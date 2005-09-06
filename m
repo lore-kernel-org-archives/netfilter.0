@@ -1,12 +1,12 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Question about high perfomance Linux firewall
-Date: Tue, 6 Sep 2005 11:28:11 -0500
-Message-ID: <200509061128.11300.rob0@gmx.co.uk>
-References: <431C9027.3010104@talika.eii.us.es>
+Subject: Re: by passing transparent proxy
+Date: Tue, 6 Sep 2005 11:33:44 -0500
+Message-ID: <200509061133.45091.rob0@gmx.co.uk>
+References: <a0f69e5050906041135c802fb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <431C9027.3010104@talika.eii.us.es>
+In-Reply-To: <a0f69e5050906041135c802fb@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,31 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 2005-September-05 13:36, Javier Miguel Rodr=EDguez wrote:
-> My ruleset will be rather short: 500-600 lines, with SNAT/DNAT in
+On Tuesday 2005-September-06 06:11, Askar wrote:
+> All teh port 80 traffic redirected to squid 3128 by ...
+>
+> $iptables -t nat -A PREROUTING -i eth0 -p tcp -s 0/0 --dport 80 -j
+> REDIRECT --to-port 3128
+>
+> Now I want to a client -s xx.xx.xx.xx access a site -d xx.xx.xx.xx
+> then his traffic by pass the squid. actaully if the client xx.xx goes
 
-(That doesn't seem short to me.)
-
-> Which gigabit ethernet card is more suitable for high perfomance
-> filtering?
-
-I know and trust the Intels, but I can't say how they will compare.
-
-> Any special advice about linux distro/ kernel tuning?
-
-Distro: whatever you are comfortable using. Any can do it.
-
-CPU: 64-bit processors do not have the same memory address space=20
-limitation as do the 32-bit CPU's.
-
-Kernel: if a 32-bit CPU, there are simple patches available which allow=20
-you to specify a LOWMEM / HIGHMEM split other than the default 1G / 3G.=20
-=46or 1G physical RAM, this is preferable to activating HIGHMEM. I think=20
-mine is set at 1.25G / 2.75G for 1G RAM.
-=2D-=20
+Precede the proxy rule with a -j RETURN rule for your -s client.IP and 
+-d server.IP. See the RETURN target in "man iptables".
+-- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
 
