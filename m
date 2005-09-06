@@ -1,11 +1,12 @@
-From: "famleone@tin.it" <famleone@tin.it>
-Subject: particular DNAT
-Date: Tue, 6 Sep 2005 22:06:38 +0100 (GMT+01:00)
-Message-ID: <2182826.1126040798325.JavaMail.root@pswm19.cp.tin.it>
-Reply-To: "famleone@tin.it" <famleone@tin.it>
+From: KOVACS Krisztian <hidden@sch.bme.hu>
+Subject: Re: Can't login to CVS
+Date: Wed, 07 Sep 2005 00:11:17 +0200
+Message-ID: <1126044678.9337.2.camel@krak.odu>
+References: <431DA6FC.7050706@possibilityforge.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <431DA6FC.7050706@possibilityforge.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,45 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jon Scottorn <jscottorn@possibilityforge.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
 
-I have a firewall netfilter + iptables and the configurations is:
+  Hi,
 
-       adsl---------------------____ ---------------------dmz ----web
-                                  |        |
-                                  | FW  
-|                                                       
-                                  |____|
-       
-hdsl---------------------         ----------------------- lan
+On Tue, 2005-09-06 at 08:26 -0600, Jon Scottorn wrote:
+>   I have been trying for the past couple of days to get the latest CVS
+> checkout for patch-o-matic but it will not let me login using the
+> example from the how to on the netfilter site. 
+> I use cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login with
+> cvs as the pwd and it just gets login failed.  Anyone know what the
+> passwd is for CVS?
 
-and for 
-the server web i have a DNAT from hdsl on dmz
+  A couple of months ago the Netfilter project has switched to using
+Subversion instead of CVS. Please take a look at the project homepage to
+find out more about the new repository:
 
-   iptables -t nat -A 
-PREROUTING -p tcp -d ip.public.hdsl --dport 80 -j DNAT --to $serverweb:
-80
+  http://www.netfilter.org/downloads.html#svn
 
-but now I need a DNAT similar for the adsl
-
-   iptables -t nat -A 
-PREROUTING -p tcp -d ip.public.adsl --dport 80 -j DNAT --to $serverweb:
-80
-
-for the same server web, but now the response from server web go 
-out from the hdsl line (the defualt gw) and it dont work.
-
-In other 
-word I want to forward the connection to the server web with 2 ip 
-public: ip.public.adsl and ip.public.hdsl but the response pass only 
-from the hdsl line. What can i do to distinguish the 2 different ip 
-public to determine the correct gw ?
-
-For me the ipt_ROUTE  is part of 
-the solutions of my problem!
-
-cfh
+-- 
+  Krisztian Kovacs
 
 
