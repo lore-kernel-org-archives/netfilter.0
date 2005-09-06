@@ -1,12 +1,10 @@
-From: lst_hoe01@kwsoft.de
-Subject: Re: Question about high perfomance Linux firewall
-Date: Tue, 06 Sep 2005 12:15:35 +0200
-Message-ID: <20050906121535.9qef8h2v8fnog8gc@webmail.kwsoft.de>
-References: <431C9027.3010104@talika.eii.us.es>
+From: Askar <askarali@gmail.com>
+Subject: by passing transparent proxy
+Date: Tue, 6 Sep 2005 16:11:53 +0500
+Message-ID: <a0f69e5050906041135c802fb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <431C9027.3010104@talika.eii.us.es>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,43 +16,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Zitat von Javier Miguel Rodr=C3=ADguez <javier.miguel@talika.eii.us.es>:
+hi list
 
-> Hello
->
-> I have to built a FAST Linux firewall (12 gigabit ethernets), and I 
-> need your advice
->
-> My current setup is ( I can change things if needed)
->
-> Compaq Proliant DL380g4 (1 xeon 3.6 ghz, with hyperthreading, pci-x 
-> based, 1 gb ram)
-> 2 broadcom gigabit ethernet cards (tg3 driver)
-> 3 intel quad gigabit ethernet cards (e1000 driver)
->
->
-> I need to keep connection tracking, so nf-hipac is discarded. I will 
-> use almost no logging.
-> My ruleset will be rather short: 500-600 lines, with SNAT/DNAT in 
-> about 5% of these rules. Only ipv4 will
-> be used in this firewall setup.
->
-> I expect substained rates of 300-400 megabits on EACH gigabit 
-> interface, with gigabit peaks. I also expect 40.000-50.000
-> concurrent connections (mainly http/smtp/dns traffic). I also expect 
-> 500-600 megabits of NATed traffic (to & from  internet)
+i have a very simple question, we have a transparent proxy "squid" for our=
+=20
+users, this machine is also the default gateway for the user. which mean al=
+l=20
+the traffic of the client do pass from this machine whether its port 80 or=
+=20
+not.
+All teh port 80 traffic redirected to squid 3128 by ...
 
-Never done such a setup but i would suggest you read
-http://people.netfilter.org/kadlec/nftest.pdf
-and
-http://www.wallfire.org/misc/netfilter_conntrack_perf.txt
+$iptables -t nat -A PREROUTING -i eth0 -p tcp -s 0/0 --dport 80 -j REDIRECT=
+=20
+--to-port 3128
 
-Regards
+Now I want to a client -s xx.xx.xx.xx access a site -d xx.xx.xx.xx then his=
+=20
+traffic by pass the squid. actaully if the client xx.xx goes through squid=
+=20
+while accessing that site then the far end web server gives him permission=
+=20
+denied.
+However on web server I could only allow the static ip of the client
+xx.xxbut not the squid server. its a secure web server.
 
-Andreas
+
+any help in this regards wil be greatly appreciated
+
+regards
+
+askar
 
 
 
+
+
+
+--=20
+Unix is very simple, but it takes a genius to understand the simplicity.
+(Dennis Ritchie)
