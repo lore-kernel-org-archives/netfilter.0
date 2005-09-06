@@ -1,11 +1,11 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Odd Problem - Connecting to SMTP
-Date: Tue, 6 Sep 2005 17:01:23 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0509061659340.11958@darkstar.sysinfo.com>
-References: <027a01c5b188$e13172b0$0ac8a8c0@defiant>
+From: "famleone@tin.it" <famleone@tin.it>
+Subject: particular DNAT
+Date: Tue, 6 Sep 2005 22:06:38 +0100 (GMT+01:00)
+Message-ID: <2182826.1126040798325.JavaMail.root@pswm19.cp.tin.it>
+Reply-To: "famleone@tin.it" <famleone@tin.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <027a01c5b188$e13172b0$0ac8a8c0@defiant>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,49 +16,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Chris Shipman <listmail@odisok.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi,
 
-On Sun, 4 Sep 2005, Chris Shipman wrote:
+I have a firewall netfilter + iptables and the configurations is:
 
->    I have a strange problem.      When I try to connect to a mail server from my linux router it can't connected to port 25.   It seems like only port 25 is affected.
-> The WAN port is DHCP and the LAN is set static with NAT enabled on outbound.
->
->    However a computer behind my linux router has no trouble connecting to port 25.    It's only when I try to connect from the linux router itself.   I'm using IPTables 1.3.3
->
->    Does anyone have an idea of what is causing this?
->
+       adsl---------------------____ ---------------------dmz ----web
+                                  |        |
+                                  | FW  
+|                                                       
+                                  |____|
+       
+hdsl---------------------         ----------------------- lan
 
+and for 
+the server web i have a DNAT from hdsl on dmz
 
-some linux dists also compile tcpd/sendmail to work and play together, and 
-this might be the case if your setup has a default deny in the 
-/etc/hosts.deny file, took awhile to figger that out here when working 
-with a new slackware setup and old hosts.xxx files moved from other 
-working setups.
+   iptables -t nat -A 
+PREROUTING -p tcp -d ip.public.hdsl --dport 80 -j DNAT --to $serverweb:
+80
 
-Thanks,
+but now I need a DNAT similar for the adsl
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+   iptables -t nat -A 
+PREROUTING -p tcp -d ip.public.adsl --dport 80 -j DNAT --to $serverweb:
+80
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
+for the same server web, but now the response from server web go 
+out from the hdsl line (the defualt gw) and it dont work.
 
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+In other 
+word I want to forward the connection to the server web with 2 ip 
+public: ip.public.adsl and ip.public.hdsl but the response pass only 
+from the hdsl line. What can i do to distinguish the 2 different ip 
+public to determine the correct gw ?
 
-iD8DBQFDHgOmst+vzJSwZikRAmsWAJ9g9T3c9r+Iuj1fBnsNGoJcbXkOgACfUh7s
-ggUMujzQ2HGk72241hmiCzk=
-=8Wtn
------END PGP SIGNATURE-----
+For me the ipt_ROUTE  is part of 
+the solutions of my problem!
+
+cfh
+
 
