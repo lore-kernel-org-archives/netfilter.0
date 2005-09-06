@@ -1,13 +1,13 @@
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+From: lst_hoe01@kwsoft.de
 Subject: Re: Question about high perfomance Linux firewall
-Date: Tue, 6 Sep 2005 12:07:54 +0300
-Message-ID: <20050906090754.GJ12310@edu.joroinen.fi>
+Date: Tue, 06 Sep 2005 12:15:35 +0200
+Message-ID: <20050906121535.9qef8h2v8fnog8gc@webmail.kwsoft.de>
 References: <431C9027.3010104@talika.eii.us.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <431C9027.3010104@talika.eii.us.es>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +18,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Javier Miguel =?iso-8859-1?Q?Rodr=EDguez?= <javier.miguel@talika.eii.us.es>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Mon, Sep 05, 2005 at 08:36:23PM +0200, Javier Miguel Rodr=EDguez wrote=
-:
+Zitat von Javier Miguel Rodr=C3=ADguez <javier.miguel@talika.eii.us.es>:
+
+> Hello
 >
-> ...
->=20
-> Which gigabit ethernet card is more suitable for high perfomance=20
-> filtering? Any special advice
-> about linux distro/ kernel tuning?
->=20
+> I have to built a FAST Linux firewall (12 gigabit ethernets), and I 
+> need your advice
+>
+> My current setup is ( I can change things if needed)
+>
+> Compaq Proliant DL380g4 (1 xeon 3.6 ghz, with hyperthreading, pci-x 
+> based, 1 gb ram)
+> 2 broadcom gigabit ethernet cards (tg3 driver)
+> 3 intel quad gigabit ethernet cards (e1000 driver)
+>
+>
+> I need to keep connection tracking, so nf-hipac is discarded. I will 
+> use almost no logging.
+> My ruleset will be rather short: 500-600 lines, with SNAT/DNAT in 
+> about 5% of these rules. Only ipv4 will
+> be used in this firewall setup.
+>
+> I expect substained rates of 300-400 megabits on EACH gigabit 
+> interface, with gigabit peaks. I also expect 40.000-50.000
+> concurrent connections (mainly http/smtp/dns traffic). I also expect 
+> 500-600 megabits of NATed traffic (to & from  internet)
 
-Hi!
+Never done such a setup but i would suggest you read
+http://people.netfilter.org/kadlec/nftest.pdf
+and
+http://www.wallfire.org/misc/netfilter_conntrack_perf.txt
 
-I've been using both tg3 and e1000 cards with Linux firewalls. Both have
-been doing fine.
+Regards
 
-Hopefully somebody other can reply with some benchmarked data or more
-information about these cards and their features (supported in Linux).
+Andreas
 
--- Pasi K=E4rkk=E4inen
-      =20
-                                   ^
-                                .     .
-                                 Linux
-                              /    -    \
-                             Choice.of.the
-                           .Next.Generation.
+
 
