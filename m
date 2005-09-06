@@ -1,11 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: patch the ipset in kernel
-Date: Tue, 6 Sep 2005 10:41:17 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0509061039480.8295@blackhole.kfki.hu>
-References: <40b6d52e050906013865c89dc5@mail.gmail.com>
+From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Subject: Re: Question about high perfomance Linux firewall
+Date: Tue, 6 Sep 2005 12:07:54 +0300
+Message-ID: <20050906090754.GJ12310@edu.joroinen.fi>
+References: <431C9027.3010104@talika.eii.us.es>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <40b6d52e050906013865c89dc5@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <431C9027.3010104@talika.eii.us.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,24 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Javier Miguel =?iso-8859-1?Q?Rodr=EDguez?= <javier.miguel@talika.eii.us.es>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Tue, 6 Sep 2005, huang mingyou wrote:
+On Mon, Sep 05, 2005 at 08:36:23PM +0200, Javier Miguel Rodr=EDguez wrote=
+:
+>
+> ...
+>=20
+> Which gigabit ethernet card is more suitable for high perfomance=20
+> filtering? Any special advice
+> about linux distro/ kernel tuning?
+>=20
 
->       I want use the ipset in our server.so I following the
-> http://ipset.netfilter.org/install.html doc do it.
-> but I can't patch the set into the kernel.our linux distribution is
-> Trustix 2.2,and the kernel is 2.4.31-5tr.
+Hi!
 
-Why can't you patch the kernel? Haven't you got access to the source code?
+I've been using both tg3 and e1000 cards with Linux firewalls. Both have
+been doing fine.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Hopefully somebody other can reply with some benchmarked data or more
+information about these cards and their features (supported in Linux).
+
+-- Pasi K=E4rkk=E4inen
+      =20
+                                   ^
+                                .     .
+                                 Linux
+                              /    -    \
+                             Choice.of.the
+                           .Next.Generation.
 
