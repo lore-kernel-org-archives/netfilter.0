@@ -1,11 +1,12 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: Question about high perfomance Linux firewall
-Date: Tue, 6 Sep 2005 13:18:47 -0400
-Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7742E2923@farmer.vikus.com>
+From: "Giacomo" <delleceste@gmail.com>
+Subject: Re: Help NAT - ISP: news
+Date: Tue, 6 Sep 2005 20:49:30 +0200
+Message-ID: <004d01c5b313$b91419e0$0300a8c0@giacomino>
+References: <001a01c5b16c$73fa8770$0300a8c0@giacomino>
+	<431DB66E.2000203@ufomechanic.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,47 +17,135 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-=20
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of /dev/rob0
-> Sent: Tuesday, September 06, 2005 12:28 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Question about high perfomance Linux firewall
->=20
-> On Monday 2005-September-05 13:36, Javier Miguel Rodr=EDguez wrote:
-> > My ruleset will be rather short: 500-600 lines, with SNAT/DNAT in
->=20
-> (That doesn't seem short to me.)
->=20
-> > Which gigabit ethernet card is more suitable for high perfomance=20
-> > filtering?
->=20
-> I know and trust the Intels, but I can't say how they will compare.
->=20
-> > Any special advice about linux distro/ kernel tuning?
->=20
-> Distro: whatever you are comfortable using. Any can do it.
->=20
-> CPU: 64-bit processors do not have the same memory address=20
-> space limitation as do the 32-bit CPU's.
->=20
-> Kernel: if a 32-bit CPU, there are simple patches available=20
-> which allow you to specify a LOWMEM / HIGHMEM split other=20
-> than the default 1G / 3G.=20
-> For 1G physical RAM, this is preferable to activating=20
-> HIGHMEM. I think mine is set at 1.25G / 2.75G for 1G RAM.
-> --=20
->     mail to this address is discarded unless "/dev/rob0"
->     or "not-spam" is in Subject: header
+----- Original Message ----- 
+From: "Amin Azez" <azez@ufomechanic.net>
+Newsgroups: gmane.comp.security.firewalls.netfilter.devel
+To: "Giacomo" <delleceste@gmail.com>
+Sent: Tuesday, September 06, 2005 5:31 PM
+Subject: Re: Help NAT - ISP: news
 
-I would add to this that AMD processors will probably offer noticeable =
-improvements in performance as demonstrated by =
-http://people.netfilter.org/kadlec/nftest.pdf.
 
-Derick Anderson
+> Have you tested the new ISP connection without your ip4 filter loaded?
+Yes it works fine without my module, resolv.conf is correct.
+In fact i was wondering what was wrong with my kernel module, and how
+iptables solves a problem like that.
+
+Thanks a lot
+
+Giacomo.
+
+>
+> I'm wondering if you need to update your /etc/resolv.conf file, default
+> route, or other such things that maybe associated with a change of ISP.
+>
+> Any problem in the area you are looking at is likely to cause problems
+> for a lot of customers so it seems unlikely to be a problem of the ISP
+>
+> Sam
+>
+> Giacomo wrote:
+>> Good Morning, i'm Giacomo S. the one who
+>> posted some days ago a message titled:
+>> "help about NAT and ISP - developing a kernel module"
+>>
+>> If anyone can help, in addition to the questions in original post, i
+>> discovered that
+>>
+>> probably the problem is not related to fragmentation in network packets.
+>>
+>> I setup the iptable rule
+>>
+>> iptables -A FORWARD -f -j LOG --log-prefix="FWD_FRAGMENTED"
+>>
+>> and no packet seems to arrive fragmented.
+>>
+>> Don't know if this information is useful, but thank in advance anyone
+>> who could
+>>
+>> point out a reason for what's happening to me.
+>>
+>> Could it be related to packets arriving in disorder?
+>>
+>> Should i mangle something else in gateway traversing packets in addition
+>> to ip, ports and checksum?
+>>
+>> I underline that i do not change any other field, nor payload.
+>>
+>> Thanks for help. I add below original message sent some days ago.
+>>
+>>
+>>
+>> Giacomo.
+>>
+>>
+>>
+>> -----
+>> ORIGINAL MESSAGE WITH PROBLEM EXPLAINED:
+>>
+>> Good morning, I'm Giacomo Strangolino from Italy.
+>>
+>> I finished developing an ipv4 packet filter with NAT/MASQUERADING and 
+>> have
+>> been
+>> testing it
+>> for some time with success connecting from home to my ISP named "libero".
+>>
+>> Then i changed ISP to another one, called "telecom" and with great 
+>> surprise
+>> i discovered that
+>> images from sites and also sites failed to load.
+>>
+>> So now, when i call an ISP all works fine, when i call the other, things 
+>> go
+>> wrong.
+>>
+>> I NAT machines behind my firewall changing only ips and ports, and
+>> recalculating checksum (ip and tcp/udp)
+>> to adjust such changes.
+>> I do not touch any other field as window size or seq number or ack, since
+>> the only things i manipulate are
+>> addresses and ports.
+>>
+>> I was wondering what i could do to solve, since iptables and ipfw+natd on
+>> freeBSD or winXP sp2 work fine
+>> with this ISP...
+>>
+>> Tweaking with ethereal i found that probably sometimes a tcp segment gets
+>> lost.
+>>
+>> My firewall is a 2.6.12 kernel module which registers with netfilter 
+>> hooks.
+>> A userspace program sends rules to
+>> kernel via netlink.
+>>
+>> I thank you if you could help me find the way to fix the problem or
+>> understand what could be wrong with an
+>> ISP network and anyway work fine with the other.
+>>
+>> Also any indication of where in iptables source is solved such problem
+>> would be appreciated.
+>>
+>> I have been consulting news for many days and until now i tried to 
+>> resolve
+>> the issue
+>> without success in the following ways:
+>>
+>> - reducing MTU on both gateway and internal hosts.
+>> - trying with the option --clamp-tcpmss-to-pmtu.
+>>
+>> Both failed and problem persisted.
+>>
+>>
+>> Thanks a lot in advance.
+>>
+>>
+>>
+>>
+>>
+> 
+
 
