@@ -1,12 +1,11 @@
-From: huang mingyou <therods@gmail.com>
-Subject: patch the ipset in kernel
-Date: Tue, 6 Sep 2005 16:38:38 +0800
-Message-ID: <40b6d52e050906013865c89dc5@mail.gmail.com>
-Reply-To: therods@gmail.com
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: patch the ipset in kernel
+Date: Tue, 6 Sep 2005 10:41:17 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0509061039480.8295@blackhole.kfki.hu>
+References: <40b6d52e050906013865c89dc5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <40b6d52e050906013865c89dc5@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,16 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hello,list.
-      I want use the ipset in our server.so I following the
-http://ipset.netfilter.org/install.html doc do it.
-but I can't patch the set into the kernel.our linux distribution is
-Trustix 2.2,and the kernel is 2.4.31-5tr.
-      so,I want to know have some other method to path the set into kernel.
+On Tue, 6 Sep 2005, huang mingyou wrote:
 
---=20
-hmy
+>       I want use the ipset in our server.so I following the
+> http://ipset.netfilter.org/install.html doc do it.
+> but I can't patch the set into the kernel.our linux distribution is
+> Trustix 2.2,and the kernel is 2.4.31-5tr.
+
+Why can't you patch the kernel? Haven't you got access to the source code?
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
