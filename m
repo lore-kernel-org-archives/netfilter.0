@@ -1,14 +1,11 @@
-From: =?ISO-8859-1?Q?Javier_Miguel_Rodr=EDguez?=
-	<javier.miguel@talika.eii.us.es>
-Subject: Re: Question about high perfomance Linux firewall
-Date: Tue, 06 Sep 2005 19:12:46 +0200
-Message-ID: <431DCE0E.3050205@talika.eii.us.es>
-References: <431C9027.3010104@talika.eii.us.es>
-	<200509061537.05637.mbellion@hipac.org>
+From: "Derick Anderson" <danderson@vikus.com>
+Subject: RE: Question about high perfomance Linux firewall
+Date: Tue, 6 Sep 2005 13:18:47 -0400
+Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7742E2923@farmer.vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200509061537.05637.mbellion@hipac.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,43 +16,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
-Cc: Michael Bellion <mbellion@hipac.org>
 
-Michael Bellion wrote:
+=20
 
->Hi,
->
->  
->
->>I need to keep connection tracking, so nf-hipac is discarded. 
->>    
->>
->
->nf-hipac does support connection tracking.
->
->  
->
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of /dev/rob0
+> Sent: Tuesday, September 06, 2005 12:28 PM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: Question about high perfomance Linux firewall
+>=20
+> On Monday 2005-September-05 13:36, Javier Miguel Rodr=EDguez wrote:
+> > My ruleset will be rather short: 500-600 lines, with SNAT/DNAT in
+>=20
+> (That doesn't seem short to me.)
+>=20
+> > Which gigabit ethernet card is more suitable for high perfomance=20
+> > filtering?
+>=20
+> I know and trust the Intels, but I can't say how they will compare.
+>=20
+> > Any special advice about linux distro/ kernel tuning?
+>=20
+> Distro: whatever you are comfortable using. Any can do it.
+>=20
+> CPU: 64-bit processors do not have the same memory address=20
+> space limitation as do the 32-bit CPU's.
+>=20
+> Kernel: if a 32-bit CPU, there are simple patches available=20
+> which allow you to specify a LOWMEM / HIGHMEM split other=20
+> than the default 1G / 3G.=20
+> For 1G physical RAM, this is preferable to activating=20
+> HIGHMEM. I think mine is set at 1.25G / 2.75G for 1G RAM.
+> --=20
+>     mail to this address is discarded unless "/dev/rob0"
+>     or "not-spam" is in Subject: header
 
-I have been reading their website ( I have NOT tested nf-hipac) and this 
-paragraph made me think that does NOT support connection tracking:
+I would add to this that AMD processors will probably offer noticeable =
+improvements in performance as demonstrated by =
+http://people.netfilter.org/kadlec/nftest.pdf.
 
-"Despite its usefulness there are still situations where you want to 
-avoid the overhead of connection tracking. Although only a constant 
-amount of time is added to the processing time of each packet (at least 
-in theory) you may need to prevent that in order to achieve maximum 
-packet rates. Those kind of setups require a highly efficient stateless 
-packet filter which is very robust against DoS or DDoS attacks. Again, 
-nf-HiPAC fulfils this requirement to the full extent."
-
-
-Thank you for your comment, I will try it ASAP
-
-
->regards
->	Michael Bellion
->  
->
-
+Derick Anderson
 
