@@ -1,13 +1,14 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: by passing transparent proxy
-Date: Tue, 6 Sep 2005 11:33:44 -0500
-Message-ID: <200509061133.45091.rob0@gmx.co.uk>
-References: <a0f69e5050906041135c802fb@mail.gmail.com>
+From: =?ISO-8859-1?Q?Javier_Miguel_Rodr=EDguez?=
+	<javier.miguel@talika.eii.us.es>
+Subject: Re: Question about high perfomance Linux firewall
+Date: Tue, 06 Sep 2005 19:12:46 +0200
+Message-ID: <431DCE0E.3050205@talika.eii.us.es>
+References: <431C9027.3010104@talika.eii.us.es>
+	<200509061537.05637.mbellion@hipac.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a0f69e5050906041135c802fb@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <200509061537.05637.mbellion@hipac.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +19,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
+Cc: Michael Bellion <mbellion@hipac.org>
 
-On Tuesday 2005-September-06 06:11, Askar wrote:
-> All teh port 80 traffic redirected to squid 3128 by ...
->
-> $iptables -t nat -A PREROUTING -i eth0 -p tcp -s 0/0 --dport 80 -j
-> REDIRECT --to-port 3128
->
-> Now I want to a client -s xx.xx.xx.xx access a site -d xx.xx.xx.xx
-> then his traffic by pass the squid. actaully if the client xx.xx goes
+Michael Bellion wrote:
 
-Precede the proxy rule with a -j RETURN rule for your -s client.IP and 
--d server.IP. See the RETURN target in "man iptables".
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+>Hi,
+>
+>  
+>
+>>I need to keep connection tracking, so nf-hipac is discarded. 
+>>    
+>>
+>
+>nf-hipac does support connection tracking.
+>
+>  
+>
+
+I have been reading their website ( I have NOT tested nf-hipac) and this 
+paragraph made me think that does NOT support connection tracking:
+
+"Despite its usefulness there are still situations where you want to 
+avoid the overhead of connection tracking. Although only a constant 
+amount of time is added to the processing time of each packet (at least 
+in theory) you may need to prevent that in order to achieve maximum 
+packet rates. Those kind of setups require a highly efficient stateless 
+packet filter which is very robust against DoS or DDoS attacks. Again, 
+nf-HiPAC fulfils this requirement to the full extent."
+
+
+Thank you for your comment, I will try it ASAP
+
+
+>regards
+>	Michael Bellion
+>  
+>
+
 
