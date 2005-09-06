@@ -1,9 +1,9 @@
-From: Will Kuhn <willkuhn76@yahoo.com>
-Subject: question about the order of the rules of iptables
-Date: Thu, 8 Sep 2005 05:01:14 -0700 (PDT)
-Message-ID: <20050908120114.76595.qmail@web60421.mail.yahoo.com>
+From: luca <llcfhll@gmail.com>
+Subject: particular DNAT
+Date: Tue, 06 Sep 2005 22:55:26 +0200
+Message-ID: <431E023E.8060100@tin.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,33 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi,
 
-Will the order of the following two rules make any
-difference in the outcome ? I personally feel that it
-should not. Can anyone confirm ?
+I have a firewall netfilter + iptables and the configurations is:
 
-My intention is to have the incoming mails first
-checked by the local anti-spam process listening at
-port 1025 before being forwarded to the local mail
-server. 10.1.1.100 is a private ip address of the
-local mail server.
+        adsl---------------------      ----------------------dmz ----web
+                            eth2|     |eth1                    
+                                     FW
+                            eth3|     |eth0
+        hdsl---------------------      ----------------------- lan
 
-Local Mail server ----- [eth0] LinuxBOX [eth1] ----
-internet
+and for the server web i have a DNAT from hdsl on dmz
 
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport
-25 -j DNAT --to 10.1.1.100
+    iptables -t nat -A PREROUTING -p tcp -d ip.public.hdsl --dport 80 -j 
+DNAT --to $serverweb:80
 
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport
-25 -j REDIRECT --to-port 1025
+but now I need a DNAT similar for the adsl
 
--Will
+    iptables -t nat -A PREROUTING -p tcp -d ip.public.adsl --dport 80 -j 
+DNAT --to $serverweb:80
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+for the same server web, but now the response from server web go out 
+from the hdsl line (the defualt gw) and it dont work.
+
+In other word I want to forward the connection to the server web with 2 
+ip public: ip.public.adsl and ip.public.hdsl but the response pass only 
+from the hdsl line. What can i do to distinguish the 2 different ip 
+public to determine the correct gw ?
+
+For me the ipt_ROUTE  is part of the solutions of my problem!
+
+CFH
+
+
+
 
