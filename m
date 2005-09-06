@@ -1,7 +1,7 @@
-From: "Greg Scott" <GregScott@InfraSupportEtc.com>
-Subject: RE: unable to apply PPTP patches
-Date: Tue, 6 Sep 2005 10:50:43 -0500
-Message-ID: <365871C49598504A9481DDBEC3EB495512322D@MAIL.InfraSupportEtc.com>
+From: "Baake, Matthias" <m.baake@porta.de>
+Subject: RE: Slow connection on Mac OSX
+Date: Tue, 6 Sep 2005 18:03:03 +0200
+Message-ID: <201E6F5AC48C274996A5AD8304FAEF860BFCBB@p001ex03.porta.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,44 +17,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Oscar Mateo <omateo@gmail.com>, netfilter@lists.netfilter.org
+To: David Leangen <dleangen@canada.com>
+Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
 
-Sigh . . .
+hi,
 
-A couple of us have had the exact same problem.  No answers yet from
-anyone.  It's been suggested to try this on the netfilter developer list
-but I haven't had time to sign up and post the problemm over there yet.
+a possibility could also be wrong or no dns settings.
+this could slow down your system too..
 
+greets=20
 
-- Greg Scott
-=20
+matthias
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Oscar Mateo
-Sent: Tuesday, September 06, 2005 9:50 AM
-To: netfilter@lists.netfilter.org
-Subject: unable to apply PPTP patches
-
-Hi all:
-
-I have been trying to apply the pptp patches (pom-ng-20050905,
-iptables-1.3.3) to the kernel source (kernels 2.6.9.x, 2.6.11.x and
-2.6.12.x) and I have found the same error that populates the August
-2005 netfilter Archives:
-
-- If I only apply the pptp/gre patches I get
-`__ip_conntrack_expect_find' undefined (when compiling either in the
-kernel or as a module).
-- If I try to apply nfnetlink and ctnetlink patches, ctnetlink is
-rejected (6 rejects out of 48 hunks).
-- If I force the ctnetlink patch, I get `__ip_conntrack_hash_insert'
-undeclared.
-
-Did someone get the patch working with kernels >=3D 2.6?
-Does anyone have any ideas how to deal with this problem?
-
-Thanks in advance for your help ^_^
-Oscar
-
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of=20
+> David Leangen
+> Sent: Monday, September 05, 2005 7:14 AM
+> To: netfilter@lists.netfilter.org
+> Subject: NAT: Slow connection on Mac OSX
+>=20
+>=20
+>=20
+> Hello!
+>=20
+> I have set up NAT/masquerading on my router box.
+>=20
+> Everything seems to be working fine on my Linux client host.=20
+> However, my=20
+> Mac is having a lot of trouble: the connection is very slow=20
+> and I can't=20
+> even finish loading, for example, the google home page.
+>=20
+>=20
+> Is there something else I need to do to get this going right?
+>=20
+>=20
+> Mac: 192.168.2.4
+> Client Linux: 192.168.2.2
+> Linux firewall (eth1): 192.168.2.1
+> Linux firewall (eth0): 192.168.1.2
+>=20
+> ip_forward is set to "1".
+>=20
+> In my iptables "nat" table, I have:
+>=20
+> -A POSTROUTING -o ppp0 -j MASQUERADE
+>=20
+>=20
+> Thanks for any advice you can give me!
+>=20
+>=20
+>=20
+>=20
 
