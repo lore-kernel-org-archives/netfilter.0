@@ -1,7 +1,7 @@
 From: Sascha Reissner <sascha.reissner@toxicnet.de>
 Subject: Re: iptables: can't set any ip address in rules
-Date: Wed, 07 Sep 2005 10:42:21 +0200
-Message-ID: <431EA7ED.5090705@toxicnet.de>
+Date: Wed, 07 Sep 2005 10:43:46 +0200
+Message-ID: <431EA842.2050502@toxicnet.de>
 References: <005e01c5b1df$46279630$205f030a@askeyrd3>
 	<017c01c5b385$3f7bfe00$205f030a@askeyrd3>
 Mime-Version: 1.0
@@ -22,10 +22,12 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Salim <salim.si@askey.com.tw>
 Cc: netfilter@lists.netfilter.org
 
-Please add a protocol to your rules (-p TCP or -p UDP) and it will work.
+Argh, i mean please add a protocol to the rule, and add the nat table to 
+the rule.. you always use -t but you do not specify the nat table.. in 
+your rules "-t" should be replaced with "-t nat"
 
-Regards,
-Sascha
+regards,
+sascha
 
 Salim wrote:
 > this issue has been solved. seems like 'unsigned long long' doesn't work on
