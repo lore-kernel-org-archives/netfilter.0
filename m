@@ -1,12 +1,10 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: question about the order of the rules of iptables
-Date: Thu, 08 Sep 2005 08:23:45 -0400
-Message-ID: <1126182225.2631.28.camel@localhost>
-References: <20050908120114.76595.qmail@web60421.mail.yahoo.com>
+From: "Soo Chun Keat" <cksoo@iris.com.my>
+Subject: block internal to access external proxy server
+Date: Wed, 7 Sep 2005 15:43:12 +0800
+Message-ID: <200509070738.j877ci8q020340@iris.com.my>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050908120114.76595.qmail@web60421.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,51 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Will Kuhn <willkuhn76@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 2005-09-08 at 05:01 -0700, Will Kuhn wrote:
-> Will the order of the following two rules make any
-> difference in the outcome ? I personally feel that it
-> should not. Can anyone confirm ?
-> 
-> My intention is to have the incoming mails first
-> checked by the local anti-spam process listening at
-> port 1025 before being forwarded to the local mail
-> server. 10.1.1.100 is a private ip address of the
-> local mail server.
-> 
-> Local Mail server ----- [eth0] LinuxBOX [eth1] ----
-> internet
-> 
-> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport
-> 25 -j DNAT --to 10.1.1.100
-> 
-> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport
-> 25 -j REDIRECT --to-port 1025
-> 
-<snip>
-That may depend on what you want to do.  First, if I recall properly
-(and I may not), REDIRECT sends the packet to port 1025 on interface lo,
-i.e., to the local machine.  It is not used for changing the port.  That
-may be what you want.  If you really want to change the port but not
-redirect the packet to the local computer, use the port parameter on
-DNAT, e.g., --to-destination 10.1.1.100:1025.
+Hi,
 
-Second, I believe packets stop traversing a chain once they have been
-matched with the DNAT target (I'm not sure about REDIRECT).  Thus, a
-packet matching rule #1 in your order would never see rule #2.
+ 
 
-I'm fetching this out of somewhat distant memory so, if someone knows
-better, please correct me - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+I just implement a center firewall (iptables) with transparent proxy (squid)
+in my company. I block the msn and yahoo chatting program in my iptables
+rules. However, the users still can use external free proxy to use msn and
+yahoo messenger. May I know got any way for me to block the users for doing
+this and force all the traffic must go though my proxy?
 
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
+ 
 
+Thanks.
+
+ 
 
