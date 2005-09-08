@@ -1,11 +1,12 @@
-From: hbeaumont hbeaumont <ahlist@gmail.com>
-Subject: blocking outbound irc
-Date: Wed, 7 Sep 2005 23:41:52 -0500
-Message-ID: <bc5becf605090721411c969411@mail.gmail.com>
+From: "Ruben Cardenal" <ruben@ruben.cn>
+Subject: RE: blocking outbound irc
+Date: Thu, 8 Sep 2005 08:07:30 +0200
+Message-ID: <4397.83909027955$1126159778@news.gmane.org>
+References: <bc5becf605090721411c969411@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <bc5becf605090721411c969411@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,16 +20,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+
 Hi,
 
-Can anyone send me the iptables line(s) I would need to block all outgoing=
-=20
-access to remote irc (ports 6668, etc.).
+> Can anyone send me the iptables line(s) I would need to block all outgoing
+> access to remote irc (ports 6668, etc.).
 
-I tried to figure this out myself (even asked some on the list a while back=
-)=20
-and haven't reallly had much luck. I feel like
-a loser for just out and out asking but if anyone could just send me the=20
-basic line for doing it I would really appreciate it.
+  Regular IRC ports are 6660-6669 and 7000. So..
 
-Thanks.
+  iptables -I OUTPUT -p tcp -m multiport --destination-ports
+6660,6661,6662,6663,6664,6665,6666,6667,6668,6669,7000 -j DROP
+
+  Regards,
+
+- Ruben
+
+
+
