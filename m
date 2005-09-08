@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: block internal to access external proxy server
-Date: Thu, 8 Sep 2005 11:18:07 -0500
-Message-ID: <200509081118.07605.rob0@gmx.co.uk>
-References: <200509070738.j877ci8q020340@iris.com.my>
+From: "Joshua, C.S. Chen" <cschen@asiaa.sinica.edu.tw>
+Subject: kernel panic because of recent match
+Date: Fri, 09 Sep 2005 00:52:46 +0800
+Message-ID: <43206C5E.30605@asiaa.sinica.edu.tw>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200509070738.j877ci8q020340@iris.com.my>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,25 +18,92 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 2005-September-07 02:43, Soo Chun Keat wrote:
-> I just implement a center firewall (iptables) with transparent proxy
-> (squid) in my company. I block the msn and yahoo chatting program in
-> my iptables rules. However, the users still can use external free
-> proxy to use msn and yahoo messenger. May I know got any way for me
-> to block the users for doing this and force all the traffic must go
-> though my proxy?
+Hi all,
+I am using linux iptables at my institute serving as gate/firewall. It's
+working fine and smooth. Recently we enable the following rule to block
+the ssh brute-force attack
 
-The bottom line is that you must know more than your users. Don't 
-provide outbound routing (and NAT if applicable) on protocols deemed 
-unwanted. Don't let them out at all, if you can.
 
-But what is this external proxy? How can you block it?
 
-It does appear that you're using technology to try to solve a human 
-problem. If they're motivated to continue doing this, you will find it 
-very difficult to stay ahead of them. The providers, particularly MSN, 
-are constantly changing their protocols to be harder to block.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+### ssh brute-force attack rule
+$IPTABLES -A INPUT -p tcp --syn --dport 22 -m recent --name sshattack --set
+$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 60 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: '
+$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 60 --hitcount 3 -j REJECT --reject-with tcp-reset
+
+
+$IPTABLES -A FORWARD -p tcp --syn --dport 22 -m recent --name sshattack
+--set
+$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 60 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: '
+$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 60 --hitcount 3 -j REJECT --reject-with tcp-reset
+
+
+And it really block ssh connect at some threshold (3/60 seconds).
+BUT after some time (several hours, or sometimes several tens of
+minutes),the firewall crash with kernel panic, without any logs to trace.
+
+The kernel is from CentOS 4.1, 2.6.9-11.ELsmp. The machine is a DUAL AMD
+optron cpu with 2G ram. It will go kernel panic sooner or later once we
+enable the recent match. Is there any hope to solve this problem? Is AMD
+cpu or SMP (dualcpu) the reason?
+
+
+
+And I am so curious about the internal 'recent match list'. Do I have a
+chance to see the list? Once an IP triggered the drop or log rule, can I
+see them? Is the list somewhere in /proc/*?
+
+
+Thanks in advance
+Joshua
+
+[root@fw ~]# man procmailrc
+Formatting page, please wait...
+[root@fw ~]#
+[root@fw ~]# cat ssh_brute_force_attack_kernel_panic
+Dear all,
+We are using linux iptables at our institute serving as gate/firewall.
+It's working fine and smooth. Recently we enable the following rule to
+block thessh brute-force attack
+
+
+
+### ssh brute-force attack rule
+$IPTABLES -A INPUT -p tcp --syn --dport 22 -m recent --name sshattack --set
+$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 60 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: '
+$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 60 --hitcount 3 -j REJECT --reject-with tcp-reset
+
+
+$IPTABLES -A FORWARD -p tcp --syn --dport 22 -m recent --name sshattack
+--set
+$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 60 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: '
+$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 60 --hitcount 3 -j REJECT --reject-with tcp-reset
+
+
+And it really block ssh connect at some threshold (3/60 seconds).
+BUT after some time (several hours, or sometimes several tens of
+minutes),the firewall crash with kernel panic, without any logs to trace.
+
+The kernel is from CentOS 4.1, 2.6.9-11.ELsmp. The machine is a DUAL AMD
+optron cpu with 2G ram. It will go kernel panic sooner or later once we
+enable the recent match. Is there any hope to solve this problem? Is AMD
+cpu or SMP (dualcpu) the reason?
+
+
+
+And I am so curious about the internal 'recent match list'. Do I have a
+chance to see the list? Once an IP trigger the drop or log rule, can I
+see the ip? Is the list somewhere in /proc/*?
+
+
+Thanks in advance
+Joshua
+
 
