@@ -1,10 +1,12 @@
-From: luca <llcfhll@gmail.com>
-Subject: particular DNAT
-Date: Tue, 06 Sep 2005 22:55:26 +0200
-Message-ID: <431E023E.8060100@tin.it>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: question about the order of the rules of iptables
+Date: Thu, 08 Sep 2005 08:23:45 -0400
+Message-ID: <1126182225.2631.28.camel@localhost>
+References: <20050908120114.76595.qmail@web60421.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050908120114.76595.qmail@web60421.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,41 +17,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Will Kuhn <willkuhn76@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Thu, 2005-09-08 at 05:01 -0700, Will Kuhn wrote:
+> Will the order of the following two rules make any
+> difference in the outcome ? I personally feel that it
+> should not. Can anyone confirm ?
+> 
+> My intention is to have the incoming mails first
+> checked by the local anti-spam process listening at
+> port 1025 before being forwarded to the local mail
+> server. 10.1.1.100 is a private ip address of the
+> local mail server.
+> 
+> Local Mail server ----- [eth0] LinuxBOX [eth1] ----
+> internet
+> 
+> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport
+> 25 -j DNAT --to 10.1.1.100
+> 
+> iptables -t nat -A PREROUTING -i eth1 -p tcp --dport
+> 25 -j REDIRECT --to-port 1025
+> 
+<snip>
+That may depend on what you want to do.  First, if I recall properly
+(and I may not), REDIRECT sends the packet to port 1025 on interface lo,
+i.e., to the local machine.  It is not used for changing the port.  That
+may be what you want.  If you really want to change the port but not
+redirect the packet to the local computer, use the port parameter on
+DNAT, e.g., --to-destination 10.1.1.100:1025.
 
-I have a firewall netfilter + iptables and the configurations is:
+Second, I believe packets stop traversing a chain once they have been
+matched with the DNAT target (I'm not sure about REDIRECT).  Thus, a
+packet matching rule #1 in your order would never see rule #2.
 
-        adsl---------------------      ----------------------dmz ----web
-                            eth2|     |eth1                    
-                                     FW
-                            eth3|     |eth0
-        hdsl---------------------      ----------------------- lan
+I'm fetching this out of somewhat distant memory so, if someone knows
+better, please correct me - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-and for the server web i have a DNAT from hdsl on dmz
-
-    iptables -t nat -A PREROUTING -p tcp -d ip.public.hdsl --dport 80 -j 
-DNAT --to $serverweb:80
-
-but now I need a DNAT similar for the adsl
-
-    iptables -t nat -A PREROUTING -p tcp -d ip.public.adsl --dport 80 -j 
-DNAT --to $serverweb:80
-
-for the same server web, but now the response from server web go out 
-from the hdsl line (the defualt gw) and it dont work.
-
-In other word I want to forward the connection to the server web with 2 
-ip public: ip.public.adsl and ip.public.hdsl but the response pass only 
-from the hdsl line. What can i do to distinguish the 2 different ip 
-public to determine the correct gw ?
-
-For me the ipt_ROUTE  is part of the solutions of my problem!
-
-CFH
-
-
+If you would like to participate in the development of an open source
+enterprise class network security management system, please visit
+http://iscs.sourceforge.net
 
 
