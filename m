@@ -1,12 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: firewall iptables based ?
-Date: Wed, 7 Sep 2005 21:59:48 -0500
-Message-ID: <200509072159.49067.rob0@gmx.co.uk>
-References: <NHBBLNDNFKDMKNNKGOMMMEOEMDAA.gregoriandres@yahoo.com.ar>
+From: hbeaumont hbeaumont <ahlist@gmail.com>
+Subject: blocking outbound irc
+Date: Wed, 7 Sep 2005 23:41:52 -0500
+Message-ID: <bc5becf605090721411c969411@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <NHBBLNDNFKDMKNNKGOMMMEOEMDAA.gregoriandres@yahoo.com.ar>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,25 +19,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 2005-September-07 21:39, LinuXKiD wrote:
-> which open source firewall iptables based
-> you recommend ?
->
-> I've checked smoothwall and shoreline, but on
-> freshmeat.net I've see many more !
+Hi,
 
-I have not seen one I really liked. I know Monmotha's is good; I used 
-that before I learned iptables(8) myself. But it and most others seem 
-far too complex for my liking.
+Can anyone send me the iptables line(s) I would need to block all outgoing=
+=20
+access to remote irc (ports 6668, etc.).
 
-Read and understand the Packet Filtering HOWTO (and NAT HOWTO if you 
-need NAT) and start with those examples. It's very simple and secure. 
-The real benefit is that you will understand WHY it's secure.
+I tried to figure this out myself (even asked some on the list a while back=
+)=20
+and haven't reallly had much luck. I feel like
+a loser for just out and out asking but if anyone could just send me the=20
+basic line for doing it I would really appreciate it.
 
-I used to have a fancy script which did a lot with little configuration 
-by the user, but it proved to be too much to maintain. Lately I am just 
-editing iptables-save(8) rules files for iptables-restore(8).
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
-
+Thanks.
