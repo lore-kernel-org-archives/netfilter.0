@@ -1,10 +1,12 @@
-From: "Joshua, C.S. Chen" <cschen@asiaa.sinica.edu.tw>
-Subject: kernel panic because of recent match
-Date: Fri, 09 Sep 2005 00:52:46 +0800
-Message-ID: <43206C5E.30605@asiaa.sinica.edu.tw>
+From: Will Kuhn <willkuhn76@yahoo.com>
+Subject: Re: question about the order of the rules of iptables
+Date: Thu, 8 Sep 2005 10:09:18 -0700 (PDT)
+Message-ID: <20050908170918.59371.qmail@web60411.mail.yahoo.com>
+References: <1126182225.2631.28.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1126182225.2631.28.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,94 +18,107 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
-I am using linux iptables at my institute serving as gate/firewall. It's
-working fine and smooth. Recently we enable the following rule to block
-the ssh brute-force attack
+Hi John, Thanks for your reply. Actually I need to
+clarify.
 
+In my config, I have an anti-spam process running on
+the linux gateway and listening on port 1025. My
+intention is to have the linux gateway filter out all
+the junks.
 
+I intend to have the linux box first modify the Dest
+ip and forwarded it the local anti-spam process for
+spam checking. After that, the anti-spam process will
+forward the clean mail to the mail server since the ip
+address has already been modified. 
 
-### ssh brute-force attack rule
-$IPTABLES -A INPUT -p tcp --syn --dport 22 -m recent --name sshattack --set
-$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
---rcheck --seconds 60 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: '
-$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
---rcheck --seconds 60 --hitcount 3 -j REJECT --reject-with tcp-reset
+Will that intention in mind, will my iptables rules
+still work ? If not, how should I design my iptables
+rules ?
 
+Thanks, Will
 
-$IPTABLES -A FORWARD -p tcp --syn --dport 22 -m recent --name sshattack
---set
-$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
---rcheck --seconds 60 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: '
-$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
---rcheck --seconds 60 --hitcount 3 -j REJECT --reject-with tcp-reset
+Local Mail server ---- e0 linux gateway e1 ----
+internet
 
-
-And it really block ssh connect at some threshold (3/60 seconds).
-BUT after some time (several hours, or sometimes several tens of
-minutes),the firewall crash with kernel panic, without any logs to trace.
-
-The kernel is from CentOS 4.1, 2.6.9-11.ELsmp. The machine is a DUAL AMD
-optron cpu with 2G ram. It will go kernel panic sooner or later once we
-enable the recent match. Is there any hope to solve this problem? Is AMD
-cpu or SMP (dualcpu) the reason?
+Local Mail server ip: 10.1.1.100
+the anti spam mail proxy running on the linux gateway.
 
 
 
-And I am so curious about the internal 'recent match list'. Do I have a
-chance to see the list? Once an IP triggered the drop or log rule, can I
-see them? Is the list somewhere in /proc/*?
+--- "John A. Sullivan III"
+<jsullivan@opensourcedevel.com> wrote:
+
+> On Thu, 2005-09-08 at 05:01 -0700, Will Kuhn wrote:
+> > Will the order of the following two rules make any
+> > difference in the outcome ? I personally feel that
+> it
+> > should not. Can anyone confirm ?
+> > 
+> > My intention is to have the incoming mails first
+> > checked by the local anti-spam process listening
+> at
+> > port 1025 before being forwarded to the local mail
+> > server. 10.1.1.100 is a private ip address of the
+> > local mail server.
+> > 
+> > Local Mail server ----- [eth0] LinuxBOX [eth1]
+> ----
+> > internet
+> > 
+> > iptables -t nat -A PREROUTING -i eth1 -p tcp
+> --dport
+> > 25 -j DNAT --to 10.1.1.100
+> > 
+> > iptables -t nat -A PREROUTING -i eth1 -p tcp
+> --dport
+> > 25 -j REDIRECT --to-port 1025
+> > 
+> <snip>
+> That may depend on what you want to do.  First, if I
+> recall properly
+> (and I may not), REDIRECT sends the packet to port
+> 1025 on interface lo,
+> i.e., to the local machine.  It is not used for
+> changing the port.  That
+> may be what you want.  If you really want to change
+> the port but not
+> redirect the packet to the local computer, use the
+> port parameter on
+> DNAT, e.g., --to-destination 10.1.1.100:1025.
+> 
+> Second, I believe packets stop traversing a chain
+> once they have been
+> matched with the DNAT target (I'm not sure about
+> REDIRECT).  Thus, a
+> packet matching rule #1 in your order would never
+> see rule #2.
+> 
+> I'm fetching this out of somewhat distant memory so,
+> if someone knows
+> better, please correct me - John
+> -- 
+> John A. Sullivan III
+> Open Source Development Corporation
+> +1 207-985-7880
+> jsullivan@opensourcedevel.com
+> 
+> If you would like to participate in the development
+> of an open source
+> enterprise class network security management system,
+> please visit
+> http://iscs.sourceforge.net
+> 
+> 
 
 
-Thanks in advance
-Joshua
 
-[root@fw ~]# man procmailrc
-Formatting page, please wait...
-[root@fw ~]#
-[root@fw ~]# cat ssh_brute_force_attack_kernel_panic
-Dear all,
-We are using linux iptables at our institute serving as gate/firewall.
-It's working fine and smooth. Recently we enable the following rule to
-block thessh brute-force attack
-
-
-
-### ssh brute-force attack rule
-$IPTABLES -A INPUT -p tcp --syn --dport 22 -m recent --name sshattack --set
-$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
---rcheck --seconds 60 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: '
-$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
---rcheck --seconds 60 --hitcount 3 -j REJECT --reject-with tcp-reset
-
-
-$IPTABLES -A FORWARD -p tcp --syn --dport 22 -m recent --name sshattack
---set
-$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
---rcheck --seconds 60 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: '
-$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
---rcheck --seconds 60 --hitcount 3 -j REJECT --reject-with tcp-reset
-
-
-And it really block ssh connect at some threshold (3/60 seconds).
-BUT after some time (several hours, or sometimes several tens of
-minutes),the firewall crash with kernel panic, without any logs to trace.
-
-The kernel is from CentOS 4.1, 2.6.9-11.ELsmp. The machine is a DUAL AMD
-optron cpu with 2G ram. It will go kernel panic sooner or later once we
-enable the recent match. Is there any hope to solve this problem? Is AMD
-cpu or SMP (dualcpu) the reason?
-
-
-
-And I am so curious about the internal 'recent match list'. Do I have a
-chance to see the list? Once an IP trigger the drop or log rule, can I
-see the ip? Is the list somewhere in /proc/*?
-
-
-Thanks in advance
-Joshua
-
+	
+		
+______________________________________________________
+Click here to donate to the Hurricane Katrina relief effort.
+http://store.yahoo.com/redcross-donate3/
 
