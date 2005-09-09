@@ -1,7 +1,8 @@
-From: "Giacomo" <delleceste@gmail.com>
-Subject: detect tcp fragmented packets
-Date: Fri, 9 Sep 2005 14:00:13 +0200
-Message-ID: <005601c5b536$0b87fc90$0300a8c0@giacomino>
+From: Denis Kaganovich <mahatma@bspu.unibel.by>
+Subject: Retransmitted TCP packets
+Date: Fri, 09 Sep 2005 16:27:17 -0200
+Message-ID: <4321D405.6070204@bspu.unibel.by>
+Reply-To: mahatma@eu.by
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,23 +16,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Good morning.
+More correct form of question:
+How to detect retransmitted TCP packets (&ACK &no, if different)?
+Interesting for iptables rule for it.
 
-does iptables' option  "-f" reveal ip fragments or also tcp fragments?
+It may be nice for input traffic smoothing. Now I use sch_psp 
+(http://www.gridmpi.org/pspacer-1.0/index.en.jsp - version 1.0.2 have 
+bugs and hung on some actions with tc on my systems - RH & Gentoo with 
+own  overoptimized kernels, but main goal - scheduling - work fine). Now 
+I use next scheme (pure 4example):
 
-My network does not work very well and i would like to discover if it is due
-to
-fragmentation in tcp header.
+tc qdisc add dev eth0 root handle 1: psp default 2 rate 100Mbit
+tc class add dev eth0 parent 1: classid 1:1 psp rate 10Mbit mode 1
+  tc class add dev eth0 parent 1:1 classid 1:10 psp mode 0
+  tc class add dev eth0 parent 1:1 classid 1:20 psp mode 0
+tc class add dev eth0 parent 1: classid 1:2 psp mode 0
 
-How can i detect tcp fragmented arriving packets to my machine?
+Into class 1:10 I move ACK packets of shaped part of traffic (now - 
+experemental - "-m state --state new" also - looks fine), into class 
+1:20 - other shaped traffic. Now I want to exclude from 1:10 
+retransmitted ACKs and get only effective ACK traffic rate estimation.
 
-If the problem was this, how could i find an example in linux kernel where
-reassembling of fragments takes place?
+All this actions have sense of smoothing/shaping of input TCP traffic 
+without direct rate estimation.
 
-Thanks a lot!
-Giacomo 
+-- 
+WBR,
+Denis Kaganovich,  mahatma@eu.by  http://mahatma.bspu.unibel.by
 
 
