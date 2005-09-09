@@ -1,14 +1,14 @@
-From: Radien Radien <radien@gmail.com>
-Subject: Re: Bandwidth/network monitoring tools
-Date: Fri, 9 Sep 2005 13:06:58 +0430
-Message-ID: <4a0a384e05090901363650a114@mail.gmail.com>
-References: <c0e9781f05081600436428eb12@mail.gmail.com>
-	<1124188629.3085.4.camel@localhost>
-Reply-To: radien@gmail.com
+From: TheGesus <thegesus@gmail.com>
+Subject: Re: QUEUE function called twice?
+Date: Fri, 9 Sep 2005 06:26:14 -0400
+Message-ID: <5e70f6530509090326538d2a0e@mail.gmail.com>
+References: <000001c5b46a$87d8c2b0$2801a8c0@MBRC40>
+	<000101c5b4e4$2996f7b0$2801a8c0@MBRC40>
+Reply-To: thegesus@gmail.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1124188629.3085.4.camel@localhost>
+In-Reply-To: <000101c5b4e4$2996f7b0$2801a8c0@MBRC40>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,48 +21,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-There is a comprehensive list here, take a look:
- http://www.slac.stanford.edu/xorg/nmtf/nmtf-tools.html
+This has happened to me so many times I have started using /dev/rob0's
+method of editing an iptables-restore file instead of writing a
+script.  It seems to be the only way to guarantee tables and chains
+get flushed between revisions.
 
-
- On 8/16/05, John A. Sullivan III <jsullivan@opensourcedevel.com> wrote:=20
->=20
-> On Tue, 2005-08-16 at 08:43 +0100, Greg Cope wrote:
-> > Hi all,
-> >
-> > Anyone got any suggestions for monitoring network usage by=20
-> hostclient/protocol?
-> >
-> > I am occassionally involved with debugging why our internet bandwidth
-> > is "slow" - and I am sure I am not the only person who has been here
-> > and I assume there are some simple tools for this sort of thing.
-> >
-> > I am not after debugging tools like netstat, lsof, or tcpdump.
-> > Excellent as they are, they are too fine grained.
-> >
-> > Ideally this would work with our iptables based firewall/router that
-> > does DMZ as well.
-> >
-> > Thanks,
-> >
-> > Greg
-> I'm not sure how granular you want to be. Have you looked at MRTG or
-> Etherape? - John
+On 9/8/05, Michael D. Berger <m.d.berger@ieee.org> wrote:
+> Mia culpa.  Because of a script error, I had two
+> similar -j QUEUE lines.  My apologies.
+> Mike.
 > --
-> John A. Sullivan III
-> Open Source Development Corporation
-> +1 207-985-7880
-> jsullivan@opensourcedevel.com
->=20
-> If you would like to participate in the development of an open source
-> enterprise class network security management system, please visit
-> http://iscs.sourceforge.net
->=20
->=20
->=20
+> Michael D. Berger
+> m.d.berger@ieee.org
+>
 
-
---=20
-__ Radien__
