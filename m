@@ -1,12 +1,15 @@
-From: "Michael D. Berger" <m.d.berger@ieee.org>
-Subject: RE: QUEUE function called twice?
-Date: Thu, 8 Sep 2005 22:14:08 -0400
-Message-ID: <000101c5b4e4$2996f7b0$2801a8c0@MBRC40>
-References: <000001c5b46a$87d8c2b0$2801a8c0@MBRC40>
+From: Radien Radien <radien@gmail.com>
+Subject: Re: Bandwidth/network monitoring tools
+Date: Fri, 9 Sep 2005 13:06:58 +0430
+Message-ID: <4a0a384e05090901363650a114@mail.gmail.com>
+References: <c0e9781f05081600436428eb12@mail.gmail.com>
+	<1124188629.3085.4.camel@localhost>
+Reply-To: radien@gmail.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000001c5b46a$87d8c2b0$2801a8c0@MBRC40>
+In-Reply-To: <1124188629.3085.4.camel@localhost>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +21,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Mia culpa.  Because of a script error, I had two
-similar -j QUEUE lines.  My apologies.
-Mike.
---
-Michael D. Berger
-m.d.berger@ieee.org 
+There is a comprehensive list here, take a look:
+ http://www.slac.stanford.edu/xorg/nmtf/nmtf-tools.html
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org 
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
-> Michael D. Berger
-> Sent: Thursday, September 08, 2005 7:43 AM
-> To: netfilter
-> Subject: QUEUE function called twice?
-> 
-> 
-> On RH-E-WS-4, in the Input chain, I send icmp type 8
-> to -j QUEUE, where my function DROPs the first three,
-> and ACCEPTs all thereafter.  The debug print in the
-> function shows that when I accept, my queue function
-> is called a second time (a total of two times for
-> each ping).  Is this to be expected?  If so, this
-> will be a problem for the ultimate intended use,
-> which is a complex, stateful filter for some nasty
-> stuff on port 80.
-> 
-> Thanks in advance for your help.
-> Mike.
+
+ On 8/16/05, John A. Sullivan III <jsullivan@opensourcedevel.com> wrote:=20
+>=20
+> On Tue, 2005-08-16 at 08:43 +0100, Greg Cope wrote:
+> > Hi all,
+> >
+> > Anyone got any suggestions for monitoring network usage by=20
+> hostclient/protocol?
+> >
+> > I am occassionally involved with debugging why our internet bandwidth
+> > is "slow" - and I am sure I am not the only person who has been here
+> > and I assume there are some simple tools for this sort of thing.
+> >
+> > I am not after debugging tools like netstat, lsof, or tcpdump.
+> > Excellent as they are, they are too fine grained.
+> >
+> > Ideally this would work with our iptables based firewall/router that
+> > does DMZ as well.
+> >
+> > Thanks,
+> >
+> > Greg
+> I'm not sure how granular you want to be. Have you looked at MRTG or
+> Etherape? - John
 > --
-> Michael D. Berger
-> m.d.berger@ieee.org 
-> 
-> 
-> 
-> 
+> John A. Sullivan III
+> Open Source Development Corporation
+> +1 207-985-7880
+> jsullivan@opensourcedevel.com
+>=20
+> If you would like to participate in the development of an open source
+> enterprise class network security management system, please visit
+> http://iscs.sourceforge.net
+>=20
+>=20
+>=20
 
 
-
+--=20
+__ Radien__
