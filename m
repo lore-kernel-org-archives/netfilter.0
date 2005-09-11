@@ -1,7 +1,7 @@
 From: Edmundo Carmona <eantoranz@gmail.com>
 Subject: Re: Is SIP 2.0 support available in IP-table
-Date: Sun, 11 Sep 2005 00:04:20 -0400
-Message-ID: <65aa6af9050910210464493d25@mail.gmail.com>
+Date: Sun, 11 Sep 2005 00:42:58 -0400
+Message-ID: <65aa6af905091021422ed83887@mail.gmail.com>
 References: <20050909230545.5504737E42@smtp4-1-sn2.hy.skanova.net>
 Reply-To: eantoranz@gmail.com
 Mime-Version: 1.0
