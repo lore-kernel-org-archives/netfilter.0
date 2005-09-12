@@ -1,22 +1,15 @@
-From: Rudi Starcevic <tech@wildcash.com>
-Subject: Re: Fwd: Route packets from an interface to another
-Date: Mon, 12 Sep 2005 08:19:16 -0700
-Message-ID: <43259C74.3000000@wildcash.com>
-References: <1224.83.227.26.235.1126295484.squirrel@webmail.2lug.se>	
-	<200509091636.37287.rob0@gmx.co.uk>	
-	<2646.83.227.27.100.1126300683.squirrel@webmail.2lug.se>	
+From: "Jonathan" <phonic@antisocial.nu>
+Subject: Re: Route packets from an interface to another
+Date: Mon, 12 Sep 2005 09:56:29 +0200 (CEST)
+Message-ID: <3609.83.227.27.100.1126511789.squirrel@webmail.antisocial.nu>
+References: <1224.83.227.26.235.1126295484.squirrel@webmail.2lug.se>
+	<2646.83.227.27.100.1126300683.squirrel@webmail.2lug.se>
 	<200509092345.40386.rob0@gmx.co.uk>
-	<43258442.4000009@wildcash.com>	
-	<65aa6af905091114314108597e@mail.gmail.com>	
-	<65aa6af90509111432525f4bd6@mail.gmail.com>	
-	<4325933E.1070902@wildcash.com>	
-	<65aa6af9050911145833fa12fd@mail.gmail.com>	
-	<4325996D.2070801@wildcash.com>
-	<65aa6af9050911151962bc24a2@mail.gmail.com>
+	<200509100254.40327.rob0@gmx.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af9050911151962bc24a2@mail.gmail.com>
+In-Reply-To: <200509100254.40327.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -30,24 +23,56 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Yeah, it works. :-)
+Thank you for your interest in my problem, and your ambition to help me.
+I've never solved it myself. ;-)
 
-> Well.. just as I said.. if the boxes in the eth0 lan know how to reach
-> the boxes, then you have to do nothing else (translation: if the boxes
-> in the 192.168.2/24 network know that the router to reach the
-> 192.168.3/24 network is te box we're talking about [it's eth0 IP, of
-> course).... or it's default gateway knows... for that matter), then
-> you are done.
-> 
-> And when you configure an interface's IP (and netmask if needed), no
-> default GW is set. Only the broadcast address... right?
-> 
-Yep .. OK great, that's alot clearer now.
-I'll be testing and working through this on my LAN at home later today.
+> On Friday 2005-September-09 23:45, I wrote:
+>
+> Most of the story, but an important part was missing. Apologies to
+> anyone who is seeing this on both lists.
+>
+>> Home machine: LAN address 192.168.6.6/24 (no direct external
+>> interface) Remote machine: x.y.z.112/29
+>>
+>> Home openvpn config:
+>> remote x.y.z.112
+>> ifconfig x.y.z.116 192.168.6.248
+>> ifconfig-nowarn
+>>
+>> Remote openvpn config:
+>> remote my.dynamic.dnsname
+>> ifconfig 192.168.6.248 x.y.z.116
+>>
+>> Started both ends of the tunnel. At home:
+>> # echo 64 tunnel >> /etc/iproute2/rt_tables
+>> # ip rule add from x.y.z.116 table tunnel
+>> # ip route add default via 192.168.6.248 table tunnel
+>> # ip route flush cache
+>> (These should go in an openvpn --up script.)
+>
+> Also, at the remote:
+> # echo 1 > /proc/sys/net/ipv4/conf/eth0/proxy_arp
+> # echo 1 > /proc/sys/net/ipv4/ip_forward
+> (These might be wanted in an --up script at the other endpoint.)
+>
+> The first command tells the eth0 interface (substitute the name of
+> yours) to listen for proxy ARP: hosts other than itself, but for whom
+> it has an explicit route. http://en.wikipedia.org/wiki/Proxy_ARP
+> explains better than I can.
+>
+> Earlier, by accident, I had bound the wrong IP's at each endpoint, so
+> the system arp(8) cache was still answering for x.y.z.116. In time the
+> cache timed out, and the tunnel stopped working.
+>
+> The second command is not needed if you were already using the machine
+> as a router, which I was, but it occurred to me that you and others
+> might not be doing that.
+> --
+>     mail to this address is discarded unless "/dev/rob0"
+>     or "not-spam" is in Subject: header
+>
+>
 
-Thanks again for following up on this off-topic post.
-
-Best regards,
-Rudi.
 
 
