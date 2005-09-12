@@ -1,14 +1,13 @@
 From: Rudi Starcevic <tech@wildcash.com>
-Subject: Re: Fwd: Route packets from an interface to another
-Date: Mon, 12 Sep 2005 07:39:58 -0700
-Message-ID: <4325933E.1070902@wildcash.com>
-References: <1224.83.227.26.235.1126295484.squirrel@webmail.2lug.se>	<200509091636.37287.rob0@gmx.co.uk>	<2646.83.227.27.100.1126300683.squirrel@webmail.2lug.se>	<200509092345.40386.rob0@gmx.co.uk>
-	<43258442.4000009@wildcash.com>	<65aa6af905091114314108597e@mail.gmail.com>
-	<65aa6af90509111432525f4bd6@mail.gmail.com>
+Subject: Re: Route packets from an interface to another
+Date: Mon, 12 Sep 2005 07:47:13 -0700
+Message-ID: <432594F1.5040200@wildcash.com>
+References: <1224.83.227.26.235.1126295484.squirrel@webmail.2lug.se>	<200509092345.40386.rob0@gmx.co.uk>
+	<43258442.4000009@wildcash.com> <200509111634.51592.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af90509111432525f4bd6@mail.gmail.com>
+In-Reply-To: <200509111634.51592.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,46 +23,36 @@ To: netfilter@lists.netfilter.org
 
 Hi,
 
-> What is it you want to achieve? 
+> I don't really know what you're doing!
 
-eth0 -> 192.168.2.0/24
-eth1 -> 192.168.3.0/34
+Really ... there's only a few lines, I kept them to a minimum
+so one could simply read them and one can see what happening.
 
-I want to achieve two seperate networks.
+> You have added "inet" and "implan" tables, but we don't know what they
+> are nor what they are used for.
 
-I want traffic from eth1 to go via eth0
-which will link the two LANS and provide
-Internet access.
+Ummm ... 'inet' means internet and 'implan' mean Local Area Network.
 
-> I don't see any firewall configuration at all....
-> your route is wide open... so to speak.
+I though this was intuitive and explains itself, there is only two after
+all.
 
-Yes, I have not added any firewalling yet.
-This is for my 3 machines at home.
+> MASQUERADE is a form of source NAT, not forwarding, strictly speaking. 
+> It's useful to understand the difference. Furthermore it's not 
+> appropriate in this case, where (I presume) you have a static IP on 
+> eth0. (If not, you probably should.)
+> 
+> And the whole purpose is unclear. If you've got a NAT router on eth0, 
+> why not connect your LAN to that? 
 
-After I am happy with my routing I intend to add
-Firewalling rules, VPN and learn about bandwith shaping.
+Well first up I want to learn how to route from one interface to
+another. I don't know if this is the best way, I'm reading up by myself
+and making an effort to try figure it out.
 
-> In case you want to enable forwarding from the lan boxes to internet,
-> just enable forward, masquerade output and that's it. 
+>> Why the extra hop?
 
-It would be this simple if there was just one LAN.
+I want to split up my machines and networks, enable bandwith controls,
+control access to resources add securtiy etc etc etc .....
 
-> Creating two separate routing tables is not a must.
-
-The issue here is how to route packets from one NIC to another.
-Deciding on which networks to use and why is another question.
-
-> Once the network interfaces
-> come up, they set the route.... just make sure the default gateway is
-> set as well.
-
-Won't the default route for eth0 be 192.168.2.6 and won't the default
-route for eth1 be 192.168.3.6 ?
-
-I fail to see how "Once the network interfaces come up,
-they set the route" will make packets from eth1 will
-auto-magiclly go out eth0 as eth1 default route is not eth0 by default.
 
 Regards,
 Rudi.
