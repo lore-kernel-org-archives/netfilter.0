@@ -1,7 +1,7 @@
-From: "Giacomo" <delleceste@gmail.com>
-Subject: thanks jozsef!
-Date: Mon, 12 Sep 2005 20:15:33 +0200
-Message-ID: <006701c5b7c5$f9e03d30$0300a8c0@giacomino>
+From: Moritz Gartenmeister <moritz@uplink-verein.ch>
+Subject: performance question
+Date: Mon, 12 Sep 2005 21:06:27 +0200
+Message-ID: <4325D1B3.5030606@uplink-verein.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,47 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter lists <netfilter@lists.netfilter.org>
 
-Thanks a lot Jozsef  for your answer to the news about my question about a 
-conntrack
-comment on tcp window.
+hi
 
-The precious hint you gave me is that i don't need to play with seq/ack!
+i'm just wondering, if my experienced performance in my network is usual.
 
-So, if i understood well, i don't need to worry about window sizes as well,
-to do simple nat...
+setup:
 
-I was quite sure about those things, but the problem is that my nat works
-fine if i call an Internet Service Provider,
-but if I call another one, web sites and images are corrupted and things
-don't work well...
+debian linux
+kernel 2.6.8.1 (patched with pom espacially l7-filter and ipp2p)
+linux-brigde
 
-i tried to lower mtu, and tried with the rule "clamp-tcpmss-to-pmtu", but
-did not solve.
-Then i tried to see if packets arrived fragmented and so lost in nat, but a
-printk put in netfilter code,
-wher defrag takes place, revealed that packets were not fragmented.
+everthing is working so far (that's the good part).
 
-Now i'm quite desperate, cause i don't know where to look for an answer!
-Could it be that i use bad functions to recalculate checksum? But why with
-an ISP that works
-while with the other not?
-I use ip_fast_csum() for ip, and
+but i measure different downloadrates:
+on my machine (behind the bridge) ~70Kbyte/s
+on the bridge ~200Kbyte/s
 
-tcp_v4_check(transport_header, skb->len-4*iph->ihl, saddr, daddr,
-csum_partial( transp_header, skb->len-4*iph->ihl, 0) )
+the linux-bridge has to forward ~500 clients and has to shape 
+transparently the traffic.
 
-for tcp/udp chacksum.
+is this difference in downloadrates normal?
 
-tcpdump always says it's correct.
+my assumption so far:
+i have 4 interfaces on the linux bridge.
+eth1 and eth2 doing the bridge, so they are heavly used.
+eth0 is rarely used, so this may be an explanation.
 
-Thanks for your help and any other suggestions!
-best regards,
+even if i stop iptables, there is no increase.
 
-Giacomo S, Italy
+i would just appriciate, if someone can confirm this as ususal behavior.
 
-
-
+greets
+moritz
 
