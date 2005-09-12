@@ -1,7 +1,7 @@
 From: Rudi Starcevic <tech@wildcash.com>
 Subject: Re: Route packets from an interface to another
-Date: Mon, 12 Sep 2005 07:47:13 -0700
-Message-ID: <432594F1.5040200@wildcash.com>
+Date: Mon, 12 Sep 2005 07:51:23 -0700
+Message-ID: <432595EB.1070701@wildcash.com>
 References: <1224.83.227.26.235.1126295484.squirrel@webmail.2lug.se>	<200509092345.40386.rob0@gmx.co.uk>
 	<43258442.4000009@wildcash.com> <200509111634.51592.rob0@gmx.co.uk>
 Mime-Version: 1.0
@@ -23,36 +23,14 @@ To: netfilter@lists.netfilter.org
 
 Hi,
 
-> I don't really know what you're doing!
+> and perhaps also at LARTC.
 
-Really ... there's only a few lines, I kept them to a minimum
-so one could simply read them and one can see what happening.
+Yes. The LARTC list has been down over a month.
+I've been waiting to post to LARTC about this subject.
 
-> You have added "inet" and "implan" tables, but we don't know what they
-> are nor what they are used for.
-
-Ummm ... 'inet' means internet and 'implan' mean Local Area Network.
-
-I though this was intuitive and explains itself, there is only two after
-all.
-
-> MASQUERADE is a form of source NAT, not forwarding, strictly speaking. 
-> It's useful to understand the difference. Furthermore it's not 
-> appropriate in this case, where (I presume) you have a static IP on 
-> eth0. (If not, you probably should.)
-> 
-> And the whole purpose is unclear. If you've got a NAT router on eth0, 
-> why not connect your LAN to that? 
-
-Well first up I want to learn how to route from one interface to
-another. I don't know if this is the best way, I'm reading up by myself
-and making an effort to try figure it out.
-
->> Why the extra hop?
-
-I want to split up my machines and networks, enable bandwith controls,
-control access to resources add securtiy etc etc etc .....
-
+I did see someone else start this off-topic thread and get
+several replies so I've added my 2 cents in the hope I'll
+learn more about routing between interfaces.
 
 Regards,
 Rudi.
