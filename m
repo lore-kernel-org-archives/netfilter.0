@@ -1,16 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: offlist hate mail and smart questions (was: Re: problem with psd
-	match)
-Date: Sun, 11 Sep 2005 09:49:52 -0500
-Message-ID: <200509110949.52668.rob0@gmx.co.uk>
-References: <3115d56e05083105045e130614@mail.gmail.com>
-	<200508310722.18400.rob0@gmx.co.uk>
-	<3115d56e05083105322b72a3f8@mail.gmail.com>
+From: Rudi Starcevic <tech@wildcash.com>
+Subject: Re: Route packets from an interface to another
+Date: Mon, 12 Sep 2005 06:36:02 -0700
+Message-ID: <43258442.4000009@wildcash.com>
+References: <1224.83.227.26.235.1126295484.squirrel@webmail.2lug.se>	<200509091636.37287.rob0@gmx.co.uk>	<2646.83.227.27.100.1126300683.squirrel@webmail.2lug.se>
+	<200509092345.40386.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3115d56e05083105322b72a3f8@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <200509092345.40386.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,92 +21,75 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 2005-August-31 12:32 GMT, afshin lamei 
-<afshinlamei@gmail.com> wrote:
-> Go and try to use your brain (if there is any!!) to understand the
-> things, instead of teaching others :D
->
-> On 8/31/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> > On Wednesday 2005-August-31 07:04, afshin lamei wrote:
-> > > what's the problem?
-> >
-> > http://www.catb.org/~esr/faqs/smart-questions.html
+Hi,
 
-Three minutes prior to this one, was another:
+I do something like this with the script below.
 
-----------  Forwarded Message  ----------
+Please let me know if you see a better way to do this
+than I am using below.
 
-Subject: hey!
-Date: Wed, 31 Aug 2005 16:59:39 +0430
-From: afshin lamei <afshinlamei@gmail.com>
-To: /dev/rob0 <rob0@gmx.co.uk>
+Thanks.
+Kind regards,
+Rudi.
 
-I'm not kidding, if your brain is not able to understand such a simple
-questions, go and try to change it :D
 
--------------------------------------------------------
+#!/bin/sh
 
-This poster was not capable of comprehending numerous things, it seems, 
-one of which being why I gave that reply. For the record here is the 
-original post in full:
+echo "Network Setup Start"
 
-----------  Forwarded Message  ----------
+echo "Flushing NICs"
+ip addr flush eth0
+ip addr flush eth1
 
-Subject: problem with psd match
-Date: Wed, 31 Aug 2005 16:34:03 +0430
-From: afshin lamei <afshinlamei@gmail.com>
-To: netfilter@lists.netfilter.org
+ip link set eth0 down
+ip link set eth1 down
 
-Hi all,
-I'm using the psd (port scan detector) , dropping all packets that
-match with psd and it works well with default values. but when I use
-the retina port scanner, it says that ports 25 (smtp) and 110 (pop3)
-are open. I have not any mail application and my box is not listening
-on these ports (netstat -an --inet proves this). all default policies
-(iptables -P ) are set to DROP.
-what's the problem?
-regards
-afshin lamei
+ip link set eth0 up
+ip link set eth1 up
 
--------------------------------------------------------
+echo "Flushing NetFilter"
+iptables -F
+iptables -t nat -F
 
-There could be any number of reasons why the scanner might have gotten 
-results which seem to be at odds with reality. In fact that number is 
-indeterminable, nearly infinite. No information is provided in the post 
-which might help narrow down the likely cause.
+echo "Routing Tables:"
+cat /etc/iproute2/rt_tables
 
-Why, list members, do I trouble you with this, which was intended as a 
-private exchange? I do not suppose that this poster would be 
-embarrassed; that would require a greater level of understanding.
+echo "Setup NIC 0"
+ip addr add 192.168.2.7/24 dev eth0 brd +
 
-I only want to point out to others that the poster might have been 
-better suited by reading the link than by banging out a pair of hate 
-mails. We're not mind readers here. (Some of us might be; only they 
-know who they are. They dare not reveal themselves to us, because we 
-would expect them to solve all our problems for us!)
+echo "Setup NIC 1"
+ip addr add 192.168.3.7/24 dev eth1 brd +
 
-Also: people who follow good methodical debugging procedures 
-("scientific method") tend to find they have fewer mysterious issues. 
-When you set out all the facts such as you know them, so that someone 
-else can take a look, often you will find the answer. My MUA "drafts" 
-folder is full of unsent posts!
+ip addr list
+ip route list
 
-This was almost 2 weeks ago. As per the .sig below, this is not an 
-account I regularly read. Here's another gripe ... many posters are 
-more than willing to take from the group's knowledge, but are unwilling 
-(or unable) to contribute anything back.
+echo "Setup Default Route [ inet table ]"
+ip route add default via 192.168.2.1 proto static table inet
 
-When you post a question you have an implicit obligation to pursue it 
-until solved, and to post that solution back to the list, even if the 
-solution reveals your foolishness.
+echo "Setup LAN Route [ implan table ]"
+ip route add 192.168.3/24 via 192.168.3.7 proto static table implan
 
-I think this list is a little worse than most in that regard. I'm not 
-sure why that is. We seem to get a higher than typical share of 
-completely clueless posts. It's frustrating to those who are trying to 
-help, as we saw back in July. Jason (not sure if he's still here!) got 
-annoyed with a poster who not only didn't check the list archives, he 
-wasn't reading active threads on the same issue!
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+ip route list
+
+echo "Setup LAN ip rule"
+ip rule add to 192.168.3/24 prio 16000 table implan
+
+echo "Setup Internet ip rule"
+ip rule add to 0/0 prio 17000 table inet
+
+echo "Enable Kernel Forwarding"
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+echo "Enable NetFilter Forwarding"
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+echo "Flushing ip route cache"
+ip route flush cache
+
+#iptables -vL
+#iptables -t nat -vL
+
+exit 0
+
+
 
