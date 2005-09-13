@@ -1,13 +1,15 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Installation doubt on latest iptables release (1.3.3)
-Date: Tue, 13 Sep 2005 11:51:09 -0500
-Message-ID: <200509131151.09964.rob0@gmx.co.uk>
-References: <7EA741ACAC1F51439618B66E4E40395E77E37D@saoserv022.sao.politec.com.br>
+From: Peggy Kam <ppkam@n-dsi.com>
+Subject: Maximum number of rules in iptables?
+Date: Tue, 13 Sep 2005 18:10:50 -0400
+Message-ID: <1126649450.4790.5.camel@ndspc131.p.n-dsi.com>
+References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>
+	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>
+	<1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
+Reply-To: ppkam@n-dsi.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7EA741ACAC1F51439618B66E4E40395E77E37D@saoserv022.sao.politec.com.br>
-Content-Disposition: inline
+In-Reply-To: <1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,20 +23,14 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 2005-September-13 09:13, Henrique Cicuto Machado - 
-SAO/Policia Federal wrote:
-> The problem is that kernel 2.4 is still on release 2.4.31, far from
-> 2.4.4.
+Hi,
 
-http://en.wikipedia.org/wiki/Linux_kernel#Version_Numbering
+What is the maximum number of policies I can define in the iptables?  
+ie. how much memory is allocated for iptables?
 
-4 < 31
+Thanks in advance,
+Peggy
 
-http://kernel.org/
 
-"... The latest 2.4 version of the Linux kernel is:
-  	2.4.31 	2005-06-01 00:57 UTC ..."
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+
 
