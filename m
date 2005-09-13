@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Understanding rate limiting
-Date: Tue, 13 Sep 2005 02:19:30 -0500
-Message-ID: <200509130219.30616.rob0@gmx.co.uk>
-References: <acf1defa0509122324c411c82@mail.gmail.com>
+From: lmarcilly@aressi.fr
+Subject: Problem with iprange
+Date: Tue, 13 Sep 2005 08:02:35 +0000
+Message-ID: <DIIE.0000058F00005E01@smtp.aressi.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <acf1defa0509122324c411c82@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,62 +18,43 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 2005-September-13 01:24, venkata subramanian wrote:
-> I am new to iptables and I find it hard to understand rate limiting.
-> (-m limit)
+Hi all,
 
-Let's call it the "limit match extension". It does not really do rate 
-limiting per se.
+i've got problem to use iprange with iptables...
 
-> 1) It is used for logging as well as not allowing a stream to exceed
-> its packets/time quota?
+iptables -V : iptables v1.3.1
 
-Strictly speaking it can be used to limit anything, not just logging.
+When i try :
 
-> 2) will all the packets that execeed the given rate be dropped?
-> (assuming a DROP jump is given)
+iptables -I INPUT -p tcp -m iprange --src-range 192.168.1.1-192.168.1.5 -j DROP
 
-No, this is wrong. Packets beyond the --limit simply do not match that 
-rule. An unmatched packet is evaluated by the next rule, as always, 
-until reaching the chain's default policy.
+I've got this error:
 
-> 3) is this a form of bandwidth management ... can i do this to limit
-> the bandwidth used by members in my organization?
+iptables:  No chain/target/match by that name
 
-I doubt it. There is tc(8) and possibly other better tools for this.
+but when it try :
 
-> 4) how is dstlimit different?
+iptables -I INPUT -p tcp -s 192.168.1.1
 
-dstlimit
-       This  module  allows you to limit the packet per second (pps)
-       rate on a per destination IP or per destination port base.
-       As  opposed  to  the `limit'  match,  every  destination  ip /
-       destination port has it's [sic] own limit.
+it works perfectly...
 
-Hey, this is what I should be using for my SSH attack limiting. Thanks!
+I've seen on the web that the iprange is built-in iptables... Moreover, when i try :
 
-The difference appear to be with --dstlimit-mode. dstlimit looks more 
-complex and more controllable. I would think that by specifying a 
-destination in a --limit rule you could accomplish most of what 
-dstlimit does? But there too, it's only a limit per rule, whereas 
-dstlimit maintains different limits (as per the mode) within the same 
-rule.
+iptables -I INPUT -p tcp -m iprange -s 192.168.1.1-192.168.1.10 -j DROP
 
-> (and... quit naive... why is there no srclimit?)
+i've got this error message:
 
-Again, --dstlimit-mode srcip-dstip almost does this. As to why no 
-srclimit, I don't know. Perhaps wasn't thought necessary?
+iptables v1.3.1: iprange match: You must specify '--src-range' or '--dst-range'
+Try 'iptables -h' or 'iptables --help' for more information
 
-> I searched hard... but i have failed to find proper answers for the
-> above questions....
+but when i try iptables -h, there is no information about iprange...
 
-Everything I know about netfilter comes from 4 sources:
-    1. Rusty's unreliable guides
-    2. "man iptables"
-    3. practice / experimentation
-    4. this mailing list
-What I know in particular about --limit came from 2 and 3.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Do you have any idea?? Is there a patch to apply in order to use iprange? Module to be load?
+
+Thanks a lot for your help!
+
+lm.
+
+
+
 
