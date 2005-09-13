@@ -1,12 +1,13 @@
-From: Georgi Alexandrov <tehlists@hotpop.com>
-Subject: Re: logging to syslog in a stealth way
-Date: Tue, 13 Sep 2005 18:54:02 +0300
-Message-ID: <4326F61A.8020402@hotpop.com>
-References: <BAY101-F2441DE99F29B1A36730988B49C0@phx.gbl>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Installation doubt on latest iptables release (1.3.3)
+Date: Tue, 13 Sep 2005 11:51:09 -0500
+Message-ID: <200509131151.09964.rob0@gmx.co.uk>
+References: <7EA741ACAC1F51439618B66E4E40395E77E37D@saoserv022.sao.politec.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY101-F2441DE99F29B1A36730988B49C0@phx.gbl>
+In-Reply-To: <7EA741ACAC1F51439618B66E4E40395E77E37D@saoserv022.sao.politec.com.br>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Albretch Mueller wrote:
+On Tuesday 2005-September-13 09:13, Henrique Cicuto Machado - 
+SAO/Policia Federal wrote:
+> The problem is that kernel 2.4 is still on release 2.4.31, far from
+> 2.4.4.
 
-> Hi *,
->
-> I could tell this is more of a Unix/Linux and syslog question, but 
-> since my end intention is using it with netfilter, I could imagine 
-> someone has come accross something like that before.
->
-> I would like for the logs produced by iptable (generally in 
-> /var/log/syslog), to be processed by an ng-syslog client and just 
-> popped as UDP packets
->
-> Search I did the mailing list 
-> (http://marc.theaimsgroup.com/?l=netfilter) for 'syslog udp' and 
-> couldn't find helpful info/leads and 'ng-syslog' or 'ngsyslog' didn't 
-> give me a hit
->
-> How could you do something like that?
->
-> Thanks
-> Albretch
->
->
->
->
-What exactly you want to achieve with that ?
+http://en.wikipedia.org/wiki/Linux_kernel#Version_Numbering
 
-regards,
-Georgi Alexandrov
+4 < 31
+
+http://kernel.org/
+
+"... The latest 2.4 version of the Linux kernel is:
+  	2.4.31 	2005-06-01 00:57 UTC ..."
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
