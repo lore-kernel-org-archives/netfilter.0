@@ -1,14 +1,12 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: Re: Installation doubt on latest iptables release (1.3.3)
-Date: Tue, 13 Sep 2005 10:18:27 -0400
-Message-ID: <65aa6af905091307183ce54d8f@mail.gmail.com>
-References: <7EA741ACAC1F51439618B66E4E40395E77E37D@saoserv022.sao.politec.com.br>
-Reply-To: eantoranz@gmail.com
+From: Georgi Alexandrov <tehlists@hotpop.com>
+Subject: Re: logging to syslog in a stealth way
+Date: Tue, 13 Sep 2005 18:54:02 +0300
+Message-ID: <4326F61A.8020402@hotpop.com>
+References: <BAY101-F2441DE99F29B1A36730988B49C0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7EA741ACAC1F51439618B66E4E40395E77E37D@saoserv022.sao.politec.com.br>
-Content-Disposition: inline
+In-Reply-To: <BAY101-F2441DE99F29B1A36730988B49C0@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Is that  A PROBLEM?
+Albretch Mueller wrote:
 
-I guess it means a kernel 2.4.4 or superior! (2.4.5, 2.4.6 and so on).
-
-On 9/13/05, Henrique Cicuto Machado - SAO/Policia Federal
-<Hmachado@sao.politec.com.br> wrote:
-> The problem is that kernel 2.4 is still on release 2.4.31, far from 2.4.4=
-.
->=20
->=20
->=20
->     On 9/13/05,  Sp0oKeR
->     <spooker@gmail.com> wrote:
->        What is the problem in "it is needed a 2.4.4 kernel or above" ?
->=20
->=20
->         On 9/13/05, Henrique Cicuto Machado - SAO/Policia Federal
->         <Hmachado@sao.politec.com.br> wrote:
->         Hello to everybody.
->         I've just downloaded the tarball to iptables 1.3.3 and found some=
-thing strange.
->         Inside the INSTALL file, it was saying that it is needed a 2.4.4 =
-kernel or above.
->         Can someone please tell me if I'm just reading it wrong?
->=20
->         Thanks
->=20
->=20
->=20
->=20
->     --
->     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->     Rodrigo Ribeiro Montoro
->     Desenvolvedor BRMAlinux
->       spooker@brc.com.br
->            RHCE/LPIC-I
->     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=20
+> Hi *,
 >
+> I could tell this is more of a Unix/Linux and syslog question, but 
+> since my end intention is using it with netfilter, I could imagine 
+> someone has come accross something like that before.
+>
+> I would like for the logs produced by iptable (generally in 
+> /var/log/syslog), to be processed by an ng-syslog client and just 
+> popped as UDP packets
+>
+> Search I did the mailing list 
+> (http://marc.theaimsgroup.com/?l=netfilter) for 'syslog udp' and 
+> couldn't find helpful info/leads and 'ng-syslog' or 'ngsyslog' didn't 
+> give me a hit
+>
+> How could you do something like that?
+>
+> Thanks
+> Albretch
+>
+>
+>
+>
+What exactly you want to achieve with that ?
+
+regards,
+Georgi Alexandrov
 
