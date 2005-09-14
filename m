@@ -1,16 +1,11 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: Maximum number of rules in iptables?
-Date: Tue, 13 Sep 2005 23:41:04 -0400
-Message-ID: <65aa6af9050913204146b94397@mail.gmail.com>
-References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>
-	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>
-	<1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
-	<1126649450.4790.5.camel@ndspc131.p.n-dsi.com>
-Reply-To: eantoranz@gmail.com
+From: venkata subramanian <venkatasubramanian@gmail.com>
+Subject: 1. Switch Flooding 2. Chains traversal
+Date: Wed, 14 Sep 2005 10:05:04 +0530
+Message-ID: <acf1defa050913213555e04129@mail.gmail.com>
+Reply-To: venkatasubramanian@gmail.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1126649450.4790.5.camel@ndspc131.p.n-dsi.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -25,20 +20,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-that's a NFI for me. A whole bunch.... I've seen red hat scripts that
-are way longer than mine. ;-)
-
-On 9/13/05, Peggy Kam <ppkam@n-dsi.com> wrote:
-> Hi,
->=20
-> What is the maximum number of policies I can define in the iptables?
-> ie. how much memory is allocated for iptables?
->=20
-> Thanks in advance,
-> Peggy
->=20
->=20
->=20
->=20
->
+Hi,
+1. Switch Flooding
+       We have a nice problem in our organisation. Due to viruses,
+some windows machine or the other starts flooding the network with
+packets. And, in the end, one of our switches comes down making us to
+manually restart the switch.
+       I don't (intuitively) see how iptables can help in this
+scenario.... But, I want to know whether any solution exists to this?
+If I make all the machine's gateway as a linux system, and rate limit
+the packets there will it help?
+   =20
+2. Chain traversal
+       Why is this chain traversal looking complicated? if there is
+atleast one rule in every inbuilt chain, it seems that there are many
+possible permutations of the chain traversal. How do you guys manage
+with it?
 
