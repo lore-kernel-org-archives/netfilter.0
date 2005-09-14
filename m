@@ -1,13 +1,13 @@
-From: Rafa Garrido <rgarrido.l@gmail.com>
-Subject: Re: missing osf module
-Date: Wed, 14 Sep 2005 15:00:05 +0200
-Message-ID: <2b8e19970509140600634aa397@mail.gmail.com>
-References: <20050914114117.81514.qmail@web30808.mail.mud.yahoo.com>
-Reply-To: rgarrido.l@gmail.com
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: NAT tables and FILTER tables
+Date: Wed, 14 Sep 2005 08:13:55 -0500
+Message-ID: <200509140813.55379.rob0@gmx.co.uk>
+References: <43280467.4050801@india.tejasnetworks.com>
+	<52968.193.173.147.3.1126697725.squirrel@193.173.147.3>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050914114117.81514.qmail@web30808.mail.mud.yahoo.com>
+In-Reply-To: <52968.193.173.147.3.1126697725.squirrel@193.173.147.3>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,26 +22,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-You can find it in 'patch-o-matic' repository:
-ftp://ftp.netfilter.org/pub/patch-o-matic-ng/
-Then patch your iptables and kernel source.
+On Wednesday 2005-September-14 06:35, Rob Sterenborg wrote:
+> Looking at http://www.faqs.org/docs/iptables/traversingoftables.html
+> a packet uses all tables, but not all chains.
 
-On 9/14/05, angico <angico@yahoo.com> wrote:
-> hi, everybody.
-> i'm trying to use osf module, but it's missing in my distro (gentoo). i
-> have done a search in netfilter.org, but have found no information on
-> how to download and install *this* module. would anybody help? i'm
-> using kernel 2.6.12.
-> many thanks in advance.
-> cheers,
-> angico.
->=20
->=20
->=20
->=20
-> __________________________________
-> Yahoo! Mail - PC Magazine Editors' Choice 2005
-> http://mail.yahoo.com
->=20
->
+A more recent version of the same thing is at
+    http://iptables-tutorial.frozentux.net/chunkyhtml/c951.html
+However neither version has been updated to include the new raw table, 
+which IIUC breaks that rule. Packets changed in the raw table do bypass 
+the filter table, and perhaps others as well. I'm not using raw yet, 
+thus am not sure of the details.
+
+Joerg's response was accurate but might be said to suffer from TCP 
+tunnel vision: SYN is only used in TCP. Connection tracking supports 
+non-TCP protocols as well.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
