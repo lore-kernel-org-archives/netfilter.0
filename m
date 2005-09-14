@@ -1,14 +1,12 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Maximum number of rules in iptables?
-Date: Tue, 13 Sep 2005 23:44:53 -0500
-Message-ID: <200509132344.53842.rob0@gmx.co.uk>
-References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>
-	<1126649450.4790.5.camel@ndspc131.p.n-dsi.com>
-	<65aa6af9050913204146b94397@mail.gmail.com>
+Subject: Re: 1. Switch Flooding 2. Chains traversal
+Date: Wed, 14 Sep 2005 01:05:18 -0500
+Message-ID: <200509140105.18536.rob0@gmx.co.uk>
+References: <acf1defa050913213555e04129@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af9050913204146b94397@mail.gmail.com>
+In-Reply-To: <acf1defa050913213555e04129@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,36 +21,60 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> On 9/13/05, Peggy Kam <ppkam@n-dsi.com> wrote:
-> > What is the maximum number of policies I can define in the
-> > iptables? ie. how much memory is allocated for iptables?
+On Tuesday 2005-September-13 23:35, venkata subramanian wrote:
+> 1. Switch Flooding
+>        We have a nice problem in our organisation. Due to viruses,
+> some windows machine or the other starts flooding the network with
+> packets. And, in the end, one of our switches comes down making us to
+> manually restart the switch.
 
-I'm sure the answer is in the kernel source code if you need it. This 
-forum is more for users than developers. You could try asking on LKML 
-or on netfilter-devel, but I don't think you would be well-received 
-there unless you showed an effort to find your own answers.
+What kind of traffic is it? I've not seen layer 2 problems with viral 
+machines. Maybe we caught ours before it got that bad.
 
-Opinion as a user: it's probably dynamically allocated; more memory is 
-used in cases where there are more rules, or where the rules require.
+>        I don't (intuitively) see how iptables can help in this
+> scenario.... But, I want to know whether any solution exists to this?
 
-Remembered from Googling: it's not ever likely to be a factor.
+Don't allow Windows machines out to the Internet. :)
 
-Personal experience: an 8MB 80386 is quite capable of handling NAT for 
-home and small business broadband connections. I increased the default 
-number of connection tracking table (ip_conntrack_max) entries, but 
-otherwise had no problem.
+Unless you're going to have firewalls between the infected machines and 
+the switches, I don't think you can stop it that way.
 
-On Tuesday 2005-September-13 22:41, Edmundo Carmona wrote:
-> that's a NFI for me. A whole bunch.... I've seen red hat scripts that
-> are way longer than mine. ;-)
+> If I make all the machine's gateway as a linux system, and rate limit
+> the packets there will it help?
 
-I think it's safe to say that if you're making that many rules, you're 
-doing something wrong. :) I said the same thing in this thread to this 
-poster over a month ago.
+Most of these infections are either spyware or spamware (or both). The 
+spamware can be slowed down (but not stopped) by not allowing Windows 
+clients out on 25/tcp.
 
-Red Hat iptables rules (that I have seen) are terrible. Do they have 
-anyone on staff who understands firewalling? If so, they're not working 
-on the firewalls.
+Spyware generally phones home on port 80/tcp, although this is not a 
+sure thing. HTTP proxying can control this. Both the SMTP and HTTP 
+controls can help identify infected machines for reinstallation.
+
+I use DNS poisoning to limit the damage at some sites. My nameserver 
+claims authority for certain known hostile domains, and points a 
+wildcard A record at an internal server. The httpd error logs at that 
+server rapidly fill up with 404's when infected machines are running.
+
+> 2. Chain traversal
+>        Why is this chain traversal looking complicated? if there is
+
+Power! :)
+
+> atleast one rule in every inbuilt chain, it seems that there are many
+> possible permutations of the chain traversal.
+
+For any given packet, no, it can only come out one way. (This offer 
+void, where taxed or prohibited by law, or where you're using limiting 
+or strange stuff like fuzzy or random matching.)
+
+It's handy, also, knowing that each packet only hits one of the built- 
+in chains. (With the caveat that loopback packets hit OUTPUT on the way 
+out and then INPUT on the way in.)
+
+> How do you guys manage with it?
+
+Think of it like a programming language. That's a good analogy. You 
+check for conditions and branch based upon the results.
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
