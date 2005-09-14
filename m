@@ -1,11 +1,12 @@
-From: kossentini_3@voila.fr
-Subject: documentation netfilter
-Date: Wed, 14 Sep 2005 09:05:10 +0200 (CEST)
-Message-ID: <8781352.1126681510174.JavaMail.www@wwinf4104>
-Reply-To: kossentini_3@voila.fr
+From: "Ruben Cardenal" <ruben@ruben.cn>
+Subject: RE: documentation netfilter
+Date: Wed, 14 Sep 2005 09:08:56 +0200
+Message-ID: <4337.22992097518$1126681875@news.gmane.org>
+References: <8781352.1126681510174.JavaMail.www@wwinf4104>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <8781352.1126681510174.JavaMail.www@wwinf4104>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,14 +17,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: kossentini_3@voila.fr, netfilter@lists.netfilter.org
 
-bonjour =C3=A0 tous,
-Dans le cadre de mon projet de fin d'=C3=A9tude, je dois choisir le meilleu=
-r firewall open source et puis je dois d=C3=A9velopper de nouvelles  foncti=
-onnalit=C3=A9s pour qu'il soit du m=C3=AAme niveau que check point. est ce =
-que  vous pouvez m'aidez dans ce sujet? quel est le meilleur firewall open =
-source (s'il y a un des liens vers des site, une =C3=A9tude)...?=20
-merci d'avance=20
-L'=C3=A9tudiante noura
+Use english in this list.
+
+Ruben
+
+
+
