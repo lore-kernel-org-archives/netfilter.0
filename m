@@ -1,12 +1,11 @@
-From: "Ruben Cardenal" <ruben@ruben.cn>
+From: kossentini_3@voila.fr
 Subject: RE: documentation netfilter
-Date: Wed, 14 Sep 2005 09:08:56 +0200
-Message-ID: <4337.22992097518$1126681875@news.gmane.org>
-References: <8781352.1126681510174.JavaMail.www@wwinf4104>
+Date: Wed, 14 Sep 2005 11:20:06 +0200 (CEST)
+Message-ID: <24026302.1126689606287.JavaMail.www@wwinf4002>
+Reply-To: kossentini_3@voila.fr
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8781352.1126681510174.JavaMail.www@wwinf4104>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,12 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: kossentini_3@voila.fr, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: Ruben Cardenal <ruben@ruben.cn>, netfilter@lists.netfilter.org
 
-Use english in this list.
+hello,
+ Within the framework of my project of end of study, I must choose best the=
+ firewall open source and then I must develop new functionalities so that i=
+t is same level as check point or another owner firewall (for example cisco=
+ Centri Firewall...).=20
+=20
+can you help me in this subject? which is the best  firewall open source (i=
+f there is one of the bonds towards site, a study)...?=20
+thank you in advance=20
 
-Ruben
 
 
 
+
+
+> Message du 14/09/05 =C3=A0 09h09
+> De : "Ruben Cardenal"=20
+> A : kossentini_3@voila.fr, netfilter@lists.netfilter.org
+> Copie =C3=A0 :=20
+> Objet : RE: documentation netfilter
+>=20
+> Use english in this list.
+>=20
+> Ruben
+>=20
+>=20
+>=20
+>
