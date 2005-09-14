@@ -1,49 +1,45 @@
-From: lst_hoe01@kwsoft.de
-Subject: Re: 1. Switch Flooding 2. Chains traversal
-Date: Wed, 14 Sep 2005 11:42:14 +0200
-Message-ID: <20050914114214.srlhfxt1l1pck04w@webmail.kwsoft.de>
-References: <acf1defa050913213555e04129@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 2.2.3 released
+Date: Wed, 14 Sep 2005 12:46:45 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0509141241230.23538@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <acf1defa050913213555e04129@mail.gmail.com>
-Content-Disposition: inline
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Zitat von venkata subramanian <venkatasubramanian@gmail.com>:
+Hi,
 
-> Hi,
-> 1. Switch Flooding
->       We have a nice problem in our organisation. Due to viruses,
-> some windows machine or the other starts flooding the network with
-> packets. And, in the end, one of our switches comes down making us to
-> manually restart the switch.
->       I don't (intuitively) see how iptables can help in this
-> scenario.... But, I want to know whether any solution exists to this?
-> If I make all the machine's gateway as a linux system, and rate limit
-> the packets there will it help?
+I'm happy to announce ipset 2.2.3. The changes compared to the previous
+release are:
 
-Use a better switch. We once had a cheap 3Com (4300-48 Ports) which had 
-the same
-behavior with ping-flood to many invalid IP-Adresses. I guess it was a error
-with the ARP handling. Once the switch was replaced by a 4400-48 (which is
-really 3Com not re-branded crap) the problem was gone.
-Best solution is of course to fix the virus-machines in your network.
+- memory allocation bug in iphash and nethash in connection with the SET
+  target was fixed (bug reported by Nikolai Malykh)
+- lockhelp.h was removed from the 2.6.13 kernel tree, ip_set.c is
+  updated accordingly (Cardoso Didier, Samir Bellabes)
+- manpage is updated to clearly state the command order in restore mode
 
-Regards
+If you use or plan to use an iphash or nethash type of set with the SET
+target, I urge you to upgrade.
 
-Andreas
+The source code can be downloaded from the ipset homepage at
+http://ipset.netfilter.org/ or from the netfilter svn repository.
 
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
