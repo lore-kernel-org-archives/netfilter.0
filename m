@@ -1,7 +1,7 @@
-From: "Cristiano B. Couto" <cris_couto@bol.com.br>
-Subject: Help for aplication.
-Date: Wed, 14 Sep 2005 09:05:15 -0300
-Message-ID: <20050914120516.0777678A0@sankara2.bol.com.br>
+From: Jan Eidtmann <cmak_@arcor.de>
+Subject: big table tweaks ?
+Date: Wed, 14 Sep 2005 14:43:00 +0200
+Message-ID: <20050914144300.6ceef8db.cmak_@arcor.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,14 +18,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi I need for help, necessary to make a incoming connection in my server,
-external connection IP validate for my internal net to have access an
-application in the hardware, this hardware in my internal net with IP
-192,168,0,200 and it is in door 80, and is application wheel saw to browser,
-if they will be able to help I am been thank, forgives my English is that I
-am Brazilian, thank.
+hello,
 
- 
+i have one kind of big table with 80.000+ rules. its referenced in
+INPUT. lookup (when someone wants to connect) is kinda slow and system
+hangs noticable (desktop usage). i tried preemptive and non_preemptive
+kernels, its all the same. so, is there anything i could tweak to make
+this run smooth?
 
-Cristiano.
+thx in advance,
+jan
+
+
+note: i am not subscribed...
 
