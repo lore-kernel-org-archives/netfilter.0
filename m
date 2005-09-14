@@ -1,15 +1,11 @@
-From: Peggy Kam <ppkam@n-dsi.com>
-Subject: Maximum number of rules in iptables?
-Date: Tue, 13 Sep 2005 18:10:50 -0400
-Message-ID: <1126649450.4790.5.camel@ndspc131.p.n-dsi.com>
-References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>
-	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>
-	<1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
-Reply-To: ppkam@n-dsi.com
+From: <somenath.pal@wipro.com>
+Subject: Need example of    iptc_insert_entry
+Date: Wed, 14 Sep 2005 08:54:43 +0530
+Message-ID: <8EFA81424BDADF4EB943E5A53420D7E3744CE5@BLR-EC-MBX03.wipro.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,14 +19,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
 
-What is the maximum number of policies I can define in the iptables?  
-ie. how much memory is allocated for iptables?
+Hi all,
 
-Thanks in advance,
-Peggy
+I am developing one filtering program using  libiptc in Redhat Linux 9.0
+.But I am not able to insert any rule using iptc_insert_entry. When I
+try to use iptc_insert_entry  into the "iptables" I get error message
+"Target problem". Please help me by giving an example of
+iptc_insert_entry or let me know any example program available in
+internet which use iptc_insert_entry.
+
+=0D
+
+Thanks and Regards,
+
+Somenath
+
+=0D
 
 
 
 
+
+Confidentiality Notice=0D
+
+The information contained in this electronic message and any attachments to=
+ this message are intended
+for the exclusive use of the addressee(s) and may contain confidential or=
+ privileged information. If
+you are not the intended recipient, please notify the sender at Wipro or=
+ Mailadmin@wipro.com immediately
+and destroy all copies of this message and any attachments.
