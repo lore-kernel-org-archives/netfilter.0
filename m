@@ -1,7 +1,8 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: big table tweaks ?
-Date: Thu, 15 Sep 2005 09:52:50 -0400
-Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7742E2B98@farmer.vikus.com>
+From: "Greg Scott" <GregScott@InfraSupportEtc.com>
+Subject: ip_conntrack_pptp: error during exp_gre - what does this mean and
+	how do I fix it?
+Date: Thu, 15 Sep 2005 09:07:30 -0500
+Message-ID: <365871C49598504A9481DDBEC3EB495512329B@MAIL.InfraSupportEtc.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,41 +18,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Eidtmann <cmak_@arcor.de>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Does anyone know what this error means?
 
+Sep 12 00:50:16 xxxxx-fw kernel: ip_conntrack_pptp: error during exp_gre
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> Jan Eidtmann
-> Sent: Wednesday, September 14, 2005 8:43 AM
-> To: netfilter@lists.netfilter.org
-> Subject: big table tweaks ?
->=20
-> hello,
->=20
-> i have one kind of big table with 80.000+ rules. its=20
-> referenced in INPUT. lookup (when someone wants to connect)=20
-> is kinda slow and system hangs noticable (desktop usage). i=20
-> tried preemptive and non_preemptive kernels, its all the=20
-> same. so, is there anything i could tweak to make this run smooth?
->=20
-> thx in advance,
-> jan
->=20
->=20
-> note: i am not subscribed...
+These ocassionally show up in /var/log/messages on one of my firewalls.
 
-It would help knowing what you are trying to accomplish with those
-80,000 rules. When I build a firewall, I know what each rule is for. I
-would have a hard time keeping track of 800 rules, let alone 80,000.
+I am using kernel 2.4.27 from kernel.org, iptables 1.2.11, and
+patch-o-matic-20040621.
 
-You said this is referenced in INPUT, are you running services on this
-host? Is it multi-homed? Are you blocking all the /24 networks of
-everybody you don't like? Is -A INPUT -m state --state
-RELATED,ESTABLISHED -j ACCEPT the first INPUT rule? Is this a Red Hat
-box? (sorry, had to ask)
+Thanks
 
-Derick Anderson
-
+- Greg Scott
