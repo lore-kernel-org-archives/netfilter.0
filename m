@@ -1,15 +1,9 @@
-From: lst_hoe01@kwsoft.de
-Subject: Re: 1. Switch Flooding 2. Chains traversal
-Date: Thu, 15 Sep 2005 10:56:20 +0200
-Message-ID: <20050915105620.hg7z7mdbzfy8skko@webmail.kwsoft.de>
-References: <acf1defa050913213555e04129@mail.gmail.com>
-	<20050914114214.srlhfxt1l1pck04w@webmail.kwsoft.de>
-	<Pine.LNX.4.60.0509141538060.13360@darkstar.sysinfo.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: bernin_a@informatik.haw-hamburg.de
+Subject: nat Problem with udp packets (missing packages between mangle and
+	nat ??)
+Date: Thu, 15 Sep 2005 11:51:40 GMT
+Message-ID: <20050915115140.AC9163CCDA26@mailgate.informatik.haw-hamburg.de>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.60.0509141538060.13360@darkstar.sysinfo.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,50 +14,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Zitat von "R. DuFresne" <dufresne@sysinfo.com>:
+Hi all!
 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->
-> On Wed, 14 Sep 2005 lst_hoe01@kwsoft.de wrote:
->
->> Zitat von venkata subramanian <venkatasubramanian@gmail.com>:
->>
->>> Hi,
->>> 1. Switch Flooding
->>>       We have a nice problem in our organisation. Due to viruses,
->>> some windows machine or the other starts flooding the network with
->>> packets. And, in the end, one of our switches comes down making us to
->>> manually restart the switch.
->>>       I don't (intuitively) see how iptables can help in this
->>> scenario.... But, I want to know whether any solution exists to this?
->>> If I make all the machine's gateway as a linux system, and rate limit
->>> the packets there will it help?
->>
->> Use a better switch. We once had a cheap 3Com (4300-48 Ports) which 
->> had the same
->> behavior with ping-flood to many invalid IP-Adresses. I guess it was a error
->> with the ARP handling. Once the switch was replaced by a 4400-48 (which is
->> really 3Com not re-branded crap) the problem was gone.
->> Best solution is of course to fix the virus-machines in your network.
->>
->
->
-> Interesting, all sorts of advice and suggestions, except the real 
-> answer, which would entertain the idea of finding the affending, 
-> perhaps infected system<s> and fixing  or taking them off the network 
-> till fixed.
+I have a strange problem here with some udp packets passing over a linux
+firewall. I need to change the source port of the packages so they appear to
+come from port 500.=20
+This used to work without any problem, but for some time now, some of the
+packages don't get their source port changed (but still, some do).
+Our setup is the following:
 
-You have not read my posting until the end ...
+We have an extra chain in the nat table called VPN_CLIENTS. for every ip we
+expect ipsec connections from, we have an entry that makes a source nat to =
+the
+original ip and source port 500.
 
-"Best solution is of course to fix the virus-machines in your network"
+Postrouting chain of table nat looks like the following:
 
-Regards
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+ULOG       udp  --  0.0.0.0/0            0.0.0.0/0          udp dpt:500 ULOG
+copy_range 0 nlgroup 1 prefix `dport 500:' queue_threshold 1
+VPN_CLIENTS  udp  --  0.0.0.0/0            62.67.60.5         udp dpt:500
 
-Andreas
+As you can see, i have set up a log rule to log me every packet that
+should be matched by the jump to VPN_CLIENTS. But some of packets do
+not get here, although i can see them with tcpdump on both, the
+incoming and the outgoing interface. And i can see them in the mangle
+table with a similar rule to the log rule above:
+
+# iptables -t nat -L -n
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+ULOG       udp  --  0.0.0.0/0            0.0.0.0/0          udp dpt:500 ULOG
+copy_range 0 nlgroup 1 prefix `mangle_dport_500:' queue_threshold 1
+
+=20
+It seems that some packages are traversing the mangle POSTROUTING
+chain but do not appear in the nat POSTROUTING chain. As i understand
+package flow, they should be. And this setup works for some ips
+(i see the packages in the nat table coming from them).
+
+So, i have no idea what is happening here...I hope someone else has.
+
+thanks,
+        arne
+
+I am running:
+
+Kernel 2.4.27 (with grsecurity)
+iptables 1.2.26a (debian)
+
+
+
+_________________________________________________
+Versendet =FCber Webmail der HAW Hamburg
+http://www.haw-hamburg.de/webmail
 
 
 
