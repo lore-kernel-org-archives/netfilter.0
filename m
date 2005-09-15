@@ -1,18 +1,14 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: iptables rules
-Date: Thu, 15 Sep 2005 18:23:55 +0200
-Message-ID: <4329A01B.4020300@mnemon.de>
-References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>	
-	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>	
-	<1123704837.3708.1.camel@ndspc131.p.n-dsi.com>	
-	<1126649450.4790.5.camel@ndspc131.p.n-dsi.com>	
-	<1126797736.4790.24.camel@ndspc131.p.n-dsi.com>	
-	<432992C0.2000404@mnemon.de>
-	<1126798629.4790.26.camel@ndspc131.p.n-dsi.com>
+From: Edmundo Carmona <eantoranz@gmail.com>
+Subject: Re: Limit access to one subnet?
+Date: Thu, 15 Sep 2005 12:58:53 -0400
+Message-ID: <65aa6af905091509582d1adbb0@mail.gmail.com>
+References: <200509151546.j8FFk1di004133@nenya.memphis.edu>
+Reply-To: eantoranz@gmail.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1126798629.4790.26.camel@ndspc131.p.n-dsi.com>
+In-Reply-To: <200509151546.j8FFk1di004133@nenya.memphis.edu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,27 +19,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Peggy Kam wrote:
-> did the manpage gets changed recently?  the iptables manpage that I see
-> states that:
-> 
-> --port [port[,port]]
->         Match if the both the source and destination ports are equal to
->         each other and to one of the given ports.
+on the server:
 
+iptables -A INPUT -s 141.225/16 -p tcp -dport 8080 -j ACCEPT
+iptables -P INPUT DROP
 
-I see. You are referring to -m mport --port*s* (by the way, there is a 
-typo or are you referring to another module ?), which is different from 
--m multiport --port*s* port[...] - which I was referring to. Your rule was
+Use with care.
 
-... -m multiport --ports 22,23,24,25 -j ACCEPT
-
-So I looked for multiport.
-
-HTH,
-
-Joerg
+On 9/15/05, Jason Luka <jluka@geshp.com> wrote:
+> I'm trying to figure out how to allow only 141.225.x.x to access port 808=
+0
+> on a server.  It's a proxy server and obviously I don't want anyone outsi=
+de
+> of campus to be able to access it.
+>=20
+>=20
+>
 
