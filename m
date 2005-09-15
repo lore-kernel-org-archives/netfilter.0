@@ -1,14 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: weird iptables behaviour
-Date: Fri, 16 Sep 2005 01:15:05 -0500
-Message-ID: <200509160115.05246.rob0@gmx.co.uk>
-References: <20050915214651.76113.qmail@web60914.mail.yahoo.com>
-	<432A5C09.5000105@riverviewtech.net>
+From: Jan Eidtmann <cmak_@arcor.de>
+Subject: Re: big table tweaks ?
+Date: Thu, 15 Sep 2005 20:41:41 +0200
+Message-ID: <20050915204141.2329eff9.cmak_@arcor.de>
+References: <E656E2CC1C5AEB42ACB00EB83122C7742E2B98@farmer.vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <432A5C09.5000105@riverviewtech.net>
-Content-Disposition: inline
+In-Reply-To: <E656E2CC1C5AEB42ACB00EB83122C7742E2B98@farmer.vikus.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,20 +20,45 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 2005-September-16 00:45, Grant Taylor wrote:
-> > On the openvpn box, FORWARD policy is DROP, so I did
-> > "iptables -I FORWARD -i tap0 -j ACCEPT" and thought this
-> > should do the trick. But I was wrong. The only solutions I
->
-> First of all you will need to have a corresponding rule:
->
-> iptables -I FORWARD -o tap0 -j ACCEPT
->
-> To allow traffic in the reverse direction too.
+thanks for all your interest and replies! :)
 
-Better yet, the usual stateful rule:
-iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+well, i found a solution for my problem this morning. actually,
+my setup was kind of stupid ( i was tired):
+
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+<...> # allow local stuff
+DROP       tcp  --  0.0.0.0/0            0.0.0.0/0           tcp flags:!0x16/0x02 state NEW
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+antip2p    all  --  0.0.0.0/0            0.0.0.0/0
+<...> # allow services
+
+NOTE: table "antip2p" drops all those networks i don't like or trust.
+      see http://www.bluetack.co.uk/config/antip2p.txt
+
+so almost every new incoming packet had to go through antip2p.
+
+solution: only sent those packets to antip2p that actually hit a
+service-port:
+
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+<...> # allow local stuff
+DROP       tcp  --  0.0.0.0/0            0.0.0.0/0           tcp flags:!0x16/0x02 state NEW
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+antip2p    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:21
+antip2p    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:22
+antip2p    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:80
+<...> # allow services but walk through antip2p for each service (like above)
+
+# iptables-show antip2p | tail -n2
+87228     0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           source IP range 222.158.0.0-222.159.255.255
+87229  6194  307K ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0
+
+this works smoother of course (as there are a lot less packets
+going through antip2p).
+not a perfect solution for busy hosts, but it works for me.
+
+cheers,
+jan
 
