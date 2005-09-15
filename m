@@ -1,14 +1,10 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: Fwd: Re: Performance issues
-Date: Thu, 15 Sep 2005 19:18:01 +0200
-Message-ID: <20050915171801.GB23354@zion.homelinux.com>
-References: <432970c4.40.cf0.1607@bavirtual.org>
+From: Gabriel <jarod125@yahoo.com>
+Subject: weird iptables behaviour
+Date: Thu, 15 Sep 2005 14:46:51 -0700 (PDT)
+Message-ID: <20050915214651.76113.qmail@web60914.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IrhDeMKUP4DT/M7F"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <432970c4.40.cf0.1607@bavirtual.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,51 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: tmp123@bavirtual.org
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+I'm connecting to an openvpn box from a remote location. I
+can access the box I'm connecting to (I'm getting ping
+replies), but nothing that's beyond it (the box serves as a
+gateway for other clients). I'm using openvpn's --dev tap0
+because i need to pass non-ip packets through the tunnel.
+On the openvpn box, FORWARD policy is DROP, so I did
+"iptables -I FORWARD -i tap0 -j ACCEPT" and thought this
+should do the trick. But I was wrong. The only solutions I
+found were either set FORWARD policy to ACCEPT (not happy
+with that) or insert an iptables rule in the FORWARD chain
+that gives access based on the MAC address. I'm probably
+going to use the latter, but I can't really understand why
+"iptables -I FORWARD -i tap0 -j ACCEPT" won't work. Isn't
+this supposed to let ALL packets (not just ip packets) pass
+through? I'm thinking that it has something to do with the
+fact that i'm using --dev tap0 (tap0 is bridged with eth1 -
+the LAN facing interface - and they form br0) which is
+layer2 but, as I said before, -i tap0 -j ACCEPT should work
+as well...
 
---IrhDeMKUP4DT/M7F
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks
 
-
-Hi,
-
-On Thu, Sep 15, 2005 at 01:01:56PM +0000, tmp123@bavirtual.org told us:
-> > Regardless of your success in the past with 3com NICs, I
-> > would suggest using something... ANYTHING... else.=20
-
-sorry to jump in here (and, yes, this is a bit off topic, sorry for
-that), but did I miss something?? In the past I mainly used 3com
-NICs (3c509C and even more in the past 3c900B) and I never had any
-problems with them...now as gigabit ethernet is common, Intel's e1000
-are the "usual" NICs in our machines...
-
-
-Sven
-
-> > 3C90x's have been the bane of my existence ever since they
-> > came out in the late 90s.  If there is an S3 video chipset
-> > on that motherboard, it's a lost cause.
-
---=20
-Linux zion.homelinux.com 2.6.13-mm1_2 #2 Thu Sep 8 01:40:47 CEST 2005 i686 =
-athlon i386 GNU/Linux
- 19:14:38 up 6 days, 22:48,  2 users,  load average: 0.02, 0.03, 0.00
-
---IrhDeMKUP4DT/M7F
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFDKazJo4FAdB2PneQRAtjbAJ9w8mamcIcbN3rwGfUTbAsdWnYspwCfUIHN
-c1u2X382vT0/p6Js/0khHr8=
-=1khi
------END PGP SIGNATURE-----
-
---IrhDeMKUP4DT/M7F--
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
