@@ -1,9 +1,8 @@
 From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
 Subject: Re: iptables rules
-Date: Thu, 15 Sep 2005 17:26:56 +0200
-Message-ID: <432992C0.2000404@mnemon.de>
-References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>	<1123704837.3708.1.camel@ndspc131.p.n-dsi.com>	<1126649450.4790.5.camel@ndspc131.p.n-dsi.com>
-	<1126797736.4790.24.camel@ndspc131.p.n-dsi.com>
+Date: Thu, 15 Sep 2005 17:33:44 +0200
+Message-ID: <43299458.1000205@mnemon.de>
+References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>	<1123704837.3708.1.camel@ndspc131.p.n-dsi.com>	<1126649450.4790.5.camel@ndspc131.p.n-dsi.com>	<1126797736.4790.24.camel@ndspc131.p.n-dsi.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -21,6 +20,8 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+For the sake of completeness :)
+
 Peggy Kam wrote:
 > Hi,
 > 
@@ -34,16 +35,23 @@ Peggy Kam wrote:
 
 man iptables:
 
---ports [!] port[,port[,port:port...]]
+multiport
+
+...
+
+       --ports [!] port[,port[,port:port...]]
                Match if either the source or destination
                ports are equal to one
                of the given ports.
 
-So, this is expected behaviour, provided that there are no other rules 
+So, this is expected behavior, provided that there are no other rules
 in the way.
 
 HTH,
 
 Joerg
 
+
+
+!DSPAM:43299390313231087616080!
 
