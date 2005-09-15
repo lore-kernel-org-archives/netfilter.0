@@ -1,7 +1,7 @@
 From: tmp123@bavirtual.org
-Subject: Re: Performance issues
-Date: Thu, 15 Sep 2005 13:02:22 GMT
-Message-ID: <432970de.272.18b0.29670@bavirtual.org>
+Subject: Fwd: Re: Performance issues
+Date: Thu, 15 Sep 2005 13:01:56 GMT
+Message-ID: <432970c4.40.cf0.1607@bavirtual.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -18,22 +18,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
->  From what you explain i would guess for PMTU issues. Any
-> chance that  some other
-> rule (in FORWARD chain) is blocking ICMP on this device?
+
+> I see two 3c905Cs and two 3C905s.  Two different chipsets.
+>  I don't like that much, but it's a personal preference.
+
+Well, it was more a matter of getting my hands on things
+hidden deep down in an old drawer. ;-)
+
 > 
-> Regards
-> 
-> Andreas
+> Regardless of your success in the past with 3com NICs, I
+> would suggest using something... ANYTHING... else. 
+> 3C90x's have been the bane of my existence ever since they
+> came out in the late 90s.  If there is an S3 video chipset
+> on that motherboard, it's a lost cause.
 > 
 
-Hi Andreas,
+Point taken, I didn't realise that, although I did read some
+negative comments on the newer models.
+That's okay, I work in a networking company anyway, so I'll
+just have to sneek off to the store room with a brown bag.
 
-Thanks for getting back to me. No, for testing purposes I
-made sure that the NAT rule is the only rule in the entire
-system, and the default policies are set to ACCEPT etc.
+I'll see how I get on with different/better hardware. Any
+recommendations?
 
-Regards,
+Thanks,
 Ferry van Aesch
 
 
