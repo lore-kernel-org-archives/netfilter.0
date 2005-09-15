@@ -1,12 +1,12 @@
-From: KOVACS Krisztian <hidden@balabit.hu>
-Subject: Re: big table tweaks ?
-Date: Thu, 15 Sep 2005 14:21:34 +0200
-Message-ID: <200509151421.34336@nienna>
-References: <201E6F5AC48C274996A5AD8304FAEF860BFCFE@p001ex03.porta.local>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: snat to multiple source ip
+Date: Thu, 15 Sep 2005 07:21:03 -0500
+Message-ID: <200509150721.03842.rob0@gmx.co.uk>
+References: <BAY103-DAV1334699C22EB479A7856C6B29E0@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <201E6F5AC48C274996A5AD8304FAEF860BFCFE@p001ex03.porta.local>
+In-Reply-To: <BAY103-DAV1334699C22EB479A7856C6B29E0@phx.gbl>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,22 +20,20 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: Jan Eidtmann <cmak_@arcor.de>
 
+On Thursday 2005-September-15 04:59, Marco Berizzi wrote:
+> My firewall script mark all the squid packet and I route them
 
-  Hi,
+You did not post your rules.
 
-On Thursday 15 September 2005 14.09, Baake, Matthias wrote:
-> try to split up your input rules into some custom chains that the
-> packets have not a really long way to traverse your input chain thats
-> what i would do..
+> through the two adsl connections (I have patched the kernel
+> with the equalize patch).
 
-  Or you could try using IPSet, maybe you can simplify your ruleset 
-using the set match.
-
-  http://ipset.netfilter.org
-
+Which patch is this? I have used Julian Anastasov's patches
+    http://www.ssi.bg/~ja/#multigw
+at numerous sites. The NANO-HOWTO linked therefrom is a step by step 
+recipe for how to set up the routing and firewall rules.
 -- 
- Regards,
-  Krisztian Kovacs
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
