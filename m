@@ -1,12 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: snat to multiple source ip
-Date: Thu, 15 Sep 2005 07:21:03 -0500
-Message-ID: <200509150721.03842.rob0@gmx.co.uk>
-References: <BAY103-DAV1334699C22EB479A7856C6B29E0@phx.gbl>
+From: TheGesus <thegesus@gmail.com>
+Subject: Re: Performance issues
+Date: Thu, 15 Sep 2005 08:43:25 -0400
+Message-ID: <5e70f6530509150543119e4434@mail.gmail.com>
+References: <004c01c5b966$5386e7c0$94010a0a@commtech.ie>
+Reply-To: thegesus@gmail.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY103-DAV1334699C22EB479A7856C6B29E0@phx.gbl>
+In-Reply-To: <004c01c5b966$5386e7c0$94010a0a@commtech.ie>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,19 +22,44 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 2005-September-15 04:59, Marco Berizzi wrote:
-> My firewall script mark all the squid packet and I route them
+On 9/14/05, Ferry van Aesch <tmp123@bavirtual.org> wrote:
+> Hi,
+>=20
+> Gents, I'm using 2.6.13-1 (same results with 2.4.27 though). I have a PII=
+I 550Mhz with 4 3Com NICs:
+>   Bus  0, device  12, function  0:
+>     Ethernet controller: 3Com Corporation 3c905C-TX/TX-M [Tornado] (rev 1=
+20).
+>       IRQ 5.
+>       Master Capable.  Latency=3D80.  Min Gnt=3D10.Max Lat=3D10.
+>       I/O at 0xe400 [0xe47f].
+>       Non-prefetchable 32 bit memory at 0xfedffc00 [0xfedffc7f].
+>   Bus  0, device  14, function  0:
+>     Ethernet controller: 3Com Corporation 3c905C-TX/TX-M [Tornado] (#2) (=
+rev 120).
+>       IRQ 10.
+>       Master Capable.  Latency=3D80.  Min Gnt=3D10.Max Lat=3D10.
+>       I/O at 0xf400 [0xf47f].
+>       Non-prefetchable 32 bit memory at 0xfedff800 [0xfedff87f].
+>   Bus  0, device  16, function  0:
+>     Ethernet controller: 3Com Corporation 3c905 100BaseTX [Boomerang] (re=
+v 0).
+>       IRQ 9.
+>       Master Capable.  Latency=3D64.  Min Gnt=3D3.Max Lat=3D8.
+>       I/O at 0xe800 [0xe83f].
+>   Bus  0, device  18, function  0:
+>     Ethernet controller: 3Com Corporation 3c905 100BaseTX [Boomerang] (#2=
+) (rev 0).
+>       IRQ 11.
+>       Master Capable.  Latency=3D64.  Min Gnt=3D3.Max Lat=3D8.
+>       I/O at 0xe000 [0xe03f].
+>=20
 
-You did not post your rules.
+I see two 3c905Cs and two 3C905s.  Two different chipsets.  I don't
+like that much, but it's a personal preference.
 
-> through the two adsl connections (I have patched the kernel
-> with the equalize patch).
-
-Which patch is this? I have used Julian Anastasov's patches
-    http://www.ssi.bg/~ja/#multigw
-at numerous sites. The NANO-HOWTO linked therefrom is a step by step 
-recipe for how to set up the routing and firewall rules.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Regardless of your success in the past with 3com NICs, I would suggest
+using something... ANYTHING... else.  3C90x's have been the bane of my
+existence ever since they came out in the late 90s.  If there is an S3
+video chipset on that motherboard, it's a lost cause.
 
