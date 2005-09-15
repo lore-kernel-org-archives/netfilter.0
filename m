@@ -1,9 +1,11 @@
-From: tmp123@bavirtual.org
-Subject: Fwd: Re: Performance issues
-Date: Thu, 15 Sep 2005 13:01:56 GMT
-Message-ID: <432970c4.40.cf0.1607@bavirtual.org>
+From: "Derick Anderson" <danderson@vikus.com>
+Subject: RE: big table tweaks ?
+Date: Thu, 15 Sep 2005 09:52:50 -0400
+Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7742E2B98@farmer.vikus.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,34 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Jan Eidtmann <cmak_@arcor.de>, netfilter@lists.netfilter.org
 
 
-> I see two 3c905Cs and two 3C905s.  Two different chipsets.
->  I don't like that much, but it's a personal preference.
 
-Well, it was more a matter of getting my hands on things
-hidden deep down in an old drawer. ;-)
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+> Jan Eidtmann
+> Sent: Wednesday, September 14, 2005 8:43 AM
+> To: netfilter@lists.netfilter.org
+> Subject: big table tweaks ?
+>=20
+> hello,
+>=20
+> i have one kind of big table with 80.000+ rules. its=20
+> referenced in INPUT. lookup (when someone wants to connect)=20
+> is kinda slow and system hangs noticable (desktop usage). i=20
+> tried preemptive and non_preemptive kernels, its all the=20
+> same. so, is there anything i could tweak to make this run smooth?
+>=20
+> thx in advance,
+> jan
+>=20
+>=20
+> note: i am not subscribed...
 
-> 
-> Regardless of your success in the past with 3com NICs, I
-> would suggest using something... ANYTHING... else. 
-> 3C90x's have been the bane of my existence ever since they
-> came out in the late 90s.  If there is an S3 video chipset
-> on that motherboard, it's a lost cause.
-> 
+It would help knowing what you are trying to accomplish with those
+80,000 rules. When I build a firewall, I know what each rule is for. I
+would have a hard time keeping track of 800 rules, let alone 80,000.
 
-Point taken, I didn't realise that, although I did read some
-negative comments on the newer models.
-That's okay, I work in a networking company anyway, so I'll
-just have to sneek off to the store room with a brown bag.
+You said this is referenced in INPUT, are you running services on this
+host? Is it multi-homed? Are you blocking all the /24 networks of
+everybody you don't like? Is -A INPUT -m state --state
+RELATED,ESTABLISHED -j ACCEPT the first INPUT rule? Is this a Red Hat
+box? (sorry, had to ask)
 
-I'll see how I get on with different/better hardware. Any
-recommendations?
-
-Thanks,
-Ferry van Aesch
-
-
+Derick Anderson
 
