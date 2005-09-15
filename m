@@ -1,47 +1,69 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 2.2.3 released
-Date: Thu, 15 Sep 2005 00:09:48 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0509150006520.25481@blackhole.kfki.hu>
-References: <Pine.LNX.4.58.0509141241230.23538@blackhole.kfki.hu>
-	<200509141002.40185.teastep@shorewall.net>
+From: lst_hoe01@kwsoft.de
+Subject: Re: 1. Switch Flooding 2. Chains traversal
+Date: Thu, 15 Sep 2005 10:56:20 +0200
+Message-ID: <20050915105620.hg7z7mdbzfy8skko@webmail.kwsoft.de>
+References: <acf1defa050913213555e04129@mail.gmail.com>
+	<20050914114214.srlhfxt1l1pck04w@webmail.kwsoft.de>
+	<Pine.LNX.4.60.0509141538060.13360@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <200509141002.40185.teastep@shorewall.net>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Tom Eastep <teastep@shorewall.net>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.60.0509141538060.13360@darkstar.sysinfo.com>
+Content-Disposition: inline
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Wed, 14 Sep 2005, Tom Eastep wrote:
+Zitat von "R. DuFresne" <dufresne@sysinfo.com>:
 
-> > I'm happy to announce ipset 2.2.3. The changes compared to the previous
-> > release are:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
 >
-> > - lockhelp.h was removed from the 2.6.13 kernel tree, ip_set.c is
-> >   updated accordingly (Cardoso Didier, Samir Bellabes)
+> On Wed, 14 Sep 2005 lst_hoe01@kwsoft.de wrote:
 >
-> This patch doesn't seem to be in svn or in the snapshot tarball linked
-> from your site.
+>> Zitat von venkata subramanian <venkatasubramanian@gmail.com>:
+>>
+>>> Hi,
+>>> 1. Switch Flooding
+>>>       We have a nice problem in our organisation. Due to viruses,
+>>> some windows machine or the other starts flooding the network with
+>>> packets. And, in the end, one of our switches comes down making us to
+>>> manually restart the switch.
+>>>       I don't (intuitively) see how iptables can help in this
+>>> scenario.... But, I want to know whether any solution exists to this?
+>>> If I make all the machine's gateway as a linux system, and rate limit
+>>> the packets there will it help?
+>>
+>> Use a better switch. We once had a cheap 3Com (4300-48 Ports) which 
+>> had the same
+>> behavior with ping-flood to many invalid IP-Adresses. I guess it was a error
+>> with the ARP handling. Once the switch was replaced by a 4400-48 (which is
+>> really 3Com not re-branded crap) the problem was gone.
+>> Best solution is of course to fix the virus-machines in your network.
+>>
+>
+>
+> Interesting, all sorts of advice and suggestions, except the real 
+> answer, which would entertain the idea of finding the affending, 
+> perhaps infected system<s> and fixing  or taking them off the network 
+> till fixed.
 
-Oops, you're right: that chunk was forgotten to commit in svn. It's fixed
-by now in svn and the snapshot is updated as well. Thank you the fast
-reporting.
+You have not read my posting until the end ...
 
-Best regards,
-jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+"Best solution is of course to fix the virus-machines in your network"
+
+Regards
+
+Andreas
+
+
 
