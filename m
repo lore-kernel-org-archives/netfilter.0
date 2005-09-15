@@ -1,11 +1,13 @@
-From: "Baake, Matthias" <m.baake@porta.de>
-Subject: RE: big table tweaks ?
-Date: Thu, 15 Sep 2005 14:09:44 +0200
-Message-ID: <201E6F5AC48C274996A5AD8304FAEF860BFCFE@p001ex03.porta.local>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Help for aplication.
+Date: Thu, 15 Sep 2005 07:11:42 -0500
+Message-ID: <200509150711.43100.rob0@gmx.co.uk>
+References: <20050914120516.0777678A0@sankara2.bol.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <20050914120516.0777678A0@sankara2.bol.com.br>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +19,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Eidtmann <cmak_@arcor.de>
-Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-hi,
+On Wednesday 2005-September-14 07:05, Cristiano B. Couto wrote:
+> Hi I need for help, necessary to make a incoming connection in my
+> server, external connection IP validate for my internal net to have
+> access an application in the hardware, this hardware in my internal
+> net with IP 192,168,0,200 and it is in door 80, and is application
+> wheel saw to browser, if they will be able to help I am been thank,
+> forgives my English is that I am Brazilian, thank.
 
-try to split up your input rules into some custom chains that the =
-packets have=20
-not a really long way to traverse your input chain thats what i would =
-do..
-
-greets
-matthias
-
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of=20
-> Jan Eidtmann
-> Sent: Wednesday, September 14, 2005 2:43 PM
-> To: netfilter@lists.netfilter.org
-> Subject: big table tweaks ?
->=20
->=20
-> hello,
->=20
-> i have one kind of big table with 80.000+ rules. its referenced in
-> INPUT. lookup (when someone wants to connect) is kinda slow and system
-> hangs noticable (desktop usage). i tried preemptive and non_preemptive
-> kernels, its all the same. so, is there anything i could tweak to make
-> this run smooth?
->=20
-> thx in advance,
-> jan
->=20
->=20
-> note: i am not subscribed...
->=20
->=20
+I am not sure what you are saying, but this might help:
+http://netfilter.org/documentation/HOWTO/pt/NAT-HOWTO.html
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
