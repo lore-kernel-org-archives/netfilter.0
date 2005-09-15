@@ -1,14 +1,14 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: Limit access to one subnet?
-Date: Thu, 15 Sep 2005 12:58:53 -0400
-Message-ID: <65aa6af905091509582d1adbb0@mail.gmail.com>
-References: <200509151546.j8FFk1di004133@nenya.memphis.edu>
-Reply-To: eantoranz@gmail.com
+From: Sven Schuster <schuster.sven@gmx.de>
+Subject: Re: Fwd: Re: Performance issues
+Date: Thu, 15 Sep 2005 19:18:01 +0200
+Message-ID: <20050915171801.GB23354@zion.homelinux.com>
+References: <432970c4.40.cf0.1607@bavirtual.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IrhDeMKUP4DT/M7F"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200509151546.j8FFk1di004133@nenya.memphis.edu>
 Content-Disposition: inline
+In-Reply-To: <432970c4.40.cf0.1607@bavirtual.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +19,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: tmp123@bavirtual.org
+Cc: netfilter@lists.netfilter.org
 
-on the server:
 
-iptables -A INPUT -s 141.225/16 -p tcp -dport 8080 -j ACCEPT
-iptables -P INPUT DROP
+--IrhDeMKUP4DT/M7F
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Use with care.
 
-On 9/15/05, Jason Luka <jluka@geshp.com> wrote:
-> I'm trying to figure out how to allow only 141.225.x.x to access port 808=
-0
-> on a server.  It's a proxy server and obviously I don't want anyone outsi=
-de
-> of campus to be able to access it.
->=20
->=20
->
+Hi,
+
+On Thu, Sep 15, 2005 at 01:01:56PM +0000, tmp123@bavirtual.org told us:
+> > Regardless of your success in the past with 3com NICs, I
+> > would suggest using something... ANYTHING... else.=20
+
+sorry to jump in here (and, yes, this is a bit off topic, sorry for
+that), but did I miss something?? In the past I mainly used 3com
+NICs (3c509C and even more in the past 3c900B) and I never had any
+problems with them...now as gigabit ethernet is common, Intel's e1000
+are the "usual" NICs in our machines...
+
+
+Sven
+
+> > 3C90x's have been the bane of my existence ever since they
+> > came out in the late 90s.  If there is an S3 video chipset
+> > on that motherboard, it's a lost cause.
+
+--=20
+Linux zion.homelinux.com 2.6.13-mm1_2 #2 Thu Sep 8 01:40:47 CEST 2005 i686 =
+athlon i386 GNU/Linux
+ 19:14:38 up 6 days, 22:48,  2 users,  load average: 0.02, 0.03, 0.00
+
+--IrhDeMKUP4DT/M7F
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFDKazJo4FAdB2PneQRAtjbAJ9w8mamcIcbN3rwGfUTbAsdWnYspwCfUIHN
+c1u2X382vT0/p6Js/0khHr8=
+=1khi
+-----END PGP SIGNATURE-----
+
+--IrhDeMKUP4DT/M7F--
 
