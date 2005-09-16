@@ -1,12 +1,15 @@
-From: Jan Eidtmann <cmak_@arcor.de>
-Subject: Re: big table tweaks ?
-Date: Thu, 15 Sep 2005 20:41:41 +0200
-Message-ID: <20050915204141.2329eff9.cmak_@arcor.de>
-References: <E656E2CC1C5AEB42ACB00EB83122C7742E2B98@farmer.vikus.com>
+From: Sai Kiran <saikiranrgda@gmail.com>
+Subject: Re: Limit access to one subnet?
+Date: Fri, 16 Sep 2005 18:38:04 +0530
+Message-ID: <7c65616905091606082eef6686@mail.gmail.com>
+References: <200509151546.j8FFk1di004133@nenya.memphis.edu>
+	<65aa6af905091509582d1adbb0@mail.gmail.com>
+Reply-To: marlinspike_tom@yahoo.co.in
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <E656E2CC1C5AEB42ACB00EB83122C7742E2B98@farmer.vikus.com>
+In-Reply-To: <65aa6af905091509582d1adbb0@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +21,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: eantoranz@gmail.com
+Cc: netfilter@lists.netfilter.org
 
-thanks for all your interest and replies! :)
+hi,
 
-well, i found a solution for my problem this morning. actually,
-my setup was kind of stupid ( i was tired):
+don't forget=20
 
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-<...> # allow local stuff
-DROP       tcp  --  0.0.0.0/0            0.0.0.0/0           tcp flags:!0x16/0x02 state NEW
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
-antip2p    all  --  0.0.0.0/0            0.0.0.0/0
-<...> # allow services
+iptables -I INPUT -i lo -j ACCEPT
 
-NOTE: table "antip2p" drops all those networks i don't like or trust.
-      see http://www.bluetack.co.uk/config/antip2p.txt
-
-so almost every new incoming packet had to go through antip2p.
-
-solution: only sent those packets to antip2p that actually hit a
-service-port:
-
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-<...> # allow local stuff
-DROP       tcp  --  0.0.0.0/0            0.0.0.0/0           tcp flags:!0x16/0x02 state NEW
-ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
-antip2p    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:21
-antip2p    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:22
-antip2p    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:80
-<...> # allow services but walk through antip2p for each service (like above)
-
-# iptables-show antip2p | tail -n2
-87228     0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           source IP range 222.158.0.0-222.159.255.255
-87229  6194  307K ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0
-
-this works smoother of course (as there are a lot less packets
-going through antip2p).
-not a perfect solution for busy hosts, but it works for me.
-
-cheers,
-jan
+>=20
+> iptables -A INPUT -s 141.225/16 -p tcp -dport 8080 -j ACCEPT
+> iptables -P INPUT DROP
 
