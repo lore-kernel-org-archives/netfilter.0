@@ -1,14 +1,10 @@
-From: Rafa Garrido <rgarrido.l@gmail.com>
-Subject: Re: NetBIOS dgm NAT Helper
-Date: Sat, 17 Sep 2005 02:53:09 +0200
-Message-ID: <2b8e1997050916175339d88351@mail.gmail.com>
-References: <1126895937.6687.3.camel@localhost>
-Reply-To: rgarrido.l@gmail.com
+From: "LinuXKiD" <gregoriandres@yahoo.com.ar>
+Subject: p2p: ARES
+Date: Fri, 16 Sep 2005 22:55:54 -0300
+Message-ID: <NHBBLNDNFKDMKNNKGOMMEEPMMFAA.gregoriandres@yahoo.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1126895937.6687.3.camel@localhost>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,36 +16,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-It can that this patch of the last week help you:
-http://patchwork.netfilter.org/netfilter-devel/patch.pl?id=3D2859
-It will be necessary to hope to that stable kernel appears.
-Greetings.
+To: netfilter <netfilter@lists.netfilter.org>
 
 
-On 9/16/05, John A. Sullivan III <jsullivan@opensourcedevel.com> wrote:
-> We have encountered an unusual situation where NetBIOS datagram packets
-> (138/udp) are being passed through an IPSec tunnel on an iptables
-> firewall but they are also being NATted by the same firewall.  It
-> appears there is IP information embedded in the NetBIOS header.  Thus
-> NAT causes this protocol to break because the reply packets are sent to
-> the original IP address in the NetBIOS header rather than the NAT IP
-> address in the IP header.
->=20
-> I believe Cisco does have a NAT helper for NetBIOS but I have not seen
-> anything for iptables.  Is there such a helper? Is there anyway for an
-> iptables firewall to NAT NetBIOS datagram packets? Thanks - John
-> --
-> John A. Sullivan III
-> Open Source Development Corporation
-> +1 207-985-7880
-> jsullivan@opensourcedevel.com
->=20
-> If you would like to participate in the development of an open source
-> enterprise class network security management system, please visit
-> http://iscs.sourceforge.net
->=20
->=20
->
+Hi,
+
+I've a linux as router nat + firewall
+(POLICY DROP for INPUT OUTPUT and FORWARD)
+
+but, I've put next rules for p2p software
+on FORWARD chain
+
+[... snip ... ]
+
+iptables -F FORWARD
+iptables -P FORWARD DROP
+
+
+iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --dport 25 -j ACCEPT
+[... snip ... ]
+
+iptables -A FORWARD -m ipp2p --ipp2p -j ACCEPT
+iptables -A FORWARD -m ipp2p --ares -j ACCEPT
+
+[...]
+
+Then... emule, kaazaa , edonkey and so on  works very good
+but ARES can't connect.
+
+I've 
+	- iptables 1.3.3
+	- kernel 2.4.28
+	- ipp2p 0.8.0rc3
+
+BUT, if I change policy
+
+	iptables -P FORWARD ACCEPT
+
+ARES works,  can connect.
+
+I've tried to guess tcp/udp ports with tcpdump
+without suceess.
+
+I guess that ipp2p only can block p2p on a ACCEPT
+policy firewall 
+
+I must open some tcp/udp port ?
+Can anybody helpme ?
+
+bests
+andres.
+
+
+
+
+
+
+
+
+
+
 
