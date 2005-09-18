@@ -1,13 +1,9 @@
-From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
-Subject: NAT (IPTABLES) + Windows 2K Routing and Remote Access (VPN) +
-	Wndows/xp client access (VPN)
-Date: Sat, 17 Sep 2005 21:47:01 -0300
-Message-ID: <001401c5bbeb$c43ba8c0$8b00000a@pivt>
-Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
+From: Dino Klein <zagzag-lists@speakeasy.net>
+Subject: Application order of match extensions
+Date: Sat, 17 Sep 2005 21:25:00 -0400
+Message-ID: <432CC1EC.20105@speakeasy.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,34 +15,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
-To: netfilter lists <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 Hi,
 
-I have a local network and the gateway is a Redhat 9 with Firewall iptables=
-=20
-v1.2.7a doing NAT to the LAN. I need to access a W2k RAS and it is behind a=
-=20
-other Redhat 9 with Firewall iptables v1.2.7a. I use the Internet to connec=
-t=20
-this two sites.
+While creating some rules for slowing down SSH attacks, I've ran into an
+interesting question - what is the order in which match extensions are
+processed? namely,  does these two rules differ:
 
-On the local network I try to access the W2k Routing and Remote Access and =
+(1) -m tcp -m state -m recent --state NEW -p tcp --dport ssh --seconds
+180 --hitcount 2 --update --name ssh -j REJECT
 
-it only work with the first connection or the first local IP. When other=20
-LAN's user try to access, they could not get the connection. On the Windows=
-=20
-XP the appear the msg "verifyng username and password" is show and do not=20
-connect or ask for the password. This msg stay until timed out.
+(2) -m tcp -m recent -m state --state NEW -p tcp --dport ssh --seconds
+180 --hitcount 2 --update --name ssh -j REJECT
 
-Is there any problem with Iptables or Nat??
+The only difference between the two is the order of the 'state' and
+'recent' extensions.
 
-Tks
+The first one works as designed - reject new connections for IP
+addresses that already have a hit-count of 2 and the last update
+occurred no more than 180 seconds ago.
 
-Sebasti=E3o.
+However, the second rule seems to apply the recent match first, and it
+does so for any packet destined for port 22, so the '--update' takes
+effect (assuming the hit count and time criteria are fulfilled). Only
+then the state of the connection is examined. The effect of this is that
+open connections end up affecting the count, and last-seen time in
+respect to the 'recent' extension, and in essence the IP is blocked from
+initiating any new connections.
 
+So, is this how things are supposed to be, and always will? is the
+application order of the match extensions determined by the order of how
+they were specified on the command line?
 
+I couldn't find info in the man page, so I was hoping someone could give
+me an answer.
 
-
+Thanks in advance.
 
