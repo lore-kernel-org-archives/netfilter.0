@@ -1,10 +1,12 @@
-From: Dino Klein <zagzag-lists@speakeasy.net>
-Subject: Application order of match extensions
-Date: Sat, 17 Sep 2005 21:25:00 -0400
-Message-ID: <432CC1EC.20105@speakeasy.net>
+From: "Greg Scott" <GregScott@InfraSupportEtc.com>
+Subject: RE: NAT (IPTABLES) + Windows 2K Routing and Remote Access (VPN)
+	+Wndows/xp client access (VPN)
+Date: Sun, 18 Sep 2005 09:41:16 -0500
+Message-ID: <365871C49598504A9481DDBEC3EB49551232B0@MAIL.InfraSupportEtc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,42 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?= <sa.campos@datasulsp.com.br>, netfilter lists <netfilter@lists.netfilter.org>
+
+You need the PPTP patch in patch-o-matic and you will need to build a =
+custom kernel.  Unfortunately, the latest version has trouble building =
+with the 2.6 kernel.  At least, that was the case about 2 weeks ago. =20
+
+- Greg Scott
+=20
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org =
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Sebasti=E3o =
+Ant=F4nio Campos (GWA)
+Sent: Saturday, September 17, 2005 7:47 PM
+To: netfilter lists
+Subject: NAT (IPTABLES) + Windows 2K Routing and Remote Access (VPN) =
++Wndows/xp client access (VPN)
 
 Hi,
 
-While creating some rules for slowing down SSH attacks, I've ran into an
-interesting question - what is the order in which match extensions are
-processed? namely,  does these two rules differ:
+I have a local network and the gateway is a Redhat 9 with Firewall =
+iptables v1.2.7a doing NAT to the LAN. I need to access a W2k RAS and it =
+is behind a other Redhat 9 with Firewall iptables v1.2.7a. I use the =
+Internet to connect this two sites.
 
-(1) -m tcp -m state -m recent --state NEW -p tcp --dport ssh --seconds
-180 --hitcount 2 --update --name ssh -j REJECT
+On the local network I try to access the W2k Routing and Remote Access =
+and it only work with the first connection or the first local IP. When =
+other LAN's user try to access, they could not get the connection. On =
+the Windows XP the appear the msg "verifyng username and password" is =
+show and do not connect or ask for the password. This msg stay until =
+timed out.
 
-(2) -m tcp -m recent -m state --state NEW -p tcp --dport ssh --seconds
-180 --hitcount 2 --update --name ssh -j REJECT
+Is there any problem with Iptables or Nat??
 
-The only difference between the two is the order of the 'state' and
-'recent' extensions.
+Tks
 
-The first one works as designed - reject new connections for IP
-addresses that already have a hit-count of 2 and the last update
-occurred no more than 180 seconds ago.
+Sebasti=E3o.
 
-However, the second rule seems to apply the recent match first, and it
-does so for any packet destined for port 22, so the '--update' takes
-effect (assuming the hit count and time criteria are fulfilled). Only
-then the state of the connection is examined. The effect of this is that
-open connections end up affecting the count, and last-seen time in
-respect to the 'recent' extension, and in essence the IP is blocked from
-initiating any new connections.
 
-So, is this how things are supposed to be, and always will? is the
-application order of the match extensions determined by the order of how
-they were specified on the command line?
 
-I couldn't find info in the man page, so I was hoping someone could give
-me an answer.
 
-Thanks in advance.
+
 
