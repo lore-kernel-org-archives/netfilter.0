@@ -1,14 +1,10 @@
-From: "Stephen J. Smoogen" <smooge@gmail.com>
-Subject: Re: netfilter conntrack performance problems
-Date: Mon, 19 Sep 2005 15:10:16 -0600
-Message-ID: <80d7e4090509191410763a5d2f@mail.gmail.com>
-References: <20050919203442.GA4111@hsz.tmp.hu>
-Reply-To: smooge@gmail.com
+From: Mike Ireton <mike-netfilter@tiedyenetworks.com>
+Subject: MARK: targetinfosize 8 != 4
+Date: Mon, 19 Sep 2005 17:12:32 -0400
+Message-ID: <432F29C0.30007@tiedyenetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050919203442.GA4111@hsz.tmp.hu>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,57 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On 9/19/05, Horvath Szabolcs <hsz@sth.sze.hu> wrote:
-> Hi!
->=20
-> We have a firewalling-only machine, called natbox. Traffic is around
-> 20-40 MByte/s, ~400 clients snatted to 4 public IPs, approx. 10000-40000
-> parallel connections.
->
->=20
-> from the munin graphics, I see the nic's interrupts generate the machine
-> load. What can we tuning to provide better performance?
->=20
-> It is a P4 3.0GHz with 1 GB ram, is this computer enough to do this task?
->=20
->
+Hi List,
 
-This is more dependant on what kind of network cards are on the box,
-if they can use NAPI... are they PCI, PCI-X, PCI-Express, and how well
-they work. there is also a dependency on the network switches and how
-they interact with the network cards. [The SNAT also has an overhead
-which probably generates irq's.. not sure how much though.]
+I'm hitting a wall with the error message 'MARK: targetinfosize 8 !=4' 
+and I'm stumped. Looking at the code, this message is related to a 
+sanity check that iptables and it's extensions peform and the deal seems 
+to be that the size of a declared structure is different between what 
+the kernel was compiled with, vs what iptables was compiled with (struct 
+ipt_mark_target_info verses ipt_mark_target_info_v1). There also appears 
+to be some runtime determination as to which structure version iptables 
+should be using (depending on kernel. iptables appears to open a socket 
+and 'ask' which it should use).
 
-A couple of parameters I have seen improve things:
+I don't see where I could possibly be compiling for one kernel / 
+iptables version but then using another or anything simple like that. I 
+don't see any other possible cause of this mismatch either. The software 
+revions involved are iptables-1.3.3 and kernel 2.4.32-pre3.
 
-1) use the same network card on both interfaces. and use a network
-card that has a good NAPI history. Harald Welt had a couple listed in
-his blog a while back.. I think the e1000 came out ok.
-
-2) I think that having the cards on the same PCI-X bus can help... but
-could be wrong here.. major allergies and my head isnt too clear. If
-you can find a set of cards/motherboard with 2 PCI-Express slots..
-that would be best.
-
-3) Make sure that the switches are able to handle the load. We had a
-problem where we thought a firewall was crap but it turned out to be
-that the switch was the problem causing a lot of resends.. this
-generated a lot of load.
-
-4) Try out jumbo frames. I think we found this decreased load.. but
-was dependant on the switches/routers handling it correctly.
-
-5) Finally.. does changing this have any effect
+Thanks.
 
 
-irq moderation:  disabled
-
-have to take more allergy medicine.. hope this helped.
-
---=20
-Stephen J Smoogen.
-CSIRT/Linux System Administrator
 
