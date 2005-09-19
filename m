@@ -1,7 +1,9 @@
-From: don-temp2@isis.cs3-inc.com (Don Cohen)
-Subject: loss of MIRROR target
-Date: Mon, 19 Sep 2005 09:05:01 -0700 (PDT)
-Message-ID: <20050919160501.C406A1A81CC@isis.cs3-inc.com>
+From: Michael Gale <michael.gale@pason.com>
+Subject: Transparent bridge with layer7 filter ?
+Date: Mon, 19 Sep 2005 11:52:02 -0600
+Message-ID: <432EFAC2.8000306@pason.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -13,32 +15,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hello,
 
-Now that I try to upgrade from RH8 to FC4 I notice that the MIRROR
-target has been removed from kernel 2.6.  A web search shows that I'm
-only about 2 years late in noticing this:
-https://lists.netfilter.org/pipermail/netfilter-devel/2003-August/012193.html
-So now I file my complaint 2 years late.
-I argue that the message I sent a few months ago:
-https://lists.netfilter.org/pipermail/netfilter-devel/2005-June/019999.html
-illustrates a perfectly legitimate use of this target.  
-Furthermore, I actually want to do it.
+I want to setup layer7 filter (http://l7-filter.sourceforge.net/) on a 
+Linux box that will be transparent to the network. I have looked up 
+transparent bridging any have found several ways to do this but non 
+mention layer7 filter. Some like ebtables (ebtables.sourceforge.net) 
+make it seem like you can not do this ?
 
-I suppose I could get almost the same result by doing snat+dnat, but
-this is more expensive and, worse, opens up an avenue for attacking me
-by filling my connection tables.
-I suppose I could install the target in my own kernel.  Is this actually
-straight forward?  Where are instructions?  Of course, it becomes a
-maintenance problem when you try to track new kernels distributed with
-Fedora, which is what I imagined trying to do.  Or is there some
-solution to that problem?
+Has any one done this yet ? If so can you provide some pointers.
 
-Naturally, my first choice would be for MIRROR to be restored to
-future kernels so eventually I'd get it back as part of a regular
-upgrade.  Any chance?
+Thanks
+
+Michael
 
