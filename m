@@ -1,13 +1,12 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: snat to multiple source ip
-Date: Tue, 20 Sep 2005 08:44:11 -0400
-Message-ID: <65aa6af905092005445b3940d4@mail.gmail.com>
-References: <BAY103-DAV7432DC634B39274E5495CB2950@phx.gbl>
-Reply-To: eantoranz@gmail.com
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Squid +iptables + apache
+Date: Tue, 20 Sep 2005 08:12:31 -0500
+Message-ID: <200509200812.33357.rob0@gmx.co.uk>
+References: <200509200157.11810.etobis@dc.uba.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY103-DAV7432DC634B39274E5495CB2950@phx.gbl>
+In-Reply-To: <200509200157.11810.etobis@dc.uba.ar>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,47 +21,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-You are using multiroute path, right?
-
-what is the output of
-
-ip route show default
-
-(on the router, of course).
-
-On 9/20/05, Marco Berizzi <pupilla@hotmail.com> wrote:
-> Thanks for the reply Rob0.
->=20
-> On Thursday 2005-September-15 04:59, Marco Berizzi wrote:
-> >> My firewall script mark all the squid packet and I route them
->=20
-> >You did not post your rules.
->=20
-> This is not the real problem.
-> The problem is the SNAT rule. It is doesn't work as stated
-> by man. How does it work? Per socket? Or per socket per host?
->=20
-> iptables -t nat -I POSTROUTING -s HDSL_ip
-> --protocol tcp -m multiport --dports SQUIDports
-> -j SNAT --to first_adsl_ip --to second_adsl_ip
->=20
-> This rules snat all packets created by this (squid) host, but
-> everytime I connect to the internet *always* the first_adsl_ip
-> is chosen. My company lan has about 150 pc that connect to
-> the internet by this proxy, so I don't understand why *everytime*
-> I open my browser and I connect to www.dnsstuff.com always the
-> same ip is displayed. It isn't a cache problem because I reset them
-> (both on squid and browser side).
->=20
-> >> through the two adsl connections (I have patched the kernel
-> >> with the equalize patch).
->=20
-> > Which patch is this? I have used Julian Anastasov's patches
->=20
-> Here is http://www.ussg.iu.edu/hypermail/linux/kernel/0203.2/1314.html
-> However this is only for routing not for nat.
->=20
->=20
->=20
+On Monday 19 September 2005 23:57, Enrique Augusto Tobis wrote:
+> To sum it up, almost everything is working as it should. But, if I
+> try to access 192.168.0.3 from INSIDE the network, I get an error
+> from squid...
 >
+> I activate the transparent proxy with
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
+> --to-port 8080
+>
+> and forward the port 80 connections with
+> iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to
+> 192.168.0.1:80
+
+iptables -vt nat -I PREROUTING -i eth0 -d 192.168.0.3 -p tcp \
+    --dport 80 -j ACCEPT
+
+*Might* do it. My guess is that this router is seeing the packets to 
+192.168.0.3 for some reason. My rule (-I to insert at top) will bypass 
+your REDIRECT rule.
+
+Edmundo's question is valid. Normally a host would not go through your 
+firewall to reach another host on the same physical segment. So my 
+guess might be wrong.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
