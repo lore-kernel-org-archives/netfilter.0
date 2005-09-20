@@ -1,12 +1,13 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: snat to multiple source ip
-Date: Tue, 20 Sep 2005 08:58:10 -0500
-Message-ID: <200509200858.10349.rob0@gmx.co.uk>
-References: <BAY103-DAV7432DC634B39274E5495CB2950@phx.gbl>
+Subject: Re: some addresses won't route
+Date: Tue, 20 Sep 2005 09:06:27 -0500
+Message-ID: <200509200906.27491.rob0@gmx.co.uk>
+References: <432DBC78.8070504@theorb.net> <200509190912.51338.rob0@gmx.co.uk>
+	<432F59FF.6010003@theorb.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY103-DAV7432DC634B39274E5495CB2950@phx.gbl>
+In-Reply-To: <432F59FF.6010003@theorb.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,21 +22,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 20 September 2005 07:39, Marco Berizzi wrote:
-> > Which patch is this? I have used Julian Anastasov's patches
->
-> Here is
-> http://www.ussg.iu.edu/hypermail/linux/kernel/0203.2/1314.html
-> However this is only for routing not for nat.
+On Monday 19 September 2005 19:38, iptables-user wrote:
+> Thanks /dev/rob0!!!  I laughed so hard I felt like *I* was full of
+> grog. (I'm part of a small circle of friends who talk like a pirate
+> on a regular basis. P)
 
-I really do not know, sorry. All I can do is suggest that you try it 
-using Julian's routes patch and the NANO-HOWTO. IWFM. I understand some 
-of the "how" but very little of the "why". Eventually I hope to know 
-more about it.
+That's a good idea! I get rusty waiting for just one day a year. Brings 
+to mind another holiday which should really be more than just one day: 
+April Fools' Day.
 
-My non-technical explanation of how it works: the source IP is set by 
-iproute2 in the routing tables. This is where the load balancing takes 
-place.
+Alas, me hook an' pegleg an' eyepatch an' cutlass are all stowed away.
+
+> Everything now works without delay.  Apparently specifying the output
+> interface in a FORWARD chain is not enough.  By modifying the rule to
+> include -i AND -o things go where they're supposed to.  Everything
+
+I wondered about this. I usually just do this by -i interface, and the 
+return is covered by the RELATED,ESTABLISHED rule. But I thought your 
+way should have worked too.
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
