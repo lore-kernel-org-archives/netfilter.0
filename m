@@ -1,10 +1,13 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: Re: snat to multiple source ip
-Date: Tue, 20 Sep 2005 15:37:06 +0200
-Message-ID: <BAY103-DAV29F33D824B9A1C15BD651B2950@phx.gbl>
-References: <BAY103-DAV7432DC634B39274E5495CB2950@phx.gbl>
-	<65aa6af905092005445b3940d4@mail.gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: rules for dhcp server
+Date: Tue, 20 Sep 2005 08:46:36 -0500
+Message-ID: <200509200846.37890.rob0@gmx.co.uk>
+References: <a0f69e5050920053621fc6fa5@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <a0f69e5050920053621fc6fa5@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,89 +18,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Edmundo Carmona wrote:
+On Tuesday 20 September 2005 07:36, Askar wrote:
+> I'm configuring a firewall on dhcp server, i'm a bit confuse which
+> port to allow on INPUT that users (clients) get IP from the server
+>
+> from /etc/sevices...
+>
+> bootps 67/tcp dhcps #Bootstrap Protocol Server
+> bootps 67/udp dhcps #Bootstrap Protocol Server
+> bootpc 68/tcp dhcpc #Bootstrap Protocol Client
+> bootpc 68/udp dhcpc #Bootstrap Protocol Client
 
-> You are using multiroute path, right?
+The server binds 67/udp, client binds 68/udp. TCP is not used.
 
-This is my firewall/proxy schema:
+> dhcpv6-client 546/tcp #DHCPv6 Client
+> dhcpv6-client 546/udp #DHCPv6 Client
+> dhcpv6-server 547/tcp #DHCPv6 Server
+> dhcpv6-server 547/udp #DHCPv6 Server
+
+I don't know about this but I bet it's also UDP-only. If you're not 
+using IPv6 addressing then you do not care.
+
+> lot of other services do runnig on this machine, however i'm very
+> clear about all other services, ie which port to allow etc
+
+On the server machine you must allow connections to your 67/udp from 
+68/udp. Some of these (renewals) will come addressed to the IP of your 
+dhcpd; others (broadcasts) will come to 255.255.255.255. The origin 
+IP's for such broadcasts are 0.0.0.0.
+
+DHCP service is generally a good thing to keep behind a firewall, IMO. 
+Mine at home is running on a server which gets pass-through DNAT from 
+the external router, so I had to be tricky about this. If the source 
+address is not in my LAN segment I handle it as an external packet, but 
+that was a problem for DHCP. I simply accept all from 255.255.255.255 
+(those won't pass through the external router anyway), but if you want 
+to tighten it up you could try this:
+
+iptables -A INPUT -s 0.0.0.0 -d 255.255.255.255 \
+    -p udp --sport 68 --dport 67 -j ACCEPT
 
 
-        +---------+
-        |         |
-        |         |              ---HDSL
-        |         |             /
-Private |firewall |            /
---------+         +---eth0----+-----adslA
-network |   &     |            \
-        | Squid   |             \
-        |         |              ---adslB
-        |         |
-        +---------+
+> All the client machines are running MS. Therefore any other good
+> suggestion will be appreciated to machine the network efficient.
 
+Get rid of all the MS machines. :)
 
-> what is the output of
-
-> ip route show default
-
-> (on the router, of course).
-
-Here is:
-
-hdsl_default_gateway_ip dev eth0  scope link
-adslB_network dev eth0  proto kernel  scope link  src adslB_ip
-adslA_network dev eth0  proto kernel  scope link  src adslA_ip
-hdsl_network dev eth1  scope link
-my_private_network dev eth2  proto kernel  scope link  src
-linux_private_ip
-127.0.0.0/8 dev lo  scope link
-default via hdsl_default_gateway_ip dev eth0  metric 1
-
-Then I run this script to add ip & gw for adsl connections:
-
-$IP address add $ip_adsl_a/$netmask_adsl_a brd + dev eth0 label
-eth0:adslA
-$IP address add $ip_adsl_b/$netmask_adsl_b brd + dev eth0 label
-eth0:adslB
-
-$IP route add $adsl_network_a dev eth0 src $ip_adsl_a table adslA
-$IP route add default via $GW_adsl_a table adslA
-$IP route add $adsl_network_b dev eth0 src $ip_adsl_b table adslB
-$IP route add default via $GW_adsl_b table adslB
-
-$IP route add $adsl_network_a dev eth0 src $ip_adsl_a table adsl
-$IP route add $adsl_network_b dev eth0 src $ip_adsl_b table adsl
-$IP route add default equalize table adsl \
-             nexthop dev eth0 via $GW_adsl_a weight 1 \
-             nexthop dev eth0 via $GW_adsl_b weight 1
-
-$IP rule add fwmark 1 table adsl priority 400
-[firewall mark packets so they are going to this routing table]
-
-However routing and SNAT should not be related.
-My question is the following.
-How does SNAT work when multiple ip are specified?
-
-iptables -t nat -I POSTROUTING -s ipX --protocol tcp
--j SNAT --to first_ip --to second_ip
-
-Why everytime I connect to www.dnsstuff.com I get always the
-first_ip? And after refreshing show me the second ip?
-I *think* that the round robin cycle works on a per socket/per host
-couple.
-Example:
-
-1st socket opened to a.a.a.a  -->> SNAT with first_ip
-2nd socket opened to b.b.b.b  -->> SNAT with first_ip
-3rd socket opened to c.c.c.c  -->> SNAT with first_ip
-4th socket opened to b.b.b.b  -->> SNAT with second_ip
-5th socket opened to d.d.d.d  -->> SNAT with first_ip
-6th socket opened to a.a.a.a  -->> SNAT with second_ip
-
-Can anyone confirm this? Wrong or correct?
-
+Only bind your DHCP service to the interface[s] where you intend to 
+offer DHCP.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
