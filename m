@@ -1,10 +1,13 @@
-From: "wei shuxi" <shuxi_w@seu.edu.cn>
-Subject: tcp-window-tracking patch in 2.4.20
-Date: Tue, 20 Sep 2005 16:54:30 +0800
-Message-ID: <13201.279185205$1127206404@news.gmane.org>
+From: KOVACS Krisztian <hidden@balabit.hu>
+Subject: Re: netfilter conntrack performance problems
+Date: Tue, 20 Sep 2005 12:38:18 +0200
+Message-ID: <200509201238.18248@nienna>
+References: <20050919203442.GA4111@hsz.tmp.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050919203442.GA4111@hsz.tmp.hu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,38 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-2022-jp"
-To: netfilter@lists.netfilter.org, netfilter@lists.netfilter.org
-
-Hi all,
-
- I failed to patch tcp-window-tracking and nf-log
-
-my kernel 2.4.20-8
-patch-o-matic-ng-20050913
-
-and i found the nf-log patch is for kernel 2.4.31
-                                           ~~~~~~~~? 
---------------------------------------------------------------
-=09The functionality relies on the available "backend" logging
-modules (ipt_LOG or ipt_ULOG). At least one of the logging
-modules must be loaded in, otherwise no log will be generated.
-If both modules are available in the kernel, then the firstly
-registered (loaded) will handle the logging.
------------------------------------------------------------------=
-
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
-cannot apply (3 rejects out of 23 hunks)
-
------------------------------------------------------------------=
-
-=A1=A1=A1=A1=A1=A1
-Any ideas?
- =09=09=09=09
-
-=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1wei shuxi
-=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1shuxi_w@seu.edu.cn
-=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A1=A12005-09-20
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+Cc: root@sth.sze.hu
 
 
+  Hi,
+
+On Monday 19 September 2005 22.34, Horvath Szabolcs wrote:
+> from the munin graphics, I see the nic's interrupts generate the
+> machine load. What can we tuning to provide better performance?
+
+  As someone already recommended, try using network cards which have 
+good drivers. e1000 is probably one of those cards. The keyword is NAPI 
+(or some kind of driver-dependant interrupt mitigation). For example 
+the sk98lin driver you're using for eth1 has some kind of interrupt 
+mitigation, however it's not enabled by default - take a look at the 
+driver documentation to find out how you could set it up to lower the 
+interrupt rate the card is generating.
+
+-- 
+ Regards,
+  Krisztian Kovacs
 
