@@ -1,13 +1,13 @@
 From: JC <bikkit@gmail.com>
 Subject: Re: netfilter hook function error...
-Date: Wed, 21 Sep 2005 02:14:03 +0100
-Message-ID: <a60102c3050920181433a26168@mail.gmail.com>
-References: <a60102c3050920171352ae872c@mail.gmail.com>
+Date: Wed, 21 Sep 2005 02:49:18 +0100
+Message-ID: <a60102c3050920184959fa2b84@mail.gmail.com>
+References: <4330b900.50a87b17.7179.ffffad17SMTPIN_ADDED@mx.gmail.com>
 Reply-To: JC <bikkit@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a60102c3050920171352ae872c@mail.gmail.com>
+In-Reply-To: <4330b900.50a87b17.7179.ffffad17SMTPIN_ADDED@mx.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,32 +20,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+To: wei shuxi <shuxi_w@seu.edu.cn>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-correct my_ipheader =3D skb->nh->iph;
+On 21/09/05, wei shuxi <shuxi_w@seu.edu.cn> wrote:
+> Hi,
+>
+> try   my_ipheader =3D (struct iphdr *)((*skb)->nh->iph);
+>
 
-with my_ipheader =3D skb->nh.iph;
+both
 
-and it does NOT work.
+   my_ipheader =3D (struct iphdr *)((*skb)->nh->iph);
 
+and
 
-includes:
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/init.h>
-#include <linux/sched.h>
-#include <linux/tty.h>
-#include <linux/version.h>
+   my_ipheader =3D (struct iphdr *)((*skb).nh->iph);
 
-#include <linux/netdevice.h>
-#include <linux/netfilter.h>
-#include <linux/netfilter_ipv4.h>
-
-#include <linux/skbuff.h>
-
-#include <linux/ip.h>
-#include <linux/udp.h>
-#include <linux/tcp.h>
+don't work either...
 
 J
 
