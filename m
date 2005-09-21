@@ -1,11 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: TTL target
-Date: Wed, 21 Sep 2005 12:55:15 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0509211250130.3031@blackhole.kfki.hu>
-References: <43313A8A.8060004@web.de>
+From: Paulo Andre <pandre@darkstar.nom.za>
+Subject: iptables dropped packets
+Date: Wed, 21 Sep 2005 13:28:36 +0200
+Message-ID: <433143E4.60304@darkstar.nom.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43313A8A.8060004@web.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ferdinand Zaubzer <ferdlz@web.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
-On Wed, 21 Sep 2005, Ferdinand Zaubzer wrote:
+Just looking at some logs and I see that packets returning from an
+internal web server are being dropped, according to entries in the
+ip_conntrack the sport of the client,165.146.5.229 differ. Is that
+mornal behaviour anyone willing to explain.
 
-> Why did the TTL target support disappear from patch-o-matic repository.
-> In the snapshot of 20050918 it was still included but the following two
-> don't include the TTL target support as far as I have seen.
-> Could anyone tell me a reason?
+Thanks
+Paulo
 
-The TTL target had been submitted into kernel inclusion. You can already
-find it in 2.6.14-rc2.
+This is my dropped packet:
+Sep 21 13:05:20 guardian ---FWD--- IN=eth0 OUT=eth1
+MAC=00:04:23:b0:74:64:00:05:5d:e6:0b:0d:08:00  SRC=172.x.x.x
+DST=165.146.5.229 LEN=52 TOS=00 PREC=0x00 TTL=126 ID=62173 CE DF
+PROTO=TCP SPT=80 DPT=1519 SEQ=3763155963 ACK=962750687 WINDOW=65535 ACK
+URGP=0
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+This appears in my ip_conntrack:
+tcp      6 9 SYN_RECV src=165.146.5.229 dst=196.25.31.195 sport=1518
+dport=8080 packets=1 bytes=60 src=172.x.x.x dst=165.146.5.229 sport=80
+dport=1518 packets=1 bytes=60 use=1
+
 
