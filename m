@@ -1,14 +1,10 @@
-From: JC <bikkit@gmail.com>
-Subject: Re: help for api doc
-Date: Wed, 21 Sep 2005 09:39:28 +0100
-Message-ID: <a60102c3050921013964bcfc45@mail.gmail.com>
-References: <012801c5be86$4564dba0$060ae29f@javaboy>
-Reply-To: JC <bikkit@gmail.com>
+From: Ferdinand Zaubzer <ferdlz@web.de>
+Subject: TTL target
+Date: Wed, 21 Sep 2005 12:48:42 +0200
+Message-ID: <43313A8A.8060004@web.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <012801c5be86$4564dba0$060ae29f@javaboy>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,29 +15,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="gb2312"
-To: jywang <jywang@cnic.cn>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-VGhlIEhPV1RPcyBhdDoKCmh0dHA6Ly93d3cubmV0ZmlsdGVyLm9yZy9kb2N1bWVudGF0aW9uL2lu
-ZGV4Lmh0bWwjZG9jdW1lbnRhdGlvbi1ob3d0bwoKd2lsbCBleHBsYWluIGEgbG90LgoKaHR0cDov
-L3d3dy5uZXRmaWx0ZXIub3JnL2RvY3VtZW50YXRpb24vSE9XVE8vL25ldGZpbHRlci1oYWNraW5n
-LUhPV1RPLmh0bWwKaW4gcGFydGljdWxhciB3aWxsIHRlbGwgeW91IGFsbCB5b3UgbmVlZCB0byBz
-dGFydC4KCkpDCgoKT24gMjEvMDkvMDUsIGp5d2FuZyA8anl3YW5nQGNuaWMuY24+IHdyb3RlOgo+
-IEhpLCBhbGwKPiAgICBpIHdhbnQgdG8gcHJvZ3JhbWluZyB3aXRoIG5ldGZpbHRlciBob29rcy4g
-YnV0IHdoYXQgYXBpIGRvYyBjYW4KPiBpIGdldCBpcyB0aGUgaGVhZGVyIGZpbGUgaW4gdGhlIGtl
-cm5lbCBzb3VyY2UgY29kZSB3aGljaCBhcmUgYyBwcm9ncmFtLgo+Cj4gaXMgdGhlcmUgYSBnb29k
-IHR1dG9yaWFsIGZvciBuZXRmaWx0ZXI/IHdoZXJlPwo+IGFuZCB3aGF0IHNob3VsZCBpIGRvPwo+
-Cj4gSmlueWkKPgo+Cj4KPgo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09Cj4gINDVw/ujuiAgICAgIM31vfDSuwo+ICC157uwo7ogICAgICAoKzg2
-KTEwLTU4ODEyMzI1Cj4gILWlzrujuiAgICAgINbQufq/xtGn1Lq8xsvju/rN+MLn0MXPotbQ0MQg
-UiZECj4gILXY1rejuiAgICAgILGxvqnW0LnYtOXEz8vEvdbLxLrFCj4gINPKseCjuiAgICAgIDEw
-MDA4MAo+ICBlbWFpbKO6ICAgICBqeXdhbmdAY25pYy5jbgo+IC0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gIE5hbWU6ICAgICAgIGppbnlpIHdh
-bmcKPiAgUGhvbmU6ICAgICAgKDg2LTEwKSA1ODgxLTIzMjUKPiAgRGl2aXNpb246ICAgUiZELENv
-bXB1dGVyIE5ldHdvcmsgSW5mb3JtYXRpb24gQ2VudGVyLAo+ICAgICAgICAgICAgIENoaW5lc2Ug
-QWNhZGVteSBvZiBTY2llbmNlcwo+ICBBZGRyZXNzOiAgICA0LDR0aCBTb3V0aCBTdHJlZXQsIFpo
-b25nZ3VhbmN1biwKPiAgICAgICAgICAgICBIYWlkaWFuIERpc3RyaWN0LCBCZWlqaW5nLCBDaGlu
-YQo+ICBaaXAgY29kZTogICAxMDAwODAKPiAgRW1haWw6ICAgICAganl3YW5nQGNuaWMuY24KPiA9
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo=
+Why did the TTL target support disappear from patch-o-matic repository.
+In the snapshot of 20050918 it was still included but the following two 
+don't include the TTL target support as far as I have seen.
+Could anyone tell me a reason?
+Regards
+Ferdinand
+
+
 
