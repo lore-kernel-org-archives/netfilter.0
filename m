@@ -1,79 +1,103 @@
-From: Leopold Aichinger <tux.racer@utanet.at>
-Subject: syn-paket behind the firewall
-Date: Tue, 20 Sep 2005 23:18:52 +0200
-Message-ID: <43307CBC.2050408@utanet.at>
+From: JC <bikkit@gmail.com>
+Subject: netfilter hook function error...
+Date: Wed, 21 Sep 2005 01:13:43 +0100
+Message-ID: <a60102c3050920171352ae872c@mail.gmail.com>
+Reply-To: JC <bikkit@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Mailing Liste <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Playing around with the new snort-machine I realised that a router 
-behind the firewall is sending 'icmp destination unreachable - host 
-unreachable' to a host on the internet:
+my hook function code, called at :
 
-IP (tos 0xc0, ttl 64, id 27629, offset 0, flags [none], proto 1, length: 
-88) 10.10.10.169 > 83.222.7.130:
-icmp 68: host 192.168.160.246 unreachable
-  0x0000: 45c0 0058 6bed 0000 4001 9de5 0a0a 0aa9
-  0x0010: 53de 0782 0301 ba2c 0000 0000 4560 003c
-  0x0020: fe9a 4000 3206 8cc2 53de 0782 c0a8 a0f6
-  0x0030: 0014 1389 9b72 1732 0000 0000 a002 16d0
-  0x0040: 6a23 0000 0204 05b4 0402 080a 5a28 e9a8
-  0x0050: 0000 0000 0103 0302
+unsigned int in_hook(unsigned int hooknum,
+struct sk_buff **skb,
+const struct net_device *in,
+const struct net_device *out,
+int (*okfn)(struct sk_buff *))
+{
+  print_string("Packet reached IN_HOOK.");
 
-This icmp-packet was generated in reaction to an tcp-packet coming from 
-host 83.222.7.130 with
-only the syn-flag set.
-On the firewall I found the following entry in the file 
-/proc/net/ip_conntrack:
+  struct iphdr *my_ipheader;
+  //u32 this_address;
 
-tcp  6 429852 ESTABLISHED src=83.222.7.130 dst=195.xx.xx.xx sport=20 dport=5001 
-src=192.168.160.246 dst=83.222.7.130 sport=5001 dport=20 [ASSURED] use=1 
-
-Note: 195.xx.xx.xx is the Internet-Ipaddress of the firewall
-This was all I found in the file /proc/net/ip_conntrack concerning host 83.222.7.130 and host 192.168.160.246 
-No second entry for this two host perhaps for port 21 or any other port.
-
-The host 192.168.160.246 has apparently established a tcp-connection to the ftp-Server
-83.222.7.130 and the client then disappeared without sending any fin or reset flag
-(I am sure that I had no machine with Ip-Address 192.168.169.246 on the net, but
-I still looking for an explanation for that!)
-
-My Problem now:
-Is it possible that syn-packets can pass the firewall coming from ftp-servers
-by using ftp activ mode if connection-tracking is used by the firewall?
-
-My firewall-rules for ftp:
-
-<-- snipp -->
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-<--snipp -->
-iptables -A FORWARD -i $INT_INTERF -o $EXT_INTERF -j client-chain-ext
-<-- snipp -->
-iptables -A client-chain-ext -p tcp -s $NETZ --sport $UNPRIVPORTS -d any/0 --dport 21 -m state --state NEW -j ACCEPT
-
-I have no rule for port 20, the last rule is all I configured for ftp.
-
-I fear that ip_conntrack_ftp perhaps opens activ-ftp transfers!
-
-Has anybody seen something similar?
-If activ-ftp is possible any idea how to block it?
-
-THX for every answer and help!!
-
-Leopold Aichinger
+  if (out)
+    {
+      if(out->name)
+=09{
+=09  print_string("out is: ");
+=09  print_string(out->name);
 
 
+=09  // compare the out device with the list of rules
+=09  // TODO: replace by matches_rule()
+=09  if (strcmp(out->name, "eth1") =3D=3D 0)
+=09    {
 
+=09      print_string("packet matches rule");
+
+
+=09      if(skb =3D=3D NULL)
+=09=09{
+=09=09  return -1;
+=09=09}
+=09
+=09      my_ipheader =3D skb->nh->iph;
+=09      print_string("printk-ing saddr...");
+=09      //this_address =3D *my_ipheader->saddr;
+=09      //printk("the ip is : %d.%d.%d.%d\n",NIPQUAD(*my_ipheader->saddr))=
+;
+
+=09    }
+=09}
+      else
+=09{
+=09  print_string("out is null");
+=09}
+    }
+
+
+  return NF_QUEUE;           /* Drop ALL packets */
+}
+
+
+line 150 is =09      my_ipheader =3D skb->nh->iph;
+
+on compile, I get this error:
+
+[root@whatever spider]# make -C /usr/src/kernels/`uname -r`-i686
+SUBDIRS=3D$PWD modules
+make: Entering directory `/usr/src/kernels/2.6.12-1.1447_FC4-i686'
+  CC [M]  /home/jc/code/spider/spider.o
+/home/jc/code/spider/spider.c: In function 'in_hook':
+/home/jc/code/spider/spider.c:126: warning: ISO C90 forbids mixed
+declarations and code
+/home/jc/code/spider/spider.c:134: warning: passing argument 1 of
+'print_string' discards qualifiers from pointer target type
+/home/jc/code/spider/spider.c:150: error: request for member 'nh' in
+something not a structure or union
+
+
+I've seen that statement being made more than a number of times, so
+what am I doing wrong??
+
+I need to change the saddr (source address) in that if to another one
+(basicly, NATing it). How will I commit that change to the skb and
+then send it back into the stack?
+
+thanx in advance...
+
+John
 
