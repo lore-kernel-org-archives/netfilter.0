@@ -1,9 +1,9 @@
-From: Ferdinand Zaubzer <ferdl@gmx.at>
-Subject: TTL target
-Date: Wed, 21 Sep 2005 12:09:57 +0200
-Message-ID: <43313175.1050600@gmx.at>
+From: Alexandre Cavaler Correa <alexcavaler@yahoo.com>
+Subject: Doubt about FTP
+Date: Wed, 21 Sep 2005 10:28:14 -0700 (PDT)
+Message-ID: <20050921172814.63461.qmail@web33314.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,14 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Why did the TTL target support disappear from patch-o-matic repository.
-In the snapshot of 20050918 it was still included but the following two 
-don't include the TTL target support as far as I have seen.
-Could anyone tell me a reason?
-Regards
-Ferdinand
+I have a Gateway based on linux and behind this a I
+have a IIS in a WIndows 2003 Server, the IIS is
+working fine, but the FTP is not working.
 
+and when I put the WIndows 2003 out of the gateway, it
+works fine.
+
+S I think my problem is on my firewall (iptables)
+
+What can I do to liberate the FTP??
+
+Thanks, 
+
+Alex
+
+
+
+
+		
+__________________________________ 
+Yahoo! Mail - PC Magazine Editors' Choice 2005 
+http://mail.yahoo.com
 
