@@ -1,85 +1,38 @@
-From: JC <bikkit@gmail.com>
-Subject: Re: netfilter hook function error...
-Date: Wed, 21 Sep 2005 07:09:38 +0100
-Message-ID: <a60102c30509202309628deea@mail.gmail.com>
-References: <a60102c3050920171352ae872c@mail.gmail.com>
-	<20050921055121.GA25193@oknodo.bof.de>
-Reply-To: JC <bikkit@gmail.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: can netfilter work on arp packet?
+Date: Wed, 21 Sep 2005 09:09:45 +0200
+Message-ID: <1127286585.5509.0.camel@anduril.intranet.cartel-securite.net>
+References: <011701c5be72$6e76b630$060ae29f@javaboy>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <20050921055121.GA25193@oknodo.bof.de>
-Content-Disposition: inline
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <011701c5be72$6e76b630$060ae29f@javaboy>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Patrick Schaaf <bof@bof.de>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: jywang <jywang@cnic.cn>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Dear Patrick,
+Le mercredi 21 septembre 2005 =E0 14:05 +0800, jywang a =E9crit :
+> if there are some hooks with which i can look deeply in other packets,
+> i.e. ARP.
 
-thank you kindly for the "Introduction to C" session. Your pointers
-were of most use. However, I must note that failing to know the
-purpose of print_string() calls in my code, in both occasions that
-they appear in the code I posted, you failed slightly to understand
-the severity of the warnings that the compiler "screamed in terror"
-about. In both points, they are merely there for logging to the
-current tty, as an alternative to printk. As a concequence of that,
-they are being commented in and out of the running code, as debugging
-requires at that particular moment.
+Ebtables and arptables do the trick.
 
-The last point, and of interest to me at that moment, was solved by
-Wei and this code seems to work:
+	http://ebtables.sourceforge.net/
 
-my_ipheader =3D (struct iphdr *)((*skb)->nh.iph);
 
-as I was quick to post back in the thread, for the reference of others.
-
-Please feel free to correct my code in the other thread, with subject
-"How to change the source address of a tcp packet", with the same
-enthusiasm. I would be, again, most thankful.
-
-kind regards,
-JC
-
-- Hide quoted text -
-
-> > /home/jc/code/spider/spider.c:126: warning: ISO C90 forbids mixed
-> > declarations and code
-> >   print_string("Packet reached IN_HOOK.");
-> >   struct iphdr *my_ipheader;
->
-> In traditional C, a variable declaration (like your my_ipheader)
-> MUST COME BEFORE ANY OTHER CODE IN A FUNCTION (like your print_string
-> call)
->
-> > /home/jc/code/spider/spider.c:134: warning: passing argument 1 of
-> > 'print_string' discards qualifiers from pointer target type
-> >         print_string(out->name);
->
-> Not that I really know, because you have not shown your print_string()
-> function prototype, but I bet that you made its first argument be
-> a 'const char *', and out->name is a 'char *' without the 'const'.
->
-> > /home/jc/code/spider/spider.c:150: error: request for member 'nh' in
-> > something not a structure or union
-> >             my_ipheader =3D skb->nh->iph;
->
-> The compiler complains that the skb thing is not pointer to a structure.
-> Which is correct. It is a pointer to a pointer to a structure. So you
-> need to dereference it once, like '(*skb)->nh->iph'. However, I'm
-> not sure that nh->iph is valid in all cases. Look at other hook
-> functions which need the IP header.
->
-> best regards
->  Patrick
->
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
