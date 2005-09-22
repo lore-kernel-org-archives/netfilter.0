@@ -1,11 +1,12 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: Doubt about FTP
-Date: Wed, 21 Sep 2005 13:54:57 -0400
-Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7742E2D2B@farmer.vikus.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Transparent bridge with layer7 filter ?
+Date: Wed, 21 Sep 2005 23:28:54 -0500
+Message-ID: <43323306.2070100@riverviewtech.net>
+References: <432EFAC2.8000306@pason.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <432EFAC2.8000306@pason.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,36 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-=20
+Michael Gale wrote:
+> Hello,
+> 
+> I want to setup layer7 filter (http://l7-filter.sourceforge.net/) on a 
+> Linux box that will be transparent to the network. I have looked up 
+> transparent bridging any have found several ways to do this but non 
+> mention layer7 filter. Some like ebtables (ebtables.sourceforge.net) 
+> make it seem like you can not do this ?
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> Alexandre Cavaler Correa
-> Sent: Wednesday, September 21, 2005 1:28 PM
-> To: netfilter@lists.netfilter.org
-> Subject: Doubt about FTP
->=20
-> I have a Gateway based on linux and behind this a I have a=20
-> IIS in a WIndows 2003 Server, the IIS is working fine, but=20
-> the FTP is not working.
->=20
-> and when I put the WIndows 2003 out of the gateway, it works fine.
->=20
-> S I think my problem is on my firewall (iptables)
->=20
-> What can I do to liberate the FTP??
->=20
-> Thanks,=20
->=20
-> Alex
+Try taking a look at EBTables (bridging) with "Bridged IP/ARP packets filtering" enabled in the kernel as well as the Layer7 patch.  I think this will allow you to use the IPTables rules to see bridged traffic and thus you can run the layer 7 filter against it.
 
-You can start by posting the output of iptables-save. It also makes a
-difference if you're using connection tracking for FTP or not - I don't
-remember the exact name of the module... ipt_conntrack_ftp?
 
-Derick Anderson
+
+Grant. . . .
 
