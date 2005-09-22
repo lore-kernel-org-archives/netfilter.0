@@ -1,10 +1,11 @@
-From: "Deepak Seshadri" <d_s123@hotmail.com>
-Subject: modprobe -r ip_conntrack_ftp problem
-Date: Thu, 22 Sep 2005 11:43:01 -0400
-Message-ID: <BAY107-DAV9BE54F7ED641AB101EAA8B7970@phx.gbl>
+From: "Harrison, Bruce (CXO)" <Bruce.Harrison@hp.com>
+Subject: RE: raw packet capture based on offset
+Date: Thu, 22 Sep 2005 09:56:27 -0600
+Message-ID: <2F75680A268354469586578F0712182AD60437@CXOEXC12.AMERICAS.CPQCORP.NET>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,25 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
+To: colorchip@sify.com, netfilter@lists.netfilter.org
+
+
+Do you want to do packet capture or packet filtering?  For packet
+capture, have a look at tcpdump.  I know it can capture based on source
+and/or destination Ethernet address.  Not sure if it can capture on the
+other field that you are looking for.
+
+Take care,
+
+Bruce...
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
+colorchip@sify.com
+Sent: Wednesday, September 21, 2005 9:29 PM
 To: netfilter@lists.netfilter.org
+Subject: raw packet capture based on offset
 
-Hello All,
-Good day!
+Hi,
 
-When I try to restart iptables by "servce iptables restart", the process 
-hangs in the "Unloading modules" section.
-ps -ef|grep modprobe shows that it is trying to remove ip_conntrack_ftp 
-module.
-The CPU has shot to 100% usage. I am not even able to kill the module. Could 
-someone, please tell me what is happening here? What is the workaround?
-It does not happen always.
+I want to capture raw packets based on the ethernet source (mac) and a
+16 bit identifier following the ethtype. I am unable to find a generic
+filter which gives me a freedom to filter the packet based on any bit
+length and offset from the beginning of the packet. Can anyone help?
 
-OS: Fedora core 2
-iptables v 1.2.11
-kernel: 2.6.8.1
-
-Any help will be appreciated.
-Thank you,
-Deepak 
+-nks
 
