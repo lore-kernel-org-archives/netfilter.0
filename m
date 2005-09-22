@@ -1,12 +1,10 @@
-From: Gobbledegeek <gobbledegeek@gmail.com>
-Subject: multipath feature
-Date: Thu, 22 Sep 2005 13:13:33 +0530
-Message-ID: <463aea57050922004357bc6b86@mail.gmail.com>
-Reply-To: Gobbledegeek <gobbledegeek@gmail.com>
+From: colorchip@sify.com
+Subject: raw packet capture based on offset
+Date: Thu, 22 Sep 2005 09:29:07 +0600 (IST)
+Message-ID: <1127361547.43322c0b7a8da@mail.sify.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,18 +18,8 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello
-       Will someonekindly update me on whether julians's patch is now
-a standard feature on the linux kernel release? Is there a decision to
-provide the same feature but re-worked in some way  (i.e out-of
-the-box dead gateway detection for example) in a future release.
+Hi,
 
-Or do I still need to patch the latest kernel release, and do all the
-"stuff" as explained in the iproute2 lartc how-to or nano how-to or
-dgd usage doc?
+I want to capture raw packets based on the ethernet source (mac) and a 16 bit identifier following the ethtype. I am unable to find a generic filter which gives me a freedom to filter the packet based on any bit length and offset from the beginning of the packet. Can anyone help?
 
---
-Nonchalantly yours
-GobbledeGeek
-[Every thing but Gobbledegook.. !!]
-
+-nks
