@@ -1,10 +1,12 @@
-From: "=?gb2312?B?wsCyqA==?=" <nvbo@163.com>
-Subject: I need your help
-Date: Thu, 22 Sep 2005 13:19:36 +0800 (CST)
-Message-ID: <43323EE8.0000E8.06737@bj163app35.163.com>
+From: Gobbledegeek <gobbledegeek@gmail.com>
+Subject: multipath feature
+Date: Thu, 22 Sep 2005 13:13:33 +0530
+Message-ID: <463aea57050922004357bc6b86@mail.gmail.com>
+Reply-To: Gobbledegeek <gobbledegeek@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,9 +20,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-aGVsbG8hDQpjYW4geW91IGhlbHAgbWUNCndoYXQgY2FuIGkgZG8/IElmIGkgd2FudCB0byBt
-YWtlIHRoZSAic3RyaW5nIG1hdGNoIHN1cHBvcnQiZG8gd29yayBpbiBsaW51eCBrZXJuZWwg
-Mi42LjUgLkJlY2F1c2UgaSBhbSBkZXZlbG9waW5nIGZpZXdhbGwgbWFrZSB1c2Ugb2YgaXB0
-YWJsZXMgMS4zLjMgLg0KcGxlYXNlIHRlbGwgbWUgaG93IHRvIGRvIHRoYXQgam9iIG1ha2Ug
-aXQgd29yaw0KcGxlYXNlIHJlcGx5DQp0aGFuayB5b3UgdmVyeSBtdWNoDQogICANCnlvdSBj
-YW4gY2FsbCBtZSA6RnJpZGF5DQoyMDA1LjkuMjI=
+Hello
+       Will someonekindly update me on whether julians's patch is now
+a standard feature on the linux kernel release? Is there a decision to
+provide the same feature but re-worked in some way  (i.e out-of
+the-box dead gateway detection for example) in a future release.
+
+Or do I still need to patch the latest kernel release, and do all the
+"stuff" as explained in the iproute2 lartc how-to or nano how-to or
+dgd usage doc?
+
+--
+Nonchalantly yours
+GobbledeGeek
+[Every thing but Gobbledegook.. !!]
+
