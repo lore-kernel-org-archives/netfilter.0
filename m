@@ -1,12 +1,10 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Transparent bridge with layer7 filter ?
-Date: Wed, 21 Sep 2005 23:28:54 -0500
-Message-ID: <43323306.2070100@riverviewtech.net>
-References: <432EFAC2.8000306@pason.com>
+From: "=?gb2312?B?wsCyqA==?=" <nvbo@163.com>
+Subject: I need your help
+Date: Thu, 22 Sep 2005 13:19:36 +0800 (CST)
+Message-ID: <43323EE8.0000E8.06737@bj163app35.163.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <432EFAC2.8000306@pason.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,21 +15,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Michael Gale wrote:
-> Hello,
-> 
-> I want to setup layer7 filter (http://l7-filter.sourceforge.net/) on a 
-> Linux box that will be transparent to the network. I have looked up 
-> transparent bridging any have found several ways to do this but non 
-> mention layer7 filter. Some like ebtables (ebtables.sourceforge.net) 
-> make it seem like you can not do this ?
-
-Try taking a look at EBTables (bridging) with "Bridged IP/ARP packets filtering" enabled in the kernel as well as the Layer7 patch.  I think this will allow you to use the IPTables rules to see bridged traffic and thus you can run the layer 7 filter against it.
-
-
-
-Grant. . . .
-
+aGVsbG8hDQpjYW4geW91IGhlbHAgbWUNCndoYXQgY2FuIGkgZG8/IElmIGkgd2FudCB0byBt
+YWtlIHRoZSAic3RyaW5nIG1hdGNoIHN1cHBvcnQiZG8gd29yayBpbiBsaW51eCBrZXJuZWwg
+Mi42LjUgLkJlY2F1c2UgaSBhbSBkZXZlbG9waW5nIGZpZXdhbGwgbWFrZSB1c2Ugb2YgaXB0
+YWJsZXMgMS4zLjMgLg0KcGxlYXNlIHRlbGwgbWUgaG93IHRvIGRvIHRoYXQgam9iIG1ha2Ug
+aXQgd29yaw0KcGxlYXNlIHJlcGx5DQp0aGFuayB5b3UgdmVyeSBtdWNoDQogICANCnlvdSBj
+YW4gY2FsbCBtZSA6RnJpZGF5DQoyMDA1LjkuMjI=
