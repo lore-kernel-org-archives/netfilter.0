@@ -1,14 +1,11 @@
-From: "Donald Murray, P.Eng." <donaldm314@gmail.com>
-Subject: Re: modprobe -r ip_conntrack_ftp problem
-Date: Thu, 22 Sep 2005 10:36:56 -0600
-Message-ID: <12984bb0050922093656bcc7e7@mail.gmail.com>
-References: <BAY107-DAV9BE54F7ED641AB101EAA8B7970@phx.gbl>
-Reply-To: "Donald Murray, P.Eng." <donaldm314@gmail.com>
+From: "Derick Anderson" <danderson@vikus.com>
+Subject: RE: DMZ howto
+Date: Thu, 22 Sep 2005 13:21:32 -0400
+Message-ID: <E656E2CC1C5AEB42ACB00EB83122C7742E2D4A@farmer.vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY107-DAV9BE54F7ED641AB101EAA8B7970@phx.gbl>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,37 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Deepak Seshadri <d_s123@hotmail.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 9/22/05, Deepak Seshadri <d_s123@hotmail.com> wrote:
->
-> Hello All,
-> Good day!
->
-> When I try to restart iptables by "servce iptables restart", the process
-> hangs in the "Unloading modules" section.
-> ps -ef|grep modprobe shows that it is trying to remove ip_conntrack_ftp
-> module.
-> The CPU has shot to 100% usage. I am not even able to kill the module.
-> Could
-> someone, please tell me what is happening here? What is the workaround?
-> It does not happen always.
->
-> OS: Fedora core 2
-> iptables v 1.2.11
-> kernel: 2.6.8.1 <http://2.6.8.1>
->
-> Any help will be appreciated.
-> Thank you,
-> Deepak
->
->
-Funny you mention this today. I rebooted a box last night because
-of this same problem. This ended a 287 day uptime.
+=20
 
-This was on an old RH 7.2 with:
-kernel-2.4.20-28.7
-iptables-1.2.8-8.72.3
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of P=20
+> theodorou
+> Sent: Thursday, September 22, 2005 8:50 AM
+> To: netfilter@lists.netfilter.org
+> Subject: DMZ howto=20
+>=20
+> Hello
+>=20
+> I want to achieve the firewall script in the official=20
+> iptables tutorial 1.20 version practices here=20
+> http://iptables-tutorial.frozentux....MZ.firewall.txt
+>=20
+> typically a well known set up is
+> to receive traffic from the ISP via dhcp which assigns IP to=20
+> eth0 and eth0 forwords traffic to eth1 (NAT) which is the=20
+> default gateway for a laptop .
+>=20
+> Now the machine has eth0 eth1 and eth2 so far we have spoken=20
+> for eth1 . Eth2 i wanted to be a DMZ for servers who need=20
+> passive connections FTP etc...
+>=20
+> The concept of DMZ confuses me , can you suggest any=20
+> resources for the topic ?
+>=20
+> Really appreciated
 
-I never bothered to send an email to the list because I assumed it
-was an old 2.4.20 issue.
+Technically a DMZ is a subnet with unfiltered access to the internet.
+However common usage of the term is a subnet with servers running
+services available to the outside world. I can't think of any reason why
+an internal network shouldn't be protected by a firewall (not that
+firewalls are the answer to security...).
+
+The point of having a separate network for your servers (DMZ) is to
+isolate them from the outside world _and_ from your inside users. You
+then use your FORWARDing rules to dictate what can travel between the
+networks, just like you do for a WAN/LAN setup, but instead of two
+possible vectors (WAN->LAN, LAN->WAN) you've got six: WAN->LAN,
+WAN->DMZ, DMZ->WAN, DMZ->LAN, LAN->WAN, LAN->DMZ. Makes it easy to
+inadvertently block traffic.
+
+Derick Anderson
+
