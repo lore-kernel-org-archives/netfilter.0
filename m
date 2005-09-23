@@ -1,10 +1,12 @@
-From: "jywang" <jywang@cnic.cn>
-Subject: about device polling and kernel configurations
-Date: Fri, 23 Sep 2005 16:42:03 +0800
-Message-ID: <013701c5c01a$abdf54b0$060ae29f@javaboy>
+From: Dmitriy Zakalyuzhniy <dimz@tendel.dp.ua>
+Subject: Re: about device polling and kernel configurations
+Date: Fri, 23 Sep 2005 11:58:49 +0300
+Message-ID: <20050923115849.22387c34.dimz@tendel.dp.ua>
+References: <013701c5c01a$abdf54b0$060ae29f@javaboy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <013701c5c01a$abdf54b0$060ae29f@javaboy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +17,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="gb2312"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-SGksIGFsbA0KDQpzb3JyeSB0byBwb3N0IGhlcmUsIGkgZG9uJ3Qga25vdyBvdGhlciBtYWlsbGlz
-dA0KZm9yIGRpc2N1c3NpbmcgZGVlcGx5IGluIGxpbnV4LiB0d28gcXVlc3Rpb25zIGhlcmUuDQoN
-CmZpcnN0bHksDQoNCkhvdyB0byBjaGVjayB0aGUgdmFsdWVzIG9mIGtlcm5lbCBjb25maWd1cmF0
-aW9ucy4NCndoZW4gd2UgY29tcGlsZSBhIGtlcm5lbCwgd2UgbXVzdCBzZXQgdGhlIHZhbHVlcy4N
-CmFuZCBub3csIHdoZW4gdGhlIHN5c3RlbSBpcyBydW5uaW5nLCBpIHdhbnQgdG8ga25vdw0KdGhl
-bSBhZ2Fpbi4NCg0KaG93PyBtYXliZSBhIGNvbW1hbmQgaXMgb2sgb3IgYSBmaWxlIGNhbiBiZSBy
-ZWFkLg0KDQpzZWNvbmRseSwNCg0KZnJvbSBzb21ld2hlcmUsIGkga25vdyB0aGUgZGV2aWNlIHBv
-bGxpbmcgaXMgYmVlbiANCmVuYWJsZWQgaW4ga2VybmVsIG9mIHZlcnNpb24gMi42LCBhbmQgYSBh
-cGkgbmFtZWQNCk5BUEkgaXMgc3VwcG9ydGVkIGZvciB1c2luZyB0aGlzIGZlYXR1cmUuDQoNCmlz
-IGl0IHRydWU/IG1heWJlIGl0IGlzIG5vdGhpbmcgYXQgYWxsIG9yIHNvbWV0aGluZyANCmVsc2Uu
-IGkgZG9uJ3Qga25vdyBidXQgd2FudCB0byBsZWFybi4gd291bGQgeW91IGxpa2UNCnRvIGdpdmUg
-bWUgc29tZSBkaXJlY3Rpb25zLg0KDQpKaW55aQ0KDQoNCg0KDQo9PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KINDVw/ujuiAgICAgIM31vfDSuyAg
-IA0KILXnu7CjuiAgICAgICgrODYpMTAtNTg4MTIzMjUNCiC1pc67o7ogICAgICDW0Ln6v8bRp9S6
-vMbL47v6zfjC59DFz6LW0NDEIFImRA0KILXY1rejuiAgICAgILGxvqnW0LnYtOXEz8vEvdbLxLrF
-DQog08qx4KO6ICAgICAgMTAwMDgwDQogZW1haWyjuiAgICAganl3YW5nQGNuaWMuY24NCi0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQogTmFtZTog
-ICAgICAgamlueWkgd2FuZw0KIFBob25lOiAgICAgICg4Ni0xMCkgNTg4MS0yMzI1DQogRGl2aXNp
-b246ICAgUiZELENvbXB1dGVyIE5ldHdvcmsgSW5mb3JtYXRpb24gQ2VudGVyLA0KICAgICAgICAg
-ICAgIENoaW5lc2UgQWNhZGVteSBvZiBTY2llbmNlcw0KIEFkZHJlc3M6ICAgIDQsNHRoIFNvdXRo
-IFN0cmVldCwgWmhvbmdndWFuY3VuLCANCiAgICAgICAgICAgICBIYWlkaWFuIERpc3RyaWN0LCBC
-ZWlqaW5nLCBDaGluYQ0KIFppcCBjb2RlOiAgIDEwMDA4MA0KIEVtYWlsOiAgICAgIGp5d2FuZ0Bj
-bmljLmNuDQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PQ==
+On Fri, 23 Sep 2005 16:42:03 +0800
+"jywang" <jywang@cnic.cn> wrote:
+
+> How to check the values of kernel configurations.
+> when we compile a kernel, we must set the values.
+> and now, when the system is running, i want to know
+> them again.
+> 
+> how? maybe a command is ok or a file can be read.
+
+In /boot directory you will find file calling config-<version-of-your-kernel>. This file keep all options of your kernel.
+
