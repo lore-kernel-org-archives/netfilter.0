@@ -1,12 +1,11 @@
-From: Dmitriy Zakalyuzhniy <dimz@tendel.dp.ua>
-Subject: Re: about device polling and kernel configurations
-Date: Fri, 23 Sep 2005 11:58:49 +0300
-Message-ID: <20050923115849.22387c34.dimz@tendel.dp.ua>
-References: <013701c5c01a$abdf54b0$060ae29f@javaboy>
+From: "Salim" <salim.si@askey.com.tw>
+Subject: Re: PPTP/IPSec multiple clients behind iptables  NAT
+Date: Fri, 23 Sep 2005 17:46:22 +0800
+Message-ID: <00b501c5c023$b3260990$205f030a@askeyrd3>
+References: <57F9959B46E0FA4D8BA88AEDFBE582900B57D0@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <013701c5c01a$abdf54b0$060ae29f@javaboy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +17,83 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "Gary W. Smith" <gary@primeexalia.com>, netfilter@lists.netfilter.org
 
-On Fri, 23 Sep 2005 16:42:03 +0800
-"jywang" <jywang@cnic.cn> wrote:
+PPTP multiple client passthrough is working now, with the patch. Thatz
+great.
+IPSec do not have any patch for NAT, it seems. Any info on how to go about
+that?
 
-> How to check the values of kernel configurations.
-> when we compile a kernel, we must set the values.
-> and now, when the system is running, i want to know
-> them again.
-> 
-> how? maybe a command is ok or a file can be read.
+----- Original Message -----
+From: "Gary W. Smith" <gary@primeexalia.com>
+To: "Salim" <salim.si@askey.com.tw>; <netfilter@lists.netfilter.org>
+Sent: Friday, September 23, 2005 10:23 AM
+Subject: RE: PPTP/IPSec multiple clients behind iptables NAT
 
-In /boot directory you will find file calling config-<version-of-your-kernel>. This file keep all options of your kernel.
+
+You need to down patch-o-matic but the problem is that RH 2.4 kernel is
+a hybrid kernel (uses much of 2.6 in it).  I am running the patch on
+RHES 4.
+
+Gary
+
+> -----Original Message-----
+> From: Salim [mailto:salim.si@askey.com.tw]
+> Sent: Thursday, September 22, 2005 7:24 PM
+> To: Gary W. Smith; netfilter@lists.netfilter.org
+> Subject: Re: PPTP/IPSec multiple clients behind iptables NAT
+>
+> Thanks Gary.
+>
+> My kernel is Red Hat 2.4.25.
+> Could you please give more details about the patch?
+>
+> ----- Original Message -----
+> From: "Gary W. Smith" <gary@primeexalia.com>
+> To: "Salim" <salim.si@askey.com.tw>; <netfilter@lists.netfilter.org>
+> Sent: Friday, September 23, 2005 10:03 AM
+> Subject: RE: PPTP/IPSec multiple clients behind iptables NAT
+>
+>
+> PPTP requires a patching of the kernel and a recompile of the kernel
+and
+> iptables (against the new kernel headers) to make this work.  It also
+> matters which kernel version you are using.  There have been
+> miscellaneous problems with different kernels report.  I believe many
+> have been fixed though.
+>
+> Gary Smith
+>
+> > -----Original Message-----
+> > From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> > bounces@lists.netfilter.org] On Behalf Of Salim
+> > Sent: Thursday, September 22, 2005 6:58 PM
+> > To: netfilter@lists.netfilter.org
+> > Subject: PPTP/IPSec multiple clients behind iptables NAT
+> >
+> > I am using iptables 1.3.3
+> >
+> > I had some problems with multiple clients behind NAT(a simple
+> MASQUERADE
+> > rule is set) connecting to the same VPN server. ONly one client can
+> > connect
+> > at a time.
+> > I have enables the CONFIG_IP_NF_PPTP and CONFIG_IP_NF_CT_PROTO_GRE
+> options
+> > in kernel.
+> >
+> > I have read a few posts about this issue in the list from as early
+as
+> in
+> > 2003. But could not find a conclusion.
+> >
+> > Could you guys please clarify? Is this scenario supported by
+iptables?
+> If
+> > not, is there a way to get around this issue?
+> >
+> > thanks
+> > Salim
+> >
+
 
