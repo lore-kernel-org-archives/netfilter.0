@@ -1,10 +1,11 @@
-From: Iulian Topliceanu <iulian.topliceanu@net-m.de>
-Subject: IPTABLES drops packages for existing rules
-Date: Fri, 23 Sep 2005 12:22:35 +0200
-Message-ID: <4333D76B.9030900@net-m.de>
+From: <Chandra.Vempali@infineon.com>
+Subject: How to access port mapping table in NAT
+Date: Fri, 23 Sep 2005 16:18:28 +0530
+Message-ID: <04EE7AD0450F7B498BA216312943A1A10309F632@blrse201.ap.infineon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,52 +19,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Hi,
+Hi all,
+I need to access the port mapping table in NAT
+Can anybody please let me know how can I do that ? Is there any API
+available ?
+Or can I access it through iptables ??
 
-I have a Fedora Core 3 on a box with plenty of RAM (1 GB) dual P4 and
-so on.
+I need to read the port mapping table and be able to set any entry in
+the table.
 
-The structure is simple: 3 NICs
+Thanks in advance,
+Chandra
 
-eth0 - ouside
-eth1 - intranet
-eth2 - heartbeat
-
-There are plenty of ACCEPT rules, and in the end a general DENY rule,
-to drop everything that didn't match the ACCEPT rules (obviously)
-
-There are plenty of NAT rules as well, portforwading and stuff like.
-
-Now, *sometimes* but just *sometimes*, ICMP and TCP packages are
-simply matching the general DENY rule and dropped, though there is a
-rule that says that LAN hosts can communicate without restrictions
-between them (there are 8 subnets)
-
-So, there are moments when IPTABLES is behaving like that ACCEPT rule
-woudn't exist, simply denying packets from a LAN host to another LAN host.
-
-If it matters, most of the denyed packets are ICMPs TYPE 0 (round 10
-000 packets / 24 h) and TCP packets on various SQL ports (round 35
-packets / 24 h)
-
-No, this woudn't be a PITA if the monitoring system would send alarms
-in these moments. Everything seems to happen randomly.
-
-What's the problem? I guess it's an IPTABLES issue not some
-ip_conntrack trick.
-
-Thanks for the sugestions,
-Iulian Topliceanu
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
-
-iD8DBQFDM9dqYBaCkvEor9kRAvvfAKCE/9DETQkpeyleAAAD/2a6lB1KTACfdeyw
-SXZzydy/uysrCY86ZQBhjW8=
-=8Mvg
------END PGP SIGNATURE-----
+*Disclaimer*
+"This e-mail and any attachments are confidential and may contain trade
+secrets or privileged or undisclosed information. They may also be
+subject to copyright protection. Please do not copy, distribute or
+forward this email to anyone unless authorised. If you are not a named
+addressee, you must not use, disclose, retain or reproduce all or any
+part of the information contained in this e-mail or any attachments. If
+you have received this email by mistake please notify the sender
+immediately by return email and destroy/delete all copies of the email."
 
 
