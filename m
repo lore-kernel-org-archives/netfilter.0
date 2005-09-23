@@ -1,12 +1,12 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Strange behaviour of REDIRECT/ipt_recent
-Date: Fri, 23 Sep 2005 07:55:15 -0500
-Message-ID: <200509230755.21161.rob0@gmx.co.uk>
-References: <20050922211815.GA3701@diesel.geggus.net>
+Subject: Re: IPTABLES drops packages for existing rules
+Date: Fri, 23 Sep 2005 08:14:39 -0500
+Message-ID: <200509230814.39994.rob0@gmx.co.uk>
+References: <4333D76B.9030900@net-m.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050922211815.GA3701@diesel.geggus.net>
+In-Reply-To: <4333D76B.9030900@net-m.de>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,53 +20,29 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: Sven Geggus <sven@gegg.us>
 
-On Thursday 22 September 2005 16:18, Sven Geggus wrote:
-> the following rule works fine so far
-> (redirect any connection to a given IP to Port 22):
+On Friday 23 September 2005 05:22, Iulian Topliceanu wrote:
+> There are plenty of ACCEPT rules, and in the end a general DENY
+
+"DENY"? Is that an ipchains target?
+
+> to drop everything that didn't match the ACCEPT rules (obviously)
 >
-> iptables -t nat -A PREROUTING  -p tcp ! --dport 22 -d $SSHIP -j \
-> REDIRECT --to-port 22
->
-> But now I need to restrict Connections to 3 accesses per minute to
-> prevent DOS-Attacken by means of Portscans:
->
-> iptables -A INPUT -i eth0 -p tcp -d $SSHIP -m state --state NEW \
-> -m recent --set --name SSH
+> There are plenty of NAT rules as well, portforwading and stuff like.
 
-You changed the destination IP in the REDIRECT rule. I can only guess 
-that $SSHIP is not the primary IP of eth0.
+Not knowing what those rules are, I cannot help you. Of course if it's 
+as huge and complex as I suspect it is I probably wouldn't even try. I 
+have work to get done today.
 
-> I suspect that the redirect rule may change the destination IP to the
-> default IP of eth0, but I would consider this to be a bug.
+> Now, *sometimes* but just *sometimes*, ICMP and TCP packages are
+> simply matching the general DENY rule and dropped, though there is a
+> rule that says that LAN hosts can communicate without restrictions
+> between them (there are 8 subnets)
 
-Why guess? From "man iptables":
-   REDIRECT
-      ...redirects the packet to the machine itself by changing
-      the destination IP to the primary address of the incoming
-      interface  (locally-generated  packets are mapped  to the
-      127.0.0.1 address).
-
-You're getting the intended (documented) behaviour. Perhaps you will 
-want to mangle/MARK these packets before REDIRECT.
-
-This whole exercise seems odd to me. Why force all TCP into one port? 
-Your sshd is sure to complain about all the non-SSH protocol traffic 
-it's getting. </dev/lightbulb comes on> Are you trying to ssh from 
-sites with brain-dead restrictive firewalls? And you don't know in 
-advance which ports they might allow out?
-
-If so I see the sense in it. Consider, however, the possibility that 
-these sites are allowing NO direct traffic out. It is possible to 
-create the illusion of Internet access by using proxy servers. Their 
-proxy won't handle your SSH.
-
-Have you talked to the site administrator[s]? I know, most of them 
-wouldn't know what you're talking about, and you would frighten them. 
-But, you seem to be deliberately doing something which goes against 
-their security policy. If you hit their proxy servers with your SSH 
-traffic, they might come seeking YOU.
+So you have seen some kind of pattern. Try LOG for packets before 
+the ... well, you said "DENY" but I am not so sure. The string DENY 
+(case insensitive) is not in my iptables(8) manual. LOG only what 
+matches your pattern.
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
