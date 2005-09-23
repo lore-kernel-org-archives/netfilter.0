@@ -1,8 +1,7 @@
-From: "Salim" <salim.si@askey.com.tw>
-Subject: Re: PPTP/IPSec multiple clients behind iptables  NAT
-Date: Fri, 23 Sep 2005 17:46:22 +0800
-Message-ID: <00b501c5c023$b3260990$205f030a@askeyrd3>
-References: <57F9959B46E0FA4D8BA88AEDFBE582900B57D0@pxtbenexd01.pxt.primeexalia.com>
+From: Iulian Topliceanu <iulian.topliceanu@net-m.de>
+Subject: IPTABLES drops packages for existing rules
+Date: Fri, 23 Sep 2005 12:22:35 +0200
+Message-ID: <4333D76B.9030900@net-m.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,83 +16,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Gary W. Smith" <gary@primeexalia.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-PPTP multiple client passthrough is working now, with the patch. Thatz
-great.
-IPSec do not have any patch for NAT, it seems. Any info on how to go about
-that?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
------ Original Message -----
-From: "Gary W. Smith" <gary@primeexalia.com>
-To: "Salim" <salim.si@askey.com.tw>; <netfilter@lists.netfilter.org>
-Sent: Friday, September 23, 2005 10:23 AM
-Subject: RE: PPTP/IPSec multiple clients behind iptables NAT
+Hi,
 
+I have a Fedora Core 3 on a box with plenty of RAM (1 GB) dual P4 and
+so on.
 
-You need to down patch-o-matic but the problem is that RH 2.4 kernel is
-a hybrid kernel (uses much of 2.6 in it).  I am running the patch on
-RHES 4.
+The structure is simple: 3 NICs
 
-Gary
+eth0 - ouside
+eth1 - intranet
+eth2 - heartbeat
 
-> -----Original Message-----
-> From: Salim [mailto:salim.si@askey.com.tw]
-> Sent: Thursday, September 22, 2005 7:24 PM
-> To: Gary W. Smith; netfilter@lists.netfilter.org
-> Subject: Re: PPTP/IPSec multiple clients behind iptables NAT
->
-> Thanks Gary.
->
-> My kernel is Red Hat 2.4.25.
-> Could you please give more details about the patch?
->
-> ----- Original Message -----
-> From: "Gary W. Smith" <gary@primeexalia.com>
-> To: "Salim" <salim.si@askey.com.tw>; <netfilter@lists.netfilter.org>
-> Sent: Friday, September 23, 2005 10:03 AM
-> Subject: RE: PPTP/IPSec multiple clients behind iptables NAT
->
->
-> PPTP requires a patching of the kernel and a recompile of the kernel
-and
-> iptables (against the new kernel headers) to make this work.  It also
-> matters which kernel version you are using.  There have been
-> miscellaneous problems with different kernels report.  I believe many
-> have been fixed though.
->
-> Gary Smith
->
-> > -----Original Message-----
-> > From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> > bounces@lists.netfilter.org] On Behalf Of Salim
-> > Sent: Thursday, September 22, 2005 6:58 PM
-> > To: netfilter@lists.netfilter.org
-> > Subject: PPTP/IPSec multiple clients behind iptables NAT
-> >
-> > I am using iptables 1.3.3
-> >
-> > I had some problems with multiple clients behind NAT(a simple
-> MASQUERADE
-> > rule is set) connecting to the same VPN server. ONly one client can
-> > connect
-> > at a time.
-> > I have enables the CONFIG_IP_NF_PPTP and CONFIG_IP_NF_CT_PROTO_GRE
-> options
-> > in kernel.
-> >
-> > I have read a few posts about this issue in the list from as early
-as
-> in
-> > 2003. But could not find a conclusion.
-> >
-> > Could you guys please clarify? Is this scenario supported by
-iptables?
-> If
-> > not, is there a way to get around this issue?
-> >
-> > thanks
-> > Salim
-> >
+There are plenty of ACCEPT rules, and in the end a general DENY rule,
+to drop everything that didn't match the ACCEPT rules (obviously)
+
+There are plenty of NAT rules as well, portforwading and stuff like.
+
+Now, *sometimes* but just *sometimes*, ICMP and TCP packages are
+simply matching the general DENY rule and dropped, though there is a
+rule that says that LAN hosts can communicate without restrictions
+between them (there are 8 subnets)
+
+So, there are moments when IPTABLES is behaving like that ACCEPT rule
+woudn't exist, simply denying packets from a LAN host to another LAN host.
+
+If it matters, most of the denyed packets are ICMPs TYPE 0 (round 10
+000 packets / 24 h) and TCP packets on various SQL ports (round 35
+packets / 24 h)
+
+No, this woudn't be a PITA if the monitoring system would send alarms
+in these moments. Everything seems to happen randomly.
+
+What's the problem? I guess it's an IPTABLES issue not some
+ip_conntrack trick.
+
+Thanks for the sugestions,
+Iulian Topliceanu
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+
+iD8DBQFDM9dqYBaCkvEor9kRAvvfAKCE/9DETQkpeyleAAAD/2a6lB1KTACfdeyw
+SXZzydy/uysrCY86ZQBhjW8=
+=8Mvg
+-----END PGP SIGNATURE-----
 
 
