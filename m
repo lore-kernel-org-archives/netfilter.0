@@ -1,8 +1,11 @@
-From: "P theodorou" <props666999@hotmail.com>
-Subject: DMZ howto
-Date: Thu, 22 Sep 2005 23:09:18 +0000
-Message-ID: <BAY102-F29D9416051B9CA35CFD107AE970@phx.gbl>
+From: "Salim" <salim.si@askey.com.tw>
+Subject: PPTP/IPSec multiple clients behind iptables  NAT
+Date: Fri, 23 Sep 2005 09:57:55 +0800
+Message-ID: <001701c5bfe2$62013e90$205f030a@askeyrd3>
+References: <1127361547.43322c0b7a8da@mail.sify.com>
+	<Pine.NEB.4.62.0509221923220.22381@otaku.freeshell.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,39 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I am using iptables 1.3.3
 
+I had some problems with multiple clients behind NAT(a simple MASQUERADE
+rule is set) connecting to the same VPN server. ONly one client can connect
+at a time.
+I have enables the CONFIG_IP_NF_PPTP and CONFIG_IP_NF_CT_PROTO_GRE options
+in kernel.
 
+I have read a few posts about this issue in the list from as early as in
+2003. But could not find a conclusion.
 
-Thank all of you for the replies,
+Could you guys please clarify? Is this scenario supported by iptables? If
+not, is there a way to get around this issue?
 
-i have now a good understanding of
-the subject but before proceed  into building the dmz subnet i need
-to ask something :
-
-My  ISP assigns me  a dynamic ip , therefore, is that a limitation
-that could not allow me to develop the dmz subnet ?
-
-Is that correct or inacurrate ? Visitors shall need to type my ip to
-access my webpage,  but what im interesting is the development
-of the firewall itselfin terms of securing a network . It will never be
-used for real casesit is just for me to understand.
-the script that i have suggesetd uses static ip
-
-# 1.1 Internet Configuration.
-#
-INET_IP="194.236.50.152"
-HTTP_IP="194.236.50.153"
-DNS_IP="194.236.50.154"
-INET_IFACE="eth0"
-So,
-Can i develop dmz subnet without static ip   and dmz'ed services
-to be accessed on the Internet?
-
-Regards
-
+thanks
+Salim
 
 
