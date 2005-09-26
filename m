@@ -1,13 +1,10 @@
-From: tedemo <tedemo@free.fr>
-Subject: Re: ipset memory usage
-Date: Mon, 26 Sep 2005 10:17:24 +0200
-Message-ID: <4337AE94.6020503@free.fr>
-References: <4336442D.3090404@free.fr>
-	<Pine.LNX.4.58.0509260852230.11331@blackhole.kfki.hu>
+From: "jywang" <jywang@cnic.cn>
+Subject: about kernel programming
+Date: Mon, 26 Sep 2005 16:20:46 +0800
+Message-ID: <014a01c5c273$31d94f80$060ae29f@javaboy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0509260852230.11331@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="gb2312"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
-
-Jozsef Kadlecsik a =E9crit :
-
->Check out the real size of the hashes by searching the kernel log:0
->"rehashing of set <foo> triggered: hashsize grows from <n> to <m>".
->
->Best regards,
->Jozsef
->
-The size for the nethash, reported in the log is arround 20mo the first=20
-time it I run :
-ipset --restore < ip.sets
-
-I deleted each set (using ipset -X on each other) and the recreated them,
-the size of the nethash went to 40Mo
-
-A few reloads later its size is 90Mo.
-
-NB: The set definition file has been created manualy to avoid hundred=20
-thousand calls to "ipset -A"
-(i.e. without calling ipset --save). Can this cause troubles ?
-
+aGksYWxsDQoNCiAgICBpIHJlYWxpemVkIGkgbXVzdCBsZWFybiBtb3JlIGFib3V0IGtlcm5lbCB0
+byBwcm9ncmFtDQp3aXRoIG5ldGZpbHRlci4NCiAgICBidXQsIGkgaGF2ZSBubyBhbnkgdHV0b3Jp
+YWwgYWJvdXQga2VybmVsIHByb2dyYW1taW5nLg0KaSB3b3JrIG9uIGZlZG9yYSBjb3JlIDIsIGFu
+ZCB3b3VsZCB5b3UgbGlrZSB0byBnaXZlIG1lDQpzbyBkaXJlY3Rpb25zLg0KICAgIHNvbWUgdHV0
+b3JpYWwsIGFwaSBkb2Mgd2lsbCBiZSBvay4NCg0KSmlueWkNCg0KDQoNCj09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQog0NXD+6O6ICAgICAgzfW9
+8NK7ICAgDQogtee7sKO6ICAgICAgKCs4NikxMC01ODgxMjMyNQ0KILWlzrujuiAgICAgINbQufq/
+xtGn1Lq8xsvju/rN+MLn0MXPotbQ0MQgUiZEDQogtdjWt6O6ICAgICAgsbG+qdbQudi05cTPy8S9
+1svEusUNCiDTyrHgo7ogICAgICAxMDAwODANCiBlbWFpbKO6ICAgICBqeXdhbmdAY25pYy5jbg0K
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiBO
+YW1lOiAgICAgICBqaW55aSB3YW5nDQogUGhvbmU6ICAgICAgKDg2LTEwKSA1ODgxLTIzMjUNCiBE
+aXZpc2lvbjogICBSJkQsQ29tcHV0ZXIgTmV0d29yayBJbmZvcm1hdGlvbiBDZW50ZXIsDQogICAg
+ICAgICAgICAgQ2hpbmVzZSBBY2FkZW15IG9mIFNjaWVuY2VzDQogQWRkcmVzczogICAgNCw0dGgg
+U291dGggU3RyZWV0LCBaaG9uZ2d1YW5jdW4sIA0KICAgICAgICAgICAgIEhhaWRpYW4gRGlzdHJp
+Y3QsIEJlaWppbmcsIENoaW5hDQogWmlwIGNvZGU6ICAgMTAwMDgwDQogRW1haWw6ICAgICAganl3
+YW5nQGNuaWMuY24NCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09
