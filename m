@@ -1,14 +1,11 @@
-From: Song Du <freewizard@gmail.com>
-Subject: Re: multipath feature
-Date: Mon, 26 Sep 2005 11:31:06 +0800
-Message-ID: <49ba2808050925203173592991@mail.gmail.com>
-References: <463aea57050922004357bc6b86@mail.gmail.com>
-Reply-To: Song Du <freewizard@gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset memory usage
+Date: Mon, 26 Sep 2005 08:54:46 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0509260852230.11331@blackhole.kfki.hu>
+References: <4336442D.3090404@free.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <463aea57050922004357bc6b86@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <4336442D.3090404@free.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,32 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Gobbledegeek <gobbledegeek@gmail.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: tedemo <tedemo@free.fr>
 Cc: netfilter@lists.netfilter.org
 
-seems u have to patch it urself
+On Sun, 25 Sep 2005, tedemo wrote:
 
-2005/9/22, Gobbledegeek <gobbledegeek@gmail.com>:
-> Hello
->        Will someonekindly update me on whether julians's patch is now
-> a standard feature on the linux kernel release? Is there a decision to
-> provide the same feature but re-worked in some way  (i.e out-of
-> the-box dead gateway detection for example) in a future release.
+> The ipset modules seems to eat a lot of memory :
+> with a test set of  :
+> - 150 000 networks in a nethash
+> - 10 000 hosts in a iphash
+> ipset sometimes fails with out of memory errors :
+> "kernel: allocation failed: out of vmalloc space - use vmalloc=<size> to
+> increase size"
 >
-> Or do I still need to patch the latest kernel release, and do all the
-> "stuff" as explained in the iproute2 lartc how-to or nano how-to or
-> dgd usage doc?
->
-> --
-> Nonchalantly yours
-> GobbledeGeek
-> [Every thing but Gobbledegook.. !!]
->
->
+> The VmAllocUsed variable from /proc/meminfo goes from 6Mo to 160Mo after
+> loading sets.
 
+Check out the real size of the hashes by searching the kernel log:0
+"rehashing of set <foo> triggered: hashsize grows from <n> to <m>".
 
---
-freewizard (at) gmail.com
-http://blog.tsing.org/freewizard/   (in Chinese)
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
