@@ -1,12 +1,12 @@
-From: "Enrique A. Tobis" <etobis@gmail.com>
-Subject: Squid + iptables + apache
-Date: Mon, 26 Sep 2005 00:41:34 -0300
-Message-ID: <b71b665d05092520412bdddd12@mail.gmail.com>
-Reply-To: etobis@dc.uba.ar
+From: Mariusz Kruk <kruk@rdc.pl>
+Subject: Re: Confirm: letting certain packages pass through un-natted
+Date: Mon, 26 Sep 2005 11:35:02 +0200
+Message-ID: <4337C0C6.5040606@rdc.pl>
+References: <4337A526.3@canada.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4337A526.3@canada.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,70 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I managed to solve my problem, but, for future reference, I answer
-Edmundo's question. The error I was getting from squid was
+David Leangen napisa=C5=82(a):
+> Could somebody please confirm whether or not I'm doing this right?
+>=20
+> I am using, in my nat table:
+>=20
+> -A PREROUTING -s 192.168.0.0/16 -d 192.168.1.1 -j ACCEPT
+>=20
+> Shouldn't all packets, including ICMP packets, get passed through to=20
+> 192.168.1.1 if originating from the local network?
 
-"
-ERROR
-The requested URL could not be retrieved
+Not necesarily.
+Even if you pass the packet in nat table, you still might drop it in=20
+filter table. I know the ACCEPT target may be used in every (?) table,=20
+but it's a matter of good practice to filter packets in filter tables=20
+and nat in nat tables and so on. So I would suggest moving this from nat=20
+table to filter table and from PREROUTING to FORWARD.
 
-While trying to retrieve the URL: http://something.dyndns.org/
 
-The following error was encountered:
-
-    * Connection Failed
-
-The system returned:
-
-    (111) Connection refused
-
-The remote host or network may be down. Please try the request again.
-"
-
-support@ilgtravel.com suggested enabling the option
-X-forwarded-something on squid. I tried that, and it didn't work.
-
-Now, /dev/rob0's solution doesn't work either. Firefox just cannot
-connect to the host.
-
-However, as you might have seen from the squid message, I was trying
-to access 192.168.0.3, as a host, but using the dyndns name it has. Of
-course, that name is associated with the ppp0 interface. Adding an
-appropriate rule in ip-up did the trick.
-
-/usr/sbin/iptables -t nat -I PREROUTING 1 -i eth0 -p tcp -d $4 --dport
-80 -j DNAT --to 192.168.0.1:80
-
-Even so, I tried /dev/rob0's solution, and I tried to acces the host
-as 192.168.0.3, and it still doesn't work.
-
-Thank you all for your suggestions.
-Enrique
-
-On Monday 19 September 2005 23:57, Enrique Augusto Tobis wrote:
-> To sum it up, almost everything is working as it should. But, if I
-> try to access 192.168.0.3 from INSIDE the network, I get an error
-> from squid...
->
-> I activate the transparent proxy with
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT
-> --to-port 8080
->
-> and forward the port 80 connections with
-> iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to
-> 192.168.0.1:80
-
-iptables -vt nat -I PREROUTING -i eth0 -d 192.168.0.3 -p tcp \
-    --dport 80 -j ACCEPT
-
-*Might* do it. My guess is that this router is seeing the packets to
-192.168.0.3 for some reason. My rule (-I to insert at top) will bypass
-your REDIRECT rule.
-
-Edmundo's question is valid. Normally a host would not go through your
-firewall to reach another host on the same physical segment. So my
-guess might be wrong.
 
