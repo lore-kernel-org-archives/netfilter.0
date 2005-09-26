@@ -1,91 +1,34 @@
-From: Michael Bellion <mbellion@hipac.org>
-Subject: [ANNOUNCE] Release of nf-HiPAC 0.9.0
-Date: Mon, 26 Sep 2005 04:41:42 +0200
-Message-ID: <200509260441.42483.mbellion@hipac.org>
+From: Mofizul Hoq <mofizul_hoq@yahoo.com>
+Subject: rules for skype
+Date: Mon, 26 Sep 2005 00:06:06 -0700 (PDT)
+Message-ID: <20050926070607.36281.qmail@web60417.mail.yahoo.com>
+Reply-To: mofizul_hoq@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi
+Hi Mr. Deepak,
+I have read your post on the list.
+I a linux newbie.
+I am working in a company which has very limited uplink bandwidth. I need the iptables scriptlet for blocking skype as it is consuming all of my uplink bandwidth. To sustain with this limited uplink bandwitdth we must block skype voice chat. Clintes are complaining about uploading files etc.
+ 
+Please help me
+ 
+Mofizul Hoq
 
-I am happy to announce the release of nf-HiPAC version 0.9.0
-
-During the development of version 0.9.0 everything was ported to Linux kernel 
-2.6 and large parts of the kernel code have been rewritten.
-The kernel patch is now fairly non-intrusive: it only adds one simple function 
-to ip_tables.c. The rest of the patch introduces new files to the kernel. 
-The new release fixes all known bugs and also introduces some new features.
-
-Since the last release I have become part of MARA Systems AB 
-( http://www.marasystems.com ). MARA Systems AB is now the commercial backer 
-of the HiPAC Project and finances it completely. Together MARA Systems and I 
-will make sure that HiPAC is actively maintained and further developed under 
-the GNU GPL.
-
-
-For all of you who don't know nf-HiPAC yet, here is a short overview:
-
-nf-HiPAC is a full featured packet filter for Linux which demonstrates the
-power and flexibility of HiPAC. HiPAC is a novel framework for packet
-classification which uses an advanced algorithm to reduce the number of
-memory lookups per packet. It is ideal for environments involving large rule
-sets and/or high bandwidth networks.
-
-nf-HiPAC provides the same rich feature set as iptables, the popular Linux
-packet filter. The complexity of the sophisticated HiPAC packet
-classification algorithm is hidden behind an iptables compatible user
-interface which renders nf-HiPAC a drop-in replacement for iptables. Thereby,
-the iptables' semantics of the rules is preserved, i.e. you can construct your
-rules like you are used to. From a user's point of view there is no need to
-understand anything about the HiPAC algorithm.
-
-The nf-hipac user space tool is designed to be as compatible as possible to
-'iptables -t filter'. It even supports the full power of iptables targets,
-matches and stateful packet filtering (connection tracking) besides the native
-nf-HiPAC matches. This makes a switch from iptables to nf-HiPAC very easy.
-Usually it is sufficient to replace the calls to iptables with calls to
-nf-hipac for your filter rules.
-
-Why another packet filter?
-Performance:
-    iptables, like most packet filters, uses a simple packet classification
-    algorithm which traverses the rules in a chain linearly per packet until a
-    matching rule is found (or not). Clearly, this approach lacks efficiency.
-    As networks grow more and more complex and offer a wider bandwidth linear
-    packet filtering is no longer an option if many rules have to be matched
-    per packet. Higher bandwidth means more packets per second which leads to
-    shorter process times per packet. nf-HiPAC outperforms iptables regardless
-    of the number of rules, i.e. the HiPAC classification engine does not
-    impose any overhead even for very small rule sets.
-
-Scalability to large rule sets:
-    The performance of nf-HiPAC is nearly independent of the number of rules.
-    nf-HiPAC with thousands of rules still outperforms iptables with 20 rules.
-
-Dynamic rule sets:
-    nf-HiPAC offers fast dynamic rules et updates without stalling packet
-    classification in contrast to iptables which yields bad update performance
-    along with stalled packet processing during updates.
-
-More information about the project can be found at:    http://www.hipac.org
-The releases are published on:    http://sourceforge.net/projects/nf-hipac/
-
-Enjoy,
-    +---------------------------+
-    |      Michael Bellion      |
-    |   <mbellion@hipac.org>    |
-    +---------------------------+
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
