@@ -1,11 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset memory usage
-Date: Mon, 26 Sep 2005 08:54:46 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0509260852230.11331@blackhole.kfki.hu>
-References: <4336442D.3090404@free.fr>
+From: David Leangen <dleangen@canada.com>
+Subject: Confirm: letting certain packages pass through un-natted
+Date: Mon, 26 Sep 2005 16:37:10 +0900
+Message-ID: <4337A526.3@canada.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4336442D.3090404@free.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +15,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: tedemo <tedemo@free.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Sun, 25 Sep 2005, tedemo wrote:
 
-> The ipset modules seems to eat a lot of memory :
-> with a test set of  :
-> - 150 000 networks in a nethash
-> - 10 000 hosts in a iphash
-> ipset sometimes fails with out of memory errors :
-> "kernel: allocation failed: out of vmalloc space - use vmalloc=<size> to
-> increase size"
->
-> The VmAllocUsed variable from /proc/meminfo goes from 6Mo to 160Mo after
-> loading sets.
+Hello!
 
-Check out the real size of the hashes by searching the kernel log:0
-"rehashing of set <foo> triggered: hashsize grows from <n> to <m>".
+Could somebody please confirm whether or not I'm doing this right?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I am using, in my nat table:
+
+-A PREROUTING -s 192.168.0.0/16 -d 192.168.1.1 -j ACCEPT
+
+Shouldn't all packets, including ICMP packets, get passed through to 
+192.168.1.1 if originating from the local network?
+
+BTW, I'm not sure why I can communicate with the 192.168.2 subnet, but 
+not my 192.168.1 subnet... Only the machine directly connected to 
+192.168.1.1 is able to communicate with it...
+
+My routing table looks like this:
+
+bla bla bla
+192.168.1.0   *    255.255.255.0    U   0   0   0   eth0
+bla bla bla
+
+which seems correct.
+
+
+So, I'm not so sure why this isn't working...
+
+
+Any hints?
+
+
+Thanks!!!
+
+Dave
+
 
