@@ -1,12 +1,15 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: DNAT Rules.
-Date: Mon, 26 Sep 2005 12:20:40 +0200
-Message-ID: <4337CB78.6030302@mnemon.de>
-References: <1057.192.168.1.22.1127673317.squirrel@192.168.1.22>
+From: tedemo <tedemo@free.fr>
+Subject: Re: ipset memory usage
+Date: Mon, 26 Sep 2005 13:03:44 +0200
+Message-ID: <4337D590.1000909@free.fr>
+References: <4336442D.3090404@free.fr>
+	<Pine.LNX.4.58.0509260852230.11331@blackhole.kfki.hu>
+	<4337AE94.6020503@free.fr>
+	<Pine.LNX.4.58.0509261020310.11331@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1057.192.168.1.22.1127673317.squirrel@192.168.1.22>
+In-Reply-To: <Pine.LNX.4.58.0509261020310.11331@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,77 +20,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Vincent Blondel wrote:
-> Hi,
-> 
-> I am trying to configure next set up so a public host can connect to my web server located in a dmz.
-> 
->                   -----------------------
->   public host --> |  eth1        eth2   | -->  web server
->     x.x.x.x       | 1.2.3.4    10.1.1.1 |      10.1.1.2:80
->                   ----------------------
-> 
-> As far as I can understand, this typically corresponds to a mix of DNAT, SNAT and FORWARD rules. Below you can find the
-> rules I have configured until now.
-> 
-> #####################################################################
-> 
-> # Enable ip forward
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> 
-> # Unlimited traffic on the loopback interface
-> iptables -A INPUT  -i lo -j ACCEPT
-> iptables -A OUTPUT -o lo -j ACCEPT
+Jozsef Kadlecsik a =E9crit :
 
-Ok, until here.
+>Please write it exactly what you do and what happens. Do you create, fil=
+l
+>up and delete the *same* sets with exactly the *same* content, in a loop=
+?
+>
+> =20
+>
+Yes I execute those commands in a loop on the same set (a nethash of 150=20
+000 entries).
 
-> # Set the default policy to drop
-> iptables --policy INPUT   DROP
-> iptables --policy OUTPUT  DROP
-> iptables --policy FORWARD DROP
+the commands in the loop are :
+ipset -X neth
+ipset --restore < ip.sets
 
-This is more a philosophical question and is discussed on this list 
-again and again. My opinion is to have a OUTPUT policy of ACCEPT and 
-then dedicated DROP Rules where needed.
+The obtained results are :
+iteration 1: neth size 25856860    VmallocUsed 108004 kB
+iteration 2: neth size 25856860    VmallocUsed 108004 kB
+iteration 3: neth size 38785290    VmallocUsed 158168 kB
+iteration 6: neth size 25856860    VmallocUsed 108004 kB
+iteration 9: neth size 58177935    VmallocUsed 235844 kB
 
-> iptables -t nat --policy PREROUTING  DROP
-> iptables -t nat --policy OUTPUT      DROP
-> iptables -t nat --policy POSTROUTING DROP
-> 
-> iptables -t mangle --policy PREROUTING  DROP
-> iptables -t mangle --policy POSTROUTING DROP
+This seems a lot for 0.15 million entries.
+Are the 230Mo of Vmalloc'ed memory really used by the kernel ?
 
-Don't do that. Don't filter in nat and mangle. These tables are not 
-intended for filtering.
+>What is your kernel and ipset versions?
+>
+> =20
+>
+ipset v2.2.2 Protocol version 2
+iptables v1.3.2
+Linux 2.6.13 i686
 
-> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 1.2.3.4
 
-Yes.
-
-> iptables -t nat -A PREROUTING -i eth1 -p tcp --sport 1024:65535 -d 1.2.3.4 --dport 80 -j DNAT --to-destination 10.1.1.2
-> iptables -A FORWARD -i eth1 -o eth2 -p tcp --sport 1024:65535 -d 10.1.1.2 --dport 80 -m state --state NEW -j ACCEPT
-
-I prefer to add --syn to the FORWARD rule.
-
-> iptables -A FORWARD -i eth2 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A FORWARD -i eth1 -o eth2 -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-These two rules can be rewritten to
-
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-It is not working because you set policies in mangle to DROP and there 
-is no rule, that allows packets to pass mangle. But even if you add 
-respective rules (or preferably set policies to ACCEPT) in mangle, it 
-will probably not work, because nat/POSTROUTING has only a rule for 
-outgoing packets via eth1. So the incoming SYN packet will be dropped, 
-effectively terminating the connection.
-
-HTH,
-
-Joerg
 
 
