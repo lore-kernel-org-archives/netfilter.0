@@ -1,12 +1,10 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Plz i need help.... or i ll be fired :(
-Date: Tue, 27 Sep 2005 11:58:12 -0400
-Message-ID: <1127836692.2652.31.camel@localhost>
-References: <20050927153424.91546.qmail@web54714.mail.yahoo.com>
+From: Alaios <alaios@yahoo.com>
+Subject: Problem reexplained.....
+Date: Tue, 27 Sep 2005 09:14:40 -0700 (PDT)
+Message-ID: <20050927161440.60437.qmail@web54707.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050927153424.91546.qmail@web54714.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,110 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Alaios <alaios@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Yes - John
+Let me reexplain the problem plz
+From src 143.233.222.253 starts some traffic that goes
+to the 143.233.222.77 this is the eth1 of the laptop
+The laptop has also one more interface the 10.2.4.1
+that is connected back to back (cross cable) with the
+interface of an other pc with ip address 10.2.4.2
+IO want the traffic that reaches 143.233.222.77 reach
+the 10.2.4.2
+This is the first step.. when i succesfully implement
+this then the next step is to forward this traffic
+from the pc to a second pc... ( i ll use the same
+methodology if step one works)
+So now we can only focus to the first step
+Plz take in mind that i dont have any firewall enables
+/proc/sys/net/ipv4/ip_forward is set to 1. I have no
+other iptables rules applied... I will only apply what
+u ll write to do..
+Before applying any iptables rules firstly i do
+iptables -F 
+iptables -F -t nat
+(if more flush commands are necessary plz say it so)
+So i need your help to implement this simple task
 
-On Tue, 2005-09-27 at 08:34 -0700, Alaios wrote:
-> Thx for your reply... i want to ask sth is the
-> ESTABLISHED and RELATED necessary for udp traffic?
->=20
-> --- J=C3=B6rg Harmuth <harmuth@mnemon.de> wrote:
->=20
-> > Alaios wrote:
-> > > Hi plz take a look at the following example
-> > >=20
-> > > The laptop has 2 ethernet interfaces
-> > > To eth1 comes traffic from src 143.233.222.253
-> > > The eth0 has ip address 10.2.4.2 and it is
-> > connected
-> > > back to back with eth1 of other pc with ip address
-> > > 10.2.4.1
-> > > I want to forward the traffic with src
-> > 143.233.222.253
-> > > to the 10.2.4.1 pc=20
-> >=20
-> > [SNIP]
-> >=20
-> > > i have also set the
-> > > /proc/sys/net/ipv4/ip_forward to 1
-> >=20
-> > Ok.
-> >=20
-> > [SNIP]
-> >=20
-> > > I have also tested this one
-> > > iptables -t nat -A PREROUTING -p tcp -d
-> > 143.233.222.77
-> > > (laptop eth1 card) --dport 22453 (i have cheched
-> > dst
-> > > port with tcpdump) 00 -j DNAT --to-destination
-> > > 10.2.4.1
-> > > this still doesnt work
-> > > Every time i try to apply a new rule i use first
-> > > the iptables -F
-> > > iptables -t nat -F command
-> >=20
-> >=20
-> > Your PREROUTING rule is probably ok, provided that
-> > 143.233.222.77 is the=20
-> > IP of eth1. But I think, if the simple approach
-> > doesn't work you=20
-> > shouldn't it make more complicated. Keep it small
-> > and simple and when=20
-> > you understand all the details, you may go deeper.
-> > So, may be you would=20
-> > like to start like this:
-> >=20
-> > ## Rewrite destination address
-> > iptables -t nat -A PREROUTING -i eth1 -s
-> > 143.233.222.253 \
-> >           -j DNAT --to 10.2.4.1
-> >=20
-> > ## Allow packets to pass FORWARD
-> > iptables -A FORWARD -m state --state
-> > ESTABLISHED,RELATED \
-> >           -j ACCEPT
-> > iptables -A FORWARD -i eth1 -s 143.233.222.253 \
-> >           -j ACCEPT
-> >=20
-> > ## Now, SNAT outgoing packets
-> > iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to
-> > 143.233.222.77
-> >=20
-> > If this is a dial-up connection replace the SNAT
-> > part with MASQUERADE.=20
-> > BTW, you only need the FORWARD rules if your FORWARD
-> > policy is DROP or=20
-> > REJECT. And if you have other policies in filter
-> > table set to DROP or=20
-> > REJECT enable loopback. And finally, set all
-> > policies in nat and mangle=20
-> > to ACCEPT (and in raw, if you have that). This
-> > should get you started.
-> >=20
-> > HTH,
-> >=20
-> > Joerg
-> >=20
-> >=20
-> >=20
->=20
->=20
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam protection around=20
-> http://mail.yahoo.com=20
->=20
---=20
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
-
-Financially sustainable open source development
-http://www.opensourcedevel.com
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
