@@ -1,15 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Firewall script
-Date: Tue, 27 Sep 2005 16:33:17 +0200 (CEST)
-Message-ID: <62697.193.173.147.3.1127831597.squirrel@webmail.sterenborg.info>
-References: <200509271639.33162.usergroups@theargoncompany.com>
-	<52145.193.173.147.3.1127822241.squirrel@webmail.sterenborg.info>
-	<65aa6af90509270654746608f7@mail.gmail.com>
-	<65aa6af905092706551e67d8e8@mail.gmail.com>
+From: Alaios <alaios@yahoo.com>
+Subject: Plz i need help.... or i ll be fired :(
+Date: Tue, 27 Sep 2005 07:57:48 -0700 (PDT)
+Message-ID: <20050927145748.68181.qmail@web54701.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af905092706551e67d8e8@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,37 +16,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Edmundo Carmona <eantoranz@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, alaios@yahoo.com
 
-On Tue, September 27, 2005 15:55, Edmundo Carmona wrote:
-> On 9/27/05, Rob Sterenborg <rob@sterenborg.info> wrote:
-> ...
->>
->> $IPTABLES -A FORWARD -i $LAN_IFACE -m state --state NEW \
->>   -p tcp --dport 25 -j LOG --log-prefix "SMTP_REJECT: "
->> $IPTABLES -A FORWARD -i $LAN_IFACE -m state --state NEW \
->>   -p tcp --dport 25 -j REJECT --reject-with tcp-reset
->
-> I have had this question in my mind for some time by now, but never
-> had the need to answer it.. however, this post brings it on.
->
-> As you can see, first, you have a LOG, and then in the same chain for
-> the same traffic, you REJECT. What other targets allow traversal to
-> go on in the same chain?
+Hi plz take a look at the following example
 
-Not all targets are valid in all chains, but I guess that those would
-be most targets that alter a packet, not being NAT or MASQ, and of
-course rules without a target.
-If a rule doesn't make a decision wether to ACCEPT, REJECT, DROP, NAT
-or MASQ a packet, a packet continues to traverse. (I hope I summed it
-all now.. Please correct me if I'm wrong.)
+The laptop has 2 ethernet interfaces
+To eth1 comes traffic from src 143.233.222.253
+The eth0 has ip address 10.2.4.2 and it is connected
+back to back with eth1 of other pc with ip address
+10.2.4.1
+I want to forward the traffic with src 143.233.222.253
+to the 10.2.4.1 pc and if it works i will redo this
+for a second pc so as to l send the traffic to a third
+on.
+Can u help me plz?
 
-For valid targets, check man iptables.
+I have tried this one
+iptables -t nat -A PREROUTING -i eth1 -s
+143.233.222.253 -j DNAT --to-destination 10.2.4.1
+i have also set the
+/proc/sys/net/ipv4/ip_forward to 1
+but still i cant see any trafiic to eth0 interface (ip
+10.2.4.2)
 
 
-Gr,
-Rob
+I have also tested this one
+iptables -t nat -A PREROUTING -p tcp -d 143.233.222.77
+(laptop eth1 card) --dport 22453 (i have cheched dst
+port with tcpdump) 00 -j DNAT --to-destination
+10.2.4.1
+this still doesnt work
+Every time i try to apply a new rule i use first
+the iptables -F
+iptables -t nat -F command
 
 
+
+
+
+		
+__________________________________ 
+Yahoo! Mail - PC Magazine Editors' Choice 2005 
+http://mail.yahoo.com
 
