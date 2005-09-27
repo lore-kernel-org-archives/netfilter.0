@@ -1,10 +1,12 @@
-From: Vagner H <vagnerh@yahoo.com>
-Subject: Debian Bridge Iptables - Forward Problem
-Date: Mon, 26 Sep 2005 19:32:43 +0000 (GMT)
-Message-ID: <20050926193244.60555.qmail@web50811.mail.yahoo.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: problems compiling kernel with patch-o-matic
+Date: Tue, 27 Sep 2005 14:12:55 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0509271408590.13597@blackhole.kfki.hu>
+References: <1127813736.10807.7.camel@biesas>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1127813736.10807.7.camel@biesas>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,43 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Justinas =?iso-8859-2?Q?Bed=BEinskas?= <justasb@patikimi.lt>
+Cc: netfilter@lists.netfilter.org
 
+On Tue, 27 Sep 2005, Justinas Bed=BEinskas wrote:
 
-Hello!
+> I patch 2.6.13.2 vanilla kernel with patch-o-matic, and I have these
+> errors:
+>
+> net/built-in.o: In function `init':
+> ipt_set.c:(.init.text+0x1c7b): undefined reference to
+> `ipt_register_match'
+>
+> Here is my config (nothing particular, just enabled IP_NF_SET..)
+> http://biesas.adminas.net/~digis/config
 
-I'm problem with iptables 1.2.11, Debian 3.1 and kernel 2.4.31.
+Either define both IP_NF_MATCH/TARGET_SET and IP_NF_IPTABLES as static in
+kernel, or module. Don't mix y/m.
 
-My forward rules don't work correctly.=20
+I'll fix the dependecy so that there won't be possible to select
+contradicting values.
 
-I'm using the command below to see Chains counters,
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
-#iptables -xvL=20
-
-=20
-
-But, I don't see any traffic in Forward rules.=20
-
-The Input and Output Chains functions ok.
-
-=20
-
-The bridge is ok, because the network function ok, but the packets don't go=
- to layer 3  (iptables).
-
- =20
-
-If possible, I would like to help to resolv this problem.
-
-=20
-
-=20
-
-Vagner H.
-
-
-	=09
----------------------------------
- Novo Yahoo! Messenger com voz: liga=E7=F5es, Yahoo! Avatars, novos emotico=
-ns e muito mais. Instale agora!
