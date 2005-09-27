@@ -1,12 +1,16 @@
-From: Giuseppe Fontana Padilha <giuseppe@contato.net>
-Subject: Re: Tproxy patch
-Date: Tue, 27 Sep 2005 10:23:24 -0300
-Message-ID: <433947CC.4060808@contato.net>
-References: <4339327D.9090903@contato.net> <20050927093129.2b32ed8d@localhost>
+From: Edmundo Carmona <eantoranz@gmail.com>
+Subject: Firewall script
+Date: Tue, 27 Sep 2005 09:55:20 -0400
+Message-ID: <65aa6af905092706551e67d8e8@mail.gmail.com>
+References: <200509271639.33162.usergroups@theargoncompany.com>
+	<52145.193.173.147.3.1127822241.squirrel@webmail.sterenborg.info>
+	<65aa6af90509270654746608f7@mail.gmail.com>
+Reply-To: Edmundo Carmona <eantoranz@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050927093129.2b32ed8d@localhost>
+In-Reply-To: <65aa6af90509270654746608f7@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +21,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-It would have that to be patch of the Balabit.
+On 9/27/05, Rob Sterenborg <rob@sterenborg.info> wrote:
+...
+>
+> $IPTABLES -A FORWARD -i $LAN_IFACE -m state --state NEW \
+>   -p tcp --dport 25 -j LOG --log-prefix "SMTP_REJECT: "
+> $IPTABLES -A FORWARD -i $LAN_IFACE -m state --state NEW \
+>   -p tcp --dport 25 -j REJECT --reject-with tcp-reset
+>
+.
+.
+.
+I have had this question in my mind for some time by now, but never
+had the need to answer it.. however, this post brings it on.
 
-Thanks,
-Giuseppe
-
-Marcus Leandro de Faria Reis escreveu:
-
->>Hello People, this is my first post and is trying to apply the Patch=20
->>tproxy of the Balabit and I am not obtaining.  I did not understand=20
->>because not to have obtained to apply this patch.  I looked for in=20
->>google and also I did not discover nothing.
->>   =20
->>
->
->Hello, if your need is multilink balancing on the proxy part (forgive me
->if its not the case..) there's a easy step by step on
->www.linuxvirtualserver.org to patch the kernel and obtain a multilink
->server working with transparent proxy.
->
->Regards,
->-----------------------------------
->Marcus Reis=20
->marcus@lanhelp.com.br
->
->Lanhelp Solu=E7=F5es=20
->www.lanhelp.com.br
->
->=09
->
->=09
->	=09
->_______________________________________________________=20
->Novo Yahoo! Messenger com voz: liga=E7=F5es, Yahoo! Avatars, novos emotico=
-ns e muito mais. Instale agora!=20
->www.yahoo.com.br/messenger/
->
->
->
->
-> =20
->
+As you can see, first, you have a LOG, and then in the same chain for
+the same traffic, you REJECT. What other targets allow traversal to go
+on in the same chain?
 
