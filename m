@@ -1,15 +1,12 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
 Subject: Re: Plz i need help.... or i ll be fired :(
-Date: Tue, 27 Sep 2005 12:59:18 -0400
-Message-ID: <65aa6af905092709593478dc29@mail.gmail.com>
-References: <65aa6af905092709425857ae3b@mail.gmail.com>
-	<20050927165239.40193.qmail@web54713.mail.yahoo.com>
-Reply-To: Edmundo Carmona <eantoranz@gmail.com>
+Date: Tue, 27 Sep 2005 13:10:51 -0400
+Message-ID: <1127841051.2652.52.camel@localhost>
+References: <20050927165239.40193.qmail@web54713.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <20050927165239.40193.qmail@web54713.mail.yahoo.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,48 +18,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Alaios <alaios@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-Look at the IP of eth0. its 10.2.4.1, and you said it was 10.2.4.2 and
-wanted to forward it to another host with ip 10.2.4.1 (according to
-your very first mail).
+What is the default gateway for the laptop? How does it get to
+143.233.222.253 since that is on a different network? - John
 
-On 9/27/05, Alaios <alaios@yahoo.com> wrote:
+On Tue, 2005-09-27 at 09:52 -0700, Alaios wrote:
 > eth0      Link encap:Ethernet  HWaddr
-> 00:02:3F:6D:70:3E
->           inet addr:10.2.4.1  Bcast:10.255.255.255
+> 00:02:3F:6D:70:3E  
+>           inet addr:10.2.4.1  Bcast:10.255.255.255 
 > Mask:255.0.0.0
 >           inet6 addr: fe80::202:3fff:fe6d:703e/64
 > Scope:Link
->           UP BROADCAST RUNNING MULTICAST  MTU:1500
+>           UP BROADCAST RUNNING MULTICAST  MTU:1500 
 > Metric:1
 >           RX packets:3 errors:0 dropped:0 overruns:0
 > frame:0
 >           TX packets:394 errors:0 dropped:0 overruns:0
 > carrier:0
->           collisions:0 txqueuelen:1000
+>           collisions:0 txqueuelen:1000 
 >           RX bytes:218 (218.0 b)  TX bytes:24983 (24.3
 > Kb)
->           Interrupt:11 Base address:0x6800
->
+>           Interrupt:11 Base address:0x6800 
+> 
 > eth1      Link encap:Ethernet  HWaddr
-> 00:02:2D:3B:1D:96
->           inet addr:143.233.222.77
+> 00:02:2D:3B:1D:96  
+>           inet addr:143.233.222.77 
 > Bcast:255.255.255.255  Mask:255.255.255.192
 >           inet6 addr: fe80::202:2dff:fe3b:1d96/64
 > Scope:Link
->           UP BROADCAST NOTRAILERS RUNNING MULTICAST
+>           UP BROADCAST NOTRAILERS RUNNING MULTICAST 
 > MTU:1500  Metric:1
 >           RX packets:293209 errors:0 dropped:0
 > overruns:0 frame:0
 >           TX packets:74 errors:0 dropped:0 overruns:0
 > carrier:0
->           collisions:0 txqueuelen:1000
+>           collisions:0 txqueuelen:1000 
 >           RX bytes:364527709 (347.6 Mb)  TX
 > bytes:19400 (18.9 Kb)
->           Interrupt:3 Base address:0x100
->
-> lo        Link encap:Local Loopback
+>           Interrupt:3 Base address:0x100 
+> 
+> lo        Link encap:Local Loopback  
 >           inet addr:127.0.0.1  Mask:255.0.0.0
 >           inet6 addr: ::1/128 Scope:Host
 >           UP LOOPBACK RUNNING  MTU:16436  Metric:1
@@ -70,36 +67,36 @@ On 9/27/05, Alaios <alaios@yahoo.com> wrote:
 > frame:0
 >           TX packets:54 errors:0 dropped:0 overruns:0
 > carrier:0
->           collisions:0 txqueuelen:0
+>           collisions:0 txqueuelen:0 
 >           RX bytes:3528 (3.4 Kb)  TX bytes:3528 (3.4
 > Kb)
->
+> 
 > Kernel IP routing table
 > Destination     Gateway         Genmask         Flags
 > Metric Ref    Use Iface
-> 143.233.222.64  0.0.0.0         255.255.255.192 U
+> 143.233.222.64  0.0.0.0         255.255.255.192 U    
 > 0      0        0 eth1
-> 10.0.0.0        0.0.0.0         255.0.0.0       U
+> 10.0.0.0        0.0.0.0         255.0.0.0       U    
 > 0      0        0 eth0
-> 127.0.0.0       0.0.0.0         255.0.0.0       U
+> 127.0.0.0       0.0.0.0         255.0.0.0       U    
 > 0      0        0 lo
->
->
->
+> 
+> 
+> 
 > --- Edmundo Carmona <eantoranz@gmail.com> wrote:
->
+> 
 > > Remove the UDP/port from the rule, that will allow
 > > you to PING the
 > > box, and the inner box should respond.
-> >
+> > 
 > > Anyway, let's go to the basics... what is the output
 > > of
-> >
+> > 
 > > ifconfig
 > > route -n
-> >
+> > 
 > > ??
-> >
+> > 
 > > On 9/27/05, Alaios <alaios@yahoo.com> wrote:
 > > > I have done absolutely what u have said.. I have
 > > > rechecked the source port and destination and are
@@ -222,7 +219,7 @@ On 9/27/05, Alaios <alaios@yahoo.com> wrote:
 > > > > > > > need or i am doing sth wrong..
 > > > > > > > i have enabled the packets loging
 > > > > > > > so executing dmesg prints the following
-> > > > > > > IN=3Deth1 OUT=3D MAC=3D(the mac addresses)
+> > > > > > > IN=eth1 OUT= MAC=(the mac addresses)
 > > > > > > > As u can see the OUT is null which means
 > > thats
 > > > > > > perhaps
@@ -434,14 +431,23 @@ On 9/27/05, Alaios <alaios@yahoo.com> wrote:
 > > > http://mail.yahoo.com
 > > >
 > > >
-> >
-> >
->
->
->
->
-> __________________________________
-> Yahoo! Mail - PC Magazine Editors' Choice 2005
+> > 
+> > 
+> 
+> 
+> 
+> 		
+> __________________________________ 
+> Yahoo! Mail - PC Magazine Editors' Choice 2005 
 > http://mail.yahoo.com
->
+> 
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+Financially sustainable open source development
+http://www.opensourcedevel.com
+
 
