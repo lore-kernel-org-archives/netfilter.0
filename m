@@ -1,10 +1,12 @@
-From: Giuseppe Fontana Padilha <giuseppe@contato.net>
-Subject: Tproxy patch
-Date: Tue, 27 Sep 2005 08:52:29 -0300
-Message-ID: <4339327D.9090903@contato.net>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: Firewall script
+Date: Tue, 27 Sep 2005 13:57:21 +0200 (CEST)
+Message-ID: <52145.193.173.147.3.1127822241.squirrel@webmail.sterenborg.info>
+References: <200509271639.33162.usergroups@theargoncompany.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200509271639.33162.usergroups@theargoncompany.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,82 +17,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello People, this is my first post and is trying to apply the Patch 
-tproxy of the Balabit and I am not obtaining.  I did not understand 
-because not to have obtained to apply this patch.  I looked for in 
-google and also I did not discover nothing.
+On Tue, September 27, 2005 13:09, Boskey wrote:
+> Hi All,
+>
+> A customer of ours has a firewall script made for there organization.
+>
+> The customer , even after enabling the firewall script has a huge
+> spammer
+> inside the network get across, and spam from the IP.
+>
+> I have seen the script and feel that his firewall is  good when it
+> comes to
+> not allowing people into the system.
+>
+> But i guess people inside the network  ( local ) can  get across
+> easily.
+>
+> Can someone help me by confirming this.
 
-I noticed that it asks for first to apply the Patch of nat-reservations, 
-I go to try to apply and happens this:
----------------------------------------------------------------------------------------------------------------
-Testing nat-reservations... not applied
-The nat-reservations patch:
-   Author: Krisztian Kovacs <hidden@balabit.hu>
-   Status: Alpha
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+#
+# Bad TCP packets we don't want
+#
 
-NAT reservations support for Netfilter
+$IPTABLES -A FORWARD -p tcp -j bad_tcp_packets
 
-This module implements reservation of manips, which won't be allocated
-by the Netfilter NAT subsystem except explicitly requested. It can be
-used in NAT helpers for complicated protocols, for example it may be
-needed in case the protocol's command channel requires negotiation of
-the exact endpoints of the data channel, and both of them need to be
-translated.
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] t
-newfile: 1 files in our way, unable to apply
----------------------------------------------------------------------------------------------------------------
+[....]
 
+#
+# LAN section
+#
 
-As I do not obtain, I go to try to apply patch tproxy, and happens this:
----------------------------------------------------------------------------------------------------------------
-Testing tproxy... not applied
-The tproxy patch:
-   Author: Balazs Scheidler <bazsi () balabit dot hu>, Krisztian Kovacs 
-<hidden () balabit dot hu>
-   Status: Alpha
-   Version: 1.9.6
+$IPTABLES -A FORWARD -i $LAN_IFACE -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Transparent proxying support for Netfilter
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-This module implements transparent proxying functionality in Netfilter. It
-can be used to implement user-space transparent proxies for complex
-protocols over TCP/UDP. A table named 'tproxy' is implemented, which takes
-care of dynamically setting up NAT mappings for the appropriate
-connections.
+Move the state rule right below the "bad tcp packets" rule (better
+performance).
 
-To support transparent proxying in the iptables rulesets, the 'tproxy'
-match matches all packets related to proxied connections, and the 'TPROXY'
-rule can be used to redirect new connections to the proxy.
+Then, below the state rule, log and reject packets for dport 25 :
 
-A more complete package with some documentation and examples can be
-downloaded from http://www.balabit.com/downloads/tproxy/linux-2.4/
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] t
-unable to find ladd slot in src 
-/usr/src/linux/net/ipv4/netfilter/Kconfig 
-(./patchlets/nat-reservations/linux-2.6/./net/ipv4/netfilter/Kconfig.ladd)
-nat-reservations not applied
-patchlets/tcp-window-tracking does not match your source trees, skipping...
-newfile: 1 files in our way, unable to apply
-unable to find ladd slot in src /tmp/pom-2711/net/ipv4/netfilter/Kconfig 
-(./patchlets/nat-reservations/linux-2.6/./net/ipv4/netfilter/Kconfig.ladd)
-apply_dependency: unable to apply dependent nat-reservations
------------------------------------------------------------------
-Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?]
----------------------------------------------------------------------------------------------------------------
+$IPTABLES -A FORWARD -i $LAN_IFACE -m state --state NEW \
+  -p tcp --dport 25 -j LOG --log-prefix "SMTP_REJECT: "
+$IPTABLES -A FORWARD -i $LAN_IFACE -m state --state NEW \
+  -p tcp --dport 25 -j REJECT --reject-with tcp-reset
+
+This way no-one can send email diectly to some smtp server on the
+internet and at the same time you will log the offending IP.
+You may want to limit (-m limit --limit 1/second or something) if your
+logs get filled too quickly.
+
+However.. If you're doing this, you need your own smtp server so
+people can send (legitimate) email when they need to able to do that.
+When they start spamming using *your* smtp server, you will have the
+smtp logs available...
 
 
-Somebody obtained to apply this patch?
+Gr,
+Rob
 
-My Kernel is 2.6.12, and Iptables 1.3.3. Patch-o-matic-ng-20040621 
-and/or patch-o-matic-ng-20050918.
 
-Sorry for my bad English.
-
-Regards,
-Giuseppe
 
