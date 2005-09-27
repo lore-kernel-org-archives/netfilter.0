@@ -1,7 +1,7 @@
 From: "Rob Sterenborg" <rob@sterenborg.info>
 Subject: Re: Firewall script
-Date: Tue, 27 Sep 2005 16:22:49 +0200 (CEST)
-Message-ID: <64599.193.173.147.3.1127830969.squirrel@webmail.sterenborg.info>
+Date: Tue, 27 Sep 2005 16:22:48 +0200 (CEST)
+Message-ID: <64478.193.173.147.3.1127830968.squirrel@webmail.sterenborg.info>
 References: <200509271639.33162.usergroups@theargoncompany.com>
 	<52145.193.173.147.3.1127822241.squirrel@webmail.sterenborg.info>
 	<65aa6af90509270654746608f7@mail.gmail.com>
