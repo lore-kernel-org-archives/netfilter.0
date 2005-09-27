@@ -1,13 +1,10 @@
-From: "AragonX" <aragonx@dcsnow.com>
-Subject: Re: Problem reexplained.....
-Date: Tue, 27 Sep 2005 13:30:08 -0400 (EDT)
-Message-ID: <1308.10.1.1.1.1127842208.squirrel@www.dcsnow.com>
-References: <65aa6af9050927092673267410@mail.gmail.com>
-	<20050927164947.43318.qmail@web54709.mail.yahoo.com>
+From: Sandro Dentella <sandro@e-den.it>
+Subject: ip on 2.6 kernelL link/[65534] instead of link/ppp
+Date: Tue, 27 Sep 2005 20:35:11 +0200
+Message-ID: <20050927183511.GA7089@casa.e-den.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050927164947.43318.qmail@web54709.mail.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,34 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: iptables <netfilter@lists.netfilter.org>
 
-<quote who="Alaios">
-> I have restarted my pc just for being sure.. i have
-> run your commands but the tcpdump -i eth0 -vv -n give
-> nothing :(
-> it doesnt work :(
-> I think its time to start debugging. plz suggest me
-> how to  use efficiently logging so as to find out what
-> the is the problem
+Hi all,
 
-I'm very new to iptables so I can't be of much help in that way.  The
-first thing I was thinking you should check is if you can communicate with
-any machines at all.  How are you connected to these machines?  Through a
-hub or directly.  If directly, are you using the correct crossover cable?
+   
+   "ip adds ls" used to give me smething like:
 
-I'm guessing both machines are running Linux.  Some have built in
-firewalls that like to take over at random intervals if not turned off.
+250: tun0: <POINTOPOINT,MULTICAST,NOARP,UP> mtu 1500 qdisc pfifo_fast qlen 10
+    link/ppp
+    inet 10.0.1.254 peer 10.0.0.254/32 scope global tun0
 
-I would make sure your hardware is connected correctly then make sure your
-iptables is clear(iptables -L & iptables -t nat -n -L).  Then ping a
-machine on both interfaces.
+    but since 2.6 I see somethining like:
 
-Once you are sure that you can connect to machines on both interfaces,
-then start working on your rules.
-
-I'm sorry if this is to basic and you have tried all these things.  :)
+12: tun1: <POINTOPOINT,MULTICAST,NOARP,UP> mtu 1500 qdisc pfifo_fast qlen 500
+    link/[65534]  <<<<<<<<<<<<<<<<<<<
+    inet 10.0.0.254 peer 10.0.1.254/32 scope global tun1
 
 
+Does anybody know why?
 
+TIA
+sandro
+*:-)
+
+
+-- 
+Sandro Dentella  *:-)
+e-mail: sandro@e-den.it 
+http://www.tksql.org                    TkSQL Home page - My GPL work
 
