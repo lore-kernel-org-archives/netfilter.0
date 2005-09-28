@@ -1,9 +1,9 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: hitcount miss
-Date: Wed, 28 Sep 2005 10:02:21 +0200
-Message-ID: <433A4E0D.1040303@eccotours.dyndns.org>
+From: "Guillermo Javier Nardoni" <gjnardoni@gmail.com>
+Subject: QoS-iptables-tc (doesn't work together) why?
+Date: Wed, 28 Sep 2005 06:17:33 -0300
+Message-ID: <005001c5c40e$520f0730$5b00a8c0@ripst>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,26 +15,107 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: iptables <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-9"
+To: netfilter@lists.netfilter.org
 
-Hi all
 
-In my ruleset  on my hosted box, I have the following ruleset.
+Hello i'm having some issues trying to match packets
+using iptables mark, iproute filter and tc filter.-
+i mean, when i do
+iptables -t mangle -A INPUT -p tcp --dport 80 -j MARK
+--set-mark 20
 
-$IPT -N SSH_Brute_Force
-$IPT -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name SSH --set --rsource -j SSH_Brute_Force
-$IPT -A SSH_Brute_Force -s $myhomeip -j ACCEPT
-$IPT -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 --name SSH --rsource -j ACCEPT
-$IPT -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
-$IPT -A SSH_Brute_Force -p tcp -j DROP
+iptables -t mangle -A PREROUTING -p tcp --dport 25 -j
+MARK --set-mark 10
 
-I thought this would work.
+iptables -t mangle -A FORWARD -p tcp -i eth0 -o eth1
+--dport 25 -j MARK --set-mark 10
 
-But I cant SSH from any other location, other than from the IP $myhomeip.
+$TC qdisc del dev $INET_IFACE root
+$TC qdisc add dev $INET_IFACE root handle 1: htb
+default 60
+$TC class add dev $INET_IFACE parent 1: classid 1:1
+htb rate 2048kbit  burst 2k
 
-What I was looking for, was that when I go on holiday (Thailand here I come). I can still SSH from anywhere else in the world.
-But obviously, for the bruteforcers out there, who try and make multiple connections, they will fall to DROP, based on their hitcount.
+$TC class add dev $INET_IFACE parent 1:1 classid 1:10
+htb rate 10kbit ceil 128kbit prio 5 quantum 1 burst 2k
+$TC qdisc add dev $INET_IFACE parent 1:10 handle 10:
+sfq perturb 10
 
-If anyone could assist, I would be most grateful
+$TC class add dev $INET_IFACE parent 1:1 classid 1:20
+htb rate 10kbit ceil 512kbit prio 2  quantum 2 burst
+2k
+$TC qdisc add dev $INET_IFACE parent 1:20 handle 20:
+sfq perturb 10
+
+$TC class add dev $INET_IFACE parent 1:1 classid 1:30
+htb rate 10kbit ceil 1024kbit prio 2  quantum 6 burst
+2k
+$TC qdisc add dev $INET_IFACE parent 1:30 handle 30:
+sfq perturb 10
+
+$TC class add dev $INET_IFACE parent 1:1 classid 1:40
+htb rate 10kbit ceil 128kbit prio 5 quantum 4 burst 2k
+$TC qdisc add dev $INET_IFACE parent 1:40 handle 40:
+sfq perturb 10
+
+$TC class add dev $INET_IFACE parent 1:1 classid 1:50
+htb rate 10kbit ceil 512kbit prio 2  quantum 5  burst
+2k
+$TC qdisc add dev $INET_IFACE parent 1:50 handle 50:
+sfq perturb 10
+
+$TC class add dev $INET_IFACE parent 1:1 classid 1:60
+htb rate 350kbit ceil 1020kbit prio 0  quantum 6 burst
+2k
+$TC qdisc add dev $INET_IFACE parent 1:60 handle 60:
+sfq perturb 10
+echo "Defino los Filtros"
+$TC filter add dev $INET_IFACE parent 1: protocol ip
+handle 10 fw classid 1:10
+$TC filter add dev $INET_IFACE parent 1: protocol ip
+handle 20 fw classid 1:20
+$TC filter add dev $INET_IFACE parent 1: protocol ip
+handle 30 fw classid 1:30
+$TC filter add dev $INET_IFACE parent 1: protocol ip
+handle 40 fw classid 1:40
+$TC filter add dev $INET_IFACE parent 1: protocol ip
+handle 50 fw classid 1:50
+$TC filter add dev $INET_IFACE parent 1: protocol ip
+handle 60 fw classid 1:60
+
+
+ip rule add from 20.0.0.3 table 20
+ip rule add from 20.0.0.4 table 10
+
+
+ip rule add fwmark 20 table 20
+ip rule add fwmark 10 table 10
+
+BUT I DOESN'T SEEMS TO WORK FINE
+ALL TRAFFIC GOES THROUGH THE DEFAULT LEAF OF THE TC'S
+TREE
+
+COULD YOU HELP ME P=D1LEASE?
+
+i added to=20
+for f in /proc/sys/net/ipv4/conf/*/rp_filter;do
+echo > $f
+done
+echo 1 > /proc/sys/net/ipv4/route/flush
+
+i use:
+iproute version: ip utility, iproute2-ss050330
+
+iptables : iptables v1.3.2
+
+ tc utility, iproute2-ss050330
+
+whyyyyyyyyyyyyyy mr anderson
+whyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+
+i really aprreciatte your help
+
+regards
+Guillermo from Argentina
 
