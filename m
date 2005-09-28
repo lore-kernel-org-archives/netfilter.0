@@ -1,74 +1,63 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [ANNOUNCE] Release of nf-HiPAC 0.9.0
-Date: Wed, 28 Sep 2005 21:46:47 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0509282125120.8767@filer.marasystems.com>
-References: <200509260441.42483.mbellion@hipac.org>
-	<433AA30E.7060709@ufomechanic.net>
+From: Piotr Holubniak <piotr.holubniak@neostrada.pl>
+Subject: iptables spof address problem
+Date: Wed, 28 Sep 2005 22:49:45 +0200
+Message-ID: <433B01E9.6050700@neostrada.pl>
+Reply-To: piotr.holubniak@neostrada.pl
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <433AA30E.7060709@ufomechanic.net>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Amin Azez <azez@ufomechanic.net>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Wed, 28 Sep 2005, Amin Azez wrote:
+Hello everyone
 
-> Does it also remove the "upload rules in bulk" issue of iptables and
-> make use of links lists (or trees) to upload small changes singly?
+I have simple question.
 
-Yes. nf-HiPAC uses netlink messages for rule updates, carrying just the 
-updates. It does not exchange complete rulesets on each update like 
-iptables does.
+Lets assume that we have Linux with IP=10.0.0.2 with iptables and it is 
+logging all incomming ssh connection. Log file contains both IP and MAC 
+addresses of the computers which bind to this service.
+Lets assume that we have another PC connected into LAN with IP=10.0.0.100.
 
-> I recall someone released a re-write a while ago that took care of this, 
-> but this seems to do rule-factoring too to reduce the number of check 
-> operations.
+Attacker with IP  = 10.0.0.200 runs:
+hping2  -S --spoof  10.0.0.100 -p 22 --faster 10.0.0.2  - which will 
+cause DoS of SSH service on 10.0.0.2
 
-iptables per definition must always send a whole new iptable (compiled 
-ruleset) to the kernel as one big blob as it is the userspace who 
-constructs the iptable and the kernel has no knowledge (or capability) to 
-modify an iptable inplace, only replace it with another submitted by 
-userspace.
+Netfilter logs all incomming on 22 port traffic. It shows that 
+connections come from IP 10.0.0.100 and it shows real MAC address of 
+this computer (10.0.0.100) instead of MAC address of attackers computer 
+(IP 10.0.0.200).
 
-As nf-HiPAC is using another internal representation of the rules it does 
-not need this, and the updates carry only the rules you are updating.
+So result is that we think that real attacker is computer with IP 10.0.0.100
 
-> Speaking under fear of blasphemy I'm wondering what stops this becoming
-> iptables proper?
+Moreover.
 
-Not much. It is already very near a full replacement of iptables filter 
-table. It does not yet have support for the other table types but it's 
-trivial to add. The nat table has to wait for the completetion of the 
-restructuring of the nat code currently taking place however, but after 
-2.6.14 this should not be a problem to implement from what I have 
-understood. The problem currently is that the nat core nat is very tightly 
-coupled with iptable_nat, but this is being addressed already by the 
-Netfilter team.
+Lest assume that spoofed  address is IP which is not assignet in the 
+local network. Netfilter logs incomming traffic but it shows MAC address 
+unknown or completely unpredictable (Windows shows all 0-ros, Linux 12 
+bytes long MAC address).
 
-> OK, it would want linking to nf_conntrack instead of ip_conntrack
+Result is that we completely don't know who is the attacker, cannot 
+track him down even we have registered MAC addresses of all computers in 
+local network.  
 
-This should be trivial. The optional conntrack dependency is already well 
-isolated in a separate very small module. Some of this isolated code 
-obviously needs to be changed when using nf_conntrack but not much.
+It works like this with FC4, also have this problem on RedHat 3.0.
 
-> and a v6 version doing type stuff, but it seems the biz.
-
-IPv6 requires a bit more work due to the larger key size in 
-source/destination addresses. HiPAC currently only implements up to 32-bit 
-lookup dimensions (source/destination/protocol/ports etc..).
+How can I make netfilter to log MAC address of the attackers computer, 
+not this one which is resolved by TCP/IP stack ? Is it possible?
 
 Regards
-Henrik
+
+PiotrH
+ 
 
 
