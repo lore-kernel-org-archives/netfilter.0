@@ -1,44 +1,50 @@
-From: Amin Azez <azez@ufomechanic.net>
-Subject: Re: [ANNOUNCE] Release of nf-HiPAC 0.9.0
-Date: Wed, 28 Sep 2005 15:05:02 +0100
-Message-ID: <433AA30E.7060709@ufomechanic.net>
-References: <200509260441.42483.mbellion@hipac.org>
+From: Daniel Wittenberg <daniel-wittenberg@starken.com>
+Subject: multi-isp connection NAT not working
+Date: Wed, 28 Sep 2005 11:51:46 -0500
+Message-ID: <1127926307.32641.17.camel@tholian.starken.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <200509260441.42483.mbellion@hipac.org>
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@lists.netfilter.org
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-This auto-factorization of rules seems cool.
+I think this is a simple problem, but nothing I've read so far seems to
+help, maybe I'm missing something.
 
-> Dynamic rule sets:
-> nf-HiPAC offers fast dynamic rules et updates without stalling packet
->classification in contrast to iptables which yields bad update performance
-> along with stalled packet processing during updates.
+ISP-1 (eth0) --  
+                \
+                 --- FIREWALL --- server
+                /
+ISP-2 (eth1) --
 
-Does it also remove the "upload rules in bulk" issue of iptables and
-make use of links lists (or trees) to upload small changes singly? I
-recall someone released a re-write a while ago that took care of this,
-but this seems to do rule-factoring too to reduce the number of check
-operations.
+I'm just trying to get an IP on both ISP's that will allow me to connect
+to server.  Right now I can connect to firewall from either ISP ok, it
+is just getting through the firewall's NAT to the server, but only from
+one connection.  I've put debug statements in iptables the packets seem
+to go as far as NAT then not sure where they are going.  I've tried:
 
-Speaking under fear of blasphemy I'm wondering what stops this becoming
-iptables proper? (ipv4 anyway)?  OK, it would want linking to
-nf_conntrack instead of ip_conntrack and a v6 version doing type stuff,
-but it seems the biz.
+route add default via {ISP-1-gateway} table T1 dev eth0
+rule add from {ISP-1-ip} table T1
+rule add fwmark 1 table T1
+iptables -t mangle -A PREROUTING -i eth0 -j MARK --set-mark 1
 
-Azez
+route add default via {ISP-2-gateway} table T2 dev eth1
+rule add from {ISP-2-ip} table T1
+rule add fwmark 2 table T1
+iptables -t mangle -A PREROUTING -i eth1 -j MARK --set-mark 2
 
+Any ideas?
+
+Thanks,
+Dan
 
