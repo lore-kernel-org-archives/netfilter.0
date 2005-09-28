@@ -1,62 +1,74 @@
-From: Daniel Wittenberg <daniel-wittenberg@starken.com>
-Subject: Re: multi-isp connection NAT not working
-Date: Wed, 28 Sep 2005 14:27:03 -0500
-Message-ID: <1127935623.32641.19.camel@tholian.starken.com>
-References: <1127926307.32641.17.camel@tholian.starken.com>
-	<200509281324.11170.rob0@gmx.co.uk>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: [ANNOUNCE] Release of nf-HiPAC 0.9.0
+Date: Wed, 28 Sep 2005 21:46:47 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0509282125120.8767@filer.marasystems.com>
+References: <200509260441.42483.mbellion@hipac.org>
+	<433AA30E.7060709@ufomechanic.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200509281324.11170.rob0@gmx.co.uk>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <433AA30E.7060709@ufomechanic.net>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Amin Azez <azez@ufomechanic.net>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Actually I've abstracted it in a script and the function name adds "ip",
-just wasn't watching when I copy/pasted :(
+On Wed, 28 Sep 2005, Amin Azez wrote:
 
-I'll take a look, thanks.
-Dan
+> Does it also remove the "upload rules in bulk" issue of iptables and
+> make use of links lists (or trees) to upload small changes singly?
 
+Yes. nf-HiPAC uses netlink messages for rule updates, carrying just the 
+updates. It does not exchange complete rulesets on each update like 
+iptables does.
 
-On Wed, 2005-09-28 at 13:24 -0500, /dev/rob0 wrote:
-> On Wednesday 2005-September-28 11:51, Daniel Wittenberg wrote:
-> > I think this is a simple problem, but nothing I've read so far seems
-> > to help, maybe I'm missing something.
-> 
-> A serious typo?
-> 
-> > route add default via {ISP-1-gateway} table T1 dev eth0
-> > rule add from {ISP-1-ip} table T1
-> > rule add fwmark 1 table T1
-> 
-> Prepend "ip " to those.
-> 
-> > iptables -t mangle -A PREROUTING -i eth0 -j MARK --set-mark 1
-> 
-> ok
-> 
-> > route add default via {ISP-2-gateway} table T2 dev eth1
-> > rule add from {ISP-2-ip} table T1
-> > rule add fwmark 2 table T1
-> 
-> Again prepend "ip " and s/T1/T2/
-> 
-> > iptables -t mangle -A PREROUTING -i eth1 -j MARK --set-mark 2
-> >
-> > Any ideas?
-> 
-> I use and recommend Julian Anastasov's routes patch. Usage is explained 
-> in http://www.ssi.bg/~ja/nano.txt , the patches are linked from the 
-> parent directory. IWFM at 3 sites.
+> I recall someone released a re-write a while ago that took care of this, 
+> but this seems to do rule-factoring too to reduce the number of check 
+> operations.
+
+iptables per definition must always send a whole new iptable (compiled 
+ruleset) to the kernel as one big blob as it is the userspace who 
+constructs the iptable and the kernel has no knowledge (or capability) to 
+modify an iptable inplace, only replace it with another submitted by 
+userspace.
+
+As nf-HiPAC is using another internal representation of the rules it does 
+not need this, and the updates carry only the rules you are updating.
+
+> Speaking under fear of blasphemy I'm wondering what stops this becoming
+> iptables proper?
+
+Not much. It is already very near a full replacement of iptables filter 
+table. It does not yet have support for the other table types but it's 
+trivial to add. The nat table has to wait for the completetion of the 
+restructuring of the nat code currently taking place however, but after 
+2.6.14 this should not be a problem to implement from what I have 
+understood. The problem currently is that the nat core nat is very tightly 
+coupled with iptable_nat, but this is being addressed already by the 
+Netfilter team.
+
+> OK, it would want linking to nf_conntrack instead of ip_conntrack
+
+This should be trivial. The optional conntrack dependency is already well 
+isolated in a separate very small module. Some of this isolated code 
+obviously needs to be changed when using nf_conntrack but not much.
+
+> and a v6 version doing type stuff, but it seems the biz.
+
+IPv6 requires a bit more work due to the larger key size in 
+source/destination addresses. HiPAC currently only implements up to 32-bit 
+lookup dimensions (source/destination/protocol/ports etc..).
+
+Regards
+Henrik
+
 
