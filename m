@@ -1,12 +1,9 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: iptables stop/start vs restart ...
-Date: Thu, 29 Sep 2005 09:02:49 -0400
-Message-ID: <1127998969.2685.10.camel@localhost>
-References: <20050929104837.92766.qmail@web86505.mail.ukl.yahoo.com>
+From: Aaron Smith <aaron@pandora-net.com>
+Subject: Filtering Transport Mode IPSec
+Date: Thu, 29 Sep 2005 11:09:18 -0400 (EDT)
+Message-ID: <Pine.LNX.4.61.0509291103090.12174@cerberus.private.pandora-net.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20050929104837.92766.qmail@web86505.mail.ukl.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +14,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Chicken of the Apocalypse <satehen@btinternet.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Thu, 2005-09-29 at 11:48 +0100, Chicken of the Apocalypse wrote:
-> Hi John,
-> 
-> > Can you use the options parameter in modprobe.conf
-> > rather than specifying the option on the command 
-> > line? - John
-> 
-> I can, not sure of what the format would be?
-> 
-> Thanks
-> 
-I'm not entirely sure since I don't do it myself but you can check man
-modprobe.conf.  It is probably something like:
+I have a Windows 2003 server connecting as a client, in Transport 
+mode, via IPSec to a RHEL4 server running a 2.6.9 kernel and StrongSwan.
+I would like to use netfilter to filter the protocols and ports that the
+windows server can access on the RHEL4 server, but from what I've read, 
+transport mode IPSec packets are decrypted AFTER they have traversed the 
+netfilter chains.  I have a rule in my INPUT chain that says to allow ESP 
+(protocol 50) packets and this appears to be enough for the windows client 
+to bypass the rest of the rules.  I also have a linux client connecting to 
+this same server in Tunnel mode and it's packets appear to be accepted, 
+decrypted, an then sent back into the interface to be subjected to 
+netfilter so everything works fine there.  Is there anyway to use 
+netfilter to filter Transport Mode IPSec?
 
-options ip_conntrack hashsize=32767
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
-
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
-
+------
+"The pain of war cannot exceed the woe of aftermath
+The drums will shake the castle walls, 
+the Ringwraiths ride in black..."
+ 	Led Zeppelin, "The Battle of Evermore"
 
