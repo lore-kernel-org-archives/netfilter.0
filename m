@@ -1,12 +1,12 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: 30s delay while receiving mail
-Date: Thu, 29 Sep 2005 17:54:46 +0200
-Message-ID: <433C0E46.1030609@mnemon.de>
-References: <BAY108-F26F9A9A119223E58D8E647978D0@phx.gbl>
+From: Piotr Holubniak <piotr.holubniak@neostrada.pl>
+Subject: Re: iptables spof address problem
+Date: Thu, 29 Sep 2005 20:14:55 +0200
+Message-ID: <433C2F1F.9070003@neostrada.pl>
+References: <E656E2CC1C5AEB42ACB00EB83122C7742E2EC6@farmer.vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY108-F26F9A9A119223E58D8E647978D0@phx.gbl>
+In-Reply-To: <E656E2CC1C5AEB42ACB00EB83122C7742E2EC6@farmer.vikus.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,45 +17,81 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+To: Derick Anderson <danderson@vikus.com>
+Cc: netfilter@lists.netfilter.org
 
-Arrrrrgh - sorry for the spam - wrong list :(
+Derick Anderson napisa=C5=82(a):
 
-david v wrote:
-> Hello,
-> I'm having problems receiving email. There is always a delay of 30s 
-> behinf the DMZ zone.
+>=20
+>
+> =20
+>
+>>-----Original Message-----
+>>From: netfilter-bounces@lists.netfilter.org=20
+>>[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+>>Piotr Holubniak
+>>Sent: Thursday, September 29, 2005 1:22 AM
+>>To: netfilter@lists.netfilter.org
+>>Subject: Re: iptables spof address problem
+>>   =20
+>>
+>
+>[snip]
+>=20
+> =20
+>
+>>This is not a question of routing Layer 2. All computers are=20
+>>in one local network in the same subnet, so there is no need=20
+>>to route pakets.
+>>This seems to me that even if data arrives to NIC of Linux=20
+>>computer with netfilter, from computer with MAC address, this=20
+>>MAC address is unseen to netfilter, because before it is=20
+>>passed to netfilter, TCP/IP stack tries to resolve MAC=20
+>>sending ARP lookup. Sa finally netfilter gets wrong MAC.
+>>Not sender but ARP lookup.
+>>
+>>Tell me if I am wrong.
+>>
+>>Regards
+>>
+>>PiotrH
+>>   =20
+>>
+>
+> =20
+>
+Netfilter is designed to improve security of network or computer system.
 
-[SNIP]
+I well designed network, such mechanism like "security port" in switch,=20
+doesn't allow you to spoof MAC address. Simply because it limits number=20
+of MAC addresses which can leave port to only one, and this one is=20
+registered and cannot be changed without supervisors pertmition.
 
-> telnet mail 110 (30s delay)
-> telnet mail 25 (no delay)
-> 
-> Forewall Nat rules are properly configured so that the firewall forward 
-> pop incoming queries to the correct IP adress(mail machine).
-> 
-> I'm not sure how to resolve that issue, any help would be extremely 
-> useful. Could that be a problem on the firewall side ?
+In described by me scenario, attacker doesn't need to spoof MAC address=20
+to be unvisible, it is enaught to spoof IP. So funcjonality of "security=20
+port" is very limited. I belive that netfilter should allways display=20
+real MAC address. I don't know how to changet it.
 
-Yes and no - a matter of taste. May be there is a identd call from your
-POP3 server ? And this call is DROPed somewhere ? If so, this rule will
-help:
+Regards
 
-iptables -I OUTPUT -p tcp --dport 113 -j REJECT \
-          --reject-with tcp-reset
+PiotrH
 
-Hmm, your talking about DMZ. The above rule is written for the POP3
-server itself. On the firewall you should replace OUTPUT with INPUT. If
-these rules don't solve the problem you can delete the rule by
+>If there's no routing involved and your hosts are on the same subnet,
+>then it is trivial to spoof the MAC of another machine, especially in
+>the scenario you describe. What you say is correct. It is not the fault
+>of netfilter or the kernel stack, it's just impossible to tell the
+>difference between two computers sending the exact same packet on the
+>same subnet.
+>
+>It's like printing out two copies of the same paper on two different
+>copiers. Which one came from which copier? You can't tell. In fact it
+>would probably be easier to figure that out as opposed to MAC spoofing.
+>
+>Derick Anderson
+>
+>
+> =20
+>
 
-iptables -D [IN|OUT]PUT 1
-
-HTH,
-
-Joerg
-
-
-
-!DSPAM:433bc6f472101927516234!
 
