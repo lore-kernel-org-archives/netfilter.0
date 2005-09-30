@@ -1,7 +1,7 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: iptables spof address problem
-Date: Fri, 30 Sep 2005 08:53:58 -0400
-Message-ID: <FAC4E024BF776842876169173CE2F0132826@mailbox.vikus.com>
+From: "Baake, Matthias" <m.baake@porta.de>
+Subject: RE: Iptables and vlan interfaces
+Date: Fri, 30 Sep 2005 14:53:22 +0200
+Message-ID: <201E6F5AC48C274996A5AD8304FAEF860BFD62@p001ex03.porta.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,59 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Henrik Nordstrom <hno@marasystems.com>, netfilter@lists.netfilter.org
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
 
-=20
+hm i have to correct my previous post..
+i copied the discussed rule and it works fine...
+there must be an other mistake maybe something missing in the kern
+
+greets
 
 > -----Original Message-----
-> From: Henrik Nordstrom [mailto:hno@marasystems.com]=20
-> Sent: Friday, September 30, 2005 8:22 AM
-> To: Derick Anderson
-> Cc: Piotr Holubniak; netfilter@lists.netfilter.org
-> Subject: RE: iptables spof address problem
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Henrik
+> Nordstrom
+> Sent: Friday, September 30, 2005 2:45 PM
+> To: sebastian.ionita@focomunicatii.ro
+> Cc: netfilter@lists.netfilter.org
+> Subject: Re: Iptables and vlan interfaces
 >=20
-> On Thu, 29 Sep 2005, Derick Anderson wrote:
 >=20
-> > I reiterate: a properly spoofed packet is completely identical to a=20
-> > genuine one. It is not Netfilter's or the kernel stack's=20
-> fault, it is=20
-> > a simple fact of life that bits are bits. With an=20
-> intelligent switch=20
-> > this kind of attack can be stopped provided the switch is=20
-> set to use a=20
-> > 1-to-1 ratio of ports to MACs and to drop invalid packets.=20
-> However, it=20
-> > is not possible prevent this attack when nothing separates the two=20
-> > boxes but twisted pair.
+> On Fri, 30 Sep 2005 sebastian.ionita@focomunicatii.ro wrote:
 >=20
-> Well, if all you have between the boxes is a twisted pair,=20
-> then identifying who sent the spoofed packet is trivial (you=20
-> know where the other end of that cable is, don't you?). And=20
-> also making anti-spoof rules is equially trivial. You know=20
-> both MAC and IPs that box should use so making a filter=20
-> ruleset to drop everything else is trivial. In this case you=20
-> should not even need to care about MAC spoofing and as the=20
-> MAC addrssing is only relevant between the two boxes..=20
-> (unless ofcourse if you act as a bridge to some other interface)
-
-Apologies for not being more precise... Yes the hub/dumb switch is
-necessary.
-
-> Problems to trace spoofing in an Ethernet arise if there is a=20
-> HUB or switch without MAC locking features. In HUB based=20
-> networks it is really bad as all you can tell is that the=20
-> packet came from some station in the network connected to=20
-> that HUB. In the switched network you may be able to find the=20
-> originating port by querying the switch for its MAC=20
-> forwarding table (each time a switch sees a new source MAC=20
-> address on a port it is registered in the MAC forwarding table).
-
-Which is essentially what I said above.
-
+> > Why doesn't iptables works with vlans interfaces?=20
+> > iptables -t mangle -A FORWARD -i eth0 -o eth1.11 -j MARK=20
+> --set-mark 4
+> > Gives me the error:
+> > host/network eth1.11 not found.
+>=20
+> Sounds like there may be a bug in your iptables command.
+>=20
+> Are you sure the command line given above is what you tried=20
+> to use? The=20
+> error seems to suggest a -s/-d option was used instead of -o.
 >=20
 > Regards
 > Henrik
 >=20
-
-Derick Anderson
+>=20
 
