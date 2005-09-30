@@ -1,13 +1,14 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
+From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
 Subject: Re: Iptables and vlan interfaces
-Date: Fri, 30 Sep 2005 13:37:24 +0200
-Message-ID: <20050930113724.GE25248@torres.l21.ma.zugschlus.de>
+Date: Fri, 30 Sep 2005 13:56:23 +0200
+Message-ID: <200509301356.23379.marcin.giedz@eulerhermes.pl>
 References: <20050930112129.19898.qmail@focomunicatii.ro>
 	<433D22A9.1060504@toxicnet.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <433D22A9.1060504@toxicnet.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +19,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@lists.netfilter.org
 
-On Fri, Sep 30, 2005 at 01:34:01PM +0200, Sascha Reissner wrote:
-> eth1.11 is the same physical device as eth1.
+Dnia pi=C4=85tek, 30 wrze=C5=9Bnia 2005 13:34, Sascha Reissner napisa=C5=82:
+> sebastian.ionita@focomunicatii.ro wrote:
+> > Why doesn't iptables works with vlans interfaces?
+> > iptables -t mangle -A FORWARD -i eth0 -o eth1.11 -j MARK --set-mark 4
+> > Gives me the error:
+> > host/network eth1.11 not found.
+> > I'm running kernel version 2.4.27. with iptables 1.2.9
+> > The eth1.11 exists works perfectly.
+> > Seby,
+>
+> eth1.11 is the same physical device as eth1. use eth1 in your rule and
+> you are fine. netfiler does IMHO not support filtering by logical
+> interface.
 
-Doesn't matter here.
+It does and it works excellent.=20
 
-> use eth1 in your rule and you are fine.
+here is short example:
+/usr/local/sbin/iptables -A FORWARD -i eth0.119 -p tcp -j ACCEPT -m state=20
+=2D-state NEW -m multiport --destination-port $TCP_FORWARD1
+/usr/local/sbin/iptables -A FORWARD -i eth0.119 -p tcp -j ACCEPT -m state=20
+=2D-state NEW -m multiport --destination-port $TCP_FORWARD2
 
-Bad advice. eth1 is most probably a completely different IP network.
+=46or me it seems like eth1.11 is not present on your system. What do get w=
+ith=20
+"ifconfig"?=20
 
-> netfiler does IMHO not support filtering by logical interface.
-
-It does. I do, however, not know why the original poster's commandline
-is not accepted as it seems to be OK on first sight.
-
-Greetings
-Marc
-
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
+Marcin
 
