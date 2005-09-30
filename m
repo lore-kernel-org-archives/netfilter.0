@@ -1,11 +1,9 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: ip_nat_mangle_udp_packet: undersized packet
-Date: Fri, 30 Sep 2005 23:22:09 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0509302321420.31223@filer.marasystems.com>
-References: <4226a8f0509301353n4f736156p@mail.gmail.com>
+From: Lore <skizzo82@yahoo.com>
+Subject: Destination_IP Field in packets coming from QUEUE
+Date: Sat, 1 Oct 2005 00:38:01 +0200 (CEST)
+Message-ID: <20050930223801.3269.qmail@web52810.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4226a8f0509301353n4f736156p@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,20 +14,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Caciano Machado <caciano@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, 30 Sep 2005, Caciano Machado wrote:
+Hi everybody...
 
-> Anyone can tell what is the meaning of this message. I'm getting a lot
-> of these warnings from kernel:
->
-> "ip_nat_mangle_udp_packet: undersized packet"
+I'm facing the problem to understand the destination
+of an OUTGOING tcp packet caught by the chain
+iptables -t filter -A OUTPUT -j QUEUE
 
-What kernel version?
+The destination address field in the ip header has my
+ip while the real destination is another.
 
-Regards
-Henrik
+Here I'd like to know if is a common behaviour that
+can be changed with some flags in the chain or there
+is anyway to know where the packet was addressed to
+(perhaps using the IPQ).
+
+Thanks in advance.
+
+Lore
+
+(I know I posted some sort of message like this but I
+figured out that the content was un-understandable...
+sorry for my english)
+
+
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
