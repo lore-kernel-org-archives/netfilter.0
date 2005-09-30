@@ -1,11 +1,11 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: RE: iptables spof address problem
-Date: Fri, 30 Sep 2005 14:21:57 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0509301414450.19019@filer.marasystems.com>
-References: <FAC4E024BF776842876169173CE2F0132821@mailbox.vikus.com>
+Subject: Re: Redirect Packets From Interface in Promiscuous Mode
+Date: Fri, 30 Sep 2005 14:29:55 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0509301422140.19019@filer.marasystems.com>
+References: <BAY103-F251017FCAC7E12DA438E6C968C0@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <FAC4E024BF776842876169173CE2F0132821@mailbox.vikus.com>
+In-Reply-To: <BAY103-F251017FCAC7E12DA438E6C968C0@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +18,54 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Derick Anderson <danderson@vikus.com>
+To: Rodre Ghorashi-Zadeh <rodrico7@hotmail.com>
 Cc: netfilter@lists.netfilter.org
 
-On Thu, 29 Sep 2005, Derick Anderson wrote:
+On Thu, 29 Sep 2005, Rodre Ghorashi-Zadeh wrote:
 
-> I reiterate: a properly spoofed packet is completely identical to a 
-> genuine one. It is not Netfilter's or the kernel stack's fault, it is a 
-> simple fact of life that bits are bits. With an intelligent switch this 
-> kind of attack can be stopped provided the switch is set to use a 1-to-1 
-> ratio of ports to MACs and to drop invalid packets. However, it is not 
-> possible prevent this attack when nothing separates the two boxes but 
-> twisted pair.
+> I have a problem that I am hoping someone can help me with. I am currently 
+> conducting some load testing on a test MySQL server that is destined to 
+> replace our current production MySQL server. What I want to do is send our 
+> current MySQL traffic, in real time, to the test MySQL server to measure the 
+> load in comparison with our current production MySQL server.
 
-Well, if all you have between the boxes is a twisted pair, then 
-identifying who sent the spoofed packet is trivial (you know where the 
-other end of that cable is, don't you?). And also making anti-spoof rules 
-is equially trivial. You know both MAC and IPs that box should use so 
-making a filter ruleset to drop everything else is trivial. In this case 
-you should not even need to care about MAC spoofing and as the MAC 
-addrssing is only relevant between the two boxes.. (unless ofcourse if you 
-act as a bridge to some other interface)
+Ok. But not at all trivial to do.
 
-Problems to trace spoofing in an Ethernet arise if there is a HUB or 
-switch without MAC locking features. In HUB based networks it is really 
-bad as all you can tell is that the packet came from some station in the 
-network connected to that HUB. In the switched network you may be able to 
-find the originating port by querying the switch for its MAC forwarding 
-table (each time a switch sees a new source MAC address on a port it is 
-registered in the MAC forwarding table).
+> What I have done so far is setup port mirroring on the switch that is shared 
+> by the Production MySQL server, the test MySQL server, and my Linux based 
+> management station, with the Linux based managment station sniffing the 
+> mirrored port of the Production MySQL server.
+
+Ok.
+
+> I am able to see the MySQL traffic going to the production MySQL server using 
+> tcpdump. For a next step what I want to be able to do is have iptables sniff 
+> the port (I set the interface into promiscuous mode using ifconfig), grab all 
+> packets that are destined for my Production MySQL server from the mirrored 
+> port, rewrite the source IP address to be my Linux based management stations 
+> IP address and rewrite the destination address to be my Test MySQL Servers IP 
+> address.
+
+This won't work. MySQL uses TCP and you can't mirror a TCP stream like 
+this.
+
+> I don't really care about the MySQL results returned to tthe Linux 
+> based management station, they can go to /dev/null for all I care, but I want 
+> to see the queries going through the Test MySQL server.
+
+Ok. This simplifies things somewhat.
+
+Can be done in two different manners. Both requires programming.
+
+a) By sniffing and using a TCP stream reassembly tool and when a MySQL 
+query has been reassembled from the TCP stream send it to the test server. 
+Drawbacks is that TCP stream reassembly is not always reliable (packets 
+may have been dropped and a number of other complications).
+
+b) Use a MySQL proxy via iptables REDIRECT and send each query to both 
+servers. This requires the intercepting box to be between the old server 
+and the network. Main drawback is that the source IP seen by the old 
+server will be changed to the address of the proxy.
 
 Regards
 Henrik
