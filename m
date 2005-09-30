@@ -1,13 +1,9 @@
-From: sebastian.ionita@focomunicatii.ro
-Subject: Re: Iptables and vlan interfaces
-Date: Fri, 30 Sep 2005 15:54:27 +0300
-Message-ID: <20050930125427.28160.qmail@focomunicatii.ro>
-References: <20050930112129.19898.qmail@focomunicatii.ro>
-	<Pine.LNX.4.61.0509301440560.19019@filer.marasystems.com>
+From: Lore <skizzo82@yahoo.com>
+Subject: LibIPQ, Reading the real destination Address in outgoin pkts
+Date: Fri, 30 Sep 2005 15:01:16 +0200 (CEST)
+Message-ID: <20050930130117.8093.qmail@web52813.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0509301440560.19019@filer.marasystems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +14,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Henrik Nordstrom writes: 
+Hi everybody.
 
-> On Fri, 30 Sep 2005 sebastian.ionita@focomunicatii.ro wrote: 
-> 
->> Why doesn't iptables works with vlans interfaces? iptables -t mangle -A 
->> FORWARD -i eth0 -o eth1.11 -j MARK --set-mark 4
->> Gives me the error:
->> host/network eth1.11 not found.
-> 
-> Sounds like there may be a bug in your iptables command. 
-> 
-> Are you sure the command line given above is what you tried to use? The 
-> error seems to suggest a -s/-d option was used instead of -o.
+I'm having problems trying to read the iphdr->daddr
+from a Packet read from the Queue.
+Expecting to find the real destination of the packet I
+find my own IP address.
 
-You are right .. it was my mistake .. :)). In the shell i typed the wrong 
-command, but when I wrote the e-mail I write the correct commnad. Sorry for 
-that. 
+The chain I used is 
+iptables -t filter -A OUTPUT -j QUEUE
+I tryied to use the nat table too but the result is
+the same.
 
-Seby, 
+Is there any way to avoid header change from iptables
+(if it's iptables'fault) or any way to solve the
+problem.
 
+Thanks in advance.
+bye
+
+
+		
+___________________________________ 
+Yahoo! Messenger: chiamate gratuite in tutto il mondo 
+http://it.messenger.yahoo.com
 
