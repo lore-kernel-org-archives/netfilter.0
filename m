@@ -1,9 +1,8 @@
-From: "Brent Wilkinson" <brent@air2data.com>
-Subject: Dynamic Natting or Mobile ip
-Date: Fri, 30 Sep 2005 10:52:18 -0600
-Message-ID: <25236.8535184816$1128099293@news.gmane.org>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCEMENT] ipset-2.2.4 released
+Date: Fri, 30 Sep 2005 18:57:16 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0509301853410.21327@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,33 +14,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-I am trying to figure out a feature I saw on a dlink router. 
+Hi,
 
-I am creating some routers/servers for a few hotels. There requirements say
-I must have a dynamic nat router. What it does is allow anyone with any
-static ip to be able to connect to the network and get internet access.
+I'm happy to announce the new version of ipset. The bugs fixed in this
+release and the new features are
 
-Example:
+- half-fixed memory allocation bug in iphash and nethash finally
+  completely fixed (bug reported by Nikolai Malykh)
+- restrictions to enter zero-valued entries into all non-hash type sets
+  were removed
+- too strict check on the set size of ipmap type was corrected
 
-Router/server
-Ip:192.168.100.1/24
-Dhcp server range: 192.168.100.50-192.168.100.200
+Now you are able to create ipmap type of sets which can contain
+all /16 network addresses :-).
 
-Example client
-Static ip: 10.1.2.47
-Subnet: 255.255.255.180
-Gateway: 10.1.2.1
-Dns: 1.1.1.1
+You can download the new version from http://ipset.netfilter.org/.
 
-What I want to do is allow the client through the network without changing
-there ip info. I have heard of something called mobile ip or dynamic
-natting. Is anyone familiar with what I am describing and/or has done it? If
-you have do you have any web pages that give information on it.
-
-Thanks
-
-Brent Wilkinson
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
