@@ -1,14 +1,11 @@
-From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
-Subject: Re: Iptables and vlan interfaces
-Date: Fri, 30 Sep 2005 13:56:23 +0200
-Message-ID: <200509301356.23379.marcin.giedz@eulerhermes.pl>
-References: <20050930112129.19898.qmail@focomunicatii.ro>
-	<433D22A9.1060504@toxicnet.de>
+From: "Baake, Matthias" <m.baake@porta.de>
+Subject: RE: Iptables and vlan interfaces
+Date: Fri, 30 Sep 2005 14:04:53 +0200
+Message-ID: <201E6F5AC48C274996A5AD8304FAEF860BFD60@p001ex03.porta.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <433D22A9.1060504@toxicnet.de>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,33 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+To: Marcin Giedz <marcin.giedz@eulerhermes.pl>
+Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
 
-Dnia pi=C4=85tek, 30 wrze=C5=9Bnia 2005 13:34, Sascha Reissner napisa=C5=82:
-> sebastian.ionita@focomunicatii.ro wrote:
-> > Why doesn't iptables works with vlans interfaces?
-> > iptables -t mangle -A FORWARD -i eth0 -o eth1.11 -j MARK --set-mark 4
-> > Gives me the error:
-> > host/network eth1.11 not found.
-> > I'm running kernel version 2.4.27. with iptables 1.2.9
-> > The eth1.11 exists works perfectly.
-> > Seby,
->
-> eth1.11 is the same physical device as eth1. use eth1 in your rule and
-> you are fine. netfiler does IMHO not support filtering by logical
-> interface.
-
-It does and it works excellent.=20
-
-here is short example:
-/usr/local/sbin/iptables -A FORWARD -i eth0.119 -p tcp -j ACCEPT -m state=20
-=2D-state NEW -m multiport --destination-port $TCP_FORWARD1
-/usr/local/sbin/iptables -A FORWARD -i eth0.119 -p tcp -j ACCEPT -m state=20
-=2D-state NEW -m multiport --destination-port $TCP_FORWARD2
-
-=46or me it seems like eth1.11 is not present on your system. What do get w=
-ith=20
-"ifconfig"?=20
-
-Marcin
+aGVsbG8gdGhlcmUsDQoNCnRoZSBmaWx0ZXJpbmcgd29ya3MgaW4gdGhlIF9maWx0ZXJfIHRhYmxl
+Lg0KYWZhaWsgdGhlcmUgaXMgbm8gc3VwcG9ydCB0byByb3V0ZSBsb2dpY2FsIGRldmljZXMgYXQg
+bGVhc3QgaW4gdGhlIG5hdCB0YWJsZSENCm1heWJlIHRoZSBzYW1lIGlzIGFwcGxpZWQgZm9yIHRo
+ZSBtYW5nbGUgdGFibGUuDQoNCmdyZWV0aW5ncyANCg0KL21hdHRoaWFzDQoNCj4gLS0tLS1Pcmln
+aW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbmV0ZmlsdGVyLWJvdW5jZXNAbGlzdHMubmV0Zmls
+dGVyLm9yZw0KPiBbbWFpbHRvOm5ldGZpbHRlci1ib3VuY2VzQGxpc3RzLm5ldGZpbHRlci5vcmdd
+T24gQmVoYWxmIE9mIA0KPiBNYXJjaW4gR2llZHoNCj4gU2VudDogRnJpZGF5LCBTZXB0ZW1iZXIg
+MzAsIDIwMDUgMTo1NiBQTQ0KPiBUbzogbmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmcNCj4g
+U3ViamVjdDogUmU6IElwdGFibGVzIGFuZCB2bGFuIGludGVyZmFjZXMNCj4gDQo+IA0KPiBEbmlh
+IHBpxIV0ZWssIDMwIHdyemXFm25pYSAyMDA1IDEzOjM0LCBTYXNjaGEgUmVpc3NuZXIgbmFwaXNh
+xYI6DQo+ID4gc2ViYXN0aWFuLmlvbml0YUBmb2NvbXVuaWNhdGlpLnJvIHdyb3RlOg0KPiA+ID4g
+V2h5IGRvZXNuJ3QgaXB0YWJsZXMgd29ya3Mgd2l0aCB2bGFucyBpbnRlcmZhY2VzPw0KPiA+ID4g
+aXB0YWJsZXMgLXQgbWFuZ2xlIC1BIEZPUldBUkQgLWkgZXRoMCAtbyBldGgxLjExIC1qIE1BUksg
+DQo+IC0tc2V0LW1hcmsgNA0KPiA+ID4gR2l2ZXMgbWUgdGhlIGVycm9yOg0KPiA+ID4gaG9zdC9u
+ZXR3b3JrIGV0aDEuMTEgbm90IGZvdW5kLg0KPiA+ID4gSSdtIHJ1bm5pbmcga2VybmVsIHZlcnNp
+b24gMi40LjI3LiB3aXRoIGlwdGFibGVzIDEuMi45DQo+ID4gPiBUaGUgZXRoMS4xMSBleGlzdHMg
+d29ya3MgcGVyZmVjdGx5Lg0KPiA+ID4gU2VieSwNCj4gPg0KPiA+IGV0aDEuMTEgaXMgdGhlIHNh
+bWUgcGh5c2ljYWwgZGV2aWNlIGFzIGV0aDEuIHVzZSBldGgxIGluIA0KPiB5b3VyIHJ1bGUgYW5k
+DQo+ID4geW91IGFyZSBmaW5lLiBuZXRmaWxlciBkb2VzIElNSE8gbm90IHN1cHBvcnQgZmlsdGVy
+aW5nIGJ5IGxvZ2ljYWwNCj4gPiBpbnRlcmZhY2UuDQo+IA0KPiBJdCBkb2VzIGFuZCBpdCB3b3Jr
+cyBleGNlbGxlbnQuIA0KPiANCj4gaGVyZSBpcyBzaG9ydCBleGFtcGxlOg0KPiAvdXNyL2xvY2Fs
+L3NiaW4vaXB0YWJsZXMgLUEgRk9SV0FSRCAtaSBldGgwLjExOSAtcCB0Y3AgLWogDQo+IEFDQ0VQ
+VCAtbSBzdGF0ZSANCj4gLS1zdGF0ZSBORVcgLW0gbXVsdGlwb3J0IC0tZGVzdGluYXRpb24tcG9y
+dCAkVENQX0ZPUldBUkQxDQo+IC91c3IvbG9jYWwvc2Jpbi9pcHRhYmxlcyAtQSBGT1JXQVJEIC1p
+IGV0aDAuMTE5IC1wIHRjcCAtaiANCj4gQUNDRVBUIC1tIHN0YXRlIA0KPiAtLXN0YXRlIE5FVyAt
+bSBtdWx0aXBvcnQgLS1kZXN0aW5hdGlvbi1wb3J0ICRUQ1BfRk9SV0FSRDINCj4gDQo+IEZvciBt
+ZSBpdCBzZWVtcyBsaWtlIGV0aDEuMTEgaXMgbm90IHByZXNlbnQgb24geW91ciBzeXN0ZW0uIA0K
+PiBXaGF0IGRvIGdldCB3aXRoIA0KPiAiaWZjb25maWciPyANCj4gDQo+IE1hcmNpbg0KPiANCj4g
+DQo=
 
