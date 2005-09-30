@@ -1,15 +1,15 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: Iptables and vlan interfaces
-Date: Fri, 30 Sep 2005 15:41:52 +0200
-Message-ID: <20050930134152.GG25248@torres.l21.ma.zugschlus.de>
+Date: Fri, 30 Sep 2005 08:55:11 -0500
+Message-ID: <200509300855.11169.rob0@gmx.co.uk>
 References: <20050930112129.19898.qmail@focomunicatii.ro>
-	<Pine.LNX.4.61.0509301440560.19019@filer.marasystems.com>
-	<20050930125427.28160.qmail@focomunicatii.ro>
 	<200509300839.15330.rob0@gmx.co.uk>
+	<20050930134152.GG25248@torres.l21.ma.zugschlus.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20050930134152.GG25248@torres.l21.ma.zugschlus.de>
 Content-Disposition: inline
-In-Reply-To: <200509300839.15330.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,25 +21,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Fri, Sep 30, 2005 at 08:39:15AM -0500, /dev/rob0 wrote:
-> Hmmm, I had always thought you couldn't use virtual interfaces.
-> # iptables -vI INPUT -i eth0:101
+On Friday 2005-September-30 08:41, Marc Haber wrote:
+> On Fri, Sep 30, 2005 at 08:39:15AM -0500, /dev/rob0 wrote:
+> > Hmmm, I had always thought you couldn't use virtual interfaces.
+> > # iptables -vI INPUT -i eth0:101
+>
+> You are obviously missing the BIG difference between an alias
+> interface and an interface connected to a VLAN.
 
-You are obviously missing the BIG difference between an alias
-interface and an interface connected to a VLAN.
+Obviously!
 
-Please refrain from giving advice if you do not _EXACTLY_ know that
-what you say is correct.
+> Please refrain from giving advice if you do not _EXACTLY_ know that
+> what you say is correct.
 
-Greetings
-Marc
-
+Please try to understand the difference between "giving advice" and 
+"asking a question."
 -- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
