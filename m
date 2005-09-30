@@ -1,11 +1,12 @@
-From: "Baake, Matthias" <m.baake@porta.de>
-Subject: RE: Iptables and vlan interfaces
-Date: Fri, 30 Sep 2005 14:04:53 +0200
-Message-ID: <201E6F5AC48C274996A5AD8304FAEF860BFD60@p001ex03.porta.local>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: iptables spof address problem
+Date: Fri, 30 Sep 2005 14:14:04 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0509301406070.19019@filer.marasystems.com>
+References: <E656E2CC1C5AEB42ACB00EB83122C7742E2EC6@farmer.vikus.com>
+	<433C2F1F.9070003@neostrada.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <433C2F1F.9070003@neostrada.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: Marcin Giedz <marcin.giedz@eulerhermes.pl>
-Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Piotr Holubniak <piotr.holubniak@neostrada.pl>
+Cc: netfilter@lists.netfilter.org, Derick Anderson <danderson@vikus.com>
 
-aGVsbG8gdGhlcmUsDQoNCnRoZSBmaWx0ZXJpbmcgd29ya3MgaW4gdGhlIF9maWx0ZXJfIHRhYmxl
-Lg0KYWZhaWsgdGhlcmUgaXMgbm8gc3VwcG9ydCB0byByb3V0ZSBsb2dpY2FsIGRldmljZXMgYXQg
-bGVhc3QgaW4gdGhlIG5hdCB0YWJsZSENCm1heWJlIHRoZSBzYW1lIGlzIGFwcGxpZWQgZm9yIHRo
-ZSBtYW5nbGUgdGFibGUuDQoNCmdyZWV0aW5ncyANCg0KL21hdHRoaWFzDQoNCj4gLS0tLS1Pcmln
-aW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbmV0ZmlsdGVyLWJvdW5jZXNAbGlzdHMubmV0Zmls
-dGVyLm9yZw0KPiBbbWFpbHRvOm5ldGZpbHRlci1ib3VuY2VzQGxpc3RzLm5ldGZpbHRlci5vcmdd
-T24gQmVoYWxmIE9mIA0KPiBNYXJjaW4gR2llZHoNCj4gU2VudDogRnJpZGF5LCBTZXB0ZW1iZXIg
-MzAsIDIwMDUgMTo1NiBQTQ0KPiBUbzogbmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmcNCj4g
-U3ViamVjdDogUmU6IElwdGFibGVzIGFuZCB2bGFuIGludGVyZmFjZXMNCj4gDQo+IA0KPiBEbmlh
-IHBpxIV0ZWssIDMwIHdyemXFm25pYSAyMDA1IDEzOjM0LCBTYXNjaGEgUmVpc3NuZXIgbmFwaXNh
-xYI6DQo+ID4gc2ViYXN0aWFuLmlvbml0YUBmb2NvbXVuaWNhdGlpLnJvIHdyb3RlOg0KPiA+ID4g
-V2h5IGRvZXNuJ3QgaXB0YWJsZXMgd29ya3Mgd2l0aCB2bGFucyBpbnRlcmZhY2VzPw0KPiA+ID4g
-aXB0YWJsZXMgLXQgbWFuZ2xlIC1BIEZPUldBUkQgLWkgZXRoMCAtbyBldGgxLjExIC1qIE1BUksg
-DQo+IC0tc2V0LW1hcmsgNA0KPiA+ID4gR2l2ZXMgbWUgdGhlIGVycm9yOg0KPiA+ID4gaG9zdC9u
-ZXR3b3JrIGV0aDEuMTEgbm90IGZvdW5kLg0KPiA+ID4gSSdtIHJ1bm5pbmcga2VybmVsIHZlcnNp
-b24gMi40LjI3LiB3aXRoIGlwdGFibGVzIDEuMi45DQo+ID4gPiBUaGUgZXRoMS4xMSBleGlzdHMg
-d29ya3MgcGVyZmVjdGx5Lg0KPiA+ID4gU2VieSwNCj4gPg0KPiA+IGV0aDEuMTEgaXMgdGhlIHNh
-bWUgcGh5c2ljYWwgZGV2aWNlIGFzIGV0aDEuIHVzZSBldGgxIGluIA0KPiB5b3VyIHJ1bGUgYW5k
-DQo+ID4geW91IGFyZSBmaW5lLiBuZXRmaWxlciBkb2VzIElNSE8gbm90IHN1cHBvcnQgZmlsdGVy
-aW5nIGJ5IGxvZ2ljYWwNCj4gPiBpbnRlcmZhY2UuDQo+IA0KPiBJdCBkb2VzIGFuZCBpdCB3b3Jr
-cyBleGNlbGxlbnQuIA0KPiANCj4gaGVyZSBpcyBzaG9ydCBleGFtcGxlOg0KPiAvdXNyL2xvY2Fs
-L3NiaW4vaXB0YWJsZXMgLUEgRk9SV0FSRCAtaSBldGgwLjExOSAtcCB0Y3AgLWogDQo+IEFDQ0VQ
-VCAtbSBzdGF0ZSANCj4gLS1zdGF0ZSBORVcgLW0gbXVsdGlwb3J0IC0tZGVzdGluYXRpb24tcG9y
-dCAkVENQX0ZPUldBUkQxDQo+IC91c3IvbG9jYWwvc2Jpbi9pcHRhYmxlcyAtQSBGT1JXQVJEIC1p
-IGV0aDAuMTE5IC1wIHRjcCAtaiANCj4gQUNDRVBUIC1tIHN0YXRlIA0KPiAtLXN0YXRlIE5FVyAt
-bSBtdWx0aXBvcnQgLS1kZXN0aW5hdGlvbi1wb3J0ICRUQ1BfRk9SV0FSRDINCj4gDQo+IEZvciBt
-ZSBpdCBzZWVtcyBsaWtlIGV0aDEuMTEgaXMgbm90IHByZXNlbnQgb24geW91ciBzeXN0ZW0uIA0K
-PiBXaGF0IGRvIGdldCB3aXRoIA0KPiAiaWZjb25maWciPyANCj4gDQo+IE1hcmNpbg0KPiANCj4g
-DQo=
+On Thu, 29 Sep 2005, Piotr Holubniak wrote:
+
+> In described by me scenario, attacker doesn't need to spoof MAC address to be 
+> unvisible, it is enaught to spoof IP. So funcjonality of "security port" is 
+> very limited. I belive that netfilter should allways display real MAC 
+> address. I don't know how to changet it.
+
+iptables sees the MAC address as it was received by the Linux box.
+
+A hacker spoofing is not invisible in a "security port" enabled network. 
+He can always be traced to his exact port from the sending MAC address as 
+the switch prevents him from sending packets with another source MAC.
+
+However, if the packet travels via a router before it reaches the firewall 
+then the original MAC addressing is implicitly lost by the routing (this 
+is a fact, nothing to be done about), and in such case tracing of the 
+actual user becomes a little harder at the firewall. But it can still be 
+traced to the originating switch port by looking at the packet in (or 
+before) the router.
+
+>> It's like printing out two copies of the same paper on two different
+>> copiers. Which one came from which copier? You can't tell. In fact it
+>> would probably be easier to figure that out as opposed to MAC spoofing.
+
+Bad example. Paper copiers are not exact and it is possible to determine 
+which copy was made on which copier by analyzing the errors in the copy.
+
+Regards
+Henrik
 
