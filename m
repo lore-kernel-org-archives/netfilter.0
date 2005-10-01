@@ -1,14 +1,10 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: NAT/POSTROUTING rules doesn't match packets
-Date: Sat, 1 Oct 2005 20:18:23 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510012011230.17163@filer.marasystems.com>
-References: <200510011806.52191.marek.zachara@conexe.pl>
-	<200510011827.15384.marek.zachara@conexe.pl>
-	<Pine.LNX.4.61.0510011859560.15331@filer.marasystems.com>
-	<200510012003.35387.marek.zachara@conexe.pl>
+From: Gioele Barabucci <dev@gioelebarabucci.com>
+Subject: Aren't these connections ESTABILISHED? (2nd take)
+Date: Sat, 01 Oct 2005 21:12:33 +0200
+Message-ID: <dhmn38$hsk$1@sea.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200510012003.35387.marek.zachara@conexe.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,39 +15,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Marek Zachara <marek.zachara@conexe.pl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sat, 1 Oct 2005, Marek Zachara wrote:
+I spend the last weeks doing experiments with iptables but still I have
+problems with connections that should be ESTABILISHED but are not.
 
-> irongate:~# tcpdump -ni eth1 udp port 4569
-> tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
-> listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
-> 19:56:41.784463 IP 10.0.0.250.4569 > 84.16.64.240.4569: UDP, length: 25
-> 19:56:43.785641 IP 10.0.0.250.4569 > 84.16.64.240.4569: UDP, length: 25
+Postfix does some DNS lookups on the DNS server (69.93.28.254). After a bit,
+iptables forget that the connection is ESTABILISHED and DROPs the reply.
 
-Odd..
+My logs are full of dropped packets like these
+05:32:33  69.93.28.254 53  myIP 2755  UDP
+05:32:33  69.93.28.254 53  myIP 2755  UDP
+05:32:53  69.93.28.254 53  myIP 2758  UDP
+05:32:53  69.93.28.254 53  myIP 2758  UDP
+05:33:13  69.93.28.254 53  myIP 2760  UDP
+05:33:13  69.93.28.254 53  myIP 2760  UDP
+05:33:34  69.93.28.254 53  myIP 2760  UDP
+05:33:34  69.93.28.254 53  myIP 2760  UDP
+05:33:34  69.93.28.254 53  myIP 2760  UDP
+05:33:34  69.93.28.254 53  myIP 2760  UDP
+05:38:08  69.93.28.254 53  myIP 2761  UDP
+05:38:08  69.93.28.254 53  myIP 2761  UDP
 
-> Any suggestions what i could be doing wrong?
+Here is my ruleset (BTW, I did not test much the "limit SMTP trafic", do you
+think that it is correct?)
 
-What does /proc/net/ip_conntrack say about the session?
+iptables -F
+iptables -X
 
-   grep 84.16.64.240 /proc/net/ip_conntrack
+echo "Default policies"
+iptables -P INPUT DROP
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD DROP
 
-udp      17 50 src=10.1.1.3 dst=10.1.1.1 sport=32793 dport=53 src=10.1.1.1 dst=10.1.1.3 sport=53 dport=32793 [ASSURED] use=1
+echo "Passthrough for known good trafic"
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i lo -j ACCEPT #accept internal connections
 
-the second number (50) is the current timeout of that session.
+echo "Allow only legal connection"
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j LOG --log-level
+"debug" --log-ip-options --log-tcp-options --log-prefix 'iptables INPUT
+DROP !SYN '
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
 
-the first src/dst/port pair is the original packet. The second pair is the 
-NAT info.
+echo "Limit smtp traffic"
+iptables -I INPUT -p tcp --dport smtp -i eth0 -m state --state NEW -m recent
+--set
+#iptables -I INPUT -p tcp --dport smtp -i eth0 -m state --state NEW -m
+recent --update --seconds 30 --hitcount 4 -j LOG --log-level "debug"
+--log-ip-options --log-tcp-options --log-prefix 'iptables INPUT DROP limit
+'
+iptables -I INPUT -p tcp --dport smtp -i eth0 -m state --state NEW -m recent
+--update --seconds 30 --hitcount 4 -j DROP
 
-And what timeouts is your kernel configured with?
+echo "Exceptions for INPUT"
+iptables -A INPUT -p tcp --dport ssh -j ACCEPT
+iptables -A INPUT -p tcp --dport smtp -j ACCEPT
+iptables -A INPUT -p tcp --dport pop3 -j ACCEPT
+iptables -A INPUT -p tcp --dport imap -j ACCEPT
+iptables -A INPUT -p tcp --dport http -j ACCEPT
+iptables -A INPUT -p icmp -j ACCEPT
 
-   cat /proc/sys/net/ipv4/netfilter/conntrack_udp_timeout
-   cat /proc/sys/net/ipv4/netfilter/conntrack_udp_timeout_stream
 
-Regards
-Henrik
+-- 
+Gioele <dev@gioelebarabucci.com>
+
 
