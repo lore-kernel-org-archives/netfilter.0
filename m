@@ -1,12 +1,11 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: NAT/POSTROUTING rules doesn't match packets
-Date: Sat, 1 Oct 2005 19:06:56 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510011859560.15331@filer.marasystems.com>
-References: <200510011806.52191.marek.zachara@conexe.pl>
-	<200510011827.15384.marek.zachara@conexe.pl>
+Subject: Re: Destination_IP Field in packets coming from QUEUE
+Date: Sat, 1 Oct 2005 19:46:17 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510011907310.15331@filer.marasystems.com>
+References: <20051001161831.75220.qmail@web52810.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200510011827.15384.marek.zachara@conexe.pl>
+In-Reply-To: <20051001161831.75220.qmail@web52810.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,34 +18,26 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Marek Zachara <marek.zachara@conexe.pl>
+To: Lore <skizzo82@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-On Sat, 1 Oct 2005, Marek Zachara wrote:
+On Sat, 1 Oct 2005, Lore wrote:
 
-> Anyway, i have just noticed that not only POSTROUTING but also PREROUTING in
-> the NAT table don't match packets as they should. So probably the issue is
-> related to NAT table.
+> Hi, At the moment I'm not able to run the program as
+> root. But what follow is the code that shows me the
+> wrong IP.
 
-The NAT table is a bit special. This table only sees the very first packet 
-of each new conntrack session. For all consequtive packets of the same 
-session the same NAT rules is automatically used.
+>    printf("S_ADDR:%s,D_ADDR:%s\n",
+>                    inet_ntoa(iph->saddr),
+>                    inet_ntoa(iph->daddr));
 
-What this means is
+inet_ntoa can not be used like this. Each call to inet_ntoa overwrites the 
+result string. (see man inet_ntoa)
 
-   a) You can not change NAT for a session while it is running
+The following will give better results:
 
-   b) When you add NAT rules they only start to apply on the next session. 
-Traffic flows already seen won't be NAT:ed.
-
-You did not tell what kind of traffic flows you are having, but the rule 
-fragments you show is based on UDP. UDP sessions are tracked by the
-
-   source IP, port, destination IP, port  (and the reverse)
-
-once a such pakcet has been seen the UDP session persists in conntrack/NAT 
-until no matching packets have been seen for the udp conntrack timeout 
-(usually 180 seconds).
+     printf("S_ADDR:%s", inet_ntoa(iph->saddr));
+     printf(",D_ADDR:%s\n", inet_ntoa(iph->daddr));
 
 Regards
 Henrik
