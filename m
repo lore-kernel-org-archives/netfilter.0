@@ -1,14 +1,16 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: Aren't these connections ESTABILISHED? (2nd take)
-Date: Sun, 2 Oct 2005 14:16:38 -0500
-Message-ID: <200510021416.39103.rob0@gmx.co.uk>
+Date: Sun, 2 Oct 2005 22:23:05 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0510022155370.26361@blackhole.kfki.hu>
 References: <dhmn38$hsk$1@sea.gmane.org> <200510011907.27026.rob0@gmx.co.uk>
 	<Pine.LNX.4.61.0510020410200.21519@filer.marasystems.com>
+	<dhnoqq$bq8$1@sea.gmane.org>
+	<Pine.LNX.4.61.0510021142470.6283@filer.marasystems.com>
+	<Pine.LNX.4.58.0510021534200.25897@blackhole.kfki.hu>
+	<Pine.LNX.4.61.0510021622210.9126@filer.marasystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0510020410200.21519@filer.marasystems.com>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0510021622210.9126@filer.marasystems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,70 +21,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: Robert Nichols <rnicholsNOSPAM@comcast.net>, Netfilter Developers <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
 
-On Saturday 2005-October-01 21:16, Henrik Nordstrom wrote:
-> On Sat, 1 Oct 2005, /dev/rob0 wrote:
-> > Also, I'm not sure it would do anything at all, because there
-> > cannot be that many --state NEW connections in such a short time.
-> > Conntrack would call those "RELATED". I think you should try --syn,
-> > not --state NEW.
+On Sun, 2 Oct 2005, Henrik Nordstrom wrote:
+
+> On Sun, 2 Oct 2005, Jozsef Kadlecsik wrote:
 >
-> The syn part is correct, but not RELATED.
+> > If a FIN receives which does not belong to any existing connection in
+> > the conntrack table, which state should we assign to the "new" connection
+> > "established" by the FIN? Was it the first FIN (half-closed session) or
+> > the second FIN from the other direction?
+>
+> If you assume it's the second then it's a good approximation, and
+> sufficient to push the TCP on the receiving host into a state from which
+> there is a guaranteed timeout as it's then only waiting on itself to
+> finish what it is doing.
 
-I know 2 things: RTFM and experience. From The Fine Manual: " ... 
-RELATED meaning that the packet is starting a new connection, but is 
-associated with an existing connection, such as an FTP data transfer, 
-or an ICMP error."
+But that relies on the assumption that the receiver side wants to close
+the session as well. If it enters the CLOSE_WAIT state instead, the
+connection will hang anyway in spite of letting through the FIN and
+assuming the LAST_ACK state.
 
-How is this association known to conntrack?
+However how would conntrack loose an (established) connection? Or are we
+speaking of loading in conntrack "on the fly" when there are already
+established connections flowing through the firewall? That's doable
+but hairy and unreliable anyway due to the lost window scaling parameters.
 
-Experience tells me that my little ssh attack blocking ploy using -m 
-limit did not work if a --state RELATED,ESTABLISHED -j ACCEPT rule 
-preceded it, but it did/does work if the rule matches only --state 
-ESTABLISHED.
+> If the FIN is dropped then communication may stall indefinitely unless the
+> protocol is using an application level timeout or TCP keepalive.
+>
+> > I dunno how a lone RST could signal to pick up a connection.
+>
+> It should be the same as a RST in an existing connection, no more, not
+> much less. It has some value to the receiving host telling it to shut down
+> a matching TCP. But this is considerably less important than the FIN as
+> the RST is very unreliable anyway and protocols using initiated RST (not
+> in direct response to a received packet) ashould have appropriate
+> application level timeouts on their connections.
 
-My inference therefrom was that the association is determined from the 
-IP addresses. For example if my MTA makes an outbound connection to 
-send mail to a remote site, and that site does an identd query, we have 
-a RELATED connection.
+Somehow I have got bad feelings on passing random RST segments.
 
-> each time a new connection is seen (unique source/destination/ports)
-> the first packet is NEW, simply by the fact that the connection is
-> not yet known to conntrack.
+It is assumed (I think) that the hung connection is in the established
+state. That does not hurt the host, does not pose as a possible DoS
+situation or bottleneck. It also does not prevent establishing a new
+connection over the hung one, we make special efforts for enabling that.
 
-TFM does appear to contradict this opinion. I'm unable to check the 
-source code for the definite answer. (Unable to understand the source, 
-I mean.) If you have done so please do clear up these issues for us.
-
-> conntrack calls syn retransmits on already accepted connections as
-> ESTABLISHED.
-
-Yes, since conntrack itself is protocol-agnostic it won't know or care 
-about TCP flags.
-
-> RELATED is "NEW" on other traffic flows which forms a known related
-> connection to a already known connection. For example the data
-> channel in the FTP protocol.
-
-Here again conntrack is protocol-agnostic. You and I know that with FTP 
-we talk to the server on its 21/tcp, and when we try to GET from it we 
-will expect the server to connect back to our port 20/tcp.
-
-I do not believe that conntrack knows that. How it sees an FTP data 
-connection is probably no different from my SMTP->out in<-identd 
-example. It knows it has an ESTABLISHED connection between those two 
-addresses, but not of any protocol relationship (because in this 
-example there is none; identd checking is not defined in SMTP.)
-
-> NEW is not related to syn, even if most TCP packets with state NEW is
-> syn packets. Any packet from a TCP (or UDP) session not yet known to
-> conntrack is NEW, even a TCP RST packet.
-
-Sure, conntrack won't care about protocol features. But precisely how 
-are you suggesting the determination of RELATED state is made?
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
