@@ -1,11 +1,14 @@
-From: Lore <skizzo82@yahoo.com>
-Subject: Re: Destination_IP Field in packets coming from QUEUE
-Date: Sun, 2 Oct 2005 20:58:30 +0200 (CEST)
-Message-ID: <20051002185830.61776.qmail@web52811.mail.yahoo.com>
-References: <Pine.LNX.4.61.0510021448040.7084@filer.marasystems.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Aren't these connections ESTABILISHED? (2nd take)
+Date: Sun, 2 Oct 2005 14:16:38 -0500
+Message-ID: <200510021416.39103.rob0@gmx.co.uk>
+References: <dhmn38$hsk$1@sea.gmane.org> <200510011907.27026.rob0@gmx.co.uk>
+	<Pine.LNX.4.61.0510020410200.21519@filer.marasystems.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0510021448040.7084@filer.marasystems.com>
+In-Reply-To: <Pine.LNX.4.61.0510020410200.21519@filer.marasystems.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +20,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
--- Henrik Nordstrom <hno@marasystems.com> ha scritto: 
+On Saturday 2005-October-01 21:16, Henrik Nordstrom wrote:
+> On Sat, 1 Oct 2005, /dev/rob0 wrote:
+> > Also, I'm not sure it would do anything at all, because there
+> > cannot be that many --state NEW connections in such a short time.
+> > Conntrack would call those "RELATED". I think you should try --syn,
+> > not --state NEW.
+>
+> The syn part is correct, but not RELATED.
 
-> May I ask yhat subject are you writing about?
-> 
-> Regards
-> Henrik
-> 
+I know 2 things: RTFM and experience. From The Fine Manual: " ... 
+RELATED meaning that the packet is starting a new connection, but is 
+associated with an existing connection, such as an FTP data transfer, 
+or an ICMP error."
 
-For shure :)
-I'm writing (tonight/tomorrow it will be finally
-tested on different networks) a daemon for linux that
-keeps tcp connections alive on multihoming devices.
-It works as follows: when a linux box with multiple
-network interfaces creates a tcp connection with
-another host (both running the daemon), for instance
-via an ethernet adapter, it can leave the current
-media and keep up the tcp connection using one of the
-others adapters available (fiber, wireless, gprs) or
-(in the case of simple ip reconfiguration) it can
-simply move from an access point with a particular
-subnet to another (with a completely different
-subnet), without interrupting the connection.
+How is this association known to conntrack?
 
-I hope to move the code (that at the moment uses
-LibIPQ) to kernel to increase performances.
-When I will degree the project will be released under
-the GPL 2 License
+Experience tells me that my little ssh attack blocking ploy using -m 
+limit did not work if a --state RELATED,ESTABLISHED -j ACCEPT rule 
+preceded it, but it did/does work if the rule matches only --state 
+ESTABLISHED.
 
-What do you thing about it? I just wanted to do
-something that wasn't destined to end on shelf
-collecting dust... Hope it will be helpfull.
+My inference therefrom was that the association is determined from the 
+IP addresses. For example if my MTA makes an outbound connection to 
+send mail to a remote site, and that site does an identd query, we have 
+a RELATED connection.
 
-Lore
+> each time a new connection is seen (unique source/destination/ports)
+> the first packet is NEW, simply by the fact that the connection is
+> not yet known to conntrack.
 
+TFM does appear to contradict this opinion. I'm unable to check the 
+source code for the definite answer. (Unable to understand the source, 
+I mean.) If you have done so please do clear up these issues for us.
 
-	
+> conntrack calls syn retransmits on already accepted connections as
+> ESTABLISHED.
 
-	
-		
-___________________________________ 
-Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
-http://mail.yahoo.it
+Yes, since conntrack itself is protocol-agnostic it won't know or care 
+about TCP flags.
+
+> RELATED is "NEW" on other traffic flows which forms a known related
+> connection to a already known connection. For example the data
+> channel in the FTP protocol.
+
+Here again conntrack is protocol-agnostic. You and I know that with FTP 
+we talk to the server on its 21/tcp, and when we try to GET from it we 
+will expect the server to connect back to our port 20/tcp.
+
+I do not believe that conntrack knows that. How it sees an FTP data 
+connection is probably no different from my SMTP->out in<-identd 
+example. It knows it has an ESTABLISHED connection between those two 
+addresses, but not of any protocol relationship (because in this 
+example there is none; identd checking is not defined in SMTP.)
+
+> NEW is not related to syn, even if most TCP packets with state NEW is
+> syn packets. Any packet from a TCP (or UDP) session not yet known to
+> conntrack is NEW, even a TCP RST packet.
+
+Sure, conntrack won't care about protocol features. But precisely how 
+are you suggesting the determination of RELATED state is made?
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
