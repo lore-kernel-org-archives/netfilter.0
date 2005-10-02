@@ -1,17 +1,14 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: Aren't these connections ESTABILISHED? (2nd take)
-Date: Sun, 2 Oct 2005 23:08:58 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0510022306040.26492@blackhole.kfki.hu>
-References: <dhmn38$hsk$1@sea.gmane.org> <200510011907.27026.rob0@gmx.co.uk>
-	<Pine.LNX.4.61.0510020410200.21519@filer.marasystems.com>
-	<dhnoqq$bq8$1@sea.gmane.org>
-	<Pine.LNX.4.61.0510021142470.6283@filer.marasystems.com>
-	<Pine.LNX.4.58.0510021534200.25897@blackhole.kfki.hu>
-	<Pine.LNX.4.61.0510021622210.9126@filer.marasystems.com>
-	<Pine.LNX.4.58.0510022155370.26361@blackhole.kfki.hu>
+Date: Sun, 2 Oct 2005 16:13:23 -0500
+Message-ID: <200510021613.23410.rob0@gmx.co.uk>
+References: <dhmn38$hsk$1@sea.gmane.org> <200510021416.39103.rob0@gmx.co.uk>
+	<Pine.LNX.4.58.0510022225450.26361@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0510022155370.26361@blackhole.kfki.hu>
+In-Reply-To: <Pine.LNX.4.58.0510022225450.26361@blackhole.kfki.hu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,45 +19,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: Robert Nichols <rnicholsNOSPAM@comcast.net>, Netfilter Developers <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, 2 Oct 2005, Jozsef Kadlecsik wrote:
-
-> On Sun, 2 Oct 2005, Henrik Nordstrom wrote:
->
-> > On Sun, 2 Oct 2005, Jozsef Kadlecsik wrote:
+On Sunday 2005-October-02 15:38, Jozsef Kadlecsik wrote:
+> > I know 2 things: RTFM and experience. From The Fine Manual: " ...
+> > RELATED meaning that the packet is starting a new connection, but
+> > is associated with an existing connection, such as an FTP data
+> > transfer, or an ICMP error."
 > >
-> > > If a FIN receives which does not belong to any existing connection in
-> > > the conntrack table, which state should we assign to the "new" connection
-> > > "established" by the FIN? Was it the first FIN (half-closed session) or
-> > > the second FIN from the other direction?
-> >
-> > If you assume it's the second then it's a good approximation, and
-> > sufficient to push the TCP on the receiving host into a state from which
-> > there is a guaranteed timeout as it's then only waiting on itself to
-> > finish what it is doing.
+> > How is this association known to conntrack?
 >
-> But that relies on the assumption that the receiver side wants to close
-> the session as well. If it enters the CLOSE_WAIT state instead, the
-> connection will hang anyway in spite of letting through the FIN and
-> assuming the LAST_ACK state.
+> There are protocol-dependent helper modules, like ip_conntrack_ftp
+> which job is to figure out the data channel parameters (RELATED
+> connections) from the commands and messages issued/passed on the
+> command channel.
 
-Hmmm, I must correct myself: the conntrack entry might get timed out, but
-then seeing the pure ACKs it picks up the connection again. Still:
+Are you saying that RELATED is only known through the use of helper 
+modules?
 
-> However how would conntrack loose an (established) connection? Or are we
-> speaking of loading in conntrack "on the fly" when there are already
-> established connections flowing through the firewall? That's doable
-> but hairy and unreliable anyway due to the lost window scaling parameters.
+> > Experience tells me that my little ssh attack blocking ploy using
+> > -m limit did not work if a --state RELATED,ESTABLISHED -j ACCEPT
+> > rule preceded it, but it did/does work if the rule matches only
+> > --state ESTABLISHED.
+>
+> Without knowing the exact rules one cannot explain why you found
+> that.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I had what amounted to this:
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p tcp --dport ssh -j Ssh
+-A Ssh -m limit --limit 3/m --limit-burst 3 -j ACCEPT
+-A Ssh -j DROP
+
+That does nothing to deter the SSH attack bots. This works, however:
+-A INPUT -p tcp --dport ssh -j Ssh
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A Ssh -m state --state ESTABLISHED -j ACCEPT
+-A Ssh -m limit --limit 3/m --limit-burst 3 -j ACCEPT
+-A Ssh -j DROP
+
+The fundamental difference of course is that --state RELATED are not 
+accepted before the --limit.
+
+An SSH attack bot is a brute force attempt to gain shell access through 
+common usernames and passwords. They scan for open sshd's on 22/tcp and 
+then do this. Each connection (--syn) tries one username/password 
+combination. They keep coming back with dozens of these whenever an 
+open sshd has been found. If you run sshd open to the Internet you 
+probably have seen these attacks in your logs.
+
+Each subsequent --syn packet has the same source IP, and the same 
+destination IP and port, as the first one which is by now in --state 
+ESTABLISHED.
+
+So you are telling me that those are not --state RELATED? My firewall 
+disagrees. The rules above are blocking SSH brute force attacks after 
+the 3rd attempt.
+
+> > My inference therefrom was that the association is determined from
+> > the IP addresses. For example if my MTA makes an outbound
+> > connection to send mail to a remote site, and that site does an
+> > identd query, we have a RELATED connection.
+>
+> No, there is no helper module for such a task.
+
+Okay, so I think we need some more explicit wording in the 
+documentation. What is RELATED? I have not found anything which 
+explains it completely.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
