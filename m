@@ -1,11 +1,11 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: masquerade mac address
-Date: Mon, 3 Oct 2005 20:03:54 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510032000470.31068@filer.marasystems.com>
-References: <fa66ff1a0510031027l3964f8cbg3cf24896e33c9@mail.gmail.com>
+From: "Henning Riis Rasmussen" <hrr@hkkf.dk>
+Subject: SV: Masquerade and dhcp lease renewal - what happens?
+Date: Mon, 3 Oct 2005 20:50:09 +0200
+Message-ID: <FBE2D879EA1A434D94659001D0C3647A045039@kbh1.hkkf>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <fa66ff1a0510031027l3964f8cbg3cf24896e33c9@mail.gmail.com>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +16,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: HouCheng Lee <houchen1@umbc.edu>
-Cc: Netfilter Users <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 3 Oct 2005, HouCheng Lee wrote:
+> Fra: Henrik Nordstrom [mailto:hno@marasystems.com]=20
+> Sendt: 3. oktober 2005 20:00
+> Til: Henning Riis Rasmussen
+> Cc: netfilter@lists.netfilter.org
+> Emne: Re: Masquerade and dhcp lease renewal - what happens?
+>=20
+> On Mon, 3 Oct 2005, Henning Riis Rasmussen wrote:
+>=20
+> > My ISP (Telia, Sweden) uses a DHCP lease time of 10 minutes=20
+> leading to=20
+> > constant renewal of the lease.
+> >
+> > If I use "-j masquerade" instead of "-j snat" I cannot have any=20
+> > longlived connections (they all die with "new not syn" or=20
+> "invalid").
+>=20
+> Seems your DHCP server is resetting interface (down/up) on=20
+> each renewal then.
+>=20
+> Does "tcpdump -i eth0" surive a renewal? If not you should=20
+> defeintely look into using another DHCP client.
 
-> My problem is that my NAT is behind a firewall (controlled by the SA), 
-> and the firewall will check the MAC address of outgoing packet. The eth0 
-> of the NAT is the only legal card that allows to go outside.
+Yes, tcpdump does survive and any longlived connections initiated by the
+firewall itself (e.g. a large download) survives too, while the same
+download attempted from any client on the LAN dies.
 
-Any packets going via a Linux router is automatically given the source MAC 
-of the interface the packet leaves the Linux router on. This happens even 
-if you do not NAT the traffic.
+The DHCP client I'm using is the one from isc.org (but I suspect Gentoo
+modifies its default behaviour).
 
-> Because the NAT only change the source ip address of packets,
-> the machines behind NAT are not allowed to go outside
-> because of the lack of legal mac address.
+>=20
+> > What is supposed to happen to the masquerade nat entries=20
+> when a dhcp=20
+> > renewal happens, particularly one that doesn't actually=20
+> change the IP=20
+> > address to a new one?
+>=20
+> In 2.6.13 the connections is cleared from conntrack if the IP=20
+> address is deleted or if the interface is brought down.
 
-The MAC is changed. Most likely the ISP is looking into something else as 
-well such as the TTL of the packet (some is known to do this to prevent 
-the use of "broadband routers" to connect multiple computers).
+I just upgraded the kernel to 2.6.12.5 but that didn't change anything.
 
-If all you need is to provide web access then the easiest solution is 
-probably to run a proxy such as Squid.
-
-Regards
-Henrik
+>=20
+> Regards
+> Henrik
+>=20
 
