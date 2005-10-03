@@ -1,17 +1,14 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Re: Iptables and vlan interfaces
-Date: Mon, 3 Oct 2005 09:44:44 +0200
-Message-ID: <20051003074444.GA27873@torres.l21.ma.zugschlus.de>
-References: <20050930112129.19898.qmail@focomunicatii.ro>
-	<Pine.LNX.4.61.0509301440560.19019@filer.marasystems.com>
-	<20050930125427.28160.qmail@focomunicatii.ro>
-	<200509300839.15330.rob0@gmx.co.uk>
-	<Pine.LNX.4.61.0509301706580.24680@filer.marasystems.com>
-	<4340D42B.2070106@india.tejasnetworks.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: pptp-conntrack-nat & kernel 2.6.11
+Date: Mon, 3 Oct 2005 09:51:48 +0200
+Message-ID: <20051003075148.GQ4168@sunbeam.de.gnumonks.org>
+References: <5a335a3d0510021106l303a056bu@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zXAsBmU9x0sF79Nf"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <4340D42B.2070106@india.tejasnetworks.com>
+In-Reply-To: <5a335a3d0510021106l303a056bu@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,29 +19,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Antonio <anton.ananich@gmail.com>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Mon, Oct 03, 2005 at 12:18:11PM +0530, Aseem Rastogi wrote:
-> i have been following this post rather keenly. it now seems to have died 
-> down. but still i am not able to understand what is a vlan interface. 
-> can somebody please give me some pointer where i can read about this. 
-> vlan i thought is a l2 concept and should have nothing to do with l3.
 
-http://en.wikipedia.org/wiki/Vlan might be a good start.
+--zXAsBmU9x0sF79Nf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-While VLANs are basically a layer 2 concept, you somehow need to reach
-them from upper layers. This is accomplished by having "virtual
-interfaces" which are "connected" to the VLAN and feel just like a
-physical interface on a physical LAN from the software side.
+On Sun, Oct 02, 2005 at 09:06:56PM +0300, Antonio wrote:
+> Dear Harald!
+>=20
+> I have read that pptp-conntrack-nat patch does not work with kernels >
+> 2.6.10. So I'd like to ask you if this is temporary? What can you
+> advice me to solve this fault? Can I help to solve this problem?
 
-Greetings
-Marc
+2.6.14 has pptp conntrack/nat in mainline, so I recommend either using
+2.6.14-rc3, or wait until 2.6.14 final is reelased.
 
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
+I didn't do any intermediate ports for 2.6.11. 2.6.12 and 2.6.13.
+
+Though it shouldn't be all that difficult to backport the (new,
+pptp-conntrack-3.0) code from 2.6.14-rc3, at least to 2.6.13.  Please
+don't forward-port the old code, since there were a number of issues
+fixed by the new code.
+
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--zXAsBmU9x0sF79Nf
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQFDQOMUXaXGVTD0i/8RAsISAKCDnClJFJvFku4TLBszzdrTKF/DVACcD+AW
+nieQHdHIOqKKqTuYcQ8a+uA=
+=zLmq
+-----END PGP SIGNATURE-----
+
+--zXAsBmU9x0sF79Nf--
 
