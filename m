@@ -1,11 +1,11 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Masquerade and dhcp lease renewal - what happens?
-Date: Mon, 3 Oct 2005 20:00:22 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510031833350.31068@filer.marasystems.com>
-References: <FBE2D879EA1A434D94659001D0C3647A045037@kbh1.hkkf>
+Subject: Re: masquerade mac address
+Date: Mon, 3 Oct 2005 20:03:54 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510032000470.31068@filer.marasystems.com>
+References: <fa66ff1a0510031027l3964f8cbg3cf24896e33c9@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <FBE2D879EA1A434D94659001D0C3647A045037@kbh1.hkkf>
+In-Reply-To: <fa66ff1a0510031027l3964f8cbg3cf24896e33c9@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +18,29 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Henning Riis Rasmussen <hrr@hkkf.dk>
-Cc: netfilter@lists.netfilter.org
+To: HouCheng Lee <houchen1@umbc.edu>
+Cc: Netfilter Users <netfilter@lists.netfilter.org>
 
-On Mon, 3 Oct 2005, Henning Riis Rasmussen wrote:
+On Mon, 3 Oct 2005, HouCheng Lee wrote:
 
-> My ISP (Telia, Sweden) uses a DHCP lease time of 10 minutes leading to
-> constant renewal of the lease.
->
-> If I use "-j masquerade" instead of "-j snat" I cannot have any
-> longlived connections (they all die with "new not syn" or "invalid").
+> My problem is that my NAT is behind a firewall (controlled by the SA), 
+> and the firewall will check the MAC address of outgoing packet. The eth0 
+> of the NAT is the only legal card that allows to go outside.
 
-Seems your DHCP server is resetting interface (down/up) on each renewal 
-then.
+Any packets going via a Linux router is automatically given the source MAC 
+of the interface the packet leaves the Linux router on. This happens even 
+if you do not NAT the traffic.
 
-Does "tcpdump -i eth0" surive a renewal? If not you should defeintely look 
-into using another DHCP client.
+> Because the NAT only change the source ip address of packets,
+> the machines behind NAT are not allowed to go outside
+> because of the lack of legal mac address.
 
-> What is supposed to happen to the masquerade nat entries when a dhcp
-> renewal happens, particularly one that doesn't actually change the IP
-> address to a new one?
+The MAC is changed. Most likely the ISP is looking into something else as 
+well such as the TTL of the packet (some is known to do this to prevent 
+the use of "broadband routers" to connect multiple computers).
 
-In 2.6.13 the connections is cleared from conntrack if the IP address is 
-deleted or if the interface is brought down.
+If all you need is to provide web access then the easiest solution is 
+probably to run a proxy such as Squid.
 
 Regards
 Henrik
