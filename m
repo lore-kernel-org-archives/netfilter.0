@@ -1,18 +1,12 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Iptables and vlan interfaces
-Date: Mon, 3 Oct 2005 14:46:39 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510031435520.24889@filer.marasystems.com>
-References: <20050930112129.19898.qmail@focomunicatii.ro>
-	<Pine.LNX.4.61.0509301440560.19019@filer.marasystems.com>
-	<20050930125427.28160.qmail@focomunicatii.ro>
-	<200509300839.15330.rob0@gmx.co.uk>
-	<Pine.LNX.4.61.0509301706580.24680@filer.marasystems.com>
-	<4340D42B.2070106@india.tejasnetworks.com>
-	<Pine.LNX.4.61.0510031035150.22605@filer.marasystems.com>
-	<20051003092435.GH27873@torres.l21.ma.zugschlus.de>
+From: afshin lamei <afshinlamei@gmail.com>
+Subject: psd match false positives?
+Date: Mon, 3 Oct 2005 17:45:53 +0330
+Message-ID: <3115d56e05100307153c99ebfb@mail.gmail.com>
+Reply-To: afshin lamei <afshinlamei@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051003092435.GH27873@torres.l21.ma.zugschlus.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,47 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Marc Haber <mh+netfilter@zugschlus.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Mon, 3 Oct 2005, Marc Haber wrote:
+hi all,
+I am using the "port scan match" with its default values, my rules are like
+this:
+iptables -A INPUT -m psd -j LOG --log-prefix "port scan:" // log the port
+scan
+iptables -A INPUT -m psd -j DROP // Drop it silently
 
-> Gee, I didn't know that. How is the different MAC address set? Naively
-> with ip link set dev eth0.101 address <new-mac>?
+one of my DNS servers is 4.2.2.4 <http://4.2.2.4> , and I'm seeing these
+logs, which say the 4.2.2.4 <http://4.2.2.4> is port scanning my box
+(external interface: 192.168.100.151 <http://192.168.100.151>) !!
 
-Yes.
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
+.2.4>DST=3D
+192.168.100.151 <http://192.168.100.151> LEN=3D8 PROTO=3DUDP SPT=3D53 DPT=
+=3D32769
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
+.2.4>DST=3D
+192.168.100.151 <http://192.168.100.151> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
+=3D32761
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
+.2.4>DST=3D
+192.168.100.151 <http://192.168.100.151> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
+=3D32773
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
+.2.4>DST=3D
+192.168.100.151 <http://192.168.100.151> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
+=3D32775
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
+.2.4>DST=3D
+192.168.100.151 <http://192.168.100.151> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
+=3D32780
 
-> Does this work with all drivers
-
-Nearly all.
-
-> will it give a performance impact (such as requiring the phyiscal 
-> interface to run promisc)?
-
-It will most likely make the physical interface run in promiscious mode 
-yes.
-
-Some NIC chips support having MAC filters accepting more than one MAC and 
-on these it is possible the interface does not go into promiscious mode, 
-but most NICs do not have this capability.
-
-But in either case this is rarely a performance impact these days as the 
-traffic is heavily filtered by the network switch anyway and very few 
-frames is seen on the physical network connection with another destination 
-MAC.
-
-
-While talking on this there is also another very interesting virtual 
-network inteface type available for Linux, namely MAC based VLANs. This 
-allows you to create multiple virtual network interfaces each with their 
-own MAC but sharing the same physical connection. This is not in the 
-standard VLAN driver of Linux but available from the same page as vconfig 
-mentioned before. Combined with the arp_filter functionality this can 
-provide quite interesting solutions to virtual hosting, router redundancy 
-etc.
-
-Regards
-Henrik
-
+It seems to be a false positive, isn't it? if so, dropping them will cause
+problems, so what should i do?
+regards,
+afshin
