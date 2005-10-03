@@ -1,11 +1,12 @@
-From: "Henning Riis Rasmussen" <hrr@hkkf.dk>
-Subject: Masquerade and dhcp lease renewal - what happens?
-Date: Mon, 3 Oct 2005 16:57:27 +0200
-Message-ID: <FBE2D879EA1A434D94659001D0C3647A045037@kbh1.hkkf>
+From: HouCheng Lee <houchen1@umbc.edu>
+Subject: masquerade mac address
+Date: Mon, 3 Oct 2005 13:27:23 -0400
+Message-ID: <fa66ff1a0510031027l3964f8cbg3cf24896e33c9@mail.gmail.com>
+Reply-To: houchen1@umbc.edu
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-content-class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +20,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello :)
+Hi,
 
-I have a problem with a Gentoo box that I'm using as firewall at home
-(vanilla kernel 2.6.11.11, iptables 1.3.2, dhclient 3.0.1).
+When using NAT, I often use
+"iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
+to masquerade the source IP.
 
-I have an ADSL connection with DHCP assigned dynamic IP address, so I
-use "-j masquerade $WAN_IF" to NAT all traffic destined for the
-Internet.
+My problem is that
+my NAT is behind a firewall (controlled by the SA), and
+the firewall will check the MAC address of outgoing packet.
+The eth0 of the NAT is the only legal card that allows to go outside.
 
-My ISP (Telia, Sweden) uses a DHCP lease time of 10 minutes leading to
-constant renewal of the lease.
+Because the NAT only change the source ip address of packets,
+the machines behind NAT are not allowed to go outside
+because of the lack of legal mac address.
 
-If I use "-j masquerade" instead of "-j snat" I cannot have any
-longlived connections (they all die with "new not syn" or "invalid").
+I'm wondering if there is anyway to change the source ip and mac address
+of the NAT packets to those of eth0(the legal one)?
+or any suggestion to solve the problem?
 
-With "-j snat" there isn't any problems (except that this is a little
-hard to use with a dynamic IP...).
-
-What is supposed to happen to the masquerade nat entries when a dhcp
-renewal happens, particularly one that doesn't actually change the IP
-address to a new one?
-
-Thanks,
-Henning
-
+Thanks.
