@@ -1,18 +1,11 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Aren't these connections ESTABILISHED? (2nd take)
-Date: Mon, 3 Oct 2005 10:30:30 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510031025270.22605@filer.marasystems.com>
-References: <dhmn38$hsk$1@sea.gmane.org> <200510011907.27026.rob0@gmx.co.uk>
-	<Pine.LNX.4.61.0510020410200.21519@filer.marasystems.com>
-	<dhnoqq$bq8$1@sea.gmane.org>
-	<Pine.LNX.4.61.0510021142470.6283@filer.marasystems.com>
-	<Pine.LNX.4.58.0510021534200.25897@blackhole.kfki.hu>
-	<Pine.LNX.4.61.0510021622210.9126@filer.marasystems.com>
-	<Pine.LNX.4.58.0510022155370.26361@blackhole.kfki.hu>
-	<Pine.LNX.4.58.0510022306040.26492@blackhole.kfki.hu>
+Subject: Re: AW: Aren't these connections ESTABILISHED? (2nd take)
+Date: Mon, 3 Oct 2005 10:34:28 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510031031030.22605@filer.marasystems.com>
+References: <20051003001657.4046223042@ds9.ddns.anduras.de>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0510022306040.26492@blackhole.kfki.hu>
+In-Reply-To: <20051003001657.4046223042@ds9.ddns.anduras.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -25,19 +18,27 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Robert Nichols <rnicholsNOSPAM@comcast.net>, Netfilter Developers <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+To: Michael Schoen <michael@schoen.de>
+Cc: netfilter@lists.netfilter.org
 
-On Sun, 2 Oct 2005, Jozsef Kadlecsik wrote:
+On Mon, 3 Oct 2005, Michael Schoen wrote:
 
-> Hmmm, I must correct myself: the conntrack entry might get timed out, but
-> then seeing the pure ACKs it picks up the connection again. Still:
->
->> However how would conntrack loose an (established) connection?
+> I think the only valid state for such pkgs would be INVALID, which makes
+> those pkgs as TARGET-type available... Everything else should be mangaged
+> within the user space..
 
-One case where the timeouts allows the above quite easily even if 
-conntrack is running all the time is a half-closed connection. Here 
-conntrack has entered FIN_WAIT with only a 2 minutes timeout.
+CONNTRACK is not about firewalling, it is about tracking connections. 
+INVALID is not "these packets is dangerous". It is "these packets can not 
+under any circumstances belong to a valid session".
+
+> I would actually DROP those targets...
+
+Then I think you should also DROP loone ACK and a number of other packet 
+types, simply done by
+
+   -m state --state NEW -p tcp \! --syn
+
+which clearly states that you do not accept resume of old sessions.
 
 Regards
 Henrik
