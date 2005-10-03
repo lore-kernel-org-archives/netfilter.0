@@ -1,14 +1,13 @@
-From: Robb Bossley <robb.bossley@gmail.com>
-Subject: Re: Dynamic Natting or Mobile ip
-Date: Sun, 2 Oct 2005 17:34:42 -0400
-Message-ID: <5c6851530510021434s10780cb2i4a0db76c38d1b506@mail.gmail.com>
-References: <433d6d9a.27388a40.617b.76d3SMTPIN_ADDED@mx.gmail.com>
-Reply-To: Robb Bossley <robb.bossley@gmail.com>
+From: David Leangen <dleangen@canada.com>
+Subject: Re: Confirm: letting certain packages pass through un-natted
+Date: Mon, 03 Oct 2005 13:51:41 +0900
+Message-ID: <4340B8DD.4070601@canada.com>
+References: <NEBBKBPLMLNABNADCIPAIEDLBHAB.dleangen@canada.com>	<4338A962.6000104@canada.com>
+	<433B70D6.6030201@canada.com> <433BDBE3.5010605@mnemon.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <433d6d9a.27388a40.617b.76d3SMTPIN_ADDED@mx.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <433BDBE3.5010605@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,57 +18,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Brent Wilkinson <brent@air2data.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On 9/30/05, Brent Wilkinson <brent@air2data.com> wrote:
-> I am trying to figure out a feature I saw on a dlink router.
->
-> I am creating some routers/servers for a few hotels. There requirements s=
-ay
-> I must have a dynamic nat router. What it does is allow anyone with any
-> static ip to be able to connect to the network and get internet access.
->
-> Example:
->
-> Router/server
-> Ip:192.168.100.1/24
-> Dhcp server range: 192.168.100.50-192.168.100.200
->
-> Example client
-> Static ip: 10.1.2.47
-> Subnet: 255.255.255.180
-> Gateway: 10.1.2.1
-> Dns: 1.1.1.1
->
-> What I want to do is allow the client through the network without changin=
-g
-> there ip info. I have heard of something called mobile ip or dynamic
-> natting. Is anyone familiar with what I am describing and/or has done it?=
- If
-> you have do you have any web pages that give information on it.
->
-> Thanks
->
-> Brent Wilkinson
->
->
 
-Brent,
+Hello!
 
-The IP you gave as an example was a private IP address.  There are
-three ranges of private IP addresses.  They consist of 192.168.x.x,
-10.x.x.x, and 172.16.x.x through 172.31.x.x.  An IP address of this
-type would not be visible beyond the LAN to which you connected.
+ >>    +---------------+
+ >>    |     modem     |
+ >>    | (192.168.1.1) |
+ >>    +---------------+
+ >>            |
+ >>   +-----------------+
+ >>   |       ppp0      |
+ >>   |        |        |
+ >>   |  ...1.2 (eth0)  |
+ >>   |        |        |eth1
+ >>   |           ...2.1|-----192.168.2.0/24
+ >>   |     Firewall    |
+ >>   +-----------------+
+ >
+ > [SNIP]
+ >
+ >
+ >>Destination Gateway    Genmask      Iface
+ >>192.168.1.0    *    255.255.255.0   eth0
+ >>192.168.2.0    *    255.255.255.0   eth1
+ >>default       xxx   0.0.0.0         ppp0
+ >
+ >
+ > [Rest snipped - probably not relevant]
+ >
+ > The only thing I can think of, is that pppd causes the problem.
+ > I think the following happens:
+ >
+ > 2.2 sends to 1.1
+ > Firewall receives on 2.1
+ > According to routing table firewall tries to send out on eth0
+ > But eth0 is now owned by pppd
+ > And pppd doesn't know about 1.1, he only knows about default
+ > gateway xxx
+ >
+ > As already said - this may be totally wrong (someone correct
+ > me please).
+ >
+ > I bet if you stop pppd, 2.2 can connect to 1.1 without any firewall
+ > rules (as long as the policies are ACCEPT and default gateway on 2.2
+ > points to 2.1). If this is true, the question is how to persuade
+ > pppd to deliver to 1.1. Sorry, I can't help you - may be
+ > somebody can jump in.
 
-I am not sure how this would work, as the DNS servers and gateway that
-the machine would need for outbound access would have to be updated.
+Hmmm... unfortunately, this does not seem to be the case...
 
-If you are trying to get a machine to have the same IP address no
-matter when or where it is attached to the same network, you can put
-that information into the DHCP configuration file for that network so
-that it will assign a certain address based upon the MAC address.
+I say this for two reasons:
 
-Robb
+  1. I can still connect to 192.168.1.1 from 192.168.2.1
+  2. Even when I bring down ppp0, I still can't reach
+     192.168.1.1 from anywhere other than the machine
+     I mention in (1)
+
+Unless, I didn't do the right thing. I simply did:
+
+  # ifconfig ppp0 down
+
+Is this sufficient?
+
+
+Thanks again!!
+
+Dave
+
 
