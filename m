@@ -1,18 +1,13 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Iptables and vlan interfaces
-Date: Mon, 3 Oct 2005 14:18:10 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510031416260.24889@filer.marasystems.com>
-References: <20050930112129.19898.qmail@focomunicatii.ro>
-	<Pine.LNX.4.61.0509301440560.19019@filer.marasystems.com>
-	<20050930125427.28160.qmail@focomunicatii.ro>
-	<200509300839.15330.rob0@gmx.co.uk>
-	<Pine.LNX.4.61.0509301706580.24680@filer.marasystems.com>
-	<4340D42B.2070106@india.tejasnetworks.com>
-	<Pine.LNX.4.61.0510031035150.22605@filer.marasystems.com>
-	<43410257.1090200@india.tejasnetworks.com>
+Subject: Re: ip_nat_mangle_udp_packet: undersized packet
+Date: Mon, 3 Oct 2005 14:22:16 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510031420540.24889@filer.marasystems.com>
+References: <4226a8f0509301353n4f736156p@mail.gmail.com> 
+	<Pine.LNX.4.61.0509302321420.31223@filer.marasystems.com>
+	<4226a8f0510030443m72c02cfj@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43410257.1090200@india.tejasnetworks.com>
+In-Reply-To: <4226a8f0510030443m72c02cfj@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -25,21 +20,19 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Aseem Rastogi <aseem@india.tejasnetworks.com>
-Cc: netfilter@lists.netfilter.org
+To: Caciano Machado <caciano@gmail.com>
+Cc: Netfilter Users <netfilter@lists.netfilter.org>
 
-On Mon, 3 Oct 2005, Aseem Rastogi wrote:
+On Mon, 3 Oct 2005, Caciano Machado wrote:
 
-> Does it mean that if I connect my machine ethernet port to another 
-> machine and configure a vlan interface with that port as physical port 
-> and then add route to another machine through that vlan interface (I 
-> need to do this to use vlan interface right ? ), then all packets sent 
-> out of it will be tagged by whatever tag i mention in vconfig?
+>>> Anyone can tell what is the meaning of this message. I'm getting a lot
+>>> of these warnings from kernel:
+>>>
+>>> "ip_nat_mangle_udp_packet: undersized packet"
+>
+> 2.4.25 with patch for sip conntrack helper, on ppc.
 
-Yes.
-
-Any packets sent out on that virtual interface will be sent tagged with 
-the vlan tag. This is done in L2 and not protocol dependent in any manner.
+May be worth trying upgrading to a more recent kernel version.
 
 Regards
 Henrik
