@@ -1,8 +1,12 @@
-From: bernin_a@informatik.haw-hamburg.de
-Subject: Re: NAT/POSTROUTING rules doesn't match packets
-Date: Tue, 4 Oct 2005 11:25:02 GMT
-Message-ID: <20051004112502.8B5133C65565@mailgate.informatik.haw-hamburg.de>
+From: Tommy W <tommy@svearike.sytes.net>
+Subject: iptables monitoring program
+Date: Mon, 3 Oct 2005 16:04:34 +0200
+Message-ID: <200510031604.34646.tommy@svearike.sytes.net>
+Reply-To: tommy@svearike.sytes.net
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,46 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-9"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Just to make sure, i have compiled kernel 2.4.31 and also switched back to
-> =20
-> 1.2.11 iptables. But nothing changed. Still the packets don't get SNAT-ed
-> and=20
-> there has been no hit on SNAT rule for about an hour (packets are sent ev=
-er=20
-> y ten seconds or so). This only applies to UDP packets.
->=20
-> Now i have noticed the same problem on another of my machines. Since its =
-not=20
-> only me having problems, maybe its some well-hidden bug in the netfilter?
->=20
+I've developed a program (under development) to monitor iptables-rules/chains 
+in realtime. and I just thought that maybe you guys in here would be 
+interested of it. What I do not know on the other hand is if it's "ok" to 
+promote my program in here, if it's not sorry :) but I've seen other people 
+doing similar things.
 
-If so, it has been there for quite a while. I am using kernel 2.4.27 (with
-grsecurity patches)... It seems there is only a problem with UDP here, too.=
-..=20
-Are your machines under heavy load ? We have a constant rate of at least 5 =
-mbit
-running over this machines...they are not very busy, though.
+Back to the program.
+It consists of a library and programs utilizing the library.
+The library takes care of putting speed's on the libiptc-structures.
 
-> As a side note: both routers that are having this problem are diskless=20
-> machines with root-over-nfs (mostly R/O) could this be any issue?
->=20
+natdump -d -z will dump out all rules in the active configuration that has a 
+speed of more than 0 
 
-i don't even have nfs compiled in ;-)
+natstat is a gui (ncurses) that will show the rules/chains at real time.
 
-> Marek
->=20
->=20
+natstatqt is a gui (qt) that does the same (not really, it's under developed 
+compared to the ncruses gui).
 
---arne
+A very commonly used and needed function is to 'temporary flush' a rule.
+Meaning with a single click you can 'temporary flush' a rule to see how much 
+traffic has been sent .. and  another click to unflush it.
 
-_________________________________________________
-Versendet =FCber Webmail der HAW Hamburg
-http://www.haw-hamburg.de/webmail
+It's a perfect help-tool for control freaks :)
 
-
+http://freshmeat.net/projects/natstat/
 
