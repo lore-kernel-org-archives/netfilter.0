@@ -1,10 +1,18 @@
-From: compuomari <compuomari@gmail.com>
-Subject: NATTING_help
-Date: Mon, 03 Oct 2005 11:29:10 +0300
-Message-ID: <4340EBD6.6040702@gmail.com>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: Aren't these connections ESTABILISHED? (2nd take)
+Date: Mon, 3 Oct 2005 10:30:30 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510031025270.22605@filer.marasystems.com>
+References: <dhmn38$hsk$1@sea.gmane.org> <200510011907.27026.rob0@gmx.co.uk>
+	<Pine.LNX.4.61.0510020410200.21519@filer.marasystems.com>
+	<dhnoqq$bq8$1@sea.gmane.org>
+	<Pine.LNX.4.61.0510021142470.6283@filer.marasystems.com>
+	<Pine.LNX.4.58.0510021534200.25897@blackhole.kfki.hu>
+	<Pine.LNX.4.61.0510021622210.9126@filer.marasystems.com>
+	<Pine.LNX.4.58.0510022155370.26361@blackhole.kfki.hu>
+	<Pine.LNX.4.58.0510022306040.26492@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.58.0510022306040.26492@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,23 +23,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: Robert Nichols <rnicholsNOSPAM@comcast.net>, Netfilter Developers <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
 
-Dears,
-I have a scenario that is somehow making me have a hardtime , i have a
-wiless access point that get the internat access from my linux box, i
-want any user that uses my internet to get a lnading page for my self (
-some kind of advertisment ) and then go to the internet , i don't need
-authentication , but i dont want this landing page occuring many more
-than once for the user ... anyhow , how can i do it with iptables? i
-want to DNAT all users to an internal apache server , then SNAT them to
-the inernet , how is that possible? double natting? proxying ? i need
-your help ..
+On Sun, 2 Oct 2005, Jozsef Kadlecsik wrote:
 
-regards,
+> Hmmm, I must correct myself: the conntrack entry might get timed out, but
+> then seeing the pure ACKs it picks up the connection again. Still:
+>
+>> However how would conntrack loose an (established) connection?
 
-oozie
+One case where the timeouts allows the above quite easily even if 
+conntrack is running all the time is a half-closed connection. Here 
+conntrack has entered FIN_WAIT with only a 2 minutes timeout.
 
-
+Regards
+Henrik
 
