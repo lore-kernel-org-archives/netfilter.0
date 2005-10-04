@@ -1,12 +1,13 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: iptables monitoring program
-Date: Tue, 04 Oct 2005 09:51:59 -0400
-Message-ID: <1128433919.2945.6.camel@localhost>
-References: <200510031604.34646.tommy@svearike.sytes.net>
+From: Marek Zachara <marek.zachara@conexe.pl>
+Subject: Re: NAT/POSTROUTING rules doesn't match packets
+Date: Tue, 4 Oct 2005 21:24:34 +0200
+Message-ID: <200510042124.34573.marek.zachara@conexe.pl>
+References: <20051004112502.8B5133C65565@mailgate.informatik.haw-hamburg.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200510031604.34646.tommy@svearike.sytes.net>
+In-Reply-To: <20051004112502.8B5133C65565@mailgate.informatik.haw-hamburg.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +19,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: tommy@svearike.sytes.net
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Mon, 2005-10-03 at 16:04 +0200, Tommy W wrote:
-> I've developed a program (under development) to monitor iptables-rules/chains 
-> in realtime. and I just thought that maybe you guys in here would be 
-> interested of it. What I do not know on the other hand is if it's "ok" to 
-> promote my program in here, if it's not sorry :) but I've seen other people 
-> doing similar things.
-> 
-> Back to the program.
-> It consists of a library and programs utilizing the library.
-> The library takes care of putting speed's on the libiptc-structures.
-> 
-> natdump -d -z will dump out all rules in the active configuration that has a 
-> speed of more than 0 
-> 
-> natstat is a gui (ncurses) that will show the rules/chains at real time.
-> 
-> natstatqt is a gui (qt) that does the same (not really, it's under developed 
-> compared to the ncruses gui).
-> 
-> A very commonly used and needed function is to 'temporary flush' a rule.
-> Meaning with a single click you can 'temporary flush' a rule to see how much 
-> traffic has been sent .. and  another click to unflush it.
-> 
-> It's a perfect help-tool for control freaks :)
-> 
-> http://freshmeat.net/projects/natstat/
-> 
-I haven't tried it yet but it sounds like a neat tool. Thanks for
-bringing it to our attention - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+On Tuesday 04 of October 2005 13:25, bernin_a@informatik.haw-hamburg.de wrote:
+> > Just to make sure, i have compiled kernel 2.4.31 and also switched back
+> > to
+> >
+> > 1.2.11 iptables. But nothing changed. Still the packets don't get SNAT-ed
+> > and
+> > there has been no hit on SNAT rule for about an hour (packets are sent
+> > ever y ten seconds or so). This only applies to UDP packets.
+> >
+> > Now i have noticed the same problem on another of my machines. Since its
+> > not only me having problems, maybe its some well-hidden bug in the
+> > netfilter?
+>
+> If so, it has been there for quite a while. I am using kernel 2.4.27 (with
+> grsecurity patches)... It seems there is only a problem with UDP here,
+> too... Are your machines under heavy load ? We have a constant rate of at
+> least 5 mbit running over this machines...they are not very busy, though.
+>
+no, there is no heavy load - 2Mb max - its my local router at home connected 
+to small community network.
 
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
+Since there is no obvious solution, I have reported this as bug to netfilter 
+bugzilla. We'll see what they say.
 
+Marek
 
