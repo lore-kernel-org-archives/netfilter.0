@@ -1,12 +1,12 @@
-From: jason <jason@jasonandjessi.com>
-Subject: Re: masquerade mac address
-Date: Mon, 3 Oct 2005 12:50:58 -0500 (CDT)
-Message-ID: <Pine.LNX.4.63.0510031249590.16941@mail>
-References: <fa66ff1a0510031027l3964f8cbg3cf24896e33c9@mail.gmail.com>
-	<Pine.LNX.4.61.0510032000470.31068@filer.marasystems.com>
+From: afshin lamei <afshinlamei@gmail.com>
+Subject: port scan detector problem
+Date: Tue, 4 Oct 2005 16:21:48 +0330
+Message-ID: <3115d56e0510040551g33988457ta415879a78116059@mail.gmail.com>
+Reply-To: afshin lamei <afshinlamei@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0510032000470.31068@filer.marasystems.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Henrik Nordstrom <hno@marasystems.com>
-Cc: HouCheng Lee <houchen1@umbc.edu>, Netfilter Users <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-You could change the mac address of the card that is your outbound
-interface. Or just swap the two cards in your config.  To change the MAC
-using iproute2, use the following
+hi all,
+I am using the "port scan match" with its default values, my rules are like
+this:
+iptables -A INPUT -m psd -j LOG --log-prefix "port scan:"
+iptables -A INPUT -m psd -j DROP // Drop it silently
 
-ip link set dev ethX address 11:22:33:44.etc
+one of my DNS servers is 4.2.2.4 <http://4.2.2.4/> , and I'm seeing these
+logs, which say the 4.2.2.4 <http://4.2.2.4/> is port scanning my box
+(external interface: 192.168.100.151 <http://192.168.100.151/>) !!
 
--- 
-Jason
-The place where you made your stand never mattered,
-only that you were there... and still on your feet
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
+.2.4/>DST=3D
+192.168.100.151 <http://192.168.100.151/> LEN=3D8 PROTO=3DUDP SPT=3D53 DPT=
+=3D32769
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
+.2.4/>DST=3D
+192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
+=3D32761
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
+.2.4/>DST=3D
+192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
+=3D32773
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
+.2.4/>DST=3D
+192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
+=3D32775
+Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D 4.2.2.4 <http://4.=
+2.2.4/>DST=3D
+192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
+=3D32780
 
-On Mon, 3 Oct 2005, Henrik Nordstrom wrote:
-
-> On Mon, 3 Oct 2005, HouCheng Lee wrote:
->
->> My problem is that my NAT is behind a firewall (controlled by the SA), and 
->> the firewall will check the MAC address of outgoing packet. The eth0 of the 
->> NAT is the only legal card that allows to go outside.
->
-> Any packets going via a Linux router is automatically given the source MAC of 
-> the interface the packet leaves the Linux router on. This happens even if you 
-> do not NAT the traffic.
->
->> Because the NAT only change the source ip address of packets,
->> the machines behind NAT are not allowed to go outside
->> because of the lack of legal mac address.
->
-> The MAC is changed. Most likely the ISP is looking into something else as 
-> well such as the TTL of the packet (some is known to do this to prevent the 
-> use of "broadband routers" to connect multiple computers).
->
-> If all you need is to provide web access then the easiest solution is 
-> probably to run a proxy such as Squid.
->
-> Regards
-> Henrik
->
->
-
+I think these are false positives, isn't it? if so, dropping them will caus=
+e
+problems, so what should i do?
+regards,
