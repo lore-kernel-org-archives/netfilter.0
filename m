@@ -1,11 +1,8 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: Poor mans cluster question
-Date: Mon, 3 Oct 2005 23:19:27 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582900B581D@pxtbenexd01.pxt.primeexalia.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: bernin_a@informatik.haw-hamburg.de
+Subject: Re: NAT/POSTROUTING rules doesn't match packets
+Date: Tue, 4 Oct 2005 07:09:26 GMT
+Message-ID: <20051004070925.7E2783C65565@mailgate.informatik.haw-hamburg.de>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,29 +13,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Hello,=20
+> Hi,
+>=20
+Hi all!
 
-I need to setup a very simple cluster for testing a couple different
-devices and applications.  I'm not looking for perfection.
+> I have been having problems with this for some time now. Some packets are=
+ not=20
+> processed correctly by iptables. This applies only to POSTROUTING chain i=
+n=20
+> NAT table.=20
+>=20
 
-What I have are 3 web servers in our test environment.  We are testing
-both Windows and a Linux web server at the same time.  We basically want
-to round robin traffic via IP to any one of the 3 servers.  My
-understanding is that the following should make this happen:=20
+I have almost the same problem here. Some packets don't seem to traverse the
+POSTROUTING chain of the nat table and don't get Snatted, but i can see the=
+m in
+the mangle table (POSTROUTING) chain. It is also UDP traffic, and i am sure=
+ that
+the nat does not work cause cause i can see the not-natted traffic on anoth=
+er
+machine (where the packets get dropped by the firewall).
+I am also able to log this traffic in the POSTROUTING chain of table mangle=
+, if
+i try to log them in POSTROUTING of the nat table, they don't get there.
+But, this does not occur with all connections, some are natted correctly.
 
--A PREROUTING -d 10.0.16.89 -j DNAT --to 10.0.16.90-10.0.16.92
+--arne
 
-But it doesn't.  I figure the next step would be to implement the
-CLUSTERIP but I'm not sure how to do this.  I'd really like to do this
-at the firewall level as the production environment uses local director
-for load balancing.
 
-Is there a better approach without having to modify the OS?  I'm not
-looking for failover but rather round robin.  DNS hasn't been doing the
-round robin the way we wanted on the local LAN (as a single workstation
-will get stuck with a single IP for that session).
 
-Gary Wayne Smith
+_________________________________________________
+Versendet =FCber Webmail der HAW Hamburg
+http://www.haw-hamburg.de/webmail
+
+
+
