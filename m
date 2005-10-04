@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Poor mans cluster question
-Date: Tue, 4 Oct 2005 11:48:31 +0200 (CEST)
-Message-ID: <63047.193.173.147.3.1128419311.squirrel@webmail.sterenborg.info>
-References: <57F9959B46E0FA4D8BA88AEDFBE582900B581D@pxtbenexd01.pxt.primeexalia.com>
+From: Marek Zachara <marek.zachara@conexe.pl>
+Subject: Re: NAT/POSTROUTING rules doesn't match packets
+Date: Tue, 4 Oct 2005 12:37:56 +0200
+Message-ID: <200510041237.57236.marek.zachara@conexe.pl>
+References: <20051004070925.7E2783C65565@mailgate.informatik.haw-hamburg.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE582900B581D@pxtbenexd01.pxt.primeexalia.co
-	m>
+In-Reply-To: <20051004070925.7E2783C65565@mailgate.informatik.haw-hamburg.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +18,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Tue, October 4, 2005 08:19, Gary W. Smith wrote:
-> Hello,
+Just to make sure, i have compiled kernel 2.4.31 and also switched back to=
+=20
+1.2.11 iptables. But nothing changed. Still the packets don't get SNAT-ed a=
+nd=20
+there has been no hit on SNAT rule for about an hour (packets are sent ever=
+y=20
+ten seconds or so). This only applies to UDP packets.
+
+Now i have noticed the same problem on another of my machines. Since its no=
+t=20
+only me having problems, maybe its some well-hidden bug in the netfilter?
+
+As a side note: both routers that are having this problem are diskless=20
+machines with root-over-nfs (mostly R/O) could this be any issue?
+
+Marek
+
+
+On Tuesday 04 of October 2005 09:09, bernin_a@informatik.haw-hamburg.de wro=
+te:
+> > Hi,
 >
-> I need to setup a very simple cluster for testing a couple different
-> devices and applications.  I'm not looking for perfection.
+> Hi all!
 >
-> What I have are 3 web servers in our test environment.  We are testing
-> both Windows and a Linux web server at the same time.  We basically
-> want
-> to round robin traffic via IP to any one of the 3 servers.  My
-> understanding is that the following should make this happen:
+> > I have been having problems with this for some time now. Some packets a=
+re
+> > not processed correctly by iptables. This applies only to POSTROUTING
+> > chain in NAT table.
 >
-> -A PREROUTING -d 10.0.16.89 -j DNAT --to 10.0.16.90-10.0.16.92
-
-Perhaps the nth patch from POM will work for you :
-http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-nth
-
-See these threads :
-https://lists.netfilter.org/pipermail/netfilter/2003-October/047215.html
-http://linuxgazette.net/108/odonovan.html
-
-
-Gr,
-Rob
-
-
+> I have almost the same problem here. Some packets don't seem to traverse
+> the POSTROUTING chain of the nat table and don't get Snatted, but i can s=
+ee
+> them in the mangle table (POSTROUTING) chain. It is also UDP traffic, and=
+ i
+> am sure that the nat does not work cause cause i can see the not-natted
+> traffic on another machine (where the packets get dropped by the firewall=
+).
+> I am also able to log this traffic in the POSTROUTING chain of table
+> mangle, if i try to log them in POSTROUTING of the nat table, they don't
+> get there. But, this does not occur with all connections, some are natted
+> correctly.
+>
+> --arne
+>
+>
+>
+> _________________________________________________
+> Versendet =FCber Webmail der HAW Hamburg
+> http://www.haw-hamburg.de/webmail
 
