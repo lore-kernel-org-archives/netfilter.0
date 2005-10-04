@@ -1,11 +1,12 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: port scan detector problem
-Date: Tue, 4 Oct 2005 09:45:08 -0400
-Message-ID: <FAC4E024BF776842876169173CE2F0132837@mailbox.vikus.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: iptables monitoring program
+Date: Tue, 04 Oct 2005 09:51:59 -0400
+Message-ID: <1128433919.2945.6.camel@localhost>
+References: <200510031604.34646.tommy@svearike.sytes.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <200510031604.34646.tommy@svearike.sytes.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,61 +18,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: afshin lamei <afshinlamei@gmail.com>, netfilter@lists.netfilter.org
+To: tommy@svearike.sytes.net
+Cc: netfilter@lists.netfilter.org
 
-=20
+On Mon, 2005-10-03 at 16:04 +0200, Tommy W wrote:
+> I've developed a program (under development) to monitor iptables-rules/chains 
+> in realtime. and I just thought that maybe you guys in here would be 
+> interested of it. What I do not know on the other hand is if it's "ok" to 
+> promote my program in here, if it's not sorry :) but I've seen other people 
+> doing similar things.
+> 
+> Back to the program.
+> It consists of a library and programs utilizing the library.
+> The library takes care of putting speed's on the libiptc-structures.
+> 
+> natdump -d -z will dump out all rules in the active configuration that has a 
+> speed of more than 0 
+> 
+> natstat is a gui (ncurses) that will show the rules/chains at real time.
+> 
+> natstatqt is a gui (qt) that does the same (not really, it's under developed 
+> compared to the ncruses gui).
+> 
+> A very commonly used and needed function is to 'temporary flush' a rule.
+> Meaning with a single click you can 'temporary flush' a rule to see how much 
+> traffic has been sent .. and  another click to unflush it.
+> 
+> It's a perfect help-tool for control freaks :)
+> 
+> http://freshmeat.net/projects/natstat/
+> 
+I haven't tried it yet but it sounds like a neat tool. Thanks for
+bringing it to our attention - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> afshin lamei
-> Sent: Tuesday, October 04, 2005 8:52 AM
-> To: netfilter@lists.netfilter.org
-> Subject: port scan detector problem
->=20
-> hi all,
-> I am using the "port scan match" with its default values, my=20
-> rules are like
-> this:
-> iptables -A INPUT -m psd -j LOG --log-prefix "port scan:"
-> iptables -A INPUT -m psd -j DROP // Drop it silently
->=20
-> one of my DNS servers is 4.2.2.4 <http://4.2.2.4/> , and I'm=20
-> seeing these logs, which say the 4.2.2.4 <http://4.2.2.4/> is=20
-> port scanning my box (external interface: 192.168.100.151=20
-> <http://192.168.100.151/>) !!
->=20
-> Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4=20
-> <http://4.2.2.4/>DST=3D
-> 192.168.100.151 <http://192.168.100.151/> LEN=3D8 PROTO=3DUDP=20
-> SPT=3D53 DPT=3D32769 Oct 3 17:23:35 kernel: Port scan:IN=3Deth0=20
-> OUT=3D SRC=3D4.2.2.4 <http://4.2.2.4/>DST=3D
-> 192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP=20
-> SPT=3D53 DPT=3D32761 Oct 3 17:23:35 kernel: Port scan:IN=3Deth0=20
-> OUT=3D SRC=3D4.2.2.4 <http://4.2.2.4/>DST=3D
-> 192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP=20
-> SPT=3D53 DPT=3D32773 Oct 3 17:23:35 kernel: Port scan:IN=3Deth0=20
-> OUT=3D SRC=3D4.2.2.4 <http://4.2.2.4/>DST=3D
-> 192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP=20
-> SPT=3D53 DPT=3D32775 Oct 3 17:23:35 kernel: Port scan:IN=3Deth0=20
-> OUT=3D SRC=3D 4.2.2.4 <http://4.2.2.4/>DST=3D
-> 192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP=20
-> SPT=3D53 DPT=3D32780
->=20
-> I think these are false positives, isn't it? if so, dropping=20
-> them will cause problems, so what should i do?
-> regards,
+If you would like to participate in the development of an open source
+enterprise class network security management system, please visit
+http://iscs.sourceforge.net
 
-It probably is a false positive. If you have a mail server, your DNS
-server might be working overtime resolving remote MX hosts for domains
-(you can fix that by installing a caching-only nameserver on that
-machine). As far as I know, Linux hosts do not cache DNS unless you
-specifically install a caching-only server on them, so unless you do
-they'll be asking for DNS all the time.
-
-To fix your port-scan problem you should insert a rule which allows
-outbound traffic from your DNS server using source port 53 before your
-port-scanning rules.
-
-Derick Anderson
 
