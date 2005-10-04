@@ -1,12 +1,11 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Filtering Transport Mode IPSec
-Date: Mon, 03 Oct 2005 20:29:11 -0500
-Message-ID: <4341DAE7.9000208@riverviewtech.net>
-References: <Pine.LNX.4.61.0509291103090.12174@cerberus.private.pandora-net.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: Poor mans cluster question
+Date: Mon, 3 Oct 2005 23:19:27 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582900B581D@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0509291103090.12174@cerberus.private.pandora-net.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +16,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Aaron Smith <aaron@pandora-net.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Take a look at the NetFilter IPSec patches (4 of them I think).  These patches are designed to have the traffic that is passing through the IPSec VPN pass through the NetFilter table twice, once encrypted and once decrypted.  This will allow you to filter the traffic on the 2nd (decrypted) pass the way that you are wanting to do.
+Hello,=20
 
+I need to setup a very simple cluster for testing a couple different
+devices and applications.  I'm not looking for perfection.
 
+What I have are 3 web servers in our test environment.  We are testing
+both Windows and a Linux web server at the same time.  We basically want
+to round robin traffic via IP to any one of the 3 servers.  My
+understanding is that the following should make this happen:=20
 
-Grant. . . .
+-A PREROUTING -d 10.0.16.89 -j DNAT --to 10.0.16.90-10.0.16.92
 
-Aaron Smith wrote:
-> I have a Windows 2003 server connecting as a client, in Transport mode, 
-> via IPSec to a RHEL4 server running a 2.6.9 kernel and StrongSwan.
-> I would like to use netfilter to filter the protocols and ports that the
-> windows server can access on the RHEL4 server, but from what I've read, 
-> transport mode IPSec packets are decrypted AFTER they have traversed the 
-> netfilter chains.  I have a rule in my INPUT chain that says to allow 
-> ESP (protocol 50) packets and this appears to be enough for the windows 
-> client to bypass the rest of the rules.  I also have a linux client 
-> connecting to this same server in Tunnel mode and it's packets appear to 
-> be accepted, decrypted, an then sent back into the interface to be 
-> subjected to netfilter so everything works fine there.  Is there anyway 
-> to use netfilter to filter Transport Mode IPSec?
-> 
-> ------
-> "The pain of war cannot exceed the woe of aftermath
-> The drums will shake the castle walls, the Ringwraiths ride in black..."
->     Led Zeppelin, "The Battle of Evermore"
-> 
+But it doesn't.  I figure the next step would be to implement the
+CLUSTERIP but I'm not sure how to do this.  I'd really like to do this
+at the firewall level as the production environment uses local director
+for load balancing.
 
+Is there a better approach without having to modify the OS?  I'm not
+looking for failover but rather round robin.  DNS hasn't been doing the
+round robin the way we wanted on the local LAN (as a single workstation
+will get stuck with a single IP for that session).
 
+Gary Wayne Smith
