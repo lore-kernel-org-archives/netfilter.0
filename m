@@ -1,12 +1,14 @@
-From: afshin lamei <afshinlamei@gmail.com>
-Subject: port scan detector problem
-Date: Tue, 4 Oct 2005 16:21:48 +0330
-Message-ID: <3115d56e0510040551g33988457ta415879a78116059@mail.gmail.com>
-Reply-To: afshin lamei <afshinlamei@gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Aren't these connections ESTABILISHED? (2nd take)
+Date: Tue, 4 Oct 2005 15:19:25 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0510041515500.2295@blackhole.kfki.hu>
+References: <dhmn38$hsk$1@sea.gmane.org> <200510011907.27026.rob0@gmx.co.uk>
+	<Pine.LNX.4.61.0510020410200.21519@filer.marasystems.com>
+	<200510021416.39103.rob0@gmx.co.uk>
+	<Pine.LNX.4.61.0510031236250.22605@filer.marasystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0510031236250.22605@filer.marasystems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +19,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: netfilter@lists.netfilter.org, /dev/rob0 <rob0@gmx.co.uk>
 
-hi all,
-I am using the "port scan match" with its default values, my rules are like
-this:
-iptables -A INPUT -m psd -j LOG --log-prefix "port scan:"
-iptables -A INPUT -m psd -j DROP // Drop it silently
+On Mon, 3 Oct 2005, Henrik Nordstrom wrote:
 
-one of my DNS servers is 4.2.2.4 <http://4.2.2.4/> , and I'm seeing these
-logs, which say the 4.2.2.4 <http://4.2.2.4/> is port scanning my box
-(external interface: 192.168.100.151 <http://192.168.100.151/>) !!
+> > How is this association known to conntrack?
+>
+> By a application protocol helper module registering an expectation of a
+> related connection.
+>
+> The manual is actually slightly incorrect. ICMP errors normally gets
+> sorted as ESTABLISHED, not RELATED.
 
-Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
-.2.4/>DST=3D
-192.168.100.151 <http://192.168.100.151/> LEN=3D8 PROTO=3DUDP SPT=3D53 DPT=
-=3D32769
-Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
-.2.4/>DST=3D
-192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
-=3D32761
-Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
-.2.4/>DST=3D
-192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
-=3D32773
-Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D4.2.2.4 <http://4.2=
-.2.4/>DST=3D
-192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
-=3D32775
-Oct 3 17:23:35 kernel: Port scan:IN=3Deth0 OUT=3D SRC=3D 4.2.2.4 <http://4.=
-2.2.4/>DST=3D
-192.168.100.151 <http://192.168.100.151/> LEN=3D1 PROTO=3DUDP SPT=3D53 DPT=
-=3D32780
+According to the source code the manual is correct and ICMP error messages
+are always RELATED (or INVALID).
 
-I think these are false positives, isn't it? if so, dropping them will caus=
-e
-problems, so what should i do?
-regards,
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+
