@@ -1,12 +1,12 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Whose ass....?
-Date: Wed, 5 Oct 2005 17:00:26 -0400
-Message-ID: <65aa6af90510051400n745c9d7coc71b5ca2e2ec4375@mail.gmail.com>
-Reply-To: Edmundo Carmona <eantoranz@gmail.com>
+From: "Jorge I. Davila L." <davila@cablenet.com.ni>
+Subject: patch-o-matic
+Date: Wed, 05 Oct 2005 16:17:54 -0600
+Message-ID: <1128550674.2921.11.camel@vyatka-39.cablenet.com.ni>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-H51fGOr8vwzwqquRPvrb"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,17 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I applied about two months ago to the LARTC mail list, and about three
-weeks later I received the reply from mailman telling me to "click=20
-here" to be included... the problem is that I was on vacation, so I
-didn't check my mails for a week and by the time I proceded, the
-invitations were due.
 
-I applied again but haven't received the invitation yet.
+--=-H51fGOr8vwzwqquRPvrb
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-So... whose ass do I have to kiss to be accepted in the LARTC mail list? :-=
-D
+Hi list!:
+
+I'm trying to apply some patches from the patch-o-matic repository but
+following the instructions I can't connect to the cvs repository ...
+where are patches ??
+
+Best regards,
+
+--=20
+Jorge Isaac Davila Lopez
+
+--=-H51fGOr8vwzwqquRPvrb
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBDRFESsLsR1MWg328RAtLZAJ9rk28dOkLG08+diI55NB8a/KQPrQCguqY3
+HrEzjwtCioMY9VihWjDV/a0=
+=D8C+
+-----END PGP SIGNATURE-----
+
+--=-H51fGOr8vwzwqquRPvrb--
+
 
