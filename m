@@ -1,16 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: IP and MAC Address check
-Date: Wed, 5 Oct 2005 10:11:30 +0200 (CEST)
-Message-ID: <60592.193.173.147.3.1128499890.squirrel@webmail.sterenborg.info>
-References: <005d01c5c964$b7ccebe0$580110ac@HO.lippogeneral.com><200510050029.36699.rob0@gmx.co.uk><00cb01c5c970$b6eb9620$580110ac@HO.lippogeneral.com>
-	<200510050123.52028.rob0@gmx.co.uk>   
-	<00e401c5c978$4ba35120$580110ac@HO.lippogeneral.com>
-	<57904.193.173.147.3.1128496418.squirrel@webmail.sterenborg.info>
-	<011a01c5c981$b6f1a0e0$580110ac@HO.lippogeneral.com>
+From: Stefan.Weigel@mondial.de
+Subject: Antwort: Re: can't initialize iptables table `filter': Bad file
+	descriptor
+Date: Wed, 5 Oct 2005 12:05:13 +0200
+Message-ID: <OF223A4AEE.268434D7-ONC1257091.00371030-C1257091.003768D9@mondial.de>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <011a01c5c981$b6f1a0e0$580110ac@HO.lippogeneral.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,59 +17,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, October 5, 2005 09:52, Winanjaya - PBXSoftwares wrote:
+Hi!
+I found the problem. Some compiler flags were set in environment:
 
->> ...[rules]...
->> # If the source IP is in 172.16.2.240/29, jump to a user defined
->> chain.
->> $ipt -A INPUT -s 172.16.2.240/29 -j MAC-CHECK
->> ...[other rules]...
->>
->> # User defined chain.
->> # RETURN to built-in chain INPUT if the MAC address matches
->> # Otherwise, DROP the packet
->>
->> $ipt -N MAC-CHECK
->> $ipt -A MAC-CHECK -m mac --mac-source 00:12:95:6d:0a:3e -j RETURN
->> $ipt -A MAC-CHECK -m mac --mac-source 00:12:95:15:61:14 -j RETURN
->> $ipt -A MAC-CHECK -m mac --mac-source 00:12:95:15:62:29 -j RETURN
->> $ipt -A MAC-CHECK -m mac --mac-source 00:12:95:15:63:ba -j RETURN
->> $ipt -A MAC-CHECK -j DROP
+CPPFLAGS / CFLAGS =3D -s -O3 -fomit-frame-pointer -Wall -malign-functions=
+=3D4=20
+-malign-double -march=3Dpentiumpro -fexpensive-optimizations
+
+With unsetting these variables I have a working iptables version.
+
+
+Best regards
+
+Stefan Weigel
+IT
+
+Mondial Assistance Deutschland GmbH
+Riedenburger Strasse 2
+D-81677 M=FCnchen
+Telefon +49 (89) 20 80 1 - 1085
+Telefax +49 (89) 20 80 1 - 1907
+mailto: stefan.weigel@mondial.de
+http://www.mondial.de
+
+
+
+
+
+Henrik Nordstrom <hno@marasystems.com>
+30.09.2005 23:19
+
+=20
+        An:     Stefan.Weigel@mondial.de
+        Kopie:  netfilter@lists.netfilter.org
+        Thema:  Re: can't initialize iptables table `filter': Bad file desc=
+riptor
+
+
+On Fri, 30 Sep 2005 Stefan.Weigel@mondial.de wrote:
+
+> I compiled kernel 2.6.13.2 and iptables 1.3.3 with some extra modules=20
+from
+> patch-o-matic-ng. Compiling went good.
+> But when doing a
 >
-> I tried it .. but all traffic 172.16.2.240/29 will be dropped
-> although it has valid Mac Address.. could you please advise ..what
-> should I check?
-
-As /dev/rob0 mentioned : are you sure that the PC's that you want to
-check the MAC address from are on the same physical ethernet segment ?
-If not then you won't be able to match the MAC address.
-
-You may want to check with this :
-
-$ipt -A MAC-CHECK -m mac --mac-source 00:12:95:6d:0a:3e -j LOG \
-  --log-prefix "MAC1: "
-$ipt -A MAC-CHECK -m mac --mac-source 00:12:95:6d:0a:3e -j RETURN
-
-$ipt -A MAC-CHECK -m mac --mac-source 00:12:95:15:61:14 -j  LOG \
-  --log-prefix "MAC2: "
-$ipt -A MAC-CHECK -m mac --mac-source 00:12:95:15:61:14 -j RETURN
-
-$ipt -A MAC-CHECK -m mac --mac-source 00:12:95:15:62:29 -j LOG \
-  --log-prefix "MAC3: "
-$ipt -A MAC-CHECK -m mac --mac-source 00:12:95:15:62:29 -j RETURN
-
-$ipt -A MAC-CHECK -m mac --mac-source 00:12:95:15:63:ba -j  LOG \
-  --log-prefix "MAC4: "
-$ipt -A MAC-CHECK -m mac --mac-source 00:12:95:15:63:ba -j RETURN
-
-See if you get any logging. If not, the MAC addresses do not match.
+> # iptables -L
+>
+> I get the following error message:
+>
+> iptables v1.3.3: can't initialize iptables table `filter': Bad file
+> descriptor
+> Perhaps iptables or your kernel needs to be upgraded.
 
 
-Gr,
-Rob
+Is your iptables compiled to the correct kernel headers? (KERNEL=5FDIR=20
+argument when compiling iptables)
+
+Regards
+Henrik
+
+
 
 
 
