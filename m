@@ -1,11 +1,14 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: ClusterIP backport question
-Date: Wed, 5 Oct 2005 09:09:17 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582900B5822@pxtbenexd01.pxt.primeexalia.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: ip_nat_pptp ICMP rejected failures
+Date: Wed, 5 Oct 2005 17:44:53 +0200
+Message-ID: <20051005154453.GC4184@rama>
+References: <20051005151309.GA28129@domsch.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cvVnyQ+4j833TQvp"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <20051005151309.GA28129@domsch.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,17 +19,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Matt Domsch <matt@domsch.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,=20
 
-I know that CLUSTERIP is included in the newer 2.6 mainline but I am
-interested in putting it into RHES 4.  Is there a older POM package out
-there that I can use to install it in this kernel?
+--cvVnyQ+4j833TQvp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have a package back from April that contains clusterip but it doesn't
-apply cleanly because connmark was broken in that particular iteration
-that I downloaded.
+On Wed, Oct 05, 2005 at 10:13:09AM -0500, Matt Domsch wrote:
+> Harald, thanks much for your efforts on the ip_nat_pptp helper.  I've
+> been using a 2.2 kernel on my firewall for years simply because it had
+> this functionality.
 
-Gary=20
+there have been patches for lots of 2.4 and 2.6 releases, though.
+
+thanks for the detailed bugreport, I'll try to analyze the problem once
+I'm back from http://workshop.netfilter.org/
+
+Please try to explicitly add a drop rule for the ICMP packets and see
+whether it works then.  Sounds strange, but I have my reasons for asking
+;)
+
+Thanks
+
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--cvVnyQ+4j833TQvp
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQFDQ/T1XaXGVTD0i/8RAkXKAKCQ99tygpGT14/zvVmvT4/iQb8vlgCgmZNt
+YHWtNNI980yM0MgMHDa0+WI=
+=kL24
+-----END PGP SIGNATURE-----
+
+--cvVnyQ+4j833TQvp--
+
