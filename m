@@ -1,12 +1,12 @@
-From: "Jorge I. Davila L." <davila@cablenet.com.ni>
-Subject: Re: patch-o-matic
-Date: Thu, 06 Oct 2005 06:22:29 -0600
-Message-ID: <1128601349.2474.4.camel@vyatka-39.cablenet.com.ni>
-References: <20051006005533.77770.qmail@web54301.mail.yahoo.com>
+From: "AragonX" <aragonx@dcsnow.com>
+Subject: Re: Whose ass....?
+Date: Thu, 6 Oct 2005 08:50:02 -0400 (EDT)
+Message-ID: <1449.10.1.1.1.1128603002.squirrel@www.dcsnow.com>
+References: <65aa6af90510051400n745c9d7coc71b5ca2e2ec4375@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051006005533.77770.qmail@web54301.mail.yahoo.com>
+In-Reply-To: <65aa6af90510051400n745c9d7coc71b5ca2e2ec4375@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Scott <gneamob@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Thanks ..
+<quote who="Edmundo Carmona">
+> I applied about two months ago to the LARTC mail list, and about three
+> weeks later I received the reply from mailman telling me to "click
+> here" to be included... the problem is that I was on vacation, so I
+> didn't check my mails for a week and by the time I proceded, the
+> invitations were due.
+>
+> I applied again but haven't received the invitation yet.
+>
+> So... whose ass do I have to kiss to be accepted in the LARTC mail list?
 
-El mi=E9, 05-10-2005 a las 17:55 -0700, Scott escribi=F3:
-> CVS is no more, they use SubVersioN now:
-> http://netfilter.org/downloads.html#svn
->=20
-> --- "Jorge I. Davila L." <davila@cablenet.com.ni>
-> wrote:
->=20
-> > Hi list!:
-> >=20
-> > I'm trying to apply some patches from the
-> > patch-o-matic repository but
-> > following the instructions I can't connect to the
-> > cvs repository ...
-> > where are patches ??
-> >=20
-> > Best regards,
-> >=20
-> > --=20
-> > Jorge Isaac Davila Lopez
-> >=20
->=20
->=20
->=20
-> 	=09
-> __________________________________=20
-> Yahoo! Mail - PC Magazine Editors' Choice 2005=20
-> http://mail.yahoo.com
---=20
-Jorge Isaac Davila Lopez
+On the howto page (http://lartc.org/) it says:
+
+News
+2005-08-21	The mailing list is down, big maintenance is going on to fix this.
+
+
 
 
