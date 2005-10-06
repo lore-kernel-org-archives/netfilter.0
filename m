@@ -1,13 +1,9 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Log incoming traffic
-Date: Thu, 6 Oct 2005 00:04:24 -0500
-Message-ID: <200510060004.24795.rob0@gmx.co.uk>
-References: <006001c5ca30$0df88940$580110ac@HO.lippogeneral.com>
+From: "Amresh Kumar" <amresh_srivastava@hotmail.com>
+Subject: (no subject)
+Date: Thu, 06 Oct 2005 13:41:09 +0530
+Message-ID: <BAY105-F32008F53295C372B97E01E9E850@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <006001c5ca30$0df88940$580110ac@HO.lippogeneral.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +14,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wednesday 2005-October-05 23:40, Winanjaya - PBXSoftwares wrote:
-> How to log incoming traffic to a file (ie. /var/log/incoming) .. ?
-> I need advise
+Hi
+I am new to iptables i have a problem in adding iptable rule i am adding ip 
+table rule
 
-I give advice. Don't do it. :)
+  iptables -A OUTPUT -p tcp -m iprange --src-range 10.0.0.1-10.0.0.20 -m 
+iprange  --dst-range 61.12.43.1-61.12.43.20 -j ACCEPT
+But i am getting following error
+Bad argument `61.12.43.1-61.12.43.20'
+Try `iptables -h' or 'iptables --help' for more information.
+Actuall i am trying to drop  destination iprange 61.12.43.1-61.12.43.20 to 
+source ip range 10.0.0.1-10.0.0.20 .
 
-Really, what do you expect to see from all that? Anything you need to 
-see (connections to running daemons) are logged anyway.
+Is their any other rule  that i can add. plz help me
 
-What exactly is your question here? Common logging targets include LOG 
-(oddly enough) and ULOG. Both are described in "man iptables". Please 
-review that before asking again, but whilst we're here I'll go ahead 
-and explain that LOG logs to syslog and ULOG passes logs to userspace.
+Thanks and regard..
 
-An important match extension commonly used with logging is -m limit. 
-Just how important is it? If you logged all packets without --limit, 
-you could easily crash your system, or at least your syslogd. If you're 
-doing remote logging you could even create a loop ... every log entry 
-generates another one, until memory runs out and syslogd dies.
+_________________________________________________________________
+Register with e-bay. 
+http://pages.ebay.in/msnindia/msn_quad_shopwingold_sept.html Win gold, 
+watches and more!
 
-Just a few days ago there was a similar discussion. Please review that 
-too.
-
-I get the feeling that you would be better served by a ready-made 
-firewall script. There are many of them available. Did you try any of 
-them? The one you're using, the default RH or Fedora firewall, is a 
-very poor choice, which is why I lost my composure. :)
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
 
