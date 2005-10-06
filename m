@@ -1,11 +1,11 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Redirecting iptables I/O
-Date: Thu, 6 Oct 2005 18:54:34 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510061852550.31577@filer.marasystems.com>
-References: <1128366906.2796.86.camel@dulcevida>
+Subject: Re: something stupid
+Date: Thu, 6 Oct 2005 19:03:58 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510061903060.31577@filer.marasystems.com>
+References: <1128493268.31931.9.camel@tholian.starken.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1128366906.2796.86.camel@dulcevida>
+In-Reply-To: <1128493268.31931.9.camel@tholian.starken.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +18,21 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Earl Eiland <eee@nmt.edu>
+To: Daniel Wittenberg <daniel-wittenberg@starken.com>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, 3 Oct 2005, Earl Eiland wrote:
+On Wed, 5 Oct 2005, Daniel Wittenberg wrote:
 
-> I want to run some IP traffic previously captured using tcpdump through
-> iptables and save the passed traffic in another tcpdump file.  How do I
-> go about this?
+> I think it's late and I've got to be missing something here.  I have 2
+> interfaces to different ISP's.  The second interface, eth1, responds
+> just fine on the primary IP ".189".  I have an alias interface .188 that
+> when I apply an iptables rule to, gets no traffic at all.
 
-Perhaps tcpreplay.sourceforge.net can be of some use?
+alias interface? IP aliases all belong to the same interface (eth1), even 
+if you give them a label.
 
-To record teh passed traffic you use tcpdump.
+What does your rules look like?
 
+Regards
+Henrik
 
