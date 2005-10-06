@@ -1,12 +1,10 @@
-From: =?ISO-8859-1?Q?Eduardo_Fern=E1ndez?= <efgonzalez@gmail.com>
-Subject: Two linux routers with DSL
-Date: Thu, 6 Oct 2005 02:26:36 +0200
-Message-ID: <fedfc260510051726r1832a75cnea267f8e5fd55a73@mail.gmail.com>
-Reply-To: =?ISO-8859-1?Q?Eduardo_Fern=E1ndez?= <efgonzalez@gmail.com>
+From: Pavels Nikolajevs <pavels@capital.lv>
+Subject: double nat and packet filtering
+Date: Thu, 06 Oct 2005 03:35:21 +0300
+Message-ID: <1128558921.25977.25.camel@sculptor>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,25 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi all!
+Hello
 
-I've the following config:
+I have set up double NAT. The request from outside world gets translated
+to local IP address.
 
-[LAN] - [big router] - [dsl router] - [internet]
+iptables -t nat -A PREROUTING -d 62.63.177.216 -j DNAT --to-destination
+192.168.100.2
+iptables -t nat -A POSTROUTING -d 192.168.100.2 -s 192.168.100.0/24 -j
+SNAT --to 192.168.100.1
 
-Big router is a dedicated computer running linux, dsl router is a
-small device running linux embedded (busybox) and connected to the
-internet via pppoa. Both routers are connected together via ethernet.
-I want to reduce as much as possible the load in the dsl router, so
-I'd like the big router to do NAT. How should I configure both
-routers?
+But I want to filter packets. For example I want to allow people from
+outside access only port 80. I wrote this
 
-Thank you very much for your help!
+iptables -A FORWARD -p TCP -d 192.168.100.2 --dport 80 -j ACCEPT
+iptables -A FORWARD -p TCP -d 192.168.100.2 -j DROP
 
-Eduardo Fern=E1ndez
+I can connect from outside to port 80 and it is okay. HOWEVER. I can't
+connect from machine 192.168.100.2 to outside Internet. If I remove
+these lines and replace with
 
-PS: this is somewhat offtopic, sorry
+iptables -A INPUT -p TCP -d 62.63.177.216 --dport 80 -j DROP
+
+the packets pass trough ignoring this rule.
+
+Any hint how to enable packet filtering with double NAT?
+
+WBR, Pavels
+
 
