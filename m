@@ -1,8 +1,9 @@
-From: Patrizio Bassi <patrizio.bassi@gmail.com>
-Subject: [BUG??] irc module fails
-Date: Wed, 05 Oct 2005 19:32:35 +0200
-Message-ID: <43440E33.4050004@gmail.com>
-Reply-To: patrizio.bassi@gmail.com
+From: =?UTF-8?B?UGF3ZcWCIFN0YXN6ZXdza2k=?= <pstaszewski@artcom.pl>
+Subject: nf-hipac v0.9.0: Couldn't load match
+ `physdev':/lib/iptables/libipt_physdev.so:
+ undefined symbol: parse_interface
+Date: Thu, 06 Oct 2005 14:19:18 +0200
+Message-ID: <43451646.7040707@artcom.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,26 +18,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, hno@marasystems.com
 
-hi.
+Some problems with physdev iptables match :
 
-seems that's a problem with irc module.
+gcc version 3.3.6
+kernel 2.6.12 (physdev is selected as module in kernel / netfilter)
+iptables 1.3.2 or 1.3.3
+nf-hipac v0.9.0
 
-if i ask dcc chat to an user it doesn't work.
-if i try to send a file, neither (no nat/router problem)
+commands:
 
-if i try to receive a file it works.
-i've sniffed a dcc chat session with ethereal..
+nf-hipac -m physdev --help
+nf-hipac -A FORWARD -m physdev --help
 
-19:22:28.000825 IP <ip1>.1267 > <myip>.33400: S 1487500188:1487500188(0) 
-win 65535 <mss 1460,nop,wscale 0,nop,nop,timestamp 466877396 0>
-19:22:30.990384 IP <ip1>.1267 > <myip>.33400: S 1487500188:1487500188(0) 
-win 65535 <mss 1460,nop,wscale 0,nop,nop,timestamp 466877696 0>
+i see error like this:
 
-packet arrives but is discarded...
-why? no tracking? seems so strange..
+nf-hipac v0.9.0: Couldn't load match 
+`physdev':/lib/iptables/libipt_physdev.so: undefined symbol: parse_interface
 
-ps. i'm not subscribed, CC me
 
 
