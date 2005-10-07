@@ -1,9 +1,9 @@
-From: "P theodorou" <props666999@hotmail.com>
-Subject: apache do not publish the website
-Date: Fri, 07 Oct 2005 00:48:11 +0000
-Message-ID: <BAY102-F31D2D48EE4251891A2359BAE840@phx.gbl>
+From: "Gene Dellinger" <gene@poh.com>
+Subject: dnat question
+Date: Thu, 6 Oct 2005 17:32:12 -1000
+Message-ID: <BOEKIIIKCIBKDMDMHHLLCEIJCMAA.gene@poh.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_ac9_1040_7d1d"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,103 +15,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+I want to do the following
+I have a primary server in my Hawaii office that clients(20.20.20.2) in
+Hawai connect to.
+Currently through straight forward routing they connect directly to the IP
+4.4.4.2
+I would like to have them connect to my firewall(3.3.3.2) and port forward
+the connections to 4.4.4.2
+ that was done using iptables -t nat PREROUTING -s 20.20.20.2 -p tcp --dport
+22 -j DNAT --to-destination 4.4.4.2
+To provide an emergency backup should something happen to the main server in
+Hawaii, I would like to change the PREROUTING to
+  -j DNAT --to-destination 6.6.6.2
 
-------=_NextPart_000_ac9_1040_7d1d
-Content-Type: text/plain; format=flowed
+I have set it up, but when I am looking at the packet trail I see it get to
+my backup server, and then die, no return packets
+are sent back to the client. Interesting note: I can gain access from the
+clients direct to the backup server(i.e. from client station ssh 6.6.6.2),
+but that takes my ability to switch to the backup in one spot at the
+firewall. I have had pretty good luck with iptables in the past but this one
+has me stumped.
 
-The firewall  works fine apart from the DMZ  it doesn't seem to
-work(the website is not accesible on the web) . Can you verify the attached 
-script ?
-the dmz'ed pc cannot access the internet i don't know why
-
-
-regards
-
-
-------=_NextPart_000_ac9_1040_7d1d
-Content-Type: application/octet-stream; name="rc.firewall"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="rc.firewall"
-
-CgpJTkVUX0lQPSIyMi4yMi4yMi4yMiIKSFRUUF9JUD0iMjIuMjIuMjIuMjIi
-CgpJTkVUX0lGQUNFPSJldGgwIgoKCkxBTl9JUD0iMTkyLjE2OC4wLjEiCkxB
-Tl9JRkFDRT0iZXRoMSIKCgpETVpfSFRUUF9JUD0iMTkyLjE2OC4xLjIiCkRN
-Wl9JUD0iMTkyLjE2OC4xLjEiCkRNWl9JRkFDRT0iZXRoMiIKCgpMT19JRkFD
-RT0ibG8iCkxPX0lQPSIxMjcuMC4wLjEiCgoKSVBUQUJMRVM9Ii91c3Ivc2Jp
-bi9pcHRhYmxlcyIKCgovc2Jpbi9kZXBtb2QgLWEKCgovc2Jpbi9tb2Rwcm9i
-ZSBpcF90YWJsZXMKL3NiaW4vbW9kcHJvYmUgaXBfY29ubnRyYWNrCi9zYmlu
-L21vZHByb2JlIGlwdGFibGVfZmlsdGVyCi9zYmluL21vZHByb2JlIGlwdGFi
-bGVfbWFuZ2xlCi9zYmluL21vZHByb2JlIGlwdGFibGVfbmF0Ci9zYmluL21v
-ZHByb2JlIGlwdF9MT0cKL3NiaW4vbW9kcHJvYmUgaXB0X2xpbWl0Ci9zYmlu
-L21vZHByb2JlIGlwdF9zdGF0ZQoKCgplY2hvICIxIiA+IC9wcm9jL3N5cy9u
-ZXQvaXB2NC9pcF9mb3J3YXJkCgoKCiRJUFRBQkxFUyAtUCBJTlBVVCBEUk9Q
-CiRJUFRBQkxFUyAtUCBPVVRQVVQgRFJPUAokSVBUQUJMRVMgLVAgRk9SV0FS
-RCBEUk9QCgoKJElQVEFCTEVTIC1OIGJhZF90Y3BfcGFja2V0cwoKCiRJUFRB
-QkxFUyAtTiBhbGxvd2VkCiRJUFRBQkxFUyAtTiBpY21wX3BhY2tldHMKCgoK
-JElQVEFCTEVTIC1BIGJhZF90Y3BfcGFja2V0cyAtcCB0Y3AgLS10Y3AtZmxh
-Z3MgU1lOLEFDSyBTWU4sQUNLIFwKLW0gc3RhdGUgLS1zdGF0ZSBORVcgLWog
-UkVKRUNUIC0tcmVqZWN0LXdpdGggdGNwLXJlc2V0CiRJUFRBQkxFUyAtQSBi
-YWRfdGNwX3BhY2tldHMgLXAgdGNwICEgLS1zeW4gLW0gc3RhdGUgLS1zdGF0
-ZSBORVcgLWogTE9HIFwKLS1sb2ctcHJlZml4ICJOZXcgbm90IHN5bjoiCiRJ
-UFRBQkxFUyAtQSBiYWRfdGNwX3BhY2tldHMgLXAgdGNwICEgLS1zeW4gLW0g
-c3RhdGUgLS1zdGF0ZSBORVcgLWogRFJPUAoKCiRJUFRBQkxFUyAtQSBhbGxv
-d2VkIC1wIFRDUCAtLXN5biAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIGFsbG93
-ZWQgLXAgVENQIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRF
-RCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIGFsbG93ZWQgLXAgVENQIC1qIERS
-T1AKCgojIENoYW5nZWQgcnVsZXMgdG90YWxseQokSVBUQUJMRVMgLUEgaWNt
-cF9wYWNrZXRzIC1wIElDTVAgLXMgMC8wIC0taWNtcC10eXBlIDggLWogQUND
-RVBUCiRJUFRBQkxFUyAtQSBpY21wX3BhY2tldHMgLXAgSUNNUCAtcyAwLzAg
-LS1pY21wLXR5cGUgMTEgLWogQUNDRVBUCgoKCiRJUFRBQkxFUyAtQSBJTlBV
-VCAtcCB0Y3AgLWogYmFkX3RjcF9wYWNrZXRzCgoKCiRJUFRBQkxFUyAtQSBJ
-TlBVVCAtcCBJQ01QIC1pICRJTkVUX0lGQUNFIC1qIGljbXBfcGFja2V0cwoK
-CgokSVBUQUJMRVMgLUEgSU5QVVQgLXAgQUxMIC1pICRETVpfSUZBQ0UgLWQg
-JERNWl9JUCAtaiBBQ0NFUFQKCgoKJElQVEFCTEVTIC1BIElOUFVUIC1wIEFM
-TCAtaSAkTEFOX0lGQUNFIC1kICRMQU5fSVAgLWogQUNDRVBUCgoKJElQVEFC
-TEVTIC1BIElOUFVUIC1wIEFMTCAtaSAkTE9fSUZBQ0UgLXMgJExPX0lQIC1q
-IEFDQ0VQVAokSVBUQUJMRVMgLUEgSU5QVVQgLXAgQUxMIC1pICRMT19JRkFD
-RSAtcyAkTEFOX0lQIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgSU5QVVQgLXAg
-QUxMIC1pICRMT19JRkFDRSAtcyAkSU5FVF9JUCAtaiBBQ0NFUFQKCgoKJElQ
-VEFCTEVTIC1BIElOUFVUIC1wIFVEUCAtaSAkTEFOX0lGQUNFIC0tZHBvcnQg
-NjcgLS1zcG9ydCA2OCAtaiBBQ0NFUFQKCgoKJElQVEFCTEVTIC1BIElOUFVU
-IC1wIEFMTCAtZCAkSU5FVF9JUCAtbSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElT
-SEVELFJFTEFURUQgXAotaiBBQ0NFUFQKCgokSVBUQUJMRVMgLUEgSU5QVVQg
-LW0gbGltaXQgLS1saW1pdCAzL21pbnV0ZSAtLWxpbWl0LWJ1cnN0IDMgLWog
-TE9HIFwKLS1sb2ctbGV2ZWwgREVCVUcgLS1sb2ctcHJlZml4ICJJUFQgSU5Q
-VVQgcGFja2V0IGRpZWQ6ICIKCgoKJElQVEFCTEVTIC1BIEZPUldBUkQgLXAg
-dGNwIC1qIGJhZF90Y3BfcGFja2V0cwoKCgoKJElQVEFCTEVTIC1BIEZPUldB
-UkQgLWkgJERNWl9JRkFDRSAtbyAkSU5FVF9JRkFDRSAtaiBBQ0NFUFQKJElQ
-VEFCTEVTIC1BIEZPUldBUkQgLWkgJElORVRfSUZBQ0UgLW8gJERNWl9JRkFD
-RSAtbSBzdGF0ZSBcCi0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBB
-Q0NFUFQKJElQVEFCTEVTIC1BIEZPUldBUkQgLWkgJExBTl9JRkFDRSAtbyAk
-RE1aX0lGQUNFIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgRk9SV0FSRCAtaSAk
-RE1aX0lGQUNFIC1vICRMQU5fSUZBQ0UgLW0gc3RhdGUgXAotLXN0YXRlIEVT
-VEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBUCgoKCiRJUFRBQkxFUyAtQSBG
-T1JXQVJEIC1wIFRDUCAtaSAkSU5FVF9JRkFDRSAtbyAkRE1aX0lGQUNFIC1k
-ICRETVpfSFRUUF9JUCBcCi0tZHBvcnQgODAgLWogYWxsb3dlZAokSVBUQUJM
-RVMgLUEgRk9SV0FSRCAtcCBJQ01QIC1pICRJTkVUX0lGQUNFIC1vICRETVpf
-SUZBQ0UgLWQgJERNWl9IVFRQX0lQIFwKLWogaWNtcF9wYWNrZXRzCgoKCgok
-SVBUQUJMRVMgLUEgRk9SV0FSRCAtaSAkTEFOX0lGQUNFIC1qIEFDQ0VQVAok
-SVBUQUJMRVMgLUEgRk9SV0FSRCAtbSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElT
-SEVELFJFTEFURUQgLWogQUNDRVBUCgoKJElQVEFCTEVTIC1BIEZPUldBUkQg
-LW0gbGltaXQgLS1saW1pdCAzL21pbnV0ZSAtLWxpbWl0LWJ1cnN0IDMgLWog
-TE9HIFwKLS1sb2ctbGV2ZWwgREVCVUcgLS1sb2ctcHJlZml4ICJJUFQgRk9S
-V0FSRCBwYWNrZXQgZGllZDogIgoKJElQVEFCTEVTIC1BIE9VVFBVVCAtcCB0
-Y3AgLWogYmFkX3RjcF9wYWNrZXRzCgoKCiRJUFRBQkxFUyAtQSBPVVRQVVQg
-LXAgQUxMIC1zICRMT19JUCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIE9VVFBV
-VCAtcCBBTEwgLXMgJExBTl9JUCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIE9V
-VFBVVCAtcCBBTEwgLXMgJElORVRfSVAgLWogQUNDRVBUCgoKJElQVEFCTEVT
-IC1BIE9VVFBVVCAtbSBsaW1pdCAtLWxpbWl0IDMvbWludXRlIC0tbGltaXQt
-YnVyc3QgMyAtaiBMT0cgXAotLWxvZy1sZXZlbCBERUJVRyAtLWxvZy1wcmVm
-aXggIklQVCBPVVRQVVQgcGFja2V0IGRpZWQ6ICIKCgokSVBUQUJMRVMgLXQg
-bmF0IC1BIFBSRVJPVVRJTkcgLXAgVENQIC1pICRJTkVUX0lGQUNFIC1kICRI
-VFRQX0lQIC0tZHBvcnQgODAgXAotaiBETkFUIC0tdG8tZGVzdGluYXRpb24g
-JERNWl9IVFRQX0lQCgokSVBUQUJMRVMgLXQgbmF0IC1BIFBPU1RST1VUSU5H
-IC1vICRJTkVUX0lGQUNFIC1qIFNOQVQgLS10by1zb3VyY2UgJElORVRfSVAK
-Cg==
+Below is the network config.
 
 
-------=_NextPart_000_ac9_1040_7d1d--
+ client	   	   	                        				               linux
+ 20.20.20.2>--->router >-1.1.1.1-(WAN T1)--1.1.1.2->router
+>-3.3.3.1--(LAN)--3.3.3.2-> firewall >-4.4.4.1--(LAN)--4.4.4.2-> main server
+           HAWAII		   			          2.2.2.1                        HAWAII
+							    		|
+									|
+							    	  (WAN T1)
+							            |
+									|
+				   				   2.2.2.2                            linux
+				   				   router >-5.5.5.1--(LAN)--5.5.5.2-> firewall
+>-6.6.6.1--(LAN)--6.6.6.2-> backup server
+				                                                          CALIFORNIA
+
+Thanks
+Gene Dellinger
+IT Systems Engineer
+POH, Inc.
+
 
