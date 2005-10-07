@@ -1,8 +1,7 @@
-From: ZeuS SN <zeus_securenet@hotmail.com>
-Subject: Iptables Forward Limit
-Date: Thu, 06 Oct 2005 17:18:37 +0100
-Message-ID: <43454E5D.80802@hotmail.com>
-Reply-To: zeus_securenet@hotmail.com
+From: sureshmadhu <smadhu@e-consystems.com>
+Subject: configuring linux machine as a router with two external interfaces
+Date: Fri, 07 Oct 2005 17:57:20 +0530
+Message-ID: <434669A8.4040709@e-consystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,11 +18,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I have to add many rules to the Filter/Forward table with iptables, and 
-I have the next question :
+hi,
+     I couldn't write the script for configuring my linux machine that 
+has two external MAC interfaces as a router. The NAT should route the 
+packet from internal network to one of the two external mac interfaces 
+acoording to load balance in the each interface.
+can anybody help me to solve this problem?
 
-    There is any limit of rules that can be added to the forward table ? 
-I can add 2048 rules, 10000000 rules ?
 
-Regards
+with regards..
+
+Suresh Madhu D
+Project Trainee
+e-consystems
+chennai.
+
 
