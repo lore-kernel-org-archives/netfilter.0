@@ -1,13 +1,15 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: something stupid
-Date: Fri, 7 Oct 2005 20:12:36 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510072009340.17798@filer.marasystems.com>
-References: <1128493268.31931.9.camel@tholian.starken.com>
-	<Pine.LNX.4.61.0510061903060.31577@filer.marasystems.com>
-	<1128622733.11829.12.camel@tholian.starken.com>
+From: Michael Bellion <mbellion@hipac.org>
+Subject: Re: nf-hipac v0.9.0: Couldn't load match
+	`physdev':/lib/iptables/libipt_physdev.so: undefined symbol:
+	parse_interface
+Date: Fri, 7 Oct 2005 20:07:09 +0200
+Message-ID: <200510072007.09465.mbellion@hipac.org>
+References: <43451646.7040707@artcom.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1128622733.11829.12.camel@tholian.starken.com>
+In-Reply-To: <43451646.7040707@artcom.pl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +20,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Daniel Wittenberg <daniel-wittenberg@starken.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+Cc: =?utf-8?q?Pawe=C5=82_Staszewski?= <pstaszewski@artcom.pl>
 
-On Thu, 6 Oct 2005, Daniel Wittenberg wrote:
+Hi
 
-> yeah, I do realize they are on the same interface, just wanted to make
-> sure it was understood what I have.  The very first rule right now in my
-> script:
+> Some problems with physdev iptables match :
 >
-> iptables -t filter -A INPUT -i eth1 -p tcp -d 1.1.1.188 --dport 25 -j
-> LOG --log-prefix " SMTP_HERE " --log-level notice
+> gcc version 3.3.6
+> kernel 2.6.12 (physdev is selected as module in kernel / netfilter)
+> iptables 1.3.2 or 1.3.3
+> nf-hipac v0.9.0
 >
-> eth1    has IP of 1.1.1.189
-> eth1:0  has IP of 1.1.1.188
+> commands:
+>
+> nf-hipac -m physdev --help
+> nf-hipac -A FORWARD -m physdev --help
+>
+> i see error like this:
+>
+> nf-hipac v0.9.0: Couldn't load match
+> `physdev':/lib/iptables/libipt_physdev.so: undefined symbol:
+> parse_interface
 
-Works here.
+Yes, sorry, the current version of the userspace tool does not export the 
+parse_interface function.
 
-iptables -t filter -A INPUT -i br0 -p tcp -d 1.1.1.188 --dport 25 -j LOG 
---log-prefix " SMTP_HERE " --log-level notice
+I am currently at the netfilter workshop in Seville, Spain and I have a lot of 
+hardware problems with my notebook :-(
+I will fix your problem as soon as I return to Germany. Expect a patch on 
+http://www.hipac.org on monday.
 
-Oct  7 20:11:24 henrik kernel:  SMTP_HERE IN=br0 OUT= PHYSIN=eth0 
-MAC=00:90:27:cc:0e:14:00:d0:b7:a7:6d:40:08:00 SRC=192.168.1.1 
-DST=1.1.1.188 LEN=60 TOS=0x10 PREC=0x00 TTL=64 ID=2497 DF PROTO=TCP 
-SPT=33342 DPT=25 WINDOW=5840 RES=0x00 SYN URGP=0
+Thanks for your bug report
+	Michael Bellion
 
-Regards
-Henrik
 
