@@ -1,10 +1,11 @@
-From: "Gene Dellinger" <gene@poh.com>
-Subject: dnat question
-Date: Thu, 6 Oct 2005 17:32:12 -1000
-Message-ID: <BOEKIIIKCIBKDMDMHHLLCEIJCMAA.gene@poh.com>
+From: "Fiala Daniel" <d.fiala@el-me.de>
+Subject: Reverse MASQUERADING
+Date: Fri, 7 Oct 2005 12:19:12 +0200
+Message-ID: <E0401B10F7BAC5469FE5ACE7B93387640192E1@exchange05.elmedmn.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +19,33 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I want to do the following
-I have a primary server in my Hawaii office that clients(20.20.20.2) in
-Hawai connect to.
-Currently through straight forward routing they connect directly to the IP
-4.4.4.2
-I would like to have them connect to my firewall(3.3.3.2) and port forward
-the connections to 4.4.4.2
- that was done using iptables -t nat PREROUTING -s 20.20.20.2 -p tcp --dport
-22 -j DNAT --to-destination 4.4.4.2
-To provide an emergency backup should something happen to the main server in
-Hawaii, I would like to change the PREROUTING to
-  -j DNAT --to-destination 6.6.6.2
+Hello *.
 
-I have set it up, but when I am looking at the packet trail I see it get to
-my backup server, and then die, no return packets
-are sent back to the client. Interesting note: I can gain access from the
-clients direct to the backup server(i.e. from client station ssh 6.6.6.2),
-but that takes my ability to switch to the backup in one spot at the
-firewall. I have had pretty good luck with iptables in the past but this one
-has me stumped.
+I want to set up a reverse MASQUERADING on a local box connecting
+to 2 or more identical networks. Each network has the ip=20
+192.168.1.0/24 and a target host with the IP 192.168.1.123 in it.=20
+I now want to setup a NAT so that each device appears to be a new
+Network:
 
-Below is the network config.
+Host box behind eth0 (192.168.1.124) -> accessible/pingable by
+192.168.2.124=20
+Host box behind eth1 (192.168.1.124) -> accessible/pingable by
+192.168.3.124
+...
 
+Is this kind of mapping possible with NAT?
 
- client	   	   	                        				               linux
- 20.20.20.2>--->router >-1.1.1.1-(WAN T1)--1.1.1.2->router
->-3.3.3.1--(LAN)--3.3.3.2-> firewall >-4.4.4.1--(LAN)--4.4.4.2-> main server
-           HAWAII		   			          2.2.2.1                        HAWAII
-							    		|
-									|
-							    	  (WAN T1)
-							            |
-									|
-				   				   2.2.2.2                            linux
-				   				   router >-5.5.5.1--(LAN)--5.5.5.2-> firewall
->-6.6.6.1--(LAN)--6.6.6.2-> backup server
-				                                                          CALIFORNIA
+Best Regards,
 
-Thanks
-Gene Dellinger
-IT Systems Engineer
-POH, Inc.
+Daniel
+--=20
+Daniel Fiala
 
+EL-ME AG
+Gewerbering 1
+
+D-84072 Au i. d. Hallertau
+
+Tel.: +49/8752/864-0
+Fax.: +49/8752/864-100
 
