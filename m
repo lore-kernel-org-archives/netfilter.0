@@ -1,10 +1,14 @@
-From: Sorin Panca <sorin.panca@gmail.com>
-Subject: The CLASSIFY target
-Date: Fri, 07 Oct 2005 18:23:20 +0300
-Message-ID: <434692E8.40008@gmail.com>
+From: Marek Zachara <marek.zachara@conexe.pl>
+Subject: Re: configuring linux machine as a router with two external
+	interfaces
+Date: Fri, 7 Oct 2005 17:26:19 +0200
+Message-ID: <200510071726.20043.marek.zachara@conexe.pl>
+References: <434669A8.4040709@e-consystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <434669A8.4040709@e-consystems.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,12 +22,31 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi!
-I have the next rule in my script:
-iptables -t mangle -A FORWARD -i $EXT -o $INT -m mark --mark 2 -j
-CLASSIFY --set-class 1:A
-should i poit it to one of the htb subclasses or to the leaf qdisc?
-iptables -t mangle -A FORWARD -i $EXT -o $INT -m mark --mark 2 -j
-CLASSIFY --set-class A:
-Can someone help me please?
+I don't think netfilter is the best tool for the job. 
+There is a kernel feature that allows bonding of two interfaces for traffic 
+sharing and traffic equalization afair (although i havn't used it 
+personally).
+You can of course share the traffic with netfilter by marking packets in 
+pre-routing and then routing them according to netfilter mark - but you must 
+define yourself how to distribute the traffic between interfaces - i don't 
+recall any target that could serve as a classic load balancing.
+
+Marek
+
+
+On Friday 07 of October 2005 14:27, sureshmadhu wrote:
+> hi,
+>      I couldn't write the script for configuring my linux machine that
+> has two external MAC interfaces as a router. The NAT should route the
+> packet from internal network to one of the two external mac interfaces
+> acoording to load balance in the each interface.
+> can anybody help me to solve this problem?
+>
+>
+> with regards..
+>
+> Suresh Madhu D
+> Project Trainee
+> e-consystems
+> chennai.
 
