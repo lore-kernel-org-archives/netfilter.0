@@ -1,7 +1,7 @@
 From: Michael Bellion <mbellion@hipac.org>
 Subject: Re: some problems
-Date: Fri, 7 Oct 2005 20:30:45 +0200
-Message-ID: <200510072030.46522.mbellion@hipac.org>
+Date: Fri, 7 Oct 2005 20:40:20 +0200
+Message-ID: <200510072040.21185.mbellion@hipac.org>
 References: <43466582.7000307@artcom.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
