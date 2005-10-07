@@ -1,16 +1,10 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: [OT] Re: Whose ass....?
-Date: Thu, 6 Oct 2005 19:07:50 -0400
-Message-ID: <65aa6af90510061607l6ae654e7w3a96a912f4720584@mail.gmail.com>
-References: <65aa6af90510051400n745c9d7coc71b5ca2e2ec4375@mail.gmail.com>
-	<1128616870.5322.17.camel@anduril.intranet.cartel-securite.net>
-	<200510061219.32345.rob0@gmx.co.uk>
-Reply-To: Edmundo Carmona <eantoranz@gmail.com>
+From: "P theodorou" <props666999@hotmail.com>
+Subject: apache do not publish the website
+Date: Fri, 07 Oct 2005 00:48:11 +0000
+Message-ID: <BAY102-F31D2D48EE4251891A2359BAE840@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="----=_NextPart_000_ac9_1040_7d1d"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200510061219.32345.rob0@gmx.co.uk>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,26 +15,103 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-In short: Bert's! LOL
+This is a multi-part message in MIME format.
 
-What's his mail address? If I may ask
+------=_NextPart_000_ac9_1040_7d1d
+Content-Type: text/plain; format=flowed
 
-On 10/6/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> On Thursday 2005-October-06 11:41, Cedric Blancher wrote:
-> > Hummm, is it "LARTC mailing lists" support mailing list there ?
-> >
-> > :)))
->
-> It's understandable that one might ask here because of the overlap in
-> topic areas, and the fact that recently LARTC list was down (and
-> perhaps still the list server is not handling subscription requests.)
-> But indeed, the best thing to do is to contact Bert directly.
-> --
->    mail to this address is discarded unless "/dev/rob0"
->    or "not-spam" is in Subject: header
->
->
+The firewall  works fine apart from the DMZ  it doesn't seem to
+work(the website is not accesible on the web) . Can you verify the attached 
+script ?
+the dmz'ed pc cannot access the internet i don't know why
+
+
+regards
+
+
+------=_NextPart_000_ac9_1040_7d1d
+Content-Type: application/octet-stream; name="rc.firewall"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="rc.firewall"
+
+CgpJTkVUX0lQPSIyMi4yMi4yMi4yMiIKSFRUUF9JUD0iMjIuMjIuMjIuMjIi
+CgpJTkVUX0lGQUNFPSJldGgwIgoKCkxBTl9JUD0iMTkyLjE2OC4wLjEiCkxB
+Tl9JRkFDRT0iZXRoMSIKCgpETVpfSFRUUF9JUD0iMTkyLjE2OC4xLjIiCkRN
+Wl9JUD0iMTkyLjE2OC4xLjEiCkRNWl9JRkFDRT0iZXRoMiIKCgpMT19JRkFD
+RT0ibG8iCkxPX0lQPSIxMjcuMC4wLjEiCgoKSVBUQUJMRVM9Ii91c3Ivc2Jp
+bi9pcHRhYmxlcyIKCgovc2Jpbi9kZXBtb2QgLWEKCgovc2Jpbi9tb2Rwcm9i
+ZSBpcF90YWJsZXMKL3NiaW4vbW9kcHJvYmUgaXBfY29ubnRyYWNrCi9zYmlu
+L21vZHByb2JlIGlwdGFibGVfZmlsdGVyCi9zYmluL21vZHByb2JlIGlwdGFi
+bGVfbWFuZ2xlCi9zYmluL21vZHByb2JlIGlwdGFibGVfbmF0Ci9zYmluL21v
+ZHByb2JlIGlwdF9MT0cKL3NiaW4vbW9kcHJvYmUgaXB0X2xpbWl0Ci9zYmlu
+L21vZHByb2JlIGlwdF9zdGF0ZQoKCgplY2hvICIxIiA+IC9wcm9jL3N5cy9u
+ZXQvaXB2NC9pcF9mb3J3YXJkCgoKCiRJUFRBQkxFUyAtUCBJTlBVVCBEUk9Q
+CiRJUFRBQkxFUyAtUCBPVVRQVVQgRFJPUAokSVBUQUJMRVMgLVAgRk9SV0FS
+RCBEUk9QCgoKJElQVEFCTEVTIC1OIGJhZF90Y3BfcGFja2V0cwoKCiRJUFRB
+QkxFUyAtTiBhbGxvd2VkCiRJUFRBQkxFUyAtTiBpY21wX3BhY2tldHMKCgoK
+JElQVEFCTEVTIC1BIGJhZF90Y3BfcGFja2V0cyAtcCB0Y3AgLS10Y3AtZmxh
+Z3MgU1lOLEFDSyBTWU4sQUNLIFwKLW0gc3RhdGUgLS1zdGF0ZSBORVcgLWog
+UkVKRUNUIC0tcmVqZWN0LXdpdGggdGNwLXJlc2V0CiRJUFRBQkxFUyAtQSBi
+YWRfdGNwX3BhY2tldHMgLXAgdGNwICEgLS1zeW4gLW0gc3RhdGUgLS1zdGF0
+ZSBORVcgLWogTE9HIFwKLS1sb2ctcHJlZml4ICJOZXcgbm90IHN5bjoiCiRJ
+UFRBQkxFUyAtQSBiYWRfdGNwX3BhY2tldHMgLXAgdGNwICEgLS1zeW4gLW0g
+c3RhdGUgLS1zdGF0ZSBORVcgLWogRFJPUAoKCiRJUFRBQkxFUyAtQSBhbGxv
+d2VkIC1wIFRDUCAtLXN5biAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIGFsbG93
+ZWQgLXAgVENQIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRF
+RCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIGFsbG93ZWQgLXAgVENQIC1qIERS
+T1AKCgojIENoYW5nZWQgcnVsZXMgdG90YWxseQokSVBUQUJMRVMgLUEgaWNt
+cF9wYWNrZXRzIC1wIElDTVAgLXMgMC8wIC0taWNtcC10eXBlIDggLWogQUND
+RVBUCiRJUFRBQkxFUyAtQSBpY21wX3BhY2tldHMgLXAgSUNNUCAtcyAwLzAg
+LS1pY21wLXR5cGUgMTEgLWogQUNDRVBUCgoKCiRJUFRBQkxFUyAtQSBJTlBV
+VCAtcCB0Y3AgLWogYmFkX3RjcF9wYWNrZXRzCgoKCiRJUFRBQkxFUyAtQSBJ
+TlBVVCAtcCBJQ01QIC1pICRJTkVUX0lGQUNFIC1qIGljbXBfcGFja2V0cwoK
+CgokSVBUQUJMRVMgLUEgSU5QVVQgLXAgQUxMIC1pICRETVpfSUZBQ0UgLWQg
+JERNWl9JUCAtaiBBQ0NFUFQKCgoKJElQVEFCTEVTIC1BIElOUFVUIC1wIEFM
+TCAtaSAkTEFOX0lGQUNFIC1kICRMQU5fSVAgLWogQUNDRVBUCgoKJElQVEFC
+TEVTIC1BIElOUFVUIC1wIEFMTCAtaSAkTE9fSUZBQ0UgLXMgJExPX0lQIC1q
+IEFDQ0VQVAokSVBUQUJMRVMgLUEgSU5QVVQgLXAgQUxMIC1pICRMT19JRkFD
+RSAtcyAkTEFOX0lQIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgSU5QVVQgLXAg
+QUxMIC1pICRMT19JRkFDRSAtcyAkSU5FVF9JUCAtaiBBQ0NFUFQKCgoKJElQ
+VEFCTEVTIC1BIElOUFVUIC1wIFVEUCAtaSAkTEFOX0lGQUNFIC0tZHBvcnQg
+NjcgLS1zcG9ydCA2OCAtaiBBQ0NFUFQKCgoKJElQVEFCTEVTIC1BIElOUFVU
+IC1wIEFMTCAtZCAkSU5FVF9JUCAtbSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElT
+SEVELFJFTEFURUQgXAotaiBBQ0NFUFQKCgokSVBUQUJMRVMgLUEgSU5QVVQg
+LW0gbGltaXQgLS1saW1pdCAzL21pbnV0ZSAtLWxpbWl0LWJ1cnN0IDMgLWog
+TE9HIFwKLS1sb2ctbGV2ZWwgREVCVUcgLS1sb2ctcHJlZml4ICJJUFQgSU5Q
+VVQgcGFja2V0IGRpZWQ6ICIKCgoKJElQVEFCTEVTIC1BIEZPUldBUkQgLXAg
+dGNwIC1qIGJhZF90Y3BfcGFja2V0cwoKCgoKJElQVEFCTEVTIC1BIEZPUldB
+UkQgLWkgJERNWl9JRkFDRSAtbyAkSU5FVF9JRkFDRSAtaiBBQ0NFUFQKJElQ
+VEFCTEVTIC1BIEZPUldBUkQgLWkgJElORVRfSUZBQ0UgLW8gJERNWl9JRkFD
+RSAtbSBzdGF0ZSBcCi0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBB
+Q0NFUFQKJElQVEFCTEVTIC1BIEZPUldBUkQgLWkgJExBTl9JRkFDRSAtbyAk
+RE1aX0lGQUNFIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgRk9SV0FSRCAtaSAk
+RE1aX0lGQUNFIC1vICRMQU5fSUZBQ0UgLW0gc3RhdGUgXAotLXN0YXRlIEVT
+VEFCTElTSEVELFJFTEFURUQgLWogQUNDRVBUCgoKCiRJUFRBQkxFUyAtQSBG
+T1JXQVJEIC1wIFRDUCAtaSAkSU5FVF9JRkFDRSAtbyAkRE1aX0lGQUNFIC1k
+ICRETVpfSFRUUF9JUCBcCi0tZHBvcnQgODAgLWogYWxsb3dlZAokSVBUQUJM
+RVMgLUEgRk9SV0FSRCAtcCBJQ01QIC1pICRJTkVUX0lGQUNFIC1vICRETVpf
+SUZBQ0UgLWQgJERNWl9IVFRQX0lQIFwKLWogaWNtcF9wYWNrZXRzCgoKCgok
+SVBUQUJMRVMgLUEgRk9SV0FSRCAtaSAkTEFOX0lGQUNFIC1qIEFDQ0VQVAok
+SVBUQUJMRVMgLUEgRk9SV0FSRCAtbSBzdGF0ZSAtLXN0YXRlIEVTVEFCTElT
+SEVELFJFTEFURUQgLWogQUNDRVBUCgoKJElQVEFCTEVTIC1BIEZPUldBUkQg
+LW0gbGltaXQgLS1saW1pdCAzL21pbnV0ZSAtLWxpbWl0LWJ1cnN0IDMgLWog
+TE9HIFwKLS1sb2ctbGV2ZWwgREVCVUcgLS1sb2ctcHJlZml4ICJJUFQgRk9S
+V0FSRCBwYWNrZXQgZGllZDogIgoKJElQVEFCTEVTIC1BIE9VVFBVVCAtcCB0
+Y3AgLWogYmFkX3RjcF9wYWNrZXRzCgoKCiRJUFRBQkxFUyAtQSBPVVRQVVQg
+LXAgQUxMIC1zICRMT19JUCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIE9VVFBV
+VCAtcCBBTEwgLXMgJExBTl9JUCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIE9V
+VFBVVCAtcCBBTEwgLXMgJElORVRfSVAgLWogQUNDRVBUCgoKJElQVEFCTEVT
+IC1BIE9VVFBVVCAtbSBsaW1pdCAtLWxpbWl0IDMvbWludXRlIC0tbGltaXQt
+YnVyc3QgMyAtaiBMT0cgXAotLWxvZy1sZXZlbCBERUJVRyAtLWxvZy1wcmVm
+aXggIklQVCBPVVRQVVQgcGFja2V0IGRpZWQ6ICIKCgokSVBUQUJMRVMgLXQg
+bmF0IC1BIFBSRVJPVVRJTkcgLXAgVENQIC1pICRJTkVUX0lGQUNFIC1kICRI
+VFRQX0lQIC0tZHBvcnQgODAgXAotaiBETkFUIC0tdG8tZGVzdGluYXRpb24g
+JERNWl9IVFRQX0lQCgokSVBUQUJMRVMgLXQgbmF0IC1BIFBPU1RST1VUSU5H
+IC1vICRJTkVUX0lGQUNFIC1qIFNOQVQgLS10by1zb3VyY2UgJElORVRfSVAK
+Cg==
+
+
+------=_NextPart_000_ac9_1040_7d1d--
 
