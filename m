@@ -1,7 +1,7 @@
-From: sureshmadhu <smadhu@e-consystems.com>
-Subject: configuring linux machine as a router with two external interfaces
-Date: Fri, 07 Oct 2005 17:57:20 +0530
-Message-ID: <434669A8.4040709@e-consystems.com>
+From: Brent Clark <bclark@eccotours.dyndns.org>
+Subject: How would this help my LAN / network
+Date: Fri, 07 Oct 2005 16:30:05 +0200
+Message-ID: <4346866D.8080900@eccotours.dyndns.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,21 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: iptables <netfilter@lists.netfilter.org>
 
-hi,
-     I couldn't write the script for configuring my linux machine that 
-has two external MAC interfaces as a router. The NAT should route the 
-packet from internal network to one of the two external mac interfaces 
-acoording to load balance in the each interface.
-can anybody help me to solve this problem?
+HI all
 
+I just came across one of the threads on the LARTC.
+In the thread it had this.
 
-with regards..
+So my question is, for the following rules, would these increase my browsing / traffic, and if so, how.
 
-Suresh Madhu D
-Project Trainee
-e-consystems
-chennai.
+iptables -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST,ACK ACK -m length --length 0:128 -j TOS --set-tos Minimize-Delay
+iptables -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST,ACK ACK -m length --length 128: -j TOS --set-tos Maximize-Throughput
+iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 20 -j TOS --set-tos Maximize-Throughput
+iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 21 -j TOS --set-tos Minimize-Delay
+iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 22 -j TOS --set-tos Minimize-Delay
+iptables -t mangle -A PREROUTING -p udp -m udp --sport 53 -j TOS --set-tos Maximize-Throughput
+iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 80 -j TOS --set-tos Maximize-Throughput
+iptables -t mangle -A PREROUTING -p udp -m udp --sport 123 -j TOS --set-tos Minimize-Delay
 
+If someone would take the time to briefly explain this to me, I would be most grateful.
+
+Kind Regards
+Brent Clark
 
