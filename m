@@ -1,12 +1,14 @@
-From: Michael Bellion <mbellion@hipac.org>
-Subject: Re: some problems
-Date: Fri, 7 Oct 2005 20:40:20 +0200
-Message-ID: <200510072040.21185.mbellion@hipac.org>
-References: <43466582.7000307@artcom.pl>
+From: Marek Zachara <marek.zachara@conexe.pl>
+Subject: Re: NAT/POSTROUTING rules doesn't match packets
+Date: Fri, 7 Oct 2005 21:33:37 +0200
+Message-ID: <200510072133.37280.marek.zachara@conexe.pl>
+References: <20051004070925.7E2783C65565@mailgate.informatik.haw-hamburg.de>
+	<200510071407.58851.marek.zachara@conexe.pl>
+	<Pine.LNX.4.61.0510072013130.17798@filer.marasystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43466582.7000307@artcom.pl>
+In-Reply-To: <Pine.LNX.4.61.0510072013130.17798@filer.marasystems.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,55 +22,60 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: =?utf-8?q?Pawe=C5=82_Staszewski?= <pstaszewski@artcom.pl>
 
-Hi
+On Friday 07 of October 2005 20:16, you wrote:
+> On Fri, 7 Oct 2005, Marek Zachara wrote:
+> > here is the conntrack entry:
+> > irongate:~# cat /proc/net/ip_conntrack |grep 4569
+> > udp      17 28 src=10.0.0.250 dst=83.16.54.250 sport=4569 dport=4569
+> > [UNREPLIED] src=83.16.54.250 dst=10.0.0.250 sport=4569 dport=4569 use=1
+>
+> This connection is not NAT:ed..
+>
+> > the counter at iptables got only 8 packets, but the router has been up
+> > for about 6 hours and these packets are being sent every few seconds:
+> >
+> > Chain POSTROUTING (policy ACCEPT 73434 packets, 3691K bytes)
+> > pkts bytes target     prot opt in     out     source             
+> > destination 8   704 SNAT       udp  --  *      eth1    0.0.0.0/0         
+> >   0.0.0.0/0 udp dpt:4569 to:192.168.100.1
+>
+> And you are positively sure the data stream was not known to conntrack
+> before you added the NAT rule?
+>
+> Unfortunately it is impossible to tell from an conntrack when it was
+> created, and since this application is used fixed port numbers once the
+> connection gets into conntrack it's very likely the conntrack may have
+> been around for quite some time.. Unlike most client traffic where new
+> source ports is selected in each connection attemt, making them classify
+> as new conntrack entries.
+>
+Well, the router startup procedure is like this: 
+1) boot up core system (eth0 built-in kernel and enabled as the router root is 
+on nfs via eth0)
+2) set up iptables rules
+3) bring up eth1
 
-> Hello
-> I have linux with hf-hipac v0.9.0 installed on kernel 2.6.13-r3
-> and i have 97 vlan interfaces on machine.
-> When i try to add:
->
-> <fw.sh>
-> #!/bin/sh
->
-> vlans="999 100 101 102 103 104 105 106 107 108 109 110 111 112 113 300
-> 114 450 401 402 301 302 303 304 305 306 307 308 309 310 311 312 313 403
-> 314 315 316 317 318 404 405 115 406 116 500 501 319 320 321 322 323 324
-> 325 326 327 328 329 330 331 332 333 334 335 336 337 117 118 119 120 121
-> 122 407 408 409 451 452 453 454 455 456 457 458 459 461 202 460 462 463
-> 464 203 503 504"
->
-> nf-hipac -F
-> nf-hipac -X
->
-> nf-hipac -X permit10-services
-> nf-hipac -N permit10-services
->
-> nf-hipac -A permit10-services -s 10.0.234.12 -j ACCEPT
-> nf-hipac -A permit10-services -s 10.0.230.0/24 -j ACCEPT
-> nf-hipac -A permit10-services -s 10.202.40.2 -j ACCEPT
-> nf-hipac -A permit10-services -s 10.4.120.195 -p tcp --dport 666 -j ACCEPT
-> nf-hipac -A permit10-services -p udp --dport 67:68 -s 10.0.0.0/8 -j ACCEPT
->
-> for vlans in $vlans
-> do
-> nf-hipac -A INPUT -i vlan0$vlans -s 10.0.0.0/8 -j permit10-services
-> done
-> <fw.sh>
->
-> dmesg shows me:
->
-> NF_HiPAC: too much interfaces UP at the same time. Please increase
-> NF_HIPAC_MAX_UP_INTERFACES in nf_hipac_dev.h and recompile!
+so before step (3) any packets destined to internet shall be returned with 
+'destination unreachable'. But i don't know if this could create the contrack 
+entry. the IAX udp packets are being sent all the time, even before the 
+router boots up - so its very likely such packet may hit the router before 
+netfilter (and SNAT) is configured.
+But from what i understand, the UDP NAT shall refresh every 180 seconds (?) so 
+after 3 minutes the packets shall be nat-ed correctly. But maybe if there is 
+a constant flow of packets it can sustain the contrack entry? But how to 
+explain then that the rule has been hit 8 times within 6 hours? As far as i 
+understand once this rule is hit, it shall then start to NAT packets 
+correctly...?
 
-Seems like the interface string match support is broken :-(
+Marek
 
-I am currently at the netfilter workshop in Seville, Spain and I have a lot of 
-hardware problems with my notebook :-(
-I will fix the interface problem as soon as I return to Germany. Expect a 
-patch on http://www.hipac.org on monday.
+P.S. Please let me know if you want me to set up some special test procedure 
+to troubleshoot this issue.
 
-Thanks for your bug report
-        Michael Bellion
+
+
+
+
+
 
