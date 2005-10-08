@@ -1,11 +1,10 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: NAT/POSTROUTING rules doesn't match packets (SOLVED?)
-Date: Mon, 10 Oct 2005 00:07:00 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510100006300.30581@filer.marasystems.com>
-References: <20051007220642.4C94B3C65565@mailgate.informatik.haw-hamburg.de>
+From: Jacky Lam <sylam@alumni.cuhk.edu.hk>
+Subject: Iptables startup failed
+Date: Sat, 08 Oct 2005 08:48:21 +0800
+Message-ID: <43471755.5010601@alumni.cuhk.edu.hk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051007220642.4C94B3C65565@mailgate.informatik.haw-hamburg.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,20 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: bernin_a@informatik.haw-hamburg.de
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Fri, 7 Oct 2005 bernin_a@informatik.haw-hamburg.de wrote:
+Dear all,
 
-> Do i understand this correctly, the problem why the packets don't get
-> masqueraded/natted properly is that they already have a conntrack entry
-> before the nat rules are in place ??
+	I am not familiar with firewall stuff. Currently, I update my kernel
+from 2.6.10 (Fedora Core 2) to 2.6.13.3. I find iptable fail to start.
+After tracing for while, the error are happened at the following line:
 
-Most likely this is the case in your setup, yes.
+-A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j
+ACCEPT
 
-Regards
-Henrik
+	I don't know if I have missed any component in kernel and I don't have
+enough information why it fails.
 
+	Please help. Thanks.
+
+Yours,
+Jacky
 
