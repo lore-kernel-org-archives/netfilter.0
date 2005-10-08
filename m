@@ -1,9 +1,8 @@
-From: sureshmadhu <smadhu@e-consystems.com>
-Subject: getting userspace iptables
-Date: Sat, 08 Oct 2005 10:50:30 +0530
-Message-ID: <4347571E.8020906@e-consystems.com>
+From: <fireball@4x.ro>
+Subject: cvs problem
+Date: Sat, 08 Oct 2005 21:01:58 +0300
+Message-ID: <1104417559.20051008210158@4x.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,25 +14,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-hi,
-     I am confusing about how to get userspace iptables for linux kernel 
-version 2.4 and compiling that iptables. I want to add the following 
-rule in the chain.
+Hell i'm Fire, i am trying to install patch-o-matic and i have a little
+problem!
 
-iptables -t mangle -A OUTPUT -o! "eth0" -m random --average 50 -j ACCEPT
+1st i did this
+cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
 
-But the random matching is not available in normal linux kernels. So I 
-am in need of using userspace iptables.
+the i enter the passwor: cvs
 
-can anybody help me to solve this problem?
+and i got this response 
+cvs [login aborted]: connect to pserver.netfilter.org(213.95.27.115):2401
+failed: Connection refused
 
-Suresh Madhu D
-Project Trainee
-e-consystems
-chennai
+pls help me with this problem
 
+____________________________________________________________________________
+ http://www.3x.ro/ - 150MB Gazduire Gratuita!
+ http://www.3xforum.ro/ - Gazduire Gratuita Forumuri
+ http://simpatie.ro/ - Anunturi Matrimoniale
 
 
