@@ -1,7 +1,7 @@
-From: Jacky Lam <sylam@alumni.cuhk.edu.hk>
-Subject: Iptables startup failed
-Date: Sat, 08 Oct 2005 08:48:21 +0800
-Message-ID: <43471755.5010601@alumni.cuhk.edu.hk>
+From: sureshmadhu <smadhu@e-consystems.com>
+Subject: getting userspace iptables
+Date: Sat, 08 Oct 2005 10:50:30 +0530
+Message-ID: <4347571E.8020906@e-consystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,24 +15,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Dear all,
+hi,
+     I am confusing about how to get userspace iptables for linux kernel 
+version 2.4 and compiling that iptables. I want to add the following 
+rule in the chain.
 
-	I am not familiar with firewall stuff. Currently, I update my kernel
-from 2.6.10 (Fedora Core 2) to 2.6.13.3. I find iptable fail to start.
-After tracing for while, the error are happened at the following line:
+iptables -t mangle -A OUTPUT -o! "eth0" -m random --average 50 -j ACCEPT
 
--A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j
-ACCEPT
+But the random matching is not available in normal linux kernels. So I 
+am in need of using userspace iptables.
 
-	I don't know if I have missed any component in kernel and I don't have
-enough information why it fails.
+can anybody help me to solve this problem?
 
-	Please help. Thanks.
+Suresh Madhu D
+Project Trainee
+e-consystems
+chennai
 
-Yours,
-Jacky
+
 
