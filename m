@@ -1,14 +1,10 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: NAT/POSTROUTING rules doesn't match packets
-Date: Mon, 10 Oct 2005 22:52:35 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510102249310.21057@filer.marasystems.com>
-References: <20051004070925.7E2783C65565@mailgate.informatik.haw-hamburg.de>
-	<200510072133.37280.marek.zachara@conexe.pl>
-	<Pine.LNX.4.61.0510092357070.30581@filer.marasystems.com>
-	<200510101442.13454.marek.zachara@conexe.pl>
+From: "ODEN,MARK THOMAS" <cerberus@ufl.edu>
+Subject: pom - applying ROUTE patch
+Date: Mon, 10 Oct 2005 18:24:58 -0400 (EDT)
+Message-ID: <1326266148.1128983098715.JavaMail.osg@osgjas02.cns.ufl.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200510101442.13454.marek.zachara@conexe.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,26 +15,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Marek Zachara <marek.zachara@conexe.pl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Mon, 10 Oct 2005, Marek Zachara wrote:
+I'm trying to use the latest pom runme script to install only the 
+ROUTE extra package, however I'm having difficulties.  When I 
+choose 'y' to the ROUTE package I receive this error:
 
-> I did try. However even adding blocking (-p udp -j DROP) at PREROUTING and
-> keeping such rule for 5 min doesn't clean the conntrack - somehow the entry
-> is 'sustained' with the incoming packets even if they are being dropped early
-> in the chain.
+Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
+newfile: 4 files in our way, unable to apply
 
-If the conntrack entry already exists then a DROP rule will probably not 
-help if the traffic is frequent.
+I read in an earlier post on the netlist-failover list that this 
+may indicate that ROUTE is already installed -- however two 
+things:
 
-However, if there is not yet an entry then DROP should prevent the 
-conntrack entry from being set up (yes, technically there still is a 
-conntrack created, but never confirmed or registered as the packet is 
-dropped).
+1) The runme script displays:
 
-Regards
-Henrik
+Testing ROUTE... not applied
+
+2) When attempting this command I receive the following error:
+
+#  iptables -A POSTROUTING -t mangle -p icmp -j ROUTE --oif eth1
+iptables v1.3.0: Unknown arg `--oif'
+Try `iptables -h' or 'iptables --help' for more information.
+
+AND
+
+#  iptables -A POSTROUTING -t mangle -p icmp -j ROUTE
+iptables v1.3.0: Couldn't load target 
+`ROUTE':/lib/iptables/libipt_ROUTE.so: cannot open shared object 
+file: No such file or directory
+
+Try `iptables -h' or 'iptables --help' for more information.
+
+---
+
+This seems to indicate that the ROUTE package is not installed.
+
+Please advise,
+
+~Mark Oden
+
 
