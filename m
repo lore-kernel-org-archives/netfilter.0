@@ -1,10 +1,11 @@
-From: "Rob M" <c4blem0nkey@gmail.com>
-Subject: Possible Bug? /proc/net/ip_tables_targets listing problem?
-Date: Sat, 8 Oct 2005 15:18:46 -0700
-Message-ID: <434845cc.3c4ac938.1fcf.ffffeab3@mx.gmail.com>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: Possible Bug? /proc/net/ip_tables_targets listing problem?
+Date: Mon, 10 Oct 2005 02:40:19 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510100230390.32235@filer.marasystems.com>
+References: <434845cc.3c4ac938.1fcf.ffffeab3@mx.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <434845cc.3c4ac938.1fcf.ffffeab3@mx.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,36 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Rob M <c4blem0nkey@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Issue:  When you cat out `/proc/net/ip_tables_targets' the MARK target is
-listed twice
+On Sat, 8 Oct 2005, Rob M wrote:
 
- 
+> Issue:  When you cat out `/proc/net/ip_tables_targets' the MARK target is
+> listed twice
 
-uname -a
+Correct. This because it exists in two different versions depending on 
+which version of the iptables userspace program you use.
 
-Linux nao 2.6.12-gentoo-r9 #1 Tue Aug 23 23:45:26 PDT 2005 i586 AMD-K6(tm)
-3D processor AuthenticAMD GNU/Linux
+It's not a bug, but maybe a misfeature.
 
- 
-
-I checked through bugzilla and didn't find anything listing this particular
-issue.  Also dug through my machine to make sure for some weird reason I
-didn't have 2 version of this module. (I don't know why I might have since
-it's a newly installed box).  Has anyone else noticed this problem?  If this
-something that others are seeing, I'll crank out a bug report on it, but if
-not I'll smack my box around a little to see if I can make it talk.  Maybe
-both. ;)
-
- 
-
-Cheers,
-
--- Rob
-
-"I won't forget the things before, so what's going on and I can not let go"
-
- 
+Regards
+Henrik
 
