@@ -1,12 +1,14 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Netfilter and Poptop ( and stuff ... )
-Date: Mon, 10 Oct 2005 06:29:16 -0500
-Message-ID: <200510100629.16485.rob0@gmx.co.uk>
-References: <20051010062902.A7C34F4DA@sorry.no-ip-here.net>
+From: Marek Zachara <marek.zachara@conexe.pl>
+Subject: Re: NAT/POSTROUTING rules doesn't match packets
+Date: Mon, 10 Oct 2005 14:42:13 +0200
+Message-ID: <200510101442.13454.marek.zachara@conexe.pl>
+References: <20051004070925.7E2783C65565@mailgate.informatik.haw-hamburg.de>
+	<200510072133.37280.marek.zachara@conexe.pl>
+	<Pine.LNX.4.61.0510092357070.30581@filer.marasystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051010062902.A7C34F4DA@sorry.no-ip-here.net>
+In-Reply-To: <Pine.LNX.4.61.0510092357070.30581@filer.marasystems.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,63 +22,35 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: poptop-server@lists.sourceforge.net
 
-On Monday 2005-October-10 01:28, Seferovic Edvin wrote:
-> I would like allow my VPN users internet access, but not to all
+On Monday 10 of October 2005 00:02, you wrote:
+> On Fri, 7 Oct 2005, Marek Zachara wrote:
+> > Well, the router startup procedure is like this:
+> > 1) boot up core system (eth0 built-in kernel and enabled as the router
+> > root is on nfs via eth0)
+> > 2) set up iptables rules
+> > 3) bring up eth1
+>
+> Try adding rules before eth0 is set up, rejecting all traffic except the
+> traffic you need for booting until the real rules is loaded later on.
+>
+I did try. However even adding blocking (-p udp -j DROP) at PREROUTING and 
+keeping such rule for 5 min doesn't clean the conntrack - somehow the entry 
+is 'sustained' with the incoming packets even if they are being dropped early 
+in the chain.
 
-This seems odd. Didn't they already have Internet access to connect to 
-your pptpd?
+>
+> As of today I am fairly certain the issue is related to your configuration
+> and not a general problem.
+>
+Well as i wrote in another post, i have solved the problem by cleanning the 
+contrack table from userspace after the rules are set up.
 
-> machines on the internal network. So I have to use NAT on the tunnel
-> endpoints ( ppp+ interfaces ), right?
+However i think this is quite a serious problem - seems that if there is any 
+traffic coming at any interface before the nat rules are set up, this can 
+effectively disable certain SNAT rules and thus render some services 
+unusable. This is a very attractive DoS opportunity.
 
-SNAT allows clients to use non-public IP addresses. It is one condition 
-which must be satisfied, but it is not all. You also must have rules in 
-FORWARD to DROP/REJECT traffic to the internal network from ppp+ and 
-then to ACCEPT traffic from ppp+ to anywhere.
-
-> I wanted to make this easy as possible, but as always - I took the
-> wrong turn... probably by choosing Firewall Builder to help me get my
-> firewall set up. I achived everything, but I cannot configure ppp+
-> interfaces in FW-Builder? Does anyone has a hint for me? Is this
-
-Type the command at the command line?
-
-> possible anyway ( please don't tell me I have to configure 150 ppp
-> interfaces in FW-Builder ) ???
-
-I am not familiar with it. If you are saying that it rejects the ppp+ 
-syntax to specify all PPP interfaces, then indeed that sounds like a 
-serious bug
-
-> I suppose it would be more secure to enter a firewall rule every time
-> a ppp interface comes up ( by using scripts like ip-up from pppd )?
-
-That would be appropriate for more fine-grained control. If all ppp+ 
-traffic is to be treated the same, I think a single blanket rule makes 
-more sense.
-
-> Do I have to enter a NAT rule for each interface then? Any
-
-No.
-
-> performance thought when having 150+ interfaces at the same time?
-
-Not terribly efficient, but I doubt you would see a performance impact 
-with that.
-
-> Nevertheless I would also like to redirect http traffic going from a
-> NATed ppp+ interface to my squid process - how does this combined
-> rule looks like?
-
-The example in the squid documentation is perfect, just adjust it to 
-suit your needs. You might want -s sourcerange/netmask and of course 
-the input interface, -i ppp+. If by "combined" you mean the same rule 
-as is doing the SNAT, no, that is not so. The HTTP proxying is done 
-using DNAT or REDIRECT target in the PREROUTING chain. SNAT is in 
-POSTROUTING.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+regards,
+Marek
 
