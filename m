@@ -1,11 +1,12 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Possible Bug? /proc/net/ip_tables_targets listing problem?
-Date: Mon, 10 Oct 2005 02:40:19 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510100230390.32235@filer.marasystems.com>
-References: <434845cc.3c4ac938.1fcf.ffffeab3@mx.gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: cvs problem
+Date: Mon, 10 Oct 2005 06:38:48 +0200
+Message-ID: <20051010044217.DE1B769B0D@smtp.sterenborg.info>
+References: <1104417559.20051008210158@4x.ro>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <434845cc.3c4ac938.1fcf.ffffeab3@mx.gmail.com>
+In-Reply-To: <1104417559.20051008210158@4x.ro>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,21 +17,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Rob M <c4blem0nkey@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sat, 8 Oct 2005, Rob M wrote:
+> Hell i'm Fire, i am trying to install patch-o-matic and i have a
+> little problem! 
+> 
+> 1st i did this
+> cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
+> 
+> the i enter the passwor: cvs
+> 
+> and i got this response
+> cvs [login aborted]: connect to
+> pserver.netfilter.org(213.95.27.115):2401
+> failed: Connection refused
 
-> Issue:  When you cat out `/proc/net/ip_tables_targets' the MARK target is
-> listed twice
+Did you go to the website (http://www.netfilter.org) and look up the CVS
+section (http://www.netfilter.org/downloads.html#svn), where you can
+read that you should use SVN ?
 
-Correct. This because it exists in two different versions depending on 
-which version of the iptables userspace program you use.
 
-It's not a bug, but maybe a misfeature.
+Gr,
+Rob
 
-Regards
-Henrik
 
