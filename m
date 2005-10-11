@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: owner based routing
-Date: Tue, 11 Oct 2005 09:46:17 -0500
-Message-ID: <200510110946.17767.rob0@gmx.co.uk>
-References: <1854128681.20051011182532@gmail.com>
+From: "Jorge I. Davila L." <davila@cablenet.com.ni>
+Subject: iprange match
+Date: Tue, 11 Oct 2005 09:14:28 -0600
+Message-ID: <1129043668.2415.12.camel@vyatka-39.cablenet.com.ni>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1854128681.20051011182532@gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,19 +18,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 2005-October-11 09:25, Ignatich wrote:
-> dr> Why is fwmark pointless?
->
-> It's pointless because ipt_owner does not work in PREROUTING table.
-> So even if I mark packet routing decision is already made.
+Hello list!:
 
-The mangle table OUTPUT chain is consulted before routing.
+I'm trying to use the iprange match, but every time when I want apply a
+rule I receives:
 
-root@room101:~# iptables -vt mangle -A OUTPUT -m owner --uid-owner rob0 -j MARK --set-mark 0x80
-MARK  all opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  OWNER UID match 1000 MARK set 0x80
+iptables: No chain/target/match by that name
 
-Did you try this?
+I'm using a 2.4.30 kernel in a xen domainU
+
+The iptables that I'm using is 1.3.3
+
+The rule that I'm testing is:
+
+iptables -A OUTPUT -p tcp -m iprange --src-range
+192.168.223.1-192.168.223.2
+
+Someone can tell me where is the problem?
+
+Best regards,
 -- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Jorge Isaac Davila Lopez
+
 
