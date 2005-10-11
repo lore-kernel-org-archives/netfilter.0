@@ -1,14 +1,15 @@
-From: Sandro Dentella <sandro@e-den.it>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: iprange match
-Date: Tue, 11 Oct 2005 20:58:12 +0200
-Message-ID: <20051011185812.GA18949@casa.e-den.it>
+Date: Tue, 11 Oct 2005 14:24:43 -0500
+Message-ID: <200510111424.43553.rob0@gmx.co.uk>
 References: <1129043668.2415.12.camel@vyatka-39.cablenet.com.ni>
-	<434C0DED.8060203@supportivo.org>
 	<1129055791.2415.79.camel@vyatka-39.cablenet.com.ni>
+	<200510111351.51801.rob0@gmx.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200510111351.51801.rob0@gmx.co.uk>
 Content-Disposition: inline
-In-Reply-To: <1129055791.2415.79.camel@vyatka-39.cablenet.com.ni>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,32 +21,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Oct 11, 2005 at 12:36:31PM -0600, Jorge I. Davila L. wrote:
-> well .. the complete rule:
-> 
-> iptables -A OUTPUT -p tcp -m iprange \
-> --src-range 192.168.223.1-192.168.223.2 \
-> -j ACCEPT
-> 
-> iptables: No chain/target/match by that name
+On Tuesday 2005-October-11 13:51, I wrote:
+> > iptables: No chain/target/match by that name
+>
+> I guess this means that your kernel lacks support for the iprange
+> target. "CONFIG_IP_NF_MATCH_IPRANGE=m"
 
-i don't think this is an answer any usefull to anybody. In any case I'm not
-familiar with -m iprange but your rule works for me:
-
-root@bluff:~# iptables -v -A OUTPUT -p tcp -m iprange --src-range 192.168.223.1-192.168.223.2
-  tcp opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  source IP range 192.168.223.1-192.168.223.2
-
-So I guess your problem is not in the syntax. Some missing kernel-modules?
-
-sandro
-*:-)
-
-
+Um, that's a match, not a target, but same idea. If it's 2.6.x with 
+config.gz enabled:
+$ zgrep CONFIG_IP_NF_MATCH_IPRANGE /proc/config.gz
 -- 
-Sandro Dentella  *:-)
-e-mail: sandro@e-den.it 
-http://www.tksql.org                    TkSQL Home page - My GPL work
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
