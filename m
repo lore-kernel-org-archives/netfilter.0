@@ -1,11 +1,12 @@
-From: Armin ranjbar <zoup@zoup.org>
-Subject: Nat on OutPut chain ?
-Date: Tue, 11 Oct 2005 07:33:22 +0000 (UTC)
-Message-ID: <20051012110400.ab0e00ce.zoup@zoup.org>
+From: Sorin Panca <sorin.panca@gmail.com>
+Subject: Re: Nat on OutPut chain ?
+Date: Tue, 11 Oct 2005 11:08:19 +0300
+Message-ID: <434B72F3.7080906@gmail.com>
+References: <20051012110400.ab0e00ce.zoup@zoup.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Date: Wed, 12 Oct 2005 11:04:00 +0330
+In-Reply-To: <20051012110400.ab0e00ce.zoup@zoup.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,13 +20,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-dear all , 
-
-i'm confused a bit , is this possible to do NAT on OutPut chain ? i guess it is impossible , but take a look at this picture : 
-http://iptables-tutorial.frozentux.net/images/tables_traverse.jpg
 
 
--- 
-Q:	How many IBM CPU's does it take to do a logical right shift?
-A:	33.  1 to hold the bits and 32 to push the register.
+Armin ranjbar wrote:
+> dear all , 
+> 
+> i'm confused a bit , is this possible to do NAT on OutPut chain ? i guess it is impossible , but take a look at this picture : 
+> http://iptables-tutorial.frozentux.net/images/tables_traverse.jpg
+> 
+> 
+take a look at this, too:
+http://l7-filter.sourceforge.net/PacketFlow.png
+www.imagestream.com/~josh/PacketFlow.gif
 
