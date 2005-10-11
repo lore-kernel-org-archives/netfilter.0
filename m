@@ -1,7 +1,7 @@
-From: "Jorge I. Davila L." <davila@cablenet.com.ni>
-Subject: iprange match
-Date: Tue, 11 Oct 2005 09:14:28 -0600
-Message-ID: <1129043668.2415.12.camel@vyatka-39.cablenet.com.ni>
+From: "Russ Kreigh" <kreigh@onlyinternet.net>
+Subject: Firewall Help
+Date: Tue, 11 Oct 2005 11:42:43 -0500
+Message-ID: <00e501c5ce82$cd6cff30$e21e89ce@ssioi.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,26 +18,50 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello list!:
+Hello -
 
-I'm trying to use the iprange match, but every time when I want apply a
-rule I receives:
+When I applied the following rules below to my firewall my clients starting
+having problems browsing webpages. When I did a tcpdump I could see the
+request go to the DNS server, but never saw a reply. 
 
-iptables: No chain/target/match by that name
+When I commented out the tcp rules, everything worked fine.
 
-I'm using a 2.4.30 kernel in a xen domainU
+Do you think my limits are too low? I would estimate there are around 200
+pcs coming through this.
 
-The iptables that I'm using is 1.3.3
 
-The rule that I'm testing is:
+Also, I am unclear if the rules are applied on a collective basis, or per ip
+address. I assume it is ALL traffic, not per IP.
 
-iptables -A OUTPUT -p tcp -m iprange --src-range
-192.168.223.1-192.168.223.2
 
-Someone can tell me where is the problem?
 
-Best regards,
--- 
-Jorge Isaac Davila Lopez
+$IPTABLES -A INPUT -s X.X.30.0/24 -j ACCEPT  # Exclude Management subnet
+from below rules
+$IPTABLES -A INPUT -d X.X.30.0/24 -j ACCEPT
+$IPTABLES -A FORWARD -s X.X.30.0/24 -j ACCEPT
+$IPTABLES -A FORWARD -d X.X.30.0/24 -j ACCEPT
+
+$IPTABLES -A INPUT -p tcp --syn -m limit --limit 500/s -j REJECT
+$IPTABLES -A FORWARD -p tcp --syn -m limit --limit 500/s -j REJECT
+
+$IPTABLES -A INPUT -p tcp -m limit --limit 2500/s -j REJECT
+$IPTABLES -A FORWARD -p tcp -m limit --limit 2500/s -j REJECT
+
+$IPTABLES -A INPUT -p icmp -m limit --limit 200/s -j REJECT
+$IPTABLES -A FORWARD -p icmp -m limit --limit 200/s -j REJECT
+
+
+Thanks,
+
+
+Russ Kreigh
+Network Engineer
+OnlyInternet.Net Broadband & Wireless
+Supernova Technologies
+Office: (800) 363-0989
+Direct: (260) 827-2486
+Fax:    (260) 824-9624
+kreigh@onlyinternet.net
+http://www.oibw.net
 
 
