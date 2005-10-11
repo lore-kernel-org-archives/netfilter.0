@@ -1,13 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: David Coulson <david@davidcoulson.net>
 Subject: Re: Nat on OutPut chain ?
-Date: Tue, 11 Oct 2005 05:26:49 -0500
-Message-ID: <200510110526.50223.rob0@gmx.co.uk>
+Date: Tue, 11 Oct 2005 07:40:05 -0400
+Message-ID: <434BA495.20809@davidcoulson.net>
 References: <20051012110400.ab0e00ce.zoup@zoup.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <20051012110400.ab0e00ce.zoup@zoup.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,17 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Armin ranjbar <zoup@zoup.org>
+Cc: netfilter@lists.netfilter.org
 
-On Wednesday 2005-October-12 02:34, Armin ranjbar is going to write:
+
+
+Armin ranjbar wrote:
 > i'm confused a bit , is this possible to do NAT on OutPut chain ?
 
-Please give some detail as to what it is you are trying to do. I am 
-thinking perhaps "ip route ... ... src ip.add.re.ss" might do what you 
-need.
+Yes, you can do DNAT on OUTPUT in the nat table.
 
-(And, do check the time on your system clock!)
+David
+
 -- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+David J. Coulson
+email: david@davidcoulson.net
+web: http://www.davidcoulson.net/
+phone: (216) 920-3100 / (216) 258-4942
 
