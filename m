@@ -1,11 +1,13 @@
-From: Ignatich <ignatich@gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: owner based routing
-Date: Tue, 11 Oct 2005 18:25:32 +0400
-Message-ID: <1854128681.20051011182532@gmail.com>
-Reply-To: Ignatich <ignatich@gmail.com>
+Date: Tue, 11 Oct 2005 09:46:17 -0500
+Message-ID: <200510110946.17767.rob0@gmx.co.uk>
+References: <1854128681.20051011182532@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1854128681.20051011182532@gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,24 +21,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Tuesday 2005-October-11 09:25, Ignatich wrote:
+> dr> Why is fwmark pointless?
+>
+> It's pointless because ipt_owner does not work in PREROUTING table.
+> So even if I mark packet routing decision is already made.
 
-dr> On Tuesday 2005-October-11 08:57, Ignatich wrote:
->> Since ipt_owner does not work in PREROUTING chain and fwmark is
->> pointless, I thought that ipt_ROUTE from p-o-m can help me.
+The mangle table OUTPUT chain is consulted before routing.
 
-dr> Why is fwmark pointless?
+root@room101:~# iptables -vt mangle -A OUTPUT -m owner --uid-owner rob0 -j MARK --set-mark 0x80
+MARK  all opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  OWNER UID match 1000 MARK set 0x80
 
->> Any ideas how to solve my problem?
-
-dr> I would try -j MARK --set-mark $UID for your -m owner matched packets
-dr> and use a ip rule / ip route combination. I've not done this, but I
-dr> don't see why it wouldn't work.
-
-It's pointless because ipt_owner does not work in PREROUTING table. So
-even if I mark packet routing decision is already made.
-
+Did you try this?
 -- 
- Ignatich                          mailto:ignatich@gmail.com
-
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
