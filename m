@@ -1,13 +1,14 @@
 From: "R. DuFresne" <dufresne@sysinfo.com>
 Subject: Re: IP Vs DNS
-Date: Tue, 11 Oct 2005 20:38:33 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0510112019370.13393@darkstar.sysinfo.com>
+Date: Tue, 11 Oct 2005 20:46:19 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0510112044100.13393@darkstar.sysinfo.com>
 References: <434C28FB.3000805@ttienterprises.org>
 	<20051011231030.GA18418@salty>
 	<434C520F.4050308@ttienterprises.org>
+	<200510111932.14894.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <434C520F.4050308@ttienterprises.org>
+In-Reply-To: <200510111932.14894.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,64 +21,43 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Barry Fawthrop <barry@ttienterprises.org>
+To: /dev/rob0 <rob0@gmx.co.uk>
 Cc: netfilter@lists.netfilter.org
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-On Tue, 11 Oct 2005, Barry Fawthrop wrote:
+
+ 	[SNIP]
 
 >
-> Jim Laurino wrote:
+> I spent more than 10 minutes on this, start to now, so let's look at
+> those NASA records again.
 >
->>> Greetings all
->>> 
->>> with an IPTABLES ruleset you can specify an IP address to be 
->>> allowed/blocked
->>> iptables INPUT -s 12.12.12.12 -j ALLOW
->>> 
->>> But can this be done with a DNS name
->>> iptables INPUT -s www.name.com -j ALLOW
->> 
->> 
->> IPTABLES accepts DNS names, but the DNS lookup is performed
->> when the rule is placed in the kernel,
->> not when the rule is evaluated against a packet.
->> The kernel (netfilter) rules use ip address only.
->> 
->> To achieve what you want, I think you would have to
->> update the rule whenever the DNS mapping changed.
->> 
-> How can this be done on a per packet basis, where the IP is checked regularly
-> or can the table be flushed and reloaded every hour.
-> What would be the negative of doing a reload each hour??
+> ;; ANSWER SECTION:
+> www.nasa.gov.           600     IN      CNAME   www.nasa.gov.speedera.net.
+> www.nasa.gov.speedera.net. 120  IN      A       208.254.75.142
+> www.nasa.gov.speedera.net. 120  IN      A       208.254.75.143
+>
+> $ host 208.254.75.142
+> Host 142.75.254.208.in-addr.arpa not found: 3(NXDOMAIN)
+> $ host 208.254.75.143
+> Host 143.75.254.208.in-addr.arpa not found: 3(NXDOMAIN)
+>
+> Two different hosts, neither with reverse DNS.
+>
+> You have to consider how fast your target is moving as you take aim at
+> it. This particular one moves very fast. Resolving this once an hour
+> won't really do much for you. In general you've got the right idea,
+> though.
 
 
-During the reload, depending upon how long the rules take to be 
-implimented, unless one is careful about things like turning off 
-forwarding and such, there is the exposure window of the network behind 
-the firewall.  Now if one has a nice, tight and short ruleset, the 
-exposure window might be all iof two seconds or so, but if one has one of 
-them fancy 20,000 rulsets, this exposure window might be a bit broader.
+Now, that's interesting, never nocited here myself that sites like this 
+might change so drmatically over such a small space of time, but I guess 
+the costs of avoinding repeated DDOS attacks has made such things a 
+reality of net-life.
 
-Proper placement of the 'echo "0" > /proc/sys/net/ipv4/ip_forward' and 
-'echo "1" > /proc/sys/net/ipv4/ip_forward' commands within the rulesets is 
-then all important when recycling the FW.  Another way around this 
-might be to down all interfaces during the FW recycle, bringing them up 
-after it;s complete.  Yet the thing is that DNS changes to sites like 
-those mentioned above rarely takes place in any hourly let alone daily or 
-weekly windows.  Now the real question is, can one control another sites 
-load balancing and DNS features with funky crafting of iptables rules? 
-I'm guessing in some cases it works, and in other cases yer hosing lots 
-of attempts to reach a site that is not single hosted, depending upon the 
-load balancing scheme<s> in place by the site owners.
-
-
-Then again, what is the real goal of considering limiting to a particular 
-machine for a multi-hosted site?  Is one more trustworthy then another?
-
-Thanks,
+Thanks for the info and research sir.
 
 Ron DuFresne
 - -- 
@@ -93,8 +73,8 @@ instead of creating the perfect love.
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQFDTFsNst+vzJSwZikRAoh2AJ9zSnReJPnHL/EUEflacEeeQbRJ0gCeOD7+
-wTlVaDm81UWVE+j1J/Iqm4w=
-=dBeq
+iD8DBQFDTFzest+vzJSwZikRAskoAJ4qkdVOrnqK5J8v+XHRsSLQYgeMoACdEZNx
+97cmYj5cfauZ4WwNAPZzOyA=
+=xs9p
 -----END PGP SIGNATURE-----
 
