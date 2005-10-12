@@ -1,11 +1,11 @@
-From: "ISC Jorge Ceron Galvan" <jorgec@acerlandslp.com.mx>
-Subject: Re: Advice on setting up a firewall for a Windows Domain Controller
-Date: Wed, 12 Oct 2005 17:59:33 -0500
-Message-ID: <WorldClient-F200510121759.AA59330145@acerlandslp.com.mx>
-References: <531442a50510121004i2229579fv8bb1cae2cd1b456a@mail.gmail.com>
-	<200510121317.25034.rob0@gmx.co.uk>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: RE: IP Vs DNS
+Date: Wed, 12 Oct 2005 19:09:56 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0510121901040.16045@darkstar.sysinfo.com>
+References: <200510120054.j9C0sDZC013724@darkstar.sysinfo.com>
+Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200510121317.25034.rob0@gmx.co.uk>
+In-Reply-To: <200510120054.j9C0sDZC013724@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,88 +16,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: /dev/rob0 <rob0@gmx.co.uk>, netfilter@lists.netfilter.org
+To: Anthony Sadler <anthonys@faredge.com.au>
+Cc: netfilter@lists.netfilter.org
 
-Talking about restrict outbound SMTP access, I set up a linux box as a firewall and I opened only those ports my users 
-need.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-They need to send and receive mail, so I set up these (among other ACCEPT rules)
+On Wed, 12 Oct 2005, Anthony Sadler wrote:
 
-iptables -A FORWARD -s 1.2.3.0/27 -i eth1 -p tcp --dport  25 -j ACCEPT
-iptables -A FORWARD -s 1.2.3.0/27 -i eth1 -p tcp --dport 110 -j ACCEPT
-iptables -A FORWARD -s 1.2.3.0/27 -i eth1 -j DROP
+> Prehaps instead of reload the whole table, why not just reload the particular rule?
+> Eg:
+>
+> 1. Ping www.name.com, dump IP into 1st file. Grep should help you here.
+> 2. Pick up IP from 1st file and use it to write rule.
+>
+> 3. Ping www.name.com, dump IP into 2nd file.
+> 4. Pick up IP from 2nd file and insert new rules.
+> 5. Using 1st file, delete rules that correspond to 2nd IP.
+>
+> 6. Ping www.name.com, dump IP into 1st file.
+> 7. Pick up IP from 1st file and use it to write rule.
+> 8. Using 2nd file, delete rules that correspond to 2nd IP.
+>
+> You should be able to kick off steps 1,2 yourself, then have scripts do steps 3-5 and 6-8. That way you should limit your downtime and processer usage.
 
-But if I want to do what you suggested, restrict outbound SMTP access, should I set this?
 
-iptables -A FORWARD -s 1.2.3.0/27 -i eth1 -p tcp --sport   25 -j DROP
+As /dev/rob pointed out for those sites that do change on a regular basis, 
+it might well work to script up and cron the first few steps with a tap 
+fired off to the admin that a change has bee noted and to fire off the 
+second round that affects the FW rule sets in question.  Of course the 
+question then is, does that mean that in even scripting through htese 
+steps might they miss the next change of IP's entirely...
 
-( I'm new to iptables )
+
+I think this is a good alternative, and if scripted correctly might save 
+time and cpu cycles, but if done by hand certainly might work for the 
+opposit.  Still and I'm perhaps missing something, I'm trying to 
+understand why, with a multi-hosted site, someone might want to push all 
+their packets at a particular system and undo the load balancing and such 
+that the site operator<s> put in place to ease congestion on their 
+systems?
+
+Thanks,
 
 
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
 
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
 
------Original Message-----
-From: /dev/rob0 <rob0@gmx.co.uk>
-To: netfilter@lists.netfilter.org
-Date: Wed, 12 Oct 2005 13:17:24 -0500
-Subject: Re: Advice on setting up a firewall for a Windows Domain Controller
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-> On Wednesday 2005-October-12 12:04, Zacky wrote:
-> > While I have set up firewalls in the past,
-> 
-> Out of curiosity ... what kinds of firewalls were these?
-> 
-> > I'm not very familiar with Windows networks and I would like to
-> > hear your opinions on how to go about setting up the firewall.
-> 
-> What in particular are you asking? Sorry, I don't see a question in 
-> that. Just to be certain we're staying on topic, this is the Linux 
-> netfilter list. We assume that you've already chosen a Linux router
-> as 
-> your firewall. If you're asking about alternatives to Linux and 
-> netfilter, you're not in the right place.
-> 
-> > Here's some info about the network. The DC and all the 25 Windows
-> > XP desktops that connect to the DC have public IP addresses,
-> 
-> What a waste! Your Linux box is routing to all these IP's, I guess?
-> 
-> > but only the DC has a FQDN.
-> 
-> Meaning what, a name that resolves in DNS? How is that significant?
-> 
-> > The requirement is to keep the desktops' public IP 
-> > addresses and just move the DC behind the firewall.
-> 
-> So only the DC is behind the Linux router? You want Windows desktop 
-> machines on routable public IP addresses with no firewall? Is that 
-> wise? Sounds like a formula for disaster. What is the reasoning
-> behind 
-> that decision?
-> 
-> > Again, any tips will be greatly appreciated.
-> 
-> I'll try, but it's not easy.
-> 
-> Windows desktops are fundamentally insecure. They'll get infected and
-> start spewing spam. You definitely want to restrict their outbound
-> SMTP 
-> access.
-> 
-> Level with me ... I have absolutely no respect for "schools" and thus
-> have no qualms with assisting someone with a stupid assignment.[1] Is
-> that what this is?
-> 
-> 
-> 
-> [1] But if you want me to do the work for you, trust me, you cannot 
-> afford my rates.[2]
-> [2] Unless of course you can. :)
-> -- 
->     mail to this address is discarded unless "/dev/rob0"
->     or "not-spam" is in Subject: header
-
+iD8DBQFDTZfHst+vzJSwZikRAjivAKDZviVwlaGkChKAgOoApo+eCWXVrQCgnEUI
+zDFr6wuqes56XhzRRk6KvIQ=
+=Rp3H
+-----END PGP SIGNATURE-----
 
