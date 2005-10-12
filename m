@@ -1,15 +1,11 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: iprange match
-Date: Wed, 12 Oct 2005 22:59:43 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510122259040.31374@filer.marasystems.com>
-References: <1129043668.2415.12.camel@vyatka-39.cablenet.com.ni>
-	<200510111506.03998.rob0@gmx.co.uk>
-	<1129062410.2415.103.camel@vyatka-39.cablenet.com.ni>
-	<200510111540.49675.rob0@gmx.co.uk>
-	<1129065387.2415.110.camel@vyatka-39.cablenet.com.ni>
+Subject: Re: [OT?] URL rewriting
+Date: Wed, 12 Oct 2005 23:04:17 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510122301510.31374@filer.marasystems.com>
+References: <NEBBKBPLMLNABNADCIPAIENCBIAB.dleangen@canada.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1129065387.2415.110.camel@vyatka-39.cablenet.com.ni>
+In-Reply-To: <NEBBKBPLMLNABNADCIPAIENCBIAB.dleangen@canada.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,26 +18,28 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: "Jorge I. Davila L." <davila@cablenet.com.ni>
-Cc: netfilter@lists.netfilter.org, /dev/rob0 <rob0@gmx.co.uk>
+To: David Leangen <dleangen@canada.com>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 11 Oct 2005, Jorge I. Davila L. wrote:
+On Wed, 12 Oct 2005, David Leangen wrote:
 
-> # make CC=gcc33 KERNEL_DIR=/downloads/kernels/xen-2.0/linux-2.4.30-xenU
-> IPTABLES_DIR=/download/iptables-1.3.3 ./runme base
-> make: Nothing to be done for `runme'.
-> make: *** No rule to make target `base'.  Stop.
->
-> this is the same result for
->
-> ./runme pending
-> ./runme extras
+> Can iptables do URL rewriting?
 
-The line should read just
+You may be able to write a NAT helper doing this to a limited extent, but 
+out of the box no.
 
-   KERNEL_DIR=/downloads/kernels/xen-2.0/linux-2.4.30-xenU IPTABLES_DIR=/download/iptables-1.3.3 ./runme base
+Better to use a HTTP proxy.
 
-no make here...
+> What do you recommend?
+
+Well, Squid obviously, but then I am perhaps somewhat biased..
+
+> Generally, I want to have one URL space as a public interface to my network.
+> Services will be provided internally from various ports at different IP
+> addresses, but all accessible publicly through the same URL space. IIUC,
+> this is "reverse proxying".
+
+It is.
 
 Regards
 Henrik
