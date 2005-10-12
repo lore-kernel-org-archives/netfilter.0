@@ -1,11 +1,15 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: owner based routing
-Date: Wed, 12 Oct 2005 22:57:53 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510122253010.31374@filer.marasystems.com>
-References: <379640488.20051011175704@gmail.com>
+Subject: Re: iprange match
+Date: Wed, 12 Oct 2005 22:59:43 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510122259040.31374@filer.marasystems.com>
+References: <1129043668.2415.12.camel@vyatka-39.cablenet.com.ni>
+	<200510111506.03998.rob0@gmx.co.uk>
+	<1129062410.2415.103.camel@vyatka-39.cablenet.com.ni>
+	<200510111540.49675.rob0@gmx.co.uk>
+	<1129065387.2415.110.camel@vyatka-39.cablenet.com.ni>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <379640488.20051011175704@gmail.com>
+In-Reply-To: <1129065387.2415.110.camel@vyatka-39.cablenet.com.ni>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,49 +22,26 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Ignatich <ignatich@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: "Jorge I. Davila L." <davila@cablenet.com.ni>
+Cc: netfilter@lists.netfilter.org, /dev/rob0 <rob0@gmx.co.uk>
 
-On Tue, 11 Oct 2005, Ignatich wrote:
+On Tue, 11 Oct 2005, Jorge I. Davila L. wrote:
 
-> Since ipt_owner does not work in PREROUTING chain and fwmark is
-> pointless, I thought that ipt_ROUTE from p-o-m can help me.
-
-Using ipt_owner in PREROUTING is pointless as PREROUTING never sees any 
-packets sent by a local application.
-
-PREROUTING sees packets coming in from the network before any decision on 
-what to do with the packet has been made.
-
-ipt_owner can be used in OUTPUT/INPUT only (at least I think it can be 
-used in INPUT, maybe not..).
-
-CONNMARK may be what you are looking for. Allows you to mark the 
-connection in OUTPUT and then reuse this mark in PREROUTING when packets 
-comes back on the same connection.
-
-> Here's what I did:
+> # make CC=gcc33 KERNEL_DIR=/downloads/kernels/xen-2.0/linux-2.4.30-xenU
+> IPTABLES_DIR=/download/iptables-1.3.3 ./runme base
+> make: Nothing to be done for `runme'.
+> make: *** No rule to make target `base'.  Stop.
 >
-> iptables -t mangle -A OUTPUT -o eth0 -m owner --gid-owner adsl -j
-> ROUTE --gw x.x.x.x --oif eth1
+> this is the same result for
 >
-> But it did not work. I belive this happened because matched packets
-> still had z.z.z.z as their source address.
+> ./runme pending
+> ./runme extras
 
-You need to SNAT/MASQUERADE them.
+The line should read just
 
-> So i tried that:
->
-> iptables -t mangle -A OUTPUT -o eth0 -m owner --gid-owner adsl -j
-> ROUTE --gw x.x.x.x --oif eth1 --continue
-> iptables -t nat -A POSTROUTING -o eth1 -m owner --gid-owner adsl -j
-> SNAT --to-source y.y.y.y
+   KERNEL_DIR=/downloads/kernels/xen-2.0/linux-2.4.30-xenU IPTABLES_DIR=/download/iptables-1.3.3 ./runme base
 
-Any specific reason why you have the owner match in POSTROUTING? Shouldn't 
-all traffic going out on eth1 be NAT:ed?
-
-Note: You generally also need to use policy routing to keep this traffic 
-on eth1.
+no make here...
 
 Regards
 Henrik
