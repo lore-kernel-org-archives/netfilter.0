@@ -1,11 +1,11 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: [OT?] URL rewriting
-Date: Wed, 12 Oct 2005 23:04:17 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510122301510.31374@filer.marasystems.com>
-References: <NEBBKBPLMLNABNADCIPAIENCBIAB.dleangen@canada.com>
+Subject: Re: Destination_IP Field in packets coming from QUEUE
+Date: Wed, 12 Oct 2005 23:10:06 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510122305270.31374@filer.marasystems.com>
+References: <20051002185830.61776.qmail@web52811.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <NEBBKBPLMLNABNADCIPAIENCBIAB.dleangen@canada.com>
+In-Reply-To: <20051002185830.61776.qmail@web52811.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +18,35 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: David Leangen <dleangen@canada.com>
+To: Lore <skizzo82@yahoo.com>
 Cc: netfilter@lists.netfilter.org
 
-On Wed, 12 Oct 2005, David Leangen wrote:
+On Sun, 2 Oct 2005, Lore wrote:
 
-> Can iptables do URL rewriting?
+> I'm writing (tonight/tomorrow it will be finally
+> tested on different networks) a daemon for linux that
+> keeps tcp connections alive on multihoming devices.
+> It works as follows: when a linux box with multiple
+> network interfaces creates a tcp connection with
+> another host (both running the daemon), for instance
+> via an ethernet adapter, it can leave the current
+> media and keep up the tcp connection using one of the
+> others adapters available (fiber, wireless, gprs) or
+> (in the case of simple ip reconfiguration) it can
+> simply move from an access point with a particular
+> subnet to another (with a completely different
+> subnet), without interrupting the connection.
 
-You may be able to write a NAT helper doing this to a limited extent, but 
-out of the box no.
+In the simplest case where only the media changes but the IP network is 
+the same no changes at all is required other than to bring up/down the 
+different network connections.
 
-Better to use a HTTP proxy.
+For the more complex case where one has to be able to move between 
+different IP networks with preserved connectivity one normally implements 
+something like this by using tunnelling by IPIP, GRE, IPSec, OpenVPN or 
+similar.
 
-> What do you recommend?
-
-Well, Squid obviously, but then I am perhaps somewhat biased..
-
-> Generally, I want to have one URL space as a public interface to my network.
-> Services will be provided internally from various ports at different IP
-> addresses, but all accessible publicly through the same URL space. IIUC,
-> this is "reverse proxying".
-
-It is.
+How does your approach compare to these alternatives?
 
 Regards
 Henrik
