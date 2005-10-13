@@ -1,13 +1,10 @@
-From: "Eric Leblond" <eric@inl.fr>
-Subject: Re: Need a method to reset the ip_conntrack_count
-Date: Thu, 13 Oct 2005 11:55:29 +0200 (CEST)
-Message-ID: <42210.193.164.229.102.1129197329.squirrel@mail.inl.fr>
-References: <002601c5b390$1d641d10$fefefe0a@jesseh7ht76e8n>
-	<007d01c5cfd8$fa089840$aa0ba8c0@l7.com.tw>
+From: "=?iso-8859-9?B?TWVobWV0IEHn/Wtn9no=?=" <acikgoz.mehmet@gmail.com>
+Subject: Download Control with Squid
+Date: Thu, 13 Oct 2005 12:59:51 +0300
+Message-ID: <ONEEIFBCJGEPEKKANPLCCEPFCAAA.acikgoz.mehmet@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <007d01c5cfd8$fa089840$aa0ba8c0@l7.com.tw>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,25 +18,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Hello folks,
->
-> I have encountered one question. Does it have a way to flush the
 
-> My Enviroment:
-> Kenel: 2.6.10
-> Iptables: 1.2.9
 
-you need to use the upcoming 2.6.14 to be able to do so....
-Pablo Neira's conntrack tool can do the job.
+Hello all,
 
->
-> Any hint are appreciated.
->
-> Vincent
->
->
->
->
+I want to download control with squid.How it do?
 
+Thanks?
+-- 
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.344 / Virus Database: 267.11.14/131 - Release Date: 12.10.2005
 
 
