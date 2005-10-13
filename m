@@ -1,16 +1,10 @@
-From: "Jorge I. Davila L." <davila@cablenet.com.ni>
-Subject: Re: iprange match
-Date: Thu, 13 Oct 2005 09:30:52 -0600
-Message-ID: <1129217452.4890.12.camel@vyatka-39.cablenet.com.ni>
-References: <1129043668.2415.12.camel@vyatka-39.cablenet.com.ni>
-	<200510111506.03998.rob0@gmx.co.uk>
-	<1129062410.2415.103.camel@vyatka-39.cablenet.com.ni>
-	<200510111540.49675.rob0@gmx.co.uk>
-	<1129065387.2415.110.camel@vyatka-39.cablenet.com.ni>
+From: Brandon Evans <maillists@hosttuls.com>
+Subject: HowTo connect a Cisco 2950 switch behind iptables?
+Date: Thu, 13 Oct 2005 14:02:59 -0700
+Message-ID: <434ECB83.80800@hosttuls.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1129065387.2415.110.camel@vyatka-39.cablenet.com.ni>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,40 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Thanks list
+Hi all,
+	I have a Fedora 3 Box with 2 nics setup up as a firewall.
+I can connect another server to the firewall and get connected to the 
+Net just fine.  This doesnt work when I connect the switch to the 
+iptables box.  Obvysly I am missing something - can someone point me in 
+the right direction?
 
-The =ABthing=BB is working over:
+Here is my setup
 
-xen 2.0.7
-kernel 2.4.30 (in a domainU - a virtual machine)
-iptables 1.3.3 (patched with 20051010 patch)
+---WAN-->[iptables box]---->[cisco switch]--->[servers]
 
-El mar, 11-10-2005 a las 15:16 -0600, Jorge I. Davila L. escribi=F3:
-> # make CC=3Dgcc33 KERNEL_DIR=3D/downloads/kernels/xen-2.0/linux-2.4.30-xe=
-nU
-> IPTABLES_DIR=3D/download/iptables-1.3.3 ./runme base
-> make: Nothing to be done for `runme'.
-> make: *** No rule to make target `base'.  Stop.
->=20
-> this is the same result for=20
->=20
-> ./runme pending
-> ./runme extras=20
->=20
->=20
->=20
-> El mar, 11-10-2005 a las 15:40 -0500, /dev/rob0 escribi=F3:
-> > On Tuesday 2005-October-11 15:26, Jorge I. Davila L. wrote:
-> > > Can you give me some light about how to solve this issue?
-> >=20
-> > I already did! Fix your kernel. Maybe it's not in 2.4.30!
-> >=20
-> > http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-iprange
---=20
-Jorge Isaac Davila Lopez
 
+-- 
+
+Thanks,
+     Brandon Evans
+
+  "I wouldn't recommend sex, drugs or insanity for everyone, but they've 
+always worked for me."
+-Hunter S. Thompson
 
