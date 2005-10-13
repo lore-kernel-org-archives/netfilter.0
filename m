@@ -1,12 +1,12 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: DNAT problems using a single interface
-Date: Thu, 13 Oct 2005 23:46:59 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510132345590.22615@filer.marasystems.com>
-References: <434D8802.40702@satchell.net>
-	<3063e50510121719n3199ee10q628397955772f136@mail.gmail.com>
+From: Brandon Evans <maillists@hosttuls.com>
+Subject: Re: HowTo connect a Cisco 2950 switch behind iptables?
+Date: Thu, 13 Oct 2005 14:50:35 -0700
+Message-ID: <434ED6AB.80108@hosttuls.com>
+References: <200510132115.j9DLFDaU018407@virt20t.secure-wi.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3063e50510121719n3199ee10q628397955772f136@mail.gmail.com>
+In-Reply-To: <200510132115.j9DLFDaU018407@virt20t.secure-wi.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,22 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: George Alexandru Dragoi <waruiinu@gmail.com>
-Cc: Stephen Satchell <list@satchell.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: edvin.seferovic@kolp.at
+Cc: netfilter@lists.netfilter.org
 
-On Thu, 13 Oct 2005, George Alexandru Dragoi wrote:
+Seferovic Edvin wrote:
+> Maybe you have forgotten to configure your cisco switch? Wrong VLAN maybe? 
+> 
 
-> application level (if you need them), even it can be tracked very well in
-> FORWARD chains. Else ... who knows, maybe you can do tricks with iproute2
-> and MARK target from iptables, and instead of nat-ing, you will do some ugly
-> routing. I can't tell exactly how to do this because i didn't read and
-> understand all aspects of your situation.
+> ---WAN-->[iptables box]---->[cisco switch]--->[servers]
 
-That might work as well, at least as long as there is no MTU issues or 
-fragmented packets...
+Your probably right, I'm not very fluent in cisco.
+The switch works fine when I hook the WAN directly up to the switch 
+though.  Which leads me to believe I'm missing a iptables setting somewhere.
 
-Regards
-Henrik
+
+-- 
+
+Thanks,
+     Brandon Evans
+
+  "I wouldn't recommend sex, drugs or insanity for everyone, but they've 
+always worked for me."
+-Hunter S. Thompson
 
