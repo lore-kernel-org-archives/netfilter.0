@@ -1,12 +1,12 @@
-From: Emilio Casbas <ecasbas@unav.es>
-Subject: Re: [OT] URL rewriting
-Date: Thu, 13 Oct 2005 11:28:39 +0200
-Message-ID: <434E28C7.8000801@unav.es>
-References: <NEBBKBPLMLNABNADCIPAGEOCBIAB.dleangen@canada.com>
+From: "Vincent" <cs83152@csie.chu.edu.tw>
+Subject: Need a method to reset the ip_conntrack_count
+Date: Thu, 13 Oct 2005 17:32:05 +0800
+Message-ID: <007d01c5cfd8$fa089840$aa0ba8c0@l7.com.tw>
+References: <002601c5b390$1d641d10$fefefe0a@jesseh7ht76e8n>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <NEBBKBPLMLNABNADCIPAGEOCBIAB.dleangen@canada.com>
+In-Reply-To: <002601c5b390$1d641d10$fefefe0a@jesseh7ht76e8n>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,68 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: dleangen@canada.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-David Leangen wrote:
+Hello folks,
 
->Ok, this topic is now officially OT...
->
->  
->
->>Better to use a HTTP proxy.
->>
->>    
->>
->>>What do you recommend?
->>>      
->>>
->>Well, Squid obviously, but then I am perhaps somewhat biased..
->>    
->>
->
->
->Why do you recommend Squid? I am very interested.
->  
->
-Obvious ;-)
-http://www.squid-cache.org/volunteers.html.
+I have encountered one question. Does it have a way to flush the
+conntrack table beside reloading the ip_conntrack module
+ (because I use the method of building into kernel.
 
->I briefly checked out both, and this is what I concluded:
->
-> - Squid seems more complicated to set up. Even after
->   reading the docs, I still have no idea how to configure this.
->  
->
-http://www.squid-cache.org/Doc/FAQ/FAQ-15.html
+As far as I know, the current conntrack number was recorded in the
+/proc/sys/net/ipv4/netfilter/ip_conntrack_count
+So I want to know whether it exists a method or not to reset the current
+counter of conntrack.
 
-> - I asked how to do this on the mailing list, but I guess my
->   question was too basic and nobody was interested in
->   replying
->  
->
-patience,
+My Enviroment:
+Kenel: 2.6.10
+Iptables: 1.2.9
 
-> - Squid can do LOTS of stuff, but all I want is a reverse proxy
->  
->
-http://www.squid-cache.org/Doc/FAQ/FAQ-20.html
+Any hint are appreciated.
 
-> - I already have an Apache installation and I know how to use
->   reverse proxying
->
->
->Despite this, I'm always interested in the "best" solution... I would indeed
->be very curious to know why you think Squid is the best choice.
->
->  
->
-My personal opinion is that.
-I have using squid for three years ago in many environments
-chain proxy, reverse proxy, ssl proxy, filtering proxy...
-and i`m agree too with Henrik.
+Vincent
 
-Thanks
-Emilio C.
+
 
