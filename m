@@ -1,11 +1,12 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Need a method to reset the ip_conntrack_count
-Date: Thu, 13 Oct 2005 23:48:41 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510132348250.22615@filer.marasystems.com>
-References: <007d01c5cfd8$fa089840$aa0ba8c0@l7.com.tw>
+Subject: Re: DNAT problems using a single interface
+Date: Thu, 13 Oct 2005 23:46:59 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510132345590.22615@filer.marasystems.com>
+References: <434D8802.40702@satchell.net>
+	<3063e50510121719n3199ee10q628397955772f136@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <007d01c5cfd8$fa089840$aa0ba8c0@l7.com.tw>
+In-Reply-To: <3063e50510121719n3199ee10q628397955772f136@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,16 +19,19 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Vincent <cs83152@csie.chu.edu.tw>
-Cc: netfilter@lists.netfilter.org
+To: George Alexandru Dragoi <waruiinu@gmail.com>
+Cc: Stephen Satchell <list@satchell.net>, netfilter@lists.netfilter.org
 
-On Thu, 13 Oct 2005, Vincent wrote:
+On Thu, 13 Oct 2005, George Alexandru Dragoi wrote:
 
-> I have encountered one question. Does it have a way to flush the
-> conntrack table beside reloading the ip_conntrack module
-> (because I use the method of building into kernel.
+> application level (if you need them), even it can be tracked very well in
+> FORWARD chains. Else ... who knows, maybe you can do tricks with iproute2
+> and MARK target from iptables, and instead of nat-ing, you will do some ugly
+> routing. I can't tell exactly how to do this because i didn't read and
+> understand all aspects of your situation.
 
-See the conntrack tool announced some time back..
+That might work as well, at least as long as there is no MTU issues or 
+fragmented packets...
 
 Regards
 Henrik
