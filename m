@@ -1,12 +1,13 @@
-From: Brandon Evans <maillists@hosttuls.com>
-Subject: Re: HowTo connect a Cisco 2950 switch behind iptables?
-Date: Thu, 13 Oct 2005 15:13:50 -0700
-Message-ID: <434EDC1E.2050702@hosttuls.com>
-References: <200510132202.j9DM22aU007735@virt20t.secure-wi.com>
+From: Mogens Valentin <mogensv@vip.cybercity.dk>
+Subject: Re: Advice on setting up a firewall for a Windows Domain Controller
+Date: Fri, 14 Oct 2005 03:24:11 +0200
+Message-ID: <434F08BB.8040603@vip.cybercity.dk>
+References: <531442a50510121004i2229579fv8bb1cae2cd1b456a@mail.gmail.com>
+Reply-To: mogensv@vip.cybercity.dk
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200510132202.j9DM22aU007735@virt20t.secure-wi.com>
+In-Reply-To: <531442a50510121004i2229579fv8bb1cae2cd1b456a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,193 +19,80 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: edvin.seferovic@kolp.at
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Seferovic Edvin wrote:
-> Hi,
+Zacky wrote:
+> Hello everyone,
 > 
-> how about posting a detailed topology and your firewall script? At this
-> point, we can only guess what could be wrong in your setup..
+> I was asked to set up a firewall for a Win2K domain controller, which
+> also acts as a print server, web server and SQL server... Last year, I
+> was assigned a similar project but never got around to work on it.
+> However, I did some research on the topic and I was directed to this
+> KB article that lists the ports I have to open for the DC to work
+> behind the firewall:
+> 
+> http://support.microsoft.com/kb/179442/
+> 
+> While I have set up firewalls in the past, I'm not very familiar with
+> Windows networks and I would like to hear your opinions on how to go
+> about setting up the firewall.
+> 
+>   Here's some info about the network. The DC and all the 25 Windows XP
+> desktops that connect to the DC have public IP addresses, but only the
+> DC has a FQDN. The requirement is to keep the desktops' public IP
+> addresses and just move the DC behind the firewall.
 
-Here is my firewall script.  eth0 is conencted to the WAN, eth0 is the LAN
+Geez! Much like a project a was assigned to solve a few yeas back.
 
-Thanks,
-Brandon
-
-# Firewall configuration written by lokkit
-# Manual customization of this file is not recommended.
-# Note: ifup-post will punch the current nameservers through the
-#       firewall; such entries will *not* be listed here.
-*filter
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT ACCEPT [150:10999]
-:bad_addresses - [0:0]
-:win_servers - [0:0]
-:win_ports - [0:0]
-:webint_ips - [0:0]
-:webint_ports - [0:0]
-
-# Allow any traffic originating locally
--A INPUT -i lo -j ACCEPT
-
-# put in your trusted address here so you can't lock yourself out
--A INPUT -i eth0 -s 66.xxx.xxx.32/27 -j ACCEPT
--A INPUT -i eth1 -s 10.10.10.0/24 -j ACCEPT
-
-# Weed out bad addresses
--A INPUT -i eth0 -j bad_addresses
-
-# Allow windows only ports
--A INPUT -i eth0 -j win_servers
-
-# Allow wi ip only ports
--A INPUT -i eth0 -j webint_ips
-
-# Drop stealth scans
--A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE 
--j DROP
--A INPUT -i eth0 -p tcp -m tcp --tcp-flags SYN,FIN SYN,FIN 
--j DROP
--A INPUT -i eth0 -p tcp -m tcp --tcp-flags SYN,RST SYN,RST 
--j DROP
--A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,RST FIN,RST 
--j DROP
--A INPUT -i eth0 -p tcp -m tcp --tcp-flags ACK,FIN FIN 
--j DROP
--A INPUT -i eth0 -p tcp -m tcp --tcp-flags ACK,URG URG 
--j DROP
-
-# Allow services that have already been established
--A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Restrict ICMP traffic
-#-A INPUT -i eth0 -p icmp -m icmp --icmp-type echo-reply              -j 
-DROP
-#-A INPUT -i eth0 -p icmp -m icmp --icmp-type destination-unreachable -j 
-DROP
-#-A INPUT -i eth0 -p icmp -m icmp --icmp-type echo-request            -j 
-DROP
-#-A INPUT -i eth0 -p icmp -m icmp --icmp-type time-exceeded           -j 
-DROP
-
-#########################################
-# Allow services we provide to everyone
-#########################################
-# SSH
--A INPUT -i eth0 -p tcp -m tcp --dport 22  --tcp-flags SYN,RST,ACK SYN 
--j ACCEPT
-
-# FTP access
--A INPUT -i eth0 -p tcp -m tcp --dport 20  --tcp-flags SYN,RST,ACK SYN 
--j ACCEPT
--A INPUT -i eth0 -p tcp -m tcp --dport 21  --tcp-flags SYN,RST,ACK SYN 
--j ACCEPT
--A INPUT -i eth0 -p tcp -m tcp --dport 1024:65535  --tcp-flags 
-SYN,RST,ACK SYN -j ACCEPT
-
-# DNS
-#-A INPUT -i eth0 -p tcp -m tcp --dport 53  --tcp-flags SYN,RST,ACK SYN 
--j ACCEPT
-#-A INPUT -i eth0 -p udp -m udp --dport 53 
--j ACCEPT
-
-# HTTP
-#-A INPUT -i eth0 -p tcp -m tcp --dport 80  --tcp-flags SYN,RST,ACK SYN 
--j ACCEPT
-
-# NTP
--A INPUT -i eth0 -p tcp -m tcp --dport 123 --tcp-flags SYN,RST,ACK SYN 
--j ACCEPT
--A INPUT -i eth0 -p udp -m udp --dport 123 -j ACCEPT
-
-# Log everything else
-#-A INPUT -m limit --limit 3 -j LOG --log-level debug
-
-# --- Bad Address tables --- ###########################
--A bad_addresses -s 192.168.0.0/255.255.0.0 -j DROP
-#-A bad_addresses -s 10.0.0.0/255.0.0.0      -j DROP
--A bad_addresses -s 172.16.0.0/12           -j DROP
--A bad_addresses -s 127.0.0.0/8             -j DROP
--A bad_addresses -s 0.0.0.0/8               -j DROP
--A bad_addresses -s 169.254.0.0/16          -j DROP
--A bad_addresses -s 224.0.0.0/4             -j DROP
--A bad_addresses -s 240.0.0.0/5             -j DROP
--A bad_addresses -d 224.0.0.0/4 -p ! udp    -j DROP
-# hack attempts
--A bad_addresses -s 211.230.148.87          -j DROP
--A bad_addresses -s 211.214.160.231         -j DROP
--A bad_addresses -s 193.126.240.21          -j DROP
--A bad_addresses -s 71.34.213.207           -j DROP
-##########################################################
-
-# --- Windows Servers --- ###############################
-# win1s
--A win_servers -s 209.xxx.xxx.xxx           -j win_ports
-# win2p
--A win_servers -s 209.xxx.xxx.xxx          -j win_ports
-# mssql1
--A win_servers -s 209.xxx.xxx.xxx           -j win_ports
-
--A win_servers -s 209.xxx.xxx.xxx           -j win_ports
-
-##########################################################
-
-# --- Windows Ports --- 
-######################################################################
-#-A win_ports -i eth0 -p tcp -m multiport --dport 22,80  --tcp-flags 
-SYN,RST,ACK SYN -j ACCEPT
--A win_ports -i eth0 -p tcp -m tcp --dport 137:139  --tcp-flags 
-SYN,RST,ACK SYN -j ACCEPT
--A win_ports -i eth0 -p udp -m udp --dport 137:139  -j ACCEPT
-##############################################################################################
-
-# ---  IP Ranges --- ###########################
-# ADN ip's
--A webint_ips -s 207.xxx.xxx.0\24            -j webint_ports
-
-<Snip>
-
--A webint_ips -s 209.xxx.xxx.0/24           -j webint_ports
-##############################################################
-
-# --- for WI servers only --- ########################################
-# Cfengine
--A webint_ports -i eth0 -p tcp -m tcp --dport 5308  --tcp-flags 
-SYN,RST,ACK SYN -j ACCEPT
-
-# Syslog
--A webint_ports -i eth0 -p udp -m udp --dport 514 -j ACCEPT
-
-# Bacula File Daemon
--A webint_ports -i eth0 -p udp -m udp --dport 9102 -j ACCEPT
-
-#############################################################################################
-
-# Allow all connections OUT and only existing and related ones IN
-#-A FORWARD -i eth0 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -i eth0 -o eth1 -j ACCEPT
--A FORWARD -i eth1 -o eth0 -j ACCEPT
--A FORWARD -j LOG
-
-COMMIT
-
-# Enabling SNAT (MASQUERADE) functionality on eth0
-*nat
-
--A POSTROUTING -o eth0 -j MASQUERADE
-
-COMMIT
+All having public addresses. Double-geez!!
+Tell them this means the server, and all clients are directly accessable 
+from the internet. No no no, they're not merely -connectet- to the inet, 
+they can be -accessed- by weird people living out here on the net.
+Do a quick'n'fun test: From -any- client, go to grc.com, and perform the 
+fun Test Your Shields test (if it's still available).
+Ok, with the Great MS Firewall in place on each fuly updated XP, it 
+-may- not be that bad; but they're still accesable from the net.
 
 
+So,
+Firstly, persuade them to have the Linux box not only do the 
+firewalling, but also route the network, and perform NAT on the internal 
+segment. Depending upon how those XP clients are organized, you may 
+(want) to segment the internal net into, say at least, an administrative 
+segment and a not-so-trusted client segment.
+
+
+Secondly, you may want to talk them into not nunning domain controller, 
+print server, web server and SQL server on one and same physical server.
+
+At least move the webserver onto its own hardware.
+
+What's the SQL server doing? A backend for the IIS?
+Worse? Some internal finalcials running on it? Both? (shiver)
+
+
+Thirdly, let the Linux box be the -real- DNS and preferably also the 
+dhcp. Use a ddns setup here, and if the business absolutely -must- run 
+some MS-DNS, have the W2K DNS get it's public info from the Linux box.
+This is actually not a stupid idea. Some MS services are easier handled 
+if the MS server runs it's own DNS.
+The Right Tool for the Right Job.
+
+
+But I can see a big problem whacked right onto you face:
+Public IP's being a REQUIREMENT!  Trible geez!!!
+Why on earth do they need to have the clients on the ugly inet?
+My take is: They don't know. Explain why they don't want that.
 
 -- 
+Kind regards,
+Mogens Valentin
 
-Thanks,
-     Brandon Evans
 
-  "I wouldn't recommend sex, drugs or insanity for everyone, but they've 
-always worked for me."
--Hunter S. Thompson
+The OSI 7-layer network model actually has three extensions:
+Layer 8 is politics
+Layer 9 is religion
+Layer 10 is the CEO layer..
+
+
 
