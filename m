@@ -1,34 +1,30 @@
-From: Antonio <anton.ananich@gmail.com>
-Subject: Re: pptp-conntrack-nat & kernel 2.6.11
-Date: Tue, 11 Oct 2005 21:41:41 +0300
-Message-ID: <5a335a3d0510111141hcfe79b2m23823f920eeb630a@mail.gmail.com>
-References: <5a335a3d0510021106l303a056bu@mail.gmail.com>
-	<20051003075148.GQ4168@sunbeam.de.gnumonks.org>
+From: "bend chen" <boy2eye@263.net>
+Subject: Re: iptables & ebtables
+Date: Sat, 15 Oct 2005 16:28:46 +0800
+Message-ID: <20051015082648.4FCF8F88@smtp.263.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: base64
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <20051003075148.GQ4168@sunbeam.de.gnumonks.org>
-Content-Disposition: inline
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Harald Welte <laforge@netfilter.org>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter <netfilter@lists.netfilter.org>
 
-RGVhciBIYXJhbGQhCgpJJ20gbm90IHNodXJlIGJ1dCBpIHRoaW5rIHRoYXQgaSBmb3VudCBhIGJ1
-ZyBpbiBpcF9uYXRfcHB0cCBpbiBrZXJuZWwKMi42LjE0LXJjMy4KSSB1c2VkIGl0IG9uIHJvdXRl
-ciB3aXRoIE5BVC4gV2hlbiBJIGNvbmZpZ3VyZSB0aGlzIG1vZHVsZSB0byBiZQpidWlsdC1pbiBh
-bmQgcnVuIGRtZXNnIEkgc2VlIHRoYXQgbW9kdWxlIGlwX2Nvbm50cmFja19wcHRwIGlzIGxvYWRl
-ZApidXQgbm90aGluZyBhYm91dCBpcF9uYXRfcHB0cC4gVW5mb3VydGVudGx5IGNvbm5lY3Rpb24g
-d2FzIG5vdCBhYmxlIHRvCmJlIHN0YXJ0ZWQuCgpUaGVuIEkgdHJ5IHRvIGNvbXBpbGUgaXQgYXMg
-Y2VwYXJhdGUgbW9kdWxlcy4gSSBtb2Rwcm9iZWQgYm90aCBtb3VsZXMKYW5kIGhhcHBpbmVzcyBi
-ZWNhbWUgIHRvIG1lIDopCgotLQpCZXN0IFJlZ2FyZHMsCkFudG9uaW8K
+SGksbmV0ZmlsdGVyo6wNCg0KDQpUaGFua3MgSm9lcmcgaGVscC4NCg0KaSB3cm90ZToNCiAgIElm
+IEkgdXNlZCBlYnRhYmxlcyBwcm9jZXNzIGEgcGFja2FnZSxidXQgbmVlZCBpcHRhYmxlcyBjYW4n
+dCBwcm9jZXNzIFRISVMgcGFja2FnZSxob3cgY2FuIEkgZG8/DQoNCnRoaXMgbWVhbnM6DQogIGlm
+IGkgdXNlIGVidGFsYmVzKGh0dHA6Ly9lYnRhYmxlcy5zb3VyY2Vmb3JnZS5uZXQpIG1hbmFnZSBh
+IHBhY2thZ2UobGlrZSBhIGZ0cC1wYWNrYWdlKSxmb3IgZXhhbXBsZTogc2V0LW1hcmsuDQpmb3Ig
+dGhpcyBwYWNrYWdlIChmdHAtcGFja2FnZSksbm90IG5lZWQgaXB0YWJsZXMgbWFuYWdlIHRoaXMg
+cGFja2FnZSxob3cgZG8gaSBkbz8NCg0K
+
+
 
