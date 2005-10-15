@@ -1,9 +1,8 @@
-From: Daniel Ivanov <sertys@supportivo.org>
-Subject: iptables & squid
-Date: Sat, 15 Oct 2005 16:54:04 +0300
-Message-ID: <435109FC.7000903@supportivo.org>
+From: amit pasari <amit@xsinfoways.com>
+Subject: removing duplicate rules
+Date: Sun, 16 Oct 2005 03:00:06 +0530
+Message-ID: <6.2.1.2.0.20051016030004.030e32a0@147.202.41.46>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,24 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I could finally manage to bump packets from a bsd box to my squid and 
-thanks to ipfw they come un-rewritten in the form
-{internal_net_ip} -> {destination_ip}
-This is ok. I set a simple redirect rule in the prerouting:
-iptables -t nat -A PREROUTING -p tcp --dport 80 -s internal_net/mask -j 
-REDIRECT --to-ports 80
 
-Packets jump to my proxy and pass through.
-But i get them returned in the form:
-{squid_box} -> {ip_from_internal_network}
- This way they are impossible for shaping. How would i make such a packet
-{destination_ip} -> {internal_net_ip}
-by means of iptables.
 
-Would a DNAT do the trick and will it be hit if a have a REDIRECT target 
-already in the PREROUTING.
-Otherwise the REDIRECT is also available in the OUTPUT chain of the nat 
-table.
+hello,
+i have been using iptables for quite sometime , Now my problem is , if by 
+make i add multiple type of same rule in iptables it accepts N number of 
+entries . So can any body tell me how to aviod that or can i check the same 
+rule exists before Appending it into the table.
+Eg : iptables -A INPUT -d 192.168.0.2/32 -i eth1 -j DROP
+i have add the above rules 10 times 20 times but the system never says the 
+above rule exist . Can anybody tell me how can i check or aviod .
+
+thanks in advance .
+
+amit
+
+
+
 
