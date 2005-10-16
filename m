@@ -1,12 +1,13 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: Re: compiling ip_set_iptree.o ( and other netfiler patches )
-Date: Wed, 19 Oct 2005 15:19:31 +0800
-Message-ID: <01f501c5d47d$74355560$0100a8c0@newlife>
-References: <00e501c5d395$0cb95eb0$0100a8c0@newlife><Pine.LNX.4.58.0510181516400.5575@blackhole.kfki.hu>
-	<017001c5d45b$f649c7b0$0100a8c0@newlife>
+From: Antonio <anton.ananich@gmail.com>
+Subject: Re: pptp-conntrack-nat & kernel 2.6.11
+Date: Sun, 16 Oct 2005 11:15:18 +0300
+Message-ID: <5a335a3d0510160115m266070a6ud7dac58e5763e44e@mail.gmail.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE582900B586A@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE582900B586A@pxtbenexd01.pxt.primeexalia.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +18,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: "Gary W. Smith" <gary@primeexalia.com>
+Cc: Harald Welte <laforge@netfilter.org>
 
-
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-
->   CC [M]  net/ipv4/netfilter/ip_conntrack_pptp.o
-> net/ipv4/netfilter/ip_conntrack_pptp.c: In function `timeout_ct_or_exp':
-> net/ipv4/netfilter/ip_conntrack_pptp.c:159: warning: implicit declaration of
-> ction `__ip_conntrack_expect_find'
-> net/ipv4/netfilter/ip_conntrack_pptp.c:159: warning: assignment makes pointe
-> om integer without a cast
->
-
-This **notorious** ip_conntrack_pptp module failed to link due to
-unresolved symbol, 
-
-          __ip_conntrack_expect_find, 
-
-there is a history of it in the maillist. I looked all over and I finally 
-changed all references  ( actually there is only one reference ) to :-
-
-          __ip_conntrack_exp_find
-
-It happily linked now. Is this the right fix ?
-
-Cheers.
-
-
-
-
+RGVhciBHYXJ5IQoKT24gMTAvMTYvMDUsIEdhcnkgVy4gU21pdGggPGdhcnlAcHJpbWVleGFsaWEu
+Y29tPiB3cm90ZToKPiBZb3UgYXJlIG1pc3NpbmcgdGhlIGZsYWcgdG8gdHVybiBvbiBwcm90b19n
+cmUuIFRoYXQncyB3aHkgaXQncyBub3QKPiBhdmFpbGFibGUgdG8geW91LgoKVGhlIG9wdGlvbiBD
+T05GSUdfSVBfTkZfTkFUX1BST1RPX0dSRSB3YXMgbWlzc2luZyBpbiBteSBjb25maWcgaW5kZWVk
+LgpCdXQgd2hlbiBJIHJ1bgojIG1ha2UgbWVudWNvbmZpZwpJIGhhdmUgbm90IGZvdW5kIHBvc3Np
+YmlsaXR5IHRvIGVuYWJsZSBpdCA6KCBIZXJlIGlzIHNjcmVlbnNob3Q6CgrilIIg4pSM4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQIOKUggog4pSCIOKUgiA8Kj4gQ29ubmVj
+dGlvbiB0cmFja2luZyAocmVxdWlyZWQgZm9yIG1hc3EvTkFUKSDilIIg4pSCCiDilIIg4pSCIFsg
+XSBDb25uZWN0aW9uIHRyYWNraW5nIGZsb3cgYWNjb3VudGluZyDilIIg4pSCCiDilIIg4pSCIFsg
+XSBDb25uZWN0aW9uIG1hcmsgdHJhY2tpbmcgc3VwcG9ydCDilIIg4pSCCiDilIIg4pSCIFsgXSBD
+b25uZWN0aW9uIHRyYWNraW5nIGV2ZW50cyDilIIg4pSCCiDilIIg4pSCIDwgPiBTQ1RQIHByb3Rv
+Y29sIGNvbm5lY3Rpb24gdHJhY2tpbmcgc3VwcG9ydCAoRVhQRVJJTUVOVEFMKSDilIIg4pSCCiDi
+lIIg4pSCIDxNPiBGVFAgcHJvdG9jb2wgc3VwcG9ydCDilIIg4pSCCiDilIIg4pSCIDxNPiBJUkMg
+cHJvdG9jb2wgc3VwcG9ydCDilIIg4pSCCiDilIIg4pSCIDwgPiBOZXRCSU9TIG5hbWUgc2Vydmlj
+ZSBwcm90b2NvbCBzdXBwb3J0IChFWFBFUklNRU5UQUwpIOKUgiDilIIKIOKUgiDilIIgPCA+IFRG
+VFAgcHJvdG9jb2wgc3VwcG9ydCDilIIg4pSCCiDilIIg4pSCIDwgPiBBbWFuZGEgYmFja3VwIHBy
+b3RvY29sIHN1cHBvcnQg4pSCIOKUggog4pSCIOKUgiA8TT4gUFBUUCBwcm90b2NvbCBzdXBwb3J0
+IOKUgiDilIIKIOKUgiDilIIgPCA+IElQIFVzZXJzcGFjZSBxdWV1ZWluZyB2aWEgTkVUTElOSyAo
+T0JTT0xFVEUpIOKUgiDilIIKIOKUgiDilIIgPCo+IElQIHRhYmxlcyBzdXBwb3J0IChyZXF1aXJl
+ZCBmb3IgZmlsdGVyaW5nL21hc3EvTkFUKSDilIIg4pSCCiDilIIg4pSCIDwgPiBsaW1pdCBtYXRj
+aCBzdXBwb3J0IOKUgiDilIIKIOKUgiDilIIgPCo+IElQIHJhbmdlIG1hdGNoIHN1cHBvcnQg4pSC
+IOKUggog4pSCIOKUlOKUgOKUgOKUtCgrKeKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmCDilIIKCgpJbiBw
+cmV2aW91cyB2ZXJzaW9ucyB0aGVyZSB3YXMgYm90aCBHUkUgYW5kIFBQVFAgb3B0aW9ucy4KCkkg
+ZXZlbiB0cnllZCB0byBhZGQgQ09ORklHX0lQX05GX05BVF9QUk9UT19HUkUgZGVmaW5pdGlvbiB0
+byAuY29uZmlnIGZpbGUKbWFudWFsbHkgYnV0IEkgZ290IG5vdGhpbmcgOigKCi0tCkJlc3QgUmVn
+YXJkcywKQW50b25pbwo=
