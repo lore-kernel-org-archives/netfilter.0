@@ -1,39 +1,42 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: why can't use connlimit ??
-Date: Sat, 29 Oct 2005 10:11:46 +0200
-Message-ID: <20051029081703.0AB336A8F8@smtp.sterenborg.info>
-References: <43a0cdcb0510282100q5473c6eav@mail.gmail.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: [ANNOUNCE] Release of nf-HiPAC 0.9.1
+Date: Sun, 16 Oct 2005 16:40:21 +0200
+Message-ID: <20051016144020.GE17257@rama.0sec>
+References: <200510121758.46328.mbellion@hipac.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43a0cdcb0510282100q5473c6eav@mail.gmail.com>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <200510121758.46328.mbellion@hipac.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Michael Bellion <mbellion@hipac.org>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-> do you mean iptalbes can work without netfilter? or I can use
+On Wed, Oct 12, 2005 at 05:58:39PM +0200, Michael Bellion wrote:
+> Hi
+> 
+> I am happy to announce the release of nf-HiPAC version 0.9.1
+> 
+> Version 0.9.1 fixes all bugs that have been discovered since the release of 
+> v0.9.0.
 
-No. iptables is the userspace utility to set rules for netfilter.
+would be nice if you were publishing incremental patches. This way it is
+easy to look at the changes and stay up-to-date.
 
-> connlimit function just only with a libipt_connlimit.so file?
-> then how to do it. I try to use modprobe to load the library,
-> but it said to me that no such module could be found. to load
-> a .so fromat module need a diffrent way?
-
-The .so is not a kernel module but a shared object. You don't load
-shared objects yourself.
-
-
-Gr,
-Rob
-
+-- 
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+============================================================================
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
