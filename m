@@ -1,9 +1,11 @@
-From: amit pasari <amit@xsinfoways.com>
-Subject: removing duplicate rules
-Date: Sun, 16 Oct 2005 03:00:06 +0530
-Message-ID: <6.2.1.2.0.20051016030004.030e32a0@147.202.41.46>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: pptp-conntrack-nat & kernel 2.6.11
+Date: Sat, 15 Oct 2005 19:17:40 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582900B586A@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,25 +16,112 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Antonio <anton.ananich@gmail.com>, Harald Welte <laforge@netfilter.org>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
+Antonio,=20
 
+You are missing the flag to turn on proto_gre.  That's why it's not
+available to you.
 
-hello,
-i have been using iptables for quite sometime , Now my problem is , if by 
-make i add multiple type of same rule in iptables it accepts N number of 
-entries . So can any body tell me how to aviod that or can i check the same 
-rule exists before Appending it into the table.
-Eg : iptables -A INPUT -d 192.168.0.2/32 -i eth1 -j DROP
-i have add the above rules 10 times 20 times but the system never says the 
-above rule exist . Can anybody tell me how can i check or aviod .
+--- kernel-2.6.9-i686.config.orig       2005-01-05 16:17:41.000000000
+-0800
++++ kernel-2.6.9-i686.config    2005-02-22 11:58:30.000000000 -0800
+@@ -640,6 +640,14 @@
+ CONFIG_IP_NF_CT_PROTO_SCTP=3Dm
+ # CONFIG_IP_NF_COMPAT_IPCHAINS is not set
+ # CONFIG_IP_NF_COMPAT_IPFWADM is not set
++CONFIG_IP_NF_MATCH_CONNLIMIT=3Dm
++CONFIG_IP_NF_TARGET_TARPIT=3Dm
++CONFIG_IP_NF_NAT_H323=3Dm
++CONFIG_IP_NF_H323=3Dm
++CONFIG_IP_NF_CT_PROTO_GRE=3Dm
++CONFIG_IP_NF_PPTP=3Dm
++CONFIG_IP_NF_NAT_PPTP=3Dm
++CONFIG_IP_NF_NAT_PROTO_GRE=3Dm
+=20
+ #
+ # IPv6: Netfilter Configuration
+@@ -947,7 +955,8 @@
+ CONFIG_PPP_SYNC_TTY=3Dm
+ CONFIG_PPP_DEFLATE=3Dm
+ CONFIG_IPPP_FILTER=3Dy
+-# CONFIG_PPP_BSDCOMP is not set
++CONFIG_PPP_BSDCOMP=3Dm
++CONFIG_PPP_MPPE=3Dm
+ CONFIG_PPPOE=3Dm
+ # CONFIG_SLIP is not set
 
-thanks in advance .
-
-amit
-
-
-
+> -----Original Message-----
+> From: netfilter-devel-bounces@lists.netfilter.org
+[mailto:netfilter-devel-
+> bounces@lists.netfilter.org] On Behalf Of Antonio
+> Sent: Friday, October 14, 2005 2:24 PM
+> To: Harald Welte
+> Cc: Netfilter Development Mailinglist; Netfilter Mailinglist
+> Subject: Re: pptp-conntrack-nat & kernel 2.6.11
+>=20
+> On 10/13/05, Antonio <anton.ananich@gmail.com> wrote:
+> > Dear Harald!
+> >
+> > On 10/12/05, Harald Welte <laforge@netfilter.org> wrote:
+> > > if you compile a kernel with static support for pptpconntrack+nat,
+you
+> > > will see neither of the two in "lsmod".  Can you please send me
+> > > (privately) your kernel .config file that was used for the
+"statically
+> > > linked" kernel, and (if possible) also the kernel binary itself?
+> >
+> > To reproduce my kernel configuration you need:
+> > 1) kernel 2.6.14-rc3
+> > 2) patch for mppe&mppc support (in attachment)
+> > 3) .config.old (also in attachment)
+> >
+> > file .config contains config which works fine
+> >
+> > --
+> > Best Regards,
+> > Antonio
+> >
+>=20
+> I'm still trying to make NAT work. Now I'm using kernel 2.6.14-rc3.
+> And I whant to say that it almost working! :) My Linux box connects to
+> Internet through router. But everyone else (who uses Windows) have not
+> this happy possibility...
+>=20
+> I think that reason is There is no modules ip_conntrack_proto_gre and
+> ip_nat_proto_gre anywhere :(  When I was using kernel 2.4 there was
+> not such troubles with PPTP and NAT integration...
+>=20
+> How can I enable connaction tracking & nat for the gre protocol? Is it
+> neccessary? Is it a reason of gre packets loss?
+>=20
+> Additional information:
+>=20
+> servak linux # cat .config | grep GRE
+> CONFIG_NET_IPGRE=3Dy
+> # CONFIG_NET_SCH_GRED is not set
+> CONFIG_NET_SCH_INGRESS=3Dy
+> servak linux # cat .config | grep PPTP
+> CONFIG_IP_NF_PPTP=3Dm
+> CONFIG_IP_NF_NAT_PPTP=3Dm
+> servak linux # cat .config | grep NAT
+> CONFIG_IP_NF_NAT=3Dm
+> CONFIG_IP_NF_NAT_NEEDED=3Dy
+> # CONFIG_IP_NF_NAT_SNMP_BASIC is not set
+> CONFIG_IP_NF_NAT_IRC=3Dm
+> CONFIG_IP_NF_NAT_FTP=3Dm
+> CONFIG_IP_NF_NAT_PPTP=3Dm
+> # CONFIG_NATSEMI is not set
+>=20
+> I'm using the only one rule
+> $IPTABLES -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+>=20
+> I hope it will be helpful to take a look at ethereal output from
+attach.
+>=20
+> --
+> Best Regards,
+> Antonio
 
