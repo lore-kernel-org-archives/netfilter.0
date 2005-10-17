@@ -1,13 +1,11 @@
-From: Antonio <anton.ananich@gmail.com>
-Subject: Re: pptp-conntrack-nat & kernel 2.6.11
-Date: Sun, 16 Oct 2005 11:15:18 +0300
-Message-ID: <5a335a3d0510160115m266070a6ud7dac58e5763e44e@mail.gmail.com>
-References: <57F9959B46E0FA4D8BA88AEDFBE582900B586A@pxtbenexd01.pxt.primeexalia.com>
+From: suresh <smadhu@e-consystems.com>
+Subject: How to see the full datagram for all the packets recieved in my
+ ethernet interface
+Date: Mon, 17 Oct 2005 18:47:32 +0530
+Message-ID: <4353A46C.9090008@e-consystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE582900B586A@pxtbenexd01.pxt.primeexalia.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +16,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: "Gary W. Smith" <gary@primeexalia.com>
-Cc: Harald Welte <laforge@netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-RGVhciBHYXJ5IQoKT24gMTAvMTYvMDUsIEdhcnkgVy4gU21pdGggPGdhcnlAcHJpbWVleGFsaWEu
-Y29tPiB3cm90ZToKPiBZb3UgYXJlIG1pc3NpbmcgdGhlIGZsYWcgdG8gdHVybiBvbiBwcm90b19n
-cmUuIFRoYXQncyB3aHkgaXQncyBub3QKPiBhdmFpbGFibGUgdG8geW91LgoKVGhlIG9wdGlvbiBD
-T05GSUdfSVBfTkZfTkFUX1BST1RPX0dSRSB3YXMgbWlzc2luZyBpbiBteSBjb25maWcgaW5kZWVk
-LgpCdXQgd2hlbiBJIHJ1bgojIG1ha2UgbWVudWNvbmZpZwpJIGhhdmUgbm90IGZvdW5kIHBvc3Np
-YmlsaXR5IHRvIGVuYWJsZSBpdCA6KCBIZXJlIGlzIHNjcmVlbnNob3Q6CgrilIIg4pSM4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQIOKUggog4pSCIOKUgiA8Kj4gQ29ubmVj
-dGlvbiB0cmFja2luZyAocmVxdWlyZWQgZm9yIG1hc3EvTkFUKSDilIIg4pSCCiDilIIg4pSCIFsg
-XSBDb25uZWN0aW9uIHRyYWNraW5nIGZsb3cgYWNjb3VudGluZyDilIIg4pSCCiDilIIg4pSCIFsg
-XSBDb25uZWN0aW9uIG1hcmsgdHJhY2tpbmcgc3VwcG9ydCDilIIg4pSCCiDilIIg4pSCIFsgXSBD
-b25uZWN0aW9uIHRyYWNraW5nIGV2ZW50cyDilIIg4pSCCiDilIIg4pSCIDwgPiBTQ1RQIHByb3Rv
-Y29sIGNvbm5lY3Rpb24gdHJhY2tpbmcgc3VwcG9ydCAoRVhQRVJJTUVOVEFMKSDilIIg4pSCCiDi
-lIIg4pSCIDxNPiBGVFAgcHJvdG9jb2wgc3VwcG9ydCDilIIg4pSCCiDilIIg4pSCIDxNPiBJUkMg
-cHJvdG9jb2wgc3VwcG9ydCDilIIg4pSCCiDilIIg4pSCIDwgPiBOZXRCSU9TIG5hbWUgc2Vydmlj
-ZSBwcm90b2NvbCBzdXBwb3J0IChFWFBFUklNRU5UQUwpIOKUgiDilIIKIOKUgiDilIIgPCA+IFRG
-VFAgcHJvdG9jb2wgc3VwcG9ydCDilIIg4pSCCiDilIIg4pSCIDwgPiBBbWFuZGEgYmFja3VwIHBy
-b3RvY29sIHN1cHBvcnQg4pSCIOKUggog4pSCIOKUgiA8TT4gUFBUUCBwcm90b2NvbCBzdXBwb3J0
-IOKUgiDilIIKIOKUgiDilIIgPCA+IElQIFVzZXJzcGFjZSBxdWV1ZWluZyB2aWEgTkVUTElOSyAo
-T0JTT0xFVEUpIOKUgiDilIIKIOKUgiDilIIgPCo+IElQIHRhYmxlcyBzdXBwb3J0IChyZXF1aXJl
-ZCBmb3IgZmlsdGVyaW5nL21hc3EvTkFUKSDilIIg4pSCCiDilIIg4pSCIDwgPiBsaW1pdCBtYXRj
-aCBzdXBwb3J0IOKUgiDilIIKIOKUgiDilIIgPCo+IElQIHJhbmdlIG1hdGNoIHN1cHBvcnQg4pSC
-IOKUggog4pSCIOKUlOKUgOKUgOKUtCgrKeKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
-gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmCDilIIKCgpJbiBw
-cmV2aW91cyB2ZXJzaW9ucyB0aGVyZSB3YXMgYm90aCBHUkUgYW5kIFBQVFAgb3B0aW9ucy4KCkkg
-ZXZlbiB0cnllZCB0byBhZGQgQ09ORklHX0lQX05GX05BVF9QUk9UT19HUkUgZGVmaW5pdGlvbiB0
-byAuY29uZmlnIGZpbGUKbWFudWFsbHkgYnV0IEkgZ290IG5vdGhpbmcgOigKCi0tCkJlc3QgUmVn
-YXJkcywKQW50b25pbwo=
+hi,
+      I want to see the complete datagram of the all packets coming into 
+  my ethernet interface. Is there any linux command to do that.
+
+  if anybody knows, please send me the response.
+
+
+
+with regards,
+
+Suresh Madhu D
+e-consystems.
+
+
