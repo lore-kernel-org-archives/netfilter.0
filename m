@@ -1,11 +1,11 @@
-From: "Baake, Matthias" <m.baake@porta.de>
-Subject: RE: NAT rules for Multiple IPAddresses on same physical interface
-Date: Mon, 17 Oct 2005 13:20:10 +0200
-Message-ID: <201E6F5AC48C274996A5AD8304FAEF860BFDF4@p001ex03.porta.local>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: lots of source ip & same dst port to one line??
+Date: Mon, 17 Oct 2005 14:06:03 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0510171402500.3698@blackhole.kfki.hu>
+References: <BAY12-F7B5C06FEC165BFDD024EF857E0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <BAY12-F7B5C06FEC165BFDD024EF857E0@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,64 +16,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Aseem Rastogi <aseem@india.tejasnetworks.com>
-Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Monty Ree <chulmin2@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-hi,
+On Mon, 17 Oct 2005, Monty Ree wrote:
 
-if you map the addresses onto one interface you have to write dnat rules =
-for every single address imho.
-if someone wants to connect to 1.2.3.4 e.g. a mailer, and this machine =
-is behind the firewall, maybe the
-DMZ, you have to dnat it to the destination machine in your DMZ. maybe =
-you have another machine in your=20
-DMZ that serves http to the outworld on ip 1.2.3.5 and the http server =
-does not run on the same machine like
-the mailer you have to write a rule to dnat http traffic from 1.2.3.5 to =
-dmz http server. at least i do that
-in my configurations.
+> I know -mport and --src-range function at iptables.
+> But I have some rules like below.
+>
+> which same dst ip and port but source ip is not like below.
+>
+> iptables -A INPUT -p tcp -s 1.1.1.1 -d 10.10.10.10 --dport  25 -j ACCEPT
+> iptables -A INPUT -p tcp -s 20.20.1.1 -d 10.10.10.10 --dport  25 -j ACCEPT
+> iptables -A INPUT -p tcp -s 30.1.2.1 -d 10.10.10.10 --dport  25 -j ACCEPT
+> iptables -A INPUT -p tcp -s 40.11.3.10 -d 10.10.10.10 --dport  25 -j ACCEPT
+> iptables -A INPUT -p tcp -s 100.1.2.3 -d 10.10.10.10 --dport  25 -j ACCEPT
+> iptables -A INPUT -p tcp -s 211.3.4.5 -d 10.10.10.10 --dport  25 -j ACCEPT
 
-greets
+Use ipset: create a set (say 'smtp-clients') for all source addresses
+above and then you can use a single rule like this:
 
-/matthias
+iptables -A INPUT -d 10.10.10.10 -p tcp --dport 25 \
+	 -m set --set smtp-clients src -j ACCEPT
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of=20
-> Aseem Rastogi
-> Sent: Monday, October 17, 2005 12:45 PM
-> To: netfilter@lists.netfilter.org
-> Subject: NAT rules for Multiple IPAddresses on same physical interface
->=20
->=20
-> Hi All,
->=20
-> I have a situation where my machine has one ethernet interface but i=20
-> have assigned it multiple ipaddresses on same interface. Now=20
-> I want to=20
-> add some NAT rules so that a packet destined for my machine and port=20
-> 3023 is redirected to some other IP and port.
->=20
-> Do I need to write rules for each of the IPAddresses that my machine=20
-> has? Or is there a way in NAT PREROUTING to identify if this=20
-> packet is=20
-> for localhost (Of course something other than --destination)?=20
-> I do not=20
-> want to write rules for each IPAddress, rather I am looking=20
-> for a way to=20
-> identify if this packet is for me.
->=20
-> Thanks in advance,
->=20
-> Regards,
-> Aseem.
->=20
-> --=20
-> The end is always good. If it's not good, it's not the end.
->=20
->=20
->=20
->=20
->=20
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
