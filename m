@@ -1,11 +1,13 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: Bachelor Project
-Date: Mon, 17 Oct 2005 16:16:48 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510171601130.21372@filer.marasystems.com>
-References: <43535A41.3030106@seznam.cz>
+From: KOVACS Krisztian <hidden@balabit.hu>
+Subject: Re: TPROXY vs REDIRECT
+Date: Mon, 17 Oct 2005 16:32:49 +0200
+Message-ID: <200510171632.49254@nienna>
+References: <20051017140908.B73ED4C11C@lists.balabit.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43535A41.3030106@seznam.cz>
+In-Reply-To: <20051017140908.B73ED4C11C@lists.balabit.hu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Jan Simbera <xcidar@seznam.cz>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Mon, 17 Oct 2005, Jan Simbera wrote:
 
-> Has anybody implemented the linux kernel module which deals with 
-> connection tracking of the protocol IPV6 or has anybody being working on 
-> it presently?
+  Hi,
 
-Yes. Look for nf_conntrack. A very much active project and scheduled to 
-replace ip conntrack in some time.
+On Monday 17 October 2005 16.08, Andrew Cant wrote:
+> I have done some quick searches, and reviewed the TPROXY
+> documentation but I have not found an answer to the question of
+> whether I should be using the TPROXY target for a simple transparent
+> proxy. (i.e., not listening on a foreign address and not reporting a
+> foreign address as a source)
+>
+> Currently, the system that I am working on is using the REDIRECT
+> targets to transparently catch port 80 traffic and redirect it
+> locally for either caching or authentication. Is there any benefit to
+> using the TPROXY target in this case? I have not been able to find
+> anything that explains what the differences between the two targets
+> would be in this simple case.
 
-> I would also like to kno if anybody has been working on implementation 
-> of the module for IPVS (using IPV6).
+  No, you shouldn't. The TPROXY target differs from REDIRECT in the 
+following aspects:
 
-No idea. This question is perhaps better asked on the lvs mailing list. 
-But probably not.
+* only works in the 'tproxy' table
+* saves the original destination address in the IPCB, so that the 
+user-space proxy will be able to get this information using recvmsg()
+* sets a special status bit in the conntrack so the 'tproxy' match will 
+match any packets belonging to that connection
 
-> Does anybody know about any contacts or addresses, where i could get 
-> this information?
+  So, to sum it up, you probably don't want to use TPROXY instead of 
+REDIRECT. (Especially if you redirect TCP traffic only, where the 
+ip_conntrack provides a getsockopt() to get the original destination 
+address.)
 
-For more info in IPVS/LVS see http://www.linuxvirtualserver.org/
-
-nf_conntrack is found from the netfilter page somewhere.
-
-Regards
-Henrik
+-- 
+ Regards,
+  Krisztian Kovacs
 
