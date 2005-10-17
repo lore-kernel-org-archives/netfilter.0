@@ -1,13 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: lots of source ip & same dst port to one line??
-Date: Sun, 16 Oct 2005 22:54:48 -0500
-Message-ID: <200510162254.48811.rob0@gmx.co.uk>
-References: <BAY12-F7B5C06FEC165BFDD024EF857E0@phx.gbl>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: removing duplicate rules
+Date: Mon, 17 Oct 2005 06:38:09 +0200
+Message-ID: <20051017044217.BF0C069BB7@smtp.sterenborg.info>
+References: <4352CA48.3070502@india.tejasnetworks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY12-F7B5C06FEC165BFDD024EF857E0@phx.gbl>
-Content-Disposition: inline
+In-Reply-To: <4352CA48.3070502@india.tejasnetworks.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,34 +20,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 2005-October-16 20:06, Monty Ree wrote:
-> which same dst ip and port but source ip is not like below.
->
-> iptables -A INPUT -p tcp -s 1.1.1.1 -d 10.10.10.10 --dport  25 -j
-> ACCEPT
-snip similar commands
-> This rule in not good for performance as I know.
+> Continuing this post:
+> 
+> Adding a rule multiple times shows multiple entries in
+> iptables -L output. My question is : does it have any
+> performance impact on packet processing ?
 
-I wouldn't worry about it much. I've never known netfilter performance 
-problems, myself. At home I used to use a 80386 as router, now I use a 
-little embedded Linksys. Not much power in the thing, but it passes 
-packets like a champ.
+Yes.
 
-At commercial sites I use better, but still not impressive, machines.
+> Should not be because as soon as a rule is matched, it should come
+> out, Right? 
 
-> So, is there any method which I can put together one line or rule??
+Well, what about the other rules that follow the duplicates ? Netfilter
+has to check all duplicates before it reaches a rule that is different.
+You may not notice the performance hit if you have a small ruleset, but
+you will if you have a large one.
 
-Consider user-defined chains, to wit:
 
-iptables -N TenTenTenTen # or hostname, whatever makes sense to you
-iptables -A INPUT -d 10.10.10.10 -j TenTenTenTen
-iptables -A TenTenTenTen -s 1.1.1.1 -p tcp --dport 25 -j ACCEPT
-...
+Gr,
+Rob
 
-At the end of TenTenTenTen you can have something different than the 
-policy, or if you want to hit the policy, do nothing. Anything which 
-didn't match goes back to the next rule in the calling chain.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
 
