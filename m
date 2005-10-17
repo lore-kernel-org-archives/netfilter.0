@@ -1,12 +1,12 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: How would I go about doing this?
-Date: Mon, 17 Oct 2005 15:33:20 -0400
-Message-ID: <1129577600.2583.62.camel@localhost>
-References: <20051017133705.00001114@mwc-acomputer>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: removing duplicate rules
+Date: Mon, 17 Oct 2005 18:50:28 -0400 (EDT)
+Message-ID: <Pine.LNX.4.60.0510171848420.32025@darkstar.sysinfo.com>
+References: <20051017044217.BF0C069BB7@smtp.sterenborg.info>
+	<43535C6A.2090506@india.tejasnetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051017133705.00001114@mwc-acomputer>
+In-Reply-To: <43535C6A.2090506@india.tejasnetworks.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +17,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "Zane C. B." <zanecb@midwest-connections.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Aseem Rastogi <aseem@india.tejasnetworks.com>
+Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
 
-On Mon, 2005-10-17 at 13:37 -0500, Zane C. B. wrote:
-> I have two routers. The main router than everything goes through and a
-> second router that I want to route some traffic through depending on the
-> originating IP#.
-> 
-> The second router has filtering and the like running on it.
-> 
-> For traffic coming from a specific IP# and hitting the main router, I
-> want it then to be routed out through the second router.
-> 
-> Currently I got it working for port 80, using iptables, since squid is
-> setup transparently on the filtering router. The command I am using is
-> this... iptables -t nat -A PREROUTING -s <machine to filter for> -p tcp
-> --destination-port 80 -j DNAT --to-destination <filtering router>. This
-> works, but only for like web or the like which has a transparent squid
-> setup to take care of it.
-> 
-> That works for right now, but what I want to accomplish is to have the
-> main router kick packets, from specified IP#, out to the secondary
-> router.
-> 
-If I understand you correctly, iproute2 is your friend.  You can
-probably find the documentation on it in a file in your distribution
-named ip-cref.ps.  You can also find a training slide show in the
-training section of the ISCS open source network security management web
-page (http://iscs.sourceforge.net).  Hope this helps - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
 
+My reply to the orig poster, my second, was sent off list, by error on my 
+end.  I'm willing to accept a clue if I was incorrect in stating:
+
+first time the rule is seen, it is applied.  now there can be cases whence
+one wants the rule re-evaluated again, and thus might have multiple
+instances, that would most often be in user define chains needing a
+reapplication, though I can't think of any such instances off the top of 
+my
+head, unless the rule is only applied in user defined chains.
+
+Thanks,
+
+Ron DuFresne
+
+
+<replying to:>
+On Mon, 17 Oct 2005, Aseem Rastogi wrote:
+
+> Hi All,
+>
+> Continuing this post:
+>
+> Adding a rule multiple times shows multiple entries in iptables -L 
+output. My
+> question is : does it have any performance impact on packet processing ?
+>
+> Should not be because as soon as a rule is matched, it should come out,
+> Right?
+>
+> Regards,
+> Aseem.
+
+
+
+
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFDVCq3st+vzJSwZikRAq1zAKCL7P/gM55KDotCL5Kk2GFQJMtULwCgifb3
+a6azKVZWCibUjXtKCStAEXc=
+=s/q7
+-----END PGP SIGNATURE-----
 
