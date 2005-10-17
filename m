@@ -1,21 +1,11 @@
-From: Aseem Rastogi <aseem@india.tejasnetworks.com>
-Subject: NAT rules for Multiple IPAddresses on same physical interface
-Date: Mon, 17 Oct 2005 16:14:34 +0530
-Message-ID: <43538092.3050603@india.tejasnetworks.com>
-References: <20051017044217.BF0C069BB7@smtp.sterenborg.info>
-	<43535C6A.2090506@india.tejasnetworks.com>
+From: "Baake, Matthias" <m.baake@porta.de>
+Subject: RE: NAT rules for Multiple IPAddresses on same physical interface
+Date: Mon, 17 Oct 2005 13:20:10 +0200
+Message-ID: <201E6F5AC48C274996A5AD8304FAEF860BFDF4@p001ex03.porta.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Received: from localhost (unknown [127.0.0.1])
-	by anche.india.tejasnetworks.com (*****) with ESMTP id 8B2BB739BF
-	for <netfilter@lists.netfilter.org>;
-	Mon, 17 Oct 2005 10:33:25 +0000 (UTC)
-Received: from india.tejasnetworks.com (aseem.india.tejasnetworks.com
-	[192.168.0.38])
-	by anche.india.tejasnetworks.com (*****) with ESMTP id 66C3B739B2
-	for <netfilter@lists.netfilter.org>;
-	Mon, 17 Oct 2005 16:03:24 +0530 (IST)
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,30 +16,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Aseem Rastogi <aseem@india.tejasnetworks.com>
+Cc: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
 
-Hi All,
+hi,
 
-I have a situation where my machine has one ethernet interface but i 
-have assigned it multiple ipaddresses on same interface. Now I want to 
-add some NAT rules so that a packet destined for my machine and port 
-3023 is redirected to some other IP and port.
+if you map the addresses onto one interface you have to write dnat rules =
+for every single address imho.
+if someone wants to connect to 1.2.3.4 e.g. a mailer, and this machine =
+is behind the firewall, maybe the
+DMZ, you have to dnat it to the destination machine in your DMZ. maybe =
+you have another machine in your=20
+DMZ that serves http to the outworld on ip 1.2.3.5 and the http server =
+does not run on the same machine like
+the mailer you have to write a rule to dnat http traffic from 1.2.3.5 to =
+dmz http server. at least i do that
+in my configurations.
 
-Do I need to write rules for each of the IPAddresses that my machine 
-has? Or is there a way in NAT PREROUTING to identify if this packet is 
-for localhost (Of course something other than --destination)? I do not 
-want to write rules for each IPAddress, rather I am looking for a way to 
-identify if this packet is for me.
+greets
 
-Thanks in advance,
+/matthias
 
-Regards,
-Aseem.
-
--- 
-The end is always good. If it's not good, it's not the end.
-
-
-
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of=20
+> Aseem Rastogi
+> Sent: Monday, October 17, 2005 12:45 PM
+> To: netfilter@lists.netfilter.org
+> Subject: NAT rules for Multiple IPAddresses on same physical interface
+>=20
+>=20
+> Hi All,
+>=20
+> I have a situation where my machine has one ethernet interface but i=20
+> have assigned it multiple ipaddresses on same interface. Now=20
+> I want to=20
+> add some NAT rules so that a packet destined for my machine and port=20
+> 3023 is redirected to some other IP and port.
+>=20
+> Do I need to write rules for each of the IPAddresses that my machine=20
+> has? Or is there a way in NAT PREROUTING to identify if this=20
+> packet is=20
+> for localhost (Of course something other than --destination)?=20
+> I do not=20
+> want to write rules for each IPAddress, rather I am looking=20
+> for a way to=20
+> identify if this packet is for me.
+>=20
+> Thanks in advance,
+>=20
+> Regards,
+> Aseem.
+>=20
+> --=20
+> The end is always good. If it's not good, it's not the end.
+>=20
+>=20
+>=20
+>=20
+>=20
 
