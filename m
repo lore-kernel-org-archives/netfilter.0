@@ -1,10 +1,11 @@
-From: Michael Bonfils <iptables@cabinetrichard.fr>
-Subject: Another Question about PPTP
-Date: Mon, 17 Oct 2005 14:53:14 +0200
-Message-ID: <43539EBA.3020207@cabinetrichard.fr>
+From: "Derick Anderson" <danderson@vikus.com>
+Subject: RE: logging and droping bad tcp packets
+Date: Mon, 17 Oct 2005 09:26:19 -0400
+Message-ID: <FAC4E024BF776842876169173CE2F013287A@mailbox.vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,98 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: edvin.seferovic@kolp.at, netfilter@lists.netfilter.org
 
-Hello,
+=20
+> Hi,
+>=20
+> =20
+>=20
+> I would like to log and drop bad TCP packets on all my=20
+> interfaces... but in my eyes it means that I would have to=20
+> write every rule three times. Is there a way to simplify this=20
+> or should I really write those rules for every interface.. or=20
+> can I just enter eth+ in the input chain for all my ethernet=20
+> interfaces?=20
+>=20
+>=20
+> Thank you in advance
+>=20
+> =20
+>=20
+> Regards,
+>=20
+> =20
+>=20
+> Edvin Seferovic
+>=20
 
-I've a private network and a firewall box under linux.
+Just don't specify an interface and the rule will apply to all of them.
+Put the 'bad tcp packets' ruleset at the top of your INPUT/FORWARD chain
+(whichever is appropriate) before you start doing your interface
+specific rules. For purposes of logging (and are you planning to read
+the logs?) you won't be able to make an interface-specific label but
+otherwise everything should work fine.
 
-I don't manage from a computer in my network to connect to several 
-extern PPTP server.
-
-In a perfect world, there can be severals connection PPTP at the same 
-time but it's not very important.
-
-. A private network in 192.3.4.0/24
-. a Firewall Linux Debian Testing with a proper Kernel 2.4.27, 
-patch-o-matic and Iptables (kernel & iptables rebuild after applied 
-'PPTP connection tracking and NAT helper' patch)
-
-The script :
-#!/bin/bash
-#script /etc/firewall.sh
-
-
-# ETHERNET
-ETH_NET=eth1
-IP_NET=84.96.23.163
-# INTRANET
-ETH_PRIALL=192.3.4.0/24
-ETH_PRI=eth0
-IP_PRI=192.3.4.2
-
-# forwarding
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-# je ne veux pas de spoofing
-if [ -e /proc/sys/net/ipv4/conf/all/rp_filter ]
-then
-    for filtre in /proc/sys/net/ipv4/conf/*/rp_filter
-    do
-           echo 1 > $filtre
-    done
-fi
-
-# PING
-echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_all
-echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-
-# flush all
-iptables -F
-iptables -X
-
-iptables -A FORWARD -p 47 -m state --state NEW -i $ETH_PRI -j ACCEPT
-iptables -A FORWARD -p tcp --dport 1723 -m state --state $ETH_PRI -i 
-eth1 -j ACCEPT
-
-
-The kernel is build with :
-
-#
-# Networking options
-#
-CONFIG_PACKET=y
-CONFIG_NETFILTER=y
-CONFIG_UNIX=y
-CONFIG_INET=y
-#
-#   IP: Netfilter Configuration
-#
-CONFIG_IP_NF_CONNTRACK=y
-CONFIG_IP_NF_FTP=y
-CONFIG_IP_NF_CT_PROTO_GRE=y
-CONFIG_IP_NF_PPTP=y
-CONFIG_IP_NF_IPTABLES=y
-CONFIG_IP_NF_MATCH_LIMIT=y
-CONFIG_IP_NF_MATCH_MARK=y
-CONFIG_IP_NF_MATCH_MULTIPORT=y
-CONFIG_IP_NF_MATCH_STATE=y
-CONFIG_IP_NF_FILTER=y
-CONFIG_IP_NF_TARGET_REJECT=y
-CONFIG_IP_NF_NAT=y
-CONFIG_IP_NF_NAT_NEEDED=y
-CONFIG_IP_NF_TARGET_MASQUERADE=y
-CONFIG_IP_NF_TARGET_REDIRECT=y
-CONFIG_IP_NF_NAT_PPTP=y
-CONFIG_IP_NF_NAT_PROTO_GRE=y
-CONFIG_IP_NF_NAT_FTP=y
-CONFIG_IP_NF_MANGLE=y
-CONFIG_IP_NF_TARGET_MARK=y
-CONFIG_IP_NF_TARGET_LOG=y
-
-
-Thanks for any help,
-Michael
-
+Derick Anderson
 
