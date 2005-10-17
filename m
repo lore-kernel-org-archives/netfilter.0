@@ -1,13 +1,11 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+From: "Derick Anderson" <danderson@vikus.com>
 Subject: RE: logging and droping bad tcp packets
-Date: Mon, 17 Oct 2005 15:44:48 +0200
-Message-ID: <34587.6189451248$1129556883@news.gmane.org>
-References: <FAC4E024BF776842876169173CE2F013287A@mailbox.vikus.com>
-Reply-To: edvin.seferovic@kolp.at
+Date: Mon, 17 Oct 2005 09:54:55 -0400
+Message-ID: <FAC4E024BF776842876169173CE2F013287C@mailbox.vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <FAC4E024BF776842876169173CE2F013287A@mailbox.vikus.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,57 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: edvin.seferovic@kolp.at, netfilter@lists.netfilter.org
 
-Hi and thank you for the answer Derick....
+=20
 
-I set it as 
-
-Iptables -t mangle -A PREROUTING ..... -j DROP ... I suppose Ill keep the
-packages rather far away from the "real" iptables chains that are used for
-filtering... critics?
-
-Regards,
-
-Edvin Seferovic 
-
------Original Message-----
-From: Derick Anderson [mailto:danderson@vikus.com] 
-Sent: Montag, 17. Oktober 2005 15:26
-To: edvin.seferovic@kolp.at; netfilter@lists.netfilter.org
-Subject: RE: logging and droping bad tcp packets
-
- 
-> Hi,
-> 
->  
-> 
-> I would like to log and drop bad TCP packets on all my 
-> interfaces... but in my eyes it means that I would have to 
-> write every rule three times. Is there a way to simplify this 
-> or should I really write those rules for every interface.. or 
-> can I just enter eth+ in the input chain for all my ethernet 
-> interfaces? 
-> 
-> 
-> Thank you in advance
-> 
->  
-> 
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+> Seferovic Edvin
+> Sent: Monday, October 17, 2005 9:45 AM
+> To: netfilter@lists.netfilter.org
+> Subject: RE: logging and droping bad tcp packets
+>=20
+> Hi and thank you for the answer Derick....
+>=20
+> I set it as=20
+>=20
+> Iptables -t mangle -A PREROUTING ..... -j DROP ... I suppose=20
+> Ill keep the packages rather far away from the "real"=20
+> iptables chains that are used for filtering... critics?
+>=20
 > Regards,
-> 
->  
-> 
-> Edvin Seferovic
-> 
+>=20
+> Edvin Seferovic=20
 
-Just don't specify an interface and the rule will apply to all of them.
-Put the 'bad tcp packets' ruleset at the top of your INPUT/FORWARD chain
-(whichever is appropriate) before you start doing your interface
-specific rules. For purposes of logging (and are you planning to read
-the logs?) you won't be able to make an interface-specific label but
-otherwise everything should work fine.
+Yes... =3D) Filtering should always be done in the filter table, not
+mangle or nat. There have been many discussions regarding this in the
+list if you would like more information on why. The bottom line is that
+iptables is designed to filter in filter, and it works properly when
+done that way.
 
-Derick Anderson
-
+Derick Anderson=20
 
