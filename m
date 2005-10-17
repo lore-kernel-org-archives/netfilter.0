@@ -1,11 +1,10 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: logging and droping bad tcp packets
-Date: Mon, 17 Oct 2005 09:54:55 -0400
-Message-ID: <FAC4E024BF776842876169173CE2F013287C@mailbox.vikus.com>
+From: "Andrew Cant" <acant@logisense.com>
+Subject: TPROXY vs REDIRECT
+Date: Mon, 17 Oct 2005 10:08:33 -0400
+Message-ID: <9651.82474251396$1129558256@news.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: edvin.seferovic@kolp.at, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-=20
+I have done some quick searches, and reviewed the TPROXY documentation but I
+have not found an answer to the question of whether I should be using the
+TPROXY target for a simple transparent proxy. (i.e., not listening on a
+foreign address and not reporting a foreign address as a source)
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> Seferovic Edvin
-> Sent: Monday, October 17, 2005 9:45 AM
-> To: netfilter@lists.netfilter.org
-> Subject: RE: logging and droping bad tcp packets
->=20
-> Hi and thank you for the answer Derick....
->=20
-> I set it as=20
->=20
-> Iptables -t mangle -A PREROUTING ..... -j DROP ... I suppose=20
-> Ill keep the packages rather far away from the "real"=20
-> iptables chains that are used for filtering... critics?
->=20
-> Regards,
->=20
-> Edvin Seferovic=20
+Currently, the system that I am working on is using the REDIRECT targets to
+transparently catch port 80 traffic and redirect it locally for either
+caching or authentication. Is there any benefit to using the TPROXY target
+in this case? I have not been able to find anything that explains what the
+differences between the two targets would be in this simple case.
 
-Yes... =3D) Filtering should always be done in the filter table, not
-mangle or nat. There have been many discussions regarding this in the
-list if you would like more information on why. The bottom line is that
-iptables is designed to filter in filter, and it works properly when
-done that way.
+Thanks
 
-Derick Anderson=20
+Andrew
+
+-----------------------------------
+Andrew Cant
+Developer
+LogiSense Corporation
+"IP Billing and Traffic Management"
+  
+e: acant@logisense.com
+p: 1-519-249-0508 x4108
+w: www.logisense.com
+weblog: http://blog.logisense.com
+forum: https://ssl.logisense.com/support/forum 
+
 
