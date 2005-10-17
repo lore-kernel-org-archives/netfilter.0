@@ -1,12 +1,10 @@
-From: "Ruben Cardenal" <ruben@ruben.cn>
-Subject: RE: Another Question about PPTP
-Date: Mon, 17 Oct 2005 18:57:48 +0200
-Message-ID: <17688.3473563523$1129568452@news.gmane.org>
-References: <43539EBA.3020207@cabinetrichard.fr>
+From: "Zane C. B." <zanecb@midwest-connections.com>
+Subject: How would I go about doing this?
+Date: Mon, 17 Oct 2005 13:37:05 -0500
+Message-ID: <20051017133705.00001114@mwc-acomputer>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43539EBA.3020207@cabinetrichard.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,16 +18,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-You should as in the proper mailing list:
+I have two routers. The main router than everything goes through and a
+second router that I want to route some traffic through depending on the
+originating IP#.
 
-http://pptpclient.sourceforge.net/contact.phtml
+The second router has filtering and the like running on it.
 
-"Subscribe to the pptpclient-devel mailing list and post your problem. On
-this mailing list we discuss problems and changes"
+For traffic coming from a specific IP# and hitting the main router, I
+want it then to be routed out through the second router.
 
-Regards
+Currently I got it working for port 80, using iptables, since squid is
+setup transparently on the filtering router. The command I am using is
+this... iptables -t nat -A PREROUTING -s <machine to filter for> -p tcp
+--destination-port 80 -j DNAT --to-destination <filtering router>. This
+works, but only for like web or the like which has a transparent squid
+setup to take care of it.
 
--Ruben
-
-
+That works for right now, but what I want to accomplish is to have the
+main router kick packets, from specified IP#, out to the secondary
+router.
 
