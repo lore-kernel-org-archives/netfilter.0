@@ -1,7 +1,7 @@
-From: StarQuake <starquake@tiscali.nl>
-Subject: Traffic Shaping with HTB for VPN's
-Date: Mon, 17 Oct 2005 12:39:11 +0200
-Message-ID: <divuts$jud$1@sea.gmane.org>
+From: Michael Bonfils <iptables@cabinetrichard.fr>
+Subject: Another Question about PPTP
+Date: Mon, 17 Oct 2005 14:53:14 +0200
+Message-ID: <43539EBA.3020207@cabinetrichard.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,58 +16,97 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: "Netfilter (E-Mail)" <netfilter@lists.netfilter.org>
 
-Hi,
+Hello,
 
-I have the following network config:
+I've a private network and a firewall box under linux.
 
+I don't manage from a computer in my network to connect to several 
+extern PPTP server.
 
+In a perfect world, there can be severals connection PPTP at the same 
+time but it's not very important.
 
-                     LAN A
+. A private network in 192.3.4.0/24
+. a Firewall Linux Debian Testing with a proper Kernel 2.4.27, 
+patch-o-matic and Iptables (kernel & iptables rebuild after applied 
+'PPTP connection tracking and NAT helper' patch)
 
-                    Firewall
-                       |
-                       |
-                   VPN router
-                       |
-                       |  (1500kb/s)
-                       |
-               /--------------\
-               |              |
-               |   Internet   |
-               |              |
-               \--------------/
-  LAN B      /                  \       LAN C
-           / (512kb/s)            \  (512kb/s)
-         /                          \
-     VPN router                   VPN router
-      /                                \
-    /                                    \
-Firewall                              Firewall
+The script :
+#!/bin/bash
+#script /etc/firewall.sh
 
 
+# ETHERNET
+ETH_NET=eth1
+IP_NET=84.96.23.163
+# INTRANET
+ETH_PRIALL=192.3.4.0/24
+ETH_PRI=eth0
+IP_PRI=192.3.4.2
 
-1. LAN B and LAN C are browsing the internet using a proxy with 
-content-filtering in LAN A
-2. LAN B and LAN C connect to a Win2k server using RDP in LAN A
+# forwarding
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-The traffic shaping in LAN A to the internet works perfectly. 
-Downloading something and using RDP or telnet to internet works perfectly.
+# je ne veux pas de spoofing
+if [ -e /proc/sys/net/ipv4/conf/all/rp_filter ]
+then
+    for filtre in /proc/sys/net/ipv4/conf/*/rp_filter
+    do
+           echo 1 > $filtre
+    done
+fi
 
-My question is, Can I start shaping traffic with HTB for LAN B and LAN C 
-using the firewall on LAN A. Since everything going to internet passes 
-the firewall on LAN A.
+# PING
+echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
 
-Right now it doesn't work right because I set the ceiling value to 1500 
-which only applies to LAN A's internet connection.
+# flush all
+iptables -F
+iptables -X
 
-I hope someone understands me and can help me :P
+iptables -A FORWARD -p 47 -m state --state NEW -i $ETH_PRI -j ACCEPT
+iptables -A FORWARD -p tcp --dport 1723 -m state --state $ETH_PRI -i 
+eth1 -j ACCEPT
 
-StarQuake
 
--- 
-for some how-to's and rpms visit my site    : http://solid.bounceme.net
-for commercially supported solutions visit  : http://www.robas.com
+The kernel is build with :
+
+#
+# Networking options
+#
+CONFIG_PACKET=y
+CONFIG_NETFILTER=y
+CONFIG_UNIX=y
+CONFIG_INET=y
+#
+#   IP: Netfilter Configuration
+#
+CONFIG_IP_NF_CONNTRACK=y
+CONFIG_IP_NF_FTP=y
+CONFIG_IP_NF_CT_PROTO_GRE=y
+CONFIG_IP_NF_PPTP=y
+CONFIG_IP_NF_IPTABLES=y
+CONFIG_IP_NF_MATCH_LIMIT=y
+CONFIG_IP_NF_MATCH_MARK=y
+CONFIG_IP_NF_MATCH_MULTIPORT=y
+CONFIG_IP_NF_MATCH_STATE=y
+CONFIG_IP_NF_FILTER=y
+CONFIG_IP_NF_TARGET_REJECT=y
+CONFIG_IP_NF_NAT=y
+CONFIG_IP_NF_NAT_NEEDED=y
+CONFIG_IP_NF_TARGET_MASQUERADE=y
+CONFIG_IP_NF_TARGET_REDIRECT=y
+CONFIG_IP_NF_NAT_PPTP=y
+CONFIG_IP_NF_NAT_PROTO_GRE=y
+CONFIG_IP_NF_NAT_FTP=y
+CONFIG_IP_NF_MANGLE=y
+CONFIG_IP_NF_TARGET_MARK=y
+CONFIG_IP_NF_TARGET_LOG=y
+
+
+Thanks for any help,
+Michael
 
 
