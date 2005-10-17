@@ -1,11 +1,13 @@
-From: "Derick Anderson" <danderson@vikus.com>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
 Subject: RE: logging and droping bad tcp packets
-Date: Mon, 17 Oct 2005 09:26:19 -0400
-Message-ID: <FAC4E024BF776842876169173CE2F013287A@mailbox.vikus.com>
+Date: Mon, 17 Oct 2005 15:44:48 +0200
+Message-ID: <34587.6189451248$1129556883@news.gmane.org>
+References: <FAC4E024BF776842876169173CE2F013287A@mailbox.vikus.com>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <FAC4E024BF776842876169173CE2F013287A@mailbox.vikus.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +19,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: edvin.seferovic@kolp.at, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-=20
+Hi and thank you for the answer Derick....
+
+I set it as 
+
+Iptables -t mangle -A PREROUTING ..... -j DROP ... I suppose Ill keep the
+packages rather far away from the "real" iptables chains that are used for
+filtering... critics?
+
+Regards,
+
+Edvin Seferovic 
+
+-----Original Message-----
+From: Derick Anderson [mailto:danderson@vikus.com] 
+Sent: Montag, 17. Oktober 2005 15:26
+To: edvin.seferovic@kolp.at; netfilter@lists.netfilter.org
+Subject: RE: logging and droping bad tcp packets
+
+ 
 > Hi,
->=20
-> =20
->=20
-> I would like to log and drop bad TCP packets on all my=20
-> interfaces... but in my eyes it means that I would have to=20
-> write every rule three times. Is there a way to simplify this=20
-> or should I really write those rules for every interface.. or=20
-> can I just enter eth+ in the input chain for all my ethernet=20
-> interfaces?=20
->=20
->=20
+> 
+>  
+> 
+> I would like to log and drop bad TCP packets on all my 
+> interfaces... but in my eyes it means that I would have to 
+> write every rule three times. Is there a way to simplify this 
+> or should I really write those rules for every interface.. or 
+> can I just enter eth+ in the input chain for all my ethernet 
+> interfaces? 
+> 
+> 
 > Thank you in advance
->=20
-> =20
->=20
+> 
+>  
+> 
 > Regards,
->=20
-> =20
->=20
+> 
+>  
+> 
 > Edvin Seferovic
->=20
+> 
 
 Just don't specify an interface and the rule will apply to all of them.
 Put the 'bad tcp packets' ruleset at the top of your INPUT/FORWARD chain
@@ -51,4 +71,5 @@ the logs?) you won't be able to make an interface-specific label but
 otherwise everything should work fine.
 
 Derick Anderson
+
 
