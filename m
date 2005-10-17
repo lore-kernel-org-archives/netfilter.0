@@ -1,7 +1,7 @@
-From: Jan Simbera <xcidar@seznam.cz>
-Subject: Bachelor Project
-Date: Mon, 17 Oct 2005 10:01:05 +0200
-Message-ID: <43535A41.3030106@seznam.cz>
+From: compuomari <compuomari@gmail.com>
+Subject: NATTING_help
+Date: Mon, 17 Oct 2005 12:17:48 +0300
+Message-ID: <43536C3C.9050006@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,21 +16,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-To anybody who can help me:
-Has anybody implemented the linux kernel module which deals with 
-connection tracking of the protocol IPV6 or has anybody being working on 
-it presently? I need this information because it is one of the topics of 
-my bachelor project. I would also like to kno if anybody has been 
-working on implementation of the module for IPVS (using IPV6). Does 
-anybody know about any contacts or addresses, where i could get this 
-information?
+Dears,
+I have a scenario that is somehow making me have a hardtime , i have a
+wiless access point that get the internat access from my linux box, i
+want any user that uses my internet to get a lnading page for my self (
+some kind of advertisment ) and then go to the internet , i don't need
+authentication , but i dont want this landing page occuring many more
+than once for the user ... anyhow , how can i do it with iptables? i
+want to DNAT all users to an internal apache server , then SNAT them to
+the inernet , how is that possible? double natting? proxying ? i need
+your help ..
 
-Thank you for your help.
+regards,
 
-Jan Simbera
+oozie
 
-xsimbera@mail.muni.cz
-ICQ 136154198
+
+
 
