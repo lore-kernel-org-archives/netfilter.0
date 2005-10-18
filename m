@@ -1,11 +1,12 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: compiling nat_sip and ip_conntrack_h323 and pptp_conntrack_nat
-Date: Tue, 18 Oct 2005 12:07:59 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510181159370.7403@filer.marasystems.com>
-References: <023f01c5d2ec$6517f1b0$0100a8c0@newlife>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: compiling ip_set_iptree.o
+Date: Tue, 18 Oct 2005 15:20:31 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0510181516400.5575@blackhole.kfki.hu>
+References: <00e501c5d395$0cb95eb0$0100a8c0@newlife>
 Mime-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="110391808-32441583-1129641631=:5575"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <023f01c5d2ec$6517f1b0$0100a8c0@newlife>
+In-Reply-To: <00e501c5d395$0cb95eb0$0100a8c0@newlife>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,47 +17,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: Ming-Ching Tiew <mingching.tiew@redtone.com>
-Cc: netfilter@lists.netfilter.org
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-On Mon, 17 Oct 2005, Ming-Ching Tiew wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-> CC [M]  net/ipv4/netfilter/ip_conntrack_sip.o
->  CC [M]  net/ipv4/netfilter/ip_nat_sip.o
-> net/ipv4/netfilter/ip_nat_sip.c: In function `ip_nat_sip':
-> net/ipv4/netfilter/ip_nat_sip.c:97: warning: ISO C90 forbids mixed declarations and code
+--110391808-32441583-1129641631=:5575
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-There is a C99 declaration there...
+On Tue, 18 Oct 2005, Ming-Ching Tiew wrote:
 
-What compiler are you using?
-
-> net/ipv4/netfilter/ip_conntrack_h323_h225.c: In function `h225_parse_connect_uuie':
-> net/ipv4/netfilter/ip_conntrack_h323_h225.c:111: error: too few arguments to function `ip_conntrack_expect_alloc'
-> net/ipv4/netfilter/ip_conntrack_h323_h225.c:135: warning: implicit declaration of function `ip_conntrack_expect_free'
-
-Looks like the h323 helper needs to be updated to work with the current 
-kernels.
-
-The first should read ip_conntrack_expect_alloc(ct) instead of 
-ip_conntrack_expect_alloc().  (ct within the parantesis).
-
-The second line calling ip_conntrack_expect_free probably should just be 
-deleted. Does not seem to be needed anymore.
-
-> And I can't apply pptp_conntrack_nat :-
+> Compiling ip_set_iptree.o as module get this error :-
 >
-> Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
-> cannot apply (1 rejects out of 7 hunks)
+>  CC [M]  net/ipv4/netfilter/ip_set_iptree.o
+> net/ipv4/netfilter/ip_set_iptree.c:123: error: parse error before "flags"
+> net/ipv4/netfilter/ip_set_iptree.c:124: warning: function declaration isn't a prototype
+> net/ipv4/netfilter/ip_set_iptree.c: In function `__addip':
 
-Same as for h323. Patch needs to be updated to work with current kernels.
+That's due to a backward compatibility issue - I tested the code on
+2.6.12.x and - as you wrote - you try to use ipset on 2.6.11.x. Please use
+the attached patch which takes care of it.
 
-For pptp can try to select "force" and then apply the failed pieces 
-manually usinga text editor (see the created .rej file for details on what 
-to change). After that you probably need similar manual massaging to get 
-it to compile as for the h323 patch.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+--110391808-32441583-1129641631=:5575
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="ipset-iptree.patch"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.58.0510181520310.5575@blackhole.kfki.hu>
+Content-Description: ipset-iptree.patch
+Content-Disposition: attachment; filename="ipset-iptree.patch"
 
-Regards
-Henrik
+ZGlmZiAtdXJOIC0tZXhjbHVkZS1mcm9tPS91c3Ivc3JjL2RpZmYuZXhjbHVk
+ZSBsaW51eC0yLjYuMTIuMy1pcHNldC1pcHBvcnQvbmV0L2lwdjQvbmV0Zmls
+dGVyL2lwX3NldF9pcHRyZWUuYyBsaW51eC0yLjYuMTIuMy1pcHNldC1pcHBv
+cnQyL25ldC9pcHY0L25ldGZpbHRlci9pcF9zZXRfaXB0cmVlLmMNCi0tLSBs
+aW51eC0yLjYuMTIuMy1pcHNldC1pcHBvcnQvbmV0L2lwdjQvbmV0ZmlsdGVy
+L2lwX3NldF9pcHRyZWUuYwkyMDA1LTEwLTEyIDE3OjA5OjA2LjAwMDAwMDAw
+MCArMDIwMA0KKysrIGxpbnV4LTIuNi4xMi4zLWlwc2V0LWlwcG9ydDIvbmV0
+L2lwdjQvbmV0ZmlsdGVyL2lwX3NldF9pcHRyZWUuYwkyMDA1LTEwLTE4IDEz
+OjAxOjI1LjAwMDAwMDAwMCArMDIwMA0KQEAgLTE5LDYgKzE5LDExIEBADQog
+I2luY2x1ZGUgPGFzbS9iaXRvcHMuaD4NCiAjaW5jbHVkZSA8bGludXgvc3Bp
+bmxvY2suaD4NCiANCisvKiBCYWNrd2FyZCBjb21wYXRpYmlsaXR5ICovDQor
+I2lmbmRlZiBfX25vY2FzdA0KKyNkZWZpbmUgX19ub2Nhc3QNCisjZW5kaWYN
+CisNCiAjaW5jbHVkZSA8bGludXgvbmV0ZmlsdGVyX2lwdjQvaXBfc2V0X2lw
+dHJlZS5oPg0KIA0KIC8qIEdhcmJhZ2UgY29sbGVjdGlvbiBpbnRlcnZhbCBp
+biBzZWNvbmRzOiAqLw0K
+
+--110391808-32441583-1129641631=:5575--
 
