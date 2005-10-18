@@ -1,7 +1,9 @@
-From: Olivier GRALL <olivier.grall@neotip.com>
-Subject: [IPTABLES] Symmetric NAT ?
-Date: Tue, 18 Oct 2005 09:07:55 +0200
-Message-ID: <43549F4B.2060705@neotip.com>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: Re: compiling ip_set_iptree.o
+Date: Tue, 18 Oct 2005 15:11:36 +0800
+Message-ID: <019e01c5d3b3$2f194880$0100a8c0@newlife>
+References: <00e501c5d395$0cb95eb0$0100a8c0@newlife>
+	<Pine.LNX.4.58.0510180853001.5083@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,40 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
 
-I was making some tests with STUN when I realize that my NAT box was a 
-simple Linux Box with an IPTABLES rule with a MASQ target. What seemed 
-strange to me was that the STUN result was "Port restricted cone ".
+From: "Jozsef Kadlecsik" <kadlec@blackhole.kfki.hu>
+> 
+> Could you be a little be more specific? What is the kernel version,
+> patch-o-matic-ng version (if downloaded from ipset.netfilter.org), ipset
+> version, gcc version?
+> 
 
-I made a new with NATcheck.exe... same result.
-http://midcom-p2p.sourceforge.net/
+I tried with patch-o-matic-ng-20051016 and patch-o-matic-ng-20051013 as
+well. Both the same. Kernel 2.6.11.12 and  ipset 2.2.5-2005103 
+( but I have no problems compiling the user space program ), gcc 3.4.3.
 
-I was sure IPTABLES NAT was Symmetric and not Port restricted cone. What 
-about it ?
-In the "Procceding of NetFilter Developer WorkShop 2004",  Harald Welte 
-reported "
+Turning off ip_set_iptree will finally allowed me to get a successful compilation.
 
-netfilter however implements (SNAT and MASQ) as ssymmetric.
-"
+I have not been having luck with newer kernels because it will hit other errors
+first before reaching compilation of ipset.
+
+Cheers.
 
 
-For me, with MASQ it is Port restricted cone and with SNAT+DNAT it is 
-Symmetric. Is it true ?
 
-Thanx,
--- 
 
-	
-Olivier GRALL
-R&D Engineer 	*NeoTIP** S.A.*
-4, rue Louis de Broglie
-22300 Lannion
-France
-olivier.grall@neotip.com <mailto:olivier.grall@neotip.com> 	+33 (0)2 96 
-48 66 94
+
+
+
+
 
 
