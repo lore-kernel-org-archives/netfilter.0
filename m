@@ -1,14 +1,11 @@
-From: Antonio <anton.ananich@gmail.com>
-Subject: Re: pptp-conntrack-nat & kernel 2.6.11
-Date: Tue, 18 Oct 2005 22:23:02 +0300
-Message-ID: <5a335a3d0510181223q49b9b993wbb295e651789d7be@mail.gmail.com>
-References: <57F9959B46E0FA4D8BA88AEDFBE582900B586A@pxtbenexd01.pxt.primeexalia.com>
-	<5a335a3d0510160115m266070a6ud7dac58e5763e44e@mail.gmail.com>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: resetting/clearing of conntrack table?
+Date: Tue, 18 Oct 2005 20:48:11 +0200
+Message-ID: <37974.9620952227$1129663834@news.gmane.org>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5a335a3d0510160115m266070a6ud7dac58e5763e44e@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,16 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Gary W. Smith" <gary@primeexalia.com>, Harald Welte <laforge@netfilter.org>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-RGVhciBhbGwhCgpJIG1ha2UgbXkgcm91dGVyIHdvcmsgYXQgbGFzdCEKQW5kIG5vdyBJIHdoYW50
-IHRvIHNoYXJlIG15IGV4cGlyaWVuY2UuCkkgd2hhbnQgdG8gbm90aWNlIHRoYXQga2VybmVsIDIu
-Ni4xNC1yYzMgZG9lcyBub3Qgcm91dGUgd2VsbCBuZWl0aGVyCndpdGggbmF0IGFuZCBjb25uZWN0
-aW9uIHRyYWNraW5nIG5vciB3aXRob3V0IGl0IDooCkkgc3BlbnQgYSBsb3Qgb2YgdGltZSB0cnlp
-bmcgdG8gbWFrZSBpdCB3b3JraW5nIGJlZm9yZSBJIGRlc2lkZWQgdG8Kcm9sbGJhY2sgdG8gdW5w
-YXRjaGVkIDIuNi4xMSBrZXJuZWwuIEFuZCBJIHR1cm5lZCBOQVQgb2ZmLiBUaGlzIGlzIHRoZQp3
-YXkgZm9yIHJvdXRpbmcgZ29kIGludGVuZGVkIHRvIGJlLiBJdCBzZWVucyB0aGF0IHBwdHAgY29u
-bmVjdGlvbgp0cmFja2luZyBpcyBzdGlsbCB2ZXJ5IHVuc3RhYmxlLgoKLS0KQmVzdCBSZWdhcmRz
-LApBbnRvbmlvCg==
+Hi,
+
+ 
+
+maybe Ive missed a discussion about how to reset conntrack, but Ive googled
+a little bit, and haven't found anything that would allow me to reset
+conntrack. 
+
+ 
+
+Is this possible anyhow? If yes - what is the best solution or way to do it?
+
+
+ 
+
+Thank you in advance !
+
+ 
+
+Regards,
+
+ 
+
+Edvin Seferovic
+
+ 
+
+ 
+
+ 
 
