@@ -1,7 +1,7 @@
 From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: string match - kernel 2.4
-Date: Tue, 18 Oct 2005 10:26:59 +0800
-Message-ID: <006d01c5d38b$6c25ab10$0100a8c0@newlife>
+Subject: compiling ip_set_iptree.o
+Date: Tue, 18 Oct 2005 11:35:56 +0800
+Message-ID: <00e501c5d395$0cb95eb0$0100a8c0@newlife>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,13 +18,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-   
-The string patch is totally removed from the patch-o-matic-ng,
-even for 2.4 kernel. I did not check the newer 2.4 kernel source, 
-is it because it has been accepted into the kernel ? But the netfilter 
-home pages still list the string patch .....
+ 
+Compiling ip_set_iptree.o as module get this error :-
 
-Cheers.
+ CC [M]  net/ipv4/netfilter/ip_set_iptree.o
+net/ipv4/netfilter/ip_set_iptree.c:123: error: parse error before "flags"
+net/ipv4/netfilter/ip_set_iptree.c:124: warning: function declaration isn't a prototype
+net/ipv4/netfilter/ip_set_iptree.c: In function `__addip':
+net/ipv4/netfilter/ip_set_iptree.c:125: error: `set' undeclared (first use in this function)
+net/ipv4/netfilter/ip_set_iptree.c:125: error: (Each undeclared identifier is reported only once
+net/ipv4/netfilter/ip_set_iptree.c:125: error: for each function it appears in.)
+net/ipv4/netfilter/ip_set_iptree.c:132: error: `hash_ip' undeclared (first use in this function)
+net/ipv4/netfilter/ip_set_iptree.c:132: error: `ip' undeclared (first use in this function)
+net/ipv4/netfilter/ip_set_iptree.c:135: error: `flags' undeclared (first use in this function)
+net/ipv4/netfilter/ip_set_iptree.c:141: error: `timeout' undeclared (first use in this function)
+make[4]: *** [net/ipv4/netfilter/ip_set_iptree.o] Error 1
+
+Regards.
 
 
 
