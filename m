@@ -1,7 +1,7 @@
-From: "ODEN,MARK THOMAS" <cerberus@ufl.edu>
-Subject: [ netfilter ] Re: relocating packets [ not-spam ]
-Date: Tue, 18 Oct 2005 15:34:16 -0400 (EDT)
-Message-ID: <504138318.1129664056504.JavaMail.osg@osgjas04.cns.ufl.edu>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: resetting/clearing of conntrack table?
+Date: Tue, 18 Oct 2005 22:01:32 +0200
+Message-ID: <1129665693.5889.7.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,55 +15,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: edvin.seferovic@kolp.at
+Cc: netfilter@lists.netfilter.org
 
-I followed Chapter 11 from lartc and did not get any results:
+> Maybe Ive missed a discussion about how to reset conntrack, but Ive googled
+> a little bit, and haven't found anything that would allow me to reset
+> conntrack. 
 
-# iptables -A PREROUTING -i eth0 -t mangle -p tcp --dport 25
--j MARK --set-mark 1
+It will possible with 2.6.14. A major rewrite netfilter
+kernel<->userspace interaction has been done and it will now be possible
+to modif or flush conntrack from userpace.
 
-# echo 201 mail.out >> /etc/iproute2/rt_tables
-# ip rule add fwmark 1 table mail.out
+The conntrack tool is the userspace program that do the stuff, but a
+library is available if you need it. Both are available from netfilter
+svn :
+	https://svn.netfilter.org/netfilter/trunk/
+(its libnfnetlink, libnfnetlink_conntrack, conntrack)
 
-# /sbin/ip route add default via 192.168.0.1 dev eth1 table 
-mail.out
+An official release is available as well :
 
-I did not receive any errors when setting the mark option, so I 
-assume the warning at the bottom of that page does not apply,
-but I don't know how to check if I have the proper options enabled 
-or not.
+http://netfilter.org/downloads.html#conntrack
 
+BR,
 
-** Also, how do I save changes to iptables and ip ?
-
-~Mark
-
-On Thu Oct 13 09:35:47 EDT 2005, /dev/rob0 <rob0@gmx.co.uk> 
-wrote:
-
-> On Thursday 2005-October-13 04:50, Mark Oden wrote:
->> Assuming I had two NICs in my machine that happen to be on the 
->> same
->> network, is there a way to force packets of certain ports to use 
->> only
->> one NIC or IP?
 > 
-> I believe this scenario is covered by the LARTC HOWTO.  In brief: 
-> use "-j MARK --set-mark 0xff" in mangle. Use dual routing tables, 
-> and a rule to put "fwmark 0xff" traffic in the alternate table. 
-> The mark can be anything from 0x0 to 0xffff.
+>  
 > 
-> http://lartc.org/howto/
-> --     mail to this address is discarded unless "/dev/rob0"
->     or "not-spam" is in Subject: header
+> Is this possible anyhow? If yes - what is the best solution or way to do it?
 > 
 > 
+>  
 > 
-
-
-
---
-ODEN,MARK THOMAS
+> Thank you in advance !
+> 
+>  
+> 
+> Regards,
+> 
+>  
+> 
+> Edvin Seferovic
+> 
+>  
+> 
+> 
+> 
+> 
+> 
 
 
