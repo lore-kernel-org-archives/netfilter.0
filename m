@@ -1,11 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: compiling ip_set_iptree.o
-Date: Tue, 18 Oct 2005 08:54:40 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0510180853001.5083@blackhole.kfki.hu>
-References: <00e501c5d395$0cb95eb0$0100a8c0@newlife>
+From: Olivier GRALL <olivier.grall@neotip.com>
+Subject: [IPTABLES] Symmetric NAT ?
+Date: Tue, 18 Oct 2005 09:07:55 +0200
+Message-ID: <43549F4B.2060705@neotip.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <00e501c5d395$0cb95eb0$0100a8c0@newlife>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,29 +15,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ming-Ching Tiew <mingching.tiew@redtone.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Tue, 18 Oct 2005, Ming-Ching Tiew wrote:
+Hi,
 
-> Compiling ip_set_iptree.o as module get this error :-
->
->  CC [M]  net/ipv4/netfilter/ip_set_iptree.o
-> net/ipv4/netfilter/ip_set_iptree.c:123: error: parse error before "flags"
-> net/ipv4/netfilter/ip_set_iptree.c:124: warning: function declaration isn't a prototype
-> net/ipv4/netfilter/ip_set_iptree.c: In function `__addip':
+I was making some tests with STUN when I realize that my NAT box was a 
+simple Linux Box with an IPTABLES rule with a MASQ target. What seemed 
+strange to me was that the STUN result was "Port restricted cone ".
 
-Could you be a little be more specific? What is the kernel version,
-patch-o-matic-ng version (if downloaded from ipset.netfilter.org), ipset
-version, gcc version?
+I made a new with NATcheck.exe... same result.
+http://midcom-p2p.sourceforge.net/
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I was sure IPTABLES NAT was Symmetric and not Port restricted cone. What 
+about it ?
+In the "Procceding of NetFilter Developer WorkShop 2004",  Harald Welte 
+reported "
+
+netfilter however implements (SNAT and MASQ) as ssymmetric.
+"
+
+
+For me, with MASQ it is Port restricted cone and with SNAT+DNAT it is 
+Symmetric. Is it true ?
+
+Thanx,
+-- 
+
+	
+Olivier GRALL
+R&D Engineer 	*NeoTIP** S.A.*
+4, rue Louis de Broglie
+22300 Lannion
+France
+olivier.grall@neotip.com <mailto:olivier.grall@neotip.com> 	+33 (0)2 96 
+48 66 94
+
 
