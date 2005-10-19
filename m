@@ -1,11 +1,11 @@
-From: afshin lamei <afshinlamei@gmail.com>
-Subject: p-o-m psd question
-Date: Wed, 19 Oct 2005 18:57:25 +0330
-Message-ID: <3115d56e0510190827o6af1eb19s628d2bd47aa12d97@mail.gmail.com>
+From: "Marius" <netfilter@marius83.de>
+Subject: Problem getting connection to terminal Server behind router and
+	firewall
+Date: Wed, 19 Oct 2005 17:42:50 +0200
+Message-ID: <20051019154258.31D6BCAFF@dd2824.kasserver.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,13 +19,68 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-dear all,
- I want to know what does these parameters of psd patch mean, and how
-should they be used?
- weight-threshold
- delay-threshold
- lo-ports-weight
- hi-ports-weight
- regards
- afshin lamei
+Hello,
+
+I have got following problem and would be happy about every hint you can
+give to me:
+
+Infrastructure:
+===============
+
+A router (AVM Fritz!Box Phone 7050 connected via Broadband-Access to the
+WWW, using an dynamic IP adress. It's neccesarry to use this Router because
+it includes a VoIP-telephone switchboard with QOS-Features. 
+External Adress: dynamic (WAN)
+Internal Adress: 192.168.178.1
+
+The dynamic Address is published through a dyndns-Account
+
+After the router there is my firewall, (SuSE 9.3, iptables). The firewall is
+based on a "harry's script" which was a little bit modified.
+eth0: 192.168.178.100 (connected to the router)
+eth1: 192.168.1.100   (connected to my LAN)
+
+With IP 192.168.1.101 there is a Microsoft Windows SBS Server 2003 including
+Terminal-Server Service reached via MS-Remote-Desktop (Port 3389)
+
+ToDo:
+=====
+
+The Terminal-Server should be reached from the www.
+
+This works fine as long as I don't have the Linux-Server in my network.
+If I change the MS SBS-IP to 192.168.178.101 for example and configure the
+router to forward all TCP 3389 requests to 192.178.101, everything works as
+it should.
+
+Problem:
+========
+
+After the Linux-Firewall is between router an MS SBS, Terminal-Server access
+is not possible (all client services HTTP, HTTPS, POP3, IMAP... work fine)
+
+I tried to ways:
+
+1. Config the router to forward all TCP 3899 requests to the firewall
+(192.168.178.100) On the firewall i put the setting: 
+iptables -t nat PREROUTING -p tcp --dport 3389 -j DNAT --to
+192.168.1.101:3389 and (another try) iptables -t nat PREROUTING -p tcp
+--dport 3389 -j DNAT --to 192.168.1.101
+
+2. Config the outer to forward all TCP requests directly to MS SBS
+(192.168.1.101)
+Firewall:
+iptables -A FORWARD -p tcp --dport 3389 -j ACCEPT
+
+On both way's a tried to include Source/Destination-IP, incoming/outgoing
+devices, but without any positive results. Which way I should follow
+generally?
+
+There get some packages through the firewall using both solutions (I can see
+an incoming connections in the Terminal-Servers log files) but no correct
+connection can be established.
+
+Thanks for your help
+
+
 
