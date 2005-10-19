@@ -1,11 +1,12 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: match n packets every m
-Date: Thu, 20 Oct 2005 18:48:23 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510201837400.27782@filer.marasystems.com>
-References: <4357B648.90700@mbigroup.it>
+From: =?iso-8859-1?Q?co-operation.de_|_Marius_M=FChlberger?=
+	<info@mysolutions.de>
+Subject: Problem getting connection to terminal Server behind router and
+	firewall
+Date: Wed, 19 Oct 2005 17:42:02 +0200
+Message-ID: <20051019154219.E649CCAFF@dd2824.kasserver.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4357B648.90700@mbigroup.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +17,79 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Roberto Ferrari <rferrari@mbigroup.it>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Thu, 20 Oct 2005, Roberto Ferrari wrote:
+Hello,
 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->
-> Hi all,
-> I'm trying to find a way to match _n_ ip packets every _m_
-> I've tryied with the nth extension, but I've not been able to obtain
-> this thing.
-> I've seen that I could insert a rule with "--packet x" for m times, if
-> I've specifyied "--every m", but I'd like to follow some other way, more
-> flexible.
-> Could someone kindly let me know if there is a smart way to do it?
-> Thank you a lot,
+I have got following problem and would be happy about every hint you can
+give to me:
+
+Infrastructure:
+===============
+
+A router (AVM Fritz!Box Phone 7050 connected via Broadband-Access to the
+WWW, 
+using an dynamic IP adress. It's neccesarry to use this Router because it
+includes
+a VoIP-telephone switchboard with QOS-Features. 
+External Adress: dynamic (WAN)
+Internal Adress: 192.168.178.1
+
+The dynamic Address is published through a dyndns-Account
+
+After the router there is my firewall, (SuSE 9.3, iptables). The firewall is
+based on
+a "harry's script" which was a little bit modified.
+eth0: 192.168.178.100 (connected to the router)
+eth1: 192.168.1.100   (connected to my LAN)
+
+With IP 192.168.1.101 there is a Microsoft Windows SBS Server 2003 including
+Terminal-Server
+Service reached via MS-Remote-Desktop (Port 3389)
+
+ToDo:
+=====
+
+The Terminal-Server should be reached from the www.
+
+This works fine as long as I don't have the Linux-Server in my network.
+If I change the MS SBS-IP to 192.168.178.101 for example and configure the
+router to
+forward all TCP 3389 requests to 192.178.101, everything works as it should.
+
+Problem:
+========
+
+After the Linux-Firewall is between router an MS SBS, Terminal-Server access
+is not
+possible (all client services HTTP, HTTPS, POP3, IMAP... work fine)
+
+I tried to ways:
+
+1. Config the router to forward all TCP 3899 requests to the firewall
+(192.168.178.100)
+On the firewall i put the setting: 
+iptables -t nat PREROUTING -p tcp --dport 3389 -j DNAT --to
+192.168.1.101:3389 
+and (another try)
+iptables -t nat PREROUTING -p tcp --dport 3389 -j DNAT --to 192.168.1.101
+
+2. Config the outer to forward all TCP requests directly to MS SBS
+(192.168.1.101)
+Firewall:
+iptables -A FORWARD -p tcp --dport 3389 -j ACCEPT
+
+On both way's a tried to include Source/Destination-IP, incoming/outgoing
+devices, 
+but without any positive results. Which way I should follow generally?
+
+There get some packages through the firewall using both solutions (I can see
+an incoming
+connections in the Terminal-Servers log files) but no correct connection can
+be established.
+
+Thanks for your help
 
 
-The simplest and most sane would probably be to extend nth with what you 
-want.
-
-If not you will need the nth match repeated many times (n times) like you 
-describe, with different --packet but same "--every m --counter X", 
-finally followed by a "-m nth --every m --counter X" to match all the 
-other..
-
-Regards
-Henrik
 
