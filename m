@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Firewall.routing configuration problems
-Date: Thu, 20 Oct 2005 14:17:13 -0500
-Message-ID: <200510201417.13180.rob0@gmx.co.uk>
-References: <003c01c5d595$00853360$e7544381@SANNPJLTABLET>
+From: iptables-user@lists.theorb.net
+Subject: how to let recursive nameserver through
+Date: Thu, 20 Oct 2005 12:50:38 -0700
+Message-ID: <4357F50E.20907@lists.theorb.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <003c01c5d595$00853360$e7544381@SANNPJLTABLET>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thursday 2005-October-20 11:40, Paul Lewis wrote:
-> iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE -o
-> eth3
+Hi all,
 
-Are you thinking that the "-o eth3" will modify the behaviour of the 
-MASQUERADE target? It will not. It merely modifies which packets match 
-the rule. The above matches packets with source address 192.168.0.0/24 
-which are routed out device eth3.
+I have a 3-leg router/firewall and would like to run a recursive caching
+nameserver (djb's dnscache) on it, but can't figure out how to get it
+past the firewall to query upstream nameservers.
 
-See also SNAT, which is more appropriate with static IP addresses. 
-MASQUERADE is for home users and dynamic IP addresses.
+eth0 : lan
+eth1 : wan which connects to default gateway to internet
+eth2 : dmz (10.0.0.1 for 10.0.0.0/24)
 
-IIUC your issue, which I might not because I didn't spend much time on 
-it, it's routing. You need to have routes for your conference guests. 
-Furthermore as has been suggested here to me (and I concur) you should 
-start unlearning route(8) and ifconfig(8) and start learning ip(8) from 
-iproute2, which is far more powerful and capable.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+dnscache is running on ip 10.0.0.1 on eth2.  If it cannot resolve the
+query from a local (inside) authority it must go outside and begin by
+querying the root-servers via eth1.  This is where it fails.
+
+If I run dnscache on a machine attached to eth2 requests are FORWARDED
+from eth2 to eth1, then via the gateway and all is well; however, when
+run ON eth2 outbound traffic is blocked.
+
+Default policies are INPUT:DROP, FORWARD:DROP, OUTPUT:ACCEPT.
+
+I can't even figure out where to try to put a rule for this, or how to
+write it.  Since it's an address ON the router it wouldn't be on the
+FORWARD chain, right?
+
+I'm totally baffled.  Anybody have any ideas where to begin debugging this?
+
+Thanks for any help.
+
 
