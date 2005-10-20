@@ -1,10 +1,13 @@
-From: Roberto Ferrari <rferrari@mbigroup.it>
-Subject: match n packets every m
-Date: Thu, 20 Oct 2005 17:22:48 +0200
-Message-ID: <4357B648.90700@mbigroup.it>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Problem compiling iptables 1.3.3 w/kernel 2.6.13-15
+Date: Thu, 20 Oct 2005 10:29:31 -0500
+Message-ID: <200510201029.31214.rob0@gmx.co.uk>
+References: <NEBBLLCNFOFHMALJMDDEIENMBBAB.pablo@blueoakdb.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <NEBBLLCNFOFHMALJMDDEIENMBBAB.pablo@blueoakdb.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +21,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Thursday 2005-October-20 09:55, Pablo Sanchez wrote:
+> I haven't had any follow ups to the above post.  I'm wondering if
+> it's because it's such a silly question or whether it's out of the
+> scope of the list.
 
-Hi all,
-I'm trying to find a way to match _n_ ip packets every _m_
-I've tryied with the nth extension, but I've not been able to obtain
-this thing.
-I've seen that I could insert a rule with "--packet x" for m times, if
-I've specifyied "--every m", but I'd like to follow some other way, more
-flexible.
-Could someone kindly let me know if there is a smart way to do it?
-Thank you a lot,
+I can only speak for myself. I have always just used the iptables 
+provided by the distribution. I have never seen any of the p-o-m or 
+other such goodies as being worth the hassle. I definitely would not 
+want L7. If I needed such control I would use proxy servers and just 
+block all outbound routing.
 
-Roberto Ferrari
-- --
+Also, I have seldom had any problem compiling things according to the 
+developer's instructions. But then, I use Slackware. It is quite likely 
+that SuSE has changed things. I think your issue is perhaps one for a 
+SuSE forum or SuSE support.
 
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFDV7ZI0xokq8z7B1ARAoHDAJ0VS+FkfFyegUTJNu5LrgH/yoeufgCgnTFA
-R9RgU0xBHPr3acuBoYtWdG8=
-=Lhp8
------END PGP SIGNATURE-----
+The answer might be found in the depths of your Makefile. Find out what 
+it is doing.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
