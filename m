@@ -1,13 +1,10 @@
-From: "Pablo Sanchez" <pablo@blueoakdb.com>
-Subject: RE: Problem compiling iptables 1.3.3 w/kernel 2.6.13-15
-Date: Thu, 20 Oct 2005 10:55:20 -0400
-Message-ID: <NEBBLLCNFOFHMALJMDDEIENMBBAB.pablo@blueoakdb.com>
-References: <NEBBLLCNFOFHMALJMDDEAEIDBBAB.pablo@blueoakdb.com>
-Reply-To: pablo@blueoakdb.com
+From: Roberto Ferrari <rferrari@mbigroup.it>
+Subject: match n packets every m
+Date: Thu, 20 Oct 2005 17:22:48 +0200
+Message-ID: <4357B648.90700@mbigroup.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <NEBBLLCNFOFHMALJMDDEAEIDBBAB.pablo@blueoakdb.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,36 +18,28 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi all,
+I'm trying to find a way to match _n_ ip packets every _m_
+I've tryied with the nth extension, but I've not been able to obtain
+this thing.
+I've seen that I could insert a rule with "--packet x" for m times, if
+I've specifyied "--every m", but I'd like to follow some other way, more
+flexible.
+Could someone kindly let me know if there is a smart way to do it?
+Thank you a lot,
+
+Roberto Ferrari
+- --
 
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Pablo =
-Sanchez
-> Sent: Tuesday, October 18, 2005 10:39 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Problem compiling iptables 1.3.3 w/kernel 2.6.13-15
->=20
->=20
-> Hi,
->=20
-> I've combed through the archives through June of this year and it=20
-> seems some other people may have had the same problem as me,=20
-> however, no one followed up.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
 
-[ snipped ]
-
-Hi,
-
-I haven't had any follow ups to the above post.  I'm wondering if it's =
-because it's such a silly question or whether it's out of the scope of =
-the list.
-
-I'd be more than happy to post it elsewhere or provide clarity. =20
-
-Please let me know.
-
-Regards,
--pablo
-
+iD8DBQFDV7ZI0xokq8z7B1ARAoHDAJ0VS+FkfFyegUTJNu5LrgH/yoeufgCgnTFA
+R9RgU0xBHPr3acuBoYtWdG8=
+=Lhp8
+-----END PGP SIGNATURE-----
 
