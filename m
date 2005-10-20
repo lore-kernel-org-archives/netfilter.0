@@ -1,13 +1,14 @@
-From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
-Subject: I can not connect a Windows 2000 Server RAS
-Date: Thu, 20 Oct 2005 19:14:31 -0200
-Message-ID: <00fd01c5d5bb$44563c30$3200000a@PIVT>
-Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
-	<sa.campos@datasulsp.com.br>
+From: "Nuno Cruz" <nunocruz@lei.fis.uc.pt>
+Subject: Re: Problem getting connection to terminal Server behind router and
+	firewall
+Date: Thu, 20 Oct 2005 23:10:22 +0100 (WEST)
+Message-ID: <1088.84.90.19.190.1129846222.squirrel@lei.fis.uc.pt>
+References: <20051019154219.E649CCAFF@dd2824.kasserver.com>
+Reply-To: nunocruz@lei.fis.uc.pt
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20051019154219.E649CCAFF@dd2824.kasserver.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +19,92 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: info@mysolutions.de
+Cc: netfilter@lists.netfilter.org
 
-Hi People!
 
-We have the follwing problem:
+Hi
 
-We have a Windows 2000 server with RAS and PPTP in a remote site.
+Port 3389 is used with windows xp remote desktop.
 
-The protocol 47 services and dest port 1723 are directed by DNAT to the
-Windows 2000 server with RAS.
+The terminal services connection can use also ports 3390, 3391, ...
 
-When a vpn client connect using a vpn dialler only the first connection
-works.
+Try to open also these ports.
 
-Well here more information.
+> Hello,
+>
+> I have got following problem and would be happy about every hint you can
+> give to me:
+>
+> Infrastructure:
+> ===============
+>
+> A router (AVM Fritz!Box Phone 7050 connected via Broadband-Access to the
+> WWW,
+> using an dynamic IP adress. It's neccesarry to use this Router because
+> it includes
+> a VoIP-telephone switchboard with QOS-Features.
+> External Adress: dynamic (WAN)
+> Internal Adress: 192.168.178.1
+>
+> The dynamic Address is published through a dyndns-Account
+>
+> After the router there is my firewall, (SuSE 9.3, iptables). The
+> firewall is based on
+> a "harry's script" which was a little bit modified.
+> eth0: 192.168.178.100 (connected to the router)
+> eth1: 192.168.1.100   (connected to my LAN)
+>
+> With IP 192.168.1.101 there is a Microsoft Windows SBS Server 2003
+> including Terminal-Server
+> Service reached via MS-Remote-Desktop (Port 3389)
+>
+> ToDo:
+> =====
+>
+> The Terminal-Server should be reached from the www.
+>
+> This works fine as long as I don't have the Linux-Server in my network.
+> If I change the MS SBS-IP to 192.168.178.101 for example and configure
+> the router to
+> forward all TCP 3389 requests to 192.178.101, everything works as it
+> should.
+>
+> Problem:
+> ========
+>
+> After the Linux-Firewall is between router an MS SBS, Terminal-Server
+> access is not
+> possible (all client services HTTP, HTTPS, POP3, IMAP... work fine)
+>
+> I tried to ways:
+>
+> 1. Config the router to forward all TCP 3899 requests to the firewall
+> (192.168.178.100)
+> On the firewall i put the setting:
+> iptables -t nat PREROUTING -p tcp --dport 3389 -j DNAT --to
+> 192.168.1.101:3389
+> and (another try)
+> iptables -t nat PREROUTING -p tcp --dport 3389 -j DNAT --to
+> 192.168.1.101
+>
+> 2. Config the outer to forward all TCP requests directly to MS SBS
+> (192.168.1.101)
+> Firewall:
+> iptables -A FORWARD -p tcp --dport 3389 -j ACCEPT
+>
+> On both way's a tried to include Source/Destination-IP,
+> incoming/outgoing devices,
+> but without any positive results. Which way I should follow generally?
+>
+> There get some packages through the firewall using both solutions (I can
+> see an incoming
+> connections in the Terminal-Servers log files) but no correct connection
+> can be established.
+>
+> Thanks for your help
 
-If  I stay in a local network using a redhat 9 and iptables doing NAT to all
-protocol, only the first conex=E3o can connect with the Windows 2000 server
-RAS.
 
-If in the same local network I NOT use the Iptables to NAT and so use the
-W2k Server or Windows XP doing NAT using a netcard sharing option,
-everything works.
-
-Anyone how to solve this problem?
-
-Thank you.
 
 
