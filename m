@@ -1,13 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: blocking traffic between two internal interfaces ?
-Date: Wed, 19 Oct 2005 22:40:12 -0500
-Message-ID: <200510192240.12970.rob0@gmx.co.uk>
-References: <20051020030747.A4016F6F2@sorry.no-ip-here.net>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: RE: blocking traffic between two internal interfaces ?
+Date: Thu, 20 Oct 2005 06:11:17 +0200
+Message-ID: <36361.8196141489$1129781539@news.gmane.org>
+References: <200510192240.12970.rob0@gmx.co.uk>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051020030747.A4016F6F2@sorry.no-ip-here.net>
-Content-Disposition: inline
+In-Reply-To: <200510192240.12970.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,7 +19,8 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: '/dev/rob0' <rob0@gmx.co.uk>, netfilter@lists.netfilter.org
+
 
 On Wednesday 2005-October-19 22:07, Seferovic Edvin wrote:
 > I have two internal interfaces ( eth1 // 172.19.0.0 & eth2 //
@@ -31,20 +32,33 @@ On Wednesday 2005-October-19 22:07, Seferovic Edvin wrote:
 
 Thou shalt not filter in the nat table.
 
+	I knew this one ;)
+
 > Iptables -t nat -A PREROUTING -s 172.19.0.0/16 -d 172.20.0.0/16 -j
 > DROP
 
 I would use interfaces, not IP addresses.
 
+	You mean - physdev matching?
+
 > Rules in FORWARD and INPUT chain just wouldn't work. Is this the
 
 What did you try in FORWARD?
 
-> right way to forbid traffic from one network to the another or am I
-> missing some basic stuff here? I would appreciate any comments.
+	Iptables -A FORWARD -d 172.20.0.0/16 -m physdev --physdev-in eth1 -j
+DROP
 
-In FORWARD, block incoming on eth1 going to eth2 and vice versa.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+This rule works now.. I must had an ESTABLISHED connection in my conntrack
+table since this rule didn't work first time I tried it. Now Ive restarted
+my gateway and applied this rule and now I cannot access the 172.20.0.0 net.
+
+
+Any suggestions?
+
+Thank you in advance.
+
+Regards,
+
+Edvin Seferovic
+
 
