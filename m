@@ -1,9 +1,12 @@
-From: iptables-user@lists.theorb.net
-Subject: how to let recursive nameserver through
-Date: Thu, 20 Oct 2005 12:50:38 -0700
-Message-ID: <4357F50E.20907@lists.theorb.net>
+From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
+	<sa.campos@datasulsp.com.br>
+Subject: I can not connect a Windows 2000 Server RAS
+Date: Thu, 20 Oct 2005 19:14:31 -0200
+Message-ID: <00fd01c5d5bb$44563c30$3200000a@PIVT>
+Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
+	<sa.campos@datasulsp.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,35 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi People!
 
-I have a 3-leg router/firewall and would like to run a recursive caching
-nameserver (djb's dnscache) on it, but can't figure out how to get it
-past the firewall to query upstream nameservers.
+We have the follwing problem:
 
-eth0 : lan
-eth1 : wan which connects to default gateway to internet
-eth2 : dmz (10.0.0.1 for 10.0.0.0/24)
+We have a Windows 2000 server with RAS and PPTP in a remote site.
 
-dnscache is running on ip 10.0.0.1 on eth2.  If it cannot resolve the
-query from a local (inside) authority it must go outside and begin by
-querying the root-servers via eth1.  This is where it fails.
+The protocol 47 services and dest port 1723 are directed by DNAT to the
+Windows 2000 server with RAS.
 
-If I run dnscache on a machine attached to eth2 requests are FORWARDED
-from eth2 to eth1, then via the gateway and all is well; however, when
-run ON eth2 outbound traffic is blocked.
+When a vpn client connect using a vpn dialler only the first connection
+works.
 
-Default policies are INPUT:DROP, FORWARD:DROP, OUTPUT:ACCEPT.
+Well here more information.
 
-I can't even figure out where to try to put a rule for this, or how to
-write it.  Since it's an address ON the router it wouldn't be on the
-FORWARD chain, right?
+If  I stay in a local network using a redhat 9 and iptables doing NAT to all
+protocol, only the first conex=E3o can connect with the Windows 2000 server
+RAS.
 
-I'm totally baffled.  Anybody have any ideas where to begin debugging this?
+If in the same local network I NOT use the Iptables to NAT and so use the
+W2k Server or Windows XP doing NAT using a netcard sharing option,
+everything works.
 
-Thanks for any help.
+Anyone how to solve this problem?
+
+Thank you.
 
 
