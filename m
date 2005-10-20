@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: blocking traffic between two internal interfaces ?
-Date: Thu, 20 Oct 2005 08:27:01 -0500
-Message-ID: <200510200827.01704.rob0@gmx.co.uk>
-References: <20051020052237.E5BB0F4DA@sorry.no-ip-here.net>
+From: Bill Tangren <bjt@aa.usno.navy.mil>
+Subject: bad_packets problem?
+Date: Thu, 20 Oct 2005 10:52:08 -0400
+Message-ID: <4357AF18.2060109@aa.usno.navy.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051020052237.E5BB0F4DA@sorry.no-ip-here.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,54 +15,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thursday 2005-October-20 00:22, Seferovic Edvin wrote:
-> > I would use interfaces, not IP addresses.
-> >
-> > 	You mean - physdev matching?
-> >
-> >I mean -i and -o options.
->
-> Packet do come in on the eth1 but I dont think that they will leave
-> eth2 because ( for example only ) - what happens when I try to access
-> services on IP of eth2?
+Hello all,
 
-We were talking about FORWARD. Sounds like you are talking about INPUT. 
-Yes, users on the eth1 segment will be able to access services on the 
-firewall machine using its eth2 (or any other) IP address, unless you 
-block with rules in INPUT or OUTPUT.
+I'm new to this list.
 
-> Is another routing decision made or are they just kept in eth2?
+I have a Linux (2.6.9-22.EL) box, running iptables version 
+1.2.11-3.1.RHEL4. My server is sitting behind a firewall (that I don't 
+control), but I have iptables running anyway, as occasionally other 
+boxes behind the firewall are compromised.
 
-They're not routed. It's a local destination. So no, there is no output 
-interface.
+I think I have a problem with iptables. Part of the script that I use to 
+set up iptables is as follows:
 
-> >That makes sense. See, you can't evaluate why something doesn't work
-> > as expected unless you know the whole picture.
->
-> I try to keep the whole pic in my head, but when you work the whole
-> night long - that is not so easy ;)
+IPT="/sbin/iptables"
+$IPT -N bad_packets
+# bad_packets chain
+#
 
-I was just trying to make you feel guilty for withholding information 
-from your post. :) But indeed, it's not always easy to get the picture 
-in your head, and working nights can't help. :)
+# Drop INVALID packets immediately
+$IPT -A bad_packets -p ALL -m state --state INVALID -j LOG \
+     --log-prefix "Invalid packet: "
+$IPT -A bad_packets -p ALL -m state --state INVALID -j DROP
+# Then check the tcp packets for additional problems
+$IPT -A bad_packets -p tcp -j bad_tcp_packets
+# All good, so return
+$IPT -A bad_packets -p ALL -j RETURN
 
-> > and applied this rule and now I cannot access the 172.20.0.0 net.
-> >
-> > Any suggestions?
-> >
-> >Was this not the goal? What is to suggest?
->
-> Maybe some other more elegant solution ;) Not every solutions is the
-> best one. But sure - goal reached ;) Thank You very much !
 
-Hmmm, 2 rules (4 if you want to REJECT the -p tcp) and total separation 
-of the segments ... sounds good to me. But I'm not you. If there's 
-something missing, let us know. You can always precede your DROP/REJECT 
-rules with exceptions if necessary.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+When implemented, this shows up in /etc/sysconfig/iptables as:
+
+-A bad_packets -m state --state INVALID -j LOG --log-prefix "Invalid
+  packet: "
+-A bad_packets -m state --state INVALID -j DROP
+-A bad_packets -p tcp -j bad_tcp_packets
+-A bad_packets -j RETURN
+
+
+So far, so good.
+
+A program called LogWatch summarizes the logs for me. When I use up2date 
+to update my RedHat software, I get entries in the log that show up in 
+the LogWatch email. The thing is, the "Invalid packet" rule catches a 
+few hundred packets a day, and logs them. A number of those packets come 
+from 209.132.177.100 (xmlrpc.rhn.redhat.com), the rhn up2date server. 
+The LogWatch output can look like this:
+
+ From 209.132.177.100 - 24 packets
+   To 10.1.5.154 - 24 packets
+      Service: 33353 (tcp/33353) (Invalid packet:,eth0,none) - 4 packets
+      Service: 33935 (tcp/33935) (Invalid packet:,eth0,none) - 10 packets
+      Service: 33951 (tcp/33951) (Invalid packet:,eth0,none) - 10 packets
+
+The updates take place eventually, but almost never on the first go.
+I get LogWatch entries like this every time I run up2date. I am assuming 
+that there is some problem with the iptables rules I have set up, but I 
+don't know what they might be.
+
+Does anyone have any thoughts on this? [I posted this question on the 
+redhat-list, but got no replies, so I thought I might try here.]
+
+Bill Tangren
+
 
