@@ -1,11 +1,13 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: blocking traffic between two internal interfaces ?
-Date: Thu, 20 Oct 2005 05:07:17 +0200
-Message-ID: <14162.9181722694$1129777685@news.gmane.org>
-Reply-To: edvin.seferovic@kolp.at
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: blocking traffic between two internal interfaces ?
+Date: Wed, 19 Oct 2005 22:40:12 -0500
+Message-ID: <200510192240.12970.rob0@gmx.co.uk>
+References: <20051020030747.A4016F6F2@sorry.no-ip-here.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20051020030747.A4016F6F2@sorry.no-ip-here.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,42 +21,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Wednesday 2005-October-19 22:07, Seferovic Edvin wrote:
+> I have two internal interfaces ( eth1 // 172.19.0.0 & eth2 //
+> 172.20.0.0 ), and I would like to block traffic between those two
+> networks. Somehow Ive failed because any rules that should forbid
+> traffic between those 2 networks didn't work. I still could access
+> webserver on the eth2 - 172.20.10.1 from a station with IP address
+> 172.19.1.100 ! Then Ive applied rule in PREROUTING chain in nat
 
- 
+Thou shalt not filter in the nat table.
 
-I have two internal interfaces ( eth1 // 172.19.0.0 & eth2 // 172.20.0.0 ),
-and I would like to block traffic between those two networks. Somehow Ive
-failed because any rules that should forbid traffic between those 2 networks
-didn't work. I still could access webserver on the eth2 - 172.20.10.1 from a
-station with IP address 172.19.1.100 ! Then Ive applied rule in PREROUTING
-chain in nat table:
+> Iptables -t nat -A PREROUTING -s 172.19.0.0/16 -d 172.20.0.0/16 -j
+> DROP
 
+I would use interfaces, not IP addresses.
 
+> Rules in FORWARD and INPUT chain just wouldn't work. Is this the
 
-Iptables -t nat -A PREROUTING -s 172.19.0.0/16 -d 172.20.0.0/16 -j DROP
+What did you try in FORWARD?
 
- 
+> right way to forbid traffic from one network to the another or am I
+> missing some basic stuff here? I would appreciate any comments.
 
-Rules in FORWARD and INPUT chain just wouldn't work. Is this the right way
-to forbid traffic from one network to the another or am I missing some basic
-stuff here? I would appreciate any comments.
-
- 
-
-Thank you in advance !
-
- 
-
-Regards,
-
- 
-
-Edvin Seferovic
-
- 
-
- 
-
- 
+In FORWARD, block incoming on eth1 going to eth2 and vice versa.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
