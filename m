@@ -1,13 +1,13 @@
-From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
-Subject: Re: How to block phishing
-Date: Fri, 21 Oct 2005 12:31:04 +0200
-Message-ID: <fad9d4840510210331x34e3f843q8bbe5f3d261b5305@mail.gmail.com>
-References: <00cb01c5d547$a7e193e0$580110ac@HO.lippogeneral.com>
+From: Roberto Ferrari <rferrari@mbigroup.it>
+Subject: Re: match n packets every m
+Date: Fri, 21 Oct 2005 12:39:42 +0200
+Message-ID: <4358C56E.3050804@mbigroup.it>
+References: <4357B648.90700@mbigroup.it>
+	<Pine.LNX.4.61.0510201837400.27782@filer.marasystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <00cb01c5d547$a7e193e0$580110ac@HO.lippogeneral.com>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0510201837400.27782@filer.marasystems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +19,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Winanjaya - PBXSoftwares <winanjaya@pbxsoftwares.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-As Justin said, nope. But have a look at MailScanner,
-www.mailscanner.info, it has this feature and much more...
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-On 10/20/05, Winanjaya - PBXSoftwares <winanjaya@pbxsoftwares.com> wrote:
-> Dear The Expert,
->
-> Is it possible to block / deny phishing with iptables? .. please advise
->
-> Regards
->
-> Luc
->
->
->
+Henrik Nordstrom wrote:
+[...]
+> 
+> The simplest and most sane would probably be to extend nth with what you
+> want.
+> 
 
+Thank you very much for the help, it seems that we reached the same
+conclusion. :-)
+Do you have idea of where I should modify the nth code?
+Do you think it could be safe to modify also the limit of 100  to the
+"--every", making it grow to 1000 or 2000?
+Txs,
 
---
+Roberto Ferrari.
 
-Kenneth Kalmer
-kenneth.kalmer@gmail.com
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
 
-Folding@home stats
-http://vspx27.stanford.edu/cgi-bin/main.py?qtype=3Duserpage&username=3Dkenn=
-eth%2Ekalmer
+iD8DBQFDWMVu0xokq8z7B1ARAoSpAKCKm60mwojc4qe29BnJp+mCEmZcOwCdHOti
+0UFW4yj00haZ0rj6Q7FuTXs=
+=Av+C
+-----END PGP SIGNATURE-----
 
