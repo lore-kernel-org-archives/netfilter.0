@@ -1,11 +1,13 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: how to let recursive nameserver through
-Date: Fri, 21 Oct 2005 05:00:22 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510210458081.8952@filer.marasystems.com>
-References: <4357F50E.20907@lists.theorb.net>
+From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+Subject: Re: How to block phishing
+Date: Fri, 21 Oct 2005 12:31:04 +0200
+Message-ID: <fad9d4840510210331x34e3f843q8bbe5f3d261b5305@mail.gmail.com>
+References: <00cb01c5d547$a7e193e0$580110ac@HO.lippogeneral.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4357F50E.20907@lists.theorb.net>
+In-Reply-To: <00cb01c5d547$a7e193e0$580110ac@HO.lippogeneral.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: iptables-user@lists.theorb.net
+Content-Type: text/plain; charset="us-ascii"
+To: Winanjaya - PBXSoftwares <winanjaya@pbxsoftwares.com>
 Cc: netfilter@lists.netfilter.org
 
-On Thu, 20 Oct 2005 iptables-user@lists.theorb.net wrote:
+As Justin said, nope. But have a look at MailScanner,
+www.mailscanner.info, it has this feature and much more...
 
-> I have a 3-leg router/firewall and would like to run a recursive caching
-> nameserver (djb's dnscache) on it, but can't figure out how to get it
-> past the firewall to query upstream nameservers.
-
-It needs to be allowed to universially query port 53 on UDP and TCP 
-(OUTPUT), and responses also needs to be let back (INPUT -m state --state 
-ESABLISHED is usually sufficient for the latter).
-
-> I can't even figure out where to try to put a rule for this, or how to
-> write it.  Since it's an address ON the router it wouldn't be on the
-> FORWARD chain, right?
+On 10/20/05, Winanjaya - PBXSoftwares <winanjaya@pbxsoftwares.com> wrote:
+> Dear The Expert,
 >
-> I'm totally baffled.  Anybody have any ideas where to begin debugging this?
+> Is it possible to block / deny phishing with iptables? .. please advise
+>
+> Regards
+>
+> Luc
+>
+>
+>
 
-Make sure you always log dropped packets, with a log tag telling you which 
-rule caused the packet to be dropped/rejected.
 
-tcpdump is also your friend.
+--
 
-Regards
-Henrik
+Kenneth Kalmer
+kenneth.kalmer@gmail.com
+
+Folding@home stats
+http://vspx27.stanford.edu/cgi-bin/main.py?qtype=3Duserpage&username=3Dkenn=
+eth%2Ekalmer
 
