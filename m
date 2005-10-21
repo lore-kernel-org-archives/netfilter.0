@@ -1,12 +1,15 @@
-From: =?ISO-8859-1?Q?S=E9bastien_Bernard?= <sbernard@nerim.net>
+From: Sven Schuster <schuster.sven@gmx.de>
 Subject: Re: pppoe with NAT not working
-Date: Fri, 21 Oct 2005 19:13:11 +0200
-Message-ID: <435921A7.6050703@nerim.net>
+Date: Fri, 21 Oct 2005 20:46:08 +0200
+Message-ID: <20051021184608.GA27002@zion.homelinux.com>
 References: <23027.::ffff:195.115.41.103.1129902602.squirrel@webmail.nerim.net>
+	<435921A7.6050703@nerim.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="azLHFNyN32YCQGCU"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <23027.::ffff:195.115.41.103.1129902602.squirrel@webmail.nerim.net>
+Content-Disposition: inline
+In-Reply-To: <435921A7.6050703@nerim.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,75 +20,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?iso-8859-1?Q?S=E9bastien?= Bernard <sbernard@nerim.net>
 Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-S=E9bastien Bernard a =E9crit :
 
->Hi,
->I got a real big headache.
->
->My DSL provider a few ago upgraded my line and for this changed the BAS =
-my
->box used to connect with.
->
->I had to reconfigure the ppp configuration.
->Before, I was using :
->pty "/usr/sbin/pppoe -I eth0 -T 80 -m 1452"
->It ceased working.
->
->The new configuration is using the rp-pppoe.so plugin as :
->plugin /usr/lib/pppd/2.4.3/rp-pppoe.so
->
->Since this modification, I'm not able to do any NAT or MASQUERADE with m=
-y
->gateway.
->My network architecture is :
->
->Private lan (192.168.x.x) =3D> GW (public fixed address) =3D> DSl Modem =
-=3D>
->Internet
->
->When any machine on the private LAN try make a connection to an outside
->address, the connection made is ok.
->
->The three-way handshake is OK with the packets correctly NATED.
->
->When the outside peer tries to send data to the internal peer, the Gatew=
-ay
->sends a reset back to it without breaking the connection inside of cours=
-e.
->
->It looks like the netfilters didn't accept the incoming packets with
->payload as part of the nated connection.
->
->I had a look to the ip_conntrak connection and the faulty connection is
->correctly tracked, with an entry.
->
->I don't really understand what is happenning.
->
->The configuration is nothing special and could resumed as :
->iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <public addre=
-ss>
->
->This was working before and I didn't touch anything to the configuration
->but the public address that changed when I moved to a speedier DSL line.
->
->If anyone could propose an explaination ...
->
->  Seb
-> =20
->
-I figured out the problem.
+--azLHFNyN32YCQGCU
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-NAT is not working with the rp-pppoe.so plugin.
-I moved back to the
 
-pty "/usr/sbin/pppoe -I eth0 -T 80 -m 1452"
+Hi S=E9bastien,
 
-Which worked now (go figure...).
-And NAT is working again.
+On Fri, Oct 21, 2005 at 07:13:11PM +0200, S=E9bastien Bernard told us:
+> I figured out the problem.
+>=20
+> NAT is not working with the rp-pppoe.so plugin.
+> I moved back to the
+>=20
+> pty "/usr/sbin/pppoe -I eth0 -T 80 -m 1452"
+>=20
+> Which worked now (go figure...).
+> And NAT is working again.
+>=20
+> Any reason for this ?
 
-Any reason for this ?
+sorry, I don't know the reason, but the only thing I can say here is
+"works for me" and has been working for the last 2 1/2 years, at first
+on redhat 9, now I currently have fedora core 4 on my home internet
+machine with two other machines on my internal network...
 
+
+Sven
+
+--=20
+Linux zion.homelinux.com 2.6.14-rc4-mm1_11 #11 Tue Oct 18 13:24:39 CEST 200=
+5 i686 athlon i386 GNU/Linux
+ 20:43:32 up 2 days, 20:28,  1 user,  load average: 0.05, 0.03, 0.00
+
+--azLHFNyN32YCQGCU
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFDWTdwo4FAdB2PneQRAu8bAKCCMmB18+ffDhDBFfSBPzPH5AesfgCfenVn
+OgtSEKApR+g+rTXIEKIO+7k=
+=0Peq
+-----END PGP SIGNATURE-----
+
+--azLHFNyN32YCQGCU--
 
