@@ -1,21 +1,10 @@
-From: Realos <realos@loftmail.com>
-Subject: Re: iptables rules
-Date: Fri, 21 Oct 2005 15:46:45 +0200
-Message-ID: <20051021134645.GA11724@isw302>
-References: <1123184190.21749.34.camel@ndspc131.p.n-dsi.com>
-	<Pine.LNX.4.61.0508050832310.20623@yvahk01.tjqt.qr>
-	<1123704837.3708.1.camel@ndspc131.p.n-dsi.com>
-	<1126649450.4790.5.camel@ndspc131.p.n-dsi.com>
-	<1126797736.4790.24.camel@ndspc131.p.n-dsi.com>
-	<432992C0.2000404@mnemon.de>
-	<1126798629.4790.26.camel@ndspc131.p.n-dsi.com>
-	<4329A01B.4020300@mnemon.de>
-Reply-To: Realos <realos@loftmail.com>
+From: =?iso-8859-1?Q?S=E9bastien_Bernard?= <sbernard@nerim.net>
+Subject: pppoe with NAT not working
+Date: Fri, 21 Oct 2005 15:50:02 +0200 (CEST)
+Message-ID: <13248.1047105559$1129902722@news.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4329A01B.4020300@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,46 +15,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-J=F6rg Harmuth wanted us to know:
+Hi,
+I got a real big headache.
 
+My DSL provider a few ago upgraded my line and for this changed the BAS m=
+y
+box used to connect with.
 
->I see. You are referring to -m mport --port*s* (by the way, there is a=20
->typo or are you referring to another module ?), which is different from=20
->-m multiport --port*s* port[...] - which I was referring to. Your rule was
+I had to reconfigure the ppp configuration.
+Before, I was using :
+pty "/usr/sbin/pppoe -I eth0 -T 80 -m 1452"
+It ceased working.
+
+The new configuration is using the rp-pppoe.so plugin as :
+plugin /usr/lib/pppd/2.4.3/rp-pppoe.so
+
+Since this modification, I'm not able to do any NAT or MASQUERADE with my
+gateway.
+My network architecture is :
+
+Private lan (192.168.x.x) =3D> GW (public fixed address) =3D> DSl Modem =3D=
 >
->... -m multiport --ports 22,23,24,25 -j ACCEPT
->
->So I looked for multiport.
+Internet
 
-There seems to be an inconsistence between man pages J=F6rg Harmuth has ins=
-talled
-and of some other people (the original poster and myself at least).
+When any machine on the private LAN try make a connection to an outside
+address, the connection made is ok.
 
-man iptables:
+The three-way handshake is OK with the packets correctly NATED.
 
-mport
-...
- --ports port[,port[,port...]]
-	Match if the both the source and destination ports are
-	equal to each other and to one  of  the  given
-	ports.
+When the outside peer tries to send data to the internal peer, the Gatewa=
+y
+sends a reset back to it without breaking the connection inside of course=
+.
 
-multiport
-...
-	used in conjunction with -p tcp or -p udp.
-	rts port[,port[,port...]]
-	Match if the both the source and destination ports
-	are equal to each other and to one  of  the  given
-	ports.
+It looks like the netfilters didn't accept the incoming packets with
+payload as part of the nated connection.
 
-Mar 09, 2002 IPTABLES(8)
+I had a look to the ip_conntrak connection and the faulty connection is
+correctly tracked, with an entry.
 
-BTW, what is the diffence between mport and multiport modules?
+I don't really understand what is happenning.
+
+The configuration is nothing special and could resumed as :
+iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source <public addres=
+s>
+
+This was working before and I didn't touch anything to the configuration
+but the public address that changed when I moved to a speedier DSL line.
+
+If anyone could propose an explaination ...
+
+  Seb
 
 
---=20
-Realos
+
 
