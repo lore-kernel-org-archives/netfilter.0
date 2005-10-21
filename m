@@ -1,13 +1,11 @@
-From: Roberto Ferrari <rferrari@mbigroup.it>
-Subject: Re: match n packets every m
-Date: Fri, 21 Oct 2005 12:39:42 +0200
-Message-ID: <4358C56E.3050804@mbigroup.it>
-References: <4357B648.90700@mbigroup.it>
-	<Pine.LNX.4.61.0510201837400.27782@filer.marasystems.com>
+From: Zac Hansen <xaxxon@gmail.com>
+Subject: LAN Port forwarding with a dynamic IP address
+Date: Fri, 21 Oct 2005 04:00:22 -0700
+Message-ID: <7f6703390510210400n3ea01619p3e46ee81bd7badc3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0510201837400.27782@filer.marasystems.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,30 +19,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+I have a single, dynamic IP address. I have multiple boxes behind a linux
+router, one of which runs a web server on port 80. I have set up rules (a
+PREROUTING and a FORWARD rule) to let people outside my LAN deal see my web
+server. The problem is that the boxes on my LAN can't see them.
 
-Henrik Nordstrom wrote:
-[...]
-> 
-> The simplest and most sane would probably be to extend nth with what you
-> want.
-> 
+I really don't want to hardcode my external IP address into any rules and I
+don't want to do any DNS work to make the LAN boxes look up the actual
+server's LAN IP address directly.
 
-Thank you very much for the help, it seems that we reached the same
-conclusion. :-)
-Do you have idea of where I should modify the nth code?
-Do you think it could be safe to modify also the limit of 100  to the
-"--every", making it grow to 1000 or 2000?
-Txs,
+Can I get my LAN boxes to see my web site and not do the things I don't wan=
+t
+to do?
 
-Roberto Ferrari.
+Thanks.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFDWMVu0xokq8z7B1ARAoSpAKCKm60mwojc4qe29BnJp+mCEmZcOwCdHOti
-0UFW4yj00haZ0rj6Q7FuTXs=
-=Av+C
------END PGP SIGNATURE-----
-
+--Zac
