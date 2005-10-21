@@ -1,12 +1,11 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Problem getting connection to terminal Server behind router
-	andfirewall
-Date: Thu, 20 Oct 2005 15:05:34 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582900B5885@pxtbenexd01.pxt.primeexalia.com>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: how to let recursive nameserver through
+Date: Fri, 21 Oct 2005 05:00:22 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510210458081.8952@filer.marasystems.com>
+References: <4357F50E.20907@lists.theorb.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <4357F50E.20907@lists.theorb.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: nunocruz@lei.fis.uc.pt, info@mysolutions.de
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: iptables-user@lists.theorb.net
 Cc: netfilter@lists.netfilter.org
 
-I think the rules you have put in place are confusing themselves. =20
+On Thu, 20 Oct 2005 iptables-user@lists.theorb.net wrote:
 
-First off, when NAT'ing an IP you really want to NAT the interface as
-well.=20
+> I have a 3-leg router/firewall and would like to run a recursive caching
+> nameserver (djb's dnscache) on it, but can't figure out how to get it
+> past the firewall to query upstream nameservers.
 
-Try this:
+It needs to be allowed to universially query port 53 on UDP and TCP 
+(OUTPUT), and responses also needs to be let back (INPUT -m state --state 
+ESABLISHED is usually sufficient for the latter).
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp -m tcp --dport 3389 -j DNAT
---to-destination 192.168.1.101:3389=20
+> I can't even figure out where to try to put a rule for this, or how to
+> write it.  Since it's an address ON the router it wouldn't be on the
+> FORWARD chain, right?
+>
+> I'm totally baffled.  Anybody have any ideas where to begin debugging this?
 
-iptables -t filter -A FORWARD -i eth0 -p tcp -m tcp --dport 3389 -j
-ACCEPT
+Make sure you always log dropped packets, with a log tag telling you which 
+rule caused the packet to be dropped/rejected.
 
+tcpdump is also your friend.
 
-> > eth0: 192.168.178.100 (connected to the router)
-> > eth1: 192.168.1.100   (connected to my LAN)
-
-> > 1. Config the router to forward all TCP 3899 requests to the
-firewall
-> > (192.168.178.100)
-> > On the firewall i put the setting:
-> > iptables -t nat PREROUTING -p tcp --dport 3389 -j DNAT --to
-> > 192.168.1.101:3389
-> > and (another try)
-> > iptables -t nat PREROUTING -p tcp --dport 3389 -j DNAT --to
-> > 192.168.1.101
-> >
-> > 2. Config the outer to forward all TCP requests directly to MS SBS
-> > (192.168.1.101)
-> > Firewall:
-> > iptables -A FORWARD -p tcp --dport 3389 -j ACCEPT
-> >
-
+Regards
+Henrik
 
