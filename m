@@ -1,10 +1,12 @@
-From: Tom Gaudasinski <cetus@internode.on.net>
-Subject: Routing from private to bridge
-Date: Sat, 22 Oct 2005 00:14:57 +0000
-Message-ID: <43598481.8040306@internode.on.net>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: iptables rules
+Date: Fri, 21 Oct 2005 18:03:44 +0200
+Message-ID: <20051021160817.0394569F86@smtp.sterenborg.info>
+References: <20051021134645.GA11724@isw302>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20051021134645.GA11724@isw302>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,48 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Greetings,
-    I have a problem in regards to the routing i've set up. I have a 
-public subnet bridged from my ISP(DSL), it's a full bridge. So in order 
-to use this subnet i have created a bridge out of two eth interfaces so 
-that i may also firewall what will be behind the router. In addition to 
-this I have a private subnet (192.168.1.x) that I NAT to the public IP 
-of the router. My setup looks like this:
+> There seems to be an inconsistence between man pages J=F6rg
+> Harmuth has installed and of some other people (the original poster
+> and myself at least).=20
+>=20
+> man iptables:
+>=20
+> mport
+> ...
+>  --ports port[,port[,port...]]
+> 	Match if the both the source and destination ports are
+> 	equal to each other and to one  of  the  given
+> 	ports.
+>=20
+> multiport
+> ...
+> 	used in conjunction with -p tcp or -p udp.
+> 	rts port[,port[,port...]]
+> 	Match if the both the source and destination ports
+> 	are equal to each other and to one  of  the  given 	ports.
+>=20
+> Mar 09, 2002 IPTABLES(8)
+>=20
+> BTW, what is the diffence between mport and multiport modules?
 
-          DSL Modem (in bridge mode)
-                        |
-                  / eth0 \
-                  <br0> 120.40.60.194/29
-                  \ eth1 /
-                 /           \__ Publically addresses machines
-             eth2       
-       192.168.1.1___Privately NATted machines
+Mport is obsoleted according to :
+http://www.netfilter.org/projects/patch-o-matic/pom-obsolete.html
 
-So eth0 and eth1 are part of the bridge (which has 1 ip address), and 
-eth2 has a private address. eth0 plugs directly into the dsl modem, eth1 
-into a switch that contains publically addressed computers and eth2 
-logically so as well. I've set the rules up so that the users behind 
-eth2 get natted and the public users also get internet. This works, what 
-doesn't work however is that the 192.168.1.x users cannot communicate 
-with the publically addressed users through the router. Even when the 
-firewall has been cleared out (of natting rules) they still cannot ping 
-or communicate. It seems there's a different procedure for routing to a 
-bridge. my route -n output is:
+Searching the Netfilter site I read that mport was to be combined with
+multiport :
+http://www.netfilter.org/documentation/conferences/nf-workshop-2004-summ
+ary.html (mport TODO: combine with multiport). So, I think this work has
+been done.
 
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use 
-Iface
-120.40.60.192  0.0.0.0         255.255.255.248 U     0      0        0 br0
-192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth2
-0.0.0.0         120.40.60.193  0.0.0.0         UG    0      0        0 br0
 
-How can i get the private LAN users to route to the publically bridged 
-subnet?
-
-Thankyou.
-
+Gr,
+Rob
 
 
