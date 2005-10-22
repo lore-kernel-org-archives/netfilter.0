@@ -1,11 +1,17 @@
-From: Henrik Nordstrom <hno@marasystems.com>
+From: Aseem Rastogi <aseem@india.tejasnetworks.com>
 Subject: Re: IP  Forwarding
-Date: Sat, 22 Oct 2005 14:53:28 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510221450350.32674@filer.marasystems.com>
+Date: Sat, 22 Oct 2005 18:41:29 +0530
+Message-ID: <435A3A81.7020007@india.tejasnetworks.com>
 References: <43595BFA.1070200@airmail.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43595BFA.1070200@airmail.net>
+Received: from localhost (unknown [127.0.0.1])
+	by anche.india.tejasnetworks.com (*****) with ESMTP
+	id 805057397B; Sat, 22 Oct 2005 13:00:25 +0000 (UTC)
+Received: from india.tejasnetworks.com (aseem.india.tejasnetworks.com
+	[192.168.0.38]) by anche.india.tejasnetworks.com (*****) with ESMTP
+	id 664547391E; Sat, 22 Oct 2005 18:30:24 +0530 (IST)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,36 +22,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Jerry Alexander <jerrya@airmail.net>
 Cc: netfilter@lists.netfilter.org
 
-On Fri, 21 Oct 2005, Jerry Alexander wrote:
+did you enable ip forwarding ?
 
->         I cannot get IPTABLES FORWARDing to work when the machines are 
-> directly
+try "echo 1> /proc/sys/net/ipv4/ip_forward".
+
+regards,
+aseem.
+
+Jerry Alexander wrote:
+
+> Dear NF:
+>
+>          I cannot get IPTABLES FORWARDing to work when the machines 
+> are directly
 > connected via a twisted cable.
-
-What should be forwarded from where?
-
->        Does FORWARDing only work with a router between the machines in 
-> question?
-
-No, but it only works when YOU act as a router for something going from 
-somewhere to somewhere else via you.
-
->        If not, how can I get it to work?   I see the packets coming into the 
-> box(ethereal)
+>         Does FORWARDing only work with a router between the machines 
+> in question?
+>         If not, how can I get it to work?   I see the packets coming 
+> into the box(ethereal)
 > but none going out.
+>         Can someone give me a quick overview of how, at the kernel 
+> code level,
+> how FORWARDing works and how to modify it to get two machines who are 
+> directly
+> connected to work.
+>
+>
+>                                                                                     
+> Jerry
+>
+>
+>
 
-Does it work if you don't load any iptables rules?
 
-If not your basic networking is not properly set up/configured.
+-- 
+The end is always good. If it's not good, it's not the end.
 
-If it works without iptables then your iptables ruleset is not properly 
-constructed, most likely dropping the traffic.
 
-Regards
-Henrik
+
 
