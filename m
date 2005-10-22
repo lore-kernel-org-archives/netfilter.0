@@ -1,11 +1,12 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: RE: make: *** [extensions/libipt_connbytes_sh.o] Error 1
-Date: Mon, 24 Oct 2005 12:46:06 +0200
-Message-ID: <BAY103-F2707B5391B27AB7499E107B2770@phx.gbl>
-References: <BAY103-F2513CC56431956E1E17D44B2770@phx.gbl>
+From: "Daniel Chojecki" <boka@piekna.pl>
+Subject: ip_conntrack_lock not readlocked
+Date: Sat, 22 Oct 2005 22:45:46 +0200 (CEST)
+Message-ID: <3102.217.17.33.242.1130013946.squirrel@webmail.piekna.pl>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;boundary="----=_20051022224546_40756"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY103-F2513CC56431956E1E17D44B2770@phx.gbl>
+References: 
+In-Reply-To: 
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,196 +17,763 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have removed extensions/.connbytes-test and this is make's output:
+------=_20051022224546_40756
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
--DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_string_sh.o -c
-extensions/libipt_string.c
-extensions/libipt_string.c: In function `parse_string':
-extensions/libipt_string.c:50: error: `BM_MAX_NLEN' undeclared (first use in 
-this function)
-extensions/libipt_string.c:50: error: (Each undeclared identifier is 
-reported only once
-extensions/libipt_string.c:50: error: for each function it appears in.)
-extensions/libipt_string.c:50: error: structure has no member named `string'
-extensions/libipt_string.c: In function `parse_hex_string':
-extensions/libipt_string.c:95: error: structure has no member named `string'
-extensions/libipt_string.c:117: error: structure has no member named 
-`string'
-extensions/libipt_string.c:123: error: structure has no member named 
-`string'
-extensions/libipt_string.c:126: error: `BM_MAX_NLEN' undeclared (first use 
-in this function)
-extensions/libipt_string.c:130: error: structure has no member named `len'
-extensions/libipt_string.c: In function `parse':
-extensions/libipt_string.c:154: error: structure has no member named `len'
-extensions/libipt_string.c:154: error: structure has no member named 
-`string'
-extensions/libipt_string.c: In function `print':
-extensions/libipt_string.c:240: error: structure has no member named 
-`string'
-extensions/libipt_string.c:240: error: structure has no member named `len'
-extensions/libipt_string.c:242: error: structure has no member named 
-`string'
-extensions/libipt_string.c:242: error: structure has no member named `len'
-extensions/libipt_string.c:245: error: structure has no member named 
-`string'
-extensions/libipt_string.c:245: error: structure has no member named `len'
-extensions/libipt_string.c: In function `save':
-extensions/libipt_string.c:257: error: structure has no member named 
-`string'
-extensions/libipt_string.c:257: error: structure has no member named `len'
-extensions/libipt_string.c:259: error: structure has no member named 
-`string'
-extensions/libipt_string.c:259: error: structure has no member named `len'
-extensions/libipt_string.c:262: error: structure has no member named 
-`string'
-extensions/libipt_string.c:262: error: structure has no member named `len'
-make: *** [extensions/libipt_string_sh.o] Error 1
+Hi !
 
-so I have deleted also extensions/.string-test and make is happy.
+I have a firewall on Dell 1850 (3353540k of RAM) with:
 
-Marco Berizzi wrote:
+- vanilla kernel: 2.4.31 with openwall patches - version 1 and pptp.
+- iptables 1.3.3
+- patch-o-matic-ng-20050904
 
->Compiling iptables 1.3.3 on Slackware 10.2
->with kernel 2.6.14rc5 I got this error:
->
->Making dependencies: please wait...
->Extensions found: IPv4:CLUSTERIP IPv4:connbytes IPv4:nth IPv4:recent 
->IPv4:string IPv6:REJECT IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header IPv6:nth 
->IPv6:hbh IPv6:dst IPv6:rt
->cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
->-DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_ah_sh.o -c 
->extensions/libipt_ah.c
->ld -shared  -o extensions/libipt_ah.so extensions/libipt_ah_sh.o
->
->[...]
->
->cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
->-DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_ULOG_sh.o -c 
->extensions/libipt_ULOG.c
->ld -shared  -o extensions/libipt_ULOG.so extensions/libipt_ULOG_sh.o
->cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
->-DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_CLUSTERIP_sh.o -c 
->extensions/libipt_CLUSTERIP.c
->ld -shared  -o extensions/libipt_CLUSTERIP.so 
->extensions/libipt_CLUSTERIP_sh.o
->cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
->-DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_connbytes_sh.o -c 
->extensions/libipt_connbytes.c
->In file included from extensions/libipt_connbytes.c:9:
->/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:19: error: 
->syntax error before "aligned_u64"
->/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:19: warning: no 
->semicolon at end of struct or union
->/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:19: warning: no 
->semicolon at end of struct or union
->/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:20: warning: 
->type defaults to `int' in declaration of `to'
->/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:20: warning: 
->data definition has no type or storage class
->/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:21: warning: 
->type defaults to `int' in declaration of `count'
->/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:21: warning: 
->data definition has no type or storage class
->/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:24: error: 
->syntax error before '}' token
->extensions/libipt_connbytes.c: In function `parse_range':
->extensions/libipt_connbytes.c:35: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:38: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:41: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:43: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:43: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:45: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:45: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c: In function `parse':
->extensions/libipt_connbytes.c:66: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:67: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:67: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:68: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:74: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:76: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:78: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:87: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:87: error: `IPT_CONNBYTES_WHAT_PKTS' 
->undeclared (first use in this function)
->extensions/libipt_connbytes.c:87: error: (Each undeclared identifier is 
->reported only once
->extensions/libipt_connbytes.c:87: error: for each function it appears in.)
->extensions/libipt_connbytes.c:89: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:89: error: `IPT_CONNBYTES_WHAT_BYTES' 
->undeclared (first use in this function)
->extensions/libipt_connbytes.c:91: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:91: error: `IPT_CONNBYTES_WHAT_AVGPKT' 
->undeclared (first use in this function)
->extensions/libipt_connbytes.c: In function `print_mode':
->extensions/libipt_connbytes.c:113: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:114: error: `IPT_CONNBYTES_WHAT_PKTS' 
->undeclared (first use in this function)
->extensions/libipt_connbytes.c:117: error: `IPT_CONNBYTES_WHAT_BYTES' 
->undeclared (first use in this function)
->extensions/libipt_connbytes.c:120: error: `IPT_CONNBYTES_WHAT_AVGPKT' 
->undeclared (first use in this function)
->extensions/libipt_connbytes.c: In function `print_direction':
->extensions/libipt_connbytes.c:131: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c: In function `print':
->extensions/libipt_connbytes.c:155: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:155: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:156: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:157: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:159: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:160: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c: In function `save':
->extensions/libipt_connbytes.c:174: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:174: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:175: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:176: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:178: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c:179: error: dereferencing pointer to 
->incomplete type
->extensions/libipt_connbytes.c: At top level:
->extensions/libipt_connbytes.c:192: error: invalid application of `sizeof' 
->to an incomplete type
->extensions/libipt_connbytes.c:193: error: invalid application of `sizeof' 
->to an incomplete type
->make: *** [extensions/libipt_connbytes_sh.o] Error 1
->
->
->
+Errors in /var/log/messages occurs when users (approx. 320) use internet
+and dmz connection.
+
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:06 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:06 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:06 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 08:24:58 router -- MARK --
+Oct 21 08:44:58 router -- MARK --
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 08:59:50 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 08:59:50 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 08:59:50 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 09:04:58 router -- MARK --
+Oct 21 09:24:58 router -- MARK --
+Oct 21 09:44:58 router -- MARK --
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 09:52:27 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 09:52:27 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 09:52:27 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 10:04:58 router -- MARK --
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 10:09:18 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 10:09:18 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 10:09:18 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 10:21:30 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 10:24:58 router -- MARK --
+Oct 21 10:44:58 router -- MARK --
+Oct 21 11:04:58 router -- MARK --
+
+Oct 21 11:24:58 router -- MARK --
+Oct 21 11:44:58 router -- MARK --
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+
+Oct 21 11:44:58 router -- MARK --
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 11:50:22 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 12:04:58 router -- MARK --
+Oct 21 12:24:58 router -- MARK --
+Oct 21 12:44:58 router -- MARK --
+Oct 21 13:04:58 router -- MARK --
+Oct 21 13:24:58 router -- MARK --
+
+Oct 21 14:04:58 router -- MARK --
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:08 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:08 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:08 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+
+
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:59 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:59 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 14:06:59 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 14:24:58 router -- MARK --
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:94
+&ip_conntrack_lock readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_nat_core.c:740 &ip_conntrack_loc=
+k
+not readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:81
+&ip_conntrack_lock not readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:83
+&ip_conntrack_lock not readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:37:24 router kernel: ASSERT ip_conntrack_core.c:1086
+&ip_conntrack_lock not readlocked
+Oct 21 14:37:24 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+Oct 21 14:37:24 router kernel: ASSERT: ip_nat_core.c:843
+&ip_conntrack_lock not readlocked
+
+Clients can see timeouts to our lotus domino server during refresh
+proccess - rest of the traffic is not slowed down,
+i mean they did not said anything about, for example, about http traffic.
+
+Any ideas what can be broken ?
+
+I have also attached .config file
+
+--=20
+greetz
+bok@
+
+
+
+
+------=_20051022224546_40756
+Content-Type: application/octet-stream; name="config"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="config"
+
+IwojIEF1dG9tYXRpY2FsbHkgZ2VuZXJhdGVkIGJ5IG1ha2UgbWVudWNvbmZpZzogZG9uJ3QgZWRp
+dAojCkNPTkZJR19YODY9eQojIENPTkZJR19TQlVTIGlzIG5vdCBzZXQKQ09ORklHX1VJRDE2PXkK
+CiMKIyBDb2RlIG1hdHVyaXR5IGxldmVsIG9wdGlvbnMKIwpDT05GSUdfRVhQRVJJTUVOVEFMPXkK
+CiMKIyBMb2FkYWJsZSBtb2R1bGUgc3VwcG9ydAojCiMgQ09ORklHX01PRFVMRVMgaXMgbm90IHNl
+dAoKIwojIFByb2Nlc3NvciB0eXBlIGFuZCBmZWF0dXJlcwojCiMgQ09ORklHX00zODYgaXMgbm90
+IHNldAojIENPTkZJR19NNDg2IGlzIG5vdCBzZXQKIyBDT05GSUdfTTU4NiBpcyBub3Qgc2V0CiMg
+Q09ORklHX001ODZUU0MgaXMgbm90IHNldAojIENPTkZJR19NNTg2TU1YIGlzIG5vdCBzZXQKIyBD
+T05GSUdfTTY4NiBpcyBub3Qgc2V0CiMgQ09ORklHX01QRU5USVVNSUlJIGlzIG5vdCBzZXQKQ09O
+RklHX01QRU5USVVNND15CiMgQ09ORklHX01LNiBpcyBub3Qgc2V0CiMgQ09ORklHX01LNyBpcyBu
+b3Qgc2V0CiMgQ09ORklHX01LOCBpcyBub3Qgc2V0CiMgQ09ORklHX01FTEFOIGlzIG5vdCBzZXQK
+IyBDT05GSUdfTUNSVVNPRSBpcyBub3Qgc2V0CiMgQ09ORklHX01XSU5DSElQQzYgaXMgbm90IHNl
+dAojIENPTkZJR19NV0lOQ0hJUDIgaXMgbm90IHNldAojIENPTkZJR19NV0lOQ0hJUDNEIGlzIG5v
+dCBzZXQKIyBDT05GSUdfTUNZUklYSUlJIGlzIG5vdCBzZXQKIyBDT05GSUdfTVZJQUMzXzIgaXMg
+bm90IHNldApDT05GSUdfWDg2X1dQX1dPUktTX09LPXkKQ09ORklHX1g4Nl9JTlZMUEc9eQpDT05G
+SUdfWDg2X0NNUFhDSEc9eQpDT05GSUdfWDg2X1hBREQ9eQpDT05GSUdfWDg2X0JTV0FQPXkKQ09O
+RklHX1g4Nl9QT1BBRF9PSz15CiMgQ09ORklHX1JXU0VNX0dFTkVSSUNfU1BJTkxPQ0sgaXMgbm90
+IHNldApDT05GSUdfUldTRU1fWENIR0FERF9BTEdPUklUSE09eQpDT05GSUdfWDg2X0wxX0NBQ0hF
+X1NISUZUPTcKQ09ORklHX1g4Nl9IQVNfVFNDPXkKQ09ORklHX1g4Nl9HT09EX0FQSUM9eQpDT05G
+SUdfWDg2X1BHRT15CkNPTkZJR19YODZfVVNFX1BQUk9fQ0hFQ0tTVU09eQpDT05GSUdfWDg2X0Yw
+MEZfV09SS1NfT0s9eQpDT05GSUdfWDg2X01DRT15CiMgQ09ORklHX1RPU0hJQkEgaXMgbm90IHNl
+dAojIENPTkZJR19JOEsgaXMgbm90IHNldApDT05GSUdfTUlDUk9DT0RFPXkKQ09ORklHX1g4Nl9N
+U1I9eQpDT05GSUdfWDg2X0NQVUlEPXkKIyBDT05GSUdfRUREIGlzIG5vdCBzZXQKIyBDT05GSUdf
+Tk9ISUdITUVNIGlzIG5vdCBzZXQKQ09ORklHX0hJR0hNRU00Rz15CiMgQ09ORklHX0hJR0hNRU02
+NEcgaXMgbm90IHNldApDT05GSUdfSElHSE1FTT15CkNPTkZJR19ISUdISU89eQojIENPTkZJR19N
+QVRIX0VNVUxBVElPTiBpcyBub3Qgc2V0CiMgQ09ORklHX01UUlIgaXMgbm90IHNldApDT05GSUdf
+U01QPXkKQ09ORklHX05SX0NQVVM9MzIKIyBDT05GSUdfWDg2X05VTUEgaXMgbm90IHNldAojIENP
+TkZJR19YODZfVFNDX0RJU0FCTEUgaXMgbm90IHNldApDT05GSUdfWDg2X1RTQz15CkNPTkZJR19I
+QVZFX0RFQ19MT0NLPXkKCiMKIyBHZW5lcmFsIHNldHVwCiMKQ09ORklHX05FVD15CkNPTkZJR19Y
+ODZfSU9fQVBJQz15CkNPTkZJR19YODZfTE9DQUxfQVBJQz15CkNPTkZJR19QQ0k9eQojIENPTkZJ
+R19QQ0lfR09CSU9TIGlzIG5vdCBzZXQKIyBDT05GSUdfUENJX0dPRElSRUNUIGlzIG5vdCBzZXQK
+Q09ORklHX1BDSV9HT0FOWT15CkNPTkZJR19QQ0lfQklPUz15CkNPTkZJR19QQ0lfRElSRUNUPXkK
+Q09ORklHX0lTQT15CkNPTkZJR19QQ0lfTkFNRVM9eQojIENPTkZJR19FSVNBIGlzIG5vdCBzZXQK
+IyBDT05GSUdfTUNBIGlzIG5vdCBzZXQKQ09ORklHX0hPVFBMVUc9eQoKIwojIFBDTUNJQS9DYXJk
+QnVzIHN1cHBvcnQKIwojIENPTkZJR19QQ01DSUEgaXMgbm90IHNldAoKIwojIFBDSSBIb3RwbHVn
+IFN1cHBvcnQKIwpDT05GSUdfSE9UUExVR19QQ0k9eQojIENPTkZJR19IT1RQTFVHX1BDSV9DT01Q
+QVEgaXMgbm90IHNldAojIENPTkZJR19IT1RQTFVHX1BDSV9DT01QQVFfTlZSQU0gaXMgbm90IHNl
+dAojIENPTkZJR19IT1RQTFVHX1BDSV9JQk0gaXMgbm90IHNldApDT05GSUdfSE9UUExVR19QQ0lf
+QUNQST15CkNPTkZJR19IT1RQTFVHX1BDSV9TSFBDPXkKQ09ORklHX0hPVFBMVUdfUENJX1NIUENf
+UE9MTF9FVkVOVF9NT0RFPXkKQ09ORklHX0hPVFBMVUdfUENJX1BDSUU9eQpDT05GSUdfSE9UUExV
+R19QQ0lfUENJRV9QT0xMX0VWRU5UX01PREU9eQpDT05GSUdfU1lTVklQQz15CkNPTkZJR19CU0Rf
+UFJPQ0VTU19BQ0NUPXkKQ09ORklHX1NZU0NUTD15CkNPTkZJR19LQ09SRV9FTEY9eQojIENPTkZJ
+R19LQ09SRV9BT1VUIGlzIG5vdCBzZXQKQ09ORklHX0JJTkZNVF9BT1VUPXkKQ09ORklHX0JJTkZN
+VF9FTEY9eQpDT05GSUdfQklORk1UX0VMRl9BT1VUPXkKQ09ORklHX0JJTkZNVF9NSVNDPXkKIyBD
+T05GSUdfT09NX0tJTExFUiBpcyBub3Qgc2V0CiMgQ09ORklHX1BNIGlzIG5vdCBzZXQKIyBDT05G
+SUdfQVBNIGlzIG5vdCBzZXQKCiMKIyBBQ1BJIFN1cHBvcnQKIwpDT05GSUdfQUNQST15CkNPTkZJ
+R19BQ1BJX0JPT1Q9eQpDT05GSUdfQUNQSV9CVVM9eQpDT05GSUdfQUNQSV9JTlRFUlBSRVRFUj15
+CkNPTkZJR19BQ1BJX0VDPXkKQ09ORklHX0FDUElfUE9XRVI9eQpDT05GSUdfQUNQSV9QQ0k9eQpD
+T05GSUdfQUNQSV9NTUNPTkZJRz15CkNPTkZJR19BQ1BJX1NMRUVQPXkKQ09ORklHX0FDUElfU1lT
+VEVNPXkKQ09ORklHX0FDUElfQUM9eQpDT05GSUdfQUNQSV9CQVRURVJZPXkKQ09ORklHX0FDUElf
+QlVUVE9OPXkKQ09ORklHX0FDUElfRkFOPXkKQ09ORklHX0FDUElfUFJPQ0VTU09SPXkKQ09ORklH
+X0FDUElfVEhFUk1BTD15CiMgQ09ORklHX0FDUElfQVNVUyBpcyBub3Qgc2V0CiMgQ09ORklHX0FD
+UElfVE9TSElCQSBpcyBub3Qgc2V0CkNPTkZJR19BQ1BJX0RFQlVHPXkKCiMKIyBNZW1vcnkgVGVj
+aG5vbG9neSBEZXZpY2VzIChNVEQpCiMKIyBDT05GSUdfTVREIGlzIG5vdCBzZXQKCiMKIyBQYXJh
+bGxlbCBwb3J0IHN1cHBvcnQKIwojIENPTkZJR19QQVJQT1JUIGlzIG5vdCBzZXQKCiMKIyBQbHVn
+IGFuZCBQbGF5IGNvbmZpZ3VyYXRpb24KIwpDT05GSUdfUE5QPXkKQ09ORklHX0lTQVBOUD15Cgoj
+CiMgQmxvY2sgZGV2aWNlcwojCkNPTkZJR19CTEtfREVWX0ZEPXkKIyBDT05GSUdfQkxLX0RFVl9Y
+RCBpcyBub3Qgc2V0CiMgQ09ORklHX1BBUklERSBpcyBub3Qgc2V0CiMgQ09ORklHX0JMS19DUFFf
+REEgaXMgbm90IHNldAojIENPTkZJR19CTEtfQ1BRX0NJU1NfREEgaXMgbm90IHNldAojIENPTkZJ
+R19DSVNTX1NDU0lfVEFQRSBpcyBub3Qgc2V0CiMgQ09ORklHX0NJU1NfTU9OSVRPUl9USFJFQUQg
+aXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX0RBQzk2MCBpcyBub3Qgc2V0CiMgQ09ORklHX0JM
+S19ERVZfVU1FTSBpcyBub3Qgc2V0CiMgQ09ORklHX0JMS19ERVZfU1g4IGlzIG5vdCBzZXQKIyBD
+T05GSUdfQkxLX0RFVl9MT09QIGlzIG5vdCBzZXQKIyBDT05GSUdfQkxLX0RFVl9OQkQgaXMgbm90
+IHNldAojIENPTkZJR19CTEtfREVWX1JBTSBpcyBub3Qgc2V0CiMgQ09ORklHX0JMS19ERVZfSU5J
+VFJEIGlzIG5vdCBzZXQKIyBDT05GSUdfQkxLX1NUQVRTIGlzIG5vdCBzZXQKCiMKIyBNdWx0aS1k
+ZXZpY2Ugc3VwcG9ydCAoUkFJRCBhbmQgTFZNKQojCiMgQ09ORklHX01EIGlzIG5vdCBzZXQKIyBD
+T05GSUdfQkxLX0RFVl9NRCBpcyBub3Qgc2V0CiMgQ09ORklHX01EX0xJTkVBUiBpcyBub3Qgc2V0
+CiMgQ09ORklHX01EX1JBSUQwIGlzIG5vdCBzZXQKIyBDT05GSUdfTURfUkFJRDEgaXMgbm90IHNl
+dAojIENPTkZJR19NRF9SQUlENSBpcyBub3Qgc2V0CiMgQ09ORklHX01EX01VTFRJUEFUSCBpcyBu
+b3Qgc2V0CiMgQ09ORklHX0JMS19ERVZfTFZNIGlzIG5vdCBzZXQKCiMKIyBOZXR3b3JraW5nIG9w
+dGlvbnMKIwpDT05GSUdfUEFDS0VUPXkKQ09ORklHX1BBQ0tFVF9NTUFQPXkKQ09ORklHX05FVExJ
+TktfREVWPXkKQ09ORklHX05FVEZJTFRFUj15CkNPTkZJR19ORVRGSUxURVJfREVCVUc9eQpDT05G
+SUdfRklMVEVSPXkKQ09ORklHX1VOSVg9eQpDT05GSUdfSU5FVD15CkNPTkZJR19JUF9NVUxUSUNB
+U1Q9eQpDT05GSUdfSVBfQURWQU5DRURfUk9VVEVSPXkKQ09ORklHX0lQX01VTFRJUExFX1RBQkxF
+Uz15CkNPTkZJR19JUF9ST1VURV9GV01BUks9eQpDT05GSUdfSVBfUk9VVEVfTkFUPXkKQ09ORklH
+X0lQX1JPVVRFX01VTFRJUEFUSD15CkNPTkZJR19JUF9ST1VURV9UT1M9eQpDT05GSUdfSVBfUk9V
+VEVfVkVSQk9TRT15CiMgQ09ORklHX0lQX1BOUCBpcyBub3Qgc2V0CkNPTkZJR19ORVRfSVBJUD15
+CkNPTkZJR19ORVRfSVBHUkU9eQpDT05GSUdfTkVUX0lQR1JFX0JST0FEQ0FTVD15CkNPTkZJR19J
+UF9NUk9VVEU9eQpDT05GSUdfSVBfUElNU01fVjE9eQpDT05GSUdfSVBfUElNU01fVjI9eQpDT05G
+SUdfQVJQRD15CiMgQ09ORklHX0lORVRfRUNOIGlzIG5vdCBzZXQKQ09ORklHX1NZTl9DT09LSUVT
+PXkKCiMKIyAgIElQOiBOZXRmaWx0ZXIgQ29uZmlndXJhdGlvbgojCkNPTkZJR19JUF9ORl9DT05O
+VFJBQ0s9eQpDT05GSUdfSVBfTkZfRlRQPXkKQ09ORklHX0lQX05GX0NUX1BST1RPX0dSRT15CkNP
+TkZJR19JUF9ORl9QUFRQPXkKQ09ORklHX0lQX05GX1BQVFBfREVCVUc9eQpDT05GSUdfSVBfTkZf
+QU1BTkRBPXkKQ09ORklHX0lQX05GX1RGVFA9eQpDT05GSUdfSVBfTkZfSVJDPXkKQ09ORklHX0lQ
+X05GX1FVRVVFPXkKQ09ORklHX0lQX05GX0lQVEFCTEVTPXkKQ09ORklHX0lQX05GX01BVENIX0xJ
+TUlUPXkKQ09ORklHX0lQX05GX01BVENIX01BQz15CkNPTkZJR19JUF9ORl9NQVRDSF9QS1RUWVBF
+PXkKQ09ORklHX0lQX05GX01BVENIX01BUks9eQpDT05GSUdfSVBfTkZfTUFUQ0hfTVVMVElQT1JU
+PXkKQ09ORklHX0lQX05GX01BVENIX1RPUz15CkNPTkZJR19JUF9ORl9NQVRDSF9SRUNFTlQ9eQpD
+T05GSUdfSVBfTkZfTUFUQ0hfRUNOPXkKQ09ORklHX0lQX05GX01BVENIX0RTQ1A9eQpDT05GSUdf
+SVBfTkZfTUFUQ0hfQUhfRVNQPXkKQ09ORklHX0lQX05GX01BVENIX0xFTkdUSD15CkNPTkZJR19J
+UF9ORl9NQVRDSF9UVEw9eQpDT05GSUdfSVBfTkZfTUFUQ0hfVENQTVNTPXkKQ09ORklHX0lQX05G
+X01BVENIX0hFTFBFUj15CkNPTkZJR19JUF9ORl9NQVRDSF9TVEFURT15CkNPTkZJR19JUF9ORl9N
+QVRDSF9DT05OVFJBQ0s9eQpDT05GSUdfSVBfTkZfTUFUQ0hfVU5DTEVBTj15CkNPTkZJR19JUF9O
+Rl9NQVRDSF9PV05FUj15CkNPTkZJR19JUF9ORl9GSUxURVI9eQpDT05GSUdfSVBfTkZfVEFSR0VU
+X1JFSkVDVD15CkNPTkZJR19JUF9ORl9UQVJHRVRfTUlSUk9SPXkKQ09ORklHX0lQX05GX05BVD15
+CkNPTkZJR19JUF9ORl9OQVRfTkVFREVEPXkKQ09ORklHX0lQX05GX1RBUkdFVF9NQVNRVUVSQURF
+PXkKQ09ORklHX0lQX05GX1RBUkdFVF9SRURJUkVDVD15CkNPTkZJR19JUF9ORl9OQVRfUFBUUD15
+CkNPTkZJR19JUF9ORl9OQVRfUFJPVE9fR1JFPXkKQ09ORklHX0lQX05GX05BVF9BTUFOREE9eQpD
+T05GSUdfSVBfTkZfTkFUX1NOTVBfQkFTSUM9eQpDT05GSUdfSVBfTkZfTkFUX0lSQz15CkNPTkZJ
+R19JUF9ORl9OQVRfRlRQPXkKQ09ORklHX0lQX05GX05BVF9URlRQPXkKQ09ORklHX0lQX05GX01B
+TkdMRT15CkNPTkZJR19JUF9ORl9UQVJHRVRfVE9TPXkKQ09ORklHX0lQX05GX1RBUkdFVF9FQ049
+eQpDT05GSUdfSVBfTkZfVEFSR0VUX0RTQ1A9eQpDT05GSUdfSVBfTkZfVEFSR0VUX01BUks9eQpD
+T05GSUdfSVBfTkZfVEFSR0VUX0xPRz15CkNPTkZJR19JUF9ORl9UQVJHRVRfVUxPRz15CkNPTkZJ
+R19JUF9ORl9UQVJHRVRfVENQTVNTPXkKQ09ORklHX0lQX05GX0FSUFRBQkxFUz15CkNPTkZJR19J
+UF9ORl9BUlBGSUxURVI9eQpDT05GSUdfSVBfTkZfQVJQX01BTkdMRT15CgojCiMgICBJUDogVmly
+dHVhbCBTZXJ2ZXIgQ29uZmlndXJhdGlvbgojCiMgQ09ORklHX0lQX1ZTIGlzIG5vdCBzZXQKIyBD
+T05GSUdfSVBWNiBpcyBub3Qgc2V0CiMgQ09ORklHX0tIVFRQRCBpcyBub3Qgc2V0CgojCiMgICAg
+U0NUUCBDb25maWd1cmF0aW9uIChFWFBFUklNRU5UQUwpCiMKIyBDT05GSUdfSVBfU0NUUCBpcyBu
+b3Qgc2V0CiMgQ09ORklHX0FUTSBpcyBub3Qgc2V0CiMgQ09ORklHX1ZMQU5fODAyMVEgaXMgbm90
+IHNldAojIENPTkZJR19JUFggaXMgbm90IHNldAojIENPTkZJR19BVEFMSyBpcyBub3Qgc2V0CiMg
+Q09ORklHX0RFQ05FVCBpcyBub3Qgc2V0CiMgQ09ORklHX0JSSURHRSBpcyBub3Qgc2V0CiMgQ09O
+RklHX1gyNSBpcyBub3Qgc2V0CiMgQ09ORklHX0xBUEIgaXMgbm90IHNldAojIENPTkZJR19MTEMg
+aXMgbm90IHNldAojIENPTkZJR19ORVRfRElWRVJUIGlzIG5vdCBzZXQKIyBDT05GSUdfRUNPTkVU
+IGlzIG5vdCBzZXQKIyBDT05GSUdfV0FOX1JPVVRFUiBpcyBub3Qgc2V0CiMgQ09ORklHX05FVF9G
+QVNUUk9VVEUgaXMgbm90IHNldAojIENPTkZJR19ORVRfSFdfRkxPV0NPTlRST0wgaXMgbm90IHNl
+dAoKIwojIFFvUyBhbmQvb3IgZmFpciBxdWV1ZWluZwojCkNPTkZJR19ORVRfU0NIRUQ9eQpDT05G
+SUdfTkVUX1NDSF9DQlE9eQpDT05GSUdfTkVUX1NDSF9IVEI9eQpDT05GSUdfTkVUX1NDSF9DU1o9
+eQpDT05GSUdfTkVUX1NDSF9IRlNDPXkKQ09ORklHX05FVF9TQ0hfUFJJTz15CkNPTkZJR19ORVRf
+U0NIX1JFRD15CkNPTkZJR19ORVRfU0NIX1NGUT15CkNPTkZJR19ORVRfU0NIX1RFUUw9eQpDT05G
+SUdfTkVUX1NDSF9UQkY9eQpDT05GSUdfTkVUX1NDSF9HUkVEPXkKQ09ORklHX05FVF9TQ0hfTkVU
+RU09eQpDT05GSUdfTkVUX1NDSF9EU01BUks9eQpDT05GSUdfTkVUX1NDSF9JTkdSRVNTPXkKQ09O
+RklHX05FVF9RT1M9eQpDT05GSUdfTkVUX0VTVElNQVRPUj15CkNPTkZJR19ORVRfQ0xTPXkKQ09O
+RklHX05FVF9DTFNfVENJTkRFWD15CkNPTkZJR19ORVRfQ0xTX1JPVVRFND15CkNPTkZJR19ORVRf
+Q0xTX1JPVVRFPXkKQ09ORklHX05FVF9DTFNfRlc9eQpDT05GSUdfTkVUX0NMU19VMzI9eQpDT05G
+SUdfTkVUX0NMU19SU1ZQPXkKQ09ORklHX05FVF9DTFNfUlNWUDY9eQpDT05GSUdfTkVUX0NMU19Q
+T0xJQ0U9eQoKIwojIE5ldHdvcmsgdGVzdGluZwojCiMgQ09ORklHX05FVF9QS1RHRU4gaXMgbm90
+IHNldAoKIwojIFRlbGVwaG9ueSBTdXBwb3J0CiMKIyBDT05GSUdfUEhPTkUgaXMgbm90IHNldAoj
+IENPTkZJR19QSE9ORV9JWEogaXMgbm90IHNldAojIENPTkZJR19QSE9ORV9JWEpfUENNQ0lBIGlz
+IG5vdCBzZXQKCiMKIyBBVEEvSURFL01GTS9STEwgc3VwcG9ydAojCkNPTkZJR19JREU9eQoKIwoj
+IElERSwgQVRBIGFuZCBBVEFQSSBCbG9jayBkZXZpY2VzCiMKQ09ORklHX0JMS19ERVZfSURFPXkK
+IyBDT05GSUdfQkxLX0RFVl9IRF9JREUgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX0hEIGlz
+IG5vdCBzZXQKIyBDT05GSUdfQkxLX0RFVl9JREVfU0FUQSBpcyBub3Qgc2V0CkNPTkZJR19CTEtf
+REVWX0lERURJU0s9eQpDT05GSUdfSURFRElTS19NVUxUSV9NT0RFPXkKIyBDT05GSUdfSURFRElT
+S19TVFJPS0UgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX0lERUNTIGlzIG5vdCBzZXQKIyBD
+T05GSUdfQkxLX0RFVl9ERUxLSU4gaXMgbm90IHNldApDT05GSUdfQkxLX0RFVl9JREVDRD15CiMg
+Q09ORklHX0JMS19ERVZfSURFVEFQRSBpcyBub3Qgc2V0CiMgQ09ORklHX0JMS19ERVZfSURFRkxP
+UFBZIGlzIG5vdCBzZXQKQ09ORklHX0JMS19ERVZfSURFU0NTST15CiMgQ09ORklHX0lERV9UQVNL
+X0lPQ1RMIGlzIG5vdCBzZXQKQ09ORklHX0JMS19ERVZfQ01ENjQwPXkKIyBDT05GSUdfQkxLX0RF
+Vl9DTUQ2NDBfRU5IQU5DRUQgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX0lTQVBOUCBpcyBu
+b3Qgc2V0CkNPTkZJR19CTEtfREVWX0lERVBDST15CiMgQ09ORklHX0JMS19ERVZfR0VORVJJQyBp
+cyBub3Qgc2V0CkNPTkZJR19JREVQQ0lfU0hBUkVfSVJRPXkKQ09ORklHX0JMS19ERVZfSURFRE1B
+X1BDST15CiMgQ09ORklHX0JMS19ERVZfT0ZGQk9BUkQgaXMgbm90IHNldAojIENPTkZJR19CTEtf
+REVWX0lERURNQV9GT1JDRUQgaXMgbm90IHNldApDT05GSUdfSURFRE1BX1BDSV9BVVRPPXkKIyBD
+T05GSUdfSURFRE1BX09OTFlESVNLIGlzIG5vdCBzZXQKQ09ORklHX0JMS19ERVZfSURFRE1BPXkK
+IyBDT05GSUdfSURFRE1BX1BDSV9XSVAgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX0FETUEx
+MDAgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX0FFQzYyWFggaXMgbm90IHNldAojIENPTkZJ
+R19CTEtfREVWX0FMSTE1WDMgaXMgbm90IHNldAojIENPTkZJR19XRENfQUxJMTVYMyBpcyBub3Qg
+c2V0CiMgQ09ORklHX0JMS19ERVZfQU1ENzRYWCBpcyBub3Qgc2V0CiMgQ09ORklHX0FNRDc0WFhf
+T1ZFUlJJREUgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX0FUSUlYUCBpcyBub3Qgc2V0CiMg
+Q09ORklHX0JMS19ERVZfQ01ENjRYIGlzIG5vdCBzZXQKIyBDT05GSUdfQkxLX0RFVl9UUklGTEVY
+IGlzIG5vdCBzZXQKIyBDT05GSUdfQkxLX0RFVl9DWTgyQzY5MyBpcyBub3Qgc2V0CiMgQ09ORklH
+X0JMS19ERVZfQ1M1NTMwIGlzIG5vdCBzZXQKIyBDT05GSUdfQkxLX0RFVl9IUFQzNFggaXMgbm90
+IHNldAojIENPTkZJR19IUFQzNFhfQVVUT0RNQSBpcyBub3Qgc2V0CiMgQ09ORklHX0JMS19ERVZf
+SFBUMzY2IGlzIG5vdCBzZXQKQ09ORklHX0JMS19ERVZfUElJWD15CiMgQ09ORklHX0JMS19ERVZf
+TlM4NzQxNSBpcyBub3Qgc2V0CiMgQ09ORklHX0JMS19ERVZfT1BUSTYyMSBpcyBub3Qgc2V0CiMg
+Q09ORklHX0JMS19ERVZfUERDMjAyWFhfT0xEIGlzIG5vdCBzZXQKIyBDT05GSUdfUERDMjAyWFhf
+QlVSU1QgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX1BEQzIwMlhYX05FVyBpcyBub3Qgc2V0
+CkNPTkZJR19CTEtfREVWX1JaMTAwMD15CiMgQ09ORklHX0JMS19ERVZfU0MxMjAwIGlzIG5vdCBz
+ZXQKIyBDT05GSUdfQkxLX0RFVl9TVldLUyBpcyBub3Qgc2V0CiMgQ09ORklHX0JMS19ERVZfU0lJ
+TUFHRSBpcyBub3Qgc2V0CiMgQ09ORklHX0JMS19ERVZfU0lTNTUxMyBpcyBub3Qgc2V0CiMgQ09O
+RklHX0JMS19ERVZfU0xDOTBFNjYgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX1RSTTI5MCBp
+cyBub3Qgc2V0CiMgQ09ORklHX0JMS19ERVZfVklBODJDWFhYIGlzIG5vdCBzZXQKIyBDT05GSUdf
+SURFX0NISVBTRVRTIGlzIG5vdCBzZXQKQ09ORklHX0lERURNQV9BVVRPPXkKIyBDT05GSUdfSURF
+RE1BX0lWQiBpcyBub3Qgc2V0CiMgQ09ORklHX0RNQV9OT05QQ0kgaXMgbm90IHNldAojIENPTkZJ
+R19CTEtfREVWX0FUQVJBSUQgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX0FUQVJBSURfUERD
+IGlzIG5vdCBzZXQKIyBDT05GSUdfQkxLX0RFVl9BVEFSQUlEX0hQVCBpcyBub3Qgc2V0CiMgQ09O
+RklHX0JMS19ERVZfQVRBUkFJRF9NRURMRVkgaXMgbm90IHNldAojIENPTkZJR19CTEtfREVWX0FU
+QVJBSURfU0lJIGlzIG5vdCBzZXQKCiMKIyBTQ1NJIHN1cHBvcnQKIwpDT05GSUdfU0NTST15CkNP
+TkZJR19CTEtfREVWX1NEPXkKQ09ORklHX1NEX0VYVFJBX0RFVlM9NDAKQ09ORklHX0NIUl9ERVZf
+U1Q9eQojIENPTkZJR19DSFJfREVWX09TU1QgaXMgbm90IHNldApDT05GSUdfQkxLX0RFVl9TUj15
+CkNPTkZJR19CTEtfREVWX1NSX1ZFTkRPUj15CkNPTkZJR19TUl9FWFRSQV9ERVZTPTIKQ09ORklH
+X0NIUl9ERVZfU0c9eQpDT05GSUdfU0NTSV9ERUJVR19RVUVVRVM9eQpDT05GSUdfU0NTSV9NVUxU
+SV9MVU49eQpDT05GSUdfU0NTSV9DT05TVEFOVFM9eQojIENPTkZJR19TQ1NJX0xPR0dJTkcgaXMg
+bm90IHNldAoKIwojIFNDU0kgbG93LWxldmVsIGRyaXZlcnMKIwojIENPTkZJR19CTEtfREVWXzNX
+X1hYWFhfUkFJRCBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfNzAwMEZBU1NUIGlzIG5vdCBzZXQK
+IyBDT05GSUdfU0NTSV9BQ0FSRCBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfQUhBMTUyWCBpcyBu
+b3Qgc2V0CiMgQ09ORklHX1NDU0lfQUhBMTU0MiBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfQUhB
+MTc0MCBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfQUFDUkFJRCBpcyBub3Qgc2V0CiMgQ09ORklH
+X1NDU0lfQUlDN1hYWCBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfQUlDNzlYWCBpcyBub3Qgc2V0
+CiMgQ09ORklHX1NDU0lfQUlDN1hYWF9PTEQgaXMgbm90IHNldAojIENPTkZJR19TQ1NJX0RQVF9J
+Mk8gaXMgbm90IHNldAojIENPTkZJR19TQ1NJX0FEVkFOU1lTIGlzIG5vdCBzZXQKIyBDT05GSUdf
+U0NTSV9JTjIwMDAgaXMgbm90IHNldAojIENPTkZJR19TQ1NJX0FNNTNDOTc0IGlzIG5vdCBzZXQK
+IyBDT05GSUdfU0NTSV9NRUdBUkFJRCBpcyBub3Qgc2V0CkNPTkZJR19TQ1NJX01FR0FSQUlEMj15
+CiMgQ09ORklHX1NDU0lfU0FUQSBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfU0FUQV9BSENJIGlz
+IG5vdCBzZXQKIyBDT05GSUdfU0NTSV9TQVRBX1NWVyBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lf
+QVRBX1BJSVggaXMgbm90IHNldAojIENPTkZJR19TQ1NJX1NBVEFfTlYgaXMgbm90IHNldAojIENP
+TkZJR19TQ1NJX1NBVEFfUVNUT1IgaXMgbm90IHNldAojIENPTkZJR19TQ1NJX1NBVEFfUFJPTUlT
+RSBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfU0FUQV9TWDQgaXMgbm90IHNldAojIENPTkZJR19T
+Q1NJX1NBVEFfU0lMIGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9TQVRBX1NJUyBpcyBub3Qgc2V0
+CiMgQ09ORklHX1NDU0lfU0FUQV9VTEkgaXMgbm90IHNldAojIENPTkZJR19TQ1NJX1NBVEFfVklB
+IGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9TQVRBX1ZJVEVTU0UgaXMgbm90IHNldAojIENPTkZJ
+R19TQ1NJX0JVU0xPR0lDIGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9DUFFGQ1RTIGlzIG5vdCBz
+ZXQKIyBDT05GSUdfU0NTSV9ETVgzMTkxRCBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfRFRDMzI4
+MCBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfRUFUQSBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lf
+RUFUQV9ETUEgaXMgbm90IHNldAojIENPTkZJR19TQ1NJX0VBVEFfUElPIGlzIG5vdCBzZXQKIyBD
+T05GSUdfU0NTSV9GVVRVUkVfRE9NQUlOIGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9HRFRIIGlz
+IG5vdCBzZXQKIyBDT05GSUdfU0NTSV9HRU5FUklDX05DUjUzODAgaXMgbm90IHNldAojIENPTkZJ
+R19TQ1NJX0lQUyBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfSU5JVElPIGlzIG5vdCBzZXQKIyBD
+T05GSUdfU0NTSV9JTklBMTAwIGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9OQ1I1M0M0MDZBIGlz
+IG5vdCBzZXQKIyBDT05GSUdfU0NTSV9OQ1I1M0M3eHggaXMgbm90IHNldAojIENPTkZJR19TQ1NJ
+X1NZTTUzQzhYWF8yIGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9OQ1I1M0M4WFggaXMgbm90IHNl
+dAojIENPTkZJR19TQ1NJX1NZTTUzQzhYWCBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfUEFTMTYg
+aXMgbm90IHNldAojIENPTkZJR19TQ1NJX1BDSTIwMDAgaXMgbm90IHNldAojIENPTkZJR19TQ1NJ
+X1BDSTIyMjBJIGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9QU0kyNDBJIGlzIG5vdCBzZXQKIyBD
+T05GSUdfU0NTSV9RTE9HSUNfRkFTIGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9RTE9HSUNfSVNQ
+IGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9RTE9HSUNfRkMgaXMgbm90IHNldAojIENPTkZJR19T
+Q1NJX1FMT0dJQ18xMjgwIGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9TRUFHQVRFIGlzIG5vdCBz
+ZXQKIyBDT05GSUdfU0NTSV9TSU03MTAgaXMgbm90IHNldAojIENPTkZJR19TQ1NJX1NZTTUzQzQx
+NiBpcyBub3Qgc2V0CiMgQ09ORklHX1NDU0lfREMzOTBUIGlzIG5vdCBzZXQKIyBDT05GSUdfU0NT
+SV9UMTI4IGlzIG5vdCBzZXQKIyBDT05GSUdfU0NTSV9VMTRfMzRGIGlzIG5vdCBzZXQKIyBDT05G
+SUdfU0NTSV9VTFRSQVNUT1IgaXMgbm90IHNldAojIENPTkZJR19TQ1NJX05TUDMyIGlzIG5vdCBz
+ZXQKIyBDT05GSUdfU0NTSV9ERUJVRyBpcyBub3Qgc2V0CgojCiMgRnVzaW9uIE1QVCBkZXZpY2Ug
+c3VwcG9ydAojCiMgQ09ORklHX0ZVU0lPTiBpcyBub3Qgc2V0CiMgQ09ORklHX0ZVU0lPTl9CT09U
+IGlzIG5vdCBzZXQKIyBDT05GSUdfRlVTSU9OX0lTRU5TRSBpcyBub3Qgc2V0CiMgQ09ORklHX0ZV
+U0lPTl9DVEwgaXMgbm90IHNldAojIENPTkZJR19GVVNJT05fTEFOIGlzIG5vdCBzZXQKCiMKIyBJ
+RUVFIDEzOTQgKEZpcmVXaXJlKSBzdXBwb3J0IChFWFBFUklNRU5UQUwpCiMKIyBDT05GSUdfSUVF
+RTEzOTQgaXMgbm90IHNldAoKIwojIEkyTyBkZXZpY2Ugc3VwcG9ydAojCiMgQ09ORklHX0kyTyBp
+cyBub3Qgc2V0CiMgQ09ORklHX0kyT19QQ0kgaXMgbm90IHNldAojIENPTkZJR19JMk9fQkxPQ0sg
+aXMgbm90IHNldAojIENPTkZJR19JMk9fTEFOIGlzIG5vdCBzZXQKIyBDT05GSUdfSTJPX1NDU0kg
+aXMgbm90IHNldAojIENPTkZJR19JMk9fUFJPQyBpcyBub3Qgc2V0CgojCiMgTmV0d29yayBkZXZp
+Y2Ugc3VwcG9ydAojCkNPTkZJR19ORVRERVZJQ0VTPXkKCiMKIyBBUkNuZXQgZGV2aWNlcwojCiMg
+Q09ORklHX0FSQ05FVCBpcyBub3Qgc2V0CkNPTkZJR19EVU1NWT15CiMgQ09ORklHX0JPTkRJTkcg
+aXMgbm90IHNldAojIENPTkZJR19FUVVBTElaRVIgaXMgbm90IHNldApDT05GSUdfVFVOPXkKQ09O
+RklHX0VUSEVSVEFQPXkKIyBDT05GSUdfTkVUX1NCMTAwMCBpcyBub3Qgc2V0CgojCiMgRXRoZXJu
+ZXQgKDEwIG9yIDEwME1iaXQpCiMKQ09ORklHX05FVF9FVEhFUk5FVD15CiMgQ09ORklHX1NVTkxB
+TkNFIGlzIG5vdCBzZXQKIyBDT05GSUdfSEFQUFlNRUFMIGlzIG5vdCBzZXQKIyBDT05GSUdfU1VO
+Qk1BQyBpcyBub3Qgc2V0CiMgQ09ORklHX1NVTlFFIGlzIG5vdCBzZXQKIyBDT05GSUdfU1VOR0VN
+IGlzIG5vdCBzZXQKIyBDT05GSUdfTkVUX1ZFTkRPUl8zQ09NIGlzIG5vdCBzZXQKIyBDT05GSUdf
+TEFOQ0UgaXMgbm90IHNldAojIENPTkZJR19ORVRfVkVORE9SX1NNQyBpcyBub3Qgc2V0CiMgQ09O
+RklHX05FVF9WRU5ET1JfUkFDQUwgaXMgbm90IHNldAojIENPTkZJR19BVDE3MDAgaXMgbm90IHNl
+dAojIENPTkZJR19ERVBDQSBpcyBub3Qgc2V0CiMgQ09ORklHX0hQMTAwIGlzIG5vdCBzZXQKIyBD
+T05GSUdfTkVUX0lTQSBpcyBub3Qgc2V0CkNPTkZJR19ORVRfUENJPXkKIyBDT05GSUdfUENORVQz
+MiBpcyBub3Qgc2V0CiMgQ09ORklHX0FNRDgxMTFfRVRIIGlzIG5vdCBzZXQKIyBDT05GSUdfQURB
+UFRFQ19TVEFSRklSRSBpcyBub3Qgc2V0CiMgQ09ORklHX0FDMzIwMCBpcyBub3Qgc2V0CiMgQ09O
+RklHX0FQUklDT1QgaXMgbm90IHNldAojIENPTkZJR19CNDQgaXMgbm90IHNldAojIENPTkZJR19D
+Uzg5eDAgaXMgbm90IHNldAojIENPTkZJR19UVUxJUCBpcyBub3Qgc2V0CiMgQ09ORklHX0RFNFg1
+IGlzIG5vdCBzZXQKIyBDT05GSUdfREdSUyBpcyBub3Qgc2V0CiMgQ09ORklHX0RNOTEwMiBpcyBu
+b3Qgc2V0CkNPTkZJR19FRVBSTzEwMD15CiMgQ09ORklHX0VFUFJPMTAwX1BJTyBpcyBub3Qgc2V0
+CiMgQ09ORklHX0UxMDAgaXMgbm90IHNldAojIENPTkZJR19MTkUzOTAgaXMgbm90IHNldAojIENP
+TkZJR19GRUFMTlggaXMgbm90IHNldAojIENPTkZJR19OQVRTRU1JIGlzIG5vdCBzZXQKIyBDT05G
+SUdfTkUyS19QQ0kgaXMgbm90IHNldAojIENPTkZJR19GT1JDRURFVEggaXMgbm90IHNldAojIENP
+TkZJR19ORTMyMTAgaXMgbm90IHNldAojIENPTkZJR19FUzMyMTAgaXMgbm90IHNldAojIENPTkZJ
+R184MTM5Q1AgaXMgbm90IHNldAojIENPTkZJR184MTM5VE9PIGlzIG5vdCBzZXQKIyBDT05GSUdf
+ODEzOVRPT19QSU8gaXMgbm90IHNldAojIENPTkZJR184MTM5VE9PX1RVTkVfVFdJU1RFUiBpcyBu
+b3Qgc2V0CiMgQ09ORklHXzgxMzlUT09fODEyOSBpcyBub3Qgc2V0CiMgQ09ORklHXzgxMzlfT0xE
+X1JYX1JFU0VUIGlzIG5vdCBzZXQKIyBDT05GSUdfU0lTOTAwIGlzIG5vdCBzZXQKIyBDT05GSUdf
+RVBJQzEwMCBpcyBub3Qgc2V0CiMgQ09ORklHX1NVTkRBTkNFIGlzIG5vdCBzZXQKIyBDT05GSUdf
+U1VOREFOQ0VfTU1JTyBpcyBub3Qgc2V0CiMgQ09ORklHX1RMQU4gaXMgbm90IHNldAojIENPTkZJ
+R19WSUFfUkhJTkUgaXMgbm90IHNldAojIENPTkZJR19WSUFfUkhJTkVfTU1JTyBpcyBub3Qgc2V0
+CiMgQ09ORklHX1dJTkJPTkRfODQwIGlzIG5vdCBzZXQKIyBDT05GSUdfTkVUX1BPQ0tFVCBpcyBu
+b3Qgc2V0CgojCiMgRXRoZXJuZXQgKDEwMDAgTWJpdCkKIwojIENPTkZJR19BQ0VOSUMgaXMgbm90
+IHNldAojIENPTkZJR19ETDJLIGlzIG5vdCBzZXQKQ09ORklHX0UxMDAwPXkKIyBDT05GSUdfRTEw
+MDBfTkFQSSBpcyBub3Qgc2V0CiMgQ09ORklHX01ZUklfU0JVUyBpcyBub3Qgc2V0CiMgQ09ORklH
+X05TODM4MjAgaXMgbm90IHNldAojIENPTkZJR19IQU1BQ0hJIGlzIG5vdCBzZXQKIyBDT05GSUdf
+WUVMTE9XRklOIGlzIG5vdCBzZXQKIyBDT05GSUdfUjgxNjkgaXMgbm90IHNldAojIENPTkZJR19T
+Szk4TElOIGlzIG5vdCBzZXQKIyBDT05GSUdfVElHT04zIGlzIG5vdCBzZXQKIyBDT05GSUdfRkRE
+SSBpcyBub3Qgc2V0CiMgQ09ORklHX0hJUFBJIGlzIG5vdCBzZXQKIyBDT05GSUdfUExJUCBpcyBu
+b3Qgc2V0CiMgQ09ORklHX1BQUCBpcyBub3Qgc2V0CiMgQ09ORklHX1NMSVAgaXMgbm90IHNldAoK
+IwojIFdpcmVsZXNzIExBTiAobm9uLWhhbXJhZGlvKQojCiMgQ09ORklHX05FVF9SQURJTyBpcyBu
+b3Qgc2V0CgojCiMgVG9rZW4gUmluZyBkZXZpY2VzCiMKIyBDT05GSUdfVFIgaXMgbm90IHNldAoj
+IENPTkZJR19ORVRfRkMgaXMgbm90IHNldAojIENPTkZJR19SQ1BDSSBpcyBub3Qgc2V0CkNPTkZJ
+R19TSEFQRVI9eQoKIwojIFdhbiBpbnRlcmZhY2VzCiMKIyBDT05GSUdfV0FOIGlzIG5vdCBzZXQK
+CiMKIyBBbWF0ZXVyIFJhZGlvIHN1cHBvcnQKIwojIENPTkZJR19IQU1SQURJTyBpcyBub3Qgc2V0
+CgojCiMgSXJEQSAoaW5mcmFyZWQpIHN1cHBvcnQKIwojIENPTkZJR19JUkRBIGlzIG5vdCBzZXQK
+CiMKIyBJU0ROIHN1YnN5c3RlbQojCiMgQ09ORklHX0lTRE4gaXMgbm90IHNldAoKIwojIE9sZCBD
+RC1ST00gZHJpdmVycyAobm90IFNDU0ksIG5vdCBJREUpCiMKIyBDT05GSUdfQ0RfTk9fSURFU0NT
+SSBpcyBub3Qgc2V0CgojCiMgSW5wdXQgY29yZSBzdXBwb3J0CiMKIyBDT05GSUdfSU5QVVQgaXMg
+bm90IHNldAojIENPTkZJR19JTlBVVF9LRVlCREVWIGlzIG5vdCBzZXQKIyBDT05GSUdfSU5QVVRf
+TU9VU0VERVYgaXMgbm90IHNldAojIENPTkZJR19JTlBVVF9KT1lERVYgaXMgbm90IHNldAojIENP
+TkZJR19JTlBVVF9FVkRFViBpcyBub3Qgc2V0CiMgQ09ORklHX0lOUFVUX1VJTlBVVCBpcyBub3Qg
+c2V0CgojCiMgQ2hhcmFjdGVyIGRldmljZXMKIwpDT05GSUdfVlQ9eQpDT05GSUdfVlRfQ09OU09M
+RT15CkNPTkZJR19TRVJJQUw9eQojIENPTkZJR19TRVJJQUxfQ09OU09MRSBpcyBub3Qgc2V0CiMg
+Q09ORklHX1NFUklBTF9FWFRFTkRFRCBpcyBub3Qgc2V0CiMgQ09ORklHX1NFUklBTF9OT05TVEFO
+REFSRCBpcyBub3Qgc2V0CkNPTkZJR19VTklYOThfUFRZUz15CkNPTkZJR19VTklYOThfUFRZX0NP
+VU5UPTI1NgoKIwojIEkyQyBzdXBwb3J0CiMKIyBDT05GSUdfSTJDIGlzIG5vdCBzZXQKCiMKIyBN
+aWNlCiMKIyBDT05GSUdfQlVTTU9VU0UgaXMgbm90IHNldApDT05GSUdfTU9VU0U9eQpDT05GSUdf
+UFNNT1VTRT15CiMgQ09ORklHXzgyQzcxMF9NT1VTRSBpcyBub3Qgc2V0CiMgQ09ORklHX1BDMTEw
+X1BBRCBpcyBub3Qgc2V0CiMgQ09ORklHX01LNzEyX01PVVNFIGlzIG5vdCBzZXQKCiMKIyBKb3lz
+dGlja3MKIwojIENPTkZJR19JTlBVVF9HQU1FUE9SVCBpcyBub3Qgc2V0CiMgQ09ORklHX1FJQzAy
+X1RBUEUgaXMgbm90IHNldAojIENPTkZJR19JUE1JX0hBTkRMRVIgaXMgbm90IHNldAojIENPTkZJ
+R19JUE1JX1BBTklDX0VWRU5UIGlzIG5vdCBzZXQKIyBDT05GSUdfSVBNSV9ERVZJQ0VfSU5URVJG
+QUNFIGlzIG5vdCBzZXQKIyBDT05GSUdfSVBNSV9LQ1MgaXMgbm90IHNldAojIENPTkZJR19JUE1J
+X1dBVENIRE9HIGlzIG5vdCBzZXQKCiMKIyBXYXRjaGRvZyBDYXJkcwojCiMgQ09ORklHX1dBVENI
+RE9HIGlzIG5vdCBzZXQKIyBDT05GSUdfU0N4MjAwIGlzIG5vdCBzZXQKIyBDT05GSUdfU0N4MjAw
+X0dQSU8gaXMgbm90IHNldAojIENPTkZJR19BTURfUk5HIGlzIG5vdCBzZXQKIyBDT05GSUdfSU5U
+RUxfUk5HIGlzIG5vdCBzZXQKIyBDT05GSUdfSFdfUkFORE9NIGlzIG5vdCBzZXQKIyBDT05GSUdf
+QU1EX1BNNzY4IGlzIG5vdCBzZXQKIyBDT05GSUdfTlZSQU0gaXMgbm90IHNldAojIENPTkZJR19S
+VEMgaXMgbm90IHNldAojIENPTkZJR19EVExLIGlzIG5vdCBzZXQKIyBDT05GSUdfUjM5NjQgaXMg
+bm90IHNldAojIENPTkZJR19BUFBMSUNPTSBpcyBub3Qgc2V0CiMgQ09ORklHX1NPTllQSSBpcyBu
+b3Qgc2V0CgojCiMgRnRhcGUsIHRoZSBmbG9wcHkgdGFwZSBkZXZpY2UgZHJpdmVyCiMKIyBDT05G
+SUdfRlRBUEUgaXMgbm90IHNldApDT05GSUdfQUdQPXkKQ09ORklHX0FHUF9JTlRFTD15CkNPTkZJ
+R19BR1BfSTgxMD15CiMgQ09ORklHX0FHUF9WSUEgaXMgbm90IHNldAojIENPTkZJR19BR1BfQU1E
+IGlzIG5vdCBzZXQKIyBDT05GSUdfQUdQX0FNRF9LOCBpcyBub3Qgc2V0CiMgQ09ORklHX0FHUF9T
+SVMgaXMgbm90IHNldAojIENPTkZJR19BR1BfQUxJIGlzIG5vdCBzZXQKIyBDT05GSUdfQUdQX1NX
+T1JLUyBpcyBub3Qgc2V0CiMgQ09ORklHX0FHUF9OVklESUEgaXMgbm90IHNldAojIENPTkZJR19B
+R1BfQVRJIGlzIG5vdCBzZXQKCiMKIyBEaXJlY3QgUmVuZGVyaW5nIE1hbmFnZXIgKFhGcmVlODYg
+RFJJIHN1cHBvcnQpCiMKIyBDT05GSUdfRFJNIGlzIG5vdCBzZXQKIyBDT05GSUdfTVdBVkUgaXMg
+bm90IHNldAojIENPTkZJR19PQk1PVVNFIGlzIG5vdCBzZXQKCiMKIyBNdWx0aW1lZGlhIGRldmlj
+ZXMKIwojIENPTkZJR19WSURFT19ERVYgaXMgbm90IHNldAoKIwojIEZpbGUgc3lzdGVtcwojCiMg
+Q09ORklHX1FVT1RBIGlzIG5vdCBzZXQKIyBDT05GSUdfUUZNVF9WMiBpcyBub3Qgc2V0CiMgQ09O
+RklHX0FVVE9GU19GUyBpcyBub3Qgc2V0CkNPTkZJR19BVVRPRlM0X0ZTPXkKQ09ORklHX1JFSVNF
+UkZTX0ZTPXkKIyBDT05GSUdfUkVJU0VSRlNfQ0hFQ0sgaXMgbm90IHNldApDT05GSUdfUkVJU0VS
+RlNfUFJPQ19JTkZPPXkKIyBDT05GSUdfQURGU19GUyBpcyBub3Qgc2V0CiMgQ09ORklHX0FERlNf
+RlNfUlcgaXMgbm90IHNldAojIENPTkZJR19BRkZTX0ZTIGlzIG5vdCBzZXQKIyBDT05GSUdfSEZT
+X0ZTIGlzIG5vdCBzZXQKIyBDT05GSUdfSEZTUExVU19GUyBpcyBub3Qgc2V0CiMgQ09ORklHX0JF
+RlNfRlMgaXMgbm90IHNldAojIENPTkZJR19CRUZTX0RFQlVHIGlzIG5vdCBzZXQKIyBDT05GSUdf
+QkZTX0ZTIGlzIG5vdCBzZXQKQ09ORklHX0VYVDNfRlM9eQpDT05GSUdfSkJEPXkKIyBDT05GSUdf
+SkJEX0RFQlVHIGlzIG5vdCBzZXQKQ09ORklHX0ZBVF9GUz15CkNPTkZJR19NU0RPU19GUz15CkNP
+TkZJR19VTVNET1NfRlM9eQpDT05GSUdfVkZBVF9GUz15CiMgQ09ORklHX0VGU19GUyBpcyBub3Qg
+c2V0CiMgQ09ORklHX0pGRlNfRlMgaXMgbm90IHNldAojIENPTkZJR19KRkZTMl9GUyBpcyBub3Qg
+c2V0CiMgQ09ORklHX0NSQU1GUyBpcyBub3Qgc2V0CkNPTkZJR19UTVBGUz15CkNPTkZJR19SQU1G
+Uz15CkNPTkZJR19JU085NjYwX0ZTPXkKQ09ORklHX0pPTElFVD15CkNPTkZJR19aSVNPRlM9eQoj
+IENPTkZJR19KRlNfRlMgaXMgbm90IHNldAojIENPTkZJR19KRlNfREVCVUcgaXMgbm90IHNldAoj
+IENPTkZJR19KRlNfU1RBVElTVElDUyBpcyBub3Qgc2V0CiMgQ09ORklHX01JTklYX0ZTIGlzIG5v
+dCBzZXQKIyBDT05GSUdfVlhGU19GUyBpcyBub3Qgc2V0CiMgQ09ORklHX05URlNfRlMgaXMgbm90
+IHNldAojIENPTkZJR19OVEZTX1JXIGlzIG5vdCBzZXQKIyBDT05GSUdfSFBGU19GUyBpcyBub3Qg
+c2V0CkNPTkZJR19QUk9DX0ZTPXkKIyBDT05GSUdfREVWRlNfRlMgaXMgbm90IHNldAojIENPTkZJ
+R19ERVZGU19NT1VOVCBpcyBub3Qgc2V0CiMgQ09ORklHX0RFVkZTX0RFQlVHIGlzIG5vdCBzZXQK
+Q09ORklHX0RFVlBUU19GUz15CiMgQ09ORklHX1FOWDRGU19GUyBpcyBub3Qgc2V0CiMgQ09ORklH
+X1FOWDRGU19SVyBpcyBub3Qgc2V0CiMgQ09ORklHX1JPTUZTX0ZTIGlzIG5vdCBzZXQKQ09ORklH
+X0VYVDJfRlM9eQojIENPTkZJR19TWVNWX0ZTIGlzIG5vdCBzZXQKIyBDT05GSUdfVURGX0ZTIGlz
+IG5vdCBzZXQKIyBDT05GSUdfVURGX1JXIGlzIG5vdCBzZXQKIyBDT05GSUdfVUZTX0ZTIGlzIG5v
+dCBzZXQKIyBDT05GSUdfVUZTX0ZTX1dSSVRFIGlzIG5vdCBzZXQKIyBDT05GSUdfWEZTX0ZTIGlz
+IG5vdCBzZXQKIyBDT05GSUdfWEZTX1FVT1RBIGlzIG5vdCBzZXQKIyBDT05GSUdfWEZTX1JUIGlz
+IG5vdCBzZXQKIyBDT05GSUdfWEZTX1RSQUNFIGlzIG5vdCBzZXQKIyBDT05GSUdfWEZTX0RFQlVH
+IGlzIG5vdCBzZXQKCiMKIyBOZXR3b3JrIEZpbGUgU3lzdGVtcwojCiMgQ09ORklHX0NPREFfRlMg
+aXMgbm90IHNldAojIENPTkZJR19JTlRFUk1FWlpPX0ZTIGlzIG5vdCBzZXQKIyBDT05GSUdfTkZT
+X0ZTIGlzIG5vdCBzZXQKIyBDT05GSUdfTkZTX1YzIGlzIG5vdCBzZXQKIyBDT05GSUdfTkZTX0RJ
+UkVDVElPIGlzIG5vdCBzZXQKIyBDT05GSUdfUk9PVF9ORlMgaXMgbm90IHNldAojIENPTkZJR19O
+RlNEIGlzIG5vdCBzZXQKIyBDT05GSUdfTkZTRF9WMyBpcyBub3Qgc2V0CiMgQ09ORklHX05GU0Rf
+VENQIGlzIG5vdCBzZXQKIyBDT05GSUdfU1VOUlBDIGlzIG5vdCBzZXQKIyBDT05GSUdfTE9DS0Qg
+aXMgbm90IHNldAojIENPTkZJR19TTUJfRlMgaXMgbm90IHNldAojIENPTkZJR19OQ1BfRlMgaXMg
+bm90IHNldAojIENPTkZJR19OQ1BGU19QQUNLRVRfU0lHTklORyBpcyBub3Qgc2V0CiMgQ09ORklH
+X05DUEZTX0lPQ1RMX0xPQ0tJTkcgaXMgbm90IHNldAojIENPTkZJR19OQ1BGU19TVFJPTkcgaXMg
+bm90IHNldAojIENPTkZJR19OQ1BGU19ORlNfTlMgaXMgbm90IHNldAojIENPTkZJR19OQ1BGU19P
+UzJfTlMgaXMgbm90IHNldAojIENPTkZJR19OQ1BGU19TTUFMTERPUyBpcyBub3Qgc2V0CiMgQ09O
+RklHX05DUEZTX05MUyBpcyBub3Qgc2V0CiMgQ09ORklHX05DUEZTX0VYVFJBUyBpcyBub3Qgc2V0
+CkNPTkZJR19aSVNPRlNfRlM9eQoKIwojIFBhcnRpdGlvbiBUeXBlcwojCiMgQ09ORklHX1BBUlRJ
+VElPTl9BRFZBTkNFRCBpcyBub3Qgc2V0CkNPTkZJR19NU0RPU19QQVJUSVRJT049eQojIENPTkZJ
+R19TTUJfTkxTIGlzIG5vdCBzZXQKQ09ORklHX05MUz15CgojCiMgTmF0aXZlIExhbmd1YWdlIFN1
+cHBvcnQKIwpDT05GSUdfTkxTX0RFRkFVTFQ9Imlzbzg4NTktMSIKQ09ORklHX05MU19DT0RFUEFH
+RV80Mzc9eQojIENPTkZJR19OTFNfQ09ERVBBR0VfNzM3IGlzIG5vdCBzZXQKIyBDT05GSUdfTkxT
+X0NPREVQQUdFXzc3NSBpcyBub3Qgc2V0CkNPTkZJR19OTFNfQ09ERVBBR0VfODUwPXkKQ09ORklH
+X05MU19DT0RFUEFHRV84NTI9eQojIENPTkZJR19OTFNfQ09ERVBBR0VfODU1IGlzIG5vdCBzZXQK
+IyBDT05GSUdfTkxTX0NPREVQQUdFXzg1NyBpcyBub3Qgc2V0CiMgQ09ORklHX05MU19DT0RFUEFH
+RV84NjAgaXMgbm90IHNldAojIENPTkZJR19OTFNfQ09ERVBBR0VfODYxIGlzIG5vdCBzZXQKIyBD
+T05GSUdfTkxTX0NPREVQQUdFXzg2MiBpcyBub3Qgc2V0CiMgQ09ORklHX05MU19DT0RFUEFHRV84
+NjMgaXMgbm90IHNldAojIENPTkZJR19OTFNfQ09ERVBBR0VfODY0IGlzIG5vdCBzZXQKIyBDT05G
+SUdfTkxTX0NPREVQQUdFXzg2NSBpcyBub3Qgc2V0CiMgQ09ORklHX05MU19DT0RFUEFHRV84NjYg
+aXMgbm90IHNldAojIENPTkZJR19OTFNfQ09ERVBBR0VfODY5IGlzIG5vdCBzZXQKIyBDT05GSUdf
+TkxTX0NPREVQQUdFXzkzNiBpcyBub3Qgc2V0CiMgQ09ORklHX05MU19DT0RFUEFHRV85NTAgaXMg
+bm90IHNldAojIENPTkZJR19OTFNfQ09ERVBBR0VfOTMyIGlzIG5vdCBzZXQKIyBDT05GSUdfTkxT
+X0NPREVQQUdFXzk0OSBpcyBub3Qgc2V0CiMgQ09ORklHX05MU19DT0RFUEFHRV84NzQgaXMgbm90
+IHNldAojIENPTkZJR19OTFNfSVNPODg1OV84IGlzIG5vdCBzZXQKQ09ORklHX05MU19DT0RFUEFH
+RV8xMjUwPXkKQ09ORklHX05MU19DT0RFUEFHRV8xMjUxPXkKQ09ORklHX05MU19JU084ODU5XzE9
+eQpDT05GSUdfTkxTX0lTTzg4NTlfMj15CiMgQ09ORklHX05MU19JU084ODU5XzMgaXMgbm90IHNl
+dAojIENPTkZJR19OTFNfSVNPODg1OV80IGlzIG5vdCBzZXQKIyBDT05GSUdfTkxTX0lTTzg4NTlf
+NSBpcyBub3Qgc2V0CiMgQ09ORklHX05MU19JU084ODU5XzYgaXMgbm90IHNldAojIENPTkZJR19O
+TFNfSVNPODg1OV83IGlzIG5vdCBzZXQKIyBDT05GSUdfTkxTX0lTTzg4NTlfOSBpcyBub3Qgc2V0
+CiMgQ09ORklHX05MU19JU084ODU5XzEzIGlzIG5vdCBzZXQKIyBDT05GSUdfTkxTX0lTTzg4NTlf
+MTQgaXMgbm90IHNldAojIENPTkZJR19OTFNfSVNPODg1OV8xNSBpcyBub3Qgc2V0CiMgQ09ORklH
+X05MU19LT0k4X1IgaXMgbm90IHNldAojIENPTkZJR19OTFNfS09JOF9VIGlzIG5vdCBzZXQKQ09O
+RklHX05MU19VVEY4PXkKCiMKIyBDb25zb2xlIGRyaXZlcnMKIwpDT05GSUdfVkdBX0NPTlNPTEU9
+eQojIENPTkZJR19WSURFT19TRUxFQ1QgaXMgbm90IHNldAojIENPTkZJR19NREFfQ09OU09MRSBp
+cyBub3Qgc2V0CgojCiMgRnJhbWUtYnVmZmVyIHN1cHBvcnQKIwojIENPTkZJR19GQiBpcyBub3Qg
+c2V0CgojCiMgU291bmQKIwojIENPTkZJR19TT1VORCBpcyBub3Qgc2V0CgojCiMgVVNCIHN1cHBv
+cnQKIwpDT05GSUdfVVNCPXkKQ09ORklHX1VTQl9ERUJVRz15CkNPTkZJR19VU0JfREVWSUNFRlM9
+eQpDT05GSUdfVVNCX0JBTkRXSURUSD15CkNPTkZJR19VU0JfRUhDSV9IQ0Q9eQpDT05GSUdfVVNC
+X1VIQ0lfQUxUPXkKQ09ORklHX1VTQl9PSENJPXkKQ09ORklHX1VTQl9TTDgxMUhTX0FMVD15CkNP
+TkZJR19VU0JfU0w4MTFIUz15CiMgQ09ORklHX1VTQl9BVURJTyBpcyBub3Qgc2V0CiMgQ09ORklH
+X1VTQl9FTUkyNiBpcyBub3Qgc2V0CkNPTkZJR19VU0JfQkxVRVRPT1RIPXkKIyBDT05GSUdfVVNC
+X01JREkgaXMgbm90IHNldApDT05GSUdfVVNCX1NUT1JBR0U9eQpDT05GSUdfVVNCX1NUT1JBR0Vf
+REVCVUc9eQpDT05GSUdfVVNCX1NUT1JBR0VfREFUQUZBQj15CkNPTkZJR19VU0JfU1RPUkFHRV9G
+UkVFQ09NPXkKQ09ORklHX1VTQl9TVE9SQUdFX0lTRDIwMD15CkNPTkZJR19VU0JfU1RPUkFHRV9E
+UENNPXkKQ09ORklHX1VTQl9TVE9SQUdFX0hQODIwMGU9eQpDT05GSUdfVVNCX1NUT1JBR0VfU0RE
+UjA5PXkKQ09ORklHX1VTQl9TVE9SQUdFX1NERFI1NT15CkNPTkZJR19VU0JfU1RPUkFHRV9KVU1Q
+U0hPVD15CiMgQ09ORklHX1VTQl9BQ00gaXMgbm90IHNldAojIENPTkZJR19VU0JfUFJJTlRFUiBp
+cyBub3Qgc2V0CiMgQ09ORklHX1VTQl9ISUQgaXMgbm90IHNldAojIENPTkZJR19VU0JfSElESU5Q
+VVQgaXMgbm90IHNldAojIENPTkZJR19VU0JfSElEREVWIGlzIG5vdCBzZXQKIyBDT05GSUdfVVNC
+X0tCRCBpcyBub3Qgc2V0CiMgQ09ORklHX1VTQl9NT1VTRSBpcyBub3Qgc2V0CiMgQ09ORklHX1VT
+Ql9BSVBURUsgaXMgbm90IHNldAojIENPTkZJR19VU0JfV0FDT00gaXMgbm90IHNldAojIENPTkZJ
+R19VU0JfS0JUQUIgaXMgbm90IHNldAojIENPTkZJR19VU0JfUE9XRVJNQVRFIGlzIG5vdCBzZXQK
+IyBDT05GSUdfVVNCX0RDMlhYIGlzIG5vdCBzZXQKIyBDT05GSUdfVVNCX01EQzgwMCBpcyBub3Qg
+c2V0CiMgQ09ORklHX1VTQl9TQ0FOTkVSIGlzIG5vdCBzZXQKIyBDT05GSUdfVVNCX01JQ1JPVEVL
+IGlzIG5vdCBzZXQKIyBDT05GSUdfVVNCX0hQVVNCU0NTSSBpcyBub3Qgc2V0CiMgQ09ORklHX1VT
+Ql9QRUdBU1VTIGlzIG5vdCBzZXQKIyBDT05GSUdfVVNCX1JUTDgxNTAgaXMgbm90IHNldAojIENP
+TkZJR19VU0JfS0FXRVRIIGlzIG5vdCBzZXQKIyBDT05GSUdfVVNCX0NBVEMgaXMgbm90IHNldAoj
+IENPTkZJR19VU0JfQ0RDRVRIRVIgaXMgbm90IHNldAojIENPTkZJR19VU0JfVVNCTkVUIGlzIG5v
+dCBzZXQKIyBDT05GSUdfVVNCX1VTUzcyMCBpcyBub3Qgc2V0CgojCiMgVVNCIFNlcmlhbCBDb252
+ZXJ0ZXIgc3VwcG9ydAojCiMgQ09ORklHX1VTQl9TRVJJQUwgaXMgbm90IHNldAojIENPTkZJR19V
+U0JfUklPNTAwIGlzIG5vdCBzZXQKIyBDT05GSUdfVVNCX0FVRVJTV0FMRCBpcyBub3Qgc2V0CiMg
+Q09ORklHX1VTQl9USUdMIGlzIG5vdCBzZXQKIyBDT05GSUdfVVNCX0JSTFZHRVIgaXMgbm90IHNl
+dAojIENPTkZJR19VU0JfTENEIGlzIG5vdCBzZXQKCiMKIyBTdXBwb3J0IGZvciBVU0IgZ2FkZ2V0
+cwojCiMgQ09ORklHX1VTQl9HQURHRVQgaXMgbm90IHNldAoKIwojIEJsdWV0b290aCBzdXBwb3J0
+CiMKIyBDT05GSUdfQkxVRVogaXMgbm90IHNldAoKIwojIFNlY3VyaXR5IG9wdGlvbnMKIwpDT05G
+SUdfSEFSREVOX1NUQUNLPXkKQ09ORklHX0hBUkRFTl9TVEFDS19TTUFSVD15CkNPTkZJR19IQVJE
+RU5fTElOSz15CkNPTkZJR19IQVJERU5fRklGTz15CkNPTkZJR19IQVJERU5fUFJPQz15CkNPTkZJ
+R19IQVJERU5fUkxJTUlUX05QUk9DPXkKQ09ORklHX0hBUkRFTl9TSE09eQoKIwojIEtlcm5lbCBo
+YWNraW5nCiMKQ09ORklHX0RFQlVHX0tFUk5FTD15CkNPTkZJR19ERUJVR19TVEFDS09WRVJGTE9X
+PXkKIyBDT05GSUdfREVCVUdfSElHSE1FTSBpcyBub3Qgc2V0CiMgQ09ORklHX0RFQlVHX1NMQUIg
+aXMgbm90IHNldAojIENPTkZJR19ERUJVR19JT1ZJUlQgaXMgbm90IHNldApDT05GSUdfTUFHSUNf
+U1lTUlE9eQpDT05GSUdfREVCVUdfU1BJTkxPQ0s9eQojIENPTkZJR19GUkFNRV9QT0lOVEVSIGlz
+IG5vdCBzZXQKQ09ORklHX0xPR19CVUZfU0hJRlQ9MAoKIwojIENyeXB0b2dyYXBoaWMgb3B0aW9u
+cwojCkNPTkZJR19DUllQVE89eQpDT05GSUdfQ1JZUFRPX0hNQUM9eQpDT05GSUdfQ1JZUFRPX05V
+TEw9eQpDT05GSUdfQ1JZUFRPX01END15CkNPTkZJR19DUllQVE9fTUQ1PXkKQ09ORklHX0NSWVBU
+T19TSEExPXkKQ09ORklHX0NSWVBUT19TSEEyNTY9eQpDT05GSUdfQ1JZUFRPX1NIQTUxMj15CkNP
+TkZJR19DUllQVE9fV1A1MTI9eQpDT05GSUdfQ1JZUFRPX0RFUz15CkNPTkZJR19DUllQVE9fQkxP
+V0ZJU0g9eQpDT05GSUdfQ1JZUFRPX1RXT0ZJU0g9eQpDT05GSUdfQ1JZUFRPX1NFUlBFTlQ9eQpD
+T05GSUdfQ1JZUFRPX0FFUz15CkNPTkZJR19DUllQVE9fQ0FTVDU9eQpDT05GSUdfQ1JZUFRPX0NB
+U1Q2PXkKQ09ORklHX0NSWVBUT19URUE9eQpDT05GSUdfQ1JZUFRPX0tIQVpBRD15CkNPTkZJR19D
+UllQVE9fQU5VQklTPXkKQ09ORklHX0NSWVBUT19BUkM0PXkKQ09ORklHX0NSWVBUT19ERUZMQVRF
+PXkKQ09ORklHX0NSWVBUT19NSUNIQUVMX01JQz15CiMgQ09ORklHX0NSWVBUT19URVNUIGlzIG5v
+dCBzZXQKCiMKIyBMaWJyYXJ5IHJvdXRpbmVzCiMKQ09ORklHX0NSQzMyPXkKQ09ORklHX1pMSUJf
+SU5GTEFURT15CkNPTkZJR19aTElCX0RFRkxBVEU9eQpDT05GSUdfRldfTE9BREVSPXkK
+------=_20051022224546_40756--
 
 
 
