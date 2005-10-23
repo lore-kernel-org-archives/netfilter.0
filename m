@@ -1,17 +1,12 @@
-From: Aseem Rastogi <aseem@india.tejasnetworks.com>
-Subject: Re: IP  Forwarding
-Date: Sat, 22 Oct 2005 18:41:29 +0530
-Message-ID: <435A3A81.7020007@india.tejasnetworks.com>
-References: <43595BFA.1070200@airmail.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: LAN Port forwarding with a dynamic IP address
+Date: Sun, 23 Oct 2005 00:19:18 -0500
+Message-ID: <435B1D56.5060704@riverviewtech.net>
+References: <7f6703390510210400n3ea01619p3e46ee81bd7badc3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Received: from localhost (unknown [127.0.0.1])
-	by anche.india.tejasnetworks.com (*****) with ESMTP
-	id 805057397B; Sat, 22 Oct 2005 13:00:25 +0000 (UTC)
-Received: from india.tejasnetworks.com (aseem.india.tejasnetworks.com
-	[192.168.0.38]) by anche.india.tejasnetworks.com (*****) with ESMTP
-	id 664547391E; Sat, 22 Oct 2005 18:30:24 +0530 (IST)
+In-Reply-To: <7f6703390510210400n3ea01619p3e46ee81bd7badc3@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,45 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jerry Alexander <jerrya@airmail.net>
+To: Zac Hansen <xaxxon@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-did you enable ip forwarding ?
+Zac Hansen wrote:
+> I have a single, dynamic IP address. I have multiple boxes behind a linux
+> router, one of which runs a web server on port 80. I have set up rules (a
+> PREROUTING and a FORWARD rule) to let people outside my LAN deal see my web
+> server. The problem is that the boxes on my LAN can't see them.
+> 
+> I really don't want to hardcode my external IP address into any rules and I
+> don't want to do any DNS work to make the LAN boxes look up the actual
+> server's LAN IP address directly.
+> 
+> Can I get my LAN boxes to see my web site and not do the things I don't want
+> to do?
 
-try "echo 1> /proc/sys/net/ipv4/ip_forward".
+You might be able to use one of the Layer 7 filters to match the traffic that is actually destined for your server via the HTTP get line but I think this would be after the connection is made.
 
-regards,
-aseem.
-
-Jerry Alexander wrote:
-
-> Dear NF:
->
->          I cannot get IPTABLES FORWARDing to work when the machines 
-> are directly
-> connected via a twisted cable.
->         Does FORWARDing only work with a router between the machines 
-> in question?
->         If not, how can I get it to work?   I see the packets coming 
-> into the box(ethereal)
-> but none going out.
->         Can someone give me a quick overview of how, at the kernel 
-> code level,
-> how FORWARDing works and how to modify it to get two machines who are 
-> directly
-> connected to work.
->
->
->                                                                                     
-> Jerry
->
->
->
-
-
--- 
-The end is always good. If it's not good, it's not the end.
+The other option that comes to mind would be to set up some sort of proxy (Squid in reverse proxy mode) server that your clients or the world would issue the request to and have it handle the routing of sending the request to the box that is really servicing the request.
 
 
 
+Grant. . . .
 
