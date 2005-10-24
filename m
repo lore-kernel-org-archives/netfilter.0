@@ -1,13 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Blocking file transfer by type
-Date: Mon, 24 Oct 2005 13:14:02 -0500
-Message-ID: <200510241314.02987.rob0@gmx.co.uk>
-References: <67c243f60510241107q5fc6741fj8dec3a740084e0cc@mail.gmail.com>
+From: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
+	<sa.campos@datasulsp.com.br>
+Subject: How to untar the .bz2
+Date: Mon, 24 Oct 2005 17:52:35 -0200
+Message-ID: <00ed01c5d8d4$7b4ff070$3200000a@PIVT>
+Reply-To: =?iso-8859-1?Q?Sebasti=E3o_Ant=F4nio_Campos_=28GWA=29?=
+	<sa.campos@datasulsp.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <67c243f60510241107q5fc6741fj8dec3a740084e0cc@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +18,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-On Monday 2005-October-24 13:07, Fabricio Lopes de Souza wrote:
-> Hello guys , im trying to find a solution for this !
-> I need to block some type of archives to get outside my network .
-> Like images and AUTOCAD files .
+People,
 
-And what about tar, zip, gzip and friends? Or worse: gpg? It's a lost 
-cause, and you're starting out from way behind, as demonstrated by the 
-fact that you posted this question here. It is not a netfilter issue, 
-not even when using ugly hacks like L7 and -m string.
 
-> I want a solution that not work with the extension of files ! :D
-> Can you help me ?
+I tried to untar this file patch-iptables-1.3.2-1.3.3.bz2 and i got error.
 
-No, but perhaps squid-cache.org could.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+I tried tar xvfz patch-iptables-1.3.2-1.3.3.bz2 and
+too tar xvfj patch-iptables-1.3.2-1.3.3.bz2
+
+Who how to do this??
+
+Tks
 
