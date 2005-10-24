@@ -1,12 +1,10 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: LAN Port forwarding with a dynamic IP address
-Date: Sun, 23 Oct 2005 00:19:18 -0500
-Message-ID: <435B1D56.5060704@riverviewtech.net>
-References: <7f6703390510210400n3ea01619p3e46ee81bd7badc3@mail.gmail.com>
+From: "Tony Spencer" <tony@games-master.co.uk>
+Subject: Forwarding to another ip:port based on source
+Date: Mon, 24 Oct 2005 07:29:26 +0100
+Message-ID: <200510240628.j9O6Skw3002058@linux.tonyspencer.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7f6703390510210400n3ea01619p3e46ee81bd7badc3@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Zac Hansen <xaxxon@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Zac Hansen wrote:
-> I have a single, dynamic IP address. I have multiple boxes behind a linux
-> router, one of which runs a web server on port 80. I have set up rules (a
-> PREROUTING and a FORWARD rule) to let people outside my LAN deal see my web
-> server. The problem is that the boxes on my LAN can't see them.
-> 
-> I really don't want to hardcode my external IP address into any rules and I
-> don't want to do any DNS work to make the LAN boxes look up the actual
-> server's LAN IP address directly.
-> 
-> Can I get my LAN boxes to see my web site and not do the things I don't want
-> to do?
+Hi 
 
-You might be able to use one of the Layer 7 filters to match the traffic that is actually destined for your server via the HTTP get line but I think this would be after the connection is made.
+Is it possible to have an IPTables rule that will forward any packets on a
+given port to another ip address and port based on where the packet came
+from?
 
-The other option that comes to mind would be to set up some sort of proxy (Squid in reverse proxy mode) server that your clients or the world would issue the request to and have it handle the routing of sending the request to the box that is really servicing the request.
+For example if I have a server on IP 192.168.0.1 and any requests into that
+server on port 80 from a source IP of 192.168.1.10 and want to force those
+packets to our squid server 192.168.0.11 on port 3128. But only for the IP
+192.168.1.10, all other requests to the server on port 80 should stay local?
 
+Thanks
+Tony
+ 
 
-
-Grant. . . .
 
