@@ -1,12 +1,10 @@
-From: Amitabh Kant <amitabhkant@gmail.com>
-Subject: Re: Installing iptables under MacOS X (for snort_inline)
-Date: Mon, 24 Oct 2005 22:52:21 +0530
-Message-ID: <84b68b3d0510241022x78fe8c15tc6ef0ab03465a379@mail.gmail.com>
-References: <2DF90770-7496-4781-AA60-D8A4E5F17E0A@bordo.com.au>
+From: Fabricio Lopes de Souza <linux.fabricio@gmail.com>
+Subject: Blocking file transfer by type
+Date: Mon, 24 Oct 2005 16:07:37 -0200
+Message-ID: <67c243f60510241107q5fc6741fj8dec3a740084e0cc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2DF90770-7496-4781-AA60-D8A4E5F17E0A@bordo.com.au>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,35 +17,11 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: James Brown <jlbrown@bordo.com.au>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I am not very sure, but isn't Mac OS X based on some BSD code.  If
-that's the case, you could try using ipfw/pf to work with snort in
-inline mode.
-
-Amitabh
-
-On 10/23/05, James Brown <jlbrown@bordo.com.au> wrote:
-> when I try "make install-devel" I get:
->
-> Making dependencies: please wait...
-> Something wrong... deleting dependencies.
->
->
->      Please try `make KERNEL_DIR=3Dpath-to-correct-kernel'.
->
->
-> make: *** [linux/ip.h] Error 1
->
->
-> This is under MacOS X Tiger (10.4.2).
->
-> Has anyone got it to work under MacOS X?
->
-> Thanks,
->
-> James.
->
->
+Hello guys , im trying to find a solution for this !
+I need to block some type of archives to get outside my network . Like
+images and AUTOCAD files .
+I want a solution that not work with the extension of files ! :D
+Can you help me ?
 
