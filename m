@@ -1,7 +1,7 @@
 From: Rafael Dreher <dreher@interage.com.br>
 Subject: Re: How to untar the .bz2
-Date: Mon, 24 Oct 2005 18:05:12 -0200
-Message-ID: <435D3E78.50204@interage.com.br>
+Date: Mon, 24 Oct 2005 18:04:35 -0200
+Message-ID: <435D3E53.2060106@interage.com.br>
 References: <00ed01c5d8d4$7b4ff070$3200000a@PIVT>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
