@@ -1,12 +1,11 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: Routing from private to bridge
-Date: Mon, 24 Oct 2005 18:09:06 +1000
-Message-ID: <435C96A2.3090807@snapgear.com>
-References: <43598481.8040306@internode.on.net>
+From: "Peter Kling" <pjotrekse@hotmail.com>
+Subject: Reaching administration ip of ADSL modem from router and internal
+	network
+Date: Mon, 24 Oct 2005 11:08:10 +0200
+Message-ID: <BAY18-F1F72898A8F1CBD26979F2A4770@phx.gbl>
+Reply-To: peter@solvik.se
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43598481.8040306@internode.on.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Tom Gaudasinski <cetus@internode.on.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On 10/22/2005 10:14 AM, Tom Gaudasinski wrote:
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags Metric Ref    Use 
-> Iface
-> 120.40.60.192  0.0.0.0         255.255.255.248 U     0      0        0 br0
-> 192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth2
-> 0.0.0.0         120.40.60.193  0.0.0.0         UG    0      0        0 br0
-> 
-> How can i get the private LAN users to route to the publically bridged 
-> subnet?
+Hi everybody...
 
-What is the routing table on the public machines?
-What NAT rules do you normally use?
+I am trying to reach the administration ip of my ADSL modem from the 
+following router and from the internal network. I am not sure that this is 
+possible at all, and am at a loss as to what to do in iptables to make it 
+possible. Searching the archive did not give a clue.
 
-It may be that the private machines and firewall are fine, but the routing
-is wrong on the public machines.  If they simply have the default gateway
-of 120.40.60.193, then they will be sending reply packets for private
-addresses to the DSL modem, which is wrong.
+The setup is as follows:
+ISP(with dyn ip) <-> ADSL Modem(in bridge mode) <-> Asus router(with 
+firewall) <-> Internal network
 
-Although these packets go via the firewall, their ethernet destination will
-be the DSL router, so the firewall will bridge them rather than route.
+The service port of the modem is set up as 10.xxx.61.1
+The internal network is 10.xxx.60.0/24
+The router interface towards modem is vlan1, towards internal network is br0
 
-You have two options:
+I have experimented with setting a route like:
+route -v add -host 10.xxx.61.1 gw 10.xxx.60.1 dev vlan1
+but this does not work/does not seem to be enough.
 
-- add a route on the public machines to use the firewall as the
-gateway for the private addresses
+Could you please help me with what I need to set up to  reach the modem from 
+the internal network and/or from the router?
 
-- make sure the NAT rule on the firewall always NATs the private
-addresses, even for connections to the public machines.
+Everything else is working perfectly OK.
+
+
+Thanks in advance.
+
+Peter
+
+
 
