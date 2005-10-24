@@ -1,11 +1,11 @@
-From: James Brown <jlbrown@bordo.com.au>
-Subject: Installing iptables under MacOS X (for snort_inline)
-Date: Sun, 23 Oct 2005 22:39:50 +1000
-Message-ID: <2DF90770-7496-4781-AA60-D8A4E5F17E0A@bordo.com.au>
-Mime-Version: 1.0 (Apple Message framework v734)
-Content-Type: multipart/signed; micalg=sha1; boundary=Apple-Mail-28--707347731;
-	protocol="application/pkcs7-signature"
+From: "Marco Berizzi" <pupilla@hotmail.com>
+Subject: RE: make: *** [extensions/libipt_connbytes_sh.o] Error 1
+Date: Mon, 24 Oct 2005 14:47:50 +0200
+Message-ID: <BAY103-F16EE8F918BF3462BE3E7D0B2770@phx.gbl>
+References: <BAY103-F2707B5391B27AB7499E107B2770@phx.gbl>
+Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY103-F2707B5391B27AB7499E107B2770@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,83 +16,208 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+I have just downloaded  iptables-1.3.3-20051023 and all is fine.
+My apologies for the spam.
 
---Apple-Mail-28--707347731
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=US-ASCII;
-	format=flowed
+PS: When will be released iptables 1.3.4?
 
-when I try "make install-devel" I get:
+Marco Berizzi wrote:
 
-Making dependencies: please wait...
-Something wrong... deleting dependencies.
+>I have removed extensions/.connbytes-test and this is make's output:
+>
+>cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
+>-DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_string_sh.o -c
+>extensions/libipt_string.c
+>extensions/libipt_string.c: In function `parse_string':
+>extensions/libipt_string.c:50: error: `BM_MAX_NLEN' undeclared (first use 
+>in this function)
+>extensions/libipt_string.c:50: error: (Each undeclared identifier is 
+>reported only once
+>extensions/libipt_string.c:50: error: for each function it appears in.)
+>extensions/libipt_string.c:50: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c: In function `parse_hex_string':
+>extensions/libipt_string.c:95: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c:117: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c:123: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c:126: error: `BM_MAX_NLEN' undeclared (first use 
+>in this function)
+>extensions/libipt_string.c:130: error: structure has no member named `len'
+>extensions/libipt_string.c: In function `parse':
+>extensions/libipt_string.c:154: error: structure has no member named `len'
+>extensions/libipt_string.c:154: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c: In function `print':
+>extensions/libipt_string.c:240: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c:240: error: structure has no member named `len'
+>extensions/libipt_string.c:242: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c:242: error: structure has no member named `len'
+>extensions/libipt_string.c:245: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c:245: error: structure has no member named `len'
+>extensions/libipt_string.c: In function `save':
+>extensions/libipt_string.c:257: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c:257: error: structure has no member named `len'
+>extensions/libipt_string.c:259: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c:259: error: structure has no member named `len'
+>extensions/libipt_string.c:262: error: structure has no member named 
+>`string'
+>extensions/libipt_string.c:262: error: structure has no member named `len'
+>make: *** [extensions/libipt_string_sh.o] Error 1
+>
+>so I have deleted also extensions/.string-test and make is happy.
+>
+>Marco Berizzi wrote:
+>
+>>Compiling iptables 1.3.3 on Slackware 10.2
+>>with kernel 2.6.14rc5 I got this error:
+>>
+>>Making dependencies: please wait...
+>>Extensions found: IPv4:CLUSTERIP IPv4:connbytes IPv4:nth IPv4:recent 
+>>IPv4:string IPv6:REJECT IPv6:ah IPv6:esp IPv6:frag IPv6:ipv6header 
+>>IPv6:nth IPv6:hbh IPv6:dst IPv6:rt
+>>cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
+>>-DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_ah_sh.o -c 
+>>extensions/libipt_ah.c
+>>ld -shared  -o extensions/libipt_ah.so extensions/libipt_ah_sh.o
+>>
+>>[...]
+>>
+>>cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
+>>-DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_ULOG_sh.o -c 
+>>extensions/libipt_ULOG.c
+>>ld -shared  -o extensions/libipt_ULOG.so extensions/libipt_ULOG_sh.o
+>>cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
+>>-DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_CLUSTERIP_sh.o -c 
+>>extensions/libipt_CLUSTERIP.c
+>>ld -shared  -o extensions/libipt_CLUSTERIP.so 
+>>extensions/libipt_CLUSTERIP_sh.o
+>>cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
+>>-DIPTABLES_VERSION=\"1.3.3\"  -fPIC -o extensions/libipt_connbytes_sh.o -c 
+>>extensions/libipt_connbytes.c
+>>In file included from extensions/libipt_connbytes.c:9:
+>>/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:19: error: 
+>>syntax error before "aligned_u64"
+>>/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:19: warning: 
+>>no semicolon at end of struct or union
+>>/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:19: warning: 
+>>no semicolon at end of struct or union
+>>/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:20: warning: 
+>>type defaults to `int' in declaration of `to'
+>>/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:20: warning: 
+>>data definition has no type or storage class
+>>/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:21: warning: 
+>>type defaults to `int' in declaration of `count'
+>>/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:21: warning: 
+>>data definition has no type or storage class
+>>/usr/src/linux/include/linux/netfilter_ipv4/ipt_connbytes.h:24: error: 
+>>syntax error before '}' token
+>>extensions/libipt_connbytes.c: In function `parse_range':
+>>extensions/libipt_connbytes.c:35: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:38: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:41: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:43: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:43: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:45: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:45: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c: In function `parse':
+>>extensions/libipt_connbytes.c:66: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:67: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:67: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:68: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:74: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:76: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:78: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:87: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:87: error: `IPT_CONNBYTES_WHAT_PKTS' 
+>>undeclared (first use in this function)
+>>extensions/libipt_connbytes.c:87: error: (Each undeclared identifier is 
+>>reported only once
+>>extensions/libipt_connbytes.c:87: error: for each function it appears in.)
+>>extensions/libipt_connbytes.c:89: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:89: error: `IPT_CONNBYTES_WHAT_BYTES' 
+>>undeclared (first use in this function)
+>>extensions/libipt_connbytes.c:91: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:91: error: `IPT_CONNBYTES_WHAT_AVGPKT' 
+>>undeclared (first use in this function)
+>>extensions/libipt_connbytes.c: In function `print_mode':
+>>extensions/libipt_connbytes.c:113: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:114: error: `IPT_CONNBYTES_WHAT_PKTS' 
+>>undeclared (first use in this function)
+>>extensions/libipt_connbytes.c:117: error: `IPT_CONNBYTES_WHAT_BYTES' 
+>>undeclared (first use in this function)
+>>extensions/libipt_connbytes.c:120: error: `IPT_CONNBYTES_WHAT_AVGPKT' 
+>>undeclared (first use in this function)
+>>extensions/libipt_connbytes.c: In function `print_direction':
+>>extensions/libipt_connbytes.c:131: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c: In function `print':
+>>extensions/libipt_connbytes.c:155: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:155: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:156: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:157: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:159: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:160: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c: In function `save':
+>>extensions/libipt_connbytes.c:174: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:174: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:175: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:176: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:178: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c:179: error: dereferencing pointer to 
+>>incomplete type
+>>extensions/libipt_connbytes.c: At top level:
+>>extensions/libipt_connbytes.c:192: error: invalid application of `sizeof' 
+>>to an incomplete type
+>>extensions/libipt_connbytes.c:193: error: invalid application of `sizeof' 
+>>to an incomplete type
+>>make: *** [extensions/libipt_connbytes_sh.o] Error 1
+>>
+>>
+>>
+>
+>
+>
 
 
-     Please try `make KERNEL_DIR=path-to-correct-kernel'.
-
-
-make: *** [linux/ip.h] Error 1
-
-
-This is under MacOS X Tiger (10.4.2).
-
-Has anyone got it to work under MacOS X?
-
-Thanks,
-
-James.
---Apple-Mail-28--707347731
-Content-Transfer-Encoding: base64
-Content-Type: application/pkcs7-signature;
-	name=smime.p7s
-Content-Disposition: attachment;
-	filename=smime.p7s
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIGHDCCAtUw
-ggI+oAMCAQICAw8LxTANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
-d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
-YWlsIElzc3VpbmcgQ0EwHhcNMDUwNjMwMDEwMTA2WhcNMDYwNjMwMDEwMTA2WjBGMR8wHQYDVQQD
-ExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMSMwIQYJKoZIhvcNAQkBFhRqbGJyb3duQGJvcmRvLmNv
-bS5hdTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKyJ5ItvspbOvsiotl7Yys4rMsn+
-DxyTXSu9Ss19yRLGLJQ9bDYcL9ykJSDc/772c5+teLv4lQLIFbczbb2Q+4g1yd963qm1FDdTXaU6
-K7LTf/zn5n4wDRB1fhNXBhraise3NIqxwt9p1i6+dUgr2DgTs13L2y3Cuy9Kx+yM0jKilRXBzQaM
-LSrSmL8Lm6ZX/82jzoRM3cc9nqCCHBkF2wl4WgKvrrS4qm2fKs3mbzXLSoHIGOolmKzDSjE7x1mB
-ElfNMpbtRp34FFzAyFrxnwF7j9GAhLv2WflMTDYXnPpABmniUnBwmWxWEequP1tAg6AW0/u7M0A8
-+/eDnGifoo8CAwEAAaMxMC8wHwYDVR0RBBgwFoEUamxicm93bkBib3Jkby5jb20uYXUwDAYDVR0T
-AQH/BAIwADANBgkqhkiG9w0BAQQFAAOBgQCSe01pQlIG+QRwHQPakEPBoI71ToH3ctmskd4pSlDA
-IDddpl012wkVzEgC1fJAhPXZvXhxERPJ3c0A0RiMYgj0zXbK5VzAsYlL0shaB8Jz4xcgMn7UbRAD
-iESBzmmuVAlDHCK1tdcw4ZmbwcUpuXsjjCAhIzSb6+PUpUNbVHRnrTCCAz8wggKooAMCAQICAQ0w
-DQYJKoZIhvcNAQEFBQAwgdExCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQ
-BgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0Nl
-cnRpZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBG
-cmVlbWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAe
-Fw0wMzA3MTcwMDAwMDBaFw0xMzA3MTYyMzU5NTlaMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxU
-aGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJl
-ZW1haWwgSXNzdWluZyBDQTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAxKY8VXNV+065ypla
-HmjAdQRwnd/p/6Me7L3N9VvyGna9fww6YfK/Uc4B1OVQCjDXAmNaLIkVcI7dyfArhVqqP3FWy688
-Cwfn8R+RNiQqE88r1fOCdz0Dviv+uxg+B79AgAJk16emu59l0cUqVIUPSAR/p7bRPGEEQB5kGXJg
-t/sCAwEAAaOBlDCBkTASBgNVHRMBAf8ECDAGAQH/AgEAMEMGA1UdHwQ8MDowOKA2oDSGMmh0dHA6
-Ly9jcmwudGhhd3RlLmNvbS9UaGF3dGVQZXJzb25hbEZyZWVtYWlsQ0EuY3JsMAsGA1UdDwQEAwIB
-BjApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxhYmVsMi0xMzgwDQYJKoZIhvcNAQEF
-BQADgYEASIzRUIPqCy7MDaNmrGcPf6+svsIXoUOWlJ1/TCG4+DYfqi2fNi/A9BxQIJNwPP2t4WFi
-w9k6GX6EsZkbAMUaC4J0niVQlGLH2ydxVyWN3amcOY6MIE9lX5Xa9/eH1sYITq726jTlEBpbNU13
-41YheILcIRk13iSx0x1G/11fZU8xggLnMIIC4wIBATBpMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQK
-ExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwg
-RnJlZW1haWwgSXNzdWluZyBDQQIDDwvFMAkGBSsOAwIaBQCgggFTMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA1MTAyMzEyMzk1MVowIwYJKoZIhvcNAQkEMRYEFB9d
-F119LvwqpHbD30ku4AIQYAGqMHgGCSsGAQQBgjcQBDFrMGkwYjELMAkGA1UEBhMCWkExJTAjBgNV
-BAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25h
-bCBGcmVlbWFpbCBJc3N1aW5nIENBAgMPC8UwegYLKoZIhvcNAQkQAgsxa6BpMGIxCzAJBgNVBAYT
-AlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3
-dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIDDwvFMA0GCSqGSIb3DQEBAQUABIIBAA++
-PBHWQZYJEVS1J//O9xrDMdRycWyOFYC7PSQv39a0btiHmpGXn3bf7sy+wFjJxfSRPgrafw8KPAEo
-eNN/76gvalrw0QEQjfmArdUuPFdZmF94i5vm3nRVFp7/N7zvY/+iBsJaUsnuep1vHP4TE2KDxvJA
-ubhUp/6dFLuwsPfA0mMH3CltdjQPFPvdhjWfazuZo4o54Pjqs15lZlN2KSiDCzyrUiuICnmigD2A
-FhoQPZ6DiSHe9d7P8CWI90QojJQH2kMLru6F66SdB6YysVEhdJuTWWyB9thUdK92cjf5OAn5Ks1p
-/BrO4oHt6fPq3kbeO2mmePi6qrMD76pkZX4AAAAAAAA=
-
---Apple-Mail-28--707347731--
 
