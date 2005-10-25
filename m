@@ -1,14 +1,12 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: Pb update iptables NAT
-Date: Tue, 25 Oct 2005 17:05:53 +0200
-Message-ID: <1130252753.4872.39.camel@localhost.localdomain>
-References: <BAF83494CE653943A97B9F755016A06601EDFC92@ftrdmel1.rd.francetelecom.fr>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: Iptables problem with Mail Server
+Date: Tue, 25 Oct 2005 17:59:49 +0200
+Message-ID: <435E5675.4090706@mnemon.de>
+References: <000b01c5d99a$49bb74a0$3a01010a@TRAINERSB>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-pkf+ivRJGyabq8TfYNxo"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAF83494CE653943A97B9F755016A06601EDFC92@ftrdmel1.rd.francetelecom.fr>
+In-Reply-To: <000b01c5d99a$49bb74a0$3a01010a@TRAINERSB>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,53 +17,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: LE BER Erwan RD-CORE-LAN <erwan.leber@francetelecom.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+your link is broken
 
---=-pkf+ivRJGyabq8TfYNxo
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
-
-Le lundi 24 octobre 2005 =E0 16:58 +0200, LE BER Erwan RD-CORE-LAN a
-=E9crit :
-> Hello,
+sameer bagwe wrote:
+>  I have two servers running Linux. Server A is SAMBA domain controller =
+and Server B is MAIL server(qmail)
+> My Server A has two NIC. One two my ISP(172.16.57.188/30) and the other=
+ to my LAN.(172.16.19.0/24)
 >=20
-> I'm using iptables on an embeded linux plateform. I applie a first
-> PREROUTING DNAT rule , it's OK.=20
-> But Now I need to update the rule to rout this packet to another
-> terminal. I have flushed my iptables rules and create an another but the
-> packets always go to the first terminal.
-> Can you help me on updating a iptables rules without stoping the packets
-> flow.
+> Server A LAN IP =3D 172.16.19.230
+> Server A ISP IP =3D 172.16.57.190
+>=20
+> Server B IP =3D 172.16.19.231
+> Server B also has a dial up option for backup if ISP is down
+>=20
+> I have attached my iptable script.
+> http://s59.yousendit.com/d.aspx?id=3D...GF23Y94C8R092VF
+>=20
+> If i set default INPUT Policy to DROP then incoming Mail stop coming.
+>=20
+> I add a rule at the end of the script:
+> ipt -A -s 0/0 -d $LAN_IP -j REJECT
+>=20
+> The above rule will also block nmap port scans.
+>=20
+> I am not a pro in iptables. Just know scripting and adding intermediate=
+ level rules.Please let me know how to fix this
+>=20
+> Thanks=20
+>=20
+> Best Regards,
+> Sameer Bagwe
+>=20
+> --
+> Only The Inquiring Mind Solves Problems !
+>=20
+> !DSPAM:435e231e12299217213932!
 
-In fact, this is not possible without kernel interaction.
-NAT chains is only hit at first packet, the connection tracking then
-stores the translation done and keep it for all the connection.
 
-Maybe you could have a look at the connmark tool that will be available
-with 2.6.14. It seems to be able to update conntrack entry, that could
-be a nice workaround.
-
-Cordialement,
 --=20
-=C9ric Leblond, eleblond@inl.fr
-T=E9l=E9phone : 01 44 89 46 40, Fax : 01 44 89 45 01
-INL, http://www.inl.fr
+-----------------------------------------------------------------------
+mnemon
+J=F6rg Harmuth
+Niederkastenholzerstr. 24a
+53881 Euskirchen
 
---=-pkf+ivRJGyabq8TfYNxo
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+Tel.: (+49) 22 55 9 48 78 22
+mail: harmuth@mnemon.de
+Web:  http://www.mnemon.de
+PGP-Key: http://www.mnemon.de/keys/harmuth_mnemon.asc
+PGP-Fingerprint: 692E 4476 0838 60F8 99E2  7F5D B7D7 E48E 267B 204F
+-----------------------------------------------------------------------
+English version below.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+Aufgrund massiven SPAM Aufkommens, werden Mails, die unser SPAM
+Filter als SPAM einstuft, automatisch gel=F6scht. Falls Ihre Mail
+f=E4lschlicherweise als SPAM eingestuft wurde, senden Sie bitte eine
+Email mit "No-Spam:" im Betreff.
 
-iD8DBQBDXknRnxA7CdMWjzIRAk84AJ4jxbYcBOZUMFRgKyFDa800vV1CigCgjY1g
-RgFKwiD7uCtjdWrERArhxMg=
-=+r0t
------END PGP SIGNATURE-----
+Diese Mail wurde vor dem Versenden auf Viren und andere sch=E4dliche
+Software untersucht. Es wurde keine malizi=F6se Software gefunden.
 
---=-pkf+ivRJGyabq8TfYNxo--
+Due to massive SPAM, all mails our content filter classifies as SPAM,
+are discarded silently. If you mail was classified as SPAM by mistake,
+please send an email with "No-Spam:" within the subject.
+
+This Mail was checked for virusses and other malicious software before
+sending. No malicious software was detected.
+-----------------------------------------------------------------------
 
 
