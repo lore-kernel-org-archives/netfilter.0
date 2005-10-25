@@ -1,11 +1,10 @@
-From: "LE BER Erwan RD-CORE-LAN" <erwan.leber@francetelecom.com>
-Subject: Pb update iptables NAT
-Date: Mon, 24 Oct 2005 16:58:36 +0200
-Message-ID: <BAF83494CE653943A97B9F755016A06601EDFC92@ftrdmel1.rd.francetelecom.fr>
+From: "sameer bagwe" <sameerb@techknowledge.co.in>
+Subject: Iptables problem with Mail Server
+Date: Tue, 25 Oct 2005 12:28:32 -0700
+Message-ID: <000b01c5d99a$49bb74a0$3a01010a@TRAINERSB>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,33 +18,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+ I have two servers running Linux. Server A is SAMBA domain controller =
+and Server B is MAIL server(qmail)
+My Server A has two NIC. One two my ISP(172.16.57.188/30) and the other =
+to my LAN.(172.16.19.0/24)
 
-I'm using iptables on an embeded linux plateform. I applie a first
-PREROUTING DNAT rule , it's OK.=20
-But Now I need to update the rule to rout this packet to another
-terminal. I have flushed my iptables rules and create an another but the
-packets always go to the first terminal.
-Can you help me on updating a iptables rules without stoping the packets
-flow.
+Server A LAN IP =3D 172.16.19.230
+Server A ISP IP =3D 172.16.57.190
 
-Thanks for every kind of information you will give.=20
+Server B IP =3D 172.16.19.231
+Server B also has a dial up option for backup if ISP is down
 
-Erwan Le Ber  : CORE/M2V/RV2
-Tel 0296059891
-                                                =20
-France Telecom R&D
-2 avenue Pierre Marzin
-22307 Lannion Cedex
+I have attached my iptable script.
+http://s59.yousendit.com/d.aspx?id=3D...GF23Y94C8R092VF
 
+If i set default INPUT Policy to DROP then incoming Mail stop coming.
 
-Erwan Le Ber  : CORE/M2V/RV2
-                                                =20
-France Telecom R&D
-2 avenue Pierre Marzin
-22307 Lannion Cedex
+I add a rule at the end of the script:
+ipt -A -s 0/0 -d $LAN_IP -j REJECT
 
+The above rule will also block nmap port scans.
 
+I am not a pro in iptables. Just know scripting and adding intermediate =
+level rules.Please let me know how to fix this
 
+Thanks=20
 
+Best Regards,
+Sameer Bagwe
 
+--
+Only The Inquiring Mind Solves Problems !
