@@ -1,7 +1,7 @@
-From: Askar Ali <askarali@beaconet.net>
-Subject: Allowing ping
-Date: Tue, 25 Oct 2005 22:32:42 +0500
-Message-ID: <435E6C3A.20709@beaconet.net>
+From: Jerry Alexander <jerrya@airmail.net>
+Subject: iptables NAT and ICMP error messages
+Date: Tue, 25 Oct 2005 15:00:01 -0500
+Message-ID: <435E8EC1.1050705@airmail.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,25 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, Jerry <jerry@mavenir.com>
 
-hi list,
+Dear NF:
 
-        I have a very simple question, presently we are blocking icmp 
-"ping" on our servers. But as far I can userderstand its not very good 
-practice or providing a good security by blocking ping request. see one 
-can ping www.xyz.com and get the reply back.
+          Set up three linux boxes. 
+          Sending out iperf udp's to second box which is PREROUTED to 
+the 3rd box and
+prerouted back to the second and then to the first:
 
-However Before allowing ping "echo-request" I just want to confirm 
-whether doing ...
+           Doing
+-A PREROUTING -d 192.168.0.15 -i eth0 -p udp -j DNAT --to-destination 
+192.169.0.30
+and so on.
+Also do a POSTROUTING command to change the source address before 
+sending back
+to the first box.
 
-iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+The good news is that the packets get routed from 1 to 2 to 3 to 2 to 1 
+and have the
+altered src and dest address.
+Problem is I am also getting tons of ICMP destination unreachable messages.
+Tried putting in some FORWARD commands but this did nothing.
+Can some one tell me the source of these ICMP error messages and how to
+eliminate them?
+Running linux 2.4-20 and "yes" , ip_forward is set to 1.
 
-would be enough or doing some rate limiting would be better?
 
-Any help in this regard  will greatly appreciated.
+                                                                                  
+Jerry
 
-regards
-
-Askar Ali
 
