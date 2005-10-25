@@ -1,13 +1,10 @@
-From: "Pablo Sanchez" <pablo@blueoakdb.com>
-Subject: RE: Problem compiling iptables 1.3.3 w/kernel 2.6.13-15
-Date: Tue, 25 Oct 2005 12:50:15 -0400
-Message-ID: <NEBBLLCNFOFHMALJMDDEKEHABCAB.pablo@blueoakdb.com>
-References: <Pine.LNX.4.61.0510201849110.27782@filer.marasystems.com>
-Reply-To: pablo@blueoakdb.com
+From: Marc Peiser <marc@gocontent.com>
+Subject: iptables/multiple external natting problem
+Date: Tue, 25 Oct 2005 18:40:39 +0100
+Message-ID: <435E6E17.9040602@gocontent.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------010201060603030004040601"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0510201849110.27782@filer.marasystems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +15,115 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+This is a multi-part message in MIME format.
+--------------010201060603030004040601
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi,
 
-> -----Original Message-----
-> From: Henrik Nordstrom [mailto:hno@marasystems.com]
-> Sent: Thursday, October 20, 2005 12:50 PM
-> To: Pablo Sanchez
-> Cc: netfilter@lists.netfilter.org
-> Subject: RE: Problem compiling iptables 1.3.3 w/kernel 2.6.13-15
->=20
->=20
-> On Thu, 20 Oct 2005, Pablo Sanchez wrote:
->=20
-> > I haven't had any follow ups to the above post.  I'm wondering if =
-it's=20
-> > because it's such a silly question or whether it's out of the scope =
-of=20
-> > the list.
->=20
-> Try with a standard kernel source tree from kernel.org.
+I'm trying to setup a firewall at our data center and I think I'm 
+missing a few things here. I have a Class C ip range, lets call it 
+1.2.3.0/24. I have a firewall running kernel 2.6.9 and iptables 1.2.11. 
+My firewall has 2 network interfaces, on the external interface I've 
+added an alias for each external ip that I want to nat to internal servers:
 
-Hi Henrik,
+eg. ifconfig eth0:0 1.2.3.10 netmask 255.255.255.0
+(Is this the correct way to use multiple ip's?)
 
-Thank you for the excellent tip.  Sometimes the obvious eludes me. =20
+My servers on the inside interface are on the 192.168.0.0/24 network.
 
-Indeed, the stock Suse 10.0 bits were the issue.  I downloaded the =
-standard kernel source per your recommendation, compiled, installed and =
-booted. =20
+I'm able to ssh to an internal server via an external ip address.
+The problem is I can't seem to connect out (via ssh, dns, www etc) from 
+the inside servers. There is a rule blocking these connections as it 
+shows me in the firewall logs:
 
-Once running with the stock kernel, IPTABLES compiled without a hitch.
+Oct 25 18:27:22 fw1 kernel: IN=eth1 OUT=eth0 SRC=192.168.0.20 
+DST=4.3.2.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=28642 DF PROTO=UDP 
+SPT=32769 DPT=53 LEN=40
+Oct 25 18:27:31 fw1 kernel: IN=eth1 OUT=eth0 SRC=192.168.0.20 
+DST=4.3.2.1 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=18271 DF PROTO=TCP 
+SPT=32792 DPT=22 WINDOW=5840 RES=0x00 SYN URGP=0
 
-Cheers,
----
-Pablo Sanchez - Blueoak Database Engineering, Inc
-Ph:    819.459.1926          Toll free:  888.459.1926
-Cell:  819.664.9118                Pgr:  pablo_p@blueoakdb.com
-Fax:   603.720.7723 (US)           Fax:  514.371.1255 (Canada)
+I've attached my firewall script, could someone please take a look at it 
+and give me a hand. Or if they have a similar setup, could you send me 
+your config. If there is a better way to do this, please let me know.
 
+Many thanks,
+Marc
+
+--------------010201060603030004040601
+Content-Type: application/x-shellscript;
+ name="firewall.sh"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="firewall.sh"
+
+IyEvYmluL3NoCgovc2Jpbi9tb2Rwcm9iZSBpcF9jb25udHJhY2tfZnRwCgpDT05ORUNUSU9O
+X1RSQUNLSU5HPSIxIgpBQ0NFUFRfQVVUSD0iMCIKSVBUPSIvc2Jpbi9pcHRhYmxlcyIJCQkj
+IExvY2F0aW9uIG9mIGlwdGFibGVzIG9uIHlvdXIgc3lzdGVtCgpFWFRfSU5URVJGQUNFPSJl
+dGgwIgkJCSMgZXh0ZXJuYWwgbmV0d29yayBpbnRlcmZhY2UgKGludGVybmV0KQpJTlRfSU5U
+RVJGQUNFPSJldGgxIgkJCSMgaW50ZXJuYWwgbmV0d29yayBpbmZlcmZhY2UgKHNlcnZlcnMp
+CkxPT1BCQUNLX0lOVEVSRkFDRT0ibG8iCQkJIyBob3dldmVyIHlvdXIgc3lzdGVtIG5hbWVz
+IGl0CgojRVhUX0lQQUREUj0iMS4yLjMuMiIJCQkjIGV4dGVybmFsIGlwIGFkZHJlc3MKI0dB
+VEVXQVlfSVBBRERSPSIxLjIuMy4xIgkJIyBnYXRld2F5IGZpcmV3YWxsIC0gdGhlIHJvdXRl
+cgojRVhUX0FERFJFU1NFUz0iMS4yLjMuMC8yNCIJCSMgZXh0ZXJuYWwgaXAgYWRkcmVzcyBy
+YW5nZQojRVhUX05FVFdPUks9IjEuMi4zLjAiCQkJIyBleHRlcm5hbCBzdWJuZXQgYmFzZSBh
+ZGRyZXNzCiNFWFRfQlJPQURDQVNUPSIxLjIuMy4yNTUiCQkjIGV4dGVybmFsIGJyb2FkY2Fz
+dCBhZGRyZXNzCgpJTlRfSVBBRERSPSIxOTIuMTY4LjAuMSIJCSMgaW50ZXJuYWwgaXAgYWRk
+cmVzcwpJTlRfQUREUkVTU0VTPSIxOTIuMTY4LjAuMC8yNCIJCSMgaW50ZXJuYWwgaXAgYWRk
+cmVzcyByYW5nZQpJTlRfTkVUV09SSz0iMTkyLjE2OC4wLjAiCQkjIGludGVybmFsIHN1Ym5l
+dCBiYXNlIGFkZHJlc3MKSU5UX0JST0FEQ0FTVD0iMTkyLjE2OC4wLjI1NSIJCSMgaW50ZXJu
+YWwgYnJvYWRjYXN0IGFkZHJlc3MKSU5UX05FVE1BU0s9IjI1NS4yNTUuMjU1LjAiCQkjIGlu
+dGVybmFsIG5ldG1hc2sKCkxPT1BCQUNLPSIxMjcuMC4wLjAvOCIKQ0xBU1NfQT0iMTAuMC4w
+LjAvOCIKQ0xBU1NfQj0iMTcyLjE2LjAuMC8xMiIKQ0xBU1NfQz0iMTkyLjE2OC4wLjAvMTYi
+CkNMQVNTX0RfTVVMVElDQVNUPSIyMjQuMC4wLjAvNCIKQ0xBU1NfRV9SRVNFUlZFRF9ORVQ9
+IjI0MC4wLjAuMC81IgpCUk9BRENBU1RfU1JDPSIwLjAuMC4wIgpCUk9BRENBU1RfREVTVD0i
+MjU1LjI1NS4yNTUuMjU1IgoKUFJJVlBPUlRTPSIwOjEwMjMiClVOUFJJVlBPUlRTPSIxMDI0
+OjY1NTM1IgoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwoKIyBSZW1vdmUgYW55IGV4aXN0aW5n
+IHJ1bGVzIGZyb20gYWxsIGNoYWlucwokSVBUIC0tZmx1c2gKJElQVCAtdCBuYXQgLS1mbHVz
+aAokSVBUIC10IG1hbmdsZSAtLWZsdXNoCiRJUFQgLVgKJElQVCAtdCBuYXQgLVgKJElQVCAt
+dCBtYW5nbGUgLVgKCiMgUmVzZXQgdGhlIGRlZmF1bHQgcG9saWN5CiRJUFQgLS1wb2xpY3kg
+SU5QVVQgQUNDRVBUCiRJUFQgLS1wb2xpY3kgT1VUUFVUIEFDQ0VQVAokSVBUIC0tcG9saWN5
+IEZPUldBUkQgQUNDRVBUCiRJUFQgLXQgbmF0IC0tcG9saWN5IFBSRVJPVVRJTkcgQUNDRVBU
+CiRJUFQgLXQgbmF0IC0tcG9saWN5IE9VVFBVVCBBQ0NFUFQKJElQVCAtdCBuYXQgLS1wb2xp
+Y3kgUE9TVFJPVVRJTkcgQUNDRVBUCiRJUFQgLXQgbWFuZ2xlIC0tcG9saWN5IFBSRVJPVVRJ
+TkcgQUNDRVBUCiRJUFQgLXQgbWFuZ2xlIC0tcG9saWN5IE9VVFBVVCBBQ0NFUFQKCiMgVW5s
+aW1pdGVkIHRyYWZmaWMgb24gdGhlIGxvb3BiYWNrIGludGVyZmFjZQokSVBUIC1BIElOUFVU
+IC1pIGxvIC1qIEFDQ0VQVAokSVBUIC1BIE9VVFBVVCAtbyBsbyAtaiBBQ0NFUFQKCiMgU2V0
+IHRoZSBkZWZhdWx0IHBvbGljeSB0byBkcm9wCiRJUFQgLS1wb2xpY3kgSU5QVVQgRFJPUAok
+SVBUIC0tcG9saWN5IEZPUldBUkQgRFJPUAoKJElQVCAtLXBvbGljeSBPVVRQVVQgQUNDRVBU
+CgokSVBUIC1BIElOUFVUIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAt
+aiBBQ0NFUFQKJElQVCAtQSBPVVRQVVQgLW0gc3RhdGUgLS1zdGF0ZSBFU1RBQkxJU0hFRCxS
+RUxBVEVEIC1qIEFDQ0VQVAokSVBUIC1BIEZPUldBUkQgLW0gc3RhdGUgLS1zdGF0ZSBFU1RB
+QkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVAoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojIE5B
+VCBydWxlcyA8ZXh0ZXJuYWwgaXA6cG9ydD4gdG8gPGludGVybmFsIHNlcnZlcjpwb3J0PiBt
+YXBwaW5nCgokSVBUIC10IG5hdCAtQSBQUkVST1VUSU5HIC1pIGV0aDAgLXAgdGNwIC0tc3Bv
+cnQgMTAyNDo2NTUzNSAtZCAxLjIuMy4xMCAtLWRwb3J0IDIyIC1qIEROQVQgLS10by1kZXN0
+aW5hdGlvbiAxOTIuMTY4LjAuMjAKJElQVCAtQSBGT1JXQVJEIC1pIGV0aDAgLW8gJElOVF9J
+TlRFUkZBQ0UgLXAgdGNwIC0tc3BvcnQgMTAyNDo2NTUzNSAtZCAxLjIuMy4xMCAtLWRwb3J0
+IDIyIC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIEFDQ0VQVAoKJElQVCAtdCBuYXQgLUEgUE9T
+VFJPVVRJTkcgLW8gZXRoMCAtcCB0Y3AgLXMgMTkyLjE2OC4wLjIwIC1qIFNOQVQgLS10byAx
+LjIuMy4xMAoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojIEFsbG93IHNzaCBhY2Nlc3MgdG8g
+YWxsIHNlcnZlcnMgZnJvbSB0aGVzZSBuZXR3b3JrcwokSVBUIC1BIEZPUldBUkQgLXMgNC4z
+LjIuMS8yNTUuMjU1LjI1NS4wIC1kIDE5Mi4xNjguMC4wLzI1NS4yNTUuMjU1LjAgLXAgdGNw
+IC1tIHRjcCAtLWRwb3J0IDIyIC1qIEFDQ0VQVAoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwoj
+IFRoZSBzaW5nbGUgZ2VuZXJpYyBGT1JXQVJEIHJ1bGUgcGFpciBmb3Igb3V0Z29pbmcgY29u
+bmVjdGlvbnMgaXMgcmVwZWF0ZWQgaGVyZToKJElQVCAtQSBGT1JXQVJEIC1pICRFWFRfSU5U
+RVJGQUNFIC1vICRJTlRfSU5URVJGQUNFIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQs
+UkVMQVRFRCAtaiBBQ0NFUFQKJElQVCAtQSBGT1JXQVJEIC1pICRJTlRfSU5URVJGQUNFIC1v
+ICRFWFRfSU5URVJGQUNFIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAt
+aiBBQ0NFUFQKCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyBMb2dnaW5nIERyb3BwZWQgUGFj
+a2V0cwoKJElQVCAtQSBJTlBVVCAtaSAkSU5UX0lOVEVSRkFDRSAtaiBMT0cKJElQVCAtQSBP
+VVRQVVQgLW8gJElOVF9JTlRFUkZBQ0UgLWogTE9HCiRJUFQgLUEgRk9SV0FSRCAtaSAkSU5U
+X0lOVEVSRkFDRSAtbyAkRVhUX0lOVEVSRkFDRSAtaiBMT0cKJElQVCAtQSBGT1JXQVJEIC1p
+ICRFWFRfSU5URVJGQUNFIC1vICRJTlRfSU5URVJGQUNFIC1qIExPRwoKZXhpdCAwCg==
+--------------010201060603030004040601--
 
