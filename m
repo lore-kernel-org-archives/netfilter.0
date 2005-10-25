@@ -1,13 +1,12 @@
-From: Rafael Dreher <dreher@interage.com.br>
-Subject: Re: How to untar the .bz2
-Date: Mon, 24 Oct 2005 18:07:53 -0200
-Message-ID: <435D3F19.800@interage.com.br>
-References: <00ed01c5d8d4$7b4ff070$3200000a@PIVT>
-	<435D3E78.50204@interage.com.br>
+From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Subject: Re: Forwarding to another ip:port based on source
+Date: Tue, 25 Oct 2005 12:07:24 +0200
+Message-ID: <435E03DC.90900@mnemon.de>
+References: <200510240628.j9O6Skw3002058@linux.tonyspencer.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <435D3E78.50204@interage.com.br>
+In-Reply-To: <200510240628.j9O6Skw3002058@linux.tonyspencer.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,75 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Rafael Dreher <dreher@interage.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Tony Spencer wrote:
+> Hi 
+> 
+> Is it possible to have an IPTables rule that will forward any packets on a
+> given port to another ip address and port based on where the packet came
+> from?
 
-Oops.
+Yes
 
-I didn't saw. :P
+> For example if I have a server on IP 192.168.0.1 and any requests into that
+> server on port 80 from a source IP of 192.168.1.10 and want to force those
+> packets to our squid server 192.168.0.11 on port 3128. But only for the IP
+> 192.168.1.10, all other requests to the server on port 80 should stay local?
 
-That's not a tarball.
+Use -s option like this:
 
-That's the way: bunzip patch-iptables-1.3.2-1.3.3.bz2
+-t nat -A PREROUTING -p tcp --dort 80 -s 192.168.1.10 \
+    -j DNAT --to 192.168.0.11:3128
 
+Probably you will have to SNAT too. Watch with tcpdump.
 
+HTH,
 
-Rafael Dreher wrote:
-| man tar... :)
-|
-| I'm kidding. :)
-|
-| tar -xjvf patch-iptables-1.3.2-1.3.3.bz2
-|
-|
-| Sebasti=E3o Ant=F4nio Campos (GWA) wrote:
-| | People,
-| |
-| |
-| | I tried to untar this file patch-iptables-1.3.2-1.3.3.bz2 and i got
-| error.
-| |
-| | I tried tar xvfz patch-iptables-1.3.2-1.3.3.bz2 and
-| | too tar xvfj patch-iptables-1.3.2-1.3.3.bz2
-| |
-| | Who how to do this??
-| |
-| | Tks
-| |
-| |
-|
-|
-| --
-| Rafael Dreher
-|
-| -:: Interage Integradora ::-
-| -:: Pesquisa e Desenvolvimento ::-
-| -:: www.gatepro.com.br || www.interage.com.br ::-
-|
-| -:: Red Hat Certified Engineer ::-
-| -:: Nr: 807303498507617 ::-
-| http://www.redhat.com/training/certification/verify
+Joerg
 
-- --
-Rafael Dreher
-
-- -:: Interage Integradora ::-
-- -:: Pesquisa e Desenvolvimento ::-
-- -:: www.gatepro.com.br || www.interage.com.br ::-
-
-- -:: Red Hat Certified Engineer ::-
-- -:: Nr: 807303498507617 ::-
-http://www.redhat.com/training/certification/verify
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (MingW32)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFDXT8ZGgX4r17upEoRAuxeAJ4/fCITNtXg7FhFDR4cu+RBx0zS1ACeO1th
-TM5E/Z6ZXYDhQPx3WuUOHKY=3D
-=3D96Jc
------END PGP SIGNATURE-----
 
