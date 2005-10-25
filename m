@@ -1,10 +1,13 @@
-From: "Oscar A. Valdez" <oscar.valdez@duraflex-politex.com>
-Subject: IPSEC end-points on the same systems as Netfilter
-Date: Tue, 25 Oct 2005 10:40:45 -0600
-Message-ID: <1130258445.3847.31.camel@wzowski.plastipak.com.sv>
+From: "Pablo Sanchez" <pablo@blueoakdb.com>
+Subject: RE: Problem compiling iptables 1.3.3 w/kernel 2.6.13-15
+Date: Tue, 25 Oct 2005 12:50:15 -0400
+Message-ID: <NEBBLLCNFOFHMALJMDDEKEHABCAB.pablo@blueoakdb.com>
+References: <Pine.LNX.4.61.0510201849110.27782@filer.marasystems.com>
+Reply-To: pablo@blueoakdb.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.61.0510201849110.27782@filer.marasystems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,42 +19,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-After upgrading from the 2.4 to the 2.6 kernel and discarding the cipe
-(Crypto-IP Encapsulation) package because of its incompatibility with
-2.6, I've been struggling hard to get IPSEC and Netfilter to coexist and
-cooperate on two IPSEC tunnel endpoints.
 
-My setup is very much like that described by Tom Eastep in
-http://www.shorewall.net/IPSEC-2.6.html#id2459973,
-except that I don't run the Shorewall package, just plain iptables
-rules. 
 
-Currently, I see the ESP packages arriving from the other endpoint, but
-I don't see them after they are decrypted.
+> -----Original Message-----
+> From: Henrik Nordstrom [mailto:hno@marasystems.com]
+> Sent: Thursday, October 20, 2005 12:50 PM
+> To: Pablo Sanchez
+> Cc: netfilter@lists.netfilter.org
+> Subject: RE: Problem compiling iptables 1.3.3 w/kernel 2.6.13-15
+>=20
+>=20
+> On Thu, 20 Oct 2005, Pablo Sanchez wrote:
+>=20
+> > I haven't had any follow ups to the above post.  I'm wondering if =
+it's=20
+> > because it's such a silly question or whether it's out of the scope =
+of=20
+> > the list.
+>=20
+> Try with a standard kernel source tree from kernel.org.
 
-I've patched the 2.6.12 kernel with Christophe Saout's patches at
-http://www.saout.de/misc/linux-2.6.12-ipsec-nat/ (ipsec-01-output-
-hooks.diff, ipsec-02-input-hooks.diff, ipsec-03-policy-lookup.diff,
-ipsec-04-policy-checks.diff), without luck.
+Hi Henrik,
 
-I'm about to rebuild the kernel and iptables with the ipsec-05-
-iptablescompile.diff from
-http://shorewall.net/pub/shorewall/contrib/IPSEC/2.6.12/,
-but I face the following difficulties applying the "policy patch"
-extension from patch-o-matic-ng-20051024.tar.bz2:
+Thank you for the excellent tip.  Sometimes the obvious eludes me. =20
 
-1) Will I be safe applying the extensions in policy/linux-2.6.10/ to the
-2.6.12 kernel?
+Indeed, the stock Suse 10.0 bits were the issue.  I downloaded the =
+standard kernel source per your recommendation, compiled, installed and =
+booted. =20
 
-2) I would prefer to apply the extensions in policy/linux-2.6.10/ and in
-policy/iptables/extensions/ to the kernel and to iptables directly by
-means of .spec files, in order to produce kernel and iptables rpms. How
-can I apply the extensions by means of .spec files? I would really
-prefer to produce rpms's.
--- 
-Oscar A. Valdez
+Once running with the stock kernel, IPTABLES compiled without a hitch.
 
+Cheers,
+---
+Pablo Sanchez - Blueoak Database Engineering, Inc
+Ph:    819.459.1926          Toll free:  888.459.1926
+Cell:  819.664.9118                Pgr:  pablo_p@blueoakdb.com
+Fax:   603.720.7723 (US)           Fax:  514.371.1255 (Canada)
 
 
