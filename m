@@ -1,14 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: iptables support in 2.2 kernel
-Date: Wed, 26 Oct 2005 16:41:04 +0200 (CEST)
-Message-ID: <52410.193.173.147.3.1130337664.squirrel@webmail.sterenborg.info>
-References: <BAY103-F404DA4544B76C919CE72A8B2690@phx.gbl>
-	<435F511A.8030204@india.tejasnetworks.com>
-	<435F9277.4010905@india.tejasnetworks.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Allowing ping
+Date: Wed, 26 Oct 2005 10:55:48 -0500
+Message-ID: <200510261055.48199.rob0@gmx.co.uk>
+References: <435E6C3A.20709@beaconet.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <435F9277.4010905@india.tejasnetworks.com>
+In-Reply-To: <435E6C3A.20709@beaconet.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,19 +21,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, October 26, 2005 16:28, Aseem Rastogi wrote:
-> hi,
+On Tuesday 2005-October-25 12:32, Askar Ali wrote:
+> I have a very simple question, presently we are blocking icmp
+> "ping" on our servers. But as far I can userderstand its not very
+> good practice or providing a good security by blocking ping request.
+
+I agree. Blocking pings is like shooting yourself in the foot.  You 
+never know when you will need ping. Some think it's a good idea to try 
+to hide. Rubbish, if you have any open services, the bots and worms 
+will find you anyway.
+
+> see one can ping www.xyz.com and get the reply back.
 >
-> i have tried a lot to search on this but could not get any definite
-> answer. it would be really helpful if someone can give me a definite
-> answer whether or not DNAT can be done using ipchains.
+> However Before allowing ping "echo-request" I just want to confirm
+> whether doing ...
+>
+> iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+>
+> would be enough or doing some rate limiting would be better?
 
-Are you searching for this ?
-http://www.compsoc.net/~steve/portfw-2.2.html
-
-
-Gr,
-Rob
-
-
+I think a reasonable --limit is not a bad idea, but there is no 
+objective measurement of "better". I use a --limit on incoming ping 
+requests. It might help in the event of a flood ping attack, and you 
+can still ping to verify your connectivity when you need it.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
