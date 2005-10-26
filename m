@@ -1,12 +1,21 @@
-From: =?unknown-8bit?b?sLAg/uP+4yDf6nL74vFnILCw?= <duppeh@yahoo.com>
-Subject: dnat to multiple destination *correction*
-Date: Wed, 26 Oct 2005 07:14:21 -0700 (PDT)
-Message-ID: <20051026141421.43651.qmail@web53308.mail.yahoo.com>
-References: <20051026140258.79270.qmail@web53313.mail.yahoo.com>
+From: Aseem Rastogi <aseem@india.tejasnetworks.com>
+Subject: Re: iptables support in 2.2 kernel
+Date: Wed, 26 Oct 2005 19:58:07 +0530
+Message-ID: <435F9277.4010905@india.tejasnetworks.com>
+References: <BAY103-F404DA4544B76C919CE72A8B2690@phx.gbl>
+	<435F511A.8030204@india.tejasnetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051026140258.79270.qmail@web53313.mail.yahoo.com>
+Received: from localhost (unknown [127.0.0.1])
+	by anche.india.tejasnetworks.com (*****) with ESMTP id 4E4C873921
+	for <netfilter@lists.netfilter.org>;
+	Wed, 26 Oct 2005 14:16:47 +0000 (UTC)
+Received: from india.tejasnetworks.com (aseem.india.tejasnetworks.com
+	[192.168.0.38])
+	by anche.india.tejasnetworks.com (*****) with ESMTP id 1D4807393E
+	for <netfilter@lists.netfilter.org>;
+	Wed, 26 Oct 2005 19:46:46 +0530 (IST)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +26,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@lists.netfilter.org
 
-hi there,
+hi,
 
-recently i read iptables man page,
-in the DNAT part :
-You  can  add  several --to-destination options.  If
-you specify more than
-one destination address, either via an address range
-or multiple --to-des=ADtination  options,  a simple
-round-robin (one after another in cycle) load
-balancing takes place between these adresses.
-=20
-in my mind, it sounds like:
-iptables -t nat -A PREROUTING -s xxx.xxx.xxx.xxx -p
-tcp
---dport 80 -j DNAT --to-destination aaa.aaa.aaa.aaa
---to-destination bbb.bbb.bbb.bbb
+i have tried a lot to search on this but could not get any definite 
+answer. it would be really helpful if someone can give me a definite 
+answer whether or not DNAT can be done using ipchains.
 
-but it says invalid arguments.
-which part was wrong ?
+thanks.
 
-cheers,
-Agung
+aseem.
+
+Aseem Rastogi wrote:
+
+> Hi All,
+>
+> Is iptables supported on 2.2 kernel? I have a requirement to use NAT 
+> rules on 2.2 kernel. Is it possible thorugh ipchains?
+>
+> Thanks in advance,
+>
+> Regards,
+> Aseem.
+>
 
 
-	=09
-__________________________________=20
-Start your day with Yahoo! - Make it your home page!=20
-http://www.yahoo.com/r/hs
+-- 
+The end is always good. If it's not good, it's not the end.
+
+
+
 
