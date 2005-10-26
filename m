@@ -1,13 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Allowing ping
-Date: Wed, 26 Oct 2005 10:55:48 -0500
-Message-ID: <200510261055.48199.rob0@gmx.co.uk>
-References: <435E6C3A.20709@beaconet.net>
+From: "Pablo Sanchez" <pablo@blueoakdb.com>
+Subject: RE: Allowing ping
+Date: Wed, 26 Oct 2005 11:59:46 -0400
+Message-ID: <NEBBLLCNFOFHMALJMDDEIEKCBCAB.pablo@blueoakdb.com>
+References: <200510261055.48199.rob0@gmx.co.uk>
+Reply-To: pablo@blueoakdb.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <435E6C3A.20709@beaconet.net>
-Content-Disposition: inline
+In-Reply-To: <200510261055.48199.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,32 +19,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: /dev/rob0 <rob0@gmx.co.uk>, netfilter@lists.netfilter.org
 
-On Tuesday 2005-October-25 12:32, Askar Ali wrote:
-> I have a very simple question, presently we are blocking icmp
-> "ping" on our servers. But as far I can userderstand its not very
-> good practice or providing a good security by blocking ping request.
 
-I agree. Blocking pings is like shooting yourself in the foot.  You 
-never know when you will need ping. Some think it's a good idea to try 
-to hide. Rubbish, if you have any open services, the bots and worms 
-will find you anyway.
 
-> see one can ping www.xyz.com and get the reply back.
->
-> However Before allowing ping "echo-request" I just want to confirm
-> whether doing ...
->
-> iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
->
-> would be enough or doing some rate limiting would be better?
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of /dev/rob0
+> Sent: Wednesday, October 26, 2005 11:56 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: Allowing ping
+>=20
+> I think a reasonable --limit is not a bad idea, but there is no=20
+> objective measurement of "better". I use a --limit on incoming ping=20
+> requests. It might help in the event of a flood ping attack, and you=20
+> can still ping to verify your connectivity when you need it.
 
-I think a reasonable --limit is not a bad idea, but there is no 
-objective measurement of "better". I use a --limit on incoming ping 
-requests. It might help in the event of a flood ping attack, and you 
-can still ping to verify your connectivity when you need it.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+I believe it marginally helps during an attack.  If you're DDOS, the =
+packets are still reaching your NIC so you're kinda hosed anyway.
+---
+Pablo Sanchez - Blueoak Database Engineering, Inc
+Ph:    819.459.1926          Toll free:  888.459.1926
+Cell:  819.664.9118                Pgr:  pablo_p@blueoakdb.com
+Fax:   603.720.7723 (US)           Fax:  514.371.1255 (Canada)
+
 
