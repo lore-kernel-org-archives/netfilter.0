@@ -1,13 +1,12 @@
-From: KOVACS Krisztian <hidden@balabit.hu>
+From: =?unknown-8bit?b?sLAg/uP+4yDf6nL74vFnILCw?= <duppeh@yahoo.com>
 Subject: Re: dnat to multiple destination
-Date: Wed, 26 Oct 2005 16:19:29 +0200
-Message-ID: <200510261619.30003@nienna>
-References: <20051026140258.79270.qmail@web53313.mail.yahoo.com>
+Date: Wed, 26 Oct 2005 07:22:04 -0700 (PDT)
+Message-ID: <20051026142205.87081.qmail@web53304.mail.yahoo.com>
+References: <200510261619.30003@nienna>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051026140258.79270.qmail@web53313.mail.yahoo.com>
-Content-Disposition: inline
+In-Reply-To: <200510261619.30003@nienna>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,38 +20,33 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-
-  Hi,
-
-On Wednesday 26 October 2005 16.02, =B0=B0 =FE=E3=FE=E3 =DF=EAr=FB=E2=F1g=
- =B0=B0 wrote:
-> recently i read iptables man page,
-> in the DNAT part :
-> You  can  add  several --to-destination options.  If
-> you specify more than
-> one destination address, either via an address range
-> or multiple --to-des=AD
-> tination  options,  a simple round-robin (one after
-> another in cycle) load
-> balancing takes place between these adresses.
+  Unfortunately that possibility was removed when
+> restructuring the=20
+> Linux NAT for the 2.6.11 Linux release. Should work
+> with older kernels,=20
+> or you can work it around by using two DNAT rules
+> and the 'random'=20
+> match from patch-o-matic-ng. Ugly, but it should
+> work that way.
+> =20
 >
-> in my mind, it sounds like:
-> iptables -A PREROUTING -s xxx.xxx.xxx.xxx -p tcp
-> --dport 80 -j DNAT --to-destination aaa.aaa.aaa.aaa
-> --to-destination bbb.bbb.bbb.bbb
->
-> but it says invalid arguments.
-> which part was wrong ?
+http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-3.=
+html#ss3.14
+>=20
+> --=20
+>  Regards,
+>   Krisztian Kovacs
+>=20
 
-  Unfortunately that possibility was removed when restructuring the=20
-Linux NAT for the 2.6.11 Linux release. Should work with older kernels,=20
-or you can work it around by using two DNAT rules and the 'random'=20
-match from patch-o-matic-ng. Ugly, but it should work that way.
-=20
-http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-=
-3.html#ss3.14
+ok thanks :-)
 
---=20
- Regards,
-  Krisztian Kovacs
+@J=F6rg
+i've correct my post, i've use -t nat just miss type
+when i write my post. thx anyway :-)
+
+
+	=09
+__________________________________=20
+Start your day with Yahoo! - Make it your home page!=20
+http://www.yahoo.com/r/hs
 
