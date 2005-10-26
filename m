@@ -1,11 +1,12 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: ftp nat doesn't work for ipsec tunnel outgoinging packets
-Date: Wed, 26 Oct 2005 19:06:40 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510261906090.27341@filer.marasystems.com>
-References: <BAY103-F17577F1C091D2B169A5F4CB2760@phx.gbl>
+Subject: Re: dnat to multiple destination
+Date: Wed, 26 Oct 2005 19:14:55 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510261914220.27341@filer.marasystems.com>
+References: <20051026140258.79270.qmail@web53313.mail.yahoo.com>
+	<200510261619.30003@nienna>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY103-F17577F1C091D2B169A5F4CB2760@phx.gbl>
+In-Reply-To: <200510261619.30003@nienna>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,15 +19,15 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Marco Berizzi <pupilla@hotmail.com>
-Cc: Netfilter Users <netfilter@lists.netfilter.org>
+To: KOVACS Krisztian <hidden@balabit.hu>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 25 Oct 2005, Marco Berizzi wrote:
+On Wed, 26 Oct 2005, KOVACS Krisztian wrote:
 
-> Hello. I have a very strange problem with ftp.
+>  Unfortunately that possibility was removed when restructuring the
+> Linux NAT for the 2.6.11 Linux release. Should work with older kernels,
 
-ipsec and iptables (especially with NAT) on the same box does not mix very 
-well yet.
+Was repordedly broken in older kernels...
 
 Regards
 Henrik
