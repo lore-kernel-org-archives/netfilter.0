@@ -1,11 +1,11 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: iptables NAT and ICMP error messages
-Date: Wed, 26 Oct 2005 19:09:44 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510261908500.27341@filer.marasystems.com>
-References: <435E8EC1.1050705@airmail.net>
+Subject: Re: ftp nat doesn't work for ipsec tunnel outgoinging packets
+Date: Wed, 26 Oct 2005 19:06:40 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510261906090.27341@filer.marasystems.com>
+References: <BAY103-F17577F1C091D2B169A5F4CB2760@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <435E8EC1.1050705@airmail.net>
+In-Reply-To: <BAY103-F17577F1C091D2B169A5F4CB2760@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,15 +18,15 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Jerry Alexander <jerrya@airmail.net>
-Cc: netfilter@lists.netfilter.org
+To: Marco Berizzi <pupilla@hotmail.com>
+Cc: Netfilter Users <netfilter@lists.netfilter.org>
 
-On Tue, 25 Oct 2005, Jerry Alexander wrote:
+On Tue, 25 Oct 2005, Marco Berizzi wrote:
 
-> Problem is I am also getting tons of ICMP destination unreachable messages.
+> Hello. I have a very strange problem with ftp.
 
-What does the ICMP errors say? Who is unreachable from where, on what 
-protocol & port? Says who?  (tcpdump tells you all these small facts..)
+ipsec and iptables (especially with NAT) on the same box does not mix very 
+well yet.
 
 Regards
 Henrik
