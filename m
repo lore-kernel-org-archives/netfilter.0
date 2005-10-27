@@ -1,13 +1,11 @@
-From: Ruprecht Helms <rhelms@my-mail.ch>
-Subject: Re: log analysis
-Date: Thu, 27 Oct 2005 09:33:08 +0200
-Message-ID: <436082B4.7040303@my-mail.ch>
-References: <BOEKIIIKCIBKDMDMHHLLIEBPCPAA.gene@poh.com>
-Reply-To: rhelms@my-mail.ch
+From: Marcin Giedz <marcin.giedz@eulerhermes.pl>
+Subject: question
+Date: Thu, 27 Oct 2005 09:55:20 +0200
+Message-ID: <200510270955.20466.marcin.giedz@eulerhermes.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BOEKIIIKCIBKDMDMHHLLIEBPCPAA.gene@poh.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Gene Dellinger <gene@poh.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Gene Dellinger wrote:
+Hi,
 
-> How difficult is it to perform Intrusion Detection using iptables, any real
-> world stories(good and bad) desired.
 
-Sorry, but good intrusion detection is very different to iptables. 
-Iptables only control the connections based on ports. With connection 
-tracking you can check if there is made some portscan or someone tried
-to send a ping of death to you.
+I'd like to ask if it possible to change "data" field (its content) in TCP 
+packet on fly? I don't need to change data's lenght but only change few bytes 
+in it.
 
-Modifying in the filesystem can not be controled by iptables. That is
-task of a good intrusion detection system.
+Example:
+0000  ff ff ff ff ff ff 00 11 25 31 ad e0 08 00 45 00   ........%1....E.
+0010  00 c1 0a b1 00 00 80 11 82 0f ac 13 01 59 ff ff   .............Y..
+0020  ff ff 04 2d 01 db 00 ad 60 78 ad a7 5b de 9f 26   ...-....`x..[..&
+0030  ec 98 2d 26 ec 18 2d 26 ec 18 2d 26 ec 18 2d 26   ..-&..-&..-&..-&
+0040  ec 18 2d 26 ec 18 2d 26 ec 18 2d 26 ec 18 2d 26   ..-&..-&..-&..-&
 
-Regards,
-Ruprecht
+First line contains MAC address 00:11:25:31:ad:e0 - I need to change it to 
+other value. 
 
-------------------------------------------------------------------------------------------
-Ruprecht Helms IT-Service & Softwareentwicklung
+Is it possible at all?
 
-Tel./Fax  +49[0]7621 16 99 16
-Web:       htp://www.rheyn.de
+Marcin
 
