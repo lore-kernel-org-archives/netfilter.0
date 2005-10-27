@@ -1,14 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: iptables support in 2.2 kernel
-Date: Wed, 26 Oct 2005 19:30:23 +0200
-Message-ID: <1130347823.5771.12.camel@anduril.intranet.cartel-securite.net>
-References: <BAY103-F404DA4544B76C919CE72A8B2690@phx.gbl>
-	<435F511A.8030204@india.tejasnetworks.com>
-	<Pine.LNX.4.61.0510261911160.27341@filer.marasystems.com>
+From: Buddy wu <ejournal4me@gmail.com>
+Subject: RE: con't combile ipt_connlimit
+Date: Thu, 27 Oct 2005 09:00:36 +0800
+Message-ID: <43a0cdcb0510261800q7e7a6169t@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0510261911160.27341@filer.marasystems.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,26 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Aseem Rastogi <aseem@india.tejasnetworks.com>
-Cc: Netfilter Users <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mercredi 26 octobre 2005 =E0 19:13 +0200, Henrik Nordstrom a =E9crit :
-> NAT in Linux-2.2 ipchains is somewhat limited.. but you have Masquerading=
-,=20
-> Redirection for transparent proxying and Port-forwarding.
+>>  make[3]: *** [net/ipv4/netfilter/ipt_connlimit.o] Error 1
+>>  make[2]: *** [net/ipv4/netfilter] Error 2
+>>  make[1]: *** [net/ipv4] Error 2
+>>  make: *** [net] Error 2
+>>
+>>  I want to know how to resolve it
+>
+>https://lists.netfilter.org/pipermail/netfilter/2005-October/063400.html
 
-Masquerading:     ipchains [...] -j MASQ
-Redirection:      ipchains [...] -j REDIRECT
-Port-forwarding:  ipmasqadm portfw [...]
+>Sorry. I haven't read correctly your post. My answer is wrong.
 
-That's all I can remember about this. Man pages for ipchains and
-ipmasqadm can be googled too.
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Is the problem of version? I have use another machine    and also
+using 2.6.10 kernel source, iptables-1.3.3, and the same error
+occured. is it  the two software  of that versions not compatible?
 
