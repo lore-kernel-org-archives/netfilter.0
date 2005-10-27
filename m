@@ -1,14 +1,13 @@
-From: Jon Heese <netfilter@jonheese.com>
-Subject: Re: Forward internal packets as though they're external
-Date: Thu, 27 Oct 2005 19:32:28 -0400
-Message-ID: <4361638C.4090708@jonheese.com>
-References: <436051E9.2050701@jonheese.com>
-	<4360D12E.4000509@jonheese.com>	<200510270938.19458.rob0@gmx.co.uk>
-	<200510271626.06383.rob0@gmx.co.uk>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: RE: Forward internal packets as though they're external
+Date: Fri, 28 Oct 2005 01:38:10 +0200
+Message-ID: <41281.5555501313$1130456329@news.gmane.org>
+References: <4361638C.4090708@jonheese.com>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200510271626.06383.rob0@gmx.co.uk>
+In-Reply-To: <4361638C.4090708@jonheese.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,8 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+Why don't you tell Castor all packages to Webster over the router? Adding an
+extra route shouldn't be a problem, and the connection tracking would work
+in this way... this way you will need an SNAT over the router to Webster...
+
+Regards,
+
+Edvin
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jon Heese
+Sent: Freitag, 28. Oktober 2005 01:32
+To: netfilter@lists.netfilter.org
+Subject: Re: Forward internal packets as though they're external
 
 Okay, so I assume you're saying I should try:
 
@@ -65,4 +79,6 @@ Jon Heese
 > 
 > 
 > The example, obviously, is not correct. Copy/paste/PEBKAC error.
+
+
 
