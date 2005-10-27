@@ -1,10 +1,11 @@
-From: "Oscar A. Valdez" <oscar.valdez@duraflex-politex.com>
-Subject: IPSEC using Linux Kernel 2.6
-Date: Thu, 27 Oct 2005 14:34:13 -0600
-Message-ID: <1130445253.3908.45.camel@wzowski.plastipak.com.sv>
+From: "Jason Sigurdur" <Jason.Sigurdur@aspenview.org>
+Subject: iptable extentions
+Date: Thu, 27 Oct 2005 15:19:08 -0600
+Message-ID: <648A21EA469E3848922D9860785CD5EF23D3F9@aspen-mail01.aspenview.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,66 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: shorewall-users@lists.sourceforge.net, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-I've been struggling to get IPSEC working on end-points on the same
-systems as Netfilter, and I'm amazed at how difficult it is to gather
-relevant information and to make it work on Linux, considering the
-growing deployment of IPSEC and the importance of Netfilter for
-firewalling. That's why I'm cross-posting to the netfilter users' and
-devels' lists.
+Hi, regarding adding/compiling extensions for iptables. Why must the
+kernel be patched (stupid question); with the newer
 
-I believe the most reliable guide is at
-http://www.shorewall.net/IPSEC-2.6.html. Briefly, for my setup, the
-requirements are:
+fedora kernels modules can be compiled  via a Simple Makefile i.e.
 
-Kernel 2.6.12 patched with: 
+=20
 
-      * The five patches in
-        http://shorewall.net/pub/shorewall/contrib/IPSEC/2.6.12 (the
-        first four are the same as at
-        http://www.saout.de/misc/linux-2.6.12-ipsec-nat/ )
+obj-m :=3D libipt_random.o
 
-      * The "policy match" extension from a recent Patch-o-matic-ng.
+KDIR  :=3D /lib/modules/$(shell uname -r)/build
+PWD   :=3D $(shell pwd)
 
-      * iptables 1.3.0 patched with the "policy match" extension from a
-        recent Patch-o-matic-ng.
+default:
+    $(MAKE) -C $(KDIR) M=3D$(PWD) modules
 
-      * ipsec-tools 0.5
+Is there a quicker way to get the extenstions or must I use the
+patch-o-matic?
 
-I first unpack a vanilla kernel and the iptables tarball into
-directories /tmp/linux-2.6.12.orig/ and /tmp/iptables-1.3.0.orig/, and
-make copies of both unpacked directories (/tmp/linux-2.6.12/
-and /tmp/iptables-1.3.0/)
-
-I then apply the "policy match" extensions to the copies, with the
-following patch-o-matic command:
-
-KERNEL_DIR=/tmp/linux-2.6.12/ \
-IPTABLES_DIR=/tmp/iptables-1.3.0/ ./runme extra
-
-Then, I generate the patch files by running 
-
-diff -Nurp iptables-1.3.0.orig/ iptables-1.3.0/ \
-> ipsec-nf-policy-match.diff
-
-and
-
-diff -Nurp kernel-2.6.12.orig/ linux-2.6.12/ > ipsec-k-policy-match.diff
-
-When I try to compile the patched kernel, I get the following error:
-
-+ make ARCH=i386 nonint_oldconfig
-CONFIG_IP_NF_MATCH_POLICY
-CONFIG_IP6_NF_MATCH_POLICY
-make[1]: *** [nonint_oldconfig] Error 2
-make: *** [nonint_oldconfig] Error 2
-
-It seems this is caused by the linux-2.4.0-nonintconfig.patch. I'll
-appreciate clues on how to get around this error, and I promise to keep
-the lists posted on my progress.
--- 
-Oscar A. Valdez
-
+thx jason
 
 
