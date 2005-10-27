@@ -1,7 +1,8 @@
-From: Gaston Martres <gmartres@tech-it.com.ar>
-Subject: Connection uptime
-Date: Thu, 27 Oct 2005 14:47:55 -0300
-Message-ID: <436112CB.3050108@tech-it.com.ar>
+From: "Robert" <mlody@elpec.com>
+Subject: dstlimit patch
+Date: Thu, 27 Oct 2005 20:22:46 +0200
+Message-ID: <000301c5db23$7a7bf710$02050c0a@robee>
+Reply-To: Robert <mlody@elpec.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,27 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-Hi there.
+i'm trying to use the dstlimit patch on netfilter pom-ng. is
 
-    Is there a way to know the uptime of a connection? Or the time 
-remaining for the timeout for a SYN, for example? All of this done with 
-netfilter or iptables, or to implement them by knowing this things with 
-another tool.
+iptables -I FORWARD -d IP_address -m dstlimit  --dstlimit 50 --dstlimit-mode 
+dstip --dstlimit-name somehost -j ACCEPT
 
-The idea came by a post on the suse-security announce, but I'm curious 
-to know if it's doable.
+the a good idea?
 
-Thanks.
 
--- 
---------------------------
-Gaston Martres
-Tech IT - Soluciones IT
-Cel: 15-5614-3012
-http://www.tech-it.com.ar
--------------------------- 
+
+robert 
 
 
