@@ -1,11 +1,14 @@
-From: "Jason Sigurdur" <Jason.Sigurdur@aspenview.org>
-Subject: iptable extentions
-Date: Thu, 27 Oct 2005 15:19:08 -0600
-Message-ID: <648A21EA469E3848922D9860785CD5EF23D3F9@aspen-mail01.aspenview.org>
+From: Jon Heese <netfilter@jonheese.com>
+Subject: Re: Forward internal packets as though they're external
+Date: Thu, 27 Oct 2005 17:25:22 -0400
+Message-ID: <436145C2.2030701@jonheese.com>
+References: <436051E9.2050701@jonheese.com>
+	<200510262351.06929.rob0@gmx.co.uk>	<4360D12E.4000509@jonheese.com>
+	<200510270938.19458.rob0@gmx.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <200510270938.19458.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,27 +19,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi, regarding adding/compiling extensions for iptables. Why must the
-kernel be patched (stupid question); with the newer
+Hmm. Nope.
 
-fedora kernels modules can be compiled  via a Simple Makefile i.e.
+I added this rule:
 
-=20
+iptables -vt nat -A PREROUTING -p tcp --dport 6969 -s 192.168.0.0/24 \
+      -d 192.168.0.100 -j SNAT --to 65.9.134.4
 
-obj-m :=3D libipt_random.o
+And I get this error:
 
-KDIR  :=3D /lib/modules/$(shell uname -r)/build
-PWD   :=3D $(shell pwd)
+SNAT  tcp opt -- in * out *  192.168.0.0/24  -> 192.168.0.100  tcp 
+dpt:6969 to:65.9.252.78
+iptables: Invalid argument
 
-default:
-    $(MAKE) -C $(KDIR) M=3D$(PWD) modules
+Seems like it doesn't like the "SNAT" target in the PREROUTING chain (if 
+I replace it with "DROP", the rule inserts fine).  Your idea makes 
+sense, Rob, but seems like something's still one step away...
 
-Is there a quicker way to get the extenstions or must I use the
-patch-o-matic?
+Regards,
+Jon Heese
 
-thx jason
-
+/dev/rob0 wrote:
+> On Thursday 2005-October-27 08:07, Jon Heese wrote:
+> 
+>>>Change your DNAT rule to match all the packets you want to match:
+>>>
+>>>iptables -vt nat -A PREROUTING -d 65.9.134.4 -p tcp --dport 6969 \
+>>>    -j DNAT --to 192.168.0.100
+>>
+>>Except for the --verbose, that's exactly what I'm already doing to
+>>DNAT everything from the outside through to castor's 6969.  This rule
+>>does not seem to be catching traffic from the inside.  Do I have to
+>>do something special to get internal traffic into the PREROUTING
+> 
+> 
+> After I sent this (and went to bed :) ) I realised what must be 
+> happening: it's getting the original packet there, but replies are 
+> going direct to the IP of the originator.
+> 
+> Suppose 192.168.0.129 connects to 65.9.134.4:6969 ... the router passes 
+> it faithfully on to 192.168.0.100. Now 192.168.0.100 has a packet from 
+> 192.168.0.129, and it won't send the reply to 65.9.134.4. The client at 
+> 192.168.0.129 is going to be confused. This cannot be a reply to my 
+> 65.9.134.4:6969 connection attempt, go away, Castor.
+> 
+> Perhaps you need a SNAT rule in POSTROUTING:
+> iptables -vt nat -A PREROUTING -p tcp --dport 6969 -s 192.168.0.0/24 \
+>     -d 192.168.0.100 -j SNAT --to 65.9.134.4
+> 
+> A cleaner solution (not sure if applicable to BitTorrent) would be an 
+> alternate DNS view, so that external clients resolve the name to 
+> 65.9.134.4 whilst internal ones resolve to 192.168.0.100.
 
