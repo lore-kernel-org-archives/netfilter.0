@@ -1,18 +1,14 @@
-From: Buddy wu <ejournal4me@gmail.com>
-Subject: Re: why can't use connlimit ??
-Date: Fri, 28 Oct 2005 18:23:21 +0800
-Message-ID: <43a0cdcb0510280323m62d85108l@mail.gmail.com>
-References: <43a0cdcb0510272319m69a7a1d4g@mail.gmail.com>
-	<64005.193.173.147.3.1130483580.squirrel@webmail.sterenborg.info>
-	<43a0cdcb0510280027x6236afeco@mail.gmail.com>
-	<50475.193.173.147.3.1130485511.squirrel@webmail.sterenborg.info>
-	<43a0cdcb0510280051u1fd2aabcv@mail.gmail.com>
-	<50262.193.173.147.3.1130490146.squirrel@webmail.sterenborg.info>
+From: Eric Leblond <eleblond@inl.fr>
+Subject: Re: ipq_read error
+Date: Thu, 27 Oct 2005 13:58:50 +0200
+Message-ID: <1130414330.14426.73.camel@localhost.localdomain>
+References: <12274.1130407731@www36.gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-kvYsIfzgB4j2s/btoNEe"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <50262.193.173.147.3.1130490146.squirrel@webmail.sterenborg.info>
-Content-Disposition: inline
+In-Reply-To: <12274.1130407731@www36.gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,45 +19,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>
+To: Peter.Muller@gmx.at
 Cc: netfilter@lists.netfilter.org
 
->
-> What if you try with the latest POM and kernel (20051027 and 2.6.14
-> resp.) ?
->
-> I'm not a programmer so if this won't work, I don't know. I also find
-> it strange that you do have a .so, but not a .ko file.
->
->
-> Gr,
-> Rob
 
-Thanks anyway.
-I will try it, but i Don't think it can be work. Justnow I have read
-an article, It paste parts of the source, but i found it is diffrent
-with that in my machine. I don't know which is the 'right'. but that's
-code not the latest, it maybe may or jul's.
+--=-kvYsIfzgB4j2s/btoNEe
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-here's the code of him
-  if (0 =3D=3D memcmp(&conn->tuple,&tuple,sizeof(tuple)) &&
-    found !=3D NULL && (found_ct =3D tuplehash_to_ctrack(found)) !=3D NULL =
-&&
-    found_ct->proto.tcp.state !=3D TCP_CONNTRACK_TIME_WAIT) {
+Hi,
 
-anzhen then is in my machine
-  if (0 =3D=3D memcmp(&conn->tuple,&tuple,sizeof(tuple)) &&
-    found !=3D NULL &&
-    found->proto.tcp.state !=3D TCP_CONNTRACK_TIME_WAIT) {
+Le jeudi 27 octobre 2005 =E0 12:08 +0200, Peter.Muller@gmx.at a =E9crit :
+> Hello!
+>=20
+> I'm using libipq's ipq_read function in a program to read packets that we=
+re
+> queued to userspace by a kernel module.
+> Does ipq_read really needs root privileges or are there other solutions? =
+Any
+> help on this is appreciated.
 
-you can found the diffrent with them. I think it is big. but I don't
-know which will be right.
-And He said he's code was not right too, should be modify to these:
-  if (found !=3D NULL && (found_ct =3D tuplehash_to_ctrack(found)) !=3D NUL=
-L &&
-    0 =3D=3D memcmp(&conn->tuple,&tuple,sizeof(tuple)) &&
-    found_ct->proto.tcp.state !=3D TCP_CONNTRACK_TIME_WAIT) {
-or else it will be let the linux crazy, and the errors were (
-<0>Kernel panic - not syncing: Fatal exception in interrupt)  ^_^
+As the program is directly talking to the kernel, you need to be root to
+be able to access libipq.
+
+A standard solution is to switch to a given user as soon as you do not
+need anymore root privileges.
+
+BR,
+--=20
+=C9ric Leblond, eleblond@inl.fr
+T=E9l=E9phone : 01 44 89 46 40, Fax : 01 44 89 45 01
+INL, http://www.inl.fr
+
+--=-kvYsIfzgB4j2s/btoNEe
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBDYMD5nxA7CdMWjzIRAtwSAJ96kbdQ6YrBonnv+og2/2P27+U+wgCfUuYA
+3jScL41E6LjCAzbB6wogHa8=
+=8EKx
+-----END PGP SIGNATURE-----
+
+--=-kvYsIfzgB4j2s/btoNEe--
+
 
