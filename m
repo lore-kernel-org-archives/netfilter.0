@@ -1,11 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: IPset_iptree with timeouts on Fedora Core 4
-Date: Thu, 27 Oct 2005 21:34:10 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0510272129210.2649@blackhole.kfki.hu>
-References: <436041CF.7090009@tfc.cz>
+From: "Oscar A. Valdez" <oscar.valdez@duraflex-politex.com>
+Subject: IPSEC using Linux Kernel 2.6
+Date: Thu, 27 Oct 2005 14:34:13 -0600
+Message-ID: <1130445253.3908.45.camel@wzowski.plastipak.com.sv>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <436041CF.7090009@tfc.cz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +15,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Radek Hladik <rhladik@tfc.cz>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: shorewall-users@lists.sourceforge.net, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-On Thu, 27 Oct 2005, Radek Hladik wrote:
+I've been struggling to get IPSEC working on end-points on the same
+systems as Netfilter, and I'm amazed at how difficult it is to gather
+relevant information and to make it work on Linux, considering the
+growing deployment of IPSEC and the importance of Netfilter for
+firewalling. That's why I'm cross-posting to the netfilter users' and
+devels' lists.
 
-> I tried:
-> ipset -N testip iptree
-> ipset -A testip 1.2.3.4%30
-> The second command produced this error in system log:
->
-> Oct 27 02:42:58 radek kernel: Debug: sleeping function called from
-> invalid context at mm/slab.c:2126
+I believe the most reliable guide is at
+http://www.shorewall.net/IPSEC-2.6.html. Briefly, for my setup, the
+requirements are:
 
-Sigh. It seems I was capable to commit all possible stupid mistakes in
-iptree. Your fix is correct, expect a new release tomorrow.
+Kernel 2.6.12 patched with: 
 
-> But iptree still had not members removed after specified timeout. I have
-> "discovered" (after reading the source code)  that the iptree set need
-> to have set the default timeout value (with --timeout option). Is this
-> true or am I doing something wrong?
+      * The five patches in
+        http://shorewall.net/pub/shorewall/contrib/IPSEC/2.6.12 (the
+        first four are the same as at
+        http://www.saout.de/misc/linux-2.6.12-ipsec-nat/ )
 
-That is a feature. Originally iptree did not support the timeout of the
-entries. In order to keep backward compatibility, the default (i.e no
-timeout) is preserved.
+      * The "policy match" extension from a recent Patch-o-matic-ng.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+      * iptables 1.3.0 patched with the "policy match" extension from a
+        recent Patch-o-matic-ng.
+
+      * ipsec-tools 0.5
+
+I first unpack a vanilla kernel and the iptables tarball into
+directories /tmp/linux-2.6.12.orig/ and /tmp/iptables-1.3.0.orig/, and
+make copies of both unpacked directories (/tmp/linux-2.6.12/
+and /tmp/iptables-1.3.0/)
+
+I then apply the "policy match" extensions to the copies, with the
+following patch-o-matic command:
+
+KERNEL_DIR=/tmp/linux-2.6.12/ \
+IPTABLES_DIR=/tmp/iptables-1.3.0/ ./runme extra
+
+Then, I generate the patch files by running 
+
+diff -Nurp iptables-1.3.0.orig/ iptables-1.3.0/ \
+> ipsec-nf-policy-match.diff
+
+and
+
+diff -Nurp kernel-2.6.12.orig/ linux-2.6.12/ > ipsec-k-policy-match.diff
+
+When I try to compile the patched kernel, I get the following error:
+
++ make ARCH=i386 nonint_oldconfig
+CONFIG_IP_NF_MATCH_POLICY
+CONFIG_IP6_NF_MATCH_POLICY
+make[1]: *** [nonint_oldconfig] Error 2
+make: *** [nonint_oldconfig] Error 2
+
+It seems this is caused by the linux-2.4.0-nonintconfig.patch. I'll
+appreciate clues on how to get around this error, and I promise to keep
+the lists posted on my progress.
+-- 
+Oscar A. Valdez
+
+
 
