@@ -1,18 +1,14 @@
-From: Oskar Andreasson <oan@frozentux.net>
-Subject: Re: question
-Date: Thu, 27 Oct 2005 15:28:43 +0200
-Message-ID: <1130419723.8832.37.camel@laptop3>
-References: <200510270955.20466.marcin.giedz@eulerhermes.pl>
-	<200510271225.50084.marcin.giedz@eulerhermes.pl>
-	<1130409459.8832.15.camel@laptop3>
-	<200510271318.06937.marcin.giedz@eulerhermes.pl>
-Reply-To: oan@frozentux.net
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Forward internal packets as though they're external
+Date: Thu, 27 Oct 2005 09:38:19 -0500
+Message-ID: <200510270938.19458.rob0@gmx.co.uk>
+References: <436051E9.2050701@jonheese.com> <200510262351.06929.rob0@gmx.co.uk>
+	<4360D12E.4000509@jonheese.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-2ovZ2xX1ccVMO4Hzv/cm"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200510271318.06937.marcin.giedz@eulerhermes.pl>
+In-Reply-To: <4360D12E.4000509@jonheese.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,46 +19,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Marcin Giedz <marcin.giedz@eulerhermes.pl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Thursday 2005-October-27 08:07, Jon Heese wrote:
+> > Change your DNAT rule to match all the packets you want to match:
+> >
+> > iptables -vt nat -A PREROUTING -d 65.9.134.4 -p tcp --dport 6969 \
+> >     -j DNAT --to 192.168.0.100
+>
+> Except for the --verbose, that's exactly what I'm already doing to
+> DNAT everything from the outside through to castor's 6969.  This rule
+> does not seem to be catching traffic from the inside.  Do I have to
+> do something special to get internal traffic into the PREROUTING
 
---=-2ovZ2xX1ccVMO4Hzv/cm
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+After I sent this (and went to bed :) ) I realised what must be 
+happening: it's getting the original packet there, but replies are 
+going direct to the IP of the originator.
 
-Shit happens, but now it works again. the admin of my site decided to
-switch the dns records over to a temporary site while they are upgrading
-the machine. my local dns server cached the old records while you seem
-to have gotten to the new servers, and i didn't see it.=20
+Suppose 192.168.0.129 connects to 65.9.134.4:6969 ... the router passes 
+it faithfully on to 192.168.0.100. Now 192.168.0.100 has a packet from 
+192.168.0.129, and it won't send the reply to 65.9.134.4. The client at 
+192.168.0.129 is going to be confused. This cannot be a reply to my 
+65.9.134.4:6969 connection attempt, go away, Castor.
 
-To make a long story short, it's fixed. Same place as previously
-mentioned... 3rd times the charm *crossing fingers* =3D)
+Perhaps you need a SNAT rule in POSTROUTING:
+iptables -vt nat -A PREROUTING -p tcp --dport 6969 -s 192.168.0.0/24 \
+    -d 192.168.0.100 -j SNAT --to 65.9.134.4
 
-On Thu, 2005-10-27 at 13:18 +0200, Marcin Giedz wrote:
-> > Sorry about that, I got an urgent task on my desk and forgot to upload
-> > the file:). It's uploaded now. Do note that this is just a very ugly
-> > framework really, you need to do all the parsing etc on your own, and I
-> > have a bad habit of not commenting work in progress projects... =3D)
-> =09
-> Hmm..  still have the same problem - sorry :( I tried http://www.frozentu=
-x.net=20
-> as well but it seems like some problems with PHP script :(
->=20
-> BR,
-> Marcin
-
---=-2ovZ2xX1ccVMO4Hzv/cm
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQBDYNYLGadwPDPpB60RAvEIAKCuYgmcf2mIHzp8HxVzKPlH+IRp9ACfSwM1
-9W+9LDhYLJMQIXq6ttVjf9w=
-=9MkM
------END PGP SIGNATURE-----
-
---=-2ovZ2xX1ccVMO4Hzv/cm--
+A cleaner solution (not sure if applicable to BitTorrent) would be an 
+alternate DNS view, so that external clients resolve the name to 
+65.9.134.4 whilst internal ones resolve to 192.168.0.100.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
