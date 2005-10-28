@@ -1,14 +1,13 @@
-From: Eric Leblond <eleblond@inl.fr>
-Subject: Re: ipq_read error
-Date: Thu, 27 Oct 2005 13:58:50 +0200
-Message-ID: <1130414330.14426.73.camel@localhost.localdomain>
-References: <12274.1130407731@www36.gmx.net>
+From: Radek Hladik <rhladik@tfc.cz>
+Subject: Re: IPset_iptree with timeouts on Fedora Core 4
+Date: Fri, 28 Oct 2005 02:57:16 +0200
+Message-ID: <4361776C.5070706@tfc.cz>
+References: <436041CF.7090009@tfc.cz>
+	<Pine.LNX.4.58.0510272129210.2649@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-kvYsIfzgB4j2s/btoNEe"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <12274.1130407731@www36.gmx.net>
+In-Reply-To: <Pine.LNX.4.58.0510272129210.2649@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,51 +18,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Peter.Muller@gmx.at
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@lists.netfilter.org
 
+Jozsef Kadlecsik wrote:
 
---=-kvYsIfzgB4j2s/btoNEe
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+>>Oct 27 02:42:58 radek kernel: Debug: sleeping function called from
+>>invalid context at mm/slab.c:2126
+>>    
+>>
+>
+>Sigh. It seems I was capable to commit all possible stupid mistakes in
+>iptree. Your fix is correct, expect a new release tomorrow.
+>  
+>
 
-Hi,
+Thanks a lot.
 
-Le jeudi 27 octobre 2005 =E0 12:08 +0200, Peter.Muller@gmx.at a =E9crit :
-> Hello!
->=20
-> I'm using libipq's ipq_read function in a program to read packets that we=
-re
-> queued to userspace by a kernel module.
-> Does ipq_read really needs root privileges or are there other solutions? =
-Any
-> help on this is appreciated.
+>  
+>
+>>But iptree still had not members removed after specified timeout. I have
+>>"discovered" (after reading the source code)  that the iptree set need
+>>to have set the default timeout value (with --timeout option). Is this
+>>true or am I doing something wrong?
+>>    
+>>
+>
+>That is a feature. Originally iptree did not support the timeout of the
+>entries. In order to keep backward compatibility, the default (i.e no
+>timeout) is preserved.
+>  
+>
+I'm afraid I wrote it a little bit confusing :(
+What I mean is that when I create iptree without default timeout:
 
-As the program is directly talking to the kernel, you need to be root to
-be able to access libipq.
+ipset -N test iptree
 
-A standard solution is to switch to a given user as soon as you do not
-need anymore root privileges.
+and now I try to add member with timeout:
 
-BR,
---=20
-=C9ric Leblond, eleblond@inl.fr
-T=E9l=E9phone : 01 44 89 46 40, Fax : 01 44 89 45 01
-INL, http://www.inl.fr
+ipset -A test 1.2.3.4%60
 
---=-kvYsIfzgB4j2s/btoNEe
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+but the timeout is not working and IP 1.2.3.4 stays in the iptree 
+forever. According to log messages:
+kernel: net/ipv4/netfilter/ip_set_iptree.c: ip_tree_gc (DBG): gc: 1 2 3 
+4: expires 1 jiffies 9992264
+The garbage collector is called but expires value is set to 1. I think 
+that it is because of the line
+ipt_set_iptree.c:141    dtree->expires[d] = map->timeout ? (timeout * HZ 
++ jiffies) : 1;
+which sets expires to 1 when adding member with timeout to non-timeout 
+iptree. I think it would not break backward compatibility as old 
+commands do not use the ip%timeout notation.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+And I've found another issue I want to ask about. Is there any 
+possibility to set timeout different from default timeout via ipt_SET 
+target?
 
-iD8DBQBDYMD5nxA7CdMWjzIRAtwSAJ96kbdQ6YrBonnv+og2/2P27+U+wgCfUuYA
-3jScL41E6LjCAzbB6wogHa8=
-=8EKx
------END PGP SIGNATURE-----
 
---=-kvYsIfzgB4j2s/btoNEe--
+Radek
+
 
 
