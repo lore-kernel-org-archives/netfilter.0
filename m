@@ -1,16 +1,16 @@
-From: Buddy wu <ejournal4me@gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
 Subject: Re: why can't use connlimit ??
-Date: Fri, 28 Oct 2005 15:51:51 +0800
-Message-ID: <43a0cdcb0510280051u1fd2aabcv@mail.gmail.com>
+Date: Fri, 28 Oct 2005 11:02:26 +0200 (CEST)
+Message-ID: <50262.193.173.147.3.1130490146.squirrel@webmail.sterenborg.info>
 References: <43a0cdcb0510272319m69a7a1d4g@mail.gmail.com>
 	<64005.193.173.147.3.1130483580.squirrel@webmail.sterenborg.info>
 	<43a0cdcb0510280027x6236afeco@mail.gmail.com>
 	<50475.193.173.147.3.1130485511.squirrel@webmail.sterenborg.info>
+	<43a0cdcb0510280051u1fd2aabcv@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <50475.193.173.147.3.1130485511.squirrel@webmail.sterenborg.info>
-Content-Disposition: inline
+In-Reply-To: <43a0cdcb0510280051u1fd2aabcv@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,49 +22,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-2005/10/28, Rob Sterenborg <rob@sterenborg.info>:
-> On Fri, October 28, 2005 09:27, Buddy wu wrote:
-> > In the System It has libipt_connlimit.so file. but don't have
->
-> In "the System" ? Where is that ?
-  In /lib/iptables  the system is just a new installation. it is
-centos4 and the same to redhat as4. When i install the system, I can
-found it in /lib/iptables directory
+On Fri, October 28, 2005 09:51, Buddy wu wrote:
+...
+> kernel version is 2.6.10, and I download from www.kernel.org
+> use the POM-20050801 or 20051025. they have the same problem
+...
+> But I'm puzzled with the errors. it said that the object don't have
+> 'proto' member(the conflicting POM patches can make out these errors?
+> I think the structure should be same ).
 
->
-> > ipt_connlimit.ko or .o file. Is this the reason why can't load the
-> > connlimit module?
->
-> The .ko is for 2.6 kernels. For 2.4 it should be .o.
-ya, thanks . and can you tell me the diffrent with .so files?
->
-> >      If it's the reason , then need I recombile the kernel?
-> >      I have done so, but When I patch the kernel with the latest patch
-> > of POM, and comblie the kernel. errors occured. Just like I have said
+What if you try with the latest POM and kernel (20051027 and 2.6.14
+resp.) ?
 
->
-> - So, what kernel version are you using ?
-> - What kernel did you try to patch ? If it's a distro kernel (like
-> RedHat, etc), try a vanilla kernel from www.kernel.org.
-kernel version is 2.6.10, and I download from www.kernel.org
-use the POM-20050801 or 20051025. they have the same problem
+I'm not a programmer so if this won't work, I don't know. I also find
+it strange that you do have a .so, but not a .ko file.
 
-> Other problems can arise if you use conflicting POM patches (some do
-> not play nice when used together).
-But I'm puzzled with the errors. it said that the object don't have
-'proto' member(the conflicting POM patches can make out these errors?
-I think the structure should be same ).
->
-> Maybe this thread can be of help to you (if you use a 2.4 kernel) :
-> https://lists.netfilter.org/pipermail/netfilter/2004-January/050227.html
->
->
-> Gr,
-> Rob
->
->
->
+
+Gr,
+Rob
+
+
+
 
