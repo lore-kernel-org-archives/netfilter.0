@@ -1,9 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-2.2.6
-Date: Fri, 28 Oct 2005 21:33:15 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0510282130230.4569@blackhole.kfki.hu>
+From: "Oscar A. Valdez" <oscar.valdez@duraflex-politex.com>
+Subject: Re: IPSEC using Linux Kernel 2.6
+Date: Fri, 28 Oct 2005 14:14:51 -0600
+Message-ID: <1130530491.4948.14.camel@wzowski.plastipak.com.sv>
+References: <1130445253.3908.45.camel@wzowski.plastipak.com.sv>
+	<1130501222.2424.6.camel@davila.nicaraguaopensource.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1130501222.2424.6.camel@davila.nicaraguaopensource.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,28 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Jorge I. Davila L." <davila@cablenet.com.ni>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+El vie, 28-10-2005 a las 06:07 -0600, Jorge I. Davila L. escribi=F3:
+> Why don't try:
+>=20
+> kernel 2.6.12
+> iptables 1.3.3
+>=20
+> After that, see If you still needs the patches (from patch-o-matic and
+> from shorewall.net)
 
-ipset 2.2.6 is just released with the following changes
+Jorge:
 
-- memory allocation in iptree is changed to GFP_ATOMIC because
-  we hold a lock (bug reported by Radek Hladik)
-- compatibility fix: __nocast is not defined in all 2.6 branches
-  (problem reported by Ming-Ching Tiew)
-- manpage corrections
+Thanks for your reply. I am working with 2.6.12, and it doesn't have the
+needed "policy match extension" patch. I don't think iptables 1.3.3 has
+the ipsec hooks and policy patches, since they're still in "testing"
+over at netfilter.org.
 
-The new release can be downloaded from http://ipset.netfilter.org or from
-the netfilter svn tree.
+Incidentally, I think the folks at netfilter should pay more attention
+to the difficulties with ipsec and iron them out.
+--=20
+Oscar A. Valdez
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+
 
