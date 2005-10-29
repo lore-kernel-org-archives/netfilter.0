@@ -1,14 +1,9 @@
-From: Michael Bellion <mbellion@hipac.org>
-Subject: Re: [ANNOUNCE] Release of nf-HiPAC 0.9.1
-Date: Sat, 29 Oct 2005 14:22:20 +0200
-Message-ID: <200510291422.21185.mbellion@hipac.org>
-References: <200510121758.46328.mbellion@hipac.org>
-	<20051016144020.GE17257@rama.0sec>
+From: Lore <skizzo82@yahoo.com>
+Subject: libipq: problems changing destination port
+Date: Sat, 29 Oct 2005 14:59:53 +0200 (CEST)
+Message-ID: <20051029125953.41594.qmail@web52810.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051016144020.GE17257@rama.0sec>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,21 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@lists.netfilter.org
-Cc: Harald Welte <laforge@netfilter.org>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi
+Hi...
+I'm trying to change the destination port of some
+packets I receive through ipq.
 
-> > I am happy to announce the release of nf-HiPAC version 0.9.1
-> >
-> > Version 0.9.1 fixes all bugs that have been discovered since the release
-> > of v0.9.0.
->
-> would be nice if you were publishing incremental patches. This way it is
-> easy to look at the changes and stay up-to-date.
+I used the following chain:
+  iptables -A OUTPUT -p "tcp" --dport 2022 -j QUEUE
+and in the code I change the tcphdr->dest to 2021, do
+a new checksum and verdict it with NF_ACCEPT.
 
-I will do that for future releases.
+The packet get's silently dropped and I don't know
+why... 
+I tried to change the data and everything worked but
+when I tried to change the destination port nothing
+went out of the box.
 
-Thanks for the note
-	Michael Bellion
+Can anyone help me?
+thanks in advance
+Lore
+
+
+	
+
+	
+		
+___________________________________ 
+Yahoo! Mail: gratis 1GB per i messaggi e allegati da 10MB 
+http://mail.yahoo.it
 
