@@ -1,13 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: why can't use connlimit ??
-Date: Sat, 29 Oct 2005 18:57:45 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0510291854100.5550@blackhole.kfki.hu>
-References: <200510281133.14216.rob0@gmx.co.uk>
-	<20051028172106.ABA796A8D7@smtp.sterenborg.info>
-	<43a0cdcb0510282106j54c6a94fx@mail.gmail.com>
+Subject: Re: Mangling TOS, or Precedence/SecurityOpts/Compartment?
+Date: Sat, 29 Oct 2005 19:19:44 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0510291909370.5550@blackhole.kfki.hu>
+References: <4882.67.100.94.26.1130540347.squirrel@www.klxsystems.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43a0cdcb0510282106j54c6a94fx@mail.gmail.com>
+In-Reply-To: <4882.67.100.94.26.1130540347.squirrel@www.klxsystems.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Buddy wu <ejournal4me@gmail.com>
-Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="windows-1252"
+To: karl@klxsystems.net
+Cc: netfilter@lists.netfilter.org
 
-On Sat, 29 Oct 2005, Buddy wu wrote:
+Hi,
 
-> > I just think it's strange that compiling iptables would produce a .so
-> > file when compiling the kernel does not produce an accompanying .ko file
-> > (except maybe when ipt_connlimit is not compiled as module, but that is
-> > something we don't know ;-))
-> >
->    I want to tell you that the .so file is not produced when I combile
-> the iptables, but it born with the installation with the linux system.
-> And I try to complie the kernel with the latest POM, but I failed, it
-> tell me he can't find proto member in found object when he compile the
-> ipt_connlimit.c file. Is it want corresponding header(.h) file, but it
-> can't find in my source files?
+On Fri, 28 Oct 2005 karl@klxsystems.net wrote:
 
-It seems that connlimit is unmaintained then.
+> For the purposes of analysis, a third =93Invisible=94 Analysis machine is
+> placed between Systems #1 and 2, and is cabled as shown in Figure 1, it
+> has two Ethernet ports, and in general acts like a =93bridge=94 in that i=
+t
+> possesses a =93Bypass Card=94, which allows the Tool Server and the Contr=
+oller
+> Machine to pass traffic through it=92s two Ethernet ports.
+>
+> One of the features of the Bypass card it contains, is that it physically
+> shunts the copper Ethernet connections together when, say, power is cut.
 
-You can try to find a kernel release which works with the patch in
-pom-ng, i.e. uses the same structures. If that's done, then you should
-definitely compile an iptables binary from source with the given patched
-kernel.
+Why do you use NAT on the analysis machine if you go into the trouble to
+create such a specific card to mimic a direct-connected network?
+
+Why do you want to play with the IP predecence field if you have got TCP
+sequence number problems?
+
+Why should the analysis machine terminate/initialize the TCP connections,
+if it's a bridged setup and you can shunt/unshunt the cabling as you
+wish?
+
+Sorry, but the whole purpose of the setup and what you do is totally
+unclear for me.
 
 Best regards,
 Jozsef
