@@ -1,11 +1,11 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: MARKing FTP traffic
-Date: Sat, 29 Oct 2005 23:50:33 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510292348320.15219@filer.marasystems.com>
-References: <43619010.4000204@logix.cz>
+Subject: Re: libipq: problems changing destination port
+Date: Sat, 29 Oct 2005 23:54:26 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0510292351550.15219@filer.marasystems.com>
+References: <20051029125953.41594.qmail@web52810.mail.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43619010.4000204@logix.cz>
+In-Reply-To: <20051029125953.41594.qmail@web52810.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +18,24 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Michal Ludvig <michal@logix.cz>
-Cc: netfilter@lists.netfilter.org
+To: Lore <skizzo82@yahoo.com>
+Cc: Netfilter Users <netfilter@lists.netfilter.org>
 
-On Fri, 28 Oct 2005, Michal Ludvig wrote:
+On Sat, 29 Oct 2005, Lore wrote:
 
-> 1) In "active" mode the packet sent to the server contains "PORT
-> 192.168.0.137,<port>" which isn't translated to 192.168.0.160 in the
-> SNAT rule and the server responds with "500 Illegal PORT command."
+> and in the code I change the tcphdr->dest to 2021, do
+> a new checksum and verdict it with NF_ACCEPT.
+>
+> The packet get's silently dropped and I don't know
+> why...
 
-You need to load the ip_nat_ftp module for this to work..
+Should work.. but make sure you get the TCP header checksum correct...
 
-> 2) In "passive" mode both sides negotiate random ports but such a
-> connection isn't cought by the MARK rule and is sent over eth0 with src
-> address 192.168.0.137. Obviously the ftp server responds with "425
-> Security: Bad IP connecting."
+What does tcpdump say?
 
-CONNMARK can help you with this. So can the helper match. CONNMARK is 
-probably easier..
-
-> I have finally found a hlaf-working dirty solution:
-> # iptables -t mangle -A OUTPUT -p tcp -d 192.168.157.21 \
->       -m state --state RELATED -j MARK --set-mark 6
-> However this would affect all RELATED connections, not only FTP ones
-> (well, that's likely not a huge problem but still :-) and it works with
-> active ftp only which could be a serious problem.
-
-Note: The above rule only matches the very first packet on a related 
-connection (i.e. the initial SYN of an FTP data channel).
+Also beware that conntrack won't be too happy if you modify the 
+"connection details" like this. If you need conntrack loaded such mangling 
+of the packets is better left to NAT..
 
 Regards
 Henrik
