@@ -1,12 +1,13 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Mangling TOS, or Precedence/SecurityOpts/Compartment?
-Date: Sat, 29 Oct 2005 19:19:44 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0510291909370.5550@blackhole.kfki.hu>
-References: <4882.67.100.94.26.1130540347.squirrel@www.klxsystems.net>
+Subject: Re: IPSEC using Linux Kernel 2.6
+Date: Sat, 29 Oct 2005 19:33:08 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0510291919560.5550@blackhole.kfki.hu>
+References: <1130445253.3908.45.camel@wzowski.plastipak.com.sv>
+	<1130501222.2424.6.camel@davila.nicaraguaopensource.com>
+	<1130530491.4948.14.camel@wzowski.plastipak.com.sv>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4882.67.100.94.26.1130540347.squirrel@www.klxsystems.net>
+In-Reply-To: <1130530491.4948.14.camel@wzowski.plastipak.com.sv>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +18,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="windows-1252"
-To: karl@klxsystems.net
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Oscar A. Valdez" <oscar.valdez@duraflex-politex.com>
 Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Fri, 28 Oct 2005, Oscar A. Valdez wrote:
 
-On Fri, 28 Oct 2005 karl@klxsystems.net wrote:
+> Incidentally, I think the folks at netfilter should pay more attention
+> to the difficulties with ipsec and iron them out.
 
-> For the purposes of analysis, a third =93Invisible=94 Analysis machine is
-> placed between Systems #1 and 2, and is cabled as shown in Figure 1, it
-> has two Ethernet ports, and in general acts like a =93bridge=94 in that i=
-t
-> possesses a =93Bypass Card=94, which allows the Tool Server and the Contr=
-oller
-> Machine to pass traffic through it=92s two Ethernet ports.
->
-> One of the features of the Bypass card it contains, is that it physically
-> shunts the copper Ethernet connections together when, say, power is cut.
+Patrick McHardy have been working on better IPSEC and netfilter
+integration for a while. It's not a simple issue at all, the problems were
+brought up on the netfilter developer workshop. There are still a few
+remaining problems to be solved for a complete solution.
 
-Why do you use NAT on the analysis machine if you go into the trouble to
-create such a specific card to mimic a direct-connected network?
-
-Why do you want to play with the IP predecence field if you have got TCP
-sequence number problems?
-
-Why should the analysis machine terminate/initialize the TCP connections,
-if it's a bridged setup and you can shunt/unshunt the cabling as you
-wish?
-
-Sorry, but the whole purpose of the setup and what you do is totally
-unclear for me.
+(But very few active developers follow the netfilter mailing list and even
+then they do that only occasionally. Developer questions should be posted
+on netfilter-devel.)
 
 Best regards,
 Jozsef
