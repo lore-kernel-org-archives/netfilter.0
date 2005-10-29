@@ -1,42 +1,66 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: [ANNOUNCE] Release of nf-HiPAC 0.9.1
-Date: Sun, 16 Oct 2005 16:40:21 +0200
-Message-ID: <20051016144020.GE17257@rama.0sec>
-References: <200510121758.46328.mbellion@hipac.org>
+From: "Giacomo" <delleceste@gmail.com>
+Subject: timers in linux kernel
+Date: Sat, 29 Oct 2005 14:05:44 +0200
+Message-ID: <001c01c5dc81$191cfff0$0300a8c0@giacomino>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200510121758.46328.mbellion@hipac.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Michael Bellion <mbellion@hipac.org>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: netfilter lists <netfilter@lists.netfilter.org>
 
-On Wed, Oct 12, 2005 at 05:58:39PM +0200, Michael Bellion wrote:
-> Hi
+
+----- Original Message ----- 
+From: "Giacomo" <delleceste@gmail.com>
+To: <netfilter-devel-request@lists.netfilter.org>
+Sent: Saturday, October 29, 2005 10:56 AM
+Subject: timers in linux kernel
+
+
+> Good morning, in my kernel code, which handles timeouts for connection 
+> tables in a linked list, i do:
 > 
-> I am happy to announce the release of nf-HiPAC version 0.9.1
+> inline void update_timer_of_state_entry(struct state_table *sttable)
+> {
+> if (sttable->state.state == ESTABLISHED)
+>  mod_timer(&sttable->timer_statelist,
+>     jiffies + HZ * state_lifetime);
+> else
+>  mod_timer(&sttable->timer_statelist,
+>     jiffies + HZ * setup_shutd_state_lifetime);
+> }
 > 
-> Version 0.9.1 fixes all bugs that have been discovered since the release of 
-> v0.9.0.
-
-would be nice if you were publishing incremental patches. This way it is
-easy to look at the changes and stay up-to-date.
-
--- 
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-============================================================================
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+> sttable is a structure which contains a struct timer_list.
+> 
+> In:
+> 
+> mod_timer(&sttable->timer_statelist,
+>     jiffies + HZ * state_lifetime);
+> 
+> i update the timeout for the structures, so that when timer expires, 
+> structure is removed from linked list.
+> 
+> The problem is that when state lifetime is long, let's say 2592000 for 
+> instance, kernel goes in panic!
+> 
+> If the value is low, say 300, or higher 259200000, ok!
+> 
+> I suspect a problem of overflow .. is it possible?
+> 
+> What can be wrong?
+> 
+> Thanks a lot for any hint!
+> 
+> Giacomo.
+> 
+>
 
