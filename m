@@ -1,11 +1,11 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: libipq: problems changing destination port
-Date: Sat, 29 Oct 2005 23:54:26 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0510292351550.15219@filer.marasystems.com>
-References: <20051029125953.41594.qmail@web52810.mail.yahoo.com>
+From: "Insomniac" <insomniac@bloodbowlonline.com>
+Subject: Same machine source IP modification
+Date: Sun, 30 Oct 2005 16:33:36 +0800
+Message-ID: <018c01c5dd2c$a2388600$6500a8c0@BM>
+Reply-To: Insomniac <insomniac@bloodbowlonline.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051029125953.41594.qmail@web52810.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,27 +16,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Lore <skizzo82@yahoo.com>
-Cc: Netfilter Users <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sat, 29 Oct 2005, Lore wrote:
+My situation is that I want to modify all incoming UDP traffic going to a
+specific port so that the source IP appears to be from the local network. I
+completely realise this creates a problem as far as monitoring traffic goes,
+but that is unimportant at this point. Being on the same machine, I have
+found I cannot use the nat table, so SNAT and MASQUERADE are not available
+to me. Any suggestions on a fast and efficient way to pull this off?
 
-> and in the code I change the tcphdr->dest to 2021, do
-> a new checksum and verdict it with NF_ACCEPT.
->
-> The packet get's silently dropped and I don't know
-> why...
-
-Should work.. but make sure you get the TCP header checksum correct...
-
-What does tcpdump say?
-
-Also beware that conntrack won't be too happy if you modify the 
-"connection details" like this. If you need conntrack loaded such mangling 
-of the packets is better left to NAT..
-
-Regards
-Henrik
 
