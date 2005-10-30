@@ -1,43 +1,48 @@
-From: Ted Kaczmarek <tedkaz@optonline.net>
-Subject: Re: Same machine source IP modification
-Date: Sun, 30 Oct 2005 05:15:24 -0500
-Message-ID: <1130667324.18229.36.camel@localhost.localdomain>
-References: <018c01c5dd2c$a2388600$6500a8c0@BM>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: pppoe with NAT not working
+Date: Sun, 30 Oct 2005 16:30:58 +0100
+Message-ID: <4364E732.30809@trash.net>
+References: <23027.::ffff:195.115.41.103.1129902602.squirrel@webmail.nerim.net>
+	<435921A7.6050703@nerim.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <018c01c5dd2c$a2388600$6500a8c0@BM>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <435921A7.6050703@nerim.net>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Insomniac <insomniac@bloodbowlonline.com>
-Cc: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?S=E9bastien_Bernard?= <sbernard@nerim.net>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-On Sun, 2005-10-30 at 16:33 +0800, Insomniac wrote:
-> My situation is that I want to modify all incoming UDP traffic going to a
-> specific port so that the source IP appears to be from the local network. I
-> completely realise this creates a problem as far as monitoring traffic goes,
-> but that is unimportant at this point. Being on the same machine, I have
-> found I cannot use the nat table, so SNAT and MASQUERADE are not available
-> to me. Any suggestions on a fast and efficient way to pull this off?
-> 
-> 
-Why can't you use iptables? You should be able to policy route that
-traffic through some type of nat capable device.
+S=E9bastien Bernard wrote:
 
-If you provide some more details about that the real issue is you are
-likely to get better responses. I generally see people heading down this
-type of path when they have broken network toplogies, and their are many
-solutions that can address this.
+> I figured out the problem.
+>=20
+> NAT is not working with the rp-pppoe.so plugin.
+> I moved back to the
+>=20
+> pty "/usr/sbin/pppoe -I eth0 -T 80 -m 1452"
+>=20
+> Which worked now (go figure...).
+> And NAT is working again.
+>=20
+> Any reason for this ?
 
-Ted
+We had a report about NAT failing to work in a similar situation
+with HW checksums, but I couldn't find the reason. You could try:
 
+- check if you have HW checksums enabled on the eth-device using
+   ethtool
+- enable conntrack logging by loading ipt_LOG and executing
+   "echo 255 >/proc/sys/net/ipv4/netfilter/ip_conntrack_log_invalid".
+- if this shows something about invalid checksums, disable HW
+   checksumming on the eth-device and try again
 
