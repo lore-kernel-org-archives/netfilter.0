@@ -1,13 +1,10 @@
 From: Buddy wu <ejournal4me@gmail.com>
-Subject: Re: why can't use connlimit ??
-Date: Mon, 31 Oct 2005 09:49:48 +0800
-Message-ID: <43a0cdcb0510301749g78dbfe2dn@mail.gmail.com>
-References: <43a0cdcb0510282100q5473c6eav@mail.gmail.com>
-	<20051029081703.0AB336A8F8@smtp.sterenborg.info>
+Subject: what's the problem of DNAT
+Date: Mon, 31 Oct 2005 11:31:58 +0800
+Message-ID: <43a0cdcb0510301931p3f97ff66p@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051029081703.0AB336A8F8@smtp.sterenborg.info>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,18 +17,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> The .so is not a kernel module but a shared object. You don't load
-> shared objects yourself.
-do you mean  if want to load a .so file, It must load be a programe?
-just like the apache extensions?
-
->
-> Gr,
-> Rob
->
->
->
+   I use '/sbin/iptables -t nat -A PREROUTING -d InternetAddr -p tcp=20
+--dport 80 -j DNAT --to 192.168.16.100:8087' it can work, but if I use
+8087 instead of 80,like follows:
+/sbin/iptables -t nat -A PREROUTING -d InternetAddr -p tcp  --dport
+8087 -j DNAT --to 192.168.16.100:8087 then it can't work. what's wrong
+with it ?
 
