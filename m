@@ -1,48 +1,37 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: pppoe with NAT not working
-Date: Sun, 30 Oct 2005 16:30:58 +0100
-Message-ID: <4364E732.30809@trash.net>
-References: <23027.::ffff:195.115.41.103.1129902602.squirrel@webmail.nerim.net>
-	<435921A7.6050703@nerim.net>
+From: Buddy wu <ejournal4me@gmail.com>
+Subject: Re: why can't use connlimit ??
+Date: Mon, 31 Oct 2005 09:49:48 +0800
+Message-ID: <43a0cdcb0510301749g78dbfe2dn@mail.gmail.com>
+References: <43a0cdcb0510282100q5473c6eav@mail.gmail.com>
+	<20051029081703.0AB336A8F8@smtp.sterenborg.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <435921A7.6050703@nerim.net>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20051029081703.0AB336A8F8@smtp.sterenborg.info>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?S=E9bastien_Bernard?= <sbernard@nerim.net>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Rob Sterenborg <rob@sterenborg.info>
+Cc: netfilter@lists.netfilter.org
 
-S=E9bastien Bernard wrote:
+> The .so is not a kernel module but a shared object. You don't load
+> shared objects yourself.
+do you mean  if want to load a .so file, It must load be a programe?
+just like the apache extensions?
 
-> I figured out the problem.
->=20
-> NAT is not working with the rp-pppoe.so plugin.
-> I moved back to the
->=20
-> pty "/usr/sbin/pppoe -I eth0 -T 80 -m 1452"
->=20
-> Which worked now (go figure...).
-> And NAT is working again.
->=20
-> Any reason for this ?
-
-We had a report about NAT failing to work in a similar situation
-with HW checksums, but I couldn't find the reason. You could try:
-
-- check if you have HW checksums enabled on the eth-device using
-   ethtool
-- enable conntrack logging by loading ipt_LOG and executing
-   "echo 255 >/proc/sys/net/ipv4/netfilter/ip_conntrack_log_invalid".
-- if this shows something about invalid checksums, disable HW
-   checksumming on the eth-device and try again
+>
+> Gr,
+> Rob
+>
+>
+>
 
