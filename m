@@ -1,11 +1,15 @@
-From: "Sylvan Andrew" <sylvan@nids.com.nf>
-Subject: Fw: --state NEW -j DROP (would be great) Resolved
-Date: Mon, 31 Oct 2005 10:28:28 +1130
-Message-ID: <007a01c5dda5$71544e60$0510a8c0@cornerpc>
-Reply-To: Sylvan Andrew <sylvan@nids.com.nf>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: what's the problem of DNAT
+Date: Mon, 31 Oct 2005 14:25:12 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0510311423190.13641@filer.marasystems.com>
+References: <43a0cdcb0510301931p3f97ff66p@mail.gmail.com> 
+	<Pine.LNX.4.61.0510310758150.11251@filer.marasystems.com> 
+	<43a0cdcb0510302358y10f854ffg@mail.gmail.com> 
+	<54583.193.173.147.3.1130746205.squirrel@webmail.sterenborg.info>
+	<43a0cdcb0510310026t66d553f2v@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <43a0cdcb0510310026t66d553f2v@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,68 +20,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Buddy wu <ejournal4me@gmail.com>
+Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
 
+On Mon, 31 Oct 2005, Buddy wu wrote:
 
-Thanks for all the info. Problem fixed.  Many thanks !!!
+> And there is another Interest thing (I'm pained with the "interesting thing")
+> where I use 'sbin/iptables -t nat -A PREROUTING -d Inet2 -p tcp
+> --dport 8087 -j DNAT --to 192.168.16.100:8087' rule, I can access
+> http://Inet2:8087 in the LAN, but I can't access http://Inet2:8087
+> through Internet(I have a machine direct access to internet)
 
+Please verify the routing on 192.168.16.100. To me the data you have 
+indicates 192.168.16.100 does not have correct routing for the Internet. 
+From what I have seen the iptables rules is correct, but all your rules 
+with NAT to 192.168.16.100 is failing.
 
-
-When traffic is being forwarded through your router it traverses
-pre-routing,forward,postrouting chains.
-When traffic is being used by a local process on the router it
-traverses, pre-routing,input,output,postrouting chains.
-I think its best to place any blacklist rules in the pre-routing chain
-instead of input.
-
-Cheers
-
--- 
-Craig Steadman   RHCE,MCSA,CCNA
-
-
-
-Hello,
-
- Could somebody please explain the  'iptables -A INPUT -eth0 -m
-state --state NEW -j DROP' a bit more for me ?  I understand that it won't
-allow any outside initiated inbound connections into a network. However
-occasionally if I'm doing a tcpdump we see things like:
-
-21:04:48.935367 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.935447 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.935455 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.935537 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.935545 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.935629 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.935637 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.935812 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.935821 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.936045 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.936053 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-21:04:48.936153 IP 82.29.180.221.15378 > 213.17.40.204.4154: R 0:0(0) ack 1
-win 0
-
-What is that and shouldn't it be dropped ? Or is the : R 0:0(0) ack 1 win 0
-part of it a already establish connection ? Although that's one of our IP's
-it's not active on our network.
-
-Any ideas / advice  would be greatly appreciated !
+Quite likely the NAT and firewall rules as such is working just fine, but 
+192.168.16.100 does not know what to do with the return traffic.
 
 Regards
-
-Sylvan 
-
+Henrik
 
