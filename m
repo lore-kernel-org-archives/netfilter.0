@@ -1,11 +1,13 @@
 From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: what's the problem of DNAT
-Date: Mon, 31 Oct 2005 07:59:15 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0510310758150.11251@filer.marasystems.com>
-References: <43a0cdcb0510301931p3f97ff66p@mail.gmail.com>
+Subject: Re: how to use sk_buff in netfilter
+Date: Mon, 31 Oct 2005 08:00:35 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0510310759260.11251@filer.marasystems.com>
+References: <00d501c5dac7$22306070$060ae29f@javaboy>
+	<200510271055.10152@nienna>
+	<00f601c5dddc$bffe60f0$060ae29f@javaboy>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43a0cdcb0510301931p3f97ff66p@mail.gmail.com>
+In-Reply-To: <00f601c5dddc$bffe60f0$060ae29f@javaboy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +20,19 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Buddy wu <ejournal4me@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: jywang <jywang@cnic.cn>
+Cc: netfilter@lists.netfilter.org, KOVACS Krisztian <hidden@balabit.hu>
 
-On Mon, 31 Oct 2005, Buddy wu wrote:
+On Mon, 31 Oct 2005, jywang wrote:
 
->   I use '/sbin/iptables -t nat -A PREROUTING -d InternetAddr -p tcp
-> --dport 80 -j DNAT --to 192.168.16.100:8087' it can work, but if I use
-> 8087 instead of 80,like follows:
-> /sbin/iptables -t nat -A PREROUTING -d InternetAddr -p tcp  --dport
-> 8087 -j DNAT --to 192.168.16.100:8087 then it can't work. what's wrong
-> with it ?
+> this so good a tutorial of sk_buff.
+>
+> and, what is about the struct sock and other core structures?
 
-Any other rules in PREROUTING on port 80?
+most are not allowed to be used from netfilter hooks...
 
-iptables-save -t nat
+but many are documented in the kernel docbook documentation received with 
+the kernel sources ("make doc" in the kernel tree to build them..)
 
 Regards
 Henrik
