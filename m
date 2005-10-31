@@ -1,12 +1,11 @@
-From: "jywang" <jywang@cnic.cn>
-Subject: Re: how to use sk_buff in netfilter
-Date: Mon, 31 Oct 2005 13:34:23 +0800
-Message-ID: <00f601c5dddc$bffe60f0$060ae29f@javaboy>
-References: <00d501c5dac7$22306070$060ae29f@javaboy>
-	<200510271055.10152@nienna>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: what's the problem of DNAT
+Date: Mon, 31 Oct 2005 07:59:15 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0510310758150.11251@filer.marasystems.com>
+References: <43a0cdcb0510301931p3f97ff66p@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <43a0cdcb0510301931p3f97ff66p@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,22 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: KOVACS Krisztian <hidden@balabit.hu>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Buddy wu <ejournal4me@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-IHRoaXMgc28gZ29vZCBhIHR1dG9yaWFsIG9mIHNrX2J1ZmYuDQoNCmFuZCwgd2hhdCBpcyBhYm91
-dCB0aGUgc3RydWN0IHNvY2sgYW5kIG90aGVyIGNvcmUgc3RydWN0dXJlcz8NCg0KaXMgdGhlcmUg
-c29tZXRoaW5nIGxpa2UgdGhlIHNrYi5odG1sPw0KDQotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0t
-LS0tIA0KRnJvbTogIktPVkFDUyBLcmlzenRpYW4iIDxoaWRkZW5AYmFsYWJpdC5odT4NClRvOiA8
-bmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmc+DQpTZW50OiBUaHVyc2RheSwgT2N0b2JlciAy
-NywgMjAwNSA0OjU1IFBNDQpTdWJqZWN0OiBSZTogaG93IHRvIHVzZSBza19idWZmIGluIG5ldGZp
-bHRlcg0KDQoNCj4gDQo+ICAgSGksDQo+IA0KPiBPbiBUaHVyc2RheSAyNyBPY3RvYmVyIDIwMDUg
-MDkuMjIsIGp5d2FuZyB3cm90ZToNCj4gPiAgICAgaSB3YW50IHRvIG1ha2Ugc29tZSBjaGFuZ2Ug
-b24gaXAgcGFja2V0IGluIE5GX0lQX1BSRV9ST1VUSU5HDQo+ID4gaG9vay4gYnV0IGkgZG9uJ3Qg
-a25vdyB3aGF0IGlzIHRoZSBleGFjdGx5IG1lYW5zIG9mIGVhY2ggcGllY2UgaW4NCj4gPiBzdHJ1
-Y3Qgc2tfYnVmZi4NCj4gDQo+ICAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9+ZGF2ZW0vc2tiLmh0
-bWwgaXMgYSBwcmV0dHkgZ29vZCBkZXNjcmlwdGlvbiBvZiANCj4gdGhlIHNrYnMuDQo+IA0KPiAt
-LSANCj4gIFJlZ2FyZHMsDQo+ICAgS3Jpc3p0aWFuIEtvdmFjcw0KPiANCj4g
+On Mon, 31 Oct 2005, Buddy wu wrote:
 
+>   I use '/sbin/iptables -t nat -A PREROUTING -d InternetAddr -p tcp
+> --dport 80 -j DNAT --to 192.168.16.100:8087' it can work, but if I use
+> 8087 instead of 80,like follows:
+> /sbin/iptables -t nat -A PREROUTING -d InternetAddr -p tcp  --dport
+> 8087 -j DNAT --to 192.168.16.100:8087 then it can't work. what's wrong
+> with it ?
 
+Any other rules in PREROUTING on port 80?
+
+iptables-save -t nat
+
+Regards
+Henrik
 
