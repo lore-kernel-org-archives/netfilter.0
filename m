@@ -1,14 +1,14 @@
-From: "jywang" <jywang@cnic.cn>
-Subject: Re: how to use sk_buff in netfilter
-Date: Mon, 31 Oct 2005 15:08:43 +0800
-Message-ID: <015001c5dde9$edd98060$060ae29f@javaboy>
-References: <00d501c5dac7$22306070$060ae29f@javaboy>
-	<200510271055.10152@nienna>
-	<00f601c5dddc$bffe60f0$060ae29f@javaboy>
-	<Pine.LNX.4.61.0510310759260.11251@filer.marasystems.com>
+From: Buddy wu <ejournal4me@gmail.com>
+Subject: Re: what's the problem of DNAT
+Date: Mon, 31 Oct 2005 15:58:08 +0800
+Message-ID: <43a0cdcb0510302358y10f854ffg@mail.gmail.com>
+References: <43a0cdcb0510301931p3f97ff66p@mail.gmail.com>
+	<Pine.LNX.4.61.0510310758150.11251@filer.marasystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.61.0510310758150.11251@filer.marasystems.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,24 +21,31 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: Henrik Nordstrom <hno@marasystems.com>
-Cc: netfilter@lists.netfilter.org, KOVACS Krisztian <hidden@balabit.hu>
+Cc: netfilter@lists.netfilter.org
 
-d2hlbiBpIHBlcmZvcm0gdGhlIGNvbW1hbmQgJ21ha2UgaHRtbGRvY3MnLCBhIGVycm9yICBvY2N1
-ciBhcyBiZWxvdzoNCg0KRXJyb3IoZnMvZGNhY2hlLmM6Njg3KTogY2Fubm90IHVuZGVyc3RhbmQg
-cHJvdG90eXBlOiAnREVOVFJZX1VOVVNFRF9USFJFU0hPTEQgMzAwMDAgJw0KDQpob3cgdG8gZml4
-IGl0Lg0KDQoNCg0KDQoNCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0gDQpGcm9tOiAiSGVu
-cmlrIE5vcmRzdHJvbSIgPGhub0BtYXJhc3lzdGVtcy5jb20+DQpUbzogImp5d2FuZyIgPGp5d2Fu
-Z0BjbmljLmNuPg0KQ2M6ICJLT1ZBQ1MgS3Jpc3p0aWFuIiA8aGlkZGVuQGJhbGFiaXQuaHU+OyA8
-bmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmc+DQpTZW50OiBNb25kYXksIE9jdG9iZXIgMzEs
-IDIwMDUgMzowMCBQTQ0KU3ViamVjdDogUmU6IGhvdyB0byB1c2Ugc2tfYnVmZiBpbiBuZXRmaWx0
-ZXINCg0KDQo+IE9uIE1vbiwgMzEgT2N0IDIwMDUsIGp5d2FuZyB3cm90ZToNCj4gDQo+ID4gdGhp
-cyBzbyBnb29kIGEgdHV0b3JpYWwgb2Ygc2tfYnVmZi4NCj4gPg0KPiA+IGFuZCwgd2hhdCBpcyBh
-Ym91dCB0aGUgc3RydWN0IHNvY2sgYW5kIG90aGVyIGNvcmUgc3RydWN0dXJlcz8NCj4gDQo+IG1v
-c3QgYXJlIG5vdCBhbGxvd2VkIHRvIGJlIHVzZWQgZnJvbSBuZXRmaWx0ZXIgaG9va3MuLi4NCj4g
-DQo+IGJ1dCBtYW55IGFyZSBkb2N1bWVudGVkIGluIHRoZSBrZXJuZWwgZG9jYm9vayBkb2N1bWVu
-dGF0aW9uIHJlY2VpdmVkIHdpdGggDQo+IHRoZSBrZXJuZWwgc291cmNlcyAoIm1ha2UgZG9jIiBp
-biB0aGUga2VybmVsIHRyZWUgdG8gYnVpbGQgdGhlbS4uKQ0KPiANCj4gUmVnYXJkcw0KPiBIZW5y
-aWsNCj4g
+> Any other rules in PREROUTING on port 80?
+>
+> iptables-save -t nat
 
+-A PREROUTING -d Inet1 -p tcp -m tcp --dport 6100 -j DNAT
+--to-destination 192.168.16.21:6100
+-A PREROUTING -d Inet1 -p tcp -m tcp --dport 80 -j DNAT
+--to-destination 192.168.16.114:80
+-A PREROUTING -d Inet1 -p tcp -m tcp --dport 20 -j DNAT
+--to-destination 192.168.16.114:20
+-A PREROUTING -d Inet1 -p tcp -m tcp --dport 8081 -j DNAT
+--to-destination 192.168.16.100:8081
+-A PREROUTING -d Inet1 -p tcp -m tcp --dport 8082 -j DNAT
+--to-destination 192.168.16.100:8082
+-A PREROUTING -d Inet1 -p tcp -m tcp --dport 8085 -j DNAT
+--to-destination 192.168.16.100:8085
+-A PREROUTING -d Inet1 -p tcp -m tcp --dport 8083 -j DNAT
+--to-destination 192.168.16.100:8083
+-A PREROUTING -d Inet1 -p tcp -m tcp --dport 8087 -j DNAT
+--to-destination 192.168.16.100:8087
 
+these are the rules in PREROUTING. the Inet1 replaced for the  =20
+internet address. Now it only can connect to Inet1:80 through the
+internet. and others like :Inet1:8083 can't be accessed.
+    It worked months ago . but now it don't work anyway
 
