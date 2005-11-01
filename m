@@ -1,11 +1,11 @@
-From: Henrik Nordstrom <hno@marasystems.com>
-Subject: Re: libipq: problems changing destination port
-Date: Tue, 1 Nov 2005 01:24:38 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0511010117560.17023@filer.marasystems.com>
-References: <20051031192724.16806.qmail@web52802.mail.yahoo.com>
+From: Buddy wu <ejournal4me@gmail.com>
+Subject: Re: what's the problem of DNAT,It seems there is a HIDE firewall
+Date: Tue, 1 Nov 2005 09:37:57 +0800
+Message-ID: <43a0cdcb0510311737w7d55f872v@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051031192724.16806.qmail@web52802.mail.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,48 +16,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Lore <skizzo82@yahoo.com>
-Cc: Netfilter Users <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Henrik Nordstrom <hno@marasystems.com>
+Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
 
-On Mon, 31 Oct 2005, Lore wrote:
+Thank you, but I don't think so
 
-> I get every outgoing packet to userspace, get the ip
-> and port, connect to server to check if it has the
-> required services and daemon (the latter is part of my
-> project) and if both are true I redirect every
-> outgoing packet of that kind (port and IP) to a
-> predefined port. (if only the former is true, packets
-> are verdicted as NF_ACCEPT without any change)
+Now I found that It seems have a HIDE firewall, the firewall just only
+allow the access from internet at port 80, and will deny  access at
+all the other ports.
+And I can access to the internet address( the firewall's machine like
+211.211.112.11) at any port that the firewall have a DNAT RULE, but i
+can't access it except port 80 from internet.
+It just like the firewall just allow the access at 80 from internet,
+but I don't set the firewall, It like it's burn with the machine. I
+promise I didn't set that firewall, and I have checked my rule that It
+doesn't drop other ports access
 
-Ok.
-
-> As we ascertained, in the case service and daemon are
-> available, I have to change the port of all incoming
-> packet of that connection...
-
-Yes.
-
-> Do you think has better performance to add a new chain
-> for every port used (via execv) or to use a chain that
-> redirects every incoming packet to userspace, so that
-> I have to do a clean NF_ACCEPT to every incoming
-> connection that is not of my kind?
-
-I would just set a mark or similar, and then use the iptables nat to 
-change the port... In mangle, just QUEUE the NEW traffic on the relevan 
-port(s), in the userspace queue handler do all the checks and return the 
-status of the check as nfmark, and in the nat table look for that mark to 
-decice if the port needs to be changed.
-
-But if you really want to do the port translation in userspace, then 
-packets in both directions MUST be sent to QUEUE in iptables and the 
-userspace would need to figure out what to do with the traffic. And you 
-also MUST make sure that ip_conntrack is not activated (loaded) on the 
-server.
-
-Regards
-Henrik
-
+2005/10/31, Henrik Nordstrom <hno@marasystems.com>:
+> On Mon, 31 Oct 2005, Buddy wu wrote:
+>
+> > And there is another Interest thing (I'm pained with the "interesting t=
+hing")
+> > where I use 'sbin/iptables -t nat -A PREROUTING -d Inet2 -p tcp
+> > --dport 8087 -j DNAT --to 192.168.16.100:8087' rule, I can access
+> > http://Inet2:8087 in the LAN, but I can't access http://Inet2:8087
+> > through Internet(I have a machine direct access to internet)
+>
+> Please verify the routing on 192.168.16.100. To me the data you have
+> indicates 192.168.16.100 does not have correct routing for the Internet.
+> From what I have seen the iptables rules is correct, but all your rules
+> with NAT to 192.168.16.100 is failing.
+>
+> Quite likely the NAT and firewall rules as such is working just fine, but
+> 192.168.16.100 does not know what to do with the return traffic.
+>
+> Regards
+> Henrik
+>
 
