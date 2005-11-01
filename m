@@ -1,13 +1,12 @@
-From: "Martijn Lievaart" <m@rtij.nl>
-Subject: Re: libipq: problems changing destination port
-Date: Tue, 1 Nov 2005 16:11:29 +0100 (CET)
-Message-ID: <42471.217.166.60.19.1130857889.squirrel@ma.rtij.nl>
-References: <20051031192724.16806.qmail@web52802.mail.yahoo.com>
-	<Pine.LNX.4.61.0511010117560.17023@filer.marasystems.com>
+From: Zoltan Nagy <kirk@nemesys.hu>
+Subject: Re: Ping flood
+Date: Tue, 01 Nov 2005 18:08:45 +0100
+Message-ID: <4367A11D.8000205@nemesys.hu>
+References: <43677BFD.3080805@darkstar.nom.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0511010117560.17023@filer.marasystems.com>
+In-Reply-To: <43677BFD.3080805@darkstar.nom.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Henrik Nordstrom zei:
-> But if you really want to do the port translation in userspace, then
-> packets in both directions MUST be sent to QUEUE in iptables and the
-> userspace would need to figure out what to do with the traffic. And you
-> also MUST make sure that ip_conntrack is not activated (loaded) on the
-> server.
-
-And you SHOULD translate all ICMP errors pertaining to this connection.
-
-M4
+To: Paulo Andre <pandre@darkstar.nom.za>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
 
+consider dropping all multicast packets
+$ipt    -d 224.0.0.0/4                  -j DROP
+
+
+Paulo Andre wrote:
+> I have the following log:
+> Nov  1 09:10:40 guardian ---SA_IN--- IN=eth1 OUT=
+> MAC=ff:ff:ff:ff:ff:ff:00:e0:1e:83:d5:19:08:00  SRC=64.34.170.237
+> DST=255.255.255.255 LEN=1072 TOS=00 PREC=0x40 TTL=243 ID=12209 DF
+> PROTO=ICMP TYPE=8 CODE=0 ID=0 SEQ=0
+> 
+> I am receiving thousands of these a day, icmp traffic is blocked with
+> iptables. But still this traffic is coming up the line. Is my only
+> solution to contact the ISP or is there something I can do in
+> iptables/linux?
+> 
+> Paulo
+> 
+> 
 
