@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Re: iptables problem
-Date: Wed, 2 Nov 2005 09:01:27 +0100 (CET)
-Message-ID: <56523.193.173.147.3.1130918487.squirrel@webmail.sterenborg.info>
-References: <4367AEA5.7080501@pcraft.com>	<43a0cdcb0511011631k1bd1cfci@mail.gmail.com>
-	<43681694.1040406@pcraft.com> <436868D1.4080508@gmail.com>
+From: "Martijn Lievaart" <m@rtij.nl>
+Subject: Re: libipq: problems changing destination port
+Date: Tue, 1 Nov 2005 16:11:29 +0100 (CET)
+Message-ID: <42471.217.166.60.19.1130857889.squirrel@ma.rtij.nl>
+References: <20051031192724.16806.qmail@web52802.mail.yahoo.com>
+	<Pine.LNX.4.61.0511010117560.17023@filer.marasystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <436868D1.4080508@gmail.com>
+In-Reply-To: <Pine.LNX.4.61.0511010117560.17023@filer.marasystems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,44 +19,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Nikolai Georgiev <voyager123bg@gmail.com>
-Cc: "Ashley M. Kirchner" <ashley@pcraft.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, November 2, 2005 08:20, Nikolai Georgiev wrote:
->>    Problem is that while they can connect OUT, nothing from the
->> outside can connect to them.
->>
-> Hello there, i think this should do
-> iptables -P INPUT DROP
-> iptables -P OUTPUT DROP
-> iptables -A INPUT --dst $YOUR_IP -m state --state ESTABLISHED,RELATED
-> -j ACCEPT
-> iptables -A OUTPUT --src $YOUR_IP -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
+Henrik Nordstrom zei:
+> But if you really want to do the port translation in userspace, then
+> packets in both directions MUST be sent to QUEUE in iptables and the
+> userspace would need to figure out what to do with the traffic. And you
+> also MUST make sure that ip_conntrack is not activated (loaded) on the
+> server.
 
-The INPUT and OUTPUT chains are for local traffic.
-These kiosk hosts are probably *behind* iptables, so traffic will
-travel through the FORWARD chain.
+And you SHOULD translate all ICMP errors pertaining to this connection.
 
-If you need external connections forwarded to hosts behind the
-firewall, you need DNAT rules to make it happen.
-
-In this case, the OP has 3 hosts to wich he wants to connect ("nothing
-from the outside can connect to them", outgoing connections are
-already working).
-FTP only uses port 21/tcp (and 20). It's to my knowledge not possible
-to forward 1 port to 3 hosts simultaneously (if that would do any
-good), so he'll need to assign different ports for the second and
-third host.
-Something like :
-21/tcp -> host 1
-41/tcp -> host 2
-61/tcp -> host 3
-(if these ports are free).
-
-
-Gr,
-Rob
+M4
 
 
 
