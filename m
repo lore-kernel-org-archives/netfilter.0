@@ -1,7 +1,7 @@
-From: Paulo Andre <pandre@darkstar.nom.za>
-Subject: Ping flood
-Date: Tue, 01 Nov 2005 16:30:21 +0200
-Message-ID: <43677BFD.3080805@darkstar.nom.za>
+From: Jan Simbera <xcidar@seznam.cz>
+Subject: Bachelor Project
+Date: Tue, 01 Nov 2005 15:48:44 +0100
+Message-ID: <4367804C.7000608@seznam.cz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,18 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-I have the following log:
-Nov  1 09:10:40 guardian ---SA_IN--- IN=eth1 OUT= 
-MAC=ff:ff:ff:ff:ff:ff:00:e0:1e:83:d5:19:08:00  SRC=64.34.170.237 
-DST=255.255.255.255 LEN=1072 TOS=00 PREC=0x40 TTL=243 ID=12209 DF 
-PROTO=ICMP TYPE=8 CODE=0 ID=0 SEQ=0
+To anybody who can help me:
+Has anybody implemented the feature for the netfilter ( the
+nf_conntrack, the generic, not the IPV4 ) module which deals with
+reduplication of the connection status (e.g. when we have two redudant
+routers/firewalls)  or has anybody being working on
+it presently? I need this information because it is one of the topics of
+my new bachelor project. Does
+anybody know about any contacts or addresses, where i could get this
+information?
 
-I am receiving thousands of these a day, icmp traffic is blocked with 
-iptables. But still this traffic is coming up the line. Is my only 
-solution to contact the ISP or is there something I can do in 
-iptables/linux?
+Thank you for your help.
 
-Paulo
+Jan Simbera
+
+Faculty if Informatics
+www.fi.muni.cz
+xsimbera(at)mail(dot)muni(dot)cz
+ICQ 136154198
+
+
+
 
