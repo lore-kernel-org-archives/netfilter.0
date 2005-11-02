@@ -1,13 +1,10 @@
-From: Nikolai Georgiev <voyager123bg@gmail.com>
-Subject: Re: Re: iptables problem
-Date: Wed, 02 Nov 2005 09:20:49 +0200
-Message-ID: <436868D1.4080508@gmail.com>
-References: <4367AEA5.7080501@pcraft.com>	<43a0cdcb0511011631k1bd1cfci@mail.gmail.com>
-	<43681694.1040406@pcraft.com>
+From: "jywang" <jywang@cnic.cn>
+Subject: how to replace a skb in NF_IP_LOCAL_OUT hook
+Date: Wed, 2 Nov 2005 15:34:21 +0800
+Message-ID: <00d201c5df7f$d70cd430$060ae29f@javaboy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43681694.1040406@pcraft.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: "Ashley M. Kirchner" <ashley@pcraft.com>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Ashley M. Kirchner wrote:
+aSB3YW50IHRvIHJlcGxhY2UgdGhlIHNrYiB3aXRoIG15IG93biwgYW5kIGluIG15IHNrYiBpIHdp
+bGwgY2hhbmdlIHRoZSBkYXRhDQppbiBpdC4gDQoNCkhvdyB0byBkbyBpdD8NCg0Kd2hhdCBpIGRv
+IGFzIGJlbG93Og0KDQogY3AgPSBza2JfY29weV9leHBhbmQoKnNrYiwgc2tiX2hlYWRyb29tKCpz
+a2IpKzEyLCBza2JfdGFpbHJvb20oKnNrYiksIEdGUF9BVE9NSUMpOw0KLy9jaGFuZ2UgdGhlIHNr
+Yi0+ZGF0YSBoZXJlDQogc2tiX3NldF9vd25lcl93KGNwLCAoKnNrYiktPnNrKTsNCiAqc2tiID0g
+Y3A7DQogcmV0dXJuIE5GX0FDQ0VQVDsNCg0KYnV0LCBpdCBjYW4ndCB3b3JrLg0KDQoNCg0KDQo9
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KIOWn
+k+WQje+8miAgICAgIOeOi+mHkeS4gCAgIA0KIOeUteivne+8miAgICAgICgrODYpMTAtNTg4MTIz
+MjUNCiDljZXkvY3vvJogICAgICDkuK3lm73np5HlrabpmaLorqHnrpfmnLrnvZHnu5zkv6Hmga/k
+uK3lv4MgUiZEDQog5Zyw5Z2A77yaICAgICAg5YyX5Lqs5Lit5YWz5p2R5Y2X5Zub6KGX5Zub5Y+3
+DQog6YKu57yW77yaICAgICAgMTAwMDgwDQogZW1haWzvvJogICAgIGp5d2FuZ0BjbmljLmNuDQot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KIE5h
+bWU6ICAgICAgIGppbnlpIHdhbmcNCiBQaG9uZTogICAgICAoODYtMTApIDU4ODEtMjMyNQ0KIERp
+dmlzaW9uOiAgIFImRCxDb21wdXRlciBOZXR3b3JrIEluZm9ybWF0aW9uIENlbnRlciwNCiAgICAg
+ICAgICAgICBDaGluZXNlIEFjYWRlbXkgb2YgU2NpZW5jZXMNCiBBZGRyZXNzOiAgICA0LDR0aCBT
+b3V0aCBTdHJlZXQsIFpob25nZ3VhbmN1biwgDQogICAgICAgICAgICAgSGFpZGlhbiBEaXN0cmlj
+dCwgQmVpamluZywgQ2hpbmENCiBaaXAgY29kZTogICAxMDAwODANCiBFbWFpbDogICAgICBqeXdh
+bmdAY25pYy5jbg0KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT0=
 
-> Buddy wu wrote:
->
->> what's your problem or what do you mean?
->>  
->>
->    Problem is that while they can connect OUT, nothing from the
-> outside can connect to them.
->
-Hello there, i think this should do
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -A INPUT --dst $YOUR_IP -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-iptables -A OUTPUT --src $YOUR_IP -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
+
 
