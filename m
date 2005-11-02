@@ -1,10 +1,13 @@
-From: "jywang" <jywang@cnic.cn>
-Subject: how to replace a skb in NF_IP_LOCAL_OUT hook
-Date: Wed, 2 Nov 2005 15:34:21 +0800
-Message-ID: <00d201c5df7f$d70cd430$060ae29f@javaboy>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: PPTP connection attempts fail with ip_nat_pptp loaded
+Date: Wed, 02 Nov 2005 17:44:18 +1000
+Message-ID: <43686E52.5060705@snapgear.com>
+References: <dk9kdc$k5j$1@sea.gmane.org> <43686128.9050003@snapgear.com>
+	<436866C5.3010104@quo.to>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <436866C5.3010104@quo.to>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,28 +18,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Jordan Russell <jr-list-2005@quo.to>
+Cc: netfilter@lists.netfilter.org
 
-aSB3YW50IHRvIHJlcGxhY2UgdGhlIHNrYiB3aXRoIG15IG93biwgYW5kIGluIG15IHNrYiBpIHdp
-bGwgY2hhbmdlIHRoZSBkYXRhDQppbiBpdC4gDQoNCkhvdyB0byBkbyBpdD8NCg0Kd2hhdCBpIGRv
-IGFzIGJlbG93Og0KDQogY3AgPSBza2JfY29weV9leHBhbmQoKnNrYiwgc2tiX2hlYWRyb29tKCpz
-a2IpKzEyLCBza2JfdGFpbHJvb20oKnNrYiksIEdGUF9BVE9NSUMpOw0KLy9jaGFuZ2UgdGhlIHNr
-Yi0+ZGF0YSBoZXJlDQogc2tiX3NldF9vd25lcl93KGNwLCAoKnNrYiktPnNrKTsNCiAqc2tiID0g
-Y3A7DQogcmV0dXJuIE5GX0FDQ0VQVDsNCg0KYnV0LCBpdCBjYW4ndCB3b3JrLg0KDQoNCg0KDQo9
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KIOWn
-k+WQje+8miAgICAgIOeOi+mHkeS4gCAgIA0KIOeUteivne+8miAgICAgICgrODYpMTAtNTg4MTIz
-MjUNCiDljZXkvY3vvJogICAgICDkuK3lm73np5HlrabpmaLorqHnrpfmnLrnvZHnu5zkv6Hmga/k
-uK3lv4MgUiZEDQog5Zyw5Z2A77yaICAgICAg5YyX5Lqs5Lit5YWz5p2R5Y2X5Zub6KGX5Zub5Y+3
-DQog6YKu57yW77yaICAgICAgMTAwMDgwDQogZW1haWzvvJogICAgIGp5d2FuZ0BjbmljLmNuDQot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KIE5h
-bWU6ICAgICAgIGppbnlpIHdhbmcNCiBQaG9uZTogICAgICAoODYtMTApIDU4ODEtMjMyNQ0KIERp
-dmlzaW9uOiAgIFImRCxDb21wdXRlciBOZXR3b3JrIEluZm9ybWF0aW9uIENlbnRlciwNCiAgICAg
-ICAgICAgICBDaGluZXNlIEFjYWRlbXkgb2YgU2NpZW5jZXMNCiBBZGRyZXNzOiAgICA0LDR0aCBT
-b3V0aCBTdHJlZXQsIFpob25nZ3VhbmN1biwgDQogICAgICAgICAgICAgSGFpZGlhbiBEaXN0cmlj
-dCwgQmVpamluZywgQ2hpbmENCiBaaXAgY29kZTogICAxMDAwODANCiBFbWFpbDogICAgICBqeXdh
-bmdAY25pYy5jbg0KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT0=
+On 11/02/2005 05:12 PM, Jordan Russell wrote:
+> Sure. What command should I use to do that?
 
-
+tethereal -w dumpfile -s 1500 -ni eth1 host pptp-server
 
