@@ -1,12 +1,13 @@
-From: Jordan Russell <jr-list-2005@quo.to>
-Subject: Re: PPTP connection attempts fail with ip_nat_pptp loaded
-Date: Wed, 02 Nov 2005 01:12:05 -0600
-Message-ID: <436866C5.3010104@quo.to>
-References: <dk9kdc$k5j$1@sea.gmane.org> <43686128.9050003@snapgear.com>
+From: Nikolai Georgiev <voyager123bg@gmail.com>
+Subject: Re: Re: iptables problem
+Date: Wed, 02 Nov 2005 09:20:49 +0200
+Message-ID: <436868D1.4080508@gmail.com>
+References: <4367AEA5.7080501@pcraft.com>	<43a0cdcb0511011631k1bd1cfci@mail.gmail.com>
+	<43681694.1040406@pcraft.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43686128.9050003@snapgear.com>
+In-Reply-To: <43681694.1040406@pcraft.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,15 +19,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+Cc: "Ashley M. Kirchner" <ashley@pcraft.com>
 
-Philip Craig wrote:
-> Is it possible to write these packets to a file so I can look at their
-> contents in more detail?
+Ashley M. Kirchner wrote:
 
-Sure. What command should I use to do that?
-
--- 
-Jordan Russell
-
+> Buddy wu wrote:
+>
+>> what's your problem or what do you mean?
+>>  
+>>
+>    Problem is that while they can connect OUT, nothing from the
+> outside can connect to them.
+>
+Hello there, i think this should do
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -A INPUT --dst $YOUR_IP -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+iptables -A OUTPUT --src $YOUR_IP -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
 
