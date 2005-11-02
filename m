@@ -1,15 +1,12 @@
-From: Buddy wu <ejournal4me@gmail.com>
-Subject: Re: Re: iptables problem
-Date: Wed, 2 Nov 2005 09:37:39 +0800
-Message-ID: <43a0cdcb0511011737r266fc4fj@mail.gmail.com>
-References: <4367AEA5.7080501@pcraft.com>
-	<43a0cdcb0511011631k1bd1cfci@mail.gmail.com>
-	<43681694.1040406@pcraft.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Re: iptables problem
+Date: Wed, 2 Nov 2005 06:56:04 +0100
+Message-ID: <20051102060142.2EBF96A931@smtp.sterenborg.info>
+References: <43681694.1040406@pcraft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <43681694.1040406@pcraft.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,12 +18,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Ashley M. Kirchner" <ashley@pcraft.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
->     Problem is that while they can connect OUT, nothing from the outside
-> can connect to them.
+>> what's your problem or what do you mean?
+>> 
+>> 
+>     Problem is that while they can connect OUT, nothing from
+> the outside can connect to them.
 
-I think you should load the ip_nat_ftp and ip_conntrack_ftp moudles.
-do you load them?
+If you don't let us know what you have already done, we don't know
+what's wrong.
+
+
+Gr,
+Rob
+
 
