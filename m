@@ -1,16 +1,10 @@
-From: Paul Goodyear <pgudge@gmail.com>
-Subject: Re: iptables on DLink DSL-502T Modem/Router
-Date: Wed, 9 Nov 2005 00:57:09 +0000
-Message-ID: <cc8f3f150511081657s6ef33b52safece6399a468366@mail.gmail.com>
-References: <cc8f3f150511071747m64e3841ava98596bfe776fcf3@mail.gmail.com>
-	<200511081516.21132.rob0@gmx.co.uk>
-	<cc8f3f150511081357s206b99d0m95942f124269b709@mail.gmail.com>
-	<200511081628.52748.rob0@gmx.co.uk>
+From: Zoltan Nagy <kirk@elte.hu>
+Subject: kernel freeze issue
+Date: Wed, 02 Nov 2005 21:45:45 +0100
+Message-ID: <43692579.8000807@elte.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200511081628.52748.rob0@gmx.co.uk>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,63 +18,88 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On 11/8/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> On Tuesday 2005-November-08 15:57, Paul Goodyear wrote:
-> > Thanks for that, I used the -I chain <ruleid> successfully. And added
-> > the rule 2 down, but the router still does not let me in. Could it be
->
-> Being an embedded device means this won't be as easy to debug. On a
-> regular system I would suggest using a -j LOG rule before your ACCEPT
-> rule to see what's happening. It might work on this, hard to say.
->
 
-Just get a unknown target with -j LOG
+summary of current configuration:
 
-> You can also use -v with the -L option to list rules. See if anything
-> matched your rule. If not, your rule is wrong, or in the wrong place.
->
+           +----- ext_if(eth1) 3c905TX ------ 34Mbit uplink
+           |
+           |
+           |
+         +------------+
+         |   filter   +
+         +------------+
+           |  |  |
+           |  |  +--- lan_if(eth5) rtl8169 - vlan1 ------ users/servers
+           |  |
+           |  +------ adm_if(eth0) 3c905TX - vlan2 ------ log server
+           |
+           +--------- core_if(eth3) 3c940
+                      +inp_if(eth3.3)      - vlan 3  +
+                      +out_if(eth3.4)      - vlan 4  +
+                                                     |
+                                                     |(cross-link cable)
+                                                     |
+               +------ core_if(eth0) 3c940 ----------+
+               |
+         +-----------+
+         |    foo    +
+         +-----------+
+               |
+               +------ adm_if(eth1) rtl8139 - vlan2
 
-Very nice, it says 0 0 for my rule, so thats good indication nothing
-is coming in.
 
-> Don't use Microsoft tools for debugging. Try to telnet(1) to your RDP
-> port from outside. Does telnet connect? Check /proc/net/ip_conntrack.
-> Is your connection listed?
->
+filter:
+	arp proxy based
+	route		-	policy routing - between local-domain1(C),local-domain2(2*C),uplink,foo(on failover this skipped)
+	packet filter(netfilter)
+				-	traffic accounting(ipt_account),flood/portscan protection
+				-	packet filter
+				-	TTL inc
+				-	ipset's for extra port configurations
+				-	ipt_condition(failover control)
+				-	we have 2 domain's so it sends redirects for the hosts spoofing that it's our router(ipt_IPALTER)
+foo:
+	not configured because of the freezes...
 
-nothing :(
+problem:
+	filter is freezes in random intervalls(30m - 6day) - on-board watchdog(i8xx) reboot's the system
+	i've tryed many things, remove my custom patches...but it won't help ;)
+	in the kernel trace i've last seen(i've a blurry image)
+	the kernel remove some packages from the boomerang interface
+	ip_rcv_finish, etc..
+	ipt_do_table is the last in the call trace...
 
-> > possible that the iptables rule is in place, but the manufactures
-> > (DLink) have done something to stop this working?
->
-> I don't know what it would be. But on further thought I realised that
-> some ISP's block RDP. Comcast does, both RDP and PPTP, likely to
-> "encourage" residential users to upgrade to "business" service (the
-> same hit-or-miss service for more money.)
->
+notice:
+	crash happens when many of our beloved users use p2p software(this is also a tip)
 
-My ISP doesn't block anything as yet, and if I open the port to
-everyone, the RDP connection is fine.
+next try:
+	place a cisco to monitor ext_if and lan_if with tcpdump, open another file every 10m
+	and when filter freezes i maybe have the packet that caused the freeze
+	(small chance - but possible ;)
 
-> Use nmap(8) to scan your router from outside. Is RDP open? Insert an
-> INPUT and FORWARD rule to ACCEPT everything from the IP address where
-> you are doing the scan. If anything shows as "filtered" it means either
-> your ISP is blocking it or you're DNAT'ing to a closed host:port.
->
+my tips was:
+	ipt_condition	-	in pom it's <2.6.0 but i've read the code, and i think it's safe to use
+	ipt_IPALTER	-	w/o it also freezes, so this isn't the problem
+	ipset		-	i've a small patch on it...to enable inverted portmaps, i think it's safe
+					i use portmap,ipmap,macipmap from it
+	NAPI			-	yesterday i disabled it...since then no freezes
+	ipt_TCPMSS	-	it wrote some warnings in dmesg, about packet size<64 - i've moved another rule before it
+						 -p tcp --tcp-option ! 2    -j DROP
+	boomerang		-	maybe the driver is a bit broken
+	pom_patches	-	TTL set connmark CONNMARK account condition limit
+	SMP			-	maybe, i haven't disabled it yet
 
-VERY nice tool, tried nmap from a remote host and only found my ftp,
-imap ports open, no RDP
+today's surprise:
+	ip l s eth0 promisc on	==> freeze, without any trace ;)
 
-> > I have a Safecom router also, with the same embeded linux version and
-> > this supports ip filtering and the iptables commands.
->
-> And you tested with that, and you found ... ?
-> --
+versions:
+Linux filter 2.6.14-alt #5 SMP Tue Nov 8 16:40:49 CET 2005 i686 GNU/Linux
+iptables-1.3.4
+pom-20051031
+ipset-2.2.6
 
-The Safecom router allows the ip filtering in the web admin, and after
-checking the iptables -L the rule is identical to the one entered on
-the dlink DSL-502T.
+some info about the system can be downloaded from
+http://152.66.235.5/info-filter.tgz
+this is my worst nightmare, any suggestions? ;)
 
-Thank you so much for all the help, and direction, i really do appreciate i=
-t.
 
