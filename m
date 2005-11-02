@@ -1,13 +1,15 @@
-From: "Ashley M. Kirchner" <ashley@pcraft.com>
+From: Buddy wu <ejournal4me@gmail.com>
 Subject: Re: Re: iptables problem
-Date: Tue, 01 Nov 2005 18:29:56 -0700
-Message-ID: <43681694.1040406@pcraft.com>
+Date: Wed, 2 Nov 2005 09:37:39 +0800
+Message-ID: <43a0cdcb0511011737r266fc4fj@mail.gmail.com>
 References: <4367AEA5.7080501@pcraft.com>
 	<43a0cdcb0511011631k1bd1cfci@mail.gmail.com>
+	<43681694.1040406@pcraft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43a0cdcb0511011631k1bd1cfci@mail.gmail.com>
+In-Reply-To: <43681694.1040406@pcraft.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +20,13 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Ashley M. Kirchner" <ashley@pcraft.com>
+Cc: netfilter@lists.netfilter.org
 
-Buddy wu wrote:
+>     Problem is that while they can connect OUT, nothing from the outside
+> can connect to them.
 
->what's your problem or what do you mean?
->  
->
-    Problem is that while they can connect OUT, nothing from the outside 
-can connect to them.
-
--- 
-H | I haven't lost my mind; it's backed up on tape somewhere.
-  +--------------------------------------------------------------------
-  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
-  IT Director / SysAdmin / WebSmith             .     800.441.3873 x130
-  Photo Craft Imaging                       .     3550 Arapahoe Ave. #6
-  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A. 
-
-
-
+I think you should load the ip_nat_ftp and ip_conntrack_ftp moudles.
+do you load them?
 
