@@ -1,12 +1,10 @@
-From: Zoltan Nagy <kirk@nemesys.hu>
-Subject: Re: Ping flood
-Date: Tue, 01 Nov 2005 18:08:45 +0100
-Message-ID: <4367A11D.8000205@nemesys.hu>
-References: <43677BFD.3080805@darkstar.nom.za>
+From: Deepak Naidu <deepak_nai@yahoo.com>
+Subject: Including TARPIT support
+Date: Wed, 2 Nov 2005 12:29:55 +0000 (GMT)
+Message-ID: <20051102122955.86522.qmail@web34613.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43677BFD.3080805@darkstar.nom.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Paulo Andre <pandre@darkstar.nom.za>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+Hi,
+     I have preinstalled iptables v1.2.8 on my Fedora
+Core 1 box.  I wanted to include the tarpit support in
+iptabes/kernel.
+
+I have my kernelsource, but I dont know how to patch
+this  in my kernel.
+
+Where should I otain the patch-o-matic patches from.
+I know the cvs has been absolute.  But the docs havent
+been updated.
+
+Can someone list the steps for enabling tarpit support
+in iptables ...
+
+Cheers,
+Deepak Naidu.
 
 
-consider dropping all multicast packets
-$ipt    -d 224.0.0.0/4                  -j DROP
+
+Linux your Life, Don't Window it [[]] 
+
+               { All for the best }
 
 
-Paulo Andre wrote:
-> I have the following log:
-> Nov  1 09:10:40 guardian ---SA_IN--- IN=eth1 OUT=
-> MAC=ff:ff:ff:ff:ff:ff:00:e0:1e:83:d5:19:08:00  SRC=64.34.170.237
-> DST=255.255.255.255 LEN=1072 TOS=00 PREC=0x40 TTL=243 ID=12209 DF
-> PROTO=ICMP TYPE=8 CODE=0 ID=0 SEQ=0
-> 
-> I am receiving thousands of these a day, icmp traffic is blocked with
-> iptables. But still this traffic is coming up the line. Is my only
-> solution to contact the ISP or is there something I can do in
-> iptables/linux?
-> 
-> Paulo
-> 
-> 
+
+
+
+	
+	
+		
+___________________________________________________________ 
+Yahoo! Messenger - NEW crystal clear PC to PC calling worldwide with voicemail http://uk.messenger.yahoo.com
 
