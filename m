@@ -1,14 +1,17 @@
-From: "Ashley M. Kirchner" <ashley@pcraft.com>
+From: Sven Schuster <schuster.sven@gmx.de>
 Subject: Re: Re: iptables problem (nfcan: addressed to exclusive
- sender for this address)
-Date: Thu, 03 Nov 2005 09:02:58 -0700
-Message-ID: <436A34B2.1080909@pcraft.com>
-References: <20051103062533.C48C96AA57@smtp.sterenborg.info>	<4369B1F2.50804@pcraft.com>
-	<20051103152158.GA14687@salty>
+	sender for this address)
+Date: Thu, 3 Nov 2005 17:23:47 +0100
+Message-ID: <20051103162346.GA31304@zion.homelinux.com>
+References: <20051103062533.C48C96AA57@smtp.sterenborg.info>
+	<4369B1F2.50804@pcraft.com> <20051103152158.GA14687@salty>
+	<436A34B2.1080909@pcraft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051103152158.GA14687@salty>
+Content-Disposition: inline
+In-Reply-To: <436A34B2.1080909@pcraft.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,43 +22,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Jim Laurino wrote:
-
-> You can arrange to have the firewall in question
-> respond to 3 IP addresses on the outside interface and
-> forward the now distinct traffic to the 3 kiosks.
-> If this is possible, it might be better than being screwed.
-
-    That would be nice, but no can do.  Remember, the server end, or 
-receiving end, is a third party company.  They have hundreds, if not 
-thousands of these little kiosks scattered across the country.  We are 
-but a tiny little company with three of those kiosks.  Each kiosk makes 
-an outbound FTP connection to the server.  Then the server makes an 
-inbound connection back to the kiosk.  This is where it fails because it 
-doesn't know where it came from since the kiosks are behind the firewall.
-
-    Putting the kiosks OUTSIDE the firewall (with different IPs) also 
-won't work because they also need to communicate (via windows shares) to 
-internal machines, again, same scenario...they contact a print station, 
-and the print station contacts them.  So you see, being screwed is the 
-only option I see here.  Unless I'm overlooking something.
-
-    And I can't tell the other company to send data to separate IPs 
-either because their system works based on the packet they first receive 
-when the kiosk contacts them.  Which goes back to my point above (about 
-putting the kiosks outside the firewall.)
-
--- 
-H | I haven't lost my mind; it's backed up on tape somewhere.
-  +--------------------------------------------------------------------
-  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
-  IT Director / SysAdmin / WebSmith             .     800.441.3873 x130
-  Photo Craft Imaging                       .     3550 Arapahoe Ave. #6
-  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A. 
+To: "Ashley M. Kirchner" <ashley@pcraft.com>
+Cc: netfilter@lists.netfilter.org
 
 
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+
+Hi Ashley,
+
+On Thu, Nov 03, 2005 at 09:02:58AM -0700, Ashley M. Kirchner told us:
+>    And I can't tell the other company to send data to separate IPs=20
+> either because their system works based on the packet they first receive=
+=20
+> when the kiosk contacts them.  Which goes back to my point above (about=
+=20
+> putting the kiosks outside the firewall.)
+
+you say "their" system works based on the packet they first receive
+when contacting them. So with multiple IPs, wouldn't it work to let
+each kiosk contact the server via its own IP address via SNAT??
+E.g. kiosk 1 which is internally 1.2.3.4 gets natted to the public
+ip 5.6.7.8, so when it contacts the server it will establish a
+connection back to 5.6.7.8 which will in turn be DNATted to 1.2.3.4.
+kiosk 2 (1.2.3.5) --> 5.6.7.9
+and so on...
+I haven't read the whole thread, so it might be that I missed
+something :-)
+
+Wouldn't this work??
+
+
+HTH
+
+Sven
+
+--=20
+Linux zion.homelinux.com 2.6.14-rc5-mm1_14 #14 Wed Nov 2 11:36:18 CET 2005 =
+i686 athlon i386 GNU/Linux
+ 17:19:16 up 1 day,  5:25,  2 users,  load average: 0.38, 0.18, 0.07
+
+--ReaqsoxgOBHFXBhH
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFDajmSo4FAdB2PneQRAo3dAJ9gjZMANl3Tk4r5WL5W1eG29UsnmACdFVAY
+GF1LX7LMIUrAvMg+mfGOB2M=
+=Z/xx
+-----END PGP SIGNATURE-----
+
+--ReaqsoxgOBHFXBhH--
 
