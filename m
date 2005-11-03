@@ -1,16 +1,12 @@
-From: "Ashley M. Kirchner" <ashley@pcraft.com>
-Subject: Re: Re: iptables problem (nfcan: addressed to exclusive
- (nfcan: addressed to exclusive sender for this address)	sender for
- this address)
-Date: Thu, 03 Nov 2005 12:57:08 -0700
-Message-ID: <436A6B94.6070305@pcraft.com>
-References: <20051103062533.C48C96AA57@smtp.sterenborg.info>	<4369B1F2.50804@pcraft.com>
-	<20051103152158.GA14687@salty>	<436A34B2.1080909@pcraft.com>
-	<20051103170032.GE14687@salty>
+From: Henrik Nordstrom <hno@marasystems.com>
+Subject: Re: how to replace a skb in NF_IP_LOCAL_OUT hook
+Date: Thu, 3 Nov 2005 22:37:51 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0511032237400.14703@filer.marasystems.com>
+References: <00d201c5df7f$d70cd430$060ae29f@javaboy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051103170032.GE14687@salty>
+In-Reply-To: <00d201c5df7f$d70cd430$060ae29f@javaboy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,87 +17,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="utf-8"; format="flowed"
+To: jywang <jywang@cnic.cn>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Jim Laurino wrote:
+This question belongs on the developer list I think.
 
-> If the kiosks are ftp clients, the situation is entirely different.
-> This should not be a problem.
+On Wed, 2 Nov 2005, jywang wrote:
 
-    They are clients.  But...keep reading...  Something changed today.
-
-> Exactly what do you mean when you say "contacts".
-> Do you mean that the kiosk also must act as an ftp server?
-> Or do you mean contact as in a passive ftp transfer?
-> Passive ftp you can support via ftp helpers and RELATED.
-
-    Neither.  It's through windows network shares.  The kiosk puts the 
-order on it's local drive which is shared to the network, and the print 
-station comes and fetches the info periodically.  Keep reading...
-
-
-    I just got off the phone with the company and they made a small 
-change in our config.  Now, all the kiosks have to do is connect via FTP 
-to their server and drop a file.  That's it.  Nothing comes back, no 
-inbound connections to the kiosks.  Just going out.
-
-    So, just out of curiosity, I decided to try doing a manual FTP 
-transfer from a completely different machine on the network.  One that 
-CAN connect to external ftp sites just fine and transfer files.  And 
-this is what I see:
-
-    - Open DOS window
-    - Connect to FTP server
-    - enter 'PUT file.xml' command
-    ...and that's where it hangs.
-
-    Now, looking in the firewall logs, I see this:
-
-Nov  3 13:47:19 serpico kernel: New not syn:IN=eth2 OUT=eth0 
-SRC=192.168.1.253 DST=206.112.90.196 LEN=67 TOS=0x00 PREC=0x00 TTL=127 
-ID=43803 DF PROTO=TCP SPT=4100 DPT=21 WINDOW=65420 RES=0x00 ACK PSH URGP=0
-
-Nov  3 13:47:49 serpico kernel: New not syn:IN=eth2 OUT=eth0 
-SRC=192.168.1.253 DST=206.112.90.196 LEN=40 TOS=0x00 PREC=0x00 TTL=127 
-ID=43949 DF PROTO=TCP SPT=4100 DPT=21 WINDOW=0 RES=0x00 ACK RST URGP=0
-
-Nov  3 13:47:55 serpico kernel: New not syn:IN=eth2 OUT=eth0 
-SRC=192.168.1.253 DST=206.112.90.196 LEN=67 TOS=0x00 PREC=0x00 TTL=127 
-ID=43987 DF PROTO=TCP SPT=4117 DPT=21 WINDOW=65338 RES=0x00 ACK PSH URGP=0
-
-    In my DOS window, I see this (while those errors are popping up in 
-syslog):
-
-    ftp> put 2008701033.xml
-            ... pause ... first error in syslog
-            ... pause ... second line in syslog
-    Connection closed by remote host.
-            ... third line in syslog
-    ftp>
-   
-
-    Please remember that this is a machine onto which I CAN open an ftp 
-connection to anywhere in the world and be able to send and receive 
-files just fine.  So then why is it not working when going to these people?
-
-    ---- FIVE MINUTES LATER ----
-
-    I just tried directly from the firewall machine and found out they 
-don't allow PASSIVE mode ON... As soon as I turn passive mode off, the 
-transfer, FROM THE FIREWALL MACHINE, works.  (firewall machine has an 
-external IP)
-
-    So now I wonder, is it because of the passive mode setting they 
-have?  Could that be why ftp transfers from within the firewall fails?
-
--- 
-W | It's not a bug - it's an undocumented feature.
-  +--------------------------------------------------------------------
-  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
-  IT Director / SysAdmin / Websmith             .     800.441.3873 x130
-  Photo Craft Laboratories, Inc.            .     3550 Arapahoe Ave. #6
-  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A.
-
-
+> i want to replace the skb with my own, and in my skb i will change the =
+data
+> in it.
+>
+> How to do it?
+>
+> what i do as below:
+>
+> cp =3D skb_copy_expand(*skb, skb_headroom(*skb)+12, skb_tailroom(*skb),=
+ GFP_ATOMIC);
+> //change the skb->data here
+> skb_set_owner_w(cp, (*skb)->sk);
+> *skb =3D cp;
+> return NF_ACCEPT;
+>
+> but, it can't work.
+>
+>
+>
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> =E5=A7=93=E5=90=8D=EF=BC=9A      =E7=8E=8B=E9=87=91=E4=B8=80
+> =E7=94=B5=E8=AF=9D=EF=BC=9A      (+86)10-58812325
+> =E5=8D=95=E4=BD=8D=EF=BC=9A      =E4=B8=AD=E5=9B=BD=E7=A7=91=E5=AD=A6=E9=
+=99=A2=E8=AE=A1=E7=AE=97=E6=9C=BA=E7=BD=91=E7=BB=9C=E4=BF=A1=E6=81=AF=E4=B8=
+=AD=E5=BF=83 R&D
+> =E5=9C=B0=E5=9D=80=EF=BC=9A      =E5=8C=97=E4=BA=AC=E4=B8=AD=E5=85=B3=E6=
+=9D=91=E5=8D=97=E5=9B=9B=E8=A1=97=E5=9B=9B=E5=8F=B7
+> =E9=82=AE=E7=BC=96=EF=BC=9A      100080
+> email=EF=BC=9A     jywang@cnic.cn
+> -----------------------------------------------------
+> Name:       jinyi wang
+> Phone:      (86-10) 5881-2325
+> Division:   R&D,Computer Network Information Center,
+>             Chinese Academy of Sciences
+> Address:    4,4th South Street, Zhongguancun,
+>             Haidian District, Beijing, China
+> Zip code:   100080
+> Email:      jywang@cnic.cn
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>
 
