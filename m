@@ -1,11 +1,13 @@
-From: Matthew Price <mandtprice@gmail.com>
-Subject: NAT between incomming PPP and office network
-Date: Thu, 3 Nov 2005 11:57:06 -0600
-Message-ID: <e63dd3500511030957h218d9393yc58eddb3b44ab772@mail.gmail.com>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: RE: NAT between incomming PPP and office network
+Date: Thu, 3 Nov 2005 19:12:17 +0100
+Message-ID: <26719.6375680671$1131041710@news.gmane.org>
+References: <e63dd3500511030957h218d9393yc58eddb3b44ab772@mail.gmail.com>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <e63dd3500511030957h218d9393yc58eddb3b44ab772@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,6 +20,25 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+Hi,
+
+I've set up a similar box. I've used ip-up and ip-down scripts to
+enter/remove a rule that contains SNATing of ppp client address. Also I have
+allowed traffic to be forwarded between ext_dev and ppp+, as well as INPUT
+and OUTPUT policies for ppp+ devices set to ALLOW. Maybe you've missed one
+of those.
+
+Regards,
+
+Edvin Seferovic
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Matthew Price
+Sent: Donnerstag, 03. November 2005 18:57
+To: netfilter@lists.netfilter.org
+Subject: NAT between incomming PPP and office network
 
 Howdy All;
 
@@ -57,4 +78,6 @@ missed?
 
 Thanks,
 Matthew
+
+
 
