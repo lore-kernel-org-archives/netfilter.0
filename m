@@ -1,66 +1,55 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: RE: NAT between incomming PPP and office network
-Date: Thu, 3 Nov 2005 20:10:47 +0100
-Message-ID: <43650.0636781149$1131045190@news.gmane.org>
-References: <e63dd3500511031057p618620al4933a7d56099801d@mail.gmail.com>
-Reply-To: edvin.seferovic@kolp.at
+From: Krzysztof Oledzki <olenf@ans.pl>
+Subject: Re: [ANNOUNCE] Release of iptables-1.3.4
+Date: Thu, 3 Nov 2005 20:14:44 +0100 (CET)
+Message-ID: <Pine.LNX.4.63.0511032004270.15701@bizon.gios.gov.pl>
+References: <20051103185339.GM905@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e63dd3500511031057p618620al4933a7d56099801d@mail.gmail.com>
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-187430788-1030322350-1131045284=:15701"
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <20051103185339.GM905@sunbeam.de.gnumonks.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: Netfilter Core Team <coreteam@netfilter.org>
+Cc: lwn@lwn.net, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
 
-Well.. try it.. if it works - it accomplishes that what you wanted! Right?
-I am a little bit paranoid so all my policies are set to DROP... and in the
-chains I control what gets in/out/forwarded...
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Regards,
+---187430788-1030322350-1131045284=:15701
+Content-Type: TEXT/PLAIN; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Edvin
 
------Original Message-----
-From: Matthew Price [mailto:mandtprice@gmail.com] 
-Sent: Donnerstag, 03. November 2005 19:58
-To: edvin.seferovic@kolp.at
-Subject: Re: NAT between incomming PPP and office network
 
-On 11/3/05, Seferovic Edvin <edvin.seferovic@kolp.at> wrote:
-> http://iptables-tutorial.frozentux.net could not find a better one ;)
+On Thu, 3 Nov 2005, Netfilter Core Team wrote:
+
+> Hi!
 >
-> I hope you know how to manage tables by now. The point is - you should
-> define an INPUT and OUTPUT table for all ppp interfaces that you will be
-> created as users connect to your box. Then you should allow traffic to be
-> forwarded between ppp+ ( it stands for ppp1 and ppp2 and ppp3 etc ) and
-your
-> external interface. If you already have a rule for MASQ - it should be
-> working. In my setup I masquerade only IP addresses of connected clients.
-> Those who are not connected with pptp dont get any internet access.
+> The netfilter coreteam proudly presents:
 >
-> I hope I could help you ;) the rules shouldn't be to heavy to implement ;)
+> =09iptables version 1.3.4
 >
-> Regards,
+> The 1.3.4 version contains accumulated bugfixes to the last 1.3.3
+> version.  It also fixes some compilation problems with the latest
+> (2.6.14) kernel release.
 >
-> Edvin
+> The ChangeLog is attached to this mail.
 
-To be sure that IP's don't get hijacked and that nothing from the WLAN
-gets through, I also added:
-iptables -P FORWARD DROP
-iptables -I FORWARD -i ppp+ -j ACCEPT
+What about support for netfilter goto extension that went into 2.6.14? It=
+=20
+still requires small iptables patch from patch-o-matic-ng.
 
-It works; does this accomplish what I want?
+Best regards,
 
-One more clueless newbie,
-Matthew
-
+ =09=09=09=09Krzysztof Ol=EAdzki
+---187430788-1030322350-1131045284=:15701--
 
