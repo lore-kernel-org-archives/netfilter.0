@@ -1,12 +1,13 @@
-From: "Harrison, James" <james.harrison@americancolor.com>
-Subject: RE: Troubleshooting Netfilter Firewall (performance issues)
-Date: Thu, 03 Nov 2005 12:24:19 -0600
-Message-ID: <1131042260.3835.16.camel@localhost.localdomain>
-References: <FAC4E024BF776842876169173CE2F013292A@mailbox.vikus.com>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: RE: NAT between incomming PPP and office network
+Date: Thu, 3 Nov 2005 19:38:16 +0100
+Message-ID: <49658.1730469645$1131043197@news.gmane.org>
+References: <e63dd3500511031025j4959dbcfhc0c8692ca6a915be@mail.gmail.com>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <FAC4E024BF776842876169173CE2F013292A@mailbox.vikus.com>
+In-Reply-To: <e63dd3500511031025j4959dbcfhc0c8692ca6a915be@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +19,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Derick Anderson <danderson@vikus.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 2005-11-03 at 12:55 -0500, Derick Anderson wrote:
-[snip]
+http://iptables-tutorial.frozentux.net could not find a better one ;)
 
-> 
-> If I were you I would monitor top during a large transfer and maybe do
-> an ethereal dump as well. If your two endpoint machines are both on Gbit
-> LAN and your firewall is 100Mbit (on a 100/1000 switch) then perhaps
-> your firewall NICs are getting overloaded. Every night at my company all
-> the servers (Gbit) back up to a local machine (100Mbit). They each have
-> their time window for backing up but it's common for Nagios to report an
-> "UNKNOWN" status for the backup server in the early morning hours. Of
-> course that could simply be the poor little backup server not having the
-> time to reply...
-> 
-> Derick Anderson
+I hope you know how to manage tables by now. The point is - you should
+define an INPUT and OUTPUT table for all ppp interfaces that you will be
+created as users connect to your box. Then you should allow traffic to be
+forwarded between ppp+ ( it stands for ppp1 and ppp2 and ppp3 etc ) and your
+external interface. If you already have a rule for MASQ - it should be
+working. In my setup I masquerade only IP addresses of connected clients.
+Those who are not connected with pptp dont get any internet access.
 
-According to netstat -i I shouldn't be having issues with overloading
-the interfaces. (TX-ERR on eth0 and eth1 are static and have not
-incremented) I have 2/100MB and 2/1000MB interfaces.
+I hope I could help you ;) the rules shouldn't be to heavy to implement ;)
 
-Iface   MTU Met   RX-OK RX-ERR RX-DRP RX-OVR   TX-OK TX-ERR TX-DRP TX-OVR Flg
-eth0   1500 0  50757220      0      0      050703586    523      0      0 BMRU
-eth0:  1500 0       - no statistics available -                        BMRU
-eth1   1500 0  339989009      0      0      0397086634   3381      0      0 BMRU
-eth1:  1500 0       - no statistics available -                        BMRU
-eth2   1500 0  409181861      0      0      0344550753      0      0      0 BMRU
-eth3   1500 0  11352902      0      0      015003672      0      0      0 BMRU
-eth3:  1500 0       - no statistics available -                        BMRU
+Regards,
 
-It is running on the Devil Linux distro.
+Edvin
 
--- 
-James Harrison RHCE
-Manager, Information Security
-AIM: harrijh1
+-----Original Message-----
+From: Matthew Price [mailto:mandtprice@gmail.com] 
+Sent: Donnerstag, 03. November 2005 19:26
+To: edvin.seferovic@kolp.at
+Subject: Re: NAT between incomming PPP and office network
+
+On 11/3/05, Seferovic Edvin <edvin.seferovic@kolp.at> wrote:
+> Hi,
+>
+> I've set up a similar box. I've used ip-up and ip-down scripts to
+> enter/remove a rule that contains SNATing of ppp client address. Also I
+have
+> allowed traffic to be forwarded between ext_dev and ppp+, as well as INPUT
+> and OUTPUT policies for ppp+ devices set to ALLOW. Maybe you've missed one
+> of those.
+>
+> Regards,
+>
+> Edvin Seferovic
+>
+
+Thanks for the quick reply.  If you don't mind, what exactly would the
+iptables command look like to accomplish those rules?  I've read so
+many man pages and howto's that my head hurts, but is not fuller. :(
+
+Is there a good source of info for the 2.6 iptables implementation? 
+It seems everything is either really or just somewhat old.
+
+Matthew
+
 
