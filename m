@@ -1,7 +1,7 @@
-From: Jason Romo <jason@romos.net>
-Subject: PPTP nat and conntrack patch with patch-o-matic
-Date: Fri, 04 Nov 2005 02:45:18 -0600
-Message-ID: <BF907BBE.2682%jason@romos.net>
+From: "Joshua, C.S. Chen" <cschen@asiaa.sinica.edu.tw>
+Subject: max size of ipt_recent match
+Date: Fri, 04 Nov 2005 16:52:28 +0800
+Message-ID: <436B214C.40205@asiaa.sinica.edu.tw>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,22 +18,45 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am trying to resolve an issue with the patch-o-matic in regards to the
-pptp nat and conntrack patch.  I am using kernel 2.6.12.3 on many different
-processors.  I have the problem across the board.  I can compile, but I can
-load the module.  I get an error in dmesg:
-
-ip_conntrack_pptp: Unknown symbol __ip_conntrack_expect_find
-ip_nat_pptp: Unknown symbol ip_nat_pptp_hook_inbound
-ip_nat_pptp: Unknown symbol ip_nat_pptp_hook_expectfn
-ip_nat_pptp: Unknown symbol ip_nat_pptp_hook_exp_gre
-ip_nat_pptp: Unknown symbol ip_nat_pptp_hook_outbound
+Hi folks,
+I am now using recent match to block ssh brute-force attack like
 
 
-Does any one know which patch-o-matic would work with the 2.6.12.3 kernel?
-I am using patch-o-matic 20050913? Or how to resolve this issue?
 
-Regards,
-Jason
+### ssh brute-force attack rule
+$IPTABLES -A INPUT -p tcp --syn --dport 22 -m recent --name sshattack --set
+
+$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 5 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: 3/5 '
+$IPTABLES -A INPUT -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 5 --hitcount 3 -j REJECT --reject-with tcp-reset
+
+
+
+
+
+
+$IPTABLES -A FORWARD -p tcp --syn --dport 22 -m recent --name sshattack
+--set
+
+
+$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 5 --hitcount 3 -j LOG --log-prefix 'SSH REJECT: 3/5 '
+$IPTABLES -A FORWARD -p tcp --dport 22 --syn -m recent --name sshattack \
+--rcheck --seconds 5 --hitcount 3 -j REJECT --reject-with tcp-reset
+
+
+It works very well for me.
+Then I found that, the internal table at /proc/net/ipt_recent/sshattack
+has a max limit of 100 entries, after the max number of entry has been
+reached, no more new entry can be added so the above will have no effect.
+
+Any knows how to 'enlarge' the limit of the table? or what should be
+done to cycle/purge old entries so new hit entries can be added.
+
+
+Thanks in advance
+Joshua
+
 
 
