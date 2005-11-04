@@ -1,12 +1,13 @@
-From: Jordan Russell <jr-list-2005@quo.to>
-Subject: Re: PPTP connection attempts fail with ip_nat_pptp loaded
-Date: Thu, 03 Nov 2005 20:45:47 -0600
-Message-ID: <dkei0s$5th$1@sea.gmane.org>
-References: <dk9kdc$k5j$1@sea.gmane.org>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Re: iptables problem
+Date: Thu, 3 Nov 2005 22:18:09 -0500 (EST)
+Message-ID: <Pine.LNX.4.60.0511032216061.9195@darkstar.sysinfo.com>
+References: <20051103062533.C48C96AA57@smtp.sterenborg.info>
+	<Pine.LNX.4.60.0511031652560.8922@darkstar.sysinfo.com>
+	<436AB088.7050502@pcraft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <dk9kdc$k5j$1@sea.gmane.org>
+In-Reply-To: <436AB088.7050502@pcraft.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +18,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: "Ashley M. Kirchner" <ashley@pcraft.com>
+Cc: netfilter@lists.netfilter.org
 
-Jordan Russell wrote:
-> When ip_nat_pptp is loaded (via "modprobe ip_nat_pptp"), about 9 out of
-> every 10 PPTP connection attempts hang and eventually time out.
-> 
-> I'm connecting from a Windows 2000 machine through a Linux 2.6.14
-> NAT/firewall box to a Poptop PPTP server on the Internet.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Follow-up:
+On Thu, 3 Nov 2005, Ashley M. Kirchner wrote:
 
-Problem solved. It turns out a patch is needed if you have Windows PPTP
-clients:
+> R. DuFresne wrote:
+>
+>> Why not have one system that reaches out for the files, and brings them 
+>> inside, then point the kiosks at that one system?  Far easier to maintain 
+>> and troubleshoot and far less FW coding.
+>
+>   Because I didn't code these machines.  They are proprietary and third 
+> party to us.
+>
+>
 
-https://bugzilla.netfilter.org/bugzilla/show_bug.cgi?id=397
+Interesting, and that means I suspect that you have no ability to tune or 
+config them as well?  Could one put in a request the third parties config 
+them to look at one trusted host you could setup to pull the files from?
 
-Thanks to Philip for bringing this to my attention.
+Have they been "tested" for their security?  Seems a tad risky, depending 
+upon placement, hopefully they are in a dmz and not the soft chewy 
+center....
 
--- 
-Jordan Russell
+Thanks,
 
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFDatL0st+vzJSwZikRArWLAKDA/urNj4sEruwm7KU8ezInKPLpJQCeJk+R
+MFr5oi+c3stQZx0mqQJgqmE=
+=Z32v
+-----END PGP SIGNATURE-----
 
