@@ -1,12 +1,13 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: pptp & NAT
-Date: Fri, 04 Nov 2005 14:00:59 +1000
-Message-ID: <436ADCFB.6070201@snapgear.com>
-References: <436ADB4C.7070800@exse.net>
+From: "Ashley M. Kirchner" <ashley@pcraft.com>
+Subject: Re: Re: iptables problem
+Date: Thu, 03 Nov 2005 21:26:48 -0700
+Message-ID: <436AE308.4040806@pcraft.com>
+References: <20051103062533.C48C96AA57@smtp.sterenborg.info>	<Pine.LNX.4.60.0511031652560.8922@darkstar.sysinfo.com>	<436AB088.7050502@pcraft.com>
+	<Pine.LNX.4.60.0511032216061.9195@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000102030302080509040208"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <436ADB4C.7070800@exse.net>
+In-Reply-To: <Pine.LNX.4.60.0511032216061.9195@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,99 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: =?ISO-8859-1?Q?Sebastian_B=F6hm?= <seb@exse.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------000102030302080509040208
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+R. DuFresne wrote:
 
-On 11/04/2005 01:53 PM, Sebastian B=F6hm wrote:
-> - sometimes (every 10th connection attempt or so) the connections fails=
-=20
-> with "GRE: read(fd=3D5,buffer=3D8056720,len=3D8260) from network failed=
-:=20
-> status =3D -1 error =3D Protocol
-> not available" reading in the server logs. I use windows clients with=20
-> linux server. somewhere I read that I should load ip_gre on the firewal=
-l=20
-> or block a specific icmp packet, is that correct ? (I dont like to bloc=
-k=20
-> icmp, icmp is there for reason)
+> Interesting, and that means I suspect that you have no ability to tune 
+> or config them as well?  Could one put in a request the third parties 
+> config them to look at one trusted host you could setup to pull the 
+> files from?
+>
+> Have they been "tested" for their security?  Seems a tad risky, 
+> depending upon placement, hopefully they are in a dmz and not the soft 
+> chewy center....
 
-Please try the attached patch.  It has fixed a problem for someone else,
-and I think this problem may be the same, but I'm not sure.
+    Tested for security?  Does the fact that they transmit order details 
+(including plain text client information and an encrypted CC string 
+within the same file) via plain old FTP tell you anything?  Do I, 
+personally, trust this system?  Oh HELL NO.  Would I, personally, use 
+them to place any orders?  Oh HELL NO.  Do I have a choice in not using 
+them?  Nope.  I'm merely the one that has to make them work...the big 
+guys paid the money.
 
-> - I am unable to estabish two pptp connections from one client, I can=20
-> connect to one pptp server and I can connect to a second pptp server,=20
-> but the second connection never accepts any traffic, when I stop the=20
-> first connection, the second connection begins to work. Is this a bug o=
-r=20
-> a known missing feature ?
+-- 
+H | I haven't lost my mind; it's backed up on tape somewhere.
+  +--------------------------------------------------------------------
+  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
+  IT Director / SysAdmin / WebSmith             .     800.441.3873 x130
+  Photo Craft Imaging                       .     3550 Arapahoe Ave. #6
+  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A. 
 
-This is intended to work.  I haven't personally tested it in
-2.6.14 though.
 
---------------000102030302080509040208
-Content-Type: text/plain;
- name="pptp-2.6.14.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="pptp-2.6.14.patch"
 
-diff -u -p -u -r1.1.1.1 ip_nat_helper_pptp.c
---- linux-2.6.x/net/ipv4/netfilter/ip_nat_helper_pptp.c	28 Oct 2005 04:39:25 -0000	1.1.1.1
-+++ linux-2.6.x/net/ipv4/netfilter/ip_nat_helper_pptp.c	3 Nov 2005 09:18:01 -0000
-@@ -73,6 +73,7 @@ static void pptp_nat_expected(struct ip_
- 	struct ip_conntrack_tuple t;
- 	struct ip_ct_pptp_master *ct_pptp_info;
- 	struct ip_nat_pptp *nat_pptp_info;
-+	struct ip_nat_range range;
- 
- 	ct_pptp_info = &master->help.ct_pptp_info;
- 	nat_pptp_info = &master->nat.help.nat_pptp_info;
-@@ -110,7 +111,30 @@ static void pptp_nat_expected(struct ip_
- 		DEBUGP("not found!\n");
- 	}
- 
--	ip_nat_follow_master(ct, exp);
-+	/* This must be a fresh one. */
-+	BUG_ON(ct->status & IPS_NAT_DONE_MASK);
-+
-+	/* Change src to where master sends to */
-+	range.flags = IP_NAT_RANGE_MAP_IPS;
-+	range.min_ip = range.max_ip
-+		= ct->master->tuplehash[!exp->dir].tuple.dst.ip;
-+	if (exp->dir == IP_CT_DIR_ORIGINAL) {
-+		range.flags |= IP_NAT_RANGE_PROTO_SPECIFIED;
-+		range.min = range.max = exp->saved_proto;
-+	}
-+	/* hook doesn't matter, but it has to do source manip */
-+	ip_nat_setup_info(ct, &range, NF_IP_POST_ROUTING);
-+
-+	/* For DST manip, map port here to where it's expected. */
-+	range.flags = IP_NAT_RANGE_MAP_IPS;
-+	range.min_ip = range.max_ip
-+		= ct->master->tuplehash[!exp->dir].tuple.src.ip;
-+	if (exp->dir == IP_CT_DIR_REPLY) {
-+		range.flags |= IP_NAT_RANGE_PROTO_SPECIFIED;
-+		range.min = range.max = exp->saved_proto;
-+	}
-+	/* hook doesn't matter, but it has to do destination manip */
-+	ip_nat_setup_info(ct, &range, NF_IP_PRE_ROUTING);
- }
- 
- /* outbound packets == from PNS to PAC */
-@@ -213,7 +237,7 @@ pptp_exp_gre(struct ip_conntrack_expect 
- 
- 	/* alter expectation for PNS->PAC direction */
- 	invert_tuplepr(&inv_t, &expect_orig->tuple);
--	expect_orig->saved_proto.gre.key = htons(nat_pptp_info->pac_call_id);
-+	expect_orig->saved_proto.gre.key = htons(ct_pptp_info->pns_call_id);
- 	expect_orig->tuple.src.u.gre.key = htons(nat_pptp_info->pns_call_id);
- 	expect_orig->tuple.dst.u.gre.key = htons(ct_pptp_info->pac_call_id);
- 	inv_t.src.ip = reply_t->src.ip;
-
---------------000102030302080509040208--
 
