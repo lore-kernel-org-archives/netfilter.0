@@ -1,13 +1,10 @@
-From: "Ashley M. Kirchner" <ashley@pcraft.com>
-Subject: Re: Re: iptables problem
-Date: Thu, 03 Nov 2005 21:26:48 -0700
-Message-ID: <436AE308.4040806@pcraft.com>
-References: <20051103062533.C48C96AA57@smtp.sterenborg.info>	<Pine.LNX.4.60.0511031652560.8922@darkstar.sysinfo.com>	<436AB088.7050502@pcraft.com>
-	<Pine.LNX.4.60.0511032216061.9195@darkstar.sysinfo.com>
+From: Jordan Russell <jr-list-2005@quo.to>
+Subject: Non-masqueraded address seeping out?
+Date: Thu, 03 Nov 2005 22:47:00 -0600
+Message-ID: <dkep45$vdb$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.60.0511032216061.9195@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +15,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-R. DuFresne wrote:
+Hi,
 
-> Interesting, and that means I suspect that you have no ability to tune 
-> or config them as well?  Could one put in a request the third parties 
-> config them to look at one trusted host you could setup to pull the 
-> files from?
->
-> Have they been "tested" for their security?  Seems a tad risky, 
-> depending upon placement, hopefully they are in a dmz and not the soft 
-> chewy center....
+I noticed something strange while trying to debug the previous problem I
+posted about:
 
-    Tested for security?  Does the fact that they transmit order details 
-(including plain text client information and an encrypted CC string 
-within the same file) via plain old FTP tell you anything?  Do I, 
-personally, trust this system?  Oh HELL NO.  Would I, personally, use 
-them to place any orders?  Oh HELL NO.  Do I have a choice in not using 
-them?  Nope.  I'm merely the one that has to make them work...the big 
-guys paid the money.
+When I initiate a PPTP connection from a Windows 2000 machine through my
+Linux 2.6.14 firewall, one of the packets is sent out the
+Internet-connected interface with a non-masqueraded source address. Or
+at least that's what tethereal and tcpdump claim; see the log below.
+Notice that the packet at 0.040063 ("PPTP Outgoing-Call-Request") is
+first sent with a source address of 10.10.10.1, then re-sent(?) 2.5
+seconds later with a 'correct' source address of 24.24.24.224.
 
--- 
-H | I haven't lost my mind; it's backed up on tape somewhere.
-  +--------------------------------------------------------------------
-  Ashley M. Kirchner <mailto:ashley@pcraft.com>   .   303.442.6410 x130
-  IT Director / SysAdmin / WebSmith             .     800.441.3873 x130
-  Photo Craft Imaging                       .     3550 Arapahoe Ave. #6
-  http://www.pcraft.com ..... .  .    .       Boulder, CO 80303, U.S.A. 
+I see the same behavior regardless of whether ip_nat_pptp &
+ip_conntrack_pptp are loaded.
+
+Is there a logical explanation for this?
+I'm curious to know whether connections would go through 2.5 seconds
+faster if the 'misaddressed' packet were eliminated...
+
+Thanks,
+Jordan Russell
 
 
+# tethereal -ni eth1 host 66.166.166.166
+Capturing on eth1
+  0.000000 24.24.24.224 -> 66.166.166.166 TCP 41824 > 1723 [SYN] Seq=0
+Ack=0 Win=65535 Len=0 MSS=1460
+  0.015359 66.166.166.166 -> 24.24.24.224 TCP 1723 > 41824 [SYN, ACK]
+Seq=0 Ack=1 Win=5840 Len=0 MSS=1460
+  0.015498 24.24.24.224 -> 66.166.166.166 TCP 41824 > 1723 [ACK] Seq=1
+Ack=1 Win=65535 Len=0
+  0.015542 24.24.24.224 -> 66.166.166.166 PPTP
+Start-Control-Connection-Request
+  0.033877 66.166.166.166 -> 24.24.24.224 TCP 1723 > 41824 [ACK] Seq=1
+Ack=157 Win=5840 Len=0
+  0.039882 66.166.166.166 -> 24.24.24.224 PPTP
+Start-Control-Connection-Reply
+  0.040063   10.10.10.1 -> 66.166.166.166 PPTP Outgoing-Call-Request
+  2.603036 24.24.24.224 -> 66.166.166.166 PPTP Outgoing-Call-Request
+  2.627212 66.166.166.166 -> 24.24.24.224 PPTP Outgoing-Call-Reply
+  2.629100 24.24.24.224 -> 66.166.166.166 PPTP Set-Link-Info
+  2.630681 66.166.166.166 -> 24.24.24.224 PPP LCP Configuration Request
+  2.632082 24.24.24.224 -> 66.166.166.166 PPP LCP Configuration Request
+  2.632102 24.24.24.224 -> 66.166.166.166 PPP LCP Configuration Ack
+  2.651733 66.166.166.166 -> 24.24.24.224 PPP LCP Configuration Reject
+  2.651973 24.24.24.224 -> 66.166.166.166 PPP LCP Configuration Request
+  2.668760 66.166.166.166 -> 24.24.24.224 PPP LCP Configuration Ack
+[...]
+
+Legend:
+10.10.10.1 is the LAN address of the PPTP client (Windows 2000)
+24.24.24.224 is the Internet address of the Linux 2.6.14 NAT/firewall
+66.166.166.166 is the Internet address of the remote PPTP server
 
 
