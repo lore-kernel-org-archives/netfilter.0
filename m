@@ -1,15 +1,11 @@
-From: Pawel Oleksik <oleksik@awa.mat.agh.edu.pl>
-Subject: Re: conntrack
-Date: Sun, 6 Nov 2005 10:22:32 +0100
-Message-ID: <20051106092232.GB26011@awa.mat.agh.edu.pl>
-References: <20051105202050.GA24788@awa.mat.agh.edu.pl>
-	<1131224098.3954.175.camel@bibo.spenneberg.de>
-	<20051106080223.GA26011@awa.mat.agh.edu.pl>
-	<1131266666.3854.0.camel@bibo.spenneberg.de>
+From: Carlos Pastorino <carlos.pastorino@gmail.com>
+Subject: ACK PSH blocked
+Date: Fri, 4 Nov 2005 14:35:33 -0200
+Message-ID: <cc4fcc140511040835m6e03feeem2a8d31516d4bf36c@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1131266666.3854.0.camel@bibo.spenneberg.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,25 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ralf Spenneberg <lists@spenneberg.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sun, Nov 06, 2005 at 09:44:26AM +0100, Ralf Spenneberg wrote:
-> Hmh,
-> 
-> well I did not use the released versions but the subversion versions.
-> They worked for me.
-> 
-> Ralf
+Hi everyone,
 
-Positive! The SVN version works. (I hope they will change default download to
-a right version soon.)
+My question is targeted to understanding Netfilter, because I know
+that the dropped packets are not impacting on the connection.
 
-Thanks for the suggestion.
+My firewall is configured like this (showing only the important information=
+):
 
-So, I will be back with questions how to use it :)
+IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+IPTABLES -A FORWARD -p TCP -i $INET -o $LAN --syn --dport http -j ACCEPT
 
-P.O.
+and I've been noticing that packets with the ACK PSH flags set are
+dropped during the connection.
 
+I know that it's not because of the connection tracking, since the
+drops are occurring during the connection, not a long time after the
+connection, so they are definitely ESTABLISHED packets. And since
+ESTABLISHED packet should get through, I wonder why those are being
+blocked.
+
+Thanks,
+
+Pastorino
 
