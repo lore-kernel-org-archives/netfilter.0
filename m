@@ -1,11 +1,10 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: Troubleshooting Netfilter Firewall (performance issues)
-Date: Fri, 4 Nov 2005 09:42:29 -0500
-Message-ID: <FAC4E024BF776842876169173CE2F0132950@mailbox.vikus.com>
+From: Manuel Marquez <Manuel.Marquez@isotrol.com>
+Subject: Problem with conntrack idle connection timeout
+Date: Fri, 04 Nov 2005 16:19:26 +0100
+Message-ID: <436B7BFE.3060807@isotrol.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,70 +16,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Harrison, James" <james.harrison@americancolor.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-=20
+Greetings to you all,
 
-> -----Original Message-----
-> From: Harrison, James [mailto:james.harrison@americancolor.com]=20
-> Sent: Thursday, November 03, 2005 1:24 PM
-> To: Derick Anderson
-> Cc: netfilter@lists.netfilter.org
-> Subject: RE: Troubleshooting Netfilter Firewall (performance issues)
->=20
-> On Thu, 2005-11-03 at 12:55 -0500, Derick Anderson wrote:
-> [snip]
->=20
-> >=20
-> > If I were you I would monitor top during a large transfer=20
-> and maybe do=20
-> > an ethereal dump as well. If your two endpoint machines are both on=20
-> > Gbit LAN and your firewall is 100Mbit (on a 100/1000 switch) then=20
-> > perhaps your firewall NICs are getting overloaded. Every=20
-> night at my=20
-> > company all the servers (Gbit) back up to a local machine=20
-> (100Mbit).=20
-> > They each have their time window for backing up but it's common for=20
-> > Nagios to report an "UNKNOWN" status for the backup server in the=20
-> > early morning hours. Of course that could simply be the poor little=20
-> > backup server not having the time to reply...
-> >=20
-> > Derick Anderson
->=20
-> According to netstat -i I shouldn't be having issues with=20
-> overloading the interfaces. (TX-ERR on eth0 and eth1 are=20
-> static and have not
-> incremented) I have 2/100MB and 2/1000MB interfaces.
->=20
-> Iface   MTU Met   RX-OK RX-ERR RX-DRP RX-OVR   TX-OK TX-ERR=20
-> TX-DRP TX-OVR Flg
-> eth0   1500 0  50757220      0      0      050703586    523  =20
->    0      0 BMRU
-> eth0:  1500 0       - no statistics available -              =20
->          BMRU
-> eth1   1500 0  339989009      0      0      0397086634   3381=20
->      0      0 BMRU
-> eth1:  1500 0       - no statistics available -              =20
->          BMRU
-> eth2   1500 0  409181861      0      0      0344550753      0=20
->      0      0 BMRU
-> eth3   1500 0  11352902      0      0      015003672      0  =20
->    0      0 BMRU
-> eth3:  1500 0       - no statistics available -              =20
->          BMRU
->=20
-> It is running on the Devil Linux distro.
->=20
-> --
-> James Harrison RHCE
-> Manager, Information Security
-> AIM: harrijh1
+I have been looking for a solution to a problem one of our clients has
+regarding a netfilter firewall and Oracle. I would very much appreciate
+any help on this.
 
-Unless Devil Linux has messed with your TCP/IP options in the kernel,
-then I think it's time to look at the firewall. If you have an
-abnormally high number of rules, this could be an issue, or if you're
-rate-limiting anything...
+We have a linux firewall with 3 network interfaces:
+	-Internet interface to connect to the router
+	-Inner LAN to hold all the Windows PCs, etc.
+	-DMZ
 
-Derick Anderson
+They have connected a Tomcat 5 application server to the DMZ network and
+the corresponding Oracle database server into the inner LAN.
+
+The problem is the use a JDBC connection pool and (I think) the linux
+firewall drops the pool connections after about 600 seconds of idle
+time. They can change the pool to make it reconnect whenever this
+happens, but they are planning to set up another interface (backend
+network) and move the oracle server there. If they did this, sqlplus and
+oracle forms would also get disconnected after this idle period (they
+have made tests with the same results on an oracle server connected to
+the DMZ). It also happens with SSH connections to the application
+(Tomcat 5) server.
+
+
+We have been testing the
+/proc/sys/net/ipv4/netfilter/ip_conntrack_generic_timeout since we guess
+its the conntrack module which closes the connection, but although we
+set up a value of more than 600 seconds, connections keep getting closed.
+
+What I would like to know is which netfilter (or linux TCP/IP stack)
+timer is expiring and/or if there is a means of maintaining these idle
+connections open. We tested the /proc/sys/net/ipv4/tcp_keepalive_time
+flag, but it does not work (maybe the firewall is dropping these tcp
+packets too).
+
+I have googled long time for an answer, but I only found some people
+with similar problems. Some of them suggest the use of "ipchains -M -S",
+but since we use netfilter, this does not help.
+
+Thanks in advance for your help
+
+Manuel Marquez Garrido
 
