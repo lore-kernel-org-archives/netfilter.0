@@ -1,13 +1,10 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Re: iptables problem
-Date: Thu, 3 Nov 2005 22:18:09 -0500 (EST)
-Message-ID: <Pine.LNX.4.60.0511032216061.9195@darkstar.sysinfo.com>
-References: <20051103062533.C48C96AA57@smtp.sterenborg.info>
-	<Pine.LNX.4.60.0511031652560.8922@darkstar.sysinfo.com>
-	<436AB088.7050502@pcraft.com>
+From: =?ISO-8859-15?Q?Sebastian_B=F6hm?= <seb@exse.net>
+Subject: pptp & NAT
+Date: Fri, 04 Nov 2005 04:53:48 +0100
+Message-ID: <436ADB4C.7070800@exse.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <436AB088.7050502@pcraft.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,53 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: "Ashley M. Kirchner" <ashley@pcraft.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi,
 
-On Thu, 3 Nov 2005, Ashley M. Kirchner wrote:
+i finally got pptp and NAT working with the patch for bug #397 
+<https://bugzilla.netfilter.org/bugzilla/show_bug.cgi?id=397>.
 
-> R. DuFresne wrote:
->
->> Why not have one system that reaches out for the files, and brings them 
->> inside, then point the kiosks at that one system?  Far easier to maintain 
->> and troubleshoot and far less FW coding.
->
->   Because I didn't code these machines.  They are proprietary and third 
-> party to us.
->
->
+Two questions left:
 
-Interesting, and that means I suspect that you have no ability to tune or 
-config them as well?  Could one put in a request the third parties config 
-them to look at one trusted host you could setup to pull the files from?
+- sometimes (every 10th connection attempt or so) the connections fails 
+with "GRE: read(fd=5,buffer=8056720,len=8260) from network failed: 
+status = -1 error = Protocol
+not available" reading in the server logs. I use windows clients with 
+linux server. somewhere I read that I should load ip_gre on the firewall 
+or block a specific icmp packet, is that correct ? (I dont like to block 
+icmp, icmp is there for reason)
 
-Have they been "tested" for their security?  Seems a tad risky, depending 
-upon placement, hopefully they are in a dmz and not the soft chewy 
-center....
+- I am unable to estabish two pptp connections from one client, I can 
+connect to one pptp server and I can connect to a second pptp server, 
+but the second connection never accepts any traffic, when I stop the 
+first connection, the second connection begins to work. Is this a bug or 
+a known missing feature ?
 
-Thanks,
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+Thank you very much !
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
+/sebastian
 
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFDatL0st+vzJSwZikRArWLAKDA/urNj4sEruwm7KU8ezInKPLpJQCeJk+R
-MFr5oi+c3stQZx0mqQJgqmE=
-=Z32v
------END PGP SIGNATURE-----
 
