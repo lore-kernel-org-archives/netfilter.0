@@ -1,10 +1,12 @@
-From: Sandro Dentella <sandro@e-den.it>
-Subject: DNAT/SNAT doubt
-Date: Fri, 4 Nov 2005 19:15:51 +0100
-Message-ID: <20051104181551.GA27330@casa.e-den.it>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Firewall Sending Resets(was Troubleshooting Netfilter Firewall
+ (performance issues))
+Date: Fri, 4 Nov 2005 23:01:38 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0511042258530.17779@blackhole.kfki.hu>
+References: <1131140392.10871.11.camel@localhost.localdomain>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1131140392.10871.11.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,35 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: iptables <netfilter@lists.netfilter.org>
+To: "Harrison, James" <james.harrison@americancolor.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
+On Fri, 4 Nov 2005, Harrison, James wrote:
 
-  a nameserver managed by one of my customers died unexpectedly, they asked
-  me to redirect all traffic to another DNS in a totally different
-  network. Should it work? (it didn't in my case...)
+> We have determined, that during large(50-100MB) file transfers the
+> firewall is spuriously sending a tcp reset to both server and client.
+[...]
 
-Chain PREROUTING (policy ACCEPT 656 packets, 33024 bytes)
- pkts bytes target     prot opt in     out     source               destination
- 1410 93104 DNAT       udp  --  *      *       0.0.0.0/0            0.0.0.0/0          udp dpt:53 to:XXX
+netfilter sends RST if it was configured to do so by using the REJECT
+target.
 
-Chain POSTROUTING (policy ACCEPT 628 packets, 31631 bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 SNAT       udp  --  *      *       0.0.0.0/0            XXX    udp dpt:53 to:YYY
+No vanilla netfilter sends RST to client and server, in any setup.
 
-  you can see that no packets entered the POSTROUTING chain even thought in
-  my opinion all packets ther entered the PREROUTING rule should enter the
-  POSTROUTING one. Am I wrong?
-
-  TYA
-  sandro
-  *:-)
-
-
--- 
-Sandro Dentella  *:-)
-e-mail: sandro@e-den.it 
-http://www.tksql.org                    TkSQL Home page - My GPL work
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
