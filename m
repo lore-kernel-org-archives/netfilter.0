@@ -1,14 +1,11 @@
-From: "Harrison, James" <james.harrison@americancolor.com>
-Subject: Re: Firewall Sending Resets(was Troubleshooting Netfilter Firewall
-	(performance issues))
-Date: Fri, 04 Nov 2005 16:16:40 -0600
-Message-ID: <1131142600.10871.13.camel@localhost.localdomain>
-References: <1131140392.10871.11.camel@localhost.localdomain>
-	<Pine.LNX.4.58.0511042258530.17779@blackhole.kfki.hu>
+From: "P theodorou" <props666999@hotmail.com>
+Subject: RE: DNAT failure
+Date: Sat, 05 Nov 2005 09:49:26 +0000
+Message-ID: <BAY102-F220B61B66765771DA5831EAE630@phx.gbl>
+References: <BAY102-F32CE5F4C40CDF72DAE41DBAE600@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0511042258530.17779@blackhole.kfki.hu>
+In-Reply-To: <BAY102-F32CE5F4C40CDF72DAE41DBAE600@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,36 +16,89 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On Fri, 2005-11-04 at 23:01 +0100, Jozsef Kadlecsik wrote:
-> On Fri, 4 Nov 2005, Harrison, James wrote:
-> 
-> > We have determined, that during large(50-100MB) file transfers the
-> > firewall is spuriously sending a tcp reset to both server and client.
-> [...]
-> 
-> netfilter sends RST if it was configured to do so by using the REJECT
-> target.
-> 
-> No vanilla netfilter sends RST to client and server, in any setup.
-> 
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
+I have noticed that DNAT works whenever redirect to eth1 but not eth2
+like here
 
-I understand, but the file transfer is initiated, begins, and can and
-will run for a period of time, then out of the blue it fires the RST.
+$IPTABLES -t nat -A PREROUTING -p tcp  -i eth0  --dport 80 \
+-j DNAT --to-destination  192.168.0.4   (eth1)
 
-Why?
 
--- 
-James Harrison RHCE
-Manager, Information Security
+but when i try
+$IPTABLES -t nat -A PREROUTING -p tcp  -i eth0  --dport 80 \
+-j DNAT --to-destination  192.168.1.4 (eth2)
+
+
+
+
+>From: "P theodorou" <props666999@hotmail.com>
+>To: netfilter@lists.netfilter.org
+>Subject: DNAT failure Date: Fri, 04 Nov 2005 21:30:32 +0000
+>
+>Hello
+>
+>I  face problem with DNAT  this is my testing script
+>
+>INET_IP="84.9.x.x"
+>INET_IFACE="eth0"
+>
+>LAN_IP="192.168.0.1"
+>LAN_IFACE="eth1"
+>DMZ_HTTP_IP="192.168.0.4"
+>
+>
+>O_IFACE="lo"
+>LO_IP="127.0.0.1"
+>
+>
+>IPTABLES="/usr/sbin/iptables"
+>
+>
+>/sbin/depmod -a
+>
+>
+>
+>
+>/sbin/modprobe ip_tables
+>/sbin/modprobe ip_conntrack
+>/sbin/modprobe iptable_filter
+>/sbin/modprobe iptable_mangle
+>/sbin/modprobe iptable_nat
+>/sbin/modprobe ipt_LOG
+>/sbin/modprobe ipt_limit
+>/sbin/modprobe ipt_state
+>
+>
+>
+>echo "1" > /proc/sys/net/ipv4/ip_forward
+>
+>
+>
+>$IPTABLES -P INPUT ACCEPT
+>$IPTABLES -P OUTPUT ACCEPT
+>$IPTABLES -P FORWARD ACCEPT
+>
+>
+>
+>$IPTABLES -t nat -A PREROUTING -p tcp  -d $INET_IP --dport 80 \
+>-j DNAT --to-destination $DMZ_HTTP_IP
+>
+>
+>
+>$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
+>
+>
+>
+>i do not  have a clue what the problem  but whenever i type
+>the real ip on the browser i get error page doesn't exist .
+>
+>any hint would be really appreciated
+>
+>
+>
+
+
 
