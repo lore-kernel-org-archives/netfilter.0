@@ -1,12 +1,12 @@
-From: Nikolai Georgiev <voyager123bg@gmail.com>
-Subject: Re: How to drop an isp
-Date: Sat, 05 Nov 2005 20:41:26 +0200
-Message-ID: <436CFCD6.7070206@gmail.com>
-References: <436CBBFB.1070101@nycap.rr.com>
+From: Harald Welte <laforge@netfilter.org>
+Subject: [ANNOUNCE] multiple netfilter.org releases
+Date: Sat, 5 Nov 2005 20:29:31 +0100
+Message-ID: <20051105192931.GI16000@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mXDO3udm/xYWQeMQ"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <436CBBFB.1070101@nycap.rr.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +17,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Dave Handler <dhandler@nycap.rr.com>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
 
-Dave Handler wrote:
 
-> Greetings!
->
-> Sorry if I worded my subject wrong, it's the best I could do!
->
-> Ok, I'm on Fedora Core 3, running iptables 1.2 (which seems to be
-> holding its own).  Logwatch sends me my logs every morning and I see
-> people trying to tap in to tcp port 25.  I do lookups on the addresses
-> and they all seems to be coming either from Taiwan or China.  A few in
-> Europe and every once in while one from the US.
->
-> I've been googling around for how to block them.  I'm rather green to
-> iptables and some of the options confuse me.  Is there a way I can
-> block the whole ip from me?  I'll paste in a section where there where
-> accepted packets:
->
-> Accepted 327 packets on interface eth0
->  From 69.21.138.231 - 169 packets to tcp(22)
->  From 70.86.208.18 - 6 packets to tcp(25)
->  From 72.36.128.42 - 6 packets to tcp(25)
->  From 202.107.195.52 - 128 packets to tcp(22)
->  From 207.150.176.81 - 16 packets to tcp(25)
->  From 219.133.247.226 - 1 packet to tcp(25)
->  From 219.134.232.31 - 1 packet to tcp(25)
->
->
-> So for instance I probably would want to block 202.107.0.0 through
-> 202.107.255.255.  But I'm not really sure of the syntax I should be
-> using.  And I don't want to screw up what I already have in place.
->
-iptables -I INPUT --src 202.107/16 --p tcp --dport 25 -j DENY
+--mXDO3udm/xYWQeMQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I'm going to chalk this one up as another learning experience!
->
-> Thanks in advance!
->
-> Dave
->
->
+Hi!
 
+Today the netfilter project released
+
+libnfnetlink-0.0.11
+	ftp://ftp.netfilter.org/pub/libnfnetlink/libnfnetlink-0.0.11.tar.bz2
+	This is the low-level communications library
+
+libnetfilter_log-0.0.10
+	ftp://ftp.netfilter.org/pub/libnetfilter_log/libnetfilter_log-0.0.10.tar.b=
+z2
+	This is the userspace library for nfnetlink_log in 2.6.14
+	It is used by the upcoming ulogd-2.00beta release
+	Needs libnfnetlink-0.0.11
+
+libnetfilter_queue-0.0.10
+	ftp://ftp.netfilter.org/pub/libnetfilter_queue/libnetfilter_queue-0.0.10.t=
+ar.bz2
+	This is the userspace library for nfnetlink_queue in 2.6.14
+	It is used by applications that traditionally used libipq
+	NuFW already has a working port
+	Needs libnfnetlink-0.0.11
+
+libnetfilter_conntrack-0.0.20
+	ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/libnetfilter_conntrack-=
+0.0.20.tar.bz2
+	This is the userspace library for the ip_conntrack netlink interface
+	It is currently only used by the conntrack program (see below)
+	Needs libnfnetlink-0.0.11
+
+conntrack-0.90
+	ftp://ftp.netfilter.org/pub/conntrack/conntrack-0.90.tar.bz2
+	The userspace connection tracking table administration program
+	Needs libnetfilter_conntrack-0.0.20
+
+btw: Anybody interested in building debian packages of the ones above?
+Preferrably an 'official' debian developer, who would be able to get
+those packages into unstable...
+
+Happy firewalling,
+	Harald (for the Netfilter Core Team)
+
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--mXDO3udm/xYWQeMQ
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQFDbQgaXaXGVTD0i/8RAnHhAJ9eV1sFI8HJpPOvKJeW1LatpvVbyQCeKNCN
+R/5yCaVDFQPp9Ik56BsW3ko=
+=Dhkr
+-----END PGP SIGNATURE-----
+
+--mXDO3udm/xYWQeMQ--
 
