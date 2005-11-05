@@ -1,53 +1,86 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Firewall Sending Resets(was Troubleshooting Netfilter Firewall
- (performance issues))
-Date: Sat, 5 Nov 2005 17:25:23 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0511051717070.18624@blackhole.kfki.hu>
-References: <1131140392.10871.11.camel@localhost.localdomain> 
-	<Pine.LNX.4.58.0511042258530.17779@blackhole.kfki.hu>
-	<1131142600.10871.13.camel@localhost.localdomain>
+From: Harald Welte <laforge@netfilter.org>
+Subject: [ANNOUNCE] ulogd-2.x reaches beta state
+Date: Sat, 5 Nov 2005 18:03:30 +0100
+Message-ID: <20051105170330.GF16000@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1131142600.10871.13.camel@localhost.localdomain>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aZoGpuMECXJckB41"
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Harrison, James" <james.harrison@americancolor.com>
-Cc: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: ulogd@lists.gnumonks.org, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-On Fri, 4 Nov 2005, Harrison, James wrote:
 
-> > netfilter sends RST if it was configured to do so by using the REJECT
-> > target.
-> >
-> > No vanilla netfilter sends RST to client and server, in any setup.
->
-> I understand, but the file transfer is initiated, begins, and can and
-> will run for a period of time, then out of the blue it fires the RST.
+--aZoGpuMECXJckB41
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Are you sure the firewall creates the RST segments?
+Hi!
 
-> Why?
+For those of you who are adventurous and willing to help:
 
-Dunno. You should capture the full traffic by tcpdump so that one could
-analyze it. Without such a proof nothing much can be said. Also, one would
-require the list of netfilter patches (from patch-o-matic or others)
-applied on top of kernel 2.4.31 in devil-linux.
+ulogd-2.x (svn http://svn.gnumonks.org/branches/ulog/ulogd2/) has
+actually reached a state where it produces useful logs ;)
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+If you want to tune in and help me with some contributions, don't
+hesitate, download and build the latest svn version...
+
+Currently working:
+
+ULOG input plugin (like ulogd-1.x)
+NFLOG input plugin (for nfnetlink_log via libnetfilter_log)
+NFCT input plugin (for flow-based logging via libnetfilter_conntrack)
+
+BASE filter plugin (interpretation of packet headers, ...)
+PWSNIFF filter plugin (sniffing of POP3/FTP logins/passwords)
+IFINDEX filter (ifnidex -> devicename resolval)
+
+OPRINT output plugin (just prints all keys/values)
+LOGEMU output plugin (print syslog-like file)
+SYSLOG output plugin (really log via syslog(3))
+PCAP output plugin (saves packets in pcap format)
+
+TODO
+
+- Port all the SQL plugins (mysql, pgsql, sqlite3) from ulogd-1.x
+- Autoconf/automake detection of required libraries, only conditionally
+  build NFLOG, NFCT, PCAP and sql
+- Clean up dynamically allocated keys after plugin stack iteration
+- Documentation
+- Testing
+
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--aZoGpuMECXJckB41
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQFDbOXiXaXGVTD0i/8RAsI+AJ45CByx5j4iNg2HyUqAsrJlFJnAtACgqJHW
+SLwgTHilbSQYkOpRp/+bBEg=
+=P2aq
+-----END PGP SIGNATURE-----
+
+--aZoGpuMECXJckB41--
 
