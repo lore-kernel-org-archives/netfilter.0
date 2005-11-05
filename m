@@ -1,11 +1,10 @@
-From: "P theodorou" <props666999@hotmail.com>
-Subject: RE: DNAT failure
-Date: Sat, 05 Nov 2005 09:49:26 +0000
-Message-ID: <BAY102-F220B61B66765771DA5831EAE630@phx.gbl>
-References: <BAY102-F32CE5F4C40CDF72DAE41DBAE600@phx.gbl>
+From: Dave Handler <dhandler@nycap.rr.com>
+Subject: How to drop an isp
+Date: Sat, 05 Nov 2005 09:04:43 -0500
+Message-ID: <436CBBFB.1070101@nycap.rr.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY102-F32CE5F4C40CDF72DAE41DBAE600@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,89 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I have noticed that DNAT works whenever redirect to eth1 but not eth2
-like here
+Greetings!
 
-$IPTABLES -t nat -A PREROUTING -p tcp  -i eth0  --dport 80 \
--j DNAT --to-destination  192.168.0.4   (eth1)
+Sorry if I worded my subject wrong, it's the best I could do!
 
+Ok, I'm on Fedora Core 3, running iptables 1.2 (which seems to be 
+holding its own).  Logwatch sends me my logs every morning and I see 
+people trying to tap in to tcp port 25.  I do lookups on the addresses 
+and they all seems to be coming either from Taiwan or China.  A few in 
+Europe and every once in while one from the US.
 
-but when i try
-$IPTABLES -t nat -A PREROUTING -p tcp  -i eth0  --dport 80 \
--j DNAT --to-destination  192.168.1.4 (eth2)
+I've been googling around for how to block them.  I'm rather green to 
+iptables and some of the options confuse me.  Is there a way I can block 
+the whole ip from me?  I'll paste in a section where there where 
+accepted packets:
 
-
-
-
->From: "P theodorou" <props666999@hotmail.com>
->To: netfilter@lists.netfilter.org
->Subject: DNAT failure Date: Fri, 04 Nov 2005 21:30:32 +0000
->
->Hello
->
->I  face problem with DNAT  this is my testing script
->
->INET_IP="84.9.x.x"
->INET_IFACE="eth0"
->
->LAN_IP="192.168.0.1"
->LAN_IFACE="eth1"
->DMZ_HTTP_IP="192.168.0.4"
->
->
->O_IFACE="lo"
->LO_IP="127.0.0.1"
->
->
->IPTABLES="/usr/sbin/iptables"
->
->
->/sbin/depmod -a
->
->
->
->
->/sbin/modprobe ip_tables
->/sbin/modprobe ip_conntrack
->/sbin/modprobe iptable_filter
->/sbin/modprobe iptable_mangle
->/sbin/modprobe iptable_nat
->/sbin/modprobe ipt_LOG
->/sbin/modprobe ipt_limit
->/sbin/modprobe ipt_state
->
->
->
->echo "1" > /proc/sys/net/ipv4/ip_forward
->
->
->
->$IPTABLES -P INPUT ACCEPT
->$IPTABLES -P OUTPUT ACCEPT
->$IPTABLES -P FORWARD ACCEPT
->
->
->
->$IPTABLES -t nat -A PREROUTING -p tcp  -d $INET_IP --dport 80 \
->-j DNAT --to-destination $DMZ_HTTP_IP
->
->
->
->$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
->
->
->
->i do not  have a clue what the problem  but whenever i type
->the real ip on the browser i get error page doesn't exist .
->
->any hint would be really appreciated
->
->
->
+Accepted 327 packets on interface eth0
+  From 69.21.138.231 - 169 packets to tcp(22)
+  From 70.86.208.18 - 6 packets to tcp(25)
+  From 72.36.128.42 - 6 packets to tcp(25)
+  From 202.107.195.52 - 128 packets to tcp(22)
+  From 207.150.176.81 - 16 packets to tcp(25)
+  From 219.133.247.226 - 1 packet to tcp(25)
+  From 219.134.232.31 - 1 packet to tcp(25)
 
 
+So for instance I probably would want to block 202.107.0.0 through 
+202.107.255.255.  But I'm not really sure of the syntax I should be 
+using.  And I don't want to screw up what I already have in place.
+
+I'm going to chalk this one up as another learning experience!
+
+Thanks in advance!
+
+Dave
 
