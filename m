@@ -1,11 +1,12 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: [ANNOUNCE] multiple netfilter.org releases
-Date: Sat, 5 Nov 2005 20:29:31 +0100
-Message-ID: <20051105192931.GI16000@sunbeam.de.gnumonks.org>
+From: Victor Julien <victor@nk.nl>
+Subject: Re: [ANNOUNCE] multiple netfilter.org releases
+Date: Sat, 5 Nov 2005 20:49:05 +0100
+Message-ID: <200511052049.05356.victor@nk.nl>
+References: <20051105192931.GI16000@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mXDO3udm/xYWQeMQ"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20051105192931.GI16000@sunbeam.de.gnumonks.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,77 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
+> libnetfilter_queue-0.0.10
+> 	ftp://ftp.netfilter.org/pub/libnetfilter_queue/libnetfilter_queue-0.0.10.t
+>ar.bz2 This is the userspace library for nfnetlink_queue in 2.6.14
+> 	It is used by applications that traditionally used libipq
+> 	NuFW already has a working port
+> 	Needs libnfnetlink-0.0.11
 
---mXDO3udm/xYWQeMQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Today a preview version of Snort Inline was released that adds support for 
+nfnetlink_queue. It was contributed by Dave Remien of Nitrosecurity.
 
-Hi!
+Interested? See the announcement:
+http://sourceforge.net/mailarchive/forum.php?thread_id=8896653&forum_id=32933
 
-Today the netfilter project released
+Get the patch against Snort-2.4.3 here:
+http://sourceforge.net/tracker/index.php?func=detail&aid=1349079&group_id=78497&atid=553469
 
-libnfnetlink-0.0.11
-	ftp://ftp.netfilter.org/pub/libnfnetlink/libnfnetlink-0.0.11.tar.bz2
-	This is the low-level communications library
+</spam>
 
-libnetfilter_log-0.0.10
-	ftp://ftp.netfilter.org/pub/libnetfilter_log/libnetfilter_log-0.0.10.tar.b=
-z2
-	This is the userspace library for nfnetlink_log in 2.6.14
-	It is used by the upcoming ulogd-2.00beta release
-	Needs libnfnetlink-0.0.11
-
-libnetfilter_queue-0.0.10
-	ftp://ftp.netfilter.org/pub/libnetfilter_queue/libnetfilter_queue-0.0.10.t=
-ar.bz2
-	This is the userspace library for nfnetlink_queue in 2.6.14
-	It is used by applications that traditionally used libipq
-	NuFW already has a working port
-	Needs libnfnetlink-0.0.11
-
-libnetfilter_conntrack-0.0.20
-	ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/libnetfilter_conntrack-=
-0.0.20.tar.bz2
-	This is the userspace library for the ip_conntrack netlink interface
-	It is currently only used by the conntrack program (see below)
-	Needs libnfnetlink-0.0.11
-
-conntrack-0.90
-	ftp://ftp.netfilter.org/pub/conntrack/conntrack-0.90.tar.bz2
-	The userspace connection tracking table administration program
-	Needs libnetfilter_conntrack-0.0.20
-
-btw: Anybody interested in building debian packages of the ones above?
-Preferrably an 'official' debian developer, who would be able to get
-those packages into unstable...
-
-Happy firewalling,
-	Harald (for the Netfilter Core Team)
-
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---mXDO3udm/xYWQeMQ
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iD8DBQFDbQgaXaXGVTD0i/8RAnHhAJ9eV1sFI8HJpPOvKJeW1LatpvVbyQCeKNCN
-R/5yCaVDFQPp9Ik56BsW3ko=
-=Dhkr
------END PGP SIGNATURE-----
-
---mXDO3udm/xYWQeMQ--
+Regards,
+Victor
 
