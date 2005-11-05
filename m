@@ -1,10 +1,12 @@
-From: Dave Handler <dhandler@nycap.rr.com>
-Subject: How to drop an isp
-Date: Sat, 05 Nov 2005 09:04:43 -0500
-Message-ID: <436CBBFB.1070101@nycap.rr.com>
+From: Matt Domsch <matt@domsch.com>
+Subject: Re: pptp & NAT
+Date: Sat, 5 Nov 2005 08:22:07 -0600
+Message-ID: <20051105142207.GA29131@domsch.com>
+References: <436ADB4C.7070800@exse.net> <436ADCFB.6070201@snapgear.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <436ADCFB.6070201@snapgear.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,41 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Philip Craig <philipc@snapgear.com>, laforge@netfilter.org
+Cc: netfilter@lists.netfilter.org
 
-Greetings!
+On Fri, Nov 04, 2005 at 02:00:59PM +1000, Philip Craig wrote:
+> Please try the attached patch.  It has fixed a problem for someone else,
+> and I think this problem may be the same, but I'm not sure.
 
-Sorry if I worded my subject wrong, it's the best I could do!
+With this patch applied, it's working for me.
 
-Ok, I'm on Fedora Core 3, running iptables 1.2 (which seems to be 
-holding its own).  Logwatch sends me my logs every morning and I see 
-people trying to tap in to tcp port 25.  I do lookups on the addresses 
-and they all seems to be coming either from Taiwan or China.  A few in 
-Europe and every once in while one from the US.
+ 
+> > - I am unable to estabish two pptp connections from one client, I can 
+> > connect to one pptp server and I can connect to a second pptp server, 
+> > but the second connection never accepts any traffic, when I stop the 
+> > first connection, the second connection begins to work. Is this a bug or 
+> > a known missing feature ?
+> 
+> This is intended to work.  I haven't personally tested it in
+> 2.6.14 though.
 
-I've been googling around for how to block them.  I'm rather green to 
-iptables and some of the options confuse me.  Is there a way I can block 
-the whole ip from me?  I'll paste in a section where there where 
-accepted packets:
+Using the endian fix patch and this patch (both are attached to bug
+397), this is working for me on a 2.6.14 kernel (really, git HEAD from
+yesterday plus these two patches).  I've got 2 clients, one WindowsXP,
+one Fedora Core 4, hitting the same PPTP server at the same time.
+Sincere thanks to both you and Harald for this effort!
 
-Accepted 327 packets on interface eth0
-  From 69.21.138.231 - 169 packets to tcp(22)
-  From 70.86.208.18 - 6 packets to tcp(25)
-  From 72.36.128.42 - 6 packets to tcp(25)
-  From 202.107.195.52 - 128 packets to tcp(22)
-  From 207.150.176.81 - 16 packets to tcp(25)
-  From 219.133.247.226 - 1 packet to tcp(25)
-  From 219.134.232.31 - 1 packet to tcp(25)
-
-
-So for instance I probably would want to block 202.107.0.0 through 
-202.107.255.255.  But I'm not really sure of the syntax I should be 
-using.  And I don't want to screw up what I already have in place.
-
-I'm going to chalk this one up as another learning experience!
-
-Thanks in advance!
-
-Dave
+Thanks,
+Matt
 
