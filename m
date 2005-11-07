@@ -1,13 +1,10 @@
-From: "Stephen J. Smoogen" <smooge@gmail.com>
-Subject: Re: ACK PSH blocked
-Date: Mon, 7 Nov 2005 11:27:40 -0700
-Message-ID: <80d7e4090511071027w74956666g4a7bf1a24846c9fa@mail.gmail.com>
-References: <cc4fcc140511040835m6e03feeem2a8d31516d4bf36c@mail.gmail.com>
+From: "Bill Hance" <bill@billhance.com>
+Subject: incrementing TTL in firewall
+Date: Mon, 7 Nov 2005 18:21:16 -0500 (EST)
+Message-ID: <3591.192.168.3.8.1131405676.squirrel@192.168.3.8>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <cc4fcc140511040835m6e03feeem2a8d31516d4bf36c@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,35 +18,63 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On 11/4/05, Carlos Pastorino <carlos.pastorino@gmail.com> wrote:
-> Hi everyone,
->
-> My question is targeted to understanding Netfilter, because I know
-> that the dropped packets are not impacting on the connection.
->
-> My firewall is configured like this (showing only the important informati=
-on):
->
-> IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> IPTABLES -A FORWARD -p TCP -i $INET -o $LAN --syn --dport http -j ACCEPT
->
-> and I've been noticing that packets with the ACK PSH flags set are
-> dropped during the connection.
->
-> I know that it's not because of the connection tracking, since the
-> drops are occurring during the connection, not a long time after the
-> connection, so they are definitely ESTABLISHED packets. And since
-> ESTABLISHED packet should get through, I wonder why those are being
-> blocked.
+Greetings,
 
-Are they really established? Or are they duplicates of existing
-packets that are being dropped because they cant be 'established'
-packets.
+  I am trying to "hide" my firewall from showing up on traceroutes, but
+want my network to be pingable.  So, I've forwarded icmp type 8 through
+the firewall to a host that will do the echo replying.
 
-I think you would need to give more information about the stream to
-figure out what the cause is.
+  As you can see below, when I omit the "1" from the command, I get a
+message to specify a value.  But when I add "1" as the value, I get a
+"No chain/target/match by that name" error...
 
---
-Stephen J Smoogen.
-CSIRT/Linux System Administrator
+  Any help would be appreciated.
+
+ -Bill
+
+
+
+
+[root@BULLDOG /]# uname -r
+2.4.20-6
+[root@BULLDOG /]# rpm -q iptables
+iptables-1.2.7a-2
+[root@BULLDOG /]#
+[root@BULLDOG /]# iptables -t mangle -L -n -v
+Chain PREROUTING (policy ACCEPT 56522 packets, 32M bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+
+Chain INPUT (policy ACCEPT 14410 packets, 919K bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+
+Chain FORWARD (policy ACCEPT 42112 packets, 31M bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+
+Chain OUTPUT (policy ACCEPT 13576 packets, 1318K bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+
+Chain POSTROUTING (policy ACCEPT 55687 packets, 32M bytes)
+ pkts bytes target     prot opt in     out     source              
+destination
+[root@BULLDOG /]#
+[root@BULLDOG /]#
+[root@BULLDOG /]#
+[root@BULLDOG /]# iptables -t mangle -A PREROUTING -j TTL --ttl-inc
+iptables v1.2.7a: TTL: You must specify a value
+Try `iptables -h' or 'iptables --help' for more information.
+[root@BULLDOG /]#
+[root@BULLDOG /]# iptables -t mangle -A PREROUTING -j TTL --ttl-inc 1
+iptables: No chain/target/match by that name
+[root@BULLDOG /]#
+[root@BULLDOG /]#
+
+
+
+
+
+
 
