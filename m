@@ -1,8 +1,12 @@
-From: "jywang" <jywang@cnic.cn>
-Subject: How to reroute the skb
-Date: Tue, 8 Nov 2005 08:55:19 +0800
-Message-ID: <002401c5e3ff$16f50850$060ae29f@javaboy>
+From: Pablo Neira <pablo@eurodev.net>
+Subject: Re: iptables v1.3.4: STRING match: You must specify `--algo'
+Date: Tue, 08 Nov 2005 02:01:06 +0100
+Message-ID: <436FF8D2.3070101@eurodev.net>
+References: <1131367085.11452.9.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1131367085.11452.9.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,22 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@lists.netfilter.org>
+To: jasbir.k@gmail.com
+Cc: netfilter@lists.netfilter.org
 
-Hi,all
-    in the NF_IP_LOCAL_OUT function, i change the destination ip,
-so, the packet should be reroute. but, i don't know how to do this.
-should i must change the sock associate with the skb. that means i
-must change the source ip, source port, destination ip and port in
-the inet_opt.
+Jasbir Khehra wrote:
+> Hi,
+>    while  running this command
+> # iptables -t nat -I PREROUTING -p tcp -s 192.168.2.20 -m string
+> --hex-string '0d0a0d0a594d5347' -j REJECT
+> 
+> Not able to get the different options for '--algo' parameter . 
+> Kernel 2.6.14 iptables v1.3.4  thanks - Jasbir 
 
-i don't know how to resolve.
+--algo [bm|kmp]
 
-jinyi
+bm: Boyer-Moore
+kmp: Knuth-Pratt-Morris
 
+Those are the algorithm implemented at the moment.
 
+BTW, you should do that in the raw table, not nat. Nobody should use the
+nat table for filtering purposes.
 
+-- 
+Pablo
 
