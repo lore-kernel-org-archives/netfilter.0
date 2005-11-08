@@ -1,15 +1,14 @@
-From: Paul Goodyear <pgudge@gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: iptables on DLink DSL-502T Modem/Router
-Date: Tue, 8 Nov 2005 21:57:40 +0000
-Message-ID: <cc8f3f150511081357s206b99d0m95942f124269b709@mail.gmail.com>
+Date: Tue, 8 Nov 2005 16:28:52 -0600
+Message-ID: <200511081628.52748.rob0@gmx.co.uk>
 References: <cc8f3f150511071747m64e3841ava98596bfe776fcf3@mail.gmail.com>
-	<200511072031.46307.rob0@gmx.co.uk>
-	<cc8f3f150511081239x4bd4d8favd7e2807f0748711c@mail.gmail.com>
 	<200511081516.21132.rob0@gmx.co.uk>
+	<cc8f3f150511081357s206b99d0m95942f124269b709@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200511081516.21132.rob0@gmx.co.uk>
+In-Reply-To: <cc8f3f150511081357s206b99d0m95942f124269b709@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -24,43 +23,39 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On 11/8/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> Please do not top-post. Thank you.
->
-> On Tuesday 2005-November-08 14:39, Paul Goodyear wrote:
-> > Thanks for the reply, that would explain a few things. I did try the
-> > rule in both INPUT and FORWARD chains, but neither worked, I took a
-> > guess that it would be INPUT to use so I posted with that chain.
->
-> There is no need to guess when we have "man iptables" at our
-> fingertips. :)
->
-> > Order, when I do a iptables -L -n I can see my rule, but it is always
-> > at the bottom of the pile, so this might be the whole issue. How do I
-> > know what <ruleid> the other rules are so I can add above them?
->
-> "iptables -h" gives a brief syntax overview. The "--line-numbers"
-> option, available in recent versions of iptables, can help. With older
-> versions, I just list the rules and count them manually!
->
-> > I have read the -A param is "to add a rule at the end of the chain"
-> > how do I add at the begining of the chain?
->
-> In Jim's reply and also in "iptables -h" and "man iptables".
-> --
->     mail to this address is discarded unless "/dev/rob0"
->     or "not-spam" is in Subject: header
->
->
-Sry about the top posting.
+On Tuesday 2005-November-08 15:57, Paul Goodyear wrote:
+> Thanks for that, I used the -I chain <ruleid> successfully. And added
+> the rule 2 down, but the router still does not let me in. Could it be
 
-Thanks for that, I used the -I chain <ruleid> successfully. And added
-the rule 2 down, but the router still does not let me in. Could it be
-possible that the iptables rule is in place, but the manufactures
-(DLink) have done something to stop this working?
+Being an embedded device means this won't be as easy to debug. On a 
+regular system I would suggest using a -j LOG rule before your ACCEPT 
+rule to see what's happening. It might work on this, hard to say.
 
-I have a Safecom router also, with the same embeded linux version and
-this supports ip filtering and the iptables commands.
+You can also use -v with the -L option to list rules. See if anything 
+matched your rule. If not, your rule is wrong, or in the wrong place.
 
-Thanks again.
+Don't use Microsoft tools for debugging. Try to telnet(1) to your RDP 
+port from outside. Does telnet connect? Check /proc/net/ip_conntrack. 
+Is your connection listed?
+
+> possible that the iptables rule is in place, but the manufactures
+> (DLink) have done something to stop this working?
+
+I don't know what it would be. But on further thought I realised that 
+some ISP's block RDP. Comcast does, both RDP and PPTP, likely to 
+"encourage" residential users to upgrade to "business" service (the 
+same hit-or-miss service for more money.)
+
+Use nmap(8) to scan your router from outside. Is RDP open? Insert an 
+INPUT and FORWARD rule to ACCEPT everything from the IP address where 
+you are doing the scan. If anything shows as "filtered" it means either 
+your ISP is blocking it or you're DNAT'ing to a closed host:port.
+
+> I have a Safecom router also, with the same embeded linux version and
+> this supports ip filtering and the iptables commands.
+
+And you tested with that, and you found ... ?
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
