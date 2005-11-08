@@ -1,12 +1,11 @@
-From: Pablo Neira <pablo@eurodev.net>
-Subject: Re: iptables v1.3.4: STRING match: You must specify `--algo'
-Date: Tue, 08 Nov 2005 02:01:06 +0100
-Message-ID: <436FF8D2.3070101@eurodev.net>
-References: <1131367085.11452.9.camel@localhost.localdomain>
+From: Paul Goodyear <pgudge@gmail.com>
+Subject: iptables on DLink DSL-502T Modem/Router
+Date: Tue, 8 Nov 2005 01:47:00 +0000
+Message-ID: <cc8f3f150511071747m64e3841ava98596bfe776fcf3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1131367085.11452.9.camel@localhost.localdomain>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: jasbir.k@gmail.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Jasbir Khehra wrote:
-> Hi,
->    while  running this command
-> # iptables -t nat -I PREROUTING -p tcp -s 192.168.2.20 -m string
-> --hex-string '0d0a0d0a594d5347' -j REJECT
-> 
-> Not able to get the different options for '--algo' parameter . 
-> Kernel 2.6.14 iptables v1.3.4  thanks - Jasbir 
+Hi all,
 
---algo [bm|kmp]
+Does iptables version v1.2.6a support forwarding from a source IP?
 
-bm: Boyer-Moore
-kmp: Knuth-Pratt-Morris
+The reason I ask, is I have a DLink DSL-502T modem router, the router
+has linux on and running iptables.
 
-Those are the algorithm implemented at the moment.
+The webadmin for the router does not allow you to create ip filters,
+port forwarding is there but not filtering.
 
-BTW, you should do that in the raw table, not nat. Nobody should use the
-nat table for filtering purposes.
+I want to allow access to port 3389 from only 1 internet IP address.
+Should this work? (81.81.81.81 being an example)
 
--- 
-Pablo
+iptables -A INPUT -s 81.81.81.81 -d 192.168.1.2 -p tcp --dport 3389 -j ACCE=
+PT
+
+The router does no allow me to connect in once this rule is in iptables.
+
+Thanks.
+
+Paul.
 
