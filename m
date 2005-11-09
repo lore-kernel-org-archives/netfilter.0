@@ -1,12 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: incrementing TTL in firewall
-Date: Wed, 9 Nov 2005 19:06:47 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0511091904520.28707@blackhole.kfki.hu>
-References: <20051108001620.25531.qmail@web60923.mail.yahoo.com>
-	<3185.192.168.3.8.1131552100.squirrel@192.168.3.8>
+From: Carlos Pastorino <carlos.pastorino@gmail.com>
+Subject: ACK PSH blocked
+Date: Wed, 9 Nov 2005 16:15:33 -0200
+Message-ID: <cc4fcc140511091015n5b7d719ah60e2a55b6d852b87@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3185.192.168.3.8.1131552100.squirrel@192.168.3.8>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Bill Hance <bill@billhance.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wed, 9 Nov 2005, Bill Hance wrote:
+Hi everyone,
 
-> Thanks for the help.  I believe I have TTL target support in the kernel:
-[...]
-> # lsmod
-> Module                  Size  Used by    Not tainted
-> ipt_ttl                 1144   0  (unused)
+My question is targeted to understanding Netfilter, because I know
+that the dropped packets are not impacting on the connection.
 
-No, you haven't got. You need the ipt_TTL kernel module. ipt_ttl
-implements the TTL >match< support.
+My firewall is configured like this (showing only the important information=
+):
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+IPTABLES -A FORWARD -p TCP -i $INET -o $LAN --syn --dport http -j ACCEPT
+
+and I've been noticing that packets with the ACK PSH flags set are
+dropped during the connection.
+
+I know that it's not because of the connection tracking, since the
+drops are occurring during the connection, not a long time after the
+connection, so they are definitely ESTABLISHED packets. And since
+ESTABLISHED packet should get through, I wonder why those are being
+blocked.
+
+Thanks,
+
+Pastorino
 
