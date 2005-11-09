@@ -1,11 +1,13 @@
-From: Joe Nuts <joenuts@gmail.com>
-Subject: tc filter packet directional questions
-Date: Wed, 9 Nov 2005 09:57:42 -0600
-Message-ID: <cfc690b70511090757q5d8b34d4o6101aed4050f002@mail.gmail.com>
+From: "Pablo Sanchez" <pablo@blueoakdb.com>
+Subject: RE: SNAT vs MASQUERADE ... RE: ftp conntrack - nat problem
+Date: Wed, 9 Nov 2005 10:57:24 -0500
+Message-ID: <NEBBLLCNFOFHMALJMDDEGEABBFAB.pablo@blueoakdb.com>
+References: <200511090951.31228.rob0@gmx.co.uk>
+Reply-To: pablo@blueoakdb.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <200511090951.31228.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,27 +21,39 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi group,
-I have a few questions concerning setting up some htb queues on my
-firewall. I've read through the documentation, and I'm utterly
-confused. My set up is essentially : DSL to internet 4.5M down .748
-up. Connects to eth0 (external interface). Firewall has eth1 (internal
-interface), and various tunnel interfaces. (approx. 12 internal
-networks are routed through this box. minimal traffic between
-networks, mostly used for internet traffic)
-As I undertstand it, only traffic that is 'sent' can be queued. Thus,
-my tc filter rules should be on dev eth0 for traffic destined for the
-internet (refered to as outbound traffic), and my filter rules should
-be on dev eth1, tun1, tun2, tun3, etc for traffic from the internet
-(refered to as inbound traffic).
-Which leads me to question 1: can one class be shared among devices? I
-would like to have my 4.5M down available to all my internal
-interfaces, with priorities given to certain tcp traffic.
-Question 2 is about the actual "sending" of the traffic. If I limit
-dev eth0 to only be able to send at .748k, will that have any effect
-on the incoming traffic? Does the act of passing an incoming packet on
-dev eth0 to go out of dev eth1 count towards dev eth0 "sending"
-traffic?
-Thanks for the help
--Joe
+
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of /dev/rob0
+> Sent: Wednesday, November 09, 2005 10:52 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Re: SNAT vs MASQUERADE ... RE: ftp conntrack - nat problem
+>=20
+>=20
+> On Wednesday 2005-November-09 09:23, Pablo Sanchez wrote:
+> > When you say the SNAT target is better.  Can you quantify 'better?'=20
+> > Are there any functional limitations overcome by SNAT over the
+> > MASQUERADE target?
+>=20
+> Ooooh, I was afraid someone might ask that.=20
+
+:)
+
+> I think one benefit of SNAT is=20
+> that a SNAT'ed TCP connection can survive a router reset. That's=20
+> important to me, because sometimes I leave ssh sessions open for weeks =
+
+> at a time.
+
+I just switched from the SNAT to the MASQUERADE target and so far (knock =
+on wood - my head in this case!) I haven't seen an issue with router =
+resets.
+
+I'm very curious to know if there are any differences (aside from =
+knowing the IP ahead of time versus not).
+
+Cheers,
+-pablo
+
 
