@@ -1,12 +1,14 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: SNAT vs MASQUERADE ... RE: ftp conntrack - nat problem
-Date: Wed, 9 Nov 2005 09:51:31 -0600
-Message-ID: <200511090951.31228.rob0@gmx.co.uk>
-References: <NEBBLLCNFOFHMALJMDDEGEPNBEAB.pablo@blueoakdb.com>
+Subject: Re: ftp conntrack - nat problem
+Date: Wed, 9 Nov 2005 09:51:35 -0600
+Message-ID: <200511090951.35603.rob0@gmx.co.uk>
+References: <fc38b710511072303w6144c3a7i3068e781c871799d@mail.gmail.com>
+	<fc38b710511090729n7ab1ba18r2734bcf4ce2c1441@mail.gmail.com>
+	<fc38b710511090740s457f85adm94675c541e9072d4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <NEBBLLCNFOFHMALJMDDEGEPNBEAB.pablo@blueoakdb.com>
+In-Reply-To: <fc38b710511090740s457f85adm94675c541e9072d4@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,23 +23,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wednesday 2005-November-09 09:23, Pablo Sanchez wrote:
-> When you say the SNAT target is better.  Can you quantify 'better?' 
-> Are there any functional limitations overcome by SNAT over the
-> MASQUERADE target?
+On Wednesday 2005-November-09 09:40, Dave Strydom wrote:
+> Ok, so this is what it has all been reduced to, and I'm still
+> getting the same problem:
 
-Ooooh, I was afraid someone might ask that. Unfortunately I am only 
-parroting the party line. From "MASQUERADE" in "man iptables":
-  MASQUERADE
-       This target is only valid in the nat table, in the POSTROUTING
-       chain.  It  should  only  be used with dynamically assigned IP
-       (dialup)  connections:  if you have a static IP  address,  you
-       should use the SNAT target.
+What more can I say?
 
-Perhaps someone else can explain why. I think one benefit of SNAT is 
-that a SNAT'ed TCP connection can survive a router reset. That's 
-important to me, because sometimes I leave ssh sessions open for weeks 
-at a time.
+> Calypso ~ # iptables-save
+
+This is like not having a firewall at all. The only functional part is 
+the NAT, DNAT FTP inbound, MASQUERADE LAN clients outbound.
+
+Not having a firewall is not necessarily a disaster, BTW. A properly 
+configured system should still be safe without it.
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
