@@ -1,12 +1,15 @@
-From: "Anthony Sadler" <anthonys@faredge.com.au>
-Subject: RE: iptables on DLink DSL-502T Modem/Router
-Date: Wed, 9 Nov 2005 12:04:06 +1100
-Message-ID: <46985.8382981785$1131539100@news.gmane.org>
-References: <cc8f3f150511071747m64e3841ava98596bfe776fcf3@mail.gmail.com>
+From: Dave Strydom <strydom.dave@gmail.com>
+Subject: Re: ftp conntrack - nat problem
+Date: Wed, 9 Nov 2005 16:06:38 +0200
+Message-ID: <fc38b710511090606i74c40337t656c68a436c5335e@mail.gmail.com>
+References: <fc38b710511072303w6144c3a7i3068e781c871799d@mail.gmail.com>
+	<200511081336.51769.rob0@gmx.co.uk>
+	<fc38b710511090331r6c6943faw875965864a056f21@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <cc8f3f150511071747m64e3841ava98596bfe776fcf3@mail.gmail.com>
+In-Reply-To: <fc38b710511090331r6c6943faw875965864a056f21@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,51 +21,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Paul Goodyear' <pgudge@gmail.com>, netfilter@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org
 
-I would personally filter either in the PREROUTING table:
-iptables -t nat -I PREROUTING -p tcp -s SOURCEIP -d EXT_INTERFACE =
---dport PORT -j DNAT --to INTERNALIP:PORT
-Or on the FORWARD table:
-iptables -I FORWARD -p $PROTO -s $SOURCEIP -d $INTERNALIP --dport =
-$PORTINT -j ACCEPT
+Ok, I have just compiled a new kernel on this box, and compiled all
+iptables things as modules... same problem... I have also removed all
+PAX and GRsecurity stuff just to write those out of the equation.
 
-This is assuming you have a default rule of drop or deny on your FORWARD =
-table.
+-----------------------------------------
+Calypso firewall # lsmod
+Module                  Size  Used by
+iptable_filter          3200  1
+ipt_MARK                2688  0
+ipt_NETMAP              2432  0
+iptable_mangle          3072  0
+ipt_ttl                 2176  0
+ipt_tos                 1792  0
+ipt_tcpmss              2560  0
+ipt_state               2176  4
+ipt_geoip               4356  0
+ipt_conntrack           2688  0
+ipt_connmark            1920  0
+ipt_SAME                2944  0
+ipt_LOG                 7424  0
+ipt_CONNMARK            2432  0
+ipt_REJECT              6784  0
+ipt_MASQUERADE          4744  1
+ip_nat_snmp_basic      11908  0
+ip_nat_ftp              3328  0
+iptable_nat            26460  5 ipt_NETMAP,ipt_SAME,ipt_MASQUERADE,ip_nat_f=
+tp
+ip_queue               11800  0
+ip_tables              25600  17
+iptable_filter,ipt_MARK,ipt_NETMAP,iptable_mangle,ipt_ttl,ipt_tos,ipt_tcpms=
+s,ipt_state,ipt_geoip,ipt_conntrack,ipt_connmark,ipt_SAME,ipt_LOG,ipt_CONNM=
+ARK,ipt_REJECT,ipt_MASQUERADE,iptable_nat
+ip_conntrack_ftp       73488  1 ip_nat_ftp
+ip_conntrack           54592  7
+ipt_state,ipt_conntrack,ipt_MASQUERADE,ip_nat_snmp_basic,ip_nat_ftp,iptable=
+_nat,ip_conntrack_ftp
+Calypso firewall #
 
-Anthony Sadler
-Far Edge Technology
-w: (02) 8425 1400
-=20
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Paul =
-Goodyear
-Sent: Tuesday, 8 November 2005 12:47=20
-To: netfilter@lists.netfilter.org
-Subject: iptables on DLink DSL-502T Modem/Router
+-----------------------------------------
 
-Hi all,
+I'm at a serious loss here, i dont know what else to do :(
 
-Does iptables version v1.2.6a support forwarding from a source IP?
+Dave
 
-The reason I ask, is I have a DLink DSL-502T modem router, the router
-has linux on and running iptables.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
 
-The webadmin for the router does not allow you to create ip filters,
-port forwarding is there but not filtering.
-
-I want to allow access to port 3389 from only 1 internet IP address.
-Should this work? (81.81.81.81 being an example)
-
-iptables -A INPUT -s 81.81.81.81 -d 192.168.1.2 -p tcp --dport 3389 -j =
-ACCEPT
-
-The router does no allow me to connect in once this rule is in iptables.
-
-Thanks.
-
-Paul.
-
-
+On 11/9/05, Dave Strydom <strydom.dave@gmail.com> wrote:
+> Ok, I have setup a test setup which is doing the same thing, here is
+> the output of my iptables-save:
+>
+>
 
