@@ -1,73 +1,57 @@
-From: Alexander Samad <alex@samad.com.au>
-Subject: Re: kernel freeze issue
-Date: Thu, 10 Nov 2005 09:44:54 +1100
-Message-ID: <20051109224454.GA9770@samad.com.au>
-References: <43692579.8000807@elte.hu> <200511091201.03783@nienna>
-	<43721E94.7060806@elte.hu>
+From: Daniel J Blueman <daniel.blueman@gmail.com>
+Subject: RED qdisc not working...
+Date: Wed, 9 Nov 2005 23:32:58 +0000
+Message-ID: <6278d2220511091532k7b732b9bv2957763ba6f4c10f@mail.gmail.com>
+References: <6278d2220511071626j3646afa7n5ac33228e8b3fc82@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-bounce@oss.sgi.com>
+In-Reply-To: <6278d2220511071626j3646afa7n5ac33228e8b3fc82@mail.gmail.com>
 Content-Disposition: inline
-In-Reply-To: <43721E94.7060806@elte.hu>
+Sender: netdev-bounce@oss.sgi.com
+Errors-to: netdev-bounce@oss.sgi.com
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-To: Zoltan Nagy <kirk@elte.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netdev@oss.sgi.com, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, kaber@trash.net
+Cc: davem@redhat.com, laforge@netfilter.org, coreteam@netfilter.org
 
+Has anyone been able to get the RED (random early detection) qdisc
+working lately?
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I can't get anything going through it to be dropped or marked; the
+'marked', 'early', 'pdrop' and 'other' fields remain at 0 [1]. In my
+example script [2], I get the 3072Kbits/s transfer into eth0, which
+you'd only expect if the RED qdisc wasn't there.
 
-On Wed, Nov 09, 2005 at 05:06:44PM +0100, Zoltan Nagy wrote:
->=20
->=20
-> KOVACS Krisztian wrote:
-> >>today's surprise:
-> >>	ip l s eth0 promisc on	=3D=3D> freeze, without any trace ;)
-> >=20
-> >=20
-> >   You could still try getting a backtrace with SysRq + P.
-> >=20
->=20
-> tried, sysrq not responding...
->=20
-> regards
+I have tried with a recent 2.6.12 debian kernel and stock 2.6.14 on
+x86_64 debian. I rebuilt new iproute and iptables packages from latest
+clean upstream sources, but to no avail.
 
-try booting with these kernel parameters
-nmi_watchdog=3D1 console=3DttyS0,9600n8 console=3D/dev/tty0
+Any ideas? Please CC me on replies, as I am not subscribed.
 
-it will setup nmi_watchdog and will also send all you syslog stuff out
-to the serial port.
+Thanks,
+  Dan
 
-Then connect serial port to another machine to capture the oops/crash
+--- [1]
 
->=20
->=20
->=20
+# tc -s qdisc show dev eth0
+qdisc htb 1: r2q 10 default 10 direct_packets_stat 0
+ Sent 53985530 bytes 36757 pkts (dropped 0, overlimits 45125)
+qdisc red 10: parent 1:10 limit 512Kb min 64Kb max 128Kb
+ Sent 53985530 bytes 36757 pkts (dropped 0, overlimits 0)
+  marked 0 early 0 pdrop 0 other 0
 
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+--- [2]
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+tc qdisc del dev eth0 root
 
-iD8DBQFDcnvmkZz88chpJ2MRAqKGAKC1BIqXPL9Vxmiqou0w4N+zXujgSQCfdX67
-wBwGnOboVZTT9diOqWTANWw=
-=8b8R
------END PGP SIGNATURE-----
+tc qdisc add dev eth0 root handle 1: htb default 10
+tc class add dev eth0 parent 1: classid 1:1 htb rate 4096kbit ceil 4096kbit
+tc class add dev eth0 parent 1:1 classid 1:10 htb rate 3072kbit ceil 3072kbit
+tc qdisc add dev eth0 parent 1:10 handle 10: red \
+  limit 4096kbit min 512kbit max 1024kbit avpkt 1000 \
+  burst 100 probability 0.02 bandwidth 1024kbit
+___
+Daniel J Blueman
 
---SUOF0GtieIMvvwua--
 
