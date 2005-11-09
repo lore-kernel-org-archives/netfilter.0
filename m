@@ -1,14 +1,12 @@
-From: Dave Strydom <strydom.dave@gmail.com>
-Subject: Re: ftp conntrack - nat problem
-Date: Wed, 9 Nov 2005 16:06:38 +0200
-Message-ID: <fc38b710511090606i74c40337t656c68a436c5335e@mail.gmail.com>
-References: <fc38b710511072303w6144c3a7i3068e781c871799d@mail.gmail.com>
-	<200511081336.51769.rob0@gmx.co.uk>
-	<fc38b710511090331r6c6943faw875965864a056f21@mail.gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: kernel freeze issue
+Date: Wed, 9 Nov 2005 08:21:09 -0600
+Message-ID: <200511090821.09368.rob0@gmx.co.uk>
+References: <43692579.8000807@elte.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <fc38b710511090331r6c6943faw875965864a056f21@mail.gmail.com>
+In-Reply-To: <43692579.8000807@elte.hu>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,58 +19,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Ok, I have just compiled a new kernel on this box, and compiled all
-iptables things as modules... same problem... I have also removed all
-PAX and GRsecurity stuff just to write those out of the equation.
+General comment on the format: it would help if you would put the text 
+and list portions in standard (>80 columns) format. ASCII drawings are 
+harder to fit sometimes, but even those will come across better under 
+80 columns. I use a GUI MUA so I was able to resize to view your post 
+properly, but remember, much of your audience might be using mutt.
 
------------------------------------------
-Calypso firewall # lsmod
-Module                  Size  Used by
-iptable_filter          3200  1
-ipt_MARK                2688  0
-ipt_NETMAP              2432  0
-iptable_mangle          3072  0
-ipt_ttl                 2176  0
-ipt_tos                 1792  0
-ipt_tcpmss              2560  0
-ipt_state               2176  4
-ipt_geoip               4356  0
-ipt_conntrack           2688  0
-ipt_connmark            1920  0
-ipt_SAME                2944  0
-ipt_LOG                 7424  0
-ipt_CONNMARK            2432  0
-ipt_REJECT              6784  0
-ipt_MASQUERADE          4744  1
-ip_nat_snmp_basic      11908  0
-ip_nat_ftp              3328  0
-iptable_nat            26460  5 ipt_NETMAP,ipt_SAME,ipt_MASQUERADE,ip_nat_f=
-tp
-ip_queue               11800  0
-ip_tables              25600  17
-iptable_filter,ipt_MARK,ipt_NETMAP,iptable_mangle,ipt_ttl,ipt_tos,ipt_tcpms=
-s,ipt_state,ipt_geoip,ipt_conntrack,ipt_connmark,ipt_SAME,ipt_LOG,ipt_CONNM=
-ARK,ipt_REJECT,ipt_MASQUERADE,iptable_nat
-ip_conntrack_ftp       73488  1 ip_nat_ftp
-ip_conntrack           54592  7
-ipt_state,ipt_conntrack,ipt_MASQUERADE,ip_nat_snmp_basic,ip_nat_ftp,iptable=
-_nat,ip_conntrack_ftp
-Calypso firewall #
+On Wednesday 2005-November-02 14:45, Zoltan Nagy wrote:
+> problem:
+> 	filter is freezes in random intervalls(30m - 6day) - on-board
+> watchdog(i8xx) reboot's the system i've tryed many things, remove my
+> custom patches...but it won't help ;) in the kernel trace i've last
 
------------------------------------------
+I would suspect hardware first.
 
-I'm at a serious loss here, i dont know what else to do :(
+> crash happens when many of our beloved users use p2p software(this
+> is also a tip)
+snip
+> today's surprise:
+> 	ip l s eth0 promisc on	==> freeze, without any trace ;)
 
-Dave
+Did you try swapping out that NIC?
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
+> some info about the system can be downloaded from
+> http://152.66.235.5/info-filter.tgz
+> this is my worst nightmare, any suggestions? ;)
 
-On 11/9/05, Dave Strydom <strydom.dave@gmail.com> wrote:
-> Ok, I have setup a test setup which is doing the same thing, here is
-> the output of my iptables-save:
->
->
+You do have my sympathy, but I didn't download the file. I would be 
+likely to do that if it was something I could view in the browser, like 
+text or HTML.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
