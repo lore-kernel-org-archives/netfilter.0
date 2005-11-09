@@ -1,15 +1,10 @@
-From: Dave Strydom <strydom.dave@gmail.com>
-Subject: Re: ftp conntrack - nat problem
-Date: Wed, 9 Nov 2005 17:56:23 +0200
-Message-ID: <fc38b710511090756t97d55acvda8f9383274073a8@mail.gmail.com>
-References: <fc38b710511072303w6144c3a7i3068e781c871799d@mail.gmail.com>
-	<fc38b710511090729n7ab1ba18r2734bcf4ce2c1441@mail.gmail.com>
-	<fc38b710511090740s457f85adm94675c541e9072d4@mail.gmail.com>
-	<200511090951.35603.rob0@gmx.co.uk>
+From: Joe Nuts <joenuts@gmail.com>
+Subject: tc filter packet directional questions
+Date: Wed, 9 Nov 2005 09:57:42 -0600
+Message-ID: <cfc690b70511090757q5d8b34d4o6101aed4050f002@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200511090951.35603.rob0@gmx.co.uk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,36 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: /dev/rob0 <rob0@gmx.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-So if it isnt the firewall, then what on earth could it be?
-
-Because from the tethereal output, you can see that FTP-DATA isnt
-being sent, any idea of what could cause this?
-
-If i remove the nat, and ftp things direct the firewall it works fine,
-it's only if I nat stuff to a ftp behind the firewall.
-
-
-----------------------------------
-On 11/9/05, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> On Wednesday 2005-November-09 09:40, Dave Strydom wrote:
-> > Ok, so this is what it has all been reduced to, and I'm still
-> > getting the same problem:
->
-> What more can I say?
->
-> > Calypso ~ # iptables-save
->
-> This is like not having a firewall at all. The only functional part is
-> the NAT, DNAT FTP inbound, MASQUERADE LAN clients outbound.
->
-> Not having a firewall is not necessarily a disaster, BTW. A properly
-> configured system should still be safe without it.
-> --
->     mail to this address is discarded unless "/dev/rob0"
->     or "not-spam" is in Subject: header
->
->
+Hi group,
+I have a few questions concerning setting up some htb queues on my
+firewall. I've read through the documentation, and I'm utterly
+confused. My set up is essentially : DSL to internet 4.5M down .748
+up. Connects to eth0 (external interface). Firewall has eth1 (internal
+interface), and various tunnel interfaces. (approx. 12 internal
+networks are routed through this box. minimal traffic between
+networks, mostly used for internet traffic)
+As I undertstand it, only traffic that is 'sent' can be queued. Thus,
+my tc filter rules should be on dev eth0 for traffic destined for the
+internet (refered to as outbound traffic), and my filter rules should
+be on dev eth1, tun1, tun2, tun3, etc for traffic from the internet
+(refered to as inbound traffic).
+Which leads me to question 1: can one class be shared among devices? I
+would like to have my 4.5M down available to all my internal
+interfaces, with priorities given to certain tcp traffic.
+Question 2 is about the actual "sending" of the traffic. If I limit
+dev eth0 to only be able to send at .748k, will that have any effect
+on the incoming traffic? Does the act of passing an incoming packet on
+dev eth0 to go out of dev eth1 count towards dev eth0 "sending"
+traffic?
+Thanks for the help
+-Joe
 
