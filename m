@@ -1,12 +1,11 @@
-From: Sandro Dentella <sandro@e-den.it>
-Subject: Re: Why would certain packets not reach nat PREROUTING chain?
-Date: Thu, 10 Nov 2005 15:50:35 +0100
-Message-ID: <20051110145035.GB21150@casa.e-den.it>
-References: <20051110134516.GA2080@bostoncoop.net>
+From: Hai Wang <u2.ireland@gmail.com>
+Subject: Compile issue on kernel 2.4.25
+Date: Thu, 10 Nov 2005 11:39:13 -0500
+Message-ID: <30be90270511100839o2e13692fmb32ec8194a4d2e2b@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20051110134516.GA2080@bostoncoop.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-> > I also have a setup in which icmp packets will not get to PREROUTING.
-> > My understanding is that the kernel does not understand they are destined
-> > for that box: could that be your situation?
-> 
-> I don't think that's related, although I admit I don't have a thorough
-> understanding of the issue... why would icmp packets matter when the
-> issue is inbound UDP 500 packets that are showing up in tcpdump? Wouldn't
+Hello everyone,
 
-  I'm not saying they are related. I just see that in both cases we have
-  packets that arrive (tcpdump shows them) but are not correctly understood
-  by the kernel as being destined for the box.
+      I encountered a problem when I tried to compile iptables-1.3.4
+on RH9 (2.4.25), I got the following errors, please shed some lights
+on it.
 
+Thanks!
 
-> showing up in tcpdump indicate that the kernel understands the packet is
-> destined for that box?
+Hai
 
-  I don't think so. A packet that is to be forwareded is not "destined for
-  the box". In general my understanding is that tcpdump reads everything
-  that passes on the wire, as it comes before any routing decision. It
-  sees also packets that are not destined for the box.
-
-  What I would like to understand is why a packet that tcpdump show as
-  destined for the box in not understood as such.
-
-  I have been asking this since a couple of weeks on 3 different lists
-  (netfilter, lartc, netdev), but didn't get a single answer...
-
-  sandro
-
-
-
--- 
-Sandro Dentella  *:-)
-e-mail: sandro@e-den.it 
-http://www.tksql.org                    TkSQL Home page - My GPL work
+       ensions/libipt_time_sh.o -c extensions/libipt_time.c
+extensions/libipt_time.c: In function `init':
+extensions/libipt_time.c:66: structure has no member named `date_start'
+extensions/libipt_time.c:67: structure has no member named `date_stop'
+extensions/libipt_time.c: In function `parse':
+extensions/libipt_time.c:394: structure has no member named `date_start'
+extensions/libipt_time.c:407: structure has no member named `date_stop'
+extensions/libipt_time.c: In function `print':
+extensions/libipt_time.c:489: structure has no member named `date_start'
+extensions/libipt_time.c:492: structure has no member named `date_start'
+extensions/libipt_time.c:494: structure has no member named `date_stop'
+extensions/libipt_time.c:497: structure has no member named `date_stop'
+extensions/libipt_time.c: In function `save':
+extensions/libipt_time.c:524: structure has no member named `date_start'
+extensions/libipt_time.c:525: structure has no member named `date_stop'
+make: *** [extensions/libipt_time_sh.o] Error 1
 
