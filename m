@@ -1,10 +1,16 @@
-From: Mayuresh Chitale <mchitale@gmail.com>
-Subject: does routing performance degrade from 2.4.20 to 2.4.31 ?
-Date: Thu, 10 Nov 2005 16:12:29 +0600
-Message-ID: <d096a3ee0511100212o6742f5a0t608c63cc9a35d8ae@mail.gmail.com>
+From: Dave Strydom <strydom.dave@gmail.com>
+Subject: Re: ftp conntrack - nat problem
+Date: Thu, 10 Nov 2005 12:16:41 +0200
+Message-ID: <fc38b710511100216p4bd263a0oe84d8059f586cff8@mail.gmail.com>
+References: <fc38b710511072303w6144c3a7i3068e781c871799d@mail.gmail.com>
+	<fc38b710511090729n7ab1ba18r2734bcf4ce2c1441@mail.gmail.com>
+	<fc38b710511090740s457f85adm94675c541e9072d4@mail.gmail.com>
+	<200511090951.35603.rob0@gmx.co.uk>
+	<fc38b710511090756t97d55acvda8f9383274073a8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <fc38b710511090756t97d55acvda8f9383274073a8@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,51 +23,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netdev@vger.kernel.org, netfilter@lists.netfilter.org
+To: /dev/rob0 <rob0@gmx.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-Hi All,
+woohoo I found the problem.
 
-We are working on kernel version 2.4.20 and are trying to migrate to
-version 2.4.31. We are doing some performance related tests to see the
-impact of migration. The routing throughput seems to degrade from
-2.4.20 to 2.4.31.
-We have a Malta board with mips 4kc processor and are using iperf tool
-to do the testing. Two test PCs are connected to the malta and iperf
-server is run on PC and the client on another PC. With netfilter
-compiled into the kernel, version 2.4.20 shows better result than
-2.4.31. No rules except the default (all accept) have been applied.
-Without netfilter, both perform almost identical. Is this expected ??
-The dump below shows the measurements. If anyone has done similar
-tests before, please share with me their results.
 
-Have a nice day.
-Mayuresh.
+in the proftpd.conf on the server behind the firewall you need to add
+something like this to the proftpd.conf file:
 
-2.4.31
-=3D=3D=3D=3D=3D
-[mayuresh@localhost ~]$ ./iperf -c 100.0.0.1 -P 2
-------------------------------------------------------------
-Client connecting to 100.0.0.1, TCP port 5001
-TCP window size: 16.0 KByte (default)
-------------------------------------------------------------
-[  4] local 10.1.1.99 port 33702 connected with 100.0.0.1 port 5001
-[  3] local 10.1.1.99 port 33701 connected with 100.0.0.1 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0-10.0 sec  16.9 MBytes  14.2 Mbits/sec
-[  4]  0.0-10.0 sec  17.0 MBytes  14.2 Mbits/sec
-[SUM]  0.0-10.0 sec  33.9 MBytes  28.3 Mbits/sec
+---
+MasqueradeAddress         209.212.xxx.xxx
+PassivePorts                    60000 65535
+---
 
-2.4.20
-=3D=3D=3D=3D=3D
-[mayuresh@localhost ~]$ ./iperf -c 100.0.0.1 -P 2
-------------------------------------------------------------
-Client connecting to 100.0.0.1, TCP port 5001
-TCP window size: 16.0 KByte (default)
-------------------------------------------------------------
-[  4] local 10.1.1.99 port 33705 connected with 100.0.0.1 port 5001
-[  3] local 10.1.1.99 port 33704 connected with 100.0.0.1 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0-10.0 sec  20.2 MBytes  16.9 Mbits/sec
-[  4]  0.0-10.0 sec  20.2 MBytes  16.9 Mbits/sec
-[SUM]  0.0-10.0 sec  40.4 MBytes  33.8 Mbits/sec
+then in the iptables:
+
+$IPTABLES -t nat -A PREROUTING -d 209.212.xxx.xxx -p tcp --dport
+60000:65535 -j DNAT --to-dest 192.168.0.xxx
+
+
+Now it's working perfectly.
+
+Dave
 
