@@ -1,11 +1,12 @@
-From: Hai Wang <u2.ireland@gmail.com>
-Subject: Compile issue on kernel 2.4.25
-Date: Thu, 10 Nov 2005 11:39:13 -0500
-Message-ID: <30be90270511100839o2e13692fmb32ec8194a4d2e2b@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Why would certain packets not reach nat PREROUTING chain?
+Date: Thu, 10 Nov 2005 17:44:16 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0511101739320.30250@blackhole.kfki.hu>
+References: <4372A919.8020100@rosi-kessel.org>
+	<20051110101539.GA12934@casa.e-den.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20051110101539.GA12934@casa.e-den.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Sandro Dentella <sandro@e-den.it>
+Cc: netfilter@lists.netfilter.org
 
-Hello everyone,
+On Thu, 10 Nov 2005, Sandro Dentella wrote:
 
-      I encountered a problem when I tried to compile iptables-1.3.4
-on RH9 (2.4.25), I got the following errors, please shed some lights
-on it.
+> On Wed, Nov 09, 2005 at 08:57:45PM -0500, Adam Rosi-Kessel wrote:
+> > I'm troubeshooting an issue of accessing a VPN through NAT. Right now the
+> > problem can be reduced to the following question:
+> >
+> > Under what conditions would inbound packets not be routing through the nat
+> > PREROUTING chain?
+>
+> That's a problem that puzzles me too.
 
-Thanks!
+Packets which cannot be associated with any existing connection
+known by the conntrack subsystem will traverse the NAT table.
 
-Hai
+If a packet is related to any connection, which can mean:
 
-       ensions/libipt_time_sh.o -c extensions/libipt_time.c
-extensions/libipt_time.c: In function `init':
-extensions/libipt_time.c:66: structure has no member named `date_start'
-extensions/libipt_time.c:67: structure has no member named `date_stop'
-extensions/libipt_time.c: In function `parse':
-extensions/libipt_time.c:394: structure has no member named `date_start'
-extensions/libipt_time.c:407: structure has no member named `date_stop'
-extensions/libipt_time.c: In function `print':
-extensions/libipt_time.c:489: structure has no member named `date_start'
-extensions/libipt_time.c:492: structure has no member named `date_start'
-extensions/libipt_time.c:494: structure has no member named `date_stop'
-extensions/libipt_time.c:497: structure has no member named `date_stop'
-extensions/libipt_time.c: In function `save':
-extensions/libipt_time.c:524: structure has no member named `date_start'
-extensions/libipt_time.c:525: structure has no member named `date_stop'
-make: *** [extensions/libipt_time_sh.o] Error 1
+- the packet belongs to a connection
+- it is an ICMP error packet about a connection
+- it is a packet of a channel (like FTP data), which can be
+  associated to a connection by an appropriate helper module
+
+then that packet won't enter the NAT table.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
