@@ -1,16 +1,12 @@
-From: Michael Bellion <mbellion@hipac.org>
-Subject: Re: [ANNOUNCE] Release of nf-HiPAC 0.9.0
-Date: Thu, 10 Nov 2005 02:07:24 +0100
-Message-ID: <200511100207.25108.mbellion@hipac.org>
-References: <200509260441.42483.mbellion@hipac.org>
-	<200510021430.21697.mbellion@hipac.org>
-	<1131575752.3423.33.camel@localhost.localdomain>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Why would certain packets not reach nat PREROUTING chain?
+Date: Wed, 09 Nov 2005 20:57:45 -0500
+Message-ID: <4372A919.8020100@rosi-kessel.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4146011.P4spjQs24Z";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig5B5D56E382C1DA7D79C74AF1"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1131575752.3423.33.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,66 +17,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter-devel@lists.netfilter.org
-Cc: netfilter@lists.netfilter.org, Bart De Schuymer <bdschuym@pandora.be>, Amin Azez <azez@ufomechanic.net>
+To: netfilter@lists.netfilter.org
 
---nextPart4146011.P4spjQs24Z
-Content-Type: text/plain;
-  charset="iso-8859-6"
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig5B5D56E382C1DA7D79C74AF1
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Hi
+I'm troubeshooting an issue of accessing a VPN through NAT. Right now the=
 
-> Op zo, 02-10-2005 te 14:30 +0200, schreef Michael Bellion:
-> > > Also, is it not possible to make a B+ tree with the standard iptables?
-> > > I don't see why it shouldn't be possible. The jump to a new chain can
-> > > be seen as going deeper into the B+ tree. So it should be possible to
-> > > construct an iptables table structure that looks very similar to the =
-B+
-> > > tree of nf-hipac, for some given rule set. I guess this will be
-> > > somewhat slower than nf-hipac, but I'd like to see the performance
-> > > difference...
-> >
-> > Sorry, but you seem to confuse some things.
-> > nf-HiPAC is not based on B+trees or any other kind of B-trees.
->
-> So the algorithm of nf-hipac was changed in view of the one you were
-> using in 2003? I remembered from your talk then that you used B+trees
-> and this is confirmed by the slides you've finally put online.
+problem can be reduced to the following question:
 
-The reason why I said that b-trees are not used in hipac was that the b-tre=
-es=20
-are not the main data structure and are not the main solution of the proble=
-m.
+Under what conditions would inbound packets not be routing through the na=
+t
+PREROUTING chain?
 
-The problem is solved by a graph that consists of a lot of nodes.
+These packets are arriving on inbound UDP port 500. They show up with
+tcpdump, but when I add a log rule, e.g.
 
-During a lookup this graph is traversed and each node that is visited=20
-internally uses again a certain data structure. In 2003 btrees were used=20
-internally at each node of the graph. In the current implementation simple=
-=20
-static binary search is used instead.
+iptables -t nat -I PREROUTING -p udp -j LOG
 
-So basically you can forget about the btrees. They are not important for th=
-e=20
-solution of the problem. Have a closer look at the slides of the more recen=
-t=20
-presentations.
+The packets are not logged.  (They are also not DNAT'd to the proper
+internal host, but that makes sense if they're not reaching the PREROUTIN=
+G
+chain at all).
 
-Best regards
-	Michael Bellion
+I have nothing in the mangle table.
 
---nextPart4146011.P4spjQs24Z
-Content-Type: application/pgp-signature
+I am not running any IPSec services on the NAT box.
+
+There is nothing between the NAT box and the Internet.
+
+Most of the iptables tutorials warn against filtering in nat PREROUTING,
+because "it will be bypassed in certain cases."  But what cases are those=
+?
+
+The iptables LOG targets are working generally--traffic coming from the
+internal client to the NAT box and then the NAT box to the external VPN
+server are all logged.  The only thing that is not being logged--and
+presumably not arriving at the nat PREROUTING chain--are the inbound
+packets.  Yet they are definitely arriving, as tcpdump -i eth0 indicates.=
+
+
+Any suggestions?
+--=20
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
+
+
+
+
+--------------enig5B5D56E382C1DA7D79C74AF1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+Version: GnuPG v1.2.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQBDcp1NqKCdDrsF/xIRAr9CAJ0aU5Bcoj3sM1+6kmqfkxX8Ur+dsgCgiMK4
-V4NLYeuTWNpFjlANFxkGsTc=
-=g+TB
+iD8DBQFDcqkZdTf3ZklQ6qYRAu+yAKCiKHNqc5Lh8/sD0cCfKfLgaJAmqgCdFCH5
+yigu4z3X0OtZO3w3yGW+lIQ=
+=6lTC
 -----END PGP SIGNATURE-----
 
---nextPart4146011.P4spjQs24Z--
+--------------enig5B5D56E382C1DA7D79C74AF1--
 
