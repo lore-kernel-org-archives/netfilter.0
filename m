@@ -1,14 +1,16 @@
-From: Jamal Hadi Salim <hadi@cyberus.ca>
-Subject: Re: RED qdisc not working...
-Date: Wed, 09 Nov 2005 19:03:35 -0500
-Message-ID: <1131581016.6451.33.camel@localhost.localdomain>
-References: <6278d2220511071626j3646afa7n5ac33228e8b3fc82@mail.gmail.com>
-	<6278d2220511091532k7b732b9bv2957763ba6f4c10f@mail.gmail.com>
-Reply-To: hadi@cyberus.ca
+From: Michael Bellion <mbellion@hipac.org>
+Subject: Re: [ANNOUNCE] Release of nf-HiPAC 0.9.0
+Date: Thu, 10 Nov 2005 02:07:24 +0100
+Message-ID: <200511100207.25108.mbellion@hipac.org>
+References: <200509260441.42483.mbellion@hipac.org>
+	<200510021430.21697.mbellion@hipac.org>
+	<1131575752.3423.33.camel@localhost.localdomain>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart4146011.P4spjQs24Z";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6278d2220511091532k7b732b9bv2957763ba6f4c10f@mail.gmail.com>
+In-Reply-To: <1131575752.3423.33.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,71 +21,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Daniel J Blueman <daniel.blueman@gmail.com>
-Cc: netdev@oss.sgi.com, laforge@netfilter.org, netfilter-devel@lists.netfilter.org, coreteam@netfilter.org, davem@redhat.com, netfilter@lists.netfilter.org, kaber@trash.net
+To: netfilter-devel@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org, Bart De Schuymer <bdschuym@pandora.be>, Amin Azez <azez@ufomechanic.net>
 
-howdy,
-When you say it is "broken" - what is this relative to?
-Did you have another kernel where you precise config worked?
+--nextPart4146011.P4spjQs24Z
+Content-Type: text/plain;
+  charset="iso-8859-6"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-The only changes that have made it in for RED are in post 2.6.14; other
-than that all should work great as ever before.
+Hi
 
-suggestions:
+> Op zo, 02-10-2005 te 14:30 +0200, schreef Michael Bellion:
+> > > Also, is it not possible to make a B+ tree with the standard iptables?
+> > > I don't see why it shouldn't be possible. The jump to a new chain can
+> > > be seen as going deeper into the B+ tree. So it should be possible to
+> > > construct an iptables table structure that looks very similar to the =
+B+
+> > > tree of nf-hipac, for some given rule set. I guess this will be
+> > > somewhat slower than nf-hipac, but I'd like to see the performance
+> > > difference...
+> >
+> > Sorry, but you seem to confuse some things.
+> > nf-HiPAC is not based on B+trees or any other kind of B-trees.
+>
+> So the algorithm of nf-hipac was changed in view of the one you were
+> using in 2003? I remembered from your talk then that you used B+trees
+> and this is confirmed by the slides you've finally put online.
 
-could you try the latest iproute2 posted last few days by Stephen and
-see if your problem persists?
+The reason why I said that b-trees are not used in hipac was that the b-tre=
+es=20
+are not the main data structure and are not the main solution of the proble=
+m.
 
-Also try using something simpler than HTB like prio qdisc to help in
-debugging things for you?
-Can you look at examples directory and use some of the tricks used
-there?
+The problem is solved by a graph that consists of a lot of nodes.
 
-cheers,
-jamal
+During a lookup this graph is traversed and each node that is visited=20
+internally uses again a certain data structure. In 2003 btrees were used=20
+internally at each node of the graph. In the current implementation simple=
+=20
+static binary search is used instead.
 
-On Wed, 2005-09-11 at 23:32 +0000, Daniel J Blueman wrote:
-> Has anyone been able to get the RED (random early detection) qdisc
-> working lately?
-> 
-> I can't get anything going through it to be dropped or marked; the
-> 'marked', 'early', 'pdrop' and 'other' fields remain at 0 [1]. In my
-> example script [2], I get the 3072Kbits/s transfer into eth0, which
-> you'd only expect if the RED qdisc wasn't there.
-> 
-> I have tried with a recent 2.6.12 debian kernel and stock 2.6.14 on
-> x86_64 debian. I rebuilt new iproute and iptables packages from latest
-> clean upstream sources, but to no avail.
-> 
-> Any ideas? Please CC me on replies, as I am not subscribed.
-> 
-> Thanks,
->   Dan
-> 
-> --- [1]
-> 
-> # tc -s qdisc show dev eth0
-> qdisc htb 1: r2q 10 default 10 direct_packets_stat 0
->  Sent 53985530 bytes 36757 pkts (dropped 0, overlimits 45125)
-> qdisc red 10: parent 1:10 limit 512Kb min 64Kb max 128Kb
->  Sent 53985530 bytes 36757 pkts (dropped 0, overlimits 0)
->   marked 0 early 0 pdrop 0 other 0
-> 
-> --- [2]
-> 
-> tc qdisc del dev eth0 root
-> 
-> tc qdisc add dev eth0 root handle 1: htb default 10
-> tc class add dev eth0 parent 1: classid 1:1 htb rate 4096kbit ceil 4096kbit
-> tc class add dev eth0 parent 1:1 classid 1:10 htb rate 3072kbit ceil 3072kbit
-> tc qdisc add dev eth0 parent 1:10 handle 10: red \
->   limit 4096kbit min 512kbit max 1024kbit avpkt 1000 \
->   burst 100 probability 0.02 bandwidth 1024kbit
-> ___
-> Daniel J Blueman
-> 
-> 
-> 
+So basically you can forget about the btrees. They are not important for th=
+e=20
+solution of the problem. Have a closer look at the slides of the more recen=
+t=20
+presentations.
 
+Best regards
+	Michael Bellion
+
+--nextPart4146011.P4spjQs24Z
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBDcp1NqKCdDrsF/xIRAr9CAJ0aU5Bcoj3sM1+6kmqfkxX8Ur+dsgCgiMK4
+V4NLYeuTWNpFjlANFxkGsTc=
+=g+TB
+-----END PGP SIGNATURE-----
+
+--nextPart4146011.P4spjQs24Z--
 
