@@ -1,12 +1,18 @@
-From: Sandro Dentella <sandro@e-den.it>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
 Subject: Re: Why would certain packets not reach nat PREROUTING chain?
-Date: Thu, 10 Nov 2005 11:15:39 +0100
-Message-ID: <20051110101539.GA12934@casa.e-den.it>
-References: <4372A919.8020100@rosi-kessel.org>
+Date: Thu, 10 Nov 2005 07:44:53 -0500
+Message-ID: <437340C5.70400@rosi-kessel.org>
+References: <4372A919.8020100@rosi-kessel.org>	
+	<4372A989.5090606@rosi-kessel.org>	
+	<20051110031834.GB9770@samad.com.au>	
+	<20051110032733.GA19073@bostoncoop.net>
+	<3063e50511100055m41abd50hc3af78a67896db7d@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig9C9167F29D6988D465061D19"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4372A919.8020100@rosi-kessel.org>
+In-Reply-To: <3063e50511100055m41abd50hc3af78a67896db7d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +23,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Nov 09, 2005 at 08:57:45PM -0500, Adam Rosi-Kessel wrote:
-> I'm troubeshooting an issue of accessing a VPN through NAT. Right now the
-> problem can be reduced to the following question:
-> 
-> Under what conditions would inbound packets not be routing through the nat
-> PREROUTING chain?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig9C9167F29D6988D465061D19
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-That's a problem that puzzles me too. Do you have fancy routing tables?
-(several different tables setup w/ iproute2).
+George Alexandru Dragoi wrote:
+> Better use mangle table, all packets traverse it. And doesn't require
+> conntrack.
 
-I also have a setup in which icmp packets will not get to PREROUTING. My
-understanding is that the kernel does not understand they are destined for
-that box: could that be your situation?
-
-In my stup, ifconfig eth3:
-eth3      Link encap:Ethernet  HWaddr 00:0A:5E:59:EF:09
-          inet addr:192.168.111.1  Bcast:192.168.111.255  Mask:255.255.255.0
-
-but these packets 
-
-10:18:07.676131 IP 192.168.111.1 > 217.27.90.70: icmp 64: echo request seq 213
-10:18:07.726977 IP 217.27.90.70 > 192.168.111.1: icmp 64: echo reply seq 213
-
-do not enter PREROUTING and are just discarded 
-
-In my case this is due to a peculiar routing tables setup,
-http://mailman.ds9a.nl/pipermail/lartc/2005q4/017168.html that I have not
-been able to debug: I didn't receice any hint on this list, lartc and
-netdev. Is it such an obscure matter?
+But I can't do DNAT in mangle, right?
+--=20
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
 
 
-sandro
+--------------enig9C9167F29D6988D465061D19
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
+iD8DBQFDc0DFdTf3ZklQ6qYRAvd2AKC+I62sA6Spi253JfseTMETss/AYACdH3zs
+yvlo21yQ+vkb3utZ6YeRj1Q=
+=50cd
+-----END PGP SIGNATURE-----
 
--- 
-Sandro Dentella  *:-)
-e-mail: sandro@e-den.it 
-http://www.tksql.org                    TkSQL Home page - My GPL work
+--------------enig9C9167F29D6988D465061D19--
 
