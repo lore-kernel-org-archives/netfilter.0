@@ -1,11 +1,15 @@
-From: Hai Wang <u2.ireland@gmail.com>
-Subject: Compilation Issue on RH9
-Date: Fri, 11 Nov 2005 08:38:47 -0500
-Message-ID: <30be90270511110538l62de6ef6j950ff67be802fffe@mail.gmail.com>
+From: Payal Rathod <payal-iptables@scriptkitchen.com>
+Subject: Re: DNAT query
+Date: Fri, 11 Nov 2005 11:11:11 -0500
+Message-ID: <20051111161111.GA31652@tranquility.scriptkitchen.com>
+References: <20051111103020.GB18203@tranquility.scriptkitchen.com>
+	<437478FE.8000804@mnemon.de>
+	<20051111114120.GA22915@tranquility.scriptkitchen.com>
+	<43748C7D.7060206@mnemon.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <43748C7D.7060206@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +21,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello everyone
+On Fri, Nov 11, 2005 at 01:20:13PM +0100, J?rg Harmuth wrote:
+> It depends. But as Robs solution works for you, it looks like you only
+> need to redirect/forward connections (roughly: PREROUTING -> FORWARD ->
+> POSTROUTING). You only need nat/OUTPUT for packets, generated on the
+> firewall itself (roughly: local process -> OUTPUT -> POSTROUTING). If
+[...]
 
-
- I encountered a problem when I tried to compile iptables-1.3.4 on RH9 (
-2.4.25), I got the following errors, please shed some lights on it.
- Thanks!
- Hai
-
-
-
-
-ensions/libipt_time_sh.o -c extensions/libipt_time.c
-extensions/libipt_time.c: In function `init':
-extensions/libipt_time.c:66: structure has no member named `date_start'
-extensions/libipt_time.c:67: structure has no member named `date_stop'
-extensions/libipt_time.c: In function `parse':
-extensions/libipt_time.c:394: structure has no member named `date_start'
-extensions/libipt_time.c:407: structure has no member named `date_stop'
-extensions/libipt_time.c: In function `print':
-extensions/libipt_time.c:489: structure has no member named `date_start'
-extensions/libipt_time.c:492: structure has no member named `date_start'
-extensions/libipt_time.c:494: structure has no member named `date_stop'
-extensions/libipt_time.c:497: structure has no member named `date_stop'
-extensions/libipt_time.c: In function `save':
-extensions/libipt_time.c:524: structure has no member named `date_start'
-extensions/libipt_time.c:525: structure has no member named `date_stop'
-make: *** [extensions/libipt_time_sh.o] Error 1
+I am sorry but you lost me here. Can you give the complete ruleset which 
+I need now. I always thought I needed PREROUTING as well as OUTPUT.
+Thanks in advance.
+With warm regards,
+-Payal
 
