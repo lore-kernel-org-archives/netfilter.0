@@ -1,13 +1,13 @@
 From: Payal Rathod <payal-iptables@scriptkitchen.com>
 Subject: Re: DNAT query
-Date: Fri, 11 Nov 2005 06:41:20 -0500
-Message-ID: <20051111114120.GA22915@tranquility.scriptkitchen.com>
+Date: Fri, 11 Nov 2005 06:42:57 -0500
+Message-ID: <20051111114257.GB22915@tranquility.scriptkitchen.com>
 References: <20051111103020.GB18203@tranquility.scriptkitchen.com>
-	<437478FE.8000804@mnemon.de>
+	<52863.193.173.147.3.1131705979.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <437478FE.8000804@mnemon.de>
+In-Reply-To: <52863.193.173.147.3.1131705979.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,17 +20,15 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: J?rg Harmuth <harmuth@mnemon.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, Nov 11, 2005 at 11:57:02AM +0100, J?rg Harmuth wrote:
-> Some time ago I had a similar problem with SLES8 and nat/OUTPUT. The
-> reason was, that is was the _only_ netfilter optio, that wasn't compiled
-> into the kernel :) I generally don't work with SuSE, so I don't know.
-> Bur maybe they still don't compile it as a kernel module.
+On Fri, Nov 11, 2005 at 11:46:19AM +0100, Rob Sterenborg wrote:
+> iptables -t nat -I PREROUTING -d dyn.example.com -p tcp --dport 8000 \
+>   -j DNAT --to-destination 192.168.10.2:8000
 
-So what do you suggest? How do I use it now? Do I have to recomiple te 
-kernel for that? I never done that before.
+This does work (sorry I should have mentioned it before). But I also 
+need the OUTPUT rule too, right?
+
 With warm regards,
 -Payal
 
