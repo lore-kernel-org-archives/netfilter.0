@@ -1,11 +1,14 @@
-From: "P theodorou" <props666999@hotmail.com>
+From: Tom Eastep <teastep@shorewall.net>
 Subject: Re: dhcp windows client port
-Date: Sat, 12 Nov 2005 23:27:32 +0000
-Message-ID: <BAY102-F1641FB10F962FBD8A6F79EAE580@phx.gbl>
-References: <20051112212509.55692.qmail@web60922.mail.yahoo.com>
+Date: Sat, 12 Nov 2005 15:51:28 -0800
+Message-ID: <200511121551.29276.teastep@shorewall.net>
+References: <BAY102-F1641FB10F962FBD8A6F79EAE580@phx.gbl>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart125782319.hAnne4JbPI";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051112212509.55692.qmail@web60922.mail.yahoo.com>
+In-Reply-To: <BAY102-F1641FB10F962FBD8A6F79EAE580@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,92 +19,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello again
+--nextPart125782319.hAnne4JbPI
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Anybody knows where can i find   scripts  with very restricted policies ?
+On Saturday 12 November 2005 15:27, P theodorou wrote:
+> Hello again
+>
+> Anybody knows where can i find   scripts  with very restricted policies ?
+>
+> If someone could suggest some  would be very appreciated
+>
+> google replies mostly basic ones
 
-If someone could suggest some  would be very appreciated
+Try http://www.shorewall.net -- you can make the Shorewall-generated rulese=
+t=20
+as restrictive as you wish.
 
-google replies mostly basic ones
+=2DTom
+=2D-=20
+Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
+Shoreline,     \ http://shorewall.net
+Washington USA  \ teastep@shorewall.net
+PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
 
-regards
+--nextPart125782319.hAnne4JbPI
+Content-Type: application/pgp-signature
 
->From: Gabriel <jarod125@yahoo.com>
->To: netfilter@lists.netfilter.org
->Subject: Re: dhcp windows client port
->Date: Sat, 12 Nov 2005 13:25:09 -0800 (PST)
->
->On Sat, 12 Nov 2005 18:08:23 +0200, P theodorou
-><props666999@hotmail.com>
->wrote:
->
-> > Hello
-> >
-> > i wish  the windows machine which receives Internet from
->the firewall pc
-> > to be restricted fully apart from the port needed to
->access the internet
-> >
-> > the windows machine has got fully access when my
->rc.firewall  contains
-> >
-> > $iptables -A FORWARD -i $LAN_IFACE -j ACCEPT
-> >
-> > which gives to the windows machine access to every port
-> >
-> > i've tried unsuccesully the following command
-> >
-> > $iptables -A FORWARD -p TCP -i $LAN_IFACE -- sport XX -j
->ACCEPT
-> >
-> > my netstat on the windows machine displays various
->connections
-> > few questions now
-> >
-> >
-> > 1 which port should be alolwed for the windows machine to
->see internet
-> > 2 can i restrct it to  something like :
-> > $iptables -A FORWARD  -p TCP -i $LAN_IFACE  -sport XX
->-dport XX -j
-> > ACCEPT
-> >
-> > in other words, allow  the windows relevant port for
->accesing on the
-> > internet  to
-> > be connected to the specific port of the firewall
-> >
-> > regards
-> >
-> >
-> >
-> >
->
->You could adopt a strategy where you allow all connections
->started from
->the inside of your LAN (and, of course, all connections
->related to those),
->but none that is started from the internet. So, you could
->set the FORWARD
->policy to DROP, allow the IPs from inside the LAN to
->connect to the
->internet and then use a rule that allows all ESTABLISHED
->and RELATED
->connections.
->
->--
->Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
->
->
->
->__________________________________
->Yahoo! FareChase: Search multiple travel sites in one click.
->http://farechase.yahoo.com
->
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
 
+iD8DBQBDdoABO/MAbZfjDLIRAuTOAJwOukhhWUWOkpq64hjNqR6sFoMy7ACePuoo
+KS6DlmbTY12T7iHVW/KUMRo=
+=bTdy
+-----END PGP SIGNATURE-----
 
+--nextPart125782319.hAnne4JbPI--
 
