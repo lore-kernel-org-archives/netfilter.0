@@ -1,17 +1,13 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: dhcp windows client port (nfcan: addressed to exclusive sender
-	for this address)
-Date: Sat, 12 Nov 2005 22:13:35 -0500
-Message-ID: <20051113031335.GC28723@salty>
-References: <BAY102-F1641FB10F962FBD8A6F79EAE580@phx.gbl>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: Edmundo Carmona <eantoranz@gmail.com>
+Subject: Re: [LARTC] MSN keeps disconnecting with load balancing
+Date: Sun, 13 Nov 2005 00:36:55 -0400
+Message-ID: <65aa6af90511122036q5774b9ffx7b4c0c309ec8eed3@mail.gmail.com>
+References: <4376BF51.7040300@phreaker.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4376BF51.7040300@phreaker.net>
 Content-Disposition: inline
-In-Reply-To: <BAY102-F1641FB10F962FBD8A6F79EAE580@phx.gbl> (from
-	+nfcan+jimlaur+957286d880.props666999#hotmail.com@spamgourmet.com
-	on Sat, Nov 12, 2005 at 18:27:32 -0500)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,55 +18,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On 2005.11.12 18:27, P theodorou - props666999@hotmail.com wrote:
-> Hello again
-> 
-> Anybody knows where can i find scripts  with very restricted policies ?
-> If someone could suggest some  would be very appreciated
+We have exaclty the same problem in our load-balancing proxy.
 
-You can not have a more restrictive filter rule set
-than the one Rob Sterenborg already gave you.
+Remember that if you are load-balancing, traffic eventually will come
+out through another network interface,,, and hence, another source IP.
 
-Your original statement:
+The problem must be that the MSN service gets "confused" when he sees
+that the one session has changed source IPs... or maybe it's a IP
+stack problem and not related to the MSN specifically. Anybody can
+provide some more feedback on this? The IP session layer is supposed
+to keep sessions across changing IPs?
 
->> I wish the windows machine which receives Internet
->> from the firewall pc to be restricted fully
->> apart from the port needed to access the internet.
+Our "solution" was to tell the MSN clients to use a proxy server that
+has a single internet connection (separete from our main proxy server,
+which is the one loadbalancing).
 
-is ambiguous, because "the internet" is *everything*,
-but you did use the singular, "the port".
-
-So I am responding to what I think you
-might be trying to accomplish.
-
-My guess is you mean something more like "the web".
-
-I think you mean that you want
-to restrict the pc to just "web browsing".
-
-If this guess is correct, then
-what you need to understand is that this
-is not really a job that a firewall can do.
-
-A firewall can restrict the pc to access
-just tcp port 80, but that does not really
-restrict what kind of traffic can flow.
-
-My guess is that making the pc use
-a proxy web server may do what you want.
-
-For Linux, you could look at squid:
-
-http://www.squid-cache.org/
-
-I hope that helps.
-
--- 
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
+On 11/13/05, ro0ot <ro0ot@phreaker.net> wrote:
+> Hi,
+>
+> I have the my gateway with load balancing traffic going out over two
+> providers.  Web browsing is fine...working great.
+>
+> But, my clients (office staff) complains that MSN keeps disconnecting
+> (in 5 mins).  Why?
+>
+> Please help me...
+>
+> Regards,
+> ro0ot
+>
+>
+>
+> _______________________________________________
+> LARTC mailing list
+> LARTC@mailman.ds9a.nl
+> http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc
+>
 
