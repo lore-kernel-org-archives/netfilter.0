@@ -1,13 +1,10 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: [LARTC] MSN keeps disconnecting with load balancing
-Date: Sun, 13 Nov 2005 00:36:55 -0400
-Message-ID: <65aa6af90511122036q5774b9ffx7b4c0c309ec8eed3@mail.gmail.com>
-References: <4376BF51.7040300@phreaker.net>
+From: Masayuki Tanaka <tan5656@yahoo.co.jp>
+Subject: DNAT incoming SIP call
+Date: Mon, 14 Nov 2005 01:01:08 +0900
+Message-ID: <43776344.6000506@yahoo.co.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4376BF51.7040300@phreaker.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-We have exaclty the same problem in our load-balancing proxy.
+Hi,
 
-Remember that if you are load-balancing, traffic eventually will come
-out through another network interface,,, and hence, another source IP.
+I'm setting up the sip phone device behind the nat and trying to DNAT
+incoming sip call, but I can't establish the call (ringing was
+arrived but no sound). I sniffed the sip traffic with Ethereal and
+found that "200 OK" response does not be NATed properly...
+Does sip_contrack_nat has capability to DNAT incoming SIP call?
 
-The problem must be that the MSN service gets "confused" when he sees
-that the one session has changed source IPs... or maybe it's a IP
-stack problem and not related to the MSN specifically. Anybody can
-provide some more feedback on this? The IP session layer is supposed
-to keep sessions across changing IPs?
 
-Our "solution" was to tell the MSN clients to use a proxy server that
-has a single internet connection (separete from our main proxy server,
-which is the one loadbalancing).
+Regards,
+Masayuki Tanaka
 
-On 11/13/05, ro0ot <ro0ot@phreaker.net> wrote:
-> Hi,
->
-> I have the my gateway with load balancing traffic going out over two
-> providers.  Web browsing is fine...working great.
->
-> But, my clients (office staff) complains that MSN keeps disconnecting
-> (in 5 mins).  Why?
->
-> Please help me...
->
-> Regards,
-> ro0ot
->
->
->
-> _______________________________________________
-> LARTC mailing list
-> LARTC@mailman.ds9a.nl
-> http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc
->
+
+
+
+
+--------------------------------------
+Know more about Breast Cancer
+http://pr.mail.yahoo.co.jp/pinkribbon/
+
 
