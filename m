@@ -1,11 +1,16 @@
-From: "P theodorou" <props666999@hotmail.com>
-Subject: Re: SSH fails on 22 - Restrictive rules
-Date: Mon, 14 Nov 2005 14:53:12 +0000
-Message-ID: <BAY102-F405D69AB559F79D8127D1AAE5A0@phx.gbl>
-References: <49164.193.173.147.3.1131974074.squirrel@webmail.sterenborg.info>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Re: Why would certain packets not reach nat PREROUTING chain?
+Date: Mon, 14 Nov 2005 09:53:48 -0500
+Message-ID: <20051114145348.GA12841@bostoncoop.net>
+References: <4372A919.8020100@rosi-kessel.org>
+	<4372A989.5090606@rosi-kessel.org>
+	<20051110031834.GB9770@samad.com.au>
+	<20051110032733.GA19073@bostoncoop.net>
+	<3063e50511100055m41abd50hc3af78a67896db7d@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <49164.193.173.147.3.1131974074.squirrel@webmail.sterenborg.info>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0511101739320.30250@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,52 +21,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+On Thu, Nov 10, 2005 at 17:44:16 CET, Jozsef Kadlecsik wrote:
 
-Basically i've got a log rule before the drop in my script , but i didn't 
-want to create a large post.
+> > > Under what conditions would inbound packets not be routing through
+> > > the nat PREROUTING chain?
+> > That's a problem that puzzles me too.
+> Packets which cannot be associated with any existing connection
+> known by the conntrack subsystem will traverse the NAT table.
+> If a packet is related to any connection, which can mean:
+> - the packet belongs to a connection
+> - it is an ICMP error packet about a connection
+> - it is a packet of a channel (like FTP data), which can be
+>   associated to a connection by an appropriate helper module
+> then that packet won't enter the NAT table.
 
-Very  good poing though to check the logs . I should have done it  before 
-posting
+The packets in question:
 
-here.  That's why are log target is for.
+  - do show up in tcpdump (so they're at least passing by the network card)
+  - do show up if logged in the mangle PREROUTING table (so iptables at
+    least knows about them)
+  - are UDP port 500 packets -- so that rules out the latter two options
+    above, right? They are not ICMP error packets, and they are not 
+    packets recognized by a channel like FTP data. I have no conntrack
+    module loaded other than the main one and the FTP one.
+  - do not show up in /proc/net/ip_conntrack. There in fact are no
+    inbound entries at all in /proc/net/ip_conntrack for the IP address of the
+    remote server or for any traffic on port 500 at all.
 
+Yet, they do not enter the nat PREROUTING table.
 
-Regards
+I even added a raw table and a NOTRACK destination to packets travelling
+on port 500 to every chain in the raw table. Still, the packets do not
+show up in nat PREROUTING.
 
->On Sun, November 13, 2005 23:44, P theodorou wrote:
-> > Hello
-> >
-> > i'm testing my SSH server from an external IP (my mate's pc)
-> > and i've noticed than whenever i allow connections on eth0 with dport
-> > 22 i can see the username login page BUT, if apply the following
-> > rules the usual user name cannot be displayed
-> >
-> > $IPTABLES -A TCPbad -p tcp --tcp-flags SYN,ACK SYN,ACK -m state
-> > --state NEW -j REJECT --reject-with tcp-reset
-> > $IPTABLES -A TCPbad -p tcp ! --syn -m state --state NEW -j DROP
-> > $IPTABLES -A TCPbad -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-> > $IPTABLES -A TCPbad -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-> > $IPTABLES -A TCPbad -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
-> > $IPTABLES -A TCPbad -p tcp --tcp-flags ALL FIN -j DROP
-> > $IPTABLES -A TCPbad -p tcp --tcp-flags ALL NONE -j DROP
-> > $IPTABLES -A TCPbad -p tcp --tcp-flags ALL ALL -j DROP
-> >
-> > any help very appreciated
->
->I don't know what rule would cause that, but you could of course add a
->logging rule before each DROP so you know which rule is the problem.
->Or, start without these rules, and add them each at a time so you can
->test when ssh doesn't work anymore.
->
->
->Gr,
->Rob
->
->
-
-
+Any suggestions for how to figure out why they're not getting to nat
+PREROUTING?  Or are they perhaps being tracked in a way that I am not
+noticing?
+-- 
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
 
