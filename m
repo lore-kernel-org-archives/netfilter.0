@@ -1,9 +1,14 @@
-From: "P theodorou" <props666999@hotmail.com>
-Subject: SSH fails on 22 - Restrictive rules
-Date: Sun, 13 Nov 2005 22:44:50 +0000
-Message-ID: <BAY102-F16251BBCA3EA823A8003A6AE5B0@phx.gbl>
+From: Sai Kiran <saikiranrgda@gmail.com>
+Subject: Re: SSH fails on 22 - Restrictive rules
+Date: Mon, 14 Nov 2005 17:52:03 +0530
+Message-ID: <7c6561690511140422u2db119bel504bf82fe9f579dd@mail.gmail.com>
+References: <BAY102-F16251BBCA3EA823A8003A6AE5B0@phx.gbl>
+Reply-To: marlinspike_tom@yahoo.co.in
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY102-F16251BBCA3EA823A8003A6AE5B0@phx.gbl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,33 +19,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: P theodorou <props666999@hotmail.com>, netfilter@lists.netfilter.org
 
-Hello
+hai,
 
-i'm testing my SSH server from an external IP (my mate's pc)
-and i've noticed than whenever i allow connections on eth0 with dport 22
-i can see the username login page BUT, if apply the following rules
+On 11/14/05, P theodorou <props666999@hotmail.com> wrote:
+> Hello
+>
+> the  usual user name cannot be displayed
 
-the  usual user name cannot be displayed
-
-$IPTABLES -A TCPbad -p tcp --tcp-flags SYN,ACK SYN,ACK -m state --state NEW 
--j REJECT --reject-with tcp-reset
-$IPTABLES -A TCPbad -p tcp ! --syn -m state --state NEW -j DROP # DROP NEW 
-NOT SYN
-$IPTABLES -A TCPbad -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP #DROP SYN-FIN 
-SCANS
-$IPTABLES -A TCPbad -p tcp --tcp-flags SYN,RST SYN,RST -j DROP #DROP SYN-RST 
-SCANS
-$IPTABLES -A TCPbad -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP #DROP X-MAS 
-SCANS
-$IPTABLES -A TCPbad -p tcp --tcp-flags ALL FIN -j DROP #DROP NMAP FIN SCAN
-$IPTABLES -A TCPbad -p tcp --tcp-flags ALL NONE -j DROP #DROP NULL SCANS
-$IPTABLES -A TCPbad -p tcp --tcp-flags ALL ALL -j DROP #DROP ALL/ALL SCANS
-
-any help very appreciated
+> $IPTABLES -A TCPbad -p tcp ! --syn -m state --state NEW -j DROP # DROP NE=
+W
+> NOT SYN
 
 
+doesn't the above rule drop all the out of nowhere pkts. i mean like a
+syn,ack or a fin pkt.
+
+
+hope i haven't got it wrong this time.
+regards,
+kiran
 
