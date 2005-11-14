@@ -1,16 +1,20 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
 Subject: Re: Why would certain packets not reach nat PREROUTING chain?
-Date: Mon, 14 Nov 2005 16:03:42 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0511141559360.1983@blackhole.kfki.hu>
+Date: Mon, 14 Nov 2005 10:09:37 -0500
+Message-ID: <4378A8B1.8010206@rosi-kessel.org>
 References: <4372A919.8020100@rosi-kessel.org>
 	<4372A989.5090606@rosi-kessel.org>
 	<20051110031834.GB9770@samad.com.au>
 	<20051110032733.GA19073@bostoncoop.net>
 	<3063e50511100055m41abd50hc3af78a67896db7d@mail.gmail.com>
 	<20051114145348.GA12841@bostoncoop.net>
+	<Pine.LNX.4.58.0511141559360.1983@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig06C31A1CF30674E45AD92981"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051114145348.GA12841@bostoncoop.net>
+In-Reply-To: <Pine.LNX.4.58.0511141559360.1983@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,68 +25,94 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Adam Rosi-Kessel <adam@rosi-kessel.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Mon, 14 Nov 2005, Adam Rosi-Kessel wrote:
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig06C31A1CF30674E45AD92981
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> On Thu, Nov 10, 2005 at 17:44:16 CET, Jozsef Kadlecsik wrote:
->
-> > > > Under what conditions would inbound packets not be routing through
-> > > > the nat PREROUTING chain?
-> > > That's a problem that puzzles me too.
-> > Packets which cannot be associated with any existing connection
-> > known by the conntrack subsystem will traverse the NAT table.
-> > If a packet is related to any connection, which can mean:
-> > - the packet belongs to a connection
-> > - it is an ICMP error packet about a connection
-> > - it is a packet of a channel (like FTP data), which can be
-> >   associated to a connection by an appropriate helper module
-> > then that packet won't enter the NAT table.
->
-> The packets in question:
->
->   - do show up in tcpdump (so they're at least passing by the network card)
->   - do show up if logged in the mangle PREROUTING table (so iptables at
->     least knows about them)
+Jozsef Kadlecsik wrote:
+>>   - do not show up in /proc/net/ip_conntrack. There in fact are no
+>>     inbound entries at all in /proc/net/ip_conntrack for the IP addres=
+s of the
+>>     remote server or for any traffic on port 500 at all.
+> Double-check it ;-).
 
-That means they passed conntrack and was not dropped as invalid. Good.
+Okay--would it be sufficient to grep on port 500? conntrack tracks by por=
+t,
+right? So as long as there are *no* entries in ip_conntrack for port 500 =
+at
+any point while I'm trying to make this connection, doesn't it mean that
+conntrack isn't handling the packets?
 
->   - are UDP port 500 packets -- so that rules out the latter two options
->     above, right? They are not ICMP error packets, and they are not
->     packets recognized by a channel like FTP data. I have no conntrack
->     module loaded other than the main one and the FTP one.
->   - do not show up in /proc/net/ip_conntrack. There in fact are no
->     inbound entries at all in /proc/net/ip_conntrack for the IP address of the
->     remote server or for any traffic on port 500 at all.
+>> I even added a raw table and a NOTRACK destination to packets travelli=
+ng
+>> on port 500 to every chain in the raw table. Still, the packets do not=
 
-Double-check it ;-).
+>> show up in nat PREROUTING.
+> If you add a NOTRACK rule for the packets in the raw table, then conntr=
+ack
+> will skip those packets and in consequence NAT will skip them as well: =
+NAT
+> is built on top of conntrack.
 
-> Yet, they do not enter the nat PREROUTING table.
->
-> I even added a raw table and a NOTRACK destination to packets travelling
-> on port 500 to every chain in the raw table. Still, the packets do not
-> show up in nat PREROUTING.
+Ah, okay, I didn't understand that.
 
-If you add a NOTRACK rule for the packets in the raw table, then conntrack
-will skip those packets and in consequence NAT will skip them as well: NAT
-is built on top of conntrack.
+>> Any suggestions for how to figure out why they're not getting to nat
+>> PREROUTING?  Or are they perhaps being tracked in a way that I am not
+>> noticing?
+> Remove the NOTRACK rules from the raw table. Double check the mangle ta=
+ble
+> for possible matching DROP targets, including the default policies. Do =
+the
+> same with the nat table as well.
 
-> Any suggestions for how to figure out why they're not getting to nat
-> PREROUTING?  Or are they perhaps being tracked in a way that I am not
-> noticing?
+The NOTRACK rules were just one test--I am not using them generally. So,
+yes, they are removed.
 
-Remove the NOTRACK rules from the raw table. Double check the mangle table
-for possible matching DROP targets, including the default policies. Do the
-same with the nat table as well.
+As far as drop targets: for testing purposes, I am clearing all of the
+tables of all rules, setting the default policy for all rules as ACCEPT, =
+and
+then just trying to see these inbound packets in the nat PREROUTING table=
+=2E
+So I am certain they are not being DROPped along the way.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+The simplest possible test involves only one or two rules--SNAT'ing outbo=
+und
+packets to the WAN IP, and then (attempting to) DNAT inbound packets on p=
+ort
+500 to the LAN IP of the proper machine. But because the inbound packets
+don't enter the nat table, they never get DNAT'ed; and they are also not
+routed to the proper machine with conntrack either.
+
+I should also mention that all other NAT stuff works fine with this setup=
+,
+including FTP (passive and active), web browsing, etc..  I am also able t=
+o
+DNAT inbound ssh connections to another internal machine.  It's only thes=
+e
+inbound udp port 500 that are somehow not entering the nat table or showi=
+ng
+up anywhere other than in mangle PREROUTING.
+--=20
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
+
+
+--------------enig06C31A1CF30674E45AD92981
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFDeKixdTf3ZklQ6qYRAh1tAJ4keW1LLOH1KJ873kiyRWizclWKAgCguCZd
+zWO3HMAgR5QJAeeJMAuv5xM=
+=LG0u
+-----END PGP SIGNATURE-----
+
+--------------enig06C31A1CF30674E45AD92981--
 
