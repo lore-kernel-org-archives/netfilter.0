@@ -1,12 +1,13 @@
 From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: Help for this project
-Date: Mon, 14 Nov 2005 18:57:31 -0600
-Message-ID: <200511141857.31934.rob0@gmx.co.uk>
+Date: Mon, 14 Nov 2005 19:05:24 -0600
+Message-ID: <200511141905.24453.rob0@gmx.co.uk>
 References: <2e51be410511141556i2b45f321l87ec23d54e3b8be1@mail.gmail.com>
+	<200511141857.31934.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2e51be410511141556i2b45f321l87ec23d54e3b8be1@mail.gmail.com>
+In-Reply-To: <200511141857.31934.rob0@gmx.co.uk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,25 +22,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 2005-November-14 17:56, Billie Joe wrote:
-> I'm starting the study with Netfilter, so I start a project to
-> make a router + firewall shell script.
+On Monday 2005-November-14 18:57, I wrote:
+> What does this one offer over the millions of other scripts out
+> there?
 
-What does this one offer over the millions of other scripts out there? 
-Why do you think this is a new idea? One such project whose owner posts 
-here is http://www.shorewall.net/ .
+To clarify, the following was an answer to the foregoing:
 
-> Please, all helps are welcome. The 
-> site of project is www.ics-informatica.com/netfilter/index.php.
+> ... Nothing, that I can see.
 
-... Nothing, that I can see. Horrible abuse of the nat and mangle 
-tables. Don't do that. Does this thing even work? I doubt it. Good 
-firewalls do not need to be complex.
+> I recommend that you look at others' scripts and hit the HOWTOs
+> some more.
 
-> Thanks in advice !!
-
-I recommend that you look at others' scripts and hit the HOWTOs some 
-more.
+And to go a bit further, I should say that I am moving away from 
+scripts, in favour of iptables-save(8)/iptables-restore(8) rulesets. 
+The initial ruleset can be developed by means of a script or editor, 
+and I find that the rules files are much easier to maintain.
 -- 
     mail to this address is discarded unless "/dev/rob0"
     or "not-spam" is in Subject: header
