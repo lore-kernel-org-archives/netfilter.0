@@ -1,7 +1,7 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: Tom Eastep <teastep@shorewall.net>
 Subject: Re: Help for this project
-Date: Mon, 14 Nov 2005 19:05:24 -0600
-Message-ID: <200511141905.24453.rob0@gmx.co.uk>
+Date: Mon, 14 Nov 2005 19:27:48 -0800
+Message-ID: <200511141927.48961.teastep@shorewall.net>
 References: <2e51be410511141556i2b45f321l87ec23d54e3b8be1@mail.gmail.com>
 	<200511141857.31934.rob0@gmx.co.uk>
 Mime-Version: 1.0
@@ -22,22 +22,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 2005-November-14 18:57, I wrote:
-> What does this one offer over the millions of other scripts out
-> there?
+On Monday 14 November 2005 16:57, /dev/rob0 wrote:
+> On Monday 2005-November-14 17:56, Billie Joe wrote:
 
-To clarify, the following was an answer to the foregoing:
+>
+> > Thanks in advice !!
+>
+> One such project whose owner posts here is http://www.shorewall.net/ .
+...
+> I recommend that you look at others' scripts and hit the HOWTOs some
+> more.
 
-> ... Nothing, that I can see.
+Billie,
 
-> I recommend that you look at others' scripts and hit the HOWTOs
-> some more.
+And then if you really want to make a contribution, I recommend that you try 
+to create a good policy routing framework. That is a much less crowded field 
+than is the firewall-generation script field and one that could use an 
+innovative product. Shorewall has some routing capability but I really think 
+that a good routing product that can integrate with firewall generators like 
+Shorewall is something that is needed. I would happily remove all the routing 
+code from Shorewall if there was something like this available.
 
-And to go a bit further, I should say that I am moving away from 
-scripts, in favour of iptables-save(8)/iptables-restore(8) rulesets. 
-The initial ruleset can be developed by means of a script or editor, 
-and I find that the rules files are much easier to maintain.
+See http://lartc.org for input to your project.
+
+Good luck,
+-Tom
+
+Who hopes to be bombarded by posts pointing me toward good routing 
+solutions...
 -- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
+Shoreline,     \ http://shorewall.net
+Washington USA  \ teastep@shorewall.net
+PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
 
