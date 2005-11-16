@@ -1,12 +1,12 @@
 From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: Re: NATTING_help
-Date: Wed, 16 Nov 2005 10:16:21 -0600
-Message-ID: <1132157781.4527.27.camel@localhost.localdomain>
-References: <437B456A.9090501@gmail.com>
+Subject: Re: How to DROP ip from behind NAT
+Date: Wed, 16 Nov 2005 15:05:57 -0600
+Message-ID: <1132175157.10830.8.camel@localhost.localdomain>
+References: <20051116020723.2109624e@nasa.one.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <437B456A.9090501@gmail.com>
+In-Reply-To: <20051116020723.2109624e@nasa.one.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,40 +20,61 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Wed, 2005-11-16 at 17:42 +0300, compuomari wrote:
-> Dears,
-> I have a scenario that is somehow making me have a hardtime , i have a
-> wiless access point that get the internat access from my linux box, i
-> want any user that uses my internet to get a lnading page for my self (
-> some kind of advertisment ) and then go to the internet , i don't need
-> authentication , but i dont want this landing page occuring many more
-> than once for the user ... anyhow , how can i do it with iptables? i
-> want to DNAT all users to an internal apache server , then SNAT them to
-> the inernet , how is that possible? double natting? proxying ? i need
-> your help ..
+On Wed, 2005-11-16 at 02:07 +0100, Przemek wrote:
+> Hi,
+> 
+> I have little network, server is connected by ADSL to internet with
+> static IP. I`m shering connection to my two machines.
+> 
+> My firewall.sh
+> IPTAB=/usr/sbin/iptables
+> PIP=XXX.XXX.XXX.XXX <-ADSL MODEM IP
+> M1=10.1.1.1 <- LOCAL IPS
+> M2=10.1.1.2
+> M3=10.1.1.3
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+> $IPTAB -F INPUT 
+> $IPTAB -P INPUT ACCEPT
+> $IPTAB -F OUTPUT
+> $IPTAB -P OUTPUT ACCEPT
+> $IPTAB -F FORWARD
+> $IPTAB -P FORWARD ACCEPT
+> $IPTAB -t nat -F
+> $IPTAB -A FORWARD -i ppp0 -j ACCEPT
+> $IPTAB -A FORWARD -i eth0 -o ppp0 -j ACCEPT      
+> $IPTAB -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source $PIP -s $M2
+> $IPTAB -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source $PIP -s $M3
+> $IPTAB -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3128 <- for proxy
+> 
+> Now I want to block packets form 10.1.1.2 to IP YYY.YYY.YYY.YYY to PORT 22
 
-i have effectively done this, (it is a registration system for the
-campus that i work at).
+can YYY.YYY.YYY.YYY be on the same network as M2 (10.1.1.2) ?
+if it is out on the internet, then block it in the FORWARD chain of the
+filter table on M1.
 
-overview:
+ps. your notation is a little confusing. perhaps use the following
+notation:
 
-1) use the mangle table to determine if users are forced (dnat'ed) to
-the landing page (internal apache server)
+ip:port -> ip:port (absence of port denotes any port)
 
-2) use apache's mod_rewrite to capture any document in the web space.
+for example, what i think you meant above would be you want to block
+10.1.1.2 -> YYY.YYY.YYY.YYY:22
 
-3) once they view the page and click a link or hit a submit button have
-a cgi that add's their ip to the mangle table that allows them passage
-through the firewall (without being dnat'ed). also this cgi can print
-out a http location header to send them to the original web site that
-they wanted to go to.
+is that correct?
 
-the system that i helped build is mildly complex and consists of a
-database for user tracking, scanning (using nessus), radius
-authentication, ucarp (unfortunately not working yet), and other things.
+> 
+> and
+> 
+> Block all traffic on 10.1.1.3 but allow to connect IP YYY.YYY.YYY.YYY to PORT 80 
 
-but a stripped down version could be done with just one or two cgi's and
-some firewall rules.
+again, i am confused. what i think you want is
+allow 10.1.1.3 -> YYY.YYY.YYY.YYY:80
+block everything else from 10.1.1.3
+
+again, this would be done in the FORWARD chain of the filter table.
+
+please verify what you want and if you need help writing the rules then
+we can help.
 
 -matt zagrabelny
 
