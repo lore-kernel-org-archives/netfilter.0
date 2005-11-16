@@ -1,10 +1,12 @@
-From: compuomari <compuomari@gmail.com>
-Subject: NATTING_help
-Date: Wed, 16 Nov 2005 17:42:50 +0300
-Message-ID: <437B456A.9090501@gmail.com>
+From: Pablo Neira <pablo@eurodev.net>
+Subject: Re: string match in 1.3.4
+Date: Wed, 16 Nov 2005 17:03:04 +0100
+Message-ID: <437B5838.4030406@eurodev.net>
+References: <4374C81F.7010704@comcast.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4374C81F.7010704@comcast.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,24 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Eric <erbenton@comcast.net>
+Cc: netfilter@lists.netfilter.org
 
-Dears,
-I have a scenario that is somehow making me have a hardtime , i have a
-wiless access point that get the internat access from my linux box, i
-want any user that uses my internet to get a lnading page for my self (
-some kind of advertisment ) and then go to the internet , i don't need
-authentication , but i dont want this landing page occuring many more
-than once for the user ... anyhow , how can i do it with iptables? i
-want to DNAT all users to an internal apache server , then SNAT them to
-the inernet , how is that possible? double natting? proxying ? i need
-your help ..
+Eric wrote:
+> I downloaded  iptables-1.3.4.tar.bz2 and also ran the patch
+> patch-o-matic-ng-20051110.tar.bz2 using runme.sh base and
+> runme.sh extra and I even tried runme.sh obsolete but i
+> never see the string match option. How do i enable that
+> extension? Do I have the corect patch?
+> I am building kernel 2.6.13 which i dl'd from kernel.org
+> Thanks
 
-regards,
+It's already in 2.6.14
 
-oozie
-
-
-
+-- 
+Pablo
 
