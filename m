@@ -1,12 +1,12 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: Many client with same IP
-Date: Fri, 18 Nov 2005 11:07:32 -0400
-Message-ID: <65aa6af90511180707s7aaee0bdqea24a60b0909fb51@mail.gmail.com>
-References: <IQ5C7O$E2767ECC0C41D2F2833F0216F3EF135D@uol.com.br>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: script v. ruleset (was: Re: Help for this project)
+Date: Fri, 18 Nov 2005 10:03:00 -0600
+Message-ID: <200511181003.01077.rob0@gmx.co.uk>
+References: <001201c5e9ad$7ca43f00$0101000a@sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <IQ5C7O$E2767ECC0C41D2F2833F0216F3EF135D@uol.com.br>
+In-Reply-To: <001201c5e9ad$7ca43f00$0101000a@sterenborg.info>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,64 +21,78 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I would use a linux box that would snat (or masquerade) traffic going
-to the DB. It would be a hup between your clients and the server, that
-way traffic arriving at the server would appear as coming from this
-linux box.
-
-Say:
-
-DB Server -- Linux Hub --  4 clients
-
-on the linux hub:
-
-iptables -t nat -A POSTROUTING -d serverIP -j SNAT --to myIP
-
-You could also try connecting all of them to the same physical
-network, but it would take a different approach:
-
-To the clients, the "hub" would be the DB server... only that the hub
-will forward traffic (with DNAT) to the server and it would have to
-masquerade traffic going to the server so that the server (once again)
-believe that it has a single client.
-
-iptables -t nat -A PREROUTING -d myIP [additional rules to recognize
-DB service traffic] -j DNAT --to-destination serverIP
-
-iptables -t nat -A POSTROUTING -d serverIP -j SNAT --to myIP
-
-Make sure forwarding is enabled and that would be it..... I guess. ;-)
-
-On 11/18/05, Pedro Drimel <pedrodrimel@uol.com.br> wrote:
-> Hi all,
+On Tuesday 2005-November-15 00:26, Rob Sterenborg wrote:
+> > And to go a bit further, I should say that I am moving away from
+> > scripts, in favour of iptables-save(8)/iptables-restore(8)
+> > rulesets. The initial ruleset can be developed by means of a script
+> > or editor, and I find that the rules files are much easier to
+> > maintain.
 >
-> I need to do a configuration in a server that I don't know if is possible=
-.
->
-> The clients connect to the server under ssh to access the database, I nee=
-d that some clients connect under only one IP, because the database count o=
-nly one license for four IPs. The first thing that I tought was to take a m=
-achine and do it a gateway and the clients of local network connect to the =
-server thgouth this new server and in this new server will be a SNAT, well =
-OK with a sub network but I thinked that this could be possible using iptab=
-les on the server that run the databse (the server ever is linux). The clie=
-nts use putty with Windows XP.
->
-> Firstly I configured another IP on the network device:
-> ifconfig eth0:0 10.0.0.10 netmask 255.255.255.0
-> then I did this rule:
-> iptables -t nat -A POSTROUTING -s 10.0.0.20 -j SNAT --to 10.0.0.10
->
-> 10.0.0.20 is the IP of the client
-> 10.0.0.10 is the IP of "logic" network device
->
-> but it did not function... I tried this rule with the IP of eth0 (10.0.0.=
-9) but eighter did not function...
->
-> Sorry for my bad english...
->
-> Best Regards.
->
->
->
+> I think that's a matter of opinion.
+
+Of course it is, and is stated as such. It is an opinion which grew 
+after writing many scripts. I once had, and at some sites still do 
+have, monster scripts that make the OP's effort look trivial. 
+Functions, nested loops, arrays, even nested arrays which are 
+supposedly not possible in bash! (I cheated, using alternate $IFS on 
+the internal arrays, the ones which were contained in other arrays.)
+
+I'm pretty good with bash. I am on a first-name basis with the Advanced 
+Bash Scripting Guide, and even with the dreaded "man bash". :) I paid 
+my shell scripting dues, so to speak, and I did it in making firewalls.
+
+I feel pretty confident that my latest firewalls, trivial to maintain 
+and to adjust using rules files, would be a nightmare to script. I have 
+complex port forwards which are allowed from some addresses but not 
+from others, and some which differ per external interface (at sites 
+with multiple external interfaces.) I have conditional branching 
+through multiple user chains. Two sites I can think of have even have 
+alternate SNAT'ing per internal address. I have several sites with 
+transparent proxying rules, HTTP and DNS.
+
+I found that when I needed to add or adjust one rule I often had to dig 
+in the depths of the script code, and the digging could break things. 
+My dream of having one simple configuration file and never touching the 
+script internals never quite came to pass.
+
+In the early days, I, like many who post here for help, did not fully 
+understand the distinction between filter INPUT and FORWARD. My early 
+scripts jumped to the same Allow chain for both INPUT and FORWARD, 
+although some of those rules belonged exclusively in one or the other.
+
+When I come across these I am converting them to rulesets. It's simple 
+to do so in $EDITOR. I make separate AllowIn and AllowFwd chains and 
+append the "In" or "Fwd" string as needed. Spending ten minutes in 
+$EDITOR gives me a tighter, better firewall, that would have taken 
+hours to script (and to debug!)
+
+> Personally I prefer scripts because I can put remarks and empty
+> lines in them, grouping lines together that belong to each other
+> so I know what I did 1 year (or so) ago, without having to read
+> over the complete script/ruleset.
+
+Red herring. No, iptables-save(8) won't preserve comments unless using 
+"--comment" in your rules, but you can certainly add comments to your 
+rules -- iptables-restore(8) is fine with that. I didn't try blank 
+lines, but I bet those work too.
+
+The only grouping requirement I know is that you must keep each table's 
+rules together between the *table_name and COMMIT lines. Perhaps you 
+could add multiple sections for the same table. Again, I have not 
+tried. Nor would I wish to try!
+
+> But everyone should do what (s)he wants in that matter ; the output
+> of iptables-save is practically in script form so it's not that I
+> can't read it.
+
+The thing that appeals to me is that the output is linear per chain, 
+just like netfilter itself. You can see right away what is being done 
+in any particular chain.
+
+I am not trying to convince you; I am only trying to explain where I 
+came from and why I went where I did. With simple firewalls, simple 
+scripts can surely be a viable option.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
