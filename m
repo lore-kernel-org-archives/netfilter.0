@@ -1,10 +1,13 @@
-From: Rob Carlson <rcarlson@kitchenandassociates.com>
-Subject: Forward Ipset and Clear DNAT entry
-Date: Fri, 18 Nov 2005 11:34:44 -0500
-Message-ID: <437E02A4.40407@kitchenandassociates.com>
+From: Marcus Aurelius <hellou@gmail.com>
+Subject: Fix For: conntrack: error while loading shared libraries:
+	libnetfilter_conntrack.so.1: cannot open shared object file:
+	No such file or directory
+Date: Fri, 18 Nov 2005 15:28:10 -0500
+Message-ID: <1b6df0140511181228m2a336caex7e673252d9ff365d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,68 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-
-I have a 2 part question.  The first is how to do
-something, the second is how do I clear up my
-failed attempts to accomplish the first.
-
-I would like to be able to forward an ipset tied
-to certain ports to a different machine.  I know
-how to create an IPSet and bind that set to
-certain ports-- I would like to be able to forward
-that  set to another machine instead of doing a
-straight reject.  My aim in the testing is to have
-a machine I can ssh to, from which I can mail,
-and then later verify that the mail sent to my
-firewall gets routed properly.
-
-To this end I created a set and a corresponding
-table-- dischash and DISCHASH
-
-ipset -N disc nethash
-ipset -A dischash xxx.xxx.xxx.xxx/xx
-ipset -N discports portmap --from 1 --to 1024
-ipset -A discports 25
-ipset -B dischash :default: -b discports
-   (Here I am not clear if I need the table, but
-created it anyway)
-iptables -N DISCHASH
-   (With a straight LTREJECT I would create a
-FORWARD and INPUT, but here, I'm not sure)
-   (Then I did this:)
-iptables -t nat  -A PREROUTING -m set --set
-dischash dst -j DNAT --to-destination --to
-yyy.yyy.yyy.yyy
-
-Now, I can't ssh to the machine in the set, my ssh
-(verified by a traceroute) fails to
-yyy.yyy.yyy.yyy-- which is what I would expect if
-I didn't have the ipset bound to port 25.  I tried
-several iterations of this last command (verifying
-my insanity) and now when I do:
-
-iptables -L -t nat
-I get entries at the end reading:
-DNAT       all  --  anywhere             anywhere
-            set dischash dst to:xxx.xxx.xxx.xxx
-
-So,
-Is there syntax to clear single DNAT entries
-without flushing ALL prerouting?
-
-And is there syntax which will allow me to reroute
-traffic from a particular ipset going only to
-bound ports (i.e. mail) to a second address?
-
-
-Thanks very much for any help.
-
-Rob Carlson
-
-
-
+aGVsbG8sCiAgICBJIGluc3RhbGxlZCBjb25udHJhY2sgd2l0aCB0aGUgc3RlcHMgYmVsb3cgYWxv
+bmcgd2l0aCBhIGN1c3RvbQpidWlsZCBvZiB0aGUgMi42LjE0LjIga2VybmVsIGFuZCBoYWQgdGhl
+IGVycm9yIGFib3ZlIHdoZW4gSSB0eXBlOgpjb25udHJhY2sKICAgIEkgd2FzIG9ubHkgYWJsZSB0
+byByZXNvbHZlIHRoZSBlcnJvciBieSBkb2luZzoKIGxuIC1zIC91c3IvbG9jYWwvbGliL2xpYm5m
+bmV0bGluay5zby4wIC9saWIvbGlibmZuZXRsaW5rLnNvLjAKIGxuIC1zIC91c3IvbG9jYWwvbGli
+L2xpYm5ldGZpbHRlcl9jb25udHJhY2suc28uMQovbGliL2xpYm5ldGZpbHRlcl9jb25udHJhY2su
+c28uMQoKIGlzIHRoZSBjb25udHJhY2stMC45OSBNYWtlZmlsZSB0aGUgZW50cnkgbGliZGlyID0g
+JHtleGVjX3ByZWZpeH0vbGliCnNlZW1lZCBvaywgc28gSSBkb24ndCBrbm93IHdoeSBjb25udHJh
+Y2sgd291bGQgbm90IHNlZSAvdXNyL2xvY2FsL2xpYiwKYW55IGlkZWFzPwoKIHJlZ2FyZHMsCiBK
+YWkgUmFnb28KCiAjIyMjIyMjIyNCdWlsZCBwcm9jZXNzIyMjIyMjIyMjIwogd2dldCBodHRwOi8v
+bmV0ZmlsdGVyLm9yZy9wcm9qZWN0cy9saWJuZm5ldGxpbmsvZmlsZXMvbGlibmZuZXRsaW5rLTAu
+MC4xMy50YXIuYnoyCiB3Z2V0IGh0dHA6Ly9uZXRmaWx0ZXIub3JnL3Byb2plY3RzL2xpYm5ldGZp
+bHRlcl9sb2cvZmlsZXMvbGlibmV0ZmlsdGVyX2xvZy0wLjAuMTIudGFyLmJ6Mgogd2dldCBodHRw
+Oi8vbmV0ZmlsdGVyLm9yZy9wcm9qZWN0cy9saWJuZXRmaWx0ZXJfcXVldWUvZmlsZXMvbGlibmV0
+ZmlsdGVyX3F1ZXVlLTAuMC4xMS50YXIuYnoyCiB3Z2V0IGh0dHA6Ly9uZXRmaWx0ZXIub3JnL3By
+b2plY3RzL2xpYm5ldGZpbHRlcl9jb25udHJhY2svZmlsZXMvbGlibmV0ZmlsdGVyX2Nvbm50cmFj
+ay0wLjAuMjgudGFyLmJ6Mgogd2dldCBodHRwOi8vbmV0ZmlsdGVyLm9yZy9wcm9qZWN0cy9jb25u
+dHJhY2svZmlsZXMvY29ubnRyYWNrLTAuOTkudGFyLmJ6MgoKIHRhciAtanZ4ZiBsaWJuZm5ldGxp
+bmstMC4wLjEzLnRhci5iejIKIGNkIGxpYm5mbmV0bGluay0wLjAuMTMKIC4vY29uZmlndXJlIC0t
+d2l0aC1rZXJuZWw9L3Vzci9zcmMvbGludXgtMi42LjE0LjIKIG1ha2UgJiYgbWFrZSBpbnN0YWxs
+CgogY2QgL3Vzci9zcmMKCiB0YXIgLWp2eGYgbGlibmV0ZmlsdGVyX2xvZy0wLjAuMTIudGFyLmJ6
+MgogY2QgbGlibmV0ZmlsdGVyX2xvZy0wLjAuMTIKIC4vY29uZmlndXJlCiBtYWtlICYmIG1ha2Ug
+aW5zdGFsbAoKCiBjZCAvdXNyL3NyYwogdGFyIC1qdnhmIGxpYm5ldGZpbHRlcl9xdWV1ZS0wLjAu
+MTEudGFyLmJ6MgogY2QgbGlibmV0ZmlsdGVyX3F1ZXVlLTAuMC4xMQogLi9jb25maWd1cmUKIG1h
+a2UKIG1ha2UgaW5zdGFsbAoKCiBjZCAvdXNyL3NyYwogdGFyIC1qdnhmIGxpYm5ldGZpbHRlcl9j
+b25udHJhY2stMC4wLjI4LnRhci5iejIKIGNkIGxpYm5ldGZpbHRlcl9jb25udHJhY2stMC4wLjI4
+CiAuL2NvbmZpZ3VyZQogbWFrZSAmJiBtYWtlIGluc3RhbGwKCiBjZCAvdXNyL3NyYwogdGFyIC1q
+dnhmIGNvbm50cmFjay0wLjk5LnRhci5iejIKIGNkIGNvbm50cmFjay0wLjk5CiAuL2NvbmZpZ3Vy
+ZQogbWFrZSAmJm1ha2UgaW5zdGFsbAo=
 
