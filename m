@@ -1,11 +1,9 @@
-From: Marcus Aurelius <hellou@gmail.com>
-Subject: Fix For: conntrack: error while loading shared libraries:
-	libnetfilter_conntrack.so.1: cannot open shared object file:
-	No such file or directory
-Date: Fri, 18 Nov 2005 15:28:10 -0500
-Message-ID: <1b6df0140511181228m2a336caex7e673252d9ff365d@mail.gmail.com>
+From: Rolf Offermanns <rolf.offermanns@gmx.net>
+Subject: NAT with latest netfilter ipsec patches
+Date: Sat, 19 Nov 2005 01:58:18 +0100
+Message-ID: <200511190158.18926.rolf.offermanns@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -21,33 +19,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-aGVsbG8sCiAgICBJIGluc3RhbGxlZCBjb25udHJhY2sgd2l0aCB0aGUgc3RlcHMgYmVsb3cgYWxv
-bmcgd2l0aCBhIGN1c3RvbQpidWlsZCBvZiB0aGUgMi42LjE0LjIga2VybmVsIGFuZCBoYWQgdGhl
-IGVycm9yIGFib3ZlIHdoZW4gSSB0eXBlOgpjb25udHJhY2sKICAgIEkgd2FzIG9ubHkgYWJsZSB0
-byByZXNvbHZlIHRoZSBlcnJvciBieSBkb2luZzoKIGxuIC1zIC91c3IvbG9jYWwvbGliL2xpYm5m
-bmV0bGluay5zby4wIC9saWIvbGlibmZuZXRsaW5rLnNvLjAKIGxuIC1zIC91c3IvbG9jYWwvbGli
-L2xpYm5ldGZpbHRlcl9jb25udHJhY2suc28uMQovbGliL2xpYm5ldGZpbHRlcl9jb25udHJhY2su
-c28uMQoKIGlzIHRoZSBjb25udHJhY2stMC45OSBNYWtlZmlsZSB0aGUgZW50cnkgbGliZGlyID0g
-JHtleGVjX3ByZWZpeH0vbGliCnNlZW1lZCBvaywgc28gSSBkb24ndCBrbm93IHdoeSBjb25udHJh
-Y2sgd291bGQgbm90IHNlZSAvdXNyL2xvY2FsL2xpYiwKYW55IGlkZWFzPwoKIHJlZ2FyZHMsCiBK
-YWkgUmFnb28KCiAjIyMjIyMjIyNCdWlsZCBwcm9jZXNzIyMjIyMjIyMjIwogd2dldCBodHRwOi8v
-bmV0ZmlsdGVyLm9yZy9wcm9qZWN0cy9saWJuZm5ldGxpbmsvZmlsZXMvbGlibmZuZXRsaW5rLTAu
-MC4xMy50YXIuYnoyCiB3Z2V0IGh0dHA6Ly9uZXRmaWx0ZXIub3JnL3Byb2plY3RzL2xpYm5ldGZp
-bHRlcl9sb2cvZmlsZXMvbGlibmV0ZmlsdGVyX2xvZy0wLjAuMTIudGFyLmJ6Mgogd2dldCBodHRw
-Oi8vbmV0ZmlsdGVyLm9yZy9wcm9qZWN0cy9saWJuZXRmaWx0ZXJfcXVldWUvZmlsZXMvbGlibmV0
-ZmlsdGVyX3F1ZXVlLTAuMC4xMS50YXIuYnoyCiB3Z2V0IGh0dHA6Ly9uZXRmaWx0ZXIub3JnL3By
-b2plY3RzL2xpYm5ldGZpbHRlcl9jb25udHJhY2svZmlsZXMvbGlibmV0ZmlsdGVyX2Nvbm50cmFj
-ay0wLjAuMjgudGFyLmJ6Mgogd2dldCBodHRwOi8vbmV0ZmlsdGVyLm9yZy9wcm9qZWN0cy9jb25u
-dHJhY2svZmlsZXMvY29ubnRyYWNrLTAuOTkudGFyLmJ6MgoKIHRhciAtanZ4ZiBsaWJuZm5ldGxp
-bmstMC4wLjEzLnRhci5iejIKIGNkIGxpYm5mbmV0bGluay0wLjAuMTMKIC4vY29uZmlndXJlIC0t
-d2l0aC1rZXJuZWw9L3Vzci9zcmMvbGludXgtMi42LjE0LjIKIG1ha2UgJiYgbWFrZSBpbnN0YWxs
-CgogY2QgL3Vzci9zcmMKCiB0YXIgLWp2eGYgbGlibmV0ZmlsdGVyX2xvZy0wLjAuMTIudGFyLmJ6
-MgogY2QgbGlibmV0ZmlsdGVyX2xvZy0wLjAuMTIKIC4vY29uZmlndXJlCiBtYWtlICYmIG1ha2Ug
-aW5zdGFsbAoKCiBjZCAvdXNyL3NyYwogdGFyIC1qdnhmIGxpYm5ldGZpbHRlcl9xdWV1ZS0wLjAu
-MTEudGFyLmJ6MgogY2QgbGlibmV0ZmlsdGVyX3F1ZXVlLTAuMC4xMQogLi9jb25maWd1cmUKIG1h
-a2UKIG1ha2UgaW5zdGFsbAoKCiBjZCAvdXNyL3NyYwogdGFyIC1qdnhmIGxpYm5ldGZpbHRlcl9j
-b25udHJhY2stMC4wLjI4LnRhci5iejIKIGNkIGxpYm5ldGZpbHRlcl9jb25udHJhY2stMC4wLjI4
-CiAuL2NvbmZpZ3VyZQogbWFrZSAmJiBtYWtlIGluc3RhbGwKCiBjZCAvdXNyL3NyYwogdGFyIC1q
-dnhmIGNvbm50cmFjay0wLjk5LnRhci5iejIKIGNkIGNvbm50cmFjay0wLjk5CiAuL2NvbmZpZ3Vy
-ZQogbWFrZSAmJm1ha2UgaW5zdGFsbAo=
+Hi All!
+I have tried to finally get NAT over IPSec working with Patricks last patches 
+applied to 2.6.14.2 (+ UFO scatter-gather patch from git > 2.6.14).
+
+Is this supposed to work?
+
+I get as far as this:
+
+172.20.0.0/14 <--> w.x.y.z <-~~~-> a.b.c.d <--> 192.168.0.1/ <--> 192.168.0.2
+ REMOTE NET        VPN-GW   I-NET   DSL-        ROADWARRIOR          HOST B
+                                   ROUTER     (V-IP:172.24.0.17)     
+
+Host B has the following routing table entry:
+route add -net 172.20.0.0 netmask 255.252.0.0 gw 192.168.0.1
+
+ROADWARRIOR runs the kernel described above with strongswan-2.5.2 and the 
+following iptables entry:
+
+iptables -I POSTROUTING -t nat -d 172.20.0.0/14 -j SNAT \
+	--to-source 172.24.0.17
+
+If I run a ping 172.22.1.1 from HOST B,
+tcpdump on the roadwarrior shows the following:
+
+01:46:30.813959 IP 192.168.0.2 > 172.22.1.1: icmp 64: echo request seq 53
+01:46:30.816474 IP 192.168.0.1.4500 > w.x.y.z.4500: UDP, length: 116
+01:46:30.833995 IP w.x.y.z.4500 > 192.168.0.1.4500: UDP, length: 116
+01:46:30.833995 IP 172.22.1.1 > 172.24.0.17: icmp 64: echo reply seq 53
+
+
+But the reply packet never reaches HOST B.
+
+Am I missing something?
+
+Thanks,
+Rolf
 
