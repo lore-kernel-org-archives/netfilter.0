@@ -1,7 +1,7 @@
-From: Daniel <damage@rooties.de>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: DROP or REJECT?
-Date: Sun, 20 Nov 2005 19:44:33 +0100
-Message-ID: <200511201944.33472.damage@rooties.de>
+Date: Sun, 20 Nov 2005 12:57:12 -0600
+Message-ID: <200511201257.12528.rob0@gmx.co.uk>
 References: <000001c5ee00$f8343970$2801a8c0@MBRC40>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -21,23 +21,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hm.... I think sending "host unreachable" from the host which should not be 
-reachable is not what you want. Alos sending "host unreachable" will increase 
-your traffic (not much, but it did :) ).
-But I think most "attack" tools will ignore trys to make yourself invisible.
-
-greez
-Daniel
-
-Am Sonntag, 20. November 2005 19:33 schrieb Michael D. Berger:
+On Sunday 2005-November-20 12:33, Michael D. Berger wrote:
 > For blocking various attacks on ports 22 and 80,
 > I have been using:
 >    -j REJECT --reject-with icmp-host-unreachable
 > To minimize future attempts, is this best, or is
 > there a better idea, such as DROP?
-> Thanks for your advice,
-> Mike.
-> --
-> Michael D. Berger
-> m.d.berger@ieee.org
+
+I doubt it matters much. I have seen, though, with my own approach of 
+"-m limit --limit 3/min --limit-burst 3 -j ACCEPT" (followed by a DROP 
+or REJECT rule) that -j REJECT does not always turn them away 
+immediately, whereas with -j DROP they usually give up. But my REJECT 
+uses the default, "--reject-with icmp-port-unreachable".
+
+Insofar as concerns future attacks, as long as you have those ports 
+open, you will have bots and worms knocking on them. They are nothing 
+more than an annoyance if you have properly secured services.
+
+I think the purpose of the SSH probes is to find more hosts from which 
+to launch these probes. :) And some of them are put to work in phishing 
+scams. The whole idea is to make it impossible to trace the phisher. 
+They probably decide who to attack by doing a port scan on 22 of the 
+entire Internet. When you're using stolen resources, there is no need 
+to conserve.
+
+HTTP probes are similar except most of those seem to target MS IIS. 
+These are more likely to be operated by Internet mass-mail marketers, 
+a/k/a spammers.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
