@@ -1,13 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: DROP or REJECT?
-Date: Sun, 20 Nov 2005 12:57:12 -0600
-Message-ID: <200511201257.12528.rob0@gmx.co.uk>
-References: <000001c5ee00$f8343970$2801a8c0@MBRC40>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: OUTPUT chain, Source Port 80 ---> Destination Port Unprivileged
+Date: Sun, 20 Nov 2005 14:13:03 -0500
+Message-ID: <4380CABF.2060705@rosi-kessel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig76AA3125E1599ACB8CBF7265"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000001c5ee00$f8343970$2801a8c0@MBRC40>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +17,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 2005-November-20 12:33, Michael D. Berger wrote:
-> For blocking various attacks on ports 22 and 80,
-> I have been using:
->    -j REJECT --reject-with icmp-host-unreachable
-> To minimize future attempts, is this best, or is
-> there a better idea, such as DROP?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig76AA3125E1599ACB8CBF7265
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I doubt it matters much. I have seen, though, with my own approach of 
-"-m limit --limit 3/min --limit-burst 3 -j ACCEPT" (followed by a DROP 
-or REJECT rule) that -j REJECT does not always turn them away 
-immediately, whereas with -j DROP they usually give up. But my REJECT 
-uses the default, "--reject-with icmp-port-unreachable".
+I've noticed that I occasionally have output packets on my webserver that=
 
-Insofar as concerns future attacks, as long as you have those ports 
-open, you will have bots and worms knocking on them. They are nothing 
-more than an annoyance if you have properly secured services.
+have source port 80 and a destination port > 1024 (I've recently seen 491=
+1,
+4912, 49440, 49521, and 50296).
 
-I think the purpose of the SSH probes is to find more hosts from which 
-to launch these probes. :) And some of them are put to work in phishing 
-scams. The whole idea is to make it impossible to trace the phisher. 
-They probably decide who to attack by doing a port scan on 22 of the 
-entire Internet. When you're using stolen resources, there is no need 
-to conserve.
+My current OUTPUT policy drops outbound traffic except on ports that are
+specifically allowed. The unprivileged ports are not currently allowed.
 
-HTTP probes are similar except most of those seem to target MS IIS. 
-These are more likely to be operated by Internet mass-mail marketers, 
-a/k/a spammers.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+I've seen a few sample iptables rulesets that allow outbound traffic to
+unprivileged ports from source port 80.
+
+Can someone explain to me why this happens, or point me to an explanation=
+
+elsewhere?  Are there reasons to allow (or not to allow) such traffic, i.=
+e.,
+with a rule like:
+
+iptables -A OUTPUT -o $EXTERNAL_INTERFACE -p tcp -s $IPADDR 1024:65535 \
+		--source-port 80 --destination-port "1024:65535" -j ACCEPT
+
+?
+--=20
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
+
+
+--------------enig76AA3125E1599ACB8CBF7265
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFDgMrBdTf3ZklQ6qYRApNLAJ44UXSrrfH9XaTXGeUu3tClign/YQCeOCZ/
+JrxImF3jvfYl2+y0nMdSSvI=
+=roM7
+-----END PGP SIGNATURE-----
+
+--------------enig76AA3125E1599ACB8CBF7265--
 
