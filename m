@@ -1,11 +1,14 @@
-From: "Jesse Gordon" <jesseg@nikola.com>
-Subject: Re: Mail server behind a firewall
-Date: Mon, 21 Nov 2005 13:31:27 -0800
-Message-ID: <061e01c5eee2$ee3aaed0$5e00800a@printserver>
-References: <7834b9550511211310n25ec94f5q@mail.gmail.com>
+From: Richard R <richhome@gmail.com>
+Subject: Re: Where is TARPIT -- iptables V. 1.3.4
+Date: Mon, 21 Nov 2005 13:35:35 -0800
+Message-ID: <462d0fec0511211335h3a53f7a2n92e00059e4aa9c7c@mail.gmail.com>
+References: <462d0fec0511210948v12bf4046i8836b4ba3797abef@mail.gmail.com>
+	<43821AF1.7050409@wp.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <43821AF1.7050409@wp.pl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,78 +19,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Fernando Martins <martinsfernand@gmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: ?ukasz Hejnak <sziftgroup@wp.pl>
+Cc: NetFilter <netfilter@lists.netfilter.org>
 
-Hi Nandao.
+Thanks for the reply.
 
-Comments below.
+It looks like the tarpit module provided by pom won't compile in the
+2.6.14.2 kernel:
 
->----- Original Message ----- 
->From: "Fernando Martins" <martinsfernand@gmail.com>
->To: <netfilter@lists.netfilter.org>
->Sent: Monday, November 21, 2005 1:10 PM
->Subject: Mail server behind a firewall
+  CC [M]  net/ipv4/netfilter/ipt_string.o
+  CC [M]  net/ipv4/netfilter/ipt_REJECT.o
+  CC [M]  net/ipv4/netfilter/ipt_TARPIT.o
+net/ipv4/netfilter/ipt_TARPIT.c: In function `tarpit_tcp':
+net/ipv4/netfilter/ipt_TARPIT.c:123: error: structure has no member
+named `nfcache'
+net/ipv4/netfilter/ipt_TARPIT.c:197: warning: implicit declaration of
+function `dst_pmtu'
+make[3]: *** [net/ipv4/netfilter/ipt_TARPIT.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
+
+Any ideas?
+
+On 11/21/05, ?ukasz Hejnak <sziftgroup@wp.pl> wrote:
+> Richard R napisa?(a):
+> > am using linux kernel 2.6.14.2
 >
-
->Hi,
+> hmm.. well afaik the tarpit extension is only for kernels < 2.6
+> *btw, I just checked, here's how it looks
 >
-> I have been looking for a solution for days and nights and I can't
->find any solution to my problem.
-> I have installed a Mail server behind a firewall , firewall I have
->configured very badly with iptables.
-> I want an exterior smtp server to be able to speak with mine but it is 
-> failing.
->  My configuration is:
+> http://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/patch=
+lets/TARPIT/info?rev=3D4018&view=3Dmarkup
+> Title: iptables TARPIT target
+> Author: "Aaron Hopkins" <lists@die.net >
+> Status: Works for me
+> Repository: extra
+> Requires: linux < 2.6.0
+>
+> > How do I get TARPIT working on a linux kernel 2.6.14.2 based system?
+> well so far (I have also a 2.6.x kernel) I've been using the pom
+> and just changing the above in the 'info' file to "> 2.4.0" and it
+> didn't complain about a thing ;) I know that's a dirty way of doing it,
+> but hey, it's working fine for me :)
+>
+> --
+> Best wishes
+> ?ukasz Hejnak
 >
 >
-> INTERNET---------------------------------FIREWALL-------------------------------MAIL
->SERVEUR
-> ----------------------------------------------eth0-----------eth1-------------------------PrivateIP
->
-> eht0 is the public interface with public adress A.
->
->
-> How can I do this?
->
-> Nandao
->  nervous break down is close
-
-I'm guessing that your eth1 has an IP like 192.168.0.3 or 10.0.0.3 or some 
-such, and you want to forward ports.
-
-The part of forwarding ports could look like this:
-
-iptables -t nat -A PREROUTING -p TCP -i eth0 -d PublicAddress --dport 25 -J 
-DNAT --to PrivateIP
-
-This tells iptables that if a packet should come in eth0, with a target 
-address of your public IP, to the destination port 25, it should be 
-forwarded to (or re addressed to) PrivateIP.
-
-For the above to work as it is, this firewall must also be the default 
-gateway for the Mail Server, and must be working as a Masquerading NAT 
-firewall.
-(I assume it's already functioning as the internet sharing computer.)
-
-Also, depending on your other firewall rules and policies, you may need to 
-specifically allow the incoming ports, but I'd have to see your specific 
-config to know exactly what you need, but it might look something like this 
-as well:
-
-iptables -A FORWARD -i eth0 -o eth1 -d MailServerIP -J ACCEPT
-
-This tells iptables that any packet that comes in eth0, and goes out eth1, 
-which has a destination IP of the mail server's private IP, to accept it.
-
-Depending on your other policies, more accept rules may be needed. But 
-hopefully this will get you started.
-
--Jesse
-
-
-
-
-
-
 
