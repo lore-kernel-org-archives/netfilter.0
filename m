@@ -1,11 +1,13 @@
-From: "David Sancho" <dsancho@optenet.com>
-Subject: Change outgoing MAC address with libipq
-Date: Mon, 21 Nov 2005 11:13:12 +0100
-Message-ID: <!&!AAAAAAAAAAAYAAAAAAAAAJ6f2noM9NtJlAaneu2R8NjCgAAAEAAAAJ/cJZHjMmNDlFTqgnNy0XYBAAAAAA==@optenet.com>
-Reply-To: dsancho@optenet.com
+From: KOVACS Krisztian <hidden@balabit.hu>
+Subject: Re: ipsec-01-output-hooks / ipsec-02-input-hooks patches vs. 2.6.14
+Date: Mon, 21 Nov 2005 13:17:52 +0100
+Message-ID: <200511211317.52647@nienna>
+References: <43819D19.9010506@atosorigin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <43819D19.9010506@atosorigin.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,27 +21,33 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
- 
-Hello!
 
- 
-I have 3 computers: A (client), B Gateway, C Server. I want to intercept A
-packets going to C in B, change destination IP to local (B) and process this
-packets in B. This is easy. The problem is with the packets originating in
-B. I want to change their source IP address and their MAC simulating A IP
-and MAC. I want to do a transparent process. B send packets to C but C
-thinks that they come from A (IP and MAC)
- 
+  Hi,
 
-The IP is also easy with libipq but how can I change the source MAC to match
-A's MAC?
- 
+On Monday 21 November 2005 11.10, Markus Marquardt wrote:
+> i've tried to apply the netfilter pom-ng-20051115 patches for
+> ipsec-01-output-hooks and ipsec-02-input-hooks against kernel 2.6.14.2.
+>
+> When using patch-o-matic-ng both complained about missing nf_reset. When
+> trying to apply them manually, the former applied with some offset &
+> fuzz, the latter failed and complained about missing files etc.
+>
+> Is there any workaround or work-in-progress to make this working on
+> 2.6.14?
 
-Thanks!
+  Patrick McHardy has been working on getting those patches ready for 
+mainline inclusion lately. He has posted the latest incarnation of his 
+patches to the netfilter-devel mailing list recently. (Note however, that 
+those patches are for the latest Linux 2.6.15 development branch and not 
+for 2.6.14.) You can take a look at the patches in the mailing list 
+archive:
 
- 
+  http://marc.theaimsgroup.com/?l=netfilter-devel&m=113250450910387&w=2
 
+  So yes, there's very serious work going on to get those patches in 
+mainline (probably in 2.6.16).
 
-
-
+-- 
+ Regards,
+  Krisztian Kovacs
 
