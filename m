@@ -1,11 +1,10 @@
-From: Daniel <damage@rooties.de>
-Subject: ipt_recent timestamp
-Date: Mon, 21 Nov 2005 07:48:45 +0100
-Message-ID: <200511210748.45555.damage@rooties.de>
+From: Markus Marquardt <markus.marquardt@atosorigin.com>
+Subject: ipsec-01-output-hooks / ipsec-02-input-hooks patches vs. 2.6.14
+Date: Mon, 21 Nov 2005 11:10:33 +0100
+Message-ID: <43819D19.9010506@atosorigin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,16 +15,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
 Hi,
-I want to generate some statistcs form /proc/net/ipt_recent/* lists. But I 
-don't understand the timestamp. Which unit is that timestamp of (e.g. 
-seconds, milliseconds...)? And where is it relative to? May be it is relativ 
-to the time the computer was started, so the timestamp in the list files is 
-just the current uptime?
 
-tia
-Daniel
+i've tried to apply the netfilter pom-ng-20051115 patches for 
+ipsec-01-output-hooks and ipsec-02-input-hooks against kernel 2.6.14.2.
+
+When using patch-o-matic-ng both complained about missing nf_reset. When 
+trying to apply them manually, the former applied with some offset & 
+fuzz, the latter failed and complained about missing files etc.
+
+Is there any workaround or work-in-progress to make this working on 2.6.14?
+
+Regards,
+Markus
+
 
