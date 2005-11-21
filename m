@@ -1,13 +1,13 @@
-From: KOVACS Krisztian <hidden@balabit.hu>
-Subject: Re: ipsec-01-output-hooks / ipsec-02-input-hooks patches vs. 2.6.14
-Date: Mon, 21 Nov 2005 13:17:52 +0100
-Message-ID: <200511211317.52647@nienna>
-References: <43819D19.9010506@atosorigin.com>
+From: Christian Seberino <seberino@spawar.navy.mil>
+Subject: Why TCP does NOT have explicit LENGTH field like UDP & IP packets
+	do!?!?
+Date: Mon, 21 Nov 2005 09:46:11 -0800
+Message-ID: <1132595171.5180.98.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-cM2JP7iBG8EW/WgvZcSp"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43819D19.9010506@atosorigin.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +18,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 
-  Hi,
+--=-cM2JP7iBG8EW/WgvZcSp
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On Monday 21 November 2005 11.10, Markus Marquardt wrote:
-> i've tried to apply the netfilter pom-ng-20051115 patches for
-> ipsec-01-output-hooks and ipsec-02-input-hooks against kernel 2.6.14.2.
->
-> When using patch-o-matic-ng both complained about missing nf_reset. When
-> trying to apply them manually, the former applied with some offset &
-> fuzz, the latter failed and complained about missing files etc.
->
-> Is there any workaround or work-in-progress to make this working on
-> 2.6.14?
 
-  Patrick McHardy has been working on getting those patches ready for 
-mainline inclusion lately. He has posted the latest incarnation of his 
-patches to the netfilter-devel mailing list recently. (Note however, that 
-those patches are for the latest Linux 2.6.15 development branch and not 
-for 2.6.14.) You can take a look at the patches in the mailing list 
-archive:
+I'm curious why TCP does not have an explicit length field like
+UDP and IP packets do.
 
-  http://marc.theaimsgroup.com/?l=netfilter-devel&m=113250450910387&w=2
+It appears from TCP RFC 793 that lower (IP) layer must provide
+*some* way for TCP to figure out length.  This is vague
+and weird that length is handled this way.....
 
-  So yes, there's very serious work going on to get those patches in 
-mainline (probably in 2.6.16).
+=46rom RFC 793 page 50 with regards to layer below TCP...
 
--- 
- Regards,
-  Krisztian Kovacs
+"Any lower level protocol will have to provide the source address,
+    destination address, and protocol fields, and some way to determine
+    the "TCP length", both to provide the functional equivlent service
+    of IP and to be used in the TCP checksum."
+
+
+
+Any ideas?
+
+
+Chris
+
+--=-cM2JP7iBG8EW/WgvZcSp
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iQEVAwUAQ4IH48XAD6FzhZH3AQLZJgf+KfZskC03vfaLROvPWLjvlN8VVEergy8T
+pyVwtTthrNiXt12NquA3TAfwZZnQcjDNMZD/kq4Rny61IowbFrD5CbNUpjg4AU6l
+5HldfT2an5ROjyfC+0i+SVbRrVWq9B72NCW/as+i4a2tb5b/dQW3G2lCkImtFzFL
+b3hmhfioPhR2KMWvXvN+aFRCXboDU6WBwfp+C7VY8MbHvh+kEp1cRrlvUz0tWEeh
+flZutMuwrUCiirV3raZ5+izIVukKMePvnmcF4n4C9Jc5+x0HPf10jHU2zyes1+H3
+c+9rRWL717aeYXa4BqXKFNLLJztXMD6THHgtDfWCXWfOdypNJurjzA==
+=nGpR
+-----END PGP SIGNATURE-----
+
+--=-cM2JP7iBG8EW/WgvZcSp--
+
 
