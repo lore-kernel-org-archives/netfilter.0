@@ -1,11 +1,10 @@
-From: Richard R <richhome@gmail.com>
-Subject: Where is TARPIT -- iptables V. 1.3.4
-Date: Mon, 21 Nov 2005 09:48:07 -0800
-Message-ID: <462d0fec0511210948v12bf4046i8836b4ba3797abef@mail.gmail.com>
+From: Keith Whyte <keith@media-solutions.ie>
+Subject: coming in through the outgoing hole?
+Date: Mon, 21 Nov 2005 11:58:50 -0600
+Message-ID: <43820ADA.8000206@media-solutions.ie>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,18 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Previously I had to use patch-o-matic to get the TARPIT target
-extension working.  However according to the iptables V1.3.4 man page
-TARPIT  is an extension that is part of the "standard distribution"  I
-am using linux kernel 2.6.14.2 .  Also, I receive no hits when greping
-for TARPIT in the kernel source.
+here's a scenario
+i have opened outgoing webserver requests and their resposes thus
+(output from iptables -v -L)
 
-How do I get TARPIT working on a linux kernel 2.6.14.2 based system?=20
-Do I still need a kernel patch?
-  (or if there is documentation on this, please let me know.)
+INPUT
+0     0 ACCEPT     tcp  --  eth0   any     anywhere
+anywhere           tcp spt:http dpts:1024:65535
+OUTPUT
+0    0 ACCEPT     tcp  --  any    eth0    anywhere
+anywhere           tcp spts:1024:65535 dpt:http
 
-Thanks
+now, it occurs to me that i have opened access to ports 1024 to 65535,
+as long as the source port is port 80, correct?
+where as I only want it open for connections originating on the local
+machine.
+
+I presume the answer here is conntrack, could someone help me with the
+command for the INPUT chain?
+should it be --state RELATED or ESTABLISHED or both or something like !
+NEW (if that can be done)?
+
+as a hypothetical example of the problem:
+let's say i run an admin type webserver for some app, listening on a
+port above 1024, for example. if someone hacked a web client to use port
+80 as the source port for it's connections,  (dunno, would you have to
+hack the kernel too, or just be root?) , then they could bypass the
+firewall part of the security, right? or with ssh, surely it would be
+easy enough to hack an ssh client to use port 80 as it's source port.
+ok, so you probably shouldn't run an ssh listener on a port above 1024,
+but nevertheless, it's a good hole to close.
+
+thanks!
+
+Keith.
+
+
+
 
