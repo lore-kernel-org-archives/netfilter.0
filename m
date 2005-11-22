@@ -1,10 +1,11 @@
-From: manish popli <popli_manish77@yahoo.com>
-Subject: how to install time patch
-Date: Mon, 21 Nov 2005 03:03:52 -0800 (PST)
-Message-ID: <20051121110352.64008.qmail@web53601.mail.yahoo.com>
+From: "Paul Collen" <paul.collen@brahler-ics.co.uk>
+Subject: Linux Firewall Problem
+Date: Tue, 22 Nov 2005 11:08:43 -0000
+Message-ID: <08ABA55F2AFD764F93022E0FEBD4DB8D2EF415@server.cambridge.brahler-ics.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +19,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am using the Linux version 2.4.21-4.ELsmp and
-Iptable
-version is iptables-save v1.2.8..
-I need to install time patch for IPtables for that i
-have to install time patch can any one guide me how to
-install time patch for iptables i guess i need new
-kernal and iptable source and need to compile it again
-plz guide me how to do this step by step..
+Hello,
 
-Thanks
-Manish Popli
+I'm new to Linux and I've inherited a Webmin controlled firewall. I'm
+used to using a SonicWall firewall and just can't seem to get the hang
+of the Linux firewall. My problem is I need to allow Outlook Web Access
+through to a server. OWA is installed and can be used internally by
+going to the server i.e. http://server/exchange We have an IP address I
+can use to connect with but I just can't seem to let any traffic through
+to the server, let alone just port 80 and 443. Are there any firewall
+gurus that can give me some help please?
 
+Cheers,
 
-
-
-
-		
-__________________________________ 
-Yahoo! FareChase: Search multiple travel sites in one click.
-http://farechase.yahoo.com
+Pablo
 
