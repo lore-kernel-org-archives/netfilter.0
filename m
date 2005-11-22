@@ -1,12 +1,11 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: FW: Linux Firewall Problem
-Date: Tue, 22 Nov 2005 06:52:29 -0500
-Message-ID: <1132660349.2681.2.camel@localhost>
-References: <08ABA55F2AFD764F93022E0FEBD4DB8D2EF416@server.cambridge.brahler-ics.co.uk>
+From: "Derick Anderson" <danderson@vikus.com>
+Subject: RE: Linux Firewall Problem
+Date: Tue, 22 Nov 2005 08:04:30 -0500
+Message-ID: <FAC4E024BF776842876169173CE2F01309A7E3@mailbox.vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <08ABA55F2AFD764F93022E0FEBD4DB8D2EF416@server.cambridge.brahler-ics.co.uk>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Paul Collen <paul.collen@brahler-ics.co.uk>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Tue, 2005-11-22 at 11:23 +0000, Paul Collen wrote:
+=20
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+> Paul Collen
+> Sent: Tuesday, November 22, 2005 6:23 AM
+> To: netfilter@lists.netfilter.org
+> Subject: FW: Linux Firewall Problem
+>=20
 > Hello,
-> 
-> I'm new to Linux and I've inherited a Webmin controlled firewall. I'm
-> used to using a SonicWall firewall and just can't seem to get the hang
-> of the Linux firewall. My problem is I need to allow Outlook Web Access
-> through to a server. OWA is installed and can be used internally by
-> going to the server i.e. http://server/exchange We have an IP address I
-> can use to connect with but I just can't seem to let any traffic through
-> to the server, let alone just port 80 and 443. Are there any firewall
-> gurus that can give me some help please?
-<snip>
-I was in a similar position many years ago and found there are excellent
-tutorials available to help one understand iptables.  In most cases, I
-found it to be far more powerful and flexible than other proprietary
-systems.  Many tutorials are listed on the netfilter web site.  There is
-an excellent one at
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-You can also find some training slide shows in the training section of
-http://iscs.sourceforge.net although these are a little out of date.
-Good luck and welcome to the world of netfilter and iptables! - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+>=20
+> I'm new to Linux and I've inherited a Webmin controlled=20
+> firewall. I'm used to using a SonicWall firewall and just=20
+> can't seem to get the hang of the Linux firewall. My problem=20
+> is I need to allow Outlook Web Access through to a server.=20
+> OWA is installed and can be used internally by going to the=20
+> server i.e. http://server/exchange We have an IP address I=20
+> can use to connect with but I just can't seem to let any=20
+> traffic through to the server, let alone just port 80 and=20
+> 443. Are there any firewall gurus that can give me some help please?
+>=20
+> Cheers,
+>=20
+> Pablo
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
+As John pointed out there are a lot of good tutorials out there for
+iptables and most of them should at least get you up and running. Some
+advice with OWA, since I (am forced to) provide it externally where I
+admin: set up forms based authentication, require HTTPS, and in
+Exchange's System Manager, remove OWA functionality from any privileged
+account. You should only need to open port 443 to the server (unless of
+course it is your mail exchange).
+
+Derick Anderson
 
 
