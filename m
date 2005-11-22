@@ -1,11 +1,10 @@
-From: "Paul Collen" <paul.collen@brahler-ics.co.uk>
-Subject: Linux Firewall Problem
-Date: Tue, 22 Nov 2005 11:08:43 -0000
-Message-ID: <08ABA55F2AFD764F93022E0FEBD4DB8D2EF415@server.cambridge.brahler-ics.co.uk>
+From: vikrant@saysnetsoft.com
+Subject: Re: Problem in applying "random" patch
+Date: Tue, 22 Nov 2005 07:18:55 -0600 (CST)
+Message-ID: <42987.61.12.43.109.1132665535.squirrel@saysnetsoft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +18,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+> Hi,
+>
+> I am trying to apply the "random" patch using patchomatic ng, but I am
+> unable to apply it successfully. It refuses to show options for the random
+> patch, saying "random does not match your source trees, skipping...". It
+> then jumps to "raw" patch.
 
-I'm new to Linux and I've inherited a Webmin controlled firewall. I'm
-used to using a SonicWall firewall and just can't seem to get the hang
-of the Linux firewall. My problem is I need to allow Outlook Web Access
-through to a server. OWA is installed and can be used internally by
-going to the server i.e. http://server/exchange We have an IP address I
-can use to connect with but I just can't seem to let any traffic through
-to the server, let alone just port 80 and 443. Are there any firewall
-gurus that can give me some help please?
+<snip>
 
-Cheers,
+> Thanks
+> Vikarnt
 
-Pablo
+
+I just realised that random only works in 2.4 kernel
+"http://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/patchlets/random/info?rev=4137&view=log"
+.  I also saw this from on of /dev/rob0 messages:
+
+> > well so far (I have also a 2.6.x kernel) I've been using the pom
+> > and just changing the above in the 'info' file to "> 2.4.0" and it
+> > didn't complain about a thing ;) I know that's a dirty way of doing
+> > it, but hey, it's working fine for me :)
+
+I will try this, but in the meantime, if anyone on this list has
+successfully implemented random on a 2.6 kernel, it would save me a lot of
+efforts.
+
+Thanks
+Vikrant
 
