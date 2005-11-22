@@ -1,7 +1,8 @@
 From: "Jesse Gordon" <jesseg@nikola.com>
-Subject: Unmatchable packet?
-Date: Tue, 22 Nov 2005 12:58:20 -0800
-Message-ID: <071e01c5efa7$786db600$5e00800a@printserver>
+Subject: Re: Unmatchable packet?
+Date: Tue, 22 Nov 2005 13:28:33 -0800
+Message-ID: <073501c5efab$b10ad390$5e00800a@printserver>
+References: <071e01c5efa7$786db600$5e00800a@printserver>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,28 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: Jesse Gordon <jesseg@nikola.com>, netfilter <netfilter@lists.netfilter.org>
 
-My box is running a TCP service. When another box tries to my box, my box 
-responds with a reply packet.(Just like it should.)
- How do I match that (and all subsequent) reply packets so I can SNAT on 
-them?
+----- Original Message ----- 
+From: "Jesse Gordon" <jesseg@nikola.com>
+> My box is running a TCP service. When another box tries to my box, my box
 
-I even tried:
+I meant 'When another box tries to _connect to_ my box...'
 
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 222.222.222.222
+-Jesse
 
-and sure enough, everything going out eth1 was 'from' 222.222.222.222 except 
-the reply packets to incoming connections.
-
-Also tried -t nat OUTPUT, -t mangle OUTPUT, etc.. Nothing seemed to work.
-
-Should I expect such a feat to be possible?
-
-Thanks!
-
--Jesse 
+> responds with a reply packet.(Just like it should.)
+> How do I match that (and all subsequent) reply packets so I can SNAT on 
+> them?
+>
+> I even tried:
+>
+> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 222.222.222.222
+>
+> and sure enough, everything going out eth1 was 'from' 222.222.222.222 
+> except the reply packets to incoming connections.
+>
+> Also tried -t nat OUTPUT, -t mangle OUTPUT, etc.. Nothing seemed to work.
+>
+> Should I expect such a feat to be possible?
+>
+> Thanks!
+>
+> -Jesse
+>
+>
+> 
 
 
 
