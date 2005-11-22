@@ -1,12 +1,13 @@
-From: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
-Subject: Re: Problem in applying "random" patch
-Date: Tue, 22 Nov 2005 12:32:38 +0100
-Message-ID: <438301D6.40900@mnemon.de>
-References: <41488.61.12.43.109.1132658372.squirrel@saysnetsoft.com>
+From: netfilter@rigacci.org
+Subject: Re: ip_conntrack_ftp as a module or built-in?
+Date: Tue, 22 Nov 2005 12:33:51 +0100
+Message-ID: <20051122113351.GA29137@rigacci.org>
+References: <20051122104702.GC27443@rigacci.org>
+	<54076.193.173.147.3.1132658395.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <41488.61.12.43.109.1132658372.squirrel@saysnetsoft.com>
+Content-Disposition: inline
+In-Reply-To: <54076.193.173.147.3.1132658395.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +19,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
+Cc: Rob Sterenborg <rob@sterenborg.info>
 
-vikrant@saysnetsoft.com schrieb:
-> Hi,
-> 
-> I am trying to apply the "random" patch using patchomatic ng, but I am
-> unable to apply it successfully. It refuses to show options for the random
-> patch, saying "random does not match your source trees, skipping...". It
-> then jumps to "raw" patch.
-> 
-> The kernel version on my test machine is 2.6.14.2 and iptables version is
-> 1.3.4. The dsitribution is CentOS4.
-> 
-> I downloaded the latest "patch-o-matic-ng-20040621.tar.bz2" from
-> http://www.netfilter.org/. The command that I used for patching was:
-> 
-> # KERNEL_DIR=/usr/src/kernels/linux-2.6.14.2/
-> IPTABLES_DIR=/root/iptables-1.3.4/ ./runme base
-> 
-> I have made sure that KERNEL_DIR and IPTABLES_DIR path are correct. I had
-> also tried using two other kernel versions earlier, 2.6.9-5.0.3 and
-> 2.6.9-22.0.1 with Iptables verion 1.2.11, but had got same results.
+> I'm not sure if passing that parameter to the kernel during boot time
+> will work (probably not).
+> Why would you do that anyway : why not use the module ?
 
-I have also kernel 2.6.14.2 but patch-o-matic-ng-20051117.tar.bz2 and
-this works. Maybe this is the why ? My system is Debian Sarge, I'm not
-sure if this matters.
+We are developing a network appliance and we are trying to keep a 
+small static kernel, with only the required features, no KMOD, no 
+discover, hotplug or whatever.
 
-HTH,
+Infact this is a more generic question: a module that accepts 
+some paramters can be built into the kernel and still receive all 
+of them?
 
-Joerg
+Thanks
+
+-- 
+Niccolo Rigacci
+Firenze - Italy
 
