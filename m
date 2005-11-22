@@ -1,13 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: Marc Haber <mh+netfilter@zugschlus.de>
 Subject: Re: Logging to the screen
-Date: Tue, 22 Nov 2005 12:39:01 -0600
-Message-ID: <200511221239.01763.rob0@gmx.co.uk>
+Date: Tue, 22 Nov 2005 20:26:46 +0100
+Message-ID: <20051122192646.GA1821@torres.l21.ma.zugschlus.de>
 References: <43836074.3000403@mail.bloomfield.k12.mo.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43836074.3000403@mail.bloomfield.k12.mo.us>
 Content-Disposition: inline
+In-Reply-To: <43836074.3000403@mail.bloomfield.k12.mo.us>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,17 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tuesday 2005-November-22 12:16, Scott Mayo wrote:
-> the actual firewall itself and see all this info that I had my
-> IPTABLES log, on the screen.  Any reason why it is not sending it to
-> the /var/log/messages? Thanks.
+On Tue, Nov 22, 2005 at 12:16:20PM -0600, Scott Mayo wrote:
+> I just noticed that my fireall is sending some of my LOGs to the screen. 
+>  I had tried setting something up a while back to LOG certain things, 
+> and was not sure if it was working or not.  Today, I went to the actual 
+> firewall itself and see all this info that I had my IPTABLES log, on the 
+> screen.  Any reason why it is not sending it to the /var/log/messages?
 
-The answer is in your LOG rules (--log-level) and syslog.conf(5). LOG 
-uses syslog(2) facility "kern" and priority as set in --log-level 
-(default is probably "info".)
+It should be sending to syslog via klogd, if you have that properly
+set up. To keep it from logging to the console, set sysctl
+kernel.printk to something like 2 4 1 7
+
+Greetings
+Marc
+
 -- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+-----------------------------------------------------------------------------
+Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
+Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
+Nordisch by Nature |  How to make an American Quilt | Fax: *49 621 72739835
 
