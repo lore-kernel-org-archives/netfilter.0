@@ -1,8 +1,9 @@
-From: Hamilton Vera <hamilton@i2.com.br>
-Subject: How to limit parallel udp connections?
-Date: Wed, 23 Nov 2005 15:38:20 -0200 (BRDT)
-Message-ID: <Pine.LNX.4.63.0511231534420.7774@lima.i2.com.br>
+From: Thamara Wanigatunga <thamara_w@yahoo.com>
+Subject: IP issue
+Date: Wed, 23 Nov 2005 12:58:59 -0800 (PST)
+Message-ID: <20051123205900.47993.qmail@web30007.mail.mud.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,25 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi list, I am looking for a way to controll/limit parallel UDP
-connections to avoid DNS DoS.
+Dear Gurus,
 
-Any idea how to do this?
+I need to have 4 web servers behind a iptables packet
+filter, could i achive this through alised ips. Or
+what could you recomend. Please help ..
 
-The only documentation I'd found about this issue, is:
-
-https://lists.netfilter.org/pipermail/netfilter-devel/2003-February/010594.html
-
-Any ideas?
-
-Thanks in advance,
-
-Sorry about the poor English.
+Regards
 
 
-"Google is my shepherd, no want shall I know"
+
+	
+		
+__________________________________ 
+Yahoo! Mail - PC Magazine Editors' Choice 2005 
+http://mail.yahoo.com
 
