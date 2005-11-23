@@ -1,13 +1,12 @@
-From: "Jesse Gordon" <jesseg@nikola.com>
-Subject: Re: Unmatchable packet?
-Date: Tue, 22 Nov 2005 17:46:36 -0800
-Message-ID: <078401c5efcf$bd9eb210$5e00800a@printserver>
-References: <071e01c5efa7$786db600$5e00800a@printserver>
-	<073501c5efab$b10ad390$5e00800a@printserver>
-	<4383BBE0.2020504@gmail.com>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: creating SYN bursts
+Date: Wed, 23 Nov 2005 15:45:43 +1000
+Message-ID: <43840207.5080802@snapgear.com>
+References: <20051122025400.GD29926@jukie.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20051122025400.GD29926@jukie.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,79 +17,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Nikolai Georgiev <voyager123bg@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Bart Trojanowski <bart@jukie.net>
 Cc: netfilter@lists.netfilter.org
 
------ Original Message ----- 
-From: "Nikolai Georgiev" <voyager123bg@gmail.com>
-To: "Jesse Gordon" <jesseg@nikola.com>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Tuesday, November 22, 2005 4:46 PM
-Subject: Re: Unmatchable packet?
-
-
-> Jesse Gordon wrote:
->
->> ----- Original Message ----- From: "Jesse Gordon" <jesseg@nikola.com>
->>
->>> My box is running a TCP service. When another box tries to my box, my
->>> box
-<snip>
->>>
->>> Should I expect such a feat to be possible?
->>>
->>> Thanks!
->>>
->>> -Jesse
->>>
->>>
->>>
->>
-> I think you are looking for DNAT. Yep, you want to make DNAT. Lets
-> suppose you have 3 machines: A,B,C; A is behind B and you are on C. You
-> would want to make a DNAT rule on B to A in order to initiate
-> connections from C to A...
-
-Thanks for your response!
-
-You are correct as to how I would go about forwarding ports to publish an 
-internal server -- but forwarding ports isn't my goal.
-
-Incidently I didn't explain well I guess.
-
-Note that what I'm trying to describe is not a normal thing to do; It's not 
-something that will make sense. Once you understand what I'm trying to say, 
-you'll want to ask me "But why on earth would you even want to do that?" (My 
-goal does have a use in the real world, but the real world is a much more 
-complicated scenerio to set up.)
-
-I actually want to rewrite the source IP of TCP packets that exit a given 
-ethernet card -- even (especially) if they are generated as responses to 
-incoming connections to the box.
-
- Lets say I have 2 machines: S, and C;
-S is the server, and I am on C[lient]. Both machines are sitting on a simple 
-isolated flat LAN.
-
-Normally, when C connects to S, S replies with it's own source address. This 
-is normal operation, and is what I want to alter.
-I wish for the replies from S to be to reach C with an arbitrarly assigned 
-source address.
-(And I want the source address rewrite to be performed inside S)
-
-I hope I was more concise this time.
-
-Thanks again!
-
--Jesse
-
->
->>
->>
->>
->
+On 11/22/2005 12:54 PM, Bart Trojanowski wrote:
+> I am doing some syn-flood testing.  I would like to create bursts of
+> real connections by using 'wget &' from a loop in user space, and have
+> the connections "queued up".  When everything is ready, I would like to
+> have all the SYNs sent out at (almost) the same time.
 > 
+> Is it possible to do something like this?  Can I use existing iptables
+> plugins?  If not, what NF primitives should I employ?
 
-
+Use the QUEUE target to send the packets to userspace, and then
+have a userspace application queue them until you are ready.
 
