@@ -1,12 +1,13 @@
 From: Philip Craig <philipc@snapgear.com>
-Subject: Re: conntrack question - what happens after timeout?
-Date: Wed, 23 Nov 2005 15:55:34 +1000
-Message-ID: <43840456.1000002@snapgear.com>
-References: <43819555.9030005@hilton.rwth-aachen.de>
+Subject: Re: Unmatchable packet?
+Date: Wed, 23 Nov 2005 16:05:19 +1000
+Message-ID: <4384069F.3010201@snapgear.com>
+References: <071e01c5efa7$786db600$5e00800a@printserver>	<073501c5efab$b10ad390$5e00800a@printserver>	<4383BBE0.2020504@gmail.com>
+	<078401c5efcf$bd9eb210$5e00800a@printserver>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43819555.9030005@hilton.rwth-aachen.de>
+In-Reply-To: <078401c5efcf$bd9eb210$5e00800a@printserver>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +19,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Daniel Sievers <sievers@hilton.rwth-aachen.de>
+To: Jesse Gordon <jesseg@nikola.com>
 Cc: netfilter@lists.netfilter.org
 
-On 11/21/2005 07:37 PM, Daniel Sievers wrote:
-> since recently we have had some problems with the conntrack table
-> growing too large and thus I experimented with lowering
-> /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established
-> from 5 days to a couple of hours.
+On 11/23/2005 11:46 AM, Jesse Gordon wrote:
+> I actually want to rewrite the source IP of TCP packets that exit a given 
+> ethernet card -- even (especially) if they are generated as responses to 
+> incoming connections to the box.
+> 
+>  Lets say I have 2 machines: S, and C;
+> S is the server, and I am on C[lient]. Both machines are sitting on a simple 
+> isolated flat LAN.
+> 
+> Normally, when C connects to S, S replies with it's own source address. This 
+> is normal operation, and is what I want to alter.
+> I wish for the replies from S to be to reach C with an arbitrarly assigned 
+> source address.
+> (And I want the source address rewrite to be performed inside S)
 
-Perhaps increasing your memory to match the workload is a better solution.
+You can't do this with iptables.  NAT rules only match the first packet
+of a connection, and the NAT mapping that is determined for that first
+packet is applied to all subsequent packets in that connection.
 
-> One thing I am still curious about though:
-> What happens after established connections timeout if packets arrive
-> which still belong to that connection? Do they get dropped automatically
-> by netfilter or do I have to set up a rule to accomplish this?
-
-The packets will not match any existing conntrack, and so a new
-conntrack will be created.  If you want to drop these packets,
-then you will need a rule such as:
-
-iptables -A FORWARD -p tcp ! --syn -m conntrack --cstate NEW -j DROP
-
-Note that a conntrack state of NEW does not imply that the SYN flag is set.
-
-> In other words: Is the conntrack code merely about managing a table with
-> connection states that gets used e.g. in the NAT code and can be used to
-> query the state of connections in iptables rules or does it perform
-> stateful inspection itself and (based on that) packet dropping etc. too?
-
-The conntrack code determines whether the packet belongs to a
-NEW or ESTABLISHED conntrack etc.  Whether packets are dropped based
-on that state is entirely up to the iptables rules.
+Futhermore, it doesn't make sense to do this.  The client will receive
+packets from your arbitarily assigned source address, but will not know
+what to do with them since it never sent any packets to that address,
+and so it will just drop them.
 
