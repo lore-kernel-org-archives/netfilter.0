@@ -1,13 +1,11 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: Unmatchable packet?
-Date: Wed, 23 Nov 2005 17:19:20 +1000
-Message-ID: <438417F8.3060907@snapgear.com>
-References: <071e01c5efa7$786db600$5e00800a@printserver>	<073501c5efab$b10ad390$5e00800a@printserver>	<4383BBE0.2020504@gmail.com>	<078401c5efcf$bd9eb210$5e00800a@printserver>	<4384069F.3010201@snapgear.com>
-	<WorldClient-F200511222303.AA03060138@nikola.com>
+From: Octavian Clinci <lyncks@gmail.com>
+Subject: SNAT tunnel
+Date: Wed, 23 Nov 2005 11:36:31 +0200
+Message-ID: <bf6a125b0511230136i63bafe2ct81a2900dabe5b491@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <WorldClient-F200511222303.AA03060138@nikola.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,41 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jesse Gordon <jesseg@nikola.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 11/23/2005 05:03 PM, Jesse Gordon wrote:
-> I agree -- to do as my little example showed would be useless -- but my
-> real goal is to route the reply traffic via a different route than the
-> request traffic -- I already got it to send the replies out a different
-> network interface then the requests came in, but I haven't yet figured out
-> how to rewrite the source address of the replies.
+hiya guys
+ im having an issue @ my home.
+ setup is as this:
+ i have a gateway with debian and 2 computers in the local LAN.
+ on the gw i have internet through let's say ISP1 and a public IP.
+ due to the fact that the internet was not that hot outside the local
+ISPs, i decided to create a tunnel to another ISP, let's call it ISP2
 
-Why do you need to rewrite the address?
-Just routing the packet should be enough, unless there is an
-intermediate firewall that is dropping the packets based on the
-source address.
+ the startup script is as follows:
 
-> I don't quite understand why iptables wouldn't be able to match just any
-> packet going into or out of any given network card, regardless of whether
-> it was related to any other packet or not.
-> 
-> I may be a little confused. It seems to me that my experiments showed that
-> the act of permitting a certain packet criteria to exit a specified
-> ethernet port does not inherently permit the responses for that connection
-> back in. It seems to me that I had to either tell it to allow related in,
-> or specifically allow the replies back. I'll check into it more.
+  route del default gw <gw isp1>
+  /sbin/modprobe ip_gre
+  /sbin/ip tunnel del net
+  /sbin/ip tunnel add mode gre net local <eth0 isp1 ip> remote <isp2
+tunneling machine>
+  /sbin/ifconfig net <public ip assigned by ISP2 to me> pointopoint <gw isp=
+2>
+  /sbin/ifconfig net up
+  /sbin/route add -host <isp2 tunneling machine> gw <isp1 gw>
+  /sbin/iptables -t nat -I POSTROUTING -s 0/0 -o net -j SNAT
+--to-source <public ip assigned by ISP2 to me>
+  route add default gw <gw isp2>
 
-I think you are confusing the nat and filter tables.
+ was sharing this connection to the other two computers through a SNAT
+to the ip given by isp2.
+ everything was working ok, until yesterday, when i couldnt resolve
+any hosts on the LAN machines, and not on the server.
+ i solved that on the server by adding a static route to the isp1 ns
+through the isp1 gw, but that didnt solve the problem for the windows
+machines.
+ on the local gw and the windows machines i have as NSes the isp1
+ones, and they worked just fine until yesterday.
+ when i move the connection to the ISP1 and not through the tunnel,
+and snat to the public isp1 address i have, everything works.
+ any ideas?
 
-The nat table only sees the first packet of a connection, because it
-is designed to set up the nat mapping based on the first packet only.
-
-The filter table does see every packet, which is why you need the rule
-to allow established/related packets.
-
-The mangle table also sees every packet.  It would be possible to write
-a custom target for use in the mangle table that changes the source
-address as you desire.  However, noone has written such a target as
-far as I know.
+ p.s. sorry about my english!
 
