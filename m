@@ -1,11 +1,25 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Forward Ipset and Clear DNAT entry
-Date: Thu, 24 Nov 2005 11:47:12 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0511241130310.20155@blackhole.kfki.hu>
-References: <437E02A4.40407@kitchenandassociates.com>
+Subject: Re: Why would certain packets not reach nat PREROUTING chain?
+Date: Thu, 24 Nov 2005 12:00:17 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0511241155311.20155@blackhole.kfki.hu>
+References: <20051110032733.GA19073@bostoncoop.net>
+	<3063e50511100055m41abd50hc3af78a67896db7d@mail.gmail.com>
+	<20051114145348.GA12841@bostoncoop.net>
+	<Pine.LNX.4.58.0511141559360.1983@blackhole.kfki.hu>
+	<4378A8B1.8010206@rosi-kessel.org>
+	<Pine.LNX.4.58.0511150855520.4319@blackhole.kfki.hu>
+	<4379E61F.5000807@rosi-kessel.org>
+	<Pine.LNX.4.58.0511151453480.4373@blackhole.kfki.hu>
+	<20051115235319.GA1727@bostoncoop.net>
+	<Pine.LNX.4.58.0511160923120.6746@blackhole.kfki.hu>
+	<20051118015254.GA21128@bostoncoop.net>
+	<Pine.LNX.4.58.0511181144430.11854@blackhole.kfki.hu>
+	<437EA014.1060908@rosi-kessel.org>
+	<Pine.LNX.4.58.0511192128300.13915@blackhole.kfki.hu>
+	<4380B04C.3090204@rosi-kessel.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <437E02A4.40407@kitchenandassociates.com>
+In-Reply-To: <4380B04C.3090204@rosi-kessel.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,80 +32,25 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Rob Carlson <rcarlson@kitchenandassociates.com>
+To: Adam Rosi-Kessel <adam@rosi-kessel.org>
 Cc: netfilter@lists.netfilter.org
 
-Hi Rob,
+On Sun, 20 Nov 2005, Adam Rosi-Kessel wrote:
 
-On Fri, 18 Nov 2005, Rob Carlson wrote:
-
-> I would like to be able to forward an ipset tied
-> to certain ports to a different machine.  I know
-> how to create an IPSet and bind that set to
-> certain ports-- I would like to be able to forward
-> that  set to another machine instead of doing a
-> straight reject.  My aim in the testing is to have
-> a machine I can ssh to, from which I can mail,
-> and then later verify that the mail sent to my
-> firewall gets routed properly.
-
-I'm not completely sure I understand what you want to achieve, but
-anyway...
-
-> To this end I created a set and a corresponding
-> table-- dischash and DISCHASH
+> >> So are there no diagnostics, absent rebuilding with netfilters debugging on,
+> >> for tracing a packet in between mangle PREROUTING and nat PREROUTING?
+> > Without further aid, no.
 >
-> ipset -N disc nethash
-> ipset -A dischash xxx.xxx.xxx.xxx/xx
-> ipset -N discports portmap --from 1 --to 1024
-> ipset -A discports 25
-> ipset -B dischash :default: -b discports
->    (Here I am not clear if I need the table, but
-> created it anyway)
-> iptables -N DISCHASH
->    (With a straight LTREJECT I would create a
-> FORWARD and INPUT, but here, I'm not sure)
->    (Then I did this:)
+> Okay, so I've rebuilt 2.6.8 with NETFILTER_DEBUG=Y. What would be the next
+> step? From what I can tell, NETFILTER_DEBUG isn't something turned on and
+> off in /proc/net or /proc/sys/net, it just is "on," but I'm not quite sure
+> what sort of debug messages we should be trying to get and how.
 
-You mean the DISCHASH chain? As you don't use it, the chain is
-unnecessary.
+You should get debug messages logged with the 'kernel' syslog facility.
+Look at /var/log/kern.log.
 
-> iptables -t nat  -A PREROUTING -m set --set
-> dischash dst -j DNAT --to-destination --to
-> yyy.yyy.yyy.yyy
->
-> Now, I can't ssh to the machine in the set, my ssh
-> (verified by a traceroute) fails to
-> yyy.yyy.yyy.yyy-- which is what I would expect if
-> I didn't have the ipset bound to port 25.
-
-The ipset is bound to the port, but you did not instruct the set matching
-to follow the bindings up to the level you want. You should have typed
-
-iptables -t nat  -A PREROUTING -m set --set \
-  dischash dst,dst -j DNAT --to-destination --to yyy.yyy.yyy.yyy
-           ^^^^^^^
-i.e instruct the set matching to follow one level of bindings and at that
-level apply destination matching. Without this, the set matching checked
-the dischash set alone and the NAT rule was applied according to the
-result.
-
-> I tried several iterations of this last command (verifying my insanity)
-> and now when I do:
->
-> iptables -L -t nat
-> I get entries at the end reading:
-> DNAT       all  --  anywhere             anywhere
->             set dischash dst to:xxx.xxx.xxx.xxx
->
-> So,
-> Is there syntax to clear single DNAT entries
-> without flushing ALL prerouting?
-
-You can delete any rule anytime. However, you cannot change the
-NAT-related parameters of the living connections known by conntrack. They
-must die out (or you can kill the corresponding conntrack entry by the new
-'conntrack' tool.)
+I'm going to try to emulate your problem with nfsim using your setup and
+the tcpdump results. Probably that can help.
 
 Best regards,
 Jozsef
