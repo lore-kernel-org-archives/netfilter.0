@@ -1,51 +1,44 @@
-From: Bhavatosh <bhavatosh@gmail.com>
-Subject: Re: IP issue
-Date: Thu, 24 Nov 2005 12:52:34 +0530
-Message-ID: <1132816954.25543.16.camel@bbhavatosh.blr.novell.com>
-References: <20051123205900.47993.qmail@web30007.mail.mud.yahoo.com>
-	<1132782410.5346.35.camel@localhost>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 2.2.7 released
+Date: Thu, 24 Nov 2005 11:19:28 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0511241113250.20155@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1132782410.5346.35.camel@localhost>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Cc: nnampoothiri@novell.com, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-On Wed, 2005-11-23 at 16:46 -0500, John A. Sullivan III wrote:
-> On Wed, 2005-11-23 at 12:58 -0800, Thamara Wanigatunga wrote:
-> > Dear Gurus,
-> > 
-> > I need to have 4 web servers behind a iptables packet
-> > filter, could i achive this through alised ips. Or
-> > what could you recomend. Please help ..
-> > 
-> <snip>
-> I assume you want each to have a unique public IP and perform NAT on the
-> iptables firewall.  If that is the case, One typically adds the NAT
-> rule(s), the access control rules in the FORWARD chain and binds the IP
-> address to the public interface of the iptables firewall using iproute2.
-> There is a slide show training session about using iproute2 in the
-> training section of http://iscs.sourceforge.net
-> Hope this helps - John
+Hi,
 
-You can use the reverse proxy functionality of squid also.
+As the subject says, ipset 2.2.7 is released. This is a bugfix version
+with all patches from Jones Desougi applied:
 
-With that create the acceleration services for all the web servers in
-reverse proxy.
+ - missing or confusing error message fixes for ipporthash
+ - minor correction in debugging in nethash
+ - copy-paste bug in kernel set types at memory allocation
+   checking fixed
+ - unified memory allocations in ipset
 
-Regards,
-Bhavatosh
+Many thanks, Jones!
 
+You can download the ipset source code and the patch-o-matic-ng snapshot
+from http://ipset.netfilter.org or from the netfilter svn tree.
 
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
