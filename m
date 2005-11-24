@@ -1,10 +1,13 @@
-From: "Daniel Chojecki" <boka@piekna.pl>
-Subject: using iptables by normal user - not gui
-Date: Thu, 24 Nov 2005 17:21:11 +0100 (CET)
-Message-ID: <2622.192.168.1.115.1132849271.squirrel@webmail.piekna.pl>
+From: Edmundo Carmona <eantoranz@gmail.com>
+Subject: Re: using iptables by normal user - not gui
+Date: Thu, 24 Nov 2005 11:59:21 -0400
+Message-ID: <65aa6af90511240759k1564b527u8f7d2edde763aefe@mail.gmail.com>
+References: <2622.192.168.1.115.1132849271.squirrel@webmail.piekna.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <2622.192.168.1.115.1132849271.squirrel@webmail.piekna.pl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,14 +21,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+have you checked doing it with sudo? I think you can set what user can
+execute a given command (iptables in this case).
 
-i would like to give access to iptables to one user in my system.
-
-Is it possible and how to setup my system to allow it ?
-
---=20
-greetz
-boka
-
+On 11/24/05, Daniel Chojecki <boka@piekna.pl> wrote:
+> Hi,
+>
+> i would like to give access to iptables to one user in my system.
+>
+> Is it possible and how to setup my system to allow it ?
+>
+> --
+> greetz
+> boka
+>
+>
+>
 
