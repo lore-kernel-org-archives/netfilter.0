@@ -1,13 +1,9 @@
-From: "Oleg A. Arkhangelsky" <sysoleg@progtech.ru>
-Subject: Re[2]: Port DNATting
-Date: Sat, 26 Nov 2005 13:28:52 +0300
-Message-ID: <1882785208.20051126132852@progtech.ru>
-References: <814141710.20051126124425@progtech.ru> <438836D9.5050204@gmail.com>
-Reply-To: "Oleg A. Arkhangelsky" <sysoleg@progtech.ru>
+From: amit pasari <amit@xsinfoways.com>
+Subject: remove duplicate rules
+Date: Sat, 26 Nov 2005 18:09:14 +0530
+Message-ID: <6.2.1.2.0.20051126180857.0336a1b0@147.202.41.46>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <438836D9.5050204@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +14,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello Georgi,
+hello,
+i have been using iptables for quite sometime , Now my problem is , if by 
+make i add multiple type of same rule in iptables it accepts N number of 
+entries . So can any body tell me how to aviod that or can i check the same 
+rule exists before Appending it into the table.
+Eg : iptables -A INPUT -d 192.168.0.2/32 -i eth1 -j DROP
+i have add the above rules 10 times 20 times but the system never says the 
+above rule exist . Can anybody tell me how can i check or aviod .
 
-Saturday, November 26, 2005, 1:20:09 PM, you wrote:
+My issue is not the performance point !! Actually i am running some scripts 
+with add rules when user login and which delete some rules when they log 
+out .  But some times this scripts mal performs and the entries doesn't get 
+deleted  OR added . and the user again logs in it add one more rule to the 
+same iptables.  I want to stop this , if the same rule exists the iptables 
+should give some error or should add the same rule again .
+Please help me .
 
-GA> If you want to do that you should read the
-GA> iptables-tutorial.frozentux.net, then use the REDIRECT target:
-GA> iptables -t nat -A PREROUTING -p tcp --dport 8080 -j REDIRECT --to 80
 
-    Thank you very much! My error was that I use POSTROUTING instead
-    of PREROUTING with DNAT.
+thanks in advance .
 
--- 
-Best regards,
- Oleg
+amit
+
+
 
 
