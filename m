@@ -1,13 +1,14 @@
-From: "Oleg A. Arkhangelsky" <sysoleg@progtech.ru>
-Subject: Re: remove duplicate rules
-Date: Sat, 26 Nov 2005 15:55:08 +0300
-Message-ID: <686184511.20051126155508@progtech.ru>
-References: <6.2.1.2.0.20051126180857.0336a1b0@147.202.41.46>
-Reply-To: "Oleg A. Arkhangelsky" <sysoleg@progtech.ru>
+From: Chris Brenton <cbrenton@chrisbrenton.org>
+Subject: Re: using iptables by normal user - not gui
+Date: Sat, 26 Nov 2005 09:13:05 -0500
+Message-ID: <1133014385.6388.1.camel@siren.chrisbrenton.org>
+References: <2622.192.168.1.115.1132849271.squirrel@webmail.piekna.pl>
+	<1132917787.21066.1.camel@bbhavatosh.blr.novell.com>
+Reply-To: cbrenton@chrisbrenton.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6.2.1.2.0.20051126180857.0336a1b0@147.202.41.46>
+In-Reply-To: <1132917787.21066.1.camel@bbhavatosh.blr.novell.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,25 +22,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello amit,
+On Fri, 2005-11-25 at 16:53 +0530, Bhavatosh wrote:
+> On Thu, 2005-11-24 at 17:21 +0100, Daniel Chojecki wrote:
+> > 
+> > i would like to give access to iptables to one user in my system.
+> > 
+> > Is it possible and how to setup my system to allow it ? 
+> 
+> Try sudo utility.You can give access of iptables to Normal user.
 
-Saturday, November 26, 2005, 3:39:14 PM, you wrote:
+Agreed. I wrote up a paper on how to set this up a while back. Info is
+here:
+http://www.loganalysis.org/sections/parsing/application-specific/firewall-logging.html
 
-ap> same iptables.  I want to stop this , if the same rule exists the iptables
-ap> should give some error or should add the same rule again .
-ap> Please help me .
+HTH,
+Chris
 
-    I think you should manually check the existence of possible
-    duplicate before adding rule. Also you can do somethig like:
 
-    iptables -D INPUT -d 192.168.0.2/32 -i eth1 -j DROP
-    iptables -A INPUT -d 192.168.0.2/32 -i eth1 -j DROP
-
-    Then you will never get duplicates.
-    But the first way is more correct.
-
--- 
-Best regards,
- Oleg
 
 
