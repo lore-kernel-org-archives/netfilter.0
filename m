@@ -1,14 +1,10 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: using iptables by normal user - not gui
-Date: Sat, 26 Nov 2005 09:13:05 -0500
-Message-ID: <1133014385.6388.1.camel@siren.chrisbrenton.org>
-References: <2622.192.168.1.115.1132849271.squirrel@webmail.piekna.pl>
-	<1132917787.21066.1.camel@bbhavatosh.blr.novell.com>
-Reply-To: cbrenton@chrisbrenton.org
+From: PassWord Sistemas <password@speedy.com.ar>
+Subject: dual/triple adsl router natting problem
+Date: Fri, 25 Nov 2005 21:58:57 -0300
+Message-ID: <4387B351.00000C.03940@OFICINA>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1132917787.21066.1.camel@bbhavatosh.blr.novell.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Fri, 2005-11-25 at 16:53 +0530, Bhavatosh wrote:
-> On Thu, 2005-11-24 at 17:21 +0100, Daniel Chojecki wrote:
-> > 
-> > i would like to give access to iptables to one user in my system.
-> > 
-> > Is it possible and how to setup my system to allow it ? 
-> 
-> Try sudo utility.You can give access of iptables to Normal user.
+Hi, sorry for my bad english, i=B4m trying to share 2 adsl line in a =
+lan
+conected to one AP with 15 clients, but i can=B4t. I=B4m using Fedora=
+ Core 3
+with a few lines scripts with one adsl line:=20
 
-Agreed. I wrote up a paper on how to set this up a while back. Info is
-here:
-http://www.loganalysis.org/sections/parsing/application-specific/firewall-logging.html
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables --flush
+iptables --table nat --flush
+iptables --table nat --append POSTROUTING --out-interface ppp0 -j MAS=
+QUERADE
+iptables --append FORWARD --in-interface eth0 -j ACCEPT
 
-HTH,
-Chris
+service named start
+=20
+I need to include in this script the other adsl because the clients a=
+re
+webing very slow.
+Very thanks...
 
+Federico.
+Rawson - Argentina
 
 
 
