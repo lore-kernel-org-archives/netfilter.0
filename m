@@ -1,13 +1,12 @@
-From: Leon Stringer <leon.stringer@ntlworld.com>
-Subject: Re: Firewall only/bridging set up
-Date: Sun, 27 Nov 2005 21:12:21 +0000
-Message-ID: <1133125941.3039.18.camel@localhost.localdomain>
-References: <1133121850.3039.16.camel@localhost.localdomain>
-	<9255886c0511271222t3b0d9adbi3cd7997cbe93221d@mail.gmail.com>
+From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
+Subject: Re: Scripting a firewall in front of a SMTP server
+Date: Sun, 27 Nov 2005 23:49:05 +0200
+Message-ID: <438A29D1.4090508@gmail.com>
+References: <7834b9550511270828o50b7b429o@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9255886c0511271222t3b0d9adbi3cd7997cbe93221d@mail.gmail.com>
+In-Reply-To: <7834b9550511270828o50b7b429o@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +17,129 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Sp0oKeR <spooker@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Thanks SpOoKeR, that answers my question. I'll read up on it.
+Fernando Martins wrote:
 
-On Sun, 2005-11-27 at 18:22 -0200, Sp0oKeR wrote:
-> Try ebtables instead of iptables
-> 
-> 
-> What is ebtables?
-> 
-> The ebtables program is a filtering tool for a bridging firewall. The
-> filtering is focussed on the Link Layer Ethernet frame fields. Apart
-> from filtering, it also gives the ability to alter the Ethernet MAC
-> addresses and implement a brouter.
-> This website is also a reference for the Linux bridge-nf code, which
-> gives Linux the functionality of a bridging IP/IPv6/ARP firewall, by
-> letting iptables/ip6tables/arptables 'see' the bridged IPv4/IPv6/ARP
-> packets.
-> Both ebtables and bridge-nf are a part of the standard 2.6 kernel. A
-> patch for the 2.4 stable kernel is maintained here, because enough
-> people keep bugging me when Marcelo releases yet another 2.4 kernel.
-> 
-> http://ebtables.sourceforge.net/
-> 
-> Regards,
-> 
-> Sp0oKeR
-> 
-> On 11/27/05, Leon Stringer <leon.stringer@ntlworld.com> wrote:
-> > Hi,
-> >
-> > I've been using iptables as a firewalling router for a year and it's
-> > worked brilliantly.
-> >
-> > (O/T: It went into service after the Cisco-qualified engineers failed to
-> > get their Cisco kit to meet our modest requirements!).
-> >
-> > I now have a new requirement for just a firewall, i.e. no routing.
-> >
-> > So the LAN will connect to one NIC and the other NIC will connect to the
-> > ISP router.
-> >
-> > So I assume that this will require a "virtual" bridge device to be set
-> > up. And I've read that this isn't straightforward to get iptables to
-> > work in this configuration.
-> >
-> > So my question is: as an existing iptables user, should I be able to set
-> > up a box for firewalling only as described?
-> >
-> > If so, is there any (good!) documentation on this?
-> >
-> > Or would I be better off with a firewall "appliance"?
-> >
-> > Thanks in advance for any advice,
-> >
-> > Leon...
+>Hello,
+>
+>I have a  firewall in front of an Exchange serveur. I can't receive
+>any mail from outside. It seems I have a problem with my script. When
+>I do a telnet on my server on port 25, from the outside, there is a
+>connection but this one is closed before I reach the HELO messages.
+>Moreover, when I try to connect friom the firewall to the SMTP server(
+>telnet 25)
+>I have more or less the message:
+>"
+>escape caracter is :^]
+>Connection closed by foreign host
+>"
+>
+>My network is :
+>
+>Internet
+>|
+>|
+>|
+>Firewall
+>|
+>|
+>SMTP
+>
+>Internet-Firewall interface: eth0 ip adress xxx.yyy.zzz.ttt
+>corresponding to the MX
+>
+>Firewall-SMTP= eth1
+>
+>SMTP: 192.168.0.2
+>
+>
+>Any idea?
+>Here is the script:
+>
+>#!/bin/sh
+># script /etc/firewall.sh
+>echo 1 > /proc/sys/net/ipv4/ip_forward
+>echo "Activation du forwarding :[OK]\n"
+>if [ -e /proc/sys/net/ipv4/conf/all/rp_filter ]
+>then
+>for filtre in /proc/sys/net/ipv4/conf/*/rp_filter
+>do
+>echo 1 > $filtre
+>done
+>fi
+>
+>echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+>echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+>
+>modprobe ip_tables
+>modprobe iptable_filter
+>modprobe iptable_nat
+>
+>iptables -F
+>iptables -X
+>
+>iptables -N LOG_DROP
+>
+>
+>iptables -A LOG_DROP -j LOG --log-prefix '[IPTABLES DROP] : '
+>iptables -A LOG_DROP -j DROP
+>
+>
+>iptables -N LOG_ACCEPT
+>iptables -A LOG_ACCEPT -j LOG --log-prefix '[IPTABLES ACCEPT] : '
+>iptables -A LOG_ACCEPT -j ACCEPT
+>
+>iptables -P INPUT DROP
+>iptables -P OUTPUT DROP
+>iptables -P FORWARD DROP
+>
+>iptables -A INPUT -i lo -j ACCEPT
+>iptables -A OUTPUT -o lo -j ACCEPT
+>
+>iptables -A OUTPUT -o eth0 -m state --state NEW,ESTABLISHED -p tcp
+>--dport 80 -j ACCEPT
+>
+>iptables -A INPUT -i eth0 -m state --state ESTABLISHED -p tcp --sport
+>80 -j ACCEPT
+>
+>iptables -A OUTPUT -o eth0 -m state --state NEW,ESTABLISHED -p tcp
+>--dport 80 -j ACCEPT
+>
+>iptables -A INPUT -i eth0 -m state --state ESTABLISHED -p tcp --sport
+>80 -j ACCEPT
+>
+>iptables -t nat -A PREROUTING -d xxx.yyy.zzz.ttt -p tcp --dport 80 -j
+>DNAT --to-destination 192.168.0.2:80
+>
+>iptables -t nat -A PREROUTING -d xxx.yyy.zzz.ttt -p tcp --dport 25 -j
+>DNAT --to-destination 192.168.0.2:25
+>
+>iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+>iptables -A FORWARD -o eth1 -i eth0 -j ACCEPT
+>
+>iptables -A FORWARD -i eth0 -o eth1 -p tcp --destination-port 80 -m
+>state --state NEW,ESTABLISHED -j ACCEPT
+>
+>iptables -A FORWARD -o eth0 -i eth1 -p tcp --source-port 80 -m state
+>--state NEW,ESTABLISHED -j ACCEPT
+>
+>iptables -A FORWARD -i eth0 -o eth1 -p tcp --destination-port 25 -m
+>state --state NEW,ESTABLISHED -j ACCEPT
+>iptables -A FORWARD -o eth0 -i eth1 -p tcp --source-port 25 -m state
+>--state ESTABLISHED -j ACCEPT
+>
+>iptables -A FORWARD -j LOG_DROP
+>iptables -A INPUT -j LOG_DROP
+>iptables -A OUTPUT -j LOG_DROP
+>
+>
+>  
+>
+I suggest you to start with this - 
+http://www.iseclab.net/modules/articles/article.php?id=1
+and this - http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
+good luck
 
