@@ -1,12 +1,12 @@
 From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: dual/triple adsl router natting problem
-Date: Sun, 27 Nov 2005 12:58:18 +0100
-Message-ID: <000001c5f349$db5b40c0$0101000a@sterenborg.info>
-References: <4387B351.00000C.03940@OFICINA>
+Subject: RE: Route block CONNECT requisitions for apache
+Date: Sun, 27 Nov 2005 13:06:58 +0100
+Message-ID: <000101c5f34b$11600790$0101000a@sterenborg.info>
+References: <eb5ae9cc0511270326k56aac640g9141e264471247a4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4387B351.00000C.03940@OFICINA>
+In-Reply-To: <eb5ae9cc0511270326k56aac640g9141e264471247a4@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Lista IPTABLES' <netfilter@lists.netfilter.org>
 
-netfilter-bounces@lists.netfilter.org scribbled on :
+> I have a apache webserver behind a iptables firewall, and some people
+> are trying to abuse from my server probably for spam. I have this
+> information on the log of the apache:
+> 
+> 219.80.160.238 - - [27/Nov/2005:08:56:13 -0200] "CONNECT
+> 64.161.246.99:25 HTTP/1.0" 200 6446
+> 
+> I have a lot of this lines, with some diferent IPs, I already blocked
+> all those IPs. 
+> 
+> I want create a rule that block all those type of connections,
+> someone know how can i do? 
 
-> Hi, sorry for my bad english, i=B4m trying to share 2 adsl line in a =
-lan
-> conected to one AP with 15 clients, but i can=B4t. I=B4m using
-> Fedora Core 3 with a few lines scripts with one adsl line:
->=20
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> iptables --flush
-> iptables --table nat --flush
-> iptables --table nat --append POSTROUTING --out-interface
-> ppp0 -j MASQUERADE
-> iptables --append FORWARD --in-interface eth0 -j ACCEPT
->=20
-> service named start
+You say you already block these connections. So why do you ask ?
 
-So you're starting the DNS server. What about the firewall script ?
+- If you have a lot of IP addresses : http://ipset.netfilter.org/ for
+creating a set of ip addresses to match
+- Use Squid as reverse proxy
 
-> I need to include in this script the other adsl because the
-> clients are webing very slow.
+> The ideia ir more or less it:
+> 
+> "everything witch comes for the htttp_port wich contain 'connect type
+> connections' must be deny or droped'"
 
-It's not quite as simple as what you have above (having never done it
-before I can't tell you exactly how difficult it will be).
-
-Please look here (Google is your friend) :
-http://www.ssi.bg/~ja/nano.txt
-http://lartc.org/howto/lartc.rpdb.multiple-links.html
-http://linux-ip.net/html/adv-multi-internet.html
-http://lists.suse.com/archive/suse-linux-e/2003-Jul/1136.html
-
-It seems you need to patch the kernel for some solutions :
-http://www.ssi.bg/~ja/#routes
+You want content filtering and Netfilter is no good for that. You could
+use the string match, but if the string you want to match is divided
+over 2 (or more) packets, it won't work.
+Use Squid as reverse proxy to block something like this.
 
 
 Gr,
