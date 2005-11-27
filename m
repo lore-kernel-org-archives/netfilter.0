@@ -1,10 +1,13 @@
-From: Leon Stringer <leon.stringer@ntlworld.com>
-Subject: Firewall only/bridging set up
-Date: Sun, 27 Nov 2005 20:04:09 +0000
-Message-ID: <1133121850.3039.16.camel@localhost.localdomain>
+From: Sp0oKeR <spooker@gmail.com>
+Subject: Re: Firewall only/bridging set up
+Date: Sun, 27 Nov 2005 18:22:44 -0200
+Message-ID: <9255886c0511271222t3b0d9adbi3cd7997cbe93221d@mail.gmail.com>
+References: <1133121850.3039.16.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1133121850.3039.16.camel@localhost.localdomain>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +19,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Leon Stringer <leon.stringer@ntlworld.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
-
-I've been using iptables as a firewalling router for a year and it's
-worked brilliantly.
-
-(O/T: It went into service after the Cisco-qualified engineers failed to
-get their Cisco kit to meet our modest requirements!).
-
-I now have a new requirement for just a firewall, i.e. no routing.
-
-So the LAN will connect to one NIC and the other NIC will connect to the
-ISP router.
-
-So I assume that this will require a "virtual" bridge device to be set
-up. And I've read that this isn't straightforward to get iptables to
-work in this configuration.
-
-So my question is: as an existing iptables user, should I be able to set
-up a box for firewalling only as described?
-
-If so, is there any (good!) documentation on this?
-
-Or would I be better off with a firewall "appliance"?
-
-Thanks in advance for any advice,
-
-Leon...
-
+VHJ5IGVidGFibGVzIGluc3RlYWQgb2YgaXB0YWJsZXMKCgpXaGF0IGlzIGVidGFibGVzPwoKVGhl
+IGVidGFibGVzIHByb2dyYW0gaXMgYSBmaWx0ZXJpbmcgdG9vbCBmb3IgYSBicmlkZ2luZyBmaXJl
+d2FsbC4gVGhlCmZpbHRlcmluZyBpcyBmb2N1c3NlZCBvbiB0aGUgTGluayBMYXllciBFdGhlcm5l
+dCBmcmFtZSBmaWVsZHMuIEFwYXJ0CmZyb20gZmlsdGVyaW5nLCBpdCBhbHNvIGdpdmVzIHRoZSBh
+YmlsaXR5IHRvIGFsdGVyIHRoZSBFdGhlcm5ldCBNQUMKYWRkcmVzc2VzIGFuZCBpbXBsZW1lbnQg
+YSBicm91dGVyLgpUaGlzIHdlYnNpdGUgaXMgYWxzbyBhIHJlZmVyZW5jZSBmb3IgdGhlIExpbnV4
+IGJyaWRnZS1uZiBjb2RlLCB3aGljaApnaXZlcyBMaW51eCB0aGUgZnVuY3Rpb25hbGl0eSBvZiBh
+IGJyaWRnaW5nIElQL0lQdjYvQVJQIGZpcmV3YWxsLCBieQpsZXR0aW5nIGlwdGFibGVzL2lwNnRh
+Ymxlcy9hcnB0YWJsZXMgJ3NlZScgdGhlIGJyaWRnZWQgSVB2NC9JUHY2L0FSUApwYWNrZXRzLgpC
+b3RoIGVidGFibGVzIGFuZCBicmlkZ2UtbmYgYXJlIGEgcGFydCBvZiB0aGUgc3RhbmRhcmQgMi42
+IGtlcm5lbC4gQQpwYXRjaCBmb3IgdGhlIDIuNCBzdGFibGUga2VybmVsIGlzIG1haW50YWluZWQg
+aGVyZSwgYmVjYXVzZSBlbm91Z2gKcGVvcGxlIGtlZXAgYnVnZ2luZyBtZSB3aGVuIE1hcmNlbG8g
+cmVsZWFzZXMgeWV0IGFub3RoZXIgMi40IGtlcm5lbC4KCmh0dHA6Ly9lYnRhYmxlcy5zb3VyY2Vm
+b3JnZS5uZXQvCgpSZWdhcmRzLAoKU3Awb0tlUgoKT24gMTEvMjcvMDUsIExlb24gU3RyaW5nZXIg
+PGxlb24uc3RyaW5nZXJAbnRsd29ybGQuY29tPiB3cm90ZToKPiBIaSwKPgo+IEkndmUgYmVlbiB1
+c2luZyBpcHRhYmxlcyBhcyBhIGZpcmV3YWxsaW5nIHJvdXRlciBmb3IgYSB5ZWFyIGFuZCBpdCdz
+Cj4gd29ya2VkIGJyaWxsaWFudGx5Lgo+Cj4gKE8vVDogSXQgd2VudCBpbnRvIHNlcnZpY2UgYWZ0
+ZXIgdGhlIENpc2NvLXF1YWxpZmllZCBlbmdpbmVlcnMgZmFpbGVkIHRvCj4gZ2V0IHRoZWlyIENp
+c2NvIGtpdCB0byBtZWV0IG91ciBtb2Rlc3QgcmVxdWlyZW1lbnRzISkuCj4KPiBJIG5vdyBoYXZl
+IGEgbmV3IHJlcXVpcmVtZW50IGZvciBqdXN0IGEgZmlyZXdhbGwsIGkuZS4gbm8gcm91dGluZy4K
+Pgo+IFNvIHRoZSBMQU4gd2lsbCBjb25uZWN0IHRvIG9uZSBOSUMgYW5kIHRoZSBvdGhlciBOSUMg
+d2lsbCBjb25uZWN0IHRvIHRoZQo+IElTUCByb3V0ZXIuCj4KPiBTbyBJIGFzc3VtZSB0aGF0IHRo
+aXMgd2lsbCByZXF1aXJlIGEgInZpcnR1YWwiIGJyaWRnZSBkZXZpY2UgdG8gYmUgc2V0Cj4gdXAu
+IEFuZCBJJ3ZlIHJlYWQgdGhhdCB0aGlzIGlzbid0IHN0cmFpZ2h0Zm9yd2FyZCB0byBnZXQgaXB0
+YWJsZXMgdG8KPiB3b3JrIGluIHRoaXMgY29uZmlndXJhdGlvbi4KPgo+IFNvIG15IHF1ZXN0aW9u
+IGlzOiBhcyBhbiBleGlzdGluZyBpcHRhYmxlcyB1c2VyLCBzaG91bGQgSSBiZSBhYmxlIHRvIHNl
+dAo+IHVwIGEgYm94IGZvciBmaXJld2FsbGluZyBvbmx5IGFzIGRlc2NyaWJlZD8KPgo+IElmIHNv
+LCBpcyB0aGVyZSBhbnkgKGdvb2QhKSBkb2N1bWVudGF0aW9uIG9uIHRoaXM/Cj4KPiBPciB3b3Vs
+ZCBJIGJlIGJldHRlciBvZmYgd2l0aCBhIGZpcmV3YWxsICJhcHBsaWFuY2UiPwo+Cj4gVGhhbmtz
+IGluIGFkdmFuY2UgZm9yIGFueSBhZHZpY2UsCj4KPiBMZW9uLi4uCj4KPgo+CgoKCi0tCj09PT09
+PT09PT09PT09PT09PT09PQogUm9kcmlnbyBSaWJlaXJvIE1vbnRvcm8KRGVzZW52b2x2ZWRvciBC
+Uk1BbGludXgKICBzcG9va2VyQGJyYy5jb20uYnIKICAgICAgIFJIQ0UvTFBJQy1JCj09PT09PT09
+PT09PT09PT09PT09PQo=
 
