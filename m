@@ -1,12 +1,11 @@
-From: "Kiba da Fucka" <dkiba@yandex.ru>
-Subject: NFQUEUE nfq_set_verdict_mark and "iptables -m mark" interaction
-	problem
-Date: Sun, 27 Nov 2005 04:24:51 +0300 (MSK)
-Message-ID: <43890AE3.000001.24021@ariel.yandex.ru>
-Reply-To: dkiba@yandex.ru
+From: Leonardo Marques <surf3r0@gmail.com>
+Subject: Route block CONNECT requisitions for apache
+Date: Sun, 27 Nov 2005 09:26:35 -0200
+Message-ID: <eb5ae9cc0511270326k56aac640g9141e264471247a4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Lista IPTABLES <netfilter@lists.netfilter.org>
 
-Hi all.
+Hello,
 
-I'm trying to use queing mechanisms of 2.6.14, NFQUEUE.
+I have a apache webserver behind a iptables firewall, and some people
+are trying to abuse from my server probably for spam. I have this
+information on the log of the apache:
 
-My task is to set firewall mark from userspace, and make filtering decision in filter table or for example corresponding DNAT action in nat PREROUTING.
+219.80.160.238 - - [27/Nov/2005:08:56:13 -0200] "CONNECT
+64.161.246.99:25 HTTP/1.0" 200 6446
 
-My test firewall rules:
+I have a lot of this lines, with some diferent IPs, I already blocked
+all those IPs.
 
-IPTABLES -t mangle -A PREROUTING -p ICMP -j NFQUEUE --queue-num 3
+I want create a rule that block all those type of connections, someone
+know how can i do?
 
-IPTABLES -P INPUT DROP
-IPTABLES -A INPUT -m mark --mark 1 -j ACCEPT
+The ideia ir more or less it:
 
-I uset nfqnl_test provided in libnetfilter_queue to test this approach:
-Set up  the queue:
+"everything witch comes for the htttp_port wich contain 'connect type
+connections' must be deny or droped'"
 
-qh = nfq_create_queue(h,  3, &cb, NULL);
+Thanks for attention ;)
 
-And in callback I call ipq_set_verdict_mark() instead of ipq_set_verdict()
-
-    u_int32_t id = print_pkt(nfa);
-    printf("entering callback\n");
-    return nfq_set_verdict_mark(qh, id, NF_ACCEPT, 1,0, NULL);
-
-Program catches packets from netlink socket and setting verdict, but it seems not to mark with  "1", because iptables rule that accepts only marked packets doesn't work, but all queued traffic goes in/out without it.
-
-Looking over code of libnetfilter_queue doesn't give me much, but as far as i understand, I don't have to pass packet data and datalen to this  function if I just want to set netfilter mark. Am I right?
-
-Or i should pass pointers to data and data length even if I just set mark?
-Or maybe there is an issue with netfilter -m mark match interaction?
-
-KdF
+--
+------------------------------
+Leonardo Marques
+http://www.analyx.org
+------------------------------
 
