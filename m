@@ -1,11 +1,13 @@
-From: Fernando Martins <martinsfernand@gmail.com>
-Subject: Scripting a firewall in front of a SMTP server
-Date: Sun, 27 Nov 2005 17:28:52 +0100
-Message-ID: <7834b9550511270828o50b7b429o@mail.gmail.com>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: RE: Scripting a firewall in front of a SMTP server
+Date: Sun, 27 Nov 2005 17:36:43 +0100
+Message-ID: <28768.1057387546$1133109430@news.gmane.org>
+References: <7834b9550511270828o50b7b429o@mail.gmail.com>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <7834b9550511270828o50b7b429o@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,6 +20,26 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+Hi,
+
+why do you need this line?
+
+iptables -A INPUT -i eth0 -m state --state ESTABLISHED -p tcp --sport 80 -j
+ACCEPT
+
+Regards,
+
+Edvin
+
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Fernando Martins
+Sent: Sonntag, 27. November 2005 17:29
+To: netfilter@lists.netfilter.org
+Subject: Scripting a firewall in front of a SMTP server
 
 Hello,
 
@@ -47,7 +69,7 @@ SMTP
 Internet-Firewall interface: eth0 ip adress xxx.yyy.zzz.ttt
 corresponding to the MX
 
-Firewall-SMTP=3D eth1
+Firewall-SMTP= eth1
 
 SMTP: 192.168.0.2
 
@@ -130,4 +152,6 @@ iptables -A FORWARD -o eth0 -i eth1 -p tcp --source-port 25 -m state
 iptables -A FORWARD -j LOG_DROP
 iptables -A INPUT -j LOG_DROP
 iptables -A OUTPUT -j LOG_DROP
+
+
 
