@@ -1,13 +1,10 @@
-From: Leonardo Marques <surf3r0@gmail.com>
-Subject: Re: Route block CONNECT requisitions for apache
-Date: Sun, 27 Nov 2005 12:37:28 -0200
-Message-ID: <eb5ae9cc0511270637y4bc28d2fp348dfbf215425fe6@mail.gmail.com>
-References: <eb5ae9cc0511270326k56aac640g9141e264471247a4@mail.gmail.com>
-	<4389BD92.2040908@gmail.com>
+From: Fernando Martins <martinsfernand@gmail.com>
+Subject: Scripting a firewall in front of a SMTP server
+Date: Sun, 27 Nov 2005 17:28:52 +0100
+Message-ID: <7834b9550511270828o50b7b429o@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4389BD92.2040908@gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,61 +17,117 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Lista IPTABLES <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On 11/27/05, Georgi Alexandrov <georgi.alexandrov@gmail.com> wrote:
-> Leonardo Marques wrote:
->
-> >Hello,
-> >
-> >I have a apache webserver behind a iptables firewall, and some people
-> >are trying to abuse from my server probably for spam. I have this
-> >information on the log of the apache:
-> >
-> >219.80.160.238 - - [27/Nov/2005:08:56:13 -0200] "CONNECT
-> >64.161.246.99:25 HTTP/1.0" 200 6446
-> >
-> >I have a lot of this lines, with some diferent IPs, I already blocked
-> >all those IPs.
-> >
-> >I want create a rule that block all those type of connections, someone
-> >know how can i do?
-> >
-> >The ideia ir more or less it:
-> >
-> >"everything witch comes for the htttp_port wich contain 'connect type
-> >connections' must be deny or droped'"
-> >
-> >
-> >
-> What's the point in doing this? As those are no harm to your system.
-> Or you like to complex your life as much as possible and then say: "oh,
-> security isn't for everyone, but i'm managing somehow!"
-> Perhaps you should leave those and deal with something more useful.
->
+Hello,
 
-Whats the problem to search a finally solution for a problem!? I cant
-understand
-why you are so brave with it. I thought here is a place to discuss
-about security with Iptables. :/
+I have a  firewall in front of an Exchange serveur. I can't receive
+any mail from outside. It seems I have a problem with my script. When
+I do a telnet on my server on port 25, from the outside, there is a
+connection but this one is closed before I reach the HELO messages.
+Moreover, when I try to connect friom the firewall to the SMTP server(
+telnet 25)
+I have more or less the message:
+"
+escape caracter is :^]
+Connection closed by foreign host
+"
 
-Whats the problem to dont have free time to be reading the apache log
-and be blocking manually a lot of ips?! Whats the problem to find a
-rule wich solve this problem for me?!
+My network is :
 
-Exactly, i need it to be automated, to have time to do another things.
+Internet
+|
+|
+|
+Firewall
+|
+|
+SMTP
 
-Georgi, if you dont want help... just dont say nothing, its better for
-me, for you, for everybody.
+Internet-Firewall interface: eth0 ip adress xxx.yyy.zzz.ttt
+corresponding to the MX
 
-> regards,
-> Georgi Alexandrov
->
->
+Firewall-SMTP=3D eth1
 
---
-------------------------------
-Leonardo Marques
-http://www.analyx.org
-------------------------------
+SMTP: 192.168.0.2
+
+
+Any idea?
+Here is the script:
+
+#!/bin/sh
+# script /etc/firewall.sh
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo "Activation du forwarding :[OK]\n"
+if [ -e /proc/sys/net/ipv4/conf/all/rp_filter ]
+then
+for filtre in /proc/sys/net/ipv4/conf/*/rp_filter
+do
+echo 1 > $filtre
+done
+fi
+
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+
+modprobe ip_tables
+modprobe iptable_filter
+modprobe iptable_nat
+
+iptables -F
+iptables -X
+
+iptables -N LOG_DROP
+
+
+iptables -A LOG_DROP -j LOG --log-prefix '[IPTABLES DROP] : '
+iptables -A LOG_DROP -j DROP
+
+
+iptables -N LOG_ACCEPT
+iptables -A LOG_ACCEPT -j LOG --log-prefix '[IPTABLES ACCEPT] : '
+iptables -A LOG_ACCEPT -j ACCEPT
+
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+iptables -A OUTPUT -o eth0 -m state --state NEW,ESTABLISHED -p tcp
+--dport 80 -j ACCEPT
+
+iptables -A INPUT -i eth0 -m state --state ESTABLISHED -p tcp --sport
+80 -j ACCEPT
+
+iptables -A OUTPUT -o eth0 -m state --state NEW,ESTABLISHED -p tcp
+--dport 80 -j ACCEPT
+
+iptables -A INPUT -i eth0 -m state --state ESTABLISHED -p tcp --sport
+80 -j ACCEPT
+
+iptables -t nat -A PREROUTING -d xxx.yyy.zzz.ttt -p tcp --dport 80 -j
+DNAT --to-destination 192.168.0.2:80
+
+iptables -t nat -A PREROUTING -d xxx.yyy.zzz.ttt -p tcp --dport 25 -j
+DNAT --to-destination 192.168.0.2:25
+
+iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+iptables -A FORWARD -o eth1 -i eth0 -j ACCEPT
+
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --destination-port 80 -m
+state --state NEW,ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -o eth0 -i eth1 -p tcp --source-port 80 -m state
+--state NEW,ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -i eth0 -o eth1 -p tcp --destination-port 25 -m
+state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -o eth0 -i eth1 -p tcp --source-port 25 -m state
+--state ESTABLISHED -j ACCEPT
+
+iptables -A FORWARD -j LOG_DROP
+iptables -A INPUT -j LOG_DROP
+iptables -A OUTPUT -j LOG_DROP
 
