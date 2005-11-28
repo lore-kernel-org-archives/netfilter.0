@@ -1,12 +1,15 @@
-From: Diego Cabrero <diego.cabrero@e-attico.net>
-Subject: Controling Inbound and Outbound traffic simultaneusly.
-Date: Mon, 28 Nov 2005 19:12:48 +0100
-Message-ID: <438B48A0.8050100@e-attico.net>
-References: <4385B2EB.60209@e-attico.net>
+From: "Jesse Gordon" <jesseg@nikola.com>
+Subject: Re: Unmatchable packet?
+Date: Mon, 28 Nov 2005 11:11:36 -0800
+Message-ID: <00d401c5f44f$8df8e560$5e00800a@printserver>
+References: <071e01c5efa7$786db600$5e00800a@printserver>	<073501c5efab$b10ad390$5e00800a@printserver>	<4383BBE0.2020504@gmail.com>	<078401c5efcf$bd9eb210$5e00800a@printserver>	<4384069F.3010201@snapgear.com>
+	<WorldClient-F200511222303.AA03060138@nikola.com>
+	<438417F8.3060907@snapgear.com>
+	<002201c5f0ec$ef3f2c50$5e00800a@printserver>
+	<438664B6.2090807@snapgear.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4385B2EB.60209@e-attico.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,46 +20,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Philip Craig <philipc@snapgear.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Philip, Robert, and whoever else:
 
-I'm Running two independent traffic applications between two computers 
-conected point to point each other, at the same time each of these 
-applications are generating trafficin one direction so i have two 
-independent traffics traveling througth the same channel.
+Thanks! You guys have done an outstanding job of explaining this to me.
+It's all starting to make a little bit of sense!
 
-Figure:
-                eth1, PC1 ---------app1-----------> eth1, PC2
-                                <--------app2------------
+----- Original Message ----- 
+From: "Philip Craig" <philipc@snapgear.com>
+Subject: Re: Unmatchable packet?
+> Okay I can see what you are doing here, and it isn't going to
+> work with standard iptables NAT.  Assymetrical routing and NAT
+> are incompatible.
+>
+> Even your "working" case is not ideal, each direction is seeing
+> only half the packets and so they can't keep state fully.  Anything
+> that requires a NAT helper will fail.  eg FTP data connections
 
-My problem is that i am trying to control the whole inbound and outbound 
-traffic through PC1 (by using IMQ for ingress) but it seems like they 
-are connected somehow.
+FTP might not fail since the one public routable IP is being mapped directly 
+to exactly one non routable private IP,
+so the asymetry should be invisable to either end. In any case, I agree --  
+[ab]using iptables like this is not ideal.
 
-This is the script i am using:
----------------------------
-Inbound control commands:
-            tc qdisc add dev imq0 root handle 1: htb
-            tc class add dev imq0 parent 1: classid 1:1 htb rate 
-${INBOUND}kbps ceil  ${INBOUND}kbps
-            iptables -t mangle -A PREROUTING -i eth1 -j MARK --set-mark 1
-            tc filter add dev imq0 protocol ip parent 1:0 handle 1 fw 
-flowid 1:1
-            iptables -t mangle -A PREROUTING -i eth1 -j IMQ --todev 0
+>> It seems iptables has no problem matching and SNATting reply packets as 
+>> long
+>> as they aren't the reply packets generated
+>> by a local server.
+>
+> No.  It has no problem matching and SNATing replies as long
+> as they are the first packet of the connection that it sees.
 
-Outbound control commands:
-            tc qdisc add dev eth1 root handle 2: htb
-            tc class add dev eth1 parent 2: classid 2:1 htb rate 
-${OUTBOUND}kbps ceil  ${OUTBOUND}kbps
-            tc filter add dev eth1 protocol ip parent 2:0 prio 3 u32 
-match ip dst 0.0.0.0/0 flowid 2:1
+I'd been assuming that the type of packet mattered -- but no, it's just 
+whether it's the first seen by iptables.
 
-Any ideas?
+> Yes.  You can use CONNMARK to mark connections that are initially
+> received on the internal interface, and then use 'ip rule' and 'ip route'
+> to route those packets back out the internal interface to the
+> Box A, which will use its existing NAT mapping to correctly source
+> NAT them automatically (ie no further NAT rules required).
+>
 
-Thanks!!
-   
+This sounds like the way to go -- I'll learn what CONNMARK means, and how to 
+use ip rule and route.
+
+Thanks very much!
+
+-Jesse 
 
 
 
