@@ -1,11 +1,12 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: remove duplicate rules
-Date: Mon, 28 Nov 2005 12:15:59 -0500
-Message-ID: <FAC4E024BF776842876169173CE2F01313B14A@mailbox.vikus.com>
+From: Diego Cabrero <diego.cabrero@e-attico.net>
+Subject: Controling Inbound and Outbound traffic simultaneusly.
+Date: Mon, 28 Nov 2005 19:12:48 +0100
+Message-ID: <438B48A0.8050100@e-attico.net>
+References: <4385B2EB.60209@e-attico.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <4385B2EB.60209@e-attico.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,43 +17,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-=20
+Hi,
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> Oleg A. Arkhangelsky
-> Sent: Saturday, November 26, 2005 7:55 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: remove duplicate rules
->=20
-> Hello amit,
->=20
-> Saturday, November 26, 2005, 3:39:14 PM, you wrote:
->=20
-> ap> same iptables.  I want to stop this , if the same rule exists the=20
-> ap> iptables should give some error or should add the same=20
-> rule again .
-> ap> Please help me .
->=20
->     I think you should manually check the existence of possible
->     duplicate before adding rule. Also you can do somethig like:
->=20
->     iptables -D INPUT -d 192.168.0.2/32 -i eth1 -j DROP
->     iptables -A INPUT -d 192.168.0.2/32 -i eth1 -j DROP
->=20
->     Then you will never get duplicates.
->     But the first way is more correct.
->=20
-> --
-> Best regards,
->  Oleg
->=20
+I'm Running two independent traffic applications between two computers 
+conected point to point each other, at the same time each of these 
+applications are generating trafficin one direction so i have two 
+independent traffics traveling througth the same channel.
 
-Just don't use that method remotely.
+Figure:
+                eth1, PC1 ---------app1-----------> eth1, PC2
+                                <--------app2------------
 
-Derick Anderson
+My problem is that i am trying to control the whole inbound and outbound 
+traffic through PC1 (by using IMQ for ingress) but it seems like they 
+are connected somehow.
+
+This is the script i am using:
+---------------------------
+Inbound control commands:
+            tc qdisc add dev imq0 root handle 1: htb
+            tc class add dev imq0 parent 1: classid 1:1 htb rate 
+${INBOUND}kbps ceil  ${INBOUND}kbps
+            iptables -t mangle -A PREROUTING -i eth1 -j MARK --set-mark 1
+            tc filter add dev imq0 protocol ip parent 1:0 handle 1 fw 
+flowid 1:1
+            iptables -t mangle -A PREROUTING -i eth1 -j IMQ --todev 0
+
+Outbound control commands:
+            tc qdisc add dev eth1 root handle 2: htb
+            tc class add dev eth1 parent 2: classid 2:1 htb rate 
+${OUTBOUND}kbps ceil  ${OUTBOUND}kbps
+            tc filter add dev eth1 protocol ip parent 2:0 prio 3 u32 
+match ip dst 0.0.0.0/0 flowid 2:1
+
+Any ideas?
+
+Thanks!!
+   
+
+
 
