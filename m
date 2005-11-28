@@ -1,7 +1,7 @@
 From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: Letting out port 80 traffic
-Date: Mon, 28 Nov 2005 12:14:41 -0500
-Message-ID: <FAC4E024BF776842876169173CE2F01313B148@mailbox.vikus.com>
+Subject: RE: remove duplicate rules
+Date: Mon, 28 Nov 2005 12:15:59 -0500
+Message-ID: <FAC4E024BF776842876169173CE2F01313B14A@mailbox.vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,43 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Paul Collen <paul.collen@brahler-ics.co.uk>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
 =20
 
 > -----Original Message-----
 > From: netfilter-bounces@lists.netfilter.org=20
 > [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> Paul Collen
-> Sent: Friday, November 25, 2005 10:59 AM
+> Oleg A. Arkhangelsky
+> Sent: Saturday, November 26, 2005 7:55 AM
 > To: netfilter@lists.netfilter.org
-> Subject: RE: Letting out port 80 traffic
+> Subject: Re: remove duplicate rules
 >=20
->  Hello,
+> Hello amit,
 >=20
-> Yep, it's working now but I don't know how. As far as I can=20
-> see it's configured the same way it was when I started this=20
-> morning, but Squid isn't running so theoretically we=20
-> shouldn't have web access. I don't want to fiddle with it=20
-> anymore today (being POETS day) but I'm sure I'll break it=20
-> again on Monday.
+> Saturday, November 26, 2005, 3:39:14 PM, you wrote:
 >=20
-> Thanks for your help with this problem.
+> ap> same iptables.  I want to stop this , if the same rule exists the=20
+> ap> iptables should give some error or should add the same=20
+> rule again .
+> ap> Please help me .
 >=20
-> Cheers,
+>     I think you should manually check the existence of possible
+>     duplicate before adding rule. Also you can do somethig like:
 >=20
-> Paul.
+>     iptables -D INPUT -d 192.168.0.2/32 -i eth1 -j DROP
+>     iptables -A INPUT -d 192.168.0.2/32 -i eth1 -j DROP
+>=20
+>     Then you will never get duplicates.
+>     But the first way is more correct.
+>=20
+> --
+> Best regards,
+>  Oleg
 >=20
 
-
-Since you are using Squid, your client users will attempt to use the
-proxy (8080?) rather than going out port 80 on the firewall until they
-forget about the proxy settings and request pages directly (IE is set to
-automatically discover proxy settings by default, while Firefox is set
-to connect directly by default). Since you opened port 80, your web
-clients now have an alternate path to the Internet.
-
-At least that is my best guess. =3D)
+Just don't use that method remotely.
 
 Derick Anderson
 
