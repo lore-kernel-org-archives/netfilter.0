@@ -1,14 +1,11 @@
-From: Scott Mayo <sgmayo@mail.bloomfield.k12.mo.us>
-Subject: Re: Logging to the screen
-Date: Mon, 28 Nov 2005 08:41:08 -0600
-Message-ID: <438B1704.4040204@mail.bloomfield.k12.mo.us>
-References: <43836074.3000403@mail.bloomfield.k12.mo.us>
-	<200511221239.01763.rob0@gmx.co.uk>
-Reply-To: sgmayo@mail.bloomfield.k12.mo.us
+From: "Derick Anderson" <danderson@vikus.com>
+Subject: RE: Letting out port 80 traffic
+Date: Mon, 28 Nov 2005 12:14:41 -0500
+Message-ID: <FAC4E024BF776842876169173CE2F01313B148@mailbox.vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200511221239.01763.rob0@gmx.co.uk>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,37 +16,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Paul Collen <paul.collen@brahler-ics.co.uk>, netfilter@lists.netfilter.org
 
-/dev/rob0 wrote:
-> On Tuesday 2005-November-22 12:16, Scott Mayo wrote:
-> 
->>the actual firewall itself and see all this info that I had my
->>IPTABLES log, on the screen.  Any reason why it is not sending it to
->>the /var/log/messages? Thanks.
-> 
-> 
-> The answer is in your LOG rules (--log-level) and syslog.conf(5). LOG 
-> uses syslog(2) facility "kern" and priority as set in --log-level 
-> (default is probably "info".)
+=20
 
-Thanks for the info.  I got to reading the man pages on syslog.  My 
-iptables were logging with the value 'debug'.  From what I read, if I 
-understand this correctly, that will cause syslog to send the message to 
-the screen.  I changed my iptables to a log-level of 'info' and it is 
-now sending the messages to /var/log/messages.
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+> Paul Collen
+> Sent: Friday, November 25, 2005 10:59 AM
+> To: netfilter@lists.netfilter.org
+> Subject: RE: Letting out port 80 traffic
+>=20
+>  Hello,
+>=20
+> Yep, it's working now but I don't know how. As far as I can=20
+> see it's configured the same way it was when I started this=20
+> morning, but Squid isn't running so theoretically we=20
+> shouldn't have web access. I don't want to fiddle with it=20
+> anymore today (being POETS day) but I'm sure I'll break it=20
+> again on Monday.
+>=20
+> Thanks for your help with this problem.
+>=20
+> Cheers,
+>=20
+> Paul.
+>=20
 
-Thanks again.
 
--- 
-Scott Mayo
-Technology Coordinator
-Bloomfield Schools
-PH: 573-568-5669
-FA: 573-568-4565
-Pager: 800-264-2535 X2549
+Since you are using Squid, your client users will attempt to use the
+proxy (8080?) rather than going out port 80 on the firewall until they
+forget about the proxy settings and request pages directly (IE is set to
+automatically discover proxy settings by default, while Firefox is set
+to connect directly by default). Since you opened port 80, your web
+clients now have an alternate path to the Internet.
 
-Duct tape is like the force, it has a light side and a dark side and it
-holds the universe together.
+At least that is my best guess. =3D)
+
+Derick Anderson
 
