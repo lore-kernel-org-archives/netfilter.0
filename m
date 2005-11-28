@@ -1,10 +1,13 @@
-From: Romeo Theriault <romeo.theriault@maine.edu>
-Subject: iptables with ssh and vnc
-Date: Mon, 28 Nov 2005 15:24:43 -0500
-Message-ID: <0A6FFB31-EABB-4616-9FCE-DADE1F7F171D@maine.edu>
-Mime-Version: 1.0 (Apple Message framework v746.2)
+From: Rob Carlson <rcarlson@kitchenandassociates.com>
+Subject: Re: Forward Ipset and Clear DNAT entry
+Date: Mon, 28 Nov 2005 16:28:17 -0500
+Message-ID: <438B7671.3070300@kitchenandassociates.com>
+References: <437E02A4.40407@kitchenandassociates.com>
+	<Pine.LNX.4.58.0511241130310.20155@blackhole.kfki.hu>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.58.0511241130310.20155@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,132 +18,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.netfilter.org
 
-Hi, I'm not sure if this is the right place to ask this question but  
-since iptables is involved I thought I'd give it a shot.
+Jozsef and group--
 
-I have a linux box with an openssh and vnc server running on it. With  
-my custom iptables firewall turned off I can tunnel vnc through ssh  
-and connect to it just fine with a command like this.
+Jozsef Kadlecsik wrote:
+<snip>
+>>I would like to be able to forward an ipset tied
+>>to certain ports to a different machine. 
+<snip>
+> I'm not completely sure I understand what you want to achieve, but
+> anyway...
 
-ssh -L 5902:130.111.68.179:5901 admin@130.111.68.179
+The idea is (in the long term) to be able to send 
+port 25 traffic from hotmail to a test mail 
+server, where the spam could be discarded and we 
+could forward legitimate mail that comes from 
+clients who still use hotmail...  Since 95% of 
+hotmail is trash, it would make our populace here 
+happy.
 
-I then can fire up my vnc server and from my machine do a vncviewer  
-localhost:2 and I get the vncserver.
+In the short term (in order to test our 
+postfix/procmail configuration) I want to be able 
+to ssh to my home machine and mail to myself at 
+work (with the hope that the mail will be routed 
+AWAY from our primary mailserver to the test mail 
+server).
 
-This works fine until I started using iptables. I know it's because  
-I'm not familiar with iptables and how to set it up correctly but I'm  
-hoping someone will be able to help me a bit with this.
+Here is where I stand now:
 
-Now is I do the same thing with iptables turned on I get this error  
-on the server side:
-channel 3: open failed: connect failed: Connection refused
+ipset -N disc nethash
+ipset -A dischash xxx.xxx.xxx.xxx/xx
+ipset -N discports portmap --from 1 --to 1024
+ipset -A discports 25
+ipset -B dischash :default: -b discports
+<snip>
+> 
+> The ipset is bound to the port, but you did not instruct the set matching
+> to follow the bindings up to the level you want. You should have typed
+> 
+(I typed the following)
 
-and this one on the client side:
-VNC server closed connection
+iptables -t nat  -A PREROUTING -m set --set \
+>   dischash dst,dst -j DNAT --to-destination -yyy.yyy.yyy.yyy
 
-here is my iptables shell script.
-#!/bin/bash
-#
-if [ ! -x /sbin/iptables ]; then
-exit 0
-fi
+That didn't take, mail still goes to the main 
+server, so I figured the cause was
+an existing PREROUTING chain forwarding to the 
+primary mail server, so I
+inserted the chain at the beginning:
 
-start()
-{
-echo "IPTables being started..."
-# clear all
-clearall
+iptables -t nat  -I PREROUTING -m set --set \
+    dischash dst,dst -j DNAT --to-destination 
+-yyy.yyy.yyy.yyy
 
-#start of iptables
-#always allow ssh from my work box
-iptables -A INPUT -s workstation -d server -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -s workstation -d server -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -s workstation -d server -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -s workstation -d server -p tcp --dport 22 -j ACCEPT
+So, I'm right now, I can ssh to my home machine, 
+but any mail I send still goes
+to the primary server.
 
-#this will allow the standart tcp 3 way handshake and allow all  
-outgoing traffic.
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j  
-ACCEPT
-iptables -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+iptables output:
 
-#this will allow http on port 80
-iptables -A INPUT -s workstation -d server -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -s workstation -d server -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -d server -p tcp --dport 80 -j ACCEPT
+root@firewall:~# iptables -L -t nat
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source      destination
+DNAT     all  --  anywhere     anywhere    set 
+dischash dst,dst to:yyy.yyy.yyy.yyy
 
-#this will allow samba traffic on the local network
-iptables -A INPUT -p udp -m udp -s network/24 --dport 137 -j ACCEPT
-iptables -A INPUT -p udp -m udp -s network/24 --dport 138 -j ACCEPT
-iptables -A INPUT -m state --state NEW -m tcp -p tcp -s network/24 -- 
-dport 139 -j ACCEPT
-iptables -A INPUT -m state --state NEW -m tcp -p tcp -s network/24 -- 
-dport 445 -j ACCEPT
+----
+DNAT       tcp  --  anywhere        anywhere 
+tcp dpt:smtp to:yyy.yyyy.yyy.xxx:25
 
-iptables -A INPUT -p udp -m udp -s network/23 --dport 137 -j ACCEPT
-iptables -A INPUT -p udp -m udp -s network/23 --dport 138 -j ACCEPT
-iptables -A INPUT -m state --state NEW -m tcp -p tcp -s network/23 -- 
-dport 139 -j ACCEPT
-iptables -A INPUT -m state --state NEW -m tcp -p tcp -s network/23 -- 
-dport 445 -j ACCEPT
+(where yyy.yyyy.yyy.xxx is the primary mail server)
 
-iptables -A INPUT -p udp -m udp -s network/23 --dport 137 -j ACCEPT
-iptables -A INPUT -p udp -m udp -s network/23 --dport 138 -j ACCEPT
-iptables -A INPUT -m state --state NEW -m tcp -p tcp -s network/23 -- 
-dport 139 -j ACCEPT
-iptables -A INPUT -m state --state NEW -m tcp -p tcp -s network/23 -- 
-dport 445 -j ACCEPT
+and then many more entries, that all route properly...
 
+Thanks for the help so far and any more...
 
-#allow any traffic from localhost
-iptables -A INPUT -d server -s 127.0.0.1 -j ACCEPT
-
-#allow ICMP/Ping
-iptables -A INPUT -d server -p icmp -j ACCEPT
-
-#reject everything else to this ip:
-iptables -A INPUT -d server -j REJECT
-
-#reject everything else coming through to any ip:
-iptables -A INPUT -j REJECT
-iptables -A FORWARD -j REJECT
+-- 
+Rob
 
 
-
-echo "IPTables started successfully..."
-
-}
-
-clearall()
-{
-iptables -F
-iptables -X
-echo "IPTables being cleared..."
-}
-
-
-case "$1" in
-restart|start)
-start
-;;
-stop)
-clearall
-;;
-*)
-echo "Usage: $0 {start|stop|restart}"
-exit 1
-esac
-
-exit 0
-
-
-Thank you,
-
-Romeo Theriault
 
 
 
