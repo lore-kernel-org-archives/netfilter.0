@@ -1,12 +1,12 @@
-From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
-Subject: Re: Scripting a firewall in front of a SMTP server
-Date: Sun, 27 Nov 2005 23:49:05 +0200
-Message-ID: <438A29D1.4090508@gmail.com>
-References: <7834b9550511270828o50b7b429o@mail.gmail.com>
+From: Martin Kahlert <mkcon@gmx.de>
+Subject: Howto redirect internet traffic from local machine back to local
+	machine?
+Date: Mon, 28 Nov 2005 08:55:25 +0100
+Message-ID: <20051128075525.GA11446@keksy.local>
+Reply-To: mkcon@gmx.de
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <7834b9550511270828o50b7b429o@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,129 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Fernando Martins wrote:
+Hi!
 
->Hello,
->
->I have a  firewall in front of an Exchange serveur. I can't receive
->any mail from outside. It seems I have a problem with my script. When
->I do a telnet on my server on port 25, from the outside, there is a
->connection but this one is closed before I reach the HELO messages.
->Moreover, when I try to connect friom the firewall to the SMTP server(
->telnet 25)
->I have more or less the message:
->"
->escape caracter is :^]
->Connection closed by foreign host
->"
->
->My network is :
->
->Internet
->|
->|
->|
->Firewall
->|
->|
->SMTP
->
->Internet-Firewall interface: eth0 ip adress xxx.yyy.zzz.ttt
->corresponding to the MX
->
->Firewall-SMTP= eth1
->
->SMTP: 192.168.0.2
->
->
->Any idea?
->Here is the script:
->
->#!/bin/sh
-># script /etc/firewall.sh
->echo 1 > /proc/sys/net/ipv4/ip_forward
->echo "Activation du forwarding :[OK]\n"
->if [ -e /proc/sys/net/ipv4/conf/all/rp_filter ]
->then
->for filtre in /proc/sys/net/ipv4/conf/*/rp_filter
->do
->echo 1 > $filtre
->done
->fi
->
->echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
->echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
->
->modprobe ip_tables
->modprobe iptable_filter
->modprobe iptable_nat
->
->iptables -F
->iptables -X
->
->iptables -N LOG_DROP
->
->
->iptables -A LOG_DROP -j LOG --log-prefix '[IPTABLES DROP] : '
->iptables -A LOG_DROP -j DROP
->
->
->iptables -N LOG_ACCEPT
->iptables -A LOG_ACCEPT -j LOG --log-prefix '[IPTABLES ACCEPT] : '
->iptables -A LOG_ACCEPT -j ACCEPT
->
->iptables -P INPUT DROP
->iptables -P OUTPUT DROP
->iptables -P FORWARD DROP
->
->iptables -A INPUT -i lo -j ACCEPT
->iptables -A OUTPUT -o lo -j ACCEPT
->
->iptables -A OUTPUT -o eth0 -m state --state NEW,ESTABLISHED -p tcp
->--dport 80 -j ACCEPT
->
->iptables -A INPUT -i eth0 -m state --state ESTABLISHED -p tcp --sport
->80 -j ACCEPT
->
->iptables -A OUTPUT -o eth0 -m state --state NEW,ESTABLISHED -p tcp
->--dport 80 -j ACCEPT
->
->iptables -A INPUT -i eth0 -m state --state ESTABLISHED -p tcp --sport
->80 -j ACCEPT
->
->iptables -t nat -A PREROUTING -d xxx.yyy.zzz.ttt -p tcp --dport 80 -j
->DNAT --to-destination 192.168.0.2:80
->
->iptables -t nat -A PREROUTING -d xxx.yyy.zzz.ttt -p tcp --dport 25 -j
->DNAT --to-destination 192.168.0.2:25
->
->iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
->iptables -A FORWARD -o eth1 -i eth0 -j ACCEPT
->
->iptables -A FORWARD -i eth0 -o eth1 -p tcp --destination-port 80 -m
->state --state NEW,ESTABLISHED -j ACCEPT
->
->iptables -A FORWARD -o eth0 -i eth1 -p tcp --source-port 80 -m state
->--state NEW,ESTABLISHED -j ACCEPT
->
->iptables -A FORWARD -i eth0 -o eth1 -p tcp --destination-port 25 -m
->state --state NEW,ESTABLISHED -j ACCEPT
->iptables -A FORWARD -o eth0 -i eth1 -p tcp --source-port 25 -m state
->--state ESTABLISHED -j ACCEPT
->
->iptables -A FORWARD -j LOG_DROP
->iptables -A INPUT -j LOG_DROP
->iptables -A OUTPUT -j LOG_DROP
->
->
->  
->
-I suggest you to start with this - 
-http://www.iseclab.net/modules/articles/article.php?id=1
-and this - http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+Unfortunately i did not find a proper answer on the web although i googled
+around for quite a lot of time:
 
-good luck
+I want to analyse a malware on my computer. The malware connects to a
+lot of sites on the internet (hard coded in the program but unfortunately
+these IPs are encrypted).
+
+I know the port the program wants to connect to and i want to answer its
+requests by a script on the same machine.
+
+I tried this for a test to catch connections to mail servers:
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -F
+iptables -t nat -A PREROUTING -p tcp -d ! 192.168.100.0/24 --dport 25 -j DNAT
+                --to 127.0.0.1:25
+
+But it does not work:
+
+$ telnet mail.gmx.net 25
+Trying 213.165.64.21...
+Connected to mail.gmx.net.         <--- of course, that's not my box
+Escape character is '^]'.
+220 {mp027} GMX Mailservices ESMTP
+
+I assume the problem has something to do that the packets are generated
+on the "iptables-machine". Unfortunately, i only have this machine and thus
+i cannot send the packets through a second firewall-machine.
+
+I would be very happy if any kind soul could give me a hint!
+
+Thanks in advance,
+Martin.
 
