@@ -1,13 +1,15 @@
-From: Rob Carlson <rcarlson@kitchenandassociates.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: Forward Ipset and Clear DNAT entry
-Date: Mon, 28 Nov 2005 16:28:17 -0500
-Message-ID: <438B7671.3070300@kitchenandassociates.com>
+Date: Mon, 28 Nov 2005 17:39:23 -0600
+Message-ID: <200511281739.23613.rob0@gmx.co.uk>
 References: <437E02A4.40407@kitchenandassociates.com>
 	<Pine.LNX.4.58.0511241130310.20155@blackhole.kfki.hu>
+	<438B7671.3070300@kitchenandassociates.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0511241130310.20155@blackhole.kfki.hu>
+In-Reply-To: <438B7671.3070300@kitchenandassociates.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,88 +20,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Jozsef and group--
+On Monday 2005-November-28 15:28, Rob Carlson wrote:
+> The idea is (in the long term) to be able to send
+> port 25 traffic from hotmail to a test mail
+> server, where the spam could be discarded and we
+> could forward legitimate mail that comes from
+> clients who still use hotmail...  Since 95% of
+> hotmail is trash, it would make our populace here
 
-Jozsef Kadlecsik wrote:
-<snip>
->>I would like to be able to forward an ipset tied
->>to certain ports to a different machine. 
-<snip>
-> I'm not completely sure I understand what you want to achieve, but
-> anyway...
+Hmmm, I probably don't agree with this approach to the problem. 
+Therefore most or all of this will be off-topic.
 
-The idea is (in the long term) to be able to send 
-port 25 traffic from hotmail to a test mail 
-server, where the spam could be discarded and we 
-could forward legitimate mail that comes from 
-clients who still use hotmail...  Since 95% of 
-hotmail is trash, it would make our populace here 
-happy.
+How did you identify the hotmail IP addresses? Their SPF?
+"v=spf1 include:spf-a.hotmail.com include:spf-b.hotmail.com 
+include:spf-c.hotmail.com include:spf-d.hotmail.com ~all" I won't try 
+to chase down all those includes.
 
-In the short term (in order to test our 
-postfix/procmail configuration) I want to be able 
-to ssh to my home machine and mail to myself at 
-work (with the hope that the mail will be routed 
-AWAY from our primary mailserver to the test mail 
-server).
+> In the short term (in order to test our
+> postfix/procmail configuration) I want to be able
 
-Here is where I stand now:
+When you say "procmail" I think you are going about this the wrong way. 
+For spam reduction in Postfix, see here:
+http://jimsun.linxnet.com/misc/postfix-anti-UCE.txt
+and the various README files, especially
+http://www.postfix.org/SMTPD_ACCESS_README.html .
+I also like greylisting at least for unknown clients and hosts which 
+appear to be dynamic. sqlgrey has a good regex for identifying likely 
+dynamic clients, which in most cases turn out to be Windows zombies.
 
-ipset -N disc nethash
-ipset -A dischash xxx.xxx.xxx.xxx/xx
-ipset -N discports portmap --from 1 --to 1024
-ipset -A discports 25
-ipset -B dischash :default: -b discports
-<snip>
-> 
-> The ipset is bound to the port, but you did not instruct the set matching
-> to follow the bindings up to the level you want. You should have typed
-> 
-(I typed the following)
+You could use Postfix restriction classes and handle the mail from 
+Hotmail differently within the same Postfix instance, too. While there 
+is plenty of spam and abuse emanating from Hotmail.com clients, the 
+*vast majority* of so-called "hotmail" spam comes from elsewhere: 
+Windows zombies pretending to send from hotmail users. The proper way 
+to deal with that would be the from_freemail_hosts class described in 
+the aforelinked Cheat Sheet.
 
-iptables -t nat  -A PREROUTING -m set --set \
->   dischash dst,dst -j DNAT --to-destination -yyy.yyy.yyy.yyy
+> to ssh to my home machine and mail to myself at
+> work (with the hope that the mail will be routed
+> AWAY from our primary mailserver to the test mail
+> server).
 
-That didn't take, mail still goes to the main 
-server, so I figured the cause was
-an existing PREROUTING chain forwarding to the 
-primary mail server, so I
-inserted the chain at the beginning:
+How are you submitting this mail? You are not hotmail.com, I bet.
 
-iptables -t nat  -I PREROUTING -m set --set \
-    dischash dst,dst -j DNAT --to-destination 
--yyy.yyy.yyy.yyy
+> So, I'm right now, I can ssh to my home machine,
+> but any mail I send still goes to the primary server.
 
-So, I'm right now, I can ssh to my home machine, 
-but any mail I send still goes
-to the primary server.
+If your IP is in the set but you use a client which calls sendmail(1) 
+for submission, you are not going to hit your port 25, thus no DNAT 
+will take place. Also if this machine is the one you're DNAT'ing, you 
+need your DNAT rules in OUTPUT, not PREROUTING.
 
-iptables output:
+> Thanks for the help so far and any more...
 
-root@firewall:~# iptables -L -t nat
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source      destination
-DNAT     all  --  anywhere     anywhere    set 
-dischash dst,dst to:yyy.yyy.yyy.yyy
-
-----
-DNAT       tcp  --  anywhere        anywhere 
-tcp dpt:smtp to:yyy.yyyy.yyy.xxx:25
-
-(where yyy.yyyy.yyy.xxx is the primary mail server)
-
-and then many more entries, that all route properly...
-
-Thanks for the help so far and any more...
-
+Whew, at least THAT part of it was on topic. :)
 -- 
-Rob
-
-
-
-
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
