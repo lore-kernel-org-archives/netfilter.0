@@ -1,13 +1,13 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: remove duplicate rules
-Date: Tue, 29 Nov 2005 14:28:06 -0500
-Message-ID: <438CABC6.80309@SCampbell.net>
-References: <FAC4E024BF776842876169173CE2F01313B14A@mailbox.vikus.com>
-	<200511281750.30511.rob0@gmx.co.uk>
+From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
+Subject: Re: Route block CONNECT requisitions for apache
+Date: Tue, 29 Nov 2005 23:47:52 +0200
+Message-ID: <438CCC88.4040702@gmail.com>
+References: <eb5ae9cc0511270326k56aac640g9141e264471247a4@mail.gmail.com>	<4389BD92.2040908@gmail.com>
+	<eb5ae9cc0511270637y4bc28d2fp348dfbf215425fe6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200511281750.30511.rob0@gmx.co.uk>
+In-Reply-To: <eb5ae9cc0511270637y4bc28d2fp348dfbf215425fe6@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,40 +21,83 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-/dev/rob0 wrote:
-> On Monday 2005-November-28 11:15, Derick Anderson wrote:
->   
->>>     I think you should manually check the existence of possible
->>>     duplicate before adding rule. Also you can do somethig like:
->>>
->>>     iptables -D INPUT -d 192.168.0.2/32 -i eth1 -j DROP
->>>     iptables -A INPUT -d 192.168.0.2/32 -i eth1 -j DROP
->>>
->>>     Then you will never get duplicates.
->>>     But the first way is more correct.
->>>       
+Leonardo Marques wrote:
+
+>On 11/27/05, Georgi Alexandrov <georgi.alexandrov@gmail.com> wrote:
+>  
 >
->   
->> Just don't use that method remotely.
->>     
+>>Leonardo Marques wrote:
+>>
+>>    
+>>
+>>>Hello,
+>>>
+>>>I have a apache webserver behind a iptables firewall, and some people
+>>>are trying to abuse from my server probably for spam. I have this
+>>>information on the log of the apache:
+>>>
+>>>219.80.160.238 - - [27/Nov/2005:08:56:13 -0200] "CONNECT
+>>>64.161.246.99:25 HTTP/1.0" 200 6446
+>>>
+>>>I have a lot of this lines, with some diferent IPs, I already blocked
+>>>all those IPs.
+>>>
+>>>I want create a rule that block all those type of connections, someone
+>>>know how can i do?
+>>>
+>>>The ideia ir more or less it:
+>>>
+>>>"everything witch comes for the htttp_port wich contain 'connect type
+>>>connections' must be deny or droped'"
+>>>
+>>>
+>>>
+>>>      
+>>>
+>>What's the point in doing this? As those are no harm to your system.
+>>Or you like to complex your life as much as possible and then say: "oh,
+>>security isn't for everyone, but i'm managing somehow!"
+>>Perhaps you should leave those and deal with something more useful.
+>>
+>>    
+>>
 >
-> Sure, just do them as a single command separated by ";".
->   
-It occurs to me that some rules may indeed be present multiple times in 
-a table.  For instance VOIP QOS where you regularily take an action 
-based on TOS fields on input and later alter the TOS fields and perhaps 
-take that action again based on the same TOS field data in which case 
-the above might cause one to remove the wrong rule!    IpTables is 
-essentially a computer program, it is a sequence of events not just a 
-unordered list of rules.  For myself, I would take much greater steps in 
-the handling of rule insertion than just seeing if that rule exists 
-somewhere in the INPUT table.  It may work fine for even the majority of 
-iptable sets but it's definately not a universal solution.  The 
-universal solution is to not put the extraneous rules in the table in 
-the first place and, to do that programmatically, the iptables sets and 
-the program altering the sets need to agree upon a structure that allows 
-this. 
-
-
-
+>Whats the problem to search a finally solution for a problem!? I cant
+>understand
+>why you are so brave with it. I thought here is a place to discuss
+>about security with Iptables. :/
+>
+>Whats the problem to dont have free time to be reading the apache log
+>and be blocking manually a lot of ips?! Whats the problem to find a
+>rule wich solve this problem for me?!
+>
+>Exactly, i need it to be automated, to have time to do another things.
+>
+>Georgi, if you dont want help... just dont say nothing, its better for
+>me, for you, for everybody.
+>
+>  
+>
+>>regards,
+>>Georgi Alexandrov
+>>
+>>
+>>    
+>>
+>
+>--
+>------------------------------
+>Leonardo Marques
+>http://www.analyx.org
+>------------------------------
+>
+>
+>  
+>
+I don't see a problem, that's why i'm saying this.
+You are getting scanned about open proxy ability, e.g. you're being 
+scanned for a open proxy listening on port 80 which you actually don't 
+have and use on port 80.
+why do you need to block these then? just to complex your life (wife) 
+situation?
 
