@@ -1,10 +1,12 @@
-From: Mark Dobossy <mark.dobossy@gmail.com>
-Subject: Internal IPs leaking past masqerade gateway
-Date: Mon, 28 Nov 2005 19:07:03 -0500
-Message-ID: <d41fd4d10511281607p79cbefecu7283966cc4f69ecb@mail.gmail.com>
+From: Dave Strydom <strydom.dave@gmail.com>
+Subject: Re: Is using a blacklist in iptables a good strategy?
+Date: Tue, 29 Nov 2005 10:29:39 +0200
+Message-ID: <fc38b710511290029i4a813e4fxdb80e5c957cb1bc2@mail.gmail.com>
+References: <1133252475.20357.5.camel@sonoda.bioscene.co.jp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1133252475.20357.5.camel@sonoda.bioscene.co.jp>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,33 +19,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@leangen.net
+Cc: netfilter@lists.netfilter.org
 
-I am having some issues with my internal IP's being leaked through my
-gateway, to a few specific IP addresses.  I have tried both "rolling
-my own" iptables setup (very simple, only port 80 open, using either
-masquerade or SNAT), as well as the ipkungfu script, and see the issue
-across either way, and even on multiple machines/distros.
+yes there is:
 
-The issue in question occurs when visiting
-http://forums.corvetteforum.com.  One of their "ad" suppliers has the
-ip address, 66.110.24.220.  Connections to this IP are leaving my
-external device with my internal IP.  This was verified both from logs
-from my network admin's router, as well as by using ethereal on the
-gateway machine, and analyzing eth1 (external device) for any packets
-leaving with a source of 192.168.2.0/24.  I only see connections to
-this particular IP with the internal address (every thing else leaves
-with the correct, external IP).
+http://people.netfilter.org/peejix/geoip/howto/geoip-HOWTO-2.html
 
-For now, I have simply banned this IP, but I am afraid it may start
-occuring elsewhere, and the network admin has threatened to kick this
-box off the network if it happens again.  Is there a rule to disallow
-any outgoing network connection with an internal IP?  Why would
-masquerading be allowing this?  I am pretty confused.
+it's a geoip patch for iptables, allows you to block entire countries,
+or you can allow connections from only certain countries.
 
-I am currently running Mandriva 2006, with the 2.6.12 kernel, and
-would be happy to supply any other info that may be necessary to solve
-this.
+Dave
 
--Mark
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+On 11/29/05, David Leangen <netfilter@leangen.net> wrote:
+>
+> Hello,
+>
+> I don't know why, but I'm getting a little fed up with break-in attempts
+> happening every single day.
+>
+> Do I just have to accept this as a fact of life?
+>
+>
+> I started keeping a list of IP addresses that I'm just going to
+> blacklist, but this does not seem like a maintainable solution. For now,
+> I'm just adding lines like so:
+>
+>   ...
+>   -A INPUT -s xxx.xxx.xxx.xxx -j BLACKLIST
+>   ...
+>   -A BLACKLIST -j DROP
+>   ...
+>
+> What is common practice?
+>
+>
+> Is it possible to blacklist any packets that come from a server from a
+> given country?
+>
+>
+> Thanks for the advice!
+> Dave
+>
+>
+>
+>
 
