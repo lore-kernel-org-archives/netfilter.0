@@ -1,12 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: remove duplicate rules
-Date: Mon, 28 Nov 2005 17:50:30 -0600
-Message-ID: <200511281750.30511.rob0@gmx.co.uk>
-References: <FAC4E024BF776842876169173CE2F01313B14A@mailbox.vikus.com>
+From: Mark Dobossy <mark.dobossy@gmail.com>
+Subject: Internal IPs leaking past masqerade gateway
+Date: Mon, 28 Nov 2005 19:07:03 -0500
+Message-ID: <d41fd4d10511281607p79cbefecu7283966cc4f69ecb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <FAC4E024BF776842876169173CE2F01313B14A@mailbox.vikus.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,20 +19,31 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Monday 2005-November-28 11:15, Derick Anderson wrote:
-> >     I think you should manually check the existence of possible
-> >     duplicate before adding rule. Also you can do somethig like:
-> >
-> >     iptables -D INPUT -d 192.168.0.2/32 -i eth1 -j DROP
-> >     iptables -A INPUT -d 192.168.0.2/32 -i eth1 -j DROP
-> >
-> >     Then you will never get duplicates.
-> >     But the first way is more correct.
+I am having some issues with my internal IP's being leaked through my
+gateway, to a few specific IP addresses.  I have tried both "rolling
+my own" iptables setup (very simple, only port 80 open, using either
+masquerade or SNAT), as well as the ipkungfu script, and see the issue
+across either way, and even on multiple machines/distros.
 
-> Just don't use that method remotely.
+The issue in question occurs when visiting
+http://forums.corvetteforum.com.  One of their "ad" suppliers has the
+ip address, 66.110.24.220.  Connections to this IP are leaving my
+external device with my internal IP.  This was verified both from logs
+from my network admin's router, as well as by using ethereal on the
+gateway machine, and analyzing eth1 (external device) for any packets
+leaving with a source of 192.168.2.0/24.  I only see connections to
+this particular IP with the internal address (every thing else leaves
+with the correct, external IP).
 
-Sure, just do them as a single command separated by ";".
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+For now, I have simply banned this IP, but I am afraid it may start
+occuring elsewhere, and the network admin has threatened to kick this
+box off the network if it happens again.  Is there a rule to disallow
+any outgoing network connection with an internal IP?  Why would
+masquerading be allowing this?  I am pretty confused.
+
+I am currently running Mandriva 2006, with the 2.6.12 kernel, and
+would be happy to supply any other info that may be necessary to solve
+this.
+
+-Mark
 
