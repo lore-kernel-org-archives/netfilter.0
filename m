@@ -1,12 +1,11 @@
-From: "David Leangen" <netfilter@leangen.net>
-Subject: RE: Is using a blacklist in iptables a good strategy?
-Date: Wed, 30 Nov 2005 23:51:58 +0900
-Message-ID: <DGEJKHJNFFKAGKLEMOPJIEDJCAAA.netfilter@leangen.net>
-References: <438C14E9.5010309@szift.org>
+From: Jay Zorzi <jzorzi@marketlinksolutions.com>
+Subject: DMZ Setup Question
+Date: Wed, 30 Nov 2005 11:22:00 -0500
+Message-ID: <1133367720.22295.45.camel@syslinux.marketlinksolutions.net>
+Reply-To: jzorzi@marketlinksolutions.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <438C14E9.5010309@szift.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: NetFilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
+My colleague and i are having a disagreement about our network firewall
+and routing policies.  First the setup information.
+We have a Bridge Router running iptables and ebtables as our external
+firewall.  Behind that we have a DMZ that contains machines with valid
+external addresses.  Between the DMZ and our internal network there is
+another firewall.  Our choke firewall.  The choke firewall is doing NAT
+in order for our internal network to surf the Internet but for our DMZ
+machines to talk to our internal machines we are just using routing, no
+NAT.
 
-Guys,
+Now here is the disagreement.  Because the internal machines are using a
+private network address my colleague is concerned that we are violating
+Internet rules/etiquette by having this internal private ip's routing to
+our DMZ machines that have valid Internet IP's.  He is also suggesting
+that using nat is more secure.
 
-
-> > I'm getting a little fed up with break-in attempts happening every 
-> > single day.
-
-> My current way of doing this is using the ipt_recent
-> so now I only block the 'strage connections' for some time...
-> here's some copy/paste from my current ipt rule set
-
-
-> http://people.netfilter.org/peejix/geoip/howto/geoip-HOWTO-2.html
-> 
-> it's a geoip patch for iptables, allows you to block entire countries,
-> or you can allow connections from only certain countries.
-
-
-Thanks for the great tips!
-
-Dave
-
-
+Can someone help us settle this disagreement?
 
