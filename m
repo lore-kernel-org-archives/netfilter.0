@@ -1,9 +1,8 @@
-From: Wolfgang Lonien <wolfgang@lonien.de>
-Subject: SNMP through VPN?
-Date: Thu, 01 Dec 2005 13:20:35 +0100
-Message-ID: <438EEA93.10000@lonien.de>
+From: Frank.Mayer@knapp-systems.com
+Subject: ipsets for both source and target in one iptables-rule?
+Date: Thu, 1 Dec 2005 15:02:25 +0100
+Message-ID: <OF6D4A24FC.BD8BFC33-ONC12570CA.004AA26A-C12570CA.004D205F@knapp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,40 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi list,
+Hello,
 
-I have an issue, and I think it's because of my linited knowledge of
-iptables. The scenario:
+I'd like to use two ipsets in a single iptables rule similar to
 
-linuxbox1---router1=====(IPSecTunnel)=====router2---linuxbox2
-192.168.x.0/24============================10.a.b.0/24
+iptables -A FORWARD -p tcp -m tcp --dport ssh -m set --set clients src -m 
+set --set servers dst  -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -m tcp --sport ssh -m set --set servers src -m 
+set --set clients dst -m state --state ESTABLISHED -j ACCEPT
 
-I want to set up monitoring using SNMP. I *can* do this from linuxbox1
-to linuxbox2 and vice versa, but not from linuxbox1 to router2 (internal
-interface) or from linuxbox2 to router1 (internal interface). All other
-services like ICMP or TCP (ssh) work in both directions, as do SNMP
-requests from the internal side to the internal interfaces of the routers.
+Can anyone tell me if that's just a syntax error or if this is entirely 
+impossible?
+(Kernel 2.4.32, iptables 1.3.4, ipset 2.2.7)
 
-In the firewall rules of router1, I added:
-iptables -I forwarding_rule -p all -s 10.a.b.0/24 -d 192.168.x.0/24 -j
-ACCEPT
-iptables -I forwarding_rule -p all -s 192.168.x.0/24 -d 10.a.b.0/24 -j
-ACCEPT
-
-to allow all traffic in both directions. I tried the same with input and
-output and as the interface ipsec+, but still no luck. I can SNMP-query
-devices *behind* the routers, but not the routers themselves.
-
-What am I doing wrong?
-
-kind regards,
-wjl aka Wolfgang Lonien
-www.lonien.de
-
--- 
-Key ID 0x728D9BD0 - public key available at wwwkeys.de.pgp.net
-'94 Honda NTV still running on fuel -
-everything else here proudly runs Debian GNU/Linux
+Thanks in Advance,
+Frank Mayer
+UNIX Systemadministration
+----------------------------------------------------
+KNAPP Systemintegration GmbH
+Waltenbachstrasse 9
+8700 Leoben, Austria
+----------------------------------------------------
+Phone: +43 3842 805-921
+Fax: +43 3842 82930-921
+frank.mayer@knapp-systems.com
+www.knapp.com
 
