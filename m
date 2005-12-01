@@ -1,8 +1,7 @@
-From: Rudi Starcevic <tech@wildcash.com>
-Subject: Re: dumb question...route from local eth1 to eth2 and vice versa
-Date: Thu, 01 Dec 2005 20:18:20 +1000
-Message-ID: <438ECDEC.20106@wildcash.com>
-Reply-To: tech@wildcash.com
+From: Wolfgang Lonien <wolfgang@lonien.de>
+Subject: SNMP through VPN?
+Date: Thu, 01 Dec 2005 13:20:35 +0100
+Message-ID: <438EEA93.10000@lonien.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,39 +18,38 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi list,
 
->> I think ip_a_route_1.sh is way too difficult for this setup. I didn't
->> even read it all through (saw something about tables, rules
->> and prio)..
-Very true, but it's the only way I know.
+I have an issue, and I think it's because of my linited knowledge of
+iptables. The scenario:
 
->> ifconfig eth0 192.168.3.10 netmask 255.255.255.0 up
->> ifconfig eth1 192.168.1.1 netmask 255.255.255.0 up
->> route add -net 0.0.0.0 netmask 0.0.0.0 gw 192.168.3.254
-Nice one .....
+linuxbox1---router1=====(IPSecTunnel)=====router2---linuxbox2
+192.168.x.0/24============================10.a.b.0/24
 
->> You did not set the policy of FORWARD to DROP. It will DROP
->> nothing.
->> You did not set the policy of OUTPUT to DROP. The OUTPUT >> rules are
-useless because everything will be accepted, even
->>  without these rules.
-Yes sorry. I didn't cut'n'paste that part of the script in.
-It's my fault for trying to hurry out a quick post just before I left work.
+I want to set up monitoring using SNMP. I *can* do this from linuxbox1
+to linuxbox2 and vice versa, but not from linuxbox1 to router2 (internal
+interface) or from linuxbox2 to router1 (internal interface). All other
+services like ICMP or TCP (ssh) work in both directions, as do SNMP
+requests from the internal side to the internal interfaces of the routers.
 
->>  He just needs to allow
->> forwarding between these to interfcaes and let routing do the
->>  rest.
->> Your scripts are doing something different.
-Yes ... but I thought it would be handy to have net too so
-all the boys and girls and play online together as well :-)
+In the firewall rules of router1, I added:
+iptables -I forwarding_rule -p all -s 10.a.b.0/24 -d 192.168.x.0/24 -j
+ACCEPT
+iptables -I forwarding_rule -p all -s 192.168.x.0/24 -d 10.a.b.0/24 -j
+ACCEPT
 
-Using things like tables, rules and prio also puts one in place
-to do QOS on the network traffic with the tc command.
+to allow all traffic in both directions. I tried the same with input and
+output and as the interface ipsec+, but still no luck. I can SNMP-query
+devices *behind* the routers, but not the routers themselves.
 
-Don't want those pesky emails, downloads and other important
-stuff to lag out the gaming connection ... :-) lol .....
+What am I doing wrong?
 
-Cheers,
-Rudi
+kind regards,
+wjl aka Wolfgang Lonien
+www.lonien.de
+
+-- 
+Key ID 0x728D9BD0 - public key available at wwwkeys.de.pgp.net
+'94 Honda NTV still running on fuel -
+everything else here proudly runs Debian GNU/Linux
 
