@@ -1,10 +1,10 @@
 From: Rudi Starcevic <tech@wildcash.com>
 Subject: Re: dumb question...route from local eth1 to eth2 and vice versa
-Date: Thu, 01 Dec 2005 16:59:37 +1000
-Message-ID: <438E9F59.9030007@wildcash.com>
+Date: Thu, 01 Dec 2005 17:05:33 +1000
+Message-ID: <438EA0BD.3070804@wildcash.com>
 References: <000001c5f642$ab8b8890$0101000a@sterenborg.info>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------030205090100050202010204"
+Content-Type: multipart/mixed; boundary="------------060603050404050901090905"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <000001c5f642$ab8b8890$0101000a@sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
@@ -20,11 +20,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
---------------030205090100050202010204
-Content-Type: text/plain; charset=ISO-8859-1
+--------------060603050404050901090905
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
 Hi,
+
+Eek .. let me try that again.
+My earlier post has an old copy of the iptables
+script. I've timmed it down so it should all work
+with a simple default = ACCEPT iptables firewall.
 
 I have two scripts I use to do something similar to this.
 
@@ -57,148 +62,8 @@ Kind regards,
 Rudi.
 
 
- 
 
-
-
-
---------------030205090100050202010204
-Content-Type: text/plain;
- name="ip_b_firewall_1.sh"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ip_b_firewall_1.sh"
-
-#!/bin/bash
-
-echo "Firewall Setup Start"
-
-## Our "die" function (think perl)
-function die () { echo "$@" 1>&2 ; exit 1 ; }
-
-## Test we have what we need
-hash iptables date modprobe || die $0: required binaries not present
-
-## Some key IP addresses
-IMPIP1=220.245.105.25
-IMPIP2=203.144.16.126
-
-################################################################################
-echo -n "Firewall: sysctl "
-
-# Enable additional kernel security
-echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-echo 1 > /proc/sys/net/ipv4/tcp_syncookies
-echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
-echo 1 > /proc/sys/net/ipv4/conf/eth1/rp_filter
-echo 0 > /proc/sys/net/ipv4/conf/eth1/accept_redirects
-echo 0 > /proc/sys/net/ipv4/conf/eth1/accept_source_route
-echo 0 > /proc/sys/net/ipv4/conf/eth1/bootp_relay
-echo 1 > /proc/sys/net/ipv4/conf/eth1/log_martians
-
-# ECN isn't handled correctly on the Internet.
-echo 0 > /proc/sys/net/ipv4/tcp_ecn
-
-# Activate window scaling according to RFC 1323
-# Activate timestamps according to RFC 1323
-echo 1 > /proc/sys/net/ipv4/tcp_window_scaling
-echo 1 > /proc/sys/net/ipv4/tcp_timestamps
-
-# Enable forwarding
-echo "Enable Kernel Forwarding"
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-################################################################################
-echo -n "reset "
-
-for chain in INPUT FORWARD OUTPUT ; do
-iptables --policy $chain DROP
-done
-
-for table in filter nat mangle ; do
-iptables --table $table --flush
-iptables --table $table --delete-chain
-done
-
-modprobe ip_nat_ftp
-
-################################################################################
-echo -n "INPUT "
-
-# accept everything from ws202 box
-iptables -A INPUT -i eth0 -s 192.168.3.110 -j ACCEPT
-
-# allows HTTP connections from anywhere
-
-#iptables -A INPUT -p tcp --syn --dport 80 -j ULOG
-#iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -p tcp --dport 80 -s $IMPIP1 -j ACCEPT
-iptables -A INPUT -p tcp --dport 80 -s $IMPIP2 -j ACCEPT
-
-# java cambozola web camera
-#iptables -A INPUT -p tcp --dport 8081 -j ACCEPT
-iptables -A INPUT -p tcp --dport 8081 -s $IMPIP1 -j ACCEPT
-iptables -A INPUT -p tcp --dport 8081 -s $IMPIP2 -j ACCEPT
-
-# allow FTP connections restricted by IP
-#iptables -A INPUT -p tcp --dport 21 -s $IMPIP1 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 21 -s $IMPIP2 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 21 -s $IMPIP3 -j ACCEPT
-
-# allows SSH connections restricted by IP
-
-#iptables -A INPUT -p tcp --syn --dport 22 -j ULOG
-
-#iptables -A INPUT -p tcp --dport 22 -s $IMPIP1 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 22 -s $IMPIP2 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 22 -s $IMPIP3 -j ACCEPT
-#iptables -A INPUT -i eth1 -p tcp --dport 22 -j ACCEPT
-
-# ssh access
-iptables -A INPUT -i eth1 -p tcp --dport 22 -j ACCEPT
-
-# bittorrent
-iptables -A INPUT -i eth1 -p tcp --dport 6881 -j ACCEPT
-
-# allows MYSQL connections restricted by IP
-#iptables -A INPUT -p tcp --dport 3306 -s $IMPIP1 -j ACCEPT
-
-# allows unrestricted connections over the local interface
-# allows conections from lan
-# allows established connections
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A INPUT -i eth1 -s 192.168.1.0/24 -j ACCEPT
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Allows helpful ICMP packets (first four are really needed)
-iptables -A INPUT -p icmp --icmp-type destination-unreachable -j ACCEPT
-iptables -A INPUT -p icmp --icmp-type source-quench -j ACCEPT
-iptables -A INPUT -p icmp --icmp-type time-exceeded -j ACCEPT
-iptables -A INPUT -p icmp --icmp-type parameter-problem -j ACCEPT
-iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
-iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
-
-################################################################################
-echo -n "FORWARD " 
-iptables -A FORWARD -i eth0 -j ACCEPT
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-iptables -t mangle -A POSTROUTING -p tcp -s 192.168.3.110 -j CLASSIFY --set-class 1:10
-
-################################################################################
-echo -n "OUTPUT "
-
-# allows unrestricted output from this machine
-iptables -A OUTPUT -o lo -j ACCEPT
-iptables -A OUTPUT -o eth0 -j ACCEPT
-iptables -A OUTPUT -o eth1 -j ACCEPT
-
-################################################################################
-echo done.
-
---------------030205090100050202010204
+--------------060603050404050901090905
 Content-Type: text/plain;
  name="ip_a_route_1.sh"
 Content-Transfer-Encoding: 7bit
@@ -262,5 +127,5 @@ ip rule add to 0/0 prio 17000 table inet
 echo "Flushing ip route cache"
 ip route flush cache
 
---------------030205090100050202010204--
+--------------060603050404050901090905--
 
