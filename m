@@ -1,11 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipsets for both source and target in one iptables-rule?
-Date: Thu, 1 Dec 2005 17:22:34 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0512011711030.7270@blackhole.kfki.hu>
-References: <OF6D4A24FC.BD8BFC33-ONC12570CA.004AA26A-C12570CA.004D205F@knapp.com>
+From: Frank.Mayer@knapp-systems.com
+Subject: Antwort: Re: ipsets for both source and target in one iptables-rule?
+Date: Thu, 1 Dec 2005 19:05:13 +0100
+Message-ID: <OFD843AFFB.B134D21C-ONC12570CA.00621CA5-C12570CA.00635B0D@knapp.com>
+References: <Pine.LNX.4.58.0512011711030.7270@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <OF6D4A24FC.BD8BFC33-ONC12570CA.004AA26A-C12570CA.004D205F@knapp.com>
+In-Reply-To: <Pine.LNX.4.58.0512011711030.7270@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,47 +16,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Frank.Mayer@knapp-systems.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hello,
 
-On Thu, 1 Dec 2005 Frank.Mayer@knapp-systems.com wrote:
-
-> I'd like to use two ipsets in a single iptables rule similar to
+>> I'd like to use two ipsets in a single iptables rule similar to
+>>
+>> iptables -A FORWARD -p tcp -m tcp --dport ssh -m set --set clients src 
+-m
+>> set --set servers dst  -m state --state NEW,ESTABLISHED -j ACCEPT
 >
-> iptables -A FORWARD -p tcp -m tcp --dport ssh -m set --set clients src -m
-> set --set servers dst  -m state --state NEW,ESTABLISHED -j ACCEPT
+> That is not possible due to the feature in iptables itself that one 
+cannot
+> specify two or more match extensions of the same time. It is a 
+limitation
+> of the userspace interface (i.e. iptables) and not that of the kernel.
 
-That is not possible due to the feature in iptables itself that one cannot
-specify two or more match extensions of the same time. It is a limitation
-of the userspace interface (i.e. iptables) and not that of the kernel.
+That's what I thought might be the case.......
 
-However, you can "workaround" the situation with using the binding
-functionality of ipset. Bind the servers set to the clients set as default
-and use the command
+> However, you can "workaround" the situation with using the binding
+> functionality of ipset. Bind the servers set to the clients set as 
+default
+> and use the command
+> .....
 
-iptables -A FORWARD -p tcp --dport ssh \
-	-m set --set clients src,dst  \
-	-m state --state NEW,ESTABLISHED -j ACCEPT
+Ah! It looks like I didn't really understand that "bind"-thing from the 
+docs. ;-)
 
-Thus the set match is forced to match the source against the clients set
-and because there's a default binding and the match is instructed to
-follow it by 'src,dst', match the destination in the servers set. The
-final result is true if both matches are true.
+> In my opinion it's wasting of resources to specify any other matching
+> together with '-m state --state NEW,ESTABLISHED' if you set up proper
+> rules for matching NEW packets.
+I'm not sure I understand....
+It's true I can (and often do) add a rule similar to
+        iptables -A FORWARD -s 0/0 -d 0/0 -p tcp -m state --state 
+ESTABLISHED -j ACCEPT
+as some "catch-it-all".
+Is this what you mean? - the second rule in my mail I just gave for 
+clarity and completeness....
 
-In my opinion it's wasting of resources to specify any other matching
-together with '-m state --state NEW,ESTABLISHED' if you set up proper
-rules for matching NEW packets. But that you should do anyway to setup a
-proper firewall.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Best Regards and many thanks,
+Frank Mayer
+UNIX Systemadministration
+----------------------------------------------------
+KNAPP Systemintegration GmbH
+Waltenbachstrasse 9
+8700 Leoben, Austria
+----------------------------------------------------
+Phone: +43 3842 805-921
+Fax: +43 3842 82930-921
+frank.mayer@knapp-systems.com
+www.knapp.com
 
