@@ -1,12 +1,13 @@
 From: Rudi Starcevic <tech@wildcash.com>
 Subject: Re: dumb question...route from local eth1 to eth2 and vice versa
-Date: Thu, 01 Dec 2005 17:05:33 +1000
-Message-ID: <438EA0BD.3070804@wildcash.com>
+Date: Thu, 01 Dec 2005 17:08:01 +1000
+Message-ID: <438EA151.1040206@wildcash.com>
 References: <000001c5f642$ab8b8890$0101000a@sterenborg.info>
+	<438EA0BD.3070804@wildcash.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060603050404050901090905"
+Content-Type: multipart/mixed; boundary="------------030304020809080104080700"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000001c5f642$ab8b8890$0101000a@sterenborg.info>
+In-Reply-To: <438EA0BD.3070804@wildcash.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,50 +21,67 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
---------------060603050404050901090905
+--------------030304020809080104080700
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
 Hi,
 
-Eek .. let me try that again.
-My earlier post has an old copy of the iptables
-script. I've timmed it down so it should all work
-with a simple default = ACCEPT iptables firewall.
+Oh man .. it's just too late in my day ....
 
-I have two scripts I use to do something similar to this.
+Let me try one more time to attach these 2 scripts ..
 
-I figured this out just reading howto's on the web so
-it could be fully wrong and I may get flamed for posting them.
-
-What the scipts does is connect two networks and is
-an internet gateway for both.
-
-I think this setup should work OK for your gaming setup.
-Just edit the networks to suit what you need.
-
-The Linux router box has 2 NICs
-
-eth0: 192.168.1.0/24
-eth1: 192.168.3.0/24
-
-The default gateway is the ADSL modem: 192.168.1.254
-
-Both networks can see each other, the machines on the
-192.168.3.0/24 network set their gateway as the Linux box
-which in turn forwards their traffic to it default gw 192.168.1.254.
-
-The script uses 'iproute' and 'iptables'.
-
-Any feedback much appreciated.
-
-Thanks.
-Kind regards,
-Rudi.
+Doh .. sorry .....
 
 
+--------------030304020809080104080700
+Content-Type: text/plain;
+ name="ip_b_firewall_1._b.sh"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ip_b_firewall_1._b.sh"
 
---------------060603050404050901090905
+#!/bin/bash
+
+echo "Firewall Setup Start"
+
+
+################################################################################
+echo -n "Firewall: sysctl "
+
+# Enable forwarding
+echo "Enable Kernel Forwarding"
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+################################################################################
+echo -n "reset "
+
+for table in filter nat mangle ; do
+iptables --table $table --flush
+iptables --table $table --delete-chain
+done
+
+modprobe ip_nat_ftp
+
+################################################################################
+echo -n "FORWARD " 
+iptables -A FORWARD -i eth0 -j ACCEPT
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+################################################################################
+echo -n "OUTPUT "
+
+# allows unrestricted output from this machine
+iptables -A OUTPUT -o lo -j ACCEPT
+iptables -A OUTPUT -o eth0 -j ACCEPT
+iptables -A OUTPUT -o eth1 -j ACCEPT
+
+################################################################################
+echo done.
+
+--------------030304020809080104080700
 Content-Type: text/plain;
  name="ip_a_route_1.sh"
 Content-Transfer-Encoding: 7bit
@@ -127,5 +145,5 @@ ip rule add to 0/0 prio 17000 table inet
 echo "Flushing ip route cache"
 ip route flush cache
 
---------------060603050404050901090905--
+--------------030304020809080104080700--
 
