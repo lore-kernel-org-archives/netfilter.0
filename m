@@ -1,12 +1,14 @@
-From: Frank.Mayer@knapp-systems.com
-Subject: Antwort: Re: Antwort: Re: ipsets for both source and target in one
- iptables-rule?
-Date: Fri, 2 Dec 2005 12:59:38 +0100
-Message-ID: <OFC109A024.3BC7914A-ONC12570CB.0040CB45-C12570CB.0041E274@knapp.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: Antwort: Re: Antwort: Re: ipsets for both source and target in 
+ one iptables-rule?
+Date: Fri, 2 Dec 2005 13:18:00 +0100 (CET)
+Message-ID: <49666.193.173.147.3.1133525880.squirrel@webmail.sterenborg.info>
 References: <Pine.LNX.4.58.0512020838530.8267@blackhole.kfki.hu>
+	<OFAD4EEC06.4666A14A-ONC12570CB.0035DAA4-C12570CB.00404F91@knapp.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0512020838530.8267@blackhole.kfki.hu>
+In-Reply-To: <OFAD4EEC06.4666A14A-ONC12570CB.0035DAA4-C12570CB.00404F91@knapp.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +20,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi Jozsef
+On Fri, December 2, 2005 12:42, Frank.Mayer@knapp-systems.com wrote:
 
-I just realized that I now think I understand what you meant by "But why 
-do you specify the protocol?"
+>> The '-s 0/0 -d 0/0' matches buy nothing, they express the default.
+>>
+> If the "-s 0/0 -d 0/0 .... -j ACCEPT" matches express the default or
+> not does depend on the default, don't they?
 
-I could have written the rule like
-        iptables -A -m state --state ESTABLISHED -j ACCEPT
+The default is 0/0 for both.
 
-Best Regards and sorry for the misunderstandings,
-Frank Mayer
-UNIX Systemadministration
-----------------------------------------------------
-KNAPP Systemintegration GmbH
-Waltenbachstrasse 9
-8700 Leoben, Austria
-----------------------------------------------------
-Phone: +43 3842 805-921
-Fax: +43 3842 82930-921
-frank.mayer@knapp-systems.com
-www.knapp.com
+> Of course, I could do without expressly stating source and
+> destination addresses when defining the generic rule, but I don't
+> think that's the point you wanted to make, is it?
+
+Since specifying -s 0/0 -d 0/0 is the same as not specifying these
+parameters, I think it is the point Jozsef wanted to make.
+
+
+Gr,
+Rob
+
 
 
