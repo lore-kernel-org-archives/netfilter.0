@@ -1,12 +1,12 @@
-From: "Anthony Sadler" <anthonys@faredge.com.au>
-Subject: RE: dumb question...route from local eth1 to eth2 and vice versa
-Date: Fri, 2 Dec 2005 08:04:09 +1100
-Message-ID: <21108.6461124525$1133528401@news.gmane.org>
-References: <438ECDEC.20106@wildcash.com>
+From: Frank.Mayer@knapp-systems.com
+Subject: Antwort: Re: Antwort: Re: Antwort: Re: ipsets for both source and
+ target in one iptables-rule?
+Date: Fri, 2 Dec 2005 14:33:27 +0100
+Message-ID: <OFD3453F7F.C50E7A66-ONC12570CB.004886DF-C12570CB.004A790C@knapp.com>
+References: <Pine.LNX.4.58.0512021315040.8267@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <438ECDEC.20106@wildcash.com>
+In-Reply-To: <Pine.LNX.4.58.0512021315040.8267@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,64 +18,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Keep in mind that if you want network games across a router, you will =
-lose your broadcast packets unless you do something funky (unless its =
-built in which I don't think it is). If you select the LAN option in a =
-multiplayer game, 9 times out of 10 they use broadcast I've found. Use =
-direct IP if you can. =20
+Hi Joszef & Rob,
 
+> On Fri, 2 Dec 2005 Frank.Mayer@knapp-systems.com wrote:
+> 
+> > I just realized that I now think I understand what you meant by "But 
+why
+> > do you specify the protocol?"
+> >
+> > I could have written the rule like
+> >         iptables -A -m state --state ESTABLISHED -j ACCEPT
+> 
+> Yes, conntrack hold entries of connections you had explicitly let to 
+open
+> up. So (usually) there is no point to add other matches to the rule 
+above.
+> 
+> Best regards,
+> Jozsef
 
-Anthony Sadler
-Far Edge Technology
-w: (02) 8425 1400
-=20
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Rudi =
-Starcevic
-Sent: Thursday, 1 December 2005 21:18=20
-To: netfilter@lists.netfilter.org
-Subject: Re: dumb question...route from local eth1 to eth2 and vice =
-versa
+In hindsight, I completely agree with you (I hadn't given my example(s) 
+the same scrutinity I usually apply to actual rule sets - if I do have the 
+time to do so).
+Nevertheless I like to expressly state "-s 0/0 -d 0/0" for 
+understandability.
 
-Hi,
+I have one more request, if I may bother you once again:
+can you point me to some documentation that clarifies state matching from 
+a user's point of view?
+I do understand "NEW" and "ESTABLISHED" related to TCP, but their meaning 
+for e.g. UDP and ICMP mostly eludes me, as does the "RELATED" state:
+under which circumstances is one connection considered "related" to 
+another one (does that depend on the interpretation of the respective 
+conntrack-module, or is there a general definition)?
 
->> I think ip_a_route_1.sh is way too difficult for this setup. I didn't
->> even read it all through (saw something about tables, rules
->> and prio)..
-Very true, but it's the only way I know.
+Best Regards and many thanks again for your clarifications
+- and patience ;-)
 
->> ifconfig eth0 192.168.3.10 netmask 255.255.255.0 up
->> ifconfig eth1 192.168.1.1 netmask 255.255.255.0 up
->> route add -net 0.0.0.0 netmask 0.0.0.0 gw 192.168.3.254
-Nice one .....
-
->> You did not set the policy of FORWARD to DROP. It will DROP
->> nothing.
->> You did not set the policy of OUTPUT to DROP. The OUTPUT >> rules are
-useless because everything will be accepted, even
->>  without these rules.
-Yes sorry. I didn't cut'n'paste that part of the script in.
-It's my fault for trying to hurry out a quick post just before I left =
-work.
-
->>  He just needs to allow
->> forwarding between these to interfcaes and let routing do the
->>  rest.
->> Your scripts are doing something different.
-Yes ... but I thought it would be handy to have net too so
-all the boys and girls and play online together as well :-)
-
-Using things like tables, rules and prio also puts one in place
-to do QOS on the network traffic with the tc command.
-
-Don't want those pesky emails, downloads and other important
-stuff to lag out the gaming connection ... :-) lol .....
-
-Cheers,
-Rudi
-
-
+Frank Mayer
+UNIX Systemadministration
+----------------------------------------------------
+KNAPP Systemintegration GmbH
+Waltenbachstrasse 9
+8700 Leoben, Austria
+----------------------------------------------------
+Phone: +43 3842 805-921
+Fax: +43 3842 82930-921
+frank.mayer@knapp-systems.com
+www.knapp.com
 
