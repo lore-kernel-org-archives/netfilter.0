@@ -1,14 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Antwort: Re: Antwort: Re: ipsets for both source and target in 
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Antwort: Re: Antwort: Re: ipsets for both source and target in
  one iptables-rule?
-Date: Fri, 2 Dec 2005 13:18:00 +0100 (CET)
-Message-ID: <49666.193.173.147.3.1133525880.squirrel@webmail.sterenborg.info>
-References: <Pine.LNX.4.58.0512020838530.8267@blackhole.kfki.hu>
-	<OFAD4EEC06.4666A14A-ONC12570CB.0035DAA4-C12570CB.00404F91@knapp.com>
+Date: Fri, 2 Dec 2005 13:19:49 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0512021315040.8267@blackhole.kfki.hu>
+References: <OFC109A024.3BC7914A-ONC12570CB.0040CB45-C12570CB.0041E274@knapp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <OFAD4EEC06.4666A14A-ONC12570CB.0035DAA4-C12570CB.00404F91@knapp.com>
+In-Reply-To: <OFC109A024.3BC7914A-ONC12570CB.0040CB45-C12570CB.0041E274@knapp.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Frank.Mayer@knapp-systems.com
+Cc: netfilter@lists.netfilter.org
 
-On Fri, December 2, 2005 12:42, Frank.Mayer@knapp-systems.com wrote:
+On Fri, 2 Dec 2005 Frank.Mayer@knapp-systems.com wrote:
 
->> The '-s 0/0 -d 0/0' matches buy nothing, they express the default.
->>
-> If the "-s 0/0 -d 0/0 .... -j ACCEPT" matches express the default or
-> not does depend on the default, don't they?
+> I just realized that I now think I understand what you meant by "But why
+> do you specify the protocol?"
+>
+> I could have written the rule like
+>         iptables -A -m state --state ESTABLISHED -j ACCEPT
 
-The default is 0/0 for both.
+Yes, conntrack hold entries of connections you had explicitly let to open
+up. So (usually) there is no point to add other matches to the rule above.
 
-> Of course, I could do without expressly stating source and
-> destination addresses when defining the generic rule, but I don't
-> think that's the point you wanted to make, is it?
-
-Since specifying -s 0/0 -d 0/0 is the same as not specifying these
-parameters, I think it is the point Jozsef wanted to make.
-
-
-Gr,
-Rob
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
