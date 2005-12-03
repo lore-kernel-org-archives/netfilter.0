@@ -1,9 +1,8 @@
-From: stefanb@zitmail.uni-paderborn.de
-Subject: Fwd: NAT not working
-Date: Sat,  3 Dec 2005 14:40:14 +0100
-Message-ID: <1133617214.4391a03e73dfb@zitmail.uni-paderborn.de>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset-2.2.8
+Date: Sat, 3 Dec 2005 16:21:02 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0512031617190.11022@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,35 +14,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Sorry for the repost, but I accidentally posted with different From-address than
-the one I used to subscribe to the list.
+Hi,
 
------ Forwarded message from stefanb@zitmail.uni-paderborn.de -----
-Hello!
+This is a bugfix-only release: a nasty off-by-one bug in iptree type of
+sets was reported by Pablo Sole. If you use iptree type of sets, please
+upgrade the kernel part. There is no need to refresh ipset: the version
+was bumped just to note the kernel fix.
 
-I have a problem with NAT on my sparc64 system. Apparently, inbound packets do
-not have their addresses translated, therefore all machines behind my routing
-machine do not get any replies to their messages.
+The new version is available from http://ipset.netfilter.org or from the
+netfilter svn tree, as usual.
 
-The latest kernel which worked for me is 2.6.8.1, starting with 2.6.9 NAT broke
-for me. I think it is the kernel version which first introduced
-/proc/net/ip_conntrack_expect, which is always empty on my machine. I am not
-sure whether it is supposed to be empty. I just tried kernel 2.6.14.3 but the
-problem still persists. Any attempted connections appear as [UNREPLIED] in
-/proc/net/ip_conntrack.
-
-I believe this could be a bug. A filed a bug report in the Kernel's Bugzilla a
-long time ago, but I didn't receive any feedback so far.
-
-I hope anyone can help me with this.
-
-Regards,
-Stefan Boettner
-
------ End forwarded message -----
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
