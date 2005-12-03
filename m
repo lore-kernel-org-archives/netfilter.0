@@ -1,8 +1,9 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-2.2.8
-Date: Sat, 3 Dec 2005 16:21:02 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0512031617190.11022@blackhole.kfki.hu>
+From: Alexander Lay <Alexander.Lay@gmx.de>
+Subject: DNAT for ongoing UDP flows
+Date: Sat, 03 Dec 2005 18:03:35 +0100
+Message-ID: <584Q3slIoxJmAE9GGpFKDnHSMtx6Ju8DOlQWsPjrOt0@akmail>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,25 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 Hi,
 
-This is a bugfix-only release: a nasty off-by-one bug in iptree type of
-sets was reported by Pablo Sole. If you use iptree type of sets, please
-upgrade the kernel part. There is no need to refresh ipset: the version
-was bumped just to note the kernel fix.
+i need to dynamically change the destination IP address
+of UDP packets for an ongoing UDP flow. That means
+when the flow starts for the first time no change
+is needed and after some time a change of the destination
+IP address must be done to redirect the packets to another
+machine dynamically. For new flows this could be done using e.g.:
+iptables -t nat -A OUTPUT/PREROUTING  -p udp --destination-port 1111
+-d 192.168.2.10 -j DNAT --to-destination 192.168.1.2:2222
 
-The new version is available from http://ipset.netfilter.org or from the
-netfilter svn tree, as usual.
+The problem is that this rule is only used for new flows
+and not for ongoing flows as already discussed in february 2003
+here:
+<https://lists.netfilter.org/pipermail/netfilter-devel/2003-February/010577.html>
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+The proposed solutions there are not applicable. Interesting
+was solution C) (ctnetlink extension) but it seems to me that
+this extension only allows matching of flows and not changing
+rules for ongoing flows.
+
+In addition i am looking for a possibility to flush tables/rules
+for ongoing flows to switch back to the old destination IP
+address in a last step by removing the DNAT rule.
+iptables -t nat -F flushes rules but again not for ongoing flows.
+
+Perhaps there are some new possibilities since february 2003
+or someone has new or additional ideas. Thanks.
+
+BTW, i am using SuSE 10, Kernel 2.6.13-15-default, iptables v1.3.3.
+
+best regards,
+  Alex
+
 
