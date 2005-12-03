@@ -1,9 +1,9 @@
-From: Alexander Lay <Alexander.Lay@gmx.de>
-Subject: DNAT for ongoing UDP flows
-Date: Sat, 03 Dec 2005 18:03:35 +0100
-Message-ID: <584Q3slIoxJmAE9GGpFKDnHSMtx6Ju8DOlQWsPjrOt0@akmail>
+From: James Rhett Aultman <jaultman@cise.ufl.edu>
+Subject: running commands when packet matched
+Date: Sat, 03 Dec 2005 17:39:32 -0500
+Message-ID: <43921EA4.7060905@cise.ufl.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,38 +18,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Dear Netfilter users,
 
-i need to dynamically change the destination IP address
-of UDP packets for an ongoing UDP flow. That means
-when the flow starts for the first time no change
-is needed and after some time a change of the destination
-IP address must be done to redirect the packets to another
-machine dynamically. For new flows this could be done using e.g.:
-iptables -t nat -A OUTPUT/PREROUTING  -p udp --destination-port 1111
--d 192.168.2.10 -j DNAT --to-destination 192.168.1.2:2222
+I'm trying to put together a prototype for a project at the moment and
+I'm trying to think about the proper architecture to use for it. 
+Basically, I need to be able to run a certain program when a given
+machine sees certain kinds of traffic coming across it.  I'm looking
+into doing this with iptables, but the tutorials I've read don't cover
+cases like mine.  Again, to explain the mechanism I need: when the
+machine encounters a packet matching a rule, I want the machine to run a
+specific program and drop the packet.
 
-The problem is that this rule is only used for new flows
-and not for ongoing flows as already discussed in february 2003
-here:
-<https://lists.netfilter.org/pipermail/netfilter-devel/2003-February/010577.html>
+Is something like this possible using iptables or another netfilter project?
 
-The proposed solutions there are not applicable. Interesting
-was solution C) (ctnetlink extension) but it seems to me that
-this extension only allows matching of flows and not changing
-rules for ongoing flows.
+--
+Rhett.
 
-In addition i am looking for a possibility to flush tables/rules
-for ongoing flows to switch back to the old destination IP
-address in a last step by removing the DNAT rule.
-iptables -t nat -F flushes rules but again not for ongoing flows.
 
-Perhaps there are some new possibilities since february 2003
-or someone has new or additional ideas. Thanks.
 
-BTW, i am using SuSE 10, Kernel 2.6.13-15-default, iptables v1.3.3.
-
-best regards,
-  Alex
 
 
