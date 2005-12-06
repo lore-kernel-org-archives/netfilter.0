@@ -1,12 +1,13 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: DMZ Setup Question
-Date: Tue, 6 Dec 2005 13:04:22 +0000
-Message-ID: <20051206130422.GC21572@metastasis.org.uk>
-References: <1133367720.22295.45.camel@syslinux.marketlinksolutions.net>
+From: Wolfgang Lonien <wolfgang@lonien.de>
+Subject: Re: SNMP through VPN?
+Date: Tue, 06 Dec 2005 14:36:06 +0100
+Message-ID: <439593C6.3010204@lonien.de>
+References: <438EEA93.10000@lonien.de>
+	<20051206125236.GB21572@metastasis.org.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1133367720.22295.45.camel@syslinux.marketlinksolutions.net>
+In-Reply-To: <20051206125236.GB21572@metastasis.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,56 +19,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Wed, Nov 30, 2005 at 11:22:00 -0500, Jay Zorzi wrote:
+Nick Drage wrote:
 
-Left in for context....
+> Can you make other connections, not related to SNMP, from linuxbox1 to
+> router2 and from linuxbox2 to router1, both to the router's internal
+> interfaces?
 
-> My colleague and i are having a disagreement about our network firewall
-> and routing policies.  First the setup information.
-> We have a Bridge Router running iptables and ebtables as our external
-> firewall.  Behind that we have a DMZ that contains machines with valid
-> external addresses.  Between the DMZ and our internal network there is
-> another firewall.  Our choke firewall.  The choke firewall is doing NAT
-> in order for our internal network to surf the Internet but for our DMZ
-> machines to talk to our internal machines we are just using routing, no
-> NAT.
+Yup - ssh and/or http work just like a charm...
 
-Onwards....
+> And what packet sniffing software do you have available on the routers,
+> so you can what's happening to the traffic.
 
-> Now here is the disagreement.  Because the internal machines are using
-> a private network address my colleague is concerned that we are
-> violating Internet rules/etiquette by having this internal private
-> ip's routing to our DMZ machines that have valid Internet IP's.
+I installed tcpdump lately. But it seems that some guy of the german
+Astaro support worked that out already - because that's our commercial
+firewall in the company, where I had the same effect.
 
-Not at all.  It may technically be against an RFC but you're not
-affecting anyone's routing tables using this method so it's not a
-problem.  I've seen large ISPs use such internal address ranges on their
-networks before so I wouldn't worry.
+Looks like some SNAT-rule together with another iptables 'ACCEPT' is
+necessary to get things going. As soon as I can confirm that the other
+way (from the company to the internal interface of my WRT54G), I'll keep
+you updated...
 
-> He is also suggesting that using nat is more secure.
-
-It is, sort of.  Without NAT if someone compromised a DMZ box and
-somehow your choke firewall permitted inbound connections then the
-attacker couuld have a go at your internal hosts from the compromised
-host.
-
-If you used NAT it would mean someone could compromise a box in the DMZ
-and still not get to your internal hosts, unless you specifically
-forwarded inbound connections to a port on the external interface of the
-choke firewall to an internal host. 
-
-So without NAT you have to do something dumb to be vulnerable, with NAT
-you have to do something dumber.  Seeing as things work at the moment
-I'd be very tempted to leave things as they are.
-
-> Can someone help us settle this disagreement?
-
-Hope the above helps :)
+But thanks anyway,
+cheers,
+wjl
 
 -- 
-deviants are sacrificed to increase group solidarity
-Jenny Solzer
+Key ID 0x728D9BD0 - public key available at wwwkeys.de.pgp.net
+'94 Honda NTV still running on fuel -
+everything else here proudly runs Debian GNU/Linux
 
