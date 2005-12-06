@@ -1,12 +1,12 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: SNMP through VPN?
-Date: Tue, 6 Dec 2005 12:52:36 +0000
-Message-ID: <20051206125236.GB21572@metastasis.org.uk>
-References: <438EEA93.10000@lonien.de>
+From: elg3ne@dap.edu.ph
+Subject: Best Linux Intrusion Detection System
+Date: Tue, 6 Dec 2005 13:58:47 +0800
+Message-ID: <007101c5fa2a$27f27a20$0b01a8c0@DAP>
+References: <mailman.0.1115718084.11687.netfilter@lists.netfilter.org><BAY12-F8D78244E7EC55433A54F3DE1F0@phx.gbl>
+	<20050510133240.GA9011@bender.817west.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <438EEA93.10000@lonien.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +18,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Dec 01, 2005 at 01:20:35 +0100, Wolfgang Lonien wrote:
-> Hi list,
+Hi guys, I know this is a off topic but since Iptables is a security tool, I
+will ask this question with regards also on security.
 
-<snip>
+Here it goes.
+1. what is the most commonly used LIDS system?
+2. what is the best LIDS?
+3. what is the most sophisticated LIDS?
+4. what is the most easiest to setup?
+5. what LIDS can you suggest on CentOS?
 
-> What am I doing wrong?
+thanks
 
-Can you make other connections, not related to SNMP, from linuxbox1 to
-router2 and from linuxbox2 to router1, both to the router's internal
-interfaces?
-
-And what packet sniffing software do you have available on the routers,
-so you can what's happening to the traffic.
-
--- 
-deviants are sacrificed to increase group solidarity
-Jenny Solzer
 
