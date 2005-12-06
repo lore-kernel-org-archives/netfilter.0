@@ -1,13 +1,11 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: Ping flood
-Date: Tue, 6 Dec 2005 21:34:11 +0000
-Message-ID: <20051206213411.GK21572@metastasis.org.uk>
-References: <43677BFD.3080805@darkstar.nom.za>
-	<200511011119.31267.rob0@gmx.co.uk>
+From: Fred Weston <fweston@gmail.com>
+Subject: Redirect all but certain hosts?
+Date: Tue, 6 Dec 2005 17:40:05 -0500
+Message-ID: <59038a50512061440t4517416t36ccd70f652e7a33@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200511011119.31267.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,49 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Nov 01, 2005 at 11:19:31 -0600, /dev/rob0 wrote:
-> On Tuesday 2005-November-01 08:30, Paulo Andre wrote:
-> > I have the following log:
-> > Nov  1 09:10:40 guardian ---SA_IN--- IN=eth1 OUT=
-> > MAC=ff:ff:ff:ff:ff:ff:00:e0:1e:83:d5:19:08:00  SRC=64.34.170.237
-> 
-> Who is this?
-> 
-> $ host 64.34.170.237
-> 237.170.34.64.in-addr.arpa domain name pointer server1.ircnapoli.com.
-> $ whois $_
-> Peer 1 Network Inc. PEER1-BLK-08 (NET-64-34-0-0-1)
->                                   64.34.0.0 - 64.34.255.255
-> ServerBeach PEER1-SERVERBEACH-02 (NET-64-34-160-0-1)
->                                   64.34.160.0 - 64.34.191.255
-> ...
-> $ host server1.ircnapoli.com.
-> server1.ircnapoli.com has address 64.34.170.237
-> 
-> > DST=255.255.255.255 LEN=1072 TOS=00 PREC=0x40 TTL=243 ID=12209 DF
-> > PROTO=ICMP TYPE=8 CODE=0 ID=0 SEQ=0
-> 
-> That's a broadcast ping.
+Is it possible to specify multiple MAC address to match a rule?
 
-The thing is, seeing as it's to 255.255.255.255 rather than the local
-broadcast address, I've a feeling packet is being generated locally in
-some way, rather than being sent to the broadcast address on the
-original poster's network from the remote host.
+Example, the rule I am using is:
 
-Although the TTL would appear to refute that hypothesis.
+iptables -t nat -A PREROUTING -i eth0 -m mac --mac-source !
+00:00:00:00:00:00 -p tcp --dport 80 -j REDIRECT --to-port 8080
 
-I can't actually force IPtables to log pings to the broadcast address on
-the boxes I have to hand, that I've sent from a host outside of the
-local network, but looking at tcpdump the destination address is
-definitely the IP address of the local broadcast address rather than
-255.255.255.255.
+What I want to achieve is any client that is not in my list of MAC
+addresses should have their http traffic redirected.  Any traffic from
+a client that is in the list of MAC addresses should be left alone.
 
-Paulo, what has a MAC address of 00:e0:1e:83:d5:19 on your LAN?
+The rule above matches everything since 00:00:00:00:00:00 should not
+match any clients.  What I want to do when I need to allow a new
+client through the firewall without being redirected, is flush the
+prerouting chain out and re-add the same rule, except with multiple
+MAC addresses.
 
--- 
-deviants are sacrificed to increase group solidarity
-Jenny Solzer
+Any help is appreciated.
 
