@@ -1,12 +1,12 @@
-From: vikrant <vikrant@saysnetsoft.com>
-Subject: Re: Problem after applying patch for "nth" module
-Date: Tue, 06 Dec 2005 17:24:06 +0530
-Message-ID: <43957BDE.9080305@saysnetsoft.com>
-References: <55531.61.12.43.109.1133854488.squirrel@saysnetsoft.com>
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: Is using a blacklist in iptables a good strategy?
+Date: Tue, 6 Dec 2005 12:47:39 +0000
+Message-ID: <20051206124739.GA21572@metastasis.org.uk>
+References: <1133252475.20357.5.camel@sonoda.bioscene.co.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <55531.61.12.43.109.1133854488.squirrel@saysnetsoft.com>
+Content-Disposition: inline
+In-Reply-To: <1133252475.20357.5.camel@sonoda.bioscene.co.jp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: vikrant@saysnetsoft.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+On Tue, Nov 29, 2005 at 05:21:15 +0900, David Leangen wrote:
 
-Sorry,i missed some steps in the following procedure:-
+> I don't know why, but I'm getting a little fed up with break-in
+> attempts happening every single day.
+> 
+> Do I just have to accept this as a fact of life?
 
->
->After,the above failure i have tried the another way to use "nth", add nth
->as a Module as follows:-
->  
->
-[step missed] first store the " ipt_nth.h"  to the "netfilter_ipv4" 
-directory.
-then, i wrote a Makefile
+What sort of attacks are these?  Are they against services you're
+running or just port scans and similar?
 
->----------------------------------------------------------------
->obj-m += ipt_nth.o
->
->all:
->	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
->
->clean:
->	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
->-----------------------------------------------------------------------
->then execute
->#make
->#insmod ./ipt_nth.ko
->  
->
-[step missed] make clean iptables.
-[step missed]  make and make install iptables.
-
-Thanks
-Vikrant
+-- 
+deviants are sacrificed to increase group solidarity
+Jenny Solzer
 
