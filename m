@@ -1,12 +1,11 @@
-From: Olivier GRALL <olivier.grall@neotip.com>
-Subject: Re: DNAT/SNAT doubt
-Date: Wed, 07 Dec 2005 10:13:26 +0100
-Message-ID: <4396A7B6.6040003@neotip.com>
-References: <20051104181551.GA27330@casa.e-den.it>
+From: Dirk Nehring <dnehring@marcant.net>
+Subject: 2.6.14.3 PPTP NAT-Problem
+Date: Tue, 6 Dec 2005 16:56:26 +0100
+Message-ID: <20051206155626.GA29734@gandalf.intern.marcant.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="NzB8fVQJ5HfG6fxh"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051104181551.GA27330@casa.e-den.it>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +16,214 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Sandro Dentella <sandro@e-den.it>
-Cc: iptables <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
+
+
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 Hi,
 
-Don't you forget to allow ip_forward on your Linux box ?
+it seems that the PPTP conntrack module is still broken under
+2.6.14.3. With a Linux pptp server and a Windows XP SP2 client the
+connection doesn't come up. I attach the logfile from the pptp-Server
+and the firewall in front of the client (on the internal interface).
 
-echo 1 > /proc/sys/net/ipv4/ip_forward
-or in /etc/sysctl.conf
+Dirk
 
-Regards,
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="pptpd_server.log"
 
-Olivier GRALL
+Dec  6 16:15:08 rossini pptpd[20615]: CTRL: Client 217.14.169.12 control connection started
+Dec  6 16:15:08 rossini pptpd[20615]: CTRL: Starting call (launching pppd, opening GRE)
+Dec  6 16:15:08 rossini pppd[20616]: pppd 2.4.3 started by root, uid 0
+Dec  6 16:15:08 rossini pppd[20616]: using channel 66
+Dec  6 16:15:08 rossini pppd[20616]: Using interface ppp0
+Dec  6 16:15:08 rossini pppd[20616]: Connect: ppp0 <--> /dev/pts/4
+Dec  6 16:15:08 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:08 rossini pppd[20616]: rcvd [len=25] [LCP ConfReq id=0x0 <mru 1400> <magic 0x16996439> <pcomp> <accomp> <callback CBCP>]
+Dec  6 16:15:08 rossini pppd[20616]: sent [len=11] [LCP ConfRej id=0x0 <callback CBCP>]
+Dec  6 16:15:10 rossini pppd[20616]: rcvd [len=25] [LCP ConfReq id=0x1 <mru 1400> <magic 0x16996439> <pcomp> <accomp> <callback CBCP>]
+Dec  6 16:15:10 rossini pppd[20616]: sent [len=11] [LCP ConfRej id=0x1 <callback CBCP>]
+Dec  6 16:15:11 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:13 rossini pppd[20616]: rcvd [len=25] [LCP ConfReq id=0x2 <mru 1400> <magic 0x16996439> <pcomp> <accomp> <callback CBCP>]
+Dec  6 16:15:13 rossini pppd[20616]: sent [len=11] [LCP ConfRej id=0x2 <callback CBCP>]
+Dec  6 16:15:14 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:17 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:17 rossini pppd[20616]: rcvd [len=25] [LCP ConfReq id=0x3 <mru 1400> <magic 0x16996439> <pcomp> <accomp> <callback CBCP>]
+Dec  6 16:15:17 rossini pppd[20616]: sent [len=11] [LCP ConfRej id=0x3 <callback CBCP>]
+Dec  6 16:15:20 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:21 rossini pppd[20616]: rcvd [len=25] [LCP ConfReq id=0x4 <mru 1400> <magic 0x16996439> <pcomp> <accomp> <callback CBCP>]
+Dec  6 16:15:21 rossini pppd[20616]: sent [len=11] [LCP ConfRej id=0x4 <callback CBCP>]
+Dec  6 16:15:23 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:25 rossini pppd[20616]: rcvd [len=25] [LCP ConfReq id=0x5 <mru 1400> <magic 0x16996439> <pcomp> <accomp> <callback CBCP>]
+Dec  6 16:15:25 rossini pppd[20616]: sent [len=11] [LCP ConfRej id=0x5 <callback CBCP>]
+Dec  6 16:15:26 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:29 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:29 rossini pppd[20616]: rcvd [len=25] [LCP ConfReq id=0x6 <mru 1400> <magic 0x16996439> <pcomp> <accomp> <callback CBCP>]
+Dec  6 16:15:29 rossini pppd[20616]: sent [len=11] [LCP ConfRej id=0x6 <callback CBCP>]
+Dec  6 16:15:32 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:33 rossini pppd[20616]: rcvd [len=25] [LCP ConfReq id=0x7 <mru 1400> <magic 0x16996439> <pcomp> <accomp> <callback CBCP>]
+Dec  6 16:15:33 rossini pppd[20616]: sent [len=11] [LCP ConfRej id=0x7 <callback CBCP>]
+Dec  6 16:15:35 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x1 <asyncmap 0x0> <auth chap MS-v2> <magic 0x72fddf8f> <pcomp> <accomp>]
+Dec  6 16:15:37 rossini pppd[20616]: rcvd [len=25] [LCP ConfReq id=0x8 <mru 1400> <magic 0x16996439> <pcomp> <accomp> <callback CBCP>]
+Dec  6 16:15:37 rossini pppd[20616]: sent [len=11] [LCP ConfRej id=0x8 <callback CBCP>]
+Dec  6 16:15:38 rossini pppd[20616]: LCP: timeout sending Config-Requests 
+Dec  6 16:15:38 rossini pppd[20616]: Connection terminated.
+Dec  6 16:15:38 rossini pppd[20616]: using channel 67
+Dec  6 16:15:38 rossini pppd[20616]: Using interface ppp0
+Dec  6 16:15:38 rossini pppd[20616]: Connect: ppp0 <--> /dev/pts/4
+Dec  6 16:15:38 rossini pppd[20616]: sent [len=29] [LCP ConfReq id=0x2 <asyncmap 0x0> <auth chap MS-v2> <magic 0x6ebcc60b> <pcomp> <accomp>]
+Dec  6 16:15:38 rossini pppd[20616]: tcflush failed: Bad file descriptor
+Dec  6 16:15:38 rossini pppd[20616]: tcsetattr: Invalid argument (line 1001)
+Dec  6 16:15:38 rossini pppd[20616]: Exit.
+Dec  6 16:15:38 rossini pptpd[20615]: GRE: read(fd=4,buffer=804dac0,len=8196) from PTY failed: status = -1 error = Input/output error, usually caused by unexpected termination of pppd, check option syntax and pppd logs
+Dec  6 16:15:38 rossini pptpd[20615]: CTRL: PTY read or GRE write failed (pty,gre)=(4,5)
+Dec  6 16:15:38 rossini pptpd[20615]: CTRL: Reaping child PPP[20616]
+Dec  6 16:15:38 rossini pptpd[20615]: CTRL: Client 217.14.169.12 control connection finished
 
-Sandro Dentella a =E9crit :
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="pptpd_client.dump.txt"
 
->Hi all,
->
->  a nameserver managed by one of my customers died unexpectedly, they as=
-ked
->  me to redirect all traffic to another DNS in a totally different
->  network. Should it work? (it didn't in my case...)
->
->Chain PREROUTING (policy ACCEPT 656 packets, 33024 bytes)
-> pkts bytes target     prot opt in     out     source               dest=
-ination
-> 1410 93104 DNAT       udp  --  *      *       0.0.0.0/0            0.0.=
-0.0/0          udp dpt:53 to:XXX
->
->Chain POSTROUTING (policy ACCEPT 628 packets, 31631 bytes)
-> pkts bytes target     prot opt in     out     source               dest=
-ination
->    0     0 SNAT       udp  --  *      *       0.0.0.0/0            XXX =
-   udp dpt:53 to:YYY
->
->  you can see that no packets entered the POSTROUTING chain even thought=
- in
->  my opinion all packets ther entered the PREROUTING rule should enter t=
-he
->  POSTROUTING one. Am I wrong?
->
->  TYA
->  sandro
->  *:-)
->
->
-> =20
->
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth1, link-type EN10MB (Ethernet), capture size 1500 bytes
+16:15:14.883808 IP 192.168.1.44.1801 > 217.14.160.69.1723: S 4054744245:4054744245(0) win 65535 <mss 1460,nop,nop,sackOK>
+	0x0000:  4500 0030 f5f5 4000 8006 c9a9 c0a8 012c  E..0..@........,
+	0x0010:  d90e a045 0709 06bb f1ae 7cb5 0000 0000  ...E......|.....
+	0x0020:  7002 ffff cbce 0000 0204 05b4 0101 0402  p...............
+16:15:14.884410 IP 217.14.160.69.1723 > 192.168.1.44.1801: S 974985490:974985490(0) ack 4054744246 win 5840 <mss 1460,nop,nop,sackOK>
+	0x0000:  4500 0030 0000 4000 3e06 01a0 d90e a045  E..0..@.>......E
+	0x0010:  c0a8 012c 06bb 0709 3a1d 1912 f1ae 7cb6  ...,....:.....|.
+	0x0020:  7012 16d0 61be 0000 0204 05b4 0101 0402  p...a...........
+16:15:14.884563 IP 192.168.1.44.1801 > 217.14.160.69.1723: P 1:157(156) ack 1 win 65535: pptp CTRL_MSGTYPE=SCCRQ PROTO_VER(1.0) FRAME_CAP(A) BEARER_CAP(A) MAX_CHAN(0) FIRM_REV(2600) HOSTNAME() VENDOR(Microsoft Windows NT)
+	0x0000:  4500 00c4 f5f6 4000 8006 c914 c0a8 012c  E.....@........,
+	0x0010:  d90e a045 0709 06bb f1ae 7cb6 3a1d 1913  ...E......|.:...
+	0x0020:  5018 ffff 47de 0000 009c 0001 1a2b 3c4d  P...G........+<M
+	0x0030:  0001 0000 0100 0000 0000 0001 0000 0001  ................
+	0x0040:  0000 0a28 0000 0000 0000 0000 0000 0000  ...(............
+	0x0050:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0060:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0070:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0080:  0000 0000 4d69 6372 6f73 6f66 7420 5769  ....Microsoft.Wi
+	0x0090:  6e64 6f77 7320 4e54 0000 0000 0000 0000  ndows.NT........
+	0x00a0:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x00b0:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x00c0:  0000 0000                                ....
+16:15:14.885220 IP 217.14.160.69.1723 > 192.168.1.44.1801: . ack 157 win 5840
+	0x0000:  4500 0028 b5ef 4000 3e06 4bb8 d90e a045  E..(..@.>.K....E
+	0x0010:  c0a8 012c 06bb 0709 3a1d 1913 f1ae 7d52  ...,....:.....}R
+	0x0020:  5010 16d0 8de6 0000                      P.......
+16:15:14.890004 IP 217.14.160.69.1723 > 192.168.1.44.1801: P 1:157(156) ack 157 win 5840: pptp CTRL_MSGTYPE=SCCRP PROTO_VER(1.0) RESULT_CODE(1) ERR_CODE(0) FRAME_CAP() BEARER_CAP() MAX_CHAN(1) FIRM_REV(1) HOSTNAME(local) VENDOR(linux)
+	0x0000:  4500 00c4 b5f1 4000 3e06 4b1a d90e a045  E.....@.>.K....E
+	0x0010:  c0a8 012c 06bb 0709 3a1d 1913 f1ae 7d52  ...,....:.....}R
+	0x0020:  5018 16d0 a578 0000 009c 0001 1a2b 3c4d  P....x.......+<M
+	0x0030:  0002 0000 0100 0100 0000 0000 0000 0000  ................
+	0x0040:  0001 0001 6c6f 6361 6c00 0000 0000 0000  ....local.......
+	0x0050:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0060:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0070:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0080:  0000 0000 6c69 6e75 7800 0000 0000 0000  ....linux.......
+	0x0090:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x00a0:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x00b0:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x00c0:  0000 0000                                ....
+16:15:14.890208 IP 192.168.1.44.1801 > 217.14.160.69.1723: P 157:325(168) ack 157 win 65379: pptp CTRL_MSGTYPE=OCRQ CALL_ID(512) CALL_SER_NUM(64073) MIN_BPS(300) MAX_BPS(100000000) BEARER_TYPE(Any) FRAME_TYPE(E) RECV_WIN(64) PROC_DELAY(0) PHONE_NO_LEN(0) PHONE_NO() SUB_ADDR()
+	0x0000:  4500 00d0 f5f7 4000 8006 c907 c0a8 012c  E.....@........,
+	0x0010:  d90e a045 0709 06bb f1ae 7d52 3a1d 19af  ...E......}R:...
+	0x0020:  5018 ff63 682c 0000 00a8 0001 1a2b 3c4d  P..ch,.......+<M
+	0x0030:  0007 0000 0200 fa49 0000 012c 05f5 e100  .......I...,....
+	0x0040:  0000 0003 0000 0003 0040 0000 0000 0000  .........@......
+	0x0050:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0060:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0070:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0080:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x0090:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x00a0:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x00b0:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+	0x00c0:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+16:15:14.930114 IP 217.14.160.69.1723 > 192.168.1.44.1801: . ack 325 win 5840
+	0x0000:  4500 0028 b5f3 4000 3e06 4bb4 d90e a045  E..(..@.>.K....E
+	0x0010:  c0a8 012c 06bb 0709 3a1d 19af f1ae 7dfa  ...,....:.....}.
+	0x0020:  5010 16d0 8ca2 0000                      P.......
+16:15:14.979372 IP 217.14.160.69.1723 > 192.168.1.44.1801: P 157:189(32) ack 325 win 5840: pptp CTRL_MSGTYPE=OCRP CALL_ID(6272) PEER_CALL_ID(512) RESULT_CODE(1) ERR_CODE(0) CAUSE_CODE(0) CONN_SPEED(100000000) RECV_WIN(64) PROC_DELAY(0) PHY_CHAN_ID(0)
+	0x0000:  4500 0048 b5f5 4000 3e06 4b92 d90e a045  E..H..@.>.K....E
+	0x0010:  c0a8 012c 06bb 0709 3a1d 19af f1ae 7dfa  ...,....:.....}.
+	0x0020:  5018 16d0 3323 0000 0020 0001 1a2b 3c4d  P...3#.......+<M
+	0x0030:  0008 0000 1880 0200 0100 0000 05f5 e100  ................
+	0x0040:  0040 0000 0000 0000                      .@......
+16:15:14.983341 IP 192.168.1.44.1801 > 217.14.160.69.1723: P 325:349(24) ack 189 win 65347: pptp CTRL_MSGTYPE=SLI PEER_CALL_ID(6272) SEND_ACCM(0xffffffff) RECV_ACCM(0xffffffff)
+	0x0000:  4500 0040 f5f8 4000 8006 c996 c0a8 012c  E..@..@........,
+	0x0010:  d90e a045 0709 06bb f1ae 7dfa 3a1d 19cf  ...E......}.:...
+	0x0020:  5018 ff43 34ce 0000 0018 0001 1a2b 3c4d  P..C4........+<M
+	0x0030:  000f 0000 1880 0000 ffff ffff ffff ffff  ................
+16:15:14.983911 IP 217.14.160.69.1723 > 192.168.1.44.1801: . ack 349 win 5840
+	0x0000:  4500 0028 b5f7 4000 3e06 4bb0 d90e a045  E..(..@.>.K....E
+	0x0010:  c0a8 012c 06bb 0709 3a1d 19cf f1ae 7e12  ...,....:.....~.
+	0x0020:  5010 16d0 8c6a 0000                      P....j..
+16:15:14.985671 IP 192.168.1.44 > 217.14.160.69: call 6272 seq 0 gre-ppp-payload
+	0x0000:  4500 0039 f5f9 0000 802f 0974 c0a8 012c  E..9...../.t...,
+	0x0010:  d90e a045 3001 880b 0019 1880 0000 0000  ...E0...........
+	0x0020:  ff03 c021 0100 0015 0104 0578 0506 1699  ...!.......x....
+	0x0030:  6439 0702 0802 0d03 06                   d9.......
+16:15:16.984955 IP 192.168.1.44 > 217.14.160.69: call 6272 seq 1 gre-ppp-payload
+	0x0000:  4500 0039 f5fa 0000 802f 0973 c0a8 012c  E..9...../.s...,
+	0x0010:  d90e a045 3001 880b 0019 1880 0000 0001  ...E0...........
+	0x0020:  ff03 c021 0101 0015 0104 0578 0506 1699  ...!.......x....
+	0x0030:  6439 0702 0802 0d03 06                   d9.......
+16:15:19.989127 IP 192.168.1.44 > 217.14.160.69: call 6272 seq 2 gre-ppp-payload
+	0x0000:  4500 0039 f5fb 0000 802f 0972 c0a8 012c  E..9...../.r...,
+	0x0010:  d90e a045 3001 880b 0019 1880 0000 0002  ...E0...........
+	0x0020:  ff03 c021 0102 0015 0104 0578 0506 1699  ...!.......x....
+	0x0030:  6439 0702 0802 0d03 06                   d9.......
+16:15:23.994981 IP 192.168.1.44 > 217.14.160.69: call 6272 seq 3 gre-ppp-payload
+	0x0000:  4500 0039 f5fc 0000 802f 0971 c0a8 012c  E..9...../.q...,
+	0x0010:  d90e a045 3001 880b 0019 1880 0000 0003  ...E0...........
+	0x0020:  ff03 c021 0103 0015 0104 0578 0506 1699  ...!.......x....
+	0x0030:  6439 0702 0802 0d03 06                   d9.......
+16:15:28.001194 IP 192.168.1.44 > 217.14.160.69: call 6272 seq 4 gre-ppp-payload
+	0x0000:  4500 0039 f5fd 0000 802f 0970 c0a8 012c  E..9...../.p...,
+	0x0010:  d90e a045 3001 880b 0019 1880 0000 0004  ...E0...........
+	0x0020:  ff03 c021 0104 0015 0104 0578 0506 1699  ...!.......x....
+	0x0030:  6439 0702 0802 0d03 06                   d9.......
+16:15:32.007092 IP 192.168.1.44 > 217.14.160.69: call 6272 seq 5 gre-ppp-payload
+	0x0000:  4500 0039 f5fe 0000 802f 096f c0a8 012c  E..9...../.o...,
+	0x0010:  d90e a045 3001 880b 0019 1880 0000 0005  ...E0...........
+	0x0020:  ff03 c021 0105 0015 0104 0578 0506 1699  ...!.......x....
+	0x0030:  6439 0702 0802 0d03 06                   d9.......
+16:15:36.012917 IP 192.168.1.44 > 217.14.160.69: call 6272 seq 6 gre-ppp-payload
+	0x0000:  4500 0039 f5ff 0000 802f 096e c0a8 012c  E..9...../.n...,
+	0x0010:  d90e a045 3001 880b 0019 1880 0000 0006  ...E0...........
+	0x0020:  ff03 c021 0106 0015 0104 0578 0506 1699  ...!.......x....
+	0x0030:  6439 0702 0802 0d03 06                   d9.......
+16:15:40.018951 IP 192.168.1.44 > 217.14.160.69: call 6272 seq 7 gre-ppp-payload
+	0x0000:  4500 0039 f606 0000 802f 0967 c0a8 012c  E..9...../.g...,
+	0x0010:  d90e a045 3001 880b 0019 1880 0000 0007  ...E0...........
+	0x0020:  ff03 c021 0107 0015 0104 0578 0506 1699  ...!.......x....
+	0x0030:  6439 0702 0802 0d03 06                   d9.......
+16:15:44.024860 IP 192.168.1.44 > 217.14.160.69: call 6272 seq 8 gre-ppp-payload
+	0x0000:  4500 0039 f613 0000 802f 095a c0a8 012c  E..9...../.Z...,
+	0x0010:  d90e a045 3001 880b 0019 1880 0000 0008  ...E0...........
+	0x0020:  ff03 c021 0108 0015 0104 0578 0506 1699  ...!.......x....
+	0x0030:  6439 0702 0802 0d03 06                   d9.......
+16:15:45.262719 IP 217.14.160.69.1723 > 192.168.1.44.1801: F 189:189(0) ack 349 win 5840
+	0x0000:  4500 0028 b5f9 4000 3e06 4bae d90e a045  E..(..@.>.K....E
+	0x0010:  c0a8 012c 06bb 0709 3a1d 19cf f1ae 7e12  ...,....:.....~.
+	0x0020:  5011 16d0 8c69 0000                      P....i..
+16:15:45.263145 IP 192.168.1.44.1801 > 217.14.160.69.1723: F 349:349(0) ack 190 win 65347
+	0x0000:  4500 0028 f617 4000 8006 c98f c0a8 012c  E..(..@........,
+	0x0010:  d90e a045 0709 06bb f1ae 7e12 3a1d 19d0  ...E......~.:...
+	0x0020:  5011 ff43 a3f4 0000 0000 0000 0000       P..C..........
+16:15:45.263896 IP 217.14.160.69.1723 > 192.168.1.44.1801: . ack 350 win 5840
+	0x0000:  4500 0028 b5fb 4000 3e06 4bac d90e a045  E..(..@.>.K....E
+	0x0010:  c0a8 012c 06bb 0709 3a1d 19d0 f1ae 7e13  ...,....:.....~.
+	0x0020:  5010 16d0 8c68 0000                      P....h..
 
+22 packets captured
+22 packets received by filter
+0 packets dropped by kernel
+
+--NzB8fVQJ5HfG6fxh--
 
