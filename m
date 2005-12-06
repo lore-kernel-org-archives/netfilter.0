@@ -1,12 +1,12 @@
 From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: Is using a blacklist in iptables a good strategy?
-Date: Tue, 6 Dec 2005 12:47:39 +0000
-Message-ID: <20051206124739.GA21572@metastasis.org.uk>
-References: <1133252475.20357.5.camel@sonoda.bioscene.co.jp>
+Subject: Re: SNMP through VPN?
+Date: Tue, 6 Dec 2005 12:52:36 +0000
+Message-ID: <20051206125236.GB21572@metastasis.org.uk>
+References: <438EEA93.10000@lonien.de>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <1133252475.20357.5.camel@sonoda.bioscene.co.jp>
+In-Reply-To: <438EEA93.10000@lonien.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,15 +21,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, Nov 29, 2005 at 05:21:15 +0900, David Leangen wrote:
+On Thu, Dec 01, 2005 at 01:20:35 +0100, Wolfgang Lonien wrote:
+> Hi list,
 
-> I don't know why, but I'm getting a little fed up with break-in
-> attempts happening every single day.
-> 
-> Do I just have to accept this as a fact of life?
+<snip>
 
-What sort of attacks are these?  Are they against services you're
-running or just port scans and similar?
+> What am I doing wrong?
+
+Can you make other connections, not related to SNMP, from linuxbox1 to
+router2 and from linuxbox2 to router1, both to the router's internal
+interfaces?
+
+And what packet sniffing software do you have available on the routers,
+so you can what's happening to the traffic.
 
 -- 
 deviants are sacrificed to increase group solidarity
