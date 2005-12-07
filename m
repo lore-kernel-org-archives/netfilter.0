@@ -1,10 +1,11 @@
-From: BERTRAND =?iso-8859-1?Q?Jo=EBl?= <mt@systella.fr>
-Subject: U60 and masquerading
-Date: Wed, 7 Dec 2005 18:54:26 +0100
-Message-ID: <20051207175426.GA16442@rayleigh.systella.fr>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Is using a blacklist in iptables a good strategy?
+Date: Wed, 7 Dec 2005 14:45:04 -0500 (EST)
+Message-ID: <Pine.LNX.4.60.0512071423450.3548@darkstar.sysinfo.com>
+References: <1133252475.20357.5.camel@sonoda.bioscene.co.jp>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1133252475.20357.5.camel@sonoda.bioscene.co.jp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,135 +16,110 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: David Leangen <netfilter@leangen.net>
+Cc: netfilter@lists.netfilter.org
 
- 	Hello,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
- 	I'm trying to use iptables on a ULTRASparc U60 (smp) without any
- 	success. I use the same version of iptables on several i386, an
- 	U420R (kernel 2.4 SMP) and an U1E with succes...
+On Tue, 29 Nov 2005, David Leangen wrote:
 
- Root bohr:[~] > lsmod
- Module                  Size  Used by
- iptable_mangle          3328  0 
- autofs4                18632  1 
- ipt_TCPMSS              4800  0 
- ipt_tcpmss              3008  0 
- ipt_MASQUERADE          3844  1 
- iptable_nat             8708  1 
- ip_nat                 20824  2 ipt_MASQUERADE,iptable_nat
- ip_conntrack           60264  3 ipt_MASQUERADE,iptable_nat,ip_nat
- iptable_filter          3392  0 
- ip_tables              21184  6
- iptable_mangle,ipt_TCPMSS,ipt_tcpmss,ipt_MASQUERADE,iptable_nat,iptable_filter
- sg                     33720  0 
- sr_mod                 16940  0 
- cdrom                  40880  1 sr_mod
- usblp                  12928  0 
- parport_pc             39816  0 
- parport                41688  1 parport_pc
- Root bohr:[~] > iptables -L -n
- Chain INPUT (policy ACCEPT)
- target     prot opt source               destination         
+>
+> Hello,
+>
+> I don't know why, but I'm getting a little fed up with break-in attempts
+> happening every single day.
+>
+> Do I just have to accept this as a fact of life?
+>
+>
+> I started keeping a list of IP addresses that I'm just going to
+> blacklist, but this does not seem like a maintainable solution. For now,
+> I'm just adding lines like so:
+>
+>  ...
+>  -A INPUT -s xxx.xxx.xxx.xxx -j BLACKLIST
+>  ...
+>  -A BLACKLIST -j DROP
+>  ...
+>
+> What is common practice?
 
- Chain FORWARD (policy ACCEPT)
- target     prot opt source               destination         
 
- Chain OUTPUT (policy ACCEPT)
- target     prot opt source               destination         
- Root bohr:[~] > iptables -t nat -L -n
- Chain PREROUTING (policy ACCEPT)
- target     prot opt source               destination         
+A default deny policy is the default best defense.
 
- Chain POSTROUTING (policy ACCEPT)
- target     prot opt source               destination         
- MASQUERADE  all  --  192.168.0.0/24       0.0.0.0/0           
+>
+>
+> Is it possible to blacklist any packets that come from a server from a
+> given country?
+>
 
- Chain OUTPUT (policy ACCEPT)
- target     prot opt source               destination         
- Root bohr:[~] > cat /proc/sys/net/ipv4/ip_forward 
- 1
- Root bohr:[~] > 
+Layered security might be your friend here, tcpd has these capabilities to 
+aid iptables, consider:
 
- 192.168.0.100 is a i386 workstation. Its default gateway is
- 192.168.0.128.
 
- 192.168.0.128 is the second ethernet interface of my U60. Address of the
- first one is 10.0.0.1 and is used to be the support of ppp0.
 
- When I try to ping www.kernel.org from 192.168.0.200. I can see :
- Root bohr:[~] > tcpdump -i eth1 proto ICMP
- tcpdump: verbose output suppressed, use -v or -vv for full protocol
- decode
- listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
- 18:04:56.333172 IP 192.168.0.100 > zeus-pub1.kernel.org: ICMP echo
- request, id 53550, seq 13056, length 64
- 18:04:57.337379 IP 192.168.0.100 > zeus-pub1.kernel.org: ICMP echo
- request, id 53550, seq 13312, length 64
- 18:04:58.341366 IP 192.168.0.100 > zeus-pub1.kernel.org: ICMP echo
- request, id 53550, seq 13568, length 64
- 18:04:59.345455 IP 192.168.0.100 > zeus-pub1.kernel.org: ICMP echo
- request, id 53550, seq 13824, length 64
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+* * * *
+*
+# Explicit refusal.  No reason for any of these domains to be 
+connecting... 
+*
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+* * * *
+*
+ALL:
 
- 4 packets captured
- 8 packets received by filter
- 0 packets dropped by kernel
- Root bohr:[~] > tcpdump -i ppp0 proto ICMP
- tcpdump: verbose output suppressed, use -v or -vv for full protocol
- decode
- listening on ppp0, link-type LINUX_SLL (Linux cooked), capture size 96
- bytes
- 18:05:36.501017 IP bohr.systella.fr > zeus-pub1.kernel.org: ICMP echo
- request, id 53550, seq 23296, length 64
- 18:05:36.712653 IP zeus-pub1.kernel.org > bohr.systella.fr: ICMP echo
- reply, id 53550, seq 23296, length 64
- 18:05:37.505105 IP bohr.systella.fr > zeus-pub1.kernel.org: ICMP echo
- request, id 53550, seq 23552, length 64
- 18:05:37.717251 IP zeus-pub1.kernel.org > bohr.systella.fr: ICMP echo
- reply, id 53550, seq 23552, length 64
- 18:05:38.509186 IP bohr.systella.fr > zeus-pub1.kernel.org: ICMP echo
- request, id 53550, seq 23808, length 64
- 18:05:38.723250 IP zeus-pub1.kernel.org > bohr.systella.fr: ICMP echo
- reply, id 53550, seq 23808, length 64
+\
+         .aero .biz .coop .edu .info .int .museum .name  .ac .ad .ae .af .ag .ai \
+         .al .am .an .ao .aq .ar .as .at .au .aw .az .ba .bb .bd .be .bf .bg .bh \
+         .bi .bj .bm .bn .bo .br .bs .bt .bv .bw .by .bz .ca .cc .cd .cf .cg .ch \
+         .ci .ck .cl .cm .cn .co .cr .cs .cu .cv .cx .cy .cz .de .dj .dk .dm .do \
+         .dz .ec .ee .eg .eh .er .es .et .eu .fi .fj .fk .fm .fo .fr .ga .gb .gd \
+         .ge .gf .gg .gh .gi .gl .gm .gn .gp .gq .gr .gs .gt .gu .gw .gy .hk .hm \
+         .hn .hr .ht .hu .id .ie .il .im .in .io .iq .ir .is .it .je .jm .jo .jp \
+         .ke .kg .kh .ki .km .kn .kp .kr .kw .ky .kz .la .lb .lc .li .lk .lr .ls \
+         .lt .lu .lv .ly .ma .mc .md .mg .mh .mk .ml .mm .mn .mo .mp .mq .mr .ms \
+         .mt .mu .mv .mw .mx .my .mz .na .nc .ne .nf .ng .ni .nl .no .np .nr .nu \
+         .nz .om .pa .pe .pf .pg .ph .pk .pl .pm .pn .pr .ps .pt .pw .py .qa .re \
+         .ro .ru .rw .sa .sb .sc .sd .se .sg .sh .si .sj .sk .sl .sm .sn .so .sr \
+         .st .su .sv .sy .sz .tc .td .tf .tg .th .tj .tk .tm .tn .to .tp .tr .tt \
+         .tv .tw .tz .ua .ug .uk .um .uy .uz .va .vc .ve .vg .vi .vn .vu .wf .ws \
+         .xxx .ye .yt .yu .za .zm .zr .zw                                       \
 
- 6 packets captured
- 12 packets received by filter
- 0 packets dropped by kernel
- Root bohr:[~] > cat /var/lib/iptables/active 
- # Generated by iptables-save v1.2.7a on Tue Mar  4 10:43:40 2003
- *nat
- :PREROUTING ACCEPT [5:340]
- :POSTROUTING ACCEPT [0:0]
- :OUTPUT ACCEPT [334:24336]
- [334:24336] -A POSTROUTING -s 192.168.0.0/255.255.255.0 -j MASQUERADE 
- COMMIT
- # Completed on Tue Mar  4 10:43:40 2003
- # Generated by iptables-save v1.2.7a on Tue Mar  4 10:43:40 2003
- *filter
- :INPUT ACCEPT [3612:629789]
- :FORWARD ACCEPT [0:0]
- :OUTPUT ACCEPT [3708:560260]
- COMMIT
- # Completed on Tue Mar  4 10:43:40 2003
- Root bohr:[~] > 
+         : SPAWN (/usr/local/wrappers/tcpdmsg ALL_DENY %a %c %n %s %u)&         \
+         : twist /usr/bin/cat /usr/local/wrappers/ALL_DENY.message
 
-	When I try to make a ping over the U60, I obtain :
 
- Root bohr:[~] > cat /proc/net/ip_conntrack | grep icmp
- icmp     1 29 src=192.168.0.100 dst=213.41.184.253 type=8 code=0 id=64616
- packets=2888 bytes=242592 [UNREPLIED] src=213.41.184.253 dst=213.41.140.153
- type=0 code=0 id=64616 packets=0 bytes=0 mark=0 use=1
- Root bohr:[~] > 
+Now this has to be included not only on the firewall, but on hosts that 
+are accessible externally as well, and that might come as a painful way to 
+work such an issue, unless one really understands that layered securtity 
+can come at a cost and require a few cycles to implimnet, and that 
+layering does not mean the firewall does it all and all other systems 
+stand alone or merely rely upon the firewall, and have some securityy 
+implimented on them as well.
 
- 	Strange, isn't it ?
 
- 	Thus, all paquets taht come from 192.168.0.100 are routed by ppp0.
- 	www.kernel.org answers to my ping, but my U60 doesn't transmet the
- 	incoming paquet to 192.168.0.100. Why ? Any idea ?
+Thanks,
 
- 	Regards,
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
 
- 	JKB
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFDlzvDst+vzJSwZikRAseOAKClgbJFoDPI/iJqISbU5RZRN4CC8ACgkO6B
+18BSbrmJo+jFf9RsEo+UGrg=
+=JARI
+-----END PGP SIGNATURE-----
 
