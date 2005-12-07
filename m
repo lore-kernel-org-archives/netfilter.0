@@ -1,13 +1,12 @@
-From: Brent Clark <bclark@eccotours.dyndns.org>
-Subject: Re: Is using a blacklist in iptables a good strategy?
-Date: Wed, 07 Dec 2005 09:47:44 +0200
-Message-ID: <439693A0.2060008@eccotours.dyndns.org>
-References: <DGEJKHJNFFKAGKLEMOPJMEEACAAA.netfilter@leangen.net>
-Reply-To: bclark@eccotours.dyndns.org
+From: Olivier GRALL <olivier.grall@neotip.com>
+Subject: Re: DNAT/SNAT doubt
+Date: Wed, 07 Dec 2005 10:13:26 +0100
+Message-ID: <4396A7B6.6040003@neotip.com>
+References: <20051104181551.GA27330@casa.e-den.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <DGEJKHJNFFKAGKLEMOPJMEEACAAA.netfilter@leangen.net>
+In-Reply-To: <20051104181551.GA27330@casa.e-den.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,67 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: David Leangen <netfilter@leangen.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Sandro Dentella <sandro@e-den.it>
+Cc: iptables <netfilter@lists.netfilter.org>
 
-David Leangen wrote:
->>>I don't know why, but I'm getting a little fed up with break-in
->>>attempts happening every single day.
->>>
->>>Do I just have to accept this as a fact of life?
->>
->>What sort of attacks are these?  Are they against services you're
->>running or just port scans and similar?
-> 
-> 
-> Well, generally they are mostly port scans and similar.
-> 
-> These have been going on for some time, but it seems that there are an
-> increasing number of attempts to break into my system via port 22.
+Hi,
 
-Hi
+Don't you forget to allow ip_forward on your Linux box ?
 
-I too have been having the same problems, etc, but what I did was a range of things for e.g.
+echo 1 > /proc/sys/net/ipv4/ip_forward
+or in /etc/sysctl.conf
 
-My working hours about between 7am and 6pm, so what I did was have two scripts, one open port 22 script and one close 22
-script (and a few other like ftp etc)
+Regards,
 
-so in my crontab I have the following:
+Olivier GRALL
 
-0 6 * * 1-6 root sh -c /root/FIREWALL.OPEN > /dev/null 2>&1
-59 16 * * 1-6 root sh -c /root/FIREWALL.CLOSE > /dev/null 2>&1
+Sandro Dentella a =E9crit :
 
-The other thing is, I run debian, for my adduser.conf, I set it so
+>Hi all,
+>
+>  a nameserver managed by one of my customers died unexpectedly, they as=
+ked
+>  me to redirect all traffic to another DNS in a totally different
+>  network. Should it work? (it didn't in my case...)
+>
+>Chain PREROUTING (policy ACCEPT 656 packets, 33024 bytes)
+> pkts bytes target     prot opt in     out     source               dest=
+ination
+> 1410 93104 DNAT       udp  --  *      *       0.0.0.0/0            0.0.=
+0.0/0          udp dpt:53 to:XXX
+>
+>Chain POSTROUTING (policy ACCEPT 628 packets, 31631 bytes)
+> pkts bytes target     prot opt in     out     source               dest=
+ination
+>    0     0 SNAT       udp  --  *      *       0.0.0.0/0            XXX =
+   udp dpt:53 to:YYY
+>
+>  you can see that no packets entered the POSTROUTING chain even thought=
+ in
+>  my opinion all packets ther entered the PREROUTING rule should enter t=
+he
+>  POSTROUTING one. Am I wrong?
+>
+>  TYA
+>  sandro
+>  *:-)
+>
+>
+> =20
+>
 
-mail:~# cat /etc/adduser.conf
-
-# /etc/adduser.conf: `adduser' configuration.
-# See adduser(8) and adduser.conf(5) for full documentation.
-
-# The DSHELL variable specifies the default login shell on your
-# system.
-DSHELL=/bin/false
-
-So yeah you can have the password, but you cant ssh in with that account.
-
-If a user needs to have a shell access look at things like bash with the --restricted (the other is rbash) option, other 
-wise there is chroot.
-
-And then last, but not least is Grant Taylor's brilliant netfilter / ssh brute force stopper.
-
-$IPT -N SSH_Brute_Force
-$IPT -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name SSH --set --rsource -j SSH_Brute_Force
-$IPT -A SSH_Brute_Force -s $myipaddress -j ACCEPT
-$IPT -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount 3 --name SSH --rsource -j ACCEPT
-$IPT -A SSH_Brute_Force -j LOG --log-prefix "SSH Brute Force Attempt:  "
-$IPT -A SSH_Brute_Force -p tcp -j DROP
-
-A while ago I was at a security conference, and the speaker, said security needs to be like an onion (layers).
-The more layers (obsticles), the better.
-
-HTH
-
-Kind Regards
-Brent Clark
 
