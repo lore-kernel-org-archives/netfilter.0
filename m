@@ -1,10 +1,11 @@
-From: jonathan <support-squid@bfinance.fr>
-Subject: ippool problem
-Date: Wed, 07 Dec 2005 13:44:18 +0100
-Message-ID: <1133959458.3300.21.camel@localhost.localdomain>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ippool problem
+Date: Wed, 7 Dec 2005 14:02:38 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0512071400340.17863@blackhole.kfki.hu>
+References: <1133959458.3300.21.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1133959458.3300.21.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,29 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: jonathan <support-squid@bfinance.fr>
+Cc: netfilter@lists.netfilter.org
 
-Hi, 
-I am in trouble because I want to migrate checkpoint firewall rules to
-iptables. 
+On Wed, 7 Dec 2005, jonathan wrote:
 
-The problem is that checkpoint works with address lists and iptables
-seems not. 
-So is there a way to add a single rule with several IP address for the
-source and for the destination ? 
+> Is there something like IP groups or IP lists or address pool on
+> iptables ?
 
-Is there something like IP groups or IP lists or address pool on
-iptables ? 
+Have a look at ipset (http://ipset.netfilter.org) which is a descendant of
+ippool.
 
-well , I have just found a tool named "ippool", it seems to be the
-solution, but I am running iptables-1.3.4 under a kernel 2.6.14 and
-according to patch-o-matic info file, this patch only works for kernel <
-2.6.10.
-
-What must I do ? Is there something for replacing this tool ?
-
-thanks to help me,
-jonathan
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
