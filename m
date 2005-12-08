@@ -1,10 +1,12 @@
-From: "Randy Grimshaw" <rgrimsha@syr.edu>
-Subject: compiling iptables on fedora core 4
-Date: Thu, 08 Dec 2005 11:11:45 -0500
-Message-ID: <s3981510.038@gwia201.syr.edu>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: compiling iptables on fedora core 4
+Date: Thu, 8 Dec 2005 10:41:24 -0600
+Message-ID: <200512081041.24482.rob0@gmx.co.uk>
+References: <s3981510.038@gwia201.syr.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <s3981510.038@gwia201.syr.edu>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,26 +21,12 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-When I attempt to compile iptables, on fedora core 4, using:
-make KERNEL_DIR=3D/usr/src/redhat/BUILD/kernel-2.6.11/linux-2.6.11
+On Thursday 2005-December-08 10:11, Randy Grimshaw wrote:
+> When I attempt to compile iptables, on fedora core 4, using:
 
- it fails with the message:
-/usr/src/redhat/BUILD/kernel-2.6.11/linux-2.6.11/include/linux/config.h:6:2=
-: error: #error including kernel header in userspace; use the glibc =
-headers instead!
-
-this is before applying any of the patches needed for my objective of =
-using ipset.
-
-thank you for any assistance you can lend.
-
-<><Randy
-
-
-<><Randall Grimshaw
-Room 203 Machinery Hall
-Syracuse University
-Syracuse, NY   13244
-315-443-5779
-rgrimsha@syr.edu
+I would suggest consulting the Fedora documentation and perhaps taking 
+it to a Fedora forum.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
