@@ -1,13 +1,10 @@
-From: Vinod Chandran <vinod_chandran@multitech.co.in>
-Subject: Re: QoS with netfilter
-Date: Mon, 12 Dec 2005 11:06:52 +0530
-Message-ID: <439D0C74.6050107@multitech.co.in>
-References: <bab495710512100453s275d2335l4a92d90d37224c2@mail.gmail.com>	<1134288474.8304.4.camel@anduril.intranet.cartel-securite.net>	<bab495710512110118x7d82bc59l554a45039b75fe23@mail.gmail.com>
-	<200512111419.34465.arny@ats.s.bawue.de>
+From: Grant Adamson <gadamson@shaw.ca>
+Subject: All interface specifications being replaced by ANYWHERE
+Date: Fri, 09 Dec 2005 15:17:11 -0800
+Message-ID: <001c01c5fd16$af0deb40$0201a8c0@shodan>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200512111419.34465.arny@ats.s.bawue.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,89 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi All,
 
-If  you want to know how DSMARK and DSCP is used for QOS, check out the 
-following link
-http://opalsoft.net/qos/DS-29.htm
-However, this doesnt use netfilter.
+I recently redid my home gateway/NAT box with debian 3.1, and everything
+looked to be working fine until I did a quick scan on it from outside to
+test the firewall. All the services running appeared to be exposed. Checking
+my rules with iptables -L, I found that for some reason, everywhere I had
+specified a physical interface, it had been replaced by ANYWHERE.
 
-If you want to use netfilter, I think the best way is to have 
-iptablerules in FORWARD, to set mark values on the basis of specific 
-conditions,
+For example, the following rule:
 
-like --src 192.168.1.0/24 -j MARK --set-mark 1.
+iptables -A INPUT -m state --state NEW -i ! $EXTIF -j ACCEPT
 
-This mark value can be further used in tc filter commands..
-If this will suffice you,  I can elaborate more on this process.
+Ends up appearing in the iptables -L list as:
 
-Regards,
-Vinod C
+target     prot opt source               destination
+ACCEPT     all  --  anywhere             anywhere            state NEW
 
 
+Needless to say, this doesn't make for a very good situation. Has anyone
+ever seen a problem like this before? Any suggestions would be greatly
+appreciated.
 
-Thilo Schulz wrote:
-
->On Sunday 11 December 2005 10:18, Erik wrote:
->  
->
->>I have a lot of answers to this but nobody have responded to what I
->>asked.  Please bear with me and help me find out what my problem might
->>*actually* be.
->>    
->>
->
->Sorry you are right.
->
->  
->
->>Have anyone actually used this feature in iptables?
->>    
->>
->
->Yes.
->
->  
->
->>No, I do not need this router to handle these packages with *any* QoS.
->>Other router handle QoS. In fact a lot of router are updated to handle QoS.
->>    
->>
->
->These bits should work nice in theory, but in my experience they offer little 
->to no improvement.
->
->  
->
->>a) confirmation that this feature actually is implemented and should
->>work with the 2.6.12 kernel (or that it is not!)
->>    
->>
->
->It should work, yes.
->
->  
->
->>b) things to verify like patches etc
->>    
->>
->
->No clue.
->
->  
->
->>c) actual commands to test this
->>    
->>
->
->tcpdump -i eth0 -v
-> 
->prints out the tos field on all packets traversing the interface eth0.
->
->  
->
+Thanks,
+Grant
 
 
