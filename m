@@ -1,12 +1,11 @@
-From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
+From: "myhapwcforever" <myhapwcforever@gmail.com>
 Subject: Re: opening port for SSH
-Date: Fri, 09 Dec 2005 16:23:44 +0200
-Message-ID: <43999370.8010504@gmail.com>
-References: <dn9dag$je3$1@sea.gmane.org>
+Date: Fri, 9 Dec 2005 22:42:17 +0800
+Message-ID: <000f01c5fcce$c2e3aad0$6501a8c0@ludi>
+References: <dn9dag$je3$1@sea.gmane.org> <43999370.8010504@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <dn9dag$je3$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,59 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Edwin Kapauni wrote:
+QW5kIHVzZSB0aGUgcHVibGljLWtleSA7KQ0KLS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLSAN
+CkZyb206ICJHZW9yZ2kgQWxleGFuZHJvdiIgPGdlb3JnaS5hbGV4YW5kcm92QGdtYWlsLmNvbT4N
+ClRvOiA8bmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmc+DQpTZW50OiBGcmlkYXksIERlY2Vt
+YmVyIDA5LCAyMDA1IDEwOjIzIFBNDQpTdWJqZWN0OiBSZTogb3BlbmluZyBwb3J0IGZvciBTU0gN
+Cg0KDQo+IEVkd2luIEthcGF1bmkgd3JvdGU6DQo+IA0KPiA+IEZyb20gdGhlIHJlY2VudCB0aHJl
+YWQgDQo+ID4gPGh0dHA6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvbmV0ZmlsdGVyL21zZzMzMDIx
+Lmh0bWw+IEkgaGF2ZSBhZG9wdGVkIA0KPiA+IHRoaXMgcnVsZXNldCBmb3IgYSBzdGFuZGFsb25l
+IGNvbXB1dGVyLg0KPiA+DQo+ID4gTm93LCBJIG5lZWQgc29tZSBoZWxwIHRlYWNoaW5nIG1lIGhv
+dyB0byBvcGVuIHBvcnRzIGZvciBTU0ggYW5kIFZvSVAuDQo+ID4gVGhhdCBzaG91bGRuJ3QgYmUg
+dG9vIGRpZmZpY3VsdCwgcmlnaHQ/DQo+ID4NCj4gPiAjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IHN0YXJ0ICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIw0KPiA+DQo+ID4NCj4gPiBpcHRhYmxl
+cyAtRg0KPiA+IGlwdGFibGVzIC1YDQo+ID4gaXB0YWJsZXMgLVoNCj4gPiBpcHRhYmxlcyAtdCBu
+YXQgLUYNCj4gPiBpcHRhYmxlcyAtdCBuYXQgLVgNCj4gPiBpcHRhYmxlcyAtdCBuYXQgLVoNCj4g
+PiBpcHRhYmxlcyAtdCBtYW5nbGUgLUYNCj4gPiBpcHRhYmxlcyAtdCBtYW5nbGUgLVgNCj4gPiBp
+cHRhYmxlcyAtdCBtYW5nbGUgLVoNCj4gPg0KPiA+DQo+ID4gaXB0YWJsZXMgLVAgSU5QVVQgRFJP
+UA0KPiA+IGlwdGFibGVzIC1QIEZPUldBUkQgRFJPUA0KPiA+IGlwdGFibGVzIC1QIE9VVFBVVCBB
+Q0NFUFQNCj4gPg0KPiA+DQo+ID4gaXB0YWJsZXMgLUEgSU5QVVQgLW0gc3RhdGUgLS1zdGF0ZSBF
+U1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0KPiA+IGlwdGFibGVzIC1BIElOUFVUIC1pIGxv
+IC1qIEFDQ0VQVA0KPiA+IGlwdGFibGVzIC1BIElOUFVUIC1wIGljbXAgLS1pY21wLXR5cGUgMyAt
+aiBBQ0NFUFQNCj4gPiBpcHRhYmxlcyAtQSBJTlBVVCAtcCBpY21wIC0taWNtcC10eXBlIDExIC1q
+IEFDQ0VQVA0KPiA+IGlwdGFibGVzIC1BIElOUFVUIC1wIGljbXAgLS1pY21wLXR5cGUgMTIgLWog
+QUNDRVBUDQo+ID4gaXB0YWJsZXMgLUEgSU5QVVQgLXAgdGNwIC0tc3luIC0tZHBvcnQgMTEzIC1q
+IFJFSkVDVCAtLXJlamVjdC13aXRoIA0KPiA+IHRjcC1yZXNldA0KPiA+DQo+ID4NCj4gPiAjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyBlbmQgIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjDQo+ID4NCj4gPiBUaGFua3MgZm9yIGFueSBoZWxwLg0KPiA+DQo+ID4NCj4gPg0KPiBJ
+ZiB5b3UgYXJlIHJ1bm5pbmcgeW91ciBzc2ggc2VydmVyIG9uIHBvcnQgMjIsIHlvdSBzaG91bGQg
+YWRkIHRoZSANCj4gZm9sbG93aW5nIGxpbmUgdG8gdGhlIHNjcmlwdDoNCj4gaXB0YWJsZXMgLUEg
+SU5QVVQgLXAgdGNwIC0tc3luIC0tZHBvcnQgMjIgLWogQUNDRVBUDQo+IA0KPiBCdXQgaSBoaWdo
+eSByZWNvbW1lbmQgYmluZGluZCB0aGUgc3NoIHNlcnZlciB0byBhIGhpZ2hlciBwb3J0Lg0KPiAN
+Cj4gDQo+IHJlZ2FyZHMsDQo+IEdlb3JnaSBBbGV4YW5kcm92DQo+IA==
 
-> From the recent thread 
-> <http://www.spinics.net/lists/netfilter/msg33021.html> I have adopted 
-> this ruleset for a standalone computer.
->
-> Now, I need some help teaching me how to open ports for SSH and VoIP.
-> That shouldn't be too difficult, right?
->
-> ######################### start ###########################
->
->
-> iptables -F
-> iptables -X
-> iptables -Z
-> iptables -t nat -F
-> iptables -t nat -X
-> iptables -t nat -Z
-> iptables -t mangle -F
-> iptables -t mangle -X
-> iptables -t mangle -Z
->
->
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
-> iptables -P OUTPUT ACCEPT
->
->
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A INPUT -i lo -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type 3 -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type 11 -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type 12 -j ACCEPT
-> iptables -A INPUT -p tcp --syn --dport 113 -j REJECT --reject-with 
-> tcp-reset
->
->
-> ############################# end #################################
->
-> Thanks for any help.
->
->
->
-If you are running your ssh server on port 22, you should add the 
-following line to the script:
-iptables -A INPUT -p tcp --syn --dport 22 -j ACCEPT
-
-But i highy recommend bindind the ssh server to a higher port.
-
-
-regards,
-Georgi Alexandrov
 
