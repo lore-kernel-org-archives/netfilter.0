@@ -1,9 +1,12 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: double packet
-Date: Fri, 09 Dec 2005 18:25:16 +0100
-Message-ID: <BAY103-F24A4CAB54BDD1905665352B2450@phx.gbl>
+From: "Bill Hance" <bill@billhance.com>
+Subject: Re: stop accepting new connections on port 80
+Date: Fri, 9 Dec 2005 13:42:12 -0500 (EST)
+Message-ID: <2486.192.168.3.8.1134153732.squirrel@192.168.3.8>
+References: <20051207123420.V66917@uberwoo.hedgpeth.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20051207123420.V66917@uberwoo.hedgpeth.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,101 +17,156 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Spam User <spam@the-force.net>
+Cc: netfilter@lists.netfilter.org
 
-Hello.
-I have a pretty strange problem with routing and iptables mark.
-My firewall has a classic 3 NIC config: one nic connected to the
-ISP routers, one network for DMZ and the third network for my
-private network. Here is the schema:
+what about entering a new rule, immediately before the one saying
 
+-dport 80 -m state --state NEW -j ACCEPT
 
-	       HUB
-HDSL router----+----ADSL router
-		|
-		|
-     HDSL IP---eth0---ADSL IP
-		|
-		|
-	+-------+------+
-	|	       |
-	|	       |
-	|	       |
-	|	       |
-	|	       +-----eth1---ADSL public network and HDSL public network
-	|	       |
-	|	       |
-	|	       |
-	|	       |
-	+-------+------+
-		|
-		|
-	       eth2---172.16.1.1
-		|
-		|
-		+----Private network 172.16.0.0/23
+the new one would be
+
+-dport 80 -m state --state NEW -j DROP
 
 
-As you may see from the schema I have two internet connections:
-one hdsl and one adsl (for surfing the internet).
-This is the output from ip rule sh:
+that would drop the new connections before they got to the rule that
+accepts them
 
-0:	from all lookup local
-200:	from all fwmark 0x2 lookup test
-32766:	from all lookup main
-32767:	from all lookup default
+and it shouldn't effect establish/related or connection tracking
 
-This is the relevant piece of my firewall:
+  -Bill
 
-$IPTABLES -I FORWARD -s 172.16.1.15 --protocol icmp -j ACCEPT
-$IPTABLES -t nat -I POSTROUTING -s 172.16.1.15 --protocol icmp -j SNAT --to 
-'ADSL IP'
-$IPTABLES -t mangle -I PREROUTING -s 172.16.1.15 --protocol icmp -j MARK 
---set-mark 2
 
-This is the output from "ip route sh table main":
 
-'HDSL router ip' dev eth0  scope link
-'ADSL router ip' dev eth0  scope link
-'ADSL public network' dev eth1  proto kernel  scope link  src 'ADSL IP'
-'HDSL public network' dev eth1  proto kernel  scope link  src 'HDSL IP'
-172.16.0.0/23 dev eth2  proto kernel  scope link  src 172.16.1.1
-127.0.0.0/8 dev lo  scope link
-default via 'HDSL router ip' dev eth0  metric 1
 
-And this is the output from "ip route sh table test":
-
-default via 'ADSL router ip' dev eth0  metric 1
-
-So far, so good.
-If I try to ping any host on the internet from the 172.16.1.15
-box, packet are natted to 'ADSL IP' and then they are routed
-through the ADSL router. But if I try to ping a system in the
-DMZ with ip an address belonging to the 'HDSL public network'
-I don't get any response. This is the tcpdump capture on the
-eth0 for a single ip echo request:
-
-tcpdump -p -n -i eth0 host ip 'HDSL public network host'
-17:39:12.999287 IP 'ADSL IP' > 'HDSL public network host': ICMP echo 
-request, id 256, seq 6656, length 40
-17:39:13.037471 IP 'ADSL IP' > 'HDSL public network host': ICMP echo 
-request, id 256, seq 6656, length 40
-
-and this the tcpdump capture on the eth2:
-
-tcpdump -p -n -i eth2 host ip 'HDSL public network host'
-17:39:12.999001 IP 172.16.1.15 > 'HDSL public network host': ICMP echo 
-request, id 256, seq 6656, length 40
-
-On eth1 I don't see any packet. (Why!?)
-
-As you may see tcpdump logs two icmp echo request
-packets on the eth0 interface. Why?
-
-I'm running linux vanilla 2.6.14 on Slackware 10.2
-Can anyone help me?
-
+> Hi,
+>
+> I've been trying to figure out how to get iptables to stop accepting new
+> connections on port 80 while letting the existing connections finish up
+> what they're doing.
+>
+> I thought it would be as easy as removing the rule that allows new
+> connections and leaving the rule that allowed related and established
+> connections, but when I remove the rule that allows new connections, all
+> connections stop working.
+>
+> I tried variations with the rule, like changing NEW to ESTABLISHED and the
+> such, but no luck...
+>
+> I was working on this during off hours when the web server only had maybe
+> 5 or 6 active connections, so I'm not sure if the connection tracking
+> module is the problem or if its what I'm doing.  I know the following
+> rules aren't the greatest, but we're behind a firewall and use host based
+> firewalls as just another security measure.
+>
+> This is all on stock RHEL4 kernels and packages - but I tested with gentoo
+> on 2.6.13 and had the same issues.
+>
+> hopefully I've included enough info to help you help me :)
+>
+> Thanks,
+>
+> Mike
+>
+>
+> ####### script to edit iptables rules
+> #!/bin/bash
+> # stop accepting new connections..
+>
+> # this is the default chain on the web servers.
+> chain="RH-Firewall-1-INPUT"
+>
+> case $1 in
+> start)
+>     # umm, yeah, start to stop accepting new connections
+>     echo "removing iptables rule for new connections on port 80"
+>     line=`iptables -nL --line-numbers | awk '$10 ~ /dpt:80/ {print $1}'`
+>     iptables -D RH-Firewall-1-INPUT $line
+> ;;
+>
+> stop)
+>     # re-add deleted chain to accept new connections
+>     echo "now allowing connections"
+>     # inserting it on line 6 because thats where it is when iptables
+> starts after a reboot
+>     iptables -I $chain 6 -p tcp -m state --state NEW -m tcp --dport 80 -j
+> ACCEPT
+> ;;
+> esac
+>
+> ####### end script
+>
+> #### system info
+> [root@www16 ~]# cat /etc/redhat-release
+> Red Hat Enterprise Linux AS release 4 (Nahant Update 2)
+> [root@www16 ~]# uname -a
+> Linux www16 2.6.9-22.ELsmp #1 SMP Mon Sep 19 18:32:14 EDT 2005 i686 i686
+> i386 GNU/Linux
+>
+> [root@www16 ~]# iptables -nL --line-numbers
+> Chain INPUT (policy ACCEPT)
+> num  target     prot opt source               destination
+> 1    RH-Firewall-1-INPUT  all  --  0.0.0.0/0            0.0.0.0/0
+>
+> Chain FORWARD (policy ACCEPT)
+> num  target     prot opt source               destination
+> 1    RH-Firewall-1-INPUT  all  --  0.0.0.0/0            0.0.0.0/0
+>
+> Chain OUTPUT (policy ACCEPT)
+> num  target     prot opt source               destination
+>
+> Chain RH-Firewall-1-INPUT (2 references)
+> num  target     prot opt source               destination
+> 1    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+> 2    ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           icmp
+> type 255
+> 3    ACCEPT     esp  --  0.0.0.0/0            0.0.0.0/0
+> 4    ACCEPT     ah   --  0.0.0.0/0            0.0.0.0/0
+> 5    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state
+> RELATED,ESTABLISHED
+> 6    ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state
+> NEW tcp dpt:80
+> 7    ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state
+> NEW tcp dpt:22
+> 8    ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           state
+> NEW tcp dpt:5666
+> 9    ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0           state
+> NEW udp dpt:161
+> 10   REJECT     all  --  0.0.0.0/0            0.0.0.0/0
+> reject-with icmp-host-prohibited
+>
+>
+>
+> [root@www16 ~]# iptables-save
+> # Generated by iptables-save v1.2.11 on Wed Dec  7 12:20:25 2005
+> *filter
+> :INPUT ACCEPT [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [10643556:3502431634]
+> :RH-Firewall-1-INPUT - [0:0]
+> -A INPUT -j RH-Firewall-1-INPUT
+> -A FORWARD -j RH-Firewall-1-INPUT
+> -A RH-Firewall-1-INPUT -i lo -j ACCEPT
+> -A RH-Firewall-1-INPUT -p icmp -m icmp --icmp-type any -j ACCEPT
+> -A RH-Firewall-1-INPUT -p ipv6-crypt -j ACCEPT
+> -A RH-Firewall-1-INPUT -p ipv6-auth -j ACCEPT
+> -A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 5666 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -p udp -m state --state NEW -m udp --dport 161 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+> COMMIT
+> # Completed on Wed Dec  7 12:20:25 2005
+>
+> [root@www16 ~]# iptables --version
+> iptables v1.2.11
+>
+>
 
 
