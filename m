@@ -1,11 +1,13 @@
-From: "myhapwcforever" <myhapwcforever@gmail.com>
+From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
 Subject: Re: opening port for SSH
-Date: Fri, 9 Dec 2005 22:42:17 +0800
-Message-ID: <000f01c5fcce$c2e3aad0$6501a8c0@ludi>
+Date: Fri, 09 Dec 2005 17:37:48 +0200
+Message-ID: <4399A4CC.90909@gmail.com>
 References: <dn9dag$je3$1@sea.gmane.org> <43999370.8010504@gmail.com>
+	<000f01c5fcce$c2e3aad0$6501a8c0@ludi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <000f01c5fcce$c2e3aad0$6501a8c0@ludi>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-QW5kIHVzZSB0aGUgcHVibGljLWtleSA7KQ0KLS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLSAN
-CkZyb206ICJHZW9yZ2kgQWxleGFuZHJvdiIgPGdlb3JnaS5hbGV4YW5kcm92QGdtYWlsLmNvbT4N
-ClRvOiA8bmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmc+DQpTZW50OiBGcmlkYXksIERlY2Vt
-YmVyIDA5LCAyMDA1IDEwOjIzIFBNDQpTdWJqZWN0OiBSZTogb3BlbmluZyBwb3J0IGZvciBTU0gN
-Cg0KDQo+IEVkd2luIEthcGF1bmkgd3JvdGU6DQo+IA0KPiA+IEZyb20gdGhlIHJlY2VudCB0aHJl
-YWQgDQo+ID4gPGh0dHA6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvbmV0ZmlsdGVyL21zZzMzMDIx
-Lmh0bWw+IEkgaGF2ZSBhZG9wdGVkIA0KPiA+IHRoaXMgcnVsZXNldCBmb3IgYSBzdGFuZGFsb25l
-IGNvbXB1dGVyLg0KPiA+DQo+ID4gTm93LCBJIG5lZWQgc29tZSBoZWxwIHRlYWNoaW5nIG1lIGhv
-dyB0byBvcGVuIHBvcnRzIGZvciBTU0ggYW5kIFZvSVAuDQo+ID4gVGhhdCBzaG91bGRuJ3QgYmUg
-dG9vIGRpZmZpY3VsdCwgcmlnaHQ/DQo+ID4NCj4gPiAjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IHN0YXJ0ICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIw0KPiA+DQo+ID4NCj4gPiBpcHRhYmxl
-cyAtRg0KPiA+IGlwdGFibGVzIC1YDQo+ID4gaXB0YWJsZXMgLVoNCj4gPiBpcHRhYmxlcyAtdCBu
-YXQgLUYNCj4gPiBpcHRhYmxlcyAtdCBuYXQgLVgNCj4gPiBpcHRhYmxlcyAtdCBuYXQgLVoNCj4g
-PiBpcHRhYmxlcyAtdCBtYW5nbGUgLUYNCj4gPiBpcHRhYmxlcyAtdCBtYW5nbGUgLVgNCj4gPiBp
-cHRhYmxlcyAtdCBtYW5nbGUgLVoNCj4gPg0KPiA+DQo+ID4gaXB0YWJsZXMgLVAgSU5QVVQgRFJP
-UA0KPiA+IGlwdGFibGVzIC1QIEZPUldBUkQgRFJPUA0KPiA+IGlwdGFibGVzIC1QIE9VVFBVVCBB
-Q0NFUFQNCj4gPg0KPiA+DQo+ID4gaXB0YWJsZXMgLUEgSU5QVVQgLW0gc3RhdGUgLS1zdGF0ZSBF
-U1RBQkxJU0hFRCxSRUxBVEVEIC1qIEFDQ0VQVA0KPiA+IGlwdGFibGVzIC1BIElOUFVUIC1pIGxv
-IC1qIEFDQ0VQVA0KPiA+IGlwdGFibGVzIC1BIElOUFVUIC1wIGljbXAgLS1pY21wLXR5cGUgMyAt
-aiBBQ0NFUFQNCj4gPiBpcHRhYmxlcyAtQSBJTlBVVCAtcCBpY21wIC0taWNtcC10eXBlIDExIC1q
-IEFDQ0VQVA0KPiA+IGlwdGFibGVzIC1BIElOUFVUIC1wIGljbXAgLS1pY21wLXR5cGUgMTIgLWog
-QUNDRVBUDQo+ID4gaXB0YWJsZXMgLUEgSU5QVVQgLXAgdGNwIC0tc3luIC0tZHBvcnQgMTEzIC1q
-IFJFSkVDVCAtLXJlamVjdC13aXRoIA0KPiA+IHRjcC1yZXNldA0KPiA+DQo+ID4NCj4gPiAjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyBlbmQgIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjDQo+ID4NCj4gPiBUaGFua3MgZm9yIGFueSBoZWxwLg0KPiA+DQo+ID4NCj4gPg0KPiBJ
-ZiB5b3UgYXJlIHJ1bm5pbmcgeW91ciBzc2ggc2VydmVyIG9uIHBvcnQgMjIsIHlvdSBzaG91bGQg
-YWRkIHRoZSANCj4gZm9sbG93aW5nIGxpbmUgdG8gdGhlIHNjcmlwdDoNCj4gaXB0YWJsZXMgLUEg
-SU5QVVQgLXAgdGNwIC0tc3luIC0tZHBvcnQgMjIgLWogQUNDRVBUDQo+IA0KPiBCdXQgaSBoaWdo
-eSByZWNvbW1lbmQgYmluZGluZCB0aGUgc3NoIHNlcnZlciB0byBhIGhpZ2hlciBwb3J0Lg0KPiAN
-Cj4gDQo+IHJlZ2FyZHMsDQo+IEdlb3JnaSBBbGV4YW5kcm92DQo+IA==
+myhapwcforever wrote:
 
+>And use the public-key ;)
+>  
+>
+And disable version 1 of the protocol.
+And disable root logins.
+And use AllowGroups and/or AllowUsers in sshd_config.
+And use RSA for generating the keys.
+
+
+P.S.
+You mean pub/priv key pair, right?
+
+regards,
+Georgi Alexandrov
 
