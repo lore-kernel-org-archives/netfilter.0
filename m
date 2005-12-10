@@ -1,14 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: QoS with netfilter
-Date: Sat, 10 Dec 2005 17:34:52 +0100
-Message-ID: <1134232492.31448.0.camel@anduril.intranet.cartel-securite.net>
-References: <bab495710512100453s275d2335l4a92d90d37224c2@mail.gmail.com>
-	<200512101357.44378.arny@ats.s.bawue.de>
-	<bab495710512100528h5103dd81t35a56afe726a7b7b@mail.gmail.com>
+From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
+Subject: Re: No package signature check for specific repository
+Date: Sat, 10 Dec 2005 19:47:47 +0200
+Message-ID: <439B14C3.1050300@gmail.com>
+References: <200512101355.46132.post@hendrik-sattler.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <bab495710512100528h5103dd81t35a56afe726a7b7b@mail.gmail.com>
+In-Reply-To: <200512101355.46132.post@hendrik-sattler.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,21 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Erik <erikev@gmail.com>
-Cc: netfilter@lists.netfilter.org, Thilo Schulz <arny@ats.s.bawue.de>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Le samedi 10 d=E9cembre 2005 =E0 05:28 -0800, Erik a =E9crit :
-> The entire http://www.lartc.org/lartc.html has not a single reference
-> to setting DSCP.
+Hendrik Sattler wrote:
 
-Why is DSCP so important to you ? Basicly, you can use TOS to do exactly
-the same thing (it's the same field, different version).
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+>Georgi Alexandrov wrote:
+>  
+>
+>>I'm using debian unstable and the main debian unstable repositories to
+>>update my system.
+>>I have added the ftp://ftp.nerim.net/debian-marillat/ repository to my
+>>sources.list file.
+>>Works great, but every time I deal with apt-get or aptitude I get
+>>notified:
+>>
+>>"W: GPG error: ftp://ftp.nerim.net sid Release: The following signatures
+>>couldn't be verified because the public key is not available: NO_PUBKEY
+>>07DC563D1F41B907"
+>>
+>>I want to turn off gpg check fot that particular respository, is that
+>>possible?
+>>    
+>>
+>
+>Why don't you just think about "because the public key is not available", get 
+>that key and make it available?
+>Read "man apt-key".
+>
+>HS
+>
+>  
+>
+nerim.net aren't signing their packages (yet?).
+That's why I wanted to turn off gpg check for that specific repository.
 
