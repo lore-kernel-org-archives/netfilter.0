@@ -1,12 +1,11 @@
-From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
-Subject: Re: question about /etc/fstab
-Date: Sat, 10 Dec 2005 13:19:32 +0200
-Message-ID: <439AB9C4.2010304@gmail.com>
-References: <20051210104954.87718.qmail@web36801.mail.mud.yahoo.com>
+From: Erik <erikev@gmail.com>
+Subject: QoS with netfilter
+Date: Sat, 10 Dec 2005 04:53:11 -0800
+Message-ID: <bab495710512100453s275d2335l4a92d90d37224c2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051210104954.87718.qmail@web36801.mail.mud.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-maha jun wrote:
+Am trying to add QoS to some web cam traffic on a network.  Also a
+newbie to netfilter.
 
-> respected sir,
->      i want to know a answer of these question.pls send me a answer to=20
-> these question.
-> =20
-> -1) Each entry in the /etc/fstab is made of the same fields. Explain=20
-> each of the fields.
-> - 2)When is this file read?
-> - 3)How would you specify that a particular file system should be=20
-> mounted at boot time?
-> - 4)Why wouldn=92t you include information about your SAMBA home drive=20
-> in the /etc/fstab file so that it is mounted at boot time? (think=20
-> about what pieces of information you must provide in order to connect=20
-> to your home drive)
-> =20
-> =20
-> bye,
-> NHM
+Packet forwarding and NAT works fine.  I can browse the web just fine
+from 10.0.0.5.
 
-we're not your employees, suite yourself:
-http://www.tuxfiles.org/linuxhelp/fstab.html
-http://www.humbug.org.au/talks/fstab/fstab.html
+Gateway  <---------->Linux router<------------------>webcam
+192.168.1.254<-->eth1     eth0 10.0.0.1<------->10.0.0.2
+
+Tried netfilter commands like:
+>iptables -t mangle -A FORWARD -s 10.0.0.0/8 -j DSCP --set-dscp 1
+
+This does not work (Using Etheral to inspect traffic)
+
+Furthermore, a command like
+>iptables -L FORWARD
+
+list a set of rules etc but this QoS is not one of them apparently...
+
+Please:
+a) Suggest a solution to my problem.
+b) Suggest a Qos HOWTO. (Other than http://iptables-tutorial.frozentux.net =
+)
+
+Thanks
 
