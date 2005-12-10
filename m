@@ -1,14 +1,14 @@
-From: Thilo Schulz <arny@ats.s.bawue.de>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: QoS with netfilter
-Date: Sat, 10 Dec 2005 19:40:39 +0100
-Message-ID: <200512101940.42082.arny@ats.s.bawue.de>
+Date: Sat, 10 Dec 2005 20:45:23 +0100
+Message-ID: <1134243923.3532.8.camel@anduril.intranet.cartel-securite.net>
 References: <bab495710512100453s275d2335l4a92d90d37224c2@mail.gmail.com>
+	<200512101357.44378.arny@ats.s.bawue.de>
+	<bab495710512100528h5103dd81t35a56afe726a7b7b@mail.gmail.com>
 	<1134232492.31448.0.camel@anduril.intranet.cartel-securite.net>
 	<bab495710512101014g6909071s2e69552681c39cd3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1244260.Q5QSJPcprz";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <bab495710512101014g6909071s2e69552681c39cd3@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
@@ -21,36 +21,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Erik <erikev@gmail.com>
+Cc: netfilter@lists.netfilter.org, Thilo Schulz <arny@ats.s.bawue.de>
 
---nextPart1244260.Q5QSJPcprz
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Saturday 10 December 2005 19:14, Erik wrote:
+Le samedi 10 d=E9cembre 2005 =E0 10:14 -0800, Erik a =E9crit :
+> dscp is not important. You have a suggestion how to set TOS?
+> I would ideally like to controll the whole byte. Either TOS or DSCP and E=
+CN.
 > How can I change all these bits (i.e. the whole byte) with the
 > netfilter mangle table or other?
 
-Do you know "man"?
-man iptables
+I think you're taking the problem the wrong way. Altering DSCP/TOS won't
+change the way packets are treated, because by default, there's no QoS
+policy. So you'll have to set a QoS policy yourself that fits your
+needs.
 
-/DSCP
+To do this, you have to read LARTC as adivsed before. Then, your QoS
+policy can be built upon TOS/DSCP value, but you can use stuff like u32
+classifier or MARK.
 
-=2D-=20
-Thilo Schulz
+Have you tried stuff like cbq-init or htb-init (see Google) ?
 
---nextPart1244260.Q5QSJPcprz
-Content-Type: application/pgp-signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iD8DBQBDmyEqZx4hBtWQhl4RAvpiAJ9J3iYv4byLIh8+8+7U2b1wPYRSswCfUDjt
-KwqswzDnSV37TXDGsZOMz5s=
-=m18o
------END PGP SIGNATURE-----
-
---nextPart1244260.Q5QSJPcprz--
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
