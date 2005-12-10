@@ -1,14 +1,11 @@
-From: Erik <erikev@gmail.com>
-Subject: Re: QoS with netfilter
-Date: Sat, 10 Dec 2005 05:28:45 -0800
-Message-ID: <bab495710512100528h5103dd81t35a56afe726a7b7b@mail.gmail.com>
-References: <bab495710512100453s275d2335l4a92d90d37224c2@mail.gmail.com>
-	<200512101357.44378.arny@ats.s.bawue.de>
+From: "myhapwcforever" <myhapwcforever@gmail.com>
+Subject: Re: opening port for SSH
+Date: Sat, 10 Dec 2005 22:43:37 +0800
+Message-ID: <004a01c5fd98$1d0b3fe0$6401a8c0@ludi>
+References: <dn9dag$je3$1@sea.gmane.org> <43999370.8010504@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200512101357.44378.arny@ats.s.bawue.de>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,27 +17,8 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Thilo Schulz <arny@ats.s.bawue.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-The entire http://www.lartc.org/lartc.html has not a single reference
-to setting DSCP.
+WWVhaC5JIG1lYW4gdGhlIGtleSBwYWlyLg==
 
-Can you be more specific?
-
-
-On 12/10/05, Thilo Schulz <arny@ats.s.bawue.de> wrote:
-> On Saturday 10 December 2005 13:53, Erik wrote:
-> > Am trying to add QoS to some web cam traffic on a network.  Also a
-> > newbie to netfilter.
->
-> Netfilter is not really meant to do QoS stuff, only to support it. You sh=
-ould
-> visit http://www.lartc.org/ for QoS stuff in Linux.
->
-> --
-> Thilo Schulz
->
->
->
 
