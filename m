@@ -1,19 +1,14 @@
 From: Erik <erikev@gmail.com>
-Subject: Re: QoS with netfilter
-Date: Sun, 11 Dec 2005 01:18:26 -0800
-Message-ID: <bab495710512110118x7d82bc59l554a45039b75fe23@mail.gmail.com>
+Subject: Re: QoS with netfilter (nfcan: addressed to exclusive sender for
+	this address)
+Date: Sun, 11 Dec 2005 01:40:17 -0800
+Message-ID: <bab495710512110140p7b2d449cm6019f8e326b697a@mail.gmail.com>
 References: <bab495710512100453s275d2335l4a92d90d37224c2@mail.gmail.com>
-	<200512101357.44378.arny@ats.s.bawue.de>
-	<bab495710512100528h5103dd81t35a56afe726a7b7b@mail.gmail.com>
-	<1134232492.31448.0.camel@anduril.intranet.cartel-securite.net>
-	<bab495710512101014g6909071s2e69552681c39cd3@mail.gmail.com>
-	<1134243923.3532.8.camel@anduril.intranet.cartel-securite.net>
-	<439B7959.4000400@lopsch.com>
-	<1134288474.8304.4.camel@anduril.intranet.cartel-securite.net>
+	<20051210150841.GI21804@salty>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1134288474.8304.4.camel@anduril.intranet.cartel-securite.net>
+In-Reply-To: <20051210150841.GI21804@salty>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -26,37 +21,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Cedric Blancher <blancher@cartel-securite.fr>
+To: nfcan.x.jimlaur@dfgh.net
 Cc: netfilter@lists.netfilter.org
 
-I have a lot of answers to this but nobody have responded to what I
-asked.  Please bear with me and help me find out what my problem might
-*actually* be.
+Thanks,
+The packets are getting set properly.  I am however still getting 0x00
+on the wire. Quite strange.
+Questions:
+1) Can the stack force this to zero somwhere else?
+2) (Sidebar) How can TOS be set? I see many packets with TOS
+set,(according to ipfilter -L, wire is still 0x00) but grep'ing the
+'man iptables' gives no hits on TOS
 
-Have anyone actually used this feature in iptables?
+This is on 2.6.12-12mdk and mandriva
 
-No, I do not need this router to handle these packages with *any* QoS.
-
-Other router handle QoS. In fact a lot of router are updated to handle QoS.
-
-What I need is *very* simple.
-
-Please do not refer to man pages, lartc etc. that has no answer to my quest=
-ion.
-
-I am only trying to get a feature to function as described in man iptables.
-
-namely:
->iptables -t mangle -A FORWARD -s 10.0.0.0/8 -j DSCP --set-dscp 1
-
-and then:
- verify that the TOS/DSCP bits are set correctly
-
-I was hoping for a discussion like:
-a) confirmation that this feature actually is implemented and should
-work with the 2.6.12 kernel (or that it is not!)
-b) things to verify like patches etc
-c) actual commands to test this
-
-Thanks
+On 12/10/05, Jim Laurino <nfcan.x.jimlaur@dfgh.net> wrote:
+> On 2005.12.10 07:53, Erik - erikev@gmail.com wrote:
+> > Am trying to add QoS to some web cam traffic on a network.
+> > Also a newbie to netfilter.
+> >
+> ...
+> >
+> > Tried netfilter commands like:
+> > >iptables -t mangle -A FORWARD -s 10.0.0.0/8 -j DSCP --set-dscp 1
+> >
+> ...
+> > Furthermore, a command like
+> > >iptables -L FORWARD
+> >
+> > list a set of rules etc but this QoS is not one of them apparently...
+> >
+>
+> The -L command has a default table argument, filter.
+> If you want to see the contents of another table,
+> you have to specify the table explicitly. Try this:
+>
+> iptables -t mangle -L -xnv
+>
+> --
+> Jim Laurino
+> nfcan.x.jimlaur@dfgh.net
+> Please reply to the list.
+> Only mail from the listserver reaches this address.
+>
+>
 
