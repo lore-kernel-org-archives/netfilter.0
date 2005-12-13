@@ -1,11 +1,18 @@
-From: Sudhakar Moharana <soodhakar@gmail.com>
-Subject: help needed for RTSP conntrack module 2.4 kernel
-Date: Wed, 14 Dec 2005 10:26:20 +0530
-Message-ID: <6dbb1b230512132056m36f76f21kd2dd7e2dbc0fd91b@mail.gmail.com>
+From: "Nicholas Basker" <nbasker@india.tejasnetworks.com>
+Subject: Performance effect on using multiple (500) MARK target rules
+Date: Tue, 13 Dec 2005 23:09:07 +0530
+Message-ID: <GHEPLFGLHNDOFLBPNPOBAEBDECAA.nbasker@india.tejasnetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Received: from localhost (unknown [127.0.0.1])
+	by anche.india.tejasnetworks.com (*****) with ESMTP id 4B55073930
+	for <netfilter@lists.netfilter.org>;
+	Tue, 13 Dec 2005 17:29:44 +0000 (UTC)
+Received: from nicholas (unknown [192.168.0.10])
+	by anche.india.tejasnetworks.com (*****) with ESMTP id A83127392B
+	for <netfilter@lists.netfilter.org>;
+	Tue, 13 Dec 2005 22:59:41 +0530 (IST)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,44 +26,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello:
 
-I'm running RTSP conntrack module in my application gateway ( uClinux
-2.4.22 kernel, ARM processor).  The application gateway has one uplink
-WAN port and eight LAN ports.  The devices on the LAN port are given
-local IP address. The application gateway does NAT + PAT for  all the
-outgoing traffic.
+I am planning to use the following MARK rule.
 
-Now the problem is that sometimes  RTSP Client behind my gateway sends
-two RTSP SETUP requests with same source port one after another. The
-RTSP module in the gateway handles the first SETUP message correctly
-while the second SETUP request does not get handled properly and the
-local IP address of the RTSP client goes to the RTSP server on the
-Network(i.e the local ip address and the port in SETUP message are not
-getting mangled to the global IP address and global ports of the
-gateway). Since the local IP addresses are not routed in the Network
-so the RTSP client fails playing the stream.
+iptables -t mangle -A POSTROUTING -d <ipaddr>/<netmask> -j MARK --set-mark
+<mark-id>
 
-How can I handle this situation where two SETUP message are sent
-subsequently. Please note that  RTSP client needs only one connection
-at one time.
-Is there any way to  discard the connection tracking made for first
-SETUP message and allow the same to be done for the second SETUP
-message if the connection tuple remains the same.  I'm getting EBUSY
-error for the second SETUP Message in ip_conntrack_expect_related
-function.
+In my application, there may be around 500 mark rules like above. They can
+change dynamically which means that some mark rule may be removed and new
+ones can be added. So at a given time there may be around 500 such rules in
+the system.
 
-Please suggest any other ideas to do the same.
+I have the following questions on the MARK rule. It would be helpful if you
+could point me to the code to understand better.
 
+01. With around 500 rules, there shall be 500 ipaddr/netmask that need to be
+matched for every packet. Will this be significant performance degradation?.
 
-Thanx & Regards,
-Sudhakar
+02. How does the matching for destination ipaddr/netmask happen? Is there an
+efficient hash scheme used. It would be helpful if you can point me to the
+code where this happens.
+
+03. Is the skbuff->nfmark field used to store the mark value. This is
+available with the skbuff even at the L2 driver layer. For example
+ethernet-driver or anyother layer2 driver. Is my assumption correct.
+
+I very much appreciate your response. Thanks for your time,
+Nicholas.
 
 
---
-SUDHAKAR MOHARANA
-Innomedia technologies pvt ltd.
-#3278,12th main,100ft road,HAL 2nd stage,
-indiaranagar,bangalore-8
-ph :-(080)5278444,ext-142 (O)
 
