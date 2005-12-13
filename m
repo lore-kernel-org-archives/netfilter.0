@@ -1,12 +1,12 @@
-From: "Gene Dellinger" <gene@poh.com>
-Subject: RE: FORWARD Chain Question
-Date: Tue, 13 Dec 2005 09:21:35 -1000
-Message-ID: <BOEKIIIKCIBKDMDMHHLLGEJODFAA.gene@poh.com>
-References: <439EA2DD.2030500@mnemon.de>
+From: Will Macfarlane <macfarlane.will@gmail.com>
+Subject: [iptable] distributing network requests over multiple interfaces by
+	size
+Date: Tue, 13 Dec 2005 15:32:59 -0800
+Message-ID: <a23e371d0512131532t7991bf1ck935ec9e66d165f52@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <439EA2DD.2030500@mnemon.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,59 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>, netfilter@lists.netfilter.org
-
-Thanks to all,
-All the information provided cleared things up for me.
-
-
-Gene D.
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of J=F6rg Harmuth
-Sent: Tuesday, December 13, 2005 12:31 AM
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Subject: Re: FORWARD Chain Question
 
+At the school where I am working we have 2 internet connections.  We
+have a high latency, high bandwidth satellite connection and a low
+latency, low bandwidth ISDN connection.  The network connects to the
+internet through our linux server running Squid.  The interface eth0
+connects to the satellite modem and the virtual interface eth0:1
+connects to the isdn modem.
 
-Gene Dellinger schrieb:
-> To All:
-> I got some helpful information, thanks to those who responded, I am sti=
-ll
-a
-> bit fuzzy though.
-> A packet coming in ETH0 destined for a system connected to ETH1, will t=
-hat
-> packet begin in the PREROUTING
-> chain on ETH1(sample 1) and then out or go to the FORWARD chain(sample =
-2)
-> and then out.
->
-> ETH0:PREROUTING---->FORWARD---->POSTROUTING---->OUT
->          |	           |            |
->        INPUT  	     |         OUTPUT
->          |	          \|/	      |
->       Local Process    |         Local Process
+Basically, I would like for all small requests (normal web browsing)
+to be directed to eth0:1 and for all requests for large files to be
+directed to eth0.
 
-As Jim already said, chain traversal isn't bound to interfaces by
-itself, but you can write rules that are related to a certain interface.
-If you take this picture (stolen from you and a little bit modified):
+Is there a way to balance these two connections in this way?  It seems
+like a spectacularly good idea to me, if I could just figure out how
+to make it work.  Do I want to be looking at iptables to do this?  Or
+can I do something in squid?
 
-   IN-->PREROUTING---->FORWARD---->POSTROUTING---->OUT
-          |	                        |
-        INPUT  	                      OUTPUT
-          |                             |
-          +------->Local Process------->+
-
-then you have a simplified picture of what's going on (amongst others,
-nat and mangle table are missing and the optional raw table as well).
-Packets go through the above picture regardless of the interface (unless
-as Jim also said, you specify -i or -o).
-
-HTH,
-
-Joerg
-
+thanks,
+Will
 
