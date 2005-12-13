@@ -1,7 +1,7 @@
-From: "Jason" <jason@oregonemt.net>
-Subject: Limiting Samba Access
-Date: Mon, 12 Dec 2005 21:51:22 -0800
-Message-ID: <00b601c5ffa9$3f93bd90$2e01a8c0@jasonspc>
+From: Simone <mimmo@ats.it>
+Subject: Netfilter box with auto-redirection
+Date: Tue, 13 Dec 2005 09:46:03 +0100
+Message-ID: <439E8A4B.6010608@ats.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,121 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello:
+Hi all...
 
-I am running Samba on Fedora Core 4.  I would like to use iptables to allow
-access to samba only to my local area network (192.168.1.0/24) and my
-cousins network (66.220.104.76).  Everyone else should be dropped.
+here is my situation..
 
-My network consists of a DSL connection with 4 windows machines and 1 linux
-machine, 3 of the windows machines are connected via wireless. The 4th
-windows machine and the linux server are plugged in via ethernet.  The linux
-server has been assigned an IP of 192.168.1.41   My DSL router has public IP
-address of 71.111.151.20 and I have port forwarded ports 137,138,139,445 to
-the linux server.
-
-Could someone please assist me in getting my firewall configuration setup so
-only my LAN and my cousins network has access to Samba?  Here is my current
-firewall script for you all to take a look at and tell me what I am doing
-incorrectly.  I thank you all in advance for your time.
-
-# import this saved configuration into your iptables configuration with the
-following command:
-# iptables-restore < web_server.config
-
-*nat
-:PREROUTING ACCEPT [127173:7033011]
-:POSTROUTING ACCEPT [31583:2332178]
-:OUTPUT ACCEPT [32021:2375633]
-COMMIT
-
-*mangle
-:PREROUTING ACCEPT [444:43563]
-:INPUT ACCEPT [444:43563] :FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [402:144198]
-:POSTROUTING ACCEPT [402:144198]
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-FIN,PSH,URG -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-COMMIT
-
-*filter
-:INPUT DROP [1:242]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
-:icmp_packets - [0:0]
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A INPUT -p tcp -m tcp --dport 20 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 21 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 43 -j ACCEPT
--A INPUT -p udp -m udp --dport 53 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 106 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 110 -j ACCEPT
--A INPUT -p udp -m udp --dport 123 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 143 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 783 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 901 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 993 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 10000 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 12000 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 15000 -j ACCEPT
--A INPUT -s 127.0.0.1 -j ACCEPT
--A INPUT -s 192.168.1.0/24 -i eth0 -p udp -m udp -d 192.168.1.41 --dport
-137 -j ACCEPT
--A INPUT -s 192.168.1.0/24 -i eth0 -p udp -m udp -d 192.168.1.41 --dport
-138 -j ACCEPT
--A INPUT -s 192.168.1.0/24 -i eth0 -p tcp -m tcp -d 192.168.1.41 --dport
-139 -j ACCEPT
--A INPUT -s 192.168.1.0/24 -i eth0 -p tcp -m tcp -d 192.168.1.41 --dport
-445 -j ACCEPT
--A INPUT -p icmp -j icmp_packets
--A INPUT -j LOG --log-prefix "IPTABLES-IN Default Drop: " --log-level 7
+             eth 1                          eth0
+| clients | -------> | linux box |  ------->  | IP backbone |
 
 
--A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 20 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 21 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 22 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 23 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 25 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 43 -j ACCEPT
--A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 106 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 110 -j ACCEPT
--A OUTPUT -p udp -m udp --dport 123 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 143 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 443 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 783 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 901 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 993 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 3306 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 10000 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 12000 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 15000 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 2210 -j ACCEPT
--A OUTPUT -d 127.0.0.1 -j ACCEPT
--A OUTPUT -p icmp -j icmp_packets
--A OUTPUT -j LOG --log-prefix "IPTABLES-OUT Default Drop: " --log-level 7
+The client get the ip address via dhcp from the linux box.. i assign a
+public ip address.
+The box normally act as a router and has to permit the packet to
+Internet only if client has the right permit.. else no way.. the packet
+is dropped.
+Doing this is easy.. i just use the FORWARD chain with 2 rules and all
+work ok.. when i need to permit the traffic i only add a rule with the
+new IPSRC to the chain before the default drop roule (-I) and all work..
 
+What i need to do is more hard..
 
--A icmp_packets -p icmp -m icmp --icmp-type 0 -j ACCEPT
--A icmp_packets -s 127.0.0.1 -p icmp -m icmp --icmp-type 8 -j ACCEPT
--A icmp_packets -p icmp -m icmp --icmp-type 8 -j DROP
--A icmp_packets -p icmp -m icmp --icmp-type 3 -j ACCEPT
--A icmp_packets -p icmp -m icmp --icmp-type 11 -j ACCEPT
-COMMIT
+I need by default that all the web traffic (80,443), for all the client
+that haven't the permit rules on.. has to be redirect to a default
+IP-ADDRESS where they will be able to insert their login/pwd for
+authentication.. after that is verification will be ok i'll add
+automatically the rule for permit the traffic without the redirection..
+By default all other kind of traffic must be dropped on eth1..
+I have search over the REDIRECT option but i can't use on the FORWARD
+chain.. just verify some solution using the mangle table.. but nothing
+over there too..
 
+Any idea ? :)
 
-
+Simon..
 
