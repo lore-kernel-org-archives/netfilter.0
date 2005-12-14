@@ -1,11 +1,15 @@
-From: "Randy Grimshaw" <rgrimsha@syr.edu>
-Subject: ebtables iptables DNAT something missing
-Date: Wed, 14 Dec 2005 09:43:07 -0500
-Message-ID: <s39fe950.070@gwia201.syr.edu>
+From: Edwin Kapauni <edwinkapauni@arcor.de>
+Subject: Re: opening port for SSH
+Date: Wed, 14 Dec 2005 17:02:19 +0100
+Message-ID: <dnpfmc$5ee$1@sea.gmane.org>
+References: <dn9dag$je3$1@sea.gmane.org>
+	<43999370.8010504@gmail.com>	<000f01c5fcce$c2e3aad0$6501a8c0@ludi>
+	<4399A4CC.90909@gmail.com>
+Reply-To: edwinkapauni@arcor.de
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4399A4CC.90909@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +20,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I thought I followed the recipe for DNAT on a transparent firewall =
-correctly with the statement below, and sniffing shows that the traffic is =
-redirected. But although the client receives the return responses from the =
-server at the dnat destination - the client basically ignores it. =
-(possibly as unexpected noise). What am I missing?
+Georgi Alexandrov wrote:
+> myhapwcforever wrote:
+> 
+>> And use the public-key ;)
+>>  
+>>
+> And disable version 1 of the protocol.
+> And disable root logins.
+> And use AllowGroups and/or AllowUsers in sshd_config.
+> And use RSA for generating the keys.
 
-iptables -t nat -D PREROUTING -p tcp --dport 80 -m physdev --physdev-in =
-eth1 -m mark --mark 9 -j DNAT --to-destination 192.168.12.12:80
+Thanks Georgi, myhapwcforever and /dev/rob0 for your support.
+I need to find some time to read and think about the SSH stuff before 
+opening a port for it.
 
-Thank you
-<><Randy
+But some questions I have here:
 
+What's the benefif of preferring
+    either "--dport ssh"
+    or     "--dport 22"?
 
-<><Randall Grimshaw
-Room 203 Machinery Hall
-Syracuse University
-Syracuse, NY   13244
-315-443-5779
-rgrimsha@syr.edu
+And, what's the means for "bindind the ssh server to a higher port"?
+
 
