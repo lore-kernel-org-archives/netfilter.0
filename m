@@ -1,12 +1,14 @@
 From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: stop accepting new connections on port 80
-Date: Wed, 14 Dec 2005 20:33:40 +0000
-Message-ID: <20051214203339.GE21572@metastasis.org.uk>
-References: <20051207123420.V66917@uberwoo.hedgpeth.com>
+Subject: Re: opening port for SSH
+Date: Wed, 14 Dec 2005 20:36:23 +0000
+Message-ID: <20051214203623.GF21572@metastasis.org.uk>
+References: <000001c600d3$c48640b0$0101000a@sterenborg.info>
+	<uizoe3jefxt.fsf@false.linpro.no>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <20051207123420.V66917@uberwoo.hedgpeth.com>
+In-Reply-To: <uizoe3jefxt.fsf@false.linpro.no>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +19,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On Wed, Dec 07, 2005 at 12:38:51 -0800, Spam User wrote:
+On Wed, Dec 14, 2005 at 06:39:26 +0100, Bj=F8rn Ruberg wrote:
+> "Rob Sterenborg" <rob@sterenborg.info> writes:
+>=20
+> > > And, what's the means for "bindind the ssh server to a higher
+> > > port"?
+> >=20
+> > A "higher port" means a portnumber somewhere above 1024.  Normally
+> > ssh binds to port 22/tcp (see above). In sshd_config you can tell it
+> > to bind to 49152 or something.
+>=20
+> The important thing to know about high and low ports is that on *nix
+> systems, only the root user may bind a service to ports below 1024,
+> while regular users can start any kind of service and making it
+> available through TCP or UDP ports above and including 1024.
+>=20
+> Because you don't want to run the risk of your SSH server being
+> replaced by some shady regular-user process which will gladly pick up
+> your login credentials, the smart thing is to bind services like SSH
+> to ports below 1024.
 
-> I've been trying to figure out how to get iptables to stop accepting
-> new connections on port 80 while letting the existing connections
-> finish up what they're doing.
-> 
-> I thought it would be as easy as removing the rule that allows new
-> connections and leaving the rule that allowed related and established
-> connections, but when I remove the rule that allows new connections,
-> all connections stop working.
+In order to bind to the correct port wouldn't the existing SSHD process
+need to be killed?  Or at least redirected to listen on another port so
+the "shady" process could act as an intermediary.  For that to happen
+wouldn't the attacker need root privileges anyway?
 
-When you say "all connections", what do you mean?
-
-Do you mean TCP connections, or browsing sessions?  I've never really
-looked at it in detail but I'm wondering if you're expecting HTTP
-sessions to stay up while someone views a site, whereas *IIRC* while a
-user web-browses numerous separate HTTP connections are opened and
-closed in quick succession.  Therefore as soon as you stop accepting new
-TCP connections all web browsing will stop, even for people with a
-half-loaded page.
-
-Why do you want to stop new sessions?  If we take a step back [1] maybe
-there's a different solution to your overall problem.
-
-[1] "take a step back"... sorry, next thing you know we'll be running
-ideas up the flagpole.
-
--- 
+--=20
 morals are for little people
 Jenny Solzer
 
