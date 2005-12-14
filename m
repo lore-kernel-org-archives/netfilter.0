@@ -1,12 +1,9 @@
-From: bjorn@ruberg.no (=?iso-8859-1?q?Bj=F8rn?= Ruberg)
-Subject: Re: opening port for SSH
-Date: 14 Dec 2005 18:39:26 +0100
-Message-ID: <uizoe3jefxt.fsf@false.linpro.no>
-References: <000001c600d3$c48640b0$0101000a@sterenborg.info>
+From: "John Lumby" <johnlumby@hotmail.com>
+Subject: how to override OUTPUT routing (like mangle ROUTE --oif)
+Date: Wed, 14 Dec 2005 13:19:04 -0500
+Message-ID: <BAY108-F202C62929A2AE50A636A0BA3380@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000001c600d3$c48640b0$0101000a@sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +14,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-"Rob Sterenborg" <rob@sterenborg.info> writes:
+Re my earlier posting asking this question, in case anyone else ever needs 
+to do this, I found a way.   Not exactly identical to what I was originally 
+thinking of but works just as well.
 
-> > And, what's the means for "bindind the ssh server to a higher port"?
->=20
-> A "higher port" means a portnumber somewhere above 1024.
-> Normally ssh binds to port 22/tcp (see above). In sshd_config you can
-> tell it to bind to 49152 or something.
+With my two internet interfaces like so:
 
-The important thing to know about high and low ports is that on *nix
-systems, only the root user may bind a service to ports below 1024,
-while regular users can start any kind of service and making it
-available through TCP or UDP ports above and including 1024.
+ppp0     66.66.66.66
+ppp1     129.129.129.129
 
-Because you don't want to run the risk of your SSH server being
-replaced by some shady regular-user process which will gladly pick up
-your login credentials, the smart thing is to bind services like SSH
-to ports below 1024.
+and relevant part of my route -n like so:
 
---=20
-Bj=F8rn
+64.64.64.64     0.0.0.0         255.255.255.255 UH    0      0        0 ppp0
+165.165.165.165 0.0.0.0         255.255.255.255 UH    0      0        0 ppp1
+0.0.0.0         64.64.64.64     0.0.0.0         UG    0      0        0 ppp0
+
+I realized that all I needed to do was to ensure that any outboubnd 
+connection request that was in response to an incoming connection via ppp1, 
+should also go out via ppp1 :
+
+iptables -t mangle -I POSTROUTING 1 -s 129.129.129.129 -j ROUTE --gw 
+165.165.165.165
+
+result - my sendmail server works exclusively on ppp1 even though my default 
+gatway is ppp0.
+kinda simple when I figured this out and works perfectly.
+
 
 
