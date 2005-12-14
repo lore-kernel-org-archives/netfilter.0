@@ -1,9 +1,9 @@
-From: Andreas Bayer <angel_azrael@gmx.de>
-Subject: problems with masquerade
-Date: Wed, 14 Dec 2005 09:13:52 +0100
-Message-ID: <200512140913.52746.angel_azrael@gmx.de>
+From: "Randy Grimshaw" <rgrimsha@syr.edu>
+Subject: ebtables iptables DNAT something missing
+Date: Wed, 14 Dec 2005 09:43:07 -0500
+Message-ID: <s39fe950.070@gwia201.syr.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -19,33 +19,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+I thought I followed the recipe for DNAT on a transparent firewall =
+correctly with the statement below, and sniffing shows that the traffic is =
+redirected. But although the client receives the return responses from the =
+server at the dnat destination - the client basically ignores it. =
+(possibly as unexpected noise). What am I missing?
 
-i try to route several protocols through a vpnc connection to my university. 
-Masquerade works fine for the outgoing packets. But all packets from the 
-university which should be redirected to my PC are delivered localy on my 
-server.
+iptables -t nat -D PREROUTING -p tcp --dport 80 -m physdev --physdev-in =
+eth1 -m mark --mark 9 -j DNAT --to-destination 192.168.12.12:80
 
-My config shows like:
-
-UNI............ --- Internet --- my Router ---Server (eth0). --- PC
-Cisco VPN ==================== vpnc (vpnlink)
+Thank you
+<><Randy
 
 
-iptables -A PREROUTING -t mangle -p tcp -d [UNI.UNI.0.0]/16 --dport 22 -j MARK 
---set-mark 3
-
-iptabeles -A POSTROUTING -t nat -d [UNI.UNI.0.0]/255.255.0.0 -o vpnlink -j 
-MASQUERADE
-
-iptables -A FORWARD -i vpnlink -s !  [UNI.UNI.0.0]/16 -j DROP
-
-/sbin/ip rule add from  [UNI.UNI.0.0]/16 to [UNI.UNI.0.0] /16 table 103 pref 
-32762
-/sbin/ip rule add fwmark 3 table 103 pref 32753
-/sbin/ip route add default dev vpnlink table 103
-
-Did i something wrong or/and have can i fix it?
-
-thanks
+<><Randall Grimshaw
+Room 203 Machinery Hall
+Syracuse University
+Syracuse, NY   13244
+315-443-5779
+rgrimsha@syr.edu
 
