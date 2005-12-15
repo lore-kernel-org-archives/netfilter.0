@@ -1,14 +1,11 @@
-From: =?ISO-8859-1?Q?Bj=F8rn_Ruberg?= <bjorn@ruberg.no>
-Subject: Re: opening port for SSH
-Date: Wed, 14 Dec 2005 23:06:25 +0100
-Message-ID: <43A09761.8050400@ruberg.no>
-References: <000001c600d3$c48640b0$0101000a@sterenborg.info>
-	<uizoe3jefxt.fsf@false.linpro.no>
-	<20051214203623.GF21572@metastasis.org.uk>
+From: "James Sanders" <Jsanders@co.riverside.ca.us>
+Subject: PORT COMMAND
+Date: Wed, 14 Dec 2005 17:22:43 -0800
+Message-ID: <s3a0556b.009@cor-mail02.co.riverside.ca.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <20051214203623.GF21572@metastasis.org.uk>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,32 +16,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Nick Drage <nickd@metastasis.org.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Nick Drage wrote:
-> On Wed, Dec 14, 2005 at 06:39:26 +0100, Bj=F8rn Ruberg wrote:
+Hello,
+I am a new list user, I have spent time searching the archives to no
+avail.
 
-[...]
+I am a relative firewall newbie, Hoping someone can help me.
 
-> In order to bind to the correct port wouldn't the existing SSHD pro=
-cess
-> need to be killed?  Or at least redirected to listen on another por=
-t so
-> the "shady" process could act as an intermediary.  For that to happ=
-en
-> wouldn't the attacker need root privileges anyway?
+I am using Shorewall 2.4.1 to manage my IPTables, everything works
+great, but I have 1 single vendor who cannot FTP files to me.
+my many other FTP vendors work fine and dandy.
 
-There are several ways to escalate privileges, most of which are not=
-=20
-netfilter related.
+I get an error on the console from the conn tracker.   conntrack_ftp:
+partial PORT  xxxxx-xx
 
-The point I was trying to make is that important services should not =
-be=20
-told to listen to ports above 1024.
+With Ethereal, I discovered that the PORT command from this problematic
+vendor is not terminated with CR/LF.
+All other FTP sequences (that work fine) have cr/lf at the end of the
+port command.
+RFC959 simplified, states that all commands will be terminated with
+cr/lf
 
---=20
-Bj=F8rn
+Has anyone run into a fix for this type of situation..the vendor has
+pushed back saying the cr/lf is actually in the next packet (which I
+have not verified yet)
+I have read online where the port command must be contained within 1
+single packet but this information is hard to come by.
+
+IPTables 1.3.3        
+Linux Kernel 2.6.8.2.386
+Shorewall 2.4.1
+Thank you all.
+JimSanders
+RCRMC.
+
 
 
