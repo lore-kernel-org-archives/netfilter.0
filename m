@@ -1,13 +1,10 @@
-From: =?UTF-8?B?UGF3ZcWCIFN0YXN6ZXdza2k=?= <pstaszewski@artcom.pl>
-Subject: Re: help on load balancing
-Date: Thu, 15 Dec 2005 15:12:15 +0100
-Message-ID: <43A179BF.1000102@artcom.pl>
-References: <1134646377.43a15469eb4ef@webmail.yanbulink.net>	<62629.193.173.147.3.1134651140.squirrel@webmail.sterenborg.info>	<1134652860.43a16dbcbf5dd@webmail.yanbulink.net>	<60346.193.173.147.3.1134653157.squirrel@webmail.sterenborg.info>	<43A17028.6040101@artcom.pl>
-	<1134655940.43a179c47fe3f@webmail.yanbulink.net>
+From: "Steverding, Kai" <Kai.Steverding@gws.ms>
+Subject: DNAT to localhost
+Date: Thu, 15 Dec 2005 15:08:03 +0100
+Message-ID: <C43D74B62BA19A45ADD74C1AB7AEE542017BCEE1@nt-gws2.gws-muenster.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1134655940.43a179c47fe3f@webmail.yanbulink.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,169 +15,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: wlagmay@yanbulink.net, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Try do install 3 squid instances and on every squid.conf insert=20
-different tcp_outgoind_address of your dsl links
+Hi !
+I am stuck with a redirection problem :
+
+I have a POP3-Server wich can only bind on 0.0.0.0 or a single =
+ip-adress. My
+machine has two internal  ip-adresses (192.168.10.1 and 192.168.20.1) =
+the
+POP3-Server needs to listen on and one external address it musn't =
+listen on.
+So i thought : "No problem, i will make the POP3-Server bind to
+localhost:110 and redirect incoming traffic to the two ip-adresses
+192.168.10.1 and 192.168.20.1 to localhost:110". I made the following
+ruleset for it :
+
+iptables -t nat -I PREROUTING -p tcp -i eth0 -d 192.168.10.1/32 --dport =
+110
+-j DNAT --to-destination 127.0.0.1
+iptables -t nat -I PREROUTING -p tcp -i eth0 -d 192.168.20.1/32 --dport =
+110
+-j DNAT --to-destination 127.0.0.1
+
+But it doesn't work. Wenn i try to connect to 192.168.10.1 Port 110 =
+from a
+client nothing happens.
+"iptables -t nat -L PREROUTING -v" shows me that the packets have been
+matched by the rules (the counters are up)
+
+What wen't wrong ?=20
 
 
-Next try to balance per tcp(80) session  to all  squid instances:
+Thanks
 
-$ipt -t nat -A squid -p tcp --dport 80 -m nth --counter 7 --every 3=20
---packet 0 -j DNAT --to 192.168.0.1:8080
-$ipt -t nat -A squid -p tcp --dport 80 -m nth --counter 7 --every 3=20
---packet 1 -j DNAT --to 192.168.0.1:8081
-$ipt -t nat -A squid -p tcp --dport 80 -m nth --counter 7 --every 3=20
---packet 2 -j DNAT --to 192.168.0.1:8082
+Kai
 
-$ipt -t nat -A PREROUTING -i eth4 -s 10.0.0.0/8 -p tcp --dport 80 -m=20
-state --state NEW -j squid
 
-the: "-m state --state NEW" param is important ... because you must=20
-balance over "tcp session" not "per packet"
+Mit freundlichen Gr=FC=DFen
 
-But with this configuration some sites will have problems to load like=20
-https ... because source of your ip will be change from dsl 1 to dsl 2=20
-and dsl 3
+Kai Steverding=09
+
+GWS Gesellschaft f=FCr Warenwirtschafts-Systeme mbH
+Kr=F6gerweg 10 - 48155 M=FCnster - Germany
+eMail: mailto:steverding@gws.ms
+Telefon: +49 251 7000-02 / Fax -3910
+Besuchen Sie uns im Internet: http://www.gws.ms____
 
 
 
 
-
-wlagmay@yanbulink.net wrote:
-
->I'm already using http://www.ssi.bg/~ja, this is from Julian Anatasov ri=
-ght, but
->my problem here, in most of the cases it needs to fully utilized the 1st=
- lint
->prior to shifting to the second link.
->
->Regards,
->
->Wennie
->
->Quoting Pawe=C3=85=E2=80=9A Staszewski <pstaszewski@artcom.pl>:
->
-> =20
->
->>You can't do load balance across 4 dsl link "per packet" ....
->>Only per session.
->>
->>If your isp is doing reverse path filtering .
->>
->>
->>Try routes patch from : http://www.ssi.bg/~ja/
->>
->>And it will be working fine :)
->>
->>
->>Rob Sterenborg wrote:
->>
->>   =20
->>
->>>On Thu, December 15, 2005 14:21, wlagmay@yanbulink.net wrote:
->>>
->>>
->>>     =20
->>>
->>>>Hi Rob,
->>>>
->>>>Im sorry, I forgot to inform you that the clients are not using this
->>>>3 lines to go directly to the internet, instead the on the same
->>>>machine I install Squid proxy server, hoping that with the load
->>>>balance technique, squid can take advantage of the connection
->>>>simultaneously, so my problem actualy is the squid
->>>>to use the 3 lines simutaneously.
->>>>
->>>>
->>>>       =20
->>>>
->>>I haven't used it myself so I'm a bit guessing here ; you may be able
->>>to alter locally generated packets (from Squid) using the ROUTE target
->>>combined with the nth match in the OUTPUT chain of the mangle table so
->>>the packets are diverted over the 3 NIC's.
->>>
->>>Something like :
->>>
->>>iptables -t mangle -A OUTPUT -o eth0 -m nth --counter 7 \
->>> --every 3 --packet 0 -j ROUTE --oif eth0
->>>
->>>iptables -t mangle -A OUTPUT -o eth0 -m nth --counter 7 \
->>> --every 3 --packet 1 -j ROUTE --oif eth1
->>>
->>>iptables -t mangle -A OUTPUT -o eth0 -m nth --counter 7 \
->>> --every 3 --packet 2 -j ROUTE --oif eth2
->>>
->>>(Where eth3 is your LAN NIC.)
->>>
->>>
->>>Gr,
->>>Rob
->>>
->>>
->>>
->>>
->>>     =20
->>>
->>>>Quoting Rob Sterenborg <rob@sterenborg.info>:
->>>>
->>>>
->>>>
->>>>       =20
->>>>
->>>>>On Thu, December 15, 2005 12:32, wlagmay@yanbulink.net wrote:
->>>>>...
->>>>>
->>>>>
->>>>>         =20
->>>>>
->>>>>>Squid proxy, Im monitoring the 4 ports via MRTG and I noticed that
->>>>>>before It goes to link 2, link 1 must be saturated first or link1
->>>>>>will stop and the request is only transfered to link 2. So it
->>>>>>
->>>>>>
->>>>>>           =20
->>>>>>
->>>>>seems
->>>>>
->>>>>
->>>>>         =20
->>>>>
->>>>>>that it is not doing a load balance, my idea of load balance is
->>>>>>utilizing the 3 lines simultaneously.
->>>>>>
->>>>>>
->>>>>>           =20
->>>>>>
->>>>>...
->>>>>
->>>>>Perhaps you can use the nth patch.
->>>>>http://www.netfilter.org/projects/patch-o-matic/pom-base.html#pom-ba=
-se-nth
->>>>>
->>>>>
->>>>>Gr,
->>>>>Rob
->>>>>
->>>>>
->>>>>         =20
->>>>>
->>>
->>>
->>>     =20
->>>
->>
->>   =20
->>
->
->
->
->
->
->
->
-> =20
->
 
 
