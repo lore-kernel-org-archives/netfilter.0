@@ -1,10 +1,12 @@
-From: wlagmay@yanbulink.net
-Subject: help on load balancing
-Date: Thu, 15 Dec 2005 14:32:57 +0300
-Message-ID: <1134646377.43a15469eb4ef@webmail.yanbulink.net>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: help on load balancing
+Date: Thu, 15 Dec 2005 13:52:20 +0100 (CET)
+Message-ID: <62629.193.173.147.3.1134651140.squirrel@webmail.sterenborg.info>
+References: <1134646377.43a15469eb4ef@webmail.yanbulink.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1134646377.43a15469eb4ef@webmail.yanbulink.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +20,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Thu, December 15, 2005 12:32, wlagmay@yanbulink.net wrote:
+...
+> Squid proxy, Im monitoring the 4 ports via MRTG and I noticed that
+> before It goes to link 2, link 1 must be saturated first or link1
+> will stop and the request is only transfered to link 2. So it seems
+> that it is not doing a load balance, my idea of load balance is
+> utilizing the 3 lines simultaneously.
+...
+
+Perhaps you can use the nth patch.
+http://www.netfilter.org/projects/patch-o-matic/pom-base.html#pom-base-nt=
+h
 
 
-Hi all,
+Gr,
+Rob
 
-I was able to setup a machine with 4 NICS , NICS 1 2 and 3 are connected to the
-internet via dsl connection and NIC 4 is connected to LAN, I try to configure
-the machine with Julian Anastasov patches and on the same machine I install
-Squid proxy, Im monitoring the 4 ports via MRTG and I noticed that before It
-goes to link 2, link 1 must be saturated first or link1 will stop and the
-request is only transfered to link 2. So it seems that it is not doing a load
-balance, my idea of load balance is utilizing the 3 lines simultaneously.
-
-Can you please help me on my problem, If you can provide a sample iptables load
-balancing configuration and a load balance routing script will definitely helps
-me a lot.
-
-Thank you very much,
-
-Wennie
 
 
