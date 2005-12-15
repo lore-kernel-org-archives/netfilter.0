@@ -1,13 +1,11 @@
-From: =?UTF-8?Q?yushin/=E7=AE=A1=E7=90=86?= =?UTF-8?Q?=E5=91=98?=
-	<admin@yushin-cn.com>
-Subject: PPTP nat and conntrack patch with patch-o-matic
-Date: Thu, 15 Dec 2005 14:37:20 +0800
-Message-ID: <1134628640.4105.1.camel@jabin.localdomain>
-Reply-To: admin@yushin-cn.com
+From: =?Big5?B?Iqf1xKOpdiAoU2Nob29sIE5ldCki?= <leeyc@school.hk>
+Subject: Bug report: ip_nat_pptp kernel panic
+Date: Thu, 15 Dec 2005 17:58:37 +0800
+Message-ID: <43A13E4D.8040209@school.hk>
+Reply-To: lee_yiu_chung@yahoo.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: 
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,30 +19,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am trying to resolve an issue with the patch-o-matic in regards to the
-pptp nat and conntrack patch.  I am using kernel 2.6.12.3 on many different
-processors.  I have the problem across the board.  I can compile, but I can
-load the module.  I get an error in dmesg:
+Dear netfilter developers,
 
-ip_conntrack_pptp: Unknown symbol __ip_conntrack_expect_find
-ip_nat_pptp: Unknown symbol ip_nat_pptp_hook_inbound
-ip_nat_pptp: Unknown symbol ip_nat_pptp_hook_expectfn
-ip_nat_pptp: Unknown symbol ip_nat_pptp_hook_exp_gre
-ip_nat_pptp: Unknown symbol ip_nat_pptp_hook_outbound
+I am using linux 2.6.14.3 kernel with ip_nat_pptp compiled as a module.
+I have discovered a bug in this condition:
 
+I have installed pptpd on a firewall. Assume the firewall has the follow
+IP: (external) 1.2.3.4 (internal) 192.168.0.1. The pptpd is serving as a
+VPN for 192.168.0.0/24.
 
-If I try to load ip_nat_pptp  I get:
+If I am using a VPN client (assume it has IP address 192.168.0.2) to
+connect to 1.2.3.4, it will generate a kernel panic. (Of course, people
+normally don't do such stupid things, but they may make a mistake, since
+my customers are roaming between sites and may choose the wrong VPN
+connection and then crashes the firewall.)
 
-in:~# modprobe ip_nat_proto_gre
-in:~# modprobe ip_nat_pptp
-WARNING: Error inserting ip_conntrack_pptp
-(/lib/modules/2.6.12.3/kernel/net/ipv4/netfilter/ip_conntrack_pptp.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
-FATAL: Error inserting ip_nat_pptp
-(/lib/modules/2.6.12.3/kernel/net/ipv4/netfilter/ip_nat_pptp.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
+I understand this is a really a abnormal test case becasue no one would
+VPN to their own servers if they are inside the company.
 
-Does any one know which patch-o-matic would work with the 2.6.12.3 kernel?
-I am using patch-o-matic 20050913? Or how to resolve this issue?
-
+Thank you.
 
