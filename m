@@ -1,10 +1,12 @@
-From: Thanos Panousis <pthanos@gmail.com>
-Subject: a way to rewrite tcp ISNs?
-Date: Fri, 16 Dec 2005 14:39:51 +0100
-Message-ID: <4dcb3660512160539m17fa57favce756b8580d14f56@mail.gmail.com>
+From: Kashif Ali Bukhari <kbukhari@gmail.com>
+Subject: Re: Bridging Firewall with Kernel 2.6 failed
+Date: Fri, 16 Dec 2005 07:03:00 -0800
+Message-ID: <a3f524e0512160703o58250e54y69220c86e0498920@mail.gmail.com>
+References: <439BDC54.30008@phreaker.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <439BDC54.30008@phreaker.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,45 +19,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: ro0ot <ro0ot@phreaker.net>
+Cc: netfilter@lists.netfilter.org, bridge@lists.osdl.org
 
-Hello to everybody,
+iptabels dont support bridge use ebtables ;)
 
-I just subscribed to the list; I already send an email to Harald
-Welte, since my questions involves ct_sync, but I m sure he has better
-things to do than answering my emails. So, here goes:
+On 12/10/05, ro0ot <ro0ot@phreaker.net> wrote:
+> Hi all,
+>
+> I have a bridging firewall running fine with kernel 2.4.31 (Slackware
+> 10.1) and iptables 1.2.11
+>
+> Yesterday I install the new kernel 2.6.14.3 and iptables 1.3.4 but the
+> bridging firewall doesn't work anymore.
+>
+> Do I need to patch the kernel 2.6 as what I did it for kernel 2.4? Or
+> what I have missed?
+>
+> Regards,
+> ro0ot
+>
+>
+>
+>
+>
 
-I 'm trying to implement a kind of a failover architecture, mainly
-targeted for router machines. The goals are no loss of state
-information, or dropped connections, since for example BGP keeps a
-connection open between peers, and if the failover architecture is any
-good, it should not allow these connections to get dropped.
-So, my architecture is about the same with Harald Welte's poor mans
-failover in his paper "replicating the fire, failover of stateful
-firewalls".
 
-A primary and a backup router, both on a HUB, both with the same MAC
-and IP. The backup has MAC broadcasting suppressed, and also has (some
-kind of) way of suppressing all his outgoing packets and is able only=20
-to recv packets coming from clients. The primary can function
-normally. This way ensures that state information is kept (almost)
-synchronized (without guarantees) between primary and backup. Using a
-heartbeat mechanism the backup queries the primary; when its
-down(assume powered-off), the backup drops its firewall and starts
-sending answers to the client.
-
-One of the problems of the architecture is the ISN. Both primary and
-backup will have the clients ISN number for the connection for the one
-way connection. BUT the the primary will handshake his own (random)
-ISN for his replies, and the secondary will not be able to establish a
-connection due to the client not agreeing to use his (random) ISN.
-
-Is there anyway to change the ISN of the backup node? I mean, can
-iptables do that? Then what's left is to get the ISN that the primary
-node issued.
-
-I am deeply sorry for any errors/inaccuracies in the above ideas. I am
-a new-comer to the low level TCP and netfilter theory. I just finished
-my first rough study of RFC 793 :). Any ideas and comments/flames are
-welcome.
+--
+Syed Kashif Ali Bukhari
+Network Engineer
+Beaconhouse IT services, Lahore Pakistan
 
