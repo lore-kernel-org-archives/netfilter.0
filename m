@@ -1,13 +1,10 @@
-From: Kashif Ali Bukhari <kbukhari@gmail.com>
-Subject: Re: Bridging Firewall with Kernel 2.6 failed
-Date: Fri, 16 Dec 2005 07:03:00 -0800
-Message-ID: <a3f524e0512160703o58250e54y69220c86e0498920@mail.gmail.com>
-References: <439BDC54.30008@phreaker.net>
+From: "Aaron Gray" <angray@beeb.net>
+Subject: Can I use ip_conntrack_ftp on a server firewall ?
+Date: Fri, 16 Dec 2005 23:44:50 -0000
+Message-ID: <004301c6029a$b49f8490$0200a8c0@AMDADVENT>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <439BDC54.30008@phreaker.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +15,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: ro0ot <ro0ot@phreaker.net>
-Cc: netfilter@lists.netfilter.org, bridge@lists.osdl.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-iptabels dont support bridge use ebtables ;)
+I have a RedHat 9 and Fedora Core 4 Servers I am setting up. I am using an 
+FTP demon on the server, Apache mod_ftpd, but when enabled the firewall is 
+blocking the FTP connection.
 
-On 12/10/05, ro0ot <ro0ot@phreaker.net> wrote:
-> Hi all,
->
-> I have a bridging firewall running fine with kernel 2.4.31 (Slackware
-> 10.1) and iptables 1.2.11
->
-> Yesterday I install the new kernel 2.6.14.3 and iptables 1.3.4 but the
-> bridging firewall doesn't work anymore.
->
-> Do I need to patch the kernel 2.6 as what I did it for kernel 2.4? Or
-> what I have missed?
->
-> Regards,
-> ro0ot
->
->
->
->
->
+How do I create rules to allow FTP passive and active connections to the 
+server ?
 
+Do I use ip_conntrack_ftp or can I just create some rules that will do the 
+job ?
 
---
-Syed Kashif Ali Bukhari
-Network Engineer
-Beaconhouse IT services, Lahore Pakistan
+Many thanks in advance,
+
+Aaron 
+
 
