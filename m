@@ -1,8 +1,7 @@
-From: =?Big5?B?Iqf1xKOpdiAoU2Nob29sIE5ldCki?= <leeyc@school.hk>
-Subject: Bug report: ip_nat_pptp kernel panic
-Date: Thu, 15 Dec 2005 17:58:37 +0800
-Message-ID: <43A13E4D.8040209@school.hk>
-Reply-To: lee_yiu_chung@yahoo.com
+From: "Marsal Isern" <marsal.isern@masesmas.com>
+Subject: IPTABLES Forwarding problem
+Date: Fri, 16 Dec 2005 11:14:21 +0100
+Message-ID: <008f01c60229$7e818550$460aa8c0@misern2>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,23 +18,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear netfilter developers,
+Hi All,
 
-I am using linux 2.6.14.3 kernel with ip_nat_pptp compiled as a module.
-I have discovered a bug in this condition:
 
-I have installed pptpd on a firewall. Assume the firewall has the follow
-IP: (external) 1.2.3.4 (internal) 192.168.0.1. The pptpd is serving as a
-VPN for 192.168.0.0/24.
+I have a rule that redirects  the port 8080 from any external IP address
+to an internal server.
+I have no problem with the majority of clients. The forwading works
+great but I have a problem with only one IP.
+I logged the traffic and the prerouting works great and the forwading
+works but it get stuck with the SYN tcp flag  so the conection is never
+established. 
+Logging the traffic form any other IP there is no problem. I can see the
+Syn flag and then the Ack flag ..
 
-If I am using a VPN client (assume it has IP address 192.168.0.2) to
-connect to 1.2.3.4, it will generate a kernel panic. (Of course, people
-normally don't do such stupid things, but they may make a mistake, since
-my customers are roaming between sites and may choose the wrong VPN
-connection and then crashes the firewall.)
+I'm sure I'm missing something, but I can not find out a solution
 
-I understand this is a really a abnormal test case becasue no one would
-VPN to their own servers if they are inside the company.
+Thanks in advance.
 
-Thank you.
+Marsal.
+
+
+
+
+
+
+
+
+
+
 
