@@ -1,10 +1,11 @@
-From: Eric <erbenton@comcast.net>
-Subject: tarpit before or after adding chain?
-Date: Fri, 16 Dec 2005 22:19:31 -0800
-Message-ID: <43A3ADF3.7050406@comcast.net>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: tarpit before or after adding chain?
+Date: Fri, 16 Dec 2005 23:25:35 -0800
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582900B59EA@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,37 +16,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Eric <erbenton@comcast.net>, netfilter mailing list <netfilter@lists.netfilter.org>
 
-I'm a little confused about when to add the TARPIT trap.
+It shouldn't matter.  You can add rules that jump to a chain, as long as
+the chain exists, even if empty.  Then later you can add rules to that
+chain.
 
-iptables -N SPECIAL # add special chain for tarpit usage
+This should also work as well.  We tarpit all data which should never
+come through our firewalls.  We also disabled tracking for the same.  We
+don't want the firewall wasting resources on this garbage.  Another
+trick that we do is we also dedicate a high/low IP for catching things
+like SQL, HTTP, VNC, RDC, etc.  This was things walking the network will
+sometimes get hung, if they are not threaded.
 
-*HERE*?
-iptables -A SPECIAL -p tcp -j TARPIT
+YMMV (some of this is off the top of my head or pulled form a
+iptables-save -- order is preserved, please consult man for exact
+syntax)
 
-#
-# the following string match rules screen out nimda and other crap
-#
-iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
---string "/default.ida?"     -j SPECIAL
-iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
---string ".exe?/c+dir"       -j SPECIAL
-iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
---string ".exe?/c+tftp"      -j SPECIAL
-iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
---string "cmd.exe"           -j SPECIAL
-iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
---string "vti_bin"           -j SPECIAL
-iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
---string "nsiislog.dll"      -j SPECIAL
-iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
---string "click-network.com" -j SPECIAL
+iptables -t raw -A PREROUTING -i eth0 -p tcp -m multiport \
+	--dports 135,139,445 -j NOTRACK
 
-*OR HERE?*
-iptables -A SPECIAL -p tcp -j TARPIT
+iptables -N filter_tarpit
+iptables -A INPUT -i eth0 -j filter_tarpit
+iptables -A FORWARD -i eth0 -j filter_tarpit
 
-Thanks
-Eric
+iptables -A filter_tarpit -p tcp -m multiport \
+	--dports 135,139,445 \
+	-j LOG --log-prefix "TARPIT: " --log-level 6
+iptables -A filter_tarpit -p tcp -m multiport \
+	--dports 135,139,445 -j TARPIT
+
+Hope this helps,=20
+
+Gary Wayne Smith
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> bounces@lists.netfilter.org] On Behalf Of Eric
+> Sent: Friday, December 16, 2005 10:20 PM
+> To: netfilter mailing list
+> Subject: tarpit before or after adding chain?
+>=20
+> I'm a little confused about when to add the TARPIT trap.
+>=20
 
