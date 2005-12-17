@@ -1,12 +1,12 @@
 From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
 Subject: Re: tarpit before or after adding chain?
-Date: Sat, 17 Dec 2005 11:13:31 +0200
-Message-ID: <43A3D6BB.4010709@gmail.com>
-References: <43A3ADF3.7050406@comcast.net>
+Date: Sat, 17 Dec 2005 11:17:50 +0200
+Message-ID: <43A3D7BE.5060201@gmail.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE582900B59EA@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43A3ADF3.7050406@comcast.net>
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE582900B59EA@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,41 +20,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Eric wrote:
+Gary W. Smith wrote:
 
-> I'm a little confused about when to add the TARPIT trap.
+>This should also work as well.  We tarpit all data which should never
+>come through our firewalls.  We also disabled tracking for the same.  We
+>don't want the firewall wasting resources on this garbage.  Another
+>trick that we do is we also dedicate a high/low IP for catching things
+>like SQL, HTTP, VNC, RDC, etc.  This was things walking the network will
+>sometimes get hung, if they are not threaded.
+>  
 >
-> iptables -N SPECIAL # add special chain for tarpit usage
->
-> *HERE*?
-> iptables -A SPECIAL -p tcp -j TARPIT
->
-> #
-> # the following string match rules screen out nimda and other crap
-> #
-> iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
-> --string "/default.ida?"     -j SPECIAL
-> iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
-> --string ".exe?/c+dir"       -j SPECIAL
-> iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
-> --string ".exe?/c+tftp"      -j SPECIAL
-> iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
-> --string "cmd.exe"           -j SPECIAL
-> iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
-> --string "vti_bin"           -j SPECIAL
-> iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
-> --string "nsiislog.dll"      -j SPECIAL
-> iptables -A INPUT -i eth0 -p tcp  --dport 80 -m string --algo bm 
-> --string "click-network.com" -j SPECIAL
->
-> *OR HERE?*
-> iptables -A SPECIAL -p tcp -j TARPIT
->
-> Thanks
-> Eric
->
->
-And again ... why do you need all this, when you're running linux and 
-those are no harm in any way to your system?
-Or you are with those guys trying to complex their lifes every single day?
+I don't think that his *one or two per day* cmd.exe automatic scans will 
+get "through his firewall",
+or will "waste resources".
+Maybe filling your firewall with those useless rules will waste more 
+resources? ;-)
+
+*Think again* (as seen in the national geographic channel)
+
+
+regards,
+Georgi Alexandrov
 
