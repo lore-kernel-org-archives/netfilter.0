@@ -1,11 +1,14 @@
-From: Marcin Krol <mark@wbp.krakow.pl>
-Subject: poor 1:1 NAT / port forwarding performance
-Date: Sun, 18 Dec 2005 12:41:50 +0100
-Message-ID: <1522723205.20051218124150@wbp.krakow.pl>
-Reply-To: Marcin Krol <mark@wbp.krakow.pl>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Re: Why would certain packets not reach nat PREROUTING chain?
+Date: Sun, 18 Dec 2005 08:16:21 -0500
+Message-ID: <20051218131621.GC2197@bostoncoop.net>
+References: <20051218055403.002CDA00EA@bostoncoop.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20051218055403.002CDA00EA@bostoncoop.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,54 +19,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello everyone,
 
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I would be very grateful if someone could pinpoint the source of this
-problem (and even more grateful for a solution).
+On Sun, Dec 18, 2005 at 032:42:43M -0500, Leonardo Rodrigues Magalhes wrote:
+>     Adam, have you tried adding a properly PREROUTING rule for this=20
+> specific traffic ? It would be like
+> iptables -t nat -A PREROUTING -p udp -d EXTERNAL_IP_OF_NAT_BOT --dport=20
+> 500 -j DNAT --to LOCAL_CLIENT
 
-Since I can't get more public IP addresses, I have set out to make NAT
-translation with sort of port forwarding to another web server (on
-another machine, 192.168.25.1) on port 5006 on gateway machine:
+I have tried that--same result. In fact, I've tried creating a "tunnel"
+between the internal and external client by leaving out the port
+limitation, i.e.:
 
+iptables -t nat -A PREROUTING -s SERVER_IP -j DNAT --to LOCAL_CLIENT
 
-iptables -t nat -A PREROUTING -p tcp -d EXT_IP --dport 5006 -j DNAT \
---to-destination 192.168.25.1
+None of these have any effect because the packets never reach the nat
+PREROUTING chain. If I put a LOG rule at the start of nat PREROUTING, I
+don't see the inbound packets from the server on the Internet. (I do see
+those packets in the mangle PREROUTING though).
 
-iptables -t nat -A POSTROUTING -p tcp -s 192.168.25.1 --sport 5006 \
--j SNAT --to-source EXT_IP
+>     Other test I would suggest ....... have you tried some other UDP=20
+> traffic, just like DNS and see if it works ? Have you tried some TCP=20
+> traffic and see if it works fine ?
 
+Everything else seems to work fine. I have another internal box to which
+certain ssh connections from the Internet go, and that's fine. I'm not
+sure exactly how I'd test other UDP traffic... Certainly UDP traffic that
+is FORWARDed through the NAT box (e.g., RealPlayer streams) seems fine.
+--=20
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
 
-It works, but it's slow as hell!!
+--tThc/1wpZn/ma/RB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-I download the test file from the main HTTP server (over the internet)
-at 160-180 KB/s, while with the NATted server the transfer is about 16
-KB/s - 10 times too slow!!!
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
 
-(It's definitely not the issue of the 2nd webserver box having little
-resources, it has a lot of resources; besides, locally over Ethernet
-and without NAT it's very fast)
+iD4DBQFDpWEldTf3ZklQ6qYRAsF3AJd+5Ks1I3JE4BjNa8aKlB2/SiXCAJ9fd4pA
+A6T5YNFBypXZVTC+M/atDw==
+=ZmKp
+-----END PGP SIGNATURE-----
 
-I set the policy on all chains to ACCEPT, I was emptying the tables
-leaving only above rules, etc, nothing works, it's still slow. I've
-been googling a lot for a solution, but to no avail - some people
-report this problem, but nobody has ever found the solution.
-
-Kernel 2.4.22 / FedoraCore 1.
-
-Is anybody here using 2.6 kernel for this sort of work? If so, is it
-slow, too, or is it working like it should be?
-
-
-
-  
-
--- 
-Best regards,
- Marcin                          mailto:mark@wbp.krakow.pl
-
-
+--tThc/1wpZn/ma/RB--
 
