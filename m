@@ -1,11 +1,12 @@
-From: Dwayne Hottinger <dhottinger@harrisonburg.k12.va.us>
-Subject: more firewall scripting
-Date: Sun, 18 Dec 2005 12:21:21 -0500
-Message-ID: <1134926481.add6476cf4871@webmail.harrisonburg.k12.va.us>
+From: "Aaron Gray" <angray@beeb.net>
+Subject: Re: Can I use ip_conntrack_ftp on a server firewall ?
+Date: Sun, 18 Dec 2005 17:43:30 -0000
+Message-ID: <008001c603fa$919d4bb0$0400a8c0@AMDADVENT>
+References: <004301c6029a$b49f8490$0200a8c0@AMDADVENT>	<do03d8$2jm$1@sea.gmane.org><005901c6037d$c3709b10$0400a8c0@AMDADVENT>
+	<do34su$1mj$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,25 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: netfilter@lists.netfilter.org
 
-Is it better to use DROP LDROP or TREJECT when blocking ipaddresses for example
-I have the following in my firewall script:
-$IPC -A FORWARD -p tcp -s 12.120.25.14 -j LDROP
-$IPC -A FORWARD -p tcp -d 12.120.25.14 -j LDROP
-$IPC -A FORWARD -p tcp -s 198.82.30.204 -j LDROP
-$IPC -A FORWARD -p tcp -d 198.82.30.204 -j LDROP
+>> Okay I have ip_conntrack_ftp loaded in /etc/sysconfig/iptables-config.
+>>
+>> Still it must require some rules to use it.
+>
+> Well, you obviously need to allow the initial incoming connection to
+> port 21.  Beyond that, all you should need are the usual rules to
+> allow all ESTABLISHED and RELATED traffic.  With the conntrack
+> module working, the ftp-data connection will be recognized as
+> RELATED.  Unless there NAT involved (requiring use of the ip_nat_ftp
+> module), it should "just work".
 
-Should I change it to TREJECT, or DROP?
+I added a NEW and it now "just works" with Windows Internet Explorer as well 
+as Unix FTP.
 
-thanks,
+Aaron
 
-ddh
-
-
---
-Dwayne Hottinger
-Network Administrator
-Harrisonburg City Public Schools
 
