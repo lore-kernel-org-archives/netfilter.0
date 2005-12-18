@@ -1,12 +1,12 @@
-From: "Aaron Gray" <angray@beeb.net>
-Subject: Re: Can I use ip_conntrack_ftp on a server firewall ?
-Date: Sun, 18 Dec 2005 02:50:09 -0000
-Message-ID: <005901c6037d$c3709b10$0400a8c0@AMDADVENT>
-References: <004301c6029a$b49f8490$0200a8c0@AMDADVENT>
-	<do03d8$2jm$1@sea.gmane.org>
+From: Chris Young <chris-netfilter@chris.net.au>
+Subject: Re: Set mark in -j QUEUE?
+Date: Sun, 18 Dec 2005 12:42:05 +0800
+Message-ID: <20051218044205.GB430@viper.net.au>
+References: <000001c60332$36cd7340$2801a8c0@MBRC40>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <000001c60332$36cd7340$2801a8c0@MBRC40>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Michael D. Berger" <m.d.berger@ieee.org>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
->> How do I create rules to allow FTP passive and active connections to the 
->> server ?
->> 
->> Do I use ip_conntrack_ftp or can I just create some rules that will do 
->> the job ?
-> 
-> You need ip_conntrack_ftp.  To get that modules loaded automatically,
-> Just edit /etc/sysconfig/iptables and add "ip_conntrack_ftp" to the
-> "IPTABLES_MODULES=" line.
+On Sat, Dec 17, 2005 at 12:49:22PM -0500, Michael D. Berger wrote:
+> Is there any way to make this work in the -j QUEUE processor?
 
-Okay I have ip_conntrack_ftp loaded in /etc/sysconfig/iptables-config.
+You need to use the ip_queue_vwmark patch:
 
-Still it must require some rules to use it.
+http://www.netfilter.org/projects/patch-o-matic/pom-extra.html#pom-extra-ip_queue_vwmark
 
-Aaron
+It provides a ipq_set_vwmark function, it's the same as ipq_set_verdict,
+except it takes a mark parameter.
 
+I have nothing to do with the development of it, but I use it for my own
+project, and it works well.
+
+Regards,
+Chris
 
