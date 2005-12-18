@@ -1,13 +1,11 @@
-From: Robert Nichols <rnicholsNOSPAM@comcast.net>
-Subject: Re: Can I use ip_conntrack_ftp on a server firewall ?
-Date: Sun, 18 Dec 2005 01:59:26 -0600
-Message-ID: <do34su$1mj$1@sea.gmane.org>
-References: <004301c6029a$b49f8490$0200a8c0@AMDADVENT>	<do03d8$2jm$1@sea.gmane.org>
-	<005901c6037d$c3709b10$0400a8c0@AMDADVENT>
+From: Marcin Krol <mark@wbp.krakow.pl>
+Subject: poor 1:1 NAT / port forwarding performance
+Date: Sun, 18 Dec 2005 12:41:50 +0100
+Message-ID: <1522723205.20051218124150@wbp.krakow.pl>
+Reply-To: Marcin Krol <mark@wbp.krakow.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <005901c6037d$c3709b10$0400a8c0@AMDADVENT>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +16,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Aaron Gray wrote:
->>> How do I create rules to allow FTP passive and active connections to 
->>> the server ?
->>>
->>> Do I use ip_conntrack_ftp or can I just create some rules that will 
->>> do the job ?
->>
->>
->> You need ip_conntrack_ftp.  To get that modules loaded automatically,
->> Just edit /etc/sysconfig/iptables and add "ip_conntrack_ftp" to the
->> "IPTABLES_MODULES=" line.
-> 
-> 
-> Okay I have ip_conntrack_ftp loaded in /etc/sysconfig/iptables-config.
-> 
-> Still it must require some rules to use it.
+Hello everyone,
 
-Well, you obviously need to allow the initial incoming connection to
-port 21.  Beyond that, all you should need are the usual rules to
-allow all ESTABLISHED and RELATED traffic.  With the conntrack
-module working, the ftp-data connection will be recognized as
-RELATED.  Unless there NAT involved (requiring use of the ip_nat_ftp
-module), it should "just work".
+
+I would be very grateful if someone could pinpoint the source of this
+problem (and even more grateful for a solution).
+
+Since I can't get more public IP addresses, I have set out to make NAT
+translation with sort of port forwarding to another web server (on
+another machine, 192.168.25.1) on port 5006 on gateway machine:
+
+
+iptables -t nat -A PREROUTING -p tcp -d EXT_IP --dport 5006 -j DNAT \
+--to-destination 192.168.25.1
+
+iptables -t nat -A POSTROUTING -p tcp -s 192.168.25.1 --sport 5006 \
+-j SNAT --to-source EXT_IP
+
+
+It works, but it's slow as hell!!
+
+I download the test file from the main HTTP server (over the internet)
+at 160-180 KB/s, while with the NATted server the transfer is about 16
+KB/s - 10 times too slow!!!
+
+(It's definitely not the issue of the 2nd webserver box having little
+resources, it has a lot of resources; besides, locally over Ethernet
+and without NAT it's very fast)
+
+I set the policy on all chains to ACCEPT, I was emptying the tables
+leaving only above rules, etc, nothing works, it's still slow. I've
+been googling a lot for a solution, but to no avail - some people
+report this problem, but nobody has ever found the solution.
+
+Kernel 2.4.22 / FedoraCore 1.
+
+Is anybody here using 2.6 kernel for this sort of work? If so, is it
+slow, too, or is it working like it should be?
+
+
+
+  
 
 -- 
-Bob Nichols         Yes, "NOSPAM" is really part of my email address.
+Best regards,
+ Marcin                          mailto:mark@wbp.krakow.pl
+
 
 
