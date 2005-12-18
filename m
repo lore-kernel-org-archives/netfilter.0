@@ -1,12 +1,10 @@
-From: Askar <askarali@gmail.com>
-Subject: Re: blocking ipaddresses
-Date: Sun, 18 Dec 2005 19:06:11 +0500
-Message-ID: <a0f69e50512180606r2f41bfe2m8e1e465ab9047643@mail.gmail.com>
-References: <1134913819.99ab56762176f@webmail.harrisonburg.k12.va.us>
+From: Dwayne Hottinger <dhottinger@harrisonburg.k12.va.us>
+Subject: more firewall scripting
+Date: Sun, 18 Dec 2005 12:21:21 -0500
+Message-ID: <1134926481.add6476cf4871@webmail.harrisonburg.k12.va.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1134913819.99ab56762176f@webmail.harrisonburg.k12.va.us>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,98 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Dwayne Hottinger <dhottinger@harrisonburg.k12.va.us>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter <netfilter@lists.netfilter.org>
 
-its not a recommended way to do filtering in NAT table perhaps ...
+Is it better to use DROP LDROP or TREJECT when blocking ipaddresses for example
+I have the following in my firewall script:
+$IPC -A FORWARD -p tcp -s 12.120.25.14 -j LDROP
+$IPC -A FORWARD -p tcp -d 12.120.25.14 -j LDROP
+$IPC -A FORWARD -p tcp -s 198.82.30.204 -j LDROP
+$IPC -A FORWARD -p tcp -d 198.82.30.204 -j LDROP
 
-Filter for filtering, nat for natting and mangle for mangling
+Should I change it to TREJECT, or DROP?
 
+thanks,
 
-regards
-
-askar
-
-On 12/18/05, Dwayne Hottinger <dhottinger@harrisonburg.k12.va.us> wrote:
-> Sirs,
-> I have the following in my firewall script:
-> #!/bin/sh
-> #########################################
-> # Script created using EasyTables v0.6
-> # by Roi Dayan
-> #########################################
-> printf "."
-> IPC=3D/sbin/iptables
->
-> SERVERS=3Deth1
-> L3=3Deth2
-> IF=3Deth3
->
-> SNAT_ADDRESS=3Dsome public ip
-> SNAT_PM=3Dsome public ip
-> PROXY_IP=3Dsome public ip
->
-> # Networks:
->
-> TEN_NET=3D10.0.0.0/8
-> CO_NET=3Danother public ip/24
->
-> ## Set up routing table
-> ip route add 10.40.0.0/16       via 10.10.220.2
-> ip route add 10.140.0.0/16      via 10.10.220.2
-> ip route add 10.41.0.0/16       via 10.10.220.2
-> ip route add 10.43.0.0/16       via 10.10.220.2
-> ip route add 10.44.0.0/16       via 10.10.220.2
-> ip route add 10.45.0.0/16       via 10.10.220.2
-> ip route add 10.46.0.0/16       via 10.10.220.2
-> ip route add 10.47.0.0/16       via 10.10.220.2
-> ip route add 10.10.221.0/24    via 10.10.220.2
-> ip route add 10.10.230.0/24     via 10.10.220.2
-> ip route add another public ip/24    via 10.10.220.2
-> ip route add some public ip/27  via 10.10.220.2
-> ip route add internal public ip/27  via 10.10.220.2
-> ###load balancing for 2nd t1
-> ip rule del from public ip table portmaster
-> ip rule add from public ip table portmaster
-> ip route add default via public ip dev eth4 table portmaster
->
-> A bunch of rules for custom chains
->
-> ###blocking proxify.com##############################
-> $IPC -t nat -A PREROUTING -p tcp -d 67.15.77.223 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 67.15.77.221 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 67.15.77.222 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 67.15.77.224 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 70.84.56.168 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 70.84.56.186 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 70.85.195.224 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 70.85.195.236 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 66.98.130.231 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 66.98.130.235 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 66.98.131.102 -j DROP
-> $IPC -t nat -A PREROUTING -p tcp -d 66.98.131.103 -j DROP
->
-> My question is, is there a better way to block the proxify.com addresses =
-I would
-> like to block them completely.  I also have quite a few spyware sites lis=
-ted
-> like the proxify.  Using iptables V1.2.9 with custom kernel.  Box has 4
-> ethernet interfaces.
->
->
-> thanks,
-> ddh
->
->
-> --
-> Dwayne Hottinger
-> Network Administrator
-> Harrisonburg City Public Schools
->
->
+ddh
 
 
 --
-Unix is very simple, but it takes a genius to understand the simplicity.
-(Dennis Ritchie)
+Dwayne Hottinger
+Network Administrator
+Harrisonburg City Public Schools
 
