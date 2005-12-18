@@ -1,10 +1,13 @@
-From: wlagmay@yanbulink.net
-Subject: help on script
-Date: Sun, 18 Dec 2005 09:07:32 +0300
-Message-ID: <1134886052.43a4fca4a964c@webmail.yanbulink.net>
+From: Robert Nichols <rnicholsNOSPAM@comcast.net>
+Subject: Re: Can I use ip_conntrack_ftp on a server firewall ?
+Date: Sun, 18 Dec 2005 01:59:26 -0600
+Message-ID: <do34su$1mj$1@sea.gmane.org>
+References: <004301c6029a$b49f8490$0200a8c0@AMDADVENT>	<do03d8$2jm$1@sea.gmane.org>
+	<005901c6037d$c3709b10$0400a8c0@AMDADVENT>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <005901c6037d$c3709b10$0400a8c0@AMDADVENT>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,35 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Aaron Gray wrote:
+>>> How do I create rules to allow FTP passive and active connections to 
+>>> the server ?
+>>>
+>>> Do I use ip_conntrack_ftp or can I just create some rules that will 
+>>> do the job ?
+>>
+>>
+>> You need ip_conntrack_ftp.  To get that modules loaded automatically,
+>> Just edit /etc/sysconfig/iptables and add "ip_conntrack_ftp" to the
+>> "IPTABLES_MODULES=" line.
+> 
+> 
+> Okay I have ip_conntrack_ftp loaded in /etc/sysconfig/iptables-config.
+> 
+> Still it must require some rules to use it.
 
+Well, you obviously need to allow the initial incoming connection to
+port 21.  Beyond that, all you should need are the usual rules to
+allow all ESTABLISHED and RELATED traffic.  With the conntrack
+module working, the ftp-data connection will be recognized as
+RELATED.  Unless there NAT involved (requiring use of the ip_nat_ftp
+module), it should "just work".
 
-Hi all,
-
-I have a problem and and idea to solve it but I dont know how can I implement
-it. This is the scenario:
-
-I have a main proxy server (main proxy) configured with round-robin options and
-connected to 2 parents proxy (proxy 1 and proxy 2. Everything is working fine
-but if proxy 1 or proxy 2 connection to the internet fails and the connection
-between the main proxy and the parents proxy still alive the main proxy still
-do round-robin request to both proxy which causes the page to sometimes not
-opening and sometimes opens.
-
-now my solution is this from proxy 1 and proxy 2 since both machines have 2 NIC
-eth0 connected to lan and eth1 connected to the internet I will create a script
-pinging the internet, if the system determined that the internet is dead it
-will issue a command ifconfig eth0 down then when the system determined that
-the internet is alive it will issue a command ifconfig eth0 up.
-
-Can anybody help me on this kind of script, a script that is based on ttl reply
-
-
-thank you very much,
-
-Wennie
-
+-- 
+Bob Nichols         Yes, "NOSPAM" is really part of my email address.
 
 
