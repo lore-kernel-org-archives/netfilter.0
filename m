@@ -1,11 +1,10 @@
-From: Mikado 4VN <mikado4vn@gmail.com>
-Subject: Conntrack + Connection owner
-Date: Mon, 19 Dec 2005 11:54:26 +0700
-Message-ID: <1b8130000512182054y7208121dtb6b20814540bbb3b@mail.gmail.com>
+From: lutz.niederer@gmx.net
+Subject: frequent network hangs on kernel 2.4.32 & netfilter 1.2.8
+Date: Mon, 19 Dec 2005 09:31:23 +0100 (MET)
+Message-ID: <18759.1134981083@www32.gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,12 +15,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
 Hi,
-Is it possible for conntrack to dump process ID that created the
-connection to userpsace (via libnetfilter_conntrack or etc...)? If
-there is one, please tell me how!
-Thank you!
+
+I just made the step from RH kernel 2.4.18 & RH nf 1.2.5 to kernel.org's
+2.4.32 and netfilter 1.2.8 (the one from fedoralegacy.org).
+Now I see strange problems where the network connections on all interfaces
+suddenly become very sluggish, slow and sometimes simply stuck.  If I stop
+iptables and restart iptables it works again.  Sometimes it takes some
+seconds.  I have no idea where this comes from.  Is it the kernel?  Is it
+the iptables?  How do I find out?  Is there something known about this
+kernel / iptables version?  Has anybody seen something similar?  How can I
+debug?  Any help/tips?
+
+Thanks a lot!
+-lutzn
+
+
+--=20
+Lust, ein paar Euro nebenbei zu verdienen? Ohne Kosten, ohne Risiko!
+Satte Provisionen f=FCr GMX Partner: http://www.gmx.net/de/go/partner
 
