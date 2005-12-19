@@ -1,13 +1,12 @@
-From: Pablo Neira Ayuso <pablo@eurodev.net>
-Subject: Re: Conntrack + Connection owner
-Date: Mon, 19 Dec 2005 18:21:35 +0100
-Message-ID: <43A6EC1F.7030600@eurodev.net>
-References: <1b8130000512182054y7208121dtb6b20814540bbb3b@mail.gmail.com>
-	<43A6EA58.9090201@eurodev.net>
+From: anon ymizer <roger123@gmail.com>
+Subject: Tracking incomping packets to a particular port if the original
+	outbound request was to a different port?
+Date: Mon, 19 Dec 2005 21:46:28 +0000
+Message-ID: <d72fc30c0512191346nda31ccl@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43A6EA58.9090201@eurodev.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,22 +18,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Mikado 4VN <mikado4vn@gmail.com>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Pablo Neira Ayuso wrote:
-> Mikado 4VN wrote:
-> 
->>Is it possible for conntrack to dump process ID that created the
->>connection to userpsace (via libnetfilter_conntrack or etc...)? If
->>there is one, please tell me how!
-> 
-> There's something incomplete here: Do you mean to include the ID in the
-> event information or in the conntrack table dumping?
+Hi,
 
-Oh, now I understand. You mean the process ID that owns the connection,
-don't you? In that case the answer is no.
+Is there any way to track incomping packets to a particular port if
+the original outbound request was to a different port (i.e AUTH back
+from a FTP server after a connection request has been sent). I have
+tried rules such as "iptables -A INPUT -m conntrack --ctstate RELATED
+--ctproto tcp -j ACCEPT" but to no avail.
+Ideally I would like to drop packets from an un-related source and
+reject (or accept) packets sent from a previously initiated
+connection.
 
--- 
-Pablo
+R
+
+mailto:  `echo NOrogerSP123@gmAail.Mcom | sed 's/[NOSPAM]//g'`
 
