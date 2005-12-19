@@ -1,14 +1,14 @@
-From: Marcin Krol <mark@wbp.krakow.pl>
-Subject: Re[2]: Why would certain packets not reach nat PREROUTING chain?
-Date: Mon, 19 Dec 2005 16:39:25 +0100
-Message-ID: <12626109102.20051219163925@wbp.krakow.pl>
-References: <20051218055403.002CDA00EA@bostoncoop.net>
-	<20051218131621.GC2197@bostoncoop.net>
-Reply-To: Marcin Krol <mark@wbp.krakow.pl>
+From: Mikado <mikado4vn@gmail.com>
+Subject: Re: multiple internet connections and routing
+Date: Mon, 19 Dec 2005 22:49:51 +0700
+Message-ID: <43A6D69F.3040605@gmail.com>
+References: <43A68D0F.7000807@vdbogaard.com>
+	<65aa6af90512190706o4d1d6f1co656bc5c5f3eed21d@mail.gmail.com>
+Reply-To: mikado4vn@gmail.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-To: <20051218131621.GC2197@bostoncoop.net>
+In-Reply-To: <65aa6af90512190706o4d1d6f1co656bc5c5f3eed21d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,64 +20,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Adam Rosi-Kessel <adam@rosi-kessel.org>
+To: Edmundo Carmona <eantoranz@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Hello Adam,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Look at point 6.3 here:
+hope this link work for you:
+http://tetro.net/misc/multilink.html
 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+Edmundo Carmona wrote:
+> You set ip to use separate routing tables.
+> 
+> with iproute2 you can use different routing tables for different traffic.
+> 
+> You can tell ip to use a routing table X (which only has a single
+> default GW using one of your wan links) for traffic coming from LAN x,
+> and to use routing table Y (which only has a default gateway using the
+> other wan link) for traffic coming from lan y. That should do.
+> 
+> Guidelines:
+> http://lartc.org/howto/lartc.rpdb.html
+> This is interesting too:
+> http://lartc.org/howto/lartc.rpdb.multiple-links.html
+> 
+> Oh... and consider posting in the larct mail list, cause I think it's
+> "fitter" there. :-)... you're welcome. ;-)
+> 
+> On 12/19/05, Paul van den Bogaard <paul@vdbogaard.com> wrote:
+> 
+>>Hi,
+>>
+>>currently I have two firewalls. Each firewall connects its own internal
+>>network to the Internet using its own single (broadband) connection.
+>>
+>>This means I have two similar setups running in parallel
+>>
+>>I would like to do this all on a single firewall. Not sure how to go there.
+>>
+>>Result should be one firewall doing NAT, such that
+>>
+>>        all trafic from/to network 10.1.5 (interface eth1) should go interface
+>>eth0 (internet gateway 1)
+>>        all trafic from/to network 10.1.6 (interface eth2) should go to
+>>interface eth3 (internet gateway 2)
+>>
+>>        If one of the internet gateways is unable to operate (provider failure,
+>>routing error up stream) I should be able to temporarely route all
+>>traffic to the other internet gateway.
+>>
+>>How to configure the box?
+>>
+>>Help, links etc are very much appreciated.
+>>
+>>Thanks
+>>Paul van den Bogaard
+>>
+>>
+> 
+> 
+> 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
-There was smth in the tutorial about only the first packet from NEW
-connection hitting the chains and the rest of them being handled by
-conntrack, although can't remember where exactly this was located in
-tutorial.
-
-This would explain the UDP traffic being handled in its entirety
-since UDP is connectionless and conntrack.
-
-Note that this is my hypothesis, it's not like I have tested
-this thoroughly.
-
-Regards,
-Marcin
-
-
-
-Sunday, December 18, 2005, 2:16:21 PM, you wrote:
-
-ARK> On Sun, Dec 18, 2005 at 032:42:43M -0500, Leonardo Rodrigues Magalhes wrote:
->>     Adam, have you tried adding a properly PREROUTING rule for this 
->> specific traffic ? It would be like
->> iptables -t nat -A PREROUTING -p udp -d EXTERNAL_IP_OF_NAT_BOT --dport 
->> 500 -j DNAT --to LOCAL_CLIENT
-
-ARK> I have tried that--same result. In fact, I've tried creating a "tunnel"
-ARK> between the internal and external client by leaving out the port
-ARK> limitation, i.e.:
-
-ARK> iptables -t nat -A PREROUTING -s SERVER_IP -j DNAT --to LOCAL_CLIENT
-
-ARK> None of these have any effect because the packets never reach the nat
-ARK> PREROUTING chain. If I put a LOG rule at the start of nat PREROUTING, I
-ARK> don't see the inbound packets from the server on the Internet. (I do see
-ARK> those packets in the mangle PREROUTING though).
-
->>     Other test I would suggest ....... have you tried some other UDP 
->> traffic, just like DNS and see if it works ? Have you tried some TCP 
->> traffic and see if it works fine ?
-
-ARK> Everything else seems to work fine. I have another internal box to which
-ARK> certain ssh connections from the Internet go, and that's fine. I'm not
-ARK> sure exactly how I'd test other UDP traffic... Certainly UDP traffic that
-ARK> is FORWARDed through the NAT box (e.g., RealPlayer streams) seems fine.
-
-
-
--- 
-Best regards,
- Marcin                            mailto:mark@wbp.krakow.pl
-
-
+iD8DBQFDptaemS/zF9V69ugRArjkAJ4tP3vsSn9ovmoB0ORrLq7/TqLDUACdGMfe
+fS6MaL5amVRE/H1yFyquXxs=
+=tD4i
+-----END PGP SIGNATURE-----
 
