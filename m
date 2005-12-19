@@ -1,13 +1,18 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Re: multiple internet connections and routing
-Date: Mon, 19 Dec 2005 11:06:08 -0400
-Message-ID: <65aa6af90512190706o4d1d6f1co656bc5c5f3eed21d@mail.gmail.com>
-References: <43A68D0F.7000807@vdbogaard.com>
+From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
+Subject: Re: Firewall and a FTP server (nfcan: addressed to exclusive sender
+	for this address)
+Date: Mon, 19 Dec 2005 10:15:48 -0500
+Message-ID: <20051219151548.GA31194@salty>
+References: <b552223b0512190352v25209da9p7d3d685b58ea9e6d@mail.gmail.com>
+Reply-To: nfcan.x.jimlaur@dfgh.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43A68D0F.7000807@vdbogaard.com>
 Content-Disposition: inline
+In-Reply-To: <b552223b0512190352v25209da9p7d3d685b58ea9e6d@mail.gmail.com>
+	(from
+	+nfcan+jimlaur+4ee21c4004.tac.forums#gmail.com@spamgourmet.com
+	on Mon, Dec 19, 2005 at 06:52:12 -0500)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,56 +23,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-You set ip to use separate routing tables.
+On 2005.12.19 06:52, TAC Forums - tac.forums@gmail.com wrote:
+> Hi All,
+> 
+> We have a FTP server, (Red Hat Linux 7) behind a firewall, the
+> firewall allows only incomming and established connections on ports
+> 20,21  from any where and evry where.
+> 
+> The Problem is, when the customers use FTP clients, the manage to
+> login , but cannot upload/download files if they use PASSIVE FTP
+> connections.
+> 
+> Can smeone suggest, how the best way to get out of this situation,
+> should we enable all ports above 1023?
 
-with iproute2 you can use different routing tables for different traffic.
+Besides loading the modules, as already discussed,
+you need to change the filter rules to allow
+not only ESTABLISHED but also RELATED connections.
+This eliminates the need to open all the high ports.
+The new rule would look something like this:
 
-You can tell ip to use a routing table X (which only has a single
-default GW using one of your wan links) for traffic coming from LAN x,
-and to use routing table Y (which only has a default gateway using the
-other wan link) for traffic coming from lan y. That should do.
+$IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Guidelines:
-http://lartc.org/howto/lartc.rpdb.html
-This is interesting too:
-http://lartc.org/howto/lartc.rpdb.multiple-links.html
-
-Oh... and consider posting in the larct mail list, cause I think it's
-"fitter" there. :-)... you're welcome. ;-)
-
-On 12/19/05, Paul van den Bogaard <paul@vdbogaard.com> wrote:
-> Hi,
->
-> currently I have two firewalls. Each firewall connects its own internal
-> network to the Internet using its own single (broadband) connection.
->
-> This means I have two similar setups running in parallel
->
-> I would like to do this all on a single firewall. Not sure how to go ther=
-e.
->
-> Result should be one firewall doing NAT, such that
->
->         all trafic from/to network 10.1.5 (interface eth1) should go inte=
-rface
-> eth0 (internet gateway 1)
->         all trafic from/to network 10.1.6 (interface eth2) should go to
-> interface eth3 (internet gateway 2)
->
->         If one of the internet gateways is unable to operate (provider fa=
-ilure,
-> routing error up stream) I should be able to temporarely route all
-> traffic to the other internet gateway.
->
-> How to configure the box?
->
-> Help, links etc are very much appreciated.
->
-> Thanks
-> Paul van den Bogaard
->
->
+-- 
+Jim Laurino
+nfcan.x.jimlaur@dfgh.net
+Please reply to the list.
+Only mail from the listserver reaches this address.
 
