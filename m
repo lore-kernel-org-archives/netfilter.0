@@ -1,14 +1,16 @@
-From: Mikado <mikado4vn@gmail.com>
-Subject: Re: multiple internet connections and routing
-Date: Mon, 19 Dec 2005 22:49:51 +0700
-Message-ID: <43A6D69F.3040605@gmail.com>
-References: <43A68D0F.7000807@vdbogaard.com>
-	<65aa6af90512190706o4d1d6f1co656bc5c5f3eed21d@mail.gmail.com>
-Reply-To: mikado4vn@gmail.com
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Re: Why would certain packets not reach nat PREROUTING chain?
+Date: Mon, 19 Dec 2005 10:40:58 -0500
+Message-ID: <43A6D48A.1020508@rosi-kessel.org>
+References: <20051218055403.002CDA00EA@bostoncoop.net>
+	<20051218131621.GC2197@bostoncoop.net>
+	<12626109102.20051219163925@wbp.krakow.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig815474B8B358DA78E1CBCCFC"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af90512190706o4d1d6f1co656bc5c5f3eed21d@mail.gmail.com>
+In-Reply-To: <12626109102.20051219163925@wbp.krakow.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,73 +21,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Edmundo Carmona <eantoranz@gmail.com>
+To: Marcin Krol <mark@wbp.krakow.pl>
 Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig815474B8B358DA78E1CBCCFC
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-hope this link work for you:
-http://tetro.net/misc/multilink.html
+Marcin Krol wrote:
+> Hello Adam,
+> Look at point 6.3 here:
+> http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+> There was smth in the tutorial about only the first packet from NEW
+> connection hitting the chains and the rest of them being handled by
+> conntrack, although can't remember where exactly this was located in
+> tutorial.
+> This would explain the UDP traffic being handled in its entirety
+> since UDP is connectionless and conntrack.
 
-Edmundo Carmona wrote:
-> You set ip to use separate routing tables.
-> 
-> with iproute2 you can use different routing tables for different traffic.
-> 
-> You can tell ip to use a routing table X (which only has a single
-> default GW using one of your wan links) for traffic coming from LAN x,
-> and to use routing table Y (which only has a default gateway using the
-> other wan link) for traffic coming from lan y. That should do.
-> 
-> Guidelines:
-> http://lartc.org/howto/lartc.rpdb.html
-> This is interesting too:
-> http://lartc.org/howto/lartc.rpdb.multiple-links.html
-> 
-> Oh... and consider posting in the larct mail list, cause I think it's
-> "fitter" there. :-)... you're welcome. ;-)
-> 
-> On 12/19/05, Paul van den Bogaard <paul@vdbogaard.com> wrote:
-> 
->>Hi,
->>
->>currently I have two firewalls. Each firewall connects its own internal
->>network to the Internet using its own single (broadband) connection.
->>
->>This means I have two similar setups running in parallel
->>
->>I would like to do this all on a single firewall. Not sure how to go there.
->>
->>Result should be one firewall doing NAT, such that
->>
->>        all trafic from/to network 10.1.5 (interface eth1) should go interface
->>eth0 (internet gateway 1)
->>        all trafic from/to network 10.1.6 (interface eth2) should go to
->>interface eth3 (internet gateway 2)
->>
->>        If one of the internet gateways is unable to operate (provider failure,
->>routing error up stream) I should be able to temporarely route all
->>traffic to the other internet gateway.
->>
->>How to configure the box?
->>
->>Help, links etc are very much appreciated.
->>
->>Thanks
->>Paul van den Bogaard
->>
->>
-> 
-> 
-> 
+Hi Marcin:
+
+I'm not exactly sure what you mean by the last sentence--did you leave of=
+f a
+word or two?
+
+I think what you're saying is that the subsequent packets aren't showing =
+up
+in nat PREROUTING because they're being tracked. This makes sense--once a=
+
+connection is tracked or ASSURED the packets don't go through nat PREROUT=
+ING
+anymore. And the connection in question *is* being tracked -- it shows up=
+ in
+/proc/net/ip_conntrack as ASSURED.
+
+Even though the connection is tracked, the traffic *doesn't* show up when=
+
+watching the inward facing network card with ethereal or tcpdump.  With
+other tracked connections (for example, an ssh or http connection) I see =
+all
+traffic with tcpdump: coming from internal client to nat box, nat box to
+external server, then back from external server to nat box, and from nat =
+box
+to internal client. With this connection, however, I see 3 out of 4 with
+tcpdump -- the traffic comes back into the nat box from the outside, is
+apparently properly tracked according to /proc/net/ip_conntrack, but it
+never leaves again on the internal facing network card.
+--=20
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
+
+
+--------------enig815474B8B358DA78E1CBCCFC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+Version: GnuPG v1.2.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQFDptaemS/zF9V69ugRArjkAJ4tP3vsSn9ovmoB0ORrLq7/TqLDUACdGMfe
-fS6MaL5amVRE/H1yFyquXxs=
-=tD4i
+iD8DBQFDptSKdTf3ZklQ6qYRAjMaAJ944ZlXfpPWBEG2Nnan2rMQ/dayYwCfdbNa
+NG8iIysJ8cFb3jqGN16OKIk=
+=LCG8
 -----END PGP SIGNATURE-----
+
+--------------enig815474B8B358DA78E1CBCCFC--
 
