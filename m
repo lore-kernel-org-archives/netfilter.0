@@ -1,18 +1,14 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: Firewall and a FTP server (nfcan: addressed to exclusive sender
-	for this address)
-Date: Mon, 19 Dec 2005 10:15:48 -0500
-Message-ID: <20051219151548.GA31194@salty>
-References: <b552223b0512190352v25209da9p7d3d685b58ea9e6d@mail.gmail.com>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: Marcin Krol <mark@wbp.krakow.pl>
+Subject: Re[2]: Why would certain packets not reach nat PREROUTING chain?
+Date: Mon, 19 Dec 2005 16:39:25 +0100
+Message-ID: <12626109102.20051219163925@wbp.krakow.pl>
+References: <20051218055403.002CDA00EA@bostoncoop.net>
+	<20051218131621.GC2197@bostoncoop.net>
+Reply-To: Marcin Krol <mark@wbp.krakow.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <b552223b0512190352v25209da9p7d3d685b58ea9e6d@mail.gmail.com>
-	(from
-	+nfcan+jimlaur+4ee21c4004.tac.forums#gmail.com@spamgourmet.com
-	on Mon, Dec 19, 2005 at 06:52:12 -0500)
+In-reply-To: <20051218131621.GC2197@bostoncoop.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,34 +19,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Cc: netfilter@lists.netfilter.org
 
-On 2005.12.19 06:52, TAC Forums - tac.forums@gmail.com wrote:
-> Hi All,
-> 
-> We have a FTP server, (Red Hat Linux 7) behind a firewall, the
-> firewall allows only incomming and established connections on ports
-> 20,21  from any where and evry where.
-> 
-> The Problem is, when the customers use FTP clients, the manage to
-> login , but cannot upload/download files if they use PASSIVE FTP
-> connections.
-> 
-> Can smeone suggest, how the best way to get out of this situation,
-> should we enable all ports above 1023?
+Hello Adam,
 
-Besides loading the modules, as already discussed,
-you need to change the filter rules to allow
-not only ESTABLISHED but also RELATED connections.
-This eliminates the need to open all the high ports.
-The new rule would look something like this:
+Look at point 6.3 here:
 
-$IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+There was smth in the tutorial about only the first packet from NEW
+connection hitting the chains and the rest of them being handled by
+conntrack, although can't remember where exactly this was located in
+tutorial.
+
+This would explain the UDP traffic being handled in its entirety
+since UDP is connectionless and conntrack.
+
+Note that this is my hypothesis, it's not like I have tested
+this thoroughly.
+
+Regards,
+Marcin
+
+
+
+Sunday, December 18, 2005, 2:16:21 PM, you wrote:
+
+ARK> On Sun, Dec 18, 2005 at 032:42:43M -0500, Leonardo Rodrigues Magalhes wrote:
+>>     Adam, have you tried adding a properly PREROUTING rule for this 
+>> specific traffic ? It would be like
+>> iptables -t nat -A PREROUTING -p udp -d EXTERNAL_IP_OF_NAT_BOT --dport 
+>> 500 -j DNAT --to LOCAL_CLIENT
+
+ARK> I have tried that--same result. In fact, I've tried creating a "tunnel"
+ARK> between the internal and external client by leaving out the port
+ARK> limitation, i.e.:
+
+ARK> iptables -t nat -A PREROUTING -s SERVER_IP -j DNAT --to LOCAL_CLIENT
+
+ARK> None of these have any effect because the packets never reach the nat
+ARK> PREROUTING chain. If I put a LOG rule at the start of nat PREROUTING, I
+ARK> don't see the inbound packets from the server on the Internet. (I do see
+ARK> those packets in the mangle PREROUTING though).
+
+>>     Other test I would suggest ....... have you tried some other UDP 
+>> traffic, just like DNS and see if it works ? Have you tried some TCP 
+>> traffic and see if it works fine ?
+
+ARK> Everything else seems to work fine. I have another internal box to which
+ARK> certain ssh connections from the Internet go, and that's fine. I'm not
+ARK> sure exactly how I'd test other UDP traffic... Certainly UDP traffic that
+ARK> is FORWARDed through the NAT box (e.g., RealPlayer streams) seems fine.
+
+
 
 -- 
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
+Best regards,
+ Marcin                            mailto:mark@wbp.krakow.pl
+
+
 
