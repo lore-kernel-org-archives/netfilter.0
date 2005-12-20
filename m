@@ -1,14 +1,14 @@
-From: ludi <myhapwcforever@gmail.com>
-Subject: Re: Firewall and a FTP server
-Date: Tue, 20 Dec 2005 09:19:32 +0800
-Message-ID: <d27cd2010512191719t7bb0ea7bh@mail.gmail.com>
-References: <b552223b0512190352v25209da9p7d3d685b58ea9e6d@mail.gmail.com>
-	<13128294275.20051219171550@wbp.krakow.pl>
+From: Mikado <mikado4vn@gmail.com>
+Subject: Re: Conntrack + Connection owner
+Date: Tue, 20 Dec 2005 09:49:38 +0700
+Message-ID: <43A77142.3040805@gmail.com>
+References: <1b8130000512182054y7208121dtb6b20814540bbb3b@mail.gmail.com>
+	<43A6EA58.9090201@eurodev.net> <43A6EC1F.7030600@eurodev.net>
+Reply-To: mikado4vn@gmail.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <13128294275.20051219171550@wbp.krakow.pl>
-Content-Disposition: inline
+In-Reply-To: <43A6EC1F.7030600@eurodev.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,10 +20,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Pablo Neira Ayuso <pablo@eurodev.net>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-SEksIEkgaGF2ZSB0aGUgc2FtZSBwcm9ibGVtLiBJIGhhdmUgYSAgcHJvZnRwIGFuZCBzZXR1cCBh
-IHNjcmlwdCBvbgp0aGUgc2VydmVyIHRvIHN0YXJ0IHRoZSBJUFRBQkxFUy4gSSBoYWQgbG9hZCB0
-aGUgaXBfY29ubnRyYWNrX2Z0cCAuCkJ1dCBteSBjbGllbnQgc3RpbGwgY2FuIG5vdCBjb25uZWN0
-IHRvIHRoZSBmdHAgYnkgIlBBU1NJVkUiIG1vZGUuClRoeAo=
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Oh yes, I want the process ID that owns the connection included in the
+event information. Is there another way to do this (maybe not using
+conntrack, but it must be programable)
+
+I also need libnfnetlink + libnetfilter_conntrack documents/API
+references/guides/tutorials. If you have one, please send me.
+
+Thank you.
+
+Pablo Neira Ayuso wrote:
+> Pablo Neira Ayuso wrote:
+> 
+>>Mikado 4VN wrote:
+>>
+>>
+>>>Is it possible for conntrack to dump process ID that created the
+>>>connection to userpsace (via libnetfilter_conntrack or etc...)? If
+>>>there is one, please tell me how!
+>>
+>>There's something incomplete here: Do you mean to include the ID in the
+>>event information or in the conntrack table dumping?
+> 
+> 
+> Oh, now I understand. You mean the process ID that owns the connection,
+> don't you? In that case the answer is no.
+> 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFDp3FBmS/zF9V69ugRArRMAKCFnaN/3T9KcLUuWJiyMvgYZZiCDACdEhQP
+op909blJQNW7lwL19toG+zw=
+=uG+P
+-----END PGP SIGNATURE-----
 
