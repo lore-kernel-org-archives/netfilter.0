@@ -1,12 +1,12 @@
-From: lst_hoe01@kwsoft.de
-Subject: Re: ICMP types to allow
-Date: Wed, 21 Dec 2005 15:16:23 +0100
-Message-ID: <20051221151623.138hvswootw80sw4@webmail.kwsoft.de>
-References: <FAC4E024BF776842876169173CE2F01313B710@mailbox.vikus.com>
+From: TheGesus <thegesus@gmail.com>
+Subject: Re: network flood imunity
+Date: Wed, 21 Dec 2005 10:33:15 -0500
+Message-ID: <5e70f6530512210733q2e2073cfy919f3a246c07f91@mail.gmail.com>
+References: <43A7F1C3.7010805@gmail.com> <43A94A49.60506@vip.cybercity.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <FAC4E024BF776842876169173CE2F01313B710@mailbox.vikus.com>
+In-Reply-To: <43A94A49.60506@vip.cybercity.dk>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,35 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Zitat von Derick Anderson <danderson@vikus.com>:
-
-> I know that some networks just drop all ICMP to prevent traceroutes but
-> recently I've been been seeing problems related to fragementation and
-> MTU and wondering if dropping ICMP is causing some of that (since
-> Fragementation Needed packets can't get through). On the flip side of
-> that there's the Source Quench and Fragmentation Needed DoS attacks
-> which have recently become mildly popular (I've gotten a few hits on
-> Snort but not that many).
+On 12/21/05, Mogens Valentin <mogensv@vip.cybercity.dk> wrote:
 >
-> I'd like to hear from the list what ICMP types firewall admins are
-> allowing and why - what are the risks for allowing certain types vs. the
-> risks of NOT allowing them?
+> Ehh? Flooded while powered off? Says who?
 >
-> Thanks,
->
-> Derick Anderson
 
+Stranger things have been known to happen...
 
-We allow icmp type 8 (echo request) incoming against our firewall and 
-all "related" and "established" icmp traffic, which should cover the 
-MTU problem and should be save against blind spoofing.
+http://h20000.www2.hp.com/bizsupport/TechSupport/Document.jsp?objectID=3DPS=
+D_HPSBMA01220
 
-Regards
-
-Andreas
-
-
+"During ongoing internal quality testing of the HP ProLiant DL585
+server, a potential vulnerability has been identified, where a
+remote unauthorized user may gain access to the server controls,
+but only when the server is powered down."
 
