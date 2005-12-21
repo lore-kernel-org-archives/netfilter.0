@@ -1,13 +1,12 @@
-From: Mogens Valentin <mogensv@vip.cybercity.dk>
-Subject: Re: network flood imunity
-Date: Wed, 21 Dec 2005 13:27:53 +0100
-Message-ID: <43A94A49.60506@vip.cybercity.dk>
-References: <43A7F1C3.7010805@gmail.com>
-Reply-To: mogensv@vip.cybercity.dk
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: problem related to  ftp
+Date: Wed, 21 Dec 2005 13:57:43 +0100 (CET)
+Message-ID: <49254.193.173.147.3.1135169863.squirrel@webmail.sterenborg.info>
+References: <000501c60572$04613d50$0100000a@server>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43A7F1C3.7010805@gmail.com>
+In-Reply-To: <000501c60572$04613d50$0100000a@server>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,84 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sorin Panca <sorin.panca@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: ammad <ammads@khi.comsats.net.pk>
 Cc: netfilter@lists.netfilter.org
 
-Sorin Panca wrote:
-> Hi!
-> I have a network with no natting and i would linke to develop a rule set
-> for flood protection of some windows stations. Recently one station was
-> flooded while it was powered off (for me this is a uncomprehensible
-> situation / act)..
+On Tue, December 20, 2005 15:31, ammad wrote:
+> i have problem and getting this a bug.(may be)
+>
+> i am using linux box as firewall+forwarding clients requests to
+> internet. my problem is that a server of windows ftp2003,  and
+> clients are unable to browse ftp site, while they are able to connect
 
-Ehh? Flooded while powered off? Says who? Your ISP? If they can see YOUR 
-  IP getting spoofed (while powered off), they -may- have a problem with 
-overlapping custumer IP's; I've seend that before :)
+Do you have a passive/active ftp problem ? Did you try to switch from
+passive to active (active to passive) and see if it works ?
 
-> My ISP added a filter against my station and I can't
-> acces the internet on it now. The server is running kernel 2.4.22-10mdk
-> with mandrake-<some.version> and iptables-1.2.8. I tried to replace it
-> (the server) but due to unknown reasons, I failed three times. And I
-> gave up.
-> If someone has an ideea of how can I protect the server in this
-> configuration against floods, I would be very happy to learn.
+> any linux base ftp server on net. i am also using squid. all of that
+> there isn't any restriction in squid or iptables.
+> i can connect from linux box  to windows 2003 ftp server.
+> i flushed all rules, deleted all chains. and default policy to
+> ACCEPT.
+>
+> and atleast i used this rule but still getting error from client
+> side, when i check on client
+> c:\> netstat -a
+>  tcp   172.16.0.22:1044     202.145.23.3:ftp    SYN_SENT
+>
+>
+> and at least  connection time  out
+> i am using these two rules only (two)
+>
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -p tcp --dport 21 -j ACCEPT
 
-I havne't got time for rule examples, but you may find the following 
-/proc settings quite helpful:
-
-       # Disable ICMP echo-request to broadcast addresses (Smurf amplifier):
-           echo "1" >/proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-
-       # Enable syn-cookies (prevent syn-flood attacks):
-           echo "1" >/proc/sys/net/ipv4/tcp_syncookies
-
-       # Reduce number of possible SYN Floods:
-           echo "1024" >/proc/sys/net/ipv4/tcp_max_syn_backlog
-
-       # Enable defrag error protection:
-           echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
-
-       # Enable time-wait assassination hazards in tcp (RFC 1337):
-           echo "1" >/proc/sys/net/ipv4/tcp_rfc1337
-
-       # Prevent remote digging of OS-type and uptime (RFC1323):
-           #echo "1" >/proc/sys/net/ipv4/tcp_timestamps    # enable 
-timestamps
-           echo "0" >/proc/sys/net/ipv4/tcp_timestamps    # disable 
-timestamps
-
-       # Disable RFC2018 TCP Selective Acknowledgements:
-           echo 0 > /proc/sys/net/ipv4/tcp_sack
+Do you load "ip_conntrack_ftp" ?
+After reading your email I'm not sure if you need ip_nat_ftp : which
+is behind the (iptables) firewall, the client or the server ?
 
 
+Gr,
+Rob
 
-       # Sourcerouting and spoofing:
-           for i in /proc/sys/net/ipv4/conf/*; do
-               # Drop all source-routed packets:
-               echo "0" >$i/accept_source_route
-
-               # Deactivate normal ICMP redirect accept/send:
-               echo "0" >$i/accept_redirects
-               echo "0" >$i/send_redirects
-
-               # Activate secure ICMP redirects (send only?) (on by 
-default):
-               echo "1" >$i/secure_redirects
-
-               # Enable ingress + egress source-address verification 
-(prevent spoofing):
-               #echo "0" >$i/rp_filter   # disable
-               echo "1" >$i/rp_filter   # enable
-           done
-
-       # Log spoofed, source routed and redirect packets:
-           #echo 1 >/proc/sys/net/ipv4/conf/all/log_martians
-           echo 0 >/proc/sys/net/ipv4/conf/all/log_martians
-
-
--- 
-Kind regards,
-Mogens Valentin
 
 
