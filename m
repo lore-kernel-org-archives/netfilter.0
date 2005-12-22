@@ -1,14 +1,16 @@
 From: =?utf-8?B?UmVuw6k=?= Pfeiffer <lynx@luchs.at>
 Subject: Re: ICMP types to allow
-Date: Thu, 22 Dec 2005 01:29:05 +0100
-Message-ID: <20051222002905.GI25728@nightfall.luchs.at>
-References: <FAC4E024BF776842876169173CE2F01313B722@mailbox.vikus.com>
+Date: Thu, 22 Dec 2005 01:32:26 +0100
+Message-ID: <20051222003226.GJ25728@nightfall.luchs.at>
+References: <FAC4E024BF776842876169173CE2F01313B710@mailbox.vikus.com>
+	<1135192930.4872.4.camel@anduril.intranet.cartel-securite.net>
+	<1135202461.30754.38.camel@siren.chrisbrenton.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FwyhczKCDPOVeYh6"
+	protocol="application/pgp-signature"; boundary="nOM8ykUjac0mNN89"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <FAC4E024BF776842876169173CE2F01313B722@mailbox.vikus.com>
+In-Reply-To: <1135202461.30754.38.camel@siren.chrisbrenton.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,23 +24,28 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
 
---FwyhczKCDPOVeYh6
+--nOM8ykUjac0mNN89
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Dec 21, 2005 at 1336 -0500, Derick Anderson appeared and said:
+On Dec 21, 2005 at 1701 -0500, Chris Brenton appeared and said:
+> On Wed, 2005-12-21 at 20:22 +0100, Cedric Blancher wrote:
+> >
+> > In addition to this, Netfilter, unlike some popular proprietary
+> > products, provide a proper stateful ICMP filtering. Just use it. Valid
+> > ICMP errors will fall into RELATED state, others will be INVALID.
 >=20
-> After reading the ICMP state machine section of the Netfilter tutorial
-> [http://iptables-tutorial.frozentux.net/iptables-tutorial.html#ICMPCONNE
-> CTIONS] it appears that ICMP traffic related to existing TCP and UDP
-> connections falls under the RELATED,ESTABLISHED rules.
+> Agreed. The payload on ICMP errors (which contains 28 bytes of the
+> packet which generated the error) is inspected and compared against the
+> state entry. This mean RELATED is more than capable of letting through
+> needed ICMP errors and dropping the bogus stuff. So you are cool with
+> types 3,4,5, & 11. The average perimeter does not need much more than
+> that.
 
-This is true. However you need some inbound ICMP in order to support
-things like Path MTU discovery. I often allow the inbound ICMP message types
-time-exceeded, destination-unreachable and parameter-problem. This
-covers messages that deal with packet fragmentation. You might want to
-disallow some of the destination-unreachable messages.
+In addition to that you can add some general size limits for ICMP
+packets. Theoretically ICMP packets can have 64 kB and there are tools
+out there that use oversized packets for tunneling data.=20
 
 Best,
 Ren=C3=A9.
@@ -50,17 +57,17 @@ Ren=C3=A9.
 `._.-(,_..'--(,_..'`-.;.'  - System administration + Consulting + Teaching -
 
 
---FwyhczKCDPOVeYh6
+--nOM8ykUjac0mNN89
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.1 (GNU/Linux)
 
-iD8DBQFDqfNReMu5lRpXJ7kRApkwAKC7+22HmjOZhelHqGjHQbjOETARuQCgvOIr
-JmV/gNCrMTk2cNIRxXJgRKw=
-=p081
+iD8DBQFDqfQaeMu5lRpXJ7kRAjjQAKCwZ4TW/GUn2CI1qasvjnTGM2Va+QCguS4I
+EPqKfrz5ZKPVCJfgpV1VBf4=
+=7boF
 -----END PGP SIGNATURE-----
 
---FwyhczKCDPOVeYh6--
+--nOM8ykUjac0mNN89--
 
