@@ -1,11 +1,12 @@
-From: Denny <denny@mypolaris.com>
-Subject: block port 25
-Date: Thu, 22 Dec 2005 14:53:26 +0700
-Message-ID: <60035ee50512212353h500f5cbdgea6094fe99713b18@mail.gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: block port 25
+Date: Thu, 22 Dec 2005 09:21:47 +0100 (CET)
+Message-ID: <52481.193.173.147.3.1135239707.squirrel@webmail.sterenborg.info>
+References: <60035ee50512212353h500f5cbdgea6094fe99713b18@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <60035ee50512212353h500f5cbdgea6094fe99713b18@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,17 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Denny <denny@mypolaris.com>
+Cc: netfilter@lists.netfilter.org
 
-is there a way to block all incoming and outgoing access to port 25,
-with only one exception if it is going through a legitimate mail server.
+On Thu, December 22, 2005 08:53, Denny wrote:
+> is there a way to block all incoming and outgoing access to port 25,
+> with only one exception if it is going through a legitimate mail
+> server.
 
-how can i accomplish this?
+Sure.
+First allow email to the legitimate email server, then block
+everything else to port 25.
 
-tnx&rgds,
-dny
-www.ngobrol.com
+# Accept NEW packet coming in from <smtp-server> to smtp port 25.
+$ipt -A INPUT -m state --state NEW -s <smtp-server> \
+  -p tcp --dport 25 -j ACCEPT
 
-... but that which cometh out of the mouth,
-this defileth a man.   Mat 15:11
+# Drop other NEW packets going to smtp port 25
+$ipt -A INPUT -m state --state NEW -p tcp --dport 25 -j DROP
+
+
+# Accept NEW packet going out to <smtp-server> on smtp port 25.
+$ipt -A OUTPUT -m state --state NEW -d <smtp-server> \
+  -p tcp --dport 25 -j ACCEPT
+
+# Drop other NEW packets going out to smtp port 25.
+$ipt -A OUTPUT -m state --state NEW -p tcp --dport -j DROP
+
+
+Gr,
+Rob
+
+
 
