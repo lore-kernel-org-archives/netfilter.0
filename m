@@ -1,12 +1,14 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: block port 25
-Date: Thu, 22 Dec 2005 09:21:47 +0100 (CET)
-Message-ID: <52481.193.173.147.3.1135239707.squirrel@webmail.sterenborg.info>
-References: <60035ee50512212353h500f5cbdgea6094fe99713b18@mail.gmail.com>
+From: lst_hoe01@kwsoft.de
+Subject: Re: ICMP types to allow
+Date: Thu, 22 Dec 2005 09:50:57 +0100
+Message-ID: <20051222095057.drpeqwuvcnk8k0kg@webmail.kwsoft.de>
+References: <FAC4E024BF776842876169173CE2F01313B722@mailbox.vikus.com>
+	<20051222002905.GI25728@nightfall.luchs.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <60035ee50512212353h500f5cbdgea6094fe99713b18@mail.gmail.com>
+In-Reply-To: <20051222002905.GI25728@nightfall.luchs.at>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +19,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Denny <denny@mypolaris.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, December 22, 2005 08:53, Denny wrote:
-> is there a way to block all incoming and outgoing access to port 25,
-> with only one exception if it is going through a legitimate mail
-> server.
+Zitat von Ren=C3=A9 Pfeiffer <lynx@luchs.at>:
 
-Sure.
-First allow email to the legitimate email server, then block
-everything else to port 25.
+> On Dec 21, 2005 at 1336 -0500, Derick Anderson appeared and said:
+>>
+>> After reading the ICMP state machine section of the Netfilter tutorial
+>> [http://iptables-tutorial.frozentux.net/iptables-tutorial.html#ICMPCONNE
+>> CTIONS] it appears that ICMP traffic related to existing TCP and UDP
+>> connections falls under the RELATED,ESTABLISHED rules.
+>
+> This is true. However you need some inbound ICMP in order to support
+> things like Path MTU discovery. I often allow the inbound ICMP message ty=
+pes
+> time-exceeded, destination-unreachable and parameter-problem. This
+> covers messages that deal with packet fragmentation. You might want to
+> disallow some of the destination-unreachable messages.
 
-# Accept NEW packet coming in from <smtp-server> to smtp port 25.
-$ipt -A INPUT -m state --state NEW -s <smtp-server> \
-  -p tcp --dport 25 -j ACCEPT
+As far as i know path MTU discovery works by setting up the connection 
+with DF set and raise the packet size until a ICMP error comes back. 
+This case is covered fine by the RELATED stuff. Time-exceeded and 
+destination unreachable are also only valid as reply to some IP traffic.
+So as the tutorial discribe there are only 4 types which could be really ne=
+w :
+"Echo request, Timestamp request, Information request and finally 
+Address mask request". For me only the first one makes sense to allow. 
+All the really critical stuff can be handeled by the ICMP state machine.
 
-# Drop other NEW packets going to smtp port 25
-$ipt -A INPUT -m state --state NEW -p tcp --dport 25 -j DROP
+Regards
 
+Andreas
 
-# Accept NEW packet going out to <smtp-server> on smtp port 25.
-$ipt -A OUTPUT -m state --state NEW -d <smtp-server> \
-  -p tcp --dport 25 -j ACCEPT
-
-# Drop other NEW packets going out to smtp port 25.
-$ipt -A OUTPUT -m state --state NEW -p tcp --dport -j DROP
-
-
-Gr,
-Rob
 
 
 
