@@ -1,16 +1,12 @@
-From: Mikado <mikado4vn@gmail.com>
-Subject: Re: How to obtain process ID that created connection or owns one
- packet
-Date: Fri, 23 Dec 2005 21:32:48 +0700
-Message-ID: <43AC0A90.3000001@gmail.com>
-References: <1b8130000512182054y7208121dtb6b20814540bbb3b@mail.gmail.com>	<43A6EA58.9090201@eurodev.net>
-	<43A6EC1F.7030600@eurodev.net>	<43ABED47.8070100@gmail.com>
-	<65aa6af90512230536g6e7eaafaw114038ea31a84e74@mail.gmail.com>
-Reply-To: mikado4vn@gmail.com
+From: Ishwar Rattan <ishwar@pali.cps.cmich.edu>
+Subject: Re: Spammer are using port 80 on my firewall to send spam
+Date: Fri, 23 Dec 2005 09:41:35 -0500 (EST)
+Message-ID: <Pine.LNX.4.56.0512230939500.24767@pali.cps.cmich.edu>
+References: <BAY7-F2612B87A52F804BFFDF04487330@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af90512230536g6e7eaafaw114038ea31a84e74@mail.gmail.com>
+In-Reply-To: <BAY7-F2612B87A52F804BFFDF04487330@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,38 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Edmundo Carmona <eantoranz@gmail.com>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+If you open the port the spammer will use it. Spam is not
+related to packet filtering, firewall can only do so much.
 
-Thanks, but I want get it in kernel space. Any ideas?
+-ishwar
 
-Edmundo Carmona wrote:
-> Processes related to connections can be seen with netstat -p:
-> 
-> netstat -np
-> netstat -nlp
-> 
-> and so on
-> 
-> On 12/23/05, Mikado <mikado4vn@gmail.com> wrote:
-> 
-> Hi,
-> 
-> I need to know a packet or a connection related to what process ID. In
-> Netfilter there is a match called 'owner' but I dont know how it
-> actually works. Can somebody tell me these informations?
-> 
-> Thank you.
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+On Fri, 23 Dec 2005, Jacques Beaudoin wrote:
 
-iD8DBQFDrAqQmS/zF9V69ugRAihMAJ98jsewpBeRvPzPi7iHUhldG2+lTwCdFO52
-x+TrWOQiS5A1TTIDDgrxahE=
-=qSec
------END PGP SIGNATURE-----
+> Greetings,
+>
+> Im getting hit by spammer on port 80 on my firewall thats is also running
+> squid.
+>
+> If i open port 80 to my mail server via prerouting,  spammer wiill use
+> my firewall to send spam.
+>
+> Port 80 is now block and i can see on my internet interface all
+> ip address trying to use my firewall as a spam proxy.
+>
+> My squid rules looks ok.
+>
+> Can anybody help
+>
+> Thanks
+>
+> _________________________________________________________________
+> Profitez des puissants filtres de courriels ind=E9sirables articul=E9 sur=
+ la
+> technologie brevet=E9e Microsoft SmartScreen.s
+> http://join.msn.com/?pgmarket=3Dfr-ca&page=3Dfeatures/popup Commencez d=
+=E8s
+> maintenant =E0 profiter de tous les avantages de MSN Premium et obtenez l=
+es
+> deux premiers mois GRATUITS*.
+>
+>
 
