@@ -1,16 +1,12 @@
-From: Mikado <mikado4vn@gmail.com>
-Subject: Re: How to obtain process ID that created connection or owns one
- packet
-Date: Fri, 23 Dec 2005 23:30:54 +0700
-Message-ID: <43AC263E.7080508@gmail.com>
-References: <1b8130000512182054y7208121dtb6b20814540bbb3b@mail.gmail.com>
-	<43A6EA58.9090201@eurodev.net> <43A6EC1F.7030600@eurodev.net>
-	<43ABED47.8070100@gmail.com>
-Reply-To: mikado4vn@gmail.com
+From: =?utf-8?B?UmVuw6k=?= Pfeiffer <lynx@luchs.at>
+Subject: ipt_IPV4OPTSSTRIP & Linux 2.6.14.4
+Date: Fri, 23 Dec 2005 18:43:03 +0100
+Message-ID: <20051223174303.GB31822@nightfall.luchs.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="m51xatjYGsM+13rf"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43ABED47.8070100@gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,37 +17,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Thanks all! Finally I found the answer in 'struct sk_buff':
+--m51xatjYGsM+13rf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-struct sk_buff ( #include <linux/skbuff.h> )
-|_struct sock ( #include <net/sock.h> )
-  |_struct socket ( #include <linux/net.h> )
-    |_struct file ( #include <linux/fs.h> )
-      |_struct fown_struct ( #include <linux/fs.h> )
-        |_int pid
+Hello!
 
-Bye.
+I just tried patch-o-matic-ng with a new Linux kernel 2.6.14.4 in order
+to try some of the extensions. The test system is a Debian Sarge 3.1r1,
+the compiler is a GCC 3.4. During the build process the compiler aborts
+with the following error:
 
-Mikado wrote:
-> Hi,
-> 
-> I need to know a packet or a connection related to what process ID. In
-> Netfilter there is a match called 'owner' but I dont know how it
-> actually works. Can somebody tell me these informations?
-> 
-> Thank you.
+[...]
+  CC [M]  net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.o
+net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c: In function `target':
+net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:33: warning: implicit declaration of=
+ function `skb_ip_make_writable'
+net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:52: error: structure has no member n=
+amed `nfcache'
+net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:52: error: `NFC_ALTERED' undeclared =
+(first use in this function)
+net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:52: error: (Each undeclared identifi=
+er is reported only once
+net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:52: error: for each function it appe=
+ars in.)
+make[3]: *** [net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
+
+A short "grep skb_ip_make_writable net/ipv4/netfilter/*.c" shows that
+skb_ip_make_writable() is only used in the IPV4OPTSSTRIP extension. Has
+anyone else seen this error?
+
+Best regards,
+Ren=C3=A9.
+
+--=20
+  )\._.,--....,'``.      Let GNU/Linux work for you while you take a nap.
+ /,   _.. \   _\  (`._ ,. R. Pfeiffer <lynx at luchs.at> + http://web.luchs=
+=2Eat/
+`._.-(,_..'--(,_..'`-.;.'  - System administration + Consulting + Teaching -
+
+
+--m51xatjYGsM+13rf
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+Version: GnuPG v1.4.1 (GNU/Linux)
 
-iD8DBQFDrCY+mS/zF9V69ugRAobiAJ9lv0ohom3ALFrDM0Thcuq3xI8RbACfZ6Fp
-eLnw35D1WRgJkA19nh77GsA=
-=wKst
+iD8DBQFDrDcneMu5lRpXJ7kRArsuAJ9AsSNVdwcb7fqhaLCPyPXo1hB5UwCgwy7p
+xP2hRolj+jnFJfDwWJ+hx8U=
+=j/gA
 -----END PGP SIGNATURE-----
+
+--m51xatjYGsM+13rf--
 
