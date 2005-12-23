@@ -1,13 +1,10 @@
-From: Chris Brenton <cbrenton@chrisbrenton.org>
-Subject: Re: Spammer are using port 80 on my firewall to send spam
-Date: Fri, 23 Dec 2005 07:19:51 -0500
-Message-ID: <1135340391.30754.218.camel@siren.chrisbrenton.org>
-References: <BAY7-F2612B87A52F804BFFDF04487330@phx.gbl>
-Reply-To: cbrenton@chrisbrenton.org
+From: "Pedro TRImel Neto" <pedrodrimel@uol.com.br>
+Subject: random IP
+Date: Fri, 23 Dec 2005 10:31:08 -0200
+Message-ID: <002e01c607bc$c2949000$2f00a8c0@TRINTASETE>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY7-F2612B87A52F804BFFDF04487330@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-On Fri, 2005-12-23 at 01:30 -0500, Jacques Beaudoin wrote:
->
-> Im getting hit by spammer on port 80 on my firewall thats is also running 
-> squid.
+Hi all,
 
-Are you running Squid as an outbound proxy or a reverse proxy? If
-outbound you should have a filter similar to:
-acl localnet src <your_subnet>/<#_of_mask_bits>
-http_access allow localnet
+I need to do that the connections from a linux box to other change the IPs 
+in random...
 
-for example:
-acl localnet src 192.168.1.0/24
-http_access allow localnet
+Scenario: A Linux box that has an phisic interface and two logic as eth0 
+eth0:0 eth0:1 with the ips 10.0.0.1 10.0.0.2 10.0.0.3
 
-If you are running it as a reverse proxy, the host defined under
-"httpd_accel_host" has a vulnerable script running on it. Check the URL
-spammers have been connecting to in order to figure out which one it is.
-Are you running form mail? That's a common target.
+I did this rule:
+iptables -t nat -A POSTROUTING -p tcp -d 10.0.0.4 -j SNAT --to 10.0.0.2
 
-> If i open port 80 to my mail server via prerouting,  spammer wiill use
-> my firewall to send spam.
+OK but I need that when do a ssh 10.0.0.4 each time it change de IP ... one 
+time with 10.0.0.1 the other 10.0.0.2 or 10.0.0.3... Or a rule per user... 
+example the user pedro has a rule that when he connect to 10.0.0.4 the IP 
+will be 10.0.0.2...
 
-Then, don't do that. ;-)
+Sorry for my bad english...
 
-Actually, unless you are running Squid as an outbound proxy with
-incorrect filters (see above) they are probably using your mail server.
-
-HTH,
-Chris
-
+Regards. 
 
 
