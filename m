@@ -1,14 +1,10 @@
-From: "Oleg A. Arkhangelsky" <sysoleg@progtech.ru>
-Subject: Re[2]: patch-o-matic help
-Date: Fri, 23 Dec 2005 10:15:29 +0300
-Message-ID: <1222862567.20051223101529@progtech.ru>
-References: <20051223044928.31767.qmail@web35912.mail.mud.yahoo.com>
-	<20051223065634.87014.qmail@web35913.mail.mud.yahoo.com>
-Reply-To: "Oleg A. Arkhangelsky" <sysoleg@progtech.ru>
+From: Vinay K Nallamothu <vinay.nallamothu@gsecone.com>
+Subject: [H.323] Compilation fixes for 2.6.14
+Date: Fri, 23 Dec 2005 14:36:01 +0530
+Message-ID: <1135328761.3327.116.camel@vinay.gsecone.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051223065634.87014.qmail@web35913.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,21 +18,83 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello Noman,
+Hi,
 
-Friday, December 23, 2005, 9:56:34 AM, you wrote:
+ip_conntrack_expect_alloc expects an argument in 2.6.14 (didn't check
+2.6.13).
 
-NL> [root@mail iptables-1.3.4]# iptables -A INPUT -p tcp
-NL> -m string --string "/bin/sh" -j DROP iptables v1.3.4:
-NL> STRING match: You must specify `--algo'
-NL> Try `iptables -h' or 'iptables --help' for more
-NL> information.
+I got the following compilation errors while trying to compile H.323
+module using patch-o-matic-ng-20051219.tar.bz2 against linux-2.6.14
 
-    You can use --algo bm for Boyer-Moore algorithm, or --algo kmp for
-    Knuth-Pratt-Morris algorithm.
+net/ipv4/netfilter/ip_conntrack_h323_h225.c: In function `h225_parse_connect_uuie':
+net/ipv4/netfilter/ip_conntrack_h323_h225.c:111: error: too few arguments to function `ip_conntrack_expect_alloc'
+
+Patch below:
+ ip_conntrack_h323_h225.c |    2 +-
+ ip_conntrack_h323_h245.c |    8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+
+diff -urN a/net/ipv4/netfilter/ip_conntrack_h323_h225.c b/net/ipv4/netfilter/ip_conntrack_h323_h225.c
+--- a/net/ipv4/netfilter/ip_conntrack_h323_h225.c	2005-12-23 14:32:53.000000000 +0530
++++ b/net/ipv4/netfilter/ip_conntrack_h323_h225.c	2005-12-23 14:32:29.000000000 +0530
+@@ -108,7 +108,7 @@
+ 		}
+ 		if (ret && ip == ct->tuplehash[dir].tuple.src.ip) {
+ 			/* match found: create an expectation */
+-			exp = ip_conntrack_expect_alloc();
++			exp = ip_conntrack_expect_alloc(ct);
+ 			if (exp == NULL)
+ 				return NF_ACCEPT;
+ 
+diff -urN a/net/ipv4/netfilter/ip_conntrack_h323_h245.c b/net/ipv4/netfilter/ip_conntrack_h323_h245.c
+--- a/net/ipv4/netfilter/ip_conntrack_h323_h245.c	2005-12-23 14:32:53.000000000 +0530
++++ b/net/ipv4/netfilter/ip_conntrack_h323_h245.c	2005-12-23 14:32:29.000000000 +0530
+@@ -296,7 +296,7 @@
+ 			       NIPQUAD(ip), ntohs(port));
+ 		if (ret && ip == ct->tuplehash[dir].tuple.src.ip) {
+ 			/* match found: create an expectation */
+-			exp = ip_conntrack_expect_alloc();
++			exp = ip_conntrack_expect_alloc(ct);
+ 			if (exp == NULL)
+ 				return NF_ACCEPT;
+ 
+@@ -348,7 +348,7 @@
+ 			       NIPQUAD(ip), ntohs(port));
+ 		if (ret && ip == ct->tuplehash[dir].tuple.src.ip) {
+ 			/* match found: create an expectation */
+-			exp = ip_conntrack_expect_alloc();
++			exp = ip_conntrack_expect_alloc(ct);
+ 			if (exp == NULL)
+ 				return NF_ACCEPT;
+ 
+@@ -616,7 +616,7 @@
+ 		       ret, i, ip, port);
+ 		if (ret && ip == ct->tuplehash[dir].tuple.src.ip) {
+ 			/* match found: create an expectation */
+-			exp = ip_conntrack_expect_alloc();
++			exp = ip_conntrack_expect_alloc(ct);
+ 			if (exp == NULL)
+ 				return NF_ACCEPT;
+ 
+@@ -663,7 +663,7 @@
+ 		       ret, i, ip, port);
+ 		if (ret && ip == ct->tuplehash[dir].tuple.src.ip) {
+ 			/* match found: create an expectation */
+-			exp = ip_conntrack_expect_alloc();
++			exp = ip_conntrack_expect_alloc(ct);
+ 			if (exp == NULL)
+ 				return NF_ACCEPT;
+ 
+
+
+
 
 -- 
-Best regards,
- Oleg                            mailto:sysoleg@progtech.ru
+Views expressed in this mail are those of the individual sender and 
+do not bind Gsec1 Limited. or its subsidiary, unless the sender has done
+so expressly with due authority of Gsec1.
+_________________________________________________________________________
+
 
 
