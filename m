@@ -1,13 +1,13 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: Edmundo Carmona <eantoranz@gmail.com>
 Subject: Re: Networking question
-Date: Sat, 24 Dec 2005 12:56:29 -0600
-Message-ID: <200512241256.29574.rob0@gmx.co.uk>
-References: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4wwL6DwAQAAAAdIdG2rUYq0C89CEWuAaQWwEAAAAA@rogers.com>
-	<1135450438.2584.4.camel@localhost>
+Date: Sat, 24 Dec 2005 14:58:59 -0400
+Message-ID: <65aa6af90512241058h731abedcuc609aa4790a246d8@mail.gmail.com>
+References: <E1EqDrd-00062I-00@smtp0.herald.ox.ac.uk>
+	<!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4wwL6DwAQAAAAdIdG2rUYq0C89CEWuAaQWwEAAAAA@rogers.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1135450438.2584.4.camel@localhost>
+In-Reply-To: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAAqrTb2LYes02Oflamihm4wwL6DwAQAAAAdIdG2rUYq0C89CEWuAaQWwEAAAAA@rogers.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,12 +22,43 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Saturday 2005-December-24 12:53, John A. Sullivan III wrote:
-> If the problem is on the XP station (no packets egressing), could
-> there be an XP personal firewall problem? - John
+Probably there's no gateway in the XP box setup... or the gateway is
+plain wrong.
 
-That or routing, is a default route set?
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+Merry Xorg-mas to everyone around! ;-)
+
+On 12/24/05, Dave Beach <drbeach@rogers.com> wrote:
+>
+> This is undoubtedly off-topic in oh-so-many ways; I'd be quite happy to b=
+e
+> redirected to another, more appropriate mailing list should someone be so
+> kind as to suggest one.
+>
+> Internal, home, private network, WinXP boxen and a Squid proxy, connectin=
+g
+> through an iptables box to my router and cable modem. Everything works
+> peachy.
+>
+> While trying to poke bittorrent holes through my iptables setup (see? Som=
+e
+> vague evidence of relevance), I encountered problems and decided to take =
+the
+> proxy out of the picture. VERY much to my surprise, when I reconfigured I=
+E
+> to not use the proxy (and configured iptables to allow for a direct
+> connection), I see no HTTP traffic whatsoever leaving the XP box destined
+> for the firewall. In fact, no TCP traffic either (all traffic analysis do=
+ne
+> with ethereal on the XP box). I can ping to/from the XP box, and see THAT
+> via ethereal.
+>
+> I am considerably confused by this. My presumption was that IE would just
+> happily send HTTP traffic directly to the firewall, but this is NOT the
+> behaviour I'm seeing.
+>
+> I know it's Christmas Eve day, and I was out a bit late last night, but
+> there's clearly something VERY obvious I'm missing.
+>
+>
+>
 
