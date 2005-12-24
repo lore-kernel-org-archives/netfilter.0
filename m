@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: string help
-Date: Sat, 24 Dec 2005 12:09:03 -0600
-Message-ID: <200512241209.03926.rob0@gmx.co.uk>
-References: <20051224073209.54921.qmail@web35908.mail.mud.yahoo.com>
+From: "Paul Lewis" <paul.lewis@st-annes.oxford.ac.uk>
+Subject: Simple routing configuration
+Date: Sat, 24 Dec 2005 18:11:25 -0000
+Message-ID: <E1EqDrd-00062I-00@smtp0.herald.ox.ac.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051224073209.54921.qmail@web35908.mail.mud.yahoo.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +16,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: lartc@mailman.ds9a.nl, netfilter@lists.netfilter.org
 
-On Saturday 2005-December-24 01:32, Noman Liaquat wrote:
-> I want to replace string "abcd" with "abcd" how i
-> could do with iptables mangle, patch-o-matic is
+Hi,
 
-Abcd, Noman:
+I have a simple question (well, at least I think it's simple!). I have a
+router, with four Ethernet cards; eth0-eth3. eth0 and eth3 are the
+'external' cards, connecting to my ISPs. eth1 and eth2 are connected to my
+internal networks. What I want to do is basically filter all the traffic
+from one card to another, in this configuration:
+	eth1 to eth3
+	eth2 to eth0
 
-I don't understand the question; what is the difference? "abcd" looks 
-quite like "abcd" to me.
+The thing is, I'm not sure if this is a routing or a firewall problem, or
+maybe a bit of both? I've tried setting up the routing using ip route, using
+the command below, but to no avail. When I used these commands, I did not
+change any of my existing firewall configuration. Here are the ip route
+commands:
+
+echo "101 ISP_1" >> /etc/iproute2/rt_tables
+echo "102 ISP_2" >> /etc/iproute2/rt_tables
+
+ip route add 192.168.4.0/22 dev eth2 src 192.168.7.253 table ISP_1
+ip route add default via 192.168.100.253 table ISP_1
+ip route add 192.168.0.0/22 dev eth1 src 192.168.3.253 table ISP_2
+ip route add default via 192.168.20.253 table ISP_2
+
+ip rule add from 192.168.7.253 table ISP_1
+ip rule add from 192.168.3.253 table ISP_2
+
+I also tried a simple iptables forward command, in the form of:
+
+iptables -A FORWARD -i eth0 -o eth2 -j ACCEPT
+iptables -A FORWARD -i eth2 -o eth0 -j ACCEPT
+iptables -A FORWARD -i eth1 -o eth3 -j ACCEPT
+iptables -A FORWARD -i eth3 -o eth1 -j ACCEPT
+
+# default policy
+iptables -P FORWARD DROP
+
+In both cases, I have set /proc/sys/net/ipv4/ip_forward to "1".
+
+Any help would be greatly appreciated.
+
+Many thanks,
+
+Paul
+
+---
+Paul Lewis (paul.lewis@st-annes.ox.ac.uk)
+Part II Student
+Materials Science
+University of Oxford
 
 
 
-Yes, that's a silly joke. But perhaps it contains a good lesson for 
-those who might wish to do silly things with strings contained in 
-network packets. This is not the way packet filtering should work.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+
 
