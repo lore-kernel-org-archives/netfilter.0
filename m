@@ -1,12 +1,13 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: RE: Help with a firewall script
-Date: Sat, 24 Dec 2005 19:11:08 -0500
-Message-ID: <1135469468.2584.12.camel@localhost>
-References: <004b01c608d9$7991c6c0$6f64a8c0@langherd.com>
+From: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?=
+	<leolistas@solutti.com.br>
+Subject: Re: iptables on FreeBSD
+Date: Sat, 24 Dec 2005 23:19:06 -0300
+Message-ID: <43AE019A.3010907@solutti.com.br>
+References: <000001c69530$0cbbf050$1000a8c0@mutogen>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <004b01c608d9$7991c6c0$6f64a8c0@langherd.com>
+In-Reply-To: <000001c69530$0cbbf050$1000a8c0@mutogen>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "John P. Lang" <john@langherd.com>
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: Artiom Matiuhoff <mutogen@pisem.net>
 Cc: netfilter@lists.netfilter.org
 
-The first rule changes the source address so the packet can traverse the
-internet. The second rule is allowing the outbound packet but you will
-need a rule to allow the reply packets such as:
 
-iptables -I FORWARD 1 -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-You can find an excellent tutorial at
-http://iptables-tutorial.frozentux.net
-There are also some slightly dated training slide shows in the training
-section of the ISCS network security management project web site at
-http://iscs.sourceforge.net
+Artiom Matiuhoff escreveu:
 
-Hope it helps - John
+>Hello,
+>
+>Is it possible to setup iptables on FreeBSD5.3?
+>
+> =20
+>
+    No, you cannot. iptables is NOT a packet filtering software. That's=20
+a task for netfilter, which is part of linux kernel. iptables is only=20
+used to manage netfilter rules.
 
-On Sat, 2005-12-24 at 14:29 -0800, John P. Lang wrote:
-> John,
-> 
-> This is exactly where my confusion lies... I thought that
-> 
-> > $IPT --table nat --append POSTROUTING --out-interface $EXTNIC -j
-> MASQUERADE
-> > 
-> > $IPT --append FORWARD --in-interface $INTNIC -j ACCEPT
-> 
-> Would basically allow all of the traffic to go through.
-> Can you point me to a proper tutorial or example on how to properly do this?
-> 
-> Thanks,
-> John
-> 
-> > 
-> After a very quick look, it appears that you are allowing outbound
-> traffic from the internal NIC but where are you allowing the reply
-> packets? Do you have a RELATED,ESTABLISHED rule anywhere? - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+    So, even if you can compile iptables on freebsd (which you probably=20
+wont, because of missing headers), freebsd kernel will not provide=20
+netfilter structure that is used by iptables.
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
+    As a completly linux kernel based software, iptables cannot run on=20
+non-linux plataforms.
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3=83O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
 
 
