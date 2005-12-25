@@ -1,13 +1,14 @@
-From: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?=
-	<leolistas@solutti.com.br>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: iptables on FreeBSD
-Date: Sat, 24 Dec 2005 23:19:06 -0300
-Message-ID: <43AE019A.3010907@solutti.com.br>
+Date: Sat, 24 Dec 2005 19:51:44 -0600
+Message-ID: <200512241951.44664.rob0@gmx.co.uk>
 References: <000001c69530$0cbbf050$1000a8c0@mutogen>
+	<43AE019A.3010907@solutti.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000001c69530$0cbbf050$1000a8c0@mutogen>
+In-Reply-To: <43AE019A.3010907@solutti.com.br>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +19,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"; format="flowed"
-To: Artiom Matiuhoff <mutogen@pisem.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
+On Saturday 2005-December-24 20:19, Leonardo Rodrigues Magalh=C3=A3es wrote:
+> Artiom Matiuhoff escreveu:
 
+Uh, that was just over six months ago, Leonardo. :)
 
-Artiom Matiuhoff escreveu:
-
->Hello,
->
->Is it possible to setup iptables on FreeBSD5.3?
->
-> =20
->
-    No, you cannot. iptables is NOT a packet filtering software. That's=20
-a task for netfilter, which is part of linux kernel. iptables is only=20
-used to manage netfilter rules.
-
-    So, even if you can compile iptables on freebsd (which you probably=20
-wont, because of missing headers), freebsd kernel will not provide=20
-netfilter structure that is used by iptables.
-
-    As a completly linux kernel based software, iptables cannot run on=20
-non-linux plataforms.
-
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3=83O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
+Best Christmas wishes to all.
+=2D-=20
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
