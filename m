@@ -1,13 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: string replacement help
-Date: Sun, 25 Dec 2005 13:48:56 +0100 (CET)
-Message-ID: <16674.80.127.73.119.1135514936.squirrel@webmail.sterenborg.info>
-References: <20051224141758.GG18594@minastirith.hsd1.md.comcast.net>
-	<20051225054543.45473.qmail@web35913.mail.mud.yahoo.com>
+From: Andy Lego <legoandy@gmail.com>
+Subject: Forward specific port to another ip
+Date: Sun, 25 Dec 2005 13:43:22 -0500
+Message-ID: <a46d47540512251043i5cb5ed51k64c58f41f9afd9f5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051225054543.45473.qmail@web35913.mail.mud.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,45 +19,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sun, December 25, 2005 06:45, Noman Liaquat wrote:
-> Hello Mike,
->
-> I am using RedHat EnterPrise Linux version#4
-> kernel.version=3Dlinux-2.6.14.4
-> I am using the patch of
-> matic-nghttp://max.kellermann.name/projects/netfilter/h323.html
-...
-> its confirm that i got the option of string when i did
->
-> [root@mail lib]# iptables -m string -h
-> STRING match v1.3.4 options:
+Hi,
 
-As you can read, this is a string *match*.
+I would like to forward all requests that come to system a.xx.com at
+port 8080 to go to another system b.xx.com to port 80.
 
-> --from                       Offset to start searching
-> from
-> --to                         Offset to stop searching
-> --algo                        Algorithm
-> --string [!] string          Match a string in a
-> packet
-> --hex-string [!] string      Match a hex string in a
-> packet
->
-> but not showing the replacement option of
-> --replace-string.
+For example, I am running a web server on system b.xx.com, but I want
+it to look like it is running on a.xx.com on different port.
 
-AFAIK you cannot alter things with match modules.
+Also, I want to do this on a.xx.com only, without touching the
+firewall or b.xx.com.
 
-> i think there is need of patch but from which place i
-> can easily get the patch and how i can patch it.
+Any ideas?
 
-Umm.. Soo.. What are you saying here ?
-You want someone to create a patch that allows you to alter strings
-using Netfilter and put it online so you can download it ?
+Thank you.
 
-
-Gr,
-Rob
-
-
+  Andy
 
