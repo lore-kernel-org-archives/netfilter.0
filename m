@@ -1,10 +1,11 @@
-From: Sagara Wijetunga <sagaralists@yahoo.com>
-Subject: KDE 3.5 based advanced Linux Desktop released
-Date: Sun, 25 Dec 2005 19:53:45 -0800 (PST)
-Message-ID: <20051226035345.38770.qmail@web34205.mail.mud.yahoo.com>
+From: Daniel Firvida <dfirvida@gmail.com>
+Subject: Problem with match extensions
+Date: Mon, 26 Dec 2005 11:31:12 +0100
+Message-ID: <8a6fb64c0512260231l107b1573u@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,37 +16,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Tomahawk Computers (www.tomahawkcomputers.com),
-Singapore, released an advanced multimedia centric
-Linux desktop distribution featuring Intel Centrino
-wireless technology, Zeroconf, High-Definition audio
-and video playback, Bluetooth, Firewire, iPod access
-and Podcasts. Complete suite of software also included
-for home and corporate use featuring KDE 3.5, Firefox
-1.5, Openoffice 2.0, etc. Tomahawk Desktop is
-compatible with wide-screen monitors and flat panels
-with aspect ratio 16:10, 16:9 in addition to popular
-5:4 and 4:3.
+Hi
 
-Unique features of Tomahawk Desktop are, resistant to
-Pharming/Phishing, fast Internet access, remote
-serviceability and package user based simple yet very
-effective package management system. No mounting and
-unmounting hassle for accessing Thumbdrives, Digital
-cameras, MP3 players, etc. 
+I have a problem with match extensions of iptables, concretely with
+match of time
+I have kernel version 2.6.9, iptables version 1.3.4 and the patch
+patch-o-matic-ng-20040621 but I not with himself that the conditions
+of time are executed.
 
-Full functional evaluation version is available to
-download via Bittorrent from
-http://www.tomahawkcomputers.com/download.html.
+The rules..
 
+iptables -I INPUT 1 -s 143.56.34.X -m time --timestop 22:30 -j DROP
+iptables -I INPUT 2 -s 143.56.34.X -m conntrack --ctexpire 50 -j DROP
+# iptables -L -n
+DROP       all  --  143.56.34.X          0.0.0.0/0           TIME to
+22:30 on all days
+DROP       all  --  143.56.34.X          0.0.0.0/0           ctexpire 50
+...
 
+They are accepted correctly by the system, but they are not freed when
+it corresponds.
+The system ignores the time rule or ctexpire completely
 
-	
-		
-__________________________________ 
-Yahoo! for Good - Make a difference this year. 
-http://brand.yahoo.com/cybergivingweek2005/
+Some solution/idea ?=BF
+
+Than you very much
+A greeting
+
+PD: escusme my bad english
 
