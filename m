@@ -1,13 +1,10 @@
-From: ludi <myhapwcforever@gmail.com>
-Subject: Re: Port Triggering
-Date: Mon, 26 Dec 2005 09:48:20 +0800
-Message-ID: <d27cd2010512251748w6f06e0abo@mail.gmail.com>
-References: <43AD2991.4060807@embeddedinfotech.com>
+From: Sagara Wijetunga <sagaralists@yahoo.com>
+Subject: KDE 3.5 based advanced Linux Desktop released
+Date: Sun, 25 Dec 2005 19:53:45 -0800 (PST)
+Message-ID: <20051226035345.38770.qmail@web34205.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43AD2991.4060807@embeddedinfotech.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,17 +18,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Ii1tIHN0YXRlIiBtYXkgaGVscCB5b3UuCgoyMDA1LzEyLzI0LCBzYW1iYSA8c2FtYmFAZW1iZWRk
-ZWRpbmZvdGVjaC5jb20+Ogo+IEhpLAo+IENhbiBzb21lb25lIHBsZWFzZSB0ZWxsIG1lIGhvdyBp
-IGNhbiBpbXBsZW1lbnQgcG9ydCB0cmlnZXJyaW5nIHVzaW5nCj4gaXB0YWJsZXMuCj4KPiBQb3J0
-IFRyaWdnZXJpbmcgOgo+Cj4gUG9ydCB0cmlnZ2VyaW5nIGFsbG93cyBvcGVuaW5nIG9mIGluYm91
-bmQgcG9ydChzKSBmb3Igc29tZSBpbnRlcnZhbCBvZiB0aW1lIGJhc2VkIG9uIHNvbWUgb3V0Ym91
-bmQgdHJhZmZpYyB0aGF0Cj4gb3JpZ2luYXRlZCBmcm9tIGludGVybmFsIExBTi4gVGhpcyBydWxl
-IGdldHMgdHJpZ2dlcmVkIHdoZW4gdGhlIHJvdXRlciBzZWVzIHRyYWZmaWMgZnJvbSB0aGUgaW50
-ZXJuYWwgTEFOIHRvIHRoZSBpbnRlcm5ldC4KPgo+IFRoZSBvdXRib3VuZCBwb3J0cyB0aGF0IHRy
-aWdnZXJzIHRoZSBydWxlIGFuZCB0aGUgaW5ib3VuZCBwb3J0cyB0aGF0IG5lZWRzIHRvIGJlIG9w
-ZW5lZCBieSB0aGUgZmlyZXdhbGwgYXJlIGNvbmZpZ3VyZWQgYnkKPiB0aGUgdXNlci4KPgo+IElz
-IHN1Y2ggYSBmZWF0dXJlIHN1cHBvcnRlZCBieSBpcHRhYmxlcyBhbmQgdGhlIG5ldGZpbHRlciBm
-cmFtZXdvcmsgPwo+Cj4gVGhhbmtzIGluIGFkdmFuY2UgZm9yIHRoZSByZXBseS4KPiBzYW1iYQo+
-Cj4KPgo+Cj4KPgo+Cg==
+Tomahawk Computers (www.tomahawkcomputers.com),
+Singapore, released an advanced multimedia centric
+Linux desktop distribution featuring Intel Centrino
+wireless technology, Zeroconf, High-Definition audio
+and video playback, Bluetooth, Firewire, iPod access
+and Podcasts. Complete suite of software also included
+for home and corporate use featuring KDE 3.5, Firefox
+1.5, Openoffice 2.0, etc. Tomahawk Desktop is
+compatible with wide-screen monitors and flat panels
+with aspect ratio 16:10, 16:9 in addition to popular
+5:4 and 4:3.
+
+Unique features of Tomahawk Desktop are, resistant to
+Pharming/Phishing, fast Internet access, remote
+serviceability and package user based simple yet very
+effective package management system. No mounting and
+unmounting hassle for accessing Thumbdrives, Digital
+cameras, MP3 players, etc. 
+
+Full functional evaluation version is available to
+download via Bittorrent from
+http://www.tomahawkcomputers.com/download.html.
+
+
+
+	
+		
+__________________________________ 
+Yahoo! for Good - Make a difference this year. 
+http://brand.yahoo.com/cybergivingweek2005/
 
