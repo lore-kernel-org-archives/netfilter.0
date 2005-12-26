@@ -1,14 +1,12 @@
-From: Robb Bossley <robb.bossley@gmail.com>
-Subject: Re: [LARTC] Not quite on topic, but...
-Date: Mon, 26 Dec 2005 13:44:37 -0500
-Message-ID: <5c6851530512261044y2dce8a98hc382cac1b903e884@mail.gmail.com>
-References: <5c6851530512261009x123d6411sd77df94308b01314@mail.gmail.com>
-	<65aa6af90512261026s312e124fo99ad92bce3f2672a@mail.gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: inline problem
+Date: Mon, 26 Dec 2005 20:09:06 +0100 (CET)
+Message-ID: <18869.80.127.73.119.1135624146.squirrel@webmail.sterenborg.info>
+References: <20051226115316.89734.qmail@web35913.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af90512261026s312e124fo99ad92bce3f2672a@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <20051226115316.89734.qmail@web35913.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,43 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Edmundo Carmona <eantoranz@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Thanks!  That was it.  I tried "last -a" as Corey suggested, and it
-produced the output I would have expected.
+On Mon, December 26, 2005 12:53, Noman Liaquat wrote:
+...
+> checking for libipq.h... yes
+> checking for ipq_set_mode in -lipq... no
+>
+>    ERROR!  Libipq library/headers not found, go get it
+> from
+>    www.netfilter.org or use the --with-libipq-*
+> options,
+>    if you have it installed in unusual place
 
-cpe-24-210-31-27.columbus.res.rr.com
+Configure found the header file so it looks like you installed libipq.
+But, configure didn't find ipq_set_mode in the library.
+Did you add the path to libipq in /etc/ld.so.conf (if necessary) and
+execute "ldconfig" ?
 
-Robb
 
-On 12/26/05, Edmundo Carmona <eantoranz@gmail.com> wrote:
-> I think that's the domain name of the host from which you logged in.
->
-> This is the name of one of our hosts from our ISP's point of view:
->
-> dC9D03164.dslam-01-15-4-01-1-01.ISPs.domain
->
-> On 12/26/05, Robb Bossley <robb.bossley@gmail.com> wrote:
-> > Hey everyone,
-> >
-> > Hope you all had a great Christmas!
-> >
-> > I am running Linux-2.6.14.3 with iptables 1.3.4.  It has been working
-> > marvelously for me, but I noticed an unusual entry in my "last" log.
-> > I believe it was from me logging on from a friend's computer, but the
-> > entry was not the typical xx.xxx.xxx.xxx entry.  The entry I saw was
-> > "cpe-24-210-31-27".  Why is this notation different, and what would
-> > have been the ip?  24.210.31.27?
-> >
-> > TIA
-> >
-> > Robb
-> > _______________________________________________
-> > LARTC mailing list
-> > LARTC@mailman.ds9a.nl
-> > http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc
-> >
->
->
+Gr,
+Rob
+
+
 
