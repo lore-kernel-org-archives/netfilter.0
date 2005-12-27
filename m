@@ -1,12 +1,12 @@
 From: "Michael D. Berger" <m.d.berger@ieee.org>
 Subject: RE: DROP TCP output to HTTP attackers?
-Date: Tue, 27 Dec 2005 13:07:09 -0500
-Message-ID: <000101c60b10$5e1f2700$2801a8c0@MBRC40>
-References: <003701c60b04$86bdd3c0$1101a8c0@quebec>
+Date: Tue, 27 Dec 2005 13:14:48 -0500
+Message-ID: <000201c60b11$6e0ca5b0$2801a8c0@MBRC40>
+References: <003801c60b05$72567ad0$1101a8c0@quebec>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <003701c60b04$86bdd3c0$1101a8c0@quebec>
+In-Reply-To: <003801c60b05$72567ad0$1101a8c0@quebec>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,41 +24,37 @@ To: 'netfilter' <netfilter@lists.netfilter.org>
 > From: netfilter-bounces@lists.netfilter.org 
 > [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
 > Richard Pickett
-> Sent: Tuesday, December 27, 2005 11:42 AM
+> Sent: Tuesday, December 27, 2005 11:49 AM
 > To: 'netfilter'
 > Subject: RE: DROP TCP output to HTTP attackers?
 > 
 > 
-> > -----Original Message-----
-> > From: netfilter-bounces@lists.netfilter.org
-> > [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
-> > Michael D. Berger
-> > Sent: Friday, December 23, 2005 3:50 PM
-> > To: netfilter
-> > Subject: DROP TCP output to HTTP attackers?
-> >
-> > Using -j QUEUE, I DROP http packets that I don't like, and I
-> > DROP all subsequent packets from the offending ipAddress.
-> > Using ethereal, I note that when I DROP, I send tcp FIN
-> > packets.  Therefore, I added -j QUEUE to the OUTPUT filter,
-> > and I block all OUTPUT to the offending ipAddress, including
-> > the tcp FIN packets, as confirmed with ethereal.  I just
-> > deployed this in the last 30 minutes.  My preliminary
-> > observation, thanks to an obliging attacker, is that I get
-> > less follow-up junk with the OUTPUT filter blocked, although
-> > there did appear to be a few anomalies, that I assume are to
-> > to timing issues.
-> >
-> > Any opinions on this procedure?
+> > My only comment would be that for proxy users (AOL, for 
+> instance) you
+> > may end up dropping legitimate traffic. The risk/reward of that is
+> > something you'll have to determine for yourself.
 > 
-> Hmmmm. I DROP everything that is suspicious and follow up with a block
-> on that IP afterward and have never noticed any packets going out with
-> the DROP.
+> My logic is like this, if AOL polices it's outbound traffic the way we
+> police our inbound traffic AOL wouldn't ever send us illegal packets.
+> 
+> Oh, they've got these big adds on TV about how they are so 
+> safe etc. I'm
+> sure by now my systems have all their public IPs blocked.
+> 
+> An additional thought is friends don't let friends do AOL. If 
+> they want
+> to use the service they have to accept the lameness that comes along
+> with it.
+> 
+> AOL has obviously compromised on security. Why should we compromise on
+> security with them?
+> 
 
-I was surprised to see it.  They appear reliably on dropping http, but I
-have not seen any in dropping ssh (in response to long username
-dictionary attacks).
-FYI: kernel-2.6.9-5.EL, iptables-1.2.11-3.1.RHEL4, httpd-2.0.52-9.ent
+I agree with you.  However, my small web site serves a function for
+a group of people, some of whom are, >and will remain<, completely
+computer illiterate.  In view of my observations mentioned in a another
+e-mail, perhaps I should analyze packets after, perhaps, an hour of
+silence.
 
 Mike.
 --
