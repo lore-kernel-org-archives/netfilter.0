@@ -1,12 +1,14 @@
-From: "Michael D. Berger" <m.d.berger@ieee.org>
-Subject: RE: DROP TCP output to HTTP attackers?
-Date: Tue, 27 Dec 2005 12:55:37 -0500
-Message-ID: <000001c60b0e$be9cc2b0$2801a8c0@MBRC40>
-References: <FAC4E024BF776842876169173CE2F01313B78B@mailbox.vikus.com>
+From: Marcus Sundberg <marcus@ingate.com>
+Subject: Re: How to obtain process ID that created connection or owns one
+ packet
+Date: Tue, 27 Dec 2005 18:58:34 +0100
+Message-ID: <43B180CA.7060808@ingate.com>
+References: <1b8130000512182054y7208121dtb6b20814540bbb3b@mail.gmail.com>	<43A6EA58.9090201@eurodev.net>	<43A6EC1F.7030600@eurodev.net>	<43ABED47.8070100@gmail.com>	<43AC263E.7080508@gmail.com>
+	<43AD5934.3050700@eurodev.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <FAC4E024BF776842876169173CE2F01313B78B@mailbox.vikus.com>
+In-Reply-To: <43AD5934.3050700@eurodev.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,80 +19,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@eurodev.net>
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org 
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
-> Derick Anderson
-> Sent: Tuesday, December 27, 2005 11:31 AM
-> To: netfilter
-> Subject: RE: DROP TCP output to HTTP attackers?
+Pablo Neira Ayuso wrote:
+> Mikado wrote:
+> 
+>>Thanks all! Finally I found the answer in 'struct sk_buff':
+>>
+>>struct sk_buff ( #include <linux/skbuff.h> )
+>>|_struct sock ( #include <net/sock.h> )
+>>  |_struct socket ( #include <linux/net.h> )
+>>    |_struct file ( #include <linux/fs.h> )
+>>      |_struct fown_struct ( #include <linux/fs.h> )
+>>        |_int pid
 > 
 > 
->  
-> [ snip ]
-> 
-> > > 
-> > > My only comment would be that for proxy users (AOL, for 
-> > instance) you 
-> > > may end up dropping legitimate traffic. The risk/reward 
-> of that is 
-> > > something you'll have to determine for yourself.
-> > > 
-> > > Derick Anderson
-> > > 
-> > 
-> > I must admit that I have little knowledge of these proxies.  
-> > I infer from what you say that different users might present 
-> > the same peer ip address.
-> > Is this true?  If so, perhaps I should set a time limit on 
-> the block.
-> 
-> Yes - there may be thousands of users on the same proxy. In my limited
-> experience it's generally broadband users (and some universities) that
-> have public IPs tied to a single account. Most others (businesses,
-> dial-up ISPs) will go through a proxy or at least NAT to a 
-> single public
-> IP and many people use third-party proxies to surf anonymously.
-> 
-> If you're going to set a time limit, it should be real short, 
-> like a few
-> seconds. Most automated attacks take place in less than two or three
-> seconds on a decent connection, from my experience. This 
-> would limit the
-> timeouts experienced by legitimate users.
->  
-> > With regard to blocking output in response to attacks, 
-> > thereby blocking TCP FIN, are there any opinoins on this?
-> > 
-> > Thanks for your help.
-> > Mike.
-> > 
-> 
-> Not sending the TCP FIN might be advantageous when coupled 
-> with your IP
-> dropping policy since legit clients may retry several times before
-> giving up. Otherwise your advantage is no response (more stealthy for
-> scans) vs. the disadvantage of more open connections which will wait a
-> long time before closing.
-> 
-> Derick Anderson
-> 
-> 
+> Yes, but AFAIK you can only use that in the OUTPUT hook, not in the
+> INPUT path.
 
-The attacks I see most frequently are GETs for a large set of nonexistant
-items.  They are easily recognized by the ip address rather than the domain
-namein the Host: header.  In cases where I do allow the TCP FIN, (which I
-have been doing for the last day or two), the attacker keeps trying for
-10 or 15 minutes.
+...and if using SMP you can't use it at all in netfilter context.
 
-Mike.
-
---
-Michael D. Berger
-m.d.berger@ieee.org 
-
-
+//Marcus
+-- 
+---------------------------------------+--------------------------
+   Marcus Sundberg <marcus@ingate.com>  | Firewalls with SIP & NAT
+  Software Developer, Ingate Systems AB |  http://www.ingate.com/
 
