@@ -1,11 +1,12 @@
-From: "Derick Anderson" <danderson@vikus.com>
+From: "Richard Pickett" <Richard.Pickett@CSRTechnologies.com>
 Subject: RE: DROP TCP output to HTTP attackers?
-Date: Tue, 27 Dec 2005 11:31:24 -0500
-Message-ID: <FAC4E024BF776842876169173CE2F01313B78B@mailbox.vikus.com>
+Date: Tue, 27 Dec 2005 10:42:25 -0600
+Message-ID: <003701c60b04$86bdd3c0$1101a8c0@quebec>
+References: <FAC4E024BF776842876169173CE2F01313B76B@mailbox.vikus.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <FAC4E024BF776842876169173CE2F01313B76B@mailbox.vikus.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: 'netfilter' <netfilter@lists.netfilter.org>
 
-=20
-[ snip ]
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
+> Michael D. Berger
+> Sent: Friday, December 23, 2005 3:50 PM
+> To: netfilter
+> Subject: DROP TCP output to HTTP attackers?
+>
+> Using -j QUEUE, I DROP http packets that I don't like, and I
+> DROP all subsequent packets from the offending ipAddress.
+> Using ethereal, I note that when I DROP, I send tcp FIN
+> packets.  Therefore, I added -j QUEUE to the OUTPUT filter,
+> and I block all OUTPUT to the offending ipAddress, including
+> the tcp FIN packets, as confirmed with ethereal.  I just
+> deployed this in the last 30 minutes.  My preliminary
+> observation, thanks to an obliging attacker, is that I get
+> less follow-up junk with the OUTPUT filter blocked, although
+> there did appear to be a few anomalies, that I assume are to
+> to timing issues.
+>
+> Any opinions on this procedure?
 
-> >=20
-> > My only comment would be that for proxy users (AOL, for=20
-> instance) you=20
-> > may end up dropping legitimate traffic. The risk/reward of that is=20
-> > something you'll have to determine for yourself.
-> >=20
-> > Derick Anderson
-> >=20
->=20
-> I must admit that I have little knowledge of these proxies. =20
-> I infer from what you say that different users might present=20
-> the same peer ip address.
-> Is this true?  If so, perhaps I should set a time limit on the block.
+Hmmmm. I DROP everything that is suspicious and follow up with a block
+on that IP afterward and have never noticed any packets going out with
+the DROP.
 
-Yes - there may be thousands of users on the same proxy. In my limited
-experience it's generally broadband users (and some universities) that
-have public IPs tied to a single account. Most others (businesses,
-dial-up ISPs) will go through a proxy or at least NAT to a single public
-IP and many people use third-party proxies to surf anonymously.
-
-If you're going to set a time limit, it should be real short, like a few
-seconds. Most automated attacks take place in less than two or three
-seconds on a decent connection, from my experience. This would limit the
-timeouts experienced by legitimate users.
-=20
-> With regard to blocking output in response to attacks,=20
-> thereby blocking TCP FIN, are there any opinoins on this?
->=20
-> Thanks for your help.
-> Mike.
->=20
-
-Not sending the TCP FIN might be advantageous when coupled with your IP
-dropping policy since legit clients may retry several times before
-giving up. Otherwise your advantage is no response (more stealthy for
-scans) vs. the disadvantage of more open connections which will wait a
-long time before closing.
-
-Derick Anderson
 
