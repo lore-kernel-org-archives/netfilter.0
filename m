@@ -1,12 +1,14 @@
-From: "Richard Pickett" <Richard.Pickett@CSRTechnologies.com>
-Subject: RE: Forward specific port to another ip
-Date: Tue, 27 Dec 2005 13:11:12 -0600
-Message-ID: <005101c60b19$4f252480$1101a8c0@quebec>
-References: <a46d47540512271036v71e355epf1f87cbb564b2996@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@eurodev.net>
+Subject: Re: How to obtain process ID that created connection or owns one
+ packet
+Date: Tue, 27 Dec 2005 20:28:06 +0100
+Message-ID: <43B195C6.8020704@eurodev.net>
+References: <1b8130000512182054y7208121dtb6b20814540bbb3b@mail.gmail.com>	<43A6EA58.9090201@eurodev.net>	<43A6EC1F.7030600@eurodev.net>	<43ABED47.8070100@gmail.com>	<43AC263E.7080508@gmail.com>
+	<43AD5934.3050700@eurodev.net> <43B180CA.7060808@ingate.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a46d47540512271036v71e355epf1f87cbb564b2996@mail.gmail.com>
+In-Reply-To: <43B180CA.7060808@ingate.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +20,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.netfilter.org>
+To: Marcus Sundberg <marcus@ingate.com>
+Cc: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Here's something to keep in mind on NAT, it only works if the NAT box is
-in-between both systems or you can double-NAT.
+Marcus Sundberg wrote:
+> Pablo Neira Ayuso wrote:
+> 
+>> Mikado wrote:
+>>
+>>> Thanks all! Finally I found the answer in 'struct sk_buff':
+>>>
+>>> struct sk_buff ( #include <linux/skbuff.h> )
+>>> |_struct sock ( #include <net/sock.h> )
+>>>  |_struct socket ( #include <linux/net.h> )
+>>>    |_struct file ( #include <linux/fs.h> )
+>>>      |_struct fown_struct ( #include <linux/fs.h> )
+>>>        |_int pid
+>>
+>>
+>>
+>> Yes, but AFAIK you can only use that in the OUTPUT hook, not in the
+>> INPUT path.
+> 
+> ...and if using SMP you can't use it at all in netfilter context.
 
-Take this example:
+And there's still some work in progress about this:
 
+http://lwn.net/Articles/157137/
 
-    NAT BOX
-       |
------------------
-|               |
-SYS A          SYS B
-
-
-A connects to NAT A's connection looks like this:
-
-From: A:Portx
-To:   NAT:Porty
-
-NAT NATs the packet to send it to B, the packet now looks like this:
-
-From: A:Portx
-To:   B:Porty
-
-When B replies to the connection his packet looks like this:
-
-From: B:Porty
-To:   A:Portx
-
-When this packet arrives at SYS A it doesn't recognize the connection,
-it's expecting all return packets to look like this:
-
-From: NAT:Porty
-To:   A:Portx
-
-To make it work you have to double-NAT the packets. You have to NAT the
-PREROUTING to change the "TO", and the POSTROUTING to change the "FROM".
-
+-- 
+Pablo
 
