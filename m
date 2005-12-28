@@ -1,10 +1,12 @@
-From: James Garrison <jhg@athensgroup.com>
-Subject: When is a connection ESTABLISHED in ip_conntrack?
-Date: Wed, 28 Dec 2005 11:08:47 -0600
-Message-ID: <43B2C69F.1040902@athensgroup.com>
+From: "Richard Pickett" <Richard.Pickett@CSRTechnologies.com>
+Subject: RE: who will solve my problem
+Date: Wed, 28 Dec 2005 14:07:51 -0600
+Message-ID: <00af01c60bea$64b898f0$1101a8c0@quebec>
+References: <20051228084349.43827.qmail@web35911.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20051228084349.43827.qmail@web35911.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,31 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Partial listing of ip_conntrack:
+IIRC snort has a way to search/replace in packets.
 
-> tcp      6 296619 ESTABLISHED src=10.56.8.1 dst=10.56.8.218 sport=39594 dport=80 packets=1 bytes=40 [UNREPLIED] src=10.56.8.218 dst=10.56.8.1 sport=80 dport=39594 packets=0 bytes=0 mark=0 use=1
+I may be wrong though.
 
-> tcp      6 296616 ESTABLISHED src=10.56.8.1 dst=10.56.8.183 sport=39594 dport=80 packets=1 bytes=40 [UNREPLIED] src=10.56.8.183 dst=10.56.8.1 sport=80 dport=39594 packets=0 bytes=0 mark=0 use=1
+If it doesn't, I'm sure there's already a tool out there that will do it
+for you, you just have to look for it.
 
-> tcp      6 296616 ESTABLISHED src=10.56.8.1 dst=10.56.8.179 sport=39594 dport=80 packets=1 bytes=40 [UNREPLIED] src=10.56.8.179 dst=10.56.8.1 sport=80 dport=39594 packets=0 bytes=0 mark=0 use=1
 
-These are left over from a portscan I ran 2 days ago, and there's an
-entry in ip_conntrack for each and every unused IP address on our
-internal subnet.  Why is the connection status 'ESTABLISHED' if
-there was never a response to the original SYN?  This causes
-ip_conntrack to use the 5-day timeout instead of 2 minutes and
-clutters up the table.
+Richard W. Pickett, Jr.
+President, CSR Technologies .com, Inc.
+Richard.Pickett@CSRTechnologies.com
+www.CSRTechnologies.com
+Office - (270) 746-0324
+Cell    - (270) 303-9154
 
-This isn't really a problem, I'm asking out of curiosity and to
-better understand connection tracking.
 
--- 
-James Garrison                                Athens Group, Inc.
-mailto:jhg@athensgroup.com                    5608 Parkcrest Dr
-http://www.athensgroup.com                    Austin, TX 78731
-PGP: RSA=0x92E90A3B DH/DSS=0x498D331C         (512) 345-0600 x150
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> bounces@lists.netfilter.org] On Behalf Of Noman Liaquat
+> Sent: Wednesday, December 28, 2005 2:44 AM
+> To: netfilter@lists.netfilter.org
+> Cc: khankhn1@yahoo.com; netfilter-devel@lists.netfilter.org
+> Subject: who will solve my problem
+> 
+> 
+> string replace problem --replace-string [who will
+> solve it]
+> 
+> 
+> Note: forwarded message attached.
+> 
+> 
+> 
+> 
+> 
+> __________________________________
+> Yahoo! for Good - Make a difference this year.
+> http://brand.yahoo.com/cybergivingweek2005/
 
 
