@@ -1,13 +1,12 @@
-From: Ishwar Rattan <ishwar@pali.cps.cmich.edu>
-Subject: Re: largescale NAT
-Date: Tue, 27 Dec 2005 19:03:41 -0500 (EST)
-Message-ID: <Pine.LNX.4.56.0512271901020.25721@pali.cps.cmich.edu>
-References: <43B16A57.508@fiktiv.szgtikol.kando.hu>
-	<5d369d900512270859j45bc26f7i32397c1c6a6e12ea@mail.gmail.com>
-	<43B17ED4.5020104@fiktiv.szgtikol.kando.hu>
+From: "Richard Pickett" <Richard.Pickett@CSRTechnologies.com>
+Subject: RE: Forward specific port to another ip
+Date: Tue, 27 Dec 2005 23:13:25 -0600
+Message-ID: <005b01c60b6d$70c55840$1101a8c0@quebec>
+References: <65aa6af90512271255g1d90b33eg50a61f08ca16ce3b@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43B17ED4.5020104@fiktiv.szgtikol.kando.hu>
+In-Reply-To: <65aa6af90512271255g1d90b33eg50a61f08ca16ce3b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+> Remember I said "for starters". You have to consider more things in
+> order to make it work... depending on your networking environment. :-)
+> 
+> On 12/27/05, Richard Pickett <Richard.Pickett@csrtechnologies.com>
+wrote:
+> > Here's something to keep in mind on NAT, it only works if the NAT
+box is
+> > in-between both systems or you can double-NAT.
 
+I wasn't addressing the completeness or lack of completeness of your
+post at all.
 
-On Tue, 27 Dec 2005, DEXTER wrote:
-
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->
-> Thank you for your answer, but what if we have only one public(external)
-> ip? :)
-
-Either go for conenction limit or get more public IPs. There are
-only so many ports on NAT box and it can process packets only
-so fast :-(
-
--ishwar
+I was addressing the post where Andy notes his telnet hangs. If the two
+systems have direct routes he would need to double nat, and that's what
+I was pointing out to him.
 
 
