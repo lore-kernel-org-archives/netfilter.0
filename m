@@ -1,10 +1,11 @@
-From: Vincent Chen <vctw@yahoo.com>
-Subject: accounting base on tcp or udp session
-Date: Wed, 28 Dec 2005 05:59:46 +0800 (CST)
-Message-ID: <20051227215946.75741.qmail@web35815.mail.mud.yahoo.com>
+From: "Greg Scott" <GregScott@InfraSupportEtc.com>
+Subject: How to download POM-ng these days?
+Date: Wed, 28 Dec 2005 01:23:49 -0600
+Message-ID: <925A849792280C4E80C5461017A4B8A26D2E@mail733.InfraSupportEtc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,16 +16,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="big5"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-SGksIGFsbAoKSXQncyB2ZXJ5IHBvcHVsYXIgdGhhdCBjb21tZXJjaWFsIGZpcmV3YWxsIG9yIEZy
-ZWVCU0QncyBpcGZpbHRlciBzZW50IGEgbG9nCmVudHJ5IGluY2x1ZGUgc2Vzc2lvbiB0aW1lLGJ5
-dGUgdHJhbnNmZXJlZCxldGMgd2hlbiBhIHRjcCBvciB1ZHAgY29ubmVjdGlvbgpjbG9zZWQuIElz
-IGl0IHBvc3NpYmxlIHRvIGNvbmZpZ3VyZSBpcHRhYmxlcyB0byBkbyB0aGluZ3MgbGlrZSB0aGF0
-PyBJIHRyaWVkIHRvCmVuYWJsZSBsb2dzIGZvciBpcHRhYmxlcyBidXQgbG9ncyBJIHJlY2VpdmVk
-IHNlZW1zIGxpa2UgYmFzZSBvbiBzaW5nbGUgcGFja2V0Cm9ubHkuIEFuZCBhY2NvdW50aW5nIG9u
-IGlwIG9yIHBvcnQgaXMgbm90IHdoYXQgSSBhbSBsb29raW5nIGZvci4KCgpUaGFua3MsCgpWaW5j
-ZW50IENoZW4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18gILPMt3OqqSBZYWhvbyGpX7yvp1muybNxsFQgNy4woUGnS7ZPuvS49LlxuNyl9KdBpbSh
-SSAgaHR0cDovL21lc3Nlbmdlci55YWhvby5jb20udHcvCgo=
+Hi -
+
+I am trying to incorporate several POM patches, including some of the
+contrack-nat helpers, ipsec, and some others.  None of the techniques
+documented in the main netfilter website work anymore.  I scoured the
+netfilter-devel list archives and found a reference to this website:
+
+https://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/
+
+I am looking at it now and I see references to all the POM modules of
+interest, along with a bunch of LDAP stuff about each module and
+references to thousands of build versions.  But I am hopelessly confused
+as to how to download the most up to date builds of everything and get
+them into a form that the runme script can use.  Or is the runme script
+also now obsolete and if so, what is the best way to download and apply
+the POM patches of interest?  If anyone would be willing to hold my hand
+a little bit, I will document how it's done currently and post it to the
+list. =20
+
+Thanks
+
+- Greg Scott
+
