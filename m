@@ -1,15 +1,13 @@
-From: Edmundo Carmona <eantoranz@gmail.com>
-Subject: Forward specific port to another ip
-Date: Tue, 27 Dec 2005 16:55:00 -0400
-Message-ID: <65aa6af90512271255g1d90b33eg50a61f08ca16ce3b@mail.gmail.com>
-References: <a46d47540512271036v71e355epf1f87cbb564b2996@mail.gmail.com>
-	<005101c60b19$4f252480$1101a8c0@quebec>
-	<65aa6af90512271254rb572182o3309a5f415b1256d@mail.gmail.com>
+From: Ishwar Rattan <ishwar@pali.cps.cmich.edu>
+Subject: Re: largescale NAT
+Date: Tue, 27 Dec 2005 19:03:41 -0500 (EST)
+Message-ID: <Pine.LNX.4.56.0512271901020.25721@pali.cps.cmich.edu>
+References: <43B16A57.508@fiktiv.szgtikol.kando.hu>
+	<5d369d900512270859j45bc26f7i32397c1c6a6e12ea@mail.gmail.com>
+	<43B17ED4.5020104@fiktiv.szgtikol.kando.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65aa6af90512271254rb572182o3309a5f415b1256d@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <43B17ED4.5020104@fiktiv.szgtikol.kando.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,50 +18,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Remember I said "for starters". You have to consider more things in
-order to make it work... depending on your networking environment. :-)
 
-On 12/27/05, Richard Pickett <Richard.Pickett@csrtechnologies.com> wrote:
-> Here's something to keep in mind on NAT, it only works if the NAT box is
-> in-between both systems or you can double-NAT.
+
+On Tue, 27 Dec 2005, DEXTER wrote:
+
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
 >
-> Take this example:
->
->
->     NAT BOX
->        |
-> -----------------
-> |               |
-> SYS A          SYS B
->
->
-> A connects to NAT A's connection looks like this:
->
-> From: A:Portx
-> To:   NAT:Porty
->
-> NAT NATs the packet to send it to B, the packet now looks like this:
->
-> From: A:Portx
-> To:   B:Porty
->
-> When B replies to the connection his packet looks like this:
->
-> From: B:Porty
-> To:   A:Portx
->
-> When this packet arrives at SYS A it doesn't recognize the connection,
-> it's expecting all return packets to look like this:
->
-> From: NAT:Porty
-> To:   A:Portx
->
-> To make it work you have to double-NAT the packets. You have to NAT the
-> PREROUTING to change the "TO", and the POSTROUTING to change the "FROM".
->
->
->
+> Thank you for your answer, but what if we have only one public(external)
+> ip? :)
+
+Either go for conenction limit or get more public IPs. There are
+only so many ports on NAT box and it can process packets only
+so fast :-(
+
+-ishwar
+
 
