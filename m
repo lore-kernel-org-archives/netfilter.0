@@ -1,11 +1,12 @@
-From: "Amresh Kumar" <amresh_srivastava@hotmail.com>
-Subject: Problem in patch-o-matic-ng
-Date: Thu, 29 Dec 2005 20:37:12 +0530
-Message-ID: <BAY105-F30F837C998381A90AFFCEF9E290@phx.gbl>
-References: <43B3CBE6.1090908@eurodev.net>
+From: "Richard Pickett" <Richard.Pickett@CSRTechnologies.com>
+Subject: RE: STring Replacement Patch [Quick Response]
+Date: Thu, 29 Dec 2005 10:30:16 -0600
+Message-ID: <00f801c60c95$290a5040$1101a8c0@quebec>
+References: <20051229104208.27463.qmail@web35912.mail.mud.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43B3CBE6.1090908@eurodev.net>
+In-Reply-To: <20051229104208.27463.qmail@web35912.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Noman Liaquat' <khankhn1@yahoo.com>, netfilter@lists.netfilter.org
 
-Hello to all,
+> this is the websites
+>  http://www.cipherdyne.org/fwsnort/
+> 
+> here iptables are providing --replace-string it is not
+> working fine giving errors to me.
 
-I  have downloaded the latest version of patch-o-matic-ng. from netfilter=20
-websites,also svn checkout for update  and now my patch of random and nth=20
-patch for load balancing , I have applied the following commands
-1.   iptables -A PREROUTING -i eth0 -p tcp --dport 80 -m state --state NEW =
+Hmmmm. Did you read that site yourself? Did you follow the instructions
+on that site for getting --replace-string to work? Or did you just glaze
+over that site and come back here and post to us?
 
--m nth --counter 0 \
---every 4 --packet 0  -j DNAT --to-destination 192.168.0.5:80
+> I am waiting for quick response.
 
-2. -A PREROUTING -i eth0 -p tcp --dport 80 -m state --state NEW -m random=20
---average 25  \
--j DNAT --to-destination 192.168.0.5:80
-
-But  i am getting the following error
-iptables: No chain/target/match by that name.
-
-My iptable version is   iptables-1.3.4 , Kernel version  linux-2.6.14.4
-
-For this i have first applied random and nth patch rule from patch-o-matic.
-after that recompile my kernel with iptables.
-
-plz help me ..
-
-Thanks in advance.
-
-_________________________________________________________________
-NRIs, paying for Money Transfers to India? Use Money2India. It=92s FREE=20
-http://creative.mediaturf.net/creatives/msn_product.htm
+You are pushy and impatient.
 
 
