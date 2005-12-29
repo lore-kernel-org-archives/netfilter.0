@@ -1,12 +1,11 @@
-From: Pablo Neira Ayuso <pablo@eurodev.net>
-Subject: Re: STring Replacement Patch [Quick Response]
-Date: Thu, 29 Dec 2005 12:43:34 +0100
-Message-ID: <43B3CBE6.1090908@eurodev.net>
-References: <20051229104208.27463.qmail@web35912.mail.mud.yahoo.com>
+From: "Amresh Kumar" <amresh_srivastava@hotmail.com>
+Subject: Problem in patch-o-matic-ng
+Date: Thu, 29 Dec 2005 20:37:12 +0530
+Message-ID: <BAY105-F30F837C998381A90AFFCEF9E290@phx.gbl>
+References: <43B3CBE6.1090908@eurodev.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20051229104208.27463.qmail@web35912.mail.mud.yahoo.com>
+In-Reply-To: <43B3CBE6.1090908@eurodev.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Noman Liaquat <khankhn1@yahoo.com>
-Cc: netfilter-devel@lists.netfilter.org, rob@sterenborg.info, george.john@ch.easynet.net, mbr@cipherdyne.org, ishwar@pali.cps.cmich.edu, netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
-Noman Liaquat wrote:
-> I  have downloaded the version of patch-o-matic-ng
-> from netfilter websites and now my patch of string
-> controlling is working, below command is the proof of
-> that
+Hello to all,
 
-the string match is available since kernel 2.6.14, so you don't need
-pom-ng in any way.
+I  have downloaded the latest version of patch-o-matic-ng. from netfilter=20
+websites,also svn checkout for update  and now my patch of random and nth=20
+patch for load balancing , I have applied the following commands
+1.   iptables -A PREROUTING -i eth0 -p tcp --dport 80 -m state --state NEW =
 
-> #iptables -A FORWARD -m string --algo bm --string
-> "hello" -j DROP
-> 
-> ok that is fine. is there any way to alter that
-> packet. to replace--string
-> is there any patch available, if yes so how i can
-> implement that patch. 
+-m nth --counter 0 \
+--every 4 --packet 0  -j DNAT --to-destination 192.168.0.5:80
 
-No, this functionality isn't implemented yet: The only sane way to do
-this that I see at the moment is implementing a target called `STRING'.
-Matches don't allow packet modifications. See the API requirements:
+2. -A PREROUTING -i eth0 -p tcp --dport 80 -m state --state NEW -m random=20
+--average 25  \
+-j DNAT --to-destination 192.168.0.5:80
 
-static int match(const struct sk_buff *skb, ...)
-                  ^^^
+But  i am getting the following error
+iptables: No chain/target/match by that name.
 
-So, such target must implement the same features than the current
-`string' match does plus the --replace-string thing.
+My iptable version is   iptables-1.3.4 , Kernel version  linux-2.6.14.4
 
--- 
-Pablo
+For this i have first applied random and nth patch rule from patch-o-matic.
+after that recompile my kernel with iptables.
+
+plz help me ..
+
+Thanks in advance.
+
+_________________________________________________________________
+NRIs, paying for Money Transfers to India? Use Money2India. It=92s FREE=20
+http://creative.mediaturf.net/creatives/msn_product.htm
+
 
