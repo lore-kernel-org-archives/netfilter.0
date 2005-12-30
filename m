@@ -1,10 +1,11 @@
-From: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
-Subject: Where is "ip_conntrack_expect_free()"?
-Date: Fri, 30 Dec 2005 19:41:05 +0100
-Message-ID: <43B57F41.1010607@arcoscom.com>
+From: Kashif Ali Bukhari <kbukhari@gmail.com>
+Subject: howto bandwidth controlling with iptables
+Date: Fri, 30 Dec 2005 11:23:28 -0800
+Message-ID: <a3f524e0512301123k28e75a1cv7b8423c5d239a98d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,65 +16,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Well, I can compile after some workaround, but when "make=20
-modules_install" many pom-ng extension can't find=20
-"ip_conntrack_expect_free()" function.
+salam to all
+i want to control IP based bandwidth i configured transparent firewall
+which is 100% hided from users and all requests are forwarding from
+bridge very well and with packet drop on layer2
+i know things like rshaper to control bandwidth but it support to kernel 2.=
+4.x
+i want control it on 2.6.x any how to ?
+which can guide me to packet shaping in layer2 or may b 3
 
-I put:
-
-extern void ip_conntrack_expect_free( struct ip_conntrack_expect * exp );
-
-Into ip_conntrack_helper.h header file (after=20
-ip_conntrack_expect_alloc() function).
-
-But, I don't know what is the appropiate source (ip_conntrack_core.c I=20
-suppose) and I haven't got the neccesary knowledge to implement the=20
-"ip_conntrack_expect_free()" function.
-
-Any work-around about it?
-
-KERNEL=3D2.6.14.5
-
-Modules affected by this issue are:
-
-ip_nat_h323.ko
-ip_nat_mms.ko
-ip_conntrack_h323.ko
-ipt_TARPIT.ko
-ipt_XOR.ko
-ip_conntrack_mms.ko
-
-And I suppose that modules listed in a previous e-mail should be=20
-affected too.
-
-Any help?
-
-If anybody has the "ip_conntrack_expect_free()" function defined in any=20
-source can help, I only had to copy/paste into ip_conntrack_core.c=20
-source file.
-
-Thanks
-
---=20
-    Samuel D=EDaz Garc=EDa
-     Director Gerente
-ArcosCom Wireless, S.L.L.
-
-CIF: B11828068
-c/ Romero Gago, 19
-Arcos de la Frontera
-11630 - Cadiz
-
-http://www.arcoscom.com
-
-mailto:samueldg@arcoscom.com
-msn: samueldg@arcoscom.com
-
-M=F3vil: 651 93 72 48
-Tlfn.: 956 70 13 15
-Fax:   956 70 34 83
-
+--
+Syed Kashif Ali Bukhari
+Network Engineer
+Beaconhouse IT Services, Lahore Pakistan
 
