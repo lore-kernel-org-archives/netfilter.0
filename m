@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: STring Replacement Patch [Quick Response]
-Date: Fri, 30 Dec 2005 11:47:55 -0600
-Message-ID: <200512301147.55231.rob0@gmx.co.uk>
-References: <00f801c60c95$290a5040$1101a8c0@quebec>
+From: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Subject: Where is "ip_conntrack_expect_free()"?
+Date: Fri, 30 Dec 2005 19:41:05 +0100
+Message-ID: <43B57F41.1010607@arcoscom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <00f801c60c95$290a5040$1101a8c0@quebec>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +15,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thursday 2005-December-29 10:30, Richard Pickett wrote:
-> > I am waiting for quick response.
->
-> You are pushy and impatient.
+Well, I can compile after some workaround, but when "make=20
+modules_install" many pom-ng extension can't find=20
+"ip_conntrack_expect_free()" function.
 
-Perhaps, or it could merely be a serious deficiency in understanding 
-written English.
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+I put:
+
+extern void ip_conntrack_expect_free( struct ip_conntrack_expect * exp );
+
+Into ip_conntrack_helper.h header file (after=20
+ip_conntrack_expect_alloc() function).
+
+But, I don't know what is the appropiate source (ip_conntrack_core.c I=20
+suppose) and I haven't got the neccesary knowledge to implement the=20
+"ip_conntrack_expect_free()" function.
+
+Any work-around about it?
+
+KERNEL=3D2.6.14.5
+
+Modules affected by this issue are:
+
+ip_nat_h323.ko
+ip_nat_mms.ko
+ip_conntrack_h323.ko
+ipt_TARPIT.ko
+ipt_XOR.ko
+ip_conntrack_mms.ko
+
+And I suppose that modules listed in a previous e-mail should be=20
+affected too.
+
+Any help?
+
+If anybody has the "ip_conntrack_expect_free()" function defined in any=20
+source can help, I only had to copy/paste into ip_conntrack_core.c=20
+source file.
+
+Thanks
+
+--=20
+    Samuel D=EDaz Garc=EDa
+     Director Gerente
+ArcosCom Wireless, S.L.L.
+
+CIF: B11828068
+c/ Romero Gago, 19
+Arcos de la Frontera
+11630 - Cadiz
+
+http://www.arcoscom.com
+
+mailto:samueldg@arcoscom.com
+msn: samueldg@arcoscom.com
+
+M=F3vil: 651 93 72 48
+Tlfn.: 956 70 13 15
+Fax:   956 70 34 83
+
 
