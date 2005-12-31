@@ -1,12 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Port Forwarding - try again
-Date: Fri, 30 Dec 2005 21:27:48 +0100
-Message-ID: <001701c60d7f$7ffa5e00$0101000a@sterenborg.info>
-References: <2174.65.117.240.212.1135972729.squirrel@secure.wispertel.net>
+From: Edmundo Carmona <eantoranz@gmail.com>
+Subject: Re: [LARTC] Routing multiple conntections to the same ISP
+Date: Sat, 31 Dec 2005 10:48:13 -0400
+Message-ID: <65aa6af90512310648w7f95cfe5l877261bd36d13c52@mail.gmail.com>
+References: <000e01c60df2$167f8360$eeeea8c0@OLE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2174.65.117.240.212.1135972729.squirrel@secure.wispertel.net>
+In-Reply-To: <000e01c60df2$167f8360$eeeea8c0@OLE>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,81 +21,70 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> This is executed from rc.local on the old machine (IP
-> addresses altered to
-> protect the innocent):
-> 
-> echo "Turning on IP Forwarding"
-> /bin/echo "1" > /proc/sys/net/ipv4/ip_forward
-> 
-> echo "Setting IPMasq Rules"
-> /usr/sbin/ipmasqadm mfw -A -m 3 -r 10.0.0.1
-> 
-> echo "PortForwarding"
-> /usr/sbin/ipmasqadm portfw -a -P tcp -L 192.168.1.1 25 -R 10.0.0.1 25
-> 
-> The new machine that I'm running this on is a CentOS 4.2
-> x86-64 running
-> kernel 2.6.9-22.0.1.EL. Some of the research that I've done
-> indicates that
-> I should have something like this going on:
-> 
-> iptables -t nat -A PREROUTING -p tcp -i eth1 -d 192.168.1.1 --dport
-> 25 -j DNAT --to 10.0.0.1:25
-> iptables -A FORWARD -p tcp -i eth0 -d 10.0.0.1 --dport 25 -j ACCEPT
-> 
-> But that doesn't work. Then I ran across a site that added a couple
-> of statements to the mix: 
-> 
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> 
-> iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
-> 
-> The additional lines don't help my cause either and I am a
-> bit lost here.
-> If anyone has any helpful information I would greatly
-> appreciate it. Thanks.
+I think it's wrong.
 
-As I understand it, you want to forward smtp traffic from the internet
-to your smtp server.
-Replace the variables I inserted with the actual values.
+Your original configuration was only migssing one entry: from
+192.168.0.2 use table 4
 
+it would be something like:
+ip rule add pref 32000 from 192.168.0.2 table 4
 
-# No forwarding until the rules have been setup
-echo 0 > /proc/sys/net/ipv4/ip_forward
+and in table 4 you just need to have the default GW through the
+desired device and that devices IP as the source.
 
-# FORWARD policy DROP
-# This drops everything that doesn't match in the following rules
-$ipt -P FORWARD DROP
+Hope that's something you can start working with.
 
-# ACCEPT packets that have been matched by a state NEW rule
-$ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-# Allow NAT for your LAN
-$ipt -A FORWARD -m state --state NEW -i <if_lan> -o <if_inet> \
-  -s <net_lan> -j ACCEPT
-
-# Perform NAT for your LAN
-$ipt -t nat -A POSTROUTING -o <if_inet> -s <net_lan> \
-  -j SNAT --to <ip_inet>
-
-# Allow portforwarding for smtp server
-$ipt -A FORWARD -m state --state NEW -i <if_inet> -o <if_lan> \
-  -d <ip_smtp_svr> -p tcp --dport 25 -j ACCEPT
-
-# Perform portforwarding for smtp server
-$ipt -t nat -A PREROUTING -i eth1 [-d <ip_inet>] \
-  -p tcp --dport 25 -j DNAT --to <ip_smtp_svr>:25
-
-# Rules have been setup ; turn on forwarding
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-
-You can find a tutorial on iptables here :
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-
-
-Gr,
-Rob
-
+On 12/31/05, Niels Ole Salscheider <niels_ole@salscheider-online.de> wrote:
+>
+> Hi,
+>
+> I have established two connections to the same ISP. After that ip route l=
+ist
+> showed this:
+>
+> 195.14.247.94 dev ppp0  proto kernel  scope link  src 81.173.141.207
+> 195.14.247.94 dev ppp1  proto kernel  scope link  src 81.173.237.84
+> 192.168.0.0/24 dev eth0  proto kernel  scope link  src 192.168.0.1
+> default via 195.14.247.94 dev ppp0
+>
+> I want 192.168.0.2 to connect to the internet by ppp1 and all other
+> computers to connect by ppp0. So I entered following commands in the shel=
+l:
+>
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+> iptables --table filter --policy FORWARD ACCEPT
+>
+> iptables --table mangle --append PREROUTING -s 192.168.0.2 --jump MARK
+> --set-mark 4
+> ip rule add fwmark 4 table 4
+>
+> Then I modified the main table and table 4, so that they looked like this=
+:
+>
+> Server:~# ip route list
+> 195.14.247.94 dev ppp0  proto kernel  scope link  src 81.173.141.207
+> 192.168.0.0/24 dev eth0  proto kernel  scope link  src 192.168.0.1
+> default via 195.14.247.94 dev ppp0
+>
+> Server:~# ip route list table 4
+> 195.14.247.94 dev ppp1  proto kernel  scope link  src 81.173.237.84
+> 192.168.0.0/24 dev eth0  proto kernel  scope link  src 192.168.0.1
+> default via 195.14.247.94 dev ppp1
+>
+> an entered ip route flush cache in the shell.
+>
+> But after this, 192.168.0.2 could not connect to the internet anymore.
+>
+> What is wrong with my routing tables?
+>
+> Thanks,
+>
+> Ole
+> _______________________________________________
+> LARTC mailing list
+> LARTC@mailman.ds9a.nl
+> http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc
+>
+>
+>
 
