@@ -1,14 +1,12 @@
-From: =?utf-8?B?UmVuw6k=?= Pfeiffer <lynx@luchs.at>
-Subject: Re: largescale NAT
-Date: Sat, 31 Dec 2005 16:57:26 +0100
-Message-ID: <20051231155726.GA2423@agamemnon.luchs.at>
-References: <43B16A57.508@fiktiv.szgtikol.kando.hu>
+From: "Richard Pickett" <Richard.Pickett@CSRTechnologies.com>
+Subject: RE: STring Replacement Patch [Quick Response]
+Date: Sun, 1 Jan 2006 03:31:58 -0600
+Message-ID: <002f01c60eb6$3897ff80$1101a8c0@quebec>
+References: <200512301147.55231.rob0@gmx.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XBg9NAhDNArbJUtw"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <43B16A57.508@fiktiv.szgtikol.kando.hu>
+In-Reply-To: <200512301147.55231.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,48 +17,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+> On Thursday 2005-December-29 10:30, Richard Pickett wrote:
+> > > I am waiting for quick response.
+> >
+> > You are pushy and impatient.
+> 
+> Perhaps, or it could merely be a serious deficiency in understanding
+> written English.
 
---XBg9NAhDNArbJUtw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+My comment comes from seeing him request over and over for the list to
+do this for him and him always being pointed away, not from this one
+phrase here.
 
-On Dec 27, 2005 at 1722 +0100, DEXTER appeared and said:
-> [...]
-> So my question is: How to handle this situation? I mean, just 1 NAT
-> linux box is able to handle all the 400+ users with the above
-> situations? Or we have to do something like CONNLIMIT on source ips? Is
-> there possibilities to balance the traffic on 2 or more NAT box?
-
-Just a wild guess, I would try to look at the timeouts in
-/proc/sys/net/ipv4/netfilter/ and see if you can reduce some of them. In
-addition to that I would increase the IP pool for NAT on the outgoing
-interface(s). You don't need two boxes for that, just multiple IP
-addresses on the interface.
-
-Best wishes,
-Ren=C3=A9.
-
---=20
-  )\._.,--....,'``.      Let GNU/Linux work for you while you take a nap.
- /,   _.. \   _\  (`._ ,. R. Pfeiffer <lynx at luchs.at> + http://web.luchs=
-=2Eat/
-`._.-(,_..'--(,_..'`-.;.'  - System administration + Consulting + Teaching -
-
-
---XBg9NAhDNArbJUtw
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFDtqpmeMu5lRpXJ7kRAionAKDKZNvYy+VgMadX1WjZC+7iFwNnRwCgrEIZ
-InCCnQbm9GQm5/QDYnWEEQU=
-=sUq9
------END PGP SIGNATURE-----
-
---XBg9NAhDNArbJUtw--
 
