@@ -1,7 +1,7 @@
 From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: mark ftp passive connections
-Date: Mon, 02 Jan 2006 18:02:36 +0100
-Message-ID: <BAY103-F1F6A1885C88454A8FBD44B22D0@phx.gbl>
+Subject: intelligent load balancing
+Date: Mon, 02 Jan 2006 18:22:55 +0100
+Message-ID: <BAY103-F222975DA0359A6311DC097B22D0@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -14,19 +14,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-I would like how to mark ftp passive connections with connmark.
-Currently I have resolved this problem in the following manner:
+I'm doing simple load balancing with two cheap adsl lines using
+nth to SNAT packets:
 
-# mark ftp active conn (no problem)
---protocol tcp --dports 20,21 -j MARK --set-mark 1
-# mark ftp passive data conn with helper's help
--m helper --helper ftp -j MARK --set-mark 1
+-m nth -every 2 -packet 1 -SNAT adslA
+-m nth -every 2 -packet 2 -SNAT adslB
 
-TIA
+This is working quite good, but I would like to do an intelligent
+load bal. Here is how it is currently working:
+
+1=B0 socket -->> SNAT adslA --- 3k gif file
+2=B0 socket -->> SNAT adslB --- 700m iso Slackware 1=B0 cd image
+3=B0 socket -->> SNAT adslA --- 5k html text only page
+4=B0 socket -->> SNAT adslB --- 700m iso Slackware 2=B0 cd image
+5=B0 socket -->> SNAT adslA --- 2k png file
+6=B0 socket -->> SNAT adslB --- 40m tar.gz linux source file
+
+As you can see adslB line is full and adslA line is empty.
+Is there anyway to optimize this?
 
 
 
