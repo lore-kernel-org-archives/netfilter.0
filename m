@@ -1,9 +1,12 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: intelligent load balancing
-Date: Mon, 02 Jan 2006 18:22:55 +0100
-Message-ID: <BAY103-F222975DA0359A6311DC097B22D0@phx.gbl>
+From: Jorge Davila <davila@cablenet.com.ni>
+Subject: Re: pom-ng "condition" for 2.6 kernels
+Date: Mon, 02 Jan 2006 11:53:47 -0600
+Message-ID: <1136224428.5569.9.camel@davila.nicaraguaopensource.com>
+References: <43B8526C.4040706@arcoscom.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <43B8526C.4040706@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,28 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Samuel =?ISO-8859-1?Q?D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Cc: netfilter@lists.netfilter.org
 
-I'm doing simple load balancing with two cheap adsl lines using
-nth to SNAT packets:
+In the patches source code directory:
 
--m nth -every 2 -packet 1 -SNAT adslA
--m nth -every 2 -packet 2 -SNAT adslB
+KERNEL_DIR=3D/the/path/to/kernel-2.6.14/source/code/directory
+IPTABLES_DIR=3D/the/path/to/iptables/source/code/directory ./runme
+<pending|base|extras>
 
-This is working quite good, but I would like to do an intelligent
-load bal. Here is how it is currently working:
+Of course, you need the source code for your kernel and for iptables.
 
-1=B0 socket -->> SNAT adslA --- 3k gif file
-2=B0 socket -->> SNAT adslB --- 700m iso Slackware 1=B0 cd image
-3=B0 socket -->> SNAT adslA --- 5k html text only page
-4=B0 socket -->> SNAT adslB --- 700m iso Slackware 2=B0 cd image
-5=B0 socket -->> SNAT adslA --- 2k png file
-6=B0 socket -->> SNAT adslB --- 40m tar.gz linux source file
+Jorge.
 
-As you can see adslB line is full and adslA line is empty.
-Is there anyway to optimize this?
-
+El dom, 01-01-2006 a las 23:06 +0100, Samuel D=EDaz Garc=EDa escribi=F3:
+> Is there any way to apply "condition" patch into 2.6.14 kernel?
+>=20
+> I can see "linux" directory into "patchlets/condition" but not a=20
+> "linux-2.6" directory.
+>=20
+> Any help about it?
+>=20
+> Thanks
+>=20
+--=20
+Jorge Isaac Davila Lopez
 
 
