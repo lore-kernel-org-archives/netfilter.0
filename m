@@ -1,12 +1,11 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: stop accepting new connections on port 80
-Date: Tue, 3 Jan 2006 08:12:42 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0601030811560.23554@yvahk01.tjqt.qr>
-References: <20051207123420.V66917@uberwoo.hedgpeth.com>
-	<2486.192.168.3.8.1134153732.squirrel@192.168.3.8>
+Subject: Re: ebtables iptables DNAT something missing
+Date: Tue, 3 Jan 2006 08:21:57 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0601030818100.23554@yvahk01.tjqt.qr>
+References: <s39fe950.070@gwia201.syr.edu> <43A04698.2000807@mnemon.de>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2486.192.168.3.8.1134153732.squirrel@192.168.3.8>
+In-Reply-To: <43A04698.2000807@mnemon.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,20 +18,24 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Bill Hance <bill@billhance.com>
-Cc: netfilter@lists.netfilter.org, Spam User <spam@the-force.net>
+To: =?ISO-8859-1?Q?J=F6rg_Harmuth?= <harmuth@mnemon.de>
+Cc: netfilter@lists.netfilter.org
 
->what about entering a new rule, immediately before the one saying
+>> I thought I followed the recipe for DNAT on a transparent firewall 
+>> correctly with the statement below, and sniffing shows that the traffic 
+>> is redirected. But although the client receives the return responses 
+>> from the server at the dnat destination - the client basically ignores 
+>> it. (possibly as unexpected noise). What am I missing?
+>> 
+>> iptables -t nat -D PREROUTING -p tcp --dport 80 -m physdev 
+>> --physdev-in eth1 -m mark --mark 9 -j DNAT --to-destination 
+>> 192.168.12.12:80
 >
->-dport 80 -m state --state NEW -j ACCEPT
->
->the new one would be
->
->-dport 80 -m state --state NEW -j DROP
+>Are you sure ? -D means delete. Given that this is a typo, maybe you are
+>missing a SNAT rule ? Also maybe, that a tcpdump helps.
 
--j REJECT is preferred here, otherwise users wait almost forever.
-I have used it in the past and works fine (i.e. lets established ones go 
-on)
+You cannot use Layer3-DNAT on a bridge (which is Layer2).
+
 
 
 Jan Engelhardt
