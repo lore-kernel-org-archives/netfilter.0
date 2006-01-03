@@ -1,15 +1,10 @@
-From: KOVACS Krisztian <hidden@sch.bme.hu>
-Subject: Re: pom-ng "condition" for 2.6 kernels
-Date: Tue, 3 Jan 2006 16:03:22 +0100
-Message-ID: <200601031603.22960@nienna>
-References: <43B8526C.4040706@arcoscom.com>
-	<1136298300.2565.10.camel@davila.nicaraguaopensource.com>
-	<43BA8EA0.5060907@arcoscom.com>
+From: Glenn Schmidt <glenns@deakin.edu.au>
+Subject: ICMP packets won't go through NAT table
+Date: Wed,  4 Jan 2006 02:17:55 +1100
+Message-ID: <1136301475.43ba95a30a5fe@mail.deakin.edu.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43BA8EA0.5060907@arcoscom.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,26 +15,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: Samuel =?iso-8859-1?q?D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
 
+I am using iptables on my NAT gateway but it refuses to apply NAT to any ICMP
+packets. NAT works correctly for other types of packets. The issue seems to be
+that ICMP packets don't pass through the 'nat' table at all. They enter and
+leave the box, without ever seeing the NAT rules.
 
-  Hi,
+To demonstrate the problem, I first flushed all my iptables rules, and made sure
+there was no other filtering running on the gateway. Then, I apply one or more
+of the following rules:
 
-On Tuesday 03 January 2006 15.48, Samuel D=EDaz Garc=EDa wrote:
-> Jorge, I don't know if you stand me, but the problem isn't if I know ho=
-w
-> to use patch-o-matic.
->
-> The problem is a bug in patch-o-matic (or mistake) that don't allow to
-> use "condition" patch with 2.6.x kernels.
->
-> I explain in the message you reply.
+iptables --table nat --append PREROUTING --protocol icmp --jump LOG --log-prefix
+"ICMP packet: "
+iptables --table nat --append POSTROUTING --protocol icmp --jump LOG
+--log-prefix "ICMP packet: "
+iptables --table nat --append OUTPUT --protocol icmp --jump LOG --log-prefix
+"ICMP packet: "
 
-  It's not a bug, pom-ng simply does not contain the 2.6 version of the=20
-condition match.
+I then generate some ICMP packets by pinging or tracerouting either a host
+accessed via the gateway, or the gateway itself. The packets get through, but
+they are not logged. And there are no other iptables rules active except the
+logging ones shown above.
 
---=20
-KOVACS Krisztian
+If I apply the same rules to chains in the 'filter' table instead of the 'nat'
+table, I get packets logged. So if ICMP packets are passing through the filter
+table and not getting dropped, why isn't the nat table seeing any of these
+packets?
+
+Again, the problem only seems to occur with ICMP packets, not TCP or UDP.
+
+I am using iptables v1.3.1 on a 2.6.12 kernel.
+
+My apologies if this has been addressed before, I did quite a few different
+Google searches and haven't come up with anything. Is there a bug, or any
+likely conflict/configuration option that I might be overlooking?
+
+Thanks,
+Glenn
 
