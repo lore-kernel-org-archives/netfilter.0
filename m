@@ -1,11 +1,11 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Subject: Re: intelligent load balancing
-Date: Tue, 03 Jan 2006 10:17:05 +0100
-Message-ID: <BAY103-F148EEBC380AA0B3B51509CB22C0@phx.gbl>
-References: <Pine.LNX.4.61.0601030841240.23554@yvahk01.tjqt.qr>
+Date: Tue, 3 Jan 2006 10:28:56 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0601031027550.3566@yvahk01.tjqt.qr>
+References: <BAY103-F148EEBC380AA0B3B51509CB22C0@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0601030841240.23554@yvahk01.tjqt.qr>
+In-Reply-To: <BAY103-F148EEBC380AA0B3B51509CB22C0@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +16,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: jengelh@linux01.gwdg.de
+To: Marco Berizzi <pupilla@hotmail.com>
 Cc: netfilter@lists.netfilter.org
 
 
-Jan Engelhardt wrote:
+> The main problem are 'download' packets which can be per-connection
+> balanced only.
 
-> > I'm doing simple load balancing with two cheap adsl lines using
-> > nth to SNAT packets:
-> >
-> > -m nth -every 2 -packet 1 -SNAT adslA
-> > -m nth -every 2 -packet 2 -SNAT adslB
-> >
-> > This is working quite good, but I would like to do an intelligent
-> > load bal.
->
->try lartc/tc.
->
-> > As you can see adslB line is full and adslA line is empty.
-> > Is there anyway to optimize this?
->
->Use tc, a per-packet load balancing; -m nth is just a per-connection
->balancing.
-
-this would be useful for 'upload' packets not for download. Right?
-The main problem are 'download' packets which can be per-connection
-balanced only.
-Thanks for the reply.
+Correct, and you can't do anything about it unless your ISP supports some 
+sort of bonding or does some tc on _their_ side.
 
 
+Jan Engelhardt
+-- 
 
