@@ -1,10 +1,12 @@
-From: "Michael D. Berger" <m.d.berger@ieee.org>
-Subject: Leap Second Kernel Panic??
-Date: Mon, 2 Jan 2006 21:38:07 -0500
-Message-ID: <000001c6100e$bb06a800$2801a8c0@MBRC40>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: stop accepting new connections on port 80
+Date: Tue, 3 Jan 2006 08:12:42 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0601030811560.23554@yvahk01.tjqt.qr>
+References: <20051207123420.V66917@uberwoo.hedgpeth.com>
+	<2486.192.168.3.8.1134153732.squirrel@192.168.3.8>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <2486.192.168.3.8.1134153732.squirrel@192.168.3.8>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,41 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Bill Hance <bill@billhance.com>
+Cc: netfilter@lists.netfilter.org, Spam User <spam@the-force.net>
 
-I have two linux boxes that run all the time.  I was away for
-a few days over New Year, and came home to find both boxes
-locked up with this on the screens, with the only differences
-shown by yy and xxxxxxxx:
+>what about entering a new rule, immediately before the one saying
+>
+>-dport 80 -m state --state NEW -j ACCEPT
+>
+>the new one would be
+>
+>-dport 80 -m state --state NEW -j DROP
 
-   Red Hat Enterprise Linux WS release 4(Nahant)
-   Kernel 2.6.9-5.EL on an i686
-
-   mbrcyy login: Clock: inserting leap second: 23:59:60 UTC
-   Kernel panic - not syncing: net/ipv4/tcp_timer.c:211:
-   spin_lock(net/ipv4/tcp_minisocks.c:xxxxxxxx) already locked by
-   net/ipv4/tcp_ipv4.c/1790
-
-   yy = 32, xxxxxxxx = f5fee080
-   yy = 20, xxxxxxxx = c276aa40
-
-I add that both boxes are running:
-   ntpd (but only one talks to the outside world)
-   net_queue_d, a new and rather complex libipq daemon I am developing
-
-I of course suspect my libipq daemon, but the apparent relation
-to the leap second is peculiar.
-
-Assistance would be much appreciated.  If additional information would
-help, please tell me what it is.
-
-Thanks,
-Mike.
-
---
-Michael D. Berger
-m.d.berger@ieee.org 
+-j REJECT is preferred here, otherwise users wait almost forever.
+I have used it in the past and works fine (i.e. lets established ones go 
+on)
 
 
+Jan Engelhardt
+-- 
 
