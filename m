@@ -1,13 +1,10 @@
-From: "Jesus M. Salvo Jr." <jesus.salvo@optusnet.com.au>
-Subject: Re: pptp_conntrack_nat and kernel 2.6.15
-Date: Tue, 3 Jan 2006 23:04:48 +1100
-Message-ID: <200601032304.49004.jesus.salvo@optusnet.com.au>
-References: <200601032253.08997.jesus.salvo@optusnet.com.au>
+From: "C.Rathnasinghe" <chamindar@sad.gov.lk>
+Subject: yahoo messenger voice enable withiptables
+Date: Tue, 03 Jan 2006 14:56:43 +0600
+Message-ID: <43BA3C4B.6000004@sad.gov.lk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200601032253.08997.jesus.salvo@optusnet.com.au>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 03 January 2006 22:53, Jesus M. Salvo Jr. wrote:
->
-> So am I right to assume that:
->
-> 1) The patch-o-matic for pptp_conntrack_nat is no longer needed if one uses
-> 2.6.15 kernels ?
->
-> 2) A linux gateway with 2.6.15 kernel and IP and VPN masquerading and with
-> the above modules loaded  will finally allow mutliple clients within the
-> LAN to connect to a remote PPTP server ??
->
-> Thanks.
->
-> John
+Hi
 
-Do I need to update iptables from 1.2.11 to 1.3.x for pptp_conntrack_nat to 
-work ?
+I need  to configure yahoo messnger voice with iptables, any=20
+configuration example would be grate. I have tryied with Masquerade but=20
+no luck.
+
+chaminda
+--=20
+
+
+UNIX is user friendly. However, it isn't IDIOT friendly.
+----					 -----
+
+-----------------
+--   \\\|///   --
+--   /// \\\   --
+--   \* | */   --
+--    \\-//    --
+--    -----    --
+--     ---     --
+-----------------
+
+.satan der D=E4mon
+
+.satan the daemon
 
 
