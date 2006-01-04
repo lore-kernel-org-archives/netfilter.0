@@ -1,13 +1,13 @@
-From: Clemens Eisserer <linuxhippy@gmail.com>
-Subject: Re: Which modules are reuqired for masquerading?
-Date: Wed, 4 Jan 2006 18:07:18 +0000
-Message-ID: <194f62550601041007w4eeca11bg@mail.gmail.com>
-References: <194f62550601040748q3b2ee549r@mail.gmail.com>
-	<43BBF74C.3000406@prosyst.com>
+From: "Jesus M. Salvo Jr." <jesus.salvo@optusnet.com.au>
+Subject: Re: Two interfaces - question
+Date: Thu, 5 Jan 2006 06:35:31 +1100
+Message-ID: <200601050635.31254.jesus.salvo@optusnet.com.au>
+References: <200601041103.12130.marcin.giedz@eulerhermes.pl>
+	<43BBAE9F.9080307@saysnetsoft.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43BBF74C.3000406@prosyst.com>
+In-Reply-To: <43BBAE9F.9080307@saysnetsoft.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,18 +20,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Boryan Yotov <yotov@prosyst.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Thanks, this really helps a lot!
-
-well, then - let cross-compiling begin :(
-
-lg Clemens
-
-> 1. ip_conntrack
-> 2. iptable_nat
-> 3. ipt_MASQUERADE (optional: Only when you really want to use the
-> MASQUERADE target)
+On Wednesday 04 January 2006 22:16, vikrant wrote:
+> Marcin Giedz wrote:
+> >Hello,
+> >
+> >In my INtel Blade server I have two ethernet interfaces: eth0, eth1. Now
+> > only one is working, the another one is not configured. However I'd like
+> > to have something like dynamic routing: if one interfaces is down the
+> > second one if
 >
+> i am getting little confused when u say interface goes down please
+> explain .
+> what do u mean from interface does down whether interface card become
+> inactive or network cable get damage or ISP connection goes down please
+> clarify it .
 >
+> >up. If first returns up the second one goes down.
+> >
+> >Does anyone know how can I do this?
+> >
+> >Thx,
+> >Marcin
+>
+> Thanks
+> Vikrant
+
+What you are looking for is the bonding driver / interface.
+Have a look in your filesystem for the file:
+
+/usr/src/<kernel>/Documentation/networking/bonding.txt
+
+
 
