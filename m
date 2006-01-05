@@ -1,11 +1,14 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Which modules are reuqired for masquerading?
-Date: Thu, 5 Jan 2006 12:35:29 -0500 (EST)
-Message-ID: <Pine.LNX.4.60.0601051234070.10470@darkstar.sysinfo.com>
-References: <194f62550601040748q3b2ee549r@mail.gmail.com>
+From: Eduardo Ukstin <ukstin@gmail.com>
+Subject: Re: pptp_conntrack_nat and kernel 2.6.15
+Date: Thu, 5 Jan 2006 18:12:19 +0000
+Message-ID: <bb8a5cd0601051012q4eb9d269y99221fb9f0e5141c@mail.gmail.com>
+References: <200601032253.08997.jesus.salvo@optusnet.com.au>
+	<200601060415.17980.jesus.salvo@optusnet.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <194f62550601040748q3b2ee549r@mail.gmail.com>
+In-Reply-To: <200601060415.17980.jesus.salvo@optusnet.com.au>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,52 +19,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Clemens Eisserer <linuxhippy@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+do you know if this kernel works with ipsec too??
 
-On Wed, 4 Jan 2006, Clemens Eisserer wrote:
+Regards
+Eduardo Ukstin
 
-> Hello,
+
+On 1/5/06, Jesus M. Salvo Jr. <jesus.salvo@optusnet.com.au> wrote:
+> On Tuesday 03 January 2006 22:53, Jesus M. Salvo Jr. wrote:
+> >
+> > So am I right to assume that:
+> >
+> > 1) The patch-o-matic for pptp_conntrack_nat is no longer needed if one =
+uses
+> > 2.6.15 kernels ?
+> >
+> > 2) A linux gateway with 2.6.15 kernel and IP and VPN masquerading and w=
+ith
+> > the above modules loaded  will finally allow mutliple clients within th=
+e
+> > LAN to connect to a remote PPTP server ??
+> >
+> > Thanks.
+> >
+> > John
 >
-> I would like to use my Nokia770 interet-tablet as wireless router but
-> iptables says that table "nat" does not exist and I need to insmod or
-> update kernel.
+> I would like to report that multiple outgoing PPTP connections from withi=
+n a
+> LAN via IP / VPN / PPTP masquerading now works with 2.6.15 ... without ha=
+ving
+> to use patch-o-matic extras pptp_conntrack_nat
 >
-> So I think to load the modules is definitivly the easier way, but
-> which modules are required for netfilter to be able to do
-> masquerading/nat?
+> You __will__ have to load the following modules for it to work:
 >
-> Thank you in advance, lg Clemens
+> /sbin/modprobe ip_nat_pptp
+> /sbin/modprobe ip_conntrack_pptp
 >
 >
 
-I'd suggest you just forget the whole idea due to the fact you are too 
-lazy to do even minor research and investigation  on your own prior to 
-tapping lists such as this for real assistance.
 
-thanks
-
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFDvVjkst+vzJSwZikRApCiAJ4tiyHT02atmnnQdpI7odL+vUXvNQCeNpVf
-hwC+cYdf8wkuBAjj6Btwmms=
-=+RBr
------END PGP SIGNATURE-----
+--
+Eduardo Ukstin
+GNU/Linux User #328388
 
