@@ -1,12 +1,11 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: processing non ip traffic
-Date: Wed, 4 Jan 2006 17:50:19 -0800 (PST)
-Message-ID: <20060105015019.477.qmail@web52408.mail.yahoo.com>
-References: <43BBF74C.3000406@prosyst.com>
+From: ludi <myhapwcforever@gmail.com>
+Subject: Ftp (pass mode ) and Iptables
+Date: Thu, 5 Jan 2006 11:51:37 +0800
+Message-ID: <d27cd2010601041951n33224017m@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43BBF74C.3000406@prosyst.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hiyas,=20
-  Under the 2.6 kernel, can you process non-ip
-protocol traffic?  I am curious about this mainly in
-bridge mode and am not concerned about explicit rule
-declaration (so maybe it all all gathered under a
-catch-all rule).
-
--Scott
-
-
-	=09
-__________________________________________=20
-Yahoo! DSL =96 Something to write home about.=20
-Just $16.99/mo. or less.=20
-dsl.yahoo.com=20
-
+SSBoYXZlIGEgZnRwIHNlcnZlciBhbmQgcnVuIGEgc2NyaXB0IG9mIGlwdGFibGVzIG9uIHRoZSBz
+ZXJ2ZXIgKG5vdCBhCm5hdC1nYXRld2F5KS4gIFRoZSBmb2xsb3cgaXMgdGhlIHNjcmlwdDoKCmlw
+dGFibGVzIC1GIE9VVFBVVAppcHRhYmxlcyAtRiBJTlBVVAppcHRhYmxlcyAtRiBGT1JXQVJECgoK
+CmlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAtaSBldGgwIC1zIDAvMCAtZCAkSE9NRV9BRERSIC0t
+ZHBvcnQgNTMgLWogQUNDRVBUCmlwdGFibGVzIC1BIElOUFVUIC1wIHRjcCAtaSBldGgwIC1zIDAv
+MCAtZCAkSE9NRV9BRERSIC0tZHBvcnQgMjIgLWogQUNDRVBUCmlwdGFibGVzIC1BIElOUFVUIC1w
+IHVkcCAtaSBldGgwIC1zIDAvMCAtZCAkSE9NRV9BRERSIC0tc3BvcnQgNTMgLWogQUNDRVBUCmlw
+dGFibGVzIC1BIElOUFVUIC1wIHRjcCAtaSBldGgwIC1zIDAvMCAtZCAkSE9NRV9BRERSIC0tZHBv
+cnQgODAgLWogQUNDRVBUCmlwdGFibGVzIC1BIElOUFVUIC1wIGljbXAgLWkgZXRoMCAtcyAwLzAg
+LWQgJEhPTUVfQUREUiAtbSBsaW1pdAotLWxpbWl0IDYvbSAtLWxpbWl0LWJ1cnN0IDYgLWogQUND
+RVBUCmlwdGFibGVzIC1BIElOUFVUIC1pIGxvIC1zIDAvMCAtZCAxMjcuMC4wLjEvMzIgLWogQUND
+RVBUCmlwdGFibGVzIC1BIElOUFVUIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRF
+RCAtaiBBQ0NFUFQKaXB0YWJsZXMgLVAgSU5QVVQgRFJPUAoKCmlwdGFibGVzIC1BIE9VVFBVVCAt
+byBsbyAtcyAxMjcuMC4wLjEgLWogQUNDRVBUCmlwdGFibGVzIC1BIE9VVFBVVCAtbyBldGgwIC1z
+ICRIT01FX0FERFIgLWogQUNDRVBUCmlwdGFibGVzIC1QIE9VVFBVVCBEUk9QCk5vdywgbXkgcXVl
+c3Rpb24gaXMgdGhhdCBJIGNhbiBub3QgY29ubmVjdCB0aGUgZnRwIHNlcnZlciB3aXRoIHBhc3MK
+bW9kZSB1bnRpbCBJIHN0b3AgdGhlIGlwdGFibGVzLiBJIGhhZCB0cmllZCB0aGUgaXBfY29ubnRy
+YWNrX2Z0cC5vCm1vZHVsZSwgYnV0IGl0IGRpZG50IGVmZmVjdC4KQ291bGQgYW55b25lIGdpdmUg
+bWUgc29tZSBpZGVhPwo=
 
