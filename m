@@ -1,9 +1,9 @@
-From: ludi <myhapwcforever@gmail.com>
-Subject: Ftp (pass mode ) and Iptables
-Date: Thu, 5 Jan 2006 11:51:37 +0800
-Message-ID: <d27cd2010601041951n33224017m@mail.gmail.com>
+From: Tharindu Rukshan Bamunuarachchi <bsd.tharindu@gmail.com>
+Subject: No chain target match by that name
+Date: Thu, 5 Jan 2006 10:39:57 +0600
+Message-ID: <d23987670601042039r6bab4299i3fae872424e77dd1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -19,23 +19,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-SSBoYXZlIGEgZnRwIHNlcnZlciBhbmQgcnVuIGEgc2NyaXB0IG9mIGlwdGFibGVzIG9uIHRoZSBz
-ZXJ2ZXIgKG5vdCBhCm5hdC1nYXRld2F5KS4gIFRoZSBmb2xsb3cgaXMgdGhlIHNjcmlwdDoKCmlw
-dGFibGVzIC1GIE9VVFBVVAppcHRhYmxlcyAtRiBJTlBVVAppcHRhYmxlcyAtRiBGT1JXQVJECgoK
-CmlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAtaSBldGgwIC1zIDAvMCAtZCAkSE9NRV9BRERSIC0t
-ZHBvcnQgNTMgLWogQUNDRVBUCmlwdGFibGVzIC1BIElOUFVUIC1wIHRjcCAtaSBldGgwIC1zIDAv
-MCAtZCAkSE9NRV9BRERSIC0tZHBvcnQgMjIgLWogQUNDRVBUCmlwdGFibGVzIC1BIElOUFVUIC1w
-IHVkcCAtaSBldGgwIC1zIDAvMCAtZCAkSE9NRV9BRERSIC0tc3BvcnQgNTMgLWogQUNDRVBUCmlw
-dGFibGVzIC1BIElOUFVUIC1wIHRjcCAtaSBldGgwIC1zIDAvMCAtZCAkSE9NRV9BRERSIC0tZHBv
-cnQgODAgLWogQUNDRVBUCmlwdGFibGVzIC1BIElOUFVUIC1wIGljbXAgLWkgZXRoMCAtcyAwLzAg
-LWQgJEhPTUVfQUREUiAtbSBsaW1pdAotLWxpbWl0IDYvbSAtLWxpbWl0LWJ1cnN0IDYgLWogQUND
-RVBUCmlwdGFibGVzIC1BIElOUFVUIC1pIGxvIC1zIDAvMCAtZCAxMjcuMC4wLjEvMzIgLWogQUND
-RVBUCmlwdGFibGVzIC1BIElOUFVUIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRF
-RCAtaiBBQ0NFUFQKaXB0YWJsZXMgLVAgSU5QVVQgRFJPUAoKCmlwdGFibGVzIC1BIE9VVFBVVCAt
-byBsbyAtcyAxMjcuMC4wLjEgLWogQUNDRVBUCmlwdGFibGVzIC1BIE9VVFBVVCAtbyBldGgwIC1z
-ICRIT01FX0FERFIgLWogQUNDRVBUCmlwdGFibGVzIC1QIE9VVFBVVCBEUk9QCk5vdywgbXkgcXVl
-c3Rpb24gaXMgdGhhdCBJIGNhbiBub3QgY29ubmVjdCB0aGUgZnRwIHNlcnZlciB3aXRoIHBhc3MK
-bW9kZSB1bnRpbCBJIHN0b3AgdGhlIGlwdGFibGVzLiBJIGhhZCB0cmllZCB0aGUgaXBfY29ubnRy
-YWNrX2Z0cC5vCm1vZHVsZSwgYnV0IGl0IGRpZG50IGVmZmVjdC4KQ291bGQgYW55b25lIGdpdmUg
-bWUgc29tZSBpZGVhPwo=
+netfilter@lists.netfilter.org
+
+hi all,
+ when i tried to add following rule,
+
+ $IPTABLES -t nat -N Proxy
+
+ $IPTABLES -t nat -A Proxy -m iprange --dst-range
+100.298.10.9-100.298.10.40 -j RETURN
+
+ i got following error,
+
+ iptables: No chain/target/match by that name
+
+ Please comment,
+
+ iptable version is 1.2.11
+ kernel version is 2.4.29-lug
+
+ Regards
+ --
+Tharindu Rukshan Bamunuarachchi
+all fabrications are subject to decay
 
