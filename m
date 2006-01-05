@@ -1,10 +1,13 @@
-From: Dragomir Todorov <drago@maxcom-bg.com>
-Subject: VPN Clients behind firewall
-Date: Thu, 05 Jan 2006 14:40:50 +0200
-Message-ID: <43BD13D2.5000200@maxcom-bg.com>
+From: Sp0oKeR <spooker@gmail.com>
+Subject: Re: VPN Clients behind firewall
+Date: Thu, 5 Jan 2006 10:54:30 -0200
+Message-ID: <9255886c0601050454u3c59906we2d812e114360a64@mail.gmail.com>
+References: <43BD13D2.5000200@maxcom-bg.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <43BD13D2.5000200@maxcom-bg.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,34 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Dragomir Todorov <drago@maxcom-bg.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
-I have a problem with VPN Clients behind firewall..
-           |         Linux                    
-PPTP  -+-> Masq and --> Internet --> PPTP
-Client  |         Firewall                             Server
-
-The problem is that my PPTP clients behind firewall couldn't connect
-here is the system log
-pptpd[8688]: GRE: read(fd=6,buffer=804e560,len=8196) from PTY failed: 
-status = -1 error = Input/output error, usually caused by unexpected 
-termination of pppd, check option syntax and pppd logs
-pptpd[8688]: CTRL: PTY read or GRE write failed (pty,gre)=(6,7)
-
-And when Clients are directly connected to internet everithing is fine...
-
-the Linux mashine is with kernel 2.4.29 and iptables 1.3.2
-I've read a lot for documents about VPN-Masq and the pach on kernel 
-2.2.x but there is nothing about 2.4.29..
-Is the problem with masq or enything else?? Please help....
-
--- 
-Dragomir Todorov
-Network Administrator
-Maxcom Ltd. Burgas, Bulgaria
-AS34909
-
-
+IElmIHlvdSBoYXZlIG1vcmUgdGhhbiBvbmUgdnBuIGNsaWVudCBiZWhpbmQgeW91ciBsaW51eCBm
+aXJld2FsbCB5b3UKbmVlZCB0byB1c2UgdGhpcyBwYXRjaAogaHR0cDovL3d3dy5uZXRmaWx0ZXIu
+b3JnL3Byb2plY3RzL3BhdGNoLW8tbWF0aWMvcG9tLWV4dHJhLmh0bWwjcG9tLWV4dHJhLXBwdHAt
+Y29ubnRyYWNrLW5hdAoKUmVnYXJkcywKCk9uIDEvNS8wNiwgRHJhZ29taXIgVG9kb3JvdiA8ZHJh
+Z29AbWF4Y29tLWJnLmNvbT4gd3JvdGU6Cj4gSGksCj4gSSBoYXZlIGEgcHJvYmxlbSB3aXRoIFZQ
+TiBDbGllbnRzIGJlaGluZCBmaXJld2FsbC4uCj4gICAgICAgICAgICB8ICAgICAgICAgTGludXgK
+PiBQUFRQICAtKy0+IE1hc3EgYW5kIC0tPiBJbnRlcm5ldCAtLT4gUFBUUAo+IENsaWVudCAgfCAg
+ICAgICAgIEZpcmV3YWxsICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTZXJ2ZXIKPgo+IFRo
+ZSBwcm9ibGVtIGlzIHRoYXQgbXkgUFBUUCBjbGllbnRzIGJlaGluZCBmaXJld2FsbCBjb3VsZG4n
+dCBjb25uZWN0Cj4gaGVyZSBpcyB0aGUgc3lzdGVtIGxvZwo+IHBwdHBkWzg2ODhdOiBHUkU6IHJl
+YWQoZmQ9NixidWZmZXI9ODA0ZTU2MCxsZW49ODE5NikgZnJvbSBQVFkgZmFpbGVkOgo+IHN0YXR1
+cyA9IC0xIGVycm9yID0gSW5wdXQvb3V0cHV0IGVycm9yLCB1c3VhbGx5IGNhdXNlZCBieSB1bmV4
+cGVjdGVkCj4gdGVybWluYXRpb24gb2YgcHBwZCwgY2hlY2sgb3B0aW9uIHN5bnRheCBhbmQgcHBw
+ZCBsb2dzCj4gcHB0cGRbODY4OF06IENUUkw6IFBUWSByZWFkIG9yIEdSRSB3cml0ZSBmYWlsZWQg
+KHB0eSxncmUpPSg2LDcpCj4KPiBBbmQgd2hlbiBDbGllbnRzIGFyZSBkaXJlY3RseSBjb25uZWN0
+ZWQgdG8gaW50ZXJuZXQgZXZlcml0aGluZyBpcyBmaW5lLi4uCj4KPiB0aGUgTGludXggbWFzaGlu
+ZSBpcyB3aXRoIGtlcm5lbCAyLjQuMjkgYW5kIGlwdGFibGVzIDEuMy4yCj4gSSd2ZSByZWFkIGEg
+bG90IGZvciBkb2N1bWVudHMgYWJvdXQgVlBOLU1hc3EgYW5kIHRoZSBwYWNoIG9uIGtlcm5lbAo+
+IDIuMi54IGJ1dCB0aGVyZSBpcyBub3RoaW5nIGFib3V0IDIuNC4yOS4uCj4gSXMgdGhlIHByb2Js
+ZW0gd2l0aCBtYXNxIG9yIGVueXRoaW5nIGVsc2U/PyBQbGVhc2UgaGVscC4uLi4KPgo+IC0tCj4g
+RHJhZ29taXIgVG9kb3Jvdgo+IE5ldHdvcmsgQWRtaW5pc3RyYXRvcgo+IE1heGNvbSBMdGQuIEJ1
+cmdhcywgQnVsZ2FyaWEKPiBBUzM0OTA5Cj4KPgo+Cj4KCgotLQo9PT09PT09PT09PT09PT09PT09
+PT0KIFJvZHJpZ28gUmliZWlybyBNb250b3JvCkRlc2Vudm9sdmVkb3IgQlJNQWxpbnV4CiAgc3Bv
+b2tlckBicmMuY29tLmJyCiAgICAgICBSSENFL0xQSUMtSQo9PT09PT09PT09PT09PT09PT09PT0K
 
