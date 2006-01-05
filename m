@@ -1,10 +1,11 @@
-From: =?UTF-8?B?TWFsdGUgU2NocsO2ZGVy?= <MalteSch@gmx.de>
-Subject: IPv6 stateful in kernel 2.6.15 & nf_conntrack ?
-Date: Wed, 04 Jan 2006 21:06:37 +0100
-Message-ID: <43BC2ACD.6070904@gmx.de>
+From: "DELORT Stephane" <Stephane.DELORT@murex.com>
+Subject: state ESTABLISHED,RELATED ignored within a bridge
+Date: Thu, 5 Jan 2006 17:02:39 +0100
+Message-ID: <200601051604.k05G4ATB028462@zig.murex.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +16,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Hello,
-I am trying to figure out how to do ipv6 stateful inspection with the
-new kernel 2.6.15. Currently I am using the patch from USAGI for 2.6.14
-but they seem to have dropped the state-match in their patch for 2.6.15.
+ Hello all,
 
-Is there stateful inspection in 2.6.15 for ipv6 (there is connection
-tracking ...) and how could I use it?
+ when I use a rule :
+   $IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+   $IPTABLES -A INPUT -j DROP
 
-Thanks for help
+ The server cannot ping or telnet any other host !=20
+=20
+ My interfaces config :
+   ifconfig eth0 0.0.0.0 promisc
+   ifconfig eth1 0.0.0.0 promisc
+   brctl addbr br0
+   brctl addif br0 eth0
+   brctl addif br0 eth1
+   ifconfig br0 10.0.0.8 netmask 255.255.240.0 up
+=20
+ Firewall rules :
+   echo "1" > /proc/sys/net/ipv4/ip_forward
+   IPTABLES=3D'/sbin/iptables'
+   $IPTABLES -F
+   $IPTABLES -X
+   $IPTABLES -A INPUT -p tcp -d 10.0.0.8 --dport 22 -j ACCEPT
+   $IPTABLES -A INPUT -d 10.0.0.8   -m state --state RELATED,ESTABLISHED =
+-j ACCEPT
+(1) $IPTABLES -A INPUT -d 10.0.0.8   -m state --state INVALID -j DROP=20
+(2) $IPTABLES -A INPUT  -j DROP  =20
 
-Please CC me since I am not subscribed to this list.
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (MingW32)
-Comment: GnuPT 2.6.2.1 by EQUIPMENTE.DE
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+ This machine is to be a bridge shaping traffic.
+ It does its job OK  but if I include the line (1) or (2) the machine =
+cannot contact anyother !
+=20
+ I did :  $IPTABLES -A INPUT -i lo -j ACCEPT
+ and even : $IPTABLES -A INPUT -s 10.0.0.8 -j ACCEPT
+ But not to avail.
+=20
+ I guess something is going wrong with the DROP instruction.
+=20
+ My config is a Fedora Core 4 with kernel version 2.6.11-1.1369_FC4. =
+Iptables version : 1.3.0
+ This script used to work fine with an old redhat, kernel was 2.4.18.
+=20
+ Is there a patch to apply to the kernel ? Is this a known bug ?=20
+ I saw some already have this knid of problem but I did not found any =
+answer.
+=20
+=20
+ Thanks in advance,
+ St=E9phane
 
-iD8DBQFDvCrN4q3E2oMjYtURAsGvAJ9SBOCNlE1Yxymbeo8HCk0rK0ekkwCeI7y9
-ltVw2q8etJ3W4YETkNJsDxs=
-=hnKZ
------END PGP SIGNATURE-----
+
+
+=20
+=20
 
