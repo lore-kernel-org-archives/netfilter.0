@@ -1,11 +1,13 @@
-From: "DELORT Stephane" <Stephane.DELORT@murex.com>
-Subject: RE: state ESTABLISHED,RELATED ignored within a bridge
-Date: Thu, 5 Jan 2006 18:11:37 +0100
-Message-ID: <200601051713.k05HD7TB004486@zig.murex.com>
+From: "Jesus M. Salvo Jr." <jesus.salvo@optusnet.com.au>
+Subject: Re: pptp_conntrack_nat and kernel 2.6.15
+Date: Fri, 6 Jan 2006 04:15:17 +1100
+Message-ID: <200601060415.17980.jesus.salvo@optusnet.com.au>
+References: <200601032253.08997.jesus.salvo@optusnet.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <200601032253.08997.jesus.salvo@optusnet.com.au>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,42 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: cbrenton@chrisbrenton.org
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-
- Hi chris,
-
- the default policy is to accept any outgoing traffic.
-=20
- however, ping and telnet work fine before I add one of these rules.
-=20
- ++
- St=E9phane
-=20
-
------Message d'origine-----
-De : Chris Brenton [mailto:cbrenton@chrisbrenton.org]
-Envoy=E9 : jeudi 5 janvier 2006 18:04
-=C0 : DELORT Stephane
-Cc : netfilter@lists.netfilter.org
-Objet : Re: state ESTABLISHED,RELATED ignored within a bridge
-
-
-On Thu, 2006-01-05 at 17:02 +0100, DELORT Stephane wrote:
+On Tuesday 03 January 2006 22:53, Jesus M. Salvo Jr. wrote:
 >
->  when I use a rule :
->    $IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
->    $IPTABLES -A INPUT -j DROP
->=20
->  The server cannot ping or telnet any other host !=20
+> So am I right to assume that:
+>
+> 1) The patch-o-matic for pptp_conntrack_nat is no longer needed if one uses
+> 2.6.15 kernels ?
+>
+> 2) A linux gateway with 2.6.15 kernel and IP and VPN masquerading and with
+> the above modules loaded  will finally allow mutliple clients within the
+> LAN to connect to a remote PPTP server ??
+>
+> Thanks.
+>
+> John
 
-This only lets replies back through. You need a rule that permits the
-initial session establishment as well. (ICMP type 8 and TCP/23).
+I would like to report that multiple outgoing PPTP connections from within a 
+LAN via IP / VPN / PPTP masquerading now works with 2.6.15 ... without having 
+to use patch-o-matic extras pptp_conntrack_nat
 
-HTH,
-Chris
+You __will__ have to load the following modules for it to work:
 
-
+/sbin/modprobe ip_nat_pptp
+/sbin/modprobe ip_conntrack_pptp
 
