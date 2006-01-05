@@ -1,13 +1,11 @@
-From: Boryan Yotov <yotov@prosyst.com>
-Subject: Re: Ftp (pass mode ) and Iptables
-Date: Thu, 05 Jan 2006 11:18:03 +0100
-Message-ID: <43BCF25B.8000409@prosyst.com>
-References: <d27cd2010601041951n33224017m@mail.gmail.com>
-	<43BCE38B.5080007@prosyst.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: processing non ip traffic
+Date: Thu, 5 Jan 2006 11:53:42 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0601051119390.21555@yvahk01.tjqt.qr>
+References: <20060105015019.477.qmail@web52408.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43BCE38B.5080007@prosyst.com>
+In-Reply-To: <20060105015019.477.qmail@web52408.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,62 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Scott MacKay <scottmackay@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-Boryan Yotov wrote:
-> ludi wrote:
-> 
->> I have a ftp server and run a script of iptables on the server (not a
->> nat-gateway).  The follow is the script:
->>
->> iptables -F OUTPUT
->> iptables -F INPUT
->> iptables -F FORWARD
->>
->>
->>
->> iptables -A INPUT -p udp -i eth0 -s 0/0 -d $HOME_ADDR --dport 53 -j 
->> ACCEPT
->> iptables -A INPUT -p tcp -i eth0 -s 0/0 -d $HOME_ADDR --dport 22 -j 
->> ACCEPT
->> iptables -A INPUT -p udp -i eth0 -s 0/0 -d $HOME_ADDR --sport 53 -j 
->> ACCEPT
->> iptables -A INPUT -p tcp -i eth0 -s 0/0 -d $HOME_ADDR --dport 80 -j 
->> ACCEPT
->> iptables -A INPUT -p icmp -i eth0 -s 0/0 -d $HOME_ADDR -m limit
->> --limit 6/m --limit-burst 6 -j ACCEPT
->> iptables -A INPUT -i lo -s 0/0 -d 127.0.0.1/32 -j ACCEPT
->> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->> iptables -P INPUT DROP
->>
->>
->> iptables -A OUTPUT -o lo -s 127.0.0.1 -j ACCEPT
->> iptables -A OUTPUT -o eth0 -s $HOME_ADDR -j ACCEPT
->> iptables -P OUTPUT DROP
->> Now, my question is that I can not connect the ftp server with pass
->> mode until I stop the iptables. I had tried the ip_conntrack_ftp.o
->> module, but it didnt effect.
->> Could anyone give me some idea?
-> 
-> 
-> Do you have TLS or SSL encryption over the FTP's server command channel?
-> 
-> 
-> 
+>Hiyas, 
+>  Under the 2.6 kernel, can you process non-ip
+>protocol traffic?  I am curious about this mainly in
+>bridge mode and am not concerned about explicit rule
+>declaration (so maybe it all all gathered under a
+>catch-all rule).
 
-Ok, since you are sure there is no TLS or SSL encryption on the command 
-channel, then it is probably the firewall setup script, which you use.
+Yes.
+  ebtables -p 0x41
+should select IPv6 traffic. This works with any protocol number/name.
 
-I suppose the script above is the complete one and it is ran on the FTP 
-server itself. If this is the case, then I see no definition for TCP/UDP 
-port 21 (where the FTP server's command channel is listening on). If 
-port 21 is closed (and your proftpd is not configured to listen on other 
-command port), then you won't be able to connect to the FTP server at all.
 
-Othersides, since you mention that PASV mode is not working, then I 
-guess you already have command channel connection open between both 
-client and server? Or not?
-
-And, please reply to the list (it makes it easier to track).
+Jan Engelhardt
+-- 
+| Alphagate Systems, http://alphagate.hopto.org/
+| jengelh's site, http://jengelh.hopto.org/
 
