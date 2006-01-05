@@ -1,14 +1,12 @@
-From: Eduardo Ukstin <ukstin@gmail.com>
-Subject: Re: pptp_conntrack_nat and kernel 2.6.15
-Date: Thu, 5 Jan 2006 18:12:19 +0000
-Message-ID: <bb8a5cd0601051012q4eb9d269y99221fb9f0e5141c@mail.gmail.com>
-References: <200601032253.08997.jesus.salvo@optusnet.com.au>
-	<200601060415.17980.jesus.salvo@optusnet.com.au>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: state ESTABLISHED,RELATED ignored within a bridge
+Date: Thu, 05 Jan 2006 22:59:52 +0100
+Message-ID: <1136498392.6695.5.camel@anduril.intranet.cartel-securite.net>
+References: <200601051713.k05HD7TB004486@zig.murex.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200601060415.17980.jesus.salvo@optusnet.com.au>
-Content-Disposition: inline
+In-Reply-To: <200601051713.k05HD7TB004486@zig.murex.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,49 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: DELORT Stephane <Stephane.DELORT@murex.com>
+Cc: cbrenton@chrisbrenton.org, netfilter@lists.netfilter.org
 
-do you know if this kernel works with ipsec too??
+Le jeudi 05 janvier 2006 =E0 18:11 +0100, DELORT Stephane a =E9crit :
+>  the default policy is to accept any outgoing traffic.
+>  however, ping and telnet work fine before I add one of these rules.
 
-Regards
-Eduardo Ukstin
-
-
-On 1/5/06, Jesus M. Salvo Jr. <jesus.salvo@optusnet.com.au> wrote:
-> On Tuesday 03 January 2006 22:53, Jesus M. Salvo Jr. wrote:
-> >
-> > So am I right to assume that:
-> >
-> > 1) The patch-o-matic for pptp_conntrack_nat is no longer needed if one =
-uses
-> > 2.6.15 kernels ?
-> >
-> > 2) A linux gateway with 2.6.15 kernel and IP and VPN masquerading and w=
-ith
-> > the above modules loaded  will finally allow mutliple clients within th=
-e
-> > LAN to connect to a remote PPTP server ??
-> >
-> > Thanks.
-> >
-> > John
->
-> I would like to report that multiple outgoing PPTP connections from withi=
-n a
-> LAN via IP / VPN / PPTP masquerading now works with 2.6.15 ... without ha=
-ving
-> to use patch-o-matic extras pptp_conntrack_nat
->
-> You __will__ have to load the following modules for it to work:
->
-> /sbin/modprobe ip_nat_pptp
-> /sbin/modprobe ip_conntrack_pptp
->
->
+Bridged traffic is seen in FORWARD chain, not INPUT nor OUTPUT.
 
 
---
-Eduardo Ukstin
-GNU/Linux User #328388
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
