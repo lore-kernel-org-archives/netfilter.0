@@ -1,12 +1,12 @@
-From: Nick Drage <nickd@metastasis.org.uk>
-Subject: Re: command owner match support
-Date: Fri, 6 Jan 2006 13:31:03 +0000
-Message-ID: <20060106133103.GF7546@metastasis.org.uk>
-References: <43BCC326.4000302@gmail.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: state ESTABLISHED,RELATED ignored within a bridge
+Date: Fri, 06 Jan 2006 15:18:48 +0100
+Message-ID: <1136557128.30718.0.camel@anduril.intranet.cartel-securite.net>
+References: <200601060823.k068MwTB021814@zig.murex.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <43BCC326.4000302@gmail.com>
+In-Reply-To: <200601060823.k068MwTB021814@zig.murex.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: DELORT Stephane <Stephane.DELORT@murex.com>
+Cc: cbrenton@chrisbrenton.org, netfilter@lists.netfilter.org
 
-On Thu, Jan 05, 2006 at 12:56:38 -0600, Ryan L wrote:
+Le vendredi 06 janvier 2006 =E0 09:21 +0100, DELORT Stephane a =E9crit :
+>  The problem occurs with the br0 interface through which I cannot
+> reach anything once the $IPTABLES -A INPUT -j DROP is activated.
 
-> I'm trying to block specific applications through iptables. However I
-> keep getting the following error message: Jan  4 22:44:05 thor
-> ipt_owner: pid, sid and command matching not supported anymore Is
-> there any way to add this back into the newer kernels or to do this
-> without it?
+From which machine can't you reach anything ? The bridge ? Or any LAN
+host behind the bridge ?
 
-I'm not seeing that message when I try and use --cmd-owner or
---pid-owner, I just get "iptables: Invalid argument".  However the
-commands are listed in the output of "iptables --owner --help" for
-IPTables 1.3.3.
 
-I can only presume that that functionality has silently "gone away".  I
-can't see anything on mailing lists or in the netfilter documentation,
-are there any references for when this was removed, or why, or what it
-should be replaced with, if anything?
-
--- 
-When the going gets tough, the tough call for close air support.
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
