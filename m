@@ -1,14 +1,11 @@
-From: ludi <myhapwcforever@gmail.com>
-Subject: Re: Ftp (pass mode ) and Iptables
-Date: Fri, 6 Jan 2006 14:30:23 +0800
-Message-ID: <d27cd2010601052230r6453298aq@mail.gmail.com>
-References: <43BCE38B.5080007@prosyst.com>
-	<AHELLDGFDKOONCHKKFCCEELOCBAA.eric.marty1@libertysurf.fr>
+From: "DELORT Stephane" <Stephane.DELORT@murex.com>
+Subject: RE: state ESTABLISHED,RELATED ignored within a bridge
+Date: Fri, 6 Jan 2006 09:21:27 +0100
+Message-ID: <200601060823.k068MwTB021814@zig.murex.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <AHELLDGFDKOONCHKKFCCEELOCBAA.eric.marty1@libertysurf.fr>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,16 +16,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: cbrenton@chrisbrenton.org, netfilter@lists.netfilter.org
 
-SSdtIHNvcnJ5LiBJIGxvc3QgdGhlIHJ1bGVzIG9mIGZ0cCBJIGluc2VydCB3aGVuIEkgc2V0dXAg
-dGhlIHByb2Z0cC4KaXB0YWJsZXMgLUEgSU5QVVQgMSAtcCB0Y3AgIC1zIDAvMCAtZCAkSE9NRV9B
-RERSIC0tZHBvcnQgODg4OCAtaiAgQUNDRVBUCjspCgpJIGNhbiBjb25uZWN0IHRoZSBmdHAgaWYg
-SSBkaXNhYmxlZCB0aGUgaXB0YWJsZXMuIE90aGVyd2lzZSwgaXQgd291bGQKdGltZW91dCB3aGVu
-IGN1dGVmdHAgbWFkZSBhIGxpc3QuCkkgZW5mb3JjZWQgdG8gdXNlIHRoZSBQT1JUIGNvbW1hbmQg
-LCBhbmQgaXQgd29ya2VkIHdlbGwuCkkgdGhpbmsgdGhlIGNvbW1hbmQgY2hhbm5lbCBlc3RhYmxp
-c2hlZCwgaG93ZXZlciwgdGhlIHJlcXVpcmUgd2FzCmZpbHRlcmVkIHdoZW4gdGhlIGN1dGVmdHAg
-bWFrZSBhIGRhdGEgY29ubmVjdGlvbiAuU28gSSB3YW50IHRvIGtub3cKd2hldGhlciB0aGUgaXB0
-YWJsZXMgY2FuIHJlc29sdmUgdGhlIHByb21ibGVtPwo=
+
+ Thank you Cedric,
+
+ I already know this and the bridge is working fine.
+ The problem occurs with the br0 interface through which I cannot reach =
+anything once the $IPTABLES -A INPUT -j DROP is activated.
+ Output is in accept mode and established,related packets are to be =
+accepted - while they are obvisouly not, and this is the problem.
+
+ Regards,
+ St=E9phane
+=20
+
+
+-----Message d'origine-----
+De : Cedric Blancher [mailto:blancher@cartel-securite.fr]
+Envoy=E9 : jeudi 5 janvier 2006 23:00
+=C0 : DELORT Stephane
+Cc : cbrenton@chrisbrenton.org; netfilter@lists.netfilter.org
+Objet : RE: state ESTABLISHED,RELATED ignored within a bridge
+
+
+Le jeudi 05 janvier 2006 =E0 18:11 +0100, DELORT Stephane a =E9crit :
+>  the default policy is to accept any outgoing traffic.
+>  however, ping and telnet work fine before I add one of these rules.
+
+Bridged traffic is seen in FORWARD chain, not INPUT nor OUTPUT.
+
+
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: =
+FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
