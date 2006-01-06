@@ -1,11 +1,15 @@
-From: "DELORT Stephane" <Stephane.DELORT@murex.com>
-Subject: RE: state ESTABLISHED,RELATED ignored within a bridge
-Date: Fri, 6 Jan 2006 15:49:45 +0100
-Message-ID: <200601061451.k06EpJTB019768@zig.murex.com>
+From: "Jesus M. Salvo Jr." <jesus.salvo@optusnet.com.au>
+Subject: Re: pptp_conntrack_nat and kernel 2.6.15
+Date: Sat, 7 Jan 2006 09:24:24 +1100
+Message-ID: <200601070924.24644.jesus.salvo@optusnet.com.au>
+References: <200601032253.08997.jesus.salvo@optusnet.com.au>
+	<200601060415.17980.jesus.salvo@optusnet.com.au>
+	<bb8a5cd0601051012q4eb9d269y99221fb9f0e5141c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <bb8a5cd0601051012q4eb9d269y99221fb9f0e5141c@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,41 +20,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: cbrenton@chrisbrenton.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
- The bridge cannot reach the other machines on the LAN.
-=20
- The traffic of others machines can pass through the bridge correctly =
-(on both side).
+> On 1/5/06, Jesus M. Salvo Jr. <jesus.salvo@optusnet.com.au> wrote:
+> > I would like to report that multiple outgoing PPTP connections from
+> > within a LAN via IP / VPN / PPTP masquerading now works with 2.6.15 ...
+> > without having to use patch-o-matic extras pptp_conntrack_nat
+> >
+> > You __will__ have to load the following modules for it to work:
+> >
+> > /sbin/modprobe ip_nat_pptp
+> > /sbin/modprobe ip_conntrack_pptp
 
- This make me think the Forward rules of Filter are OK, but not the =
-INPUT ones.
-=20
+On Friday 06 January 2006 05:12, Eduardo Ukstin wrote:
+> do you know if this kernel works with ipsec too??
+>
+> Regards
+> Eduardo Ukstin
+>
 
+I have no idea ... although I cannot see why this or previous kernels cannot 
+do so.
 
------Message d'origine-----
-De : Cedric Blancher [mailto:blancher@cartel-securite.fr]
-Envoy=E9 : vendredi 6 janvier 2006 15:19
-=C0 : DELORT Stephane
-Cc : cbrenton@chrisbrenton.org; netfilter@lists.netfilter.org
-Objet : RE: state ESTABLISHED,RELATED ignored within a bridge
+I was reading your original post about "VPN rules". Although a bit old, the 
+following link will still have some relevant information:
 
+	http://www.faqs.org/docs/Linux-HOWTO/VPN-Masquerade-HOWTO.html
 
-Le vendredi 06 janvier 2006 =E0 09:21 +0100, DELORT Stephane a =E9crit :
->  The problem occurs with the br0 interface through which I cannot
-> reach anything once the $IPTABLES -A INPUT -j DROP is activated.
-
-From which machine can't you reach anything ? The bridge ? Or any LAN
-host behind the bridge ?
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: =
-FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
 
