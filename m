@@ -1,12 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: what version of iptables and POM to install ?
-Date: Fri, 6 Jan 2006 12:11:45 +0100 (CET)
-Message-ID: <64272.193.173.147.3.1136545905.squirrel@webmail.sterenborg.info>
-References: <015901c612b1$8f950fe0$2f00a8c0@TRINTASETE>
+From: Jamie McParland <jamie@listserv.newberg.k12.or.us>
+Subject: Bypass transparent proxy in iptables?
+Date: Thu, 05 Jan 2006 17:37:06 -0800
+Message-ID: <BFE309C2.4DB92%jamie@listserv.newberg.k12.or.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <015901c612b1$8f950fe0$2f00a8c0@TRINTASETE>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,17 +18,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+This is probably the wrong place to ask this but i don't know where else to
+turn. I'm using IPCOP as my distro and we use iptables to do transparent
+proxy with squid.
 
-On Fri, January 6, 2006 12:08, Pedro Drimel Neto wrote:
-> I would like to install iptables with POM to use the "module" nth...
-> what version of iptables and patch-o-matig-ng should I install ? Kernel
-> is 2.6.11
+I have one site that is balling up in squid and need to totally bypass
+squid. Doing an ACL in squid doesn't work.
 
-The latest snapshot ?
+I know i could somehow put some rule before the transparent rule and bypass
+it that way but i can't seem to figure it out. I asked the ipcop list but
+didn't have any luck there. I thought the IPTable gurus might have an idea.
 
-
-Gr,
-Rob
+Thanks, 
+Jamie
 
 
 
