@@ -1,12 +1,12 @@
-From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
-Subject: Re: Bypass transparent proxy in iptables?
-Date: Fri, 06 Jan 2006 14:16:34 +0200
-Message-ID: <43BE5FA2.6050800@gmail.com>
-References: <BFE309C2.4DB92%jamie@listserv.newberg.k12.or.us>
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: command owner match support
+Date: Fri, 6 Jan 2006 13:31:03 +0000
+Message-ID: <20060106133103.GF7546@metastasis.org.uk>
+References: <43BCC326.4000302@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BFE309C2.4DB92%jamie@listserv.newberg.k12.or.us>
+Content-Disposition: inline
+In-Reply-To: <43BCC326.4000302@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +17,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Jamie McParland wrote:
+On Thu, Jan 05, 2006 at 12:56:38 -0600, Ryan L wrote:
 
->This is probably the wrong place to ask this but i don't know where else to
->turn. I'm using IPCOP as my distro and we use iptables to do transparent
->proxy with squid.
->
->I have one site that is balling up in squid and need to totally bypass
->squid. Doing an ACL in squid doesn't work.
->
->I know i could somehow put some rule before the transparent rule and bypass
->it that way but i can't seem to figure it out. I asked the ipcop list but
->didn't have any luck there. I thought the IPTable gurus might have an idea.
->
->Thanks, 
->Jamie
->
->
->
->
->  
->
-Let's asume you are using a rule like this one:
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
---to-port 3128
+> I'm trying to block specific applications through iptables. However I
+> keep getting the following error message: Jan  4 22:44:05 thor
+> ipt_owner: pid, sid and command matching not supported anymore Is
+> there any way to add this back into the newer kernels or to do this
+> without it?
 
-Let's asume the site you'll be bypassing is www.McParland.com.
+I'm not seeing that message when I try and use --cmd-owner or
+--pid-owner, I just get "iptables: Invalid argument".  However the
+commands are listed in the output of "iptables --owner --help" for
+IPTables 1.3.3.
 
-Just add a rule before the REDIRECT one like this:
+I can only presume that that functionality has silently "gone away".  I
+can't see anything on mailing lists or in the netfilter documentation,
+are there any references for when this was removed, or why, or what it
+should be replaced with, if anything?
 
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -d 
-www.McParland.com -j RETURN
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT 
---to-port 3128
-
-That would cause tcp packets coming from eth0 with destination port 80 
-and destination host www.McParland.com
-to stop travelling PREROUTING chain of the nat table. E.g. they won't 
-hit the REDIRECT rule and will not be
-redirected to squid's port.
-
-
-regards,
-Georgi Alexandrov
+-- 
+When the going gets tough, the tough call for close air support.
 
