@@ -1,11 +1,13 @@
-From: "DELORT Stephane" <Stephane.DELORT@murex.com>
-Subject: RE: state ESTABLISHED,RELATED ignored within a bridge
-Date: Fri, 6 Jan 2006 09:21:27 +0100
-Message-ID: <200601060823.k068MwTB021814@zig.murex.com>
+From: Boryan Yotov <yotov@prosyst.com>
+Subject: Re: Ftp (pass mode ) and Iptables
+Date: Fri, 06 Jan 2006 10:37:09 +0100
+Message-ID: <43BE3A45.1060802@prosyst.com>
+References: <43BCE38B.5080007@prosyst.com>	<AHELLDGFDKOONCHKKFCCEELOCBAA.eric.marty1@libertysurf.fr>
+	<d27cd2010601052230r6453298aq@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <d27cd2010601052230r6453298aq@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,43 +18,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: cbrenton@chrisbrenton.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+ludi wrote:
+> I'm sorry. I lost the rules of ftp I insert when I setup the proftp.
+> iptables -A INPUT 1 -p tcp  -s 0/0 -d $HOME_ADDR --dport 8888 -j  ACCEPT
+> ;)
+> 
+> I can connect the ftp if I disabled the iptables. Otherwise, it would
+> timeout when cuteftp made a list.
+> I enforced to use the PORT command , and it worked well.
+> I think the command channel established, however, the require was
+> filtered when the cuteftp make a data connection .So I want to know
+> whether the iptables can resolve the promblem?
+
+What has tcp port 8888 to do with FTP? Or you changed the FTP server
+settings to bind itself on port 8888? Correct?
+
+The ipt_conntrack_ftp module is listenning for PORT and PASV on the
+command channel running on port 21. If you bind your FTP server to
+another port then you need to correct the include file of the module
+as well:
+
+ From include/linux/netfilter_ipv4/ip_conntrack_ftp.h:
+	#define FTP_PORT        21
+change to
+	#define FTP_PORT	8888
+
+And then recompile the module.
+
+I'm not sure and had no time to look if the module itself accept
+parameters. If its true then you don't have to compile anything,
+simply find out the ipt_conntrack_ftp insmod options.
 
 
- Thank you Cedric,
-
- I already know this and the bridge is working fine.
- The problem occurs with the br0 interface through which I cannot reach =
-anything once the $IPTABLES -A INPUT -j DROP is activated.
- Output is in accept mode and established,related packets are to be =
-accepted - while they are obvisouly not, and this is the problem.
-
- Regards,
- St=E9phane
-=20
-
-
------Message d'origine-----
-De : Cedric Blancher [mailto:blancher@cartel-securite.fr]
-Envoy=E9 : jeudi 5 janvier 2006 23:00
-=C0 : DELORT Stephane
-Cc : cbrenton@chrisbrenton.org; netfilter@lists.netfilter.org
-Objet : RE: state ESTABLISHED,RELATED ignored within a bridge
-
-
-Le jeudi 05 janvier 2006 =E0 18:11 +0100, DELORT Stephane a =E9crit :
->  the default policy is to accept any outgoing traffic.
->  however, ping and telnet work fine before I add one of these rules.
-
-Bridged traffic is seen in FORWARD chain, not INPUT nor OUTPUT.
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: =
-FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
 
