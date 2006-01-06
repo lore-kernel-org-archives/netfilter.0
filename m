@@ -1,12 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: RE: state ESTABLISHED,RELATED ignored within a bridge
-Date: Thu, 05 Jan 2006 22:59:52 +0100
-Message-ID: <1136498392.6695.5.camel@anduril.intranet.cartel-securite.net>
-References: <200601051713.k05HD7TB004486@zig.murex.com>
+From: "Jojo Solis" <jojo.solis@summitmedia.com.ph>
+Subject: Routing problem (resend)
+Date: Fri, 6 Jan 2006 08:40:31 +0800
+Message-ID: <CBF2220F040BC54584E69D569377DC4DC56844@smg-mail.summitmedia.com.ph>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200601051713.k05HD7TB004486@zig.murex.com>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: DELORT Stephane <Stephane.DELORT@murex.com>
-Cc: cbrenton@chrisbrenton.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le jeudi 05 janvier 2006 =E0 18:11 +0100, DELORT Stephane a =E9crit :
->  the default policy is to accept any outgoing traffic.
->  however, ping and telnet work fine before I add one of these rules.
+=20
+Hi everyone,
+=20
+In my server I have Three ethernet interfaces, eth0, eth1 and eth2, Eth0
+is connected to my LAN, eth1 is connected to ISP1 and eth2 is connected
+to ISP2. My goal is i want to use eth1 for all http outgoing traffic
+only and let eth2 handle any other traffic. Is it possible in iptables?
+can you help me creating a script to accomplish my goal?
+=20
+=20
+Thanks!
+=20
+Jojo
 
-Bridged traffic is seen in FORWARD chain, not INPUT nor OUTPUT.
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
 
