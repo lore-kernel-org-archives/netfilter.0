@@ -1,15 +1,16 @@
-From: Ryan L <drseus88@gmail.com>
-Subject: Re: command owner match support
-Date: Sat, 07 Jan 2006 10:58:36 -0600
-Message-ID: <43BFF33C.9050304@gmail.com>
-References: <43BCC326.4000302@gmail.com>
-	<20060106133103.GF7546@metastasis.org.uk>
-	<43BF214A.4050801@lists.netfilter.org>
-	<20060107140410.GK7546@metastasis.org.uk>
+From: Eduardo Ukstin <ukstin@gmail.com>
+Subject: Re: pptp_conntrack_nat and kernel 2.6.15
+Date: Sat, 7 Jan 2006 18:30:38 +0000
+Message-ID: <bb8a5cd0601071030n491c136et405139f82519b10e@mail.gmail.com>
+References: <200601032253.08997.jesus.salvo@optusnet.com.au>
+	<200601060415.17980.jesus.salvo@optusnet.com.au>
+	<bb8a5cd0601051012q4eb9d269y99221fb9f0e5141c@mail.gmail.com>
+	<200601070924.24644.jesus.salvo@optusnet.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060107140410.GK7546@metastasis.org.uk>
+In-Reply-To: <200601070924.24644.jesus.salvo@optusnet.com.au>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,51 +21,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Nick Drage wrote:
+Thanks,
 
->On Fri, Jan 06, 2006 at 08:02:50 -0600, drseus88@gmail.com wrote:
->  
->
->>Nick Drage wrote:
->>    
->>
->>>On Thu, Jan 05, 2006 at 12:56:38 -0600, Ryan L wrote:
->>>      
->>>
->
->Hi,
->
->  
->
->>I have found nothing about why it was removed or it should be replaced
->>with either. That is the main thing I'm trying to find out. The
->>message you get is the same as what I get when running the command in
->>console.  But if you check /var/log/messages right afterward, it will
->>show the message I posted. Sorry. I should have clarified that a bit
->>more. Also, I'm using iptables 1.3.4 with a 2.6.14 kernel.
->>    
->>
->
->It's very weird that it's just vanished.  Please post me this reply but
->to the mailing list just so everyone can see it, and then I'll send off
->an email to the developers, see if we can get a response.
->
->Thanks.
->
->  
->
-Oh, did you mean like this?
+I founded this how to, i've solved the problem, but I'll read it!
 
-Ok this is how it went in order:
-> 1) Run: iptables -I OUTPUT -m owner --cmd-owner firefox -j LOG
-> 2) It gives me this message: "iptables: Invalid argument"
-> 3) Check /var/log/messages
-> 4) It shows the following message:  "Jan 4 22:44:05 thor > ipt_owner: 
-> pid, sid and command matching not supported anymore"
-> 5) I say "WTF!?"
+Regards
+Eduardo Ukstin
 
-
+> I was reading your original post about "VPN rules". Although a bit old, t=
+he
+> following link will still have some relevant information:
+>
+>         http://www.faqs.org/docs/Linux-HOWTO/VPN-Masquerade-HOWTO.html
 
