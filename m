@@ -1,46 +1,77 @@
-From: "Amresh Kumar" <amresh_srivastava@hotmail.com>
-Subject: iptables: No chain/target/match by that name
-Date: Sat, 07 Jan 2006 12:42:16 +0530
-Message-ID: <BAY105-F281A346E9A68ED0764F10F9E200@phx.gbl>
+From: Harald Welte <laforge@netfilter.org>
+Subject: [ANNOUNCE] multiple netfilter.org releases
+Date: Sat, 7 Jan 2006 16:56:18 +0100
+Message-ID: <20060107155618.GM4898@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Rr/zTE2kOLnfAECX"
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
 
-Hi ,
 
-I am using  iptables rule for Load Balancing with random* or nth but i am 
-getting the error
+--Rr/zTE2kOLnfAECX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-iptables: No chain/target/match by that name
+Hi!
 
-iptables rule :  iptables  -A PREROUTING -i eth0 -p tcp --dport 80 -m state 
---state NEW -m nth --counter 0 --every 4 --packet 0  -j DNAT 
---to-destination 192.168.0.5:80
+Today the netfilter project released
 
-iptables -A PREROUTING -i eth0 -p tcp --dport 80 -m state --state NEW -m 
-random --average 25 -j DNAT --to-destination 192.168.0.5:80
+libnfnetlink-0.0.14
+	ftp://ftp.netfilter.org/pub/libnfnetlink/libnfnetlink-0.0.14.tar.bz2
+	This is the low-level communications library
 
-My kernel version is  2.6.9-5.0.3.EL
-Iptable version = iptables v1.3.4
+libnetfilter_conntrack-0.0.30
+	ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/libnetfilter_conntrack-=
+0.0.30.tar.bz2
+	This is the userspace library for the ip_conntrack netlink interface
+	It is currently only used by the conntrack program (see below)
+	Needs libnfnetlink >=3D 0.0.13
 
-can anyone  explain.
+conntrack-1.00beta1
+	ftp://ftp.netfilter.org/pub/conntrack/conntrack-1.00beta1.tar.bz2
+	The userspace connection tracking table administration program
+	Needs libnetfilter_conntrack-0.0.30
 
-Thanks..
+btw: Support for building debian packages is now included in the
+abovementioned releases (Thanks to Max Kellermann).
 
-_________________________________________________________________
-A Camera Sells every 2 Minutes on eBay. Get Your's at a Great Price Now! 
-http://adfarm.mediaplex.com/ad/ck/4686-26272-10936-699?ck=Cameras
+Happy firewalling,
+	Harald (for the Netfilter Core Team)
 
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--Rr/zTE2kOLnfAECX
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQFDv+SiXaXGVTD0i/8RAn3SAJsHbvba4g4C0rEIfwqo6NasRLftdQCfW7V6
+Mx4KsnIGSmnl7IM1R4jzEc4=
+=TH07
+-----END PGP SIGNATURE-----
+
+--Rr/zTE2kOLnfAECX--
 
