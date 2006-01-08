@@ -1,10 +1,14 @@
-From: Daniel <damage@rooties.de>
-Subject: iptables - losing packets between mangle and nat
-Date: Sun, 8 Jan 2006 01:51:02 +0100
-Message-ID: <200601080151.02899.damage@rooties.de>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: VPN rules
+Date: Sat, 7 Jan 2006 22:46:40 -0600
+Message-ID: <200601072246.40928.rob0@gmx.co.uk>
+References: <bb8a5cd0601041418t1645bf5cke057e6e371280c45@mail.gmail.com>
+	<9255886c0601050404r2c09053bo42096794b31fee13@mail.gmail.com>
+	<bb8a5cd0601050431q45d60c55i284c81ca8c38f5a5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <bb8a5cd0601050431q45d60c55i284c81ca8c38f5a5@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,36 +21,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter List <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hi,
-I'm trying to create an net-to-net VPN.
+On Thursday 2006-January-05 06:31, Eduardo Ukstin wrote:
+> iptables -A INPUT -p 47 ... (or gre)
+> iptables -A INPUT -p 50 ...
+> iptables -A INPUT -p 51 ...
+>
+> and none of these received any package. I'm afraid this is a
+> proprietary vpn, at least the client is.
 
-{192.168.0.0/24}--[192.168.0.1]-VPN/INET-[192.168.1.1]--{192.168.1.0/24}
-       LAN           GATEWAY                GATEWAY           LAN
+You will have to ask the vendor for information, or do some low-level 
+investigation (i.e., packet sniffing) on your own.
 
-Everything seems to be fine:
-1. I'm able to ping 192.168.1.1 from 192.168.0.1 (so, racoon allready
-established the tunnel
-2. I'm able to ping 192.168.0.1 from 192.168.1.1 (so, both ways are ok)
-3. if I try to ping 192.168.1.1 from 192.168.0.0/24 then racoon is
-establishing the tunnel
-4. if I try to ping 192.168.0.1 from 192.168.1.0/24 then racoon is
-establishing the tunnel
-
-But in case 3 und 4 the client from the LAN does not got an reply on his
-request. As I noticed the problem is the gateway from the lan which the
-client is in (so in case 3 the problem is 192.168.0.1). Also (in case 3) I
-noticed that the reply has been send from 192.168.1.1 but it gets "lost" on
-192.168.0.1.
-
-So I added some rules to iptables on 192.168.0.1 and I noticed that the packet
-access the PREROUTING chain in the table mangle but never access the
-PREROUTING chain in the table nat. I think it should because of the packet 
-flow (http://www.siliconvalleyccie.com/images/iptables.gif) ?!?!?!
-
-Why does this packet never access the PREROUTING chain in "nat" (and all other 
-following chains)? Any suggestions?
-
-Daniel
+Or, of course, switch to something open and documented on both ends. 
+OpenVPN is my top choice for VPN.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
