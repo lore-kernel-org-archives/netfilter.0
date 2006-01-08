@@ -1,12 +1,14 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: iptables: No chain/target/match by that name
-Date: Sat, 07 Jan 2006 13:50:10 -0500
-Message-ID: <1136659810.2599.10.camel@localhost>
-References: <BAY105-F281A346E9A68ED0764F10F9E200@phx.gbl>
+From: Edmundo Carmona <eantoranz@gmail.com>
+Subject: Re: [LARTC] routing decision based on sorce port
+Date: Sat, 7 Jan 2006 20:39:50 -0400
+Message-ID: <65aa6af90601071639s2b302b40weabe6632345e86b1@mail.gmail.com>
+References: <1136557846.10545.42.camel@sehe-c4.berlin.teles.de>
+	<20060108030453.04c6ad7f.linux@pilot.org.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY105-F281A346E9A68ED0764F10F9E200@phx.gbl>
+In-Reply-To: <20060108030453.04c6ad7f.linux@pilot.org.ua>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +20,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Amresh Kumar <amresh_srivastava@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Sat, 2006-01-07 at 12:42 +0530, Amresh Kumar wrote:
-> Hi ,
-> 
-> I am using  iptables rule for Load Balancing with random* or nth but i am 
-> getting the error
-> 
-> iptables: No chain/target/match by that name
-> 
-> iptables rule :  iptables  -A PREROUTING -i eth0 -p tcp --dport 80 -m state 
-> --state NEW -m nth --counter 0 --every 4 --packet 0  -j DNAT 
-> --to-destination 192.168.0.5:80
-> 
-> iptables -A PREROUTING -i eth0 -p tcp --dport 80 -m state --state NEW -m 
-> random --average 25 -j DNAT --to-destination 192.168.0.5:80
-> 
-> My kernel version is  2.6.9-5.0.3.EL
-> Iptable version = iptables v1.3.4
-> 
-> can anyone  explain.
-> 
-> Thanks..
-<snip>
-Is it enabled in the kernel or as a module? If as a module, is it
-loaded? - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+Why not? mark them on OUTPUT
 
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
-
+On 1/7/06, Denis Ovsienko <linux@pilot.org.ua> wrote:
+> There is a small, but important issue with outgoing packets policy
+> routing. Locally originating packets don't hit PREROUTING chain of
+> mangle table
+> (http://www.faqs.org/docs/iptables/traversingoftables.html), so you
+> generally can't policy route such traffic.
+>
+> --
+>     DO4-UANIC
+> _______________________________________________
+> LARTC mailing list
+> LARTC@mailman.ds9a.nl
+> http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc
+>
 
