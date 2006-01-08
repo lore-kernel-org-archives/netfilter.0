@@ -1,10 +1,12 @@
-From: bright true <brighttrue@gmail.com>
-Subject: block + kill connections
-Date: Sun, 8 Jan 2006 23:44:39 +0200
-Message-ID: <3b29fb790601081344me985167p9c06cf286126ffdb@mail.gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: block + kill connections
+Date: Sun, 8 Jan 2006 16:02:28 -0600
+Message-ID: <200601081602.28807.rob0@gmx.co.uk>
+References: <3b29fb790601081344me985167p9c06cf286126ffdb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <3b29fb790601081344me985167p9c06cf286126ffdb@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,23 +21,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello ,
+On Sunday 2006-January-08 15:44, bright true wrote:
+> iptables -I INPUT -s 1.2.3.4 -j DROP
+>
+> but seems to be it doesn't kill the active connections , it works
+> only for new incoming connections
 
-How to block plus kill all currently opened connections from specific ip ad=
-dress
-
-on all ports .
-
-i tryed using :
-
-iptables -I INPUT -s 1.2.3.4 -j DROP
-
-but seems to be it doesn't kill the active connections , it works only for =
-new
-
-incoming connections
-
-any help ?
-
-Thanks
+I suspect we have an issue of INPUT vs. FORWARD misunderstanding here. 
+See "man iptables" and the description of the filter table and its 
+built-in chains.
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
