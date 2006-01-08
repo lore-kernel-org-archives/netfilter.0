@@ -1,11 +1,11 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Kernel panic - not syncing
-Date: Sun, 8 Jan 2006 10:14:42 -0800
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582900B5A71@pxtbenexd01.pxt.primeexalia.com>
+From: bright true <brighttrue@gmail.com>
+Subject: block + kill connections
+Date: Sun, 8 Jan 2006 23:44:39 +0200
+Message-ID: <3b29fb790601081344me985167p9c06cf286126ffdb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Michael D. Berger" <m.d.berger@ieee.org>, netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Michael,=20
+Hello ,
 
-This may or may not help but I know there were some spinlock issues
-prior to the RHEL 4 update 2 kernels.  I don't have the links to the
-patches offhand.  In my case, I ran into the spinlock bug when using
-ipsec and netfilter.
+How to block plus kill all currently opened connections from specific ip ad=
+dress
 
-Gary
+on all ports .
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> bounces@lists.netfilter.org] On Behalf Of Michael D. Berger
-> Sent: Sunday, January 08, 2006 10:04 AM
-> To: netfilter
-> Subject: Kernel panic - not syncing
->=20
-> On:
->    Red Hat Enterprise Linux WS release 4(Nahant)
->    Kernel 2.6.9-5.EL on an i686
-> I get:
->    Kernel panic - not syncing: net/ipv4/tcp_timer.c:yyy:
->    spin_lock(net/ipv4/tcp_minisocks.c:xxxxxxxx) already locked by
->    net/ipv4/tcp_ipv4.c/1790
->=20
->                      previous         now
-> yyy                  211              422
-> xxxxxxxx             f5fee080         f62db080
->=20
+i tryed using :
+
+iptables -I INPUT -s 1.2.3.4 -j DROP
+
+but seems to be it doesn't kill the active connections , it works only for =
+new
+
+incoming connections
+
+any help ?
+
+Thanks
 
