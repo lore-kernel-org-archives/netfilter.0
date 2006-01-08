@@ -1,10 +1,11 @@
-From: "Michael D. Berger" <m.d.berger@ieee.org>
-Subject: FW: block + kill connections
-Date: Sun, 8 Jan 2006 18:01:20 -0500
-Message-ID: <000101c614a7$70964cb0$2801a8c0@MBRC40>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: block + kill connections
+Date: Sun, 8 Jan 2006 18:14:40 -0500 (EST)
+Message-ID: <Pine.LNX.4.60.0601081813580.15383@darkstar.sysinfo.com>
+References: <3b29fb790601081344me985167p9c06cf286126ffdb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <3b29fb790601081344me985167p9c06cf286126ffdb@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,90 +16,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: bright true <brighttrue@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Now thw wrong list.  Damm!
-Mike
---
-Michael D. Berger
-m.d.berger@ieee.org 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> -----Original Message-----
-> From: Michael D. Berger [mailto:m.d.berger@ieee.org] 
-> Sent: Sunday, January 08, 2006 5:59 PM
-> To: Redhat-List
-> Subject: FW: block + kill connections
-> 
-> 
-> My apology.  Inadvertantly send to the individual rather than 
-> the list.
-> Some list managers think that this is good.  I do not.
-> Mike.
-> --
-> Michael D. Berger
-> m.d.berger@ieee.org 
-> 
-> > -----Original Message-----
-> > From: Michael D. Berger [mailto:m.d.berger@ieee.org] 
-> > Sent: Sunday, January 08, 2006 5:47 PM
-> > To: '/dev/rob0'
-> > Subject: RE: block + kill connections
-> > 
-> > 
-> > [...]
-> > > On Sunday 2006-January-08 16:04, Robert Nichols wrote:
-> > > > > iptables -I INPUT -s 1.2.3.4 -j DROP
-> > > 
-> > > > That will prevent communication by blocking any further incoming
-> > > > packets, but won't do anything to tear down the connection.  See
-> > > 
-> > > Actually it would drop anything with a source address of 
-> > > 1.2.3.4 which 
-> > > happens to hit the filter INPUT chain, regardless of protocol 
-> > > or state. 
-> > > Perhaps the issue is as I suggested, the packets are 
-> > hitting FORWARD, 
-> > > or simply that a blocked connection has not yet timed out of 
-> > > conntrack 
-> > > or netstat listings.
-> > > -- 
-> > >     mail to this address is discarded unless "/dev/rob0"
-> > >     or "not-spam" is in Subject: header
-> > > 
-> > > 
-> > 
-> > I have the same problem.  I DROP in the INPUT chain, but the 
-> > connection
-> > stays up and receives more junk.
-> > 
-> > There is no confusion with the FORWARD chain.  I have 
-> > :FORWARD DROP [0:0],
-> > and that is it.  I do not forward anything.
-> > 
-> > I like the suggestion in a previous post:
-> > 
-> >    iptables -I INPUT -s 1.2.3.4 -p tcp --tcp-flags ! FIN,RST 
-> > NONE -j REJECT 
-> >    --reject-with tcp-reset
-> > 
-> > however, I DROP from a libipq daemon, and REJECT  does not 
-> > appear to be an
-> > option. I could accomplish it if I could set the MARK from 
-> > the daemon, but
-> > this is not possible in the version I have, although it is 
-> > possible in later
-> > versions.
-> > 
-> > I await admonition by those more knowledgeable than I.
-> > 
-> > Mike.
-> > --
-> > Michael D. Berger
-> > m.d.berger@ieee.org 
-> > 
-> > 
-> 
+On Sun, 8 Jan 2006, bright true wrote:
+
+> Hello ,
+>
+> How to block plus kill all currently opened connections from specific ip address
+>
+> on all ports .
+>
+> i tryed using :
+>
+> iptables -I INPUT -s 1.2.3.4 -j DROP
+>
+> but seems to be it doesn't kill the active connections , it works only for new
+>
+> incoming connections
+>
+> any help ?
 
 
+kill/killall -9 nasty-app-being-hit/shell-in-use.
+
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQFDwZzkst+vzJSwZikRArw1AJwMVjPAuF0rs2/6BA1IczVGZ1ZYbwCfV7n6
+6XyaVW8aU+dJyplYtDmZAhU=
+=7mkJ
+-----END PGP SIGNATURE-----
 
