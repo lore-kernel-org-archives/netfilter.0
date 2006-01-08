@@ -1,13 +1,13 @@
-From: Daniel <damage@rooties.de>
-Subject: Re: iptables - losing packets between mangle and nat
-Date: Sun, 8 Jan 2006 16:30:55 +0100
-Message-ID: <200601081630.55456.damage@rooties.de>
-References: <200601080151.02899.damage@rooties.de>
+From: syrius.ml@no-log.org
+Subject: Re: IPv6 stateful in kernel 2.6.15 & nf_conntrack ?
+Date: Sun, 08 Jan 2006 17:05:15 +0100
+Message-ID: <87fynyu399.87ek3iu399@87d5j2u399.message.id>
+References: <43BC2ACD.6070904@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200601080151.02899.damage@rooties.de>
-Content-Disposition: inline
+In-Reply-To: <43BC2ACD.6070904@gmx.de> (Malte =?iso-8859-15?Q?Schr=F6der's?=
+	message of "Wed, 04 Jan 2006 21:06:37 +0100")
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,48 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Malte =?iso-8859-15?Q?Schr=F6der?= <MalteSch@gmx.de>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
-I marked the packets from 192.168.1.0/24 in the PREROUTING Chain in table 
-mangle. After that I created in every Chain in tables nat/mangle/filter an 
-ACCEPT rule for the marked packets. But I did not see them any more... Now 
-I'm really confused... What is going on there? Where are the packets going? 
-Did I forgot to set a sysctl flag in /proc/sys/net/* ???
-Please help me! Any suggestion is helpfull.
+Malte Schr=F6der <MalteSch@gmx.de> writes:
 
-Daniel
+> Hello,
+> I am trying to figure out how to do ipv6 stateful inspection with the
+> new kernel 2.6.15. Currently I am using the patch from USAGI for 2.6.14
+> but they seem to have dropped the state-match in their patch for 2.6.15.
+>
+> Is there stateful inspection in 2.6.15 for ipv6 (there is connection
+> tracking ...) and how could I use it?
 
-Am Sonntag, 8. Januar 2006 01:51 schrieb Daniel:
-> Hi,
-> I'm trying to create an net-to-net VPN.
->
-> {192.168.0.0/24}--[192.168.0.1]-VPN/INET-[192.168.1.1]--{192.168.1.0/24}
->        LAN           GATEWAY                GATEWAY           LAN
->
-> Everything seems to be fine:
-> 1. I'm able to ping 192.168.1.1 from 192.168.0.1 (so, racoon allready
-> established the tunnel
-> 2. I'm able to ping 192.168.0.1 from 192.168.1.1 (so, both ways are ok)
-> 3. if I try to ping 192.168.1.1 from 192.168.0.0/24 then racoon is
-> establishing the tunnel
-> 4. if I try to ping 192.168.0.1 from 192.168.1.0/24 then racoon is
-> establishing the tunnel
->
-> But in case 3 und 4 the client from the LAN does not got an reply on his
-> request. As I noticed the problem is the gateway from the lan which the
-> client is in (so in case 3 the problem is 192.168.0.1). Also (in case 3) I
-> noticed that the reply has been send from 192.168.1.1 but it gets "lost" on
-> 192.168.0.1.
->
-> So I added some rules to iptables on 192.168.0.1 and I noticed that the
-> packet access the PREROUTING chain in the table mangle but never access the
-> PREROUTING chain in the table nat. I think it should because of the packet
-> flow (http://www.siliconvalleyccie.com/images/iptables.gif) ?!?!?!
->
-> Why does this packet never access the PREROUTING chain in "nat" (and all
-> other following chains)? Any suggestions?
->
-> Daniel
+It seems some progress have been made. I'm also looking forward to
+test those new features.
+I read x_tables has be pushed to linus' tree, but i don't know
+how/where to get it.
+
+any advice ?
+
+--=20
 
