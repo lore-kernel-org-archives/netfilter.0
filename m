@@ -1,12 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Bypass transparent proxy in iptables?
-Date: Sat, 7 Jan 2006 22:54:24 -0600
-Message-ID: <200601072254.24189.rob0@gmx.co.uk>
-References: <BFE309C2.4DB92%jamie@listserv.newberg.k12.or.us>
+From: Christos Panagiotakis <chrismfz@gmail.com>
+Subject: Masquerading problem - question
+Date: Sun, 8 Jan 2006 08:21:52 +0200
+Message-ID: <dac71d7b0601072221j8a15c80g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BFE309C2.4DB92%jamie@listserv.newberg.k12.or.us>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,16 +19,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday 2006-January-05 19:37, Jamie McParland wrote:
-> I know i could somehow put some rule before the transparent rule and
-> bypass it that way but i can't seem to figure it out. I asked the
-> ipcop list but didn't have any luck there. I thought the IPTable
-> gurus might have an idea.
+Hello people. This is my first post, please be nice with me :-)
 
-Georgi told you what rules to use, but as to how to make it "stick" in 
-your distro, you will have to go back and ask them (unless you read the 
-scripts and figure it out on your own.)
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+I have a little network with 3 computers. 2 workstations, 1 server.
+the network is 10.166.0.0
+server 10.166.0.1
+1 workstation 10.166.0.2 and a new one the third 10.166.0.3
+server has 2 interfaces. the one is connected with another network
+( 10.165.0.0) wirelessly. from the "main" server they assigned me with
+2 internet static ips (for 10.166.0.1 and 10.166.0.2). But when I took
+the third one (10.166.0.3) I wanted to connect it with internet.
+I did echo 1 > /proc/sys/net/ipv4/ip_dynaddr
+and the problematic one:
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+thats good! it worked! But the problem is that both 10.166.0.2
+and 10.166.0.3 having internet with the server's ip address...
+I just want 10.166.0.3 to share the same static ip address.
+I dont know what exactly to do to make only 10.166.0.3 to "share"/masq
+the same ip with the server. And now I have both 10.166.0.2 and 10.166.0.3
+with the same ip, yeap its working but I need the second static ip to 10.16=
+6.0.2
+and I dont know what to do...
+
+Christos Panagiotakis
+
+ps: forgive me for my awful english I hope to understand me
 
