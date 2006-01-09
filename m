@@ -1,12 +1,14 @@
-From: "Michael D. Berger" <m.d.berger@ieee.org>
-Subject: RE: FW: block + kill connections
-Date: Sun, 8 Jan 2006 19:26:33 -0500
-Message-ID: <000001c614b3$583c82e0$2801a8c0@MBRC40>
-References: <200601081728.01152.rob0@gmx.co.uk>
+From: Robert Nichols <rnicholsNOSPAM@comcast.net>
+Subject: Re: block + kill connections
+Date: Sun, 08 Jan 2006 20:47:16 -0600
+Message-ID: <dpsirl$7a0$1@sea.gmane.org>
+References: <3b29fb790601081344me985167p9c06cf286126ffdb@mail.gmail.com>	<dps2a2$shp$1@sea.gmane.org>
+	<200601081618.01364.rob0@gmx.co.uk>
+	<200601081720.11675.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200601081728.01152.rob0@gmx.co.uk>
+In-Reply-To: <200601081720.11675.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,55 +19,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> On Sunday 2006-January-08 17:01, Michael D. Berger wrote:
-> > > > I have the same problem.  I DROP in the INPUT chain, but
-> > > > the connection stays up
+/dev/rob0 wrote:
+> On Sunday 2006-January-08 16:18, I wrote:
 > 
-> Likely so, insofar as your local process knows, as explained in my 
-> corrected reply to Bob Nichols. But ...
+>>On Sunday 2006-January-08 16:04, Robert Nichols wrote:
+>>
+>>>>iptables -I INPUT -s 1.2.3.4 -j DROP
+>>>
+>>>That will prevent communication by blocking any further incoming
+>>>packets, but won't do anything to tear down the connection.  See
 > 
-> > > > and receives more junk. 
 > 
-> No, not if you used a rule as the OP did, with -I to put it 
-> at the top 
-> of INPUT rules. If a packet matches the first DROP rule, that's where 
-> it stops. If a --state RELATED,ESTABLISHED -j ACCEPT rule 
-> precedes the 
-> DROP, yes, but that's a different issue.
+> Yes, you're right, sorry. I read too quickly. You're saying this:
 > 
-> > > > I await admonition by those more knowledgeable than I.
 > 
-> Does it make sense now?
+>>... or simply that a blocked connection has not yet 
+>>timed out of conntrack or netstat listings.
+> 
+> 
+> ... and you're right, the REJECT will tell the other end that the 
+> connection is terminated. But I doubt that the local side will show 
+> anything different in conntrack or netstat, unless a corresponding 
+> REJECT rule was used in OUTPUT.
 
-[...]
+What typically happens is that as soon as the local side transmits
+any packet on the half-closed connection, the far end responds with
+its own TCP RESET, and the "--tcp-flags ! FIN,RST NONE" matcher in
+my suggested rule allows any packet with a RST or FIN flag to get
+through.
 
-It does make sense in theory, but not in practice.  Below is an excerpt
-from the results of an iptables-save (with numbers zeroed).  As you can
-see, the QUEUE preceeds any ACCEPT except for -i lo.  The extra DROP is
-my paranoia in case QUEUE doesn't work.  The OUTPUT chain blocks some
-output that previous communications indicated should not be there. I
-note that when I say that there are packets in both directions after
-the DROP I have confirmed this with tethereal, which I have running in
-the background.  Perhaps there are some timing issues that have not
-been mentioned?
 
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:MDB-IN - [0:0]
-[0:0] -A INPUT -j MDB-IN
-[0:0] -A OUTPUT -j MDB-OUT
-[0:0] -A MDB-IN -i lo -j ACCEPT
-[0:0] -A MDB-IN -p tcp -m tcp --dport 80 -j QUEUE
-[0:0] -A MDB-IN -p tcp -m tcp --dport 80 -j DROP
-[0:0] -A MDB-IN -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-Mike.
---
-Michael D. Berger
-m.d.berger@ieee.org 
-
+-- 
+Bob Nichols         Yes, "NOSPAM" is really part of my email address.
 
 
