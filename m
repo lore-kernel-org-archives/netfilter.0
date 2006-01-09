@@ -1,12 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: iptables port80 forward and snat
-Date: Fri, 13 Jan 2006 22:36:39 +0100
-Message-ID: <000601c61889$7032a030$0101000a@sterenborg.info>
-References: <005701c61875$46484720$6c00a8c0@ATMIT>
+From: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Subject: Re: Where is CONNMARK extension kernel 2.4.32?
+Date: Mon, 09 Jan 2006 18:58:41 +0100
+Message-ID: <43C2A451.1020509@arcoscom.com>
+References: <43C0F61F.4030400@arcoscom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <005701c61875$46484720$6c00a8c0@ATMIT>
+In-Reply-To: <43C0F61F.4030400@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +17,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Cc: netfilter@lists.netfilter.org
 
-> I have a RH ES4 box with 3 eth.ports and safesquid installed.
-> Safesquid listens on port 8080.
-> Eth0 = 1.1.1.1  (Internet connection)
-> Eth1 =  2.2.2.2
-> Eth2 = 192.168.1.1 (needs to be sNATted)
-> 
-> How do I setup iptables to:
-> 
-> 1- Snat traffic coming in on eth2
+Any help?
 
-Via which NIC ? My "magical powers" tell me that it's probably eth0.
+Samuel D=EDaz Garc=EDa escribi=F3:
 
-$ipt -t nat -A POSTROUTING -i eth2 -s 192.168.1.0/24 \
-  -j SNAT --to 1.1.1.1
+> Hi all.
+>=20
+> I have troubles with CONNMARK extensions into kernel 2.4.32.
+>=20
+> The problem I have is that I tried to patch a 2.4.32 kernel with pom-ng=
+=20
+> and I cant see CONNMARK extension into the pom-ng options and isn't in=20
+> kernel config.
+>=20
+> Perhaps could be that any patch I applied before (IMQ, Layer7filter,=20
+> etc...) had broken it. I had compiled kernel, iptables (1.3.4) and many=
+=20
+> pom-ng patches. And when I test some scripts that uses CONNMARK without=
+=20
+> success (chain/tarjet error).
+> I can view /usr/local/usr/libipt_CONNMARK.so and I suppose that is the=20
+> reason why I can view "iptables -j CONNMARK --help" help text, but I=20
+> can't see any "/lib/modules/2.4.32/....." *CONNMARK* module and isn't=20
+> compiled into the kernel (cat /usr/src/linux/.config | grep "CONNMARK")=
+=20
+> doesn't show me anythink.
+>=20
+> Can anybody help me please?
+>=20
+> Thanks
+>=20
 
-> 2- port forward http traffic coming in on eth1 to port 8080 (so it
-> will hit the safesquid running on the box)
+--=20
+    Samuel D=EDaz Garc=EDa
+     Director Gerente
+ArcosCom Wireless, S.L.L.
 
-$ipt -t nat -A PREROUTING -i eth1 -p tcp --dport 80 \
-  -j DNAT --to 2.2.2.2:8080
+CIF: B11828068
+c/ Romero Gago, 19
+Arcos de la Frontera
+11630 - Cadiz
 
+http://www.arcoscom.com
 
-Gr,
-Rob
+mailto:samueldg@arcoscom.com
+msn: samueldg@arcoscom.com
 
+M=F3vil: 651 93 72 48
+Tlfn.: 956 70 13 15
+Fax:   956 70 34 83
 
