@@ -1,12 +1,10 @@
-From: Pablo Neira Ayuso <pablo@eurodev.net>
-Subject: Re: Where is CONNMARK extension kernel 2.4.32?
-Date: Mon, 09 Jan 2006 19:25:58 +0100
-Message-ID: <43C2AAB6.5010807@eurodev.net>
-References: <43C0F61F.4030400@arcoscom.com>
+From: "Pedro Drimel Neto" <pedrodrimel@uol.com.br>
+Subject: match nth
+Date: Mon, 9 Jan 2006 16:33:39 -0200
+Message-ID: <018c01c6154b$375c8aa0$2f00a8c0@TRINTASETE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43C0F61F.4030400@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,19 +15,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-Samuel D=EDaz Garc=EDa wrote:
-> I have troubles with CONNMARK extensions into kernel 2.4.32.
->=20
-> The problem I have is that I tried to patch a 2.4.32 kernel with pom-ng
-> and I cant see CONNMARK extension into the pom-ng options and isn't in
-> kernel config.
+Hi all,
 
-Did the patch applied cleanly?
+I'm using the module nth... and I know that is support only --packet 
+0 --packet 1 and --packet 2 what means that I can use only 3 IP with it... 
+right ?
 
---=20
-Pablo
+If I add a network card (-o eth1) could I use more IP's ?
+
+Regards... 
+
 
