@@ -1,13 +1,12 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: FW: block + kill connections
-Date: Sun, 8 Jan 2006 17:28:01 -0600
-Message-ID: <200601081728.01152.rob0@gmx.co.uk>
-References: <000101c614a7$70964cb0$2801a8c0@MBRC40>
+From: "Michael D. Berger" <m.d.berger@ieee.org>
+Subject: RE: FW: block + kill connections
+Date: Sun, 8 Jan 2006 19:26:33 -0500
+Message-ID: <000001c614b3$583c82e0$2801a8c0@MBRC40>
+References: <200601081728.01152.rob0@gmx.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000101c614a7$70964cb0$2801a8c0@MBRC40>
-Content-Disposition: inline
+In-Reply-To: <200601081728.01152.rob0@gmx.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,24 +20,52 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Sunday 2006-January-08 17:01, Michael D. Berger wrote:
-> > > I have the same problem.  I DROP in the INPUT chain, but
-> > > the connection stays up
+> On Sunday 2006-January-08 17:01, Michael D. Berger wrote:
+> > > > I have the same problem.  I DROP in the INPUT chain, but
+> > > > the connection stays up
+> 
+> Likely so, insofar as your local process knows, as explained in my 
+> corrected reply to Bob Nichols. But ...
+> 
+> > > > and receives more junk. 
+> 
+> No, not if you used a rule as the OP did, with -I to put it 
+> at the top 
+> of INPUT rules. If a packet matches the first DROP rule, that's where 
+> it stops. If a --state RELATED,ESTABLISHED -j ACCEPT rule 
+> precedes the 
+> DROP, yes, but that's a different issue.
+> 
+> > > > I await admonition by those more knowledgeable than I.
+> 
+> Does it make sense now?
 
-Likely so, insofar as your local process knows, as explained in my 
-corrected reply to Bob Nichols. But ...
+[...]
 
-> > > and receives more junk. 
+It does make sense in theory, but not in practice.  Below is an excerpt
+from the results of an iptables-save (with numbers zeroed).  As you can
+see, the QUEUE preceeds any ACCEPT except for -i lo.  The extra DROP is
+my paranoia in case QUEUE doesn't work.  The OUTPUT chain blocks some
+output that previous communications indicated should not be there. I
+note that when I say that there are packets in both directions after
+the DROP I have confirmed this with tethereal, which I have running in
+the background.  Perhaps there are some timing issues that have not
+been mentioned?
 
-No, not if you used a rule as the OP did, with -I to put it at the top 
-of INPUT rules. If a packet matches the first DROP rule, that's where 
-it stops. If a --state RELATED,ESTABLISHED -j ACCEPT rule precedes the 
-DROP, yes, but that's a different issue.
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:MDB-IN - [0:0]
+[0:0] -A INPUT -j MDB-IN
+[0:0] -A OUTPUT -j MDB-OUT
+[0:0] -A MDB-IN -i lo -j ACCEPT
+[0:0] -A MDB-IN -p tcp -m tcp --dport 80 -j QUEUE
+[0:0] -A MDB-IN -p tcp -m tcp --dport 80 -j DROP
+[0:0] -A MDB-IN -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-> > > I await admonition by those more knowledgeable than I.
+Mike.
+--
+Michael D. Berger
+m.d.berger@ieee.org 
 
-Does it make sense now?
--- 
-    mail to this address is discarded unless "/dev/rob0"
-    or "not-spam" is in Subject: header
+
 
