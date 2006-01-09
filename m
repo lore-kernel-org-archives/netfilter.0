@@ -1,12 +1,12 @@
-From: Javier Hijas <jhijas@germinus.com>
-Subject: Re: VPN with IPSEC
-Date: Mon, 09 Jan 2006 11:51:15 +0100
-Message-ID: <43C24023.3010302@germinus.com>
-References: <AHELLDGFDKOONCHKKFCCAELPCBAA.eric.marty1@libertysurf.fr>
+From: Pablo Neira Ayuso <pablo@eurodev.net>
+Subject: Re: Where is CONNMARK extension kernel 2.4.32?
+Date: Mon, 09 Jan 2006 19:25:58 +0100
+Message-ID: <43C2AAB6.5010807@eurodev.net>
+References: <43C0F61F.4030400@arcoscom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <AHELLDGFDKOONCHKKFCCAELPCBAA.eric.marty1@libertysurf.fr>
+In-Reply-To: <43C0F61F.4030400@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +17,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: emarty@systems-networks.com
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
 Cc: netfilter@lists.netfilter.org
 
-Try racoon and setkey utilities(ipsec-tools package will do:
-http://ipsec-tools.sourceforge.net/)  with your kernel compiled with VPN
-and IPSEC capabilities.
+Samuel D=EDaz Garc=EDa wrote:
+> I have troubles with CONNMARK extensions into kernel 2.4.32.
+>=20
+> The problem I have is that I tried to patch a 2.4.32 kernel with pom-ng
+> and I cant see CONNMARK extension into the pom-ng options and isn't in
+> kernel config.
 
-Javier Hijas
+Did the patch applied cleanly?
 
-Eric Marty wrote:
-> Hello All,
-> 
-> i have the fedora core 2.6.9 and i would like find on VPN with IPSEC (free).
-> 
-> Somebody has an idee ?
-> 
-> Many thanks
-> 
-> Eric
-> 
-> 
-> 
-
+--=20
+Pablo
 
