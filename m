@@ -1,10 +1,10 @@
-From: Alpt <alpt@freaknet.org>
-Subject: "Established connection" issues using multipath
-Date: Tue, 10 Jan 2006 03:06:01 +0100
-Message-ID: <20060110020601.GA7326@nihil>
+From: vikrant@saysnetsoft.com
+Subject: Re: match nth
+Date: Mon, 9 Jan 2006 19:45:51 -0600 (CST)
+Message-ID: <32925.61.246.44.47.1136857551.squirrel@saysnetsoft.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +16,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Pedro Drimel Neto <pedrodrimel@uol.com.br>
+Cc: netfilter@lists.netfilter.org
 
-The problem is described here:
+Pedro Drimel Neto wrote:
 
-http://marc.theaimsgroup.com/?l=linux-net&m=113550638110682&w=2
+> Hi all,
+>
+> I'm using the module nth... and I know that is support only --packet 0
+--packet 1 and --packet 2 what means that I can use only 3 IP with it...
+right ?
+>
+> If I add a network card (-o eth1) could I use more IP's ?
+>
+> Regards...
+>
+>
+>
 
-and continues here:
+Please read the docs carefully:-
+http://netfilter.org/projects/patch-o-matic/pom-base.html#pom-base-nth
 
-http://marc.theaimsgroup.com/?l=linux-net&m=113636640615375&w=2
+If u want to add more IP's then what u have to do  just increase the
+--every value .
+for example:-
 
+iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
+--packet 0 -j SNAT --to-source 10.0.0.5
+iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
+--packet 1 -j SNAT --to-source 10.0.0.6
+iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
+--packet 2 -j SNAT --to-source 10.0.0.7
+iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
+--packet 3 -j SNAT --to-source 10.0.0.8
+iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
+--packet 4 -j SNAT --to-source 10.0.0.9
 
-Is it possible to solve it using netfilter hacks?
+i think there is no need to add more interface card.
+Please correct me if i am wrong.
 
-Thanks in advance
--- 
-:wq!
-"I don't know nothing" The One Who reached the Thinking Matter   '.'
+Thanks
+Vikrant
 
-[ Alpt --- Freaknet Medialab ]
-[ GPG Key ID 441CF0EE ]
-[ Key fingerprint = 8B02 26E8 831A 7BB9 81A9  5277 BFF8 037E 441C F0EE ]
 
