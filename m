@@ -1,10 +1,12 @@
-From: vikrant@saysnetsoft.com
-Subject: Re: match nth
-Date: Mon, 9 Jan 2006 19:45:51 -0600 (CST)
-Message-ID: <32925.61.246.44.47.1136857551.squirrel@saysnetsoft.com>
+From: "Mac!eKs" <macieks@freesco.pl>
+Subject: Re: Where is CONNMARK extension kernel 2.4.32?
+Date: Tue, 10 Jan 2006 19:43:07 +0100
+Message-ID: <43C4003B.9080400@freesco.pl>
+References: <43C0F61F.4030400@arcoscom.com> <43C2A451.1020509@arcoscom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <43C2A451.1020509@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,47 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Pedro Drimel Neto <pedrodrimel@uol.com.br>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 Cc: netfilter@lists.netfilter.org
 
-Pedro Drimel Neto wrote:
+Samuel D=C3=ADaz Garc=C3=ADa napisa=C5=82(a):
+>> Hi all.
+>>
+>> I have troubles with CONNMARK extensions into kernel 2.4.32.
+>>
+>> The problem I have is that I tried to patch a 2.4.32 kernel with=20
+>> pom-ng and I cant see CONNMARK extension into the pom-ng options and=20
+>> isn't in kernel config.
+>>
+>> Perhaps could be that any patch I applied before (IMQ, Layer7filter,=20
+>> etc...) had broken it. I had compiled kernel, iptables (1.3.4) and=20
+>> many pom-ng patches. And when I test some scripts that uses CONNMARK=20
+>> without success (chain/tarjet error).
+>> I can view /usr/local/usr/libipt_CONNMARK.so and I suppose that is the=
+=20
+>> reason why I can view "iptables -j CONNMARK --help" help text, but I=20
+>> can't see any "/lib/modules/2.4.32/....." *CONNMARK* module and isn't =
 
-> Hi all,
->
-> I'm using the module nth... and I know that is support only --packet 0
---packet 1 and --packet 2 what means that I can use only 3 IP with it...
-right ?
->
-> If I add a network card (-o eth1) could I use more IP's ?
->
-> Regards...
->
->
->
+>> compiled into the kernel (cat /usr/src/linux/.config | grep=20
+>> "CONNMARK") doesn't show me anythink.
+>>
+>> Can anybody help me please?
+>>
+>> Thanks
+>>
 
-Please read the docs carefully:-
-http://netfilter.org/projects/patch-o-matic/pom-base.html#pom-base-nth
+which pom-ng snapshot are you using?
+The last pom-ng snapshot with CONNMARK/TTL/string is from 20050918.
+Then these patches were removed, because they are now in 2.6 kernel=20
+serie. But not in 2.4 :/
 
-If u want to add more IP's then what u have to do  just increase the
---every value .
-for example:-
-
-iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
---packet 0 -j SNAT --to-source 10.0.0.5
-iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
---packet 1 -j SNAT --to-source 10.0.0.6
-iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
---packet 2 -j SNAT --to-source 10.0.0.7
-iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
---packet 3 -j SNAT --to-source 10.0.0.8
-iptables -t nat -A POSTROUTING -o eth0 -m nth --counter 7 --every 5 \
---packet 4 -j SNAT --to-source 10.0.0.9
-
-i think there is no need to add more interface card.
-Please correct me if i am wrong.
-
-Thanks
-Vikrant
+--=20
+Mac!eKs
 
 
