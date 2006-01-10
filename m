@@ -1,13 +1,10 @@
-From: "Mac!eKs" <macieks@freesco.pl>
-Subject: Re: Where is CONNMARK extension kernel 2.4.32?
-Date: Wed, 11 Jan 2006 11:59:23 +0100
-Message-ID: <43C4E50B.2040909@freesco.pl>
-References: <43C0F61F.4030400@arcoscom.com> <43C2A451.1020509@arcoscom.com>
-	<43C4003B.9080400@freesco.pl> <43C4B1A4.3070706@arcoscom.com>
+From: "Nicolas Turro" <Nicolas.Turro@inrialpes.fr>
+Subject: (no subject)
+Date: Tue, 10 Jan 2006 18:13:32 +0100
+Message-ID: <20060110181332703.00000002932@rodal>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43C4B1A4.3070706@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Cc: netfilter@lists.netfilter.org
-
-Samuel D=C3=ADaz Garc=C3=ADa napisa=C5=82(a):
-> The last pom-ng tested by me where the 20051231 and I'm sure the=20
-> CONNMARK isn't into it.
-
-Because in snapshots _newer_ then 20050918 there's no CONNMARK, string, T=
-TL.
-
-> Could any netfilter guy re-add these patches into pom-ng for the 2.4=20
-> kernels? Or, better, talk with kernel guys to add them into 2.4 mainlin=
-e?
->=20
-> What do you think about this propose?
-
-I agree :)
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
 
---=20
-Mac!eKs
+
+Hi, I am trying to patch my Fedora core 4 kernel/iptable in order to includ=
+e the 'random' filter (I am trying to implement =
+
+http://linux.com.lb/wiki/index.pl?node=3DLoad%20Balancing%20Across%20Multip=
+le%20Links )
+
+
+However I encounter some difficulties:
+
+Patch-o-matic works against my kernel source tree, but won't recognize linu=
+x-libc-headers as a valid KERNEL_DIR.
+
+ Iptable won't compile against the kernel source tree: I get a bunch of =
+
+#error including kernel header in userspace; use the glibc headers instead!=
+
+(However in this case, make print-extensions finds IPv4:random )
+
+And if I use the unpatched linux-libc-headers, it won't compile libipt_rand=
+om.so (make print-extensions only shows: IPv4:recent)
+
+
+So I don't know how to proceed.
+Any tips?
+
+Please respond to me explicitly since I'm not subscribed to this mail list.=
+ Thx in advance
+
+N. Turro
 
 
