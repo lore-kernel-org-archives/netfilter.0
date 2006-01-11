@@ -1,11 +1,10 @@
-From: Thanos Panousis <pthanos@gmail.com>
-Subject: Packets from "self" dont pass through netfilter
-Date: Wed, 11 Jan 2006 16:35:24 +0100
-Message-ID: <4dcb3660601110735o30468a40m87b7629d8b0e041d@mail.gmail.com>
+From: Curtis Hawthorne <mrperson@mrperson.org>
+Subject: Bandwidth tracking per user
+Date: Wed, 11 Jan 2006 13:56:42 -0600
+Message-ID: <43C562FA.8010705@mrperson.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,38 +18,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi all,
 
-I have bothered this list before with a little project I am working
-on, so here goes again.
+I'm trying to put together a solution for tracking the bandwidth usage
+of each local user on a shared server.  At first, I thought I could just
+create a rule for each user with the --uid-owner match on all traffic
+and look at the counter for that rule.  But, I found out it will only
+work on LOCAL_OUT or POST_ROUTING.  So, the solution I came up with was
+to use the --uid-owner to set a mark on the connection on an outgoing
+packet and then use that mark to track the incoming traffic.  Here's an
+example of what I was doing to track root's incoming and outgoing traffic:
 
-I have 3 hosts: a client, a primary and a backup server, all on a HUB,
-so everybody hears everybody else's traffic. The primary and the
-backup have the same IPs AND the same MACs. The backup has
+iptables -t filter -A OUTPUT -m owner --uid-owner 0 -j CONNMARK --set-mark 0
 
-ifconfig eth0 -arp
-ifconfig eth0 promisc
+iptables -A INPUT -m connmark --mark 0
 
-, meaning I have disabled arp broadcasting and I ve put its interface
-in promisc mode. I am using iptables in the backup to redirect all
-traffic going in or out of its NIC to a QUEUE target, and these
-packets get processed by a script of my that is suppossed to do
-smthing.
+This seems like a strange way to do things to me.  Is there a better way
+to track total bandwidth usage for local users, or will this way work?
 
-So, say I do a telnet from client to primary(and the backup, since
-they got the same IP). The primary will do the TCP handshake OK, and
-the backup will get fucked up, sending RST tcp packets. What SHOULD
-traverce the firewall (and hence the QUEUE target) on the backup is:
+Thanks!
 
--the clients SYN packet going in
--the primary SYN/ACK packet going in
--the backup SYN/ACK going out
--the client ACK going in
+Curtis H.
 
-then the backup server would see the wrong ACK that came in and get
-fucked up(send an RST?).
-
-But the packets that come from the primary server(which has the same
-IP/MAC) NEVER go in the backups QUEUE. Why is that?? I dont grab them
-at the QUEUE target, but I can see them crossing if I use ethereal!
 
