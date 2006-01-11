@@ -1,12 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: iptables: No chain/target/match by that name (detailed)
-Date: Wed, 11 Jan 2006 16:05:38 +0100 (CET)
-Message-ID: <55893.193.173.147.3.1136991938.squirrel@webmail.sterenborg.info>
-References: <s3c4d304.069@gwia201.syr.edu>
+From: Amitabh Kant <amitabhkant@gmail.com>
+Subject: Re: (no subject)
+Date: Wed, 11 Jan 2006 20:38:22 +0530
+Message-ID: <84b68b3d0601110708o24d588fpd676036c2aaef18@mail.gmail.com>
+References: <20060110181332703.00000002932@rodal>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <s3c4d304.069@gwia201.syr.edu>
+In-Reply-To: <20060110181332703.00000002932@rodal>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +19,11 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Wed, January 11, 2006 15:42, Randy Grimshaw wrote:
-> I believe you need to specify the chain i.e.:
+Try instaling glic kernel headers. If you have yum working on your
+system, "yum install glibc-kernheaders.i386" should install the
+required headers.
 
-You mean "table" (which is what you added) ?
-
-> iptables -t filter -A INPUT -p icmp --icmp-type echo-request -m nth
-> --every 2 -j DROP
-
-"-t filter" is assumed if not specified.
-
->> "iptables -A INPUT -p icmp --icmp-type echo-request -m nth --every 2
->> -j DROP"
->>
->> It throws a message "iptables: No chain/target/match by that name".
-
-Using kernel 2.6.15 I'm having problems too when compiling nth.
-
-Actually, I'm seeing more things : 2.6.15 (vanilla) has NF
-functionality that POM doesn't recognize and offers to install a patch
-for (I thought pptp is an example).
-Also, for example, in 2.4.31 I tried to patch for NOTRACK but POM says
-: no raw table. But I was't offered to install the raw table patch.
-
-
-Gr,
-Rob
-
-
+Amitabh
 
