@@ -1,12 +1,10 @@
-From: Amitabh Kant <amitabhkant@gmail.com>
-Subject: Re: (no subject)
-Date: Wed, 11 Jan 2006 20:38:22 +0530
-Message-ID: <84b68b3d0601110708o24d588fpd676036c2aaef18@mail.gmail.com>
-References: <20060110181332703.00000002932@rodal>
+From: Thanos Panousis <pthanos@gmail.com>
+Subject: Packets from "self" dont pass through netfilter
+Date: Wed, 11 Jan 2006 16:35:24 +0100
+Message-ID: <4dcb3660601110735o30468a40m87b7629d8b0e041d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060110181332703.00000002932@rodal>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,11 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Try instaling glic kernel headers. If you have yum working on your
-system, "yum install glibc-kernheaders.i386" should install the
-required headers.
+Hello,
 
-Amitabh
+I have bothered this list before with a little project I am working
+on, so here goes again.
+
+I have 3 hosts: a client, a primary and a backup server, all on a HUB,
+so everybody hears everybody else's traffic. The primary and the
+backup have the same IPs AND the same MACs. The backup has
+
+ifconfig eth0 -arp
+ifconfig eth0 promisc
+
+, meaning I have disabled arp broadcasting and I ve put its interface
+in promisc mode. I am using iptables in the backup to redirect all
+traffic going in or out of its NIC to a QUEUE target, and these
+packets get processed by a script of my that is suppossed to do
+smthing.
+
+So, say I do a telnet from client to primary(and the backup, since
+they got the same IP). The primary will do the TCP handshake OK, and
+the backup will get fucked up, sending RST tcp packets. What SHOULD
+traverce the firewall (and hence the QUEUE target) on the backup is:
+
+-the clients SYN packet going in
+-the primary SYN/ACK packet going in
+-the backup SYN/ACK going out
+-the client ACK going in
+
+then the backup server would see the wrong ACK that came in and get
+fucked up(send an RST?).
+
+But the packets that come from the primary server(which has the same
+IP/MAC) NEVER go in the backups QUEUE. Why is that?? I dont grab them
+at the QUEUE target, but I can see them crossing if I use ethereal!
 
