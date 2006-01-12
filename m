@@ -1,12 +1,14 @@
-From: Markus Marquardt <adrock0501@arcor.de>
-Subject: Re: Packets from "self" dont pass through netfilter
-Date: Thu, 12 Jan 2006 13:52:27 +0100
-Message-ID: <43C6510B.3070203@arcor.de>
-References: <4dcb3660601110735o30468a40m87b7629d8b0e041d@mail.gmail.com>
+From: Peggy Kam <ppkam@n-dsi.com>
+Subject: logging for snat
+Date: Thu, 12 Jan 2006 09:55:11 -0500
+Message-ID: <1137077711.3562.25.camel@ndspc131.p.n-dsi.com>
+References: <1136301475.43ba95a30a5fe@mail.deakin.edu.au>
+	<1136304661.5137.34.camel@anduril.intranet.cartel-securite.net>
+Reply-To: ppkam@n-dsi.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4dcb3660601110735o30468a40m87b7629d8b0e041d@mail.gmail.com>
+In-Reply-To: <1136304661.5137.34.camel@anduril.intranet.cartel-securite.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,19 +19,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thanos Panousis wrote:
+Hi,
 
-> But the packets that come from the primary server(which has the same
-> IP/MAC) NEVER go in the backups QUEUE. Why is that?? I dont grab them
-> at the QUEUE target, but I can see them crossing if I use ethereal!
+Is it possible to log traffic for a specific postrouting policy that
+will be snat to somewhere else from a particular interface?
 
-IMHO the backup server thinks the packets came from itself (same MAC). 
-So why should it queue them into the ip stack?
+ie.  iptables -t nat -I nat POSTROUTING -i eth0 -s
+192.168.1.0/255.255.255.0 -d 192.168.22.0/255.255.255.0 -p tcp -m tcp -j
+SNAT --to-source 192.168.22.215:1-65535
 
-Regards,
-Markus
+I would like to log the translating address of the above iptables rule.
+Please advice if that can be done and how.
+
+Thanks,
+Peggy
 
 
