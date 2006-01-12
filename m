@@ -1,14 +1,13 @@
-From: Thanos Panousis <pthanos@gmail.com>
-Subject: Re: Packets from "self" dont pass through netfilter
-Date: Thu, 12 Jan 2006 16:19:29 +0100
-Message-ID: <4dcb3660601120719w550aa81r9c63431e72f575bc@mail.gmail.com>
-References: <4dcb3660601110735o30468a40m87b7629d8b0e041d@mail.gmail.com>
-	<43C6510B.3070203@arcor.de>
+From: Sorin Panca <sorin.panca@gmail.com>
+Subject: Re: iptables: No chain/target/match by that name (detailed)
+Date: Fri, 13 Jan 2006 01:31:59 +0200
+Message-ID: <43C6E6EF.5070001@gmail.com>
+References: <s3c4d304.069@gwia201.syr.edu>
+	<55893.193.173.147.3.1136991938.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43C6510B.3070203@arcor.de>
-Content-Disposition: inline
+In-Reply-To: <55893.193.173.147.3.1136991938.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,38 +19,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org
 
-Yes I understand that, but still I need some advice on how to make
-that happen, cause its really vital for what I m trying to do.
+Hi Amresh Kumar!
+The PREROUTING and POSTROUTING chains exist only in nat or mangle
+tables. So add iptables -t nat or iptables -t mangle
 
-How can I make the QUEUE target of netfilter receive packets as if it
-was in "promiscuous" mode? to put it in another way, I would like the
-QUEUE target to receive whatever shows up on ethereal (which is all
-traffic on the hub).
+> iptables rule :  iptables  -A PREROUTING -i eth0 -p tcp --dport 80 -m state 
+> --state NEW -m nth --counter 0 --every 4 --packet 0  -j DNAT 
+> --to-destination 192.168.0.5:80
+> 
+> iptables -A PREROUTING -i eth0 -p tcp --dport 80 -m state --state NEW -m 
+> random --average 25 -j DNAT --to-destination 192.168.0.5:80
+> 
+> 
 
-Having both the the primary and the backup share the same IP/MAC, the
-packets from the primary dont go up netfilter in the backup. How can I
-make this happen, or at least "fake" something in the backup so that I
-make it happen....
+The above rules would be for the nat table.
+HTH
+Sorin
 
-
-Thanks for your reply.
-
-
-On 1/12/06, Markus Marquardt <adrock0501@arcor.de> wrote:
-> Thanos Panousis wrote:
->
-> > But the packets that come from the primary server(which has the same
-> > IP/MAC) NEVER go in the backups QUEUE. Why is that?? I dont grab them
-> > at the QUEUE target, but I can see them crossing if I use ethereal!
->
-> IMHO the backup server thinks the packets came from itself (same MAC).
-> So why should it queue them into the ip stack?
->
-> Regards,
-> Markus
->
->
->
 
