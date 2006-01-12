@@ -1,14 +1,14 @@
-From: Peggy Kam <ppkam@n-dsi.com>
-Subject: logging for snat
-Date: Thu, 12 Jan 2006 09:55:11 -0500
-Message-ID: <1137077711.3562.25.camel@ndspc131.p.n-dsi.com>
-References: <1136301475.43ba95a30a5fe@mail.deakin.edu.au>
-	<1136304661.5137.34.camel@anduril.intranet.cartel-securite.net>
-Reply-To: ppkam@n-dsi.com
+From: Thanos Panousis <pthanos@gmail.com>
+Subject: Re: Packets from "self" dont pass through netfilter
+Date: Thu, 12 Jan 2006 16:19:29 +0100
+Message-ID: <4dcb3660601120719w550aa81r9c63431e72f575bc@mail.gmail.com>
+References: <4dcb3660601110735o30468a40m87b7629d8b0e041d@mail.gmail.com>
+	<43C6510B.3070203@arcor.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1136304661.5137.34.camel@anduril.intranet.cartel-securite.net>
+In-Reply-To: <43C6510B.3070203@arcor.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,19 +22,36 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Yes I understand that, but still I need some advice on how to make
+that happen, cause its really vital for what I m trying to do.
 
-Is it possible to log traffic for a specific postrouting policy that
-will be snat to somewhere else from a particular interface?
+How can I make the QUEUE target of netfilter receive packets as if it
+was in "promiscuous" mode? to put it in another way, I would like the
+QUEUE target to receive whatever shows up on ethereal (which is all
+traffic on the hub).
 
-ie.  iptables -t nat -I nat POSTROUTING -i eth0 -s
-192.168.1.0/255.255.255.0 -d 192.168.22.0/255.255.255.0 -p tcp -m tcp -j
-SNAT --to-source 192.168.22.215:1-65535
+Having both the the primary and the backup share the same IP/MAC, the
+packets from the primary dont go up netfilter in the backup. How can I
+make this happen, or at least "fake" something in the backup so that I
+make it happen....
 
-I would like to log the translating address of the above iptables rule.
-Please advice if that can be done and how.
 
-Thanks,
-Peggy
+Thanks for your reply.
 
+
+On 1/12/06, Markus Marquardt <adrock0501@arcor.de> wrote:
+> Thanos Panousis wrote:
+>
+> > But the packets that come from the primary server(which has the same
+> > IP/MAC) NEVER go in the backups QUEUE. Why is that?? I dont grab them
+> > at the QUEUE target, but I can see them crossing if I use ethereal!
+>
+> IMHO the backup server thinks the packets came from itself (same MAC).
+> So why should it queue them into the ip stack?
+>
+> Regards,
+> Markus
+>
+>
+>
 
