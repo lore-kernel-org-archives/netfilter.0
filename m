@@ -1,7 +1,7 @@
 From: "Arthur DiSegna" <adisegna@authentium.com>
 Subject: RE: Creating a variable for multiple IP addresses?
-Date: Fri, 13 Jan 2006 13:39:54 -0500
-Message-ID: <B584AAC32ED8DE49A8EAD2CF3D847FE002171801@auth-fl-mail1.commandsoftware.com>
+Date: Fri, 13 Jan 2006 13:41:58 -0500
+Message-ID: <B584AAC32ED8DE49A8EAD2CF3D847FE002171803@auth-fl-mail1.commandsoftware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,20 +19,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Cancel my last=20
+
+ NOC=3D"192.168.0.1/32 192.168.0.2/32 192.168.0.25/32" did work.=20
+
+Thank you for your help!
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Arthur
+DiSegna
+Sent: Friday, January 13, 2006 1:40 PM
+To: netfilter@lists.netfilter.org
+Subject: RE: Creating a variable for multiple IP addresses?
+
 That didn't work.=20
 
 192.168.1.1
-I tried=20
+I tried
 NOC=3D"192.168.0.1 192.168.0.2 192.168.0.25"
 And
 NOC=3D"192.168.0.1/32 192.168.0.2/32 192.168.0.25/32"
 
 for ip in $NOC; do
 $IPT -A INPUT -i $NETWORK_INTERFACE -s $ip -p tcp --sport $UNPRIVPORTS
--d $IPADDR --dport 445 -j ACCEPT
-#$IPT -A INPUT -i $NETWORK_INTERFACE -s $TRUSTEDNETWORK1 -p tcp --sport
-$UNPRIVPORTS -d $IPADDR --dport 445 -j ACCEPT
-done
+-d $IPADDR --dport 445 -j ACCEPT #$IPT -A INPUT -i $NETWORK_INTERFACE -s
+$TRUSTEDNETWORK1 -p tcp --sport $UNPRIVPORTS -d $IPADDR --dport 445 -j
+ACCEPT done
 
 Am I missing a delimeter in the NOC variable?
 
@@ -43,7 +57,7 @@ Thanks
 
 
 -----Original Message-----
-From: Maxime Ducharme [mailto:mducharme@cybergeneration.com]=20
+From: Maxime Ducharme [mailto:mducharme@cybergeneration.com]
 Sent: Friday, January 13, 2006 1:16 PM
 To: Arthur DiSegna
 Cc: netfilter@lists.netfilter.org
@@ -86,6 +100,8 @@ NOC=3D"192.168.0.1 192.168.0.2 192.168.0.25"
 
 
 Thanks in advance
+
+
 
 
 
