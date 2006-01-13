@@ -1,13 +1,10 @@
-From: Sorin Panca <sorin.panca@gmail.com>
-Subject: Re: iptables: No chain/target/match by that name (detailed)
-Date: Fri, 13 Jan 2006 01:31:59 +0200
-Message-ID: <43C6E6EF.5070001@gmail.com>
-References: <s3c4d304.069@gwia201.syr.edu>
-	<55893.193.173.147.3.1136991938.squirrel@webmail.sterenborg.info>
+From: Britto <britto_antony@yahoo.com>
+Subject: ssh rule
+Date: Fri, 13 Jan 2006 02:07:40 -0800 (PST)
+Message-ID: <20060113100740.53076.qmail@web33407.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <55893.193.173.147.3.1136991938.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +16,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Amresh Kumar!
-The PREROUTING and POSTROUTING chains exist only in nat or mangle
-tables. So add iptables -t nat or iptables -t mangle
+Hi 
 
-> iptables rule :  iptables  -A PREROUTING -i eth0 -p tcp --dport 80 -m state 
-> --state NEW -m nth --counter 0 --every 4 --packet 0  -j DNAT 
-> --to-destination 192.168.0.5:80
-> 
-> iptables -A PREROUTING -i eth0 -p tcp --dport 80 -m state --state NEW -m 
-> random --average 25 -j DNAT --to-destination 192.168.0.5:80
-> 
-> 
+Can you pls anyone help me correct it if i am wrong. I
+have the following entries in the iptables 
 
-The above rules would be for the nat table.
-HTH
-Sorin
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 
+but still i can not do ssh to linux box from the PC
+which is sitting in the internal network.
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
