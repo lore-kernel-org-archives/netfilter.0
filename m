@@ -1,12 +1,11 @@
-From: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
-Subject: Re: Where is CONNMARK extension kernel 2.4.32?
-Date: Mon, 09 Jan 2006 18:58:41 +0100
-Message-ID: <43C2A451.1020509@arcoscom.com>
-References: <43C0F61F.4030400@arcoscom.com>
+From: Davis Sylvester <dsylvesteriii@yahoo.com>
+Subject: EMAIL and NAT HELP
+Date: Fri, 13 Jan 2006 23:27:46 -0800 (PST)
+Message-ID: <20060114072747.48053.qmail@web54705.mail.yahoo.com>
+Reply-To: dsylvesteriii@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43C0F61F.4030400@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,57 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Any help?
+I am trying to run our qmail E-Mail server behind our
+firewall.  Our firewall is a linux box running
+iptables.  The current configuration is as following:
 
-Samuel D=EDaz Garc=EDa escribi=F3:
+Firewall
+Eth0:  10.10.10.1  --- Internal LAN
+Eth1:  208.10.10.1 --- Primary Internet
+Eth1:0: 208.10.10.2 --- Alias for web (listed in DNS)
+Eth1:1  208.10.10.3 --- Alias for E-mail (listed in
+DNS)
 
-> Hi all.
->=20
-> I have troubles with CONNMARK extensions into kernel 2.4.32.
->=20
-> The problem I have is that I tried to patch a 2.4.32 kernel with pom-ng=
-=20
-> and I cant see CONNMARK extension into the pom-ng options and isn't in=20
-> kernel config.
->=20
-> Perhaps could be that any patch I applied before (IMQ, Layer7filter,=20
-> etc...) had broken it. I had compiled kernel, iptables (1.3.4) and many=
-=20
-> pom-ng patches. And when I test some scripts that uses CONNMARK without=
-=20
-> success (chain/tarjet error).
-> I can view /usr/local/usr/libipt_CONNMARK.so and I suppose that is the=20
-> reason why I can view "iptables -j CONNMARK --help" help text, but I=20
-> can't see any "/lib/modules/2.4.32/....." *CONNMARK* module and isn't=20
-> compiled into the kernel (cat /usr/src/linux/.config | grep "CONNMARK")=
-=20
-> doesn't show me anythink.
->=20
-> Can anybody help me please?
->=20
-> Thanks
->=20
+Email Server
+Eth0:   10.10.10.100
 
---=20
-    Samuel D=EDaz Garc=EDa
-     Director Gerente
-ArcosCom Wireless, S.L.L.
+Web Server
+Eth0:   10.10.10.200
 
-CIF: B11828068
-c/ Romero Gago, 19
-Arcos de la Frontera
-11630 - Cadiz
+Basically I need every packet that arrives on
+Ethernet1:1 using ports 110,25,143 forwarded to
+10.10.10.100.  10.10.10.100 then needs to reference
+all it packets to 208.10.10.1 when send back to
+internet community.
 
-http://www.arcoscom.com
+Thanks in advance for all the HELP and ASSISTANCE!!!
 
-mailto:samueldg@arcoscom.com
-msn: samueldg@arcoscom.com
 
-M=F3vil: 651 93 72 48
-Tlfn.: 956 70 13 15
-Fax:   956 70 34 83
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
