@@ -1,11 +1,10 @@
-From: Moises Silva <moises.silva@gmail.com>
-Subject: ip_nat_sip understanding, may be not working for 2.6.14?
-Date: Sat, 14 Jan 2006 13:21:25 -0600
-Message-ID: <c4d05cbe0601141121m77533ebp499fb3a274fa1557@mail.gmail.com>
+From: Gabriel <jarod125@yahoo.com>
+Subject: Re: iptables port80 forward and snat
+Date: Sat, 14 Jan 2006 12:23:42 -0800 (PST)
+Message-ID: <20060114202342.43263.qmail@web60918.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,85 +18,38 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi everybody.
- chentschel@people.netfilter.org
-I have kernel 2.6.14 with ip_nat_sip and ip_conntrack_sip modules
-loaded. I have te following setup:
+On Fri, 13 Jan 2006 21:12:18 +0200, J.P. Fischer wrote:
 
-SIP UA <--------- Gnu/Linux Firewall -----------> Asterisk VoIP server
+> I have a RH ES4 box with 3 eth.ports and safesquid
+installed.
+> Safesquid listens on port 8080.
+> Eth0 = 1.1.1.1  (Internet connection)
+> Eth1 =  2.2.2.2
+> Eth2 = 192.168.1.1 (needs to be sNATted)
+>
+> How do I setup iptables to:
+>
+> 1- Snat traffic coming in on eth2
 
-So, my SIP UA is sending REGISTER requests to the VoIP server, but
-since the contact: field has a private IP address, Asterisk is trying
-to reply to the private IP address. I have checked that using snort
-(network sniffer), having the next results.
+iptables -t nat -A POSTROUTING -i eth2 -o eth0 -j SNAT
+--to-source 1.1.1.1
 
-GNU/Linux Firewal, snort attached to eth2 interface (the one connected
-to SIP UA)
+> 2- port forward http traffic coming in on eth1 to port
+8080 (so it will hit
+> the safesquid running on the box)
 
-01/14-12:34:31.469420 192.168.1.89:5060 -> 201.137.229.81:5060
-UDP TTL:250 TOS:0xC0 ID:40650 IpLen:20 DgmLen:479
-Len: 451
+here:
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#REDIRECTTARGET
+it says it should look something like this:
 
-UA has the 192.168.1.89, and Asterisk VoIP server has 201.137.229.81.
-So the UA is attempting to send a REGISTER. Then in The Asterisk box i
-have snort reading all that is sent from GNU/Linux firewall, and this
-show up:
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j
+REDIRECT --to-ports 8080
 
-01/14-12:37:40.882310 200.95.104.45:1025 -> 201.137.229.81:5060
-UDP TTL:248 TOS:0xD0 ID:40627 IpLen:20 DgmLen:479
-Len: 451
+-- 
+Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
 
-so the same register request is mapped to src 200.95.104.45 (the IP
-address of the firewall, duh!) and to port 1025 (dont know why is
-mapping to other port, since 5060 is not being used)
-
-And finally i have listening snort in VoIP server eth0 (the one in the
-LAN side) and this is shown:
-
-01/14-12:46:30.317974 ARP who-has 192.168.1.89 tell 192.168.1.1
-
-01/14-12:46:31.317927 ARP who-has 192.168.1.89 tell 192.168.1.1
-
-so, its attempting to get the MAC of the UA in the LAN, but obviously
-the UA is not in that LAN, but in the other across internet.
-
-Well, the register problem can be solved with a parameter in VoIP
-server (nat=3Dyes), so it will try to contact the UA ignoring the
-"contact" field info. And succeeds. But the fact is that i guess
-ip_nat_sip, should be rewritting the SIP REGISTER request properly.
-Despite that once done that, Native Transfer (RTP media not passing by
-the VoIP server) does not work, even when i have sip modules loaded in
-both kernels (the voip-server and the firewall).
-
-I have some ideas in the working of "static unsigned int ip_nat_sip()".
-
-1. This function should receive ALL the 5060 port packets.
-2. First look for the packet having at least the  SIP/2.0 string.
-3. look for "REGISTER" string in the Cseq line of the packet
-4. In case a register is found it will call to "static unsigned int
-mangle_sip_packet()", telling it to mangle the sip header contact.
-5. then ct_sip_get_info() calculate the matchoff and matchlen values
-(i guess are the positions of the IPs or Ports to rewrite), these
-positions are then passed to the int ip_nat_mangle_udp_packet(), who
-actually rewrittes the addresses to do the NAT.
-
-Thats what i have of looking on the code for a couple of hours, and im
-starting to understand it, but guidelines will be much appreciated.
-
-I have set DEBUGP turned on, but only logs about registering and
-unregistering the ip_conntrack_sip helper module are shown.
-
-Sincerly,
-moy (Moises Silva)
-
-PD.
-Christian Hentschel im sending you a Bcc, if you have some time, any
-comment will be greatly appreciated.
-
-
-- moy ( at ) ivsol ( dot ) net
-
---
-"Su nombre es GNU/Linux, no solamente Linux, mas info en http://www.gnu.org=
-"
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
