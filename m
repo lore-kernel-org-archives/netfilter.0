@@ -1,12 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: EMAIL and NAT HELP
-Date: Sat, 14 Jan 2006 08:48:04 +0100
-Message-ID: <000001c618de$da354b90$0101000a@sterenborg.info>
-References: <20060114072747.48053.qmail@web54705.mail.yahoo.com>
+From: Carlos Pastorino <carlos.pastorino@gmail.com>
+Subject: Fwd: Conntrack and DNS
+Date: Sat, 14 Jan 2006 09:38:24 -0200
+Message-ID: <cc4fcc140601140338i4a573791s2bffcae9423dc805@mail.gmail.com>
+References: <cc4fcc140601091111k57bdf291le27ae00681f2bbb7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060114072747.48053.qmail@web54705.mail.yahoo.com>
+In-Reply-To: <cc4fcc140601091111k57bdf291le27ae00681f2bbb7@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,66 +21,52 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-netfilter-bounces@lists.netfilter.org scribbled on :
+No one has any idea about this?
 
-> I am trying to run our qmail E-Mail server behind our
-> firewall.  Our firewall is a linux box running
-> iptables.  The current configuration is as following:
-> 
-> Firewall
-> Eth0:  10.10.10.1  --- Internal LAN
-> Eth1:  208.10.10.1 --- Primary Internet
-> Eth1:0: 208.10.10.2 --- Alias for web (listed in DNS)
-> Eth1:1  208.10.10.3 --- Alias for E-mail (listed in
-> DNS)
-> 
-> Email Server
-> Eth0:   10.10.10.100
-> 
-> Web Server
-> Eth0:   10.10.10.200
-> 
-> Basically I need every packet that arrives on
-> Ethernet1:1 using ports 110,25,143 forwarded to
-> 10.10.10.100.  10.10.10.100 then needs to reference
-> all it packets to 208.10.10.1 when send back to
-> internet community.
+Thanks,
 
-I suppose you have FORWARD policy set to DROP :
+Carlos Pastorino
 
+---------- Forwarded message ----------
 
-$ipt -A FORWARD -m state --state RELATED,ESTABLISHED \
-   -j ACCEPT
-$ipt -A FORWARD -m state --state NEW -i eth1 -o eth0 \
-  -d 10.10.10.100 -p tcp --dport 25 -j ACCEPT
-$ipt -A FORWARD -m state --state NEW -i eth1 -o eth0 \
-  -d 10.10.10.100 -p tcp --dport 110 -j ACCEPT
-$ipt -A FORWARD -m state --state NEW -i eth1 -o eth0 \
-  -d 10.10.10.100 -p tcp --dport 143 -j ACCEPT
+Hi everyone,
 
-$ipt -t nat -A PREROUTING -i eth1 -d 208.10.10.3 \
-  -p tcp --dport 25 -j DNAT --to 10.10.10.100
-$ipt -t nat -A PREROUTING -i eth1 -d 208.10.10.3 \
-  -p tcp --dport 110 -j DNAT --to 10.10.10.100
-$ipt -t nat -A PREROUTING -i eth1 -d 208.10.10.3 \
-  -p tcp --dport 143 -j DNAT --to 10.10.10.100
+I have the following rules in my firewall:
 
+$IPTABLES -A FORWARD -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -p UDP -i $DMZ_IFACE -o $INET_IFACE -s
+$MYMAILSERVER -d $DNS01 --dport domain -j ACCEPT
+$IPTABLES -A FORWARD -p UDP -i $DMZ_IFACE -o $INET_IFACE -s
+$MYMAILSERVER -d $DNS02 --dport domain -j ACCEPT
 
-Or, if you can use the multiport module :
+But some response DNS packets are being dropped. Here's an example:
 
+TCPDUMP on my mail server:
 
-$ipt -A FORWARD -m state --state RELATED,ESTABLISHED \
-   -j ACCEPT
-$ipt -A FORWARD -m state --state NEW -i eth1 -o eth0 \
-  -d 10.10.10.100 -m multiport -p tcp \
-  --dports 25,110,143 -j ACCEPT
+16:26:27.433734 IP (tos 0x0, ttl  64, id 47192, offset 0, flags [DF],
+proto 17, length: 55) MYMAILSERVER.49372 > DNS01.domain: [udp sum ok]
+9962+ AAAA? ibest.com. (27)
+16:26:27.549682 IP (tos 0x0, ttl 250, id 35994, offset 0, flags [DF],
+proto 17, length: 55) DNS01.domain > MYMAILSERVER.49372: [udp sum ok]
+9962 ServFail q: AAAA? ibest.com. 0/0/0 (27)
+16:26:27.549801 IP (tos 0x0, ttl  64, id 47308, offset 0, flags [DF],
+proto 17, length: 55) MYMAILSERVER.49372 > DNS02.domain: [udp sum ok]
+34474+ A? ibest.com. (27)
 
-$ipt -t nat -A PREROUTING -i eth1 -d 208.10.10.3 \
-  -m multiport -p tcp --dports 25,110,143 \
-  -j DNAT --to 10.10.10.100
+/VAR/LOG/MESSAGES on my firewall:
 
+Jan  9 16:26:57 SRVA kernel: FORWARD blocked: IN=3Deth0 OUT=3Deth1
+SRC=3DDNS02 DST=3DMYMAILSERVER LEN=3D55 TOS=3D0x00 PREC=3D0x00 TTL=3D250 ID=
+=3D13214
+DF PROTO=3DUDP SPT=3D53 DPT=3D49372 LEN=3D35
 
-Gr,
-Rob
+As you can see, MYMAILSERVER asks DNS01, and DNS01 responds with
+ServFail. So, MYMAILSERVER in turn asks to DNS02, and the response is
+blocked by the firewall.
 
+Why?
+
+Thanks,
+
+Carlos Pastorino
 
