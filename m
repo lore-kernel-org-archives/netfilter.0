@@ -1,12 +1,11 @@
-From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
-Subject: Re: How to disable mIRC Chat
-Date: Sat, 14 Jan 2006 20:59:56 +0200
-Message-ID: <43C94A2C.4050901@gmail.com>
-References: <20060114182550.35278.qmail@web60913.mail.yahoo.com>
+From: Moises Silva <moises.silva@gmail.com>
+Subject: ip_nat_sip understanding, may be not working for 2.6.14?
+Date: Sat, 14 Jan 2006 13:21:25 -0600
+Message-ID: <c4d05cbe0601141121m77533ebp499fb3a274fa1557@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060114182550.35278.qmail@web60913.mail.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +16,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Gabriel wrote:
+Hi everybody.
+ chentschel@people.netfilter.org
+I have kernel 2.6.14 with ip_nat_sip and ip_conntrack_sip modules
+loaded. I have te following setup:
 
->On Sat, 14 Jan 2006 15:17:33 +0200, Myanmar Linux Boy
->wrote:
->
->  
->
->>Dear All,
->> I am new to linux.
->> I want to disable chat with iptables so that nobody can
->>    
->>
->use chat with
->  
->
->>mIRC with   LAN. Because every students are chatting all
->>    
->>
->the time.
->  
->
->> I am using Red Hat 9 and Squid.
->> They use port 443 and 6667 to chat with mIRC
->> How can I write firewall rules.
->>    
->>
->
->iptables -A FORWARD -p tcp --dport 6660:6669 -j DROP would
->do, but, considering IRC servers also run on other ports,
->you should do:
->
->iptables -A FORWARD -p tcp -m multiport --destination-port
-><insert random ports separated by comma here>
->
->443 is used by https, so I don't think you should block it.
->An IRC daemon would not normally run on that port.
->
->
->  
->
-Maybe best match will be achieved with l7-filter.sf.net
+SIP UA <--------- Gnu/Linux Firewall -----------> Asterisk VoIP server
+
+So, my SIP UA is sending REGISTER requests to the VoIP server, but
+since the contact: field has a private IP address, Asterisk is trying
+to reply to the private IP address. I have checked that using snort
+(network sniffer), having the next results.
+
+GNU/Linux Firewal, snort attached to eth2 interface (the one connected
+to SIP UA)
+
+01/14-12:34:31.469420 192.168.1.89:5060 -> 201.137.229.81:5060
+UDP TTL:250 TOS:0xC0 ID:40650 IpLen:20 DgmLen:479
+Len: 451
+
+UA has the 192.168.1.89, and Asterisk VoIP server has 201.137.229.81.
+So the UA is attempting to send a REGISTER. Then in The Asterisk box i
+have snort reading all that is sent from GNU/Linux firewall, and this
+show up:
+
+01/14-12:37:40.882310 200.95.104.45:1025 -> 201.137.229.81:5060
+UDP TTL:248 TOS:0xD0 ID:40627 IpLen:20 DgmLen:479
+Len: 451
+
+so the same register request is mapped to src 200.95.104.45 (the IP
+address of the firewall, duh!) and to port 1025 (dont know why is
+mapping to other port, since 5060 is not being used)
+
+And finally i have listening snort in VoIP server eth0 (the one in the
+LAN side) and this is shown:
+
+01/14-12:46:30.317974 ARP who-has 192.168.1.89 tell 192.168.1.1
+
+01/14-12:46:31.317927 ARP who-has 192.168.1.89 tell 192.168.1.1
+
+so, its attempting to get the MAC of the UA in the LAN, but obviously
+the UA is not in that LAN, but in the other across internet.
+
+Well, the register problem can be solved with a parameter in VoIP
+server (nat=3Dyes), so it will try to contact the UA ignoring the
+"contact" field info. And succeeds. But the fact is that i guess
+ip_nat_sip, should be rewritting the SIP REGISTER request properly.
+Despite that once done that, Native Transfer (RTP media not passing by
+the VoIP server) does not work, even when i have sip modules loaded in
+both kernels (the voip-server and the firewall).
+
+I have some ideas in the working of "static unsigned int ip_nat_sip()".
+
+1. This function should receive ALL the 5060 port packets.
+2. First look for the packet having at least the  SIP/2.0 string.
+3. look for "REGISTER" string in the Cseq line of the packet
+4. In case a register is found it will call to "static unsigned int
+mangle_sip_packet()", telling it to mangle the sip header contact.
+5. then ct_sip_get_info() calculate the matchoff and matchlen values
+(i guess are the positions of the IPs or Ports to rewrite), these
+positions are then passed to the int ip_nat_mangle_udp_packet(), who
+actually rewrittes the addresses to do the NAT.
+
+Thats what i have of looking on the code for a couple of hours, and im
+starting to understand it, but guidelines will be much appreciated.
+
+I have set DEBUGP turned on, but only logs about registering and
+unregistering the ip_conntrack_sip helper module are shown.
+
+Sincerly,
+moy (Moises Silva)
+
+PD.
+Christian Hentschel im sending you a Bcc, if you have some time, any
+comment will be greatly appreciated.
+
+
+- moy ( at ) ivsol ( dot ) net
+
+--
+"Su nombre es GNU/Linux, no solamente Linux, mas info en http://www.gnu.org=
+"
 
