@@ -1,10 +1,12 @@
-From: "sjdcom" <sjdcom@totalise.co.uk>
-Subject: Problems installing conntrack
-Date: Sun, 15 Jan 2006 18:55:48 -0000
-Message-ID: <004801c61a05$4cc0a4d0$0c00a8c0@Jupiter>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Network configuration
+Date: Sun, 15 Jan 2006 20:02:45 +0100
+Message-ID: <001101c61a06$450e7860$0101000a@sterenborg.info>
+References: <000301c61a02$9f6f3500$6402a8c0@sannpjl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <000301c61a02$9f6f3500$6402a8c0@sannpjl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +20,35 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+> I have tried setting up routing using these commands:
+> 
+> echo "ISP_1" >> /etc/iproute2/rt_tables
+> echo "ISP_2" >> /etc/iproute2/rt_tables
+> 
+> ip route add 192.168.4.0/22 dev eth2 src 192.168.7.253 table ISP_1
+> ip route add default via 192.168.100.253 table ISP_1
+> ip route add 192.168.0.0/22 dev eth1 src 192.168.3.253 table ISP_2
+> ip route add default via 192.168.20.253 table ISP_2
+> 
+> ip rule add from 192.168.7.253 table ISP_1
+> ip rule add from 192.168.3.253 table ISP_2
+> 
+> However, this yielded no success. I have also tried a simple iptables
+> forwarding configuration (without the routing config above):
+> 
+> iptables -A FORWARD -i eth0 -o eth2 -j ACCEPT
+> iptables -A FORWARD -i eth2 -o eth0 -j ACCEPT
+> iptables -A FORWARD -i eth1 -o eth3 -j ACCEPT
+> iptables -A FORWARD -i eth3 -o eth1 -j ACCEPT
+> 
+> # default policy
+> iptables -P FORWARD DROP
 
-I'm installing netfilter for the first time.  I'm installing on Fedora
-Core 4 with kernel 2.6.14.  I've installed iptables, libnfnetlink,
-libnetfilter_log, libnetfilter_queue and libnetfilter_conntrack without
-any trouble.  I have tried installing conntrack but I'm not having much
-success.  When I do a ./configure everything seems OK, but when I do a
-make it comes up with the following errors;
+Not looking at your routing rules ; did you also do :
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-Conntrack.c:844: error: too few arguments to function
-'nfct_dump_conntrack_table_reset_counters'
 
-I also get some other errors of the same type regarding
-'nfct_ump_conntrack_table', 'nfct_dump_expect_list',
-'nfct_flush_conntrack_table', and 'nfct_flush_expectation_table'
-
-Hope I'm not asking too dumb a question ... Has anyone come across this
-before?
-
-Steve
+Gr,
+Rob
 
 
