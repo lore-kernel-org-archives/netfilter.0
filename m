@@ -1,11 +1,11 @@
-From: Ishwar Rattan <ishwar@pali.cps.cmich.edu>
-Subject: Re: Bridge rule info?
-Date: Sat, 14 Jan 2006 17:47:09 -0500 (EST)
-Message-ID: <Pine.LNX.4.56.0601141744080.28763@pali.cps.cmich.edu>
-References: <Pine.LNX.4.56.0601141648560.28674@pali.cps.cmich.edu>
+From: Armin ranjbar <zoup@zoup.org>
+Subject: missing program?
+Date: Sun, 15 Jan 2006 09:10:19 +0000 (UTC)
+Message-ID: <20060116124401.56af5774.zoup@zoup.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.56.0601141648560.28674@pali.cps.cmich.edu>
+Date: Mon, 16 Jan 2006 12:44:01 +0330
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,29 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I realize that I am a little confused about bridging.
-Before the bridge, I was running firewall on interface eth0
-After the bridge (br0) is up, eth0 and tun0 are bridged to it
-- does it mean that br0 is now the interface to run firewall on?
+hi list :)
 
--ishwar
+its been a long since I'm looking for a tool that can :
 
-On Sat, 14 Jan 2006, Ishwar Rattan wrote:
 
->
-> I have a debian based Linux box connected to dept LAN
-> with iptables running. I am interested in eth0 and tun0
-> bridge (br0) on this box. If I remove the firewall first and
-> then set up the bridge, it works as promised. If the firewall
-> is brought up the bridge stops. So, I am looking for a
-> way for bridge and firewall to work together.
->
-> Any ideas?
-> -ishwar
->
->
+generate traffic in all protocols ( the ability to send customized and standard (example : syn/ack) to target ) 
+control over Ip Diagram 
+ability to do Denial of service attack ! ( I'm not looking to crack anything , but i need to test my own setup with it ) 
+the ability to work without its own server ( like socket , which also can work as server )
+Developed Actively 
+
+
+do you know one ?
+
+-- 
+He that breaks a thing to find out what it is has left the path of wisdom.
+		-- J.R.R. Tolkien
 
