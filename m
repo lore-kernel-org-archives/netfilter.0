@@ -1,12 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
+From: "Paul Lewis" <paul.lewis@st-annes.oxford.ac.uk>
 Subject: RE: Network configuration
-Date: Sun, 15 Jan 2006 20:02:45 +0100
-Message-ID: <001101c61a06$450e7860$0101000a@sterenborg.info>
-References: <000301c61a02$9f6f3500$6402a8c0@sannpjl>
+Date: Sun, 15 Jan 2006 19:08:32 -0000
+Message-ID: <000401c61a07$14f79160$6402a8c0@sannpjl>
+References: <001101c61a06$450e7860$0101000a@sterenborg.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000301c61a02$9f6f3500$6402a8c0@sannpjl>
+In-Reply-To: <001101c61a06$450e7860$0101000a@sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,7 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+To: 'Rob Sterenborg' <rob@sterenborg.info>, netfilter@lists.netfilter.org
+
+Hi,
+
+Sorry, I forgot to mention that. Yes, the "echo 1 >
+/proc/sys/net/ipv4/ip_forward" has been set to run in rc.local script on
+every boot.
+
+Cheers,
+
+Paul
+
+---
+Paul Lewis (paul.lewis@st-annes.ox.ac.uk)
+Part II Student
+Department Of Materials
+University Of Oxford
+
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Rob Sterenborg
+Sent: 15 January 2006 19:03
 To: netfilter@lists.netfilter.org
+Subject: RE: Network configuration
 
 > I have tried setting up routing using these commands:
 > 
@@ -50,5 +75,8 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 
 Gr,
 Rob
+
+
+
 
 
