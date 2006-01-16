@@ -1,10 +1,13 @@
-From: "Michael D. Berger" <m.d.berger@ieee.org>
-Subject: NLMSG_ERROR: No such file or directory
-Date: Mon, 16 Jan 2006 10:01:57 -0500
-Message-ID: <005501c61aad$cc0594a0$2801a8c0@MBRC40>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: default entries
+Date: Mon, 16 Jan 2006 10:04:32 -0600
+Message-ID: <200601161004.32669.rob0@gmx.co.uk>
+References: <20060116082038.20590.qmail@web33412.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060116082038.20590.qmail@web33412.mail.mud.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +19,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-In my iptables:
-   -A MDB-IN -i lo -p udp -m udp --dport 5000 -j QUEUE
+On Monday 2006-January-16 02:20, Britto wrote:
+> Could pls anyone explain the following default entries
+> in the iptables
 
-In my QUEUE processor, after each correctly transmitted and
-received udp message, I receive another signal with:
-   ipq_message_type(buf) == NLMSG_ERROR
-and
-   ipq_get_msgerr(buf) == 2 == No such file or directory
+A user chain is by definition not a "default" entry. With all tables' 
+drivers loaded, here is what a default iptables-save(8) would look 
+like: no user chains, no rules, all policies ACCEPT:
 
-I have no such problem with my other messages, which are
-all non-local tcp.
-
-What could cause this kind of error?
-
-Thanks in advance for your help.
-Mike.
-
---
-Michael D. Berger
-m.d.berger@ieee.org 
-
-
+*nat
+:PREROUTING ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+COMMIT
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+COMMIT
+*filter
+:FORWARD ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+COMMIT
+*raw
+:PREROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+COMMIT
+-- 
+    mail to this address is discarded unless "/dev/rob0"
+    or "not-spam" is in Subject: header
 
