@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: default entries
-Date: Mon, 16 Jan 2006 10:11:08 +0100 (CET)
-Message-ID: <49266.193.173.147.3.1137402668.squirrel@webmail.sterenborg.info>
-References: <20060116082038.20590.qmail@web33412.mail.mud.yahoo.com>
+From: "Derick Anderson" <danderson@vikus.com>
+Subject: RE: Conntrack and DNS
+Date: Mon, 16 Jan 2006 08:01:02 -0500
+Message-ID: <FAC4E024BF776842876169173CE2F0132CB183@mailbox.vikus.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060116082038.20590.qmail@web33412.mail.mud.yahoo.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,26 +19,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, January 16, 2006 09:20, Britto wrote:
-> Hi,
->
-> Could pls anyone explain the following default entries
-> in the iptables
->
-> :RH-Firewall-1-INPUT - [0:0]
-> -A INPUT -j RH-Firewall-1-INPUT
-> -A FORWARD -j RH-Firewall-1-INPUT
+=20
 
-A new chain called "RH-Firewall-1-INPUT" is created and left empty.
-The INPUT chain always jumps to chain "RH-Firewall-1-INPUT".
-The FORWARD chain always jumps to chain "RH-Firewall-1-INPUT".
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+> Carlos Pastorino
+> Sent: Saturday, January 14, 2006 6:38 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Fwd: Conntrack and DNS
+>=20
+> No one has any idea about this?
+>=20
+> Thanks,
+>=20
+> Carlos Pastorino
+>=20
 
-This will probably do nothing, but I don't know if there's anything
-else in the script.
+Give me the full output of iptables-save and I'll give it a shot.
+Although it doesn't seem to be your problem, consider adding TCP port 53
+(domain) as well since long DNS replies get sent over TCP.
 
-
-Gr,
-Rob
-
-
+Derick Anderson
 
