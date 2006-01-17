@@ -1,14 +1,12 @@
-From: Graham Murray <graham@gmurray.org.uk>
-Subject: ipv6 state matching
-Date: Tue, 17 Jan 2006 14:39:00 +0000
-Message-ID: <87wtgyc41n.fsf@newton.gmurray.org.uk>
+From: Alpt <alpt@freaknet.org>
+Subject: Re: "Established connection" issues using multipath
+Date: Tue, 17 Jan 2006 15:57:39 +0100
+Message-ID: <20060117145739.GA11048@nihil>
+References: <20060110020601.GA7326@nihil>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/simple; d=gmurray.org.uk; s=in200507;
-	t=1137508741; h=Received:X-Authentication-Warning:From:To:Subject:
-	X-Hashcash:Date:Message-ID:User-Agent:MIME-Version:Content-Type; b=P
-	hyO/Vs7D4RDVgBJr1OZxfnIKoFsWAciS80DtH6O0n8r7XLehqCcR+HA7owvQTsGADWU
-	OoU3ir/0jk9HSjJJ5Q==
+Content-Disposition: inline
+In-Reply-To: <20060110020601.GA7326@nihil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,11 +21,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Now that Linux kernel 2.6.15 includes conntrack for IPv6, what is the
-ip6tables (v1.3.4) command which does the equivalent of 
+On Tue, Jan 10, 2006 at 03:06:01AM +0100, <Alpt>:
+~> The problem is described here:
+~> 
+~> http://marc.theaimsgroup.com/?l=linux-net&m=113550638110682&w=2
+~> 
+~> and continues here:
+~> 
+~> http://marc.theaimsgroup.com/?l=linux-net&m=113636640615375&w=2
+~> 
+~> 
+~> Is it possible to solve it using netfilter hacks?
+~> 
+~> Thanks in advance
 
-'iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT'
+So... any ideas?
 
-The obvious replacement of iptables by ip6tables complains that
-libip6t_state.so cannot be found.
+-- 
+:wq!
+"I don't know nothing" The One Who reached the Thinking Matter   '.'
+
+[ Alpt --- Freaknet Medialab ]
+[ GPG Key ID 441CF0EE ]
+[ Key fingerprint = 8B02 26E8 831A 7BB9 81A9  5277 BFF8 037E 441C F0EE ]
 
