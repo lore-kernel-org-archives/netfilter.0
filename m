@@ -1,10 +1,10 @@
-From: Steve Snodgrass <ssnodgra@pheran.com>
-Subject: Netfilter dropping packets with valid conntracks on RHEL4?
-Date: Wed, 18 Jan 2006 19:47:15 -0500
-Message-ID: <20060119004715.GA11129@shadow.pheran.com>
+From: John Mok <jmok@attglobal.net>
+Subject: iptables + PPPoE routing problem
+Date: Thu, 19 Jan 2006 11:34:36 +0800
+Message-ID: <43CF08CC.1090401@attglobal.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,38 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I'm running a firewall on RHEL4 (kernel 2.6.9-22.0.1.ELsmp) and have been
-seeing some strange problems affecting the IMAP connections from my mail
-client, mutt.  It seems that occasionally netfilter will decide to start
-dropping packets from an IMAP session that has been established and running
-fine for hours, causing mutt to hang.  Here's an example (this is the
-output from the LOG target before the default deny statement at the end
-of the iptables rules):
+Hi,
 
-Jan 18 17:04:40 xxxx kernel: IN=eth1 OUT=eth0.21 SRC=192.168.10.9
-DST=192.168.0.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=62 ID=31009 DF PROTO=TCP
-SPT=143 DPT=35857 WINDOW=63712 RES=0x00 ACK URGP=0
+I would like to install a Linux firewall connecting to ISP using PPPoE. 
+The following are the software installed on the Linux box :-
 
-But, this entry exists in the conntrack table:
+Linux kernel 2.4.21 (SuSE distribution)
+iptables 1.3.1
+Roaring Penguin PPPoE 3.7
+pppd 2.4.1
 
-tcp      6 431979 ESTABLISHED src=192.168.0.10 dst=192.168.10.9 sport=35857
-dport=143 packets=823 bytes=666482 src=192.168.10.9 dst=192.168.0.10 sport=143
-dport=35857 packets=629 bytes=257842 [ASSURED] use=1
+I have successfully connect to the ISP, and I could NAT'd through the 
+ppp0 interface. On the Linux box, I could ping anywhere. However, on the 
+DMZ, I could only ping the ppp0 interface and failed to ping ISP side of 
+the point-to-point connection. It still failed even I make all the 
+iptables rules with "ACCEPT".
 
-The very first rule in iptables is:
+What went wrong? I hope someone could help me to how to setup the PPPoE 
+properly to make the DMZ work.
 
-ACCEPT     all  --  anywhere   anywhere    state RELATED,ESTABLISHED
+Thanks a lot.
 
-Has anyone seen this before?  Is there anything I can do to further
-debug this?  Unfortunately I do not have any way to cause this behavior
-at will, it just seems to happen at random.
+John Mok
 
--- 
-Steve Snodgrass * ssnodgra@pheran.com * Network and Unix Guru(?) at Large
-Geek Code: GCS d? s: a C++ U++++$ P+++ L++ w PS+ 5++ b++ DI+ D++ e++ r+++ y+*
-"If you want to be somebody else, change your mind."  -Sister Hazel
 
