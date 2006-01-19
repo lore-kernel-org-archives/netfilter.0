@@ -1,10 +1,10 @@
-From: Carlos Munoz <carlos@kenati.com>
-Subject: Configuring iptables to allow tftp traffic on kernel 2.6.14
-Date: Wed, 18 Jan 2006 15:42:45 -0800
-Message-ID: <43CED275.4060804@kenati.com>
+From: Steve Snodgrass <ssnodgra@pheran.com>
+Subject: Netfilter dropping packets with valid conntracks on RHEL4?
+Date: Wed, 18 Jan 2006 19:47:15 -0500
+Message-ID: <20060119004715.GA11129@shadow.pheran.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,67 +15,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all,
+I'm running a firewall on RHEL4 (kernel 2.6.9-22.0.1.ELsmp) and have been
+seeing some strange problems affecting the IMAP connections from my mail
+client, mutt.  It seems that occasionally netfilter will decide to start
+dropping packets from an IMAP session that has been established and running
+fine for hours, causing mutt to hang.  Here's an example (this is the
+output from the LOG target before the default deny statement at the end
+of the iptables rules):
 
-I hope this is the right forum for this question. I tried to search the 
-archives but did not find a search function.
+Jan 18 17:04:40 xxxx kernel: IN=eth1 OUT=eth0.21 SRC=192.168.10.9
+DST=192.168.0.10 LEN=1500 TOS=0x00 PREC=0x00 TTL=62 ID=31009 DF PROTO=TCP
+SPT=143 DPT=35857 WINDOW=63712 RES=0x00 ACK URGP=0
 
-I'm trying to configure iptables to allow tftp traffic that originates 
-from the linux box. I can tftp files as long as the policy for the INPUT 
-chain is ACCEPT. Once, I enter the following rules, I can't tftp any files.
+But, this entry exists in the conntrack table:
 
-/carlos # uname -a
-Linux carlos-npgateway 2.6.14.6-2.0.0-95 #4 Tue Jan 17 19:17:28 PST 2006 
-armv5tejl unknown
-/carlos #
-/carlos #
-/carlos # iptables -P INPUT DROP
-/carlos # iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-/carlos #
-/carlos #
-/carlos # iptables -L
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere            state 
-RELATED,ESTABLISHED
+tcp      6 431979 ESTABLISHED src=192.168.0.10 dst=192.168.10.9 sport=35857
+dport=143 packets=823 bytes=666482 src=192.168.10.9 dst=192.168.0.10 sport=143
+dport=35857 packets=629 bytes=257842 [ASSURED] use=1
 
-Chain FORWARD (policy DROP)
-target     prot opt source               destination
+The very first rule in iptables is:
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+ACCEPT     all  --  anywhere   anywhere    state RELATED,ESTABLISHED
 
-Chain NPFORWARDCHAIN (0 references)
-target     prot opt source               destination
+Has anyone seen this before?  Is there anything I can do to further
+debug this?  Unfortunately I do not have any way to cause this behavior
+at will, it just seems to happen at random.
 
-The connection tracking module for tftp is loaded:
-
-/carlos # lsmod
-Module                  Size  Used by
-ip_nat_tftp             1920  0
-ip_conntrack_tftp       4400  1 ip_nat_tftp
-phone_mrvl            100852  2
-phonedev                4224  3 phone_mrvl
-/carlos #
-
-
-Connection tracking reports the following connections:
-
-/carlos # cat /proc/net/ip_conntrack
-udp      17 24 src=192.168.1.75 dst=192.168.1.8 sport=3080 dport=69 
-[UNREPLIED] src=192.168.1.8 dst=192.168.1.75 sport=69 dport=3080 use=1
-/carlos #
-/carlos #
-/carlos # cat /proc/net/ip_conntrack_expect
-292 proto=17 src=192.168.1.8 dst=192.168.1.75 sport=69 dport=3080
-/carlos #
-
-Does anyone know what I need to do to get this to work ? Thanks in 
-advance for your help.
-
-
-Carlos Munoz
+-- 
+Steve Snodgrass * ssnodgra@pheran.com * Network and Unix Guru(?) at Large
+Geek Code: GCS d? s: a C++ U++++$ P+++ L++ w PS+ 5++ b++ DI+ D++ e++ r+++ y+*
+"If you want to be somebody else, change your mind."  -Sister Hazel
 
