@@ -1,10 +1,12 @@
-From: Michael Gale <michael.gale@pason.com>
-Subject: Send SYN ACK from server ?
-Date: Thu, 19 Jan 2006 13:58:40 -0700
-Message-ID: <43CFFD80.3050203@pason.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: vpn masquerading
+Date: Thu, 19 Jan 2006 22:30:57 +0100
+Message-ID: <001401c61d3f$a2f7c5d0$0101000a@sterenborg.info>
+References: <NHBBLNDNFKDMKNNKGOMMKEBGOCAA.gregoriandres@yahoo.com.ar>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <NHBBLNDNFKDMKNNKGOMMKEBGOCAA.gregoriandres@yahoo.com.ar>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,37 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hello,
+> -> ->  * TODO: - finish support for multiple calls within one session
+> -> ->  *     (needs expect reservations in newnat)
+> -> ->  *   - testing of incoming PPTP calls
+>
+> thank you, I  will try, but what confused me is that
+> inside pptp netfilter patch source code:
 
-    I am seeing a problem where when a linux box from behind a linux 
-firewall connects to an external server, the external server is sending 
-a second SYN,ACK message:
+Maybe some leftover from ancient times ? I don't know.
+All I know is that I just connected 2 pptp clients in my LAN to a corp
+pptp server, so it must be working.. ;-)
 
--> SYN sent
-<- SYN,ACK received -- WINDOWS SIZE SET TO 0 ??
--> ACK sent
 
-Then the external server sends:
-<-SYN, ACK with same seq numbers ?? and WINDOW SIZE SET TO 16560 ??
-
-Now if the client is windows :( it replies to the second SYN,ACK and 
-everything seems to work, however when the client is linux, the second 
-SYN,ACK is ignored by the client which I believe causes the connection 
-state to be destroyed on the firewall.
-
-Am I corrent is assuming that the window size update packet should NOT 
-have the SYN bit set and that this is a problem on the remote server ?
-
-Michael
-
--- 
-Michael Gale
-
-Linux Administrator
-Network Administrator
-Pason Systems Corp.
+Gr,
+Rob
 
 
