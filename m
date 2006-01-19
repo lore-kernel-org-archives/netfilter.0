@@ -1,12 +1,13 @@
-From: "LinuXKiD" <gregoriandres@yahoo.com.ar>
+From: "Rob Sterenborg" <rob@sterenborg.info>
 Subject: RE: vpn masquerading
-Date: Thu, 19 Jan 2006 11:02:26 -0300
-Message-ID: <NHBBLNDNFKDMKNNKGOMMKEPNOBAA.gregoriandres@yahoo.com.ar>
+Date: Thu, 19 Jan 2006 15:19:12 +0100 (CET)
+Message-ID: <55135.193.173.147.3.1137680352.squirrel@webmail.sterenborg.info>
 References: <65494.193.173.147.3.1137677788.squirrel@webmail.sterenborg.info>
+	<NHBBLNDNFKDMKNNKGOMMKEPNOBAA.gregoriandres@yahoo.com.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65494.193.173.147.3.1137677788.squirrel@webmail.sterenborg.info>
+In-Reply-To: <NHBBLNDNFKDMKNNKGOMMKEPNOBAA.gregoriandres@yahoo.com.ar>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,60 +21,31 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter <netfilter@lists.netfilter.org>
 
+> -> > lsmod:
+> -> >
+> -> > Module                  Size  Used by    Not tainted
+> ->
+> -> ...
+> ->
+> -> > ip_nat_proto_gre        1508   0  (unused)
+> -> > ip_nat_pptp             2572   0  (unused)
+> ->
+> -> I'm not sure ; perhaps you need to unload ip_nat_pptp. I thought
+> you
+> -> needed this when *you* run a PPTP server *behind* the firewall.
+>
+> Thank you, but PPTP server is located on Internet, not behind
+> firewall.
+
+Yes, that's why I mentioned it : you have the same situation as I had
+back then and I needed to unload this module. But, YMMV.
+
+Still, we don't know what you rule have so far concerning pptp...
+It's a little hard to give advice this way.
 
 
-Hi.
+Gr,
+Rob
 
 
--> On Thu, January 19, 2006 13:58, LinuXKiD wrote:
--> >
--> > Hi,
--> >
--> > I've a small lan with linux router debian:
--> > 	- 2.4.28 kernel
--> > 	- iptables 1.3.0
--> > 	- pptp patch-o-matic-ng and others patchs
--> > 	- Adsl internet connection.
--> >
--> > Lan share internet connection with MASQUERADE (iptables nat)
--> > and I've loaded modules pptp and gre (conntrack and nat)
--> >
--> > lsmod:
--> >
--> > Module                  Size  Used by    Not tainted
--> 
--> ...
--> 
--> > ip_nat_proto_gre        1508   0  (unused)
--> > ip_nat_pptp             2572   0  (unused)
--> 
--> I'm not sure ; perhaps you need to unload ip_nat_pptp. I thought you
--> needed this when *you* run a PPTP server *behind* the firewall.
-
-Thank you, but PPTP server is located on Internet, not behind firewall.
-
-
--> For me, pptp masq stopped working when I loaded ip_nat_pptp, but I
--> must say that was about 2 years ago.
--> 
--> ...
--> 
--> > ip_conntrack_pptp       2832   1  [ip_nat_pptp]
--> > ip_conntrack_proto_gre    2676   0  [ip_nat_pptp ip_conntrack_pptp]
--> 
--> ...
--> 
--> > well... the problem is when two , or more lan hosts want to access
--> > same vpn server with pptp "microsoft vpn protocol"
--> >
--> > Only one host can connect to VPN simultaneously
--> 
--> And.. What rules do you have so far concerning pptp ?
--> 
--> 
--> Gr,
--> Rob
--> 
--> 
--> 
 
