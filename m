@@ -1,12 +1,11 @@
-From: Michael Gale <michael.gale@pason.com>
-Subject: Re: Send SYN ACK from server ?
-Date: Fri, 20 Jan 2006 10:59:12 -0700
-Message-ID: <43D124F0.1080804@pason.com>
-References: <43CFFD80.3050203@pason.com>
+From: "John Lumby" <johnlumby@hotmail.com>
+Subject: vpn masquerading
+Date: Fri, 20 Jan 2006 13:04:22 -0500
+Message-ID: <BAY108-F1522810B0AD54025B1AA15A31F0@phx.gbl>
+References: <BAY0-MC3-F19Zs3JcXu00035e65@bay0-mc3-f19.bay0.hotmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43CFFD80.3050203@pason.com>
+In-Reply-To: <BAY0-MC3-F19Zs3JcXu00035e65@bay0-mc3-f19.bay0.hotmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,53 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Michael Gale <michael.gale@pason.com>, netfilter <netfilter@lists.netfilter.org>
-
-Hello,
-
-    Why does disabling TCP window tracking resolve this issue ?
-
-The firewall is CentOS 4 - kernel Linux fw1-calgary.int.pason.com 
-2.6.9-22.0.1.EL #1 Thu Oct 27 12:26:11
-iptables 1.2.11
-
-# echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
-Michael
+>well... the problem is when two , or more lan hosts want to access
+>same vpn server with pptp "microsoft vpn protocol"
+>Only one host can connect to VPN simultaneously
 
-Michael Gale wrote:
+Some vpn servers do not allow more than one connection from the same client 
+address.   Reason being that the vpn server tracks each connection based on 
+source address ands gets confused if it gets two from the same.   Your two 
+lan machines both appear to the vpn server as the same machine (same source 
+IP address).   Something to check.
 
-> Hello,
->
->    I am seeing a problem where when a linux box from behind a linux 
-> firewall connects to an external server, the external server is 
-> sending a second SYN,ACK message:
->
-> -> SYN sent
-> <- SYN,ACK received -- WINDOWS SIZE SET TO 0 ??
-> -> ACK sent
->
-> Then the external server sends:
-> <-SYN, ACK with same seq numbers ?? and WINDOW SIZE SET TO 16560 ??
->
-> Now if the client is windows :( it replies to the second SYN,ACK and 
-> everything seems to work, however when the client is linux, the second 
-> SYN,ACK is ignored by the client which I believe causes the connection 
-> state to be destroyed on the firewall.
->
-> Am I corrent is assuming that the window size update packet should NOT 
-> have the SYN bit set and that this is a problem on the remote server ?
->
-> Michael
->
+John
 
--- 
-Michael Gale
-
-Linux Administrator
-Network Administrator
-Pason Systems Corp.
 
 
