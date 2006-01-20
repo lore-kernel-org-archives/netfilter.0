@@ -1,11 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ip forwarding: client has stalling problems
-Date: Fri, 20 Jan 2006 18:41:24 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0601201840060.12328@blackhole.kfki.hu>
-References: <200601201516.13638.saintiss@gmx.net>
+From: Yermo Lamers <yml@dtlink.com>
+Subject: Using iptables on a single NIC to map old IP addresses onto new.
+Date: Fri, 20 Jan 2006 12:53:04 -0500
+Message-ID: <43D12380.6080901@dtlink.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200601201516.13638.saintiss@gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: SainTiss <saintiss@gmx.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Fri, 20 Jan 2006, SainTiss wrote:
+>> I want to map all ports on a.a.a.2 to b.b.b.2 and all ports
+>> on a.a.a.3 to
+>> b.b.b.3
+>>
+>> Can something like this be done using iptables if I only
+>> have 1 NIC card and I do not have a physically separate
+>> subnet?
+>
+> Why not use "ifconfig" (or "ip addr") to add multiple IP addresses (old
+> and new) to the NIC ?
+> Then, when the transition is complete, you just remove the old
+> addresses.
 
-> I just set up IP forwarding on a 2.6.12 debian system (server) and a 2.6.12
-> ubuntu client. I used this script:
+That was my first thought. I bound a.a.a.2 and b.b.b.2 to the same box.
+I obviously have two pipes. If I set the default route on the box to the
+a.a.a.1 router I can ping a.a.a.2 from the outside but not b.b.b.2. If I
+switch to the b.b.b.1 router the opposite happens.
 
-Either upgrade to a more recent kernel in the 2.6.x series or disable TCP
-window tracking by
+arp cache has entries for both routers. I can ping both routers from the 
+box in question.
 
-# echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
+I would have expected packets to come down either pipe and go out
+whichever one happens to be the default gateway.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I've been assuming either it's some issue on the routers themselves or 
+there is some issue with the 2.2 kernel and binding IPs from separate 
+networks (old machine which I can't take down yet.) but it's been alot 
+of long hours and little sleep so maybe I'm missing something stupidly 
+obvious.
+
+
+-- 
+---------------------------------------------------------------------
+DTLink Software                                 http://www.dtlink.com
+              Internet Business Systems and Software
+---------------------------------------------------------------------
+
 
