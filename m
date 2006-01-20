@@ -1,10 +1,11 @@
-From: Burak Ozgoren <BOzgoren@gunessigorta.com.tr>
-Subject: Fw: nat between dmz and local after external nat to dmz. is it
-	possible?
-Date: Fri, 20 Jan 2006 16:18:43 +0200
-Message-ID: <OFCD89F525.04A4F486-ONC22570FC.004E1BB5-C22570FC.004ED0BC@gunessigorta.com.tr>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ip forwarding: client has stalling problems
+Date: Fri, 20 Jan 2006 18:41:24 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0601201840060.12328@blackhole.kfki.hu>
+References: <200601201516.13638.saintiss@gmx.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200601201516.13638.saintiss@gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,42 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: SainTiss <saintiss@gmx.net>
+Cc: netfilter@lists.netfilter.org
 
-Yes, it is possible with one interface to dmz.
+On Fri, 20 Jan 2006, SainTiss wrote:
 
+> I just set up IP forwarding on a 2.6.12 debian system (server) and a 2.6.12
+> ubuntu client. I used this script:
 
+Either upgrade to a more recent kernel in the 2.6.x series or disable TCP
+window tracking by
 
------ Forwarded by Burak Ozgoren/BIM/Gunessigorta on 20.01.2006 16:16 
------
+# echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
 
-Burak Ozgoren/BIM/Gunessigorta 
-19.01.2006 15:08
-
-To
-netfilter@lists.netfilter.org
-cc
-
-Subject
-nat between dmz and local after external nat to dmz. is it possible?
-
-
-
-
-
-Hello,
-
-My question is. Tcp connection coming from external (internet) is being 
-nat to dmz. 
-
-195.155.x.x port 12000 -> 192.168.x.x port 12000
-
-i want to put a linux box with netfilter to dmz to nat these tcp packets 
-to 10.10.x.x port 25.
-
-two nat operations on the way, is it possible?
-
-Thank you.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
