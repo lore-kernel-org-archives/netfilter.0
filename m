@@ -1,12 +1,15 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Using iptables on a single NIC to map old IP addresses onto new.
-Date: Sat, 21 Jan 2006 09:00:23 +0100
-Message-ID: <001b01c61e60$bb729460$0101000a@sterenborg.info>
-References: <43D133A8.4010801@dtlink.com>
+From: SainTiss <saintiss@gmx.net>
+Subject: Re: ip forwarding: client has stalling problems
+Date: Sat, 21 Jan 2006 14:31:52 +0100
+Message-ID: <200601211431.55350.saintiss@gmx.net>
+References: <200601201516.13638.saintiss@gmx.net>
+	<Pine.LNX.4.58.0601201840060.12328@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart8434130.eU8Mzekh2z";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43D133A8.4010801@dtlink.com>
+In-Reply-To: <Pine.LNX.4.58.0601201840060.12328@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,61 +20,79 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@lists.netfilter.org
 
->>> I would have expected packets to come down either pipe and go out
->>> whichever one happens to be the default gateway.
->>
->>It could be that both your ISPs are using source address spoofing
->>filters (as they should, of course). That is, the router a.a.a.1
->>will only accept traffic with source address a.a.a.2 and the rest
->>(including ping replies from b.b.b.2) get dropped.
-> 
-> Yea, that's what I think is going on. I was checking the
-> iproute2 site to see if I could come up with something fancy but
-> the kernel on this box doesn't have the advanced routing enabled.
+--nextPart8434130.eU8Mzekh2z
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Hmm. Wouldn't this be solved by adding another NIC and configure the new
-IP on it ? That should be less work than install/configure a new Linux
-box to do this forwarding.
+Thanks for the tip,
 
-> So the question is can I set up a box on the network, bind IP
-> addresses to it and then forward those connections onto another box
-> for both TCP and UDP akin to the way rinetd works?
-> 
-> i.e.
-> 
-> a.a.a.1 port 80 gets forwarded to b.b.b.1 80
-> a.a.a.2 port 80 gets forwarded to b.b.b.2 80
+However, after I did this both on server and client, nothing changed... Als=
+o,=20
+using 2.6.8 on the server doesn't help...
 
-Sure.
+Did I maybe misunderstand (e.g. do I have to restart something after=20
+echo'ing?) or maybe something else is the cause?
 
-> So I'm fowarding packets despite the fact that I'm not using
-> a "router" per se. I want to forward packets for connections to
-> the local box like rinetd does.
-> 
-> Can that be done using iptables or is there another approach to this
-> problem? (Like rewriting the from address depending on which pipe the
-> packet came from) 
+Also, is it the kernel on the server which is too "old", or the client one,=
+ or=20
+both?
 
-On the box, use rules like :
+Thanks,
 
-$ipt -P FORWARD DROP
+Hans
 
-$ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-$ipt -A FORWARD -m state --state NEW -d b.b.b.1 -p tcp --dport 80 \
-  -j ACCEPT
-$ipt -A FORWARD -m state --state NEW -d b.b.b.2 -p tcp --dport 80 \
-  -j ACCEPT
+On Friday 20 January 2006 18:41, Jozsef Kadlecsik wrote:
+> On Fri, 20 Jan 2006, SainTiss wrote:
+> > I just set up IP forwarding on a 2.6.12 debian system (server) and a
+> > 2.6.12 ubuntu client. I used this script:
+>
+> Either upgrade to a more recent kernel in the 2.6.x series or disable TCP
+> window tracking by
+>
+> # echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
+>
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
 
-$ipt -t nat -A PREROUTING -d a.a.a.1 -p tcp --dport 80 \
-  -j DNAT --to b.b.b.1
-$ipt -t nat -A PREROUTING -d a.a.a.2 -p tcp --dport 80 \
-  -j DNAT --to b.b.b.2
+=2D-=20
+If we cannot live so as to be happy, let us at least live so as to deserve =
+it
+ -- Immanuel Hermann Fichte
 
+People are promoted up to their level of incompetence
+ -- Peter's Principle
 
-Gr,
-Rob
+Ark Linux - Linux for the Masses (http://arklinux.org)
 
+Hans Schippers
+Aspirant FWO - Vlaanderen
+=46ormal Techniques in Software Engineering (FoTS)
+University of Antwerp
+Middelheimlaan 1
+2020 Antwerpen - Belgium
+Phone: +32 3 265 38 71
+=46ax: +32 3 265 37 77
+
+--nextPart8434130.eU8Mzekh2z
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQBD0jfLXlnUYIbmLOQRAme0AJ9jrQMd7m+38mkqA3Zaeh4+ThW1IgCfSXMu
+i+XJ6fPFIvXBrUniVhIOh+c=
+=Pbc8
+-----END PGP SIGNATURE-----
+
+--nextPart8434130.eU8Mzekh2z--
 
