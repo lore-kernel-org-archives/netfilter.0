@@ -1,8 +1,9 @@
-From: alninuo_li@sdc.sercomm.com
-Subject: RE:double NAT problem
-Date: Mon, 23 Jan 2006 09:13:36 +0800
-Message-ID: <OF4A8B63BA.0263F32E-ON482570FF.0006AA83@sdc.sercomm.com>
+From: Nived Gopalan <nived.gopalan@gmail.com>
+Subject: problems using random patch for 2.6.15.1 kernel
+Date: Mon, 23 Jan 2006 14:54:34 +0000
+Message-ID: <43D4EE2A.5030105@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,18 +15,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Guenter.Sprakties@team4.de
-Cc: netfilter-bounces@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
 
-Dear :
-      Maybe need check the route table settings, or some ip spoofing
-detection at your router.
-Best Regards.
-Alninuo Lee
+Hi,
 
+I get the following compilation errors when i build 2.6.15.1 kernel 
+with  netfilter - random patch.
 
+  CC [M]  net/ipv6/netfilter/ip6t_random.o
+net/ipv6/netfilter/ip6t_random.c:76: warning: initialization makes 
+integer from pointer without a cast
+net/ipv6/netfilter/ip6t_random.c:76: error: initializer element is not 
+computable at load time
+net/ipv6/netfilter/ip6t_random.c:76: error: (near initialization for 
+`ip6t_rand_reg.revision')
+net/ipv6/netfilter/ip6t_random.c:77: warning: initialization from 
+incompatible pointer type
+net/ipv6/netfilter/ip6t_random.c:79: warning: initialization from 
+incompatible pointer type
+make[3]: *** [net/ipv6/netfilter/ip6t_random.o] Error 1
+make[2]: *** [net/ipv6/netfilter] Error 2
+make[1]: *** [net/ipv6] Error 2
+make: *** [net] Error 2
+
+-----------------------
+
+Any ideas/ suggestions ?
+Thanx.
+
+Regards,
+Nived.
 
 
