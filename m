@@ -1,12 +1,9 @@
-From: pwasik@optonline.net
-Subject: Filter on MAC OUI?
-Date: Sun, 22 Jan 2006 19:40:17 -0500
-Message-ID: <f396b7dfbc2b.43d3dfa1@optonline.net>
+From: alninuo_li@sdc.sercomm.com
+Subject: RE:double NAT problem
+Date: Mon, 23 Jan 2006 09:13:36 +0800
+Message-ID: <OF4A8B63BA.0263F32E-ON482570FF.0006AA83@sdc.sercomm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-language: en
-Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,13 +15,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Guenter.Sprakties@team4.de
+Cc: netfilter-bounces@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hi, 
 
-Is it possible to filter source MAC addresses on a partial MAC such as the manufacturers OUI portion only? 
+Dear :
+      Maybe need check the route table settings, or some ip spoofing
+detection at your router.
+Best Regards.
+Alninuo Lee
 
-Thanks, 
 
-Paul
+
 
