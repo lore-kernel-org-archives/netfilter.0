@@ -1,12 +1,11 @@
-From: Thomas Kuiper <tkuiper-netfilter@inxsoft.net>
-Subject: Re: <<netfilter hacking howto>> chinese edition
-Date: Tue, 24 Jan 2006 11:24:33 +0800
-Message-ID: <43D59DF1.6000508@inxsoft.net>
-References: <001f01c62093$cef9da40$d51c010a@zhuxiaoping>
+From: Marcelus Trojahn <trojahn@alternativa.com.br>
+Subject: bridge and FORWARD chain
+Date: Tue, 24 Jan 2006 16:23:02 -0300
+Message-ID: <536155680.20060124162302@alternativa.com.br>
+Reply-To: Marcelus Trojahn <trojahn@alternativa.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001f01c62093$cef9da40$d51c010a@zhuxiaoping>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,24 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear Zhu,
+Friends,
 
-sorry but your file is not visible. Could you resent it with a link?
+  I  have  a linux bridge, using bridge-utils... I've worked with bridges before
+  and never had the problem I'm having now...
 
-Also, is your version in simplified or traditional chinese (I noticed its 
-better to make a traditional first and then convert it to simplified with 
-iconv, the other way around doesn't work 100% automatic).
+  The  packets go from interface to interface, but never reach the FORWARD chain
+  on iptables... How is that possible?
 
-Best Regards,
-Thomas
+  Here's  an  example...  The  bridge  has  an  uptime of 17hrs, working with no
+  problems at all, yet, no packets on FORWARD chain...
 
-zhu xiaoping wrote:
-> This is my translation of <<netfilter hacking howto>> in chinese. It's a sgml
-> file,i cannot transform it in html
-> 
-> droplet@kernelchina.org
+# uptime
+ 17:54:46 up 17:54, load average: 0.00, 0.00, 0.00
+# iptables -L -vn
+Chain INPUT (policy ACCEPT 5262 packets, 1012K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain OUTPUT (policy ACCEPT 2953 packets, 940K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+ The  main  reason of this bridge is to filter some unwanted traffic coming from
+ the network behind it... So, I need the FORWARD chain for that...
+
+ Anything on /proc or something that can disable it?
+
+-- 
+Marcelus Trojahn
+
+
 
 
