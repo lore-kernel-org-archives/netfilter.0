@@ -1,12 +1,14 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: Re: bridge and FORWARD chain
-Date: Tue, 24 Jan 2006 11:48:06 -0800
-Message-ID: <BFFBC476.E681%gary@primeexalia.com>
-References: <536155680.20060124162302@alternativa.com.br>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Re: Why would certain packets not reach nat PREROUTING chain?
+Date: Tue, 24 Jan 2006 20:16:21 -0500
+Message-ID: <20060125011621.GC3805@bostoncoop.net>
+References: <20051218055403.002CDA00EA@bostoncoop.net>
+	<20051218131621.GC2197@bostoncoop.net>
+	<12626109102.20051219163925@wbp.krakow.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <536155680.20060124162302@alternativa.com.br>
+Content-Disposition: inline
+In-Reply-To: <12626109102.20051219163925@wbp.krakow.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,69 +20,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Marcelus Trojahn <trojahn@alternativa.com.br>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Marcelus,
+I'm following up on a thread that started at
+<https://lists.netfilter.org/pipermail/netfilter/2005-November/063703.html>.
 
-I only know a little about bridging so if I'm wrong please jump in.
-Netfilter is designed to work on the interface that the data is traveling
-across.  When you have two interfaces that are bridged they are now one
-interface.  You need to treat the bridge as such.  If you have the
-following:
-eth0 - inet
-eth1 - DMZ
-eth2 - lan
-brd0 - (eth0 + eth1)
+The problem was trying to connect to a SonicWALL VPN through a NAT box
+running iptables. Packets went from client to NAT box, then NAT box to
+VPN server, then back from the VPN serve to the NAT box, but disappeared
+into an abyss somewhere between mangle PREROUTING and nat PREROUTING. The
+connection showed up as tracked in /proc/net/ip_conntrack, but tcpdump
+showed no packets going out the inward facing ethernet card.
 
-Forwarding from eth0+eth1 is automatically occurring (via the bridge).
-Forward rules on eth0 or eth1 no longer apply as it's brd0
+As it turns out, an upgrade to 2.6.15.1 seems to have totally fixed the
+problem. I also went through the kernel options one-by-one and turned off
+absolutely everything that was not essential for the server. So either
+explanation could account for the fix.
 
-Now forwarding from brd0 to/from eth2 should work.
+People had suspected before that the Debian stock kernel IPSec
+functionality was getting in the way; the Debian kernel does come with
+IPSec modules but none of them were loaded.
 
-If you need to limit forward traffic between eth0 to eth1 you need to look
-towards ebtables.
-
-That's my understanding.
-
-Hope that helps.
-
-Gary Wayne Smith
-
-On 1/24/06 11:23 AM, "Marcelus Trojahn" <trojahn@alternativa.com.br> wrote:
-
-> Friends,
-> 
->   I  have  a linux bridge, using bridge-utils... I've worked with bridges
-> before
->   and never had the problem I'm having now...
-> 
->   The  packets go from interface to interface, but never reach the FORWARD
-> chain
->   on iptables... How is that possible?
-> 
->   Here's  an  example...  The  bridge  has  an  uptime of 17hrs, working with
-> no
->   problems at all, yet, no packets on FORWARD chain...
-> 
-> # uptime
->  17:54:46 up 17:54, load average: 0.00, 0.00, 0.00
-> # iptables -L -vn
-> Chain INPUT (policy ACCEPT 5262 packets, 1012K bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
-> 
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
-> 
-> Chain OUTPUT (policy ACCEPT 2953 packets, 940K bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
-> 
->  The  main  reason of this bridge is to filter some unwanted traffic coming
-> from
->  the network behind it... So, I need the FORWARD chain for that...
-> 
->  Anything on /proc or something that can disable it?
-
+In any case, I thought I'd just post this to put some finality to the
+discussion. Thanks for everyone who helped earlier.
+-- 
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
 
