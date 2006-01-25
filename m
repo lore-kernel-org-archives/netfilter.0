@@ -1,7 +1,7 @@
 From: "Arthur DiSegna" <adisegna@authentium.com>
 Subject: RE: First rule in the list seems to allow everything?
-Date: Wed, 25 Jan 2006 12:07:17 -0500
-Message-ID: <B584AAC32ED8DE49A8EAD2CF3D847FE0022255DA@auth-fl-mail1.commandsoftware.com>
+Date: Wed, 25 Jan 2006 12:13:12 -0500
+Message-ID: <B584AAC32ED8DE49A8EAD2CF3D847FE0022255DD@auth-fl-mail1.commandsoftware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,6 +18,30 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+Cancel my last. The output below is from my other test firewall.=20
+
+The actual output from the firewall in question of the iptables -nvL
+command does in fact show the accept all rule for the loopback addresss
+only.
+
+Thank you.
+
+ pkts bytes target     prot opt in     out     source
+destination
+   32  1600 ACCEPT     all  --  lo     *       0.0.0.0/0
+0.0.0.0/0
+	RULES
+	MORE RULES
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Arthur
+DiSegna
+Sent: Wednesday, January 25, 2006 12:07 PM
+To: netfilter@lists.netfilter.org
+Subject: RE: First rule in the list seems to allow everything?
 
 iptables -nvL output
 
@@ -67,6 +91,8 @@ iptables -nvL
 
 Gr,
 Rob
+
+
 
 
 
