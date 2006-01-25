@@ -1,7 +1,8 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: Completely Bypassing a Firewall?!
-Date: Wed, 25 Jan 2006 09:28:42 -0500
-Message-ID: <FAC4E024BF776842876169173CE2F0132CB3A1@mailbox.vikus.com>
+From: =?iso-8859-1?Q?SI_-_Eng=2E_Jo=E3o_Fernandes?=
+	<joao.fernandes@hidrografico.pt>
+Subject: RE: double NAT problem
+Date: Wed, 25 Jan 2006 14:31:44 -0000
+Message-ID: <8B153E8DF6500744AF143C162AC25A3201C786F1@ih-mail.ih.marinha.pt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,41 +17,79 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
+It doesn't look like double NAT to me. Anyways, try and combine your rule=
+s with the proper IP-NIC mapping by way of the ARP proxying functionality=
+=2E Look it up. That's usually a good bet when it comes to double NATTING=
+=2E There's also a good paper on double NAT in the netfilter.org site.
+
+Good luck.
+
+Jo=E3o
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-bounces@lis=
+ts.netfilter.org] On Behalf Of Guenter.Sprakties@team4.de
+Sent: domingo, 22 de Janeiro de 2006 14:58
+To: netfilter@lists.netfilter.org
+Subject: double NAT problem
+
+Hello,
+
+I've got an urgend problem with double netfilter NAT.
+The router has the following interfaces:
+
+eth0: 220.100.100.1/24   -> Internet
+eth1: 172.24.24.1/24     -> Intranet (INTNET)
+eth2: 192.168.100.1/24   -> DMZ
+
+Now the iptables ruleset:
+
+  #NAT
+1 iptables -t nat -A POSTROUTING -o eth0 -s 192.168.100.4 -d ! "$INTNET"=20=
+
+-j SNAT --to 220.100.100.4
+2 iptables -t nat -A PREROUTING  -i eth0 -d 220.100.100.4 -j DNAT --to=20=
+
+192.168.100.4
+3 ip addr add 220.100.100.4 dev eth0
+
+4 iptables -t nat -A POSTROUTING -o eth1 -s 192.168.100.4 -d "$INTNET" -j=
 =20
+SNAT --to 172.24.24.4
+5 iptables -t nat -A PREROUTING  -i eth1 -s "$INTNET" -d 172.24.24.4 -j=20=
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> Jason Noble
-> Sent: Wednesday, January 25, 2006 9:07 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Completely Bypassing a Firewall?!
->=20
->=20
-> We just heard a rumor about our rival company, that they have=20
-> developed
-> a "system" that can completely bypass a=20
-> properly-configured/locked-down
-> firewall (netfilter or any other).
->=20
-> Is this truly possible? with only external access and no=20
-> software that's
-> already been planted inside the firewall?
+DNAT --to 192.168.100.4
+6 ip address add 172.24.24.4 dev eth1=20
 
-Depends on how you define "bypass". Can you send SMTP data through port
-80? Yes. You can also "bypass" any firewall which filters on source port
-but not destination port, but this isn't considered properly configured
-much less locked down. Are you sure they're not talking about I[D|P]Ses?
-There have been several white papers over the last few years on
-bypassing those, and some people think that firewall =3D IPS.
+The idea is to get the DMZ from inside by their 172.. IP and from outside=
+=20
+by their 220... IP while te 'real IP is an 192.. net IP. So far, so good.=
+=20
+From inside, everything is fine. Going to outside, the outgoing packets=20=
 
-Maybe this rival company has been watching too many recent movie
-previews with Harrison Ford in them. If Harrison Ford works for you (and
-you happen to be a bank), then I'd be worried. =3D)
+are also ok. The problem are the ext-dmz direction: we see this packets b=
+y=20
+tcpdump with the 220... IP coming from outside, but not in iptables -=20
+neither with an 192.. nor with an 220 destination address.
 
-Derick Anderson
+Is double natting not allowed? If its like this, we need another router -=
+=20
+one for inside NAT and one for outside NAT.=20
 
+Amybody any idea?
+
+Greetings,
+
+G=FCnter
+
+
+
+
+-------------------------------------------------------------------------=
+--
+<a href=3D"http://www.hidrografico.pt/email/disclaimer.htm">http://www.hi=
+drografico.pt/email/disclaimer.htm</a>
 
