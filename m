@@ -1,12 +1,12 @@
 From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: NAT with iptables / linux
-Date: Thu, 26 Jan 2006 22:38:35 +0100
-Message-ID: <002101c622c0$dc643de0$0101000a@sterenborg.info>
-References: <dac71d7b0601261219q39b58368w@mail.gmail.com>
+Subject: RE: iptables rules to connect through a linux firewall
+Date: Thu, 26 Jan 2006 22:45:21 +0100
+Message-ID: <002701c622c1$ce7f9ca0$0101000a@sterenborg.info>
+References: <9d5ddd1f0601261310j4892f2br8b411c801f2b3810@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <dac71d7b0601261219q39b58368w@mail.gmail.com>
+In-Reply-To: <9d5ddd1f0601261310j4892f2br8b411c801f2b3810@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,37 +20,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> I just buy my first 16 static ip pack and I am wondering what can I do
-> to assign these ips to some workstation that I have.
-> Something like this
+> I'm trying to connect a windows XP client to a remote pptp server. I'm
+> using windows XP at home on my home network which connects to the
+> internet via a fedora linux firewall using iptables with nat.
 > 
-> =========
-> =             =
-> =   Lan     =     == Linux Box === Modem/router === Internet >>> =   
-> = =========
-> 
-> Lets say I have local ips like 10.0.0.0/24 and "real" static ips like
-> 195.170.2.1 , 195.170.2.2 and so on....
-> And I want for every local ip to assing a static one.
+> What iptables rules do I need to insert to allow this to happen. I
+> guess I just need to forward packets.
 
-You might want to use the NETMAP target for this :
-http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-NETMAP
 
-(Yes : if you don't have this module already, you have to patch and
-compile your own kernel and iptables.)
+$modprobe ip_nat_pptp  
+$modprobe ip_nat_proto_gre
+$modprobe ip_conntrack_pptp
+$modprobe ip_conntrack_proto_gre
 
-> In a few words I want every single workstation to have its
-> own static ip..
-> A friend of mine told to that I have to use POSTROUTING and PREROUTING
-> and here is that I confused...
-> Anyone can help me / tell me what exactly have to do to make
-> this work ?
+$ipt -P FORWARD DROP
+$ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+$ipt -A FORWARD -m state --state NEW -i <if_lan> -o <if_inet> \
+  -s <net_lan> -p gre -j ACCEPT
+$ipt -A FORWARD -m state --state NEW -i <if_lan> -o <if_inet> \
+  -s <net_lan> -p tcp --dport 1723 -j ACCEPT
 
-There is an example in the above url.
+$ipt -t nat -A POSTROUTING -o <if_inet> -s <net_lan> \
+  -j SNAT --to <inet_ip>
 
-But, if you are confused by this then I think you also want to read up
-in Oskars tutorial...
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+And don't forget to enable ip forwarding...
 
 
 Gr,
