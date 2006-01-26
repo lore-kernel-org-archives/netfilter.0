@@ -1,13 +1,10 @@
-From: "Mark E. Donaldson" <markee@bandwidthco.com>
-Subject: RE: Completely Bypassing a Firewall?!
-Date: Wed, 25 Jan 2006 19:48:39 -0800
-Message-ID: <007501c6222b$64a6a9e0$0300a8c0@bandwidthco.com>
-References: <1138198038.16454.73.camel@localhost.localdomain>
-Reply-To: markee@bandwidthco.com
+From: Sebastian Heidl <s.heidl@teles.de>
+Subject: system time going up with many rules updates
+Date: Thu, 26 Jan 2006 09:46:05 +0100
+Message-ID: <1138265165.10432.163.camel@sehe-c4.berlin.teles.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1138198038.16454.73.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,73 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: 'Jason Noble' <sysadmin@polezero.com>, netfilter@lists.netfilter.org
-
-Yes it is possible. Hack the root password on the box, rewrite the ruleset,
-and then load the ruleset. But ya know, I think that possibility has always
-existed. 
-
-
-##########################################
-This is coming from the home and office of:
-
-Mark E. Donaldson
-Bandwidthco Computer Security
-markee@bandwidthco.com
-http://www.bandwidthco.com/
-
-Copyright C 1999 Bandwidthco.com. All rights reserved.
-
-4500 0028 a66b 4000 8006 d307 c0a8 000a
-c0a8 0002 0871 0bc3 572b 25f7 ca7d 1b60
-5010 f64c c0f6 0000 0000 0000 0000
-##########################################
-CCNA, OCP, GSEC, GCFW, GCIH, GCIA, GCUX, GCFA, X-Ways (WinHex) Forensics
-Certified
-##########################################
-Hacking is the process of influencing a computer system
-in such a way that it performs an action that is useful to you.
-##########################################
-  .~.    
-  /V\     
-  /( )\   
-^^-^^ 
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jason Noble
-Sent: Wednesday, January 25, 2006 6:07 AM
 To: netfilter@lists.netfilter.org
-Subject: Completely Bypassing a Firewall?!
-
-We just heard a rumor about our rival company, that they have developed a
-"system" that can completely bypass a properly-configured/locked-down
-firewall (netfilter or any other).
-
-Is this truly possible? with only external access and no software that's
-already been planted inside the firewall?
 
 
+Hello List,
 
-########################################################
-This message has been scanned for viruses and dangerous content by
-MailScanner, and is believed to be clean.
+I have some moderately busy (in terms of traffic) firewalls that are
+spending quite a lot CPU time in %system (> 70%) when there are a lot of
+updates to the netfilter rules.
+My question is: How can I lower the system time to enable the machines
+to handle more traffic ? Specifically, would nf-hipac or other netfilter
+projects help here ?
 
-postmaster@bandwidthco.com
-MailScanner at Bandwidthco Computer Security is for your absolute
-protection.
-########################################################
+These are 2.8GHz Xeon Machines with 512 MB RAM and GbE interfaces.
+During the "high-system-time period" they are forwarding about 30 Mbit/s
+traffic.
 
+The netfilter chains structure is as follows (only FORWARD is relevant):
 
+Chain FORWARD (policy DROP)
+*** publicly available services ***
+*** jump to chain with authenticated users ***
+*** services for authenticated users ***
 
+The last rule in the auth-chain is a REJECT so only authenticated users
+can access the private services. When a user logs in successfully a rule
+is added to the auth-chain, when he logs out the rule is deleted.
 
-########################################################
-This message has been scanned for viruses and dangerous 
-content by MailScanner, and is believed to be clean.
+At the mentioned high-system-time periods there are about 10 updates
+(add/delete) to the auth-chain per second.
 
-postmaster@bandwidthco.com
-MailScanner at Bandwidthco Computer Security is for your absolute protection.
-########################################################
+I'm thankful for any advice.
+_sh_
+
 
 
