@@ -1,16 +1,11 @@
-From: Sebastian Heidl <s.heidl@teles.de>
-Subject: Re: system time going up with many rules updates
-Date: Thu, 26 Jan 2006 12:33:22 +0100
-Message-ID: <1138275202.10432.175.camel@sehe-c4.berlin.teles.de>
-References: <1138265165.10432.163.camel@sehe-c4.berlin.teles.de>
-	<200601261100.18485.vnulllists@pcnet.com.pl>
+From: Christos Panagiotakis <chrismfz@gmail.com>
+Subject: NAT with iptables / linux
+Date: Thu, 26 Jan 2006 22:19:02 +0200
+Message-ID: <dac71d7b0601261219q39b58368w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200601261100.18485.vnulllists@pcnet.com.pl>
-In-Reply-To: <200601261100.18485.vnulllists@pcnet.com.pl>
-References: <1138265165.10432.163.camel@sehe-c4.berlin.teles.de>
-	<200601261100.18485.vnulllists@pcnet.com.pl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,39 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jakub Wartak <vnulllists@pcnet.com.pl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Thu, 2006-01-26 at 11:00 +0100, Jakub Wartak wrote:
-> Dnia czwartek, 26 stycznia 2006 09:46, Sebastian Heidl napisa=B3:
-> > I have some moderately busy (in terms of traffic) firewalls that =
-are
-> > spending quite a lot CPU time in %system (> 70%) when there are a =
-lot of
-> > updates to the netfilter rules.
-> > My question is: How can I lower the system time to enable the =
-machines
-> > to handle more traffic ? Specifically, would nf-hipac or other =
-netfilter
-> > projects help here ?
-> >...
-> You could try ipsets, in my production systems they are rock solid =
-stable.=20
+Hello people!
+I just buy my first 16 static ip pack and I am wondering what can I do
+to assign these ips to some workstation that I have.
+Something like this
 
-Ok, I think the iphash type of set would be the right one here. Are
-there any docs about the lookup/insert/update times under load ?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=3D             =3D
+=3D   Lan     =3D     =3D=3D Linux Box =3D=3D=3D Modem/router =3D=3D=3D Int=
+ernet >>>
+=3D             =3D
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-> I'm=20
-> pushing over 1200 clients on P4 3GHz ( about 25-30 mbps , 50% cpu =
-load, but=20
-> this machine also is running netflow probe... network cards: pure =
-e100
+Lets say I have local ips like 10.0.0.0/24 and "real" static ips like
+195.170.2.1 , 195.170.2.2 and so on....
+And I want for every local ip to assing a static one.
+In a few words I want every single workstation to have its own static ip..
+A friend of mine told to that I have to use POSTROUTING and PREROUTING
+and here is that I confused...
+Anyone can help me / tell me what exactly have to do to make this work ?
 
-I'm running netflow too, NICs are e1000, currently we have a little =
-over
-3000 clients at peak times.
+Thanks in advance and forgive me for my awful english :-)
 
-Thanks for the reply.
-_sh_
+Christos Panagiotakis
 
