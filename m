@@ -1,11 +1,11 @@
-From: Iwan Fauzie <iwan@gorontalo.net>
-Subject: MAC/IP PAIR MATCH
-Date: Fri, 27 Jan 2006 14:52:14 +0700
-Message-ID: <164362107.20060127145214@gorontalo.net>
-Reply-To: Iwan Fauzie <iwan@gorontalo.net>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: abusing ipset and ulog for tcpdump-like functions?
+Date: Fri, 27 Jan 2006 09:48:03 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0601270940100.21892@blackhole.kfki.hu>
+References: <43D9569A.4070609@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <43D9569A.4070609@gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,15 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Hi,
 
-I would like to patch mac/ip pair match, how to do that? any body help me
+On Fri, 27 Jan 2006, Carl-Daniel Hailfinger wrote:
 
--- 
+> Can I add one IP with multiple MACs to a given macipmap table?
+
+No, you cannot. It is assumed that there is one MAC address per IP.
+
 Best regards,
- Iwan                          mailto:iwan@gorontalo.net
-
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
