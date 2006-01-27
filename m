@@ -1,14 +1,12 @@
-From: Adam Rosi-Kessel <adam@rosi-kessel.org>
-Subject: Re: netfilter Digest, Vol 18, Issue 29
-Date: Tue, 31 Jan 2006 22:45:07 -0500
-Message-ID: <20060201034506.GD15311@bostoncoop.net>
-References: <20060131183135.1FB42A01EF@bostoncoop.net>
+From: Christian Seberino <seberino@spawar.navy.mil>
+Subject: How make iptables script with NAT handle "active FTP"?
+Date: Fri, 27 Jan 2006 11:34:34 -0800
+Message-ID: <1138390474.4844.79.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2JFBq9zoW8cOFH7v"
+	protocol="application/pgp-signature";
+	boundary="=-WLyZHnGGkVkVzPfIBpZf"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20060131183135.1FB42A01EF@bostoncoop.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,83 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, Ray Schumacher <rays@blue-cove.com>
 
 
---2JFBq9zoW8cOFH7v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-WLyZHnGGkVkVzPfIBpZf
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 31, 2006 at 16:33:52 +0100, Boryan Yotov <yotov@prosyst.com>
-wrote:
-> 1. In this version of the script I see no "clear" option, but only
-> "stop" and "status". Could you try "./wondershaper stop" and check
-> if it fix the problem. Or probably you have a newer one.
+Active FTP seems to need to open new sockets.
 
-Oh, yes, there is definitely a clear option now:
+This creates problems for NAT'ing firewalls.
 
-   if [ "$1" =3D=3D "clear" ];
-   then
-      tc qdisc del dev $DEV root    2> /dev/null > /dev/null
-      tc qdisc del dev $DEV ingress 2> /dev/null > /dev/null
-      echo Wondershaper queues have been cleared.
-      exit
-   fi
+What is easiest way to open the right ports
 
-> 2. The wondershaper is using kilobits instead of kilobytes. If you
-> have a 700 kilobytes uplink, then you'll have to set UPLINK equal
-> to 5600. The same is valid for DOWNLINK.
+and do NAT'ing back to clients on 192.168.x.y IP addresses?
 
-Yes, I understand that.  I'm not throttling downlink at all on the NAT
-box--I have it set to something like 10000.
 
->   + If the wondershaper's DEV is accidently set to match your
->     internall interface
->   AND
->   + You did wrote 700 instead of 5600 as UPLINK value
->   THEN
->=20
->   =3D You'll have these 700 kbytes limited to exactly 70 kbytes for
->     all HTTP responses going to your LAN clients.
+Chris
 
-I agree that it does seem very suspicious that the internal clients are
-being throttled on HTTP to almost exactly what wondershaper is supposed
-to throttle outbound traffic on the external facing interface.
-
-But: it is definitely the same behavior with wondershaper cleared. Both
-of the following give empty responses (after 'wondershaper clear' is
-run):
-
-tc class show dev eth0
-tc class show dev eth1
-
-And I definitely know which interface is inward facing and which is
-outward facing. The inward facing one is 192.168.98.50, the outward
-facing one is 72.1.169.236. There's not really any way that I could have
-that backwards. :)
-
-The other thing is that wondershaper, when in place, definitely throttles
-port 80 and port 22 to the same bitrate; but the problem I'm experiencing
-for internal clients is only on port 80. I really don't have anything
-anywhere in my network that would discriminate in bandwidth between the
-two ports.
---=20
-Adam Rosi-Kessel
-http://adam.rosi-kessel.org
-
---2JFBq9zoW8cOFH7v
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+--=-WLyZHnGGkVkVzPfIBpZf
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.1 (GNU/Linux)
 
-iD8DBQFD4C7CdTf3ZklQ6qYRAp/zAKDIIkUbTI2TrCJ5rSQ1Gs1/04/bZQCgqFIA
-za4oiTI4exoJMEXeblWPrmc=
-=fBxb
+iQEVAwUAQ9p1ysXAD6FzhZH3AQL9zQf+IkKs01zxsEojrEDAFZ2QvZCmdyaCwpvW
+YFe1aU/OeF1chINiKnX9chn2hxKk23ZrDHaIGc+oP6aMK5Q/xTZu7KIHQ4eLbu4t
+EW2BYYOEPzYlJMmsnkXgo+MpvmhrxHM8cy4bXz0zKUxtbAkRjQFA97U+EBrGChg7
+gXbUJHTzinHOlqs4sIhMleFrXVDi5yanMYW8OTIYm5xZ2fgJPNw+LDayikuuIFv9
+8Zn5ig17sLoKnjI+jJ6eeNPIJhNOEz1DQKP1Eor7rd0yJnjqJXzunuDXnTsTQvgX
+snMJ5BPXLDMOPKSiUDAsUYd/Y4Wo3p8HfqMU3ZF8qZItdwb7hAgcvw==
+=PT4F
 -----END PGP SIGNATURE-----
 
---2JFBq9zoW8cOFH7v--
+--=-WLyZHnGGkVkVzPfIBpZf--
+
 
