@@ -1,12 +1,13 @@
-From: Boryan Yotov <yotov@prosyst.com>
-Subject: Re: MAC/IP PAIR MATCH
-Date: Fri, 27 Jan 2006 15:17:48 +0100
-Message-ID: <43DA2B8C.5050007@prosyst.com>
-References: <164362107.20060127145214@gorontalo.net>
+From: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
+Subject: Re: Completely Bypassing a Firewall?!
+Date: Fri, 27 Jan 2006 15:54:57 +0100
+Message-ID: <43DA3441.5090901@gmx.net>
+References: <1138198038.16454.73.camel@localhost.localdomain>
+	<33402.138.106.11.116.1138351847.squirrel@intern.southpole.se>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <164362107.20060127145214@gorontalo.net>
+In-Reply-To: <33402.138.106.11.116.1138351847.squirrel@intern.southpole.se>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jimmy Hedman <jimmy.hedman@southpole.se>
+Cc: netfilter@lists.netfilter.org
 
-Iwan Fauzie wrote:
-> Hello,
+Jimmy Hedman schrieb:
+>>We just heard a rumor about our rival company, that they have developed
+>>a "system" that can completely bypass a properly-configured/locked-down
+>>firewall (netfilter or any other).
+
+Properly locked down = no connection to the outside possible, not even
+via proxy. No ICMP, no DNS, no SMTP. Well, in that case it would be
+interesting to see them break that. OTOH, such a thing makes it impossible
+for anyone to surf the net or send mails.
+
+>>Is this truly possible? with only external access and no software that's
+>>already been planted inside the firewall?
+>>
 > 
-> I would like to patch mac/ip pair match, how to do that? any body help me
-> 
+> If you have someone at the "inside" there is no problem to create tunnels
+> with for example OpenVPN that completly "bypasses" the firewall. If you
+> create a tunnel with OpenVPN over https and bridge the networks together
+> you could get everything through with the traffic looking just like
+> ordinary https-traffic.
+> But with only access from the outside it is very vary hard, if not
+> impossible.
 
-If you want to match IP against MAC address, then check the iptables's 
-_mac_ match:
+Yes, but finding a sufficiently naive user will probably be easy. I wrote
+such a tool myself (but it used a few java quirks), so if you can get
+somebody inside to click on something you present him, every other defense
+(except cutting the wire physically or logically) is worthless. Hey, you
+could even use the WMF exploit for such a purpose.
 
-# iptables -m mac -help
 
-Example: rule for forwarding packets matching certain IP/MAC pair is:
-
-# iptables -A FORWARD -s <IP _address> -m -mac --mac-source <MAC 
-address> -j ACCEPT
-
-... but if you want to "patch a match", then you need to specify a bit 
-more detailed what are you trying to do.
-
-The _mac_ match exist into the default iptables source (./extensions) 
-e.g. you don't need to patch anything. Just install iptables and enable 
-the match inside your kernel's .config file (CONFIG_IP_NF_MATCH_MAC=y) 
-and finally recompile (and install) the new kernel.
-
+Regards,
+Carl-Daniel
+-- 
+http://www.hailfinger.org/
 
