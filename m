@@ -1,11 +1,9 @@
-From: denizen <netdenizen@gmail.com>
-Subject: Bridge and iptables
-Date: Fri, 27 Jan 2006 10:23:42 -0600
-Message-ID: <e606945b0601270823t6aab545cwb2a5e71b7e67d430@mail.gmail.com>
+From: Travis Alexander Snoozy <tsnoozy@u.washington.edu>
+Subject: Request for Feedback: iptables Usability
+Date: Fri, 27 Jan 2006 19:07:23 -0800 (PST)
+Message-ID: <Pine.LNX.4.43.0601271907230.19321@hymn05.u.washington.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,42 +14,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm trying to use NoCatSplash to create a captive portal on a bridge
-machine that has an IP address assigned to the bridge device.=20
-NoCatSplash uses iptables and it seems that this is the beginning of
-my problems...i guess I need to be using ebtables instead of iptables
-but i'm not sure...
+Hi all,
 
-I've setup NoCatSplash before and found it rather easy to get working
-but am having a hard time getting it to work on the bridge.  The idea
-is to be able to very easily insert a captive portal at a bottleneck
-point in a given network without reconfiguring all of the routers and
-access points already installed.
+   I'm currently looking at iptables from a usability perspective, as part of a usability engineering class. If anyone would like to share any of the following, it would be most helpful:
 
-My bridge setup is as follows:
+- What you use iptables for
+- The most common tasks you do with iptables, and how you do them
+- Comments about what you find irritating/inefficient about iptables
 
-ifconfig eth1 0.0.0.0
-ifconfig eth2 0.0.0.0
-brctl addbr br0
-brctl addif br0 eth1
-brctl addif br0 eth2
-ifconfig eth1 up
-ifconfig eth2 up
-ifconfig br0 10.0.0.99 netmask 255.255.255.0 up
-route add default gw 10.0.0.1
+Part of my project requires that I actually do make improvements to the system, so hopefully I'll be able to generate a patch that resolves some of the most common complaints/requests, or helps to accelerate some of the most common tasks. Note that I'm NOT doing a re-write, or generating an entirely new front end -- simply adding or tweaking the functionality of the existing iptables application.
 
-I've configured NoCatSplash to use br0 as the interface and 10.0.0.99
-as the ip address but of course its not working.  The firewall is
-setup incorrectly and i'm not sure what part of the firewall is
-incorrect as i'm not sure where the bridging logic and the iptables
-logic interact.
+Please address any replies to this E-mail specifically to me -- I (and I'm sure many others) don't want to start a huge gripe-fest thread on the list :). Also, I'll be hanging around #iptables on freenode (nick "ai2097"), if folks would prefer to get a hold of me that way.
 
-I'm not sure what i'm missing but i've hit the limits of my
-knowledge...can someone help me with this?
 
-Thanks in advance!
-dennis
+Thanks,
+
+-- Travis
+
+
+
+
 
