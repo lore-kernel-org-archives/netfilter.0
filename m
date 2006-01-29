@@ -1,12 +1,10 @@
-From: Claudio Roberto Cussuol <claudio@brazilfw.com.br>
-Subject: Fwd: Re: How can i see a list of applied p-o-m patches
-Date: Sun, 29 Jan 2006 09:33:05 -0200
-Message-ID: <20061299335.268713@xp>
-References: <43DBFAEC.3090807@arcoscom.com>
+From: =?ISO-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Subject: Is there any issue with ftp/web server in netfilter.org?
+Date: Sun, 29 Jan 2006 16:42:13 +0100
+Message-ID: <43DCE255.7090908@arcoscom.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43DBFAEC.3090807@arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Solved. I did the following:
+Is there any active issue with netfilter.org servers?
 
-./runme all > tempfile
+I can't acces to ftp or www today (2006/01/29).
 
-As I could not see the messages i pressed enter around fifty times to not=
- apply 
-any patch.
+Regards
+--=20
+    Samuel D=EDaz Garc=EDa
+     Director Gerente
+ArcosCom Wireless, S.L.L.
 
-Then:
+CIF: B11828068
+c/ Romero Gago, 19
+Arcos de la Frontera
+11630 - Cadiz
 
-grep ^Testing tempfile
+http://www.arcoscom.com
 
-Show me a list with the lines started by Testing, Example:
-Testing ipp2p... Not Applied
-Testing rpc... Not Applied
-Testing string... Applied
+mailto:samueldg@arcoscom.com
+msn: samueldg@arcoscom.com
 
-That was what i need.
-
-
-
-Runme help shows the following option:
--- check   check mode, automaticaly checks if patches are alreay applied.
-              produces a logfile: rune.out-check
-
-
-(Note 2 tipos: alreay and rune.out-check)
-
-However it just does nothing, I tried to run several times and could not=
- find 
-the runme.out-check file.
-
+M=F3vil: 651 93 72 48
+Tlfn.: 956 70 13 15
+Fax:   956 70 34 83
 
