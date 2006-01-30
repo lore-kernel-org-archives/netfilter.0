@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Question about filtrate the LOG messages of iptables
-Date: Mon, 30 Jan 2006 10:26:23 +0100 (CET)
-Message-ID: <51676.193.173.147.3.1138613183.squirrel@webmail.sterenborg.info>
-References: <6ff3e7140601292239s434b62d7i@mail.gmail.com>
+From: Benoit Moeremans <abeneuneu@gmail.com>
+Subject: debian sarge + iptables
+Date: Mon, 30 Jan 2006 14:11:44 +0100
+Message-ID: <e62701950601300511t54aa1a2fq71b24cc85bec53e9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6ff3e7140601292239s434b62d7i@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +17,89 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-On Mon, January 30, 2006 07:39, openbsd shen wrote:
-> When I use "--log-level emerg" or "warn"...  the messages will be
-> output to /var/log/messages and the standard output (screen), now I
-> want to filtrate the output messages instant for get the useful
-> messages, and I don't want to read /var/log/messages periodic, how can
-> I do?
-> Thanks.
+Hello,
 
-Create a logging rule that only shows you the interesting messages.
-I suppose you know what you can log and what you find interesting.
+I have a strange problem. I'm using debian sarge and iptables v1.2.11.
+ For all my firewalling rules, i'm using a script (see below).  I
+don't know why, but iptables doesn't load all my rules. For example,
+the port forwarding is not working perfectly. The pfw to one ip iw
+working but the rules just before, wich is also a pfw to another ip,
+doesn't work.
 
-E.g. : if you want to log ssh access (which btw is already logged by
-ssh), you can use something like :
+This script works perfectly before, so even with some modifications, i
+failed to get it working.
 
-$ipt -A INPUT -m state --state NEW -m limit --limit 1/sec \
-  -p tcp --dport 22 -j LOG --log-level warn --log-prefix "ipt_ssh: "
+Any idea?
 
+Thnx in advance,
 
-Gr,
-Rob
+Benoit
 
 
+#!/bin/bash
+
+case $1 in
+
+start)
+   echo -n "Starting firewall.."
+
+for i in /proc/sys/net/ipv4/conf/*/accept_source_route; do
+                 echo 1 > $i;
+done
+
+for i in /proc/sys/net/ipv4/conf/*/rp_filter; do
+                 echo 0 > $i;
+done
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -t nat -P PREROUTING ACCEPT
+iptables -t nat -P POSTROUTING ACCEPT
+iptables -t nat -P OUTPUT ACCEPT
+iptables -F
+iptables -t nat -F
+
+
+iptables -A FORWARD -s 192.168.1.0/24 -j ACCEPT
+iptables -A FORWARD -d 192.168.1.0/24 -j ACCEPT
+iptables -A FORWARD -j DROP
+
+
+#PFW
+iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 112 -j DNAT
+--to-destination 192.168.1.240:80
+iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 111 -j DNAT
+--to-destination 192.168.1.159:80
+#NAT
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth1 -j MASQUERADE
+
+
+echo ""
+;;
+
+stop)
+   echo -n "Stopping firewall..."
+
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -t nat -P PREROUTING ACCEPT
+iptables -t nat -P POSTROUTING ACCEPT
+iptables -t nat -P OUTPUT ACCEPT
+iptables -F
+iptables -t nat -F
+echo "."
+;;
+*)
+echo "Usage: /etc/init.d/firewall {start|stop}"
+exit 1
+esac
+
+exit 0
 
