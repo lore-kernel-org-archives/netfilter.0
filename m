@@ -1,11 +1,13 @@
-From: Benoit Moeremans <abeneuneu@gmail.com>
-Subject: debian sarge + iptables
-Date: Mon, 30 Jan 2006 14:11:44 +0100
-Message-ID: <e62701950601300511t54aa1a2fq71b24cc85bec53e9@mail.gmail.com>
+From: Boryan Yotov <yotov@prosyst.com>
+Subject: Re: MAC/IP PAIR MATCH
+Date: Mon, 30 Jan 2006 18:30:35 +0100
+Message-ID: <43DE4D3B.8080106@prosyst.com>
+References: <164362107.20060127145214@gorontalo.net>	<43DA2B8C.5050007@prosyst.com>
+	<10310383401.20060128161251@gorontalo.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <10310383401.20060128161251@gorontalo.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,90 +18,177 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hello,
+Iwan Fauzie wrote:
+> Hello Boryan,
+> 
+> Thanks for you help Boryan.
+> 
+> Please see http://www.netservers.co.uk/gpl/ this patch IPtables MAC/IP
+> pair match
+> 
+> This patch to help prevent users from:
+> 
+>  - users have not changed their IP address to conflict with or spoof
+>    others users
+>  - Users have not changed their MAC address (e.g. new network cards
+>  MAC spoofing or NAT)
+>
+> 
+> Friday, January 27, 2006, 9:17:48 PM, you wrote:
+> 
+> 
+>>Iwan Fauzie wrote:
+>>
+>>>Hello,
+>>>
+>>>I would like to patch mac/ip pair match, how to do that? any body help me
+>>>
+> 
+> 
+>>If you want to match IP against MAC address, then check the iptables's
+>>_mac_ match:
+> 
+> 
+>># iptables -m mac -help
+> 
+> 
+>>Example: rule for forwarding packets matching certain IP/MAC pair is:
+> 
+> 
+>># iptables -A FORWARD -s <IP _address> -m -mac --mac-source <MAC 
+> 
+> address>> -j ACCEPT
+> 
+> 
+>>... but if you want to "patch a match", then you need to specify a bit
+>>more detailed what are you trying to do.
+> 
+> 
+>>The _mac_ match exist into the default iptables source (./extensions)
+>>e.g. you don't need to patch anything. Just install iptables and enable
+>>the match inside your kernel's .config file (CONFIG_IP_NF_MATCH_MAC=y)
+>>and finally recompile (and install) the new kernel.
+> 
+> 
 
-I have a strange problem. I'm using debian sarge and iptables v1.2.11.
- For all my firewalling rules, i'm using a script (see below).  I
-don't know why, but iptables doesn't load all my rules. For example,
-the port forwarding is not working perfectly. The pfw to one ip iw
-working but the rules just before, wich is also a pfw to another ip,
-doesn't work.
+Personally I never used the iptables patch you mentioned above.
+But looking at its tarball content it seems to be a 2.4.xx kernel
+patch, for a kernel patched with iptables (probably 1.2.x).
 
-This script works perfectly before, so even with some modifications, i
-failed to get it working.
+Follow this steps (not the smartest one) in order to install it:
 
-Any idea?
+=================================================================
+STEP 1: Patching the kernel
+=================================================================
 
-Thnx in advance,
+The file with the sources (macmatch.patch) is a diff on a patched
+kernel, so you could apply it to an existing kernel tree easily.
+Just go to where you current kernel source is located (I suppose
+it is into:
 
-Benoit
+   # cd /usr/src/linux
 
+Make sure it is already patched with iptables (recent kernels are
+by default). To apply the "macmatch.patch" patch simply type:
 
-#!/bin/bash
+   # patch -p1 < /<Patch_Location >/macmatch.patch
 
-case $1 in
+The result from the patch command must look like:
 
-start)
-   echo -n "Starting firewall.."
+   patching file include/linux/netfilter_ipv4/ipt_macmatch.h
+   patching file net/ipv4/netfilter/ipt_macmatch.c
 
-for i in /proc/sys/net/ipv4/conf/*/accept_source_route; do
-                 echo 1 > $i;
-done
+The configuration and make files are not a diff, so the fastest
+way to apply them, is to edit the corresponding files manually:
 
-for i in /proc/sys/net/ipv4/conf/*/rp_filter; do
-                 echo 0 > $i;
-done
+-----------------------------------------------------------------
+"macmatch.patch.config.in"
+-----------------------------------------------------------------
 
-echo 1 > /proc/sys/net/ipv4/ip_forward
+Its content goes to "/usr/src/linux/net/ipv4/netfilter/Config.in"
 
+Find the line from "Config.in" which says:
 
-iptables -P INPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -t nat -P PREROUTING ACCEPT
-iptables -t nat -P POSTROUTING ACCEPT
-iptables -t nat -P OUTPUT ACCEPT
-iptables -F
-iptables -t nat -F
+   dep_tristate '  MAC address match support' CONFIG_IP_NF_MATCH_MAC 
+$CONFIG_IP_NF_IPTABLES
 
+... and replace it (the line only) with the content of the 
+macmatch.patch.config.in:
 
-iptables -A FORWARD -s 192.168.1.0/24 -j ACCEPT
-iptables -A FORWARD -d 192.168.1.0/24 -j ACCEPT
-iptables -A FORWARD -j DROP
-
-
-#PFW
-iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 112 -j DNAT
---to-destination 192.168.1.240:80
-iptables -A PREROUTING -t nat -i eth1 -p tcp --dport 111 -j DNAT
---to-destination 192.168.1.159:80
-#NAT
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth1 -j MASQUERADE
+   dep_tristate '  MAC address match support' CONFIG_IP_NF_MATCH_MAC 
+$CONFIG_IP_NF_IPTABLES
+   dep_tristate '  MAC/IP pair match support' 
+CONFIG_IP_NF_MATCH_MACMATCH $CONFIG_IP_NF_IPTABLES
 
 
-echo ""
-;;
+-----------------------------------------------------------------
+"macmatch.patch.makefile"
+-----------------------------------------------------------------
+Its content goes to "/usr/src/linux/net/ipv4/netfilter/Makefile"
 
-stop)
-   echo -n "Stopping firewall..."
+Find the line from "Makefile" which says:
 
-iptables -P INPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -t nat -P PREROUTING ACCEPT
-iptables -t nat -P POSTROUTING ACCEPT
-iptables -t nat -P OUTPUT ACCEPT
-iptables -F
-iptables -t nat -F
-echo "."
-;;
-*)
-echo "Usage: /etc/init.d/firewall {start|stop}"
-exit 1
-esac
+   obj-$(CONFIG_IP_NF_MATCH_MAC) += ipt_mac.o
 
-exit 0
+... and replace it (the line only) with the content of the 
+macmatch.patch.makefile:
+
+   obj-$(CONFIG_IP_NF_MATCH_MAC) += ipt_mac.o
+   obj-$(CONFIG_IP_NF_MATCH_MACMATCH) += ipt_macmatch.o
+
+
+-----------------------------------------------------------------
+"macmatch.patch.configure.help"
+-----------------------------------------------------------------
+This is optional and only for convenience. You'll need it if you
+want a help entry for the macmatch kernel configuration option.
+Its content (starting from the second line) should go as an entry
+into "/usr/src/linux/Documentation/Configure.help".
+
+
+=================================================================
+STEP 2: Patching iptables
+=================================================================
+
+Once you have you kernel tree ready its time to let know iptables
+about the macmatch existence:
+
+Go to your iptables source tree location. I'll suppose it is into
+
+   #cd /usr/local/src/iptables-1.xx.yy
+
+Copy both "libipt_macmatch.c" and ".macmatch-test" files from the
+macmatch tree into:
+
+   #cp <file1> <file2> /usr/local/src/iptables-1.xx.yy/extensions
+
+And finally compile and install iptables.
+
+   make KERNEL_DIR=/usr/src/linux
+   make install KERNEL_DIR=/usr/src/linux
+
+
+=================================================================
+STEP 3: Enable the patch into the kernel config file
+=================================================================
+
+Add the following line into "/usr/src/linux/.config" :
+
+   CONFIG_IP_NF_MATCH_MACMATCH=y
+
+... in order to build the patch static into the kernel
+
+or
+
+   CONFIG_IP_NF_MATCH_MACMATCH=m
+
+... if you need it as loadable module.
+
+Finally recompile the kernel, load it and reboot.
+
+
+Hope this helps.
 
