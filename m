@@ -1,14 +1,15 @@
-From: Scott Mayo <sgmayo@mail.bloomfield.k12.mo.us>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: Filtered Port
-Date: Tue, 31 Jan 2006 08:26:48 -0600
-Message-ID: <43DF73A8.6030601@mail.bloomfield.k12.mo.us>
-References: <43DF6C38.6010204@mail.bloomfield.k12.mo.us>	<61929.193.173.147.3.1138716397.squirrel@webmail.sterenborg.info>
-	<43DF70BC.8010804@rlworkman.net>
-Reply-To: sgmayo@mail.bloomfield.k12.mo.us
+Date: Tue, 31 Jan 2006 08:28:03 -0600
+Message-ID: <200601310828.03996.rob0@gmx.co.uk>
+References: <43DF6C38.6010204@mail.bloomfield.k12.mo.us>
+	<61929.193.173.147.3.1138716397.squirrel@webmail.sterenborg.info>
+	<43DF7196.6070606@mail.bloomfield.k12.mo.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43DF70BC.8010804@rlworkman.net>
+In-Reply-To: <43DF7196.6070606@mail.bloomfield.k12.mo.us>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,53 +20,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Robby Workman wrote:
-> Rob Sterenborg wrote:
-> 
->> On Tue, January 31, 2006 14:55, Scott Mayo wrote:
->>
->>> I am not sure if this is my iptables or not, but I am not sure where
->>> else to look or ask.  I am trying to use Remote Desktop on a
->>> computer.  From inside my network, it works fine, but once I get
->>> outside, I cannot use it.  I have set my IPTABLES to forward anything
->>> going to port 3389 to the computer that is using Remote Desktop.
->>>
->>> The problems seems to be that port 3389 is filtered.  I can find
->>> nothing in my iptables where I have this port filtered.  Are there
->>> some generic ports, that IPTABLES filters on it own or something?  If
->>> the IPTABLES are not filtering it, what else could be?
->>
->>
->> You allow forwarding to this host but you also need to DNAT these
->> packets from the internet IP to the IP of your computer.
->>
->> $ipt -t nat -A PREROUTING -i <if_inet> -d <ip_inet> \
->>   -p tcp --dport 3389 -j DNAT --to <ip_controlled_host>
-> 
-> 
-> <apology>Rob, sorry for sending this to you first - I always forget to
-> fix that...</apology>
-> 
-> If it still doesn't work, it's quite possible that your ISP is filtering 
->  that port upstream of you.
-> 
-> RW
-> 
+On Tuesday 2006-January-31 08:17, Scott Mayo wrote:
+> I still have no idea why port 3389 is shown as being filtered.  I
+> have no rules in my iptables that explicitly filter it.
 
-But I get on the server itself and do an nmap from itself, and it shows 
-that it is filtered.  If the ISP was filtering, would NMAP still show that?
-
+This is normal for a forwarded port which cannot get replies back to  
+the originator. Closed means you get an icmp-port-unreachable reply 
+back. Open means the SYN/ACK connection negotiation succeeds (although 
+with a stealth scan you do not complete the negotiation.) Filtered 
+means ... anything else. You don't get anything back.
 -- 
-Scott Mayo
-Technology Coordinator
-Bloomfield Schools
-PH: 573-568-5669
-FA: 573-568-4565
-Pager: 800-264-2535 X2549
-
-Duct tape is like the force, it has a light side and a dark side and it
-holds the universe together.
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
 
