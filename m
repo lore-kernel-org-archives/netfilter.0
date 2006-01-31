@@ -1,13 +1,13 @@
-From: Robby Workman <netfilter@rlworkman.net>
-Subject: Re: Filtered Port
-Date: Tue, 31 Jan 2006 08:14:20 -0600
-Message-ID: <43DF70BC.8010804@rlworkman.net>
-References: <43DF6C38.6010204@mail.bloomfield.k12.mo.us>
-	<61929.193.173.147.3.1138716397.squirrel@webmail.sterenborg.info>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: ARP & IPTables!!
+Date: Tue, 31 Jan 2006 08:16:43 -0600
+Message-ID: <200601310816.44019.rob0@gmx.co.uk>
+References: <1354.172.22.28.50.1138686445.squirrel@mx.uom.ac.mu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <61929.193.173.147.3.1138716397.squirrel@webmail.sterenborg.info>
+In-Reply-To: <1354.172.22.28.50.1138686445.squirrel@mx.uom.ac.mu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Rob Sterenborg wrote:
-> On Tue, January 31, 2006 14:55, Scott Mayo wrote:
->> I am not sure if this is my iptables or not, but I am not sure where
->> else to look or ask.  I am trying to use Remote Desktop on a
->> computer.  From inside my network, it works fine, but once I get
->> outside, I cannot use it.  I have set my IPTABLES to forward anything
->> going to port 3389 to the computer that is using Remote Desktop.
->>
->> The problems seems to be that port 3389 is filtered.  I can find
->> nothing in my iptables where I have this port filtered.  Are there
->> some generic ports, that IPTABLES filters on it own or something?  If
->> the IPTABLES are not filtering it, what else could be?
-> 
-> You allow forwarding to this host but you also need to DNAT these
-> packets from the internet IP to the IP of your computer.
-> 
-> $ipt -t nat -A PREROUTING -i <if_inet> -d <ip_inet> \
->   -p tcp --dport 3389 -j DNAT --to <ip_controlled_host>
+On Monday 2006-January-30 23:47, ramsurrunv@mx.uom.ac.mu wrote:
+> I wanted to know if there is a way of relaying (forwarding) ARP
+> requests and replies using iptables. What rule can I use?
 
-<apology>Rob, sorry for sending this to you first - I always forget to
-fix that...</apology>
+ARP is layer 2, iptables is layer 3, so no, I doubt it is possible. 
+You're needing a bridge interface. That *is* possible, actually very 
+easy to do.
 
-If it still doesn't work, it's quite possible that your ISP is filtering 
-  that port upstream of you.
+The high-level overview: flush all IP addresses on the interfaces you 
+want to bridge, assign them 0.0.0.0/0. Use brctl(8) to create a bridge 
+interface and to add each physical interface to it. Assign your IP 
+address to the bridge interface.
 
-RW
-
+ebtables(8) can control layer 2 bridge traffic if you want to limit or 
+filter it. With CONFIG_BRIDGE_NETFILTER=y you can control bridged 
+traffic at layer 3 in your filter / FORWARD chain.
 -- 
-
-http://rlworkman.net
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
 
