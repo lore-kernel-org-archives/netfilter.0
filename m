@@ -1,13 +1,10 @@
-From: Sorin Panca <sorin.panca@gmail.com>
-Subject: Re: MAC/IP PAIR MATCH
-Date: Mon, 30 Jan 2006 21:43:43 +0200
-Message-ID: <43DE6C6F.4040200@gmail.com>
-References: <164362107.20060127145214@gorontalo.net>	<43DA2B8C.5050007@prosyst.com>	<10310383401.20060128161251@gorontalo.net>
-	<43DE4D3B.8080106@prosyst.com>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: HTTP slower than SSH on client behind iptables
+Date: Mon, 30 Jan 2006 22:35:19 -0500
+Message-ID: <20060131033519.GA32564@bostoncoop.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43DE4D3B.8080106@prosyst.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,17 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Boryan Yotov <yotov@prosyst.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Hi!
-This rule is not correctly witten:
-# iptables -A FORWARD -s <IP _address> -m -mac --mac-source
-<MACaddress>> -j ACCEPT
+I have a standard NAT box; the essential configuration for discussion
+purposes on the box is just IP masquerading.
 
-It should be:
-iptables -A FORWARD -s $IP -m mac --mac-source $MAC -j ACCEPT
+On the NAT box, my Internet connection goes up to about 700 kilobytes per
+second, regardless of the protocol used (e.g., ssh or http).  
 
-HTH
-Sorin.
+On clients behind the NAT box, however, HTTP connections seem to top out
+around 70 kilobytes per second. ssh connections (e.g., rsync) get the
+full throughput of the Internet connection.
+
+As far as NAT goes, I don't hvae any special settings.
+
+Can anyone think of an explanation for this behavior? It doesn't make any
+sense to me.
+-- 
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
 
