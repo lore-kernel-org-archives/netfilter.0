@@ -1,12 +1,15 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Filtered Port
-Date: Tue, 31 Jan 2006 15:06:37 +0100 (CET)
-Message-ID: <61929.193.173.147.3.1138716397.squirrel@webmail.sterenborg.info>
-References: <43DF6C38.6010204@mail.bloomfield.k12.mo.us>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Re: HTTP slower than SSH on client behind iptables
+Date: Tue, 31 Jan 2006 09:11:35 -0500
+Message-ID: <43DF7017.8030008@rosi-kessel.org>
+References: <20060131033519.GA32564@bostoncoop.net>
+	<43DF299D.9070105@prosyst.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig0D6D08303B42A832D4DCEC72"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43DF6C38.6010204@mail.bloomfield.k12.mo.us>
+In-Reply-To: <43DF299D.9070105@prosyst.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +20,79 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On Tue, January 31, 2006 14:55, Scott Mayo wrote:
-> I am not sure if this is my iptables or not, but I am not sure where
-> else to look or ask.  I am trying to use Remote Desktop on a
-> computer.  From inside my network, it works fine, but once I get
-> outside, I cannot use it.  I have set my IPTABLES to forward anything
-> going to port 3389 to the computer that is using Remote Desktop.
->
-> The problems seems to be that port 3389 is filtered.  I can find
-> nothing in my iptables where I have this port filtered.  Are there
-> some generic ports, that IPTABLES filters on it own or something?  If
-> the IPTABLES are not filtering it, what else could be?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig0D6D08303B42A832D4DCEC72
+Content-Type: multipart/mixed; boundary="------------060602010109050602080402"
 
-You allow forwarding to this host but you also need to DNAT these
-packets from the internet IP to the IP of your computer.
+This is a multi-part message in MIME format.
+--------------060602010109050602080402
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-$ipt -t nat -A PREROUTING -i <if_inet> -d <ip_inet> \
-  -p tcp --dport 3389 -j DNAT --to <ip_controlled_host>
+(sorry, should have sent this to the list)
 
+Boryan Yotov wrote:
+>> On the NAT box, my Internet connection goes up to about 700 kilobytes =
+per
+>> second, regardless of the protocol used (e.g., ssh or http).=20
+>> On clients behind the NAT box, however, HTTP connections seem to top o=
+ut
+>> around 70 kilobytes per second. ssh connections (e.g., rsync) get the
+>> full throughput of the Internet connection.
+> Are you sure, you don't have some kind of a traffic shaping
+> active on the NAT gateway's internal interface?
+> For example: If tc is used, you could check that using:
+> tc class show dev <nat_box_internal_interface>
+> and
+> tc filter show dev <nat_box_internal_interface>
 
-Gr,
-Rob
+I do have traffic shaping on the *external* interface, but it is not port=
 
+dependent.
 
+tc class|filter show dev <internal_interface> gives an empty response.
+
+Also, when I clear the queue (I use wondershaper, so running wondershaper=
+
+clear), it seems I still have the same problem.
+
+=2E..But is there some way that outbound traffic shaping on the external
+facing interface could somehow impact *inbound* HTTP traffic on an intern=
+al
+client connected to the internal facing interface?
+--=20
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
+
+--------------060602010109050602080402
+Content-Type: application/pgp-signature;
+ name="signature.asc"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="signature.asc"
+
+LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0NClZlcnNpb246IEdudVBHIHYxLjIuNSAo
+TWluZ1czMikNCkNvbW1lbnQ6IFVzaW5nIEdudVBHIHdpdGggTW96aWxsYSAtIGh0dHA6Ly9l
+bmlnbWFpbC5tb3pkZXYub3JnDQoNCmlEOERCUUZEMzJKeGRUZjNaa2xRNnFZUkF2a3NBSjRv
+WEdQK216NWhzV0VwTGd6T2djdXJFdXRyaUFDYUFpY24NClpoQkVicG9hNGJRUTQ0cWxOeUNi
+SzhvPQ0KPUNHZjENCi0tLS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQ0KDQo=
+--------------060602010109050602080402--
+
+--------------enig0D6D08303B42A832D4DCEC72
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFD33AZdTf3ZklQ6qYRAktJAKCP1K515OmixSRura1BkHlRQwIvfgCgnCX6
+3LX4MuXi/xq+2T4GYnKQKBg=
+=SiUN
+-----END PGP SIGNATURE-----
+
+--------------enig0D6D08303B42A832D4DCEC72--
 
