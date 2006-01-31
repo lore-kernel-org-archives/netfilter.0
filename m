@@ -1,13 +1,9 @@
-From: Robby Workman <netfilter@rlworkman.net>
-Subject: Re: Filtered Port
-Date: Tue, 31 Jan 2006 09:44:05 -0600
-Message-ID: <43DF85C5.4080804@rlworkman.net>
-References: <43DF6C38.6010204@mail.bloomfield.k12.mo.us>	<61929.193.173.147.3.1138716397.squirrel@webmail.sterenborg.info>	<43DF7196.6070606@mail.bloomfield.k12.mo.us>	<58058.193.173.147.3.1138718408.squirrel@webmail.sterenborg.info>
-	<43DF7CF1.4060607@mail.bloomfield.k12.mo.us>
+From: "P theodorou" <props666999@hotmail.com>
+Subject: firewall traffic simulation
+Date: Tue, 31 Jan 2006 16:49:56 +0000
+Message-ID: <BAY102-F263BCEC3BBFCB6254C7833AE080@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43DF7CF1.4060607@mail.bloomfield.k12.mo.us>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +14,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Scott Mayo wrote:
-> Rob Sterenborg wrote:
->> In that case you may want to allow forwarding ;-)..
->>
->> $ipt -A FORWARD -i <if_inet> -o <if_lan> -d <ip_controlled_host> \
->>   -p tcp --dport 3389 -j ACCEPT
->>
-> 
-> This did not let it go through either.  It must not be the iptables 
-> causing it.  I took everything out of my rules except for the PREROUTING 
-> rule above and my POSTROUTING rule for SNAT and I am getting the same 
-> thing.
-> 
-> I am not sure what else would be blocking this, unless it is the 
-> upstream ISP.  I don't think it is, but I have sent them an email to 
-> make sure.  Only thing this machine is used for is to be a filter using 
-> IPTABLES, Squid and Dansguardian.
+Hello
+
+I need to demonstrate my firewall script to my supervisor. Unfortunately 
+there is no Internet connection at my supervisor's office. Moreover the
+Iptables script assumes the usual eth0( ISP) and 2 clients( LAN). My laptop 
+has just eth0 and threfore will be no connected to any other clients.
+
+My question is : Is there a way to demonstrate the functionality(SNAT,DNAT 
+etc) of this script somehow ?
+
+Kind regards
 
 
-Scott:
-
-Are the counters showing any packets hitting those rules?
-
-RW
-
--- 
-
-http://rlworkman.net
 
