@@ -1,13 +1,11 @@
-From: kelly <kelly@cliffhanger.com>
-Subject: Re: NAT with iptables / linux
-Date: Tue, 31 Jan 2006 11:48:22 -0600
-Message-ID: <22533.5267409266$1138733711@news.gmane.org>
-References: <dac71d7b0601261219q39b58368w@mail.gmail.com>
-	<002101c622c0$dc643de0$0101000a@sterenborg.info>
+From: Yong Zhang <yozhang@gmail.com>
+Subject: a problem with nat table setting
+Date: Tue, 31 Jan 2006 17:20:42 -0800
+Message-ID: <d268cd070601311720o1d2a4ff4w259e8c8ab915d223@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <002101c622c0$dc643de0$0101000a@sterenborg.info>
-Content-disposition: inline
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,64 +17,90 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Maybe this will help.
+Hi,
 
-http://home1.gte.net/res0psau/security/nat-on-linux.html
+I am having a problem with the nat table configuration.  I am using
+2.6.8.1 kernel in a router and also added a http filter proxy which
+uses port 8080.
+
+Internet ------------ ROUTER(http filter proxy) ---------linux PC.
+                                      lan ip: 192.168.1.1       192.168.1.2
+
+I have found that if there is a established connection exist between
+linux PC and the webserver before I start the proxy, and added the
+iptables nat rules, which can be  checked use netstat, the outgoing
+http packet will not be passed to the proxy, and it seems go out
+directly.  If I leave it untouched (no http activity), and after some
+time later, that connection is gone,  the outgoing http packet will be
+passed to the proxy again.
+
+Any one know how to solve this problem?
+
+Thanks.
+
+Yong
+
+Here is the iptables configure:
+1. only the one in nat PREROUTING REDIRECT are for the proxy)
+2. ppp0 is wan interface     br0 is lan interface.  PC is attached to br0.
+
+# iptables -L -v
+Chain INPUT (policy ACCEPT 3574 packets, 11M bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+   22  7554 ACCEPT     all  --  ppp0   any     anywhere           =20
+anywhere            state RELATED,ESTABLISHED
+    0     0 ACCEPT     udp  --  ppp0   any     anywhere           =20
+anywhere            udp dpt:500
+    0     0 ACCEPT     esp  --  ppp0   any     anywhere             anywher=
+e
+    0     0 ACCEPT    !esp  --  ppp0   any     anywhere           =20
+anywhere            MARK match 0x10000000/0x10000000
+    0     0 LOG        tcp  --  ppp0   any     anywhere           =20
+anywhere            tcp flags:SYN,RST,ACK/SYN limit: avg 6/hour burst
+5 LOG level alert prefix `Intrusion -> '
+    0     0 DROP       all  --  ppp0   any     anywhere             anywher=
+e
+
+Chain FORWARD (policy ACCEPT 43 packets, 13943 bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+   37 15118 ACCEPT     all  --  ppp0   any     anywhere           =20
+anywhere            state RELATED,ESTABLISHED
+    0     0 ACCEPT    !esp  --  ppp0   any     anywhere           =20
+anywhere            MARK match 0x10000000/0x10000000
+    0     0 LOG        tcp  --  ppp0   any     anywhere           =20
+anywhere            tcp flags:SYN,RST,ACK/SYN limit: avg 6/hour burst
+5 LOG level alert prefix `Intrusion -> '
+    0     0 DROP       all  --  ppp0   any     anywhere             anywher=
+e
+
+Chain OUTPUT (policy ACCEPT 3456 packets, 11M bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+    0     0 DROP       all  --  any    ppp0    anywhere           =20
+239.255.255.250
 
 
--- 
-kelly
-http://home1.gte.net/res0psau/index.html#Hang-Gliding-Stuff
+# iptables -t nat -L -v
+Chain PREROUTING (policy ACCEPT 84 packets, 5865 bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+    2   120 REDIRECT   tcp  --  br0    any     anywhere          =20
+!192.168.1.1         tcp dpt:www redir ports 8080
+    2   118 DNAT       udp  --  br0    any     anywhere           =20
+192.168.1.1         udp dpt:domain to:10.250.1.10
 
-	   --    -- 
-	     \  /
-	      \/
-	      /\
-	     /  \
-	   --    --
+Chain POSTROUTING (policy ACCEPT 28 packets, 1822 bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+    3   178 MASQUERADE  all  --  any    ppp0    192.168.1.0/24       anywhe=
+re
 
-
-
-Quoting Rob Sterenborg <rob@sterenborg.info>:
-        > I just buy my first 16 static ip pack and I am wondering what can I do
-        > to assign these ips to some workstation that I have.
-        > Something like this
-        > 
-        > =========
-        > =             =
-        > =   Lan     =     == Linux Box === Modem/router === Internet >>> =   
-        > = =========
-        > 
-        > Lets say I have local ips like 10.0.0.0/24 and "real" static ips like
-        > 195.170.2.1 , 195.170.2.2 and so on....
-        > And I want for every local ip to assing a static one.
-        
-        You might want to use the NETMAP target for this :
-        http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-NETMAP
-        
-        (Yes : if you don't have this module already, you have to patch and
-        compile your own kernel and iptables.)
-        
-        > In a few words I want every single workstation to have its
-        > own static ip..
-        > A friend of mine told to that I have to use POSTROUTING and PREROUTING
-        > and here is that I confused...
-        > Anyone can help me / tell me what exactly have to do to make
-        > this work ?
-        
-        There is an example in the above url.
-        
-        But, if you are confused by this then I think you also want to read up
-        in Oskars tutorial...
-        http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-        
-        
-        Gr,
-        Rob
-        
-        
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+#
 
