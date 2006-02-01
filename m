@@ -1,169 +1,110 @@
-From: Netfilter Core Team <coreteam@netfilter.org>
-Subject: Release of iptables-1.3.5
-Date: Wed, 1 Feb 2006 14:09:45 +0100
-Message-ID: <20060201130945.GG31060@sunbeam.de.gnumonks.org>
-Reply-To: coreteam@netfilter.org
+From: Robb Bossley <robb.bossley@gmail.com>
+Subject: Re: Filtered Port
+Date: Wed, 1 Feb 2006 09:58:01 -0500
+Message-ID: <5c6851530602010658l6d639245k585bee323b09e886@mail.gmail.com>
+References: <43DF6C38.6010204@mail.bloomfield.k12.mo.us>
+	<61929.193.173.147.3.1138716397.squirrel@webmail.sterenborg.info>
+	<43DF7196.6070606@mail.bloomfield.k12.mo.us>
+	<58058.193.173.147.3.1138718408.squirrel@webmail.sterenborg.info>
+	<43DF7CF1.4060607@mail.bloomfield.k12.mo.us>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KR/qxknboQ7+Tpez"
-Return-path: <netfilter-announce-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <43DF7CF1.4060607@mail.bloomfield.k12.mo.us>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
-	<mailto:netfilter-announce-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-announce>
-List-Post: <mailto:netfilter-announce@lists.netfilter.org>
-List-Help: <mailto:netfilter-announce-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
-	<mailto:netfilter-announce-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-announce-bounces@lists.netfilter.org
-Errors-To: netfilter-announce-bounces@lists.netfilter.org
-To: Netfilter Announcement List <netfilter-announce@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: lwn@lwn.net
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: sgmayo@mail.bloomfield.k12.mo.us
+Cc: netfilter@lists.netfilter.org
 
+Scott,
 
---KR/qxknboQ7+Tpez
-Content-Type: multipart/mixed; boundary="qp4W5+cUSnZs0RIF"
-Content-Disposition: inline
+Instead of toying with your firewall rules and opening up ports, if
+you are the only one using this, try an ssh tunnel.  "ssh -L
+3389:<destinationaddress>:3389 <yourrouteraddress>"
 
+Then just remote desktop to localhost:3389.  It is encrypted and
+solves the issue of opening up a hole in the firewall.
 
---qp4W5+cUSnZs0RIF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Robb
 
-Hi!
-
-The netfilter coreteam proudly presents:
-
-	iptables version 1.3.5
-
-The 1.3.5 version contains accumulated bugfixes to the last 1.3.4
-version.  It also fixes some compilation problems with old kernel
-headers.  The most noteworthy new features are:
-
-	- support for full netfilter/ipsec interoperability via
-	  policy match
-
-	- support for ipv6 stateful packet filtering using
-	  nf_conntrack and the ip6tables 'state' and 'conntrack'
-	  match.
-
-The ChangeLog is attached to this mail.
-
-Version 1.3.5 can be obtained from:
-
-	http://www.netfilter.org/files/iptables-1.3.5.tar.bz2
-	ftp://ftp.netfilter.org/pub/iptables/iptables-1.3.5.tar.bz2
-
-More information can be found at the netfilter/iptables project homepage,
-available at:
-
-	http://www.netfilter.org/
-
-Happy firewalling,
-
---=20
-- Harald Welte <laforge@netfilter.org>             http://www.netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---qp4W5+cUSnZs0RIF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-iptables-1.3.5.txt"
-Content-Transfer-Encoding: quoted-printable
-
-iptables v1.3.5 Changelog
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-This version requires kernel >=3D 2.4.0
-This version recommends kernel >=3D 2.4.18
-
-Bugs fixed from 1.3.4:
-
-- Fix conntrack --ctproto option in iptables-save
-	[ Phil Oester ]
-
-- Fix string match '--from' option in iptables-save
-	[ Michael Rash ]
-
-- Fix option parser of ttl match
-	[ Patrick McHardy ]
-
-- Get rid of gcc-4 warnings
-	[ Patrick McHardy ]
-
-- Fix spelling of 'address' in DNAT/SNAT manpage section
-	[ MJ Anthony ]
-
-- Fix 'tcp-rst' parsing in REJECT target
-	[ Torsten Hilbrich ]
-
-- Fix probing for supported revisions
-	[ Jones Desougi ]
-
-- Fix compilation of iptables on [old] systems that don't have IPT_F_GOTO
-	[ Harald Welte ]
-
-- Only set revisions on real targets, not on jumps
-	[ Pablo Neira ]
-
-- Fix memory leak in TC_COMMIT() of libiptc
-	[ Markus Sundberg ]
-
-- Correctly propagate errors of setsockopt to calling function
-	[ Harald Welte ]
-
-- Fix connbytes match iptables-save
-	[ Unknown ]
-
-- Fix sctp match compilation against recent kernel headers
-	[ Harald Welte ]
-
-- Fix conntrack match compilation against 2.4.0 kernel headers
-	[ Harald Welte ]
-
-Changes from 1.3.4:
-
-- Add support for ip6tables connmark match and target=20
-	[ Harald Welte ]
-
-- Add support for ip6tables state match
-	[ Harald Welte ]
-
-- Add support for new policy ip[6]tables match
-	[ Patrick McHardy ]
-
-- Major manpage update
-	[ Yasuyuki Kozakai ]
-
-- Remove ippool support, it has been deprecated by ipset long time ago
-	[ Harald Welte ]
-
-Please note: Since version 1.2.7a, patch-o-matic is now no longer part of
-iptables but rather distributed as a seperate package
-(ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot)
-
-
---qp4W5+cUSnZs0RIF--
-
---KR/qxknboQ7+Tpez
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iD8DBQFD4LMZNfqJzMqajVsRAkNtAJ41u3JIIMDybv7bR1ECQaMhfBzDiACfZakO
-KDP4qNZGqIKzzFk+G6oamE0=
-=U6fY
------END PGP SIGNATURE-----
-
---KR/qxknboQ7+Tpez--
+On 1/31/06, Scott Mayo <sgmayo@mail.bloomfield.k12.mo.us> wrote:
+> Rob Sterenborg wrote:
+> > On Tue, January 31, 2006 15:17, Scott Mayo wrote:
+> >
+> >>Rob Sterenborg wrote:
+> >>
+> >>>On Tue, January 31, 2006 14:55, Scott Mayo wrote:
+> >>>
+> >>>
+> >>>>I am not sure if this is my iptables or not, but I am not sure where
+> >>>>else to look or ask.  I am trying to use Remote Desktop on a
+> >>>>computer.  From inside my network, it works fine, but once I get
+> >>>>outside, I cannot use it.  I have set my IPTABLES to forward
+> >>>>anything
+> >>>>going to port 3389 to the computer that is using Remote Desktop.
+> >>>>
+> >>>>The problems seems to be that port 3389 is filtered.  I can find
+> >>>>nothing in my iptables where I have this port filtered.  Are there
+> >>>>some generic ports, that IPTABLES filters on it own or something?
+> >>>>If
+> >>>>the IPTABLES are not filtering it, what else could be?
+> >>>
+> >>>
+> >>>You allow forwarding to this host but you also need to DNAT these
+> >>>packets from the internet IP to the IP of your computer.
+> >>>
+> >>>$ipt -t nat -A PREROUTING -i <if_inet> -d <ip_inet> \
+> >>>  -p tcp --dport 3389 -j DNAT --to <ip_controlled_host>
+> >>>
+> >>Maybe I used the wrong word when I said 'forward'.  This is the rule
+> >>that I have in place and it does not seem to be working.  I assumed
+> >>that it was because the port is filtered, or that is what NMAP tells
+> >>me when I run it.
+> >>
+> >>I still have no idea why port 3389 is shown as being filtered.  I
+> >>have no rules in my iptables that explicitly filter it.
+> >
+> >
+> > In that case you may want to allow forwarding ;-)..
+> >
+> > $ipt -A FORWARD -i <if_inet> -o <if_lan> -d <ip_controlled_host> \
+> >   -p tcp --dport 3389 -j ACCEPT
+> >
+>
+> This did not let it go through either.  It must not be the iptables
+> causing it.  I took everything out of my rules except for the PREROUTING
+> rule above and my POSTROUTING rule for SNAT and I am getting the same thi=
+ng.
+>
+> I am not sure what else would be blocking this, unless it is the
+> upstream ISP.  I don't think it is, but I have sent them an email to
+> make sure.  Only thing this machine is used for is to be a filter using
+> IPTABLES, Squid and Dansguardian.
+>
+> Hopefully it has something to do with my ISP, but I really doubt it.
+>
+> Thanks for the help.
+>
+> --
+> Scott Mayo
+> Technology Coordinator
+> Bloomfield Schools
+> PH: 573-568-5669
+> FA: 573-568-4565
+> Pager: 800-264-2535 X2549
+>
+> Duct tape is like the force, it has a light side and a dark side and it
+> holds the universe together.
+>
+>
 
