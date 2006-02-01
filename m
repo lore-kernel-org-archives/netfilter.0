@@ -1,11 +1,14 @@
-From: Yong Zhang <yozhang@gmail.com>
-Subject: a problem with nat table setting
-Date: Tue, 31 Jan 2006 17:20:42 -0800
-Message-ID: <d268cd070601311720o1d2a4ff4w259e8c8ab915d223@mail.gmail.com>
+From: Adam Rosi-Kessel <adam@rosi-kessel.org>
+Subject: Re: netfilter Digest, Vol 18, Issue 29
+Date: Tue, 31 Jan 2006 22:45:07 -0500
+Message-ID: <20060201034506.GD15311@bostoncoop.net>
+References: <20060131183135.1FB42A01EF@bostoncoop.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2JFBq9zoW8cOFH7v"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <20060131183135.1FB42A01EF@bostoncoop.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,91 +19,83 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
 
-I am having a problem with the nat table configuration.  I am using
-2.6.8.1 kernel in a router and also added a http filter proxy which
-uses port 8080.
+--2JFBq9zoW8cOFH7v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Internet ------------ ROUTER(http filter proxy) ---------linux PC.
-                                      lan ip: 192.168.1.1       192.168.1.2
+On Tue, Jan 31, 2006 at 16:33:52 +0100, Boryan Yotov <yotov@prosyst.com>
+wrote:
+> 1. In this version of the script I see no "clear" option, but only
+> "stop" and "status". Could you try "./wondershaper stop" and check
+> if it fix the problem. Or probably you have a newer one.
 
-I have found that if there is a established connection exist between
-linux PC and the webserver before I start the proxy, and added the
-iptables nat rules, which can be  checked use netstat, the outgoing
-http packet will not be passed to the proxy, and it seems go out
-directly.  If I leave it untouched (no http activity), and after some
-time later, that connection is gone,  the outgoing http packet will be
-passed to the proxy again.
+Oh, yes, there is definitely a clear option now:
 
-Any one know how to solve this problem?
+   if [ "$1" =3D=3D "clear" ];
+   then
+      tc qdisc del dev $DEV root    2> /dev/null > /dev/null
+      tc qdisc del dev $DEV ingress 2> /dev/null > /dev/null
+      echo Wondershaper queues have been cleared.
+      exit
+   fi
 
-Thanks.
+> 2. The wondershaper is using kilobits instead of kilobytes. If you
+> have a 700 kilobytes uplink, then you'll have to set UPLINK equal
+> to 5600. The same is valid for DOWNLINK.
 
-Yong
+Yes, I understand that.  I'm not throttling downlink at all on the NAT
+box--I have it set to something like 10000.
 
-Here is the iptables configure:
-1. only the one in nat PREROUTING REDIRECT are for the proxy)
-2. ppp0 is wan interface     br0 is lan interface.  PC is attached to br0.
+>   + If the wondershaper's DEV is accidently set to match your
+>     internall interface
+>   AND
+>   + You did wrote 700 instead of 5600 as UPLINK value
+>   THEN
+>=20
+>   =3D You'll have these 700 kbytes limited to exactly 70 kbytes for
+>     all HTTP responses going to your LAN clients.
 
-# iptables -L -v
-Chain INPUT (policy ACCEPT 3574 packets, 11M bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-   22  7554 ACCEPT     all  --  ppp0   any     anywhere           =20
-anywhere            state RELATED,ESTABLISHED
-    0     0 ACCEPT     udp  --  ppp0   any     anywhere           =20
-anywhere            udp dpt:500
-    0     0 ACCEPT     esp  --  ppp0   any     anywhere             anywher=
-e
-    0     0 ACCEPT    !esp  --  ppp0   any     anywhere           =20
-anywhere            MARK match 0x10000000/0x10000000
-    0     0 LOG        tcp  --  ppp0   any     anywhere           =20
-anywhere            tcp flags:SYN,RST,ACK/SYN limit: avg 6/hour burst
-5 LOG level alert prefix `Intrusion -> '
-    0     0 DROP       all  --  ppp0   any     anywhere             anywher=
-e
+I agree that it does seem very suspicious that the internal clients are
+being throttled on HTTP to almost exactly what wondershaper is supposed
+to throttle outbound traffic on the external facing interface.
 
-Chain FORWARD (policy ACCEPT 43 packets, 13943 bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-   37 15118 ACCEPT     all  --  ppp0   any     anywhere           =20
-anywhere            state RELATED,ESTABLISHED
-    0     0 ACCEPT    !esp  --  ppp0   any     anywhere           =20
-anywhere            MARK match 0x10000000/0x10000000
-    0     0 LOG        tcp  --  ppp0   any     anywhere           =20
-anywhere            tcp flags:SYN,RST,ACK/SYN limit: avg 6/hour burst
-5 LOG level alert prefix `Intrusion -> '
-    0     0 DROP       all  --  ppp0   any     anywhere             anywher=
-e
+But: it is definitely the same behavior with wondershaper cleared. Both
+of the following give empty responses (after 'wondershaper clear' is
+run):
 
-Chain OUTPUT (policy ACCEPT 3456 packets, 11M bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-    0     0 DROP       all  --  any    ppp0    anywhere           =20
-239.255.255.250
+tc class show dev eth0
+tc class show dev eth1
 
+And I definitely know which interface is inward facing and which is
+outward facing. The inward facing one is 192.168.98.50, the outward
+facing one is 72.1.169.236. There's not really any way that I could have
+that backwards. :)
 
-# iptables -t nat -L -v
-Chain PREROUTING (policy ACCEPT 84 packets, 5865 bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-    2   120 REDIRECT   tcp  --  br0    any     anywhere          =20
-!192.168.1.1         tcp dpt:www redir ports 8080
-    2   118 DNAT       udp  --  br0    any     anywhere           =20
-192.168.1.1         udp dpt:domain to:10.250.1.10
+The other thing is that wondershaper, when in place, definitely throttles
+port 80 and port 22 to the same bitrate; but the problem I'm experiencing
+for internal clients is only on port 80. I really don't have anything
+anywhere in my network that would discriminate in bandwidth between the
+two ports.
+--=20
+Adam Rosi-Kessel
+http://adam.rosi-kessel.org
 
-Chain POSTROUTING (policy ACCEPT 28 packets, 1822 bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-    3   178 MASQUERADE  all  --  any    ppp0    192.168.1.0/24       anywhe=
-re
+--2JFBq9zoW8cOFH7v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-#
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFD4C7CdTf3ZklQ6qYRAp/zAKDIIkUbTI2TrCJ5rSQ1Gs1/04/bZQCgqFIA
+za4oiTI4exoJMEXeblWPrmc=
+=fBxb
+-----END PGP SIGNATURE-----
+
+--2JFBq9zoW8cOFH7v--
 
