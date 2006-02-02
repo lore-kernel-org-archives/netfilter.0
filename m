@@ -1,8 +1,7 @@
-From: "robee" <mlody@elpec.com>
-Subject: nf-hipac problem
-Date: Thu, 2 Feb 2006 09:33:59 +0100
-Message-ID: <001e01c627d3$a8d56d60$060010ac@CyberAdmin>
-Reply-To: robee <mlody@elpec.com>
+From: Javier Ramirez Molina <jramirez@ip-cable.com>
+Subject: Iptables Unknown Error
+Date: Thu, 02 Feb 2006 10:17:39 +0100
+Message-ID: <43E1CE33.5040706@ip-cable.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,18 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
--P option does not work. where is the problem? my rules looks like below:
+Good Morning, I have installed iptables from sources as described in:
+http://pastebin.ca/39582
 
-<--------
-nf-hipac -P INPUT DROP
-nf-hipac -P OUTPUT DROP
-nf-hipac -P FORWARD DROP
-<--------
+And I have this complete ruleset:
+http://pastebin.ca/39577
+
+And I having these errors:
+
+/sbin/iptables -t mangle -A ms-all-chains -m connmark --mark 0xebc013d6 -j
+ms-chain-eth0-1:21
+Error: iptables: Unknown error 4294967295
 
 
-Robert Czechonski
+Any Clue?
+
+Thanks
+
+-- 
+Un Saludo
+Javier Ramirez Molina
+Departamento Ingenieria  IP-Cable
+Tfno: 951230266 
 
 
