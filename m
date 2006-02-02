@@ -1,11 +1,11 @@
-From: "Eray Aslan" <eray.aslan@caf.com.tr>
-Subject: RE: --tcp-flags  option
-Date: Thu, 2 Feb 2006 08:20:50 +0200
-Message-ID: <4FE82EE778704E4D9D31E9CE0BEC14650D2F3D@caf02.caf.local>
+From: "robee" <mlody@elpec.com>
+Subject: nf-hipac problem
+Date: Thu, 2 Feb 2006 09:33:59 +0100
+Message-ID: <001e01c627d3$a8d56d60$060010ac@CyberAdmin>
+Reply-To: robee <mlody@elpec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,22 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: P theodorou <props666999@hotmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-> Could someone explain the tcp-flag options
->=20
->=20
-> like the following line  what does it mean ?
-> tcp-flags SYN,RST SYN,RST
->=20
-> why between RST and SYN there is no comma?
->=20
-tcp-flags x,y,z x,y examines flags x, y and z and matches if x and y are
-set and z is unset.
+-P option does not work. where is the problem? my rules looks like below:
 
-man 8 iptables for more info.
+<--------
+nf-hipac -P INPUT DROP
+nf-hipac -P OUTPUT DROP
+nf-hipac -P FORWARD DROP
+<--------
 
---=20
-Eray
+
+Robert Czechonski
+
 
