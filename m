@@ -1,13 +1,12 @@
-From: Nikolai Georgiev <voyager123bg@gmail.com>
-Subject: Re: Ippersonality
-Date: Thu, 02 Feb 2006 16:38:02 +0200
-Message-ID: <43E2194A.1090008@gmail.com>
-References: <005f01c627f1$68b93e50$2f00a8c0@TRINTASETE>
-	<43E203F5.8010903@gmx.net>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: ICMP nat
+Date: Thu, 02 Feb 2006 13:35:34 +0100
+Message-ID: <1138883734.4981.5.camel@anduril.intranet.cartel-securite.net>
+References: <01e301c627ef$c78e3310$5964a8c0@office.aradio.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43E203F5.8010903@gmx.net>
+In-Reply-To: <01e301c627ef$c78e3310$5964a8c0@office.aradio.ru>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,34 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Victor A. Bykov" <vr@aradio.ru>
 Cc: netfilter@lists.netfilter.org
 
-Carl-Daniel Hailfinger wrote:
+Le jeudi 02 f=E9vrier 2006 =E0 14:57 +0300, Victor A. Bykov a =E9crit :
+> My question is: if I, for example, generate icmp packet with icmp-type
+> 11 by packet generator, this packet is not in ESTABLISHED state, and
+> not in conntrack list, and probably should go via NAT table? in
+> practical test, however, that kind of packet not go via NAT!
 
->Pedro Drimel Neto schrieb:
->  
->
->>Hi all,
->>
->>Ippersonality (http://ippersonality.sourceforge.net) stop the
->>development in 2002 and has only for kernel 2.4.18.
->>
->>Someone know other tool about it ?
->>    
->>
->
->Well, I did maintain it for a while. I plan to come back once
->I have more time. The problem is that netfilter has changed quite
->a bit since 2.4.18.
->
->
->  
->
-You might want to look at: http://www.synacklabs.net/projects/morph/
-I never got it to work, for I already had newer kernel, and didn't want
-to move back.
-Also if anyone has information on such projects, but for the 2.6
-kernel... :) it would be nice.
+If you craft an ICMP error, then it will be given INVALID state as no
+previous entry exists in conntrack table to which it can be associated.
+
+
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
