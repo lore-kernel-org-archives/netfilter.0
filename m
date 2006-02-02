@@ -1,10 +1,12 @@
-From: Frederic Beck <frederic.beck@loria.fr>
-Subject: Problem with state match for ip6tables
-Date: Thu, 2 Feb 2006 13:38:57 +0100
-Message-ID: <20060202133857.5bded5b8@localhost.localdomain>
+From: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
+Subject: Re: Ippersonality
+Date: Thu, 02 Feb 2006 14:07:01 +0100
+Message-ID: <43E203F5.8010903@gmx.net>
+References: <005f01c627f1$68b93e50$2f00a8c0@TRINTASETE>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <005f01c627f1$68b93e50$2f00a8c0@TRINTASETE>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +18,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+To: Pedro Drimel Neto <pedrodrimel@uol.com.br>
+Cc: netfilter@lists.netfilter.org
 
-Hello
+Pedro Drimel Neto schrieb:
+> Hi all,
+> 
+> Ippersonality (http://ippersonality.sourceforge.net) stop the
+> development in 2002 and has only for kernel 2.4.18.
+> 
+> Someone know other tool about it ?
 
-I'm trying to set up a firewalling script for IPv6 on my Debian, kernel 
-2.6.15-1-686-smp, but i have a problem when using the state match.
+Well, I did maintain it for a while. I plan to come back once
+I have more time. The problem is that netfilter has changed quite
+a bit since 2.4.18.
 
-When i try simply to match all packets with a state ESTABLISHED, i got
-the followinf error
 
-root@trunks:~/firewalling/iptables
-% ip6tables -A FORWARD  -m state --state ESTABLISHED -j ACCEPT
-ip6tables: Unknown error 4294967295
-
-I'm using ip6tables version 1.3.5, i tried also to retrieve the svn
-version, but i got the same behaviour.
-
-I didn't see any patch to apply, and am clueless now. Am i missing
-something ? Is it a bug ?
-
-Thanks a lot
-Fred
+Regards,
+Carl-Daniel
+-- 
+http://www.hailfinger.org/
 
