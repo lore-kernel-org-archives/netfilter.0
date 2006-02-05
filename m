@@ -1,9 +1,9 @@
-From: Linux linux <khankhn1@yahoo.com>
-Subject: I want to understand the concept
-Date: Sun, 5 Feb 2006 00:54:25 -0800 (PST)
-Message-ID: <20060205085425.75608.qmail@web35905.mail.mud.yahoo.com>
+From: alninuo_li@sdc.sercomm.com
+Subject: RE:I want to understand the concept
+Date: Sun, 5 Feb 2006 16:57:16 +0800
+Message-ID: <OF6A54A6C2.6D24D2F6-ON4825710C.003120B5@sdc.sercomm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,96 +15,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: khankhn1@yahoo.com, rhce.rhct@gmail.com, nomankhn@yahoo.com
+Content-Type: text/plain; charset="big5"
+Cc: netfilter-bounces@lists.netfilter.org, khankhn1@yahoo.com, rhce.rhct@gmail.com, netfilter@lists.netfilter.org, nomankhn@yahoo.com
+
+DQpEZWFyIDoNCiAgICAgIHlvdSBuZWVkIHRvIHJlYWQgdGhlIFJ1c3NlbCdzIExpbnV4IE5BVCBI
+b3cgVG8gZ3VpZGVsaW5lLg0KQmVzdCBSZWdhcmRzLg0KQWxuaW51byBMZWUNCg0KDQogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICANCiAgICAgICAgICAgICAgICAgICAgICBMaW51eCBsaW51
+eCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0K
+ICAgICAgICAgICAgICAgICAgICAgIDxraGFua2huMUB5YWhvby5jb20+ICAgICAgICAgICAgICCm
+rKXzpEihRyAgbmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmcgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQogICAgICAgICAgICAgICAgICAgICAgsUil
+86RIoUcgICAgICAgICAgICAgICAgICAgICAgICAgILDGpbun27BloUcgICAgICBraGFua2huMUB5
+YWhvby5jb20sIHJoY2UucmhjdEBnbWFpbC5jb20sIG5vbWFua2huQHlhaG9vLmNvbSAgICAgICAg
+ICAgICANCiAgICAgICAgICAgICAgICAgICAgICBuZXRmaWx0ZXItYm91bmNlc0BsaXN0cy5uZSAg
+ICAgICAgpUSmrqFHICAgIEkgd2FudCB0byB1bmRlcnN0YW5kIHRoZSBjb25jZXB0ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAgICAg
+ICAgIHRmaWx0ZXIub3JnICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAgICAgICAgIDIwMDYtMDItMDUgMTY6
+NTQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IA0KDQoNCg0KDQoNCg0KDQpIZWxsbz8NCg0KSSB3YW50IHRvIHVuZGVyc3RhbmQgdGhlIGRpZmZl
+cmVuY2UgYi93IGZvbGxvd2luZw0KdGhpbmdzDQoNClExLiBXaGF0IGlzIHRoZSBkaWZmZXJlbmNl
+IGIvdyB0aGVzZSAyIGNvbW1hbmQNCg0KaXB0YWJsZXMgLUEgRk9SV0FSRCAtcyAxOTIuMTY4LjAu
+MSAtaiBEUk9QDQppcHRhYmxlcyAtdCBtYW5nbGUgLUEgRk9SV0FSRCAtcyAxOTIuMTY4LjAuMSAt
+aiBEUk9QDQoNCndoYXQgaXMgdGhlIGRpZmZlcmVuY2UgYi93DQoNCkZPUldBUkQgb2YgZmlsdGVy
+IHRhYmxlPw0KRk9SV0FSRCBvZiBtYW5nbGUgdGFibGU/DQoNClEyLiBXaGF0IGlzIHRoZSBkaWZm
+ZXJlbmNlIGIvdyBQT1NUUk9VVElORyBhbmQNClBSRVJPVVRJTkc/DQoNClEzLiBXaGF0IGlzIHRo
+ZSBkaWZmZXJlbmNlIGIvdyBTTkFUIGFuZCBETkFUPw0KDQoNClE0LiBXaGF0IGlzIHRoZSBkaWZm
+ZXJlbmNlIGIvdyB0aGF0DQoNCkhvdyBpIGNhbiB1bmRlcnN0YW5kDQoNCkZPUiBGSUxURVIgVEFC
+TEU/DQoNCndoYXQgaXMgbXkgc291cmNlIGluIEZPUldBUkQgY2hhaW4gb2YgRklMVEVSIHRhYmxl
+DQp3aGF0IGlzIG15IGRzdGluYXRpb24gaW4gRk9SV0FSRCBjaGFpbiBvZiBGSUxURVIgdGFibGUN
+Cg0Kd2hhdCBpcyBteSBzb3VyY2UgaW4gSU5QVVQgY2hhaW4gb2YgRklMVEVSIHRhYmxlDQp3aGF0
+IGlzIG15IGRzdGluYXRpb24gaW4gSU5QVVQgY2hhaW4gb2YgRklMVEVSIHRhYmxlDQoNCndoYXQg
+aXMgbXkgc291cmNlIGluIE9VVFBVVCBjaGFpbiBvZiBGSUxURVIgdGFibGUNCndoYXQgaXMgbXkg
+ZGVzdGluYXRpb24gaW4gT1VUUFVUIGNoYWluIG9mIEZJTFRFUiB0YWJsZQ0KDQpGT1IgTkFUIFRB
+QkxFPw0KDQp3aGF0IGlzIG15IHNvdXJjZSBpbiBJTlBVVCBjaGFpbiBvZiBNQU5HTEUgdGFibGUN
+CndoYXQgaXMgbXkgZHN0aW5hdGlvbiBpbiBJTlBVVCBjaGFpbiBvZiBNQU5HTEUgdGFibGUNCg0K
+d2hhdCBpcyBteSBzb3VyY2UgaW4gRk9SV0FSRCBjaGFpbiBvZiBNQU5HTEUgdGFibGUNCndoYXQg
+aXMgbXkgZHN0aW5hdGlvbiBpbiBGT1JXQVJEIGNoYWluIG9mIE1BTkdMRSB0YWJsZQ0KDQp3aGF0
+IGlzIG15IHNvdXJjZSBpbiBPVVRQVVQgY2hhaW4gb2YgTUFOR0xFIHRhYmxlDQp3aGF0IGlzIG15
+IGRlc3RpbmF0aW9uIGluIE9VVFBVVCBjaGFpbiBvZiBNQU5HTEUgdGFibGUNCg0Kd2hhdCBpcyBt
+eSBzb3VyY2UgaW4gUFJFUk9VVElORyBjaGFpbiBvZiBNQU5HTEUgdGFibGUNCndoYXQgaXMgbXkg
+ZGVzdGluYXRpb24gaW4gUFJFUk9VVElORyBjaGFpbiBvZiBNQU5HTEUNCnRhYmxlDQoNCndoYXQg
+aXMgbXkgc291cmNlIGluIFBPU1RST1VUSU5HIGNoYWluIG9mIE1BTkdMRSB0YWJsZQ0Kd2hhdCBp
+cyBteSBkZXN0aW5hdGlvbiBpbiBQT1NUUk9VVElORyBjaGFpbiBvZiBNQU5HTEUNCnRhYmxlDQoN
+Cg0KRk9SIE5BVCBUQUJMRT8NCg0Kd2hhdCBpcyBteSBzb3VyY2UgaW4gT1VUUFVUIGNoYWluIG9m
+IE5BVCB0YWJsZQ0Kd2hhdCBpcyBteSBkZXN0aW5hdGlvbiBpbiBPVVRQVVQgY2hhaW4gb2YgTkFU
+IHRhYmxlDQoNCndoYXQgaXMgbXkgc291cmNlIGluIFBSRVJPVVRJTkcgY2hhaW4gb2YgTkFUIHRh
+YmxlDQp3aGF0IGlzIG15IGRlc3RpbmF0aW9uIGluIFBSRVJPVVRJTkcgY2hhaW4gb2YgTkFUDQp0
+YWJsZQ0KDQp3aGF0IGlzIG15IHNvdXJjZSBpbiBQT1NUUk9VVElORyBjaGFpbiBvZiBOQVQgdGFi
+bGUNCndoYXQgaXMgbXkgZGVzdGluYXRpb24gaW4gUE9TVFJPVVRJTkcgY2hhaW4gb2YgTkFUDQp0
+YWJsZQ0KDQoNClJlZ2FyZHMNCktoYW4NCg0KDQoNCg0KDQoNCg0KDQoNCg0KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCkRvIFlvdSBZYWhvbyE/DQpU
+aXJlZCBvZiBzcGFtPyAgWWFob28hIE1haWwgaGFzIHRoZSBiZXN0IHNwYW0gcHJvdGVjdGlvbiBh
+cm91bmQNCmh0dHA6Ly9tYWlsLnlhaG9vLmNvbQ0KDQoNCg0KDQo=
 
 
-
-Hello?
-
-I want to understand the difference b/w following
-things
-
-Q1. What is the difference b/w these 2 command
-
-iptables -A FORWARD -s 192.168.0.1 -j DROP
-iptables -t mangle -A FORWARD -s 192.168.0.1 -j DROP
-
-what is the difference b/w 
-
-FORWARD of filter table?
-FORWARD of mangle table?
-
-Q2. What is the difference b/w POSTROUTING and
-PREROUTING?
-
-Q3. What is the difference b/w SNAT and DNAT?
-
-
-Q4. What is the difference b/w that
-
-How i can understand 
-
-FOR FILTER TABLE?
-
-what is my source in FORWARD chain of FILTER table
-what is my dstination in FORWARD chain of FILTER table
-
-what is my source in INPUT chain of FILTER table
-what is my dstination in INPUT chain of FILTER table
-
-what is my source in OUTPUT chain of FILTER table
-what is my destination in OUTPUT chain of FILTER table
-
-FOR NAT TABLE?
-
-what is my source in INPUT chain of MANGLE table
-what is my dstination in INPUT chain of MANGLE table
-
-what is my source in FORWARD chain of MANGLE table
-what is my dstination in FORWARD chain of MANGLE table
-
-what is my source in OUTPUT chain of MANGLE table
-what is my destination in OUTPUT chain of MANGLE table
-
-what is my source in PREROUTING chain of MANGLE table
-what is my destination in PREROUTING chain of MANGLE
-table
-
-what is my source in POSTROUTING chain of MANGLE table
-what is my destination in POSTROUTING chain of MANGLE
-table
-
-
-FOR NAT TABLE?
-
-what is my source in OUTPUT chain of NAT table
-what is my destination in OUTPUT chain of NAT table
-
-what is my source in PREROUTING chain of NAT table
-what is my destination in PREROUTING chain of NAT
-table
-
-what is my source in POSTROUTING chain of NAT table
-what is my destination in POSTROUTING chain of NAT
-table
-
-
-Regards
-Khan
-
-
-
-
-
-
-
-
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
