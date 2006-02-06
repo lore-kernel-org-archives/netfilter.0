@@ -1,11 +1,10 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: 2 DSL connection
-Date: Sun, 5 Feb 2006 10:10:13 -0800
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE582900B5B5E@pxtbenexd01.pxt.primeexalia.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: PMTU-D and conntrack
+Date: Mon, 06 Feb 2006 00:47:38 -0500
+Message-ID: <1139204858.2549.5.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: varun <varun_saa@rediffmail.com>, netfilter@lists.netfilter.org
+To: Netfilter users list <netfilter@lists.netfilter.org>
 
-It is possible, as already stated, you should look at lartc.  It does
-get a little tricky if you need to dnat/snat those static IP's
-internally.  We have done just that (two DSL's) for a couple clients.
+Are the ICMP Destination Unreachable-Fragmentation Needed and DF Set
+(type 3, code 4) packets sent in response to a TCP packet doing PMTU
+discovery considered RELATED or does one need to allow NEW connections
+for such packets?
 
-In our case we don't equalize the outgoing routes but rather have then
-going out a single route.  The second DSL is used for incoming VPN and
-remote desktop connections.  This way if people are sending/reciving
-large email or downloading/uploading a bunch of files, the people using
-the VPN are unaffected by it.
+By the way, is there a way to specify code number in the --icmp-type
+match? I think one can do -p 1 --icmp-type fragmentation-needed but I
+usually use the numbers to avoid lookups, e.g., -p 1 --icmp-type 8.
+Thanks - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-
-
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> bounces@lists.netfilter.org] On Behalf Of varun
-> Sent: Sunday, February 05, 2006 6:25 AM
-> To: netfilter@lists.netfilter.org
-> Subject: 2 DSL connection
->=20
-> Hello,
->=20
-> I want to use 2 DSL connections on one
-> system.
->=20
-> eth0 - DSL1 with static IP
->=20
-> eth1 - DSL2 with static IP
->=20
-> eth2 - LAN
->=20
-> I would like all traffic from eth2(LAN)
-> to be distributed equally between DSL1
-> and DSL2.
->=20
-> Is it possible to do that using iptables  ?
->=20
-> Thanks in advance
->=20
-> Varun
->=20
+If you would like to participate in the development of an open source
+enterprise class network security management system, please visit
+http://iscs.sourceforge.net
 
 
