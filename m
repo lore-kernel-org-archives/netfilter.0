@@ -1,12 +1,11 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: PMTU-D and conntrack
-Date: Mon, 06 Feb 2006 16:43:16 +1000
-Message-ID: <43E6F004.4020404@snapgear.com>
-References: <1139204858.2549.5.camel@localhost>
+From: David Vogt <beunlovable@gmail.com>
+Subject: ipq_set_verdict() does not shorten packets
+Date: Mon, 6 Feb 2006 08:04:56 +0100
+Message-ID: <859616420602052304g45d0a704g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1139204858.2549.5.camel@localhost>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Cc: Netfilter users list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On 02/06/2006 03:47 PM, John A. Sullivan III wrote:
-> Are the ICMP Destination Unreachable-Fragmentation Needed and DF Set
-> (type 3, code 4) packets sent in response to a TCP packet doing PMTU
-> discovery considered RELATED or does one need to allow NEW connections
-> for such packets?
+I am using iptables and queue packets to user space. Packets are
+either augmented (with a signature) or shortened (removal of
+signature). The augmentation works.
+ However, when removing the signature, the resulting packet contains
+the correct data, but its overall size is equal to the original
+(signed) packet. (i.e. original packet size: 83, signed packet size:
+163)
 
-The man page says that ICMP errors are RELATED, but I seem to recall
-them showing up as ESTABLISHED instead.  In any case, fragmentation
-needed errors are treated the same as other ICMP errors, and so an
-accept ESTABLISHED/RELATED rule is enough.
+ I checked this using ethereal on the receiving machine, which lists
+packets with the additional bytes (163-83=3D79) as trailer for the
+ethernet frame. (So, actually, the packet is processed correclty on
+the other side, however, the additional bytes seem odd to me)
 
-> By the way, is there a way to specify code number in the --icmp-type
-> match? I think one can do -p 1 --icmp-type fragmentation-needed but I
-> usually use the numbers to avoid lookups, e.g., -p 1 --icmp-type 8.
-> Thanks - John
+ Any help would be great.
 
-The man page doesn't mention this, but if you run iptables -p icmp -h
-then it says you can use type/code, eg -p 1 --icmp-type 3/4
+ P.S. I am new to mailing lists, I tried to be prepared and hope I did
+not make any major mistakes, appart from my bad english.
 
