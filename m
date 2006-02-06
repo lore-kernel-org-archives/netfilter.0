@@ -1,10 +1,12 @@
-From: David Vogt <beunlovable@gmail.com>
-Subject: ipq_set_verdict() does not shorten packets
-Date: Mon, 6 Feb 2006 08:04:56 +0100
-Message-ID: <859616420602052304g45d0a704g@mail.gmail.com>
+From: Amitabh Kant <amitabhkant@gmail.com>
+Subject: Re: 2 DSL connection
+Date: Mon, 6 Feb 2006 13:36:15 +0530
+Message-ID: <84b68b3d0602060006u471ce5abic639b8e13f1d7478@mail.gmail.com>
+References: <1139149508.4793.2.camel@nirvana.aurokruti.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1139149508.4793.2.camel@nirvana.aurokruti.in>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,23 +19,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: varun <varun_saa@rediffmail.com>
+Cc: netfilter@lists.netfilter.org
 
-I am using iptables and queue packets to user space. Packets are
-either augmented (with a signature) or shortened (removal of
-signature). The augmentation works.
- However, when removing the signature, the resulting packet contains
-the correct data, but its overall size is equal to the original
-(signed) packet. (i.e. original packet size: 83, signed packet size:
-163)
+Hi
 
- I checked this using ethereal on the receiving machine, which lists
-packets with the additional bytes (163-83=3D79) as trailer for the
-ethernet frame. (So, actually, the packet is processed correclty on
-the other side, however, the additional bytes seem odd to me)
+You can also take a look at the "nth" and/or "random" extensions for
+netfilter.  Either of these two alongwith the route command should
+give you the desired result.
 
- Any help would be great.
+Amitabh
 
- P.S. I am new to mailing lists, I tried to be prepared and hope I did
-not make any major mistakes, appart from my bad english.
+On 2/5/06, varun <varun_saa@rediffmail.com> wrote:
+> Hello,
+>
+> I want to use 2 DSL connections on one
+> system.
+>
+> eth0 - DSL1 with static IP
+>
+> eth1 - DSL2 with static IP
+>
+> eth2 - LAN
+>
+> I would like all traffic from eth2(LAN)
+> to be distributed equally between DSL1
+> and DSL2.
+>
+> Is it possible to do that using iptables  ?
+>
+> Thanks in advance
+>
+> Varun
+>
+>
+>
 
