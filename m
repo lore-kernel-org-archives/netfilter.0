@@ -1,10 +1,11 @@
-From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Unknown error 4294967295
-Date: Mon, 06 Feb 2006 19:20:49 -0600
-Message-ID: <1139275250.3600.3.camel@davila.nicaraguaopensource.com>
+From: BTP <smokefat@gmail.com>
+Subject: ipt -P INPUT ACCEPT problem
+Date: Mon, 6 Feb 2006 23:10:11 -0400
+Message-ID: <42ad30bb0602061910i705f5a69u8f88a97f813c0681@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +19,33 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi list!:
+Hello,
 
-Trying to execute this rule
+This is my first time posting here and I have a problem with some basics.
 
-iptables -t mangle -A PREROUTING -s  -j NETMAP --to 192.168.3.0/24
+I have a personal laptop running Debian sitting behind a linksys
+future-shop-bought router that nicely provides me with DHCP services
+at boot. My only concern at the moment is having iptables as a basic
+firewall that can block/accept all incoming and outgoing packets from
+my untrustworthy router.
 
-I receive
+Starting out to experiment, I wanted to block all incoming packets:
 
-iptables: Unknown error 4294967295
+iptables -P INPUT DROP
 
-Someone knows where to look?
+Then, I wanted to undo my changes:
 
-The system is Ubuntu 5.10 and iptables 1.3.5
+iptables -P INPUT ACCEPT
 
-Thanks,
+Why is it that now I can't access the internet? I can access my router
+at 192.168.1.1 and my other system at 192.168.1.100 but everythign
+else is just shut down. Checking my router setup turns out that it
+assigned only one DHCP client, and my system is gone from its list.
 
--- 
------------------------------------------------------------------
-Jorge Isaac Davila Lopez
--
-sitio web: http://www.nicaraguaopensource.com/
-correo-e: davila@nicaraguaopensource.com
--
-clave pgp: http://www.nicaraguaopensource.com/claves/nos.asc
-huella digital: F8F4 8563 28D2 29E1 E2EA 9EAB CA0F A96F A3EE 6F56
------------------------------------------------------------------
+Is there something about the internal workings of iptables I should
+know, or is this meant for the Debian, or general Linux help mailing
+list?? I attempted restarting my networking scripts but it failed on
+DHCP init.
 
+Bart
 
