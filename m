@@ -1,10 +1,10 @@
-From: Markus Wells <markus@wiztech.cc>
-Subject: How to I bounce/redirect packets from one external ip to another?
-Date: Mon, 06 Feb 2006 19:45:29 -0800
-Message-ID: <43E817D9.1080209@wiztech.cc>
+From: Mark-Walter@t-online.de
+Subject: how to clear kernel routing chains / iptables
+Date: Tue, 7 Feb 2006 10:24:44 +0100
+Message-ID: <20060207092444.GA3439@marschmellow.homeunix.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,18 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi,
 
-  I'm travelling and I want to access my news server remotely. They have 
-it set up so that it will only accept connections originating from my 
-home ip, so I was hoping one of you packet mangling gurus might have a 
-couple lines of code so that I can redirect nntp traffic from an 
-arbitrary external ip to another external ip(the news server) via my 
-home firewall.
+a howto from Russel describes a reboot clears all created chains
+concerning the kernel routing.
 
-  Thank you for any help you can offer!
+So I tried this but it's not working:
 
-Markus
+$IPTABLES -F 		# flush aller chains (Tabelle filter)
+$IPTABLES -X 		# delete all userdefined chains
+$IPTABLES -t nat -F 	# flush aller chains (Tabelle nat)
+
+All chains are deleted (iptables -L) but my routing is not working
+properly while using masquerade.
+
+How can I overcome this problem to avoid a reboot while using iptables ?
+
+-- 
+Best Regards, 
+
+Mark 
 
