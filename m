@@ -1,13 +1,10 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: iptables matching method
-Date: Mon, 6 Feb 2006 13:05:22 -0600
-Message-ID: <200602061305.22977.rob0@gmx.co.uk>
-References: <3115d56e0602060218s2ad8ed82ie5ffc03c5d6931bb@mail.gmail.com>
+From: Jorge Davila <davila@nicaraguaopensource.com>
+Subject: Unknown error 4294967295
+Date: Mon, 06 Feb 2006 19:20:49 -0600
+Message-ID: <1139275250.3600.3.camel@davila.nicaraguaopensource.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3115d56e0602060218s2ad8ed82ie5ffc03c5d6931bb@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,35 +18,31 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I remember you, and normally would not answer, but this is a good 
-question which deserves an answer even if you don't. :)
+Hi list!:
 
-On Monday 2006-February-06 04:18, afshin lamei wrote:
-> I have a question about the way netfilter matches the fields in a
-> rule. for example in :
-> iptables -A FORWARD -p tcp -m condition --condition myweb -m string
-> --string 'test' -j DROP
-> there are 3 fields: protocol:tcp, condition:myweb and string: 'test'
-> . if these 3 fields are matched serially ( one bye one ), then we
-> will not pay the cost of string matching for none-tcp packets, also
-> if the "myweb" condition is off again we have not to concern the
-> string matching overhead.
-> But if they are matched in parallel, then we will pay the cost of
-> string matching for all packets.
-> Does any one no which method (serial or parallel) is really used by
+Trying to execute this rule
 
-I don't know how it's done in the single rule, but what I would do to 
-remove any doubt is to use user chains to do the matching in the order 
-you want:
+iptables -t mangle -A PREROUTING -s  -j NETMAP --to 192.168.3.0/24
 
-iptables -N StrTest
-iptables -A FORWARD -p tcp -m condition --condition myweb -j StrTest
-iptables -A StrTest -m string --string 'test' -j DROP
+I receive
 
-You could get even fancier and branch into separate chains for the -p 
-tcp and -m condition matching too. But my example does avoid the string 
-matching, which no doubt is the greatest concern.
+iptables: Unknown error 4294967295
+
+Someone knows where to look?
+
+The system is Ubuntu 5.10 and iptables 1.3.5
+
+Thanks,
+
 -- 
-    Offlist mail to this address is discarded unless
-    "/dev/rob0" or "not-spam" is in Subject: header
+-----------------------------------------------------------------
+Jorge Isaac Davila Lopez
+-
+sitio web: http://www.nicaraguaopensource.com/
+correo-e: davila@nicaraguaopensource.com
+-
+clave pgp: http://www.nicaraguaopensource.com/claves/nos.asc
+huella digital: F8F4 8563 28D2 29E1 E2EA 9EAB CA0F A96F A3EE 6F56
+-----------------------------------------------------------------
+
 
