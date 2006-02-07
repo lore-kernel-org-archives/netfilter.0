@@ -1,12 +1,11 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: Unknown error 4294967295
-Date: Tue, 07 Feb 2006 14:10:30 +1000
-Message-ID: <43E81DB6.1040504@snapgear.com>
-References: <1139275250.3600.3.camel@davila.nicaraguaopensource.com>
+From: openbsd shen <openbsd.shen@gmail.com>
+Subject: I don't want the LOG be writed to /var/log/messages
+Date: Tue, 7 Feb 2006 13:27:57 +0800
+Message-ID: <6ff3e7140602062127u58c56046u@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1139275250.3600.3.camel@davila.nicaraguaopensource.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +17,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jorge Davila <davila@nicaraguaopensource.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-On 02/07/2006 11:20 AM, Jorge Davila wrote:
-> Trying to execute this rule
-> 
-> iptables -t mangle -A PREROUTING -s  -j NETMAP --to 192.168.3.0/24
-> 
-> I receive
-> 
-> iptables: Unknown error 4294967295
+I write a line in /etc/syslog.conf:
+kern.=3Dinfo                                              /var/log/iptables
 
-I assume you really had an address after the -s option.
-
-I can't explain the error you are seeing, but at least one
-problem is that you must use the nat table, not the mangle table.
-
+Now the log of iptables write to /var/log/iptables, but I found that
+the log still write in /var/log/messages, now I have 2 copies of the
+log, how can I stop the write to /var/log/messages, and only write to
+/var/log/iptables?
+Thanks.
 
