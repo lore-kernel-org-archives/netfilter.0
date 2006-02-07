@@ -1,11 +1,12 @@
-From: BTP <smokefat@gmail.com>
-Subject: ipt -P INPUT ACCEPT problem
-Date: Mon, 6 Feb 2006 23:10:11 -0400
-Message-ID: <42ad30bb0602061910i705f5a69u8f88a97f813c0681@mail.gmail.com>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: Unknown error 4294967295
+Date: Tue, 07 Feb 2006 14:10:30 +1000
+Message-ID: <43E81DB6.1040504@snapgear.com>
+References: <1139275250.3600.3.camel@davila.nicaraguaopensource.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <1139275250.3600.3.camel@davila.nicaraguaopensource.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jorge Davila <davila@nicaraguaopensource.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+On 02/07/2006 11:20 AM, Jorge Davila wrote:
+> Trying to execute this rule
+> 
+> iptables -t mangle -A PREROUTING -s  -j NETMAP --to 192.168.3.0/24
+> 
+> I receive
+> 
+> iptables: Unknown error 4294967295
 
-This is my first time posting here and I have a problem with some basics.
+I assume you really had an address after the -s option.
 
-I have a personal laptop running Debian sitting behind a linksys
-future-shop-bought router that nicely provides me with DHCP services
-at boot. My only concern at the moment is having iptables as a basic
-firewall that can block/accept all incoming and outgoing packets from
-my untrustworthy router.
+I can't explain the error you are seeing, but at least one
+problem is that you must use the nat table, not the mangle table.
 
-Starting out to experiment, I wanted to block all incoming packets:
-
-iptables -P INPUT DROP
-
-Then, I wanted to undo my changes:
-
-iptables -P INPUT ACCEPT
-
-Why is it that now I can't access the internet? I can access my router
-at 192.168.1.1 and my other system at 192.168.1.100 but everythign
-else is just shut down. Checking my router setup turns out that it
-assigned only one DHCP client, and my system is gone from its list.
-
-Is there something about the internal workings of iptables I should
-know, or is this meant for the Debian, or general Linux help mailing
-list?? I attempted restarting my networking scripts but it failed on
-DHCP init.
-
-Bart
 
