@@ -1,14 +1,10 @@
-From: Adam Rosi-Kessel <adam@rosi-kessel.org>
-Subject: Re: HTTP slower than SSH on client behind iptables
-Date: Tue, 7 Feb 2006 19:46:31 -0500
-Message-ID: <20060208004630.GA10508@bostoncoop.net>
-References: <20060131033519.GA32564@bostoncoop.net>
-	<43DF299D.9070105@prosyst.com>
-	<20060202145613.GA12056@bostoncoop.net>
+From: "Edoardo Mariconda" <edoardo@generalsystem.net>
+Subject: PPTP problem with firewall
+Date: Wed, 8 Feb 2006 11:22:22 +0100
+Message-ID: <000701c62c99$8fd7c9a0$fe14a8c0@pceddy>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20060202145613.GA12056@bostoncoop.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,34 +16,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Thu, Feb 02, 2006 at 09:56:13AM -0500, Adam Rosi-Kessel wrote:
-> On Tue, Jan 31, 2006 at 10:10:53AM +0100, Boryan Yotov wrote:
-> > >On clients behind the NAT box, however, HTTP connections seem to top out
-> > >around 70 kilobytes per second. ssh connections (e.g., rsync) get the
-> > >full throughput of the Internet connection.
-> > >As far as NAT goes, I don't hvae any special settings.
-> > >Can anyone think of an explanation for this behavior? It doesn't make any
-> > >sense to me.
-> > Are you sure, you don't have some kind of a traffic shaping
-> > active on the NAT gateway's internal interface?
-> > For example: If tc is used, you could check that using:
-> > tc class show dev <nat_box_internal_interface>
-> > and
-> > tc filter show dev <nat_box_internal_interface>
-> I figured it out. Apparently I was missing some kernel modules that were
-> causing wondershaper to behave oddly. I rebuilt the kernel with all QOS
-> and netfilter configuration options enabled (or built as modules) and now
-> internal clients can download HTTP at full speed. I suspect there was
-> some option that was causing tc to not distinguish between interfaces
-> despite the fact that wondershaper instructed it to only throttle the
-> external interface. I'm not sure exactly which kernel setting fixed it,
-> but it is now fixed.
+Hi.
 
-Actually, I didn't figure it out! Apparently, just rebooting the NAT
-system returns everything to full speed. Something happens, either over
-time, or as the result of some occasional event, that causes internal
-connections to be throttled. Any ideas what this could be?
+I have installed a firewall (IpCop 1.4.10 distribution) into
+my office lan.
+We have 4 vpn/pptp account on external server of our
+customer for our remote assistance.
+I have configured that account into my XP client and .....
+
+- without firewall ----> all account works correctly
+- with firewall -------> 3 account works correctly and 1
+don't connect !!!!
+
+Into log of my firewall I see that GRE packet from external
+server with problem (which mount a CISCO PIX) are blocked
+from my firewall, as it isn't able to nat (or conntrack)
+that.
+
+If I try from another office with another linux firewall
+(supported by another people) all works correctly.
+Maintainer of CISCO PIX of customer with problem, connect
+from his office (with a linux firewall) and vpn connection
+correctly works.
+
+My configuration is (you can also view modules here:
+http://www.ipcop.org/modules.php?op=modload&name=phpWiki&fil
+e=index&pagename=IPCopSoftwares
+
+Kernel: 2.4.31
+Iptables: 1.2.11
+ip_conntrack version 2.1
+ip_conntrack_pptp version 1.9 loaded
+ip_nat_pptp version 1.5 loaded
+
+And I have also modules
+ip_nat_proto_gre
+ip_conntrack_proto_gre
+---- (other vpn/pptp works correctly)
+
+Note that I have also forwarded input 1723 connection on my
+internal PPTP server (for come-in vpn connection) whitout
+problem.
+
+What kind of problem I have????
+
+Thanks you.
+
+-- 
+No virus found in this outgoing message.
+Checked by AVG Free Edition.
+Version: 7.1.375 / Virus Database: 267.15.2/253 - Release
+Date: 07/02/2006
+ 
+
 
