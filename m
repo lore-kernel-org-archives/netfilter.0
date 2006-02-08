@@ -1,10 +1,12 @@
-From: Henning Schild <henning@wh9.tu-dresden.de>
-Subject: MARK's
-Date: Wed, 8 Feb 2006 19:21:48 +0100
-Message-ID: <20060208192148.0e858618@hensch.wh9.tu-dresden.de>
+From: kelly <kelly@cliffhanger.com>
+Subject: Re: General NAT
+Date: Wed, 08 Feb 2006 11:56:37 -0600
+Message-ID: <28895.4624826603$1139424547@news.gmane.org>
+References: <000701c62cc3$528ac9b0$7b82a8c0@aladin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-reply-to: <000701c62cc3$528ac9b0$7b82a8c0@aladin>
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,14 +18,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Master <account@netje.nl>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
 
-i've got a question about the MARK target. Are the marks removed when
-the packets leave the machine? Or can anyone behind the firewall see
-them? If so they could confuse other machines using the marks for other
-things. I guess they are removed but i did not find a lot documentation.
+In regards to the routing, use the "iproute2"
+tool. http://www.policyrouting.org/
 
-Henning
+What does your interface configs look like?
+
+	i.e., ip addr <enter>
+
+What does your current routing table look like?
+
+	i.e., ip route <enter>
+
+-- 
+kelly
+http://home1.gte.net/res0psau/index.html#Hang-Gliding-Stuff
+
+	   --    -- 
+	     \  /
+	      \/
+	      /\
+	     /  \
+	   --    --
+
+
+
+Quoting Master <account@netje.nl>:
+        Hi,
+         
+        I am new to IPTABLES. I have used Cisco stuff for many years, but am now moving to real world ???
+         
+        I need to get a DNAT/SNAT in/out working. The IN part seem to be working, but the route OUT seem to be the problem.
+         
+        Example:
+        On the out-side, I have address 10.10.10.40, at port 11022 (SSH) on eth1
+        I need to NAT this to 192.168.1.101:22 (real port) on eth2
+        I also need to make sure that the host is able to get out on 10.10.10.40 and not on the default route of route.
+         
+        Can anyone send me a clue on this?
+         
+        Regards,
+           Richard
+        
+        
 
