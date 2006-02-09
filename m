@@ -1,13 +1,12 @@
-From: Greg Cope <gregcope@gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
 Subject: Re: Why is can't my clients use DNS?
-Date: Thu, 9 Feb 2006 10:34:10 +0000
-Message-ID: <c0e9781f0602090234j24fa6e4fn@mail.gmail.com>
+Date: Thu, 9 Feb 2006 11:48:17 +0100 (CET)
+Message-ID: <56494.193.173.147.3.1139482097.squirrel@webmail.sterenborg.info>
 References: <c0e9781f0602090218y2d8cc31dy@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <c0e9781f0602090218y2d8cc31dy@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,15 +20,7 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am an idiot sorry
-
-I was missing this;
-
-${IPTABLES} -t nat -A POSTROUTING -s ${DMZ_IP_RANGE} -j MASQUERADE
-
-Greg
-
-On 09/02/06, Greg Cope <gregcope@gmail.com> wrote:
+On Thu, February 9, 2006 11:18, Greg Cope wrote:
 > Hi All,
 >
 > I have a simple firewall/router.
@@ -53,56 +44,33 @@ On 09/02/06, Greg Cope <gregcope@gmail.com> wrote:
 > ${DMZ_IP_RANGE} -j ACCEPT
 > ${IPTABLES} -A FORWARD -p udp -s ${EXT_DNS_IP} -d ${DMZ_IP_RANGE}
 > --sport 53 -j ACCEPT
->
->
-> What am I missing?
->
-> snipped output of  iptables -nvL -t filter
->
-> Chain INPUT (policy DROP 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->   119  8981 ACCEPT     all  --  eth1   *       0.0.0.0/0
-> 0.0.0.0/0           state RELATED,ESTABLISHED
->     6   680 ACCEPT     all  --  eth0   *       0.0.0.0/0
-> 0.0.0.0/0
->     0     0 ACCEPT     all  --  lo     *       0.0.0.0/0
-> 0.0.0.0/0
->     0     0 icmp_packets  icmp --  eth1   *       0.0.0.0/0
-> 0.0.0.0/0
->     0     0 DROP       all  --  eth1   *       192.168.0.0/16
-> 0.0.0.0/0
->     0     0 DROP       all  --  eth1   *       127.0.0.0/8
-> 0.0.0.0/0
->     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           tcp dpt:80 flags:0x16/0x02
->     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           tcp dpt:22 flags:0x16/0x02
->     0     0 ACCEPT     udp  --  *      *       195.40.1.36
-> 192.168.0.0/16      udp spt:53
->     0     0 ACCEPT     udp  --  *      *       195.184.228.6
-> 192.168.0.0/16      udp spt:53
->     0     0 DROP       udp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
->     1    40 DROP       tcp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           tcp flags:0x16/0x02
->     0     0 LOG        all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           LOG flags 0 level 7 prefix `INPUT DENY: '
->
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->     8   536 ACCEPT     all  --  eth0   eth1    0.0.0.0/0
-> 0.0.0.0/0
->     0     0 ACCEPT     all  --  eth1   eth0    0.0.0.0/0
-> 0.0.0.0/0           state RELATED,ESTABLISHED
->     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-> 192.168.0.0/16      tcp dpt:22 flags:0x16/0x02
->     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-> 192.168.0.0/16      tcp dpt:80 flags:0x16/0x02
->     0     0 ACCEPT     udp  --  *      *       195.40.1.36
-> 192.168.0.0/16      udp spt:53
->     0     0 LOG        all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           LOG flags 0 level 7 prefix `FORWARD DENY: '
->
+
+
+I'm sorry, but for me it's not enough information. Are your clients DMZ
+servers or real clients ? I think there's some rules missing to evaluate =
+it
+properly.
+
+For your problem :
+> - Let clients use external dns (does not work)
+
+You need to create rules like these (I'll assume your "clients" are DMZ
+servers) :
+$ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+$ipt -A FORWARD -m state --state NEW -i <if_dmz> -s <net_dmz> \
+  [-d <ip_ext_dns>] -p udp --dport 53 -j ACCEPT
+$ipt -A FORWARD -m state --state NEW -i <if_dmz> -s <net_dmz> \
+  [-d <ip_ext_dns>] -p tcp --dport 53 -j ACCEPT
+
+$ipt -t nat -A POSTROUTING -o <if_inet> -s <net_dmz> [-d <ip_ext_dns>] \
+  -p udp --dport 53 -j SNAT <ip_inet>
+$ipt -t nat -A POSTROUTING -o <if_inet> -s <net_dmz> [-d <ip_ext_dns>] \
+  -p tcp --dport 53 -j SNAT <ip_inet>
+
+
+Gr,
+Rob
+
+
 
