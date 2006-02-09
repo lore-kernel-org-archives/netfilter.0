@@ -1,7 +1,7 @@
 From: "Thomas Raef" <traef06@ebasedsecurity.com>
 Subject: RE: ip_conntrack_standalone issues...
-Date: Thu, 9 Feb 2006 15:30:10 -0600
-Message-ID: <D2EA20593E6AAD4DA6D07DE0EC12D161013335@ebs-2200.ebasedsecurity.com>
+Date: Thu, 9 Feb 2006 15:31:24 -0600
+Message-ID: <D2EA20593E6AAD4DA6D07DE0EC12D161013336@ebs-2200.ebasedsecurity.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -20,12 +20,11 @@ Content-Type: text/plain; charset="iso-8859-1"
 To: =?iso-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
 Cc: netfilter@lists.netfilter.org
 
-It's my understanding that running "./runme set" only adds the =
-functionality for ipsets. I didn't add any other patches. Does it add =
-some without asking?
+My issue still seems to stem from the fact that I don't have =
+ip_set_ipporthash.h which defines the ip_set_req_ipporthash_create =
+structure.
 
-Thank you for your insight.
-
+Please help :)
 
 -----Original Message-----
 From: Samuel D=EDaz Garc=EDa [mailto:samueldg@arcoscom.com]=20
