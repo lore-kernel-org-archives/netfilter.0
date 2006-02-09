@@ -1,11 +1,12 @@
-From: Claas Hilbrecht <claas+maillinglists.netfilter@jucs-kramkiste.de>
-Subject: iptables chain name limits differ
-Date: Thu, 09 Feb 2006 14:23:51 +0100
-Message-ID: <861A90786D6440B15266D502@[192.168.83.50]>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: iptables rule chain question
+Date: Thu, 9 Feb 2006 15:13:49 +0100 (CET)
+Message-ID: <61489.193.173.147.3.1139494429.squirrel@webmail.sterenborg.info>
+References: <20060209131739.GA4441@server.homelinux.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20060209131739.GA4441@server.homelinux.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,50 +17,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Thu, February 9, 2006 14:17, Mark-Walter@t-online.de wrote:
+> Hi,
+>
+> I've have this in my firewall rule script and I'am unsure about DROP:
+>
+> #
+> # allowed chain
+> #
+>
+> $IPTABLES -A allowed -p TCP --syn -j ACCEPT
+> $IPTABLES -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j
+> ACCEPT
+> $IPTABLES -A allowed -p TCP -j DROP
+>
+> The first should allow tcp connections with syn,rst,ack and he should
+> accept it.
+>
+> The second one describes already established connections with ACCEPT.
+>
+> But what happens in the third rule ?
+>
+> Does it mean iptables DROP every TCP connection in the case syn,rst,ack=
+ is
+> not set and the connection is not established.
 
-there seems to be a problem in kernel 2.4.32 and iptables 1.3.4. I think 
-the maximum chain name length is different in some code pathes. See here:
+Or related. Yes.
 
-fli4l # iptables -N 1234567890123456789012345678A
-fli4l # iptables -nvL | grep 1234
-Chain 1234567890123456789012345678A (0 references)
-fli4l # iptables -A INPUT -i eth5 -j 1234567890123456789012345678A
-iptables: No chain/target/match by that name
-fli4l # iptables -N 1234567890123456789012345678
-fli4l # iptables -A INPUT -i eth5 -j 1234567890123456789012345678
-fli4l # iptables -nvL | grep 123456789
-    0     0 1234567890123456789012345678  all  --  eth5   *       0.0.0.0/0 
-0.0.0.0/0
-Chain 1234567890123456789012345678 (1 references)
-Chain 1234567890123456789012345678A (0 references)
+> Does iptables storing all connection's with connection tracking to know
+> which connection is established,related ? (2. rule)
 
-If you create a chain with 29 characters you can't use this chain name as a 
-jump target. The fli4l team thinks the problem is located in that piece off 
-code:
+Yes. See : /proc/net/ip_conntrack
 
-<snip>
-static void set_revision(char *name, u_int8_t revision)
-{
-        /* Old kernel sources don't have ".revision" field,
-           but we stole a byte from name. */
-        name[IPT_FUNCTION_MAXNAMELEN - 2] = '\0';
-        name[IPT_FUNCTION_MAXNAMELEN - 1] = revision;
-}
-Breakpoint 7, set_revision (name=0x8055562 "post-out-ovpn-KarstenHorsmann",
-    revision=0 '\0') at iptables.c:1806
-(gdb) print name
-$23 = 0x8055562 "post-out-ovpn-KarstenHorsmann"
-(gdb) next
-(gdb) print name
-$24 = 0x8055562 "post-out-ovpn-KarstenHorsman"
-</snip>
+> Sorry, for these questions but I think it's fast answer for you.
 
--- 
- Claas Hilbrecht
- http://www.jucs-kramkiste.de
+I think this is a good read :
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+
+Gr,
+Rob
+
 
 
