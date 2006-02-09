@@ -1,7 +1,7 @@
 From: "Thomas Raef" <traef06@ebasedsecurity.com>
-Subject: RE: ip_conntrack_standalone issues...
-Date: Thu, 9 Feb 2006 15:35:12 -0600
-Message-ID: <D2EA20593E6AAD4DA6D07DE0EC12D161013337@ebs-2200.ebasedsecurity.com>
+Subject: RE: missing  ip_set_ipporthash.h
+Date: Thu, 9 Feb 2006 17:57:52 -0600
+Message-ID: <D2EA20593E6AAD4DA6D07DE0EC12D161013338@ebs-2200.ebasedsecurity.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -20,49 +20,110 @@ Content-Type: text/plain; charset="iso-8859-1"
 To: =?iso-8859-1?Q?Samuel_D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
 Cc: netfilter@lists.netfilter.org
 
-I reloaded the kernel and iptables and finally got back to where I =
-started.
+From the ipset Download and Install web page I was following these =
+steps:
 
-This has been solved.
+The installation requires the following steps=20
 
-However, I'm still missing ip_set_ipporthash.h
+1. donwload and unpack the sources;=20
+2. run make menuconfig or equivalent in the kernel source directory to   =
+  preconfigure the kernel=20
+3. run KERNEL_DIR=3D/where/the/kernel/source ./runme set from the =
+patch-o-matic-n g directory and patch your kernel with the IP set =
+functionality;=20
+4. go back to the kernel source directory, run make oldconfig. Enable =
+the new IP set related options, then compile and install the kernel as =
+usual.=20
+5. run KERNEL_DIR=3D... make, then KERNEL_DIR=3D... make install in the =
+iptables source code directory. Similarly to patch-o-matic-ng, you must =
+specify the proper kernel source directory name via the KERNEL_DIR =
+variable.=20
+6. repeat the previous step in the ipset source directory=20
+7. and ready!
 
-Thank you.
+(I added the number for clarity)
+
+I tried it repeatedly. (isn't that the definition of insanity - trying =
+the same thing over and over and expecting different results)
+
+I finally got it to work by running make menuconfig in step #4 instead =
+of make oldconfig.
+
+I'm not knowledgeable enough to know what the difference is, but it =
+worked!
+
+Anyone on this list care to explain?
+
+Thank you for your patience - and your help.
+
 
 -----Original Message-----
 From: Samuel D=EDaz Garc=EDa [mailto:samueldg@arcoscom.com]=20
-Sent: Thursday, February 09, 2006 3:14 PM
+Sent: Thursday, February 09, 2006 11:50 AM
 To: Thomas Raef
 Cc: netfilter@lists.netfilter.org
-Subject: Re: ip_conntrack_standalone issues...
+Subject: Re: missing ip_set_ipporthash.h
 
-Take a look into a message send by me some days ago with subject: "Last=20
-patch-o-matic patches status report".
+I compile fine with 2.6.x (from 2.6.12 to 2.6.15.3 tested).
 
-Some patches broke the kernel compilation.
+In README says that you need to apply "set" patch from patch-o-matic.
 
-Use the "--reverse" option for "./runme" to undo the don't needed patch.
+I always make kernel, and iptables with "all" patches without problems.
+
+Create a link called linux into /usr/src to your kernel sources root =
+(for=20
+example "ln -s /usr/src/linux-2.6.15.3 /usr/src/linux)
+
+The same with iptables ("ln -s /usr/src/iptables-1.3.5 =
+/usr/src/iptables").
+
+Put your pom-ng directory where you want, cd into your pom-ng directory =
+and do=20
+"./runme set"
+
+Compile and install your kernel.
+
+Disable your iptables boot scripts before reboot ("chkconfig --level =
+2345=20
+iptables off" under Fedora).
+
+Reboot with your new kernel.
+
+Goto your iptables sources directory, make and make install. Remember to =
+
+uninstall your previous iptables package before install the new iptables =
+or=20
+rename old binaries/libs/libs directories.
+
+The next is go into your ipset-2.2.8 directory and "make clean && make =
+&& make=20
+install"
+
+That's all (as I remember).
 
 Good luck.
 
 Thomas Raef wrote:
-> I started with 2.6.15 kernel & iptables-1.3.4
+> I'm trying to compile ipset-2.2.8 on my Debian Sarge 2.6.15 system I
+> keep getting:
 >=20
-> I'm trying to add the ipset-2.2.8 functionality and in trying to use
-> pom, I mistakenly added ip_conntrack_standalone and now I can't
-> recompile my kernel.
+> linux/netfilter_ipv4/ip_set_ipporthash.h no such file or directory
 >=20
-> Is there a way to start over?
+> When I do:
 >=20
-> Please help.
+> Find / -name ip_set_ipporthash.h
+>=20
+> It finds nothing.
+>=20
+> Please help
 >=20
 > Thank you in advance.
+>=20
 >=20
 > Thomas J. Raef
 > e-Based Security, Inc.
 > www.ebasedsecurity.com
 > "You're either hardened, or you're hacked!"
->=20
 >=20
 >=20
 >=20
