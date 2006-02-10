@@ -1,14 +1,13 @@
 From: ludi <myhapwcforever@gmail.com>
-Subject: Re: iptables rule chain question
-Date: Fri, 10 Feb 2006 09:47:40 +0800
-Message-ID: <d27cd2010602091747q68084a6dj@mail.gmail.com>
-References: <20060209131739.GA4441@server.homelinux.net>
-	<43EB4EE4.7010004@prosyst.com>
-	<20060209184200.GB4875@server.homelinux.net>
+Subject: Re: Why is can't my clients use DNS?
+Date: Fri, 10 Feb 2006 11:50:39 +0800
+Message-ID: <d27cd2010602091950y18baa6eaw@mail.gmail.com>
+References: <c0e9781f0602090218y2d8cc31dy@mail.gmail.com>
+	<56494.193.173.147.3.1139482097.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060209184200.GB4875@server.homelinux.net>
+In-Reply-To: <56494.193.173.147.3.1139482097.squirrel@webmail.sterenborg.info>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,9 +22,6 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-SSB0aGluayBpdCBtYXkgYWNjZXB0IGFsbCBlc3RhYmxpc2hlZCBjb25uZWN0aW9uIGFuZCBkcm9w
-IGFsbCBvdGhlcgp0Y3AgcGFja2V0cywgc3VjaCBhcyBwYWNrZXRzIG1hZGUgYnkgbm1hcC5Ob3Jt
-YWwgY29ubmVjdGlvbiBzaG91bGQKc3RhcnQgd2l0aCBzeW4gcGFja2V0LCBzbyBhIGZpcnN0IGFj
-ay9yc3QgcGFja2V0IG1heSBtZWFucyBzb21lb25lIGlzCnNjYW5uaW5nIHlvdXIgYm94LgpJdCdz
-IG15IHZpZXcuV2lzaCB0byBoZWxwLgo=
+IC1tIHN0YXRlIC0tc3RhdGUgUkVMQVRFRCxFU1RBQkxJU0hFRApEb2VzIGl0IHdvcmsgb24gdGhl
+IFVEUD8K
 
