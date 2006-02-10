@@ -1,16 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Query
-Date: Fri, 10 Feb 2006 15:28:22 +0100 (CET)
-Message-ID: <50988.193.173.147.3.1139581702.squirrel@webmail.sterenborg.info>
-References: <20060210043532.26157.qmail@web8510.mail.in.yahoo.com>
-	<56244.193.173.147.3.1139578250.squirrel@webmail.sterenborg.info>
-	<859616420602100546w2f9870abi@mail.gmail.com>
-	<60942.193.173.147.3.1139580157.squirrel@webmail.sterenborg.info>
-	<859616420602100605j42b14cfcy@mail.gmail.com>
+From: Khoa Nguyen <khoa.coffee@gmail.com>
+Subject: SNAT round-robin broken?
+Date: Fri, 10 Feb 2006 10:22:08 -0500
+Message-ID: <3d00e6dc0602100722l482ae14naa0964f58fb83753@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <859616420602100605j42b14cfcy@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,43 +19,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, February 10, 2006 15:05, David Vogt wrote:
-> 2006/2/10, Rob Sterenborg <rob@sterenborg.info>:
->> Yes, but still : can you give me a reason why I would use
->> iptables/netfilter/libipq to sniff and log packets when I can do it wi=
-th
->> tcpdump or something ?
->> The OP says <quote>I want to capture IP packets so that I can compress=
- it
->> and
->> then send it to the receiver</quote>. If he just wants to capture pack=
-ets,
->> it
->> seems to me that using iptables for this is a bit more difficult.
->>
->
-> As far as I understood he wants to modify the packets and reinject
-> them. Is this possible with pcdump and ethereal as well? I thought
-> they were ... read-only?
-> On the other hand ... if he takes care of the communication of the
-> packets in any other way (socket or whatever), libipq would not by my
-> first choice either.
+I have the following on a box acting as a router between a client and
+a web server:
 
-<quote>
-I want to capture IP packets so that I can compress it and then send
-it to the receiver. Receiver decompresses it at its side. Is it
-possible to do it with iptables?
-</quote>
+iptables -t nat -A POSTROUTING --source 10.1.1.1 --destination
+10.2.1.1 --protocol tcp --dport 80 -j SNAT --to-source
+192.168.20.1-192.168.20.100
 
-What I understand is that he wants to send (not specified how) packet log=
-s to
-somebody who can process those (also not specified how).
+I open several http connections from the client to the server, the
+gateway for some reason SNAT to a single random address only and
+doesn't do round-robin for every socket from the client. Is something
+broken? How I force it to perform round-robin SNAT'ing?
 
-Oh well, the OP can choose ;-)
+My kernel: 2.6.12-1.1381_FC3
+iptables version: 1.3.4
 
-
-Gr,
-Rob
-
-
+Thanks,
+Khoa
 
