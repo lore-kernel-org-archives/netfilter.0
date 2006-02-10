@@ -1,13 +1,14 @@
-From: BTP <smokefat@gmail.com>
-Subject: Re: ipt -P INPUT ACCEPT problem
-Date: Thu, 9 Feb 2006 20:32:36 -0400
-Message-ID: <42ad30bb0602091632m4055372csa6db75948901abb8@mail.gmail.com>
-References: <42ad30bb0602061910i705f5a69u8f88a97f813c0681@mail.gmail.com>
-	<000001c62bac$7f9183d0$0101000a@sterenborg.info>
+From: ludi <myhapwcforever@gmail.com>
+Subject: Re: iptables rule chain question
+Date: Fri, 10 Feb 2006 09:47:40 +0800
+Message-ID: <d27cd2010602091747q68084a6dj@mail.gmail.com>
+References: <20060209131739.GA4441@server.homelinux.net>
+	<43EB4EE4.7010004@prosyst.com>
+	<20060209184200.GB4875@server.homelinux.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000001c62bac$7f9183d0$0101000a@sterenborg.info>
+In-Reply-To: <20060209184200.GB4875@server.homelinux.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,28 +23,9 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I dont know what the problem was, things seem to work now without
-issues. Maybe last time I might have broken something as it's likely I
-set/unset since it was my first time starting to mess with iptables
-with a script.
-
-Thanks for the replies though.
-
-Bart
-
-> > Is there something about the internal workings of iptables I should
-> > know, or is this meant for the Debian, or general Linux help mailing
-> > list?? I attempted restarting my networking scripts but it failed on
-> > DHCP init.
->
-> Unless you received an error when executing the commands above, there
-> should be no problem. Maybe it's something with the router ; there's not
-> too much troubleshooting information.
->
->
-> Gr,
-> Rob
->
->
->
+SSB0aGluayBpdCBtYXkgYWNjZXB0IGFsbCBlc3RhYmxpc2hlZCBjb25uZWN0aW9uIGFuZCBkcm9w
+IGFsbCBvdGhlcgp0Y3AgcGFja2V0cywgc3VjaCBhcyBwYWNrZXRzIG1hZGUgYnkgbm1hcC5Ob3Jt
+YWwgY29ubmVjdGlvbiBzaG91bGQKc3RhcnQgd2l0aCBzeW4gcGFja2V0LCBzbyBhIGZpcnN0IGFj
+ay9yc3QgcGFja2V0IG1heSBtZWFucyBzb21lb25lIGlzCnNjYW5uaW5nIHlvdXIgYm94LgpJdCdz
+IG15IHZpZXcuV2lzaCB0byBoZWxwLgo=
 
