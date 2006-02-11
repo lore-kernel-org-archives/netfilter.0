@@ -1,13 +1,10 @@
-From: KOVACS Krisztian <hidden@sch.bme.hu>
-Subject: Re: SNAT round-robin broken?
-Date: Fri, 10 Feb 2006 22:12:21 +0100
-Message-ID: <200602102212.22491@krak>
-References: <3d00e6dc0602100722l482ae14naa0964f58fb83753@mail.gmail.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: [OT] Strange bash phenomenon
+Date: Sat, 11 Feb 2006 08:44:52 -0500
+Message-ID: <1139665492.21361.37.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3d00e6dc0602100722l482ae14naa0964f58fb83753@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,33 +16,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: Khoa Nguyen <khoa.coffee@gmail.com>
+To: Netfilter users list <netfilter@lists.netfilter.org>
+
+Hello everyone.  This is a little off topic but I find it both
+perplexing and amusing.  I've been spending the last few days enabling
+support for CyberGuard security devices for the ISCS network security
+management platform.  It has gone very well with the new firmware and
+has given us a near off the shelf solution.
+
+However, in one of the scripts for automated distribution of the rules,
+it checks for the presence of existing iptables files.  I originally
+thought I could do something like:
+
+if [ -f iptables* ];then
+
+But the shell expands all the iptables file names and creates an error
+when passing that many arguments to the test.
+
+So I then thought I could do:
+
+FILES=/etc/config/iptables*
+if [ -f ${FILES%% *} ];then
+        cp /etc/config/iptables* /etc/config/PEPBackup/ 2>/dev/null
+        if [ $? -ne 0 ]; then
+                echo '[PEP Update Error]' Could not backup up PEP
+configuration files >&2
+                exit 1
+        fi
+fi
+
+I'd trim off everything after the first space and test for that single
+file.  However, it doesn't work.  ${FILES%% *} expands to include all
+the file names.  On the other hand, the version below works!
 
 
-  Hi,
+FILES=$(echo /etc/config/iptables*)
+if [ -f ${FILES%% *} ];then
+        cp /etc/config/iptables* /etc/config/PEPBackup/ 2>/dev/null
+        if [ $? -ne 0 ]; then
+                echo '[PEP Update Error]' Could not backup up PEP
+configuration files >&2
+                exit 1
+        fi
+fi
 
-On Friday 10 February 2006 16:22, Khoa Nguyen wrote:
-> I have the following on a box acting as a router between a client and
-> a web server:
->
-> iptables -t nat -A POSTROUTING --source 10.1.1.1 --destination
-> 10.2.1.1 --protocol tcp --dport 80 -j SNAT --to-source
-> 192.168.20.1-192.168.20.100
->
-> I open several http connections from the client to the server, the
-> gateway for some reason SNAT to a single random address only and
-> doesn't do round-robin for every socket from the client. Is something
-> broken? How I force it to perform round-robin SNAT'ing?
->
-> My kernel: 2.6.12-1.1381_FC3
-> iptables version: 1.3.4
-
-  Have you tried it with more than one internal IP address connecting to 
-multiple destination addresses? Netfilter chooses the translated source 
-IP based on the source and destination address of the original 
-connection.
-
+Any ideas why the latter one works fine but the other does not? Just
+curious - John
 -- 
- KOVACS Krisztian
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+If you would like to participate in the development of an open source
+enterprise class network security management system, please visit
+http://iscs.sourceforge.net
+
 
