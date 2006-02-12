@@ -1,58 +1,56 @@
-From: DiegoLacerda <diegolacerda@gmail.com>
-Subject: Unknown error 4294967295
-Date: Tue, 28 Jun 2005 16:58:03 -0300
-Message-ID: <42C1ABCB.8020209@gmail.com>
+From: Jesper Juhl <jesper.juhl@gmail.com>
+Subject: [PATCH] netfilter: fix build error due to missing has_bridge_parent macro
+Date: Sun, 12 Feb 2006 03:20:36 +0100
+Message-ID: <200602120320.37042.jesper.juhl@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750939AbWBLCUe@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Rusty Russell <rusty@rustcorp.com.au>, Marc Boucher <marc@mbsi.ca>, James Morris <jmorris@namei.org>, Harald Welte <laforge@netfilter.org>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Jesper Juhl <jesper.juhl@gmail.com>, coreteam@netfilter.org, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-Hi people!
+Hi,
 
-I got this message with the PSD and UNCLEAN modules, but I succeeded by 
-reconfiguring and compiling my kernel again.
-Try to recompile your kernel source with CONFIG_IP_NF_TARGET_NETMAP=y 
-option in your .config file.
+I just did an allyesconfig test build of 2.6.16-rc2-git10 and found a build
+problem.
 
-Best regards,
-Diego Lacerda.
+commit 5dce971acf2ae20c80d5e9d1f6bbf17376870911 removed the 
+"has_bridge_parent" macro from net/bridge/br_netfilter.c, resulting in the 
+following warning at compile time:
 
-> Hi
- 
-> On Mon, 06 Feb 2006 19:20:49 -0600
-> Jorge Davila <davila at nicaraguaopensource.com <https://lists.netfilter.org/mailman/listinfo/netfilter>> wrote:
+ net/bridge/br_netfilter.c: In function `br_nf_post_routing':
+ net/bridge/br_netfilter.c:808: warning: implicit declaration of function `has_bridge_parent'
 
->>/ Hi list!:
-/>>/ 
-/>>/ Trying to execute this rule
-/>>/ 
-/>>/ iptables -t mangle -A PREROUTING -s  -j NETMAP --to 192.168.3.0/24
-/>>/ 
-/>>/ I receive
-/>>/ 
-/>>/ iptables: Unknown error 4294967295
-/>>/ 
-/>>/ Someone knows where to look?
-/>>/ 
-/
->first i would look into your arguments, as the source-ip(range) to match
->is not specified. second i would look into the argument-handling of
->iptables as this error is easy to catch ;)
+and this error at link time:
 
->regards
->virtual
+ net/built-in.o(.text+0xeae28): In function `br_nf_post_routing':
+ net/bridge/br_netfilter.c:808: undefined reference to `has_bridge_parent'
+ make: *** [.tmp_vmlinux1] Error 1
+
+The patch below fixes the problem.
 
 
+Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
+---
+
+ Patch is compile tested only but should be obviously correct.
+
+ net/bridge/br_netfilter.c |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-2.6.16-rc2-git10/net/bridge/br_netfilter.c~	2006-02-12 03:03:29.000000000 +0100
++++ linux-2.6.16-rc2-git10/net/bridge/br_netfilter.c	2006-02-12 03:03:29.000000000 +0100
+@@ -805,7 +805,7 @@ static unsigned int br_nf_post_routing(u
+ print_error:
+ 	if (skb->dev != NULL) {
+ 		printk("[%s]", skb->dev->name);
+-		if (has_bridge_parent(skb->dev))
++		if (bridge_parent(skb->dev))
+ 			printk("[%s]", bridge_parent(skb->dev)->name);
+ 	}
+ 	printk(" head:%p, raw:%p, data:%p\n", skb->head, skb->mac.raw,
 
 
