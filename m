@@ -1,10 +1,21 @@
-From: Aleksander <aleksander@krediidiinfo.ee>
-Subject: state new with SYN not set
-Date: Mon, 13 Feb 2006 11:26:02 +0200
-Message-ID: <43F050AA.3050602@krediidiinfo.ee>
+From: Graham Murray <graham@gmurray.org.uk>
+Subject: Re: Problem with state match for ip6tables
+Date: Mon, 13 Feb 2006 10:56:26 +0000
+Message-ID: <871wy7il2d.fsf@newton.gmurray.org.uk>
+References: <20060202133857.5bded5b8@localhost.localdomain>
+	<87d5i3bf2t.fsf@newton.gmurray.org.uk>
+	<20060210145631.1726fd0d@localhost.localdomain>
+	<200602130416.k1D4GP73019763@toshiba.co.jp>
+	<8764njipgp.fsf@newton.gmurray.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/simple; d=gmurray.org.uk; s=in200507;
+	t=1139828187; h=Received:X-Authentication-Warning:From:To:Subject:
+	References:X-Hashcash:Date:In-Reply-To:Message-ID:User-Agent:
+	MIME-Version:Content-Type; b=Ky69zj+La858h5mcGXmTTUZdegxaNfryl+lvn5
+	Du93i12hbNPzP8fwIfJjs9gU/MFzapTXVFIm2bI7L4vHDjVA==
+In-Reply-To: <8764njipgp.fsf@newton.gmurray.org.uk> (Graham Murray's message
+	of "Mon, 13 Feb 2006 09:21:26 +0000")
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,31 +26,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello list,
+Graham Murray <graham@gmurray.org.uk> writes:
 
-My firewall drops packets, which state is NEW, but no SYN bit is set. 
-Now I started logging these dropped packets and there are loads of them. 
-All connecting to the 443 port from random IP's (legitimate clients). 
-The service is https. The service works fine, but I'm still worried 
-about the dropping.
+> I am using kernel 2.6.15 but I do not see these config options
+> anywhere. I have grep'd the kernel source and can find
+> CONFIG_IP_NF_MATCH_STATE (which is only used in the ipv4 makefile to
+> build ipt_state.o)
 
-The rules:
-${IPTABLES} -t filter -A bad_tcp_packets -p tcp --tcp-flags ! SYN SYN -m 
-state --state NEW -j LOG --log-prefix "BAD PACKET N
-EW+!syn: "
-${IPTABLES} -t filter -A bad_tcp_packets -p tcp --tcp-flags ! SYN SYN -m 
-state --state NEW -j DROP
-
-An example, from the FORWARD chain:
-Feb 13 11:18:38 myname kernel: BAD PACKET NEW+!syn: IN=eth1 OUT=eth0 
-SRC=1.2.3.4 DST=192.168.111.34 LEN=75 TOS=0x00 PREC=0x00 TTL=56 ID=47503 
-DF PROTO=TCP SPT=36086 DPT=443 WINDOW=32942 RES=0x00 ACK PSH FIN URGP=0
-
-What should I think of this?
-
-Thanks,
-    Alex
+Also connection tracking for ipv6 is working as I see ipv6 sessions in
+/proc/net/nf_conntrack
 
