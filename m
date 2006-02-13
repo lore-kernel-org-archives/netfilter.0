@@ -1,21 +1,13 @@
-From: Graham Murray <graham@gmurray.org.uk>
-Subject: Re: Problem with state match for ip6tables
-Date: Mon, 13 Feb 2006 10:56:26 +0000
-Message-ID: <871wy7il2d.fsf@newton.gmurray.org.uk>
-References: <20060202133857.5bded5b8@localhost.localdomain>
-	<87d5i3bf2t.fsf@newton.gmurray.org.uk>
-	<20060210145631.1726fd0d@localhost.localdomain>
-	<200602130416.k1D4GP73019763@toshiba.co.jp>
-	<8764njipgp.fsf@newton.gmurray.org.uk>
+From: "Stephen J. Smoogen" <smooge@gmail.com>
+Subject: Re: state new with SYN not set
+Date: Mon, 13 Feb 2006 05:54:11 -0700
+Message-ID: <80d7e4090602130454l41a7eb03pef73e7f49ef21916@mail.gmail.com>
+References: <43F050AA.3050602@krediidiinfo.ee>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/simple; d=gmurray.org.uk; s=in200507;
-	t=1139828187; h=Received:X-Authentication-Warning:From:To:Subject:
-	References:X-Hashcash:Date:In-Reply-To:Message-ID:User-Agent:
-	MIME-Version:Content-Type; b=Ky69zj+La858h5mcGXmTTUZdegxaNfryl+lvn5
-	Du93i12hbNPzP8fwIfJjs9gU/MFzapTXVFIm2bI7L4vHDjVA==
-In-Reply-To: <8764njipgp.fsf@newton.gmurray.org.uk> (Graham Murray's message
-	of "Mon, 13 Feb 2006 09:21:26 +0000")
+In-Reply-To: <43F050AA.3050602@krediidiinfo.ee>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -27,16 +19,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org
 
-Graham Murray <graham@gmurray.org.uk> writes:
+On 2/13/06, Aleksander <aleksander@krediidiinfo.ee> wrote:
+> Hello list,
+>
+> My firewall drops packets, which state is NEW, but no SYN bit is set.
+> Now I started logging these dropped packets and there are loads of them.
+> All connecting to the 443 port from random IP's (legitimate clients).
+> The service is https. The service works fine, but I'm still worried
+> about the dropping.
+>
+> The rules:
+> ${IPTABLES} -t filter -A bad_tcp_packets -p tcp --tcp-flags ! SYN SYN -m
+> state --state NEW -j LOG --log-prefix "BAD PACKET N
+> EW+!syn: "
+> ${IPTABLES} -t filter -A bad_tcp_packets -p tcp --tcp-flags ! SYN SYN -m
+> state --state NEW -j DROP
+>
+> An example, from the FORWARD chain:
+> Feb 13 11:18:38 myname kernel: BAD PACKET NEW+!syn: IN=3Deth1 OUT=3Deth0
+> SRC=3D1.2.3.4 DST=3D192.168.111.34 LEN=3D75 TOS=3D0x00 PREC=3D0x00 TTL=3D=
+56 ID=3D47503
+> DF PROTO=3DTCP SPT=3D36086 DPT=3D443 WINDOW=3D32942 RES=3D0x00 ACK PSH FI=
+N URGP=3D0
+>
+> What should I think of this?
+>
 
-> I am using kernel 2.6.15 but I do not see these config options
-> anywhere. I have grep'd the kernel source and can find
-> CONFIG_IP_NF_MATCH_STATE (which is only used in the ipv4 makefile to
-> build ipt_state.o)
+Many times this is because of late packets getting to your server. It
+might be because the server has finished the session (it saw a FIN or
+RST on its side) and so has closed down the session.. or it might be
+that the client didn't get the servers RST/FIN and is sending a second
+ACK/PSH/FIN to make sure the session is closed.
 
-Also connection tracking for ipv6 is working as I see ipv6 sessions in
-/proc/net/nf_conntrack
+There are probably other reasons for this, but this has been my
+biggest number. There are some probe tools that just send ACK-PSH-FIN
+packets to see what they get back from firewalls.
+
+
+> Thanks,
+>     Alex
+>
+>
+
+
+--
+Stephen J Smoogen.
+CSIRT/Linux System Administrator
 
