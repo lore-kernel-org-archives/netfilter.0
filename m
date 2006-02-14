@@ -1,11 +1,11 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: RE: ipsec and iptables
-Date: Tue, 14 Feb 2006 14:39:16 +0100
-Message-ID: <BAY103-F18B52DF78B9CA5C62F9698B2060@phx.gbl>
-References: <43F08DAA.5070804@dawin.de>
+From: "Mark L. Wise" <mark@alpha2.com>
+Subject: (no subject)
+Date: Tue, 14 Feb 2006 09:02:19 -0500
+Message-ID: <00ed01c6316f$44eef640$b00aa8c0@a2smark>
+Reply-To: mark@alpha2.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43F08DAA.5070804@dawin.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,61 +16,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: stallmann@dawin.de
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hello all!
 
-Andreas Stallmann wrote:
+I am struggling with what I think is an iptables issue...
 
->Hello,
+I have the following Net-to-Net VPN set up between to FC4 boxes:
 
-Ciao.
+192.168.20.0/24-->192.168.20.2(gw)-->$PUBLICIP1 ...
+$PUBLICIP2<--192.168.30.100(gw)<--192.168.30.0/24
 
->3. $IPTABLES -A INPUT -i ipsec0 -d $INTERNAL_NET -j ALLOW
->How do I write rule no. 3 now, without ipsec interfaces at hand?
+With no firewall rules (iptables) entered, I can ping from 192.168.20.70 to
+192.168.30.33 without any problem.  However, I cannot get to outside
+internet addresses.  If I add:
 
-Here is an example: policy match is much more flexible than ipsecX
-virtual interface. You can even select ipsec traffic from different
-gateway.
+iptables -t nat -A POSTROUTING --dst ! 192.168.30.0/24 -j SNAT --to-source
+$PUBLICIP1
 
-iptables -A FORWARD -m policy \
+to the 192.168.20.2(gw) machine's iptables, I can get out of the firewall to
+the internet from the 192.168.20.0/24 net, BUT MY VPN TRAFFIC DOES NOT REACH
+THE OTHER SIDE.
 
---dir in \ this is for select inbound/outbound traffic
+So it seems that I can either have my VPN traffic between the nets OR be
+able to get to the internet (WWW, etc.) but I cannot have both.
 
---pol ipsec \ this match if traffic is subject to IPsec processing
+Anyone have any ideas???
 
---mode tunnel \ this is if you want to match tunnel mode
+Mark L. Wise, President
+Alpha II Service, Inc.
+1312 Epworth Ave
+Reynoldsburg, Ohio 43068-2116
+614 868-5033 (Phone)
+614 868-1060 (Fax)
 
---tunnel-dst 172.16.1.247 --tunnel-src 172.16.1.226 \
-             ^^^^^^^^^^^               ^^^^^^^^^^^^
-These are the ipsec endpoint addresses (usually public ip addresses)
-
--s blablab -d $INTERNAL_NET --protocol blabla --dport blabla \
-what you want to do with this rule
-
--j ACCEPT (or DROP)
-
->OK, let's do some naive painting. In the following picture, my packet "X" 
->has passed the rules 1 and 2 on the INPUT chain, allowing it to pass 
->through to the OPENSWAN-Software. It got authenticated by openswan and is 
->now passed back to the iptables stack.
-
-No. Openswan has nothing to do with this schema. Openswan (when used
-with netkey) is only an IKE daemon.
-
->outside------->FORWARD--------->inside
->        |                    |
->      INPUT                OUTPUT
->        |_____(OPENSWAN)_X___|
->
-
->Or is it passed back to the forward chain, because after "unwrapping", it's 
->header identifies it as a packed coming from an external private subnet, 
->being directed to a internal private subnet?
-
-Yes.
 
 
 
