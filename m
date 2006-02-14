@@ -1,7 +1,7 @@
 From: "Mark L. Wise" <mark@alpha2.com>
-Subject: (no subject)
-Date: Tue, 14 Feb 2006 09:02:19 -0500
-Message-ID: <00ed01c6316f$44eef640$b00aa8c0@a2smark>
+Subject: FC4 iptables, VPN and SNAT
+Date: Tue, 14 Feb 2006 09:19:52 -0500
+Message-ID: <00f301c63171$b87ca600$b00aa8c0@a2smark>
 Reply-To: mark@alpha2.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,6 +18,8 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+(Sorry for the double post I forgot the subject...)
 
 Hello all!
 
@@ -50,6 +52,8 @@ Alpha II Service, Inc.
 Reynoldsburg, Ohio 43068-2116
 614 868-5033 (Phone)
 614 868-1060 (Fax)
+
+
 
 
 
