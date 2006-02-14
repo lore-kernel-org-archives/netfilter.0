@@ -1,25 +1,32 @@
-From: <deneme@bwdow.com>
-Subject: Re: netfilter Digest, Vol 19, Issue 20
-Date: Wed, 15 Feb 2006 00:38:34 -0800
-Message-ID: <000001c6320b$35702990$c05c5a42@fdcp4xq35qslnu>
-Reply-To: deneme@bwdow.com
+From: Jens Taprogge <jlt_kernel@shamrock.dyndns.org>
+Subject: 2.6.16-rc3 panic related to IP Forwarding and/or Netfilter
+Date: Tue, 14 Feb 2006 18:34:56 +0100
+Message-ID: <20060214173455.GA19355@ranger.taprogge.wh>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+Return-path: <linux-net-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-net-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: linux-kernel@vger.kernel.org, linux-net@vger.kernel.org, netfilter@lists.netfilter.org
 
-Visit http://www.bwdow.com
+Hello.
 
+After upgrading from 2.6.13 an IP Masquerading router panics as soon as
+soon as packages are forwarder (or rather should be).  As long as IP
+Masquerading is disabled (and thus no forwarding occurs) the box runs
+stable.
 
+A picture of the panic ouput can be found at:
+http://shamrock.dyndns.org/~ln/kernel/2.6.16rc3_panic/panic.jpg
+The config is at:
+http://shamrock.dyndns.org/~ln/kernel/2.6.16rc3_panic/config-2.6.16-rc3-g51d6aa16-dirty
+
+The kernel was patched to support SIP-contrack however the extra files
+have not been compiled and should thus have no influence.
+
+Please cc me on replies as I am not subscribed to the lists.
+
+Best Regards
+Jens Taprogge
