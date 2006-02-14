@@ -1,11 +1,11 @@
 From: "Marco Berizzi" <pupilla@hotmail.com>
 Subject: RE: ipsec and iptables
-Date: Tue, 14 Feb 2006 17:30:45 +0100
-Message-ID: <BAY103-F314AB42DCC4D2185B7AF25B2060@phx.gbl>
-References: <010501c6317b$9db3e9f0$b00aa8c0@a2smark>
+Date: Tue, 14 Feb 2006 17:35:24 +0100
+Message-ID: <BAY103-F16347FD522ACCAE30BA2A9B2060@phx.gbl>
+References: <1139934266.22417.14.camel@fly.in.iantel.com.uy>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <010501c6317b$9db3e9f0$b00aa8c0@a2smark>
+In-Reply-To: <1139934266.22417.14.camel@fly.in.iantel.com.uy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +18,23 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: mark@alpha2.com
+To: edspremolla@antel.com.uy
 Cc: netfilter@lists.netfilter.org
 
 
-Mark L. Wise wrote:
+Eduardo Spremolla wrote:
 
->Here is the configuration:
+>I use a trick stste on ipsec-tools howto:
 >
->192.168.20.0/24(net)-->[192.168.20.2(gw)-->$PUBLICIP1 <firewall # 1>]  ....
->internet
->.... internet [<firewall # 2>
->$PUBLICIP2<--192.168.30.100(gw)<--192.168.30.0/24(net)
+>iptables -t mangle -A PREROUTING -i eth0 -p esp -j MARK --set-mark 1
 >
->Without NAT, all packets can reach every destination internally.  When I 
->add
->the following to allow NAT to allow the internal machines access to the
->internet, packets are no longer routed to the opposite local net;
+>then to catch the uncapsulated packet:
 >
->iptables -t nat -A POSTROUTING -d ! 192.168.30.0/24 -j SNAT --to-source
->$PUBLICIP1
+>iptables -A INPUT -m mark --mark 1 -j ACCEPT
 
-mhhh... what linux kernel version are you using?  There are some know issue
-when you try to snat esp packet with linux < 2.6.15-git8
-
->How can I route outgoing packets going to 192.168.30.0/24 (opposite 
->internal
->net) differently than packets going to other addresses????
-
-Try these rule:
-
-iptables -t nat -A POSTROUTING -s 192.168.20.0/24 -d 192.168.30.0/24 -j 
-ACCEPT
-iptables -t nat -A POSTROUTING --protocol esp -j ACCEPT (don't snat ipsec 
-packets)
-
-iptables -t nat -A POSTROUTING --protocol tcp -j SNAT --to-source $PUBLICIP1
-iptables -t nat -A POSTROUTING --protocol udp -j SNAT --to-source $PUBLICIP1
+Yes. There are many way to filter ipsec packets. However
+I think that the proper way to filter ipsec packets is the
+policy match with recent kernel (2.6.16) and iptables (1.3.5).
 
 Ciao
 
