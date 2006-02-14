@@ -1,77 +1,60 @@
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-Subject: Re: IPv6 state match - possible bug.
-Date: Tue, 14 Feb 2006 15:47:40 +0900 (JST)
-Message-ID: <200602140647.k1E6le20024437@toshiba.co.jp>
-References: <200602140403.k1E43GCu003190@toshiba.co.jp>
-	<200602140416.k1E4GXbM015693@toshiba.co.jp>
-	<1139891071.26079.11.camel@araqiel.keine.ath.cx>
+From: =?ISO-8859-2?Q?Keser=FB_Korn=E9l?= <keseruk@freemail.hu>
+Subject: lost UDP packets with matching NAT rules
+Date: Tue, 14 Feb 2006 10:34:05 +0100 (CET)
+Message-ID: <freemail.20060114103405.20767@fm05.freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <1139891071.26079.11.camel@araqiel.keine.ath.cx>
-	<1139896381.27048.1.camel@araqiel.keine.ath.cx>
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: Text/Plain; charset="us-ascii"
-To: darktama@iinet.net.au
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-From: Ben Skeggs <darktama@iinet.net.au>
-Date: Tue, 14 Feb 2006 15:24:31 +1100
+Dear List Members,
 
-> On Tue, 2006-02-14 at 13:16 +0900, Yasuyuki KOZAKAI wrote:
-> > From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-> > Date: Tue, 14 Feb 2006 13:03:15 +0900 (JST)
-> > 
-> > > looks fine to me. I tested with recent kernel, same kernrel config,
-> > > and same rules, but couldn't reproduce above log.
-> > > 
-> > > Which version of kernel(or git commit id) and ip6tables ?
-> > > And could you do
-> > > 	echo 255 > /proc/sys/net/ipv4/netfilter/ip_conntrack_log_invalid
-> > 
-> > Sorry, right sysctl is
-> > 
-> >   	echo 255 > /proc/sys/net/netfilter/nf_conntrack_log_invalid
-> Okay, seems there is an issue somewhere..  I'm using 2.6.16-rc3, and
-> also had the same issue with -rc2.  iptables is version 1.3.5.
-> 
-> nf_ct_tcp: bad TCP checksum IN= OUT=
-> SRC=2001:0200:0000:8002:0203:47ff:fea5:3085
-> DST=2001:0388:c17d:0000:020f:eaff:fe70:ebf9 LEN=80 TC=0 HOPLIMIT=56
-> FLOWLBL=525788 PROTO=TCP SPT=80 DPT=52498 SEQ=1589838125 ACK=2289866071
-> WINDOW=57344 RES=0x00 ACK SYN URGP=0 OPT
-> (020405A0010303000101080A2DA73166049359BE)
+I'm using iptables (v1.3.4 on a 2.6.15.3 kernel) in order to NAT incoming=
+=20
+UDP packets arriving on a single IP:port (1-1 rules in PRE- and=20
+POSTROUTING chains in the nat table). I found out that packets are=20
+sometimes lost, therefore I developed a test program for that.
+The test program receives an UDP packet from the NAT box (from the=20
+UDP socket where the iptables are setup) waits until conntrack entries=20
+time out and then sends back 100 UDP packets from 100 different=20
+sockets. Iptables should forward the received packets to a given=20
+destination.
+The experience is that only the first packet is forwarded, others are lost=
+=20
+(neither received locally nor forwarded), altough they are sent from 100=20
+different ports (but from the same IP). If I list the iptables rules with "=
+-
+v" I find that all 100 packets matched the iptables rules (pkts column=20
+shows 100 in PRE- and POSTROUTING chains).
+I suspect, it cannot be a conntrack problem, because I send packets=20
+from 100 different ports. Or are the packets looked up in conntrack=20
+table by IP address only?
+Other experience is that all 100 packets are lost if I don't wait for=20
+conntrack to time out before sending back the first packet. I don't=20
+understand it, because I never send data from the same source=20
+address where a locally generated packet was sent previously from the=20
+NAT box. So there can't be such conntrack that describes that=20
+connection. And the counter in iptables is always incremented, it shows=20
+100.
+How could I find out, why are the packets lost? Is there a log entry=20
+somewhere that says if an UDP packet was dropped because of... ?
 
-checksumming with your eth0 driver might be broken.
-I'm not sure why, but I saw some reports about checksum for a few weeks.
+Thank you for your answer!
 
-> IP6-IN: IN=eth0 OUT= MAC=00:0f:ea:70:eb:f9:00:50:8d:e3:b5:89:86:dd
-> SRC=2001:0200:0000:8002:0203:47ff:fea5:3085
-> DST=2001:0388:c17d:0000:020f:eaff:fe70:ebf9 LEN=80 TC=0 HOPLIMIT=56
-> FLOWLBL=525788 PROTO=TCP SPT=80 DPT=52498 WINDOW=57344 RES=0x00 ACK SYN
-> URGP=0
-> 
-> Which is odd, without any ip6tables rules everything seems to work well.
-
-From: Ben Skeggs <darktama@iinet.net.au>
-Date: Tue, 14 Feb 2006 16:53:01 +1100
-
-> Just another followup with some more info.. I built 2.6.16-rc3 on my
-> other machine (x86) and it does indeed appear to work correctly there.
-> 
-> I'm wondering if there is some amd64-specific bug?
-
-Or they have different ether card, maybe. I'm using e100 and it works fine.
-
--- Yasuyuki Kozakai
-
+Best regards,
+Kornel Keseru
+=0A=0A_____________________________________________________________________=
+______=0A=D6ntsd k=E9peslapba az =E9rz=E9seidet! K=E9peslapok Valentin-napr=
+a!=0Ahttp://www.t-online.hu=0A=0A
 
