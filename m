@@ -1,45 +1,123 @@
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
-Subject: Reading /proc/net/ip_conntrack still slow / causing packet loss?
-Date: Tue, 14 Feb 2006 19:39:23 +0200
-Message-ID: <20060214173923.GN16512@edu.joroinen.fi>
+From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+Subject: Re: IPv6 state match - possible bug.
+Date: Wed, 15 Feb 2006 03:43:49 +0900 (JST)
+Message-ID: <200602141843.k1EIhnQB023057@toshiba.co.jp>
+References: <1139891071.26079.11.camel@araqiel.keine.ath.cx>
+	<200602140647.k1E6lerK011885@toshiba.co.jp>
+	<1139965907.8973.1.camel@araqiel.keine.ath.cx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-Type: Multipart/Mixed;
+	boundary="--Next_Part(Wed_Feb_15_03_43_49_2006_488)--"
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <1139965907.8973.1.camel@araqiel.keine.ath.cx>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: darktama@iinet.net.au
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, yasuyuki.kozakai@toshiba.co.jp
 
-Hi!
+----Next_Part(Wed_Feb_15_03_43_49_2006_488)--
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-http://ds9a.nl/klogbot/?year=3D2005&month=3D7&day=3D1&hour=3D16
 
-quote from the url above:
+Hi, Ben,
 
-"<Gandalf> cap_: the most extreme experience I have is reading
-/proc/net/ip_conntrack on a fairly busy router... that really slows wthin=
-gs
-down and packets get dropped because of the slowdown"
+From: Ben Skeggs <darktama@iinet.net.au>
+Date: Wed, 15 Feb 2006 12:11:47 +1100
 
-"<Gandalf> and I had an identd daemon wich forwarding support that read
-/p/n/ip_conntrack for each incoming ident request... 200ms forwarding del=
-ays
-and lots of drops each time an ident request came in :)"
+> > > > Sorry, right sysctl is
+> > > > 
+> > > >   	echo 255 > /proc/sys/net/netfilter/nf_conntrack_log_invalid
+> > > Okay, seems there is an issue somewhere..  I'm using 2.6.16-rc3, and
+> > > also had the same issue with -rc2.  iptables is version 1.3.5.
+> > > 
+> > > nf_ct_tcp: bad TCP checksum IN= OUT=
+> > > SRC=2001:0200:0000:8002:0203:47ff:fea5:3085
+> > > DST=2001:0388:c17d:0000:020f:eaff:fe70:ebf9 LEN=80 TC=0 HOPLIMIT=56
+> > > FLOWLBL=525788 PROTO=TCP SPT=80 DPT=52498 SEQ=1589838125 ACK=2289866071
+> > > WINDOW=57344 RES=0x00 ACK SYN URGP=0 OPT
+> > > (020405A0010303000101080A2DA73166049359BE)
+> > 
+> > checksumming with your eth0 driver might be broken.
+> > I'm not sure why, but I saw some reports about checksum for a few weeks.
+> Thank you!  This was indeed the problem.
 
-Is that information still valid for the current 2.6 kernels? How about fo=
-r
-2.4 ?
+Finally I got time to check codes for this and found bug.
+If you have some time, could you try attached patch ?
+I tested with sky2, but it's great if I can confirm that it works fine
+with other device.
 
-Thanks!
+> I swapped from my onboard Yukon (skge driver), to the nvidia card
+> (forcedeth driver) and everything seems to work correctly now.
+> 
+> Sorry for the noise!
 
--- Pasi K=E4rkk=E4inen
+No. Thanks a lot for this report.
+
+-- Yasuyuki Kozakai
+
+----Next_Part(Wed_Feb_15_03_43_49_2006_488)--
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="nfct_checksum.patch"
+
+[NETFILTER] nf_conntrack: Fix TCP/UDP checksum handling for IPv6 packet
+
+If skb->ip_summed is CHECKSUM_HW here, skb->csum includes checksum
+of actual IPv6 header and extension headers. Then such excess
+checksum must be subtruct when nf_conntrack calculates TCP/UDP checksum
+with psuedo IPv6 header.
+
+Signed-off-by: Yasuyuki Kozakai <yasuyuki.kozakai@toshiba.co.jp>
+
+---
+commit 7f5523d7f49865e62b683b0519408cf15a5b5624
+tree e79868f93168aadd3e07e96605c351009019197f
+parent 5552c28f6937d2a2b873d06c6d09b96204722dd0
+author <kozakai@camellia.isl.rdc.toshiba.co.jp> Wed, 15 Feb 2006 03:16:28 +0900
+committer <kozakai@camellia.isl.rdc.toshiba.co.jp> Wed, 15 Feb 2006 03:16:28 +0900
+
+ net/netfilter/nf_conntrack_proto_tcp.c |    4 +++-
+ net/netfilter/nf_conntrack_proto_udp.c |    4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
+--- a/net/netfilter/nf_conntrack_proto_tcp.c
++++ b/net/netfilter/nf_conntrack_proto_tcp.c
+@@ -864,7 +864,9 @@ static int csum6(const struct sk_buff *s
+ {
+ 	return csum_ipv6_magic(&skb->nh.ipv6h->saddr, &skb->nh.ipv6h->daddr,
+ 			       skb->len - dataoff, IPPROTO_TCP,
+-			       skb->ip_summed == CHECKSUM_HW ? skb->csum
++			       skb->ip_summed == CHECKSUM_HW
++			       ? csum_sub(skb->csum,
++					  skb_checksum(skb, 0, dataoff, 0))
+ 			       : skb_checksum(skb, dataoff, skb->len - dataoff,
+ 					      0));
+ }
+diff --git a/net/netfilter/nf_conntrack_proto_udp.c b/net/netfilter/nf_conntrack_proto_udp.c
+--- a/net/netfilter/nf_conntrack_proto_udp.c
++++ b/net/netfilter/nf_conntrack_proto_udp.c
+@@ -161,7 +161,9 @@ static int csum6(const struct sk_buff *s
+ {
+ 	return csum_ipv6_magic(&skb->nh.ipv6h->saddr, &skb->nh.ipv6h->daddr,
+ 			       skb->len - dataoff, IPPROTO_UDP,
+-			       skb->ip_summed == CHECKSUM_HW ? skb->csum
++			       skb->ip_summed == CHECKSUM_HW
++			       ? csum_sub(skb->csum,
++					  skb_checksum(skb, 0, dataoff, 0))
+ 			       : skb_checksum(skb, dataoff, skb->len - dataoff,
+ 					      0));
+ }
+
+----Next_Part(Wed_Feb_15_03_43_49_2006_488)----
 
