@@ -1,32 +1,45 @@
-From: Jens Taprogge <jlt_kernel@shamrock.dyndns.org>
-Subject: 2.6.16-rc3 panic related to IP Forwarding and/or Netfilter
-Date: Tue, 14 Feb 2006 18:34:56 +0100
-Message-ID: <20060214173455.GA19355@ranger.taprogge.wh>
+From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Subject: Reading /proc/net/ip_conntrack still slow / causing packet loss?
+Date: Tue, 14 Feb 2006 19:39:23 +0200
+Message-ID: <20060214173923.GN16512@edu.joroinen.fi>
 Mime-Version: 1.0
-Return-path: <linux-net-owner@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-Sender: linux-net-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: linux-kernel@vger.kernel.org, linux-net@vger.kernel.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Hello.
+Hi!
 
-After upgrading from 2.6.13 an IP Masquerading router panics as soon as
-soon as packages are forwarder (or rather should be).  As long as IP
-Masquerading is disabled (and thus no forwarding occurs) the box runs
-stable.
+http://ds9a.nl/klogbot/?year=3D2005&month=3D7&day=3D1&hour=3D16
 
-A picture of the panic ouput can be found at:
-http://shamrock.dyndns.org/~ln/kernel/2.6.16rc3_panic/panic.jpg
-The config is at:
-http://shamrock.dyndns.org/~ln/kernel/2.6.16rc3_panic/config-2.6.16-rc3-g51d6aa16-dirty
+quote from the url above:
 
-The kernel was patched to support SIP-contrack however the extra files
-have not been compiled and should thus have no influence.
+"<Gandalf> cap_: the most extreme experience I have is reading
+/proc/net/ip_conntrack on a fairly busy router... that really slows wthin=
+gs
+down and packets get dropped because of the slowdown"
 
-Please cc me on replies as I am not subscribed to the lists.
+"<Gandalf> and I had an identd daemon wich forwarding support that read
+/p/n/ip_conntrack for each incoming ident request... 200ms forwarding del=
+ays
+and lots of drops each time an ident request came in :)"
 
-Best Regards
-Jens Taprogge
+Is that information still valid for the current 2.6 kernels? How about fo=
+r
+2.4 ?
+
+Thanks!
+
+-- Pasi K=E4rkk=E4inen
+
