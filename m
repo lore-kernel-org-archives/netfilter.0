@@ -1,7 +1,7 @@
 From: Ben Skeggs <darktama@iinet.net.au>
 Subject: Re: IPv6 state match - possible bug.
-Date: Tue, 14 Feb 2006 15:24:31 +1100
-Message-ID: <1139891071.26079.11.camel@araqiel.keine.ath.cx>
+Date: Tue, 14 Feb 2006 16:53:01 +1100
+Message-ID: <1139896381.27048.1.camel@araqiel.keine.ath.cx>
 References: <1139835278.26079.7.camel@araqiel.keine.ath.cx>
 	<200602140403.k1E43GCu003190@toshiba.co.jp>
 	<200602140416.k1E4GXbM015693@toshiba.co.jp>
@@ -38,25 +38,13 @@ On Tue, 2006-02-14 at 13:16 +0900, Yasuyuki KOZAKAI wrote:
 > Sorry, right sysctl is
 > 
 >   	echo 255 > /proc/sys/net/netfilter/nf_conntrack_log_invalid
-Okay, seems there is an issue somewhere..  I'm using 2.6.16-rc3, and
-also had the same issue with -rc2.  iptables is version 1.3.5.
+Just another followup with some more info.. I built 2.6.16-rc3 on my
+other machine (x86) and it does indeed appear to work correctly there.
 
-nf_ct_tcp: bad TCP checksum IN= OUT=
-SRC=2001:0200:0000:8002:0203:47ff:fea5:3085
-DST=2001:0388:c17d:0000:020f:eaff:fe70:ebf9 LEN=80 TC=0 HOPLIMIT=56
-FLOWLBL=525788 PROTO=TCP SPT=80 DPT=52498 SEQ=1589838125 ACK=2289866071
-WINDOW=57344 RES=0x00 ACK SYN URGP=0 OPT
-(020405A0010303000101080A2DA73166049359BE)
-IP6-IN: IN=eth0 OUT= MAC=00:0f:ea:70:eb:f9:00:50:8d:e3:b5:89:86:dd
-SRC=2001:0200:0000:8002:0203:47ff:fea5:3085
-DST=2001:0388:c17d:0000:020f:eaff:fe70:ebf9 LEN=80 TC=0 HOPLIMIT=56
-FLOWLBL=525788 PROTO=TCP SPT=80 DPT=52498 WINDOW=57344 RES=0x00 ACK SYN
-URGP=0
+I'm wondering if there is some amd64-specific bug?
 
-Which is odd, without any ip6tables rules everything seems to work well.
-
-Thanks,
-Ben Skeggs.
+Cheers,
+Ben.
 > 
 > -- Yasuyuki Kozakai
 
