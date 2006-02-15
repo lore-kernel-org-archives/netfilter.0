@@ -1,15 +1,10 @@
-From: Khoa Nguyen <khoa.coffee@gmail.com>
-Subject: Re: SNAT round-robin broken?
-Date: Wed, 15 Feb 2006 16:47:27 -0500
-Message-ID: <3d00e6dc0602151347w1955521bn814bd68fb93dc58d@mail.gmail.com>
-References: <3d00e6dc0602100722l482ae14naa0964f58fb83753@mail.gmail.com>
-	<200602132145.27983@krak>
-	<3d00e6dc0602131301y75cf0398y8c887289b8c994d3@mail.gmail.com>
-	<200602132230.48764@krak>
+From: Kenneth Kalmer <kenneth.kalmer@gmail.com>
+Subject: Closed ports and traffic shaping
+Date: Thu, 16 Feb 2006 00:38:38 +0200
+Message-ID: <fad9d4840602151438x3f291cd4mfe9c53896ef453de@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200602132230.48764@krak>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,43 +17,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: KOVACS Krisztian <hidden@sch.bme.hu>
-Cc: netfilter@lists.netfilter.org
+To: NetFilter <netfilter@lists.netfilter.org>, lartc <lartc@mailman.ds9a.nl>
 
-On 2/13/06, KOVACS Krisztian <hidden@sch.bme.hu> wrote:
->
->   Hi,
+First off, please excuse the cross post between lartc and netfiler,
+the line between the two is very blurred here (at least for me)...
 
-> > Before 2.6.11 kernel, the SNAT box was mapping every new socket from
-> > the Client to a new source IP address. With this, I was able to
-> > simulate several thousands "virtual" clients. Now with the new
-> > behaviour, every socket from the Client to the Server is mapped to the
-> > same random but fixed source IP address.
-> > ... Is there any way I can achieve the previous behaviour without modif=
-ying the kernel
-> > source code :-( or downgrading to a pre-2.6.11 kernel?
->
->   I see. Well, I don't think this is possible without modifying the kerne=
-l
-> source.
-> ...
->  About the kernel: take a look at
-> find_best_ips_proto() in ip_nat_core.c. At the end of the function
-> there's a jhash_2words() call, this is responsible for choosing an IP
-> inside the address range specified. You could easily modify it to produce
-> a hash value based on the (src, src port, dst) tuple instead of just
-> (src, dst).
->
-> --
->  KOVACS Krisztian
->
+A thought just crossed my mind now while working on a new iptables/tc
+collaboration for a project.
 
-Hi,
+I use iptables to basically seal off a linux gateway, we're very
+restrictive on what users can do on the connection. For now I'm using
+destination port filtering, will bring in source port filtering for
+replies and layer-7 for some help later.
 
-Thanks for your suggestion. I modified the kernel source with
-jhash_3words(src, port, dst) and now my SNAT box is snat'in per
-socket. Very cool!
+Traffic shaping is done with tc using WRR. All traffic coming from the
+server's OUTPUT chain is classified differently from internet traffic,
+which passes through WRR (localhost is pfifo_fast).
 
-Thanks again.
-Khoa
+Now here is the question...
+
+If someone on the network attempts to use an aggressive file sharing
+program, one that keeps on connecting to random peers on random ports,
+and the server replies that the requested ports are unavailable
+("REJECT --reject-with tcp-reset" for TCP, and "REJECT --reject-with
+icmp-port-unreachable" for UDP) where applicable; do these packets get
+classified as internet traffic or do they pass through the OUTPUT
+chain and get classified as local traffic?
+
+I know tcpdump hooks in before netfilter gets to work, but it looked
+like the errors came from the internet hosts and not localhost. What
+I'm getting at is if these error packers don't get classified
+differently from normal internet traffic they can potentially saturate
+your class doing shaping for internet traffic, right or wrong? I know
+you need a pretty aggressive piece of P2P to get this done...
+
+Any advice & insight would be appreciated
+
+--
+
+Kenneth Kalmer
+kenneth.kalmer@gmail.com
+
+Folding@home stats
+http://fah-web.stanford.edu/cgi-bin/main.py?qtype=3Duserpage&username=3Dken=
+neth%2Ekalmer
 
