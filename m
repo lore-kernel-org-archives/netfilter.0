@@ -1,36 +1,30 @@
 From: Patrick McHardy <kaber@trash.net>
-Subject: Re: 2.6.16-rc3 panic related to IP Forwarding and/or Netfilter
-Date: Wed, 15 Feb 2006 07:52:38 +0100
-Message-ID: <43F2CFB6.9030106@trash.net>
-References: <20060214173455.GA19355@ranger.taprogge.wh>
+Subject: Re: IPv6 state match - possible bug.
+Date: Wed, 15 Feb 2006 11:14:18 +0100
+Message-ID: <43F2FEFA.6090906@trash.net>
+References: <1139965907.8973.1.camel@araqiel.keine.ath.cx>	<200602141843.k1EIhnqD012520@toshiba.co.jp>	<1139973329.9018.2.camel@araqiel.keine.ath.cx>
+	<200602150432.k1F4WR99027202@toshiba.co.jp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-net-owner@vger.kernel.org>
-In-Reply-To: <20060214173455.GA19355@ranger.taprogge.wh>
-Sender: linux-net-owner@vger.kernel.org
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <200602150432.k1F4WR99027202@toshiba.co.jp>
 List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jens Taprogge <jlt_kernel@shamrock.dyndns.org>
-Cc: linux-kernel@vger.kernel.org, linux-net@vger.kernel.org, netfilter@lists.netfilter.org
+To: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+Cc: darktama@iinet.net.au, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, laforge@gnumonks.org
 
-Jens Taprogge wrote:
-> Hello.
-> 
-> After upgrading from 2.6.13 an IP Masquerading router panics as soon as
-> soon as packages are forwarder (or rather should be).  As long as IP
-> Masquerading is disabled (and thus no forwarding occurs) the box runs
-> stable.
-> 
-> A picture of the panic ouput can be found at:
-> http://shamrock.dyndns.org/~ln/kernel/2.6.16rc3_panic/panic.jpg
-> The config is at:
-> http://shamrock.dyndns.org/~ln/kernel/2.6.16rc3_panic/config-2.6.16-rc3-g51d6aa16-dirty
-> 
-> The kernel was patched to support SIP-contrack however the extra files
-> have not been compiled and should thus have no influence.
-> 
-> Please cc me on replies as I am not subscribed to the lists.
+Yasuyuki KOZAKAI wrote:
+> Thanks for test. Harald or Patrick, please apply attached patch.
+> # I've added "Spotted by Ben Skeggs" to previous one.
 
-Known problem, I'll submit a fix tonight. Until then you can avoid
-the crash by making sure your masquerade rules don't change packets
-which matched an IPsec policy so they don't match anymore.
+Also applied, thanks.
+
