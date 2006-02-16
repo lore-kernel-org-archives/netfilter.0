@@ -1,74 +1,51 @@
-From: Mike Kimmick <mkimmick@district70.org>
-Subject: load balancing and realm modules question
-Date: Thu, 16 Feb 2006 11:39:56 -0700
-Message-ID: <1140115197.16042.22.camel@localhost.localdomain>
-Reply-To: mkimmick@district70.org
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: 2.6.16-rc3 panic related to IP Forwarding and/or Netfilter
+Date: Thu, 16 Feb 2006 21:33:07 +0100
+Message-ID: <43F4E183.2020508@trash.net>
+References: <20060216001056.GA7446@ranger.taprogge.wh> <43F3C547.8050901@trash.net> <20060216144457.GA1576@ranger.taprogge.wh>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <linux-net-owner@vger.kernel.org>
+In-Reply-To: <20060216144457.GA1576@ranger.taprogge.wh>
+Sender: linux-net-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Jens Taprogge <jlt_lk@shamrock.dyndns.org>
+Cc: linux-kernel@vger.kernel.org, linux-net@vger.kernel.org, netfilter@lists.netfilter.org
 
-My specific question is how to use the realm module to accomplish the
-same thing that could be done with the nexthop module (proposed here 
-https://lists.netfilter.org/pipermail/netfilter-devel/2003-November/013216.html ).
+Jens Taprogge wrote:
+> The two patches fix the panic.  However routing still does not quite
+> work. 
+> 
+> My setup consits of two masquerading gateways with local adresses
+> 192.168.1.128 (2.6.15.1) and 192.168.3.11 (2.6.16-rc3 + patches).  They
+> connect the two local networks through an IPSEC tunnel.  With the exact
+> same setup that previously (192.168.3.11 running 2.6.13) worked I can
+> now only reach from 192.168.1.0/24 to 192.168.3.0/24 and not the other
+> way around:
+> 
+> Pinging from 192.168.1.128 I am getting:
+> 	$ ping 192.168.3.15
+> 	PING 192.168.3.15 (192.168.3.15): 56 data bytes
+> 	64 bytes from 192.168.3.15: icmp_seq=0 ttl=63 time=127.9 ms
+> 
+> On the other hand pinging from 192.168.3.11 I am getting timeouts.
+> 
+> This is even the case if I set the nat POSTROUTING rule to: 
+> 	$ iptables -t mangle -I PREROUTING -p esp -j MARK --set-mark 111
+> 	$ iptables -t nat -F POSTROUTING
+> 	$ iptables -t nat -A POSTROUTING -o ppp0 -s 192.168.3.0/24 \
+> 		-m mark ! --mark 111 -j MASQUERADE
+> 
+> on both sides of the tunnel which should disable masquerading for IPSEC
+> packages.
+> 
+> However the tunnel works as soon as I completly disable masquerading.
 
-Here's our setup and some info.
-
-We're currently attempting to load balance our Internet traffic over
-three low-cost dsl lines and one high-cost fiber connection.  We're
-currently using multipath routing to accomplish this by setting multiple
-default routes, equalized, and with same weights.  The problem is with
-connections that last a while (i.e. downloading large files); they get
-terminated after some time.  It's my understanding that what is actually
-happening is that we're load-balancing packets rather than connections,
-and after some amount of time, the connection is broken because some of
-it's packets take on a different route.
-
-Our current setup is a linux box acting as our firewall with one
-external NIC, is connected to the dsl modems/routers and the fiber
-connection through a switch...thus, all Internet traffic goes out one
-interface on the firewall box.  Therefore, I cannot mark any packets
-based on which interface it goes out, and thus I need to be able to mark
-packets based on the nexthop, which in turn will allow me to keep all
-packets of one connection using the same route (hopefully).
-
-The nexthop patch noted above looks like the answer to our situation,
-but I do not have support for this on my box, nor do I want to customize
-our kernels.  Reading the posts regarding the nexthop module, it seems
-that the realm module can do the same as the nexthop and more, but I am
-quite unclear as to how to use the realm module.
-
-And finally to my question.  How do I use the realm module to accomplish
-matching and marking packets based on nexthop?  I can certainly setup a
-realm in my /etc/iproute2/rt_realms file, but at this point it appears
-that I must set specific routes that are part of this realm rather than
-having multiple default routes via a specific gateways each part of a
-different realm.  Here's the most I've found for realm
-http://www.netfilter.org/projects/patch-o-matic/pom-submitted.html#pom-submitted-realm
-
-Can anyone enlighten me as to how to use the realm module for this task,
-or at least where I might find more in-depth docs or examples for using
-the realm module?
-
-
-Thanks,
-
--- 
-Michael Kimmick
-Software Administrator
-Pueblo School District No. 70
-Pueblo, CO 81006
-(719)295-6531
-
-
+2.6.16-rc includes patches for proper netfilter IPsec handling. Packets
+will now go through the chains once in plain text and once encrypted,
+so I guess you're masquerading the packets that should go through the
+tunnel to an address that doesn't match the policy anymore and they
+are therefore not handled by IPsec (this is also the case my patches
+fixed). So you need to make sure you don't have any SNAT rules that
+change the unencrypted packets to an address not included in the policy.
