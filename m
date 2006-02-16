@@ -1,12 +1,10 @@
-From: <deneme@bwdow.com>
-Subject: Re: netfilter Digest, Vol 19, Issue 23
-Date: Thu, 16 Feb 2006 08:24:39 -0800
-Message-ID: <000001c63315$7c327850$c05c5a42@fdcp4xq35qslnu>
-Reply-To: deneme@bwdow.com
+From: ulisses <ulisses.alonso@rediris.es>
+Subject: stateless UDP DNAT/REDIRECT in 2.6 possible?
+Date: Thu, 16 Feb 2006 10:58:10 +0100
+Message-ID: <20060216095810.GA12287@tux.rediris.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,8 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Visit http://www.bwdow.com
+Hello
+
+is there a way to do stateless DNAT or REDIRECT in linux kernel 2.6?
+(in my case I'm using 2.6.8)
+
+I have an unidirectional UDP flow I would like in which I would like
+to unconditionally rewrite destination port. I think my current
+DNAT/REDIRECT trials have not been sucessfully because of the
+statefull nature of netfilter.
+
+Any comment or suggestion will be greatly appreciated
+
+Thanks in advance
+
+	Ulisses
+
 
 
