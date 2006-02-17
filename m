@@ -1,10 +1,12 @@
-From: Mark-Walter@t-online.de
-Subject: IPT Output packet died
-Date: Fri, 17 Feb 2006 12:14:26 +0100
-Message-ID: <20060217111426.GB1183@server.homelinux.net>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: IPT Output packet died
+Date: Fri, 17 Feb 2006 13:41:32 +0100 (CET)
+Message-ID: <57599.193.173.147.3.1140180092.squirrel@webmail.sterenborg.info>
+References: <20060217111426.GB1183@server.homelinux.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20060217111426.GB1183@server.homelinux.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,39 +18,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+On Fri, February 17, 2006 12:14, Mark-Walter@t-online.de wrote:
 
-I'am using the simple rc.firewall script from Oscar Andreason.
+> From time to time the log rule next to the output section show's this:
+>
+> Feb 17 10:59:01 gerry kernel: IPT OUTPUT packet died: IN=3D OUT=3Deth0
+> SRC=3D192.168.0.1 DST=3D217.89.23.137 LEN=3D61 TOS=3D0x00 PREC=3D0x00 T=
+TL=3D64
+> ID=3D19170 DF PROTO=3DUDP SPT=3D32769 DPT=3D53 LEN=3D41
+>
+> The destination ip is the bind process of my provider.
+>
+> What have I to change to avoid this logging ?
+>
+> Here are some rules for the OUTPUT section:
+>
+> $IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
+> $IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
 
-From time to time the log rule next to the output section show's this:
+These are indeed "some" rules, not all. There are none before these in th=
+e
+OUTPUT chain that could block outgoing traffic ? (You say you use Oscar's
+script but you could have modified it.)
 
-Feb 17 10:59:01 gerry kernel: IPT OUTPUT packet died: IN= OUT=eth0
-SRC=192.168.0.1 DST=217.89.23.137 LEN=61 TOS=0x00 PREC=0x00 TTL=64
-ID=19170 DF PROTO=UDP SPT=32769 DPT=53 LEN=41
+I have not seen your other rules for this chain and assuming there's no D=
+ROP
+or REJECT or such rule in the chain, why do you even bother to set rules =
+in it
+? It seems you want to allow everything which is the same as policy set t=
+o
+ACCEPT and no rules in it.
 
-The destination ip is the bind process of my provider.
 
-What have I to change to avoid this logging ?
+Gr,
+Rob
 
-Here are some rules for the OUTPUT section:
 
-$IPTABLES -A OUTPUT -p ALL -s $LO_IP -j ACCEPT
-$IPTABLES -A OUTPUT -p ALL -s $LAN_IP -j ACCEPT
-$IPTABLES -A OUTPUT -p ALL -s $INET_IP -j ACCEPT
-
-As far as I understand all protocol's are allowed.
-
-I've uncommented in the allowed chain the port 53 without any success.
-
-$IPTABLES -A udp_packets -p UDP -s 0/0 --destination-port 53 -j ACCEPT
-
-It's still logging ...
-
--- 
-Best Regards,
-
-Mark
 
