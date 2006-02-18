@@ -1,11 +1,12 @@
-From: "marcyx szef" <mozeodbiore@wp.pl>
-Subject: How to redirect interface?
-Date: Fri, 17 Feb 2006 11:41:54 +0100
-Message-ID: <43f5a872b123f@wp.pl>
+From: <deneme@bwdow.com>
+Subject: Re: netfilter Digest, Vol 19, Issue 25
+Date: Fri, 17 Feb 2006 21:17:53 -0800
+Message-ID: <000001c6344a$ab2dfd60$c05c5a42@fdcp4xq35qslnu>
+Reply-To: deneme@bwdow.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,18 +17,9 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi!
-I want to know how to redirect whole interface(virtual) but not only ports!=
- I don't know how to configure it!
-Thank You
-
-
-----------------------------------------------------
-Rozmowy telefoniczne z zagranic=B1 za grosze
-Zobacz http://klik.wp.pl/?adr=3Dwww.telefon.wp.pl&sid=3D665
-
+Best Web Designs of World:  http://www.bwdow.com
 
 
