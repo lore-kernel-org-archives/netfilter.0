@@ -1,13 +1,10 @@
-From: Mark-Walter@t-online.de
-Subject: Re: IPT Output packet died
-Date: Sat, 18 Feb 2006 12:56:11 +0100
-Message-ID: <20060218115611.GB628@server.homelinux.net>
-References: <20060217111426.GB1183@server.homelinux.net>
-	<57599.193.173.147.3.1140180092.squirrel@webmail.sterenborg.info>
+From: Brent Clark <bclark@eccotours.co.za>
+Subject: cant route out
+Date: Sat, 18 Feb 2006 21:45:44 +0200
+Message-ID: <43F77968.4050609@eccotours.co.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <57599.193.173.147.3.1140180092.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +15,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi Rob,
+Hi all I seem to have a very weird problem.
 
-many thank's for your quick reply.
+I have a gateway that allows me to route into the LAN etc, but for some reason I cant get traffic out.
 
-> > From time to time the log rule next to the output section show's this:
-> > Feb 17 10:59:01 gerry kernel: IPT OUTPUT packet died: IN= OUT=eth0
-> > SRC=192.168.0.1 DST=217.89.23.137 LEN=61 TOS=0x00 PREC=0x00 TTL=64
-> > ID=19170 DF PROTO=UDP SPT=32769 DPT=53 LEN=41
+I have apprended a route like below to help me if its getting that far, and it defiantly is.
 
-> These are indeed "some" rules, not all. There are none before these in the
-> OUTPUT chain that could block outgoing traffic ? (You say you use Oscar's
-> script but you could have modified it.)
+$IPT -t nat -A POSTROUTING -o eth0 -s 10.0.0.0/24 -j LOG --log-prefix "POST ROUTE: "
+--log-tcp-options --log-ip-options
 
-I set my filter rules to the original of Oscar Andreason, without any
-success.
+Feb 18 19:14:16 ukgate kernel: POST ROUTE: IN= OUT=eth0 SRC=10.0.0.74 DST=140.135.10.98 LEN=48
+TOS=0x00 PREC=0x00 TTL=127 ID=52278 DF PROTO=TCP SPT=1336 DPT=80 WINDOW=65535 RES=0x00 SYN URGP=0
+OPT (020405B401010402)
+Feb 18 19:14:16 ukgate kernel: POST ROUTE: IN= OUT=eth0 SRC=10.0.0.74 DST=219.159.9.103 LEN=48
+TOS=0x00 PREC=0x00 TTL=127 ID=52279 DF PROTO=TCP SPT=1337 DPT=80 WINDOW=65535 RES=0x00 SYN URGP=0
+OPT (020405B401010402)
+Feb 18 19:14:16 ukgate kernel: POST ROUTE: IN= OUT=eth0 SRC=10.0.0.74 DST=219.117.8.205 LEN=48
+TOS=0x00 PREC=0x00 TTL=127 ID=52280 DF PROTO=TCP SPT=1338 DPT=80 WINDOW=65535 RES=0x00 SYN URGP=0
+OPT (020405B401010402)
 
-> I have not seen your other rules for this chain and assuming there's no DROP
-> or REJECT or such rule in the chain, why do you even bother to set rules in it
-> ? It seems you want to allow everything which is the same as policy set to
-> ACCEPT and no rules in it.
 
-it seem's I've found the problem.
+ukgate:~# ip route show
+217.206.34.80/28 dev eth0  proto kernel  scope link  src 217.206.34.82
+10.0.0.0/24 dev eth1  proto kernel  scope link  src 10.0.0.4
+default via 217.206.34.81 dev eth0
+ukgate:~#
 
-I had my DSL-Modem router in the /etc/resolv.conf
+And the weird thing is, is that tcpdump shows the client trying to connect
 
-There are no packet's the the time anymore of port 53.
+ukgate:~# tcpdump -nn port 80
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
+19:21:59.735233 IP 10.0.0.4.1900 > 219.54.8.100.80: S 340139438:340139438(0) win 65535 <mss
+1460,nop,nop,sackOK>
+19:21:59.735396 IP 10.0.0.4.1901 > 213.73.201.11.80: S 340204029:340204029(0) win 65535 <mss
+1460,nop,nop,sackOK>
+19:22:01.734139 IP 10.0.0.4.1904 > 218.212.34.220.80: S 340860984:340860984(0) win 65535 <mss
+1460,nop,nop,sackOK>
+19:22:02.706327 IP 10.0.0.4.1900 > 219.54.8.100.80: S 340139438:340139438(0) win 65535 <mss
+1460,nop,nop,sackOK>
+19:22:02.706347 IP 10.0.0.4.1901 > 213.73.201.11.80: S 340204029:340204029(0) win 65535 <mss
+1460,nop,nop,sackOK>
+19:22:04.717925 IP 10.0.0.4.1904 > 218.212.34.220.80: S 340860984:340860984(0) win 65535 <mss
+1460,nop,nop,sackOK>
 
--- 
-Best Regards,
 
-Mark
+If anyone could assist, I would be most grateful.
+
+Kind Regards
+Brent Clark
+
+P.s.
+
+I have echo 1 > /proc/sys/net/ipv4/ip_forward in my ruleset.
+
+
 
