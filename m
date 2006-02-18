@@ -1,12 +1,10 @@
-From: angico <angico@yahoo.com>
-Subject: Re: can't -j TARPIT
-Date: Fri, 17 Feb 2006 13:18:22 -0800 (PST)
-Message-ID: <20060217211822.75635.qmail@web36803.mail.mud.yahoo.com>
-References: <200602171050.17706.ramoni@databras.com.br>
+From: "Ben Lentz" <BLentz@channing-bete.com>
+Subject: IPSEC + Bridging + NAT
+Date: Fri, 17 Feb 2006 20:58:00 -0500 (EST)
+Message-ID: <3381.67.20.144.224.1140227880.squirrel@webmail.channing-bete.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200602171050.17706.ramoni@databras.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,52 +18,28 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-ok, andre. i tried it, but the answer is still the same. also, i tried
-the example given in the man page:
-# iptables -A INPUT -p tcp -m tcp --dport 80 -j TARPIT
-and the answer is the same.
-surprisingly, if i issue the command
-# iptables -p tcp -j TARPIT --help
-besides the help for the "-p tcp" option it says "TARPIT takes no
-options".
-any other hints?
-btw, iptables --version  ==> 1.3.4
-tia,
-angico.
+Greetings list,
+I've got an IPSEC connection between two gateways, where bridging is used
+on one of the gateways. It seems that when traffic is recieved over the
+IPSEC tunnel by the gateway using bridging, the packets do not traverse
+the POSTROUTING chain. If I remove bridging from the picture, everything
+works exactly as expected.
+
+Packets not coming over the IPSEC tunnel are processed by POSTROUTING.
+
+Is this a known bug? Is the answer to my problem "don't do that"?
+
+It's understandable that the system is getting confused over what is
+local, what is layer 2, and what is layer 3. I believe I've read that the
+bridging code and the netfilter code are pretty well patched together,
+but where does the ipsec stuff live in the stack?
+
+I believe I'm having the same problem as this gentleman:
+http://www.ussg.iu.edu/hypermail/linux/kernel/0407.3/0986.html
+
+kernel 2.6.11-1.14 (Fedora Core 3)
+ipsec-tools 0.5
+iptables 1.2.11-3.1
 
 
---- Andre Ramoni <ramoni@databras.com.br> wrote:
-
-> Use -p tcp
-> On Friday 17 February 2006 07:01, angico wrote:
-> > hi, all!
-> > i'm trying this:
-> >
-> > iptables -A INPUT -s 1.2.3.4 -j TARPIT
-> >
-> > but iptables says "no chain/target/match by that name", although
-> > libipt_TARPIT.so is present in /lib/iptables/
-> >
-> > i'm running kernel 2.6.15. any hints on what's wrong?
-> > thanks in advance,
-> > angico.
-> >
-> >
-> > __________________________________________________
-> > Do You Yahoo!?
-> > Tired of spam?  Yahoo! Mail has the best spam protection around
-> > http://mail.yahoo.com
-> 
-> -- 
-> Andre Guimaraes
-> Databras Informatica
-> Redes / Servidores Linux
-> 
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
