@@ -1,9 +1,11 @@
-From: informatica@excelente.com.pt
-Subject: ACCEPT behaviour (from a newbie...)
-Date: Fri, 17 Feb 2006 16:59:03 +0000
-Message-ID: <MDAEMON470047200602171659.AA5903088@excelente.com.pt>
-Reply-To: informatica@excelente.com.pt
+From: =?iso-8859-1?q?Ra=FFfffffal=20Rodr=FFffffedguez?=
+	<raul_rodriguez_vasquez@yahoo.es>
+Subject: doubts about queued packets...
+Date: Mon, 20 Feb 2006 00:15:03 +0100 (CET)
+Message-ID: <20060219231503.68069.qmail@web86911.mail.ukl.yahoo.com>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="0-1932622067-1140390903=:67816"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,36 +17,110 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi to all,
+--0-1932622067-1140390903=:67816
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Id: 
+Content-Disposition: inline
 
-Being a Windows user, I am just starting to grasp the universe of firewalling with netfilter. As I understood so far, when a packet meets a rule, the target instruction is executed. If it happens to be ACCEPT, as in this example, then no more rules are inspected and the packet is let through.
+Hi Paul or somebody who can help me, i'm writing a
+Netfilter module. I want to write one wich must
+enqueue packets in different queues and reinject each
+one of them according to my decisions...
 
-Assuming this is correct, then on the following example (taken from an IPCop config file) an ipsec packet would never reach custom chain IPSECRED (lines 9 and 10) because line 3 is automatically ACCEPTing all ipsec packets entering the INPUT chain.
+I've registered two hooks (NF_IP_PRE_ROUTING and
+NF_IP_POST_ROUTING), but one of them enqueue some
+packets (return NF_QUEUE)..... I know at this point,
+all queued packets are dropped!, because no-one is
+registered to handle queued packets...... and for
+register interest in queued packets i must use
+nf_register_interest() and nf_unregister_interest()...
 
-Is this correct, or need I do some more home work?
+In "Processing queued packets - Netfilter hacking
+howto" you wrote: you must register interest
+in queued packets and then they begin queueing.  Can
+somebody please explain me how i do that? what happens
+with packets when they're queued? how the struct
+nf_interest do? where can i find the netfilter_dev.c
+file? what it do? can i register interest in queued
+packets, but queued them in 3 different queues?
+
+See attached document (my module), in case you going
+to check it... Thanks for help!!!
+Raul Rodriguez
 
 
-01.        # accept all traffic from ipsec interfaces
-02.        /sbin/ipccept all traffic from ipsec interfaces
-03.        /sbin/iptables -A INPUT   -i ipsec+ -j ACCEPT
-04.        /sbin/iptables -A FORWARD -i ipsec+ -j ACCEPT
+	=09
+______________________________________________=20
+LLama Gratis a cualquier PC del Mundo.=20
+Llamadas a fijos y m=F3viles desde 1 c=E9ntimo por minuto.=20
+http://es.voice.yahoo.com
+--0-1932622067-1140390903=:67816
+Content-Type: application/octet-stream; name="pktfilter.c"
+Content-Transfer-Encoding: base64
+Content-Description: pat51638502
+Content-Disposition: attachment; filename="pktfilter.c"
 
-05.        # allow DHCP on BLUE to be turned on/off
-06.        /sbin/iptables -N DHCPBLUEINPUT
-07.        /sbin/iptables -A INPUT -j DHCPBLUEINPUT
+I2RlZmluZSBfX0tFUk5FTF9fCiNkZWZpbmUgTU9EVUxFCgojaW5jbHVkZSA8
+bGludXgvbW9kdWxlLmg+ICAgICAgICAgCiNpbmNsdWRlIDxsaW51eC9rZXJu
+ZWwuaD4gICAgICAgICAKI2luY2x1ZGUgPGxpbnV4L25ldGZpbHRlci5oPiAg
+ICAgIAojaW5jbHVkZSA8bGludXgvbmV0ZmlsdGVyX2lwdjQuaD4KCiNpbmNs
+dWRlIDxsaW51eC9za2J1ZmYuaD4KI2luY2x1ZGUgPGxpbnV4L2lwLmg+ICAg
+ICAgICAgICAgIAojaW5jbHVkZSA8bGludXgvbmV0ZGV2aWNlLmg+CiNpbmNs
+dWRlIDxsaW51eC91ZHAuaD4KI2luY2x1ZGUgPGxpbnV4L3RjcC5oPgojaW5j
+bHVkZSA8bGludXgvaWNtcC5oPgojaW5jbHVkZSA8bGludXgvdGltZS5oPgoK
+c3RhdGljIGNoYXIgKmludGVyZmFjZV9MQU4gPSAiZXRoMCI7ICAKc3RhdGlj
+IGNoYXIgKmludGVyZmFjZV9XQU4gPSAibWdzbDAiOwpzdGF0aWMgY2hhciAq
+aW50ZXJmYWNlX2xvb3BiYWNrID0gImxvIjsKc3RhdGljIHN0cnVjdCBuZl9o
+b29rX29wcyBob29rXzE7CnN0YXRpYyBzdHJ1Y3QgbmZfaG9va19vcHMgaG9v
+a180OwoKdW5zaWduZWQgaW50IGhvb2tfZnVuY18xMSh1bnNpZ25lZCBpbnQg
+aG9va251bSwKICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc2tfYnVm
+ZiAqKnNrYiwKICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3Qg
+bmV0X2RldmljZSAqaW4sCiAgICAgICAgICAgICAgICAgICAgICAgY29uc3Qg
+c3RydWN0IG5ldF9kZXZpY2UgKm91dCwKICAgICAgICAgICAgICAgICAgICAg
+ICBpbnQgKCpva2ZuKShzdHJ1Y3Qgc2tfYnVmZiopKQp7CiAgICByZXR1cm4g
+TkZfQUNDRVBUOwp9Cgp1bnNpZ25lZCBpbnQgaG9va19mdW5jXzEyKHVuc2ln
+bmVkIGludCBob29rbnVtLCAKCQkJICBzdHJ1Y3Qgc2tfYnVmZiAqKnNrYiwg
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgY29uc3Qgc3RydWN0IG5ldF9k
+ZXZpY2UgKmluLAogICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0
+cnVjdCBuZXRfZGV2aWNlICpvdXQsCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgaW50ICgqb2tmbikoc3RydWN0IHNrX2J1ZmYqKSkKewogICAgaWYgKHN0
+cmNtcChpbi0+bmFtZSwgaW50ZXJmYWNlX0xBTikgPT0gMCkKICAgIHsgcmV0
+dXJuIE5GX0FDQ0VQVDsgfQogICAgaWYgKHN0cmNtcChpbi0+bmFtZSwgaW50
+ZXJmYWNlX1dBTikgPT0gMCkKICAgIHsgcmV0dXJuIE5GX0FDQ0VQVDsgfQog
+ICAgaWYgKHN0cmNtcChpbi0+bmFtZSwgaW50ZXJmYWNlX2xvb3BiYWNrKSA9
+PSAwKQogICAgeyByZXR1cm4gTkZfUVVFVUU7IH0KICAgIGVsc2UKICAgIHsg
+cmV0dXJuIE5GX0RST1A7IH0KfSAgICAgICAgICAKCnVuc2lnbmVkIGludCBo
+b29rX2Z1bmNfNDEodW5zaWduZWQgaW50IGhvb2tudW0sCiAgICAgICAgICAg
+ICAgICAgICAgICAgc3RydWN0IHNrX2J1ZmYgKipza2IsCiAgICAgICAgICAg
+ICAgICAgICAgICAgY29uc3Qgc3RydWN0IG5ldF9kZXZpY2UgKmluLAogICAg
+ICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBuZXRfZGV2aWNlICpv
+dXQsCiAgICAgICAgICAgICAgICAgICAgICAgaW50ICgqb2tmbikoc3RydWN0
+IHNrX2J1ZmYqKSkKewogICAgcmV0dXJuIE5GX0FDQ0VQVDsKfQoKdm9pZCBu
+Zl9yZWdpc3Rlcl9pbnRlcmVzdChzdHJ1Y3QgbmZfaW50ZXJlc3QgKmludGVy
+ZXN0KQp7Cn0KCmludCBpbml0X21vZHVsZSh2b2lkKQp7CiAgICBob29rXzEu
+aG9vayAgICAgPSBob29rX2Z1bmNfMTE7ICAgICAgICAgLyogSGFuZGxlciBm
+dW5jdGlvbiAqLwogICAgaG9va18xLmhvb2tudW0gID0gTkZfSVBfUFJFX1JP
+VVRJTkc7IC8qIEZpcnN0IGhvb2sgZm9yIElQdjQgKi8KICAgIGhvb2tfMS5w
+ZiAgICAgICA9IFBGX0lORVQ7CiAgICBob29rXzEucHJpb3JpdHkgPSBORl9J
+UF9QUklfRklSU1Q7ICAgLyogTWFrZSBvdXIgZnVuY3Rpb24gZmlyc3QgKi8K
+ICAgICAKICAgIGhvb2tfMS5ob29rICAgICA9IGhvb2tfZnVuY18xMjsgICAg
+ICAgICAvKiBIYW5kbGVyIGZ1bmN0aW9uICovCiAgICBob29rXzEuaG9va251
+bSAgPSBORl9JUF9QUkVfUk9VVElORzsgLyogRmlyc3QgaG9vayBmb3IgSVB2
+NCAqLwogICAgaG9va18xLnBmICAgICAgID0gUEZfSU5FVDsKICAgIGhvb2tf
+MS5wcmlvcml0eSA9IE5GX0lQX1BSSV9MQVNUOyAgIC8qIE1ha2Ugb3VyIGZ1
+bmN0aW9uIGZpcnN0ICovCiAgICAKICAgIGhvb2tfNC5ob29rICAgICA9IGhv
+b2tfZnVuY180MTsgICAgICAgICAvKiBIYW5kbGVyIGZ1bmN0aW9uICovCiAg
+ICBob29rXzQuaG9va251bSAgPSBORl9JUF9QT1NUX1JPVVRJTkc7IC8qIEZp
+cnN0IGhvb2sgZm9yIElQdjQgKi8KICAgIGhvb2tfNC5wZiAgICAgICA9IFBG
+X0lORVQ7CiAgICBob29rXzQucHJpb3JpdHkgPSBORl9JUF9QUklfRklSU1Q7
+ICAgLyogTWFrZSBvdXIgZnVuY3Rpb24gZmlyc3QgKi8KICAgIAogICAgbmZf
+cmVnaXN0ZXJfaG9vaygmaG9va18xKTsKICAgIG5mX3JlZ2lzdGVyX2hvb2so
+Jmhvb2tfNCk7CgogICAgcmV0dXJuIDA7Cn0KCnZvaWQgY2xlYW51cF9tb2R1
+bGUodm9pZCkKewogICAgbmZfdW5yZWdpc3Rlcl9ob29rKCZob29rXzEpOwog
+ICAgbmZfdW5yZWdpc3Rlcl9ob29rKCZob29rXzQpOwp9CgoKCg==
 
-08.        # IPSec chains
-09.        /sbin/iptables -N IPSECRED
-10.        /sbin/iptables -A INPUT -j IPSECRED
-11.        /sbin/iptables -N IPSECBLUE
-12.        /sbin/iptables -A INPUT -j IPSECBLUE
-
-
-tks
-cf
-
+--0-1932622067-1140390903=:67816--
 
