@@ -1,14 +1,14 @@
-From: Sebastian Heidl <s.heidl@teles.de>
-Subject: Re: Tricking NMAP
-Date: Mon, 20 Feb 2006 18:40:24 +0100
-Message-ID: <1140457224.6950.23.camel@sehe-c4.berlin.teles.de>
-References: <00d301c63641$476e6870$020a0aac@SOUTHWEST>
+From: Sven Schuster <schuster.sven@gmx.de>
+Subject: Re: Forcing an RST
+Date: Mon, 20 Feb 2006 19:03:35 +0100
+Message-ID: <20060220180335.GA24535@zion.homelinux.com>
+References: <00dd01c63645$6bb69910$020a0aac@SOUTHWEST>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <00d301c63641$476e6870$020a0aac@SOUTHWEST>
-In-Reply-To: <00d301c63641$476e6870$020a0aac@SOUTHWEST>
-References: <00d301c63641$476e6870$020a0aac@SOUTHWEST>
+Content-Disposition: inline
+In-Reply-To: <00dd01c63645$6bb69910$020a0aac@SOUTHWEST>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,35 +19,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: James Strickland <jstic04@cp.centennialcollege.ca>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, 2006-02-20 at 12:15 -0500, James Strickland wrote:
-> Hello, i am trying to set up something to further trick port scanners.  I
-> want to dnat all new connections to an inside server, and not have the
-> router crash!
-> 
-> currently, with my setup, a port scan on all ports should return that all
-> ports from 1-65534 are filtered. this is done by dnat'ing all new
-> connections to my wan interface over to an internal host.  The internal host
-> software responds with an RST.  Unfortunately, with all the new entries for
-> the router, it crashes.
-> 
-> is there anything i can set in proc to reserve more processes for such a
-> thing?  how about adding more memory, will that help?
 
-This is for Kernel 2.6.x, I'm not sure if it works the same way in
-2.4.x.
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In /proc/sys/net/ipv4/netfilter/ip_conntrack_max you can increase the
-maximum number of conntrack entries. This number is limited by the
-available RAM (about 250 bytes per entry, depends on your architecture).
 
-But why don't you drop the unwanted pakets in the first place or just
-answer with a reset (-j REJECT --reject-with tcp-reset) on the
-router/firewall ?
+Hi James,
 
-HTH,
-_sh_
+On Mon, Feb 20, 2006 at 12:45:20PM -0500, James Strickland told us:
+> Hi. Is there a way so that when a packet reaches the filter table input
+> chain with the Syn flag set, that i send out a response with RST?
+>=20
+> ie: connections to my wan interface with Syn set (trying to establish) on
+> port 80 get a RST response to the sender?
+
+iptables -A INPUT -i <your wan device> -p tcp --dport 80 \
+         -j REJECT --reject-with tcp-reset
+
+But this should be not too hard to find in any of the iptables
+tutorials out there ;-), e.g.
+
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+
+have a nice day ;-)
+
+Sven
+
+--=20
+Linux zion.homelinux.com 2.6.16-rc3-mm1_27 #27 Wed Feb 15 17:51:36 CET 2006=
+ i686 athlon i386 GNU/Linux
+ 19:00:44 up 2 days, 23:16,  1 user,  load average: 0.07, 0.14, 0.18
+
+--uAKRQypu60I7Lcqm
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.1 (GNU/Linux)
+
+iD8DBQFD+gR3o4FAdB2PneQRAgR/AJ9XqGe7mpEnYTnXWqO/JXJg4Jzn8gCfYtRA
+FBLG3YfJKsBfLSwYrxD5GUg=
+=0eC5
+-----END PGP SIGNATURE-----
+
+--uAKRQypu60I7Lcqm--
 
