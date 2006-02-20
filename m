@@ -1,12 +1,12 @@
-From: <deneme@bwdow.com>
-Subject: Re: netfilter Digest, Vol 19, Issue 27
-Date: Mon, 20 Feb 2006 21:25:17 -0800
-Message-ID: <000001c636a7$33424fe0$c05c5a42@fdcp4xq35qslnu>
-Reply-To: deneme@bwdow.com
+From: Clist <clist@uah.es>
+Subject: avoid conntrack
+Date: Mon, 20 Feb 2006 14:30:35 +0100
+Message-ID: <200602201430.35996.clist@uah.es>
+Reply-To: clist@uah.es
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,6 +20,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Best Web Designs of World:  http://www.bwdow.com
+Hi list,
 
+It is needed to do '-j NOTRACK'  in order to avoid conntracking for some 
+packets, or i can simply DROP packets on the raw table so they do not reach 
+other netfilter tables and so it is not conntracking for those packets..?
+
+
+Now and simply do
+*raw 
+-A PREROUTING <some criteria> -j DROP
+
+do i need to do
+-A PREROUTING <some criteria> -j NOTRACK
+-A PREROUTING <some criteria> -j DROP
+
+Thanks...
+-- 
+---------------------------------------------
+Clister UAH
+---------------------------------------------
 
