@@ -1,13 +1,12 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: Forcing an RST
-Date: Mon, 20 Feb 2006 14:18:22 -0500
-Message-ID: <43FA15FE.1080605@SCampbell.net>
-References: <00dd01c63645$6bb69910$020a0aac@SOUTHWEST>
-	<43FA04F5.3010403@SCampbell.net>
+From: angico <angico@yahoo.com>
+Subject: Re: can't -j TARPIT
+Date: Mon, 20 Feb 2006 11:25:25 -0800 (PST)
+Message-ID: <20060220192525.20720.qmail@web36809.mail.mud.yahoo.com>
+References: <200602201046.22912.ramoni@databras.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43FA04F5.3010403@SCampbell.net>
+In-Reply-To: <200602201046.22912.ramoni@databras.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Steven M Campbell <Netfilter@SCampbell.net>
-Cc: netfilter@lists.netfilter.org, James Strickland <jstic04@cp.centennialcollege.ca>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Steven M Campbell wrote:
-> James Strickland wrote:
->> Hi. Is there a way so that when a packet reaches the filter table input
->> chain with the Syn flag set, that i send out a response with RST?
->>
->> ie: connections to my wan interface with Syn set (trying to 
->> establish) on
->> port 80 get a RST response to the sender?
->>
->>
->>   
-> Use  -p tcp --syn -j REJECT --with tcp-reset
->
->
->
-heh, both of us got it wrong, sven missed the syn bit, I missed the port 80
+actually i use gentoo. all the flags necessary for compilation are
+given automaticaly by a program called "emerge". and in fact it
+compiles tarpit target by default. the question is: once the
+installation is ok and includes the lib for tarpit, why doesn't a rule
+can jump for it?
+regards,
+angico.
 
--p tcp --syn --dport 80 -j REJECT --with tcp-reset
 
+--- Andre Ramoni <ramoni@databras.com.br> wrote:
+
+> This rule in my firewall works.
+> You have compiled iptables with what flags ? LIBDIR,BINDIR ?
+> Here, the iptables libs are in /usr/lib/iptables.
+> And, important, have you compiled iptables AFTER you patched the
+> kernel ?
+> 
+> On Friday 17 February 2006 19:18, angico wrote:
+> > ok, andre. i tried it, but the answer is still the same. also, i
+> tried
+> > the example given in the man page:
+> > # iptables -A INPUT -p tcp -m tcp --dport 80 -j TARPIT
+> > and the answer is the same.
+> > surprisingly, if i issue the command
+> > # iptables -p tcp -j TARPIT --help
+> > besides the help for the "-p tcp" option it says "TARPIT takes no
+> > options".
+> > any other hints?
+> > btw, iptables --version  ==> 1.3.4
+> > tia,
+> > angico.
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
