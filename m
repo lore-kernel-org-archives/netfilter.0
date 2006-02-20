@@ -1,13 +1,10 @@
-From: Andre Ramoni <ramoni@databras.com.br>
-Subject: Re: can't -j TARPIT
-Date: Mon, 20 Feb 2006 10:46:22 -0300
-Message-ID: <200602201046.22912.ramoni@databras.com.br>
-References: <20060217211822.75635.qmail@web36803.mail.mud.yahoo.com>
+From: "James Strickland" <jstic04@cp.centennialcollege.ca>
+Subject: Tricking NMAP
+Date: Mon, 20 Feb 2006 12:15:41 -0500
+Message-ID: <00d301c63641$476e6870$020a0aac@SOUTHWEST>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060217211822.75635.qmail@web36803.mail.mud.yahoo.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,59 +18,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This rule in my firewall works.
-You have compiled iptables with what flags ? LIBDIR,BINDIR ?
-Here, the iptables libs are in /usr/lib/iptables.
-And, important, have you compiled iptables AFTER you patched the kernel ?
+Hello, i am trying to set up something to further trick port scanners.  I
+want to dnat all new connections to an inside server, and not have the
+router crash!
 
-On Friday 17 February 2006 19:18, angico wrote:
-> ok, andre. i tried it, but the answer is still the same. also, i tried
-> the example given in the man page:
-> # iptables -A INPUT -p tcp -m tcp --dport 80 -j TARPIT
-> and the answer is the same.
-> surprisingly, if i issue the command
-> # iptables -p tcp -j TARPIT --help
-> besides the help for the "-p tcp" option it says "TARPIT takes no
-> options".
-> any other hints?
-> btw, iptables --version  ==> 1.3.4
-> tia,
-> angico.
->
-> --- Andre Ramoni <ramoni@databras.com.br> wrote:
-> > Use -p tcp
-> >
-> > On Friday 17 February 2006 07:01, angico wrote:
-> > > hi, all!
-> > > i'm trying this:
-> > >
-> > > iptables -A INPUT -s 1.2.3.4 -j TARPIT
-> > >
-> > > but iptables says "no chain/target/match by that name", although
-> > > libipt_TARPIT.so is present in /lib/iptables/
-> > >
-> > > i'm running kernel 2.6.15. any hints on what's wrong?
-> > > thanks in advance,
-> > > angico.
-> > >
-> > >
-> > > __________________________________________________
-> > > Do You Yahoo!?
-> > > Tired of spam?  Yahoo! Mail has the best spam protection around
-> > > http://mail.yahoo.com
-> >
-> > --
-> > Andre Guimaraes
-> > Databras Informatica
-> > Redes / Servidores Linux
->
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam protection around
-> http://mail.yahoo.com
+currently, with my setup, a port scan on all ports should return that all
+ports from 1-65534 are filtered. this is done by dnat'ing all new
+connections to my wan interface over to an internal host.  The internal host
+software responds with an RST.  Unfortunately, with all the new entries for
+the router, it crashes.
 
--- 
-Andre Guimaraes
-Databras Informatica
-Redes / Servidores Linux
+is there anything i can set in proc to reserve more processes for such a
+thing?  how about adding more memory, will that help?
+
+
+
 
