@@ -1,12 +1,12 @@
-From: "Gary W. Smith" <gary.w.smith@primeexalia.com>
-Subject: Re: --reject-with icmp-host-unreachable VS DROP
-Date: Tue, 21 Feb 2006 09:06:50 -0800
-Message-ID: <1140541610.6320.6.camel@pxt-lp04.pxt.primeexalia.com>
-References: <43FB3A42.3040301@eccotours.co.za>
+From: angico <angico@yahoo.com>
+Subject: Re: can't -j TARPIT
+Date: Tue, 21 Feb 2006 12:08:13 -0800 (PST)
+Message-ID: <20060221200813.62800.qmail@web36807.mail.mud.yahoo.com>
+References: <200602201638.40582.ramoni@databras.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43FB3A42.3040301@eccotours.co.za>
+In-Reply-To: <200602201638.40582.ramoni@databras.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Brent Clark <bclark@eccotours.co.za>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-First off, you have a double -j in there.  Secondly, REJECT is similar,
-but not the same as DROP.  In either case, REJECT is the end of the
-chain.  So it's useless to put the -j DROP there.
+hi, andre,
+i finaly did it!
+the problem is that gentoo doensn't include the tarpit patch into the
+kernel sources. so i had to do it manually.
+thank you, anyway.
+cheers,
+angico.
 
-But the first one should be fine.  If you are worried about continued
-DOS attacks, etc, look at -j TARPIT.  It requires you to recompile the
-kernel but it's the best thing for slowing people down.
 
-Gary Smith
+--- Andre Ramoni <ramoni@databras.com.br> wrote:
 
-On Tue, 2006-02-21 at 18:05 +0200, Brent Clark wrote:
-> Hi all
+> I use gentoo too.
+> Seems that you use the "extensions" use flag,  right ?
+> Seems like iptables have build the lib ok, and is loading it ok
+> (since it 
+> recognizes the -j TARPIT help)
+> I made a test here, that was to disable the TARPIT in the kernel, and
+> so, I 
+> got the same error of you.
 > 
-> I have a default policy of DROP for the INPUT, OUTPUT AND FORWARD.
-> 
-> I was thinking what just before the end of a FORWARD chain, I would use something like this.
-> 
-> $IPT -t filter -A FORWARD -j -j REJECT --reject-with icmp-host-unreachable
-> $IPT -t filter -A FORWARD -j DROP
-> 
-> Would anyone be kind to advise me on whether this is ok.
-> 
-> I defianltly think it will slow some applications from continuously retrying.
-> 
-> Kind Regards
-> Brent Clark
-> 
-> 
+> Your TARPIT is in your kernel as a module ? Try to modprobe it to see
+> if any 
+> problem occurs.
+> Once I compiled the kernel with TARPIT build in again, things get
+> back to 
+> normal.
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
