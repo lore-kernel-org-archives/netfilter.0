@@ -1,10 +1,10 @@
-From: Mark-Walter@t-online.de
-Subject: allowed chain vs. NEW,INVALID
-Date: Tue, 21 Feb 2006 16:09:53 +0100
-Message-ID: <20060221150953.GA835@server.homelinux.net>
+From: Brent Clark <bclark@eccotours.co.za>
+Subject: --reject-with icmp-host-unreachable VS DROP
+Date: Tue, 21 Feb 2006 18:05:22 +0200
+Message-ID: <43FB3A42.3040301@eccotours.co.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,35 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I've seen through the tutorial of Oscar Andreason.
+Hi all
 
-Out of my firewall book (and I think the howto's from Russel too) is
-this rule:
+I have a default policy of DROP for the INPUT, OUTPUT AND FORWARD.
 
-iptables -A INPUT -i eth0 -m state --state NEW,INVALID -j DROP
-iptables -A FORWARD -i eth0 -m state --state NEW,INVALID -j DROP
+I was thinking what just before the end of a FORWARD chain, I would use something like this.
 
-The allowed chain of Oscar Andreason describes this:
+$IPT -t filter -A FORWARD -j -j REJECT --reject-with icmp-host-unreachable
+$IPT -t filter -A FORWARD -j DROP
 
-#
-# allowed chain
-#
+Would anyone be kind to advise me on whether this is ok.
 
-$IPTABLES -A allowed -p TCP --syn -j ACCEPT
-$IPTABLES -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-$IPTABLES -A allowed -p TCP -j DROP
+I defianltly think it will slow some applications from continuously retrying.
 
-Does this the same or might it be a good idea to add a rule to DROP
-packet's NEW,INVALID like above for INPUT and FORWARD and the device
-eth0 ?
+Kind Regards
+Brent Clark
 
--- 
-Best Regards,
-
-Mark
 
