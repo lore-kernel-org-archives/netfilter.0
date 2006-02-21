@@ -1,7 +1,7 @@
-From: Brent Clark <bclark@eccotours.biz>
-Subject: --reject-with icmp-host-unreachable VS DROP
-Date: Tue, 21 Feb 2006 18:05:09 +0200
-Message-ID: <43FB3A35.3000909@eccotours.biz>
+From: Fons <enyacc@yahoo.com>
+Subject: packet forward stops time to time
+Date: Tue, 21 Feb 2006 18:11:28 +0100
+Message-ID: <43FB49C0.2020107@yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,19 +18,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all
+Hello guys,
+I'm using redhat 7.3(kernel 2.4.18), iptables 1.2.5
+Since 4 years ago i installed this firewall. no any problem. Just since 
+1 month ago, it sometimes stop forwarding packets. but linux still works 
+itself. After a while, it works again. How can I debug this problem? How 
+can I monitor the status of packet fowarding?
 
-I have a default policy of DROP for the INPUT, OUTPUT AND FORWARD.
 
-I was thinking what just before the end of a FORWARD chain, I would use something like this.
+thanks for any suggestion!!!
 
-$IPT -t filter -A FORWARD -j -j REJECT --reject-with icmp-host-unreachable
-$IPT -t filter -A FORWARD -j DROP
+Best Regards/Fons
 
-Would anyone be kind to advise me on whether this is ok.
-
-I defianltly think it will slow some applications from continuously retrying.
-
-Kind Regards
-Brent Clark
 
