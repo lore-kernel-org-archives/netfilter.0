@@ -1,14 +1,10 @@
-From: ludi <myhapwcforever@gmail.com>
-Subject: Re: netfilter Digest, Vol 19, Issue 25
-Date: Tue, 21 Feb 2006 09:41:01 +0800
-Message-ID: <d27cd2010602201741j7530e238h@mail.gmail.com>
-References: <000001c6344a$ab2dfd60$c05c5a42@fdcp4xq35qslnu>
-	<1140187561.70661c6c074b7@webmail.harrisonburg.k12.va.us>
+From: Linux linux <khankhn1@yahoo.com>
+Subject: What is snat
+Date: Tue, 21 Feb 2006 03:21:52 -0800 (PST)
+Message-ID: <20060221112152.11785.qmail@web35906.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1140187561.70661c6c074b7@webmail.harrisonburg.k12.va.us>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,12 +17,24 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: khankhn1@yahoo.com
 
-SXQgIHN0aWxsIHNlbmQuLi4uLi4KMjAwNi8yLzE3LCBEd2F5bmUgSG90dGluZ2VyIDxkaG90dGlu
-Z2VyQGhhcnJpc29uYnVyZy5rMTIudmEudXM+Ogo+IEltIGdldHRpbmcgYWJvdXQgNiBvZiB0aGVz
-ZSBhIGRheS4gIENhbiBzb21lb25lIHNodXQgdGhpcyBkb3duPyAgSSBkb250IHRoaW5rCj4gdGhl
-IGxpc3QgaXMgZm9yIGFkdmVydGlzaW5nIHlvdXIgYnVzaW5lc3MuCj4KPiBRdW90aW5nIGRlbmVt
-ZUBid2Rvdy5jb206Cj4KPiA+IEJlc3QgV2ViIERlc2lnbnMgb2YgV29ybGQ6ICBodHRwOi8vd3d3
-LmJ3ZG93LmNvbQo+ID4KPiA+Cj4KPgo+IC0tCj4gRHdheW5lIEhvdHRpbmdlcgo+IE5ldHdvcmsg
-QWRtaW5pc3RyYXRvcgo+IEhhcnJpc29uYnVyZyBDaXR5IFB1YmxpYyBTY2hvb2xzCj4KPgo=
+
+What is SNAT?
+
+i have to network card
+
+eth0: 203.143.112.90
+eth1:192.168.5.1
+
+how can i implement snat in above environment?
+how can i redirect ports in snat ?
+
+Regards
+khan
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
