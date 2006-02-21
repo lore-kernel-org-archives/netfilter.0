@@ -1,10 +1,11 @@
-From: Fons <enyacc@yahoo.com>
-Subject: packet forward stops time to time
-Date: Tue, 21 Feb 2006 18:11:28 +0100
-Message-ID: <43FB49C0.2020107@yahoo.com>
+From: "Yannick Deltroo" <deltroo@gmail.com>
+Subject: multiple PPTP clients to same server
+Date: Tue, 21 Feb 2006 22:48:15 +0100
+Message-ID: <96b73a1a0602211348o3ac495a0u52b92d5597f03ebe@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,19 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello guys,
-I'm using redhat 7.3(kernel 2.4.18), iptables 1.2.5
-Since 4 years ago i installed this firewall. no any problem. Just since 
-1 month ago, it sometimes stop forwarding packets. but linux still works 
-itself. After a while, it works again. How can I debug this problem? How 
-can I monitor the status of packet fowarding?
+Hi,
 
+One quick question about the PPTP NAT helper:
+Does it support multiple PPTP clients connecting to the same PPTP
+server from behind a Netfilter NAT router  ?
 
-thanks for any suggestion!!!
+I guess Call-Id could be used to track multiple calls in the same
+control connection.
 
-Best Regards/Fons
-
+Cheers
+Y. Deltroo
 
