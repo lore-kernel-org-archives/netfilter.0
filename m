@@ -1,12 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: What is snat
-Date: Tue, 21 Feb 2006 12:45:41 +0100 (CET)
-Message-ID: <55676.193.173.147.3.1140522341.squirrel@webmail.sterenborg.info>
-References: <20060221112152.11785.qmail@web35906.mail.mud.yahoo.com>
+From: Mark-Walter@t-online.de
+Subject: allowed chain vs. NEW,INVALID
+Date: Tue, 21 Feb 2006 16:09:53 +0100
+Message-ID: <20060221150953.GA835@server.homelinux.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060221112152.11785.qmail@web35906.mail.mud.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Tue, February 21, 2006 12:21, Linux linux wrote:
->
-> What is SNAT?
->
-> i have to network card
->
-> eth0: 203.143.112.90
-> eth1:192.168.5.1
->
-> how can i implement snat in above environment?
-> how can i redirect ports in snat ?
+I've seen through the tutorial of Oscar Andreason.
 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+Out of my firewall book (and I think the howto's from Russel too) is
+this rule:
 
+iptables -A INPUT -i eth0 -m state --state NEW,INVALID -j DROP
+iptables -A FORWARD -i eth0 -m state --state NEW,INVALID -j DROP
 
-Gr,
-Rob
+The allowed chain of Oscar Andreason describes this:
 
+#
+# allowed chain
+#
 
+$IPTABLES -A allowed -p TCP --syn -j ACCEPT
+$IPTABLES -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+$IPTABLES -A allowed -p TCP -j DROP
+
+Does this the same or might it be a good idea to add a rule to DROP
+packet's NEW,INVALID like above for INPUT and FORWARD and the device
+eth0 ?
+
+-- 
+Best Regards,
+
+Mark
 
