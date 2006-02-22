@@ -1,11 +1,13 @@
-From: =?iso-8859-1?q?Ra=FFfffffal=20Rodr=FFffffedguez?=
-	<raul_rodriguez_vasquez@yahoo.es>
-Subject: doubts about nf_register_queue_handler!!
-Date: Wed, 22 Feb 2006 23:14:46 +0100 (CET)
-Message-ID: <20060222221446.39341.qmail@web86904.mail.ukl.yahoo.com>
+From: Chinh Nguyen <cnguyen@certicom.com>
+Subject: Re: updated iptables doesn't work with old rules
+Date: Wed, 22 Feb 2006 17:18:32 -0500
+Message-ID: <43FCE338.4090306@certicom.com>
+References: <5f56302b0602220158k76b68705p88dd35b4c2782caa@mail.gmail.com>	<54666.193.173.147.3.1140606085.squirrel@webmail.sterenborg.info>	<5f56302b0602220325p1c66f156y47e8ad569ee7fffb@mail.gmail.com>	<56310.193.173.147.3.1140611713.squirrel@webmail.sterenborg.info>	<5f56302b0602220539t2ec885acwda00f0f2eb521854@mail.gmail.com>	<5f56302b0602221253t7157857ejb15f87d9984da59c@mail.gmail.com>	<43FCCF82.6010402@certicom.com>
+	<5f56302b0602221357k27931798n7d521184123bb1c9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <5f56302b0602221357k27931798n7d521184123bb1c9@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,94 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Daniel Nogradi <nogradi@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi guys, i'm writing a netfilter module which must
-enqueue packets in different queues and reinject each
-one of them according to my decisions... but i have
-some doubts....=20
+Daniel Nogradi wrote:
+> 
+> Hi Chinh, I tried interchanging eth0 and eth1 and still no luck. I
+> didn't want to restrict the source yet, because I first would like to
+> see that it works at all, and then start tightening security.
+> /var/log/messages also says nothing. Is there any other log file which
+> would be useful to check?
+>
 
-module--------------------------------------
-unsigned int hook_func_11(unsigned int hooknum,
-                       struct sk_buff **skb,
-                       const struct net_device *in,
-                       const struct net_device *out,
-                       int (*okfn)(struct sk_buff*))
-{
-    if (strcmp(in->name, interface_LAN) =3D=3D 0)
-    { return NF_ACCEPT; }
-    if (strcmp(in->name, interface_WAN) =3D=3D 0)
-    { return NF_ACCEPT; }
-    if (strcmp(in->name, interface_loopback) =3D=3D 0)
-    { return NF_QUEUE; }
-    else
-    { return NF_DROP; }
-}     =20
+I just did a quick test. With ip_forwarding on and no restrictions, it is
+sufficient to use the MASQUERADE rule, no FORWARD rule needed. If MASQUERADE
+isn't working, you can also try the SNAT rule.
 
-unsigned int hook_func_41(unsigned int hooknum,
-                       struct sk_buff **skb,
-                       const struct net_device *in,
-                       const struct net_device *out,
-                       int (*okfn)(struct sk_buff*))
-{
-    return NF_ACCEPT;
-}
+To see how your packets are going through iptables, you can turn on some logging:
 
-int init_module(void)
-{
-    hook_1.hook     =3D hook_func_11;
-    hook_1.hooknum  =3D NF_IP_PRE_ROUTING;
-    hook_1.pf       =3D PF_INET;
-    hook_1.priority =3D NF_IP_PRI_FIRST;
-   =20
-    hook_4.hook     =3D hook_func_41;
-    hook_4.hooknum  =3D NF_IP_POST_ROUTING;
-    hook_4.pf       =3D PF_INET;
-    hook_4.priority =3D NF_IP_PRI_FIRST;
-           =20
-    nf_register_hook(&hook_1);
-    nf_register_hook(&hook_4);
-           =20
-    return 0;
-}
+iptables -A PREROUTING -t nat --in-interface eth1 -j LOG --log-prefix "nat: "
+iptables -A FORWARD --in-interface eth1 -j LOG --log-prefix "out-fwd: "
 
-void cleanup_module(void)
-{
-    nf_unregister_hook(&hook_1);
-    nf_unregister_hook(&hook_4);
-}
----------------------------------------------
+and so on.
 
-I've registered two hooks (NF_IP_PRE_ROUTING and
-NF_IP_POST_ROUTING), but one of them enqueue some
-packets (return NF_QUEUE)..... I know at this point,
-all queued packets are dropped!, because no-one is
-registered to handle queued packets...... and for
-register interest in queued packets i must use
-nf_register_queue_handler() and
-nf_unregister_queue_handler()...
+These logs are kernel messages, so if kernel logs aren't enabled, you can edit
+the /etc/syslog.conf file and restart syslogd. For example:
 
-In "Processing queued packets - Netfilter hacking
-howto" you wrote: you must register interest
-in queued packets and then they begin queueing.  Can
-you please explain me how do i do that? what happens
-with packets when they're queued? where are they
-stored?=20
-
-I've seen nf_register_queue_handler declarated in
-netfilter.h, but i haven't seen it defined nowhere...
-please, how must i register some queue_handlers in my
-module (one per protocol)? Thanks for help!!!
-
-Raul Rodriguez
+kern.*                /var/log/messages
 
 
-=09
-=09
-	=09
-______________________________________________=20
-LLama Gratis a cualquier PC del Mundo.=20
-Llamadas a fijos y m=F3viles desde 1 c=E9ntimo por minuto.=20
-http://es.voice.yahoo.com
+Just a thought, how is your machine B resolving DNS? I'm assuming that machine A
+gets its networking values including DNS from the modem. Is it communicating
+this to machine B? Maybe it's a DNS issue. For example, are you testing by
+pinging "google.com" or directly via an IP address?
+
+Regards,
+
+Chinh
 
