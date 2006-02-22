@@ -1,12 +1,11 @@
-From: angico <angico@yahoo.com>
-Subject: Re: can't -j TARPIT
-Date: Tue, 21 Feb 2006 12:08:13 -0800 (PST)
-Message-ID: <20060221200813.62800.qmail@web36807.mail.mud.yahoo.com>
-References: <200602201638.40582.ramoni@databras.com.br>
+From: "Daniel Nogradi" <nogradi@gmail.com>
+Subject: updated iptables doesn't work with old rules
+Date: Wed, 22 Feb 2006 10:58:01 +0100
+Message-ID: <5f56302b0602220158k76b68705p88dd35b4c2782caa@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200602201638.40582.ramoni@databras.com.br>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,36 +19,45 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi, andre,
-i finaly did it!
-the problem is that gentoo doensn't include the tarpit patch into the
-kernel sources. so i had to do it manually.
-thank you, anyway.
-cheers,
-angico.
+I have updated my Fedora Core 3 box to the latest versions (in the FC3
+branch) and now have
 
+iptables-1.2.11-3.1.FC3
+kernel-2.6.12-1.1381_FC3
 
---- Andre Ramoni <ramoni@databras.com.br> wrote:
+and ip forwarding stopped working. Before the upgrade I had
 
-> I use gentoo too.
-> Seems that you use the "extensions" use flag,  right ?
-> Seems like iptables have build the lib ok, and is loading it ok
-> (since it 
-> recognizes the -j TARPIT help)
-> I made a test here, that was to disable the TARPIT in the kernel, and
-> so, I 
-> got the same error of you.
-> 
-> Your TARPIT is in your kernel as a module ? Try to modprobe it to see
-> if any 
-> problem occurs.
-> Once I compiled the kernel with TARPIT build in again, things get
-> back to 
-> normal.
+iptables-1.2.11-3.1
+kernel-2.6.9-1.667
 
+The configuration is this:
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+machine A with FC3 ---------------- adsl modem -------------------- interne=
+t
+  |
+  |
+  |
+machine B
+on a LAN
+
+The FC3 box was using iptables for ip ipforwarding in order to let
+'machine B' access the internet using these rules:
+
+iptables --flush
+iptables -t nat --flush
+iptables --delete-chain
+iptables -t nat --delete-chain
+iptables -t nat --append POSTROUTING --out-interface eth0 -j MASQUERADE
+iptables -t nat --append POSTROUTING -s 192.168.10.0/255.255.255.0 -j MASQU=
+ERADE
+iptables --append FORWARD --in-interface eth1 -j ACCEPT
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+Now after the update these rules stopped working and nothing gets
+through from 'machine B', although pinging works between machines A
+and B both ways.
+
+Any ideas as to what to change in these rules to have the same effect
+as before the update?
 
