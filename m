@@ -1,12 +1,10 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: netfilter Digest, Vol 19, Issue 31
-Date: Wed, 22 Feb 2006 20:57:08 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0602222055530.15003@darkstar.sysinfo.com>
-References: <000001c6388d$a827e990$c05c5a42@fdcp4xq35qslnu>
-	<45576.162.119.232.107.1140651650.squirrel@www.malibyte.net>
+From: Adhiraj <adhiraj@linsyssoft.com>
+Subject: arp replies from two adapters of same type in a machine
+Date: Wed, 22 Feb 2006 21:15:58 +0530
+Message-ID: <1140623158.6987.59.camel@triumph>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45576.162.119.232.107.1140651650.squirrel@www.malibyte.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,59 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Bob Sully <rcs@malibyte.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi all,
 
+I have two RTL-8139 network adapters in a machine, they have these IP
+addresses:
+eth1: 192.168.20.1
+eth2: 192.168.21.1
 
+When I take tcpdump on these interfaces and ping to 192.168.21.1 from
+192.168.21.50, I see that both the adapters reply to ARP requst sent by
+192.168.21.50 machine:
 
-better suggestion, manage it on yer own system<s>.  man procmail for a 
-start.
+/usr/sbin/tcpdump -i eth1 -vv
+.
+.
+arp reply 192.168.21.1 is-at <MAC add of eth1>
 
+/usr/sbin/tcpdump -i eth2 -vv
+.
+.
+arp reply 192.168.21.1 is-at <MAC add of eth2>
 
-Thanks,
+Ideally eth1 should not reply to the ARP request.
 
-Ron DuFresne
+Any idea why this happens?
 
+Regards,
+Adhiraj.
 
-On Wed, 22 Feb 2006, Bob Sully wrote:
-
-> Suggestion for the Netfilter admins:
->
->
-> <<>> DiG 9.3.1 <<>> bwdow.com
->
-> ;; ANSWER SECTION:
-> bwdow.com.              86400   IN      A       66.90.92.192
->
-> /sbin/iptables -A INPUT -i $EXTERNAL_INTERFACE -p tcp -s 66.90.92.192 -d
-> $EXTERNAL_IP -j DROP
->
->
-> deneme@bwdow.com wrote:
->> Best Web Designs of World:  http://www.bwdow.com
->
->
-
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFD/RZ3st+vzJSwZikRAs3uAJ9IBNun/R3rnUdTtYmkEJ0R4pp1igCgqFHg
-Ntw0Z0dxMwv0M/Np9Lm05I8=
-=scm3
------END PGP SIGNATURE-----
 
