@@ -1,22 +1,12 @@
-From: "Daniel Nogradi" <nogradi@gmail.com>
-Subject: Re: updated iptables doesn't work with old rules
-Date: Wed, 22 Feb 2006 15:25:04 -0800
-Message-ID: <5f56302b0602221525s35f1487br2994647bf8e86708@mail.gmail.com>
-References: <5f56302b0602220158k76b68705p88dd35b4c2782caa@mail.gmail.com>
-	<54666.193.173.147.3.1140606085.squirrel@webmail.sterenborg.info>
-	<5f56302b0602220325p1c66f156y47e8ad569ee7fffb@mail.gmail.com>
-	<56310.193.173.147.3.1140611713.squirrel@webmail.sterenborg.info>
-	<5f56302b0602220539t2ec885acwda00f0f2eb521854@mail.gmail.com>
-	<5f56302b0602221253t7157857ejb15f87d9984da59c@mail.gmail.com>
-	<43FCCF82.6010402@certicom.com>
-	<5f56302b0602221357k27931798n7d521184123bb1c9@mail.gmail.com>
-	<43FCE338.4090306@certicom.com>
-	<5f56302b0602221513i22ff868et991067e3314998da@mail.gmail.com>
+From: <deneme@bwdow.com>
+Subject: Re: netfilter Digest, Vol 19, Issue 31
+Date: Thu, 23 Feb 2006 07:27:28 -0800
+Message-ID: <000001c6388d$a827e990$c05c5a42@fdcp4xq35qslnu>
+Reply-To: deneme@bwdow.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5f56302b0602221513i22ff868et991067e3314998da@mail.gmail.com>
-Content-Disposition: inline
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -30,6 +20,6 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Oh, I forgot to mention that I have a dynamic IP so that's why I use
-masquerading and not snat.
+Best Web Designs of World:  http://www.bwdow.com
+
 
