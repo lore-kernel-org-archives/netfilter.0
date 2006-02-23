@@ -1,7 +1,7 @@
 From: Undertacker <undertacker@areanetworking.it>
-Subject: problem with applying a state match rules for ipv6 connections
-Date: Thu, 23 Feb 2006 11:11:00 +0100
-Message-ID: <43FD8A34.8090605@areanetworking.it>
+Subject: Problem with applying a state match rules for ipv6 connections
+Date: Thu, 23 Feb 2006 15:28:48 +0100
+Message-ID: <43FDC6A0.3090401@areanetworking.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -40,7 +40,7 @@ there is also a second interface eth1 for LAN distribution of ipv6 suppor=
 t.
 
 It is not long that I=E2=80=99m using a linux ( just about 6 months) so p=
-lease=20
+lease
 forgive me if I done some stupid configuration.
 
 this is my ip6tables configuration:
@@ -58,9 +58,9 @@ cat /etc/iptables.conf/ip6tables-roule.conf
 -A INPUT -s ::/0 -d ::/0 -i btexact00 -j btexact00_in
 -A OUTPUT -s ::/0 -d ::/0 -o btexact00 -j btexact00_out
 -A OUTPUT -s ::/0 -d ::/0 -o eth1 -j eth1_out
--A btexact00_in -s ::/0 -d ::/0 -m state --state RELATED,ESTABLISHED -j=20
+-A btexact00_in -s ::/0 -d ::/0 -m state --state RELATED,ESTABLISHED -j
 ACCEPT
--A btexact00_out -s 2001:618:400:c23b:ffff:ffff:ffff:ffff/128 -d ::/0 -j=20
+-A btexact00_out -s 2001:618:400:c23b:ffff:ffff:ffff:ffff/128 -d ::/0 -j
 ACCEPT
 COMMIT
 # Completed on Thu Feb 23 10:55:57 2006
@@ -77,12 +77,12 @@ COMMIT
 
 finaly I came to my question:
 for some kind of reason the roule:
--A btexact00_in -s ::/0 -d ::/0 -m state --state RELATED,ESTABLISHED -j=20
+-A btexact00_in -s ::/0 -d ::/0 -m state --state RELATED,ESTABLISHED -j
 ACCEPT
 don=E2=80=99t match that king of traffic.
-(if i add this roule after the up one : "-A btexact00_in -s ::/0 -d ::/0=20
+(if i add this roule after the up one : "-A btexact00_in -s ::/0 -d ::/0
 -j LOG" log output all the traffic)
-I was tray several times to reconfigure all ip6tables supposing that=20
+I was tray several times to reconfigure all ip6tables supposing that
 this was an configuration problem , but the configuration to me seems ok.
 Please can you help me?
 Best Regards
@@ -90,6 +90,7 @@ Undertacker
 
 P.S.
 I=E2=80=99m so sorry for my English, I hope you understand this mail.
+
 
 
 
