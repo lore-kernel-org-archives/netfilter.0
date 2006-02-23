@@ -1,22 +1,12 @@
-From: "Daniel Nogradi" <nogradi@gmail.com>
-Subject: Re: updated iptables doesn't work with old rules
-Date: Thu, 23 Feb 2006 16:49:09 +0100
-Message-ID: <5f56302b0602230749v5a56c8c3u6cbbdf832b59c88c@mail.gmail.com>
-References: <5f56302b0602220158k76b68705p88dd35b4c2782caa@mail.gmail.com>
-	<5f56302b0602220325p1c66f156y47e8ad569ee7fffb@mail.gmail.com>
-	<56310.193.173.147.3.1140611713.squirrel@webmail.sterenborg.info>
-	<5f56302b0602220539t2ec885acwda00f0f2eb521854@mail.gmail.com>
-	<5f56302b0602221253t7157857ejb15f87d9984da59c@mail.gmail.com>
-	<43FCCF82.6010402@certicom.com>
-	<5f56302b0602221357k27931798n7d521184123bb1c9@mail.gmail.com>
-	<43FCE338.4090306@certicom.com>
-	<5f56302b0602221513i22ff868et991067e3314998da@mail.gmail.com>
-	<43FDC9EC.1050704@certicom.com>
+From: Steven M Campbell <Netfilter@SCampbell.net>
+Subject: Re: arp replies from two adapters of same type in a machine
+Date: Thu, 23 Feb 2006 13:44:15 -0500
+Message-ID: <43FE027F.5060403@SCampbell.net>
+References: <1140623158.6987.59.camel@triumph>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <43FDC9EC.1050704@certicom.com>
-Content-Disposition: inline
+In-Reply-To: <1140623158.6987.59.camel@triumph>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -27,30 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Adhiraj <adhiraj@linsyssoft.com>
+Cc: netfilter@lists.netfilter.org
 
-> It mean your packet traversed the prerouting nat eth1, and so on.
+Adhiraj wrote:
+> Hi all,
 >
-> I would put 3 log messages, at "prerouting nat eth1", "forward", and
-> "postrouting nat". If your packet is seen at postrouting then it should b=
-e
-> successfully forwarded.
+> I have two RTL-8139 network adapters in a machine, they have these IP
+> addresses:
+> eth1: 192.168.20.1
+> eth2: 192.168.21.1
 >
-> I noticed that your packet's outbound interface is ppp0. However, I recal=
-l
-> your
-> MASQUERADE rule had "--out-interface eth0". Perhaps this is the cause and
-> your
-> packet is not masqueraded? Try a simple "iptables -A POSTROUTING -t nat -=
-j
-> MASQUERADE" without qualifiers.
+> When I take tcpdump on these interfaces and ping to 192.168.21.1 from
+> 192.168.21.50, I see that both the adapters reply to ARP requst sent by
+> 192.168.21.50 machine:
 >
-> Other things to try. Use ethereal to sniff eth1, and eth0/ppp0. Is there
-> traffic?
+> /usr/sbin/tcpdump -i eth1 -vv
+> .
+> .
+> arp reply 192.168.21.1 is-at <MAC add of eth1>
 >
-> Chinh
+> /usr/sbin/tcpdump -i eth2 -vv
+> .
+> .
+> arp reply 192.168.21.1 is-at <MAC add of eth2>
 >
+> Ideally eth1 should not reply to the ARP request.
+>
+>   
+I doubt that this is a netfilter issue, however....
 
-Hi Chinh, thank you very much again, I'll try your suggestions tonight.
+I suspect proxy arp is enabled,  on a 2.6 kernel (possibly on 2.4 also 
+but I'm not sure) you can see if this is so
+    cat /proc/sys/net/ipv4/conf/eth1/proxy_arp
+If you get a 1 then it is on, if you get a 0 then it is off.    It can 
+be controlled with the sysctl program (See man sysctl).
+
+Proxy arp would tell an interface to answer arps with it's own mac 
+address, the idea is to allow nodes on the network to route through this 
+system without actually having a route entry.  It's almost always a bad 
+thing in practice.
+
+
 
