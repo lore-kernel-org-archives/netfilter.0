@@ -1,10 +1,16 @@
-From: Jeff Machesky <jeff@codebest.com>
-Subject: NAT rules not clearing,  delays in loading
-Date: Fri, 24 Feb 2006 10:49:56 -0700
-Message-ID: <43FF4744.8040706@codebest.com>
+From: "Daniel Nogradi" <nogradi@gmail.com>
+Subject: Re: updated iptables doesn't work with old rules
+Date: Sat, 25 Feb 2006 00:17:53 +0100
+Message-ID: <5f56302b0602241517w2140ffe7v2531d8543368d253@mail.gmail.com>
+References: <5f56302b0602221253t7157857ejb15f87d9984da59c@mail.gmail.com>
+	<000301c6390b$3ff8eee0$0101000a@sterenborg.info>
+	<5f56302b0602240214g1ea15a6ah4634a5a78d5bc5dc@mail.gmail.com>
+	<54682.193.173.147.3.1140783730.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <54682.193.173.147.3.1140783730.squirrel@webmail.sterenborg.info>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,64 +21,141 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I use to belong to this group once upon a time,  I stepped away for a while.
+Hi Chinh and Rob,
 
-I've run in to a very strange problem that I hope someone can shed some 
-light on.
-
-Using Debian 3.1 I'm trying to do a DNS redirector.   The idea is 
-clients using the DNS that have not been authorized will be directed to 
-a login page,  once they log in iptables rules will be added to allow 
-DNS to resolve normally.
-
-Here is what I've got
-
-The IP of the client (fake) in this case would be 24.158.18.72
-The IP of the real DNS server is 10.1.1.2 (Internal LAN)
-The IP of the pseudo  DNS server is 24.0.1.2 (fake) on eth0 and 
-10.0.1.11 eth1 
-
-iptables -t nat -A PREROUTING -s 24.158.18.72 -p udp -i eth0 --dport 53 
--j DNAT --to 10.0.1.2
-iptables -t ant -A POSTROUTING -d 10.0.1.2 -o eth1 -p udp -m udp --dport 
-53 -j SNAT --to-source 10.0.1.11
-
-And of course I have forwarding set.
-
-What this does is allow real DNS for client with the IP of 24.158.18.172 
-and fake DNS (resolves all the same) for any other client. 
-
-The above rules work,   Now for the problem.
-
-When rule #1 is first put in place the packets do not start to route 
-right away,  they often take up to a minute or so to take hold.  Once in 
-a while I'll get lucky and the rule appears to take effect right away.  
-This is verified by ethereal dumps.
-
-The other problem,   after removing rule #1 or for that matter flushing 
-the entire nat chain (iptables -t nat -F) the rules will keep working 
-for several minutes.
-
-I've tried this with iptables 1.2.xx and iptables 1.3.5 with kernel 
-2.6.12 and kernel 2.6.15.4.   The rules work,  they just don't take hold 
-right away or release right away.   This is so weird.
-
-Linux version 2.6.15.4 (root@somewhere.com) (gcc version 3.3.5 (Debian 
-1:3.3.5-13)) #2 SMP Thu Feb 23 14:31:04 MST 2006
-
-filename:       
-/lib/modules/2.6.15.4/kernel/net/ipv4/netfilter/iptable_nat.ko
-license:        GPL
-vermagic:       2.6.15.4 SMP PENTIUM4 gcc-3.3
-depends:        ip_nat,ip_tables,ip_conntrack
+Let me first thank you both very much for your help and explanation,
+now everything works, routing was the problem as well as me not
+understanding the iptables rules properly so was always setting
+something not correct.
 
 
-Can anyone shed some light on this issue ?
+> >>DEVICE=3Deth1
+> >>BOOTPROTO=3Dnone
+> >>BROADCAST=3D192.168.10.255
+> >>IPADDR=3D192.168.10.101
+> >>NETMASK=3D255.255.255.0
+> >>NETWORK=3D192.168.10.0
+> >>ONBOOT=3Dyes
+> >>TYPE=3DEthernet
+> >>GATEWAY=3D192.168.10.254
+> >
+> >
+> > This NIC seems to be connected to your hub/switch/machine B.
+> > I'd say, because machine A -> internet works, put this one on the
+> > 192.168.11.0/24 network and machine B also. (You don't want to change
+> things
+> > that are already working.)
+> >
+> > Change :
+> > BROADCAST=3D192.168.11.255
+> > IPADDR=3D192.168.11.1
+> > NETWORK=3D192.168.11.0
+> > GATEWAY=3D192.168.11.1
 
-Thanks,
 
-Jeff
+I changed this, now the internal net is on 192.168.11.0.
+
+
+> >>DEVICE=3Deth0
+> >>BROADCAST=3D192.168.10.255
+> >>IPADDR=3D192.168.10.105
+> >>NETMASK=3D255.255.255.0
+> >>NETWORK=3D192.168.10.0
+> >>TYPE=3DEthernet
+> >>ONBOOT=3Dyes
+> >>GATEWAY=3D192.168.10.254
+> >
+> >
+> > Because you can use the internet on machine A, I suppose the config for
+> eth0
+> > is correct.
+
+
+Indeed, I didn't change that and it's still working :)
+
+
+> Daniel, you should try Rob's advice and see if you can get further. Here =
+are
+> some my two cents. I've never done a PPPoE/DSL in Linux but I noticed a f=
+ew
+> odd things about your configuration.
+>
+> >
+> >>USERCTL=3Dyes
+> >>BOOTPROTO=3Ddialup
+> >>NAME=3DDSLppp0
+> >>DEVICE=3Dppp0
+> >>TYPE=3DxDSL
+> >>ONBOOT=3Dyes
+> >>PIDFILE=3D/var/run/pppoe-adsl.pid
+> >>FIREWALL=3DMASQUERADE
+> >>PING=3D.
+> >>PPPOE_TIMEOUT=3D80
+> >>LCP_FAILURE=3D3
+> >>LCP_INTERVAL=3D20
+> >>CLAMPMSS=3D1412
+> >>CONNECT_POLL=3D6
+> >>CONNECT_TIMEOUT=3D60
+> >>DEFROUTE=3Dyes
+> >>SYNCHRONOUS=3Dno
+> >>ETH=3Deth1
+> >>PROVIDER=3DDSLppp0
+> >>USER=3D02024784362
+> >>PEERDNS=3Dyes
+> >>DEMAND=3Dno
+> >>PERSIST=3Dno
+>
+> The line ETH=3Deth1 suggests to me that your PPP connection is bound to e=
+th1.
+> However, in your previous messages you state that eth1 is on the private
+> side
+> (attached to machine B) and eth0 is on the public side. This seems odd.
+
+
+Now you've got me. To tell the truth in my first post I accidently
+interchanged eth0 and eth1 so in all further posts I systematically
+kept interchanging them in order not to mix up the conversation, so
+whenever I was talking about eth1 I meant eth0 and vica versa, in
+principle it's not a problem if it's systematic (this was not the real
+problem as I kept track of the interchange). But as you correctly
+point out in this above file, ifcfg-ppp0, I forgot to change it and
+left the original in :)
+
+
+> Additionally, resources on the net regarding PPP connections (usually bou=
+nd
+> to eth0) has a similar ppp0 configuration as yours. But the associated
+> interface (usually eth0) for a ppp0 connection is usually down and not co=
+nfigured.
+>
+> DEVICE=3Deth0
+> ONBOOT=3Dno
+
+
+Thanks for this as well, I changed it to ONBOOT=3Dno.
+
+At the moment my rules are:
+
+
+echo 0 > /proc/sys/net/ipv4/ip_forward
+iptables --flush
+iptables -t nat --flush
+iptables --delete-chain
+iptables -t nat --delete-chain
+iptables -P FORWARD DROP
+iptables -F FORWARD
+iptables -A FORWARD -i eth0 -o ppp0 -j ACCEPT
+iptables -A FORWARD -o eth0 -i ppp0 -j ACCEPT
+iptables -t nat -F POSTROUTING
+iptables -t nat -A POSTROUTING -j MASQUERADE
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+which I understand are not secure or in any way optimal, but at least
+they work, so I'll start adding the suggestions of both of you to make
+them what they really supposed to be.
+
+Thanks again very much!
 
