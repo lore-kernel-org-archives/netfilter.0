@@ -1,12 +1,13 @@
-From: Ard van Breemen <ard@kwaak.net>
-Subject: Re: arp replies from two adapters of same type in a machine
-Date: Fri, 24 Feb 2006 15:57:08 +0100
-Message-ID: <20060224145708.GD17756@kwaak.net>
-References: <1140623158.6987.59.camel@triumph>
+From: Chinh Nguyen <cnguyen@certicom.com>
+Subject: Re: updated iptables doesn't work with old rules
+Date: Fri, 24 Feb 2006 09:48:55 -0500
+Message-ID: <43FF1CD7.40007@certicom.com>
+References: <5f56302b0602221253t7157857ejb15f87d9984da59c@mail.gmail.com>	<000301c6390b$3ff8eee0$0101000a@sterenborg.info>	<5f56302b0602240214g1ea15a6ah4634a5a78d5bc5dc@mail.gmail.com>
+	<54682.193.173.147.3.1140783730.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1140623158.6987.59.camel@triumph>
+In-Reply-To: <54682.193.173.147.3.1140783730.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,45 +19,89 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Adhiraj <adhiraj@linsyssoft.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
-On Wed, Feb 22, 2006 at 09:15:58PM +0530, Adhiraj wrote:
-> I have two RTL-8139 network adapters in a machine, they have these IP
-> addresses:
-> eth1: 192.168.20.1
-> eth2: 192.168.21.1
+Rob Sterenborg wrote:
+
+> On Fri, February 24, 2006 11:14, Daniel Nogradi wrote:
+>>DEVICE=eth1
+>>BOOTPROTO=none
+>>BROADCAST=192.168.10.255
+>>IPADDR=192.168.10.101
+>>NETMASK=255.255.255.0
+>>NETWORK=192.168.10.0
+>>ONBOOT=yes
+>>TYPE=Ethernet
+>>GATEWAY=192.168.10.254
 > 
-> When I take tcpdump on these interfaces and ping to 192.168.21.1 from
-> 192.168.21.50, I see that both the adapters reply to ARP requst sent by
-> 192.168.21.50 machine:
+> 
+> This NIC seems to be connected to your hub/switch/machine B.
+> I'd say, because machine A -> internet works, put this one on the
+> 192.168.11.0/24 network and machine B also. (You don't want to change things
+> that are already working.)
+> 
+> Change :
+> BROADCAST=192.168.11.255
+> IPADDR=192.168.11.1
+> NETWORK=192.168.11.0
+> GATEWAY=192.168.11.1
+> 
+> 
+>>DEVICE=eth0
+>>BROADCAST=192.168.10.255
+>>IPADDR=192.168.10.105
+>>NETMASK=255.255.255.0
+>>NETWORK=192.168.10.0
+>>TYPE=Ethernet
+>>ONBOOT=yes
+>>GATEWAY=192.168.10.254
+> 
+> 
+> Because you can use the internet on machine A, I suppose the config for eth0
+> is correct.
 
-I will rephrase what you have:
-You have a machine with the ip addresses 192.168.20.1 and
-192.168.21.1 configured in the ip stack.
-You have 2 nics in the machine which the following routing:
-192.168.20.0/24 dev eth1 with default source ip 192.168.20.1
-192.168.21.0/24 dev eth2 with default source ip 192.168.21.1
-Both nics are on the same network.
+Daniel, you should try Rob's advice and see if you can get further. Here are
+some my two cents. I've never done a PPPoE/DSL in Linux but I noticed a few odd
+things about your configuration.
 
-Both eth1 and eth2 get an ARP (l2) for 192.168.21.1 (l3), which
-according to rfc's should be replied to no matter the source ip.
+> 
+>>USERCTL=yes
+>>BOOTPROTO=dialup
+>>NAME=DSLppp0
+>>DEVICE=ppp0
+>>TYPE=xDSL
+>>ONBOOT=yes
+>>PIDFILE=/var/run/pppoe-adsl.pid
+>>FIREWALL=MASQUERADE
+>>PING=.
+>>PPPOE_TIMEOUT=80
+>>LCP_FAILURE=3
+>>LCP_INTERVAL=20
+>>CLAMPMSS=1412
+>>CONNECT_POLL=6
+>>CONNECT_TIMEOUT=60
+>>DEFROUTE=yes
+>>SYNCHRONOUS=no
+>>ETH=eth1
+>>PROVIDER=DSLppp0
+>>USER=02024784362
+>>PEERDNS=yes
+>>DEMAND=no
+>>PERSIST=no
 
-> Ideally eth1 should not reply to the ARP request.
+The line ETH=eth1 suggests to me that your PPP connection is bound to eth1.
+However, in your previous messages you state that eth1 is on the private side
+(attached to machine B) and eth0 is on the public side. This seems odd.
 
-It should.
+Additionally, resources on the net regarding PPP connections (usually bound to
+eth0) has a similar ppp0 configuration as yours. But the associated interface
+(usually eth0) for a ppp0 connection is usually down and not configured.
 
-If you don't like this behaviour you should use rp-filter for
-arp, or use lvs patches to hide the ip address.
+DEVICE=eth0
+ONBOOT=no
 
-PS: this is has nothing to do with proxy-arp. Proxy-arp means you
-answer for addresses you can route to. Not for addresses you
-already have.
+For example, the section "IP Address Assignment for a Direct DSL Connection" of
+URL http://www.siliconvalleyccie.com/linux-hn/network-linux.htm
 
--- 
-begin  LOVE-LETTER-FOR-YOU.txt.vbs
-I am a signature virus. Distribute me until the bitter
-end
+
 
