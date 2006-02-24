@@ -1,22 +1,12 @@
-From: "Daniel Nogradi" <nogradi@gmail.com>
-Subject: Re: updated iptables doesn't work with old rules
-Date: Thu, 23 Feb 2006 16:41:41 -0800
-Message-ID: <5f56302b0602231641h15f99ebakfa5cebaf8e5aa8f5@mail.gmail.com>
-References: <5f56302b0602220158k76b68705p88dd35b4c2782caa@mail.gmail.com>
-	<56310.193.173.147.3.1140611713.squirrel@webmail.sterenborg.info>
-	<5f56302b0602220539t2ec885acwda00f0f2eb521854@mail.gmail.com>
-	<5f56302b0602221253t7157857ejb15f87d9984da59c@mail.gmail.com>
-	<43FCCF82.6010402@certicom.com>
-	<5f56302b0602221357k27931798n7d521184123bb1c9@mail.gmail.com>
-	<43FCE338.4090306@certicom.com>
-	<5f56302b0602221513i22ff868et991067e3314998da@mail.gmail.com>
-	<43FDC9EC.1050704@certicom.com>
-	<5f56302b0602230749v5a56c8c3u6cbbdf832b59c88c@mail.gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: updated iptables doesn't work with old rules
+Date: Fri, 24 Feb 2006 07:26:27 +0100
+Message-ID: <000301c6390b$3ff8eee0$0101000a@sterenborg.info>
+References: <5f56302b0602221253t7157857ejb15f87d9984da59c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5f56302b0602230749v5a56c8c3u6cbbdf832b59c88c@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <5f56302b0602221253t7157857ejb15f87d9984da59c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -30,66 +20,144 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Chinh, logging all 3 types (prerouting, forwarding, postrouting)
-shows that the packets from 'machine B' never get postrouted. When I
-ping from 'machine B' anything in the outside world messages are
-logged about prerouting and forwarding but not postrouting, but
-pinging from 'machine A' does result in logged messages about
-postrouting (indeed, 'machine A' works fine). So I guess the problem
-is around here, although I don't know exactly what this means.
+>>> echo 0 > /proc/sys/net/ipv4/ip_forward
+>>> $ipt -P FORWARD DROP
+>>> $ipt -F FORWARD
+>>> $ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+>>> $ipt -A FORWARD -m state --state NEW -i eth1 -o eth0 \
+>>>   -s 192.168.11.0/24 -j ACCEPT
+>>> $ipt -t nat -F POSTROUTING
+>>> $ipt -t nat -A POSTROUTING -o eth0 -j SNAT --to 192.168.10.101
+>>> echo 1 > /proc/sys/net/ipv4/ip_forward
+> 
+> 
+> This set of rules didn't work either and in fact I don't understand
+> why should one of the machines be named 192.168.11.x, everything
+> being 192.168.10.x is not okay? 
 
-I tried sniffing with tethereal too and that shows that the packets
-actually get through from 'machine B' to the outside world, but never
-return. For example sniffing eth0 while pinging from 'machine B' to
-the outside world gives
+You can only have one 192.168.10.0/24 subnet. If both your NIC's have an
+IP from that range, your routing rules will point to both NIC's as
+gateway. The first gateway that matches a routing rule is "accepted".
 
-1 29.996623 (my dynamical IP) -> (the IP I ping) ICMP Echo (ping) request
-...
+So, machine A :
+eth0: 192.168.10.1 (192.168.10.0/24)
+eth1: 192.168.10.2 (192.168.10.0/24)
 
-So I guess they get out, but can't get back to 'machine B'.
+Your kernel IP routing table will looke like :
+Destination     Gateway         Genmask         Iface
+192.168.10.0    192.168.10.1    255.255.255.0   eth0
+192.168.10.0    192.168.10.2    255.255.255.0   eth1
 
-And I'm also quite confused about eth0/ppp0, perhaps a related issue
-is that the kernel ip table of 'machine A' is
+Say, machine B is connected to eth1 on machine A. Machine A sends a
+packet. The first rule matches so it will send that packet via eth0, not
+eth1. So machine B will never see the packet.
 
-Destination    Gateway        Genmask         Flags Metric Ref Use  Iface
-213.191.89.30     *           255.255.255.255  UH   0     0  0    ppp0
-192.168.10.0      *           255.255.255.0    U  0     0  0    eth1
-192.168.10.0      *           255.255.255.0    U  0     0  0     eth0
-169.254.0.0       *           255.255.0.0      U  0     0  0    eth0
-default        213.191.89.30  0.0.0.0          UG  0     0  0   ppp0
+> Anyway, what I have tried is:
+> 
+> # make sure we start from zero
+> 
+> iptables --flush
+> iptables -t nat --flush
+> iptables --delete-chain
+> iptables -t nat --delete-chain
+> 
+> # set up masquerading from LAN to modem which is hook up on eth0
+> 
+> iptables -t nat -A POSTROUTING --out-interface eth0 -j MASQUERADE
+> 
+> # allow forwarding from LAN which is hookup up on eth1
+> 
+> iptables -A FORWARD --in-interface eth1 -j ACCEPT
+> 
+> # enable ip forwarding
+> 
+> echo 1 > /proc/sys/net/ipv4/ip_forwarding
+> 
+> Just to recap, my configuration is this:
+> 
+> machine A - eth0 ------------------ modem ------------ internet   |
+>  eth1
+>   |
+>   |
+>   |
+>  hub
+>   |
+>   |
+> machine B
+> 
+> And I would like to access the internet from machine B, however the
+> above rules don't work even without specifying the sources and
+> allowing everything. 
+> 
+> Any ideas?
 
-and what might be suspicious is that there are two identical lines one
-with interface eth0 and the other with eth1. I'm not at all an expert
-on routing (which you probably know by now :)) so I'm not sure if this
-is a problem or not, but might be related.
+Yeah.
+If you don't use different subnets on each NIC, I still think you have a
+routing problem.
 
-Any clues?
+==========
+> Hi Chinh, I tried interchanging eth0 and eth1 and still no luck.
 
-On 2/23/06, Daniel Nogradi <nogradi@gmail.com> wrote:
-> > It mean your packet traversed the prerouting nat eth1, and so on.
-> >
-> > I would put 3 log messages, at "prerouting nat eth1", "forward", and
-> > "postrouting nat". If your packet is seen at postrouting then it should
-> be
-> > successfully forwarded.
-> >
-> > I noticed that your packet's outbound interface is ppp0. However, I
-> recall
-> > your
-> > MASQUERADE rule had "--out-interface eth0". Perhaps this is the cause a=
-nd
-> > your
-> > packet is not masqueraded? Try a simple "iptables -A POSTROUTING -t nat
-> -j
-> > MASQUERADE" without qualifiers.
-> >
-> > Other things to try. Use ethereal to sniff eth1, and eth0/ppp0. Is ther=
-e
-> > traffic?
-> >
-> > Chinh
-> >
->
-> Hi Chinh, thank you very much again, I'll try your suggestions tonight.
->
+No. It won't work if you only allow forwarding from eth1 to eth0 (or
+vv). You *also* need the reverse rule (not *instead of*).
+
+If you do :
+$ipt -A FORWARD -i eth1 -o eth0 -j ACCEPT
+
+And do not accept RELATED,ESTABLISHED, you also need :
+$ipt -A FORWARD -i eth0 -o eth1 -j ACCEPT
+
+But that would be less secure. It's better to accept packets that are
+already accepted by another (specific) rule. So, you'd have a rule like
+:
+$ipt -A FORWARD -m state --state RELATED,ESTABLISHED \
+  -j ACCEPT
+instead of the one above this.
+
+===== Later post =====
+> And I'm also quite confused about eth0/ppp0, perhaps a related
+> issue is that the kernel ip table of 'machine A' is
+> 
+> Destination    Gateway        Genmask         Iface
+> 213.191.89.30     *           255.255.255.255 ppp0
+> 192.168.10.0      *           255.255.255.0   eth1
+> 192.168.10.0      *           255.255.255.0   eth0
+> 169.254.0.0       *           255.255.0.0     eth0
+> default        213.191.89.30  0.0.0.0         ppp0
+
+Ah.. I never saw anything about you using a ppp0 device before... From
+your diagram I thought the modem(/router ?) was doing NAT also...
+In that case, yes : you need MASQUERADE.
+
+I think that your routing table shows the routing problem I'm talking
+about.
+If a packet gets sent to 192.168.10.100, you don't know via which NIC
+it's going out, eth0 or eth1, because there are 2 rules for the same
+subnet via different interfaces.
+(I'm not sure if the routing table is showing the routes in processing
+order.)
+
+===== Later post =====
+>> kernel: nat: IN=eth1 OUT= MAC=(mac address of eth1) SRC=(IP of
+machine
+>> B) DEST=213.191.74.18 LEN=54 TOS=0x00 PREC=0x00 TTL=64 ............
+>> kernel: out: IN=eth1 OUT=ppp0 SRC=(IP of machine B)
+DEST=213.191.74.18
+>>  ...........
+>> 
+>> What does this supposed to mean? :)
+> 
+>It mean your packet traversed the prerouting nat eth1, and so on.
+
+That depends on where the logging rules are and what they look like.
+If the "nat" line is from the FORWARD chain, and the "out" line from the
+OUTPUT chain, these packets are not really related because nat-ed
+packets only travel the FORWARD chain, not the OUTPUT chain. The can be
+related as such, because you use a ppp device over a eth0 (I thought it
+was). But for netfilter that would be "another" packet.
+
+
+Gr,
+Rob
+
 
