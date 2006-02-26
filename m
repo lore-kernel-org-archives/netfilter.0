@@ -1,12 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: updated iptables doesn't work with old rules
-Date: Sat, 25 Feb 2006 20:20:46 +0100
-Message-ID: <000301c63a40$94e7e060$8b00000a@sterenborg.info>
-References: <5f56302b0602241517w2140ffe7v2531d8543368d253@mail.gmail.com>
+From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+Subject: Re: problem with applying a state match rules for ipv6 connections
+Date: Sun, 26 Feb 2006 14:17:45 +0900 (JST)
+Message-ID: <200602260517.k1Q5Hkgc003490@toshiba.co.jp>
+References: <43FD8A34.8090605@areanetworking.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5f56302b0602241517w2140ffe7v2531d8543368d253@mail.gmail.com>
+In-Reply-To: <43FD8A34.8090605@areanetworking.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,66 +17,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: Text/Plain; charset="iso-8859-1"
+To: undertacker@areanetworking.it
+Cc: netfilter@lists.netfilter.org
 
-> Hi Chinh and Rob,
-> 
-> Let me first thank you both very much for your help and explanation,
-
-You're welcome.
-
-> now everything works, routing was the problem as well as me not
-> understanding the iptables rules properly so was always setting
-> something not correct. 
-
-I don't know if you found it already, but I find Oscar's iptables
-tutorial a good read :
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-
->> Additionally, resources on the net regarding PPP connections
->> (usually bound to eth0) has a similar ppp0 configuration as yours.
->> But the associated interface (usually eth0) for a ppp0 connection is
->> usually down and not configured. 
->> 
->> DEVICE=eth0
->> ONBOOT=no
-> 
-> Thanks for this as well, I changed it to ONBOOT=no.
-
-Are you by any change using an Alcatel/Thomson ADSL modem (don't know if
-this is going to work on other modem brands) ? In that case you may be
-able to get rid of ppp0 by using SIP spoofing (which has nothing to do
-with VOIP) and have the internet IP address directly on your NIC.
-I find it easier to use, but the only modem/router I know of that can do
-this are manufactured by Alcatel/Thomson.
-
-> At the moment my rules are:
-> 
-> echo 0 > /proc/sys/net/ipv4/ip_forward
-> iptables --flush
-> iptables -t nat --flush
-> iptables --delete-chain
-> iptables -t nat --delete-chain
-> iptables -P FORWARD DROP
-> iptables -F FORWARD
-> iptables -A FORWARD -i eth0 -o ppp0 -j ACCEPT
-> iptables -A FORWARD -o eth0 -i ppp0 -j ACCEPT
-
-This is effectively the same as having no rules in the FORWARD chain
-when it's policy is ACCEPT. (Okay, not completely because you didn't
-specify the eth1 device.)
-
-For a start, make that :
-iptables -A FORWARD -m state --state NEW -i eth0 -o ppp0 -j ACCEPT
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-> iptables -t nat -F POSTROUTING
-> iptables -t nat -A POSTROUTING -j MASQUERADE
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-
-
-Gr,
-Rob
-
+DQpIaSwNCg0KRnJvbTogVW5kZXJ0YWNrZXIgPHVuZGVydGFja2VyQGFyZWFuZXR3b3JraW5nLml0
+Pg0KRGF0ZTogVGh1LCAyMyBGZWIgMjAwNiAxMToxMTowMCArMDEwMA0KDQo+IERlYXIgQWxsDQo+
+IEkgaGF2ZSBzb21lIHByb2JsZW0gd2l0aCBhcHBseWluZyBhIHN0YXRlIG1hdGNoIHJ1bGVzIGZv
+ciBpcHY2IGNvbm5lY3Rpb25zLg0KPiANCj4gSaJtIHVzaW5nIGEgZGViaWFuIHVuc3RhYmxlIHdp
+dGggMi42LjE2LXJjNCBrZXJuZWwuDQo+IFRoaXMgaXMgbXkgaXB2NiBjb25maWd1cmF0aW9uOigv
+ZXRjL25ldHdvcmsvaW50ZXJmYWNlcykNCj4gDQo+IGF1dG8gYnRleGFjdDAwDQo+IGlmYWNlIGJ0
+ZXhhY3QwMCBpbmV0NiB2NHR1bm5lbA0KPiBhZGRyZXNzIDIwMDE6NjE4OjQwMDpjMjNiOmZmZmY6
+ZmZmZjpmZmZmOmZmZmYNCj4gbmV0bWFzayAxMjgNCj4gZ2F0ZXdheSBmZTgwOjpkNTc5OjE4NTUN
+Cj4gZW5kcG9pbnQgMjEzLjEyMS4yNC44NQ0KPiBsb2NhbCA4NS44OC4yMDAuMTANCj4gdHRsIDI1
+NA0KPiBpcHY2IGFsbG9jYXRpb24gaXMgMjAwMTo2MTg6NDAwOmMyM2I6Oi82NA0KPiBmb3Igbm93
+IEmibSB1c2luZyBvbmx5IGEgYnRleGFjdDAwIGludGVyZmFjZSBmb3IgaXB2NiBvdXRwdXQgdG8g
+aW50ZXJuZXQuDQo+IHRoZXJlIGlzIGFsc28gYSBzZWNvbmQgaW50ZXJmYWNlIGV0aDEgZm9yIExB
+TiBkaXN0cmlidXRpb24gb2YgaXB2Ng0KPiBzdXBwb3J0Lg0KDQpTb3JyeSBJJ20gbm90IGZhbWls
+aWFyIHdpdGggZGViaWFuLCBidXQgdGhpcyBib3ggaXMgcm91dGVyLCBpc24ndCB0aGlzID8NCg0K
+PiBJdCBpcyBub3QgbG9uZyB0aGF0IEmibSB1c2luZyBhIGxpbnV4ICgganVzdCBhYm91dCA2IG1v
+bnRocykgc28gcGxlYXNlIA0KPiBmb3JnaXZlIG1lIGlmIEkgZG9uZSBzb21lIHN0dXBpZCBjb25m
+aWd1cmF0aW9uLg0KPiANCj4gdGhpcyBpcyBteSBpcDZ0YWJsZXMgY29uZmlndXJhdGlvbjoNCj4g
+Y2F0IC9ldGMvaXB0YWJsZXMuY29uZi9pcDZ0YWJsZXMtcm91bGUuY29uZg0KPiAjIEdlbmVyYXRl
+ZCBieSBpcDZ0YWJsZXMtc2F2ZSB2MS4zLjUgb24gVGh1IEZlYiAyMyAxMDo1NTo1NyAyMDA2DQo+
+ICpmaWx0ZXINCj4gOklOUFVUIERST1AgWzE4ODoxODkwNF0NCj4gOkZPUldBUkQgRFJPUCBbMDow
+XQ0KPiA6T1VUUFVUIERST1AgWzk6NzI4XQ0KPiA6YnRleGFjdDAwX2luIC0gWzA6MF0NCj4gOmJ0
+ZXhhY3QwMF9vdXQgLSBbMDowXQ0KPiA6ZXRoMV9pbiAtIFswOjBdDQo+IDpldGgxX291dCAtIFsw
+OjBdDQo+IC1BIElOUFVUIC1zIDo6LzAgLWQgOjovMCAtaSBldGgxIC1qIGV0aDFfaW4NCj4gLUEg
+SU5QVVQgLXMgOjovMCAtZCA6Oi8wIC1pIGJ0ZXhhY3QwMCAtaiBidGV4YWN0MDBfaW4NCj4gLUEg
+T1VUUFVUIC1zIDo6LzAgLWQgOjovMCAtbyBidGV4YWN0MDAgLWogYnRleGFjdDAwX291dA0KPiAt
+QSBPVVRQVVQgLXMgOjovMCAtZCA6Oi8wIC1vIGV0aDEgLWogZXRoMV9vdXQNCj4gLUEgYnRleGFj
+dDAwX2luIC1zIDo6LzAgLWQgOjovMCAtbSBzdGF0ZSAtLXN0YXRlIFJFTEFURUQsRVNUQUJMSVNI
+RUQgLWogDQo+IEFDQ0VQVA0KPiAtQSBidGV4YWN0MDBfb3V0IC1zIDIwMDE6NjE4OjQwMDpjMjNi
+OmZmZmY6ZmZmZjpmZmZmOmZmZmYvMTI4IC1kIDo6LzAgLWogDQo+IEFDQ0VQVA0KPiBDT01NSVQN
+Cj4gIyBDb21wbGV0ZWQgb24gVGh1IEZlYiAyMyAxMDo1NTo1NyAyMDA2DQo+ICMgR2VuZXJhdGVk
+IGJ5IGlwNnRhYmxlcy1zYXZlIHYxLjMuNSBvbiBUaHUgRmViIDIzIDEwOjU1OjU3IDIwMDYNCj4g
+Km1hbmdsZQ0KPiA6UFJFUk9VVElORyBBQ0NFUFQgWzE5NToxOTYzMl0NCj4gOklOUFVUIEFDQ0VQ
+VCBbMTk1OjE5NjMyXQ0KPiA6Rk9SV0FSRCBBQ0NFUFQgWzA6MF0NCj4gOk9VVFBVVCBBQ0NFUFQg
+WzE5NToxOTc4NF0NCj4gOlBPU1RST1VUSU5HIEFDQ0VQVCBbMTg2OjE5MDU2XQ0KPiBDT01NSVQN
+Cj4gIyBDb21wbGV0ZWQgb24gVGh1IEZlYiAyMyAxMDo1NTo1NyAyMDA2DQoNCkF0IGZpcnN0LCB0
+aGlzIGNvbmZpZ3VyYXRpb24gd2lsbCBjYXVzZSB0byBkcm9wIElDTVB2NiBwYWNrZXRzIGZvcg0K
+YWRkcmVzcyBhdXRvY29uZmlndXJhdGlvbiBpbiB5b3VyIExBTiBpZiB5b3UgcnVuIHJhZHZkIG9u
+IHRoaXMgYm94Lg0KDQo+IGZpbmFseSBJIGNhbWUgdG8gbXkgcXVlc3Rpb246DQo+IGZvciBzb21l
+IGtpbmQgb2YgcmVhc29uIHRoZSByb3VsZToNCj4gLUEgYnRleGFjdDAwX2luIC1zIDo6LzAgLWQg
+OjovMCAtbSBzdGF0ZSAtLXN0YXRlIFJFTEFURUQsRVNUQUJMSVNIRUQgLWogDQo+IEFDQ0VQVA0K
+PiBkb26idCBtYXRjaCB0aGF0IGtpbmcgb2YgdHJhZmZpYy4NCj4gKGlmIGkgYWRkIHRoaXMgcm91
+bGUgYWZ0ZXIgdGhlIHVwIG9uZSA6ICItQSBidGV4YWN0MDBfaW4gLXMgOjovMCAtZCA6Oi8wIA0K
+PiAtaiBMT0ciIGxvZyBvdXRwdXQgYWxsIHRoZSB0cmFmZmljKQ0KDQpJZiB0aGlzIGJveCBpcyBy
+b3V0ZXIgYW5kIHlvdSB3YW50IHRvIHVzZSBzdGF0ZSBtYXRjaCBmb3IgZm9yd2FyZWRlZA0KcGFj
+a2V0cywgeW91IG5lZWQgdG8gY29uZmlndXJlIEZPUldBUkQgY2hhaW4uDQoNCkFuZCBwbGVhc2Ug
+Im1vZHByb2JlIG5mX2Nvbm50cmFja19pcHY2IiBtYW51YWxseS4gRm9yIHNvbWUgcmVhc29uLCBp
+dCBpc24ndA0KYXV0by1sb2FkZWQgYW5kIHdlIGhhdmUgdG8gZGVmZXIgdG8gaW1wcm92ZSB0aGlz
+IHVudGlsIDIuNi4xNy4NCg0KPiBJIHdhcyB0cmF5IHNldmVyYWwgdGltZXMgdG8gcmVjb25maWd1
+cmUgYWxsIGlwNnRhYmxlcyBzdXBwb3NpbmcgdGhhdCANCj4gdGhpcyB3YXMgYW4gY29uZmlndXJh
+dGlvbiBwcm9ibGVtICwgYnV0IHRoZSBjb25maWd1cmF0aW9uIHRvIG1lIHNlZW1zIG9rLg0KPiBQ
+bGVhc2UgY2FuIHlvdSBoZWxwIG1lPw0KPiBCZXN0IFJlZ2FyZHMNCj4gVW5kZXJ0YWNrZXINCj4g
+DQo+IFAuUy4NCj4gSaJtIHNvIHNvcnJ5IGZvciBteSBFbmdsaXNoLCBJIGhvcGUgeW91IHVuZGVy
+c3RhbmQgdGhpcyBtYWlsLg0KDQotLSBZYXN1eXVraSBLb3pha2FpDQo=
 
