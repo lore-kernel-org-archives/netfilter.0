@@ -1,10 +1,12 @@
-From: Chris Mason <lists@masonc.com>
-Subject: iptables-1.3.5 patch-o-matic-ng policy patch does not build
-Date: Sun, 26 Feb 2006 21:12:38 -0400
-Message-ID: <44025206.7020805@masonc.com>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: How many ways are there to interact with Linux TCP/IP stack?
+Date: Mon, 27 Feb 2006 11:33:59 +1000
+Message-ID: <44025707.5030800@snapgear.com>
+References: <20060224083724.13182.qmail@web37814.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060224083724.13182.qmail@web37814.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,77 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="windows-1252"
+To: Mayank <linuxblr_in@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-I am trying to patch iptables-1.3.5 using patch-o-matic-ng to include 
-the policy patch. I am building against the 2.6.12 kernel from an source 
-rpm. I get these errors when I build:
+On 02/24/2006 06:37 PM, Mayank wrote:
+> I am new to netfilter world, can someone please
+> clarify on how many ways are there to interact with
+> the Linux TCP/IP stack, based on google reading,  I
+> think it can be achieved in following 3 ways-
+>
+> 1. Userspace =AC=96 LIBIPQ can be used in
+>    conjugation with =96j QUEUE
+> 2. Kernal modules- by using nf_register_hook
+> 3. IPTABLES match =96 by using register_match
+>
+> Are there more ways? does anybody has any comparison
+> info  in terms of performance etc ? Which one is
+> faster?
 
-cc -O2 -g -pipe -m32 -march=i386 -mtune=pentium4 
--I/usr/src/redhat/BUILD/iptables-1.3.5/include -fPIC -Wall -Wunused 
--I/usr/include -Iinclude/ -DIPTABLES_VERSION=\"1.3.5\"  -fPIC -o 
-extensions/libipt_policy_sh.o -c extensions/libipt_policy.c
-extensions/libipt_policy.c: In function `parse_direction':
-extensions/libipt_policy.c:104: error: `POLICY_MATCH_IN' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:104: error: (Each undeclared identifier is 
-reported only once
-extensions/libipt_policy.c:104: error: for each function it appears in.)
-extensions/libipt_policy.c:106: error: `POLICY_MATCH_OUT' undeclared 
-(first use in this function)
-extensions/libipt_policy.c: In function `parse_policy':
-extensions/libipt_policy.c:113: error: `POLICY_MATCH_NONE' undeclared 
-(first use in this function)
-extensions/libipt_policy.c: In function `parse_mode':
-extensions/libipt_policy.c:122: error: `POLICY_MODE_TRANSPORT' 
-undeclared (first use in this function)
-extensions/libipt_policy.c:124: error: `POLICY_MODE_TUNNEL' undeclared 
-(first use in this function)
-extensions/libipt_policy.c: In function `parse':
-extensions/libipt_policy.c:143: error: `POLICY_MATCH_IN' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:143: error: `POLICY_MATCH_OUT' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:160: error: `POLICY_MATCH_STRICT' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:200: error: incompatible types in assignment
-extensions/libipt_policy.c:201: error: incompatible types in assignment
-extensions/libipt_policy.c:215: error: incompatible types in assignment
-extensions/libipt_policy.c:216: error: incompatible types in assignment
-extensions/libipt_policy.c:246: error: `POLICY_MAX_ELEM' undeclared 
-(first use in this function)
-extensions/libipt_policy.c: In function `final_check':
-extensions/libipt_policy.c:268: error: `POLICY_MATCH_IN' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:268: error: `POLICY_MATCH_OUT' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:272: error: `POLICY_MATCH_NONE' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:273: error: `POLICY_MATCH_STRICT' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:290: error: `POLICY_MODE_TUNNEL' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:291: error: `POLICY_MODE_TRANSPORT' 
-undeclared (first use in this function)
-extensions/libipt_policy.c: In function `print_mode':
-extensions/libipt_policy.c:303: error: `POLICY_MODE_TRANSPORT' 
-undeclared (first use in this function)
-extensions/libipt_policy.c:306: error: `POLICY_MODE_TUNNEL' undeclared 
-(first use in this function)
-extensions/libipt_policy.c: In function `print_flags':
-extensions/libipt_policy.c:369: error: `POLICY_MATCH_IN' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:374: error: `POLICY_MATCH_NONE' undeclared 
-(first use in this function)
-extensions/libipt_policy.c:379: error: `POLICY_MATCH_STRICT' undeclared 
-(first use in this function)
-make: *** [extensions/libipt_policy_sh.o] Error 1
-error: Bad exit status from /var/tmp/rpm-tmp.86614 (%build)
+Basically, the only way is nf_register_hook.  The other 2 are just
+infrastructure built on top of that.
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+That is, iptables registers a netfilter hook, and calls the matches
+and targets from this hook.
 
+QUEUE is just a iptables target, so it is called by iptables.
+
+For performance, QUEUE is clearly slower, since it passes the packet
+to user space.
+
+Choosing between netfilter hooks or iptables matches should be based
+purely on whether you want to use iptables functionality.
 
