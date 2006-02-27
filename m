@@ -1,13 +1,10 @@
-From: Stephen Jones <hivemynd@hivemynd.net>
-Subject: Re: Tuning NAT timeout values
-Date: Sun, 26 Feb 2006 13:29:05 -0600
-Message-ID: <44020181.4030605@hivemynd.net>
-References: <43EA2AA5.3080401@arcoscom.com> <43FE1589.10205@hivemynd.net>
-	<d27cd2010602260356n640eeb22g@mail.gmail.com>
+From: Chris Mason <lists@masonc.com>
+Subject: iptables-1.3.5 patch-o-matic-ng policy patch does not build
+Date: Sun, 26 Feb 2006 21:12:38 -0400
+Message-ID: <44025206.7020805@masonc.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <d27cd2010602260356n640eeb22g@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,44 +16,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: ludi <myhapwcforever@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-ludi wrote:
-> it maybe help you.
-> /usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_udp.c
-> #define UDP_TIMEOUT (30*HZ)
-> #define UDP_STREAM_TIMEOUT (180*HZ)
-> To change these values you can set up the udp timeout values.
-> 
-> tcp
-> 
-> /usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c:
-> 
-> 
-> static unsigned long tcp_timeouts[]
-> = { 30 MINS, /* TCP_CONNTRACK_NONE, */
-> 5 DAYS, /* TCP_CONNTRACK_ESTABLISHED, */
-> 2 MINS, /* TCP_CONNTRACK_SYN_SENT, */
-> 60 SECS, /* TCP_CONNTRACK_SYN_RECV, */
-> 2 MINS, /* TCP_CONNTRACK_FIN_WAIT, */
-> 2 MINS, /* TCP_CONNTRACK_TIME_WAIT, */
-> 10 SECS, /* TCP_CONNTRACK_CLOSE, */
-> 60 SECS, /* TCP_CONNTRACK_CLOSE_WAIT, */
-> 30 SECS, /* TCP_CONNTRACK_LAST_ACK, */
-> 2 MINS, /* TCP_CONNTRACK_LISTEN, */
-> };
-> I only find these , but I am not sure whether it work.
+I am trying to patch iptables-1.3.5 using patch-o-matic-ng to include 
+the policy patch. I am building against the 2.6.12 kernel from an source 
+rpm. I get these errors when I build:
 
-Thanks for your reply ludi!  I saw those in the source code also, but I 
-was hoping it would be safe to change them with something like this:
+cc -O2 -g -pipe -m32 -march=i386 -mtune=pentium4 
+-I/usr/src/redhat/BUILD/iptables-1.3.5/include -fPIC -Wall -Wunused 
+-I/usr/include -Iinclude/ -DIPTABLES_VERSION=\"1.3.5\"  -fPIC -o 
+extensions/libipt_policy_sh.o -c extensions/libipt_policy.c
+extensions/libipt_policy.c: In function `parse_direction':
+extensions/libipt_policy.c:104: error: `POLICY_MATCH_IN' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:104: error: (Each undeclared identifier is 
+reported only once
+extensions/libipt_policy.c:104: error: for each function it appears in.)
+extensions/libipt_policy.c:106: error: `POLICY_MATCH_OUT' undeclared 
+(first use in this function)
+extensions/libipt_policy.c: In function `parse_policy':
+extensions/libipt_policy.c:113: error: `POLICY_MATCH_NONE' undeclared 
+(first use in this function)
+extensions/libipt_policy.c: In function `parse_mode':
+extensions/libipt_policy.c:122: error: `POLICY_MODE_TRANSPORT' 
+undeclared (first use in this function)
+extensions/libipt_policy.c:124: error: `POLICY_MODE_TUNNEL' undeclared 
+(first use in this function)
+extensions/libipt_policy.c: In function `parse':
+extensions/libipt_policy.c:143: error: `POLICY_MATCH_IN' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:143: error: `POLICY_MATCH_OUT' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:160: error: `POLICY_MATCH_STRICT' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:200: error: incompatible types in assignment
+extensions/libipt_policy.c:201: error: incompatible types in assignment
+extensions/libipt_policy.c:215: error: incompatible types in assignment
+extensions/libipt_policy.c:216: error: incompatible types in assignment
+extensions/libipt_policy.c:246: error: `POLICY_MAX_ELEM' undeclared 
+(first use in this function)
+extensions/libipt_policy.c: In function `final_check':
+extensions/libipt_policy.c:268: error: `POLICY_MATCH_IN' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:268: error: `POLICY_MATCH_OUT' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:272: error: `POLICY_MATCH_NONE' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:273: error: `POLICY_MATCH_STRICT' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:290: error: `POLICY_MODE_TUNNEL' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:291: error: `POLICY_MODE_TRANSPORT' 
+undeclared (first use in this function)
+extensions/libipt_policy.c: In function `print_mode':
+extensions/libipt_policy.c:303: error: `POLICY_MODE_TRANSPORT' 
+undeclared (first use in this function)
+extensions/libipt_policy.c:306: error: `POLICY_MODE_TUNNEL' undeclared 
+(first use in this function)
+extensions/libipt_policy.c: In function `print_flags':
+extensions/libipt_policy.c:369: error: `POLICY_MATCH_IN' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:374: error: `POLICY_MATCH_NONE' undeclared 
+(first use in this function)
+extensions/libipt_policy.c:379: error: `POLICY_MATCH_STRICT' undeclared 
+(first use in this function)
+make: *** [extensions/libipt_policy_sh.o] Error 1
+error: Bad exit status from /var/tmp/rpm-tmp.86614 (%build)
 
-echo ### > /proc/sys/net/ipv4/netfilter/ip_conntrack_generic_timeout
+-- 
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
 
-Where the ### is the desired value in seconds. Having to recompile 
-sources everytime paramaters like this need to be changed would be 
-inconvenient, to say the least. If that is the only way, then so be it. 
-Thanks again for your reply!
-
-SJ
 
