@@ -1,59 +1,84 @@
-From: Tommy W <tommy@svearike.sytes.net>
-Subject: How to make portforwarding work properly with two ISPs
-Date: Tue, 28 Feb 2006 22:33:59 +0100
-Message-ID: <200602282233.59855.tommy@svearike.sytes.net>
+From: Alpt <alpt-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+Subject: Multiple inet gw and multipath
+Date: Tue, 28 Feb 2006 22:44:37 +0100
+Message-ID: <20060228214437.GA5695@nihil>
+Reply-To: netsukuku-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jI8keyz6grp/JLjh"
+Return-path: <netsukuku-return-479-gnpn-netsukuku=m.gmane.org-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+List-Post: <mailto:netsukuku-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+List-Help: <mailto:netsukuku-help-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+List-Unsubscribe: <mailto:netsukuku-unsubscribe-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+List-Subscribe: <mailto:netsukuku-subscribe-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+Cc: netsukuku-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org
 
-Hi
-I'm having some trouble with getting my portforwarding to work.
-Basically what I do is check for   destination ip and port, if they match my 
-server's, then to DNAT to the correct box.
-This works perfectly, unless the request is done on the "wrong" interface.
-Meaning if a request comes in on my secondary interface.
-I take it that ALL SENT to the GATEWAY will be redirected to the correct BOX 
-BEHIND.. but it's when the BOX BEHIND starts talking back, it goes out on the 
-standard interface instead of the secondary.
-I use --set-mark 0x2 in the mangle table for getting traffic out on the 
-secondary interface.
 
-TELIA is my main line and BOSTREAM is my secondary line.
-And this is the code used when doing portforwarding. only the first two 
-commands work. the last two will fail (silently)
+--jI8keyz6grp/JLjh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-iptables -I PREROUTING -t nat -d $TELIAIP -p $PROTO -m $PROTO --dport $1 -j 
-DNAT --to-destination $2:$3
-iptables -I FORWARD -d $2 -i $TELIAIF -o $SRCIF -p $PROTO -m $PROTO --dport $3 
--j ACCEPT
+Hi there,
+this is the situation:
 
-iptables -I PREROUTING -t nat -d $BOSTREAMIP -p $PROTO -m $PROTO --dport $1 -j 
-DNAT --to-destination $2:$3
-iptables -I FORWARD -d $2 -i $BOSTREAMIF -o $SRCIF -p $PROTO -m $PROTO --dport 
-$3 -j ACCEPT
+We have a multipath default route. Each nexthop is an ipip tunnel to differ=
+ent
+inet gateways.
 
-Do I need to put the connection in some kind of connection tracking ?
-I'm quite lost about this to be honest.
-All help is appreciated
+	default equalize=20
+        	nexthop via 10.10.1.1  dev tunl0 weight 1
+	        nexthop via 10.10.1.2  dev tunl1 weight 1
+	        nexthop via 10.10.1.3  dev tunl2 weight 1
 
-http://svearike.sytes.net/~ws/rc.firewall_
+Each inet gw has a different IP on the Internet, therefore the tcp connecti=
+on
+breaks if the packets go first from one gw and then after another one.
+What we need is to use the same gw for all the packets of a connection.
 
-There's the firewall-script in it's whole.
-If you find anything that looks stupid or if you have any other suggestions 
-about the script, feel free to harrass me :)
+We can use "-o, --out-interface [!] name" to mark the outgoing packets,
+especially the packets which initialize a new connection, and associate each
+tunX interface to a routing rule.
 
-Tommy W
+What's your advises?
 
+You can understand better the the whole situation here:                    =
+                                                   =20
+http://archives.free.net.ph/message/20060207.030317.37885ea1.en.html
+http://marc.theaimsgroup.com/?l=3Dlinux-net&m=3D113550638110682&w=3D2      =
+                                                         =20
+and here:                                                                  =
+                                                   =20
+http://marc.theaimsgroup.com/?l=3Dlinux-net&m=3D113636640615375&w=3D2    =
+=20
+
+If we can resolve this problem, then it we'll be possible to use at the same
+time multiple inet gw in Netsukuku:
+
+http://lab.dyne.org/Ntk_IGS
+
+Thanks ^_^
+--=20
+:wq!
+"I don't know nothing" The One Who reached the Thinking Matter   '.'
+
+[ Alpt --- Freaknet Medialab ]
+[ GPG Key ID 441CF0EE ]
+[ Key fingerprint =3D 8B02 26E8 831A 7BB9 81A9  5277 BFF8 037E 441C F0EE ]
+
+--jI8keyz6grp/JLjh
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQFEBMRFv/gDfkQc8O4RAkxWAJsEJR5w08+DO5DwGdgG/QvVuUES6gCgs7Ac
+rRBP82akBlY3rfqYSG14XVE=
+=mSWC
+-----END PGP SIGNATURE-----
+
+--jI8keyz6grp/JLjh--
