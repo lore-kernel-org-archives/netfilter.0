@@ -1,7 +1,7 @@
-From: Oleg <sov.rbsec@gmail.com>
-Subject: icmp in ip_conntrack not seen
-Date: Tue, 28 Feb 2006 23:33:20 +0300
-Message-ID: <200602282333.20515.sov.rbsec@gmail.com>
+From: Tommy W <tommy@svearike.sytes.net>
+Subject: How to make portforwarding work properly with two ISPs
+Date: Tue, 28 Feb 2006 22:33:59 +0100
+Message-ID: <200602282233.59855.tommy@svearike.sytes.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,41 +19,41 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello!
+Hi
+I'm having some trouble with getting my portforwarding to work.
+Basically what I do is check for   destination ip and port, if they match my 
+server's, then to DNAT to the correct box.
+This works perfectly, unless the request is done on the "wrong" interface.
+Meaning if a request comes in on my secondary interface.
+I take it that ALL SENT to the GATEWAY will be redirected to the correct BOX 
+BEHIND.. but it's when the BOX BEHIND starts talking back, it goes out on the 
+standard interface instead of the secondary.
+I use --set-mark 0x2 in the mangle table for getting traffic out on the 
+secondary interface.
 
-I 've got a problem with my linux box, description:
+TELIA is my main line and BOSTREAM is my secondary line.
+And this is the code used when doing portforwarding. only the first two 
+commands work. the last two will fail (silently)
 
-Box setup:
-1. Linux kernel 2.6.15 vanilla from www.kernel.org, no additional patches.
-2. 
-# cat /proc/sys/net/ipv4/netfilter/ip_conntrack_icmp_timeout
-30
-3. 
-zcat /proc/config.gz |grep IP_NF
-CONFIG_IP_NF_CONNTRACK=y
-CONFIG_IP_NF_CT_ACCT=y
-CONFIG_IP_NF_CONNTRACK_MARK=y
-CONFIG_IP_NF_CONNTRACK_EVENTS=y
-# CONFIG_IP_NF_CT_PROTO_SCTP is not set
-CONFIG_IP_NF_FTP=y
-... etc
+iptables -I PREROUTING -t nat -d $TELIAIP -p $PROTO -m $PROTO --dport $1 -j 
+DNAT --to-destination $2:$3
+iptables -I FORWARD -d $2 -i $TELIAIF -o $SRCIF -p $PROTO -m $PROTO --dport $3 
+-j ACCEPT
 
-Problem:
-When pinging from other server, this box has no icmp records 
-in /proc/net/ip_conntrack. When pinging from this box other server those 
-entries not exist too. Ping works ok, request/replies goes both sides (seen 
-at tcpdump on both systems).
+iptables -I PREROUTING -t nat -d $BOSTREAMIP -p $PROTO -m $PROTO --dport $1 -j 
+DNAT --to-destination $2:$3
+iptables -I FORWARD -d $2 -i $BOSTREAMIF -o $SRCIF -p $PROTO -m $PROTO --dport 
+$3 -j ACCEPT
 
-Those entries appear only for small time when pinging in such way: ping 
--f ... :-( And only one way to get them is this script:
-while true;do grep icmp /proc/net/ip_conntrack;done
+Do I need to put the connection in some kind of connection tracking ?
+I'm quite lost about this to be honest.
+All help is appreciated
 
-P.S. I think that problem exist because i set CONFIG_IP_NF_CT_ACCT option, am 
-i wrong?
-P.P.S. I can't subscribe to this list from my mail at mail.ru server, no 
-notification about cause of this has been received, no rules at 
-www.netfilter.org describe problems with free mail servers :-(
--- 
-Best regards, Oleg
+http://svearike.sytes.net/~ws/rc.firewall_
 
+There's the firewall-script in it's whole.
+If you find anything that looks stupid or if you have any other suggestions 
+about the script, feel free to harrass me :)
+
+Tommy W
 
