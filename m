@@ -1,10 +1,10 @@
-From: Jason Neely <bondibox@bellsouth.net>
-Subject: RTSP Reflect Broadcast
-Date: Tue, 28 Feb 2006 11:38:41 -0500
-Message-ID: <44047C91.40502@bellsouth.net>
-Reply-To: bondibox@bellsouth.net
+From: "postmaster" <postmaster@netje.nl>
+Subject: Outgoing port is wrong
+Date: Wed, 1 Mar 2006 13:14:03 +0100
+Message-ID: <004f01c63d29$a1818010$7b82a8c0@aladin>
+Reply-To: postmaster@netje.nl
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,63 +16,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
+I am having a lot of problems with setting up something relatively easy, =
+but
+does not seem to work.
+=A0
+Situation:
+=A0
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
++-------------+=A0=A0=A0=A0=A0=A0=A0=A0 |--- Box1=A0 192.168.1.107:15009 =
 
-I have a CentOS 4.2 box running Darwin Streaming Server with an iptables 
-firewall.  I set the firewall rules to allow rtsp streaming, and it 
-works fine while streaming static files housed on the server, but when I 
-try to reflect a live broadcast with the firewall running it breaks down.
-
-The way it is set up is an enduser ($PC) sends a request to the server 
-($DSS) which then listens for the unicast broadcast session being sent 
-to it from the broadcaster ($Mac), and forwards it out to the initial 
-user.  The session breaks down because the server can only answer 
-requests and can't initiate a listen to the broadcast being sent to it,  
-or it can't forward the broadcast.  I found that it is the reject 
-any-as-yet unspecified INPUT rule that is causing the stoppage.   The 
-DSS has only one interface, eth0 with which it receives the broadcast 
-and client requests.
-
-What iptables ruleset will allow the streaming server to enable a user 
-to tell it to start listening to an unicast transmission?
-
-Port 554 =  DSS Listen
-Port 6970-6999 = DSS Send & control
-Port 5432= broadcaster audio 1
-Port 5433= broadcaster audio 2
-------------------------------------------------------------------------------
-I did cat /proc/net/ip_conntrack and identified the following sessions 
-as relevant.  
-
-udp      src=$Mac dst=$DSS sport=6970 dport=5432  src=$DSS dst=$Mac 
-sport=5432 dport=6970
-udp      src=$Mac dst=$DSS sport=6971 dport=5433 src=$DSS dst=$Mac 
-sport=5433 dport=6971
-udp      src=$DSS dst=$PC sport=6970 dport=6970  src=$PC dst=$DSS 
-sport=6970 dport=6970
-udp      src=$DSS dst=$PC sport=6971 dport=6971  src=$PC dst=$DSS 
-sport=6971 dport=6971
-tcp      ESTABLISHED src=$PC dst=$DSS sport=2278 dport=554 src=$DSS 
-dst=$PC sport=554 dport=2278
-
-===============  iptables rules  ====================
-/sbin/iptables -A INPUT -s 127.0.0.1 -j ACCEPT
-/sbin/iptables -A INPUT -s 127.0.0.1 -d 192.168.1.159 -j ACCEPT
-/sbin/iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-/sbin/iptables -A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED 
--j ACCEPT
-/sbin/iptables -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-/sbin/iptables -A INPUT -d 192.168.1.159 -p tcp --dport 80 -j ACCEPT
-/sbin/iptables -A INPUT -d 192.168.1.159 -p udp --dport 80 -j ACCEPT
-/sbin/iptables -A INPUT -d 192.168.1.159 -p tcp --dport 554 -j ACCEPT
-/sbin/iptables -A INPUT -d 192.168.1.159 -p udp --dport 554 -j ACCEPT
-/sbin/iptables -A INPUT -d 192.168.1.159 -p tcp --dport 7070 -j ACCEPT
-/sbin/iptables -A INPUT -d 192.168.1.159 -p udp --dport 7070 -j ACCEPT
-/sbin/iptables -A INPUT -d 192.168.1.159 -p udp --dport 6970:6999 -j ACCEPT
-/sbin/iptables -A INPUT -j LOG
-/sbin/iptables -A INPUT -j REJECT
-/sbin/iptables -A FORWARD -j REJECT
+Internet ------| eth0=A0=A0=A0 eth1|---------|--- Box2=A0 =
+192.168.1.108:15009
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
++-------------+=A0=A0=A0=A0=A0=A0=A0=A0 |--- Box3=A0 192.168.1.109:15009
+=A0=A0=A0=A0=A0=A0=A0=A0 62.59.197.53 =A0=A0=A0=A0192.168.1.1
+=A0
+I have 3 boxes running the same services in a DMZ. Via the internet, I =
+want
+the ability to access the different boxes, based on a different port =
+number
+on the out-side. Out-side port 18107 should go to internal
+192.168.1.107:15009, 18108 should go to 192.168.1.108:15009 and Port =
+18109
+should go to 192.168.1.109:15009.=20
+This was working, but the new security of the applications does demand =
+that
+the services should be able to reinitiate the connection, using the same
+port as on the way in. So I need to make sure that box1
+(192.168.1.107:15009) always uses 62.59.197.53:18107 to connect to the
+outside.=20
+=A0
+How do I setup these rules correctly for in and out going?
+=A0
+=A0
+Any help is welcome.
+=A0
+=A0=A0 Henri B.
+=A0
+=A0
 
 
