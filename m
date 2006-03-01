@@ -1,12 +1,12 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: How to make portforwarding work properly with two ISPs
-Date: Wed, 01 Mar 2006 10:16:06 +1000
-Message-ID: <4404E7C6.301@snapgear.com>
-References: <200602282233.59855.tommy@svearike.sytes.net>
+From: "Calvin Hubble" <calvin.hubble@gmail.com>
+Subject: NF_STOLEN reinsertion
+Date: Tue, 28 Feb 2006 18:18:47 -0800
+Message-ID: <3f0dd8f80602281818p5b2f16ffpbb0e26b3832906c2@mail.gmail.com>
+Reply-To: chubble@cs.ucsd.edu
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200602282233.59855.tommy@svearike.sytes.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +18,13 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Tommy W <tommy@svearike.sytes.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 03/01/2006 07:33 AM, Tommy W wrote:
-> Hi
-> I'm having some trouble with getting my portforwarding to work.
-> Basically what I do is check for   destination ip and port, if they match my 
-> server's, then to DNAT to the correct box.
-> This works perfectly, unless the request is done on the "wrong" interface.
-> Meaning if a request comes in on my secondary interface.
-> I take it that ALL SENT to the GATEWAY will be redirected to the correct BOX 
-> BEHIND.. but it's when the BOX BEHIND starts talking back, it goes out on the 
-> standard interface instead of the secondary.
-> I use --set-mark 0x2 in the mangle table for getting traffic out on the 
-> secondary interface.
+I have yet to find any resource that answers this question.  If I have
+a kernel module that registers a callback with netfilter and steals a
+packet during the NF_IP_PRE_ROUTING stage, How can I re-insert this
+packet on the network stack, (before the ip routing stage) so it is
+forwarded back out on the correct device?
 
-The solution here is to remember that a connection was initiated on the
-secondary, and set the mark on replies so that they go out the secondary.
-I've had success doing this with something like this:
-
-iptables -t mangle -A PREROUTING -i $BOSTREAMIF -m conntrack --ctstate NEW -j CONNMARK --set-mark 0x2
-iptables -t mangle -A PREROUTING -i $INTIF -m conntrack --ctstate ESTABLISHED,RELATED -j CONNMARK --restore-mark
-
+Thanks
 
