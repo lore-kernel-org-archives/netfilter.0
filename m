@@ -1,11 +1,10 @@
-From: "Andy Lego" <legoandy@gmail.com>
-Subject: Dual-home and forward outgoing requests
-Date: Thu, 2 Mar 2006 08:33:55 -0500
-Message-ID: <a46d47540603020533v6093ac9et4a1f3677e0f490cc@mail.gmail.com>
+From: veera kumar <veera_kumar2983@yahoo.co.in>
+Subject: nfsim
+Date: Thu, 2 Mar 2006 13:40:03 +0000 (GMT)
+Message-ID: <20060302134003.61127.qmail@web8510.mail.in.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,21 +18,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi,
+ I am working nfsim to test netfilter code.I got nfsim
+code from netfilter.org.I can able to compile that.
+  Then I have to load my module into nfsim.How can I
+load  my own module into that.I tried insmod command
+which  belongs to nfsim I got following message.
+ ./netfilter/module.so :Can not open shared object
+files.
+No Such file or directory.
+  kindly save me.
 
-I have a dual-homed network. Is there any way to tell iptables to
-forward all requests for specific service, that come from one
-interface, to go back out on the same interface?
 
-Right now I have simply:
+Thanks
+veera
 
--A POSTROUTING -o eth0 -j MASQUERADE
--A POSTROUTING -o eth1 -j MASQUERADE
 
-So, what am I missing?
-
-Thank you.
-
---
-http://legoandy.com
+		
+__________________________________________________________ 
+Yahoo! India Matrimony: Find your partner now. Go to http://yahoo.shaadi.com
 
