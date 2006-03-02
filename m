@@ -1,11 +1,11 @@
-From: Davis Sylvester <dsylvesteriii@yahoo.com>
-Subject: IPTABLES AND MONITOR
-Date: Thu, 2 Mar 2006 08:19:39 -0800 (PST)
-Message-ID: <20060302161939.40940.qmail@web54711.mail.yahoo.com>
-Reply-To: dsylvesteriii@yahoo.com
+From: "Jason Sigurdur" <Jason.Sigurdur@aspenview.org>
+Subject: P.o.m question
+Date: Thu, 2 Mar 2006 09:28:31 -0700
+Message-ID: <648A21EA469E3848922D9860785CD5EF23D47E@aspen-mail01.aspenview.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,20 +19,12 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-We're running iptables/Netfilter 1.3.5.  We have our
-mail server nat'ed.  Every so often our firewall stops
-preforming the nat translation from public IP address
---> private IP Address.
+Hi, why must the the kernel be patched for netfilter modules. Would it
+not be possible to build the modules without patching the kernel. I
+thought that patching was only required for stuff that was built in
+statically?=20
 
-What is the best way to troubleshoot this problem? If
-you have reference to a simple quide or how to shoot
-it my way.
+Thx confused
 
-
-Thanks in advance!
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+jason
 
