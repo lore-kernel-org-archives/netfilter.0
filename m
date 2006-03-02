@@ -1,11 +1,12 @@
-From: =?iso-8859-1?q?Ra=FFfffffal=20Rodr=FFffffedguez?=
-	<raul_rodriguez_vasquez@yahoo.es>
-Subject: information about nf_register_queue_handler
-Date: Thu, 2 Mar 2006 17:59:14 +0100 (CET)
-Message-ID: <20060302165914.38686.qmail@web86907.mail.ukl.yahoo.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: Easy way to block an IP address from having internet access
+Date: Thu, 02 Mar 2006 12:12:21 -0500
+Message-ID: <1141319541.2835.1.camel@localhost>
+References: <053d01c63df0$e22e2c40$9f811405@ckboy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <053d01c63df0$e22e2c40$9f811405@ckboy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: cKBoy <ckboy@megasardines.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi guys, i'm writing a netfilter module which must
-enqueue packets in different queues and reinject each
-one of them according to my decisions... but i have
-some doubts....=20
+On Thu, 2006-03-02 at 20:00 +0800, cKBoy wrote:
+> What command would block an IP address(es) from having internet access?  And 
+> could it be done for a limited time? 
+> 
+> 
+> 
+That's a pretty straightforward problem easily answered by reading the
+documentation unless I misunderstand your question.  You can find an
+excellent tutorial at
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+There are also some slightly dated slide training slide shows in the
+training section of the ISCS network security management project at
+http://iscs.sourceforge.net
 
-I've registered two hooks (NF_IP_PRE_ROUTING and
-NF_IP_POST_ROUTING), but one of them enqueue some
-packets (return NF_QUEUE)..... I know at this point,
-all queued packets are dropped!, because no-one is
-registered to handle queued packets...... and for
-register interest in queued packets i must use
-nf_register_queue_handler() and
-nf_unregister_queue_handler()...=20
+Good luck - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-I've seen nf_register_queue_handler declarated in
-netfilter.h, but i haven't seen it defined nowhere...
-please, how must i register some queue_handlers in my
-module (one per protocol)? if you know where can i
-find information about this, please, let me know
-it......... Thanks for help!!!
+Financially sustainable open source development
+http://www.opensourcedevel.com
 
-Raul Rodriguez
-
-
-=09
-=09
-	=09
-______________________________________________=20
-LLama Gratis a cualquier PC del Mundo.=20
-Llamadas a fijos y m=F3viles desde 1 c=E9ntimo por minuto.=20
-http://es.voice.yahoo.com
 
