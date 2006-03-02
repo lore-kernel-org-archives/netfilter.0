@@ -1,7 +1,7 @@
-From: "Niels Somers" <somers.niels@gmail.com>
-Subject: libipt_recent
-Date: Thu, 2 Mar 2006 14:18:43 +0100
-Message-ID: <2ad714090603020518x42cecf23l@mail.gmail.com>
+From: "Andy Lego" <legoandy@gmail.com>
+Subject: Dual-home and forward outgoing requests
+Date: Thu, 2 Mar 2006 08:33:55 -0500
+Message-ID: <a46d47540603020533v6093ac9et4a1f3677e0f490cc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,27 +19,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all,
+Hello,
 
-I have a very basic knownledge of linux. So keep that in mind plz :)
-I ran into a problem when I was searching for a solution for the ssh
-brute-force attacks.
-Found one that was simple to add,  some rules in the iptables.
-When I add those rules I get an error that the file libipt_recent.so is mis=
-sing.
-And indeed, when I check the lib-files it isn't there.
-So I downloaded a newer version of iptables. 1.3.0 (its a red hat 7.3,
-kernel 2.4.18-3).
-When I do a "make" I see alot of files getting compiled in the
-extensions folder.
-But when I look for libipt_recent I can only find the .c file, and not
-the .so file :(
-How can force it to be compiled also ?
-Searching with google didn't gave me much answers, just to recompile
-the kernel and iptables.
-How do you recompile the kernel ?  Or that isn't nessecary ?
+I have a dual-homed network. Is there any way to tell iptables to
+forward all requests for specific service, that come from one
+interface, to go back out on the same interface?
 
-Greetings,
+Right now I have simply:
 
-Niels
+-A POSTROUTING -o eth0 -j MASQUERADE
+-A POSTROUTING -o eth1 -j MASQUERADE
+
+So, what am I missing?
+
+Thank you.
+
+--
+http://legoandy.com
 
