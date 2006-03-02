@@ -1,56 +1,89 @@
-From: "Sun Susan-SSUN2" <SSUN2@motorola.com>
-Subject: Help - iptables: Invalid argument
-Date: Wed, 1 Mar 2006 12:14:30 -0500
-Message-ID: <274D46DDEB9F2244B2F1EA66B3FF54BC84BE29@de01exm70.ds.mot.com>
+From: Alpt <alpt-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+Subject: Re: Multiple inet gw and multipath
+Date: Thu, 2 Mar 2006 03:38:28 +0100
+Message-ID: <20060302023828.GA14670@nihil>
+References: <57F9959B46E0FA4D8BA88AEDFBE582901673AA@pxtbenexd01.pxt.primeexalia.com> <20060301045503.GA7482@nihil> <440532BA.40009@snapgear.com>
+Reply-To: netsukuku-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Return-path: <netsukuku-return-482-gnpn-netsukuku=m.gmane.org-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+List-Post: <mailto:netsukuku-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+List-Help: <mailto:netsukuku-help-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+List-Unsubscribe: <mailto:netsukuku-unsubscribe-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+List-Subscribe: <mailto:netsukuku-subscribe-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <440532BA.40009-XXXsiaCtIV5Wk0Htik3J/w@public.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Philip Craig <philipc-XXXsiaCtIV5Wk0Htik3J/w@public.gmane.org>
+Cc: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org, netsukuku-6BmP915+9Ldg9hUCZPvPmw@public.gmane.org
 
-Dear Sir:
+On Wed, Mar 01, 2006 at 03:35:54PM +1000, <Philip Craig>:
+~> On 03/01/2006 02:55 PM, Alpt wrote:
+~> > We have multiple gw. When a new connection is established through a gw,
+~> > all the packets belonging to the same connection must be sent through the
+~> > same gw. 
+~> > We cannot use the source routing method since all the IFs use the same IP,
+~> > thus in order to accomplish this we have to:
+~> > mark with the same id all the packets which belong to the same
+~> > connection.
+~> > Each connection has to have a different mark in order to go through
+~> > different gateways.
 
-I'm new to network security and this is my first time to use iptables,
-when I run a firewall script, I got the following error:
+~> It should work if you just mark the connection with the same mark
+~> you use for the route tables.  Some untested rules:
+~> # Save the gateway in the connection mark for new outgoing connections
+~> iptables -t mangle -A POSTROUTING -o eth0 -m conntrack --ctstate NEW -j CONNMARK --set-mark 0x4
+~> iptables -t mangle -A POSTROUTING -o eth1 -m conntrack --ctstate NEW -j CONNMARK --set-mark 0x8
+~> # Use the correct gateway for reply packets from local connections
+~> iptables -t mangle -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j CONNMARK --restore-mark
 
-+ /sbin/iptables -A INPUT -m limit --limit 3/minute --limit-burst 3 -j
-LOG --log-level DEBUG --log-prefix 'IPT INPUT packet died: '
-iptables: Invalid argument
+Thanks for your advice, it works.
+Here below there are the rules and routes we've used in the tests.
+(I'm including them here because they might be useful to someone who'll read
+the archive of the ml in search of the solution for the same problem ;)
 
-I also tried -m owner option, it give me same error:  "iptables: Invalid
-argument".
+pc1:~/src# ip rule
+0:      from all lookup local 
+32764:  from 10.198.117.159 fwmark 0x8 lookup 202 
+32765:  from 10.198.117.159 fwmark 0x4 lookup 201 
+32766:  from all lookup main 
+32767:  from all lookup default 
+pc1:~/src# 
 
-But I don't get error for -m state. I can use iptables -L to see other
-rules except the error commands.
+pc1:~/src# ip route show table 201
+default via 10.198.117.95 dev tunl0 
 
-I have the follow modules listed when I run lsmod:
-ipt_owner               3976  0=20
-ipt_MASQUERADE          4960  1=20
-ipt_REJECT              8520  1=20
-ipt_state               2688  4=20
-ipt_limit               3488  0=20
-ipt_LOG                 8288  0=20
-iptable_nat            35162  2 ipt_MASQUERADE
-iptable_mangle          5248  0=20
-ip_conntrack           62332  3 ipt_MASQUERADE,ipt_state,iptable_nat
-iptable_filter          4888  1=20
-ip_tables              25088  9
-ipt_owner,ipt_MASQUERADE,ipt_REJECT,ipt_state,ipt_limit,ipt_LOG,iptable_
-nat,iptable_mangle,iptable_filter
+pc1:~/src# ip route show table 202
+default via 10.198.117.3 dev tunl1 
+pc1:~/src# 
 
-Can anyone help me how to solve the error?
+pc1:~/src# ip route
+10.198.117.3 via 10.198.117.159 dev eth0  proto 15  scope link 
+10.198.117.95 via 10.198.117.159 dev eth1  proto 15  scope link 
+10.0.0.0/8 dev eth0  proto kernel  scope link  src 10.198.117.159 
+10.0.0.0/8 dev eth1  proto kernel  scope link  src 10.198.117.159 
+10.0.0.0/8 dev tunl0  proto kernel  scope link  src 10.198.117.159 
+10.0.0.0/8 dev tunl1  proto kernel  scope link  src 10.198.117.159 
+default equalize 
+        nexthop via 10.198.117.95  dev tunl0 weight 1
+        nexthop via 10.198.117.3  dev tunl1 weight 1
+pc1:~/src# 
 
-Thanks in advance,
-Susan
+iptables -t mangle -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED  -j CONNMARK --restore-mark
+iptables -t mangle -A POSTROUTING -o tunl0 -m conntrack --ctstate NEW -j CONNMARK --set-mark 0x4
+iptables -t mangle -A POSTROUTING -o tunl1 -m conntrack --ctstate NEW -j CONNMARK --set-mark 0x8
 
+ip rule add from  10.198.117.159 fwmark 0x4 lookup 201
+ip rule add from  10.198.117.159 fwmark 0x8 lookup 202
+
+ip route add table 201 default via 10.198.117.95  dev tunl0
+ip route add table 202 default via 10.198.117.3  dev tunl1
+
+-- 
+:wq!
+"I don't know nothing" The One Who reached the Thinking Matter   '.'
+
+[ Alpt --- Freaknet Medialab ]
+[ GPG Key ID 441CF0EE ]
+[ Key fingerprint = 8B02 26E8 831A 7BB9 81A9  5277 BFF8 037E 441C F0EE ]
