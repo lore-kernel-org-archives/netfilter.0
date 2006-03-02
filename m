@@ -1,12 +1,12 @@
 From: Chinh Nguyen <cnguyen@certicom.com>
-Subject: Re: Dual-home and forward outgoing requests
-Date: Thu, 02 Mar 2006 10:24:50 -0500
-Message-ID: <44070E42.6000808@certicom.com>
-References: <a46d47540603020533v6093ac9et4a1f3677e0f490cc@mail.gmail.com>
+Subject: Re: Port forwarding - again ! :)
+Date: Thu, 02 Mar 2006 10:38:13 -0500
+Message-ID: <44071165.4020201@certicom.com>
+References: <ZULUEcLsXJB7oDaSeXn000002df@zulu.barmen.nu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a46d47540603020533v6093ac9et4a1f3677e0f490cc@mail.gmail.com>
+In-Reply-To: <ZULUEcLsXJB7oDaSeXn000002df@zulu.barmen.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,33 +20,39 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Andy Lego wrote:
-> Hello,
-> 
-> I have a dual-homed network. Is there any way to tell iptables to
-> forward all requests for specific service, that come from one
-> interface, to go back out on the same interface?
-> 
-> Right now I have simply:
-> 
-> -A POSTROUTING -o eth0 -j MASQUERADE
-> -A POSTROUTING -o eth1 -j MASQUERADE
-> 
-> So, what am I missing?
-> 
-> Thank you.
-> 
-> --
-> http://legoandy.com
-> 
-Not sure what you mean. Say your device is 10.0.1.5, do you mean that if someone
-was to telnet to 10.0.1.5 you would forward it to 10.0.1.10 (10.0.1.0/24 is on
-eth0)?
 
-The simplest is to have ip_forwarding on. Then add DNAT and MASQUERADE rules.
-Linux routing should take care of the rest.
+Stian B. Barmen wrote:
+> I am wondering how to enable port forwarding from a DMZ to an internal
+> network. The machine forwarding is just a normal Linux machine, no firewall in
+> the DMZ, and I want it to forward one port to an internal machine on the
+> intenal network.
+> 
+> How to forward 1 port from a machine in dmz-network to internal network!
+> 
+> <internet>
+> |
+> <firewall>
+> |
+> <router> - <dmz network>
+> |
+> <internal network>
+> I just used the command:
+> iptables -t nat -A PREROUTING -p tcp -i eth0 -d 217.20.20.160 --dport 81 -j
+> DNAT --to 10.22.0.79:8081
+> 
+> # cat /proc/sys/net/ipv4/ip_forward
+> 1
+> 
+> Also I enabled ip_forward.
+> 
+> But when I try to connect to 217.20.20.160:81 it just times out waiting for an
+> answer. Do I need more in this minimalistic setup to make it work?
+> 
+> Note, the ip addresses are bogus, but representative. (the 217 is public ip
+> and the 10 is private)
 
-iptables -A PREROUTING -t nat -p tcp -s 10.0.1.0/24 --dport 23 -j DNAT --to
-10.0.1.10
-iptables -A POSTROUTING -t nat -j MASQUERADE
+My guess would be you also need a MASQUERADE rule on the POSTROUTING chain of
+nat table. Without it, you have a connection from machine X to 217.20.20.160,
+but you have get a reply from 10.22.0.79!
+
 
