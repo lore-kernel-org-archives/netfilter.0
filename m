@@ -1,8 +1,7 @@
-From: "Sandeep Agarwal" <sandeep_agarwal@hotmail.com>
-Subject: How to use Real IP inside the LAN
-Date: Fri, 3 Mar 2006 19:07:45 +0530
-Message-ID: <BAY20-DAV63F1C2B14037920885A9497EA0@phx.gbl>
-Reply-To: Sandeep Agarwal <sandeep_agarwal@hotmail.com>
+From: "T. Horsnell" <tsh@mrc-lmb.cam.ac.uk>
+Subject: states and UDP
+Date: Fri, 3 Mar 2006 14:34:56 +0000 (GMT)
+Message-ID: <E1FFBMv-0016UD-1H@alf1.lmb.internal>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,28 +15,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Dear All,
+Am I right in thinking that the stateful capabilities
+of iptables (NEW/ESTABLISHED/RELATED etc) only apply to
+tcp connections? If not, how are these states defined for
+udp?
 
-I have following setup.
+iptables doesnt complain if I add a rule containing
+'-p udp -m state --state NEW'
 
-ISP---->|eth0|Linux Box|eth1|------>|Switch|--->PC (LAN IP)
-                                                            |--->VOIP Device 
-(Cisco) (Real IP)
-                                                            |--->WebServer 
-(Real IP)
-
-ISP has provided 8 IP Pool.
-No DMZ configuration is there. Simple rc.firewall is working.
-Now I want to use Real IP inside the LAN.
-What is the right way to do this?
-
-Will it be worthwhile, If I make aliases like eth1:1 & assign a Real IP from 
-pool?
-If this is ok, than which rules I have to add in iptables?
-
-Thanks
-Sandeep 
+Thanks,
+Terry.
 
