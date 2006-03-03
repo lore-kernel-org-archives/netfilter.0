@@ -1,12 +1,13 @@
-From: ludi <myhapwcforever@gmail.com>
-Subject: Re: Connection not recognized as RELATED
-Date: Fri, 3 Mar 2006 10:04:55 +0800
-Message-ID: <d27cd2010603021804p30d14675g@mail.gmail.com>
-References: <5995792B428BD840906480B184A386CBB50B7F@marvin.killerobot.com>
+From: "Buddy wu" <ejournal4me@gmail.com>
+Subject: Re: how to connect to VPN server using IPTABLES nat
+Date: Fri, 3 Mar 2006 12:55:02 +0800
+Message-ID: <43a0cdcb0603022055x4209bf80v@mail.gmail.com>
+References: <43a0cdcb0603020246n4da19616p@mail.gmail.com>
+	<63794.193.173.147.3.1141299908.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5995792B428BD840906480B184A386CBB50B7F@marvin.killerobot.com>
+In-Reply-To: <63794.193.173.147.3.1141299908.squirrel@webmail.sterenborg.info>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,13 +20,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Rob Sterenborg <rob@sterenborg.info>
+Cc: netfilter@lists.netfilter.org
 
-SSBoYWQgc2V0dGxlZCAgdGhlIHByb2JsZW0gbGFzdCB0aW1lLHdpdGggaGVscC46KQpGaXJzdCBv
-ZiBhbGwsIHlvdSBtdXN0IGluc21vZCBmdHBfY29ubnRyYWNrKG5hdF9mdHBfY29ubnRyYWNrLi4u
-LmV0YykuClRoZSBtb2R1bGUgd29yayBmb3IgcHJvY2Vzc2luZyB0aGUgZnRwIGNvbm5lY3Rpb24u
-CkFuZCB0aGVuLCB5b3Ugc2hvdWxkIGJpbmQgZnRwIG9uIDIxcG9ydC5UaGUgbW9kdWxlIG9ubHkg
-Y2FuIHRyYWNrIHRoZQoyMXBvcnQgYnkgZGVmYXVsdC5JZiB5b3Ugd2FudCB0byBzZXQgb3RoZXIg
-cG9ydCx5b3UgbXVzdCBlZGl0IHRoZQpzb3VyY2UuCllvdSBtYXkgc2V0dXAgeW91ciBydWxlIHRv
-IGFsbG93IHRoZSBmdHAgcGFzcy4KRGlkIHlvdXIgZnRwIHdvcms/CjopCg==
+I'm puzzled with the IPTABLES
+when I set the default Policy of INPUT and FORWARD chains, I can
+established the vpn connection. But When I use the below command ,the
+vpn connection can't be established
+iptables -A INPUT -d 218.0.0.0 -j ACCEPT
+iptables -A FORWARD -d 218.0.0.0 -j ACCEPT
+WHY? what other rules should be added?
+
+
+2006/3/2, Rob Sterenborg <rob@sterenborg.info>:
+>
+> On Thu, March 2, 2006 11:46, Buddy wu wrote:
+> >    I DON'T mean there is a VPN serving making from linux.
+> >    The fact is that:
+> >    I set up a VPN server using windows server(IP:192.168.1.1) and it
+> > is behind a Linux server which is using iptables for nat
+> >    iptables -A PREROUTING -d 218.0.0.0 -j DNAT --to 192.168.1.1
+> >
+> >    but I can't establish the VPN connection from out(etc IP address is
+> > 218.10.0.1, I have tested that I can connect to other service such as
+> > web(port 80). How can I establish the VPN connection ? Is there need
+> > some setting in IPTABLES?
+>
+> If it's Windows then I suspect it's a PPTP server.
+> For this to work you have to forward both 1723/tcp and the gre (47) proto=
+col.
+> Also, you need the pptp conntrack/nat modules for which you may have to
+> recompile the kernel and iptables.
+>
+>
+> Gr,
+> Rob
+>
+>
+>
+>
 
