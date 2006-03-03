@@ -1,12 +1,12 @@
 From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: states and UDP
-Date: Fri, 03 Mar 2006 09:44:13 -0500
-Message-ID: <4408563D.2040605@SCampbell.net>
-References: <E1FFBMv-0016UD-1H@alf1.lmb.internal>
+Subject: Re: avoid conntrack
+Date: Fri, 03 Mar 2006 09:48:44 -0500
+Message-ID: <4408574C.4070003@SCampbell.net>
+References: <200602201430.35996.clist@uah.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <E1FFBMv-0016UD-1H@alf1.lmb.internal>
+In-Reply-To: <200602201430.35996.clist@uah.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: clist@uah.es
+Cc: netfilter@lists.netfilter.org
 
-T. Horsnell wrote:
-> Am I right in thinking that the stateful capabilities
-> of iptables (NEW/ESTABLISHED/RELATED etc) only apply to
-> tcp connections? If not, how are these states defined for
-> udp?
+Clist wrote:
+> Hi list,
 >
-> iptables doesnt complain if I add a rule containing
-> '-p udp -m state --state NEW'
+> It is needed to do '-j NOTRACK'  in order to avoid conntracking for some 
+> packets, or i can simply DROP packets on the raw table so they do not reach 
+> other netfilter tables and so it is not conntracking for those packets..?
 >
-> Thanks,
-> Terry.
 >
+> Now and simply do
+> *raw 
+> -A PREROUTING <some criteria> -j DROP
+>
+> do i need to do
+> -A PREROUTING <some criteria> -j NOTRACK
+> -A PREROUTING <some criteria> -j DROP
+>
+> Thanks...
 >   
-any tracked connection can have state.   For instance, one could write a 
-conneciton tracker for NFS over UDP mounts and use the state flag in 
-firewall rules.  That's not a real example (to my knowledge), I'm just 
-showing that the capability is there.
+conntrack only keeps track of  connections, it does absolutely nothing 
+to your firewall rules,  it's up to you to decide what to do with the 
+connection states in your rules.   At some point you have a rule that is 
+similar to  --state established,related  -j ACCEPT, that's where you are 
+allowing packets through because they are in conntrack, if you want to 
+eliminate some packets regardless of state then just do so before you 
+hit the rule.
 
 
