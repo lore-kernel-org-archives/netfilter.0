@@ -1,13 +1,9 @@
-From: Aleksander <aleksander@krediidiinfo.ee>
-Subject: Re: Connection not recognized as RELATED
-Date: Fri, 03 Mar 2006 11:51:02 +0200
-Message-ID: <44081186.3050401@krediidiinfo.ee>
-References: <5995792B428BD840906480B184A386CBB50B7F@marvin.killerobot.com>
-	<d27cd2010603021804p30d14675g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: "Marco Berizzi" <pupilla@hotmail.com>
+Subject: Re: H.323 conntrack
+Date: Fri, 3 Mar 2006 14:04:56 +0100
+Message-ID: <BAY103-DAV92EBBB23805AD6177997FB2EA0@phx.gbl>
+References: <648A21EA469E3848922D9860785CD5EF23D480@aspen-mail01.aspenview.org>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <d27cd2010603021804p30d14675g@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +14,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jason Sigurdur <Jason.Sigurdur@aspenview.org>
+Cc: netfilter@lists.netfilter.org
 
-ludi wrote:
-> The module only can track the
-> 21port by default.If you want to set other port,you must edit the
-> source.
+Jason Sigurdur wrote:
 
-Are you sure? I remember seeing an option like port=XXX for the modules, 
-their names are:
-ip_conntrack_ftp
-ip_nat_ftp
+> Hi, will there be support for H.245 for the h.323-conntrack-nat
+module?
 
-Just google this for example:
-http://www.google.com/search?complete=1&hl=en&lr=&q=%22modprobe+ip_conntrack_ftp+port%22&btnG=Search
+See:
 
-Alex
+https://lists.netfilter.org/pipermail/netfilter-devel/2006-February/023492.html
+
 
