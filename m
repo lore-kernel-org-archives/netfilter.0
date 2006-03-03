@@ -1,8 +1,10 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: Re: H.323 conntrack
-Date: Fri, 3 Mar 2006 14:04:56 +0100
-Message-ID: <BAY103-DAV92EBBB23805AD6177997FB2EA0@phx.gbl>
-References: <648A21EA469E3848922D9860785CD5EF23D480@aspen-mail01.aspenview.org>
+From: "Sandeep Agarwal" <sandeep_agarwal@hotmail.com>
+Subject: How to use Real IP inside the LAN
+Date: Fri, 3 Mar 2006 19:07:45 +0530
+Message-ID: <BAY20-DAV63F1C2B14037920885A9497EA0@phx.gbl>
+Reply-To: Sandeep Agarwal <sandeep_agarwal@hotmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,19 +16,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jason Sigurdur <Jason.Sigurdur@aspenview.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Jason Sigurdur wrote:
+Dear All,
 
-> Hi, will there be support for H.245 for the h.323-conntrack-nat
-module?
+I have following setup.
 
-See:
+ISP---->|eth0|Linux Box|eth1|------>|Switch|--->PC (LAN IP)
+                                                            |--->VOIP Device 
+(Cisco) (Real IP)
+                                                            |--->WebServer 
+(Real IP)
 
-https://lists.netfilter.org/pipermail/netfilter-devel/2006-February/023492.html
+ISP has provided 8 IP Pool.
+No DMZ configuration is there. Simple rc.firewall is working.
+Now I want to use Real IP inside the LAN.
+What is the right way to do this?
 
+Will it be worthwhile, If I make aliases like eth1:1 & assign a Real IP from 
+pool?
+If this is ok, than which rules I have to add in iptables?
+
+Thanks
+Sandeep 
 
