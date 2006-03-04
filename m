@@ -1,11 +1,11 @@
-From: Oleg <sov.rbsec@gmail.com>
-Subject: icmp and ip_conntrack
-Date: Fri, 3 Mar 2006 21:58:22 +0300
-Message-ID: <200603032158.22452.sov.rbsec@gmail.com>
+From: Davis Sylvester <dsylvesteriii@yahoo.com>
+Subject: FTP through Firewall
+Date: Sat, 4 Mar 2006 10:47:27 -0800 (PST)
+Message-ID: <20060304184727.92357.qmail@web54708.mail.yahoo.com>
+Reply-To: dsylvesteriii@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,11 +19,28 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Is it possible that when successfully pinging server, which has conntrack 
-enabled, cat /proc/net/ip_conntrack not show icmp entries?
+I am trying to grant FTP access to Internet customers
+to our servers behind our firewall.
+When they try to connect they get the following error:
 
-All ping requests/replyes goes both sides (seen in tcpdump)
--- 
-Best regards, Oleg
+ftp: connect :Unknown error number
 
+I am using the following iptables commands to allow
+access.  Our default policy is DENY.
+
+iptables -A FORWARD -m state --state
+RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -m state --state NEW -i eth4 -o
+eth5 -d 1.1.1.2 -p tcp --dport ftp -j ACCEPT
+iptables -t nat -A PREROUTING -i eth1 -d 208.1.1.1 -p
+tcp --dport ftp -j DNAT --to 1.1.1.2
+
+
+Thanks in advance!
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
