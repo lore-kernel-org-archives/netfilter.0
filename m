@@ -1,12 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: FTP through Firewall
-Date: Sat, 04 Mar 2006 20:13:52 +0100
-Message-ID: <1141499633.13945.33.camel@anduril.intranet.cartel-securite.net>
-References: <20060304184727.92357.qmail@web54708.mail.yahoo.com>
+From: Jochen Kaechelin <fvgi242ss@wlanhacking.de>
+Subject: need some assistence with vpn
+Date: Sun, 5 Mar 2006 07:40:19 +0100
+Message-ID: <200603050740.20121.fvgi242ss@wlanhacking.de>
+Reply-To: fvgi242ss@wlanhacking.de
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060304184727.92357.qmail@web54708.mail.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,25 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: dsylvesteriii@yahoo.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le samedi 04 mars 2006 =E0 10:47 -0800, Davis Sylvester a =E9crit :
-> I am trying to grant FTP access to Internet customers
-> to our servers behind our firewall.
-> When they try to connect they get the following error:
-> ftp: connect :Unknown error number
-[...]
+I have the following:
 
-Have you insmoded ip_conntrack_ftp and ip_nat_ftp (or build them into
-kernel) ?
+OFFICE: 
+- openvpn gui
+- static ip (going online with squid)
+- vpn "nic" 10.8.0.6
 
+HOME ROUTER:	
+- port forwarding UDP 1604 -> SERVER UDP 1604 (192.168.178.112)
+- internal ip: 192.168.178.1
+- external ip: dynamic (DSL)
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+SERVER:
+- kernel 2.6.15 (Ubuntu)
+- eth0 192.168.178.112
+- tun0 10.8.0.1
 
+HOME:
+- tslcient (rdp)
+- eth0 192.168.178.28
+
+I'am looking for some rules which allow a connection from
+my Notebook to my Office PC.
+
+Can someone help me?!
+
+Thanx.
+
+-- 
+Jochen Kaechelin, fvgi242ss, wlanhacking.de
+http://mail.wlanhacking.de/cgi-bin/mailman/listinfo
 
