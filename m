@@ -1,13 +1,11 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+From: "Jason Sigurdur" <Jason.Sigurdur@aspenview.org>
 Subject: RE: Netfilter / ldap authentication
-Date: Mon, 6 Mar 2006 23:21:24 +0100
-Message-ID: <45232.3484853425$1141683733@news.gmane.org>
-References: <648A21EA469E3848922D9860785CD5EF23D486@aspen-mail01.aspenview.org>
-Reply-To: edvin.seferovic@kolp.at
+Date: Mon, 6 Mar 2006 16:02:52 -0700
+Message-ID: <648A21EA469E3848922D9860785CD5EF23D487@aspen-mail01.aspenview.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <648A21EA469E3848922D9860785CD5EF23D486@aspen-mail01.aspenview.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,7 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
+To: edvin.seferovic@kolp.at
+Cc: netfilter@lists.netfilter.org
+
+Hi, windows2k/xp systems in a 2k domain. Currently using proxy server =
+2.0; do not want to upgrade to ISA server. Our vpn/gateway =
+infrastructure is entirely linux  based.
+
+
+Thx jason
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org =
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Seferovic =
+Edvin
+Sent: Monday, March 06, 2006 3:21 PM
 To: netfilter@lists.netfilter.org
+Subject: RE: Netfilter / ldap authentication
 
 What do you want to authenticate with LDAP?
 
@@ -35,6 +49,7 @@ Hi, is there any known methods of a integrated netfilter and ldap
 authentication? For example: in a windows AD domain?
 
 Thx jason
+
 
 
 
