@@ -1,12 +1,12 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: icmp and ip_conntrack
-Date: Mon, 06 Mar 2006 11:45:45 +1000
-Message-ID: <440B9449.70407@snapgear.com>
-References: <200603032158.22452.sov.rbsec@gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: how to do a no duplicate record log.
+Date: Mon, 6 Mar 2006 06:58:32 +0100
+Message-ID: <000001c640e3$00947140$0101000a@sterenborg.info>
+References: <40b6d52e0603051739w1ead2f5ap@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200603032158.22452.sov.rbsec@gmail.com>
+In-Reply-To: <40b6d52e0603051739w1ead2f5ap@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,15 +18,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Oleg <sov.rbsec@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 03/04/2006 04:58 AM, Oleg wrote:
-> Is it possible that when successfully pinging server, which has conntrack 
-> enabled, cat /proc/net/ip_conntrack not show icmp entries?
-> 
-> All ping requests/replyes goes both sides (seen in tcpdump)
+netfilter-bounces@lists.netfilter.org scribbled on :
 
-There should only be 1 reply packet, so the conntrack is destroyed immediately.
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#ICMPCONNECTIONS
+> hello,list.
+>    I need record all ip that input,and log it.but if log the duplicate
+> message will occupy more disk space. so I want only log one record for
+> one ip, or little records. iptables can do this ? my English is
+>    ugly,I'm so sorry! Please help me.
+
+Do I understand correctly that you want each unique IP address logged
+only once in the entire log ? I don't know of any mechanism that can do
+this out-of-the-box.
+Maybe if you use ulogd, log to a database and then run a sql job to it
+at regular intervals to remove duplicate source IP's you can achieve
+this. But that would be ugly. ;-)
+
+
+Gr,
+Rob
+
 
