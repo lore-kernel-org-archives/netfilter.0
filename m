@@ -1,11 +1,12 @@
-From: "huang mingyou" <therods@gmail.com>
-Subject: how to do a no duplicate record log.
-Date: Mon, 6 Mar 2006 09:39:38 +0800
-Message-ID: <40b6d52e0603051739w1ead2f5ap@mail.gmail.com>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: states and UDP
+Date: Mon, 06 Mar 2006 11:43:21 +1000
+Message-ID: <440B93B9.6060204@snapgear.com>
+References: <E1FFBMv-0016UD-1H@alf1.lmb.internal>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <E1FFBMv-0016UD-1H@alf1.lmb.internal>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,18 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: "T. Horsnell" <tsh@mrc-lmb.cam.ac.uk>
+Cc: netfilter@lists.netfilter.org
 
-hello,list.
-   I need record all ip that input,and log it.but if log the duplicate
-message will occupy more disk space. so I want only log one record for
-one ip, or little records. iptables can do this ? my English is
-ugly,I'm so sorry!
-   Please help me.
+On 03/04/2006 12:34 AM, T. Horsnell wrote:
+> Am I right in thinking that the stateful capabilities
+> of iptables (NEW/ESTABLISHED/RELATED etc) only apply to
+> tcp connections? If not, how are these states defined for
+> udp?
+> 
+> iptables doesnt complain if I add a rule containing
+> '-p udp -m state --state NEW'
 
+Conntrack states are valid for all protocols.
+They are different from TCP states.
+The man page and tutorial describe what they mean:
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#USERLANDSTATES
 
-
-
----------
-   HMY
 
