@@ -1,12 +1,12 @@
 From: Philip Craig <philipc@snapgear.com>
-Subject: Re: states and UDP
-Date: Mon, 06 Mar 2006 11:43:21 +1000
-Message-ID: <440B93B9.6060204@snapgear.com>
-References: <E1FFBMv-0016UD-1H@alf1.lmb.internal>
+Subject: Re: icmp and ip_conntrack
+Date: Mon, 06 Mar 2006 11:45:45 +1000
+Message-ID: <440B9449.70407@snapgear.com>
+References: <200603032158.22452.sov.rbsec@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <E1FFBMv-0016UD-1H@alf1.lmb.internal>
+In-Reply-To: <200603032158.22452.sov.rbsec@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +18,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "T. Horsnell" <tsh@mrc-lmb.cam.ac.uk>
+To: Oleg <sov.rbsec@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-On 03/04/2006 12:34 AM, T. Horsnell wrote:
-> Am I right in thinking that the stateful capabilities
-> of iptables (NEW/ESTABLISHED/RELATED etc) only apply to
-> tcp connections? If not, how are these states defined for
-> udp?
+On 03/04/2006 04:58 AM, Oleg wrote:
+> Is it possible that when successfully pinging server, which has conntrack 
+> enabled, cat /proc/net/ip_conntrack not show icmp entries?
 > 
-> iptables doesnt complain if I add a rule containing
-> '-p udp -m state --state NEW'
+> All ping requests/replyes goes both sides (seen in tcpdump)
 
-Conntrack states are valid for all protocols.
-They are different from TCP states.
-The man page and tutorial describe what they mean:
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#USERLANDSTATES
-
+There should only be 1 reply packet, so the conntrack is destroyed immediately.
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#ICMPCONNECTIONS
 
