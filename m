@@ -1,7 +1,7 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: Connection not recognized as RELATED
-Date: Mon, 6 Mar 2006 10:38:30 -0500
-Message-ID: <FAC4E024BF776842876169173CE2F0132CBCB8@mailbox.vikus.com>
+From: "Jason Sigurdur" <Jason.Sigurdur@aspenview.org>
+Subject: RE: How to use Real IP inside the LAN
+Date: Mon, 6 Mar 2006 11:22:21 -0700
+Message-ID: <648A21EA469E3848922D9860785CD5EF23D485@aspen-mail01.aspenview.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,58 +17,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: George Alexandru Dragoi <waruiinu@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-=20
+Hi, I am in the same scenario. My eth0 will have a different address
+assigned by the isp, and a different internet valid pool assigned to us
+to use. The isp will route all traffic to our eth0 for the assigned
+pool.
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> Richard Simon
-> Sent: Friday, March 03, 2006 10:48 AM
-> To: ludi; netfilter@lists.netfilter.org
-> Subject: RE: Connection not recognized as RELATED
->=20
-> I dont think you looked at my configuration included in the message.
-> I have those modules loaded (as you can see from my lsmod=20
-> output) and I have ftp working on port 21 (which you can=20
-> infer from my DNAT rule).
-> I'm just not getting the conntrack to recognize the SYN for=20
-> the passive connection to be RELATED.
->=20
-> anyone else have a guess?
->=20
-> Richard Simon
-> Giant Killer Robots
-> 361 Brannan St.
-> San Francisco, CA 94107
-> (415) 777-2477
->=20
+My question is that is it possible to DNAT the 'assigned' address pool
+into the Lan without having an interface with that address?
 
-I would start by filtering in the filter table. These rules
+Thx jason
 
--A PREROUTING -d 77.77.77.4 -i eth2 -p tcp -m tcp --sport 1024:65535
---dport 21 -j DNAT --to-destination 192.168.4.101:21
--A FORWARD -d 192.168.4.101 -i eth2 -o eth0 -p tcp -m tcp --sport
-1024:65535 --dport 21 -m state --state NEW -j ACCEPT=20
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of George
+Alexandru Dragoi
+Sent: Sunday, March 05, 2006 10:56 AM
+To: Sandeep Agarwal
+Cc: netfilter
+Subject: Re: How to use Real IP inside the LAN
 
-should be
+If the ISP routed an 8 ip subnet (let's say 1.1.1.128/29) to you
+(consider having an ip on eth0 from a different pool), then  you can
+configure the ip 1.1.1.129 on eth1, with subnet mask 255.255.255.248,
+and the ips from 1.1.1.130 to 1.1.1.134 with same subnet mask above on
+the PC, VOIP device and Web Server, also enable ip_forward on the
+Linux Box with command
 
--A PREROUTING -d 77.77.77.4 -i eth2 -j DNAT --to-destination
-192.168.4.101
--A FORWARD -p tcp -d 192.168.4.101 -i eth2 -o eth0 -p tcp -m tcp --dport
-21 -m state --state NEW  -j ACCEPT
+# echo 1 > /proc/sys/net/ipv4/ip_forward
 
-There is no need to filter twice and conntrack makes unprivileged source
-port filtering unnecessary. Also, filtering in nat is a bad idea, for
-reasons that are explained somewhere in the archive but if memory serves
-only the first packet in a connection which is matched by a nat rule
-actually passes through the nat table.
+ .. then it will just work.
 
-Hope that helps. If not, you can always open up the destination ports
-for the passive range on your FTP server. Also, if you use FTPS (over
-SSL) conntrack can't see the PASV port request and won't have a clue
-what to do, so you have to open those ports anyway.
+On 3/3/06, Sandeep Agarwal <sandeep_agarwal@hotmail.com> wrote:
+> Dear All,
+>
+> I have following setup.
+>
+> ISP---->|eth0|Linux Box|eth1|------>|Switch|--->PC (LAN IP)
+>                                                            |--->VOIP
+Device
+> (Cisco) (Real IP)
+>
+|--->WebServer
+> (Real IP)
+>
+> ISP has provided 8 IP Pool.
+> No DMZ configuration is there. Simple rc.firewall is working.
+> Now I want to use Real IP inside the LAN.
+> What is the right way to do this?
+>
+> Will it be worthwhile, If I make aliases like eth1:1 & assign a Real
+IP from
+> pool?
+> If this is ok, than which rules I have to add in iptables?
+>
+> Thanks
+> Sandeep
+>
+>
 
-Derick Anderson
+
+--
+Bla bla
+
 
