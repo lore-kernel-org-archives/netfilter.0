@@ -1,11 +1,10 @@
-From: "Derick Anderson" <danderson@vikus.com>
-Subject: RE: icmp-host-unreachable as opposed to destination-unreachable
-Date: Tue, 7 Mar 2006 10:23:15 -0500
-Message-ID: <FAC4E024BF776842876169173CE2F0132CBD29@mailbox.vikus.com>
+From: Joerg Hartmann <J.Hartmann@reinarts.de>
+Subject: problem with IPSEC-patches for 2.6.15 kernel
+Date: Tue, 07 Mar 2006 17:20:01 +0100
+Message-ID: <440DB2B1.9030601@reinarts.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,40 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: bclark <bclark@eccotours.co.za>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-=20
+Hello,
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org=20
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of bclark
-> Sent: Tuesday, March 07, 2006 6:45 AM
-> To: netfilter@lists.netfilter.org
-> Subject: icmp-host-unreachable as opposed to destination-unreachable
->=20
-> Hi all
->=20
-> Would anyone be kind to explain why would a person reject a=20
-> connection to port 113 with icmp-host-unreachable as opposed=20
-> to destination-unreachable.
-> I probally dont understand the difference.
-> Just something I was wondering.
->=20
-> Kind Regards
-> Brent Clark
->=20
+i tried to patch iptables-1.3.5 and kernel 2.6.15.5 with 
+patch-o-matic-ng-20060303 to get ipsec-01 ... ipsec-04 patches into the 
+kernel.
 
-From what I can tell, icmp-host-unreachable is a code (1) for the
-destination-unreachable ICMP type (3). See
-http://www.spirit.com/Resources/icmp.html for a little more information,
-and Google RFC 792 for a lot more information.
+Unfortunately i got errors for the ipsec-01 ... 04 patches:
 
-Basically though, "host-unreachable" is more specific than
-"destination-unreachable". I would think that code 3 would be more
-appropriate ("port unreachable") to this specific rule but then I don't
-bother with ident (port 113) rules. There's more information on that on
-this page: http://grc.com/port_113.htm.
+"patchlets/ipsec-01-output-hooks has dependency on nf_reset, but 
+nf_reset is not known"
 
-Derick Anderson
+Goggle was no help on this topic. Does someone know how to resolve this 
+problem ?
+
+regards
+               Joerg
 
