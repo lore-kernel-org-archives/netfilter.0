@@ -1,11 +1,10 @@
-From: "Jason Sigurdur" <Jason.Sigurdur@aspenview.org>
-Subject: H323 patch
-Date: Tue, 7 Mar 2006 11:06:36 -0700
-Message-ID: <648A21EA469E3848922D9860785CD5EF23D489@aspen-mail01.aspenview.org>
+From: "Bjo Breiskoll" <bjo@nefkom.net>
+Subject: Compiling a netfilter shared library
+Date: Tue, 7 Mar 2006 17:25:29 +0100
+Message-ID: <000a01c64203$bfabcbc0$03b2a8c0@bjoserver>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,20 +18,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, In regards to the h323 patch by 'Jing Min Zhao'. Using FC4
-2.6.15-1.1833_fc4smp.
+Hello.
 
-I downloaded the rpm source installed it, patched it ,make modules;make
-modules_install,restarted the system. "I had to do a depmod after the
-system was restarted, modprobe could not find ip_nat_h323?
+Im currently developing a new netfilter-target for the current
+netfilter-framework under kernel 2.6.x. I had only a few problems with the
+kernel-modul registering a new target. After the decision of implementing a
+few user-mode commands via iptables i need to compile a shared-library for
+my module.
+And here is the problem: Is there a "special" way for compiling
+iptables-shared-libs? For testing purpose i've tried the TCPLAG-Target: The
+Kernelmodul compiled well but with "gcc -fPIC -c libipt_TCPLAG.c" for the
+library only compile-errors occour.
+ 
+Maybe i need special compilation arguments?
 
-Anyway I loaded the ip_nat_h323, and did a simple test using netmeeting.
+Regards
+BJO
 
-The linux system did a 'stack dump' and locked up.
-
-Unfortunately, I could not post to sourceforge/nath323 was down?=20
-
-Any suggestions appreciated,
-
-jason
 
