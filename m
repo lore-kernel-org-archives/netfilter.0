@@ -1,9 +1,8 @@
-From: bclark <bclark@eccotours.co.za>
-Subject: icmp-host-unreachable as opposed to destination-unreachable
-Date: Tue, 07 Mar 2006 13:44:33 +0200
-Message-ID: <440D7221.1040606@eccotours.co.za>
+From: Carlo Henrico <CarloH@perago.com>
+Subject: NATing
+Date: Tue, 7 Mar 2006 15:48:31 +0200
+Message-ID: <2C3CB727B662D511889200508B4481F603D6A0BC@PERAGO_SERVER01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,17 +14,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi all
+Hi All
 
-Would anyone be kind to explain why would a person reject a connection to port 113 with icmp-host-unreachable as opposed to destination-unreachable.
-I probally dont understand the difference.
-Just something I was wondering.
+I am new to all this but here goes.
 
-Kind Regards
-Brent Clark
+I have read the docs on NAT'ing etc but am still lost.
 
+I have a linux box with 2 NIC's, one on the public network and one on the
+LAN.
 
+The public side has a public IP address but we also have 4 more IP addresses
+routed by the ISP down that line.
+
+I would like to "reroute" the traffic from one of those IP addresses to a
+web server (port 80) on the LAN.
+
+What I have tried is :
+
+Iptables -t nat PREROUTING -I 1.2.3.4 -j DNAT --to 5.6.7.8
+
+Where 1.2.3.4 is the public IP address and 5.6.7.8 is the LAN address of the
+web server.
+
+Please help, what am I doing wrong?
+
+Thanks
+
+Carlo
 
