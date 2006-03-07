@@ -1,12 +1,13 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: RE: Netfilter / ldap authentication
-Date: Mon, 06 Mar 2006 18:22:30 -0500
-Message-ID: <1141687350.2778.98.camel@localhost>
-References: <648A21EA469E3848922D9860785CD5EF23D487@aspen-mail01.aspenview.org>
+From: ludi <myhapwcforever@gmail.com>
+Subject: Re: Connection not recognized as RELATED
+Date: Tue, 7 Mar 2006 15:45:20 +0800
+Message-ID: <d27cd2010603062345q6432d7c4id13edaa2a7d40f80@mail.gmail.com>
+References: <5995792B428BD840906480B184A386CBD5B4CE@marvin.killerobot.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <648A21EA469E3848922D9860785CD5EF23D487@aspen-mail01.aspenview.org>
+In-Reply-To: <5995792B428BD840906480B184A386CBD5B4CE@marvin.killerobot.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,53 +18,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jason Sigurdur <Jason.Sigurdur@aspenview.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Richard Simon <rlsimon@killerobot.com>
 Cc: netfilter@lists.netfilter.org
 
-I'm not sure if it will do what you want but you may want to look at the
-NuFW project.  I think it is at http://www.nufw.org - John
-
-On Mon, 2006-03-06 at 16:02 -0700, Jason Sigurdur wrote:
-> Hi, windows2k/xp systems in a 2k domain. Currently using proxy server 2.0=
-; do not want to upgrade to ISA server. Our vpn/gateway infrastructure is e=
-ntirely linux  based.
->=20
->=20
-> Thx jason
->=20
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-bounces@lis=
-ts.netfilter.org] On Behalf Of Seferovic Edvin
-> Sent: Monday, March 06, 2006 3:21 PM
-> To: netfilter@lists.netfilter.org
-> Subject: RE: Netfilter / ldap authentication
->=20
-> What do you want to authenticate with LDAP?
->=20
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jason Sigurdu=
-r
-> Sent: Montag, 06. M=C3=A4rz 2006 23:16
-> To: netfilter@lists.netfilter.org
-> Subject: Netfilter / ldap authentication
->=20
-> Hi, is there any known methods of a integrated netfilter and ldap
-> authentication? For example: in a windows AD domain?
->=20
-> Thx jason
->=20
->=20
->=20
->=20
---=20
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
-
-Financially sustainable open source development
-http://www.opensourcedevel.com
-
+QlRXLEkgdGhpbmsgeW91IHNob3VsZCB1c2UgdGhlIG1vZHVsZS0tLS1pcF9uYXRfZnRwLm8KCk9u
+IDMvMy8wNiwgUmljaGFyZCBTaW1vbiA8cmxzaW1vbkBraWxsZXJvYm90LmNvbT4gd3JvdGU6Cj4g
+SSBkb250IHRoaW5rIHlvdSBsb29rZWQgYXQgbXkgY29uZmlndXJhdGlvbiBpbmNsdWRlZCBpbiB0
+aGUgbWVzc2FnZS4KPiBJIGhhdmUgdGhvc2UgbW9kdWxlcyBsb2FkZWQgKGFzIHlvdSBjYW4gc2Vl
+IGZyb20gbXkgbHNtb2Qgb3V0cHV0KSBhbmQgSSBoYXZlIGZ0cCB3b3JraW5nIG9uIHBvcnQgMjEg
+KHdoaWNoIHlvdSBjYW4gaW5mZXIgZnJvbSBteSBETkFUIHJ1bGUpLgo+IEknbSBqdXN0IG5vdCBn
+ZXR0aW5nIHRoZSBjb25udHJhY2sgdG8gcmVjb2duaXplIHRoZSBTWU4gZm9yIHRoZSBwYXNzaXZl
+IGNvbm5lY3Rpb24gdG8gYmUgUkVMQVRFRC4KPgo+IGFueW9uZSBlbHNlIGhhdmUgYSBndWVzcz8K
+Pgo+IFJpY2hhcmQgU2ltb24KPiBHaWFudCBLaWxsZXIgUm9ib3RzCj4gMzYxIEJyYW5uYW4gU3Qu
+Cj4gU2FuIEZyYW5jaXNjbywgQ0EgOTQxMDcKPiAoNDE1KSA3NzctMjQ3Nwo+Cj4KPiA+IC0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gPiBGcm9tOiBuZXRmaWx0ZXItYm91bmNlc0BsaXN0cy5u
+ZXRmaWx0ZXIub3JnCj4gPiBbbWFpbHRvOm5ldGZpbHRlci1ib3VuY2VzQGxpc3RzLm5ldGZpbHRl
+ci5vcmddT24gQmVoYWxmIE9mIGx1ZGkKPiA+IFNlbnQ6IFRodXJzZGF5LCBNYXJjaCAwMiwgMjAw
+NiA2OjA1IFBNCj4gPiBUbzogbmV0ZmlsdGVyQGxpc3RzLm5ldGZpbHRlci5vcmcKPiA+IFN1Ympl
+Y3Q6IFJlOiBDb25uZWN0aW9uIG5vdCByZWNvZ25pemVkIGFzIFJFTEFURUQKPiA+Cj4gPgo+ID4g
+SSBoYWQgc2V0dGxlZCAgdGhlIHByb2JsZW0gbGFzdCB0aW1lLHdpdGggaGVscC46KQo+ID4gRmly
+c3Qgb2YgYWxsLCB5b3UgbXVzdCBpbnNtb2QgZnRwX2Nvbm50cmFjayhuYXRfZnRwX2Nvbm50cmFj
+ay4uLi5ldGMpLgo+ID4gVGhlIG1vZHVsZSB3b3JrIGZvciBwcm9jZXNzaW5nIHRoZSBmdHAgY29u
+bmVjdGlvbi4KPiA+IEFuZCB0aGVuLCB5b3Ugc2hvdWxkIGJpbmQgZnRwIG9uIDIxcG9ydC5UaGUg
+bW9kdWxlIG9ubHkgY2FuIHRyYWNrIHRoZQo+ID4gMjFwb3J0IGJ5IGRlZmF1bHQuSWYgeW91IHdh
+bnQgdG8gc2V0IG90aGVyIHBvcnQseW91IG11c3QgZWRpdCB0aGUKPiA+IHNvdXJjZS4KPiA+IFlv
+dSBtYXkgc2V0dXAgeW91ciBydWxlIHRvIGFsbG93IHRoZSBmdHAgcGFzcy4KPiA+IERpZCB5b3Vy
+IGZ0cCB3b3JrPwo+ID4gOikKPiA+Cj4K
 
