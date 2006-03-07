@@ -1,12 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: NATing
-Date: Tue, 7 Mar 2006 15:01:36 +0100 (CET)
-Message-ID: <54857.193.173.147.3.1141740096.squirrel@webmail.sterenborg.info>
-References: <2C3CB727B662D511889200508B4481F603D6A0BC@PERAGO_SERVER01>
+From: Aleksander <aleksander@krediidiinfo.ee>
+Subject: Re: FTP through Firewall
+Date: Tue, 07 Mar 2006 17:01:20 +0200
+Message-ID: <440DA040.2010700@krediidiinfo.ee>
+References: <20060304184727.92357.qmail@web54708.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2C3CB727B662D511889200508B4481F603D6A0BC@PERAGO_SERVER01>
+In-Reply-To: <20060304184727.92357.qmail@web54708.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,57 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tue, March 7, 2006 14:48, Carlo Henrico wrote:
-> Hi All
->
-> I am new to all this but here goes.
->
-> I have read the docs on NAT'ing etc but am still lost.
->
-> I have a linux box with 2 NIC's, one on the public network and one on t=
-he
-> LAN.
->
-> The public side has a public IP address but we also have 4 more IP addr=
-esses
-> routed by the ISP down that line.
->
-> I would like to "reroute" the traffic from one of those IP addresses to=
- a
-> web server (port 80) on the LAN.
->
-> What I have tried is :
->
-> Iptables -t nat PREROUTING -I 1.2.3.4 -j DNAT --to 5.6.7.8
+Davis Sylvester wrote:
+> iptables -A FORWARD -m state --state
+> RELATED,ESTABLISHED -j ACCEPT
+> iptables -A FORWARD -m state --state NEW -i eth4 -o
+> eth5 -d 1.1.1.2 -p tcp --dport ftp -j ACCEPT
+> iptables -t nat -A PREROUTING -i eth1 -d 208.1.1.1 -p
+> tcp --dport ftp -j DNAT --to 1.1.1.2
 
-This rule can't possibly work and would generate an error when executing =
-it. I
-suspect it's a typo ?
+Shouldn't the PREROUTING rule's interface option (-i) match the one in 
+the FORWARD rule?
 
-> Where 1.2.3.4 is the public IP address and 5.6.7.8 is the LAN address o=
-f the
-> web server.
->
-> Please help, what am I doing wrong?
+You're doing DNAT for packets from eth1, but allowing packets to the ftp 
+box that come from eth4.
 
-man iptables.
--I means "insert rule" and should be used before "PREROUTING". You should=
- use
-"-d <destination IP>" instead.
+Right now the packets are DROPped/REJECTed depending on your filter 
+FORWARD policy.
 
-$ipt -t nat -A PREROUTING -d 1.2.3.4 -p tcp --dport 80 \
-  -j DNAT --to 5.6.7.8
-
-Assuming your FORWARD policy is ACCEPT ($ipt -P FORWARD ACCEPT) and have =
-IP
-forwarding enabled (echo 1 > /proc/sys/net/ipv4/ip_forward).
-
-
-Gr,
-Rob
-
-
+HTH,
+	Alex
 
