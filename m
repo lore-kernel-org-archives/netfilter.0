@@ -1,8 +1,7 @@
-From: "Andreja Babic" <babic@nodau.net>
-Subject: post-prerouting
-Date: Thu, 9 Mar 2006 17:39:58 +0100 (CET)
-Message-ID: <3550.195.140.184.10.1141922398.squirrel@mail.nodau.net>
-Reply-To: babic@nodau.net
+From: "Eduardo Bejar" <wonka@linkabu.net>
+Subject: SNAT / MASQUERADE to a different IP
+Date: Thu, 9 Mar 2006 17:09:13 -0500
+Message-ID: <019d01c643c6$193ab020$6bb1a8c0@veruca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,23 +15,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi,
 
-can somebody tell me if it is possible to make NAT with iptables like:
+I have this setup:
 
-(src IP, dst IP, dst port A) =3D> (natted_src_IP, original dst IP, dst po=
-rt B)
+LAN with one Fedora Server as gateway/email server.
 
-for example:
+Currently I masquerade all LAN traffic to use the same IP as the Server:
 
-(10.10.0.5,192.168.120.40,10080) =3D> (192.168.1.100,192.168.120.40,80)
+iptables -t nat -A POSTROUTING -s $LAN -o eth0 -j MASQUERADE
 
-If it is possible, can somebody explain me how do I do this?
+So, LAN and mail server use both the same IP address. This works fine, =
+but
+now I=B4d like to make the LAN use a different IP address than the mail
+server, so I=B4d like to know how can I do that?
 
-Thanks in advance,
+I tested SNAT, like:
 
-Andreja
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $IP
+
+but with this, LAN and mail server now use $IP both, and what I=B4d like =
+to do
+is assign different IP addresses: one for the LAN and other for the mail
+server.
+
+Any thoughts about this will be very appreciated.
+
+Thanks!
+
+Edo
+
+
+
+
 
