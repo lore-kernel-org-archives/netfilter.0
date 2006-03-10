@@ -1,11 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Why is ipset nethash set type limited to /31?
-Date: Fri, 10 Mar 2006 09:15:18 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0603100910240.6303@blackhole.kfki.hu>
-References: <4410F444.3090407@netboxblue.com>
+From: "=?ISO-8859-1?Q?Eduardo_Fern=E1ndez?=" <efgonzalez@gmail.com>
+Subject: Rule to limit outbound packets?
+Date: Fri, 10 Mar 2006 05:39:16 +0100
+Message-ID: <fedfc260603092039y3b7fabfagf86b4310abab5696@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4410F444.3090407@netboxblue.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,29 +16,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Menno Smits <menno@netboxblue.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi!
 
-On Fri, 10 Mar 2006, Menno Smits wrote:
+I admin a linux router at a uni dorm, the internet link is adsl (low
+upstream bw) so I to write a rule that limits (mostly outbound) p2p
+traffic. I'm trying something like this:
 
-> Is there a reason why the ipset's nethash set type can't be used with
-> single IPs (/32) as well as larger networks? I'd really like to be able
-> to use networks and IPs in the same set.
+iptables -A FORWARD -m limit --limit 200/s --limit-burst 200 -p tcp
+--syn --dport 4662 -j ACCEPT
+iptables -A FORWARD -p tcp --syn --dport 4662 -j REJECT
 
-An IP(v4) address is a 32bit number. A network address consists of an IP
-address and a mask value. In nethash the IP address *and* the mask
-together are stored on 32bits. Therefore it is not possible to store plain
-IP addresses in that type of sets.
+or
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+iptables -A FORWARD -o $IFOUT -m limit --limit 100/s --limit-burst
+1000 -p tcp --syn --dport 4662 -j ACCEPT
+iptables -A FORWARD -o $IFOUT -p tcp --syn --dport 4662 -j REJECT
+
+but it doesn't seem to work. I can't use hashlimit because I only can
+use 2.4 (any patch to use hashlimit in 2.4?).
+
+Thanks a lot!
+
+Edu
 
