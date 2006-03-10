@@ -1,11 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Why is ipset nethash set type limited to /31?
-Date: Fri, 10 Mar 2006 14:33:10 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0603101421580.6303@blackhole.kfki.hu>
-References: <s410b957.066@gwia201.syr.edu> <44112723.30505@netboxblue.com>
+From: "Leandro Silva" <lansoweb@gmail.com>
+Subject: Error in Masquerade ??
+Date: Fri, 10 Mar 2006 12:01:08 -0300
+Message-ID: <581260b00603100701n3beddb20p@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44112723.30505@netboxblue.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +16,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Menno Smits <menno@netboxblue.com>
-Cc: Netfilter Mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
+I have the following rule in my firewall:
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+And that's the only rule if postrouting chain. It's working fine but
+from time to time a packet leaves the server with the original ip and
+not with the server's. It's happening  like 1 "wrong" packet for 100
+or 200 ok.
+I've tried in other servers with same results and different
+"Mandrakes" ( 9.1, 10,1 and 2006.0 ). And different cpus ( p3, p4,
+amd, all with 512 mb ram ).
+Any ideias ?
 
-On Fri, 10 Mar 2006, Menno Smits wrote:
-
-> On a side note, I agree that IPset is fabulous and should be part of
-> mainline netfilter. It can greatly simplify otherwise complex firewall
-> configurations.
-
-Thanks ;-). Currently we are working on rewriting some part of ipset
-(kernel-userspace communication are converted to netlink) and improving
-the hash types for the next release.
-
-The 'binding' as a hard to grasp and not effective enough feature will go,
-instead of that there will be some new set types. I wonder wether anyone
-uses binding at all...
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks a lot
+Leandro
 
