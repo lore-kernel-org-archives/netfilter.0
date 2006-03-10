@@ -1,11 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: Counting elements of an ipset
-Date: Fri, 10 Mar 2006 21:34:32 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0603102130180.7349@blackhole.kfki.hu>
+Date: Fri, 10 Mar 2006 21:52:28 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0603102146160.7496@blackhole.kfki.hu>
 References: <slrne13jtk.cv0.micah@pond.riseup.net>
+	<Pine.LNX.4.58.0603102130180.7349@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <slrne13jtk.cv0.micah@pond.riseup.net>
+In-Reply-To: <Pine.LNX.4.58.0603102130180.7349@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,30 +22,16 @@ Content-Transfer-Encoding: 7bit
 To: Micah Anderson <micah@riseup.net>
 Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Fri, 10 Mar 2006, Jozsef Kadlecsik wrote:
 
-On Fri, 10 Mar 2006, Micah Anderson wrote:
+> However, you can use ULOG as a target and log the packets by it. Feeding
+> mySQL/Postgres by ulogd is easy and then you can create such accounting
+> info as you wish.
 
-> I'm using ipsets and it appears as if ipsets do not have counters for
-> packet matching, you can only count packets that match an entire set.
-
-That's true.
-
-> Is there a way I can get iptables to tell me the packets of a particular
-> IP in an ipset?
-
-No, it is not possible. Accounting was not part of the design.
-
-> I can create an ipmap ipset for each individual IP that I want to
-> count, and then count each of those set's packet counts, but do I gain
-> anything by doing this (ie. does using ipsets save me any memory or
-> CPU in this scenario?)
-
-No, you waste memory and CPU cycles.
-
-However, you can use ULOG as a target and log the packets by it. Feeding
-mySQL/Postgres by ulogd is easy and then you can create such accounting
-info as you wish.
+Oops, I believe I'm lying here - as far as I know currently you cannot
+*trigger* to log the connection packet and byte counters when a conntrack
+entry is destroyed. If that piece would be there then in some way we would
+produce better data that netflow.
 
 Best regards,
 Jozsef
