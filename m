@@ -1,12 +1,14 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
+From: Nathaniel Hall <nathaniel.d.hall@gmail.com>
 Subject: Re: Error in Masquerade ??
-Date: Fri, 10 Mar 2006 16:48:31 +0100 (CET)
-Message-ID: <50343.193.173.147.3.1142005711.squirrel@webmail.sterenborg.info>
-References: <581260b00603100737k630aaa8l@mail.gmail.com>
+Date: Fri, 10 Mar 2006 07:57:49 -0800
+Message-ID: <20060310075749.97grq9b1g9w0w88w@www.spider-comm.com>
+References: <581260b00603100701n3beddb20p@mail.gmail.com>
+	<1142004434.2617.26.camel@davila.nicaraguaopensource.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <581260b00603100737k630aaa8l@mail.gmail.com>
+In-Reply-To: <1142004434.2617.26.camel@davila.nicaraguaopensource.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +19,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Jorge Davila <davila@nicaraguaopensource.com>
+Cc: netfilter@lists.netfilter.org
 
-On Fri, March 10, 2006 16:37, Leandro Silva wrote:
-> Hello Jorge !
->
-> Thanks for the response.
-> When i have a fixed ip i can use SNAT, but i have some dsl links with
-> dynamic ip so i can't use SNAT :-(
->
-> Leandro
+You shouldn't have to use SNAT at all.  Here is an example of a rule 
+that I use
+and it works great.
 
-If you have a ppp adapter you need MASQUERADE.
-If you have DSL with a static or "dynamic" (dynamically assigned, but it
-doesn't change) IP address on an eth interface you can still use SNAT. E.=
-g. I
-have a DSL line which assignes a static IP address. I use SNAT.
+iptables -t nat -A POSTROUTING -s <network>/<subnet> -o eth0 -j MASQUERADE
 
-> -------
+I have to add a new rule for every rule that I want masqueraded, but I don'=
+t
+have to do any SNAT rules.
+
+Nathan
+
+Quoting Jorge Davila <davila@nicaraguaopensource.com>:
+
 > Leandro:
 >
-> You need another rule to alter the source ip address of the outgoing pa=
-ckets.
+> You need another rule to alter the source ip address of the outgoing
+> packets.
 >
-> iptables -t nat -A POSTROUTING -o eth0 \ -j SNAT --to-source <server_ad=
-dress>
+> iptables -t nat -A POSTROUTING -o eth0 \
+> -j SNAT --to-source <server_address>
 >
 > iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-You do *not* need both rules.
-
-
-Gr,
-Rob
-
-
+>
+> Jorge.
+>
 > El vie, 10-03-2006 a las 12:01 -0300, Leandro Silva escribi=F3:
 >> I have the following rule in my firewall:
->> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE And that's the
->> only rule if postrouting chain. It's working fine but from time to
->> time a packet leaves the server with the original ip and not with the
->> server's. It's happening  like 1 "wrong" packet for 100 or 200 ok.
+>> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>> And that's the only rule if postrouting chain. It's working fine but
+>> from time to time a packet leaves the server with the original ip and
+>> not with the server's. It's happening  like 1 "wrong" packet for 100
+>> or 200 ok.
 >> I've tried in other servers with same results and different
 >> "Mandrakes" ( 9.1, 10,1 and 2006.0 ). And different cpus ( p3, p4,
 >> amd, all with 512 mb ram ).
@@ -66,6 +63,16 @@ Rob
 >>
 >> Thanks a lot
 >> Leandro
+>>
+> --
+> Jorge Isaac Davila Lopez
+> Nicaragua Open Source
+> +505 808 2478
+> davila@nicaraguaopensource.com
+>
+>
+>
+
 
 
 
