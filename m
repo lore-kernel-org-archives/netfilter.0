@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Rule to limit outbound packets?
-Date: Fri, 10 Mar 2006 14:09:10 +0100 (CET)
-Message-ID: <63409.193.173.147.3.1141996150.squirrel@webmail.sterenborg.info>
-References: <fedfc260603092039y3b7fabfagf86b4310abab5696@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Why is ipset nethash set type limited to /31?
+Date: Fri, 10 Mar 2006 14:33:10 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0603101421580.6303@blackhole.kfki.hu>
+References: <s410b957.066@gwia201.syr.edu> <44112723.30505@netboxblue.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <fedfc260603092039y3b7fabfagf86b4310abab5696@mail.gmail.com>
+In-Reply-To: <44112723.30505@netboxblue.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Menno Smits <menno@netboxblue.com>
+Cc: Netfilter Mailing list <netfilter@lists.netfilter.org>
 
-On Fri, March 10, 2006 05:39, Eduardo Fern=E1ndez wrote:
-> Hi!
->
-> I admin a linux router at a uni dorm, the internet link is adsl (low
-> upstream bw) so I to write a rule that limits (mostly outbound) p2p
-> traffic. I'm trying something like this:
->
-> iptables -A FORWARD -m limit --limit 200/s --limit-burst 200 -p tcp
-> --syn --dport 4662 -j ACCEPT
-> iptables -A FORWARD -p tcp --syn --dport 4662 -j REJECT
->
-> or
->
-> iptables -A FORWARD -o $IFOUT -m limit --limit 100/s --limit-burst
-> 1000 -p tcp --syn --dport 4662 -j ACCEPT
-> iptables -A FORWARD -o $IFOUT -p tcp --syn --dport 4662 -j REJECT
->
-> but it doesn't seem to work. I can't use hashlimit because I only can
-> use 2.4 (any patch to use hashlimit in 2.4?).
+Hi,
 
-Perhaps you'd better use the p2p patch because it's easy to circumvent --=
-dport
-4662.
+On Fri, 10 Mar 2006, Menno Smits wrote:
 
-http://www.netfilter.org/projects/patch-o-matic/pom-extra.html#pom-extra-=
-ipp2p
+> On a side note, I agree that IPset is fabulous and should be part of
+> mainline netfilter. It can greatly simplify otherwise complex firewall
+> configurations.
 
+Thanks ;-). Currently we are working on rewriting some part of ipset
+(kernel-userspace communication are converted to netlink) and improving
+the hash types for the next release.
 
-Gr,
-Rob
+The 'binding' as a hard to grasp and not effective enough feature will go,
+instead of that there will be some new set types. I wonder wether anyone
+uses binding at all...
 
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
