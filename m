@@ -1,13 +1,10 @@
-From: "Leandro Silva" <lansoweb@gmail.com>
-Subject: Re: port forwarding form IP range
-Date: Sat, 11 Mar 2006 09:40:23 -0300
-Message-ID: <581260b00603110440y7cca1117o@mail.gmail.com>
-References: <20060311122437.15645.qmail@web50511.mail.yahoo.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: volunteer tcl script writer needed for iptables application
+Date: Sat, 11 Mar 2006 18:22:59 -0500
+Message-ID: <1142119379.2987.59.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060311122437.15645.qmail@web50511.mail.yahoo.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,74 +16,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Nilesh <niluforalways@yahoo.com>
-Cc: iptables <netfilter@lists.netfilter.org>, iptables@linuxguruz.com
+To: Netfilter users list <netfilter@lists.netfilter.org>
 
-Hello !
+The ISCS open source network security management project
+(http://iscs.sourceforge.net) could use some volunteer assistance from
+someone who can adapt bash scripts to tcl for the creation of iptables
+configuration files and implementing dynamic iptables changes on
+production devices.  If you are interested and able to assist, please
+contact me using the details in my signature below.  For more details,
+please continue reading.
 
-You can use something like that:
+We have added support for the Secure Computing / CyberGuard / SnapGear
+SG series of devices so that they can be managed using ISCS with no
+change to firmware.  The SG580 devices are working fine in production
+but the SG570 devices use sash instead of bash.  We can get around the
+limitations of bash by using the tcl interpreter.  However, we have no
+one on the team with tcl experience.
 
-iptables -I PREROUTING -t nat -s 192.168.0.10 -p tcp --dport 80 -j
-DNAT --to 192.168.0.3:3128
-iptables -I PREROUTING -t nat -s 192.168.0.10 -p tcp --dport 3128 -j
-DNAT --to 192.168.0.3:3128
+ISCS could be described as an open source alternative to very expensive
+products for managing large, enterprise network security deployments
+such as Solsoft or Provider1.  Actually, it does much more and has no
+commercial equivalent.  It has allowed us to implement complex,
+perimeter style security within the perimeter to affordably create truly
+segmented and multi-layered networks with a minimum of labor.
 
-If you have iprange compiled for iptables you can use:
+To give an idea of what it does, a recent production deployment of
+internal network security for a global manufacturer would have required
+well in excess of 100,000 iptables rules.  ISCS reduced that rule set to
+roughly 13,000 rules, only requires traversal of a small subset of those
+rules for any new packet, generated those rules in a couple of hours and
+distributed them to all devices automatically at the click of a button
+within a couple of minutes.  ipset could probably reduce the rule set
+tenfold again.  Any ipset experts out there interested in helping?
 
-iptables -I PREROUTING -t nat -m iprange --src-range
-192.168.0.10-192.168.0.20 -p tcp --dport 80 -j DNAT --to
-192.168.0.3:3128
-iptables -I PREROUTING -t nat -m iprange --src-range
-192.168.0.10-192.168.0.20 -p tcp --dport 3128 -j DNAT --to
-192.168.0.3:3128
+In comparison, if one had to write 13,000 rules at 20 seconds per rule,
+that would be 72 hours -- at one minute per rule, 217 hours.  150,000
+rules would take 833 hours at 20 seconds and 2,500 hours at one minute
+per rule.
 
-I hope this can help,
-Leandro
+All this with a dramatic reduction in exposure to human error (one can
+imagine the danger of a typo or out of order rule in 150,000 line rule
+set). That's just the beginning.
 
-2006/3/11, Nilesh <niluforalways@yahoo.com>:
-> Dear all,
->
-> I have two squid proxy servers and two ISP
->
-> 1)      192.168.0.1 port 3128
-> 2)      192.168.0.3 port 3128
->
-> We have around 70 comps assigned IP's between
-> 192.168.0.4 to 192.168.0.250
-> The default proxy we are using is 192.168.0.1 which is
-> on the ISP 1.
-> Now I have configured 192.168.0.3 squid proxy server
-> on ISP 2 line.
-> Both ISP 1 and ISP 2 are landing (connected) on the
-> same Switch.
->
-> Now I want setup the request coming from IP range
-> (192.168.0.10 to 192.168.0.20) for the
-> 192.168.0.1:3128
-> Will be forward to 192.168.0.3:3128
-> So the users from this IP range will access only
-> 192.168.0.3 proxy server.
->
-> Could any one please help me which rules should I use
-> in IPTABLES .
->
-> I have attached herewith my rc.firewall file.
->
-> Please help me.
->
-> Regards
-> Nilesh.
->
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam
-> protection around
-> http://mail.yahoo.com
->
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam protection around
-> http://mail.yahoo.com
->
->
+If you are interested and can help, we would greatly appreciate your
+assistance.  Thanks - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+Financially sustainable open source development
+http://www.opensourcedevel.com
+
 
