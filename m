@@ -1,10 +1,12 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: volunteer tcl script writer needed for iptables application
-Date: Sat, 11 Mar 2006 18:22:59 -0500
-Message-ID: <1142119379.2987.59.camel@localhost>
+From: Kevin McConnell <kevymac@yahoo.com>
+Subject: Re: defeat fingerprint
+Date: Sat, 11 Mar 2006 18:45:15 -0800 (PST)
+Message-ID: <20060312024515.73985.qmail@web50513.mail.yahoo.com>
+References: <012201c64472$20f31580$2f00a8c0@TRINTASETE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <012201c64472$20f31580$2f00a8c0@TRINTASETE>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,57 +18,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter users list <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-The ISCS open source network security management project
-(http://iscs.sourceforge.net) could use some volunteer assistance from
-someone who can adapt bash scripts to tcl for the creation of iptables
-configuration files and implementing dynamic iptables changes on
-production devices.  If you are interested and able to assist, please
-contact me using the details in my signature below.  For more details,
-please continue reading.
+    Hello Pedro,
+When you say you want a tool to defeat fingerprints, I
+assume that you mean a way to hide what OS you're
+using when people scan your box with a tool like nmap.
+Iptables doesn't need a tool to change it's behavior,
+you can just call it from the command line. Also,
+there are other kernel variables that you can change
+using sysctl that will also effect the way the IP
+stack behaves. You have to remember that if people
+really want to figure out what kind of OS you're
+running, they can check out other avenues, such as
+services that you might be running on your machine,
+etc....  A good start is looking at the documentation
+that comes with the kernel and the documentation that
+comes with iptables.
+HTH
 
-We have added support for the Secure Computing / CyberGuard / SnapGear
-SG series of devices so that they can be managed using ISCS with no
-change to firmware.  The SG580 devices are working fine in production
-but the SG570 devices use sash instead of bash.  We can get around the
-limitations of bash by using the tcl interpreter.  However, we have no
-one on the team with tcl experience.
+--- Pedro Drimel Neto <pedrodrimel@uol.com.br> wrote:
 
-ISCS could be described as an open source alternative to very expensive
-products for managing large, enterprise network security deployments
-such as Solsoft or Provider1.  Actually, it does much more and has no
-commercial equivalent.  It has allowed us to implement complex,
-perimeter style security within the perimeter to affordably create truly
-segmented and multi-layered networks with a minimum of labor.
+> Hi all,
+> 
+> I'm looking for a tool that defeat fingerprint... I
+> found ippersonality 
+> (http://ippersonality.sourceforge.net) but it has
+> the patch only for kernel 
+> 2.4.18...
+> I also found the fingerprint scubber but it was
+> testes on FreeBSD and his 
+> funcional is like a firewall not only to defeat
+> fingerprint...
+> 
+> Does iptables has this function to defeat tcp/ip
+> stack fingerprint like nmap 
+> does ?
+> 
+> Thanks...
+> 
+> Regards. 
+> 
+> 
+> 
 
-To give an idea of what it does, a recent production deployment of
-internal network security for a global manufacturer would have required
-well in excess of 100,000 iptables rules.  ISCS reduced that rule set to
-roughly 13,000 rules, only requires traversal of a small subset of those
-rules for any new packet, generated those rules in a couple of hours and
-distributed them to all devices automatically at the click of a button
-within a couple of minutes.  ipset could probably reduce the rule set
-tenfold again.  Any ipset experts out there interested in helping?
 
-In comparison, if one had to write 13,000 rules at 20 seconds per rule,
-that would be 72 hours -- at one minute per rule, 217 hours.  150,000
-rules would take 833 hours at 20 seconds and 2,500 hours at one minute
-per rule.
+Kevin C. McConnell --RHCE # 805299480800193 since July 2, 1999-- <Red Hat Certified Engineer>
+Freedom in software, now freedom in life.
+http://www.freestateproject.org/
 
-All this with a dramatic reduction in exposure to human error (one can
-imagine the danger of a typo or out of order rule in 150,000 line rule
-set). That's just the beginning.
-
-If you are interested and can help, we would greatly appreciate your
-assistance.  Thanks - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
-
-Financially sustainable open source development
-http://www.opensourcedevel.com
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
