@@ -1,12 +1,13 @@
-From: Kevin McConnell <kevymac@yahoo.com>
-Subject: Re: defeat fingerprint
-Date: Sat, 11 Mar 2006 18:45:15 -0800 (PST)
-Message-ID: <20060312024515.73985.qmail@web50513.mail.yahoo.com>
-References: <012201c64472$20f31580$2f00a8c0@TRINTASETE>
+From: Menno Smits <menno@netboxblue.com>
+Subject: Re: Why is ipset nethash set type limited to /31?
+Date: Mon, 13 Mar 2006 08:47:10 +1000
+Message-ID: <4414A4EE.8040207@netboxblue.com>
+References: <4410F444.3090407@netboxblue.com>
+	<Pine.LNX.4.58.0603100910240.6303@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <012201c64472$20f31580$2f00a8c0@TRINTASETE>
+In-Reply-To: <Pine.LNX.4.58.0603100910240.6303@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,58 +18,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter Mailing list <netfilter@lists.netfilter.org>
 
-    Hello Pedro,
-When you say you want a tool to defeat fingerprints, I
-assume that you mean a way to hide what OS you're
-using when people scan your box with a tool like nmap.
-Iptables doesn't need a tool to change it's behavior,
-you can just call it from the command line. Also,
-there are other kernel variables that you can change
-using sysctl that will also effect the way the IP
-stack behaves. You have to remember that if people
-really want to figure out what kind of OS you're
-running, they can check out other avenues, such as
-services that you might be running on your machine,
-etc....  A good start is looking at the documentation
-that comes with the kernel and the documentation that
-comes with iptables.
-HTH
+Hi Jozsef,
 
---- Pedro Drimel Neto <pedrodrimel@uol.com.br> wrote:
+Jozsef Kadlecsik wrote:
+> Hi,
+> 
+> On Fri, 10 Mar 2006, Menno Smits wrote:
+> 
+>> Is there a reason why the ipset's nethash set type can't be used with
+>> single IPs (/32) as well as larger networks? I'd really like to be able
+>> to use networks and IPs in the same set.
+> 
+> An IP(v4) address is a 32bit number. A network address consists of an IP
+> address and a mask value. In nethash the IP address *and* the mask
+> together are stored on 32bits. Therefore it is not possible to store plain
+> IP addresses in that type of sets.
 
-> Hi all,
-> 
-> I'm looking for a tool that defeat fingerprint... I
-> found ippersonality 
-> (http://ippersonality.sourceforge.net) but it has
-> the patch only for kernel 
-> 2.4.18...
-> I also found the fingerprint scubber but it was
-> testes on FreeBSD and his 
-> funcional is like a firewall not only to defeat
-> fingerprint...
-> 
-> Does iptables has this function to defeat tcp/ip
-> stack fingerprint like nmap 
-> does ?
-> 
-> Thanks...
-> 
-> Regards. 
-> 
-> 
-> 
+Ok fair enough.
 
+How would you feel about a "union" set type? Union sets would be
+configured to refer to 1 or more other sets. If the IP is found in any
+of the child sets it returns a match.
 
-Kevin C. McConnell --RHCE # 805299480800193 since July 2, 1999-- <Red Hat Certified Engineer>
-Freedom in software, now freedom in life.
-http://www.freestateproject.org/
+Example usage could be something like:
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+# ipset -N foo iphash
+# ipset -A foo 192.168.0.1
+
+# ipset -N bar nethash
+# ipset -A bar 10.0.0.0/8
+
+# ipset -N foobar union --set foo --set bar
+
+# ipset -T foobar 192.168.0.1
+192.168.0.1 is in set foobar.
+
+# ipset -T foobar 10.1.2.3
+10.1.2.3 is in set foobar.
+
+# ipset -T foobar 192.168.0.2
+192.168.0.2 is NOT in set foobar.
+
+# ipset -T foobar 11.0.0.2
+11.0.0.2 is NOT in set foobar.
+
+Obviously the set types that could be used in the union would have to be 
+compatible. Mixing an iphash and an ipportmap wouldn't make much sense.
+
+Your thoughts?
+
+Regards,
+Menno
+
 
