@@ -1,12 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: list of ip
-Date: Mon, 13 Mar 2006 14:30:36 +0100
-Message-ID: <1142256637.4809.48.camel@anduril.intranet.cartel-securite.net>
-References: <019f01c6469e$70c20b60$2f00a8c0@TRINTASETE>
+From: Steve Comfort <steve@4dllc.com>
+Subject: MAC Address filter on wireless interface
+Date: Mon, 13 Mar 2006 16:23:19 +0200
+Message-ID: <44158057.20203@4dllc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <019f01c6469e$70c20b60$2f00a8c0@TRINTASETE>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pedro Drimel Neto <pedrodrimel@uol.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Le lundi 13 mars 2006 =E0 10:02 -0300, Pedro Drimel Neto a =E9crit :
-> How do I make a rule with a lot os ips like
-> IPS=3D"{192.168.1.2, 192.168.1.50, 192.168.1.55}"
-> iptables -A INPUT -p tcp -s $IPS -j DROP
+Hi All,
 
-An iptables rule can only take one src and/org dst at the time, saying
-one host or network. Thus, shell scripting is your friend:
+I have been trying to get MAC address filtering to work on our wireless 
+card - so far without success :
 
-	IPS=3D"192.168.1.2 192.168.1.50 192.168.1.55"
-	for i in $IPS; do
-		iptables -A INPUT -p tcp -s $i -j DROP;
-	done
+The rules I am using are listed below :
 
+     for M in $(cat /etc/mac.allow) ; do
+         $IPT -A INPUT -i $WIFI_IF -m mac --mac_source $M -j ACCEPT
+     done
+     for M in $(cat /etc/mac.allow) ; do
+         $IPT -A INPUT -i $WIFI_IF -m mac --mac-source ! $M -j DROP
+     done
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+(I do have CONFIG_IP_NF_MATCH_MAC turned on).
+
+I'm running on an ARM processor with kernel 2.4.21-rmk1
+
+Is it in fact possible to filter on MAC addresses over a WiFi interface, 
+or am I doing something stupid?
+
+Best regards
+Steve Comfort
+
 
