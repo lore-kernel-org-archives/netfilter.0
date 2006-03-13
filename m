@@ -1,13 +1,12 @@
-From: Menno Smits <menno@netboxblue.com>
-Subject: Re: Why is ipset nethash set type limited to /31?
-Date: Mon, 13 Mar 2006 08:47:10 +1000
-Message-ID: <4414A4EE.8040207@netboxblue.com>
-References: <4410F444.3090407@netboxblue.com>
-	<Pine.LNX.4.58.0603100910240.6303@blackhole.kfki.hu>
+From: Nilesh <niluforalways@yahoo.com>
+Subject: Re: port forwarding form IP range
+Date: Mon, 13 Mar 2006 00:53:58 -0800 (PST)
+Message-ID: <20060313085358.83165.qmail@web50511.mail.yahoo.com>
+References: <581260b00603110440y7cca1117o@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0603100910240.6303@blackhole.kfki.hu>
+In-Reply-To: <581260b00603110440y7cca1117o@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,59 +17,122 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Leandro Silva <lansoweb@gmail.com>
+Cc: iptables <netfilter@lists.netfilter.org>, iptables@linuxguruz.com
 
-Hi Jozsef,
+Thanks Leandro,
 
-Jozsef Kadlecsik wrote:
-> Hi,
+I have tried with this rules but unfortunately not
+working.
+Squid server running on the 192.168.0.3 and its
+working  fine. I have not installed any firewall on
+the 192.168.0.3.
+In my Internet browser settings If I chnage the
+settings from 192.168.0.1:3128 to 192.168.0.3:3128 I
+can surf the web.
+but If I dont change to 192.168.0.3:3128 proxy
+settings I get the connection timout error.
+
+I think DNAT is not working 
+
+could you please help me 
+
+Nilesh,
+ 
+
+
+--- Leandro Silva <lansoweb@gmail.com> wrote:
+
+> Hello !
 > 
-> On Fri, 10 Mar 2006, Menno Smits wrote:
+> You can use something like that:
 > 
->> Is there a reason why the ipset's nethash set type can't be used with
->> single IPs (/32) as well as larger networks? I'd really like to be able
->> to use networks and IPs in the same set.
+> iptables -I PREROUTING -t nat -s 192.168.0.10 -p tcp
+> --dport 80 -j
+> DNAT --to 192.168.0.3:3128
+> iptables -I PREROUTING -t nat -s 192.168.0.10 -p tcp
+> --dport 3128 -j
+> DNAT --to 192.168.0.3:3128
 > 
-> An IP(v4) address is a 32bit number. A network address consists of an IP
-> address and a mask value. In nethash the IP address *and* the mask
-> together are stored on 32bits. Therefore it is not possible to store plain
-> IP addresses in that type of sets.
+> If you have iprange compiled for iptables you can
+> use:
+> 
+> iptables -I PREROUTING -t nat -m iprange --src-range
+> 192.168.0.10-192.168.0.20 -p tcp --dport 80 -j DNAT
+> --to
+> 192.168.0.3:3128
+> iptables -I PREROUTING -t nat -m iprange --src-range
+> 192.168.0.10-192.168.0.20 -p tcp --dport 3128 -j
+> DNAT --to
+> 192.168.0.3:3128
+> 
+> I hope this can help,
+> Leandro
+> 
+> 2006/3/11, Nilesh <niluforalways@yahoo.com>:
+> > Dear all,
+> >
+> > I have two squid proxy servers and two ISP
+> >
+> > 1)      192.168.0.1 port 3128
+> > 2)      192.168.0.3 port 3128
+> >
+> > We have around 70 comps assigned IP's between
+> > 192.168.0.4 to 192.168.0.250
+> > The default proxy we are using is 192.168.0.1
+> which is
+> > on the ISP 1.
+> > Now I have configured 192.168.0.3 squid proxy
+> server
+> > on ISP 2 line.
+> > Both ISP 1 and ISP 2 are landing (connected) on
+> the
+> > same Switch.
+> >
+> > Now I want setup the request coming from IP range
+> > (192.168.0.10 to 192.168.0.20) for the
+> > 192.168.0.1:3128
+> > Will be forward to 192.168.0.3:3128
+> > So the users from this IP range will access only
+> > 192.168.0.3 proxy server.
+> >
+> > Could any one please help me which rules should I
+> use
+> > in IPTABLES .
+> >
+> > I have attached herewith my rc.firewall file.
+> >
+> > Please help me.
+> >
+> > Regards
+> > Nilesh.
+> >
+> > __________________________________________________
+> > Do You Yahoo!?
+> > Tired of spam?  Yahoo! Mail has the best spam
+> > protection around
+> > http://mail.yahoo.com
+> >
+> > __________________________________________________
+> > Do You Yahoo!?
+> > Tired of spam?  Yahoo! Mail has the best spam
+> protection around
+> > http://mail.yahoo.com
+> >
+> >
+> 
+> 
 
-Ok fair enough.
 
-How would you feel about a "union" set type? Union sets would be
-configured to refer to 1 or more other sets. If the IP is found in any
-of the child sets it returns a match.
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam
+protection around 
+http://mail.yahoo.com 
 
-Example usage could be something like:
-
-# ipset -N foo iphash
-# ipset -A foo 192.168.0.1
-
-# ipset -N bar nethash
-# ipset -A bar 10.0.0.0/8
-
-# ipset -N foobar union --set foo --set bar
-
-# ipset -T foobar 192.168.0.1
-192.168.0.1 is in set foobar.
-
-# ipset -T foobar 10.1.2.3
-10.1.2.3 is in set foobar.
-
-# ipset -T foobar 192.168.0.2
-192.168.0.2 is NOT in set foobar.
-
-# ipset -T foobar 11.0.0.2
-11.0.0.2 is NOT in set foobar.
-
-Obviously the set types that could be used in the union would have to be 
-compatible. Mixing an iphash and an ipportmap wouldn't make much sense.
-
-Your thoughts?
-
-Regards,
-Menno
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
