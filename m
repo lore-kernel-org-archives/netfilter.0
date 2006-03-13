@@ -1,12 +1,13 @@
-From: Nilesh <niluforalways@yahoo.com>
-Subject: Re: port forwarding form IP range
-Date: Mon, 13 Mar 2006 03:02:11 -0800 (PST)
-Message-ID: <20060313110211.66536.qmail@web50507.mail.yahoo.com>
-References: <51754.193.173.147.3.1142241353.squirrel@webmail.sterenborg.info>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: RE: port forwarding form IP range
+Date: Mon, 13 Mar 2006 12:09:56 +0100
+Message-ID: <27442.9464400329$1142248240@news.gmane.org>
+References: <20060313110211.66536.qmail@web50507.mail.yahoo.com>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <51754.193.173.147.3.1142241353.squirrel@webmail.sterenborg.info>
+In-Reply-To: <20060313110211.66536.qmail@web50507.mail.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +19,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Rob,
-
-The default FORWARD policy is ACCEPT.
-
-Yes I am trying the rules 
-
-iptables -I PREROUTING -t nat -s 192.168.0.10 -p tcp
---dport 80 -j DNAT --to 192.168.0.3:3128
-iptables -I PREROUTING -t nat -s 192.168.0.10 -p tcp
---dport 3128 -j DNAT --to 192.168.0.3:3128
+-i eth1 -o eth1 ??? How is this suppose to work? Is there any forward chain
+on one interface?
 
 iptables -A FORWARD -s 192.168.0.10 -i eth1 -d
 192.168.0.1 -o eth1 -p tcp --sport 1024:65535 --dport
 3128 -j ACCEPT.
 
-Rob, I am trying to forward all request coming from IP
-192.168.0.10 port 3128 and 80 to 192.168.0.3 port
-3128.
+Regards,
 
-so 192.168.0.10 will use the 192.168.0.3 proxy server
-not the 192.168.0.1 proxy server.
-
-Thanks 
+Edvin
 
 --- Rob Sterenborg <rob@sterenborg.info> wrote:
 
@@ -165,4 +153,6 @@ __________________________________________________
 Do You Yahoo!?
 Tired of spam?  Yahoo! Mail has the best spam protection around 
 http://mail.yahoo.com 
+
+
 
