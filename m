@@ -1,12 +1,11 @@
-From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Re: iptables and patch-o-matic compilation errors with fedora core 4
-Date: Tue, 14 Mar 2006 07:48:20 -0600
-Message-ID: <1142344100.2610.3.camel@davila.nicaraguaopensource.com>
-References: <44169348.7070408@besancon.org>
+From: Mattes Opel <mattes.opel@web.de>
+Subject: Case concerning iptables filtering traffic from the internet in a
+ NATed scenario
+Date: Tue, 14 Mar 2006 16:48:05 +0100
+Message-ID: <4416E5B5.3060004@web.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44169348.7070408@besancon.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,118 +16,98 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: thierry itty <thierry.itty@besancon.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-uhm ... I was fighting with the same problem some weeks ago.
+Hello everybody,
 
-My solution was a vanilla kernel and use gcc 3.3 with iptables 1.3.5.
-This for fc4.
+I'm new to this list, so I'm hoping not to break with any rules.
 
-Hope this help.
+I've got a case concerning iptables. Please excuse this long posting.
 
-Jorge.
+Before explaining the scenario, here are my questions:
+1) How do restrict internetworking traffic, which is originated by 
+/destinated to the internet to a machine. Please read on, because it's 
+sounds simple but is something special for me.
 
-El mar, 14-03-2006 a las 10:56 +0100, thierry itty escribi=F3:
-> Hello
-> I've an "out-of-the-box" fedora core 4 (standard i686 on either amd or=20
-> pentium)
-> I want to apply gre and pptp patches to netfilter
->=20
-> I install the kernel sources and rebuild the binaries :
->=20
-> rpm -Uvh kernel-2.6.11-1.1369_FC4.src.rpm
-> rpmbuild -bp --target=3Di686 /usr/src/redhat/SPECS/kernel-2.6.spec
-> cd /usr/src/redhat/BUILD/kernel-2.6.11-1/linux-2.6.11-1
-> cp configs/kernel-2.6.11-1.i686.config ./.config
-> make menuconfig (just to check)
-> make
->=20
-> the kernel build ok (with some warnings here and there but nothing=20
-> unusual...)
-> I make it visible :
-> ln -s /usr/src/redhat/BUILD/kernel-2.6.11-1/linux-2.6.11-1 /usr/src/linux
->=20
-> I install the iptables sources
-> rpm -Uvh iptables-1.3.0-2.src.rpm
-> rpmbuild -bp --target=3Di686 /usr/src/redhat/SPECS/iptables.spec
->=20
-> when i compile
-> cd /usr/src/redhat/BUILD/iptables-1.3.0
-> make
->=20
-> I get the following error several times
-> /usr/src/linuc/include/linux/config.h:6:2 error : #error including=20
-> kernel header in userspace; use the glibc headers instead!
->=20
-> After googling a while, I see that some people have solved this by just=20
-> removing the test that triggers the error in=20
-> /usr/src/linux/include/linx/config.h (file which is brought by the=20
-> kernel source package installation + prep by the symlink made just=20
-> before, which should thus be "the right one"), this test reads
-> #if !defined (__KERNEL__) && !defined(__KERNGLUE__)
-> #error including kernel header in userspace; use the glibc headers instea=
-d!
-> #endif
->=20
-> I really don't see where's my error, and I wonder wether this is the=20
-> right way for recompiling FC4 packages...
->=20
-> Actually, I do need to do this because we have to handle several pptp=20
-> vpns going throught this machine, and i have to apply pptp and h323=20
-> helpers patches from patch-o-matic
->=20
-> If I do as I saw (modify the config.h source to remove the test),=20
-> iptables compiles but we are unable to handle pptp vpns (we were used to =
+The main problem is, that I can access the hosts only remote. A mistake 
+would hurt very much.
 
-> do that with 2.4 kernels and it works fine), modprobe and rmmod go in=20
-> endless loops, and so on...
->=20
-> With a little more googling, I saw that userspace applications (iptables =
+The Scenario is as follows:
 
-> in this case) should not use kernel headers, but glibc ones instead,=20
-> hence the error, and since the 2.6 kernel releases, this looks more like =
+a) I've got a host running iptables, which offers different services to 
+the local subnet. The subnet is private, so it's addressed by a stack of 
+192.* IP-Numbers.
 
-> a mus than a should. So, another solution I found was to remove the=20
-> "-I$(KERNEL_DIR)/include" from iptables' Makefile...
->=20
-> Doing so, iptables begins to compile, but stops quickly after a=20
-> "linux/netfilter_ipv4/ipt_CLUSTERIP.h" missing file error
-> I see that the include files iptables uses this way are provided by=20
-> glibc-kernheaders-2.4.-9.1.94, standard version for FC4, but those files =
+b) Machine a) needs internet access for e.g. retrieving updates.
 
-> look three years old and obviously recent netfilter stuff isn't present=20
-> within (to say nothing about the remainder), and making compile to abort
->=20
-> Some more googling, until I find a post which says that to compile=20
-> iptables without using the kernel headers I have to install=20
-> "linux-libc-headers" that are a brand of userspace kernel headers. Ok,=20
-> let's give it a try : I restore iptables' original makefile (with=20
-> -I$(KERNEL_DIR)/include) and export a KERNEL_DIR environment variable=20
-> set to the directory where I untared linux-libc-headers, and I (after a=20
-> make clean) I start a new make.
-> Fine, iptables compiles successfully
->=20
-> But now comes the big question : when I'll apply pptp and h323 patches=20
-> from p-o-m, I can direct KERNEL_DIR to either the true kernel source=20
-> directory or to this new "headers only" directory, but obviously not=20
-> both. So I'll get either the kernel sources patched, which is necessary=20
-> to build a patched kernel, or I'll get the headers patched, which is=20
-> necessary to build iptables, but how will I be able to build both ???
->=20
-> So to conclude and make it short, is there anybody out there who has=20
-> successfully applied pptp and h323 patches on an out-of-the-box fedora=20
-> core 4, and how did he do that ?
-> Should I upgrade to a 2.6.15 kernel ? vanilla or fc4 flavour ?
->=20
-> many thanks in advance
->=20
->=20
---=20
-Jorge Isaac Davila Lopez
-Nicaragua Open Source
-+505 808 2478
-davila@nicaraguaopensource.com=20
+c) For administration tasks the machine described by a) is accessible 
+from the internet. The internet firewall does PAT/NAT or something 
+similar, which means that a certain port on the external router 
+interface is forwarded to a certain TCP-Port/IP-Address combination on 
+the local subnet (192.*).
 
+d) Only three hosts in the local subnet (192.*) should access the 
+machine a). Access strategy for this hosts to the machine a) is all or 
+nothing, which means that filtering occurs based on IP-addresses (not 
+TCP-Ports) or possibly MAC-Addresses.
+
+e) I need the strongest security but simplest configurable security, 
+which can be setup by onboard-tools like iptables.
+
+So where's the prob?
+
+# set policies
+iptables -P OUTPUT DROP
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+
+# allow the local interface of machine a)
+iptables -A INPUT -p All -s 192.168.1.20 -j ACCEPT
+iptables -A OUTPUT -p All -d 192.168.1.20 -j ACCEPT
+
+# restricting access to the three machines on local subnet
+iptables -A INPUT -p All -s 192.168.1.10 -j ACCEPT
+iptables -A INPUT -p All -s 192.168.1.11 -j ACCEPT
+iptables -A INPUT -p All -s 192.168.1.12 -j ACCEPT
+
+iptables -A OUTPUT -p All -d 192.168.1.10 -j ACCEPT
+iptables -A OUTPUT -p All -d 192.168.1.11 -j ACCEPT
+iptables -A OUTPUT -p All -d 192.168.1.12 -j ACCEPT
+
+# access the internet-router
+iptables -A INPUT -p All -s 192.168.1.1 -j ACCEPT
+iptables -A OUTPUT -p All -d 192.168.1.1 -j ACCEPT
+
+# Log the rest
+iptables -A INPUT -p All -s 0.0.0.0/255.255.255.255 -j LOG
+iptables -A output -p All -s 0.0.0.0/255.255.255.255 -j LOG
+
+Here's the prob.
+
+I can't access internet-hosts from machine a), because packets for this 
+purpose are destinated to registered IP-Numbers. They are rejected by 
+the output chain, because they doesn't contain the routers internal IP 
+as destination. Access to the three hosts on local subnet works fine.
+
+The question to answer for solving the problem:
+How do I indentify a packets sourced by machine a) destinated to 
+anywhere, which have to got through the router?
+
+And the other way around:
+How do I indentify packets destinated to machine a) sourced from 
+anywhere, which have passed the router?
+
+Further a possibility to filter those packets in a second stage by 
+protocol or port would be fine?
+
+AND don't forget the administrator's access:
+How do I identify packets, which where forwarded by the router. See c) 
+in the secanrio description.
+
+Hope that somebody can help me. Thanks in advance.
+
+Greetings from Hamburg,
+
+Mattes
 
