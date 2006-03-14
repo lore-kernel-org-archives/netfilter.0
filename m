@@ -1,11 +1,12 @@
-From: Mattes Opel <mattes.opel@web.de>
-Subject: Case concerning iptables filtering traffic from the internet in a
- NATed scenario
-Date: Tue, 14 Mar 2006 16:48:05 +0100
-Message-ID: <4416E5B5.3060004@web.de>
+From: "Randy Grimshaw" <rgrimsha@syr.edu>
+Subject: Re: Case concerning iptables filtering traffic from the
+	internet in a NATed scenario
+Date: Tue, 14 Mar 2006 10:54:38 -0500
+Message-ID: <s416a0fa.012@gwia201.syr.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,98 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, mattes.opel@web.de
 
-Hello everybody,
 
-I'm new to this list, so I'm hoping not to break with any rules.
 
-I've got a case concerning iptables. Please excuse this long posting.
 
-Before explaining the scenario, here are my questions:
-1) How do restrict internetworking traffic, which is originated by 
-/destinated to the internet to a machine. Please read on, because it's 
-sounds simple but is something special for me.
+<><Randall Grimshaw
+Room 203 Machinery Hall
+Syracuse University
+Syracuse, NY   13244
+315-443-5779
+rgrimsha@syr.edu
 
-The main problem is, that I can access the hosts only remote. A mistake 
-would hurt very much.
+>>> Mattes Opel <mattes.opel@web.de> 3/14/2006 10:48:05 AM >>>
 
-The Scenario is as follows:
+>I can't access internet-hosts from machine a), because packets for =
+this=20
+>purpose are destinated to registered IP-Numbers. They are rejected by=20
+>the output chain, because they doesn't contain the routers internal IP=20
+>as destination. Access to the three hosts on local subnet works fine.
 
-a) I've got a host running iptables, which offers different services to 
-the local subnet. The subnet is private, so it's addressed by a stack of 
-192.* IP-Numbers.
+You don't have any FORWARD rules, where the acl logic would likely reside.
 
-b) Machine a) needs internet access for e.g. retrieving updates.
+<><Randy
 
-c) For administration tasks the machine described by a) is accessible 
-from the internet. The internet firewall does PAT/NAT or something 
-similar, which means that a certain port on the external router 
-interface is forwarded to a certain TCP-Port/IP-Address combination on 
-the local subnet (192.*).
-
-d) Only three hosts in the local subnet (192.*) should access the 
-machine a). Access strategy for this hosts to the machine a) is all or 
-nothing, which means that filtering occurs based on IP-addresses (not 
-TCP-Ports) or possibly MAC-Addresses.
-
-e) I need the strongest security but simplest configurable security, 
-which can be setup by onboard-tools like iptables.
-
-So where's the prob?
-
-# set policies
-iptables -P OUTPUT DROP
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-
-# allow the local interface of machine a)
-iptables -A INPUT -p All -s 192.168.1.20 -j ACCEPT
-iptables -A OUTPUT -p All -d 192.168.1.20 -j ACCEPT
-
-# restricting access to the three machines on local subnet
-iptables -A INPUT -p All -s 192.168.1.10 -j ACCEPT
-iptables -A INPUT -p All -s 192.168.1.11 -j ACCEPT
-iptables -A INPUT -p All -s 192.168.1.12 -j ACCEPT
-
-iptables -A OUTPUT -p All -d 192.168.1.10 -j ACCEPT
-iptables -A OUTPUT -p All -d 192.168.1.11 -j ACCEPT
-iptables -A OUTPUT -p All -d 192.168.1.12 -j ACCEPT
-
-# access the internet-router
-iptables -A INPUT -p All -s 192.168.1.1 -j ACCEPT
-iptables -A OUTPUT -p All -d 192.168.1.1 -j ACCEPT
-
-# Log the rest
-iptables -A INPUT -p All -s 0.0.0.0/255.255.255.255 -j LOG
-iptables -A output -p All -s 0.0.0.0/255.255.255.255 -j LOG
-
-Here's the prob.
-
-I can't access internet-hosts from machine a), because packets for this 
-purpose are destinated to registered IP-Numbers. They are rejected by 
-the output chain, because they doesn't contain the routers internal IP 
-as destination. Access to the three hosts on local subnet works fine.
-
-The question to answer for solving the problem:
-How do I indentify a packets sourced by machine a) destinated to 
-anywhere, which have to got through the router?
-
-And the other way around:
-How do I indentify packets destinated to machine a) sourced from 
-anywhere, which have passed the router?
-
-Further a possibility to filter those packets in a second stage by 
-protocol or port would be fine?
-
-AND don't forget the administrator's access:
-How do I identify packets, which where forwarded by the router. See c) 
-in the secanrio description.
-
-Hope that somebody can help me. Thanks in advance.
-
-Greetings from Hamburg,
-
-Mattes
 
