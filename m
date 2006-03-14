@@ -1,7 +1,7 @@
-From: thierry itty <thierry.itty@besancon.org>
-Subject: iptables and patch-o-matic compilation errors with fedora core 4
-Date: Tue, 14 Mar 2006 10:56:24 +0100
-Message-ID: <44169348.7070408@besancon.org>
+From: Lexx <lexx@paragina.homeip.net>
+Subject: Re: port forwarding form IP range
+Date: Tue, 14 Mar 2006 12:54:10 +0200
+Message-ID: <4416A0D2.20900@paragina.homeip.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,92 +18,311 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello
-I've an "out-of-the-box" fedora core 4 (standard i686 on either amd or 
-pentium)
-I want to apply gre and pptp patches to netfilter
+  Try running ethereal on the macines to test your connections...
+I hava a similar setup (in the nat way):
+THIS IS NOT A QUESTION BUT AN ANSWER... (i'm just explaing what i did)
+So my setup is like this:
+1 external ip; more computers on the lan. What I required was: if one of 
+the internal computers on the lan tries to connect to a dnated port it 
+should start talking with the destined computer...
 
-I install the kernel sources and rebuild the binaries :
+Basicaly it was the same from the nat point of view (dnat to the same 
+interface)...
+i first did the rules as you did...
+and if i sent something like
 
-rpm -Uvh kernel-2.6.11-1.1369_FC4.src.rpm
-rpmbuild -bp --target=i686 /usr/src/redhat/SPECS/kernel-2.6.spec
-cd /usr/src/redhat/BUILD/kernel-2.6.11-1/linux-2.6.11-1
-cp configs/kernel-2.6.11-1.i686.config ./.config
-make menuconfig (just to check)
-make
+lanip1 -> extip:dnatport
+it would be translated in to lanip1->lnaip2:dnatport
 
-the kernel build ok (with some warnings here and there but nothing 
-unusual...)
-I make it visible :
-ln -s /usr/src/redhat/BUILD/kernel-2.6.11-1/linux-2.6.11-1 /usr/src/linux
+the lanip2 machine would send back
+lanip2:dnatport->lanip1 which would go directly to machine lanip1....
 
-I install the iptables sources
-rpm -Uvh iptables-1.3.0-2.src.rpm
-rpmbuild -bp --target=i686 /usr/src/redhat/SPECS/iptables.spec
+The problem was that the lanip1 machine was expecting an answer from 
+extip:dnatport not lanip2 so it would disregard the packet sent back....
+My soulution was addaing the following two rules
 
-when i compile
-cd /usr/src/redhat/BUILD/iptables-1.3.0
-make
 
-I get the following error several times
-/usr/src/linuc/include/linux/config.h:6:2 error : #error including 
-kernel header in userspace; use the glibc headers instead!
+iptables -t nat -A POSTROUTING -o lan_interface -s 
+lan_network/subnetmask -d lan_network/subnetmask -j SNAT --to-source 
+lan_gw_ip
+iptables -A FORWARD -i lan_interface -o lan_interface -j ACCEPT
 
-After googling a while, I see that some people have solved this by just 
-removing the test that triggers the error in 
-/usr/src/linux/include/linx/config.h (file which is brought by the 
-kernel source package installation + prep by the symlink made just 
-before, which should thus be "the right one"), this test reads
-#if !defined (__KERNEL__) && !defined(__KERNGLUE__)
-#error including kernel header in userspace; use the glibc headers instead!
-#endif
 
-I really don't see where's my error, and I wonder wether this is the 
-right way for recompiling FC4 packages...
+what this two rules do is force the connection to be like
+lanip1 - gw - lanip2 (so all packets pass through the gw)
 
-Actually, I do need to do this because we have to handle several pptp 
-vpns going throught this machine, and i have to apply pptp and h323 
-helpers patches from patch-o-matic
+in your case instead of the above two rules i think that you can also do 
+something like: (on the proxy machines; i might be wrong beacuase this 
+would render the gw connections table a bit off track):
+iptables -A POSTROUTING -j SNAT --to-source lan_gw_ip
 
-If I do as I saw (modify the config.h source to remove the test), 
-iptables compiles but we are unable to handle pptp vpns (we were used to 
-do that with 2.4 kernels and it works fine), modprobe and rmmod go in 
-endless loops, and so on...
+so all packet going to the proxy will go like lanip1 - gw - proxy
+and all packets will come back proxy - lanip1 (but the source ip will be 
+the gw)
 
-With a little more googling, I saw that userspace applications (iptables 
-in this case) should not use kernel headers, but glibc ones instead, 
-hence the error, and since the 2.6 kernel releases, this looks more like 
-a mus than a should. So, another solution I found was to remove the 
-"-I$(KERNEL_DIR)/include" from iptables' Makefile...
 
-Doing so, iptables begins to compile, but stops quickly after a 
-"linux/netfilter_ipv4/ipt_CLUSTERIP.h" missing file error
-I see that the include files iptables uses this way are provided by 
-glibc-kernheaders-2.4.-9.1.94, standard version for FC4, but those files 
-look three years old and obviously recent netfilter stuff isn't present 
-within (to say nothing about the remainder), and making compile to abort
+If you have a better way please post it... (my gw is using a similar 
+setup as i said)
 
-Some more googling, until I find a post which says that to compile 
-iptables without using the kernel headers I have to install 
-"linux-libc-headers" that are a brand of userspace kernel headers. Ok, 
-let's give it a try : I restore iptables' original makefile (with 
--I$(KERNEL_DIR)/include) and export a KERNEL_DIR environment variable 
-set to the directory where I untared linux-libc-headers, and I (after a 
-make clean) I start a new make.
-Fine, iptables compiles successfully
 
-But now comes the big question : when I'll apply pptp and h323 patches 
-from p-o-m, I can direct KERNEL_DIR to either the true kernel source 
-directory or to this new "headers only" directory, but obviously not 
-both. So I'll get either the kernel sources patched, which is necessary 
-to build a patched kernel, or I'll get the headers patched, which is 
-necessary to build iptables, but how will I be able to build both ???
+Cheers,
+    Silviu
 
-So to conclude and make it short, is there anybody out there who has 
-successfully applied pptp and h323 patches on an out-of-the-box fedora 
-core 4, and how did he do that ?
-Should I upgrade to a 2.6.15 kernel ? vanilla or fc4 flavour ?
 
-many thanks in advance
+Rob Sterenborg wrote:
+
+>On Mon, March 13, 2006 12:02, Nilesh wrote:
+>  
+>
+>>Hi Rob,
+>>
+>>The default FORWARD policy is ACCEPT.
+>>    
+>>
+>
+>If this is a firewall that is connected to the internet, you'd better set it
+>to DROP (or have a last rule that says DROP or REJECT) and make it work with
+>the state match (RELATED and ESTABLISHED)...
+>
+>  
+>
+>>Yes I am trying the rules
+>>
+>>iptables -I PREROUTING -t nat -s 192.168.0.10 -p tcp
+>>--dport 80 -j DNAT --to 192.168.0.3:3128
+>>iptables -I PREROUTING -t nat -s 192.168.0.10 -p tcp
+>>--dport 3128 -j DNAT --to 192.168.0.3:3128
+>>
+>>iptables -A FORWARD -s 192.168.0.10 -i eth1 -d
+>>192.168.0.1 -o eth1 -p tcp --sport 1024:65535 --dport
+>>3128 -j ACCEPT.
+>>    
+>>
+>
+>You are PREROUTING to 192.168.0.3 but you allow forwarding to 192.168.0.1.
+>That doesn't match and therefore this will not work.
+>
+>  
+>
+>>Rob, I am trying to forward all request coming from IP
+>>192.168.0.10 port 3128 and 80 to 192.168.0.3 port
+>>3128.
+>>    
+>>
+>
+>Let's keep it simple at first : you can always make the rule more restrictive
+>if it works (and if you need to).
+>
+>$ipt -t nat -A PREROUTING -i eth1 -s 192.168.0.10 -p tcp \
+>  --dport 3128 -j DNAT --to 192.168.0.3
+>
+>$ipt -A FORWARD -i eth1 -s 192.168.0.10 -d 192.168.0.3 \
+>  -p tcp --dport 3128 -j ACCEPT.
+>
+>I must say that I've never tried forwarding "back" to the same interface..
+>Don't know for sure if it's going to work.
+>
+>  
+>
+>>so 192.168.0.10 will use the 192.168.0.3 proxy server
+>>not the 192.168.0.1 proxy server.
+>>    
+>>
+>
+>
+>
+>
+>Please don't top-post.
+>
+>
+>
+>
+>
+>Gr,
+>Rob
+>
+>
+>
+>
+>
+>  
+>
+>>--- Rob Sterenborg <rob@sterenborg.info> wrote:
+>>
+>>    
+>>
+>>>On Mon, March 13, 2006 09:53, Nilesh wrote:
+>>>      
+>>>
+>>>>Thanks Leandro,
+>>>>
+>>>>I have tried with this rules but unfortunately not
+>>>>working.
+>>>>Squid server running on the 192.168.0.3 and its
+>>>>working  fine. I have not installed any firewall
+>>>>        
+>>>>
+>>>on
+>>>      
+>>>
+>>>>the 192.168.0.3.
+>>>>In my Internet browser settings If I chnage the
+>>>>settings from 192.168.0.1:3128 to 192.168.0.3:3128
+>>>>        
+>>>>
+>>>I
+>>>      
+>>>
+>>>>can surf the web.
+>>>>but If I dont change to 192.168.0.3:3128 proxy
+>>>>settings I get the connection timout error.
+>>>>
+>>>>I think DNAT is not working
+>>>>        
+>>>>
+>>>Probably you tell Netfilter to do DNAT, but are not
+>>>allowing it.
+>>>Do you have a FORWARD rule that allows this traffic
+>>>or is your policy ACCEPT ?
+>>>
+>>>Please don't top-post.
+>>>
+>>>
+>>>Gr,
+>>>Rob
+>>>
+>>>
+>>>      
+>>>
+>>>>--- Leandro Silva <lansoweb@gmail.com> wrote:
+>>>>
+>>>>        
+>>>>
+>>>>>Hello !
+>>>>>
+>>>>>You can use something like that:
+>>>>>
+>>>>>iptables -I PREROUTING -t nat -s 192.168.0.10 -p
+>>>>>          
+>>>>>
+>>>tcp
+>>>      
+>>>
+>>>>>--dport 80 -j
+>>>>>DNAT --to 192.168.0.3:3128
+>>>>>iptables -I PREROUTING -t nat -s 192.168.0.10 -p
+>>>>>          
+>>>>>
+>>>tcp
+>>>      
+>>>
+>>>>>--dport 3128 -j
+>>>>>DNAT --to 192.168.0.3:3128
+>>>>>
+>>>>>If you have iprange compiled for iptables you can
+>>>>>use:
+>>>>>
+>>>>>iptables -I PREROUTING -t nat -m iprange
+>>>>>          
+>>>>>
+>>>--src-range
+>>>      
+>>>
+>>>>>192.168.0.10-192.168.0.20 -p tcp --dport 80 -j
+>>>>>          
+>>>>>
+>>>DNAT
+>>>      
+>>>
+>>>>>--to
+>>>>>192.168.0.3:3128
+>>>>>iptables -I PREROUTING -t nat -m iprange
+>>>>>          
+>>>>>
+>>>--src-range
+>>>      
+>>>
+>>>>>192.168.0.10-192.168.0.20 -p tcp --dport 3128 -j
+>>>>>DNAT --to
+>>>>>192.168.0.3:3128
+>>>>>
+>>>>>I hope this can help,
+>>>>>Leandro
+>>>>>
+>>>>>2006/3/11, Nilesh <niluforalways@yahoo.com>:
+>>>>>          
+>>>>>
+>>>>>>Dear all,
+>>>>>>
+>>>>>>I have two squid proxy servers and two ISP
+>>>>>>
+>>>>>>1)      192.168.0.1 port 3128
+>>>>>>2)      192.168.0.3 port 3128
+>>>>>>
+>>>>>>We have around 70 comps assigned IP's between
+>>>>>>192.168.0.4 to 192.168.0.250
+>>>>>>The default proxy we are using is 192.168.0.1
+>>>>>>            
+>>>>>>
+>>>>>which is
+>>>>>          
+>>>>>
+>>>>>>on the ISP 1.
+>>>>>>Now I have configured 192.168.0.3 squid proxy
+>>>>>>            
+>>>>>>
+>>>>>server
+>>>>>          
+>>>>>
+>>>>>>on ISP 2 line.
+>>>>>>Both ISP 1 and ISP 2 are landing (connected) on
+>>>>>>            
+>>>>>>
+>>>>>the
+>>>>>          
+>>>>>
+>>>>>>same Switch.
+>>>>>>
+>>>>>>Now I want setup the request coming from IP
+>>>>>>            
+>>>>>>
+>>>range
+>>>      
+>>>
+>>>>>>(192.168.0.10 to 192.168.0.20) for the
+>>>>>>192.168.0.1:3128
+>>>>>>Will be forward to 192.168.0.3:3128
+>>>>>>So the users from this IP range will access
+>>>>>>            
+>>>>>>
+>>>only
+>>>      
+>>>
+>>>>>>192.168.0.3 proxy server.
+>>>>>>
+>>>>>>Could any one please help me which rules should
+>>>>>>            
+>>>>>>
+>>>I
+>>>      
+>>>
+>>>>>use
+>>>>>          
+>>>>>
+>>>>>>in IPTABLES .
+>>>>>>
+>>>>>>I have attached herewith my rc.firewall file.
+>>>>>>
+>>>>>>Please help me.
+>>>>>>
+>>>>>>Regards
+>>>>>>Nilesh.
+>>>>>>            
+>>>>>>
+>
+>
+>
+>  
+>
 
 
