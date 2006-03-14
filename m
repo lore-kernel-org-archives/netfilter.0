@@ -1,14 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: MAC Address filter on wireless interface
-Date: Tue, 14 Mar 2006 08:59:08 +0100
-Message-ID: <1142323148.4833.8.camel@anduril.intranet.cartel-securite.net>
-References: <44158057.20203@4dllc.com>
-	<1142262177.4809.67.camel@anduril.intranet.cartel-securite.net>
-	<4416608F.1050008@4dllc.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Why is ipset nethash set type limited to /31?
+Date: Tue, 14 Mar 2006 10:22:34 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0603141017050.11147@blackhole.kfki.hu>
+References: <4410F444.3090407@netboxblue.com>
+	<Pine.LNX.4.58.0603100910240.6303@blackhole.kfki.hu>
+	<4414A4EE.8040207@netboxblue.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4416608F.1050008@4dllc.com>
+In-Reply-To: <4414A4EE.8040207@netboxblue.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,32 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Steve Comfort <steve@4dllc.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Menno Smits <menno@netboxblue.com>
+Cc: Netfilter Mailing list <netfilter@lists.netfilter.org>
 
-Le mardi 14 mars 2006 =E0 08:19 +0200, Steve Comfort a =E9crit :
-> mac.allow is a file we create containing permitted MAC addresses. The
-> above was just a snippet, I have the same rule in place for the
-> FORWARD chain.
+Hi,
 
-OK. Then what I would do is check with an iptables -L -v rules counters
-to verify if thoses rules actually match. And if they don't, try to
-figure out why. Maybe you have one prior rule that allows all packets,
-bypassing this part of the ruleset.
+On Mon, 13 Mar 2006, Menno Smits wrote:
 
-On the other end, I would do a mac.allow file, and put a DROP policy so
-you'll never see anything go through until you get the right MAC, and
-the right ruleset ;) Maybe another "customer request" ?
+> How would you feel about a "union" set type? Union sets would be
+> configured to refer to 1 or more other sets. If the IP is found in any
+> of the child sets it returns a match.
 
-> Yeah, I know. Customer requirement unfortunately.
+Technically it is not difficult to add an union type. But first we'd like
+to complete the transition from sockopt to netlink based kernel-userspace
+communication (it involves the internal API of the settypes as well).
 
-Customers...
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
