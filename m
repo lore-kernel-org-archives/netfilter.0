@@ -1,7 +1,7 @@
 From: "Thomas Raef" <traef06@ebasedsecurity.com>
-Subject: ipset not blocking
-Date: Wed, 15 Mar 2006 07:22:28 -0600
-Message-ID: <D2EA20593E6AAD4DA6D07DE0EC12D1610133D6@ebs-2200.ebasedsecurity.com>
+Subject: RE: ipset not blocking
+Date: Wed, 15 Mar 2006 08:42:16 -0600
+Message-ID: <D2EA20593E6AAD4DA6D07DE0EC12D1610133D8@ebs-2200.ebasedsecurity.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,7 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Thomas Raef <traef06@ebasedsecurity.com>, netfilter@lists.netfilter.org
+
+I forgot to add:
+
+I'm using ipset 2.2.8 version 2
+Iptables v1.3.4
+Kernel 2.6.15
+
+If I change the iptables to the INPUT chain it blocks, but more than
+just dst port 25, it blocks everything.
+
+What am I doing wrong?
+
+
+-----Original Message-----
+From: Thomas Raef=20
+Sent: Wednesday, March 15, 2006 7:22 AM
+To: 'netfilter@lists.netfilter.org'
+Subject: ipset not blocking
 
 Please shed some light on this.
 
