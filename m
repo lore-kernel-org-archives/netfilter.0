@@ -1,14 +1,11 @@
-From: Gaurav Sharma <gaurav@interacesso.pt>
-Subject: Re: calculate "new connections per second" (nfcan: addressed to
-	exclusive sender for this address)
-Date: Thu, 16 Mar 2006 11:08:44 +0000
-Message-ID: <200603161108.44976.gaurav@interacesso.pt>
-References: <200603151513.08287.gaurav@interacesso.pt>
-	<20060315233244.GI31570@salty>
+From: Alexander Samad <alex@samad.com.au>
+Subject: Interesting problem with conntrack and ftp
+Date: Fri, 17 Mar 2006 10:55:11 +1100
+Message-ID: <20060316235511.GA18440@hufpuf.lan1.hme1.samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060315233244.GI31570@salty>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,38 +17,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: netfilter-devel@lists.netfilter.org
 
 
-Thanks for the reply Jim.
+--x+6KMIRAuhnl3hBn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I am using the ip_conntrack module to mark connections on a linux bridge to 
-shape traffic. Sometimes if there is a DOS attack the ip_conntrack table 
-overflows and the kernel starts dropping packets.  I want to measure the rate 
-at which the connections are being made and being entered in the ip_conntrack 
-table so if there is a spike in the rate I will know that there is a DOS 
-attack going on.  I hope you can now understand my situation. I you need more 
-information please let me know.
+Hi
 
-Appreciate your help.
+I was resently setting up my new firewall usimng openwrt on a linksys.
 
-Regards,
-Gaurav.
+I got around to setting up my adsl connection and added into my iptables
+these commands
 
-On Wednesday 15 March 2006 23:32, Jim Laurino wrote:
-> On 2006.03.15 10:13, Gaurav Sharma - gaurav@interacesso.pt wrote:
-> > Hello,
-> >
-> > I am trying to find out a way to calculate
-> > the rate of "new connections per second"
-> > for the ip_conntrack module.
-> > What would be a good approach for this problem?
->
-> Are you asking how to determine
-> the time each connection is established
-> or are you asking, given this data,
-> how to estimate this rate.
->
-> Can you explain how you want to use the measurement?
+
+
+$IPT -t filter -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT=20
+$IPT -t filter -A FORWARD -o $WANADSL -p tcp --tcp-flags SYN,RST SYN -j TCP=
+MSS --clamp-mss-to-pmtu
+$IPT -t nat -A POSTROUTING -o $WANADSL -j MASQUERADE
+
+which is what I have normally done.
+
+http traffic worked well, but ftp of large files, timed out, sign of a
+mtu problem. It worked when I ftp'ed from the firewall, but not when I
+did it from behind the firewall.
+
+When I did some tcpdumps, I noticed that the second connection created
+by the client wasn't being clamp'ed.
+
+The way I figure it was that the second connection was related to the
+first one, and thus being consumed by the first line in iptables (above)
+
+Once I changed the order of line 1 and 2 every thing worked fine.
+
+Now openwrt uses 2.4.30, and my previous firewall used 2.6 and I believe
+it was setup as shown above and it worked fine.
+
+The other difference is that conntrack_ftp is compiled into the kernel.
+
+Is this a know feature/bug ? why has it worked in 2.6 and not in 2.4 or
+is the problem in compiled in and as a module
+
+Alex
+
+
+--x+6KMIRAuhnl3hBn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD4DBQFEGfrfkZz88chpJ2MRAhcMAKCZ5cVuW8Upl8ck80HNJ6skGqAvYgCY16AN
+lAZpknnGZXSgvgeDEJuCJA==
+=wL+5
+-----END PGP SIGNATURE-----
+
+--x+6KMIRAuhnl3hBn--
 
