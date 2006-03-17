@@ -1,10 +1,12 @@
-From: Simone Sestini <simone.sestini@eutelia.it>
-Subject: Iptables - QOS - MPLS
-Date: Fri, 17 Mar 2006 09:36:18 +0100
-Message-ID: <441A7502.7050503@eutelia.it>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: Iptables - QOS - MPLS
+Date: Fri, 17 Mar 2006 14:27:53 +0100 (CET)
+Message-ID: <57061.193.173.147.3.1142602073.squirrel@webmail.sterenborg.info>
+References: <441A7502.7050503@eutelia.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <441A7502.7050503@eutelia.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,37 +20,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all..
+On Fri, March 17, 2006 09:36, Simone Sestini wrote:
+> Hi all..
+>
+> I'm working on a very interesting project about Iptables .. bridging
+> server.. qos.. well managing traffic you can see.
+>
+...
+>
+> So what i ask..
+> Where i can found the right patches and the support for MPLS for linux =
+?
+> iptables need to be patched too ?
+> I'm sure . searching over various newsletter that there are some
+> experiments out.. anyone could help me to resolve this situation ?
 
-I'm working on a very interesting project about Iptables .. bridging
-server.. qos.. well managing traffic you can see.
-
-The situation is easy.
-
- lnx server --- router A --- router B  --- lnx bridge box --- router C
---- client
-
-What i need to do is shape the traffic from/to "client" to "lnx server".
-On a normal IP situation this is not hard to configure and all is
-working good.
-I'm able to shape any kind of traffic, working at layer7 with special rules.
-
-The problem is over the second step.
-I had the MPLS protocol over the 3 routers.
-The traffic from/to server still work naturally but iptables over the
-lnx bridge box isen't able anymore to TAG the traffic and shape it.
-
-So what i ask..
-Where i can found the right patches and the support for MPLS for linux ?
-iptables need to be patched too ?
-I'm sure . searching over various newsletter that there are some
-experiments out.. anyone could help me to resolve this situation ?
-
-Thanks in advice for any good reply.
-
-Simon
+Having never used MPLS I did a quick google for "mpls protocol iptables" =
+and
+found patches pretty quickly (Sourceforge seems to have an MPLS project),=
+ just
+like an article about "setting up of mpls in network" (Linux)...
 
 
+Gr,
+Rob
 
 
 
