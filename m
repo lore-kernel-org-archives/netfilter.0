@@ -1,12 +1,10 @@
-From: Alexander Samad <alex@samad.com.au>
-Subject: Interesting problem with conntrack and ftp
-Date: Fri, 17 Mar 2006 10:55:11 +1100
-Message-ID: <20060316235511.GA18440@hufpuf.lan1.hme1.samad.com.au>
+From: Simone <mimmo@ats.it>
+Subject: Iptables - Bridge - QOS - MPLS
+Date: Fri, 17 Mar 2006 10:52:51 +0100
+Message-ID: <441A86F3.8030704@ats.it>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,66 +15,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: netfilter-devel@lists.netfilter.org
 
+Hi all..
 
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm working on a very interesting project about Iptables .. bridging
+server.. qos.. well managing traffic you can see.
 
-Hi
+The situation is easy.
 
-I was resently setting up my new firewall usimng openwrt on a linksys.
+ lnx server --- router A --- router B  --- lnx bridge box --- router C
+--- client
 
-I got around to setting up my adsl connection and added into my iptables
-these commands
+What i need to do is shape the traffic from/to "client" to "lnx server".
+On a normal IP situation this is not hard to configure and all is
+working good.
+I'm able to shape any kind of traffic, working at layer7 with special rules.
 
+The problem is over the second step.
+I had the MPLS protocol over the 3 routers.
+The traffic from/to server still work naturally but iptables over the
+lnx bridge box isen't able anymore to TAG the traffic and shape it.
 
+So what i ask..
+Where i can found the right patches and the support for MPLS for linux ?
+iptables need to be patched too ?
+I'm sure . searching over various newsletter that there are some
+experiments out.. anyone could help me to resolve this situation ?
 
-$IPT -t filter -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT=20
-$IPT -t filter -A FORWARD -o $WANADSL -p tcp --tcp-flags SYN,RST SYN -j TCP=
-MSS --clamp-mss-to-pmtu
-$IPT -t nat -A POSTROUTING -o $WANADSL -j MASQUERADE
+Thanks in advice for any good reply.
 
-which is what I have normally done.
+Simon
 
-http traffic worked well, but ftp of large files, timed out, sign of a
-mtu problem. It worked when I ftp'ed from the firewall, but not when I
-did it from behind the firewall.
-
-When I did some tcpdumps, I noticed that the second connection created
-by the client wasn't being clamp'ed.
-
-The way I figure it was that the second connection was related to the
-first one, and thus being consumed by the first line in iptables (above)
-
-Once I changed the order of line 1 and 2 every thing worked fine.
-
-Now openwrt uses 2.4.30, and my previous firewall used 2.6 and I believe
-it was setup as shown above and it worked fine.
-
-The other difference is that conntrack_ftp is compiled into the kernel.
-
-Is this a know feature/bug ? why has it worked in 2.6 and not in 2.4 or
-is the problem in compiled in and as a module
-
-Alex
-
-
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iD4DBQFEGfrfkZz88chpJ2MRAhcMAKCZ5cVuW8Upl8ck80HNJ6skGqAvYgCY16AN
-lAZpknnGZXSgvgeDEJuCJA==
-=wL+5
------END PGP SIGNATURE-----
-
---x+6KMIRAuhnl3hBn--
 
