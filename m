@@ -1,7 +1,7 @@
-From: Simone <mimmo@ats.it>
-Subject: Iptables - Bridge - QOS - MPLS
-Date: Fri, 17 Mar 2006 10:52:51 +0100
-Message-ID: <441A86F3.8030704@ats.it>
+From: Simone Sestini <simone.sestini@eutelia.it>
+Subject: Iptables - QOS - MPLS
+Date: Fri, 17 Mar 2006 09:36:18 +0100
+Message-ID: <441A7502.7050503@eutelia.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -47,5 +47,8 @@ experiments out.. anyone could help me to resolve this situation ?
 Thanks in advice for any good reply.
 
 Simon
+
+
+
 
 
