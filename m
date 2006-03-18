@@ -1,13 +1,10 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: limit a connection?
-Date: Fri, 17 Mar 2006 10:47:48 -0500
-Message-ID: <441ADA24.10003@SCampbell.net>
-References: <20060316105241.89864.qmail@web35915.mail.mud.yahoo.com>
-	<a3f524e0603170702x39124f0ey9b4ebe0c9ff89067@mail.gmail.com>
+From: <jay@esuna.co.uk>
+Subject: ipt_owner and ICMP
+Date: Sat, 18 Mar 2006 18:34:40 -0000
+Message-ID: <004801c64aba$9e81b170$0301a8c0@asp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <a3f524e0603170702x39124f0ey9b4ebe0c9ff89067@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,42 +18,35 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Clarification, no you can't with netfilter.  
+Hi,
 
-However, you can with traffic shaping.  Take a look at http://lartc.org/ for info and http://lartc.org/wondershaper/ for something to help do it for you.
+I'm currently using the ipt_owner module to enforce stronger outgoing packet
+filtering on certain daemons. I create a custom chain with the stronger
+rules and use '-m owner' to jump packets into the chain.
 
-It's just not appropos to this list which deals strictly with netfilter issues.
+This works fine for UDP and TCP, but my outgoing ICMP packets never match
+the rule. I understand why incoming ICMP should fail to match, but why are
+outgoing packets missing the filter?
 
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+acctboth   all  --  anywhere             anywhere
+ACCEPT     all  --  anywhere             anywhere
+apache-output  all  --  anywhere             anywhere            OWNER UID
+match
+ iptest
 
-Kashif Ali Bukhari wrote:
-> no u cant
-> 
-> On 3/16/06, Linux linux <khankhn1@yahoo.com> wrote:
->> Hello
->>
->> I want to ask one question which is that is it
->> possible that 192.168.0.11 will send and recive 5
->> packet per seconds or per minutes. if yes is it
->> possible with limit option but i don't understand that
->> option, can any one help me. how to do that.
->>
->>
->> regards
->> sonofredhat
->>
->> __________________________________________________
->> Do You Yahoo!?
->> Tired of spam?  Yahoo! Mail has the best spam protection around
->> http://mail.yahoo.com
->>
->>
-> 
-> 
-> --
-> Syed Kashif Ali Bukhari
-> +92-300-4295604
-> Network Engineer
-> Beaconhouse IT Services, Lahore Pakistan
-> 
+Chain apache-output (1 references)
+target     prot opt source               destination
+DROP       icmp --  anywhere             anywhere
+
+(nothing in the acctboth chain causes a jump)
+
+Any ideas?
+
+-- 
+Jay L.T. Cornwall, http://www.esuna.co.uk/~jay/
+PhD Student
+Imperial College London
 
 
