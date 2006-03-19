@@ -1,42 +1,79 @@
-From: "Jay L.T. Cornwall" <jay@esuna.co.uk>
-Subject: Re: ipt_owner and ICMP
-Date: Sun, 19 Mar 2006 00:26:35 +0000
-Message-ID: <441CA53B.6010606@esuna.co.uk>
-References: <004801c64aba$9e81b170$0301a8c0@asp> <441CA43E.1040706@zoomnet.ro>
+From: Krzysztof Oledzki <olenf@ans.pl>
+Subject: Re: Interesting problem with conntrack and ftp
+Date: Sun, 19 Mar 2006 01:37:39 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0603190134110.16079@bizon.gios.gov.pl>
+References: <20060316235511.GA18440@hufpuf.lan1.hme1.samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <441CA43E.1040706@zoomnet.ro>
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-187430788-1683039739-1142728659=:16079"
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <20060316235511.GA18440@hufpuf.lan1.hme1.samad.com.au>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: Alexander Samad <alex@samad.com.au>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Alexandru Dragoi wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
->> This works fine for UDP and TCP, but my outgoing ICMP packets never match
->> the rule. I understand why incoming ICMP should fail to match, but why are
->> outgoing packets missing the filter?
+---187430788-1683039739-1142728659=:16079
+Content-Type: TEXT/PLAIN; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-> I think this is because icmp packets are just generated and sent away by
-> some part of the kernel after it received a syscall from a program with
-> uid 0 (only root can use icmp).
 
-Oh, of course! *slaps head*
 
-Ping was running as setuid root. I feel silly now, thanks for pointing 
-that out. :)
+On Fri, 17 Mar 2006, Alexander Samad wrote:
 
--- 
-Jay L.T. Cornwall, http://www.esuna.co.uk/~jay/
-PhD Student
-Imperial College London
+> Hi
+>
+> I was resently setting up my new firewall usimng openwrt on a linksys.
+>
+> I got around to setting up my adsl connection and added into my iptables
+> these commands
+>
+>
+>
+> $IPT -t filter -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> $IPT -t filter -A FORWARD -o $WANADSL -p tcp --tcp-flags SYN,RST SYN -j T=
+CPMSS --clamp-mss-to-pmtu
+> $IPT -t nat -A POSTROUTING -o $WANADSL -j MASQUERADE
+>
+> which is what I have normally done.
+>
+> http traffic worked well, but ftp of large files, timed out, sign of a
+> mtu problem. It worked when I ftp'ed from the firewall, but not when I
+> did it from behind the firewall.
+>
+> When I did some tcpdumps, I noticed that the second connection created
+> by the client wasn't being clamp'ed.
+>
+> The way I figure it was that the second connection was related to the
+> first one, and thus being consumed by the first line in iptables (above)
+>
+> Once I changed the order of line 1 and 2 every thing worked fine.
+>
+> Now openwrt uses 2.4.30, and my previous firewall used 2.6 and I believe
+> it was setup as shown above and it worked fine.
+>
+> The other difference is that conntrack_ftp is compiled into the kernel.
+>
+> Is this a know feature/bug ? why has it worked in 2.6 and not in 2.4 or
+> is the problem in compiled in and as a module
+
+The solution is simple: TCPMSS should be used only in mangle table.=20
+Anyway, if you didn't change the configuration I have no idea why it=20
+worked in 2.6 and does not work in 2.4.
+
+Best regards,
+
+ =09=09=09=09Krzysztof Ol=EAdzki
+---187430788-1683039739-1142728659=:16079--
 
