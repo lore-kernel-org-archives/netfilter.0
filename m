@@ -1,13 +1,10 @@
-From: Hardik Dalwadi <hardik@deeproot.co.in>
-Subject: Re: Defining ip range in a rule
-Date: Mon, 20 Mar 2006 17:19:34 +0530
-Message-ID: <441E96CE.9010809@deeproot.co.in>
-References: <441E907F.4060107@mmcomputer.hu>
-Reply-To: Hardik Dalwadi <hardik@deeproot.co.in>
+From: "Mesut Bayrak" <mbayrak@datagrup.com.tr>
+Subject: FW: Nat problem
+Date: Mon, 20 Mar 2006 15:40:13 +0200
+Message-ID: <18413.6101430797$1142862065@news.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <441E907F.4060107@mmcomputer.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: McDouglas <mcdouglas@mmcomputer.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi McDouglas,
+Hi people 
+    I have a little nat problem
+ 
+I write that 
+    iptables -t nat -I POSTROUTING -p tcp -d X.X.X.X --dport 88 -j DNAT
+--to-destination X.X.X.X --dport 80
+ 
+and i just get that 
+ 
+iptables v1.2.7a: Only one `--destination-port' allowed
+Try `iptables -h' or 'iptables --help' for more information.
+ 
+ 
+What i was trying to do was  
+ 
+                                  _______
+________________
+internet------>----port 88  firewall  --->--- port 80  : machine on the lan 
 
-On Monday 20 March 2006 04:52 PM, McDouglas wrote:
-> Hi,
-> 
-> I'd like to ask how to define an ip address range in a rule. I don't 
-> mean using subnet mask but rather for example making a rule which will 
-> block port 110 for the 10.10.2.50-10.10.2.150 ip range.
 
-If your kernel is compiled with CONFIG_IP_NF_MATCH_IPRANGE=y
-then check below Example.
+How can i do it :) ?                           
 
-iptables -I PREROUTING -t nat -m iprange --src-range
-			       ^^^^^^^^^^^^^^^^^^^^^^	
-10.10.2.50-10.10.2.150 -p tcp --dport 80 -j DNAT --to
-^^^^^^^^^^^^^^^^^^^^^^^^^
-10.10.2.1:3128
-
-
-Hardik Dalwadi.
 
