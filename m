@@ -1,10 +1,12 @@
-From: McDouglas <mcdouglas@mmcomputer.hu>
-Subject: Defining ip range in a rule
-Date: Mon, 20 Mar 2006 12:22:39 +0100
-Message-ID: <441E907F.4060107@mmcomputer.hu>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: Defining ip range in a rule
+Date: Mon, 20 Mar 2006 06:44:57 -0500
+Message-ID: <1142855098.2922.2.camel@localhost>
+References: <441E907F.4060107@mmcomputer.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <441E907F.4060107@mmcomputer.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: McDouglas <mcdouglas@mmcomputer.hu>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+On Mon, 2006-03-20 at 12:22 +0100, McDouglas wrote:
+> Hi,
+> 
+> I'd like to ask how to define an ip address range in a rule. I don't 
+> mean using subnet mask but rather for example making a rule which will 
+> block port 110 for the 10.10.2.50-10.10.2.150 ip range.
+> 
+> Thank you.
+The iprange match is in most newer kernels.  If it is missing in yours,
+you may need to patch.  You may also need to check to see if it is
+included in activated in your kernel.
 
-I'd like to ask how to define an ip address range in a rule. I don't=20
-mean using subnet mask but rather for example making a rule which will=20
-block port 110 for the 10.10.2.50-10.10.2.150 ip range.
+The man page will have more information but the syntax is:
 
-Thank you.
+iptables -A FORWARD -m iprange --[src|dst]-range x.x.x.x-y.y.y.y
 
---=20
-Tisztelettel:
+Or at least so I recall.  Good luck - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-Gregorics Tam=E1s
-
-Szerv=EDzmunkat=E1rs
-M&M Computer Kft.
-7623 P=E9cs, M=E1rt=EDrok u.42.
-Tel.: +36-72/516-511
-Fax: +36-72/516-529
-Mobil: +36-30-943-6784
-e-mail: tamas.gregorics@mmcomputer.hu
-
-http://www.mmcomputer.hu=20
+If you would like to participate in the development of an open source
+enterprise class network security management system, please visit
+http://iscs.sourceforge.net
 
 
