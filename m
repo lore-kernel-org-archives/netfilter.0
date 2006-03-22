@@ -1,12 +1,11 @@
-From: Martin Skarda <skarda@uni-freiburg.de>
-Subject: Re: Problem blocking dhcp discoveries ??
-Date: Wed, 22 Mar 2006 18:41:19 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0603221833290.12862@persil.ruf.uni-freiburg.de>
-References: <Pine.LNX.4.64.0603142108050.12862@persil.ruf.uni-freiburg.de>
-	<25831.217.166.60.19.1143045520.squirrel@ma.rtij.nl>
+From: diegoa@imagiro-1.com
+Subject: Iptables + extensions + Fedora 3
+Date: Wed, 22 Mar 2006 10:31:30 -0800 (PST)
+Message-ID: <48135.82.214.211.1.1143052290.squirrel@webmail.imagiro-1.com>
+Reply-To: diegoa@imagiro-1.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <25831.217.166.60.19.1143045520.squirrel@ma.rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Martijn Lievaart <m@rtij.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Wed, 22 Mar 2006, Martijn Lievaart wrote:
+I need to add the extenions for iptables. I am running Fedora 3. I
+downloaded patch-o-matic which lets me add the extensions I need. Here's
+what I have done so far.
 
-> Martin Skarda zei:
->>
->> Where is my mistake? Why do I see all the bursts on my dhcp server even
->> if  the dmesg output and the iptable counters are telling me that the
->> packages  are dropped?
->
-> Just a guess, but ISTR that the standard linux DHCP server does not use
-> the normal mechanisms, but talks to the network interfaces at such a low
-> level that it sees the packets before netfilter.
->
+1. Download patch-o-matic, kernel sources, etc.
+2. Installed the kernel source.
+3. Ran iptables runme -extra and installed the quota patch
+4. Complied the kernel according to this site:
+http://www.cri.ch/linux/docs/sk0010.html
+5. I restarted and booted into the new kernel that appeared in the grub m=
+enu.
+6. I ran the iptables command to apply the quota patch: iptables -A INPUT
+-p tcp -m quota --quota 2147483648 -j ACCEPT
 
-Why sould it do: When I look at the RFCs, I see that bootp is designed to 
-use the UDP/IP. It only has to send a ARP request to get the MAC address 
-of the client. But this is a normal behavior on a local network segment 
-too!
+and I got this error: iptables v1.2.11: Couldn't load match
+`quota':/lib/iptables/libipt_quota.so: cannot open shared object file: No
+such file or directory
 
-The DHCP server I use, is the standard ISC server.
+7. I ran make menuconfig and I found the kernel module marked for Module.
+Which to me says that it is configured in the new kernel.
 
-kindly, Martin
+Is the module loaded? Yes, according to...
+[root@localhost ~]# modprobe -l | grep quota
+/lib/modules/2.6.9-prep/kernel/net/ipv4/netfilter/ipt_quota.ko
+
+What is going on here?
+
 
