@@ -1,11 +1,11 @@
-From: diegoa@imagiro-1.com
-Subject: Iptables + extensions + Fedora 3
-Date: Wed, 22 Mar 2006 10:31:30 -0800 (PST)
-Message-ID: <48135.82.214.211.1.1143052290.squirrel@webmail.imagiro-1.com>
-Reply-To: diegoa@imagiro-1.com
+From: "Jeremy Elson" <jelson@gmail.com>
+Subject: Per-client routing, plus masquerading -- possible?
+Date: Wed, 22 Mar 2006 19:10:47 -0800
+Message-ID: <51e5f6120603221910j3a7d3827oddb2b3bdcacaa818@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +19,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I need to add the extenions for iptables. I am running Fedora 3. I
-downloaded patch-o-matic which lets me add the extensions I need. Here's
-what I have done so far.
+[ Oops, sent this to netfilter-devel before I realized this list
+existed.  D'oh! ]
 
-1. Download patch-o-matic, kernel sources, etc.
-2. Installed the kernel source.
-3. Ran iptables runme -extra and installed the quota patch
-4. Complied the kernel according to this site:
-http://www.cri.ch/linux/docs/sk0010.html
-5. I restarted and booted into the new kernel that appeared in the grub m=
-enu.
-6. I ran the iptables command to apply the quota patch: iptables -A INPUT
--p tcp -m quota --quota 2147483648 -j ACCEPT
 
-and I got this error: iptables v1.2.11: Couldn't load match
-`quota':/lib/iptables/libipt_quota.so: cannot open shared object file: No
-such file or directory
+Hi,
 
-7. I ran make menuconfig and I found the kernel module marked for Module.
-Which to me says that it is configured in the new kernel.
+I'm trying to set up a Linux box as a NATting router.  But here's the
+trick: my box's external interface is on a LAN that has a whole bunch
+of next-hop routers on it, any of which can be used to access the
+Internet.  I'm trying to figure out how to configure iptables so that
+the NAT box selects the router to use based on client IP address
+(i.e., the IP address on the inside interface).
 
-Is the module loaded? Yes, according to...
-[root@localhost ~]# modprobe -l | grep quota
-/lib/modules/2.6.9-prep/kernel/net/ipv4/netfilter/ipt_quota.ko
+In other words -- I'd like ipfilter to keep the destination IP address
+unchanged, but select a next-hop destination (e.g., by changing the
+destination MAC address) based on the source IP.   And, on top of all
+this, mangle the source address according to normal masquerading.
 
-What is going on here?
+I've been tinkering with a command like this:
 
+iptables -t nat -A POSTROUTING -i $INTERNAL_CLIENT_IP -o
+external-iface0 -j SNAT --to $EXTERNAL_ROUTER_IP
+
+...but it seems that --to controls the new source address given to the
+packet (i.e., the router's outside-interface IP), and not the
+destination to which the NATted packet is sent.
+
+Could someone please point me in the right direction?  Or is this not possi=
+ble?
+
+Thanks!
+
+--Jeremy
 
