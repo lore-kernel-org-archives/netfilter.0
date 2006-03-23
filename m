@@ -1,12 +1,14 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: Per-client routing, plus masquerading -- possible?
-Date: Thu, 23 Mar 2006 08:46:17 -0500
-Message-ID: <4422A6A9.7030102@SCampbell.net>
-References: <51e5f6120603221910j3a7d3827oddb2b3bdcacaa818@mail.gmail.com>
+From: Martin Skarda <skarda@uni-freiburg.de>
+Subject: Re: Problem blocking dhcp discoveries ??
+Date: Thu, 23 Mar 2006 15:28:01 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0603231524340.12862@persil.ruf.uni-freiburg.de>
+References: <Pine.LNX.4.64.0603142108050.12862@persil.ruf.uni-freiburg.de>
+	<25831.217.166.60.19.1143045520.squirrel@ma.rtij.nl>
+	<Pine.LNX.4.64.0603221833290.12862@persil.ruf.uni-freiburg.de>
+	<4421BA0A.7080107@rtij.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <51e5f6120603221910j3a7d3827oddb2b3bdcacaa818@mail.gmail.com>
+In-Reply-To: <4421BA0A.7080107@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,46 +19,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jeremy Elson <jelson@gmail.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Martijn Lievaart <m@rtij.nl>
 Cc: netfilter@lists.netfilter.org
 
-Jeremy Elson wrote:
-> [ Oops, sent this to netfilter-devel before I realized this list
-> existed.  D'oh! ]
-> 
-> 
-> Hi,
-> 
-> I'm trying to set up a Linux box as a NATting router.  But here's the
-> trick: my box's external interface is on a LAN that has a whole bunch
-> of next-hop routers on it, any of which can be used to access the
-> Internet.  I'm trying to figure out how to configure iptables so that
-> the NAT box selects the router to use based on client IP address
-> (i.e., the IP address on the inside interface).
-> 
-> In other words -- I'd like ipfilter to keep the destination IP address
-> unchanged, but select a next-hop destination (e.g., by changing the
-> destination MAC address) based on the source IP.   And, on top of all
-> this, mangle the source address according to normal masquerading.
-> 
-> I've been tinkering with a command like this:
-> 
-> iptables -t nat -A POSTROUTING -i $INTERNAL_CLIENT_IP -o
-> external-iface0 -j SNAT --to $EXTERNAL_ROUTER_IP
-> 
-> ...but it seems that --to controls the new source address given to the
-> packet (i.e., the router's outside-interface IP), and not the
-> destination to which the NATted packet is sent.
-> 
-> Could someone please point me in the right direction?  Or is this not possible?
-> 
-> Thanks!
-> 
-> --Jeremy
-> 
+Hi Martijn,
 
-You just want do to source routing, look here
+On Wed, 22 Mar 2006, Martijn Lievaart wrote:
 
-http://www.linuxguruz.com/iptables/howto/2.4routing-4.html#ss4.1
+>
+> I don't know why either, but some googling turned up 
+> http://www.shorewall.net/dhcp.htm:
+>
+>>
+>>        Note
+>>
+>>  For most operations, DHCP software interfaces to the Linux IP stack at a
+>>  level below Netfilter. Hence, Netfilter (and therefore Shorewall) cannot
+>>  be used effectively to police DHCP. The ?dhcp? interface option described
+>>  in this article allows for Netfilter to stay out of DHCP's way for those
+>>  operations that can be controlled by Netfilter and prevents unwanted
+>>  logging of DHCP-related traffic by Shorewall-generated Netfilter logging
+>>  rules.
+>>
+
+thank you for this link. It will explain this behavior...
+
+kindly Martin
 
