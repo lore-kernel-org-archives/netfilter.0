@@ -1,10 +1,9 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: [ADM] svn.netfilter.org / bugzilla.netfilter.org fixed
-Date: Fri, 24 Mar 2006 15:02:08 +0100
-Message-ID: <20060324140208.GF6039@sunbeam.de.gnumonks.org>
+From: "Matthew Pepar" <thepigs@gmail.com>
+Subject: voip question
+Date: Sat, 25 Mar 2006 10:57:59 +1100
+Message-ID: <fcfe0b070603241557n768205dkd919adc6a09e9b5b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DiL7RhKs8rK9YGuF"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -17,44 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi,
 
---DiL7RhKs8rK9YGuF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ I've been using netfilter successfully -- thanks for writing it.
 
-Hi!
+I was wondering if I could improve my VOIP calls using netfilter.
 
-Despite lots of problems with gentoo/ppc64 (again) I now managed to get
-http://svn.netfilter.org/ and https://bugzilla.netfilter.org/ into a
-running state again.
+ The main problem is excessive jitter delay to the receiver when P2P
+or WEB uploads /browsing is/are occurring.
 
-If you still encounter any issues, please let me know!
+I have 512/128 ADSL and I am using tc-htb and using a reduced MTU (576
+bytes). The RTP data is getting through its just that the jitter delay
+is very long (seconds). The jitter delay returns to unnoticeable when
+the uploads are stopped. Some basic testing indicates that jitter
+delay is mostly unnoticeable if all other traffic is limited to
+24kbit(!) upload.
 
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+I was wondering if netfilter could detect the outgoing/incoming RTP
+traffic and then set a flag. After RTP traffic has finished the flag
+would be removed (using a timeout). The flag could then be used to
+CLASSIFY other packets into say a 24kbit upload pool.
 
---DiL7RhKs8rK9YGuF
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+ Looking at the iptables docs there is no specific module that could
+do this although you could hack the 'condition' module to enable
+setting of flags and add timeouts by reusing some of the 'recent'
+module code. I am thinking about doing this, but I'd thought I'd ask
+first to see if anyone has any thoughts about whether its been done
+already or whether it would work or whether its too hard.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFEI/vgXaXGVTD0i/8RAlh8AKCWcAM03x0CIPXncbgAehsDQN2EnQCffjR7
-lV9dCoRwF6f4IaT0cLzlfwQ=
-=f4nV
------END PGP SIGNATURE-----
-
---DiL7RhKs8rK9YGuF--
+Thx,
+Matt.
 
