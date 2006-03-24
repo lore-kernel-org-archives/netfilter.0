@@ -1,9 +1,10 @@
-From: Francis.Sauch@etu.enseeiht.fr
-Subject: Problem with ROUTE target
-Date: Fri, 24 Mar 2006 11:34:12 +0100 (CET)
-Message-ID: <32872.82.234.42.39.1143196452.squirrel@82.234.42.39>
+From: "Kazuo Nakamura" <kazuon@4link.co.jp>
+Subject: iptables v1.2.11: can't initialize iptables table `filter': Module
+	is wrong version
+Date: Sat, 25 Mar 2006 00:00:50 +0900
+Message-ID: <000801c64f53$bd883ce0$0201a8c0@NORVY>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,34 +19,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi All
+Now I am using iptables v1.2.11, 2.6.9 kernel, and glibc-2.3.4
+But I can not use iptables.
 
-I installed the ROUTE target for ip6tables and I've got a problem.
-Whenever I try to create a rule, for example
+Following error message.
+ip_tables: (C) 2000-2002 Netfilter core team
+iptables v1.2.11: can't initialize iptables table `filter': Module is wrong
+version
+Perhaps iptables or your kernel needs to be upgraded.
+# lsmod
+Module                  Size  Used by    Not tainted
+iptable_filter 2368 0 - Live 0xbf007000
+ip_tables 20640 1 iptable_filter, Live 0xbf000000
 
-ip6tables -t mangle -A POSTROUTING -j ROUTE --oif eth0
+How can I use iptables on 2.6.9 kernel ?
+I think that getsockopt has error in TC_INIT.
 
-I've got the message :
+Best regards
+Kazuo Nakamura
+ 
 
-unknown error 4294967295
 
-I know some people had the same issue but I didn't find any solution.
-
-I tried to use strace and the result was something like :
-
-socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
-getsockopt(3, SOL_IP, 0x40 /* IP_??? */,
-"mangle\0\301\304e9\300\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., [84]) = 0
-getsockopt(3, SOL_IP, 0x41 /* IP_??? */,
-"mangle\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., [2456]) = 0
-setsockopt(3, SOL_IP, 0x40 /* IP_??? */,
-"mangle\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 2668) = -1
-ENOENT (No such file or directory)
-
-That was not the exact message (I can't reproduce it right now) but that
-was this error (ENOENT)
-
-I really need to use this target so I would really appreciate your help
-
-Than you
 
