@@ -1,11 +1,10 @@
-From: r93942033@ntu.edu.tw
-Subject: Routing for multiple GRE tunnels?
-Date: Thu, 23 Mar 2006 11:28:20 +0800
-Message-ID: <20060323112820.n4xgy96lw80wok4s@wmail6.cc.ntu.edu.tw>
+From: Francis.Sauch@etu.enseeiht.fr
+Subject: Problem with ROUTE target
+Date: Fri, 24 Mar 2006 11:34:12 +0100 (CET)
+Message-ID: <32872.82.234.42.39.1143196452.squirrel@82.234.42.39>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,62 +15,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear all:
-      I have a network configuration as in the link:
+Hello,
 
-http://homepage.ntu.edu.tw/~r93942033/network.png
+I installed the ROUTE target for ip6tables and I've got a problem.
+Whenever I try to create a rule, for example
 
-and I establish one GRE tunnel on both ADSL and WLAN. For the tunnel on 
-ADSL, I use the following commands:
-==at Router 1==
-ip tunnel add neta mode gre remote 10.0.1.2 local 10.0.1.1 ttl 255
-ip link set neta up
-ip addr add 192.168.1.3 dev neta
-==at Router 2==
-ip tunnel add netb mode gre remote 10.0.1.1 local 10.0.1.2 ttl 255
-ip link set netb up
-ip addr add 192.168.2.3 dev netb
+ip6tables -t mangle -A POSTROUTING -j ROUTE --oif eth0
 
-And for the tunnel on WLAN:
-==at Router 1==
-ip tunnel add neta_wlan mode gre remote 10.0.0.2 local 10.0.0.1 ttl 255
-ip link set neta_wlan up
-ip addr add 192.168.1.4 dev neta_wlan
-==at Router 2==
-ip tunnel add netb_wlan mode gre remote 10.0.0.1 local 10.0.0.2 ttl 255
-ip link set netb_wlan up
-ip addr add 192.168.2.4 dev netb_wlan
+I've got the message :
 
-Then I set the routing table:
-==at Router 1==
-ip route add 192.168.2.0/24 dev neta_wlan
-==at Router 2==
-ip route add 192.168.1.0/24 dev netb_wlan
+unknown error 4294967295
 
-Using this configuration, the NB 1 and NB 2 can ping each other successfully.
+I know some people had the same issue but I didn't find any solution.
 
-My Problem is:
-How can I make some traffic go through ADSL tunnel and others through 
-WLAN tunnel?
-For example, let TCP traffic to through WLAN tunnel and ICMP go through 
-ADSL tunnel?
-I have tried the commands:
-==at Router 1==
-iptables -t mangle -A PREROUTING -p icmp -j ROUTE --oif neta
-==at Router 2==
-iptables -t mangle -A PREROUTING -p icmp -j ROUTE --oif netb
+I tried to use strace and the result was something like :
 
-or ==at Router 1==
-iptables -t mangle -A FORWARD -p icmp -j ROUTE --oif neta
-==at Router 2==
-iptables -t mangle -A FORWARD -p icmp -j ROUTE --oif netb
+socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
+getsockopt(3, SOL_IP, 0x40 /* IP_??? */,
+"mangle\0\301\304e9\300\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., [84]) = 0
+getsockopt(3, SOL_IP, 0x41 /* IP_??? */,
+"mangle\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., [2456]) = 0
+setsockopt(3, SOL_IP, 0x40 /* IP_??? */,
+"mangle\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 2668) = -1
+ENOENT (No such file or directory)
 
-But it fails, NB1 cannot ping NB2 (request time out).
+That was not the exact message (I can't reproduce it right now) but that
+was this error (ENOENT)
 
-How can I solve it?
-Thanks for your answering!
+I really need to use this target so I would really appreciate your help
 
+Than you
 
