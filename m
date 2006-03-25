@@ -1,11 +1,13 @@
-From: "Matthew Pepar" <thepigs@gmail.com>
-Subject: voip question
-Date: Sat, 25 Mar 2006 10:57:59 +1100
-Message-ID: <fcfe0b070603241557n768205dkd919adc6a09e9b5b@mail.gmail.com>
+From: "Pablo Sanchez" <pablo@blueoakdb.com>
+Subject: RE: voip question
+Date: Fri, 24 Mar 2006 22:01:29 -0500
+Message-ID: <NEBBLLCNFOFHMALJMDDEEEICCBAB.pablo@blueoakdb.com>
+References: <fcfe0b070603241557n768205dkd919adc6a09e9b5b@mail.gmail.com>
+Reply-To: pablo@blueoakdb.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <fcfe0b070603241557n768205dkd919adc6a09e9b5b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,34 +21,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
 
- I've been using netfilter successfully -- thanks for writing it.
 
-I was wondering if I could improve my VOIP calls using netfilter.
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Matthew =
+Pepar
+> Sent: Friday, March 24, 2006 6:58 PM
+> To: netfilter@lists.netfilter.org
+> Subject: voip question
+>=20
+>=20
+> I was wondering if I could improve my VOIP calls using netfilter.
 
- The main problem is excessive jitter delay to the receiver when P2P
-or WEB uploads /browsing is/are occurring.
+I use L7-filter coupled with tc and iptables to give VOIP packets a =
+higher priority over other packets:
 
-I have 512/128 ADSL and I am using tc-htb and using a reduced MTU (576
-bytes). The RTP data is getting through its just that the jitter delay
-is very long (seconds). The jitter delay returns to unnoticeable when
-the uploads are stopped. Some basic testing indicates that jitter
-delay is mostly unnoticeable if all other traffic is limited to
-24kbit(!) upload.
+	http://l7-filter.sourceforge.net/
 
-I was wondering if netfilter could detect the outgoing/incoming RTP
-traffic and then set a flag. After RTP traffic has finished the flag
-would be removed (using a timeout). The flag could then be used to
-CLASSIFY other packets into say a 24kbit upload pool.
+I hope that helps.
+-pablo
 
- Looking at the iptables docs there is no specific module that could
-do this although you could hack the 'condition' module to enable
-setting of flags and add timeouts by reusing some of the 'recent'
-module code. I am thinking about doing this, but I'd thought I'd ask
-first to see if anyone has any thoughts about whether its been done
-already or whether it would work or whether its too hard.
+ps:  If you want to see my prioritized traffic real-time, you can go =
+here:
 
-Thx,
-Matt.
+	http://www.hillsandlakes.com/stats/graphs/shaping_one_hour.html
+
+pps:  I cap http uploads at 256kbps.
+
 
