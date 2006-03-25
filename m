@@ -1,13 +1,11 @@
-From: "Pablo Sanchez" <pablo@blueoakdb.com>
-Subject: RE: voip question
-Date: Fri, 24 Mar 2006 22:01:29 -0500
-Message-ID: <NEBBLLCNFOFHMALJMDDEEEICCBAB.pablo@blueoakdb.com>
-References: <fcfe0b070603241557n768205dkd919adc6a09e9b5b@mail.gmail.com>
-Reply-To: pablo@blueoakdb.com
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: physical interface ? with bridging
+Date: Sat, 25 Mar 2006 12:31:09 -0800
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829016747F@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <fcfe0b070603241557n768205dkd919adc6a09e9b5b@mail.gmail.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,32 +19,33 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I have a bridge setup one a set of firewalls that I would like to do
+some custom filtering with.  Here is the config:
 
+eth0 -> WAN
+eth1 -> heartbeat=20
+eth2 -> DMZ
+eth3 -> LAN
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Matthew =
-Pepar
-> Sent: Friday, March 24, 2006 6:58 PM
-> To: netfilter@lists.netfilter.org
-> Subject: voip question
->=20
->=20
-> I was wondering if I could improve my VOIP calls using netfilter.
+Most of the checks we do are from the DMZ to the LAN but now we would
+like to filter out specific traffic between WAN and DMZ.  We have some
+blanket global rules in place (only 80, 445, 25, etc) in via the DMZ but
+lately this isn't cutting it.
 
-I use L7-filter coupled with tc and iptables to give VOIP packets a =
-higher priority over other packets:
+Looking into the log, netfilter is seeing the physical device in and
+out.  I found some table about ipt_physdev module.  I loaded the module
+and tried filtering on the physical device and received some errors:
 
-	http://l7-filter.sourceforge.net/
+-A FORWARD -physin eth0 -j LOG --log-prefix "FW ETH0:"
 
-I hope that helps.
--pablo
+iptables-restore v1.2.11: unknown protocol `-physin' specified
 
-ps:  If you want to see my prioritized traffic real-time, you can go =
-here:
+I have also tried using the --physdev-in as per the man iptables
+listing.
 
-	http://www.hillsandlakes.com/stats/graphs/shaping_one_hour.html
+How can I build a rule on this with netfilter using the basic rules?
+This is a RHEL 4 environment and we would rather not patch these
+machines with pom items.  I seems like I'm missing something simple.
 
-pps:  I cap http uploads at 256kbps.
 
 
