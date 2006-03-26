@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: physical interface ? with bridging
-Date: Sun, 26 Mar 2006 09:47:59 +0200
-Message-ID: <001901c650a9$9bcbaef0$0101000a@sterenborg.info>
-References: <57F9959B46E0FA4D8BA88AEDFBE58290167481@pxtbenexd01.pxt.primeexalia.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Using conntrack to delete all connections for one source address
+Date: Sun, 26 Mar 2006 23:49:35 +0100
+Message-ID: <20060326234935.y1gsd3csowckgkko@www.simplelists.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE58290167481@pxtbenexd01.pxt.primeexalia.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,28 +19,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Okay, using better search criteria I was able to find an article that
-> showed the syntax that seems to work using ipt_physdev.
-> 
-> iptables -A FORWARD -m physdev --physdev-in eth0 -j LOG
-> 
-> This will do what I want it to for now.
+Is there a way of using conntrack to delete all connections associated with one
+particular source address? If I do:
 
-This also what is in the man page (well, it is in mine) :
+conntrack -D --orig-src 192.168.4.240 -p tcp
 
-   physdev
-       This module matches on the bridge port input and output devices
-       enslaved to a bridge device. This module  is  a part  of  the
-       infrastructure that enables a transparent bridging IP firewall
-       and is only useful for kernel ver-sions above version 2.5.44.
+I get:
 
-       --physdev-in [!] name
+NFNETLINK answers: No such file or directory
+Operation failed: such conntrack doesn't exist
 
-You can only use --physdev[-in|...] with "-m physdev", just like you can
-only use "--dports" with "-m mulitport" or "--limit" with "-m limit".
+However, if I specify all parameters (source and destination IP and ports) then
+it works. Doing it this way makes it quite difficult deleting all connections
+for a particular host.
 
+conntrack v1.00beta1
+libnfnetlink-0.0.14
+libnetfilter_conntrack-0.0.30
 
-Gr,
-Rob
-
+Andy Beverley
 
