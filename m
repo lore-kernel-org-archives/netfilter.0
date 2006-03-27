@@ -1,11 +1,10 @@
-From: "Bruno Nunes" <nunesb@gmail.com>
-Subject: ip redirection
-Date: Mon, 27 Mar 2006 12:13:35 -0300
-Message-ID: <52837e3e0603270713g798cea20v1e718747a631a095@mail.gmail.com>
+From: bash <0x62ash@gmail.com>
+Subject: IPSET and linux-2.6.15 kernel
+Date: Mon, 27 Mar 2006 19:23:19 +0400
+Message-ID: <20060327192319.31ecc828.0x62ash@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,22 +18,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-this is what the dns server does:
+  Hello All,
+Anybody tried to apply patch-o-matic-ng-20051203 to current
+linux-2.6.15 kernel? Im want to add IPSET
+http://ipset.netfilter.org/install.html functionality to netfilter. But
+this p-o-matic offer to add only COMMENT patch :/
 
- intranet.xxxxxxxxx.com.br --> AAA.AAA.AAA.AAA
+execution flow:
+---%<--------------------------------------------------------
+src # pwd
+/usr/src
 
- requests to intranet... goes to AAA....A  (the router)
+src # ls
+iptables-1.3.4  linux  linux-2.6.15  patch-o-matic-ng
+patch-o-matic-ng-20051203.tar.bz2
 
- this is what i want:
+src # cd patch-o-matic-ng
 
- AAA.AAA.AAA.AAA (router) --> BBB.BBB.BBB.BBB (webserver)
+src # KERNEL_DIR=/usr/src/linux-2.6.15/
+IPTABLES_DIR=/usr/src/iptables-1.3.4/ ./runme
+---%<--------------------------------------------------------
 
- BBB...B is an IP address inside a private network like 192.168.1.x
- AAA...A is a worldwide ip address like 139.82.x.x
+Any advices, comments or help?
 
- How can I do this redirection with iptables?
-
- thanks!
-
- bruno
+-- 
+Biomechanica Artificial Sabotage Humanoid
 
