@@ -1,10 +1,13 @@
-From: bash <0x62ash@gmail.com>
-Subject: IPSET and linux-2.6.15 kernel
-Date: Mon, 27 Mar 2006 19:23:19 +0400
-Message-ID: <20060327192319.31ecc828.0x62ash@gmail.com>
+From: Nathaniel Hall <nathaniel.d.hall@gmail.com>
+Subject: Re: REJECT --reject-with icmp-host-unreachable vs DROP
+Date: Mon, 27 Mar 2006 09:24:00 -0600
+Message-ID: <44280390.8060502@gmail.com>
+References: <4427A69D.6010702@eccotours.co.za>
+Reply-To: nathaniel.d.hall@gmail.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4427A69D.6010702@eccotours.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,32 +18,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Brent Clark <bclark@eccotours.co.za>
+Cc: netfilter@lists.netfilter.org
 
-  Hello All,
-Anybody tried to apply patch-o-matic-ng-20051203 to current
-linux-2.6.15 kernel? Im want to add IPSET
-http://ipset.netfilter.org/install.html functionality to netfilter. But
-this p-o-matic offer to add only COMMENT patch :/
+Brent Clark wrote:
 
-execution flow:
----%<--------------------------------------------------------
-src # pwd
-/usr/src
+> Hi all
+>
+> Just something I would like to pick someones brain with.
+>
+> If I use the default policy of drop, BUT at the end of the chain use 
+> the following
+>
+> $IPT -t filter -A FORWARD -j REJECT --reject-with icmp-host-unreachable
+>
+> Would that be ok, or does is another ICMP message I can reply back with.
+>
+> Reason I ask this is because I find that by using the default policy 
+> (DROP), some applications keep retrying to make a
+> connection etc.
+> Where as this approach, seems to slow things down (I stand to 
+> correction on this).
+>
+> If someone could maybe help me understand this or assit I would be 
+> most grateful.
 
-src # ls
-iptables-1.3.4  linux  linux-2.6.15  patch-o-matic-ng
-patch-o-matic-ng-20051203.tar.bz2
+I recommend using --reject-with icmp-host-unreachable and here are the 
+reasons:
 
-src # cd patch-o-matic-ng
-
-src # KERNEL_DIR=/usr/src/linux-2.6.15/
-IPTABLES_DIR=/usr/src/iptables-1.3.4/ ./runme
----%<--------------------------------------------------------
-
-Any advices, comments or help?
+1) What is the only reason you would receive nothing?  When a firewall 
+is in place.  That's it.  Everything else you either get a host 
+unreachable, network unreachable, port unreachable, reset, etc. 2) What 
+do DDoS attacks rely on?  Slow/no connection resets.  If your address 
+space is spoofed and you do not send a reject or reset message, the 
+victim still has the connection open.  You are aiding the cracker with 
+their DDoS by DROPing the connection and not rejecting/reseting it.
+3) If I remember right, it is against RFC to DROP a connection without 
+rejecting/reseting it.  If anybody could point me to the correct RFC, 
+that would be great.
 
 -- 
-Biomechanica Artificial Sabotage Humanoid
+Nathaniel Hall, GSEC GCFW GCIA
+
 
