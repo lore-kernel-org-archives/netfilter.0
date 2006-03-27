@@ -1,11 +1,12 @@
-From: "Bruno Nunes" <nunesb@gmail.com>
-Subject: ip redirection
-Date: Tue, 28 Mar 2006 09:37:43 -0300
-Message-ID: <52837e3e0603280437s8645463l67792ff8e5694d39@mail.gmail.com>
+From: "Martijn Lievaart" <m@rtij.nl>
+Subject: Re: REJECT --reject-with icmp-host-unreachable vs DROP
+Date: Mon, 27 Mar 2006 11:21:31 +0200 (CEST)
+Message-ID: <25781.217.166.60.19.1143451291.squirrel@ma.rtij.nl>
+References: <4427A69D.6010702@eccotours.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4427A69D.6010702@eccotours.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,16 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: bclark@eccotours.co.za
+Cc: netfilter@lists.netfilter.org
 
-i want all connections incoming from IP1 to be forwarded to the IP2
-ip1 is a internet ip
-ip2 is a local ip
+Brent Clark zei:
+> Hi all
+>
+> Just something I would like to pick someones brain with.
+>
+> If I use the default policy of drop, BUT at the end of the chain use the
+> following
+>
+> $IPT -t filter -A FORWARD -j REJECT --reject-with icmp-host-unreachable
+>
+> Would that be ok, or does is another ICMP message I can reply back with.
 
-i only need an ip redirection...so if I use ssh, http or ftp or
-anything iptables must route ip1 to ip2 directly
+If tcp, use tcp-reset instead. Different stacks can and do react
+differently to an icmp-*-unreachable message. Sending back a tcp reset is
+the correct thing to do according to the RFCs, and indeed all tcp/ip
+stacks(1) understand this.
 
-how can i do that with iptables?
+> Reason I ask this is because I find that by using the default policy
+> (DROP), some applications keep retrying to make a connection etc.
+> Where as this approach, seems to slow things down (I stand to correction
+> on this).
 
-thanks
+Absolutely right. I personaly drop on the outside and reject on the
+inside. Precisely for this reason.
+
+HTH,
+M4
+
+(1) Except possibly some very broken stacks such as found in some embedded
+machines. I recently had a chance to fight with the Zebra printserver
+stack. Ugly.
+
+
 
