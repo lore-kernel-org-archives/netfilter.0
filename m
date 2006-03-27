@@ -1,14 +1,10 @@
-From: "=?ISO-8859-1?Q?Mart=EDn_Ferrari?=" <martin.ferrari@gmail.com>
-Subject: Lost packets - strange problem
-Date: Mon, 27 Mar 2006 17:33:43 -0300
-Message-ID: <b9800b70603271233p2507e071k317dde92dc72448d@mail.gmail.com>
-References: <1143483717.776638.226080@u72g2000cwu.googlegroups.com>
-	<b9800b70603271128h7d0372b9ie7abf79780420042@mail.gmail.com>
+From: bash <0x62ash@gmail.com>
+Subject: need an elegant solution
+Date: Tue, 28 Mar 2006 00:52:55 +0400
+Message-ID: <20060328005255.680651ad.0x62ash@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <b9800b70603271128h7d0372b9ie7abf79780420042@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,47 +15,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-(x-posted in linux-net mailing list)
+  Hello All,
 
-Hi!
+From my routers point of view internet devided in 3 zones:
+1) MYNET="10.20.0.0/16"
+2) FRIENDNET="10.21.0.0/16 10.22.0.0/16 10.23.0.3 10.24.0.4"
+3) all other networks and IPs
 
-I'm having a very strange problem. I have already tested a *lot* of
-things before asking, and I still have no clue of what's happening.
+As you can see $FRIENDNET contains not just NETs, but IPs too. I
+can't use one IPSET set, so i decided not to use IPSET functionally and
+wait for some "union" types in IPSET in future releases
+[http://lists.netfilter.org/pipermail/netfilter/2006-March/065103.html].
 
-I have 6 linux boxes acting as firewalls/routers. They have been using
-similar configurations and netfilter rules for 4 years, when I
-installed the first of these. Some of them route more than 10 Mbps
-between interfaces, 50000+ connections tracked with netfilter, traffic
-shaping, NAT, and stuff, and they don't even blink.
+Problem is that manipulation with $FRIENDNET in form:
+---%<-----------------------------------
+for net in $FRIENDNET
+do
+   iptables -A (FORWARD|INPUT) (-s|-d) $net [...]
+done
+---%<-----------------------------------
+Is not elegant when you need to grant/drop access to many
+resourses/services/etc. netfilter will be clutter up with identical
+rules...
 
-BUT, two of them started giving headaches, they don't have the highest
-usage, but they lose packets (in any interface) up to 80%, sometimes
-softirqd eats all the cpu, and you cannot even connect to the boxes.
-This does not happen from the very first day, and not all the time!
+So I want to find elegant solution for this situation :))
 
-The NICs are mostly 3c905*(a mix of them), also some e100 and 3c940
-(sk98lin). The troublesome computers have 3c905 and 3c940, but I do
-not find any pattern on hardware.
+My current approach is:
+---%<-----------------------------------
+iptables -N FRIENDNET_IN_ACCEPT
+iptables -F FRIENDNET_IN_ACCEPT
+for net in $FRIENDNET
+do
+   iptables -s $net -j ACCEPT
+done
 
-Also, the error count is 0 in the internet interface of the host which
-fails the most.
+iptables -N FRIENDNET_OUT_ACCEPT
+iptables -F FRIENDNET_OUT_ACCEPT
+for net in $FRIENDNET
+do
+   iptables -d $net -j ACCEPT
+done
 
-I tried rewriting the rules, turning off traffic shaping, changing
-NICs, then changing ALL the hardware (they have some very nice and fast
-hardware now). I even migrated from debian woody with 2.4.x  kernels to
-debian sarge with 2.6.8 kernels and the problem is still the same. I
-don't really know what to do.
+# grant access to some service
+iptables -p tcp -A INPUT -s $MYNET --dport some-service -j ACCEPT
+iptables -p tcp -A INPUT --dport some-service -j FRIENDNET_IN_ACCEPT
+iptables -p tcp -A INPUT --dport some-service -j DROP
 
-I suspect that this could be triggered by some internet DoS attack, but
-I didn't find anything special (I have already solved the recursion
-problem with DNS servers). The 6 servers receive loads of dumb attacks
-all the time.
+# forward from my net to friends net and vice versa
+iptables -P FORWARD DROP
+iptables -A FORWARD -d $MYNET -j FRIENDNET_IN_ACCEPT
+iptables -A FORWARD -s $MYNET -j FRIENDNET_OUT_ACCEPT
+---%<-----------------------------------
 
-Any help would be greatly appreciated!
+Maybe you know more elegant solution?
 
---
-Mart=EDn Ferrari
+-- 
+Biomechanica Artificial Sabotage Humanoid
 
