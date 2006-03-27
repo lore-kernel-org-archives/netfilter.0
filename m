@@ -1,9 +1,9 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Using conntrack to delete all connections for one source address
-Date: Sun, 26 Mar 2006 23:49:35 +0100
-Message-ID: <20060326234935.y1gsd3csowckgkko@www.simplelists.com>
+From: "Will Twomey" <termina@gmail.com>
+Subject: Multiple IP addresses
+Date: Sun, 26 Mar 2006 19:53:45 -0600
+Message-ID: <9a6de10603261753s33408f9cnb5ce6f9ae7b4f75d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -19,23 +19,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Is there a way of using conntrack to delete all connections associated with one
-particular source address? If I do:
+I apologize if this is the wrong list, but...
 
-conntrack -D --orig-src 192.168.4.240 -p tcp
+I would like to have several (3?) ip addresses on one interface (eth0,
+eth0:1, etc.), and forward each of those IP addresses to another
+interface (192.168.0.1, 192.168.1.1, 192.168.2.1, etc.)
 
-I get:
+Does anyone have an advice for me, or a good place to learn how to do this?
 
-NFNETLINK answers: No such file or directory
-Operation failed: such conntrack doesn't exist
+If someone has an iptables/netfilter script that does this, I'd love
+to see it. :D
 
-However, if I specify all parameters (source and destination IP and ports) then
-it works. Doing it this way makes it quite difficult deleting all connections
-for a particular host.
+Thanks!
 
-conntrack v1.00beta1
-libnfnetlink-0.0.14
-libnetfilter_conntrack-0.0.30
-
-Andy Beverley
+--
+Will Twomey
+http://UnhandledExceptions.com
 
