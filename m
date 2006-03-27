@@ -1,10 +1,12 @@
-From: Filippo Nicolussi <Filippo.Nicolussi@ilgtravel.com>
-Subject: - no subject -
-Date: Mon, 27 Mar 2006 17:46:55 +0200 (CEST)
-Message-ID: <4609835.1143474415826.SLOX.WebMail.wwwrun@exchange.ilgtravel.com>
+From: Mike Wright <ebwximaurm@mailinator.com>
+Subject: Re: ip redirection
+Date: Mon, 27 Mar 2006 08:21:05 -0800
+Message-ID: <442810F1.3020300@mailinator.com>
+References: <52837e3e0603270713g798cea20v1e718747a631a095@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <52837e3e0603270713g798cea20v1e718747a631a095@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,25 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-isp1 : eth2 with 4 static ip
-isp2: eth3 with 4 static ip
+Bruno Nunes wrote:
+> this is what the dns server does:
+> 
+>  intranet.xxxxxxxxx.com.br --> AAA.AAA.AAA.AAA
+> 
+>  requests to intranet... goes to AAA....A  (the router)
+> 
+>  this is what i want:
+> 
+>  AAA.AAA.AAA.AAA (router) --> BBB.BBB.BBB.BBB (webserver)
+> 
+>  BBB...B is an IP address inside a private network like 192.168.1.x
+>  AAA...A is a worldwide ip address like 139.82.x.x
+> 
+>  How can I do this redirection with iptables?
 
-i readed documentation about Advanced ip routing with iproute2 at
-http://lartc.org/howto/lartc.rpdb.multiple-links.html
+It's called Network Address Translation.  (man iptables)
 
-i find the script mpath2 on site http://www.ssi.bg/~ja/tmp/mpath2.sh
+iptables -t nat -A PREROUTING -d AAA.AAA.AAA.AAA \
+          -p tcp -m tcp --dport 80 \
+          -j DNAT --to-destination BBB.BBB.BBB.BBB
 
-have i to add one line type off command
-ip route add $P2_NET dev $IF2 src $IP2 table T2
-for every pubblic ip assained by my isp to the relative table
-
-eth2  = 1 ip address assigned
-eth2:0 = 2 ip address assigned
-etc.
-
-and eth1 similar 
-
+> 
+>  thanks!
+> 
+>  bruno
+> 
+> 
+> 
 
