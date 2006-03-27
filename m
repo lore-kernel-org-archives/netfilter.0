@@ -1,10 +1,11 @@
-From: bash <0x62ash@gmail.com>
-Subject: IPSET question
-Date: Mon, 27 Mar 2006 23:20:26 +0400
-Message-ID: <20060327232026.618f7e56.0x62ash@gmail.com>
+From: "Bruno Nunes" <nunesb@gmail.com>
+Subject: ip redirection and multiport noobish question
+Date: Mon, 27 Mar 2006 16:57:50 -0300
+Message-ID: <52837e3e0603271157p80fbb87g154345f50735c4c4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +19,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
- Hello All,
-I have question about IPSET:
-how to create new set with some random ip-addresses and nets (in cidr
-format).
+first i want to thank the replys for my first post!
+i want to do another route now
 
-For example, I have "10.21.0.0/16", "10.90.20.0/26" networks and
-"10.22.0.30", "10.23.0.30" ips.
+anypc --> webserver1 --- (router) --> webserver2
 
-I thought that "nethash" type of set will works, but as I see from
-documentation (http://ipset.netfilter.org/ipset.man.html), "nethash"
-can't handle net with /32. So i cant add "10.22.0.30" and "10.23.0.30"
-ip in "nethash" SET :////
+ip webserver1 =3D a.a.a.a (worldwide)
+ip router =3D b.b.b.b (router)
+ip webserver2 =3D c.c.c.c (intranet)
 
-So... how to be? :)))
+webserver1 uses APIs running on webserver2.
 
+people over the internet should be able to see the contents of
+webserver2 which is on the local network
 
- -- 
-Biomechanica Artificial Sabotage Humanoid
+how can i route this?
 
