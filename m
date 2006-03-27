@@ -1,11 +1,12 @@
-From: "Kazuo Nakamura" <kazuon@4link.co.jp>
-Subject: iptables v1.2.11: can't initialize iptables table `filter': Module
-	is wrong version
-Date: Sat, 25 Mar 2006 00:00:50 +0900
-Message-ID: <000801c64f53$bd883ce0$0201a8c0@NORVY>
+From: Mike Wright <ebwximaurm@mailinator.com>
+Subject: Re: Multiple IP addresses
+Date: Sun, 26 Mar 2006 19:30:09 -0800
+Message-ID: <44275C41.4070603@mailinator.com>
+References: <9a6de10603261753s33408f9cnb5ce6f9ae7b4f75d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <9a6de10603261753s33408f9cnb5ce6f9ae7b4f75d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,29 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi All
-Now I am using iptables v1.2.11, 2.6.9 kernel, and glibc-2.3.4
-But I can not use iptables.
+Will Twomey wrote:
+> I apologize if this is the wrong list, but...
+> 
+> I would like to have several (3?) ip addresses on one interface (eth0,
+> eth0:1, etc.), 
 
-Following error message.
-ip_tables: (C) 2000-2002 Netfilter core team
-iptables v1.2.11: can't initialize iptables table `filter': Module is wrong
-version
-Perhaps iptables or your kernel needs to be upgraded.
-# lsmod
-Module                  Size  Used by    Not tainted
-iptable_filter 2368 0 - Live 0xbf007000
-ip_tables 20640 1 iptable_filter, Live 0xbf000000
+Aliasing your network card isn't necessary.  Just assign IP's to it.
 
-How can I use iptables on 2.6.9 kernel ?
-I think that getsockopt has error in TC_INIT.
+ip address add 192.168.0.1/24 dev eth0
+ip address add 192.168.1.1/24 dev eth0
+ip address add 192.168.2.1/24 dev eth0
 
-Best regards
-Kazuo Nakamura
- 
+> and forward each of those IP addresses to another
+> interface (192.168.0.1, 192.168.1.1, 192.168.2.1, etc.)
+
+I think these might work.
+
+iptables -A FORWARD -d 192.168.0.0/24 -i eth0 -o eth1 -j ACCEPT
+iptables -A FORWARD -d 192.168.1.0/24 -i eth0 -o eth2 -j ACCEPT
+iptables -A FORWARD -d 192.168.2.0/24 -i eth0 -o eth3 -j ACCEPT
+
+
+> Does anyone have an advice for me, or a good place to learn how to do this?
+> 
+> If someone has an iptables/netfilter script that does this, I'd love
+> to see it. :D
+> 
+> Thanks!
+> 
+> --
+> Will Twomey
+> http://UnhandledExceptions.com
 
 
 
