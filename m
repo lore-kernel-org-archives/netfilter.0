@@ -1,12 +1,10 @@
-From: "Martijn Lievaart" <m@rtij.nl>
-Subject: Re: Multiple IP addresses
-Date: Mon, 27 Mar 2006 11:28:48 +0200 (CEST)
-Message-ID: <26939.217.166.60.19.1143451728.squirrel@ma.rtij.nl>
-References: <9a6de10603261753s33408f9cnb5ce6f9ae7b4f75d@mail.gmail.com>
+From: Support <support@ilgtravel.com>
+Subject: iproute multiple isp balancing
+Date: Mon, 27 Mar 2006 17:41:16 +0200
+Message-ID: <4428079C.4000601@ilgtravel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9a6de10603261753s33408f9cnb5ce6f9ae7b4f75d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +15,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: termina@gmail.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Will Twomey zei:
-> I apologize if this is the wrong list, but...
->
-> I would like to have several (3?) ip addresses on one interface (eth0,
-> eth0:1, etc.), and forward each of those IP addresses to another
-> interface (192.168.0.1, 192.168.1.1, 192.168.2.1, etc.)
+isp1 : eth2 with 4 static ip
+isp2: eth3 with 4 static ip
 
-What exactly do you mean? Do you want to send packets addressed to one of
-those addresses to another ip? Or do you want to fake those addresses and
-send them on to the machine that really has that address? Or do you want
-to route packets not addressed to any of those addresses but based on the
-address the previous router used as a next hop?
+i readed documentation about Advanced ip routing with iproute2 at 
+http://lartc.org/howto/lartc.rpdb.multiple-links.html
 
-In the first case, just use DNAT. In the second case, create a static arp
-entry and use normal routing rules. The third is not (easily) possible as
-the packet that arrives just has the final IP destination and the MAC
-address of eth0. Which is not enough information to figure out what IP was
-used to route the packet.
+i find the script mpath2 on site http://www.ssi.bg/~ja/tmp/mpath2.sh
 
-Maybe you can explain better what you want to achieve?
+have i to add one line type off command
+ip route add $P2_NET dev $IF2 src $IP2 table T2
+for every pubblic ip assained by my isp to the relative table
 
-M4
+eth2  = 1 ip address assigned
+eth2:0 = 2 ip address assigned
+etc.
 
+and eth1 similar
+
+-- 
+Support - Network Operating Center
+
+International Leisure Group
+Internet Address: www.ilgtravel.com
+Head Office 38062 Arco -TN
+tel +39 0464 588 807
+
+Ai sensi della legge 196/03 si precisa che le informazioni contenute in questo messaggio sono riservate e ad uso esclusivo del destinatario. Qualora il messaggio le fosse pervenuto per errore, la preghiamo di eliminarlo senza copiarlo e di non inoltrarlo a terzi, dandocene gentilmente comunicazione. Grazie.
+
+This message may contain confidential information, and, therefore is subject to Law 196/03. If you are not the addressee or authorized to receive this message, you must not use, copy, disclose or take any action based on any information herein. If you have received this message in error, please advise the sender immediately and delete this message. Thank you for your cooperation
 
 
 
