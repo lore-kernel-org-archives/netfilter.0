@@ -1,13 +1,12 @@
-From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
-Subject: Re: Multiple IP addresses
-Date: Mon, 27 Mar 2006 09:24:34 -0300
-Message-ID: <1143462275.17996.8.camel@fly.in.iantel.com.uy>
-References: <9a6de10603261753s33408f9cnb5ce6f9ae7b4f75d@mail.gmail.com>
+From: Menno Smits <menno@netboxblue.com>
+Subject: Re: REJECT --reject-with icmp-host-unreachable vs DROP
+Date: Mon, 27 Mar 2006 23:07:51 +1000
+Message-ID: <4427E3A7.20308@netboxblue.com>
+References: <4427A69D.6010702@eccotours.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9a6de10603261753s33408f9cnb5ce6f9ae7b4f75d@mail.gmail.com>
-Content-Class: urn:content-classes:message
+In-Reply-To: <4427A69D.6010702@eccotours.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,55 +17,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Will Twomey <termina@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Brent Clark <bclark@eccotours.co.za>
 Cc: netfilter@lists.netfilter.org
 
-On Sun, 2006-03-26 at 19:53 -0600, Will Twomey wrote:
-> I apologize if this is the wrong list, but...
->=20
-> I would like to have several (3?) ip addresses on one interface (eth0,
-> eth0:1, etc.), and forward each of those IP addresses to another
-> interface (192.168.0.1, 192.168.1.1, 192.168.2.1, etc.)
+Brent Clark wrote:
+> Hi all
+> 
+> Just something I would like to pick someones brain with.
+> 
+> If I use the default policy of drop, BUT at the end of the chain use
+> the following
+> 
+> $IPT -t filter -A FORWARD -j REJECT --reject-with
+> icmp-host-unreachable
+> 
+> Would that be ok, or does is another ICMP message I can reply back
+> with.
 
--t nat PREROUTING -i eth0 -d myip1 -j DNAT --to 192.168.0.1
--t nat PREROUTING -i eth0 -d myip2 -j DNAT --to 192.168.1.1
--t nat PREROUTING -i eth0 -d myip3 -j DNAT --to 192.168.2.1
+icmp-host-unreachable is fine. The default for the REJECT target is
+icmp-port-unreachable which is ok too. If you want to make
+troubleshooting easier you may want to want to tailor the ICMP reply
+according to the reason that a packet was blocked (ie. was a host
+blocked, a network or a port). It doesn't matter too much though.
 
+Do an "iptables -j REJECT --help" to see the available reject types.
 
+> Reason I ask this is because I find that by using the default policy
+>  (DROP), some applications keep retrying to make a connection etc.
+> 
+> Where as this approach, seems to slow things down (I stand to
+> correction on this).
 
+Most applications/IP stacks will keep retrying for a while because with
+a DROP there is no ICMP packet going back to let the sender know that
+its traffic isn't getting through. The packet is just stopped without
+letting the sender know. The sender assumes the packet was lost and
+tries again until some sort of timeout is reached.
 
-> Does anyone have an advice for me, or a good place to learn how to do =
-this?
->=20
-> If someone has an iptables/netfilter script that does this, I'd love
-> to see it. :D
->=20
-> Thanks!
->=20
-> --
-> Will Twomey
-> http://UnhandledExceptions.com
->=20
+If you use REJECT an ICMP packet is sent back so that the sender know 
+that its packet won't get through. This way it won't bother retrying and 
+will give up immediately.
 
+Note that this isn't always true. Some applications seem to ignore the 
+ICMP reject packets coming back and will keep retrying anyway. The 
+built-in command line Windows telnet application seems to do this. I'm 
+not sure if this is a Windows thing or just the telnet program.
 
-Este e-mail y cualquier posible archivo adjunto est=E1 dirigido =
-=FAnicamente al destinatario del mensaje y contiene informaci=F3n que =
-puede ser confidencial. Si Ud. no es el destinatario correcto por favor =
-notifique al remitente respondiendo este mensaje y elimine =
-inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
-sistema. Est=E1 prohibida cualquier utilizaci=F3n, difusi=F3n o copia de =
-este e-mail por cualquier persona o entidad que no sean las =
-espec=EDficas destinatarias del mensaje. ANTEL no acepta ninguna =
-responsabilidad con respecto a cualquier comunicaci=F3n que haya sido =
-emitida incumpliendo nuestra Pol=EDtica de Seguridad de la =
-Informaci=F3n.
-. . . . . . . . .
-This e-mail and any attachment is confidential and is intended solely =
-for the addressee(s). If you are not intended recipient please inform =
-the sender immediately, answering this e-mail and delete it as well as =
-the attached files. Any use, circulation or copy of this e-mail by any =
-person or entity that is not the specific addressee(s) is prohibited. =
-ANTEL is not responsible for any communication emitted without =
-respecting our Information Security Policy.
+There are some situations where you should just use DROP instead of 
+REJECT, usually for performance reasons where your netfilter machine has 
+to deal with a high traffic volume and can't afford to send REJECTs. You 
+might also want to use DROP when you get traffic that is almost 
+definitely malicious. There's no point in sending a nice REJECT in this 
+case.
+
+> If someone could maybe help me understand this or assit I would be
+> most grateful.
+
+I hope I've explained it clearly enough.
+
+Menno
 
