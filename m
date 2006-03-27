@@ -1,12 +1,11 @@
-From: Menno Smits <menno@netboxblue.com>
-Subject: Re: REJECT --reject-with icmp-host-unreachable vs DROP
-Date: Mon, 27 Mar 2006 23:07:51 +1000
-Message-ID: <4427E3A7.20308@netboxblue.com>
-References: <4427A69D.6010702@eccotours.co.za>
+From: "Bruno Nunes" <nunesb@gmail.com>
+Subject: ip redirection
+Date: Mon, 27 Mar 2006 12:13:35 -0300
+Message-ID: <52837e3e0603270713g798cea20v1e718747a631a095@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4427A69D.6010702@eccotours.co.za>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,64 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Brent Clark <bclark@eccotours.co.za>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Brent Clark wrote:
-> Hi all
-> 
-> Just something I would like to pick someones brain with.
-> 
-> If I use the default policy of drop, BUT at the end of the chain use
-> the following
-> 
-> $IPT -t filter -A FORWARD -j REJECT --reject-with
-> icmp-host-unreachable
-> 
-> Would that be ok, or does is another ICMP message I can reply back
-> with.
+this is what the dns server does:
 
-icmp-host-unreachable is fine. The default for the REJECT target is
-icmp-port-unreachable which is ok too. If you want to make
-troubleshooting easier you may want to want to tailor the ICMP reply
-according to the reason that a packet was blocked (ie. was a host
-blocked, a network or a port). It doesn't matter too much though.
+ intranet.xxxxxxxxx.com.br --> AAA.AAA.AAA.AAA
 
-Do an "iptables -j REJECT --help" to see the available reject types.
+ requests to intranet... goes to AAA....A  (the router)
 
-> Reason I ask this is because I find that by using the default policy
->  (DROP), some applications keep retrying to make a connection etc.
-> 
-> Where as this approach, seems to slow things down (I stand to
-> correction on this).
+ this is what i want:
 
-Most applications/IP stacks will keep retrying for a while because with
-a DROP there is no ICMP packet going back to let the sender know that
-its traffic isn't getting through. The packet is just stopped without
-letting the sender know. The sender assumes the packet was lost and
-tries again until some sort of timeout is reached.
+ AAA.AAA.AAA.AAA (router) --> BBB.BBB.BBB.BBB (webserver)
 
-If you use REJECT an ICMP packet is sent back so that the sender know 
-that its packet won't get through. This way it won't bother retrying and 
-will give up immediately.
+ BBB...B is an IP address inside a private network like 192.168.1.x
+ AAA...A is a worldwide ip address like 139.82.x.x
 
-Note that this isn't always true. Some applications seem to ignore the 
-ICMP reject packets coming back and will keep retrying anyway. The 
-built-in command line Windows telnet application seems to do this. I'm 
-not sure if this is a Windows thing or just the telnet program.
+ How can I do this redirection with iptables?
 
-There are some situations where you should just use DROP instead of 
-REJECT, usually for performance reasons where your netfilter machine has 
-to deal with a high traffic volume and can't afford to send REJECTs. You 
-might also want to use DROP when you get traffic that is almost 
-definitely malicious. There's no point in sending a nice REJECT in this 
-case.
+ thanks!
 
-> If someone could maybe help me understand this or assit I would be
-> most grateful.
-
-I hope I've explained it clearly enough.
-
-Menno
+ bruno
 
