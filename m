@@ -1,14 +1,10 @@
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-Subject: Re: Where is ip6tables?
-Date: Wed, 29 Mar 2006 16:51:35 +0900 (JST)
-Message-ID: <200603290751.k2T7paQO023351@toshiba.co.jp>
-References: <859616420603280835rc24974dw@mail.gmail.com>
-	<200603290715.k2T7FPrH011180@toshiba.co.jp>
-	<859616420603282327u4eb9e96fi@mail.gmail.com>
+From: Marek Nawa <mnawa@sst.pl>
+Subject: how to see marker value in syslog
+Date: Tue, 28 Mar 2006 15:58:17 +0200
+Message-ID: <442940F9.2080502@sst.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <859616420603282327u4eb9e96fi@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,26 +15,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: Text/Plain; charset="us-ascii"
-To: beunlovable@gmail.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-From: "David Vogt" <beunlovable@gmail.com>
-Date: Wed, 29 Mar 2006 09:27:08 +0200
+Hi,
+I'm using on my server Debian stable with iptables. I've configure 
+traffic control (command tc from iproute2) based on filter fw (marked 
+packages from iptables). I have advanced router with failover and 4 
+network interfaces and I had to define more than one marking rule.
+e.g.
+iptables -A PREROUTING -t mangle -i eth0 -j MARK --set-mark 10
 
-> > You can find iptables-ipv6-...rpm at
-> >
-> > http://download.fedora.redhat.com/pub/fedora/linux/core/updates/3/i386/
-> >
-> 
-> Thanks, solved that. Now ip6_queue module is missing. There are
-> various modules (e.g. ip6_tables) installed, however, the queue module
-> is missing. Can I find additional modules in packages as well? I'm
-> confused.
+I've defined too rule for loggin results:
+iptables -t mangle -A PREROUTING -i eth0 -m limit --limit 1/s -j LOG 
+--log-prefix "mark testMN prerouting 10 " --log-level debug 
+--log-ip-options --log-tcp-options
 
-Sorry, I don't know about fedora package in detail. ip6_queue is kernel
-module, then I think it is in package of kernel. Otherwise I have no idea
-to get package including it.
+and I've found in syslog
 
--- Yasuyuki Kozakai
+Mar 28 14:50:11 routerUbuntu kernel: mark testMN prerouting 10 IN=eth0 
+OUT= MAC=00:0e:0c:7f:2a:7f:00:c0:7b:a2:e7:06:08:00 SRC
+=213.218.117.68 DST=217.8.184.66 LEN=60 TOS=0x10 PREC=0x00 TTL=53 
+ID=23913 DF PROTO=UDP SPT=14026 DPT=16384 LEN=40
+Mar 28 14:50:12 routerUbuntu kernel: mark testMN prerouting 10 IN=eth0 
+OUT= MAC=00:0e:0c:7f:2a:7f:00:c0:7b:a2:e7:06:08:00 SRC
+=213.218.117.68 DST=217.8.184.66 LEN=60 TOS=0x10 PREC=0x00 TTL=53 
+ID=23963 DF PROTO=UDP SPT=14026 DPT=16384 LEN=40
+Mar 28 14:50:13 routerUbuntu kernel: mark testMN prerouting 10 IN=eth0 
+OUT= MAC=00:0e:0c:7f:2a:7f:00:c0:7b:a2:e7:06:08:00 SRC
+=64.236.34.4 DST=217.8.184.84 LEN=1448 TOS=0x00 PREC=0x00 TTL=42 
+ID=30688 PROTO=TCP SPT=80 DPT=3714 WINDOW=4096 RES=0x00 ACK
+URGP=0
+
+but I can't find iformation about my marker value 10.
+Please give me a solution, how can I investigate in log files packages 
+with their marker-value.
+
+-- 
+Regards,
+
+Marek 
+
 
