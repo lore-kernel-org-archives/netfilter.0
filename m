@@ -1,10 +1,12 @@
-From: "Daniel Mon" <cdanielmon@hotmail.com>
-Subject: Change header
-Date: Mon, 27 Mar 2006 17:13:16 -0300
-Message-ID: <BAY19-F13B3CE389E95972ED3ED60CBD20@phx.gbl>
-Reply-To: info@cmon.com.ar
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: ip redirection
+Date: Tue, 28 Mar 2006 16:52:26 +0200 (CEST)
+Message-ID: <64721.193.173.147.3.1143557546.squirrel@webmail.sterenborg.info>
+References: <52837e3e0603280437s8645463l67792ff8e5694d39@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <52837e3e0603280437s8645463l67792ff8e5694d39@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,19 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Tue, March 28, 2006 14:37, Bruno Nunes wrote:
+> i want all connections incoming from IP1 to be forwarded to the IP2
+> ip1 is a internet ip
+> ip2 is a local ip
+>
+> i only need an ip redirection...so if I use ssh, http or ftp or
+> anything iptables must route ip1 to ip2 directly
+>
+> how can i do that with iptables?
 
-Hello, my name is Daniel and need your help. I need change the header IP of 
-192.168.0.* to 10.0.12.* and save the finish  number of IP, is it possible? 
-Thanks for your help. Sorry for my english is very bad, Bye.
+In a previous post "ip redirection and multiport noobish question" (where=
+ I
+fail to see what the multiport question was) you asked something similar.=
+ Did
+you actualy look for yourself in the tutorial ?
+
+If you did, you would have been able to construct this :
+$ipt -t nat -A PREROUTING -i <if_inet> -d IP1 -j DNAT --to $IP2
+
+However, if you'd ask me then my advice would be not doing this.
 
 
-
-                        Mon Carlos Daniel
-               web: http://www.carlosmon.com.ar
+Gr,
+Rob
 
 
 
