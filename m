@@ -1,12 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Where is ip6tables?
-Date: Tue, 28 Mar 2006 18:56:00 +0200
-Message-ID: <000101c65288$7e120d60$0101000a@sterenborg.info>
-References: <859616420603280835rc24974dw@mail.gmail.com>
+From: Mr Ritter <netfilter@candlefire.org>
+Subject: packets missing/skipping DNAT rules
+Date: Tue, 28 Mar 2006 15:34:20 -0700
+Message-ID: <4429B9EC.8030200@candlefire.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <859616420603280835rc24974dw@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> Dear all,
-> 
-> just a quick question. I am running Fedora Core 3 (2.6.11-1.35_FC3)
-> with iptables v1.2.11 installed. I know this is not brand new stuff,
-> but as far as I conclude from the Changelog, ip6tables should already
-> be part of this release. Nontheless, it is simply not there.
-> 
-> I know the solution is simple, but I have been sitting here for quite
-> some time now. I should seiously consider going home now.
+I have some basic rules in the PREROUTING of *nat that perform a DNAT 
+like so:
 
-It may be part of the release, but the question is : did you install it
-? (That said, I'm not sure if there's a separate ip6tables package.)
+-A PREROUTING -p tcp --dport 1234 -j DNAT --to 1.2.3.4
 
-You could also try to find it using "locate ip6tables | grep bin" or
-"whereis ip6tables".
+However, on a pretty consistent basis this rule fails to be applied and 
+I'll see the results of that in the kernel logs like:
 
+Mar 28 15:24:21 hostname IN=eth1 OUT= MAC=<mac addrs> SRC=w.x.y.z 
+DST=4.3.2.1 LEN=40 TOS=0x00 PREC=0x00 TTL=242 ID=37514 DF PROTO=TCP 
+SPT=3232 DPT=1234 WINDOW=0 RES=0x00 ACK RST URGP=0
 
-Gr,
-Rob
+The log shows that a small sampling of packets did not apply the DNAT, 
+and it is happening enough to notice, I'd say 1 in 100.
 
+Any suggestions on how to troubleshoot and resolve this?
+
+I'm not trying to do anything real fancy, its a simple dual NIC 
+interface, eth0 is private and eth1 public.
+
+TIA
+
+--
+Ritter
 
