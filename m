@@ -1,14 +1,13 @@
-From: "Roger Hamilton" <roger123@gmail.com>
+From: Steven M Campbell <Netfilter@SCampbell.net>
 Subject: Re: It seems I've found why conntrack blocks some packets
-Date: Wed, 29 Mar 2006 16:11:04 +0100
-Message-ID: <d72fc30c0603290711t12927540o61a6eb7f74f6ef4d@mail.gmail.com>
-References: <cc4fcc140603290545q1cfb7c82t6e91ca1801d2dad2@mail.gmail.com>
-	<442A9103.10908@SCampbell.net>
+Date: Wed, 29 Mar 2006 10:17:07 -0500
+Message-ID: <442AA4F3.1000903@SCampbell.net>
+References: <cc4fcc140603290545q1cfb7c82t6e91ca1801d2dad2@mail.gmail.com>	<442A9103.10908@SCampbell.net>
+	<d72fc30c0603290711t12927540o61a6eb7f74f6ef4d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <442A9103.10908@SCampbell.net>
-Content-Disposition: inline
+In-Reply-To: <d72fc30c0603290711t12927540o61a6eb7f74f6ef4d@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,69 +18,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Roger Hamilton <roger123@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-T24gMjkvMDMvMDYsIFN0ZXZlbiBNIENhbXBiZWxsIDxOZXRmaWx0ZXJAc2NhbXBiZWxsLm5ldD4g
-d3JvdGU6Cj4gQ2FybG9zIFBhc3RvcmlubyB3cm90ZToKPiA+IEhpIGV2ZXJ5b25lLAo+ID4KPiA+
-IEkgYWx3YXlzIHdvbmRlcmVkIHdoeSBjb25udHJhY2sgYmxvY2tlZCBzb21lIHBhY2tldHMgdGhh
-dCB3ZXJlCj4gPiBzdXBwb3NlZCB0byBwYXNzIHRocm91Z2ggbXkgRVNUQUJMSVNIRUQsUkVMQVRF
-RCBydWxlLiBOb3cgaXQgc2VlbXMKPiA+IHRoYXQgSSd2ZSBmb3VuZCB0aGUgYW5zd2VyLgo+ID4K
-PiA+IEJlYXIgd2l0aCBtZSwgYmVjYXVzZSB0aGVyZSB3aWxsIGJlIHF1ZXN0aW9ucyBpbiB0aGUg
-ZW5kLgo+ID4KPiA+IFNvLCB3aGF0IGhhcHBlbnMgaXM6IGZyb20gdGltZSB0byB0aW1lLCBJIHNl
-ZSBteSBmaXJld2FsbCBibG9ja2luZyBhCj4gPiBwYWNrZXQgbGlrZSB0aGlzOgo+ID4KPiA+IE1h
-ciAyOCAxNDo0ODoyMSBTUlZBIGtlcm5lbDogRk9SV0FSRCBibG9ja2VkOiBJTj1ldGgxIE9VVD1l
-dGgwCj4gPiBTUkM9d2Vic2VydmVyaXAgRFNUPWN1c3RvbWVyaXAgTEVOPTQ4IFRPUz0weDAwIFBS
-RUM9MHgwMCBUVEw9NjMgSUQ9MAo+ID4gREYgUFJPVE89VENQIFNQVD04MCBEUFQ9MTA0NTggV0lO
-RE9XPTU4NDAgUkVTPTB4MDAgQUNLIFNZTiBVUkdQPTAKPiA+Cj4gPiBXZWxsLCBpdCBkb2VzIGNh
-bGwgbXkgYXR0ZW50aW9uIGJlY2F1c2UgaXQncyBhIGJsb2NrZWQgcGFja2V0IEZST00gbXkKPiA+
-IHdlYnNlcnZlci4gSW4gYW55IGNhc2UsIGl0IHNob3VsZG4ndCBiZSBibG9ja2VkLCBiZWNhdXNl
-IHRoZQo+ID4gY29ubmVjdGlvbiBpcyBub3QgZXZlbiAyIG1pbnV0ZXMgb2xkLgo+ID4KPiA+IEJ1
-dCwgb24gdGhlIHdlYnNlcnZlciwgSSB3YXMgcnVubmluZyB0Y3BkdW1wIHRoaXMgdGltZSwgc28g
-SSBjb3VsZCBzZWUKPiA+IHdoYXQgcmVhbGx5IGhhcHBlbmVkOgo+ID4KPiA+IDE0OjQ2OjQ3LjU3
-MzczOCBjdXN0b21lcmlwLjEwNDU4ID4gd2Vic2VydmVyaXAuODA6IFMgW3RjcCBzdW0gb2tdCj4g
-PiAyMzUxMjAwMDoyMzUxMjAwMCgwKSB3aW4gNjU1MzUgPG1zcyAxNDYwLG5vcCxub3Asc2Fja09L
-PiAoREYpICh0dGwKPiA+IDEyMCwgaWQgNDEwNjUsIGxlbiA0OCkKPiA+IDE0OjQ2OjQ3LjU3Mzc0
-NyB3ZWJzZXJ2ZXJpcC44MCA+IGN1c3RvbWVyaXAuMTA0NTg6IFMgW3RjcCBzdW0gb2tdCj4gPiA0
-MTMxNjM0Mjk3OjQxMzE2MzQyOTcoMCkgYWNrIDIzNTEyMDAxIHdpbiA1ODQwIDxtc3MKPiA+IDE0
-NjAsbm9wLG5vcCxzYWNrT0s+IChERikgKHR0bCA2NCwgaWQgMCwgbGVuIDQ4KQo+ID4gMTQ6NDY6
-NTEuMzI3NjI5IHdlYnNlcnZlcmlwLjgwID4gY3VzdG9tZXJpcC4xMDQ1ODogUyBbdGNwIHN1bSBv
-a10KPiA+IDQxMzE2MzQyOTc6NDEzMTYzNDI5NygwKSBhY2sgMjM1MTIwMDEgd2luIDU4NDAgPG1z
-cwo+ID4gMTQ2MCxub3Asbm9wLHNhY2tPSz4gKERGKSAodHRsIDY0LCBpZCAwLCBsZW4gNDgpCj4g
-PiAxNDo0Njo1Ny4zMjc2MjMgd2Vic2VydmVyaXAuODAgPiBjdXN0b21lcmlwLjEwNDU4OiBTIFt0
-Y3Agc3VtIG9rXQo+ID4gNDEzMTYzNDI5Nzo0MTMxNjM0Mjk3KDApIGFjayAyMzUxMjAwMSB3aW4g
-NTg0MCA8bXNzCj4gPiAxNDYwLG5vcCxub3Asc2Fja09LPiAoREYpICh0dGwgNjQsIGlkIDAsIGxl
-biA0OCkKPiA+IDE0OjQ3OjA5LjMyNzYwOSB3ZWJzZXJ2ZXJpcC44MCA+IGN1c3RvbWVyaXAuMTA0
-NTg6IFMgW3RjcCBzdW0gb2tdCj4gPiA0MTMxNjM0Mjk3OjQxMzE2MzQyOTcoMCkgYWNrIDIzNTEy
-MDAxIHdpbiA1ODQwIDxtc3MKPiA+IDE0NjAsbm9wLG5vcCxzYWNrT0s+IChERikgKHR0bCA2NCwg
-aWQgMCwgbGVuIDQ4KQo+ID4gMTQ6NDc6MzMuNTI3NTc1IHdlYnNlcnZlcmlwLjgwID4gY3VzdG9t
-ZXJpcC4xMDQ1ODogUyBbdGNwIHN1bSBva10KPiA+IDQxMzE2MzQyOTc6NDEzMTYzNDI5NygwKSBh
-Y2sgMjM1MTIwMDEgd2luIDU4NDAgPG1zcwo+ID4gMTQ2MCxub3Asbm9wLHNhY2tPSz4gKERGKSAo
-dHRsIDY0LCBpZCAwLCBsZW4gNDgpCj4gPiAxNDo0NzozNC4yMTY2NDIgY3VzdG9tZXJpcC4xMDQ1
-OCA+IHdlYnNlcnZlcmlwLjgwOiBSIFt0Y3Agc3VtIG9rXQo+ID4gMDowKDApIGFjayAwIHdpbiAw
-ICh0dGwgMjYsIGlkIDEsIGxlbiA0MCkKPiA+IDE0OjQ4OjIxLjcyNzUxNSB3ZWJzZXJ2ZXJpcC44
-MCA+IGN1c3RvbWVyaXAuMTA0NTg6IFMgW3RjcCBzdW0gb2tdCj4gPiA0MTMxNjM0Mjk3OjQxMzE2
-MzQyOTcoMCkgYWNrIDIzNTEyMDAxIHdpbiA1ODQwIDxtc3MKPiA+IDE0NjAsbm9wLG5vcCxzYWNr
-T0s+IChERikgKHR0bCA2NCwgaWQgMCwgbGVuIDQ4KQo+ID4KPiA+IEFzIHlvdSBjYW4gc2VlLCB0
-aGUgY3VzdG9tZXIgY29ubmVjdGVkIHdpdGggYSBTWU4gcGFja2V0LCBhbmQgbXkKPiA+IHdlYnNl
-cnZlciByZXNwb25kZWQgd2l0aCA2IEFDSy9TWU4gcGFja2V0cy4gQlVULCBiZWZvcmUgdGhlIDZ0
-aAo+ID4gQUNLL1NZTiByZXNwb25zZSwgdGhlIGN1c3RvbWVyIHNlbnQgYW4gQUNLL1JTVCBwYWNr
-ZXQsIHJlc2V0dGluZyB0aGUKPiA+IGNvbm5lY3Rpb24sIGFuZCB0aHVzIHRoZSA2dGggQUNLL1NZ
-TiBwYWNrZXQgd2FzIGJsb2NrZWQgYnkgdGhlCj4gPiBmaXJld2FsbCBiZWNhdXNlIHRoZSBjb25u
-ZWN0aW9uIHdhcyBubyBsb25nZXIgaW4gdGhlIGNvbm50cmFjay4gWWVzLAo+ID4gY2xvY2tzIGlu
-IHRoZSBmaXJld2FsbCBhbmQgd2Vic2VydmVyIGFyZSBzeW5jaHJvbml6ZWQuCj4gPgo+ID4gUXVl
-c3Rpb25zIGFyZToKPiA+Cj4gPiAxKSBEb2VzIGFueW9uZSBoYXZlIHNlZW4gdGhpcyBoYXBwZW5p
-bmcgdG9vPwo+ID4KPiA+IDIpIEhvdyBjYW4gSSBzaWxlbnRseSBkcm9wIHRoYXQgcGFja2FnZSwg
-d2l0aG91dCBjb21wcm9taXNpbmcgdGhlIG9uCj4gPiBnb2luZyBjb25uZWN0aW9ucz8gSSB3b3Vs
-ZCBsaWtlIHRvIGdldCByaWQgb2YgdGhvc2UgImZhbHNlIHBvc2l0aXZlcyIuCj4gPgo+ID4gVGhh
-bmtzLAo+ID4KPiA+IENhcmxvcwo+ID4KPgo+IFRoZSByZWFsIHF1ZXN0aW9uIGhlcmUgaXMgd2hh
-dCBiYWQgdGhpbmcgaGFwcGVuZWQgaW4gdGhlIHRoZSBkYXRhIHN0cmVhbSB0aGF0IHRoZSBjdXN0
-b21lciBzZW50IHRoZSByZXNldCBwYWNrZXQ/ICBUaGUgYW5zd2VyIGlzIG5vdCB0byBpZ25vcmUg
-dGhlIHJlc2V0IGJ1dCB0byBmaW5kIG91dCB3aHkgaXQgaXMgYmVpbmcgc2VudCwgdGhlIGNsaWVu
-dCBiZWxpZXZlcyB0aGlzIGNvbm5lY3Rpb24gc2hvdWxkIGJlIGFib3J0ZWQgZm9yIHNvbWUgcmVh
-c29uLgo+Cj4KPgpEb2Vzbid0IHRoaXMgaGFwcGVuIGlmIHRoZSBjdXN0b21lciBjbG9zZXMgdGhl
-IGJyb3dzZXIvc3RvcHMgdGhlIHdlYgpwYWdlIGxvYWRpbmcgYmVmb3JlIHRoZSBwYWdlIGhhcyBj
-b21wbGV0ZWx5IGxvYWRlZD8gSWYgc28gdGhlbiBvbmUgd2F5CnRvIGlnbm9yZSB0aGVzZSBwYWNr
-ZXRzIGlzIHRvIHNpbGVudGx5IGRyb3AgQUNLL1NZTiBwYWNrZXRzCm9yaWdpbmF0aW5nIGZyb20g
-cG9ydCA4MC4K
+Roger Hamilton wrote:
+> On 29/03/06, Steven M Campbell <Netfilter@scampbell.net> wrote:
+>> Carlos Pastorino wrote:
+>>> Hi everyone,
+>>>
+>>> I always wondered why conntrack blocked some packets that were
+>>> supposed to pass through my ESTABLISHED,RELATED rule. Now it seems
+>>> that I've found the answer.
+>>>
+>>> Bear with me, because there will be questions in the end.
+>>>
+>>> So, what happens is: from time to time, I see my firewall blocking a
+>>> packet like this:
+>>>
+>>> Mar 28 14:48:21 SRVA kernel: FORWARD blocked: IN=eth1 OUT=eth0
+>>> SRC=webserverip DST=customerip LEN=48 TOS=0x00 PREC=0x00 TTL=63 ID=0
+>>> DF PROTO=TCP SPT=80 DPT=10458 WINDOW=5840 RES=0x00 ACK SYN URGP=0
+>>>
+>>> Well, it does call my attention because it's a blocked packet FROM my
+>>> webserver. In any case, it shouldn't be blocked, because the
+>>> connection is not even 2 minutes old.
+>>>
+>>> But, on the webserver, I was running tcpdump this time, so I could see
+>>> what really happened:
+>>>
+>>> 14:46:47.573738 customerip.10458 > webserverip.80: S [tcp sum ok]
+>>> 23512000:23512000(0) win 65535 <mss 1460,nop,nop,sackOK> (DF) (ttl
+>>> 120, id 41065, len 48)
+>>> 14:46:47.573747 webserverip.80 > customerip.10458: S [tcp sum ok]
+>>> 4131634297:4131634297(0) ack 23512001 win 5840 <mss
+>>> 1460,nop,nop,sackOK> (DF) (ttl 64, id 0, len 48)
+>>> 14:46:51.327629 webserverip.80 > customerip.10458: S [tcp sum ok]
+>>> 4131634297:4131634297(0) ack 23512001 win 5840 <mss
+>>> 1460,nop,nop,sackOK> (DF) (ttl 64, id 0, len 48)
+>>> 14:46:57.327623 webserverip.80 > customerip.10458: S [tcp sum ok]
+>>> 4131634297:4131634297(0) ack 23512001 win 5840 <mss
+>>> 1460,nop,nop,sackOK> (DF) (ttl 64, id 0, len 48)
+>>> 14:47:09.327609 webserverip.80 > customerip.10458: S [tcp sum ok]
+>>> 4131634297:4131634297(0) ack 23512001 win 5840 <mss
+>>> 1460,nop,nop,sackOK> (DF) (ttl 64, id 0, len 48)
+>>> 14:47:33.527575 webserverip.80 > customerip.10458: S [tcp sum ok]
+>>> 4131634297:4131634297(0) ack 23512001 win 5840 <mss
+>>> 1460,nop,nop,sackOK> (DF) (ttl 64, id 0, len 48)
+>>> 14:47:34.216642 customerip.10458 > webserverip.80: R [tcp sum ok]
+>>> 0:0(0) ack 0 win 0 (ttl 26, id 1, len 40)
+>>> 14:48:21.727515 webserverip.80 > customerip.10458: S [tcp sum ok]
+>>> 4131634297:4131634297(0) ack 23512001 win 5840 <mss
+>>> 1460,nop,nop,sackOK> (DF) (ttl 64, id 0, len 48)
+>>>
+>>> As you can see, the customer connected with a SYN packet, and my
+>>> webserver responded with 6 ACK/SYN packets. BUT, before the 6th
+>>> ACK/SYN response, the customer sent an ACK/RST packet, resetting the
+>>> connection, and thus the 6th ACK/SYN packet was blocked by the
+>>> firewall because the connection was no longer in the conntrack. Yes,
+>>> clocks in the firewall and webserver are synchronized.
+>>>
+>>> Questions are:
+>>>
+>>> 1) Does anyone have seen this happening too?
+>>>
+>>> 2) How can I silently drop that package, without compromising the on
+>>> going connections? I would like to get rid of those "false positives".
+>>>
+>>> Thanks,
+>>>
+>>> Carlos
+>>>
+>> The real question here is what bad thing happened in the the data stream that the customer sent the reset packet?  The answer is not to ignore the reset but to find out why it is being sent, the client believes this connection should be aborted for some reason.
+>>
+>>
+>>
+> Doesn't this happen if the customer closes the browser/stops the web
+> page loading before the page has completely loaded? If so then one way
+> to ignore these packets is to silently drop ACK/SYN packets
+> originating from port 80.
+
+The original arguement is that conntrack was blocking packets that it's not supposed to block.  It certainly should block packets that are arriving on a terminated connection.  I don't believe the issue here has anything to do with connection tracking being faulty and workarounds to that effect are only hidng the real issue.  Why did the customer not see the ack packets and finally send a rst?   
 
