@@ -1,12 +1,14 @@
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+From: "David Vogt" <beunlovable@gmail.com>
 Subject: Re: Where is ip6tables?
-Date: Wed, 29 Mar 2006 16:15:25 +0900 (JST)
-Message-ID: <200603290715.k2T7FPrH011180@toshiba.co.jp>
+Date: Wed, 29 Mar 2006 09:27:08 +0200
+Message-ID: <859616420603282327u4eb9e96fi@mail.gmail.com>
 References: <859616420603280835rc24974dw@mail.gmail.com>
+	<200603290715.k2T7FPrH011180@toshiba.co.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <859616420603280835rc24974dw@mail.gmail.com>
+In-Reply-To: <200603290715.k2T7FPrH011180@toshiba.co.jp>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +19,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: Text/Plain; charset="us-ascii"
-To: beunlovable@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+To: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
 Cc: netfilter@lists.netfilter.org
 
-From: "David Vogt" <beunlovable@gmail.com>
-Date: Tue, 28 Mar 2006 18:35:58 +0200
+> You can find iptables-ipv6-...rpm at
+>
+> http://download.fedora.redhat.com/pub/fedora/linux/core/updates/3/i386/
+>
 
-> Dear all,
-> 
-> just a quick question. I am running Fedora Core 3 (2.6.11-1.35_FC3)
-> with iptables v1.2.11 installed. I know this is not brand new stuff,
-> but as far as I conclude from the Changelog, ip6tables should already
-> be part of this release. Nontheless, it is simply not there.
-> 
-> I know the solution is simple, but I have been sitting here for quite
-> some time now. I should seiously consider going home now.
+Thanks, solved that. Now ip6_queue module is missing. There are
+various modules (e.g. ip6_tables) installed, however, the queue module
+is missing. Can I find additional modules in packages as well? I'm
+confused.
 
-You can find iptables-ipv6-...rpm at
-
-http://download.fedora.redhat.com/pub/fedora/linux/core/updates/3/i386/
-
--- Yasuyuki Kozakai
+David
 
