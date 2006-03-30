@@ -1,13 +1,13 @@
-From: "Carlos Pastorino" <carlos.pastorino@gmail.com>
-Subject: Re: Real ip's behind Firewall
-Date: Thu, 30 Mar 2006 11:14:54 -0300
-Message-ID: <cc4fcc140603300614o250d5faw6149bd5b15ec89f2@mail.gmail.com>
-References: <3da957060603300530o74205fe9g2067b6c61152da5@mail.gmail.com>
+From: bash <0x62ash@gmail.com>
+Subject: Re: help me (nfcan: addressed to exclusive sender for this address)
+Date: Thu, 30 Mar 2006 19:58:26 +0400
+Message-ID: <20060330195826.ef15fbaf.0x62ash@gmail.com>
+References: <20060329231421.0d6d3a59.0x62ash@gmail.com>
+	<000201c653bd$16ea0e40$0101000a@sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3da957060603300530o74205fe9g2067b6c61152da5@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <000201c653bd$16ea0e40$0101000a@sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,38 +19,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Stephan Higuti <higuti.sam@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Yes you can. You have to create subnets with the IP range you have.
-One subnet shall be used for the interface connected to the Internet,
-and the other subnet shall be used for the interface connected to the
-internal network.
+On Thu, 30 Mar 2006 07:45:01 +0200
+"Rob Sterenborg" <rob@sterenborg.info> wrote:
 
-After that, you have to create routes on your Internet router, so it
-knows were to send the packets destined to the internal network.
+> >> $ipt -A [INPUT|FORWARD] -i $IF_LAN -m state --state NEW -s $LAN_NET \
+> >>   -p tcp --syn -m limit --limit 3/sec -j ACCEPT
+> > 
+> > If just ONE host from my $LAN_NET will exceed this limit, then ALL
+> > hosts in $LAN_NET will not able to start new session... and this is
+> > bad. I want to limit 3/sec per host, not for all net....
+> 
+> Yes.. :-\
+> Maybe this post is of help then.
+> http://www.linux-noob.com/forums/index.php?showtopic=1829
 
+I saw it... "-m recent" has only 1 second sampling... i cant handle
+situaton of 3/sec and etc.....
 
-On 3/30/06, Stephan Higuti <higuti.sam@gmail.com> wrote:
-> Hello guys.
-> Let me explain my situation:
-> I have a Internet Connection coming in a switch , In this switch , i
-> have my "Firewall" and some other serevrs that uses Real Ip's, so ,
-> the firewall dont protect the other servers , cause the servers dont
-> are behind it.
-> I need to change this , making a Real Firewall , in the front of the serv=
-ers.
-> I want to know:
-> Can i put some servers using real ip's behind my firewall using iptables?
-> If yes, how can i make this?
->
-> Sorry for my bad english!
->
-> Thank'z
->
-> Cheers
->
-> Stephan
->
->
+I found "-m dstlimit" module which is handy, *but* for my situation i
+wanna the same but with limit the packet rate on a per SOURCE ip....
+inverted dstlimit :)
+
+Any ideads? :/
+
+-- 
+Biomechanica Artificial Sabotage Humanoid
 
