@@ -1,10 +1,13 @@
-From: John McMonagle <johnm@advocap.org>
-Subject: Problem with conntrack table filling
-Date: Thu, 30 Mar 2006 14:30:37 -0600
-Message-ID: <442C3FED.4040706@advocap.org>
+From: "Filip Sneppe" <filip.sneppe@gmail.com>
+Subject: Re: ip_conntrack_ftp and non-standard ports
+Date: Thu, 30 Mar 2006 23:10:38 +0200
+Message-ID: <9151ac2a0603301310q19746224yb8d43d26f31a31f6@mail.gmail.com>
+References: <442B68CB.10005@palaver.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040701090004030504020606"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <442B68CB.10005@palaver.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,59 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Brian Capouch <brianc@palaver.net>
+Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------040701090004030504020606
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On 3/30/06, Brian Capouch <brianc@palaver.net> wrote:
+> I hope this isn't a FAQ.  I've looked around and googled around, and so
+> far, it seems from what I've found that such a thing can be done.  What
+> I don't know is just how to tell iptables to do it.
+>
+This is done when loading the ip_conntrack_ftp and ip_nat_ftp kernel module=
+s,
+eg.
 
-Firewall was dropping a lot of packets this morning.
+modprobe ip_conntracl_ftp ports=3D21,2021,3021
+modprobe ip_nat_ftp ports=3D21,2021,3021
 
-Had  a lot of messages like:
-Mar 30 06:30:54 fonroute kernel: ip_conntrack: table full, dropping packet.
+(see "modinfo ip_conntrack_ftp")
 
-Rebooted to get it working
+> I hope someone might provide a pointer.
+>
+Hope this helps...
 
-/proc/sys/net/ipv4/ip_conntrack_max was 16k
-set to 32k.
-
-After running for a while started monitoring /proc/net/ip_conntrack
-
-at the moment have 3671 and still going up after 7 hours.
-
-Looking at it most (  3343 )of them are for razor connection from the
-mail server like this:
-
-
-tcp      6 418044 ESTABLISHED src=192.168.2.5 dst=66.151.150.22
-sport=52613 dport=2703 packets=6 bytes=364 src=66.151.150.22
-dst=24.196.120.30 sport=2703 dport=52613 packets=6 bytes=501 [ASSURED] use=1
-tcp      6 424354 ESTABLISHED src=192.168.2.5 dst=66.151.150.22
-sport=43840 dport=2703 packets=6 bytes=364 src=66.151.150.22
-dst=24.196.120.30 sport=2703 dport=43840 packets=5 bytes=449 [ASSURED] use=1
-tcp      6 418125 ESTABLISHED src=192.168.2.5 dst=66.151.150.12
-sport=52803 dport=2703 packets=6 bytes=349 src=66.151.150.12
-dst=24.196.120.30 sport=2703 dport=52803 packets=5 bytes=386 [ASSURED] use=1
-
-At least when I checked there were no tcp connections  to port 2703 from
-the mail server.
-
-What is the cause of this?
-
-More info.
-Both firewall an mail server are debian sarge.
-firewall:
-2.6.10 kernel
-
-mailserver:
-mailscanner    4.41.3-2
-razor          2.670-1sarge2
-
-Thanks
-
-John
-
-
---------------040701090004030504020606--
+Regards,
+Filip
 
