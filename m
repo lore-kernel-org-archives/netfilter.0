@@ -1,11 +1,10 @@
-From: "Robert LeBlanc" <robert@leblancnet.us>
-Subject: Gateway cluster using iptables and CLUSTERIP
-Date: Thu, 30 Mar 2006 09:31:32 -0700
-Message-ID: <A78C6C481BFAE949BC5990E1EEB2FE125715@q.LeBlancNet.us>
+From: "Pedro Drimel Neto" <pedrodrimel@uol.com.br>
+Subject: NTH
+Date: Thu, 30 Mar 2006 14:34:29 -0300
+Message-ID: <000501c65420$333e10b0$2f00a8c0@TRINTASETE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,36 +15,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-I am basically familiar with iptables and can do some of the usual
-stuff, block and drop packets, NAT, etc. I'm working on a project that
-would provide an active-active gateway cluster using iptables and
-heartbeat. I've got heartbeat configured to failover and failback the
-CLUSTERIP, but CLUSTERIP address will not respond to network activity
-and the host interface reports that the destination is not known.
-Running tcpdump on the interface when doing a ping show arp traffic
-requesting who has the address, but there is never a response. I did get
-this to work once before, but it will not work again.
+Hi all,
 
-I've entered:
+I'm using the nth module for each connection it change of IP.
+The scenario is:
+--------------              -------------
+| Server with | ------ > |    Server    |
+|      NTH     |               |   Master    |
+--------------              -------------
+So, the users connect to "Server with NTH" and the .bashrc of the user has a 
+ssh to "Server Master".
+On "Server with NTH" has an interface, eth0, with 2 logics, eth0:0 and 
+eth0:1
+eth0: 10.0.0.2
+eth0:0 10.0.0.3
+eth0:1: 10.0.0.4
+Above are the rules on "Server with NTH"
+iptables -t nat -A POSTROUTING -o eth0 -d "Server Master" -m nth --counter 
+7 --every 3 --packet 0 -j SNAT --to-source 10.0.0.2
+iptables -t nat -A POSTROUTING -o eth0 -d "Server Master" -m nth --counter 
+7 --every 3 --packet 1 -j SNAT --to-source 10.0.0.3
+iptables -t nat -A POSTROUTING -o eth0 -d "Server Master" -m nth --counter 
+7 --every 3 --packet 2 -j SNAT --to-source 10.0.0.4
 
-iptables -A INPUT -I eth1 -d 10.0.0.1 -j CLUSTERIP -new -hashmode
-sourceip -clustermac 01:83:91:A7:0D:33 -total-nodes 1 -local-nodes 1
+So, at each connection to "Server Master" the IP is changed.
+As NTH support only packet 0, 1 and 2 and I need to more IPs to be changed, 
+if I add more a interface does it work ?
+Thanks a lot.
 
-I have entered only one node in the cluster so that I would not have to
-bring up both nodes during the testing or remember to add the other node
-to /proc/net/ipt_CLUSTERIP/10.0.0.1.
+Regards. 
 
-I am running Debian stock kernel 2.6.15-1-686 and iptables v1.3.3. The
-documentation that I have found has been very sparse and no one seemed
-to have an answer for the lack of arp response. Once I get this problem
-figured out, I will need help with getting this address to work as the
-gateway address for the network. I'm not sure how to hook that address
-in the SNAT chain (is that even what it is called?).
-
-Thanks,
-Robert LeBlanc
-Brigham Young University
 
