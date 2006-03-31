@@ -1,11 +1,12 @@
-From: "Robert LeBlanc" <robert@leblancnet.us>
-Subject: RE: Gateway cluster using iptables and CLUSTERIP
-Date: Fri, 31 Mar 2006 07:20:25 -0700
-Message-ID: <A78C6C481BFAE949BC5990E1EEB2FE125718@q.LeBlancNet.us>
+From: "Martijn Lievaart" <m@rtij.nl>
+Subject: Re: packets skipping DNAT rules
+Date: Fri, 31 Mar 2006 11:47:53 +0200 (CEST)
+Message-ID: <30418.217.166.60.19.1143798473.squirrel@ma.rtij.nl>
+References: <442ACC85.1060807@candlefire.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <442ACC85.1060807@candlefire.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +18,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@candlefire.org
+Cc: netfilter@lists.netfilter.org
 
-Unfortunately setting nodes to 2 and having the node respond to both
-dose not work either. I'm in the process of putting together a 2.6.16.1
-kernel and getting the latest iptables compiled to see if it is a bug
-that was fixed.
+Mr Ritter zei:
+> I have some rules in the PREROUTING of the nat table that perform a DNAT
+>  however, on a very consistent basis the rules doesn't get applied and
+> the packet ends up in the filter table without the destination modified.
+>  95% of the time it works, 5% it doesn't. I can't put a finger on whats
+> causing it, or see anything in particular about the packets that fail to
+>  DNAT. Any suggestions on how to resolve this?
 
-Robert LeBlanc
-Brigham Young University
+You can start by posting your ruleset, please show us the output from
+iptables-save. Also, you failed to mention if those packets that don't get
+DNATted are really random or creating a new connection.
 
-> -----Original Message-----
-> From: KOVACS Krisztian [mailto:hidden@balabit.hu]
-> Sent: Friday, March 31, 2006 2:55 AM
-> To: netfilter@lists.netfilter.org
-> Cc: Robert LeBlanc
-> Subject: Re: Gateway cluster using iptables and CLUSTERIP
->=20
->=20
->   Hi,
->=20
-> On Thursday 30 March 2006 18.31, Robert LeBlanc wrote:
-> > iptables -A INPUT -I eth1 -d 10.0.0.1 -j CLUSTERIP -new -hashmode
-> > sourceip -clustermac 01:83:91:A7:0D:33 -total-nodes 1 -local-nodes 1
-> >
-> > I have entered only one node in the cluster so that I would not have
-to
-> > bring up both nodes during the testing or remember to add the other
-node
-> > to /proc/net/ipt_CLUSTERIP/10.0.0.1.
->=20
->   Strange. Please note that apparently there are very few CLUSTERIP
-users
-> out there, so this might also be a bug. Does setting total-nodes to 2
-> help?
->=20
-> --
->  Regards,
->   Krisztian Kovacs
+HTH,
+M4
+
+
 
 
