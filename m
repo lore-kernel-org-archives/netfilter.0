@@ -1,12 +1,13 @@
-From: Stephan Scholz <sscholz@astaro.com>
-Subject: Re: NTH
-Date: Fri, 31 Mar 2006 12:58:05 +0200
-Message-ID: <442D0B3D.70007@astaro.com>
-References: <000501c65420$333e10b0$2f00a8c0@TRINTASETE>
+From: Steven M Campbell <Netfilter@SCampbell.net>
+Subject: Re: It seems I've found why conntrack blocks some packets
+Date: Fri, 31 Mar 2006 08:20:15 -0500
+Message-ID: <442D2C8F.1020505@SCampbell.net>
+References: <57F9959B46E0FA4D8BA88AEDFBE582901674BC@pxtbenexd01.pxt.primeexalia.com>
+	<cc4fcc140603300601j169864eexddc8fe3dd06c1a24@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000501c65420$333e10b0$2f00a8c0@TRINTASETE>
+In-Reply-To: <cc4fcc140603300601j169864eexddc8fe3dd06c1a24@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +18,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"
-To: Pedro Drimel Neto <pedrodrimel@uol.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-WWVzLCB0aGF0IHNob3VsZCB3b3JrLiBTaW1wbHkgaW5jcmVhc2UgdGhlICJldmVyeSIgbnVtYmVy
-IGFuZCBhZGQgYSBuZXcgcnVsZS4KCkV4YW1wbGUgZm9yIDQgaG9zdHM6CgppcHRhYmxlcyAtdCBu
-YXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRoMCAtZCAiU2VydmVyIE1hc3RlciIgLW0gbnRoIC0tY291
-bnRlciA3IC0tZXZlcnkgNCAtLXBhY2tldCAwIC1qIFNOQVQgLS10by1zb3VyY2UgMTAuMC4wLjIK
-aXB0YWJsZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1vIGV0aDAgLWQgIlNlcnZlciBNYXN0ZXIi
-IC1tIG50aCAtLWNvdW50ZXIgNyAtLWV2ZXJ5IDQgLS1wYWNrZXQgMSAtaiBTTkFUIC0tdG8tc291
-cmNlIDEwLjAuMC4zCmlwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtbyBldGgwIC1kICJT
-ZXJ2ZXIgTWFzdGVyIiAtbSBudGggLS1jb3VudGVyIDcgLS1ldmVyeSA0IC0tcGFja2V0IDIgLWog
-U05BVCAtLXRvLXNvdXJjZSAxMC4wLjAuNAppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcg
-LW8gZXRoMCAtZCAiU2VydmVyIE1hc3RlciIgLW0gbnRoIC0tY291bnRlciA3IC0tZXZlcnkgNCAt
-LXBhY2tldCAzIC1qIFNOQVQgLS10by1zb3VyY2UgMTAuMC4wLjUKClN0ZXBoYW4KClBlZHJvIERy
-aW1lbCBOZXRvIHdyb3RlOgo+IEhpIGFsbCwKPiAKPiBJJ20gdXNpbmcgdGhlIG50aCBtb2R1bGUg
-Zm9yIGVhY2ggY29ubmVjdGlvbiBpdCBjaGFuZ2Ugb2YgSVAuCj4gVGhlIHNjZW5hcmlvIGlzOgo+
-IC0tLS0tLS0tLS0tLS0tICAgICAgICAgICAgICAtLS0tLS0tLS0tLS0tCj4gfCBTZXJ2ZXIgd2l0
-aCB8IC0tLS0tLSA+IHwgICAgU2VydmVyICAgIHwKPiB8ICAgICAgTlRIICAgICB8ICAgICAgICAg
-ICAgICAgfCAgIE1hc3RlciAgICB8Cj4gLS0tLS0tLS0tLS0tLS0gICAgICAgICAgICAgIC0tLS0t
-LS0tLS0tLS0KPiBTbywgdGhlIHVzZXJzIGNvbm5lY3QgdG8gIlNlcnZlciB3aXRoIE5USCIgYW5k
-IHRoZSAuYmFzaHJjIG9mIHRoZSB1c2VyCj4gaGFzIGEgc3NoIHRvICJTZXJ2ZXIgTWFzdGVyIi4K
-PiBPbiAiU2VydmVyIHdpdGggTlRIIiBoYXMgYW4gaW50ZXJmYWNlLCBldGgwLCB3aXRoIDIgbG9n
-aWNzLCBldGgwOjAgYW5kCj4gZXRoMDoxCj4gZXRoMDogMTAuMC4wLjIKPiBldGgwOjAgMTAuMC4w
-LjMKPiBldGgwOjE6IDEwLjAuMC40Cj4gQWJvdmUgYXJlIHRoZSBydWxlcyBvbiAiU2VydmVyIHdp
-dGggTlRIIgo+IGlwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtbyBldGgwIC1kICJTZXJ2
-ZXIgTWFzdGVyIiAtbSBudGgKPiAtLWNvdW50ZXIgNyAtLWV2ZXJ5IDMgLS1wYWNrZXQgMCAtaiBT
-TkFUIC0tdG8tc291cmNlIDEwLjAuMC4yCj4gaXB0YWJsZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5H
-IC1vIGV0aDAgLWQgIlNlcnZlciBNYXN0ZXIiIC1tIG50aAo+IC0tY291bnRlciA3IC0tZXZlcnkg
-MyAtLXBhY2tldCAxIC1qIFNOQVQgLS10by1zb3VyY2UgMTAuMC4wLjMKPiBpcHRhYmxlcyAtdCBu
-YXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRoMCAtZCAiU2VydmVyIE1hc3RlciIgLW0gbnRoCj4gLS1j
-b3VudGVyIDcgLS1ldmVyeSAzIC0tcGFja2V0IDIgLWogU05BVCAtLXRvLXNvdXJjZSAxMC4wLjAu
-NAo+IAo+IFNvLCBhdCBlYWNoIGNvbm5lY3Rpb24gdG8gIlNlcnZlciBNYXN0ZXIiIHRoZSBJUCBp
-cyBjaGFuZ2VkLgo+IEFzIE5USCBzdXBwb3J0IG9ubHkgcGFja2V0IDAsIDEgYW5kIDIgYW5kIEkg
-bmVlZCB0byBtb3JlIElQcyB0byBiZQo+IGNoYW5nZWQsIGlmIEkgYWRkIG1vcmUgYSBpbnRlcmZh
-Y2UgZG9lcyBpdCB3b3JrID8KPiBUaGFua3MgYSBsb3QuCj4gCj4gUmVnYXJkcy4KPiAKCgotLSAK
-ClN0ZXBoYW4gU2Nob2x6Cgpzc2Nob2x6QGFzdGFyby5jb20gfCBEZXZlbG9wbWVudApBc3Rhcm8g
-QUcgfCB3d3cuYXN0YXJvLmNvbSB8IFBob25lICs0OS03MjEtMjU1MTYtMApGYXggKzQ5LTcyMS0y
-NTUxNi0yMDAKQW1hbGllbmJhZHN0cmHDn2UgMzYgLyBCYXUgMzNhIHwgNzYyMjcgS2FybHNydWhl
-IHwgR2VybWFueQoKLSBQQyBNYWdhemluZSBCZXN0IG9mIHRoZSBZZWFyIDIwMDQvMjAwNQotIENS
-TiBCZXN0IG9mIHRoZSBZZWFyIDIwMDUKLSBTQyBNYWdhemluZSAiQmVzdCBCdXkiICYgNSBzdGFy
-IHJhdGluZyAtIE9jdG9iZXIgMjAwNSwgQmVzdCBvZiB0aGUgWWVhciAyMDA1Ci0gSW50ZXJuZXQg
-UHJvZmVzc2lvbmVsbCAiRW1wZmVobHVuZyBkZXIgUmVkYWt0aW9uIiAtIE5vdmVtYmVyIDIwMDUK
-Cgo=
+We know from the message that we fell off of the end of the FORWARD chain (because the --log-prefix "FORWARD blocked: " is the only one to match the message....
+
+Carlos Pastorino wrote:
+	
+> 
+> $IPTABLES -A FORWARD -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -p ICMP -i $DMZ_IFACE -s $DMZ_RANGE -j ACCEPT
+> 
+> $IPTABLES -A FORWARD -p TCP -i $DMZ_IFACE -o $INET_IFACE -s $DMZ_RANGE
+> -d $0/0 --syn --dport domain -j ACCEPT
+> $IPTABLES -A FORWARD -p TCP -i $DMZ_IFACE -o $INET_IFACE -s $DMZ_RANGE
+> -d 0/0 --syn --dport ftp -j ACCEPT
+> $IPTABLES -A FORWARD -p TCP -i $DMZ_IFACE -o $INET_IFACE -s $DMZ_RANGE
+> -d 0/0 --syn --dport http -j ACCEPT
+> $IPTABLES -A FORWARD -p TCP -i $DMZ_IFACE -o $INET_IFACE -s $DMZ_RANGE
+> -d 0/0 --syn --dport smtp -j ACCEPT
+> $IPTABLES -A FORWARD -p UDP -i $DMZ_IFACE -o $INET_IFACE -s $DMZ_RANGE
+> -d 0/0 --dport domain -j ACCEPT
+> $IPTABLES -A FORWARD -p UDP -i $DMZ_IFACE -o $INET_IFACE -s $DMZ_RANGE
+> -d 0/0 --dport ntp -j ACCEPT
+> 
+
+deleted a bunch of drop and logs, these aren't the problem
+
+> 
+> $IPTABLES -A FORWARD -p TCP -i $INET_IFACE -s 0/0 -j pre_analysis
+> 
+
+I'm removing lines that deal with ports other than http
+
+> $IPTABLES -A FORWARD -p ICMP -i $INET_IFACE -o $DMZ_IFACE -s
+> $MONITORING -d $DMZ_RANGE -j ACCEPT
+> $IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -s 0/0 -d
+> $DMZ_WEBSERVER --syn --dport http -j ACCEPT
+> $IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $DMZ_IFACE -s 0/0 -d
+> $DMZ_WEBSERVER --syn --dport https -j ACCEPT
+> 
+> 
+> [SOME FORWARD LINES SUPPRESSED]
+> 
+> $IPTABLES -A FORWARD -j LOG --log-prefix "FORWARD blocked: "
+> 
+> 
+
+Unfortunately, you've needed to obscure the actual ip address (I understand) but I can't match the 'customerip' and 'webserverip' to the ${variables} above because I don't know the actual values for any of them.
+
+Try to walk through the rules in your forward chain using the ip addresses you've captured and identify the rule you believe should allow these ack packets to go out.
+
