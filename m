@@ -1,13 +1,11 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: It seems I've found why conntrack blocks some packets
-Date: Fri, 31 Mar 2006 08:43:42 -0500
-Message-ID: <442D320E.7070301@SCampbell.net>
-References: <57F9959B46E0FA4D8BA88AEDFBE582901674BC@pxtbenexd01.pxt.primeexalia.com>	<cc4fcc140603300601j169864eexddc8fe3dd06c1a24@mail.gmail.com>
-	<442D2C8F.1020505@SCampbell.net>
+From: "Robert LeBlanc" <robert@leblancnet.us>
+Subject: RE: Gateway cluster using iptables and CLUSTERIP
+Date: Fri, 31 Mar 2006 07:20:25 -0700
+Message-ID: <A78C6C481BFAE949BC5990E1EEB2FE125718@q.LeBlancNet.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <442D2C8F.1020505@SCampbell.net>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +16,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Steven M Campbell wrote:
-> We know from the message that we fell off of the end of the FORWARD 
-> chain (because the --log-prefix "FORWARD blocked: " is the only one to 
-> match the message....
-> 
->
+Unfortunately setting nodes to 2 and having the node respond to both
+dose not work either. I'm in the process of putting together a 2.6.16.1
+kernel and getting the latest iptables compiled to see if it is a bug
+that was fixed.
 
-One other thought to this, if I were to presume the ${variables} and ...ip's then I would presume that the RELATED rules should allow these ack's to go through.  The only reason I know of for them not do (again, assuming all the addressing is really ok) would be that the conntrack table has filled up.
+Robert LeBlanc
+Brigham Young University
 
-To see the maximum connnections that can be tracked:
+> -----Original Message-----
+> From: KOVACS Krisztian [mailto:hidden@balabit.hu]
+> Sent: Friday, March 31, 2006 2:55 AM
+> To: netfilter@lists.netfilter.org
+> Cc: Robert LeBlanc
+> Subject: Re: Gateway cluster using iptables and CLUSTERIP
+>=20
+>=20
+>   Hi,
+>=20
+> On Thursday 30 March 2006 18.31, Robert LeBlanc wrote:
+> > iptables -A INPUT -I eth1 -d 10.0.0.1 -j CLUSTERIP -new -hashmode
+> > sourceip -clustermac 01:83:91:A7:0D:33 -total-nodes 1 -local-nodes 1
+> >
+> > I have entered only one node in the cluster so that I would not have
+to
+> > bring up both nodes during the testing or remember to add the other
+node
+> > to /proc/net/ipt_CLUSTERIP/10.0.0.1.
+>=20
+>   Strange. Please note that apparently there are very few CLUSTERIP
+users
+> out there, so this might also be a bug. Does setting total-nodes to 2
+> help?
+>=20
+> --
+>  Regards,
+>   Krisztian Kovacs
 
-# cat /proc/sys/net/ipv4/ip_conntrack_max
-32760
-
-To see how many you are using at a given moment
-
-# wc  -l /proc/net/ip_conntrack
-16 /proc/net/ip_conntrack
-
-
-This from my house and there really isn't all that much going on, I would expect far larger counts, you may need to up ip_conntrack_max.  This really out in the SWAG arena because I can't see the details of your installation.
 
