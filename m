@@ -1,13 +1,12 @@
-From: Gaurav Sharma <gaurav@interacesso.pt>
-Subject: Re: Problem with conntrack table filling
-Date: Fri, 31 Mar 2006 11:07:43 +0000
-Message-ID: <200603311107.43579.gaurav@interacesso.pt>
-References: <442C3FED.4040706@advocap.org>
+From: Stephan Scholz <sscholz@astaro.com>
+Subject: Re: NTH
+Date: Fri, 31 Mar 2006 12:58:05 +0200
+Message-ID: <442D0B3D.70007@astaro.com>
+References: <000501c65420$333e10b0$2f00a8c0@TRINTASETE>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <442C3FED.4040706@advocap.org>
-Content-Disposition: inline
+In-Reply-To: <000501c65420$333e10b0$2f00a8c0@TRINTASETE>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,70 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="macroman"
+To: Pedro Drimel Neto <pedrodrimel@uol.com.br>
+Cc: netfilter@lists.netfilter.org
 
-Hi John,
-
-Please check the value inside 
-"/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established"
-The default usually is 5 days, so a connection being tracked will be in the 
-table for 5 days (check the 3rd field in the conntrack entries 'tcp      6 
-"*418044*" ESTABLISHED........... this is the time left for the connection to 
-expire).  You can should change the ip_conntrack_tcp_timeout_established to 
-reasonable number as most tcp connections are active and don't have a idle 
-period of 5 days and and even if some are idle for long periods (ssh , telnet 
-etc.) they dont stay idle for 5 days.
-
-Hope this helps.
-
-~Gaurav.
-
-On Thursday 30 March 2006 20:30, John McMonagle wrote:
-> Firewall was dropping a lot of packets this morning.
->
-> Had  a lot of messages like:
-> Mar 30 06:30:54 fonroute kernel: ip_conntrack: table full, dropping packet.
->
-> Rebooted to get it working
->
-> /proc/sys/net/ipv4/ip_conntrack_max was 16k
-> set to 32k.
->
-> After running for a while started monitoring /proc/net/ip_conntrack
->
-> at the moment have 3671 and still going up after 7 hours.
->
-> Looking at it most (  3343 )of them are for razor connection from the
-> mail server like this:
->
->
-> tcp      6 418044 ESTABLISHED src=192.168.2.5 dst=66.151.150.22
-> sport=52613 dport=2703 packets=6 bytes=364 src=66.151.150.22
-> dst=24.196.120.30 sport=2703 dport=52613 packets=6 bytes=501 [ASSURED]
-> use=1 tcp      6 424354 ESTABLISHED src=192.168.2.5 dst=66.151.150.22
-> sport=43840 dport=2703 packets=6 bytes=364 src=66.151.150.22
-> dst=24.196.120.30 sport=2703 dport=43840 packets=5 bytes=449 [ASSURED]
-> use=1 tcp      6 418125 ESTABLISHED src=192.168.2.5 dst=66.151.150.12
-> sport=52803 dport=2703 packets=6 bytes=349 src=66.151.150.12
-> dst=24.196.120.30 sport=2703 dport=52803 packets=5 bytes=386 [ASSURED]
-> use=1
->
-> At least when I checked there were no tcp connections  to port 2703 from
-> the mail server.
->
-> What is the cause of this?
->
-> More info.
-> Both firewall an mail server are debian sarge.
-> firewall:
-> 2.6.10 kernel
->
-> mailserver:
-> mailscanner    4.41.3-2
-> razor          2.670-1sarge2
->
-> Thanks
->
-> John
-
+WWVzLCB0aGF0IHNob3VsZCB3b3JrLiBTaW1wbHkgaW5jcmVhc2UgdGhlICJldmVyeSIgbnVtYmVy
+IGFuZCBhZGQgYSBuZXcgcnVsZS4KCkV4YW1wbGUgZm9yIDQgaG9zdHM6CgppcHRhYmxlcyAtdCBu
+YXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRoMCAtZCAiU2VydmVyIE1hc3RlciIgLW0gbnRoIC0tY291
+bnRlciA3IC0tZXZlcnkgNCAtLXBhY2tldCAwIC1qIFNOQVQgLS10by1zb3VyY2UgMTAuMC4wLjIK
+aXB0YWJsZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1vIGV0aDAgLWQgIlNlcnZlciBNYXN0ZXIi
+IC1tIG50aCAtLWNvdW50ZXIgNyAtLWV2ZXJ5IDQgLS1wYWNrZXQgMSAtaiBTTkFUIC0tdG8tc291
+cmNlIDEwLjAuMC4zCmlwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtbyBldGgwIC1kICJT
+ZXJ2ZXIgTWFzdGVyIiAtbSBudGggLS1jb3VudGVyIDcgLS1ldmVyeSA0IC0tcGFja2V0IDIgLWog
+U05BVCAtLXRvLXNvdXJjZSAxMC4wLjAuNAppcHRhYmxlcyAtdCBuYXQgLUEgUE9TVFJPVVRJTkcg
+LW8gZXRoMCAtZCAiU2VydmVyIE1hc3RlciIgLW0gbnRoIC0tY291bnRlciA3IC0tZXZlcnkgNCAt
+LXBhY2tldCAzIC1qIFNOQVQgLS10by1zb3VyY2UgMTAuMC4wLjUKClN0ZXBoYW4KClBlZHJvIERy
+aW1lbCBOZXRvIHdyb3RlOgo+IEhpIGFsbCwKPiAKPiBJJ20gdXNpbmcgdGhlIG50aCBtb2R1bGUg
+Zm9yIGVhY2ggY29ubmVjdGlvbiBpdCBjaGFuZ2Ugb2YgSVAuCj4gVGhlIHNjZW5hcmlvIGlzOgo+
+IC0tLS0tLS0tLS0tLS0tICAgICAgICAgICAgICAtLS0tLS0tLS0tLS0tCj4gfCBTZXJ2ZXIgd2l0
+aCB8IC0tLS0tLSA+IHwgICAgU2VydmVyICAgIHwKPiB8ICAgICAgTlRIICAgICB8ICAgICAgICAg
+ICAgICAgfCAgIE1hc3RlciAgICB8Cj4gLS0tLS0tLS0tLS0tLS0gICAgICAgICAgICAgIC0tLS0t
+LS0tLS0tLS0KPiBTbywgdGhlIHVzZXJzIGNvbm5lY3QgdG8gIlNlcnZlciB3aXRoIE5USCIgYW5k
+IHRoZSAuYmFzaHJjIG9mIHRoZSB1c2VyCj4gaGFzIGEgc3NoIHRvICJTZXJ2ZXIgTWFzdGVyIi4K
+PiBPbiAiU2VydmVyIHdpdGggTlRIIiBoYXMgYW4gaW50ZXJmYWNlLCBldGgwLCB3aXRoIDIgbG9n
+aWNzLCBldGgwOjAgYW5kCj4gZXRoMDoxCj4gZXRoMDogMTAuMC4wLjIKPiBldGgwOjAgMTAuMC4w
+LjMKPiBldGgwOjE6IDEwLjAuMC40Cj4gQWJvdmUgYXJlIHRoZSBydWxlcyBvbiAiU2VydmVyIHdp
+dGggTlRIIgo+IGlwdGFibGVzIC10IG5hdCAtQSBQT1NUUk9VVElORyAtbyBldGgwIC1kICJTZXJ2
+ZXIgTWFzdGVyIiAtbSBudGgKPiAtLWNvdW50ZXIgNyAtLWV2ZXJ5IDMgLS1wYWNrZXQgMCAtaiBT
+TkFUIC0tdG8tc291cmNlIDEwLjAuMC4yCj4gaXB0YWJsZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5H
+IC1vIGV0aDAgLWQgIlNlcnZlciBNYXN0ZXIiIC1tIG50aAo+IC0tY291bnRlciA3IC0tZXZlcnkg
+MyAtLXBhY2tldCAxIC1qIFNOQVQgLS10by1zb3VyY2UgMTAuMC4wLjMKPiBpcHRhYmxlcyAtdCBu
+YXQgLUEgUE9TVFJPVVRJTkcgLW8gZXRoMCAtZCAiU2VydmVyIE1hc3RlciIgLW0gbnRoCj4gLS1j
+b3VudGVyIDcgLS1ldmVyeSAzIC0tcGFja2V0IDIgLWogU05BVCAtLXRvLXNvdXJjZSAxMC4wLjAu
+NAo+IAo+IFNvLCBhdCBlYWNoIGNvbm5lY3Rpb24gdG8gIlNlcnZlciBNYXN0ZXIiIHRoZSBJUCBp
+cyBjaGFuZ2VkLgo+IEFzIE5USCBzdXBwb3J0IG9ubHkgcGFja2V0IDAsIDEgYW5kIDIgYW5kIEkg
+bmVlZCB0byBtb3JlIElQcyB0byBiZQo+IGNoYW5nZWQsIGlmIEkgYWRkIG1vcmUgYSBpbnRlcmZh
+Y2UgZG9lcyBpdCB3b3JrID8KPiBUaGFua3MgYSBsb3QuCj4gCj4gUmVnYXJkcy4KPiAKCgotLSAK
+ClN0ZXBoYW4gU2Nob2x6Cgpzc2Nob2x6QGFzdGFyby5jb20gfCBEZXZlbG9wbWVudApBc3Rhcm8g
+QUcgfCB3d3cuYXN0YXJvLmNvbSB8IFBob25lICs0OS03MjEtMjU1MTYtMApGYXggKzQ5LTcyMS0y
+NTUxNi0yMDAKQW1hbGllbmJhZHN0cmHDn2UgMzYgLyBCYXUgMzNhIHwgNzYyMjcgS2FybHNydWhl
+IHwgR2VybWFueQoKLSBQQyBNYWdhemluZSBCZXN0IG9mIHRoZSBZZWFyIDIwMDQvMjAwNQotIENS
+TiBCZXN0IG9mIHRoZSBZZWFyIDIwMDUKLSBTQyBNYWdhemluZSAiQmVzdCBCdXkiICYgNSBzdGFy
+IHJhdGluZyAtIE9jdG9iZXIgMjAwNSwgQmVzdCBvZiB0aGUgWWVhciAyMDA1Ci0gSW50ZXJuZXQg
+UHJvZmVzc2lvbmVsbCAiRW1wZmVobHVuZyBkZXIgUmVkYWt0aW9uIiAtIE5vdmVtYmVyIDIwMDUK
+Cgo=
