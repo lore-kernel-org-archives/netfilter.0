@@ -1,10 +1,15 @@
-From: Alexandre Rouillac <alexandre.rouillac@gmail.com>
-Subject: iptables -A INPUT -j LOG does not log anything
-Date: Sat, 01 Apr 2006 10:44:59 +0200
-Message-ID: <442E3D8B.9060804@gmail.com>
+From: "Carlos Pastorino" <carlos.pastorino@gmail.com>
+Subject: Re: It seems I've found why conntrack blocks some packets
+Date: Sat, 1 Apr 2006 17:46:12 -0300
+Message-ID: <cc4fcc140604011246u55577b8cqd0c7992f1208ab6@mail.gmail.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE582901674BC@pxtbenexd01.pxt.primeexalia.com>
+	<cc4fcc140603300601j169864eexddc8fe3dd06c1a24@mail.gmail.com>
+	<442D2C8F.1020505@SCampbell.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <442D2C8F.1020505@SCampbell.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,39 +20,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Steven M Campbell <Netfilter@scampbell.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
+Hi Steven,
 
-I set my iptables with policy "-P INPUT DROP" and my last line of INPUT 
-chains to "-A INPUT -j LOG".
+> Unfortunately, you've needed to obscure the actual ip address (I understa=
+nd) but I can't match the 'customerip' and 'webserverip' to the ${variables=
+} above because I don't know the actual values for any of them.
 
-So everything packets not matching my INPUT rules will be LOG and DROP.
+Well, the customerip is from some unknown Internet user. So it's an
+external IP, and its connection comes in via $INET_IFACE.
 
-My problem is that iptables does not log anything to my syslog file.
+The webserverip is in my DMZ, so it matches $DMZ_RANGE or $DMZ_WEBSERVER.
 
-I checked the syslogd configuration (debian default):
+> Try to walk through the rules in your forward chain using the ip addresse=
+s you've captured and identify the rule you believe should allow these ack =
+packets to go out.
 
-*.*;auth,authpriv.none          -/var/log/syslog
+Well, it's actually the ACK packets that should come in, and the rule
+that must match them is the ESTABLISHED,RELATED rule. And it actually
+does match for more than 3,000 connections a day. But, for 200 or so
+of them, this odd behavior occurs.
 
-kern.*                          -/var/log/kern.log
+Your next e-mail may have shed some light. I'll comment on it.
 
-*.=info;*.=notice;*.=warn;\
-         auth,authpriv.none;\
-         cron,daemon.none;\
-         mail,news.none          -/var/log/messages
-
-
-I checked counters of INPUT chains :
-20       3   144 LOG        all  --  *      *       0.0.0.0/0 
-  0.0.0.0/0           LOG flags 0 level 4
-
-But nothing on my logfiles (syslog, messages, kern.log).
-
-Does someone can help ?
-
-Best Regards,
-Alexandre
-
+Regards.
 
