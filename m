@@ -1,12 +1,12 @@
-From: sven@hin.de
-Subject: Re: Update Iptables in order to use String-Match
-Date: Sun, 02 Apr 2006 23:41:24 +0200
-Message-ID: <44304504.7010808@hin.de>
-References: <001701c65693$58272720$0101000a@sterenborg.info>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Update Iptables in order to use String-Match
+Date: Mon, 3 Apr 2006 00:31:31 +0200
+Message-ID: <001b01c656a5$314bc680$0101000a@sterenborg.info>
+References: <44304504.7010808@hin.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001701c65693$58272720$0101000a@sterenborg.info>
+In-Reply-To: <44304504.7010808@hin.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,21 +20,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Rob Sterenborg schrieb:
-> So your iptables isn't installed or installed in a different path than
-> the original.
-hmm bad...how do I correct this?
+>> So your iptables isn't installed or installed in a different path
+>> than the original.
+> hmm bad...how do I correct this?
 
-> So that's where things go wrong : if it doesn't show up, you couldn't
-> have patched the kernel for it.
-> 
-> The string match is in the Extra repository. Did you run POM with
-> "./runme extra" ?
-> http://www.netfilter.org/projects/patch-o-matic/pom-extra.html#pom-extra
-> -string
-hmm no, I will do this now...
+>> iptables: match `string' v1.3.3 (I'm v1.3.5)
 
- > I think not completely.
-> What does "iptables -V" say ? (Mine says : "iptables v1.3.5-2006xxxx")
-iptables v1.3.5
+The last part between the brackets, I suppose iptables wrote it ? (I
+think I got confused there.)
+If this is true, you have the string match from 1.3.3 installed (if you
+already had it, why build a new kernel/iptables ?) and are using
+iptables 1.3.5. (That means you have iptables-1.3.5 installed but didn't
+install string match 1.3.5 which would be true, reading below.)
+
+>> The string match is in the Extra repository. Did you run POM with
+>> "./runme extra" ? 
+>
+> hmm no, I will do this now...
+
+I think that will solve your problem.
+(Remember to also recompile iptables..)
+
+
+Gr,
+Rob
+
 
