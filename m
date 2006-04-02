@@ -1,14 +1,13 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: It seems I've found why conntrack blocks some packets
-Date: Sat, 01 Apr 2006 23:08:51 -0500
-Message-ID: <442F4E53.9060501@SCampbell.net>
-References: <57F9959B46E0FA4D8BA88AEDFBE582901674BC@pxtbenexd01.pxt.primeexalia.com>	<cc4fcc140603300601j169864eexddc8fe3dd06c1a24@mail.gmail.com>	<442D2C8F.1020505@SCampbell.net>
-	<442D320E.7070301@SCampbell.net>
-	<cc4fcc140604011259m3ee3a19coa5aac5a34ba3f66e@mail.gmail.com>
+From: "Kashif Ali Bukhari" <kbukhari@gmail.com>
+Subject: Re: Real ip's behind Firewall
+Date: Sun, 2 Apr 2006 18:28:30 +0500
+Message-ID: <a3f524e0604020628g2a2290a4r5922a63f2bc2ef11@mail.gmail.com>
+References: <3da957060603300530o74205fe9g2067b6c61152da5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <cc4fcc140604011259m3ee3a19coa5aac5a34ba3f66e@mail.gmail.com>
+In-Reply-To: <3da957060603300530o74205fe9g2067b6c61152da5@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Stephan Higuti <higuti.sam@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Carlos Pastorino wrote:
-> Now, commenting on this message: I actually didn't know that the
-> conntrack table had a limit. Learning something every day. I will
-> check its value on Monday, during peak time.
+you can use bridging on Your firewall it will also known as transparent fir=
+ewall
 
-A related thought to this, I wonder how many connections are not being closed nicely and then have to hang around in the conntrack table. If you find that you are approaching the limits then you might want to look into the various connection tracking timings.
+On 3/30/06, Stephan Higuti <higuti.sam@gmail.com> wrote:
+> Hello guys.
+> Let me explain my situation:
+> I have a Internet Connection coming in a switch , In this switch , i
+> have my "Firewall" and some other serevrs that uses Real Ip's, so ,
+> the firewall dont protect the other servers , cause the servers dont
+> are behind it.
+> I need to change this , making a Real Firewall , in the front of the serv=
+ers.
+> I want to know:
+> Can i put some servers using real ip's behind my firewall using iptables?
+> If yes, how can i make this?
+>
+> Sorry for my bad english!
+>
+> Thank'z
+>
+> Cheers
+>
+> Stephan
+>
+>
 
 
-> Another thought: if the ACKs that are being blocked are for some
-> reason malformed, wouldn't they be blocked as well by the last rule?
-
-The last rule is a log-only rule:
-
-	$IPTABLES -A FORWARD -j LOG --log-prefix "FORWARD blocked: "
-
-It's the one generating the log messages we see, therefore we are actually falling off the table and taking the default policy which is 'DROP'  ($IPTABLES -P FORWARD DROP)
-
-Also, there really isn't that much to the syn-ack packets, kinda hard to malform them too much. 
-
-
-> 
->> One other thought to this, if I were to presume the ${variables} and ...ip's then I would presume that the RELATED rules should allow these ack's to go through.  The only reason I know of for them not do (again, assuming all the addressing is really ok) would be that the conntrack table has filled up.
->>
->> To see the maximum connnections that can be tracked:
->>
->> # cat /proc/sys/net/ipv4/ip_conntrack_max
->> 32760
->>
->> To see how many you are using at a given moment
->>
->> # wc  -l /proc/net/ip_conntrack
->> 16 /proc/net/ip_conntrack
->>
->>
->> This from my house and there really isn't all that much going on, I would expect far larger counts, you may need to up ip_conntrack_max.  This really out in the SWAG arena because I can't see the details of your installation.
->>
->>
-> 
-
+--
+Syed Kashif Ali Bukhari
++92-300-4295604
+Network Engineer
+Beaconhouse IT Services, Lahore Pakistan
 
