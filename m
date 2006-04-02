@@ -1,12 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Update Iptables in order to use String-Match
-Date: Sun, 2 Apr 2006 19:12:45 +0200
-Message-ID: <001501c65678$a8c561d0$0101000a@sterenborg.info>
-References: <442FEF23.5040400@hin.de>
+From: sven@hin.de
+Subject: Re: Update Iptables in order to use String-Match
+Date: Sun, 02 Apr 2006 20:07:34 +0200
+Message-ID: <443012E6.3050204@hin.de>
+References: <001501c65678$a8c561d0$0101000a@sterenborg.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <442FEF23.5040400@hin.de>
+In-Reply-To: <001501c65678$a8c561d0$0101000a@sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org
 
-> Hi List!
+Rob Sterenborg schrieb:
+> Dunno.. The crystal ball is a bit cloudy today. Any error messages ?
+oh I 've forgotten:
+
+linux:/usr/local/lib/iptables # iptables -m string -h
+iptables: match `string' v1.3.3 (I'm v1.3.5)
+
+> You have "updated some versions of p-o-m". What do you mean by that ?
+> What have you done exactly ?
 > 
-> I am running Linux 2.4.32 and an older version of iptables.
-> I'd like to use String-Match. I tried to update with some verions of
-> p-o-m. Nothing helped. I also compiled iptables 1.3.5. successfully.
-> 
-> What went wrong?
+> Have you :
+> - untarred the kernel,
+> - untarred POM,
+> - untarred iptables,
+all yes
 
-Dunno.. The crystal ball is a bit cloudy today. Any error messages ?
+> - patched both the kernel and iptables with POM,
+yes, but don't add string-match
 
-You have "updated some versions of p-o-m". What do you mean by that ?
-What have you done exactly ?
+> - compiled and installed the kernel and modules,
+yes, but no string-match modul seen in kernel menuconfig
 
-Have you :
-- untarred the kernel,
-- untarred POM,
-- untarred iptables,
-- patched both the kernel and iptables with POM,
-- compiled and installed the kernel and modules,
-- compiled and installed iptables ?
+> - compiled and installed iptables ?
+yes
 
-
-Gr,
-Rob
 
 
