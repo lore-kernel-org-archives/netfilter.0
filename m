@@ -1,12 +1,12 @@
-From: Clist <clist@uah.es>
-Subject: ipset command ipporthash anormal behavior
-Date: Tue, 4 Apr 2006 14:46:00 +0200
-Message-ID: <200604041446.01536.clist@uah.es>
-Reply-To: clist@uah.es
+From: Alexandre Rouillac <alexandre.rouillac@gmail.com>
+Subject: Re: iptables -A INPUT -j LOG does not log anything
+Date: Tue, 04 Apr 2006 16:02:06 +0200
+Message-ID: <44327C5E.4050800@gmail.com>
+References: <442E3D8B.9060804@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <442E3D8B.9060804@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +17,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi 
-I have ipsets 2.2.8 
+dmesg command give the DROPed packet.
 
-All commands using iphash run fine but, all comands from other sets return 
-error, (ipporthas, nethash etc..) 
-Example:
+Someone can help ?
 
-The set clients does not exist, so it is ok to create one,
+Thanks for help.
 
-Shell Command:
+Alexandre Rouillac wrote:
+> Hi all,
+> 
+> I set my iptables with policy "-P INPUT DROP" and my last line of INPUT 
+> chains to "-A INPUT -j LOG".
+> 
+> So everything packets not matching my INPUT rules will be LOG and DROP.
+> 
+> My problem is that iptables does not log anything to my syslog file.
+> 
+> I checked the syslogd configuration (debian default):
+> 
+> *.*;auth,authpriv.none          -/var/log/syslog
+> 
+> kern.*                          -/var/log/kern.log
+> 
+> *.=info;*.=notice;*.=warn;\
+>         auth,authpriv.none;\
+>         cron,daemon.none;\
+>         mail,news.none          -/var/log/messages
+> 
+> 
+> I checked counters of INPUT chains :
+> 20       3   144 LOG        all  --  *      *       0.0.0.0/0 
+>  0.0.0.0/0           LOG flags 0 level 4
+> 
+> But nothing on my logfiles (syslog, messages, kern.log).
+> 
+> Does someone can help ?
+> 
+> Best Regards,
+> Alexandre
+> 
+> 
+> 
 
-ipset -N clients ipporthash --from 192.168.153.206 --to 192.168.153.207 
---hashsize 1024 --probes 4 --resize 50 || echo "failure .."
-
-it prints :
-
-"failure .."
-
-But the set got created!!. 
-
-This is confusing and make my script run bad, if the commnad ran sucessfully, 
-
-Why it returns error code !=0 to the OS??
--- 
----------------------------------------------
-Clister UAH
----------------------------------------------
 
