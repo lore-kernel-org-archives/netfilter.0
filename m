@@ -1,12 +1,12 @@
-From: Alexander Samad <alex@samad.com.au>
-Subject: Multi default gateway and 2.4.30
-Date: Tue, 4 Apr 2006 10:24:01 +1000
-Message-ID: <20060404002401.GE7733@hufpuf.lan1.hme1.samad.com.au>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Update Iptables in order to use String-Match
+Date: Tue, 4 Apr 2006 07:52:13 +0200
+Message-ID: <000e01c657ab$ed115cc0$0101000a@sterenborg.info>
+References: <44311E2F.20907@hin.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5oH/S/bF6lOfqCQb"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <44311E2F.20907@hin.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,53 +17,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+>> The last part between the brackets, I suppose iptables wrote it ? (I
+>> think I got confused there.) If this is true, you have the string
+>> match from 1.3.3 installed (if you already had it, why build a new
+>> kernel/iptables ?) and are using iptables 1.3.5. (That means you
+>> have iptables-1.3.5 installed but didn't install string match 1.3.5
+>> which would be true, reading below.) 
+>> 
+>>>> The string match is in the Extra repository. Did you run POM with
+>>>> "./runme extra" ?
+>>> hmm no, I will do this now...
+>> 
+>> I think that will solve your problem.
+>> (Remember to also recompile iptables..)
+> 
+> The last version of POM does not content String-match!
+> I found it in a version of 2004, is that right?
 
---5oH/S/bF6lOfqCQb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi
-
-I have just moved my firewall from a 2.6 debian machine to a 2.4.30
-openwrt (linksys wrt54gs) box.
-
-I orginially had this working with 2 isp, 1 cable 1 adsl and dyndns.
-
-Now when i have moved to 2.4.30 I am having problems.  Everything else
-is working fine except when I DNAT packets from the firewall to an
-internal address, ie my web browser is inside so I DNAT from the
-external IP  to the internal web server.
-
-now I am getting time outs, upon investigation what is happening is that
-packets are coming in, getting DNAT'ed, the web server is returning
-them, they get un DNAT, but a new call to the routing table is made and
-it seems to bypass the ip rules rules I have, all traffic that
-terminates on the external IP is okay and doesn't suffer from the
-problem.
-
-I remember reading about patches for the iproute and the kernel but I
-haven't kept up to date with those since I started using 2.6
-
-Am i missing a patch ??
-
-Thanks
+Hm. I never used it so I never noticed ; it indeed appears to be dropped
+or something.
+If you really need it (we don't know what you actually want to do, so
+maybe there's another/better way), maybe you can use an old POM for just
+the string match, and a recent POM for the rest.. But I'm not sure if
+that's such a good idea or even if that will break something : it's up
+to you.
 
 
+Gr,
+Rob
 
---5oH/S/bF6lOfqCQb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFEMbyhkZz88chpJ2MRAtLAAKCH2Mu8dpRYTplpv11rEfSazx9uoQCgxWtc
-2I+L7YgAqdROVRdwPMuEpfU=
-=jKCX
------END PGP SIGNATURE-----
-
---5oH/S/bF6lOfqCQb--
 
