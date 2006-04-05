@@ -1,11 +1,10 @@
-From: "Randy Grimshaw" <rgrimsha@syr.edu>
+From: Casey Scott <casey@phantombsd.org>
 Subject: Re: Throttling NAT interface
-Date: Wed, 05 Apr 2006 13:27:48 -0400
-Message-ID: <s433c5f2.011@gwia201.syr.edu>
+Date: Wed, 5 Apr 2006 10:35:26 -0700 (PDT)
+Message-ID: <6440356.271144258526830.JavaMail.root@tomcat.phantombsd.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,15 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, casey@phantombsd.org
+To: Randy Grimshaw <rgrimsha@syr.edu>
+Cc: netfilter@lists.netfilter.org
 
-Our throttle is really in the other direction but the idea may work for =
-you.
-iptables [traffic pattern spec] -m limit --limit 40/second --limit-burst =
-60 -j LEVEL2
-LEVEL2 is a user defined chain that specifies other restrictions or in =
-your case NAT translations. The point is that you can match the traffic =
-patterns that you need before applying the limit match.
+Thanks for the response. Will using iptables in that 
+manner cause the firewall to just drop the packets that 
+arrived after the limit has been reached? I don't want 
+to have to drop packets that have already used up 
+bandwidth getting to the machine, and making matters 
+worse by requiring the packets to be sent again. 
+
+Thanks,
+Casey
+----- Original Message -----
+From: Randy Grimshaw <rgrimsha@syr.edu>
+To: netfilter@lists.netfilter.org, casey@phantombsd.org
+Sent: Wednesday, April 5, 2006 10:27:48 AM GMT-0800
+Subject: Re: Throttling NAT interface
+
+Our throttle is really in the other direction but the 
+idea may work for you.
+iptables [traffic pattern spec] -m limit --limit 
+40/second --limit-burst 60 -j LEVEL2
+LEVEL2 is a user defined chain that specifies other 
+restrictions or in your case NAT translations. 
+The point is that you can match the traffic patterns 
+that you need before applying the limit match.
 hope this is helpful.
 <><Randy
 
@@ -64,6 +80,7 @@ and eth2 are in the same network?  eth0 is not throttled, which
 
 TIA,
 Casey
+
 
 
 
