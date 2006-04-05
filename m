@@ -1,10 +1,11 @@
-From: Casey Scott <casey@phantombsd.org>
+From: "Randy Grimshaw" <rgrimsha@syr.edu>
 Subject: Re: Throttling NAT interface
-Date: Wed, 5 Apr 2006 10:35:26 -0700 (PDT)
-Message-ID: <6440356.271144258526830.JavaMail.root@tomcat.phantombsd.org>
+Date: Wed, 05 Apr 2006 14:11:16 -0400
+Message-ID: <s433d021.098@gwia201.syr.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,31 +17,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Randy Grimshaw <rgrimsha@syr.edu>
+To: casey@phantombsd.org
 Cc: netfilter@lists.netfilter.org
 
-Thanks for the response. Will using iptables in that 
-manner cause the firewall to just drop the packets that 
-arrived after the limit has been reached? I don't want 
-to have to drop packets that have already used up 
-bandwidth getting to the machine, and making matters 
-worse by requiring the packets to be sent again. 
+I hope this isn't evasive, but I am still learning this stuff too.
+
+The packets that don't match - i.e. exceed the threshold - will continue =
+down the chain.
+You can do a lot of different things with those packets as you need. You =
+can probably match the behavior of tc if that is what you want.
+
+<><Randy
+
+
+<><Randall Grimshaw
+Room 203 Machinery Hall
+Syracuse University
+Syracuse, NY   13244
+315-443-5779
+rgrimsha@syr.edu
+
+>>> Casey Scott <casey@phantombsd.org> 4/5/2006 1:35 PM >>>
+Thanks for the response. Will using iptables in that=20
+manner cause the firewall to just drop the packets that=20
+arrived after the limit has been reached? I don't want=20
+to have to drop packets that have already used up=20
+bandwidth getting to the machine, and making matters=20
+worse by requiring the packets to be sent again.=20
 
 Thanks,
 Casey
 ----- Original Message -----
 From: Randy Grimshaw <rgrimsha@syr.edu>
-To: netfilter@lists.netfilter.org, casey@phantombsd.org
+To: netfilter@lists.netfilter.org, casey@phantombsd.org=20
 Sent: Wednesday, April 5, 2006 10:27:48 AM GMT-0800
 Subject: Re: Throttling NAT interface
 
-Our throttle is really in the other direction but the 
+Our throttle is really in the other direction but the=20
 idea may work for you.
-iptables [traffic pattern spec] -m limit --limit 
+iptables [traffic pattern spec] -m limit --limit=20
 40/second --limit-burst 60 -j LEVEL2
-LEVEL2 is a user defined chain that specifies other 
-restrictions or in your case NAT translations. 
-The point is that you can match the traffic patterns 
+LEVEL2 is a user defined chain that specifies other=20
+restrictions or in your case NAT translations.=20
+The point is that you can match the traffic patterns=20
 that you need before applying the limit match.
 hope this is helpful.
 <><Randy
@@ -51,7 +70,7 @@ Room 203 Machinery Hall
 Syracuse University
 Syracuse, NY   13244
 315-443-5779
-rgrimsha@syr.edu
+rgrimsha@syr.edu=20
 
 >>> Casey Scott <casey@phantombsd.org> 4/5/2006 12:44 PM >>>
 The gist of what I need to do is restrict the rate of
@@ -80,6 +99,7 @@ and eth2 are in the same network?  eth0 is not throttled, which
 
 TIA,
 Casey
+
 
 
 
