@@ -1,20 +1,10 @@
-From: Frank Abel Cancio Bello <frankabel@tesla.cujae.edu.cu>
-Subject: About doc of libnetfilter_queue
-Date: Wed, 5 Apr 2006 21:38:55 -0400
-Message-ID: <200604052138.57149.frankabel@tesla.cujae.edu.cu>
+From: Mike Auty <mike.auty@gmail.com>
+Subject: libnetfilter_queue conditions required to rewrite packets...
+Date: Thu, 06 Apr 2006 04:25:27 +0100
+Message-ID: <44348A27.60602@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=nowsp; d=tesla.cujae.edu.cu;
-	s=MDaemon; t=1144287551; x=1144892351;
-	i=frankabel@tesla.cujae.edu.cu; q=dns; h=DomainKey-Signature:
-	Received:From:Organization:To:Subject:Date:User-Agent:
-	MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-Disposition:Message-Id; b=rS5jH2joLTnwbGiFISUUM2ul8MpEEYu
-	jtaeDHbRFQi1Ie/Y0O8lEPPFpDHx9CB6vKZ/E40FSJV7t/3VS85aCHYclj6CwzuX
-	X/FSK2S1rgUok8u2uYlrsQFMe6jfvO3OxwWSDTYeg1F7HjvWYoAuYwVlcBLA0NS1
-	QCQXYqGUs3EA=
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -25,24 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all!
-
-The question is: where I can read libnetfilter_queue documentation?
-
-I have see on Internet some references to "Brad Fisher's documentation of=20
-libnetfilter_queue", where are this doc?
-
-Salute
-Frank Abel
-
-
-__________________________________________
-
-XIII Convenci=F3n Cient=EDfica de Ingenier=EDa y Arquitectura
-28/noviembre al 1/diciembre de 2006
-Cujae, Ciudad de la Habana, Cuba
-http://www.cujae.edu.cu/eventos/convencion
+Hi,
+     I appologize if this is a bit of a daft question, but looking 
+through all the documentation I've managed to locate it's never made 
+explicit, and the list archives are rather difficult to use when looking 
+for specific information.
+     I'm trying to make use of the libnetfilter_queue module to 
+intelligently mangle certain packets on their way through certain points 
+in iptables.  I think I've got all the code working correctly, and I 
+believe I'm modifying the packet and using a pointer to the modified 
+packet in the nfq_set_verdict call with the new packet length, however 
+from all the tests I've run, the original packet is continuing on, and 
+the new payload seems to be ignored.  Are there special conditions under 
+which packet modification will work, or should it work under all 
+circumstances?
+     I've read several things which might help narrow the problem.  In 
+one example (for libipq as it turns out), they have a test so that 
+rewriting only happens if the packet's come in from hook 0 (which is 
+PREROUTING).  Does this mean that packet modification can only be done 
+in certain chains (for example, PREROUTING and OUTPUT only)?  Must the 
+NFQUEUE target be in the mangle table rather than the filter table to 
+perform payload rewriting?  I've tried both and I still seem not to be 
+sending out the modified data.  I'd also read somewhere that the kernel 
+might silently ignore packets if their checksums had not been calculated 
+correctly.  Does this mean invalid packets can't be sent using this 
+method?  Would nfq_set_verdict fail if that were the case?  Finally if 
+the packet contents can be modified no matter where the hook is, does 
+anyone have any ideas how I could further debug the problem?  Last thing 
+I know is I'm passing the right data to the nfq_set_verdict call and I'm 
+getting back a positive response, but the data received always appears 
+to be the original data sent.  Is there someway to track what's going on 
+further inside the netlink?
+     Any light anyone can shed on this would be greatly appreciated. 
+Thanks very much...
+     Mike  5:)
 
