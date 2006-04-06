@@ -1,12 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset command ipporthash anormal behavior
-Date: Thu, 6 Apr 2006 11:54:00 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0604061146340.17700@blackhole.kfki.hu>
-References: <200604041446.01536.clist@uah.es>
+From: Eddy Kvetny <eddy.linux@yahoo.com>
+Subject: Huge impact of the conntrack mechanism on routing performance (30%
+	with a single conntrack entry)
+Date: Thu, 6 Apr 2006 03:27:36 -0700 (PDT)
+Message-ID: <20060406102736.72495.qmail@web38411.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="110391808-587513186-1144317240=:17700"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200604041446.01536.clist@uah.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,62 +16,94 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Clist <clist@uah.es>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+Netfilter gurus,
 
---110391808-587513186-1144317240=:17700
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Could someone shed light on pretty strange problem of
+a huge impact of the conntrack mechanism on routing
+performance ?
 
-Hi,
+The configuration is as follows: 
+- the ARM9E-based (500Mhz) board with Linux 2.6.12
+- 2 GbE interfaces connected to the traffic generator
+tool (Smartbit)
+- Smartbit injects UDP packets to the device via 1st
+network interface, then the devices routes these
+packets back to Smartbit via the 2nd interface
 
-On Tue, 4 Apr 2006, Clist wrote:
+When only plain routing without any netfilter stuff
+(conntrack, NAT, filter modules) is done, 40K packets
+per second are processed and returned to Smartbit
+giving about 485Mbps througput (40000 packets x 8 bit
+x 1518 byte/packet)
+ 
+Right after "insmod ip_conntrack.ko" the throughput
+drastically falls to 28 kpps (-12 kpps or -30% !!!). I
+know that "conntrack" mechanism has some overhead but
+30% is still seems to be too much, especially when in
+my case there is only 1 connection in the conntrack
+table and as far as I know most of the  "conntrack"
+processing is done for the 1st packet of each
+connection only. Then this connection is put in the
+"conntrack" hash table and it is supposed to be very
+quickly found for successive packets belonging to the
+same connection
+ After "insmod iptable_filter.ko" throughput is 25
+kpps (-3 kpps) and after "insmod iptable_nat.ko" (NAT
+mechanism) throughput is 23 kpps (-2 kpps). Insertion
+of additional modules (like ipt_state.ko,
+ip_conntrack_ftp.ko etc.) and configuring rules for
+firewall/NAT (not talking about hundreds or more
+rules) has no significant impact on throughput
+So, I am wondering whether there is some logic
+explanation for this huge impact of the conntrack
+mechanism on routing performance. 
 
-> ipset -N clients ipporthash --from 192.168.153.206 --to 192.168.153.207
-> --hashsize 1024 --probes 4 --resize 50 || echo "failure .."
->
-> it prints :
->
-> "failure .."
->
-> But the set got created!!.
->
-> This is confusing and make my script run bad, if the commnad ran sucessfully,
->
-> Why it returns error code !=0 to the OS??
+I would appreciate any information in this regard
+Thanks in advance
 
-That's a small bug: the set specific parse function returns 1 when it
-could parse the command line successfully and this return value is not
-erased later, but used as the final return value of the ipset command.
+Regards, Eddy
 
-There'll be a new release somewhere in this month: until then you can use
-the attached patch.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
---110391808-587513186-1144317240=:17700
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="ipset-create.patch"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.58.0604061154000.17700@blackhole.kfki.hu>
-Content-Description: ipset-create.patch
-Content-Disposition: attachment; filename="ipset-create.patch"
+P.S. I found a couple of similar observations in
+Internet
 
-ZGlmZiAtdXJOIGlwc2V0LTIuMi44L2lwc2V0LmMgaXBzZXQtMi4yLjkvaXBz
-ZXQuYw0KLS0tIGlwc2V0LTIuMi44L2lwc2V0LmMJMjAwNS0xMS0yNCAxMDow
-ODo1Ny4wMDAwMDAwMDAgKzAxMDANCisrKyBpcHNldC0yLjIuOS9pcHNldC5j
-CTIwMDYtMDQtMDYgMTE6NTE6MjguMDAwMDAwMDAwICswMjAwDQpAQCAtMjA5
-OSw3ICsyMDk5LDggQEANCiAJCQkJCWV4aXRfZXJyb3IoUEFSQU1FVEVSX1BS
-T0JMRU0sDQogCQkJCQkJICAgIlVua25vd24gYXJnIGAlcyciLA0KIAkJCQkJ
-CSAgIGFyZ3Zbb3B0aW5kIC0gMV0pOw0KLQ0KKwkJCQkNCisJCQkJcmVzID0g
-MDsNCiAJCQl9DQogDQogCQkJRFAoIm5leHQgYXJnIik7DQo=
+From http://lwn.net/Articles/103858/
+.......
 
---110391808-587513186-1144317240=:17700--
+13.3. Netfilter benchmarking  by HW 
+.....
+Lose 30% of performance (850kpps to 500kpps) 
+... 
+Initial rate (forwarding only) 800kpps 
+insmod ip_conntrack -200 kpps 
+load IPtable (even empty) 25% 
+oprofile (non-halted) everything in ip_tables (3%) 
+static compiling makes 5% difference 
+full test (nat, mangle, filter, ip_conntrack): down to
+350kpps 
+....................
+ 
+================================================
+ 
+From http://lkml.org/lkml/2004/9/8/235
+................................................. 
+I'm sure others here have far better examples, but one
+post to the  netfilter-devel list last December
+provided an example of a firewall that could process
+580kpps with netfilter/conntrack turned off.  Granted,
+the post noted that adding netfilter brought that down
+to 450kpps, and adding conntrack on top of that
+brought it down to 295kpps,but all three of those
+numbers are well over the claimed 100kpps.
+..................................................
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
