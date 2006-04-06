@@ -1,18 +1,10 @@
-From: "Carlos Pastorino" <carlos.pastorino@gmail.com>
-Subject: Re: It seems I've found why conntrack blocks some packets
-Date: Thu, 6 Apr 2006 15:33:01 -0300
-Message-ID: <cc4fcc140604061133o7a247eebg74d807587e3e17e4@mail.gmail.com>
-References: <57F9959B46E0FA4D8BA88AEDFBE582901674BC@pxtbenexd01.pxt.primeexalia.com>
-	<cc4fcc140603300601j169864eexddc8fe3dd06c1a24@mail.gmail.com>
-	<442D2C8F.1020505@SCampbell.net> <442D320E.7070301@SCampbell.net>
-	<cc4fcc140604011259m3ee3a19coa5aac5a34ba3f66e@mail.gmail.com>
-	<442F4E53.9060501@SCampbell.net>
-	<cc4fcc140604040536l21166fd3j489ef6b1619c11b@mail.gmail.com>
-	<4433DA5A.8050908@SCampbell.net>
+From: "Matthew Clark" <mjclark1@gmail.com>
+Subject: Routing directed broadcast
+Date: Fri, 7 Apr 2006 08:32:57 +1000
+Message-ID: <780c228e0604061532va42dac9qcba87516672ae045@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4433DA5A.8050908@SCampbell.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -25,24 +17,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Steven M Campbell <Netfilter@scampbell.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Well, disabling it didn't work. I'll enable it back.
+Hi List,
+I am wondering if there is any way to route directed broadcast packets
+through a linux box using iptables.
 
-I'm sorta giving up on this. Thanks a lot for your attention and help.
+So far I have tried (through a friends suggestion) to mark the packet
+in the mangle table of the PREROUTING chain, change the packet to be a
+packet that will route and then change it back to a broadcast on the
+OUTPUT chain.
+i.e.
+Broadcasting to 10.200.172.255
+Packets are coming in to eth0 (10.14.172.250/24)
+Packets need to go out eth1 (10.200.172.250/24)
+Have tried
+iptables -t mangle -A PREROUTING -i eth0 -d 10.200.172.255  -j MARK
+--set-mark 0x10
+iptables -t nat -A PREROUTING -i eth0 -d 10.200.172.255 -j DNAT
+--to-dest 10.200.172.254
+iptables -v -t nat -A OUTPUT -d 10.200.172.254 --match mark --mark
+0x10 -j DNAT --to-dest 10.200.172.255
 
-Regards.
+But the problem I find is that whilst matching in the mangle table
+Chain PREROUTING (policy ACCEPT 246K packets, 35M bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+79687   19M MARK       all  --  eth0   *       0.0.0.0/0
+10.200.172.255      MARK set 0x10
 
-On 4/5/06, Steven M Campbell <Netfilter@scampbell.net> wrote:
-> Carlos Pastorino wrote:
->
-> >
-> > By the way, do you keep rp_filter enabled or disabled?
-> >
->
-> enabled but I'm originally a network geek by trade so my network is very =
-clean with regards to where subnets are so reverse path filters work for me=
-.
->
+The packets don't make it to the nat table
+Chain PREROUTING (policy ACCEPT 9014 packets, 567K bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+  0     0 DNAT       all  --  eth0   *       0.0.0.0/0
+10.200.172.255      to:10.200.172.254
+
+Why are the packets not making to the nat PREROUTING chain?
+
+Is there a better way of doing this?
+
+Thanks in advance,
+Matt.
+
+Apologies if this email arrived twice, but I received an email saying
+my first post failed because my source email address was not from a
+subscribed member (rectified).
 
