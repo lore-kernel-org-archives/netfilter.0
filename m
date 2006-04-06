@@ -1,13 +1,12 @@
-From: "David Vogt" <beunlovable@gmail.com>
-Subject: Re: libnetfilter_queue conditions required to rewrite packets...
-Date: Thu, 6 Apr 2006 08:30:43 +0200
-Message-ID: <859616420604052330gc251080q95738ef1d112b465@mail.gmail.com>
-References: <44348A27.60602@gmail.com>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: About doc of libnetfilter_queue
+Date: Thu, 06 Apr 2006 08:51:30 +0200
+Message-ID: <4434BA72.8080300@inl.fr>
+References: <200604052138.57149.frankabel@tesla.cujae.edu.cu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44348A27.60602@gmail.com>
-Content-Disposition: inline
+In-Reply-To: <200604052138.57149.frankabel@tesla.cujae.edu.cu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,16 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Mike Auty <mike.auty@gmail.com>
+To: Frank Abel Cancio Bello <frankabel@tesla.cujae.edu.cu>
 Cc: netfilter@lists.netfilter.org
 
-2006/4/6, Mike Auty <mike.auty@gmail.com>:
-> from all the tests I've run, the original packet is continuing on, and
-> the new payload seems to be ignored.
-Same here, just ported an libipq application (which was working fine)
-to libnetfilter_queue and encountered the same problem. I will post to
-the list, once I found out anything. Any advice would be highly
-appreciated.
+Frank Abel Cancio Bello wrote:
+> Hi all!
+> 
+> The question is: where I can read libnetfilter_queue documentation?
+> 
+> I have see on Internet some references to "Brad Fisher's documentation of 
+> libnetfilter_queue", where are this doc?
 
-David
+Maybe there :
+http://archives.free.net.ph/message/20060208.171235.186dce08.en.html
+
+BR,
+--
+Eric Leblond
 
