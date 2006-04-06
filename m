@@ -1,10 +1,18 @@
-From: =?iso-8859-1?q?S=E9rgio_Gomes?= <sergiomdgomes@gmail.com>
-Subject: Adding a routing header to IPv6 TCP packets
-Date: Thu, 6 Apr 2006 14:28:10 +0100
-Message-ID: <200604061428.10350.sergiomdgomes@gmail.com>
+From: "Carlos Pastorino" <carlos.pastorino@gmail.com>
+Subject: Re: It seems I've found why conntrack blocks some packets
+Date: Thu, 6 Apr 2006 15:33:01 -0300
+Message-ID: <cc4fcc140604061133o7a247eebg74d807587e3e17e4@mail.gmail.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE582901674BC@pxtbenexd01.pxt.primeexalia.com>
+	<cc4fcc140603300601j169864eexddc8fe3dd06c1a24@mail.gmail.com>
+	<442D2C8F.1020505@SCampbell.net> <442D320E.7070301@SCampbell.net>
+	<cc4fcc140604011259m3ee3a19coa5aac5a34ba3f66e@mail.gmail.com>
+	<442F4E53.9060501@SCampbell.net>
+	<cc4fcc140604040536l21166fd3j489ef6b1619c11b@mail.gmail.com>
+	<4433DA5A.8050908@SCampbell.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4433DA5A.8050908@SCampbell.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,25 +24,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Steven M Campbell <Netfilter@scampbell.net>
+Cc: netfilter@lists.netfilter.org
 
-Hello everyone,
+Well, disabling it didn't work. I'll enable it back.
 
-I have a machine running kernel 2.6, with an Apache webserver. It's connect=
-ed=20
-to a small test network that only uses IPv6. Now, what I'd like to do is ad=
-d=20
-the optional IPv6 Routing Header to all TCP packets being sent from Apache,=
-=20
-because I need to set up one compulsory hop the route must have.
+I'm sorta giving up on this. Thanks a lot for your attention and help.
 
-Is this at all possible with netfilter/iptables, and if so, how do I do it?=
-=20
-The alternative, hacking the Apache source, is a bit intimidating...
+Regards.
 
-
-Thanks,
-
-S=E9rgio Gomes
+On 4/5/06, Steven M Campbell <Netfilter@scampbell.net> wrote:
+> Carlos Pastorino wrote:
+>
+> >
+> > By the way, do you keep rp_filter enabled or disabled?
+> >
+>
+> enabled but I'm originally a network geek by trade so my network is very =
+clean with regards to where subnets are so reverse path filters work for me=
+.
+>
 
