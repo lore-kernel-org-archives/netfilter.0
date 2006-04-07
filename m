@@ -1,14 +1,10 @@
-From: "David Vogt" <beunlovable@gmail.com>
-Subject: Re: libnetfilter_queue conditions required to rewrite packets...
-Date: Fri, 7 Apr 2006 15:55:41 +0200
-Message-ID: <859616420604070655n35ced2eau5c6968f5d2e3f029@mail.gmail.com>
-References: <44348A27.60602@gmail.com>
-	<859616420604052330gc251080q95738ef1d112b465@mail.gmail.com>
+From: =?iso-8859-1?Q?Bernhard_Wellh=F6fer?= <bernd.wellhoefer@email.de>
+Subject: Routing port 80 to 8080 for one of two IPs
+Date: Fri, 7 Apr 2006 16:39:43 +0200
+Message-ID: <003501c65a51$1c709970$73ffa8c0@gaiagroup.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <859616420604052330gc251080q95738ef1d112b465@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,34 +16,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Mike Auty <mike.auty@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-For testing purposes I simply rewrote the nfq_test.c application in
-libnetfilter_queue/utils, such that the reinjected packet should have
-the ttl field modified.
-1) receive original payload and length with nfq_get_payload
-2) modify payload
-3) call nfq_set_verdict(qh, id, NF_ACCEPT, len, modified_payload)
+Hello,
+ 
+my Linux machine has one physical interface eth0 and additionally one
+logically interface eth0:1 :
+ 
+$ ifconfig -a
+eth0      Link encap:Ethernet  HWaddr 00:50:BA:EE:B4:35
+          inet addr:192.168.255.25  Bcast:192.168.255.255 Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:34819 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:33864 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:5948119 (5.6 MiB)  TX bytes:3104279 (2.9 MiB)
+          Interrupt:10 Base address:0xb400
+ 
+eth0:1    Link encap:Ethernet  HWaddr 00:50:BA:EE:B4:35
+          inet addr:192.168.255.81  Bcast:192.168.255.255 Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          Interrupt:10 Base address:0xb400
+
+ 
+I have a Java program serving as web server that binds itself to port 8080
+for the logically interface eth0:1 - since I do not want to start the Java
+web server as root. Therefore I want to add a right iptables rule to
+redirect port 80 to port 8080 for eth0:1. It is important that port 80 for
+eth0 is not redirected.
+
+What is the correct rule here? I tried
+
+/sbin/iptables -t nat -I PREROUTING -p tcp --dst 192.168.255.81 --dport 80
+-j REDIRECT --to-port 8080
+
+and
+
+/sbin/iptables -t nat -I PREROUTING -p tcp -i eth0:1  --dport 80 -j REDIRECT
+--to-port 8080 (results in a warning)
+
+but without success.
+
+Who can help me here?
+
+Thanks in advance,
+
+Bernd
 
 
-I tried to find a place where things go wrong, but as far as I can
-see, everything looks fine all the way down to the actual sendmsg call
-on the netlink socket (i.e. nfnl_sendiov() in libnfnetlink.c).
-On the "receiver" side I checked nfqnl_recv_verdict(), which is part
-of nfnetlink_queue module
-(linux-2.6.16/net/netfilter/nfnetlink_queue.c). The check
-if (nfqa[NFQA_PAYLOAD-1]) {
-  // call nfqnl_mangle
-}
-fails. However, a raw dump of the skb that nfqnl_recv_verdict()
-operates, reveals that the payload IS there, WITH the modifications
-that have been applied.
-
-I haven't gain enought insight into the *nfqa[] stuff, yet, so any
-help would be appreciated. Maybe I'm looking for a solution in all the
-wrong places. What do I do wrong?
 
 
-David
 
