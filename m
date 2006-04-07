@@ -1,11 +1,11 @@
-From: "Matthew Clark" <mjclark1@gmail.com>
-Subject: Routing directed broadcast
-Date: Thu, 6 Apr 2006 16:44:34 +1000
-Message-ID: <780c228e0604052344u60f9321k790e1313a54e016b@mail.gmail.com>
+From: vasudevan@multitech.co.in
+Subject: please ...Clarify me Regarding "PPTP PASS THRU" with 4 modules 
+ Loaded
+Date: Fri, 7 Apr 2006 10:09:08 +0530 (IST)
+Message-ID: <33434.192.168.51.71.1144384748.squirrel@192.168.10.1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,44 +19,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi List,
-I am wondering if there is any way to route directed broadcast packets
-through a linux box using iptables.
+Hi,
 
-So far I have tried (through a friends suggestion) to mark the packet
-in the mangle table of the PREROUTING chain, change the packet to be a
-packet that will route and then change it back to a broadcast on the
-OUTPUT chain.
-i.e.
-Broadcasting to 10.200.172.255
-Packets are coming in to eth0 (10.14.172.250/24)
-Packets need to go out eth1 (10.200.172.250/24)
-Have tried
-iptables -t mangle -A PREROUTING -i eth0 -d 10.200.172.255  -j MARK
---set-mark 0x10
-iptables -t nat -A PREROUTING -i eth0 -d 10.200.172.255 -j DNAT
---to-dest 10.200.172.254
-iptables -v -t nat -A OUTPUT -d 10.200.172.254 --match mark --mark
-0x10 -j DNAT --to-dest 10.200.172.255
 
-But the problem I find is that whilst matching in the mangle table
-Chain PREROUTING (policy ACCEPT 246K packets, 35M bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-79687   19M MARK       all  --  eth0   *       0.0.0.0/0          =20
-10.200.172.255      MARK set 0x10
+Can you please mention me how are these modules loaded help me in "PPTP
+PASS THROUGH". The modules as stated below.
 
-The packets don't make it to the nat table
-Chain PREROUTING (policy ACCEPT 9014 packets, 567K bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-    0     0 DNAT       all  --  eth0   *       0.0.0.0/0          =20
-10.200.172.255      to:10.200.172.254
+Can you please explain the usage of these modules in Connection tracking
+and NAT support for PPTP.
 
-Why are the packets not making to the nat PREROUTING chain?
-
-Is there a better way of doing this?
+The loaded modules are as follows
+	ip_conntrack_proto_gre
+	ip_conntrack_pptp
+	ip_nat_proto_gre
+	ip_nat_pptp
 
 Thanks in advance,
-Matt.
+Vasudevan N.
+
+
+
+
+
+
+
+
 
