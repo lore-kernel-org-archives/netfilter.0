@@ -1,14 +1,10 @@
-From: Mike Auty <mike.auty@gmail.com>
-Subject: Re: libnetfilter_queue conditions required to rewrite packets...
-Date: Sat, 08 Apr 2006 02:50:00 +0100
-Message-ID: <443716C8.3060409@gmail.com>
-References: <44348A27.60602@gmail.com>	
-	<859616420604052330gc251080q95738ef1d112b465@mail.gmail.com>
-	<859616420604070655n35ced2eau5c6968f5d2e3f029@mail.gmail.com>
+From: vlad f halilow <mlist@ratel.ru>
+Subject: iptables and mac filtering
+Date: Sat, 08 Apr 2006 12:21:21 +0400
+Message-ID: <44377281.60706@ratel.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <859616420604070655n35ced2eau5c6968f5d2e3f029@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,19 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: David Vogt <beunlovable@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Looks as though,
-	The code in the subversion repository's quite different, so I've 
-checked out a copy of that and I'm gonna give it a test when I next get 
-a chance.  It requires >=libnfnetlink-0.0.16, so that's also gonna have 
-to be built from subversion.
-	The changes include incrementing the size of the structure to include 
-the size of the payload, and also the structure holding the payload is 
-defined outside the conditional statement.  These I think, should mean 
-the packet's better formed and hopefully will do the actual mangling...
-	I'm not sure how far away those packages are from becoming releases, 
-but it seems they have some definite enhancements in them...
-	Mike  5:)
+
+Hi there. Please help with strange issuse. I have debian woody with
+2.6.12 kernel + iptables.1.3.3. (unstable) under vmware workstation. I
+try to block connection to my PPPoE server (rp-pppoe) by mac-address of
+client. something like
+
+#iptables -I INPUT -m mac --mac-source blablag -j DROP
+
+. Line inserted showed by iptables -L -v -n but not block any IP-less
+requests from address specified. Ping or any IP protocols blocking
+success, but pppoe discovery, exchange and traffic pass the filter
+wthout any problem with no rule countr increment. How i can fix this
+thing? Or what i to do wrong?
+
+
+
 
