@@ -1,43 +1,41 @@
-From: Dexter <babyangel@skydsl.com.ph>
-Subject: iptables setting problem
-Date: Sun, 09 Apr 2006 13:48:55 +0700
-Message-ID: <4438AE57.6060706@skydsl.com.ph>
+From: Nix <nix@esperi.org.uk>
+Subject: Re: Linux 2.6.17-rc1: /sbin/iptables does not find kernel netfilter
+Date: Sun, 09 Apr 2006 17:00:06 +0100
+Message-ID: <87psjqg2nt.fsf@hades.wkstn.nix>
+References: <Pine.LNX.4.64.0604022037380.3781@g5.osdl.org>
+	<20060408200915.GN1686@vianova.fi> <44388908.6070602@trash.net>
+	<20060409074313.GZ15954@vianova.fi> <20060409144416.GO1686@vianova.fi>
+	<20060409144534.GN29797@vianova.fi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750805AbWDIQAd@vger.kernel.org>
+In-Reply-To: <20060409144534.GN29797@vianova.fi> (Ville Herva's message of "9 Apr 2006 15:47:23 +0100")
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: vherva@vianova.fi
+Cc: Patrick McHardy <kaber@trash.net>, linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org, davem@davemloft.net
 
-Dear Sir,
-I encounter the problem of setting the iptables.
-I manually set eth0 210.21.47.32 netmask 255.255.255.0 gateway 
-210.21.47.1 and eth1 192.168.1.1 netmask 255.255.255.0
-and setting of Lan computer is 192.168.1.2  255.255.255.0  192.168.1.1
-from the computer in Lan I can ping both the address of eth0 and eth1, 
-but I can not ping the default gateway that ISP assigned to me.
-I did the following:
-iptables -A FORWARD -i eth1 -j ACCEPT
-echo 1 > /proc/sys/net/ipv4/ip_forward
+On 9 Apr 2006, Ville Herva yowled:
+> On Sun, Apr 09, 2006 at 05:44:16PM +0300, you [Ville Herva] wrote:
+>> I just realized 
+>> # CONFIG_NETFILTER_XT_MATCH_STATE is not set
+>> should probably be set. I'm building a new kernel now...
+> 
+> Ok, that seems to do it.
+> 
+> Thanks for the help, and sorry for the noise. I hope not too many people hit
+> the same glitch while upgrading...
 
-but didn't work, then I did follow:
-iptables -t nat -A PREROUTING -d $210.21.47.32/24 -i eth0 -j DNAT 
---to-destination 192.168.1.0
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth0 -j SNAT 
---to-source $210.21.47.32
+I cetainly did. A simple `make oldconfig' ends up zapping pretty much
+all the old iptables CONFIG_ options, so you end up with not much of
+iptables or netfilter left.
 
-but still didn't work. something wring with my setting. Thanks.
+I must admit not quite understanding why the xtables stuff is needed:
+I thought that was needed for userspace connection tracking, which
+while it sounds cool isn't something I'm using yet.
 
-Best Regards,
-Dexter Co
-
-
+-- 
+`On a scale of 1-10, X's "brokenness rating" is 1.1, but that's only
+ because bringing Windows into the picture rescaled "brokenness" by
+ a factor of 10.' --- Peter da Silva
