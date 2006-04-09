@@ -1,48 +1,66 @@
-From: Ville Herva <vherva@vianova.fi>
-Subject: Re: Linux 2.6.17-rc1: /sbin/iptables does not find kernel netfilter
-Date: Sun, 9 Apr 2006 20:10:28 +0300
-Message-ID: <20060409171028.GC15954@vianova.fi>
-References: <Pine.LNX.4.64.0604022037380.3781@g5.osdl.org> <20060408200915.GN1686@vianova.fi> <44388908.6070602@trash.net> <20060409074313.GZ15954@vianova.fi> <20060409144416.GO1686@vianova.fi> <20060409144534.GN29797@vianova.fi> <87psjqg2nt.fsf@hades.wkstn.nix> <4439385B.6010908@trash.net> <87hd52g065.fsf@hades.wkstn.nix>
-Reply-To: vherva@vianova.fi
+From: richard lucassen <mailinglists@lucassen.org>
+Subject: Re: NATed packets only enter the default routing table
+Date: Sun, 9 Apr 2006 20:30:58 +0200
+Message-ID: <20060409203058.6e375d70.mailinglists@lucassen.org>
+References: <20060408194058.71fa3e09.mailinglists@lucassen.org>
+	<200604091556.02586.jeroen@elebaut.com>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750797AbWDIRKf@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87hd52g065.fsf@hades.wkstn.nix>
-Sender: linux-kernel-owner@vger.kernel.org
-List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Nix <nix@esperi.org.uk>
-Cc: Patrick McHardy <kaber@trash.net>, linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200604091556.02586.jeroen@elebaut.com>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, Apr 09, 2006 at 05:53:54PM +0100, you [Nix] wrote:
-> On Sun, 09 Apr 2006, Patrick McHardy murmured woefully:
-> >> I cetainly did. A simple `make oldconfig' ends up zapping pretty much
-> >> all the old iptables CONFIG_ options, so you end up with not much of
-> >> iptables or netfilter left.
-> > 
-> > But it does show you all the new options. Admittedly, it would
-> > have been better to automatically select the new options when
-> > needed, but probably not worth changing it now, it has been
-> > like this for two releases I think.
+On Sun, 9 Apr 2006 15:56:02 +0200
+Jeroen Elebaut <jeroen@elebaut.com> wrote:
+
+> i had a similar problem with our setup. The problem is i think that
+> the  routing decision on the linux box is made before the address in
+> the packet is  changed back to 1.2.3.3. So it doesn't use the source
+> policy routing entry. I  solved this by using the connmark module from
+> iptables and then do routing  based on the mark. The following should
+> work in your setup:
 > 
-> Oh, yes, it did, and I thought they were userspace-matching related and
-> left them off. The real problem is that oldconfig doesn't mention when
-> options you *had* enabled disappear.
+> iptables -t mangle -I PREROUTING -m conntrack --ctstate
+> ESTABLISHED,RELATED -j  CONNMARK --restore-mark
+> iptables -t mangle -I PREROUTING -i eth1 -m conntrack --ctstate NEW 
+> -j  CONNMARK --set-mark 1
+> 
+> ip rule add fwmark 1 lookup eth1_up
 
-Likewise for me.
+I already found out this:
 
-Perhaps iptables could point to a document or a webpage (in case kernel is newer
-than the userspace iptables, and has introduced new requirements) that lists
-the kernel options that need to be enabled, instead of saying 
+iptables -t mangle -A PREROUTING -i eth1 -d 192.168.201.3 \
+ -j CONNMARK --set-mark 1
 
- failed iptables v1.3.5: can't initialize iptables table filter: iptables
- who? (do you need to insmod?)
+iptables -t mangle -A PREROUTING -i eth2 -s 10.0.2.1 \
+ -j CONNMARK --restore-mark
 
-Such verbosity might not be unixy, but during Old Unix times, thousands of people
-weren't following -rc kernels...
+> This will route everything that entered via eth1 back via eth1.
 
+And indeed that was the solution. Thnx!
 
--- v -- 
+R.
 
-v@iki.fi
+-- 
+___________________________________________________________________
+It is better to remain silent and be thought a fool, than to speak
+aloud and remove all doubt.
+
++------------------------------------------------------------------+
+| Richard Lucassen, Utrecht                                        |
+| Public key and email address:                                    |
+| http://www.lucassen.org/mail-pubkey.html                         |
++------------------------------------------------------------------+
+
