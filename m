@@ -1,10 +1,9 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: NATed packets only enter the default routing table
-Date: Sat, 8 Apr 2006 17:07:24 +0200
-Message-ID: <20060408170724.4fd8a877.mailinglists@lucassen.org>
-Reply-To: netfilter@lists.netfilter.org
+From: clan@dominationtime.com
+Subject: Redirecting packets based on source+destination ip's
+Date: Sat, 8 Apr 2006 21:34:37 -0700 (PDT)
+Message-ID: <4840.68.94.225.167.1144557277.squirrel@webmail.dominationtime.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,66 +18,33 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-(copy from lartc mailinglist)
+I have been trying to find a way with iptables to redirect a packet
+created on a server to be sent to 1.1.1.1 instead of 2.2.2.2 but only if
+the packet is coming from 3.3.3.3.
 
-I set up this config:
+With the help of linuxquestions.org I have gotten to the point of using
+DNAT where the packet redirects, but the determining factor is destination
+address.  Not source.  Since this is a shared server(each user has a
+different ip) it would be nice to only redirect certain ip's, but leave
+the others alone.
 
- +------+
--+ ISP1 +--+
- +------+  |  +-------+
-           +--+ linux |
- +------+  |  +-------+
--+ ISP2 +--+
- +------+
+In case I didn't make it understandable what I want to do here is what I
+am trying to accomplish, I rent a server for running a battlefield 2
+server.  This is of course shared, so there are other battlefield
+instances running next to mine albeit on different ip's.  I want to run a
+stats program that requires redirecting bf2web.gamespy.com to
+212.77.171.103 so that when my server sends out stats they go to ABR
+instead of EA.  The usual way of doing this is with a hosts file, but that
+effects all ip's on the server, and causes some pretty big problems with
+the other servers on the machine.
 
-No problem. Standard setup with two ISP's. Both routed subnets. Default
-gateway is ISP1. No magic here.
+Here is what the guy at linuxquestions.org gave me to work with
+iptables -t nat -A PREROUTING -t nat -p tcp -d 1.1.1.1 --dport 80 -j DNAT
+--to 2.2.2.2
 
-Now I put a server behind the Linux box. I want the server to be
-reachable on an /extra/ IP in the routed subnet of ISP2.
+To make it work I had to change PREROUTING to OUTPUT.  So is there a way
+for that to only effect certain source ip's?
 
- +------+
--+ ISP1 +--+
- +------+  |  +-------+  +-----------------+
-           +--+ linux +--+ server 10.0.0.2 |
- +------+  |  +-------+  +-----------------+
--+ ISP2 +--+
- +------+
+Thank you so much,  Fourthbean
 
-router ISP2: 1.2.3.1/24
-dev ISP2: eth1
-Linux box eth1: 1.2.3.2/24
-external ip ISP2 for server 10.0.0.2: 1.2.3.3
-
-arp -s 1.2.3.3 aa:bb:cc:dd:ee:ff pub
-ip route add 1.2.3.3 via 10.0.0.2
-iptables -t nat -A PREROUTING -i eth1 -d 1.2.3.3 -j DNAT --to 10.0.0.2
-
-When pinging 1.2.3.3, the packets get in through eth1 (ok), but the
-replies are following the default routing table through eth0 (wrong)
-
-Even a
-
-ip rule add from 1.2.3.3 lookup table_eth1
-
-doesn't change this behaviour. It is working ok when I add the address
-1.2.3.3 directly to eth1 (without NAT):
-
-ip a a 1.2.3.3 dev eth1
-
-Why is this?
-
-R.
-
-
--- 
-___________________________________________________________________
-It is better to remain silent and be thought a fool, than to speak
-aloud and remove all doubt.
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
 
