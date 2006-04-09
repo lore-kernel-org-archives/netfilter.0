@@ -1,84 +1,81 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: NATed packets only enter the default routing table
-Date: Sat, 8 Apr 2006 19:40:58 +0200
-Message-ID: <20060408194058.71fa3e09.mailinglists@lucassen.org>
-Reply-To: netfilter@lists.netfilter.org
+From: Ville Herva <vherva@vianova.fi>
+Subject: Re: Linux 2.6.17-rc1: /sbin/iptables does not find kernel netfilter
+Date: Sun, 9 Apr 2006 10:43:13 +0300
+Message-ID: <20060409074313.GZ15954@vianova.fi>
+References: <Pine.LNX.4.64.0604022037380.3781@g5.osdl.org> <20060408200915.GN1686@vianova.fi> <44388908.6070602@trash.net>
+Reply-To: vherva@vianova.fi
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750705AbWDIHnR@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <44388908.6070602@trash.net>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org, davem@davemloft.net
 
-(copy from lartc mailinglist)
+On Sun, Apr 09, 2006 at 06:09:44AM +0200, you [Patrick McHardy] wrote:
+> Ville Herva wrote:
+> > I upgraded from 2.6.15-rc7 to 2.6.17-rc1. rc1 seems nice other than that
+> > iptables stopped working:
+> > 
+> >  failed iptables v1.3.5: can't initialize iptables table filter: iptables
+> >  who? (do you need to insmod?) 
+> >  Perhaps iptables or your kernel needs to be upgraded.
+> > 
+> > iptables is compiled in the kernel, not a module:
+> >  CONFIG_NETFILTER=y
+> > 
+> > I can even do "modprobe iptable_nat" successfully (iptable_nat is module),
+> > but iptables refuses to work. iptables is of version iptables-1.3.5-1.2. 
+> > 
+> > The kernel config is copied with make oldconfig from 2.6.15-rc7 (which
+> > worked), not much else has changed. I just booted back to 2.6.15-rc7 and
+> > verified it works. Any ideas?
+> 
+> Most likely you didn't enable the new xtables options. Please post your
+> full config.
 
-I set up this config:
+The full .config is here
+ http://www.iki.fi/v/tmp/2.6.17-rc1.config
 
- +------+
--+ ISP1 +--+
- +------+  |  +-------+
-           +--+ linux |
- +------+  |  +-------+
--+ ISP2 +--+
- +------+
+I indeed do not have xfilter enabled (I was unaware that such thing had been
+introduced :):
+--8<-----------------------------------------------------------------------
+...
+CONFIG_NETFILTER=y
+# CONFIG_NETFILTER_DEBUG is not set
 
-No problem. Standard setup with two ISP's. Both routed subnets. Default
-gateway is ISP1. No magic here.
+#
+# Core Netfilter Configuration
+#
+# CONFIG_NETFILTER_NETLINK is not set
+# CONFIG_NETFILTER_XTABLES is not set
 
-Now I put a server behind the Linux box. I want the server to be
-reachable on an /extra/ IP in the routed subnet of ISP2.
+#
+# IP: Netfilter Configuration
+#
+CONFIG_IP_NF_CONNTRACK=m
+# CONFIG_IP_NF_CT_ACCT is not set
+# CONFIG_IP_NF_CONNTRACK_MARK is not set
+# CONFIG_IP_NF_CONNTRACK_EVENTS is not set
+# CONFIG_IP_NF_CT_PROTO_SCTP is not set
+CONFIG_IP_NF_FTP=m
+# CONFIG_IP_NF_IRC is not set
+# CONFIG_IP_NF_NETBIOS_NS is not set
+# CONFIG_IP_NF_TFTP is not set
+# CONFIG_IP_NF_AMANDA is not set
+# CONFIG_IP_NF_PPTP is not set
+# CONFIG_IP_NF_H323 is not set
+# CONFIG_IP_NF_QUEUE is not set
+...
+--8<-----------------------------------------------------------------------
 
- +------+
--+ ISP1 +--+
- +------+  |  +-------+  +-----------------+
-           +--+ linux +--+ server 10.0.0.2 |
- +------+  |  +-------+  +-----------------+
--+ ISP2 +--+
- +------+
-
-router ISP2: 1.2.3.1/24
-dev ISP2: eth1
-Linux box eth1: 1.2.3.2/24
-external ip ISP2 for server 10.0.0.2: 1.2.3.3
-
-arp -s 1.2.3.3 aa:bb:cc:dd:ee:ff pub
-ip route add 1.2.3.3 via 10.0.0.2
-iptables -t nat -A PREROUTING -i eth1 -d 1.2.3.3 -j DNAT --to 10.0.0.2
-
-When pinging 1.2.3.3, the packets get in through eth1 (ok), but the
-replies are following the default routing table through eth0 (wrong)
-
-Even a
-
-ip rule add from 1.2.3.3 lookup table_eth1
-
-doesn't change this behaviour. It is working ok when I add the address
-1.2.3.3 directly to eth1 (without NAT):
-
-ip a a 1.2.3.3 dev eth1
-
-Why is this?
-
-R.
+I'll try building a new kernel with CONFIG_NETFILTER_XTABLES enabled and
+report back. Thanks!
 
 
--- 
-___________________________________________________________________
-It is better to remain silent and be thought a fool, than to speak
-aloud and remove all doubt.
+-- v -- 
 
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
-
+v@iki.fi
