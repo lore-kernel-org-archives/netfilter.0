@@ -1,9 +1,9 @@
-From: clan@dominationtime.com
-Subject: Redirecting packets based on source+destination ip's
-Date: Sat, 8 Apr 2006 21:34:37 -0700 (PDT)
-Message-ID: <4840.68.94.225.167.1144557277.squirrel@webmail.dominationtime.com>
+From: Dexter <babyangel@skydsl.com.ph>
+Subject: iptables setting problem
+Date: Sun, 09 Apr 2006 13:48:55 +0700
+Message-ID: <4438AE57.6060706@skydsl.com.ph>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,36 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I have been trying to find a way with iptables to redirect a packet
-created on a server to be sent to 1.1.1.1 instead of 2.2.2.2 but only if
-the packet is coming from 3.3.3.3.
+Dear Sir,
+I encounter the problem of setting the iptables.
+I manually set eth0 210.21.47.32 netmask 255.255.255.0 gateway 
+210.21.47.1 and eth1 192.168.1.1 netmask 255.255.255.0
+and setting of Lan computer is 192.168.1.2  255.255.255.0  192.168.1.1
+from the computer in Lan I can ping both the address of eth0 and eth1, 
+but I can not ping the default gateway that ISP assigned to me.
+I did the following:
+iptables -A FORWARD -i eth1 -j ACCEPT
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-With the help of linuxquestions.org I have gotten to the point of using
-DNAT where the packet redirects, but the determining factor is destination
-address.  Not source.  Since this is a shared server(each user has a
-different ip) it would be nice to only redirect certain ip's, but leave
-the others alone.
+but didn't work, then I did follow:
+iptables -t nat -A PREROUTING -d $210.21.47.32/24 -i eth0 -j DNAT 
+--to-destination 192.168.1.0
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth0 -j SNAT 
+--to-source $210.21.47.32
 
-In case I didn't make it understandable what I want to do here is what I
-am trying to accomplish, I rent a server for running a battlefield 2
-server.  This is of course shared, so there are other battlefield
-instances running next to mine albeit on different ip's.  I want to run a
-stats program that requires redirecting bf2web.gamespy.com to
-212.77.171.103 so that when my server sends out stats they go to ABR
-instead of EA.  The usual way of doing this is with a hosts file, but that
-effects all ip's on the server, and causes some pretty big problems with
-the other servers on the machine.
+but still didn't work. something wring with my setting. Thanks.
 
-Here is what the guy at linuxquestions.org gave me to work with
-iptables -t nat -A PREROUTING -t nat -p tcp -d 1.1.1.1 --dport 80 -j DNAT
---to 2.2.2.2
-
-To make it work I had to change PREROUTING to OUTPUT.  So is there a way
-for that to only effect certain source ip's?
-
-Thank you so much,  Fourthbean
+Best Regards,
+Dexter Co
 
 
