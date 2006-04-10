@@ -1,14 +1,11 @@
-From: Nathaniel Hall <nathaniel.d.hall@gmail.com>
-Subject: Re: Change outbound ICMP source
-Date: Mon, 10 Apr 2006 15:18:18 -0500
-Message-ID: <443ABD8A.7080002@gmail.com>
-References: <443A9DA4.30801@gmail.com>
-	<Pine.LNX.4.64.0604102004520.26404@darkstar.sysinfo.com>
-Reply-To: nathaniel.d.hall@gmail.com
+From: "Bealach Na Bo" <bealach@gmail.com>
+Subject: IPinIP ipencap with iptables
+Date: Mon, 10 Apr 2006 22:39:58 +0200
+Message-ID: <c4bf8e090604101339j69d868f2pb2d423a28e6bffb5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.64.0604102004520.26404@darkstar.sysinfo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,33 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "R. DuFresne" <dufresne@sysinfo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-R. DuFresne wrote:
+Hello folks,
 
-> On Mon, 10 Apr 2006, Nathaniel Hall wrote:
->
->> I have been trying to figure out how to change the source IP address
-of an
->> ICMP packet that originates from the firewall.  Here is my application.
->>
->> Instead of dropping a packet I reject it with ICMP host unreachable
-messages.
->> I would like to make it appear that the firewall isn't there, so I
-would like to
->> change the source IP address to be that of our upstream router.  How
-would
->> I go about doing this?
->
-> by blocking the ICMP's at that upstream router.
+ I'm new to iptables and have got most things to work on my Debian FW
+machine using iptables. What I'm really struggling with is
+ finding the iptables equivalent of my current ipfw rules for IPinIP.
+These are very simple in ipfw and allow me to connect to my work
+machine.
 
-That doesn't achieve what I want.  If a TCP connection is rejected at
-the firewall, then blocking ICMP at the upstream router will block the
-host-unreachable from going out, not make it seem as if the router is
-the source.
 
--- 
-Nathaniel Hall, GSEC GCFW GCIA
+ # Allow bi-directional IPinIP traffic
+ ipfw add 300 allow ipencap from 192.168.0.0/24 to 193.0.252.50
+ ipfw add 301 allow ipencap from 192.168.0.0/24 to 193.0.252.52
+ ipfw add 310 allow ipencap from 193.0.252.50 to 192.168.0.0/24
+ ipfw add 311 allow ipencap from 193.0.252.52 to 192.168.0.0/24
 
+
+ Any help would be very much appreciated.
+
+
+ Regards,
+
+
+ Bealach
 
