@@ -1,12 +1,12 @@
-From: Aleksander <aleksander@krediidiinfo.ee>
-Subject: Re: Redirecting packets based on source+destination ip's
-Date: Mon, 10 Apr 2006 17:04:13 +0300
-Message-ID: <443A65DD.6050607@krediidiinfo.ee>
-References: <4840.68.94.225.167.1144557277.squirrel@webmail.dominationtime.com>
+From: "Mailings'AT'netzwerk.cc" <mailings@netzwerk.cc>
+Subject: Re: patch-o-matic ROUTE
+Date: Mon, 10 Apr 2006 17:04:25 +0200
+Message-ID: <443A73F9.6050508@netzwerk.cc>
+References: <BAY112-F18D7AFAD77899CAE8DFA9399CC0@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4840.68.94.225.167.1144557277.squirrel@webmail.dominationtime.com>
+In-Reply-To: <BAY112-F18D7AFAD77899CAE8DFA9399CC0@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Ian stuart Turnbull <ian.t7@hotmail.co.uk>
+Cc: netfilter@lists.netfilter.org
 
-clan@dominationtime.com wrote:
+Ian stuart Turnbull wrote:
+> Hi folks,
+> can I request some help please. I would like to know if the 
+> patch-o-matic ROUTE -tee function works and if so could someone please 
+> tell me how/when I apply the patch. I mean how does one tell the Kernel 
+> make to include just this one extra patch?
+> Sorry if this has been explained earlier. I attempted to search the 
+> mailing list archives but couldn't find a search capability.
+> Thanks,
+> Ian t
+> 
+> _________________________________________________________________
+> Are you using the latest version of MSN Messenger? Download MSN 
+> Messenger 7.5 today! http://join.msn.com/messenger/overview
+> 
+> 
+> 
 
-> To make it work I had to change PREROUTING to OUTPUT.  So is there a way
-> for that to only effect certain source ip's?
+Hey dude :),
 
-If the packet originated from localhost, then OUTPUT is correct. -s is 
-source and -d is destination ip.
+take a look at the pom2patch file in your patch-o-matic directory.
 
-iptables -t nat -A OUTPUT -s 3.3.3.3 -d 1.1.1.1 -p tcp -m tcp --dport 80 
--j DNAT --to 2.2.2.2
+i think you have to call it like "pom2patch kernel-source patch"
 
-Should work for you. Remove your previously inserted rule first though.
+you should get a normal kernel diff file.
 
-Please read the manual page of iptables and/or 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-
-HTH,
-	Alex
+cheers
 
