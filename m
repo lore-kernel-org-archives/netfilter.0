@@ -1,11 +1,10 @@
-From: "James Harper" <james.harper@bendigoit.com.au>
-Subject: MAC address SNAT
-Date: Mon, 10 Apr 2006 14:18:55 +1000
-Message-ID: <AEC6C66638C05B468B556EA548C1A77DCEBF6A@trantor>
+From: b52@entrap.de
+Subject: recent module
+Date: Mon, 10 Apr 2006 14:01:16 +0200 (CEST)
+Message-ID: <52994.212.77.162.22.1144670476.squirrel@www.entrap.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,36 +18,42 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am trying to find a way of doing virtual MAC addresses under Linux,
-and it occurred to me that it could be done with netfilter based on the
-following pieces of the puzzle:
 
-1. a way of responding to arp requests with the new MAC address
-(arptables to mangle the MAC address in the arp response)
-2. a way of accepting packets with the different MAC address (promisc
-mode on the interface)
-3. a way of SNAT-ing the MAC address in outgoing packets (the missing
-piece)
+Hi folks,
 
-In fact, #3 almost wouldn't be required if hosts on the network didn't
-mind ip packets coming at them with a different MAC addresses to what
-was in their arp tables.
+maybe somebody could give me an advice with the iptables recent module.
 
-Unfortunately the device I'm trying to talk to uses the source MAC
-address on the arp-reply packet, not the MAC address in the packet
-itself. Clearly my device is broken, but I'm stuck with it.
+I need a list of 100 ip addresses which have special rights as long as the
+last packet of this ip was recieved within the last 300 seconds.
 
-I originally thought ebtables might be able to do what I want, but I'm
-not using a bridge and it can't SNAT OUTPUT packets anyway.
+If this source ip is not in that list and the list is not full include
+this ip in that list.
+If this source ip is not in that list and the list is full redirect that
+connection.
+If this source ip is in that list and the last packet is less than 300
+seconds ago update the timestamp in the list.
+If this source ip is in that list and the last packet is more than 300
+seconds ago treat it as it is not in the list.
 
-Could a SNAT MAC address target be written for iptables, or does
-iptables 'finish' too early in the packet traversal for the MAC address
-to be decided on yet?
+I thought this will be simple, but the list will be completely filled
+anytime with connections older than 300 seconds. How can I tell recent to
+forget an entry or overwrite it if the timestamp is more than 300 seconds
+old?
 
-Suggestions?
+There is an example at the programers page
+http://www.snowman.net/projects/ipt_recent/ which confuses me even more:
 
-Thanks
+Example #3:
 
-James
+# iptables -A FORWARD -d 192.168.1.1/32 -p tcp --dport 25 -m recent --set
+--rsource --name SMTP_RELAY_IN -j ACCEPT
+# iptables -A FORWARD -d 192.168.1.1/32 -p tcp --dport 113 -m recent
+--rcheck --rsource --seconds 15 --name SMTP_RELAY_OUT -j ACCEPT
+
+if I use this rules the list will be filled after some time, because I
+never remove entries out of that list..
+
+Any help would be appreciated.
+Thanks, b52
 
 
