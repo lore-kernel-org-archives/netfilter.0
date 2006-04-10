@@ -1,10 +1,10 @@
-From: "Isaiah Makwakwa" <isaiah@medcol.mw>
-Subject: IP masquerade + squid problem
-Date: Mon, 10 Apr 2006 09:19:14 +0200 (CAT)
-Message-ID: <51851.192.168.2.7.1144653554.squirrel@mail2.medcol.mw>
-Reply-To: isaiah@medcol.mw
+From: =?utf-8?B?IuyLoOyEne2YhCI=?= <phelios@naver.com>
+Subject: I have some problem on CentOS 4.3(kernel:2.6.9-34)
+Date: Mon, 10 Apr 2006 16:34:33 +0900 (KST)
+Message-ID: <443A0A89.000001.26468@i4j049>
+Reply-To: =?utf-8?B?IuyLoOyEne2YhCI=?= <phelios@naver.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,37 +16,13 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-
-Dear list,
-
-I have a problem with my squid + ip masquerading setup. My box has two
-interfaces one internal one external. I masquerade all internal traffic on
-this box which also runs squid proxy.
-
-When my iptables runs, and I point my client to the proxy on this box I do
-not seem to get anywhere even though the squid box accepts and logs a
-request. When I go direct I can get the page.
-
-My gut feeling is that the squid box does get the request, processses but
-due to some nating problem fails to identify the client which made the
-request. Could anyone help to arrest the rot?
-
-Regards,
-
-Isaiah,
-
-Malawi
-
-
--- 
-Linux System/Network Administrator,
-College of Medicine,
-P/Bag 360,
-Chichiri,
-Blantyre 3.
-
-
+aSBoYXZlIGluc3RhbGwgYnJpZGdlIGZpcmV3YWxsIGluIG15IG9mZmljZS4gDQogDQppIHdhbm5h
+IHRvIHVzZSBzdHJpbmcgbWF0Y2ggZmlsdGVyaW5nLi4uLg0KIA0KYnV0IGkgY2FudCBwYXRjaC1v
+LW1hdGljLW5nIG9uIG15IGtlcm5lbC4uDQogDQprZXJuZWwgMi42LnguLi4uIGNhbid0IGRvIHRo
+YXQ/DQogDQpzb3JyeSBteSBwb29yIGVuZ2xpc2guLi4NCiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCk5BVkVS
+IDo6IEtvcmVhJ3MgTm8uMSBzZWFyY2ggcG9ydGFsDQp3d3cubmF2ZXIuY29tDQo=
 
