@@ -1,32 +1,34 @@
-From: syrius.ml@no-log.org
-Subject: NF_CONNTRACK & NAT
-Date: Tue, 11 Apr 2006 12:55:43 +0200
-Message-ID: <874q10mlk1.873bgkmlk1@871ww4mlk1.message.id>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Linux 2.6.17-rc1: /sbin/iptables does not find kernel netfilter
+Date: Tue, 11 Apr 2006 13:27:36 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0604111326540.928@yvahk01.tjqt.qr>
+References: <Pine.LNX.4.64.0604022037380.3781@g5.osdl.org>
+ <20060408200915.GN1686@vianova.fi> <44388908.6070602@trash.net>
+ <20060409074313.GZ15954@vianova.fi> <20060409144416.GO1686@vianova.fi>
+ <20060409144534.GN29797@vianova.fi> <87psjqg2nt.fsf@hades.wkstn.nix>
+ <4439350E.4060306@tomt.net>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750754AbWDKL2F@vger.kernel.org>
+In-Reply-To: <4439350E.4060306@tomt.net>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Andre Tomt <andre@tomt.net>
+Cc: Nix <nix@esperi.org.uk>, linux-kernel@vger.kernel.org, vherva@vianova.fi, Patrick McHardy <kaber@trash.net>, netfilter@lists.netfilter.org, davem@davemloft.net
+
+>
+> Beeing bitten by such issues in the past, I always diff the old and the new
+> config and look for anything suspicious going down.
+>
+
+My way:
+  gzip -cd /proc/config.gz >.config
+  make
+
+The configurator will stop at any new config option, which includes 
+xtables. :)
 
 
-Hi there,
-
-I've realized i can't use NF_CONNTRACK and NAT. Am I doing something
-wrong or is it a known limitation ?
-I'd like to be able to use NF_CONNTRACK (for ipv6 & ipv4) and being
-able to use nat for ipv4. is there a solution ?
-
-Cheers
-
+Jan Engelhardt
 -- 
-
