@@ -1,12 +1,12 @@
-From: "Calvin Hubble" <calvin.hubble@gmail.com>
-Subject: libipq, packet mangling and checksum calculations
-Date: Tue, 11 Apr 2006 02:16:49 -0700
-Message-ID: <3f0dd8f80604110216v7b2f858r4cb352211b6670be@mail.gmail.com>
-Reply-To: chubble@cs.ucsd.edu
+From: Eric Leblond <eric@inl.fr>
+Subject: Nuface 1.0, firewall configuration interface
+Date: Tue, 11 Apr 2006 11:52:25 +0200
+Message-ID: <1144749145.21344.11.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-wNxxBhqlpjwacubUGOcf"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: nufw-announces@nongnu.org, netfilter@lists.netfilter.org
+Cc: nufw-users@nongnu.org
 
-I am having issues with libipq and checksum calculations, I apologize
-if this has been explored space.
 
-I am using libipq along with iptables to mangle incoming/outgoing
-packets in an attempt to write a watered-down user-level nat.  For an
-outgoing packet I change the source address and recalculate both the
-IP and TCP checksums.  Now here is the weird thing, I don't seem to
-have a problem with connection startup (SYN/SYN-ACK/ACK).  I am
-tcpdumping on my outgoing link and see no errors.  When I send an
-outgoing packet with actual data (i.e. an HTTP request), then tcpdump
-keeps telling me I have a bad checksum.  For example :
+--=-wNxxBhqlpjwacubUGOcf
+Content-Type: text/plain; charset=iso-8859-7
+Content-Transfer-Encoding: quoted-printable
 
- [bad tcp cksum 2072 (->768d)!]
+Hi,
 
-Howerver, I verified my checksum calculation as well as the value
-inside the payload which I pass back to the kernel using
-ipq_set_verdict and in all cases the checksum value I have is
-correctly set at 0x768d (in this case).  What is going on here?
+INL is proud to announce the availability of the Nuface 1.0 branch
+(latest release 1.0.3).
 
-Again, this is only for TCP checksum calculations on data packets, I
-do not see this issue with IP checksums or TCP syn/syn-ack/ack
-packets.
+Nuface is an intuitive firewall configuration interface for
+EdenWall/NuFW as well as for Netfilter. It lets you use high level
+objects, agglomerate objects into ACLs, and deals with generating
+Netfilter rules as well as LDAP Acls for NuFW.
 
-Thank you for the help.
+Nuface uses an XML abstraction of filtering rules, as well as an XML
+definition of the network topology. This leads to automatic
+auti-spoofing rules (ie, the web interface does not show the notion of
+physical network interface to the admins, but deals with it internally).
 
--Calvin
+Nuface is distributed under the terms of the GPL v2 license.
+
+You can test nuface at the Nuface demo site :
+	https://nuface.inl.fr/
+Of course you won=A2t be able to generate or apply firewall rules on this
+demo.
+
+Happy filtering to all,
+--
+Eric Leblond for the INL development team
+
+
+--=-wNxxBhqlpjwacubUGOcf
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBEO3xYnxA7CdMWjzIRAlWFAJ4v42JT2kl2hAzf44mHjSUXsyyeyQCfb2nN
+5gMZml6Ckl0hrwlqWOTnIWk=
+=/NzT
+-----END PGP SIGNATURE-----
+
+--=-wNxxBhqlpjwacubUGOcf--
+
 
