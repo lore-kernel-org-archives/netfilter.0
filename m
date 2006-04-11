@@ -1,19 +1,12 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: Linux 2.6.17-rc1: /sbin/iptables does not find kernel netfilter
-Date: Tue, 11 Apr 2006 11:03:56 +0200
-Message-ID: <20060411090356.GJ5167@rama.linbit>
-References: <Pine.LNX.4.64.0604022037380.3781@g5.osdl.org>
-	<20060408200915.GN1686@vianova.fi> <44388908.6070602@trash.net>
-	<20060409074313.GZ15954@vianova.fi>
-	<20060409144416.GO1686@vianova.fi>
-	<20060409144534.GN29797@vianova.fi>
-	<87psjqg2nt.fsf@hades.wkstn.nix> <4439385B.6010908@trash.net>
+From: "Calvin Hubble" <calvin.hubble@gmail.com>
+Subject: libipq, packet mangling and checksum calculations
+Date: Tue, 11 Apr 2006 02:16:49 -0700
+Message-ID: <3f0dd8f80604110216v7b2f858r4cb352211b6670be@mail.gmail.com>
+Reply-To: chubble@cs.ucsd.edu
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BEa57a89OpeoUzGD"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <4439385B.6010908@trash.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,45 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Patrick McHardy <kaber@trash.net>
-Cc: Nix <nix@esperi.org.uk>, netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org, vherva@vianova.fi, davem@davemloft.net
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+I am having issues with libipq and checksum calculations, I apologize
+if this has been explored space.
 
---BEa57a89OpeoUzGD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am using libipq along with iptables to mangle incoming/outgoing
+packets in an attempt to write a watered-down user-level nat.  For an
+outgoing packet I change the source address and recalculate both the
+IP and TCP checksums.  Now here is the weird thing, I don't seem to
+have a problem with connection startup (SYN/SYN-ACK/ACK).  I am
+tcpdumping on my outgoing link and see no errors.  When I send an
+outgoing packet with actual data (i.e. an HTTP request), then tcpdump
+keeps telling me I have a bad checksum.  For example :
 
-On Sun, Apr 09, 2006 at 06:37:47PM +0200, Patrick McHardy wrote:
+ [bad tcp cksum 2072 (->768d)!]
 
-> But it does show you all the new options. Admittedly, it would
-> have been better to automatically select the new options when
-> needed,=20
+Howerver, I verified my checksum calculation as well as the value
+inside the payload which I pass back to the kernel using
+ipq_set_verdict and in all cases the checksum value I have is
+correctly set at 0x768d (in this case).  What is going on here?
 
-I spent a long time trying to do this with Kconfig, including
-suggestions from Rusty, but couldn't get it to work at all.
+Again, this is only for TCP checksum calculations on data packets, I
+do not see this issue with IP checksums or TCP syn/syn-ack/ack
+packets.
 
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
+Thank you for the help.
 
---BEa57a89OpeoUzGD
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFEO3D8XaXGVTD0i/8RAqY4AKCoA03noKLFWahqTa59WwRt7HugkgCfaFvM
-UgJrkwY6JMMy7k9uAkXcbeE=
-=hSbd
------END PGP SIGNATURE-----
-
---BEa57a89OpeoUzGD--
+-Calvin
 
