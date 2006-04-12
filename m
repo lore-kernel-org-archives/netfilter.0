@@ -1,9 +1,12 @@
-From: "Ian stuart Turnbull" <ian.t7@hotmail.co.uk>
-Subject: patch-o-matic no password for the samba.org ftp using cvs
-Date: Wed, 12 Apr 2006 16:44:20 +0100
-Message-ID: <BAY112-F3122170C3E7B2D3DBACE9099C20@phx.gbl>
+From: "Robert LeBlanc" <robert@leblancnet.us>
+Subject: SNAT will not work for Linux clients when using an alias as the
+	gatway address
+Date: Wed, 12 Apr 2006 11:10:21 -0600
+Message-ID: <A78C6C481BFAE949BC5990E1EEB2FE125741@q.LeBlancNet.us>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,22 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm sorry if this is not the correct place to post.
+I am working on a project to build a failover gateway system. I have
+heartbeat installed to ipfailover the gateway address eth1:0: 10.0.0.1
+and it works great. Windows and Mac machines are able to get through the
+gateway and receive responses like they should. Linux machines on the
+other hand, don't seem to get a response back from the gateway. It's
+really odd as I am using DHCP for all the machines. If I set the Linux
+gateway to the actual address of the gateway (eth1: 10.0.0.251) it work
+fine, but if that machine goes down, the Linux computer can no longer
+get through to the rest of the network. Please help as we have to
+present this project tomorrow and it's the last problem to overcome.
 
-http://www.collaborium.org/onsite/benin/docs/services/NETFILTER_RELATED/netfilter-extensions/netfilter-extensions-HOWTO-2.html
-
-the above HOWTO says to use cvs to get the latest patch-o-matic tree. 
-Unfortunately it now requires a user password. Can anyone tell me where else 
-I can get the p-o-m or the password please
-
-thanks
-
-_________________________________________________________________
-Be the first to hear what's new at MSN - sign up to our free newsletters! 
-http://www.msn.co.uk/newsletters
-
+Thank you,
+Robert LeBlanc
 
