@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: patch-o-matic no password for the samba.org ftp using cvs
-Date: Wed, 12 Apr 2006 21:58:12 +0200
-Message-ID: <001201c65e6b$6ea0c760$0101000a@sterenborg.info>
-References: <BAY112-F3122170C3E7B2D3DBACE9099C20@phx.gbl>
+From: "Jason Sigurdur" <Jason.Sigurdur@aspenview.org>
+Subject: routing question
+Date: Wed, 12 Apr 2006 14:51:29 -0600
+Message-ID: <648A21EA469E3848922D9860785CD5EF23D496@aspen-mail01.aspenview.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY112-F3122170C3E7B2D3DBACE9099C20@phx.gbl>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,27 +19,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> I'm sorry if this is not the correct place to post.
-> 
-> http://www.collaborium.org/onsite/benin/docs/services/NETFILTE
-> R_RELATED/netfilter-extensions/netfilter-extensions-HOWTO-2.html
-> 
-> the above HOWTO says to use cvs to get the latest patch-o-matic tree.
-> Unfortunately it now requires a user password. Can anyone
-> tell me where else I can get the p-o-m or the password please
 
-ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/
+I have the following scenario:
 
-I had a quick look at the HOWTO and it's not really up-to-date I think.
-POM has been followed up by POM-ng. Further, the HOWTO talks about "make
-patch-o-matic" and AFAIK that's not in use anymore. You can now patch
-the kernel and iptables source like this :
-KERNEL_DIR="/path/to/kernel_src" \
-IPTABLES_DIR="path/to/iptables_src" \
-./runme <basic|extra>
+Two subnets, two ipsec vpn servers using openswan.
+Vpn server 1 192.168.10.1,10.10.1.1
+Vpn Server 2 192.168.30.1, 10.30.1.1
+
+I can ping 192.168.10.1 -> 30.1, but cannot ping 10.10.1.1 -> 10.30/16 ,
+but can ping from 10.30.1.10 {any system not the vpn box} to 10.10.1.1}
+
+Is this how the SA dictates the vpn or is it a routing thing.
+
+I noticed that if I ping from 10.10.1.1 to an 10.30/16 address, the
+packets are sent over the ipsecX but with an 192.168.10.1 as a source
+address.
+
+I should I see this, I thought the SA would only tunnel 10.10/16 <->
+10.30/16 traffic?
+
+Is there a way I can allow for the vpn systems to use its internal
+source address?
+
+Thx jason
 
 
-Gr,
-Rob
-
+conn S1toS16
+        left=3D192.168.10.1
+        leftnexthop=3D192.168.10.254
+        leftsubnet=3D10.10.0.0/16
+        right=3D192.168.30.1
+        rightnexthop=3D192.168.30.254
+        rightsubnet=3D10.30.0.0/16
+        auto =3D start
 
