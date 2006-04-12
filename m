@@ -1,11 +1,14 @@
-From: "Matthew Winkler" <mwinkler@netuxsolutions.com>
-Subject: Information
-Date: Tue, 11 Apr 2006 16:07:59 -0500
-Message-ID: <FA5F350EE1C5964D87C8F98C110BBF7D5CF0@crash.x.local>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: Could you please update the Netfilter Extensions HOWTO ?
+Date: Wed, 12 Apr 2006 15:10:09 +0200
+Message-ID: <20060412131009.GF31616@sunbeam.de.gnumonks.org>
+References: <!&!AAAAAAAAAAAuAAAAAAAAAGijumR0/exNlphhAnEGGE0BADBNQamd5u1NvceZIhpjukkAAAABmqQAABAAAAAzRR9OvepsR68zTFrgVL60AQAAAAA=@vsb.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="+DRhDX4TDhSuvTBU"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <!&!AAAAAAAAAAAuAAAAAAAAAGijumR0/exNlphhAnEGGE0BADBNQamd5u1NvceZIhpjukkAAAABmqQAABAAAAAzRR9OvepsR68zTFrgVL60AQAAAAA=@vsb.cz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,30 +19,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: "Ing. BcA. Ivan Dolezal" <ivan.dolezal@vsb.cz>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
-I was given this email address as the most likely contact for getting =
-help with an IPTables problem.=A0 I am attempting to set up a linux =
-router with eth0, ppp0, and ppp1.=A0 eth0 is the internal nic and ppp0 =
-and ppp1 are both external internet connections.=A0 I have the local =
-network set up in the 192.168.1.x fashion with the router at 192.168.1.1 =
-and the 6 computers within the network from 192.168.1.100 through =
-192.168.1.105.=A0 I would like to route all outbound traffic from =
-192.168.1.100, 192.168.1.101, and 192.168.1.102 through ppp0 and all =
-other outbound traffic through ppp1.=A0 All of the guides I have found =
-to this point walk me through steps and configuration settings that end =
-up with one of two possibilities.=A0 The first is that all outbound =
-traffic is still being routed through only 1 of the two connections and =
-the second is the problem that I may not be able to get any data to get =
-outside the network.=A0 I hope that this message has found a person who =
-will be able to help me and I also hope that you are able to send me =
-some information back regarding this issue.=A0 If this email address is =
-not correct, please forward this or let me know who I should be getting =
-in touch with.
 
-Thank you,
-Matt Winkler
-Netux Solutions LLC
+--+DRhDX4TDhSuvTBU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Apr 12, 2006 at 02:34:54PM +0200, Ing. BcA. Ivan Dolezal wrote:
+=20
+>    this may sound stupid but could you please update the Netfilter
+> Extensions HOWTO? It says something about using CVS which doesn't work. I
+> found somewhere in a mailing list that I should use Subversion. When I
+> downloaded the stuff, I was confused from more patch-o-matics. It all made
+> me quite disgusted...
+>=20
+>    I do appreciate your work, but its usefulness goes down with smoothness
+> of usage.
+
+The extensions HOWTO (which was contributed to netfilter.org) was
+abandoned by its original author, as it seems.=20
+
+A volunteer project lives from contributions by volunteers.=20
+
+The netfilter core team is mostly busy with development tasks and with
+keeping the project running.  There's no time left for any kind of
+documentation, I fear.
+
+We don't even have a webmaster - the core developers themselves are
+taking care of that (involuntarily).
+
+The only non-technical project member we have is Travis, our listmaster.
+
+>    Did you guys think of transfering docs to wiki?
+
+A wiki needs somebody who takes care of the maintenance.  Otherwise you
+get problems with inaccurate information, spam and the like.  So whether
+a wiki or old-style HOWTOS: Somebody needs to take care.
+
+Unless we see more people volunteering in the area of documentation, I
+don't think this is going to change, sorry.
+
+Cheers,
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--+DRhDX4TDhSuvTBU
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+
+iD8DBQFEPPwxXaXGVTD0i/8RAt/sAKCu99zTaZSilcR8oe5HJtNeVkkShQCgglNG
+cSVGh+zX6iB2js0+EUV6UbM=
+=mp2r
+-----END PGP SIGNATURE-----
+
+--+DRhDX4TDhSuvTBU--
 
