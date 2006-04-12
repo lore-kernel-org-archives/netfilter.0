@@ -1,11 +1,14 @@
-From: "Jesse Gordon" <jesseg@nikola.com>
-Subject: Strange need to reboot to clear iptables of ESP rule or lack
-	thereof?
-Date: Tue, 11 Apr 2006 22:46:29 -0700
-Message-ID: <096b01c65df4$720d5e80$5e00800a@printserver>
+From: "Isaiah Makwakwa" <isaiah@medcol.mw>
+Subject: RE: IP masquerade + squid problem
+Date: Wed, 12 Apr 2006 10:33:11 +0200 (CAT)
+Message-ID: <2853.192.168.2.224.1144830791.squirrel@mail2.medcol.mw>
+References: <51851.192.168.2.7.1144653554.squirrel@mail2.medcol.mw>
+	<000c01c65cce$ad299640$0101000a@sterenborg.info>
+Reply-To: isaiah@medcol.mw
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----=_20060412103311_66283"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <000c01c65cce$ad299640$0101000a@sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,91 +19,132 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter <netfilter@lists.netfilter.org>
+To: rob@sterenborg.info
+Cc: netfilter@lists.netfilter.org
 
-I have a Cisco PIX 501 vpn endpoint appliance sitting behind a natting 
-(linux 2.4.26) iptables (v1.3.3) and I have two remote offices happily 
-connecting to my PIX vpn endpoint.
+------=_20060412103311_66283
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-I just forward the correct UDP ports in, and it all works.
+Hie Rob et al,
 
-Today I tried to add a third, but found that instead of forwarding packets 
-like before, my iptables box would just reply to the remote office with 
-this:
+Sorry that I could be dumping my whole file to the list but here is my
+iptables script.
 
-icmp 104: Jesse's_Public_Ip protocol 50 unreachable (According to TCPDUMP on 
-a separate host running as a packet analyzer on a "hub".)(Span on a fancy 
-switch, actually.)
+Everything else works apart from the fact that at first I could not access
+my external website also on the same machine and squid could not be
+accessible. I solved the external website by configuring view in my DNS
+but it seems there is no easy way for the squid box.
 
-I found that in addition to forwarding UDP ports 50,500, and a few others, 
-in order to make this third VPN client work, I had to also forward ESP:
+Regards,
 
-iptables -t nat -A PREROUTING -p ESP -i eth1 -d Iptables_Box_Public_IP -j 
-DNAT --to 10.x.x.4
-
-Then the packets are correctly forwarded.
-
-But here's what I don't understand:
-
-My firewall script is just a simple bash script -- really a list of iptables 
-commands like the one shown above. It is started from /etc/rc.d/rc.local (A 
-bash script which gets run as root once on every startup.)
-
-If I put the above mentioned ESP rule in my firewall script and reboot, then 
-it takes effect and works. But if I just type the rule at the command line 
-as root, it enters into iptables without error -- but the packets are still 
-refused with "protocol 50 unreachable."
-
-And if I boot with the ESP rule in my startup script, then the packets are 
-forwarded, and manually removing the ESP rule doesn't seem to stop the 
-packages from being forwarded.
-
-I did this experiment with the ESP rule as the last command in the script.
-I cannot understand why it makes a difference whether the ESP rule is added 
-as the last rule in my bootup script, or a few seconds later by my keying it 
-in on the console.
+Isaiah.
 
 
-In other words, if the ESP rule was in the script at boot, then the system 
-works as it should regardless of whether I leave or remove the rule from the 
-running iptables.
+>> Dear list,
+>>
+>> I have a problem with my squid + ip masquerading setup. My box has two
+>> interfaces one internal one external. I masquerade all internal
+> traffic
+>> on this box which also runs squid proxy.
+>>
+>> When my iptables runs, and I point my client to the proxy on this box
+>> I do not seem to get anywhere even though the squid box accepts and
+>> logs a request.
+>
+> So your INPUT rules seem to be fine for your LAN.
+>
+>> When I go direct I can get the page.
+>>
+>> My gut feeling is that the squid box does get the request,
+>> processses but due to some nating problem fails to identify the client
+>> which made the request. Could anyone help to arrest the rot?
+>
+> Well, you could start by adding iptables LOG rules to see what happens.
+> - Does squid actually try to perform the request (try a tcpdump or
+> something) ?
+> - Is the request getting through your (OUTPUT) rules (hence the logging)
+> ?
+> - Is the reply being allowed ?
+> - What have you looked at / what have you tried ?
+> - Maybe some rules we need to look at ?
+>
+> If you don't have any logging yet, add a rule to the bottom of your
+> OUTPUT ruleset saying something like :
+> $ipt -A OUTPUT -m limit --limit 1/sec -j LOG --log-prefix "_ipt_OUTPUT:
+> "
+> and see if it's logging http requests from squid. If it is and your
+> OUTPUT policy is DROP, the requests are most likely not getting out of
+> your box.
+> But since you didn't tell much about your setup and what you tried,
+> that's only a wild guess.
+>
+>
+> Gr,
+> Rob
 
-But if the rule is not in the script at bootup, then the packets are 
-rejected with "protocol 50 unreachable" regardless of whether the ESP rule 
-is manually added to the running iptables or not.
 
-I seem to have to reboot to change it.
-
-My firewall script does flush everything empty before setting up any rules:
-
-iptables -F
-iptables -Z
-iptables -X
-iptables -F -t nat
-iptables -Z -t nat
-iptables -X -t nat
-iptables -F -t mangle
-iptables -Z -t mangle
-iptables -X -t mangle
-
-And after those commands, iptables-save shows it as having no rules at all.
+-- 
+Linux System/Network Administrator,
+College of Medicine,
+P/Bag 360,
+Chichiri,
+Blantyre 3.
 
 
-I would be most grateful for any comments on the topic!
+------=_20060412103311_66283
+Content-Type: application/octet-stream; name="iptables"
+Content-Disposition: attachment; filename="iptables"
+Content-Transfer-Encoding: base64
 
-Thanks very much,
+RVhUSUY9ImV0aDAiCkVYVElQPSIxMC4xMC4wLjEiCkVYVE5FVD0iMTAuMTAuMC4wLzI4IgpJTlRJ
+Rj0iZXRoMSIKSU5UTkVUPSIxOTIuMTY4LjIuMC8yNCIKSU5USVA9IjE5Mi4xNjguMi4zIgpJUFRB
+QkxFUz0iL3NiaW4vaXB0YWJsZXMiCldPUkxEPSIwLjAuMC4wLzAiCgoKIyBGbHVzaCBhbGwgcnVs
+ZXMKJElQVEFCTEVTIC1BIElOUFVUIC1qIERST1AKJElQVEFCTEVTIC1BIE9VVFBVVCAtaiBEUk9Q
+CiRJUFRBQkxFUyAtQSBGT1JXQVJEIC1qIERST1AKCiMgRGVjbGFyZSBDdXN0b20gQ2hhaW5zCiRJ
+UFRBQkxFUyAtTiBsb2NhbAokSVBUQUJMRVMgLU4gZXh0CiRJUFRBQkxFUyAtTiBsb2NhbC1md2QK
+JElQVEFCTEVTIC1OIGV4dC1md2QKCiMkSVBUQUJMRVMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkg
+JElOVElGIC1wIHRjcCAtLWRwb3J0IDMxMjggLWogQUNDRVBUCiMkSVBUQUJMRVMgLXQgbmF0IC1B
+IFBSRVJPVVRJTkcgLWkgJElOVElGIC1wIHRjcCAtLWRwb3J0IDMwMzMgLWogQUNDRVBUCgojIENy
+ZWF0ZSBJTlBVVCBjaGFpbiB0YXJnZXRzCiRJUFRBQkxFUyAtQSBJTlBVVCAtbSBzdGF0ZSAtLXN0
+YXRlIFJFTEFURUQsRVNUQUJMSVNIRUQgLWogQUNDRVBUCiRJUFRBQkxFUyAtQSBJTlBVVCAtaSAk
+SU5USUYgLWogbG9jYWwKJElQVEFCTEVTIC1BIElOUFVUIC1zIDEyNy4wLjAuMSAtaiBsb2NhbAok
+SVBUQUJMRVMgLUEgSU5QVVQgLWkgJEVYVElGIC1qIGV4dAokSVBUQUJMRVMgLUEgSU5QVVQgLWog
+RFJPUAoKIyBDcmVhdGUgRk9SV0FSRCBjaGFpbiB0YXJnZXRzCiRJUFRBQkxFUyAtQSBGT1JXQVJE
+IC1tIHN0YXRlIC0tc3RhdGUgUkVMQVRFRCxFU1RBQkxJU0hFRCAtaiBBQ0NFUFQKJElQVEFCTEVT
+IC1BIEZPUldBUkQgLW8gJEVYVElGIC1qIGxvY2FsLWZ3ZAokSVBUQUJMRVMgLUEgRk9SV0FSRCAt
+cyAxMjcuMC4wLjEgLWogbG9jYWwtZndkCiRJUFRBQkxFUyAtQSBGT1JXQVJEIC1qIERST1AKCiMg
+RW5hYmxlIHBvcnRzCgojMS4gV2ViCiRJUFRBQkxFUyAtQSBsb2NhbCAtcCB0Y3AgLS1kcG9ydCA4
+MCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIGxvY2FsIC1wIHRjcCAtLWRwb3J0IDQ0MyAtaiBBQ0NF
+UFQKJElQVEFCTEVTIC1BIGV4dCAtcCB0Y3AgLS1kcG9ydCA4MCAtaiBBQ0NFUFQKJElQVEFCTEVT
+IC1BIGV4dCAtcCB0Y3AgLS1kcG9ydCA0NDMgLWogQUNDRVBUCgojMi4gRlRQCiRJUFRBQkxFUyAt
+QSBsb2NhbCAtcCB0Y3AgLS1kcG9ydCAyMSAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIGV4dCAtcCB0
+Y3AgLS1kcG9ydCAyMSAtaiBBQ0NFUFQKCiMzLiBTU0gKJElQVEFCTEVTIC1BIGxvY2FsIC1wIHRj
+cCAtLWRwb3J0IDIyIC1qIEFDQ0VQVAoKIzQuIEROUwokSVBUQUJMRVMgLUEgbG9jYWwgLXAgdGNw
+IC0tZHBvcnQgNTMgLWogQUNDRVBUCiRJUFRBQkxFUyAtQSBsb2NhbCAtcCB1ZHAgLS1kcG9ydCA1
+MyAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIGV4dCAtcCB0Y3AgLS1kcG9ydCA1MyAtaiBBQ0NFUFQK
+JElQVEFCTEVTIC1BIGV4dCAtcCB1ZHAgLS1kcG9ydCA1MyAtaiBBQ0NFUFQKCgojNS4gV2ViIFBy
+b3h5CiRJUFRBQkxFUyAtQSBsb2NhbCAtcCB0Y3AgLS1kcG9ydCAzMTI4IC1qIEFDQ0VQVAokSVBU
+QUJMRVMgLUEgbG9jYWwgLXAgdGNwIC0tZHBvcnQgMzAzMyAtaiBBQ0NFUFQKJElQVEFCTEVTIC1B
+IGxvY2FsIC1wIHRjcCAtLWRwb3J0IDgwODAgLWogQUNDRVBUCgojNS4gSUNNUAokSVBUQUJMRVMg
+LUEgbG9jYWwgLXAgaWNtcCAtaiBBQ0NFUFQKCiMgQWxsb3cgT1VUUFVUIGZyb20gbG9jYWwgTWFj
+aGluZSAmIGxvY2FsIG5ldAokSVBUQUJMRVMgLUEgT1VUUFVUIC1tIHN0YXRlIC0tc3RhdGUgRVNU
+QUJMSVNIRUQsUkVMQVRFRCAtaiBBQ0NFUFQKJElQVEFCTEVTIC1BIE9VVFBVVCAtcCBBTEwgLWQg
+MTI3LjAuMC4xIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgT1VUUFVUIC1wIEFMTCAtbyAkSU5USUYg
+LWogQUNDRVBUCiRJUFRBQkxFUyAtQSBPVVRQVVQgLXAgQUxMIC1vICRFWFRJRiAtaiBBQ0NFUFQK
+CgojIEVuYWJsZSBsb2NhbC1pbnRlcm5ldCBmb3J3YXJkaW5nCiRJUFRBQkxFUyAtQSBsb2NhbC1m
+d2QgLXAgdGNwIC0tZHBvcnQgMTEwIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgbG9jYWwtZndkIC1w
+IHRjcCAtLWRwb3J0IDgwIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgbG9jYWwtZndkIC1wIHRjcCAt
+LWRwb3J0IDIxIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgbG9jYWwtZndkIC1wIHRjcCAtLWRwb3J0
+IDUzIC1qIEFDQ0VQVAokSVBUQUJMRVMgLUEgbG9jYWwtZndkIC1wIHRjcCAtLWRwb3J0IDQ0MyAt
+aiBBQ0NFUFQKJElQVEFCTEVTIC1BIGxvY2FsLWZ3ZCAtcCB1ZHAgLS1kcG9ydCA1MyAtaiBBQ0NF
+UFQKCgoKIyBOb3cgd2UgbWFzcXVlcmFkZSB0aGUgc3R1ZmYgd2UgYWxsb3cKJElQVEFCTEVTIC10
+IG5hdCAtQSBQT1NUUk9VVElORyAtbyAkRVhUSUYgLWogTUFTUVVFUkFERQoKCiMgRFJPUCBBTEwg
+T1RIRVIgVFJBRkZJQwokSVBUQUJMRVMgLUEgbG9jYWwgLWogRFJPUAokSVBUQUJMRVMgLUEgZXh0
+IC1qIERST1AKCiMgUmVtb3ZlIHRoZSBjb21wbGV0ZSBibG9ja3MKJElQVEFCTEVTIC1EIElOUFVU
+IDEKJElQVEFCTEVTIC1EIE9VVFBVVCAxCiRJUFRBQkxFUyAtRCBGT1JXQVJEIDEKCiMgRW5hYmxl
+IElQLUZvcndhcmRpbmcKZWNobyAxID4gL3Byb2Mvc3lzL25ldC9pcHY0L2lwX2ZvcndhcmQK
 
-Jesse Gordon
-
-
-Nikola Engineering Inc.
-224 W. Washington St.
-Suite 104
-Sequim, WA 98382-3371
-Tel  (360)582-1051
-Fax (360)582-1104
-
-
+------=_20060412103311_66283--
 
 
