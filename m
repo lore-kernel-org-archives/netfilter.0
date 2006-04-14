@@ -1,12 +1,10 @@
-From: Oleg <xsov@mail.ru>
+From: "Diego Lacerda" <diegolacerda@gmail.com>
 Subject: Re: Fixup protocol
-Date: Fri, 14 Apr 2006 08:14:24 +0400
-Message-ID: <200604140814.24600.xsov@mail.ru>
-References: <cc86d0010604131641r157d57eu1b0cda9962b7d410@mail.gmail.com>
+Date: Fri, 14 Apr 2006 11:40:50 -0300
+Message-ID: <cc86d0010604140740j76c73230le64852f5e0f35b1d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <cc86d0010604131641r157d57eu1b0cda9962b7d410@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,13 +19,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> I'm searching for solution about the Cisco PIX fixup protocol
-> (application inspection) in Linux OS.
-> This solution ensures the secure use of applications and services, by
-> enabling Adaptative Security Algorithm.
-Take a look at the unclean module, it supports TCP, UDP, ICMP, IP.
+>> Hi people,
+>>
+>> Someone can help me?
+>>
+>> I'm searching for solution about the Cisco PIX fixup protocol
+>> (application inspection) in Linux OS.
 
--- 
-Best regards, Oleg
+>The only PIX fixup results I have seen were for smtp and those are not
+>so good. The PIX smtp fixup is considered quite brain-dead by many (it
+>doesn't speak ESMTP), so I don't know if using it is such a good idea.
+>(The other fixup's may be better, though.)
+>Anyway, you want to configure Cisco PIX fixup in Linux or what ? AFAIK
+>this is a PIX solution only.
 
+I want to configure something similar to Cisco PIX fixup in Linux.
+
+Thanks,
+Diego Lacerda.
 
