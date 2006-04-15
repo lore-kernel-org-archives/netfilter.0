@@ -1,7 +1,7 @@
-From: "Diego Lacerda" <diegolacerda@gmail.com>
-Subject: Re: Fixup protocol
-Date: Fri, 14 Apr 2006 11:40:50 -0300
-Message-ID: <cc86d0010604140740j76c73230le64852f5e0f35b1d@mail.gmail.com>
+From: "o omida parasita" <izghitu@gmail.com>
+Subject: Problem with iptables/geoip
+Date: Sat, 15 Apr 2006 11:57:46 +0300
+Message-ID: <948a6d890604150157o41fae766l3c344ef5bcef7e26@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,22 +19,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
->> Hi people,
->>
->> Someone can help me?
->>
->> I'm searching for solution about the Cisco PIX fixup protocol
->> (application inspection) in Linux OS.
+Hello,
+I compiled successfuly iptables with geoip support using the guide
+from here: http://people.netfilter.org/peejix/geoip/howto/geoip-HOWTO-1.htm=
+l
+The problem is when I do the following for example:iptables -A INPUT
+-m geoip ! --src-cc CA -j DROP
+I receive the following error: iptables: Unknown error 4294967295
 
->The only PIX fixup results I have seen were for smtp and those are not
->so good. The PIX smtp fixup is considered quite brain-dead by many (it
->doesn't speak ESMTP), so I don't know if using it is such a good idea.
->(The other fixup's may be better, though.)
->Anyway, you want to configure Cisco PIX fixup in Linux or what ? AFAIK
->this is a PIX solution only.
+I did all this on FC4 with a 2.6 kernel
 
-I want to configure something similar to Cisco PIX fixup in Linux.
+Please help
 
-Thanks,
-Diego Lacerda.
+Thank you
 
