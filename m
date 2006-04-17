@@ -1,12 +1,11 @@
-From: Brad Lhotsky <lhotskyb@grc.nia.nih.gov>
-Subject: Re: same ip to multiple hostnames block
-Date: Mon, 17 Apr 2006 11:41:44 -0400
-Message-ID: <4443B738.8030102@grc.nia.nih.gov>
-References: <52837e3e0604170613v2a6903fey50f0e983e5a04924@mail.gmail.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: Restrict based on time of day
+Date: Mon, 17 Apr 2006 09:09:45 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE58290167572@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <52837e3e0604170613v2a6903fey50f0e983e5a04924@mail.gmail.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,62 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Bruno Nunes <nunesb@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Grant Taylor <gtaylor@riverviewtech.net>
 Cc: netfilter@lists.netfilter.org
 
-That sounds like you're doing something similar to Apache's Name Based 
-Virtual Hosting on the IIS Server.  I've never run IIS, so I have no 
-idea.  But this is not a Network level issue, it's a web server issue.
+I also recompile the kernel on many of my boxes but this isn't my box
+nor my configuration and I don't want to break anything in their
+environment at this time.
 
-Apache would have something like this:
+Overall, I'm just gathering information for them so I can propose their
+options.
 
-<VirtualHost 1.2.3.4>
-    ServerName zeus.xxxxxxxxxx.com
-    DocumentRoot /www/zeus/html
-    <Directory /www/zeus/html>
-     Order deny,allow
-     Allow from all
-    </Directory>
-</VirtualHost>
-
-
-<VirtualHost 1.2.3.4>
-    ServerName intranet.xxxxxxxxx.com
-    DocumentRoot /www/intranet/html
-
-    <Directory /www/intranet/html>
-     Order deny,allow
-     Deny from all
-     Allow from 1.2.3.0/24 # OUR LOCAL SUBNET
-    </Directory>
-</VirtualHost>
-
-So not a Layer 3 or 4 decision here.  This is a Layer 7 issue.
-
-Bruno Nunes wrote:
-> Hi,
-> 
-> I have:
-> 
-> intranet.xxxxxxxxxxx.com  -> ip A
-> zeus.xxxxxxxxxxx.com.  -> ip A
-> 
-> both are redirections made with iptables to make ip A (local) accessed
-> by world wide. When someone tries to access zeus or intranet by the
-> hostname the host machine running IIS knows which website the user is
-> trying to access.
-> 
-> my problem is:
-> 
-> how to block intranet.xxxxxxxx.com to be accessed by worldwide if it
-> has the same ip as zeus.xxxxxxx.com? can i block by hostnames instead
-> of an ip address??
-> 
-> thanks
-
--- 
-Brad Lhotsky <lhotskyb@grc.nia.nih.gov>
-NCTS Computer Specialist
-Phone: 410.558.8006
+> -----Original Message-----
+> From: Grant Taylor [mailto:gtaylor@riverviewtech.net]
+> Sent: Sunday, April 16, 2006 8:21 PM
+> To: Gary W. Smith
+> Cc: netfilter@lists.netfilter.org
+> Subject: Re: Restrict based on time of day
+>=20
+> > Does this one require a kernel recompile or can you link it
+externally?
+>=20
+> Well, I always recompile my kernel.  I suppose you could compile it in
+as
+> a module.  That is if there are not other internal structures that
+change
+> when you introduce the new feature.  Are you opposed to recompiling
+the
+> kernel?  If so, can I ask why?
+>=20
+>=20
+>=20
+>=20
+> Grant. . . .
 
