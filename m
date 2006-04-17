@@ -1,10 +1,11 @@
-From: "big one" <bigone@qon.lao.net>
-Subject: TCPFlags Option Error
-Date: Sun, 16 Apr 2006 10:09:25 -0700
-Message-ID: <20060416100925.9B4B33F0@resin04.mta.everyone.net>
-Reply-To: bigone@qon.lao.net
+From: BTP <smokefat@gmail.com>
+Subject: iptables, eth0, snort, ARP packets problem
+Date: Sun, 16 Apr 2006 23:05:16 -0300
+Message-ID: <42ad30bb0604161905m2d8450c3p941f5e8c93550ada@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,50 +17,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello,
 
-I had installed new kernel 2.6.16.5 on Debian knoppix 3.4 with all IP Tables kernel options enabled.
+I have this strange problem that I can't figure out, and I'm not an
+expert in this area yet so I was wondering if someone could shed some
+light on this for me.
 
-The setup is one interface: one PC with one external ethernet modem.
+I am hooked up to a cable modem, whose activity light is always
+flashing and turns out to be sending my directly hooked up laptop ARP
+packets, averaging 11Kb/s (who-has xxx.xxx.xxx.xxx tell
+xxx.xxx.xxx.xxx) - whether connected or not.
 
-I use: Shorewall 3.0.6, IPTables: 1.3.5 
+In Windows XP Pro when I run snort, I can log this incoming stream all
+the time. On my Linux system, it is possible to also receive this
+stream (and snort logs it into the database for me as "BAD-TRAFFIC" -
+loopback) or not to receive this stream, depending on the _order_ in
+which I invoke snort, eth0 (the only interface), and iptables.
 
-Everything is ok, except TCPFlags option at /etc/shorewall/interfaces:
+[start snort]
+[ifup eth0]
+[invoke iptables firewall rules] **
 
-#ZONE INTERFACE BROADCAST OPTIONS
-#net  eth0      detect    norfc1918,routefilter,dhcp,blacklist
-net   eth0      detect    norfc1918,routefilter,dhcp,blacklist,tcpflags
+** As soon as I invoke iptables, snort begins to record all this
+traffic as alerts into my database.
 
-If I delete tcpflags, the shorewall started succesfully.
+[ifup eth0]
+[start snort]
+[invoke iptables firewall rules]
 
-If I use tcpflags options:
+The preceding order of commands does NOT make snort log all this
+traffic log to the database.
 
-(from trace / debug output):
+After my hard drive is going crazy filling up the database, it does
+not matter if I play around with bringing up/down my interface eth0 or
+changing the rules in iptables (I just set all Policies to accept, as
+I don't know how to unload the whole program modules from memory).
 
-+ run_iptables -A logflags -j REJECT --reject-with tcp-reset
-+ '[' -n '' ']'
-+ '[' -n Yes ']'
-+ '[' -f /tmp/shorewall.SaCWSI/iprange ']'
-+ /sbin/iptables -A logflags -j REJECT --reject-with tcp-reset
-iptables: Unknown error 4294967295
-+ '[' -z '' ']'
-+ error_message 'ERROR: Command "/sbin/iptables -A' logflags -j REJECT --reject-with 'tcp-reset" Failed'
-+ echo ' ERROR: Command "/sbin/iptables -A' logflags -j REJECT --reject-with 'tcp-reset" Failed'
-ERROR: Command "/sbin/iptables -A logflags -j REJECT --reject-with tcp-reset" Failed
-+ stop_firewall
-+ '[' -n /var/lib/shorewall/shorewall.JIpwiX ']'
-+ rm -f /var/lib/shorewall/shorewall.JIpwiX
-+ set +x
+However, running 'ifconfig' will display as my eth0 and lo interfaces
+to be constantly receiving approximately 11Kb/s. Sometimes if eth0 is
+down, lo receives all the traffic. Sometimes they both do, and
+sometimes just eth0. I have been experimenting for a while, but
+dealing with three variables and constantly rebooting to notice
+changes is time consuming.
 
-How to solve this problem?
-Thank you
+Why am I getting this constant flow of ARP packets? but more
+importantly, what is the order in which iptables and snort see
+traffic?? They're both hooked up to the same interface and I'm just
+using iptables as a firewall. I believe snort does not rely on
+iptables/netfilter's behaviour in order to see traffic unless snort is
+running with the 'inline' option, which isn't the case here.
 
-_____________________________________________________________
-= You want FREE web-based email ? 
-= You want your own @qon.lao.net address??
-= Then you want LaoNet's WebMail !
-= Get it at http://webmail.lao.net !!
+Although, I am confused. Is there something I should know about how
+snort and iptables behave in relation to eachother and the order of
+bring up the interface??
+
+
+Thanks
+
+Bart
 
