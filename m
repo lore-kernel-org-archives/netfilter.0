@@ -1,7 +1,7 @@
-From: "Stephan Higuti" <higuti.sam@gmail.com>
-Subject: Let Real Ip's behind Firewall
-Date: Mon, 17 Apr 2006 09:25:52 -0300
-Message-ID: <3da957060604170525q177719cfy3f3347f3061cf411@mail.gmail.com>
+From: "Bruno Nunes" <nunesb@gmail.com>
+Subject: same ip to multiple hostnames block
+Date: Mon, 17 Apr 2006 10:13:33 -0300
+Message-ID: <52837e3e0604170613v2a6903fey50f0e983e5a04924@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,14 +19,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello guys,
+Hi,
 
-Anybody have an idea of how i can let my servers with real ip's behind
-of my firewall running iptables?
-Use i forward?
-Can i do this?
+I have:
 
-Cheers
+intranet.xxxxxxxxxxx.com  -> ip A
+zeus.xxxxxxxxxxx.com.  -> ip A
 
-Stephan
+both are redirections made with iptables to make ip A (local) accessed
+by world wide. When someone tries to access zeus or intranet by the
+hostname the host machine running IIS knows which website the user is
+trying to access.
+
+my problem is:
+
+how to block intranet.xxxxxxxx.com to be accessed by worldwide if it
+has the same ip as zeus.xxxxxxx.com? can i block by hostnames instead
+of an ip address??
+
+thanks
 
