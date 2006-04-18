@@ -1,10 +1,9 @@
-From: Sebastien Tandel <standel@info.ucl.ac.be>
+From: michael@grife.net
 Subject: Re: udp clients
-Date: Tue, 18 Apr 2006 13:58:22 +0200
-Message-ID: <4444D45E.604@info.ucl.ac.be>
+Date: Tue, 18 Apr 2006 23:02:31 +1000 (EST)
+Message-ID: <Pine.LNX.4.64.0604182259540.26313@amp.grife.net>
 References: <44447DB9.4080409@elgas.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <44447DB9.4080409@elgas.com.au>
 List-Id: <netfilter.vger.kernel.org>
@@ -17,49 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Dallas Clarke <dallas.clarke@elgas.com.au>, netfilter@lists.netfilter.org
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 Hi,
 
-Can you give some more precision?
+> Is this the standard way netfilter works, have I configured something wrong
 
-What's the physical network configuration? how are the network
-interfaces configured?
-then
-   iptables -L -v -n
-   iptables -t nat -v -n
-   route -n
+How have you configured the firewall?
 
-thx
+Something like the output of "iptables -L" from the command line is good.
 
-Dallas Clarke wrote:
-> Hello All,
-> 
-> I am running a udp client behind an iptables firewall, I can open a
-> socket, send from the socket, but I can only receive one packet back
-> from the server - all other packets are blocked.
-> 
-> Is this the standard way netfilter works, have I configured something
-> wrong (straight out of the box fedora core 5).
-> 
-> This is a real problem from me since I can't expect every user to drop
-> their firewall so they can use our client software.
-> 
-> Thanks
-> 
-> Dallas.
-> 
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFERNRew76McB8jGxkRAnsLAJ0eiuyMB+gfnDtQknHuuregF4yKHgCfZRtt
-BhSwQ6TuK5s/5wEVcNIwj5k=
-=st47
------END PGP SIGNATURE-----
+Michael
+michael@grife.net
 
