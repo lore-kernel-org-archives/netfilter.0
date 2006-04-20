@@ -1,10 +1,12 @@
-From: Matthieu N <matmailinglist@gmail.com>
-Subject: ipsec policy match support
-Date: Thu, 20 Apr 2006 18:14:00 +0200
-Message-ID: <4447B348.1090604@gmail.com>
+From: Mario <mariounixuser@yahoo.com.mx>
+Subject: Re: packets loging
+Date: Thu, 20 Apr 2006 15:47:08 -0500
+Message-ID: <4447F34C.6030500@yahoo.com.mx>
+References: <002d01c66445$01dd28f0$0e01050a@CyberAdmin>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <002d01c66445$01dd28f0$0e01050a@CyberAdmin>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,25 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: robee <mlody@elpec.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+robee wrote:
 
-Could you give me the best way to verify if my configuration is "policy
-match" ready?
+> when i use -j LOG target, netfilter writes so many information to=20
+> syslog. what can i use to write only IN and OUT interface, SRC and DST=20
+> host?
+>
+> robee
+>
+>
+$myLoglevel=3Dinfo ...
 
-My OS is Debian:
-Kernel is 2.6.16 (unstable arg...)
-own compiled iptables 1.3.5
+iptables -A _____ -i $intif -s $Src -o $outif -d $Dest ________ -j LOG=20
+--log-prefix "xxxxxxx" --log-level $myLoglevel
 
---> my shorewall still display "Your kernel and/or iptables does not
-support policy match: ipsec" :-(
+and a little change in syslog.conf... like: kern.=3Dinfo=20
+/var/log/kern.info.log ....
 
-thanks a lot!
 
-Matthieu
 
-ps: sorry for my english
+
+__________________________________________________
+Correo Yahoo!
+Espacio para todos tus mensajes, antivirus y antispam =A1gratis!=20
+Reg=EDstrate ya - http://correo.yahoo.com.mx/=20
 
 
