@@ -1,7 +1,7 @@
-From: Casey Scott <casey@phantombsd.org>
-Subject: iptables throttle via tc
-Date: Thu, 20 Apr 2006 08:13:15 -0700 (PDT)
-Message-ID: <4435274.01145545995631.JavaMail.root@tomcat.phantombsd.org>
+From: Matthieu N <matmailinglist@gmail.com>
+Subject: ipsec policy match support
+Date: Thu, 20 Apr 2006 18:14:00 +0200
+Message-ID: <4447B348.1090604@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,14 +18,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Is it possible for iptables to use a TC tbf bucket to throttle a connection?
+Hi,
 
-I have a machine with 2 NICs being used as a gateway for an internal network.
-I'd like to throttle the rate the internal interface will send packets into 
-the local network that originated off network (Internet). I don't want to use
-iptables to drop the packets because bandwidth is still consumed by the dropped
-packets.
+Could you give me the best way to verify if my configuration is "policy
+match" ready?
 
-Regards,
-Casey
+My OS is Debian:
+Kernel is 2.6.16 (unstable arg...)
+own compiled iptables 1.3.5
+
+--> my shorewall still display "Your kernel and/or iptables does not
+support policy match: ipsec" :-(
+
+thanks a lot!
+
+Matthieu
+
+ps: sorry for my english
+
 
