@@ -1,9 +1,9 @@
-From: Casey Scott <casey@phantombsd.org>
-Subject: Re: iptables throttle via tc cont.
-Date: Thu, 20 Apr 2006 21:16:50 -0700 (PDT)
-Message-ID: <13823905.31145593010041.JavaMail.root@tomcat.phantombsd.org>
+From: Maurice Volaski <mvolaski@aecom.yu.edu>
+Subject: Re: iptables is complaining with bogus unknown error
+ 18446744073709551615
+Date: Fri, 21 Apr 2006 02:21:17 -0400
+Message-ID: <a06230910c06e2510acfa@[129.98.90.227]>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,56 +15,120 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
 
-For the mailling list record. This works:
+At least since 2.6.1.16.1, many calls to iptables no longer function 
+at least under 64-bit x86, presumably due to a bug in the netfilter 
+kernel code.
 
-Iptables:
+The problem is still present in 2.6.17-rc2.
 
--A FORWARD -s 192.168.1.0/24 -j MARK --set-mark 3
--A POSTROUTING -s ! 192.168.1.0/24 -d 192.168.1.0/24 -j MARK --set-mark 4
+The error from iptables is
+iptables: unknown error 18446744073709551615
 
-TC:
+Examples of rules that give the error are
 
-tc qdisc add dev eth0 root handle 11: cbq bandwidth 100Mbit avpkt 1000 mpu 64
-tc class add dev eth0 parent 11:0 classid 11:1 cbq rate 2000kbit weight 15kbit allot 1514 prio 1 avpkt 1000 bounded
-tc filter add dev eth0 parent 11:0 protocol ip handle 4 fw flowid 11:1
-tc qdisc add dev eth1 root handle 10: cbq bandwidth 10Mbit avpkt 1000 mpu 64
-tc class add dev eth1 parent 10:0 classid 10:1 cbq rate 500kbit weight 2kbit allot 1514 prio 1 avpkt 1000 bounded
-tc filter add dev eth1 parent 10:0 protocol ip handle 3 fw flowid 10:1
+1) iptables -A INPUT -i bond0 -s 129.98.90.0/24 -p tcp --dport 548 -j ACCEPT
+2) iptables -A INPUT -i bond0 -s 129.98.90.101/32 -p tcp --dport 497 -j ACCEPT
+3) iptables -A INPUT -i bond0 -s 129.98.90.227/32 -p tcp --dport 22 -j ACCEPT
 
-This configuration restricts downloads on internal clients to 2000KB, and uploads to 500KB while not effecting the host.
+Example of a rule that does not give the error:
+1) iptables -A INPUT -i bond0 -p ICMP --icmp-type echo-request -s 
+129.98.90.13/32 -j ACCEPT
 
-Casey
+The computer is using IPv4 and not IPv6, which has not been compiled into the
+kernel.
 
------ Original Message -----
-From: Casey Scott <casey@phantombsd.org>
-To: netfilter@lists.netfilter.org
-Sent: Thursday, April 20, 2006 11:59:34 AM GMT-0800
-Subject: iptables throttle via tc cont.
+iptables is version 1.3.5.
 
-After working some more on my original post, I've come up with this. It doesn't work,
-though I think it should. I am trying to throttle incoming connections from the Internet. 
-Since tc filters work on transmit, the best place to restrict seems to be from eth1 to 
-eth0 (FORWARD). That way, the restriction imposed on the trasmit of eth1 won't apply to a connection from the internal network going out (like an file upload). The box in 
-question has eth0 in an internal network and eth1 on the WAN link.
+Kernel configuration related to iptables follows:
 
-iptables -t mangle -A FORWARD -i eth0 -j MARK --set-mark 1
-iptables -t mangle -A FORWARD -i eth1 -j MARK --set-mark 2
+CONFIG_IP_NF_CONNTRACK=m
+CONFIG_IP_NF_CT_ACCT=y
+CONFIG_IP_NF_CONNTRACK_MARK=y
+CONFIG_IP_NF_CONNTRACK_EVENTS=y
+CONFIG_IP_NF_CONNTRACK_NETLINK=m
+# CONFIG_IP_NF_CT_PROTO_SCTP is not set
+CONFIG_IP_NF_FTP=m
+# CONFIG_IP_NF_IRC is not set
+# CONFIG_IP_NF_NETBIOS_NS is not set
+# CONFIG_IP_NF_TFTP is not set
+# CONFIG_IP_NF_AMANDA is not set
+# CONFIG_IP_NF_PPTP is not set
+# CONFIG_IP_NF_H323 is not set
+# CONFIG_IP_NF_QUEUE is not set
+CONFIG_IP_NF_IPTABLES=m
+CONFIG_IP_NF_MATCH_IPRANGE=m
+CONFIG_IP_NF_MATCH_TOS=m
+CONFIG_IP_NF_MATCH_RECENT=m
+CONFIG_IP_NF_MATCH_ECN=m
+CONFIG_IP_NF_MATCH_DSCP=m
+CONFIG_IP_NF_MATCH_AH=m
+CONFIG_IP_NF_MATCH_TTL=m
+CONFIG_IP_NF_MATCH_OWNER=m
+CONFIG_IP_NF_MATCH_ADDRTYPE=m
+CONFIG_IP_NF_MATCH_HASHLIMIT=m
+CONFIG_IP_NF_FILTER=m
+# CONFIG_IP_NF_TARGET_REJECT is not set
+CONFIG_IP_NF_TARGET_LOG=m
+CONFIG_IP_NF_TARGET_ULOG=m
+CONFIG_IP_NF_TARGET_TCPMSS=m
+# CONFIG_IP_NF_NAT is not set
+CONFIG_IP_NF_MANGLE=m
+# CONFIG_IP_NF_TARGET_TOS is not set
+# CONFIG_IP_NF_TARGET_ECN is not set
+# CONFIG_IP_NF_TARGET_DSCP is not set
+# CONFIG_IP_NF_TARGET_TTL is not set
+# CONFIG_IP_NF_TARGET_CLUSTERIP is not set
+CONFIG_IP_NF_RAW=m
+CONFIG_IP_NF_ARPTABLES=m
+CONFIG_IP_NF_ARPFILTER=m
+CONFIG_IP_NF_ARP_MANGLE=m
 
-tc qdisc del dev eth0 root 2>/dev/null
-tc qdisc add dev eth0 root handle 1:0 htb default 1
-tc class add dev eth0 parent 1:0 classid 1:1 htb rate 100mbit
-tc class add dev eth0 parent 1:1 classid 1:10 htb rate 2kbit
-tc filter add dev eth0 parent 1:0 protocol ip prio 0 handle 1 fw classid 1:10
-tc filter add dev eth0 parent 1:0 protocol ip prio 0 handle 2 fw classid 1:1
+CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+# CONFIG_NETFILTER_XT_TARGET_CONNMARK is not set
+CONFIG_NETFILTER_XT_TARGET_MARK=m
+CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
+# CONFIG_NETFILTER_XT_TARGET_NOTRACK is not set
+CONFIG_NETFILTER_XT_MATCH_COMMENT=m
+CONFIG_NETFILTER_XT_MATCH_CONNBYTES=m
+CONFIG_NETFILTER_XT_MATCH_CONNMARK=m
+CONFIG_NETFILTER_XT_MATCH_CONNTRACK=m
+CONFIG_NETFILTER_XT_MATCH_DCCP=m
+CONFIG_NETFILTER_XT_MATCH_ESP=m
+CONFIG_NETFILTER_XT_MATCH_HELPER=m
+CONFIG_NETFILTER_XT_MATCH_LENGTH=m
+CONFIG_NETFILTER_XT_MATCH_LIMIT=m
+CONFIG_NETFILTER_XT_MATCH_MAC=m
+CONFIG_NETFILTER_XT_MATCH_MARK=m
+CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
+CONFIG_NETFILTER_XT_MATCH_PKTTYPE=m
+CONFIG_NETFILTER_XT_MATCH_REALM=m
+CONFIG_NETFILTER_XT_MATCH_SCTP=m
+CONFIG_NETFILTER_XT_MATCH_STATE=m
+CONFIG_NETFILTER_XT_MATCH_STRING=m
+CONFIG_NETFILTER_XT_MATCH_TCPMSS=m
 
-Though I see packets being caught by the iptables rules, they never seem to 
-get the tc filters applied to them.
+lsmod shows
+xt_state                4928  0
+ipt_LOG                 8960  0
+ip_conntrack_ftp       10000  0
+ip_conntrack           57880  2 xt_state,ip_conntrack_ftp
+nfnetlink               8520  1 ip_conntrack
+iptable_filter          5440  0
+ip_tables              22168  1 iptable_filter
+x_tables               17800  3 xt_state,ipt_LOG,ip_tables
 
-Thanks,
-Casey
 
+This issue has been posted to netfilter bugzilla as 
+https://bugzilla.netfilter.org/bugzilla/show_bug.cgi?id=467
+and to kernel bugzilla as
+http://bugzilla.kernel.org/show_bug.cgi?id=6420
+-- 
 
+Maurice Volaski, mvolaski@aecom.yu.edu
+Computing Support, Rose F. Kennedy Center
+Albert Einstein College of Medicine of Yeshiva University
 
