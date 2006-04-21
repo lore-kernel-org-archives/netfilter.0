@@ -1,11 +1,14 @@
-From: "Asfand Yar Qazi" <ayqazi@gmail.com>
-Subject: Check my firewall please?
-Date: Fri, 21 Apr 2006 10:24:40 +0100
-Message-ID: <79328ea80604210224ja7c5bffl1c56a97ae13374c6@mail.gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: packets loging
+Date: Fri, 21 Apr 2006 13:15:46 +0200 (CEST)
+Message-ID: <52345.193.173.147.3.1145618146.squirrel@webmail.sterenborg.info>
+References: <002d01c66445$01dd28f0$0e01050a@CyberAdmin><4447F34C.6030500@yahoo.com.mx><000d01c6650d$99afe6e0$0e01050a@CyberAdmin><60102.193.173.147.3.1145604135.squirrel@webmail.sterenborg.info><002801c66516$40ff0ae0$0e01050a@CyberAdmin>
+	<51316.193.173.147.3.1145606258.squirrel@webmail.sterenborg.info>
+	<004401c66520$f6286880$0e01050a@CyberAdmin>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <004401c66520$f6286880$0e01050a@CyberAdmin>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,74 +22,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Sorry if you get so many of these posts, but I'd be grateful if you
-could check my firewall/NAT rules on my box which now acts as an ADSL
-router:
+On Fri, April 21, 2006 10:52, robee wrote:
+> disk space is not a problem but disk usage increased 10 times during lo=
+ging
+> dstport 80 only. it is a gateway for large network.
 
-#!/bin/bash
+If it's so large, maybe you can setup a log-server and do remote logging.
+(Have you also looked at ULOG ?) To me, logging *all* packets to dport 80
+seems to be overkill but that's up to you.
 
-MYADDR=3D89.145.208.16
+> When i use limit module is it possible that loging system miss some
+> significant connection?
 
-function pppnat()
-{
-        # Source NAT on ppp0 - change source address of packets sent
-        # out to the address on interface ppp0
+Yes, you *will* miss packets when limiting LOG (as you have a busy networ=
+k).
+I think the most important packet is the first one in a connection so you=
+ can
+also choose to just log the NEW packets :
 
-        # The following iptables command should only be used to change
-        # the source IP for dynamically allocated IP addresses, as it
-        # forgets existing connections if the link goes down.
-        # iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE || klear
-
-        iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to ${MYADDR}
-
-        # Port-forward 22 onto big (so ssh works).
-        iptables -t nat -A PREROUTING -p tcp --dport 22 -i ppp0 \
-                                      -j DNAT --to 10.0.0.1
-
-        # Port-forward 12003 onto suhaib (so azureus works properly).
-        iptables -t nat -A PREROUTING -p tcp --dport 12003 -i ppp0 \
-                                      -j DNAT --to 10.0.0.3
-}
-
-function pppfilter()
-{
-
-        iptables -N pppfilter || klear
-
-        # Accept connections that do not originate from ppp0
-        iptables -A pppfilter -m state --state NEW -i ! ppp0 -j ACCEPT || k=
-lear
-
-        # Accept packets from ppp0 for connections that already exist
-        iptables -A pppfilter -m state --state ESTABLISHED,RELATED \
-                              -j ACCEPT || klear
-
-        # Log NEW ssh connect attempts from ppp0
-        iptables -A pppfilter -p tcp --dport 22 \
-                              -m state --state NEW \
-                              -i ppp0 \
-                              -j LOG --log-prefix=3D"[ssh] " || klear
-
-        # Accept ssh packets from ppp0
-        # TODO: only accept ssh packets from work IP
-        iptables -A pppfilter -p tcp --dport 22 -j ACCEPT || klear
-
-        # Log all new connection attempts
-        # Not needed really, is it?...
-        # iptables -A pppfilter -m state --state NEW \
-        #                       -m limit --limit 10/minute -i ppp0 \
-        #                       -j LOG --log-prefix=3D"[block addr] " || kl=
-ear
-
-        # Reject everything not already accepted
-        iptables -A pppfilter -j REJECT || klear
+$ipt -A INPUT -m state --state NEW -p tcp --dport 80 \
+  -j LOG --log-level <...> --log-prefix "<...>"
 
 
-        # Jump to that chain from INPUT and FORWARD chains.
-        iptables -A INPUT -j pppfilter || klear
-        iptables -A FORWARD -j pppfilter || klear
-}
+Gr,
+Rob
 
-pppnat
-pppfilter
+
 
