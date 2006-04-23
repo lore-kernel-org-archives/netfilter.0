@@ -1,15 +1,10 @@
-From: "Toby DiPasquale" <codeslinger@gmail.com>
-Subject: Re: one rule to create per IP connlimits?
-Date: Sat, 22 Apr 2006 14:48:34 -0400
-Message-ID: <876ef97a0604221148t6d68337ex3862a3a641d68674@mail.gmail.com>
-References: <5cc9c8f90604211201keda9583yf0026180cbfe9a75@mail.gmail.com>
-	<006201c665f5$00205670$0e01050a@CyberAdmin>
-	<876ef97a0604220615g530bd141uffe611fec9759a8e@mail.gmail.com>
-	<1145720124.2502.2.camel@robee.mars.cyberbajt.pl>
+From: "Asfand Yar Qazi" <ayqazi@gmail.com>
+Subject: Adaptive stealthing/unstealthing of port 113
+Date: Sun, 23 Apr 2006 11:51:39 +0000
+Message-ID: <79328ea80604230451w61a266f3w59da83ef8dce2540@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1145720124.2502.2.camel@robee.mars.cyberbajt.pl>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,28 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: mlody@elpec.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 4/22/06, robee <mlody@elpec.com> wrote:
-> do you mean it shoud be indyvidual rule for each IP separatelly?
+Hi,
 
-Yes, that's right. So, instead of this:
+On Steve Gibson's site, I had a few interesting things to read about
+the ZoneAlarm firewall:
 
-iptables -A FORWARD -p tcp --syn -s 10.10.2.96/27 -m connlimit
---connlimit-above 20 -j REJECT
+(quote)
+Even after many years, the (free) ZoneAlarm personal firewall from
+Zone Labs is the only personal firewall to "adaptively" stealth port
+113. Unlike any other firewall or NAT router (any of which could also
+do the same) this allows port 113 to be stealthed to any passing
+Internet scanners or probes, but "unstealthed" for any valid IDENT
+connection attempts originating from remote servers with which the
+user's computer is attempting to connect. (Since this could easily be
+done by any personal firewall or even NAT routers, I am hopeful that
+this feature might yet appear in other products.)
 
-which will not do what you want, you'd instead use something this:
+"Adaptive Stealthing" means that when a TCP SYN packet arrives to
+request a connection to your machine's port 113, ZoneAlarm checks, on
+the fly, to see whether your machine currently has any sort of
+"relationship" with the remote machine (such as a pending outgoing
+connection attempt). If so, the remote machine is considered to be
+"friendly" and its IDENT request packet is allowed to pass through
+ZoneAlarm's firewall. But if the IDENT originating machine is not
+known to ZoneAlarm as a "friendly" machine, the connection requesting
+packet is dropped and discarded, rendering port 113 stealth to all
+unknown port scanners. It's very slick.
+(end quote)
 
-for i in `seq 97 126`; do
-    iptables -A FORWARD \
-        -p tcp --syn \
-        -s 10.10.2.${i} \
-        -m connlimit --connlimit-above 20 \
-        -j REJECT
-done
+I wanna do it on my ADSL firewall!
 
---
-Toby DiPasquale
-0x636f6465736c696e67657240676d61696c2e636f6d
+How can I do this?  I realise I could just write a custom module in C,
+but you guys probably know of a way to do it with the existing tools.
+
+Thanks
 
