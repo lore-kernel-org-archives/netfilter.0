@@ -1,11 +1,13 @@
-From: Ivan Gustin <ivan.gustin@pu.t-com.hr>
-Subject: Rerouting remote users to VPN channel
-Date: Mon, 24 Apr 2006 21:23:38 +0200
-Message-ID: <444D25BA.6040505@pu.t-com.hr>
-Reply-To: ivan.gustin@pu.t-com.hr
+From: "Marcos Hack" <marcoshack@gmail.com>
+Subject: Re: DNAT Problems
+Date: Mon, 24 Apr 2006 17:04:16 -0300
+Message-ID: <842e837b0604241304k7a7952a2r4a8cee046b0d90bb@mail.gmail.com>
+References: <20060424182225.9464.qmail@web54710.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060424182225.9464.qmail@web54710.mail.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,53 +18,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: dsylvesteriii@yahoo.com
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+nat PREROUTING is ok.
+filter FORWARD is ok.
 
-I have one specific routing situation that I still can't handle, so I am 
-asking for some help.
+Well, rules sounds good to me.
 
-I have Linux server, one eth interface and 2 DSL links. One DSL is VPN 
-link to another site's Web Intranet application. VPN link itself is 
-realised via DSL line and CISCO router. Local users can work with that 
-application. Another DSL is Internet gateway for local users, and 
-incomming channel for accessing server from outside (there is Siemens 
-DSL router).
+You said that all was working fine before a reboot. Do you install
+some hardware in this machine? All interfaces (eth0, eth1) was
+correctly configured after reboot?
 
-I want to provide that external remote users can connect to that server 
-from Internet and use that Intranet application via another DSL and VPN 
-channel.
+And try to follow traffic using tcpdump on interfaces eth0 and eth1.
 
-Route table:
-# route -n
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use 
-Iface
-192.168.30.9     192.168.93.65    255.255.255.255 UGH   0      0 
-0 eth0
-192.168.93.64    0.0.0.0         255.255.255.192 U     0      0        0 
-eth0
-127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
-0.0.0.0         192.168.93.122   0.0.0.0         UG    0      0        0 
-eth0
 
-...93.64/26 is LAN,
-...93.65 is VPN gateway to Intranet Web server on another site,
-...93.122 is Internet gateway,
-...30.9 is Intranet Web server with The Application on remote site.
 
-Local users can go to Internet and on Intranet app on remote site, and 
-that works fine. I need rules that Internet users comming from public IP 
-using http://mysite.dyndns.biz:myport through ...93.122 can go to 
-http://192.168.30.9:80. I succesfully set forwarding on DSL router so 
-incomming packets comes to server on port 'myport' (I can't 
-reroute/rewrite packets on DSL router itself).
+On 4/24/06, Davis Sylvester <dsylvesteriii@yahoo.com> wrote:
+>
+> For some reason my firewall was working fine until a
+> reboot and now none of the DNAT is working.  The most
+> important thing is that the e-mail server is not
+> receiving mail, it sends just fine.  Also no one can
+> access squirrel mail, again works fine internally.
+>
 
-I tried with one PREROUTING rule, but I can't rewrite both source and 
-destination address, so obviusly I need two rules?
+> *nat
+> :PREROUTING ACCEPT [6384:872118]
+> :POSTROUTING ACCEPT [156:10133]
+> :OUTPUT ACCEPT [1681:126170]
+> -A PREROUTING -d 1.1.1.25 -i eth1 -p tcp -m tcp
+> --sport 1024:65535 --dport 25 -j DNAT --to-destination
+> 192.168.150.20
+> -A PREROUTING -d 1.1.1.25 -i eth1 -p tcp -m tcp
+> --sport 1024:65535 --dport 110 -j DNAT
+> --to-destination 192.168.150.20
+> -A PREROUTING -d 1.1.1.25 -i eth1 -p tcp -m tcp
+> --sport 1024:65535 --dport 143 -j DNAT
+> --to-destination 192.168.150.20
+> -A PREROUTING -d 1.1.1.200 -i eth1 -p tcp -m tcp
+> --sport 1024:65535 --dport 80 -j DNAT --to-destination
+> 192.168.150.200
 
-Thank anyone for any help,
-GI
+> :FORWARD ACCEPT [2955:564452]
+
+> -A FORWARD -d 192.168.150.20 -i eth1 -o eth0 -p tcp -m
+> tcp --sport 1024:65535 --dport 25 -m state --state NEW
+> -j ACCEPT
+> -A FORWARD -d 192.168.150.20 -i eth1 -o eth0 -p tcp -m
+> tcp --sport 1024:65535 --dport 110 -m state --state
+> NEW -j ACCEPT
+> -A FORWARD -d 192.168.150.20 -i eth1 -o eth0 -p tcp -m
+> tcp --sport 1024:65535 --dport 143 -m state --state
+> NEW -j ACCEPT
+> -A FORWARD -i eth0 -o eth1 -m state --state
+> RELATED,ESTABLISHED -j ACCEPT
+> -A FORWARD -i eth1 -o eth0 -m state --state
+> RELATED,ESTABLISHED -j ACCEPT
+> -A FORWARD -d 192.168.150.200 -i eth1 -o eth0 -p tcp
+> -m tcp --sport 1024:65535 --dport 80 -m state --state
+> NEW -j ACCEPT
 
