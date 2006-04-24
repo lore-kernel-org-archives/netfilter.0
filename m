@@ -1,13 +1,10 @@
-From: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
-Subject: Re: one rule to create per IP connlimits?
-Date: Mon, 24 Apr 2006 03:41:16 +0200
-Message-ID: <444C2CBC.7010804@gmx.net>
-References: <5cc9c8f90604211201keda9583yf0026180cbfe9a75@mail.gmail.com>	<006201c665f5$00205670$0e01050a@CyberAdmin>
-	<876ef97a0604220615g530bd141uffe611fec9759a8e@mail.gmail.com>
+From: isp@cgscomm.net
+Subject: about dettecting different TTL value
+Date: Mon, 24 Apr 2006 10:36:36 +0600 (BDT)
+Message-ID: <1161.202.22.193.97.1145853396.squirrel@202.22.193.97>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <876ef97a0604220615g530bd141uffe611fec9759a8e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,26 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Toby DiPasquale <codeslinger@gmail.com>
-Cc: robee <mlody@elpec.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hello,
 
-Toby DiPasquale schrieb:
-> To do this, the connlimit module would have to keep track of
-> individual conntracks, not just aggregate numbers. It doesn't right
-> now, but it could be made to do so.
+I am new here. I am working in an ISP. I like to know that how can I
+prevent user to use multiple computer with single internet connection? I
+have searched on the web and found nothing.
 
-Do you have any plans to change that? If no, do you know if anybody
-is maintaining connlimit right now?
+I think it is only possible by detecting different TTL value that comes
+from same IP address. And I didn't get any thing from the web. I like to
+know that is it possible to do with IPTABLES?
 
-I'd like a combination of hashlimit and connlimit which also works
-for UDP so I can limit the number of simultaneous connections per
-IP to avoid overflowing the conntrack table of upstream firewalls.
+Please someone help me on this matter.
 
+Thanks.
 
-Regards,
-Carl-Daniel
--- 
-http://www.hailfinger.org/
+Hasan Syed Jowhor.
+
 
