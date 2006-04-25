@@ -1,12 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Netfilter journey of a locally generated packet?
-Date: Tue, 25 Apr 2006 14:07:34 +0200 (CEST)
-Message-ID: <61019.193.173.147.3.1145966854.squirrel@webmail.sterenborg.info>
-References: <6C7A33B8773A2E4C9BDF935D13FA3E71630D4D@MAIL1.mediatrix.com>
+From: Torsten Luettgert <t.luettgert@pressestimmen.de>
+Subject: problems with accouting via ULOG
+Date: Tue, 25 Apr 2006 16:10:27 +0200
+Message-ID: <1145974227.8032.9.camel@scaramouche.combox.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6C7A33B8773A2E4C9BDF935D13FA3E71630D4D@MAIL1.mediatrix.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,29 +18,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Mon, April 24, 2006 20:43, Pierre-Marie Wecowski wrote:
-> Hi,
->
-> Is there an exact and complete diagram of a packet journey inside
-> netfilter?
->
-> I have found something strange that may require some explanation:
->
-> I am running Linux 2.6.11 on a device with two network interfaces.
->
-> When I generate locally (local process) a packet (UDP for instance) wit=
-h
-> a source address of one interface and a destination address of the
-> other, the packet go through PREROUTING chain in the mangle table but
-> not in the nat table.
->
-> Is there a reason behind this behaviour?
+Hello,
 
-Because the IP is not NAT-ed, just routed ??
+I want to setup traffic accounting with ulog-acctd and the ULOG target.
+The server I'm using has 2 interfaces, eth1 is connected to the mirror
+port of the master switch. I put eth1 promisc up without an address, and
+packets are streaming in all right.
 
+But they don't arrive at any netfilter hook (except for multicasts and
+broadcasts), so I can't queue them to the accounting daemon. Searching
+the docs, I found that "promisc receives" don't enter the netfilter
+system at all.
 
-Gr,
-Rob
+I could now bind the nets I want to account to eth1, but then my box
+wouldn't be able to talk to those hosts, and that'd be a bad thing(tm)
+especially because it's the name server :-P
+
+Any advice, anyone? I'm feeling quite screwed up right now.
+
+Thanks in advance,
+Torsten
 
 
 
