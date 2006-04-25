@@ -1,12 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: FORWARD-chain packets go through INPUT-chain ?
-Date: Wed, 26 Apr 2006 11:34:20 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0604261128290.16145@blackhole.kfki.hu>
-References: <444F32A3.7050900@trans.net>
+From: Stratos Margaritis <stratism@gmail.com>
+Subject: Why is this not working???
+Date: Tue, 25 Apr 2006 16:14:59 +0300
+Message-ID: <200604251615.03991.stratism@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; boundary="nextPart1236331.ZeJ9qaCpEK";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <444F32A3.7050900@trans.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +17,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: Philip Westphal <philip@trans.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 26 Apr 2006, Philip Westphal wrote:
+--nextPart1236331.ZeJ9qaCpEK
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-> i think my problem is quit simple, but i=C2=B4m a little bit under pressu=
-re,
-> and google didn=C2=B4t help. i have a firewall machine, with ip6tables
-> running on it, and behind this firewall there is a webserver with
-> apache2 running. the network looks like this:
-[...]
-> my problem is, that packets from the LAPTOP to the APACHE (and
-> vice-versa) go through all 3 chains INPUT, OUTPUT and FORWARD. if i
-> don=C2=B4t make any rules, i have to set all 3 chains to ACCEPT to get
-> packets through. if i have INPUT and OUTPUT on drop (FORWARD is all the
-> time on ACCEPT), i need to allow especially packets to or from port 80
-> or icmpv6 on the INPUT and OUTPUT chain.
+Can someone help me find out why is this rule does not work?
 
-IPv6 is not just IPv4 with bumped up address space: ARP is replaced by ND
-(Neighbour Discovery), which is performed over ICMPv6. So if you block
-ICMPv6 completely in INPUT/OUTPUT, you actually disable IPv6.
+*filter
+:INPUT DROP [1803:271102]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+=2DA INPUT -i lo -j ACCEPT
+=2DA INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+=2DA INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+=2DA INPUT -p tcp -m tcp --dport 25 -j ACCEPT
+=2DA INPUT -p tcp -m tcp --dport 53 -j ACCEPT
+=2DA INPUT -p udp -m udp --dport 53 -j ACCEPT
+=2DA INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+=2DA INPUT -p icmp -j ACCEPT
+=2DA INPUT -p tcp -j REJECT --reject-with tcp-reset
+=2DA INPUT -p tcp --syn -m limit --limit 5/s -i eth0 -j ACCEPT
+=2DA FORWARD -p tcp -i eth0 -s xxx.xxx.xxx.xxx/28 -o eth1 -d yyy.yyy.yyy.yy=
+y -j=20
+ACCEPT
+=2DA FORWARD -j LOG
 
-Have a look at the IETF draft 'Best Current Practice for Filtering ICMPv6
-Messages in Firewalls':
+Where xxx.xxx.xxx.xxx is a real network that should be allowed to contact t=
+he=20
+server yyy.yyy.yyy.yyy both of which are having real IP's.
 
-http://www.ietf.org/internet-drafts/draft-ietf-v6ops-icmpv6-filtering-bcp-0=
-1.txt
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+=2D-=20
+Stratos
+stratism@gmail.com
+
+--nextPart1236331.ZeJ9qaCpEK
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQBETiDX8GO3ry/weE4RAsSjAJ9i4qJJow7teyqyWocbL/WVXoLcSQCgn5Rd
+u9jnSknq+w/9qP+aZu49jGA=
+=9pm6
+-----END PGP SIGNATURE-----
+
+--nextPart1236331.ZeJ9qaCpEK--
 
