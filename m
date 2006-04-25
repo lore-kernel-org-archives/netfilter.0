@@ -1,11 +1,12 @@
-From: "Pierre-Marie Wecowski" <pmwecowski@mediatrix.com>
-Subject: Netfilter journey of a locally generated packet?
-Date: Mon, 24 Apr 2006 14:43:59 -0400
-Message-ID: <6C7A33B8773A2E4C9BDF935D13FA3E71630D4D@MAIL1.mediatrix.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: IPTABLES and outlook express
+Date: Tue, 25 Apr 2006 14:05:15 +0200 (CEST)
+Message-ID: <51025.193.173.147.3.1145966715.squirrel@webmail.sterenborg.info>
+References: <444E0628.3070002@phoenixlogin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <444E0628.3070002@phoenixlogin.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +19,30 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: Pierre-Marie Wecowski <pmwecowski@mediatrix.com>
 
-Hi,
+On Tue, April 25, 2006 13:21, Ravi Kumar wrote:
+> Hi GUYS,
+>
+> Please help me setup iptables to access pop and smtp ( outlook express)
+> when going through squid proxy server.
 
-Is there an exact and complete diagram of a packet journey inside
-netfilter?
+When using smtp and pop I don't think you'll be using Squid. And if you w=
+ould,
+this would be the wrong mailinglist for asking support.
 
-I have found something strange that may require some explanation:
+You fail to say what your setup is and what you have tried already but I =
+guess
+you need this :
+$ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+$ipt -A FORWARD -m state --state NEW -p tcp --dport 25 -j ACCEPT
+$ipt -A FORWARD -m state --state NEW -p tcp --dport 110 -j ACCEPT
 
-I am running Linux 2.6.11 on a device with two network interfaces.
+You can read up on Netfilter at :
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-When I generate locally (local process) a packet (UDP for instance) with
-a source address of one interface and a destination address of the
-other, the packet go through PREROUTING chain in the mangle table but
-not in the nat table.
 
-Is there a reason behind this behaviour?
+Gr,
+Rob
 
-Thank you.
-
-Pierre-Marie Wecowski
-Software Designer
-Mediatrix Telecom
 
 
