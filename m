@@ -1,12 +1,13 @@
-From: Stratos Margaritis <stratism@gmail.com>
-Subject: Why is this not working???
-Date: Tue, 25 Apr 2006 16:14:59 +0300
-Message-ID: <200604251615.03991.stratism@gmail.com>
+From: Samuel =?iso-8859-1?Q?D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
+Subject: Re: Why is this not working???
+Date: Wed, 26 Apr 2006 13:42:26 +0200 (CEST)
+Message-ID: <52275.195.55.244.106.1146051746.squirrel@www.arcoscom.com>
+References: <200604251615.03991.stratism@gmail.com>
+Reply-To: samueldg@arcoscom.com
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1236331.ZeJ9qaCpEK";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200604251615.03991.stratism@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +18,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Stratos Margaritis <stratism@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
---nextPart1236331.ZeJ9qaCpEK
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Perhaps did you need something as:
 
-Can someone help me find out why is this rule does not work?
+-A FORWARD -m state --state RELATED,ESTABLISHED \
+           -j ACCEPT
+-A FORWARD -m state --state NEW \
+           -p tcp \
+           -i eth0 -s xxx.xxx.xxx.xxx/28 \
+           -o eth1 -d yyy.yyy.yyy.yyy \
+           -j ACCEPT
 
-*filter
-:INPUT DROP [1803:271102]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
-=2DA INPUT -i lo -j ACCEPT
-=2DA INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-=2DA INPUT -p tcp -m tcp --dport 22 -j ACCEPT
-=2DA INPUT -p tcp -m tcp --dport 25 -j ACCEPT
-=2DA INPUT -p tcp -m tcp --dport 53 -j ACCEPT
-=2DA INPUT -p udp -m udp --dport 53 -j ACCEPT
-=2DA INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-=2DA INPUT -p icmp -j ACCEPT
-=2DA INPUT -p tcp -j REJECT --reject-with tcp-reset
-=2DA INPUT -p tcp --syn -m limit --limit 5/s -i eth0 -j ACCEPT
-=2DA FORWARD -p tcp -i eth0 -s xxx.xxx.xxx.xxx/28 -o eth1 -d yyy.yyy.yyy.yy=
-y -j=20
-ACCEPT
-=2DA FORWARD -j LOG
+?
 
-Where xxx.xxx.xxx.xxx is a real network that should be allowed to contact t=
-he=20
-server yyy.yyy.yyy.yyy both of which are having real IP's.
+Take care in "FORWARD" chain and the "-m state" in the second rule.
 
 
-=2D-=20
-Stratos
-stratism@gmail.com
+--=20
+Samuel D=EDaz Garc=EDa
+ArcosCom Wireless, S.L.L.
 
---nextPart1236331.ZeJ9qaCpEK
-Content-Type: application/pgp-signature
+CIF: B11828068
+c/ Romero Gago, 19
+Arcos de la Frontera
+11630 - Cadiz
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
+http://www.arcoscom.com
 
-iD8DBQBETiDX8GO3ry/weE4RAsSjAJ9i4qJJow7teyqyWocbL/WVXoLcSQCgn5Rd
-u9jnSknq+w/9qP+aZu49jGA=
-=9pm6
------END PGP SIGNATURE-----
+mailto:samueldg@arcoscom.com
+msn: samueldg@arcoscom.com
 
---nextPart1236331.ZeJ9qaCpEK--
+Tlfn.: 956 70 13 15
+Fax:   956 70 34 83
+
+
+El Mar, 25 de Abril de 2006, 15:14, Stratos Margaritis escribi=F3:
+> Can someone help me find out why is this rule does not work?
+>
+> *filter
+> :INPUT DROP [1803:271102]
+> :FORWARD DROP [0:0]
+> :OUTPUT DROP [0:0]
+> -A INPUT -i lo -j ACCEPT
+> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 53 -j ACCEPT
+> -A INPUT -p udp -m udp --dport 53 -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+> -A INPUT -p icmp -j ACCEPT
+> -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+> -A INPUT -p tcp --syn -m limit --limit 5/s -i eth0 -j ACCEPT
+> -A FORWARD -p tcp -i eth0 -s xxx.xxx.xxx.xxx/28 -o eth1 -d yyy.yyy.yyy.yyy
+> -j
+> ACCEPT
+> -A FORWARD -j LOG
+>
+> Where xxx.xxx.xxx.xxx is a real network that should be allowed to contact
+> the
+> server yyy.yyy.yyy.yyy both of which are having real IP's.
+>
+>
+> --
+> Stratos
+> stratism@gmail.com
+>
+
+
 
