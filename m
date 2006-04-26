@@ -1,12 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Why is this not working???
-Date: Wed, 26 Apr 2006 13:44:09 +0200
-Message-ID: <1146051849.5244.38.camel@anduril.intranet.cartel-securite.net>
-References: <200604251615.03991.stratism@gmail.com>
+From: "Real Oneone" <realoneone@gmail.com>
+Subject: How to re-send out the packets captured by my hook function at
+	NF_IP_PRE_ROUTING
+Date: Wed, 26 Apr 2006 20:37:03 +0800
+Message-ID: <84d7d9cf0604260537v54db80fdoadbd3cc6785f3122@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200604251615.03991.stratism@gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,16 +18,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Stratos Margaritis <stratism@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-1. You have INPUT rules, but no OUTPUT ones for returning packets.
-2. You have a FORWARD rule in one way, but nothing on the other.
+Hi, I tried to captured all the packets at NF_IP_PRE_ROUTING, made
+some changes to some of them, and invoked skb->dev->hard_start_xmit to
+send them out directly. However, the kernel crashed before I could get
+any printked information.
 
+If you have any idea of how to send the received packets out, please tell m=
+e.
 
--- 
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Thank you in advance.
+
+Best regards,
+Gu, Xinxing
 
