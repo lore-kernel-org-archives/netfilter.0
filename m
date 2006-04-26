@@ -1,12 +1,10 @@
-From: Aj Mirani <debsec@tucows.com>
-Subject: Re: Why is this not working???
-Date: Wed, 26 Apr 2006 08:57:26 -0400
-Message-ID: <20060426125726.GI5568@orbitor.ops.internal.tucows.com>
-References: <200604251615.03991.stratism@gmail.com>
+From: Drew Leske <dleske@uvic.ca>
+Subject: Login load balancing
+Date: Wed, 26 Apr 2006 10:33:51 -0700
+Message-ID: <444FAEFF.1040100@uvic.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200604251615.03991.stratism@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,66 +16,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Stratos Margaritis <stratism@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Why not put something like this into your INPUT chain:
+Hi all,
 
--A INPUT -p tcp -m tcp --dport 22 -s xxx.xxx.xxx.xxx/28 -d yyy.yyy.yyy.yyy -j ACCEPT
+I'm looking for a solution (and I'm not afraid of devving one if necessary)
+to load-balance SSH logins over several mostly identical systems.  So far
+the closest I have come is a solution using iptables, but I'm not sure it
+will work, and I may well be overlooking some other solution.  Any ideas
+would be appreciated.  My research has so far turned up little.
 
-Also for your line: 
--A INPUT -p tcp --syn -m limit --limit 5/s -i eth0 -j ACCEPT
+We have several systems that are, from a user's perspective, identical.
+Their home directories are network mounted, libraries are synchronised, and
+so on, so they don't really care which system they log in to.  Their work on
+these systems can be quite intensive and may consume quite a few resources,
+but must remain interactive (so a batch system running on a cluster won't do
+it).
 
-This is a server wide limit not a per host limit which depending on what
-you're trying to prevent may not be the best way to do it.
+For the users it's a guessing game as to which of the machines they should
+log in to at any point.  They may log in to the first and find it's heavily
+loaded, and so log in to another, until they find the best.  A second
+difficulty with this is the users have be aware of which machines are
+available--and they are named, due to historical reasons, using a
+non-contiguous numbering scheme.
 
-If you are trying to prevent a syn attack but still want the server to
-respond to legitimate requests try something like this:
--A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -m recent --set --name SYNATTACK --rsource 
--A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -m recent --update --seconds 20 --hitcount 10 --name SYNATTACK --rsource -j DROP 
--A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j ACCEPT 
+So instead of the users logging in to bob3, bob6 or bob8, I'd like for them
+to be able to simply log in to "bob" and be directed to the least-loaded
+machine.
 
-This dynamically put hosts on a 'blacklist' who are trying to connect
-too fast (more that 10 times in a 20 second period.)  with the use of
---update it will keep them blacklisted as long as they continue to send
-packets too fast.
+Round-robining on the switch won't do it, because if one of the systems is
+absolutely pinned, every Nth login will still wind up there.
 
+Determining which machines are least loaded will not be a problem.  The
+metrics may be gathered using SNMP or some other means from the
+participating hosts.  The problem is entirely in the redirection from 'bob'
+to 'bob3', 'bob6', 'bob8'.
 
+Logins are exclusively through SSH.  There is no need, and I don't
+anticipate one (which means there will be some fantastic new request coming
+in tomorrow) to support other protocols in this manner.
 
-On Tue, Apr 25, 2006 at 04:14:59PM +0300, Stratos Margaritis wrote:
-> Can someone help me find out why is this rule does not work?
-> 
-> *filter
-> :INPUT DROP [1803:271102]
-> :FORWARD DROP [0:0]
-> :OUTPUT DROP [0:0]
-> -A INPUT -i lo -j ACCEPT
-> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 53 -j ACCEPT
-> -A INPUT -p udp -m udp --dport 53 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-> -A INPUT -p icmp -j ACCEPT
-> -A INPUT -p tcp -j REJECT --reject-with tcp-reset
-> -A INPUT -p tcp --syn -m limit --limit 5/s -i eth0 -j ACCEPT
-> -A FORWARD -p tcp -i eth0 -s xxx.xxx.xxx.xxx/28 -o eth1 -d yyy.yyy.yyy.yyy -j 
-> ACCEPT
-> -A FORWARD -j LOG
-> 
-> Where xxx.xxx.xxx.xxx is a real network that should be allowed to contact the 
-> server yyy.yyy.yyy.yyy both of which are having real IP's.
-> 
-> 
-> -- 
-> Stratos
-> stratism@gmail.com
+The only half-solution I have come up with so far is to define a 'director'
+box with the 'bob' alias, and then periodically grab load metrics from the
+participating hosts, determine of the 'bob's which is the least loaded, and
+then *cough* update a DNAT rule to redirect requests coming in for 'bob' to
+the least-loaded 'bobX'.
 
+The last part feels horky, and I'm not even sure it will work, since later
+packets coming in may be DNAT'ed to a different machine.  Also, the director
+then routes all the packets for logins to all the boxes.  I can't see any
+way to redirect the initial connection that won't cause all sorts of
+problems with the client's firewalls.
 
+Any ideas?
+
+Thanks,
+Drew.
 
 -- 
-Aj Mirani
-Network Operations
-Tucows.com Inc
+Drew Leske :: Systems Group/Unix, Computing Services, University of Victoria
+  dleske@uvic.ca / +1250 472 5055 (office) / +1250 588 4311 (cel)
 
