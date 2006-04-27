@@ -1,12 +1,18 @@
-From: Drew Leske <dleske@uvic.ca>
-Subject: Re: Login load balancing
-Date: Thu, 27 Apr 2006 10:42:17 -0700
-Message-ID: <44510279.5040409@uvic.ca>
-References: <444FAEFF.1040100@uvic.ca>
+From: Harald Welte <laforge@netfilter.org>
+Subject: CONFIG_KMOD in x86_64/defconfig (was Re: iptables is complaining
+	with bogus unknown error 18446744073709551615)
+Date: Thu, 27 Apr 2006 16:24:30 -0300
+Message-ID: <20060427192430.GE21823@rama>
+References: <200604210738.k3L7cBGO010103@mailgw.aecom.yu.edu>
+	<a06230901c075ca078b8d@[129.98.90.227]>
+	<20060427135119.GB5177@rama>
+	<a06230904c07687df0a33@[129.98.90.227]>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="bajzpZikUji1w+G9"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <444FAEFF.1040100@uvic.ca>
+Content-Disposition: inline
+In-Reply-To: <a06230904c07687df0a33@[129.98.90.227]>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,75 +23,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Maurice Volaski <mvolaski@aecom.yu.edu>
+Cc: netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
 
-A big thanks to everybody who took the time to consider my problem and
-especially to those who responded.  I got a lot of great suggestions.  I'll
-see what I come up with and if I find one that works using iptables I'll let
-you all know--it just might be useful to somebody else as well.
 
-Cheers,
-Drew.
+--bajzpZikUji1w+G9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Drew Leske wrote:
-> Hi all,
-> 
-> I'm looking for a solution (and I'm not afraid of devving one if necessary)
-> to load-balance SSH logins over several mostly identical systems.  So far
-> the closest I have come is a solution using iptables, but I'm not sure it
-> will work, and I may well be overlooking some other solution.  Any ideas
-> would be appreciated.  My research has so far turned up little.
-> 
-> We have several systems that are, from a user's perspective, identical.
-> Their home directories are network mounted, libraries are synchronised, and
-> so on, so they don't really care which system they log in to.  Their work on
-> these systems can be quite intensive and may consume quite a few resources,
-> but must remain interactive (so a batch system running on a cluster won't do
-> it).
-> 
-> For the users it's a guessing game as to which of the machines they should
-> log in to at any point.  They may log in to the first and find it's heavily
-> loaded, and so log in to another, until they find the best.  A second
-> difficulty with this is the users have be aware of which machines are
-> available--and they are named, due to historical reasons, using a
-> non-contiguous numbering scheme.
-> 
-> So instead of the users logging in to bob3, bob6 or bob8, I'd like for them
-> to be able to simply log in to "bob" and be directed to the least-loaded
-> machine.
-> 
-> Round-robining on the switch won't do it, because if one of the systems is
-> absolutely pinned, every Nth login will still wind up there.
-> 
-> Determining which machines are least loaded will not be a problem.  The
-> metrics may be gathered using SNMP or some other means from the
-> participating hosts.  The problem is entirely in the redirection from 'bob'
-> to 'bob3', 'bob6', 'bob8'.
-> 
-> Logins are exclusively through SSH.  There is no need, and I don't
-> anticipate one (which means there will be some fantastic new request coming
-> in tomorrow) to support other protocols in this manner.
-> 
-> The only half-solution I have come up with so far is to define a 'director'
-> box with the 'bob' alias, and then periodically grab load metrics from the
-> participating hosts, determine of the 'bob's which is the least loaded, and
-> then *cough* update a DNAT rule to redirect requests coming in for 'bob' to
-> the least-loaded 'bobX'.
-> 
-> The last part feels horky, and I'm not even sure it will work, since later
-> packets coming in may be DNAT'ed to a different machine.  Also, the director
-> then routes all the packets for logins to all the boxes.  I can't see any
-> way to redirect the initial connection that won't cause all sorts of
-> problems with the client's firewalls.
-> 
-> Any ideas?
-> 
-> Thanks,
-> Drew.
-> 
+On Thu, Apr 27, 2006 at 11:41:40AM -0400, Maurice Volaski wrote:
+> >On Wed, Apr 26, 2006 at 09:12:38PM -0400, Maurice Volaski wrote:
+> >> Automatic kernel module loading! That is an option and it's off by
+> >> default. When it's off, attempts to load kernel modules are ignored
+> >> internally, and that's why iptables was failing. It tried to load
+> >> xt_tcpudp, but was ignored by the kernel.
+> >What do you mean by "it's an option" and "is off by default".  I would
+> >claim that any major linux distribution that I've seen in the last ten
+> >years has support for module auto loading (enabled by default).
+>=20
+> Distribution vendors are free to change it to whatever they want, I guess=
+, but it's OFF by=20
+> default in the official kernel (.config).
 
--- 
-Drew Leske :: Systems Group/Unix, Computing Services, University of Victoria
-  dleske@uvic.ca / +1250 472 5055 (office) / +1250 588 4311 (cel)
+apparently architecture-specific:
+
+grep KMOD arch/i386/defconfig
+CONFIG_KMOD=3Dy
+
+grep KMOD arch/x86_64/defconfig
+CONFIG_KMOD is not set
+
+don't know why x86_64 turns it off by default.  the help message says
+'if unsure, say Y' (which makes sense!)
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--bajzpZikUji1w+G9
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+
+iD8DBQFEURpuXaXGVTD0i/8RAo70AJ4gXihEWtdsN/L0ft8JGl2XrY6DOACcCqgI
+g7E79jG0ptEY7pOZIg69oKI=
+=vcPr
+-----END PGP SIGNATURE-----
+
+--bajzpZikUji1w+G9--
 
