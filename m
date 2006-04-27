@@ -1,12 +1,10 @@
-From: Drew Leske <dleske@uvic.ca>
-Subject: Re: Login load balancing
-Date: Wed, 26 Apr 2006 14:56:35 -0700
-Message-ID: <444FEC93.6070101@uvic.ca>
-References: <444FAEFF.1040100@uvic.ca> <444FE835.2010007@gmx.net>
+From: "Jesse Gordon" <jesseg@nikola.com>
+Subject: IP port over 65535 ?!
+Date: Wed, 26 Apr 2006 17:18:06 -0700
+Message-ID: <013701c66990$0e9cc500$5e00800a@printserver>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <444FE835.2010007@gmx.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hi Carl,
+I sometimes see a port number like this in Tcpdump:
 
-Carl-Daniel Hailfinger wrote:
-> what about using a DNS CNAME for bob to bob[368]? If you set the
-> TTL low enough and update your DNS server with the latest data
-> from your SNMP agents continuously, you will achieve exactly what
-> you want without any iptables trickery.
-> Such a solution is running here and it works fine.
+10.0.0.76.2049 > 64.x.x.5.796094310: reply ERR 394
 
-That's an interesting solution.  I like it.
+64.7.197.5.791752241 > 10.0.0.76.2049: 1460 proc-170106..
 
-Unfortunately we don't control the DNS--another group here has
-responsibility for that.  I'll chat with them and see if they have provision
-for remote updates.
+Ever seen anything like this?
 
-Thanks,
-Drew.
+I'm a small natting ISP -- all of the above looks good except that port 
+number of 791752241..
 
--- 
-Drew Leske :: Systems Group/Unix, Computing Services, University of Victoria
-  dleske@uvic.ca / +1250 472 5055 (office) / +1250 588 4311 (cel)
+Thanks!
+
+-Jesse Gordon
+
+
+Nikola Engineering Inc.
+224 W. Washington St.
+Suite 104
+Sequim, WA 98382-3371
+Tel  (360)582-1051
+Fax (360)582-1104
+
+
+
 
