@@ -1,13 +1,14 @@
 From: Drew Leske <dleske@uvic.ca>
 Subject: Re: Login load balancing
-Date: Thu, 27 Apr 2006 10:34:52 -0700
-Message-ID: <445100BC.1080907@uvic.ca>
-References: <444FAEFF.1040100@uvic.ca>	<1146073387.24375.74.camel@sehe-c4.berlin.teles.de>	<444FBBA7.2020501@uvic.ca>
-	<20060427121619.3e2bf426.arnt@c2i.net>
+Date: Thu, 27 Apr 2006 10:37:58 -0700
+Message-ID: <44510176.7020108@uvic.ca>
+References: <444FAEFF.1040100@uvic.ca>
+	<444FE835.2010007@gmx.net>	<444FEC93.6070101@uvic.ca>
+	<Pine.LNX.4.64.0604272026100.18949@amp.grife.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060427121619.3e2bf426.arnt@c2i.net>
+In-Reply-To: <Pine.LNX.4.64.0604272026100.18949@amp.grife.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,17 +20,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>
+To: michael@grife.net
 Cc: netfilter@lists.netfilter.org
 
-> ..check out sdm and sdm-terminal, if you wanna provide X logins over
-> ssh, the user sees a menu to choose from and you should be able to 
-> "pile up the good boxes" on top of that menu listing:
+michael@grife.net wrote:
+> On Wed, 26 Apr 2006, Drew Leske wrote:
+> 
+>> Unfortunately we don't control the DNS--another group here has
+>> responsibility for that.  I'll chat with them and see if they have
+>> provision
+>> for remote updates.
+> 
+> There is another possibility you could consider. Instead of having them
+> enable remote updates, get them to delegate a new zone for you.
+> 
+> All you would need to do then is setup some bind servers. You would then
+> have direct access to update the A records.
 
-Interesting, and I might find this useful elsewhere, but for this issue I
-need to support console logins as well.
+I considered that, but then I'm implementing a service provided by experts
+in another group.  (I provide a BIND server internally for our cluster, but
+not one with public access.)  This is, shall we say, "discouraged" (for good
+reason--it's one more thing to be an expert in and we've already got experts
+elsewhere).
 
-Thanks though!
+Thanks!
 Drew.
 
 -- 
