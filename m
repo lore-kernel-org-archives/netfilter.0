@@ -1,16 +1,14 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: iptables is complaining with bogus unknown error
-	18446744073709551615
-Date: Thu, 27 Apr 2006 10:51:19 -0300
-Message-ID: <20060427135119.GB5177@rama>
-References: <200604210738.k3L7cBGO010103@mailgw.aecom.yu.edu>
-	<a06230901c075ca078b8d@[129.98.90.227]>
+From: Aj Mirani <debsec@tucows.com>
+Subject: Re: Why is this not working???
+Date: Thu, 27 Apr 2006 10:30:27 -0400
+Message-ID: <20060427143027.GS5568@orbitor.ops.internal.tucows.com>
+References: <200604251615.03991.stratism@gmail.com>
+	<20060426125726.GI5568@orbitor.ops.internal.tucows.com>
+	<200604271013.18777.stratism@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yNb1oOkm5a9FJOVX"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <a06230901c075ca078b8d@[129.98.90.227]>
+In-Reply-To: <200604271013.18777.stratism@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,55 +19,97 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Maurice Volaski <mvolaski@aecom.yu.edu>
-Cc: netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Stratos Margaritis <stratism@gmail.com>
+Cc: netfilter@lists.netfilter.org
+
+Ah, I see... I believe what you need to do is put these rules in the
+PREROUTING chain.
+
+something like:
+iptables -t nat -A PREROUTING -p tcp -s xxx.xxx.xxx.xxx/28 -d
+yyy.yyy.yyy.yyy -j ACCEPT 
+
+Check out this iptables flow chart - it should help clear things up a
+little about how packets traverse the different chains:
+
+http://cs.senecac.on.ca/~selmys/subjects/sec830-051/iptables.gif
 
 
---yNb1oOkm5a9FJOVX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+			-aj
 
-On Wed, Apr 26, 2006 at 09:12:38PM -0400, Maurice Volaski wrote:
-> Automatic kernel module loading! That is an option and it's off by
-> default. When it's off, attempts to load kernel modules are ignored
-> internally, and that's why iptables was failing. It tried to load=20
-> xt_tcpudp, but was ignored by the kernel.
 
-What do you mean by "it's an option" and "is off by default".  I would
-claim that any major linux distribution that I've seen in the last ten
-years has support for module auto loading (enabled by default).
+On Thu, Apr 27, 2006 at 10:13:15AM +0300, Stratos Margaritis wrote:
+> Well I am trying to forward packets from the outside world to some machines 
+> inside. All machines have real IP's and when I use:
+> -A FORWARD -j ACCEPT
+> everything works fine. But what I want to do is to also filter packets as well 
+> as who has access to my internal machines.
+> 
+> On Wed 26 Apr 2006 15:57, Aj Mirani wrote:
+> > Why not put something like this into your INPUT chain:
+> >
+> > -A INPUT -p tcp -m tcp --dport 22 -s xxx.xxx.xxx.xxx/28 -d yyy.yyy.yyy.yyy
+> > -j ACCEPT
+> >
+> > Also for your line:
+> > -A INPUT -p tcp --syn -m limit --limit 5/s -i eth0 -j ACCEPT
+> >
+> > This is a server wide limit not a per host limit which depending on what
+> > you're trying to prevent may not be the best way to do it.
+> >
+> > If you are trying to prevent a syn attack but still want the server to
+> > respond to legitimate requests try something like this:
+> > -A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -m recent --set --name
+> > SYNATTACK --rsource -A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -m
+> > recent --update --seconds 20 --hitcount 10 --name SYNATTACK --rsource -j
+> > DROP -A INPUT -p tcp -m tcp --tcp-flags SYN,RST,ACK SYN -j ACCEPT
+> >
+> > This dynamically put hosts on a 'blacklist' who are trying to connect
+> > too fast (more that 10 times in a 20 second period.)  with the use of
+> > --update it will keep them blacklisted as long as they continue to send
+> > packets too fast.
+> >
+> > On Tue, Apr 25, 2006 at 04:14:59PM +0300, Stratos Margaritis wrote:
+> > > Can someone help me find out why is this rule does not work?
+> > >
+> > > *filter
+> > >
+> > > :INPUT DROP [1803:271102]
+> > > :FORWARD DROP [0:0]
+> > > :OUTPUT DROP [0:0]
+> > >
+> > > -A INPUT -i lo -j ACCEPT
+> > > -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> > > -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+> > > -A INPUT -p tcp -m tcp --dport 25 -j ACCEPT
+> > > -A INPUT -p tcp -m tcp --dport 53 -j ACCEPT
+> > > -A INPUT -p udp -m udp --dport 53 -j ACCEPT
+> > > -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+> > > -A INPUT -p icmp -j ACCEPT
+> > > -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+> > > -A INPUT -p tcp --syn -m limit --limit 5/s -i eth0 -j ACCEPT
+> > > -A FORWARD -p tcp -i eth0 -s xxx.xxx.xxx.xxx/28 -o eth1 -d
+> > > yyy.yyy.yyy.yyy -j ACCEPT
+> > > -A FORWARD -j LOG
+> > >
+> > > Where xxx.xxx.xxx.xxx is a real network that should be allowed to contact
+> > > the server yyy.yyy.yyy.yyy both of which are having real IP's.
+> > >
+> > >
+> > > --
+> > > Stratos
+> > > stratism@gmail.com
+> 
+> -- 
+> Stratos
+> stratism@gmail.com
 
-There are many userspace programs that try to autoload modules, such as
-device-mapper, ipsec, etc. =20
 
-If you disable module autoloading, it's your own responsibility to load
-modules manually.
 
-So the only thing that I really consider a bug is that bogus error
-message of iptables.  This has been fixed in SVN, case closed.
-
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---yNb1oOkm5a9FJOVX
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iD8DBQFEUMxXXaXGVTD0i/8RAk4rAJsHQ3b+gPR4259+l1AUEIeS1fdAlgCcDD3b
-a9ytrRZZ11XgkS75AVTn9/s=
-=efeV
------END PGP SIGNATURE-----
-
---yNb1oOkm5a9FJOVX--
+-- 
+Aj Mirani
+Network Operations
+Tucows.com Inc
 
