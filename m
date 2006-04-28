@@ -1,10 +1,13 @@
-From: "George P Nychis" <gnychis@cmu.edu>
-Subject: getting random and average to accept decimals?
-Date: Fri, 28 Apr 2006 14:29:57 -0400 (EDT)
-Message-ID: <33064.128.2.140.234.1146248997.squirrel@128.2.140.234>
+From: Drew Leske <dleske@uvic.ca>
+Subject: Re: Login load balancing
+Date: Fri, 28 Apr 2006 11:36:47 -0700
+Message-ID: <445260BF.5010406@uvic.ca>
+References: <444FAEFF.1040100@uvic.ca>	<1146073387.24375.74.camel@sehe-c4.berlin.teles.de>	<444FBBA7.2020501@uvic.ca>	<20060427121619.3e2bf426.arnt@c2i.net>	<445100BC.1080907@uvic.ca>	<20060428120005.4d940e7b.arnt@c2i.net>	<445244DD.8040100@uvic.ca>
+	<20060428202356.5c09239b.arnt@c2i.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060428202356.5c09239b.arnt@c2i.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,21 +19,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Arnt Karlsen <arnt@c2i.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Arnt Karlsen wrote:
+>> I'm not sure I understand, but you seem to be suggesting a way by
+>> which I could use a console window in X.  As a base case, I have to
+>> support somebody connecting with a vt100 and a 9600 baud modem.  This
+>> solution needs to be completely independent of X.
+> 
+> ..yup, and I was thinking of the various ttys, on which again you offer
+> a shell menu to choose from, instead of the usual shell prompt, any tty
+> (except mingetty or fgetty) should do this for you, a few quick ideas:
+> arnt@a45:~ $ apt-cache search tty |grep tty
+> [...]
 
-I need a very high precision loss model, and right now it seems as though --average can only accept integer numbers
+Okay, so what you're talking about now has nothing to do with sdm-terminal,
+and is just a script run when users log in to the director, which will give
+the user a menu and then shunt them off through ssh or some other means to
+one of the participating hosts.
 
-I would for example like to introduce .01% packet loss, .1% packet loss, 1% packet loss, 1.5% packet loss ... except it seemas though out of that set, i would only be able to do 1% packet loss
+I wouldn't bother with the menu, though, because that defeats the
+'load-balacing' part of it (unless I put the latest load figures in the menu
+and let the user choose).
 
-lanthanum-ini ~ # iptables -A FORWARD -p all -m random --average .25 -j DROP
-iptables v1.3.5: bad --average `.25', must be between 1 and 99
-Try `iptables -h' or 'iptables --help' for more information.
+This solution requires login access to the director host.  Not necessarily a
+show-stopper, but it's a drawback.
 
-is there any way i can get higher precision?
+Thanks for your input,
+Drew.
 
-Thanks!
-George
-
+-- 
+Drew Leske :: Systems Group/Unix, Computing Services, University of Victoria
+  dleske@uvic.ca / +1250 472 5055 (office) / +1250 588 4311 (cel)
 
