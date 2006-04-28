@@ -1,55 +1,69 @@
-From: Drew Leske <dleske@uvic.ca>
-Subject: Re: Login load balancing
-Date: Fri, 28 Apr 2006 11:36:47 -0700
-Message-ID: <445260BF.5010406@uvic.ca>
-References: <444FAEFF.1040100@uvic.ca>	<1146073387.24375.74.camel@sehe-c4.berlin.teles.de>	<444FBBA7.2020501@uvic.ca>	<20060427121619.3e2bf426.arnt@c2i.net>	<445100BC.1080907@uvic.ca>	<20060428120005.4d940e7b.arnt@c2i.net>	<445244DD.8040100@uvic.ca>
-	<20060428202356.5c09239b.arnt@c2i.net>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: linux/iptables + smp question
+Date: Fri, 28 Apr 2006 19:50:03 -0300
+Message-ID: <20060428225003.GF5598@rama>
+References: <44520085.3030909@tecnoera.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060428202356.5c09239b.arnt@c2i.net>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ILuaRSyQpoVaJ1HG"
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932080AbWD1WtA@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <44520085.3030909@tecnoera.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Arnt Karlsen <arnt@c2i.net>
-Cc: netfilter@lists.netfilter.org
+To: Juan Pablo Abuyeres <jpabuyer@tecnoera.com>
+Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
 
-Arnt Karlsen wrote:
->> I'm not sure I understand, but you seem to be suggesting a way by
->> which I could use a console window in X.  As a base case, I have to
->> support somebody connecting with a vt100 and a 9600 baud modem.  This
->> solution needs to be completely independent of X.
-> 
-> ..yup, and I was thinking of the various ttys, on which again you offer
-> a shell menu to choose from, instead of the usual shell prompt, any tty
-> (except mingetty or fgetty) should do this for you, a few quick ideas:
-> arnt@a45:~ $ apt-cache search tty |grep tty
-> [...]
 
-Okay, so what you're talking about now has nothing to do with sdm-terminal,
-and is just a script run when users log in to the director, which will give
-the user a menu and then shunt them off through ssh or some other means to
-one of the participating hosts.
+--ILuaRSyQpoVaJ1HG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I wouldn't bother with the menu, though, because that defeats the
-'load-balacing' part of it (unless I put the latest load figures in the menu
-and let the user choose).
+On Fri, Apr 28, 2006 at 07:46:13AM -0400, Juan Pablo Abuyeres wrote:
+> Hi guys,
 
-This solution requires login access to the director host.  Not necessarily a
-show-stopper, but it's a drawback.
+Hi, please follow up to the netfilter mailinglist, since this is not a
+kernel [development] question.
 
-Thanks for your input,
-Drew.
+> I've been using an old single processor / linux 2.4 iptables based firewa=
+ll for a few years.
+>
+> Now it's time to upgrade that machine, so, I am wondering, would it be of=
+ real benefit if I put a=20
+> two-processor system for a firewall? This machine is going to have 4 NICs=
+, it's going to make=20
+> routing (lots of routes), and firewall (iptables). I don't know if these =
+kind of tasks take=20
+> advantage from a multiple-processor architecture. Please enlighten me :)
 
--- 
-Drew Leske :: Systems Group/Unix, Computing Services, University of Victoria
-  dleske@uvic.ca / +1250 472 5055 (office) / +1250 588 4311 (cel)
+some notes:
 
+1) 2.6. network stack scales better on smp
+2) iptables and routing both scale very good on smp systems, if you use
+   multiple interfaces and distribute the interrupts over multiple cpus
+3) connection tracking inherently scales less good on SMP systems
+
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--ILuaRSyQpoVaJ1HG
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+
+iD8DBQFEUpwbXaXGVTD0i/8RApw2AKCFWxyvFb9TzA9mAQCmWXEUvAx62QCeNn/v
+volpm1hk2KEzZvGUICE6kmo=
+=wtmq
+-----END PGP SIGNATURE-----
+
+--ILuaRSyQpoVaJ1HG--
