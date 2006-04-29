@@ -1,69 +1,49 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Re: linux/iptables + smp question
-Date: Fri, 28 Apr 2006 19:50:03 -0300
-Message-ID: <20060428225003.GF5598@rama>
-References: <44520085.3030909@tecnoera.com>
+From: George Nychis <gnychis@cmu.edu>
+Subject: Re: getting random and average to accept decimals?
+Date: Fri, 28 Apr 2006 22:16:06 -0400
+Message-ID: <4452CC66.40402@cmu.edu>
+References: <33064.128.2.140.234.1146248997.squirrel@128.2.140.234>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ILuaRSyQpoVaJ1HG"
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932080AbWD1WtA@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <44520085.3030909@tecnoera.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <33064.128.2.140.234.1146248997.squirrel@128.2.140.234>
 List-Id: <netfilter.vger.kernel.org>
-To: Juan Pablo Abuyeres <jpabuyer@tecnoera.com>
-Cc: linux-kernel@vger.kernel.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: George P Nychis <gnychis@cmu.edu>
+Cc: netfilter@lists.netfilter.org
 
+Daniel made a really helpful suggestion on #iptables to solve my problem:
 
---ILuaRSyQpoVaJ1HG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+iptables -N CENTAPKT; iptables -A INPUT -m random --average 1 -j 
+CENTAPKT; iptables -A CENTAPKT -m random --average 1 -j DROP
 
-On Fri, Apr 28, 2006 at 07:46:13AM -0400, Juan Pablo Abuyeres wrote:
-> Hi guys,
+yey, 0.01% packet loss :)
 
-Hi, please follow up to the netfilter mailinglist, since this is not a
-kernel [development] question.
+George P Nychis wrote:
+> Hi,
+> 
+> I need a very high precision loss model, and right now it seems as though --average can only accept integer numbers
+> 
+> I would for example like to introduce .01% packet loss, .1% packet loss, 1% packet loss, 1.5% packet loss ... except it seemas though out of that set, i would only be able to do 1% packet loss
+> 
+> lanthanum-ini ~ # iptables -A FORWARD -p all -m random --average .25 -j DROP
+> iptables v1.3.5: bad --average `.25', must be between 1 and 99
+> Try `iptables -h' or 'iptables --help' for more information.
+> 
+> is there any way i can get higher precision?
+> 
+> Thanks!
+> George
+> 
+> 
+> 
 
-> I've been using an old single processor / linux 2.4 iptables based firewa=
-ll for a few years.
->
-> Now it's time to upgrade that machine, so, I am wondering, would it be of=
- real benefit if I put a=20
-> two-processor system for a firewall? This machine is going to have 4 NICs=
-, it's going to make=20
-> routing (lots of routes), and firewall (iptables). I don't know if these =
-kind of tasks take=20
-> advantage from a multiple-processor architecture. Please enlighten me :)
-
-some notes:
-
-1) 2.6. network stack scales better on smp
-2) iptables and routing both scale very good on smp systems, if you use
-   multiple interfaces and distribute the interrupts over multiple cpus
-3) connection tracking inherently scales less good on SMP systems
-
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---ILuaRSyQpoVaJ1HG
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iD8DBQFEUpwbXaXGVTD0i/8RApw2AKCFWxyvFb9TzA9mAQCmWXEUvAx62QCeNn/v
-volpm1hk2KEzZvGUICE6kmo=
-=wtmq
------END PGP SIGNATURE-----
-
---ILuaRSyQpoVaJ1HG--
