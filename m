@@ -1,12 +1,11 @@
-From: Petr Pisar <petr.pisar@atlas.cz>
-Subject: Re: Obtain original address from redirected connection
-Date: Tue, 02 May 2006 08:36:35 +0200
-Message-ID: <e36ulj$omu$1@sea.gmane.org>
-References: <20060502025450.73457687.pedro.werneck@terra.com.br>
+From: Marius-Iulian Corici <marius-Iulian.corici@fokus.fraunhofer.de>
+Subject: Fwd: about conntrack application
+Date: Tue, 2 May 2006 11:54:27 +0200
+Message-ID: <200605021154.28006.mco@fokus.fraunhofer.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060502025450.73457687.pedro.werneck@terra.com.br>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,35 +19,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+I have a 2.6.16 kernel with iptables version 1.3.5
+I installed also:
+               libnfnetlink - 0.0.14
+               libnetfilter-conntrack - 0.0.30
+               conntrack - 1.00beta1-1
 
-Pedro Werneck wrote:
-> I have a daemon, a sort of proxy, written in Python, who receives
-> redirected connections with a rule like this:
-> 
-> iptables -t nat -A PREROUTING -j DNAT -p TCP -s source --to-destination host:port
-> 
-> The problem is that I need access to the original destination address,
-> but I could not find a way to do that when I wrote the daemon.
-[...]
-> Is it possible to do this with SO_ORIGINAL_DST, or is there any other
-> approach for obtaining the original address ?
-> 
+I receive at execution as root the next outputs:
+> ctnl_test
 
-SO_ORIGINAL_DST works only on local REDIRECT. If you do NAT and run
-proxy on the same machine use REDIRECT instead. Otherwise you need an
-silly side channel for delivering original address. (Maybe create IP
-tunnel betwean NATing machine and proxy machine and then REDIRECT this
-traffic on proxy machine.)
+Test for libnetfilter_conntrack
 
-- -- Petr
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
+libc.so.6: aborted attempt to load ctnl_test!
 
-iD8DBQFEVv3zuR4f4nEwzHIRArLeAKCAKSVvmKaQCe/pE5HDeHFc/Vw0swCfdy9Q
-t8czUPh+btwIf1dEGKlp9/M=
-=TbTl
------END PGP SIGNATURE-----
+and also (as root !!):
+> conntrack  -L conntrack
+
+Operation failed: sorry, you must be root or get CAP_NET_ADMIN capability to
+do this
+
+I don't have any clue were to start from. Is there any document on how to
+install and run this application? Which versions go with which iptables and
+with which kernel. Do I need special kernel modules for netlink
+communication? Is the version of iptables correct? Are there other settings
+that could be necessary?
+
+I am in front of a dead-line, so if anyone could give me any hint I will be
+very VERY greatful.
+
+Marius
 
 
