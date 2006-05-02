@@ -1,10 +1,9 @@
-From: Bastian Blank <waldi@debian.org>
-Subject: conntrack and bridge
-Date: Mon, 1 May 2006 22:12:00 +0200
-Message-ID: <20060501201200.GA1487@wavehammer.waldi.eu.org>
+From: Marius-Iulian Corici <marius-Iulian.corici@fokus.fraunhofer.de>
+Subject: Fwd: about conntrack application
+Date: Tue, 2 May 2006 11:50:37 +0200
+Message-ID: <200605021150.38026.mco@fokus.fraunhofer.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -17,42 +16,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
 
---KsGdsel6WgEHnImy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi folks
+----------  Forwarded Message  ----------
 
-Linux ethernet bridge and ip_conntrack in 2.6.16 does not properly work
-together with fragmented IP packages. It does not even work with using
-NOTRACK. The problem seems to be that ip_conntrack defragments the
-packages always and then get dropped on the output device as they are
-now too large.
+Subject: about conntrack application
+Date: Tuesday 02 May 2006 11:48
+From: Marius-Iulian Corici <mco@fokus.fraunhofer.de>
+To: netfilter@lists.netfilter.org
 
-Is there a proposed patch or workaround?
+I have a 2.6.16 kernel with iptables version 1.3.5
+I installed also:
+               libnfnetlink - 0.0.14
+               libnetfilter-conntrack - 0.0.30
+               conntrack - 1.00beta1-1
 
-Bastian
+I receive at execution as root the next outputs:
+> ctnl_test
 
---=20
-Killing is stupid; useless!
-		-- McCoy, "A Private Little War", stardate 4211.8
+Test for libnetfilter_conntrack
 
---KsGdsel6WgEHnImy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+libc.so.6: aborted attempt to load ctnl_test!
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
+and also (as root !!):
+> conntrack  -L conntrack
 
-iEYEARECAAYFAkRWa5AACgkQnw66O/MvCNHAOACgllFzFT8+2A3PrwZZItghUBh3
-fqoAnRrk9beJW4M+F+IpHL7sfcRMDTix
-=9D7l
------END PGP SIGNATURE-----
+Operation failed: sorry, you must be root or get CAP_NET_ADMIN capability to
+do this
 
---KsGdsel6WgEHnImy--
+I don't have any clue were to start from. Is there any document on how to
+install and run this application? Which versions go with which iptables and
+with which kernel. Do I need special kernel modules for netlink
+communication? Is the version of iptables correct? Are there other settings
+that could be necessary?
+
+I am in front of a dead-line, so if anyone could give me any hint I will be
+very VERY greatful.
+
+Marius
+
+-------------------------------------------------------
+
+-- 
+Dipl. Eng. Marius-Iulian Corici
+FOKUS/NGNI
+Kaiserin-Augusta-Allee 31
+10589 Berlin,Germany
+Phone +49 (0)30 - 3463 - 7271
+eMail corici@fokus.fraunhofer.de
+We are changing the world because God helped us hack His source code ...
 
