@@ -1,12 +1,11 @@
-From: Rob Sterenborg <rob@sterenborg.info>
-Subject: Re: DROP before PREROUTING
-Date: Wed, 03 May 2006 15:10:44 +0200
-Message-ID: <4458ABD4.80005@sterenborg.info>
-References: <52837e3e0605030548v485078e0w7ae6bbb9492d674a@mail.gmail.com>
+From: "Jason Sigurdur" <Jason.Sigurdur@aspenview.org>
+Subject: programicly inserting rules
+Date: Wed, 3 May 2006 10:51:44 -0600
+Message-ID: <648A21EA469E3848922D9860785CD5EF23D4B0@aspen-mail01.aspenview.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <52837e3e0605030548v485078e0w7ae6bbb9492d674a@mail.gmail.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,28 +19,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Bruno Nunes wrote:
-> Hi folks,
->   i have this rule which forwards all incoming requests for ipA to a
-> local machine as you can see.
->    iptables -t nat -A PREROUTING -d <ipA> -i eth0 -p tcp --dport 80
-> -j DNAT --to 192.168.1.4
-> 
->  is there any way to allow only a range of machines to use this
-> specific rule (not interfering with the other rules)? dropping all
-> requests that are not welcome.
-
-By specifying the source IP('s).
-
-iptables -t nat -A PREROUTING -s <src_ip[/mask]> -d <dst_ip> \
-  -i eth0 -p tcp --dport 80 -j DNAT --to 192.168.1.4
-
-If you have the iprange match installed, you can also use that to match
-a range instead of a subnet or host.
-http://www.netfilter.org/projects/patch-o-matic/pom-base.html#pom-base-iprange
+I need some suggestions for programicly inserting and deleting iptable
+rules. I have seen some mentions of using libiptc. Would It be possible
+to
+Make libiptc a shared library and use JNI?
 
 
-Gr,
-Rob
+Regarding Inserts; If I had the following:
+Forward chain
+Rule 1 state
+Rule 2 forward accept
+Rule 3 log
+Rule 4 drop
 
+If I made multiple inserts to position 4, would the relative positions
+of 1,3,4 remain? Or should I just make rule2 a jump to a different chain
+where the inserts would happen?
+
+Thx jason
 
