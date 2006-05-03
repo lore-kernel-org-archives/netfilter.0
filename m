@@ -1,12 +1,10 @@
-From: "Filipe Mordhorst" <filipe.mordhorst@abilis.com.br>
-Subject: New rule impact
-Date: Wed, 3 May 2006 14:46:19 -0300
-Message-ID: <5DCE1CDE91978540A3092DA869CF7F8AB17729@exchange01.intranet.abilis.com.br>
+From: Michael McCallister <mikemc-netfilter@contactdesigns.com>
+Subject: connbytes patch eliminated
+Date: Wed, 03 May 2006 11:22:09 -0700
+Message-ID: <4458F4D1.1000503@contactdesigns.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=SHA1; boundary="----=_NextPart_000_0025_01C66EC0.56F39CE0"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,94 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
+Cc: devik@cdi.cz, laforge@netfilter.org
 
-This is a multi-part message in MIME format.
+Hello,
 
-------=_NextPart_000_0025_01C66EC0.56F39CE0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+First, a warning - I am a newbie to netfilter, so I may ask some stupid 
+questions here.  I believe the connbytes patch offers exactly what I am 
+looking for - granted it is listed as experimental, but I am willing to 
+test it out since if offers the functionality I think I need - mainly 
+depriotizing bulk transfers.  I am concerned because it appears it was 
+dropped from the main linux kernel, the last kernel I found with it was 
+linux-2.6.15.7.  Also, it is not in pom-ng - at least I could not find 
+it in pom snapshots or cvs 
+(http://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/).  
+So I get the impression there may be plans to get rid of the connbytes 
+patch.  The latest iptables still does checks for it though "[ -f 
+$KERNEL_DIR/net/ipv4/netfilter/ipt_connbytes.c ] && echo connbytes".  
+Was there a decision that it was not suitable anymore and it is being 
+eliminated in favor of another approach?  If so, any advice as to the 
+new approach is greatly appreciated.  Also, if it was dropped from the 
+kernel/pom because it was highly unstable and caused system crashes - 
+that would be great information too :-)
 
-Hello everyone,
-
-I was searching the net (including google) for the best way to take a
-measurement for additional processor requirement and additional overhead
-when adding a specific rule.
-The fact is that I=92m starting to work with the string match. A already =
-know
-how to implement it, but I need to know how it will affect my =
-environment.
-
-Thanks for now
-
-Best regards,
-----
-Filipe Mordhorst=A0=A0
-Brasil - SC
+Thanks for any help - my apologies if I missed something obvious.
+Michael
 
 
-------=_NextPart_000_0025_01C66EC0.56F39CE0
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII3TCCAmUw
-ggHOoAMCAQICAw/GmzANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
-d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
-YWlsIElzc3VpbmcgQ0EwHhcNMDUxMTAyMTg1MjM3WhcNMDYxMTAyMTg1MjM3WjBQMR8wHQYDVQQD
-ExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMS0wKwYJKoZIhvcNAQkBFh5maWxpcGUubW9yZGhvcnN0
-QGFiaWxpcy5jb20uYnIwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAL/6sKPZ2nrTHV90D03z
-9TK0ZsCxXbczHY9FSAWYJgh+csnrYLrOlILv8x9ocUrdaMAkiUxxEe+fpIZ0APQ7GLKd2cx8lK3A
-pxaUTpr2ScF/hQuw7dA/hTnLECYcgK2ACoqAVRw22dU3Hw5fhDMGVkGQMYNBUQRX0Mrt3edLN8rF
-AgMBAAGjOzA5MCkGA1UdEQQiMCCBHmZpbGlwZS5tb3JkaG9yc3RAYWJpbGlzLmNvbS5icjAMBgNV
-HRMBAf8EAjAAMA0GCSqGSIb3DQEBBAUAA4GBAJvFJN6pe5AOcrLPrE6jpNC/UD75c+xg+FEOThH7
-EAad6TXSciIwF3J8IOO+RZi4Z6zoBlBXBCJU6QlOBjtSlHS2LI6lMDT+f34u6Hqr+Os2/Nlpd22B
-i5cTh8qFVLyJ/tKD4mo86XGnUx52zDzo+nYE9fFuYxRlWD5k4JZ4XDAgMIIDLTCCApagAwIBAgIB
-ADANBgkqhkiG9w0BAQQFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTES
-MBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UECxMf
-Q2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBlcnNvbmFs
-IEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0aGF3dGUuY29t
-MB4XDTk2MDEwMTAwMDAwMFoXDTIwMTIzMTIzNTk1OVowgdExCzAJBgNVBAYTAlpBMRUwEwYDVQQI
-EwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENvbnN1
-bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAiBgNVBAMT
-G1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVyc29uYWwtZnJl
-ZW1haWxAdGhhd3RlLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA1GnX1LCUZFtx6UfY
-DFG26nKRsIRefS0Nj3sS34UldSh0OkIsYyeflXtL734Zhx2G6qPduc6WZBrCFG5ErHzmj+hND3Ef
-QDimAKOHePb5lIZererAXnbr2RSjXW56fAylS1V/Bhkpf56aJtVquzgkCGqYx7Hao5iR/Xnb5VrE
-HLkCAwEAAaMTMBEwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQQFAAOBgQDH7JJ+Tvj1lqVn
-Yiqk8E0RYNBvjWBYYawmu1I1XAjPMPuoSpaKH2JCI4wXD/S6ZJwXrEcp352YXtJsYHFcoqzceePn
-bgBHH7UNKOgCneSa/RP0ptl8sfjcXyMmCZGAc9AUG95DqYMl8uacLxXK/qarigd1iwzdUYRr5PjR
-zneigTCCAz8wggKooAMCAQICAQ0wDQYJKoZIhvcNAQEFBQAwgdExCzAJBgNVBAYTAlpBMRUwEwYD
-VQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENv
-bnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAiBgNV
-BAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVyc29uYWwt
-ZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMzA3MTcwMDAwMDBaFw0xMzA3MTYyMzU5NTlaMGIxCzAJ
-BgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQD
-EyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTCBnzANBgkqhkiG9w0BAQEFAAOB
-jQAwgYkCgYEAxKY8VXNV+065yplaHmjAdQRwnd/p/6Me7L3N9VvyGna9fww6YfK/Uc4B1OVQCjDX
-AmNaLIkVcI7dyfArhVqqP3FWy688Cwfn8R+RNiQqE88r1fOCdz0Dviv+uxg+B79AgAJk16emu59l
-0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sCAwEAAaOBlDCBkTASBgNVHRMBAf8ECDAGAQH/AgEAMEMG
-A1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9jcmwudGhhd3RlLmNvbS9UaGF3dGVQZXJzb25hbEZyZWVt
-YWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxh
-YmVsMi0xMzgwDQYJKoZIhvcNAQEFBQADgYEASIzRUIPqCy7MDaNmrGcPf6+svsIXoUOWlJ1/TCG4
-+DYfqi2fNi/A9BxQIJNwPP2t4WFiw9k6GX6EsZkbAMUaC4J0niVQlGLH2ydxVyWN3amcOY6MIE9l
-X5Xa9/eH1sYITq726jTlEBpbNU1341YheILcIRk13iSx0x1G/11fZU8xggLPMIICywIBATBpMGIx
-CzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYD
-VQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIDD8abMAkGBSsOAwIaBQCg
-ggG8MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA2MDUwMzE3NDYx
-OVowIwYJKoZIhvcNAQkEMRYEFN5EX04/eoLG29e6t5qcEe5DTqpfMGcGCSqGSIb3DQEJDzFaMFgw
-CgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqG
-SIb3DQMCAgEoMAcGBSsOAwIaMAoGCCqGSIb3DQIFMHgGCSsGAQQBgjcQBDFrMGkwYjELMAkGA1UE
-BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1Ro
-YXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAgMPxpswegYLKoZIhvcNAQkQAgsxa6Bp
-MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSww
-KgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIDD8abMA0GCSqGSIb3
-DQEBAQUABIGARZUwJRmqJlk2X1kIBjZ1crIrY9xOHGydjeDhbFqFREn6AaAE6DFqqtgSz8Jfasii
-FTYKCgAmJ42Tsy4vubq9/vyU4y6KYs0QR2yj4XvTzUAyUxGV09SqsuYSMBNQLuitsoa8TQt/v2PL
-hDMwL6MOcGMwZFHr5ISMS76k7OHyNlIAAAAAAAA=
-
-------=_NextPart_000_0025_01C66EC0.56F39CE0--
 
