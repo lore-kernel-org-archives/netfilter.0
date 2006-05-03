@@ -1,15 +1,16 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
+From: Thomas Kuiper <tkuiper-netfilter@inxsoft.net>
 Subject: Re: about dettecting different TTL value
-Date: Wed, 03 May 2006 09:32:26 +0200
-Message-ID: <1146641546.28003.20.camel@anduril.intranet.cartel-securite.net>
-References: <1154.202.22.193.97.1146631315.squirrel@202.22.193.97>
-	<44583D20.6010703@inxsoft.net>
-	<1146634258.4841.19.camel@anduril.intranet.cartel-securite.net>
+Date: Wed, 03 May 2006 15:50:19 +0800
+Message-ID: <445860BB.5030307@inxsoft.net>
+References: <1154.202.22.193.97.1146631315.squirrel@202.22.193.97>	
+	<44583D20.6010703@inxsoft.net>	
+	<1146634258.4841.19.camel@anduril.intranet.cartel-securite.net>	
 	<4458454C.9080705@inxsoft.net>
+	<1146641546.28003.20.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4458454C.9080705@inxsoft.net>
+In-Reply-To: <1146641546.28003.20.camel@anduril.intranet.cartel-securite.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,55 +21,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Thomas Kuiper <tkuiper-netfilter@inxsoft.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Cedric Blancher <blancher@cartel-securite.fr>
 Cc: netfilter@lists.netfilter.org
 
-Le mercredi 03 mai 2006 =E0 13:53 +0800, Thomas Kuiper a =E9crit :
-> ISP's that filter are bad
+Cedric Blancher wrote:
+> Second situation, there are solutions. One deployed is PPPoE links, even
+> for cable modems. If users have to set a PPP links, then you can
+> restrict a given login to one tunnel at the same time, you can restrict
+> one modem to establish one tunnel at the same time, you can attach BPF
+> filter to you PPP link (to enforce source IP as an example), etc.
 
-Agree. And thoses who are trying to prevent people from sharing their
-connection as well. But nevermind, such dinosaurs will extinguish by
-themselves. In France for instance, thoses who have been trying to
-enforce that have seen there clients leave for other ISP, so they had to
-stop and most actually droped the "sharing not allowed" clause from
-their contracts. Most of them even encourage that now :)
+But they can still use NAT behind a second router right? :-) I think the 
+whole connection sharing issues for ISP's is that they want to sell a second 
+account to someone else in that house. Its bogus cause one pays (normally) 
+for an agreed link speed (no matter how many computers are behind the router 
+and it will still be the same up/downlink speed to the ISP). Traffic amount 
+doesn't concern either as the user should have the right to use the line as 
+much as the contract allows.
 
-> and ethernet isn't really designed to be secure for that.
+And how many ISP's are there who promise a certain speed but never deliver it...
 
-Link layer is not designed to be secure in any mean.
+Still, to remain netfilter related in this topic, its a security question if 
+its possible to force without third party software that only one computer 
+uses a link, and the question remains if its possible to do it with 
+netfilter (I doubt).
 
-> But thats wasn't question here. Whats your solution?
-
-Imho, ISP should not bother with how many hosts are behind a link.
-People won't subscribe 2 lines because they got 2 laptops at home :)
-Now, there's still something obscur to me behind OP question. What are
-we talking about ? People using a soho router so they can share their
-connection (I think it is the point, as TTL is discussed) ? People
-trying to get multiple IPs for multiple hosts from the same modem (case
-where we'll see different MAC addresses) ?
-
-First situation, no solution. But is there a point in trying to prevent
-this ? Connection sharing is imho something so well accepted nowadays...
-Traffic emitted is in complete user control so they can tweak any header
-field or parameter they want to fool ISP tracking. In particular, stuff
-like OpenBSD pf scrub[1] optionaly associated with modulate[2] (I don't
-see someone trying to figure out ISN generator class to spot multiple
-hosts though). A bit sad we do not have such things in Netfilter. BTW...
-
-Second situation, there are solutions. One deployed is PPPoE links, even
-for cable modems. If users have to set a PPP links, then you can
-restrict a given login to one tunnel at the same time, you can restrict
-one modem to establish one tunnel at the same time, you can attach BPF
-filter to you PPP link (to enforce source IP as an example), etc.
-
-
-[1] http://www.openbsd.org/faq/pf/scrub.html
-[2] http://www.openbsd.org/faq/pf/filter.html#state
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+BR,
+Thomas
 
