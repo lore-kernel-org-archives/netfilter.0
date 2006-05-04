@@ -1,11 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: iptables empty ipset matches on address of 0.0.0.0?
-Date: Fri, 5 May 2006 11:48:52 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0605051141430.725@blackhole.kfki.hu>
-References: <BAY106-F1F8468438D28D95E7FFD6D6B50@phx.gbl>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Obtain original address from redirected connection
+Date: Thu, 04 May 2006 20:51:24 +0200
+Message-ID: <445A4D2C.1000001@plouf.fr.eu.org>
+References: <20060502025450.73457687.pedro.werneck@terra.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY106-F1F8468438D28D95E7FFD6D6B50@phx.gbl>
+In-Reply-To: <20060502025450.73457687.pedro.werneck@terra.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andrew Kraslavsky <andykras@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, 4 May 2006, Andrew Kraslavsky wrote:
+[Sorry for the late answer, I just subscribed to the list]
 
-> My question is regarding the iptables ipset match (-m set ...).  What I am
-> seeing is that an empty ipset set of type iphash (I have not tried this with
-> any other ipset type) seems to yield a match on packets with an IP address
-> of 0.0.0.0.  The packets of concern here are DHCP client requests, for which
-> a source IP of 0.0.0.0 is expected.
->
-> With any rule, like the LOG target example below, that uses an empty ipset
-> to match against source address, I see a match but, since the ipset set is
-> empty, this seems odd.
->
-> iptables -A INPUT -m set --set emptyset src -j LOG --log-prefix "What the!?"
->
-> Is this how the match is supposed to work?  Even though 0.0.0.0 may be
-> equivalent to "any", if the set is empty it seems like a match should _not_
-> occur.
+Hello,
 
-Default all sets are zero-filled - thus 0.0.0.0 always matches.
-I think it's more a bug than a peculiar feature as it's non-intuitive.
-Expect a fixed ipset release in a few days.
+Pedro Werneck wrote :
+> 
+> I have a daemon, a sort of proxy, written in Python, who receives
+> redirected connections with a rule like this:
+> 
+> iptables -t nat -A PREROUTING -j DNAT -p TCP -s source --to-destination host:port
+> 
+> The problem is that I need access to the original destination address,
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+You can parse /proc/net/ip_conntrack on the NAT box, which contains the 
+  list of the connections currently handled by conntrack/NAT. This is 
+how Squid retrieves the original destination address when running in 
+transparent mode.
+Note : on "recent" kernels you need root privileges to read this file.
 
