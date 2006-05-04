@@ -1,12 +1,12 @@
-From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Re: New rule impact
-Date: Thu, 04 May 2006 14:17:30 +0000
-Message-ID: <1146752250.2644.9.camel@davila.nicaraguaopensource.com>
-References: <5DCE1CDE91978540A3092DA869CF7F8AB17729@exchange01.intranet.abilis.com.br>
+From: "Filipe Mordhorst" <filipe.mordhorst@abilis.com.br>
+Subject: RES: New rule impact
+Date: Thu, 4 May 2006 12:33:03 -0300
+Message-ID: <5DCE1CDE91978540A3092DA869CF7F8AB17831@exchange01.intranet.abilis.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+	micalg=SHA1; boundary="----=_NextPart_000_000E_01C66F76.E2B98170"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5DCE1CDE91978540A3092DA869CF7F8AB17729@exchange01.intranet.abilis.com.br>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,9 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Filipe Mordhorst <filipe.mordhorst@abilis.com.br>
+To: Jorge Davila <davila@nicaraguaopensource.com>
 Cc: netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_000E_01C66F76.E2B98170
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Thanks for the reply Jorge. Some people asked me to block file transfer
+through MSN. So a tough using string match support was a good idea, since
+there is a Content Type filed in the Application header. This content type
+is different for some of MSN's functions and file transfer is one of them.
+I tried something with squid, but wasn't successful. MSN uses the same port
+for IM and file transfer, at least that's what I saw at the logs.
+
+I tested the string match support against file transfer with MSN and it
+worked fine. Now I need to know how it will affect the firewall (overhead,
+etc)
+
+Best regards,
+----
+Filipe Mordhorst  
+Brasil - SC
+
+
+-----Mensagem original-----
+De: Jorge Davila [mailto:davila@nicaraguaopensource.com] 
+Enviada em: quinta-feira, 4 de maio de 2006 11:18
+Para: Filipe Mordhorst
+Cc: netfilter@lists.netfilter.org
+Assunto: Re: New rule impact
 
 With the string match you can not be sure that the string that you want
 compares is encapsulated in a single packet, then that mechanics does
@@ -30,29 +60,69 @@ better for you squid.
 
 Hope this help.
 
-Jorge.=20
+Jorge.
 
-El mi=E9, 03-05-2006 a las 14:46 -0300, Filipe Mordhorst escribi=F3:
-> Hello everyone,
->=20
-> I was searching the net (including google) for the best way to take a
-> measurement for additional processor requirement and additional overhead
-> when adding a specific rule.
-> The fact is that I=FFm starting to work with the string match. A already =
-know
-> how to implement it, but I need to know how it will affect my environment.
->=20
-> Thanks for now
->=20
-> Best regards,
-> ----
-> Filipe Mordhorst =20
-> Brasil - SC
->=20
---=20
-Jorge Isaac Davila Lopez
-Nicaragua Open Source
-+505 808 2478
-davila@nicaraguaopensource.com=20
+------=_NextPart_000_000E_01C66F76.E2B98170
+Content-Type: application/x-pkcs7-signature;
+	name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="smime.p7s"
 
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII3TCCAmUw
+ggHOoAMCAQICAw/GmzANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
+d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
+YWlsIElzc3VpbmcgQ0EwHhcNMDUxMTAyMTg1MjM3WhcNMDYxMTAyMTg1MjM3WjBQMR8wHQYDVQQD
+ExZUaGF3dGUgRnJlZW1haWwgTWVtYmVyMS0wKwYJKoZIhvcNAQkBFh5maWxpcGUubW9yZGhvcnN0
+QGFiaWxpcy5jb20uYnIwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAL/6sKPZ2nrTHV90D03z
+9TK0ZsCxXbczHY9FSAWYJgh+csnrYLrOlILv8x9ocUrdaMAkiUxxEe+fpIZ0APQ7GLKd2cx8lK3A
+pxaUTpr2ScF/hQuw7dA/hTnLECYcgK2ACoqAVRw22dU3Hw5fhDMGVkGQMYNBUQRX0Mrt3edLN8rF
+AgMBAAGjOzA5MCkGA1UdEQQiMCCBHmZpbGlwZS5tb3JkaG9yc3RAYWJpbGlzLmNvbS5icjAMBgNV
+HRMBAf8EAjAAMA0GCSqGSIb3DQEBBAUAA4GBAJvFJN6pe5AOcrLPrE6jpNC/UD75c+xg+FEOThH7
+EAad6TXSciIwF3J8IOO+RZi4Z6zoBlBXBCJU6QlOBjtSlHS2LI6lMDT+f34u6Hqr+Os2/Nlpd22B
+i5cTh8qFVLyJ/tKD4mo86XGnUx52zDzo+nYE9fFuYxRlWD5k4JZ4XDAgMIIDLTCCApagAwIBAgIB
+ADANBgkqhkiG9w0BAQQFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTES
+MBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3VsdGluZzEoMCYGA1UECxMf
+Q2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UEAxMbVGhhd3RlIFBlcnNvbmFs
+IEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1mcmVlbWFpbEB0aGF3dGUuY29t
+MB4XDTk2MDEwMTAwMDAwMFoXDTIwMTIzMTIzNTk1OVowgdExCzAJBgNVBAYTAlpBMRUwEwYDVQQI
+EwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENvbnN1
+bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAiBgNVBAMT
+G1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVyc29uYWwtZnJl
+ZW1haWxAdGhhd3RlLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA1GnX1LCUZFtx6UfY
+DFG26nKRsIRefS0Nj3sS34UldSh0OkIsYyeflXtL734Zhx2G6qPduc6WZBrCFG5ErHzmj+hND3Ef
+QDimAKOHePb5lIZererAXnbr2RSjXW56fAylS1V/Bhkpf56aJtVquzgkCGqYx7Hao5iR/Xnb5VrE
+HLkCAwEAAaMTMBEwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQQFAAOBgQDH7JJ+Tvj1lqVn
+Yiqk8E0RYNBvjWBYYawmu1I1XAjPMPuoSpaKH2JCI4wXD/S6ZJwXrEcp352YXtJsYHFcoqzceePn
+bgBHH7UNKOgCneSa/RP0ptl8sfjcXyMmCZGAc9AUG95DqYMl8uacLxXK/qarigd1iwzdUYRr5PjR
+zneigTCCAz8wggKooAMCAQICAQ0wDQYJKoZIhvcNAQEFBQAwgdExCzAJBgNVBAYTAlpBMRUwEwYD
+VQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENv
+bnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAiBgNV
+BAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVyc29uYWwt
+ZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMzA3MTcwMDAwMDBaFw0xMzA3MTYyMzU5NTlaMGIxCzAJ
+BgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQD
+EyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTCBnzANBgkqhkiG9w0BAQEFAAOB
+jQAwgYkCgYEAxKY8VXNV+065yplaHmjAdQRwnd/p/6Me7L3N9VvyGna9fww6YfK/Uc4B1OVQCjDX
+AmNaLIkVcI7dyfArhVqqP3FWy688Cwfn8R+RNiQqE88r1fOCdz0Dviv+uxg+B79AgAJk16emu59l
+0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sCAwEAAaOBlDCBkTASBgNVHRMBAf8ECDAGAQH/AgEAMEMG
+A1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9jcmwudGhhd3RlLmNvbS9UaGF3dGVQZXJzb25hbEZyZWVt
+YWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxh
+YmVsMi0xMzgwDQYJKoZIhvcNAQEFBQADgYEASIzRUIPqCy7MDaNmrGcPf6+svsIXoUOWlJ1/TCG4
++DYfqi2fNi/A9BxQIJNwPP2t4WFiw9k6GX6EsZkbAMUaC4J0niVQlGLH2ydxVyWN3amcOY6MIE9l
+X5Xa9/eH1sYITq726jTlEBpbNU1341YheILcIRk13iSx0x1G/11fZU8xggLPMIICywIBATBpMGIx
+CzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYD
+VQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIDD8abMAkGBSsOAwIaBQCg
+ggG8MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA2MDUwNDE1MzMw
+MlowIwYJKoZIhvcNAQkEMRYEFK34ExL6AC6pfLsqMP+W4RjR7dKGMGcGCSqGSIb3DQEJDzFaMFgw
+CgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqG
+SIb3DQMCAgEoMAcGBSsOAwIaMAoGCCqGSIb3DQIFMHgGCSsGAQQBgjcQBDFrMGkwYjELMAkGA1UE
+BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1Ro
+YXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAgMPxpswegYLKoZIhvcNAQkQAgsxa6Bp
+MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSww
+KgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIDD8abMA0GCSqGSIb3
+DQEBAQUABIGAo5C0X3qq0YYCrX+/kjqpBsz9sPbky8p6Y+LKUgBkq2LCmyBrfbHFgR6wzFrTj34z
+3CaaltAEXQi9FQOgLFZcp2HNbBj0vPtJYQWXdPqVSbuPKXudwLNT04HKj3nZQLGOVcengEcXZ9Ez
+32PFcPcBFEl2NA7cenknlragxKa2w4QAAAAAAAA=
+
+------=_NextPart_000_000E_01C66F76.E2B98170--
 
