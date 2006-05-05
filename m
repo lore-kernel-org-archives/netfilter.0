@@ -1,13 +1,9 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Not NATed packets
-Date: Fri, 05 May 2006 00:22:00 +0200
-Message-ID: <445A7E88.406@plouf.fr.eu.org>
-References: <Pine.LNX.4.64N.0604231700330.6204@tank.eu.org>
-	<e30e0b$284$1@sea.gmane.org>
+From: "Andrew Kraslavsky" <andykras@hotmail.com>
+Subject: iptables empty ipset matches on address of 0.0.0.0?
+Date: Thu, 04 May 2006 17:34:24 -0700
+Message-ID: <BAY106-F1F8468438D28D95E7FFD6D6B50@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e30e0b$284$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +14,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; format=flowed; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
-Cc: Petr Pisar <petr.pisar@atlas.cz>
 
-Petr Pisar a =E9crit :
->=20
-> and after doing this excercise I can't see any change on counters in=20
-> POSTROUTING chain. Naturaly I can't see anything in the kernel log (as=20
-> you can see, I log everything before MASQ and after that).
->=20
-> I seems, these magic packets are completly bypassing POSTROUTING chain.
->=20
-> I found out too that TCP traffic goes inside this chain only with first=
+Good day,
+
+My question is regarding the iptables ipset match (-m set ...).  What I am =
+
+seeing is that an empty ipset set of type iphash (I have not tried this wit=
+h=20
+any other ipset type) seems to yield a match on packets with an IP address =
+
+of 0.0.0.0.  The packets of concern here are DHCP client requests, for whic=
+h=20
+a source IP of 0.0.0.0 is expected.
+
+With any rule, like the LOG target example below, that uses an empty ipset =
+
+to match against source address, I see a match but, since the ipset set is =
+
+empty, this seems odd.
+
+iptables -A INPUT -m set --set emptyset src -j LOG --log-prefix "What the!?"
+
+Is this how the match is supposed to work?  Even though 0.0.0.0 may be=20
+equivalent to "any", if the set is empty it seems like a match should _not_=
 =20
-> SYN packet. After that there the packets are I don't see them anymore.=20
-> Is it normal?
->=20
-> So, I have one workaround. These magic packets are INVALID from point o=
-f=20
-> state module's view.
+occur.
 
-Connection tracking state is the key to explain all that you observed.
-Only NEW packets can create an entry in the connection tracking table=20
-(which contents can been seen through /proc/net/ip_conntrack) and can go=20
-through the 'nat' chains. That's why :
-- INVALID packets bypass the nat chains, thus aren't NATed nor counted
-- only the first NEW packet of a connection, which is usually a SYN in=20
-TCP connections, goes through the nat chains. Duplicate SYN, although=20
-NEW too, or subsequent packets belonging (ESTABLISHED) or related=20
-(RELATED) to the same connection in either direction don't. However all=20
-get automatically NATed according to the conntrack entry in a way=20
-determined by how the first packet was NATed.
+Thanks,
 
->=20
-> I'm not sure if any INVALID packet can also be considered as a health=20
-> packet. Can you see any false positivities?
+- Andrew Kraslavsky
 
-Unlike malformed packets which the experimental "unclean" match tries to=20
-detect, INVALID packets are not "unhealthy" in nature, they're just=20
-unexpected. And yes, false positive can occur. With kernels older than=20
-2.4.29, some locally-generated ICMP replies are wrongly considered=20
-INVALID instead of RELATED.
+_________________________________________________________________
+Don=92t just search. Find. Check out the new MSN Search!=20
+http://search.msn.click-url.com/go/onm00200636ave/direct/01/
+
 
