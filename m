@@ -1,10 +1,11 @@
-From: Dirk <dirk2@wor.net>
-Subject: current iptables/netfilter in kernel 2.4.17?
-Date: Sat, 06 May 2006 06:55:00 +0200
-Message-ID: <445C2C24.1090609@wor.net>
+From: "Gabriel Sousa" <gabriel.sousa@gmail.com>
+Subject: h323 + netfilter on linux 2.6 kernel
+Date: Sat, 6 May 2006 05:12:59 -0300
+Message-ID: <2ad878d00605060112k128ce890ke209b95dc4c3e5dc@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,17 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi everybody,  I have one problema with dell poweredge 850 servers.
+When I compile linux kernel 2.6.16 with netfilter its works, but when
+i apply the patch of h323 protocol i have kernel panic. Kernel not
+sync. This servers have a NIC with tg3 module.
 
-is there a packport (patch) that makes it possible to use
-a more recent version of iptables/netfilter (especially
-connection tracking) usable in 2.4.17? Somehow in patch-o-matic?
+if someone can help me, please send me one link or a way that i can
+solve this problem,
 
-Thank you,
+thanks
 
-
-Dirk
+Gabriel
 
