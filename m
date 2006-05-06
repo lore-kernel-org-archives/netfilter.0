@@ -1,9 +1,9 @@
-From: "Gabriel Sousa" <gabriel.sousa@gmail.com>
-Subject: h323 + netfilter on linux 2.6 kernel
-Date: Sat, 6 May 2006 05:12:59 -0300
-Message-ID: <2ad878d00605060112k128ce890ke209b95dc4c3e5dc@mail.gmail.com>
+From: Andreas Gaupmann <andreas.gaupmann@gmx.net>
+Subject: Schedule while atomic
+Date: Sat, 6 May 2006 13:56:34 +0200
+Message-ID: <200605061356.35270.andreas.gaupmann@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -16,18 +16,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi everybody,  I have one problema with dell poweredge 850 servers.
-When I compile linux kernel 2.6.16 with netfilter its works, but when
-i apply the patch of h323 protocol i have kernel panic. Kernel not
-sync. This servers have a NIC with tg3 module.
+Hello,
 
-if someone can help me, please send me one link or a way that i can
-solve this problem,
+I have registered a callback function in a kernel module with the Netfilter 
+hook NF_IP_LOCAL_IN. In the function the following statements lead to a 
+kernel freeze:
 
-thanks
+set_current_state(TASK_INTERRUPTIBLE);
+schedule_timeout(HZ);
 
-Gabriel
+Another try (with the same result) for letting the hook function sleep for a 
+certain amount of time:
+
+while (time_before(jiffies,jiffies+HZ));
+
+The error message for the kernel oops is "scheduling while atomic" for both 
+attempts.
+
+Why is this error ocurring? Are the Netfilter hooks atomic?
+How can a sleep in a hook function be achieved?
+
+Regards,
+Andreas Gaupmann
 
