@@ -1,9 +1,9 @@
-From: Andre Kalamandeen <x_trodinary@yahoo.com>
-Subject: Cant get iptables with string match and ROUTE to work.
-Date: Sat, 6 May 2006 21:55:22 -0700 (PDT)
-Message-ID: <20060507045522.6619.qmail@web53303.mail.yahoo.com>
+From: S t i n g r a y <fasi_74@yahoo.com>
+Subject: allowing mac address list
+Date: Sun, 7 May 2006 11:36:44 -0700 (PDT)
+Message-ID: <20060507183644.53689.qmail@web51112.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,34 +15,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hey all, i've been trying to do a combination filter
-using string matching and the "-j ROUTE" extras from
-netfilter but i cant seem to get them to work. Here's
-what i do, i got a source (2.6.16.5) from kernel.org
-untared to folder, got a copy of iptables (1.3.1) and
-untared that too, got me a copy of patch-o-matic-ng
-and untared also. I ran the 
-p-o-m giving the folders with kernel and iptables
-source and apply the patch i want (ROUTE). Next, i
-start a xmenuconfig and compile the kernel making sure
-the "string" match option and "ROUTE" option are being
-installed as modules. Compilation and install goes
-fine, i reboot to the new kernel but when i try to use
-the string match i keep getting an error saying :
-"String match v1.3.5 (I'm 1.3.1)" i figured i have to
-upgrade iptables, but when i try a test using the -j
-ROUTE --gw it doesnt recognise the command. I did a
-search in the kernel compilation folder and there
-exists a _ROUTE.o file there. Im not really sure what
-to do from here, any help would be appreciated.
+i want to allow only a certian list of internal MAC
+address to access my nat server to access internet.
+all other should be disallowed.
 
-Thanks.
+what should i do ?
+
+regards
+
+
+*=BA=A4., =B8=B8,.=A4=BA*=A8=A8=A8*=A4 Stingray *=BA=A4., =B8=B8,.=A4=BA*=
+=A8=A8*=A4
+             =20
+
+
 
 __________________________________________________
 Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Tired of spam?  Yahoo! Mail has the best spam protection around=20
+http://mail.yahoo.com=20
 
