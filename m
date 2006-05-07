@@ -1,7 +1,7 @@
-From: Andre Kalamandeen <x_trodinary@yahoo.com>
-Subject: Cant get iptables string match and ROUTE to work.
-Date: Sat, 6 May 2006 21:47:23 -0700 (PDT)
-Message-ID: <20060507044723.71491.qmail@web53312.mail.yahoo.com>
+From: "R. Rajasekaran" <rrajas@yahoo.com>
+Subject: ICMP Redirect
+Date: Sun, 7 May 2006 00:19:11 -0700 (PDT)
+Message-ID: <20060507071911.55929.qmail@web35005.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,28 +18,63 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hey all, i've been trying to do a combination filter
-using string matching and the "-j ROUTE" extras from
-netfilter but i cant seem to get them to work. Here's
-what i do, i got a source (2.6.16.5) from kernel.org
-untared to folder, got a copy of iptables (1.3.1) and
-untared that too, got me a copy of patch-o-matic-ng
-and untared also. I ran the 
-p-o-m giving the folders with kernel and iptables
-source and apply the patch i want (ROUTE). Next, i
-start a xmenuconfig and compile the kernel making sure
-the "string" match option and "ROUTE" option are being
-installed as modules. Compilation and install goes
-fine, i reboot to the new kernel but when i try to use
-the string match i keep getting an error saying :
-"String match v1.3.5 (I'm 1.3.1)" i figured i have to
-upgrade iptables, but when i try a test using the -j
-ROUTE --gw it doesnt recognise the command. I did a
-search in the kernel compilation folder and there
-exists a _ROUTE.o file there. Im not really sure what
-to do from here, any help would be appreciated.
- 
-Thanks.
+
+Kindly help me in understanding the observation of 
+following experiment :-
+
+
+
+ --------         --------
+ |      |         |      |
+ |  H1  |---------|  H2  |
+ |      |         |      |
+ --------         --------
+
+H1 and H2 are two Linux host.
+
+IP of H1   = 10.0.0.1
+MAC of H1  = 00:00:00:00:00:01
+
+
+IP of H2   = 10.0.0.2
+MAC of H2  = 00:00:00:00:00:02
+
+Now I did the following configurations.
+
+1) In host H1
+-------------
+I added a static arp entry in the arp cache of the
+host H1
+as  arp -s 10.0.0.3 00:00:00:00:00:02.
+
+(ie) the mac address for 10.0.0.3 as H2's mac address.
+
+
+2) In host H2
+-------------
+Enabled IP forwarding.
+
+
+Then from host H1, I made a ping 10.0.0.3.
+Here I found that ICMP request from host H1 reaches
+host H2,
+and host H2 sends the following as ICMP redirect
+messages.
+
+From 10.0.0.2: icmp_seq=1 Redirect Host (New nexthop:
+10.0.0.3)
+From 10.0.0.2: icmp_seq=2 Redirect Host (New nexthop:
+10.0.0.3)
+From 10.0.0.2: icmp_seq=3 Redirect Host (New nexthop:
+10.0.0.3)
+
+The above behaviour is of Linux functionality.
+Here the redirect uses the next-hop address as
+10.0.0.3.  What is the reason of it ?
+It seems confusing because the ping was send just to
+that address.
+
+- R. Rajasekaran.
 
 __________________________________________________
 Do You Yahoo!?
