@@ -1,40 +1,58 @@
-From: S t i n g r a y <fasi_74@yahoo.com>
-Subject: allowing mac address list
-Date: Sun, 7 May 2006 11:36:44 -0700 (PDT)
-Message-ID: <20060507183644.53689.qmail@web51112.mail.yahoo.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset-2.2.9 released
+Date: Mon, 8 May 2006 12:17:40 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0605081138230.4039@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-i want to allow only a certian list of internal MAC
-address to access my nat server to access internet.
-all other should be disallowed.
+Hi,
 
-what should i do ?
+This is a bugfix release. The list of the fixed bugs is
 
-regards
+ - 'ipset -N' did not generate proper return code
+ - 'limit' module parameter added to the kernel modules of the
+   iphash, ipporthash, nethash and iptree type of sets so that
+   the maximal number of elements can now be limited
+ - zero valued entries (port 0 or IP address 0.0.0.0) were
+   detected as members of the hash/tree kind of sets
+   (reported by Andrew Kraslavsky)
+ - list and save operations used the external identifier
+   of the sets for the bindings instead of the internal one
+   (reported by Amin Azez)
 
+If you use hash/iptree type of sets to dynamically protect your network
+via the SET target, I strongly suggest you to upgrade: in the previous
+releases there was no limit on the number of the possible elements in a
+hash/iptree type of set and thus an attacker could exhaust the available
+physical memory in the machine by triggering adding bogus, faked entries.
 
-*=BA=A4., =B8=B8,.=A4=BA*=A8=A8=A8*=A4 Stingray *=BA=A4., =B8=B8,.=A4=BA*=
-=A8=A8*=A4
-             =20
+Now there is a default of max 65535 elements in the hash/iptree type of
+sets: you can adjust it per settype by setting the 'limit' parameter of
+the appropriate kernel module, e.g:
 
+	# modprobe ip_set_iphash limit=10000
 
+You can download the new release from http://ipset.netfilter.org or from
+the netfilter svn tree.
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around=20
-http://mail.yahoo.com=20
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
