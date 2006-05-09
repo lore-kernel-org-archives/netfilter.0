@@ -1,12 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ICMP Redirect
-Date: Tue, 09 May 2006 14:25:51 +0200
-Message-ID: <1147177552.4881.63.camel@anduril.intranet.cartel-securite.net>
-References: <20060507071911.55929.qmail@web35005.mail.mud.yahoo.com>
+From: Bill Tangren <bjt@aa.usno.navy.mil>
+Subject: log entries from primary dns
+Date: Tue, 09 May 2006 09:45:41 -0400
+Message-ID: <44609D05.4050908@aa.usno.navy.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060507071911.55929.qmail@web35005.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,46 +15,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: "R. Rajasekaran" <rrajas@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Le dimanche 07 mai 2006 =E0 00:19 -0700, R. Rajasekaran a =E9crit :
-> IP of H1   =3D 10.0.0.1
-> IP of H2   =3D 10.0.0.2
-[...]
-> >From 10.0.0.2: icmp_seq=3D1 Redirect Host (New nexthop:
-> 10.0.0.3)
-[...]
-> The above behaviour is of Linux functionality.
-> Here the redirect uses the next-hop address as
-> 10.0.0.3.  What is the reason of it ?
+I'm getting quite a few messages in my logs from itables. There seems to be a 
+problem with packets coming from the primary DNS (10.1.1.5). The messages look 
+like this (this is output from logwatch):
 
-Because your network setting is just wrong. The smallest network mask
-you can set on this type of link is /30, i.e. 10.0.0.0/30. Then you
-have :
+    From 10.1.1.5 - 334 packets
+       To 10.1.5.93 - 334 packets
+          Service: 32972 (udp/32972) (INPUT packet died:,eth0,none) - 1 packet
+          Service: 32973 (udp/32973) (INPUT packet died:,eth0,none) - 1 packet
+          Service: 32974 (udp/32974) (INPUT packet died:,eth0,none) - 1 packet
+          Service: 33063 (udp/33063) (INPUT packet died:,eth0,none) - 1 packet
+          Service: 33112 (udp/33112) (INPUT packet died:,eth0,none) - 1 packet
 
-	10.0.0.0 as network address
-	10.0.0.3 as broadcast address
-	10.0.0.1 and 10.0.0.2 as host addresses
+he following are some of my udp rules set:
 
-If you send a packet from H1 to H2 destined to 10.0.0.3, H2 will
-complain because he's not the best router for H1 to reach 10.0.0.3. As
-describe by network mask, H1 should reach 10.0.0.3 directly on link,
-without using H2 as a router, thus you gety an ICMP Redirect.
-
-This is still true if network mask is wider than /30, because then,
-10.0.0.3 will be a host address belonging to H1 and H2 local link. Then
-there's not reason for H1 to go through H2 to reach it, and you get an
-ICMP redirect again.
-
-Set your network as 10.0.0.0/30 and try to ping 10.0.0.5 instead. BTW,
-there's nothing related to Netfilter in this behaviour.
+Chain udp_inbound (1 references)
+target     prot opt source           destination
+ACCEPT     udp  --  10.1.5.0/24      0.0.0.0/0           udp dpt:123
+ACCEPT     udp  --  10.1.0.0/16      0.0.0.0/0           udp dpts:137:139
+ACCEPT     udp  --  10.1.0.0/16      0.0.0.0/0           udp dpt:445
+RETURN     udp  --  0.0.0.0/0        0.0.0.0/0
 
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+
+I *believe* that dns is working properly on this box (10.1.5.93). For example, 
+reverse lookups work when I ssh into it. Could someone tell me why I'm getting 
+these messages? Is the DNS misconfigured?
+
+Oh, I'm running RHEL ES4 (kernel version 2.6.9-22.0.2.ELsmp) on this box. Don't 
+know what the DNS box is running.
+
+Thanks!
+
+Bill Tangren
 
