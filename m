@@ -1,11 +1,10 @@
-From: "Jason Sigurdur" <Jason.Sigurdur@aspenview.org>
-Subject: libiptc build as shared library
-Date: Mon, 8 May 2006 12:28:29 -0600
-Message-ID: <648A21EA469E3848922D9860785CD5EF23D4B4@aspen-mail01.aspenview.org>
+From: Sagara Wijetunga <sagaralists@yahoo.com>
+Subject: SIP connection tracking
+Date: Mon, 8 May 2006 22:37:01 -0700 (PDT)
+Message-ID: <20060509053701.45562.qmail@web34211.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,7 +18,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, how would I build libiptc as a shared library?
+Hi all
 
-Thx jason
+I'm trying to prioritize the out going SIP related
+traffic from my desktop computer.
+
+I tried:
+
+iptables -t mangle -A POSTROUTING \
+-m helper --helper sip -m state --state
+ESTABLISHED,RELATED \
+-j ...
+
+It simply doesn't detect SIP related traffic!
+
+I'm using Linux kernel 2.6.11.9, iptables 1.3.5 and
+sip-conntrack-nat from patch-o-matic-ng-20060502.
+
+I have enabled the Mangling, SIP support in the kernel
+(as built-in, not as a module).
+
+Have I missed something? any ideas?
+
+Thanks
+
+Kind regards
+Sagara
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
