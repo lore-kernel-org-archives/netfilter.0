@@ -1,10 +1,10 @@
-From: Stephane Bortzmeyer <bortzmeyer@nic.fr>
-Subject: Cannot compile connlimit: structure has no member named `proto'
-Date: Thu, 11 May 2006 10:51:21 +0200
-Message-ID: <20060511085121.GA6833@faramir.nic.fr>
+From: "William Bohannan" <william.bohannan@spidersat.net>
+Subject: Time matching support
+Date: Wed, 10 May 2006 16:12:43 -0000
+Message-ID: <002301c6744c$9a259a90$59010a0a@ACCSSWILLIAM>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,23 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: fabrice@celestix.com, andrews@stusoft.com, netfilter@lists.netfilter.org, netfilter-admin@lists.netfilter.org
 
-I just patched (with Patch-o-Matic) a 2.6.9 kernel with the connlimit
-patch (foudn in patchlets/ in the Subversion repository). Patching was
-successful but compilation is not:
+Hello,
+I am try to match by time with iptables 1.3.5 on linux kernel 2.6.15.2.
+Only problem is I am try to match in the postrouting / mangle stage.  Do you
+know if there is a patch or if you have had any success with this matter?
 
-  CC [M]  net/ipv4/netfilter/ipt_connlimit.o
-net/ipv4/netfilter/ipt_connlimit.c: In function `count_them':
-net/ipv4/netfilter/ipt_connlimit.c:68: error: structure has no member named `proto'
-net/ipv4/netfilter/ipt_connlimit.c:94: error: structure has no member named `infos'
-net/ipv4/netfilter/ipt_connlimit.c:101: error: structure has no member named `infos'
-make[3]: *** [net/ipv4/netfilter/ipt_connlimit.o] Error 1
-make[2]: *** [net/ipv4/netfilter] Error 2
-make[1]: *** [net/ipv4] Error 2
-make: *** [net] Error 2
+Getting the following errors:
 
-Does it mean that I should patch the Netfilter which is in the kernel as well?
+machinenemae login: ipt_time loading
+ipt_time: error, only valid for PRE_ROUTING, LOCAL_IN, FORWARD and OUTPUT)
+
+
+many thanks
+
+william
 
 
