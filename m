@@ -1,12 +1,10 @@
-From: Sagara Wijetunga <sagaralists@yahoo.com>
-Subject: Re: Problems with ip_conntrack_sip in kernel 2.6.16
-Date: Wed, 10 May 2006 22:21:20 -0700 (PDT)
-Message-ID: <20060511052120.30991.qmail@web34201.mail.mud.yahoo.com>
-References: <36F26FE0EB71E24B9AE89623D4B6F3DD0A199E@sbs.meritusa.local>
+From: Stephane Bortzmeyer <bortzmeyer@nic.fr>
+Subject: pserver.netfilter.org down? (Cannot CVS Patch-o-matic)
+Date: Thu, 11 May 2006 10:24:50 +0200
+Message-ID: <20060511082450.GA24526@nic.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <36F26FE0EB71E24B9AE89623D4B6F3DD0A199E@sbs.meritusa.local>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +16,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
---- Joseph Yannaccone <JYannaccone@meritengine.com>
-wrote:
+%  cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
+Logging in to :pserver:cvs@pserver.netfilter.org:2401/cvspublic
+CVS password: 
+cvs [login aborted]: connect to pserver.netfilter.org(213.95.27.115):2401 failed: Connection refused
 
-> Does anyone have sip_conntrack_nat working with
-> kernel 2.6.16.  I am
-> trying to perform basic SIP connection tracking
-> using the
-> ip_conntrack_sip module with netfilter/iptables to
-> dynamically open RTP
-> ports for VoIP calls (using SIP signaling, of
-> course).  I do not yet
-> need any SIP NAT functionality.
-> 
-
-I also have the same requirement and sent a post to
-this mailing list few days ago under "SIP connection
-tracking". It seems nobody is using this module :(
-
-Regards
-Sagara
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
