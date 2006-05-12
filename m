@@ -1,10 +1,14 @@
-From: Valerio Bruno <valerio.bruno@torlug.org>
-Subject: queue order and conntrack callback
-Date: Thu, 11 May 2006 22:56:02 +0200 (CEST)
-Message-ID: <20060511205602.22041.qmail@web86909.mail.ukl.yahoo.com>
-Reply-To: valerio.bruno@torlug.org
+From: Wolfram Schlich <lists@wolfram.schlich.org>
+Subject: Re: IPv6 state match in kernel 2.6.15 and iptables 1.3.5
+Date: Fri, 12 May 2006 15:02:14 +0200
+Message-ID: <20060512130214.ALLYOURBASEAREBELONGTOUS.F24279@bla.fasel.org>
+References: <20060511131959.ALLYOURBASEAREBELONGTOUS.B31059@bla.fasel.org>
+	<1147434871.5002.107.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <1147434871.5002.107.camel@anduril.intranet.cartel-securite.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,57 +19,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-i need to capture tcp packets so i'm using
-libnetfilter_queue to get them; with 
-an iptables rule i send packets in a queue and then
-accept/drop them from my application code.
+* Cedric Blancher <blancher@cartel-securite.fr> [2006-05-12 13:57]:
+> Le jeudi 11 mai 2006 =E0 15:19 +0200, Wolfram Schlich a =E9crit :
+> > I was happy to see that kernel 2.6.15 and iptables 1.3.5
+> > brought state match support for IPv6.
+> > When giving it a try, it turned out *all* packets were classified
+> > as being in INVALID state:
+>=20
+> It seems you don't have Layer 3 independant connection tracking
+> (NF_CONNTRACK) and IPv6 conntrack support (NF_CONNTRACK_IPV6) built.
+>=20
+> The thing is Linux kernel as the "old style" connection tracking that
+> only works for IPv4, not for IPv6. That's what you're using now. That's
+> why you get INVALID state for IPv6 packets.
+>=20
+> If you want to have IPv6 conntrack, you have to remove "Connection
+> tracking" support in "IP Netfilter Configuration section, then go to
+> Core Netfilter Configuration section and activate "Layer 3 Independent
+> Connection tracking". Then you will see "IPv6 support for new connectio=
+n
+> tracking" option in IPv6 Netfilter Configuration section.
+>=20
+> And you're done.
 
-Now the question is: can i suppose that packets are
-correctly sorted ? 
-I mean sorted by data order, for example:
+You simply _made my day_ :-)
 
-tcp packet 1
-from A to B
-seq. number 412
-data: 111
+Thanks a lot!
 
-tcp packet 2
-from A to B
-seq number 415
-data: 222
-
-Can i always suppose that packet number 2 is processed
-AFTER number 1 ? Or is it an incorrect assumption?
-if netfilter sort packages before puts them on queue,
-i avoid to write code that re-sort packages. 
-
-Moreover i need connection tracking: i thought about
-libnetfilter_conntrack, but
-
-where i can find informations about
-nfct_register_callback function and parameters passed
-to the callback? (utils/ctnl_test.c and source code
-apart)
-
-does libnetfilter_conntrack detect connection not
-issued/received by local host (eg connection throught
-netfilter machine not from/to it)? 
-
-Sorry for the length of the message and my poor
-english. 
-
-Any help will be appreciated!
-
-Valerio
-
-PS
-It's very hard finding netfilter libs
-documentation.Why don't create a wiki ? if every one
-adds a line of text we add a lot of docs..
-
+I am wondering from what docs I could have found that out :-/
+--=20
+Regards,
+Wolfram Schlich <wschlich@gentoo.org>
+Gentoo Linux * http://dev.gentoo.org/~wschlich/
 
