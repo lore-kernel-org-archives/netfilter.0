@@ -1,11 +1,13 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: RE: [ANNOUNCE] ipset-2.2.9 released
-Date: Fri, 12 May 2006 10:25:29 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0605121021570.10772@blackhole.kfki.hu>
-References: <BAY106-F22C1E316E8ECC9F51B39CCD6AF0@phx.gbl>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Policy routing with mark not working.
+Date: Fri, 12 May 2006 12:54:06 +0200
+Message-ID: <4464694E.8030309@plouf.fr.eu.org>
+References: <20060510202615.51988.qmail@web53303.mail.yahoo.com>	<44625A23.30606@zoomnet.ro>
+	<803aaa110605111701v56ea7d8dg39b278888321b1ee@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY106-F22C1E316E8ECC9F51B39CCD6AF0@phx.gbl>
+In-Reply-To: <803aaa110605111701v56ea7d8dg39b278888321b1ee@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andrew Kraslavsky <andykras@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, 11 May 2006, Andrew Kraslavsky wrote:
+Hello,
 
-> >- 'limit' module parameter added to the kernel modules of the
-> >   iphash, ipporthash, nethash and iptree type of sets so that
-> >   the maximal number of elements can now be limited
->
-> By amazing coincidence, I was just looking into adding a "--limit" argument
-> to ipset iphash, nethash, ipporthash, and iptree sets when I saw this
-> announcement.
-[...]
-> I would be very glad if my changes (or corrected/improved version thereof)
-> were folded into the next ipset release.  Where should I post my changes
-> (e.g. this list? the developers' list or...) and in what format (all of the
-> affected source files as attachments or in a tar file or as patch files
-> or...)?
+Frank a =E9crit :
+> Also, after much time banging my head against the wall trying to
+> figure out why my marks were ignored, I discovered that in spite of
+> what the netfilter packet traversal diagram shows, marks set in
+> PREROUTING are ignored for packets originating on the box doing the
+> routing, and the marks need to be set on the OUTPUT chain for that
+> case
 
-Post your patch as an unified diff in the netfilter-devel mailing list,
-that's it!
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+"In spite" ? What are you tacking about ? That's exactly what the=20
+Netfilter diagram shows : locally generated packets don't go through the=20
+PREROUTING chain - except when sent to (and therefore received back=20
+from) the loopback interface.
 
