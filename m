@@ -1,13 +1,12 @@
-From: "Kashif Ali Bukhari" <kbukhari@gmail.com>
-Subject: Re: requires help
-Date: Fri, 12 May 2006 18:28:39 +0500
-Message-ID: <a3f524e0605120628k2690a02at5344f6e9196adcfc@mail.gmail.com>
-References: <20060511120151.27508.qmail@web35915.mail.mud.yahoo.com>
+From: Andre Kalamandeen <x_trodinary@yahoo.com>
+Subject: Re: Policy routing with mark not working.
+Date: Fri, 12 May 2006 06:53:50 -0700 (PDT)
+Message-ID: <20060512135350.98132.qmail@web53302.mail.yahoo.com>
+References: <4464694E.8030309@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060511120151.27508.qmail@web35915.mail.mud.yahoo.com>
-Content-Disposition: inline
+In-Reply-To: <4464694E.8030309@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +17,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Linux linux <khankhn1@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-please define your steps
+Hey, i figured out what the problem was, i was passing
+all packets through squid, so when it was maked in the
+mangle PREROUTING chain, squid removed the marks since
+it doesnt support them, but changing the chain to
+OUTPUT solved this prob. Thanks to all.
+
+--- Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+wrote:
+
+> Hello,
+>=20
+> Frank a =E9crit :
+> > Also, after much time banging my head against the
+> wall trying to
+> > figure out why my marks were ignored, I discovered
+> that in spite of
+> > what the netfilter packet traversal diagram shows,
+> marks set in
+> > PREROUTING are ignored for packets originating on
+> the box doing the
+> > routing, and the marks need to be set on the
+> OUTPUT chain for that
+> > case
+>=20
+> "In spite" ? What are you tacking about ? That's
+> exactly what the=20
+> Netfilter diagram shows : locally generated packets
+> don't go through the=20
+> PREROUTING chain - except when sent to (and
+> therefore received back=20
+> from) the loopback interface.
+>=20
+>=20
 
 
-On 5/11/06, Linux linux <khankhn1@yahoo.com> wrote:
-> hi to all
->
-> i want to configure patch-o-matic-ng
->
-> my kernel=3Dlinux-2.6.16.15.tar.bz2
-> patch-o-matic-ng=3Dpatch-o-matic-ng.tar.bz2
-> iptables=3Diptables-1.3.5.tar.bz2
->
-> i am facing problem in patching up iptables, is it
-> possible or not.
->
-> regards
-> noman
->
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam protection around
-> http://mail.yahoo.com
->
->
-
-
---=20
-Syed Kashif Ali Bukhari
-+92-300-4295604
-Network Engineer
-Beaconhouse IT Services, Lahore Pakistan
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around=20
+http://mail.yahoo.com=20
 
