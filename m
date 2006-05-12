@@ -1,12 +1,10 @@
-From: Andre Kalamandeen <x_trodinary@yahoo.com>
-Subject: Re: Policy routing with mark not working.
-Date: Fri, 12 May 2006 06:53:50 -0700 (PDT)
-Message-ID: <20060512135350.98132.qmail@web53302.mail.yahoo.com>
-References: <4464694E.8030309@plouf.fr.eu.org>
+From: "Angel Tsankov" <fn42551@fmi.uni-sofia.bg>
+Subject: Enabling the TTL target in your linux kernel
+Date: Fri, 12 May 2006 21:58:23 +0300
+Message-ID: <001201c675f6$0b19e990$cf34000a@sven>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4464694E.8030309@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,46 +15,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: "ML: netfilter" <netfilter@lists.netfilter.org>
 
-Hey, i figured out what the problem was, i was passing
-all packets through squid, so when it was maked in the
-mangle PREROUTING chain, squid removed the marks since
-it doesnt support them, but changing the chain to
-OUTPUT solved this prob. Thanks to all.
+I decompressed patch-o-matic-ng-20060511.tar.bz2 and executed  ./runme TTL with KERNEL_DIR and IPTABLES_DIR set appropriately, but I
+could not find TTL target support in "Device drivers" > "Networking support" > "Networking options" > "Network packet filtering" >
+"netfilter configuration". I do get "TTL target support" patch-o-matic-ng-20040621.tar.bz2, however. Why do I not have TTL target
+support with 20060511?
 
---- Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-wrote:
-
-> Hello,
->=20
-> Frank a =E9crit :
-> > Also, after much time banging my head against the
-> wall trying to
-> > figure out why my marks were ignored, I discovered
-> that in spite of
-> > what the netfilter packet traversal diagram shows,
-> marks set in
-> > PREROUTING are ignored for packets originating on
-> the box doing the
-> > routing, and the marks need to be set on the
-> OUTPUT chain for that
-> > case
->=20
-> "In spite" ? What are you tacking about ? That's
-> exactly what the=20
-> Netfilter diagram shows : locally generated packets
-> don't go through the=20
-> PREROUTING chain - except when sent to (and
-> therefore received back=20
-> from) the loopback interface.
->=20
->=20
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around=20
-http://mail.yahoo.com=20
 
