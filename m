@@ -1,12 +1,12 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Questions re iproute2, netfilter, and locally sourced packets
-Date: Sat, 13 May 2006 12:15:21 +0200
-Message-ID: <4465B1B9.2000208@plouf.fr.eu.org>
-References: <446576D0.2050407@aut.ac.nz>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Routing through PtP and iptables
+Date: Sat, 13 May 2006 12:38:42 +0200
+Message-ID: <000601c67679$67d1c940$0101000a@sterenborg.info>
+References: <200605122335.10078.antonio.dibacco@aruba.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <446576D0.2050407@aut.ac.nz>
+In-Reply-To: <200605122335.10078.antonio.dibacco@aruba.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,52 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hello,
+netfilter-bounces@lists.netfilter.org scribbled on :
 
-Ian Batterbee a =E9crit :
-[...]
-> So to achieve this, I set up another routing table, added a name for it=
-=20
-> into /etc/iproute2/rt_tables, added an "ip rule from [HostA] lookup=20
-> vpn", and in the script that brings the tunnel up, routes are added for=
-=20
-> my work's netblocks via the ppp link to the vpn route table. This much=20
-> all works.=20
-> In the same script, I enable masquerading on the ppp interface. This=20
-> appears not to work, because if I sniff from a machine on the other sid=
-e=20
-> of the tunnel (ie, at work), packets emerging from it still have their=20
-> original IP addresses from my local subnet on them
-
-This is a rather known issue. Iptables's MASQUERADE may not work (may it=20
-work ?) when combined with source address based routing policy. If I=20
-understood correctly the reason is the MASQUERADE code uses a kernel=20
-output routing function to determine the apparent source address, but=20
-this function does not use the original source address (why would it, as=20
-its purpose is to find out the source address to use ?), so the ip rule=20
-does not trigger and the main routing table is used. A workaround is to=20
-set the apparent source address explicitly with SNAT instead of=20
-MASQUERADE. However, unlike MASQUERADE, SNAT assumes the output=20
-interface is static and won't clean up the conntrack/NAT table when the=20
-PPP interface goes down, but this is not a problem if the interface=20
-always gets the same address.
-
-> To make things more complicated, not only is Host A allowed to route vi=
-a=20
-> the tunnel, but packets sourced from the linux router itself should als=
-o=20
-> be allowed to go that way (or to put it another way, everything but hos=
-t=20
-> B and Host C should be allowed to use the tunnel).
+> Hi all,
 >=20
-> The trouble is, while I can allow packets from the linux router by=20
-> adding: "ip rule add prior 50 lookup vpn" (which obviously allows=20
-> everything to use the tunnel), I can't figure out how to specifically=20
-> allow locally generated packets without allowing everything=20
-> unconditionally.
+> I have two identical linux boxes (A e B), each one with two
+> interfaces: an ethernet (eth0 with ip 192.168.1.50) and an hdlc
+> (hdlc0). The two boxes are only connected via a link through their
+> hdlc interfaces. Because they have to be =A0exactly the same, if I =
+have
+> to assign an ip address to hdlc0 of A then the hdlc0 of B should have
+> the same ip address. Each one should have a default route that cannot
+> coincide with the hdlc interface. Every linux box has a web server.
+> When I connect with my notebook to box A I want to reach the web
+> server on A typing in my browser http://192.168.1.50 and I want to
+> reach web server on B typing http://192.168.1.50:8080 .=20
+> Some one knows how could it be possible?
+>=20
+> Thank you for your help,
+> Antonio.
 
-What about using MARK in the mangle OUTPUT chain and fwmark in ip rule ?
+If Server A has IP 192.168.1.50, you *cannot* have a server B also on
+192.168.1.50 in the samen LAN. You would have 1 IP address for multiple
+servers and that just isn't going to work.
+
+What you *can* do is :
+Server A =3D 192.168.1.50
+Server B =3D 192.168.1.51
+Forward requests to 192.168.1.50:8080 to 192.168.1.51(:8080 or whatever
+you like)
+
+
+Gr,
+Rob
+
 
