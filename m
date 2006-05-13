@@ -1,10 +1,12 @@
-From: Aras Vaichas <arasv@magellan-technology.com>
-Subject: bridged with dhcpd on one interface only, how?
-Date: Sat, 13 May 2006 20:12:20 +1000
-Message-ID: <4465B104.6020101@magellan-technology.com>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: restoring iptables configuration at system startup
+Date: Sun, 14 May 2006 01:29:50 +0200
+Message-ID: <44666BEE.1010801@rtij.nl>
+References: <003701c67670$a5102030$cf34000a@sven>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <003701c67670$a5102030$cf34000a@sven>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,18 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+To: Angel Tsankov <fn42551@fmi.uni-sofia.bg>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+Angel Tsankov wrote:
 
-I have an embedded device with 2 interfaces, eth0 and usb0. I need to provide a 
-DHCP server on usb0 but not eth0. Also, I need to bridge eth0 and usb0, so the 
-entire device has only one IP address that can be accessed by either (or both) 
-interfaces.
+> How do I restore iptables configuration at system startup before the 
+> default rules get applied and enforced?
+>
 
-Do I need to use ebtables, or can I use iptables with the -i option?
+Which distro? For Redhat and derivatives:
 
-Thanks!
+# chkconfig iptables on
 
-Aras Vaichas
+Other distros probably have something similar.
+
+M4
+
 
