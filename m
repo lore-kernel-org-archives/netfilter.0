@@ -1,12 +1,11 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: restoring iptables configuration at system startup
-Date: Sun, 14 May 2006 01:29:50 +0200
-Message-ID: <44666BEE.1010801@rtij.nl>
-References: <003701c67670$a5102030$cf34000a@sven>
+From: "afshin lamei" <afshinlamei@gmail.com>
+Subject: ip_queue problem
+Date: Sun, 14 May 2006 20:28:49 +0330
+Message-ID: <3115d56e0605140958m59629989gb3d2b44ede4c9783@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <003701c67670$a5102030$cf34000a@sven>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Angel Tsankov <fn42551@fmi.uni-sofia.bg>
-Cc: netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Angel Tsankov wrote:
+dear all,
+I'm using ip_queue for icmp and tcp packets like this:
 
-> How do I restore iptables configuration at system startup before the 
-> default rules get applied and enforced?
->
+iptable -A INPUT -p icmp -j QUEUE
+iptables -A INPUT -p tcp --dport 80 -j QUEUE
 
-Which distro? For Redhat and derivatives:
+then, I run snort_inline like this:
+snort_inline -D -i eth1 -Q -A fast // which starts snort inline mode,
+capturing packets from ip_queue instead of pcap.
+the ip_queue generates these errors and drops all icmp and tcp/80 packets:
 
-# chkconfig iptables on
+An SKB was queued with no app data
+ip_queue: error creating packet message
+Build packet failed
 
-Other distros probably have something similar.
-
-M4
-
+Do any of you know what's the solution to theses errors?
+regards,
+afshin
 
