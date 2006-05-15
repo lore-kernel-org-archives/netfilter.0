@@ -1,12 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Questions re iproute2, netfilter, and locally sourced packets
-Date: Sun, 14 May 2006 23:11:07 +0200
-Message-ID: <44679CEB.3040701@plouf.fr.eu.org>
-References: <44677E8B.7050604@aut.ac.nz>
+From: azeredo@qmc.ufsc.br
+Subject: iptables: Unknown error 4294967295
+Date: Mon, 15 May 2006 02:21:02 -0300
+Message-ID: <20060515022102.xwh7hh74qqgck4kw@quark.qmc.ufsc.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44677E8B.7050604@aut.ac.nz>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +16,647 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Ian Batterbee a =E9crit :
-[...]
-> ip rule add prio 1100 fwmark 0x0001 lookup vpn
-[...]
-> if I then display the rules, it shows (other rules omitted)
-> 1100:   from all lookup vpn
->=20
-> ie, the fwmark condition doesn't show in the display output. I thought=20
-> that may just be a display problem when dumping the rules
 
-The fwmark condition should show. Is the option CONFIG_IP_ROUTE_FWMARK=20
-enabled in the kernel ? Or maybe your 'ip' version is too old (or too=20
-recent) for your kernel version.
+
+    Hi,
+
+
+   I am using Centos for gateway in a small private net in my work. I =20
+SNAT all outgoing traffic to the internet from the computers in the =20
+local private net. Besides the usual routing services, i use it for =20
+two important things:
+
+      PPTPD SERVER for outside VPN tunnels to the local net
+      VPN connections coming from the private net to a VPN ( PPTPD) =20
+server in the internet going through NAT at the linux box.
+
+   So i need the following modules:
+
+      ppp_mppe
+      ip_conntrack_pptp
+      ip_conntrack_proto_gre
+      ip_nat_pptp
+      ip_nat_proto_gre
+
+   So I took a kernel source from ( Centos 4.3: =20
+kernel-2.6.9-34.EL.src.rpm also from RHEL4 too)
+   build the kernel source, patched with
+
+   linux-2.6.9-mppe-mppc-1.2.patch.gz
+   patch-o-matic-ng-20060510
+
+   add iptables-1.3.5  from netfilter
+
+   configured as it was from the distro plus the necessary modules to work
+    (my config may be seen at the end of this email).
+
+    Then I compiled the kernel and  iptables too, installed both, and =20
+everything goes well except when I try to start the firewall
+
+  more especifically the rule
+
+     /usr/local/sbin/iptables  -t nat -A POSTROUTING -o eth1 -j SNAT =20
+--to-source  my_gateway_ip
+
+   and get the following error
+
+    iptables: Unknown error 4294967295
+
+   The same iptables work fine with the kernel from the distro.
+    Any help would be much appreciated.  Thanks in advance.
+   I also had tried to use the usual kernel  =20
+(kernel-2.6.9-34.EL.i586.rpm) from    the distro plus the modules
+
+
+kernel-module-ppp-1.0.2-2_2.6.9_34.EL.i586.rpm
+kernel-module-pptp-conntrack-nat-2.0-1_2.6.9_34.EL.i586.rpm
+
+   that were compiled for that kernel. Unfortunately when i load the =20
+mnodule ip_nat_pptp the connections from the net to my private net =20
+stop working, as if this module were interfering with ppp_mppe module. =20
+I cannot start any VPN connection unless I unload module ip_nat_pptp.
+
+   My kernel works fine except that i do not have my firewall properly worki=
+ng.
+
+   It follows part of my .config file ( at least what really is =20
+important i guess:if needed i will mail the whole file)
+
+
+
+#
+# Networking support
+#
+CONFIG_NET=3Dy
+
+#
+# Networking options
+#
+CONFIG_PACKET=3Dy
+CONFIG_PACKET_MMAP=3Dy
+CONFIG_NETLINK_DEV=3Dy
+CONFIG_UNIX=3Dy
+CONFIG_NET_KEY=3Dm
+CONFIG_INET=3Dy
+CONFIG_IP_MULTICAST=3Dy
+CONFIG_IP_ADVANCED_ROUTER=3Dy
+CONFIG_IP_MULTIPLE_TABLES=3Dy
+CONFIG_IP_ROUTE_FWMARK=3Dy
+CONFIG_IP_ROUTE_MULTIPATH=3Dy
+CONFIG_IP_ROUTE_VERBOSE=3Dy
+# CONFIG_IP_PNP is not set
+CONFIG_NET_IPIP=3Dm
+CONFIG_NET_IPGRE=3Dm
+CONFIG_NET_IPGRE_BROADCAST=3Dy
+CONFIG_IP_MROUTE=3Dy
+CONFIG_IP_PIMSM_V1=3Dy
+CONFIG_IP_PIMSM_V2=3Dy
+# CONFIG_ARPD is not set
+CONFIG_SYN_COOKIES=3Dy
+CONFIG_INET_AH=3Dm
+CONFIG_INET_ESP=3Dm
+CONFIG_INET_IPCOMP=3Dm
+CONFIG_INET_TUNNEL=3Dm
+
+#
+# IP: Virtual Server Configuration
+#
+CONFIG_IP_VS=3Dm
+# CONFIG_IP_VS_DEBUG is not set
+CONFIG_IP_VS_TAB_BITS=3D12
+
+#
+# IPVS transport protocol load balancing support
+#
+CONFIG_IP_VS_PROTO_TCP=3Dy
+CONFIG_IP_VS_PROTO_UDP=3Dy
+CONFIG_IP_VS_PROTO_ESP=3Dy
+CONFIG_IP_VS_PROTO_AH=3Dy
+
+#
+# IPVS scheduler
+#
+CONFIG_IP_VS_RR=3Dm
+CONFIG_IP_VS_WRR=3Dm
+CONFIG_IP_VS_LC=3Dm
+CONFIG_IP_VS_WLC=3Dm
+CONFIG_IP_VS_LBLC=3Dm
+CONFIG_IP_VS_LBLCR=3Dm
+CONFIG_IP_VS_DH=3Dm
+CONFIG_IP_VS_SH=3Dm
+CONFIG_IP_VS_SED=3Dm
+CONFIG_IP_VS_NQ=3Dm
+
+#
+# IPVS application helper
+#
+CONFIG_IP_VS_FTP=3Dm
+CONFIG_IPV6=3Dm
+CONFIG_IPV6_PRIVACY=3Dy
+CONFIG_INET6_AH=3Dm
+CONFIG_INET6_ESP=3Dm
+CONFIG_INET6_IPCOMP=3Dm
+CONFIG_INET6_TUNNEL=3Dm
+CONFIG_IPV6_TUNNEL=3Dm
+CONFIG_NETFILTER=3Dy
+# CONFIG_NETFILTER_DEBUG is not set
+CONFIG_BRIDGE_NETFILTER=3Dy
+
+#
+# IP: Netfilter Configuration
+#
+CONFIG_IP_NF_CONNTRACK=3Dm
+CONFIG_IP_NF_CT_ACCT=3Dy
+# CONFIG_IP_NF_CT_PROTO_SCTP is not set
+CONFIG_IP_NF_FTP=3Dm
+CONFIG_IP_NF_IRC=3Dm
+CONFIG_IP_NF_TFTP=3Dm
+CONFIG_IP_NF_AMANDA=3Dm
+CONFIG_IP_NF_QUEUE=3Dm
+CONFIG_IP_NF_IPTABLES=3Dm
+CONFIG_IP_NF_MATCH_LIMIT=3Dm
+CONFIG_IP_NF_MATCH_IPRANGE=3Dm
+CONFIG_IP_NF_MATCH_MAC=3Dm
+CONFIG_IP_NF_MATCH_PKTTYPE=3Dm
+CONFIG_IP_NF_MATCH_MARK=3Dm
+CONFIG_IP_NF_MATCH_MULTIPORT=3Dm
+CONFIG_IP_NF_MATCH_TOS=3Dm
+CONFIG_IP_NF_MATCH_RECENT=3Dm
+CONFIG_IP_NF_MATCH_ECN=3Dm
+CONFIG_IP_NF_MATCH_DSCP=3Dm
+CONFIG_IP_NF_MATCH_AH_ESP=3Dm
+CONFIG_IP_NF_MATCH_LENGTH=3Dm
+CONFIG_IP_NF_MATCH_TTL=3Dm
+CONFIG_IP_NF_MATCH_TCPMSS=3Dm
+CONFIG_IP_NF_MATCH_HELPER=3Dm
+CONFIG_IP_NF_MATCH_STATE=3Dm
+CONFIG_IP_NF_MATCH_CONNTRACK=3Dm
+CONFIG_IP_NF_MATCH_OWNER=3Dm
+CONFIG_IP_NF_MATCH_PHYSDEV=3Dm
+CONFIG_IP_NF_MATCH_ADDRTYPE=3Dm
+CONFIG_IP_NF_MATCH_REALM=3Dm
+CONFIG_IP_NF_MATCH_SCTP=3Dm
+CONFIG_IP_NF_MATCH_COMMENT=3Dm
+CONFIG_IP_NF_FILTER=3Dm
+CONFIG_IP_NF_TARGET_REJECT=3Dm
+CONFIG_IP_NF_TARGET_LOG=3Dm
+CONFIG_IP_NF_TARGET_ULOG=3Dm
+CONFIG_IP_NF_TARGET_TCPMSS=3Dm
+CONFIG_IP_NF_NAT=3Dm
+CONFIG_IP_NF_NAT_NEEDED=3Dy
+CONFIG_IP_NF_TARGET_MASQUERADE=3Dm
+CONFIG_IP_NF_TARGET_REDIRECT=3Dm
+CONFIG_IP_NF_TARGET_NETMAP=3Dm
+CONFIG_IP_NF_TARGET_SAME=3Dm
+CONFIG_IP_NF_NAT_LOCAL=3Dy
+# CONFIG_IP_NF_NAT_SNMP_BASIC is not set
+CONFIG_IP_NF_NAT_IRC=3Dm
+CONFIG_IP_NF_NAT_FTP=3Dm
+CONFIG_IP_NF_NAT_TFTP=3Dm
+CONFIG_IP_NF_NAT_AMANDA=3Dm
+CONFIG_IP_NF_MANGLE=3Dm
+CONFIG_IP_NF_TARGET_TOS=3Dm
+CONFIG_IP_NF_TARGET_ECN=3Dm
+CONFIG_IP_NF_TARGET_DSCP=3Dm
+CONFIG_IP_NF_TARGET_MARK=3Dm
+CONFIG_IP_NF_TARGET_CLASSIFY=3Dm
+CONFIG_IP_NF_RAW=3Dm
+CONFIG_IP_NF_TARGET_NOTRACK=3Dm
+CONFIG_IP_NF_ARPTABLES=3Dm
+CONFIG_IP_NF_ARPFILTER=3Dm
+CONFIG_IP_NF_ARP_MANGLE=3Dm
+# CONFIG_IP_NF_COMPAT_IPCHAINS is not set
+# CONFIG_IP_NF_COMPAT_IPFWADM is not set
+CONFIG_IP_NF_CT_PROTO_GRE=3Dm
+CONFIG_IP_NF_PPTP=3Dm
+CONFIG_IP_NF_NAT_PPTP=3Dm
+CONFIG_IP_NF_NAT_PROTO_GRE=3Dm
+
+#
+# IPv6: Netfilter Configuration
+#
+# CONFIG_IP6_NF_QUEUE is not set
+CONFIG_IP6_NF_IPTABLES=3Dm
+CONFIG_IP6_NF_MATCH_LIMIT=3Dm
+CONFIG_IP6_NF_MATCH_MAC=3Dm
+CONFIG_IP6_NF_MATCH_RT=3Dm
+CONFIG_IP6_NF_MATCH_OPTS=3Dm
+CONFIG_IP6_NF_MATCH_FRAG=3Dm
+CONFIG_IP6_NF_MATCH_HL=3Dm
+CONFIG_IP6_NF_MATCH_MULTIPORT=3Dm
+CONFIG_IP6_NF_MATCH_OWNER=3Dm
+CONFIG_IP6_NF_MATCH_MARK=3Dm
+CONFIG_IP6_NF_MATCH_IPV6HEADER=3Dm
+CONFIG_IP6_NF_MATCH_AHESP=3Dm
+CONFIG_IP6_NF_MATCH_LENGTH=3Dm
+CONFIG_IP6_NF_MATCH_EUI64=3Dm
+CONFIG_IP6_NF_MATCH_PHYSDEV=3Dm
+CONFIG_IP6_NF_FILTER=3Dm
+CONFIG_IP6_NF_TARGET_LOG=3Dm
+CONFIG_IP6_NF_MANGLE=3Dm
+CONFIG_IP6_NF_TARGET_MARK=3Dm
+CONFIG_IP6_NF_RAW=3Dm
+
+#
+# Bridge: Netfilter Configuration
+#
+CONFIG_BRIDGE_NF_EBTABLES=3Dm
+CONFIG_BRIDGE_EBT_BROUTE=3Dm
+CONFIG_BRIDGE_EBT_T_FILTER=3Dm
+CONFIG_BRIDGE_EBT_T_NAT=3Dm
+CONFIG_BRIDGE_EBT_802_3=3Dm
+CONFIG_BRIDGE_EBT_AMONG=3Dm
+CONFIG_BRIDGE_EBT_ARP=3Dm
+CONFIG_BRIDGE_EBT_IP=3Dm
+CONFIG_BRIDGE_EBT_LIMIT=3Dm
+CONFIG_BRIDGE_EBT_MARK=3Dm
+CONFIG_BRIDGE_EBT_PKTTYPE=3Dm
+CONFIG_BRIDGE_EBT_STP=3Dm
+CONFIG_BRIDGE_EBT_VLAN=3Dm
+CONFIG_BRIDGE_EBT_ARPREPLY=3Dm
+CONFIG_BRIDGE_EBT_DNAT=3Dm
+CONFIG_BRIDGE_EBT_MARK_T=3Dm
+CONFIG_BRIDGE_EBT_REDIRECT=3Dm
+CONFIG_BRIDGE_EBT_SNAT=3Dm
+CONFIG_BRIDGE_EBT_LOG=3Dm
+CONFIG_XFRM=3Dy
+CONFIG_XFRM_USER=3Dy
+
+#
+# SCTP Configuration (EXPERIMENTAL)
+#
+CONFIG_IP_SCTP=3Dm
+# CONFIG_SCTP_DBG_MSG is not set
+# CONFIG_SCTP_DBG_OBJCNT is not set
+# CONFIG_SCTP_HMAC_NONE is not set
+# CONFIG_SCTP_HMAC_SHA1 is not set
+CONFIG_SCTP_HMAC_MD5=3Dy
+CONFIG_ATM=3Dm
+CONFIG_ATM_CLIP=3Dm
+# CONFIG_ATM_CLIP_NO_ICMP is not set
+CONFIG_ATM_LANE=3Dm
+# CONFIG_ATM_MPOA is not set
+CONFIG_ATM_BR2684=3Dm
+# CONFIG_ATM_BR2684_IPFILTER is not set
+CONFIG_BRIDGE=3Dm
+CONFIG_VLAN_8021Q=3Dm
+# CONFIG_DECNET is not set
+CONFIG_LLC=3Dy
+# CONFIG_LLC2 is not set
+# CONFIG_IPX is not set
+# CONFIG_ATALK is not set
+# CONFIG_X25 is not set
+# CONFIG_LAPB is not set
+CONFIG_NET_DIVERT=3Dy
+# CONFIG_ECONET is not set
+# CONFIG_WAN_ROUTER is not set
+
+#
+# QoS and/or fair queueing
+#
+CONFIG_NET_SCHED=3Dy
+CONFIG_NET_SCH_CLK_JIFFIES=3Dy
+# CONFIG_NET_SCH_CLK_GETTIMEOFDAY is not set
+# CONFIG_NET_SCH_CLK_CPU is not set
+CONFIG_NET_SCH_CBQ=3Dm
+CONFIG_NET_SCH_HTB=3Dm
+CONFIG_NET_SCH_HFSC=3Dm
+CONFIG_NET_SCH_ATM=3Dm
+CONFIG_NET_SCH_PRIO=3Dm
+CONFIG_NET_SCH_RED=3Dm
+CONFIG_NET_SCH_SFQ=3Dm
+CONFIG_NET_SCH_TEQL=3Dm
+CONFIG_NET_SCH_TBF=3Dm
+CONFIG_NET_SCH_GRED=3Dm
+CONFIG_NET_SCH_DSMARK=3Dm
+CONFIG_NET_SCH_NETEM=3Dm
+CONFIG_NET_SCH_INGRESS=3Dm
+CONFIG_NET_QOS=3Dy
+CONFIG_NET_ESTIMATOR=3Dy
+CONFIG_NET_CLS=3Dy
+CONFIG_NET_CLS_TCINDEX=3Dm
+CONFIG_NET_CLS_ROUTE4=3Dm
+CONFIG_NET_CLS_ROUTE=3Dy
+CONFIG_NET_CLS_FW=3Dm
+CONFIG_NET_CLS_U32=3Dm
+CONFIG_CLS_U32_PERF=3Dy
+CONFIG_NET_CLS_IND=3Dy
+CONFIG_NET_CLS_RSVP=3Dm
+CONFIG_NET_CLS_RSVP6=3Dm
+# CONFIG_NET_CLS_ACT is not set
+CONFIG_NET_CLS_POLICE=3Dy
+
+#
+# Network testing
+#
+# CONFIG_NET_PKTGEN is not set
+CONFIG_NETPOLL=3Dy
+# CONFIG_NETPOLL_RX is not set
+CONFIG_NETPOLL_TRAP=3Dy
+CONFIG_NET_POLL_CONTROLLER=3Dy
+# CONFIG_HAMRADIO is not set
+# CONFIG_IRDA is not set
+CONFIG_BT=3Dm
+CONFIG_BT_L2CAP=3Dm
+CONFIG_BT_SCO=3Dm
+CONFIG_BT_RFCOMM=3Dm
+CONFIG_BT_RFCOMM_TTY=3Dy
+CONFIG_BT_BNEP=3Dm
+CONFIG_BT_BNEP_MC_FILTER=3Dy
+CONFIG_BT_BNEP_PROTO_FILTER=3Dy
+CONFIG_BT_CMTP=3Dm
+CONFIG_BT_HIDP=3Dm
+
+#
+# Bluetooth device drivers
+#
+CONFIG_BT_HCIUSB=3Dm
+CONFIG_BT_HCIUSB_SCO=3Dy
+CONFIG_BT_HCIUART=3Dm
+CONFIG_BT_HCIUART_H4=3Dy
+CONFIG_BT_HCIUART_BCSP=3Dy
+CONFIG_BT_HCIUART_BCSP_TXCRC=3Dy
+CONFIG_BT_HCIBCM203X=3Dm
+CONFIG_BT_HCIBFUSB=3Dm
+CONFIG_BT_HCIDTL1=3Dm
+CONFIG_BT_HCIBT3C=3Dm
+CONFIG_BT_HCIBLUECARD=3Dm
+CONFIG_BT_HCIBTUART=3Dm
+CONFIG_BT_HCIVHCI=3Dm
+CONFIG_TUX=3Dm
+
+#
+# TUX options
+#
+CONFIG_TUX_EXTCGI=3Dy
+# CONFIG_TUX_EXTENDED_LOG is not set
+# CONFIG_TUX_DEBUG is not set
+CONFIG_NETDEVICES=3Dy
+CONFIG_DUMMY=3Dm
+CONFIG_BONDING=3Dm
+# CONFIG_EQUALIZER is not set
+CONFIG_TUN=3Dm
+CONFIG_ETHERTAP=3Dm
+# CONFIG_NET_SB1000 is not set
+
+#
+# ARCnet devices
+#
+# CONFIG_ARCNET is not set
+
+#
+# Ethernet (10 or 100Mbit)
+#
+CONFIG_NET_ETHERNET=3Dy
+CONFIG_MII=3Dm
+CONFIG_HAPPYMEAL=3Dm
+CONFIG_SUNGEM=3Dm
+CONFIG_NET_VENDOR_3COM=3Dy
+# CONFIG_EL1 is not set
+# CONFIG_EL2 is not set
+# CONFIG_ELPLUS is not set
+# CONFIG_EL16 is not set
+# CONFIG_EL3 is not set
+# CONFIG_3C515 is not set
+CONFIG_VORTEX=3Dm
+CONFIG_TYPHOON=3Dm
+# CONFIG_LANCE is not set
+CONFIG_NET_VENDOR_SMC=3Dy
+# CONFIG_WD80x3 is not set
+# CONFIG_ULTRA is not set
+CONFIG_SMC9194=3Dm
+CONFIG_NET_VENDOR_RACAL=3Dy
+# CONFIG_NI5010 is not set
+# CONFIG_NI52 is not set
+# CONFIG_NI65 is not set
+
+#
+# Tulip family network device support
+#
+CONFIG_NET_TULIP=3Dy
+CONFIG_DE2104X=3Dm
+CONFIG_TULIP=3Dm
+# CONFIG_TULIP_MWI is not set
+CONFIG_TULIP_MMIO=3Dy
+# CONFIG_TULIP_NAPI is not set
+CONFIG_DE4X5=3Dm
+CONFIG_WINBOND_840=3Dm
+CONFIG_DM9102=3Dm
+CONFIG_PCMCIA_XIRCOM=3Dm
+# CONFIG_PCMCIA_XIRTULIP is not set
+# CONFIG_AT1700 is not set
+# CONFIG_DEPCA is not set
+CONFIG_HP100=3Dm
+# CONFIG_NET_ISA is not set
+CONFIG_NET_PCI=3Dy
+CONFIG_PCNET32=3Dm
+CONFIG_AMD8111_ETH=3Dm
+CONFIG_AMD8111E_NAPI=3Dy
+CONFIG_ADAPTEC_STARFIRE=3Dm
+CONFIG_ADAPTEC_STARFIRE_NAPI=3Dy
+# CONFIG_AC3200 is not set
+CONFIG_APRICOT=3Dm
+CONFIG_B44=3Dm
+CONFIG_FORCEDETH=3Dm
+# CONFIG_CS89x0 is not set
+# CONFIG_DGRS is not set
+CONFIG_EEPRO100=3Dm
+# CONFIG_EEPRO100_PIO is not set
+CONFIG_E100=3Dm
+CONFIG_E100_NAPI=3Dy
+CONFIG_FEALNX=3Dm
+CONFIG_NATSEMI=3Dm
+CONFIG_NE2K_PCI=3Dm
+CONFIG_8139CP=3Dm
+CONFIG_8139TOO=3Dm
+CONFIG_8139TOO_PIO=3Dy
+# CONFIG_8139TOO_TUNE_TWISTER is not set
+CONFIG_8139TOO_8129=3Dy
+# CONFIG_8139_OLD_RX_RESET is not set
+CONFIG_SIS900=3Dm
+CONFIG_EPIC100=3Dm
+# CONFIG_SUNDANCE is not set
+CONFIG_TLAN=3Dm
+CONFIG_VIA_RHINE=3Dm
+CONFIG_VIA_RHINE_MMIO=3Dy
+CONFIG_NET_POCKET=3Dy
+# CONFIG_ATP is not set
+# CONFIG_DE600 is not set
+# CONFIG_DE620 is not set
+
+#
+# Ethernet (1000 Mbit)
+#
+CONFIG_ACENIC=3Dm
+# CONFIG_ACENIC_OMIT_TIGON_I is not set
+CONFIG_DL2K=3Dm
+CONFIG_E1000=3Dm
+CONFIG_E1000_NAPI=3Dy
+CONFIG_NS83820=3Dm
+# CONFIG_HAMACHI is not set
+# CONFIG_YELLOWFIN is not set
+CONFIG_R8169=3Dm
+CONFIG_R8169_NAPI=3Dy
+CONFIG_SKY2=3Dm
+CONFIG_SK98LIN=3Dm
+CONFIG_VIA_VELOCITY=3Dm
+CONFIG_TIGON3=3Dm
+CONFIG_BNX2=3Dm
+
+#
+# Ethernet (10000 Mbit)
+#
+CONFIG_IXGB=3Dm
+CONFIG_IXGB_NAPI=3Dy
+CONFIG_S2IO=3Dm
+CONFIG_S2IO_NAPI=3Dy
+
+#
+# Token Ring devices
+#
+CONFIG_TR=3Dy
+CONFIG_IBMTR=3Dm
+CONFIG_IBMOL=3Dm
+CONFIG_IBMLS=3Dm
+CONFIG_3C359=3Dm
+CONFIG_TMS380TR=3Dm
+CONFIG_TMSPCI=3Dm
+CONFIG_SKISA=3Dm
+CONFIG_PROTEON=3Dm
+CONFIG_ABYSS=3Dm
+CONFIG_SMCTR=3Dm
+
+#
+# Wireless LAN (non-hamradio)
+#
+CONFIG_NET_RADIO=3Dy
+
+#
+# Obsolete Wireless cards support (pre-802.11)
+#
+# CONFIG_STRIP is not set
+# CONFIG_ARLAN is not set
+CONFIG_WAVELAN=3Dm
+CONFIG_PCMCIA_WAVELAN=3Dm
+CONFIG_PCMCIA_NETWAVE=3Dm
+
+#
+# Wireless 802.11 Frequency Hopping cards support
+#
+# CONFIG_PCMCIA_RAYCS is not set
+
+#
+# Wireless 802.11b ISA/PCI cards support
+#
+CONFIG_IEEE80211=3Dm
+# CONFIG_IEEE80211_DEBUG is not set
+CONFIG_IEEE80211_CRYPT=3Dm
+CONFIG_IEEE80211_WPA=3Dm
+CONFIG_IEEE80211_CRYPT_CCMP=3Dm
+CONFIG_IEEE80211_CRYPT_TKIP=3Dm
+CONFIG_IPW2100=3Dm
+CONFIG_IPW2100_PROMISC=3Dy
+# CONFIG_IPW_DEBUG is not set
+CONFIG_IPW2200=3Dm
+CONFIG_AIRO=3Dm
+CONFIG_HERMES=3Dm
+CONFIG_PLX_HERMES=3Dm
+CONFIG_TMD_HERMES=3Dm
+CONFIG_PCI_HERMES=3Dm
+CONFIG_ATMEL=3Dm
+CONFIG_PCI_ATMEL=3Dm
+
+#
+# Wireless 802.11b Pcmcia/Cardbus cards support
+#
+CONFIG_PCMCIA_HERMES=3Dm
+CONFIG_AIRO_CS=3Dm
+CONFIG_PCMCIA_ATMEL=3Dm
+CONFIG_PCMCIA_WL3501=3Dm
+
+#
+# Prism GT/Duette 802.11(a/b/g) PCI/Cardbus support
+#
+CONFIG_PRISM54=3Dm
+CONFIG_NET_WIRELESS=3Dy
+
+#
+# PCMCIA network device support
+#
+CONFIG_NET_PCMCIA=3Dy
+CONFIG_PCMCIA_3C589=3Dm
+CONFIG_PCMCIA_3C574=3Dm
+CONFIG_PCMCIA_FMVJ18X=3Dm
+CONFIG_PCMCIA_PCNET=3Dm
+CONFIG_PCMCIA_NMCLAN=3Dm
+CONFIG_PCMCIA_SMC91C92=3Dm
+CONFIG_PCMCIA_XIRC2PS=3Dm
+CONFIG_PCMCIA_AXNET=3Dm
+CONFIG_PCMCIA_IBMTR=3Dm
+
+#
+# Wan interfaces
+#
+# CONFIG_WAN is not set
+
+#
+# ATM drivers
+#
+CONFIG_ATM_TCP=3Dm
+CONFIG_ATM_LANAI=3Dm
+CONFIG_ATM_ENI=3Dm
+# CONFIG_ATM_ENI_DEBUG is not set
+# CONFIG_ATM_ENI_TUNE_BURST is not set
+CONFIG_ATM_FIRESTREAM=3Dm
+# CONFIG_ATM_ZATM is not set
+CONFIG_ATM_NICSTAR=3Dm
+# CONFIG_ATM_NICSTAR_USE_SUNI is not set
+# CONFIG_ATM_NICSTAR_USE_IDT77105 is not set
+CONFIG_ATM_IDT77252=3Dm
+# CONFIG_ATM_IDT77252_DEBUG is not set
+# CONFIG_ATM_IDT77252_RCV_ALL is not set
+CONFIG_ATM_IDT77252_USE_SUNI=3Dy
+CONFIG_ATM_AMBASSADOR=3Dm
+# CONFIG_ATM_AMBASSADOR_DEBUG is not set
+CONFIG_ATM_HORIZON=3Dm
+# CONFIG_ATM_HORIZON_DEBUG is not set
+# CONFIG_ATM_IA is not set
+CONFIG_ATM_FORE200E_MAYBE=3Dm
+# CONFIG_ATM_FORE200E_PCA is not set
+CONFIG_ATM_HE=3Dm
+# CONFIG_ATM_HE_USE_SUNI is not set
+CONFIG_FDDI=3Dy
+# CONFIG_DEFXX is not set
+# CONFIG_SKFP is not set
+# CONFIG_HIPPI is not set
+# CONFIG_PLIP is not set
+CONFIG_PPP=3Dm
+CONFIG_PPP_MULTILINK=3Dy
+CONFIG_PPP_FILTER=3Dy
+CONFIG_PPP_ASYNC=3Dm
+CONFIG_PPP_SYNC_TTY=3Dm
+CONFIG_PPP_DEFLATE=3Dm
+# CONFIG_PPP_BSDCOMP is not set
+CONFIG_PPP_MPPE_MPPC=3Dm
+CONFIG_PPPOE=3Dm
+CONFIG_PPPOATM=3Dm
+# CONFIG_SLIP is not set
+CONFIG_NET_FC=3Dy
+# CONFIG_SHAPER is not set
+CONFIG_NETCONSOLE=3Dm
+CONFIG_NETDUMP=3Dm
+
+
+
+
+
+
+
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
+
 
