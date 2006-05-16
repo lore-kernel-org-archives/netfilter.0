@@ -1,12 +1,11 @@
-From: Robert Nichols <rnicholsNOSPAM@comcast.net>
-Subject: Re: ip forwarding and iptables
-Date: Mon, 15 May 2006 17:41:37 -0500
-Message-ID: <e4b032$e9r$1@sea.gmane.org>
-References: <002301c67865$88d8d6e0$cf34000a@sven>
+From: "Mansour Al-Aqeel" <mansour77@ownmail.net>
+Subject: setting up a firewall from scratch
+Date: Mon, 15 May 2006 21:46:42 -0300
+Message-ID: <1147740402.17757.261507231@webmail.messagingengine.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <002301c67865$88d8d6e0$cf34000a@sven>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +16,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Angel Tsankov wrote:
-> I have 2 PCs: one configured as gateway (PC1) and the other one (PC2) 
-> configured to use PC1 as gateway. PC1 runs a custom Linux distribution. 
-> It has ip
-> forwarding enabled (e.g. by echo 'net.ipv4.ip_forward = 1' >> 
-> /etc/sysctl.conf).
-> As far as I understand, I do not need to do anything else to make the 
-> kernel route traffic to and from PC2, right?
-> However, if I have one PC more - PC3, and I do not wnat to route traffic 
-> to and from it I need to configure the kernel, e.g. with
-> the help of iptables. Now if I do so, i.e. use iptables to configure the 
-> kernel, save the iptables configuration, setup the system
-> to reload it at startup (using the init.d scripts), is there any moment 
-> (during system startup) when ip forwarding has been enabled
-> but the iptables configuration has not yet been loaded and traffic could 
-> be routed to and from PC3?
+Hi Everybody:
+I need an advice from someone about what to do. I have a small lan and
+looking to connect it to the net through a LinkSys router using OpenWrt.
+The router comes with a built in rules that does everything. However,
+I'm a new to iptables, and therefore it would be good chance for me to
+be introduced to this tool. I need to delete all the built in rules and
+recteate them again from scratch in order to know what each of them
+does... I wrote a small script to excute and save my rules in. The
+router stopps responding when I excute the script, and I have to reboot
+it. All I need at this point is to disable any connection attempt from
+out side ($WAN) and enable everything on the ($LAN) side. Here's what I
+did so far. Can any one tell me what's next, or what I'm missing ??
 
-It's pretty hard to guess what your "custom Linux distribution" might
-be doing.  Usually, at startup the iptables service is started before
-starting networking, and during shutdown networking is stopped before
-stopping (unloading) iptables.
 
-How much more you might need to do in order to get traffic routed
-depends on details about your network addressing that you have not
-provided.
+#delete all the existing rules from all chains
+iptables -F INPUT
+iptables -F OUTPUT
+iptables -F FORWARD
+
+#set the default policy on the external interface not to accept anything
+iptables -P INPUT -i $WAN -j REJECT  # dont let anything coming from
+outside
+iptables -P OUTPUT -i $WAN -j ACCEPT # let anything go out
+iptables -P FORWARD -i $WAN -j REJECT # dont forward anyhting from
+outside to inside
+
+#######################################
+## allow everyThign internally
+#######################################
+iptables -f filter -A INPUT -i $LAN -j ACCEPT
+iptables -f filter -A INPUT -o $LAN -j ACCEPT
+
+iptable  -A OUTPUT -i $LAN -j ACCEPT
+iptable -A OUTPUT -o $LAN -j ACCEPT
+
+####forward internally through the br0
+iptables -f filter -A FORWARD -i $LAN -j ACCEPT
+iptables -f filter -A FORWARD -o $LAN -j ACCEPT
+
+
+Thanx
+-- 
+  Mansour Al-Aqeel
+  mansour77@ownmail.net
 
 -- 
-Bob Nichols         Yes, "NOSPAM" is really part of my email address.
+http://www.fastmail.fm - I mean, what is it about a decent email service?
 
 
