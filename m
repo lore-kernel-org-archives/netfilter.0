@@ -1,7 +1,7 @@
 From: "Angel Tsankov" <fn42551@fmi.uni-sofia.bg>
 Subject: Re: ip forwarding and iptables
-Date: Tue, 16 May 2006 09:52:39 +0300
-Message-ID: <003501c678b5$5320ccb0$cf34000a@sven>
+Date: Tue, 16 May 2006 09:55:03 +0300
+Message-ID: <004401c678b5$acf7c310$cf34000a@sven>
 References: <002301c67865$88d8d6e0$cf34000a@sven> <e4b032$e9r$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -17,10 +17,11 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: netfilter@lists.netfilter.org, Robert Nichols <rnicholsNOSPAM@comcast.net>
+To: netfilter@lists.netfilter.org
 
->> I have 2 PCs: one configured as gateway (PC1) and the other one (PC2) configured to use PC1 as gateway. PC1 runs a custom Linux 
->> distribution. It has ip
+
+>> I have 2 PCs: one configured as gateway (PC1) and the other one (PC2)
+>> configured to use PC1 as gateway. PC1 runs a custom Linux distribution. It has ip
 >> forwarding enabled (e.g. by echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf).
 >> As far as I understand, I do not need to do anything else to make the kernel route traffic to and from PC2, right?
 >> However, if I have one PC more - PC3, and I do not wnat to route traffic to and from it I need to configure the kernel, e.g. with
@@ -37,12 +38,11 @@ To: netfilter@lists.netfilter.org, Robert Nichols <rnicholsNOSPAM@comcast.net>
 
 My linux distro is LFS.
 
->
 > How much more you might need to do in order to get traffic routed
 > depends on details about your network addressing that you have not
 > provided.
 
-Well, it seems that enabling ip forwarding on PC1 is sufficient to route traffice to and from PC2 as the latter can ping hosts on 
+Well, it seems that enabling ip forwarding on PC1 is sufficient to route traffice to and from PC2 as the latter can ping hosts on
 the Internet and browse web sites. The network configurations is as follows:
 PC1 has a single NIC:
 IP=172.16.0.3
@@ -58,8 +58,8 @@ iptables have NOT been installed on PC1. So, if PC3 is configured similarly to P
 
 And lastly, two more quesions:
 -What exactly does ip forwarding mean?
--If I install the iptables service, and use it to configure the kernel not to route traffice for PC3, how can I ensure that the 
-iptables service gets started before starting networking, so that there won't be a time slice when PC3 will have access to the 
+-If I install the iptables service, and use it to configure the kernel not to route traffice for PC3, how can I ensure that the
+iptables service gets started before starting networking, so that there won't be a time slice when PC3 will have access to the
 Internet? 
 
 
