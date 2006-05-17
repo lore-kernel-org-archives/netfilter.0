@@ -1,9 +1,8 @@
-From: Ramen Sen <ramen@intnetsystems.com>
-Subject: Duplicating packets and NATting dup'd packet
-Date: Wed, 17 May 2006 15:14:29 +0100
-Message-ID: <446B2FC5.2020706@intnetsystems.com>
+From: Bowie Bailey <Bowie_Bailey@BUC.com>
+Subject: RE: iptables and pop3 lockup
+Date: Wed, 17 May 2006 11:39:55 -0400
+Message-ID: <4766EEE585A6D311ADF500E018C154E302684A25@bnifex.cis.buc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,28 +15,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: "Netfilter List (E-mail)" <netfilter@lists.netfilter.org>
 
-Hello,
+Gary W. Smith wrote:
+> I'm now sure what the problem is.  There is nothing pointing out right
+> now.  But these are the canned RH rules.  I would recommend making the
+> following change just to rule out any connection tracking.  Here is
+> the reason.  If connection tracking is broken then any requests for a
+> second packet will not be considered new which will fail to be
+> matched on the connection tracking site.
+> 
+> Do this as a test (in place for the corresponding rules).
+> 
+> -A RH-Firewall-1-INPUT -m tcp -p tcp --dport 25 -j ACCEPT
+> -A RH-Firewall-1-INPUT -m tcp -p tcp --dport 110 -j ACCEPT
+> -A RH-Firewall-1-INPUT -m tcp -p tcp --dport 53 -j ACCEPT
+> -A RH-Firewall-1-INPUT -m udp -p udp --dport 53 -j ACCEPT
+> -A RH-Firewall-1-INPUT -m tcp -p tcp --dport 587 -j ACCEPT
+> -A RH-Firewall-1-INPUT -m tcp -p tcp --dport 80 -j ACCEPT
+> -A RH-Firewall-1-INPUT -m tcp -p tcp --dport 22 -s 172.16.0.0/16 -j
+> ACCEPT
+> -A RH-Firewall-1-INPUT -m tcp -p tcp --dport 443 -j ACCEPT
+> -A RH-Firewall-1-INPUT -m tcp -p tcp --dport 995 -j ACCEPT
+> -A RH-Firewall-1-INPUT -m tcp -p tcp --dport 21 -j ACCEPT
+> 
+> Connection tracking can save you some time in the chain processing for
+> allowing for faster matches but we are trying to find out if it's even
+> working or not.
 
-I've been struggling with this for a couple of days and am not sure how
-best to proceed.
+I made the change you suggested, but only for pop3 since that was the
+only service with the problem.  Everything worked properly at that
+point.  So it seems that the problem is with the connection tracking.
+What can I do to fix it?
 
-I need to do the usual duplicating and logging packets thing - with a
-twist in that I need to NAT the duplicated packets and send them out on
-a particular interface. I've been reading a lot of docs and FAQs, but it
-seems that I can't do this?  Do I need to go through user space?
+For comparison and clarity, this is my working rule list at the
+moment:
 
-ROUTE --tee seems not to allow you to do anything further with the
-packet unless I'm missing something?
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:RH-Firewall-1-INPUT - [0:0]
+-A INPUT -j RH-Firewall-1-INPUT
+-A FORWARD -j RH-Firewall-1-INPUT
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -p icmp --icmp-type any -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 25 -j
+ACCEPT
+-A RH-Firewall-1-INPUT -m tcp -p tcp --dport 110 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 53 -j
+ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m udp -p udp --dport 53 -j
+ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 587 -j
+ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j
+ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -s
+172.16.0.0/16 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j
+ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 995 -j
+ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j
+ACCEPT
+-A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+COMMIT
 
-There were also some veiled references to MARK and iproute2 but nothing
-concrete that I can find.
+All I did was remove the state requirements from the pop3 rule.
+Everything else is still at my original settings.
 
-Has anyone done this or something similar? Any ideas? Or a pointer to a
-reference I've missed?
-
-thanks
-Ramen
-
+Bowie
 
