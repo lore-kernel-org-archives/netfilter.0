@@ -1,12 +1,10 @@
-From: Petr Pisar <petr.pisar@atlas.cz>
-Subject: Re: Iptables + extensions + Fedora 3
-Date: Wed, 17 May 2006 09:06:05 +0200
-Message-ID: <446ACB5D.2050101@atlas.cz>
-References: <48135.82.214.211.1.1143052290.squirrel@webmail.imagiro-1.com>
+From: Ramen Sen <ramen@intnetsystems.com>
+Subject: Duplicating packets and NATting dup'd packet
+Date: Wed, 17 May 2006 15:14:29 +0100
+Message-ID: <446B2FC5.2020706@intnetsystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <48135.82.214.211.1.1143052290.squirrel@webmail.imagiro-1.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,31 +18,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hello,
 
-diegoa@imagiro-1.com wrote:
-> 6. I ran the iptables command to apply the quota patch: iptables -A INPUT
-> -p tcp -m quota --quota 2147483648 -j ACCEPT
-> 
-> and I got this error: iptables v1.2.11: Couldn't load match
-> `quota':/lib/iptables/libipt_quota.so: cannot open shared object file: No
-> such file or directory
-> 
-iptables is userspace tool. It needs to know, how to comunicate with
-netfilter in kernel. For this purpose there exist shared libraries in
-/lib/iptables. Almost every netfilter module has its own "mirror" in
-this directory. You need to recompile iptables (not kernel) using new
-kernel header files. If libipt_quota is not standard part of iptables,
-you will need to patch it too.
+I've been struggling with this for a couple of days and am not sure how
+best to proceed.
 
-- -- Petr
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
+I need to do the usual duplicating and logging packets thing - with a
+twist in that I need to NAT the duplicated packets and send them out on
+a particular interface. I've been reading a lot of docs and FAQs, but it
+seems that I can't do this?  Do I need to go through user space?
 
-iD8DBQFEassWuR4f4nEwzHIRAjnYAJ9953b1xr0K968iROdUp1KsJg8hQQCcDpoD
-w80Om/4mqfzqae1aTR5FBrs=
-=V8Df
------END PGP SIGNATURE-----
+ROUTE --tee seems not to allow you to do anything further with the
+packet unless I'm missing something?
+
+There were also some veiled references to MARK and iproute2 but nothing
+concrete that I can find.
+
+Has anyone done this or something similar? Any ideas? Or a pointer to a
+reference I've missed?
+
+thanks
+Ramen
 
 
