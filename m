@@ -1,7 +1,7 @@
 From: Petr Pisar <petr.pisar@atlas.cz>
 Subject: Re: Iptables + extensions + Fedora 3
-Date: Wed, 17 May 2006 09:04:54 +0200
-Message-ID: <446ACB16.60101@atlas.cz>
+Date: Wed, 17 May 2006 09:06:05 +0200
+Message-ID: <446ACB5D.2050101@atlas.cz>
 References: <48135.82.214.211.1.1143052290.squirrel@webmail.imagiro-1.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
