@@ -1,11 +1,9 @@
-From: "Randy Grimshaw" <rgrimsha@syr.edu>
-Subject: Re: Reserving bandwidth with iptables
-Date: Thu, 18 May 2006 13:47:46 -0400
-Message-ID: <s46c7b13.084@gwia202.syr.edu>
+From: "Andrew Kraslavsky" <andykras@hotmail.com>
+Subject: Why doesn't MASQUERADE handle local packets?
+Date: Thu, 18 May 2006 14:14:33 -0700
+Message-ID: <BAY106-F5B1C306A466F2FD42A55ED6A60@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +14,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: zottmann <zottmann@ig.com.br>, netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Do you really want to reserve bandwidth, or guarantee QOS quality of =
-service to the 'vip'?
-<><Randy
+Good day,
 
+In attempting to use the MASQUERADE target for some traffic that is locally 
+generated (as opposed to forwarded traffic) I found that the source IP 
+address was not being changed even though the rule was clearly being used.
 
-<><Randall Grimshaw
-Room 203 Machinery Hall
-Syracuse University
-Syracuse, NY   13244
-315-443-5779
-rgrimsha@syr.edu
+A quick review of ipt_MASQUERADE.c turned up these lines at the beginning of 
+function masquerade_target():
 
->>> zottmann <zottmann@ig.com.br> 5/18/2006 9:11:18 AM >>>
-Hi !!=20
+	/* FIXME: For the moment, don't do local packets, breaks
+	   testsuite for 2.3.49 --RR */
+	if ((*pskb)->sk)
+		return NF_ACCEPT;
 
-Our management asked us to reserve some bandwidth to our vip users, and, =
-as=20
-we use Squid proxy, I was thinking that we could achieve it by setting =
-an=20
-outgoing ip address at the Squid proxy based on the user=B4s group, and=20
-reserve bandwidth at the iptables firewall based on this ip address.=20
+If I comment out the return statement, MASQUERADE of locally generated 
+packets seems to work without any problems.
 
-Is this feasible? Can we reserve bandwidth with iptables alone, or shoule =
-we=20
-use another product as well?=20
+My question are:
 
-Thanks in advance,=20
-Carlos.=20
+1) Why doesn't MASQUERADE handle local packets?
+2) What would the damage be if I patched the source to comment out that 
+return statement?  If it is simply a matter of causing an old test suite to 
+fail then that seems harmless enough to me but is there more to this story?
 
+Thanks,
 
+- Andrew Kraslavsky
+
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today - it's FREE! 
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
 
 
