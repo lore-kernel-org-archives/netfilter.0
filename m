@@ -1,12 +1,9 @@
-From: Menno Smits <menno@netboxblue.com>
-Subject: Re: Questions re iproute2, netfilter, and locally sourced packets
-Date: Thu, 18 May 2006 14:55:45 +0100
-Message-ID: <446C7CE1.5080209@netboxblue.com>
-References: <446576D0.2050407@aut.ac.nz>
+From: Bowie Bailey <Bowie_Bailey@BUC.com>
+Subject: RE: iptables and pop3 lockup
+Date: Thu, 18 May 2006 10:04:17 -0400
+Message-ID: <4766EEE585A6D311ADF500E018C154E302684A2D@bnifex.cis.buc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <446576D0.2050407@aut.ac.nz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +14,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ian Batterbee <ian.batterbee@aut.ac.nz>, Netfilter Mailing list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "'Netfilter List (E-mail)'" <netfilter@lists.netfilter.org>
 
-Ian Batterbee wrote:
+Rob Sterenborg wrote:
+> > Glad to here that worked for you.
+> > 
+> > As for getting connection tracking to work I'll defer that to
+> > others on the list.  I'm have a similar problem on a Fedora Core 2
+> > virtual instance that we lease offsite for a project.  In that case
+> > everything was statically linked but I can't use any of the loaded
+> > modules (or better said they don't work).  But for me it wasn't
+> > critical so I just gave up on it.
 > 
-> 2. How can I identify to "ip rule" packets that are locally sourced ? 
+> The OP could build a new kernel from kernel.org and see if the problem
+> goes away. You can't take advantage of the RH kernel updates anymore
+> if you do this but so far only the FC2 kernel seems to have this
+> problem. Of course, if this is a production site then it is not
+> really an option but then perhaps a test-server could be built.
 
-I've used something like this in the past:
+This is a production box, so I am not interested in building a custom
+kernel.  I am running CentOS 4.3 which should be nearly the same
+kernel as RHEL4.
 
-ip rule add iif lo lookup <some table>
-
-That rule will match locally generated packets regardless of where they 
-are going.
-
-Hope that helps,
-Menno
+-- 
+Bowie
 
