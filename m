@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: iptables and pop3 lockup
-Date: Thu, 18 May 2006 07:25:35 +0200
-Message-ID: <000c01c67a3b$7e0b3280$0101000a@sterenborg.info>
-References: <57F9959B46E0FA4D8BA88AEDFBE582901676DB@pxtbenexd01.pxt.primeexalia.com>
+From: zottmann <zottmann@ig.com.br>
+Subject: Reserving bandwidth with iptables
+Date: Thu, 18 May 2006 10:11:18 -0300
+Message-ID: <20060518_131118_033947.zottmann@ig.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="Message-Boundary-by-Mail-Sender-1147957878"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE582901676DB@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "'Netfilter List (E-mail)'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-> Glad to here that worked for you.
-> 
-> As for getting connection tracking to work I'll defer that to
-> others on the list.  I'm have a similar problem on a Fedora Core 2
-> virtual instance that we lease offsite for a project.  In that case
-> everything was statically linked but I can't use any of the loaded
-> modules (or better said they don't work).  But for me it wasn't
-> critical so I just gave up on it. 
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-The OP could build a new kernel from kernel.org and see if the problem
-goes away. You can't take advantage of the RH kernel updates anymore if
-you do this but so far only the FC2 kernel seems to have this problem.
-Of course, if this is a production site then it is not really an option
-but then perhaps a test-server could be built.
+--Message-Boundary-by-Mail-Sender-1147957878
+Content-Type: text/plain; charset="iso-8859-1"
+Content-description: Mail message body
+Content-Transfer-Encoding: quoted-printable
+Content-disposition: inline
+
+Hi !!=20
+
+Our management asked us to reserve some bandwidth to our vip users, and, as=
+=20
+we use Squid proxy, I was thinking that we could achieve it by setting an=20
+outgoing ip address at the Squid proxy based on the user=B4s group, and=20
+reserve bandwidth at the iptables firewall based on this ip address.=20
+
+Is this feasible? Can we reserve bandwidth with iptables alone, or shoule w=
+e=20
+use another product as well?=20
+
+Thanks in advance,=20
+Carlos.=20
 
 
-Gr,
-Rob
+
+--Message-Boundary-by-Mail-Sender-1147957878--
 
 
