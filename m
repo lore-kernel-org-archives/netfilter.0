@@ -1,13 +1,12 @@
-From: "Pablo Sanchez" <pablo@blueoakdb.com>
-Subject: RE: Reserving bandwidth with iptables
-Date: Thu, 18 May 2006 09:16:16 -0400
-Message-ID: <00b401c67a7d$3ecb9d70$0419a8c0@fly>
-References: <20060518_131118_033947.zottmann@ig.com.br>
-Reply-To: pablo@blueoakdb.com
+From: Menno Smits <menno@netboxblue.com>
+Subject: Re: Questions re iproute2, netfilter, and locally sourced packets
+Date: Thu, 18 May 2006 14:55:45 +0100
+Message-ID: <446C7CE1.5080209@netboxblue.com>
+References: <446576D0.2050407@aut.ac.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060518_131118_033947.zottmann@ig.com.br>
+In-Reply-To: <446576D0.2050407@aut.ac.nz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'zottmann' <zottmann@ig.com.br>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ian Batterbee <ian.batterbee@aut.ac.nz>, Netfilter Mailing list <netfilter@lists.netfilter.org>
 
- 
-
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org 
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of zottmann
-> Sent: Thursday, May 18, 2006 9:11 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Reserving bandwidth with iptables
+Ian Batterbee wrote:
 > 
-> Is this feasible? Can we reserve bandwidth with iptables 
-> alone, or shoule we 
-> use another product as well? 
+> 2. How can I identify to "ip rule" packets that are locally sourced ? 
 
-I use 'tc' (traffic control) to shape my 'classified' traffic and iptables
-to classify.  When I researched 'tc', I saw you can reserve bandwidth and
-have it dynamically allocated to other areas when it's not needed.
+I've used something like this in the past:
 
-In short, look into 'tc'
+ip rule add iif lo lookup <some table>
 
-Cheers,
--pablo
+That rule will match locally generated packets regardless of where they 
+are going.
 
+Hope that helps,
+Menno
 
