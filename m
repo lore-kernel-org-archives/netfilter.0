@@ -1,20 +1,12 @@
-From: Frank Abel Cancio Bello <frankabel@tesla.cujae.edu.cu>
-Subject: How install nth extension?
-Date: Wed, 17 May 2006 15:44:47 -0400
-Message-ID: <200605171544.48125.frankabel@tesla.cujae.edu.cu>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: iptables and pop3 lockup
+Date: Thu, 18 May 2006 07:25:35 +0200
+Message-ID: <000c01c67a3b$7e0b3280$0101000a@sterenborg.info>
+References: <57F9959B46E0FA4D8BA88AEDFBE582901676DB@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=nowsp; d=tesla.cujae.edu.cu;
-	s=MDaemon; t=1147895142; x=1148499942;
-	i=frankabel@tesla.cujae.edu.cu; q=dns; h=DomainKey-Signature:
-	Received:From:Organization:To:Subject:Date:User-Agent:
-	MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-Disposition:Message-Id; b=lq9kRrfMA9v1t0nMEt7ubRZaf5eWUz8
-	zsqIeK7dFuqZxI1C+gJZSVBSwXF9skLYOh15WMU5gCaZkFiRduUSIRRqEdnBVZwr
-	sYY9u4lctSC8/nB0/RhahLnpkj9jE2/GnlujjB3a0EzRtxWgyD1PmA27TTYTx58U
-	nzWQzru3CvWk=
-Content-Disposition: inline
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE582901676DB@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -25,37 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "'Netfilter List (E-mail)'" <netfilter@lists.netfilter.org>
 
-Hi all!
+> Glad to here that worked for you.
+> 
+> As for getting connection tracking to work I'll defer that to
+> others on the list.  I'm have a similar problem on a Fedora Core 2
+> virtual instance that we lease offsite for a project.  In that case
+> everything was statically linked but I can't use any of the loaded
+> modules (or better said they don't work).  But for me it wasn't
+> critical so I just gave up on it. 
 
-When put in command line "make KERNEL_DIR=3D/usr/src/linux" to compile the =
-
-iptables-1.3.5 I don't see that in extensions directory appear the=20
-"libipt_nth.so" file. After when I write "make install=20
-KERNEL_DIR=3D/usr/src/linux" and try to add the following rule:
-
-"sudo iptables -t mangle -A OUTPUT -p icmp -m nth --counter 0 --every 2=20
---packet 0 -j NFQUEUE 0"
-
-the ouput error is:
-
-"iptables v1.3.5: Couldn't load match=20
-`nth':/usr/local/lib/iptables/libipt_nth.so: cannot open shared object file=
-:=20
-No such file or directory"
-
-Well can anybody tell me what I must do to install "libipt_nth.so"?
-
-Salute
-Frank Abel
+The OP could build a new kernel from kernel.org and see if the problem
+goes away. You can't take advantage of the RH kernel updates anymore if
+you do this but so far only the FC2 kernel seems to have this problem.
+Of course, if this is a production site then it is not really an option
+but then perhaps a test-server could be built.
 
 
-__________________________________________
+Gr,
+Rob
 
-XIII Convenci=F3n Cient=EDfica de Ingenier=EDa y Arquitectura
-28/noviembre al 1/diciembre de 2006
-Cujae, Ciudad de la Habana, Cuba
-http://www.cujae.edu.cu/eventos/convencion
 
