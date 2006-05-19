@@ -1,9 +1,12 @@
-From: "Andrew Kraslavsky" <andykras@hotmail.com>
-Subject: Why doesn't MASQUERADE handle local packets?
-Date: Thu, 18 May 2006 14:14:33 -0700
-Message-ID: <BAY106-F5B1C306A466F2FD42A55ED6A60@phx.gbl>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Why doesn't MASQUERADE handle local packets?
+Date: Fri, 19 May 2006 07:11:14 +0200
+Message-ID: <000c01c67b02$a7349530$0101000a@sterenborg.info>
+References: <BAY106-F5B1C306A466F2FD42A55ED6A60@phx.gbl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY106-F5B1C306A466F2FD42A55ED6A60@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,40 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Good day,
+> In attempting to use the MASQUERADE target for some traffic that is
+> locally generated (as opposed to forwarded traffic) I found that the
+> source IP address was not being changed even though the rule was
+> clearly being used. 
 
-In attempting to use the MASQUERADE target for some traffic that is locally 
-generated (as opposed to forwarded traffic) I found that the source IP 
-address was not being changed even though the rule was clearly being used.
+If a packet is MASQ-ed, it gets the source IP address from an interface
+on the firewall where it leaves from (to put it simple). When a locally
+generated packets leave the firewall from the same interface as MASQ-ed
+packets do, they should already have the same source IP address so why
+would you want to use MASQ ?
 
-A quick review of ipt_MASQUERADE.c turned up these lines at the beginning of 
-function masquerade_target():
+I see no reason for locally generated packets to be MASQ-ed and I think
+the question is: what is it that you want to accomplish by MASQ-ing
+locally generated packets..?
 
-	/* FIXME: For the moment, don't do local packets, breaks
-	   testsuite for 2.3.49 --RR */
-	if ((*pskb)->sk)
-		return NF_ACCEPT;
 
-If I comment out the return statement, MASQUERADE of locally generated 
-packets seems to work without any problems.
-
-My question are:
-
-1) Why doesn't MASQUERADE handle local packets?
-2) What would the damage be if I patched the source to comment out that 
-return statement?  If it is simply a matter of causing an old test suite to 
-fail then that seems harmless enough to me but is there more to this story?
-
-Thanks,
-
-- Andrew Kraslavsky
-
-_________________________________________________________________
-Express yourself instantly with MSN Messenger! Download today - it's FREE! 
-http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+Gr,
+Rob
 
 
