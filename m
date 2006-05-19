@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Why doesn't MASQUERADE handle local packets?
-Date: Fri, 19 May 2006 07:11:14 +0200
-Message-ID: <000c01c67b02$a7349530$0101000a@sterenborg.info>
-References: <BAY106-F5B1C306A466F2FD42A55ED6A60@phx.gbl>
+From: "Tosho Yankov" <T.Yankov@snt.bg>
+Subject: patch-o-matic problem
+Date: Fri, 19 May 2006 10:21:05 +0300
+Message-ID: <707F3F9D99DFB049A25A6C880E5CADF901F5F9A7@tangra.snt.bg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C67B14.D4E73F48"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY106-F5B1C306A466F2FD42A55ED6A60@phx.gbl>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +16,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> In attempting to use the MASQUERADE target for some traffic that is
-> locally generated (as opposed to forwarded traffic) I found that the
-> source IP address was not being changed even though the rule was
-> clearly being used. 
+This is a multi-part message in MIME format.
 
-If a packet is MASQ-ed, it gets the source IP address from an interface
-on the firewall where it leaves from (to put it simple). When a locally
-generated packets leave the firewall from the same interface as MASQ-ed
-packets do, they should already have the same source IP address so why
-would you want to use MASQ ?
+------_=_NextPart_001_01C67B14.D4E73F48
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I see no reason for locally generated packets to be MASQ-ed and I think
-the question is: what is it that you want to accomplish by MASQ-ing
-locally generated packets..?
+uname  -a
+Linux gate 2.6.15 #1 SMP PREEMPT Mon Jan 9 13:13:52 EET 2006 i686
+unknown unknown GNU/Linux
 
+I try to use patch-o-matic but I have this error
+root@gate:/usr/src/linux# make modules
+  CHK     include/linux/version.h
+scripts/Makefile.build:51: kbuild: net/ipv4/netfilter/Makefile - Usage
+of export-objs is obsolete in 2.6. Please fix!
+  CC [M]  net/ipv4/netfilter/ip_conntrack_ftp.o
+In file included from include/linux/netfilter_ipv4/ip_conntrack.h:32,
+                 from
+include/linux/netfilter_ipv4/ip_conntrack_helper.h:4,
+                 from net/ipv4/netfilter/ip_conntrack_ftp.c:19:
+include/linux/netfilter_ipv4/ip_conntrack_talk.h:7:43:
+linux/netfilter_ipv4/lockhelp.h: No such file or directory
+In file included from include/linux/netfilter_ipv4/ip_conntrack.h:32,
+                 from
+include/linux/netfilter_ipv4/ip_conntrack_helper.h:4,
+                 from net/ipv4/netfilter/ip_conntrack_ftp.c:19:
+include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: type
+defaults to `int' in declaration of `DECLARE_LOCK_EXTERN'
+include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: parameter
+names (without types) in function declaration
+include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: data
+definition has no type or storage class
+make[3]: *** [net/ipv4/netfilter/ip_conntrack_ftp.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
 
-Gr,
-Rob
+Can anybody help me pleas?
+What is the problem?
 
+Tosho Yankov
+Support Engineer
+S&T Bulgaria
+phone: +359 2 965 17 87
+fax: +359 2 975 16 00
+e-mail: t.yankov@snt.bg
+www.snt.bg
+
+------_=_NextPart_001_01C67B14.D4E73F48--
 
