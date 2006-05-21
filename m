@@ -1,11 +1,10 @@
-From: "David Theobald" <davidtheo@gmail.com>
-Subject: IPTABLES and passwords
-Date: Sun, 21 May 2006 15:58:45 +1200
-Message-ID: <2ddb22030605202058p7e6d27e8j68b69e6dd98bf0f9@mail.gmail.com>
+From: "Mahmood" <maa@clickasun.net>
+Subject: Port Redirection with Load balancing
+Date: Sun, 21 May 2006 12:57:39 +0330
+Message-ID: <200605210927.k4L9Rdqk027474@Mail.clickasun.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +15,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Let me ask this Question in a different way as you did not understand
 
-I have a sever at home that has a firewall on it that I have writen
-myself what I what to do is this
+Dears,
 
-I have one wireless computer on my network and a computer on a
-ethernet both connected to the internet thourgh a firewall using
-IPTABLES what Rules do I use to make the wireless computer use
-user-based authenentication on the proxy to access http and ftp I am
-using squid web Caching also.
+I have a server that runs 10 copies of a service on TCP ports 1000, 2000,
+3000 . 10000. 
+I would like to have clients connect to a single IP at TCP port 500 and have
+a load balancer distribute the incoming requests across ports 1000 ... 10000
+at the same machine. 
+I don't want any of the servers have more than 100 concurrent connections. 
+I want to use iptables port redirection with load balancing.
+How can I do that?
+ 
 
-would what I have below do it.
-$IPTABLES -t nat -A PREROUTING -i INPUT -p tcp --dport 80 -j REDIRECT
---to-port 3128
-
-$IPTABLES -t nat -A POSTROUTING -o OUTPUT -p tcp --dport 80 -j
-REDIRECT --to-port 3128
+Regards,
+-Mahmood
 
 
 
-Thanks for any help you can give
 
