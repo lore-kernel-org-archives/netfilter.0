@@ -1,13 +1,19 @@
-From: Antonio Di Bacco <antonio.dibacco@aruba.it>
-Subject: Re: PtP not working
-Date: Sun, 21 May 2006 14:38:00 +0200
-Message-ID: <200605211438.00621.antonio.dibacco@aruba.it>
-References: <200605201730.52334.antonio.dibacco@aruba.it>
-	<44704D13.3060305@rtij.nl>
+From: Frank Abel Cancio Bello <frankabel@tesla.cujae.edu.cu>
+Subject: error compiling nfqnl_test.c
+Date: Sun, 21 May 2006 15:15:30 -0400
+Message-ID: <200605211515.30934.frankabel@tesla.cujae.edu.cu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44704D13.3060305@rtij.nl>
+DKIM-Signature: a=rsa-sha1; c=nowsp; d=tesla.cujae.edu.cu;
+	s=MDaemon; t=1148238998; x=1148843798;
+	i=frankabel@tesla.cujae.edu.cu; q=dns; h=DomainKey-Signature:
+	Received:From:Organization:To:Subject:Date:User-Agent:
+	MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-Disposition:Message-Id; b=UNEZDhiuNhqLk9Q4A9OrrKlQ1hnsjXm
+	nmowXuaWs7vqqqGiFqzyF0B6Sv7IML0XQQ8Gg/dhzAuTMSVz3CAk+1Njjk5gIrg8
+	FYYgcrJadIY+N1PMVSrrfDzei3pd88B4Xvw319SseTHTclVKjO0RFqZFjjaQePjC
+	ehVZt4iRWKHE=
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,61 +25,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Martijn Lievaart <m@rtij.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Anyway I can have the same MAC address for both boxes on eth0.
+Hi all!
 
-On Sunday 21 May 2006 13:20, Martijn Lievaart wrote:
-> Antonio Di Bacco wrote:
-> >Anyone could explain this?
-> >
-> >Two linux systems connected:
-> >
-> >System A     <=========> System B
-> >                   eth0                    eth0
-> >
-> >Each system ha the following config:
-> >
-> ># routing enabled
-> >net.ipv4.ip_forward=1
-> >
-> >#ethernet with no address associated and NOARP set
-> >eth0      Link encap:Ethernet  HWaddr 08:00:3E:26:24:65
-> >          UP BROADCAST RUNNING NOARP MULTICAST  MTU:1500  Metric:1
-> >          RX packets:1306 errors:0 dropped:0 overruns:0 frame:0
-> >          TX packets:1325 errors:0 dropped:0 overruns:0 carrier:0
-> >          collisions:0 txqueuelen:1000
-> >          RX bytes:732864 (715.6 KiB)  TX bytes:61643 (60.1 KiB)
-> >          Base address:0x3c00
-> >
-> ># Routing table
-> >Kernel IP routing table
-> >Destination     Gateway         Genmask         Flags Metric Ref    Use
-> > Iface 10.10.10.10     *               255.255.255.255 UH    0      0     
-> >   0 eth0
-> >
-> >
-> >I'm on System A and try to ping 10.10.10.10 but no answer. Where is the
-> >problem?
->
-> Which system has 10.10.10.10? None. So how can any system answer? Even
-> if there was a 10.10.10.10, you disabled the arp mechanism, so you can
-> never find out where it is. Finaly, for the return packets exactly the
-> same problem occurs.
->
-> If you want to make a point to point connection over ethernet:
-> - Either just configure a subnet there.
-> - Or:
->   - Assign addresses to the interfaces (can be the same address as
-> another interface on the same box)
->   - Create static arp addresses for the other box
->   - Create routes as above for the address of the other box
->
-> I think you will still have to enable arp for this to work, in which
-> case you can skip the static arp entries.
->
-> HTH,
-> M4
+A newbie question:
+When I try to compile "nfqnl_test.c" putting on command line:
+
+"gcc -Wall -o nfqnl_test nfqnl_test.c"
+
+the following error occur:
+
+"
+/tmp/cc8hh7RL.o: In function `print_pkt':nfqnl_test.c:(.text+0x15): undefin=
+ed=20
+reference to `nfq_get_msg_packet_hdr'
+:nfqnl_test.c:(.text+0x73): undefined reference to `nfq_get_nfmark'
+:nfqnl_test.c:(.text+0x9a): undefined reference to `nfq_get_indev'
+:nfqnl_test.c:(.text+0xc1): undefined reference to `nfq_get_outdev'
+:nfqnl_test.c:(.text+0xef): undefined reference to `nfq_get_payload'
+/tmp/cc8hh7RL.o: In function `cb':nfqnl_test.c:(.text+0x173): undefined=20
+reference to `nfq_set_verdict'
+/tmp/cc8hh7RL.o: In function `main':nfqnl_test.c:(.text+0x1a5): undefined=20
+reference to `nfq_open'
+:nfqnl_test.c:(.text+0x1fe): undefined reference to `nfq_unbind_pf'
+:nfqnl_test.c:(.text+0x252): undefined reference to `nfq_bind_pf'
+:nfqnl_test.c:(.text+0x2b6): undefined reference to `nfq_create_queue'
+:nfqnl_test.c:(.text+0x317): undefined reference to `nfq_set_mode'
+:nfqnl_test.c:(.text+0x357): undefined reference to `nfq_nfnlh'
+:nfqnl_test.c:(.text+0x365): undefined reference to `nfnl_fd'
+:nfqnl_test.c:(.text+0x392): undefined reference to `nfq_handle_packet'
+:nfqnl_test.c:(.text+0x3dd): undefined reference to `nfq_destroy_queue'
+:nfqnl_test.c:(.text+0x3f4): undefined reference to `nfq_close'
+collect2: ld returned 1 exit status
+"
+
+What I must put a command line to compile the "nfqnl_test.c"
+
+Salute
+Frank Abel
+
+
+__________________________________________
+
+XIII Convenci=F3n Cient=EDfica de Ingenier=EDa y Arquitectura
+28/noviembre al 1/diciembre de 2006
+Cujae, Ciudad de la Habana, Cuba
+http://www.cujae.edu.cu/eventos/convencion
 
