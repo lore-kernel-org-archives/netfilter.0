@@ -1,7 +1,7 @@
 From: Antonio Di Bacco <antonio.dibacco@aruba.it>
 Subject: Re: PtP not working
-Date: Sun, 21 May 2006 14:36:39 +0200
-Message-ID: <200605211436.40235.antonio.dibacco@aruba.it>
+Date: Sun, 21 May 2006 14:38:00 +0200
+Message-ID: <200605211438.00621.antonio.dibacco@aruba.it>
 References: <200605201730.52334.antonio.dibacco@aruba.it>
 	<44704D13.3060305@rtij.nl>
 Mime-Version: 1.0
@@ -23,11 +23,7 @@ Content-Type: text/plain; charset="us-ascii"
 To: Martijn Lievaart <m@rtij.nl>
 Cc: netfilter@lists.netfilter.org
 
-My problem is that both boxes should have the same ip address on eth0. They 
-cannot be different.
-
-Thank you,
-Antonio
+Anyway I can have the same MAC address for both boxes on eth0.
 
 On Sunday 21 May 2006 13:20, Martijn Lievaart wrote:
 > Antonio Di Bacco wrote:
