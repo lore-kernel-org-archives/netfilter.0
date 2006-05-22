@@ -1,14 +1,14 @@
-From: "Elijah Alcantara" <elijah.alcantara@gmail.com>
-Subject: Re: Abwesenheitsnotiz: Transparent proxy using squid,
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: Abwesenheitsnotiz: Transparent proxy using squid,
 	redirect all ss l/https ... ?
-Date: Mon, 22 May 2006 18:11:46 +0800
-Message-ID: <b4a631130605220311u661b9247sb826c932a140495b@mail.gmail.com>
+Date: Mon, 22 May 2006 12:24:11 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012763@knowledge.wizdom.nu>
 References: <443FCB7F54D7FA47A057708D1F57BA2A01D4A709@deblx001.actis.de>
+	<b4a631130605220311u661b9247sb826c932a140495b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <443FCB7F54D7FA47A057708D1F57BA2A01D4A709@deblx001.actis.de>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,8 +19,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+To: Elijah Alcantara <elijah.alcantara@gmail.com>, netfilter@lists.netfilter.org
+
+Hehe, if you are talking about the included mail, it's just an Out of =
+Office notification in German.
+=20
+-Sietse
+
+________________________________
+
+From: netfilter-bounces@lists.netfilter.org on behalf of Elijah =
+Alcantara
+Sent: Mon 22-May-06 12:11
 To: netfilter@lists.netfilter.org
+Subject: Re: Abwesenheitsnotiz: Transparent proxy using squid,redirect =
+all ss l/https ... ?
+
+
 
 Hi,
 
@@ -35,7 +51,8 @@ Elijah A.
 On 5/22/06, Marquardt, Markus <Markus.Marquardt@atosorigin.com> wrote:
 > Hallo,
 >
-> ich bin erst am 23.05.2006 wieder am Arbeitsplatz. Ihre Mail wurde nicht
+> ich bin erst am 23.05.2006 wieder am Arbeitsplatz. Ihre Mail wurde =
+nicht
 > automatisch weitergeleitet.
 >
 > In dringenden F=E4llen k=F6nnen Sie sich an folgende Kollegen wenden:
@@ -49,4 +66,7 @@ On 5/22/06, Marquardt, Markus <Markus.Marquardt@atosorigin.com> wrote:
 >
 > Markus Marquardt
 >
+
+
+
 
