@@ -1,16 +1,23 @@
-From: Thomas Kuiper <tkuiper-netfilter@inxsoft.net>
-Subject: Re: Abwesenheitsnotiz: Transparent proxy using squid,
-	redirect all ss l/https ... ?
-Date: Mon, 22 May 2006 09:24:02 -0500
-Message-ID: <20060522142402.GA28892@esc29.midphase.com>
-References: <443FCB7F54D7FA47A057708D1F57BA2A01D4A709@deblx001.actis.de>
-	<b4a631130605220311u661b9247sb826c932a140495b@mail.gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C4012763@knowledge.wizdom.nu>
+From: Frank Abel Cancio Bello <frankabel@tesla.cujae.edu.cu>
+Subject: Re: error compiling nfqnl_test.c
+Date: Mon, 22 May 2006 10:42:25 -0400
+Message-ID: <200605221042.26597.frankabel@tesla.cujae.edu.cu>
+References: <200605211515.30934.frankabel@tesla.cujae.edu.cu>
+	<4471C553.8000005@wengo.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=nowsp; d=tesla.cujae.edu.cu;
+	s=MDaemon; t=1148309024; x=1148913824;
+	i=frankabel@tesla.cujae.edu.cu; q=dns; h=DomainKey-Signature:
+	Received:From:Organization:To:Subject:Date:User-Agent:References:
+	In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-Disposition:Message-Id; b=OCL8hl4RVd8Cs3GSieNg+vVUMCNIOaS
+	Wh598sgHzwGVuP6NfV2hljvhF5z4mvof90igLXuDlhSfmqAu8/9Za2ePKheR2Ix2
+	30Dx9zUASlDV06cIiVY5zVgr4Z8lI9YnYFC42ZRfQxJ2P9LqNZIsr2CpkEeEV0Tf
+	VGJ/rY76iYxg=
+In-Reply-To: <4471C553.8000005@wengo.fr>
 Content-Disposition: inline
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C4012763@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,61 +28,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-9"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Sebastien Tricaud <sebastien.tricaud@wengo.fr>, netfilter@lists.netfilter.org
 
-Hello,
+Thanks Sebastien!
 
-it also says lists contacts for urgent requests, go ahead if its urgent.. :=
--)
+Now the problem is when I try to run the binary, when I put on command line:
 
-Thomas
+./nfqnl_test
 
-On Mon, May 22, 2006 at 12:24:11PM +0200, Sietse van Zanen wrote:
-> Hehe, if you are talking about the included mail, it's just an Out of Off=
-ice notification in German.
-> =20
-> -Sietse
->=20
-> ________________________________
->=20
-> From: netfilter-bounces@lists.netfilter.org on behalf of Elijah Alcantara
-> Sent: Mon 22-May-06 12:11
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Abwesenheitsnotiz: Transparent proxy using squid,redirect al=
-l ss l/https ... ?
->=20
->=20
->=20
-> Hi,
->=20
-> Thanks for the reply, but unfortunately I don't speak your language
-> (german?). I tried translating ... something about automatically
-> redirecting all workstations? ...
->=20
->=20
-> Regards,
-> Elijah A.
->=20
-> On 5/22/06, Marquardt, Markus <Markus.Marquardt@atosorigin.com> wrote:
-> > Hallo,
+the following error happend:
+
+./nfqnl_test: error while loading shared libraries: libnfnetlink.so.0: cann=
+ot=20
+open shared object file: No such file or directory
+
+Nevertheless my box have theses files:
+/usr/local/lib/libnfnetlink.so.0
+/usr/local/lib/libnfnetlink.so.0.0.0
+
+Beside, when I install the libnfnetlink ("./configure;make;make install") I=
+=20
+get a binary of nfqnl_test.c into utils directory and when I run it all is =
+
+fine.
+
+Salute
+Frank Abel
+
+
+On Monday 22 May 2006 10:06 am, you wrote:
+> Frank Abel Cancio Bello wrote:
+> > Hi all!
 > >
-> > ich bin erst am 23.05.2006 wieder am Arbeitsplatz. Ihre Mail wurde nicht
-> > automatisch weitergeleitet.
+> > A newbie question:
+> > When I try to compile "nfqnl_test.c" putting on command line:
 > >
-> > In dringenden F=E4llen k=F6nnen Sie sich an folgende Kollegen wenden:
+> > "gcc -Wall -o nfqnl_test nfqnl_test.c"
 > >
-> > o Martin Endruschat (PC/Server, Allg. IT-Administration)
-> > o Thomas Moebius (Fernwartung, Netzwerk)
-> > o Lars Klemstein (Unix Server)
-> > o Stephan C. Sauermann (Remedy)
-> >
-> > Mit freundlichen Gr=FC=DFen
-> >
-> > Markus Marquardt
-> >
->=20
->=20
->=20
->=20
+> > the following error occur:
+>
+> [snip errors]
+>
+> you forgot to include required library symbols:
+>
+> gcc -Wall -o nfqnl_test nfqnl_test.c -lnfnetlink -lnetfilter_queue
+>
+> will do
+
+
+__________________________________________
+
+XIII Convenci=F3n Cient=EDfica de Ingenier=EDa y Arquitectura
+28/noviembre al 1/diciembre de 2006
+Cujae, Ciudad de la Habana, Cuba
+http://www.cujae.edu.cu/eventos/convencion
 
