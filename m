@@ -1,19 +1,10 @@
-From: Frank Abel Cancio Bello <frankabel@tesla.cujae.edu.cu>
-Subject: error compiling nfqnl_test.c
-Date: Sun, 21 May 2006 15:15:30 -0400
-Message-ID: <200605211515.30934.frankabel@tesla.cujae.edu.cu>
+From: "Elijah Alcantara" <elijah.alcantara@gmail.com>
+Subject: Transparent proxy using squid, redirect all ssl/https ... ?
+Date: Mon, 22 May 2006 10:17:01 +0800
+Message-ID: <b4a631130605211917t7a747ceeo6d9f22b067d67466@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=nowsp; d=tesla.cujae.edu.cu;
-	s=MDaemon; t=1148238998; x=1148843798;
-	i=frankabel@tesla.cujae.edu.cu; q=dns; h=DomainKey-Signature:
-	Received:From:Organization:To:Subject:Date:User-Agent:
-	MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-Disposition:Message-Id; b=UNEZDhiuNhqLk9Q4A9OrrKlQ1hnsjXm
-	nmowXuaWs7vqqqGiFqzyF0B6Sv7IML0XQQ8Gg/dhzAuTMSVz3CAk+1Njjk5gIrg8
-	FYYgcrJadIY+N1PMVSrrfDzei3pd88B4Xvw319SseTHTclVKjO0RFqZFjjaQePjC
-	ehVZt4iRWKHE=
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -25,52 +16,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all!
+Hi,
 
-A newbie question:
-When I try to compile "nfqnl_test.c" putting on command line:
+It seems that implementing transparent squid proxy will cause https &
+ssl to not work well on browsers ... and it would be troublesome to
+manually setup proxy settings to all browsers within our network.
 
-"gcc -Wall -o nfqnl_test nfqnl_test.c"
+So I'd like to be able to redirect all other requests like
+https/ssl(port 443) or email client's ports to directly access the
+internet instead of going through our proxy server.
 
-the following error occur:
+Here's a little diagram of our network:
+http://static.flickr.com/49/149174815_48fa51f1a3_o.png
 
-"
-/tmp/cc8hh7RL.o: In function `print_pkt':nfqnl_test.c:(.text+0x15): undefin=
-ed=20
-reference to `nfq_get_msg_packet_hdr'
-:nfqnl_test.c:(.text+0x73): undefined reference to `nfq_get_nfmark'
-:nfqnl_test.c:(.text+0x9a): undefined reference to `nfq_get_indev'
-:nfqnl_test.c:(.text+0xc1): undefined reference to `nfq_get_outdev'
-:nfqnl_test.c:(.text+0xef): undefined reference to `nfq_get_payload'
-/tmp/cc8hh7RL.o: In function `cb':nfqnl_test.c:(.text+0x173): undefined=20
-reference to `nfq_set_verdict'
-/tmp/cc8hh7RL.o: In function `main':nfqnl_test.c:(.text+0x1a5): undefined=20
-reference to `nfq_open'
-:nfqnl_test.c:(.text+0x1fe): undefined reference to `nfq_unbind_pf'
-:nfqnl_test.c:(.text+0x252): undefined reference to `nfq_bind_pf'
-:nfqnl_test.c:(.text+0x2b6): undefined reference to `nfq_create_queue'
-:nfqnl_test.c:(.text+0x317): undefined reference to `nfq_set_mode'
-:nfqnl_test.c:(.text+0x357): undefined reference to `nfq_nfnlh'
-:nfqnl_test.c:(.text+0x365): undefined reference to `nfnl_fd'
-:nfqnl_test.c:(.text+0x392): undefined reference to `nfq_handle_packet'
-:nfqnl_test.c:(.text+0x3dd): undefined reference to `nfq_destroy_queue'
-:nfqnl_test.c:(.text+0x3f4): undefined reference to `nfq_close'
-collect2: ld returned 1 exit status
-"
+What I did so far is:
+1. Block out all connection request from our router settings except
+for our proxy server (adminserver ) only, this will force our users to
+use the proxy settings for their other applications.
+2. Set all client's pc's to use the new gateway 'adminserver' (our
+squid server).
+3. Setup transparent proxy for squid. For http requests.
 
-What I must put a command line to compile the "nfqnl_test.c"
+Everything else is working fine so far, except that opening up
+ssl-enabled sites (mail.yahoo.com) creates a timeout error and email
+clients seems to not work even with proxy settings enabled.
 
-Salute
-Frank Abel
+What I need is some sort of iptable rule to grab all port 443
+connections and make it connect directly to the internet ... I used
+webmin to formulate a rule but that didn't work ... so I thought of
+asking for help here, anyone?
+
+Here are my current rules:
+-A PREROUTING -p tcp -m tcp -i eth0 --dport 80 -j REDIRECT --to-ports 3128
+-A PREROUTING -p tcp -m tcp -i eth0 --dport 443 -j DNAT
+--to-destination 192.168.100.3
+
+The first one works, it's for transparent proxy, the other one.. I
+have no idea why it's not working =3D(
 
 
-__________________________________________
-
-XIII Convenci=F3n Cient=EDfica de Ingenier=EDa y Arquitectura
-28/noviembre al 1/diciembre de 2006
-Cujae, Ciudad de la Habana, Cuba
-http://www.cujae.edu.cu/eventos/convencion
+Regards,
+Elijah A.
 
