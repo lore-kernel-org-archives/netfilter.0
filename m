@@ -1,15 +1,13 @@
-From: "Rodrigo Montoro" <spooker@gmail.com>
-Subject: Re: error compiling nfqnl_test.c
-Date: Mon, 22 May 2006 11:48:07 -0300
-Message-ID: <9255886c0605220748w5ebfccb1r3ef016fff2d5b0da@mail.gmail.com>
-References: <200605211515.30934.frankabel@tesla.cujae.edu.cu>
-	<4471C553.8000005@wengo.fr>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: error compiling nfqnl_test.c
+Date: Mon, 22 May 2006 16:49:36 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012766@knowledge.wizdom.nu>
+References: <200605211515.30934.frankabel@tesla.cujae.edu.cu><4471C553.8000005@wengo.fr>
 	<200605221042.26597.frankabel@tesla.cujae.edu.cu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200605221042.26597.frankabel@tesla.cujae.edu.cu>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,37 +18,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Frank Abel Cancio Bello <frankabel@tesla.cujae.edu.cu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Frank Abel Cancio Bello <frankabel@tesla.cujae.edu.cu>, Sebastien Tricaud <sebastien.tricaud@wengo.fr>, netfilter@lists.netfilter.org
 
-ICBUcnkgdG8gcnVuIGxkY29uZmlnCiAgSWYgdGhpcyBmYWlscyAsdHJ5IHRvIGVkaXQgL2V0Yy9s
-ZC5zby5jb25mIGFuZCBhZGQKICAvdXNyL2xvY2FsL2xpYgogIFNvIHJ1biBsZGNvbmZpZyBhZ2Fp
-bi4KCkF0dCwKCk9uIDUvMjIvMDYsIEZyYW5rIEFiZWwgQ2FuY2lvIEJlbGxvIDxmcmFua2FiZWxA
-dGVzbGEuY3VqYWUuZWR1LmN1PiB3cm90ZToKPiBUaGFua3MgU2ViYXN0aWVuIQo+Cj4gTm93IHRo
-ZSBwcm9ibGVtIGlzIHdoZW4gSSB0cnkgdG8gcnVuIHRoZSBiaW5hcnksIHdoZW4gSSBwdXQgb24g
-Y29tbWFuZCBsaW5lOgo+Cj4gLi9uZnFubF90ZXN0Cj4KPiB0aGUgZm9sbG93aW5nIGVycm9yIGhh
-cHBlbmQ6Cj4KPiAuL25mcW5sX3Rlc3Q6IGVycm9yIHdoaWxlIGxvYWRpbmcgc2hhcmVkIGxpYnJh
-cmllczogbGlibmZuZXRsaW5rLnNvLjA6IGNhbm5vdAo+IG9wZW4gc2hhcmVkIG9iamVjdCBmaWxl
-OiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4KPiBOZXZlcnRoZWxlc3MgbXkgYm94IGhhdmUg
-dGhlc2VzIGZpbGVzOgo+IC91c3IvbG9jYWwvbGliL2xpYm5mbmV0bGluay5zby4wCj4gL3Vzci9s
-b2NhbC9saWIvbGlibmZuZXRsaW5rLnNvLjAuMC4wCj4KPiBCZXNpZGUsIHdoZW4gSSBpbnN0YWxs
-IHRoZSBsaWJuZm5ldGxpbmsgKCIuL2NvbmZpZ3VyZTttYWtlO21ha2UgaW5zdGFsbCIpIEkKPiBn
-ZXQgYSBiaW5hcnkgb2YgbmZxbmxfdGVzdC5jIGludG8gdXRpbHMgZGlyZWN0b3J5IGFuZCB3aGVu
-IEkgcnVuIGl0IGFsbCBpcwo+IGZpbmUuCj4KPiBTYWx1dGUKPiBGcmFuayBBYmVsCj4KPgo+IE9u
-IE1vbmRheSAyMiBNYXkgMjAwNiAxMDowNiBhbSwgeW91IHdyb3RlOgo+ID4gRnJhbmsgQWJlbCBD
-YW5jaW8gQmVsbG8gd3JvdGU6Cj4gPiA+IEhpIGFsbCEKPiA+ID4KPiA+ID4gQSBuZXdiaWUgcXVl
-c3Rpb246Cj4gPiA+IFdoZW4gSSB0cnkgdG8gY29tcGlsZSAibmZxbmxfdGVzdC5jIiBwdXR0aW5n
-IG9uIGNvbW1hbmQgbGluZToKPiA+ID4KPiA+ID4gImdjYyAtV2FsbCAtbyBuZnFubF90ZXN0IG5m
-cW5sX3Rlc3QuYyIKPiA+ID4KPiA+ID4gdGhlIGZvbGxvd2luZyBlcnJvciBvY2N1cjoKPiA+Cj4g
-PiBbc25pcCBlcnJvcnNdCj4gPgo+ID4geW91IGZvcmdvdCB0byBpbmNsdWRlIHJlcXVpcmVkIGxp
-YnJhcnkgc3ltYm9sczoKPiA+Cj4gPiBnY2MgLVdhbGwgLW8gbmZxbmxfdGVzdCBuZnFubF90ZXN0
-LmMgLWxuZm5ldGxpbmsgLWxuZXRmaWx0ZXJfcXVldWUKPiA+Cj4gPiB3aWxsIGRvCj4KPgo+IF9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Cj4gWElJSSBDb252ZW5j
-acOzbiBDaWVudMOtZmljYSBkZSBJbmdlbmllcsOtYSB5IEFycXVpdGVjdHVyYQo+IDI4L25vdmll
-bWJyZSBhbCAxL2RpY2llbWJyZSBkZSAyMDA2Cj4gQ3VqYWUsIENpdWRhZCBkZSBsYSBIYWJhbmEs
-IEN1YmEKPiBodHRwOi8vd3d3LmN1amFlLmVkdS5jdS9ldmVudG9zL2NvbnZlbmNpb24KPgo+CgoK
-LS0gCj09PT09PT09PT09PT09PT09PT09PQogUm9kcmlnbyBSaWJlaXJvIE1vbnRvcm8KRGVzZW52
-b2x2ZWRvciBCUk1BbGludXgKICBzcG9va2VyQGJyYy5jb20uYnIKICAgICAgIFJIQ0UvTFBJQy1J
-Cj09PT09PT09PT09PT09PT09PT09PQo=
+Add /usr/local/lib to ld.conf or LD_LIBRARY_PATH env variable.
+=20
+-Sietse
+
+________________________________
+
+From: netfilter-bounces@lists.netfilter.org on behalf of Frank Abel =
+Cancio Bello
+Sent: Mon 22-May-06 16:42
+To: Sebastien Tricaud; netfilter@lists.netfilter.org
+Subject: Re: error compiling nfqnl_test.c
+
+
+
+Thanks Sebastien!
+
+Now the problem is when I try to run the binary, when I put on command =
+line:
+
+./nfqnl_test
+
+the following error happend:
+
+./nfqnl_test: error while loading shared libraries: libnfnetlink.so.0: =
+cannot
+open shared object file: No such file or directory
+
+Nevertheless my box have theses files:
+/usr/local/lib/libnfnetlink.so.0
+/usr/local/lib/libnfnetlink.so.0.0.0
+
+Beside, when I install the libnfnetlink ("./configure;make;make =
+install") I
+get a binary of nfqnl_test.c into utils directory and when I run it all =
+is
+fine.
+
+Salute
+Frank Abel
+
+
+On Monday 22 May 2006 10:06 am, you wrote:
+> Frank Abel Cancio Bello wrote:
+> > Hi all!
+> >
+> > A newbie question:
+> > When I try to compile "nfqnl_test.c" putting on command line:
+> >
+> > "gcc -Wall -o nfqnl_test nfqnl_test.c"
+> >
+> > the following error occur:
+>
+> [snip errors]
+>
+> you forgot to include required library symbols:
+>
+> gcc -Wall -o nfqnl_test nfqnl_test.c -lnfnetlink -lnetfilter_queue
+>
+> will do
+
+
+__________________________________________
+
+XIII Convenci=F3n Cient=EDfica de Ingenier=EDa y Arquitectura
+28/noviembre al 1/diciembre de 2006
+Cujae, Ciudad de la Habana, Cuba
+http://www.cujae.edu.cu/eventos/convencion
+
+
+
 
