@@ -1,13 +1,12 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: error compiling nfqnl_test.c
-Date: Mon, 22 May 2006 16:49:36 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012766@knowledge.wizdom.nu>
-References: <200605211515.30934.frankabel@tesla.cujae.edu.cu><4471C553.8000005@wengo.fr>
-	<200605221042.26597.frankabel@tesla.cujae.edu.cu>
+From: Amin Azez <azez@ufomechanic.net>
+Subject: Re: Iptables load balancing
+Date: Mon, 22 May 2006 17:22:04 +0100
+Message-ID: <4471E52C.3010600@ufomechanic.net>
+References: <200605201449.56621.vladimir@sycore.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <200605201449.56621.vladimir@sycore.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,77 +17,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Frank Abel Cancio Bello <frankabel@tesla.cujae.edu.cu>, Sebastien Tricaud <sebastien.tricaud@wengo.fr>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+Cc: netfilter-devel@lists.netfilter.org
 
-Add /usr/local/lib to ld.conf or LD_LIBRARY_PATH env variable.
-=20
--Sietse
-
-________________________________
-
-From: netfilter-bounces@lists.netfilter.org on behalf of Frank Abel =
-Cancio Bello
-Sent: Mon 22-May-06 16:42
-To: Sebastien Tricaud; netfilter@lists.netfilter.org
-Subject: Re: error compiling nfqnl_test.c
-
+Vladimir S. Petukhov wrote:
+> Hi!
+> 
+> Sorry for my English...
+> 
+> I need to separate UDP packets  via several ports according content of these 
+> packets. Each packet has fixed field  (2 bytes) - "connection" number 
+> (session number), packet with the same number must be forwarded on the same 
+> port. It look like NAT, but based on content of UDP packet.
 
 
-Thanks Sebastien!
+Looks like you need http://l7-filter.sourceforge.net/ and write some
+patterns to match your packets and then set a mark based on which packet
+matched.
 
-Now the problem is when I try to run the binary, when I put on command =
-line:
+Then you can have NAT rules (or ipt_route) or whatever based on the
+packet mark.
 
-./nfqnl_test
-
-the following error happend:
-
-./nfqnl_test: error while loading shared libraries: libnfnetlink.so.0: =
-cannot
-open shared object file: No such file or directory
-
-Nevertheless my box have theses files:
-/usr/local/lib/libnfnetlink.so.0
-/usr/local/lib/libnfnetlink.so.0.0.0
-
-Beside, when I install the libnfnetlink ("./configure;make;make =
-install") I
-get a binary of nfqnl_test.c into utils directory and when I run it all =
-is
-fine.
-
-Salute
-Frank Abel
-
-
-On Monday 22 May 2006 10:06 am, you wrote:
-> Frank Abel Cancio Bello wrote:
-> > Hi all!
-> >
-> > A newbie question:
-> > When I try to compile "nfqnl_test.c" putting on command line:
-> >
-> > "gcc -Wall -o nfqnl_test nfqnl_test.c"
-> >
-> > the following error occur:
->
-> [snip errors]
->
-> you forgot to include required library symbols:
->
-> gcc -Wall -o nfqnl_test nfqnl_test.c -lnfnetlink -lnetfilter_queue
->
-> will do
-
-
-__________________________________________
-
-XIII Convenci=F3n Cient=EDfica de Ingenier=EDa y Arquitectura
-28/noviembre al 1/diciembre de 2006
-Cujae, Ciudad de la Habana, Cuba
-http://www.cujae.edu.cu/eventos/convencion
-
-
+Sam
 
 
