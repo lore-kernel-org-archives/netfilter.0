@@ -1,12 +1,13 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: PtP not working
-Date: Sun, 21 May 2006 13:20:51 +0200
-Message-ID: <44704D13.3060305@rtij.nl>
-References: <200605201730.52334.antonio.dibacco@aruba.it>
+From: Unknown <unknown@unknown.invalid>
+Subject: Re: Transparent proxy using squid, redirect all ssl/https ... ?
+Date: Mon, 22 May 2006 13:30:17 +0200 (CEST)
+Message-ID: <15433.811947196$1148299162@news.gmane.org>
+References: <b4a631130605211917t7a747ceeo6d9f22b067d67466@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200605201730.52334.antonio.dibacco@aruba.it>
+In-Reply-To: <b4a631130605211917t7a747ceeo6d9f22b067d67466@mail.gmail.com>
+From: martijn@localhost
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,62 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Antonio Di Bacco <antonio.dibacco@aruba.it>
+Content-Type: text/plain; charset="us-ascii"
+To: Elijah Alcantara <elijah.alcantara@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Antonio Di Bacco wrote:
-
->Anyone could explain this?
+<citaat van="Elijah Alcantara">
+> Here are my current rules:
+> -A PREROUTING -p tcp -m tcp -i eth0 --dport 80 -j REDIRECT --to-ports 3128
+> -A PREROUTING -p tcp -m tcp -i eth0 --dport 443 -j DNAT
+> --to-destination 192.168.100.3
 >
->Two linux systems connected:
->
->System A     <=========> System B
->                   eth0                    eth0
->
->Each system ha the following config:
->
-># routing enabled
->net.ipv4.ip_forward=1
->
->#ethernet with no address associated and NOARP set
->eth0      Link encap:Ethernet  HWaddr 08:00:3E:26:24:65
->          UP BROADCAST RUNNING NOARP MULTICAST  MTU:1500  Metric:1
->          RX packets:1306 errors:0 dropped:0 overruns:0 frame:0
->          TX packets:1325 errors:0 dropped:0 overruns:0 carrier:0
->          collisions:0 txqueuelen:1000
->          RX bytes:732864 (715.6 KiB)  TX bytes:61643 (60.1 KiB)
->          Base address:0x3c00
->
-># Routing table
->Kernel IP routing table
->Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
->10.10.10.10     *               255.255.255.255 UH    0      0        0 eth0
->
->
->I'm on System A and try to ping 10.10.10.10 but no answer. Where is the 
->problem?
->  
+> The first one works, it's for transparent proxy, the other one.. I
+> have no idea why it's not working =(
 >
 
-Which system has 10.10.10.10? None. So how can any system answer? Even 
-if there was a 10.10.10.10, you disabled the arp mechanism, so you can 
-never find out where it is. Finaly, for the return packets exactly the 
-same problem occurs.
-
-If you want to make a point to point connection over ethernet:
-- Either just configure a subnet there.
-- Or:
-  - Assign addresses to the interfaces (can be the same address as 
-another interface on the same box)
-  - Create static arp addresses for the other box
-  - Create routes as above for the address of the other box
-
-I think you will still have to enable arp for this to work, in which 
-case you can skip the static arp entries.
+See http://lists.debian.org/debian-user/2004/05/msg01434.html
 
 HTH,
 M4
-
 
 
