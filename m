@@ -1,11 +1,13 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: Controlling an iptables-match from userspace
-Date: Tue, 23 May 2006 14:04:23 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0605231402210.27281@mercury.sdinet.de>
-References: <815d745e0605230442x24c596a2w6e97b7fb83dfeba@mail.gmail.com>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Transparent proxy using squid, redirect all ssl/https ... ?
+Date: Mon, 22 May 2006 20:26:34 +0200
+Message-ID: <4472025A.1050709@rtij.nl>
+References: <b4a631130605211917t7a747ceeo6d9f22b067d67466@mail.gmail.com>	<8963106281166041607@unknownmsgid>
+	<b4a631130605220452i18a16d12tbb97a35433ebda9b@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <815d745e0605230442x24c596a2w6e97b7fb83dfeba@mail.gmail.com>
+In-Reply-To: <b4a631130605220452i18a16d12tbb97a35433ebda9b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Manfred Stock <manfred.stock@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Elijah Alcantara <elijah.alcantara@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-On Tue, 23 May 2006, Manfred Stock wrote:
+Elijah Alcantara wrote:
 
-> I'm looking for a way to control an iptables-match from a
-> c/c++-program. My goal is to
-> have a simple match-module which can be told from userspace to either
-> return 0 or 1
-> in it's match-function (this would be useful for dynamically turning
-> on/off several more
-> complicated rules without inserting/removing them from the ip tables,
-> i.e. without
-> using libiptc (for which I haven't found an easy way on how to use it
-> anyways...) or
-> iptables itself).
+>> See http://lists.debian.org/debian-user/2004/05/msg01434.html
+>>
+>> HTH,
+>> M4
+>
+>
+> Checked out the link. Actualy I'm not really planning to cache secure
+> connections like ssl, I only wanted to be able to redirect that
+> request to go directly to the internet (bypass squid).
+>
+> I currently have an iptable rule for that but it's currently not
+> working right...
 
-Have a look at the "condition" patch-o-matic-ng extension. Some time ago 
-is was in the pom-ng subversion repository, but I don't know where it is 
-kept now.
 
-c'ya
-sven
+Ah, I see. How about
 
--- 
+-A POSTROUTING -p tcp --dport 443 -j SNAT --to 192.168.100.2
 
-The Internet treats censorship as a routing problem, and routes around it.
-(John Gilmore on http://www.cygnus.com/~gnu/)
+Don't forget to turn on forwarding as well and create appropriate 
+forwarding rules.
+
+Personally I would set this firewall between your clients and the 
+Internet, in that case you don't need SNAT tricks, just basic FORWARDING 
+rules.
+
+M4
 
