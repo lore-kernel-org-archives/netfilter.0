@@ -1,13 +1,11 @@
-From: bjorn@ruberg.no (=?iso-8859-1?q?Bj=F8rn?=)
-Subject: Re: authenentication
-Date: Tue, 23 May 2006 13:54:47 +0200
-Message-ID: <uizr72l7y7s.fsf@false.linpro.no>
-References: <008c01c67e58$0a9c38f0$0301a8c0@david9d3eac8c1>
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: Controlling an iptables-match from userspace
+Date: Tue, 23 May 2006 14:04:23 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0605231402210.27281@mercury.sdinet.de>
+References: <815d745e0605230442x24c596a2w6e97b7fb83dfeba@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <008c01c67e58$0a9c38f0$0301a8c0@david9d3eac8c1> (David
-	theobald's message of "Tue, 23 May 2006 22:59:56 +1200")
+In-Reply-To: <815d745e0605230442x24c596a2w6e97b7fb83dfeba@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: David theobald <davidtheo@gmail.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Manfred Stock <manfred.stock@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-"David theobald" <davidtheo@gmail.com> writes:
+On Tue, 23 May 2006, Manfred Stock wrote:
 
-> I am trying to do the following can anyone help
->
-> I want my wireless network to use the proxy on my sever proxy cashe in
-> order to access http and ftp however I want them to use user-based
-> authenentication on the proxy how do I do this I am using squid on the
-> sever proxy Cashe firewall
->
-> I am trying to do this in IPTABLES can anyone please help
->
-> David
+> I'm looking for a way to control an iptables-match from a
+> c/c++-program. My goal is to
+> have a simple match-module which can be told from userspace to either
+> return 0 or 1
+> in it's match-function (this would be useful for dynamically turning
+> on/off several more
+> complicated rules without inserting/removing them from the ip tables,
+> i.e. without
+> using libiptc (for which I haven't found an easy way on how to use it
+> anyways...) or
+> iptables itself).
 
-You need to separate your thoughts. Your requirements involve
-different mechanisms and should be handled as such. Iptables alone
-will not solve your problem.
+Have a look at the "condition" patch-o-matic-ng extension. Some time ago 
+is was in the pom-ng subversion repository, but I don't know where it is 
+kept now.
 
-First of all, create iptables rules that only allows traffic to your
-proxy for the computers on your wireless network. Depending on your
-infrastructure, you may also need to allow traffic to DNS and e-mail
-servers, etc.
+c'ya
+sven
 
-When that works, configure your proxy for user based authentication.
+-- 
 
-Finally, configure the computers on your wireless network to use the
-proxy. Do not try to introduce transparent proxying, at least not
-until this basic functionality is in place.
-
-Important: Configure iptables to log traffic that is denied, so that
-you are able to debug when something does not work as expected.
-
-Read the netfilter-howto on
-http://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO.html
-and also use http://www.linuxguruz.com/iptables/ for references and
-good ideas.
-
-Good luck!
-
---
-Bj=F8rn
-
-
+The Internet treats censorship as a routing problem, and routes around it.
+(John Gilmore on http://www.cygnus.com/~gnu/)
 
