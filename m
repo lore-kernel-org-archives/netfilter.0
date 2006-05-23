@@ -1,16 +1,10 @@
-From: "Elijah Alcantara" <elijah.alcantara@gmail.com>
-Subject: Re: Transparent proxy using squid, redirect all ssl/https ... ?
-Date: Tue, 23 May 2006 10:48:43 +0800
-Message-ID: <b4a631130605221948l679f87d0o566d39b1ae64af52@mail.gmail.com>
-References: <b4a631130605211917t7a747ceeo6d9f22b067d67466@mail.gmail.com>
-	<8963106281166041607@unknownmsgid>
-	<b4a631130605220452i18a16d12tbb97a35433ebda9b@mail.gmail.com>
-	<4472025A.1050709@rtij.nl>
+From: veera kumar <veera_kumar2983@yahoo.co.in>
+Subject: l7-layer
+Date: Tue, 23 May 2006 08:30:25 +0100 (BST)
+Message-ID: <20060523073025.44282.qmail@web8503.mail.in.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4472025A.1050709@rtij.nl>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,21 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Ah, I see. How about
->
-> -A POSTROUTING -p tcp --dport 443 -j SNAT --to  192.168.100.2
->
-> Don't forget to turn on forwarding as well and create appropriate
-> forwarding rules.
->
+Hi,
+  I have done a netfilter module Which is support to
+Layer 7.I can able to compile our module with nfsim
+and tested the other functionalities.I have to test
+the Layer7 feature with nfsim.How can i generate the
+traffic 
+based on application (e.g.ftp,ssh) rather than port
+numbers.
 
-Yesss! that one worked. I should'nt have pointed it to 192.168.100.3,
-oops. This takes care of the https/ssl requests, I guess all that's
-left are the ports used by our email clients.
+I really appreciate your inputs here.;)
 
-Thanks!
-Elijah A.
+Thanks
+veera
+
+Send instant messages to your online friends http://in.messenger.yahoo.com 
 
