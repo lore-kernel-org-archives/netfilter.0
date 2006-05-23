@@ -1,11 +1,10 @@
-From: "Paul Fleischer" <paul.fleischer@gmail.com>
-Subject: Matching IPv6 packets by the flowlabel
-Date: Tue, 23 May 2006 17:18:03 +0200
-Message-ID: <ab2fc2a60605230818ya53d9fbm56f76a077eeb089e@mail.gmail.com>
+From: Klaubert Herr da Silveira <klauberts@yahoo.com>
+Subject: Wierd black hole
+Date: Tue, 23 May 2006 09:06:35 -0700 (PDT)
+Message-ID: <20060523160635.32057.qmail@web54610.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,24 +15,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi, 
 
-I am currently writing my master thesis about a particular IPv6 QoS
-signalling protocol. One of my goals is to present a prototype
-implementation of the protocol on Linux. For this I need to be able to
-match IPv6 packets based on their flowlabel. This is currently mainly
-to maintain statistics on how many bytes have been transferred per
-flow, but might be used for  other things as well.
-Is it possible with ip6tables to match packets based on their flowlabel?
+I had a wierd situation here, and I'd like to understand why this happen.
 
-Also, if anyone has a better idea how to collect statistics on a per
-flow basis, please let me know :-)
+I setup a Iptables firewall doing a static NAT for a partner network, and a
+Firewall-1 protecting internal network. Like this.
 
-Hope someone can help me.
+                       eth1    eth2
+Partner <-> Router <---> Iptables <---> Fw1 <-> Internal Network
+                           Nat          Nat
 
-Cheers,
-Paul Fleischer
+A build the firewall and nat rule with Firewall Builder, however I forgot to
+insert the apropriated route in Iptables machine to Nat in Fw1. What is already
+solved. The route to partner network is always there.
+
+The question is. Why, whithout the route, the ip packet don't cross the
+firewall (iptables)? They reach eth2 (my side) interface, but dont get routed
+out to eth1 (partner side), as tcpdump could show me.No Drop were trigged.
+Something like a black hole.
+
+As soon I put the apropriate route, the packet cross both interfaces, reach
+destination and come back to iptables box.
+
+Any idea?
+
+Klaubert
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
