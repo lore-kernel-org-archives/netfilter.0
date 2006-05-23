@@ -1,12 +1,12 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
+From: veera kumar <veera_kumar2983@yahoo.co.in>
 Subject: RE: l7-layer
-Date: Tue, 23 May 2006 10:43:40 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C401276C@knowledge.wizdom.nu>
-References: <20060523073025.44282.qmail@web8503.mail.in.yahoo.com>
+Date: Tue, 23 May 2006 10:12:23 +0100 (BST)
+Message-ID: <20060523091223.31816.qmail@web8514.mail.in.yahoo.com>
+References: <02BB8A4AC86C564C89C7F14CF98CE0C401276C@knowledge.wizdom.nu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C401276C@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +18,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: veera kumar <veera_kumar2983@yahoo.co.in>, netfilter@lists.netfilter.org
+To: Sietse van Zanen <sietse@wizdom.nu>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Hi Veera,
-=20
-I would say, that doing an ftp ftp.some.where would generate traffic =
-based upon the ftp appliaction.
-All the L7 information is included in the TCP/UDP packet which you are =
-inspecting with your module.
-=20
-Maybe you need to be a bit more specific about what you want to =
-inspect/filter with your module and how.
-=20
-Sietse
+Hi zanen,
+    Its good to see your reply.The Layer7-filter
+feature works as a firewall and classifies packets
+based on L7 information instead of port numbers(e.g
+Suppose client use 1110 is a http port number).
+You can find the L7 feature Documentation here.
+http://l7-filter.sourceforge.net/
 
-________________________________
-
-From: netfilter-bounces@lists.netfilter.org on behalf of veera kumar
-Sent: Tue 23-May-06 9:30
-To: netfilter@lists.netfilter.org
-Subject: l7-layer
-
-
-
-Hi,
-  I have done a netfilter module Which is support to
-Layer 7.I can able to compile our module with nfsim
-and tested the other functionalities.I have to test
-the Layer7 feature with nfsim.How can i generate the
-traffic
-based on application (e.g.ftp,ssh) rather than port
-numbers.
-
-I really appreciate your inputs here.;)
+I dont need  generate traffic from real time(e.g ftp
+ftp.some.where).I have to generate traffic fron nfsim
+using the command gen_ip.
 
 Thanks
 veera
+--- Sietse van Zanen <sietse@wizdom.nu> wrote:
 
-Send instant messages to your online friends =
-http://in.messenger.yahoo.com <http://in.messenger.yahoo.com/>=20
+> Hi Veera,
+>  
+> I would say, that doing an ftp ftp.some.where would
+> generate traffic based upon the ftp appliaction.
+> All the L7 information is included in the TCP/UDP
+> packet which you are inspecting with your module.
+>  
+> Maybe you need to be a bit more specific about what
+> you want to inspect/filter with your module and how.
+>  
+> Sietse
+> 
+> ________________________________
+> 
+> From: netfilter-bounces@lists.netfilter.org on
+> behalf of veera kumar
+> Sent: Tue 23-May-06 9:30
+> To: netfilter@lists.netfilter.org
+> Subject: l7-layer
+> 
+> 
+> 
+> Hi,
+>   I have done a netfilter module Which is support to
+> Layer 7.I can able to compile our module with nfsim
+> and tested the other functionalities.I have to test
+> the Layer7 feature with nfsim.How can i generate the
+> traffic
+> based on application (e.g.ftp,ssh) rather than port
+> numbers.
+> 
+> I really appreciate your inputs here.;)
+> 
+> Thanks
+> veera
+> 
+> Send instant messages to your online friends
+> http://in.messenger.yahoo.com
+> <http://in.messenger.yahoo.com/> 
+> 
+> 
+> 
+> 
 
 
-
+Send instant messages to your online friends http://in.messenger.yahoo.com 
 
