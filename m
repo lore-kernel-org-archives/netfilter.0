@@ -1,13 +1,11 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: l7-layer
-Date: Tue, 23 May 2006 13:00:27 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C401276F@knowledge.wizdom.nu>
-References: <20060523091223.31816.qmail@web8514.mail.in.yahoo.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C401276E@knowledge.wizdom.nu>
+From: "Manfred Stock" <manfred.stock@gmail.com>
+Subject: Controlling an iptables-match from userspace
+Date: Tue, 23 May 2006 13:42:17 +0200
+Message-ID: <815d745e0605230442x24c596a2w6e97b7fb83dfeba@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,98 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-The application information is filtered by the L7 module from the DATA =
-part of the TCP/IP packet. For example, the filter sees a TCP packet, =
-destined for port 1110. It then inspects the data in the packet and sees =
-something like GET / HTTP1.1 / www.bla.bla <http://www.bla.bla/>     The =
-module, then knows it is an HTTP packet on port 1110. Or it sees =
-something like PORT xxxx,xxxx and then knows it is FTP on port 1110
-=20
-Now I'm not familiar with nfsim, but it seems, that to test this L7 =
-module, you would need to manually create the data part of the packets, =
-if that is at all possible. I don't think it can simulate that much.
-=20
-Therefor I would say, testing this with real-time traffic is easier, =
-faster and more reliable.
-=20
--Sietse
+Hi,
 
-________________________________
+I'm looking for a way to control an iptables-match from a
+c/c++-program. My goal is to
+have a simple match-module which can be told from userspace to either
+return 0 or 1
+in it's match-function (this would be useful for dynamically turning
+on/off several more
+complicated rules without inserting/removing them from the ip tables,
+i.e. without
+using libiptc (for which I haven't found an easy way on how to use it
+anyways...) or
+iptables itself).
 
-From: veera kumar [mailto:veera_kumar2983@yahoo.co.in]
-Sent: Tue 23-May-06 11:12
-To: Sietse van Zanen
-Cc: netfilter
-Subject: RE: l7-layer
-
-
-
-Hi zanen,
-    Its good to see your reply.The Layer7-filter
-feature works as a firewall and classifies packets
-based on L7 information instead of port numbers(e.g
-Suppose client use 1110 is a http port number).
-You can find the L7 feature Documentation here.
-http://l7-filter.sourceforge.net/
-
-I dont need  generate traffic from real time(e.g ftp
-ftp.some.where).I have to generate traffic fron nfsim
-using the command gen_ip.
-
-Thanks
-veera
---- Sietse van Zanen <sietse@wizdom.nu> wrote:
-
-> Hi Veera,
->=20
-> I would say, that doing an ftp ftp.some.where would
-> generate traffic based upon the ftp appliaction.
-> All the L7 information is included in the TCP/UDP
-> packet which you are inspecting with your module.
->=20
-> Maybe you need to be a bit more specific about what
-> you want to inspect/filter with your module and how.
->=20
-> Sietse
->
-> ________________________________
->
-> From: netfilter-bounces@lists.netfilter.org on
-> behalf of veera kumar
-> Sent: Tue 23-May-06 9:30
-> To: netfilter@lists.netfilter.org
-> Subject: l7-layer
->
->
->
-> Hi,
->   I have done a netfilter module Which is support to
-> Layer 7.I can able to compile our module with nfsim
-> and tested the other functionalities.I have to test
-> the Layer7 feature with nfsim.How can i generate the
-> traffic
-> based on application (e.g.ftp,ssh) rather than port
-> numbers.
->
-> I really appreciate your inputs here.;)
->
-> Thanks
-> veera
->
-> Send instant messages to your online friends
-> http://in.messenger.yahoo.com <http://in.messenger.yahoo.com/>=20
-> <http://in.messenger.yahoo.com/>
->
->
->
->
+The netfilter Hacking HOWTO mentions nf_register_sockopt for such
+tasks (receiving
+commands from userspace) - is this still the way to go, or is it going
+to be removed
+in the (not so far) future (eg. in favor of netlink)? Another way
+would be the use of
+sysfs, but it seems to be more for device drivers than this; configfs
+is still relatively
+new and probably not available for older kernels... Or is there even a
+simpler way to do
+such a thing? Any ideas/hints?
 
 
-Send instant messages to your online friends =
-http://in.messenger.yahoo.com <http://in.messenger.yahoo.com/>=20
 
+Best regards,
 
+Manfred.
 
