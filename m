@@ -1,10 +1,12 @@
-From: Carlos O'Donell <carlos@codesourcery.com>
-Subject: netfilter files in a case-insensitive filesystem
-Date: Tue, 23 May 2006 16:27:45 -0400
-Message-ID: <20060523202744.GO31607@lios>
+From: "Anthony Sadler" <anthonys@faredge.com.au>
+Subject: RE: precedence and redundancy questions re ACCEPT vs NEW
+Date: Wed, 24 May 2006 10:03:56 +1000
+Message-ID: <003801c67ec5$8ccead90$bf20a8c0@snow>
+References: <4473a1a6.109.4e72.1299307770@lowell.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <4473a1a6.109.4e72.1299307770@lowell.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +18,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: pjh@lowell.edu, netfilter@lists.netfilter.org
+
+IPTables is just that: A table. A packet is said to traverse the table, =
+ie it starts at the first rule and checks for a match. If the rule's =
+conditions do not match the packet, then that rule is ignored and the =
+packet is compared against the second rule, so on and so forth until it =
+finds a match. If it doesn't find a match, that is where the default =
+rule comes in the play.
+
+In your case, whichever rule is first is the rule that will pick the =
+packet. So in what you have provided, the very top rule will be used and =
+the other two ignored.=20
+
+HTH
+
+Anthony Sadler
+Far Edge Technology
+w: (02) 8425 1400
+=20
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org =
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Padraig =
+Houlahan
+Sent: Wednesday, 24 May 2006 09:59=20
 To: netfilter@lists.netfilter.org
+Subject: precedence and redundancy questions re ACCEPT vs NEW
+
+Greetings:
+
+If my firewall receives a packet from 1.2.3.4, which rule
+accepts it?
+
+-A INPUT -s 1.2.3.4                       -j ACCEPT
+-A INPUT -s 1.2.3.4 -m state --state NEW  -j ACCEPT
+-A INPUT -s 1.2.3.4 -p TCP   --syn        -j ACCEPT     =20
+
+Does it matter if the packet is the first of a new
+connection?
+
+Are these lines redundant in the sense they will all allow a
+first connection packet through?
+
+Are rules #2 and #3 the same?
+
+Regards,
+
+PH
+
+++++++++++++
+Padraig Houlahan
+IT Manager
+Lowell Observatory
+Flagstaff, AZ
+928-774-3358 x 214
 
 
-netfilter,
-
-Netfilter has header files with names that differ only in case [1].
-
-e.g.
-
-include/linux/netfilter_ipv4/ipt_MARK.h  
-include/linux/netfilter_ipv4/ipt_mark.h
-
-Such files conflict in a case-insensitive filesystem. This is a problem
-for users building on Windows, or installing the headers on a Windows
-case-insensitive filesystems.
-
-The structures in the conflicting files seem to have unique names. Is it
-possible to merge both files together? 
-
-Comments welcome, please keep me on the CC.
-
-Thanks!
-
-Cheers,
-Carlos.
--- 
-Carlos O'Donell
-CodeSourcery
-carlos@codesourcery.com
-(650) 331-3385 x716
-
-[1] Netfilter has many files with names that differ only in case.
 
