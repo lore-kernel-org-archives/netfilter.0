@@ -1,12 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: precedence and redundancy questions re ACCEPT vs NEW
-Date: Wed, 24 May 2006 07:31:28 +0200
-Message-ID: <000301c67ef3$4f0777c0$0101000a@sterenborg.info>
-References: <4473a1a6.109.4e72.1299307770@lowell.edu>
+From: Eric Leblond <eric@inl.fr>
+Subject: [Announce] NuFW 2.0 is available
+Date: Wed, 24 May 2006 09:54:58 +0200
+Message-ID: <1148457299.31849.29.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-M93T0DVcM4o9mYQaRCPp"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4473a1a6.109.4e72.1299307770@lowell.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,86 +17,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-
-> Greetings:
-> 
-> If my firewall receives a packet from 1.2.3.4, which rule accepts it?
-> 
-> -A INPUT -s 1.2.3.4                       -j ACCEPT
-
-This rule will accept all packets from IP 1.2.3.4
-
-> -A INPUT -s 1.2.3.4 -m state --state NEW  -j ACCEPT
-
-This rule will accept all packets in state NEW from IP 1.2.3.4
-
-> -A INPUT -s 1.2.3.4 -p TCP   --syn        -j ACCEPT
-
-This rule will accept all **tcp** packets with the SYN bit set from IP
-1.2.3.4
-
-To answer your question: all rules will accept "a" packet from IP
-1.2.3.4, but not all rules will accept all packets from 1.2.3.4.
-Example:
-- The 2nd rule doesn't accept ESTABLISHED, RELATED or INVALID packets
-but the 1st rule does.
-- The 3rd rule will not accept any other packet than tcp with the SYN
-bit set (which most likely is also NEW).
-
-They're all different rules that only have the same effect when the
-first **tcp** packet in a connection is matched. In all other cases they
-don't behave the same.
-
-That said, I read some time ago about cases where it's possible to have
-a tcp packet that is regarded as NEW but doesn't have the SYN bit set so
-that would be an exception, however I don't recall in what situation
-that would be. Maybe someone else can shed a light on that.
-
-> Does it matter if the packet is the first of a new
-> connection?
-
-You normally set the policy of a chain to DROP, match for NEW packets
-and accept those.
-Then, all other packets in that connection have state ESTABLISHED (or
-RELATED) and you'd write a rule that accepts all ESTABLISHED packets in
-that connection.
-
-$ipt -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-$ipt -A INPUT -m state --state NEW -s 1.2.3.4 -j ACCEPT
-
-Now, this is an example that doesn't seem so useful. But, when you also
-set the OUTPUT policy to DROP, you will have to allow outgoing packets
-(the "answer") that are part of the incoming connection.
-
-$ipt -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-You can use this quite effectively in the FORWARD chain too.
-
-Because you only match 1 packet with the NEW match, most packets will be
-matched by the ESTABLISHED,RELATED rule, so you'd put that rule
-somewhere on top of your rule-list for performance reasons: that way you
-don't have to match for NEW packets first.
-
-> Are these lines redundant in the sense they will all allow a
-> first connection packet through?
-
-The first rule matches all packets from IP 1.2.3.4 and the target is
-ACCEPT wich is a definitive target, so no more matching is done. That
-means the following 2 rules will never match.
-
-> Are rules #2 and #3 the same?
-
-No. Connection tracking is something Netfilter does. The SYN bit is part
-of tcp's handshaking procedure. Other protocols don't have a SYN bit. A
-udp or icmp packet would be matched by the 2nd rule, but not by the 3rd.
-
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html has some
-good reading..
+Cc: netfilter-devel@lists.netfilter.org
 
 
-Gr,
-Rob
+--=-M93T0DVcM4o9mYQaRCPp
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+Hello Netfilter users,
+
+NuFW 2.0 "extatic porcupine" is available. This is the first release of
+the new stable branch of the NuFW project (http://www.nufw.org).
+
+NuFW is an authenticating firewall based on Netfilter.
+
+NuFW can :=20
+-  Authenticate any connection that goes through your gateway or only
+from/to a chosen subset or a specific protocol (iptables is used to
+select the connections to authenticate).=20
+-  Perform accounting, routing and quality of service based on users and
+not simply on IPs.=20
+-  Filter packets with criterium such as application and OS used by
+distant users.=20
+-  Be the key of a secure and simple Single Sign On system.
+
+Main new Netfilter related features of 2.0 are :
+
+   * Libnfnetlink based interaction with kernel:
+
+NuFW 2.0 is able to use libnetfilter_queue and libnetfilter_conntrack to
+handle interaction with kernel.
+
+   * Complete period handling:
+
+ACLs can now be linked with a period. The match against the period is
+initially done by NuFW (as time match does) but connection is removed
+from conntrack automatically at the end of the period.
+Removal can be done via a libnetfilter_conntrack call at end of the
+period or directly (with a patched kernel) via connection timeout in the
+conntrack. The related patch (fixed_timeout) has been queued by Patrick
+McHardy for inclusion in 2.6.18.
+
+More information about new features of NuFW are available at:
+	http://www.nufw.org/What-s-new-A-comparison-between.html
+
+Happy "user" filtering to all,
+--=20
+Eric Leblond <eric@inl.fr>
+
+--=-M93T0DVcM4o9mYQaRCPp
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBEdBFRnxA7CdMWjzIRAkeSAJ9CulfMRp99BXVc1EAogJ9dyAm4AACfR5sR
+o4sOIaUgyDvGI0tNXdSX9ro=
+=ARGS
+-----END PGP SIGNATURE-----
+
+--=-M93T0DVcM4o9mYQaRCPp--
 
 
