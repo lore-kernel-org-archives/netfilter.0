@@ -1,11 +1,13 @@
-From: "Feris Thia" <feris.tia@gmail.com>
-Subject: Blocking HTTP source port from an IP
-Date: Wed, 24 May 2006 23:18:25 +0700
-Message-ID: <426f2b4c0605240918m79243e89g229547a64132510a@mail.gmail.com>
+From: Marcelus Trojahn <trojahn@alternativa.com.br>
+Subject: Re: Blocking HTTP source port from an IP
+Date: Wed, 24 May 2006 13:30:57 -0300
+Message-ID: <1022269661.20060524133057@alternativa.com.br>
+References: <426f2b4c0605240918m79243e89g229547a64132510a@mail.gmail.com>
+Reply-To: Marcelus Trojahn <trojahn@alternativa.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <426f2b4c0605240918m79243e89g229547a64132510a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Feris Thia <feris.tia@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi All,
+Hello,
 
-I'm quite new to iptables and actually.. how it works. I set up
-firewall on a server with IP 192.168.0.40/24 (with an Apache web
-server running) and then I have a windows client with IP
-192.168.0.30/24 and then I try to block HTTP port request from this
-client using this command :
+  It's the opposite... The request goes to the tcp port 80 of your server, not
+  the other way around...
 
-iptables -A INPUT -s 192.168.0.30 -p tcp --sport http -j REJECT
+  iptables -A INPUT -s 192.168.0.30 -p tcp --dport http -j REJECT
 
-but it fails.... then I try this one :
+  means
 
-iptables -A INPUT -s 192.168.0.30 -p tcp --dport http -j REJECT
-
-why is it so ?? As my logic say the request come from http port, so I
-specify the -p tcp --sport http, but it doesn't work at all :(
-
+  Reject tcp packets coming from 192.168.0.30 destined to port 80 of this box.
 
 -- 
-Regards,
-Feris
+Marcelus Trojahn
+
+Wednesday, May 24, 2006, 1:18:25 PM, voce escreveu:
+
+> Hi All,
+
+> I'm quite new to iptables and actually.. how it works. I set up
+> firewall on a server with IP 192.168.0.40/24 (with an Apache web
+> server running) and then I have a windows client with IP
+> 192.168.0.30/24 and then I try to block HTTP port request from this
+> client using this command :
+
+> iptables -A INPUT -s 192.168.0.30 -p tcp --sport http -j REJECT
+
+> but it fails.... then I try this one :
+
+> iptables -A INPUT -s 192.168.0.30 -p tcp --dport http -j REJECT
+
+> why is it so ?? As my logic say the request come from http port, so I
+> specify the -p tcp --sport http, but it doesn't work at all :(
+
+
+
+
 
