@@ -1,11 +1,12 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Blocking HTTP source port from an IP
-Date: Wed, 24 May 2006 18:35:57 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C49C6D@knowledge.wizdom.nu>
+From: Drew Leske <dleske@uvic.ca>
+Subject: Re: Blocking HTTP source port from an IP
+Date: Wed, 24 May 2006 09:49:56 -0700
+Message-ID: <44748EB4.2090802@uvic.ca>
+References: <426f2b4c0605240918m79243e89g229547a64132510a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <426f2b4c0605240918m79243e89g229547a64132510a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,71 +18,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Marcelus Trojahn <trojahn@alternativa.com.br>, Feris Thia <feris.tia@gmail.com>
+To: Feris Thia <feris.tia@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-The difference is in the source and destination ports.
+When the Windows box contacts the web server on the Linux box, it comes from
+an available port assigned by the operating system--random so far as the
+Linux box and iptables are concerned.  On the other hand, the Windows box
+(well actually the browser or whatever application) need to know where to go
+on the Linux box.
 
-A http request has destination port 80. The source port is picked from a
-random range, but always above 1024. The reply would then be with source
-port of 80 and the destination port that was randomly chosen.
+The IP address of the Linux server is like the street address of an
+apartment building.  The ports are like the apartment numbers.  The HTTP
+port (port 80) is a "well-known port" in that all web servers by default
+will answer on that port.  So that's like when all the kids in the
+neighbourhood know that the nice old lady in apartment 80 gives out candy.
 
-This rule:
-Iptables -A INPUT -s 192.168.0.30 -p tcp --sport http -j REJECT
+If you don't want the fat kid from down the street getting any more candy,
+you tell the doorman to block him from ringing up the nice old candy lady.
+And there's your firewall:
 
-Will actually block http reply packets coming from 192.168.0.30
+iptables -A INPUT -s fat_kid -p tcp --dport CANDY -j REJECT
 
-For more info, go read the documentation, take an IP course and educate
-yourself.
+Now substitute your Windows box for the fat kid (big stretch, har har) and
+HTTP for CANDY:
 
--Sietse
+iptables -A INPUT -s 192.168.0.30 -p tcp --dport HTTP -j REJECT
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Marcelus
-Trojahn
-Sent: Wednesday, May 24, 2006 6:31 PM
-To: Feris Thia
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Blocking HTTP source port from an IP
+Hahaha worst analogy ev-ar.  Hope it helps!
 
-Hello,
+By the way, the address of the Windows box would be 192.168.0.30, not
+192.168.0.30/24.  The "/24" at the end specifies a network mask, so when you
+say 192.168.0.30/24 you're not specifying a single address but a subnet.
+Another post suggested you read up on basic networking and I respectfully
+recommend you do that, or you're in for a lot of frustration and pain.
 
-  It's the opposite... The request goes to the tcp port 80 of your
-server, not
-  the other way around...
+The Linux Documentation Project at www.tldp.org has a lot of useful
+information.  I'd start with the Guides.  Check out "Introduction to Linux -
+A Hands on Guide", which probably has a basic networking intro, then move on
+to "The Linux System Administrators' Guide".  Also check out the how-to's.
 
-  iptables -A INPUT -s 192.168.0.30 -p tcp --dport http -j REJECT
+Drew.
 
-  means
 
-  Reject tcp packets coming from 192.168.0.30 destined to port 80 of
-this box.
 
---=20
-Marcelus Trojahn
 
-Wednesday, May 24, 2006, 1:18:25 PM, voce escreveu:
-
+Feris Thia wrote:
 > Hi All,
-
+> 
 > I'm quite new to iptables and actually.. how it works. I set up
 > firewall on a server with IP 192.168.0.40/24 (with an Apache web
 > server running) and then I have a windows client with IP
 > 192.168.0.30/24 and then I try to block HTTP port request from this
 > client using this command :
-
+> 
 > iptables -A INPUT -s 192.168.0.30 -p tcp --sport http -j REJECT
-
+> 
 > but it fails.... then I try this one :
-
+> 
 > iptables -A INPUT -s 192.168.0.30 -p tcp --dport http -j REJECT
-
+> 
 > why is it so ?? As my logic say the request come from http port, so I
 > specify the -p tcp --sport http, but it doesn't work at all :(
+> 
+> 
 
-
-
-
-
+-- 
+Drew Leske :: Systems Group/Unix, Computing Services, University of Victoria
+  dleske@uvic.ca / +1250 472 5055 (office) / +1250 588 4311 (cel)
 
