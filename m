@@ -1,12 +1,10 @@
-From: "Anthony Sadler" <anthonys@faredge.com.au>
-Subject: RE: precedence and redundancy questions re ACCEPT vs NEW
-Date: Wed, 24 May 2006 10:03:56 +1000
-Message-ID: <003801c67ec5$8ccead90$bf20a8c0@snow>
-References: <4473a1a6.109.4e72.1299307770@lowell.edu>
+From: ramsurrunv@mx.uom.ac.mu
+Subject: Problem with arptables!!
+Date: Wed, 24 May 2006 11:44:54 +0400 (MUT)
+Message-ID: <1106.172.22.62.53.1148456694.squirrel@mx.uom.ac.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4473a1a6.109.4e72.1299307770@lowell.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,60 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: pjh@lowell.edu, netfilter@lists.netfilter.org
-
-IPTables is just that: A table. A packet is said to traverse the table, =
-ie it starts at the first rule and checks for a match. If the rule's =
-conditions do not match the packet, then that rule is ignored and the =
-packet is compared against the second rule, so on and so forth until it =
-finds a match. If it doesn't find a match, that is where the default =
-rule comes in the play.
-
-In your case, whichever rule is first is the rule that will pick the =
-packet. So in what you have provided, the very top rule will be used and =
-the other two ignored.=20
-
-HTH
-
-Anthony Sadler
-Far Edge Technology
-w: (02) 8425 1400
-=20
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Padraig =
-Houlahan
-Sent: Wednesday, 24 May 2006 09:59=20
 To: netfilter@lists.netfilter.org
-Subject: precedence and redundancy questions re ACCEPT vs NEW
 
-Greetings:
+Hi to all,
 
-If my firewall receives a packet from 1.2.3.4, which rule
-accepts it?
+I have been trying to use arptables to forward arp requests from PC_A to
+PC_B via PC_C. All three PCs are connected to a switch and have ip
+addresses 192.168.10.2, 192.168.10.3 and 192.168.10.4 respectively. I use
+ebtables on PC_A to change the destination mac address of the Ethernet
+frame containing the arp packet to that of PC_C, using the following
+command:
 
--A INPUT -s 1.2.3.4                       -j ACCEPT
--A INPUT -s 1.2.3.4 -m state --state NEW  -j ACCEPT
--A INPUT -s 1.2.3.4 -p TCP   --syn        -j ACCEPT     =20
+ebtables -t nat -A OUTPUT -p arp -o eth0 -j dnat --to-dst
+00:04:e2:51:c6:4e --dnat-target ACCEPT
 
-Does it matter if the packet is the first of a new
-connection?
+I use the following command on PC_C:
 
-Are these lines redundant in the sense they will all allow a
-first connection packet through?
+arptables -A FORWARD -s 192.168.10.0/24 -d 192.168.10.0/24 -i eth0 -o eth0
+-j ACCEPTable
 
-Are rules #2 and #3 the same?
+When I do arptables -L -v, the pcnt and bcnt values remain zero.
 
-Regards,
+On PC_C, i have compiled a new kernel (2.6.16) and have selected the
+options regarding arptables, namely arp packet filtering and arp payload
+mangling. I have not installed ebtables on PC_C but I have checked all the
+ebtables options in the kernel.
 
-PH
+What am I doing wrong?
 
-++++++++++++
-Padraig Houlahan
-IT Manager
-Lowell Observatory
-Flagstaff, AZ
-928-774-3358 x 214
+Any help will be the very most welcome..
+
+Warm regards,
+Visham
 
 
 
