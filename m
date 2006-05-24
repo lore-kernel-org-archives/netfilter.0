@@ -1,7 +1,7 @@
-From: Ian Batterbee <ian.batterbee@aut.ac.nz>
-Subject: Problem with SNAT
-Date: Thu, 25 May 2006 07:59:36 +1200
-Message-ID: <4474BB28.1050801@aut.ac.nz>
+From: "David theobald" <davidtheo@gmail.com>
+Subject: ftp.ssh
+Date: Thu, 25 May 2006 08:48:33 +1200
+Message-ID: <005201c67f73$6e164e40$0301a8c0@david9d3eac8c1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,38 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: user list <netfilter@lists.netfilter.org>
 
-For those of you who remember my problem from a week or so ago, this is 
-a continuation of the same thing.
+I am trying to do the following can anyone help
 
-I've now changed from using MASQ to using SNAT in order to work around 
-the problem where MASQ and policy routing don't work together, however 
-I've run into a new problem.
+I have the http part of the following working but not the ftp can someone 
+help me with this I also can't ssh from my Ethernet to the wireless even 
+with rules pointing everything to the wireless I get a error saying it can't 
+reach port 22 or something....
 
-My linux box has 3 interfaces -
-eth0 - 192.168.0.1/24 (outside - goes to an adsl modem
-eth1 - x.x.252.33/29   (inside)
-ppp0 - z.z.2.204/32 (ssh tunnel to work)
+I want my wireless network to use the proxy on my sever proxy cashe in order
+to access http and ftp however I want them to use user-based
+authenentication on the proxy how do I do this I am using squid on the sever
+proxy Cashe firewall
 
-In order to source nat anything I route down the tunnel onto the 
-tunnel's IP address,I have the following SNAT command active:
+I am trying to do this in IPTABLES can anyone please help
 
-iptables -t nat -I POSTROUTING -o ppp0 -j SNAT --to-source z.z.2.204
-
-The problem is that the -o ppp0 bit seems to be being ignored. If I ssh 
-from my windows machine (x.x.252.36) to x.x.252.33,  my address gets 
-translated to z.z.2.204, even though it the address I connect to is on 
-the same subnet. I.e., it shouldn't have gone anywhere near the ppp0 
-interface.
-
-A tcpdump -n shows that the SYN comes from the correct address of 
-x.x.252.36, and the reply is sent there, but unless I add ALL:z.z.2.204 
-into /etc/hosts, sshd resets the tcp connection, strongly suggesting 
-that the SNAT has occured by the time the sshd process sees the packet.
-
-Is this expected behaviour ?
-
+David 
 
 
