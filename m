@@ -1,11 +1,15 @@
-From: "Jesse Gordon" <jesseg@nikola.com>
-Subject: Re: Linux box to D-Link router/bridge/access connection question
-Date: Thu, 25 May 2006 11:05:41 -0700
-Message-ID: <00d201c68025$d5e52f70$5e00800a@printserver>
-References: <4385672.1148572853538.JavaMail.root@elwamui-lapwing.atl.sa.earthlink.net>
+From: Massimiliano Hofer <max@nucleus.it>
+Subject: Re: Controlling an iptables-match from userspace
+Date: Fri, 26 May 2006 00:00:55 +0200
+Message-ID: <200605260000.56259.max@nucleus.it>
+References: <815d745e0605230442x24c596a2w6e97b7fb83dfeba@mail.gmail.com>
+	<Pine.LNX.4.64.0605231402210.27281@mercury.sdinet.de>
+	<815d745e0605230800t4b4f58a3s76f160788025fa95@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <815d745e0605230800t4b4f58a3s76f160788025fa95@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,100 +20,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: martinh@ix.netcom.com
 
-> Two questions:
-> 1) How can I get my linux boxes to see and communicate properly with my 
-> D-Link router?
+On Tuesday 23 May 2006 5:00 pm, Manfred Stock wrote:
 
-D-Link's usually have a netmask of 255.255.255.0 -- and an IP of 
-192.168.0.1, and since your linux boxes are 192.168.1.x, they are outside of 
-the netmask range and the dlink ignores them.
+> Thanks. That's close to what I'm looking for. Unfortunately, it does
+> not seem to be maintained anymore - I could find the sources in
+> netfilter's svn using google, but the last change was it's import into
+> the new trunk directory 19 months ago... At least it compiles against
+> 2.6.8 with only one warning, and seems to work. But I would very much
+> prefer a solution which does not rely on /proc because I don't believe
+> in it's future for this kind of stuff ;). Any ideas?
 
-Set the LAN netmask on the dlink to 255.255.0.0, or change it's IP to 
-192.168.1.1, or change your linux boxes to 192.168.0.x..
+I recently became maintainer of the condition patch.
+You can find a new version at 
+"http://www.nucleus.it/pom-repo/condition.tar.gz". From now on it will be 
+handled as an external repository.
 
-Also, the dlinks default to have a DHCP server running on them -- so you 
-could set your linux boxes to use DHCP to autoconfigure an IP, but then you 
-wouldn't always know what IP they would be. (They would probably start at 
-around 192.168.0.100 or so.)(To try dhcp, just type dhcpcd and press enter 
-and wait. dhcpcd stands for "Dynamic Host Configuration Protocol Client 
-Daemon. dhcpcd requests to be assigned an IP, netmask, default gateway, and 
-DNS from the dlink.)
+I'm working on some other changes that should make it more acceptable, 
+althought I've been busy in the last couple of weeks.
 
-> 2) My linux boxes were using a dialup modem serial port to connect to the 
-> Internet. How can I change my connection from using the dialup modem to 
-> now go through the router to access the high speed connection?
+Some considerations:
+- adding a new system call or ioctl is more intrusive than a proc interface;
+- a file interface doesn't require a special app.
 
-After changing the IP or netmask as above, just set your default route to be 
-192.168.0.1 (or whatever you set the LAN ip to on the dlink.)
+You could argue about putting it in /sys or in the brand new configfs.
+I'd like feedback about the best way to handle this.
 
-I don't know what distro you use, so I don't know which network 
-configuration utility you would use, but to test it, you could type these on 
-one of the linux boxes:
-
-ifconfig eth0 192.168.0.2 netmask 255.255.0.0
-route add default gw 192.168.0.1
-
-Of course you might type route -n (then press the ENTER key) to make sure 
-there isn't already a default route.
-
-You'll also need to set up a DNS server IP. You can use whatever network 
-configuration tool you have or like, or you may be able to just edit 
-/etc/resolv.conf and add the line:
-nameserver 192.168.0.1
-
-before any other 'nameserver' lines.
-
-Hope this helps.
-
--Jesse
-
-
-
------ Original Message ----- 
-From: <martinh@ix.netcom.com>
-To: <netfilter@lists.netfilter.org>
-Cc: <martinh@ix.netcom.com>
-Sent: Thursday, May 25, 2006 9:00 AM
-Subject: Linux box to D-Link router/bridge/access connection question
-
-
->I just got a D-Link wireless router connected to high speed Internet access 
->via a cable modem.
->
-> I have a Windoze XP laptop with wireless network card that communicates 
-> properly with the wireless router and I can make a high speed Internet 
-> connection.
->
-> My linux box1 is connected into port two of the router.
-> My linux box2 is connected to port 3.
-> My two linux boxes can see each other connected into the ports of the 
-> wireless router.
->
-> But I can not get my linux boxes to see the D-Link router!
->
-> D-Link address is 192.168.0.1
->
-> My linux boxes are 192.168.1.2 and 192.168.1.50
->
-> Two questions:
-> 1) How can I get my linux boxes to see and communicate properly with my 
-> D-Link router?
->
-> 2) My linux boxes were using a dialup modem serial port to connect to the 
-> Internet. How can I change my connection from using the dialup modem to 
-> now go through the router to access the high speed connection?
->
-> Thank you for you help.
-> -Martin
->
->
->
->
-> 
-
-
+-- 
+Saluti,
+   Massimiliano Hofer
+        Nucleus
 
