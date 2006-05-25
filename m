@@ -1,45 +1,115 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: "bad argument" trouble with iptables-restore (ipt v.1.3.4 +
- gentoo 2.6.16)
-Date: Thu, 25 May 2006 19:50:48 +0200
-Message-ID: <4475EE78.4000306@trash.net>
-References: <4474EEC4.4070909@ionpipe.com> <4475DDC4.4090008@ionpipe.com>
+From: "Jesse Gordon" <jesseg@nikola.com>
+Subject: Re: Linux box to D-Link router/bridge/access connection question
+Date: Thu, 25 May 2006 11:05:41 -0700
+Message-ID: <00d201c68025$d5e52f70$5e00800a@printserver>
+References: <4385672.1148572853538.JavaMail.root@elwamui-lapwing.atl.sa.earthlink.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <4475DDC4.4090008@ionpipe.com>
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Eric White <eric.white@ionpipe.com>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
+Cc: martinh@ix.netcom.com
 
-Eric White wrote:
-> With a little more experimentation, I see that manually poking a new
-> chain definition (e.g., "iptables -t filter -N :A:Svc:ABD ") and then
-> issuing iptables-save generates a
+> Two questions:
+> 1) How can I get my linux boxes to see and communicate properly with my 
+> D-Link router?
+
+D-Link's usually have a netmask of 255.255.255.0 -- and an IP of 
+192.168.0.1, and since your linux boxes are 192.168.1.x, they are outside of 
+the netmask range and the dlink ignores them.
+
+Set the LAN netmask on the dlink to 255.255.0.0, or change it's IP to 
+192.168.1.1, or change your linux boxes to 192.168.0.x..
+
+Also, the dlinks default to have a DHCP server running on them -- so you 
+could set your linux boxes to use DHCP to autoconfigure an IP, but then you 
+wouldn't always know what IP they would be. (They would probably start at 
+around 192.168.0.100 or so.)(To try dhcp, just type dhcpcd and press enter 
+and wait. dhcpcd stands for "Dynamic Host Configuration Protocol Client 
+Daemon. dhcpcd requests to be assigned an IP, netmask, default gateway, and 
+DNS from the dlink.)
+
+> 2) My linux boxes were using a dialup modem serial port to connect to the 
+> Internet. How can I change my connection from using the dialup modem to 
+> now go through the router to access the high speed connection?
+
+After changing the IP or netmask as above, just set your default route to be 
+192.168.0.1 (or whatever you set the LAN ip to on the dlink.)
+
+I don't know what distro you use, so I don't know which network 
+configuration utility you would use, but to test it, you could type these on 
+one of the linux boxes:
+
+ifconfig eth0 192.168.0.2 netmask 255.255.0.0
+route add default gw 192.168.0.1
+
+Of course you might type route -n (then press the ENTER key) to make sure 
+there isn't already a default route.
+
+You'll also need to set up a DNS server IP. You can use whatever network 
+configuration tool you have or like, or you may be able to just edit 
+/etc/resolv.conf and add the line:
+nameserver 192.168.0.1
+
+before any other 'nameserver' lines.
+
+Hope this helps.
+
+-Jesse
+
+
+
+----- Original Message ----- 
+From: <martinh@ix.netcom.com>
+To: <netfilter@lists.netfilter.org>
+Cc: <martinh@ix.netcom.com>
+Sent: Thursday, May 25, 2006 9:00 AM
+Subject: Linux box to D-Link router/bridge/access connection question
+
+
+>I just got a D-Link wireless router connected to high speed Internet access 
+>via a cable modem.
+>
+> I have a Windoze XP laptop with wireless network card that communicates 
+> properly with the wireless router and I can make a high speed Internet 
+> connection.
+>
+> My linux box1 is connected into port two of the router.
+> My linux box2 is connected to port 3.
+> My two linux boxes can see each other connected into the ports of the 
+> wireless router.
+>
+> But I can not get my linux boxes to see the D-Link router!
+>
+> D-Link address is 192.168.0.1
+>
+> My linux boxes are 192.168.1.2 and 192.168.1.50
+>
+> Two questions:
+> 1) How can I get my linux boxes to see and communicate properly with my 
+> D-Link router?
+>
+> 2) My linux boxes were using a dialup modem serial port to connect to the 
+> Internet. How can I change my connection from using the dialup modem to 
+> now go through the router to access the high speed connection?
+>
+> Thank you for you help.
+> -Martin
+>
+>
+>
+>
 > 
-> ::A:Svc:ABD - [0:0]
-> 
-> line in the output.  So, I modified the ruleset, replacing all -N
-> occurrences with the corresponding ":" prefix and added the "- [0:0]'
-> suffix, with the same result; i.e., the COMMIT line generates a "bad
-> argument" error.
 
-
-This usually means that a previously used match/target didn't
-ignore unknown arguments as it ought to do. I suggest to
-try the latest iptables version (there are a couple of these
-fixes in each release), if that doesn't help please try to
-find out which match or target is responsible by removing
-individual lines until the error goes away.
 
 
