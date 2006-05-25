@@ -1,11 +1,11 @@
-From: "Majid Khan" <majidkk@gmail.com>
-Subject: Netfilter and SMP
-Date: Thu, 25 May 2006 00:24:39 -0400
-Message-ID: <a656c20605242124l1280ec3em57224425a84b910a@mail.gmail.com>
+From: martinh@ix.netcom.com
+Subject: Linux box to D-Link router/bridge/access connection question
+Date: Thu, 25 May 2006 12:00:53 -0400 (GMT-04:00)
+Message-ID: <4385672.1148572853538.JavaMail.root@elwamui-lapwing.atl.sa.earthlink.net>
+Reply-To: martinh@ix.netcom.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: martinh@ix.netcom.com
 
-Hi,
- I am developing a netfilter based application on an SMP (dual core) system=
-.
-One thing that I noticed over a period of time was that most of the
-network traffic was handled by only one of the processor. Only under
-high network traffic (roughly 10,000 packet/sec or more) did the
-second processor got invloved invloved in traffic handling. Even then
-more than 90 percent of the traffic was being handled by one of the
-processor.
+I just got a D-Link wireless router connected to high speed Internet access via a cable modem.
 
-Can somebody provide me with some information on how to configure my
-SMP system so that both processors share the traffic load.
+I have a Windoze XP laptop with wireless network card that communicates properly with the wireless router and I can make a high speed Internet connection.
 
-My second question was that if there is any known method to gracefully
-handle failures in a netfilter module. Currently any failure in
-netfilter would cause the kernel panic.
+My linux box1 is connected into port two of the router.
+My linux box2 is connected to port 3.
+My two linux boxes can see each other connected into the ports of the wireless router.
 
-Regards,
-Majid
+But I can not get my linux boxes to see the D-Link router!
+
+D-Link address is 192.168.0.1
+
+My linux boxes are 192.168.1.2 and 192.168.1.50
+
+Two questions:
+1) How can I get my linux boxes to see and communicate properly with my D-Link router?
+
+2) My linux boxes were using a dialup modem serial port to connect to the Internet. How can I change my connection from using the dialup modem to now go through the router to access the high speed connection?
+
+Thank you for you help.
+-Martin
+
+
+
 
