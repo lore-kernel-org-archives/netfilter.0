@@ -1,15 +1,12 @@
-From: Massimiliano Hofer <max@nucleus.it>
-Subject: Re: Controlling an iptables-match from userspace
-Date: Fri, 26 May 2006 00:00:55 +0200
-Message-ID: <200605260000.56259.max@nucleus.it>
-References: <815d745e0605230442x24c596a2w6e97b7fb83dfeba@mail.gmail.com>
-	<Pine.LNX.4.64.0605231402210.27281@mercury.sdinet.de>
-	<815d745e0605230800t4b4f58a3s76f160788025fa95@mail.gmail.com>
+From: Allan Parreno <atparreno@yahoo.com>
+Subject: STRING agrument
+Date: Thu, 25 May 2006 19:17:35 -0700 (PDT)
+Message-ID: <20060526021735.81499.qmail@web30213.mail.mud.yahoo.com>
+References: <200605260000.56259.max@nucleus.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <815d745e0605230800t4b4f58a3s76f160788025fa95@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <200605260000.56259.max@nucleus.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,33 +20,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 23 May 2006 5:00 pm, Manfred Stock wrote:
+Hello,
 
-> Thanks. That's close to what I'm looking for. Unfortunately, it does
-> not seem to be maintained anymore - I could find the sources in
-> netfilter's svn using google, but the last change was it's import into
-> the new trunk directory 19 months ago... At least it compiles against
-> 2.6.8 with only one warning, and seems to work. But I would very much
-> prefer a solution which does not rely on /proc because I don't believe
-> in it's future for this kind of stuff ;). Any ideas?
+Good Day.
 
-I recently became maintainer of the condition patch.
-You can find a new version at 
-"http://www.nucleus.it/pom-repo/condition.tar.gz". From now on it will be 
-handled as an external repository.
+Anyone could help me out with this error using the string argument.
 
-I'm working on some other changes that should make it more acceptable, 
-althought I've been busy in the last couple of weeks.
+[root@ja Desktop]# iptables -o eth0 -A FORWARD -p tcp -m string --string
+"X-Kazaa-Username:" -j REJECT --reject-with tcp-reset
+iptables v1.3.4: STRING match: You must specify `--algo'
+Try `iptables -h' or 'iptables --help' for more information.
+[root@ja Desktop]#
 
-Some considerations:
-- adding a new system call or ioctl is more intrusive than a proc interface;
-- a file interface doesn't require a special app.
+However, if I specify the --algo if have this error
 
-You could argue about putting it in /sys or in the brand new configfs.
-I'd like feedback about the best way to handle this.
+[root@ja Desktop]# iptables -o eth0 -A FORWARD -p tcp -m string --string --algo
+"X-Kazaa-Username:" -j REJECT --reject-with tcp-reset
+Bad argument `X-Kazaa-Username:'
+Try `iptables -h' or 'iptables --help' for more information.
+[root@ja Desktop]#
 
--- 
-Saluti,
-   Massimiliano Hofer
-        Nucleus
+Thanks in advance
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
