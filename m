@@ -1,11 +1,12 @@
-From: martinh@ix.netcom.com
-Subject: Linux D-Link router/bridge/access connection question
-Date: Thu, 25 May 2006 11:38:42 -0400 (GMT-04:00)
-Message-ID: <12059309.1148571523336.JavaMail.root@elwamui-lapwing.atl.sa.earthlink.net>
-Reply-To: martinh@ix.netcom.com
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Connection tracking looses packets?
+Date: Fri, 26 May 2006 14:19:16 +0200
+Message-ID: <4476F244.8000608@plouf.fr.eu.org>
+References: <44745ECF.70702@expertron.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <44745ECF.70702@expertron.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: martinh@ix.netcom.com
 
-I just got a D-Link wireless router connected to high speed Internet access via a cable modem.
+Hello,
 
-I have a Windoze XP laptop with wireless network card that communicates properly with the wireless router and I can make a high speed Internet connection.
+Justin Schoeman a =E9crit :
+>=20
+> (This is logged by a -m state --state INVALID rule in the mangle table.=
+)=20
+> The packet is then not natted, but drops into the INPUT chain for the=20
+> firewall itself, where it is dropped.
 
-My linux box1 is connected into port two of the router.
-My linux box2 is connected to port 3.
-My two linux boxes can see each other connected into the ports of the wireless router.
-
-But I can not get my linux boxes to see the D-Link router!
-
-D-Link address is 192.168.0.1
-
-My linux boxes are 192.168.1.2 and 192.168.1.50
-
-Two questions:
-1) How can I get my linux boxes to see and communicate properly with my D-Link router?
-
-2) My linux boxes were using a dialup modem serial port to connect to the Internet. How can I change my connection from using the dialup modem to now go through the router to access the high speed connection?
-
-Thank you for you help.
--Martin
+Yes, packets marked in the INVALID state by the connection tracking are=20
+not handled by NAT.
 
 
+> Any idea why this packet may be dropped, or are there other possible=20
+> reasons why the connection may be stalling?
 
+If the reason is incorrect sequence numbers with a kernel >=3D 2.6.9 or=20
+including patch tcp-window-tracking, you can try to enable (value > 0)=20
+the parameter /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal=20
+(net.ipv4.netfilter.ip_conntrack_tcp_be_liberal in sysctl) :
+
+   ip_conntrack_tcp_be_liberal
+                 when enabled, only out of window reset (RST) segments
+                 are marked as INVALID; when disabled (default), all
+                 out of window packets are marked as INVALID.
 
