@@ -1,12 +1,13 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Connection tracking looses packets?
-Date: Fri, 26 May 2006 14:19:16 +0200
-Message-ID: <4476F244.8000608@plouf.fr.eu.org>
-References: <44745ECF.70702@expertron.co.za>
+Subject: Re: Configuring netfilter for pptp connections
+Date: Fri, 26 May 2006 15:06:31 +0200
+Message-ID: <4476FD57.90601@plouf.fr.eu.org>
+References: <4472499F.2000200@uga.edu>	<53942.193.173.147.3.1148372693.squirrel@webmail.sterenborg.info>
+	<02BB8A4AC86C564C89C7F14CF98CE0C401276A@knowledge.wizdom.nu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44745ECF.70702@expertron.co.za>
+In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C401276A@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,27 +23,17 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
-Justin Schoeman a =E9crit :
->=20
-> (This is logged by a -m state --state INVALID rule in the mangle table.=
-)=20
-> The packet is then not natted, but drops into the INPUT chain for the=20
-> firewall itself, where it is dropped.
+Sietse van Zanen a =E9crit :
+> For PPTP/GRE to work you need to add two rules:
+> 1 for the PPTP connection (TCP Port 1723) and 1 for the GRE Protocol (I=
+P proto 47).
+> =20
+> If you want your machine to connect to a PPTP server on the Internet,
+> allow PPTP OUTBOUND towards that server and GRE INBOUND from that serve=
+r.
+> If you want a client on the Internet connect to your PPTP server,
+> allow both PPTP and GRE INBOUND to your server.
 
-Yes, packets marked in the INVALID state by the connection tracking are=20
-not handled by NAT.
-
-
-> Any idea why this packet may be dropped, or are there other possible=20
-> reasons why the connection may be stalling?
-
-If the reason is incorrect sequence numbers with a kernel >=3D 2.6.9 or=20
-including patch tcp-window-tracking, you can try to enable (value > 0)=20
-the parameter /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal=20
-(net.ipv4.netfilter.ip_conntrack_tcp_be_liberal in sysctl) :
-
-   ip_conntrack_tcp_be_liberal
-                 when enabled, only out of window reset (RST) segments
-                 are marked as INVALID; when disabled (default), all
-                 out of window packets are marked as INVALID.
+According to this, neither the client or the server are allowed to=20
+establish an outbound GRE connection. How can this work ?
 
