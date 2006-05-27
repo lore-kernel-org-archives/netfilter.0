@@ -1,13 +1,12 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Configuring netfilter for pptp connections
-Date: Fri, 26 May 2006 15:06:31 +0200
-Message-ID: <4476FD57.90601@plouf.fr.eu.org>
-References: <4472499F.2000200@uga.edu>	<53942.193.173.147.3.1148372693.squirrel@webmail.sterenborg.info>
-	<02BB8A4AC86C564C89C7F14CF98CE0C401276A@knowledge.wizdom.nu>
+From: Eric Benton <erbenton@comcast.net>
+Subject: Re: STRING agrument
+Date: Fri, 26 May 2006 19:49:21 -0700
+Message-ID: <4477BE31.4000405@comcast.net>
+References: <20060526021735.81499.qmail@web30213.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C401276A@knowledge.wizdom.nu>
+In-Reply-To: <20060526021735.81499.qmail@web30213.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Allan Parreno wrote:
 
-Sietse van Zanen a =E9crit :
-> For PPTP/GRE to work you need to add two rules:
-> 1 for the PPTP connection (TCP Port 1723) and 1 for the GRE Protocol (I=
-P proto 47).
-> =20
-> If you want your machine to connect to a PPTP server on the Internet,
-> allow PPTP OUTBOUND towards that server and GRE INBOUND from that serve=
-r.
-> If you want a client on the Internet connect to your PPTP server,
-> allow both PPTP and GRE INBOUND to your server.
+>Hello,
+>
+>Good Day.
+>
+>Anyone could help me out with this error using the string argument.
+>
+>[root@ja Desktop]# iptables -o eth0 -A FORWARD -p tcp -m string --string
+>"X-Kazaa-Username:" -j REJECT --reject-with tcp-reset
+>iptables v1.3.4: STRING match: You must specify `--algo'
+>Try `iptables -h' or 'iptables --help' for more information.
+>[root@ja Desktop]#
+>
+>However, if I specify the --algo if have this error
+>
+>[root@ja Desktop]# iptables -o eth0 -A FORWARD -p tcp -m string --string --algo
+>"X-Kazaa-Username:" -j REJECT --reject-with tcp-reset
+>Bad argument `X-Kazaa-Username:'
+>Try `iptables -h' or 'iptables --help' for more information.
+>[root@ja Desktop]#
+>
+>Thanks in advance
+>
+>
+>
+>__________________________________________________
+>Do You Yahoo!?
+>Tired of spam?  Yahoo! Mail has the best spam protection around 
+>http://mail.yahoo.com 
+>
+>
+>  
+>
+--algo bm
 
-According to this, neither the client or the server are allowed to=20
-establish an outbound GRE connection. How can this work ?
+algo needs to a method but you left out the method
+in this case the mthod is "bm"
+Eric
+
 
