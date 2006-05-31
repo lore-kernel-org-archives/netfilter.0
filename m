@@ -1,13 +1,11 @@
-From: "System Admin" <admin@nepalbank.com.np>
-Subject: RE: block dhcp service based on mac
-Date: Wed, 31 May 2006 11:18:29 +0545
-Message-ID: <WorldClient-F200605311118.AA18290404@nepalbank.com.np>
-References: <WorldClient-F200605301121.AA21510331@nepalbank.com.np>
-	<02BB8A4AC86C564C89C7F14CF98CE0C4012780@knowledge.wizdom.nu>
-Reply-To: admin@nepalbank.com.np
+From: "moniacheli@tiscali.it" <moniacheli@tiscali.it>
+Subject: packet filter rules updating
+Date: Wed, 31 May 2006 17:56:07 +0200 (CEST)
+Message-ID: <6770617.1149090967505.JavaMail.root@ps12>
+Reply-To: "moniacheli@tiscali.it" <moniacheli@tiscali.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C4012780@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,64 +16,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Sietse van Zanen <sietse@wizdom.nu>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@lists.netfilter.org
+
+This is my problem.
+I have configured iptables for modifying ip source
+of syslog packets outgoing from one of my router interfaces.
+I have used these commands:
+iptables -t mangle -A OUTPUT -p udp --dport 514 -j MARK --set-mark 13
+iptables -t nat -A POSTROUTING -m mark --mark 13 -j SNAT --to-source=20
+2.2.2.2
+
+With the commands
+iptables -t nat -L
+iptables -t mangle -L
+I can see that the previous rules have been correctly inserted and the=20
+syslog=20
+packets have the right ip source.
+If I delete the previuos rules, I have no effect on syslog traffic and=20
+also if I=20
+give new iptables command with different ip source=20
+(Es. iptables -t nat -A POSTROUTING -m mark --mark 13 -j SNAT --to-
+source 3.3.3.3)
+syslog pkt maintains the previous ip source (2.2.2.2) while no rule is=20
+configured=20
+with this ip.
+Is there some iptables options that I have to give to force the rules=20
+updating?
+Thanks a lot for your collaboration!
+Monia Cheli
 
 
 
-> 1. With iptables -I you would usually need to specify a rule number
-> where to insert your new rule. Instead use iptables -A to add the rule
-> to the end of the chain.
 
-i have done that properly
+=09=09
+La gara pi=C3=B9 entusiasmante dell'anno!=20
 
->  
-> 2. I see 2 different MAC addresses for 1 machine? You 100% sure that's
-> ok and that the machine in question uses these two MAC's and they are
-> not from other machines?
+Gioca e corri alla velocit=C3=A0 della luce sui 18 circuiti di Intel Speed =
+Contest 2006!
 
-yes both should be the same mac address .
+I pi=C3=B9 bravi vincono Notebook Sony VAIO, iPod da 60 GB e altro ancora..=
+.=20
 
-  
+Sfida gli amici!
 
-> 3. Post the output of iptables -L (-nv).
->  
-> -Sietse
-> 
-> 
-> 
- 
-> I have an dhcp server and i want to block a particular mac address
-> (that
-> pc is virus infected) from using my dhcp service so that it will not
-> get
-> any valid ip address.
-> 
-> for that i have used
-> 
-> /sbin/iptables -I INPUT -i eth2 -p all -m mac --mac-source
-> 00:02:E3:34:EA:77 -j DROP
-> 
-> or
-> 
-> /sbin/iptables -I INPUT -i eth2 -p udp --dport 67:68 -m mac
-> --mac-source
-> 00:05:5D:4A:8A:3B -j DROP
-> 
-> while the iptables rule match count do increase but the pc is still
-> getting ip address from my dhcp server which is seen from dhcpd log
-> file.
-> 
-> does the packet goes to dhcp service before going to iptables stack?
-> I am using redhat 9 with dhcp-3.0pl1-23 dhcp server.
-> 
-> Thank you
-> 
-> 
-
-
--------------------------------------------------  DISCLAIMER  ---------------------------------------------------------
-This email is intended for the exclusive use by the person(s) mentioned as recipient(s) and  may contain information that is confidential and/or privileged.This email does not  constitute any commitment from Nepal Bank Limited or its subsidiaries except when expressly agreed in a written agreement between the intended recipient and Nepal Bank Limited or its subsidiaries. If you receive this email by mistake, please notify the sender or notify by emailing at postmaster@nepalbank.com.np and delete this email immediately from your system and destroy  all copies of it. You may not, directly or indirectly, use, disclose, distribute, print or  copy this email or any part of it if you are not the intended recipient.
-
+http://intelspeedcontest2006.tiscali.it/=20
+=09
 
