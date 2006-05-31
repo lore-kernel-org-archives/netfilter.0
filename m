@@ -1,12 +1,12 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Problems with Routing and masquerading
-Date: Wed, 31 May 2006 09:01:16 +0200
-Message-ID: <447D3F3C.3090203@plouf.fr.eu.org>
-References: <447C57E8.3050005@multitech.co.in>
+From: Nick Drage <nickd@metastasis.org.uk>
+Subject: Re: IP port over 65535 ?!
+Date: Wed, 31 May 2006 08:25:00 +0100
+Message-ID: <20060531072500.GS19917@metastasis.org.uk>
+References: <013701c66990$0e9cc500$5e00800a@printserver>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <447C57E8.3050005@multitech.co.in>
+Content-Disposition: inline
+In-Reply-To: <013701c66990$0e9cc500$5e00800a@printserver>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +17,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Wed, Apr 26, 2006 at 05:18:06PM -0700, Jesse Gordon wrote:
+> I sometimes see a port number like this in Tcpdump:
+> 
+> 10.0.0.76.2049 > 64.x.x.5.796094310: reply ERR 394
+> 
+> 64.7.197.5.791752241 > 10.0.0.76.2049: 1460 proc-170106..
+> 
+> Ever seen anything like this?
+> 
+> I'm a small natting ISP -- all of the above looks good except that port 
+> number of 791752241..
 
-Vinod Chandran a =E9crit :
->=20
-> I have a linux box which balances load between two interfaces ( say WAN=
-1=20
-> and WAN2). I have masquerading on for any request coming from LAN to th=
-e=20
-> outside world.
->=20
-> The setup is in such a way that WAN1 drops packets with source ip=20
-> belonging to WAN2's network and viceversa.
-> For some strange reason, I find that packet coming out from the WAN=20
-> interface has source address of WAN2 and thereby getting dropped.
-[...]
+That looks like some kind of issue with tcpdump or the underlying
+library.  Have you looked at the same traffic with tethereal/ethereal?
 
-If you use MASQUERADE and alternate routing tables based on source=20
-address or fwmark, try to use SNAT instead if possible. MASQUERADE does=20
-not work well with advanced routing.
+-- 
+How can I miss you if you won't go away?
+
 
