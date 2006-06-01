@@ -1,8 +1,8 @@
 From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Prob with hook reg in iptables
-Date: Thu, 1 Jun 2006 14:09:44 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012784@knowledge.wizdom.nu>
-References: <447E830E.8000606@rocsys.com>
+Subject: RE: Urgent help with firewall packet forwarding!!
+Date: Thu, 1 Jun 2006 14:12:09 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012785@knowledge.wizdom.nu>
+References: <1177.202.123.0.206.1149096265.squirrel@mx.uom.ac.mu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,63 +18,93 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: varun <varun@rocsys.com>, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+To: ramsurrunv@mx.uom.ac.mu, netfilter@lists.netfilter.org
 
-Proprietary firewalls usually hook themselves very low in the kernel. =
-Check the docs of you FW software.
-I wouldn't expect this to be working. And why use both iptables AND =
-other FW software, that's just asking for trouble IMHO.
+A piece of advice. Educate yourself in TCP/IP, Routing and netfilter.
+=20
+What you are trying to do seems so darn illogical to me, that I'm not =
+even going to try to understand it.
+=20
+Trying to route packets without routing? that's like trying to drive a =
+car without an engine.... Or smoking a pipe without tobacco....
+=20
+Netfilter does not route packets, the routing engine in the kernel does. =
+Netfilter just inspects and makes decision whether to let traffic =
+through.
 =20
 -Sietse
 
 ________________________________
 
-From: netfilter-bounces@lists.netfilter.org on behalf of varun
-Sent: Thu 01-Jun-06 8:02
-To: netfilter-devel@lists.netfilter.org; netfilter@lists.netfilter.org
-Subject: Prob with hook reg in iptables
+From: netfilter-bounces@lists.netfilter.org on behalf of =
+ramsurrunv@mx.uom.ac.mu
+Sent: Wed 31-May-06 19:24
+To: netfilter@lists.netfilter.org
+Subject: Urgent help with firewall packet forwarding!!
 
 
 
-Hi all,
+Hi to all,
 
-            I have a setup where iam using iptables. I have squid
-running on my statem. Now the scenario is that this sytem is my router.
-I have eth0 connected to LAN, eth1 to Wan 1 and eth2 to Wan2. In the
-same box i also have a propratery FW which has Load Balancing feature.=20
-Now my intention is i start iptables first so that it registers with
-netfilter hook first.
-So policy is like this
-      iptables -t nat -D PREROUTING -i eth0 -p tcp -j REDIRECT --to-port
-8080
- In the port 8080 i have squid running.
- As far as filtering of iptables is concerned it is allow all.
+This is the topology of the network I'm trying to set up:
 
-     So my basic FW functionality is concerned it is taken care by My
-Propratery FW. It will do  the natting for both wan interfaces in Load
-balance.
+       __________         _____________         _________
+      |          |       |             |       |         |
+      |      eth1|-------|eth0 FW1 eth1|-------|eth1     |
+      |          |       |_____________|       |         |
+PC_A--|eth0 PC_B |                             |PC_C eth0|--PC_D
+      |          |        _____________        |         |
+      |      eth2|-------|eth0 FW2 eth1|-------|eth2     |
+      |__________|       |_____________|       |_________|
 
-  Now what i expect is that iptables will get all the packets first and
-then packet will go to my firewall and might get dropped if ACL matches
-else it is success. Once success i expect the packet to be redirected to
-port 8080 where squid can take control.
 
- Now my problem is that even though iptables is registered first when i
-log the packets using iptables for the above rule i find that no packets
-are comming to iptables there by no packets are going to proxy. I get
-only some multicast packets.
 
- From lan iam able to browse well and all my traffic is going tru my FW
-rather that first through iptables. Why?
+The configurations on the respective PCs are:
+PC_A:
+eth0 =3D 192.168.0.10/24
 
-As far as my knowledge first registered module get the packet first and
-if the action is NF_ACCEPT the the next registered module to the hook
-gets it right? If yes why is it not happening? Another thing is what
-exactly does redirect do does it mangel the packet?
+PC_B:
+eth0 =3D 192.168.0.1/24
+eth1 =3D 192.168.10.10/24
+eth2 =3D 192.168.10.11/24
 
-Please help me in this?
+FW1:
+eth0 =3D 192.168.10.12/24
+eth1 =3D 192.168.20.12/24
 
-Varun
+FW2:
+eth0 =3D 192.168.10.13/24
+eth1 =3D 192.168.20.13/24
+
+PC_C:
+eth0 =3D 192.168.30.1/24
+eth1 =3D 192.168.20.10/24
+eth2 =3D 192.168.20.11/24
+
+PC_D:
+eth0 =3D 192.168.30.10/24
+
+
+I wanted to know the following:
+
+1) FW1 & FW2 are PCs with iptables firewalls on them. They verify the
+packets from PC_A and then forwards them on towards PC_D. Is there a way
+to make the firewalls forward traffic with having them do routing, that
+is, only switch the packets to the other side after inspection?
+
+2) If I put the NICs eth0 & eth1 of the firewalls FW1 & FW2, eth1 & eth2
+of PC_B and PC_C on the same network, with ip forwarding enabled and
+rp_filter disabled, will the FORWARD Chain of the iptables forward the
+packets from PC_A to PC_D without having a look at the routing table.I
+tried to do it, but it didn't work..i don't know if it's possible or =
+it's
+simply me making some mistakes with the routing.
+
+Any help will be most appreciated..to all of you guys, pls give me your
+comments cos I'm stuck with making this work for quite some time now :(
+
+Warm regards,
+Visham
 
 
 
