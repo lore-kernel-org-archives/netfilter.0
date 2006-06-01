@@ -1,8 +1,8 @@
 From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Help!
-Date: Thu, 1 Jun 2006 14:07:19 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012783@knowledge.wizdom.nu>
-References: <3da957060606010453h6488c763xcb4be5b81c8945bf@mail.gmail.com>
+Subject: RE: Prob with hook reg in iptables
+Date: Thu, 1 Jun 2006 14:09:44 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012784@knowledge.wizdom.nu>
+References: <447E830E.8000606@rocsys.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,58 +18,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Stephan Higuti <higuti.sam@gmail.com>, netfilter@lists.netfilter.org
+To: varun <varun@rocsys.com>, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-You are doing it exactly as it should be done.
-=20
-DNAT rules go to PREROUTING CHAIN (as you first want to set the new =
-destination and the do routing)
-SNAT rules go to POSTROUTING (usually, as it wouldn't really matter =
-where they go, unless you do source routing).
-=20
-Ofcourse you will need to ACCEPT the connections in your filter table =
-too.
+Proprietary firewalls usually hook themselves very low in the kernel. =
+Check the docs of you FW software.
+I wouldn't expect this to be working. And why use both iptables AND =
+other FW software, that's just asking for trouble IMHO.
 =20
 -Sietse
 
 ________________________________
 
-From: netfilter-bounces@lists.netfilter.org on behalf of Stephan Higuti
-Sent: Thu 01-Jun-06 13:53
-To: netfilter@lists.netfilter.org
-Subject: Help!
+From: netfilter-bounces@lists.netfilter.org on behalf of varun
+Sent: Thu 01-Jun-06 8:02
+To: netfilter-devel@lists.netfilter.org; netfilter@lists.netfilter.org
+Subject: Prob with hook reg in iptables
 
 
 
-Hello guys....
-I have a question about PREROUTING and POSTROUTING.
-I'm making a new firewall script.....
-In this script, i put some PREROUTING rules , ex:
+Hi all,
 
-####################### Apache ##########################
-iptables -t nat -A PREROUTING -d 200.xxx.yyy.zzz -p tcp --dport 80 -j
-DNAT --to-destination 192.168.23.7:80
+            I have a setup where iam using iptables. I have squid
+running on my statem. Now the scenario is that this sytem is my router.
+I have eth0 connected to LAN, eth1 to Wan 1 and eth2 to Wan2. In the
+same box i also have a propratery FW which has Load Balancing feature.=20
+Now my intention is i start iptables first so that it registers with
+netfilter hook first.
+So policy is like this
+      iptables -t nat -D PREROUTING -i eth0 -p tcp -j REDIRECT --to-port
+8080
+ In the port 8080 i have squid running.
+ As far as filtering of iptables is concerned it is allow all.
 
-But i need to put some POSTROUTING rules to this?
-My situation: My firewall will reply for 4 differents Ip's (reals) ,
-one for apache , other for e-mail server, etc............
-This PREROUTING rule get a pack that come from internet to a IP "x" ,
-and i want that all that incoming to this ip , to be forward to my
-internal ip.
-So , i think that PREROUTING rules its right... but i dont if i need
-to create a POSTROUTING for this.....
-Waiting Help....
+     So my basic FW functionality is concerned it is taken care by My
+Propratery FW. It will do  the natting for both wan interfaces in Load
+balance.
 
-p.s.:* Sorry for my bad, bad english   =3DD
+  Now what i expect is that iptables will get all the packets first and
+then packet will go to my firewall and might get dropped if ACL matches
+else it is success. Once success i expect the packet to be redirected to
+port 8080 where squid can take control.
 
-Cheers
+ Now my problem is that even though iptables is registered first when i
+log the packets using iptables for the above rule i find that no packets
+are comming to iptables there by no packets are going to proxy. I get
+only some multicast packets.
 
---
----------------------------------------------------------------------
-Stephan Higuti
-MSN: higutisam@hotmail.com
-Email: higuti@fai.com.br
----------------------------------------------------------------------
+ From lan iam able to browse well and all my traffic is going tru my FW
+rather that first through iptables. Why?
+
+As far as my knowledge first registered module get the packet first and
+if the action is NF_ACCEPT the the next registered module to the hook
+gets it right? If yes why is it not happening? Another thing is what
+exactly does redirect do does it mangel the packet?
+
+Please help me in this?
+
+Varun
 
 
 
