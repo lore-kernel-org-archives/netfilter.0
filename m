@@ -1,12 +1,12 @@
 From: Philip Craig <philipc@snapgear.com>
-Subject: Re: netfilter files in a case-insensitive filesystem
-Date: Thu, 01 Jun 2006 15:40:25 +1000
-Message-ID: <447E7DC9.9010809@snapgear.com>
-References: <20060523202744.GO31607@lios>
+Subject: Re: packet filter rules updating
+Date: Thu, 01 Jun 2006 15:48:02 +1000
+Message-ID: <447E7F92.7040606@snapgear.com>
+References: <6770617.1149090967505.JavaMail.root@ps12>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060523202744.GO31607@lios>
+In-Reply-To: <6770617.1149090967505.JavaMail.root@ps12>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +18,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Carlos O'Donell <carlos@codesourcery.com>
+To: "moniacheli@tiscali.it" <moniacheli@tiscali.it>
 Cc: netfilter@lists.netfilter.org
 
-On 05/24/2006 06:27 AM, Carlos O'Donell wrote:
-> Such files conflict in a case-insensitive filesystem. This is a problem
-> for users building on Windows, or installing the headers on a Windows
-> case-insensitive filesystems.
-> 
-> The structures in the conflicting files seem to have unique names. Is it
-> possible to merge both files together?
+On 06/01/2006 01:56 AM, moniacheli@tiscali.it wrote:
+> Is there some iptables options that I have to give to force the rules 
+> updating?
 
-Depends what exactly you are trying to do.  If you are just trying to
-build an application that uses them, then you could probably merge them;
-have you tried?  Building the kernel would require more work.
+No, the problem is that NAT rules are only used for the first packet
+in a connection, and the conntrack table entry hasn't timed out.
 
+You can delete the entry using the conntrack tool (requires a recent
+kernel and you may need to get the conntrack tool source from svn.)
 
