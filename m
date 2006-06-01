@@ -1,10 +1,13 @@
-From: Vasant Kumar <vasant63@yahoo.com>
-Subject: Hello - problem with iptables out of memory : process killed
-Date: Thu, 1 Jun 2006 09:47:04 +0100 (BST)
-Message-ID: <20060601084704.91905.qmail@web53102.mail.yahoo.com>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: Perfomance problem on MIPS
+Date: Thu, 01 Jun 2006 18:55:06 +1000
+Message-ID: <447EAB6A.1000006@snapgear.com>
+References: <19506.060601@sigrand.ru>
+	<20060601094654.a603gs9n082s4gc0@webmail.kwsoft.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060601094654.a603gs9n082s4gc0@webmail.kwsoft.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,59 +21,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
-     We have installed IPtables 1.2.7a which is a part
-of REDHAT 9.0 on 
-our system. 
-   
-  We are using the following rules to recieve IP
-Packets in the USER 
-space.
-   
-  iptables -A INPUT -p udp -m pkttype --pkt-type
-mulitcast -j QUEUE
-   
-  We are using IP queue with stolen attribute to get
-the full IP 
-packets in the USER space.
-   
-  ipqueue_set_verdict(ipqhandle,
-ipq_pointer->packet_id, NF_STOLEN, 0, 
-NULL);
-   
-  We are running 2 video streams each of 1 Mbps. We
-are able to receive 
-the total IP packets from these 2 video streams. We
-are observing a 
-peculiar problem. After 25 minutes, we are seeing the
-following message
-   
-  Out of memory: killing process xxx.
-   
-  It is killing all the process and logging off.
-   
-  This phenomenon is observed when run in multiuser
-mode (init 3). 
-   
-  We have downloaded IPtables 1.3.5 from netfilter.org
-and installed 
-it.
-   
-  Here also the same phenomenon was observed.
-   
-  Pl. advise us whether we are making any mistake or
-how this problem 
-can be overcome?
-   
-   
-  Thanks in advance.
-   
-  Have a wonderful day.
-   
-  With best wishes
-   
-  Vasant
+On 06/01/2006 05:46 PM, lst_hoe01@kwsoft.de wrote:
+> Zitat von art <art@sigrand.ru>:
+>> It's wery upset fact. What can be done with this? Can I get version
+>> where NAT not depend on Connection tracking?
+> 
+> For performance see
+> 
+> http://people.netfilter.org/kadlec/nftest.pdf
+> 
+> For NAT without conntrack use NOTRACK or disable connection tracking at all.
 
+You cannot use the standard kernel NAT without connection tracking.
 
-Send instant messages to your online friends http://uk.messenger.yahoo.com 
+It should be possible to write some stateless mangle targets that
+can do simple address rewriting if that is all you need (this is the
+equivalent of what the fast nat in 2.2 and 2.4 kernels did).
+
+But if you need many to 1 NAT, or complex protocols such as FTP,
+then you must use connection tracking.
 
