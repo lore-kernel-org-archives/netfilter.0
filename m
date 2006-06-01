@@ -1,13 +1,14 @@
-From: Justin Schoeman <justin@expertron.co.za>
-Subject: Re: Possible conntrack problem
-Date: Thu, 01 Jun 2006 14:15:13 +0200
-Message-ID: <447EDA51.3020604@expertron.co.za>
-References: <20060601_115618_060771.zottmann@ig.com.br>
-	<02BB8A4AC86C564C89C7F14CF98CE0C4012782@knowledge.wizdom.nu>
+From: "Stephan Higuti" <higuti.sam@gmail.com>
+Subject: Re: Help!
+Date: Thu, 1 Jun 2006 09:34:24 -0300
+Message-ID: <3da957060606010534x7f0c15fcs676c0bc29d24c6a2@mail.gmail.com>
+References: <3da957060606010453h6488c763xcb4be5b81c8945bf@mail.gmail.com>
+	<02BB8A4AC86C564C89C7F14CF98CE0C4012783@knowledge.wizdom.nu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C4012782@knowledge.wizdom.nu>
+In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C4012783@knowledge.wizdom.nu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,54 +19,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sietse van Zanen <sietse@wizdom.nu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Can also try:
+thankz for help guys!
+So , its right my rule?
+Anyway... look this image:
+http://img180.imageshack.us/my.php?image=3Dfirewallsemip2ok.jpg
 
-echo "1" > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
+My eth0 reply for 4 reals ip's...
+And forward the packs to my servers......... so , PREROUTING its the
+right way to do this?
 
-Seems to help if there is a PIX between your clients and servers...
+Thank's a lot!
 
--justin
-
-Sietse van Zanen wrote:
-> This usually happens with clients behaving badly or misconfigured servers. Very unlikely (I would say less 1% chance) to be a netfilter issue.
-> If you don't get any reports about you webserver being unreachable or unusable, all is working exactly as it should.
->  
-> If people do have problems with your webserver, check the configuration of the server and clients.
->  
+On 6/1/06, Sietse van Zanen <sietse@wizdom.nu> wrote:
+> You are doing it exactly as it should be done.
+>
+> DNAT rules go to PREROUTING CHAIN (as you first want to set the new desti=
+nation and the do routing)
+> SNAT rules go to POSTROUTING (usually, as it wouldn't really matter where=
+ they go, unless you do source routing).
+>
+> Ofcourse you will need to ACCEPT the connections in your filter table too=
+.
+>
 > -Sietse
-> 
+>
 > ________________________________
-> 
-> From: netfilter-bounces@lists.netfilter.org on behalf of zottmann@ig.com.br
-> Sent: Thu 01-Jun-06 13:56
+>
+> From: netfilter-bounces@lists.netfilter.org on behalf of Stephan Higuti
+> Sent: Thu 01-Jun-06 13:53
 > To: netfilter@lists.netfilter.org
-> Subject: Possible conntrack problem
-> 
-> 
-> 
-> Hi !!
-> 
-> I am having a problem that I think may be related to conntrack.
-> 
-> I am getting dropped packets in the firewall coming from our web server,
-> source port 80, and going to external machines on high ports, with both ACK
-> and SEQ numbers set.
-> 
-> It seems to me that these packets are answers from our webserver to
-> connections estabilished with it, but, for some reason, the connection
-> information is being lost (maybe due to timeout?).
-> 
-> How can I track this? Has anyone gone through something like it?
-> 
-> Thanks in advance,
-> Carlos.
-> 
-> 
-> 
-> 
-> 
+> Subject: Help!
+>
+>
+>
+> Hello guys....
+> I have a question about PREROUTING and POSTROUTING.
+> I'm making a new firewall script.....
+> In this script, i put some PREROUTING rules , ex:
+>
+> ####################### Apache ##########################
+> iptables -t nat -A PREROUTING -d 200.xxx.yyy.zzz -p tcp --dport 80 -j
+> DNAT --to-destination 192.168.23.7:80
+>
+> But i need to put some POSTROUTING rules to this?
+> My situation: My firewall will reply for 4 differents Ip's (reals) ,
+> one for apache , other for e-mail server, etc............
+> This PREROUTING rule get a pack that come from internet to a IP "x" ,
+> and i want that all that incoming to this ip , to be forward to my
+> internal ip.
+> So , i think that PREROUTING rules its right... but i dont if i need
+> to create a POSTROUTING for this.....
+> Waiting Help....
+>
+> p.s.:* Sorry for my bad, bad english   =3DD
+>
+> Cheers
+>
+> --
+> ---------------------------------------------------------------------
+> Stephan Higuti
+> MSN: higutisam@hotmail.com
+> Email: higuti@fai.com.br
+> ---------------------------------------------------------------------
+>
+>
+>
+>
+
+
+--=20
+---------------------------------------------------------------------
+Stephan Higuti
+MSN: higutisam@hotmail.com
+Email: higuti@fai.com.br
+
+T=E9cnico em Inform=E1tica
+Adm servidores Linux
+FAI - Faculdades Adamantinenses Integradas
+---------------------------------------------------------------------
 
