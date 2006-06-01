@@ -1,10 +1,11 @@
-From: ramsurrunv@mx.uom.ac.mu
-Subject: Urgent help with firewall packet forwarding!!
-Date: Wed, 31 May 2006 21:24:25 +0400 (MUT)
-Message-ID: <1177.202.123.0.206.1149096265.squirrel@mx.uom.ac.mu>
+From: "Stephan Higuti" <higuti.sam@gmail.com>
+Subject: Help!
+Date: Thu, 1 Jun 2006 08:53:45 -0300
+Message-ID: <3da957060606010453h6488c763xcb4be5b81c8945bf@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,67 +16,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi to all,
+Hello guys....
+I have a question about PREROUTING and POSTROUTING.
+I'm making a new firewall script.....
+In this script, i put some PREROUTING rules , ex:
 
-This is the topology of the network I'm trying to set up:
+####################### Apache ##########################
+iptables -t nat -A PREROUTING -d 200.xxx.yyy.zzz -p tcp --dport 80 -j
+DNAT --to-destination 192.168.23.7:80
 
-       __________         _____________         _________
-      |          |       |             |       |         |
-      |      eth1|-------|eth0 FW1 eth1|-------|eth1     |
-      |          |       |_____________|       |         |
-PC_A--|eth0 PC_B |                             |PC_C eth0|--PC_D
-      |          |        _____________        |         |
-      |      eth2|-------|eth0 FW2 eth1|-------|eth2     |
-      |__________|       |_____________|       |_________|
+But i need to put some POSTROUTING rules to this?
+My situation: My firewall will reply for 4 differents Ip's (reals) ,
+one for apache , other for e-mail server, etc............
+This PREROUTING rule get a pack that come from internet to a IP "x" ,
+and i want that all that incoming to this ip , to be forward to my
+internal ip.
+So , i think that PREROUTING rules its right... but i dont if i need
+to create a POSTROUTING for this.....
+Waiting Help....
 
+p.s.:* Sorry for my bad, bad english   =D
 
+Cheers
 
-The configurations on the respective PCs are:
-PC_A:
-eth0 = 192.168.0.10/24
-
-PC_B:
-eth0 = 192.168.0.1/24
-eth1 = 192.168.10.10/24
-eth2 = 192.168.10.11/24
-
-FW1:
-eth0 = 192.168.10.12/24
-eth1 = 192.168.20.12/24
-
-FW2:
-eth0 = 192.168.10.13/24
-eth1 = 192.168.20.13/24
-
-PC_C:
-eth0 = 192.168.30.1/24
-eth1 = 192.168.20.10/24
-eth2 = 192.168.20.11/24
-
-PC_D:
-eth0 = 192.168.30.10/24
-
-
-I wanted to know the following:
-
-1) FW1 & FW2 are PCs with iptables firewalls on them. They verify the
-packets from PC_A and then forwards them on towards PC_D. Is there a way
-to make the firewalls forward traffic with having them do routing, that
-is, only switch the packets to the other side after inspection?
-
-2) If I put the NICs eth0 & eth1 of the firewalls FW1 & FW2, eth1 & eth2
-of PC_B and PC_C on the same network, with ip forwarding enabled and
-rp_filter disabled, will the FORWARD Chain of the iptables forward the
-packets from PC_A to PC_D without having a look at the routing table.I
-tried to do it, but it didn't work..i don't know if it's possible or it's
-simply me making some mistakes with the routing.
-
-Any help will be most appreciated..to all of you guys, pls give me your
-comments cos I'm stuck with making this work for quite some time now :(
-
-Warm regards,
-Visham
+-- 
+---------------------------------------------------------------------
+Stephan Higuti
+MSN: higutisam@hotmail.com
+Email: higuti@fai.com.br
+---------------------------------------------------------------------
 
