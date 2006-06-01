@@ -1,11 +1,12 @@
-From: art <art@sigrand.ru>
-Subject: Perfomance problem on MIPS
-Date: Thu, 1 Jun 2006 12:09:02 +0700
-Message-ID: <19506.060601@sigrand.ru>
-Reply-To: art <art@sigrand.ru>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: Load Balancer Trouble, are "Routes with Memory" Possible?
+Date: Thu, 01 Jun 2006 15:39:33 +1000
+Message-ID: <447E7D95.5000404@snapgear.com>
+References: <20060523225646.poejqicpp0cg88gc@zarzamora.com.mx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060523225646.poejqicpp0cg88gc@zarzamora.com.mx>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: desert@zarzamora.com.mx
+Cc: netfilter@lists.netfilter.org
 
-Hello all,
+On 05/24/2006 01:56 PM, desert@zarzamora.com.mx wrote:
+> What i need is this.
+> 
+> 1) A connection comes from LAN trying to access an IP in WAN
+> 2) Round robin (or whatever) to select any WAN pipe.
+> 3) Remember that route for many minutes
+>    or until client closes it.
+> 
+> I dont care if other LAN clients follow the same route or if they
+> select a different route.
+> 
+> The real trick is to mantain the route for as long as the client needs
+> it.
 
-I have some problem with using iptables:
-I work with Infineon ADM5120 SOC. It has MIPS32 4KC processor(200MHz),
-embedded ADM5120 switch (with 4 100Mbit interfaces).
-I get embedded Linux OS work on it.
-I test network bandwidth without iptables enabled in kernel - result
-80Mbit/s.
-When I enable Connection tracking (I need NAT) & iptables and test
-WITOUT ANY RULES - bandwidth was near 35-40Mbi/s.
-Then I make several tests and find that most bandwidth reduction
-occurs when enabling Connection tracking.
+Use CONNMARK.  Save the mark for packets with a NEW state in the
+POSTROUTING chain based on which interfaces was selected by the
+round robin.  Restore the mark for packets ESTABLISHED or RELATED
+states in the PREROUTING and OUTPUT chains, and use the mark to
+route it out the corresponding interface.
 
-It's wery upset fact. What can be done with this? Can I get version
-where NAT not depend on Connection tracking?
-
-
-
-  
-
--- 
-Best regards,
- art                          mailto:art@sigrand.ru
-
-
+I posted some rules a couple of months ago, search the archives.
 
