@@ -1,8 +1,8 @@
 From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Possible conntrack problem
-Date: Thu, 1 Jun 2006 14:04:20 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012782@knowledge.wizdom.nu>
-References: <20060601_115618_060771.zottmann@ig.com.br>
+Subject: RE: Help!
+Date: Thu, 1 Jun 2006 14:07:19 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012783@knowledge.wizdom.nu>
+References: <3da957060606010453h6488c763xcb4be5b81c8945bf@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,47 +18,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: zottmann@ig.com.br, netfilter@lists.netfilter.org
+To: Stephan Higuti <higuti.sam@gmail.com>, netfilter@lists.netfilter.org
 
-This usually happens with clients behaving badly or misconfigured =
-servers. Very unlikely (I would say less 1% chance) to be a netfilter =
-issue.
-If you don't get any reports about you webserver being unreachable or =
-unusable, all is working exactly as it should.
+You are doing it exactly as it should be done.
 =20
-If people do have problems with your webserver, check the configuration =
-of the server and clients.
+DNAT rules go to PREROUTING CHAIN (as you first want to set the new =
+destination and the do routing)
+SNAT rules go to POSTROUTING (usually, as it wouldn't really matter =
+where they go, unless you do source routing).
+=20
+Ofcourse you will need to ACCEPT the connections in your filter table =
+too.
 =20
 -Sietse
 
 ________________________________
 
-From: netfilter-bounces@lists.netfilter.org on behalf of =
-zottmann@ig.com.br
-Sent: Thu 01-Jun-06 13:56
+From: netfilter-bounces@lists.netfilter.org on behalf of Stephan Higuti
+Sent: Thu 01-Jun-06 13:53
 To: netfilter@lists.netfilter.org
-Subject: Possible conntrack problem
+Subject: Help!
 
 
 
-Hi !!
+Hello guys....
+I have a question about PREROUTING and POSTROUTING.
+I'm making a new firewall script.....
+In this script, i put some PREROUTING rules , ex:
 
-I am having a problem that I think may be related to conntrack.
+####################### Apache ##########################
+iptables -t nat -A PREROUTING -d 200.xxx.yyy.zzz -p tcp --dport 80 -j
+DNAT --to-destination 192.168.23.7:80
 
-I am getting dropped packets in the firewall coming from our web server,
-source port 80, and going to external machines on high ports, with both =
-ACK
-and SEQ numbers set.
+But i need to put some POSTROUTING rules to this?
+My situation: My firewall will reply for 4 differents Ip's (reals) ,
+one for apache , other for e-mail server, etc............
+This PREROUTING rule get a pack that come from internet to a IP "x" ,
+and i want that all that incoming to this ip , to be forward to my
+internal ip.
+So , i think that PREROUTING rules its right... but i dont if i need
+to create a POSTROUTING for this.....
+Waiting Help....
 
-It seems to me that these packets are answers from our webserver to
-connections estabilished with it, but, for some reason, the connection
-information is being lost (maybe due to timeout?).
+p.s.:* Sorry for my bad, bad english   =3DD
 
-How can I track this? Has anyone gone through something like it?
+Cheers
 
-Thanks in advance,
-Carlos.
-
+--
+---------------------------------------------------------------------
+Stephan Higuti
+MSN: higutisam@hotmail.com
+Email: higuti@fai.com.br
+---------------------------------------------------------------------
 
 
 
