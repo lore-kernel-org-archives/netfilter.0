@@ -1,11 +1,13 @@
-From: "Horton, Dave" <dhorton@pactolus.com>
-Subject: NFC_ALTERED packet for localhost not being re-routed
-Date: Thu, 1 Jun 2006 10:31:38 -0400
-Message-ID: <E8E029BA163C694484CFEA4914619EA201285554@pcsexch.ad.pactolus.com>
+From: "Toby DiPasquale" <codeslinger@gmail.com>
+Subject: Re: Urgent help with firewall packet forwarding!!
+Date: Thu, 1 Jun 2006 08:09:36 -0700
+Message-ID: <876ef97a0606010809s61818978m685224532bbfc2ac@mail.gmail.com>
+References: <1177.202.123.0.206.1149096265.squirrel@mx.uom.ac.mu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <1177.202.123.0.206.1149096265.squirrel@mx.uom.ac.mu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "ramsurrunv@mx.uom.ac.mu" <ramsurrunv@mx.uom.ac.mu>
+Cc: netfilter@lists.netfilter.org
 
-I have a netfilter target which is hooking on to the PRE_ROUTING chain.
-My target is doing some simple packet forwarding.  My code modifies the
-IP and UDP destination address and port, and sets the NFC_ALTERED bit.
-This works perfectly when I set the destination address to a different
-machine -- the packet gets re-routed and forwarded on to the machine as
-I want it to.
+On 5/31/06, ramsurrunv@mx.uom.ac.mu <ramsurrunv@mx.uom.ac.mu> wrote:
+> 1) FW1 & FW2 are PCs with iptables firewalls on them. They verify the
+> packets from PC_A and then forwards them on towards PC_D. Is there a way
+> to make the firewalls forward traffic with having them do routing, that
+> is, only switch the packets to the other side after inspection?
+>
+> 2) If I put the NICs eth0 & eth1 of the firewalls FW1 & FW2, eth1 & eth2
+> of PC_B and PC_C on the same network, with ip forwarding enabled and
+> rp_filter disabled, will the FORWARD Chain of the iptables forward the
+> packets from PC_A to PC_D without having a look at the routing table.I
+> tried to do it, but it didn't work..i don't know if it's possible or it's
+> simply me making some mistakes with the routing.
+>
+> Any help will be most appreciated..to all of you guys, pls give me your
+> comments cos I'm stuck with making this work for quite some time now :(
 
-However, I also have a special case where I am leaving the destination
-address as the local address and only rewriting the destination port in
-the UDP header.  I also set the NFC_ALTERED bit in this scenario.  What
-I want to happen in this case is for the packet gets rerouted, as in the
-above scenario -- I want it to come back in on the PRE_ROUTING chain
-again on the local machine, this time with the modified destination UDP
-port.  However, this is not what happens -- it appears that the packet
-doesn't get rerouted if it has a local address as the destination
-address in the ip header.  (If I do a tcpdump I only see the packet
-once, as it comes out of me target.  When I am forwarding to remote
-addresses I will see the packet twice in the capture - once as it comes
-out of my PRE_ROUTING hook, and once after its rerouted, as its being
-sent.)
+It sounds to me like what you want is for FW1 and FW2 to be
+"bridging", not necessarily as firewalls, per se. Check out this page
+for more info on using Linux to do Ethernet bridging:
 
-Is there a way I can get it to do what I want, either by configuration
-or a code change of some kind?
+http://linux-net.osdl.org/index.php/Bridge
 
-I am running RH ES 3.0 with kernel version 2.4.21-27.EL
+If that's not what you want, then the only other thing you can do is
+try to describe more fully what you want by first investigating this
+document to see what's possible:
+
+http://lartc.org/howto/
+
+HTH
+
+-- 
+Toby DiPasquale
+0x636f6465736c696e67657240676d61696c2e636f6d
 
