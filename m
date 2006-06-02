@@ -1,10 +1,10 @@
 From: zottmann <zottmann@ig.com.br>
-Subject: Possible conntrack problem
-Date: Fri, 2 Jun 2006 15:46:42 -0300
-Message-ID: <20060602_184642_048181.zottmann@ig.com.br>
+Subject: Iptables statistics and management
+Date: Fri, 2 Jun 2006 15:54:29 -0300
+Message-ID: <20060602_185429_050452.zottmann@ig.com.br>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="Message-Boundary-by-Mail-Sender-1149274002"
+	boundary="Message-Boundary-by-Mail-Sender-1149274469"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,7 +21,7 @@ To: netfilter@lists.netfilter.org
 This message is in MIME format. Since your mail reader does not understand
 this format, some or all of this message may not be legible.
 
---Message-Boundary-by-Mail-Sender-1149274002
+--Message-Boundary-by-Mail-Sender-1149274469
 Content-type: text/plain; charset=ISO-8859-1
 Content-description: Mail message body
 Content-transfer-encoding: 8bit
@@ -29,23 +29,21 @@ Content-disposition: inline
 
 Hi !! 
 
-We are seeing a lot of packets being blocked at our firewall, coming from 
-our webserver, port 80, going to the several hosts at the Internet, at high 
-ports, with both SET and ACK set. 
+We are using fwbuilder and iptables logger, wich gives us nice interfaces 
+for building rules and watching and querying iptables logs. 
 
-It seems that these packets are answers from our webserver to connections 
-estabilished to it, and, for some reason, their state is not being kept. 
+We are needing a way to get consolidated statistics, like top sites that are 
+being accessed on a given port/protocol, at the last minute, five minutes, 
+hour, etc ..., and things like that, as well as monitoring current 
+connections. 
 
-How can I track this problem? 
-
-We are using iptables 1.3.1, kernel 2.6.11.12, in a Fedora Core 3 machine. 
+Is there such a "management console" for iptables? 
 
 Thanks in advance, 
 Carlos. 
 
 
 
-
---Message-Boundary-by-Mail-Sender-1149274002--
+--Message-Boundary-by-Mail-Sender-1149274469--
 
 
