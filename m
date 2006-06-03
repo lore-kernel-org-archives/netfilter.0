@@ -1,13 +1,12 @@
-From: Mogens Valentin <mogensv@vip.cybercity.dk>
-Subject: Re: How stop DoS and SYN attack..
-Date: Sat, 03 Jun 2006 23:54:53 +0200
-Message-ID: <4482052D.8090409@vip.cybercity.dk>
-References: <e32f231c0606031333s7ab57702y9a75cc62a3f96da0@mail.gmail.com>
-Reply-To: mogensv@vip.cybercity.dk
+From: Djalma Fadel Junior <dfadel@ferasoft.com.br>
+Subject: Re: Possible conntrack problem
+Date: Sat, 3 Jun 2006 19:04:11 -0300
+Message-ID: <20060603190411.7108369a@phadell.org>
+References: <20060602_184642_048181.zottmann@ig.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e32f231c0606031333s7ab57702y9a75cc62a3f96da0@mail.gmail.com>
+In-Reply-To: <20060602_184642_048181.zottmann@ig.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +17,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Alberto Ferrer <albertoferrer@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Alberto Ferrer wrote:
-> =BFany know a way to stop via Linux with iptables or related a SYN atta=
-ck ?
-> =BFwhere i can read something related to this?
+On Fri, 2 Jun 2006 15:46:42 -0300
+zottmann <zottmann@ig.com.br> wrote:
 
-   # Enable syn-cookies (prevent syn-flood attacks):
-     echo "1" >/proc/sys/net/ipv4/tcp_syncookies
+> Hi !!=20
+>=20
+> We are seeing a lot of packets being blocked at our firewall, coming from=
+=20
+> our webserver, port 80, going to the several hosts at the Internet, at hi=
+gh=20
+> ports, with both SET and ACK set.=20
+>=20
+> It seems that these packets are answers from our webserver to connections=
+=20
+> estabilished to it, and, for some reason, their state is not being kept.=
+=20
+>=20
+> How can I track this problem?=20
+>=20
+> We are using iptables 1.3.1, kernel 2.6.11.12, in a Fedora Core 3 machine=
+.=20
 
-   # Reduce number of possible SYN Floods:
-     echo "1024" >/proc/sys/net/ipv4/tcp_max_syn_backlog
+I'm facing the same problem on port 3128.
+I guess that may be some kind of virus/worm that use ports like 80,1080,808=
+0,3128 for spam purpose. They use any HTTP port to connect on mail servers =
+and send bulk email.
 
-Helps somewhat. Can also be set via sysctl.
-You may wan't to look into iptables docs for the 'limit' module:
+My conntrack table was getting flooded and I set 2 rules, but the problem k=
+eeps on.
 
-   -m limit --limit X/sec
+iptables -t nat -I PREROUTING -p tcp ! --syn -m state --state NEW -j DROP
+iptables -I FORWARD -d ${MY_NETWORK} -p tcp --dport 3128 -m state --state N=
+EW -j DROP
+
+
+any effective solution would be appreciated.
+
+thanks
+
 
 --=20
-Kind regards,
-Mogens Valentin
-
+Djalma Fadel Junior
+Diretor T=E9cnico
+Ferasoft Corporation Ltda
++55 (19) 3542-3490
+dfadel@ferasoft.com.br
 
