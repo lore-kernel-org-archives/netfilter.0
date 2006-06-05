@@ -1,10 +1,13 @@
-From: Julian Hagenauer <chaosbringer@gmx.de>
-Subject: Redirecting traffic from a non-existent IP
-Date: Mon, 05 Jun 2006 13:27:32 +0200
-Message-ID: <44841524.1070505@gmx.de>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Transparent proxy setup with apache on the nat gateway
+Date: Mon, 05 Jun 2006 13:31:51 +0200
+Message-ID: <44841627.9070704@plouf.fr.eu.org>
+References: <02BB8A4AC86C564C89C7F14CF98CE0C49C73@knowledge.wizdom.nu>	<1149500883.6397.9.camel@rousalka.dyndns.org>	<44841133.90004@plouf.fr.eu.org>
+	<1149506463.6397.27.camel@rousalka.dyndns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1149506463.6397.27.camel@rousalka.dyndns.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,42 +18,13 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
-i am running Linux 2.6.11.12-xen0 (binary distribution).
-I want to route all Traffic destined to 192.168.1.5 to 192.168.1.3.
-192.168.1.5 is a non-existent IP/host, 192.168.1.3 is a Xen-VM running 
-on localhost, so 192.168.1.5 should act as a kind of alias for 
-192.168.1.3 and be accessible from localhost.
-The following modules are loaded:
+Nicolas Mailhot a =E9crit :
+> There is a ton of pages on mod_proxy and transparent proxying, but most
+> of the times transparent seems to be used in another context.
 
-Module                  Size  Used by
-iptable_filter          2432  0 
-iptable_nat            19932  1 
-ip_conntrack           38712  1 iptable_nat
-ip_tables              20352  2 iptable_filter,iptable_nat
-intel_agp              20124  1 
-agpgart                28968  1 intel_agp
-
-
-I wrote and ran the following script on localhost:
-
-#!/bin/bash
-echo 1 > /proc/sys/net/ipv4/ip_forward
-MAP_FROM=192.168.1.5 # virtuelle IP
-MAP_TO=192.168.1.3 # IP einer VM
-iptables -t nat -F
-echo "Mappe $MAP_FROM nach $MAP_TO..."
-iptables -t nat -A PREROUTING -d $MAP_FROM -j DNAT --to $MAP_TO
-echo "Aktuelle Nat-Regeln:"
-iptables -t nat -L
-
-But ping 192.168.1.5 or ssh 192.168.1.5 still does not work.
-I have no clue what's wrong.
-
-Sincerely,
-Julian
-
+Really ? I searched for "transparent AND mod_proxy" in the=20
+www.apache.org site and nothing relevant came out.
 
