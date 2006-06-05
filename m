@@ -1,14 +1,11 @@
-From: Nicolas Mailhot <nicolas.mailhot@laposte.net>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
 Subject: RE: Transparent proxy setup with apache on the nat gateway
-Date: Mon, 05 Jun 2006 11:48:03 +0200
-Message-ID: <1149500883.6397.9.camel@rousalka.dyndns.org>
-References: <02BB8A4AC86C564C89C7F14CF98CE0C49C73@knowledge.wizdom.nu>
+Date: Mon, 5 Jun 2006 12:51:07 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C49C74@knowledge.wizdom.nu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-8J7iopUqqrFMZPOTBvWR"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C49C73@knowledge.wizdom.nu>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,15 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Sietse van Zanen <sietse@wizdom.nu>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Nicolas Mailhot <nicolas.mailhot@laposte.net>
 Cc: netfilter@lists.netfilter.org
 
+Well, if Apache sees the traffic on port 8081 then your redirect is =
+working as it should. Netfilter does nothing with the contents of the =
+packets, just with the addresses and ports.
 
---=-8J7iopUqqrFMZPOTBvWR
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Your problem is then with Apache. A browser never requests a / but =
+always a URL, your apache makes something different of it.=20
 
-Le lundi 05 juin 2006 =C3=A0 10:40 +0200, Sietse van Zanen a =C3=A9crit :
+-Sietse
+
+-----Original Message-----
+From: Nicolas Mailhot [mailto:nicolas.mailhot@laposte.net]=20
+Sent: Monday, June 05, 2006 11:48 AM
+To: Sietse van Zanen
+Cc: netfilter@lists.netfilter.org
+Subject: RE: Transparent proxy setup with apache on the nat gateway
+
+Le lundi 05 juin 2006 =E0 10:40 +0200, Sietse van Zanen a =E9crit :
 
 Thank you for taking the time to look at my problem !
 
@@ -69,20 +78,4 @@ Regards,
 
 --=20
 Nicolas Mailhot
-
---=-8J7iopUqqrFMZPOTBvWR
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iEYEABECAAYFAkSD/dEACgkQI2bVKDsp8g29cQCbBsmGBjhYNk8QRk/xUZGxl24y
-dyMAnih9QqyutptHKpeQqtoyKM/d03gr
-=+krw
------END PGP SIGNATURE-----
-
---=-8J7iopUqqrFMZPOTBvWR--
-
 
