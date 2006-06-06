@@ -1,11 +1,18 @@
-From: "robee" <mlody@elpec.com>
-Subject: BUG: soft lockup detected on CPU#0!
-Date: Tue, 6 Jun 2006 15:06:43 +0200
-Message-ID: <008801c6896a$12e1bb80$0e01050a@robee>
-Reply-To: robee <mlody@elpec.com>
+From: Brent Clark <bclark@eccotours.co.za>
+Subject: Re: How stop DoS and SYN attack..
+Date: Tue, 06 Jun 2006 15:20:15 +0200
+Message-ID: <4485810F.4060603@eccotours.co.za>
+References: <e32f231c0606031333s7ab57702y9a75cc62a3f96da0@mail.gmail.com>	
+	<4482052D.8090409@vip.cybercity.dk>	
+	<e32f231c0606042021t2a80a4det5ed2beeed11e19c5@mail.gmail.com>	
+	<44841859.2060209@vip.cybercity.dk>	
+	<e32f231c0606050710xee283dei3b82dcbbbf76ad@mail.gmail.com>	
+	<448446D2.9080602@eccotours.co.za>
+	<e32f231c0606060608o6ce1619p3de97cbf2030d0f5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <e32f231c0606060608o6ce1619p3de97cbf2030d0f5@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,64 +23,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-i'm using iptables-1.3.5 with kernel-2.6.16.18 with SMP, pppd-2.4.3, 
-rp-pppoe-3.8 in kernel mode
-Xeon 3GHz, 2GB RAM
-iptables rules are present in /etc/ppp/ip-up.local
-sometimes i get kernel log looks like:
-<----
-Jun  5 18:47:55 jowisz kernel: BUG: soft lockup detected on CPU#0!
-Jun  5 18:47:55 jowisz kernel:
-Jun  5 18:47:55 jowisz kernel: Pid: 14746, comm:                 pppd
-Jun  5 18:47:55 jowisz kernel: EIP: 0060:[<f8c4f6c7>] CPU: 0
-Jun  5 18:47:55 jowisz kernel: EIP is at ipt_do_table+0xc0/0x2ed [ip_tables]
-Jun  5 18:47:55 jowisz kernel:  EFLAGS: 00000246    Not tainted  (2.6.16.18 
-#3)
-Jun  5 18:47:55 jowisz kernel: EAX: ffffffff EBX: f8c91600 ECX: 00000000 
-EDX:
-f7855001
-Jun  5 18:47:55 jowisz kernel: ESI: f8dd2dc4 EDI: eedce038 EBP: 00000070 DS:
-007b ES: 007b
-Jun  5 18:47:55 jowisz kernel: CR0: 8005003b CR2: 08085d10 CR3: 026ffa20 
-CR4:
-000006f0
-Jun  5 18:47:55 jowisz kernel:  [<f8962017>] ipt_hook+0x17/0x1c
-[iptable_filter]
-Jun  5 18:47:55 jowisz kernel:  [<c028a37c>] nf_iterate+0x2e/0x5f
-Jun  5 18:47:55 jowisz kernel:  [<c0291ab8>] ip_forward_finish+0x0/0x31
-Jun  5 18:47:55 jowisz kernel:  [<c028a460>] nf_hook_slow+0x38/0xc0
-Jun  5 18:47:55 jowisz kernel:  [<c0291ab8>] ip_forward_finish+0x0/0x31
-Jun  5 18:47:55 jowisz kernel:  [<c0291c81>] ip_forward+0x198/0x233
-Jun  5 18:47:55 jowisz kernel:  [<c0291ab8>] ip_forward_finish+0x0/0x31
-Jun  5 18:47:55 jowisz kernel:  [<c0290bb5>] ip_rcv+0x404/0x47f
-Jun  5 18:47:55 jowisz kernel:  [<c02797a4>] netif_receive_skb+0x309/0x347
-Jun  5 18:47:55 jowisz kernel:  [<c0279859>] process_backlog+0x77/0xe4
-Jun  5 18:47:55 jowisz kernel:  [<c027827f>] net_rx_action+0x98/0x151
-Jun  5 18:47:55 jowisz kernel:  [<c011eee8>] __do_softirq+0x58/0xc0
-Jun  5 18:47:55 jowisz kernel:  [<c010525b>] do_softirq+0x46/0x4e
-Jun  5 18:47:55 jowisz kernel:  =======================
-Jun  5 18:47:55 jowisz kernel:  [<c011ebce>] local_bh_enable+0x5b/0x66
-Jun  5 18:47:55 jowisz kernel:  [<c028cc3b>] rt_run_flush+0x63/0xad
-Jun  5 18:47:55 jowisz kernel:  [<c02b339b>] ip_mc_dec_group+0x83/0x9c
-Jun  5 18:47:55 jowisz kernel:  [<c02af76a>] inetdev_event+0x141/0x294
-Jun  5 18:47:55 jowisz kernel:  [<c028b7d3>] ipv4_dst_ifdown+0x0/0x4c
-Jun  5 18:47:55 jowisz kernel:  [<c02ce273>] notifier_call_chain+0x15/0x25
-Jun  5 18:47:56 jowisz kernel:  [<c02776ec>] dev_close+0x5e/0x62
-Jun  5 18:47:56 jowisz kernel:  [<c027751f>] dev_change_flags+0x46/0xe7
-Jun  5 18:47:56 jowisz kernel:  [<c02afc5f>] devinet_ioctl+0x24b/0x561
-Jun  5 18:47:56 jowisz kernel:  [<c026fb1c>] sock_ioctl+0x1e0/0x208
-Jun  5 18:47:56 jowisz kernel:  [<c026f93c>] sock_ioctl+0x0/0x208
-Jun  5 18:47:56 jowisz kernel:  [<c0163170>] do_ioctl+0x1c/0x5d
-Jun  5 18:47:56 jowisz kernel:  [<c0163400>] vfs_ioctl+0x24f/0x262
-Jun  5 18:47:56 jowisz kernel:  [<c0163459>] sys_ioctl+0x46/0x5d
-Jun  5 18:47:56 jowisz kernel:  [<c0103337>] sysenter_past_esp+0x54/0x75
-<----
+Alberto Ferrer wrote:
+> 2006/6/5, Brent Clark <bclark@eccotours.co.za>:
+>> Alberto Ferrer wrote:
+>> >> > Jun  5 00:19:39 lnx1 kernel: [4322117.587000] fp=bad_packets:1 
+>> a=DROP
+>> >> > IN=eth0 OUT= MAC=00:08:54:2f:8a:ac:00:0b:46:e2:04:00:08:00
+>> >> > SRC=201.254.155.13 DST=200.68.95.25 LEN=40 TOS=0x00 PREC=0x00 
+>> TTL=244
+>> >> > ID=0 PROTO=TCP SPT=28837 DPT=80 WINDOW=0 RES=0x00 RST URGP=0
+>>
+>> Hi
+>>
+>> Unless im mistaken, but why are you dropping on the RST status.
+>>
+>> Just something im wondering.
+>>
+> 
+> whats that, what means, my english its a little bad .
+>> Kind Regards
+>> Brent Clark
 
-anybody can help?
+Hi
 
-robert 
+Im not really qualified to assist (continue asking the guys from Netfilter Mailing List).
+
+The reason for my email is because it looks like you DROPPING on the RST (Look at the end of the string "RES=0x00 RST URGP=0") flag (out of interest do you know TCP/IP and its flags etc).
+
+Its maybe advisable to post your rulset and maybe someone will proof read it for you.
+
+HTH and best of luck.
+
+Kind Regards
+Brent Clark
+
 
 
