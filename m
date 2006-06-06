@@ -1,18 +1,10 @@
-From: Brent Clark <bclark@eccotours.biz>
-Subject: Re: How stop DoS and SYN attack..
-Date: Tue, 06 Jun 2006 15:19:11 +0200
-Message-ID: <448580CF.6010101@eccotours.biz>
-References: <e32f231c0606031333s7ab57702y9a75cc62a3f96da0@mail.gmail.com>	
-	<4482052D.8090409@vip.cybercity.dk>	
-	<e32f231c0606042021t2a80a4det5ed2beeed11e19c5@mail.gmail.com>	
-	<44841859.2060209@vip.cybercity.dk>	
-	<e32f231c0606050710xee283dei3b82dcbbbf76ad@mail.gmail.com>	
-	<448446D2.9080602@eccotours.co.za>
-	<e32f231c0606060608o6ce1619p3de97cbf2030d0f5@mail.gmail.com>
+From: "ji'e'toh" <jietoh@o2online.de>
+Subject: netfilter .. (openswan) nat problem ..
+Date: Tue, 6 Jun 2006 23:00:39 +0200
+Message-ID: <01e101c689ac$45d82050$c964a8c0@sol>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e32f231c0606060608o6ce1619p3de97cbf2030d0f5@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,41 +15,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Alberto Ferrer wrote:
-> 2006/6/5, Brent Clark <bclark@eccotours.co.za>:
->> Alberto Ferrer wrote:
->> >> > Jun  5 00:19:39 lnx1 kernel: [4322117.587000] fp=bad_packets:1 
->> a=DROP
->> >> > IN=eth0 OUT= MAC=00:08:54:2f:8a:ac:00:0b:46:e2:04:00:08:00
->> >> > SRC=201.254.155.13 DST=200.68.95.25 LEN=40 TOS=0x00 PREC=0x00 
->> TTL=244
->> >> > ID=0 PROTO=TCP SPT=28837 DPT=80 WINDOW=0 RES=0x00 RST URGP=0
->>
->> Hi
->>
->> Unless im mistaken, but why are you dropping on the RST status.
->>
->> Just something im wondering.
->>
-> 
-> whats that, what means, my english its a little bad .
->> Kind Regards
->> Brent Clark
+i have to solv the following problem (debian 3.1, kernel 2.6.14 from kernel
+org, no patches, openswan 2.x.x maybe important):
 
-Hi
+netA - gwA - gwB - netB - internet, where 
 
-Im not really qualified to assist (continue asking the guys from Netfilter Mailing List).
+netA: 192.168.0.0/24
+gwA: 192.168.0.1 + pppoe-ip-addr
+gwB: 100.100.100.100 (static official ip)
+netB: 100.100.100.100/32 (no real subnet)
 
-The reason for my email is because it looks like you DROPPING on the RST (Look at the end of the string "RES=0x00 RST URGP=0") flag (out of interest do you know TCP/IP and its flags etc).
+gwA and gwB are both real gateways
 
-Its maybe advisable to post your rulset and maybe someone will proof read it for you.
+tunnel works in the following way:
 
-HTH and best of luck.
+netA/gwA to netB/gwB and netB/gwB to netA/gwA, all I think .
 
-Kind Regards
-Brent Clark
+now I want to forward a spezial port on gwB, perhaps 50000 to an address in
+netA (192.168.0.100:50000), ok np from gwB, but ! I could not connect from
+the internet over gwB to this spezial host
+
+my nat rules, nothing else ..
+
+iptables -t nat -A PREROUTING -j DNAT -p tcp -s 0/0 --dport 50000
+--to-destination 192.168.0.100:50000 -i eth0
+iptables -t nat -A POSTROUTING -j SNAT -p tcp -d 192.168.0.100 --dport 50000
+--to 100.100.100.100 -o eth0
+
+tcpdump tell me that all nat works, but no traffic on gwA interfaces
+received. gwB send it, but I have a [DF] in that lines, maybe important, I
+doesn't know
+
+any suggestions? someone could help?
+
+
+
+regards, ji
+
+
+
+
 
 
