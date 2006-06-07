@@ -1,11 +1,12 @@
-From: "Diana Asnani" <sakal_woman@hotmail.com>
-Subject: RE: newbie at routing !!
-Date: Wed, 07 Jun 2006 19:31:18 +0800
-Message-ID: <BAY19-F75E3A1484E57E5AB08E6D9E8A0@phx.gbl>
-References: <001f01c68a17$c04e36b0$0101000a@sterenborg.info>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: netfilter .. (openswan) nat problem ..
+Date: Wed, 7 Jun 2006 13:36:07 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012793@knowledge.wizdom.nu>
+References: <01e101c689ac$45d82050$c964a8c0@sol>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001f01c68a17$c04e36b0$0101000a@sterenborg.info>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,57 +17,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+To: ji'e'toh <jietoh@o2online.de>, netfilter@lists.netfilter.org
+
+In addition to NAT, do you also ACCEPT the traffic in the FORWARD chain =
+of the FILTER table?
+=20
+Your second NAT rule: iptables -t nat -A POSTROUTING -j SNAT -p tcp -d =
+192.168.0.100 --dport 50000
+--to 100.100.100.100 -o eth0
+--dport should be --sport otherwise return traffic will not work.
+=20
+-Sietse
+
+________________________________
+
+From: netfilter-bounces@lists.netfilter.org on behalf of ji'e'toh
+Sent: Tue 06-Jun-06 23:00
 To: netfilter@lists.netfilter.org
-
-Hi Rob,
-
-thanks for the reply too...sorry...i guess i just subscribe to the first 
-thing i saw in the list...
-yup 202.184.41.41 is configured in the same PC as 192.168.206.1
-the subnet mask is 255.255.255.240
-i will try teh configuration as you have mentioned...i hope it works
+Subject: netfilter .. (openswan) nat problem ..
 
 
->From: "Rob Sterenborg" <rob@sterenborg.info>
->To: <netfilter@lists.netfilter.org>
->Subject: RE: newbie at routing !!
->Date: Wed, 7 Jun 2006 11:50:02 +0200
->
-> > I need help!! My VLAN IP is 192.168.202.1. I can ping another PC with
-> > the VLAN IP of 192.168.206.1 but i can't ping the 202.184.41.41
-> > address in that PC. Am i supposed to do some sort of routing
-> > configuration? I am using FC3 as my OS. What am i supposed to do to
-> > ping 202.184.41.41? Thanks
->
->Perhaps you noticed that this is the Netfilter list, not Linux Routing ?
->
->Anyway. I'll give it a try.
->- Your IP is 192.168.202.1 and you can ping 192.168.206.1, so I'm
->guessing that your netmask is would be 255.255.0.0.
->- If I understand you correctly, you say that 202.184.41.41 is
->configured to the PC that also has 192.168.202.1.
->
->To be able to ping that IP,
->- you need, on your PC, to set the default gateway to 192.168.206.1 or
->have a specific route for 202.184.41.41 which points to 192.168.206.1.
->- on the machine that holds both 192.168.206.1 and 202.184.41.41, you
->need to enable IP forwarding, make sure that it has routes for both
->networks and check the iptables rules if they permit this FORWARD
->traffic.
->
->If the above does not help you, you should add more details about your
->setup.
->
->
->Gr,
->Rob
->
->
 
-_________________________________________________________________
-Find just what you are after with the more precise, more powerful new MSN 
-Search. http://search.msn.com.my/ Try it now.
+i have to solv the following problem (debian 3.1, kernel 2.6.14 from =
+kernel
+org, no patches, openswan 2.x.x maybe important):
+
+netA - gwA - gwB - netB - internet, where
+
+netA: 192.168.0.0/24
+gwA: 192.168.0.1 + pppoe-ip-addr
+gwB: 100.100.100.100 (static official ip)
+netB: 100.100.100.100/32 (no real subnet)
+
+gwA and gwB are both real gateways
+
+tunnel works in the following way:
+
+netA/gwA to netB/gwB and netB/gwB to netA/gwA, all I think .
+
+now I want to forward a spezial port on gwB, perhaps 50000 to an address =
+in
+netA (192.168.0.100:50000), ok np from gwB, but ! I could not connect =
+from
+the internet over gwB to this spezial host
+
+my nat rules, nothing else ..
+
+iptables -t nat -A PREROUTING -j DNAT -p tcp -s 0/0 --dport 50000
+--to-destination 192.168.0.100:50000 -i eth0
+iptables -t nat -A POSTROUTING -j SNAT -p tcp -d 192.168.0.100 --dport =
+50000
+--to 100.100.100.100 -o eth0
+
+tcpdump tell me that all nat works, but no traffic on gwA interfaces
+received. gwB send it, but I have a [DF] in that lines, maybe important, =
+I
+doesn't know
+
+any suggestions? someone could help?
+
+
+
+regards, ji
+
+
+
+
+
+
+
 
 
