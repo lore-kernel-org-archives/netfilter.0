@@ -1,13 +1,12 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Is ip_conntrack_ftp needed for 1:1 nat?
-Date: Wed, 07 Jun 2006 17:16:39 +0200
-Message-ID: <4486EDD7.2040002@plouf.fr.eu.org>
-References: <A78C6C481BFAE949BC5990E1EEB2FE1257BF@q.LeBlancNet.us>	<4486CCFF.2070903@plouf.fr.eu.org>
-	<02BB8A4AC86C564C89C7F14CF98CE0C4012795@knowledge.wizdom.nu>
+Date: Wed, 07 Jun 2006 21:10:17 +0200
+Message-ID: <44872499.7050608@plouf.fr.eu.org>
+References: <A78C6C481BFAE949BC5990E1EEB2FE1257C7@q.LeBlancNet.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C4012795@knowledge.wizdom.nu>
+In-Reply-To: <A78C6C481BFAE949BC5990E1EEB2FE1257C7@q.LeBlancNet.us>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,39 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Sietse van Zanen wrote :
-> BZZZZZZZZT
+Robert LeBlanc a =E9crit :
+> the FTP protocol contains the source IP and port,
 
-Huh ?
+The _destination_ address and port.
 
-> You have just missed the 1.000.000 dollar question. The short answer is indeed: NO.
->  
-> When you do pure 1:1 NAT and don't filter any traffic, you do not need
-> to track connections, as any packet will just get NATted between the two
-> addresses.
+> which wouldn't
+> make sense since it is a private address. At least that is what I
+> understand of the FTP protocol.
+>=20
+> Are there any other protocols that have issues like this that I'm not
+> aware of?
 
-Packets will. But addresses in PORT commands or PASV replies won't. So 
-when the sender of this information is masqueraded, the other side will 
-try (and mostly fail) to connect to the given private address or simply 
-refuse to connect because it does not match the apparent address 
-(protection against abuse).
-
-Possible workaround in passive mode : use the command EPSV instead of 
-PASV, because unlike the PASV reply, the EPSV reply does not contain the 
-(useless because already known) server address.
-Limit : it works only for a masqueraded server, but the use of EPSV is 
-up to the client, and not all FTP clients support it.
-
-I repeat, FTP will work without tracking control connections nor special 
-setup on the NATed host only in the following conditions :
-
-- active mode with a non NATed client, so PORT commands contain the 
-expected address (the server may be NATed) ;
-- passive mode with a non NATed server, so PASV replies contain the 
-expected address (the client may be NATed) ;
-- passive mode with a NATed server when the client uses EPSV (client may 
-also be NATed) ;
+You can have an idea by looking at the available conntrack/NAT helper=20
+modules (ip_conntrack_* and ip_nat_*) for the Linux kernel : IRC DCC=20
+(file transfer and peer to peer communication with an IRC client), TFTP,=20
+PPTP, some communication/multimedia/peer to peer protocols such as=20
+H.323/Netmeeting, RTSP, SIP, MSN Messenger, DirectX, MMS (Microsoft=20
+Streaming Media), Talk...
 
