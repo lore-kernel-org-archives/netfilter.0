@@ -1,12 +1,13 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Is ip_conntrack_ftp needed for 1:1 nat?
-Date: Wed, 7 Jun 2006 17:01:47 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C4012799@knowledge.wizdom.nu>
-References: <A78C6C481BFAE949BC5990E1EEB2FE1257C7@q.LeBlancNet.us>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Is ip_conntrack_ftp needed for 1:1 nat?
+Date: Wed, 07 Jun 2006 17:16:39 +0200
+Message-ID: <4486EDD7.2040002@plouf.fr.eu.org>
+References: <A78C6C481BFAE949BC5990E1EEB2FE1257BF@q.LeBlancNet.us>	<4486CCFF.2070903@plouf.fr.eu.org>
+	<02BB8A4AC86C564C89C7F14CF98CE0C4012795@knowledge.wizdom.nu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C4012795@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,158 +18,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Robert LeBlanc <robert@leblancnet.us>, netfilter@lists.netfilter.org
-
-That's indeed the long answer. :-)
-=20
-Just what I said, it's not a good idea, as you will break more stuff. =
-Lots of protocols use mechanisms like that.
-BTW, passive ftp should work.
-=20
-Oh, I did not read the entire original question. I was just shortly =
-answering the would you need conntrack for 1:1 NAT.
-=20
--Sietse.
-
-________________________________
-
-From: Robert LeBlanc [mailto:robert@leblancnet.us]
-Sent: Wed 07-Jun-06 16:57
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: Sietse van Zanen
-Subject: RE: Is ip_conntrack_ftp needed for 1:1 nat?
 
-
-
-Hmmm, this has turned out to be an interesting discussion. I was under
-the impression of what Sietse was saying would work, but it didn't. Only
-after I had loaded the ip_conntrack_ftp module did my ftp connections
-work. I would think that outside_ip:outside_port would directly
-translate to inside_ip:outside_port. Since it is 1:1, there is no need
-to mangle the ports, right? But, what Pascal is saying also makes sense
-in that the FTP protocol contains the source IP and port, which wouldn't
-make sense since it is a private address. At least that is what I
-understand of the FTP protocol.
-
-Are there any other protocols that have issues like this that I'm not
-aware of?
-
-Thank you,
-Robert LeBlanc
-
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> bounces@lists.netfilter.org] On Behalf Of Sietse van Zanen
-> Sent: Wednesday, June 07, 2006 8:33 AM
-> To: netfilter@lists.netfilter.org
-> Subject: RE: Is ip_conntrack_ftp needed for 1:1 nat?
->
+Sietse van Zanen wrote :
 > BZZZZZZZZT
->
-> You have just missed the 1.000.000 dollar question. The short answer
-is
-> indeed: NO.
->
+
+Huh ?
+
+> You have just missed the 1.000.000 dollar question. The short answer is indeed: NO.
+>  
 > When you do pure 1:1 NAT and don't filter any traffic, you do not need
-to
-> track connections, as any packet will just get NATted between the two
+> to track connections, as any packet will just get NATted between the two
 > addresses.
->
-> Whether this is a good setup, or a good idea, I don't think so. You
-would
-> probably need to do other things on your firewall then just 1:1 NAT
-> between address(ranges).
->
-> -Sietse
->
-> ________________________________
->
-> From: netfilter-bounces@lists.netfilter.org on behalf of Pascal
-Hambourg
-> Sent: Wed 07-Jun-06 14:56
-> To: netfilter@lists.netfilter.org
-> Subject: Re: Is ip_conntrack_ftp needed for 1:1 nat?
->
->
->
-> Hello,
->
-> Robert LeBlanc wrote :
-> > Is ip_conntrack_ftp needed for 1:1 nat?
->
-> The short answer is : yes, and ip_nat_ftp (which needs
-ip_conntrack_ftp)
-> is needed too to handle properly any NAT situation.
->
-> The longer answer is : the FTP conntrack and NAT helper modules are
-not
-> absolutely necessary in all NAT situations. But even in the case when
-> they are not absolutely necessary, they can make the NAT and filtering
-> setup much simpler.
->
-> To summarize, what do these modules do ?
->
-> In both active and passive modes, ip_conntrack_ftp expects and marks
-as
-> RELATED the first packet of an FTP data connection related to an
-> established control FTP connection.
->
-> In passive mode, ip_nat_ftp modifies if necessary (i.e. when the
-client
-> address is masqueraded) the address and port numbers in the PORT
-> commands sent by the client to the server over the control connection
-> which tell the server which address and port to connect to to
-establish
-> the data connection. In passive mode, it modifies if necessary (i.e.
-> when the server address is masqueraded) the address and port numbers
-in
-> the reply to the PASV command sent by the server to the client over
-the
-> control connection to tell the client which address and port to
-connect
-> to to establish the data connection.
->
->   Note that both modules must be given in the 'ports' parameter the
-list
-> of destination ports that may be used for FTP control connection
-> whenever there are  non standard ones (other than 21). This implies
-that
-> you must explicitly load ip_conntrack_ftp before ip_nat_ftp, else
-> ip_nat_ftp will automatically load ip_conntrack_ftp but without
-telling
-> it which ports to monitor !
->
-> So, when are the FTP helper modules not necessary ?
->
-> - In passive mode when the server address is not masqueraded. If the
-> client is masqueraded, the NAT device must masquerade and accept any
-> connection from the client.
->
-> - In active mode when the client address is not masqueraded. If the
-> server is masqueraded, the NAT device must masquerade and accept any
-> connection from the server with uses the ftp-data source port (20/TCP
-by
-> default).
->
-> - In passive mode when the server is masqueraded but is able to send
-its
-> apparent address in the PASV reply and to use a restricted range of
-> local ports for data connections. The NAT device must redirect (DNAT)
-> and accept NEW connections on this port range to the server private
-> address.
->
-> - In active mode when the client is masqueraded but is able to send
-its
-> apparent address in the PORT command and to use a restricted range of
-> local ports for data connections. The NAT device must redirect (DNAT)
-> and accept NEW connections on this port range to the client private
-> address.
->
->
->
->
 
+Packets will. But addresses in PORT commands or PASV replies won't. So 
+when the sender of this information is masqueraded, the other side will 
+try (and mostly fail) to connect to the given private address or simply 
+refuse to connect because it does not match the apparent address 
+(protection against abuse).
 
+Possible workaround in passive mode : use the command EPSV instead of 
+PASV, because unlike the PASV reply, the EPSV reply does not contain the 
+(useless because already known) server address.
+Limit : it works only for a masqueraded server, but the use of EPSV is 
+up to the client, and not all FTP clients support it.
 
+I repeat, FTP will work without tracking control connections nor special 
+setup on the NATed host only in the following conditions :
+
+- active mode with a non NATed client, so PORT commands contain the 
+expected address (the server may be NATed) ;
+- passive mode with a non NATed server, so PASV replies contain the 
+expected address (the client may be NATed) ;
+- passive mode with a NATed server when the client uses EPSV (client may 
+also be NATed) ;
 
