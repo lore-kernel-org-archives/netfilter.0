@@ -1,28 +1,38 @@
-From: Andi Kleen <ak@suse.de>
-Subject: Re: Firewall question
-Date: Fri, 9 Jun 2006 05:43:24 +0200
-Message-ID: <200606090543.24401.ak@suse.de>
-References: <20060608185712.79340.qmail@web50207.mail.yahoo.com> <20060608192628.GA561@csclub.uwaterloo.ca>
+From: "Feng Xian" <alex.xian@gmail.com>
+Subject: a question about netfilter/ipt matcher
+Date: Thu, 8 Jun 2006 14:47:49 -0400
+Message-ID: <e16b711f0606081147m6f53cbe8qf145bdd32bbd8375@mail.gmail.com>
+References: <e16b711f0606081146t3d6f8893ld10096a5836236a1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20060608192628.GA561@csclub.uwaterloo.ca>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <e16b711f0606081146t3d6f8893ld10096a5836236a1@mail.gmail.com>
 Content-Disposition: inline
-Sender: netdev-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Lennart Sorensen <lsorense@csclub.uwaterloo.ca>
-Cc: Alex Davis <alex14641@yahoo.com>, netfilter@lists.netfilter.org, netdev@vger.kernel.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hi,
 
-> Well the DSL modem only transfers whatever data the ISP end sends to it,
-> which in your case is just PPP packets (LCC or LCP I think).  No one out
-> on the internet 
+I have a question about implement a ipt matcher in kernel space. upon
+receiving a packet, i want to ship this packet to a hardware pattern
+match accelerator to do some scan. when the scan result come back from
+the accelerator(after a while) then I tell the ipt/netfilter if i got
+a match or not. I am not sure if the current netfilter/ipt_match
+infrastructure support this kind of non-blocking matcher or if  it
+does suport, how can i do it in practical. Thanks in advance and
+please CC me on reply since I am not subscribed to the list.
 
-No one out on the internet, but it would be trivial for someone outside
-his house. All his traffic will be on a long unsecured cable. 
+regards,
 
-That is why I would never bridge home ethernet traffic onto a DSL line.
-
--Andi
+Alex
 
