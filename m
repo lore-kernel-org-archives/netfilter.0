@@ -1,12 +1,12 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: iptables - resource temporary unavailable
-Date: Thu, 08 Jun 2006 10:34:52 +1000
-Message-ID: <448770AC.6030209@snapgear.com>
-References: <004901c68a07$99c5f790$0e01050a@robee>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: iptables - resource temporary unavailable
+Date: Thu, 8 Jun 2006 07:23:44 +0200
+Message-ID: <000001c68abb$b71dd1a0$0101000a@sterenborg.info>
+References: <448770AC.6030209@snapgear.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <004901c68a07$99c5f790$0e01050a@robee>
+In-Reply-To: <448770AC.6030209@snapgear.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: robee <mlody@elpec.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On 06/07/2006 05:54 PM, robee wrote:
-> any time when i'm restarting my firewall rules (NAT mostly, about 500 users) 
-> i got this error -> iptables - resource temporary unavailable.
-> but, if i unplug users (main switch off) and restart firewall everyting is 
-> fine
-> my system is fedora core 4, iptables 1.3.5, kernel 2.6.16.18
+> On 06/07/2006 05:54 PM, robee wrote:
+>> any time when i'm restarting my firewall rules (NAT mostly, about
+>> 500 users) i got this error -> iptables - resource temporary
+>> unavailable. but, if i unplug users (main switch off) and restart
+>> firewall everyting is fine my system is fedora core 4, iptables
+>> 1.3.5, kernel 2.6.16.18 
+> 
+> I don't think it is lack of memory, the error message for that
+> includes the word memory.  Resource temporarily unavailable means
+> that something else is currently using the resource.  Is it
+> possible that another iptables instance is running at the same time?
 
-I don't think it is lack of memory, the error message for that
-includes the word memory.  Resource temporarily unavailable means
-that something else is currently using the resource.  Is it
-possible that another iptables instance is running at the same time?
+(Not that I know the solution, but..) Iptables is a userspace utility to
+setup rules. Once the rule is setup, iptables itself terminates and
+Netfilter (kernelspace) will use the rule.
+Although you could add the same rule multiple times (which is a bit
+useless..), AFAICS there's no way to have Netfilter "running" multiple
+times.
+
+But you do have a point: is the OP flushing all rules/deleting all
+user-chains when he is restarting the firewall script ?
+
+
+Gr,
+Rob
 
 
