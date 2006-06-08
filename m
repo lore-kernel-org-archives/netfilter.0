@@ -1,36 +1,34 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: newbie at routing
-Date: Thu, 08 Jun 2006 17:41:28 +0200
-Message-ID: <1149781288.24414.24.camel@anduril.intranet.cartel-securite.net>
-References: <BAY19-F1C1F1025A66D8C65190469E8B0@phx.gbl>
-	<448841DB.50308@prosyst.com>
+From: Alex Davis <alex14641@yahoo.com>
+Subject: Firewall question
+Date: Thu, 8 Jun 2006 11:57:12 -0700 (PDT)
+Message-ID: <20060608185712.79340.qmail@web50207.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <448841DB.50308@prosyst.com>
+Content-Transfer-Encoding: 7BIT
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, netdev@vger.kernel.org
 
-Le jeudi 08 juin 2006 =E0 17:27 +0200, Boryan Yotov a =E9crit :
-> My questions are...
+The scenario:
+I have a DSL modem in pass through (bridge) mode. The linux firewall/router 
+has a single ethernet card.  It is running pppoe. This gives two interfaces: 
+eth0 and ppp0. The firewall is running iptables. There are several machines 
+behind the firewall.
 
-My question is: as this list is dedicated to Netfilter, why asking about
-routing problem here ?!
+Problem:
+I've been told that if someone whose public IP address is on the same
+network subnet as mine were to get my mac address, (s)he could bypass
+the firewall and talk directly to the machines behind it.
+
+Is this true?
+
+Thanks.
 
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+I code, therefore I am
 
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
