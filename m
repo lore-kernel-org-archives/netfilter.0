@@ -1,14 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Transparent proxy errors
-Date: Fri, 09 Jun 2006 17:08:21 +0200
-Message-ID: <1149865702.23939.1.camel@anduril.intranet.cartel-securite.net>
-References: <44365.10.137.2.111.1149854383.squirrel@mail.medcol.mw>
-	<9255886c0606090507w7980d50es9d08edd12c89ee8f@mail.gmail.com>
-	<448981AE.1080508@gmail.com>
+From: Brian Atkins <batkins@tlcdelivers.com>
+Subject: Missing shared object
+Date: Fri, 09 Jun 2006 11:07:33 -0400
+Message-ID: <44898EB5.8010005@tlcdelivers.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <448981AE.1080508@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +15,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Diaa Radwan <diaaradwan@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Le vendredi 09 juin 2006 =E0 17:11 +0300, Diaa Radwan a =E9crit :
-> >   You can't use transparent proxy with SSL cause headers are
-> > encrypted and contains no useful data about destinations.
-> You can use it ,there is nothing will stop iptables from forwarding the
-> requests to your proxy ports.
+Good morning.
 
-Yes, you can forward them, but it won't work unless your HTTP proxy
-handles SSL connection itself.
-Usual way to handle SSL connections proxying is explicitly declare proxy
-for SSL to have web client issue a CONNECT to the proxy.=20
+I have a Gentoo server (2.6.16-r7 kernel from Gentoo sources) running 
+iptables 1.3.4. This is a fresh build and I am setting up rules for the 
+first time. The rules were complied using FWBuilder and are the same set 
+of rules on my current firewall, which is running the same 
+configuration, hardware, etc.
 
+The first attempt to run the FWB generated script failed:
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+iptables-restore v1.3.4: Couldn't load match 
+`ipv4options':/lib/iptables/libipt_ipv4options.so: cannot open shared 
+object file: No such file or directory
+Error occurred at line: 152
+Try `iptables-restore -h' or 'iptables-restore --help' for more information.
+
+The offending line is:
+
+-A Cid4461182F.0 -p all  -m ipv4options  --rr  -j ACCEPT
+
+I dug through the Netfilter docs and Googled the errors, but only turned 
+up a single site that seems to be relevant (anyone know polish?). 
+However, everything seems to indicate that this was an issue with 
+version 1.2.8, which was corrected by a patch.
+
+Anyone have more recent experience with this issue?
+
+Thanks,
+
+-- 
+Brian
+
+"An adventure is never an adventure
+when it's happening.  Challenging
+experiences need time to ferment,
+and an adventure is simply physical
+and emotional discomfort recollected
+in tranquility." -- Tim Cahill
 
