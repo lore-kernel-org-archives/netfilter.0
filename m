@@ -1,31 +1,51 @@
-From: Lennart Sorensen <lsorense@csclub.uwaterloo.ca>
-Subject: Re: Firewall question
-Date: Fri, 9 Jun 2006 09:12:17 -0400
-Message-ID: <20060609131217.GJ558@csclub.uwaterloo.ca>
-References: <20060608185712.79340.qmail@web50207.mail.yahoo.com> <20060608192628.GA561@csclub.uwaterloo.ca> <200606090543.24401.ak@suse.de>
+From: "Pablo Sanchez" <pablo@blueoakdb.com>
+Subject: RE: can i have boolean OR between multiple addresses in
+	iptablesexpression?
+Date: Fri, 9 Jun 2006 09:18:00 -0400
+Message-ID: <01b501c68bc7$22461990$0419a8c0@fly>
+References: <20060609003246.GE24839@mini.alaya.net>
+Reply-To: pablo@blueoakdb.com
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <200606090543.24401.ak@suse.de>
-Sender: netdev-owner@vger.kernel.org
-List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andi Kleen <ak@suse.de>
-Cc: Alex Davis <alex14641@yahoo.com>, netfilter@lists.netfilter.org, netdev@vger.kernel.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060609003246.GE24839@mini.alaya.net>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Fri, Jun 09, 2006 at 05:43:24AM +0200, Andi Kleen wrote:
-> No one out on the internet, but it would be trivial for someone outside
-> his house. All his traffic will be on a long unsecured cable. 
+ 
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org 
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
+> prosolutions@gmx.net
+> Sent: Thursday, June 08, 2006 8:33 PM
+> To: netfilter@lists.netfilter.org
+> Subject: can i have boolean OR between multiple addresses in 
+> iptablesexpression?
 > 
-> That is why I would never bridge home ethernet traffic onto a DSL line.
+> 
+> 
+> for example i would like to have a rule with -s !127.0.0.1 OR 
+> !172.16.0.0/24   
 
-Hmm, traffic sent between his machines would not go over the DSL since
-the MAC address doesn't match the DSL modem (I would think so at
-least).  It would be a mess if the DSL modem tried to forwards all
-traffic on an ethernet segment (well it doesn't have the bandwidth for
-sure).  Maybe I am incorrectly assuming the DSL modem only forwards the
-PPPoE traffic being sent at it.  I could see broadcast traffic being
-forwarded, although arps and such are generally not that interesting.
+I believe you can't.  What I've done is simply create several rules with the
+predicate slightly different in each to accomplish an OR.  If you'd like to
+make it obvious, you can create a new chain and place your different rules
+there.
+---
+Pablo Sanchez - Blueoak Database Engineering, Inc
+Ph:    819.459.1926          Toll free:  888.459.1926
+Cell:  819.918.9731                Pgr:  pablo_p@blueoakdb.com
+Fax:   603.720.7723 (US)           Fax:  514.371.1255 (Canada)
 
-Len Sorensen
+
