@@ -1,57 +1,31 @@
-From: "Rodrigo Montoro" <spooker@gmail.com>
-Subject: Re: Transparent proxy errors
-Date: Fri, 9 Jun 2006 09:07:14 -0300
-Message-ID: <9255886c0606090507w7980d50es9d08edd12c89ee8f@mail.gmail.com>
-References: <44365.10.137.2.111.1149854383.squirrel@mail.medcol.mw>
+From: Lennart Sorensen <lsorense@csclub.uwaterloo.ca>
+Subject: Re: Firewall question
+Date: Fri, 9 Jun 2006 09:12:17 -0400
+Message-ID: <20060609131217.GJ558@csclub.uwaterloo.ca>
+References: <20060608185712.79340.qmail@web50207.mail.yahoo.com> <20060608192628.GA561@csclub.uwaterloo.ca> <200606090543.24401.ak@suse.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44365.10.137.2.111.1149854383.squirrel@mail.medcol.mw>
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <200606090543.24401.ak@suse.de>
+Sender: netdev-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "isaiah@medcol.mw" <isaiah@medcol.mw>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Andi Kleen <ak@suse.de>
+Cc: Alex Davis <alex14641@yahoo.com>, netfilter@lists.netfilter.org, netdev@vger.kernel.org
 
-   You can't use transparent proxy with SSL cause headers are
-encrypted and contains no useful data about destinations.
+On Fri, Jun 09, 2006 at 05:43:24AM +0200, Andi Kleen wrote:
+> No one out on the internet, but it would be trivial for someone outside
+> his house. All his traffic will be on a long unsecured cable. 
+> 
+> That is why I would never bridge home ethernet traffic onto a DSL line.
 
-Regards,
+Hmm, traffic sent between his machines would not go over the DSL since
+the MAC address doesn't match the DSL modem (I would think so at
+least).  It would be a mess if the DSL modem tried to forwards all
+traffic on an ethernet segment (well it doesn't have the bandwidth for
+sure).  Maybe I am incorrectly assuming the DSL modem only forwards the
+PPPoE traffic being sent at it.  I could see broadcast traffic being
+forwarded, although arps and such are generally not that interesting.
 
-On 6/9/06, isaiah@medcol.mw <isaiah@medcol.mw> wrote:
-> Dear all,
->
-> I have a box setup for transparent proxying. Since this happened I have
-> had several websites timing out.
->
-> I have what seems like an SSL problem with many websites especially
-> hotmail. When one wants to log onto hotmail, the proxy gives "document
-> contains no data reply". When I manually configure the proxy in my
-> browser, I then can logon with no problems.
->
-> Could anyone help me resolve this?
->
-> Regards,
->
-> Isaiah.
->
->
-
-
--- 
-=====================
- Rodrigo Ribeiro Montoro
-Desenvolvedor BRMAlinux
-  spooker@brc.com.br
-       RHCE/LPIC-I
-=====================
-
+Len Sorensen
