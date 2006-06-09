@@ -1,10 +1,15 @@
-From: cifroes <cifroes@netcabo.pt>
-Subject: target ACCEPT in maccheck chain, forward chain is still used?
-Date: Fri, 09 Jun 2006 15:10:31 +0100
-Message-ID: <44898157.8080802@netcabo.pt>
+From: Diaa Radwan <diaaradwan@gmail.com>
+Subject: Re: Transparent proxy errors
+Date: Fri, 09 Jun 2006 17:11:58 +0300
+Message-ID: <448981AE.1080508@gmail.com>
+References: <44365.10.137.2.111.1149854383.squirrel@mail.medcol.mw>
+	<9255886c0606090507w7980d50es9d08edd12c89ee8f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig09333E0B37F414B15E77E7C2"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <9255886c0606090507w7980d50es9d08edd12c89ee8f@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,37 +20,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Rodrigo Montoro <spooker@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-hi,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig09333E0B37F414B15E77E7C2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I'm configuring a machine with iptables to serve as "router" and I have
-a rather strange question.
+Rodrigo Montoro wrote:
+>   You can't use transparent proxy with SSL cause headers are
+> encrypted and contains no useful data about destinations.
+You can use it ,there is nothing will stop iptables from forwarding the
+requests to your proxy ports.
 
-I have to do mac check on one of the networks the router is connected so
-I have something like this:
-iptables -t mangle -N maccheck
-iptables -t mangle -I PREROUTING -i eth1 -j maccheck
-iptables -t mangle -A maccheck -m mac -j ACCEPT --mac-source AA:BB:CC...etc
-iptables -t mangle -A maccheck -j DROP
+>=20
+> Regards,
+>=20
+> On 6/9/06, isaiah@medcol.mw <isaiah@medcol.mw> wrote:
+>> Dear all,
+>>
+>> I have a box setup for transparent proxying. Since this happened I hav=
+e
+>> had several websites timing out.
+>>
+>> I have what seems like an SSL problem with many websites especially
+>> hotmail. When one wants to log onto hotmail, the proxy gives "document=
 
-(this is not pasted so ignore the typos)
+>> contains no data reply". When I manually configure the proxy in my
+>> browser, I then can logon with no problems.
+>>
+>> Could anyone help me resolve this?
+>>
+>> Regards,
+>>
+>> Isaiah.
+>>
+>>
+>=20
+>=20
 
-I also have many rules in FORWARD chain.
 
 
-My question is simple: what happens to the packet when it's marked as
-ACCEPT by the 3rd rule? The rules that apply to that packet in the
-FORWARD chain are still used or the ACCEPT stuff just overrides everything?
+--------------enig09333E0B37F414B15E77E7C2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
 
-My tests say the FORWARD RULES are still used, am i correct?
+iD8DBQFEiYG0r6hbNdYtyWwRAqymAJ9P8+Eg3yvVrmgG5PiH84V1W7h0xgCeMlNw
+G0mvs/+6Nj5RTy+ATsFI1VA=
+=Jina
+-----END PGP SIGNATURE-----
 
-
-(this is kind of a discussion with a mate, so if you can add
-documentation to prove it, i will appreciate it...)
-
-Many thx in advance
-
+--------------enig09333E0B37F414B15E77E7C2--
 
