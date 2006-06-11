@@ -1,14 +1,11 @@
-From: "Pablo Sanchez" <pablo@blueoakdb.com>
-Subject: RE: can i have boolean OR between multiple addresses in	iptables
-	expression?
-Date: Sat, 10 Jun 2006 06:56:21 -0400
-Message-ID: <02b001c68c7c$837bf490$0419a8c0@fly>
-References: <448A7604.6040701@plouf.fr.eu.org>
-Reply-To: pablo@blueoakdb.com
+From: "Syed AbuBakr" <syed.abubakr@gmail.com>
+Subject: FTP and Masquerading
+Date: Sun, 11 Jun 2006 13:23:25 +0500
+Message-ID: <7e53eda20606110123v3b45c520g384338a877affcb0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <448A7604.6040701@plouf.fr.eu.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,43 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
- 
+I am  new to linux and need some guidance.
+PROBLEM:
+FTP is not working. My internal users can not connect external ftp and
+vice versa.
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org 
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
-> Pascal Hambourg
-> Sent: Saturday, June 10, 2006 3:34 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Re: can i have boolean OR between multiple addresses 
-> in iptables expression?
-> 
-> I think that using a user defined chain is not only a matter of 
-> obviousness, in some case the result may be different from using two 
-> separate rules. For example :
-> 
-> iptables -A INPUT -s 127.0.0.1 -m limit -j ACCEPT
-> iptables -A INPUT -s 172.16.0.0/24 -m limit -j ACCEPT
-> 
-> and :
-> 
-> iptables -A INPUT -s 127.0.0.1 -j user_chain
-> iptables -A INPUT -s 172.16.0.0/24 -j user_chain
-> iptables -A user_chain -m limit -j ACCEPT
-> 
-> behave differently because, if I understand correctly, each 'limit' 
-> match has its own counters and timers. Am I right ?
+SCENARIO:
+1. I am using SQUID for proxy services.
+ 2. OS is FedoraCore 5
+3. Using transparent proxy
+4. Masquerading my out bound traffic.
+5. All packages including kernel are same as they come with the
+standard distro of FC-5
+6. Install time Firewall is disabled, so i have only a couple of rules
+in my ip tables.
 
-Absolutely.  You do have to be certain to 'play computer' correctly when you
-write the rules.  Know that each rule is an AND and apply OR's correctly
-with judicious use of the -j ACCEPT target.
----
-Pablo Sanchez - Blueoak Database Engineering, Inc
-Ph:    819.459.1926          Toll free:  888.459.1926
-Cell:  819.918.9731                Pgr:  pablo_p@blueoakdb.com
-Fax:   603.720.7723 (US)           Fax:  514.371.1255 (Canada)
+I dont know how to recompile kernel or insert modules, So please do me
+a favour and give me a step by step how to of it.
 
+I'll be very gratefull to u. 'cuz i am stuck.
+Thanx a lot
 
