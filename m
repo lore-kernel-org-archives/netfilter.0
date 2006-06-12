@@ -1,7 +1,7 @@
-From: Tommy W <tommy@svearike.sytes.net>
-Subject: libiptc linking problem under AMD64
-Date: Mon, 12 Jun 2006 02:30:19 +0200
-Message-ID: <200606120230.20148.tommy@svearike.sytes.net>
+From: "Jacob Wu" <jacob.p.wu@gmail.com>
+Subject: repeated port 21 attempts
+Date: Mon, 12 Jun 2006 11:41:04 -0500
+Message-ID: <59cb28fc0606120941q75c2ef40xeccf3419bc173b84@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,29 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
-I'm writing an application that uses libiptc and iptables for various
-monitoring applications.
+I'm getting port 21 connection attempts every 5 minutes from about
+half a dozen of my network users.  These attempts are repeating
+regularly with one computer sending out 1500+ attempts a day.  I have
+not seen this before and I'm wondering if anyone else here has seen a
+client behave this way before?
 
-http://www.freshmeat.net/projects/natstat
+My initial thoughts were: hacker, virus/trojan/spy ware or badly
+configured program.  I ruled hacker out right away when talking to the
+clients and realizing they didn't even understand the concept of
+ports.  After receiving the machines from the clients and doing
+vigorous virus/trojan/spy ware scans I have found nothing known on
+them.
 
-and I've come upon a small problem with libiptc on AMD64
-
-It won't link into my program, because of lack of the flag -fPIC during
-compile time.
-
-I edited the Makefile for libiptc and put -fPIC in there, voila, everything
-worked.
-So my questions now are:
-
-* is there a reason for not having -fPIC ?
-* could you add -fPIC ?
-
-Thanks in advance
-/Tommy Wallberrg
-
--------------------------------------------------------
+Anyone got anything?  Is this something new?
 
