@@ -1,10 +1,12 @@
-From: Brett Curtis <dashnu@gmail.com>
-Subject: DNAT Question & ULOG Question
-Date: Tue, 13 Jun 2006 10:50:39 -0400
-Message-ID: <EB7DBACA-57BF-4FB5-9C71-03AA7D6C2C54@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v750)
+From: Henning Wangerin <post+050629@henning.wangerin.dk>
+Subject: Re: NAT problems forwarding from a routed subnet.
+Date: Wed, 14 Jun 2006 00:47:52 +0200
+Message-ID: <1150238872.3585.3.camel@server.ltsp>
+References: <1150204810.16144.39.camel@server.ltsp> <448F0D00.50306@zoomnet.ro>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <448F0D00.50306@zoomnet.ro>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,33 +17,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
-To: Netfilter Lists <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-A couple questions before I try to push out my new firewall.
+On Tue, 2006-06-13 at 22:07 +0300, Alexandru Dragoi wrote:
+> You will do same as in 10.128.x.250->10.10.x.250, but on the next router
+> (with nat capabilityes) to internet. 
 
-Creating a  PREROUTING rule on a DROP all policy like so.
+Yeah.
+The moment you call for help, the solution pops into ones face.
 
-$IPT -t nat -A PREROUTING -i $EXTIF -d $HOST_EXTIP -p tcp --dport 22 \
-   -j DNAT --to-destination $HOST_INTIP:22
+The natting on the client-box is done via scripts, and I counldn't
+figure out witch parts to pick out.
 
-This allows the packets to pass through my external nic so I would  
-only need a forward rule like so to complete the request?
+It's up and running find.
 
-$IPT -A FORWARD  -o $INTIF -d $HOST_INTIP -p tcp --dport 22
+> By the way, that link is not working.
 
- From what I read the routing decision happens after PREROUTING but I  
-am not sure if the request has traversed pass my external interface  
-at this time.
-Not sure if I need to specify both interface or in my case it would  
-be the same if I specified none.
+Hmm. Should be.
 
+Must have been a temporary outage of the old line :-(
+That's one more reason the get the new setup running quickly!
 
-My question related to ULOG....  Is ULOG the only way to get iptables  
-logging out of my dmesg ? Every time I type dmesg I find it  
-overloaded with iptables logging.
-
-Thanks.
-
-
+-- 
+Henning Wangerin <post+050629@henning.wangerin.dk>
 
