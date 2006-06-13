@@ -1,11 +1,11 @@
-From: "Jacob Wu" <jacob.p.wu@gmail.com>
-Subject: repeated port 21 attempts
-Date: Mon, 12 Jun 2006 11:41:04 -0500
-Message-ID: <59cb28fc0606120941q75c2ef40xeccf3419bc173b84@mail.gmail.com>
+From: Igor Belikov <ivb@is.ua>
+Subject: LARTC mailing list
+Date: Tue, 13 Jun 2006 09:57:50 +0300
+Message-ID: <628834180.20060613095750@is.ua>
+Reply-To: Igor Belikov <ivb@is.ua>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,21 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm getting port 21 connection attempts every 5 minutes from about
-half a dozen of my network users.  These attempts are repeating
-regularly with one computer sending out 1500+ attempts a day.  I have
-not seen this before and I'm wondering if anyone else here has seen a
-client behave this way before?
+Hello netfilter,
 
-My initial thoughts were: hacker, virus/trojan/spy ware or badly
-configured program.  I ruled hacker out right away when talking to the
-clients and realizing they didn't even understand the concept of
-ports.  After receiving the machines from the clients and doing
-vigorous virus/trojan/spy ware scans I have found nothing known on
-them.
+  I'm sorry for off-topic, but this list have similar subjects...
 
-Anyone got anything?  Is this something new?
+  What happen to LARTC mailing-list?
+
+  I send my letter in LARTC list several days ago. But I don't get any
+  letters from that list from June, 5 (I don't get ever my own
+  letter).
+
+-- 
+Best regards,
+ Igor                          mailto:ivb@is.ua
+
 
