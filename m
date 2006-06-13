@@ -1,9 +1,8 @@
-From: Henning Wangerin <post+050629@henning.wangerin.dk>
-Subject: NAT problems forwarding from a routed subnet.
-Date: Tue, 13 Jun 2006 15:20:09 +0200
-Message-ID: <1150204810.16144.39.camel@server.ltsp>
+From: "Andrew Kraslavsky" <andykras@hotmail.com>
+Subject: Re: can i have boolean OR between multiple addresses in
+Date: Tue, 13 Jun 2006 11:03:53 -0700
+Message-ID: <BAY106-F2158D145223C4B78D0DEA3D68C0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,31 +14,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Hi!
+Howdy,
 
-I'm in control of a larger WLAN network, where we are connected via
-a /30 network, and have a routed /28 network that we are going to
-forward ip by by to some of our users.
+If a single rule is really the way you want to go, maybe you can take=20
+advantage of an iphash ipset?
 
-Each location have an 10.128.x.1/24 network where eg 10.128.x.250 is
-natted to 10.10.x.250 on my LAN.
+Doing so would require the additional steps of creating the set and=20
+populating it but, once that is accomplished you could use a single rule=20
+which, asssuming the name of the set you create is 'limithosts',  would loo=
+k=20
+simething like:
 
-That works fine. I can ssh from the WLAN-network to 10.128.x.250 and get
-access to the desired server.
+iptables -A INPUT -m set --set limithosts src -m limit -j ACCEPT
 
-I need to get access the same way from the internet, so eg a.b.c.50 is
-forwarded to 10.128.x.250.
+The ipset site at http://people.netfilter.org/kadlec/ipset/ provides an=20
+excellent explanation of what ipset is and how to use it.
 
-I'tried multiple solutions, but nothing works.
+Just a thought...
 
-Any tips/links on how to get it to work?
+- Andrew Kraslavsky
 
-BTW the network is described here:
-	http://www.olsr-net.dk
+_________________________________________________________________
+Don=92t just search. Find. Check out the new MSN Search!=20
+http://search.msn.click-url.com/go/onm00200636ave/direct/01/
 
--- 
-Henning Wangerin <post+050629@henning.wangerin.dk>
 
