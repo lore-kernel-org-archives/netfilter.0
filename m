@@ -1,12 +1,11 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: target ACCEPT in maccheck chain, forward chain is still used?
-Date: Sun, 11 Jun 2006 14:16:01 +0200
-Message-ID: <448C0981.2030807@rtij.nl>
-References: <44898157.8080802@netcabo.pt>
+From: "Raghu Ni" <raghuni@gmail.com>
+Subject: How to configure Firewall/router without aliasing
+Date: Tue, 13 Jun 2006 15:56:28 +0530
+Message-ID: <68869d910606130326m2602f270o8a28c680b81f7335@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44898157.8080802@netcabo.pt>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,49 +17,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: cifroes <cifroes@netcabo.pt>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-cifroes wrote:
+On my Linux machine I have two NICs with the following IPs on eth0 and
+eth1 respectively.
 
->hi,
->
->I'm configuring a machine with iptables to serve as "router" and I have
->a rather strange question.
->
->I have to do mac check on one of the networks the router is connected so
->I have something like this:
->iptables -t mangle -N maccheck
->iptables -t mangle -I PREROUTING -i eth1 -j maccheck
->iptables -t mangle -A maccheck -m mac -j ACCEPT --mac-source AA:BB:CC...etc
->iptables -t mangle -A maccheck -j DROP
->
->(this is not pasted so ignore the typos)
->
->I also have many rules in FORWARD chain.
->
->
->My question is simple: what happens to the packet when it's marked as
->ACCEPT by the 3rd rule? The rules that apply to that packet in the
->FORWARD chain are still used or the ACCEPT stuff just overrides everything?
->
->
->My tests say the FORWARD RULES are still used, am i correct?
->
->  
->
+  EXTIP=xxx.xxx.xxx.1 (External PUBLIC IP on eth0)
+  INTGW=192.168.0.254 (Gateway for Internal Network on eth1)
 
-Correct. If a packet is ACCEPTed (which may be implicit by falling of a 
-chain, in that case the chains policy is applied), processing continues 
-with the next chain. Otherwise processing stops.
+  INTIP=192.168.0.1 (Internal Server)
 
-So if your PREROUTING chain has a policy of ACCEPT (which it should, 
-check with iptables-save command), explicitly ACCEPTing a packet is no 
-different from falling of the chain. In that last case you already know 
-the rest of the chains are applied (think of an empty chain), so it is 
-easy to see that any ACCEPT means to continue with the next chain.
+  Normally, if any one wants to access my server which is running in
+DMZ (With a private IP) then, we will write a DNAT rules in iptables
+like
 
-HTH,
-M4
+  iptables -p tcp -t nat -A PREROUTING -i eth0-s aaa.bbb.ccc.ddd -j
+DNAT --to-destination 192.168.0.1
 
+  or
+
+  iptables -p tcp -t nat -A PREROUTING -i eth1 -s aaa.bbb.ccc.ddd -d
+xxx.xxx.xxx.1 -j DNAT --to-destination 192.168.0.1
+
+  Both the above rules are working fine for me.
+  For ex: If a client from the ip aaa.bbb.ccc.ddd tries to connect to
+port 22 on the IP xxx.xxx.xxx.1 then, it will be DNATed to
+192.168.0.1. and as I mentioned above this is working fine for me.
+
+  But, xxx.xxx.xxx.1 is my firewall's (Primary) IP which we don't want
+to disclose to anybody as security concern. Instead, we want to give
+another IP (Ex: xxx.xxx.xxx.2) to access my internal server
+(192.168.0.1) to our client.
+
+  One solution, which I have for this is, assigning xxx.xxx.xxx.2 as
+an alias IP to my external NIC and my iptables rule should be either
+
+  iptables -p tcp -t nat -A PREROUTING -i eth1 -s aaa.bbb.ccc.ddd -j
+DNAT --to-destination 192.168.0.1
+  Or
+  iptables -p tcp -t nat -A PREROUTING -i eth1 -s aaa.bbb.ccc.ddd -d
+xxx.xxx.xxx.2 -j DNAT --to-destination 192.168.0.1
+
+  With this, without changing any other settings client can able to
+access my internal server (192.168.0.1) from his IP (aaa.bbb.ccc.ddd)
+i.e. client will do ssh to xxx.xxx.xxx.2 and because of our DNAT rule
+he will be DNATed to 192.168.0.1 automatically.
+
+  Here, creating an alias IP is not at all a secure way as both the
+IPs (xxx.xxx.xxx.1 and xxx.xxx.xxx.2) are open to internet. So,
+without IP aliasing, How to DNAT a packet which is coming for
+xxx.xxx.xxx.2 to my internal IP.
+
+  In simple way, with out IP aliasing How to DNAT (one to one only) on
+other public IP which is not assigned on my firewall box. I believe,
+in iptables, for DNAT rule, we don't require writing a separate SNAT
+rule again.
+=====================================================================
+ While configuring Hardware firewall, we will just allocate only one
+IP on WAN port and we will configure all other public to private DNAT
+rules separately, in which case except the public IP which is
+configured to WAN, no other IP will be exposed to Internet. I am
+trying to implement the same scenario.
+==================================================================================================
+
+ Waiting for any reply,
+ RaghuNi
 
