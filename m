@@ -1,9 +1,9 @@
-From: "Kilian" <kil@gnu.ch>
-Subject: iptables & grsecurity: iptables not logging to syslog anymore
-Date: Wed, 14 Jun 2006 09:53:32 +0200 (CEST)
-Message-ID: <49984.193.246.253.20.1150271612.squirrel@fook.gnu.ch>
+From: "Jimmy Hedman" <jimmy.hedman@southpole.se>
+Subject: Odd problem with conntrack
+Date: Wed, 14 Jun 2006 11:18:07 +0200 (CEST)
+Message-ID: <4820.212.3.14.77.1150276687.squirrel@intern.southpole.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;boundary="----=_20060614111807_91561"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,25 +15,92 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+------=_20060614111807_91561
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-I have a problem with grsecurity 2.1.8 (kernel 2.6.14) and iptables
-version 1.2.11: since installing the grsecurity patch and gradm, iptables
-does not log to syslog anymore. Console logging still works and the
-messages are present in the kernel ring buffer (dmesg), but the kernel
-facility in syslog does not receive the messages from iptables specified
-with --LOG target anymore, no matter what priority I specify.
+Hi,
+We have encounterad an odd problem when enabling an statefull inspection
+rule. When using rsync with it's own protocoll (on port 873) it seem to
+"lose" it's states after between 35 and 50 MB data. If we instead rsync
+over ssh it is no problem to transfer over 4 GB.
+We are using a gigabit network, tg3 and e1000 network-cards. We have tried
+with both an cheap Netgear switch and a (not that cheap) Cisco switch with
+the same result.
+I tried to increase
+/proc/sys/net/core/{wmem_max,wmem_default,rmem_max,rmem_default} to
+83886080 and got somewhat better result but it's still not 100%
+successfull.
+I've attached our rules.
 
-Has anyone ever experienced something similar before? Where should I go
-looking? I tweaked with kernel.printk, syslog.conf and the iptables LOG
-statement, but I'm quite stuck right now... Thanks for any hint!
+Many thanks in advance,
+Jimmy Hedman
+------=_20060614111807_91561
+Content-Type: application/octet-stream; name="rules.save"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="rules.save"
 
-Sorry if this is OT here, but the grsecurity Mailing lists seems dead and
-I didn't know where to turn to..
+IyBHZW5lcmF0ZWQgYnkgaXB0YWJsZXMtc2F2ZSB2MS4yLjExIG9uIFdlZCBKdW4gMTQgMTE6MDk6
+NDEgMjAwNgoqZmlsdGVyCjpJTlBVVCBEUk9QIFswOjBdCjpGT1JXQVJEIERST1AgWzA6MF0KOk9V
+VFBVVCBEUk9QIFswOjBdCi1BIElOUFVUIC1pIGxvIC1qIEFDQ0VQVCAKLUEgSU5QVVQgLW0gc3Rh
+dGUgLS1zdGF0ZSBSRUxBVEVELEVTVEFCTElTSEVEIC1qIEFDQ0VQVCAKLUEgSU5QVVQgLXAgaWNt
+cCAtbSBpY21wIC0taWNtcC10eXBlIDMgLWogQUNDRVBUIAotQSBJTlBVVCAtcCBpY21wIC1tIGlj
+bXAgLS1pY21wLXR5cGUgOCAtaiBBQ0NFUFQgCi1BIElOUFVUIC1wIGljbXAgLW0gaWNtcCAtLWlj
+bXAtdHlwZSAxMSAtaiBBQ0NFUFQgCi1BIElOUFVUIC1wIHRjcCAtbSBzdGF0ZSAtLXN0YXRlIE5F
+VyAtbSB0Y3AgLS1kcG9ydCAyMSAtaiBBQ0NFUFQgCi1BIElOUFVUIC1zIDE5Mi4xNjguMTIuMC8y
+NTUuMjU1LjI1NS4wIC1wIHRjcCAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtbSB0Y3AgLS1kcG9ydCAy
+MiAtaiBBQ0NFUFQgCi1BIElOUFVUIC1zIDE5Mi4xNjguMTMuMC8yNTUuMjU1LjI1NS4wIC1wIHRj
+cCAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtbSB0Y3AgLS1kcG9ydCAyMiAtaiBBQ0NFUFQgCi1BIElO
+UFVUIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCA4MCAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtaiBBQ0NF
+UFQgCi1BIElOUFVUIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCA4NzMgLW0gc3RhdGUgLS1zdGF0ZSBO
+RVcgLWogQUNDRVBUIAotQSBJTlBVVCAtcyAxOTIuMTY4LjEyLjAvMjU1LjI1NS4yNTUuMCAtcCB0
+Y3AgLW0gdGNwIC0tZHBvcnQgMjUgLW0gc3RhdGUgLS1zdGF0ZSBORVcgLWogQUNDRVBUIAotQSBJ
+TlBVVCAtcyAxOTIuMTY4LjEzLjAvMjU1LjI1NS4yNTUuMCAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQg
+MjUgLW0gc3RhdGUgLS1zdGF0ZSBORVcgLWogQUNDRVBUIAotQSBJTlBVVCAtcCB1ZHAgLW0gdWRw
+IC0tZHBvcnQgNTMgLWogQUNDRVBUIAotQSBJTlBVVCAtcyAxOTIuMTY4LjEyLjAvMjU1LjI1NS4y
+NTUuMCAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgNTMgLW0gc3RhdGUgLS1zdGF0ZSBORVcgLWogQUND
+RVBUIAotQSBJTlBVVCAtcyAxOTIuMTY4LjEzLjAvMjU1LjI1NS4yNTUuMCAtcCB0Y3AgLW0gdGNw
+IC0tZHBvcnQgNTMgLW0gc3RhdGUgLS1zdGF0ZSBORVcgLWogQUNDRVBUIAotQSBJTlBVVCAtcyAx
+OTIuMTY4LjEyLjAvMjU1LjI1NS4yNTUuMCAtcCB1ZHAgLW0gdWRwIC0tZHBvcnQgNTE0IC1qIEFD
+Q0VQVCAKLUEgSU5QVVQgLXMgMTkyLjE2OC4xMy4wLzI1NS4yNTUuMjU1LjAgLXAgdWRwIC1tIHVk
+cCAtLWRwb3J0IDUxNCAtaiBBQ0NFUFQgCi1BIElOUFVUIC1zIDE5Mi4xNjguMTIuMC8yNTUuMjU1
+LjI1NS4wIC1wIHVkcCAtbSB1ZHAgLS1kcG9ydCAxMjMgLWogQUNDRVBUIAotQSBJTlBVVCAtcyAx
+OTIuMTY4LjEzLjAvMjU1LjI1NS4yNTUuMCAtcCB1ZHAgLW0gdWRwIC0tZHBvcnQgMTIzIC1qIEFD
+Q0VQVCAKLUEgSU5QVVQgLXMgMTkyLjE2OC4xMi4wLzI1NS4yNTUuMjU1LjAgLXAgdGNwIC1tIHRj
+cCAtLWRwb3J0IDEyMyAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtaiBBQ0NFUFQgCi1BIElOUFVUIC1z
+IDE5Mi4xNjguMTMuMC8yNTUuMjU1LjI1NS4wIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCAxMjMgLW0g
+c3RhdGUgLS1zdGF0ZSBORVcgLWogQUNDRVBUIAotQSBJTlBVVCAtaiBMT0cgLS1sb2ctcHJlZml4
+ICJJTlBVVCBJUFRhYmxlcyBzdG9wcGFkZTogIiAtLWxvZy1sZXZlbCA3IAotQSBJTlBVVCAtaiBE
+Uk9QIAotQSBPVVRQVVQgLW8gbG8gLWogQUNDRVBUIAotQSBPVVRQVVQgLW0gc3RhdGUgLS1zdGF0
+ZSBSRUxBVEVELEVTVEFCTElTSEVEIC1qIEFDQ0VQVCAKLUEgT1VUUFVUIC1wIGljbXAgLW0gaWNt
+cCAtLWljbXAtdHlwZSAzIC1qIEFDQ0VQVCAKLUEgT1VUUFVUIC1wIGljbXAgLW0gaWNtcCAtLWlj
+bXAtdHlwZSA4IC1qIEFDQ0VQVCAKLUEgT1VUUFVUIC1wIGljbXAgLW0gaWNtcCAtLWljbXAtdHlw
+ZSAxMSAtaiBBQ0NFUFQgCi1BIE9VVFBVVCAtZCAxOTIuMTY4LjEyLjggLXAgdGNwIC1tIHRjcCAt
+LWRwb3J0IDIxIC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIEFDQ0VQVCAKLUEgT1VUUFVUIC1kIDE5
+Mi4xNjguMTMuOCAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgMjEgLW0gc3RhdGUgLS1zdGF0ZSBORVcg
+LWogQUNDRVBUIAotQSBPVVRQVVQgLWQgMTkyLjE2OC4xMi45IC1wIHRjcCAtbSB0Y3AgLS1kcG9y
+dCAyMSAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtaiBBQ0NFUFQgCi1BIE9VVFBVVCAtZCAxOTIuMTY4
+LjEzLjkgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDIxIC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIEFD
+Q0VQVCAKLUEgT1VUUFVUIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCAyMiAtbSBzdGF0ZSAtLXN0YXRl
+IE5FVyAtaiBBQ0NFUFQgCi1BIE9VVFBVVCAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgMjUgLW0gc3Rh
+dGUgLS1zdGF0ZSBORVcgLWogQUNDRVBUIAotQSBPVVRQVVQgLWQgMTkyLjE2OC4xMi4wLzI1NS4y
+NTUuMjU1LjAgLXAgdWRwIC1tIHVkcCAtLXNwb3J0IDUzIC1qIEFDQ0VQVCAKLUEgT1VUUFVUIC1k
+IDE5Mi4xNjguMTMuMC8yNTUuMjU1LjI1NS4wIC1wIHVkcCAtbSB1ZHAgLS1zcG9ydCA1MyAtaiBB
+Q0NFUFQgCi1BIE9VVFBVVCAtcCB1ZHAgLW0gdWRwIC0tZHBvcnQgNTMgLWogQUNDRVBUIAotQSBP
+VVRQVVQgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDUzIC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIEFD
+Q0VQVCAKLUEgT1VUUFVUIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCA1MyAtbSBzdGF0ZSAtLXN0YXRl
+IE5FVyAtaiBBQ0NFUFQgCi1BIE9VVFBVVCAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgMTIzIC1tIHN0
+YXRlIC0tc3RhdGUgTkVXIC1qIEFDQ0VQVCAKLUEgT1VUUFVUIC1wIHVkcCAtbSB1ZHAgLS1kcG9y
+dCAxMjMgLWogQUNDRVBUIAotQSBPVVRQVVQgLWQgMTkyLjE2OC4xMi4wLzI1NS4yNTUuMjU1LjAg
+LXAgdGNwIC1tIHRjcCAtLWRwb3J0IDg3MyAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtaiBBQ0NFUFQg
+Ci1BIE9VVFBVVCAtZCAxOTIuMTY4LjEzLjAvMjU1LjI1NS4yNTUuMCAtcCB0Y3AgLW0gdGNwIC0t
+ZHBvcnQgODczIC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIEFDQ0VQVCAKLUEgT1VUUFVUIC1qIExP
+RyAtLWxvZy1wcmVmaXggIk9VVFBVVCBJUFRhYmxlcyBzdG9wcGFkZTogIiAtLWxvZy1sZXZlbCA3
+IAotQSBPVVRQVVQgLWogRFJPUCAKQ09NTUlUCiMgQ29tcGxldGVkIG9uIFdlZCBKdW4gMTQgMTE6
+MDk6NDEgMjAwNgo=
+------=_20060614111807_91561--
 
-Greetings,
-Kilian
+
 
