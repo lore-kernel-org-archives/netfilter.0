@@ -1,12 +1,10 @@
-From: Henning Wangerin <post+050629@henning.wangerin.dk>
-Subject: Re: NAT problems forwarding from a routed subnet.
-Date: Wed, 14 Jun 2006 00:47:52 +0200
-Message-ID: <1150238872.3585.3.camel@server.ltsp>
-References: <1150204810.16144.39.camel@server.ltsp> <448F0D00.50306@zoomnet.ro>
+From: "Kilian" <kil@gnu.ch>
+Subject: iptables & grsecurity: iptables not logging to syslog anymore
+Date: Wed, 14 Jun 2006 09:53:32 +0200 (CEST)
+Message-ID: <49984.193.246.253.20.1150271612.squirrel@fook.gnu.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <448F0D00.50306@zoomnet.ro>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,25 +18,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, 2006-06-13 at 22:07 +0300, Alexandru Dragoi wrote:
-> You will do same as in 10.128.x.250->10.10.x.250, but on the next router
-> (with nat capabilityes) to internet. 
+Hi all,
 
-Yeah.
-The moment you call for help, the solution pops into ones face.
+I have a problem with grsecurity 2.1.8 (kernel 2.6.14) and iptables
+version 1.2.11: since installing the grsecurity patch and gradm, iptables
+does not log to syslog anymore. Console logging still works and the
+messages are present in the kernel ring buffer (dmesg), but the kernel
+facility in syslog does not receive the messages from iptables specified
+with --LOG target anymore, no matter what priority I specify.
 
-The natting on the client-box is done via scripts, and I counldn't
-figure out witch parts to pick out.
+Has anyone ever experienced something similar before? Where should I go
+looking? I tweaked with kernel.printk, syslog.conf and the iptables LOG
+statement, but I'm quite stuck right now... Thanks for any hint!
 
-It's up and running find.
+Sorry if this is OT here, but the grsecurity Mailing lists seems dead and
+I didn't know where to turn to..
 
-> By the way, that link is not working.
-
-Hmm. Should be.
-
-Must have been a temporary outage of the old line :-(
-That's one more reason the get the new setup running quickly!
-
--- 
-Henning Wangerin <post+050629@henning.wangerin.dk>
+Greetings,
+Kilian
 
