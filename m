@@ -1,14 +1,11 @@
-From: Gino <regino_m@hotmail.com>
-Subject: =?iso-8859-1?q?Arptables_before_Iptables=2C_to_route_other_gatew?=
-	=?iso-8859-1?q?ays_Ip=B4s_traffic=3F?=
-Date: Tue, 20 Jun 2006 17:56:42 +0200
-Message-ID: <BAY105-DAV165C00F3FC7717F51DA04DE5870@phx.gbl>
-Reply-To: regino_m@hotmail.com
+From: Vincent Regnard <devel@regnard.org>
+Subject: conntrack utility
+Date: Tue, 20 Jun 2006 19:10:09 +0200
+Message-ID: <44982BF1.8090102@regnard.org>
+Reply-To: devel@regnard.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Message-ID: <2006620175642.626554@feanorhome>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,49 +16,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello!
+Hi,
 
-For much time I=B4ve been thinking in configuring an Hot Spot function in my=
- Linux based router:
+I've been playing with the conntrack recently, mainly to get 
+conntrack_sip working. Because I had some problems having it working on 
+a router with no nat. I compiled the conntrack utility, expecting to 
+make some debug with it. But I cannot have the conntrack utility 
+working. I use latest available version of the required libs and utility:
 
-The function is to route traffic to the internet network, ok, but the client=
- wouldn=B4t necessary have configured DHCP or the IP range of the local=
- network of the router itself... in other words, the HotSpots can easily=
- route traffic to an external network (internet) while it doesn=B4t matter at=
- all the Ip config of the client, so the router could be 10.0.0.1, and the=
- client could have it=B4s gateway configured at 192.168.0.1....
+- libnfnetlink-0.0.14
+- libnetfilter_conntrack-0.0.30
+- conntrack-1.00beta1
 
-With Iptables, only, it=B4s impossible to do this, and I=B4ve been thinking=
- configuring virtual interfaces in real time to route, but I think it=B4s=
- almost impossible and too hard for me...
+together with a kernel 2.6.16.20 and iptables 1.3.5
 
-But recently I have had a look at arptables... mmmmmmmmmmm..... it can=
- manage arp packets, and arp responses, so, my router maybe can do this:
+When invoking conntrack as root I always get the following error:
 
-0 - a client has not DHCP activated, and it=B4s network is quite different...=
- ok, the client starts networking, and asks for MAC of it=B4s gateway=
- static-ly configured (192.168.0.1)... it=B4s ARP.
-1 - Router catches arp traffic.
-2 - modify arp traffic and mangles the IP of the packet to itself... by=
- example, sets IP of the Arp packet to 10.0.0.1 (linux router itself).
+Operation failed: invalid parameters
 
-Now my questions:
-=A0
-1 - Does the ARP Request be answered with the linux router MAC address, so=
- the client may register 192.168.0.1 to <MAC linux router>=A0in its arp=
- table????
-2 - if the last one is true, I could think easily that the client would send=
- non-local-traffic to <MAC linux router>, then IPTABLES IN THE ROUTER MAY=
- FORWARD IT, AND MAYBE NAT IS POSSIBLE??????
-3 - I think too NAT is difficult because Linux router may think 192.168.0.x=
- (client) is at external network... can you imagine a way to solve this=
- problem???????
-4 - Do you understand something I said??? =A0=A0;) ;)
+I am apparently not the only one having this kind of trouble (cf this 
+list post on february 17th). I am wondering if there is any chance I can 
+have a release of conntrack working. Do some of you have it working (if 
+so what version of the libraries/conttrack do you play with ?).
 
-I=B4m getting mad with this....
+If you have any hints, I would be glad to ear from you. Just knowing it 
+work somewhere else and people use it sometimes would make me happy, so 
+I could carry on compiling on other environement and pray god a bit more 
+longer.
 
-Thanks so much!
+thanks for your feedback
 
+Vincent
 
