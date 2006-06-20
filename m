@@ -1,11 +1,14 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: iptables-restore of rules with inverted set match fails
-Date: Tue, 20 Jun 2006 13:21:49 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0606201320350.9358@blackhole.kfki.hu>
-References: <BAY106-F130990A95F83F74F8827A3D6870@phx.gbl>
+From: Gino <regino_m@hotmail.com>
+Subject: =?iso-8859-1?q?Arptables_before_Iptables=2C_to_route_other_gatew?=
+	=?iso-8859-1?q?ays_Ip=B4s_traffic=3F?=
+Date: Tue, 20 Jun 2006 17:56:42 +0200
+Message-ID: <BAY105-DAV165C00F3FC7717F51DA04DE5870@phx.gbl>
+Reply-To: regino_m@hotmail.com
 Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY106-F130990A95F83F74F8827A3D6870@phx.gbl>
+Message-ID: <2006620175642.626554@feanorhome>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,29 +19,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andrew Kraslavsky <andykras@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Mon, 19 Jun 2006, Andrew Kraslavsky wrote:
+Hello!
 
-> With iptablesw-save and iptables-restore version 1.33, restoration of
-> iptables rules with inverted set matches is failing with the following
-> error:
->
-> Bad argument `!--set'
-> Error occurred at line: 6
-> Try `iptables-restore -h' or 'iptables-restore --help' for more information.
+For much time I=B4ve been thinking in configuring an Hot Spot function in my=
+ Linux based router:
 
-That's a bug, inverted set matching is not saved properly then. I'm going
-to fix it.
+The function is to route traffic to the internet network, ok, but the client=
+ wouldn=B4t necessary have configured DHCP or the IP range of the local=
+ network of the router itself... in other words, the HotSpots can easily=
+ route traffic to an external network (internet) while it doesn=B4t matter at=
+ all the Ip config of the client, so the router could be 10.0.0.1, and the=
+ client could have it=B4s gateway configured at 192.168.0.1....
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+With Iptables, only, it=B4s impossible to do this, and I=B4ve been thinking=
+ configuring virtual interfaces in real time to route, but I think it=B4s=
+ almost impossible and too hard for me...
+
+But recently I have had a look at arptables... mmmmmmmmmmm..... it can=
+ manage arp packets, and arp responses, so, my router maybe can do this:
+
+0 - a client has not DHCP activated, and it=B4s network is quite different...=
+ ok, the client starts networking, and asks for MAC of it=B4s gateway=
+ static-ly configured (192.168.0.1)... it=B4s ARP.
+1 - Router catches arp traffic.
+2 - modify arp traffic and mangles the IP of the packet to itself... by=
+ example, sets IP of the Arp packet to 10.0.0.1 (linux router itself).
+
+Now my questions:
+=A0
+1 - Does the ARP Request be answered with the linux router MAC address, so=
+ the client may register 192.168.0.1 to <MAC linux router>=A0in its arp=
+ table????
+2 - if the last one is true, I could think easily that the client would send=
+ non-local-traffic to <MAC linux router>, then IPTABLES IN THE ROUTER MAY=
+ FORWARD IT, AND MAYBE NAT IS POSSIBLE??????
+3 - I think too NAT is difficult because Linux router may think 192.168.0.x=
+ (client) is at external network... can you imagine a way to solve this=
+ problem???????
+4 - Do you understand something I said??? =A0=A0;) ;)
+
+I=B4m getting mad with this....
+
+Thanks so much!
+
 
