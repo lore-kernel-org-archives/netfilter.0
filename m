@@ -1,9 +1,11 @@
-From: "Diana Asnani" <sakal_woman@hotmail.com>
-Subject: same prob again...cannot ping 202.184.41.41
-Date: Wed, 21 Jun 2006 15:03:16 +0800
-Message-ID: <BAY19-F233ECF40C109704F4C0AAC9E840@phx.gbl>
+From: "Tosho Yankov" <T.Yankov@snt.bg>
+Subject: conntrack patch--o-matic error
+Date: Wed, 21 Jun 2006 10:10:25 +0300
+Message-ID: <9C574B97B5C3F246B6CBAA099C87F42F048770@veles.snt.bg>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C69501.CD6F83C2"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,36 +16,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+This is a multi-part message in MIME format.
 
-this time is about iptables...previously, i posted about routing issues and 
-i got quite a lot of response on that...
-
-ok, i still could not ping 202.184.41.41 from my IP, 192.168.202.1...i could 
-not add this "route add -net 202.184.41.0/24 gw 192.168.202.1" in my routing 
-table because my default gateway is set as 192.168.202.14 in the vlan 
-configuration....and yes ipv4 forwarding is enabled in /etc/sysctl.conf...I 
-could always ping 192.168.206.1 because we are in the same vlan...but with 
-my gateway as 192.168.202.14 because its connected to the 
-vlan...192.168.206.1 is in the same PC with 202.184.41.41...
-
-the PC router 202.184.41.41/192.168.206.1 ( the PC router ) did NAT and 
-added this in the iptables:
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 202.184.41.41
-
-is there anything  else that i should do to make the PC 192.168.202.1 to 
-ping 202.184.41.41?? I'm really devastated with this problem...hope you guys 
-could help....
+------_=_NextPart_001_01C69501.CD6F83C2
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
 
-Diana
+I have
+linux-2.6.15.1
+patch-o-matic-ng-20060531
+iptables-1.3.4
 
-_________________________________________________________________
-Get your mobile ringtones, operator logos and picture messages from MSN 
-Mobile http://msn.smsfactory.no/
+while I try to compile kernel with modules for conntrack I have this
+error :
 
+scripts/Makefile.build:51: kbuild: net/ipv4/netfilter/Makefile - Usage
+of export-objs is obsolete in 2.6. Please fix!
+  CC [M]  net/ipv4/netfilter/ip_conntrack_standalone.o
+In file included from include/linux/netfilter_ipv4/ip_conntrack.h:32,
+                 from net/ipv4/netfilter/ip_conntrack_standalone.c:34:
+include/linux/netfilter_ipv4/ip_conntrack_talk.h:7:43:
+linux/netfilter_ipv4/lockhelp.h: No such file or directory In file
+included from include/linux/netfilter_ipv4/ip_conntrack.h:32,
+                 from net/ipv4/netfilter/ip_conntrack_standalone.c:34:
+include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: type
+defaults to `int' in declaration of `DECLARE_LOCK_EXTERN'
+include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: parameter
+names (without types) in function declaration
+include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: data
+definition has no type or storage class
+make[3]: *** [net/ipv4/netfilter/ip_conntrack_standalone.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
+
+
+Can anybody help me pleas ? what is wrong and how can a fix it ?=20
+Thank you, in advanced.
+Tosho Yankov
+Support Engineer
+S&T Bulgaria
+phone: +359 2 965 17 87
+fax: +359 2 975 16 00
+e-mail: t.yankov@snt.bg
+www.snt.bg
+
+
+------_=_NextPart_001_01C69501.CD6F83C2--
 
