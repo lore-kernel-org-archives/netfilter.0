@@ -1,9 +1,9 @@
-From: Giacomo Succi <giacomo_succi@email.it>
-Subject: Question concerning tunnels
-Date: Thu, 22 Jun 2006 11:44:58 +0200
-Message-ID: <449A669A.10908@email.it>
+From: "David Alexandre M. de Carvalho" <david@di.ubi.pt>
+Subject: iptables -L command
+Date: Wed, 21 Jun 2006 17:46:59 +0100 (WEST)
+Message-ID: <3720.10.0.1.96.1150908419.squirrel@www.di.ubi.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,61 +18,11 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-Hi to all.
-
-I've a small question concerning the tunnels in Linux.
-
-For an university project I need to create a tunnel from a machine to another
-(even if the dest machine is in a VM on the sender machine). So I looking for
-the "ip tunnel" command and the related stuff.
-
-But I didn't find the answare to this question:
-In theory a tunnel entry point grab the packet, doesn't modify it in any form,
-encapsulate it in another packet and it send it to de dest host. That's the way
-it also work on Linux in your implementation? That's true also for the GRE tunnels?
-
-I need the unmodified original packet. Neither in the TTL field.
-
-Otherwise i need to do an hook in the kernel (as I already done in the past for
-a similar problem).
-
-Thanks every one for the attention and... Sorry for my english -.-.
-- --
-Giacomo Succi
-
-- -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-Contacts:
-eMail: giacomo_succi@email.it; AIM: Anandir82
-Y!: anandir82; ICQ: 135781176
-J: Anandir@jabber.org; MSN: anandir@email.it
-
-GPG:		0x52CDCA27
-GPG Server:	http://sks.keyserver.penguin.de
-- -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.1 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFEmmaaUda2pFLNyicRAjUAAJ9mGxFf9tuV6zh7Bl2mme6OpjhEnQCfYlqg
-HfYLDmUK8IrM0pSoEQsPJDc=
-=jBTC
------END PGP SIGNATURE-----
- 
-
- 
-
- --
-
- Email.it, the professional e-mail, gratis per te: http://www.email.it/f
-
- 
-
- Sponsor:
-
- Crea il tuo sito web dinamico con ASP e ACCESS - VideoCorso professionale direttamente nel tuo computer. Trucchi e segreti
-
- Clicca qui: http://adv.email.it/cgi-bin/foclick.cgi?mid=5143&d=22-6
+Hi !
+How can I do something equivalent to "ipchains -L -M" ?
+I want to see active masq/nat rules.
+iptables -t nat -L is not enough. I need to see active connections.
+Thanks !
+Best regards
+David
 
