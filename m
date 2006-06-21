@@ -1,13 +1,11 @@
-From: Samuel =?iso-8859-1?Q?D=EDaz_Garc=EDa?= <samueldg@arcoscom.com>
-Subject: Re: conntrack patch--o-matic error
-Date: Wed, 21 Jun 2006 09:44:37 +0200 (CEST)
-Message-ID: <36199.195.55.244.106.1150875877.squirrel@www.arcoscom.com>
-References: <9C574B97B5C3F246B6CBAA099C87F42F048770@veles.snt.bg>
-Reply-To: samueldg@arcoscom.com
+From: "Tosho Yankov" <T.Yankov@snt.bg>
+Subject: FW: conntrack patch--o-matic error
+Date: Wed, 21 Jun 2006 11:54:11 +0300
+Message-ID: <9C574B97B5C3F246B6CBAA099C87F42F048785@veles.snt.bg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C69510.4C839046"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9C574B97B5C3F246B6CBAA099C87F42F048770@veles.snt.bg>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,10 +16,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-For many months, the patch for "talk" broke the kernel modules compilation
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C69510.4C839046
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Yes I need from this module for nat/masq
+
+Tosho Yankov
+Support Engineer
+S&T Bulgaria
+phone: +359 2 965 17 87
+fax: +359 2 975 16 00
+e-mail: t.yankov@snt.bg
+www.snt.bg
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org =
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Samuel Diaz =
+Garcia
+Sent: Wednesday, June 21, 2006 10:45 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: conntrack patch--o-matic error
+
+For many months, the patch for "talk" broke the kernel modules =
+compilation
 under 2.6.x kernels.
 
 As is writen in some place: "only use patches you really need".
@@ -67,7 +90,8 @@ El Mie, 21 de Junio de 2006, 9:10, Tosho Yankov escribi=F3:
 >                  from net/ipv4/netfilter/ip_conntrack_standalone.c:34:
 > include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: type
 > defaults to `int' in declaration of `DECLARE_LOCK_EXTERN'
-> include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: parameter
+> include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: =
+parameter
 > names (without types) in function declaration
 > include/linux/netfilter_ipv4/ip_conntrack_talk.h:10: warning: data
 > definition has no type or storage class
@@ -90,4 +114,8 @@ El Mie, 21 de Junio de 2006, 9:10, Tosho Yankov escribi=F3:
 >
 
 
+
+
+
+------_=_NextPart_001_01C69510.4C839046--
 
