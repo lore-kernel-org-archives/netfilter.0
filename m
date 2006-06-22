@@ -1,11 +1,12 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: iptables -L command
-Date: Thu, 22 Jun 2006 15:19:30 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0606221518550.28760@mercury.sdinet.de>
-References: <3720.10.0.1.96.1150908419.squirrel@www.di.ubi.pt>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: Pom patch error
+Date: Thu, 22 Jun 2006 15:16:46 +0200 (CEST)
+Message-ID: <60157.193.173.147.3.1150982206.squirrel@webmail.sterenborg.info>
+References: <20060622120928.8174E699BF@smtp.sterenborg.info>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3720.10.0.1.96.1150908419.squirrel@www.di.ubi.pt>
+In-Reply-To: <20060622120928.8174E699BF@smtp.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,24 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: "David Alexandre M. de Carvalho" <david@di.ubi.pt>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-On Wed, 21 Jun 2006, David Alexandre M. de Carvalho wrote:
+On Thu, June 22, 2006 14:17, Ali Ozaltin wrote:
+> Hello ,
+> How can i install patch-o-matic on =EF=BF=BD2.6.9-34.0.1.Elsmp kernel v=
+ersion ? When
 
-> How can I do something equivalent to "ipchains -L -M" ?
-> I want to see active masq/nat rules.
-> iptables -t nat -L is not enough. I need to see active connections.
+This is probably a CentOS kernel ?
 
-cat /proc/net/ip_conntrack
+> i try ./runme pending its giving this error messages ; Do you want to a=
+pply
+> this patch [N/y/t/f/a/r/b/w/q/?] y Testing patch submitted/01_2.4.19.pa=
+tch...
 
-c'ya
-sven
+Maybe I'm reading this wrong, but if not then I think it's strange that P=
+OM
+tries to use a 2.4.29 patch on a 2.6.9 kernel.
+Btw, what is the exact commandline that you use to execute "runme"?
 
--- 
+> Warning - no help text file could be found in either
+> /usr/src/kernels/2.6.9-34.0.1.EL-smp-i686/net/ipv4/netfilter/Config.hel=
+p
+> or /usr/src/kernels/2.6.9-34.0.1.EL-smp-i686/Documentation/Configure.he=
+lp
+> Failed to patch copy of /usr/src/kernels/2.6.9-34.0.1.EL-smp-i686
+> TEST FAILED: patch NOT applied.
+> [Press enter to continue]
+> What can i do ? pls help
+> Installed OS: CentOS 4.3
 
-The Internet treats censorship as a routing problem, and routes around it.
-(John Gilmore on http://www.cygnus.com/~gnu/)
+It could be that this kernel has been modified by CentOS. POM should be
+working on a vanilla kernel from kernel.org so you could try using one of
+those.
+
+
+Gr,
+Rob
+
+
 
