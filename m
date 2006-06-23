@@ -1,13 +1,9 @@
-From: Dimitri Yioulos <dyioulos@firstbhph.com>
-Subject: Re: VPN (off-topic)
-Date: Fri, 23 Jun 2006 09:13:10 -0400
-Message-ID: <200606230913.10915.dyioulos@firstbhph.com>
-References: <20060623_130008_007203.zottmann@ig.com.br>
+From: Michael Da Cova <mdacova@equiinet.com>
+Subject: RE: VPN (off-topic)
+Date: Fri, 23 Jun 2006 14:30:12 +0100
+Message-ID: <193F46660487D3119850009027D0CEF501E59D6D@EQUIINET01>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060623_130008_007203.zottmann@ig.com.br>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,42 +15,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Friday June 23 2006 9:00 am, zottmann wrote:
-> Hi !!
->
-> Sorry for this off-topic, but I guess this should be a good place
-> to ask for advice ...
->
-> We use iptables, and we are needing to install a vpn solution in
-> order to build vpns with other companies that may be using various
-> vpn solutions, so we need one that can build vpns based on
-> standards, like ipsec.
->
-> I have heard about OpenVPN and FreeSwan.
->
-> Are these good solutions? Do they have any management resources,
-> like graphical interfaces for setting up vpns and getting
-> information about its use?
->
-> Are there any other open source or free implementation of vpn that
-> is better suited for use with iptables?
->
-> Thanks in Advance,
 
-We use OpenVPN (as well as iptables) in our shop, and it works great.  
-Adding the rules to iptables for OpenVPN operability is simple.  The 
-OpenVPN documentation is quite thorough, and the mailing list is very 
-helpful.
+Hi 
 
-HTH.
+I totally agree and as for windows gui see http://openvpn.se/
 
-Dimitri
+The issue you will get is when trying to connect to third party VPN's most
+of the mainstream kit support IPSec see openswan http://www.openswan.org/
+also on the freeswan site they have a very good interoperability list
+http://www.freeswan.org/freeswan_trees/freeswan-2.06/doc/interop.html 
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
 
+
+
+
+
+
+|-----Original Message-----
+|From: Vivek Dasmohapatra [mailto:vivek@etla.org] 
+|Sent: 23 June 2006 14:10
+|To: zottmann
+|Cc: netfilter@lists.netfilter.org
+|Subject: Re: VPN (off-topic)
+|
+|On Fri, 23 Jun 2006, zottmann wrote:
+|
+|> I have heard about OpenVPN and FreeSwan.
+|
+|I have found openvpn to be very good - easy to install, 
+|trivial to make work with firewalls, UDP based (or TCP if you 
+|_have_ to), and reliable. Oh, and as long as you have TUN/TAP 
+|devices already (which you should), no kernel tweakery 
+|involved. I'd definitely recommend it.
+|
+|
+|
+|
+|This email has been scanned by netpilot.edison.equiinet.com if 
+|you believe this email to be SPAM or HAM please click 
+|https://netpilot.edison.equiinet.com/secure-admin?mod=spamassas
+sin-reclassify&mid=1151068379.0373722080
+|
 
