@@ -1,11 +1,11 @@
-From: zottmann <zottmann@ig.com.br>
-Subject: VPN (off-topic)
-Date: Fri, 23 Jun 2006 10:00:08 -0300
-Message-ID: <20060623_130008_007203.zottmann@ig.com.br>
+From: Vivek Dasmohapatra <vivek@etla.org>
+Subject: Re: VPN (off-topic)
+Date: Fri, 23 Jun 2006 14:09:45 +0100 (BST)
+Message-ID: <Pine.LNX.4.62.0606231407480.15699@pike.pepperfish.net>
+References: <20060623_130008_007203.zottmann@ig.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="Message-Boundary-by-Mail-Sender-1151067608"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060623_130008_007203.zottmann@ig.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,39 +16,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: zottmann <zottmann@ig.com.br>
+Cc: netfilter@lists.netfilter.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Fri, 23 Jun 2006, zottmann wrote:
 
---Message-Boundary-by-Mail-Sender-1151067608
-Content-type: text/plain; charset=ISO-8859-1
-Content-description: Mail message body
-Content-transfer-encoding: 8bit
-Content-disposition: inline
+> I have heard about OpenVPN and FreeSwan.
 
-Hi !! 
+I have found openvpn to be very good - easy to install, trivial to make work
+with firewalls, UDP based (or TCP if you _have_ to), and reliable. Oh,
+and as long as you have TUN/TAP devices already (which you should), no 
+kernel tweakery involved. I'd definitely recommend it.
 
-Sorry for this off-topic, but I guess this should be a good place to ask for 
-advice ... 
-
-We use iptables, and we are needing to install a vpn solution in order to 
-build vpns with other companies that may be using various vpn solutions, so 
-we need one that can build vpns based on standards, like ipsec. 
-
-I have heard about OpenVPN and FreeSwan. 
-
-Are these good solutions? Do they have any management resources, like 
-graphical interfaces for setting up vpns and getting information about its 
-use? 
-
-Are there any other open source or free implementation of vpn that is better 
-suited for use with iptables? 
-
-Thanks in Advance, 
-
-
-
---Message-Boundary-by-Mail-Sender-1151067608--
 
 
