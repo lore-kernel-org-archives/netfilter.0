@@ -1,8 +1,8 @@
 From: dog daemon <dog.daemon@gmail.com>
 Subject: Could policy routing with fwmark be applied to locally generated
  packet ?
-Date: Fri, 23 Jun 2006 17:43:09 +0800
-Message-ID: <449BB7AD.6010102@gmail.com>
+Date: Fri, 23 Jun 2006 17:46:42 +0800
+Message-ID: <449BB882.8030706@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -23,24 +23,24 @@ Hi all:
 
 Below is the setting in my linux box :
 
-          +--- eth0 10.0.30.1/24 ------------------- 10.0.0.254 gw
+          +--- eth0 10.5.30.17/24 ------------------- 10.5.30.254 gw
 Linux Box |                             wired
           |
-          +--- wlan 192.168.0.1/24 ----~~~~~------- 192.168.0.254 gw
+          +--- wlan 192.168.3.10/24 ----~~~~~------- 192.168.3.1 gw
                                        wireless
 
-10.0.0.254 is the default gateway in my linux box, but it has multiple 
-gateways rather than single one. The difference between the two 
-gateways(10.0.0.254 and 192.168.0.254) is that the former is restricted 
-by MIS but rather fast, the later is free for any traffic but is very 
+10.5.30.254 is the default gateway in my linux box, but it has multiple
+gateways rather than single one. The difference between the two
+gateways(10.5.30.254 and 192.168.3.10) is that the former is restricted
+by MIS but rather fast, the later is free for any traffic but is very
 slow and unstable.
 
-The question is could we use netfilter fwmark to mark locally generated 
-port 80 packet (http) to certain fwmark(ex. 0x20), and route them to 
-wireless route, but keep the default gw being 10.0.0.254?
+The question is could we use netfilter fwmark to mark locally generated
+port 80 packet (http) to certain fwmark(ex. 0x20), and route them to
+wireless route, but keep the default gw being 10.5.30.254?
 
-I have tested the following environment but it seemed that the packets 
-was be routed to the correct route, but had the incorrect source 
+I have tested the following environment but it seemed that the packets
+was be routed to the correct route, but had the incorrect source
 address(the address of eth0).
 
 
@@ -48,9 +48,9 @@ mangle table and routing table, rules
 ================================================================================
 SuperAMD linux # iptables -v -t mangle --list OUTPUT
 Chain OUTPUT (policy ACCEPT 4549 packets, 551K bytes)
- pkts bytes target     prot opt in     out     source               
+pkts bytes target     prot opt in     out     source
 destination
-   14   840 MARK       tcp  --  any    any     anywhere             
+   14   840 MARK       tcp  --  any    any     anywhere
 anywhere            tcp dpt:http MARK set 0x20
 
 SuperAMD linux # ip rule list
@@ -76,14 +76,14 @@ tcpdump wlan0 when I invoked firefox
 SuperAMD ~ # tcpdump -i wlan0 -n tcp or icmp
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
 listening on wlan0, link-type EN10MB (Ethernet), capture size 96 bytes
-17:05:44.570096 IP 10.5.30.17.37418 > 64.233.189.104.80: S 
-2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13842 23 
+17:05:44.570096 IP 10.5.30.17.37418 > 64.233.189.104.80: S
+2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13842 23
 0,nop,wscale 2>
-17:05:47.564537 IP 10.5.30.17.37418 > 64.233.189.104.80: S 
-2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13849 73 
+17:05:47.564537 IP 10.5.30.17.37418 > 64.233.189.104.80: S
+2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13849 73
 0,nop,wscale 2>
-17:05:53.564917 IP 10.5.30.17.37418 > 64.233.189.104.80: S 
-2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13864 73 
+17:05:53.564917 IP 10.5.30.17.37418 > 64.233.189.104.80: S
+2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13864 73
 0,nop,wscale 2>
 
 3 packets captured
@@ -91,12 +91,13 @@ listening on wlan0, link-type EN10MB (Ethernet), capture size 96 bytes
 0 packets dropped by kernel
 ====================================================================================
 
-I think that output routing decision was done before "OUTPUT" chain in 
-mangle table, and the outgoing address was already chosen(this is 
-different from building an router which redirect the incoming http 
+I think that output routing decision was done before "OUTPUT" chain in
+mangle table, and the outgoing address was already chosen(this is
+different from building an router which redirect the incoming http
 traffic to certain route).
 
-Is there another way to fit this requirement or am i missing 
+Is there another way to fit this requirement or am i missing
 something(documentation) ?
 Thanks.
+
 
