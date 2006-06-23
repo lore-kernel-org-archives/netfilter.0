@@ -1,11 +1,13 @@
-From: dog daemon <dog.daemon@gmail.com>
-Subject: Could policy routing with fwmark be applied to locally generated
- packet ?
-Date: Fri, 23 Jun 2006 17:46:42 +0800
-Message-ID: <449BB882.8030706@gmail.com>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: Could policy routing with fwmark be applied to locally
+	generated packet ?
+Date: Fri, 23 Jun 2006 11:56:28 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127AF@knowledge.wizdom.nu>
+References: <449BB882.8030706@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,8 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: dog daemon <dog.daemon@gmail.com>, netfilter@lists.netfilter.org
+
+I think you only need to add a simple SNAT rule to change the source IP =
+to 192.168.3.10
+=20
+Or there might be some ip_if_group option is /proc/sys/net to have local =
+outgoing packets always use the source address of the interface the are =
+leaving. Not sure about Linux, but Solaris has such an option in the =
+kernel.
+=20
+-Sietse
+
+________________________________
+
+From: netfilter-bounces@lists.netfilter.org on behalf of dog daemon
+Sent: Fri 23-Jun-06 11:46
 To: netfilter@lists.netfilter.org
+Subject: Could policy routing with fwmark be applied to locally =
+generated packet ?
+
+
 
 Hi all:
 
@@ -45,7 +67,10 @@ address(the address of eth0).
 
 
 mangle table and routing table, rules
-================================================================================
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
 SuperAMD linux # iptables -v -t mangle --list OUTPUT
 Chain OUTPUT (policy ACCEPT 4549 packets, 551K bytes)
 pkts bytes target     prot opt in     out     source
@@ -68,13 +93,20 @@ default via 10.5.30.254 dev eth0
 SuperAMD linux # ip route ls table squid
 192.168.3.0/24 dev wlan0  scope link  src 192.168.3.10
 default via 192.168.3.1 dev wlan0
-====================================================================================
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 tcpdump wlan0 when I invoked firefox
 
-====================================================================================
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
 SuperAMD ~ # tcpdump -i wlan0 -n tcp or icmp
-tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+tcpdump: verbose output suppressed, use -v or -vv for full protocol =
+decode
 listening on wlan0, link-type EN10MB (Ethernet), capture size 96 bytes
 17:05:44.570096 IP 10.5.30.17.37418 > 64.233.189.104.80: S
 2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13842 23
@@ -89,7 +121,10 @@ listening on wlan0, link-type EN10MB (Ethernet), capture size 96 bytes
 3 packets captured
 6 packets received by filter
 0 packets dropped by kernel
-====================================================================================
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 I think that output routing decision was done before "OUTPUT" chain in
 mangle table, and the outgoing address was already chosen(this is
@@ -99,5 +134,8 @@ traffic to certain route).
 Is there another way to fit this requirement or am i missing
 something(documentation) ?
 Thanks.
+
+
+
 
 
