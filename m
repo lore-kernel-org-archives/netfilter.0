@@ -1,14 +1,12 @@
-From: "Fabio S. Silva" <fabiofoz@gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Status open , filtered
-Date: Fri, 23 Jun 2006 12:07:51 -0300
-Message-ID: <12ec50350606230807x2bc5824dga382a6a89ec342bc@mail.gmail.com>
+Date: Fri, 23 Jun 2006 17:30:36 +0200
+Message-ID: <449C091C.4060309@plouf.fr.eu.org>
 References: <12ec50350606230755u68e1ad42p8c95714d208fad8c@mail.gmail.com>
-	<449C0231.4080703@addictz.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <449C0231.4080703@addictz.org>
-Content-Disposition: inline
+In-Reply-To: <12ec50350606230755u68e1ad42p8c95714d208fad8c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,55 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-right... but... is this correct ? or is a bug on creating firewall rules ?
+Hello,
 
-2006/6/23, Mike <Lists@addictz.org>:
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
->
-> - From http://www.insecure.org/nmap/
->
-> Filtered means that a firewall, filter, or other network obstacle is
-> blocking the port so that Nmap cannot tell whether it is open or closed.
->
-> Thanks
->
-> Mike
->
->
-> Fabio S. Silva wrote:
-> > Hi all, i have a question, i make a firewall but when i make a scan
-> > using nmap it returns to me that the ports are in state filtered no
-> > close
-> >
-> > (The 1673 ports scanned but not shown below are in state: filtered)
-> >
-> > Anybody know why it returns to me it? is my rules wrong? or is a type
-> > of rule that i created that make it in state filtered?
-> > Just the ssh/22 port is open, and if i make a internal test in the
-> > firewall i can see another ports opened, its good because i just can
-> > see my ssh port opened from the internet, but i dont understand why
-> > the state show me filtered.
-> >
-> >
-> > thanks
-> >
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.3 (MingW32)
->
-> iD8DBQFEnAIsj5H2goTKsxsRAvzMAKCvlfDUwPBXyu2tHEaHvItLDZ5Q+gCfeicL
-> xmGtYcdRvcmmYpSHG5Jlrgc=
-> =dvMW
-> -----END PGP SIGNATURE-----
->
->
+Fabio S. Silva a =E9crit :
+> Hi all, i have a question, i make a firewall but when i make a scan
+> using nmap it returns to me that the ports are in state filtered no
+> close
 
+What type of scan ? Which iptables target do you use to filter=20
+connection attempts on ports you want to close ? DROP or REJECT (if so,=20
+what type of reject) ?
 
--- 
----------------------------------------------------
-Fabio S. Silva
-LPIC-1 Linux Professional Institute Certified
+My results with nmap 2.54 various TCP scans :
+(better displayed with a fixed-sized font)
+
+Target / TCP scan type  -T(connect) -S(syn)  -F(fin) -X(Xmas) -N(null)
+DROP                     filtered  filtered   open     open     open
+REJECT icmp-port-unreach  closed   filtered filtered filtered filtered
+REJECT tcp-reset          closed    closed   closed   closed   closed
 
