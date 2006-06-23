@@ -1,9 +1,13 @@
-From: Michael Da Cova <mdacova@equiinet.com>
-Subject: RE: VPN (off-topic)
-Date: Fri, 23 Jun 2006 14:30:12 +0100
-Message-ID: <193F46660487D3119850009027D0CEF501E59D6D@EQUIINET01>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Pom patch error
+Date: Fri, 23 Jun 2006 15:54:05 +0200
+Message-ID: <449BF27D.7020506@plouf.fr.eu.org>
+References: <20060622120928.8174E699BF@smtp.sterenborg.info>
+	<60157.193.173.147.3.1150982206.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <60157.193.173.147.3.1150982206.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,49 +18,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hello,
 
-Hi 
+Rob Sterenborg a =E9crit :
+> On Thu, June 22, 2006 14:17, Ali Ozaltin wrote:
+>=20
+>>How can i install patch-o-matic on 2.6.9-34.0.1.Elsmp kernel version ? =
+When
+>>i try ./runme pending its giving this error messages ; Do you want to a=
+pply
+>>this patch [N/y/t/f/a/r/b/w/q/?] y Testing patch submitted/01_2.4.19.pa=
+tch...
+>=20
+> Maybe I'm reading this wrong, but if not then I think it's strange that=
+ POM
+> tries to use a 2.4.29 patch on a 2.6.9 kernel.
 
-I totally agree and as for windows gui see http://openvpn.se/
+Yes you're reading wrong, Rob, it's a 2.4.19 patch (to upgrade a 2.4.18=20
+kernel), not 2.4.29. ;-)
 
-The issue you will get is when trying to connect to third party VPN's most
-of the mainstream kit support IPSec see openswan http://www.openswan.org/
-also on the freeswan site they have a very good interoperability list
-http://www.freeswan.org/freeswan_trees/freeswan-2.06/doc/interop.html 
+Ali, from this message it looks like you're using a VERY old version of=20
+the original patch-o-matic (not patch-o-matic-ng) that was intended for=20
+older 2.4 kernels only and was replaced by patch-o-matic-ng. You should=20
+use a more recent patch-o-matic-ng (pom-ng) which is intended for recent=20
+2.4 kernels (above 2.4.18) and 2.6 kernels. As stated by the 2005-Jan-30=20
+announce in the news section of the Netfilter website, there are now no=20
+more pom-ng stable releases (I guess a patch is considered stable when=20
+it's included in the kernel and removed from pom-ng) but only daily=20
+snapshots available here :
 
+ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/
+  or
+http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/
 
-
-
-
-
-
-|-----Original Message-----
-|From: Vivek Dasmohapatra [mailto:vivek@etla.org] 
-|Sent: 23 June 2006 14:10
-|To: zottmann
-|Cc: netfilter@lists.netfilter.org
-|Subject: Re: VPN (off-topic)
-|
-|On Fri, 23 Jun 2006, zottmann wrote:
-|
-|> I have heard about OpenVPN and FreeSwan.
-|
-|I have found openvpn to be very good - easy to install, 
-|trivial to make work with firewalls, UDP based (or TCP if you 
-|_have_ to), and reliable. Oh, and as long as you have TUN/TAP 
-|devices already (which you should), no kernel tweakery 
-|involved. I'd definitely recommend it.
-|
-|
-|
-|
-|This email has been scanned by netpilot.edison.equiinet.com if 
-|you believe this email to be SPAM or HAM please click 
-|https://netpilot.edison.equiinet.com/secure-admin?mod=spamassas
-sin-reclassify&mid=1151068379.0373722080
-|
+Avoid the older pom-ng stable release versions in=20
+http://ftp.netfilter.org/pub/patch-o-matic-ng/, they're broken.
+And of course, apply only the patches you really need.
 
