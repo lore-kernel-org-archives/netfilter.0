@@ -1,14 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Could policy routing with fwmark be applied to locally generated
- packet ?
-Date: Fri, 23 Jun 2006 12:48:24 +0200
-Message-ID: <449BC6F8.2000205@plouf.fr.eu.org>
-References: <449BB882.8030706@gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127AF@knowledge.wizdom.nu>
+From: zottmann <zottmann@ig.com.br>
+Subject: VPN (off-topic)
+Date: Fri, 23 Jun 2006 10:00:08 -0300
+Message-ID: <20060623_130008_007203.zottmann@ig.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="Message-Boundary-by-Mail-Sender-1151067608"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C40127AF@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,45 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-Sietse van Zanen wrote :
-> 
-> dog daemon wrote :
->>
->> The question is could we use netfilter fwmark to mark locally generated
->> port 80 packet (http) to certain fwmark(ex. 0x20), and route them to
->> wireless route, but keep the default gw being 10.5.30.254?
+--Message-Boundary-by-Mail-Sender-1151067608
+Content-type: text/plain; charset=ISO-8859-1
+Content-description: Mail message body
+Content-transfer-encoding: 8bit
+Content-disposition: inline
 
-Yes, of course.
+Hi !! 
 
->> I have tested the following environment but it seemed that the packets
->> was be routed to the correct route, but had the incorrect source
->> address(the address of eth0).
-[...]
->> I think that output routing decision was done before "OUTPUT" chain in
->> mangle table, and the outgoing address was already chosen
+Sorry for this off-topic, but I guess this should be a good place to ask for 
+advice ... 
 
-That's correct.
+We use iptables, and we are needing to install a vpn solution in order to 
+build vpns with other companies that may be using various vpn solutions, so 
+we need one that can build vpns based on standards, like ipsec. 
 
->> Is there another way to fit this requirement or am i missing
->> something(documentation) ?
-> 
-> I think you only need to add a simple SNAT rule to change the source IP
-> to 192.168.3.10
+I have heard about OpenVPN and FreeSwan. 
 
-Yes. Avoid MASQUERADE which does not always work as expected when in 
-conjunction with advanced routing.
-The mark set for alternate routing can be reused to match the 
-connections which need to be SNATed.
+Are these good solutions? Do they have any management resources, like 
+graphical interfaces for setting up vpns and getting information about its 
+use? 
 
-> Or there might be some ip_if_group option is /proc/sys/net to have
-> local outgoing packets always use the source address of the interface
-> the are leaving. Not sure about Linux, but Solaris has such an option in
-> the kernel.
+Are there any other open source or free implementation of vpn that is better 
+suited for use with iptables? 
 
-IMHO such behaviour would be total nonsense.
+Thanks in Advance, 
+
+
+
+--Message-Boundary-by-Mail-Sender-1151067608--
+
 
