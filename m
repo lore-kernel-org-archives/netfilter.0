@@ -1,13 +1,14 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Could policy routing with fwmark be applied to locally
-	generated packet ?
-Date: Fri, 23 Jun 2006 11:56:28 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127AF@knowledge.wizdom.nu>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Could policy routing with fwmark be applied to locally generated
+ packet ?
+Date: Fri, 23 Jun 2006 12:48:24 +0200
+Message-ID: <449BC6F8.2000205@plouf.fr.eu.org>
 References: <449BB882.8030706@gmail.com>
+	<02BB8A4AC86C564C89C7F14CF98CE0C40127AF@knowledge.wizdom.nu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C40127AF@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,124 +19,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: dog daemon <dog.daemon@gmail.com>, netfilter@lists.netfilter.org
-
-I think you only need to add a simple SNAT rule to change the source IP =
-to 192.168.3.10
-=20
-Or there might be some ip_if_group option is /proc/sys/net to have local =
-outgoing packets always use the source address of the interface the are =
-leaving. Not sure about Linux, but Solaris has such an option in the =
-kernel.
-=20
--Sietse
-
-________________________________
-
-From: netfilter-bounces@lists.netfilter.org on behalf of dog daemon
-Sent: Fri 23-Jun-06 11:46
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Subject: Could policy routing with fwmark be applied to locally =
-generated packet ?
 
+Hello,
 
+Sietse van Zanen wrote :
+> 
+> dog daemon wrote :
+>>
+>> The question is could we use netfilter fwmark to mark locally generated
+>> port 80 packet (http) to certain fwmark(ex. 0x20), and route them to
+>> wireless route, but keep the default gw being 10.5.30.254?
 
-Hi all:
+Yes, of course.
 
-Below is the setting in my linux box :
+>> I have tested the following environment but it seemed that the packets
+>> was be routed to the correct route, but had the incorrect source
+>> address(the address of eth0).
+[...]
+>> I think that output routing decision was done before "OUTPUT" chain in
+>> mangle table, and the outgoing address was already chosen
 
-          +--- eth0 10.5.30.17/24 ------------------- 10.5.30.254 gw
-Linux Box |                             wired
-          |
-          +--- wlan 192.168.3.10/24 ----~~~~~------- 192.168.3.1 gw
-                                       wireless
+That's correct.
 
-10.5.30.254 is the default gateway in my linux box, but it has multiple
-gateways rather than single one. The difference between the two
-gateways(10.5.30.254 and 192.168.3.10) is that the former is restricted
-by MIS but rather fast, the later is free for any traffic but is very
-slow and unstable.
+>> Is there another way to fit this requirement or am i missing
+>> something(documentation) ?
+> 
+> I think you only need to add a simple SNAT rule to change the source IP
+> to 192.168.3.10
 
-The question is could we use netfilter fwmark to mark locally generated
-port 80 packet (http) to certain fwmark(ex. 0x20), and route them to
-wireless route, but keep the default gw being 10.5.30.254?
+Yes. Avoid MASQUERADE which does not always work as expected when in 
+conjunction with advanced routing.
+The mark set for alternate routing can be reused to match the 
+connections which need to be SNATed.
 
-I have tested the following environment but it seemed that the packets
-was be routed to the correct route, but had the incorrect source
-address(the address of eth0).
+> Or there might be some ip_if_group option is /proc/sys/net to have
+> local outgoing packets always use the source address of the interface
+> the are leaving. Not sure about Linux, but Solaris has such an option in
+> the kernel.
 
-
-mangle table and routing table, rules
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-SuperAMD linux # iptables -v -t mangle --list OUTPUT
-Chain OUTPUT (policy ACCEPT 4549 packets, 551K bytes)
-pkts bytes target     prot opt in     out     source
-destination
-   14   840 MARK       tcp  --  any    any     anywhere
-anywhere            tcp dpt:http MARK set 0x20
-
-SuperAMD linux # ip rule list
-0:      from all lookup local
-32765:  from all fwmark 0x20 lookup squid
-32766:  from all lookup main
-32767:  from all lookup default
-
-SuperAMD linux # ip route ls
-10.5.30.0/24 dev eth0  scope link
-192.168.3.0/24 dev wlan0  scope link
-127.0.0.0/8 dev lo  scope link
-default via 10.5.30.254 dev eth0
-
-SuperAMD linux # ip route ls table squid
-192.168.3.0/24 dev wlan0  scope link  src 192.168.3.10
-default via 192.168.3.1 dev wlan0
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-tcpdump wlan0 when I invoked firefox
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-SuperAMD ~ # tcpdump -i wlan0 -n tcp or icmp
-tcpdump: verbose output suppressed, use -v or -vv for full protocol =
-decode
-listening on wlan0, link-type EN10MB (Ethernet), capture size 96 bytes
-17:05:44.570096 IP 10.5.30.17.37418 > 64.233.189.104.80: S
-2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13842 23
-0,nop,wscale 2>
-17:05:47.564537 IP 10.5.30.17.37418 > 64.233.189.104.80: S
-2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13849 73
-0,nop,wscale 2>
-17:05:53.564917 IP 10.5.30.17.37418 > 64.233.189.104.80: S
-2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13864 73
-0,nop,wscale 2>
-
-3 packets captured
-6 packets received by filter
-0 packets dropped by kernel
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-I think that output routing decision was done before "OUTPUT" chain in
-mangle table, and the outgoing address was already chosen(this is
-different from building an router which redirect the incoming http
-traffic to certain route).
-
-Is there another way to fit this requirement or am i missing
-something(documentation) ?
-Thanks.
-
-
-
-
+IMHO such behaviour would be total nonsense.
 
