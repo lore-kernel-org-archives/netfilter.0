@@ -1,11 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: iptables-restore of rules with inverted set match fails
-Date: Fri, 23 Jun 2006 11:42:28 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0606231141330.17146@blackhole.kfki.hu>
-References: <BAY106-F130990A95F83F74F8827A3D6870@phx.gbl>
+From: dog daemon <dog.daemon@gmail.com>
+Subject: Could policy routing with fwmark be applied to locally generated
+ packet ?
+Date: Fri, 23 Jun 2006 17:43:09 +0800
+Message-ID: <449BB7AD.6010102@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY106-F130990A95F83F74F8827A3D6870@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +16,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andrew Kraslavsky <andykras@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Mon, 19 Jun 2006, Andrew Kraslavsky wrote:
+Hi all:
 
-> With iptablesw-save and iptables-restore version 1.33, restoration of
-> iptables rules with inverted set matches is failing with the following
-> error:
->
-> Bad argument `!--set'
-> Error occurred at line: 6
-> Try `iptables-restore -h' or 'iptables-restore --help' for more information.
+Below is the setting in my linux box :
 
-The bug is fixed in the iptables svn tree. Thanks for the bugreport!
+          +--- eth0 10.0.30.1/24 ------------------- 10.0.0.254 gw
+Linux Box |                             wired
+          |
+          +--- wlan 192.168.0.1/24 ----~~~~~------- 192.168.0.254 gw
+                                       wireless
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+10.0.0.254 is the default gateway in my linux box, but it has multiple 
+gateways rather than single one. The difference between the two 
+gateways(10.0.0.254 and 192.168.0.254) is that the former is restricted 
+by MIS but rather fast, the later is free for any traffic but is very 
+slow and unstable.
+
+The question is could we use netfilter fwmark to mark locally generated 
+port 80 packet (http) to certain fwmark(ex. 0x20), and route them to 
+wireless route, but keep the default gw being 10.0.0.254?
+
+I have tested the following environment but it seemed that the packets 
+was be routed to the correct route, but had the incorrect source 
+address(the address of eth0).
+
+
+mangle table and routing table, rules
+================================================================================
+SuperAMD linux # iptables -v -t mangle --list OUTPUT
+Chain OUTPUT (policy ACCEPT 4549 packets, 551K bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
+   14   840 MARK       tcp  --  any    any     anywhere             
+anywhere            tcp dpt:http MARK set 0x20
+
+SuperAMD linux # ip rule list
+0:      from all lookup local
+32765:  from all fwmark 0x20 lookup squid
+32766:  from all lookup main
+32767:  from all lookup default
+
+SuperAMD linux # ip route ls
+10.5.30.0/24 dev eth0  scope link
+192.168.3.0/24 dev wlan0  scope link
+127.0.0.0/8 dev lo  scope link
+default via 10.5.30.254 dev eth0
+
+SuperAMD linux # ip route ls table squid
+192.168.3.0/24 dev wlan0  scope link  src 192.168.3.10
+default via 192.168.3.1 dev wlan0
+====================================================================================
+
+tcpdump wlan0 when I invoked firefox
+
+====================================================================================
+SuperAMD ~ # tcpdump -i wlan0 -n tcp or icmp
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on wlan0, link-type EN10MB (Ethernet), capture size 96 bytes
+17:05:44.570096 IP 10.5.30.17.37418 > 64.233.189.104.80: S 
+2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13842 23 
+0,nop,wscale 2>
+17:05:47.564537 IP 10.5.30.17.37418 > 64.233.189.104.80: S 
+2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13849 73 
+0,nop,wscale 2>
+17:05:53.564917 IP 10.5.30.17.37418 > 64.233.189.104.80: S 
+2634301649:2634301649(0) win 5840 <mss 1460,sackOK,timestamp 13864 73 
+0,nop,wscale 2>
+
+3 packets captured
+6 packets received by filter
+0 packets dropped by kernel
+====================================================================================
+
+I think that output routing decision was done before "OUTPUT" chain in 
+mangle table, and the outgoing address was already chosen(this is 
+different from building an router which redirect the incoming http 
+traffic to certain route).
+
+Is there another way to fit this requirement or am i missing 
+something(documentation) ?
+Thanks.
 
