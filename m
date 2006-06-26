@@ -1,41 +1,35 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: ipset updated in svn
-Date: Mon, 26 Jun 2006 15:10:07 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0606261452020.20933@blackhole.kfki.hu>
+From: Nicolas Mailhot <Nicolas.Mailhot@laPoste.net>
+Subject: Re: repeated failed logons and ignoring them
+Date: Mon, 26 Jun 2006 16:20:35 +0200
+Message-ID: <449FED33.1010607@laPoste.net>
+References: <200606260702.57739.tyche@ica.net>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: Quoted-Printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200606260702.57739.tyche@ica.net>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: tyche <tyche@ica.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+tyche a =C3=A9crit :
+> over the last few days, my server has been attacked. i would=20
+> like to limit remote logon attempts by address so that if=20
+> someone tries to logon from an ip address and fails 3 times,=20
+> my computer will ignore repeated attempts from that ip=20
+> address. any idea how to make a rule for this?
 
-I just wanted to let you know that the kernel part of ipset has been
-updated in svn: thanks to everyone who sent patches to catch up the
-internal 2.6.x API changes.
+You want to try something like pam_abl
 
-The committed code should work on every latest release from the 2.6.15.x,
-2.6.16.x and 2.6.17.x series but it might still be be incompatible with
-earlier releases as extraversion cannot be checked at preprocessing time.
-
-If you have got problems to compile/run it using the latest extraversion,
-please let me know.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+--=20
+Nicolas Mailhot
 
