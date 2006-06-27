@@ -1,12 +1,11 @@
-From: Michael Rash <mbr@cipherdyne.org>
-Subject: Re: repeated failed logons and ignoring them
-Date: Mon, 26 Jun 2006 22:20:01 -0400
-Message-ID: <20060627022001.GA12553@minastirith.hsd1.md.comcast.net>
-References: <200606260702.57739.tyche@ica.net>
+From: Admin <netfilter-info@internode.com.au>
+Subject: troublesome load balancing and iptables to the rescue...maybe
+Date: Tue, 27 Jun 2006 19:47:38 +0930
+Message-ID: <200606271947.38079.netfilter-info@internode.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200606260702.57739.tyche@ica.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,53 +17,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Why let arbitrary IP addresses connect to your SSH daemon?  There have
-been remotely exploitable vulnerabilities discovered in various SSH
-implementations, and these vulnerabilities generally have nothing to
-do with trying to brute force passwords.
+Hi all
 
-You might be interested in "fwknop" which implements a passive
-authorization scheme called "Single Packet Authorization" in conjunction
-with Netfilter configured in a default-drop stance:
+We have a load balanced set of web servers (behind an alteon AD3) which all 
+work fine - except when the real servers (the webserver instances on the load 
+balanced machines) try to access the virtual ip (vip) on the alteon.
 
-http://www.cipherdyne.org/fwknop/
+Here's how it works
 
-Here is a HOWTO on setting up fwknop to use GnuPG keys:
+clientIP=AA
+VIP=BB
+RealServerIP=CC
+SourceIP=sip
+DestinationIP=dip
 
-http://www.cipherdyne.org/fwknop/docs/gpghowto.html
+The vip and real_server ips are all on the same network.
 
---
-Michael Rash
-http://www.cipherdyne.org/
-Key fingerprint = 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
+# client request from the outside
+(client) -> (vip) - sip=AA, dip=BB
+(vip) -> (real_server) - sip=AA, dip=CC
+# return traffic (real server on CC responds to client on AA)
+(real_server) -- sip=CC, dip=AA --> (alteon) -- sip=BB, dip=AA --> client
 
+So the alteon substitutes the virtual server ip with the real server one and 
+back again for the load balancing to work.
 
-On Jun 26, 2006, tyche wrote:
+Now the problem, we need the real servers to be able to access the service 
+provided on the VIP also. The ports on the alteon are configured properly 
+(client and server enable and so on) but the problem seems to be a routing 
+one.
 
-> over the last few days, my server has been attacked. i would 
-> like to limit remote logon attempts by address so that if 
-> someone tries to logon from an ip address and fails 3 times, 
-> my computer will ignore repeated attempts from that ip 
-> address. any idea how to make a rule for this?
-> 
-> tia
-> 
-> tyche
-> -- 
-> Win9x
-> 
-> A 32 bit extention
-> to a 16 bit patch
-> for a 8 bit operating system
-> on a 4 bit machine
-> by a 2 bit company
-> that cant stand 1 bit of competition
->  
-> -----------------------------------------------------------------------------
->     This Email is powered by ICA Canada OnLine
->          http://www.icacanadaonline.com
-> 
+Here's the flow of traffic when the real server tries to access the vip
+
+# client request
+(client) -> (vip) - sip=CC, dip=BB
+(vip) -> (real_server) - sip=CC, dip=CC
+# return traffic (real server on CC responds to client on CC - oops that's me)
+(real_server) -- sip=CC, dip=CC --> straight back to the real server, no dice.
+
+Now this is a common problem, usually solved by using proxy-ips, however the 
+alteon proxy-ips don't add X-Forwarded-For headers meaning our servers won't 
+get the correct client IPs - which is unacceptable.
+
+I have been trying to find a way to mangle the packets with iptables (on the 
+real servers) to make this work.
+
+The obvious (well...kinda obvious) way is to change the sip (to something 
+outside the local network)  on the incoming packet somewhere in the 
+PREROUTING or INPUT phase, then modify the dip in the response packet in the 
+POSTROUTING phase back to that of the real server.
+
+Unfortunately this is pretty much the reverse of what DNAT and SNAT are used 
+for.
+
+We want SNAT on the PREROUTING or INPUT phase and DNAT in the POSTROUTING (or 
+possibly OUTPUT, but I don't think so) one.
+
+Or perhaps - is there any way to force traffic from one IP to the same IP to 
+go through a remote router? Perhaps mark traffic from the real server to the 
+vip then act on that mark when the alteon directs it back?
+
+Can anyone offer any ideas how to solve this issue?
+
+Many thanks
+Admin
 
