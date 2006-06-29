@@ -1,13 +1,10 @@
-From: "Daniel De Graaf" <danieldegraaf@gmail.com>
-Subject: Re: Cannot find CONFIG_IP_NF_MATCH_STATE in kernel config
-Date: Wed, 28 Jun 2006 22:20:13 -0500
-Message-ID: <427c54c0606282020j77103190hafc220d21486d0d1@mail.gmail.com>
-References: <BAY104-F1032D8D540256FFC8DD0C4877F0@phx.gbl>
+From: "Rafael Marangoni" <listas@rafa.eti.br>
+Subject: Tool for monitoring, graphs, but more detailed
+Date: Thu, 29 Jun 2006 14:47:02 -0300
+Message-ID: <001701c69ba4$07144ab0$0a00000a@poseidon>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY104-F1032D8D540256FFC8DD0C4877F0@phx.gbl>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,32 +15,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: James Naples <oicu812_116@msn.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 6/28/06, James Naples <oicu812_116@msn.com> wrote:
-> Hello!
->
-> I am trying to follow some directions from
-> http://www.gentoo.org/doc/en/hpc-howto.xml and they give some kernel config
-> options that should be enabled.  I have located all but
-> CONFIG_IP_NF_MATCH_STATE=y, although i did locate a
-> CONFIG_NETFILTER_XT_MATCH_STATE=y.  I am wondering if this is the new tag
-> for that setting since who knows what kernel version was being referenced to
-> in the documentation.  I am guessing that the identifier was updated or
-> relocated in the 2.6.16.16 vanilla kernel i am working on.  If someone could
-> please point me in the right direction so i have an equivalent setting
-> enabled id appreciate it!
->
-> P.S.  I did not subscribe to the list since i am not heavily into this
-> stuff, just looking for a quick pointer.  Please drop me an email if you
-> have any hints for me.  Thanks in advance! :D
->
-> -James Naples
+Hello!
 
-Yes, this is the new tag; there was a major change starting in 2.6.15
-to unify the IPv4 and IPv6 matches for iptables.
+Well, I'm looking for a tool that can help me with a question: make
+reports/graphics of the traffic passing through some firewalls (Linux
+gateways, using iptables and others tools).
 
-- Daniel De Graaf
+Yes, I know about MRTG and some others, but it makes graphs of the
+entire traffic, and can't explain more detailed. 
+
+I need to explicit the traffic:
+	- smtp traffic;
+	- web (http/https) traffic;
+	- gree traffic;
+	- udp ;
+	- icmp;
+	- etc....
+
+Ok, it can work in the concept of ports, and don't need to open the
+packets passing through to know what type of TCP packet is it (example:
+TCP 80 is http, TCP 25 is SMTP).
+
+Searching, googling,...., I encountered a very good site (Stanford
+University) that collected many tools for monitoring, and probably
+anyone posted it here, but I'll do it again:
+
+http://www.slac.stanford.edu/
+
+But there looks like that doesn't have what I'm looking for.
+
+And tools like iptraf, don't help me, because I need graphs, beauty
+graphs ;).
+
+Anyone can help me with this question?!
+
+Thanks for all!
+
+Rafael Marangoni
+
 
