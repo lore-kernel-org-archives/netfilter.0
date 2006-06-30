@@ -1,14 +1,10 @@
-From: Sven Schuster <schuster.sven@gmx.de>
-Subject: Re: Tool for monitoring, graphs, but more detailed
-Date: Thu, 29 Jun 2006 20:13:24 +0200
-Message-ID: <20060629181324.GA12110@zion.homelinux.com>
-References: <001701c69ba4$07144ab0$0a00000a@poseidon>
+From: "Michael Novelo" <development@novellogic.de>
+Subject: Help for some Rules
+Date: Fri, 30 Jun 2006 08:24:56 +0200
+Message-ID: <000b01c69c0d$e832a960$7a00a8c0@nove1>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <001701c69ba4$07144ab0$0a00000a@poseidon>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,90 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Rafael Marangoni <listas@rafa.eti.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Our Firewall-Administrator is on Vacation for the next 4 Weeks. Now i =
+have
+the Problem that he installed a new Firewall (Endian) but he has =
+forgoten to
+set certain Rules:
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The Main-Office want to get Access to out network without setting on all
+Machines a route:
 
+=20
+Our internal Network is 192.168.171.xxx=20
+Firewall Adress: 192.168.171.99=20
+ISDN-Router(Gateway to the Main-Office): 192.168.171.80
 
-Hi Rafael,
+Main-Office Network: 192.168.1.xxx
 
-did you take a look at ntop?? http://www.ntop.org
-Gives you quite detailed view of what's going on...really good
-utility in my opinion, but may perhaps take quite some cpu
-power and hard disk space...
+=20
+now the Main Office want to access our network via an ISDN Router they
+dialin in a bintec bingo router which has 192.168.171.80 as ip adress. I
+have set a route for their network(route add -net 192.168.1.0 netmask
+255.255.255.0 gw 192.168.171.80) everything works fine for me in our
+network. i can send a ping to the servers on their network. traceroute =
+works
+also fine on all of our machines. But the Main-Office want to get access =
+to
+our Machines the only two ways which are working are =20
+1.) i set on every machine a route via route add=20
+2.) i change the default Gateway to 192.168.1.80
 
-hope this helps...
+Can sombody help me to set some rules to route all traffic who comes =
+from
+the MainOffice Network the right way?
 
+Greetings=20
 
+Novelo
 
-have a nice day :-)
-
-Sven
-
-
-On Thu, Jun 29, 2006 at 02:47:02PM -0300, Rafael Marangoni told us:
-> Hello!
->=20
-> Well, I'm looking for a tool that can help me with a question: make
-> reports/graphics of the traffic passing through some firewalls (Linux
-> gateways, using iptables and others tools).
->=20
-> Yes, I know about MRTG and some others, but it makes graphs of the
-> entire traffic, and can't explain more detailed.=20
->=20
-> I need to explicit the traffic:
-> 	- smtp traffic;
-> 	- web (http/https) traffic;
-> 	- gree traffic;
-> 	- udp ;
-> 	- icmp;
-> 	- etc....
->=20
-> Ok, it can work in the concept of ports, and don't need to open the
-> packets passing through to know what type of TCP packet is it (example:
-> TCP 80 is http, TCP 25 is SMTP).
->=20
-> Searching, googling,...., I encountered a very good site (Stanford
-> University) that collected many tools for monitoring, and probably
-> anyone posted it here, but I'll do it again:
->=20
-> http://www.slac.stanford.edu/
->=20
-> But there looks like that doesn't have what I'm looking for.
->=20
-> And tools like iptraf, don't help me, because I need graphs, beauty
-> graphs ;).
->=20
-> Anyone can help me with this question?!
->=20
-> Thanks for all!
->=20
-> Rafael Marangoni
->=20
->=20
->=20
-
---=20
-Linux zion.homelinux.com 2.6.17-rc5-mm1_35 #35 Tue May 30 14:11:06 CEST 200=
-6 i686 athlon i386 GNU/Linux
- 20:12:56 up 28 days, 20:57,  3 users,  load average: 2.28, 2.15, 2.12
-
---HcAYCG3uE/tztfnV
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFEpBhEo4FAdB2PneQRApEfAJ9bzI5rX2fDU7sdfu2egPtoOFO8wACaAkMs
-J1ZYLz6fqyern80j1G4Vu4Q=
-=vIZd
------END PGP SIGNATURE-----
-
---HcAYCG3uE/tztfnV--
 
