@@ -1,9 +1,9 @@
-From: "Michael Novelo" <development@novellogic.de>
-Subject: Help for some Rules
-Date: Fri, 30 Jun 2006 08:24:56 +0200
-Message-ID: <000b01c69c0d$e832a960$7a00a8c0@nove1>
+From: Ramen Sen <ramen@intnetsystems.com>
+Subject: per machine SNAT
+Date: Fri, 30 Jun 2006 14:03:28 +0100
+Message-ID: <44A52120.7020206@intnetsystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,41 +18,46 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Our Firewall-Administrator is on Vacation for the next 4 Weeks. Now i =
-have
-the Problem that he installed a new Firewall (Endian) but he has =
-forgoten to
-set certain Rules:
+Hi all,
 
-The Main-Office want to get Access to out network without setting on all
-Machines a route:
+I'm hoping someone might be able to point me in the right direction.
 
-=20
-Our internal Network is 192.168.171.xxx=20
-Firewall Adress: 192.168.171.99=20
-ISDN-Router(Gateway to the Main-Office): 192.168.171.80
+I have a large number of machines (potentially > 65,000) that I need to
+be able SNAT to particular addresses for particular machines, onto a
+different network.
 
-Main-Office Network: 192.168.1.xxx
+Essentially I'm trying to achieve a dynamic DHCP -> fixed address
+mapping onto a different network for logging and filtering based on ip
+address.  (The easiest way would be to do away with dynamic DHCP but I
+unfortunately do not have that option.  Also I will need to map
+different networks onto the same network, which also negates the use of
+static DHCP option.)
 
-=20
-now the Main Office want to access our network via an ISDN Router they
-dialin in a bintec bingo router which has 192.168.171.80 as ip adress. I
-have set a route for their network(route add -net 192.168.1.0 netmask
-255.255.255.0 gw 192.168.171.80) everything works fine for me in our
-network. i can send a ping to the servers on their network. traceroute =
-works
-also fine on all of our machines. But the Main-Office want to get access =
-to
-our Machines the only two ways which are working are =20
-1.) i set on every machine a route via route add=20
-2.) i change the default Gateway to 192.168.1.80
+One way to do this is to write a custom rule for each machine, eg:
 
-Can sombody help me to set some rules to route all traffic who comes =
-from
-the MainOffice Network the right way?
+Chain POSTROUTING (policy ACCEPT)
+target 	prot	opt 	source		destination
+SNAT 	all 	--	192.168.100.50	anywhere	to: 10.0.0.1
+SNAT 	all 	--	192.168.100.17	anywhere	to: 10.0.0.2
+SNAT 	all 	--	172.16.45.18	anywhere	to: 10.0.0.3
+...etc...
 
-Greetings=20
+That's ok for a small number of machines, but performance obviously
+drops off quickly for large numbers of rules.
 
-Novelo
+I looked at using ipset, but this does seem to be able to be used in
+this kind of case.
+
+Also, unfortunately there is no algorithmic mapping in this case - the
+information for the mappings will be stored in a database that will be
+used to populate the rules.
+
+Can anyone suggest a possible solution?  I am willing to write my own
+GPL'd kernel module (probably based on another that is part way there -
+e.g. ipset) if that is the answer, but before I throw my effort into
+that, I'm hoping that someone else might have an idea.
+
+regards
+Ramen Sen
 
 
