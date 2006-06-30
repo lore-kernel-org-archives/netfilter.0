@@ -1,7 +1,7 @@
-From: Ramen Sen <ramen@intnetsystems.com>
-Subject: per machine SNAT
-Date: Fri, 30 Jun 2006 14:03:28 +0100
-Message-ID: <44A52120.7020206@intnetsystems.com>
+From: "Andrea Bencini" <andrea.bencini@tin.it>
+Subject: Redirect-pop3
+Date: Fri, 30 Jun 2006 19:18:54 +0200
+Message-ID: <002701c69c69$445db990$0200640a@casa>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,46 +18,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-
-I'm hoping someone might be able to point me in the right direction.
-
-I have a large number of machines (potentially > 65,000) that I need to
-be able SNAT to particular addresses for particular machines, onto a
-different network.
-
-Essentially I'm trying to achieve a dynamic DHCP -> fixed address
-mapping onto a different network for logging and filtering based on ip
-address.  (The easiest way would be to do away with dynamic DHCP but I
-unfortunately do not have that option.  Also I will need to map
-different networks onto the same network, which also negates the use of
-static DHCP option.)
-
-One way to do this is to write a custom rule for each machine, eg:
-
-Chain POSTROUTING (policy ACCEPT)
-target 	prot	opt 	source		destination
-SNAT 	all 	--	192.168.100.50	anywhere	to: 10.0.0.1
-SNAT 	all 	--	192.168.100.17	anywhere	to: 10.0.0.2
-SNAT 	all 	--	172.16.45.18	anywhere	to: 10.0.0.3
-...etc...
-
-That's ok for a small number of machines, but performance obviously
-drops off quickly for large numbers of rules.
-
-I looked at using ipset, but this does seem to be able to be used in
-this kind of case.
-
-Also, unfortunately there is no algorithmic mapping in this case - the
-information for the mappings will be stored in a database that will be
-used to populate the rules.
-
-Can anyone suggest a possible solution?  I am willing to write my own
-GPL'd kernel module (probably based on another that is part way there -
-e.g. ipset) if that is the answer, but before I throw my effort into
-that, I'm hoping that someone else might have an idea.
-
-regards
-Ramen Sen
+I have firewall (iptables) in my network (10.100.0.0/24) with iface eth0 in
+local network and eth1 in external network (Internet).
+eth0-->10.100.0.1-->default gateway for my local network.
+My clients download mail (pop3).
+I would like install p3scan into linux server (10.100.0.250) in my network
+. This package listens on 8110 port and scans e-mails with clamav.
+Without changing any configuration on my clients, the firewall should
+redirect all mail download requests (pop3) to p3scan (port 8110); after
+p3scan will download mails, will controll them and will deliver them to the
+clients.
+Other info:
+Kernel-2.6
+iptables-1.3.0
+Which are the rules that I must implement on the firewall?
+Thanks
+Andrea
 
 
