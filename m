@@ -1,11 +1,12 @@
-From: "Bruno Nunes" <nunesb@gmail.com>
-Subject: Rsync PortRedirection
-Date: Mon, 3 Jul 2006 10:33:50 -0300
-Message-ID: <52837e3e0607030633k5320f2f2rc9b8564c9fe5d10e@mail.gmail.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: Netfilters for Beginners
+Date: Mon, 03 Jul 2006 14:30:44 -0400
+Message-ID: <1151951444.2915.11.camel@localhost>
+References: <6b16fb4c0607030319q666e7b26te80bcda41bc5a1d1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <6b16fb4c0607030319q666e7b26te80bcda41bc5a1d1@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Kaushal Shriyan <kaushalshriyan@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
-   How can i use rsync beetwen 2 computers in diferents networks? I
-put an addicional ip address in the router to host this forward that i
-will call _ip2
+On Mon, 2006-07-03 at 15:49 +0530, Kaushal Shriyan wrote:
+> Hi ALL
+> 
+> I am a novice to iptables, how do i start with iptables configuration,
+> is there a good docs to start with iptables :)
+<snip>
+We've always recommended Oskar Andreasson's tutorial at
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-Computer A = 139.82.xxx.xx1
-Computer B = 192.168.1.4
-router_ip2 = 139.82.xxx.xx2
+There are also some (slightly dated) training slide shows in the
+training section of the ISCS open source network security management
+project (http://iscs.sourceforge.net).
 
-router_ip2 and computer A are onde the same network
-router is on both networks, of course
+Hope that helps - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-rsync uses port 873 i guess
+If you would like to participate in the development of an open source
+enterprise class network security management system, please visit
+http://iscs.sourceforge.net
 
-this is what i want to run:
-rsync -razvp localhost:/home/ 139.82.xxx.xx2::backup/daily
-
-139.82.xxx.xxx -> router -> 192.168.1.4 : 873
-
-i tried:
-iptables -t nat -A PREROUTING -d 139.82.xxx.xx2 -i eth0 -p tcp --dport
-873 -j DNAT --to 192.168.1.4
-...but didnt work
-
-thanks
 
