@@ -1,12 +1,14 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Netfilters for Beginners
-Date: Mon, 03 Jul 2006 14:30:44 -0400
-Message-ID: <1151951444.2915.11.camel@localhost>
-References: <6b16fb4c0607030319q666e7b26te80bcda41bc5a1d1@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Packet Mirroring
+Date: Tue, 04 Jul 2006 09:32:52 +0200
+Message-ID: <44AA19A4.9000603@plouf.fr.eu.org>
+References: <eb5e15780606270602h772cca66s59358a4e15c59951@mail.gmail.com>	
+	<44A13084.2020400@plouf.fr.eu.org>
+	<eb5e15780607030143k6a31c31dl77c2d2a931f35d9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6b16fb4c0607030319q666e7b26te80bcda41bc5a1d1@mail.gmail.com>
+In-Reply-To: <eb5e15780607030143k6a31c31dl77c2d2a931f35d9@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +19,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Kaushal Shriyan <kaushalshriyan@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Mon, 2006-07-03 at 15:49 +0530, Kaushal Shriyan wrote:
-> Hi ALL
-> 
-> I am a novice to iptables, how do i start with iptables configuration,
-> is there a good docs to start with iptables :)
-<snip>
-We've always recommended Oskar Andreasson's tutorial at
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+[This is a reply to a message that did not show on the list for some=20
+unknow reason.]
 
-There are also some (slightly dated) training slide shows in the
-training section of the ISCS open source network security management
-project (http://iscs.sourceforge.net).
+conn itnel a =E9crit :
+> Thanx Pascal for your quick reply,
+>=20
+> Your answer is very correct but i am need to do it without patching the
+> kernel. I mean using programming.
+>=20
+> so i am just asking if there is another way of doing the same thing usi=
+ng
+> some APIs ?
 
-Hope that helps - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
-
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
-
+I'm a basic user, not a developper, and have no clue. Maybe someone else=20
+on the list knows.
 
