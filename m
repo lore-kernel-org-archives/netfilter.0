@@ -1,7 +1,7 @@
-From: Dwayne Hottinger <dhottinger@harrisonburg.k12.va.us>
-Subject: unable to connect to www.kernel.org
-Date: Wed,  5 Jul 2006 19:31:21 -0400
-Message-ID: <1152142281.43d200bca62fd@webmail.harrisonburg.k12.va.us>
+From: "Ramamurthy S" <ramams@gmail.com>
+Subject: Need help in duplicating the SNMP trap packets
+Date: Thu, 6 Jul 2006 09:27:19 +0530
+Message-ID: <ecc2c39a0607052057t63ce9d4cna30d66dab047f364@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -16,30 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-I had to redo my firewall and routers over the weekend due to a change in our
-isp.  After changing everything and modifying some of my firewall rules, every
-website works (that I know of) except for kernel.org.  I can ping kernel.org,
-traceroute it etc, but can not open either an http or ftp connection.  Initial
-connection is made, lynx says connecting to kernel.org and then just dies. 
-Squid reports a tcp_miss/504 for the site.  If I do an iptraf on my firewall
-for the interface connected to my DMZ I get the following:
-Wed Jul  5 18:58:35 2006; UDP; eth1; 46 bytes; from 204.111.40.4:33592 to
-204.152.191.37:33507.  If I try to connect from inside the firewall I dont get
-any connection to kernel.org that I can find.  I am really missing something
-here.  Ive been through my log files and cant find a reason for this.  I could
-send my firewall script if needed.  It is quite long though.  I have 4 class c
-addresses and several small subnets that get routed, natted, etc.  If anyone
-could help me try anything else to point me to where the problem may start and
-end.
+Hi,
 
-thanks everyone,
+In one of our projects we are using two products with two different
+SNMP stacks (one in C and other in Java) on the same Linux box. C SNMP
+stack is used to listen for traps from some old generation devices and
+Java SNMP stack is used to listen for traps from new generation
+devices. Is it possible to configure iptables to copy (duplicate)
+packets coming in to UDP port 162 to another port (say 1620) on the
+same box? In otherwords, both 162 and 1620 should receive all the SNMP
+traps coming in to the system.
 
+If I use REDIRECT target, I will be able to receive traps only on the
+redirected port, but not on 162.
 
---
-Dwayne Hottinger
-Network Administrator
-Harrisonburg City Public Schools
+I also tried to forward port 162 to two diffetent ports (one for C and
+other for Java SNMP) as follows. In this case packets are getting
+forwarded to only one port (1620).
+
+iptables -t nat -A PREROUTING -p udp --dport 162 -j REDIRECT
+--to-ports 1620-1621
+
+BTW, I looked at the ROUTE target in netfilter site. However, we may
+not be able to install kernel patches in customer environments (they
+may not allow it).
+
+Thanks in advance,
+Rama
 
