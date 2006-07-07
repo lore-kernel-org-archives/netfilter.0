@@ -1,7 +1,7 @@
 From: Dwayne Hottinger <dhottinger@harrisonburg.k12.va.us>
 Subject: RE: unable to connect to www.kernel.org
-Date: Thu,  6 Jul 2006 09:25:59 -0400
-Message-ID: <1152192359.4ab6ef6d5499c@webmail.harrisonburg.k12.va.us>
+Date: Fri,  7 Jul 2006 08:10:44 -0400
+Message-ID: <1152274244.a705c675fe31f@webmail.harrisonburg.k12.va.us>
 References: <000901c6a0be$babe4560$0101000a@sterenborg.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -20,18 +20,6 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-
-Im using squid on another box.  Running the transparent proxy.  I know the ports
-are wrong.  I agree that natting is working correctly Rob.  I'll get my script
-and clean it up and send it to the list for someone to dissect.  Might be a
-little.  Just seems weird that the only site I cant get to (so far) is
-kernel.org.  I thought maybe they did something weird on their end that someone
-knew about.
-
-thanks,
-
-ddh
-
 
 Quoting Rob Sterenborg <rob@sterenborg.info>:
 
@@ -71,7 +59,30 @@ Quoting Rob Sterenborg <rob@sterenborg.info>:
 > Rob
 >
 >
+Sirs,
+I sent Rob most of my firewall script.  Rob if you dont think that was
+appropriate, just let me know.  Id rather not send it to the entire world. 
+Here is what else Ive been able to dig up.  My http traffic gets redirected via
+the firewall to my proxy server over port 8080.  When attempting a connection
+to kernel.org, a netstat on the proxy server shows the following:
 
+tcp        0      1 proxy.harrisonbur:32871 zeus-pub2.kernel.o:http SYN_SENT
+tcp        0      0 proxy.harrison:webcache hcps-1ad4532410.hh:2188 ESTABLISHED
+tcp        0      0 proxy.harrisonburg:http hcps-1ad4532410.hh:2181 TIME_WAIT
+tcp        0      0 proxy.harrisonburg:http hcps-1ad4532410.hh:2183 TIME_WAIT
+
+I get a 1152273752.023 179196 10.40.12.164 TCP_MISS/504 1421 GET
+http://kernel.org/ - NONE/- text/html ALLOW "Computing/Internet"
+1152274157.027 179460 10.40.12.164 TCP_MISS/504 1421 GET http://kernel.org/ -
+NONE/- text/html ALLOW "Computing/Internet" in my access logs on the proxy
+server.  Traceroute works on all subnets, and ping works.  However, I dont see
+squat on the firewall when trying to connect to this website.
+
+thanks,
+
+ddh
+
+[root@proxy logs]#
 
 --
 Dwayne Hottinger
