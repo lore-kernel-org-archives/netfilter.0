@@ -1,12 +1,12 @@
-From: Dwayne Hottinger <dhottinger@harrisonburg.k12.va.us>
-Subject: RE: unable to connect to www.kernel.org
-Date: Fri,  7 Jul 2006 08:10:44 -0400
-Message-ID: <1152274244.a705c675fe31f@webmail.harrisonburg.k12.va.us>
-References: <000901c6a0be$babe4560$0101000a@sterenborg.info>
+From: "Kashif Ali Bukhari" <kbukhari@gmail.com>
+Subject: Re: how to by pass yahoo mail and hotmail
+Date: Fri, 7 Jul 2006 18:58:16 +0500
+Message-ID: <a3f524e0607070658g1beb1565h2ee30069c68660d0@mail.gmail.com>
+References: <44AD07AB.7060204@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000901c6a0be$babe4560$0101000a@sterenborg.info>
+In-Reply-To: <44AD07AB.7060204@gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,74 +18,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Askar Ali <askarali@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Quoting Rob Sterenborg <rob@sterenborg.info>:
+#hotmail
+iptables -A PREROUTING -i eth0 -t mangle -p tcp -d 65.52.0.0/14
+--dport 80 -j RETURN
+iptables -A PREROUTING -i eth0 -t mangle -p tcp -d 207.46.0.0/16
+--dport 80 -j RETURN
+#yahoo
+iptables -A PREROUTING -i eth0 -t mangle -p tcp -d 206.190.32.0/19
+--dport 80 -j RETURN
+#
+# By passing waridtel.com from cache/proxy servers
+iptables -A PREROUTING -t mangle -i eth0 -p tcp -d 203.124.26.20 -j RETURN
+#
 
-> > I had to redo my firewall and routers over the weekend due to a
-> > change in our isp.  After changing everything and modifying some of
-> > my firewall rules, every website works (that I know of) except for
-> > kernel.org.  I can ping kernel.org, traceroute it etc, but can not
-> > open either an http or ftp connection.  Initial connection is made,
-> > lynx says connecting to kernel.org and then just dies. Squid reports
-> > a tcp_miss/504 for the site.  If I do an iptraf on my firewall for
-> > the interface connected to my DMZ I get the following: Wed Jul  5
-> > 18:58:35 2006; UDP; eth1; 46 bytes; from 204.111.40.4:33592 to
-> > 204.152.191.37:33507.  If I try to connect from inside the firewall I
-> > dont get any connection to kernel.org that I can find.  I am really
-> > missing something here.  Ive been through my log files and cant find
-> > a reason for this.  I could send my firewall script if needed.  It is
-> > quite long though. I have 4 class c addresses and several small
-> > subnets that get routed, natted, etc.  If anyone could help me try
-> > anything else to point me to where the problem may start and end.
+
+On 7/6/06, Askar Ali <askarali@gmail.com> wrote:
+> Hi list,
 >
-> AFAICS the udp packets you describe don't have anything to do with
-> connecting to kernel.org as that traffic would be 53/udp (DNS
-> lookup/reply) and 80/tcp (http request/reply).
+> we are redirecting port 80 traffic from our firewall to our proxy/cache
+> servers with iptables + iproute2 ie
+> #ip rule add fwmark 9 table cache.out
+> #ip route add default via xxx.xxx.xx.xx dev eth0 table cache.out
+> #ip route flush cache
 >
-> Further, you mention squid. I suppose your browser(s) and ftpclient(s)
-> is(are) using squid, not NAT. If squid is on the box that performs NAT,
-> it could be that it can't send packets out because something is blocking
-> it in the OUTPUT chain or something.
-> Ping and traceroute use NAT, not squid (they don't try to connect to
-> port 80/tcp or 21/tcp) so that would mean your NAT rules are working.
+> iptables -A PREROUTING -i eth0 -t mangle -s xxx.xxx.xx.0/24 -p tcp --dport
+> 80 -j MARK --set-mark 9
 >
-> Whithout the script I don't think there's a way to find out what's
-> happening.
+> Everythign working fine, now a question is how to -j Return yahoo mail and
+> hotmail traffic from going to proxy servers so that  yahoo mail and hotmail
+> see the orginal IP of the client not the IP of squid server.
+>
+> yahoo mail and hotmail resolve to multiple IPs if I add a -J Return rule
+> before or after the above rule its not working say...
+>
+> iptables -A PREROUTING -i eth0 -t mangle -s xxx.xxx.xx.0/24 -d
+> mail.yahoo.com -p tcp --dport 80 -j MARK --set-mark 9
+>
+> Any help in this regards will be greatly apprecaited.
+>
+> Regards,
 >
 >
-> Gr,
-> Rob
->
->
-Sirs,
-I sent Rob most of my firewall script.  Rob if you dont think that was
-appropriate, just let me know.  Id rather not send it to the entire world. 
-Here is what else Ive been able to dig up.  My http traffic gets redirected via
-the firewall to my proxy server over port 8080.  When attempting a connection
-to kernel.org, a netstat on the proxy server shows the following:
 
-tcp        0      1 proxy.harrisonbur:32871 zeus-pub2.kernel.o:http SYN_SENT
-tcp        0      0 proxy.harrison:webcache hcps-1ad4532410.hh:2188 ESTABLISHED
-tcp        0      0 proxy.harrisonburg:http hcps-1ad4532410.hh:2181 TIME_WAIT
-tcp        0      0 proxy.harrisonburg:http hcps-1ad4532410.hh:2183 TIME_WAIT
 
-I get a 1152273752.023 179196 10.40.12.164 TCP_MISS/504 1421 GET
-http://kernel.org/ - NONE/- text/html ALLOW "Computing/Internet"
-1152274157.027 179460 10.40.12.164 TCP_MISS/504 1421 GET http://kernel.org/ -
-NONE/- text/html ALLOW "Computing/Internet" in my access logs on the proxy
-server.  Traceroute works on all subnets, and ping works.  However, I dont see
-squat on the firewall when trying to connect to this website.
-
-thanks,
-
-ddh
-
-[root@proxy logs]#
-
---
-Dwayne Hottinger
-Network Administrator
-Harrisonburg City Public Schools
+-- 
+Syed Kashif Ali Bukhari
++92-300-4295604
+Network Engineer
+Beaconhouse IT Services, Lahore Pakistan
 
