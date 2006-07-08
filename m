@@ -1,9 +1,11 @@
-From: David Lang <dlang@digitalinsight.com>
-Subject: is this possible (multiple sources, replies go to proper source)
-Date: Fri, 7 Jul 2006 13:21:57 -0700 (PDT)
-Message-ID: <Pine.LNX.4.63.0607071315280.1769@qynat.qvtvafvgr.pbz>
+From: Antonio Di Bacco <antonio.dibacco@aruba.it>
+Subject: iptables rule doesn't work
+Date: Sat, 8 Jul 2006 22:47:05 +0200
+Message-ID: <200607082247.06089.antonio.dibacco@aruba.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,38 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-In trying to figure out a LVS configuration to load balance firewallsI have 
-gotten stuck with one problem.
+I receive on an interface (eth0, NOARP , ipaddr: 192.168.0.20 ) a tcp packet 
+in this way (I have dumped it with tcpdump):
 
-the scenerio below is drasticly simplified, I can go into more detail if people 
-think it would help.
+SRC: 192.168.0.21:6000 
+DST: 192.168.0.21:80
 
-inbound traffic to a box can arrive through either box B or box C (depending on 
-factors outside this problem)
+I have an iptables rule:
 
-B   C
-  \ /
-   A
-   |
-   D
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT 
+--to-destination 192.168.0.20:80
 
-box A routes the traffic on to box D
+Why my web server listening on eth0 doesn't receive it?
 
-box D replies to the connection (sending the packets to box A)
-
-box A needs to figure out which box (B or C) the connection came through in the 
-first place and use that as the gateway for the reply packets.
-
-the nearest thing I can think of to a solution would be for box A to remember 
-the MAC address that started the connection and then use it as the gateway for 
-reply packets that are part of that connections. I don't know how to do this (or 
-even if it's possible)
-
-please copy me on replies as I am not subscribed to the list.
-
-David Lang
+Thank you,
+Antonio.
 
