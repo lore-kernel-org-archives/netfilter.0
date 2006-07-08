@@ -1,11 +1,11 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] article in USENIX's :LOGIN; on the connection tracking
- system
-Date: Sat, 08 Jul 2006 21:51:30 +0200
-Message-ID: <44B00CC2.7080001@netfilter.org>
+From: Antonio Di Bacco <antonio.dibacco@aruba.it>
+Subject: DNAT problem
+Date: Sat, 8 Jul 2006 23:00:48 +0200
+Message-ID: <200607082300.48752.antonio.dibacco@aruba.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, netfilter <netfilter@lists.netfilter.org>, Rik Farrow <rik@spirit.com>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi all,
+I receive on an interface (eth0, NOARP , ipaddr: 192.168.0.20 ) a tcp packet 
+in this way (I have dumped it with tcpdump):
 
-I mentioned some weeks ago that I wrote an article for :LOGIN; [1] the 
-magazine of USENIX [2], so here comes the official announce.
+SRC: 192.168.0.21:6000 
+DST: 192.168.0.21:80
 
-The article can be of interest of developers and sysadmin. It provides a 
-panoramic view about netfilter's connection tracking system. It is 
-available at my people.netfilter.org place [3]. I hope that can be 
-useful for the community.
+I have an iptables rule:
 
-Acknowledgements goes to Rik Farrow for considering this stuff of 
-interest as well as for his useful comments during the article review stage.
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT 
+--to-destination 192.168.0.20:80
 
-Please, have a look at the REPRINT note before reading the article.
+Why my web server listening on eth0 doesn't receive it?
 
-Enjoy,
-	Pablo
-
-[1] http://www.usenix.org
-[2] www.usenix.org/publications/login/
-[3] http://people.netfilter.org/pablo/docs/
-
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of 
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+Thank you,
+Antonio.
 
