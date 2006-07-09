@@ -1,12 +1,12 @@
-From: Alexandru Dragoi <alex@zoomnet.ro>
-Subject: Re: Changing destination in postrouting
-Date: Sun, 09 Jul 2006 10:53:49 +0300
-Message-ID: <44B0B60D.7010903@zoomnet.ro>
-References: <200607082323.14982.antonio.dibacco@aruba.it>
+From: Jochen Kaechelin <fvgi242ss@wlanhacking.de>
+Subject: browser based analyser/grapher recommendation
+Date: Sun, 9 Jul 2006 11:27:42 +0200
+Message-ID: <200607091127.42688.fvgi242ss@wlanhacking.de>
+Reply-To: fvgi242ss@wlanhacking.de
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200607082323.14982.antonio.dibacco@aruba.it>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +18,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Antonio Di Bacco <antonio.dibacco@aruba.it>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Antonio Di Bacco wrote:
+Can someone recommend me a browser based 
+iptables-logfile-analyzer/grapher!
 
->Is it possible to change the destination ip address of a packet after the 
->routing has happened? that is, in the POSTROUTING? 
->
->Thank you,
->Antonio.
->
->  
->
-Teoritically, maybe. Practically that would require work on how
-ip_conntrack works.
+I would like to have a php driven system.
+
+Thanx.
+
+PS: I run Ubuntu-Dapper, MySQL 5.x, Apache 2.x, PHP 5.1.x
+
+
+-- 
+Jochen Kaechelin, fvgi242ss, wlanhacking.de
+http://mail.wlanhacking.de/cgi-bin/mailman/listinfo
+http://www.gissmoh.de - Mein sonstiges Leben!!
 
