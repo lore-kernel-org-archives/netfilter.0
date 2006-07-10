@@ -1,12 +1,12 @@
-From: Arno van Amersfoort <arnova@eld.physics.leidenuniv.nl>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: TCP connection timeout problem
-Date: Mon, 10 Jul 2006 09:10:34 +0200
-Message-ID: <44B1FD6A.6010207@eld.physics.leidenuniv.nl>
+Date: Mon, 10 Jul 2006 09:33:58 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0607100921490.12586@blackhole.kfki.hu>
 References: <44ACDDC3.7080907@eld.physics.leidenuniv.nl>
+	<44B1FD6A.6010207@eld.physics.leidenuniv.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44ACDDC3.7080907@eld.physics.leidenuniv.nl>
+In-Reply-To: <44B1FD6A.6010207@eld.physics.leidenuniv.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,57 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: kadlec@blackhole.kfki.hu
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Arno van Amersfoort <arnova@eld.physics.leidenuniv.nl>
 Cc: netfilter@lists.netfilter.org
 
-Here is some additional information:
+On Mon, 10 Jul 2006, Arno van Amersfoort wrote:
 
-I'm currently running a vanilla kernel 2.6.15.6, but I already observed 
-it with older kernel versions too.... The system is running Debian 3.1 
-x86 with iptables 1.2.11, but I don't think this really matters.... If 
-you need additional info, please let me know...
+> I'm currently running a vanilla kernel 2.6.15.6, but I already observed
+> it with older kernel versions too.... The system is running Debian 3.1
+> x86 with iptables 1.2.11, but I don't think this really matters.... If
+> you need additional info, please let me know...
 
-Arno
+There was a SACK related bug in TCP connection tracking which was fixed
+around 2.6.15 and which exhibited such problems. Either upgrade the kernel
+on your firewall or disable SACK on all machines behind it. If you can
+reproduce the problem at will with a machine then disable SACK on it and
+check wether it solves the problem.
 
-Arno van Amersfoort wrote:
-> Hello all,
->
-> I'm the author of "Arno's Iptables Firewall" (maybe you know). Anyway, 
-> I've been experiencing a problem for quite some time know. The problem 
-> is that it seems that in once in a while a connection is no longer 
-> considered ESTABLISHED by netfilter/iptables, causing the packets to 
-> bounce of the firewall like this:
-> Jul  5 18:02:16 rulhm2 kernel: Stealth scan (UNPRIV)?: IN=eth0 OUT= 
-> MAC=00:01:02:05:1d:25:00:10:dc:d4:a2:bc:08:00 SRC=x.x.x.x DST=x.x.x.x 
-> LEN=41 TOS=0x00 PREC=0x00 TTL=128 ID=26688 DF PROTO=TCP SPT=445 
-> DPT=53205 WINDOW=17053 RES=0x00 ACK URGP=0
->
-> In this case it's a connection for used by Samba (port 445). As you 
-> can see an TCP packets with the ACK-flag set is bounced of as it's (no 
-> longer) catched by my (iptables) ESTABLISHED-rule. This happens for a 
-> variety of flag-combinations (like RST, FIN, ACK/FIN etc.). Is there 
-> any way I can fix this "nicely", as until know I've always "worked 
-> around" this issue with using some general iptables rules which simply 
-> drop(ignore) these kind of packets. I'm thinking of some kernel 
-> settings (/proc / sysctl) that one might "tweak"....
->
-> Thanks for any info anyone can provide....
->
-
--- 
-Ing. A.C.J. van Amersfoort (Arno)
-Department Of Electronics (ELD, k1007)
-Huygens Laboratory
-Leiden University
-P.O. Box 9504
-Niels Bohrweg 2
-2333 CA Leiden
-The Netherlands
-----------------------------------------------------------------
-Phone : +31-(0)71-527.1894   Fax: +31-(0)71-527.5819
-E-mail: a.c.j.van.amersfoort@eld.physics.leidenuniv.nl
-----------------------------------------------------------------
-Arno's (Linux firewall) homepage: http://rocky.eld.leidenuniv.nl
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
