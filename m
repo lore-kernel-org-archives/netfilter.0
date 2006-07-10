@@ -1,13 +1,13 @@
 From: Antonio Di Bacco <antonio.dibacco@aruba.it>
 Subject: Re: iptables rule doesn't work
-Date: Mon, 10 Jul 2006 21:28:03 +0200
-Message-ID: <200607102128.03366.antonio.dibacco@aruba.it>
+Date: Mon, 10 Jul 2006 21:28:56 +0200
+Message-ID: <200607102128.57001.antonio.dibacco@aruba.it>
 References: <200607082247.06089.antonio.dibacco@aruba.it>
-	<61640.193.173.147.3.1152533638.squirrel@webmail.sterenborg.info>
+	<44B243FA.6060305@eld.physics.leidenuniv.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <61640.193.173.147.3.1152533638.squirrel@webmail.sterenborg.info>
+In-Reply-To: <44B243FA.6060305@eld.physics.leidenuniv.nl>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,19 +19,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
-Cc: Rob Sterenborg <rob@sterenborg.info>
 
-Hi,
-my problem is a little bit different from usual:
+This is my scenario:
 
-LAN-A =C2=A0 =C2=A0 ------------ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0PtP =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0----------- =C2=A0 =C2=A0LAN-B
-=C2=A0---------------| Box A =C2=A0|------------------------- | Box B =C2=
-=A0| ---------- =C2=A0=20
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 eth0 =C2=A0------------ eth1 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 eth1 ---------- =C2=A0eth0
+LAN-A =A0 =A0 ------------ =A0 =A0 =A0 =A0 =A0 =A0 =A0PtP =A0 =A0 =A0 =A0 =
+=A0----------- =A0 =A0LAN-B
+=A0---------------| Box A =A0|------------------------- | Box B =A0| ------=
+=2D--- =A0=20
+=A0 =A0 =A0 =A0 eth0 =A0------------ eth1 =A0 =A0 =A0 =A0 =A0 =A0 eth1 ----=
+=2D----- =A0eth0
 
 Both the boxes are identical , this means that both ETH1 must be configured=
 =20
@@ -45,7 +43,7 @@ I then I configured iptables as here on both boxes:
 
 ifconfig eth1 192.168.0.20 -arp
 iptables -t nat -F
-iptables -t nat -A POSTROUTING -o eth1 =C2=A0-p tcp -j SNAT --to-source \=20
+iptables -t nat -A POSTROUTING -o eth1 =A0-p tcp -j SNAT --to-source \=20
 192.168.0.21:6000-6050
 iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT \=20
 =2D-to-destination 192.168.0.20:80
