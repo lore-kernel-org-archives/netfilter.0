@@ -1,15 +1,16 @@
 From: Rene Mayrhofer <rene.mayrhofer@gibraltar.at>
 Subject: Re: do_IRQ: stack overflow
-Date: Mon, 10 Jul 2006 14:17:35 +0100
-Message-ID: <200607101417.39519.rene.mayrhofer@gibraltar.at>
+Date: Mon, 10 Jul 2006 14:37:36 +0100
+Message-ID: <200607101437.40663.rene.mayrhofer@gibraltar.at>
 References: <200607071547.51437.rene.mayrhofer@gibraltar.at>
 	<4354d3270607100608o15eff2b7w38168ece9a7cae9c@mail.gmail.com>
+	<44B25377.2010002@eld.physics.leidenuniv.nl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart6503852.iLfMfLtGRq";
+Content-Type: multipart/signed; boundary="nextPart3014774.1D7mXbbei4";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4354d3270607100608o15eff2b7w38168ece9a7cae9c@mail.gmail.com>
+In-Reply-To: <44B25377.2010002@eld.physics.leidenuniv.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,63 +21,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: =?iso-8859-1?q?T=F6r=F6k?= Edvin <edwintorok@gmail.com>
+To: Arno van Amersfoort <arnova@eld.physics.leidenuniv.nl>
 Cc: netfilter@lists.netfilter.org
 
---nextPart6503852.iLfMfLtGRq
+--nextPart3014774.1D7mXbbei4
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-Am Monday 10 July 2006 14:08 schrieb T=F6r=F6k Edvin:
-> On 7/7/06, Rene Mayrhofer <rene.mayrhofer@gibraltar.at> wrote:
-> > Hi all,
->
-> Hi,
-> [why did this mail got delayed 3 days?
-> Received: from localhost ([127.0.0.1] helo=3Dvishnu.netfilter.org)
-> 	by vishnu.netfilter.org with esmtp (Exim 4.60 #1 (Debian))
-> 	id 1FzulL-0003tk-Tz; Mon, 10 Jul 2006 14:21:19 +0200
-> Received: from jupiter.gibraltar.at ([80.120.3.32])
-> 	by vishnu.netfilter.org with esmtps (Exim 4.60 #1 (Debian))
-> 	id 1Fys2y-0001ni-3E
-> 	for <netfilter@lists.netfilter.org>; Fri, 07 Jul 2006 17:15:13 +0200
-> ]
-Maybe because of problems with my current line? Hmm, but actually it=20
-shouldn't. Strange.
+Am Monday 10 July 2006 14:17 schrieb Arno van Amersfoort:
+> I had something simular in the past. This turned out to be a broken
+> network card (3COM 3C905).... I hope this info can be of value to you...
+Interesting - I though about it. But then we tried with a different hardwar=
+e=20
+(first different hardware appliance of same make, then different hardware=20
+appliance), and still had the problem.
 
-> Is this similar to:
-> http://oss.sgi.com/archives/netdev/2004-12/msg00484.html?
-I read that thread, but I think it's not really applicable because:
-=2D I use IPSec, and according to the stack trace that seems to be part of =
-the=20
-problem.
-=2D I still use kernel 2.4.32, so the patch given in that thread does not a=
-pply=20
-at all (I tried, but didn't look into the details).
+Bart Trojanowski provided a patch to openswan KLIPS, which should reduce it=
+s=20
+stack usage somehow. I hope to be able to try it in a few days (the only=20
+system where we see this problem is of course a production machine...).
 
-> Does your system continue to work after this, or does it flood your logs?
-No, it does not work - the only think that can be done is a complete=20
-(hardware) reset.
-
-Thanks,
+with best regards,
 Rene
 
 =2D-=20
 =2D------------------------------------------------
 Gibraltar firewall       http://www.gibraltar.at/
 
---nextPart6503852.iLfMfLtGRq
+--nextPart3014774.1D7mXbbei4
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.3 (GNU/Linux)
 
-iD8DBQBEslNzq7SPDcPCS94RAnVDAJsHVOsdxQb1fbg5I0yzNz3XC5rq7QCfRn26
-GXbI2BYUHtXOCVOYkkgrkPE=
-=SVcE
+iD8DBQBEslgkq7SPDcPCS94RAngEAJ9hA08q9GrgL5xFLblKYQTANrT27wCgxxY3
++RwvfdzpHCF+DSjGIj+sCOI=
+=Q2L9
 -----END PGP SIGNATURE-----
 
---nextPart6503852.iLfMfLtGRq--
+--nextPart3014774.1D7mXbbei4--
 
