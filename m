@@ -1,13 +1,12 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: do_IRQ: stack overflow
-Date: Tue, 11 Jul 2006 11:24:26 +0200
-Message-ID: <44B36E4A.2050401@plouf.fr.eu.org>
-References: <200607071547.51437.rene.mayrhofer@gibraltar.at>
-	<4354d3270607100608o15eff2b7w38168ece9a7cae9c@mail.gmail.com>
+Subject: Re: need assistence for PREROUTING
+Date: Tue, 11 Jul 2006 11:36:21 +0200
+Message-ID: <44B37115.4030702@plouf.fr.eu.org>
+References: <20060710235021.235F178@brinstar.nerim.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4354d3270607100608o15eff2b7w38168ece9a7cae9c@mail.gmail.com>
+In-Reply-To: <20060710235021.235F178@brinstar.nerim.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,13 +22,13 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
-T=F6r=F6k Edvin a =E9crit :
-> On 7/7/06, Rene Mayrhofer <rene.mayrhofer@gibraltar.at> wrote:
+Seferovic Edvin a =E9crit :
+>>$IPTABLES -t nat -A PREROUTING -i $ETH -p tcp --sport=20
+>>$UNPRIVPORTS --dport 4444 -d xxx.xxx.xxx.xxx -j DNAT
+>> --to-destination 192.168.178.32
 >=20
-> [why did this mail got delayed 3 days?
+> You need port here !!! --to-destination 192.168.178.32:80
 
-Because, as stated in it, its author is not subscribed to the list, so=20
-the message had to be approved manually :
-
->> X-Mailman-Approved-At: Mon, 10 Jul 2006 14:20:33 +0200
+Also, 192.168.178.112 must be the gateway for the return packets so they=20
+are properly un-DNATed.
 
