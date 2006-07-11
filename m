@@ -1,12 +1,12 @@
-From: "Martijn Lievaart" <m@rtij.nl>
-Subject: Re: is this possible (multiple sources, replies go to proper source)
-Date: Tue, 11 Jul 2006 13:12:48 +0200 (CEST)
-Message-ID: <33713.0275824622$1152619589@news.gmane.org>
-References: <Pine.LNX.4.63.0607101300410.12501@qynat.qvtvafvgr.pbz>
+From: KSCOTT9@triad.rr.com
+Subject: "stand-alone" web server
+Date: Tue, 11 Jul 2006 16:30:56 -0400
+Message-ID: <c39d9d00714b2.714b2c39d9d00@southeast.rr.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.63.0607101300410.12501@qynat.qvtvafvgr.pbz>
+Content-language: en
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: David Lang <dlang@digitalinsight.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-<citaat van="David Lang">
-> In trying to figure out a LVS configuration to load balance firewallsI
-> have
-> gotten stuck with one problem.
->
-> the scenerio below is drasticly simplified, I can go into more detail if
-> people
-> think it would help.
->
-> inbound traffic to a box can arrive through either box B or box C
-> (depending on
-> factors outside this problem)
->
-> B   C
->   \ /
->    A
->    |
->    D
->
-> box A routes the traffic on to box D
->
-> box D replies to the connection (sending the packets to box A)
->
-> box A needs to figure out which box (B or C) the connection came through
-> in the
-> first place and use that as the gateway for the reply packets.
->
-> the nearest thing I can think of to a solution would be for box A to
-> remember
-> the MAC address that started the connection and then use it as the gateway
-> for
-> reply packets that are part of that connections. I don't know how to do
-> this
-> (or even if it's possible)
+I am trying to set up a "stand-alone" internet lab environment where my
+web server will be on the internet side of a router serving up a
+training website. The clients will only be able to access those web
+pages, not the "Real" internet. It would best if users were routed to
+that web page regardless of whatever internet address they entered
+(except for server management screens). I'm thinking the following:
 
-Use CONNMARK to remember which connection came from which gateway, use the
-ROUTE target to correctly route the replies.
+Requested website //  Destination page served up
+cnn.com           //    myserver/index.html
+whatever.com      //    myserver/index.html
+myserver:8081     //    myserver/management.html
+cnn.com:8081      //    myserver/management.html
 
-HTH,
-M4
+I'm think maybe appropriate entry(s) in iptables will do this but I am
+not quite sure how to proceed. I think I need something like:
+
+iptables -A PREROUTING  -p tcp -dport 80 -j REDIRECT --to-ports 80     
+  # web server
+iptables -A PREROUTING  -p tcp -dport 8081 -j REDIRECT --to-ports 8081 
+  # mgmt server
+The two server need to be configured to answer on those ports 
+
+or  maybe
+# let only appweb answer normal port 80 traffic
+ iptables -A INPUT -p tcp --dport 80 ! --uid-owner appweb -j REJECT
+--reject -with -tcp-reset 
+
+Am I close?  Thanks 
+Ken
+
 
