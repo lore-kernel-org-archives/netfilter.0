@@ -1,12 +1,10 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: "stand-alone" web server
-Date: Tue, 11 Jul 2006 16:19:02 -0500
-Message-ID: <44B415C6.8040703@riverviewtech.net>
-References: <c39d9d00714b2.714b2c39d9d00@southeast.rr.com>
-Mime-Version: 1.0
+From: gary douglas <GM-Douglas@wiu.edu>
+Subject: (no subject)
+Date: Wed, 12 Jul 2006 11:07:36 -0500
+Message-ID: <0E6ED28F-854E-43D2-BD60-D551639A7680@wiu.edu>
+Mime-Version: 1.0 (Apple Message framework v752.2)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <c39d9d00714b2.714b2c39d9d00@southeast.rr.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +15,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-KSCOTT9@triad.rr.com wrote:
-> I am trying to set up a "stand-alone" internet lab environment where my
-> web server will be on the internet side of a router serving up a
-> training website. The clients will only be able to access those web
-> pages, not the "Real" internet. It would best if users were routed to
-> that web page regardless of whatever internet address they entered
-> (except for server management screens). I'm thinking the following:
+Try to build a clean box with Fedora Core 4 and IPTables with  
+connlimits. I keep running into errors.
 
-You may run in to a problem with your web server serving pages like you are wanting it to.  See below.
+I clean install Fedora Core 4. Download iptables 1.3.5, patch-o-matic  
+20060710, and linux kernel 2.6.17.3. Create a link from /usr/src/ 
+linux to the linux kernel directory.
 
-> I'm think maybe appropriate entry(s) in iptables will do this but I am
-> not quite sure how to proceed. I think I need something like:
-> 
-> iptables -A PREROUTING  -p tcp -dport 80 -j REDIRECT --to-ports 80     
->   # web server
-> iptables -A PREROUTING  -p tcp -dport 8081 -j REDIRECT --to-ports 8081 
->   # mgmt server
-> The two server need to be configured to answer on those ports 
+cd into patch o matic and enter the following:
+export KERNEL_DIR=/usr/src/linux
 
-You may need to SNAT as well.  I have done this before, but it has been a while and I don't recall if I had to SNAT at all.  Basically the reason you would need to SNAT would be because the client computers sent a request to some server on the internet.  Your firewall redirected them by altering the target IP of the packet to be your local web server.  So your local web server will respond directly to your clients.  Your clients will not know who or why this person is offering them information that they did not ask for.  If you SNAT your local web server will send the traffic back to your firewall (even if it's the same system) which will un-DNAT the traffic back to your clients.  Your clients will now think that they got a reply from the server that they asked for data from.
+export IPTABLES_DIR=~/iptables-1.3.5
 
-You will also need to configure your web server's default site and page to be the page that you want people to see when they access what ever it is they access.  I.e. www.cnn.com and www.msn.com will really bring back your local default site and pages.  I would also recommend that you force your server to return a 200 series code even on the 404 page.  You will get a 404 when you ask for http://www.cnn.com/<bla>/<bla>/<bla>.<ext> because your server does not have that page to serve.  The 200 ""error code will help most browsers render what you want them to verses a 404 error page.  I would also recommend that you set the page expire time to be 1 second, or there abouts.  This will prevent client systems from caching your redirect page with a URL that it should not do so with.
-
-By the way, this is really much easier than it sounds.
+./runme connlimit
 
 
+I have to force this as connlimit, if I do a y I get the following  
+error:
 
-Grant. . . .
+unable to find ladd slot in src /tmp/pom-29493/net/ipv4/netfilter/ 
+Makefile (./patchlets/connlimit/linux-2.6.11/./net/ipv4/netfilter/ 
+Makefile.ladd)
+
+than I cd over to iptables folder and run the make command. I get the  
+following error at this time:
+
+cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ - 
+DIPTABLES_VERSION=\"1.3.5\"  -D_UNKNOWN_KERNEL_POINTER_SIZE -fPIC -o  
+extensions/libipt_CLUSTERIP_sh.o -c extensions/libipt_CLUSTERIP.c
+In file included from /usr/src/linux/include/linux/config.h:6,
+                  from /usr/src/linux/include/linux/netfilter_ipv4.h:8,
+                  from /usr/src/linux/include/linux/netfilter_ipv4/ 
+ip_tables.h:26,
+                  from include/libiptc/libiptc.h:6,
+                  from include/iptables.h:5,
+                  from extensions/libipt_CLUSTERIP.c:18:
+/usr/include/linux/autoconf.h:1:2: error: #error Invalid kernel  
+header included in userspace
+make: *** [extensions/libipt_CLUSTERIP_sh.o] Error 1
+
+
+Any suggestion on correcting this problem are welcome.
+
+Thank you
+Gary Douglas
 
 
