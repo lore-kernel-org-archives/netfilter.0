@@ -1,12 +1,11 @@
-From: "Martijn Lievaart" <m@rtij.nl>
-Subject: Re: "stand-alone" web server
-Date: Wed, 12 Jul 2006 16:33:11 +0200 (CEST)
-Message-ID: <20223.5692916021$1152791445@news.gmane.org>
-References: <c39d9d00714b2.714b2c39d9d00@southeast.rr.com>
+From: Alejandro <sisdis@tournet.com.ar>
+Subject: Short questions about NAT and FTP
+Date: Thu, 13 Jul 2006 10:15:06 -0300
+Message-ID: <44B6475A.70305@tournet.com.ar>
+Reply-To: sisdis@tournet.com.ar
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <c39d9d00714b2.714b2c39d9d00@southeast.rr.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: KSCOTT9@triad.rr.com
-Cc: netfilter@lists.netfilter.org
+To: "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
 
-<citaat van="KSCOTT9@triad.rr.com">
-> I am trying to set up a "stand-alone" internet lab environment where my
-> web server will be on the internet side of a router serving up a
-> training website. The clients will only be able to access those web
-> pages, not the "Real" internet. It would best if users were routed to
-> that web page regardless of whatever internet address they entered
-> (except for server management screens). I'm thinking the following:
->
-> Requested website //  Destination page served up
-> cnn.com           //    myserver/index.html
-> whatever.com      //    myserver/index.html
-> myserver:8081     //    myserver/management.html
-> cnn.com:8081      //    myserver/management.html
->
-> I'm think maybe appropriate entry(s) in iptables will do this but I am
-> not quite sure how to proceed. I think I need something like:
->
-> iptables -A PREROUTING  -p tcp -dport 80 -j REDIRECT --to-ports 80
->   # web server
-> iptables -A PREROUTING  -p tcp -dport 8081 -j REDIRECT --to-ports 8081
->   # mgmt server
-> The two server need to be configured to answer on those ports
+Dear all,
 
-Correct if the webserver is on the same machine as your router. Otherwise
-you need to DNAT.
+I have two short question please:
 
-> or  maybe
-> # let only appweb answer normal port 80 traffic
->  iptables -A INPUT -p tcp --dport 80 ! --uid-owner appweb -j REJECT
-> --reject -with -tcp-reset
+1) Machine A from Internet accesses machine B from (web server) my DMZ
+behind my linux/iptables, is it necessary to build a NAT rule from A to
+B and from B to A, or just A to B is enough ???
 
-Not sure what you are tring to do here, but it won't work.
 
-HTH,
-M4
+2) I want my LAN users to access all FTP servers from Internet, and I
+have loaded the ip_conntrack_ftp module.
 
+Are this rules enough or do I have to specify something else (taking
+into account FTP active and passive modes) ???
+
+$IPTABLES -A FORWARD  -i eth0  -m state --state ESTABLISHED,RELATED  -j
+ACCEPT
+
+$IPTABLES -A FORWARD -p tcp -m tcp  -s 192.168.0.0  --dport 21  -m state
+--state NEW  -j ACCEPT
+
+
+Thanking in advance !!!!
+
+Alejandro
 
