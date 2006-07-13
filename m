@@ -1,12 +1,17 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Short questions about NAT and FTP
-Date: Thu, 13 Jul 2006 15:17:41 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127C0@knowledge.wizdom.nu>
-References: <44B6475A.70305@tournet.com.ar>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: TCP connection timeout problem
+Date: Thu, 13 Jul 2006 17:31:47 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0607131729210.29332@darkstar.sysinfo.com>
+References: <44ACDDC3.7080907@eld.physics.leidenuniv.nl>
+	<44B1FD6A.6010207@eld.physics.leidenuniv.nl>
+	<Pine.LNX.4.58.0607100921490.12586@blackhole.kfki.hu>
+	<44B3444C.3020503@eld.physics.leidenuniv.nl>
+	<Pine.LNX.4.58.0607110843170.24895@blackhole.kfki.hu>
+	<44B35ED9.7070008@eld.physics.leidenuniv.nl>
+	<44B5FE48.7000503@eld.physics.leidenuniv.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <44B5FE48.7000503@eld.physics.leidenuniv.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +22,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: sisdis@tournet.com.ar, "Netfilter lista (iptables)" <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Arno van Amersfoort <arnova@eld.physics.leidenuniv.nl>
+Cc: netfilter@lists.netfilter.org, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 
-1. NAT rule from a to be would be enough, though it's best to use =
-standard ports (ie 21 for ftp), or connection tracking might cause =
-problems. Oh yeah, do not forget a FORWARD rule (to the internal IP of =
-machine B) to allow the incoming traffic.
-=20
-2. Unless all your internal machines have routable Internet addresses, =
-you will need a SNAT or MASQUARADE rule too.
-=20
--Sietse
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-________________________________
+On Thu, 13 Jul 2006, Arno van Amersfoort wrote:
 
-From: netfilter-bounces@lists.netfilter.org on behalf of Alejandro
-Sent: Thu 13-Jul-06 15:15
-To: Netfilter lista (iptables)
-Subject: Short questions about NAT and FTP
+> Just did some more investigation. Didn't test with tcpdump yet as this issue 
+> is not reproducable easiely :-S Anyway it turns out that the packets shown 
+> have state "INVALID" (opposed to ESTABLISHED or NEW). So somehow iptables 
+> "thinks" they no longer belong to a connection (somehow)....
 
 
+Or that there is some other issue with the packets, such as bad header, 
+improper flags set, truncated packets, etc.  This could be a sign as well 
+of a nic flaking out or a bad cable or switch port.  Or could be a 
+malicious app is spewing packets that do not fit the coresponding 
+connections paramaters.
 
-Dear all,
+Thanks,
 
-I have two short question please:
-
-1) Machine A from Internet accesses machine B from (web server) my DMZ
-behind my linux/iptables, is it necessary to build a NAT rule from A to
-B and from B to A, or just A to B is enough ???
-
-
-2) I want my LAN users to access all FTP servers from Internet, and I
-have loaded the ip_conntrack_ftp module.
-
-Are this rules enough or do I have to specify something else (taking
-into account FTP active and passive modes) ???
-
-$IPTABLES -A FORWARD  -i eth0  -m state --state ESTABLISHED,RELATED  -j
-ACCEPT
-
-$IPTABLES -A FORWARD -p tcp -m tcp  -s 192.168.0.0  --dport 21  -m state
---state NEW  -j ACCEPT
-
-
-Thanking in advance !!!!
-
-Alejandro
+Ron DuFresne
 
 
 
+>
+> Arno van Amersfoort wrote:
+>> 
+>> 
+>> Jozsef Kadlecsik wrote:
+>>> On Tue, 11 Jul 2006, Arno van Amersfoort wrote:
+>>>
+>>> 
+>>>> I think I already stumbled into this bug in the past, I recall that this
+>>>> bug was in 2.6.14.
+>>>> Anyway, I've tried to disable tcp_sack & tcp_dsack but no luck. I also
+>>>> upgraded to 2.6.17.4 but this doesn't help iether :-S I'm also getting
+>>>> packets like this for "open ports" (with ie. -p tcp --dport 22 --syn -j
+>>>> ACCEPT) giving:
+>>>> 
+>>>> Jul 11 04:02:59 rulhm2 kernel: Stealth scan (PRIV)?: IN=eth0 OUT=
+>>>> MAC=00:01:02:05:1d:25:00:01:03:d2:b8:75:08:00 SRC=132.229.96.110 
+>>>> DST=132.229.96.12 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=34709 DF PROTO=TCP
+>>>> SPT=39536 DPT=445 WINDOW=5840 RES=0x00 ACK FIN URGP=0
+>>>> 
+>>> 
+>>> I don't understand how it is related to an open ssh port.
+>>> 
+>> Sorry about that. It should (of course) be -p tcp --dport 445 --syn -j 
+>> ACCEPT . (I'm running Samba on this machine). But do note that this issue 
+>> doesn't specifically happen with Samba. I've also seen it happen with http 
+>> packets...
+>>> 
+>>>> Any other suggestions?
+>>>> 
+>>> 
+>>> Enable logging invalid packets via
+>>> /proc/sys/net/ipv4/netfilter/ip_conntrack_log_invalid then record by
+>>> tcpdump a whole TCP session which triggers the problem. Then send me the
+>>> capture file and the corresponding kernel log entries.
+>>> 
+>> Ok. I will try to do this. And let you know my findings
+>>> Best regards,
+>>> Jozsef
+>>> -
+>>> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+>>> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+>>> Address : KFKI Research Institute for Particle and Nuclear Physics
+>>>           H-1525 Budapest 114, POB. 49, Hungary
+>>>
+>>> 
+>> 
+>
+>
+
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.4 (GNU/Linux)
+
+iD8DBQFEtrvGst+vzJSwZikRAsBdAJ4zpaSRk+7nnrIqC1jpjNq3eLz6LgCgoMgr
+9TkGWKMZMOdETwS0mLhi8ok=
+=qs/A
+-----END PGP SIGNATURE-----
 
