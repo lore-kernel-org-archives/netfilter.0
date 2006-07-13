@@ -1,10 +1,13 @@
-From: gary douglas <GM-Douglas@wiu.edu>
-Subject: (no subject)
-Date: Wed, 12 Jul 2006 11:07:36 -0500
-Message-ID: <0E6ED28F-854E-43D2-BD60-D551639A7680@wiu.edu>
-Mime-Version: 1.0 (Apple Message framework v752.2)
+From: Arno van Amersfoort <arnova@eld.physics.leidenuniv.nl>
+Subject: Re: TCP connection timeout problem
+Date: Thu, 13 Jul 2006 10:03:20 +0200
+Message-ID: <44B5FE48.7000503@eld.physics.leidenuniv.nl>
+References: <44ACDDC3.7080907@eld.physics.leidenuniv.nl>	<44B1FD6A.6010207@eld.physics.leidenuniv.nl>	<Pine.LNX.4.58.0607100921490.12586@blackhole.kfki.hu>	<44B3444C.3020503@eld.physics.leidenuniv.nl>	<Pine.LNX.4.58.0607110843170.24895@blackhole.kfki.hu>
+	<44B35ED9.7070008@eld.physics.leidenuniv.nl>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <44B35ED9.7070008@eld.physics.leidenuniv.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,52 +18,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Arno van Amersfoort <arnova@eld.physics.leidenuniv.nl>
+Cc: netfilter@lists.netfilter.org, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 
-Try to build a clean box with Fedora Core 4 and IPTables with  
-connlimits. I keep running into errors.
+Just did some more investigation. Didn't test with tcpdump yet as this 
+issue is not reproducable easiely :-S Anyway it turns out that the 
+packets shown have state "INVALID" (opposed to ESTABLISHED or NEW). So 
+somehow iptables "thinks" they no longer belong to a connection 
+(somehow)....
 
-I clean install Fedora Core 4. Download iptables 1.3.5, patch-o-matic  
-20060710, and linux kernel 2.6.17.3. Create a link from /usr/src/ 
-linux to the linux kernel directory.
+Arno van Amersfoort wrote:
+>
+>
+> Jozsef Kadlecsik wrote:
+>> On Tue, 11 Jul 2006, Arno van Amersfoort wrote:
+>>
+>>  
+>>> I think I already stumbled into this bug in the past, I recall that 
+>>> this
+>>> bug was in 2.6.14.
+>>> Anyway, I've tried to disable tcp_sack & tcp_dsack but no luck. I also
+>>> upgraded to 2.6.17.4 but this doesn't help iether :-S I'm also getting
+>>> packets like this for "open ports" (with ie. -p tcp --dport 22 --syn -j
+>>> ACCEPT) giving:
+>>>
+>>> Jul 11 04:02:59 rulhm2 kernel: Stealth scan (PRIV)?: IN=eth0 OUT=
+>>> MAC=00:01:02:05:1d:25:00:01:03:d2:b8:75:08:00 SRC=132.229.96.110 
+>>> DST=132.229.96.12 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=34709 DF 
+>>> PROTO=TCP
+>>> SPT=39536 DPT=445 WINDOW=5840 RES=0x00 ACK FIN URGP=0
+>>>     
+>>
+>> I don't understand how it is related to an open ssh port.
+>>   
+> Sorry about that. It should (of course) be -p tcp --dport 445 --syn -j 
+> ACCEPT . (I'm running Samba on this machine). But do note that this 
+> issue doesn't specifically happen with Samba. I've also seen it happen 
+> with http packets...
+>>  
+>>> Any other suggestions?
+>>>     
+>>
+>> Enable logging invalid packets via
+>> /proc/sys/net/ipv4/netfilter/ip_conntrack_log_invalid then record by
+>> tcpdump a whole TCP session which triggers the problem. Then send me the
+>> capture file and the corresponding kernel log entries.
+>>   
+> Ok. I will try to do this. And let you know my findings
+>> Best regards,
+>> Jozsef
+>> -
+>> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+>> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+>> Address : KFKI Research Institute for Particle and Nuclear Physics
+>>           H-1525 Budapest 114, POB. 49, Hungary
+>>
+>>   
+>
 
-cd into patch o matic and enter the following:
-export KERNEL_DIR=/usr/src/linux
-
-export IPTABLES_DIR=~/iptables-1.3.5
-
-./runme connlimit
-
-
-I have to force this as connlimit, if I do a y I get the following  
-error:
-
-unable to find ladd slot in src /tmp/pom-29493/net/ipv4/netfilter/ 
-Makefile (./patchlets/connlimit/linux-2.6.11/./net/ipv4/netfilter/ 
-Makefile.ladd)
-
-than I cd over to iptables folder and run the make command. I get the  
-following error at this time:
-
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ - 
-DIPTABLES_VERSION=\"1.3.5\"  -D_UNKNOWN_KERNEL_POINTER_SIZE -fPIC -o  
-extensions/libipt_CLUSTERIP_sh.o -c extensions/libipt_CLUSTERIP.c
-In file included from /usr/src/linux/include/linux/config.h:6,
-                  from /usr/src/linux/include/linux/netfilter_ipv4.h:8,
-                  from /usr/src/linux/include/linux/netfilter_ipv4/ 
-ip_tables.h:26,
-                  from include/libiptc/libiptc.h:6,
-                  from include/iptables.h:5,
-                  from extensions/libipt_CLUSTERIP.c:18:
-/usr/include/linux/autoconf.h:1:2: error: #error Invalid kernel  
-header included in userspace
-make: *** [extensions/libipt_CLUSTERIP_sh.o] Error 1
-
-
-Any suggestion on correcting this problem are welcome.
-
-Thank you
-Gary Douglas
+-- 
+Ing. A.C.J. van Amersfoort (Arno)
+Department Of Electronics (ELD, k1007)
+Huygens Laboratory
+Leiden University
+P.O. Box 9504
+Niels Bohrweg 2
+2333 CA Leiden
+The Netherlands
+----------------------------------------------------------------
+Phone : +31-(0)71-527.1894   Fax: +31-(0)71-527.5819
+E-mail: a.c.j.van.amersfoort@eld.physics.leidenuniv.nl
+----------------------------------------------------------------
+Arno's (Linux firewall) homepage: http://rocky.eld.leidenuniv.nl
 
 
