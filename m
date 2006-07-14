@@ -1,10 +1,11 @@
-From: Brent Clark <bclark@eccotours.co.za>
-Subject: transparent proxy and mutiple links / lines
-Date: Fri, 14 Jul 2006 13:26:45 +0200
-Message-ID: <44B77F75.3090504@eccotours.co.za>
+From: "Fabio S. Silva" <fabiofoz@gmail.com>
+Subject: uid-owner
+Date: Fri, 14 Jul 2006 09:22:59 -0300
+Message-ID: <12ec50350607140522p40cc8a86jd5b08fa88a555900@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,15 +19,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hey all
+Hi all, i want to know how to work with uid-owner i 've tried to use
+with this rule
 
-I have a scenario where I route for multiple uplinks and I too have a transparent proxy running.
-Would anyone know how I can make all HTTP traffic go out the non default gateway / route.
+iptables -A OUTPUT -m owner --uid-owner fabio -j DROP
 
-Routing HTTP traffic out one of the lines aint a problem, Its redirecting to Transparent proxy and then out a certain line.
+but all packets created by this user pass the firewall
+ if i create the rule in the machine of user fabio its works, but i
+need to create the rule in my firewall gateway, in the firewall i can
+see user fabio with the command id fabio, its returns ok to me, i've
+tried to use with the user id but didnt work.
 
-If anyone has a trick up one of there sleeves and would care to share it, I would be most grateful.
+any idea?
 
-Kind Regards
-Brent Clark
+thanks
 
