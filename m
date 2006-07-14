@@ -1,14 +1,11 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: Strange NAT Behavior
-Date: Fri, 14 Jul 2006 07:29:26 -0700
-Message-ID: <44B7AA46.7080105@shorewall.net>
-References: <005a01c6a750$847a7d00$e30da8c0@tmilawton.com>
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: uid-owner
+Date: Fri, 14 Jul 2006 16:49:03 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0607141645350.15850@mercury.sdinet.de>
+References: <12ec50350607140522p40cc8a86jd5b08fa88a555900@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig75D9C25B7755905311C1274E"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <005a01c6a750$847a7d00$e30da8c0@tmilawton.com>
+In-Reply-To: <12ec50350607140522p40cc8a86jd5b08fa88a555900@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,51 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "Anthony R. Vallario" <avallario@tecmasters.com>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: "Fabio S. Silva" <fabiofoz@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig75D9C25B7755905311C1274E
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Fri, 14 Jul 2006, Fabio S. Silva wrote:
 
-Anthony R. Vallario wrote:
-> Sure enough, there are logged events
-> from when one of the LAN pc's was blocked from going to say yahoo, adob=
-e
-> or google. Weird thing is, it's random. Ports are random to.I can't mak=
-e
-> heads or tales out of a pattern or reason why. So why on earth would a
-> nat firewall with no outgoing drop rules all of a sudden block these la=
-n
-> pc's?
+> Hi all, i want to know how to work with uid-owner i 've tried to use
+> with this rule
+>
+> iptables -A OUTPUT -m owner --uid-owner fabio -j DROP
+>
+> but all packets created by this user pass the firewall
+> if i create the rule in the machine of user fabio its works, but i
+> need to create the rule in my firewall gateway, in the firewall i can
+> see user fabio with the command id fabio, its returns ok to me, i've
+> tried to use with the user id but didnt work.
 
-Check the DROP log messages -- is the IN=3D interface your LAN interface =
-or your
-WAN interface? If it is the WAN interface, check your cabling to be sure =
-that
-you haven't bridged the LAN and WAN sides of your firewall.
+1.
+User user-id/name of the "person" sending the data is not transfered onto 
+the network, so if the firewall is on a different machine it won't see 
+which user does the traffic - only which source ip it uses.
 
--Tom
---=20
-Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
-Shoreline,     \ http://shorewall.net
-Washington USA  \ teastep@shorewall.net
-PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
+2.
+OUTPUT rules are only used for traffic directly from the machine to 
+somewhere, not routed through the machine. So in your firewall it means 
+traffic generated directly by the firewall machine, not received from some 
+other box and then passed on - such packets use the FORWARD chain.
 
+c'ya
+sven
 
---------------enig75D9C25B7755905311C1274E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+-- 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFEt6pLO/MAbZfjDLIRAkRJAJwKRxjHCdsr3FM1n3h9ERj8ZUxxdQCeOsMn
-d3EfKQoV/a53y63r7V3pprY=
-=HXbs
------END PGP SIGNATURE-----
-
---------------enig75D9C25B7755905311C1274E--
+The Internet treats censorship as a routing problem, and routes around it.
+(John Gilmore on http://www.cygnus.com/~gnu/)
 
