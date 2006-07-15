@@ -1,11 +1,12 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: uid-owner
-Date: Fri, 14 Jul 2006 16:49:03 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0607141645350.15850@mercury.sdinet.de>
-References: <12ec50350607140522p40cc8a86jd5b08fa88a555900@mail.gmail.com>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: Strange NAT Behavior
+Date: Sat, 15 Jul 2006 12:44:30 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127C5@knowledge.wizdom.nu>
+References: <005a01c6a750$847a7d00$e30da8c0@tmilawton.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <12ec50350607140522p40cc8a86jd5b08fa88a555900@mail.gmail.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,40 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: "Fabio S. Silva" <fabiofoz@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Anthony R. Vallario" <avallario@tecmasters.com>, netfilter@lists.netfilter.org
 
-On Fri, 14 Jul 2006, Fabio S. Silva wrote:
+Well, there is most likely nothing wrong. Clients sometimes behave =
+badly. I see it every day, especially with P2P software. If you have no =
+problems reported to you, don't worry about it. It just happens.
+=20
+-Sietse
 
-> Hi all, i want to know how to work with uid-owner i 've tried to use
-> with this rule
->
-> iptables -A OUTPUT -m owner --uid-owner fabio -j DROP
->
-> but all packets created by this user pass the firewall
-> if i create the rule in the machine of user fabio its works, but i
-> need to create the rule in my firewall gateway, in the firewall i can
-> see user fabio with the command id fabio, its returns ok to me, i've
-> tried to use with the user id but didnt work.
+________________________________
 
-1.
-User user-id/name of the "person" sending the data is not transfered onto 
-the network, so if the firewall is on a different machine it won't see 
-which user does the traffic - only which source ip it uses.
+From: netfilter-bounces@lists.netfilter.org on behalf of Anthony R. =
+Vallario
+Sent: Fri 14-Jul-06 16:19
+To: netfilter@lists.netfilter.org
+Subject: Strange NAT Behavior
 
-2.
-OUTPUT rules are only used for traffic directly from the machine to 
-somewhere, not routed through the machine. So in your firewall it means 
-traffic generated directly by the firewall machine, not received from some 
-other box and then passed on - such packets use the FORWARD chain.
 
-c'ya
-sven
 
--- 
+To all;
+    I've got a CentOS 4.2 box configured as your standard nat firewall.
+Nothing fancy, nothing new. Of course logwatch is on and configured to
+report about the day's previous activities. After looking at these =
+emails
+from logwatch I noticed something funny. There were entries from where =
+the
+firewall was blocking my LAN pc's. Huh? That's right. I went thru
+/var/log/messages to confirm. Sure enough, there are logged events from =
+when
+one of the LAN pc's was blocked from going to say yahoo, adobe or =
+google.
+Weird thing is, it's random. Ports are random to.I can't make heads or =
+tales
+out of a pattern or reason why. So why on earth would a nat firewall =
+with no
+outgoing drop rules all of a sudden block these lan pc's? Oh one more =
+thing
+of note. This same nat firewall (text file with the rules) was used on a
+fedora core 1 box about a month ago. No issues with random outgoing =
+blocks.
 
-The Internet treats censorship as a routing problem, and routes around it.
-(John Gilmore on http://www.cygnus.com/~gnu/)
+
+Anthony R. Vallario
+
+
+
+
 
