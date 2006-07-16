@@ -1,12 +1,10 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Strange NAT Behavior
-Date: Sat, 15 Jul 2006 12:44:30 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127C5@knowledge.wizdom.nu>
-References: <005a01c6a750$847a7d00$e30da8c0@tmilawton.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Connlimit and linux-2.6.17
+Date: Sun, 16 Jul 2006 22:53:34 +0100
+Message-ID: <44BAB55E.4010501@andybev.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "Anthony R. Vallario" <avallario@tecmasters.com>, netfilter@lists.netfilter.org
-
-Well, there is most likely nothing wrong. Clients sometimes behave =
-badly. I see it every day, especially with P2P software. If you have no =
-problems reported to you, don't worry about it. It just happens.
-=20
--Sietse
-
-________________________________
-
-From: netfilter-bounces@lists.netfilter.org on behalf of Anthony R. =
-Vallario
-Sent: Fri 14-Jul-06 16:19
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Subject: Strange NAT Behavior
 
+I am having trouble using connlimit with kernel 2.6.17.4 and
+iptables-1.3.5-20060508. When I run:
 
+iptables -t mangle -A PREROUTING -p tcp -i eth0 -m \
+	connlimit --connlimit-above 5 -j LOG
 
-To all;
-    I've got a CentOS 4.2 box configured as your standard nat firewall.
-Nothing fancy, nothing new. Of course logwatch is on and configured to
-report about the day's previous activities. After looking at these =
-emails
-from logwatch I noticed something funny. There were entries from where =
-the
-firewall was blocking my LAN pc's. Huh? That's right. I went thru
-/var/log/messages to confirm. Sure enough, there are logged events from =
-when
-one of the LAN pc's was blocked from going to say yahoo, adobe or =
-google.
-Weird thing is, it's random. Ports are random to.I can't make heads or =
-tales
-out of a pattern or reason why. So why on earth would a nat firewall =
-with no
-outgoing drop rules all of a sudden block these lan pc's? Oh one more =
-thing
-of note. This same nat firewall (text file with the rules) was used on a
-fedora core 1 box about a month ago. No issues with random outgoing =
-blocks.
+I get "iptables: Invalid argument"
 
+The kernel and iptables are patched with patch-o-matic-ng-20060626,
+which in turn is patched as per
+http://patchwork.netfilter.org/netfilter-devel/patch.pl?id=3456 to
+uupdate the connlimit patch
 
-Anthony R. Vallario
+I have noticed that when compiling the kernel I get error messages as
+follows when compiling connlimit:
 
+net/ipv4/netfilter/ipt_connlimit.c:211: warning: initialization from
+incompatible pointer type
+net/ipv4/netfilter/ipt_connlimit.c:212: warning: initialization from
+incompatible pointer type
+net/ipv4/netfilter/ipt_connlimit.c:213: warning: initialization from
+incompatible pointer type
 
+The above error messages do not appear when using 2.6.15, and connlimit
+works.
 
+Any ideas?
+
+On another note, will connlimit ever form part of the stable kernel? It
+is a real pain having to mess around patching each time I get a new
+kernel, especially as currently the patch-o-matic also requires patching!
+
+Andy Beverley
 
 
