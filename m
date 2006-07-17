@@ -1,10 +1,21 @@
-From: Felipe Maya <fmay@midiacom.uff.br>
-Subject: change sk_buff iph saddr... how?
-Date: Mon, 17 Jul 2006 10:39:32 -0300
-Message-ID: <1153143572.2471.24.camel@gneax.admatel.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: TCP connection timeout problem
+Date: Mon, 17 Jul 2006 15:54:57 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0607171540260.964@blackhole.kfki.hu>
+References: <44ACDDC3.7080907@eld.physics.leidenuniv.nl>
+	<44B1FD6A.6010207@eld.physics.leidenuniv.nl>
+	<Pine.LNX.4.58.0607100921490.12586@blackhole.kfki.hu>
+	<44B3444C.3020503@eld.physics.leidenuniv.nl>
+	<Pine.LNX.4.58.0607110843170.24895@blackhole.kfki.hu>
+	<44B35ED9.7070008@eld.physics.leidenuniv.nl>
+	<44B5FE48.7000503@eld.physics.leidenuniv.nl>
+	<Pine.LNX.4.58.0607170945190.935@blackhole.kfki.hu>
+	<44BB8CD4.5000506@eld.physics.leidenuniv.nl>
+	<Pine.LNX.4.58.0607171514020.964@blackhole.kfki.hu>
+	<44BB8F43.6040301@eld.physics.leidenuniv.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <44BB8F43.6040301@eld.physics.leidenuniv.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,77 +26,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Arno van Amersfoort <arnova@eld.physics.leidenuniv.nl>
+Cc: netfilter@lists.netfilter.org
 
-Hello.
+On Mon, 17 Jul 2006, Arno van Amersfoort wrote:
 
-I'm trying to send a packet using other net device. I'm taking all
-information of device, the IP header source address is changing, the
-packet is checksumed, and the dst_entry is updated. Can any help me to
-send a packet using other interface?...The next source is KERNEL BUG
-result. 
+> Yep: I have ipt_LOG loaded (actually compiled into the kernel) and not
+> ipt_ULOG. So the only thing I'm getting in my kernel log is:
+>
+> Jul 17 04:02:07 rulhm2 kernel: INVALID packet: IN=eth0 OUT=
+> MAC=00:01:02:05:1d:25:00:01:03:d2:b8:75:08:00 SRC=132.229.96.110
+> DST=132.229.96.12 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=56700 DF PROTO=TCP
+> SPT=54858 DPT=445 WINDOW=5840 RES=0x00 ACK FIN URGP=0
+>
+> (But of course this also is shown when
+> /proc/sys/net/ipv4/netfilter/ip_conntrack_log_invalid = 0 )
 
-struct sk_buff *nskb;
-struct rtable *rt;
-struct iphdr *iph = (*skb)->nh.iph;
-struct flowi fl = { };
-fl.oif = (*skb)->sk ? (*skb)->sk->sk_bound_dev_if : 0;
-fl.nl_u.ip4_u.daddr = iph->daddr;
-fl.nl_u.ip4_u.saddr = nsaddr;
-fl.nl_u.ip4_u.tos = RT_TOS(iph->tos);
-fl.proto = iph->protocol;
+That line is created by your explicit rule of logging invalid packets. If
+there were any TCP related problem which would forced conntrack to mark
+the packet as invalid, you should see kernel log messages with the prefix
+"ip_ct_tcp: " (when logging invalid packets is enabled). That's really
+strange.  As the packet is not truncated, there isn't really anything
+which should trigger to mark it as INVALID.
 
-switch(iph->protocol){
-	case IPPROTO_TCP:
-		fl.fl_ip_sport = (*skb)->h.th->source;
-		fl.fl_ip_dport = (*skb)->h.th->dest;
-	break;
-	case IPPROTO_UDP:
-		fl.fl_ip_sport = (*skb)->h.uh->source;
-		fl.fl_ip_dport = (*skb)->h.uh->dest;
-	break;
-}
-			
-if (!skb_make_writable(skb, sizeof(*skb)))
-	return NF_STOLEN;
-if (ip_route_output_key(&rt, &fl) != 0){
-	DEBUGP("ip_route_output_key error\n");
-	//ip_rt_put(rt);
-	//dev_put(dev);
-	return NF_STOLEN;
-}
-//xfrm_lookup((struct dst_entry **)&rt, &fl, NULL, 0);
+It seems to me only catching such packets by tcpdump can really help.
 
-dst_release((*skb)->dst);
-(*skb)->dst = &rt->u.dst;
-
-if ((*skb)->dst->error)
-	return NF_STOLEN;
-
-//if (!(IPCB(*skb)->flags & IPSKB_XFRM_TRANSFORMED) &&
-xfrm_decode_session(*skb, &fl, AF_INET) == 0)
-
-if (xfrm_lookup(&(*skb)->dst, &fl, (*skb)->sk, 0))
-	return NF_STOLEN;
-
-iph->saddr = nsaddr;
-iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
-ip_send_check(iph);
-if (skb_headroom(*skb) < (*skb)->dst->dev->hard_header_len) {
-	struct sk_buff *pskb;
-	pskb = skb_realloc_headroom(*skb,
-				(*skb)->dst->dev->hard_header_len);
-	if (!pskb) {
-		return NF_STOLEN;
-	}
-	if ((*skb)->sk) skb_set_owner_w(pskb, (*skb)->sk);
-		kfree_skb(*skb);
-		*skb = pskb;
-	}
-}
-return NF_ACCEPT;
-
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
