@@ -1,21 +1,10 @@
-From: Arno van Amersfoort <arnova@eld.physics.leidenuniv.nl>
-Subject: Re: TCP connection timeout problem
-Date: Mon, 17 Jul 2006 15:25:45 +0200
-Message-ID: <44BB8FD9.7080606@eld.physics.leidenuniv.nl>
-References: <44ACDDC3.7080907@eld.physics.leidenuniv.nl>
-	<44B1FD6A.6010207@eld.physics.leidenuniv.nl>
-	<Pine.LNX.4.58.0607100921490.12586@blackhole.kfki.hu>
-	<44B3444C.3020503@eld.physics.leidenuniv.nl>
-	<Pine.LNX.4.58.0607110843170.24895@blackhole.kfki.hu>
-	<44B35ED9.7070008@eld.physics.leidenuniv.nl>
-	<44B5FE48.7000503@eld.physics.leidenuniv.nl>
-	<Pine.LNX.4.58.0607170945190.935@blackhole.kfki.hu>
-	<44BB8CD4.5000506@eld.physics.leidenuniv.nl>
-	<Pine.LNX.4.58.0607171514020.964@blackhole.kfki.hu>
+From: Felipe Maya <fmay@midiacom.uff.br>
+Subject: change sk_buff iph saddr... how?
+Date: Mon, 17 Jul 2006 10:39:32 -0300
+Message-ID: <1153143572.2471.24.camel@gneax.admatel.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0607171514020.964@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,70 +15,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Yep: I have ipt_LOG loaded (actually compiled into the kernel) and not 
-ipt_ULOG. So the only thing I'm getting in my kernel log is:
+Hello.
 
-Jul 17 04:02:07 rulhm2 kernel: INVALID packet: IN=eth0 OUT= 
-MAC=00:01:02:05:1d:25:00:01:03:d2:b8:75:08:00 SRC=132.229.96.110 
-DST=132.229.96.12 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=56700 DF PROTO=TCP 
-SPT=54858 DPT=445 WINDOW=5840 RES=0x00 ACK FIN URGP=0
+I'm trying to send a packet using other net device. I'm taking all
+information of device, the IP header source address is changing, the
+packet is checksumed, and the dst_entry is updated. Can any help me to
+send a packet using other interface?...The next source is KERNEL BUG
+result. 
 
-(But of course this also is shown when 
-/proc/sys/net/ipv4/netfilter/ip_conntrack_log_invalid = 0 )
+struct sk_buff *nskb;
+struct rtable *rt;
+struct iphdr *iph = (*skb)->nh.iph;
+struct flowi fl = { };
+fl.oif = (*skb)->sk ? (*skb)->sk->sk_bound_dev_if : 0;
+fl.nl_u.ip4_u.daddr = iph->daddr;
+fl.nl_u.ip4_u.saddr = nsaddr;
+fl.nl_u.ip4_u.tos = RT_TOS(iph->tos);
+fl.proto = iph->protocol;
+
+switch(iph->protocol){
+	case IPPROTO_TCP:
+		fl.fl_ip_sport = (*skb)->h.th->source;
+		fl.fl_ip_dport = (*skb)->h.th->dest;
+	break;
+	case IPPROTO_UDP:
+		fl.fl_ip_sport = (*skb)->h.uh->source;
+		fl.fl_ip_dport = (*skb)->h.uh->dest;
+	break;
+}
+			
+if (!skb_make_writable(skb, sizeof(*skb)))
+	return NF_STOLEN;
+if (ip_route_output_key(&rt, &fl) != 0){
+	DEBUGP("ip_route_output_key error\n");
+	//ip_rt_put(rt);
+	//dev_put(dev);
+	return NF_STOLEN;
+}
+//xfrm_lookup((struct dst_entry **)&rt, &fl, NULL, 0);
+
+dst_release((*skb)->dst);
+(*skb)->dst = &rt->u.dst;
+
+if ((*skb)->dst->error)
+	return NF_STOLEN;
+
+//if (!(IPCB(*skb)->flags & IPSKB_XFRM_TRANSFORMED) &&
+xfrm_decode_session(*skb, &fl, AF_INET) == 0)
+
+if (xfrm_lookup(&(*skb)->dst, &fl, (*skb)->sk, 0))
+	return NF_STOLEN;
+
+iph->saddr = nsaddr;
+iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
+ip_send_check(iph);
+if (skb_headroom(*skb) < (*skb)->dst->dev->hard_header_len) {
+	struct sk_buff *pskb;
+	pskb = skb_realloc_headroom(*skb,
+				(*skb)->dst->dev->hard_header_len);
+	if (!pskb) {
+		return NF_STOLEN;
+	}
+	if ((*skb)->sk) skb_set_owner_w(pskb, (*skb)->sk);
+		kfree_skb(*skb);
+		*skb = pskb;
+	}
+}
+return NF_ACCEPT;
 
 
-
-Jozsef Kadlecsik wrote:
-> On Mon, 17 Jul 2006, Arno van Amersfoort wrote:
->
->   
->> Jozsef Kadlecsik wrote:
->>     
->>> On Thu, 13 Jul 2006, Arno van Amersfoort wrote:
->>>
->>>       
->>>> Just did some more investigation. Didn't test with tcpdump yet as this
->>>> issue is not reproducable easiely :-S Anyway it turns out that the
->>>> packets shown have state "INVALID" (opposed to ESTABLISHED or NEW). So
->>>> somehow iptables "thinks" they no longer belong to a connection
->>>> (somehow)....
->>>>         
->>> If you enabled logging invalid packets, then the kernel would produce log
->>> lines why those packets were categorized as INVALID.
->>>       
->> I've tried enabling this option but nothing shows up in my kernel log.
->> I'd expect it to appear in loglevel kern.* right ?
->>     
->
-> That's right. You have got the kernel module ipt_LOG loaded in (and
-> ipt_ULOG doesn't), don't you?
->
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
->
->   
-
--- 
-Ing. A.C.J. van Amersfoort (Arno)
-Department Of Electronics (ELD, k1007)
-Huygens Laboratory
-Leiden University
-P.O. Box 9504
-Niels Bohrweg 2
-2333 CA Leiden
-The Netherlands
-----------------------------------------------------------------
-Phone : +31-(0)71-527.1894   Fax: +31-(0)71-527.5819
-E-mail: a.c.j.van.amersfoort@eld.physics.leidenuniv.nl
-----------------------------------------------------------------
-Arno's (Linux firewall) homepage: http://rocky.eld.leidenuniv.nl
 
 
