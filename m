@@ -1,9 +1,9 @@
-From: "kavita" <kavithak@pal.ece.iisc.ernet.in>
-Subject: How to identify RTP packets?
-Date: Wed, 19 Jul 2006 11:42:28 +0530 (IST)
-Message-ID: <4801.10.32.19.84.1153289548.squirrel@www.pal.ece.iisc.ernet.in>
+From: Ross Cameron <ross.cameron@linuxpro.co.za>
+Subject: Firewalling issue
+Date: Wed, 19 Jul 2006 12:25:44 +0200
+Message-ID: <44BE08A8.2020507@linuxpro.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,26 +15,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi there list I have the following issue:
 
-   I am working on voice application. I want to identify RTP packets
-and set DSCP for those. Is there anyway to accomplish this task either
-using tc or iptables. Please help me..
-
-   Thank you
-
+I have a IP split setup on one of my Linux boxes (see diagram below), I 
+can route and all access is hunky dory,... BUT I want to block access to 
+my DMZ'z gateway address from the outside world.
+    How do I do this?
 
 
++------------+                                       +------------ +
+|            |       eth0 +-------------+  eth1      |             |
+|  Internet  |============| FW / Router |============| LAN         |
+|            |            +-------------+            |             |
++------------+                    || eth2            +------------ +
+                                  ||
+                                  ||
+                                  ||
+                                  ||                 +------------ +
+                                  |+-----------------|             |
+                                  +------------------|    DMZ      |
+                                                     |             |
+                                                     +------------ +
+
+KEY:
+~~~~
+eth0   =>   196.x.x.122 / 255.255.255.252
+eth1   =>   192.168.x.x / 255.255.255.0
+eth2   =>   196.x.x.94  / 255.255.255.240
 
 
+The Internet needs to be able to see 196.x.x.80 -> 196.x.x.95,... with 
+the exception of 196.x.x.94!!!
 
+Everything else is correct and how I need it to be,... I need to know 
+how to DROP the packets coming in on eth0 for 196.x.x.94
+BUT packets coming in on eth2 for 196.x.x.94 need to be allowed.
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
-
+Regards,...
+Ross Cameron
 
