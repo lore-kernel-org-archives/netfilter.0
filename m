@@ -1,9 +1,9 @@
-From: Jim Doble <jim.doble@tavve.com>
-Subject: Local Routing without IP Aliasing
-Date: Mon, 17 Jul 2006 14:12:54 -0400
-Message-ID: <44BBD326.7010506@tavve.com>
+From: "kavita" <kavithak@pal.ece.iisc.ernet.in>
+Subject: How to identify RTP packets?
+Date: Wed, 19 Jul 2006 11:42:28 +0530 (IST)
+Message-ID: <4801.10.32.19.84.1153289548.squirrel@www.pal.ece.iisc.ernet.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,31 +15,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am trying to configure a Linux host to treat a potentially large range 
-of IP addresses as "local", without having to define these addresses as 
-aliases. When packets (UDP or TCP) arrive addressed to any of these 
-addresses, I need these packets to be delivered locally (that is, 
-treated as if they were addressed to the IP address of my Linux host, 
-even though they were not), without losing knowledge of the original 
-destination address and port.  
+Hi,
 
-I am defining static routes in any other hosts that need to communicate 
-with these addresses, in order to ensure that packets addressed to these 
-addresses will be sent to my Linux host. The problem I am having is that 
-these packets are being discarded in my Linux host, unless I redirect 
-them to the address associated with my Linux host, in which case the 
-original destination address is lost (except in the case of TCP, where 
-there is a mechanism to recover it via getsockopt).
+   I am working on voice application. I want to identify RTP packets
+and set DSCP for those. Is there anyway to accomplish this task either
+using tc or iptables. Please help me..
 
-I would prefer to find a way to do this using iptables or routing 
-configuration, or via a netfilter extension, if that is possible. Any 
-advice would be appreciated.
+   Thank you
 
-Jim Doble
-Tavve Software Company
 
+
+
+
+
+
+-- 
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
 
 
