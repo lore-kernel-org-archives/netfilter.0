@@ -1,12 +1,13 @@
 From: Andrew Beverley <andy@andybev.com>
 Subject: Re: Connlimit and linux-2.6.17
-Date: Wed, 19 Jul 2006 22:21:36 +0100
-Message-ID: <44BEA260.2050702@andybev.com>
-References: <44BE4C27.7050602@gmail.com>
+Date: Wed, 19 Jul 2006 23:45:27 +0100
+Message-ID: <44BEB607.3000408@andybev.com>
+References: <44BEA42B.3000304@andybev.com>
+	<Pine.LNX.4.64.0607200026310.4015@bizon.gios.gov.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44BE4C27.7050602@gmail.com>
+In-Reply-To: <Pine.LNX.4.64.0607200026310.4015@bizon.gios.gov.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +19,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Adlan <adlan.elm@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: Krzysztof Oledzki <olenf@ans.pl>
+Cc: martin.bene@icomedias.com, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, kraxel@bytesex.org
 
-> I got similar problems after I moved to 2.6.17.6 from 2.6.14
-> I've downloaded latest POM and patched kernel manually
-> I didn't notice if there were any warnings when building kernel.
+>> I (and others, see netfilter list) are having trouble compiling kernel 
+>> 2.6.17.4 and iptables-1.3.5-20060508 to use connlimit. Once compiled 
+>> in and I run:
 
-I suspect the warnings I got means it's got problems - but I am not a C programmer!
+<snip>
 
-The code in question is the highlighted lines below:
+> Yes, the API was changed in 2.6.17, so small fixes are required to allow 
+> extensions to work. I'm currently traveling a lot so connlimit & TARPIT 
+> is still on my TODO list. I'm going to finish it ASAP but with limited 
+> GPRS/EDGE access it is not so simple.
 
-static struct ipt_match connlimit_match = {
-         .name = "connlimit",
-         .match = &match,               <--
-         .checkentry = &check,          <--
-         .destroy = &destroy,           <--
-         .me = THIS_MODULE
-};
+Many thanks. I do not envy you working through GPRS - very tedious!
 
-> This is what I get when I try to use connlimit match
- >
-> iptables: Unknown error 18446744073709551615
-
-I was getting a very similar error when using iptables 1.3.5. The error changed to 
-"iptables: Invalid argument" when I used iptables-1.3.5-20060508.
-
-> and, finally dmesg tells me:
-> 
-> ip_tables: connlimit match: invalid size 0 != 24
-> ip_tables: connlimit match: invalid size 0 != 24
-
-I get 'connlimit match: invalid size 0 != 16'
-
-I will email netfilter-devel and see if I can get an answer there. It looks like 
-no one is maintaining connlimit - last date in the code is 2002!
+Will it still be a patch or is it possible to get it in the stable kernel?
 
 Andy Beverley
 
