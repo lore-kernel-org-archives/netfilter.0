@@ -1,11 +1,12 @@
-From: "Darryl Romano" <dromano@vmware.com>
-Subject: IP conntrack VPN routing issue.
-Date: Thu, 20 Jul 2006 09:37:27 -0700
-Message-ID: <882A4B7A51024043B9E5EA13382DF211CC9A82@PA-EXCH03.vmware.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Routing Incoming and Outgoing Packets Differently
+Date: Thu, 20 Jul 2006 20:34:49 +0200
+Message-ID: <44BFCCC9.2070806@plouf.fr.eu.org>
+References: <44BF98B9.5020101@tavve.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <44BF98B9.5020101@tavve.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,63 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: brian@game-sat.com
 
-The scenario I am trying to pull off, in theory is rather simple I'd =
-assume.=A0
-I must be missing something small.
+Hello,
 
-What I am trying to do is,=A0=A0 route a public IP over a VPN to the =
-gateway of
-the other end of the VPN.=A0=20
+Jim Doble a =E9crit :
+> Is there a way to use one set of routing rules for incoming packets and=
+=20
+> a different set of routing rules for outgoing packets?
 
-The following URL contains a diagram of what I am trying to do.
+Yes, with advanced routing.
 
-http://www.flukex.com/network/network.jpg
+Quote from ip manpage (http://lartc.org/manpages/ip.txt) :
 
-The Office computer contains the network 72.232.50.42-46
-The VPN ip's are=A0=20
-         Office (tap0) 30.20.1.1=20
-         Home router (tap0) 30.20.1.2
+    ip rule add - insert a new rule
+[...]
+        iif NAME
+               select the incoming device to match.  If the inter-
+               face  is  loopback,  the  rule only matches packets
+               originating from this host.  This  means  that  you
+               may  create  separate  routing tables for forwarded
+               and local packets and, hence, completely  segregate
+               them.
+[end of quote]
 
-I would like to route 72.232.50.45 over the VPN to the home router.
+So you can create an alternate routing table for locally-generated=20
+packets. Incoming packets will use the default "main" routing table.
 
-Using the following rule on the "office" router,=A0 I can get the =
-packets to
-get to the home router 30.20.1.2.
+ip rule add iif lo lookup <output_table_number> prio 32765
+ip route add <destination1> gw <gateway> table <output_table_number>
+ip route add <destination2> dev <interface> table <output_table_number>
+...
 
-iptables -t nat -A PREROUTING -i eth0 -d 72.232.50.45 -j DNAT
---to-destination 30.20.1.2
-
-I see clearly that the packets are in fact reaching 30.20.1.2 (home =
-router).=20
-
-The problem at this point is that the packets, seeing as they have =
-public
-source IP's are then routing out the default gateway on the home router,
-rather then going back out on the VPN path as I would like it to do.
-
-I guess the overall question is, how can I make it so that packets =
-coming in
-on one interface go back out on the exact same interface regardless of =
-the
-default gateway.
-
-Once this if figured out,=A0 I can handle the routing to the actual =
-internal
-network myself.
-
-I am suspecting some sort of configuration relying on connection =
-tracking is
-required.=A0 I just cannot figure out how.
-
-Any help would be grateful.
-
-Thanks.
-Darryl Romano
-
-
-
+You need to have the following options enabled in your kernel to use=20
+this feature.
+CONFIG_IP_ADVANCED_ROUTER=3Dy
+CONFIG_IP_MULTIPLE_TABLES=3Dy
 
