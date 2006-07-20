@@ -1,13 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: FORWARD packet problem
-Date: Thu, 20 Jul 2006 17:46:38 +0200
-Message-ID: <44BFA55E.504@plouf.fr.eu.org>
-References: <44BE4BCE.8060509@darkstar.nom.za>	<44BE8385.4080509@plouf.fr.eu.org>
-	<44BF8A13.2010205@darkstar.nom.za>
+From: "Darryl Romano" <dromano@vmware.com>
+Subject: IP conntrack VPN routing issue.
+Date: Thu, 20 Jul 2006 09:37:27 -0700
+Message-ID: <882A4B7A51024043B9E5EA13382DF211CC9A82@PA-EXCH03.vmware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44BF8A13.2010205@darkstar.nom.za>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,49 +16,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
+Cc: brian@game-sat.com
 
-Paulo Andre a =E9crit :
->>
->>> I have a multiple isp fw
->>> eth0 =3D int
->>> eth1 =3D default isp
->>> eth2 =3D sec isp
->>>
->>> when I try and make a connection to and internal server via the eth2=20
->>> , the packet appears on the PREROUTING table, and then not on FORWARD=
-=20
->>> , anyone have any ideas?
+The scenario I am trying to pull off, in theory is rather simple I'd =
+assume.=A0
+I must be missing something small.
 
-[disable rp_filter on the interface]
+What I am trying to do is,=A0=A0 route a public IP over a VPN to the =
+gateway of
+the other end of the VPN.=A0=20
 
-> Thanks Pascal, that fixed it.
+The following URL contains a diagram of what I am trying to do.
 
-Be aware that now eth2 is not protected against IP spoofing by the input=20
-routing any more. So you must use iptables rules to drop incoming=20
-packets with an "impossible" IP source address on this interface, i.e.=20
-an address belonging to another interface (lo, eth0, eth1) subnet.
+http://www.flukex.com/network/network.jpg
 
-> Would I have to use CONNMARK and MARK to get connections leaving the=20
-> correct interface?
+The Office computer contains the network 72.232.50.42-46
+The VPN ip's are=A0=20
+         Office (tap0) 30.20.1.1=20
+         Home router (tap0) 30.20.1.2
 
-I'm not sure I understand your question correctly. Do you mean routing=20
-reply packets belonging to connections coming from the secondary ISP=20
-back through the same interface ?
+I would like to route 72.232.50.45 over the VPN to the home router.
 
-If so, you have to use CONNMARK+MARK+advanced routing only when there is=20
-no other way to identify packets which must be sent via the non-default=20
-interface. If they have distinctive characteristics other than the=20
-source or destination IP addresses (for example the source or=20
-destination port), you don't need CONNMARK and can use only=20
-MARK+advanced routing. If they have distinctive source IP addresses, you=20
-can use only advanced routing. And of course, if they have distinctive=20
-destination IP addresses, you only need standard routing.
+Using the following rule on the "office" router,=A0 I can get the =
+packets to
+get to the home router 30.20.1.2.
 
-But routing the packets through the correct interface won't allow you to=20
-re-enable rp_filter, at least when MARK is in use, because the rp_filter=20
-validation does not take iptables rules into account. I'm not sure about=20
-using only advanced routing though (does rp_filter validation use the=20
-packet destination address ?).
+iptables -t nat -A PREROUTING -i eth0 -d 72.232.50.45 -j DNAT
+--to-destination 30.20.1.2
+
+I see clearly that the packets are in fact reaching 30.20.1.2 (home =
+router).=20
+
+The problem at this point is that the packets, seeing as they have =
+public
+source IP's are then routing out the default gateway on the home router,
+rather then going back out on the VPN path as I would like it to do.
+
+I guess the overall question is, how can I make it so that packets =
+coming in
+on one interface go back out on the exact same interface regardless of =
+the
+default gateway.
+
+Once this if figured out,=A0 I can handle the routing to the actual =
+internal
+network myself.
+
+I am suspecting some sort of configuration relying on connection =
+tracking is
+required.=A0 I just cannot figure out how.
+
+Any help would be grateful.
+
+Thanks.
+Darryl Romano
+
+
+
 
