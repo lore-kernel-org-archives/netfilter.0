@@ -1,7 +1,7 @@
-From: Paulo Andre <pandre@drepan.za.net>
-Subject: rule does not get to FORWARD
-Date: Wed, 19 Jul 2006 16:58:59 +0200
-Message-ID: <44BE48B3.4020006@drepan.za.net>
+From: Paulo Andre <pandre@darkstar.nom.za>
+Subject: Packet FORWARD problem
+Date: Thu, 20 Jul 2006 15:43:36 +0200
+Message-ID: <44BF8888.1000006@darkstar.nom.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
