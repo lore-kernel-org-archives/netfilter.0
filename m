@@ -1,8 +1,7 @@
-From: Alejandro Cabrera Obed <informatica@cndisc.gov.ar>
-Subject: Firewall Builder for iptables
-Date: Thu, 20 Jul 2006 23:34:02 -0300
-Message-ID: <44C03D1A.7070506@cndisc.gov.ar>
-Reply-To: informatica@cndisc.gov.ar
+From: Michael =?ISO-8859-1?Q?Fern=E1ndez?= "M." <mfernandez@sernam.cl>
+Subject: h323
+Date: Fri, 21 Jul 2006 09:00:23 -0400
+Message-ID: <1153486823.16671.74.camel@debian.sernam2k.cl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -17,24 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "Netfilter (lista)" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Dear all,
+Hi....
 
-I'm building a firewall with Firewall Builder (fwbuilder) for
-linux/iptables....I'm sure that my NAT and filtering rules using virtual
-addresses for accesing my public servers from Internet are OK, but it
-doesn't work.
+Someone have h323 modules (netfilter) working on Debian Sarge (Kernel
+2.4.27)... i need these modules but i`m not sure about how to patch the
+kernel... 
 
-I see that I consider that my firewall is NOT part of "Any", because I
-consider Any = Internet, but I'm not sure if I'm right.
+There is a good document that explain the process?
 
-Can you tell me when do I have to consider my firewall as part of "Any"
-using the Firewall Buildewr interface ??
+Thanks a lot!!!!
 
+Michael.-
 
-Thanks a lot,
-
-
-Alejandro
 
