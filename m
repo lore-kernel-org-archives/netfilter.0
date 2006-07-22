@@ -1,79 +1,145 @@
-From: Krzysztof Oledzki <olenf@ans.pl>
-Subject: Re: Connlimit and linux-2.6.17
-Date: Sat, 22 Jul 2006 02:37:34 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0607220227500.2260@bizon.gios.gov.pl>
-References: <44BEA42B.3000304@andybev.com>
-	<Pine.LNX.4.64.0607200026310.4015@bizon.gios.gov.pl>
-	<44BEB607.3000408@andybev.com>
-	<Pine.LNX.4.64.0607212050390.17358@bizon.gios.gov.pl>
-	<44C16CE4.3030302@andybev.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Help with IPtables and NAT
+Date: Sat, 22 Jul 2006 02:58:46 +0200
+Message-ID: <44C17846.4080403@plouf.fr.eu.org>
+References: <44C16109.20704@jemconsult.biz>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="-187430788-1071996556-1153528654=:2260"
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <44C16CE4.3030302@andybev.com>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <44C16109.20704@jemconsult.biz>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: Andrew Beverley <andy@andybev.com>
-Cc: kraxel@bytesex.org, martin.bene@icomedias.com, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, adlan.elm@gmail.com
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hello,
 
----187430788-1071996556-1153528654=:2260
-Content-Type: TEXT/PLAIN; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+James Marcinek a =E9crit :
+[...]
+> This is my latest concoction:
+>=20
+> # First drop everything (lets you open what you want)
+> iptables -P INPUT DROP
+> iptables -P OUTPUT DROP
+> iptables -P FORWARD DROP
 
+So far so good.
 
+> iptables -t nat -P PREROUTING DROP
+> iptables -t nat -P POSTROUTING DROP
 
-On Sat, 22 Jul 2006, Andrew Beverley wrote:
+This is wrong, *very* wrong. The 'nat' table is not intended to do any=20
+filtering, so you don't want to set the default policy of any nat chain=20
+to DROP. Trust me. (Sometimes I wonder why the DROP default policy is=20
+allowed in the nat chains.)
 
->>>>> I (and others, see netfilter list) are having trouble compiling kerne=
-l=20
->>>>> 2.6.17.4 and iptables-1.3.5-20060508 to use connlimit. Once compiled =
-in=20
->>>>> and I run:
->>>=20
->>> <snip>
->>>=20
->>>> Yes, the API was changed in 2.6.17, so small fixes are required to all=
-ow=20
->>>> extensions to work. I'm currently traveling a lot so connlimit & TARPI=
-T=20
->>>> is still on my TODO list. I'm going to finish it ASAP but with limited=
+> # PREROUTING chain rules
+> # iptables -t nat -i PREROUTING 1 -d 172.10.10.2 -j LOG --loglevel debu=
+g
+> iptables -t nat -A PREROUTING -d 172.10.10.2 -p tcp --dport 80 -j DNAT=20
+> --to-dest 192.168.0.2
+> iptables -t nat -A PREROUTING -d 172.10.10.2 -p tcp --dport 443 -j DNAT=
 =20
->>>> GPRS/EDGE access it is not so simple.
->>=20
->> OK, I fixed the connlimit extension. Please:
->>
->>  - tell me if it works (or not).
->>=20
->
-> I forgot to mention - I get a lot of 'ipt_connlimit: Oops: invalid ct sta=
-te'=20
-> error messages scrolling up the screen.
+> --to-dest 192.168.0.2
+[and so on]
 
-But when did it start? In 2.6.17?
+Since you want to DNAT 172.10.10.2 to 192.168.0.2, I suggest you write a=20
+single rule for all protocols and ports :
 
-> Is it safe for me to edit=20
-> ipt_connlimit.c to not print them? Or are they telling me there is someth=
-ing=20
-> wrong with my setup?
+iptables -t nat -A PREROUTING -d 172.10.10.2 -j DNAT --to 192.168.0.2
 
-Plase try adding "-m conntrack --ctstate INVALID -j DROP" before "-m=20
-connlimit (...)". Did it help?
+Then you add rules in the filter FORWARD chain to do the filtering, just=20
+like you did in the filter INPUT chain.
 
+> iptables -t nat -A PREROUTING -d 172.10.10.2 -p udp --dport 53 -j DNAT=20
+> --to-dest 192.168.0.2
+> iptables -t nat -A PREROUTING -d 172.10.10.2 -p udp --dport 53 -j DNAT=20
+> --to-dest 192.168.0.2
 
-Best regards,
+Here you have twice the same rule. Shouldn't one be for TCP (DNS can use=20
+either TCP our UDP) ?
 
- =09=09=09=09Krzysztof Ol=EAdzki
----187430788-1071996556-1153528654=:2260--
+> # User-defined chain for ACCEPTed TCP packets
+> iptables -N okay
+> iptables -A okay -p TCP --syn -j ACCEPT
+> iptables -A okay -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A okay -p TCP -j DROP
+
+It does not really matter, but I don't fully understant the purpose of=20
+this chain.
+
+> # INPUT chain rules
+> iptables -A INPUT -p ALL -i eth1 -s 192.168.0.0/24 -j ACCEPT
+> iptables -A INPUT -p ALL -i lo -s 127.0.0.1 -j ACCEPT
+> iptables -A INPUT -p ALL -i lo -s 192.168.0.1 -j ACCEPT
+> iptables -A INPUT -p ALL -i lo -s 172.10.10.1 -j ACCEPT
+> iptables -A INPUT -p ALL -i lo -s 172.10.10.2 -j ACCEPT
+
+You forgot the whole 127.0.0.0/8 subnet which can be used on the=20
+loopback interface. Anyway, why don't you just allow all traffic on the=20
+loopback interface ?
+
+> iptables -A INPUT -p ALL -i eth1 -d 192.168.0.255 -j ACCEPT
+
+Useless : 192.168.0.255 belongs to 192.168.0.0/24.
+
+> # Rules for incoming packets from the Internet
+>=20
+> # Packets for established connections
+> iptables -A INPUT -p ALL -d 172.10.10.1 -m state --state=20
+> ESTABLISHED,RELATED -j ACCEPT
+> iptables -A INPUT -p ALL -d 172.10.10.2 -m state --state=20
+> ESTABLISHED,RELATED -j ACCEPT
+
+If all traffic on 172.10.10.2 is redirected to 192.168.0.2, this last=20
+rule becomes useless.
+
+> # TCP rules
+[...]
+
+> # UDP rules
+> iptables -A INPUT -p UDP -i eth0 -s 0/0 --destination-port 53 -j ACCEPT
+[...]
+
+As DNS can also use TCP, I'd expect a rule accepting TCP port 53.
+
+> # ICMP rules
+>=20
+> # FORWARD chain rules
+> iptables -A FORWARD -i eth1 -j ACCEPT
+> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+>=20
+> # iptables -A FORWARD -i eth0 -d 192.168.0.2 -j ACCEPT
+
+Ok, you don't want to accept all traffic redirected to 192.168.0.2. So=20
+you have to add rules to accept some protocols/ports. E.g. :
+
+iptables -A FORWARD -i eth0 -d 192.168.0.2 -p tcp --dport 80 -j ACCEPT
+
+> # OUTPUT chain rules
+> iptables -A OUTPUT -p ALL -s 127.0.0.1 -j ACCEPT
+> iptables -A OUTPUT -p ALL -s 192.168.0.1 -j ACCEPT
+> iptables -A OUTPUT -p ALL -s 172.10.10.1 -j ACCEPT
+
+Same remark as above about 127.0.0.0/8.
+By the way, why do you need to filter the source address in OUTPUT ?=20
+This could break things like the REJECT target if you used it.
+
+> # iptables -A OUTPUT -p ALL -s 172.10.10.2 -j ACCEPT
+> iptables -t nat -A OUTPUT -d 172.10.10.2 -p ALL -j DNAT --to-destinatio=
+n=20
+> 192.168.0.2
+>=20
+> # POSTROUTING
+> iptables -t nat -A POSTROUTING -s 192.168.0.2 -j SNAT --to-source=20
+> 172.10.10.2
+> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 172.10.10.1
 
