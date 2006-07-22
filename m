@@ -1,12 +1,13 @@
 From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: Struggling with NAT: is PREROUTING working at all?
-Date: Fri, 21 Jul 2006 19:34:04 +0200
-Message-ID: <44C1100C.2080006@rtij.nl>
-References: <44BE40D6.90108@gentoo.org>
+Subject: Re: is this possible (multiple sources, replies go to proper source)
+Date: Sat, 22 Jul 2006 12:32:15 +0200
+Message-ID: <44C1FEAF.4060304@rtij.nl>
+References: <Pine.LNX.4.63.0607101300410.12501@qynat.qvtvafvgr.pbz>	<55561.2001:888:19e1::53.1152616368.squirrel@dexter>
+	<44BE491C.7010502@darkstar.nom.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44BE40D6.90108@gentoo.org>
+In-Reply-To: <44BE491C.7010502@darkstar.nom.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +19,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Daniel Drake <dsd@gentoo.org>
+To: Paulo Andre <pandre@darkstar.nom.za>
 Cc: netfilter@lists.netfilter.org
 
-Daniel Drake wrote:
+Paulo Andre wrote:
 
-> I took a step back and re-read the iptables man page. It says that the 
-> nat table is consulted whenever a new connection is about to be 
-> established, and PREROUTING is used when packets come in, so I'd 
-> expect this rule to give me a lot of output:
+> Martijn Lievaart wrote:
 >
->     iptables -t nat -A PREROUTING -j LOG
+>>
+>> Use CONNMARK to remember which connection came from which gateway, 
+>> use the
+>> ROUTE target to correctly route the replies.
+>>
+>> HTH,
+>> M4
+>>  
+>>
 >
-> But, I get nothing, even when successfully establishing a new 
-> connection from the outside to the linux system. Logging is definitely 
-> working since I can get logs from other rules.
+> Hi Martjin, do you have an example on how to do this?
 >
-> No other rules are in place before this one, my script simply clears 
-> all tables/chains, sets all policies to ACCEPT, then runs the above 
-> command.
->
-> Am I missing something, or PREROUTING not triggering when it should be?
 
 
-You may have hit a bug here. That should have worked. I never tried 
-LOGging from prerouting, but the NAT functionality definately works.
+Scratch the route target. Use iproute2. In prerouting mark the packet 
+according to the interface it came in on. On the retrun traffic restore 
+the mark. Create routing rules on the fwmark. Google on "connmark route" 
+gives lots of info.
 
+HTH,
 M4
+
 
