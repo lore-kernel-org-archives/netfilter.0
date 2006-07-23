@@ -1,9 +1,14 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Use of ipt_statistic
-Date: Sun, 23 Jul 2006 18:28:50 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0607231809080.26586@yvahk01.tjqt.qr>
+From: "David Burrow" <dnburrow@gmail.com>
+Subject: Re: ipset: Kernel configuration error? "Protocol unavailable"
+Date: Sun, 23 Jul 2006 14:18:53 -0600
+Message-ID: <edc15fb60607231318i4781591ai6f5c229754cf8a03@mail.gmail.com>
+References: <edc15fb60607222220r6cd7ff6aw2439beedf0872b4@mail.gmail.com>
+	<20060723110958.3mnr0a9bkos8sok0@www.simplelists.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060723110958.3mnr0a9bkos8sok0@www.simplelists.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,18 +19,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Andrew Beverley <andy@andybev.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+All,
 
+Nevermind, I've found the problem.  It wasn't loading the ipset
+module.  Now that it's loaded, everything seems to be working.
 
-in 2.6.18-rc1, ipt_statistics has been merged to supercede ipt_random and 
-ipt_nth. But the current userspace iptables (svn) does not have any code 
-for ipt_statistics.
+David
 
-
-Jan Engelhardt
--- 
+On 7/23/06, Andrew Beverley <andy@andybev.com> wrote:
+> > I've got ipset patched in and running on a SUSE 10 box (vanilla 2.6.17
+> > kernel from kernel.org).  I think, however, that I've misconfigured
+> > something somewhere, as I'm getting the following error when I try to
+> > creat a set of either iphash or nethash type:
+> >
+> > I type in the example rule from the website
+> > http://ipset.netfilter.org/tips.html
+> >
+> >> ipset -N foo iphash --resize 0
+> >
+> > And I get the following error:
+> >
+> > ipset v2.2.9: Error from kernel: Protocol not available
+>
+> Stupid question - but have you enabled _all_ the ipset options in the kernel
+> config? There's several different ones for the different types of ipsets.
+>
+> Andy Beverley
+>
+>
 
