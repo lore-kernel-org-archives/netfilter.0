@@ -1,10 +1,11 @@
-From: Richard Cai <cy@microembed.cn>
-Subject: what nat type does netfilter's snat&masquerade,implement?
-Date: Sun, 23 Jul 2006 10:26:02 +0800
-Message-ID: <44C2DE3A.8070207@microembed.cn>
+From: "David Burrow" <dnburrow@gmail.com>
+Subject: ipset: Kernel configuration error? "Protocol unavailable"
+Date: Sat, 22 Jul 2006 23:20:07 -0600
+Message-ID: <edc15fb60607222220r6cd7ff6aw2439beedf0872b4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,11 +19,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-hi:
+All,
 
-Can you tell me what nat type does netfilter's snat&masquerade
-implement? Port restricted cone or Symmetric NAT?
+I've got ipset patched in and running on a SUSE 10 box (vanilla 2.6.17
+kernel from kernel.org).  I think, however, that I've misconfigured
+something somewhere, as I'm getting the following error when I try to
+creat a set of either iphash or nethash type:
 
-Thank you!
+I type in the example rule from the website http://ipset.netfilter.org/tips.html
 
+>ipset -N foo iphash --resize 0
+
+And I get the following error:
+
+ipset v2.2.9: Error from kernel: Protocol not available
+
+Any ideas where I should look for what I've done wrong?  I apologize
+if you need more information from me, if so, just let me know and I'll
+include it.
+
+Thanks,
+
+David
 
