@@ -1,13 +1,10 @@
-From: "David Burrow" <dnburrow@gmail.com>
-Subject: Re: ipset: Kernel configuration error? "Protocol unavailable"
-Date: Sun, 23 Jul 2006 14:18:53 -0600
-Message-ID: <edc15fb60607231318i4781591ai6f5c229754cf8a03@mail.gmail.com>
-References: <edc15fb60607222220r6cd7ff6aw2439beedf0872b4@mail.gmail.com>
-	<20060723110958.3mnr0a9bkos8sok0@www.simplelists.com>
+From: "Kaushal Shriyan" <kaushalshriyan@gmail.com>
+Subject: Internet Sharing
+Date: Mon, 24 Jul 2006 11:36:05 +0530
+Message-ID: <6b16fb4c0607232306w3797d309u4326fb763ec92f89@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060723110958.3mnr0a9bkos8sok0@www.simplelists.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,35 +17,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-All,
+Hi ALL
 
-Nevermind, I've found the problem.  It wasn't loading the ipset
-module.  Now that it's loaded, everything seems to be working.
+I have my ISP connection for Internet through ADSL router. I connected
+to Linux box which has FC4. I am able to browse the internel, Now how
+do i share the internet to the other linux box which are in the LAN.
 
-David
+Thanks and Regards
 
-On 7/23/06, Andrew Beverley <andy@andybev.com> wrote:
-> > I've got ipset patched in and running on a SUSE 10 box (vanilla 2.6.17
-> > kernel from kernel.org).  I think, however, that I've misconfigured
-> > something somewhere, as I'm getting the following error when I try to
-> > creat a set of either iphash or nethash type:
-> >
-> > I type in the example rule from the website
-> > http://ipset.netfilter.org/tips.html
-> >
-> >> ipset -N foo iphash --resize 0
-> >
-> > And I get the following error:
-> >
-> > ipset v2.2.9: Error from kernel: Protocol not available
->
-> Stupid question - but have you enabled _all_ the ipset options in the kernel
-> config? There's several different ones for the different types of ipsets.
->
-> Andy Beverley
->
->
+
+Kaushal
 
