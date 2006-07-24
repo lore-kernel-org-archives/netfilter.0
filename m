@@ -1,14 +1,14 @@
-From: "Kaushal Shriyan" <kaushalshriyan@gmail.com>
-Subject: Re: Testing IPTABLES
-Date: Sat, 22 Jul 2006 19:10:34 +0530
-Message-ID: <6b16fb4c0607220640v224825afh80ca914888c68008@mail.gmail.com>
-References: <6b16fb4c0607220406r5e42469re057fccc64f67dd3@mail.gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C49C83@knowledge.wizdom.nu>
+From: Anssi Hannula <anssi.hannula@gmail.com>
+Subject: Re: Messages in log with SNAT target
+Date: Mon, 24 Jul 2006 15:01:34 +0300
+Message-ID: <44C4B69E.9040302@gmail.com>
+References: <44C4903B.3080004@gmail.com> <44C49FC6.6030504@plouf.fr.eu.org>
+	<44C4A904.4010403@gmail.com>
+	<02BB8A4AC86C564C89C7F14CF98CE0C40127D9@knowledge.wizdom.nu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: Quoted-Printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C49C83@knowledge.wizdom.nu>
-Content-Disposition: inline
+In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C40127D9@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,37 +19,154 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: Sietse van Zanen <sietse@wizdom.nu>
+Cc: netfilter@lists.netfilter.org
 
-On 7/22/06, Sietse van Zanen <sietse@wizdom.nu> wrote:
-> Yes.
->
+Sietse van Zanen wrote:
+> The security risk is, and it is a MAJOR one, especially with WiFi netwo=
+rks is that any PC on the network could just be set up with a private IP =
+on your private network, start sniffing for passwords etc.
+> =20
+> It's a very, very bad idea to put your public and private WiFi infratru=
+cture on the same physical network.
+> I would say, there's even no point in firewalling this. Firewalling is =
+seperating, you are combining.
+> =20
 > -Sietse
->
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Kaushal
-> Shriyan
-> Sent: Saturday, July 22, 2006 1:07 PM
+
+In this case the private network is only a very small home network. I
+don't see there being too big a risk of anyone setting up a box with
+private IP on the network with harm on their mind. If that would be
+possible, wouldn't the security of the whole system be compromised so
+much that the private/public separation doesn't matter anymore?
+
+The main purpose of the private IPs here is the ease of use and having
+no public IP for a system if so wanted.
+
+> ________________________________
+>=20
+> From: netfilter-bounces@lists.netfilter.org on behalf of Anssi Hannula
+> Sent: Mon 24-Jul-06 13:03
 > To: netfilter@lists.netfilter.org
-> Subject: Testing IPTABLES
->
-> Hi
->
-> Can i test IPTABLES Rules in Testing Environment
->
-> Thanks and Regards
->
-> Kaushal
->
->
+> Subject: Re: Messages in log with SNAT target
+>=20
+>=20
+>=20
+> Pascal Hambourg wrote:
+>=20
+>>Hello,
+>=20
+>=20
+> Hi, and thank you very much for your thorough answer.
+>=20
+>=20
+>>Anssi Hannula a =E9crit :
+>>
+>>
+>>>I've been using this kind of configuration on my Linux router for a fe=
+w
+>>>years:
+>>>
+>>>eth0    80.223.77.223, public internet ip
+>>>eth0:0    10.0.0.1, private network ip
+>>
+>>
+>>You know that having both internet and a private LAN on the same
+>>interface is a *very* bad idea, don't you ? I suppose you have no other
+>>choice.
+>=20
+>=20
+> Oops, I didn't know :((
+>=20
+> Is the bad part on it having both of them on the same physical network,
+> or only the fact that they are on the same interface?
+>=20
+> Then again, this is a wireless network where some hosts have
+> public+private IPs and some hosts private IPs, so I guess it would be
+> pretty non-practical to have two interfaces on every system which I wan=
+t
+> to have public IP too.
+>=20
+> What is the security risk here, exactly?
+>=20
+>=20
+>>>IP forwarding enabled.
+>>>
+>>>And a rule for iptables:
+>>>-A POSTROUTING -s 10.0.0.0/255.255.255.0 -d ! 10.0.0.0/255.255.255.0 -=
+j
+>>>SNAT --to-source 80.223.77.223
+>>>
+>>>Kernel IP routing table
+>>>Destination     Gateway         Genmask         Flags Metric Ref =20
+>>>Use Iface
+>>>10.0.0.0        0.0.0.0         255.255.255.0   U     10     0     =20
+>>>0 eth0
+>>>80.223.64.0     0.0.0.0         255.255.240.0   U     10     0     =20
+>>>0 eth0
+>>>0.0.0.0         80.223.64.1     0.0.0.0         UG    10     0     =20
+>>>0 eth0
+>>>
+>>>However, I get lots of this kind of messages in the dmesg while routin=
+g:
+>>>host 10.0.0.4/if2 ignores redirects for 70.35.xxx.xxx to 80.223.64.1.
+>>
+>>[and so on]
+>>
+>>Here's what happens. On your router box, all routes use the same
+>>interface eth0, so when it receives a packet for another destination
+>>than the box itself, it sends an "ICMP Redirect" message to the source
+>>IP address meaning "hey, there is a more direct route to destination
+>>70.35.x.x using gateway 80.223.64.1 instead of me. Please update your
+>>routing table".
+>>
+>>Happily, the 1.0.0.4 host ignores the "ICMP Redirect" messages. One
+>>reason is I think that's a default behaviour of Windows NT. Another
+>>reason is that host has probably no direct route to the proposed gatewa=
+y
+>>address. Anyway, if it didn't ignore the "ICMP Redirect", it would
+>>probably lose connectivity with internet hosts because of its private
+>>address.
+>>
+>>Note : destination NAT (DNAT) on the same network blocks the sending of
+>>"ICMP Redirect" messages by the routing decision, because destination
+>>NAT takes place before the routing decision. But source NAT (SNAT,
+>>MASQUERADE) doesn't, because it takes place after the routing decision,
+>>so it's too late (see Netfilter diagram in
+>>http://www.netfilter.org/documentation/HOWTO//NAT-HOWTO.txt).
+>>
+>>You can enable or disable the sending of "ICMP Redirect" messages with
+>>the kernel parameter send_redirect.
+>>
+>>send_redirects - BOOLEAN
+>>     Send redirects, if router.
+>>     send_redirects for the interface will be enabled if at least one o=
+f
+>>     conf/{all,interface}/send_redirects is set to TRUE,
+>>     it will be disabled otherwise
+>>     Default: TRUE
+>>
+>>To disable sending "ICMP redirect" on eth0 :
+>>
+>>echo 0 > /proc/sys/net/ipv4/conf/all/send_redirects
+>>echo 0 > /proc/sys/net/ipv4/conf/eth0/send_redirects
+>>
+>>or :
+>>
+>>sysctl -w net/ipv4/conf/all/send_redirects=3D0
+>>sysctl -w net/ipv4/conf/eth0/send_redirects=3D0
+>=20
+>=20
+>=20
+> --
+> Anssi Hannula
+>=20
+>=20
+>=20
 
-Hi Sietse
 
-How do i start with , I am a novice to iptables
+--=20
+Anssi Hannula
 
-Thanks
-
-Kaushal
 
