@@ -1,9 +1,11 @@
-From: Hadley Scott K <SKHADLEY@qinetiq.com>
-Subject: netfilter versions that support kernel 2.4.26
-Date: Tue, 25 Jul 2006 14:45:58 +0100
-Message-ID: <4B399B8DBA86D411BB3500508B9566FF0B661B21@mal-mail-1.dera.gov.uk>
+From: "Ric Messier" <kilroy@WasHere.COM>
+Subject: Going around routing tables without NAT
+Date: Tue, 25 Jul 2006 09:47:24 -0600
+Message-ID: <001c01c6b001$a08ae1b0$e1a0a510$@COM>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Language: en-us
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,45 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 Hi,
+	I have a problem I've been unable to come up with a solution for. I
+have a pair of "Internet" connections into my firewall. One is a wireless
+broadband connection that has a static IP address so I use it to host a
+couple of small domains (Web/mail). The second connection is DSL. I'd like
+to push traffic from my internal network through the DSL connection and
+leave the static connection for hosting purposes (and a backup in case of
+issues with the DSL). I don't, however, want to do NAT since the "modem" I
+am connected to already does NAT and I don't really want to double-NAT the
+packets. My routing table on the firewall is set with a default out the
+wireless connection which needs to be there so I'm not routing
+asymmetrically on response traffic to, for example, SMTP or HTTP. It seems
+to me that a POSTROUTING rule with a ROUTE target should be correct but I'd
+need to install the patches for that and it's not clear to me how well it
+would work anyway. Any additional thoughts?
 
-Could someone please tell me what netfilter, libnetfilter_queue and
-libnfnetlink etc versions I would need to download to get it to compile and
-work with Linux kernel version 2.4.16?
 
-I would also appreciate a pointer at the iptables in user space code.
+:wireless bband: ------ 	<- default route
+				\
+				 \
+				  <--->: firewall : <---> : internal network
+:
+				 /
+				/
+:DSL: -----------------
 
-Thanks in advance
+
+Thanks,
+Ric
 
 
-Regards
 
---
-Scott Hadley
-QinetiQ
-01684 89 Ext. 7393
-mailto:skhadley@QinetiQ.com
-
-The information contained in this E-Mail and any subsequent
-correspondence is private and is intended solely for the intended
-recipient(s).  The information in this communication may be confidential
-and/or legally privileged.  Nothing in this e-mail is intended to
-conclude a contract on behalf of QinetiQ or make QinetiQ subject to any
-other legally binding commitments, unless the e-mail contains an express
-statement to the contrary or incorporates a formal Purchase Order.
-
-For those other than the recipient any disclosure, copying,
-distribution, or any action taken or omitted to be taken in reliance on
-such information is prohibited and may be unlawful.
-
-Emails and other electronic communication with QinetiQ may be monitored
-and recorded for business purposes including security, audit and
-archival purposes.  Any response to this email indicates consent to
-this.
-
-Telephone calls to QinetiQ may be monitored or recorded for quality
-control, security and other business purposes.
 
