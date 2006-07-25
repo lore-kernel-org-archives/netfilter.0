@@ -1,8 +1,8 @@
-From: <support@sjobeck.com>
-Subject: nat, dns, public, private, port forwarding,
-	iptables: cant see sites on LAN with public DNS
-Date: Mon, 24 Jul 2006 22:55:32 -0700
-Message-ID: <B74511B06DDF514399346C759139F03B8DF163@roma.sjobeck.com>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: stateless and stateful packet filtering
+Date: Tue, 25 Jul 2006 09:02:23 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127DD@knowledge.wizdom.nu>
+References: <6b16fb4c0607242248u566b61ccof2c2f1e70b63d416@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -20,55 +20,38 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Dear All,
+This is a good article that explains about various types of firewalling:
+=20
+http://www.webhostgear.com/37_print.html
+=20
+-Sietse
 
-First time poster, go easy on me. I'm an IOS convert.
+________________________________
 
-I just replaced my Cisco 1750 with a DSL WIC in it for a CentOS 4.3
-machine with a Sangoma DSL card, and it works great, and we like it a
-lot. There is one side-effect of the difference between the way that IOS
-handled the static NAT mapping and the way that we are currently
-(iptables) configured for same.=20
+From: netfilter-bounces@lists.netfilter.org on behalf of Kaushal Shriyan
+Sent: Tue 25-Jul-06 7:48
+To: netfilter@lists.netfilter.org
+Subject: stateless and stateful packet filtering
 
-In IOS, the traffic came in the public IP, was mapped to the private IP,
-and then hit that box. Same was true for out-bound, traffic came from
-the box as private IP, to router, spun around in to public IP, and out
-to the WAN, as that public IP.=20
 
-Now my traffic hits the WAN interface of iptables, is mapped to the
-private IP, hits the box on the LAN. But for traffic originating from
-the box destained to the WAN, it appears to the WAN as just any other
-box coming out of the NAT pool, and appears to come from the gateway's
-WAN interface. It does not appear to come from its public IP.
 
-So, here is the part that is "interesting trafic" to my discussion.=20
+Hi ALL
 
-Question 1: Do I care? Do I want those boxes that are mapped to public
-IP's to appear to the WAN to be actually coming from those public IP's?
+I went through http://www.netfilter.org <http://www.netfilter.org/> , I =
+did not understood the below
 
-But, most importantly, is question 2:
+Main Features
+stateless packet filtering (IPv4 and IPv6)
+stateful packet filtering (IPv4)
 
-I can not see the websites that are hosted on this webserver on my LAN,
-since those websites are for domains that have public DNS (and no split
-horizon DNS)(we don't want split horizon DNS). Something is breaking
-when my host tries to see these sites ..... it gets DNS from the WAN,
-then tries to come back in through the NAT/router/iptables/port
-forwarder/gateway machine to try to see the webserver, on my LAN, at its
-private (RFC1918) address. Is there a way to elegantly resolve this? I
-do not want to run internal DNS for these domains. I can not add 20
-entries to all our laptops then remove those same entries when we leave
-the LAN. (I did test adding entries to HOSTS file and sites come right
-up)
+What can I do with netfilter/iptables?
+build internet firewalls based on stateless and stateful packet =
+filtering
 
-Any flashes of brilliance from you brilliant people on this great list
-will be so very much appreciated.
+Thanks and Regards
 
-Thanks very much.
+Kaushal
 
-Peace.
 
-Jason Sjobeck
-
-www.sjobeck.com
 
 
