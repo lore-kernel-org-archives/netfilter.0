@@ -1,12 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: multiport tolerance changes
-Date: Wed, 26 Jul 2006 13:35:24 +0200
-Message-ID: <44C7537C.7070509@plouf.fr.eu.org>
-References: <44C73691.1080302@regnard.org>
+From: WP <mls100@comcast.net>
+Subject: IPTables problem perhaps related to ECN/CWR flags?
+Date: Wed, 26 Jul 2006 04:45:39 -0700
+Message-ID: <44C755E3.7050908@comcast.net>
+Reply-To: mls1000@s92551514.onlinehome.us
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44C73691.1080302@regnard.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +16,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Greetings,
 
-Vincent Regnard a =E9crit :
->=20
-> With iptables 1.2.7 I had some rules where I could write some multiport=
-=20
-> (port lists or ranges) both for source and destination ports, like this=
-:
->=20
-> /sbin/iptables -A fw2net_eth3 -p tcp -m multiport -s 82.67.103.87=20
-> --sport 1024:65535 -d 0.0.0.0/0 --dports 80,8080,81,8000,1755 -j ACCEPT
->=20
-> iptables was coping well with this and expanded the port matrix into=20
-> appropriate single rules
+I currently setup a home network with the following topology:
 
-What do you mean ? Could you give an example of such expansion ?
+Cable Modem -> Linux Computer (IPTables+NAT) -> Switch (3com 8 port 
+100mbit Officeconnect) -> 4 computers.
 
-> But iptables 1.3.5 refuses to have multiport for both=20
-> source and destination ports and objects:
->=20
-> iptables v1.3.5: multiport can only have one option
+I use Arno's IPTables Script: 
+http://rocky.eld.leidenuniv.nl/iptables-firewall/arno-iptables-firewall_1.8.6c.tar.gz 
+.
 
-Well, it seems that my old iptables 1.2.6a already had the same=20
-limitation. I submitted your rule to it and got an error too.
+I run two computers running two different versions of the a server 
+behind the NAT. The first version (2.0) is extremely old and runs on DOS 
+6.22 and a packet driver (henceforth referred to as W2). The second 
+(3.0) runs fine on Windows XP (henceforth referred to as W3). From the 
+internal LAN, I can connect to both servers fine. From the outside 
+though, people are only able to connect to W3 . Both listen on port 23. 
+I decided to setup tcpdump and see what was going on.
 
-> So I have to re-write my firewall rules.
+I compared the packets being sent when successful (via LAN)
 
-How did you rewrite the above rule ?
-If I reorder the options, so that the --sport parameter appears to=20
-belong to the implicit "-m tcp" match created by "-p tcp", the rule is=20
-accepted by my iptables 1.2.6a :
+wireshark screenshot of tcpdump cap: 
+http://s92551514.onlinehome.us/upload/LANtoW2.jpg
 
-/sbin/iptables -A fw2net_eth3 -s 82.67.103.87 -d 0.0.0.0/0 \
-   -p tcp --sport 1024:65535 -m multiport --dports 80,8080,81,8000,1755 \
-   -j ACCEPT
+to the ones being ignored (via Outside)
 
-As a general rule it seems to me that it is more logical and readable to=20
-put the parameters of a match right behind the match.
+wireshark screenshot of tcpdump cap: 
+http://s92551514.onlinehome.us/upload/OUTSIDEtoW2.jpg *# note the 
+connect packet is forwarded successfully, but W2 does not respond.*
 
-PS: what's the use of "-d 0.0.0.0/0" ?
+...and noticed that the only difference was the ECN and CWR flags.
+
+I did a little googling, and saw a few random posts that said some sites 
+don't function with ECN enabled, and that ECN is supplied only when it 
+is negotiated. So I'm thinking perhaps the outside client asks my Linux 
+routing comp if it supports ECN (/proc/sys/net/ipv4/tcp_ecn is 0), Linux 
+comp says yes?, packet is generated with ECN/CWR and sent to Linux, 
+Linux forwards packet to W2 with those flags intact. W2, being old and 
+not knowing what those flags mean, ignores the packets.
+
+This is of course pure theory, as I have little to no knowledge of any 
+of this stuff to be honest, I'm just comparing what works and what 
+doesn't. So my question is this, would the CWR and ECN flags possibly 
+cause W2 to act this way? If so, is there some tool I can use to strip 
+those flags when forwarding packets to W2 so that they match the LAN 
+packets I captured? Or is there a better solution to this whole mess?
+
+Thanks very much,
+
+MLS
+
+Relevant version info etc...
+
+Router:
+Gentoo Linux 2006.0
+Kernel 2.6.16
+IPTables 1.3.5
+Wireshark 0.99.2
+TCPDump 3.9.4
+LibPcap 0.9.4
+
+W2:
+MS-DOS 6.22
+Intel E100B Packet Driver 11.11
 
