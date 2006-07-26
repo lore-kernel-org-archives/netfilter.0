@@ -1,20 +1,12 @@
-From: Anssi Hannula <anssi.hannula@gmail.com>
-Subject: Re: Messages in log with SNAT target
-Date: Wed, 26 Jul 2006 14:54:27 +0300
-Message-ID: <44C757F3.6060400@gmail.com>
-References: <44C4903B.3080004@gmail.com> <44C49FC6.6030504@plouf.fr.eu.org>
-	<44C4A904.4010403@gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127D9@knowledge.wizdom.nu>
-	<44C4B69E.9040302@gmail.com>
-	<Pine.LNX.4.64.0607252038520.10006@darkstar.sysinfo.com>
-	<44C724D3.2090602@gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127E0@knowledge.wizdom.nu>
-	<44C75021.9070204@gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127E4@knowledge.wizdom.nu>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: IPTables problem perhaps related to ECN/CWR flags?
+Date: Wed, 26 Jul 2006 14:42:05 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127E5@knowledge.wizdom.nu>
+References: <44C755E3.7050908@comcast.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C40127E4@knowledge.wizdom.nu>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,140 +18,109 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Sietse van Zanen <sietse@wizdom.nu>
-Cc: netfilter@lists.netfilter.org
+To: mls1000@s92551514.onlinehome.us, netfilter@lists.netfilter.org
 
-Sietse van Zanen wrote:
-> The important issue you have is not WHAT somebody can hack. It's what somebody can DO and ACCESS, WHEN you've been hacked.
->  
-> If somebody does manage to take over one of your systems, he most certainly gains access to ALL to systems on the same physical (sub)network. As ALL your systems are on the same net, draw the conclusion.
->  
-> Combine that conclusion with the innate vulnerability of WiFi networks and do the math. It's unwise to use your set up. period. It's not for nothing that reccomendations always talk about shielding your WiFi with a firewall. Now for personal use, it might be acceptable to do otherwise, but that's up to you, as always the choice is between security and convenience.
+You cannot use both servers on the same port externally, when accessing =
+from the Internet. There is no way a client on the Internet can =
+distinguish between the servers, as it only sees the IP address of your =
+firewall.
+=20
+Do either of the following.
+=20
+Have your firewall forward two different ports to port 23 of your =
+server:
+FW port 23 -> W2 port 23
+FW port 24 -> W3 port 23
+=20
+Configure one of your servers to use a different port and set up port =
+forwarding accordingly.
+FW port 23 -> W2 port 23
+FW port 24 -> W3 port 24
+=20
+The first one will not break your internal network, the second is =
+somewhat more symetric. Asymetric port forwarding might not work with =
+certain software.
+=20
+The only 'real' solution to use both machines on port 23 is obtain an =
+extra external IP address.
+=20
+-Sietse
 
-Thanks for your reply. Unfortunately, you do not seem to offer any
-alternative to my current setup.
+________________________________
 
-Do you suggest that having all the systems on the same physical network
-is unwise? If yes, should I have multiple subnetworks for my *home
-network*, that has only 3 hosts, of which I want public IP for 2-3 hosts.
-
-You seem to suggest that one should shield the WLAN with a firewall.
-Where would that firewall go? Between the WLAN and the only host that
-doesn't usually need to have public access from the internet? But the
-WLAN adapter is *in* the laptop, so that would have to be a software
-firewall. But wait, what would we want to block? All incoming traffic?
-
-It seems you don't know enough of my network, so here's the scheme:
-
-ADSL modem, no natting.
-WLAN access point connected to the ADSL modem, no natting.
-Host 1 with private+public IP, needs to have public access from
-internet, connected to WLAN AP via wireless.
-Host 2 with private+public IP, needs to have public access from
-internet, connected to ADSL modem via ethernet.
-Host 3 with private IP only, connected to WLAN AP via wireless, routed
-through Host 1.
-
-If you have any suggestion to make this better, feel free to do so.
-
-
-> ________________________________
-> 
-> From: Anssi Hannula [mailto:anssi.hannula@gmail.com]
-> Sent: Wed 26-Jul-06 13:21
-> To: Sietse van Zanen
-> Cc: R. DuFresne; netfilter@lists.netfilter.org
-> Subject: Re: Messages in log with SNAT target
-> 
-> 
-> 
-> Sietse van Zanen wrote:
-> 
->>That, or put your WiFi in a DMZ behind a firewall, and have the firewall protect your private network.
->>
->>Making WiFi DMZ's is sort of standard practice.
->>
->>-sietse
-> 
-> 
-> I don't really get it.
-> 
-> As far as I can see, there are currently two weak points in my network:
-> 1. Someone could compromise one of the hosts remotely.
-> 2. Someone could crack the WLAN encryption.
-> 
-> No matter what kind of firewalls or network schemes I deploy, neither of
-> those points goes away.
-> 
-> 
-> 
->>________________________________
->>
->>From: Anssi Hannula [mailto:anssi.hannula@gmail.com]
->>Sent: Wed 26-Jul-06 10:16
->>To: R. DuFresne
->>Cc: Sietse van Zanen; netfilter@lists.netfilter.org
->>Subject: Re: Messages in log with SNAT target
->>
->>
->>
->>R. DuFresne wrote:
->>
->>
->>>On Mon, 24 Jul 2006, Anssi Hannula wrote:
->>>
->>>
->>>
->>>>>Sietse van Zanen wrote:
->>>>>
->>>>>
->>>>>
->>>>>>The security risk is, and it is a MAJOR one, especially with WiFi
->>>>>>networks is that any PC on the network could just be set up with a
->>>>>>private IP on your private network, start sniffing for passwords etc.
->>>>>>
->>>>>>It's a very, very bad idea to put your public and private WiFi
->>>>>>infratructure on the same physical network.
->>>>>>I would say, there's even no point in firewalling this. Firewalling
->>>>>>is seperating, you are combining.
->>>>>>
->>>>>>-Sietse
->>>>>
->>>>>
->>>>>In this case the private network is only a very small home network. I
->>>>>don't see there being too big a risk of anyone setting up a box with
->>>>>private IP on the network with harm on their mind. If that would be
->>>>>possible, wouldn't the security of the whole system be compromised so
->>>>>much that the private/public separation doesn't matter anymore?
->>>>>
->>>>>The main purpose of the private IPs here is the ease of use and having
->>>>>no public IP for a system if so wanted.
->>>
->>>
->>>
->>>Hopefully, for yer sake, you are the only home for mile and miles
->>>around....Yet, I doubt such is the case, so you are a risk to all sadly.
->>>
->>
->>
->>So, what do you suggest, then?
->>
->>That I have 2 separate wireless networks, one for the internet and one
->>for the private network?
->>
->>(the WLAN is of course WPA encrypted)
->>
->>--
->>Anssi Hannula
->>
-> 
-> --
-> Anssi Hannula
-> 
-> 
+From: netfilter-bounces@lists.netfilter.org on behalf of WP
+Sent: Wed 26-Jul-06 13:45
+To: netfilter@lists.netfilter.org
+Subject: IPTables problem perhaps related to ECN/CWR flags?
 
 
--- 
-Anssi Hannula
+
+Greetings,
+
+I currently setup a home network with the following topology:
+
+Cable Modem -> Linux Computer (IPTables+NAT) -> Switch (3com 8 port
+100mbit Officeconnect) -> 4 computers.
+
+I use Arno's IPTables Script:
+http://rocky.eld.leidenuniv.nl/iptables-firewall/arno-iptables-firewall_1=
+.8.6c.tar.gz
+.
+
+I run two computers running two different versions of the a server
+behind the NAT. The first version (2.0) is extremely old and runs on DOS
+6.22 and a packet driver (henceforth referred to as W2). The second
+(3.0) runs fine on Windows XP (henceforth referred to as W3). From the
+internal LAN, I can connect to both servers fine. From the outside
+though, people are only able to connect to W3 . Both listen on port 23.
+I decided to setup tcpdump and see what was going on.
+
+I compared the packets being sent when successful (via LAN)
+
+wireshark screenshot of tcpdump cap:
+http://s92551514.onlinehome.us/upload/LANtoW2.jpg
+
+to the ones being ignored (via Outside)
+
+wireshark screenshot of tcpdump cap:
+http://s92551514.onlinehome.us/upload/OUTSIDEtoW2.jpg *# note the
+connect packet is forwarded successfully, but W2 does not respond.*
+
+...and noticed that the only difference was the ECN and CWR flags.
+
+I did a little googling, and saw a few random posts that said some sites
+don't function with ECN enabled, and that ECN is supplied only when it
+is negotiated. So I'm thinking perhaps the outside client asks my Linux
+routing comp if it supports ECN (/proc/sys/net/ipv4/tcp_ecn is 0), Linux
+comp says yes?, packet is generated with ECN/CWR and sent to Linux,
+Linux forwards packet to W2 with those flags intact. W2, being old and
+not knowing what those flags mean, ignores the packets.
+
+This is of course pure theory, as I have little to no knowledge of any
+of this stuff to be honest, I'm just comparing what works and what
+doesn't. So my question is this, would the CWR and ECN flags possibly
+cause W2 to act this way? If so, is there some tool I can use to strip
+those flags when forwarding packets to W2 so that they match the LAN
+packets I captured? Or is there a better solution to this whole mess?
+
+Thanks very much,
+
+MLS
+
+Relevant version info etc...
+
+Router:
+Gentoo Linux 2006.0
+Kernel 2.6.16
+IPTables 1.3.5
+Wireshark 0.99.2
+TCPDump 3.9.4
+LibPcap 0.9.4
+
+W2:
+MS-DOS 6.22
+Intel E100B Packet Driver 11.11
+
+
 
 
