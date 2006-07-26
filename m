@@ -1,9 +1,16 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: Re: Ipsec, policy match and PROTO=4
-Date: Wed, 26 Jul 2006 09:29:18 +0200
-Message-ID: <BAY103-DAV11A5D51D5F953F7587C290B25B0@phx.gbl>
-References: <200607252059.02920.thomasheinz@gmx.net>
+From: Anssi Hannula <anssi.hannula@gmail.com>
+Subject: Re: Messages in log with SNAT target
+Date: Wed, 26 Jul 2006 11:16:19 +0300
+Message-ID: <44C724D3.2090602@gmail.com>
+References: <44C4903B.3080004@gmail.com> <44C49FC6.6030504@plouf.fr.eu.org>
+	<44C4A904.4010403@gmail.com>
+	<02BB8A4AC86C564C89C7F14CF98CE0C40127D9@knowledge.wizdom.nu>
+	<44C4B69E.9040302@gmail.com>
+	<Pine.LNX.4.64.0607252038520.10006@darkstar.sysinfo.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.64.0607252038520.10006@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,69 +21,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Thomas Heinz <thomasheinz@gmx.net>
+To: "R. DuFresne" <dufresne@sysinfo.com>
 Cc: netfilter@lists.netfilter.org
 
-Thomas Heinz wrote:
+R. DuFresne wrote:
+> On Mon, 24 Jul 2006, Anssi Hannula wrote:
+> 
+>>> Sietse van Zanen wrote:
+>>>
+>>>> The security risk is, and it is a MAJOR one, especially with WiFi
+>>>> networks is that any PC on the network could just be set up with a
+>>>> private IP on your private network, start sniffing for passwords etc.
+>>>>
+>>>> It's a very, very bad idea to put your public and private WiFi
+>>>> infratructure on the same physical network.
+>>>> I would say, there's even no point in firewalling this. Firewalling
+>>>> is seperating, you are combining.
+>>>>
+>>>> -Sietse
+>>>
+>>>
+>>> In this case the private network is only a very small home network. I
+>>> don't see there being too big a risk of anyone setting up a box with
+>>> private IP on the network with harm on their mind. If that would be
+>>> possible, wouldn't the security of the whole system be compromised so
+>>> much that the private/public separation doesn't matter anymore?
+>>>
+>>> The main purpose of the private IPs here is the ease of use and having
+>>> no public IP for a system if so wanted.
+> 
+> 
+> 
+> Hopefully, for yer sake, you are the only home for mile and miles
+> around....Yet, I doubt such is the case, so you are a risk to all sadly.
+> 
 
+So, what do you suggest, then?
 
-> Hallo guys
+That I have 2 separate wireless networks, one for the internet and one
+for the private network?
 
-Ciao
+(the WLAN is of course WPA encrypted)
 
-> I have the following standard ipsec tunnel:
->
-> [tun_A] host_A [pub_A]-------------[pub_B] host_B [tun_B]
->
-> pub_A/B: public IP of host_A/B
-> tun_A/B: tunnel IP of host_A/B
->
-> After establishing the ipsec connection, putting two simple log-all
-rules
-> in INPUT and OUTPUT like this:
-> # iptables -I INPUT -j LOG
-> # iptables -I OUTPUT -j LOG
-> and pinging tun_B from host_A, I get the following log entries:
->
-> IN= OUT=eth0 SRC=tun_A DST=tun_B LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0
-DF
-> PROTO=ICMP TYPE=8 CODE=0 ID=16181 SEQ=1
-> IN= OUT=eth0 SRC=pub_A DST=pub_B LEN=136 TOS=0x00 PREC=0x00 TTL=64
-ID=0 DF
-> PROTO=ESP SPI=0xxxxxxxxx
->
-> Very nice so far: the packet is seen twice, once clear and once
-encrypted.
-> Now, let's look at the ICMP reply.
->
-> IN=eth0 OUT= MAC=xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx SRC=pub_B
-> DST=pub_A LEN=136 TOS=0x00 PREC=0x00 TTL=56 ID=57843 PROTO=ESP
-> SPI=0xxxxxxxxx
-> IN=eth0 OUT= MAC=xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx SRC=pub_B
-> DST=pub_A LEN=104 TOS=0x00 PREC=0x00 TTL=56 ID=57843 PROTO=4
->
-> Here, we see the packet also twice but the cleartext one has PROTO=4
-> (ipencap, ipip tunnel).
-
-You aren't seeing the clear text packet
-because because you should log also the
-FORWARD chain: 'iptables -I FORWARD -j LOG'
-
-> This has been observed in e.g. this thread:
-> http://marc.theaimsgroup.com/?l=netfilter-devel&m=114010374229806&w=2
->
-> However, I don't see any solution. What is your approach to filter
-> cleartext packets?
-
-You must filter packets in the FORWARD
-chain, nor INPUT nor OUTPUT
-
-> Is the issue considered a bug?
-
-Yes, the issue in the above thread is a
-know bug to the netfilter team.
+-- 
+Anssi Hannula
 
 
