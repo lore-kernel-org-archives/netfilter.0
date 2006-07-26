@@ -1,10 +1,13 @@
-From: Ray Van Dolson <rayvd@digitalpath.net>
-Subject: Kernel options required for ingress policer?
-Date: Wed, 26 Jul 2006 07:03:02 -0700
-Message-ID: <20060726140302.GA15727@digitalpath.net>
+From: Vincent Regnard <devel@regnard.org>
+Subject: Re: multiport tolerance changes
+Date: Wed, 26 Jul 2006 16:21:00 +0200
+Message-ID: <44C77A4C.2080708@regnard.org>
+References: <44C73691.1080302@regnard.org> <44C7537C.7070509@plouf.fr.eu.org>
+Reply-To: devel@regnard.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <44C7537C.7070509@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,711 +18,93 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Haven't gotten a response for this on the LARTC list... hoping someone here
-may have an answer for me.
+Pascal Hambourg a =E9crit :
+> Hello,
+>=20
+> Vincent Regnard a =E9crit :
+>>
+>> With iptables 1.2.7 I had some rules where I could write some=20
+>> multiport (port lists or ranges) both for source and destination=20
+>> ports, like this:
+>>
+>> /sbin/iptables -A fw2net_eth3 -p tcp -m multiport -s 82.67.103.87=20
+>> --sport 1024:65535 -d 0.0.0.0/0 --dports 80,8080,81,8000,1755 -j ACCEPT
+>>
+>> iptables was coping well with this and expanded the port matrix into=20
+>> appropriate single rules
+>=20
+> What do you mean ? Could you give an example of such expansion ?
 
-I'm trying to use the ingress policer on a custom kernel as follows, but
-having some problems:
+The expansion in that case becomes:
 
- # tc qdisc add dev eth1 handle ffff: ingress
- # tc filter add dev eth1 parent ffff: protocol ip prio 50 u32 match ip src \
-     0.0.0.0/0 police rate 384kbit burst 10k drop flowid :1
- RTNETLINK answers: Invalid argument
+     0     0 ACCEPT     tcp  --  *      *       82.67.103.87
+0.0.0.0/0          tcp spts:1024:65535 dpt:8080
+     0     0 ACCEPT     tcp  --  *      *       82.67.103.87
+0.0.0.0/0          tcp spts:1024:65535 dpt:81
+     0     0 ACCEPT     tcp  --  *      *       82.67.103.87
+0.0.0.0/0          tcp spts:1024:65535 dpt:8000
+     0     0 ACCEPT     tcp  --  *      *       82.67.103.87
+0.0.0.0/0          tcp spts:1024:65535 dpt:1755
 
-This is on a Fedora Core 2 based system, with a custom built 2.6.17.7
-kernel.
+>=20
+>> But iptables 1.3.5 refuses to have multiport for both source and=20
+>> destination ports and objects:
+>>
+>> iptables v1.3.5: multiport can only have one option
+>=20
+> Well, it seems that my old iptables 1.2.6a already had the same=20
+> limitation. I submitted your rule to it and got an error too.
+>=20
+>> So I have to re-write my firewall rules.
+>=20
+> How did you rewrite the above rule ?
 
-The above commands work perfectly on a CentOS 4.x based system with a custom
-built 2.6.16 kernel.  The hardware in both machines are identical and I used
-the 2.6.16 config from the CentOS machine to build the 2.6.17.7 kernel (did
-a make oldconfig).  So the netfilter moudules, etc should be identical.
+I suppressed the SOURCE port range and the rule becomes more permissive
+(but works):
 
-The network driver on both is the bcm5700 from HP.
+/sbin/iptables -A fw2net_eth3 -p tcp -m multiport -s 82.67.103.87 -d
+0.0.0.0/0 --dports 80,8080,81,8000,1755 -j ACCEPT
 
-tc with any egress filtering options works perfectly on the 2.6.17.7 box.
+> If I reorder the options, so that the --sport parameter appears to=20
+> belong to the implicit "-m tcp" match created by "-p tcp", the rule is=20
+> accepted by my iptables 1.2.6a :
+>=20
+> /sbin/iptables -A fw2net_eth3 -s 82.67.103.87 -d 0.0.0.0/0 \
+>   -p tcp --sport 1024:65535 -m multiport --dports 80,8080,81,8000,1755 \
+>   -j ACCEPT
+>=20
 
-I can also run the ingress policer commands on identical hardware with
-Fedora Core 1 (using stock kernel).  So I don't believe this is a result of
-the version of the iproute package.
+I confirm that when writing it that way (reordering properly) I also
+have no more error. But for some protocol, I would like to be able to
+write some source port range and also some destination port range. A
+rule like this:
 
-Does anyone know the exact requirements of the ingress policer as far as the
-kernel is concerned?  Below is my kernel config:
+/sbin/iptables -A fw2net_eth3 -p tcp -m multiport -s 82.67.103.87
+--sports 10000,10001,10002 -d 0.0.0.0/0 --dports 80,8080,81,8000,1755 -j
+ACCEPT
 
-CONFIG_X86_32=y
-CONFIG_SEMAPHORE_SLEEPERS=y
-CONFIG_X86=y
-CONFIG_MMU=y
-CONFIG_GENERIC_ISA_DMA=y
-CONFIG_GENERIC_IOMAP=y
-CONFIG_GENERIC_HWEIGHT=y
-CONFIG_ARCH_MAY_HAVE_PC_FDC=y
-CONFIG_DMI=y
-CONFIG_EXPERIMENTAL=y
-CONFIG_BROKEN_ON_SMP=y
-CONFIG_INIT_ENV_ARG_LIMIT=32
-CONFIG_LOCALVERSION=""
-CONFIG_LOCALVERSION_AUTO=y
-CONFIG_SWAP=y
-CONFIG_SYSVIPC=y
-CONFIG_POSIX_MQUEUE=y
-CONFIG_BSD_PROCESS_ACCT=y
-CONFIG_SYSCTL=y
-CONFIG_IKCONFIG=y
-CONFIG_IKCONFIG_PROC=y
-CONFIG_INITRAMFS_SOURCE=""
-CONFIG_UID16=y
-CONFIG_VM86=y
-CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-CONFIG_KALLSYMS=y
-CONFIG_KALLSYMS_EXTRA_PASS=y
-CONFIG_HOTPLUG=y
-CONFIG_PRINTK=y
-CONFIG_BUG=y
-CONFIG_ELF_CORE=y
-CONFIG_BASE_FULL=y
-CONFIG_FUTEX=y
-CONFIG_EPOLL=y
-CONFIG_SHMEM=y
-CONFIG_SLAB=y
-CONFIG_BASE_SMALL=0
-CONFIG_MODULES=y
-CONFIG_MODULE_UNLOAD=y
-CONFIG_KMOD=y
-CONFIG_LBD=y
-CONFIG_IOSCHED_NOOP=y
-CONFIG_IOSCHED_AS=y
-CONFIG_IOSCHED_DEADLINE=y
-CONFIG_IOSCHED_CFQ=y
-CONFIG_DEFAULT_AS=y
-CONFIG_DEFAULT_IOSCHED="anticipatory"
-CONFIG_X86_PC=y
-CONFIG_MPENTIUM4=y
-CONFIG_X86_GENERIC=y
-CONFIG_X86_CMPXCHG=y
-CONFIG_X86_XADD=y
-CONFIG_X86_L1_CACHE_SHIFT=7
-CONFIG_RWSEM_XCHGADD_ALGORITHM=y
-CONFIG_GENERIC_CALIBRATE_DELAY=y
-CONFIG_X86_WP_WORKS_OK=y
-CONFIG_X86_INVLPG=y
-CONFIG_X86_BSWAP=y
-CONFIG_X86_POPAD_OK=y
-CONFIG_X86_CMPXCHG64=y
-CONFIG_X86_GOOD_APIC=y
-CONFIG_X86_INTEL_USERCOPY=y
-CONFIG_X86_USE_PPRO_CHECKSUM=y
-CONFIG_X86_TSC=y
-CONFIG_PREEMPT_NONE=y
-CONFIG_X86_MCE=y
-CONFIG_MICROCODE=y
-CONFIG_X86_MSR=y
-CONFIG_X86_CPUID=y
-CONFIG_HIGHMEM4G=y
-CONFIG_PAGE_OFFSET=0xC0000000
-CONFIG_HIGHMEM=y
-CONFIG_ARCH_FLATMEM_ENABLE=y
-CONFIG_ARCH_SPARSEMEM_ENABLE=y
-CONFIG_ARCH_SELECT_MEMORY_MODEL=y
-CONFIG_SELECT_MEMORY_MODEL=y
-CONFIG_FLATMEM_MANUAL=y
-CONFIG_FLATMEM=y
-CONFIG_FLAT_NODE_MEM_MAP=y
-CONFIG_SPARSEMEM_STATIC=y
-CONFIG_SPLIT_PTLOCK_CPUS=4
-CONFIG_HIGHPTE=y
-CONFIG_MTRR=y
-CONFIG_SECCOMP=y
-CONFIG_HZ_250=y
-CONFIG_HZ=250
-CONFIG_PHYSICAL_START=0x100000
-CONFIG_ARCH_ENABLE_MEMORY_HOTPLUG=y
-CONFIG_PM=y
-CONFIG_PM_LEGACY=y
-CONFIG_ACPI=y
-CONFIG_ACPI_SLEEP=y
-CONFIG_ACPI_SLEEP_PROC_FS=y
-CONFIG_ACPI_AC=y
-CONFIG_ACPI_BATTERY=y
-CONFIG_ACPI_BUTTON=y
-CONFIG_ACPI_VIDEO=y
-CONFIG_ACPI_FAN=y
-CONFIG_ACPI_PROCESSOR=y
-CONFIG_ACPI_THERMAL=y
-CONFIG_ACPI_BLACKLIST_YEAR=0
-CONFIG_ACPI_EC=y
-CONFIG_ACPI_POWER=y
-CONFIG_ACPI_SYSTEM=y
-CONFIG_X86_PM_TIMER=y
-CONFIG_PCI=y
-CONFIG_PCI_GOANY=y
-CONFIG_PCI_BIOS=y
-CONFIG_PCI_DIRECT=y
-CONFIG_PCI_MMCONFIG=y
-CONFIG_ISA_DMA_API=y
-CONFIG_ISA=y
-CONFIG_BINFMT_ELF=y
-CONFIG_BINFMT_MISC=y
-CONFIG_NET=y
-CONFIG_PACKET=y
-CONFIG_PACKET_MMAP=y
-CONFIG_UNIX=y
-CONFIG_XFRM=y
-CONFIG_XFRM_USER=y
-CONFIG_NET_KEY=y
-CONFIG_INET=y
-CONFIG_IP_ADVANCED_ROUTER=y
-CONFIG_ASK_IP_FIB_HASH=y
-CONFIG_IP_FIB_HASH=y
-CONFIG_IP_MULTIPLE_TABLES=y
-CONFIG_IP_ROUTE_FWMARK=y
-CONFIG_IP_ROUTE_MULTIPATH=y
-CONFIG_IP_ROUTE_VERBOSE=y
-CONFIG_NET_IPIP=y
-CONFIG_NET_IPGRE=y
-CONFIG_SYN_COOKIES=y
-CONFIG_INET_AH=y
-CONFIG_INET_ESP=y
-CONFIG_INET_IPCOMP=y
-CONFIG_INET_XFRM_TUNNEL=y
-CONFIG_INET_TUNNEL=y
-CONFIG_INET_DIAG=y
-CONFIG_INET_TCP_DIAG=y
-CONFIG_TCP_CONG_BIC=y
-CONFIG_NETFILTER=y
-CONFIG_BRIDGE_NETFILTER=y
-CONFIG_NETFILTER_NETLINK=m
-CONFIG_NETFILTER_NETLINK_QUEUE=m
-CONFIG_NETFILTER_NETLINK_LOG=m
-CONFIG_NETFILTER_XTABLES=m
-CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
-CONFIG_NETFILTER_XT_TARGET_MARK=m
-CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
-CONFIG_NETFILTER_XT_MATCH_COMMENT=m
-CONFIG_NETFILTER_XT_MATCH_CONNBYTES=m
-CONFIG_NETFILTER_XT_MATCH_CONNTRACK=m
-CONFIG_NETFILTER_XT_MATCH_DCCP=m
-CONFIG_NETFILTER_XT_MATCH_ESP=m
-CONFIG_NETFILTER_XT_MATCH_HELPER=m
-CONFIG_NETFILTER_XT_MATCH_LENGTH=m
-CONFIG_NETFILTER_XT_MATCH_LIMIT=m
-CONFIG_NETFILTER_XT_MATCH_MAC=m
-CONFIG_NETFILTER_XT_MATCH_MARK=m
-CONFIG_NETFILTER_XT_MATCH_POLICY=m
-CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
-CONFIG_NETFILTER_XT_MATCH_PKTTYPE=m
-CONFIG_NETFILTER_XT_MATCH_REALM=m
-CONFIG_NETFILTER_XT_MATCH_SCTP=m
-CONFIG_NETFILTER_XT_MATCH_STATE=m
-CONFIG_NETFILTER_XT_MATCH_STRING=m
-CONFIG_NETFILTER_XT_MATCH_TCPMSS=m
-CONFIG_IP_NF_CONNTRACK=y
-CONFIG_IP_NF_CT_ACCT=y
-CONFIG_IP_NF_CT_PROTO_SCTP=y
-CONFIG_IP_NF_FTP=y
-CONFIG_IP_NF_IRC=y
-CONFIG_IP_NF_TFTP=y
-CONFIG_IP_NF_AMANDA=y
-CONFIG_IP_NF_PPTP=m
-CONFIG_IP_NF_H323=m
-CONFIG_IP_NF_QUEUE=y
-CONFIG_IP_NF_IPTABLES=m
-CONFIG_IP_NF_MATCH_IPRANGE=m
-CONFIG_IP_NF_MATCH_TOS=m
-CONFIG_IP_NF_MATCH_RECENT=m
-CONFIG_IP_NF_MATCH_ECN=m
-CONFIG_IP_NF_MATCH_DSCP=m
-CONFIG_IP_NF_MATCH_AH=m
-CONFIG_IP_NF_MATCH_TTL=m
-CONFIG_IP_NF_MATCH_OWNER=m
-CONFIG_IP_NF_MATCH_ADDRTYPE=m
-CONFIG_IP_NF_MATCH_HASHLIMIT=m
-CONFIG_IP_NF_FILTER=m
-CONFIG_IP_NF_TARGET_REJECT=m
-CONFIG_IP_NF_TARGET_LOG=m
-CONFIG_IP_NF_TARGET_ULOG=m
-CONFIG_IP_NF_TARGET_TCPMSS=m
-CONFIG_IP_NF_NAT=m
-CONFIG_IP_NF_NAT_NEEDED=y
-CONFIG_IP_NF_TARGET_MASQUERADE=m
-CONFIG_IP_NF_TARGET_REDIRECT=m
-CONFIG_IP_NF_TARGET_NETMAP=m
-CONFIG_IP_NF_TARGET_SAME=m
-CONFIG_IP_NF_NAT_SNMP_BASIC=m
-CONFIG_IP_NF_NAT_IRC=m
-CONFIG_IP_NF_NAT_FTP=m
-CONFIG_IP_NF_NAT_TFTP=m
-CONFIG_IP_NF_NAT_AMANDA=m
-CONFIG_IP_NF_NAT_PPTP=m
-CONFIG_IP_NF_NAT_H323=m
-CONFIG_IP_NF_MANGLE=m
-CONFIG_IP_NF_TARGET_TOS=m
-CONFIG_IP_NF_TARGET_ECN=m
-CONFIG_IP_NF_TARGET_DSCP=m
-CONFIG_IP_NF_TARGET_TTL=m
-CONFIG_IP_NF_RAW=m
-CONFIG_IP_NF_ARPTABLES=m
-CONFIG_IP_NF_ARPFILTER=m
-CONFIG_IP_NF_ARP_MANGLE=m
-CONFIG_IP_SCTP=m
-CONFIG_SCTP_HMAC_MD5=y
-CONFIG_BRIDGE=y
-CONFIG_VLAN_8021Q=y
-CONFIG_LLC=y
-CONFIG_NET_SCHED=y
-CONFIG_NET_SCH_CLK_JIFFIES=y
-CONFIG_NET_SCH_CBQ=y
-CONFIG_NET_SCH_HTB=y
-CONFIG_NET_SCH_HFSC=y
-CONFIG_NET_SCH_PRIO=y
-CONFIG_NET_SCH_RED=y
-CONFIG_NET_SCH_SFQ=y
-CONFIG_NET_SCH_TEQL=y
-CONFIG_NET_SCH_TBF=y
-CONFIG_NET_SCH_GRED=y
-CONFIG_NET_SCH_DSMARK=y
-CONFIG_NET_SCH_NETEM=y
-CONFIG_NET_SCH_INGRESS=y
-CONFIG_NET_CLS=y
-CONFIG_NET_CLS_TCINDEX=y
-CONFIG_NET_CLS_ROUTE4=y
-CONFIG_NET_CLS_ROUTE=y
-CONFIG_NET_CLS_FW=y
-CONFIG_NET_CLS_U32=y
-CONFIG_CLS_U32_PERF=y
-CONFIG_NET_CLS_RSVP=y
-CONFIG_NET_CLS_RSVP6=y
-CONFIG_NET_CLS_POLICE=y
-CONFIG_NET_CLS_IND=y
-CONFIG_NET_ESTIMATOR=y
-CONFIG_STANDALONE=y
-CONFIG_PREVENT_FIRMWARE_BUILD=y
-CONFIG_CONNECTOR=y
-CONFIG_PNP=y
-CONFIG_ISAPNP=y
-CONFIG_PNPACPI=y
-CONFIG_BLK_DEV_FD=y
-CONFIG_BLK_DEV_LOOP=y
-CONFIG_BLK_DEV_CRYPTOLOOP=y
-CONFIG_BLK_DEV_NBD=y
-CONFIG_BLK_DEV_RAM=y
-CONFIG_BLK_DEV_RAM_COUNT=16
-CONFIG_BLK_DEV_RAM_SIZE=16384
-CONFIG_BLK_DEV_INITRD=y
-CONFIG_IDE=y
-CONFIG_BLK_DEV_IDE=y
-CONFIG_BLK_DEV_IDEDISK=y
-CONFIG_IDEDISK_MULTI_MODE=y
-CONFIG_BLK_DEV_IDECD=y
-CONFIG_BLK_DEV_IDESCSI=y
-CONFIG_IDE_GENERIC=y
-CONFIG_BLK_DEV_IDEPCI=y
-CONFIG_IDEPCI_SHARE_IRQ=y
-CONFIG_BLK_DEV_GENERIC=y
-CONFIG_BLK_DEV_IDEDMA_PCI=y
-CONFIG_IDEDMA_PCI_AUTO=y
-CONFIG_BLK_DEV_PIIX=y
-CONFIG_BLK_DEV_SVWKS=y
-CONFIG_BLK_DEV_IDEDMA=y
-CONFIG_IDEDMA_AUTO=y
-CONFIG_SCSI=y
-CONFIG_SCSI_PROC_FS=y
-CONFIG_BLK_DEV_SD=y
-CONFIG_BLK_DEV_SR=y
-CONFIG_BLK_DEV_SR_VENDOR=y
-CONFIG_CHR_DEV_SG=y
-CONFIG_SCSI_SPI_ATTRS=y
-CONFIG_SCSI_FC_ATTRS=y
-CONFIG_SCSI_SATA=y
-CONFIG_SCSI_ATA_PIIX=y
-CONFIG_SCSI_SATA_INTEL_COMBINED=y
-CONFIG_MD=y
-CONFIG_BLK_DEV_MD=y
-CONFIG_MD_LINEAR=y
-CONFIG_MD_RAID0=y
-CONFIG_MD_RAID1=y
-CONFIG_MD_RAID10=y
-CONFIG_MD_RAID5=y
-CONFIG_MD_RAID6=y
-CONFIG_MD_MULTIPATH=y
-CONFIG_MD_FAULTY=y
-CONFIG_NETDEVICES=y
-CONFIG_DUMMY=y
-CONFIG_NET_ETHERNET=y
-CONFIG_MII=y
-CONFIG_NET_PCI=y
-CONFIG_TIGON3=m
-CONFIG_PPP=y
-CONFIG_PPP_MULTILINK=y
-CONFIG_PPP_FILTER=y
-CONFIG_PPP_ASYNC=y
-CONFIG_PPP_SYNC_TTY=y
-CONFIG_PPP_DEFLATE=y
-CONFIG_PPP_BSDCOMP=y
-CONFIG_PPP_MPPE=y
-CONFIG_NETCONSOLE=y
-CONFIG_NETPOLL=y
-CONFIG_NET_POLL_CONTROLLER=y
-CONFIG_INPUT=y
-CONFIG_INPUT_MOUSEDEV=y
-CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
-CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
-CONFIG_INPUT_KEYBOARD=y
-CONFIG_KEYBOARD_ATKBD=y
-CONFIG_INPUT_MOUSE=y
-CONFIG_MOUSE_PS2=y
-CONFIG_MOUSE_SERIAL=y
-CONFIG_INPUT_MISC=y
-CONFIG_INPUT_PCSPKR=y
-CONFIG_INPUT_UINPUT=y
-CONFIG_SERIO=y
-CONFIG_SERIO_I8042=y
-CONFIG_SERIO_LIBPS2=y
-CONFIG_VT=y
-CONFIG_VT_CONSOLE=y
-CONFIG_HW_CONSOLE=y
-CONFIG_SERIAL_8250=y
-CONFIG_SERIAL_8250_CONSOLE=y
-CONFIG_SERIAL_8250_PCI=y
-CONFIG_SERIAL_8250_PNP=y
-CONFIG_SERIAL_8250_NR_UARTS=1024
-CONFIG_SERIAL_8250_RUNTIME_UARTS=4
-CONFIG_SERIAL_8250_EXTENDED=y
-CONFIG_SERIAL_8250_SHARE_IRQ=y
-CONFIG_SERIAL_8250_DETECT_IRQ=y
-CONFIG_SERIAL_8250_RSA=y
-CONFIG_SERIAL_CORE=y
-CONFIG_SERIAL_CORE_CONSOLE=y
-CONFIG_UNIX98_PTYS=y
-CONFIG_HW_RANDOM=y
-CONFIG_NVRAM=y
-CONFIG_RTC=y
-CONFIG_AGP=y
-CONFIG_AGP_ATI=y
-CONFIG_AGP_INTEL=y
-CONFIG_HANGCHECK_TIMER=y
-CONFIG_I2C=y
-CONFIG_I2C_CHARDEV=y
-CONFIG_I2C_ALGOBIT=y
-CONFIG_I2C_ALGOPCF=y
-CONFIG_I2C_ALGOPCA=y
-CONFIG_I2C_I801=y
-CONFIG_I2C_I810=y
-CONFIG_I2C_PIIX4=y
-CONFIG_I2C_ISA=y
-CONFIG_SENSORS_EEPROM=y
-CONFIG_SENSORS_PCF8574=y
-CONFIG_SENSORS_PCF8591=y
-CONFIG_HWMON=y
-CONFIG_HWMON_VID=y
-CONFIG_SENSORS_ADM1021=y
-CONFIG_SENSORS_ADM1025=y
-CONFIG_SENSORS_ADM1031=y
-CONFIG_SENSORS_ASB100=y
-CONFIG_SENSORS_DS1621=y
-CONFIG_SENSORS_FSCHER=y
-CONFIG_SENSORS_GL518SM=y
-CONFIG_SENSORS_IT87=y
-CONFIG_SENSORS_LM75=y
-CONFIG_SENSORS_LM77=y
-CONFIG_SENSORS_LM78=y
-CONFIG_SENSORS_LM80=y
-CONFIG_SENSORS_LM83=y
-CONFIG_SENSORS_LM85=y
-CONFIG_SENSORS_LM90=y
-CONFIG_SENSORS_MAX1619=y
-CONFIG_SENSORS_SMSC47M1=y
-CONFIG_SENSORS_VIA686A=y
-CONFIG_SENSORS_W83781D=y
-CONFIG_SENSORS_W83L785TS=y
-CONFIG_SENSORS_W83627HF=y
-CONFIG_VIDEO_V4L2=y
-CONFIG_VIDEO_SELECT=y
-CONFIG_VGA_CONSOLE=y
-CONFIG_DUMMY_CONSOLE=y
-CONFIG_USB_ARCH_HAS_HCD=y
-CONFIG_USB_ARCH_HAS_OHCI=y
-CONFIG_USB_ARCH_HAS_EHCI=y
-CONFIG_EXT2_FS=y
-CONFIG_EXT2_FS_XATTR=y
-CONFIG_EXT2_FS_POSIX_ACL=y
-CONFIG_EXT2_FS_SECURITY=y
-CONFIG_EXT3_FS=y
-CONFIG_EXT3_FS_XATTR=y
-CONFIG_EXT3_FS_POSIX_ACL=y
-CONFIG_EXT3_FS_SECURITY=y
-CONFIG_JBD=y
-CONFIG_FS_MBCACHE=y
-CONFIG_FS_POSIX_ACL=y
-CONFIG_ROMFS_FS=y
-CONFIG_INOTIFY=y
-CONFIG_DNOTIFY=y
-CONFIG_AUTOFS_FS=y
-CONFIG_AUTOFS4_FS=y
-CONFIG_ISO9660_FS=y
-CONFIG_JOLIET=y
-CONFIG_ZISOFS=y
-CONFIG_ZISOFS_FS=y
-CONFIG_UDF_FS=y
-CONFIG_UDF_NLS=y
-CONFIG_PROC_FS=y
-CONFIG_PROC_KCORE=y
-CONFIG_SYSFS=y
-CONFIG_TMPFS=y
-CONFIG_RAMFS=y
-CONFIG_NFS_FS=y
-CONFIG_NFS_V3=y
-CONFIG_NFS_V4=y
-CONFIG_NFS_DIRECTIO=y
-CONFIG_NFSD=y
-CONFIG_NFSD_V3=y
-CONFIG_NFSD_V4=y
-CONFIG_NFSD_TCP=y
-CONFIG_LOCKD=y
-CONFIG_LOCKD_V4=y
-CONFIG_EXPORTFS=y
-CONFIG_NFS_COMMON=y
-CONFIG_SUNRPC=y
-CONFIG_SUNRPC_GSS=y
-CONFIG_RPCSEC_GSS_KRB5=y
-CONFIG_SMB_FS=y
-CONFIG_CIFS=y
-CONFIG_CIFS_XATTR=y
-CONFIG_CIFS_POSIX=y
-CONFIG_PARTITION_ADVANCED=y
-CONFIG_OSF_PARTITION=y
-CONFIG_MAC_PARTITION=y
-CONFIG_MSDOS_PARTITION=y
-CONFIG_BSD_DISKLABEL=y
-CONFIG_MINIX_SUBPARTITION=y
-CONFIG_SOLARIS_X86_PARTITION=y
-CONFIG_UNIXWARE_DISKLABEL=y
-CONFIG_SGI_PARTITION=y
-CONFIG_SUN_PARTITION=y
-CONFIG_EFI_PARTITION=y
-CONFIG_NLS=y
-CONFIG_NLS_DEFAULT="utf8"
-CONFIG_NLS_CODEPAGE_437=y
-CONFIG_NLS_CODEPAGE_737=y
-CONFIG_NLS_CODEPAGE_775=y
-CONFIG_NLS_CODEPAGE_850=y
-CONFIG_NLS_CODEPAGE_852=y
-CONFIG_NLS_CODEPAGE_855=y
-CONFIG_NLS_CODEPAGE_857=y
-CONFIG_NLS_CODEPAGE_860=y
-CONFIG_NLS_CODEPAGE_861=y
-CONFIG_NLS_CODEPAGE_862=y
-CONFIG_NLS_CODEPAGE_863=y
-CONFIG_NLS_CODEPAGE_864=y
-CONFIG_NLS_CODEPAGE_865=y
-CONFIG_NLS_CODEPAGE_866=y
-CONFIG_NLS_CODEPAGE_869=y
-CONFIG_NLS_CODEPAGE_936=y
-CONFIG_NLS_CODEPAGE_950=y
-CONFIG_NLS_CODEPAGE_932=y
-CONFIG_NLS_CODEPAGE_949=y
-CONFIG_NLS_CODEPAGE_874=y
-CONFIG_NLS_ISO8859_8=y
-CONFIG_NLS_CODEPAGE_1250=y
-CONFIG_NLS_CODEPAGE_1251=y
-CONFIG_NLS_ASCII=y
-CONFIG_NLS_ISO8859_1=y
-CONFIG_NLS_ISO8859_2=y
-CONFIG_NLS_ISO8859_3=y
-CONFIG_NLS_ISO8859_4=y
-CONFIG_NLS_ISO8859_5=y
-CONFIG_NLS_ISO8859_6=y
-CONFIG_NLS_ISO8859_7=y
-CONFIG_NLS_ISO8859_9=y
-CONFIG_NLS_ISO8859_13=y
-CONFIG_NLS_ISO8859_14=y
-CONFIG_NLS_ISO8859_15=y
-CONFIG_NLS_KOI8_R=y
-CONFIG_NLS_KOI8_U=y
-CONFIG_NLS_UTF8=y
-CONFIG_MAGIC_SYSRQ=y
-CONFIG_DEBUG_KERNEL=y
-CONFIG_LOG_BUF_SHIFT=17
-CONFIG_DETECT_SOFTLOCKUP=y
-CONFIG_DEBUG_BUGVERBOSE=y
-CONFIG_FORCED_INLINING=y
-CONFIG_EARLY_PRINTK=y
-CONFIG_DEBUG_STACKOVERFLOW=y
-CONFIG_DEBUG_STACK_USAGE=y
-CONFIG_STACK_BACKTRACE_COLS=2
-CONFIG_DOUBLEFAULT=y
-CONFIG_CRYPTO=y
-CONFIG_CRYPTO_HMAC=y
-CONFIG_CRYPTO_NULL=y
-CONFIG_CRYPTO_MD4=y
-CONFIG_CRYPTO_MD5=y
-CONFIG_CRYPTO_SHA1=y
-CONFIG_CRYPTO_SHA256=y
-CONFIG_CRYPTO_SHA512=y
-CONFIG_CRYPTO_WP512=y
-CONFIG_CRYPTO_DES=y
-CONFIG_CRYPTO_BLOWFISH=y
-CONFIG_CRYPTO_TWOFISH=y
-CONFIG_CRYPTO_SERPENT=y
-CONFIG_CRYPTO_AES=y
-CONFIG_CRYPTO_AES_586=y
-CONFIG_CRYPTO_CAST5=y
-CONFIG_CRYPTO_CAST6=y
-CONFIG_CRYPTO_TEA=y
-CONFIG_CRYPTO_ARC4=y
-CONFIG_CRYPTO_KHAZAD=y
-CONFIG_CRYPTO_DEFLATE=y
-CONFIG_CRYPTO_MICHAEL_MIC=y
-CONFIG_CRYPTO_CRC32C=y
-CONFIG_CRC_CCITT=y
-CONFIG_CRC32=y
-CONFIG_LIBCRC32C=y
-CONFIG_ZLIB_INFLATE=y
-CONFIG_ZLIB_DEFLATE=y
-CONFIG_TEXTSEARCH=y
-CONFIG_TEXTSEARCH_KMP=m
-CONFIG_TEXTSEARCH_BM=m
-CONFIG_TEXTSEARCH_FSM=m
-CONFIG_GENERIC_HARDIRQS=y
-CONFIG_GENERIC_IRQ_PROBE=y
-CONFIG_X86_BIOS_REBOOT=y
-CONFIG_KTIME_SCALAR=y
+And such a rule actually does not work.
 
-And here is strace output trying to execute the police command:
+> As a general rule it seems to me that it is more logical and readable to =
 
-execve("/sbin/tc", ["tc", "filter", "add", "dev", "eth1", "parent", "ffff:", "protocol", "ip", "prio", "50", "u32", "match", "ip", "src", "0.0.0.0/0", "police", "rate", "384kbit", "burst", "10k", "drop", "flowid", ":1"], [/* 22 vars */]) = 0
-uname({sys="Linux", node="chico-pptp2.digitalpath.net", ...}) = 0
-brk(0)                                  = 0x8066000
-open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or directory)
-open("/etc/ld.so.cache", O_RDONLY)      = 3
-fstat64(3, {st_mode=S_IFREG|0644, st_size=36167, ...}) = 0
-old_mmap(NULL, 36167, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7fde000
-close(3)                                = 0
-open("/lib/libresolv.so.2", O_RDONLY)   = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\260glC"..., 512) = 512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=76640, ...}) = 0
-old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
-old_mmap(0x436c4000, 76232, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x436c4000
-old_mmap(0x436d3000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3, 0xe000) = 0x436d3000
-old_mmap(0x436d5000, 6600, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x436d5000
-close(3)                                = 0
-open("/lib/tls/libm.so.6", O_RDONLY)    = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\0#jC4\0"..., 512) = 512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=214800, ...}) = 0
-old_mmap(0x4369f000, 139424, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x4369f000
-old_mmap(0x436c0000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3, 0x20000) = 0x436c0000
-close(3)                                = 0
-open("/lib/libdl.so.2", O_RDONLY)       = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\300xhC"..., 512) = 512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=16692, ...}) = 0
-old_mmap(0x43686000, 12412, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x43686000
-old_mmap(0x43688000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3, 0x1000) = 0x43688000
-close(3)                                = 0
-open("/lib/tls/libc.so.6", O_RDONLY)    = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\300\313"..., 512) = 512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=1459332, ...}) = 0
-old_mmap(0x43568000, 1162188, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x43568000
-old_mmap(0x4367e000, 16384, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3, 0x116000) = 0x4367e000
-old_mmap(0x43682000, 7116, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x43682000
-close(3)                                = 0
-old_mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdc000
-mprotect(0x436c0000, 4096, PROT_READ)   = 0
-mprotect(0x43688000, 4096, PROT_READ)   = 0
-mprotect(0x4367e000, 4096, PROT_READ)   = 0
-mprotect(0x43564000, 4096, PROT_READ)   = 0
-set_thread_area({entry_number:-1 -> 6, base_addr:0xb7fdc080, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}) = 0
-munmap(0xb7fde000, 36167)               = 0
-brk(0)                                  = 0x8066000
-brk(0x8087000)                          = 0x8087000
-brk(0)                                  = 0x8087000
-open("/proc/net/psched", O_RDONLY)      = 3
-fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fe6000
-read(3, "000fa000 000f4240 000f4240 00000"..., 1024) = 36
-close(3)                                = 0
-munmap(0xb7fe6000, 4096)                = 0
-open("/etc/ld.so.cache", O_RDONLY)      = 3
-fstat64(3, {st_mode=S_IFREG|0644, st_size=36167, ...}) = 0
-old_mmap(NULL, 36167, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7fde000
-close(3)                                = 0
-open("/lib/tls/i686/sse2/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/lib/tls/i686/sse2", 0xbfa76fc0) = -1 ENOENT (No such file or directory)
-open("/lib/tls/i686/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/lib/tls/i686", 0xbfa76fc0)     = -1 ENOENT (No such file or directory)
-open("/lib/tls/sse2/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/lib/tls/sse2", 0xbfa76fc0)     = -1 ENOENT (No such file or directory)
-open("/lib/tls/f_u32.so", O_RDONLY)     = -1 ENOENT (No such file or directory)
-stat64("/lib/tls", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
-open("/lib/i686/sse2/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/lib/i686/sse2", 0xbfa76fc0)    = -1 ENOENT (No such file or directory)
-open("/lib/i686/f_u32.so", O_RDONLY)    = -1 ENOENT (No such file or directory)
-stat64("/lib/i686", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
-open("/lib/sse2/f_u32.so", O_RDONLY)    = -1 ENOENT (No such file or directory)
-stat64("/lib/sse2", 0xbfa76fc0)         = -1 ENOENT (No such file or directory)
-open("/lib/f_u32.so", O_RDONLY)         = -1 ENOENT (No such file or directory)
-stat64("/lib", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
-open("/usr/lib/tls/i686/sse2/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/usr/lib/tls/i686/sse2", 0xbfa76fc0) = -1 ENOENT (No such file or directory)
-open("/usr/lib/tls/i686/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/usr/lib/tls/i686", 0xbfa76fc0) = -1 ENOENT (No such file or directory)
-open("/usr/lib/tls/sse2/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/usr/lib/tls/sse2", 0xbfa76fc0) = -1 ENOENT (No such file or directory)
-open("/usr/lib/tls/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/usr/lib/tls", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
-open("/usr/lib/i686/sse2/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/usr/lib/i686/sse2", 0xbfa76fc0) = -1 ENOENT (No such file or directory)
-open("/usr/lib/i686/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/usr/lib/i686", 0xbfa76fc0)     = -1 ENOENT (No such file or directory)
-open("/usr/lib/sse2/f_u32.so", O_RDONLY) = -1 ENOENT (No such file or directory)
-stat64("/usr/lib/sse2", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
-open("/usr/lib/f_u32.so", O_RDONLY)     = -1 ENOENT (No such file or directory)
-stat64("/usr/lib", {st_mode=S_IFDIR|0755, st_size=20480, ...}) = 0
-munmap(0xb7fde000, 36167)               = 0
-socket(PF_NETLINK, SOCK_RAW, 0)         = 3
-bind(3, {sa_family=AF_NETLINK, pid=0, groups=00000000}, 12) = 0
-getsockname(3, {sa_family=AF_NETLINK, pid=28175, groups=00000000}, [12]) = 0
-time(NULL)                              = 1153922478
-sendto(3, "\24\0\0\0\22\0\1\3\257u\307D\0\0\0\0\0\210\247\277", 20, 0, {sa_family=AF_NETLINK, pid=0, groups=00000000}, 12) = 20
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\364\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\4\3\1\0\0\0I"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3680
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2z\2\0\0\321"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\222\2\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\247\2\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\304\2\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\340\2\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\367\2\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\21\3\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\0021\3\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2W\3\0\0\321"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\236\3\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\325\3\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\36\4\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\3\5\0\0\321"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2w\n\0\0\321"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3740
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\324\n\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3756
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2\373\n\0\0"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3764
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\334\0\0\0\20\0\2\0\257u\307D\17n\0\0\0\0\0\2!\v\0\0\321"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 3528
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\24\0\0\0\3\0\2\0\257u\307D\17n\0\0\0\0\0\0!\v\0\0\321"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 20
-sendmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\224\4\0\0,\0\5\6\260u\307D\0\0\0\0\0\0\0\0l\2\0\0\0\0"..., 1172}], msg_controllen=0, msg_flags=0}, 0) = 1172
-recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"$\0\0\0\2\0\0\0\260u\307D\17n\0\0\352\377\377\377\224\4"..., 8192}], msg_controllen=0, msg_flags=0}, 0) = 36
-dup(2)                                  = 4
-fcntl64(4, F_GETFL)                     = 0x8002 (flags O_RDWR|O_LARGEFILE)
-fstat64(4, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 0), ...}) = 0
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fe6000
-_llseek(4, 0, 0xbfa75198, SEEK_CUR)     = -1 ESPIPE (Illegal seek)
-write(4, "RTNETLINK answers: Invalid argum"..., 36RTNETLINK answers: Invalid argument
-) = 36
-close(4)                                = 0
-munmap(0xb7fe6000, 4096)                = 0
-exit_group(2)                           = ?
+> put the parameters of a match right behind the match.
 
-I'm not sure why it's trying to load f_u32.so.  It does the same on the
-CentOS machine (and the file also does not exist anywhere that I can tell),
-but the tc command suceeds.
+You're right, but I have some constraints that does not permit this
+right now.
 
-Thanks for any suggestions, pulling my hair out on this one.
+>=20
+> PS: what's the use of "-d 0.0.0.0/0" ?
+>=20
+>=20
 
-Ray
+0.0.0.0 is here just because I use shell script variable for my rules
+and sometimes it gets replaced with a "proper" IP bloc or address
+I have some general scripts that generate config for many routeurs, the
+config are then uploaded onto the routers for iptables treatment. A kind
+of general firewall configuration generator based on per router DB
+variables.
+
 
