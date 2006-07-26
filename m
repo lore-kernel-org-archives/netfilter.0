@@ -1,19 +1,12 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Messages in log with SNAT target
-Date: Wed, 26 Jul 2006 13:22:15 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127E4@knowledge.wizdom.nu>
-References: <44C4903B.3080004@gmail.com> <44C49FC6.6030504@plouf.fr.eu.org>
-	<44C4A904.4010403@gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127D9@knowledge.wizdom.nu>
-	<44C4B69E.9040302@gmail.com>
-	<Pine.LNX.4.64.0607252038520.10006@darkstar.sysinfo.com>
-	<44C724D3.2090602@gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127E0@knowledge.wizdom.nu>
-	<44C75021.9070204@gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: multiport tolerance changes
+Date: Wed, 26 Jul 2006 13:35:24 +0200
+Message-ID: <44C7537C.7070509@plouf.fr.eu.org>
+References: <44C73691.1080302@regnard.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <44C73691.1080302@regnard.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,122 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Anssi Hannula <anssi.hannula@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-The important issue you have is not WHAT somebody can hack. It's what =
-somebody can DO and ACCESS, WHEN you've been hacked.
-=20
-If somebody does manage to take over one of your systems, he most =
-certainly gains access to ALL to systems on the same physical =
-(sub)network. As ALL your systems are on the same net, draw the =
-conclusion.
-=20
-Combine that conclusion with the innate vulnerability of WiFi networks =
-and do the math. It's unwise to use your set up. period. It's not for =
-nothing that reccomendations always talk about shielding your WiFi with =
-a firewall. Now for personal use, it might be acceptable to do =
-otherwise, but that's up to you, as always the choice is between =
-security and convenience.
-=20
--Sietse
+Hello,
 
-________________________________
-
-From: Anssi Hannula [mailto:anssi.hannula@gmail.com]
-Sent: Wed 26-Jul-06 13:21
-To: Sietse van Zanen
-Cc: R. DuFresne; netfilter@lists.netfilter.org
-Subject: Re: Messages in log with SNAT target
-
-
-
-Sietse van Zanen wrote:
-> That, or put your WiFi in a DMZ behind a firewall, and have the =
-firewall protect your private network.
+Vincent Regnard a =E9crit :
 >=20
-> Making WiFi DMZ's is sort of standard practice.
+> With iptables 1.2.7 I had some rules where I could write some multiport=
+=20
+> (port lists or ranges) both for source and destination ports, like this=
+:
 >=20
-> -sietse
+> /sbin/iptables -A fw2net_eth3 -p tcp -m multiport -s 82.67.103.87=20
+> --sport 1024:65535 -d 0.0.0.0/0 --dports 80,8080,81,8000,1755 -j ACCEPT
+>=20
+> iptables was coping well with this and expanded the port matrix into=20
+> appropriate single rules
 
-I don't really get it.
+What do you mean ? Could you give an example of such expansion ?
 
-As far as I can see, there are currently two weak points in my network:
-1. Someone could compromise one of the hosts remotely.
-2. Someone could crack the WLAN encryption.
+> But iptables 1.3.5 refuses to have multiport for both=20
+> source and destination ports and objects:
+>=20
+> iptables v1.3.5: multiport can only have one option
 
-No matter what kind of firewalls or network schemes I deploy, neither of
-those points goes away.
+Well, it seems that my old iptables 1.2.6a already had the same=20
+limitation. I submitted your rule to it and got an error too.
 
+> So I have to re-write my firewall rules.
 
-> ________________________________
->
-> From: Anssi Hannula [mailto:anssi.hannula@gmail.com]
-> Sent: Wed 26-Jul-06 10:16
-> To: R. DuFresne
-> Cc: Sietse van Zanen; netfilter@lists.netfilter.org
-> Subject: Re: Messages in log with SNAT target
->
->
->
-> R. DuFresne wrote:
->
->>On Mon, 24 Jul 2006, Anssi Hannula wrote:
->>
->>
->>>>Sietse van Zanen wrote:
->>>>
->>>>
->>>>>The security risk is, and it is a MAJOR one, especially with WiFi
->>>>>networks is that any PC on the network could just be set up with a
->>>>>private IP on your private network, start sniffing for passwords =
-etc.
->>>>>
->>>>>It's a very, very bad idea to put your public and private WiFi
->>>>>infratructure on the same physical network.
->>>>>I would say, there's even no point in firewalling this. Firewalling
->>>>>is seperating, you are combining.
->>>>>
->>>>>-Sietse
->>>>
->>>>
->>>>In this case the private network is only a very small home network. =
-I
->>>>don't see there being too big a risk of anyone setting up a box with
->>>>private IP on the network with harm on their mind. If that would be
->>>>possible, wouldn't the security of the whole system be compromised =
-so
->>>>much that the private/public separation doesn't matter anymore?
->>>>
->>>>The main purpose of the private IPs here is the ease of use and =
-having
->>>>no public IP for a system if so wanted.
->>
->>
->>
->>Hopefully, for yer sake, you are the only home for mile and miles
->>around....Yet, I doubt such is the case, so you are a risk to all =
-sadly.
->>
->
->
-> So, what do you suggest, then?
->
-> That I have 2 separate wireless networks, one for the internet and one
-> for the private network?
->
-> (the WLAN is of course WPA encrypted)
->
-> --
-> Anssi Hannula
->
->
+How did you rewrite the above rule ?
+If I reorder the options, so that the --sport parameter appears to=20
+belong to the implicit "-m tcp" match created by "-p tcp", the rule is=20
+accepted by my iptables 1.2.6a :
 
+/sbin/iptables -A fw2net_eth3 -s 82.67.103.87 -d 0.0.0.0/0 \
+   -p tcp --sport 1024:65535 -m multiport --dports 80,8080,81,8000,1755 \
+   -j ACCEPT
 
---
-Anssi Hannula
+As a general rule it seems to me that it is more logical and readable to=20
+put the parameters of a match right behind the match.
 
-
-
+PS: what's the use of "-d 0.0.0.0/0" ?
 
