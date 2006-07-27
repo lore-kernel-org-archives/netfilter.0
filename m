@@ -1,12 +1,20 @@
-From: Ray Van Dolson <rayvd@digitalpath.net>
-Subject: Re: Kernel options required for ingress policer?
-Date: Thu, 27 Jul 2006 09:36:53 -0700
-Message-ID: <20060727163653.GA10822@digitalpath.net>
-References: <20060726140302.GA15727@digitalpath.net>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Messages in log with SNAT target
+Date: Thu, 27 Jul 2006 15:09:46 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0607271507410.16694@darkstar.sysinfo.com>
+References: <44C4903B.3080004@gmail.com> <44C49FC6.6030504@plouf.fr.eu.org>
+	<44C4A904.4010403@gmail.com>
+	<02BB8A4AC86C564C89C7F14CF98CE0C40127D9@knowledge.wizdom.nu>
+	<44C4B69E.9040302@gmail.com>
+	<Pine.LNX.4.64.0607252038520.10006@darkstar.sysinfo.com>
+	<44C724D3.2090602@gmail.com>
+	<02BB8A4AC86C564C89C7F14CF98CE0C40127E0@knowledge.wizdom.nu>
+	<44C75021.9070204@gmail.com>
+	<02BB8A4AC86C564C89C7F14CF98CE0C40127E4@knowledge.wizdom.nu>
+	<44C757F3.6060400@gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20060726140302.GA15727@digitalpath.net>
+In-Reply-To: <44C757F3.6060400@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,53 +25,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Anssi Hannula <anssi.hannula@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, Jul 26, 2006 at 07:03:02AM -0700, Ray Van Dolson wrote:
-> Haven't gotten a response for this on the LARTC list... hoping someone here
-> may have an answer for me.
-> 
-> I'm trying to use the ingress policer on a custom kernel as follows, but
-> having some problems:
-> 
->  # tc qdisc add dev eth1 handle ffff: ingress
->  # tc filter add dev eth1 parent ffff: protocol ip prio 50 u32 match ip src \
->      0.0.0.0/0 police rate 384kbit burst 10k drop flowid :1
->  RTNETLINK answers: Invalid argument
-> 
-> This is on a Fedora Core 2 based system, with a custom built 2.6.17.7
-> kernel.
-> 
-> The above commands work perfectly on a CentOS 4.x based system with a custom
-> built 2.6.16 kernel.  The hardware in both machines are identical and I used
-> the 2.6.16 config from the CentOS machine to build the 2.6.17.7 kernel (did
-> a make oldconfig).  So the netfilter moudules, etc should be identical.
-> 
-> The network driver on both is the bcm5700 from HP.
-> 
-> tc with any egress filtering options works perfectly on the 2.6.17.7 box.
-> 
-> I can also run the ingress policer commands on identical hardware with
-> Fedora Core 1 (using stock kernel).  So I don't believe this is a result of
-> the version of the iproute package.
-> 
-> Does anyone know the exact requirements of the ingress policer as far as the
-> kernel is concerned?  Below is my kernel config:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Well, figured out the problem.  The issue was not the kernel, but that the
-tools were built against RedHat/Fedora's glibc-kernheaders.  Apparently they
-must reference a symbol of some sort that doesn't exist in the stock kernel
-(at least in Fedora Core 2).
+On Wed, 26 Jul 2006, Anssi Hannula wrote:
 
-I modified the iproute RPM .spec file to build against my 2.6.17 kernel
-headers instead of glibc-kernheaders and everything is working fine.
+> Sietse van Zanen wrote:
+>> The important issue you have is not WHAT somebody can hack. It's what somebody can DO and ACCESS, WHEN you've been hacked.
+>>
+>> If somebody does manage to take over one of your systems, he most certainly gains access to ALL to systems on the same physical (sub)network. As ALL your systems are on the same net, draw the conclusion.
+>>
+>> Combine that conclusion with the innate vulnerability of WiFi networks and do the math. It's unwise to use your set up. period. It's not for nothing that reccomendations always talk about shielding your WiFi with a firewall. Now for personal use, it might be acceptable to do otherwise, but that's up to you, as always the choice is between security and convenience.
+>
+> Thanks for your reply. Unfortunately, you do not seem to offer any
+> alternative to my current setup.
 
-Grr!
 
-As an aside, would have loved to stick with the stock kernels (wouldn't have
-encountered this issue in that case), but wanted to make use of built-in
-MPPE support in the later kernel releases.  Obviously this will never be
-backported into FC2's now-maintained-by-fedora-legacy kernel. :)
+Actually he did offer an alternative, though you had to read carefully his 
+answer;  go with a wired set of networks, both distinct from one another.
+
+Firewall those networks, adding further isolation from eachother and from 
+the publc internet at large.
+
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.4 (GNU/Linux)
+
+iD8DBQFEyQ9/st+vzJSwZikRAgFiAJ0VfuNg1mknLLCIEBwNixGOYiqehwCguxIU
+L30Qlwza8HKr9oYDgwp+viE=
+=G+zy
+-----END PGP SIGNATURE-----
 
