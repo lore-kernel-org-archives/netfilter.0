@@ -1,11 +1,12 @@
-From: Maxim Britov <maxim.britov@gmail.com>
-Subject: string seems doesn't work
-Date: Thu, 27 Jul 2006 17:34:32 +0300
-Message-ID: <20060727173432.3cea1a6f@maxim.office.modum.by>
+From: Ray Van Dolson <rayvd@digitalpath.net>
+Subject: Re: Kernel options required for ingress policer?
+Date: Thu, 27 Jul 2006 09:36:53 -0700
+Message-ID: <20060727163653.GA10822@digitalpath.net>
+References: <20060726140302.GA15727@digitalpath.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary=Sig_D4UZ.ZwkJu13ZON6epZV0.x;
-	protocol="application/pgp-signature"; micalg=PGP-SHA1
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20060726140302.GA15727@digitalpath.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,59 +17,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
---Sig_D4UZ.ZwkJu13ZON6epZV0.x
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jul 26, 2006 at 07:03:02AM -0700, Ray Van Dolson wrote:
+> Haven't gotten a response for this on the LARTC list... hoping someone here
+> may have an answer for me.
+> 
+> I'm trying to use the ingress policer on a custom kernel as follows, but
+> having some problems:
+> 
+>  # tc qdisc add dev eth1 handle ffff: ingress
+>  # tc filter add dev eth1 parent ffff: protocol ip prio 50 u32 match ip src \
+>      0.0.0.0/0 police rate 384kbit burst 10k drop flowid :1
+>  RTNETLINK answers: Invalid argument
+> 
+> This is on a Fedora Core 2 based system, with a custom built 2.6.17.7
+> kernel.
+> 
+> The above commands work perfectly on a CentOS 4.x based system with a custom
+> built 2.6.16 kernel.  The hardware in both machines are identical and I used
+> the 2.6.16 config from the CentOS machine to build the 2.6.17.7 kernel (did
+> a make oldconfig).  So the netfilter moudules, etc should be identical.
+> 
+> The network driver on both is the bcm5700 from HP.
+> 
+> tc with any egress filtering options works perfectly on the 2.6.17.7 box.
+> 
+> I can also run the ingress policer commands on identical hardware with
+> Fedora Core 1 (using stock kernel).  So I don't believe this is a result of
+> the version of the iproute package.
+> 
+> Does anyone know the exact requirements of the ingress policer as far as the
+> kernel is concerned?  Below is my kernel config:
 
-I trying to use string. iptables 1.3.5 / kernel 2.6.18-rc2-ck1
+Well, figured out the problem.  The issue was not the kernel, but that the
+tools were built against RedHat/Fedora's glibc-kernheaders.  Apparently they
+must reference a symbol of some sort that doesn't exist in the stock kernel
+(at least in Fedora Core 2).
 
-iptables -A INPUT -p tcp -m string --algo kmp --string 112233 -j LOG
-iptables -A INPUT -p tcp -m string --algo kmp --string ! 112233 -j LOG
-iptables -A INPUT -p tcp -m string --algo kmp --hex-string 112233 -j LOG
+I modified the iproute RPM .spec file to build against my 2.6.17 kernel
+headers instead of glibc-kernheaders and everything is working fine.
 
-I got worked first rule only.
+Grr!
 
-Second rule never matches any packets. IMHO it should match any packet with=
-out my string. I'm right?
-
-Thirst rule iptables-save show as:
--A INPUT -p tcp -m string --string "112233" --algo kmp --to 65535 -j LOG
-I think it transform my --hex-string into --string here. May I misunderstoo=
-d some here?
-
-
-
---=20
-Maxim Britov
-
-GnuPG KeyID 0x4580A6D66F3DB1FB xmpp:maxim@modum.by icq 198171258
-Fingerprint: 4059 B5C5 8985 5A47 8F5A 8623 4580 A6D6 6F3D B1FB
-GnuPG-ru Team (http://lists.gnupg.org/mailman/listinfo/gnupg-ru
-               xmpp:gnupg-ru@conference.jabber.ru)
-
---Sig_D4UZ.ZwkJu13ZON6epZV0.x
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.4 (GNU/Linux)
-
-iQIcBAEBAgAGBQJEyM7+AAoJEOS1BTjOtE8GbTsQAKIFVLIl6RzWrUmpygTb+GtX
-2bKYVj5B5XcCc4qAUsW2kegMH7nu7Gka/z4wf0ph79hZxZK9wyIYRf1OKejG0qLf
-Ww4ZFXJuEl2NaTTASqWAu0QPAVc37N1qdsZW0Ni6l7ew02pc9vP2VHjvDeaoHjy7
-7MuePGTIUyl2EQtmC4QB5hE3zOHce/r6iV2n9M/hDbKcQ3PB3MPbPR2q9CGhGmTB
-B0VDzwLjwXl4o/RvMeTVk6xZjVOcrAtklSJholi2xZVjuBXrYEXJDBtbg6Xwn4yL
-mXn+kYHRxyN+3AiHSDjh/FvxyRnueUktDithzzwVeCoxdDeZ7NLbjS4obEnulOot
-6MJ1mYisiJR435hkWX9mrix7RpVNJ7PNI2B+F5iCBh4OYMz1I/WJaorK97bw7fll
-MtSXQ2rKdn7N/Mz1cqTRnT2I7woNJBC9TfUR6EONkZpCr9orXrf/9MySZIwhh218
-X6THvjGXiv/NEExfCaBHgHN96p22bpcxQCHjtgEpI26h2ufyOvwdxRPBt0lC53cX
-2DdPpp1AGAH13PQAoLNU2eFYAkoz/+d2fkML8REXRSD4QNubFxOa4bv7ZHujmTLM
-kkS1RUEW60MwW+sL+jU1gVchGGfLhwqWS4DvGf7IrD19tPSFG4Sx9s3aMt7772NM
-6YKdW1sDeLvmllz/kQZ7
-=nF5l
------END PGP SIGNATURE-----
-
---Sig_D4UZ.ZwkJu13ZON6epZV0.x--
+As an aside, would have loved to stick with the stock kernels (wouldn't have
+encountered this issue in that case), but wanted to make use of built-in
+MPPE support in the later kernel releases.  Obviously this will never be
+backported into FC2's now-maintained-by-fedora-legacy kernel. :)
 
