@@ -1,22 +1,10 @@
-From: Anssi Hannula <anssi.hannula@gmail.com>
-Subject: Re: Messages in log with SNAT target
-Date: Thu, 27 Jul 2006 22:46:15 +0300
-Message-ID: <44C91807.6030500@gmail.com>
-References: <44C4903B.3080004@gmail.com> <44C49FC6.6030504@plouf.fr.eu.org>
-	<44C4A904.4010403@gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127D9@knowledge.wizdom.nu>
-	<44C4B69E.9040302@gmail.com>
-	<Pine.LNX.4.64.0607252038520.10006@darkstar.sysinfo.com>
-	<44C724D3.2090602@gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127E0@knowledge.wizdom.nu>
-	<44C75021.9070204@gmail.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127E4@knowledge.wizdom.nu>
-	<44C757F3.6060400@gmail.com>
-	<Pine.LNX.4.64.0607271507410.16694@darkstar.sysinfo.com>
+From: Rigoberto Corujo <rcorujo@yahoo.com>
+Subject: NFS hang after restarting IP tables
+Date: Thu, 27 Jul 2006 13:00:43 -0700 (PDT)
+Message-ID: <20060727200043.90594.qmail@web60816.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.64.0607271507410.16694@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -28,62 +16,97 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "R. DuFresne" <dufresne@sysinfo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-R. DuFresne wrote:
-> On Wed, 26 Jul 2006, Anssi Hannula wrote:
-> 
->>> Sietse van Zanen wrote:
->>>
->>>> The important issue you have is not WHAT somebody can hack. It's what
->>>> somebody can DO and ACCESS, WHEN you've been hacked.
->>>>
->>>> If somebody does manage to take over one of your systems, he most
->>>> certainly gains access to ALL to systems on the same physical
->>>> (sub)network. As ALL your systems are on the same net, draw the
->>>> conclusion.
->>>>
->>>> Combine that conclusion with the innate vulnerability of WiFi
->>>> networks and do the math. It's unwise to use your set up. period.
->>>> It's not for nothing that reccomendations always talk about shielding
->>>> your WiFi with a firewall. Now for personal use, it might be
->>>> acceptable to do otherwise, but that's up to you, as always the
->>>> choice is between security and convenience.
->>>
->>>
->>> Thanks for your reply. Unfortunately, you do not seem to offer any
->>> alternative to my current setup.
-> 
-> Actually he did offer an alternative, though you had to read carefully
-> his answer;  go with a wired set of networks, both distinct from one
-> another.
+Hello everyone,
 
-Well, I can't go with wired network, especially with the laptop. I
-consider WLAN with a proper WPA encryption to be sufficiently secure for
-my purposes.
+I have just joined this mailing list so my apologies
+if my question is not appropriate for this mailing
+list.
 
-> Firewall those networks, adding further isolation from eachother and
-> from the publc internet at large.
+Basically I need some guidance on a problem I'm
+having.
 
-But if these are two distinct networks (the first one being connected to
-internet and the workstations, the second one connected to workstations
-only), what do you mean by "firewalling" them?
+With iptables already started, I NFS mount a
+filesystem using the "proto=tcp" option on, say,
+"/mnt".  I can do a "ls /mnt" with no problem.
 
-There cannot be any blocking of traffic on the first network, as the
-whole purpose of the network is to allow connections from the internet.
+Now, if I restart iptables, my "ls /mnt" will hang for
+a good long while and eventually time out.
 
-The second network contains only internal traffic, and blocking any of
-that would result in trouble only.
+From the tcpdump output, you can see that the NFS
+client "njxcsup7nh" is communication on port 800 with
+the NFS server "kurby".
 
-People, thanks for your concern over my network security, but I don't
-really think I can achieve much better security by rewiring my network
-differently. The biggest security problem I have is the possibility of
-vulnerabilities in the server software, and if such a vulnerability gets
-exploited, no firewall will help me then. I have to just make sure that
-doesn't happen.
+The packet exchange seems to be going fine until,
+suddenly, the NFS client "njxcsup7nh" decides he is no
+longer accepting packets to port 800 and sends back an
+"unreachable - admin prohibited" packet to the NFS
+server "kurby".
 
--- 
-Anssi Hannula
+14:06:34.871476 IP njxcsup7nh.companyname.com.800 >
+kurby.companyname.com.nfs: P 3932:4064(132) ack 3489
+win 18 <nop,nop,timestamp 775808018 2529886659>
+14:06:34.871667 IP kurby.companyname.com.nfs >
+njxcsup7nh.companyname.com.800: P 3489:3605(116) ack
+4064 win 9756 <nop,nop,timestamp 2529886660 775808018>
+14:06:34.871714 IP njxcsup7nh.companyname.com.800 >
+kurby.companyname.com.nfs: P 4064:4196(132) ack 3605
+win 18 <nop,nop,timestamp 775808018 2529886660>
+14:06:34.871905 IP kurby.companyname.com.nfs >
+njxcsup7nh.companyname.com.800: P 3605:3721(116) ack
+4196 win 9756 <nop,nop,timestamp 2529886660 775808018>
+14:06:34.871954 IP njxcsup7nh.companyname.com.800 >
+kurby.companyname.com.nfs: P 4196:4328(132) ack 3721
+win 18 <nop,nop,timestamp 775808018 2529886660>
+14:06:34.872146 IP kurby.companyname.com.nfs >
+njxcsup7nh.companyname.com.800: P 3721:3837(116) ack
+4328 win 9756 <nop,nop,timestamp 2529886660 775808018>
+14:06:34.872165 IP njxcsup7nh.companyname.com >
+kurby.companyname.com: icmp 176: host
+njxcsup7nh.companyname.com unreachable - admin
+prohibited
+14:06:35.072687 IP njxcsup7nh.companyname.com.800 >
+kurby.companyname.com.nfs: P 4196:4328(132) ack 3721
+win 18 <nop,nop,timestamp 775808219 2529886660>
+14:06:35.072841 IP kurby.companyname.com.nfs >
+njxcsup7nh.companyname.com.800: . ack 4328 win 9756
+<nop,nop,timestamp 2529886861 775808219,nop,nop,sack
+sack 1 {4196:4328} >
+14:06:35.072857 IP njxcsup7nh.companyname.com >
+kurby.companyname.com: icmp 72: host
+njxcsup7nh.companyname.com unreachable - admin
+prohibited
 
+After the "ls /mnt" times out, subsequent "ls /mnt"
+are successful.  That is, unless I restart iptables
+again.
+
+As a side note, when I only had one file in "/mnt" I
+didn't get the hang.  So I copied files under "/etc"
+to "/mnt" and then I get the hang.  I have observed
+that the "unreachable - admin prohibited" message
+occurs randomly during the packet exchange between the
+NFS client and the NFS server.  That is, sometimes
+tcpdump shows more packets being exchanged and
+sometimes it shows less packets being exchanged before
+the rejection occurs.
+
+This problem does not occur if the "proto=udp" option
+is used with NFS.  This problem has been observed on
+Red Hat AS 3 as well as Red Hat AS 4.
+
+Would anyone be able provide even a guess as to why
+the NFS client "njxcsup7nh" started to reject packets
+to port 800 after it had been happily accepting them?
+
+Thank you.
+
+Rigoberto
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
