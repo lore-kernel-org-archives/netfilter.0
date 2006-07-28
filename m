@@ -1,11 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: scanning / attacking ?
-Date: Fri, 28 Jul 2006 16:24:48 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0607281624280.15192@yvahk01.tjqt.qr>
-References: <007501c6b207$cb14a1c0$0503800a@wanxpe2773a9cb>
+From: Maxim Britov <maxim.britov@gmail.com>
+Subject: Re: string seems doesn t work
+Date: Fri, 28 Jul 2006 17:57:05 +0300
+Message-ID: <20060728175705.529ed584@maxim.office.modum.by>
+References: <20060727173432.3cea1a6f@maxim.office.modum.by>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <007501c6b207$cb14a1c0$0503800a@wanxpe2773a9cb>
+In-Reply-To: <20060727173432.3cea1a6f@maxim.office.modum.by>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,20 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ArioS <christian@wanxp.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-> I got this on my wireless network using iptraf... any1 know what is it ?
-> broadcasting ? i took bout 300kbps each of my wireless clients >.<
->
-> Non-Ip (0x4) (48 Bytes) from 555555555555 to 555555555555 on eth0
+On Thu, 27 Jul 2006 17:34:32 +0300
+ Maxim Britov wrote:
 
-Interesting MAC address.
+> I trying to use string. iptables 1.3.5 / kernel 2.6.18-rc2-ck1
+> 
+> iptables -A INPUT -p tcp -m string --algo kmp --string 112233 -j LOG
+> iptables -A INPUT -p tcp -m string --algo kmp --string ! 112233 -j LOG
+> iptables -A INPUT -p tcp -m string --algo kmp --hex-string 112233 -j LOG
+> 
+> I got worked first rule only.
+> 
+> Second rule never matches any packets. IMHO it should match any packet without my string. I'm right?
+> 
+> Thirst rule iptables-save show as:
+> -A INPUT -p tcp -m string --string "112233" --algo kmp --to 65535 -j LOG
+> I think it transform my --hex-string into --string here. May I misunderstood some here?
+
+And "--algo bm --string 112233" doesn't want match 112233, but match x112233
+
+Is it bug or it is bm algorithm feature?
+
+PS. Happy SysAdmin Day!!! ;)
 
 
-
-Jan Engelhardt
 -- 
+Maxim Britov
+
+GnuPG KeyID 0x4580A6D66F3DB1FB xmpp:maxim@modum.by icq 198171258
+Fingerprint: 4059 B5C5 8985 5A47 8F5A 8623 4580 A6D6 6F3D B1FB
+GnuPG-ru Team (http://lists.gnupg.org/mailman/listinfo/gnupg-ru
+               xmpp:gnupg-ru@conference.jabber.ru)
 
