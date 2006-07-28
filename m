@@ -1,13 +1,14 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Help with IPtables and NAT
-Date: Fri, 28 Jul 2006 12:31:30 +0200
-Message-ID: <44C9E782.8080306@plouf.fr.eu.org>
-References: <44C16109.20704@jemconsult.biz> <44C17846.4080403@plouf.fr.eu.org>
-	<42950.2001:888:19e1::53.1153754175.squirrel@dexter>
+Subject: Re: IPTABLES , help requested , have problem in forwarding port 110
+ to 8110
+Date: Fri, 28 Jul 2006 12:39:56 +0200
+Message-ID: <44C9E97C.5090506@plouf.fr.eu.org>
+References: <20060727063003.28711.qmail@web55508.mail.re4.yahoo.com><02BB8A4AC86C564C89C7F14CF98CE0C40127E7@knowledge.wizdom.nu>	<44C88315.3060006@plouf.fr.eu.org>
+	<02BB8A4AC86C564C89C7F14CF98CE0C40127E8@knowledge.wizdom.nu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <42950.2001:888:19e1::53.1153754175.squirrel@dexter>
+In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C40127E8@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,26 +22,15 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Martijn Lievaart a =E9crit :
-> <citaat van=3D"Pascal Hambourg">
->>
->>You forgot the whole 127.0.0.0/8 subnet which can be used on the
->>loopback interface. Anyway, why don't you just allow all traffic on the
->>loopback interface ?
+Sietse van Zanen a =E9crit :
 >=20
-> Even worse, loopback is used for communicating with any local address, =
-not
-> just the one assigned to the lo interface.
+>>I strongly suggest John and anyone lists iptables rules with>
+>>iptables-save instead of iptables -L.
+>=20
+> Or iptables -L -n -v would do fine too, I think.
 
-Local addresses were already dealt with by the following rules :
-
-iptables -A INPUT -p ALL -i lo -s 127.0.0.1 -j ACCEPT
-iptables -A INPUT -p ALL -i lo -s 192.168.0.1 -j ACCEPT
-iptables -A INPUT -p ALL -i lo -s 172.10.10.1 -j ACCEPT
-iptables -A INPUT -p ALL -i lo -s 172.10.10.2 -j ACCEPT
-
-
-> Don't restrict loopback unless you know exactly what you're doing.
-
-Sure. Much less pain.
+IMHO iptables-save has some advantages over iptables -nvL :
+- lists all loaded tables in one command unless specified otherwise
+- output format is similar to the iptables syntax
+- output format is more compact (simple rules can fit in 80 columns).
 
