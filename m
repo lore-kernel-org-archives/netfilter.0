@@ -1,15 +1,11 @@
-From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: IPTABLES , help requested ,
-	have problem in forwarding port 110 to 8110
-Date: Fri, 28 Jul 2006 15:34:19 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127E9@knowledge.wizdom.nu>
-References: <20060727063003.28711.qmail@web55508.mail.re4.yahoo.com><02BB8A4AC86C564C89C7F14CF98CE0C40127E7@knowledge.wizdom.nu>	<44C88315.3060006@plouf.fr.eu.org>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127E8@knowledge.wizdom.nu>
-	<44C9E97C.5090506@plouf.fr.eu.org>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: scanning / attacking ?
+Date: Fri, 28 Jul 2006 16:24:48 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0607281624280.15192@yvahk01.tjqt.qr>
+References: <007501c6b207$cb14a1c0$0503800a@wanxpe2773a9cb>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <007501c6b207$cb14a1c0$0503800a@wanxpe2773a9cb>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,33 +16,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: ArioS <christian@wanxp.net>
+Cc: netfilter@lists.netfilter.org
 
-True, and what about a screendump of an fwbuilder rulebase. ;-)
-
-________________________________
-
-From: netfilter-bounces@lists.netfilter.org on behalf of Pascal Hambourg
-Sent: Fri 28-Jul-06 12:39
-To: netfilter@lists.netfilter.org
-Subject: Re: IPTABLES , help requested , have problem in forwarding port =
-110 to 8110
-
-
-
-Sietse van Zanen a =E9crit :
+> I got this on my wireless network using iptraf... any1 know what is it ?
+> broadcasting ? i took bout 300kbps each of my wireless clients >.<
 >
->>I strongly suggest John and anyone lists iptables rules with>
->>iptables-save instead of iptables -L.
->
-> Or iptables -L -n -v would do fine too, I think.
+> Non-Ip (0x4) (48 Bytes) from 555555555555 to 555555555555 on eth0
 
-IMHO iptables-save has some advantages over iptables -nvL :
-- lists all loaded tables in one command unless specified otherwise
-- output format is similar to the iptables syntax
-- output format is more compact (simple rules can fit in 80 columns).
+Interesting MAC address.
 
 
 
+Jan Engelhardt
+-- 
 
