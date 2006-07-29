@@ -1,13 +1,10 @@
-From: John Joseph <jjk_saji@yahoo.com>
-Subject: RE: IPTABLES , help requested ,
-	have problem in forwarding port 110 to 8110
-Date: Sat, 29 Jul 2006 12:21:06 +0100 (BST)
-Message-ID: <20060729112106.53683.qmail@web55511.mail.re4.yahoo.com>
-References: <20060729060906.82661.qmail@web55508.mail.re4.yahoo.com>
-Mime-Version: 1.0
+From: "former03 | Baltasar Cevc" <baltasar.cevc@former03.de>
+Subject: unDNATting and advanced routing; policyrouting local packets
+Date: Sat, 29 Jul 2006 20:12:20 +0200
+Message-ID: <b3fe111cce2f910de8a0d62de9c23b43@former03.de>
+Mime-Version: 1.0 (Apple Message framework v624)
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060729060906.82661.qmail@web55508.mail.re4.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,152 +15,108 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="macroman"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi everybody,
 
---- John Joseph <jjk_saji@yahoo.com> wrote:
+I have a machine with two internet connections (ADSL and leased line)=20
+which is supposed to do routing and for our  local company network.
 
->=20
-> --- Sietse van Zanen <sietse@wizdom.nu> wrote:
->=20
-> > >> ACCEPT     all  --  anywhere           =20
-> anywhere
-> > >> This converts your DROP policy to an ACCEPT,
-> > doesn't seem wise.
-> >=20
-> > >Remember that iptables -L hides some rule
-> > parameters such as interfaces.
-> > >I would not be surprised that this rule actually
-> > contains "-i eth1".
-> > >I strongly suggest John and anyone lists iptables
-> > rules with>
-> > >iptables-save instead of iptables -L.
-> >=20
-> > Or iptables -L -n -v would do fine too, I think.
-> >=20
-> >=20
-> >=20
->=20
->=20
->=20
-> Hi Thanks for the reply=20
->     in my gateway  =93iptables -L -n -v  =93 . results
-> are
->               =20
->=20
-> **************************
-> [root@gateway ~]# iptables -L -n -v
-> Chain INPUT (policy ACCEPT 256K packets, 29M bytes)
->  pkts bytes target     prot opt in     out   =20
-> source=20
->              destination
->=20
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out   =20
-> source=20
->              destination
->     8   472 ACCEPT     all  --  eth0   eth1  =20
-> 0.0.0.0/0            0.0.0.0/0           state
-> RELATED,ESTABLISHED
->    17   840 ACCEPT     all  --  eth1   eth0  =20
-> 0.0.0.0/0            0.0.0.0/0
->     3   180 LOG        all  --  *      *     =20
-> 0.0.0.0/0            0.0.0.0/0           LOG flags 0
-> level 4
->     3   180 ACCEPT     tcp  --  eth0   *     =20
-> 0.0.0.0/0            192.168.242.129     tcp
-> dpt:8110
->=20
-> Chain OUTPUT (policy ACCEPT 2885 packets, 430K
-> bytes)
->  pkts bytes target     prot opt in     out   =20
-> source=20
->              destination
->=20
-> *******************************
->=20
->=20
-> I am posting , some part of the previous mail , for
-> continuity=20
->    I have a gateway (CentOS) with eth0 and eth1 as
-> interfaces. =93eth0=94  is exposed to WAN and  =93eth1=94 to
-> the LAN  network , I want all POP3 packets coming=20
-> in
-> through the gateway  wan interface (eth0) to be
-> redirected  to the PS1(192.168.242.129 inside the
-> lan)
-> port 8110 .  I had done some iptables settings as =20
->=20
-> iptables -t nat -A PREROUTING -i eth0 -p tcp =96dport
-> pop3 -j DNAT =96to  192.168.242.129:8110
-> iptables        -A FORWARD -i eth0 -p tcp --dport
-> 8110
-> -d 192.168.242.129 -j ACCEPT
->=20
->   In this setup POP3  packets were not redirected to
-> PS1 (192.168.242.129)=20
->                      Thanks=20
->                          Joseph John=20
->=20
->=20
+One of the things it should to is map some external ports to internal=20
+machines in the DMZ (e.g. port 80 on external interface 1 should go to=20=
+
+192.168.192.168, port 25 on external interface 2 to 192.168.192.1).
+
+The nat works well for the interface which has the default route. The=20
+nat rules look like this:
+
+=3D=3D=3D Table nat, Chain PREROUTING (policy ACCEPT 125 packets, 11210 =
+bytes)
+  pkts bytes target     prot opt in     out     source              =20
+destination
+     1    60 DNAT       tcp  --  any    any     anywhere            =20
+extip1  tcp dpt:2201 to:192.168.192.168
+     7   420 DNAT       tcp  --  any    any     anywhere            =20
+extip2 tcp dpt:2201 to:192.168.192.168
+
+=3D=3D=3D Table nat, Chain POSTROUTING (policy ACCEPT 36 packets, 2955 =
+bytes)
+  pkts bytes target     prot opt in     out     source              =20
+destination
+     1    60 SNAT       all  --  any    eth0   !extip2  anywhere        =20=
+
+    to:extip2
+    17  1036 SNAT       all  --  any    ppp0   !extip1   anywhere       =20=
+
+     to:extip1
+
+=3D=3D=3D Table filter, Chain FORWARD (policy DROP 738 packets, 57598 =
+bytes)
+    12   648 LOG        tcp  --  any    any     anywhere            =20
+anywhere            tcp spt:2201 LOG level warning prefix `SBOX___'
+    24  1299 LOG        tcp  --  any    any     anywhere            =20
+anywhere            tcp dpt:2201 LOG level warning prefix `BOX___'
+
+=3D=3D=3D Chain INPUT (policy DROP 42252 packets, 4143K bytes)
+     0     0 LOG        tcp  --  any    any     anywhere            =20
+anywhere            tcp dpt:2201 LOG level warning prefix `WBOX__'
+[more rules follow]
 
 
-Hi=20
-  In response to my previous mail ,   I am posting my
-iptables-script which I had used , so that going
-through the code can give me good response from the
-list=20
-**************   =20
-#!/bin/sh
-#
-#  Unless specified, the defaults for INPUT and OUTPUT
-is ACCEPT
-#    The default for FORWARD is DROP (REJECT is not a
-valid policy)
-#   Isn't ACCEPT insecure?  To some degree, YES, but
-this is our testing
-#   phase.
-#
+When I connect using extip1, I ahve the follwoing log entries:
+Jul 29 19:48:51 lg2 kernel: BOX___IN=3Deth0 OUT=3Deth2 SRC=3D<testing =
+host>=20
+DST=3D<intdestip> LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D50 ID=3D43282 DF =
+PROTO=3DTCP=20
+SPT=3D26557 DPT=3D2201 WINDOW=3D65535 RES=3D0x00 SYN URGP=3D0
+Jul 29 19:48:51 lg2 kernel: SBOX___IN=3Deth2 OUT=3Deth0 SRC=3D<intdestip>=20=
 
-echo "   Clearing any existing rules and setting
-default policy.."
-iptables -P INPUT ACCEPT
-iptables -F INPUT
-iptables -P OUTPUT ACCEPT
-iptables -F OUTPUT
-iptables -P FORWARD DROP
-iptables -F FORWARD
-iptables -t nat -F
+DST=3D<testing host> LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D0 DF =
+PROTO=3DTCP=20
+SPT=3D2201 DPT=3D26557 WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
 
-echo "   FWD: Allow all connections IN"
-iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
-iptables -A FORWARD -j LOG
+Connecting on extip2 does not result in any messages; I don't see any=20
+packet when I tcpdump the DMZ interface then, either.
 
-echo "   Enabling SNAT (MASQUERADE) functionality on
-$eth0"
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-echo "Forwarding all the port 110 to
-192.168.242.129:8110"
-
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport
-110 -j DNAT --to 192.168.242.129:8110
-
-iptables        -A FORWARD -i eth0 -p tcp --dport 8110
--d 192.168.242.129 -j ACCEPT
-************************************
-                Thanks=20
-                    Joseph John=20
+My routing looks as follows (there should be no marked packets as I=20
+flushed the 'mangle' table before testing):
+ofc:/home/bc# ip ru ls
+0:      from all lookup local
+32756:  from all fwmark 0x1 lookup IQ
+32757:  from <extip1> lookup DSL
+32758:  from all fwmark 0x2 lookup DSL
+32759:  from <extip2> lookup IQ
+32766:  from all lookup main
+32767:  from all lookup default
+ofc:/home/bc# ip ro ls
+<pppremote> dev ppp0  proto kernel  scope link  src <extip1>
+<extip2> dev eth0  scope link
+192.168.0.0/24 dev eth3  proto kernel  scope link  src 192.168.0.253
+172.27.2.0/24 dev dummy0  proto kernel  scope link  src 172.27.2.254
+<DMZnet>/16 dev eth2  proto kernel  scope link  src <dmzlocalip>
+default dev ppp0  scope link
 
 
 
-=09
-=09
-	=09
-___________________________________________________________=20
-All new Yahoo! Mail "The new Interface is stunning in its simplicity and ea=
-se of use." - PC Magazine=20
-http://uk.docs.yahoo.com/nowyoucan.html
+Another question: is there some possibility to route local packets=20
+depending on ports? As far as I've understood the only way is to mark=20
+them using the mark target, however that only works after the routing=20
+for local packets, doesn't it?
+
+Thanx for your help, if I can provide any other useful information,=20
+just let me know.
+
+Baltasar
+
+--
+
+Baltasar Cevc
+
+_____ former 03 gmbh
+_____ infanteriestra=DFe 19 haus 6 eg
+_____ D-80797 muenchen
+
+_____ http://www.former03.de
+
 
