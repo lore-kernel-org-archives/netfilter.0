@@ -1,18 +1,12 @@
-From: Graham Murray <graham@gmurray.org.uk>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Subject: Re: no ssh on eth0
-Date: Sun, 30 Jul 2006 11:12:31 +0100
-Message-ID: <87fygje700.fsf@newton.gmurray.org.uk>
+Date: Sun, 30 Jul 2006 13:44:17 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0607301343450.23827@yvahk01.tjqt.qr>
 References: <1154239260.5429.2.camel@nirvana.aurokruti.in>
+	<87fygje700.fsf@newton.gmurray.org.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/simple; d=gmurray.org.uk; s=in200507;
-	t=1154254351; bh=lfsu6scVDEAg4hoHLlWwFD7t7sg=; h=Received:
-	X-Authentication-Warning:From:To:Subject:References:X-Hashcash:
-	Date:In-Reply-To:Message-ID:User-Agent:MIME-Version:Content-Type; b=d
-	drrIF8DAAJCqfRq8x7C6WA+pQ4cF7fu8h9jX8N561Nc0S69Ekel77yLe5Vkjc4zA4dX
-	shmAbkxP8Rw2cycB7A==
-In-Reply-To: <1154239260.5429.2.camel@nirvana.aurokruti.in> (varun's message
-	of "Sun, 30 Jul 2006 11:31:00 +0530")
+In-Reply-To: <87fygje700.fsf@newton.gmurray.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,21 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Graham Murray <graham@gmurray.org.uk>
+Cc: netfilter@lists.netfilter.org
 
-varun <varun_saa@rediffmail.com> writes:
+>> Hello,
+>>
+>> I a internet server with :
+>>
+>> eth0 as WAN and eth1 as LAN.
+>>
+>> I want to prevent ssh on eth0.
+>>
+>> Howto do it ?
+>
+>iptables -I INPUT -i eth0 -p tcp --dport 22 -j DROP
+>
 
-> Hello,
->
-> I a internet server with :
->
-> eth0 as WAN and eth1 as LAN.
->
-> I want to prevent ssh on eth0.
->
-> Howto do it ?
+If
+	eth0 10.0.0.1
+	eth1 192.168.222.3
+then
+/etc/ssh/sshd_config:
 
-iptables -I INPUT -i eth0 -p tcp --dport 22 -j DROP
+	ListenAddress 192.168.222.3
+
+
+Jan Engelhardt
+-- 
 
