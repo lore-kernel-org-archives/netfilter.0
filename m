@@ -1,10 +1,11 @@
-From: fred dusin <fdusin@yahoo.com>
-Subject: routing, source-address rewriting
-Date: Sun, 30 Jul 2006 04:14:58 -0700 (PDT)
-Message-ID: <20060730111458.99932.qmail@web57106.mail.re3.yahoo.com>
+From: "M. Menges Email" <m.menges@seam.de>
+Subject: libipt_time TIME Kernel 2.6.17.x
+Date: Sun, 30 Jul 2006 15:17:10 +0200
+Message-ID: <s4cccd99.056@seam.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +19,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi!
+Hi all,
+i'm unable to build a 'working'  iptables/kernel-Version  with the TIME =
+patch from - patch-o-matic.
+I found some confused information between 'no problem'  and  'could not =
+go' because
+of kernel changes (help-file).
+is it out-dated? - are the How-to's up to date ?=20
 
-let's say i have 2 pcs connected to the internet. each one has a public
-ip address from a totally different subnet.
+- my current version starts and i can put in some rules with the -m time  =
+rule
+but the iptables -L gives me no 'time' Rule ...=20
 
-pc1 should now accept connections on port 80 and forward them to pc2.
-pc2 has a webserver running, processes the request and should then
-reply DIRECTLY to the client, so bypassing pc1. speaking of packets,
-pc1 should get the packets from the client, forward them to pc2. pc2
-processes the request and sends the answer packets directly to the
-client (and not over pc1).
+...any information (eg 'I build it with the current kernel with no =
+problem..') / suggestion appreciated
 
-i though doing this using iptables should be quite easy:
-1. forward all packets arriving at pc1 on port 80 to pc2. (does works!)
-2. change the source-address of the outgoing packets from pc2 to the ip
-of pc1 so the clients see the packets comming from pc1 while in realtiy
-they come from pc2. (does not work!)
 
-when i change the source-adress of the packets on pc1 to the ip of pc1, 
-everything works fine. but this way the packets are going out to the 
-client over pc1 but i want them to go the client directly.
 
-i'm really looking forward to any suggestions. may be doing it by some
-tunnel or what ever is much better than trying to do this with
-iptables?
+Kernel: 2.6.17.1... 7 - working
+iptables: 1.3.5  ... 20060728  -working
+p-o-m ...some ..eg p-o-m-ng-20060726... -damned will not work...
 
-fred
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+
+
+
+
+
+
+
+ mfg
+ Marc
+
+
 
