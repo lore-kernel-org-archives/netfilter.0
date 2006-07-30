@@ -1,13 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: no ssh on eth0
-Date: Sun, 30 Jul 2006 14:37:22 +0200
-Message-ID: <44CCA802.2090403@plouf.fr.eu.org>
-References: <1154239260.5429.2.camel@nirvana.aurokruti.in>	<87fygje700.fsf@newton.gmurray.org.uk>
-	<Pine.LNX.4.61.0607301343450.23827@yvahk01.tjqt.qr>
+From: "Daniel Williams" <danielw@staff.iinet.net.au>
+Subject: iptables random support
+Date: Sun, 30 Jul 2006 21:52:46 +0800
+Message-ID: <5B0731A8753509478386ED3D6513B2D101AE6CBB@isp-per-exch01.win2k.iinet.net.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0607301343450.23827@yvahk01.tjqt.qr>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +16,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
 
-Jan Engelhardt a =E9crit :
->>>
->>>I want to prevent ssh on eth0.
->>>
->>>Howto do it ?
->>
->>iptables -I INPUT -i eth0 -p tcp --dport 22 -j DROP
+Hi,
 
-If the goal is to prevent *incoming* SSH connections on eth0.
+I have been trying to get iptables -m random support working to very
+little success.
 
-> If
-> 	eth0 10.0.0.1
-> 	eth1 192.168.222.3
-> then
-> /etc/ssh/sshd_config:
->=20
-> 	ListenAddress 192.168.222.3
+Does anyone have a modern 2.6 kernel with iptables -m random working ?
 
-This alone is not enough to prevent connections on eth0. You can connect=20
-to any host address on any interface. E.g. connect to eth1 address on=20
-eth0 interface and vice versa.
+I tried using the random and nth patches from patch-o-matic-ng-20050918,
+with 2.6.17.7 and iptables 1.2.11 and 1.3.5.
+
+The modules are loaded:
+root@server2:/usr/src# lsmod | grep ipt
+iptable_nat             8196  0
+ip_nat                 17580  1 iptable_nat
+iptable_filter          3968  0
+ipt_random              3200  0
+ipt_nth                 3584  0
+iptable_mangle          3968  0
+ip_tables              14580  3
+iptable_nat,iptable_filter,iptable_mangle
+x_tables               14724  5
+xt_tcpudp,iptable_nat,ipt_random,ipt_nth,ip_tables
+
+
+When I type a command that uses random or nth I get:
+# iptables -A INPUT -m random --average 1 -j ACCEPT
+iptables: Invalid argument
+# iptables -A INPUT -m nth --every 2 -j ACCEPT
+iptables: Invalid argument
+with iptables 1.2.11 and with iptables 1.3.5:
+# iptables -A INPUT -m nth --every 2 -j ACCEPT
+iptables: Unknown error 4294967295
+# iptables -A INPUT -m random -j ACCEPT
+iptables: Unknown error 4294967295
+
+
+I realize the 'unknown error' is a known, unrelated bug.
+
+I have some complicated routing requirements that I plan to use random
+in combination with mark/fwmark routing.
+
+I am also interested if anyone has this setup and can tell me the
+performance of there setup.
+
+Daniel
+
+
 
