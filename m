@@ -1,14 +1,10 @@
-From: Michael Weinert <weinert@sys2.de>
-Subject: Re: no ssh on eth0
-Date: Sun, 30 Jul 2006 12:41:25 +0200
-Message-ID: <200607301241.29820.weinert@sys2.de>
-References: <1154239260.5429.2.camel@nirvana.aurokruti.in>
+From: fred dusin <fdusin@yahoo.com>
+Subject: routing, source-address rewriting
+Date: Sun, 30 Jul 2006 04:14:58 -0700 (PDT)
+Message-ID: <20060730111458.99932.qmail@web57106.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1915681.qjR3gax4YY";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1154239260.5429.2.camel@nirvana.aurokruti.in>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,60 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---nextPart1915681.qjR3gax4YY
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+hi!
 
-Am Sonntag, 30. Juli 2006 08:01 schrieb varun:
+let's say i have 2 pcs connected to the internet. each one has a public
+ip address from a totally different subnet.
 
-Hello
+pc1 should now accept connections on port 80 and forward them to pc2.
+pc2 has a webserver running, processes the request and should then
+reply DIRECTLY to the client, so bypassing pc1. speaking of packets,
+pc1 should get the packets from the client, forward them to pc2. pc2
+processes the request and sends the answer packets directly to the
+client (and not over pc1).
 
-how about editing the:
+i though doing this using iptables should be quite easy:
+1. forward all packets arriving at pc1 on port 80 to pc2. (does works!)
+2. change the source-address of the outgoing packets from pc2 to the ip
+of pc1 so the clients see the packets comming from pc1 while in realtiy
+they come from pc2. (does not work!)
 
-/etc/ssh/sshd_config
+when i change the source-adress of the packets on pc1 to the ip of pc1, 
+everything works fine. but this way the packets are going out to the 
+client over pc1 but i want them to go the client directly.
 
-ListenAddress <your-ip-from-eth1>
+i'm really looking forward to any suggestions. may be doing it by some
+tunnel or what ever is much better than trying to do this with
+iptables?
 
-I personally wouldn't do this with iptables.
+fred
 
-Michael
-
-> Hello,
->
-> I a internet server with :
->
-> eth0 as WAN and eth1 as LAN.
->
-> I want to prevent ssh on eth0.
->
-> Howto do it ?
->
-> Thanks
->
-> Varun
-
-=2D-=20
-
-          SysQuadrat    Systeme mit Sicherheit
-    Michael Weinert Stuttgart Filderstadt-Plattenhardt
-  Tel.: 0711-9970288 Fax: 5360559 Mobil: 0170-4141273
-   http://www.linux-firewall.de  weinert@sys2.de
-           KeyServer hkp://pgp.mit.edu
-
---nextPart1915681.qjR3gax4YY
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iD8DBQBEzIzZzHH3xZ4BwaURAhMXAKCgwmJ9lWqeXYIkEfFkMSe6PL4TuQCfXdiI
-ZQ1KJ/IrXN10pTUbAmQYwMc=
-=41hU
------END PGP SIGNATURE-----
-
---nextPart1915681.qjR3gax4YY--
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
