@@ -1,14 +1,10 @@
-From: "former03 | Baltasar Cevc" <baltasar.cevc@former03.de>
-Subject: Re: no ssh on eth0
-Date: Mon, 31 Jul 2006 00:57:52 +0200
-Message-ID: <f5cb25e84f751fd22816a75d4e6ba77b@former03.de>
-References: <1154239260.5429.2.camel@nirvana.aurokruti.in>	<87fygje700.fsf@newton.gmurray.org.uk>	<Pine.LNX.4.61.0607301343450.23827@yvahk01.tjqt.qr>	<44CCA802.2090403@plouf.fr.eu.org>	<facccfbd353e38901017e6dee5a54a99@former03.de>	<44CCE712.4070907@plouf.fr.eu.org>
-	<98ab1181f512c188a486f7e3667bb2c4@former03.de>
-	<44CD10E0.501@plouf.fr.eu.org>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Transfer-Encoding: quoted-printable
+From: Pedro Werneck <pedro.werneck@terra.com.br>
+Subject: Connection through gateway fails in a random basis
+Date: Sun, 30 Jul 2006 22:11:20 -0300
+Message-ID: <20060730221120.7668ee28.pedro.werneck@terra.com.br>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44CD10E0.501@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,38 +15,84 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
-On 30.07.2006, at 22:04, Pascal Hambourg wrote:
+Hi all
 
-> former03 | Baltasar Cevc a =E9crit :
->> You're right, of course - I thought of a firewall situation with NAT =
--
->
-> Why ? What is the difference with or without NAT ?
 
-You can filter out all incoming packets to local IP addresses on the=20
-wan interface before NAT is done; if you just use MASQUERADE for=20
-outgoing packets, "iptables -A INPUT -i eth0.-d 192.168.0.0/16 -j=20
-DROP".
-Granted, if filtering breaks that does not help, but in case of an=20
-attacker who is not on the same physical network as the WAN interface=20
-it will probably break with the other listen address as he will hardly=20=
+Something that seems simple here, but I cannot find anything wrong
 
-manage to get the packets routed to the host.
+I have two machines here, A and B. A have eth0 and eth1, and a DSL
+connection (ppp0) with the modem connected to eth0. B have eth0. I have
+A.eth1 connected to B.eth0, and I'm trying to use A as a gateway for B.
 
-Baltasar
+It works, from B I can reach anything I can do from A, with ping,
+tracereroute and resolve names, but I can't use other protocols like
+HTTP, FTP, IRC, and it seems to happen on a random basis. Sometimes it
+works, sometimes it waits for data until timeout... I tried to find a 
+pattern on it but I couldn't. I tried to use LOG and netwatch on ppp0
+and eth1 to debug it, there's no data coming from the remote on these 
+cases.
 
---
-Baltasar Cevc
+Someone suggested I should upgrade the kernel, so I'm using the latest
+version, 2.6.17.7 #4, but still doesn't work...
 
-_____ former 03 gmbh
-_____ infanteriestra=DFe 19 haus 6 eg
-_____ D-80797 muenchen
 
-_____ http://www.former03.de
+Here's the ruleset I'm using on the gateway... pretty simple
 
+<code>
+#!/bin/bash 
+
+echo 1 > /proc/sys/net/ipv4/ip_forward 
+
+IPT="iptables --verbose"
+
+$IPT -F
+$IPT -t nat -F
+
+$IPT -P INPUT ACCEPT
+$IPT -P OUTPUT ACCEPT
+$IPT -P FORWARD ACCEPT
+
+$IPT -A INPUT -j ACCEPT -i lo
+$IPT -A INPUT -j ACCEPT -s 192.168.1.0/24
+$IPT -A INPUT -i ppp0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPT -A INPUT -j ACCEPT -p tcp --dport 3306
+$IPT -A INPUT -j ACCEPT -p tcp --dport 3690
+$IPT -A INPUT -j ACCEPT -p tcp --dport 8000:8010
+$IPT -A INPUT -j ACCEPT -p tcp --dport 8021
+$IPT -A INPUT -j ACCEPT -p tcp --dport 8022
+$IPT -A INPUT -j ACCEPT -p tcp --dport 8080
+
+$IPT -A FORWARD -j ACCEPT -i ppp0 
+$IPT -A FORWARD -j ACCEPT -s 192.168.1.0/24
+$IPT -A FORWARD -j DROP
+
+$IPT -t nat -A POSTROUTING -s 192.168.1.0/24 -o ppp0 -j MASQUERADE
+</code>
+
+And here's the modules I have loaded (lsmod | grep ip), in case
+something is missing and I haven't noticed:
+
+ipt_LOG                 5440  0 
+ipt_MASQUERADE          2560  1 
+iptable_mangle          2240  0 
+iptable_nat             5636  1 
+ip_nat                 12844  2 ipt_MASQUERADE,iptable_nat
+ip_conntrack           36564  4 ipt_MASQUERADE,xt_state,iptable_nat,ip_nat
+iptable_filter          2240  1 
+ip_tables               9944  3 iptable_mangle,iptable_nat,iptable_filter
+x_tables                9668  6 ipt_LOG,xt_tcpudp,ipt_MASQUERADE,xt_state,iptable_nat,ip_tables
+
+
+Since it seems something very weird, I'm asking for your help here.
+Any idea about what's wrong here ?
+
+
+Thanks...
+
+-- 
+Pedro Werneck
 
