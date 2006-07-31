@@ -1,13 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: common FTP+NAT problem
-Date: Mon, 31 Jul 2006 20:19:24 +0200
-Message-ID: <44CE49AC.6000505@plouf.fr.eu.org>
-References: <44CE313A.4040204@ort.edu.uy> <44CE4193.4050603@plouf.fr.eu.org>
-	<44CE4784.3090909@ort.edu.uy>
+From: zakinthinos@freemail.gr
+Subject: stateful filtering, ppp dialup link, secure ?
+Date: Mon, 31 Jul 2006 22:04:59 +0300
+Message-ID: <44ce545bf2c5c8.10134588@freemail.gr>
+Reply-To: zakinthinos@freemail.gr
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44CE4784.3090909@ort.edu.uy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +15,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Ernesto Silva a =E9crit :
-> I wrote the "RELATED" specification because I thought port 20 and the=20
-> rest of the connections (in passive and active mode) may be handled by=20
-> ip_conntrack_ftp and ip_nat_ftp in an "automagically" way.
 
-This is what happens, at least partly :
-- ip_conntrack_ftp, by monitoring the FTP control connections,=20
-identifies the first packet of an FTP data connection as RELATED ;
-- ip_nat_ftp, with the help of ip_conntrack_ftp, does the necessary NAT=20
-on FTP data connections.
 
-But you still have the job of writing rules to decide their fate,=20
-whether they must be accepted or dropped.
+hi
 
-> Anyway, I used your suggestion (which I already knew)
+i was wondering if there are any obvious security
+security concerns in the following script
 
-Ok, sorry for doubting.
+the script is placed into /etc/ppp/ip-up
+($PPP_LOCAL is the dynamic ip and $DNS{1,2}
+is the address of the dns server)
+
+iptables -F
+iptables -X
+iptables -Z
+
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -s $PPP_LOCAL -j ACCEPT
+iptables -A OUTPUT -s 127.0.0.1/32 -d 127.0.0.1/32 -o lo -j ACCEPT
+
+
+iptables -A INPUT -p udp -d $PPP_LOCAL -s $DNS1 --sport 53 -j ACCEPT
+iptables -A INPUT -p udp -d $PPP_LOCAL -s $DNS2 --sport 53 -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -p tcp -d $PPP_LOCAL --dport 1024: -j ACCEPT
+iptables -A INPUT -s 127.0.0.1/32 -d 127.0.0.1/32 -i lo -j ACCEPT
+
+
+iptables -A OUTPUT -j LOG --log-prefix " OUTPUT: " --log-level debug --log-uid
+iptables -A INPUT -j LOG --log-prefix " INPUT: " --log-level debug --log-uid
+
+
 
