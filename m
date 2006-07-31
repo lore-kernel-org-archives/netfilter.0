@@ -1,14 +1,13 @@
-From: "David Burrow" <dnburrow@gmail.com>
-Subject: Re: ipset not making ipset.ko (or ipset.ko)
-Date: Mon, 31 Jul 2006 06:30:27 -0600
-Message-ID: <edc15fb60607310530n19378dc6g389390306457a0f3@mail.gmail.com>
-References: <edc15fb60607260643t13f71346je0627e6d0712326e@mail.gmail.com>
-	<Pine.LNX.4.58.0607310948520.24809@blackhole.kfki.hu>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: routing, source-address rewriting
+Date: Mon, 31 Jul 2006 15:37:09 +0200
+Message-ID: <44CE0785.3010508@plouf.fr.eu.org>
+References: <20060730111458.99932.qmail@web57106.mail.re3.yahoo.com>
+	<a17923b1c77e594d5af02a3236065958@former03.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0607310948520.24809@blackhole.kfki.hu>
-Content-Disposition: inline
+In-Reply-To: <a17923b1c77e594d5af02a3236065958@former03.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +18,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Jozsef,
+Hello,
 
-> That is the installing of the userspace utility ipset. .ko objects belongs
-> to the kernel. Nothing's wrong here.
+former03 | Baltasar Cevc a =E9crit :
+> Does pc2 try to send out the packets (see tcpdump output)? - If yes,
+> it's probably your ISP blocking 'spoofed' packets (packets which come
+> from adresses that are not supposed to be on that subnet).
 
-Thanks, I've got the kernel modules installed now.  I appreciate the
-help (especially as my question reflected a great degree of ignorance
-about linux).
-
-David
+Right. But even though the ISP does not block "spoofed" packets, I=20
+replied in comp.protocols.tcp-ip that an SNAT rule cannot change the=20
+source address of a reply packet.
 
