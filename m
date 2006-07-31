@@ -1,10 +1,11 @@
-From: Pedro Werneck <pedro.werneck@terra.com.br>
-Subject: Connection through gateway fails in a random basis
-Date: Sun, 30 Jul 2006 22:11:20 -0300
-Message-ID: <20060730221120.7668ee28.pedro.werneck@terra.com.br>
+From: "Daniel Williams" <danielw@staff.iinet.net.au>
+Subject: RE: iptables random support
+Date: Mon, 31 Jul 2006 09:13:43 +0800
+Message-ID: <5B0731A8753509478386ED3D6513B2D101AE6CDA@isp-per-exch01.win2k.iinet.net.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,83 +17,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+To: Daniel Williams <danielw@staff.iinet.net.au>, netfilter@lists.netfilter.org
+
+
+
+To add to this dmesg reports the following when trying to add a random
+or nth match rule:
+ip_tables: random match: invalid size 0 !=3D 4
+and
+ip_tables: nth match: invalid size 0 !=3D 8
+
+
+Daniel
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Daniel
+Williams
+Sent: Sunday, 30 July 2006 9:53 PM
 To: netfilter@lists.netfilter.org
+Subject: iptables random support
 
 
-Hi all
+Hi,
+
+I have been trying to get iptables -m random support working to very
+little success.
+
+Does anyone have a modern 2.6 kernel with iptables -m random working ?
+
+I tried using the random and nth patches from patch-o-matic-ng-20050918,
+with 2.6.17.7 and iptables 1.2.11 and 1.3.5.
+
+The modules are loaded:
+root@server2:/usr/src# lsmod | grep ipt
+iptable_nat             8196  0
+ip_nat                 17580  1 iptable_nat
+iptable_filter          3968  0
+ipt_random              3200  0
+ipt_nth                 3584  0
+iptable_mangle          3968  0
+ip_tables              14580  3
+iptable_nat,iptable_filter,iptable_mangle
+x_tables               14724  5
+xt_tcpudp,iptable_nat,ipt_random,ipt_nth,ip_tables
 
 
-Something that seems simple here, but I cannot find anything wrong
-
-I have two machines here, A and B. A have eth0 and eth1, and a DSL
-connection (ppp0) with the modem connected to eth0. B have eth0. I have
-A.eth1 connected to B.eth0, and I'm trying to use A as a gateway for B.
-
-It works, from B I can reach anything I can do from A, with ping,
-tracereroute and resolve names, but I can't use other protocols like
-HTTP, FTP, IRC, and it seems to happen on a random basis. Sometimes it
-works, sometimes it waits for data until timeout... I tried to find a 
-pattern on it but I couldn't. I tried to use LOG and netwatch on ppp0
-and eth1 to debug it, there's no data coming from the remote on these 
-cases.
-
-Someone suggested I should upgrade the kernel, so I'm using the latest
-version, 2.6.17.7 #4, but still doesn't work...
+When I type a command that uses random or nth I get:
+# iptables -A INPUT -m random --average 1 -j ACCEPT
+iptables: Invalid argument
+# iptables -A INPUT -m nth --every 2 -j ACCEPT
+iptables: Invalid argument
+with iptables 1.2.11 and with iptables 1.3.5:
+# iptables -A INPUT -m nth --every 2 -j ACCEPT
+iptables: Unknown error 4294967295
+# iptables -A INPUT -m random -j ACCEPT
+iptables: Unknown error 4294967295
 
 
-Here's the ruleset I'm using on the gateway... pretty simple
+I realize the 'unknown error' is a known, unrelated bug.
 
-<code>
-#!/bin/bash 
+I have some complicated routing requirements that I plan to use random
+in combination with mark/fwmark routing.
 
-echo 1 > /proc/sys/net/ipv4/ip_forward 
+I am also interested if anyone has this setup and can tell me the
+performance of there setup.
 
-IPT="iptables --verbose"
-
-$IPT -F
-$IPT -t nat -F
-
-$IPT -P INPUT ACCEPT
-$IPT -P OUTPUT ACCEPT
-$IPT -P FORWARD ACCEPT
-
-$IPT -A INPUT -j ACCEPT -i lo
-$IPT -A INPUT -j ACCEPT -s 192.168.1.0/24
-$IPT -A INPUT -i ppp0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-$IPT -A INPUT -j ACCEPT -p tcp --dport 3306
-$IPT -A INPUT -j ACCEPT -p tcp --dport 3690
-$IPT -A INPUT -j ACCEPT -p tcp --dport 8000:8010
-$IPT -A INPUT -j ACCEPT -p tcp --dport 8021
-$IPT -A INPUT -j ACCEPT -p tcp --dport 8022
-$IPT -A INPUT -j ACCEPT -p tcp --dport 8080
-
-$IPT -A FORWARD -j ACCEPT -i ppp0 
-$IPT -A FORWARD -j ACCEPT -s 192.168.1.0/24
-$IPT -A FORWARD -j DROP
-
-$IPT -t nat -A POSTROUTING -s 192.168.1.0/24 -o ppp0 -j MASQUERADE
-</code>
-
-And here's the modules I have loaded (lsmod | grep ip), in case
-something is missing and I haven't noticed:
-
-ipt_LOG                 5440  0 
-ipt_MASQUERADE          2560  1 
-iptable_mangle          2240  0 
-iptable_nat             5636  1 
-ip_nat                 12844  2 ipt_MASQUERADE,iptable_nat
-ip_conntrack           36564  4 ipt_MASQUERADE,xt_state,iptable_nat,ip_nat
-iptable_filter          2240  1 
-ip_tables               9944  3 iptable_mangle,iptable_nat,iptable_filter
-x_tables                9668  6 ipt_LOG,xt_tcpudp,ipt_MASQUERADE,xt_state,iptable_nat,ip_tables
+Daniel
 
 
-Since it seems something very weird, I'm asking for your help here.
-Any idea about what's wrong here ?
 
-
-Thanks...
-
--- 
-Pedro Werneck
 
