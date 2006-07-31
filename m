@@ -1,12 +1,13 @@
-From: list user <xktnniuymlla@mailinator.com>
-Subject: Re: Connection through gateway fails in a random basis
-Date: Mon, 31 Jul 2006 10:03:54 -0700
-Message-ID: <44CE37FA.4050005@mailinator.com>
-References: <20060730221120.7668ee28.pedro.werneck@terra.com.br>
+From: Ernesto Silva <silva@ort.edu.uy>
+Subject: Re: common FTP+NAT problem
+Date: Mon, 31 Jul 2006 14:39:07 -0300
+Message-ID: <44CE403B.4000003@ort.edu.uy>
+References: <44CE313A.4040204@ort.edu.uy>
+	<5801cedd6a9e2c3fb5137903c6ba8c73@former03.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060730221120.7668ee28.pedro.werneck@terra.com.br>
+In-Reply-To: <5801cedd6a9e2c3fb5137903c6ba8c73@former03.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,97 +18,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Pedro Werneck wrote:
-> Hi all
-> 
-> 
-> Something that seems simple here, but I cannot find anything wrong
-> 
-> I have two machines here, A and B. A have eth0 and eth1, and a DSL
-> connection (ppp0) with the modem connected to eth0. B have eth0. I have
-> A.eth1 connected to B.eth0, and I'm trying to use A as a gateway for B.
-> 
-> It works, from B I can reach anything I can do from A, with ping,
-> tracereroute and resolve names, but I can't use other protocols like
-> HTTP, FTP, IRC, and it seems to happen on a random basis. Sometimes it
-> works, sometimes it waits for data until timeout... I tried to find a 
-> pattern on it but I couldn't. I tried to use LOG and netwatch on ppp0
-> and eth1 to debug it, there's no data coming from the remote on these 
-> cases.
-> 
-> Someone suggested I should upgrade the kernel, so I'm using the latest
-> version, 2.6.17.7 #4, but still doesn't work...
-> 
-> 
-> Here's the ruleset I'm using on the gateway... pretty simple
-> 
-> <code>
-> #!/bin/bash 
-> 
-> echo 1 > /proc/sys/net/ipv4/ip_forward 
-> 
-> IPT="iptables --verbose"
-> 
-> $IPT -F
-> $IPT -t nat -F
-> 
-> $IPT -P INPUT ACCEPT
-> $IPT -P OUTPUT ACCEPT
-> $IPT -P FORWARD ACCEPT
-> 
-> $IPT -A INPUT -j ACCEPT -i lo
-> $IPT -A INPUT -j ACCEPT -s 192.168.1.0/24
-> $IPT -A INPUT -i ppp0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $IPT -A INPUT -j ACCEPT -p tcp --dport 3306
-> $IPT -A INPUT -j ACCEPT -p tcp --dport 3690
-> $IPT -A INPUT -j ACCEPT -p tcp --dport 8000:8010
-> $IPT -A INPUT -j ACCEPT -p tcp --dport 8021
-> $IPT -A INPUT -j ACCEPT -p tcp --dport 8022
-> $IPT -A INPUT -j ACCEPT -p tcp --dport 8080
-> 
-> $IPT -A FORWARD -j ACCEPT -i ppp0 
-> $IPT -A FORWARD -j ACCEPT -s 192.168.1.0/24
-> $IPT -A FORWARD -j DROP
-> 
-> $IPT -t nat -A POSTROUTING -s 192.168.1.0/24 -o ppp0 -j MASQUERADE
-> </code>
-> 
-> And here's the modules I have loaded (lsmod | grep ip), in case
-> something is missing and I haven't noticed:
-> 
-> ipt_LOG                 5440  0 
-> ipt_MASQUERADE          2560  1 
-> iptable_mangle          2240  0 
-> iptable_nat             5636  1 
-> ip_nat                 12844  2 ipt_MASQUERADE,iptable_nat
-> ip_conntrack           36564  4 ipt_MASQUERADE,xt_state,iptable_nat,ip_nat
-> iptable_filter          2240  1 
-> ip_tables               9944  3 iptable_mangle,iptable_nat,iptable_filter
-> x_tables                9668  6 ipt_LOG,xt_tcpudp,ipt_MASQUERADE,xt_state,iptable_nat,ip_tables
-> 
-> 
-> Since it seems something very weird, I'm asking for your help here.
-> Any idea about what's wrong here ?
+Hi Baltasar,
 
-Hi Pedro,
+Sorry, it was a typo, _nat is defined as "iptables -t nat -A POSTROUTING"=
+ so thats not the problem.
 
-I can't answer your question but I can point out what looks like a 
-serious error in your rules -- the firewall is wide open.  You should 
-either change your default policy on the INPUT chain to DROP, or you 
-should append a rule "-A INPUT -j DROP".
+I was not clear enough, I don't have an ftp server, I just want to access=
+ internet ftp servers from my internal network
+which is protected by the firewall. The firewall itself don't have any ot=
+her running service but iptables.
 
-For my personal preference I always start with no rules and default 
-policy of DROP on both INPUT and FORWARD, then begin adding rules to 
-allow specific traffic.
+Regards, and many thanks,
+--=20
+Ing. Ernesto Silva.
+Coordinador de Desarrollo Web y Sistemas Abiertos
+Universidad ORT Uruguay.
+E-mail: silva@ort.edu.uy
+Tel: (+598-2) 902-1505 ext. 206
 
-Mike Wright
 
-> 
-> 
-> Thanks...
-> 
+former03 | Baltasar Cevc wrote:
+> Hi Ernesto, hi everybody,
+>=20
+>> _fwd=3D"iptables -A FORWARD"
+>> _nat=3D"iptables -A POSTROUTING"
+>=20
+>=20
+> Postrouting is in the nat table, so you have to add "-t nat" to _nat an=
+d=20
+> make it
+>    _nat=3D"iptables -t nat -A POSTROUTING"
+>=20
+>>    I'm having a problem to access internet ftp servers from my=20
+>> internal network. I understand the ftp connection but I don't have=20
+>> enough information about ip_conntrack_ftp and ip_nat_ftp modules, so=20
+>> here is my situation.
+>=20
+>=20
+> Apart from that you will need more rules for FTP, that's the tricky=20
+> part. What worked well for me was using vsftpd with a port specifiactio=
+n=20
+> for the data connections and allow these ports in INPUT|FORWARD.
+> It may work using the ftp conntack module, but I don't know anything=20
+> about that. You will have to add some port 20 rule, though.
+>=20
+> Baltasar
+>=20
+> --=20
+> Baltasar Cevc
+>=20
+> _____ former 03 gmbh
+> _____ infanteriestra=DFe 19 haus 6 eg
+> _____ D-80797 muenchen
+>=20
+> _____ http://www.former03.de
+>=20
+>=20
 
 
