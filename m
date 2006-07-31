@@ -1,11 +1,11 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Network traffic monitor
-Date: Tue, 1 Aug 2006 13:06:39 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0608011306300.29748@yvahk01.tjqt.qr>
-References: <96bc76cf0607310736k37eab26fx940ef8cd9299649e@mail.gmail.com>
+From: =?ISO-8859-1?Q?Gerard_Par=EDs_Aixal=E0?=
+	<gerard.paris@estudiants.urv.cat>
+Subject: Filtering MAC adresses and Multicast
+Date: Mon, 31 Jul 2006 16:50:25 +0200
+Message-ID: <44CE18B1.6010006@estudiants.urv.cat>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <96bc76cf0607310736k37eab26fx940ef8cd9299649e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,23 +16,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Vlad Janicek <vladjanicek@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
->
-> Is there any graphical network traffic monitor program for a router
-> device using netfilter?? something like a nagios plugin or a web
-> report system? I have a router using many iptables rules and sometimes
-> I just can't identify fast enough the highest traffic machines using
-> iptraf or any user killing my bandwidht using a new P2P program
->
-> Any recommendations??
+Hello all,
 
-iptraf
+I have a strange problem using iptables that had been reported yet in 
+this list two years ago, but it has not been solved: 
+http://lists.netfilter.org/pipermail/netfilter/2004-October/056506.html
+
+I emulate a MANET on a Ethernet by adding iptables rules like these:
+
+/sbin/iptables -t mangle -A PREROUTING -m mac --mac-source 00:06:5B:12:C9:7A -j DROP
+/sbin/iptables -t mangle -A PREROUTING -m mac --mac-source 00:06:5B:13:4A:69 -j DROP
 
 
-Jan Engelhardt
--- 
+These rules drop Unicast traffic but they do not drop Multicast traffic.
+Anyone has a idea what happens?
+
+Thank you in advance
+Kind regards,
+Gerard
+
+
+
 
