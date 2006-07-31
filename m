@@ -1,11 +1,11 @@
-From: "M. Menges Email" <m.menges@seam.de>
-Subject: libipt_time TIME Kernel 2.6.17.x
-Date: Sun, 30 Jul 2006 15:17:10 +0200
-Message-ID: <s4cccd99.056@seam.de>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset not making ipset.ko (or ipset.ko)
+Date: Mon, 31 Jul 2006 09:51:16 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0607310948520.24809@blackhole.kfki.hu>
+References: <edc15fb60607260643t13f71346je0627e6d0712326e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <edc15fb60607260643t13f71346je0627e6d0712326e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,40 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: David Burrow <dnburrow@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
-i'm unable to build a 'working'  iptables/kernel-Version  with the TIME =
-patch from - patch-o-matic.
-I found some confused information between 'no problem'  and  'could not =
-go' because
-of kernel changes (help-file).
-is it out-dated? - are the How-to's up to date ?=20
+On Wed, 26 Jul 2006, David Burrow wrote:
 
-- my current version starts and i can put in some rules with the -m time  =
-rule
-but the iptables -L gives me no 'time' Rule ...=20
+> I'm trying to patch a SUSE 10 box with ipset.  I'm using a vanilla
+> kernel form kernel.org and the configuration, kernel recompile and
+> install, iptables recompile and install, ipset compile and install all
+> *seemed* to go well, except that ipset.ko (or ip_set.ko) is not being
+> created anywhere.  I watched the output from running
+> KERNEL_DIR=/usr/src/linux make install in the ipset directory and got
+> this:
+>
+> cp ipset /usr/local/sbin/ipset
+> cp libipset_ipmap.so /usr/local/lib/ipset/libipset_ipmap.so
+> cp libipset_portmap.so /usr/local/lib/ipset/libipset_portmap.so
+> cp libipset_macipmap.so /usr/local/lib/ipset/libipset_macipmap.so
+> cp libipset_iphash.so /usr/local/lib/ipset/libipset_iphash.so
+> cp libipset_nethash.so /usr/local/lib/ipset/libipset_nethash.so
+> cp libipset_iptree.so /usr/local/lib/ipset/libipset_iptree.so
+> cp libipset_ipporthash.so /usr/local/lib/ipset/libipset_ipporthash.so
+>
+> Any ideas why the .ko files don't seem to be getting made?
 
-...any information (eg 'I build it with the current kernel with no =
-problem..') / suggestion appreciated
+That is the installing of the userspace utility ipset. .ko objects belongs
+to the kernel. Nothing's wrong here.
 
-
-
-Kernel: 2.6.17.1... 7 - working
-iptables: 1.3.5  ... 20060728  -working
-p-o-m ...some ..eg p-o-m-ng-20060726... -damned will not work...
-
-
-
-
-
-
-
-
-
- mfg
- Marc
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
