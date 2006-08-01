@@ -1,7 +1,8 @@
-From: Dean Hiller <olddean@xsoftware.biz>
-Subject: block 8080, but redirect from 80 to 8080
-Date: Mon, 31 Jul 2006 22:11:11 -0600
-Message-ID: <44CED45F.10208@xsoftware.biz>
+From: =?ISO-8859-1?Q?Gerard_Par=EDs_Aixal=E0?=
+	<gerard.paris@estudiants.urv.cat>
+Subject: Filtering MAC addresses and Multicast
+Date: Tue, 01 Aug 2006 10:35:50 +0200
+Message-ID: <44CF1266.5090109@estudiants.urv.cat>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,26 +19,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I would like block all traffic to port 8080 except that which was 
-redirected in the nat table from port 80 to 8080. 
+Hello all,
 
-I have a default policy of DROP on incoming.  The following is what my 
-iptables file currently has and this works, EXCEPT that 8080 is left 
-open to anyone....
+I have a strange problem using iptables that had been reported yet in 
+this list two years ago, but it has not been solved: 
+http://lists.netfilter.org/pipermail/netfilter/2004-October/056506.html
 
-*nat table.....
--A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+I emulate a MANET on an Ethernet by adding iptables rules like these 
+(filtering at MAC layer):
 
-*filter table.....
--A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j 
-ACCEPT
--A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 8080 
--j ACCEPT
+/sbin/iptables -t mangle -A PREROUTING -m mac --mac-source 
+00:06:5B:12:C9:7A -j DROP
+/sbin/iptables -t mangle -A PREROUTING -m mac --mac-source 
+00:06:5B:13:4A:69 -j DROP
 
+These rules drop Unicast traffic but they do not drop Multicast traffic.
+How can I fix it?
 
-but anyone can go to http://<machine>:8080 which I want to disallow.  
-How can I fix that?
-thanks,
-dean
+Thank you in advance
+Kind regards,
+Gerard
 
