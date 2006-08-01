@@ -1,7 +1,7 @@
-From: =?ISO-8859-15?Q?G=E1sp=E1r_Lajos?= <gaspar.lajos@whb.hu>
+From: =?ISO-8859-15?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
 Subject: Re: block 8080, but redirect from 80 to 8080
-Date: Tue, 01 Aug 2006 13:42:41 +0200
-Message-ID: <44CF3E31.3080001@whb.hu>
+Date: Tue, 01 Aug 2006 13:54:54 +0200
+Message-ID: <44CF410E.6000802@freemail.hu>
 References: <44CED45F.10208@xsoftware.biz> <44CF3120.4080008@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -29,5 +29,6 @@ To: Netfilter IPtableMailinglist <netfilter@lists.netfilter.org>
 >
 I would recomment NOT TO DO any ACCEPT or DROP/REJECT in other than the
 filter table...
+
 
 
