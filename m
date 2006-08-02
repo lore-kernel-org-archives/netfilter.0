@@ -1,12 +1,13 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: Re: iptables random support
-Date: Wed, 2 Aug 2006 10:39:22 +0800
-Message-ID: <015101c6b5dc$dc8eb390$0100a8c0@newlife>
-References: <5B0731A8753509478386ED3D6513B2D101AE6CBB@isp-per-exch01.win2k.iinet.net.au>
-	<Pine.LNX.4.61.0608011305260.29748@yvahk01.tjqt.qr>
+From: =?ISO-8859-1?Q?Gerard_Par=EDs_Aixal=E0?=
+	<gerard.paris@estudiants.urv.cat>
+Subject: Re: Filtering MAC addresses and Multicast
+Date: Wed, 02 Aug 2006 09:17:28 +0200
+Message-ID: <44D05188.3040506@estudiants.urv.cat>
+References: <44CF1266.5090109@estudiants.urv.cat> <44CFB3EE.2010007@rtij.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <44CFB3EE.2010007@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +18,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Martijn Lievaart wrote:
+> Gerard Par=EDs Aixal=E0 wrote:
+>
+>> Hello all,
+>>
+>> /sbin/iptables -t mangle -A PREROUTING -m mac --mac-source=20
+>> 00:06:5B:12:C9:7A -j DROP
+>> /sbin/iptables -t mangle -A PREROUTING -m mac --mac-source=20
+>> 00:06:5B:13:4A:69 -j DROP
+>>
+>> These rules drop Unicast traffic but they do not drop Multicast traffi=
+c.
+>
+> Multicast traffic is sent to specific multicast MAC adresses.
+> Learn how multicast works and drop the corresponding MAC addresses.=20
+> (No I don't have a link handy, tcp/ip illustrated would be a good, but=20
+> pricy source).
+>
+> HTH,
+> M4
+>
 
-I took the patch and apply to a vanilla 2.6.17.7, it failed :-
+I know how multicast works, but I want to drop packets with the=20
+specified MAC source adresses. In multicast, the source address is=20
+always a real one, to identify which computer the packet came from (the=20
+destination address, both MAC and IP, is a special one).
 
-patching file include/linux/netfilter_ipv4/ipt_random.h
-patching file include/linux/netfilter_ipv6/ip6t_random.h
-patching file net/ipv4/netfilter/Kconfig
-Hunk #1 succeeded at 314 with fuzz 2 (offset -34 lines).
-patching file net/ipv4/netfilter/Makefile
-Hunk #1 FAILED at 64.
-1 out of 1 hunk FAILED -- saving rejects to file net/ipv4/netfilter/Makefile.rej
-patching file net/ipv4/netfilter/ipt_random.c
-patching file net/ipv6/netfilter/Kconfig
-Hunk #1 succeeded at 123 with fuzz 2 (offset -24 lines).
-patching file net/ipv6/netfilter/Makefile
-Hunk #1 FAILED at 12.
-1 out of 1 hunk FAILED -- saving rejects to file net/ipv6/netfilter/Makefile.rej
-patching file net/ipv6/netfilter/ip6t_random.c
-
-
------ Original Message ----- 
-From: "Jan Engelhardt" <jengelh@linux01.gwdg.de>
-To: "Daniel Williams" <danielw@staff.iinet.net.au>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Tuesday, August 01, 2006 7:06 PM
-Subject: Re: iptables random support
-
-
-> >
-> >I have been trying to get iptables -m random support working to very
-> >little success.
-> >
-> >Does anyone have a modern 2.6 kernel with iptables -m random working ?
-> 
-> http://freshmeat.net/p/jen_kernel/
-> look for random in the .tar.bz2
-> 
-> 
-> Jan Engelhardt
-> -- 
-> 
-
-
-
+Gerard
 
