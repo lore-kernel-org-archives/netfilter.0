@@ -1,14 +1,10 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Filtering MAC addresses and Multicast
-Date: Wed, 02 Aug 2006 11:40:42 +0200
-Message-ID: <44D0731A.4070507@freemail.hu>
-References: <44CF1266.5090109@estudiants.urv.cat>
-	<44CFB3EE.2010007@rtij.nl>	<44D05188.3040506@estudiants.urv.cat>
-	<44D052DD.3060103@rtij.nl>
+From: Tolga Onbay <tolgaonbay@yahoo.com>
+Subject: How to configure iptables for a group of IPs
+Date: Wed, 2 Aug 2006 04:00:31 -0700 (PDT)
+Message-ID: <20060802110031.49705.qmail@web56603.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44D052DD.3060103@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,53 +15,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Netfilter IPtableMailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Martijn Lievaart =EDrta:
-> Gerard Par=EDs Aixal=E0 wrote:
->
->> Martijn Lievaart wrote:
->>
->>> Gerard Par=EDs Aixal=E0 wrote:
->>>
->>>> Hello all,
->>>>
->>>> /sbin/iptables -t mangle -A PREROUTING -m mac --mac-source=20
->>>> 00:06:5B:12:C9:7A -j DROP
->>>> /sbin/iptables -t mangle -A PREROUTING -m mac --mac-source=20
->>>> 00:06:5B:13:4A:69 -j DROP
->>>>
->>>> These rules drop Unicast traffic but they do not drop Multicast=20
->>>> traffic.
->>>
->>>
->>> Multicast traffic is sent to specific multicast MAC adresses.
->>> Learn how multicast works and drop the corresponding MAC addresses.=20
->>> (No I don't have a link handy, tcp/ip illustrated would be a good,=20
->>> but pricy source).
->>>
->>> HTH,
->>> M4
->>>
->>
->> I know how multicast works, but I want to drop packets with the=20
->> specified MAC source adresses. In multicast, the source address is=20
->> always a real one, to identify which computer the packet came from=20
->> (the destination address, both MAC and IP, is a special one).
->
->
-> <blush> Oops, my bad. Should read better. Sorry, Can't help you there.=20
-> If you don't get a reply on this list in a few days, maybe ask=20
-> netfilter-devel, because this looks like a bug.
->
-> M4
->
->
->
->
-Try this:
+Hi,
 
-iptables -t mangle -A PREROUTING -j DROP -m mac --mac-source=20
-XX:XX:XX:XX:XX:XX -m pkttype --pkt-type multicast
+I read the documents in netfilter.org. But I think i
+missed something. My problem is,
+
+In my network there is 2 group of people. These are
+administrators, and limited users. All IPs in the
+network are in the same block(192.168.1.0/24). I want
+to block p2p and messenger programs to limited users.
+But administrators should use the programs whenever
+they want. For example the limited users' IP addresses
+are
+192.168.1.10
+192.168.1.15
+192.168.1.17
+and administrators' IP adresses are
+192.168.1.12
+192.168.1.20
+192.168.1.22
+I want to block the p2p and messenger programs to .10,
+.15 and .17 IPs. If there are 10 rules to block these
+programs for one IP, there must be 30 rules to block
+all these IPs. But there are so many IPs like 60 for
+limited users and 30 for administrators. Also in the
+future some groups can be added.
+
+If there is something like defining a range of IP
+addresses in iptables like 192.168.1.10-192.168.1.20,
+I can configure the IP addresses of workers to match
+this feature.
+
+Thanks for your help
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
