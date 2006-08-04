@@ -1,10 +1,11 @@
-From: Don Gould <don@bowenvale.co.nz>
-Subject: SMTP Redirect - 'This is it'...
-Date: Sat, 05 Aug 2006 21:52:33 +1200
-Message-ID: <44D46A61.10606@bowenvale.co.nz>
+From: Priscilla Kurtz <pri@softwarelivre.org>
+Subject: Change Source IP Without Using SNAT
+Date: Fri, 04 Aug 2006 14:50:57 -0300
+Message-ID: <20060804145057.62yh7umql7kg8040@secure.softwarelivre.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,30 +16,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hey, folks!
 
-Is there a way to fool the mail client into thinking that a call to 
-'smtp.someonelse.whateva.com' is my local server?
+I'm building a small communicating process migration tool:  you telnet a server
+from A; you checkpoint the process (execution and communication), migrate
+theses checkpointed images to from A to B; restore the process in B and
+everything stays as the same in A.
 
-I have people visiting my network with laptops.
+The main problem here is that IP has no mobility skills in its pure form.
+The idea I had was to configurate an alias for eth0, so my NIC can answer for
+two IPs: eth0 and eth0:0. For testing my tool, I'm using a small cluster with 6
+nodes + front-end. So, only one node at a time has the eth0:0 up because this
+virtual interface is also migrated. For that, the connections wuold be
+identified by IP_telnerServer, IP_eth0:0; PORT_telnetServer, PORT_'eth0:0'.
 
-Getting mail off their POP server is no problem.
+But, as usual, all the traffic is routed through default gw route. All I wanted
+to do is build up a rule (by /sbin/route ou by iptables) that forces traffic go
+go out through eth0:0. I realised that if I make all the traffic go out by
+eth0:0 and migrate eth0:0 in some time later, I'll be screwing all other
+process' communication, right? So I thought about iptables. But all source Ip
+mangling stuff is done with SNAT. To me, it's not useful because NAT rules only
+are checked for new connections. And I'm migrating a connection which, in
+theory, remains the same.
 
-Sending mail is a problem as my up stream provider blocks links....
+So after this bla bla bla, the question is: how can I change source ip without
+using SNAT?
 
-So I want my server on my network to intercept the call on port 25 for a 
-remote smtp server and then just lie to the laptop.
+Thanks for reading the long-lausy-english email. :)
 
-This gives me the advantage of not having to reconfigure the users 
-machine when they leave my network.
+--
+Priscilla
+www.inf.ufrgs.br/~pri
 
-Cheers Don
--- 
-Don Gould
-www.thinkdesignprint.co.nz - www.tcn.bowenvale.co.nz - 
-www.bowenvale.co.nz - www.hearingbooks.co.nz - SkypeMe:  ThinkDesignPrint
+... And it's CAPTAIN Jack Sparrow.
 
+-------------------------------------------------------------
+Associacao Software Livre.Org - http://www.softwarelivre.org/
 
