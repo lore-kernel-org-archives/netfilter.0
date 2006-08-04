@@ -1,12 +1,10 @@
-From: "Martijn Lievaart" <m@rtij.nl>
-Subject: Re: Conntrack for related service
-Date: Thu, 3 Aug 2006 18:03:46 +0200 (CEST)
-Message-ID: <49345.6398872242$1154621127@news.gmane.org>
-References: <012501c6b66c$7f60a080$4764a8c0@mhsystems.com>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: Simulating asymmetric nat on Linux
+Date: Fri, 4 Aug 2006 10:39:09 +0800
+Message-ID: <036b01c6b76f$29e9aa30$0100a8c0@newlife>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <012501c6b66c$7f60a080$4764a8c0@mhsystems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Mikhail <misha@mhsystems.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-<citaat van="Mikhail">
-> Hello,
->
-> I have a small network of Windows boxes behind Linux firewall/router. I
-> run
-> Debian Sarge 3.1 without X there. I have a server on the LAN that serves
-> clients from the Internet over RMI connection on the certain port. RMI is
-> basically connection-oriented TCP/IP protocol. I do DNAT for such requests
-> to that local server. All is working fine so far.
->
->  Problem: those clients from the Internet need direct access to the MS SQL
-> server over TCP/IP on the different port. I want to open and DNAT MS SQL
-> port dynamically - if client already has ESTABLISHED connection over RMI
-> port I want allow access to MS SQL port, otherwise I'd like to drop the
-> request. If the client got disconnected over RMI then it is OK to reject
-> direct requests from him to MS SQL thereafter. How can this be
-> accomplished
-> with iptables?
 
-Should be possible using reject. Something along these lines.
+Have been reading about the mention of symmetric and non-symmetric
+( asymmetric ) nat, with most of the material mentioning that 
+Linux/iptables/netfilter implementing symmetric nat.
 
--A FORWARD -m state RELATED,ESTABLISHED -j ACCEPT
-# Maybe you restrict this more, for now accept RMI from everywhere
--A FORWARD -p tcp -dport $rmiport -j RMI
--A FORWARD -p tcp -dport $mssql -j MSSQL
-... other rules ...
+Not that I am advocating non-symmetric nat, is there a way to mimick
+asymmetric nat on Linux ?
 
--A RMI -p tcp --tcp-flags FIN FIN -j RMIFIN
--A RMI -m recent --name rmi --set
--A RMI -j ACCEPT
--A RMIFIN -m recent --name rmi --remove
--A RMIFIN -j ACCEPT
--A MSSQL -m recent --name rmi -rcheck -j ACCEPT
--A MSSQL -j LOG --prefix "mssql without rmi "
--A MSSQL -j DROP
+I want to have a way to simulate such nat on Linux for the purpose
+of testing STUN client and server with regards of running SIP phones.
 
-HTH,
-M4
+Any input is greatly appreciated.
+
 
 
 
