@@ -1,10 +1,13 @@
-From: Chris Miller <asterisk@scratchspace.com>
-Subject: Can't access select websites
-Date: Sat, 05 Aug 2006 01:59:42 -0700
-Message-ID: <44D45DFE.4030307@scratchspace.com>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: Preventing port scanning using iptables ?
+Date: Sat, 5 Aug 2006 15:41:34 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127F4@knowledge.wizdom.nu>
+References: <20060805062309.43523.qmail@web56213.mail.re3.yahoo.com>
+	<44D4456C.5050203@mymail.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,33 +18,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ruprecht Helms <rhelms@mymail.ch>, Elvir Kuric <omasnjak@yahoo.com>
+Cc: netfilter@lists.netfilter.org
+
+If you set the policy of the INPUT and FORWARD chains to DROP and only =
+allow connection to ports you need from IP's that need to access these =
+ports, you're automagically protected against portscans. Iptables will =
+drop all connections to ports you have not opened, and the scanner will =
+not know anything about them. Any ports you have opened will be visible =
+to scanners ofcourse.
+=20
+-Sietse
+
+________________________________
+
+From: netfilter-bounces@lists.netfilter.org on behalf of Ruprecht Helms
+Sent: Sat 05-Aug-06 9:14
+To: Elvir Kuric
+Cc: netfilter@lists.netfilter.org
+Subject: Re: Preventing port scanning using iptables ?
 
 
-I've got a WRT54GL with three interfaces. The router connects via PPPoE 
-(ppp0) and has a public routed /29 to one interface (br0), and a private 
-/24 with NAT on another interface (vlan2). The rules are not 
-particularly fancy and access from/to the internal networks is fine. I 
-can access any website from either LAN just fine, except I can't access 
-microsoft.com and fscrater.com. Both these sites have one thing in 
-common, they filter ping. Tcpdump from a *nix box on the public LAN 
-shows that the initial http connection is being acknowledged by the 
-remote web server, but subsequent incoming packets seem to be dropped. 
-I've enabled logging in my FW script and remote syslog on the router, 
-but logging seems to go into the bit bucket. I suspect that may be due 
-to the way iptables is compiled for the WRT. 
- 
-I have an identical setup in another location that does not experience 
-this problem, the difference is the /29 is routed via a /30 on the WAN 
-side, PPPoE is not used. AT&T appears to be preserving IP space by using 
-PPPoE and an internal 192.x.x.x address on the DSLAM. So PPPoE seems to 
-be related to the problem. 
- 
-I've verified that NAT is not happening on the public interface, so it's 
-not a NAT issue. Without the ability to see what's happening via 
-logging, I'm lost. Has anyone seen this behavior before? Any suggestions 
-on where logging might be going?
 
-Chris
+Elvir Kuric schrieb:
+> Hi all,
+>  I am trying to implement proper firewall to my
+> network using iptables
+> and I  have to admit that I am amazing by amount of
+> iptables features
+> it offers.
+>  But I can not understand is there any way to prevent
+> port scanning
+> using iptables?
+
+Yes by checking the tcp-flags. The connections are not established
+because only the port is checked if it is reachabele.
+
+Regards,
+Ruprecht
+
+-------------------------------------------------------------------
+Ruprecht Helms IT-Service & Softwareentwicklung
+             let worktools be individual
+
+Web: http://www.rheyn.de <http://www.rheyn.de/>=20
+
+
+
 
