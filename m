@@ -1,9 +1,8 @@
 From: "Sietse van Zanen" <sietse@wizdom.nu>
-Subject: RE: Preventing port scanning using iptables ?
-Date: Sat, 5 Aug 2006 15:41:34 +0200
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127F4@knowledge.wizdom.nu>
-References: <20060805062309.43523.qmail@web56213.mail.re3.yahoo.com>
-	<44D4456C.5050203@mymail.ch>
+Subject: RE: SMTP Redirect - 'This is it'...
+Date: Sat, 5 Aug 2006 15:45:45 +0200
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C40127F5@knowledge.wizdom.nu>
+References: <44D46A61.10606@bowenvale.co.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,50 +18,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Ruprecht Helms <rhelms@mymail.ch>, Elvir Kuric <omasnjak@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: Don Gould <don@bowenvale.co.nz>, netfilter@lists.netfilter.org
 
-If you set the policy of the INPUT and FORWARD chains to DROP and only =
-allow connection to ports you need from IP's that need to access these =
-ports, you're automagically protected against portscans. Iptables will =
-drop all connections to ports you have not opened, and the scanner will =
-not know anything about them. Any ports you have opened will be visible =
-to scanners ofcourse.
+Assuming eth0 is the NIC that your internal clients connect to and that =
+it has IP 192.168.1.1:
+=20
+REDIRECT or NAT any traffic coming into eth0 on port 25 to your =
+firewall:
+iptables -t nat -A PREROUTING -i eth0 p tcp --dport 25 -j DNAT --to =
+192.168.1.1:25
+ALLOW the connections to your firewall:
+iptables -t filter -A INPUT -i eth0 -p tcp -d 192.168.1.1 --dport 25 -j =
+ACCEPT
+=20
+This should take care of redirecting port 25 traffic to your firewall. =
+Configuration of your smtp server is outside scope of this mailing list.
 =20
 -Sietse
 
 ________________________________
 
-From: netfilter-bounces@lists.netfilter.org on behalf of Ruprecht Helms
-Sent: Sat 05-Aug-06 9:14
-To: Elvir Kuric
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Preventing port scanning using iptables ?
+From: netfilter-bounces@lists.netfilter.org on behalf of Don Gould
+Sent: Sat 05-Aug-06 11:52
+To: netfilter@lists.netfilter.org
+Subject: SMTP Redirect - 'This is it'...
 
 
 
-Elvir Kuric schrieb:
-> Hi all,
->  I am trying to implement proper firewall to my
-> network using iptables
-> and I  have to admit that I am amazing by amount of
-> iptables features
-> it offers.
->  But I can not understand is there any way to prevent
-> port scanning
-> using iptables?
+Hi,
 
-Yes by checking the tcp-flags. The connections are not established
-because only the port is checked if it is reachabele.
+Is there a way to fool the mail client into thinking that a call to
+'smtp.someonelse.whateva.com' is my local server?
 
-Regards,
-Ruprecht
+I have people visiting my network with laptops.
 
--------------------------------------------------------------------
-Ruprecht Helms IT-Service & Softwareentwicklung
-             let worktools be individual
+Getting mail off their POP server is no problem.
 
-Web: http://www.rheyn.de <http://www.rheyn.de/>=20
+Sending mail is a problem as my up stream provider blocks links....
+
+So I want my server on my network to intercept the call on port 25 for a
+remote smtp server and then just lie to the laptop.
+
+This gives me the advantage of not having to reconfigure the users
+machine when they leave my network.
+
+Cheers Don
+--
+Don Gould
+www.thinkdesignprint.co.nz - www.tcn.bowenvale.co.nz -
+www.bowenvale.co.nz - www.hearingbooks.co.nz - SkypeMe:  =
+ThinkDesignPrint
+
 
 
 
