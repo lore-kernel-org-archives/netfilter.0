@@ -1,12 +1,12 @@
-From: Elvir Kuric <omasnjak@yahoo.com>
-Subject: Re: Preventing port scanning using iptables ?
-Date: Sat, 5 Aug 2006 01:00:10 -0700 (PDT)
-Message-ID: <20060805080010.4988.qmail@web56204.mail.re3.yahoo.com>
-References: <44D4456C.5050203@mymail.ch>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Conntrack for related service
+Date: Sat, 05 Aug 2006 11:32:41 +0200
+Message-ID: <44D465B9.4060807@rtij.nl>
+References: <000901c6b842$c19de2a0$4764a8c0@mhsystems.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44D4456C.5050203@mymail.ch>
+In-Reply-To: <000901c6b842$c19de2a0$4764a8c0@mhsystems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Ruprecht Helms <rhelms@mymail.ch>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mikhail <misha@mhsystems.com>
 Cc: netfilter@lists.netfilter.org
 
-Thanks Ruprecht, but I still can not figure out how
-the  rule for that will look, is there any example? 
-I want my  firewall be persistent on port scanning,
-how write iptables rule ? 
+Mikhail wrote:
 
-Regards
-
---- Ruprecht Helms <rhelms@mymail.ch> wrote:
-
-> Elvir Kuric schrieb:
-> > Hi all, 
-> >  I am trying to implement proper firewall to my
-> > network using iptables 
-> > and I  have to admit that I am amazing by amount
-> of
-> > iptables features 
-> > it offers.
-> >  But I can not understand is there any way to
-> prevent
-> > port scanning 
-> > using iptables? 
-> 
-> Yes by checking the tcp-flags. The connections are
-> not established
-> because only the port is checked if it is
-> reachabele.
-> 
-> Regards,
-> Ruprecht
-> 
+>I've placed this filter in mangle table before I do my DNAT. I've also added
+>the rule to clean up recent list in case of RST type of disconnect.
+>  It seems to me though that script in this version has a flaw. Let's say
+>someone creates 2 instances of the same application with the same source
+>address and then closes one of them. I think this will effectively kill
+>MSSQL connection for the remaining instance. Is there any way to count RMI
+>connections originated from the same source IP and then start dropping MSSQL
+>requests only in case that count reaches 0?
+>  
 >
--------------------------------------------------------------------
-> Ruprecht Helms IT-Service & Softwareentwicklung
->              let worktools be individual
-> 
-> Web: http://www.rheyn.de
-> 
 
+Yes you're right. What you could do is not look at fin and rst packets, 
+but use the timing feature of the recent module. Use a large timeout. So 
+what you want is , if there has been activity from this ip address in 
+the past X seconds on the RMI port, allow the mssql port.
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Obviously that will not work if there has been no activity on the RMI 
+port recently (or in case you have a lot of connections, the connection 
+got evicted by recent for a newer one). But if rmi activity always 
+occurs shortly before opening a connection to mssql it should do the trick.
+
+HTH,
+M4
+
 
