@@ -1,12 +1,12 @@
-From: Mikhail <misha@mhsystems.com>
-Subject: RE: Conntrack for related service
-Date: Fri, 04 Aug 2006 23:53:48 -0400
-Message-ID: <000901c6b842$c19de2a0$4764a8c0@mhsystems.com>
-References: <"52488.2001:888:19e1::53.1154621026.squirrel"@dexter>
+From: Elvir Kuric <omasnjak@yahoo.com>
+Subject: Re: Port forwarding in special case
+Date: Fri, 4 Aug 2006 23:21:10 -0700 (PDT)
+Message-ID: <20060805062110.8928.qmail@web56215.mail.re3.yahoo.com>
+References: <BAY117-F171920CCD498DEABBC2CC1F5510@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <"52488.2001:888:19e1::53.1154621026.squirrel"@dexter>
+In-Reply-To: <BAY117-F171920CCD498DEABBC2CC1F5510@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,71 +18,83 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: m@rtij.nl
-Cc: netfilter@lists.netfilter.org
+To: notinh notien <notinhnotien7@hotmail.com>, netfilter@lists.netfilter.org
+
+Hi,
+I think the next link will help you
+
+http://forums1.itrc.hp.com/service/forums/bizsupport/questionanswer.do?threadId=1032378&admit=-682735245+1154757766144+28353475
+
+just read threads carefuly. Instead port 80 you can
+put port 443 as well. Or both. In my case this work.
+And of course read
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+best wishes
+
+--- notinh notien <notinhnotien7@hotmail.com> wrote:
+
+> Hi. I am a newbie here,  I need some helps for my
+> situation.
+> 
+> My set up is that I have Apache as the web server
+> and set it up so that it 
+> would do proxy reverse to the backend web server. 
+> It is all good and my 
+> user can use the front web server to view the
+> content provided by the 
+> backend web server.
+> 
+> So I only open my hardware firewall and forward all
+> access to the front end 
+> server.  My front end server is a Linux box and have
+> iptables to protect it. 
+>   Now i need to forward the ports that are not part
+> of the Apache reverse 
+> proxy (80, 443) to the backend server.
+> 
+> So you see, my front end server is not a gateway and
+> does not provide NAT to 
+> any other server like a firewall gateway settings. 
+> I already have a 
+> hardware firewall to protect these two servers. 
+> These two servers are in 
+> the same subnet 192.168.0.0/24.  I only need it to
+> forward ports to the 
+> backend server and return related data for
+> connections from the back end on 
+> those ports to outside people.  I want people to
+> have the impression that 
+> they are connecting to the same server because the
+> software I used do not 
+> allow setting more than one IP address for all the
+> services from the end 
+> user GUI.
+> 
+> Could someone here show me how to do this?  Should
+> NAT involve in this?
+> 
+> Thanks.
+> 
+>
+_________________________________________________________________
+> Express yourself instantly with MSN Messenger!
+> Download today it's FREE! 
+>
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+> 
+> 
+> 
 
 
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam
+protection around 
+http://mail.yahoo.com 
 
------Original Message-----
-From: Martijn Lievaart [mailto:m@rtij.nl] 
-Sent: Thursday, August 03, 2006 12:04 PM
-To: Mikhail
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Conntrack for related service
-Should be possible using reject. Something along these lines.
-
--A FORWARD -m state RELATED,ESTABLISHED -j ACCEPT
-# Maybe you restrict this more, for now accept RMI from everywhere
--A FORWARD -p tcp -dport $rmiport -j RMI
--A FORWARD -p tcp -dport $mssql -j MSSQL
-... other rules ...
-
--A RMI -p tcp --tcp-flags FIN FIN -j RMIFIN
--A RMI -m recent --name rmi --set
--A RMI -j ACCEPT
--A RMIFIN -m recent --name rmi --remove
--A RMIFIN -j ACCEPT
--A MSSQL -m recent --name rmi -rcheck -j ACCEPT
--A MSSQL -j LOG --prefix "mssql without rmi "
--A MSSQL -j DROP
-
-HTH,
-M4
-
-
-Thanks' a lot for the script - it did the trick! Here is my updated version:
-
-iptables -t mangle -N RMI
-iptables -t mangle -N RMIFIN
-iptables -t mangle -N MSSQL
-
-iptables -t mangle -A PREROUTING -p tcp -d $external_ip --dport $rmi_port -j
-RMI
-iptables -t mangle -A PREROUTING -p tcp -d $external_ip --dport @mssql_port
--j MSSQL
-
-iptables -t mangle -A RMI -p tcp --tcp-flags RST RST -j RMIFIN
-iptables -t mangle -A RMI -p tcp --tcp-flags FIN FIN -j RMIFIN
-iptables -t mangle -A RMI -m recent --name rmi --set
-iptables -t mangle -A RMI -j ACCEPT
-
-iptables -t mangle -A RMIFIN -m recent --name rmi --remove
-#iptables -t mangle -A RMIFIN -j LOG --log-prefix "rmi fin "
-iptables -t mangle -A RMIFIN -j ACCEPT
-
-iptables -t mangle -A MSSQL -m recent --name rmi --rcheck -j ACCEPT
-iptables -t mangle -A MSSQL -j LOG --log-prefix "mssql without rmi "
-iptables -t mangle -A MSSQL -j DROP
-
-I've placed this filter in mangle table before I do my DNAT. I've also added
-the rule to clean up recent list in case of RST type of disconnect.
-  It seems to me though that script in this version has a flaw. Let's say
-someone creates 2 instances of the same application with the same source
-address and then closes one of them. I think this will effectively kill
-MSSQL connection for the remaining instance. Is there any way to count RMI
-connections originated from the same source IP and then start dropping MSSQL
-requests only in case that count reaches 0?
-
-Mikhail.
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
