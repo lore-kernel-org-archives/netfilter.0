@@ -1,10 +1,13 @@
-From: Dan Ferris <dan@usrsbin.com>
-Subject: 1:1 NAT Help
-Date: Mon, 07 Aug 2006 12:56:07 -0600
-Message-ID: <44D78CC7.5020607@usrsbin.com>
+From: Andy Furniss <lists@andyfurniss.entadsl.com>
+Subject: Re: Can't access select websites
+Date: Mon, 07 Aug 2006 20:46:52 +0100
+Message-ID: <44D798AC.5050704@andyfurniss.entadsl.com>
+References: <44D45DFE.4030307@scratchspace.com>
+Reply-To: lists@andyfurniss.entadsl.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <44D45DFE.4030307@scratchspace.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,47 +19,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Chris Miller <asterisk@scratchspace.com>
+Cc: netfilter@lists.netfilter.org
 
-Dear List,
+Chris Miller wrote:
+> 
+> I've got a WRT54GL with three interfaces. The router connects via PPPoE 
+> (ppp0) and has a public routed /29 to one interface (br0), and a private 
+> /24 with NAT on another interface (vlan2). The rules are not 
+> particularly fancy and access from/to the internal networks is fine. I 
+> can access any website from either LAN just fine, except I can't access 
+> microsoft.com and fscrater.com. Both these sites have one thing in 
+> common, they filter ping. Tcpdump from a *nix box on the public LAN 
+> shows that the initial http connection is being acknowledged by the 
+> remote web server, but subsequent incoming packets seem to be dropped. 
+> I've enabled logging in my FW script and remote syslog on the router, 
+> but logging seems to go into the bit bucket. I suspect that may be due 
+> to the way iptables is compiled for the WRT.
+> I have an identical setup in another location that does not experience 
+> this problem, the difference is the /29 is routed via a /30 on the WAN 
+> side, PPPoE is not used. AT&T appears to be preserving IP space by using 
+> PPPoE and an internal 192.x.x.x address on the DSLAM. So PPPoE seems to 
+> be related to the problem.
+> I've verified that NAT is not happening on the public interface, so it's 
+> not a NAT issue. Without the ability to see what's happening via 
+> logging, I'm lost. Has anyone seen this behavior before? Any suggestions 
+> on where logging might be going?
 
-I have search Google, and the list archives back to 2003 and have found 
-little information about this particular problem.
+Don't know about the logging.
 
-First I present to you two very simplified rules.
+If you have to use pppoe then either set LAN PC MTUs to 1492 or maybe 
+mss clamp on the router (if you can).
 
-iptables -A PREROUTING -i eth2 -d 204.184.20.221 -j DNAT --to 10.2.253.21
-
-and
-
-iptables -A POSTROUTING -o eth2 -s 10.2.253.21 -j SNAT --to 204.184.20.221
-
-Having never really delt with 1:1 NAT before, I thought this would "just 
-work".  However, it does not work.  The SNAT rule works fine.  The DNAT 
-rule does not work at all.  I don't even see packets hitting it.
-
-A few other pieces of information:
-
-1.  Proxy arp does not seem to be a problem.  When I SSH to the external 
-IP, I can see the ethernet frames coming into the ethernet interface.
-
-2.  I have tried doing: ip addr add 204.184.20.221 dev eth2 and it still 
-won't work.
-
-We have an old POS box running Debian with Shorewall and kernel 2.4 that 
-works perfectly with the 1:1 NAT rules.  However, the friend I am 
-helping does not want to use Shorewall, as she wishes to learn iptables 
-the old fashioned way.  The only difference between the old Debian 
-firewall and the new one is the the new one is running CentOS and the 
-2.6 kernel.
-The old firewall that works has proxy arp turned off and rp_filter 
-turned on.  The new firewall has proxy arp turned off and rp_filter 
-turned on.
-
-I'm really lost and I used to think I was decent at iptables.  So if 
-anybody can help it would be appreciated.
-
-Thank you!
-
-Dan
+Andy.
 
