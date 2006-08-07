@@ -1,12 +1,12 @@
-From: "former03 | Baltasar Cevc" <baltasar.cevc@former03.de>
-Subject: Re: Change Source IP Without Using SNAT
-Date: Sun, 6 Aug 2006 17:38:43 +0200
-Message-ID: <8b3be9fdc67d169b5e0196def78f954f@former03.de>
-References: <20060804145057.62yh7umql7kg8040@secure.softwarelivre.org>
-Mime-Version: 1.0 (Apple Message framework v624)
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: Blocking ip addresses and regulating bandwidth
+Date: Mon, 07 Aug 2006 12:21:20 +0200
+Message-ID: <44D71420.7020009@freemail.hu>
+References: <96bc76cf0608041411k6c610c44mcb351a9ebfedfce3@mail.gmail.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060804145057.62yh7umql7kg8040@secure.softwarelivre.org>
+In-Reply-To: <96bc76cf0608041411k6c610c44mcb351a9ebfedfce3@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,80 +17,149 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"; format="flowed"
-To: Priscilla Kurtz <pri@softwarelivre.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Netfilter IPtableMailinglist <netfilter@lists.netfilter.org>
 
-Hi Priscilla,
-
-> I'm building a small communicating process migration tool:  you telnet=20=
-
-> a server
-> from A; you checkpoint the process (execution and communication),=20
-> migrate
-> theses checkpointed images to from A to B; restore the process in B =
-and
-> everything stays as the same in A.
+Vlad Janicek =EDrta:
+> Hey there,
 >
-> The main problem here is that IP has no mobility skills in its pure=20
-> form.
-> The idea I had was to configurate an alias for eth0, so my NIC can=20
-> answer for
-> two IPs: eth0 and eth0:0. For testing my tool, I'm using a small=20
-> cluster with 6
-> nodes + front-end. So, only one node at a time has the eth0:0 up=20
-> because this
-> virtual interface is also migrated. For that, the connections wuold be
-> identified by IP_telnerServer, IP_eth0:0; PORT_telnetServer,=20
-> PORT_'eth0:0'.
+> I have a linux router using netfilter. I've been using it for years
+> now and now I'm starting to have a problem. I want to block some IPs
+> for excess of traffic. I've been using this
 >
-> But, as usual, all the traffic is routed through default gw route. All=20=
+> iptables -I FORWARD 1 -s 192.168.0.187 -j DROP
+>
+> and that IP it's still connected to the internet. It's there anything
+> wrong there? also, what would be the best way to restrict bandwith to
+> users with netfilter?? is there any gui or web interface for that??
+For bandwith limiting Read The Fine Manual of lartc.... :) www.lartc.org
+You have to play with "tc".
 
-> I wanted
-> to do is build up a rule (by /sbin/route ou by iptables) that forces=20=
+> This is my iptable script. Thanks a lot for your help
+>
+> Vlad
+>
+>
+> #Cargando las reglas de firewall
+> #cargando modulos
+> modprobe ip_conntrack_ftp
+> modprobe ip_conntrack_irc
+> modprobe iptable_nat
+> modprobe ip_nat_ftp
+> echo "Borrando posibles reglas anteriores..."
+>
+> IPTABLES=3D"/sbin/iptables"
+> $IPTABLES -P INPUT ACCEPT
+> $IPTABLES -P FORWARD ACCEPT
+> $IPTABLES -P OUTPUT ACCEPT
+> $IPTABLES -t nat -P PREROUTING ACCEPT
+> $IPTABLES -t nat -P POSTROUTING ACCEPT
+> $IPTABLES -t nat -P OUTPUT ACCEPT
+> $IPTABLES -t mangle -P PREROUTING ACCEPT
+> $IPTABLES -t mangle -P OUTPUT ACCEPT
+-P =3D Policy.... ACCEPT all ??? I would set to DROP all filter tables...=
+=20
+But be carefull...
+> $IPTABLES -F
+> $IPTABLES -t nat -F
+> $IPTABLES -t mangle -F
+> $IPTABLES -X
+> $IPTABLES -t nat -X
+> $IPTABLES -t mangle -X
+Clean tables...
+>
+> echo "Habilitando politicas de negacion total de paquetes"
+>
+> iptables -P FORWARD DROP
+> iptables -P INPUT DROP
+Hmmm.... Why did you said ACCEPT a few lines before???
 
-> traffic go
-> go out through eth0:0. I realised that if I make all the traffic go=20
-> out by
-> eth0:0 and migrate eth0:0 in some time later, I'll be screwing all=20
-> other
-> process' communication, right? So I thought about iptables. But all=20
-> source Ip
-> mangling stuff is done with SNAT. To me, it's not useful because NAT=20=
+> echo "Reglas para paquetes de entrada y salida"
+> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+>
+> #iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+> iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+> #iptables -A INPUT -p tcp -s mygmaildomain.fake --dport 3000 -j ACCEPT
+> #iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+> #iptables -A INPUT -p tcp --dport 143 -j ACCEPT
+> #iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+> #iptables -A INPUT -p tcp --dport 110 -j ACCEPT
+>
+> #Para dejar el acceso total al servidor desde adentro
+> iptables -A INPUT -i eth1 -s 192.168.0.0/22 -j ACCEPT
+>
+ACCEPT EVERYTHING from the subnet !!!
+> #para el redireccionamiento
+>
+> echo 0 > /proc/sys/net/ipv4/ip_forward
+>
+> #cadenas forward para acceso a internet
+>
+> iptables -P FORWARD DROP
+Again... Why ACCEPT before???
+> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+>
+>
+> #Bloqueo limewire
+> iptables -A FORWARD -p tcp --dport 6346 -j DROP
+> iptables -A FORWARD -p udp --dport 6346 -j DROP
+> iptables -A FORWARD -p tcp --dport 6345 -j DROP
+> iptables -A FORWARD -p udp --dport 6345 -j DROP
+>
+> ##
+> ##
+> ##Redireccionamiento de paquetes a servidores internos
+> ##
+> ##
+> ##
+> #WebServer interno
+> iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 80 -j ACCEPT
+> iptables -t nat -A PREROUTING -d 192.168.74.2 -p tcp --dport 80 \
+>    -j DNAT --to-destination 192.168.0.2:80
+>
+> #ftp a netfinity
+> iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 21 -j ACCEPT
+> iptables -t nat -A PREROUTING -d 192.168.74.2 -p tcp --dport 21 \
+>    -j DNAT --to-destination 192.168.0.2:21
+>
+> #correo
+> iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 25 -j ACCEPT
+> iptables -t nat -A PREROUTING -d 192.168.74.2 -p tcp --dport 25 \
+>    -j DNAT --to-destination 192.168.0.2:25
+>
+> #pop
+> iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 110 -j ACCEPT
+> iptables -t nat -A PREROUTING -d 192.168.74.2 -p tcp --dport 110 \
+>    -j DNAT --to-destination 192.168.0.2:110
+>
+> #imap
+> iptables -A FORWARD -d 192.168.0.2 -p tcp --dport 143 -j ACCEPT
+> iptables -t nat -A PREROUTING -d 192.168.74.2 -p tcp --dport 143 \
+>    -j DNAT --to-destination 192.168.0.2:143
+>
+>
+> ##
+> ##
+> ##Acceso a clientes y servidores
+> ##
+> ##
+> ##
+>
+> #cadena de acceso directo a internet
+>
+> #reenvio de paquetes para permitir el acceso del servidor Netfinity
+> iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>
+> #usuarios bloqueados
+> iptables -I FORWARD 1 -d 192.168.0.187 -j DROP
+In the header of your mail you wrote:
+iptables -I FORWARD 1 -s 192.168.0.187 -j DROP
 
-> rules only
-> are checked for new connections. And I'm migrating a connection which,=20=
-
-> in
-> theory, remains the same.
-You can't route any traffic on a virtual interface in that sense -=20
-eth0:0 *is*
-eth0, it's just a work around for some tools that do not support=20
-multiple IPs
-per interface.
-
-The nat table will see each connection only once, however, I assume=20
-(don't know!)
-that that's a conntrack thing, so in case your conntrack hasn't seen=20
-the packet
-yet, it will pass the nat.
-
-> So after this bla bla bla, the question is: how can I change source ip=20=
-
-> without
-> using SNAT?
-You can't. At least not using an unmodified iptables/netfilter.
-
-Baltasar
-
---
-
-Baltasar Cevc
-
-_____ former 03 gmbh
-_____ infanteriestra=DFe 19 haus 6 eg
-_____ D-80797 muenchen
-
-_____ http://www.former03.de
+Hmmm... -s or -d ????
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+>
+>
+>
 
 
