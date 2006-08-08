@@ -1,13 +1,10 @@
-From: Dan Ferris <dan@usrsbin.com>
-Subject: Re: 1:1 NAT Help
-Date: Tue, 08 Aug 2006 06:14:51 -0600
-Message-ID: <44D8803B.6060703@usrsbin.com>
-References: <44D78CC7.5020607@usrsbin.com>
-	<02BB8A4AC86C564C89C7F14CF98CE0C40127FB@knowledge.wizdom.nu>
+From: Justin Schoeman <justin@expertron.co.za>
+Subject: netfilter patch-o-matic: where did all the patches go?
+Date: Tue, 08 Aug 2006 14:27:31 +0200
+Message-ID: <44D88333.1070100@expertron.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C40127FB@knowledge.wizdom.nu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,79 +18,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Yes, because I cleared all the rules and set everything to accept before 
-testing.
+Hi all,
 
-Dan
+I haven't been paying attention to this for a while, but now that I 
+download the latest patch-o-matic-ng, I see that most of the patches are 
+gone...
 
-Sietse van Zanen wrote:
-> Are you sure, you also allow the connection in the FORWARD chain of the filter table?
->  
-> iptables -i eth2 -d 10.2.253.21 -j ACCEPT
->  
-> -Sietse
->
-> ________________________________
->
-> From: netfilter-bounces@lists.netfilter.org on behalf of Dan Ferris
-> Sent: Mon 07-Aug-06 20:56
-> To: netfilter@lists.netfilter.org
-> Subject: 1:1 NAT Help
->
->
->
-> Dear List,
->
-> I have search Google, and the list archives back to 2003 and have found
-> little information about this particular problem.
->
-> First I present to you two very simplified rules.
->
-> iptables -A PREROUTING -i eth2 -d 204.184.20.221 -j DNAT --to 10.2.253.21
->
-> and
->
-> iptables -A POSTROUTING -o eth2 -s 10.2.253.21 -j SNAT --to 204.184.20.221
->
-> Having never really delt with 1:1 NAT before, I thought this would "just
-> work".  However, it does not work.  The SNAT rule works fine.  The DNAT
-> rule does not work at all.  I don't even see packets hitting it.
->
-> A few other pieces of information:
->
-> 1.  Proxy arp does not seem to be a problem.  When I SSH to the external
-> IP, I can see the ethernet frames coming into the ethernet interface.
->
-> 2.  I have tried doing: ip addr add 204.184.20.221 dev eth2 and it still
-> won't work.
->
-> We have an old POS box running Debian with Shorewall and kernel 2.4 that
-> works perfectly with the 1:1 NAT rules.  However, the friend I am
-> helping does not want to use Shorewall, as she wishes to learn iptables
-> the old fashioned way.  The only difference between the old Debian
-> firewall and the new one is the the new one is running CentOS and the
-> 2.6 kernel.
-> The old firewall that works has proxy arp turned off and rp_filter
-> turned on.  The new firewall has proxy arp turned off and rp_filter
-> turned on.
->
-> I'm really lost and I used to think I was decent at iptables.  So if
-> anybody can help it would be appreciated.
->
-> Thank you!
->
-> Dan
->
->
->
->
->
->   
+Anybody have an idea where I can download the 'extras' repository? 
+Specifically geoip.
 
--- 
-What do you call a guy with no legs who is waterskiing?
+Thanks!
 
-
-Skip.
-
+-justin
 
