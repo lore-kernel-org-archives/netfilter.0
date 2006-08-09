@@ -1,10 +1,17 @@
-From: Dan Ferris <Dferris@colorado.edu>
-Subject: 1:1 NAT help
-Date: Mon, 07 Aug 2006 11:05:42 -0600
-Message-ID: <44D772E6.1080707@colorado.edu>
+From: Michael Rash <mbr@cipherdyne.org>
+Subject: Re: Preventing port scanning using iptables ?
+Date: Tue, 8 Aug 2006 22:29:48 -0400
+Message-ID: <20060809022948.GB14347@minastirith.hsd1.md.comcast.net>
+References: <20060805062309.43523.qmail@web56213.mail.re3.yahoo.com>
+	<44D4456C.5050203@mymail.ch>
+	<02BB8A4AC86C564C89C7F14CF98CE0C40127F4@knowledge.wizdom.nu>
+	<6c6b5e1c0daf49cbc42b7ecc329cc3e7@former03.de>
+	<44D5CF34.4060406@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <44D5CF34.4060406@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,49 +22,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Dear List,
+On Aug 06, 2006, Pascal Hambourg wrote:
 
-I have search Google, and the list archives back to 2003 and have found 
-little information about this particular problem.
+> Hello,
+>=20
+> former03 | Baltasar Cevc a =E9crit :
+> >
+> >Just for the record: there is a side effect the dropping behaviour.=20
+> >While not exposing whether the port is open or closed, show some=20
+> >scanners will conclude that there is a filter. If you want the scanner=
+=20
+> >to think the ports are closed, you could issue send back a port=20
+> >unreachable packet (-j REJECT --reject-with icmp-port-unreachable)
+>=20
+> This works only against UDP scans or basic TCP scans using the "connect"=
+=20
+> method. A more advanced TCP scan will detect a packet filter when=20
+> receiving an ICMP port unreachable instead of a TCP RST which is the=20
+> normal reply for a closed TCP port. A TCP port is properly firewalled=20
+> using "-j REJECT --reject-with tcp-reset".
 
-First I present to you two very simplified rules.
+You may not want to generate RST packets at all because a clever
+attacker can examine the specific manner in which the RST packets were
+constructed to differentiate the response software.  For example, the
+Netfilter REJECT target always hard-codes the TTL value at 255, sets
+the TCP Window size to zero, and only sends one RST packet per rule
+match.  In contrast, the Snort flexreponse2 detection plugin examines
+the TTL value of the matching packet and chooses a near multiple of
+64, sets the Window size to the same value in the matching packet, and
+typically sends a minimum of five RST packets... very different.
 
-iptables -A PREROUTING -i eth2 -d 204.184.20.221 -j DNAT --to 10.2.253.21
+If you just drop the packet, then the attacker only knows that there is
+_some_ inline device that is getting in the way.
 
-and
+In response to the original poster, if you are interested in detecting
+and preventing port scans via Netfilter, you might like psad:
 
-iptables -A POSTROUTING -o eth2 -s 10.2.253.21 -j SNAT --to 204.184.20.221
+http://www.cipherdyne.org/psad/
 
-Having never really delt with 1:1 NAT before, I thought this would "just 
-work".  However, it does not work.  The SNAT rule works fine.  The DNAT 
-rule does not work at all.  I don't even see packets hitting it.
+--
+Michael Rash
+http://www.cipherdyne.org/
+Key fingerprint =3D 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
 
-A few other pieces of information:
-
-1.  Proxy arp does not seem to be a problem.  When I SSH to the external 
-IP, I can see the ethernet frames coming into the ethernet interface.
-
-2.  I have tried doing: ip addr add 204.184.20.221 dev eth2 and it still 
-won't work.
-
-We have an old POS box running Debian with Shorewall and kernel 2.4 that 
-works perfectly with the 1:1 NAT rules.  However, the friend I am 
-helping does not want to use Shorewall, as she wishes to learn iptables 
-the old fashioned way.  The only difference between the old Debian 
-firewall and the new one is the the new one is running CentOS and the 
-2.6 kernel. 
-
-The old firewall that works has proxy arp turned off and rp_filter 
-turned on.  The new firewall has proxy arp turned off and rp_filter 
-turned on.
-
-I'm really lost and I used to think I was decent at iptables.  So if 
-anybody can help it would be appreciated.
-
-Thank you!
-
-Dan
 
