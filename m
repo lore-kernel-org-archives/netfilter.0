@@ -1,10 +1,11 @@
-From: Vultur Constantin <costi@cdvultur.com>
-Subject: One little problem I don't understand
-Date: Wed, 09 Aug 2006 23:14:39 +0300
-Message-ID: <44DA422F.7000306@cdvultur.com>
+From: Joe Giles <jgiles@windowsproof.com>
+Subject: ipt_time time match invalid size
+Date: Wed, 9 Aug 2006 18:02:48 -0600
+Message-ID: <200608091802.48638.jgiles@windowsproof.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,39 +16,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello again,
 
-I have a little problem understanding the way iptables does the matching 
-of packets.
-The problem is like this:
-I have an subnet A.B.C.D/X which I mark it with --set-mark 1:
+I finally figured out what I was doing wrong with the P-O-M and the time 
+module.
 
-$IPT -A fw-interfaces -i $INT_IF -s $INT_NET  -d A.B.C.D/X -m state 
---state NEW    -j ACCEPT
-$IPT -t mangle -A PREROUTING -i $INT_IF -d A.B.C.D/X  -j MARK --set-mark 1
+Now, after installing the proper modules and running the following iptables 
+command:
+IPTABLES = path to iptables
+$IPTABLES -A INPUT  -s 192.168.15.131 -m time  --timestart 17:05  --timestop 
+17:20  --days Wed -j RULE_2
+$IPTABLES -A FORWARD  -s 192.168.15.131 -m time  --timestart 17:05  --timestop 
+17:20  --days Wed -j RULE_2
 
-and I mark the connections to port 22 ( ssh ) with --set-mark 2
+(This was just a test script to see how it worked)
 
-$IPT -A fw-interfaces -i $INT_IF -s $INT_NET  -p tcp --dport 22 -m state 
---state NEW    -j ACCEPT
-$IPT -t mangle -A PREROUTING -i $INT_IF -p tcp --dport 22 -j MARK 
---set-mark 2   
- 
-fw-interfaces is used as a custom chain in FORWARD.
+It doesn't work and I get this error executing the command from within my 
+script:
 
-Now my problem is like this:
-If I want to connect to ssh to one of the ip's from d A.B.C.D/X all my 
-packets are set-marked with 2. The rule with d A.B.C.D/X   is above tho 
-one with ssh.
-Shouldn't the ssh connection to A.B.C.D/X  be marked with 1 ? If not 
-what I am doing wrong.
+iptables: Unknown error 4294967295
+iptables: Unknown error 4294967295
 
-Thanks,
+And, I get this output in dmesg:
 
--- 
-Constantin Daniel VULTUR
+ip_tables: time match: invalid size 0 != 16
+ip_tables: time match: invalid size 0 != 16
+
+
+I used the 20060706 of p-o-m-ng and am using the 2.6.17.8 kernel. The 20060706 
+version of p-o-m is the latest with the time module in it and it compiles 
+just fine with the kernel.
+
+Does anyone know how I can resolve this issue?
+
+Thanks!!!
+
+Joe
 
 
