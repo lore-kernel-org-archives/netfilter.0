@@ -1,14 +1,10 @@
-From: "former03 | Baltasar Cevc" <baltasar.cevc@former03.de>
-Subject: Re: Problem with router connected to two ISPs (connection marking?)
-Date: Thu, 10 Aug 2006 15:12:23 +0200
-Message-ID: <3b37c573ddc16140d97b8e68d15aa489@former03.de>
-References: <200608082140.03815.marek.zachara@telperion.pl>
-	<44D9CB5B.9020508@freemail.hu>
-	<200608091435.49051.marek.zachara@telperion.pl>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Transfer-Encoding: quoted-printable
+From: "Frank Eyermann" <Frank.Eyermann@unibw.de>
+Subject: Bridge, NAT Problem, Packets are lost in the kernel
+Date: Thu, 10 Aug 2006 16:20:10 +0200
+Message-ID: <002301c6bc88$19918860$423fc189@informatik.unibwmuenchen.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200608091435.49051.marek.zachara@telperion.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,68 +15,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"; format="flowed"
-To: Marek Zachara <marek.zachara@telperion.pl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hello Netfilter-Community,
 
-On 09.08.2006, at 14:35, Marek Zachara wrote:
+I have a Linux-machine, which has three interfaces. The machine runs a
+firewall, separating a wireless network, connected to eth1 (with private
+Ips), my "normal" internal network (with public Ips, eth0) and the Internet
+(eth2). As the machine is virtualized with Xen, eth1 is in a bridge,
+together with a virutal interface of the virtualized os (it's running also
+Linux and a Radius-Server).
 
->>
->> Maybe these lines will help you... :) But if not.... :D
->>
->> $IPT -t nat -A POSTROUTING -j SNAT -p tcp --dport www -d $WWW
->> --to-source $MY_IP
->> $IPT -t nat -A POSTROUTING -j SNAT -p tcp --dport www -d $WWW
->> --to-source $MY_IP
->>
-> well, the packets can be send out with two different IPs - depending=20=
+I want my wireless clients being able to access the Internet, therefore I
+need to masquerade (SNAT) the traffic from the brigde, for outgoing
+connections. 
 
-> on which
-> ISP the connection came from - so this would just bind all connections=20=
+The iptables rule I use is:
 
-> to one
-> of the IPs making it impossible to have a connection from the other=20
-> one.
-> no, i am pretty sure the snatting must be done automatically based on=20=
+iptables -t nat -A POSTROUTING -s 192.168.101.0/24 -d ! 192.168.101.0/24 -j
+MASQUERADE
+(192.168.101.0/24 is the network with my wireless clients).
 
-> contrack
-> entries.
-I agree. These rules don't make much sense. Actually, the second rule
-won't ever get hit as the first one gets all the traffic.
-What _can_ be done, while not solving our problem, is rewriting of the
-outgoing traffic to the IP of that interface:
-# iptables -t nat -A POSTROUTING -o ${extif1} -s ! ${extnet1}/29 -j=20
-SNAT --to ${extip1}
-# iptables -t nat -A POSTROUTING -o ${extif2} -s ! ${extnet2}/29 -j=20
-SNAT --to ${extip2}
+But then all packets are somewhere lost in the kernel. Without the rule,
+(when doing simply routing), a ping to a machine in the network of eth0
+works fine.
 
-Which makes sense, however does not discharge conntrack of the duty to=20=
+I have the following setup (eth2 not shown):
 
-handle
-reply packets, as these rules left alone would just lead into the=20
-replies
-having the wrong IP address in addition to going out on the wrong=20
-interface.
+                      +--------+ +-------+
+                      |FW      | |Radius |
+Internet-Connection   |(Xen0)  | |(XenU) |
+----------------------|        | |       |
+                 eth0 | vif0.1 | |       |
+                      |   |    | |       |
+                      |+--+-------------+|
+                   ----|bridge (xenbr0) ||
+                 eth1 |+----------------+|
+                      +--------+ +-------+
 
-Conntrack should, at least that's my understanding, SNAT (or should I=20
-say de-DNAT) the
-replies before they enter the routing mechanism.
+When I start xend, a bridge is set up (I'm using network-bridge and
+vif-bridge), netdev is eth1. This means bridge xenbr0 is connected to eth1,
+vif0.2 and vif1.0 (for the XenU-domain).
 
-Is anybody who know the code well enough to tell why the packets don't=20=
+I did a lot of debuging, using ebtables to log the way of the packets
+through the bridge-code. But without success. What is strange for me, that
+the out-interface is the virtual one of Xen, not eth0. 
 
-hit
-the conntrack snat 'rules' or aren't rewritten out on the list? Thanx!
+Aug 10 15:04:22 inst3gw kernel: eb-nat-POSTROUTING IN= OUT=vif0.2 MAC source
+= 00:16:3e:27:5e:a1 MAC dest = 00:11:43:ce:7b:25 proto = 0x0800 IP
+SRC=192.168.101.250 IP DST=<public-ip>, IP tos=0x00, IP proto=17 SPT=32768
+DPT=53 Aug 10 15:04:22 inst3gw kernel: ip-LOG-POSTROUTING:IN= OUT=network192
+PHYSIN=vif1.0 PHYSOUT=vif0.2 SRC=192.168.101.250 DST=<public-ip> LEN=74
+TOS=0x00 PREC=0x00 TTL=64 ID=25382 DF PROTO=UDP SPT=32768 DPT=53 LEN=54
 
-Baltasar
+I even tried to influence the routing decision by dropping packets in the
+BROUTING table (to force routing by the IP-Layer), but then I didn't see the
+packets anymore.
+
+I hope some can help me,
+
+Many thanks in advance,
+
+Best regards,
+
+Frank
 
 --
-Baltasar Cevc
-
-_____ former 03 gmbh
-_____ infanteriestra=DFe 19 haus 6 eg
-_____ D-80797 muenchen
-
-_____ http://www.former03.de
+Dipl.-Inform. Frank Eyermann
+Department of Computer Science
+Systems Information Laboratory
+University of the Federal Armed Forces, Munich, Germany
 
 
