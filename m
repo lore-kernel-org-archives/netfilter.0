@@ -1,14 +1,13 @@
-From: Marek Zachara <marek.zachara@telperion.pl>
-Subject: Re: Problem with router connected to two ISPs (connection marking?)
-Date: Wed, 9 Aug 2006 14:35:48 +0200
-Message-ID: <200608091435.49051.marek.zachara@telperion.pl>
-References: <200608082140.03815.marek.zachara@telperion.pl>
-	<44D9CB5B.9020508@freemail.hu>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: One little problem I don't understand
+Date: Thu, 10 Aug 2006 14:13:09 +0200
+Message-ID: <44DB22D5.8010004@rtij.nl>
+References: <44DA422F.7000306@cdvultur.com> <44DAE1DC.3080801@rtij.nl>
+	<44DAE67F.3010702@cdvultur.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44D9CB5B.9020508@freemail.hu>
-Content-Disposition: inline
+In-Reply-To: <44DAE67F.3010702@cdvultur.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,22 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Costi <costi@cdvultur.com>
+Cc: netfilter@lists.netfilter.org
 
->
-> Maybe these lines will help you... :) But if not.... :D
->
-> $IPT -t nat -A POSTROUTING -j SNAT -p tcp --dport www -d $WWW
-> --to-source $MY_IP
-> $IPT -t nat -A POSTROUTING -j SNAT -p tcp --dport www -d $WWW
-> --to-source $MY_IP
->
-well, the packets can be send out with two different IPs - depending on which 
-ISP the connection came from - so this would just bind all connections to one 
-of the IPs making it impossible to have a connection from the other one.
-no, i am pretty sure the snatting must be done automatically based on contrack 
-entries.
+Costi wrote:
 
-Marek
+[ Please don't top post! ]
+
+>>>
+>>> Now my problem is like this:
+>>> If I want to connect to ssh to one of the ip's from d A.B.C.D/X all 
+>>> my packets are set-marked with 2. The rule with d A.B.C.D/X   is 
+>>> above tho one with ssh.
+>>> Shouldn't the ssh connection to A.B.C.D/X  be marked with 1 ? If not 
+>>> what I am doing wrong.
+>>
+>>
+>>
+>> It IS marked with 1, subsequently overwritten by 2 by the second rule.
+>>
+
+ > But still isn't iptables  *first rule wins* policy ? From what I know 
+iptables runs with this policy?
+
+No, first rule gets executed first. If that is a rule with a terminal 
+target, the processing stops there. Otherwise processing continues with 
+the next rule.
+
+To get what you want, do this:
+
+$IPT -t mangle -A PREROUTING -i $INT_IF -d A.B.C.D/X  -j  T1
+$IPT -N T1
+$IPT -A T1 -j MARK --set-mark 1
+$IPT -A T1 -j ACCEPT
+$IPT -t mangle -A PREROUTING -i $INT_IF -p tcp --dport 22 -j MARK 
+--set-mark 2
+
+HTH,
+M4
+
 
