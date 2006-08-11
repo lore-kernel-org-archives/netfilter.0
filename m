@@ -1,11 +1,12 @@
-From: thiago@powers.com.br
+From: Jeffrey Paul <jeffrey.paul@121media.com>
 Subject: Re: load balancing with REDIRECT - what is the best way?
-Date: Fri, 11 Aug 2006 14:55:16 -0300
-Message-ID: <OFE2B0B54F.CEEE25A8-ON832571C7.006242A1-832571C7.00636583@powers.com.br>
-References: <73E0FE76-7EE0-4EC7-904B-17E157A4D0DC@121media.com>
-Mime-Version: 1.0
+Date: Fri, 11 Aug 2006 14:13:54 -0400
+Message-ID: <873D40CF-9DD9-4A1B-AFA6-4E8CCD439DC0@121media.com>
+References: <OFE2B0B54F.CEEE25A8-ON832571C7.006242A1-832571C7.00636583@powers.com.br>
+Mime-Version: 1.0 (Apple Message framework v752.2)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <73E0FE76-7EE0-4EC7-904B-17E157A4D0DC@121media.com>
+In-Reply-To: <OFE2B0B54F.CEEE25A8-ON832571C7.006242A1-832571C7.00636583@powers.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,75 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jeffrey Paul <jeffrey.paul@121media.com>
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
+To: thiago@powers.com.br
 Cc: netfilter-bounces@lists.netfilter.org, netfilter@lists.netfilter.org
 
-A range should be begin:end (note the : instead of -). 
-
---
-Thiago Lucas
-thiago@powers.com.br
-POWERSolutions Inf. Ltda.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
 
+On Aug 11, 2006, at 13:55 , thiago@powers.com.br wrote:
 
+> A range should be begin:end (note the : instead of -).
 
-Jeffrey Paul <jeffrey.paul@121media.com> 
-Enviado Por: netfilter-bounces@lists.netfilter.org
-11/08/2006 14:59
+Hmmm, still no love.  All of the requests are going to 3128, even  
+after clearing the table and using:
 
-Para
-netfilter@lists.netfilter.org
-cc
+iptables -t nat -A PREROUTING -p tcp --dport 80 \
+	-j REDIRECT --to-port 3128:3131
 
-Assunto
-load balancing with REDIRECT - what is the best way?
+This leads me to my next question... what's the best way of getting a  
+stable kernel and userspace that supports -m nth and/or -m random?
 
+- -j
 
-
-
-
-
-
-I'm trying to perform some simple load balancing using the REDIRECT 
-target.
-
-Right now, I'm using -p tcp --dport 80 -j REDIRECT --to-ports 3128 to 
-transparently proxy web traffic to a running squid.
-
-I'd like to be able to balance between several running squid 
-processes, say, on 3128, 3129, 3130, and 3131.
-
-The --to-ports option to REDIRECT says it can take a port range, 
-which I tried ("--to-ports 3128-3131"), but it only rewrites the dest 
-port to 3128.  What is a port range option to --to-ports ever used for?
-
-Next up, if I can't get this method working, is to try to use the nth 
-or random modules to select SYNs to redirect to various ports.  Will 
-I need to use connection marking to differentiate which ports I am 
-redirecting a given set of tcp packets (a connection) to, or will the 
-built in connection tracking automatically rewrite subsequent packets 
-in the same connection with the same dest port it gave the first one?
-
-Also, I read somewhere that nth and random aren't in patch-o-matic-ng 
-anymore because they're being included into .18.  As they're not yet 
-in the latest .18-rc, is there any currently recommended way of 
-getting them into a production system other than using the last patch- 
-o-matic-ng snapshot they're in (20060511)?
-
-Cheers,
--j
-
---
+- --
 Jeffrey Paul, 121Media - jeffrey.paul@121media.com
 646-217-0598 x5333
 264 W. 40th St, New York, NY 10018
 
 
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (Darwin)
 
-
-
+iD8DBQFE3MjkdRDaRGLf2XMRArg1AJ9LUf3C/fkb/NYX6oUzIWH3affk4gCfenuK
+OfKruL7QsBdoMfdFKtA3L44=
+=Gw1B
+-----END PGP SIGNATURE-----
 
