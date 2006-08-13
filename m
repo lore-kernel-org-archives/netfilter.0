@@ -1,9 +1,9 @@
-From: Elvir Kuric <omasnjak@yahoo.com>
-Subject: Preventing DoS attacks using iptables?
-Date: Sat, 12 Aug 2006 10:07:39 -0700 (PDT)
-Message-ID: <20060812170739.39960.qmail@web56203.mail.re3.yahoo.com>
+From: Brian Lewis <bsl04@uark.edu>
+Subject: port redirection
+Date: Sat, 12 Aug 2006 19:18:19 -0500
+Message-ID: <20060812191819.8d677f6c.bsl04@uark.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,29 +18,20 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all, 
+I run a servlet container that wants to listen on TCP 8080. I want to
+redirect TCP 80 on my machine to 8080 on the same machine.
 
-I have just one question related to preventing DoS
-attack using iptables. I know there is possible limit
-of receiving packets causef by DoS attacks using --m
-limit --limit 1/s and on that way pushing firewall to
-accept just on packet per second. But in some cases
-the kernel will accept that packets and we can reject
-theu putting 1 in /proc/sys/net/ipv4# cat
-tcp_syncookies....According to
- 
-http://cr.yp.to/syncookies.html
+If I do -t nat -I PREROUTING -i $IF -d $IP -p tcp --dport 80 -j REDIRECT
+--to-port 8080, it works in that I reach the 8080 server when I connect
+to 80.
 
-where they say that this method is stil experimenting
-I am asking you what is your experineces related to
-oreventing DoS attacks this way.
+But I have to allow 8080 through. Is there a way to provide access to the
+8080 server via port 80 without having to allow 8080?
 
-Thanks 
+Stating the problem a different way, suppose that for security through
+obscurity purposes you wanted sshd to appear as if it was running on 2200
+via firewall rules. The above method of redirecting 2200 -> 22 would work,
+but not offer much help because 22 would still have to be open.
 
-Regards 
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Thank you.
 
