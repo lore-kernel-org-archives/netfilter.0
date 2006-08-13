@@ -1,18 +1,13 @@
-From: Graham Murray <graham@gmurray.org.uk>
+From: Brian Lewis <bsl04@uark.edu>
 Subject: Re: port redirection
-Date: Sun, 13 Aug 2006 07:18:55 +0100
-Message-ID: <87d5b5cg4w.fsf@newton.gmurray.org.uk>
+Date: Sun, 13 Aug 2006 02:54:04 -0500
+Message-ID: <20060813025404.47434f1a.bsl04@uark.edu>
 References: <20060812191819.8d677f6c.bsl04@uark.edu>
+	<87d5b5cg4w.fsf@newton.gmurray.org.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/simple; d=gmurray.org.uk; s=in200507;
-	t=1155449936; bh=qbnddUgU+q5xnxGTUFMQx1oPrlE=; h=Received:
-	X-Authentication-Warning:From:To:Subject:References:X-Hashcash:
-	Date:In-Reply-To:Message-ID:User-Agent:MIME-Version:Content-Type; b=Y
-	bSsOpvHEvywysB3QKyWYjgJv6XDDKV4y1WCYvYUxPkvjaTarmGpN67q/q202dlRx1zx
-	KdDGO5RR8qJVVsm3Mw==
-In-Reply-To: <20060812191819.8d677f6c.bsl04@uark.edu> (Brian Lewis's message
-	of "Sat, 12 Aug 2006 19:18:19 -0500")
+In-reply-to: <87d5b5cg4w.fsf@newton.gmurray.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,27 +19,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Brian Lewis <bsl04@uark.edu> writes:
+On Sun, 13 Aug 2006 07:18:55 +0100
+Graham Murray <graham@gmurray.org.uk> wrote:
 
-> I run a servlet container that wants to listen on TCP 8080. I want to
-> redirect TCP 80 on my machine to 8080 on the same machine.
->
-> If I do -t nat -I PREROUTING -i $IF -d $IP -p tcp --dport 80 -j REDIRECT
-> --to-port 8080, it works in that I reach the 8080 server when I connect
-> to 80.
->
-> But I have to allow 8080 through. Is there a way to provide access to the
-> 8080 server via port 80 without having to allow 8080?
+> Brian Lewis <bsl04@uark.edu> writes:
+> 
+> > I run a servlet container that wants to listen on TCP 8080. I want to
+> > redirect TCP 80 on my machine to 8080 on the same machine.
+> >
+> > If I do -t nat -I PREROUTING -i $IF -d $IP -p tcp --dport 80 -j REDIRECT
+> > --to-port 8080, it works in that I reach the 8080 server when I connect
+> > to 80.
+> >
+> > But I have to allow 8080 through. Is there a way to provide access to the
+> > 8080 server via port 80 without having to allow 8080?
+> 
+> Would the following work?
+> 
+> iptables -t mangle -A PREROUTING -p tcp --dport 80 -j MARK
+> --set-mark 1
+> 
+> iptables -A INPUT -m mark --mark 1 -j ACCEPT
+> iptables -A INPUT -p tcp --dport 8080 -j DROP
 
-Would the following work?
-
-iptables -t mangle -A PREROUTING -p tcp --dport 80 -j MARK
---set-mark 1
-
-iptables -A INPUT -m mark --mark 1 -j ACCEPT
-iptables -A INPUT -p tcp --dport 8080 -j DROP
-
+That in conjuction with the REDIRECT rule seems to work well. Thank you.
 
