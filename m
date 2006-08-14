@@ -1,10 +1,12 @@
-From: Osvaldo Andrade <osvaldo_andrade@yahoo.com.br>
-Subject: DNAT - Load Balance
-Date: Mon, 14 Aug 2006 11:33:35 -0300 (ART)
-Message-ID: <20060814143335.31632.qmail@web53408.mail.yahoo.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: issue with 'gre' over nat
+Date: Mon, 14 Aug 2006 19:13:58 +0200
+Message-ID: <44E0AF56.6080102@plouf.fr.eu.org>
+References: <OF9E9DDECA.67360F0D-ON832571C7.004F26DB-832571C7.005F0D4F@powers.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <OF9E9DDECA.67360F0D-ON832571C7.004F26DB-832571C7.005F0D4F@powers.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,41 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I=B4m a iptables user and i=B4ve got a kind of problem in
-a load balance through NAT situation.=20
-=20
-Well, I have one Aplication Server (WebSphere) whose
-open a socket to another server called CommServer and
-it cannot support connections any more, so we decided
-to add another CommServer and uses a NAT for load
-balancnig.=20
-=20
-The following is the nat rule i=B4ve tested:=20
-=20
-/sbin/iptables -t nat -A PREROUTING -d 192.168.89.44
--p tcp --dport 9000 -j DNAT --to
-192.168.89.158-192.168.89.159=20
-=20
-Whenever i use the tcpdump, i got all socket
-connections passing by the same host(CommServer).
-After some read about the subject i undestand its
-occurring due to a round robin implementation on DNAT
-in iptables, whose uses the source host to make the
-load balance instead packages, and i=B4m always gonna
-have only one client source.=20
-=20
-Is there any way to use a nat for load balancing when
-i have only one source ?=20
-=20
-Is something wrong on my string rule ?=20
-=20
-Thanks,=20
-Osvaldo Andrade
+Hello,
 
-__________________________________________________
-Fale com seus amigos  de gra=E7a com o novo Yahoo! Messenger=20
-http://br.messenger.yahoo.com/=20
+thiago@powers.com.br a =E9crit :
+>=20
+> nated boxes -> iptables gateway -> internet -> vpn server (runs pptp, a=
+nd=20
+> has iptables also)
+>=20
+> Note:1) allways trying one connection at time, 2) connection tracking=20
+> module is loaded
+>=20
+> I can establish vpn connections (and acctually make use of it) with the=
+=20
+> remote vpn server many times, when the requests are originated from the=
+=20
+> same box (behind nat); if another computer behind this same nat tries t=
+o=20
+> connect this vpn server, the tunnel doesn't come up.
+
+Have you tried with the PPTP conntrack and NAT modules ip_conntrack_pptp=20
+and ip_nat_pptp loaded ?
+If your kernel is older than 2.6.14, you may need to patch and compile=20
+your kernel with the pptp-conntrack-nat patch from the patch-o-matic-ng=20
+(older than patch-o-matic-ng-20060512).
 
