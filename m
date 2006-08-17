@@ -1,11 +1,10 @@
-From: "Jon Wilson" <jon.wilson@3waynetworks.com>
-Subject: Help needed on NAT and raw sockets for telecoms product
-Date: Thu, 17 Aug 2006 11:21:25 +0100
-Message-ID: <93EDDD37BB21F242B60066B66AC0D657836E5A@euw0300240.xe2hosting.net>
+From: Marcelo Salavee Lemos <marcelo@fm.usp.br>
+Subject: problem module psd with kernel-2.6.17.7
+Date: Thu, 17 Aug 2006 15:44:42 -0300
+Message-ID: <44E4B91A.8080905@fm.usp.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,132 +15,89 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi, newbie here.  I've searched the web and archives for info on this
-and so far failed to find the info I need.  Apologies if I'm going over
-old ground, just steer me in the direction of any existing
-threads/FAQs/docs and I'll slink off to do some reading.  Thanks!
+Hi,
 
-The situation I have is:
+I migrate my kernel 2.6.16.22 for 2.6.17.7 and i recompile my 
+iptables-1.3.5-20060816 with patch-o-matic-ng aplying module psd.
+When i execute:
 
-  * RH9, 2.4.22 kernel with RT Linux 3.2
-
-  * Various bits of hardware and software on this host allow
-    wireless equipment to communicate with it, encapsulating
-    IP packets over the air interface.  I.e. IP packets arrive
-    in my application from the wireless equipment having never
-    traversed the Linux IP stack or host Ethernet i/f.
-
-  * The wireless equipment runs applications using IP and each bit
-    of wireless equipment has been allocated a 10.x.x.x address.
-
-  * The host has a single Ethernet interface.  This happens to
-    currently be on a private 192.168.0.x net but could have a
-    public address.
-
-So....=20
-
-Wireless  <> Encap IP  <> Proprietary <> Ethernet <>  LAN/Internet
-Equipment    packets      host app         eth0
-10.x.x.x     over air                   192.168.0.x
-
-                 \-------- linux host  --------/
-
-What I want to achieve is:
-
-  * A packet with src address 10.x.x.x arriving from wireless
-    equipment is sent from the host app, out of eth0, having
-    been NAT'd.
-
-  * A packet arriving from the LAN/Internet is NAT'd and if
-    the dst IP is 10.x.x.x it is processed by the host app
-    to be sent on to the correct bit of wireless equipment.
-
-  * The NAT should work for all TCP/UDP/ICMP packets,
-    probably FTP and possibly other protocols that embed
-    IP info.
-
-It seemed like I could do this by:
-
-  * Set up POSTROUTING masquerading on eth0 for packets with
-    a source address of 10.x.x.x.
-
-  * Send packets that arrive from the wireless equipment
-    from my host app using raw sockets (without modification).
-    These would then be sent out of eth0 having been NAT'd.
-
-  * Sniff for received eth0 packets in my host app, e.g. using
-    libpcap with a host 10.x.x.x filter, thus picking up post
-    NAT packets destined for the wireless equipment.
-    Knowing the dst address then lets me route the packet over
-    the air interface to the correct bit of wireless equipment.
-
-  * Setup an INPUT filter on 10.x.x.x to DROP packets to stop
-    the kernel responding to packets destined for the wireless
-    equipment.
-
-I've tried this, and I find the NAT doesn't work.  So far I've only
-tried the outbound (wireless equipment -> internet) direction and the
-packets leave eth0 with their original 10.x.x.x address.
-
-I have read that the netfilter code is bypassed for raw sockets but if I
-set up a DROP filter in the OUTPUT table for packets with src address
-10.x.x.x they *are* dropped so it seems that this isn't true (at least
-wrt the OUTPUT table).
-
-Should the setup above work?!  If not, where am I going wrong and does
-anyone have any suggestions as to how I can do this?
-
-If it should work, that's great (as it'll possibly save me writing a NAT
-:-) ), but I must be doing something wrong in the setup and any pointers
-as to how to debug it would be appreciated!
-
-Output from various related cmds shown below.
-
-Thanks in advance,
-
-Jon
+iptables -A INPUT -m psd -j DROP
 
 
-# cat /proc/sys/net/ipv4/ip_forward
-1
+I have in dmesg:
 
-# iptables -L -v
+ip_conntrack version 2.4 (7168 buckets, 57344 max) - 236 bytes per conntrack
+ip_tables: (C) 2000-2006 Netfilter Core Team
+netfilter PSD loaded - (c) astaro AG
+ip_tables: psd match: invalid size 0 != 12
 
-Chain INPUT (policy ACCEPT 1147K packets, 174M bytes)
-pkts bytes target     prot opt in     out     source     destination
-   0     0 DROP       all  --  eth0   any     anywhere   10.0.0.0/8
 
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source    destination
+lsmod:
 
-Chain OUTPUT (policy ACCEPT 900K packets, 120M bytes)
- pkts bytes target     prot opt in     out     source    destination
+Module                  Size  Used by
+ipt_layer7             12472  50
+xt_multiport            4103  4
+ipt_psd                44691  0
+ipt_TOS                 2776  20
+ipt_LOG                 7240  50
+xt_state                2761  3
+xt_tcpudp               4009  80
+xt_limit                3129  3
+iptable_mangle          3190  1
+iptable_filter          3295  1
+ip_nat_h323             6475  0
+ip_conntrack_h323      49758  1 ip_nat_h323
+ip_nat_ftp              3789  0
+ip_conntrack_ftp        7470  1 ip_nat_ftp
+iptable_nat             7935  1
+ip_nat                 16165  3 ip_nat_h323,ip_nat_ftp,iptable_nat
+ip_tables              13472  3 iptable_mangle,iptable_filter,iptable_nat
+ip_conntrack           47936  7 
+xt_state,ip_nat_h323,ip_conntrack_h323,ip_nat_ftp,ip_conntrack_ftp,iptable_nat,ip_nat
+nfnetlink               6131  2 ip_nat,ip_conntrack
+x_tables               12774  10 
+ipt_layer7,xt_multiport,ipt_psd,ipt_TOS,ipt_LOG,xt_state,xt_tcpudp,xt_limit,iptable_nat,ip_tables
+intel_agp              21240  1
+shpchp                 36776  0
+i8xx_tco                6711  0
+i2c_i801                8646  0
+i2c_core               17886  1 i2c_i801
+skge                   35045  0
+sk98lin               164242  0
 
-# iptables -L -v -t nat
 
-Chain PREROUTING (policy ACCEPT 15393 packets, 1656K bytes)
- pkts bytes target     prot opt in     out     source    destination
+When i use iptables-1.3.5 the error is:
 
-Chain POSTROUTING (policy ACCEPT 19135 packets, 1205K bytes)
- pkts bytes target      prot opt in     out     source     destination
-    0     0 MASQUERADE  all  --  any    eth0    10.0.0.0/8 anywhere
+Unknown error 4294967295
 
-Chain OUTPUT (policy ACCEPT 19160 packets, 1208K bytes)
- pkts bytes target     prot opt in     out     source    destination
 
-# lsmod
+Anybody help me?
 
-Module                  Size  Used by    Not tainted
-ipt_state               1080   0  (autoclean)
-ipt_MASQUERADE          2296   1  (autoclean)
-iptable_nat            22456   1  [ipt_MASQUERADE]
-ip_conntrack           29960   2  [ipt_state ipt_MASQUERADE iptable_nat]
-iptable_filter          2444   0  (autoclean)
-ip_tables              16320   6  [ipt_state ipt_MASQUERADE iptable_nat
-iptable_filter]
-8139too                18312   1
+
+Tks
+Marcelo
+
+---------------------------------------------------------------------
+Esta mensagem pode conter informacao confidencial.
+Se voce nao for o destinatario ou a pessoa autorizada a receber
+esta mensagem, nao podera usar, copiar ou divulgar as informacoes nela
+contidas ou tomar qualquer acao baseada nessas informacoes. Se
+voce recebeu esta mensagem por engano, favor avisar imediatamente o
+remetente, respondendo o e-mail e, em seguida, apague-o.
+Agradecemos sua cooperacao.
+
+This message may contain confidential information.
+If you are not the addressee or authorized person to receive it for the
+addressee, you must not use, copy, disclose or take any action based on
+this message or any information herein. If you have received this message
+in error, please advise the sender immediately by replying this e-mail 
+message and delete it.
+Thanks in advance for your cooperation.
+----------------------------------------------------------------------
+                  Faculdade de Medicina USP
+----------------------------------------------------------------------
 
 
