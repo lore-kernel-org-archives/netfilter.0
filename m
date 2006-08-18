@@ -1,12 +1,10 @@
-From: matteo@cisilino.com
-Subject: Re: block multimedia protocols
-Date: Fri, 18 Aug 2006 15:44:20 +0200
-Message-ID: <200608181544.21012.matteo@cisilino.com>
-References: <018401c6c2c4$70759350$0419a8c0@fly>
+From: "Leonardo Marques" <surf3r0@gmail.com>
+Subject: Bridge speed doubts
+Date: Fri, 18 Aug 2006 14:24:37 +0000
+Message-ID: <eb5ae9cc0608180724gfc3d18cndde7a1d88d298d8d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <018401c6c2c4$70759350$0419a8c0@fly>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,28 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-9"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Lista IPTABLES <netfilter@lists.netfilter.org>
 
-Alle 14:47, venerd=EC 18 agosto 2006, Pablo Sanchez ha scritto:
-> > -----Original Message-----
-> > From: netfilter-bounces@lists.netfilter.org
-> > [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
-> > matteo@cisilino.com
-> > Sent: Friday, August 18, 2006 8:01 AM
-> > To: netfilter@lists.netfilter.org
-> > Subject: block multimedia protocols
-> >
-> > Hi all , I'd like to know if there's a way to block certain
-> > multimedia casting
-> > protocols , Is it possible?
->
-> One thought is to use L7 (http://l7-filter.sourceforge.net/) to classify =
-by
-> protocol and DROP accordingly.  I don't believe there will be a single
-> solution which will cover your needs so you'll have to cobble a solution
-> together; not terribly difficult I would think.  Try to shoot to block 95%
-> of the castings.  :)
->
-> -pablo
+Hey guys,
+
+I have a bridge with 4 ethernet cards, 3 are 10/100 mb/s and 1 is 10
+mb/s . I having a low speed at bridge, all bridge ports are working at
+10 mb/s i think that is occurring because I have one 10mb/s interface
+on the array.
+
+All the 10/100 cards are connected with others 10/100 connections, and
+the 10 card are connected with another 10 card. So, i want between de
+10/100 cards a traffic speed in a 100 mb/s speed and between 10 cards
+or 10/100 - 10 a 10 mb/s traffic speed.
+
+Anyone know if is possible do it and how to do it?
+
+Im using the packet bridge-utils.
+
+Thanks for attention.
+
+-- 
+------------------------------
+ Leonardo Marques
+   www.analyx.org
+------------------------------
 
