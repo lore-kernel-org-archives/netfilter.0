@@ -1,10 +1,11 @@
-From: longraider <longraider@gazeta.pl>
-Subject: Where the de-SNAT actually takes place?
-Date: Sat, 19 Aug 2006 19:38:40 +0200
-Message-ID: <44E74CA0.9080808@gazeta.pl>
+From: "Kelvin Proctor" <Kelvin.Proctor@citect.com>
+Subject: RE: possibility to multiply packets?
+Date: Sun, 20 Aug 2006 14:53:12 +1000
+Message-ID: <DE7AB3268C8CB149ADA35F54287DC68F0652CA98@TEL-MAIL01.citect.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,49 +19,32 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi
-I've sent this post on the c.o.l.networking also, and after that I've
-found this mailing list, so please forgive this crossposting, as I don't
-expect answer from c.o.l.n to this question.
+> Is there any possibility to intentionally (mis)configure
+> netfilter to duplicate packets?
 
-I've been reading a bit about packet traversal in the linux kernel but
-apparently my linux box doesn't like theory very much ;-)
-My config:
-linux-2.6.14.2 with imq patch
-eth0 - iface where two inet connections are attached
-eth1 - server
-eth2 - LAN
-There is SNAT involved on one net connection. The other conn is for
-servers, and there is proxy-arp active (at eth0 and eth1).
+Marcus,
 
-I type:
-iptables -t nat -A PREROUTING -i eth0 -j LOG
-And after that, dmesg shows something like that:
-17:08:53 IN=eth0 OUT= SRC=some_remote_IP DST=IP_of_the_linux_box
+I needed to do something a bit crazy like this recently. I was wanting
+to get packets to be re-transmitted to multiple interfaces.
 
-Shouldn't be there DST=10.0.0.5 for example (ie. de-SNATed)?
+I have found the ROUTE target module to be really great for this
+purpose.  If you use the --tee option a duplicate of the packet is
+create and routed in some manner that you select.
 
-I've found that on google:
-http://lists.netfilter.org/pipermail/netfilter/2003-July/045355.html
-And that is weird. I think that in my kernelversion this is implemented
-in different way, but actually I don't know what is going on.
+This would certainly be an option.
 
-And all that I want to do is ingress queuing using IMQ. I want to fwmark
-packets according to their de-SNATed destination adress (and some other
-things also), and then put them into the IMQ ingress queue.
-I could use the packet matching available in the ingress queue itself
-(by ip tool), but I don't know if the packets that go into IMQ are
-de-SNATed or not.
+I was using a Fedora Code 5 box which unfortunately does not have the
+ROUTE module patched into the kernel, but in this case patch-o-matic is
+your friend.
 
-So, where the de-SNAT actually takes place?
+For more details see:
 
-BTW is this diagram correct?
-http://www.docum.org/docum.org/kptd/
-I think not, since traversing the magle PREROUTING can't occur
-simulatenously with de-MASQ. And is this de-MASQUERADE a de-SNAT also?
+http://www.netfilter.org/projects/patch-o-matic/pom-extra.html#pom-extra
+-ROUTE
 
--- 
-mati
+for more information.
 
+Hope this helps,
 
+Kelvin
 
