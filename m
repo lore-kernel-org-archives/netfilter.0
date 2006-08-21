@@ -1,13 +1,9 @@
-From: "Gavin White" <white.gavin@gmail.com>
-Subject: Re: load balancing by source IP address
-Date: Mon, 21 Aug 2006 16:39:18 +0100
-Message-ID: <451eaded0608210839od0e55e4ibe014f682761a504@mail.gmail.com>
-References: <451eaded0608210616y1c7752e2r18e30dbd1879e50c@mail.gmail.com>
-	<1340252840406979389@unknownmsgid>
+From: cerise-netfilter@l.armory.com
+Subject: connrate
+Date: Mon, 21 Aug 2006 15:01:37 -0700
+Message-ID: <20060821220137.GB26225@boogeyman>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1340252840406979389@unknownmsgid>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,61 +15,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Martijn Lievaart <m@rtij.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On 8/21/06, Martijn Lievaart <m@rtij.nl> wrote:
-> <citaat van="Gavin White">
-> > Hello,
-> >
-> > I would like to use iptables SNAT/DNAT to provide load balancing for
-> > an inbound web service. The service is sticky, that is to say, users
-> > must be redirected to the same machine during a user session, which
-> > can span several TCP sessions.
-> >
-> > One simple way to do this would be by redirecting incoming connections
-> > based on their source IP address. Since addresses might not be evenly
-> > distributed through the address space, and many customers might be
-> > concentrated in particular regions, I would like to specify a filter
-> > using the last octet, ie. *.*.*.0-127 redirects to server A, and
-> > *.*.*.128-255 redirects to server B. I would also be happy creating
-> > 255 rules if a last - octet range is not possible.
->
-> I think this will do the trick.
->
-> -i $EXT -s 0.0.0.0/0.0.0.128 -j SNAT $A
-> -i $EXT -j SNAT $B
+Hi!
 
+I've been playing around with iptables in conjunction with tc to shape traffic.
+It's been working great with the exception of an interesting problem.
 
-This approach works perfectly, thank you.
+I've divided my traffic into three queues going by the TOS on packets.  I set
+them with iptables based on ports and split them into interactive traffic,
+less important traffic, and bulk traffic (which has a bandwidth limit via htb).
 
-Gavin
+The problem in question is with ssh and scp.  Both forms of traffic go to port
+22.  I want to preserve the interactivity of ssh and throw scp traffic into the
+bulk traffic queue.
 
+Lacking any immediately obvious way of figuring out which is which, I disabled
+scp on sshd and started a second instance which allows scp and I mark traffic
+to the second one as bulk.
 
+What I'd really like to do though is keep scp open on port 22 to spare my users
+a curveball.  So I was thinking of using connrate to mark traffic > 25k/s or
+so.  This'll capture some ssh traffic, but when the session calms down, it'll
+go back into the interactive queue.
 
->
-> > Does anyone have any suggestions on how to do this, or other, more
-> > sensible approaches to sticky load balancling?
->
-> I think you could the same with the nth and recent matches to achieve
-> better load balancing, but it would be tricky (and not persistent across
-> firewall reloads). Something along these  lines:
->
-> -i $EXT -j LOADBALANCE
->
-> LOADBALANCE chain:
-> -m recent -name loadbalA -rcheck -update -j SNAT $A
-> -m recent -name loadbalB -rcheck -update -j SNAT $B
-> -m nth --every 2 -m recent -name loadbalA -set -j SNAT $A
-> -m recent -name loadbalB -set -j SNAT $B
->
->
-> For true load balancing (taking the load of the webservers into account)
-> you'll need something else, iptables alone cannot do that.
->
-> HTH,
-> M4
->
->
+The problem is that connrate didn't install when I emerged it on my gentoo.  I
+snagged my own copy and hacked the Makefile to include connrate in the 
+OPTIONALS and it would really like to compile, but a header file in the vanilla
+2.6.15.1 kernel source isn't there: linux/netfilter_ipv4/ipt_connrate.h
+
+I'm not really sure what I can do to solve the problem.  I can't find a 
+reference to the header via google.
+
+So, I'm looking for one of two things.  Either a way to get connrate capability
+or a more elegant solution to my scp/ssh problem.  8)
+
+-Phil/CERisE
 
