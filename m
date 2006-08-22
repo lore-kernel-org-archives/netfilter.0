@@ -1,41 +1,38 @@
-From: Damjan <gdamjan@mail.net.mk>
-Subject: Re: connrate
-Date: Tue, 22 Aug 2006 02:26:32 +0200
-Message-ID: <20060822002632.GA22161@legolas.on.net.mk>
-References: <20060821220137.GB26225@boogeyman>
-Reply-To: netfilter@lists.netfilter.org
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: ipt_MARK/xt_MARK usage problem
+Date: Tue, 22 Aug 2006 08:21:40 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0608220815560.24532@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20060821220137.GB26225@boogeyman>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750768AbWHVGV7@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, netfilter@lists.netfilter.org
 
-> I've divided my traffic into three queues going by the TOS on packets.  I set
-> them with iptables based on ports and split them into interactive traffic,
-> less important traffic, and bulk traffic (which has a bandwidth limit via htb).
-> 
-> The problem in question is with ssh and scp.  Both forms of traffic go to port
-> 22.  I want to preserve the interactivity of ssh and throw scp traffic into the
-> bulk traffic queue.
-
-I *thought* that OpenSSH would set the TOS bit differently on interactive SSH
-sessions and on file transfer sessions? Have you tried it? 
+Hello,
 
 
+kernel 2.6.17 ships with xt_MARK, but iptables 1.3.5 still uses ipt_MARK. 
+In essence, I cannot use `iptables -j MARK` giving me 
+
+# iptables -A INPUT -j MARK --set-mark 1
+iptables: Unknown error 4294967295
+
+I have seen this before and the problem behind this strange error (-1) is 
+that the .targetsize/.matchsize variables in the kernel modules do not 
+match their userspace parts.
+
+However, this time it seems to be something different:
+
+# iptables -t mangle -A INPUT -j MARK --set-mark 1
+
+Works without problems. Am I missing something?
+How do I get MARK back to work in -t filter -- possibly without hacking in 
+xt_MARK.c?
+
+
+
+
+Jan Engelhardt
 -- 
-damjan | дамјан
-This is my jabber ID -->         damjan@bagra.net.mk 
- -- not my mail address, it's a Jabber ID --^ :)
-
