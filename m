@@ -1,13 +1,10 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: Problems configuring iptables
-Date: Wed, 23 Aug 2006 20:22:24 +0200
-Message-ID: <44EC9CE0.10308@rtij.nl>
-References: <580B00011E6B2F4980CAC67A08FECC3AF765CE@rpo.oldplacerville.csvaluation.lan>	<44EC95B0.1090808@ncemch.org>
-	<44EC966C.6000002@ncemch.org>
+From: Martin Metzker <martinmetzker@gmx.net>
+Subject: change destination port
+Date: Wed, 23 Aug 2006 22:39:07 +0200
+Message-ID: <44ECBCEB.3080700@gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44EC966C.6000002@ncemch.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,66 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Matt Singerman <msingerman@ncemch.org>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Matt Singerman wrote:
+hello world!
 
-> Wow, that came out looking all messed up, let me try sending that again:
->
-> Hmmm...  That is definitely part of it, yeah.  But there is something 
-> else going on here.
->
-> So I tried changing the chain policy to ACCEPT and to just block all 
-> traffic using an iptables rule.  When I implement the rules as 
-> follows, things work:
->
-> Chain FORWARD (policy ACCEPT)
-> target     prot opt source               destination       ACCEPT     
-> tcp  --  x.y.z.116            x.y.z.120     tcp dpt:ssh 
-> flags:FIN,SYN,RST,ACK/SYN
-> DROP       tcp  --  anywhere             anywhere      tcp dpt:ssh 
-> flags:FIN,SYN,RST,ACK/SYN
->
-> As you can see, that is just blocking all traffic from anywhere to 
-> anywhere on port 22 after allowing traffic from x.y.z.116 to x.y.z.120 
-> through.  (x.y.z.116 and x.y.z.120 are both on the same subnet, but 
-> 120 is behind the firewall and 116 is not.)  x.y.z.116 can SSH in to 
-> x.y.z.120, but nothing else can.
->
-> If I try to change it so that it isn't just blocking traffic on port 
-> 22, but rather all traffic:
->
-> Chain FORWARD (policy ACCEPT)
-> target     prot opt source               destination       ACCEPT     
-> tcp  --  x.y.z.116            x.y.z.120     tcp dpt:ssh 
-> flags:FIN,SYN,RST,ACK/SYN
-> DROP       tcp  --  anywhere             anywhere
->
-> No SSH connections can get through at all, even from host x.y.z.116.
->
-> Any ideas what could be causing this odd behavior?
->
+i need to modify the dport of a locally generated packet.
+i want an ipsec tunnel between my router here (dynamic ip) and a box 
+behind a cisco pix firewall (static ip). the problem is that the pix is 
+an ipsec endpoint as well so forwarding port 500 on the pix is a bad 
+idea. the nat traversal option only encapsulates esp packets so i have 
+to make ike work by myself.
+the idea is to change the dport from 500 to some other port, say 2000. 
+as far as i can tell openswan does not support that, so i was/am hoping 
+i can use iptables to change the dport on packets leaving my box with 
+destination X.X.X.X.
 
-Nothing odd here. First you allow all all syns from .116 to .120. You 
-dorp all other syns. You allow all other traffic, which includes all 
-non-syn traffic. In the second scenario you aloow the syns, but frop all 
-non syn traffic. So the syn gets through, but the syn-ack from the ssh 
-server gets dropped.
+iptables -A OUTPUT -t nat -p tcp -d X.X.X.X --dport 500 -J DNAT 
+--to-destination X.X.X.X:2000
+doesn't do the trick. in fact locally generated outbound ike packets 
+don't seem to care about OUTPUT on table nat. the postrouting chain does 
+not support target DNAT so i'm about to believe i can't do it.
 
-What you should be doing is this:
+this mailing list is sort of my last hope. if i can't find help here i 
+might have to start cross compiling :-(
 
-# let through all traffic from established connections
--A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-# let through the connection request
--A FORWARD -p tcp --dport 22 -s x.y.z.116 -d x.y.z.130 -j ACCEPT
-# log and drop all other traffic
--A FORWARD -j LOG
--A FORWARD -j DROP
+thanks in advance
 
-For further information, read the howtos at the www.netfilter.org site.
-
-HTH,
-M4
-
+martin
 
