@@ -1,10 +1,13 @@
-From: Brett Curtis <dashnu@gmail.com>
-Subject: x_tables xt_esp match problem.
-Date: Wed, 23 Aug 2006 14:18:16 -0400
-Message-ID: <D437F596-3DAB-43DB-88D5-1829EF835672@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v752.2)
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Problems configuring iptables
+Date: Wed, 23 Aug 2006 20:22:24 +0200
+Message-ID: <44EC9CE0.10308@rtij.nl>
+References: <580B00011E6B2F4980CAC67A08FECC3AF765CE@rpo.oldplacerville.csvaluation.lan>	<44EC95B0.1090808@ncemch.org>
+	<44EC966C.6000002@ncemch.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <44EC966C.6000002@ncemch.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,34 +18,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
-To: Netfilter Lists <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Matt Singerman <msingerman@ncemch.org>
+Cc: netfilter@lists.netfilter.org
 
-Hello
+Matt Singerman wrote:
 
-I was using a 2.6.14 kernel with a esp match mark rule for my ipsec  
-connection. However with kernel 2.6.17 iptables will not match esp  
-packets with the same rule.
+> Wow, that came out looking all messed up, let me try sending that again:
+>
+> Hmmm...  That is definitely part of it, yeah.  But there is something 
+> else going on here.
+>
+> So I tried changing the chain policy to ACCEPT and to just block all 
+> traffic using an iptables rule.  When I implement the rules as 
+> follows, things work:
+>
+> Chain FORWARD (policy ACCEPT)
+> target     prot opt source               destination       ACCEPT     
+> tcp  --  x.y.z.116            x.y.z.120     tcp dpt:ssh 
+> flags:FIN,SYN,RST,ACK/SYN
+> DROP       tcp  --  anywhere             anywhere      tcp dpt:ssh 
+> flags:FIN,SYN,RST,ACK/SYN
+>
+> As you can see, that is just blocking all traffic from anywhere to 
+> anywhere on port 22 after allowing traffic from x.y.z.116 to x.y.z.120 
+> through.  (x.y.z.116 and x.y.z.120 are both on the same subnet, but 
+> 120 is behind the firewall and 116 is not.)  x.y.z.116 can SSH in to 
+> x.y.z.120, but nothing else can.
+>
+> If I try to change it so that it isn't just blocking traffic on port 
+> 22, but rather all traffic:
+>
+> Chain FORWARD (policy ACCEPT)
+> target     prot opt source               destination       ACCEPT     
+> tcp  --  x.y.z.116            x.y.z.120     tcp dpt:ssh 
+> flags:FIN,SYN,RST,ACK/SYN
+> DROP       tcp  --  anywhere             anywhere
+>
+> No SSH connections can get through at all, even from host x.y.z.116.
+>
+> Any ideas what could be causing this odd behavior?
+>
 
-iptables -t mangle -A INPUT --proto esp -j MARK --set-mark 1
-iptables -A INPUT -i eth0 -m mark --mark 1 -j LOG --log-prefix "Mark 1:"
-iptables -A INPUT -i eth0 -m mark --mark 1 -j ACCEPT
+Nothing odd here. First you allow all all syns from .116 to .120. You 
+dorp all other syns. You allow all other traffic, which includes all 
+non-syn traffic. In the second scenario you aloow the syns, but frop all 
+non syn traffic. So the syn gets through, but the syn-ack from the ssh 
+server gets dropped.
 
-My ipsec connection uses NAT-T and the esp packets are encapsulated  
-inside UDP 4500. If I match and mark port 4500 udp my VPN works as  
-expected.
+What you should be doing is this:
 
-Did something change related to the matching of esp packets that I am  
-not aware of?
+# let through all traffic from established connections
+-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+# let through the connection request
+-A FORWARD -p tcp --dport 22 -s x.y.z.116 -d x.y.z.130 -j ACCEPT
+# log and drop all other traffic
+-A FORWARD -j LOG
+-A FORWARD -j DROP
 
-Thanks for your time.
+For further information, read the howtos at the www.netfilter.org site.
 
--BC
-
-Brett Curtis
-dashnu@gmail.com
-http://teh.sh.nu
-
-
+HTH,
+M4
 
 
