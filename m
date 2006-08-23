@@ -1,13 +1,10 @@
-From: "Pablo Sanchez" <pablo@blueoakdb.com>
-Subject: P-O-M  - cvs server down?
-Date: Wed, 23 Aug 2006 11:37:33 -0400
-Message-ID: <001d01c6c6ca$0dd2cc90$9e0110ac@chaussy>
-References: <44EB5BCA.2010504@dmusyd.edu>
-Reply-To: pablo@blueoakdb.com
+From: Matt Singerman <msingerman@ncemch.org>
+Subject: Problems configuring iptables
+Date: Wed, 23 Aug 2006 11:49:11 -0400
+Message-ID: <44EC78F7.4010106@ncemch.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44EB5BCA.2010504@dmusyd.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +15,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi all,
 
-Is the cvs server down?  From two machines on different ISP's (one in Canada
-and the other in Columbia) I've tried to check out netfilter in order to run
-P-O-M and I'm getting 'connection refused'  I can ping
-'pserver.netfilter.org' which leads me to believe the cvs server isn't
-running:
+I am new to iptables, so please bear with me here.  I am configuring 
+what I think is a fairy simple setup.  I have a linux box which is 
+acting as a network bridge that I want to install the firewall on.  It 
+has two ethernet cards: eth0 is attached to the internet, and eth1 is 
+connected to the internal network.  All machines inside the network use 
+static public IP addresses, so there is no need to use NAT services or 
+IP masquerading.  I am setting it up to only accept SYN packets on 
+certain TCP ports, then accept all packets on existing connections.  The 
+order would be:
 
-% cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
-Logging in to :pserver:cvs@pserver.netfilter.org:2401/cvspublic
-CVS password:
-cvs [login aborted]: connect to pserver.netfilter.org(213.95.27.115):2401
-failed: Connection refused
+ACCEPT SYN packets for certain TCP services.
+DENY all other SYN packets on other TCP services.
+ACCEPT all other TCP packets that are part of an existing connection.
+DENY all other TCP packets.
 
-I'm following the information found on:
+I started by changing the policies on INPUT AND FORWARD to drop all 
+packets by default, and OUTPUT to accept.
 
-http://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-2.h
-tml#ss2.1
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
 
-Which worked before.  :)
+Next, I added a rule to allow all traffic from the internal network to 
+the outside world:
 
-Cheers,
----
-Pablo Sanchez - Blueoak Database Engineering, Inc
-Ph:    819.459.1926          Toll free:  888.459.1926
-Cell:  819.918.9731                Pgr:  pablo_p@blueoakdb.com
-Fax:   603.720.7723 (US)
+iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
 
+Next, a rule to forward packets that are part of an existing connection 
+from eth0 to eth1.
+
+iptables -A FORWARD -i eth0 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+Same thing, but on the firewall...
+
+iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+And to allow all inputs from the internal network and local loopback to 
+the firewall.
+
+iptables -A INPUT -i eth1 -s 0/0 -d 0/0 -j ACCEPT
+iptables -A INPUT -i lo -s 0/0 -d 0/0 -j ACCEPT
+
+So after I set up these rules, if I understand iptables correctly, all 
+traffic from inside the network should flow out smoothly over the bridge 
+no matter what the internal IP address is nor what port the traffic is 
+on.  This, however, is not happening: no traffic can flow in or out of 
+the network.
+
+Also, if I try to add a rule to allow, say, SSH traffic to a specific 
+machine behind the firewall, I run into other problems.  If I type:
+
+iptables -A FORWARD -s 0/0 -d w.x.y.z -p tcp --dport 22 --syn -j ACCEPT
+
+This is, so far as I am aware, the format I would use.  However, when I 
+type iptables -L, the list just hangs just before listing that rule.
+
+Can anyone offer any pointers as to what I may be doing wrong, and what 
+I can do to get this working?  Thanks!
+
+Regards,
+
+Matt
 
