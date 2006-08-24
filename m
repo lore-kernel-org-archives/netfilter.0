@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Wol Magic Packets
-Date: Thu, 24 Aug 2006 07:45:59 +0200
-Message-ID: <000301c6c740$93b6e870$0101000a@tanjian>
-References: <J4H7AL$3755F2FB0EF94967751D3C49D3390021@libero.it>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: Re: Multiple ISP connection balancing
+Date: Thu, 24 Aug 2006 13:47:51 +0800
+Message-ID: <013f01c6c740$d6437fa0$0100a8c0@newlife>
+References: <1156397539.3014.4.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <J4H7AL$3755F2FB0EF94967751D3C49D3390021@libero.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,44 +19,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-claudio987@libero.it <mailto:claudio987@libero.it> wrote:
->> On Wed, August 23, 2006 11:33, claudio987\@libero\.it wrote:
->>> exsists a module that can recognize Magic packet used in wake on
->>> lan? 
->> 
->> No, not specifically.
->> 
->>> I'd like to drop Magic packets
->> 
-...
->> 
->> Port 7/udp being echo and port 9/udp being discard, I don't see why
->> you couldn't block these ports. 
->> 
-> 7 and 9 are default ports but Magica packets can also be
-> trasmitted trought other ports:
-> http://www.depicus.com/wake-on-lan/woli.aspx
-> as you can see, here you can specify port number.
 
-Yes. Well, I also received an email from Sietske van Zanen who thought
-more thoroughly than I did, but he hit the wrong butten and it was not
-sent to the list.
-This was his answer and I have to agree with him:
+From: "Myxomop" <myxomopmeister@gmail.com>
+> 
+> The problem is I cannot make neither of modules nth and random work.
+>
 
-[quote]
-I do not see what use it is, to block this on your firewall. WoL is a
-broadcast, hence it will already never traverse a firewall if it's
-configured correctly. On the local LAN segment they will never pass a
-firewall before reaching a LAN station. That's the whole idea of
-broadcasting.
- 
-The best thing to do is disable WoL on the workstations.
- 
--Sietse
-[/quote]
+This is a known problem because the nth and random kernel modules
+are not updated for newer kernel and so the maintainer has removed it
+from POM and the replacement for it hasn't been released yet.
+
+This url seems to have an "interim" solution, but I couldn't get it 
+compiled, probably require some minor tweaking in the Makefile.
+> 
+> http://freshmeat.net/p/jen_kernel/
+> look for random in the .tar.bz2
+> 
+
+Cheers.
 
 
-Gr,
-Rob
+
 
 
