@@ -1,11 +1,11 @@
-From: "notinh notien" <notinhnotien7@hotmail.com>
-Subject: Re: Port forwarding in special case (New problems )
-Date: Thu, 24 Aug 2006 06:26:31 +0700
-Message-ID: <BAY117-F15C3FA2C822E31959712EAF5470@phx.gbl>
-References: <20060805062110.8928.qmail@web56215.mail.re3.yahoo.com>
+From: Myxomop <myxomopmeister@gmail.com>
+Subject: Multiple ISP connection balancing
+Date: Thu, 24 Aug 2006 11:32:19 +0600
+Message-ID: <1156397539.3014.4.camel@localhost.localdomain>
+Reply-To: myxomopmeister@gmail.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060805062110.8928.qmail@web56215.mail.re3.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,235 +16,134 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: omasnjak@yahoo.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi, all.  Thanks for all the info.  However after I set it up, I actually 
-saw commnunication that my host  (LEO) is supposed to forward to back end 
-host (GEMINI), but it is kinda weird when the src and dst ip address of 
-packets leaving LEO and arrive at GEMINI is the same IP address.  I must 
-have done something wrong or something in my rules are missing.  Could the 
-experts here take a look and give me some pointers?
+Hi everybody!
 
-Thanks  in advance.
-NN
+I'm totally new to both linux and iptables.
 
-IPTABLES LOG on LEO
-Aug 23 15:41:46 leo kernel: PREROUTING IN=eth0 OUT= 
-MAC=00:e0:81:41:72:dc:00:12:1e:b6:14:97:08:00 SRC=xxx.xxx.xxx.212 
-DST=192.168.18.80 LEN=37 TOS=0x00 PREC=0x00 TTL=126 ID=65354 PROTO=UDP 
-SPT=1420 DPT=44335 LEN=17
-Aug 23 15:41:46 leo kernel: FORWARD-1 IN=eth0 OUT=eth0 SRC=xxx.xxx.xxx.212 
-DST=192.168.18.25 LEN=37 TOS=0x00 PREC=0x00 TTL=125 ID=65354 PROTO=UDP 
-SPT=1420 DPT=44335 LEN=17
-Aug 23 15:41:46 leo kernel: POST ROUTING IN= OUT=eth0 SRC=xxx.xxx.xxx.212 
-DST=192.168.18.25 LEN=37 TOS=0x00 PREC=0x00 TTL=125 ID=65354 PROTO=UDP 
-SPT=1420 DPT=44335 LEN=17
+I have multiple connections to the internet, and I want to unite them to
+get better summary bandwidth. I've searched the internet, and found that
+in recent past that was done with iptables by masquerading and packet
+balancing schemes like random and round-robin.
 
-LEO HOST
-tcpdump -vv -nn dst port udp 44335
-15:41:46.146609 IP (tos 0x0, ttl 126, id 65354, offset 0, flags [none], 
-proto 17, length: 37) xxx.xxx.xxx.212.1420 > 192.168.18.80.44335: [udp sum 
-ok] UDP, length 9
-15:41:46.147844 IP (tos 0x0, ttl 125, id 65354, offset 0, flags [none], 
-proto 17, length: 37) 192.168.18.25.1420 > 192.168.18.25.44335: [udp sum ok] 
-UDP, length 9
+The problem is I cannot make neither of modules nth and random work.
+With every argument different from --help for random and nth I get
+"Invalid argument" for iptables 1.3.0 and "Unknown error" with a very
+large number for version 1.3.5. Other modules work just as well as they
+have to.
 
-GEMINI HOST
-tcpdump -vv -nn udp and not port 53
-15:49:43.052465 IP (tos 0x0, ttl 125, id 65354, offset 0, flags [none], 
-length: 37) 192.168.18.25.1420 > 192.168.18.25.44335: [udp sum ok] UDP, 
-length: 9
+I've tried different versions both of POM and iptables, but that did
+not help. I also tried to compile kernel modules both statically and as
+modules, loading them all, but that didn't seem to help either.
 
-LEO Host
-iptables -L
-*nat :PREROUTING ACCEPT [127173:7033011]
-:POSTROUTING ACCEPT [31583:2332178]
-:OUTPUT ACCEPT [32021:2375633]
--A POSTROUTING  -d 192.168.18.25 -p udp --dport 44335 -j LOG --log-prefix 
-"POST ROUTING "
--A POSTROUTING  -d 192.168.18.25 -p udp --dport 44335 -j SNAT --to-source 
-192.168.18.25
+And can anyone explain me what libraries in /usr/local/lib/iptables/
+for?
 
--A PREROUTING -s ! 192.168.18.25 -d 192.168.18.80 -p udp --dport 44335 -j 
-LOG --log-prefix "PREROUTING "
--A PREROUTING -s ! 192.168.18.25 -d 192.168.18.80 -p udp --dport 44335 -j 
-DNAT --to-destination 192.168.18.25:44335
-COMMIT
+I'm using kernel 2.6.17.6 from kernel.org with Fedora3 distributive.
 
-*mangle
-:PREROUTING ACCEPT [444:43563]
-:INPUT ACCEPT [444:43563]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [402:144198] :POSTROUTING ACCEPT [402:144198]
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,PSH,URG 
--j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP -A 
-PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,PSH,URG 
--j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP -A 
-PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,PSH,URG 
--j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,PSH,URG 
--j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
--A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-COMMIT
+Here comes my loaded modules:
 
-*filter
-:INPUT DROP [1:242]
-:FORWARD ACCEPT [0:0]
-:OUTPUT DROP [0:0]
-:LOG_DROP - [0:0]
-:LOG_ACCEPT - [0:0]
-:icmp_packets - [0:0]
+nfnetlink 6936 0
+ipt_ULOG 8224 0
+ipt_TTL 2432 0
+ipt_ttl 2048 0
+ipt_TOS 2304 0
+ipt_tos 1792 0
+ipt_TCPMSS 4352 0
+ipt_SAME 2432 0
+ipt_REJECT 5376 0
+ipt_REDIRECT 2304 0
+ipt_recent 11404 0
+ipt_owner 2176 0
+ipt_nth 2464 0
+ipt_NETMAP 2176 0
+ipt_MASQUERADE 3456 0
+ipt_LOG 6784 0
+ipt_iprange 1920 0
+ipt_hashlimit 9224 0
+ipt_ECN 3200 0
+ipt_ecn 2432 0
+ipt_DSCP 2432 0
+ipt_dscp 1792 0
+ipt_ah 2048 0
+ipt_addrtype 2048 0
+iptable_raw 2176 0
+iptable_nat 7684 0
+iptable_mangle 3072 0
+ip_queue 10400 0
+ip_nat_tftp 1920 0
+ip_nat_pptp 6148 0
+ip_nat_irc 2816 0
+ip_nat_ftp 3584 0
+ip_nat_amanda 2432 0
+ip_nat 16692 10
+ipt_SAME, ipt_REDIRECT, ipt_NETMAP, ipt_MASQUERADE, iptable_nat,
+ip_nat_tftp, ip_nat_pptp, ip_nat_irc, ip_nat_ftp, ip_nat_amanda
+ip_conntrack_tftp 4500 1 ip_nat_tftp
+ip_conntrack_pptp 10896 1 ip_nat_pptp
+ip_conntrack_irc 6808 1 ip_nat_irc
+ip_conntrack_ftp 7580 1 ip_nat_ftp
+ip_conntrack_amanda 4744 1 ip_nat_amanda
+arpt_mangle 2816 0
+arptable_filter 2304 0
+arp_tables 11992 1 arptable_filter
+ipt_random 2176 0
+iptable_filter 3072 0
+ip_tables 13912 4
+iptable_raw, iptable_nat, iptable_mangle, iptable_filter
+x_tables 14212 28
+ipt_ULOG, ipt_TTL, ipt_ttl, ipt_TOS, ipt_tos, ipt_TCPMSS, ipt_SAME,
+ipt_REJECT, ipt_REDIRECT, ipt_recent, ipt_owner, ipt_nth, ipt_NETMAP,
+ipt_MASQUERADE, ipt_LOG, ipt_iprange, ipt_hashlimit, ipt_ECN, ipt_ecn,
+ipt_DSCP, ipt_dscp, ipt_ah, ipt_addrtype, iptable_nat, arpt_mangle,
+arp_tables, ipt_random, ip_tables
+tun 11392 1
+ppp_deflate 6272 1
+zlib_deflate 21536 1 ppp_deflate
+ppp_async 11392 1
+crc_ccitt 2176 1 ppp_async
+ppp_generic 24724 6 ppp_deflate, ppp_async
+slhc 7680 1 ppp_generic
+autofs4 21636 2
+rfcomm 37528 0
+l2cap 24324 5 rfcomm
+bluetooth 48612 4 rfcomm, l2cap
+sunrpc 154916 1
+vfat 13184 1
+fat 52252 1 vfat
+nls_utf8 2176 3
+ntfs 107508 3
+video 14980 0
+button 6544 0
+nvidia 4549460 12
+uhci_hcd 23052 0
+ehci_hcd 30472 0
+i2c_viapro 8852 0
+i2c_core 21904 10
+nvidia, i2c_viapro, b2c2_flexcop, mt352, mt312, bcm3510, stv0299,
+stv0297, nxt200x, lgdt330x
+sk98lin 160224 0
+8139too 26240 0
+mii 5888 1 8139too
+floppy 60524 0
+ext3 134408 2
+jbd 57876 1 ext3
+sata_via 8324 7
+libata 70028 1 sata_via
+sd_mod 18320 8
+scsi_mod 98028 2 libata, sd_mod
 
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A INPUT -p tcp -m tcp --dport 22  -s 192.168.68.0/24 -j LOG_ACCEPT
--A INPUT -p tcp -m tcp --dport 53 -j ACCEPT
--A INPUT -p udp -m udp --dport 53 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
--A INPUT -p udp -m udp --dport 44335 -j ACCEPT
--A INPUT -s 127.0.0.1 -j ACCEPT
--A INPUT -p icmp -j icmp_packets
--A INPUT -j LOG_DROP
+I'll be very glad if you can guess the problem; and if patch-o-matic
+method has become obsolete, I'd like to here how the problem is solved
+nowadays.
 
--A FORWARD -p udp -d 192.168.18.25 --dport 44335 --sport 1024:65535 -m state 
---state NEW -j LOG --log-prefix "FORWARD-1 "
--A FORWARD -p udp -d 192.168.18.25 --dport 44335 --sport 1024:65535 -m state 
---state NEW -j ACCEPT
-
--A FORWARD -m state --state NEW,ESTABLISHED,RELATED -j LOG --log-prefix 
-"FORWARD-2 "
--A FORWARD -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -m state --state ESTABLISHED,RELATED -j LOG --log-prefix 
-"FORWARD-3"
--A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
--A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 22 -d 192.168.18.0/24 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 25 -d 192.168.18.25 -j ACCEPT
--A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 80 -j ACCEPT
--A OUTPUT -p tcp -m tcp --dport 443 -j ACCEPT
--A OUTPUT -d 127.0.0.1 -j ACCEPT
--A OUTPUT -p icmp -j icmp_packets
--A OUTPUT -j LOG_DROP
-
--A LOG_DROP -j LOG --log-prefix "[IPTABLES DROP] : " --log-tcp-options 
---log-ip-options
--A LOG_DROP -j DROP
--A LOG_ACCEPT -j LOG --log-prefix "[IPTABLES ACCEPT] : " --log-tcp-options 
---log-ip-options
--A LOG_ACCEPT -j ACCEPT
-
--A icmp_packets -p icmp -m icmp --icmp-type 0 -j ACCEPT
--A icmp_packets -p icmp -m icmp --icmp-type 8 -j ACCEPT
--A icmp_packets -p icmp -m icmp --icmp-type 8 -j DROP
--A icmp_packets -p icmp -m icmp --icmp-type 3 -j ACCEPT
--A icmp_packets -p icmp -m icmp --icmp-type 11 -j ACCEPT
-COMMIT
+Regards, Myxomop
 
 
 
 
 
-
->From: Elvir Kuric <omasnjak@yahoo.com>
->To: notinh notien <notinhnotien7@hotmail.com>, 
->netfilter@lists.netfilter.org
->Subject: Re: Port forwarding in special case
->Date: Fri, 4 Aug 2006 23:21:10 -0700 (PDT)
->
->Hi,
->I think the next link will help you
->
->http://forums1.itrc.hp.com/service/forums/bizsupport/questionanswer.do?threadId=1032378&admit=-682735245+1154757766144+28353475
->
->just read threads carefuly. Instead port 80 you can
->put port 443 as well. Or both. In my case this work.
->And of course read
->http://iptables-tutorial.frozentux.net/iptables-tutorial.html
->
->best wishes
->
->--- notinh notien <notinhnotien7@hotmail.com> wrote:
->
-> > Hi. I am a newbie here,  I need some helps for my
-> > situation.
-> >
-> > My set up is that I have Apache as the web server
-> > and set it up so that it
-> > would do proxy reverse to the backend web server.
-> > It is all good and my
-> > user can use the front web server to view the
-> > content provided by the
-> > backend web server.
-> >
-> > So I only open my hardware firewall and forward all
-> > access to the front end
-> > server.  My front end server is a Linux box and have
-> > iptables to protect it.
-> >   Now i need to forward the ports that are not part
-> > of the Apache reverse
-> > proxy (80, 443) to the backend server.
-> >
-> > So you see, my front end server is not a gateway and
-> > does not provide NAT to
-> > any other server like a firewall gateway settings.
-> > I already have a
-> > hardware firewall to protect these two servers.
-> > These two servers are in
-> > the same subnet 192.168.0.0/24.  I only need it to
-> > forward ports to the
-> > backend server and return related data for
-> > connections from the back end on
-> > those ports to outside people.  I want people to
-> > have the impression that
-> > they are connecting to the same server because the
-> > software I used do not
-> > allow setting more than one IP address for all the
-> > services from the end
-> > user GUI.
-> >
-> > Could someone here show me how to do this?  Should
-> > NAT involve in this?
-> >
-> > Thanks.
-> >
-> >
->_________________________________________________________________
-> > Express yourself instantly with MSN Messenger!
-> > Download today it's FREE!
-> >
->http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
-> >
-> >
-> >
->
->
->__________________________________________________
->Do You Yahoo!?
->Tired of spam?  Yahoo! Mail has the best spam
->protection around
->http://mail.yahoo.com
->
->__________________________________________________
->Do You Yahoo!?
->Tired of spam?  Yahoo! Mail has the best spam protection around
->http://mail.yahoo.com
-
-_________________________________________________________________
-Express yourself instantly with MSN Messenger! Download today it's FREE! 
-http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
 
 
