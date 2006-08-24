@@ -1,10 +1,12 @@
-From: pub@vlab.mb.jhu.edu
-Subject: where is u32 matching module?
-Date: Thu, 24 Aug 2006 15:09:38 -0400
-Message-ID: <44EDF972.3010105@vlab.mb.jhu.edu>
+From: "Martijn Lievaart" <m@rtij.nl>
+Subject: Re: Poor forwarding performance
+Date: Thu, 24 Aug 2006 22:15:10 +0200 (CEST)
+Message-ID: <16177.7801033624$1156450578@news.gmane.org>
+References: <ca7df3760608241028n53544585rf25217b3053df384@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <ca7df3760608241028n53544585rf25217b3053df384@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,16 +18,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Alejandro Flores <alejandrorflores@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+<citaat van="Alejandro Flores">
+> I'm having an horrible performance with the traffic flow from and net
+> to another. I made some transfer tests and I can't get more than 5
+> MB/s.
 
-I am trying to match the receive window size in the incoming packets.
-What I can think of is using u32 module to match any 4 bytes of data.
-However, the iptables manual in fedora core 5 mentioned to look for
-details in kernel module, while the u32 module is not in my kernel
-source tree apparently. Is this module being replaced by something
-else I am not aware of? Is there any alternative to match the window size?
+That smells like a duplex mismatch. Do you have the same horrible
+performance without iptables connaction tracking?
 
---Bob
+M4
+
 
