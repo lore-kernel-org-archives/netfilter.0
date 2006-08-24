@@ -1,11 +1,14 @@
-From: "Yan Doldonov" <yand@seabak.com>
-Subject: NATing h.323 protocol stack
-Date: Thu, 24 Aug 2006 14:10:11 +0500
-Message-ID: <01ab01c6c75d$1beb01b0$fbb0660a@pilligrim>
-Reply-To: yand@seabak.com
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: allowing traffic through an iptables ruleset to a machine on a 
+ VM
+Date: Thu, 24 Aug 2006 11:15:44 +0200 (CEST)
+Message-ID: <53531.193.173.147.3.1156410944.squirrel@webmail.sterenborg.info>
+References: <44ED4E82.5050800@vivitec.com.au>
+	<49311.193.173.147.3.1156410166.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <49311.193.173.147.3.1156410166.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +22,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello everyone!
+On Thu, August 24, 2006 11:02, Rob Sterenborg wrote:
+...
+> What VM software are you using and how is networking for the VM's confi=
+gured?
+> When using VMware, I thought you'd be able to configure it in such way =
+that
+> you don't need NAT.
 
-Has any one got experience of setting up the H.323 devices running NATed? 
-We have a taske where we need to setup the h.323 sessions to work over a
-corporate VPN. Any comments or reference to useful literature I would
-appreciate.
+Correction, that seems to be on Windows only according to the docs (2.5).
 
-Thanks.
 
-+------------------------------------------+
-Yan Doldonov
-IT Consultant
-Seabak Outsourced IT Services
-www.seabak.net
-mail-to: yand@seabak.com
-mobile: +99450 3271502
-office: +99412 4972191
-+------------------------------------------+ 
+Gr,
+Rob
+
 
 
