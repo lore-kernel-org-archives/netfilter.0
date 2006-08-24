@@ -1,10 +1,12 @@
-From: Pawel Zawora <pzawora@interia.pl>
-Subject: IPSEC ping
-Date: Thu, 24 Aug 2006 13:18:39 +0200
-Message-ID: <44ED8B0F.2070009@interia.pl>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Wol Magic Packets
+Date: Thu, 24 Aug 2006 14:48:48 +0200 (CEST)
+Message-ID: <57237.193.173.147.3.1156423728.squirrel@webmail.sterenborg.info>
+References: <J4I52P$07AD17049DE455463CE6BF9E6D425F69@libero.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <J4I52P$07AD17049DE455463CE6BF9E6D425F69@libero.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,92 +17,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hello,
-
-I ve a vpn tunnel (native 2.6, openswan)
-
-I have the ipsec tunnel:
-
-host_A [IP_A]<-->[router IP_router]-----------host_B [IP_B]  host_C [ip_C]
-
-
-left IP_A
-right IP_B
-rightsubnet IP_C
-
-On host A:
-ip xfrm policy show
-
-src IP_A/32 dst IP_C/32
-        dir out priority 2080
-        tmpl src IP_A dst  IP_C
-                proto esp reqid 16385 mode tunnel
-
-openswans add routing
-IP_C via IP_router dev eth1
-
-
-tested with
-iptables -A FORWARD/INPUT -s IP_C -j ACCEPT
-iptables -A FORWAD/INPUT -d IP_C -j ACCEPT
-
-and without any rules.
-
-
-On host A:
-
-ping -I IP_A IP_C  give me no repspose...
-
-When I try to use tcpdump I discover strange information
-
-tcpdump -i eth1 -n src or dst IP_C
-
-IP IP_C>  IP_A: ICMP echo reply,
-IP IP_C > IP_A: ICMP echo reply,
-....
-
-I cant see echo request!
-
-but.......
-
-tcpdump -i eth1 -n src or dst IP_B
-
-IP IP_A > IP_B: ESP(spi....
-IP IP_B > IP_A: ESP(spi....
-IP IP_A > IP_B: ESP(spi....
-IP IP_B > IP_A: ESP(spi....
-.....
-
-What is wrong?
-What ping cannot see ICMP reply?
-Why tcpdump do not show me ICMP request?
-
-Thanks for any help
-
-Pawel
+Would you please be so kind to keep this discussion on the list by replyi=
+ng to
+it, not to me directly.
+Thanks.
 
 
 
+On Thu, August 24, 2006 14:23, claudio987\@libero\.it wrote:
+>> Yes. Well, I also received an email from Sietske van Zanen who thought
+>> more thoroughly than I did, but he hit the wrong butten and it was not=
+ sent
+>> to the list. This was his answer and I have to agree with him:
+>>
+>>
+>> [quote]
+>> I do not see what use it is, to block this on your firewall. WoL is a
+>> broadcast, hence it will already never traverse a firewall if it's con=
+figured
+>> correctly. On the local LAN segment they will never pass a firewall be=
+fore
+>> reaching a LAN station. That's the whole idea of broadcasting.
+>>
+>> The best thing to do is disable WoL on the workstations.
+>>
+>>
+>> -Sietse
+>> [/quote]
+>>
+>> Gr,
+>> Rob
+>>
+> how can I block wol packets? I must disable broadcasting? In what way? =
+I wont
+> to use wol only in my lan. I have a linux box router: 192.168.0.1 and 4=
+ pc on
+> lan 192.168.0.2 192.168.0.3 192.168.0.4 192.168.0.5. I must disable it =
+with
+> iptables on 192.168.0.1 (router). Thanks
+
+Did you read Sietse's comment?
+- WOL is a broadcast and broadcasts typically *do not pass* a router, in =
+this
+case your Linux firewall.
+- If the WOL packet is coming from your LAN you *cannot* block it using y=
+our
+Linux firewall, because the packets *do not pass through* it.
+
+Disable the WOL feature on your clients, as Sietse suggested.
 
 
+Gr,
+Rob
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-----------------------------------------------------------------------
-Zostan Chlopakiem Lata! >>> http://link.interia.pl/f1998
 
 
