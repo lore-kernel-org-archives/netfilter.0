@@ -1,11 +1,14 @@
-From: "Yan Doldonov" <yand@seabak.com>
-Subject: FW: NATing h.323 protocol stack
-Date: Thu, 24 Aug 2006 14:35:38 +0500
-Message-ID: <01d801c6c760$a9f87ca0$fbb0660a@pilligrim>
-Reply-To: yand@seabak.com
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: Problems configuring iptables
+Date: Thu, 24 Aug 2006 12:57:46 +0200
+Message-ID: <44ED862A.7020603@freemail.hu>
+References: <580B00011E6B2F4980CAC67A08FECC3AF765CE@rpo.oldplacerville.csvaluation.lan>	<44EC95B0.1090808@ncemch.org>	<44EC966C.6000002@ncemch.org>
+	<44EC9CE0.10308@rtij.nl>	<44ECA54A.2000905@ncemch.org>
+	<44ECA9FE.30605@rtij.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <44ECA9FE.30605@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,59 +19,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Martijn Lievaart <m@rtij.nl>
+Cc: netfilter@lists.netfilter.org
 
-Thierry thak you for the comment.
-
-Quintum, whose hardware box we're thinking of using at the moment
-specifically states in the manual to disable all software firewall h.323
-natting capabilities and claims that their hardware devices have native
-support for NATed environment and they also say that every software =
-products
-they've seen that do NAT for h.323 really do not do a full job as per =
-their
-opinion. We had an experience with another device by Polycom which =
-claimed a
-native support for NAT as well however all our attempts to make it work =
-in
-the NATed environment failed.=20
-
-So I am a litle confused here and really looking for a real world =
-experience
-of having made it work.
-
-
-+------------------------------------------+
-Yan Doldonov
-IT Consultant
-Seabak Outsourced IT Services
-www.seabak.net
-mail-to: yand@seabak.com
-mobile: +99450 3271502
-office: +99412 4972191
-+------------------------------------------+=20
------Original Message-----
-From: thierry itty [mailto:thierry.itty@besancon.org]=20
-Sent: Thursday, 24 August, 2006 14:17
-To: yand@seabak.com
-Subject: Re: NATing h.323 protocol stack
-
-my 0.02$
-the latest kernel (2-6-17) includes h323 natting stuff just modprobe the
-necessary modules at iptables startup
-
-Yan Doldonov a =E9crit :
-
->Hello everyone!
+Martijn Lievaart =EDrta:
+> Matt Singerman wrote:
 >
->Has any one got experience of setting up the H.323 devices running =
-NATed?=20
->We have a taske where we need to setup the h.323 sessions to work over=20
->a corporate VPN. Any comments or reference to useful literature I would =
-
->appreciate.
+>> This did work, yes!  Thanks!  I am experiencing a new problem,=20
+>> though: it took an extremely long time for the connection to go=20
+>> through.  Once it connected, it runs at normal speed, but it took a=20
+>> good 30 or 40 seconds for ssh to prompt me for my password.  What=20
+>> could be causing this?  I am guessing it is some sort of routing issue=
+?
+>>
+> Ah no. It's either reverse DNS or ident that trips you up. Ethereal is=20
+> your friend, look what goes on "at the wire".
 >
-
-
+> M4
+>
+>
+>
+I am not sure... but maybe your script blocks the DNS service...
+Try it on your firewalled server and on a client behind the firewall...
+(host www.netfilter.org  AND   nslookup www.netfilter.org)
 
