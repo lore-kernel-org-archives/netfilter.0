@@ -1,12 +1,12 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: creating one rule for both tcp and udp?
-Date: Sat, 26 Aug 2006 20:47:41 +0200
-Message-ID: <44F0974D.3060705@plouf.fr.eu.org>
-References: <44EF3A8C.6000004@ncemch.org>
+From: Piotr Chytla <pch@packetconsulting.pl>
+Subject: Re: where is u32 matching module?
+Date: Sun, 27 Aug 2006 12:01:32 +0200
+Message-ID: <20060827100132.GA11078@packetconsulting.pl>
+References: <44EDF972.3010105@vlab.mb.jhu.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44EF3A8C.6000004@ncemch.org>
+Content-Disposition: inline
+In-Reply-To: <44EDF972.3010105@vlab.mb.jhu.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,24 +17,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: pub@vlab.mb.jhu.edu
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+On Thu, Aug 24, 2006 at 03:09:38PM -0400, pub@vlab.mb.jhu.edu wrote:
+> Hello,
+> 
+> I am trying to match the receive window size in the incoming packets.
+> What I can think of is using u32 module to match any 4 bytes of data.
+> However, the iptables manual in fedora core 5 mentioned to look for
+> details in kernel module, while the u32 module is not in my kernel
+> source tree apparently. Is this module being replaced by something
+> else I am not aware of? Is there any alternative to match the window size?
+>
+u32 match is in path-o-matic-ng,
 
-Matt Singerman a =E9crit :
->=20
-> -A FORWARD -s 0/0 -d 141.161.111.203  -p all --dport 548 -j ACCEPT
->=20
-> iptables v1.3.5: Unknown arg `--dport'
->=20
-> I am guessing that is because "-p all" include ICMP, which doesn't take=
-=20
-> the --dport argument.  Am I wrong about that?
+http://svn.netfilter.org/netfilter/trunk/patch-o-matic-ng/ 
 
-It's a little more complicated than that. It's not that ICMP or other=20
-protocols don't take the --dport argument. Actually --dport is valid=20
-only with the "-m tcp" and "-m udp" matches, which in turn are only=20
-valid with - and implicitly created by - "-p tcp" and "-p udp" respective=
-ly.
+you must apply u32 patch to your kernel , and rebuild everything.
+
+/pch
+
+-- 
+Dyslexia bug unpatched since 1977 ...
+exploit has been leaked to the underground.
 
