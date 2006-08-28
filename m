@@ -1,11 +1,12 @@
-From: william fitzgerald <wfitzgerald@tssg.org>
-Subject: Query: conntrack verus state command set
-Date: Mon, 28 Aug 2006 16:36:39 +0100
-Message-ID: <44F30D87.1050901@tssg.org>
-Reply-To: wfitzgerald@tssg.org
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Wol Magic Packets
+Date: Mon, 28 Aug 2006 18:25:41 +0200
+Message-ID: <000f01c6cabe$9ac1b1a0$0101000a@tanjian>
+References: <J4PLM6$6AFE7408040355E1E49784AB0D8E8AF1@libero.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <J4PLM6$6AFE7408040355E1E49784AB0D8E8AF1@libero.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'netfilter' <netfilter@lists.netfilter.org>
 
-Dear all,
+"claudio987@libero.it" wrote:
+> Rob Sterenborg... Can you answer me please?
 
-I have began my initial investigation into iptables from reading the 
-200+ page documentation by Oskar Andresson along with the man pages.
+Ah, right. Last time you answered "ok, I'm sorry, I haven't red your
+message at all." so then I thought "what's the use to answer"..
 
-My question is the conntrack command set a replacement for the -m state 
-commands or is it an enhancement?
+If WOL packets really *do* enter your network then I don't know how to
+block them.
 
-I am a little confused as I see some examples on the web etc that don't 
-use conntrack at all and others that do with the state options.
+According to the AMD whitepaper a WOL packet is sent using a subnet
+directed broadcast to pass through routers. If you search around the
+internet, you find that directed broadcasts can be blocked by using:
+"echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts".
+But, that's ICMP and UDP seems (commonly) to be used for WOL packets so
+this would not help you.
 
-so is "conntrack" an add on to the "state" option or is it envisioned 
-that "conntrack" will replace the "state" option?
 
-in fact can the iptables provide statefull inspection with just the 
-"state" command set?
-
-kind regards,
-Will.
-
--- 
-William M. Fitzgerald,
-PhD Student,
-Telecommunications Software & Systems Group,
-Waterford Institute of Technology,
-Cork Rd.
-Waterford.
-Office Ph: +353 51 302937
-Mobile Ph: +353 87 9527083
+Gr,
+Rob
 
 
