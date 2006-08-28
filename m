@@ -1,10 +1,12 @@
-From: lauraf <lauraf@liceodaprocida.net>
-Subject: pptp_conntrack_nat and kernel 2.6.15
-Date: Mon, 28 Aug 2006 03:57:25 +0200
-Message-ID: <44F24D85.8080207@liceodaprocida.net>
+From: longraider <longraider@gazeta.pl>
+Subject: Re: Two inet connections and stateful SNAT
+Date: Mon, 28 Aug 2006 12:28:52 +0200
+Message-ID: <44F2C564.8080509@gazeta.pl>
+References: <44F01E8B.1040504@gazeta.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <44F01E8B.1040504@gazeta.pl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,20 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi gentlemen,
+> Hi
+> I've got a problem with proper configuration of firewall described in:
+> 10.4.1. Outbound traffic Using Multiple Connections to the Internet
+> described at http://linux-ip.net/html/adv-multi-internet.html
+> 
 
-could anybody please confirm that by using kernel 2.6.15 is it now
-possible to setup multiple PPTP connections from different  PCs within
-the local net, trought a linux box running iptables, toward several
-external world PPTP servers ?
+I've finally got it. The rp_filter needs to be disabled.
+echo 0 > /proc/sys/net/ipv4/conf/$DSL_IF/rp_filter
 
-thanks a lot for your help
 
-Regards
+-- 
+mati
 
-laura
 
 
