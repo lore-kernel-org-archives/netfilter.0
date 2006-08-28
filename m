@@ -1,12 +1,10 @@
-From: Piotr Chytla <pch@packetconsulting.pl>
-Subject: Re: where is u32 matching module?
-Date: Sun, 27 Aug 2006 12:01:32 +0200
-Message-ID: <20060827100132.GA11078@packetconsulting.pl>
-References: <44EDF972.3010105@vlab.mb.jhu.edu>
+From: lauraf <lauraf@liceodaprocida.net>
+Subject: pptp_conntrack_nat and kernel 2.6.15
+Date: Mon, 28 Aug 2006 03:57:25 +0200
+Message-ID: <44F24D85.8080207@liceodaprocida.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <44EDF972.3010105@vlab.mb.jhu.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +15,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: pub@vlab.mb.jhu.edu
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, Aug 24, 2006 at 03:09:38PM -0400, pub@vlab.mb.jhu.edu wrote:
-> Hello,
-> 
-> I am trying to match the receive window size in the incoming packets.
-> What I can think of is using u32 module to match any 4 bytes of data.
-> However, the iptables manual in fedora core 5 mentioned to look for
-> details in kernel module, while the u32 module is not in my kernel
-> source tree apparently. Is this module being replaced by something
-> else I am not aware of? Is there any alternative to match the window size?
->
-u32 match is in path-o-matic-ng,
+Hi gentlemen,
 
-http://svn.netfilter.org/netfilter/trunk/patch-o-matic-ng/ 
+could anybody please confirm that by using kernel 2.6.15 is it now
+possible to setup multiple PPTP connections from different  PCs within
+the local net, trought a linux box running iptables, toward several
+external world PPTP servers ?
 
-you must apply u32 patch to your kernel , and rebuild everything.
+thanks a lot for your help
 
-/pch
+Regards
 
--- 
-Dyslexia bug unpatched since 1977 ...
-exploit has been leaked to the underground.
+laura
+
 
