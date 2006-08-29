@@ -1,9 +1,8 @@
-From: varun <varun_saa@rediffmail.com>
-Subject: iptable & user net logging
-Date: Tue, 29 Aug 2006 19:16:34 +0530
-Message-ID: <1156859195.5048.6.camel@nirvana.aurokruti.in>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Q: remapping IP addresses for inbound and outbound traffic
+Date: Tue, 29 Aug 2006 18:57:04 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0608291856330.10656@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,28 +14,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
 
-I sharing my internet using the following
-rule :
+Sent to wrong one (@netfilter.org), sorry :-)
 
--A FORWARD -i eth1 -o eth0 -s 192.168.15.xxx -j ACCEPT
+---------- Forwarded message ----------
+Date: Tue, 29 Aug 2006 10:07:48 +0200 (MEST)
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+To: Innocenti Maresin <qq@inCTV.ru>
+Cc: LKML <linux-kernel@vger.kernel.org>, netfilter@netfilter.org
+Subject: Re: Q: remapping IP addresses for inbound and outbound traffic
 
-I would like to log individual user internet activity 
-based on his IP.
+Hi,
 
-How to do this ?
+>The software of this box needs to connect all hosts in both networks, and
+>also to receive inbound TCP connections.  The evident way is to "remap"
+>overlapping IPv4 area of one network to some "place" not used neither in it
+>nor in other.  This means that, when we receive a packet from remapped area,
+>the kernel should replace the source IP to an "internal representaion". 
+>Versa, sending something to "internally represented" IP the kernel should
+>replace such IP by its external value.  I clarify these terms so carefully
+>because in news:comp.os.linux.networking some people state that I "use terms
+>in strange ways" :)
+>
+>The question is: how to do it? Please, don't say quicky "iproute2" and
+>"RTFM".  Iproute2 can do such things when *forwarding* packets.  I need no
+>forwarding at all, no *connection* between 2 networks.  I need only to
+>*serve* both networks, such that some "external" IPs need to be replaced by
+>internally used IP and versa.  All this at one Linux box. No forwarding
+>traffic. Only inbound and outbound.
 
-What kind of rule to add ?
+I am working on a small module doing something like that, changing IP 
+addresses before the NAT code sees them, in mangle.
 
-Is there any ready to use software that will
-parse a file and generate user friendly report ?
+  http://jengelh.hopto.org/f/xt_MAP-v0.tar.bz2
 
-Thanks
+I still cannot get outgoing mangled packets (see command below) to reach 
+their destination:
 
-Varun
+  iptables -t mangle -A POSTROUTING -d 134.76.13.21 -j MAP \
+    --map-dest 134.76.13.28
 
+ping and TCP packets seem to leave the box (tcpdump), but there are no 
+responses (neither negative responses). The destination box's tcpdump also 
+shows nothing.
+netfilter list, am I missing something like recalculating IP checksums?
+
+
+
+Jan Engelhardt
+-- 
 
