@@ -1,52 +1,54 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Wol Magic Packets
-Date: Tue, 29 Aug 2006 07:54:10 +0200
-Message-ID: <000b01c6cb2f$9027b2a0$0101000a@tanjian>
-References: <J4Q48B$49CD3A0E96B6FF69053333AC1EFEF19C@libero.it>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Q: remapping IP addresses for inbound and outbound traffic
+Date: Tue, 29 Aug 2006 10:07:48 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0608291001030.5247@yvahk01.tjqt.qr>
+References: <LKML-nat-0.qq@inCTV.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <J4Q48B$49CD3A0E96B6FF69053333AC1EFEF19C@libero.it>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751191AbWH2IJQ@vger.kernel.org>
+In-Reply-To: <LKML-nat-0.qq@inCTV.ru>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'netfilter' <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Innocenti Maresin <qq@inCTV.ru>
+Cc: LKML <linux-kernel@vger.kernel.org>, netfilter@netfilter.org
 
->> If WOL packets really *do* enter your network then I don't know how
->> to block them. 
->> 
->> According to the AMD whitepaper a WOL packet is sent using a subnet
->> directed broadcast to pass through routers. If you search around the
->> internet, you find that directed broadcasts can be blocked by using:
->> "echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts".
->> But, that's ICMP and UDP seems (commonly) to be used for WOL packets
->> so this would not help you. 
->> 
-> packet enters only if I send it to a port opened into the
-> router...: for example: if I forward port 30 tcp\udp to
-> 192.168.0.2 (pc of my lan) and I send a wol packet for
-> another internet address out of my lan to poty 30 of external
-> ppp0 interface of my router, pc 192.168.0.2 turns on
-> 
+Hi,
 
-Yes, well, you've said that before and as I said: if these *do* enter
-your network then I don't know how to block them.
-Perhaps you can search for the String match (it's in an older POM-ng and
-which I never used) and try to catch those WOL packets by matching it's
-contents. Since each WOL packet looks the same (6 bytes FF followed by
-16 bytes containing the MAC address of the PC to wake up), you should be
-able to do it.
+>The software of this box needs to connect all hosts in both networks, and
+>also to receive inbound TCP connections.  The evident way is to "remap"
+>overlapping IPv4 area of one network to some "place" not used neither in it
+>nor in other.  This means that, when we receive a packet from remapped area,
+>the kernel should replace the source IP to an "internal representaion". 
+>Versa, sending something to "internally represented" IP the kernel should
+>replace such IP by its external value.  I clarify these terms so carefully
+>because in news:comp.os.linux.networking some people state that I "use terms
+>in strange ways" :)
+>
+>The question is: how to do it? Please, don't say quicky "iproute2" and
+>"RTFM".  Iproute2 can do such things when *forwarding* packets.  I need no
+>forwarding at all, no *connection* between 2 networks.  I need only to
+>*serve* both networks, such that some "external" IPs need to be replaced by
+>internally used IP and versa.  All this at one Linux box. No forwarding
+>traffic. Only inbound and outbound.
+
+I am working on a small module doing something like that, changing IP 
+addresses before the NAT code sees them, in mangle.
+
+  http://jengelh.hopto.org/f/xt_MAP-v0.tar.bz2
+
+I still cannot get outgoing mangled packets (see command below) to reach 
+their destination:
+
+  iptables -t mangle -A POSTROUTING -d 134.76.13.21 -j MAP \
+    --map-dest 134.76.13.28
+
+ping and TCP packets seem to leave the box (tcpdump), but there are no 
+responses (neither negative responses). The destination box's tcpdump also 
+shows nothing.
+netfilter list, am I missing something like recalculating IP checksums?
 
 
-Gr,
-Rob
 
-
+Jan Engelhardt
+-- 
