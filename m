@@ -1,8 +1,9 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Q: remapping IP addresses for inbound and outbound traffic
-Date: Tue, 29 Aug 2006 18:57:04 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0608291856330.10656@yvahk01.tjqt.qr>
+From: Mikhail <misha@mhsystems.com>
+Subject: DNAT for two external NIC
+Date: Tue, 29 Aug 2006 17:42:35 -0400
+Message-ID: <007301c6cbb4$0aa38c00$4764a8c0@mhsystems.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,57 +15,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
 
+=A0 I have Linux gateway/firewall with 3 NIC: eth0 =96 LAN, eth1 =96 =
+ISP1, eth2 =96
+ISP2.
+I=92ve got separate static IPs from each of the ISP (IP1 & IP2) which I
+statically assigned to eth1 and eth2.
+My default route points to ISP1 gateway via eth1. I need to provide =
+external
+access to a few computers on the LAN using different IPs and port =
+numbers
+(no load balancing and target machines are IP-specific).=20
+=A0 Everything works fine if I use IP1 address but I was unable to get =
+to the
+corresponding LAN machine through IP2. Ping requests are also not =
+responded
+if they=92re made to IP2. They do reach eth2 and I can see them using =
+tcpdump
+but then nothing goes out on any NIC. The same goes for TCP/IP requests =
+=96
+I=92ve managed to trace them to the nat table PREROUTING chain but they =
+could
+not be found in either INPUT or FORWARD chain of the mangle table. If I =
+make
+default route through eth2 =96 everything starts working through that =
+NIC and
+stops through eth1. I seem to be missing something simple. Any help is
+greatly appreciated.
 
-Sent to wrong one (@netfilter.org), sorry :-)
-
----------- Forwarded message ----------
-Date: Tue, 29 Aug 2006 10:07:48 +0200 (MEST)
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-To: Innocenti Maresin <qq@inCTV.ru>
-Cc: LKML <linux-kernel@vger.kernel.org>, netfilter@netfilter.org
-Subject: Re: Q: remapping IP addresses for inbound and outbound traffic
-
-Hi,
-
->The software of this box needs to connect all hosts in both networks, and
->also to receive inbound TCP connections.  The evident way is to "remap"
->overlapping IPv4 area of one network to some "place" not used neither in it
->nor in other.  This means that, when we receive a packet from remapped area,
->the kernel should replace the source IP to an "internal representaion". 
->Versa, sending something to "internally represented" IP the kernel should
->replace such IP by its external value.  I clarify these terms so carefully
->because in news:comp.os.linux.networking some people state that I "use terms
->in strange ways" :)
->
->The question is: how to do it? Please, don't say quicky "iproute2" and
->"RTFM".  Iproute2 can do such things when *forwarding* packets.  I need no
->forwarding at all, no *connection* between 2 networks.  I need only to
->*serve* both networks, such that some "external" IPs need to be replaced by
->internally used IP and versa.  All this at one Linux box. No forwarding
->traffic. Only inbound and outbound.
-
-I am working on a small module doing something like that, changing IP 
-addresses before the NAT code sees them, in mangle.
-
-  http://jengelh.hopto.org/f/xt_MAP-v0.tar.bz2
-
-I still cannot get outgoing mangled packets (see command below) to reach 
-their destination:
-
-  iptables -t mangle -A POSTROUTING -d 134.76.13.21 -j MAP \
-    --map-dest 134.76.13.28
-
-ping and TCP packets seem to leave the box (tcpdump), but there are no 
-responses (neither negative responses). The destination box's tcpdump also 
-shows nothing.
-netfilter list, am I missing something like recalculating IP checksums?
+Mikhail.
 
 
-
-Jan Engelhardt
--- 
 
