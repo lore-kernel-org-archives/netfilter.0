@@ -1,12 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Wol Magic Packets
-Date: Tue, 29 Aug 2006 13:55:33 +0200 (CEST)
-Message-ID: <64876.193.173.147.3.1156852533.squirrel@webmail.sterenborg.info>
-References: <J4RCCQ$90300DFBE572C56BB53FC8E3AEB5BD68@libero.it>
+From: varun <varun_saa@rediffmail.com>
+Subject: iptable & user net logging
+Date: Tue, 29 Aug 2006 19:16:34 +0530
+Message-ID: <1156859195.5048.6.camel@nirvana.aurokruti.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <J4RCCQ$90300DFBE572C56BB53FC8E3AEB5BD68@libero.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,43 +18,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Tue, August 29, 2006 13:38, claudio987\@libero\.it wrote:
->>> packet enters only if I send it to a port opened into the router...: =
-for
->>> example: if I forward port 30 tcp\udp to
->>> 192.168.0.2 (pc of my lan) and I send a wol packet for
->>> another internet address out of my lan to poty 30 of external ppp0
->>> interface of my router, pc 192.168.0.2 turns on
->>>
->>
->> Yes, well, you've said that before and as I said: if these *do* enter
->> your network then I don't know how to block them. Perhaps you can sear=
-ch for
->> the String match (it's in an older POM-ng and which I never used) and =
-try to
->> catch those WOL packets by matching it's contents. Since each WOL pack=
-et
->> looks the same (6 bytes FF followed by 16 bytes containing the MAC add=
-ress
->> of the PC to wake up), you should be able to do it.
->>
->> Gr,
->> Rob
->>
-> how can I do it?
+Hello,
 
-By downloading a kernel, POM-ng (patch-o-matic-ng) and an older POM-ng th=
-at
-still has the string patchlet, and iptables. Patch the kernel using the o=
-lder
-POM-ng for the string match and use the newer POM-ng for recent stuff. In=
-stall
-the new kernel and iptables and see if everything (still) works.
+I sharing my internet using the following
+rule :
 
-If you've never done this I suggest you search the internet for howto's, =
-read
-the README's and/or INSTALL files and try it with a test-PC first.
-Howto's on patching a kernel is not really the scope of this list.
+-A FORWARD -i eth1 -o eth0 -s 192.168.15.xxx -j ACCEPT
 
+I would like to log individual user internet activity 
+based on his IP.
+
+How to do this ?
+
+What kind of rule to add ?
+
+Is there any ready to use software that will
+parse a file and generate user friendly report ?
+
+Thanks
+
+Varun
 
 
