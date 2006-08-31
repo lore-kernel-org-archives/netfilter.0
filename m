@@ -1,10 +1,13 @@
-From: nunezj@ucbcba.edu.bo
-Subject: Filter ips
-Date: Thu, 31 Aug 2006 18:34:17 -0400 (BOT)
-Message-ID: <4298.200.87.170.170.1157063657.squirrel@admin.ucbcba.edu.bo>
+From: Jonas Meurer <jonas@freesources.org>
+Subject: Re: how to set ports for ip_conntrack_ftp
+Date: Fri, 1 Sep 2006 00:48:57 +0200
+Message-ID: <20060831224857.GA23094@freesources.org>
+References: <20060831151130.GA32342@freesources.org>
+	<20060831173059.GA23640@legolas.on.net.mk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <20060831173059.GA23640@legolas.on.net.mk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,23 +19,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi everyone
+On 31/08/2006 Damjan wrote:
+> > where can i set the ports for ip_conntrack_ftp?
+> > 
+> > if i load it as module, i can use
+> > 'modprobe ip_conntrack_ftp ports=21,31,41'
+> > 
+> > but if the module is compiled into the kernel, i have no idea how to set
+> > the ports. i didn't find anything in either /proc or
+> > kernel-source/Documentation.
+> > 
+> > the server is running linux kernel 2.4.27.
+> 
+> Hmm, I don't know about 2.4.x kernels but in 2.6.x you can always set
+> parameters to integrated modules on the kernel comand line.
+> 
+> In your case it would be:
+>  ip_conntrack_ftp.ports=21,31,41
 
-       I have some problems when I want to filter some ips in  my network
+how can i use this kernel command line?
+do you mean sysctl?
 
- I put this rules in the my script:
-
- iptables -A INPUT -s 192.168.0.5/32 -d 0/0 -p tcp --dport 20,21 -j DROP
-
- but it doesn't work. The same I put in the Output rules but it doen't
-work....
-
-  How can I make this filter?
-
-regards,
-
-             Jorge Enrique
-
+...
+ jonas
 
