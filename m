@@ -1,14 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: diferent ports, diferent routes
-Date: Thu, 31 Aug 2006 11:59:11 +0200
-Message-ID: <44F6B2EF.6040601@plouf.fr.eu.org>
-References: <194721190608300726y132d8718p4fab8c32f1c4efbe@mail.gmail.com>	
-	<44F5A8D1.1000400@plouf.fr.eu.org>
-	<194721190608310117u29fdd089r976caddc2a99fbcc@mail.gmail.com>
+From: Jonas Meurer <jonas@freesources.org>
+Subject: how to set ports for ip_conntrack_ftp
+Date: Thu, 31 Aug 2006 17:11:30 +0200
+Message-ID: <20060831151130.GA32342@freesources.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <194721190608310117u29fdd089r976caddc2a99fbcc@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,47 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-9"; format="flowed"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter-Users <netfilter@lists.netfilter.org>
 
-[Please reply on the list]
+Hello,
 
-KNO a =E9crit :
->>
->> The POSTROUTING table is too late, after the final output routing
->> decision is made. You must create this rule in the OUTPUT chain instea=
-d.
->=20
-> I've try marking in OUTPUT chain and now it doent work at all. The
-> packets go out, but they doent return. The rule I've added is:
-> iptables -t mangle -A OUTPUT -p tcp --dport 80 -d ! 192.168.2.0/24 -j
-> MARK --set-mark 1
+where can i set the ports for ip_conntrack_ftp?
 
-You say the packets go out, but how far ? Do they reach the router2 as=20
-expected, meaning that the destination MAC address is router2's MAC=20
-address ? Do they reach the target host ? Does the target host send a=20
-reply packet ?
+if i load it as module, i can use
+'modprobe ip_conntrack_ftp ports=21,31,41'
 
-Does your Linux box perform SNAT or MASQUERADE on the WAN interface ?
+but if the module is compiled into the kernel, i have no idea how to set
+the ports. i didn't find anything in either /proc or
+kernel-source/Documentation.
 
-By the way, how do things work when you set the box default route via=20
-router2 ?
+the server is running linux kernel 2.4.27.
 
-Also, there is something unclear in your addressing scheme. You wrote :
-
-> router1 address 192.168.2.9
-> router2 address 192.168.2.10
-> linux address 192.168.2.22
-> linux default gateway 192.168.2.10
-> lan workstations use linux as proxy (squid at port 8080) 192.168.2.22
-
-It seems that both your LAN and WAN networks use the same subnet=20
-192.168.2.0/24. And :
-
-> :~# ip route ls
-> 192.168.2.0/24 dev eth0  proto kernel  scope link  src 192.168.2.252
-> default via 192.168.2.9 dev eth0
-
-I understand these are the routes on the WAN interface. Where are the=20
-interface and route to the LAN ?
+...
+ jonas
 
