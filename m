@@ -1,13 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Damjan <gdamjan@mail.net.mk>
 Subject: Re: how to set ports for ip_conntrack_ftp
-Date: Thu, 31 Aug 2006 18:44:04 +0200
-Message-ID: <44F711D4.5090002@plouf.fr.eu.org>
-References: <20060831151130.GA32342@freesources.org>	<000601c6cd14$e07a28a0$0101000a@tanjian>
-	<20060831155749.GC32342@freesources.org>
+Date: Thu, 31 Aug 2006 19:30:59 +0200
+Message-ID: <20060831173059.GA23640@legolas.on.net.mk>
+References: <20060831151130.GA32342@freesources.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060831155749.GC32342@freesources.org>
+Content-Disposition: inline
+In-Reply-To: <20060831151130.GA32342@freesources.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="utf-8"
 To: Netfilter-Users <netfilter@lists.netfilter.org>
 
-Hello,
+> where can i set the ports for ip_conntrack_ftp?
+> 
+> if i load it as module, i can use
+> 'modprobe ip_conntrack_ftp ports=21,31,41'
+> 
+> but if the module is compiled into the kernel, i have no idea how to set
+> the ports. i didn't find anything in either /proc or
+> kernel-source/Documentation.
+> 
+> the server is running linux kernel 2.4.27.
 
-'Jonas Meurer' a =E9crit :
->=20
-> in other words, this module is unusable for ftpservers on non-standard
-> ports, if it's compiled into the kernel?
+Hmm, I don't know about 2.4.x kernels but in 2.6.x you can always set
+parameters to integrated modules on the kernel comand line.
 
-Well, I guess you can edit the default port list in the kernel source=20
-before compiling.
+In your case it would be:
+ ip_conntrack_ftp.ports=21,31,41
 
-> how can i open the ports for those ftp-servers without using
-> ip_conntrack_ftp?
 
-There is a workaround, which requires that the FTP server software be=20
-"cooperative". For instance, it must be able to set a range of local=20
-ports to use for data transfer connections in passive mode.
-
-> what i'm currently doing is:
->=20
-> iptables -A INPUT -i eth0 -m state --state NEW,ESTABLISHED,RELATED \
-> 	-m multiport -p tcp --dports 9621,9721 \
-> 	-d **.**.***.**/31 -j ACCEPT
->=20
-> iptables -A OUTPUT -o eth0 -m state --state ESTABLISHED,RELATED \
-> 	-m multiport -p tcp --sports 9621,9721 \
-> 	-d **.**.***.**/31 -j ACCEPT
->=20
-> iptables -A OUTPUT -o eth0 -m state --state NEW \
-> 	-m multiport -p tcp --sports 9620,9720 \
-> 	-d **.**.***.**/31 -j ACCEPT
-
-What do the "-d **.**.***.**/31" address ranges represent ?
-
-> but obviously this doesn't work. i still cannot connect to the
-> ftpservers on port 9621 and 9721. what am i missing?
-
-The first two rules may allow to establish an incoming control=20
-connection, although the RELATED state is not needed. But the third rule=20
-is not sufficient to allow the server to establish an outgoing data=20
-connection in active mode. You need to add the ESTABLISHED state to=20
-allow outgoing packets once the connection is established. You also need=20
-to create another rule in the INPUT chain as its counterpart for the=20
-return traffic, in the ESTABLISHED state.
+-- 
+damjan | дамјан
+This is my jabber ID -->         damjan@bagra.net.mk 
+ -- not my mail address, it's a Jabber ID --^ :)
 
