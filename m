@@ -1,11 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Slow down windows worms.
-Date: Fri, 1 Sep 2006 11:42:50 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0609011142370.21934@yvahk01.tjqt.qr>
-References: <44F80038.6010101@gabrix.ath.cx>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Filter ips
+Date: Fri, 01 Sep 2006 12:14:11 +0200
+Message-ID: <44F807F3.4030906@plouf.fr.eu.org>
+References: <4298.200.87.170.170.1157063657.squirrel@admin.ucbcba.edu.bo>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44F80038.6010101@gabrix.ath.cx>
+In-Reply-To: <4298.200.87.170.170.1157063657.squirrel@admin.ucbcba.edu.bo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,21 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: gabrix <gabrix@gabrix.ath.cx>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
->
->I know using POM i can add a TARPIT jump to my firewall.I was wondering
->instead how i can do without the POM.All that TARPIT does is answering 
->with a ACK window size  set to 0.How can i do this without the use of
->POM  just  by iptables ?
->Thanks !
+Hello,
 
-By use of TARPIT. POM is just the archive where you get TARPIT from.
+nunezj@ucbcba.edu.bo a =E9crit :
+>=20
+>  I put this rules in the my script:
+>=20
+>  iptables -A INPUT -s 192.168.0.5/32 -d 0/0 -p tcp --dport 20,21 -j DRO=
+P
+>=20
+>  but it doesn't work.
 
-
-Jan Engelhardt
--- 
+What do you mean *exactly* ?
+--dport expects a port interval, not a port list : --dport 20:21
 
