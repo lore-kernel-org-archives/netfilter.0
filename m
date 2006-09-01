@@ -1,12 +1,10 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Control Bandwidth by TOS marking
-Date: Fri, 01 Sep 2006 10:56:42 -0400
-Message-ID: <1157122602.2926.27.camel@localhost>
-References: <20060901144525.10883.qmail@web34511.mail.mud.yahoo.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: I need some clarification about multiple ISPs...
+Date: Fri, 01 Sep 2006 10:06:23 -0500
+Message-ID: <44F84C6F.8080506@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060901144525.10883.qmail@web34511.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +15,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-1?Q?Andr=E9?= Marques <andre_sesred@yahoo.com.br>
-Cc: Lista NetFilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-On Fri, 2006-09-01 at 14:45 +0000, Andr=C3=A9 Marques wrote:
-> Hello to all!
->=20
-> I'm trying to implement bandwidth control using TC and
-> IPTables, but i'm still having some difficults about
-> using the TOS field to implement it.
->=20
-> Does anybody knows how can i use the TOS field to makr
-> the packets in a way that i when they come and go by
-> the net they still remain marked?
->=20
-> Any help is appreciated. Thank you very much!
-<snip>
-If it helps, here is an example used to expedite traffic to a local IP
-PBX here:
+Hello, a colleague and I are at a minor disagreement that I believe NetFilter Mailing List subscribers will be able to clarify.
 
-*mangle
--A OUTPUT -d 192.168.223.5 -p 17 --dport 1024: -j TOS --set-tos
-Minimize-Delay
--A INPUT -s 192.168.223.5 -p 17 --sport 1024: -j TOS --set-tos
-Minimize-Delay
-COMMIT
+The situation is I have a client who has (will once they are activated) two internet connections through two different providers.  Either connection will work just fine by it's self.  I also believe that I can use both connections simultaneously with client initiated traffic just fine.  What I perceive as a problem will be if someone (myself) initiates an inbound connection (SSH) to either of the connections.  If the system is configured to use ISP 1 as the default and the connection is targeted at the IP for the ISP 2 interface, where will the connections traffic go back out from?  I am of the opinion that I will need to mark the traffic that comes in on at least one of the interfaces to make sure that said marked traffic goes back out the correct interface.
 
---=20
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+More specifically I suspect that  will have two (sub) routing tables in addition to the main routing table.  Have the system use the main routing table for all client side initiated out bound (and related) traffic.  Mark traffic that comes in the interface for ISP 1 such that the returning outbound traffic will be directed to use the ISP 1 routing table.  Mark traffic that comes in the interface for ISP 2 such that the returning outbound traffic will be directed to use the ISP 2 routing table.
 
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
+Any thought(s) / opinion(s) / suggestion(s) are welcomed and appreciated.
 
+
+
+Grant. . . .
 
