@@ -1,10 +1,12 @@
-From: =?iso-8859-1?q?Andr=E9=20Marques?= <andre_sesred@yahoo.com.br>
-Subject: Control Bandwidth by TOS marking
-Date: Fri, 1 Sep 2006 14:45:25 +0000 (GMT)
-Message-ID: <20060901144525.10883.qmail@web34511.mail.mud.yahoo.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: Control Bandwidth by TOS marking
+Date: Fri, 01 Sep 2006 10:56:42 -0400
+Message-ID: <1157122602.2926.27.camel@localhost>
+References: <20060901144525.10883.qmail@web34511.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060901144525.10883.qmail@web34511.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +18,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
-To: Lista NetFilter <netfilter@lists.netfilter.org>
+To: =?ISO-8859-1?Q?Andr=E9?= Marques <andre_sesred@yahoo.com.br>
+Cc: Lista NetFilter <netfilter@lists.netfilter.org>
 
-Hello to all!
+On Fri, 2006-09-01 at 14:45 +0000, Andr=C3=A9 Marques wrote:
+> Hello to all!
+>=20
+> I'm trying to implement bandwidth control using TC and
+> IPTables, but i'm still having some difficults about
+> using the TOS field to implement it.
+>=20
+> Does anybody knows how can i use the TOS field to makr
+> the packets in a way that i when they come and go by
+> the net they still remain marked?
+>=20
+> Any help is appreciated. Thank you very much!
+<snip>
+If it helps, here is an example used to expedite traffic to a local IP
+PBX here:
 
-I'm trying to implement bandwidth control using TC and
-IPTables, but i'm still having some difficults about
-using the TOS field to implement it.
+*mangle
+-A OUTPUT -d 192.168.223.5 -p 17 --dport 1024: -j TOS --set-tos
+Minimize-Delay
+-A INPUT -s 192.168.223.5 -p 17 --sport 1024: -j TOS --set-tos
+Minimize-Delay
+COMMIT
 
-Does anybody knows how can i use the TOS field to makr
-the packets in a way that i when they come and go by
-the net they still remain marked?
+--=20
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-Any help is appreciated. Thank you very much!
+If you would like to participate in the development of an open source
+enterprise class network security management system, please visit
+http://iscs.sourceforge.net
 
-
-Andr=E9
-
-
-	=09
-_______________________________________________________=20
-O Yahoo! est=E1 de cara nova. Venha conferir!=20
-http://br.yahoo.com
 
