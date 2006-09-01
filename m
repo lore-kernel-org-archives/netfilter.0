@@ -1,14 +1,12 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Filter ips
-Date: Fri, 01 Sep 2006 10:05:12 +0200
-Message-ID: <44F7E9B8.4010001@freemail.hu>
-References: <4298.200.87.170.170.1157063657.squirrel@admin.ucbcba.edu.bo>
-	<44F7E55B.5000406@freemail.hu>
-	<Pine.LNX.4.61.0609010956010.13189@yvahk01.tjqt.qr>
+From: longraider <longraider@gazeta.pl>
+Subject: Re: DNAT for two external NIC
+Date: Fri, 01 Sep 2006 10:35:03 +0200
+Message-ID: <44F7F0B7.5010001@gazeta.pl>
+References: <054a01c6cd90$641aa3d0$0100a8c0@newlife>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0609010956010.13189@yvahk01.tjqt.qr>
+In-Reply-To: <054a01c6cd90$641aa3d0$0100a8c0@newlife>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,19 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Netfilter IPtableMailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Jan Engelhardt =EDrta:
->> iptables -A INPUT -s 192.168.0.5 -p tcp -m multiports --dports 20,21 -=
-j DROP
->>    =20
->                                                       ^
->
-> -m multiport
->
->
-> Jan Engelhardt
->  =20
-You have got the point !!! :)
+Ming-Ching Tiew wrote:
+
+>>Maybe you need to disable rp_filter (reverse path filtering) on the
+>>interface that has not the default route.
+>>
+>>sysctl -w net/ipv4/conf/eth2/rp_filter=0
+> 
+> Isn't this a bug in rp_filter ? In multipath routing, it's often the system
+> will have multiple routing tables. The rp_filter seems to only look at
+> the main routing table.
+> 
+
+It looks at different tables (according to ip rule). I've recently
+posted a problem with the same solution. The problem was with the fwmark
+in the ip rules.
+
+http://lists.netfilter.org/pipermail/netfilter/2006-August/066553.html
+
+-- 
+mati
+
+
 
