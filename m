@@ -1,11 +1,11 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: RE: how to set ports for ip_conntrack_ftp
-Date: Fri, 1 Sep 2006 09:24:19 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0609010923580.25521@yvahk01.tjqt.qr>
-References: <000a01c6cd1a$7e02bbf0$0101000a@tanjian>
+Subject: Re: Filter ips
+Date: Fri, 1 Sep 2006 09:35:24 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0609010934470.25521@yvahk01.tjqt.qr>
+References: <4298.200.87.170.170.1157063657.squirrel@admin.ucbcba.edu.bo>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000a01c6cd1a$7e02bbf0$0101000a@tanjian>
+In-Reply-To: <4298.200.87.170.170.1157063657.squirrel@admin.ucbcba.edu.bo>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +18,26 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: 'Netfilter-Users' <netfilter@lists.netfilter.org>
+To: nunezj@ucbcba.edu.bo
+Cc: netfilter@lists.netfilter.org
 
->>>> if i load it as module, i can use
->>>> 'modprobe ip_conntrack_ftp ports=21,31,41'
->>>> 
->>> AFAIK you can't: you can only do that when it's compiled as a module.
->> 
->> in other words, this module is unusable for ftpservers on non-standard
->> ports, if it's compiled into the kernel?
+>Hi everyone
 >
->Ah, well, you could try by passing the paramters to the kernel at
->boot-time (lilo/grub). maybe that would work.
+>       I have some problems when I want to filter some ips in  my network
+>
+> I put this rules in the my script:
+>
+> iptables -A INPUT -s 192.168.0.5/32 -d 0/0 -p tcp --dport 20,21 -j DROP
+>
+> but it doesn't work.
 
-The boot option is, IIRC, ip_conntrack_ftp.ports=21,31,41
+It may have been accepted before.
 
+> The same I put in the Output rules but it doen't
+>work....
+
+Note that you probably need to turn -s into -d and vice versa when 
+changing INPUT to OUTPUT, too.
 
 Jan Engelhardt
 -- 
