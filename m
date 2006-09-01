@@ -1,12 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: how to set ports for ip_conntrack_ftp
-Date: Fri, 1 Sep 2006 07:59:12 +0200
-Message-ID: <000901c6cd8b$bfbb28e0$0101000a@tanjian>
-References: <20060831224857.GA23094@freesources.org>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: DNAT for two external NIC
+Date: Fri, 1 Sep 2006 14:32:26 +0800
+Message-ID: <054a01c6cd90$641aa3d0$0100a8c0@newlife>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060831224857.GA23094@freesources.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +15,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
->>> where can i set the ports for ip_conntrack_ftp?
->>> 
->>> if i load it as module, i can use
->>> 'modprobe ip_conntrack_ftp ports=21,31,41'
->>> 
->>> but if the module is compiled into the kernel, i have no idea how
->>> to set the ports. i didn't find anything in either /proc or
->>> kernel-source/Documentation. 
->>> 
->>> the server is running linux kernel 2.4.27.
->> 
->> Hmm, I don't know about 2.4.x kernels but in 2.6.x you can always set
->> parameters to integrated modules on the kernel comand line.
->> 
->> In your case it would be:
->>  ip_conntrack_ftp.ports=21,31,41
-> 
-> how can i use this kernel command line?
-> do you mean sysctl?
+Pascal Hambourg wrote :-
 
-No.
-You should edit your lilo.conf or grub.conf for this and look for the
-line that says where your kernel is (probably: /boot/...). Append
-"ip_conntrack_ftp.ports=21,31,41" to it.
-Then, reboot the server.
+>Hello,
+>
+>Mikhail a =E9crit :
+>>   Everything works fine if I use IP1 address but I was unable to get t=
+o the
+>> corresponding LAN machine through IP2. Ping requests are also not resp=
+onded
+>> if they're made to IP2. They do reach eth2 and I can see them using tc=
+pdump
+>> but then nothing goes out on any NIC. The same goes for TCP/IP request=
+s -
+>> I've managed to trace them to the nat table PREROUTING chain but they =
+could
+>> not be found in either INPUT or FORWARD chain of the mangle table. If =
+I make
+> default route through eth2 - >everything starts working through that NI=
+C and
+>> stops through eth1.
+>
+>Maybe you need to disable rp_filter (reverse path filtering) on the
+>interface that has not the default route.
+>
+>sysctl -w net/ipv4/conf/eth2/rp_filter=3D0
+
+Isn't this a bug in rp_filter ? In multipath routing, it's often the syst=
+em
+will have multiple routing tables. The rp_filter seems to only look at
+the main routing table.
+
+Regards.
 
 
-Gr,
-Rob
+
 
 
