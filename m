@@ -1,12 +1,10 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: how to set ports for ip_conntrack_ftp
-Date: Sat, 2 Sep 2006 18:14:49 +0200
-Message-ID: <002f01c6ceaa$ea521d50$0101000a@tanjian>
-References: <20060902142907.GB31352@freesources.org>
+From: Elvir Kuric <omasnjak@yahoo.com>
+Subject: Hardly loaded machines and iptables? Your experiences?
+Date: Sat, 2 Sep 2006 10:48:58 -0700 (PDT)
+Message-ID: <20060902174858.44865.qmail@web56212.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060902142907.GB31352@freesources.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,22 +18,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
->> No.
->> You should edit your lilo.conf or grub.conf for this and look for the
->> line that says where your kernel is (probably: /boot/...). Append
->> "ip_conntrack_ftp.ports=21,31,41" to it.
->> Then, reboot the server.
-> 
-> as it is a production server, reboot is very complicated.
+Hi all, 
 
-I already thought you were going to say this..
+I need your opinion about heavy load machines acting
+as firewals based on iptables package.
+If I have Pentium 4, equiped with 1GB of RAM, two
+NICs, one NIC to internet, second to private network (
+in private network are servers ). On firewall (
+iptables ) machine I have nat, pat, everthing using
+iptables. How that works in  environment with many
+reqestes to servers in the LAN, I mean about 10000
+request per day? Have you experience about this topic.
+Is there any limit on hits to iptables machine, what
+is about memory, procesor.
 
-> there is absolutely no way to set the ports in a running system?
+What do you think is solution based on iptables enough
+secure for mission critical cases? I just need your
+frank opinion.
 
-Not that I know of.
+Thanks 
+Regards
 
-
-Gr,
-Rob
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
