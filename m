@@ -1,13 +1,13 @@
-From: "Steffen Heil" <lists@steffen-heil.de>
-Subject: RE: how to set ports for ip_conntrack_ftp
-Date: Sat, 2 Sep 2006 17:16:29 +0200
-Message-ID: <006801c6cea2$c41f5790$0b4613ac@shs1>
-References: <20060902142907.GB31352@freesources.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: how to set ports for ip_conntrack_ftp
+Date: Sat, 02 Sep 2006 17:17:05 +0200
+Message-ID: <44F9A071.7070603@plouf.fr.eu.org>
+References: <20060831151130.GA32342@freesources.org>	<000601c6cd14$e07a28a0$0101000a@tanjian>	<20060831155749.GC32342@freesources.org>	<44F711D4.5090002@plouf.fr.eu.org>	<20060901012054.GB23094@freesources.org>	<44F7996C.9010504@plouf.fr.eu.org>
+	<20060902142712.GA31352@freesources.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=SHA1; boundary="----=_NextPart_000_0063_01C6CEB3.87637D70"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060902142907.GB31352@freesources.org>
+In-Reply-To: <20060902142712.GA31352@freesources.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,87 +18,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: 'Jonas Meurer' <jonas@freesources.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
+Jonas Meurer a =E9crit :
+>>
+>>>>What do the "-d **.**.***.**/31" address ranges represent ?
+>=20
+> the ftp servers listen on both ips. so both are server addresses.
+>=20
+> do you think that i should change the "-d ..." at -A OUTPUT to "-s ..."=
+?
 
-------=_NextPart_000_0063_01C6CEB3.87637D70
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Obviously yes. I just wonder how these rules could accept the control=20
+connection, as they did not accept the return packets from the server.
 
-Hi
- 
-> as it is a production server, reboot is very complicated.
-> there is absolutely no way to set the ports in a running system?
+[...]
+> i would like to support both active and passive mode.
 
-That's the point in have components as modules instead of in kernel...
+To allow active mode you'll have to perform two actions :
 
-Regards,
-  Steffen
+1) Look into your FTP server configuration for an option named "passive=20
+mode local port range" or the like. You must define a port range that is=20
+not likely to be used by other local processes (so for example don't=20
+overlap /proc/sys/net/ipv4/ip_local_port_range). The number of ports in=20
+the interval must be bigger enough than the expected maximum number of=20
+simultaneous data connections from FTP clients.
 
-------=_NextPart_000_0063_01C6CEB3.87637D70
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
+2) Set iptables rules in INPUT and OUTPUT which allow incoming TCP=20
+connections to the port range you defined in the previous step.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII4jCCAmow
-ggHToAMCAQICAw96FDANBgkqhkiG9w0BAQQFADBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhh
-d3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVt
-YWlsIElzc3VpbmcgQ0EwHhcNMDUwOTE0MDkwNTU3WhcNMDYwOTE0MDkwNTU3WjBeMQ0wCwYDVQQE
-EwRIZWlsMRAwDgYDVQQqEwdTdGVmZmVuMRUwEwYDVQQDEwxTdGVmZmVuIEhlaWwxJDAiBgkqhkiG
-9w0BCQEWFWxpc3RzQHN0ZWZmZW4taGVpbC5kZTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA
-uhwOMnpx6Ie9JOoTWutK0H8GiSwMjIjPeTX3HKqrTemKEau/CXGiAYb5+ramEl7Ul7ByMNe8Blr+
-S/TLcCzy3am70jITkR75/HAeryopzZ+MIce7MY96Gm2cZkm6soJ+cpbm31/mqvVwMqWo6KqQ/YOb
-fJCIbqg4I8wbrXlsh5sCAwEAAaMyMDAwIAYDVR0RBBkwF4EVbGlzdHNAc3RlZmZlbi1oZWlsLmRl
-MAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEEBQADgYEAZO5k8jD7PY1yKyFLCgSEd+iOZce9CGmP
-/TcwuB4z5S1VDmURtquZU64K2q3JQV8BAN9q2SGm+Q7eUjEh71MEXxi/vuWX0Bc7GjNx2EZzaSTQ
-Ot8Cl3EXwNuvJjS8jWQOrRgW4jNKYUx6+WUgSz8n6ImUZdT1x/1ep0gDDqu0QCMwggMtMIIClqAD
-AgECAgEAMA0GCSqGSIb3DQEBBAUAMIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBD
-YXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYD
-VQQLEx9DZXJ0aWZpY2F0aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVy
-c29uYWwgRnJlZW1haWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0
-ZS5jb20wHhcNOTYwMTAxMDAwMDAwWhcNMjAxMjMxMjM1OTU5WjCB0TELMAkGA1UEBhMCWkExFTAT
-BgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUg
-Q29uc3VsdGluZzEoMCYGA1UECxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIG
-A1UEAxMbVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25h
-bC1mcmVlbWFpbEB0aGF3dGUuY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDUadfUsJRk
-W3HpR9gMUbbqcpGwhF59LQ2PexLfhSV1KHQ6QixjJ5+Ve0vvfhmHHYbqo925zpZkGsIUbkSsfOaP
-6E0PcR9AOKYAo4d49vmUhl6t6sBeduvZFKNdbnp8DKVLVX8GGSl/npom1Wq7OCQIapjHsdqjmJH9
-edvlWsQcuQIDAQABoxMwETAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBBAUAA4GBAMfskn5O
-+PWWpWdiKqTwTRFg0G+NYFhhrCa7UjVcCM8w+6hKloofYkIjjBcP9LpknBesRynfnZhe0mxgcVyi
-rNx54+duAEcftQ0o6AKd5Jr9E/Sm2Xyx+NxfIyYJkYBz0BQb3kOpgyXy5pwvFcr+pquKB3WLDN1R
-hGvk+NHOd6KBMIIDPzCCAqigAwIBAgIBDTANBgkqhkiG9w0BAQUFADCB0TELMAkGA1UEBhMCWkEx
-FTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3
-dGUgQ29uc3VsdGluZzEoMCYGA1UECxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEk
-MCIGA1UEAxMbVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJz
-b25hbC1mcmVlbWFpbEB0aGF3dGUuY29tMB4XDTAzMDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVow
-YjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAq
-BgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqGSIb3DQEB
-AQUAA4GNADCBiQKBgQDEpjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/DDph8r9RzgHU
-5VAKMNcCY1osiRVwjt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+K/67GD4Hv0CAAmTX
-p6a7n2XRxSpUhQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIGA1UdEwEB/wQIMAYBAf8C
-AQAwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUuY29tL1RoYXd0ZVBlcnNvbmFs
-RnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYDVQQDExFQcml2
-YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBIjNFQg+oLLswNo2asZw9/r6y+whehQ5aU
-nX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZfoSxmRsAxRoLgnSeJVCUYsfbJ3FXJY3dqZw5
-jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfjViF4gtwhGTXeJLHTHUb/XV9lTzGCAs8wggLLAgEB
-MGkwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4x
-LDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAgMPehQwCQYFKw4D
-AhoFAKCCAbwwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDYwOTAy
-MTUxNjI5WjAjBgkqhkiG9w0BCQQxFgQUPxENHzldutjfxdfa+5vieoSj/YowZwYJKoZIhvcNAQkP
-MVowWDAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcw
-DQYIKoZIhvcNAwICASgwBwYFKw4DAhowCgYIKoZIhvcNAgUweAYJKwYBBAGCNxAEMWswaTBiMQsw
-CQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UE
-AxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECAw96FDB6BgsqhkiG9w0BCRAC
-CzFroGkwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0
-ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAgMPehQwDQYJ
-KoZIhvcNAQEBBQAEgYAC+3lDhoK4QBk8bQd1V6YtThYWw02s6OcjYaaSdyIG7cXbx8mqEzXBV72J
-Fr1bQpKklRltu0/uq6OzUHgW7UOfm6v55T/kIN2GwELNIcsLAr8Xxj/DK6D97+lbOYAJARwny1c+
-aWBebkr09NhPDouN+IPL/FL2g2PQOCS7X/+XHAAAAAAAAA==
+[...]
+> user@home~$ lftp user@62.75.128.98:9621
+> lftp user@62.75.128.98:/> debug
+>=20
+> lftp user@62.75.128.98:/> set ftp:passive-mode on
+>=20
+> lftp user@62.75.128.98:/> ls
+> ---> PASV
+> <--- 227 Entering Passive Mode (62,75,128,98,180,236)
+> ---- Connecting data socket to (62.75.128.98) port 46316
+> `ls' at 0 [Making data connection...]
 
-------=_NextPart_000_0063_01C6CEB3.87637D70--
+I guess your ruleset does not allow incoming TCP connections to the port=20
+46316, so the data connection fails. Don't bother to allow this port, as=20
+it is dynamic and a different one is chosen by the server for each=20
+passive data connection.
 
+> lftp user@62.75.128.98:/> set ftp:passive-mode off
+>=20
+> lftp user@62.75.128.98:/> ls
+[...]
+> ---> PORT 192,168,3,34,197,115
+> <--- 200 PORT command successful.
+> ---> LIST
+> <--- 150 Opening ASCII mode data connection for file list
+> <--- 426 Connection closed; transfer aborted
+> ---- Closing data socket
+
+That's probably the effect of the -d option in the second OUTPUT rule.=20
+The server tries to open a data connection to the TCP port 50547 of=20
+192.168.3.34, but this destination address doesn't match the -d option.=20
+Try to change -d to -s. Check also that there is no packet filter on the=20
+client which may block FTP data connections.
 
