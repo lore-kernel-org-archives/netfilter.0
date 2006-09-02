@@ -1,13 +1,10 @@
-From: Mike Williams <mike@v6.gaima.co.uk>
-Subject: Re: Hardly loaded machines and iptables? Your experiences?
-Date: Sat, 2 Sep 2006 19:38:58 +0100
-Message-ID: <200609021938.58564.mike@v6.gaima.co.uk>
-References: <20060902174858.44865.qmail@web56212.mail.re3.yahoo.com>
+From: Dmitri <dk-netfilter@nth.ca>
+Subject: matching -d to a given interface without specifying ip address
+Date: Sat, 02 Sep 2006 18:32:44 -0400
+Message-ID: <44FA068C.1000202@nth.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060902174858.44865.qmail@web56212.mail.re3.yahoo.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Saturday 02 September 2006 18:48, Elvir Kuric wrote:
-> I need your opinion about heavy load machines acting
-> as firewals based on iptables package.
-> If I have Pentium 4, equiped with 1GB of RAM, two
-> NICs, one NIC to internet, second to private network (
-> in private network are servers ). On firewall (
-> iptables ) machine I have nat, pat, everthing using
-> iptables. How that works in =A0environment with many
-> reqestes to servers in the LAN, I mean about 10000
-> request per day? Have you experience about this topic.
-> Is there any limit on hits to iptables machine, what
-> is about memory, procesor.
->
-> What do you think is solution based on iptables enough
-> secure for mission critical cases? I just need your
-> frank opinion.
+Hello,
 
-10000 a day? That's nothing.
-Our companies web presence is behind a PIII 800, with 376MB RAM, and it NAT=
-s=20
-in excess of 10000 individual web requests a minute, just to one of the=20
-webservers!
-Add the mail server, the support system, the bug trackers, etc, etc.
-Currently handling nearly 40000 connections, with peaks of over 60000.
-Pushing upwards of 40Mbps at normal peak.
-And all the while being the end point for several IPSEC VPNs.
-It can quite happily max out the 100Mbps connection, as it is now (hasn't d=
-one=20
-that before!) with a cpu usage of ~40%.
+Is there a way to define a condition "those packets whose destination is 
+the IP address of the given interface" without specifying the actual IP 
+address? (it changes, thus needs to be detected and updated)
 
-=2D-=20
-Mike Williams
+I want to be able to distinguish those packets addressed to the box, to 
+be forwarded, from those just passing through it. (-i matches both)
 
-=2D-=20
-Mike Williams
+Such packets can be discovered in the INPUT chains, after the "routing 
+decision", but by then it's too late to do DNAT.
+
+Thanks,
+
+--Dmitri
 
