@@ -1,13 +1,16 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: RE: How do I block www.yahoo.com
-Date: Sun, 3 Sep 2006 14:33:24 +0200
-Message-ID: <27697.7072739557$1157286848@news.gmane.org>
-References: <20060903122559.99728.qmail@web56203.mail.re3.yahoo.com>
-Reply-To: edvin.seferovic@kolp.at
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: diferent ports, diferent routes
+Date: Sun, 03 Sep 2006 15:28:56 +0200
+Message-ID: <44FAD898.1000709@plouf.fr.eu.org>
+References: <194721190608300726y132d8718p4fab8c32f1c4efbe@mail.gmail.com>	
+	<44F5A8D1.1000400@plouf.fr.eu.org>	
+	<194721190608310117u29fdd089r976caddc2a99fbcc@mail.gmail.com>	
+	<44F6B2EF.6040601@plouf.fr.eu.org>
+	<194721190609010211u72f7ef69qb53223debbdebc96@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060903122559.99728.qmail@web56203.mail.re3.yahoo.com>
+In-Reply-To: <194721190609010211u72f7ef69qb53223debbdebc96@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,68 +21,67 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+[Once again, please reply on the mailing list !]
 
-I recommend the use of a http proxy server which allows access control ( for
-example SQUID ). 
+KNO a =E9crit :
+>>
+>> You say the packets go out, but how far ? Do they reach the router2 as
+>> expected, meaning that the destination MAC address is router2's MAC
+>> address ? Do they reach the target host ? Does the target host send a
+>> reply packet ?
+>=20
+> How can I know if they reach the router2?
 
-Only by using iptables - you would need to deny access to whole yahoo IP
-range. When you use -d www.yahoo.com iptables resolves the www.yahoo.com
-into one IP address which will be blocked then. But since Yahoo has more IP
-addresses ( served in round-robin manner by DNS servers ) that wont help you
-much. 
+Maybe you can run a packet sniffer on the router. Else, check with a=20
+packet sniffer on the Linux box that the packets have the destination=20
+MAC addresse of the router, then check that the Linux box can reach the=20
+router, with ping for example.
 
-Regards,
+> They dont reach to target host.
 
-Edvin Seferovic
+How did you see that ? By running a packet sniffer on the target host ?
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Elvir Kuric
-Sent: Sonntag, 03. September 2006 14:26
-To: saki; netfilter@lists.netfilter.org
-Subject: Re: How do I block www.yahoo.com
+>> Does your Linux box perform SNAT or MASQUERADE on the WAN interface ?
+>>
+> No. Workstations don't have direct access to Internet, only througth
+> squid, so I dont need to do masquerade, do I?
 
-Hi,  try this 
+Sure.
 
+>> By the way, how do things work when you set the box default route via
+>> router2 ?
 
-iptables -A FORWARD -p tcp -s 10.0.1.3 -d
-www.yahoo.com -j DROP
+That was in important question, you didn't answer it.
 
-Regards
+>> Also, there is something unclear in your addressing scheme. You wrote =
+:
+>>
+>> > router1 address 192.168.2.9
+>> > router2 address 192.168.2.10
+>> > linux address 192.168.2.22
+>> > linux default gateway 192.168.2.10
+>> > lan workstations use linux as proxy (squid at port 8080) 192.168.2.2=
+2
+>>
+>> It seems that both your LAN and WAN networks use the same subnet
+>> 192.168.2.0/24. And :
+>>
+>> > :~# ip route ls
+>> > 192.168.2.0/24 dev eth0  proto kernel  scope link  src 192.168.2.252
+>> > default via 192.168.2.9 dev eth0
+>>
+>> I understand these are the routes on the WAN interface. Where are the
+>> interface and route to the LAN ?
+>>
+> You are rigth: Router have only one interface conected to LAN, and
+> routers (1 and 2) are conected to LAN too.
 
-Elvir
-
---- saki <sakimumustafa@yahoo.com> wrote:
-
-> Hello Guruz,
-> I want to block traffic from host 10.0.1.3 to
-> www.yahoo.com through my Gateway server.
-> 
-> I implimented this command :
-> #iptables -A FORWARD -o eth0 -s 10.0.1.3 -d
-> www.yahoo.com -j DROP
-> But could not block traffic. Any idea?
-> 
-> Best Regards,
-> Saki
-> 
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam
-> protection around 
-> http://mail.yahoo.com 
-> 
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
-
-
+So your diagram, showing the Linux box between the LAN and the routers,=20
+was wrong.
+One last unclear detail : you said that the default gateway was=20
+192.168.2.10 (router2) but the default route in the main routing table=20
+is 192.168.2.9 (router1).
 
