@@ -1,16 +1,19 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: diferent ports, diferent routes
-Date: Sun, 03 Sep 2006 15:28:56 +0200
-Message-ID: <44FAD898.1000709@plouf.fr.eu.org>
-References: <194721190608300726y132d8718p4fab8c32f1c4efbe@mail.gmail.com>	
-	<44F5A8D1.1000400@plouf.fr.eu.org>	
-	<194721190608310117u29fdd089r976caddc2a99fbcc@mail.gmail.com>	
-	<44F6B2EF.6040601@plouf.fr.eu.org>
-	<194721190609010211u72f7ef69qb53223debbdebc96@mail.gmail.com>
+From: Jonas Meurer <jonas@freesources.org>
+Subject: Re: how to set ports for ip_conntrack_ftp
+Date: Sun, 3 Sep 2006 18:29:26 +0200
+Message-ID: <20060903162926.GA4573@freesources.org>
+References: <20060831151130.GA32342@freesources.org>
+	<000601c6cd14$e07a28a0$0101000a@tanjian>
+	<20060831155749.GC32342@freesources.org>
+	<44F711D4.5090002@plouf.fr.eu.org>
+	<20060901012054.GB23094@freesources.org>
+	<44F7996C.9010504@plouf.fr.eu.org>
+	<20060902142712.GA31352@freesources.org>
+	<44F9A071.7070603@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <194721190609010211u72f7ef69qb53223debbdebc96@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <44F9A071.7070603@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,67 +24,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-[Once again, please reply on the mailing list !]
+On 02/09/2006 Pascal Hambourg wrote:
+> >>>>What do the "-d **.**.***.**/31" address ranges represent ?
+> >
+> >the ftp servers listen on both ips. so both are server addresses.
+> >
+> >do you think that i should change the "-d ..." at -A OUTPUT to "-s ..."?
+> 
+> Obviously yes. I just wonder how these rules could accept the control 
+> connection, as they did not accept the return packets from the server.
 
-KNO a =E9crit :
->>
->> You say the packets go out, but how far ? Do they reach the router2 as
->> expected, meaning that the destination MAC address is router2's MAC
->> address ? Do they reach the target host ? Does the target host send a
->> reply packet ?
->=20
-> How can I know if they reach the router2?
+i guess that it was a typo in my previous mail. the rules on the server
+used -s for -A OUTPUT  all the time.
 
-Maybe you can run a packet sniffer on the router. Else, check with a=20
-packet sniffer on the Linux box that the packets have the destination=20
-MAC addresse of the router, then check that the Linux box can reach the=20
-router, with ping for example.
+> [...]
+> >i would like to support both active and passive mode.
+> 
+> To allow active mode you'll have to perform two actions :
+> 
+> 1) Look into your FTP server configuration for an option named "passive 
+> mode local port range" or the like. You must define a port range that is 
+> not likely to be used by other local processes (so for example don't 
+> overlap /proc/sys/net/ipv4/ip_local_port_range). The number of ports in 
+> the interval must be bigger enough than the expected maximum number of 
+> simultaneous data connections from FTP clients.
 
-> They dont reach to target host.
+this is a big problem, as the ftp-server does not seem to support any
+other configuration than ip and port to listen on. it's the internal
+zope ftp-server (Medusa Async V1.23 [experimental]).
 
-How did you see that ? By running a packet sniffer on the target host ?
+> 2) Set iptables rules in INPUT and OUTPUT which allow incoming TCP 
+> connections to the port range you defined in the previous step.
+> 
+> [...]
+> 
+> I guess your ruleset does not allow incoming TCP connections to the port 
+> 46316, so the data connection fails. Don't bother to allow this port, as 
+> it is dynamic and a different one is chosen by the server for each 
+> passive data connection.
+> 
+> [...]
+> 
+> That's probably the effect of the -d option in the second OUTPUT rule. 
+> The server tries to open a data connection to the TCP port 50547 of 
+> 192.168.3.34, but this destination address doesn't match the -d option. 
+> Try to change -d to -s. Check also that there is no packet filter on the 
+> client which may block FTP data connections.
 
->> Does your Linux box perform SNAT or MASQUERADE on the WAN interface ?
->>
-> No. Workstations don't have direct access to Internet, only througth
-> squid, so I dont need to do masquerade, do I?
+now i used the following rules:
+iptables -A INPUT -i eth0 -m state --state NEW,ESTABLISHED \
+  -m multiport -p tcp --dports 9621,9721 -d 62.75.128.98/31 -j ACCEPT
+iptables -A OUTPUT -o eth0 -m state --state ESTABLISHED \
+  -m multiport -p tcp --sports 9621,9721 -s 62.75.128.98/31 -j ACCEPT
+iptables -A INPUT -i eth0 -m state --state ESTABLISHED \
+  -m multiport -p tcp --dports 9620,9720 -d 62.75.128.98/31 -j ACCEPT
+iptables -A OUTPUT -o eth0 -m state --state NEW,ESTABLISHED \
+  -m multiport -p tcp --sports 9620,9720 -s 62.75.128.98/31 -j ACCEPT
 
-Sure.
+unfortunately i still get the same result, both with passive and active
+ftp.
+i understand why passive ftp doesn't work, the ports are simply not open
+for the passive connection. but why does active ftp still not work? i
+tried from different servers without firewall and without a nat router,
+so the client cannot be the problem at all.
 
->> By the way, how do things work when you set the box default route via
->> router2 ?
+do you have any further suggestions?
 
-That was in important question, you didn't answer it.
+it would be great to get at least active ftp working.
 
->> Also, there is something unclear in your addressing scheme. You wrote =
-:
->>
->> > router1 address 192.168.2.9
->> > router2 address 192.168.2.10
->> > linux address 192.168.2.22
->> > linux default gateway 192.168.2.10
->> > lan workstations use linux as proxy (squid at port 8080) 192.168.2.2=
-2
->>
->> It seems that both your LAN and WAN networks use the same subnet
->> 192.168.2.0/24. And :
->>
->> > :~# ip route ls
->> > 192.168.2.0/24 dev eth0  proto kernel  scope link  src 192.168.2.252
->> > default via 192.168.2.9 dev eth0
->>
->> I understand these are the routes on the WAN interface. Where are the
->> interface and route to the LAN ?
->>
-> You are rigth: Router have only one interface conected to LAN, and
-> routers (1 and 2) are conected to LAN too.
-
-So your diagram, showing the Linux box between the LAN and the routers,=20
-was wrong.
-One last unclear detail : you said that the default gateway was=20
-192.168.2.10 (router2) but the default route in the main routing table=20
-is 192.168.2.9 (router1).
+...
+ jonas
 
