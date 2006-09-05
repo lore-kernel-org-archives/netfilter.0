@@ -1,11 +1,10 @@
-From: "Fischer, Anna" <anna.fischer@hp.com>
-Subject: Netfilter and bridging
-Date: Tue, 5 Sep 2006 06:56:41 +0100
-Message-ID: <86FE9B2B91ADD04095335314BE6906E85F3DCE@sdcexc04.emea.cpqcorp.net>
+From: "Nguyen Duy Cuong" <cuongnd.it@ct-in.com.vn>
+Subject: Re: diferent ports, diferent routes (Pascal Hambourg)
+Date: Tue, 5 Sep 2006 13:44:42 +0700
+Message-ID: <003a01c6d0b6$c47d7760$950b000a@ctin.com.vn>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,16 +18,9 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi there,
 
-I use bridge-utils to set up a bridge (basically I use Xen...) and now I
-want to filter packets coming from (or going to) specific bridge ports.
-I use the PHYSDEV extension for that and in general that works fine.
-However, I thought all bridged packets traverse the iptables FORWARD
-chain, but in my case they don't! As far as I know, every bridged packet
-should go through this chain, so I'm wondering what might be the reason
-that this is not the case on my machine. Can anyone help me on that?
+Re: diferent ports, diferent routes (Pascal Hambourg)
 
-Cheers,
-Anna
+
+
 
