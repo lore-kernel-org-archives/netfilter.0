@@ -1,12 +1,11 @@
-From: Danny Rathjens <gmane@rathjens.org>
-Subject: Re: matching -d to a given interface without specifying ip address
-Date: Wed, 06 Sep 2006 14:11:08 -0400
-Message-ID: <edn2vt$4dl$1@sea.gmane.org>
-References: <009601c6cfdf$c4406910$0101000a@tanjian> <44FD003D.7080509@nth.ca>
+From: "Ing. Rogelio Sevilla Fernandez" <sevilla@col.gob.mx>
+Subject: Problem using "string" support on iptables
+Date: Wed, 06 Sep 2006 13:50:52 -0500
+Message-ID: <20060906135052.taczeo17kgs04ock@mail.col.gob.mx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <44FD003D.7080509@nth.ca>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,21 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; delsp="Yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Dmitri wrote:
-> The problem with specifying an IP is that it may change, which breaks 
-> the rules and requires an update (and detection as well). Event for a 
-> static IP, that's an extra dependency to watch out for.
- 
-That's what variables in your firewall script are for.
-Just re-run it when your network connection restarts:
-EXTIF="eth0"
-EXTIP=`ifconfig $EXTIF |perl -ne'print $1 if /inet addr:([\d.]+)/'`
-iptables -A INPUT -j ACCEPT -i $EXTIF -p tcp -d $EXTIP --dport 80
--- 
-     _.,-*~`^'~*-,._ Danny Rathjens _.,-*~`^'~*-,._
-FireCast: Rock solid kiosk software: http://www.wirespring.com/
+I want block a certain packets with some text on it.
+Im using iptables 1.3.5 and i want do the follow:
+
+iptables -I FORWARD -p tcp --dport 1863 -m string --string "someuser" -j DRO=
+P
+
+And i get this error:
+
+iptables v1.3.5: STRING match: You must specify `--algo'
+
+Why i get that problem?
+
+Thanks.
+
+
+--=20
+Ing. Rogelio C. Sevilla Fern=E1ndez
+Direcci=F3n de Desarrollo Telem=E1tico / Secretaria de Administraci=F3n
+Tel (312)3162062 / (312)3162000 ext 2360
+Gobierno del Estado de Colima.
+
+-----------------------------------------------------
+  "2006, A=D1O DEL BICENTENARIO DEL NATALICIO DEL LIC.
+     BENITO JUAREZ BENEMERITO DE LAS AMERICAS"
+-----------------------------------------------------
 
 
