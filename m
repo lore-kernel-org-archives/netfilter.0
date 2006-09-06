@@ -1,11 +1,10 @@
-From: "Ing. Rogelio Sevilla Fernandez" <sevilla@col.gob.mx>
-Subject: Problem using "string" support on iptables
-Date: Wed, 06 Sep 2006 13:50:52 -0500
-Message-ID: <20060906135052.taczeo17kgs04ock@mail.col.gob.mx>
+From: Danny Rathjens <gmane@rathjens.org>
+Subject: generating icmp redirects
+Date: Wed, 06 Sep 2006 15:01:19 -0400
+Message-ID: <edn5u0$fbn$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +15,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; delsp="Yes"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I want block a certain packets with some text on it.
-Im using iptables 1.3.5 and i want do the follow:
+I want to redirect packets to a different machine (similar to transparent proxy type setup).
+(I am trying to emulate a network at a bank where our linux distro is having trouble
+configuring network/connecting to our server)
 
-iptables -I FORWARD -p tcp --dport 1863 -m string --string "someuser" -j DRO=
-P
+I chose a random box on my net to be my test gateway, enabled forwarding and added rule to
+mark packets destined for port 666 and route them to a different machine:
 
-And i get this error:
+on test gateway:
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -A PREROUTING -i eth0 -t mangle -p tcp --dport 666 -j MARK --set-mark 2
+echo 202 eos >> /etc/iproute2/rt_tables
+ip rule add fwmark 2 table eos
+ip route add default via 192.168.1.16 dev eth0 table eos
+ip route flush cache
 
-iptables v1.3.5: STRING match: You must specify `--algo'
+on eos(place being redirected to):
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 666 -j REDIRECT 
+nc -l -p 666 -c "echo eos"
 
-Why i get that problem?
+on test host on internal net:
+route del default gw
+route add default gw 192.168.1.4 # test gateway
+perl -MIO::Socket -wle' my $sock = IO::Socket::INET->new( PeerAddr => "4.2.2.2", PeerPort => 666, Proto => "tcp") or die;print <$sock>'
+# 4.2.2.2 is random host out in the world
 
-Thanks.
+This does print "eos" as it should, since the packets got routed to eos.
+But I am not seeing any ICMP redirects like I want when I do
+tcpdump tcp port 666 or icmp
+(just normal 3-way handshake, some data packets, ack, then reset.)
 
+It seems that sending redirects is the default:
+cat /proc/sys/net/ipv4/conf/*/send_redirects
+1
+1
+1
+1
 
---=20
-Ing. Rogelio C. Sevilla Fern=E1ndez
-Direcci=F3n de Desarrollo Telem=E1tico / Secretaria de Administraci=F3n
-Tel (312)3162062 / (312)3162000 ext 2360
-Gobierno del Estado de Colima.
-
------------------------------------------------------
-  "2006, A=D1O DEL BICENTENARIO DEL NATALICIO DEL LIC.
-     BENITO JUAREZ BENEMERITO DE LAS AMERICAS"
------------------------------------------------------
+So any idea how to force the ICMP redirects to happen?
+-- 
+    _.,-*~`^'~*-,._ Danny Rathjens _.,-*~`^'~*-,._
+FireCast: Rock solid kiosk software: http://www.wirespring.com/
 
 
