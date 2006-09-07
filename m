@@ -1,10 +1,12 @@
-From: saki <sakimumustafa@yahoo.com>
-Subject: How to use ipp2p
-Date: Thu, 7 Sep 2006 00:47:59 -0700 (PDT)
-Message-ID: <20060907074759.59163.qmail@web36607.mail.mud.yahoo.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: How to use ipp2p
+Date: Thu, 7 Sep 2006 09:59:22 +0200 (CEST)
+Message-ID: <64132.193.173.147.3.1157615962.squirrel@webmail.sterenborg.info>
+References: <20060907074759.59163.qmail@web36607.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060907074759.59163.qmail@web36607.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +20,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I want to filter p2p packet going through my gateway.
-I tried it with ipp2p.. but could not make it working
-with my Fedora Core 2 distro. Anyone would tell me how
-to patch iptables with ipp2p in FC2? And how to use
-it.
+On Thu, September 7, 2006 09:47, saki wrote:
+> I want to filter p2p packet going through my gateway.
+> I tried it with ipp2p.. but could not make it working
+> with my Fedora Core 2 distro. Anyone would tell me how to patch iptable=
+s with
+> ipp2p in FC2? And how to use it.
 
-Regards,
--Saki
+And exactly *what* have you tried..?
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+
+Gr,
+Rob
+
+
 
