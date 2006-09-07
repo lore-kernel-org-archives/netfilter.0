@@ -1,10 +1,12 @@
-From: "Maxime Ducharme" <mducharme@cybergeneration.com>
-Subject: Question on Layer 7 filtering
-Date: Thu, 7 Sep 2006 16:34:05 -0400
-Message-ID: <34248.6100191765$1157661298@news.gmane.org>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: not able to ssh from the firewall
+Date: Thu, 7 Sep 2006 22:57:59 +0200
+Message-ID: <001701c6d2c0$4d588b00$0101000a@tanjian>
+References: <1157637682.4771.1.camel@nirvana.aurokruti.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1157637682.4771.1.camel@nirvana.aurokruti.in>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +20,56 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+>>> I am not able to ssh from the firewall
+>>> to a client. Though the reverse is
+>>> working.
+>>> 
+>>> I would also like to put :
+>>> 
+>>> -A OUTPUT -j DROP
+>>> 
+>>> But if I do that clients are not able to connect
+>>> to the net. I need add a rule which I could
+>>> not figure out.
+>> 
+>> You should allow SSH out when you want to be able to use it.
+>> SSH listens on port 22, so this should do it:
+>> 
+>> -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+>> -A OUTPUT -p tcp --dport 22 -j ACCEPT
+>> -A OUTPUT -j DROP
+> 
+> No that did not work.
 
-Hello ppl
+Of course not. AFAIK your current OUTPUT policy is still ACCEPT (see
+below) so that should not be the problem. (Don't mess with the OUTPUT
+chain untill your INPUT chain is working as you want it to.)
 
-anyone have experience with http://l7-filter.sourceforge.net/ ?
+>>> :INPUT ACCEPT [80:13056]
+>>> -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+>> 
+>> It looks like eth0 is connected to the internet and eth1 to your LAN.
+>> Check if outgoing ssh works using:
+>> 
+>> -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-We are currently looking for a way to add more security
-with linux based solutions (Layer 7 filtering would be very nice)
+Did you try this?
+If it doesn't work, put a LOG rule just before the DROP rule to see what
+get's dropped when you're trying to setup an ssh session.
 
-We are ready to develop some parts if needed (i mean we dont want
-to buy "all-set" linux solutions)
+>>> :OUTPUT ACCEPT [80:13056]
+>>> -A OUTPUT -j ACCEPT
+>>> -A OUTPUT -o lo -j ACCEPT
 
-example of what we'd like to block :
-- good ol' codered/nimba/slammer attacks
-- sql injections
-- XSS
-- ...
+Here is where I see you're not dropping anything in the OUTPUT chain.
+The first rule accepts everything so the second will never match and is
+useless. Further, your chain polocy is ACCEPT, so if you're not going to
+drop anything: why have rules in that chain to accept packets that would
+be accepted anyway? Just get rid of the OUTPUT rules for now and leave
+it's policy ACCEPT.
 
-TIA 
- 
-Maxime Ducharme
+
+Gr,
+Rob
 
 
