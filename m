@@ -1,54 +1,44 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: where did the condition and time extensions go?
-Date: Mon, 11 Sep 2006 05:44:32 -0400
-Message-ID: <pubag25l8vm6pjquvfvagpoo0pg5oo4oo7@4ax.com>
+From: Mike Williams <mike@v6.gaima.co.uk>
+Subject: NAT to one net, bridge to another
+Date: Fri, 8 Sep 2006 12:50:29 +0100
+Message-ID: <200609081250.32329.mike@v6.gaima.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
 List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=help>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
 List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
-Errors-To: netfilter-bounces-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org
+To: netfilter@lists.netfilter.org
 
-OK, I figure this has to be a FAQ, but I can't find the answers around
-anywhere.
+Hey,
 
-What the hell happened to most of the extensions in patch-o-matic-ng?  I
-found a reference somewhere to say that they've been "retired".  Too bad
-for us users.  I happen to depend on the condition and time patches, which
-apparently have been retired.
+Sometime in the next couple months we're going to be replacing a large part of 
+our infrastructure to increase the already excellent reliability (dual nics 
+and psus everywhere, etc).
+I'm just speccing up some kit for quote, and I'm slightly undecided as to the 
+best things I can do with the firewalls.
 
-Are there any plans to restore the removed patches?  Have they been placed
-in a hold queue somewhere, awaiting work to make them functional again?  I
-thought that was the purpose of the old "extra" set et al.
+At the moment I'm looking at NATting stuff to 3 different zones (private 
+networks), and hopefully bridging to a 4th zone.
+It'll have 10 nics, all paired off into round-robin bonds, so 5 usuable 
+interfaces. 1 colo facing, 3 private, 1 "public".
 
-Looking at the latest iptables source, I see it includes source for the
-condition and time extensions.  But these two extensions are missing from
-pom-ng and from the 2.6.17 kernel source (AFAICT).  Does this mean that the
-latest iptables can use them, without setting kernel options?  Or do we
-have a conflict between iptables, which includes them, and kernel/pom-ng,
-which don't?
+Can you DNAT packets to IPs X, and Y, Z assigned to a bridge, while bridging 
+those IPs not assigned to it?
+(There is probably going to be a small amount of firewalling on the bridged 
+IPs)
 
-Was this change announced to users anywhere?  If not, it doesn't treat us
-users, who depend on the deleted material, very well.
+Thanks
 
-And in fact, as of today, the last several days' snapshots of pom-ng are
-completely empty.  What the hell is going on at netfilter.org?
-
-Sorry for my frustration.  It would probably help if I could find somewhere
-where someone troubled to explain all of this when it happened.
-
-Andrew.
-
---
-To reply by email, change "deadspam.com" to "alumni.utexas.net"
-
+-- 
+Mike Williams
 
