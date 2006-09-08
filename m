@@ -1,10 +1,12 @@
-From: Mike Wright <xktnniuymlla@mailinator.com>
-Subject: need help with ipset
-Date: Sun, 10 Sep 2006 19:39:48 -0700
-Message-ID: <4504CC74.3040607@mailinator.com>
+From: "Michael P. Brininstool" <mikepb@hoplite.org>
+Subject: RE: ip_conntrack problem?
+Date: Fri, 8 Sep 2006 10:41:28 -0600
+Message-ID: <004301c6d365$a5753f40$c84f949b@nasw.ds.army.mil>
+References: <001001c6d296$eef8d4d0$c84f949b@nasw.ds.army.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-reply-to: <001001c6d296$eef8d4d0$c84f949b@nasw.ds.army.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,66 +17,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi netfilter users,
+Not sure if this made it to the list.  If so, does anybody have any ideas?
 
-Trying to use ipset but having no joy.
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Michael P.
+Brininstool
+Sent: Thursday, September 07, 2006 10:02 AM
+To: netfilter@lists.netfilter.org
+Subject: ip_conntrack problem?
 
-O/S is Fedora Core 4, kernel is linux-2.6.16-xen.
+I have a Fedora Core 4 iptables firewall with 1 external interface, 1
+wireless network interface, 1 DMZ interface and 2 internal interfaces.  I
+have a mail server doing IMAPS and SMTP in the DMZ.
+Employees on the outside and inside need to be able to reach both the SMTP
+and the IMAPS servers.  For the most part the current set up works fine,
+BUT.....
 
-I'm using the instructions from ipset.netfilter.net/install.html.
-Kernel readied, patch applied, kernel built, iptables built, ipset
-built, no errors reported.  Only issue was that everything wanted to
-install into /usr/local.  The Makefile was changed to use this:
+Every once in a while, those sending emails from thunderbird or outlook get
+a message saying that their email was not sent, and their client requeues
+the outgoing email and tries again.  It will try forever.....  What the
+recipient sees is that (s)he receives many many copies of the email until
+the sender deletes the message from the outgoing queue.
 
-PREFIX:=/
-LIBDIR:=$(PREFIX)/lib
-BINDIR:=$(PREFIX)/sbin
-MANDIR:=$(PREFIX)/usr/share/man
-INCDIR:=$(PREFIX)/usr/include
+Fast Forward a month....I happen to notice log messages from the firewall
+one day, that the ACK PSH FIN packet from the SMTP server was not getting to
+the client that was attempting to send the email.  I looked at the DST port
+of these packets and then looked at the ip_conntrack file in /proc and found
+that the port was not listed.  But port numbers slightly higher were for
+that node pair.
 
-I've built and installed the libipset*.so modules into both
-/lib/iptables and /lib/ipset.
+Fast Forward a week....I was watching this more often, and then found that
+the DST port the SMTP server was attempting to send to WAS a valid
+connection with hundred's of thousands of seconds before timeout.  Then for
+no apparent reason, the entry in /proc/.../ip_conntrack with that DST port
+suddenly disappeared as the TCP connection was being shutdown.  The iptables
+firewall was blocking the ACK PSH FIN packet because it no longer considered
+it a RELATED or ESTABLISHED connection.
 
-When iptables is started it reports v1.3.5 and seems to work with my
-previous iptables rules.
+Here is one line of output from my logs:
 
-Trying to create a set:
-    "ipset -N TEST iphash" fails with:
-       ipset v2.2.9: Error from kernel: Protocol not available
+Aug 30 09:19:42 gateway kernel: DMZ2ENG_PACKET IN=eth1 OUT=eth2
+SRC=172.20.1.33 DST=172.20.2.84 LEN=117 TOS=0x00 PREC=0x00 TTL=63 ID=42207
+DF PROTO=TCP SPT=25 DPT=1098 WINDOW=32767 RES=0x00 ACK PSH FIN URGP=0
 
-On google I found a user with that error, but said he had success once
-he loaded the module (didn't say how he did it though).  Reading man
-iptables says that modules will be loaded implicitly by specifying a
-protocol, i.e -p tcp,etc or explicitly by specifying a -m "module", so I
-tried this:
-   "iptables -A INPUT -m set --set TEST dst -j ACCEPT" and got
-      "iptables v1.3.5: Problem when communicating with ipset, errno=92"
+Any idea why the connection tracking is losing the record of the established
+connection before the shutdown handshake is complete?  This is only
+happening once in a while....
+I do not appear to be running out of connection tracking memory....
+This has recently been seen on IMAPS packets from the internal network to a
+remote IMAPS server -- ACK PSH FIN packets coming back are being blocked as
+unsolicited connections. -- I verified they were indeed valid connections
+seconds before the packet was logged.
 
-(errno=92 is ENOPROTOOPT /* protocol not supported */)
+TIA!
 
-Here are my kernel configs for ipset:
-  <M> IP set support
-  (256) Maximum number of IP sets
-  (1024) Hash size for bindings of IP sets
-  < >  ipmap set support
-  < >  macipmap set support
-  < >  portmap set support
-  <M>  iphash set support
-  < >  nethash set support
-  < >  ipporthash set support
-  < >  iptree set support
-  <M>   set match support
-  <M>   SET target support
+--
+Michael P Brininstool
 
-Docs are pretty sparse on this, so it could very well be PEBCAK.
 
-Any help would be very appreciated.
-
-Thanks,
-Mike Wright :m)
 
 
 
