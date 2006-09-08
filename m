@@ -1,12 +1,12 @@
-From: Dmitri <dk-netfilter@nth.ca>
-Subject: Re: matching -d to a given interface without specifying ip address
-Date: Thu, 07 Sep 2006 22:03:55 -0400
-Message-ID: <4500CF8B.8060304@nth.ca>
-References: <000601c6d0a5$da2c37b0$0101000a@tanjian>
+From: varun <varun_saa@rediffmail.com>
+Subject: RE: not able to ssh from the firewall
+Date: Fri, 08 Sep 2006 07:52:16 +0530
+Message-ID: <1157682136.4889.4.camel@nirvana.aurokruti.in>
+References: <001701c6d2c0$4d588b00$0101000a@tanjian>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000601c6d0a5$da2c37b0$0101000a@tanjian>
+In-Reply-To: <001701c6d2c0$4d588b00$0101000a@tanjian>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +17,81 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Rob Sterenborg <rob@sterenborg.info>
+Cc: netfilter@lists.netfilter.org
 
-Rob Sterenborg wrote:
-> Yes, but there is a difference:
-> Here you are talking about packets that come from your client that are
-> sent to Google. These do not have the destination IP of the firewall box
-> but pass through the firewall because you have set your gateway
-> according. Besides, that would be SNAT which is something else.
-...
- > ... A client from the internet can
- > only point to your public IP ...
+On Thu, 2006-09-07 at 22:57 +0200, Rob Sterenborg wrote:
+> >>> I am not able to ssh from the firewall
+> >>> to a client. Though the reverse is
+> >>> working.
+> >>> 
+> >>> I would also like to put :
+> >>> 
+> >>> -A OUTPUT -j DROP
+> >>> 
+> >>> But if I do that clients are not able to connect
+> >>> to the net. I need add a rule which I could
+> >>> not figure out.
+> >> 
+> >> You should allow SSH out when you want to be able to use it.
+> >> SSH listens on port 22, so this should do it:
+> >> 
+> >> -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> >> -A OUTPUT -p tcp --dport 22 -j ACCEPT
+> >> -A OUTPUT -j DROP
+> > 
+> > No that did not work.
+> 
+> Of course not. AFAIK your current OUTPUT policy is still ACCEPT (see
+> below) so that should not be the problem. (Don't mess with the OUTPUT
+> chain untill your INPUT chain is working as you want it to.)
+> 
+> >>> :INPUT ACCEPT [80:13056]
+> >>> -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+> >> 
+> >> It looks like eth0 is connected to the internet and eth1 to your LAN.
+> >> Check if outgoing ssh works using:
+> >> 
+> >> -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> 
+> Did you try this?
+> If it doesn't work, put a LOG rule just before the DROP rule to see what
+> get's dropped when you're trying to setup an ssh session.
+> 
+> >>> :OUTPUT ACCEPT [80:13056]
+> >>> -A OUTPUT -j ACCEPT
+> >>> -A OUTPUT -o lo -j ACCEPT
 
-Yes, but a client from the local network can either point at google's 
-ip, or the public or private IP of the gateway. I wanted to detect these 
-cases. It's specifically about local clients, whichever IP they're 
-pointing to.
+OK, I had set :
 
-> Perhaps you're confusing DNAT with SNAT?
-> When packets for Google pass through it's (initial) direction is from
-> your LAN to the internet and packets are SNAT-ed. This is the opposite
-> of what you want above.
+-A OUTPUT -j DROP
 
-No, I'm not confusing DNAT with SNAT. SNAT, particularly MASQUERADE, is 
-happening anyway for -o ppp0. But I wanted to DNAT some things directed 
-to the box itself to some other destination. When they come -o ppp0, 
-they will get MASQUERADEd as well.
+So nothing worked.
 
-Anyway, I think I have the answer to my question, as explained in my 
-response to Danny.
+If OUTPUT is set to :
 
-Thanks,
---Dmitri
+-A OUTPUT -j ACCEPT
+
+Then everthing works. I can ssh, ping to clients .
+
+So how do I get it working with OUTPUT as DROP ?
+
+
+
+> 
+> Here is where I see you're not dropping anything in the OUTPUT chain.
+> The first rule accepts everything so the second will never match and is
+> useless. Further, your chain polocy is ACCEPT, so if you're not going to
+> drop anything: why have rules in that chain to accept packets that would
+> be accepted anyway? Just get rid of the OUTPUT rules for now and leave
+> it's policy ACCEPT.
+> 
+> 
+> Gr,
+> Rob
+> 
+> 
+> 
+
 
