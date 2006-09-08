@@ -1,12 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: not able to ssh from the firewall
-Date: Thu, 7 Sep 2006 22:57:59 +0200
-Message-ID: <001701c6d2c0$4d588b00$0101000a@tanjian>
-References: <1157637682.4771.1.camel@nirvana.aurokruti.in>
+From: Dmitri <dk-netfilter@nth.ca>
+Subject: Re: matching -d to a given interface without specifying ip address
+Date: Thu, 07 Sep 2006 21:42:19 -0400
+Message-ID: <4500CA7B.6050304@nth.ca>
+References: <009601c6cfdf$c4406910$0101000a@tanjian> <44FD003D.7080509@nth.ca>
+	<edn2vt$4dl$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1157637682.4771.1.camel@nirvana.aurokruti.in>
+In-Reply-To: <edn2vt$4dl$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,59 +18,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
->>> I am not able to ssh from the firewall
->>> to a client. Though the reverse is
->>> working.
->>> 
->>> I would also like to put :
->>> 
->>> -A OUTPUT -j DROP
->>> 
->>> But if I do that clients are not able to connect
->>> to the net. I need add a rule which I could
->>> not figure out.
->> 
->> You should allow SSH out when you want to be able to use it.
->> SSH listens on port 22, so this should do it:
->> 
->> -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->> -A OUTPUT -p tcp --dport 22 -j ACCEPT
->> -A OUTPUT -j DROP
+Danny Rathjens wrote:
+> Dmitri wrote:
+>> The problem with specifying an IP is that it may change, which breaks 
+>> the rules and requires an update (and detection as well). Event for a 
+>> static IP, that's an extra dependency to watch out for.
 > 
-> No that did not work.
+> That's what variables in your firewall script are for.
+> Just re-run it when your network connection restarts:
+> EXTIF="eth0"
+> EXTIP=`ifconfig $EXTIF |perl -ne'print $1 if /inet addr:([\d.]+)/'`
+> iptables -A INPUT -j ACCEPT -i $EXTIF -p tcp -d $EXTIP --dport 80
 
-Of course not. AFAIK your current OUTPUT policy is still ACCEPT (see
-below) so that should not be the problem. (Don't mess with the OUTPUT
-chain untill your INPUT chain is working as you want it to.)
+Yes, but it's exactly the sort of hack I hoped to avoid. For a perfectly 
+simple expression, now I need to 1) detect that IP changed or connection 
+restarted, and 2) run the hack. There isn't supposed to be any firewall 
+script.
 
->>> :INPUT ACCEPT [80:13056]
->>> -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
->> 
->> It looks like eth0 is connected to the internet and eth1 to your LAN.
->> Check if outgoing ssh works using:
->> 
->> -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+It's like SNAT vs. MASQUERADE - MASQUERADE works without any scripts or 
+reloads. Same can be done with other things which require reloading. The 
+less dynamic hacks in the system, the less of a nondeterministic mess it 
+would be.
 
-Did you try this?
-If it doesn't work, put a LOG rule just before the DROP rule to see what
-get's dropped when you're trying to setup an ssh session.
+Well, I guess the answer to my question is "no, there is no such 
+option". I'm half-considering implementing it myself, if I can find 
+heads and tails of it.
 
->>> :OUTPUT ACCEPT [80:13056]
->>> -A OUTPUT -j ACCEPT
->>> -A OUTPUT -o lo -j ACCEPT
-
-Here is where I see you're not dropping anything in the OUTPUT chain.
-The first rule accepts everything so the second will never match and is
-useless. Further, your chain polocy is ACCEPT, so if you're not going to
-drop anything: why have rules in that chain to accept packets that would
-be accepted anyway? Just get rid of the OUTPUT rules for now and leave
-it's policy ACCEPT.
-
-
-Gr,
-Rob
-
+Thanks,
+--Dmitri
 
