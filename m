@@ -1,12 +1,10 @@
-From: varun <varun_saa@rediffmail.com>
-Subject: RE: not able to ssh from the firewall
-Date: Fri, 08 Sep 2006 07:52:16 +0530
-Message-ID: <1157682136.4889.4.camel@nirvana.aurokruti.in>
-References: <001701c6d2c0$4d588b00$0101000a@tanjian>
+From: Mike Wright <xktnniuymlla@mailinator.com>
+Subject: need help with ipset
+Date: Sun, 10 Sep 2006 19:39:48 -0700
+Message-ID: <4504CC74.3040607@mailinator.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001701c6d2c0$4d588b00$0101000a@tanjian>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,81 +15,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, 2006-09-07 at 22:57 +0200, Rob Sterenborg wrote:
-> >>> I am not able to ssh from the firewall
-> >>> to a client. Though the reverse is
-> >>> working.
-> >>> 
-> >>> I would also like to put :
-> >>> 
-> >>> -A OUTPUT -j DROP
-> >>> 
-> >>> But if I do that clients are not able to connect
-> >>> to the net. I need add a rule which I could
-> >>> not figure out.
-> >> 
-> >> You should allow SSH out when you want to be able to use it.
-> >> SSH listens on port 22, so this should do it:
-> >> 
-> >> -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> >> -A OUTPUT -p tcp --dport 22 -j ACCEPT
-> >> -A OUTPUT -j DROP
-> > 
-> > No that did not work.
-> 
-> Of course not. AFAIK your current OUTPUT policy is still ACCEPT (see
-> below) so that should not be the problem. (Don't mess with the OUTPUT
-> chain untill your INPUT chain is working as you want it to.)
-> 
-> >>> :INPUT ACCEPT [80:13056]
-> >>> -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-> >> 
-> >> It looks like eth0 is connected to the internet and eth1 to your LAN.
-> >> Check if outgoing ssh works using:
-> >> 
-> >> -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> 
-> Did you try this?
-> If it doesn't work, put a LOG rule just before the DROP rule to see what
-> get's dropped when you're trying to setup an ssh session.
-> 
-> >>> :OUTPUT ACCEPT [80:13056]
-> >>> -A OUTPUT -j ACCEPT
-> >>> -A OUTPUT -o lo -j ACCEPT
+Hi netfilter users,
 
-OK, I had set :
+Trying to use ipset but having no joy.
 
--A OUTPUT -j DROP
+O/S is Fedora Core 4, kernel is linux-2.6.16-xen.
 
-So nothing worked.
+I'm using the instructions from ipset.netfilter.net/install.html.
+Kernel readied, patch applied, kernel built, iptables built, ipset
+built, no errors reported.  Only issue was that everything wanted to
+install into /usr/local.  The Makefile was changed to use this:
 
-If OUTPUT is set to :
+PREFIX:=/
+LIBDIR:=$(PREFIX)/lib
+BINDIR:=$(PREFIX)/sbin
+MANDIR:=$(PREFIX)/usr/share/man
+INCDIR:=$(PREFIX)/usr/include
 
--A OUTPUT -j ACCEPT
+I've built and installed the libipset*.so modules into both
+/lib/iptables and /lib/ipset.
 
-Then everthing works. I can ssh, ping to clients .
+When iptables is started it reports v1.3.5 and seems to work with my
+previous iptables rules.
 
-So how do I get it working with OUTPUT as DROP ?
+Trying to create a set:
+    "ipset -N TEST iphash" fails with:
+       ipset v2.2.9: Error from kernel: Protocol not available
 
+On google I found a user with that error, but said he had success once
+he loaded the module (didn't say how he did it though).  Reading man
+iptables says that modules will be loaded implicitly by specifying a
+protocol, i.e -p tcp,etc or explicitly by specifying a -m "module", so I
+tried this:
+   "iptables -A INPUT -m set --set TEST dst -j ACCEPT" and got
+      "iptables v1.3.5: Problem when communicating with ipset, errno=92"
 
+(errno=92 is ENOPROTOOPT /* protocol not supported */)
 
-> 
-> Here is where I see you're not dropping anything in the OUTPUT chain.
-> The first rule accepts everything so the second will never match and is
-> useless. Further, your chain polocy is ACCEPT, so if you're not going to
-> drop anything: why have rules in that chain to accept packets that would
-> be accepted anyway? Just get rid of the OUTPUT rules for now and leave
-> it's policy ACCEPT.
-> 
-> 
-> Gr,
-> Rob
-> 
-> 
-> 
+Here are my kernel configs for ipset:
+  <M> IP set support
+  (256) Maximum number of IP sets
+  (1024) Hash size for bindings of IP sets
+  < >  ipmap set support
+  < >  macipmap set support
+  < >  portmap set support
+  <M>  iphash set support
+  < >  nethash set support
+  < >  ipporthash set support
+  < >  iptree set support
+  <M>   set match support
+  <M>   SET target support
+
+Docs are pretty sparse on this, so it could very well be PEBCAK.
+
+Any help would be very appreciated.
+
+Thanks,
+Mike Wright :m)
+
 
 
