@@ -1,11 +1,10 @@
-From: "Yuriy Popyk" <fennister@gmail.com>
-Subject: problems with SNAT
-Date: Tue, 12 Sep 2006 12:47:56 +0300
-Message-ID: <8a3f83490609120247t85facf9p3326b822fac2057f@mail.gmail.com>
+From: Pedro Werneck <pedro.werneck@terra.com.br>
+Subject: Problems with nat/forwarding on gateway
+Date: Sun, 10 Sep 2006 21:33:58 -0300
+Message-ID: <20060910213358.39f29020.pedro.werneck@terra.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,51 +15,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello
+
+Hi
 
 
-  We have a lan with ips in private range
- Problem is described with a following pic
+I always configured linux gateways with DSL-pppoe, but now I have to do
+it with dhcp and I can't get it working. 
 
- ----------      ----------
-   |  PC2 |-----|  R2   |
-   ----------      ----------
-                    |
-                    |
-                  ----------         ----------
-                  |   R1  |--------|  PC1 |
-                  ----------         ----------
-                      |
-                  ----------
-                   | ISP |
-                   ----------
+I checked both interfaces at the gateway machine and the packets from
+the LAN reach it, but the responses don't get back past it. 
 
-  R1 - router 1, linux
- R2 - router 2, ms windows 2000
-  PC1 - pc 1, ms windows XP
-  PC1 - pc 1, ms windows 2000
+I had the same problem with pppoe, but it was related to MTU size, and I
+tried the same now but it doesn't work, so it seems a problem within the
+eth connected to the router and the machines inside the LAN. I searched
+for information on this but there's nothing beside the trivial tutorials
+on DSL setup. Since I'm testing with a pretty simple rules set, I'd like
+to ask if there's anything wrong, or if the problem may be at the
+routing tables.
 
-  when I'm trying to set SNAT on R1 for PC1
-  # iptables -t nat -A POSTROUTING -s  $pc1 -j SNAT --to-source $ip_to_isp
- it works
+This is what I'm using... eth1 is connected to DSL, eth0 to the router.
 
-  but when I'm trying to set SNAT for PC2
-  # iptables -t nat -A POSTROUTING -s  $pc2 -j SNAT --to-source $ip_to_isp
- it fails
+iptables -P INPUT DROP
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -A INPUT -j ACCEPT -i lo
+iptables -A INPUT -j ACCEPT -s 192.168.1.0/24
+iptables -A INPUT -j ACCEPT -i eth1 -m state --state ESTABLISHED,RELATED
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j MASQUERADE
+iptables -A FORWARD -j ACCEPT -i eth1
+iptables -A FORWARD -j ACCEPT -s 192.168.1.0/24
+iptables -A FORWARD -j DROP
+iptables -A INPUT -j ACCEPT -p tcp --dport 21
+iptables -A INPUT -j ACCEPT -p tcp --dport 22
+iptables -A INPUT -j ACCEPT -p tcp --dport 80
 
-  tcpdump -nl -i $ISP_eth
-  shows that R1 forwards packets from PC2 to outside world without NATing
-  and in the same time packets from PC1 is NATed
 
- when i made
-  # iptables -t filter -A FORWARD -s PC2 -j DROP
- it works, packets from PC2 is not going outside anymore
+Thanks for any help... 
 
-  i have tried to do SNAT with firewall rules flushed and policies set to ACCEPT
- the problem appeared again
-
- Thanks at advance
+-- 
+Pedro Werneck
 
