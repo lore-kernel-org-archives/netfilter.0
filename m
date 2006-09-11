@@ -1,10 +1,13 @@
-From: Pedro Werneck <pedro.werneck@terra.com.br>
-Subject: Problems with nat/forwarding on gateway
-Date: Sun, 10 Sep 2006 21:33:58 -0300
-Message-ID: <20060910213358.39f29020.pedro.werneck@terra.com.br>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: not able to ssh from the firewall
+Date: Mon, 11 Sep 2006 10:29:30 +0200 (CEST)
+Message-ID: <60586.193.173.147.3.1157963370.squirrel@webmail.sterenborg.info>
+References: <001701c6d2c0$4d588b00$0101000a@tanjian>
+	<1157854906.4748.4.camel@nirvana.aurokruti.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1157854906.4748.4.camel@nirvana.aurokruti.in>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +21,26 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+On Sun, September 10, 2006 04:21, varun wrote:
+> Yes I did all that you suggested.
+> I think OUTPUT should allow tcp and udp out ? What do you think ?
 
-Hi
+It should allow out what you need, but most people leave it's policy to A=
+CCEPT
+without any rules because it's easier.
+AFAICS, when you have the appropriate state rules in the INPUT and OUTPUT
+chain, having an ACCEPT rule for tcp dport 22 should allow you to setup a=
+ ssh
+connection to a remote server. Having ACCEPT rules for tcp/udp dport 53 s=
+hould
+enable you to do DNS lookups.
 
-
-I always configured linux gateways with DSL-pppoe, but now I have to do
-it with dhcp and I can't get it working. 
-
-I checked both interfaces at the gateway machine and the packets from
-the LAN reach it, but the responses don't get back past it. 
-
-I had the same problem with pppoe, but it was related to MTU size, and I
-tried the same now but it doesn't work, so it seems a problem within the
-eth connected to the router and the machines inside the LAN. I searched
-for information on this but there's nothing beside the trivial tutorials
-on DSL setup. Since I'm testing with a pretty simple rules set, I'd like
-to ask if there's anything wrong, or if the problem may be at the
-routing tables.
-
-This is what I'm using... eth1 is connected to DSL, eth0 to the router.
-
-iptables -P INPUT DROP
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -A INPUT -j ACCEPT -i lo
-iptables -A INPUT -j ACCEPT -s 192.168.1.0/24
-iptables -A INPUT -j ACCEPT -i eth1 -m state --state ESTABLISHED,RELATED
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j MASQUERADE
-iptables -A FORWARD -j ACCEPT -i eth1
-iptables -A FORWARD -j ACCEPT -s 192.168.1.0/24
-iptables -A FORWARD -j DROP
-iptables -A INPUT -j ACCEPT -p tcp --dport 21
-iptables -A INPUT -j ACCEPT -p tcp --dport 22
-iptables -A INPUT -j ACCEPT -p tcp --dport 80
+Again, if that doesn't work, insert a logging rule to the end (before the
+DROP) of the chain to see *what* get's dropped (and post it here).
 
 
-Thanks for any help... 
+Gr,
+Rob
 
--- 
-Pedro Werneck
+
 
