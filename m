@@ -1,12 +1,11 @@
-From: "Eray Aslan" <eray.aslan@caf.com.tr>
-Subject: Re: Question on Layer 7 filtering
-Date: Fri, 8 Sep 2006 08:18:07 +0300 (EEST)
-Message-ID: <1190.10.0.0.24.1157692687.squirrel@localhost>
-References: <20060907203617.8258434DAA@mail.caf.com.tr>
+From: "Yuriy Popyk" <fennister@gmail.com>
+Subject: problems with SNAT
+Date: Tue, 12 Sep 2006 12:47:56 +0300
+Message-ID: <8a3f83490609120247t85facf9p3326b822fac2057f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060907203617.8258434DAA@mail.caf.com.tr>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +16,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thu, September 7, 2006 11:34 pm, Maxime Ducharme wrote:
->
-> Hello ppl
->
-> anyone have experience with http://l7-filter.sourceforge.net/ ?
->
-> We are currently looking for a way to add more security
-> with linux based solutions (Layer 7 filtering would be very nice)
->
-> We are ready to develop some parts if needed (i mean we dont want
-> to buy "all-set" linux solutions)
-[snip]
+Hello
 
-Works for us with both 2.6.16 and 2.6.17 kernels.  We use it for traffic
-shaping, mainly for skype.
 
---=20
-Eray
+  We have a lan with ips in private range
+ Problem is described with a following pic
 
+ ----------      ----------
+   |  PC2 |-----|  R2   |
+   ----------      ----------
+                    |
+                    |
+                  ----------         ----------
+                  |   R1  |--------|  PC1 |
+                  ----------         ----------
+                      |
+                  ----------
+                   | ISP |
+                   ----------
+
+  R1 - router 1, linux
+ R2 - router 2, ms windows 2000
+  PC1 - pc 1, ms windows XP
+  PC1 - pc 1, ms windows 2000
+
+  when I'm trying to set SNAT on R1 for PC1
+  # iptables -t nat -A POSTROUTING -s  $pc1 -j SNAT --to-source $ip_to_isp
+ it works
+
+  but when I'm trying to set SNAT for PC2
+  # iptables -t nat -A POSTROUTING -s  $pc2 -j SNAT --to-source $ip_to_isp
+ it fails
+
+  tcpdump -nl -i $ISP_eth
+  shows that R1 forwards packets from PC2 to outside world without NATing
+  and in the same time packets from PC1 is NATed
+
+ when i made
+  # iptables -t filter -A FORWARD -s PC2 -j DROP
+ it works, packets from PC2 is not going outside anymore
+
+  i have tried to do SNAT with firewall rules flushed and policies set to ACCEPT
+ the problem appeared again
+
+ Thanks at advance
 
