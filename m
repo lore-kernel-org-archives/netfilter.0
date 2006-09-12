@@ -1,11 +1,10 @@
-From: Mike Williams <mike@v6.gaima.co.uk>
-Subject: NAT to one net, bridge to another
-Date: Fri, 8 Sep 2006 12:50:29 +0100
-Message-ID: <200609081250.32329.mike@v6.gaima.co.uk>
+From: Mike Wright <xktnniuymlla@mailinator.com>
+Subject: list down?
+Date: Tue, 12 Sep 2006 08:25:48 -0700
+Message-ID: <4506D17C.9000603@mailinator.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,29 +15,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hey,
+Hi all,
 
-Sometime in the next couple months we're going to be replacing a large part of 
-our infrastructure to increase the already excellent reliability (dual nics 
-and psus everywhere, etc).
-I'm just speccing up some kit for quote, and I'm slightly undecided as to the 
-best things I can do with the firewalls.
+Testing to see if this list is still up.  Posted to it on the 10th and 
+never saw the email hit the list.  However, I can still make changes to 
+my list acccount.
 
-At the moment I'm looking at NATting stuff to 3 different zones (private 
-networks), and hopefully bridging to a 4th zone.
-It'll have 10 nics, all paired off into round-robin bonds, so 5 usuable 
-interfaces. 1 colo facing, 3 private, 1 "public".
+Sorry for the noise.
 
-Can you DNAT packets to IPs X, and Y, Z assigned to a bridge, while bridging 
-those IPs not assigned to it?
-(There is probably going to be a small amount of firewalling on the bridged 
-IPs)
-
-Thanks
-
--- 
-Mike Williams
+:m)
 
