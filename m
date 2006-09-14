@@ -1,12 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: NAT to one net, bridge to another
-Date: Thu, 14 Sep 2006 13:41:31 +0200
-Message-ID: <45093FEB.3050305@plouf.fr.eu.org>
-References: <200609081250.32329.mike@v6.gaima.co.uk>
+From: "Sherwyn Greene" <sgreene@kentz-ojs.com>
+Subject: FW: iptables and Limewire
+Date: Thu, 14 Sep 2006 08:05:48 -0400
+Message-ID: <23973.2402646498$1158235625@news.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200609081250.32329.mike@v6.gaima.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +15,90 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+ 
+ 
+Sherwyn Greene
+Planner / I.T. Technician
+Project Controls Dept.
+Kentz-OJ's E&I Services J.V.
++1 (868) 648-0876
+ 
 
-Mike Williams a =E9crit :
->=20
-> At the moment I'm looking at NATting stuff to 3 different zones (privat=
-e=20
-> networks), and hopefully bridging to a 4th zone.
-> It'll have 10 nics, all paired off into round-robin bonds, so 5 usuable=
-=20
-> interfaces. 1 colo facing, 3 private, 1 "public".
+________________________________
 
-What interfaces do you plan to bridge ?
+From: Sietse van Zanen [mailto:sietse@wizdom.nu] 
+Sent: Thursday, September 14, 2006 8:01 AM
+To: Sherwyn Greene
+Subject: RE: iptables and Limewire
 
-> Can you DNAT packets to IPs X, and Y, Z assigned to a bridge, while bri=
-dging=20
-> those IPs not assigned to it?
 
-First, bridging and DNAT don't take place at the same network layer.=20
-Bridging takes place at layer 2 and DNAT at layer 3 or 4. You bridge=20
-ethernet frames (possibly transporting IP packets but it doesn't matter)=20
-  according to their MAC addresses, and this process is transparent for=20
-the TCP/IP stack. You DNAT IP datagrams (possibly transported in=20
-ethernet frames) according to their IP addresses and TCP or UDP ports. A=20
-bridge can be considered as a virtual ethernet switch whose ports are=20
-the bridged interfaces. On the host, it creates a bridge interface=20
-"hiding" the bridged interfaces, just as a bond interface hide the=20
-enslaved interfaces. So the kernel routing and Netfilter/iptables will=20
-only see packets from the bridge interface, not those from the bridged=20
-interfaces.
+1. Yes, but not entirely. You can block all outgoing traffic execpt traffic
+on port 80 or 443. This would allow for HTTP and HTTPS, but also for
+connections to limewire users, that set their client to listen on port 80 or
+443. That will not be many users, and they will only be reached with direct
+connects, so doing this should get rid of 99.99% of the limewire traffic.
+Your internal users will no longer be able to connnect to Limewire servers
+directly. They might be able to exploit a public open proxy, that allows
+CONNECT. Also not very likely.
+ 
+2. iptables -P FORWARD DROP
+    iptables -A FORWARD -s your_internal_net -d 0/0 -p tcp --dports 80,443
+-j ACCEPT
+first rule sets the policy to DROP, second would then only allow http
+traffic. Of course you have to do NAT to, when you use private address
+range.
+Downside of this, is that users will not be able to access web servers on
+non-standard ports.
+ 
+3. Don't think there's a limewire conntrack module, so if you want to do the
+honourable, write it yourself. :-)
+You might be able to use a L7 filter (l7filter.sourceforge.net). But like
+said at point 1. It's probably overdone, as you can block 99.99% with
+iptables alone.
+ 
+Another strategy is to use a web proxy and block all internet traffic for
+your internal users. This will stop absolutely 100% p2p traffic, but will
+cost you considerably more resources and time to set up.
+ 
+-Sietse
+ 
+PS: As I am writing this mail from OWA, which only uses HTML, I can not send
+it to the list, as it only accepts text. Could you be so kind to forward it
+to the list?
 
-I assume you plan to bridge the "colo" and "public" interfaces.
+________________________________
 
-          colo     public
-            |        |
-            |        |
-         bridge interface
-                |
-                |
-          TCP/IP stack (routing, iptables, NAT, filtering)
-             |  |  |
-             |  |  |
-        private interfaces
+From: Sherwyn Greene
+Sent: Thu 14-Sep-06 13:00
+To: netfilter@lists.netfilter.org
+Subject: iptables and Limewire
 
-The bridge catches incoming ethernet frames before the IP stack can see=20
-them. So an ethernet frame forwarded from colo to public does not hit=20
-the IP stack, unless it is an ethernet broadcast.
 
-To try to answer your question, you can DNAT IP datagrams transported by=20
-ethernet frames which are not bridged to another interface.
+Hi, everyone
+ 
+    I have a problem on my network they are user using limewire p2p and
+using up all or most of the bandwidth, so my question is:
+ 
+1. Can I use iptables to block limewire from connecting, but allow web
+browsing
+ 
+2. if so, how to implement this
+ 
+3. Is there a module or something like that for iptables that will give me
+that abuilty to block them
+ 
+Thank
+ 
+Sherwyn Greene
+Planner / I.T. Technician
+Project Controls Dept.
+Kentz-OJ's E&I Services J.V.
++1 (868) 648-0876
+
+
+
+
 
