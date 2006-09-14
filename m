@@ -1,10 +1,14 @@
-From: "Sherwyn Greene" <sgreene@kentz-ojs.com>
-Subject: FW: iptables and Limewire
-Date: Thu, 14 Sep 2006 08:05:48 -0400
-Message-ID: <23973.2402646498$1158235625@news.gmane.org>
+From: Mike Williams <mike@v6.gaima.co.uk>
+Subject: Re: NAT to one net, bridge to another
+Date: Thu, 14 Sep 2006 13:07:44 +0100
+Message-ID: <200609141307.45172.mike@v6.gaima.co.uk>
+References: <200609081250.32329.mike@v6.gaima.co.uk>
+	<45093FEB.3050305@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <45093FEB.3050305@plouf.fr.eu.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,87 +22,37 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
- 
- 
-Sherwyn Greene
-Planner / I.T. Technician
-Project Controls Dept.
-Kentz-OJ's E&I Services J.V.
-+1 (868) 648-0876
- 
+On Thursday 14 September 2006 12:41, Pascal Hambourg wrote:
+> > It'll have 10 nics, all paired off into round-robin bonds, so 5 usuable
+> > interfaces. 1 colo facing, 3 private, 1 "public".
+>
+> What interfaces do you plan to bridge ?
 
-________________________________
+bond0 to bond4 (probably). bond0 being the link to the colo, bond4 to 
+the "public" servers.
+bond{1,2,3} private networks.
 
-From: Sietse van Zanen [mailto:sietse@wizdom.nu] 
-Sent: Thursday, September 14, 2006 8:01 AM
-To: Sherwyn Greene
-Subject: RE: iptables and Limewire
+[snip lots of very useful information]
 
+> I assume you plan to bridge the "colo" and "public" interfaces.
 
-1. Yes, but not entirely. You can block all outgoing traffic execpt traffic
-on port 80 or 443. This would allow for HTTP and HTTPS, but also for
-connections to limewire users, that set their client to listen on port 80 or
-443. That will not be many users, and they will only be reached with direct
-connects, so doing this should get rid of 99.99% of the limewire traffic.
-Your internal users will no longer be able to connnect to Limewire servers
-directly. They might be able to exploit a public open proxy, that allows
-CONNECT. Also not very likely.
- 
-2. iptables -P FORWARD DROP
-    iptables -A FORWARD -s your_internal_net -d 0/0 -p tcp --dports 80,443
--j ACCEPT
-first rule sets the policy to DROP, second would then only allow http
-traffic. Of course you have to do NAT to, when you use private address
-range.
-Downside of this, is that users will not be able to access web servers on
-non-standard ports.
- 
-3. Don't think there's a limewire conntrack module, so if you want to do the
-honourable, write it yourself. :-)
-You might be able to use a L7 filter (l7filter.sourceforge.net). But like
-said at point 1. It's probably overdone, as you can block 99.99% with
-iptables alone.
- 
-Another strategy is to use a web proxy and block all internet traffic for
-your internal users. This will stop absolutely 100% p2p traffic, but will
-cost you considerably more resources and time to set up.
- 
--Sietse
- 
-PS: As I am writing this mail from OWA, which only uses HTML, I can not send
-it to the list, as it only accepts text. Could you be so kind to forward it
-to the list?
+Yes, your diagram is correct.
 
-________________________________
+> The bridge catches incoming ethernet frames before the IP stack can see
+> them. So an ethernet frame forwarded from colo to public does not hit
+> the IP stack, unless it is an ethernet broadcast.
 
-From: Sherwyn Greene
-Sent: Thu 14-Sep-06 13:00
-To: netfilter@lists.netfilter.org
-Subject: iptables and Limewire
+Or destined for an IP/MAC assigned to the bridge interface?
+That also explains the necessity for ebtables in addition to ip[6]tables.
 
+> To try to answer your question, you can DNAT IP datagrams transported by
+> ethernet frames which are not bridged to another interface.
 
-Hi, everyone
- 
-    I have a problem on my network they are user using limewire p2p and
-using up all or most of the bandwidth, so my question is:
- 
-1. Can I use iptables to block limewire from connecting, but allow web
-browsing
- 
-2. if so, how to implement this
- 
-3. Is there a module or something like that for iptables that will give me
-that abuilty to block them
- 
-Thank
- 
-Sherwyn Greene
-Planner / I.T. Technician
-Project Controls Dept.
-Kentz-OJ's E&I Services J.V.
-+1 (868) 648-0876
+Thanks very much, exactly what I wanted to hear.
 
+-- 
+Mike Williams
 
-
-
+-- 
+Mike Williams
 
