@@ -1,13 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: --to-destination of DNAT issue -- or my misinterpretation?
-Date: Thu, 14 Sep 2006 16:22:32 +0200
-Message-ID: <450965A8.3070804@plouf.fr.eu.org>
-References: <c6c65ec80609131835l7d586b6r29e8226a93db7bab@mail.gmail.com>	<c6c65ec80609131838x35b95470m42a61c6d6f27ec9f@mail.gmail.com>	<c6c65ec80609140546w1089a228j6031fa049e4bd5d6@mail.gmail.com>	<Pine.LNX.4.61.0609141525570.25864@yvahk01.tjqt.qr>	<45096024.1050204@plouf.fr.eu.org>
-	<Pine.LNX.4.61.0609141601340.25864@yvahk01.tjqt.qr>
+From: Bo Yang <struggle@mail.nankai.edu.cn>
+Subject: Re: How to detect the net flow for any given ip ?
+Date: Thu, 14 Sep 2006 22:27:19 +0800
+Message-ID: <358244255.27191@mail.nankai.edu.cn>
+References: <358232132.27387@mail.nankai.edu.cn>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0609141601340.25864@yvahk01.tjqt.qr>
+Message-ID: <450966C7.9020906@mail.nankai.edu.cn>
+In-Reply-To: <358232132.27387@mail.nankai.edu.cn>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,18 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: netfilter@lists.netfilter.org
 
-Jan Engelhardt a =E9crit :
->=20
-> That iptables(1) manpage got it right:
->=20
->               Later Kernels (>=3D 2.6.11-rc1) don't have the ability to=
-  NAT  to
->               multiple ranges anymore.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+ 
+Bo Yang:
+> Hello,everybody I am a newbie for linux firewall , and have look at
+> some document for iptablesand netfilter . In my school , we must
+> pay for 20$ for 2G web flow , and the gateway in our school can
+> tell us how much flow we use in a month !
+>
+> I am wondering how linux gateway can recode the web flow for any
+> given ip ? Can iptables do such things for me ?
+>
+> Thanks in advance !
+>
+> Bo
+Help me please , thank you !
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+ 
+iD8DBQFFCWbG7tZp58UCwyMRAlpNAJ4tkfoEYZTgpntgCu/0CtDiwuJHggCeNz+f
+t8MclfcwnNsSa77QHRw9uvU=
+=ZeAP
+-----END PGP SIGNATURE-----
 
-Well, the manpage included in my iptables 1.2.11 does't contain this.
-I wonder what happens when you try to create a NAT rule with multiple=20
---to with iptables < 1.3.4 and Linux >=3D 2.6.11.
 
