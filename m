@@ -1,13 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: NAT to one net, bridge to another
-Date: Thu, 14 Sep 2006 14:53:57 +0200
-Message-ID: <450950E5.40609@plouf.fr.eu.org>
-References: <200609081250.32329.mike@v6.gaima.co.uk>	<45093FEB.3050305@plouf.fr.eu.org>
-	<200609141307.45172.mike@v6.gaima.co.uk>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: --to-destination of DNAT issue -- or my misinterpretation?
+Date: Thu, 14 Sep 2006 15:26:34 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0609141525570.25864@yvahk01.tjqt.qr>
+References: <c6c65ec80609131835l7d586b6r29e8226a93db7bab@mail.gmail.com>
+	<c6c65ec80609131838x35b95470m42a61c6d6f27ec9f@mail.gmail.com>
+	<c6c65ec80609140546w1089a228j6031fa049e4bd5d6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200609141307.45172.mike@v6.gaima.co.uk>
+In-Reply-To: <c6c65ec80609140546w1089a228j6031fa049e4bd5d6@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +18,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: =?ISO-8859-1?Q?Jo=E3o_Fernandes_Simpl=EDcio?= <jfsimplicio@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Mike Williams a =E9crit :
->=20
->>The bridge catches incoming ethernet frames before the IP stack can see
->>them. So an ethernet frame forwarded from colo to public does not hit
->>the IP stack, unless it is an ethernet broadcast.
->=20
-> Or destined for an IP/MAC assigned to the bridge interface?
+>
+> Hello,
+>
+> It seems I can't specify several --to-destination (like the man page
+> tells), and iptables doesn't spit any errors.
+>
+> iptables -t nat -A PREROUTING -p tcp --dport 12345 -d dest-host -s
+> source-host -j DNAT --to-destination dest-host:12346 --to-destination
+> dest-host:12347 --to-destination dest-host:12348
+>
+> Am I doing something wrong?
 
-If a unicast ethernet frame is destined for the MAC address assigned to=20
-the bridge interface, there is no reason that it is forwarded from an=20
-interface of the bridge to another. Ethernet broadcast is an exception=20
-because the frame is forwarded to all the other interfaces of the bridge=20
-and to the IP stack. I guess that multicast ethernet frames have a=20
-special processing too, but I don't know much about this subject.
+Only one --to-destination is supported.
 
-> That also explains the necessity for ebtables in addition to ip[6]table=
-s.
 
-Yes, ip[6]tables works at the the network layer (routing) and ebtables=20
-at the link layer (bridging).
+Jan Engelhardt
+-- 
 
