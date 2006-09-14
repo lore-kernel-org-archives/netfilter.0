@@ -1,15 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: --to-destination of DNAT issue -- or my misinterpretation?
-Date: Thu, 14 Sep 2006 16:01:49 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0609141601340.25864@yvahk01.tjqt.qr>
-References: <c6c65ec80609131835l7d586b6r29e8226a93db7bab@mail.gmail.com>
-	<c6c65ec80609131838x35b95470m42a61c6d6f27ec9f@mail.gmail.com>
-	<c6c65ec80609140546w1089a228j6031fa049e4bd5d6@mail.gmail.com>
-	<Pine.LNX.4.61.0609141525570.25864@yvahk01.tjqt.qr>
-	<45096024.1050204@plouf.fr.eu.org>
+From: Mohammad Farooq <mohammadfarooq@tango-networks.com>
+Subject: Problem compiling u32 patch on Redhat
+Date: Thu, 14 Sep 2006 09:16:50 -0500
+Message-ID: <1158243410.4127.15.camel@mfarooq-1.tango-networks.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45096024.1050204@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,47 +15,98 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
->> > It seems I can't specify several --to-destination (like the man page
->> > tells), and iptables doesn't spit any errors.
->> > 
->> > Am I doing something wrong?
->> 
->> Only one --to-destination is supported.
->
-> This restriction was first introduced in kernel 2.6.11. Previous 2.6 kernels,
-> as well as 2.4 kernels, should support multiple ranges.
->
-> ChangeLog-2.6.11 :
-> " [PATCH] Remove NAT to multiple ranges
-> The NAT code has the concept of multiple ranges: you can say "map this
-> connection onto IP 192.168.1.2 - 192.168.1.4, 192.168.1.7 ports
-> 1024-65535, and 192.168.1.10".  I implemented this because we could.
->
-> But it's not actually *used* by many (any?) people, and you can
-> approximate this by a random match (from patch-o-matic) if you really
-> want to.  It adds complexity to the code."
->
-> changes-iptables-1.3.4.txt :
-> " Print error message when multiple "--to" DNAT/SNAT args are used
-> with kernel >= 2.6.10"
->                     ^^
-> There seems to be a little mistake here, should be 2.6.11 according to Linux
-> changelog.
+Hi Gurus,
 
-That iptables(1) manpage got it right:
+I am trying to apply u32 patch to the Redhat enterprise edition 4 which
+is using 2.6.9 kernel. I am getting the following compile error. I
+looked in the ipt_u32.c and found the matchsize variable:
 
-              Later Kernels (>= 2.6.11-rc1) don't have the ability to  NAT  to
-              multiple ranges anymore.
+static struct ipt_match u32_match = {
+        .name           = "u32",
+        .match          = &match,
+        .matchsize      = sizeof(struct ipt_u32),
+        .checkentry     = &checkentry,
+        .me             = THIS_MODULE
+};
 
->
->
->
+But in the ip_tables.h this varibale doesn't exists:
 
-Jan Engelhardt
--- 
+struct ipt_match
+{
+        struct list_head list;
+
+        const char name[IPT_FUNCTION_MAXNAMELEN];
+
+        /* Return true or false: return FALSE and set *hotdrop = 1 to
+           force immediate packet drop. */
+        /* Arguments changed since 2.4, as this must now handle
+           non-linear skbs, using skb_copy_bits and
+           skb_ip_make_writable. */
+        int (*match)(const struct sk_buff *skb,
+                     const struct net_device *in,
+                     const struct net_device *out,
+                     const void *matchinfo,
+                     int offset,
+                     int *hotdrop);
+
+        /* Called when user tries to insert an entry of this type. */
+        /* Should return true or false. */
+        int (*checkentry)(const char *tablename,
+                          const struct ipt_ip *ip,
+                          void *matchinfo,
+                          unsigned int matchinfosize,
+                          unsigned int hook_mask);
+
+        /* Called when entry of this type deleted. */
+        void (*destroy)(void *matchinfo, unsigned int matchinfosize);
+
+        /* Set this to THIS_MODULE. */
+        struct module *me;
+};
+
+Could you please guide me how can I fix this problem. I tried to fix
+this compile problem by commenting out the line ipt_u32.c which
+references matchsize variable. After that I was able to compile the
+kernel but when I tried to run iptables command,
+I got "Invalid argumment" error. Here is the command I used.
+
+iptables -A OUTPUT -m u32 --u32 "2&0xffff=0x2:0x0100" -j DROP
+iptables: Invalid argument
+
+I am not sure if I am seen this error because I commented out the line
+in ipt_u32.c? I appreciate if you point me to the right direction. Is
+u32 module is ported to linux 2.6 kernel?
+Thanks.
+
+Mohammad
+
+
+net/ipv4/netfilter/ipt_u32.c:127: warning: "struct xt_match" declared
+inside parameter list
+net/ipv4/netfilter/ipt_u32.c:127: warning: its scope is only this
+definition or declaration, which is probably not what you want
+net/ipv4/netfilter/ipt_u32.c:210: warning: "struct xt_match" declared
+inside parameter list
+net/ipv4/netfilter/ipt_u32.c:219: warning: initialization from
+incompatible pointer type
+net/ipv4/netfilter/ipt_u32.c:220: error: unknown field `matchsize'
+specified in initializer
+net/ipv4/netfilter/ipt_u32.c:220: warning: initialization makes pointer
+from integer without a cast
+net/ipv4/netfilter/ipt_u32.c:221: warning: initialization from
+incompatible pointer type
+make[3]: *** [net/ipv4/netfilter/ipt_u32.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
+
+
+
+
+
+
+
 
