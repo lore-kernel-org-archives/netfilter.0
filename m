@@ -1,12 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Can iptables/ip6tables start and work in parallel
-Date: Fri, 15 Sep 2006 10:42:57 +0200
-Message-ID: <450A6791.8040900@plouf.fr.eu.org>
-References: <Pine.GSO.4.53.0609141945140.3688@compserv1>
+From: Mike Wright <xktnniuymlla@mailinator.com>
+Subject: Re: need help with ipset
+Date: Fri, 15 Sep 2006 09:29:34 -0700
+Message-ID: <450AD4EE.3050205@mailinator.com>
+References: <4504CC74.3040607@mailinator.com>
+	<Pine.LNX.4.58.0609140855340.18386@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.GSO.4.53.0609141945140.3688@compserv1>
+In-Reply-To: <Pine.LNX.4.58.0609140855340.18386@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +18,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Netfilter user list <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Vidya Ravipati a =E9crit :
->=20
->> Yes, of course. iptables and ip6tables are mostly independent, as IPv4
->> and IPv6 are on any dual stack machine (with restrictions due to
->> IPv4-mapped addresses).
->>=20
-> Can you mention what are the restrictions on the dual stack machine  wi=
-th
-> IPv4 mapped addresses
+Jozsef Kadlecsik wrote:
 
-IPv4-mapped addresses are special IPv6 addresses used to represent IPv4=20
-addresses. They have the prefix ::ffff:0:0/96, and the last 8 digits are=20
-the hexadecimal representation of the IPv4 address. They also have a=20
-special human-readable representation. For example the IPv4-mapped IPv6=20
-address for 127.0.0.1 is "::ffff:7f00:1" or "::ffff:127.0.0.1".
+ > On Sun, 10 Sep 2006, Mike Wright wrote:
+ >
+ >> Trying to create a set:
+ >>    "ipset -N TEST iphash" fails with:
+ >>       ipset v2.2.9: Error from kernel: Protocol not available
+ >
+ >
+ >
+ > The ipset binary isn't smart enough to autoload the ip_set kernel module,
+ > you need to load it manually (or via /etc/modules at system boot time):
+ >
+ > # modprobe ip_set
+ >
+Thanks Jozsef.  (Sorry for private reply.  Meant to reply to the list.) 
+  That worked.  Also had to modprobe ip_set_iphash.
 
-On IPv4+IPv6 dual stack Linux hosts, by default, IPv6 sockets can also=20
-be used for IPv4 communications. IPv4-mapped IPv6 addresses are used to=20
-communicate with a remote IPv4 host using a local IPv6 socket. An IPv6=20
-socket listening on :: (any local IPv6 address) can also accept IPv4=20
-communications and will see the IPv4-mapped addresses (beware with ACL).=20
-These communications use IPv4-mapped IPv6 addresses at the IPv6 socket=20
-level and real IPv4 addresses at network level, so the real network=20
-traffic is IPv4 and only iptables will see it, not ip6tables.
+Still can't get iptables to recognize my set.  Can't find which step 
+I've missed.  Here's the ipset -L
 
-Other operating systems may have different default behaviours. On Linux,=20
-the default behaviour can be changed with the kernel parameter=20
-(/proc/sys/)net/ipv6/bindv6only. When set to 1, new IPv6 sockets are be=20
-limited to "pure" IPv6 communications and cannot use IPv4-mapped=20
-addresses, so IPv4 and IPv6 are completely independent.
+  Name: BADIPS
+  Type: iphash
+  References: 0
+  Default binding:
+  Header: hashsize: 1024 probes: 8 resize: 50
+  Members:
+  3.4.5.6
+  2.3.4.5
+  1.2.3.4
+  Bindings:
 
-I think you should find a lot of more detailed documentation on the web,=20
-but I don't have any pointer right now.
+...and modules
+   lsmod |grep ip_set
+     ip_set_iphash           8164  1
+     ip_set                 20828  2 ip_set_iphash
+
+Now I want to add a rule to iptables.
+
+   "iptables -A INPUT -m set --set BADIPS src -j DROP"
+
+But it errs with
+
+   "iptables: No chain/target/match by that name"
+
+It seems that iptables does not know about BADIPS? <Grasping />
+
+If anyone knows what is missing I would sure appreciate the help :)
+
+Thanks,
+Mike Wright
+
+ > Best regards,
+ > Jozsef
+
+
 
