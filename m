@@ -1,12 +1,12 @@
-From: gabrix <gabrix@gabrix.ath.cx>
-Subject: Re: netfilter Digest, Vol 26, Issue 11
-Date: Fri, 15 Sep 2006 03:53:30 +0200
-Message-ID: <450A079A.6050104@gabrix.ath.cx>
-References: <20060914120926.896829AC14@mail.gabrix.ath.cx>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Can iptables/ip6tables start and work in parallel
+Date: Fri, 15 Sep 2006 10:42:57 +0200
+Message-ID: <450A6791.8040900@plouf.fr.eu.org>
+References: <Pine.GSO.4.53.0609141945140.3688@compserv1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060914120926.896829AC14@mail.gabrix.ath.cx>
+In-Reply-To: <Pine.GSO.4.53.0609141945140.3688@compserv1>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,74 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Netfilter user list <netfilter@lists.netfilter.org>
 
-netfilter-request@lists.netfilter.org wrote:
-> Send netfilter mailing list submissions to
-> 	netfilter@lists.netfilter.org
->
-> To subscribe or unsubscribe via the World Wide Web, visit
-> 	https://lists.netfilter.org/mailman/listinfo/netfilter
-> or, via email, send a message with subject or body 'help' to
-> 	netfilter-request@lists.netfilter.org
->
-> You can reach the person managing the list at
-> 	netfilter-owner@lists.netfilter.org
->
-> When replying, please edit your Subject line so it is more specific
-> than "Re: Contents of netfilter digest..."
->
->
-> Today's Topics:
->
->    1. NAT to one net, bridge to another (Mike Williams)
->    2. list down? (Mike Wright)
->    3. RE: Question on Layer 7 filtering (Maxime Ducharme)
->    4. connrate and Linux 2.6.14 and 2.6.16 (Pablo Sanchez)
->    5. Can iptables/ip6tables start and work in parallel (fwd)
->       (Vidya Ravipati)
->    6. Re: NAT to one net, bridge to another (Jan Engelhardt)
->    7. Re: need help with ipset (Jozsef Kadlecsik)
->    8. Re: Can iptables/ip6tables start and work in parallel (fwd)
->       (Pascal Hambourg)
->    9. iptables and Limewire (Sherwyn Greene)
->   10. How to detect the net flow for any given ip ? (Bo Yang)
->   11. Re: NAT to one net, bridge to another (Pascal Hambourg)
->   12. FW: iptables and Limewire (Sherwyn Greene)
->
->
-> ----------------------------------------------------------------------
->
-> Message: 1
-> Date: Fri, 8 Sep 2006 12:50:29 +0100
-> From: Mike Williams <mike@v6.gaima.co.uk>
-> Subject: NAT to one net, bridge to another
-> To: netfilter@lists.netfilter.org
-> Message-ID: <200609081250.32329.mike@v6.gaima.co.uk>
-> Content-Type: text/plain;  charset="us-ascii"
->
-> Hey,
->
-> Sometime in the next couple months we're going to be replacing a large part of 
-> our infrastructure to increase the already excellent reliability (dual nics 
-> and psus everywhere, etc).
-> I'm just speccing up some kit for quote, and I'm slightly undecided as to the 
-> best things I can do with the firewalls.
->
-> At the moment I'm looking at NATting stuff to 3 different zones (private 
-> networks), and hopefully bridging to a 4th zone.
-> It'll have 10 nics, all paired off into round-robin bonds, so 5 usuable 
-> interfaces. 1 colo facing, 3 private, 1 "public".
->
-> Can you DNAT packets to IPs X, and Y, Z assigned to a bridge, while bridging 
-> those IPs not assigned to it?
-> (There is probably going to be a small amount of firewalling on the bridged 
-> IPs)
->
-> Thanks
->
->   
-How can i give an ack window size = 0 by iptables without using the
-patch o matic tarpit ?(II time!)
+Vidya Ravipati a =E9crit :
+>=20
+>> Yes, of course. iptables and ip6tables are mostly independent, as IPv4
+>> and IPv6 are on any dual stack machine (with restrictions due to
+>> IPv4-mapped addresses).
+>>=20
+> Can you mention what are the restrictions on the dual stack machine  wi=
+th
+> IPv4 mapped addresses
+
+IPv4-mapped addresses are special IPv6 addresses used to represent IPv4=20
+addresses. They have the prefix ::ffff:0:0/96, and the last 8 digits are=20
+the hexadecimal representation of the IPv4 address. They also have a=20
+special human-readable representation. For example the IPv4-mapped IPv6=20
+address for 127.0.0.1 is "::ffff:7f00:1" or "::ffff:127.0.0.1".
+
+On IPv4+IPv6 dual stack Linux hosts, by default, IPv6 sockets can also=20
+be used for IPv4 communications. IPv4-mapped IPv6 addresses are used to=20
+communicate with a remote IPv4 host using a local IPv6 socket. An IPv6=20
+socket listening on :: (any local IPv6 address) can also accept IPv4=20
+communications and will see the IPv4-mapped addresses (beware with ACL).=20
+These communications use IPv4-mapped IPv6 addresses at the IPv6 socket=20
+level and real IPv4 addresses at network level, so the real network=20
+traffic is IPv4 and only iptables will see it, not ip6tables.
+
+Other operating systems may have different default behaviours. On Linux,=20
+the default behaviour can be changed with the kernel parameter=20
+(/proc/sys/)net/ipv6/bindv6only. When set to 1, new IPv6 sockets are be=20
+limited to "pure" IPv6 communications and cannot use IPv4-mapped=20
+addresses, so IPv4 and IPv6 are completely independent.
+
+I think you should find a lot of more detailed documentation on the web,=20
+but I don't have any pointer right now.
 
