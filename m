@@ -1,8 +1,9 @@
-From: "saravanan chanemouganandam" <saravanan_sprt@hotmail.com>
-Subject: netfilter problem
-Date: Mon, 18 Sep 2006 17:46:59 +0530
-Message-ID: <BAY114-F28742995E28F10CCFFB17AE22D0@phx.gbl>
+From: "diegoscelfo" <diegoscelfo@libero.it>
+Subject: iptables:problems with rule persistence
+Date: Mon, 18 Sep 2006 14:55:14 +0200
+Message-ID: <J5SH82$C694312A17D01C628F716A4618B46728@libero.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,30 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
-Cc: netfilter-devel@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@lists.netfilter.org>
 
 Hi,
 
-I have a problem in compiling "netfilter" for Iptables support into the 
-linux 2.6.12 kernel version. I have manually enabled the config option 
-"CONFIG_NETFILTER=y" and all netfilter configuration CONFIG_IP_NF_* manually 
-in to the "mainstone_defconfig" file for my target arm board.
+I have a question...do iptables rule need asort of keepalive mechanism in=
+ order not to be erased . I am particularly thinking about nat bindings i=
+n a voip context...I have found in literature that such mechanism are nec=
+essary for many nat devices currently deployed but i couldn't find anythi=
+ng about iptables....
 
-Now, the problem is that, on "make vmlinux", the files under the 
-"linux/2.6.12/net/ipv4/netfilter" directory doesn't gets compiled leaving 
-built-in.o and this annoys me a lot.
+Thanks to anyone who might kindly answer me,
 
-Could any one please precise me, what are the options I need to check or 
-enable in the config, Kconfig or in Makefile to get the "netfilter" compiled 
-into my kernel?
-
-Thanks.
-
-Regards,
-Sara
-
+regards 
+diego=0A=0A=0A------------------------------------------------------=0ARc=
+ Auto? Scopri la convenienza Direct Line. Approffitta dello sconto extra =
+5+5% entro il 30 Settembre!=0Ahttp://click.libero.it/direct_line2=0A
 
 
