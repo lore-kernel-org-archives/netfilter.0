@@ -1,84 +1,50 @@
-From: Snehasis Sinha <ssinha@connectivasystems.com>
-Subject: RE: iptables - port forwarding in LAN
-Date: Tue, 19 Sep 2006 09:26:37 +0530
-Message-ID: <450F6A75.10103@connectivasystems.com>
+From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+Subject: Re: netfilter problem
+Date: Tue, 19 Sep 2006 13:47:33 +0900 (JST)
+Message-ID: <200609190447.k8J4lYZI002909@toshiba.co.jp>
+References: <BAY114-F28742995E28F10CCFFB17AE22D0@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <BAY114-F28742995E28F10CCFFB17AE22D0@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: saravanan_sprt@hotmail.com
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-
-
--------- Original Message --------
-Subject: 	[?] RE: iptables - port forwarding in LAN
-Date: 	Mon, 18 Sep 2006 17:13:39 +0200
-From: 	Sietse van Zanen <sietse@wizdom.nu>
-To: 	Snehasis Sinha <ssinha@connectivasystems.com>
-References: 	<4504CC74.3040607@mailinator.com> 
-<Pine.LNX.4.58.0609140855340.18386@blackhole.kfki.hu> 
-<450AD4EE.3050205@mailinator.com> <450AD69F.9000506@candlefire.org> 
-<450AD8D4.7040008@mailinator.com>, <450E8D0F.2070909@connectivasystems.com>
-
-
-
-You will have to pull of quite some tricks to make that work, as all 
-your hosts are on the same subnet. This is what happens when you just 
-try NAT:
- 
-1. host_c contacts host_a on port 80.
-2. host_a NATs this to host_b port 8080
-3. host_b receives the connection, thinking it comes from host_a 
-directly (source IP remains the same)
-4. host_b replies to host_a with a SYN_ACK for port 8080
-5. host_a recieves the syn_ack for host_b port 8080 and rejects this, as 
-it never tried openeing a connection to that host on that port.
- 
-To get this to work you will have to double NAT (both NAT source and 
-destination address). Change the destination address from host_a port 80 
-to host_b port 8080 and MASQUERADE the source address. That way host_b 
-will think the connection comes from host_a and replies accordingly. 
-host_a then NATs all back to host_c.
- 
-Should be something like:
-iptables -t NAT -A PREROUTING -s 10.5.1.150 -d 10.5.1.100 --dport 80 -j 
-DNAT --to-destination 10.5.1.200:8080
-iptables -t NAT -A POSTROUTING -s 10.5.1.150 -d 10.5.1.200 --dport 8080 
--j SNAT --to-source 10.5.1.150
- 
-for testing, set the filter tables policies to ACCEPT, so only NAT is 
-used. Apply only the previous NAT rules to the nat table.
- 
--Sietse
- 
-PS: Could you forward this message to the list. I cannot send it there, 
-as I'm using OWA, which is HTML only and the list only accepts clear text.
- 
-
-------------------------------------------------------------------------
-*From:* Snehasis Sinha
-*Sent:* Mon 18-Sep-06 14:11
-*To:* netfilter@lists.netfilter.org
-*Subject:* iptables - port forwarding in LAN
 
 Hi,
 
-I am trying to port forward in a closed (not connected to real internet or outside network) network (LAN) to a machine; but could not do it successfully. the senerio is:
+From: "saravanan chanemouganandam" <saravanan_sprt@hotmail.com>
+Date: Mon, 18 Sep 2006 17:46:59 +0530
 
-I have a host_a (10.5.1.100), host_b (10.5.1.200) and host_c (10.5.1.150) connected among themselves. from host_c i am accessing http service at host_a using http://10.5.1.100:80. I can access tomcat server using http://10.5.1.200:8080, from host_c. now I want to use http://10.5.1.100:80 to access 10.5.1.200:8080 from the same host (host_c), ie. all http requests targetted to 10.5.1.100:80 should be redirected to 10.5.1.200:8080, so that pages from host_b:8080 comes to host_c but appear to come from host_a:80
+> Hi,
+> 
+> I have a problem in compiling "netfilter" for Iptables support into the 
+> linux 2.6.12 kernel version. I have manually enabled the config option 
+> "CONFIG_NETFILTER=y" and all netfilter configuration CONFIG_IP_NF_* manually 
+> in to the "mainstone_defconfig" file for my target arm board.
+> 
+> Now, the problem is that, on "make vmlinux", the files under the 
+> "linux/2.6.12/net/ipv4/netfilter" directory doesn't gets compiled leaving 
+> built-in.o and this annoys me a lot.
+> 
+> Could any one please precise me, what are the options I need to check or 
+> enable in the config, Kconfig or in Makefile to get the "netfilter" compiled 
+> into my kernel?
 
-how to do that using iptables. please advise.
-thanks in advance
+If you run 'make menuconfig' on the other machine, you will see that some
+CONFIG_IP_NF_* are moved to CONFIG_NETFILTER_XT_* and NETFILTER_XTABLES is
+added.
 
--snehasis
+-- Yasuyuki Kozakai
 
