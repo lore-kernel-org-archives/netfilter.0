@@ -1,14 +1,10 @@
-From: "Daniel " <daniel@eskozoo.com>
-Subject: Re: iptables drops _some_ valid packets
-Date: Tue, 19 Sep 2006 14:16:33 -0300
-Message-ID: <40fff57a0609191016n205de4v7a36c516645c96a8@mail.gmail.com>
-References: <40fff57a0609190652n2dce5f49ie37ec04952d2d139@mail.gmail.com>
-	<45101B44.5060000@plouf.fr.eu.org>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: Simple question about ipset
+Date: Wed, 20 Sep 2006 14:54:04 +0800
+Message-ID: <022d01c6dc81$8ff1d3c0$0100a8c0@newlife>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45101B44.5060000@plouf.fr.eu.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,29 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hello,
-Setting /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal to 1
-did not solve the issue.
 
-Thanks
+I have been reading ipset from http://ipset.netfilter.org/features.html
+quite a few times but still do not understand what does it mean
+by this :-
 
-On 9/19/06, Pascal Hambourg <pascal.mail@plouf.fr.eu.org> wrote:
-> Hello,
->
-> Daniel a =E9crit :
-> >
-> > Im having problems with iptables dropping some packets that belong to
-> > an established/valid connection.
->
-> If the kernel is >=3D 2.6.9 or includes the patch "tcp-window-tracking"
-> from the Netfilter patch-o-matic-ng, try to set the kernel parameter
-> /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal to 1.
-> See
-> http://www.netfilter.org/projects/patch-o-matic/pom-submitted.html#pom-su=
-bmitted-tcp-window-tracking
->
->
+    iptables -A FORWARD -m set --set servers dst,dst -j ACCEPT
+
+My question is why the flag is dst,dst ?
+
+And similarly what is the significance if it is src,dst ?
+What if it is src,dst,dst and so on ?
+
+Regards
+
+
+
+
 
