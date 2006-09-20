@@ -1,11 +1,13 @@
-From: "Robert M. Marmorstein" <rmmarm@CS.WM.EDU>
-Subject: Re: netfilter Digest, Vol 26, Issue 14
-Date: Wed, 20 Sep 2006 10:26:38 -0400 (EDT)
-Message-ID: <Pine.LNX.4.63.0609201023520.3481@melkor.cs.wm.edu>
-References: <20060920140039.8920B11AF03@mail.cs.wm.edu>
+From: Mike Wright <xktnniuymlla@mailinator.com>
+Subject: Re: need help with ipset [SOLVED]
+Date: Wed, 20 Sep 2006 09:20:42 -0700
+Message-ID: <45116A5A.2090801@mailinator.com>
+References: <4504CC74.3040607@mailinator.com>	<Pine.LNX.4.58.0609140855340.18386@blackhole.kfki.hu>
+	<450AD4EE.3050205@mailinator.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060920140039.8920B11AF03@mail.cs.wm.edu>
+In-Reply-To: <450AD4EE.3050205@mailinator.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,24 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> From: Rob Carlson <rcarlson@kitchenandassociates.com>
-> Subject: Alternatives to --check option
+> Now I want to add a rule to iptables.
 > 
-> Is there any way of being able to tell how iptables is handling a 
-> package from a particular address short of actually sending something 
-> from said address?
+>   "iptables -A INPUT -m set --set BADIPS src -j DROP"
 > 
+> But it errs with
+> 
+>   "iptables: No chain/target/match by that name"
+> 
+> It seems that iptables does not know about BADIPS? <Grasping />
 
-There are several tools for penetration testing that work (nmap, etc), but 
-you might also give my "passive testing tool" a try: 
-http://itval.sourceforge.net.  It constructs a model of your rule set and 
-answers queries about the behavior.  Unfortunately, right now, it doesn't 
-understand IPSET matches, but I'll see if I can add that functionality to 
-the next version for you.
+Sorry for the noise.  This was not an ipset problem.  It was operator 
+error.  My kernel modules got out of sync.  There is a BIG difference 
+between "make modules install" and "make modules_install".
 
-Robert Marmorstein
+Thanks for the ipset module, Jozsef.  It replaced a really UGLY iptables 
+ruleset with a very elegant one line solution.
+
+:m)
+
+
 
