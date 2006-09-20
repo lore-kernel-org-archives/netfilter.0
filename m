@@ -1,10 +1,11 @@
-From: "diegoscelfo" <diegoscelfo@libero.it>
-Subject: please....help;me do nat rule need refresh?
-Date: Thu, 21 Sep 2006 01:30:27 +0200
-Message-ID: <J5WZYR$C71277E77F164E91ADA31FA49FE19B3E@libero.it>
+From: "Henning Sprang" <henning_sprang@gmx.de>
+Subject: missing module for tcp-flags match?
+Date: Thu, 21 Sep 2006 01:54:29 +0200
+Message-ID: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,15 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Please i am trying to understand this question:
+Hi,
+I am having trouble to add a rule as simple as
 
-if i set up a rule in the postrouting chain for a snat with port specific=
-ation, let'say rtp flow ...do i need to deploy ke=E8palive methods or doe=
-s iptables store the rule even if there is more tha afew minutes of silen=
-ce....of there is a timer ...what is it by default?
-Thanks to anyone who could kindly answer me.....=0A
+iptables -A INPUT --protocol tcp --tcp-flags ALL SYN,ACK -j DROP
 
+I only get  the error:
+
+iptables: No chain/target/match by that name
+
+I am experimenting with an embedded box (linksys NSLU) and I realized
+before that some other rules did fail because some kernel modules
+where missing and I found out which and then installed them.
+But with this rule I have, after searching for a long time now,
+absolutely no idea which kernel module can be missing to give me the
+match tcp-flags. None of the howtos or tutorials nor google gives any
+hint on that. The only kernel module that seems to have something to
+do with tcp-flags at all I found by searching in the kernel source is
+TCPMSS, but that doesn't look like helping with general analysis of
+tcp flags.
+
+Any ideas?
+
+Henning
 
