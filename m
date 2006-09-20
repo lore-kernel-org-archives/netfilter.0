@@ -1,13 +1,10 @@
-From: Mike Wright <xktnniuymlla@mailinator.com>
-Subject: Re: need help with ipset [SOLVED]
-Date: Wed, 20 Sep 2006 09:20:42 -0700
-Message-ID: <45116A5A.2090801@mailinator.com>
-References: <4504CC74.3040607@mailinator.com>	<Pine.LNX.4.58.0609140855340.18386@blackhole.kfki.hu>
-	<450AD4EE.3050205@mailinator.com>
+From: "Oliver Schulze L." <oliver@samera.com.py>
+Subject: Multiple port-fwd on same port  based on src IP
+Date: Wed, 20 Sep 2006 14:38:49 -0400
+Message-ID: <45118AB9.8080104@samera.com.py>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <450AD4EE.3050205@mailinator.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,24 +18,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> Now I want to add a rule to iptables.
-> 
->   "iptables -A INPUT -m set --set BADIPS src -j DROP"
-> 
-> But it errs with
-> 
->   "iptables: No chain/target/match by that name"
-> 
-> It seems that iptables does not know about BADIPS? <Grasping />
+Hi,
+I wonder if I can use multiple port forwarding rules to the same IP/Port 
+based
+on the src IP and forwarding to different internal IPs
 
-Sorry for the noise.  This was not an ipset problem.  It was operator 
-error.  My kernel modules got out of sync.  There is a BIG difference 
-between "make modules install" and "make modules_install".
+It should be something like this:
+iptables -t nat -A PREROUTING -p tcp -s CLIENT1_IP -d INET_IP --dport 
+1234 -j DNAT --to 192.168.1.1:1234
+iptables -t nat -A PREROUTING -p tcp -s CLIENT2_IP -d INET_IP --dport 
+1234 -j DNAT --to 192.168.1.2:1234
+iptables -t nat -A PREROUTING -p tcp -s CLIENT3_IP -d INET_IP --dport 
+1234 -j DNAT --to 192.168.1.3:1234
+...
 
-Thanks for the ipset module, Jozsef.  It replaced a really UGLY iptables 
-ruleset with a very elegant one line solution.
+Will it work? Or should I configure some sort of tcp proxy.?
 
-:m)
+Thanks
+Oliver
 
+-- 
+Oliver Schulze L.
+Get my e-mail after a captcha test in: http://tinymailto.com/oliver
 
 
