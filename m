@@ -1,14 +1,11 @@
-From: Dimitri Yioulos <dyioulos@firstbhph.com>
-Subject: Re: Port forwarding question
-Date: Thu, 21 Sep 2006 16:53:46 -0400
-Message-ID: <200609211653.46613.dyioulos@firstbhph.com>
-References: <200609211555.39634.dyioulos@firstbhph.com>
-	<4512F520.6010104@candlefire.org>
+From: "Radovan Jablonov" <rjablonov@arrow.ca>
+Subject: destination load balancing
+Date: Thu, 21 Sep 2006 14:07:41 -0700
+Message-ID: <F88399957644AA41B09BBDE2704CCEA8F4F0C9@raoxch01.arrow.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4512F520.6010104@candlefire.org>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,45 +19,52 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thursday September 21 2006 4:25 pm, you wrote:
-> Greetings,
->
-> Dimitri Yioulos wrote:
-> > Noob, question:
-> >
-> > I want to allow a vendor to access a piece of equipment on our
-> > LAN (192.168.100.46) through port 4000 from outside via a server
-> > in our DMZ (www.xxx.yyy.zzz).  While I should know how to do
-> > this, I'm not 100% sure.  Can someone help?
->
-> DNAT.
->
-> for example:
-> iptables -t nat -A PREROUTING -d www.xxx.yyy.zzz -i eth1 -p tcp
-> --dport 4000 -j
-> DNAT --to 192.168.100.46
+Hello,
 
-eth1 being the DMZ iface?
+Has iptables possibility (or will have) to use other load balancing
+methods/algorithms (for example: weighted round-robin, hash, load agent,
+custom algorithm)?
 
-> iptables -t filter -A INETIN -d 192.168.100.46 -p tcp --dport 4000
-> -j ACCEPT
->
-> > Oh, and separately, how would I allow that access only through
-> > the vendor's ip address, if that were the way I decided to go?
->
-> for example:
-> iptables -t nat -A PREROUTING -s 1.2.3.4 -d www.xxx.yyy.zzz -i eth1
-> -p tcp --dport 4000 -j DNAT --to 192.168.100.46
->
->
-> Regards,
->
-> --
-> Ritter
+From 'man iptables':
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+   DNAT
+        This target is only valid in the nat table, in the PREROUTING
+and OUTPUT
+	chains, and user-defined chains which are only called from those
+chains.
+        It  specifies that the destination address of the packet should
+be
+	modified (and all future packets in this connection will also be
+	mangled), and rules should cease being examined.  It takes one
+type of
+	option:
+
+       --to-destination ipaddr[-ipaddr][:port-port]
+              which can specify a single new destination IP address, an
+              inclusive range of IP addresses, and optionally, a port
+range
+              (which  is  only valid if the rule also specifies -p tcp
+or -p
+              udp).  If no port range is specified, then the destination
+port
+              will never be modified.
+
+              You  can  add several --to-destination options.  If you
+specify
+              more than one destination address, either via an address
+range or
+              multiple --to-destination options, a simple round-robin
+(one after
+              another in cycle) load balancing takes place between these
+              addresses.
+
+Sincerely,
+--------------------------------------------
+Radovan Jablonovsky
+Database Architect/DBA
+Arrow Transportation Systems Inc.=20
+Tel: (250) 571-7773
+Email: rjablonov@arrow.ca
+WWW: www.arrowtransportation.com
 
 
