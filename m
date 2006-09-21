@@ -1,15 +1,12 @@
-From: Dimitri Yioulos <dyioulos@firstbhph.com>
-Subject: Re: Port forwarding question
-Date: Thu, 21 Sep 2006 17:23:30 -0400
-Message-ID: <200609211723.31082.dyioulos@firstbhph.com>
-References: <200609211555.39634.dyioulos@firstbhph.com>
-	<200609211653.46613.dyioulos@firstbhph.com>
-	<451300B6.2050902@rtij.nl>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: destination load balancing
+Date: Thu, 21 Sep 2006 23:27:04 +0200
+Message-ID: <451303A8.8010203@rtij.nl>
+References: <F88399957644AA41B09BBDE2704CCEA8F4F0C9@raoxch01.arrow.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <451300B6.2050902@rtij.nl>
-Content-Disposition: inline
+In-Reply-To: <F88399957644AA41B09BBDE2704CCEA8F4F0C9@raoxch01.arrow.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,62 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Radovan Jablonov <rjablonov@arrow.ca>
+Cc: netfilter@lists.netfilter.org
 
-On Thursday September 21 2006 5:14 pm, you wrote:
-> Dimitri Yioulos wrote:
-> >On Thursday September 21 2006 4:25 pm, you wrote:
-> >>Greetings,
-> >>
-> >>Dimitri Yioulos wrote:
-> >>>Noob, question:
-> >>>
-> >>>I want to allow a vendor to access a piece of equipment on our
-> >>>LAN (192.168.100.46) through port 4000 from outside via a server
-> >>>in our DMZ (www.xxx.yyy.zzz).  While I should know how to do
-> >>>this, I'm not 100% sure.  Can someone help?
-> >>
-> >>DNAT.
-> >>
-> >>for example:
-> >>iptables -t nat -A PREROUTING -d www.xxx.yyy.zzz -i eth1 -p tcp
-> >>--dport 4000 -j
-> >>DNAT --to 192.168.100.46
-> >
-> >eth1 being the DMZ iface?
+Radovan Jablonov wrote:
+
+>Hello,
 >
-> No, your Internet interface.
+>Has iptables possibility (or will have) to use other load balancing
+>methods/algorithms (for example: weighted round-robin, hash, load agent,
+>custom algorithm)?
+>  
 >
-> This rule says: if destination is www.xxx.yyy.zzz and it comes in
-> through eth1 and it's tcp and it's on port 4000, then DNAT to the
-> internal server. Obviously, if the packet comes from the vendor, it
-> must come from the Internet, so the interface in -i must be your
-> Internet interface.
->
-> You could leave this out, but that opens up all kind of nastiness
-> if you access this port on www.xxx.yyy.zzz from your DMZ (the
-> return packets will go straight to your client in the DMZ, will not
-> go through your firwall so will not be de-DNATted. Your client will
-> get confused as it gets packets from somewhere it's not expecting
-> them. In short, it will not work). You could replace that -i with
-> "! -i $DMZ_IF", meaning if it comes in from any interface but the
-> DMZ interface. Then you can access it from any interface (read your
-> internal interface) other than your DMZ interface.
->
-> HTH,
-> M4
+No, not directly.
 
-Stupid me.  Of course it's the inet interface.  And, I appreciate the 
-explanation.
+If you can set a fwmark based on some criterium you could implement more 
+advance schemes, but that requires some custom match the YOU have to write.
 
-Many, many thanks to all for you help!
+So a hash based load balancing could be implemented faily easily, just 
+write a module that sets fwmark based on the hash. I guess more people 
+would be interested in this . (If only to load balance over multiple 
+links, f.i.).
 
-Dimitri
+Load balancing based on some kind of load agent would be more difficult, 
+one has to communicate with userspace for this. I imagine many people 
+would be interested in this.
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+Weighted round robin is actually fairly easy by using the nth match. 
+lets say you want 2/3 go to A and 1/2 3 go to B. Just use nth to devide 
+in 3's and send cases 0 and 1 to A and case 2 to B.
+
+M4
 
 
