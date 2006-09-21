@@ -1,7 +1,7 @@
-From: Martijn Lievaart <m@rtij.nl>
+From: Mr Ritter <netfilter@candlefire.org>
 Subject: Re: Port forwarding question
-Date: Thu, 21 Sep 2006 22:23:17 +0200
-Message-ID: <4512F4B5.6050206@rtij.nl>
+Date: Thu, 21 Sep 2006 14:25:04 -0600
+Message-ID: <4512F520.6010104@candlefire.org>
 References: <200609211555.39634.dyioulos@firstbhph.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,32 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Dimitri Yioulos <dyioulos@firstbhph.com>
-Cc: netfilter@lists.netfilter.org
+To: Dimitri Yioulos <dyioulos@firstbhph.com>, netfilter@lists.netfilter.org
+
+Greetings,
 
 Dimitri Yioulos wrote:
+> Noob, question:
+> 
+> I want to allow a vendor to access a piece of equipment on our LAN  
+> (192.168.100.46) through port 4000 from outside via a server in our 
+> DMZ (www.xxx.yyy.zzz).  While I should know how to do this, I'm not 
+> 100% sure.  Can someone help?
 
->Hi, folks.
->
->Noob, question:
->
->I want to allow a vendor to access a piece of equipment on our LAN  
->(192.168.100.46) through port 4000 from outside via a server in our 
->DMZ (www.xxx.yyy.zzz).  While I should know how to do this, I'm not 
->100% sure.  Can someone help?
->  
->
+DNAT.
 
-In PREROUTING do a DNAT rule, in FORWARD allow traffic to 192.168.100.46.
+for example:
+iptables -t nat -A PREROUTING -d www.xxx.yyy.zzz -i eth1 -p tcp --dport 
+4000 -j
+DNAT --to 192.168.100.46
+iptables -t filter -A INETIN -d 192.168.100.46 -p tcp --dport 4000 -j ACCEPT
 
->Oh, and separately, how would I allow that access only through the 
->vendor's ip address, if that were the way I decided to go?
->  
->
 
-Add -s $VENDOR_IP to both rules.
+> Oh, and separately, how would I allow that access only through the 
+> vendor's ip address, if that were the way I decided to go?
 
-HTH,
-M4
+for example:
+iptables -t nat -A PREROUTING -s 1.2.3.4 -d www.xxx.yyy.zzz -i eth1 -p 
+tcp --dport 4000 -j DNAT --to 192.168.100.46
+
+
+Regards,
+
+--
+Ritter
 
 
