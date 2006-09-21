@@ -1,10 +1,13 @@
-From: Jukka Laaksola <jukka.laaksola@netland.fi>
-Subject: ip_nat_ftp and TCP retransmission
-Date: Thu, 21 Sep 2006 10:04:27 +0300
-Message-ID: <4512397B.8090409@netland.fi>
+From: "Henning Sprang" <henning.sprang@gmail.com>
+Subject: missing module for tcp-flags match?
+Date: Thu, 21 Sep 2006 09:13:18 +0200
+Message-ID: <5bb00b3f0609210013l48233308o43e750b426cb504b@mail.gmail.com>
+References: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,58 +21,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi!
+Hi,
+I am having trouble to add a rule as simple as
 
-We have problems with ftp client behind NAT. Our firewall is Debian 
-sarge with iptables version 1.2.11-10. ip_nat_ftp module seems to work 
-usually perfect but sometimes active ftp fails.
+iptables -A INPUT --protocol tcp --tcp-flags ALL SYN,ACK -j DROP
 
-In our case there are many PORT-commands in FTP session and those PORT 
-commands ip and host parameters are changed correctly by ip_nat_ftp 
-module. But occasionally the ftp client behind the NAT does not get 
-enough soon response to PORT port command from public ftp server. Then 
-the client does retransmission on PORT command. ip_nat_ftp does not 
-change the server ip and port of those retransmissed PORT commands.
+I only get  the error:
 
-Something like that:
-----8<----
-220 OPNET FTP server OK
-USER anonymous
-200 Command OK.
-PORT x,y,z,162,19,201
-200 PORT command successful.
-STOR ASIAKAS
-150 Opening data connection.
-226 Transfer complete.
-200 PORT command successful.
-RETR AINEISTO
-150 Opening data connection.
-226 Transfer complete.
-PORT x,y,z,162,20,86
-200 PORT command successful.
-STOR PALVELU
-150 Opening data connection.
-226 Transfer complete.
-PORT x,y,z,162,20,87
-200 PORT command successful.
-RETR AINEISTO
-150 Opening data connection.
-226 Transfer complete.
-PORT x,y,x,162,20,88
-PORT 192,168,1,59,20,88
-----8<----
+iptables: No chain/target/match by that name
 
+This happens while I am playing with an embedded box (linksys NSLU). I realized
+before that some other rules did fail because some kernel modules
+where missing and I found out which and then installed them.
 
-The x,y,z,162 is our public IP and the 192.168.1.59 is IP of the FTP 
-client. The ftp client is bank software client and there comes 
-communication failure at those retransmission. The ftp server closes the 
-connection after retransmission because of the PORT command with private IP.
+But with this rule I have, after searching for a long time now,
+absolutely no idea which kernel module can be missing to give me the
+match tcp-flags. No howtos or tutorials nor google or the Kernel
+sources gives any
+hint on that.
+The only kernel module that seems to have something to
+do with tcp-flags at all is TCPMSS, but that doesn't look like helping
+with general analysis of
+tcp flags.
 
-Is there anything we can try to correct the problem?
+Any ideas?
 
-Thanks
-
--- 
-Jukka Laaksola
-Netland Oy
+Henning
 
