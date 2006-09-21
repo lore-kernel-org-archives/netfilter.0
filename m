@@ -1,12 +1,13 @@
-From: Mr Ritter <netfilter@candlefire.org>
+From: "Mr. Ritter" <netfilter@candlefire.org>
 Subject: Re: Port forwarding question
-Date: Thu, 21 Sep 2006 14:25:04 -0600
-Message-ID: <4512F520.6010104@candlefire.org>
+Date: Thu, 21 Sep 2006 14:32:20 -0600
+Message-ID: <4512F6D4.4060003@candlefire.org>
 References: <200609211555.39634.dyioulos@firstbhph.com>
+	<4512F520.6010104@candlefire.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200609211555.39634.dyioulos@firstbhph.com>
+In-Reply-To: <4512F520.6010104@candlefire.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +19,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Dimitri Yioulos <dyioulos@firstbhph.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Greetings,
+Mr Ritter wrote:
+> iptables -t filter -A INETIN -d 192.168.100.46 -p tcp --dport 4000 -j
+> ACCEPT
 
-Dimitri Yioulos wrote:
-> Noob, question:
-> 
-> I want to allow a vendor to access a piece of equipment on our LAN  
-> (192.168.100.46) through port 4000 from outside via a server in our 
-> DMZ (www.xxx.yyy.zzz).  While I should know how to do this, I'm not 
-> 100% sure.  Can someone help?
-
-DNAT.
-
-for example:
-iptables -t nat -A PREROUTING -d www.xxx.yyy.zzz -i eth1 -p tcp --dport 
-4000 -j
-DNAT --to 192.168.100.46
-iptables -t filter -A INETIN -d 192.168.100.46 -p tcp --dport 4000 -j ACCEPT
-
-
-> Oh, and separately, how would I allow that access only through the 
-> vendor's ip address, if that were the way I decided to go?
-
-for example:
-iptables -t nat -A PREROUTING -s 1.2.3.4 -d www.xxx.yyy.zzz -i eth1 -p 
-tcp --dport 4000 -j DNAT --to 192.168.100.46
-
-
-Regards,
-
---
-Ritter
+Doh!  INETIN is one of my tables, meant to say:
+iptables -t filter -A FORWARD -d 192.168.100.46 -p tcp --dport 4000 -j
+ACCEPT
 
 
