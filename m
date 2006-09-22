@@ -1,10 +1,13 @@
-From: J Richard Glass <richard@mikeradford.org>
-Subject: Using iptables with marks, fwmarks and ip tables and routes
-Date: Fri, 22 Sep 2006 10:55:47 -0700
-Message-ID: <cc2f7c40260241bbf8304b5c45fa29ef@localhost>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Forwarding multiple UDP ports
+Date: Fri, 22 Sep 2006 21:06:32 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0609222105190.7758@yvahk01.tjqt.qr>
+References: <45140C99.8040205@samera.com.py>
+	<Pine.LNX.4.61.0609221821100.12304@yvahk01.tjqt.qr>
+	<451410CD.6020102@samera.com.py>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <451410CD.6020102@samera.com.py>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,35 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Oliver Schulze L." <oliver@samera.com.py>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+>
+> Explanation:
+> INTRA_SERVER sends UDP traffic to the INTRA_ROUTER IP, then, INTRA_ROUTER
+> forwards those packets to the public IP INET_IP
 
-I am hoping for some enlightenment
-
-We have a dial-out server that will be establishing multiple ppp connections with remote ppp servers. In our case all the destination ip addresses are the same (same ips on different servers). 
-
-To make sure packets go out the appropriate interface, we assign a temporary destination address that is associated with an interface. In the OUTPUT hook mangle table we mark the packet with a flag that will route it to its interface. The packet destination address is then translated (DNAT) to its real ip address and we use the mark to routes the packet out the correct interface.
-
-Here are the commands we issue to iptables and ip:
-
-iptables -v -t mangle -A OUTPUT -d 10.9.0.1  -j MARK --set-mark 11 
-iptables -v -t nat -A OUTPUT -d 10.9.0.1  -j DNAT --to-destination 192.168.1.1
-
-ip rule add fwmark 11 table 11
-ip route add dev ppp0 table 11
-
-Table of IP Addresses to Interface
-10.9.0.1 => table 11 => ppp0
-10.9.0.2 => table 12 => ppp1 etc.
-
-We've gotten this to work with NICs using ethernet connections, but now we are starting with the modems and the ppp interfaces don't come up until connections are made. Since all the routing rules are static and determined beforehand, would it be possible to create placeholder ppp interfaces and then write iptables and ip rules using the placeholders? We'd prefer to have this set up independent of our software.
-
-Thanks for the help.
-
--richard
+In that case, DNAT is ok. Just make sure that no packet (in either 
+direction) can evade INTRA_ROUTER (such as hubs/switches and other 
+sorts of bridges), because that nullifies NAT.
 
 
-
+Jan Engelhardt
+-- 
 
