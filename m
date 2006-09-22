@@ -1,11 +1,11 @@
 From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: RE: Kernel 2.6.18 and quota match
-Date: Fri, 22 Sep 2006 17:26:02 +0200
-Message-ID: <BAY103-F17F1A57863422A66812347B2210@phx.gbl>
-References: <BAY108-F2081F7D5BC4C3ADEE0D5CEBC210@phx.gbl>
+Subject: Re: Kernel 2.6.18 and quota match
+Date: Fri, 22 Sep 2006 17:41:10 +0200
+Message-ID: <BAY103-F363870BA17F1FCBAD3E954B2210@phx.gbl>
+References: <BAY108-F11F1C98A999C5BD38D2856BC210@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY108-F2081F7D5BC4C3ADEE0D5CEBC210@phx.gbl>
+In-Reply-To: <BAY108-F11F1C98A999C5BD38D2856BC210@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +18,19 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: uncystu@hotmail.com
+To: uncystu@hotmail.com, jengelh@linux01.gwdg.de
 Cc: netfilter@lists.netfilter.org
 
->Thanks for your reply.  I have tried both the standard download available 
->from the netfilter website (dated 1st Feb 2006) and iptables snapshot 
->(20060902) with no difference.
+>>Kernel: 'quota' has been obsoleted by 'statistic'.
 
-mhhh...
-This is my extensions test result:
+No. Quota is quota. nth & random has been obsoleted
+by the new statistic match.
 
-Extensions found: IPv4:CLUSTERIP IPv4:connbytes IPv4:dccp IPv4:quota 
-IPv4:recent IPv4:statistic IPv4:string IPv6:REJECT IPv6:ah IPv6:esp 
-IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
+>>Userspace: You are out of luck. quota was removed from POM, but its
+>>replacement has not appeared in iptables to date.
 
-When you compile iptables snapshot are you able to see IPv4:quota?
-If you don't see it, you should update your kernel headers to 2.6.18
+Support for quota and statistic is in current iptables
+snapshot (20060920 for example).
 
 
 
