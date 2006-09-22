@@ -1,14 +1,14 @@
 From: "Henning Sprang" <henning_sprang@gmx.de>
 Subject: Re: missing module for tcp-flags match?
-Date: Fri, 22 Sep 2006 21:50:45 +0200
-Message-ID: <5bb00b3f0609221250h6ecdb2ddif81228550479cc2c@mail.gmail.com>
+Date: Fri, 22 Sep 2006 22:03:10 +0200
+Message-ID: <5bb00b3f0609221303r4989aa6g1e4f4f7e74226fb0@mail.gmail.com>
 References: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
 	<5bb00b3f0609220655n7a888c4bt4d1ed714f5193545@mail.gmail.com>
-	<45141121.1050707@mailinator.com>
+	<4513F715.4090509@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45141121.1050707@mailinator.com>
+In-Reply-To: <4513F715.4090509@plouf.fr.eu.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,24 +23,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On 9/22/06, Mike Wright <xktnniuymlla@mailinator.com> wrote:
+On 9/22/06, Pascal Hambourg <pascal.mail@plouf.fr.eu.org> wrote:
 > [...]
-> Not sure this is relevant but while attempting to add ipset support I
-> got the same error message. It turned out that my kernel and modules
-> were out of sync.
+> There is an option to not receive a copy of your own messages, maybe you
+> enabled it.
 
-You mean for example, different versions, or build with different
-configurations?
-It seems unlikely, but it could be it. The kernel is integrated into
-the firmware and the additional modules come from the package
-repository. (I even had to install and addtional package to get the
-state match, and even for the REJECT target). But both are from the
-people who make the free DebianSlug firmware for the Linksys NSLU.
+O.k. that explains it - I read a lot of lists but never saw such a feature.
+Not that I know of, I only wrote  my address into the subscription form.
 
-Still, I get not errors about any problems with that - the logs look
-quite free of errors.
-Do you have an idea how I can find out if that is the type of problem I have?
+Still, I just looked at the config, because I wanted to enable that I
+get copies of my own posts(I find not getting them rather irritating),
+but it's already saying "yes". But i really don't get them.
 
-Thanks anyway for the hint
+I'll mail the list admin about that - seems not to work correctly, and
+by default people should get there mails because I guess most people
+will wonder and repost if they don't get their mails back...
+
+Thanks,
 Henning
 
