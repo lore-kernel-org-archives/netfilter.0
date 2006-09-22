@@ -1,13 +1,12 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: missing module for tcp-flags match?
-Date: Fri, 22 Sep 2006 16:45:41 +0200
-Message-ID: <4513F715.4090509@plouf.fr.eu.org>
-References: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
-	<5bb00b3f0609220655n7a888c4bt4d1ed714f5193545@mail.gmail.com>
+Subject: Re: Martians question
+Date: Fri, 22 Sep 2006 16:59:02 +0200
+Message-ID: <4513FA36.2060600@plouf.fr.eu.org>
+References: <45132DDE.6090101@rhyme.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5bb00b3f0609220655n7a888c4bt4d1ed714f5193545@mail.gmail.com>
+In-Reply-To: <45132DDE.6090101@rhyme.com.au>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,36 +22,51 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
-Henning Sprang a =E9crit :
-> Sorry for having posted this message twice. I did't see it coming back
-> through the list, and realized I sent it from the wrong address.
+Philip Warner a =E9crit :
+> I've seen a lot about martian sources being from a 'wrong' subnet, and
+> in that context can not see why I am getting lots of martian messages i=
+n
+> my logs:
 
-Messages sent with an address which is not subscribed to the list must=20
-wait to be approved by a list manager, this can take some time.
+Martian source detection is not related to Netfilter/iptables.
 
-> I then sent it again from the address whic is actually subscribed.
-> Now that I wondered why even the second mail didn't come back to me, I
-> looked in the list archive and saw that the mail actually came through
-> the list, even twice. I wonder why I didn't get a copy, because all
-> other lists I know send copies of mails also to the sender himself -
-> is the netfilter list different in this?
+> Sep 21 22:29:49 ares kernel: martian source 203.8.195.10 from 203.8.195=
+.20, on dev eth1
+> Sep 21 22:29:49 ares kernel: ll header: ff:ff:ff:ff:ff:ff:00:50:ba:39:1=
+0:22:08:06
 
-There is an option to not receive a copy of your own messages, maybe you=20
-enabled it.
+If I'm not mistaken, this packet looks like a broadcast ARP query from=20
+IP 203.8.195.20 and MAC 00:50:ba:39:10:22 aimed at 203.8.195.10. Hence,=20
+for some reason, the packet came back to the interface from which it was=20
+sent.
 
-> When tyring to set up the rule:
+Just an idea : did you check that both ends of the ethernet wire have=20
+the same duplex setting ?
+
+> where eth1 is configured as:
 >=20
-> iptables -A INPUT --protocol tcp --tcp-flags ALL SYN,ACK -j DROP
->=20
-> I only get the error:
->=20
-> iptables: No chain/target/match by that name
->=20
-> When I remove the tcp-flags part, the rules is accepted. I assume to
-> be missing a kernel module for tcp-flags match, but have no idea which
-> module this could be. Which Kernel module is required for getting
-> tcp-flags matches?
+> eth1      Link encap:Ethernet  HWaddr 00:50:BA:39:10:22
+>           inet addr:203.8.195.20  Bcast:203.8.195.255  Mask:255.255.255=
+.0
+>           inet6 addr: fe80::250:baff:fe39:1022/64 Scope:Link
+>           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+>           collisions:0 txqueuelen:1000
 
-AFAIK, there is no specific module for --tcp-flags. It is a standard tcp=20
-match, like --dport and --sport. I see no reason why you get an error.
+So it seems that your "martian" packet was sent by your box itself.
+
+[...]
+> eth2      Link encap:Ethernet  HWaddr 00:01:80:5C:8B:35
+>           inet addr:203.8.195.121  Bcast:203.8.195.121  Mask:255.255.25=
+5.255
+>=20
+> (this interface should really be dropped,
+
+Yes it should, because its IP setup is broken : local and broadcast=20
+addresses are identical. That's what happens with ifconfig which does=20
+not behave well with /31 and /32 masks.
+
+> and when I drop eth2, I still get martians...so I assume it's not relev=
+ant.
+
+If eth2 is not connected to the same ethernet network as eth1, I agree.
 
