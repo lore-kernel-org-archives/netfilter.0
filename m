@@ -1,11 +1,11 @@
-From: "Randy Grimshaw" <rgrimsha@syr.edu>
-Subject: Re: Martians question
-Date: Thu, 21 Sep 2006 23:08:29 -0400
-Message-ID: <s5131b92.045@gwia203.syr.edu>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Kernel 2.6.18 and quota match
+Date: Fri, 22 Sep 2006 08:00:31 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0609220757510.28671@yvahk01.tjqt.qr>
+References: <BAY108-F3CD4343FDF322275C0034BC210@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <BAY108-F3CD4343FDF322275C0034BC210@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,61 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org, pjw@rhyme.com.au
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Stuart Clouston <uncystu@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
-I have seen martians caused by two MACaddresses (systems) with the same
-IPnumber.
-<><Randy
+>
+> With just the quota match option enabled in the kernel config, trying to use
+> the quota match reported an error that it couldn't locate the libipt_quota.so
+> file. Is it still necessary to use patch-o-matic-ng to obtain the quota match
+> now that kernel 2.6.18 has it as an option?
 
+Kernel: 'quota' has been obsoleted by 'statistic'.
+Userspace: You are out of luck. quota was removed from POM, but its 
+replacement has not appeared in iptables to date.
 
-<><Randall Grimshaw
-Room 203 Machinery Hall
-Syracuse University
-Syracuse, NY   13244
-315-443-5779
-rgrimsha@syr.edu
->>> Philip Warner <pjw@rhyme.com.au> 09/21/06 8:27 PM >>>
-I've seen a lot about martian sources being from a 'wrong' subnet, and
-in that context can not see why I am getting lots of martian messages in
-my logs:
+Try POMNG revision 6660 in which most matches should still be present,
 
-Sep 21 22:29:49 ares kernel: martian source 203.8.195.10 from
-203.8.195.20, on dev eth1
-Sep 21 22:29:49 ares kernel: ll header:
-ff:ff:ff:ff:ff:ff:00:50:ba:39:10:22:08:06
+> I have applied the quota patch from the pom-ng-20060511 snapshot anyway and I
+> now get the following error whenever I attempt to create a rule using the quota
+> match:
+> On screen: "invalid argument"
+> syslog:  ip_tables: quota match: invalid size 0 != 24
 
-where eth1 is configured as:
+The .userspacesize in kernel/net/ipv4/netfilter_ipv4/ipt_quota.c does 
+not match the .size in iptables/extensions/libipt_quota.c.
 
-eth1      Link encap:Ethernet  HWaddr 00:50:BA:39:10:22
-          inet addr:203.8.195.20  Bcast:203.8.195.255 
-Mask:255.255.255.0
-          inet6 addr: fe80::250:baff:fe39:1022/64 Scope:Link
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          collisions:0 txqueuelen:1000
-
-and the routing has:
-
-203.8.195.0/24 dev eth1  proto kernel  scope link  src 203.8.195.20
-
-Admittedly, I barely know what I'm doing, but this looks like it should
-be OK: the
-martian 203.8.195.10 is on eth1's subnet, and the routing tables
-at least recognize where to send packets for that address to...so any
-explanation or 
-help would be appreciated.
-
-There are also 2 other ethernet devices,  one to a 10.x.y/24 address
-range and the other to part of the same address range:
-
-eth2      Link encap:Ethernet  HWaddr 00:01:80:5C:8B:35
-          inet addr:203.8.195.121  Bcast:203.8.195.121 
-Mask:255.255.255.255
-
-(this interface should really be dropped, it's there for a legacy
-network that is now not used)...and when I drop eth2, I still get
-martians...so I assume it's not relevant.
+> iptables 1.3.5 source is from ftp://ftp.netfilter.org/pub/iptables.  (Is this
+> the correct version of iptables to use or should I be using the latest version
+> from the snapshot directory on the ftp server?)
 
 
-
+Jan Engelhardt
+-- 
 
