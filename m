@@ -1,13 +1,15 @@
-From: Mike Wright <xktnniuymlla@mailinator.com>
+From: "Henning Sprang" <henning_sprang@gmx.de>
 Subject: Re: missing module for tcp-flags match?
-Date: Fri, 22 Sep 2006 12:22:28 -0700
-Message-ID: <451437F4.3070007@mailinator.com>
-References: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>	<5bb00b3f0609220655n7a888c4bt4d1ed714f5193545@mail.gmail.com>	<45141121.1050707@mailinator.com>
-	<Pine.LNX.4.61.0609222106510.7758@yvahk01.tjqt.qr>
+Date: Fri, 22 Sep 2006 21:50:45 +0200
+Message-ID: <5bb00b3f0609221250h6ecdb2ddif81228550479cc2c@mail.gmail.com>
+References: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
+	<5bb00b3f0609220655n7a888c4bt4d1ed714f5193545@mail.gmail.com>
+	<45141121.1050707@mailinator.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0609222106510.7758@yvahk01.tjqt.qr>
+In-Reply-To: <45141121.1050707@mailinator.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,14 +23,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Jan Engelhardt wrote:
->>>When tyring to set up the rule:
->>
->>iptables -A INPUT -p tcp -m tcp \
->>--tcp-flags FIN,SYN,RST,PSH,ACK,URG SYN,ACK -j DROP
-> 
-> And if you drop "-m tcp" now, since that should be implied by "-p tcp"?
-> 
+On 9/22/06, Mike Wright <xktnniuymlla@mailinator.com> wrote:
+> [...]
+> Not sure this is relevant but while attempting to add ipset support I
+> got the same error message. It turned out that my kernel and modules
+> were out of sync.
 
-Yes, according to the man page.
+You mean for example, different versions, or build with different
+configurations?
+It seems unlikely, but it could be it. The kernel is integrated into
+the firmware and the additional modules come from the package
+repository. (I even had to install and addtional package to get the
+state match, and even for the REJECT target). But both are from the
+people who make the free DebianSlug firmware for the Linksys NSLU.
+
+Still, I get not errors about any problems with that - the logs look
+quite free of errors.
+Do you have an idea how I can find out if that is the type of problem I have?
+
+Thanks anyway for the hint
+Henning
 
