@@ -1,12 +1,13 @@
-From: Philip Warner <pjw@rhyme.com.au>
-Subject: Re: Martians question
-Date: Fri, 22 Sep 2006 23:30:25 +1000
-Message-ID: <4513E571.5030603@rhyme.com.au>
-References: <s5131b92.046@gwia203.syr.edu>
+From: "Henning Sprang" <henning.sprang@gmail.com>
+Subject: Re: missing module for tcp-flags match?
+Date: Fri, 22 Sep 2006 15:55:03 +0200
+Message-ID: <5bb00b3f0609220655n7a888c4bt4d1ed714f5193545@mail.gmail.com>
+References: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <s5131b92.046@gwia203.syr.edu>
+In-Reply-To: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,72 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Randy Grimshaw <rgrimsha@syr.edu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Randy Grimshaw wrote:
-> I have seen martians caused by two MACaddresses (systems) with the same
-> IPnumber.
->   
-But that's not the case here. AFAICT...203.8.195.10 is the remote
-machine on the other side of eth1.
-> <><Randy
->
->
-> <><Randall Grimshaw
-> Room 203 Machinery Hall
-> Syracuse University
-> Syracuse, NY   13244
-> 315-443-5779
-> rgrimsha@syr.edu
->   
->>>> Philip Warner <pjw@rhyme.com.au> 09/21/06 8:27 PM >>>
->>>>         
-> I've seen a lot about martian sources being from a 'wrong' subnet, and
-> in that context can not see why I am getting lots of martian messages in
-> my logs:
->
-> Sep 21 22:29:49 ares kernel: martian source 203.8.195.10 from
-> 203.8.195.20, on dev eth1
-> Sep 21 22:29:49 ares kernel: ll header:
-> ff:ff:ff:ff:ff:ff:00:50:ba:39:10:22:08:06
->
-> where eth1 is configured as:
->
-> eth1      Link encap:Ethernet  HWaddr 00:50:BA:39:10:22
->           inet addr:203.8.195.20  Bcast:203.8.195.255 
-> Mask:255.255.255.0
->           inet6 addr: fe80::250:baff:fe39:1022/64 Scope:Link
->           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
->           collisions:0 txqueuelen:1000
->
-> and the routing has:
->
-> 203.8.195.0/24 dev eth1  proto kernel  scope link  src 203.8.195.20
->
-> Admittedly, I barely know what I'm doing, but this looks like it should
-> be OK: the
-> martian 203.8.195.10 is on eth1's subnet, and the routing tables
-> at least recognize where to send packets for that address to...so any
-> explanation or 
-> help would be appreciated.
->
-> There are also 2 other ethernet devices,  one to a 10.x.y/24 address
-> range and the other to part of the same address range:
->
-> eth2      Link encap:Ethernet  HWaddr 00:01:80:5C:8B:35
->           inet addr:203.8.195.121  Bcast:203.8.195.121 
-> Mask:255.255.255.255
->
-> (this interface should really be dropped, it's there for a legacy
-> network that is now not used)...and when I drop eth2, I still get
-> martians...so I assume it's not relevant.
->
->
->
->
->
->   
+Hi,
+Sorry for having posted this message twice. I did't see it coming back
+through the list, and realized I sent it from the wrong address. I
+then sent it again from the address whic is actually subscribed.
+Now that I wondered why even the second mail didn't come back to me, I
+looked in the list archive and saw that the mail actually came through
+the list, even twice. I wonder why I didn't get a copy, because all
+other lists I know send copies of mails also to the sender himself -
+is the netfilter list different in this?
 
+But for the topic itself: unfortunately, I got no reply at all, I
+assume because you are annoxed by the double post, or because the
+question was unclear. As I explained the first problem, I try to ask
+the question in a different way:
+
+When tyring to set up the rule:
+
+iptables -A INPUT --protocol tcp --tcp-flags ALL SYN,ACK -j DROP
+
+I only get the error:
+
+iptables: No chain/target/match by that name
+
+When I remove the tcp-flags part, the rules is accepted. I assume to
+be missing a kernel module for tcp-flags match, but have no idea which
+module this could be. Which Kernel module is required for getting
+tcp-flags matches?
+
+Henning
 
