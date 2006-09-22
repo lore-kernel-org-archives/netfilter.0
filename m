@@ -1,13 +1,10 @@
-From: Mike Wright <xktnniuymlla@mailinator.com>
-Subject: Re: missing module for tcp-flags match?
-Date: Fri, 22 Sep 2006 09:36:49 -0700
-Message-ID: <45141121.1050707@mailinator.com>
-References: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
-	<5bb00b3f0609220655n7a888c4bt4d1ed714f5193545@mail.gmail.com>
+From: J Richard Glass <richard@mikeradford.org>
+Subject: Using iptables with marks, fwmarks and ip tables and routes
+Date: Fri, 22 Sep 2006 10:55:47 -0700
+Message-ID: <cc2f7c40260241bbf8304b5c45fa29ef@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5bb00b3f0609220655n7a888c4bt4d1ed714f5193545@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Henning Sprang <henning.sprang@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Henning Sprang wrote:
-> When tyring to set up the rule:
-> 
-> iptables -A INPUT --protocol tcp --tcp-flags ALL SYN,ACK -j DROP
->
+Hi,
 
-I just tried this with iptables 1.3.5, linux-2.6.16-xen:
+I am hoping for some enlightenment
 
-iptables -A INPUT -p tcp -m tcp \
-          --tcp-flags FIN,SYN,RST,PSH,ACK,URG SYN,ACK -j DROP
+We have a dial-out server that will be establishing multiple ppp connections with remote ppp servers. In our case all the destination ip addresses are the same (same ips on different servers). 
 
-and it works.
+To make sure packets go out the appropriate interface, we assign a temporary destination address that is associated with an interface. In the OUTPUT hook mangle table we mark the packet with a flag that will route it to its interface. The packet destination address is then translated (DNAT) to its real ip address and we use the mark to routes the packet out the correct interface.
 
-> I only get the error:
-> 
-> iptables: No chain/target/match by that name
->
+Here are the commands we issue to iptables and ip:
 
-Not sure this is relevant but while attempting to add ipset support I 
-got the same error message. It turned out that my kernel and modules 
-were out of sync.
+iptables -v -t mangle -A OUTPUT -d 10.9.0.1  -j MARK --set-mark 11 
+iptables -v -t nat -A OUTPUT -d 10.9.0.1  -j DNAT --to-destination 192.168.1.1
 
-Hope that helps, :m)
+ip rule add fwmark 11 table 11
+ip route add dev ppp0 table 11
+
+Table of IP Addresses to Interface
+10.9.0.1 => table 11 => ppp0
+10.9.0.2 => table 12 => ppp1 etc.
+
+We've gotten this to work with NICs using ethernet connections, but now we are starting with the modems and the ppp interfaces don't come up until connections are made. Since all the routing rules are static and determined beforehand, would it be possible to create placeholder ppp interfaces and then write iptables and ip rules using the placeholders? We'd prefer to have this set up independent of our software.
+
+Thanks for the help.
+
+-richard
+
+
+
 
