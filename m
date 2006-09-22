@@ -1,11 +1,10 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: Re: Kernel 2.6.18 and quota match
-Date: Fri, 22 Sep 2006 17:41:10 +0200
-Message-ID: <BAY103-F363870BA17F1FCBAD3E954B2210@phx.gbl>
-References: <BAY108-F11F1C98A999C5BD38D2856BC210@phx.gbl>
+From: "Oliver Schulze L." <oliver@samera.com.py>
+Subject: Forwarding multiple UDP ports
+Date: Fri, 22 Sep 2006 12:17:29 -0400
+Message-ID: <45140C99.8040205@samera.com.py>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY108-F11F1C98A999C5BD38D2856BC210@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,21 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: uncystu@hotmail.com, jengelh@linux01.gwdg.de
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
->>Kernel: 'quota' has been obsoleted by 'statistic'.
+Hi,
+I have a intranet server that initiate UDP connections and I want to forward
+those connections to and Internet IP.
 
-No. Quota is quota. nth & random has been obsoleted
-by the new statistic match.
+I have a Linux box with 2 NICs.
 
->>Userspace: You are out of luck. quota was removed from POM, but its
->>replacement has not appeared in iptables to date.
+My question is: can I forward UDP trafic from and internal server to the 
+Internet?
+Can I use this line:
 
-Support for quota and statistic is in current iptables
-snapshot (20060920 for example).
+iptables -t nat -A PREROUTING -p udp -s INTRA_SERVER -d INTRA_ROUTER 
+--dport 1024:6000 -j DNAT --to-destination INET_IP:1024-6000
 
+I'm testing it and I see the rule matched, the byte and packet counters 
+are incrementing.
+But, I see no traffic going out of the Internet NIC.
+I'm not sure if the multi-port specification will work.
+
+Thanks!
+Oliver
+
+-- 
+Oliver Schulze L.
+Get my e-mail after a captcha test in: http://tinymailto.com/oliver
 
 
