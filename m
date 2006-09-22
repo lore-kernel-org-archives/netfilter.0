@@ -1,12 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Martians question
-Date: Fri, 22 Sep 2006 16:59:02 +0200
-Message-ID: <4513FA36.2060600@plouf.fr.eu.org>
-References: <45132DDE.6090101@rhyme.com.au>
+From: "Marco Berizzi" <pupilla@hotmail.com>
+Subject: RE: Kernel 2.6.18 and quota match
+Date: Fri, 22 Sep 2006 17:26:02 +0200
+Message-ID: <BAY103-F17F1A57863422A66812347B2210@phx.gbl>
+References: <BAY108-F2081F7D5BC4C3ADEE0D5CEBC210@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45132DDE.6090101@rhyme.com.au>
+In-Reply-To: <BAY108-F2081F7D5BC4C3ADEE0D5CEBC210@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: uncystu@hotmail.com
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+>Thanks for your reply.  I have tried both the standard download available 
+>from the netfilter website (dated 1st Feb 2006) and iptables snapshot 
+>(20060902) with no difference.
 
-Philip Warner a =E9crit :
-> I've seen a lot about martian sources being from a 'wrong' subnet, and
-> in that context can not see why I am getting lots of martian messages i=
-n
-> my logs:
+mhhh...
+This is my extensions test result:
 
-Martian source detection is not related to Netfilter/iptables.
+Extensions found: IPv4:CLUSTERIP IPv4:connbytes IPv4:dccp IPv4:quota 
+IPv4:recent IPv4:statistic IPv4:string IPv6:REJECT IPv6:ah IPv6:esp 
+IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt
 
-> Sep 21 22:29:49 ares kernel: martian source 203.8.195.10 from 203.8.195=
-.20, on dev eth1
-> Sep 21 22:29:49 ares kernel: ll header: ff:ff:ff:ff:ff:ff:00:50:ba:39:1=
-0:22:08:06
+When you compile iptables snapshot are you able to see IPv4:quota?
+If you don't see it, you should update your kernel headers to 2.6.18
 
-If I'm not mistaken, this packet looks like a broadcast ARP query from=20
-IP 203.8.195.20 and MAC 00:50:ba:39:10:22 aimed at 203.8.195.10. Hence,=20
-for some reason, the packet came back to the interface from which it was=20
-sent.
 
-Just an idea : did you check that both ends of the ethernet wire have=20
-the same duplex setting ?
-
-> where eth1 is configured as:
->=20
-> eth1      Link encap:Ethernet  HWaddr 00:50:BA:39:10:22
->           inet addr:203.8.195.20  Bcast:203.8.195.255  Mask:255.255.255=
-.0
->           inet6 addr: fe80::250:baff:fe39:1022/64 Scope:Link
->           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
->           collisions:0 txqueuelen:1000
-
-So it seems that your "martian" packet was sent by your box itself.
-
-[...]
-> eth2      Link encap:Ethernet  HWaddr 00:01:80:5C:8B:35
->           inet addr:203.8.195.121  Bcast:203.8.195.121  Mask:255.255.25=
-5.255
->=20
-> (this interface should really be dropped,
-
-Yes it should, because its IP setup is broken : local and broadcast=20
-addresses are identical. That's what happens with ifconfig which does=20
-not behave well with /31 and /32 masks.
-
-> and when I drop eth2, I still get martians...so I assume it's not relev=
-ant.
-
-If eth2 is not connected to the same ethernet network as eth1, I agree.
 
