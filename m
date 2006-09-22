@@ -1,12 +1,10 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: destination load balancing
-Date: Thu, 21 Sep 2006 23:27:04 +0200
-Message-ID: <451303A8.8010203@rtij.nl>
-References: <F88399957644AA41B09BBDE2704CCEA8F4F0C9@raoxch01.arrow.ca>
+From: Philip Warner <pjw@rhyme.com.au>
+Subject: Martians question
+Date: Fri, 22 Sep 2006 10:27:10 +1000
+Message-ID: <45132DDE.6090101@rhyme.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <F88399957644AA41B09BBDE2704CCEA8F4F0C9@raoxch01.arrow.ca>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Radovan Jablonov <rjablonov@arrow.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Radovan Jablonov wrote:
+I've seen a lot about martian sources being from a 'wrong' subnet, and
+in that context can not see why I am getting lots of martian messages in
+my logs:
 
->Hello,
->
->Has iptables possibility (or will have) to use other load balancing
->methods/algorithms (for example: weighted round-robin, hash, load agent,
->custom algorithm)?
->  
->
-No, not directly.
+Sep 21 22:29:49 ares kernel: martian source 203.8.195.10 from 203.8.195.20, on dev eth1
+Sep 21 22:29:49 ares kernel: ll header: ff:ff:ff:ff:ff:ff:00:50:ba:39:10:22:08:06
 
-If you can set a fwmark based on some criterium you could implement more 
-advance schemes, but that requires some custom match the YOU have to write.
+where eth1 is configured as:
 
-So a hash based load balancing could be implemented faily easily, just 
-write a module that sets fwmark based on the hash. I guess more people 
-would be interested in this . (If only to load balance over multiple 
-links, f.i.).
+eth1      Link encap:Ethernet  HWaddr 00:50:BA:39:10:22
+          inet addr:203.8.195.20  Bcast:203.8.195.255  Mask:255.255.255.0
+          inet6 addr: fe80::250:baff:fe39:1022/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          collisions:0 txqueuelen:1000
 
-Load balancing based on some kind of load agent would be more difficult, 
-one has to communicate with userspace for this. I imagine many people 
-would be interested in this.
+and the routing has:
 
-Weighted round robin is actually fairly easy by using the nth match. 
-lets say you want 2/3 go to A and 1/2 3 go to B. Just use nth to devide 
-in 3's and send cases 0 and 1 to A and case 2 to B.
+203.8.195.0/24 dev eth1  proto kernel  scope link  src 203.8.195.20
 
-M4
+Admittedly, I barely know what I'm doing, but this looks like it should be OK: the
+martian 203.8.195.10 is on eth1's subnet, and the routing tables
+at least recognize where to send packets for that address to...so any explanation or 
+help would be appreciated.
+
+There are also 2 other ethernet devices,  one to a 10.x.y/24 address
+range and the other to part of the same address range:
+
+eth2      Link encap:Ethernet  HWaddr 00:01:80:5C:8B:35
+          inet addr:203.8.195.121  Bcast:203.8.195.121  Mask:255.255.255.255
+
+(this interface should really be dropped, it's there for a legacy
+network that is now not used)...and when I drop eth2, I still get
+martians...so I assume it's not relevant.
 
 
