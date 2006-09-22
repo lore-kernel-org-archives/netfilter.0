@@ -1,13 +1,13 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Forwarding multiple UDP ports
-Date: Fri, 22 Sep 2006 21:06:32 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0609222105190.7758@yvahk01.tjqt.qr>
-References: <45140C99.8040205@samera.com.py>
-	<Pine.LNX.4.61.0609221821100.12304@yvahk01.tjqt.qr>
-	<451410CD.6020102@samera.com.py>
+Subject: Re: missing module for tcp-flags match?
+Date: Fri, 22 Sep 2006 21:07:09 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0609222106510.7758@yvahk01.tjqt.qr>
+References: <5bb00b3f0609201654w100cdc33vf8fa674477ed1274@mail.gmail.com>
+	<5bb00b3f0609220655n7a888c4bt4d1ed714f5193545@mail.gmail.com>
+	<45141121.1050707@mailinator.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <451410CD.6020102@samera.com.py>
+In-Reply-To: <45141121.1050707@mailinator.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,18 +20,23 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Oliver Schulze L." <oliver@samera.com.py>
+To: Mike Wright <xktnniuymlla@mailinator.com>
 Cc: netfilter@lists.netfilter.org
 
+
+>> When tyring to set up the rule:
+>> 
+>> iptables -A INPUT --protocol tcp --tcp-flags ALL SYN,ACK -j DROP
+>> 
 >
-> Explanation:
-> INTRA_SERVER sends UDP traffic to the INTRA_ROUTER IP, then, INTRA_ROUTER
-> forwards those packets to the public IP INET_IP
+> I just tried this with iptables 1.3.5, linux-2.6.16-xen:
+>
+> iptables -A INPUT -p tcp -m tcp \
+> --tcp-flags FIN,SYN,RST,PSH,ACK,URG SYN,ACK -j DROP
+>
+> and it works.
 
-In that case, DNAT is ok. Just make sure that no packet (in either 
-direction) can evade INTRA_ROUTER (such as hubs/switches and other 
-sorts of bridges), because that nullifies NAT.
-
+And if you drop "-m tcp" now, since that should be implied by "-p tcp"?
 
 Jan Engelhardt
 -- 
