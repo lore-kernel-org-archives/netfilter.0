@@ -1,10 +1,13 @@
-From: Elvir Kuric <omasnjak@yahoo.com>
-Subject: Re: iptables rtsp port forwarding
-Date: Sat, 23 Sep 2006 12:06:20 -0700 (PDT)
-Message-ID: <20060923190620.58841.qmail@web56206.mail.re3.yahoo.com>
+From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
+Subject: RE: iptables rtsp port forwarding
+Date: Sat, 23 Sep 2006 21:13:50 +0200
+Message-ID: <7656.94543156332$1159038879@news.gmane.org>
+References: <20060923190620.58841.qmail@web56206.mail.re3.yahoo.com>
+Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20060923190620.58841.qmail@web56206.mail.re3.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,7 +19,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: sundar <sundar@cynaptix.com>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+Just a little notice. -i is used for interface like -i eth0 and NOT for
+destination address. Maybe the example on DNAT from Elvir will help you. If
+not try the rtsp helper for iptables.
+
+Regards,
+
+Edvin Seferovic
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Elvir Kuric
+Sent: Samstag, 23. September 2006 21:06
+To: sundar; netfilter@lists.netfilter.org
+Subject: Re: iptables rtsp port forwarding
 
 Hi, 
 try this 
@@ -71,4 +89,6 @@ __________________________________________________
 Do You Yahoo!?
 Tired of spam?  Yahoo! Mail has the best spam protection around 
 http://mail.yahoo.com 
+
+
 
