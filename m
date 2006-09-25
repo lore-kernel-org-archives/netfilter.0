@@ -1,9 +1,8 @@
-From: Elvir Kuric <omasnjak@yahoo.com>
-Subject: Question related to DROP target?
-Date: Mon, 25 Sep 2006 12:31:56 -0700 (PDT)
-Message-ID: <20060925193156.58922.qmail@web56215.mail.re3.yahoo.com>
+From: "Andrew Kraslavsky" <andykras@hotmail.com>
+Subject: Countermeasures for SYN flood and DDoS attacks
+Date: Mon, 25 Sep 2006 12:37:41 -0700
+Message-ID: <BAY119-F49065D82325C9618A5088D6240@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,76 +14,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi people, I wrote some rules in my firewal like
-bellow.
-When I started it blocked my all connections, and I
-realised that ( <#iptables -P INPUT DROP
-#iptables -P OUTPUT DROP
-#iptables -P FORWARD DROP ) blocking everything.So I
-put in comment.  I am confused because this rule is at
-beggining of firewal and I do not understand why rules
-that comes after are not implemented. I want to block
-all traffic first and theh allow specified trafic.
-Please I need your opinions, I read many sources and I
-understand what above rules means, but I can not
-understand why rules after does not working.
-Regards
+Hello,
 
-PS : Links and other resources are welcome too
+I am looking to add protection to my linux and iptables based firewall 
+specifcially for SYN flood and DDoS attacks to start with and, to that end, 
+was trawling through the archives of this mailing lists and other places Mr. 
+Google suggested I visit.
 
-Thanks 
+Unfortunately, what I found suggests that there is some debate about how 
+best to approach this.
 
-Elvir Kuric
+Specifically, many postings suggest using a 'limit' match such as...
 
+-A INPUT -p tcp --syn -j syn-flood
+-A FORWARD -p tcp --syn -j syn-flood
+-A syn-flood -m limit --limit 100/second --limit-burst 150 -j RETURN
+-A syn-flood -j LOG --log-prefix "SYN flood: "
+-A syn-flood -j DROP
 
+...or testing for TCP flag combinations...
 
-iptables -F
-iptables -t nat -F
-iptables -t mangle -F
-
+-A INPUT -j syn-flood
+-A FORWARD -j syn-flood
+-A syn-flood-i -p tcp --tcp-flags ALL ACK,RST,SYN,FIN -j DROP
+-A syn-flood-i -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+-A syn-flood-i -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
 
 
-iptables -X
-iptables -t nat -X
-iptables -t mangle -X
+....but other postings say that such rules will not help and in fact may even 
+themselves act as a kind of internal DoS!
 
+Here are a couple of example postings on this topic:
+1) http://www.webhostingtalk.com/archive/index.php/t-355411.html
+2) 
+http://forums.devshed.com/security-and-cryptography-17/iptables-syn-flood-rule-for-a-busy-webserver-277224.html
 
+So my question is, has there been a resolution to this debate?  If so, what 
+was the result?
 
-#iptables -P INPUT DROP
-#iptables -P OUTPUT DROP
-#iptables -P FORWARD DROP
+Thanks,
 
+- Andrew Kraslavsky
 
-iptables -A INPUT -s 127.0.0.1/255.0.0.0 -j ACCEPT
-iptables -A OUTPUT -d 127.0.0.1/255.0.0.0 -j ACCEPT
+_________________________________________________________________
+Add fun gadgets and colorful themes to express yourself on Windows Live 
+Spaces   
+http://clk.atdmt.com/MSN/go/msnnkwsp0070000001msn/direct/01/?href=http://www.get.live.com/spaces/features
 
-
-
-iptables -A INPUT -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
-
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-#iptables -t nat -A POSTROUTING -o eth1 -j SNAT
---to-source ip_adresa
-
-
-iptables -A OUTPUT -p tcp --dport 22 -j ACCEPT
-
-
-
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam
-protection around 
-http://mail.yahoo.com 
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
