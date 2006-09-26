@@ -1,14 +1,12 @@
-From: Guillaume <silencer@free-4ever.net>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: DNAT doesn't work
-Date: Tue, 26 Sep 2006 17:19:35 +0200
-Message-ID: <45194507.10301@free-4ever.net>
-References: <c936c6b70609260745r40491602uba2aef2c6ae9be34@mail.gmail.com>	
-	<4519406E.4040902@free-4ever.net>
-	<c936c6b70609260813g6389cb2br52ff21d7eb628bb2@mail.gmail.com>
+Date: Tue, 26 Sep 2006 18:05:01 +0200
+Message-ID: <45194FAD.4060500@plouf.fr.eu.org>
+References: <c936c6b70609260745r40491602uba2aef2c6ae9be34@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <c936c6b70609260813g6389cb2br52ff21d7eb628bb2@mail.gmail.com>
+In-Reply-To: <c936c6b70609260745r40491602uba2aef2c6ae9be34@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,39 +20,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hello,
+
 Holger Kinkelin a =E9crit :
-> Hi Guillaume
 >=20
-> Thanx for your reply
+> I'm more or less new to netfilter / iptables; so I've got a question=20
+> about DNAT.
 >=20
->> The first thing I'm thinking about is that you need a corresponding ru=
-le
->> in the "filter" table !
->>
->> In this example, you should had a rule:
->> iptables -A INPUT -p tcp --dport 80 -d 127.0.0.1 -j ACCEPT
->>
->> Of course, it's needed only if you set the default policy to "DROP" in
->> all chains of table "filter".
-> hmmmm, ... no, the default policy is set to "ACCEPT"... Otherwise, I
-> think, I coundn't open http://localhost in my webbrowser, too -- Or am
-> I wrong?
+> My problem is, that my DNAT won't work. I want to reroute http-pakets
+> to server X to my own server running on localhost.
 >=20
-> Regards,
-> Holger
+> The first command I tried was the following:
+>=20
+> iptables -A PREROUTING -t nat -p tcp -d [IP OF X] --dport 80 \
+>   -j DNAT --to-destination 127.0.0.1:80
 
-hhhmmm...
-It sounds you are right !
+Don't DNAT connections from the outside to a loopback address. It won't=20
+work because the input routing, which takes place right after the=20
+PREROUTING chain, will drop packets to any destination in 127.0.0.0/8=20
+received on any interface other than lo. So you can only reach these=20
+destinations from the local host. Use the REDIRECT target instead, or=20
+DNAT to the local address of the input interface.
 
-Don't know what to tell you at the moment....
+> But: There is no effect. When I try to open a page hostet on X, the
+> page loads from X, not from localhost...
+>=20
+> So I tried
+>=20
+> iptables -A PREROUTING -t nat -p tcp -d [IP OF X] --dport 80 -j REDIREC=
+T
+>=20
+> No effect, too
 
-Please post on the list more details like the network setup, and so on...
-
-
---=20
-Guillaume
-E-mail: silencer_<at>_free-4ever_<dot>_net
-Blog: http://guillaume.free-4ever.net
-----
-Site: http://www.free-4ever.net
+If the source of the HTTP connection is the local host, you must put=20
+this rule in the OUTPUT chain instead of PREROUTING. By the way, you can=20
+use "DNAT --to 127.0.0.1" this time, because it's a local host=20
+communication. Make sure trafic on the interface lo is allowed.
 
