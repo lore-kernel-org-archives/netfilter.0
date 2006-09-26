@@ -1,13 +1,12 @@
-From: "Daniel De Graaf" <danieldegraaf@gmail.com>
+From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
 Subject: Re: iptables: Unknown error 4294967295
-Date: Mon, 25 Sep 2006 19:37:13 -0500
-Message-ID: <427c54c0609251737w484a6fh7485a4cd77d27c7@mail.gmail.com>
+Date: Tue, 26 Sep 2006 09:41:28 +0900 (JST)
+Message-ID: <200609260041.k8Q0fikT014394@toshiba.co.jp>
 References: <20060926000301.GC10112@fmp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <20060926000301.GC10112@fmp.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Lindsay Haisley <fmouse-m14acd@fmp.com>
+Content-Type: Text/Plain; charset="us-ascii"
+To: fmouse-m14acd@fmp.com, fmouse-netfilter@fmp.com
 Cc: netfilter@lists.netfilter.org
 
-On 9/25/06, Lindsay Haisley <fmouse-netfilter@fmp.com> wrote:
+Hello,
+
+From: Lindsay Haisley <fmouse-netfilter@fmp.com>
+Date: Mon, 25 Sep 2006 19:03:01 -0500
+
 > When I execute the following:
->
+> 
 > iptables -t nat -I PREROUTING -s 10.8.0.1 -i tap0 -j SNAT --to-source 216.110.12.105
->
-> ... I'm getting the error:
->
+> 
+> ... I'm getting the error: 
+> 
 > iptables: Unknown error 4294967295
->
+> 
 > (4294967295 = an unsigned representation of a signed long int of -1)
->
+> 
 > Running this under strace shows the following:
->
->
-> mmap2(NULL, 7648, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) =
+> 
+> 
+> mmap2(NULL, 7648, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 
 > 0xb7fbb000
 > mmap2(0xb7fbc000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xb7fbc000
 > close(3)                                = 0
@@ -48,28 +51,16 @@ On 9/25/06, Lindsay Haisley <fmouse-netfilter@fmp.com> wrote:
 > ) = 35
 > exit_group(1)                           = ?
 > Process 10231 detached
->
-> Apprently the error is originating in a malformed socket option call.  What's
-> happening here, and how can I fix it?   I'm running kernel 2.6.17-gentoo-r4,
+> 
+> Apprently the error is originating in a malformed socket option call.  What's 
+> happening here, and how can I fix it?   I'm running kernel 2.6.17-gentoo-r4, 
 > iptables v1.3.5.
->
-> I have about every possible kernel netfilter capability compiled as a module,
+> 
+> I have about every possible kernel netfilter capability compiled as a module, 
 > or built into the kernel.
->
-> --
-> Lindsay Haisley       | "Fighting against human |     PGP public key
-> FMP Computer Services |    creativity is like   |      available at
-> 512-259-1190          |    trying to eradicate  | <http://pubkeys.fmp.com>
-> http://www.fmp.com    |        dandelions"      |
->                       |      (Pamela Jones)     |
->
->
-The (unsigned)(-1) is a known bug (#460 in bugzilla), fixed in
-subversion versions of iptables.
-However, it is only an invalid reporting of the error; the fixed
-version would output "iptables: Invalid Argument".
 
-The error is because SNAT must be in POSTROUTING, not PREROUTING.
+Is your iptables 32bit binary and do you run it on 64bit kernel ?
+And did syslog output anything ?
 
-- Daniel De Graaf
+-- Yasuyuki Kozakai
 
