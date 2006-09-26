@@ -1,12 +1,9 @@
-From: Nathan <lists@netdigix.com>
-Subject: Re: Accepting Forwaded Packets
-Date: Tue, 26 Sep 2006 12:35:36 -0700
-Message-ID: <1159299336.451981089ec40@mail.dreamtoy.net>
-References: <bd573cf00609261015x676fc64au453fbe6fe9f458a8@mail.gmail.com>
+From: Martin Feinstein <feinstei@email.unc.edu>
+Subject: IPTABLES INVALID state
+Date: Tue, 26 Sep 2006 17:10:21 -0400 (EDT)
+Message-ID: <Pine.A41.4.63+UNC.0609261708310.57350@login2.isis.unc.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <bd573cf00609261015x676fc64au453fbe6fe9f458a8@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +14,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Ranjith Kumar <ranjitbat@gmail.com>
-Cc: netfilter@lists.netfilter.org
-
-what are the NAT commands you are using? you want the DNAT and SNAT somthing 
-like this:
-
-iptables -t nat -A PREROUTING -d 1.1.1.1 -j DNAT --to 10.10.10.10
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
 
-Quoting Ranjith Kumar <ranjitbat@gmail.com>:
+  Hi,
+  We're running an EZproxy server  under RHEL4. We've recently had problems
+  downloading a PDF file from one of our vendor sites. The symptom is that the
+  download eventually times out part way through and the PDF reader claims that
+  the file format is bad.
 
-> Hi All,
-> 
-> I have a Windows server 2003 installed, infront of my mail server. The
-> windows server is connected to internet and this is acting as
-> relayhost to my Linux mail server. I enabled NAT on the windows
-> firewall and forwarding pop3 and imap ports to Linux machine. But I am
-> not able to access pop3 or imap from the internet.
-> 
-> Do I need to add any commands to my iptables to accept the
-> natted/forwarded packets?
-> 
-> Thanks & Regards
-> Ranjith Kumar.
-> 
+  After a repeated examination of our proxy server, we decided to turn off
+  IPTABLES as a test and the transfer worked.
+
+  Since that time, I've used SNORT to examine the incoming packets for both the
+  successful (IPTABLES off) and unsuccessful attempts (IPTABLES on).
+  In the unsuccessful case, after receiving about 70% of the file, an
+  abnormally long time elapses and we receive the same packet several times and
+  finally send the sender ACK FIN.
+
+  In desparation, I inserted an IPTABLES command to accept INVALID packets from
+  the vendor server. The transaction completed normally.
+
+  I then turned on the logging function in IPTABLES for the INVALID records and
+  also ran SNORT against the whole transaction so that using the ID numbers in
+  the snort log and the log of the INVALID packets, I could see the entire
+  INVALID packet.
+
+  My problem is that I can't figure out why IPTABLES sees them as invalid. All
+  the records in the IPTABLES log have good source/destination ports, good flag
+  configurations (A and AP), good window sizes etc. When I look at the data
+  packet in the SNORT log, there doesn't seem to be anything unusual.
+
+  In his HOWTO, Rusty defines an invalid packet as one that could not be
+  identified for reasons that include running out of memory. Is that a
+  possibility here? Are there other possibilities?
+
+  The IPTABLES directive I'm using doesn't work for me as a long term solution.
+  I'm accepting INVALID records from a specific IP source that could change at
+  any time. Is it possible that the IPTABLES rule may be a little too strict?
+
+  Many thanks...martin feinstein
+               Library Systems
+               University of North Carolina Chapel Hill
 
 
-
-
-Thanks
-
-- Nathan
-- http://www.linuxcare.ca
 
 
