@@ -1,15 +1,12 @@
-From: Lindsay Haisley <fmouse-netfilter@fmp.com>
-Subject: Re: iptables: Unknown error 4294967295
-Date: Mon, 25 Sep 2006 19:55:04 -0500
-Message-ID: <20060926005504.GD10112@fmp.com>
-References: <20060926000301.GC10112@fmp.com>
-	<427c54c0609251737w484a6fh7485a4cd77d27c7@mail.gmail.com>
-Reply-To: Lindsay Haisley <fmouse-m14acd@fmp.com>
+From: Elvir Kuric <omasnjak@yahoo.com>
+Subject: Re: Question related to DROP target?
+Date: Tue, 26 Sep 2006 03:26:50 -0700 (PDT)
+Message-ID: <20060926102650.24107.qmail@web56213.mail.re3.yahoo.com>
+References: <ygf3bafvet9.fsf@donald.hjemme.ruberg.no>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <427c54c0609251737w484a6fh7485a4cd77d27c7@mail.gmail.com>
+In-Reply-To: <ygf3bafvet9.fsf@donald.hjemme.ruberg.no>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,24 +17,100 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?unknown-8bit?q?Bj=F8rn?= Ruberg <bjorn@ruberg.no>, netfilter@lists.netfilter.org
 
-Thus spake Daniel De Graaf on Mon, Sep 25, 2006 at 07:37:13PM CDT
-> The (unsigned)(-1) is a known bug (#460 in bugzilla), fixed in
-> subversion versions of iptables.
-> However, it is only an invalid reporting of the error; the fixed
-> version would output "iptables: Invalid Argument".
-> 
-> The error is because SNAT must be in POSTROUTING, not PREROUTING.
+Thanks,=20
 
-Thanks.  I had just discovered this.  I'm trying to wrangle a VPN into shape 
-and feeling my way.  Sorry for the noise!
+I made it :) with your suggestion.
 
--- 
-Lindsay Haisley       | "Fighting against human |     PGP public key
-FMP Computer Services |    creativity is like   |      available at
-512-259-1190          |    trying to eradicate  | <http://pubkeys.fmp.com>
-http://www.fmp.com    |        dandelions"      |
-                      |      (Pamela Jones)     |
+Regards=20
+--- Bj=F8rn Ruberg <bjorn@ruberg.no> wrote:
+
+> Elvir Kuric <omasnjak@yahoo.com> writes:
+>=20
+> [...]
+>=20
+> > that comes after are not implemented. I want to
+> block
+> > all traffic first and theh allow specified trafic.
+>=20
+> Then you actually need to specify it properly.
+>=20
+> > Please I need your opinions, I read many sources
+> and I
+> > understand what above rules means, but I can not
+> > understand why rules after does not working.
+>=20
+> [...]
+>=20
+> > iptables -F
+> > iptables -t nat -F
+> > iptables -t mangle -F
+> >=20
+> > iptables -X
+> > iptables -t nat -X
+> > iptables -t mangle -X
+> >=20
+> > #iptables -P INPUT DROP
+> > #iptables -P OUTPUT DROP
+> > #iptables -P FORWARD DROP
+>=20
+> Here, you accept traffic to and from localhost. You
+> should probably
+> specify the interface.
+>=20
+> > iptables -A INPUT -s 127.0.0.1/255.0.0.0 -j ACCEPT
+> > iptables -A OUTPUT -d 127.0.0.1/255.0.0.0 -j
+> ACCEPT
+>=20
+> This one allows both new and established traffic.
+> However, if I read
+> the documentation right, you allow -only- the
+> initiating traffic
+> (e.g. SYN packets, if you are familiar with the TCP
+> three-way
+> handshake) to your server; only the start of any
+> connection. E.g. completing a login will then not
+> work.
+>=20
+> > iptables -A INPUT -m state --state
+> > NEW,ESTABLISHED,RELATED -j ACCEPT
+>=20
+> [...]
+>=20
+> > iptables -A OUTPUT -p tcp --dport 22 -j ACCEPT
+>=20
+> Finally, you accept all _outbound_ traffic to port
+> 22 (SSH) on other
+> servers. The return traffic to your firewall will be
+> allowed due to
+> your ESTABLISHED rule above.
+>=20
+> Summarily, you allow yourself to use SSH from your
+> firewall, and
+> that's about it.
+>=20
+> You should check out the information and scripts at
+> http://www.linuxguruz.com/iptables/
+>=20
+> Good luck :-)
+>=20
+> --=20
+> Bj=F8rn
+>=20
+>=20
+>=20
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam
+protection around=20
+http://mail.yahoo.com=20
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around=20
+http://mail.yahoo.com=20
 
