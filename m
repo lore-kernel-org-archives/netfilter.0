@@ -1,12 +1,11 @@
-From: <computational_complex-netfilter@yahoo.it>
-Subject: Re: Question related to DROP target?
-Date: Tue, 26 Sep 2006 12:36:46 +0200 (CEST)
-Message-ID: <20060926103646.70894.qmail@web86912.mail.ukl.yahoo.com>
-References: <20060925193156.58922.qmail@web56215.mail.re3.yahoo.com>
-Reply-To: computational_complex-netfilter@yahoo.it
+From: "Holger Kinkelin" <holger.kinkelin@gmail.com>
+Subject: DNAT doesn't work
+Date: Tue, 26 Sep 2006 16:45:09 +0200
+Message-ID: <c936c6b70609260745r40491602uba2aef2c6ae9be34@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060925193156.58922.qmail@web56215.mail.re3.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,106 +16,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
---- Elvir Kuric <omasnjak@yahoo.com> ha scritto: 
+Hi everybody!
 
-> When I started it blocked my all connections, and I
-> realised that ( <#iptables -P INPUT DROP
-> #iptables -P OUTPUT DROP
-> #iptables -P FORWARD DROP ) blocking everything.So I
-> put in comment. 
+I'm more or less new to netfilter / iptables; so I've got a question about DNAT.
 
-It's correct ! With these comamands you say to your
-linux box: 
+My problem is, that my DNAT won't work. I want to reroute http-pakets
+to server X to my own server running on localhost.
 
-BY DEFAULT every packet that comes in the box has to
-be dropped (iptables -P INPUT DROP)
+The first command I tried was the following:
 
-BY DEFAULT every packet that wants to go out from the
-box has to be dropped (iptables -P OUTPUT DROP)
+>> iptables -A PREROUTING -t nat -p tcp -d [IP OF X] --dport 80 -j
+DNAT --to-destination 127.0.0.1:80
 
-BY DEFAULT every packet that wants to be forwarded
-from the box has to be dropped (iptables -P FORWARD
-DROP)
+The new rule seems to be added correctly to the nat-table:
 
-> I am confused because this rule is
-> at
-> beggining of firewal and I do not understand why
-> rules
-> that comes after are not implemented.
+>> iptables -t nat --list
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DNAT       tcp  --  anywhere             X tcp dpt:http to:127.0.0.1:80
 
-No, them are implemented too.
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
 
-> I want to
-> block
-> all traffic first 
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
-you do it with rules described above...
+But: There is no effect. When I try to open a page hostet on X, the
+page loads from X, not from localhost...
 
+So I tried
 
-> iptables -F
-this command deletes all rules from default table.
+>> iptables -A PREROUTING -t nat -p tcp -d [IP OF X] --dport 80 -j REDIRECT
 
-> iptables -t nat -F
-this command deletes all rules from nat table.
+No effect, too
 
+Could anybody tell me, what I'm doing wrong?
+I'm using Suse Linux 10.0
 
-> iptables -t mangle -F
-this command deletes all rules from mangle table.
-
-> iptables -X
-Delete the optional user-defined chains on default
-table.
-
-> iptables -t nat -X
-> iptables -t mangle -X
-
-do the same for other tables.
- 
-> #iptables -P INPUT DROP
-> #iptables -P OUTPUT DROP
-> #iptables -P FORWARD DROP
-Uncomment these! otherwise firewall isn't useful.
-
-
-> iptables -A INPUT -s 127.0.0.1/255.0.0.0 -j ACCEPT
-> iptables -A OUTPUT -d 127.0.0.1/255.0.0.0 -j ACCEPT
-Accept everything from/to loopback interface.
-This enable connection (every packet) from the box to
-the box using tcp.
- 
-> iptables -A INPUT -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
-Accept packets that come in from already established
-connection
- 
-> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-Do you need masquerading? Are you configuring personal
-firewall or a network gateway for other computers?
-If yes you need to enable ip forwarding too! And you
-need rules that specify whose connections forward...
-Otherwise delete this rule.
-
-> #iptables -t nat -A POSTROUTING -o eth1 -j SNAT
-> --to-source ip_adresa
-What do you want to do with this???
-
-> iptables -A OUTPUT -p tcp --dport 22 -j ACCEPT
-Well, you can connect to ssh server... then?
-you need other rules to specify other connections.
-for example:
-
-iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
-
-for web connections...
-
-What do you want to do exactly?
-Have you read iptables man page?
-
-Bye
-
-Valerio
+Regards,
+Holger
 
