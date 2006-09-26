@@ -1,12 +1,12 @@
-From: bjorn@ruberg.no (=?iso-8859-1?q?Bj=F8rn_Ruberg?=)
-Subject: Re: Question related to DROP target?
-Date: Mon, 25 Sep 2006 23:04:02 +0200
-Message-ID: <ygf3bafvet9.fsf@donald.hjemme.ruberg.no>
-References: <20060925193156.58922.qmail@web56215.mail.re3.yahoo.com>
+From: Lindsay Haisley <fmouse-netfilter@fmp.com>
+Subject: iptables: Unknown error 4294967295
+Date: Mon, 25 Sep 2006 19:03:01 -0500
+Message-ID: <20060926000301.GC10112@fmp.com>
+Reply-To: Lindsay Haisley <fmouse-m14acd@fmp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <20060925193156.58922.qmail@web56215.mail.re3.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,68 +17,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Elvir Kuric <omasnjak@yahoo.com> writes:
+When I execute the following:
 
-[...]
+iptables -t nat -I PREROUTING -s 10.8.0.1 -i tap0 -j SNAT --to-source 216.110.12.105
 
-> that comes after are not implemented. I want to block
-> all traffic first and theh allow specified trafic.
+... I'm getting the error: 
 
-Then you actually need to specify it properly.
+iptables: Unknown error 4294967295
 
-> Please I need your opinions, I read many sources and I
-> understand what above rules means, but I can not
-> understand why rules after does not working.
+(4294967295 = an unsigned representation of a signed long int of -1)
 
-[...]
+Running this under strace shows the following:
 
-> iptables -F
-> iptables -t nat -F
-> iptables -t mangle -F
->=20
-> iptables -X
-> iptables -t nat -X
-> iptables -t mangle -X
->=20
-> #iptables -P INPUT DROP
-> #iptables -P OUTPUT DROP
-> #iptables -P FORWARD DROP
 
-Here, you accept traffic to and from localhost. You should probably
-specify the interface.
+mmap2(NULL, 7648, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 
+0xb7fbb000
+mmap2(0xb7fbc000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0xb7fbc000
+close(3)                                = 0
+socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
+getsockopt(3, SOL_IP, 0x40 /* IP_??? */, "nat\0\1\0\0\0\335g\21\300\0\0\0\0\224\313F\300\1\0\0\0"..., [84]) = 0
+getsockopt(3, SOL_IP, 0x41 /* IP_??? */, "nat\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., [656]) = 0
+setsockopt(3, SOL_IP, 0x40 /* IP_??? */, "nat\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 876) = -1 EINVAL (Invalid argument)
+write(2, "iptables: Unknown error 42949672"..., 35iptables: Unknown error 4294967295
+) = 35
+exit_group(1)                           = ?
+Process 10231 detached
 
-> iptables -A INPUT -s 127.0.0.1/255.0.0.0 -j ACCEPT
-> iptables -A OUTPUT -d 127.0.0.1/255.0.0.0 -j ACCEPT
+Apprently the error is originating in a malformed socket option call.  What's 
+happening here, and how can I fix it?   I'm running kernel 2.6.17-gentoo-r4, 
+iptables v1.3.5.
 
-This one allows both new and established traffic. However, if I read
-the documentation right, you allow -only- the initiating traffic
-(e.g. SYN packets, if you are familiar with the TCP three-way
-handshake) to your server; only the start of any
-connection. E.g. completing a login will then not work.
+I have about every possible kernel netfilter capability compiled as a module, 
+or built into the kernel.
 
-> iptables -A INPUT -m state --state
-> NEW,ESTABLISHED,RELATED -j ACCEPT
-
-[...]
-
-> iptables -A OUTPUT -p tcp --dport 22 -j ACCEPT
-
-Finally, you accept all _outbound_ traffic to port 22 (SSH) on other
-servers. The return traffic to your firewall will be allowed due to
-your ESTABLISHED rule above.
-
-Summarily, you allow yourself to use SSH from your firewall, and
-that's about it.
-
-You should check out the information and scripts at
-http://www.linuxguruz.com/iptables/
-
-Good luck :-)
-
---=20
-Bj=F8rn
-
+-- 
+Lindsay Haisley       | "Fighting against human |     PGP public key
+FMP Computer Services |    creativity is like   |      available at
+512-259-1190          |    trying to eradicate  | <http://pubkeys.fmp.com>
+http://www.fmp.com    |        dandelions"      |
+                      |      (Pamela Jones)     |
 
