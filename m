@@ -1,9 +1,11 @@
-From: Martin Feinstein <feinstei@email.unc.edu>
-Subject: IPTABLES INVALID state
-Date: Tue, 26 Sep 2006 17:10:21 -0400 (EDT)
-Message-ID: <Pine.A41.4.63+UNC.0609261708310.57350@login2.isis.unc.edu>
+From: "Stuart Clouston" <uncystu@hotmail.com>
+Subject: RE: Kernel 2.6.18 and quota match
+Date: Wed, 27 Sep 2006 10:38:40 +1000
+Message-ID: <BAY108-F8318177454C51278A866ABC1A0@phx.gbl>
+References: <BAY103-F260770D20AB6DE0A57B3BB2240@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY103-F260770D20AB6DE0A57B3BB2240@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,51 +16,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: pupilla@hotmail.com
+Cc: netfilter@lists.netfilter.org
 
+Hi Marco,
 
-  Hi,
-  We're running an EZproxy server  under RHEL4. We've recently had problems
-  downloading a PDF file from one of our vendor sites. The symptom is that the
-  download eventually times out part way through and the PDF reader claims that
-  the file format is bad.
+Thanks for your help.  It looks as though it is all working properly now. 
+Looks like my original problem was that I was using the standard iptables 
+download from the http site when I should have been using the latest 
+snapshot.  Also the fact that I wasn't sure whether patch-o-matic was 
+required or not didn't help.
 
-  After a repeated examination of our proxy server, we decided to turn off
-  IPTABLES as a test and the transfer worked.
+Thank you mostly for clearing up my understanding of this issue. ;-)
 
-  Since that time, I've used SNORT to examine the incoming packets for both the
-  successful (IPTABLES off) and unsuccessful attempts (IPTABLES on).
-  In the unsuccessful case, after receiving about 70% of the file, an
-  abnormally long time elapses and we receive the same packet several times and
-  finally send the sender ACK FIN.
+Thanks again,
+Stuart Clouston
 
-  In desparation, I inserted an IPTABLES command to accept INVALID packets from
-  the vendor server. The transaction completed normally.
+>From: "Marco Berizzi" <pupilla@hotmail.com>
+>To: uncystu@hotmail.com
+>CC: netfilter@lists.netfilter.org
+>Subject: RE: Kernel 2.6.18 and quota match
+>Date: Mon, 25 Sep 2006 10:50:00 +0200
+>
+>Stuart Clouston wrote:
+>
+>>With kernel 2.6.18, should I still need patch-o-matic-ng to get the quota 
+>>match?
+>
+>No, don't patch your kernel sources, nor iptables sources.
+>Try this procedure.
+>Untar linux kernel 2.6.18 source wherever you want
+>(for example under /usr/src/linux-2.6.18) and build
+>it. Then untar iptables snapshot, 'cd' to iptables
+>snapshot sources and run:
+>
+>make KERNEL_DIR=/usr/src/linux-2.6.18
+>
+>
 
-  I then turned on the logging function in IPTABLES for the INVALID records and
-  also ran SNORT against the whole transaction so that using the ID numbers in
-  the snort log and the log of the INVALID packets, I could see the entire
-  INVALID packet.
-
-  My problem is that I can't figure out why IPTABLES sees them as invalid. All
-  the records in the IPTABLES log have good source/destination ports, good flag
-  configurations (A and AP), good window sizes etc. When I look at the data
-  packet in the SNORT log, there doesn't seem to be anything unusual.
-
-  In his HOWTO, Rusty defines an invalid packet as one that could not be
-  identified for reasons that include running out of memory. Is that a
-  possibility here? Are there other possibilities?
-
-  The IPTABLES directive I'm using doesn't work for me as a long term solution.
-  I'm accepting INVALID records from a specific IP source that could change at
-  any time. Is it possible that the IPTABLES rule may be a little too strict?
-
-  Many thanks...martin feinstein
-               Library Systems
-               University of North Carolina Chapel Hill
-
-
+_________________________________________________________________
+Windows Live Spaces: share up to 500 photos per month, free 
+http://spaces.live.com/
 
 
