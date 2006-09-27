@@ -1,7 +1,7 @@
 From: Lucas Diaz <lucasdiaz@eternet.cc>
-Subject: NAT with CONNMARK
-Date: Wed, 27 Sep 2006 17:37:41 -0300
-Message-ID: <451AE115.4050009@eternet.cc>
+Subject: port forwarding AND local application consumption...
+Date: Wed, 27 Sep 2006 17:55:35 -0300
+Message-ID: <451AE547.8090409@eternet.cc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,21 +18,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I'm using CONNMARK with layer7 for doing traffic shaping, and it works 
-great.
-My problem is that i want to SNAT packets marked with CONNMARK (actually 
-i'm doing "-m mark --mark X -j CONNMARK --save-mark"), and no packets go 
-through the rule "iptables -t nat -A POSTROUTING -m connmark --mark X -j 
-SNAT --to x.x.x.x".
-I also tried using "-m mark --mark X -j SNAT --to x.x.x.x".
-All the marking is done on mangle table PREROUTING chain.
+I use kernel 2.4.x.
+I need to do port forwarding to a remote host AND to
+pass these packets to a local application.
 
-What's the difference between MARK and CONNMARK?
+I used the DNAT feature in iptables and it does the
+port forwarding. But the issue is that these forwarded
+packets are unreachable to local application.
 
-I've also got another scenario with -j MARK on mangle table POSTROUTING 
-chain, and SNAT and it works fine.
+Any tips about proper iptables' rules to accomplish both?
 
-I've searching in the web, and it seems to be all fine, but it doesn't work.
-
-Thanx a lot.
+Appreciate your help.
+-D
 
