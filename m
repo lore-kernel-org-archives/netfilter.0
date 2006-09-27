@@ -1,11 +1,11 @@
-From: "Ryan Belcher" <Ryanb@sealevel.com>
-Subject: iptables REJECT NAT Internal -> External Portrange
-Date: Wed, 27 Sep 2006 12:11:05 -0400
-Message-ID: <4F7EDC4D48D076428187517D1D77B017239AA5@mercury.int.sealevel.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: iptables REJECT NAT Internal -> External Portrange
+Date: Wed, 27 Sep 2006 18:30:38 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0609271830190.17586@yvahk01.tjqt.qr>
+References: <4F7EDC4D48D076428187517D1D77B017239AA5@mercury.int.sealevel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <4F7EDC4D48D076428187517D1D77B017239AA5@mercury.int.sealevel.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,31 +16,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-
-Hi All,
-
-I'm trying to set up a rule that will send an icmp-host-unreachable (or =
-similar) back to the local machine (inside the NAT) if they try to =
-connect to an external host on a specified port range.
-
-I know I'm missing something obvious, but I can't seem to figure out =
-what I'm missing.
-
-iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 10000:11000 -j =
-REJECT --reject-with icmp-host-unreachable
-
-The above command returns with "Invalid Argument".
-
-If I simply replace "-j REJECT --reject-with icmp-host-unreachabel" with =
-"-j DROP" iptables accepts it.
-
-What am I missing?
-
-TIA!
-
-Ryan
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ryan Belcher <Ryanb@sealevel.com>
+Cc: netfilter@lists.netfilter.org
 
 
+>iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 10000:11000 -j REJECT --reject-with icmp-host-unreachable
+>
+>The above command returns with "Invalid Argument".
+
+REJECT is to be used in -t filter.
+
+
+Jan Engelhardt
+-- 
 
