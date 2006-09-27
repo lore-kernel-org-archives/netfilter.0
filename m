@@ -1,12 +1,12 @@
-From: Shane Hickey <shane@howsyournetwork.com>
-Subject: Re: ftp passive ports and their state
-Date: Wed, 27 Sep 2006 16:48:37 -0600
-Message-ID: <20060927164837.3885411c@daneel.volumen.net>
-References: <451AF753.4020703@gabrix.ath.cx>
+From: Clemens <clemens.schaefer@gmx.de>
+Subject: Marks set in PREROUTING got lost
+Date: Thu, 28 Sep 2006 01:50:59 +0200
+Message-ID: <451B0E63.3010806@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig529AC56D6C396070211DEF59"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <451AF753.4020703@gabrix.ath.cx>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-gabrix <gabrix@gabrix.ath.cx> [2006-09-28 00:12]:
-> I have a debian sarge kernel 2.6 stable and proftpd as ftpd ... .My
-> ftpd is open to internet users and i accept passive ftping.I have
-> inserted a PassivePorts 60000 65534 directive in proftpd.conf for
-> passive connections which it's still a hole of 5534 ports in my
-> firewall.Could i accept connections to this ports  in a state
-> ESTABLISHED,RELATED in my iptables script ?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig529AC56D6C396070211DEF59
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-If you haven't already, you might want to check out the ip_conntrack_ftp and ip_nat_ftp modules.  I believe they do some sort of magic with passive FTP.
+Hi everyone,
 
-Shane
+after experimenting with setting marks (--set-mark) in the
+PREROUTING chain in the mangle table, I found out, that those marks
+were not accessible/matchable in PREROUTING nat table. I was able to
+see the marks in chain FORWARD mangle table though :-(
 
--- 
-Shane Hickey <shane@howsyournetwork.com>: Network/System Consultant
-GPG KeyID: 777CBF3F
-Key fingerprint: 254F B2AC 9939 C715 278C  DA95 4109 9F69 777C BF3F
+Is this behavior supposed to be like that?
+
+Thank you for your help!
+
+Greets, Clemens
+
+
+--------------enig529AC56D6C396070211DEF59
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFFGw5qnDei4azjmoERAt2gAJ92te59DzE2nPzTHoOdIwwXebFbugCeOaUF
+f+z4KBSV5P7enRQRvhsEk9A=
+=UzHF
+-----END PGP SIGNATURE-----
+
+--------------enig529AC56D6C396070211DEF59--
 
