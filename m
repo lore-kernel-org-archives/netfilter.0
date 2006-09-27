@@ -1,7 +1,7 @@
-From: Lucas Diaz <lucasdiaz@eternet.cc>
-Subject: port forwarding AND local application consumption...
-Date: Wed, 27 Sep 2006 17:55:35 -0300
-Message-ID: <451AE547.8090409@eternet.cc>
+From: gabrix <gabrix@gabrix.ath.cx>
+Subject: ftp passive ports and their state
+Date: Thu, 28 Sep 2006 00:12:35 +0200
+Message-ID: <451AF753.4020703@gabrix.ath.cx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,16 +18,12 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I use kernel 2.4.x.
-I need to do port forwarding to a remote host AND to
-pass these packets to a local application.
+I have a debian sarge kernel 2.6 stable and proftpd as ftpd ... .My ftpd 
+is open to internet users and i accept passive ftping.I have inserted a 
+PassivePorts 60000 65534 directive in proftpd.conf for passive 
+connections which it's still a hole of 5534 ports in my firewall.Could i 
+accept connections to this ports  in a state ESTABLISHED,RELATED in my 
+iptables script ?
 
-I used the DNAT feature in iptables and it does the
-port forwarding. But the issue is that these forwarded
-packets are unreachable to local application.
-
-Any tips about proper iptables' rules to accomplish both?
-
-Appreciate your help.
--D
+Thanks !
 
