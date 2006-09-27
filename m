@@ -1,10 +1,11 @@
-From: Alan Garrison <alang@cronosys.com>
-Subject: Using the "recent" module to stop ssh/ftp attacks
-Date: Wed, 27 Sep 2006 10:28:53 -0400
-Message-ID: <451A8AA5.7010301@cronosys.com>
+From: "Ryan Belcher" <Ryanb@sealevel.com>
+Subject: iptables REJECT NAT Internal -> External Portrange
+Date: Wed, 27 Sep 2006 12:11:05 -0400
+Message-ID: <4F7EDC4D48D076428187517D1D77B017239AA5@mercury.int.sealevel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,26 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I've used the "recent" trick to keep out bulk login attempt, 
-particularly for some publically accessable FTP sites my company runs:
+Hi All,
 
--A INPUT -p tcp --dport 21 -m state --state NEW -m recent --set
--A INPUT -p tcp --dport 21 -m state --state NEW -m recent --update 
---seconds 600 --hitcount 10 -j DROP
--A INPUT -p tcp -m tcp --dport 21 -j ACCEPT
+I'm trying to set up a rule that will send an icmp-host-unreachable (or =
+similar) back to the local machine (inside the NAT) if they try to =
+connect to an external host on a specified port range.
 
-It works fine on basic server setups, however I've seen this not work 
-properly on machines that have ethernet aliases ("eth0", "eth0:1", etc). 
-   Basically it blocks either too soon or just blocks the port 
-completely even on the first attempt.  Does the exact network alias need 
-to be specified in the rules for these cases, or is there some other 
-limitation I may not be aware of?
+I know I'm missing something obvious, but I can't seem to figure out =
+what I'm missing.
+
+iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 10000:11000 -j =
+REJECT --reject-with icmp-host-unreachable
+
+The above command returns with "Invalid Argument".
+
+If I simply replace "-j REJECT --reject-with icmp-host-unreachabel" with =
+"-j DROP" iptables accepts it.
+
+What am I missing?
+
+TIA!
+
+Ryan
 
 
--- 
-Alan Garrison <agarrison@cronosys.com>
-(216) 221-4600 x 308
 
