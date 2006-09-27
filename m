@@ -1,13 +1,10 @@
-From: "Ryan Belcher" <Ryanb@sealevel.com>
-Subject: RE: iptables REJECT NAT Internal -> External Portrange
-Date: Wed, 27 Sep 2006 13:31:54 -0400
-Message-ID: <4F7EDC4D48D076428187517D1D77B017239AA8@mercury.int.sealevel.com>
-References: <451AB3D2.9050507@gmail.com>
+From: Lucas Diaz <lucasdiaz@eternet.cc>
+Subject: NAT with CONNMARK
+Date: Wed, 27 Sep 2006 17:37:41 -0300
+Message-ID: <451AE115.4050009@eternet.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <451AB3D2.9050507@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I did compile it on my own, and the REJECT target is there (I tested it =
-under different circumstances).
+I'm using CONNMARK with layer7 for doing traffic shaping, and it works 
+great.
+My problem is that i want to SNAT packets marked with CONNMARK (actually 
+i'm doing "-m mark --mark X -j CONNMARK --save-mark"), and no packets go 
+through the rule "iptables -t nat -A POSTROUTING -m connmark --mark X -j 
+SNAT --to x.x.x.x".
+I also tried using "-m mark --mark X -j SNAT --to x.x.x.x".
+All the marking is done on mangle table PREROUTING chain.
 
-Ryan
+What's the difference between MARK and CONNMARK?
 
->Did this come with a distribution or have you compiled it on your own?  =
-I think I had a similar
->problem with the iptables that came with Fedora Core because it didn't =
-come with the REJECT module.
->
->--=20
->Nathaniel Hall, GSEC GCFW GCIA GCIH
+I've also got another scenario with -j MARK on mangle table POSTROUTING 
+chain, and SNAT and it works fine.
+
+I've searching in the web, and it seems to be all fine, but it doesn't work.
+
+Thanx a lot.
 
