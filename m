@@ -1,17 +1,11 @@
-From: Clemens <clemens.schaefer@gmx.de>
-Subject: Re: Marks set in PREROUTING got lost
-Date: Thu, 28 Sep 2006 18:06:48 +0200
-Message-ID: <451BF318.2010200@gmx.de>
-References: <451B0E63.3010806@gmx.de>
-	<Pine.LNX.4.61.0609281029430.21498@yvahk01.tjqt.qr>
-	<451B9794.9090209@gmx.de>
-	<Pine.LNX.4.61.0609281253020.30351@yvahk01.tjqt.qr>
+From: "Jon Wilson" <jon.wilson@3waynetworks.com>
+Subject: RE: Raw sockets send/receive through NAT
+Date: Thu, 28 Sep 2006 17:11:36 +0100
+Message-ID: <93EDDD37BB21F242B60066B66AC0D657B278C4@euw0300240.xe2hosting.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig6A4A1D3D4373C80BAFED6454"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0609281253020.30351@yvahk01.tjqt.qr>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,67 +16,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig6A4A1D3D4373C80BAFED6454
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+> > I have a requirement to NAT packets sent using raw sockets (
+> > socket(AF_INET, SOCK_RAW, IPPROTO_TCP/ICMP) ).  The machine I'm
+using
+> > has a single interface with a 192.168.x.x address and I want to send
+a
+> > packet from this machine with a 10.x.x.x source address (hence raw
+> > sockets) and have the 10.x.x.x address NAT'd to the 192.168.x.x
+address.
+> > I'm using POSTROUTING MASQUERADE'ing on eth0.  I've got a couple of
+> > questions:
+> why do you do that ? Just for fun or something else ?
 
-> -j MARK =3D> per-packet
-> -j CONNMARK =3D> per-connection
+:-) Not for fun!  The packets are arriving from mobile devices through
+proprietary h/w and s/w and I need to send them on to the local LAN /
+internet (and forward responses back to the mobile devices...).
 
-thank you
+> >
+> > 1.  How do I receive the returned (raw) packets *after* they have
+> > traversed the NAT i.e. in the 10.x.x.x IP space?  If I use libpcap
+for
+> > example, I get the 192.168.x.x IP space packet but what I need is
+the
+> > packet post-NAT with the 10.x.x.x IP address.
+> You can just send the package , and wait for the response package ,
+> the kernel netfilter will do
+> other things for you .
+> I think postrouting and prerouting will affect your package in a
+> transparent way .
 
->=20
->> through a certain user defined chain. I guess this is a mark per packe=
-t.
->> The particular chain lookes like this:
->>
->>
->> Chain FWD_WWW-101 (2 references)
->> target     prot opt source               destination
->> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           quota:
->> 100000000 bytes
->> MARK       all  --  0.0.0.0/0            0.0.0.0/0           MARK
->> set 0x65
->> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           quota:
->> 1000000 bytes
->> MARK       all  --  0.0.0.0/0            0.0.0.0/0           MARK
->> set 0x1
->=20
-> MARK is only allowed in the mangle table.
->=20
-Yes I know that. The abstract above comes from the mangle table, the
-name of the userdefined chain (which I jump into from PREROUTING
-mangle) might be a bit irritating, I admit, but it has nothing to do
-with FORWARD.
+I actually got this working today.  Using raw packets I can receive all
+packets and filter on destination IP address, pulling out only those
+that are for the mobile devices.  It turns out that using raw sockets
+gives me the packets post-NAT so the IP addresses are back in the
+private range (10.x.x.x in my example).  Maybe this is common knowledge
+but I've struggled to find it documented.  If I use libpcap/tcpdump I
+get packets pre-NAT and this is what I was expecting raw packets would
+give me.  Fortunately I was wrong :-) so I now have a solution.
 
-> http://www.imagestream.com/~josh/PacketFlow.png
->=20
-> PREROUTING comes before FORWARD.
+Hope this is of help to someone out there!
 
-Yes I also know that. The Packets get marked correctly, I checked
-that in FORWARD filter, but in PREROUTING nat they are not, even
-though they should have been, hence I cannot dnat
+Jon
 
---
-Clemens
-
-
---------------enig6A4A1D3D4373C80BAFED6454
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFFG/MYnDei4azjmoERAvKPAJ9a3J4wJP28NGC3E4Ebgj7TE8r+lACeNyY5
-w4X7lFu/47dUP3gsYPAISJI=
-=0ZYw
------END PGP SIGNATURE-----
-
---------------enig6A4A1D3D4373C80BAFED6454--
 
