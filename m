@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: how to write different ip sources on a single rule
-Date: Thu, 28 Sep 2006 13:42:34 +0200 (CEST)
-Message-ID: <51300.193.173.147.3.1159443754.squirrel@webmail.sterenborg.info>
-References: <OFA056E856.525622F6-ONC22571F7.003EC45C-C22571F7.003FED20@gunessigorta.com.tr>
+From: Lucas Diaz <lucasdiaz@eternet.cc>
+Subject: Re: Marks set in PREROUTING got lost
+Date: Thu, 28 Sep 2006 09:17:01 -0300
+Message-ID: <451BBD3D.40305@eternet.cc>
+References: <451B0E63.3010806@gmx.de>	<Pine.LNX.4.61.0609281029430.21498@yvahk01.tjqt.qr>	<451B9794.9090209@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <OFA056E856.525622F6-ONC22571F7.003EC45C-C22571F7.003FED20@gunessigort
-	a.com.tr>
+In-Reply-To: <451B9794.9090209@gmx.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +17,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@lists.netfilter.org
 
-On Thu, September 28, 2006 13:35, Burak Ozgoren wrote:
-> Hi,
+So, something marked with -j MARK can't be matched on nat table, right?
+What if after you mark the packet with -j MARK, you do "-m mark --mark X 
+-j CONNMARK --save-mark"; it should be visible from nat table or must be 
+marked with -j CONNMARK --set-mark?
+
+
+>> What marks, per-packet marks or per-connection marks?
+>> 
+>I am not sure, how to distinguish, I just mark all pakets that pass
+
+-j MARK => per-packet
+-j CONNMARK => per-connection
+
+>through a certain user defined chain. I guess this is a mark per packet.
+>The particular chain lookes like this:
 >
 >
-> I know i can write source ip within a ip range or with a network mask. =
-For
-> example: 192.168.0.5-192.168.0.15 or 192.168.0.0/24
+>Chain FWD_WWW-101 (2 references)
+>target     prot opt source               destination
+>ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           quota:
+>100000000 bytes
+>MARK       all  --  0.0.0.0/0            0.0.0.0/0           MARK
+>set 0x65
+>ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           quota:
+>1000000 bytes
+>MARK       all  --  0.0.0.0/0            0.0.0.0/0           MARK
+>set 0x1
+
+MARK is only allowed in the mangle table.
+
 >
 >
-> Can i write it for single ip. Like 192.168.0.5 and 192.168.0.9
+>The goal is to provide full network speed for all NATed computers
+>for a certain amount of bytes (first quota match), then mark their
+>packets individually (each computer has its own mangle chain
+>(FWD_WWW-$computernumber)) with its computernumber in hex, so tc can
+>slow down their connection to 56k and after the "slow quota" is used
+>up, the users packets get a different mark  (mark 1) and get a DNAT
+>to an Over Quota webpage, when the user tries to access an outside
+>webpage, other connectionattempts get droped.
+>
+>
+>The problem is now, that pakets get marked with the mark 0x1, but in
+>PREROUTING nat table, this mark never appears.
 
-You can use the second notation (192.168.0.0/24), but for the first you n=
-eed
-the iprange match.
+http://www.imagestream.com/~josh/PacketFlow.png
 
-http://www.netfilter.org/projects/patch-o-matic/pom-base.html#pom-base-ip=
-range
+PREROUTING comes before FORWARD.
 
+>
+>Thanks, Clemens
+>
+>
 
+Jan Engelhardt
+-- 
 
-Grts,
-Rob
 
 
 
