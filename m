@@ -1,12 +1,12 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: [ANNOUNCE] Release of iptables-1.3.6
-Date: Thu, 28 Sep 2006 19:51:54 +0200
-Message-ID: <451C0BBA.9070509@plouf.fr.eu.org>
-References: <20060928172109.GN13764@sunbeam.de.gnumonks.org>
+From: dave <ceek63@yahoo.com>
+Subject: Re: port forwarding AND local application consumption...
+Date: Thu, 28 Sep 2006 13:29:18 -0700 (PDT)
+Message-ID: <20060928202918.95062.qmail@web38004.mail.mud.yahoo.com>
+References: <Pine.LNX.4.61.0609281026230.21498@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060928172109.GN13764@sunbeam.de.gnumonks.org>
+In-Reply-To: <Pine.LNX.4.61.0609281026230.21498@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,17 +17,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
 
-Netfilter Core Team a =E9crit :
->=20
-> New features since 1.3.5:
->=20
-> - Support multiple matches of the same type within a single rule
+I use redhat kernel 2.4.x and looks like I need to
+rebuild the kernel if I want to use ROUTE target?
 
-Wow. What does this mean exactly ? Does it mean that one can set=20
-multiple -p, -s, -d, --dport and so on in a single rule ?
+None of the iptables' rpms for fedora/redhat distro
+contain libipt_ROUTE.so.
+
+What is best way to incorporate ROUTE target in
+my situation?
+
+-D
+
+
+--- Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
+
+> > I use kernel 2.4.x.
+> > I need to do port forwarding to a remote host AND
+> to
+> > pass these packets to a local application.
+> >
+> > I used the DNAT feature in iptables and it does
+> the
+> > port forwarding. But the issue is that these
+> forwarded
+> > packets are unreachable to local application.
+> 
+> Of course, you just changed the IP address to
+> something else than your 
+> own box. With DNAT, you explicitly 'give' up the
+> connection for the 
+> local host.
+> 
+> >
+> > Any tips about proper iptables' rules to
+> accomplish both?
+> 
+> Apart from writing your own target extensions, I
+> know of none. Might use 
+> ipt_ROUTE as a base, it contains a --tee option.
+> 
+> 
+> Jan Engelhardt
+> -- 
+> 
+> 
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
