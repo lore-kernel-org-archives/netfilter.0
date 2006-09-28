@@ -1,13 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Marks set in PREROUTING got lost
-Date: Thu, 28 Sep 2006 14:31:34 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0609281430270.26317@yvahk01.tjqt.qr>
-References: <451B0E63.3010806@gmx.de>
-	<Pine.LNX.4.61.0609281029430.21498@yvahk01.tjqt.qr>
-	<451B9794.9090209@gmx.de> <451BBD3D.40305@eternet.cc>
+From: Justin Schoeman <justin@expertron.co.za>
+Subject: Re: IPTABLES INVALID state
+Date: Thu, 28 Sep 2006 14:39:58 +0200
+Message-ID: <451BC29E.7060602@expertron.co.za>
+References: <Pine.A41.4.63+UNC.0609261708310.57350@login2.isis.unc.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <451BBD3D.40305@eternet.cc>
+In-Reply-To: <Pine.A41.4.63+UNC.0609261708310.57350@login2.isis.unc.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,78 +17,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Lucas Diaz <lucasdiaz@eternet.cc>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Martin Feinstein <feinstei@email.unc.edu>
 Cc: netfilter@lists.netfilter.org
 
->
-> So, something marked with -j MARK can't be matched on nat table, right?
+I am personally not sure why some of these packets are marked as 
+invalid.  Seems to mostly occur with a CISCO natting solution in place?
 
-You have to mark it in the PREROUTING chain of the mangle table, to be 
-able to match on it within the PREROUTING chain of the nat table.
+Use the following to relax the 'invalid' checks to work with these networks:
 
---- Orig msg ---
-> What if after you mark the packet with -j MARK, you do "-m mark --mark X -j
-> CONNMARK --save-mark"; it should be visible from nat table or must be marked
-> with -j CONNMARK --set-mark?
->
->
->> > What marks, per-packet marks or per-connection marks?
->> > 
->> I am not sure, how to distinguish, I just mark all pakets that pass
->
-> -j MARK => per-packet
-> -j CONNMARK => per-connection
->
->> through a certain user defined chain. I guess this is a mark per packet.
->> The particular chain lookes like this:
->> 
->> 
->> Chain FWD_WWW-101 (2 references)
->> target     prot opt source               destination
->> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           quota:
->> 100000000 bytes
->> MARK       all  --  0.0.0.0/0            0.0.0.0/0           MARK
->> set 0x65
->> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           quota:
->> 1000000 bytes
->> MARK       all  --  0.0.0.0/0            0.0.0.0/0           MARK
->> set 0x1
->
-> MARK is only allowed in the mangle table.
->
->> 
->> 
->> The goal is to provide full network speed for all NATed computers
->> for a certain amount of bytes (first quota match), then mark their
->> packets individually (each computer has its own mangle chain
->> (FWD_WWW-$computernumber)) with its computernumber in hex, so tc can
->> slow down their connection to 56k and after the "slow quota" is used
->> up, the users packets get a different mark  (mark 1) and get a DNAT
->> to an Over Quota webpage, when the user tries to access an outside
->> webpage, other connectionattempts get droped.
->> 
->> 
->> The problem is now, that pakets get marked with the mark 0x1, but in
->> PREROUTING nat table, this mark never appears.
->
-> http://www.imagestream.com/~josh/PacketFlow.png
->
-> PREROUTING comes before FORWARD.
->
->> 
->> Thanks, Clemens
->> 
->> 
->
-> Jan Engelhardt
-> -- 
->
->
->
->
+echo 1 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
 
-Jan Engelhardt
--- 
+-justin
+
+
+Martin Feinstein wrote:
+> 
+>  Hi,
+>  We're running an EZproxy server  under RHEL4. We've recently had problems
+>  downloading a PDF file from one of our vendor sites. The symptom is 
+> that the
+>  download eventually times out part way through and the PDF reader 
+> claims that
+>  the file format is bad.
+> 
+>  After a repeated examination of our proxy server, we decided to turn off
+>  IPTABLES as a test and the transfer worked.
+> 
+>  Since that time, I've used SNORT to examine the incoming packets for 
+> both the
+>  successful (IPTABLES off) and unsuccessful attempts (IPTABLES on).
+>  In the unsuccessful case, after receiving about 70% of the file, an
+>  abnormally long time elapses and we receive the same packet several 
+> times and
+>  finally send the sender ACK FIN.
+> 
+>  In desparation, I inserted an IPTABLES command to accept INVALID 
+> packets from
+>  the vendor server. The transaction completed normally.
+> 
+>  I then turned on the logging function in IPTABLES for the INVALID 
+> records and
+>  also ran SNORT against the whole transaction so that using the ID 
+> numbers in
+>  the snort log and the log of the INVALID packets, I could see the entire
+>  INVALID packet.
+> 
+>  My problem is that I can't figure out why IPTABLES sees them as 
+> invalid. All
+>  the records in the IPTABLES log have good source/destination ports, 
+> good flag
+>  configurations (A and AP), good window sizes etc. When I look at the data
+>  packet in the SNORT log, there doesn't seem to be anything unusual.
+> 
+>  In his HOWTO, Rusty defines an invalid packet as one that could not be
+>  identified for reasons that include running out of memory. Is that a
+>  possibility here? Are there other possibilities?
+> 
+>  The IPTABLES directive I'm using doesn't work for me as a long term 
+> solution.
+>  I'm accepting INVALID records from a specific IP source that could 
+> change at
+>  any time. Is it possible that the IPTABLES rule may be a little too 
+> strict?
+> 
+>  Many thanks...martin feinstein
+>               Library Systems
+>               University of North Carolina Chapel Hill
+> 
+> 
+> 
+> 
 
