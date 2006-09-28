@@ -1,11 +1,10 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: FW: iptables and Limewire
-Date: Wed, 27 Sep 2006 23:38:51 -0400 (EDT)
-Message-ID: <Pine.LNX.4.64.0609272337210.7358@darkstar.sysinfo.com>
-References: <200609141211.k8ECBuVu013734@darkstar.sysinfo.com>
+From: Noman Jamil <zil_pk@yahoo.com>
+Subject: ip_nat_h323/h323 module nat problem!
+Date: Wed, 27 Sep 2006 21:21:27 -0700 (PDT)
+Message-ID: <20060928042127.62690.qmail@web50402.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200609141211.k8ECBuVu013734@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,68 +15,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Sherwyn Greene <sgreene@kentz-ojs.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-On Thu, 14 Sep 2006, Sherwyn Greene wrote:
-
->
->
-> Sherwyn Greene
-> Planner / I.T. Technician
-> Project Controls Dept.
-> Kentz-OJ's E&I Services J.V.
-> +1 (868) 648-0876
->
->
-> ________________________________
->
-> From: Sietse van Zanen [mailto:sietse@wizdom.nu]
-> Sent: Thursday, September 14, 2006 8:01 AM
-> To: Sherwyn Greene
-> Subject: RE: iptables and Limewire
->
->
-> 1. Yes, but not entirely. You can block all outgoing traffic execpt traffic
-> on port 80 or 443. This would allow for HTTP and HTTPS, but also for
-> connections to limewire users, that set their client to listen on port 80 or
-> 443. That will not be many users, and they will only be reached with direct
-> connects, so doing this should get rid of 99.99% of the limewire traffic.
-> Your internal users will no longer be able to connnect to Limewire servers
-> directly. They might be able to exploit a public open proxy, that allows
-> CONNECT. Also not very likely.
+Hello,
 
 
+I have been able to compile the kernel 2.6.18 with
+h323 support and iptables version 1.3.5, however, I am
+still not able to conduct (h323) calls between the
+outside  and NAT endpoint.
 
-Would it not be easier to route the limewire servers to 127.0.0.0?
+First, after rebuild of kernel and reboot, i have 
+loaded  ip_nat_h323 and ip_nat_h343 module. When
+placing a call from the NAT endpoint  to a remote
+endpoint. The same symptoms occur as before I applied
+the patch/module. The  remote user is unable to hear
+(recieve voice) from the inside NAT endpoint.  The
+remote use can accept the call and recieve everything
+fine.
 
-You may have to keep track of what the current servers are but that would 
-elimiate making your network a virtual prison.
+Do you have any answer to this riddle. I hope it is
+simple and that I  am missing a "step" somewhere, or
+there is something wrong with the connection tracking,
+which is not replacing/writing the header when send
+information to the NATed endpoint, below is the detail
+description of  a call.
+
+My linux machine (h323-nat-machine) is configured with
+h323 support and connected with 2 networks (LAN &
+WAN), LAN ip is 10.x.x.x and WAN IP is  80.x.x.x, one
+of the endpoint is behind the nat or at 10.x.x.x.
+network and 2nd endpoint is on the public network (IP
+202.x.x.x).
+
+When a call is established from the public end point
+it send the setup msg to h323-nat-machine with media
+connection ip 202.x.x.x, now h323-nat-machine forward
+that same setup msg to internal end point without
+changing the media connection IP. With h323 NATing
+point of view media connection ip has to be replaced
+with h323-nat-machine internal/LAN IP which is not in
+this case, coz of that RTP/voice couldn't initiate
+between the endpoints.
+
+Same is the case with sip module support in kernel.
+
+I have applied following iptables rules for h323
+module:
+
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+ptables -t nat -A PREROUTING -i eth0 -p tcp --dport
+1720 -j DNAT --to-destination 10.x.x.x
+
+Prompt response will be appreciated.
+
+Regards,
+Nouman
 
 
-Thanks,
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFFG0PPst+vzJSwZikRAoo+AJ4+xSTJeiVKPgHHQ4DY7vJb7P5N1wCgmYSk
-XROM8/4qn7oeV/di5BFDNSQ=
-=b1Zt
------END PGP SIGNATURE-----
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
