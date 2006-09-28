@@ -1,13 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Marks set in PREROUTING got lost
-Date: Thu, 28 Sep 2006 12:55:24 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0609281253020.30351@yvahk01.tjqt.qr>
-References: <451B0E63.3010806@gmx.de>
-	<Pine.LNX.4.61.0609281029430.21498@yvahk01.tjqt.qr>
-	<451B9794.9090209@gmx.de>
+From: Burak Ozgoren <BOzgoren@gunessigorta.com.tr>
+Subject: how to write different ip sources on a single rule
+Date: Thu, 28 Sep 2006 14:35:08 +0300
+Message-ID: <OFA056E856.525622F6-ONC22571F7.003EC45C-C22571F7.003FED20@gunessigorta.com.tr>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_mixed 003FED1EC22571F7_="
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <451B9794.9090209@gmx.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,60 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Clemens <clemens.schaefer@gmx.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+--=_mixed 003FED1EC22571F7_=
+Content-Type: text/plain; charset="US-ASCII"
+
+Hi,
+
+I know i can write source ip within a ip range or with a network mask. For 
+example: 192.168.0.5-192.168.0.15 or 192.168.0.0/24
+
+Can i write it for single ip. Like 192.168.0.5 and 192.168.0.9
+
+Thanks for the reply.
 
 
->> What marks, per-packet marks or per-connection marks?
->> 
->I am not sure, how to distinguish, I just mark all pakets that pass
 
--j MARK => per-packet
--j CONNMARK => per-connection
+--=_mixed 003FED1EC22571F7_=
+Content-Type: application/octet-stream;
+	name="Burak =?windows-1254?Q?=D6ZG=D6REN=2Evcf?="
+Content-Disposition: attachment;
+	filename="Burak =?windows-1254?Q?=D6ZG=D6REN=2Evcf?="
+Content-Transfer-Encoding: base64
 
->through a certain user defined chain. I guess this is a mark per packet.
->The particular chain lookes like this:
->
->
->Chain FWD_WWW-101 (2 references)
->target     prot opt source               destination
->ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           quota:
->100000000 bytes
->MARK       all  --  0.0.0.0/0            0.0.0.0/0           MARK
->set 0x65
->ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           quota:
->1000000 bytes
->MARK       all  --  0.0.0.0/0            0.0.0.0/0           MARK
->set 0x1
+QkVHSU46VkNBUkQNClZFUlNJT046Mi4xDQpOOtZaR9ZSRU47QnVyYWsNCkZOOkJ1cmFrINZaR9ZS
+RU4NCk9SRzpH3E5F3iBT3UdPUlRBIEEu3i47QmlsZ2kg3f5sZW0gU2VydmlzaQ0KVElUTEU63Wxl
+dGn+aW0gVXptYW79DQpURUw7V09SSztWT0lDRTorOTAtMjEyLTM1NTY3MjINClRFTDtXT1JLO0ZB
+WDorOTAtMjEyLTM1NTY0NjQgeDc3MDANCkFEUjtXT1JLOjs7R/xuZf4gUGxhemEsIEL8efxrZGVy
+ZSBjYWQsIE5vOjExMCwgRXNlbnRlcGU73XN0YW5idWw73mn+bGk7MzQzOTQ7VPxya2l5ZQ0KTEFC
+RUw7V09SSztFTkNPRElORz1RVU9URUQtUFJJTlRBQkxFOkc9RkNuZT1GRSBQbGF6YSwgQj1GQ3k9
+RkNrZGVyZSBjYWQsIE5vOjExMCwgRXNlbnRlcGU9MEQ9MEE9RERzdGFuYnVsLCA9REVpPQ0KPUZF
+bGkgMzQzOTQ9MEQ9MEFUPUZDcmtpeWUNClgtV0FCLUdFTkRFUjoyDQpCREFZOjE5NzQwNzMwDQpF
+TUFJTDtQUkVGO0lOVEVSTkVUOmJvemdvcmVuQGd1bmVzc2lnb3J0YS5jb20udHINClJFVjoyMDA2
+MDcxOFQwNzAwMTFaDQpFTkQ6VkNBUkQNCg==
 
-MARK is only allowed in the mangle table.
-
->
->
->The goal is to provide full network speed for all NATed computers
->for a certain amount of bytes (first quota match), then mark their
->packets individually (each computer has its own mangle chain
->(FWD_WWW-$computernumber)) with its computernumber in hex, so tc can
->slow down their connection to 56k and after the "slow quota" is used
->up, the users packets get a different mark  (mark 1) and get a DNAT
->to an Over Quota webpage, when the user tries to access an outside
->webpage, other connectionattempts get droped.
->
->
->The problem is now, that pakets get marked with the mark 0x1, but in
->PREROUTING nat table, this mark never appears.
-
-http://www.imagestream.com/~josh/PacketFlow.png
-
-PREROUTING comes before FORWARD.
-
->
->Thanks, Clemens
->
->
-
-Jan Engelhardt
--- 
+--=_mixed 003FED1EC22571F7_=--
 
