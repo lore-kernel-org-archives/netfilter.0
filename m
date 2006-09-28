@@ -1,10 +1,13 @@
-From: Burak Ozgoren <BOzgoren@gunessigorta.com.tr>
-Subject: how to write different ip sources on a single rule
-Date: Thu, 28 Sep 2006 14:35:08 +0300
-Message-ID: <OFA056E856.525622F6-ONC22571F7.003EC45C-C22571F7.003FED20@gunessigorta.com.tr>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: how to write different ip sources on a single rule
+Date: Thu, 28 Sep 2006 13:42:34 +0200 (CEST)
+Message-ID: <51300.193.173.147.3.1159443754.squirrel@webmail.sterenborg.info>
+References: <OFA056E856.525622F6-ONC22571F7.003EC45C-C22571F7.003FED20@gunessigorta.com.tr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=_mixed 003FED1EC22571F7_="
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <OFA056E856.525622F6-ONC22571F7.003EC45C-C22571F7.003FED20@gunessigort
+	a.com.tr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,39 +18,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---=_mixed 003FED1EC22571F7_=
-Content-Type: text/plain; charset="US-ASCII"
+On Thu, September 28, 2006 13:35, Burak Ozgoren wrote:
+> Hi,
+>
+>
+> I know i can write source ip within a ip range or with a network mask. =
+For
+> example: 192.168.0.5-192.168.0.15 or 192.168.0.0/24
+>
+>
+> Can i write it for single ip. Like 192.168.0.5 and 192.168.0.9
 
-Hi,
+You can use the second notation (192.168.0.0/24), but for the first you n=
+eed
+the iprange match.
 
-I know i can write source ip within a ip range or with a network mask. For 
-example: 192.168.0.5-192.168.0.15 or 192.168.0.0/24
-
-Can i write it for single ip. Like 192.168.0.5 and 192.168.0.9
-
-Thanks for the reply.
+http://www.netfilter.org/projects/patch-o-matic/pom-base.html#pom-base-ip=
+range
 
 
 
---=_mixed 003FED1EC22571F7_=
-Content-Type: application/octet-stream;
-	name="Burak =?windows-1254?Q?=D6ZG=D6REN=2Evcf?="
-Content-Disposition: attachment;
-	filename="Burak =?windows-1254?Q?=D6ZG=D6REN=2Evcf?="
-Content-Transfer-Encoding: base64
+Grts,
+Rob
 
-QkVHSU46VkNBUkQNClZFUlNJT046Mi4xDQpOOtZaR9ZSRU47QnVyYWsNCkZOOkJ1cmFrINZaR9ZS
-RU4NCk9SRzpH3E5F3iBT3UdPUlRBIEEu3i47QmlsZ2kg3f5sZW0gU2VydmlzaQ0KVElUTEU63Wxl
-dGn+aW0gVXptYW79DQpURUw7V09SSztWT0lDRTorOTAtMjEyLTM1NTY3MjINClRFTDtXT1JLO0ZB
-WDorOTAtMjEyLTM1NTY0NjQgeDc3MDANCkFEUjtXT1JLOjs7R/xuZf4gUGxhemEsIEL8efxrZGVy
-ZSBjYWQsIE5vOjExMCwgRXNlbnRlcGU73XN0YW5idWw73mn+bGk7MzQzOTQ7VPxya2l5ZQ0KTEFC
-RUw7V09SSztFTkNPRElORz1RVU9URUQtUFJJTlRBQkxFOkc9RkNuZT1GRSBQbGF6YSwgQj1GQ3k9
-RkNrZGVyZSBjYWQsIE5vOjExMCwgRXNlbnRlcGU9MEQ9MEE9RERzdGFuYnVsLCA9REVpPQ0KPUZF
-bGkgMzQzOTQ9MEQ9MEFUPUZDcmtpeWUNClgtV0FCLUdFTkRFUjoyDQpCREFZOjE5NzQwNzMwDQpF
-TUFJTDtQUkVGO0lOVEVSTkVUOmJvemdvcmVuQGd1bmVzc2lnb3J0YS5jb20udHINClJFVjoyMDA2
-MDcxOFQwNzAwMTFaDQpFTkQ6VkNBUkQNCg==
 
---=_mixed 003FED1EC22571F7_=--
 
