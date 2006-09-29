@@ -1,13 +1,13 @@
-From: "Gabriel Sousa" <gabriel.sousa@gmail.com>
-Subject: Re: ipset-2.2.9 + kernel 2.6.18
-Date: Fri, 29 Sep 2006 13:14:30 -0300
-Message-ID: <2ad878d00609290914k2151da11q57313332b5008ea5@mail.gmail.com>
-References: <2ad878d00609290905g3df5372cmb2077fbe6bd366b5@mail.gmail.com>
+From: Oskar Andreasson <oan@frozentux.net>
+Subject: [announce] iptables-tutorial 1.2.1 released
+Date: Fri, 29 Sep 2006 18:20:37 +0200
+Message-ID: <1159546837.4943.64.camel@LAPTOP4.MSHOME>
+Reply-To: oan@frozentux.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-y3z1WrL9H1+c1tN+nqlo"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2ad878d00609290905g3df5372cmb2077fbe6bd366b5@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +18,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-FYI
-
-i see that i can apply on patch to remove __always_inline, but if
-anyone have some add information please tell me =D
-
-http://marc2.theaimsgroup.com/?l=linux-kernel&m=109399104031994&w=2
-
-tks,
-
-call
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
 
+--=-y3z1WrL9H1+c1tN+nqlo
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On 9/29/06, Gabriel Sousa <gabriel.sousa@gmail.com> wrote:
-> Hi all,
->
-> i had a problem when try to compile ipset-2.2.9 with kernel 2.6.18,
-> you can see the problem below:
->
-> /usr/src/linux/include/asm/bitops.h:244: error: syntax error before "int"
-> In file included from /usr/src/linux/include/asm/bitops.h:409,
->                 from ipset.c:24:
->
-> I see the header file bitops.h at 244 line and found this function:
->
-> static __always_inline int constant_test_bit(int nr, const volatile
-> unsigned long *addr)
->
-> the ipset don't accept the *__always_* if we change this to *inline*
-> it compile correctly. So my function at header file was thus:
->
-> static inline int constant_test_bit(int nr, const volatile unsigned long *addr)
->
->
-> I want to know if anyone found another solution to this problem...
->
-> Regards,
->
-> Gabriel Sousa a.k.a call
->
+Hi all,=20
+
+After a long time of being close to dead, the iptables tutorial has
+finally started moving again. Version 1.2.1 is basically a cleanup of
+all the incoming problem/error reports I have received over the last
+year. On top of this, make processes has been improved, images and page
+sizes and dsssl's has been adapted for better print quality and some
+rewrites of the introductions and some sections inside the tutorial.
+Additional is a "commercial products" chapter/section where I hope to
+gather up some material on commercial products based on
+iptables/netfilter in the future.
+
+In the upcoming 3 weeks I will be hard at work with the next version,
+hopefully getting the whole work up to iptables 1.3.6 version, adding
+some information on VPN tunnels and netfilter and some other larger
+updates on my list.=20
+
+Also, next version will be available in book form. The first copy has
+been ordered based on this version to see that the layout is ok and to
+see the quality). Pricing when ordered should be around 32-36 USD
+depending on some final variables.=20
+
+Comments are more than welcome as always.=20
+
+All versions are as usual available at:
+http://iptables-tutorial.frozentux.net
+
+Thank you.
+
+//Oskar Andreasson
+
+--=-y3z1WrL9H1+c1tN+nqlo
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQBFHUfUGadwPDPpB60RAvJcAJ9xgkOe2U+RWC5auo7GLy/Z2RJaGQCgudmJ
+BWeoQtf651GVMzdrvy6nlw4=
+=c7gP
+-----END PGP SIGNATURE-----
+
+--=-y3z1WrL9H1+c1tN+nqlo--
 
