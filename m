@@ -1,13 +1,13 @@
 From: Bo Yang <struggle@mail.nankai.edu.cn>
-Subject: Re: Marks set in PREROUTING got lost
-Date: Fri, 29 Sep 2006 12:44:24 +0800
-Message-ID: <359505300.29036@mail.nankai.edu.cn>
-References: <359401435.12133@mail.nankai.edu.cn>
+Subject: Re: Traffic Accounting on Small System and User Limits.
+Date: Fri, 29 Sep 2006 12:55:44 +0800
+Message-ID: <359505980.29170@mail.nankai.edu.cn>
+References: <359501767.17840@mail.nankai.edu.cn>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Message-ID: <451CA4A8.5080402@mail.nankai.edu.cn>
-In-Reply-To: <359401435.12133@mail.nankai.edu.cn>
+Message-ID: <451CA750.7050209@mail.nankai.edu.cn>
+In-Reply-To: <359501767.17840@mail.nankai.edu.cn>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,40 +24,47 @@ Cc: netfilter@lists.netfilter.org
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
  
-Clemens :
-> Hi everyone,
+Don Gould :
+> This is a requirement for a small system I'm building for a local
+> motel to be able to give internet access away free to their
+> customers.
 >
-> after experimenting with setting marks (--set-mark) in the
-> PREROUTING chain in the mangle table, I found out, that those marks
->  were not accessible/matchable in PREROUTING nat table. I was able
-> to see the marks in chain FORWARD mangle table though :-(
-I think this has something to do with the kernel netfilter framework
-internal .
-In the netfilter , there are five points in which user defined
-funtions to be
-called by the kernel , they are PREROUTING , FORWORD , POSTROUTING ,
-INPUT , OUTPUT . So , you mark a package in the prerouting point , and
-then
-you must can see it in the forword point , because the package go from
-the prerouting
-to the forward . But if you mark a package in the prerouting point but
-also want to
-see it in the same point , there is must some trick here .
-If the mangle table's  funtion called before the nat table , I think
-you can see the mark ,
-if it isn't , you can't .
+> I have looked in to a bunch of different stuff but don't know the
+> best way to go.  I know this might not even be the right list to
+> ask on, so please be kind. :)
+>
+> OPEN SOURCE GPL PLEASE - I have already done some work on some
+> systems to get me what I want...  all the work I'm doing is on open
+>  source stuff and is/will be made available back to the community,
+> so, if you have a need for this work as well but can't help, then
+> please feel free to drop me a line and I'll keep you informed.
+>
+> 1. I want to keep a record of the amount of data each user uses
+> over a given amount of time.  I know the users IP number and their
+> MAC address.  I modified DNSMasq [1] to tell me this each time the
+> user issues a DHCP request.
+If you just want to get how many bytes a user used in a given range of
+time , iptalbes can do it very nicely !
+iptables -t filter -A forword  -s {your user ip}
+>
+> 2.  It is proposed that each MAC will be given 50mb of data to use.
+>  After this the user/MAC will have to be authorised to have more.
+You can use iptables quota module to accomplish this .
+>
+> The servers I'm using will run Debian Saige and are only small - p2
+>  or 3 with ~30 to 64mb ram and 2 - 3gb hard disk.  Each server only
+>  has to look after < 50 clients and in most cases wouldn't get more
+>  than 10 using it at a time.
+Oh , bad  hardware  ~
+ 
 
-But you can just complete your task without go into the troubles here .
-If you want to distinguish packages , you can just do that in the nat
-prerouting chain ,
-why do you mark it in the mangle table and find it in the nat table ?
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.5 (MingW32)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
  
-iD8DBQFFHKSn7tZp58UCwyMRAqXOAJ9j8HjpvPYFKsODrT8PDkyWzm/jUACeLYBX
-/rcGTiWbFi3gekD/EsL3Er4=
-=ZIlb
+iD8DBQFFHKdP7tZp58UCwyMRAtsFAKC7PQ2zlFtdbwtTAtuPOcRe345auwCaA8aj
+rKiCK4X1fDgjZT6euB0b7nQ=
+=g8nB
 -----END PGP SIGNATURE-----
 
 
