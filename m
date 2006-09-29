@@ -1,12 +1,11 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Multiport Module
-Date: Fri, 29 Sep 2006 15:39:33 +0200
-Message-ID: <451D2215.2000006@trash.net>
-References: <c9961d450609280730l2176c0b5pdbf1c0c3efdf52f5@mail.gmail.com>
+From: "Ralph Blach" <ralph.blach@gmail.com>
+Subject: can iptables block ARPS
+Date: Fri, 29 Sep 2006 10:21:15 -0400
+Message-ID: <b06339d40609290721o57703505m4de20360ac6aca30@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <c9961d450609280730l2176c0b5pdbf1c0c3efdf52f5@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +16,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Rajesh Mahajan <rajeshmahajan09@gmail.com>
-Cc: netfilter <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Rajesh Mahajan wrote:
-> How can i use both source and destination ports in multiport module of
-> iptable 1.5
-> 
-> I m geting error when i apply a explample rule
-> 
-> iptables -D post-ids  -d 192.168.10.1 -p tcp -m multiport --sport
-> 10002:10005 -m multiport--dport 50:80 -j QUEUE;
-> *** glibc detected *** double free or corruption (!prev): 0x08056148 ***
-> Aborted
+Can Ip Tables Block arp request from certain Mac address or IP address?
 
-This is fixed in iptables 1.3.6.
+If so, what is the syntax.
+
+thanks
+
+Chip
 
