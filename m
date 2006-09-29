@@ -1,12 +1,10 @@
-From: dave <ceek63@yahoo.com>
-Subject: Re: port forwarding AND local application consumption...
-Date: Thu, 28 Sep 2006 13:33:59 -0700 (PDT)
-Message-ID: <20060928203359.55696.qmail@web38003.mail.mud.yahoo.com>
-References: <20060928202918.95062.qmail@web38004.mail.mud.yahoo.com>
+From: Don Gould <don@bowenvale.co.nz>
+Subject: Traffic Accounting on Small System and User Limits.
+Date: Fri, 29 Sep 2006 15:42:43 +1200
+Message-ID: <451C9633.1020805@bowenvale.co.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20060928202918.95062.qmail@web38004.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,83 +15,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
+
+This is a requirement for a small system I'm building for a local motel 
+to be able to give internet access away free to their customers.
+
+I have looked in to a bunch of different stuff but don't know the best 
+way to go.  I know this might not even be the right list to ask on, so 
+please be kind. :)
+
+OPEN SOURCE GPL PLEASE - I have already done some work on some systems 
+to get me what I want...  all the work I'm doing is on open source stuff 
+and is/will be made available back to the community, so, if you have a 
+need for this work as well but can't help, then please feel free to drop 
+me a line and I'll keep you informed.
+
+1. I want to keep a record of the amount of data each user uses over a 
+given amount of time.  I know the users IP number and their MAC address. 
+  I modified DNSMasq [1] to tell me this each time the user issues a 
+DHCP request.
+
+2.  It is proposed that each MAC will be given 50mb of data to use. 
+After this the user/MAC will have to be authorised to have more.
+
+The servers I'm using will run Debian Saige and are only small - p2 or 3 
+with ~30 to 64mb ram and 2 - 3gb hard disk.  Each server only has to 
+look after < 50 clients and in most cases wouldn't get more than 10 
+using it at a time.
+
+My problem is that I don't know how I should count the data used in a 
+light weight way.
+
+I've read that packet counting programs can be CPU intensive.
+
+vnstat looked good but doesn't count by IP or MAC (from what I can see).
 
 
-Here is the related Bugzilla who direct the needed
-ones to netfilter!
-Bugzilla Bug 145642: iptables ROUTE target does not
-work
+I read in some of the netfilter documentation (which is fantastic btw) 
+that iptables can place limits on accounts, but didn't fully understand it.
 
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=145642#c3
+Can anyone make any recommendations?
 
+TIA
 
--D
+Cheers Don
 
+[1] The code is rough and still have debug statements in it, see: 
+http://www.tcn.bowenvale.co.nz/content/view/44/35/
 
---- dave <ceek63@yahoo.com> wrote:
+I'm no C programmer so please don't flame me :)  Be kind :)
 
-> 
-> I use redhat kernel 2.4.x and looks like I need to
-> rebuild the kernel if I want to use ROUTE target?
-> 
-> None of the iptables' rpms for fedora/redhat distro
-> contain libipt_ROUTE.so.
-> 
-> What is best way to incorporate ROUTE target in
-> my situation?
-> 
-> -D
-> 
-> 
-> --- Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
-> 
-> > > I use kernel 2.4.x.
-> > > I need to do port forwarding to a remote host
-> AND
-> > to
-> > > pass these packets to a local application.
-> > >
-> > > I used the DNAT feature in iptables and it does
-> > the
-> > > port forwarding. But the issue is that these
-> > forwarded
-> > > packets are unreachable to local application.
-> > 
-> > Of course, you just changed the IP address to
-> > something else than your 
-> > own box. With DNAT, you explicitly 'give' up the
-> > connection for the 
-> > local host.
-> > 
-> > >
-> > > Any tips about proper iptables' rules to
-> > accomplish both?
-> > 
-> > Apart from writing your own target extensions, I
-> > know of none. Might use 
-> > ipt_ROUTE as a base, it contains a --tee option.
-> > 
-> > 
-> > Jan Engelhardt
-> > -- 
-> > 
-> > 
-> 
-> 
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam
-> protection around 
-> http://mail.yahoo.com 
-> 
-> 
+-- 
+Don Gould
+www.thinkdesignprint.co.nz - www.tcn.bowenvale.co.nz - 
+www.bowenvale.co.nz - www.hearingbooks.co.nz - SkypeMe: 
+ThinkDesignPrint - Good ideas:  www.solarking.co.nz
 
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
