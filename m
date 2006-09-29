@@ -1,13 +1,12 @@
-From: Don Gould <don@bowenvale.co.nz>
-Subject: Re: Traffic Accounting on Small System and User Limits.
-Date: Fri, 29 Sep 2006 18:58:42 +1200
-Message-ID: <451CC422.7050507@bowenvale.co.nz>
-References: <359501767.17840@mail.nankai.edu.cn>
-	<359505980.29170@mail.nankai.edu.cn>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] Release of iptables-1.3.6
+Date: Fri, 29 Sep 2006 08:59:16 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0609290849580.10141@blackhole.kfki.hu>
+References: <20060928172109.GN13764@sunbeam.de.gnumonks.org>
+	<451C0BBA.9070509@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <359505980.29170@mail.nankai.edu.cn>
+In-Reply-To: <451C0BBA.9070509@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>
 
+On Thu, 28 Sep 2006, Pascal Hambourg wrote:
 
+> > New features since 1.3.5:
+> >
+> > - Support multiple matches of the same type within a single rule
+>
+> Wow. What does this mean exactly ? Does it mean that one can set
+> multiple -p, -s, -d, --dport and so on in a single rule ?
 
-Bo Yang wrote:
+No - and as the conditons in a rule are ANDed, it wouldn't make much
+sense. But from now on you can set multiple match extensions of the same
+type in a single rule, e.g:
 
-> If you just want to get how many bytes a user used in a given range of
-> time , iptalbes can do it very nicely !
-> iptables -t filter -A forword  -s {your user ip}
+.. -m condition --condition foo -m condition --condition bar ...
+.. -m set --set servers dst -m set --set services dst ...
 
-Ok, I fried this bit...
-
-I assumed you'd done a type o and 'forword' should be forwArd.
-
-[root@bowenvale ~]# iptables -t filter -A forward  -s 192.168.2.148
-iptables: No chain/target/match by that name
-
-I'm sure I'm not understanding something, sorry if I'm being dumb.
-
-Cheers Don
--- 
-Don Gould
-www.thinkdesignprint.co.nz - www.tcn.bowenvale.co.nz - 
-www.bowenvale.co.nz - www.hearingbooks.co.nz - SkypeMe: 
-ThinkDesignPrint - Good ideas:  www.solarking.co.nz
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
