@@ -1,8 +1,10 @@
-From: Vidya Ravipati <ravipati@cs.sunysb.edu>
-Subject: how to unblock connections coming from a NAT boxB
-Date: Fri, 29 Sep 2006 14:58:38 -0400 (EDT)
-Message-ID: <Pine.GSO.4.53.0609291453110.14793@compserv4>
+From: "Pablo Sanchez" <pablo@blueoakdb.com>
+Subject: P-O-M:  connrate for 2.6.14-4
+Date: Fri, 29 Sep 2006 22:38:44 -0400
+Message-ID: <001601c6e439$8ca30300$c700000a@chaussy>
+Reply-To: pablo@blueoakdb.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -14,22 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a question regarding how to unblock the incoming connections
-from the source NAT box.
-If I have source machine behind the NAT , how should I configure my
-iptable rules to unblock the connections coming from that particular host
-only.
-1) How should I specify my rule to unblock only particular host behing the
-source NAt only
-2)How to unblock the particular host behind the particular NAT box (can
-allow the connections from other host behind the same NAt also)
+Hi,
 
-Thanks
+I'd like to get connrate installed on my 2.6.14-4 kernel.  When I run P-O-M
+extra, it doesn't show up as an option.  I've checked out revision 6677 of
+the P-O-M trunk:
 
-Vidya Sagar Ravipati
+   # svn co https://svn.netfilter.org/netfilter/trunk/patch-o-matic-ng
+   Checked out revision 6677.
+
+Any ideas how to patch my kernel to get connrate implemented?
+
+Cheers,	
+---
+Pablo Sanchez - Blueoak Database Engineering, Inc
+Ph:    819.459.1926          Toll free:  888.459.1926
+Cell:  819.918.9731                Pgr:  pablo_p@blueoakdb.com
+Fax:   603.720.7723 (US)
 
 
