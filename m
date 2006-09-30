@@ -1,15 +1,13 @@
-From: Bo Yang <struggle@mail.nankai.edu.cn>
-Subject: Re: Marks set in PREROUTING got lost
-Date: Sat, 30 Sep 2006 14:29:51 +0800
-Message-ID: <359598032.21356@mail.nankai.edu.cn>
-References: <451B0E63.3010806@gmx.de>	<Pine.LNX.4.61.0609281029430.21498@yvahk01.tjqt.qr>	<451B9794.9090209@gmx.de>
-	<451BBD3D.40305@eternet.cc>	<Pine.LNX.4.61.0609281430270.26317@yvahk01.tjqt.qr>	<451BF2CA.5060001@gmx.de>
-	<359510883.21717@mail.nankai.edu.cn>
+From: "=?ISO-8859-1?Q?AkiL_Muss=E1?=" <akilmussa@gmail.com>
+Subject: Help with NAT and port translation
+Date: Sat, 30 Sep 2006 09:22:00 +0200
+Message-ID: <900f379d0609300022p27182e03mc516570d50e16ca3@mail.gmail.com>
+References: <900f379d0609300020u25d1ef89k912fb031cd72897c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Message-ID: <451E0EDF.2050901@mail.nankai.edu.cn>
-In-Reply-To: <359510883.21717@mail.nankai.edu.cn>
+In-Reply-To: <900f379d0609300020u25d1ef89k912fb031cd72897c@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,33 +18,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
- 
-Jan Engelhardt:
->>> You have to mark it in the PREROUTING chain of the mangle
->>> table, to be able to match on it within the PREROUTING chain of
->>> the nat table.
->> Is this also true, if I jump from PREROUTING mangle in a user
->> defined chain and mark my packets there?
->
-> Just make sure it gets marked in a table/chain (or subchain
-> thereof) before the nat-PREROUTING chain is hit, according to
-> http://www.imagestream.com/~josh/PacketFlow-new.png
->
-Good stuff , very clear flow !
-Thank you !
+Hi all,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
- 
-iD8DBQFFHg7e7tZp58UCwyMRAqgDAJ9mVf92fMHZUL5PHhL0UtNBJn9nnACfS4rx
-UG7NZsE/bgQMsbQTYnzCMdo=
-=5FpZ
------END PGP SIGNATURE-----
+I need some help setting up iptables with NAT and port translation.
 
+I need to redirect all traffic comming to 41.220.40.183:80 to 10.0.0.1:8080
+
+The netfilter HOWTO says that its possible using the following rule,
+but it isn't working for me:
+ iptables -A PREROUTING -t nat -p tcp -i eth0 --dport 80 -j DNAT --to
+10.0.0.1:8080
+
+When I setup NAT using the same port (port 80 to 80), it works
+perfectly. The problem is when redirecting from port 80 to 8080
+
+Note:
+- 10.0.0.1 is a virtual machine created using Xen VMM
+
+
+My actual configuration is:
+# iptables -L -t nat -nv
+ Chain PREROUTING (policy ACCEPT 1659 packets, 143K bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+    0     0 DNAT       tcp  --  eth0   *       0.0.0.0/0
+0.0.0.0/0           tcp dpt:80 to:10.0.0.1:8080
+
+ Chain POSTROUTING (policy ACCEPT 28126 packets, 1747K bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+17560 1110K MASQUERADE  all  --  *      eth0    0.0.0.0/0             0.0.0=
+.0/0
+
+Chain OUTPUT (policy ACCEPT 45638 packets, 2854K bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+
+##### ##### ##### ##### #####
+
+#  iptables -L -nv
+ Chain INPUT (policy ACCEPT 3470K packets, 374M bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+
+Chain FORWARD (policy ACCEPT 3212 packets, 1440K bytes)
+  pkts bytes target     prot opt in     out     source               destin=
+ation
+     0     0 ACCEPT     all  --  *      *       10.0.0.1
+0.0.0.0/0           PHYSDEV match --physdev-in vif5.0
+     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0           PHYSDEV match --physdev-in  vif5.0 udp spt:68
+dpt:67
+    0     0 ACCEPT     all  --  *      *       10.0.0.2
+0.0.0.0/0           PHYSDEV match --physdev-in vif6.0
+    0     0 ACCEPT     udp  --  *      *        0.0.0.0/0
+0.0.0.0/0           PHYSDEV match --physdev-in vif6.0 udp spt:68
+dpt:67
+
+ Chain OUTPUT (policy ACCEPT 3465K packets, 353M bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion
+
+
+Thanks for any help...
+--=20
+AkiL Muss=E1
+Software is like SEX, it is better when it is FREE (Linus Torvalds)
 
