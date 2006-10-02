@@ -1,12 +1,15 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Stefan Friedel <stefan.friedel@iwr.uni-heidelberg.de>
 Subject: Re: DNAT problem
-Date: Mon, 02 Oct 2006 12:42:29 +0200
-Message-ID: <4520ED15.5090205@plouf.fr.eu.org>
+Date: Mon, 2 Oct 2006 14:01:37 +0200
+Message-ID: <20061002120137.GD23849@woyzeck>
 References: <BAY103-F25ED7B9242FA2718CEF385B21F0@phx.gbl>
+	<4520ED15.5090205@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LTeJQqWS0MN7I/qa"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY103-F25ED7B9242FA2718CEF385B21F0@phx.gbl>
+Content-Disposition: inline
+In-Reply-To: <4520ED15.5090205@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,29 +20,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@lists.netfilter.org
+
+
+--LTeJQqWS0MN7I/qa
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 Hello,
-
-Marco Berizzi a =E9crit :
 >=20
-> In Kernels up to 2.6.10 you can add several --to-destination options.
-> For those kernels, if you specify more than one destination address,
-> either via an address range or multiple --to-destination options, a
-> simple round-robin (one after another in cycle)  load  balancing
-> takes place between these addresses.  Later Kernels (>=3D 2.6.11-rc1)
-> don't have the ability to NAT to multiple ranges anymore.
+> OK, SNAT and DNAT do not support multiple --to any more in kernels above=
+=20
+> 2.6.10. But it is unclear to me whether they still support one IP=20
+> address *range* (with round robin) or only one single IP address.
+The range is still accepted as option for iptables 1.3.6, but it has no eff=
+ect
+with 2.6.17.3 (so I assume that it is indeed the "NAT+round robin" capabili=
+ty
+which has gone in Kernels > 2.6.10/11). It doesn't matter if I use the SAME=
+ or
+the DNAT target in PREROUTING -
+>=20
+> The SAME target won't do round robin for the same source address. It=20
+> will only do round robin for separate source addresses.
+>=20
+> What about the BALANCE target ? It's in the man page, but I had never=20
+> heard of it.
+In iptables 1.3.6 BALANCE is not available (nor is it available in the 2.6.=
+17.3
+source). Obsolete? And I fear that it would not help, because the problem is
+the missing round robin/load balancing in the Kernel.
 
-OK, SNAT and DNAT do not support multiple --to any more in kernels above=20
-2.6.10. But it is unclear to me whether they still support one IP=20
-address *range* (with round robin) or only one single IP address.
+Maybe LVS is a solution -
 
-> Maybe the SAME target extension will help you.
+Thanks and Best Regards, Stefan Friedel
+--=20
+Zentrale Dienste - Interdisziplin=E4res Zentrum f=FCr Wissenschaftliches
+Rechnen der Universit=E4t Heidelberg - IWR - INF 368, 69120 Heidelberg
+stefan.friedel@iwr.uni-heidelberg.de  Tel +49 6221 54-8240 Fax -5224
+IWR: www.iwr.uni-heidelberg.de          HELICS: www.helics.uni-hd.de
 
-The SAME target won't do round robin for the same source address. It=20
-will only do round robin for separate source addresses.
+--LTeJQqWS0MN7I/qa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-What about the BALANCE target ? It's in the man page, but I had never=20
-heard of it.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFIP+h3umRt9zSRsQRAkBrAJ9ZYjANQ2w6oMnOYRP1hpfdsFek8gCdHseI
+2y05ItU/BGcBY17Vd2Iu8/w=
+=PLIp
+-----END PGP SIGNATURE-----
+
+--LTeJQqWS0MN7I/qa--
 
