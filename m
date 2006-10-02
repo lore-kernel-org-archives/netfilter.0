@@ -1,13 +1,16 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Stefan Friedel <stefan.friedel@iwr.uni-heidelberg.de>
 Subject: Re: DNAT problem
-Date: Mon, 02 Oct 2006 15:14:41 +0200
-Message-ID: <452110C1.2010203@plouf.fr.eu.org>
-References: <BAY103-F25ED7B9242FA2718CEF385B21F0@phx.gbl>	<4520ED15.5090205@plouf.fr.eu.org>
-	<20061002120137.GD23849@woyzeck>
+Date: Mon, 2 Oct 2006 16:18:00 +0200
+Message-ID: <20061002141800.GE23849@woyzeck>
+References: <BAY103-F25ED7B9242FA2718CEF385B21F0@phx.gbl>
+	<4520ED15.5090205@plouf.fr.eu.org> <20061002120137.GD23849@woyzeck>
+	<452110C1.2010203@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6e7ZaeXHKrTJCxdu"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20061002120137.GD23849@woyzeck>
+Content-Disposition: inline
+In-Reply-To: <452110C1.2010203@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,64 +21,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@lists.netfilter.org
 
-Stefan Friedel a =E9crit :
+
+--6e7ZaeXHKrTJCxdu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Pascal Hambourg,
 >=20
->>OK, SNAT and DNAT do not support multiple --to any more in kernels abov=
-e=20
->>2.6.10. But it is unclear to me whether they still support one IP=20
->>address *range* (with round robin) or only one single IP address.
->=20
-> The range is still accepted as option for iptables 1.3.6, but it has no=
- effect
-> with 2.6.17.3 (so I assume that it is indeed the "NAT+round robin" capa=
-bility
-> which has gone in Kernels > 2.6.10/11). It doesn't matter if I use the =
-SAME or
-> the DNAT target in PREROUTING -
+> One question : did you test this from only one single source IP address=
+=20
+> of from several source IP addresses ? SAME is designed to always give=20
+> the same mapping to a given source address, and it seems that DNAT/SNAT=
+=20
+> do the same in kernels >=3D 2.6.11.
+ah, great. I just tested a few (3 different source ips, to be honest) accou=
+nts
+before with SAME - after your last mail I asked some colleagues to test: it=
+ is
+working indeed (obviously using some statistical method to choose the
+destination ip. The destination ip did not change until we opened ~ 10
+connections from different source ips...)
 
-One question : did you test this from only one single source IP address=20
-of from several source IP addresses ? SAME is designed to always give=20
-the same mapping to a given source address, and it seems that DNAT/SNAT=20
-do the same in kernels >=3D 2.6.11.
+Thank you for your hint! and best regards, Stefan Friedel
+--=20
+Zentrale Dienste - Interdisziplin=E4res Zentrum f=FCr Wissenschaftliches
+Rechnen der Universit=E4t Heidelberg - IWR - INF 368, 69120 Heidelberg
+stefan.friedel@iwr.uni-heidelberg.de  Tel +49 6221 54-8240 Fax -5224
+IWR: www.iwr.uni-heidelberg.de          HELICS: www.helics.uni-hd.de
 
-I remember reading something about this in kernel 2.6.11 changelog :
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-   [PATCH] Remove Randomness in Selecting NAT IP Address
+--6e7ZaeXHKrTJCxdu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-   We currently choose a "random" IP address to NAT to, where we have a
-   range.  Martin Josefsson pointed out that he uses the SAME target in
-   iptables because changing IP addresses breaks Internet banking sites
-   (among others) which assume the customer will be coming from a
-   consistent IP address.
-   In fact, we spend a fair bit of effort trying to balance the number of
-   connections we NAT to each IP address.  We can come pretty damn close
-   just hashing the source and destination IP addresses, and it has the
-   consistency property which is so desirable, as well as being faster.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-I believe that with this patch the SNAT and DNAT targets behave in a way=20
-like the SAME target and always use the same mapping in the --to range=20
-for a given source IP address. However, when a range is specified,=20
-different sources may use different mappings. But it won't be a dynamic=20
-round robin, just a static hash. However I believe that when there are=20
-many different source addresses it can achieve some kind of load balancin=
-g.
+iD8DBQFFIR+Y3umRt9zSRsQRAkXgAJ4x/LlMiB361/tUm/yTqjOr4KaJ5ACfaO5K
+q0bUuxKJMIHn5YOFqllU+w0=
+=T+m5
+-----END PGP SIGNATURE-----
 
->>What about the BALANCE target ? It's in the man page, but I had never=20
->>heard of it.
->=20
-> In iptables 1.3.6 BALANCE is not available (nor is it available in the =
-2.6.17.3
-> source). Obsolete? And I fear that it would not help, because the probl=
-em is
-> the missing round robin/load balancing in the Kernel.
-
-I don't think so. Each target has its own code.
+--6e7ZaeXHKrTJCxdu--
 
