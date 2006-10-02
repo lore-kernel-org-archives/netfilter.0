@@ -1,13 +1,11 @@
-From: "Joel Lindsay" <joel@waveteq.com>
-Subject: Cant find
-Date: Mon, 2 Oct 2006 09:54:59 -0700
-Message-ID: <009701c6e643$7f20ef60$4401a8c0@WINXPVIRUSMONITOR>
-References: <BAY103-F25ED7B9242FA2718CEF385B21F0@phx.gbl><4520ED15.5090205@plouf.fr.eu.org>
-	<20061002120137.GD23849@woyzeck><452110C1.2010203@plouf.fr.eu.org>
-	<20061002141800.GE23849@woyzeck>
+From: "malvika joshi" <zenith.of.perfection@gmail.com>
+Subject: interaction of iptables userspace tool with kernel
+Date: Mon, 2 Oct 2006 23:51:37 +0530
+Message-ID: <9157ddef0610021121u74a7c30awd0deb1c5143b8cdc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,40 +16,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Keep getting the error.
-
-iptables v1.2.11: Couldn't find target `MASQUERADE'
-
-Using kernel 2.6.15-uc0 uclinux.
-
-Have compiled as module and statically the following.
-
-iptables support
-connection tracking support
-ip filter support
-reject target support
-full nat support
-masquerading support
-
-the module ipt_MASQUERADE exists and is loaded, but I keep getting this 
-error.  I cant figure out why??
-
-Is there more dependencies on some other modules?
-
-
-Joel Lindsay, B.Eng
-Project Engineer
-Waveteq Communications
-(250) 766-9229
------ Original Message ----- 
-From: "Stefan Friedel" <stefan.friedel@iwr.uni-heidelberg.de>
-To: "Pascal Hambourg" <pascal.mail@plouf.fr.eu.org>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Monday, October 02, 2006 7:18 AM
-Subject: Re: DNAT problem
-
-
+I want to find all the possible means by which iptables userspace
+program interacts with the kernel.I have found that it does by means
+of setsockopt and getsockopt calls in the source code.But there is
+also a libipq library with the userspace program which uses netlink
+sockets.But any of the functions of the libipq library are not called
+from the source code.Is it safe to assume that the only means of
+interaction of the userspace program with the kernel is only by means
+of set and getsockopt calls?? If so under what circumstances is the
+libipq used??
 
