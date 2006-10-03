@@ -1,11 +1,10 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: Re: DNAT problem
-Date: Tue, 03 Oct 2006 12:11:27 +0200
-Message-ID: <BAY103-F2959DFC95676C9CA4F26F6B21C0@phx.gbl>
-References: <4521C6A3.1040902@mail.nankai.edu.cn>
+From: Brent Clark <bclark@eccotours.co.za>
+Subject: Cant get transparent proxy to route out new ISP.
+Date: Tue, 03 Oct 2006 12:34:49 +0200
+Message-ID: <45223CC9.4050005@eccotours.co.za>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4521C6A3.1040902@mail.nankai.edu.cn>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,31 +15,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: struggle@mail.nankai.edu.cn
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Bo Yang wrote:
+Hi all
 
->How to do the balance using nth match , can you give an example ?
->For example , I have a gateway 111.111.111.111 which connected to my
->own LAN .
->And in LAN , I have four machines 10.0.0.1 - 10.0.0.4 to share the ssh
->connection .
->Could you tell me how to balance the ssh flow ?
+Could someone please me with my current setup.
 
-I haven't exactly understood your question. However this is
-an example:
+I just got another DSL line and I have my routing  and marking the packets etc so that I can decided the fate as to which ISP I would like to route my
+traffic out of etc.
 
-$IPTABLES -t nat -A PREROUTING -d 111.111.111.111 --protocol tcp --dport 22 
--m statistic --mode nth --every 4 -j DNAT --to 10.0.0.1
-$IPTABLES -t nat -A PREROUTING -d 111.111.111.111 --protocol tcp --dport 22 
--m statistic --mode nth --every 4 -j DNAT --to 10.0.0.2
-$IPTABLES -t nat -A PREROUTING -d 111.111.111.111 --protocol tcp --dport 22 
--m statistic --mode nth --every 4 -j DNAT --to 10.0.0.3
-$IPTABLES -t nat -A PREROUTING -d 111.111.111.111 --protocol tcp --dport 22 
--j DNAT --to 10.0.0.4
+I managed to get squid to be used as a trasparent proxy, but im forced to use the default gw of the machine and for the likes of my I cant figure out to
+send traffic out the new ISP.
 
+So my question / request for help is, Would anyone please advise me as to how I can choose what ISP I can route my transparent proxy.
+
+I was thinking that maybe it is a POSTROUTING marking that I need to do, and the the routing tables will take care of the rest.
+
+Kinds Regards and thank you in advance.
+
+Brent Clark
 
 
