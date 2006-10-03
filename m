@@ -1,10 +1,12 @@
-From: Brent Clark <bclark@eccotours.co.za>
-Subject: Cant get transparent proxy to route out new ISP.
-Date: Tue, 03 Oct 2006 12:34:49 +0200
-Message-ID: <45223CC9.4050005@eccotours.co.za>
+From: angico <angico@yahoo.com>
+Subject: Re: Cant find
+Date: Tue, 3 Oct 2006 05:36:39 -0700 (PDT)
+Message-ID: <20061003123639.47431.qmail@web36810.mail.mud.yahoo.com>
+References: <009701c6e643$7f20ef60$4401a8c0@WINXPVIRUSMONITOR>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <009701c6e643$7f20ef60$4401a8c0@WINXPVIRUSMONITOR>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,25 +17,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all
+Try upgrading iptables.
+regards,
+angico.
 
-Could someone please me with my current setup.
 
-I just got another DSL line and I have my routing  and marking the packets etc so that I can decided the fate as to which ISP I would like to route my
-traffic out of etc.
+--- Joel Lindsay <joel@waveteq.com> wrote:
 
-I managed to get squid to be used as a trasparent proxy, but im forced to use the default gw of the machine and for the likes of my I cant figure out to
-send traffic out the new ISP.
+> Keep getting the error.
+> 
+> iptables v1.2.11: Couldn't find target `MASQUERADE'
+> 
+> Using kernel 2.6.15-uc0 uclinux.
+> 
+> Have compiled as module and statically the following.
+> 
+> iptables support
+> connection tracking support
+> ip filter support
+> reject target support
+> full nat support
+> masquerading support
+> 
+> the module ipt_MASQUERADE exists and is loaded, but I keep getting
+> this 
+> error.  I cant figure out why??
+> 
+> Is there more dependencies on some other modules?
+> 
+> 
+> Joel Lindsay, B.Eng
+> Project Engineer
+> Waveteq Communications
+> (250) 766-9229
+> ----- Original Message ----- 
+> From: "Stefan Friedel" <stefan.friedel@iwr.uni-heidelberg.de>
+> To: "Pascal Hambourg" <pascal.mail@plouf.fr.eu.org>
+> Cc: <netfilter@lists.netfilter.org>
+> Sent: Monday, October 02, 2006 7:18 AM
+> Subject: Re: DNAT problem
+> 
+> 
+> 
+> 
 
-So my question / request for help is, Would anyone please advise me as to how I can choose what ISP I can route my transparent proxy.
 
-I was thinking that maybe it is a POSTROUTING marking that I need to do, and the the routing tables will take care of the rest.
-
-Kinds Regards and thank you in advance.
-
-Brent Clark
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
