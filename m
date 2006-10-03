@@ -1,12 +1,10 @@
-From: angico <angico@yahoo.com>
-Subject: Re: Cant find
-Date: Tue, 3 Oct 2006 05:36:39 -0700 (PDT)
-Message-ID: <20061003123639.47431.qmail@web36810.mail.mud.yahoo.com>
-References: <009701c6e643$7f20ef60$4401a8c0@WINXPVIRUSMONITOR>
+From: Mohammad Farooq <mohammadfarooq@tango-networks.com>
+Subject: Pleeeeeeeeeeease help me with u32 module
+Date: Tue, 03 Oct 2006 09:45:32 -0500
+Message-ID: <1159886732.28977.156.camel@mfarooq-1.tango-networks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <009701c6e643$7f20ef60$4401a8c0@WINXPVIRUSMONITOR>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,53 +18,47 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Try upgrading iptables.
-regards,
-angico.
+Hi All,
+
+I need help very badly. I want to use u32 kernel module which is
+unfortunately not part of the iptables core set. When I tried to compile
+this module with redhat enterprise which is using kernel 2.6.9, it
+failed with the following error:
+
+net/ipv4/netfilter/ipt_u32.c:127: warning: "struct xt_match" declared
+inside parameter list
+net/ipv4/netfilter/ipt_u32.c:127: warning: its scope is only this
+definition or declaration, which is probably not what you want
+net/ipv4/netfilter/ipt_u32.c:210: warning: "struct xt_match" declared
+inside parameter list
+net/ipv4/netfilter/ipt_u32.c:219: warning: initialization from
+incompatible pointer type
+net/ipv4/netfilter/ipt_u32.c:220: error: unknown field `matchsize'
+specified in initializer
+net/ipv4/netfilter/ipt_u32.c:220: warning: initialization makes pointer
+from integer without a cast
+net/ipv4/netfilter/ipt_u32.c:221: warning: initialization from
+incompatible pointer type
+make[3]: *** [net/ipv4/netfilter/ipt_u32.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
+
+I solve this compile error by adding the matchsize variable in the
+ipt_match structure in
+the /usr/src/linux/include/linux/netfilter_ipv4/ip_tables.h
+
+Now I can compile without any compile error but when I try to run
+iptables command:
+iptables -A INPUT -m u32 --u32 "2&0xffff=0x2" -j ACCEPT
+iptables: Invalid argument
+
+I get "Invalid argument" error. I am stuck right now. I am not a kernel
+hacker and have no clue how to move forward. I would appreciate if some
+kind soul point me to the right direction. Thanks in advance.
+
+MF
 
 
---- Joel Lindsay <joel@waveteq.com> wrote:
 
-> Keep getting the error.
-> 
-> iptables v1.2.11: Couldn't find target `MASQUERADE'
-> 
-> Using kernel 2.6.15-uc0 uclinux.
-> 
-> Have compiled as module and statically the following.
-> 
-> iptables support
-> connection tracking support
-> ip filter support
-> reject target support
-> full nat support
-> masquerading support
-> 
-> the module ipt_MASQUERADE exists and is loaded, but I keep getting
-> this 
-> error.  I cant figure out why??
-> 
-> Is there more dependencies on some other modules?
-> 
-> 
-> Joel Lindsay, B.Eng
-> Project Engineer
-> Waveteq Communications
-> (250) 766-9229
-> ----- Original Message ----- 
-> From: "Stefan Friedel" <stefan.friedel@iwr.uni-heidelberg.de>
-> To: "Pascal Hambourg" <pascal.mail@plouf.fr.eu.org>
-> Cc: <netfilter@lists.netfilter.org>
-> Sent: Monday, October 02, 2006 7:18 AM
-> Subject: Re: DNAT problem
-> 
-> 
-> 
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
