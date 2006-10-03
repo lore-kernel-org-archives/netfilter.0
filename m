@@ -1,11 +1,11 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: ipset loading to/from file
-Date: Tue, 3 Oct 2006 10:07:34 +0000 (UTC)
-Message-ID: <011501c6ff2f$49546010$0100a8c0@newlife>
+From: "Marco Berizzi" <pupilla@hotmail.com>
+Subject: Re: DNAT problem
+Date: Tue, 03 Oct 2006 12:11:27 +0200
+Message-ID: <BAY103-F2959DFC95676C9CA4F26F6B21C0@phx.gbl>
+References: <4521C6A3.1040902@mail.nankai.edu.cn>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Date: Fri, 3 Nov 2006 18:03:18 +0800
+In-Reply-To: <4521C6A3.1040902@mail.nankai.edu.cn>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,19 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: struggle@mail.nankai.edu.cn
+Cc: netfilter@lists.netfilter.org
 
+Bo Yang wrote:
 
-Shell scripts are slow, when it has to iterate over hugh
-amount of data. Is there a way to load ipset data to/from files 
-( as a binary blob perhaps ) so that it can be loaded quickily into the 
-memory when the system re-starts ?
+>How to do the balance using nth match , can you give an example ?
+>For example , I have a gateway 111.111.111.111 which connected to my
+>own LAN .
+>And in LAN , I have four machines 10.0.0.1 - 10.0.0.4 to share the ssh
+>connection .
+>Could you tell me how to balance the ssh flow ?
 
-Cheers.
+I haven't exactly understood your question. However this is
+an example:
 
-
-
+$IPTABLES -t nat -A PREROUTING -d 111.111.111.111 --protocol tcp --dport 22 
+-m statistic --mode nth --every 4 -j DNAT --to 10.0.0.1
+$IPTABLES -t nat -A PREROUTING -d 111.111.111.111 --protocol tcp --dport 22 
+-m statistic --mode nth --every 4 -j DNAT --to 10.0.0.2
+$IPTABLES -t nat -A PREROUTING -d 111.111.111.111 --protocol tcp --dport 22 
+-m statistic --mode nth --every 4 -j DNAT --to 10.0.0.3
+$IPTABLES -t nat -A PREROUTING -d 111.111.111.111 --protocol tcp --dport 22 
+-j DNAT --to 10.0.0.4
 
 
 
