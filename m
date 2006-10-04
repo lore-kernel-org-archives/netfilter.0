@@ -1,7 +1,7 @@
-From: Brent Clark <bclark@eccotours.co.za>
-Subject: change routes for a transparenty proxy
-Date: Wed, 04 Oct 2006 15:02:42 +0200
-Message-ID: <4523B0F2.1080009@eccotours.co.za>
+From: gabrix <gabrix@gabrix.ath.cx>
+Subject: iptables and hostnames.
+Date: Wed, 04 Oct 2006 15:12:41 +0200
+Message-ID: <4523B349.20009@gabrix.ath.cx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,15 +18,15 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hey all
-
-Would anyone know how to switch routes for a transparent proxy. I am connected to 2 ISPs, but I would like to be able to chop and change which ISP
-I route HTTP out of.
-
-Would be great for redundancy, if one DSL line should go down.
-
-Kind Regards
-Brent Clark
-
-
+What is the reason why if i use this iptables:
+> # (APACHE)
+> $IPT -A INPUT -p tcp -d x.gabrix.ath.cx --dport 80 -m state --state ! 
+> INVALID -j ACCEPT
+> $IPT -A INPUT -p tcp -d tor.gabrix.ath.cx --dport 443 -m state --state 
+> ! INVALID -j ACCEPT
+the hostnames you see get resolved to their pubblic ips.This is on an 
+inside lan pc but this doesn't happen on the gateway pc right before it 
+where iptables says it can't resolve the hostnames .Why this ?I have 
+debian sarge kernel 2.6 on all machines.
+Thanks !
 
