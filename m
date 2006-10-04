@@ -1,17 +1,10 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: redirect all HTTP traffic (nfcan: addressed to exclusive sender
-	for this address)
-Date: Wed, 4 Oct 2006 08:34:23 -0400
-Message-ID: <20061004123423.GA22147@salty>
-References: <452387A9.3010906@eccotours.co.za>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: Brent Clark <bclark@eccotours.co.za>
+Subject: change routes for a transparenty proxy
+Date: Wed, 04 Oct 2006 15:02:42 +0200
+Message-ID: <4523B0F2.1080009@eccotours.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <452387A9.3010906@eccotours.co.za> (from
-	+nfcan+jimlaur+beeeb246f4.bclark#eccotours.co.za@spamgourmet.com
-	on Wed, Oct 04, 2006 at 06:06:33 -0400)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,36 +15,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On 2006.10.04 06:06, Brent Clark - bclark@eccotours.co.za wrote:
-> Hey all
-> 
-> Ive been trying to redirect all HTTP traffic to my newly built proxy  
-> (squid).
-> 
-> But I cant seem to get it working.
-> 
-> This is what I have
-> 
-> $IPT -t nat -A PREROUTING -i eth1 -s 192.168.111.0/24 -p tcp --dport 80 -j  
-> DNAT --to 192.168.111.9:3128
-> $IPT -t nat -A POSTROUTING -o eth1 -s 192.168.111.0/24 -j SNAT --to  
-> 192.168.111.10
-> 
-> and
-> 
-> $IPT -t filter -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $IPT -t filter -A FORWARD -i eth1 -o eth1 -p tcp --dport 80 -m state --state  
-> NEW -j ACCEPT
+Hey all
 
-The prerouting rule changed the destination port from 80 to 3128.
-Try accepting new traffic on 3128 in the filter table.
+Would anyone know how to switch routes for a transparent proxy. I am connected to 2 ISPs, but I would like to be able to chop and change which ISP
+I route HTTP out of.
 
--- 
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
+Would be great for redundancy, if one DSL line should go down.
+
+Kind Regards
+Brent Clark
+
+
 
