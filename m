@@ -1,12 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: redirect all HTTP traffic
-Date: Wed, 04 Oct 2006 12:30:12 +0200
-Message-ID: <45238D34.8040104@plouf.fr.eu.org>
-References: <452387A9.3010906@eccotours.co.za>
+From: =?UTF-8?B?R8Ohc3DDoXIgTGFqb3M=?= <swifty@freemail.hu>
+Subject: Re: STRING  module : Invalid argument
+Date: Wed, 04 Oct 2006 12:56:32 +0200
+Message-ID: <45239360.6060304@freemail.hu>
+References: <45236AD9.4090300@freemail.hu>
+	<53842.193.173.147.3.1159955117.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <452387A9.3010906@eccotours.co.za>
+In-Reply-To: <53842.193.173.147.3.1159955117.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Rob Sterenborg <rob@sterenborg.info>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Rob Sterenborg =C3=ADrta:
+> On Wed, October 4, 2006 10:03, G=EF=BF=BDsp=EF=BF=BDr Lajos wrote:
+>  =20
+>> Hi,
+>>
+>> fw1:~# iptables -v -A INPUT -j DROP -p tcp -m string --string "test"
+>> DROP  tcp opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  STRING match "te=
+st"
+>> iptables: Invalid argument
+>>
+>>    =20
+Does it means that it fails at insertation of the rule into the chain,=20
+doesn't?
 
-Brent Clark a =E9crit :
->=20
-> Ive been trying to redirect all HTTP traffic to my newly built proxy=20
-> (squid).
->=20
-> But I cant seem to get it working.
+> - You probably don't have the string module installed and/or loaded.
+> - Kernel 2.6.18 is rather new (sep-2006) and iptables 1.2.11 is rather =
+old
+> (june 2004). Upgrade to a new iptables version: 1.3.6 is just released.
+>
+>  =20
+I have already tried it with the Debian backport of iptables (v1.3.x)=20
+... Same results.
 
-Please elaborate. What's happening exactly ?
+Right now I am recompiling the kernel and iptables + pom-ng.
+Hope it helps... :)
+> Grts,
+> Rob
+>
+>
+>
+>
+>
+>  =20
 
-> This is what I have
->=20
-> $IPT -t nat -A PREROUTING -i eth1 -s 192.168.111.0/24 -p tcp --dport 80=
-=20
-> -j DNAT --to 192.168.111.9:3128
-> $IPT -t nat -A POSTROUTING -o eth1 -s 192.168.111.0/24 -j SNAT --to=20
-> 192.168.111.10
->=20
-> and
->=20
-> $IPT -t filter -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEP=
-T
-> $IPT -t filter -A FORWARD -i eth1 -o eth1 -p tcp --dport 3128 -m state=20
-> --state NEW -j ACCEPT
-
-It seems that the proxy is in the same network as the clients. Does it=20
-use the same gateway too ? If so, you need to set a no-DNAT exception in=20
-PREROUTING for the proxy source address and a rule in FORWARD to allow=20
-NEW packets from the proxy to the outside.
 
