@@ -1,12 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Patch o matic
-Date: Thu, 5 Oct 2006 09:55:50 +0200 (CEST)
-Message-ID: <58185.193.173.147.3.1160034950.squirrel@webmail.sterenborg.info>
-References: <4523FAF7.1070503@gabrix.ath.cx>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: STRING  module : Invalid argument
+Date: Thu, 05 Oct 2006 12:34:10 +0200
+Message-ID: <4524DFA2.9030504@netfilter.org>
+References: <45236AD9.4090300@freemail.hu>	<53842.193.173.147.3.1159955117.squirrel@webmail.sterenborg.info>
+	<45239360.6060304@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4523FAF7.1070503@gabrix.ath.cx>
+In-Reply-To: <45239360.6060304@freemail.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,57 +18,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: =?UTF-8?B?R8Ohc3DDoXIgTGFqb3M=?= <swifty@freemail.hu>
+Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
 
-On Wed, October 4, 2006 20:18, gabrix wrote:
-> I have a debian sarge kernel 2.6 i got the patch-o-matic-ng , a kernel
-> and iptables source ...
->
->> root@argo:~# ls /usr/src/
->> iptables-1.3.6  kernel-image-2.6.8_custom.1.0_i386.deb kernel-source-2=
-.6.8
->> patch-o-matic-ng-20040621
->
-> I have placed all in the /usr/src/ dir as you can see , compiled the ne=
-w
-> kernel , installed by dpkg -i the new kernel,rebooted,no kernel panic a=
-nd i
-> can't find the new ipt modules.Some got built like NOTRACK and TTL but =
-no
-> TARPIT or psd ...
+Gáspár Lajos wrote:
+> Rob Sterenborg írta:
+>> On Wed, October 4, 2006 10:03, G�sp�r Lajos wrote:
+>>  
+>>> Hi,
+>>>
+>>> fw1:~# iptables -v -A INPUT -j DROP -p tcp -m string --string "test"
+>>> DROP  tcp opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  STRING match
+>>> "test"
+>>> iptables: Invalid argument
+>>>
+>>>     
+> Does it means that it fails at insertation of the rule into the chain,
+> doesn't?
 
-[....]
+Yes
 
->> root@argo:~# ls /lib/modules/2.6.8-2-386/kernel/net/ipv4/netfilter/
->> arptable_filter.ko      ipfwadm.ko            iptable_nat.ko ipt_ecn.k=
-o
->> ipt_mark.ko        ipt_realm.ko     ipt_TOS.ko arp_tables.ko
+>> - You probably don't have the string module installed and/or loaded.
+>> - Kernel 2.6.18 is rather new (sep-2006) and iptables 1.2.11 is rather
+>> old
+>> (june 2004). Upgrade to a new iptables version: 1.3.6 is just released.
+>>
+>>   
+> I have already tried it with the Debian backport of iptables (v1.3.x)
+> ... Same results.
 
-[....]
+Debian backport of iptables? What do mean?
 
-> Is this the right dir for iptables kernel modules?
+> Right now I am recompiling the kernel and iptables + pom-ng.
+> Hope it helps... :)
 
-Only if that is the kernel version you are using.
-You say that you built a kernel from source, patched the kernel and iptab=
-les
-using pom-ng:
-- Did you really use 2.6.8? We are now at 2.6.18.
-- Did you see a patch for TARPIT and psd when you ran pom-ng?
-- You installed the kernel but are you sure you are running the version y=
-ou
-installed (uname -r)?
+The string match was introduced in kernel 2.6.16 if my mind serves well,
+the old version that was available in pom-ng was broken. You also need a
+recent iptables version to make it work as Rob pointed out.
 
-> Is TARPIT and psd part of a chain of modules i missed to modprobe ?
-
-Check your kernel .config file if you have the lines
-"CONFIG_IP_NF_TARGET_TARPIT=3Dm" and "CONFIG_IP_NF_MATCH_PSD=3Dm". If you=
- can't
-find them, support for these is not available in your kernel.
-
-
-Grts,
-Rob
-
-
+-- 
+The dawn of the fourth age of Linux firewalling is coming; a time of
+great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
 
