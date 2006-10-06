@@ -1,9 +1,9 @@
-From: Adhi Laksono <wingback06@yahoo.com>
-Subject: Layer 7 Filter
-Date: Thu, 5 Oct 2006 23:30:13 -0700 (PDT)
-Message-ID: <20061006063013.80678.qmail@web31010.mail.mud.yahoo.com>
+From: kiraly laszlo <kirusz@freemail.hu>
+Subject: POM-NG missing patchlets
+Date: Fri, 6 Oct 2006 09:10:24 +0200 (CEST)
+Message-ID: <freemail.20060906091024.30448@fm10.freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,36 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi list!
 
-I made a script using iptables with layer 7 filter
-support... My default policy is :
+I have some questions about POM-NG.
 
-$IPTABLES -P INPUT DROP
-$IPTABLES -P OUTPUT DROP
-$IPTABLES -P FORWARD DROP
+Maybe I'm lame or blind but:
 
-The rules in the filter table works fine, but the
-wierd thing is, how come all the application (ex.
-bittorrent) doesn't work?? I haven't written any rules
-for the application to DROP yet, and have tried to add
+Why aren't many modules in recent POM-NG version like geoip,
+accounting etc.?
+These aren't in the kernel. Are these modules already
+usefulness?
+I need these modules.
+The only method that I found is searching in the devel list
+to find some modules
+and add to the new POM-NG than patch it to work with recent
+kernel.
 
-$IPTABLES -A LAN-Internet -s $NET_LAN -d 0/0 -m layer7
---l7proto bittorrent
+I found only very old documentation about POM. :(
 
-And still, it wont work...
+regards
 
-Any help please???
+---
+kiru
+=0A=0A_____________________________________________________________________=
+_
+Ne maradjon ki az internetes kereskedelem n=F6veked=E9s=E9b=F5l! Nyisson we=
+bboltot most - az els=F5 3 havi b=E9rleti d=EDjat mi fizetj=FCk!
+http://origo.hu/adsminisites/webbolt_akcio/index.html
 
-Regards,
-
-Adhi  
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
