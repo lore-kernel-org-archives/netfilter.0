@@ -1,12 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset on 2.4.18-14
-Date: Fri, 6 Oct 2006 09:19:50 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0610060915240.3869@blackhole.kfki.hu>
-References: <4516BEAE.3030708@mailinator.com>
-	<Pine.LNX.4.58.0609242036020.6965@blackhole.kfki.hu>
+From: "Jorge Bastos" <mysql.jorge@decimal.pt>
+Subject: Compiling 1.3.6
+Date: Fri, 6 Oct 2006 19:41:58 +0100
+Message-ID: <00be01c6e977$1ba6bcd0$0101a8c0@pcjorge>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0609242036020.6965@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,24 +15,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mike Wright <xktnniuymlla@mailinator.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-On Sun, 24 Sep 2006, Jozsef Kadlecsik wrote:
+I was compiling the 1.3.6 version of iptables, agains my 2.6.19-rc1 kernel 
+version and i get this (it also happens with the final 2.6.18).
+Is there some livrary that needs an upgrade or am i missing something?
+I already tryed the svn last version and the same happens.
 
-> > I've been trying to add ipset support to a remote box running Redhat 8
-> > with kernel 2.4.18-14 and am having build problems.
+Thanks,
+Jorge
 
-Sorry, I was blind: that is an old release from the 2.4 tree. You should
-really upgrade.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Extensions found: IPv4:CLUSTERIP IPv4:connbytes IPv4:dccp IPv4:quota 
+IPv4:recent IPv4:statistic IPv4:string IPv6:REJECT IPv6:ah IPv6:esp 
+IPv6:frag IPv6:ipv6header IPv6:rt
+cc -O2 -Wall -Wunused -I/usr/src/linux-2.6.18/include -Iinclude/ -DIPTABLES_VERSION=\"1.3.6\" 
+  -fPIC -o extensions/libipt_iprange_sh.o -c extensions/libipt_iprange.c
+In file included from extensions/libipt_iprange.c:9:
+/usr/src/linux-2.6.18/include/linux/netfilter_ipv4/ipt_iprange.h:11: error: 
+expected specifier-qualifier-list before '__be32'
+extensions/libipt_iprange.c: In function 'parse_iprange':
+extensions/libipt_iprange.c:43: error: 'struct ipt_iprange' has no member 
+named 'min_ip'
+extensions/libipt_iprange.c:50: error: 'struct ipt_iprange' has no member 
+named 'max_ip'
+extensions/libipt_iprange.c:52: error: 'struct ipt_iprange' has no member 
+named 'max_ip'
+extensions/libipt_iprange.c:52: error: 'struct ipt_iprange' has no member 
+named 'min_ip'
+extensions/libipt_iprange.c: In function 'print_iprange':
+extensions/libipt_iprange.c:116: error: 'const struct ipt_iprange' has no 
+member named 'min_ip'
+extensions/libipt_iprange.c:117: error: 'const struct ipt_iprange' has no 
+member named 'max_ip'
+make: *** [extensions/libipt_iprange_sh.o] Error 1 
+
 
