@@ -1,10 +1,12 @@
-From: kiraly laszlo <kirusz@freemail.hu>
-Subject: POM-NG missing patchlets
-Date: Fri, 6 Oct 2006 09:10:24 +0200 (CEST)
-Message-ID: <freemail.20060906091024.30448@fm10.freemail.hu>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset on 2.4.18-14
+Date: Fri, 6 Oct 2006 09:19:50 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0610060915240.3869@blackhole.kfki.hu>
+References: <4516BEAE.3030708@mailinator.com>
+	<Pine.LNX.4.58.0609242036020.6965@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.58.0609242036020.6965@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,35 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mike Wright <xktnniuymlla@mailinator.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi list!
+On Sun, 24 Sep 2006, Jozsef Kadlecsik wrote:
 
-I have some questions about POM-NG.
+> > I've been trying to add ipset support to a remote box running Redhat 8
+> > with kernel 2.4.18-14 and am having build problems.
 
-Maybe I'm lame or blind but:
+Sorry, I was blind: that is an old release from the 2.4 tree. You should
+really upgrade.
 
-Why aren't many modules in recent POM-NG version like geoip,
-accounting etc.?
-These aren't in the kernel. Are these modules already
-usefulness?
-I need these modules.
-The only method that I found is searching in the devel list
-to find some modules
-and add to the new POM-NG than patch it to work with recent
-kernel.
-
-I found only very old documentation about POM. :(
-
-regards
-
----
-kiru
-=0A=0A_____________________________________________________________________=
-_
-Ne maradjon ki az internetes kereskedelem n=F6veked=E9s=E9b=F5l! Nyisson we=
-bboltot most - az els=F5 3 havi b=E9rleti d=EDjat mi fizetj=FCk!
-http://origo.hu/adsminisites/webbolt_akcio/index.html
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
 
