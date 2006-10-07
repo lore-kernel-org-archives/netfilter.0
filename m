@@ -1,8 +1,8 @@
-From: Colin Madere <clm_lists@mac.com>
-Subject: ulogd IP extension?
-Date: Fri, 6 Oct 2006 22:40:05 -0400
-Message-ID: <9DC2C4DA-12D8-43BC-B84E-2B0680402726@mac.com>
-Mime-Version: 1.0 (Apple Message framework v752.3)
+From: Blake Patton <pattonb@network1.ca>
+Subject: 2.4.33.3 kernel & pptp-conntrack-nat
+Date: Sat, 07 Oct 2006 02:06:24 -0600
+Message-ID: <45276000.1070506@network1.ca>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -15,16 +15,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello list,
+I am attempting to to add the pptp-conntrack-nat from patch-o-matic and
+I receive the following error,
 
-Wondering if anyone knows of a ulogd extension that will log to an IP  
-address.  Want to pick up log messages via unicast or multicast,  
-either will do.
+unable to find ladd slot in src usr/src/linux/net/ipv4/netfilter/Config.in
 
-Thanks,
 
-Colin
+do I need a 2.6 kernel ?
+
+
 
