@@ -1,12 +1,12 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: 2.4.33.3 kernel & pptp-conntrack-nat
-Date: Sun, 08 Oct 2006 12:13:34 +0200
-Message-ID: <4528CF4E.6060705@plouf.fr.eu.org>
-References: <45276000.1070506@network1.ca>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Compiling 1.3.6
+Date: Mon, 09 Oct 2006 00:21:43 +0200
+Message-ID: <452979F7.9090205@netfilter.org>
+References: <00be01c6e977$1ba6bcd0$0101a8c0@pcjorge>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------020206080608030409010800"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45276000.1070506@network1.ca>
+In-Reply-To: <00be01c6e977$1ba6bcd0$0101a8c0@pcjorge>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,22 +17,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter@lists.netfilter.org, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-Hello,
+This is a multi-part message in MIME format.
+--------------020206080608030409010800
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Blake Patton a =E9crit :
-> I am attempting to to add the pptp-conntrack-nat from patch-o-matic and
-> I receive the following error,
->=20
-> unable to find ladd slot in src usr/src/linux/net/ipv4/netfilter/Config=
-.in
+Hi Patrick,
 
-I just tried to apply the pptp-conntrack-nat patch from the latest=20
-patch-o-matic-ng (20060511) which contains it on a 2.4.33.3 kernel tree=20
-and it worked. However it failed to restore Documentation/Configure.help=20
-when I tried to reverse the patch.
+Jorge Bastos wrote:
+> I was compiling the 1.3.6 version of iptables, agains my 2.6.19-rc1
+> kernel version and i get this (it also happens with the final 2.6.18).
+> Is there some livrary that needs an upgrade or am i missing something?
+> I already tryed the svn last version and the same happens.
 
-What version of the patch-o-matic are you using ?
+min_ip and max_ip type has been changed from u_int32_t to __be32 that is
+not defined in userspace, this breaks iptables compilation. Attached a
+patch that recovers the use of u_int32_t. I'm not sure if this is the
+best fix so let me know what you think.
+
+-- 
+The dawn of the fourth age of Linux firewalling is coming; a time of
+great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+
+--------------020206080608030409010800
+Content-Type: text/plain;
+ name="x"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="x"
+
+[PATCH] Fix iptables compilation with support for iprange
+
+iptables requires ipt_iprange.h that defines max_ip and min_ip as __be32
+that is not defined in userspace.
+
+Reported by Jorge Bastos.
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+
+Index: net-2.6/include/linux/netfilter_ipv4/ipt_iprange.h
+===================================================================
+--- net-2.6.orig/include/linux/netfilter_ipv4/ipt_iprange.h	2006-10-09 00:15:42.000000000 +0200
++++ net-2.6/include/linux/netfilter_ipv4/ipt_iprange.h	2006-10-09 00:15:55.000000000 +0200
+@@ -8,7 +8,7 @@
+ 
+ struct ipt_iprange {
+ 	/* Inclusive: network order. */
+-	__be32 min_ip, max_ip;
++	u_int32_t min_ip, max_ip;
+ };
+ 
+ struct ipt_iprange_info
+
+--------------020206080608030409010800--
 
