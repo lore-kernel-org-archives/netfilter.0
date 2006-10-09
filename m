@@ -1,10 +1,12 @@
-From: Mohammad Farooq <mohammadfarooq@tango-networks.com>
-Subject: How to find out packet latency?
-Date: Mon, 09 Oct 2006 09:51:20 -0500
-Message-ID: <1160405480.28977.201.camel@mfarooq-1.tango-networks.com>
+From: aoliva <aoliva@it.uc3m.es>
+Subject: How to find the chain which calls the match
+Date: Mon, 09 Oct 2006 17:13:24 +0200
+Message-ID: <452A6714.5030709@it.uc3m.es>
+References: <1160405480.28977.201.camel@mfarooq-1.tango-networks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1160405480.28977.201.camel@mfarooq-1.tango-networks.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,21 +17,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@lists.netfilter.org
 
-Hi all,
+Hi all, I am writing a match for iptables and I would like it to have a 
+different behaviour when it is called from different chains (e.g. 
+different behaviour when called from INPUT than OUTPUT) anyone knows how 
+to check in the match which is the chain that is calling it?
 
-I am using linux box as router. Every ip packet which enters the box is
-forwarded to some ip address. I have iptables rules which performs this
-task. My question is how can I find out the duration ip packet took to
-go out of the box. Basically I need time difference when the packet
-entered the box and the time it left the box. I want to monitor the
-latency. If it crosses some threshold value, I may have to notify. Since
-the packets are switched at the kernel level, I am not sure how to get
-this information. I would appreciate if someone can point me to the
-right direction. Thanks in advance.
+Thanks in advance.
 
-MF 
-
+Antonio de la Oliva
 
