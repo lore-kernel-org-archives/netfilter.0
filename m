@@ -1,11 +1,13 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: Re: Compiling 1.3.6
-Date: Mon, 09 Oct 2006 17:58:34 +0200
-Message-ID: <BAY103-F13D1C1A680193B4FD7C978B2160@phx.gbl>
-References: <452A6E75.2030700@netfilter.org>
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: How to find the chain which calls the match
+Date: Mon, 09 Oct 2006 17:58:19 +0200
+Message-ID: <452A719B.9080209@freemail.hu>
+References: <1160405480.28977.201.camel@mfarooq-1.tango-networks.com>	<452A6714.5030709@it.uc3m.es>
+	<452A68BE.8030605@it.uc3m.es>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <452A6E75.2030700@netfilter.org>
+In-Reply-To: <452A68BE.8030605@it.uc3m.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,74 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: pablo@netfilter.org, kaber@trash.net
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: aoliva <aoliva@it.uc3m.es>
+Cc: netfilter@lists.netfilter.org
 
-Pablo Neira Ayuso wrote:
+aoliva =EDrta:
+> Sorry if you receives multiple copies,
+>
+> Hi all, I am writing a match for iptables and I would like it to have=20
+> a different behaviour when it is called from different chains (e.g.=20
+> different behaviour when called from INPUT than OUTPUT) anyone knows=20
+> how to check in the match which is the chain that is calling it?
+>
+> Thanks in advance.
+>
+> Antonio de la Oliva
+>
 
->Pablo Neira Ayuso wrote:
->>Patrick McHardy wrote:
->>
->>>Pablo Neira Ayuso wrote:
->>>
->>>>min_ip and max_ip type has been changed from u_int32_t to __be32 that is
->>>>not defined in userspace, this breaks iptables compilation.
+I DO NOT THINK THAT IT IS A GOOD IDEA OF USING IPTABLES THIS WAY,
+but anyway try this:
 
-I'm able to compile iptables 1.3.6 with 2.6.18 kernel
-headers without any errors.
-However iptables 1.3.6 + linux 2.6.19-rc1 kernel
-headers give me this error:
+iptables -A INPUT -j MARK --set-mark 1
+iptables -A INPUT -j mychain
 
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -Iinclude/ 
--DIPTABLES_VERSION=\"1.3.6\"  -fPIC -o extensions/libipt_iprange_sh.o -c 
-exte
-nsions/libipt_iprange.c
-In file included from extensions/libipt_iprange.c:9:
-/usr/src/linux/include/linux/netfilter_ipv4/ipt_iprange.h:11: error: syntax 
-error before "__be32"
-/usr/src/linux/include/linux/netfilter_ipv4/ipt_iprange.h:11: warning: no 
-semicolon at end of struct or union
-/usr/src/linux/include/linux/netfilter_ipv4/ipt_iprange.h:16: error: field 
-`src' has incomplete type
-/usr/src/linux/include/linux/netfilter_ipv4/ipt_iprange.h:17: error: field 
-`dst' has incomplete type
-extensions/libipt_iprange.c: In function `parse_iprange':
-extensions/libipt_iprange.c:43: error: dereferencing pointer to incomplete 
-type
-extensions/libipt_iprange.c:50: error: dereferencing pointer to incomplete 
-type
-extensions/libipt_iprange.c:52: error: dereferencing pointer to incomplete 
-type
-extensions/libipt_iprange.c:52: error: dereferencing pointer to incomplete 
-type
-extensions/libipt_iprange.c: In function `print_iprange':
-extensions/libipt_iprange.c:116: error: dereferencing pointer to incomplete 
-type
-extensions/libipt_iprange.c:117: error: dereferencing pointer to incomplete 
-type
-make: *** [extensions/libipt_iprange_sh.o] Error 1
+iptables -A OUTPUT -j MARK --set-mark 2
+iptables -A OUTPUT -j mychain
 
-My env: Slackware Linux 11.0
+iptables -A FORWARD -j MARK --set-mark 3
+iptables -A FORWARD -j mychain
 
-Linux Calimero 2.6.19-rc1 #1 PREEMPT Thu Oct 5 15:26:06 CEST 2006 i686 
-pentium3 i386 GNU/Linux
+iptables -A mybehaviour1 -j DROP
 
-Gnu C                  3.4.6
-Gnu make               3.81
-binutils               2.15.92.0.2
-util-linux             2.12r
-mount                  2.12r
-module-init-tools      3.2.2
-e2fsprogs              1.38
-Linux C Library        2.3.6
-Dynamic linker (ldd)   2.3.6
-Linux C++ Library      6.0.3
-Procps                 3.2.7
-Net-tools              1.60
-Kbd                    1.12
-Sh-utils               5.97
+iptables -A mychain -j mybehaviour1 -m mark --mark 1 //INPUT
+iptables -A mychain -j mybehaviour2 -m mark --mark 2 //OUTPUT
+iptables -A mychain -j mybehaviour3 -m mark --mark 3 //FORWARD
 
 
+
+Swifty
 
