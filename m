@@ -1,57 +1,33 @@
-From: "Eric Leblond" <eric@inl.fr>
-Subject: [Announce] pynetfilter_conntrack,
- a Python binding of libnetfilter_conntrack
-Date: Mon, 9 Oct 2006 22:03:59 +0200 (CEST)
-Message-ID: <1721.83.156.14.82.1160424239.squirrel@mail.inl.fr>
+From: Mohammad Farooq <mohammadfarooq@tango-networks.com>
+Subject: Is timestamp_sec in ipq_packet_msg_t used?
+Date: Mon, 09 Oct 2006 16:55:08 -0500
+Message-ID: <1160430908.28977.213.camel@mfarooq-1.tango-networks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
-Cc: haypo@inl.fr, vincent@inl.fr
+To: netfilter@lists.netfilter.org
 
-Hi,
+Hi all,
 
-INL development team is proud to announce the availability of
-pynetfilter_conntrack.
+I just wrote a test program which reads the packets from the QUEUE and
+accepts them. When I printed the timestamp_sec and timestamp_usec they
+are set to zero. Are these fields used? My iptables rule is:
 
-pynetfilter_conntrack is a Python binding of libnetfilter_conntrack. The
-binding is the file pynetfilter_conntrack.py and you have also a clone of
-conntrack program: conntrack.py.
+iptables -A FORWARD -p udp -j QUEUE
 
-It provides a high level API for libnetfilter_conntrack. For example, you
-can display all TCP connections with destination port 22 by doing
-something like :
+Thanks.
 
-nf = NetfilterConntrack(CONNTRACK)
-table = nf.create_table(IPV4)
-table = table.filter(6,dport=22)
-table.display()
-
-The current release of pynetfilter_conntrack supports listing,
-modification and deletion of conntrack entries.
-
-pynetfilter_conntrack has been developped by Victor Stinner aka Haypo. It
-is released under GPL by INL.
-
-pynetfilter_conntrack :
-http://software.inl.fr/trac/trac.cgi/wiki/pynetfilter_conntrack
-INL : http://www.inl.fr/
-
-BR,
---
-Eric Leblond
-INL : http://www.inl.fr
-NuFW, Now User Filtering Works (http://www.nufw.org)
+MF
 
 
