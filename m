@@ -1,13 +1,13 @@
-From: aoliva <aoliva@it.uc3m.es>
-Subject: How to find the chain which calls the match
-Date: Mon, 09 Oct 2006 17:20:30 +0200
-Message-ID: <452A68BE.8030605@it.uc3m.es>
-References: <1160405480.28977.201.camel@mfarooq-1.tango-networks.com>
-	<452A6714.5030709@it.uc3m.es>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Compiling 1.3.6
+Date: Mon, 09 Oct 2006 17:23:01 +0200
+Message-ID: <452A6955.6020100@trash.net>
+References: <00be01c6e977$1ba6bcd0$0101a8c0@pcjorge>
+	<452979F7.9090205@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------010907020403010904010904"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <452A6714.5030709@it.uc3m.es>
+In-Reply-To: <452979F7.9090205@netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,20 +18,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@lists.netfilter.org, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-Sorry if you receives multiple copies,
+This is a multi-part message in MIME format.
+--------------010907020403010904010904
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 
-Hi all, I am writing a match for iptables and I would like it to have a 
-different behaviour when it is called from different chains (e.g. 
-different behaviour when called from INPUT than OUTPUT) anyone knows how 
-to check in the match which is the chain that is calling it?
+Pablo Neira Ayuso wrote:
+> min_ip and max_ip type has been changed from u_int32_t to __be32 that is
+> not defined in userspace, this breaks iptables compilation. Attached a
+> patch that recovers the use of u_int32_t. I'm not sure if this is the
+> best fix so let me know what you think.
 
-Thanks in advance.
-
-Antonio de la Oliva
-
+I think we should just define the endian-annotation types in userspace.
+Does this patch fix compilation?
 
 
+--------------010907020403010904010904
+Content-Type: text/plain;
+ name="x"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="x"
+
+Index: include/iptables_common.h
+===================================================================
+--- include/iptables_common.h	(Revision 6660)
++++ include/iptables_common.h	(Arbeitskopie)
+@@ -42,4 +42,9 @@
+   extern void init_extensions(void);
+ #endif
+ 
++#define __be32	u_int32_t
++#define __le32	u_int32_t
++#define __be16	u_int16_t
++#define __le16	u_int16_t
++
+ #endif /*_IPTABLES_COMMON_H*/
+
+--------------010907020403010904010904--
 
