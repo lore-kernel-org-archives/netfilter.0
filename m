@@ -1,12 +1,13 @@
-From: "Holger Kinkelin" <holger.kinkelin@gmail.com>
-Subject: How to create a transparent proxy with iptables and redirect
-	incoming packets to another port?
-Date: Tue, 10 Oct 2006 10:17:44 +0200
-Message-ID: <c936c6b70610100117s79a832ebka9fff1bae1f240da@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: How to find the chain which calls the match
+Date: Tue, 10 Oct 2006 11:24:08 +0200
+Message-ID: <452B66B8.3060805@plouf.fr.eu.org>
+References: <1160405480.28977.201.camel@mfarooq-1.tango-networks.com>	<452A6714.5030709@it.uc3m.es>
+	<452A68BE.8030605@it.uc3m.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <452A68BE.8030605@it.uc3m.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,59 +18,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello list!
+Hello,
 
-I need to implement some sort of transparent proxy server for the sip
-protocol. (In case you don't know: sip uses udp and the standard port
-5060).
+aoliva a =E9crit :
+>=20
+> Hi all, I am writing a match for iptables and I would like it to have a=
+=20
+> different behaviour when it is called from different chains (e.g.=20
+> different behaviour when called from INPUT than OUTPUT) anyone knows ho=
+w=20
+> to check in the match which is the chain that is calling it?
 
-Step 1:
-I redirect packets sent by the sip client (running on 192.168.0.21) to
-the server (192.168.0.31) to my proxy server app (running on
-192.168.0.21, too) using the following rule:
-
-iptables -A OUTPUT -t nat -p udp --sport 5060 -j DNAT --to-destination
-192.168.0.21:5061
-
-As you can imagine my proxy app listens on 5061 for these redirected
-packets. This part works well.
-
----
-
-Step 2:
-Now I do "something magic" with the captured sip packets inside my
-proxy app and send the  (unchanged) packets to the sip server. My idea
-was to send them out at port 5062 and redirect the packets using
-another iptables rule that it looks like, if the packets were sent on
-5060. That rule looks as follows:
-
-iptables -A POSTROUTING -t nat -p udp --sport 5062 -j SNAT --to-source
-192.168.0.21:5060
-
-This part works, too
-
-___
-
-Step 3:
-Now I need to redirect the response packets coming IN form the SIP
-Server to my proxy app. My idea was to open another port 5063 on the
-proxy and redirect the incoming packets to that port. But how? My rule
-
-iptables -A INPUT -t nat -p udp --sport 5060 -j DNAT --to-destination
-192.168.0.21:5063
-
-was rejected, since DNAT won't work for INPUT. I tried PREROUTING, the
-rule was valid, but no packets are redirected to my proxy.
-
-So my first question is: How can I redirect INCOMING packets to another port?
-And the second question is: is there a better way of doing this
-transparent proxy app?
-
-Thanks for reading / answering!
-
-Regards,
-Holger
+I do not have the answer to your question, but you could watch the code=20
+of the NETMAP target which does destination NAT in the PREROUTING chain=20
+and source NAT in the POSTROUTING chain. By the way, how does it behave=20
+in the OUTPUT chain ?
 
