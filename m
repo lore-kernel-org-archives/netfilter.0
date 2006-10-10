@@ -1,13 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How to find the chain which calls the match
-Date: Tue, 10 Oct 2006 11:24:08 +0200
-Message-ID: <452B66B8.3060805@plouf.fr.eu.org>
-References: <1160405480.28977.201.camel@mfarooq-1.tango-networks.com>	<452A6714.5030709@it.uc3m.es>
-	<452A68BE.8030605@it.uc3m.es>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: More question about ipset - protocol ?
+Date: Tue, 10 Oct 2006 17:51:06 +0800
+Message-ID: <011d01c6ec51$9b514ae0$0100a8c0@newlife>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <452A68BE.8030605@it.uc3m.es>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
 
-aoliva a =E9crit :
->=20
-> Hi all, I am writing a match for iptables and I would like it to have a=
-=20
-> different behaviour when it is called from different chains (e.g.=20
-> different behaviour when called from INPUT than OUTPUT) anyone knows ho=
-w=20
-> to check in the match which is the chain that is calling it?
+I still have more questions with ipset, I noticed that
+in the portmap, there is no mentioned of protocol,
+whether should it be tcp or udp. Taking the example
+from the url :-
 
-I do not have the answer to your question, but you could watch the code=20
-of the NETMAP target which does destination NAT in the PREROUTING chain=20
-and source NAT in the POSTROUTING chain. By the way, how does it behave=20
-in the OUTPUT chain ?
+            http://ipset.netfilter.org/features.html
+
+iptables -A FORWARD -m set --set servers dst,dst -j ACCEPT
+iptables -A FORWARD -j DROP
+
+You notice that the ipmap 'server' binds to a portmap, but there is 
+no mentioned of protocol ( whether it should be tcp or udp ).
+
+Does it mean I have to specify the protocol in the iptables command,
+Shoudn't there be a way the protocol be mentioned in the binding
+somewhere  ? 
+
+Cheers. 
+
+
+
 
