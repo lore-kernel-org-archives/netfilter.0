@@ -1,12 +1,11 @@
-From: Mohammad Farooq <mohammadfarooq@tango-networks.com>
-Subject: Re: Redirecting incoming packets to other port
-Date: Wed, 11 Oct 2006 08:41:54 -0500
-Message-ID: <1160574114.4059.54.camel@mfarooq-1.tango-networks.com>
-References: <c936c6b70610110109v73453362h65b8e34d6771dadd@mail.gmail.com>
+From: "info" <info@mail.apd-hp.de>
+Subject: iptables psd with kernel 2.6.18
+Date: Wed, 11 Oct 2006 15:49:22 +0200
+Message-ID: <6407D8226F45114A973E9E4005AE9E5C165164@ns1.apd-hp.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <c936c6b70610110109v73453362h65b8e34d6771dadd@mail.gmail.com>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +17,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Holger Kinkelin <holger.kinkelin@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, 2006-10-11 at 10:09 +0200, Holger Kinkelin wrote:
-> Hello everybody
-> 
-> how can I redirect packets sent to my computer to another port?
-> 
-> I tried: iptables -A PREROUTING -t nat -p udp --dport 5060 --sport
-> 5060 -j DNAT --to-destination 192.168.0.21:5063
-> 
-> This rule is accepted but doesn't do anything. There are no other
-> rules that could cause side effects.
-> 
-> Regards,
-> Holger
-> 
-> 
-Make sure forwarding is turn on on your box. Execute the following
-command:
-echo 1 > /proc/sys/net/ipv4/ip_forward
+Hello,=20
 
-MF
+I've tried to compile iptables and kernel 2.6.18 with some extensions
+I'd used with a prior kernel as they're string and psd match.
+
+Now I'm getting a little confused about patch-o-matic-ng.=20
+
+A lot of the extension I've seen before went out from patch-o-matic-ng
+(like string and psd) but they're described in base or extra.
+
+I'm getting string working but psd does'nt work. I was lookin' in an old
+branch psd code which was portet to 2.6.11 but it does'nt work also.
+
+Iptables prints out an "invalid size 0 !=3D 12" on psd match.=20
+
+Any hints?=20
+
+Thanks in advance for your help.=20
+
+Best regards=20
+
+Chris=20
+
 
 
