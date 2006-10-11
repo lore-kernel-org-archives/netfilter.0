@@ -1,14 +1,12 @@
-From: "Holger Kinkelin" <holger.kinkelin@gmail.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: Redirecting incoming packets to other port
-Date: Wed, 11 Oct 2006 11:44:14 +0200
-Message-ID: <c936c6b70610110244m34760db8wc1a942becc475910@mail.gmail.com>
+Date: Wed, 11 Oct 2006 12:04:52 +0200
+Message-ID: <1160561093.3906.17.camel@anduril.intranet.cartel-securite.net>
 References: <c936c6b70610110109v73453362h65b8e34d6771dadd@mail.gmail.com>
-	<452CAFDC.3070909@eccotours.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <452CAFDC.3070909@eccotours.co.za>
-Content-Disposition: inline
+In-Reply-To: <c936c6b70610110109v73453362h65b8e34d6771dadd@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,43 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Brent Clark <bclark@eccotours.co.za>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Holger Kinkelin <holger.kinkelin@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Hello,
-no this doesn't seem to work.
+Le mercredi 11 octobre 2006 =E0 10:09 +0200, Holger Kinkelin a =E9crit :
+> I tried: iptables -A PREROUTING -t nat -p udp --dport 5060 --sport
+> 5060 -j DNAT --to-destination 192.168.0.21:5063
+> This rule is accepted but doesn't do anything. There are no other
+> rules that could cause side effects.
 
-I can REDIRECT packets sent BY my computer, not packets sent TO it. Is
-there maybe another posibility?
+Is your filtering ruleset consistent with this ? I.e. are theses packets
+allowed by a FORWARD or INPUT rule ? If you want to redirect traffic to
+your host, you can give a try to REDIRECT target.
 
-Regards,
-Holger
 
-PS: Thanks to Brent for his reply
-
-2006/10/11, Brent Clark <bclark@eccotours.co.za>:
-> Holger Kinkelin wrote:
-> > Hello everybody
-> >
-> > how can I redirect packets sent to my computer to another port?
-> >
-> > I tried: iptables -A PREROUTING -t nat -p udp --dport 5060 --sport
-> > 5060 -j DNAT --to-destination 192.168.0.21:5063
-> >
-> > This rule is accepted but doesn't do anything. There are no other
-> > rules that could cause side effects.
-> >
-> > Regards,
-> > Holger
->
->
-> http://www.linuxtopia.org/Linux_Firewall_iptables/x4508.html
->
-> HTH
->
-> Kind Regards
-> Brent Clark
->
->
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
