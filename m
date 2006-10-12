@@ -1,7 +1,7 @@
-From: Markus Marquardt <markus.marquardt@atosorigin.com>
-Subject: Something like next hop match
-Date: Thu, 12 Oct 2006 13:39:28 +0200
-Message-ID: <452E2970.6090401@atosorigin.com>
+From: Brent Clark <bclark@eccotours.co.za>
+Subject: -j ROUTE vs marking and then forwarding
+Date: Thu, 12 Oct 2006 14:34:14 +0200
+Message-ID: <452E3646.6050804@eccotours.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,24 +18,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi
 
-in my configuration there's a linux router which is dynamically learning
-routes via RIP from an isdn router connected to the "outside" interface
-of the router. The internet gateway is also conencted to that interface.
+Im still in a state of uncertainty on this question, as I have not performed routing with -j ROUTE before, but getting a glimpse of ROUTE did make me wonder
+about effiency / speed.
 
-For some reason i don't want the packets which travel through the isdn
-router to get SNATted. Packets going out to the internet gateway must be
-SNATted.
+So my question is.
 
-Is there any way to match the packets which travel through the isdn
-router by something like a next hop match in the POSTROUTING table? Some
-years ago there was a nexthop match patch, but it never makes it into
-the netfilter project.
+Would anyone know if there is a difference or which is the faster of just routing via just using -j ROUTE --oif as opposed to
 
-Any ideas?
+a) marking the packets (-j MARK --set-mark 0x1) and then
+b) using FORWARD.
 
-Regards,
-Markus
-
+Kind Regards
+Brent Clark
 
