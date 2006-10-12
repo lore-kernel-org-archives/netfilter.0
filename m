@@ -1,11 +1,10 @@
-From: "Noman Jamil" <njamil@gmail.com>
-Subject: iptables XOR patch
-Date: Thu, 12 Oct 2006 15:08:36 +0500
-Message-ID: <f5e96a3c0610120308n3cf94b9ai725ff4fc943be4df@mail.gmail.com>
+From: Markus Marquardt <markus.marquardt@atosorigin.com>
+Subject: Something like next hop match
+Date: Thu, 12 Oct 2006 13:39:28 +0200
+Message-ID: <452E2970.6090401@atosorigin.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,15 +18,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all
+Hello,
 
-How to get iptables XOR patched to the kernel and get it working ?
-i tried to compile versin 1.3.5 and i can see the libipt_XOR.c and man
-file but when i run make and make install i dont see XOR patched to
-the kernel ?
+in my configuration there's a linux router which is dynamically learning
+routes via RIP from an isdn router connected to the "outside" interface
+of the router. The internet gateway is also conencted to that interface.
 
-Any help will be apprecited
+For some reason i don't want the packets which travel through the isdn
+router to get SNATted. Packets going out to the internet gateway must be
+SNATted.
 
--- 
-Deceving Looks
+Is there any way to match the packets which travel through the isdn
+router by something like a next hop match in the POSTROUTING table? Some
+years ago there was a nexthop match patch, but it never makes it into
+the netfilter project.
+
+Any ideas?
+
+Regards,
+Markus
+
 
