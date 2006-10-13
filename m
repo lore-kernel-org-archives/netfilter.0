@@ -1,46 +1,55 @@
-From: "Ashutosh Naik" <ashutosh.naik@gmail.com>
-Subject: Kphone not opening a secondary SIP direct connection
-Date: Fri, 13 Oct 2006 15:49:19 +0530
-Message-ID: <81083a450610130319v12fb5585vf64f95ff64734933@mail.gmail.com>
+From: Mike Wright <xktnniuymlla@mailinator.com>
+Subject: Re: Ultima vez que se uso una cadena??
+Date: Fri, 13 Oct 2006 11:24:45 -0700
+Message-ID: <452FD9ED.9070203@mailinator.com>
+References: <298bd5800610122009w5f4c0cd1o89f2dba3ca58d865@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <kphone-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <298bd5800610122009w5f4c0cd1o89f2dba3ca58d865@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/kphone-devel>, 
-	<mailto:kphone-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=kphone-devel>
-List-Post: <mailto:kphone-devel@lists.sourceforge.net>
-List-Help: <mailto:kphone-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/kphone-devel>,
-	<mailto:kphone-devel-request@lists.sourceforge.net?subject=subscribe>
-Sender: kphone-devel-bounces@lists.sourceforge.net
-Errors-To: kphone-devel-bounces@lists.sourceforge.net
-To: kphone-devel@lists.sourceforge.net
-Cc: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
+Cc: =?ISO-8859-1?Q?Pablo_Proa=F1o?= <pabartur@gmail.com>
 
-Hi guys,
+Pablo Proa=F1o wrote:
+> Saludos:
+>=20
+> Tal vez alguien me puede ayudar,  estoy desarrollando una aplicacion
+> para la cual me seria de utilidad conocer cuando fue la ultima vez que
+> se utilizo una regla de iptabels para filtrar o dejar pasar cierto
+> contenido.
+>=20
+> (ACCEPT, DROP, REJECT)
+>=20
+> por ejemplo tengo configurado en mi firewall una regla  com esta:
+>=20
+> iptables -t filter -A INPUT -s 192.168.1.1/32 -j ACCEPT
+>=20
+> y deseo saber cuando fue la ultima vez (HH:MM:SS) que me permitio
+> pasar trafico de la IP 192.168.1.1 hacia el Internet.
+>=20
 
-I am using kphone 4.2 in my setup, where I am connecting to the
-internet behind a router. What I observe is that my kphone client is
-unable to establish a secondary direct connection with the other
-user's  SIP client
+"man iptables" y busca LOG
 
-I think SIP allows a secondary direct connection, and netfilter ALGs
-have also been written to allow this ( ip_conntrack_sip.c and
-ip_nat_sip.c ).
+Tal vez algo como esto:
 
-Please let me know if this is a kphone client issue ( The client is
-not initiating a secondary connection ) or it is something else.
+iptables -N LOGGER
+iptables -t filter -A INPUT -s 192.168.1.1/32 -j LOGGER
+iptables -t filter -A LOGGER -j LOG
+iptables -t filter -A LOGGER -j ACCEPT
 
-Kindly CC me on the replies, I am not subscribed to the list yet.
+Se puede mirar los resultados en /var/log/messages.  Los datos al fin=20
+estan los mas recien.
 
-Regards
-Ashutosh
+(desculpame el espanol ;)
 
--------------------------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
