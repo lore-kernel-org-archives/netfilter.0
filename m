@@ -1,9 +1,11 @@
-From: "Patrick Cummings" <cummingspatrick@hotmail.com>
-Subject: Can't get access to local servers using external IP
-Date: Thu, 12 Oct 2006 23:08:19 -0400
-Message-ID: <BAY102-F34366D66CEBC07CEBB779FBC0A0@phx.gbl>
+From: "=?ISO-8859-1?Q?Pablo_Proa=F1o?=" <pabartur@gmail.com>
+Subject: Ultima vez que se uso una cadena??
+Date: Thu, 12 Oct 2006 22:09:41 -0500
+Message-ID: <298bd5800610122009w5f4c0cd1o89f2dba3ca58d865@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,44 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
-I've already posted this but it looks like it has been deleted or somehow 
-was not sent.
+Saludos:
 
-I have setup a linux router for my network. Everything works well except one 
-thing.
-It has three network connections. One is the Internet, another is a bridge 
-of network cards that is the LAN and the last one is a separate network used 
-as a SAN.
+Tal vez alguien me puede ayudar,  estoy desarrollando una aplicacion
+para la cual me seria de utilidad conocer cuando fue la ultima vez que
+se utilizo una regla de iptabels para filtrar o dejar pasar cierto
+contenido.
 
-The problem is that I can't access the local servers with the external 
-Internet IP.
-This worked before when I had my POS linksys router that I smashed into 
-pieces after the linux router was setup because I hated it.
-This creates some problems. For example, if I host something on my local 
-webserver (192.168.0.2) and somebody links to it from a webpage on an 
-external server and I click on it I can't get access. However it would work 
-if I was not a the LAN. So if I replace the IP address in the link with the 
-one of my LAN it will work. However that's a real mess, if there is a page 
-with like 50 pictures the 50 pictures will load for everybody except the 
-ones that are on the lan except if they were to click on each picture 
-manually and edit the adress so that it contains the LAN IP.
-Also I always need to log remotely to an outside computer to test if 
-services are accessible with the internet IP.
+(ACCEPT, DROP, REJECT)
 
-If it can help, here are the scripts I use to configure IPtables:
-(they are extremely hard to read....sorry)
-http://etherealnet.servehttp.com/patrick/iptables-start
-http://etherealnet.servehttp.com/patrick/iptables-start.conf
+por ejemplo tengo configurado en mi firewall una regla  com esta:
 
-http://etherealnet.servehttp.com/patrick/ifconfig
+iptables -t filter -A INPUT -s 192.168.1.1/32 -j ACCEPT
 
-I run Debian GNU/Linux with 2.6.8 kernel.
-I wish there is a quick way to fix this since my previous crappy router did 
-it so well.
-
-
+y deseo saber cuando fue la ultima vez (HH:MM:SS) que me permitio
+pasar trafico de la IP 192.168.1.1 hacia el Internet.
 
