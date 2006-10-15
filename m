@@ -1,12 +1,13 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: use of -m  limit for Syn Flood protection
-Date: Sun, 15 Oct 2006 14:24:31 +0200
-Message-ID: <4532287F.2040407@plouf.fr.eu.org>
-References: <4530E332.4090306@eccotours.co.za>
+Subject: Re: Can't get access to local servers using external IP
+Date: Sun, 15 Oct 2006 14:54:24 +0200
+Message-ID: <45322F80.3090502@plouf.fr.eu.org>
+References: <BAY102-F34366D66CEBC07CEBB779FBC0A0@phx.gbl>
+	<453111A5.8000603@rtij.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4530E332.4090306@eccotours.co.za>
+In-Reply-To: <453111A5.8000603@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,28 +23,28 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
-Brent Clark a =E9crit :
+Martijn Lievaart a =E9crit :
 >=20
-> # we allow 4 TCP connects per second, no more
-> $IPT -N syn-flood
-> $IPT -A syn-flood -m limit --limit 1/s --limit-burst 4 -j LOG=20
-> --log-level info --log-prefix '#### Syn Flood ####'
-> $IPT -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
-> $IPT -A syn-flood -j DROP
+> There are several ways you can make this work.
+>=20
+> 1) When packets from $local_lan arrive destined for the webserver, not=20
+> only DNAT them, but SNAT them as well to an ip of the firewall. The=20
+> disadvantage is that the webserverlogs will not acurately report the=20
+> source address for these connections. This is probably what the linksys=
+=20
+> did.
 
-This accepts only 1 packet per second after an initial 4-packet burst,=20
-and it logs *accepted* packets, not dropped ones. I am not sure this is=20
-what you want.
+Hint : using NETMAP to do the source NAT, you can do a 1:1 mapping so=20
+you can retrieve the original source address.
 
-You probably want something like this instead, assuming there is an=20
-ACCEPT rule later that matches these packets in the calling chain :
+[...]
+> 6) Probably lots of other solutions I didn't think about.
 
-$IPT -N syn-flood
-$IPT -A syn-flood -m limit --limit 4/s --limit-burst 4 -j RETURN
-$IPT -A syn-flood -j LOG --log-level info \
-   --log-prefix '#### Syn Flood ####'
-$IPT -A syn-flood -j DROP
+If you access the server by name instead of by IP address :
 
-You may also want to set a rate limit in the LOG rule not to prevent SYN=20
-flood but to prevent log flood. ;-)
+7) Put the private address and the name in the /etc/hosts file of your=20
+workstations. Quick and dirty, does not scale.
+
+8) Set up a "split DNS" server so the internal requests receive the=20
+private address and the external request receive the public address.
 
