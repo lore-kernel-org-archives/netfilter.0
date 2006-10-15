@@ -1,13 +1,12 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Can't get access to local servers using external IP
-Date: Sun, 15 Oct 2006 14:54:24 +0200
-Message-ID: <45322F80.3090502@plouf.fr.eu.org>
-References: <BAY102-F34366D66CEBC07CEBB779FBC0A0@phx.gbl>
-	<453111A5.8000603@rtij.nl>
+Subject: Re: Can't get access remote LAN through firewall
+Date: Sun, 15 Oct 2006 15:13:15 +0200
+Message-ID: <453233EB.3080404@plouf.fr.eu.org>
+References: <453178E2.5020602@gigared.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <453111A5.8000603@rtij.nl>
+In-Reply-To: <453178E2.5020602@gigared.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,28 +22,24 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
-Martijn Lievaart a =E9crit :
+piraguasu a =E9crit :
 >=20
-> There are several ways you can make this work.
->=20
-> 1) When packets from $local_lan arrive destined for the webserver, not=20
-> only DNAT them, but SNAT them as well to an ip of the firewall. The=20
-> disadvantage is that the webserverlogs will not acurately report the=20
-> source address for these connections. This is probably what the linksys=
+> I have two LAN, both connected to Internet through proxy/firewall on=20
+> Linux. One is my working LAN and other remote. I want to see internal=20
+> machines of remote LAN from any computers of my LAN, for this I setup a=
 =20
-> did.
+> tunnel and when the  firewall  is down in both LAN, all OK.
+>=20
+> When firewall is up, my problem is forwarding between tunnel device and=
+=20
+> internal card (eth1), I can't get pass through firewall, iptables rules=
+=20
+> don't work.
 
-Hint : using NETMAP to do the source NAT, you can do a 1:1 mapping so=20
-you can retrieve the original source address.
+Does the FORWARD chain contains rules which accept packets between the=20
+tunnel interface and the LAN interface in both directions ?
 
-[...]
-> 6) Probably lots of other solutions I didn't think about.
-
-If you access the server by name instead of by IP address :
-
-7) Put the private address and the name in the /etc/hosts file of your=20
-workstations. Quick and dirty, does not scale.
-
-8) Set up a "split DNS" server so the internal requests receive the=20
-private address and the external request receive the public address.
+Something like :
+iptables -A FORWARD -i eth1 -o tun0 -j ACCEPT
+iptables -A FORWARD -i tun0 -o eth1 -j ACCEPT
 
