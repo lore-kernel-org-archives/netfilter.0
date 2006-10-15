@@ -1,10 +1,11 @@
-From: piraguasu <grtruchet@gigared.com>
-Subject: Can't get access remote LAN through firewall
-Date: Sat, 14 Oct 2006 20:55:14 -0300
-Message-ID: <453178E2.5020602@gigared.com>
+From: "Patrick Cummings" <cummingspatrick@hotmail.com>
+Subject: Re: Can't get access to local servers using external IP
+Date: Sat, 14 Oct 2006 23:08:43 -0400
+Message-ID: <BAY102-F39C2BA72F1E93EAD2DD46DBC080@phx.gbl>
+References: <453111A5.8000603@rtij.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <453111A5.8000603@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,22 +17,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: m@rtij.nl
+Cc: netfilter@lists.netfilter.org
 
-Hi All
+>Your workstation sends a packet to $public_ip, which gets DNATted to 
+>192.168.0.2. The webservers sees a packet from $workstation so responds 
+>there. That return packet never traverses the firewall again, as 
+>$workstation is on the same local subnet. Your workstation is expecting a 
+>reply from $public_ip, so it ignores the return packet from 192.168.0.2.
+>
+>There are several ways you can make this work.
+>
+>1) When packets from $local_lan arrive destined for the webserver, not only 
+>DNAT them, but SNAT them as well to an ip of the firewall. The disadvantage 
+>is that the webserverlogs will not acurately report the source address for 
+>these connections. This is probably what the linksys did.
+>
+>2) Set up a DMZ, put the webserver in the DMZ. You need another nic in the 
+>firewall, but it is a very clean solution.
+>
+>3) Fake a DMZ, don't put another nic in the server but configure two 
+>network segments on the same phyisical LAN. Dirty. Don't go there unless 
+>you understand perfectly what it does.
+>
+>4) Use mod_proxy on the firewall instead of DNAT. I do this all the time 
+>and it works perfectly. As an added advantage, you can map multiple 
+>(probably internal) webservers to different paths on your public webserver.
+>
+>5) Use DNAT on your workstation to translate $public_ip to 192.168.0.2 (for 
+>port 80 and 443). Obviously this doesn't scale, but may be the simplest 
+>solution.
+>
+>6) Probably lots of other solutions I didn't think about.
+>
+>HTH,
+>M4
 
-I have two LAN, both connected to Internet through proxy/firewall on 
-Linux. One is my working LAN and other remote. I want to see internal 
-machines of remote LAN from any computers of my LAN, for this I setup a 
-tunnel and when the  firewall  is down in both LAN, all OK.
+wow thanks a lot that makes perfect sense. I'm for sure going to do #1, as 
+it seems the most secure and scalable. Thanks for your time really
 
-When firewall is up, my problem is forwarding between tunnel device and 
-internal card (eth1), I can't get pass through firewall, iptables rules 
-don't work.
 
-Forwarding is enabled in the systems "/proc/sys/net/ipv4/ip_forward = 1"
-
-Why iptables FORWARD don't work.
-
-Who can help me?
 
