@@ -1,13 +1,16 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: Two identical ips connected
-Date: Mon, 16 Oct 2006 19:08:41 +0200
-Message-ID: <4533BC99.6010800@rtij.nl>
-References: <20061016095557.058bbde3@vmm1.chaosbringer.de>	<49542.193.173.147.3.1160991666.squirrel@webmail.sterenborg.info>
-	<20061016120211.6ab1d49b@vmm1.chaosbringer.de>
+From: Alberto Negri <negri@cs.unibo.it>
+Subject: Re: hi all
+Date: Mon, 16 Oct 2006 17:26:46 +0000
+Message-ID: <20061016172646.2b82a25d@localhost>
+References: <20061015171523.3ac5ebe3@localhost>
+	<20061016110201.58e06085@localhost>
+	<58531.193.173.147.3.1160999859.squirrel@webmail.sterenborg.info>
+	<20061016122458.56980859@localhost>
+	<65468.193.173.147.3.1161003117.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20061016120211.6ab1d49b@vmm1.chaosbringer.de>
+In-Reply-To: <65468.193.173.147.3.1161003117.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,61 +21,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Julian Hagenauer <chaosbringer@gmx.de>
-Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Julian Hagenauer wrote:
+On Mon, 16 Oct 2006 14:51:57 +0200 (CEST)
+"Rob Sterenborg" <rob@sterenborg.info> wrote:
 
->Hi
->
->  
->
->>If you packet would make it to the router and the router had this configuration:
->>- eth0: 192.168.1.0/24
->>- eth1: 192.168.1.0/24
->>the router cannot distinguish the subnets.
->>
->>    
->>
->
->Why so complicated.
->eth0: 192.168.1.4
->eth1: 192.168.1.4
->
->(Hostbased routing) would be enough. Sure the router can not distinguish between the IPs, but he could distinguish between the MACs, so would it be possible to do Masquerading based on MAC-Adresses?
->
->  
->
->>But you'd not even get that far.
->>When you send a packet from a client to the server and this server has same IP
->>as the client (thus src and dst IP are the same), then the packet wouldn't
->>even make it to the router: it would be sent to itself.
->>    
->>
->
->Mhm, i don't understand that. Let me explain my setup in greater detail:
->
->	Server1---------|
->			|
->			|
->			|
->	Server2-------Router-------Client
->			|
->			|
->			DB
->
->I want that Server 1 and Server2 have the same IP, although only Server1 should be accessible for clients.
->The reason for that is, that i want do some kind of load-balancing.
->The problem is, that both Servers need permanent access to the db, so the router should somehow translate/masquerade the ip of the server2, so that both servers can access the db at the same time.
->
->  
->
+> In fact I wasn't really helping you and for my answer the information was not
+> relevant; also, your problem didn't go away (yet?). :-)
+> I was responding to what people suggested and I suggest that if you're having
+> a problem using iptables-[save|restore] you can write a script that works for
+> you.
 
-Give both servers their own IP. Give one of the servers also the IP the 
-clients use to access the server. When that server fails, assign that IP 
-to the second server (also as secondary!) instead.
+Really i has no problem...as like you suggesed me(the same suggestion of Taube) i wrote a 
+scritp. I was interested in helping netfilter comunity...as "i has a bug" (not sure ;) ).
+ 
+> > So debug of those tools will be neglected?
+> 
+> I don't know if it is. (Can't imagine, but this is a user list; not developer)
 
-M4
+You're right...but before spam into devel ml, i decided to spam here :D
+Hearing some expert user is always better ;)
+ 
+> > P.S.: the point was not to make my firewall working...the point is
+> > understanding why those tools does not work. ;) but if that does not interest
+> > at netfilter mailing list...
+> 
+> Well, I'm not using it so no: I'm not really that interested. But others may
+> be. ;-)
+> The latest version of iptables is 1.3.6. Since you're using 1.3.5, the latest
+> version may solve your problem with iptables-[save|restore].
 
+Ok...but before i'll see changelog ;)
+
+Do you think that this problem could be interesting for developers? 
+Is there some way to let it see at some devel before posting (and probably spamming) on devel
+mailing list?
+
+> Grts,
+> Rob
+
+thanks and bye
+Alberto
+
+ 
 
