@@ -1,13 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Can't get access to local servers using external IP
-Date: Sun, 15 Oct 2006 20:21:16 +0200
-Message-ID: <45327C1C.1090507@plouf.fr.eu.org>
-References: <BAY102-F34366D66CEBC07CEBB779FBC0A0@phx.gbl>	<453111A5.8000603@rtij.nl>	<45322F80.3090502@plouf.fr.eu.org>
-	<45327853.4070101@rtij.nl>
+From: Monty Ree <montyree2@yahoo.com>
+Subject: How to disable ip_conntrack function?
+Date: Sun, 15 Oct 2006 19:04:47 -0700 (PDT)
+Message-ID: <20061016020447.532.qmail@web56109.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45327853.4070101@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +15,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Martijn Lievaart a =E9crit :
->
->> 8) Set up a "split DNS" server so the internal requests receive the=20
->> private address and the external request receive the public address.
->=20
-> I do that too, it may actually be the best advice from this list.
+Hello.. 
 
-Nooo, we're on a Netfilter/iptables list !
+As I know, connection tracking(conntrack) requires
+some memory at busy server. 
+So I would like to disable conntrack function to
+improve performance. 
 
-> A bitch to set up[1], but once it's working it works like a charm.
+And I disabled "state" match
+support(CONFIG_NETFILTER_XT_MATCH_STATE)" at kernel
+menu. 
+But  I can see like below related conntrack. 
+I just selected only this menu. 
 
-Well, it depends a lot on what you've got.
+Netfilter Xtables support (required for ip_tables) 
+Connection tracking (required for masq/NAT) 
+FTP protocol support IP tables support (required for
+filtering/masq/NAT) 
+Packet filtering 
+REJECT target support Full NAT 
+Packet mangling 
+TOS target support 
 
-If you have your own Bind9 authoritative DNS server for the name, you=20
-must set up "views". May be heavy.
+and linux kernel is 2.6.17. 
 
-If you have a DNS relay running dnsmasq, you just need to put the name=20
-in the /etc/hosts file of the box running dnsmasq. Easy.
+
+How can I disable conntrack function? 
+
+and what's the difference between
+net.ipv4.ip_conntrack_max and
+net.ipv4.netfilter.ip_conntrack_max? 
+
+
+# sysctl -a|grep conntrack 
+net.ipv4.ip_conntrack_max = 365536 
+net.ipv4.netfilter.ip_conntrack_tcp_max_retrans = 3 
+net.ipv4.netfilter.ip_conntrack_tcp_be_liberal = 0 
+net.ipv4.netfilter.ip_conntrack_tcp_loose = 3 
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_max_retrans
+= 300 
+net.ipv4.netfilter.ip_conntrack_log_invalid = 0 
+net.ipv4.netfilter.ip_conntrack_generic_timeout = 600 
+net.ipv4.netfilter.ip_conntrack_icmp_timeout = 30 
+net.ipv4.netfilter.ip_conntrack_udp_timeout_stream =
+180 
+net.ipv4.netfilter.ip_conntrack_udp_timeout = 30 
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_close = 10
+
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_time_wait
+= 120 
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_last_ack =
+30 
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_close_wait
+= 60 
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_fin_wait =
+120 
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_established
+= 432000 
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_syn_recv =
+60 
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_syn_sent =
+120 
+net.ipv4.netfilter.ip_conntrack_checksum = 1 
+net.ipv4.netfilter.ip_conntrack_buckets = 8192 
+net.ipv4.netfilter.ip_conntrack_count = 1790 
+net.ipv4.netfilter.ip_conntrack_max = 365536 
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
