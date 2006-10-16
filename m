@@ -1,13 +1,12 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: query regarding hashlimit using ipset src,dst tuple
-Date: Mon, 16 Oct 2006 11:19:14 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0610161101350.15489@blackhole.kfki.hu>
-References: <001001c6f07e$9c290f80$0201a8c0@synapse.com> 
-	<Pine.LNX.4.58.0610160858240.15459@blackhole.kfki.hu>
-	<b322db070610160154g13f52818o32d0f7134c6d051@mail.gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: Two identical ips connected
+Date: Mon, 16 Oct 2006 11:41:06 +0200 (CEST)
+Message-ID: <49542.193.173.147.3.1160991666.squirrel@webmail.sterenborg.info>
+References: <20061016095557.058bbde3@vmm1.chaosbringer.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <b322db070610160154g13f52818o32d0f7134c6d051@mail.gmail.com>
+In-Reply-To: <20061016095557.058bbde3@vmm1.chaosbringer.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +17,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Retesh <retesh.chadha@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Mon, 16 Oct 2006, Retesh wrote:
 
-> Can you let us know the way to AND 2 ipsets, with an example. It will
-> be really useful.
+On Mon, October 16, 2006 09:55, Julian Hagenauer wrote:
+> Hi,
+> is it possible somehow possible to attach two computers with the same i=
+p to a
+> router, and let the router rewrite/masquerade the ip of one of those co=
+mputers
+> with iptables, so that both could be accessed with different ips?
 
-Let's assume a bunch of servers (the IP addresses stored in the set
-'servers') and a bunch of clients (the IP addresses stored in 'clients')
-and one wants to allow any listed client to access any listed server:
+I don't think you can.
 
-iptables -A <chain> -m set --set clients src \
-	            -m set --set servers dst \
-		    -j ACCEPT
+> Can you give my some hints how this could be achieved?
 
-Or if you want to restrict the access to the given list of services on the
-servers (port numbers are stored in 'services'), assuming the same list of
-services on each server:
+If you packet would make it to the router and the router had this configu=
+ration:
+- eth0: 192.168.1.0/24
+- eth1: 192.168.1.0/24
+the router cannot distinguish the subnets.
 
-iptables -A <chain> -m set --set clients src \
-	            -m set --set servers dst \
-		    -m set --set services dst \
-		    -j ACCEPT
+But you'd not even get that far.
+When you send a packet from a client to the server and this server has sa=
+me IP
+as the client (thus src and dst IP are the same), then the packet wouldn'=
+t
+even make it to the router: it would be sent to itself.
 
-Or if the list of services are different on the servers, then one can use
-an ipporthash type of set to store (server IP, service port) pairs in
-'server-service' and write:
 
-iptables -A <chain> -m set --set clients src \
-	            -m set --set server-service dst,dst \
-		    -j ACCEPT
+Grts,
+Rob
 
-Hope it helps,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+
 
