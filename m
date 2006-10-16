@@ -1,16 +1,18 @@
-From: Alberto Negri <negri@cs.unibo.it>
-Subject: Re: hi all
-Date: Mon, 16 Oct 2006 17:26:46 +0000
-Message-ID: <20061016172646.2b82a25d@localhost>
-References: <20061015171523.3ac5ebe3@localhost>
-	<20061016110201.58e06085@localhost>
-	<58531.193.173.147.3.1160999859.squirrel@webmail.sterenborg.info>
-	<20061016122458.56980859@localhost>
-	<65468.193.173.147.3.1161003117.squirrel@webmail.sterenborg.info>
+From: Kamal <kamash@gmail.com>
+Subject: Re: NAT POSTROUTING accounting
+Date: Mon, 16 Oct 2006 20:40:25 +0300
+Message-ID: <8a1be4700610161040g70d38874gf3d9fb1fe629d84@mail.gmail.com>
+References: <8a1be4700610150743t6c089bfcm7648174d88793c00@mail.gmail.com>
+	<45327967.8080406@rtij.nl>
+	<8a1be4700610160500r3bee8e52taa1e7f0c4765eb8c@mail.gmail.com>
+	<45337B04.4040808@freemail.hu>
+	<8a1be4700610160622q533ac28di9ab37f5735ddd554@mail.gmail.com>
+	<45339128.4010609@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <65468.193.173.147.3.1161003117.squirrel@webmail.sterenborg.info>
+In-Reply-To: <45339128.4010609@freemail.hu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,48 +23,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Mon, 16 Oct 2006 14:51:57 +0200 (CEST)
-"Rob Sterenborg" <rob@sterenborg.info> wrote:
+On 10/16/06, G=E1sp=E1r Lajos <swifty@freemail.hu> wrote:
 
-> In fact I wasn't really helping you and for my answer the information was not
-> relevant; also, your problem didn't go away (yet?). :-)
-> I was responding to what people suggested and I suggest that if you're having
-> a problem using iptables-[save|restore] you can write a script that works for
-> you.
 
-Really i has no problem...as like you suggesed me(the same suggestion of Taube) i wrote a 
-scritp. I was interested in helping netfilter comunity...as "i has a bug" (not sure ;) ).
- 
-> > So debug of those tools will be neglected?
-> 
-> I don't know if it is. (Can't imagine, but this is a user list; not developer)
+mangle POSTROUTING comes before nat POSTROUTING so nat POSTROUTING is
+the last chain in a packet traversal as per:
+http://iptables-tutorial.frozentux.net/images/tables_traverse.jpg
 
-You're right...but before spam into devel ml, i decided to spam here :D
-Hearing some expert user is always better ;)
- 
-> > P.S.: the point was not to make my firewall working...the point is
-> > understanding why those tools does not work. ;) but if that does not interest
-> > at netfilter mailing list...
-> 
-> Well, I'm not using it so no: I'm not really that interested. But others may
-> be. ;-)
-> The latest version of iptables is 1.3.6. Since you're using 1.3.5, the latest
-> version may solve your problem with iptables-[save|restore].
+So replying to your email:
+> 1. You may do some changes on the packets... (SNAT/DNAT, etc...)
+How  would SNAT or DNAT help in accounting?
 
-Ok...but before i'll see changelog ;)
+> 2.a. You have to mark or identify the packets you want to count in other
+> chains ... (MARK target or direct rules)
+Since nat POSTROUTING is the last chain I wouldn't be able to mark it
+after the packet is SNATte'd.
 
-Do you think that this problem could be interesting for developers? 
-Is there some way to let it see at some devel before posting (and probably spamming) on devel
-mailing list?
+> 2.b. You can use the mangle POSTROUTING chain for counting specified
+> packets because this is the "last" chain BEFORE every packet leaves the
+> system.
+> (I know that there is a "raw" table...)
+As I said POSTROUTING mangle comes before POSTROUTING nat.
 
-> Grts,
-> Rob
+If it were after it then I would have the following:
 
-thanks and bye
-Alberto
+ iptables -t nat -I POSTROUTING -o eth0 -p tcp --dport 80 -j SNAT --to
+192.168.0.1
+ iptables -t nat -I POSTROUTING -o eth0 -p tcp --dport 25 -j SNAT --to
+192.168.0.1
+ iptables -t nat -I POSTROUTING -o eth0 -p tcp --dport 443 -j SNAT --to
+192.168.0.1
+ iptables -t nat -I POSTROUTING -o eth0 -j SNAT --to  192.168.0.2
 
- 
+then I would have added
+iptables -t mangle -I POSTROUTING -o eth0 -s 192.168.0.1 -j ACCEPT
+iptables -t mangle -I POSTROUTING -o eth0 -s 192.168.0.2 -j ACCEPT
+
+which would have been a nice solution
+
+But since mangle POSTROUTING is before nat POSTROUTING, then the above
+wouldn't work & I would have to add a statement in mangle POSTROUTING
+for every nat rule:
+iptables -t mangle -I POSTROUTING -o eth0 -p tcp --dport 80 -j ACCEPT
+iptables -t mangle-I POSTROUTING -o eth0 -p tcp --dport 25 -j ACCEPT
+iptables -t mangle -I POSTROUTING -o eth0 -p tcp --dport 443 -j ACCEPT
+iptables -t mangle -I POSTROUTING -o eth0 -j ACCEPT
+
+And that's what I meant by "not very graceful".
+
+Thanks
 
