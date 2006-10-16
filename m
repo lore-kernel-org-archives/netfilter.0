@@ -1,10 +1,13 @@
-From: Monty Ree <montyree2@yahoo.com>
-Subject: How to disable ip_conntrack function?
-Date: Sun, 15 Oct 2006 19:04:47 -0700 (PDT)
-Message-ID: <20061016020447.532.qmail@web56109.mail.re3.yahoo.com>
+From: Bo Yang <struggle@mail.nankai.edu.cn>
+Subject: Re: query regarding hashlimit using ipset src,dst tuple
+Date: Mon, 16 Oct 2006 14:36:11 +0800
+Message-ID: <360980823.25277@mail.nankai.edu.cn>
+References: <360933340.11695@mail.nankai.edu.cn>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Message-ID: <4533285B.8040609@mail.nankai.edu.cn>
+In-Reply-To: <360933340.11695@mail.nankai.edu.cn>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,77 +19,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Cc: netfilter@lists.netfilter.org
 
-Hello.. 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+ 
+Manish Jain :
+> Hi,
+>
+> I have a requirement as follows -
+>
+> Say there are 2 source IPs - src1 and src2, and 2 destination IP - dst1,
+> dst2.
+> I need to limit src1->dst1 as well as src2-dst2 communication but want
+> unlimited src2->dst1 communication.
+> I have a ipset KNOWN, which contains src1, src2, dst1, dst2
+>
+> Now i write a rule as follows -
+> iptables -A INPUT_CHAIN --match hashlimit --hashlimit 1000/s
+> --hashlimit-mode srcipdstip --hashlimit-name foo -m set --set KNOWN
+> src,dst -j ACCEPT
+>
+> But this will limit the src2->dst1 communication as well, which I dont
+want.
+>
+> 1. Is there a way to add ip1,ip2 as a tuple in a ipset the way we can
+do for
+> ip1%port?
+Yes , look the ipset manual to find the binding .
+> 2. Is there a mode which can help me do this, using a single iptable
+rule as
+> above?
+Following maybe :
+ipset -N from  ipmap --network 192.168.0.0/24
+ipset -A from src1
+ipset -A from src2
 
-As I know, connection tracking(conntrack) requires
-some memory at busy server. 
-So I would like to disable conntrack function to
-improve performance. 
+ipset -N to ipmap --network 192.168.0.0/24
+ipset -A to dst1
+ipset -A to dst2
 
-And I disabled "state" match
-support(CONFIG_NETFILTER_XT_MATCH_STATE)" at kernel
-menu. 
-But  I can see like below related conntrack. 
-I just selected only this menu. 
+ipset -B from default -b to
 
-Netfilter Xtables support (required for ip_tables) 
-Connection tracking (required for masq/NAT) 
-FTP protocol support IP tables support (required for
-filtering/masq/NAT) 
-Packet filtering 
-REJECT target support Full NAT 
-Packet mangling 
-TOS target support 
+iptables -A INPUT_CHAIN --match hashlimit --hashlimit 1000/s
+- --hashlimit-mode srcipdstip --hashlimit-name foo -m set --set KNOWN
+src,dst -j ACCEPT
 
-and linux kernel is 2.6.17. 
+> 3. Is there a way to specify multiple ipsets in 1 iptable rule?
+I think one set with its bindings can do everything for you ~
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+ 
+iD8DBQFFMyha7tZp58UCwyMRAhWDAJ9o8DdSFxcMDUbK8djcqtTF3Va7MACgsbU1
+e5JKNYI/P62IGXKtVD3i7wY=
+=mDXZ
+-----END PGP SIGNATURE-----
 
-
-How can I disable conntrack function? 
-
-and what's the difference between
-net.ipv4.ip_conntrack_max and
-net.ipv4.netfilter.ip_conntrack_max? 
-
-
-# sysctl -a|grep conntrack 
-net.ipv4.ip_conntrack_max = 365536 
-net.ipv4.netfilter.ip_conntrack_tcp_max_retrans = 3 
-net.ipv4.netfilter.ip_conntrack_tcp_be_liberal = 0 
-net.ipv4.netfilter.ip_conntrack_tcp_loose = 3 
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_max_retrans
-= 300 
-net.ipv4.netfilter.ip_conntrack_log_invalid = 0 
-net.ipv4.netfilter.ip_conntrack_generic_timeout = 600 
-net.ipv4.netfilter.ip_conntrack_icmp_timeout = 30 
-net.ipv4.netfilter.ip_conntrack_udp_timeout_stream =
-180 
-net.ipv4.netfilter.ip_conntrack_udp_timeout = 30 
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_close = 10
-
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_time_wait
-= 120 
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_last_ack =
-30 
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_close_wait
-= 60 
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_fin_wait =
-120 
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_established
-= 432000 
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_syn_recv =
-60 
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_syn_sent =
-120 
-net.ipv4.netfilter.ip_conntrack_checksum = 1 
-net.ipv4.netfilter.ip_conntrack_buckets = 8192 
-net.ipv4.netfilter.ip_conntrack_count = 1790 
-net.ipv4.netfilter.ip_conntrack_max = 365536 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
