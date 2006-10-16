@@ -1,14 +1,13 @@
-From: Alberto Negri <negri@cs.unibo.it>
-Subject: Re: hi all
-Date: Mon, 16 Oct 2006 12:24:58 +0000
-Message-ID: <20061016122458.56980859@localhost>
-References: <20061015171523.3ac5ebe3@localhost>
-	<20061016110201.58e06085@localhost>
-	<58531.193.173.147.3.1160999859.squirrel@webmail.sterenborg.info>
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: NAT POSTROUTING accounting
+Date: Mon, 16 Oct 2006 14:28:52 +0200
+Message-ID: <45337B04.4040808@freemail.hu>
+References: <8a1be4700610150743t6c089bfcm7648174d88793c00@mail.gmail.com>	<45327967.8080406@rtij.nl>
+	<8a1be4700610160500r3bee8e52taa1e7f0c4765eb8c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <58531.193.173.147.3.1160999859.squirrel@webmail.sterenborg.info>
+In-Reply-To: <8a1be4700610160500r3bee8e52taa1e7f0c4765eb8c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,68 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Kamal <kamash@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On Mon, 16 Oct 2006 13:57:39 +0200 (CEST)
-"Rob Sterenborg" <rob@sterenborg.info> wrote:
+Kamal =EDrta:
+> On 10/15/06, Martijn Lievaart <m@rtij.nl> wrote:
+>
+>> Create a seperate rule in FORWARD that jumps to an empty chain. Put th=
+is
+>> rule before the -m state rule(s).
+>
+> I will try to guess that by FORWARD you mean the filter FORWARD chain
+> (as opposed to mangle FORWARD), & the empty chain that you're
+> referring to is a user-defined chain,
+> but I didn't get what you eman by "the -m state rule" since in my
+> example I didn't use the state module.
+>
+> But in any case, doesn't the FORWARD chain only accounts for forwarded
+> packets through the machine. What about locally generated packets?
+>
+> Thanks
+>
 
-LOG_LEVEL=1 :D
+Maybe you can use the mangle POSTROUTING chain...
 
-The most difficult thing speaking with expert linux user is setup the right log_level :D (when you don't post infos other says you: "post same datails...how do you think we can help you without them?", when you post too many datails...)
-Anyway thanks for your replay, Rob! ;)
-So debug of those tools will be neglected? 
-
-Thanks all in particular at Rob 
-Al
-
-P.S.: the point was not to make my firewall working...the point is understanding why those tools does not work. ;) but if that does not interest at netfilter mailing list...
-
-P.P.S.: sorry for my bad english :P
-
-> On Mon, October 16, 2006 13:02, Alberto Negri wrote:
-> > On Sun, 15 Oct 2006 17:15:23 +0000
-> > Alberto Negri <negri@cs.unibo.it> wrote:
-> >
-> >
-> > any suggestions? am i wrong Mailing list? ping :) Alberto
-> >
-> >> hi all,
-> >>
-> >> i post here after spoke with people into #iptables irc channel in particular
-> >> with "Taube". At the end of my problem explanation he suggested me to use a
-> >> script instead of iptables-{save,restore} commands, but reading iptables
-> >> tutorial in particular here:
-> >> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#SAVEANDRESTOR
-> >> E i get the advice to use iptables-{save,restore} instead of a bash
-> >> script...now i thought to post here... So now my problem:
-> >>
-> >> Using iptables-{save,restore} on a gentoo box iptables crashes at start up.
-> >>  my error message(doing /etc/init.d/iptables start):
-> 
-> [Snip lots of info]
-> 
-> I thought that the main benefit of these script was speed when
-> saving/restoring rules (someone please correct me if I'm wrong). I don't think
-> your ruleset is big enough to notice the difference.
-> 
-> If you're having trouble using iptables-[save|restore] then you can create
-> your own script: it's just a matter of preference.
-> 
-> 
-> Gr,
-> Rob
-> 
-> 
-> 
-
-
--- 
-Undergraduate student at Computer Science, University of Bologna.
-Icq number: 79465051
-Web page: www.cs.unibo.it/~negri
-Gpg-id: 1024D/E96025D7
-Fingerprint: 2C6A 3E88 05AB 5B21 82E8  4A80 C357 1E37 E960 25D7
-
- 
+Swifty
 
