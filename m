@@ -1,11 +1,13 @@
-From: Brent Clark <bclark@eccotours.co.za>
-Subject: trying different TCP flags for extra protections (probally false
- sense of security)
-Date: Mon, 16 Oct 2006 17:29:28 +0200
-Message-ID: <4533A558.9090701@eccotours.co.za>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Two identical ips connected
+Date: Mon, 16 Oct 2006 19:08:41 +0200
+Message-ID: <4533BC99.6010800@rtij.nl>
+References: <20061016095557.058bbde3@vmm1.chaosbringer.de>	<49542.193.173.147.3.1160991666.squirrel@webmail.sterenborg.info>
+	<20061016120211.6ab1d49b@vmm1.chaosbringer.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20061016120211.6ab1d49b@vmm1.chaosbringer.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,52 +19,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Julian Hagenauer <chaosbringer@gmx.de>
+Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
 
-Hey all
+Julian Hagenauer wrote:
 
-I have added some extra checking for my ruleset. Would anyone care to please overlook them.
-The INPUT, FORWARD and OUTPUT is all set to DROP
+>Hi
+>
+>  
+>
+>>If you packet would make it to the router and the router had this configuration:
+>>- eth0: 192.168.1.0/24
+>>- eth1: 192.168.1.0/24
+>>the router cannot distinguish the subnets.
+>>
+>>    
+>>
+>
+>Why so complicated.
+>eth0: 192.168.1.4
+>eth1: 192.168.1.4
+>
+>(Hostbased routing) would be enough. Sure the router can not distinguish between the IPs, but he could distinguish between the MACs, so would it be possible to do Masquerading based on MAC-Adresses?
+>
+>  
+>
+>>But you'd not even get that far.
+>>When you send a packet from a client to the server and this server has same IP
+>>as the client (thus src and dst IP are the same), then the packet wouldn't
+>>even make it to the router: it would be sent to itself.
+>>    
+>>
+>
+>Mhm, i don't understand that. Let me explain my setup in greater detail:
+>
+>	Server1---------|
+>			|
+>			|
+>			|
+>	Server2-------Router-------Client
+>			|
+>			|
+>			DB
+>
+>I want that Server 1 and Server2 have the same IP, although only Server1 should be accessible for clients.
+>The reason for that is, that i want do some kind of load-balancing.
+>The problem is, that both Servers need permanent access to the db, so the router should somehow translate/masquerade the ip of the server2, so that both servers can access the db at the same time.
+>
+>  
+>
 
-Ive been googling for examples and reading Oskar Andreasson iptables document, but im still worried that im doing something wrong.
+Give both servers their own IP. Give one of the servers also the IP the 
+clients use to access the server. When that server fails, assign that IP 
+to the second server (also as secondary!) instead.
 
-# Limit 12 connections per second (burst to 24)
-$IPT -N syn-flood
-$IPT -A syn-flood -m limit --limit 12/s --limit-burst 24 -j RETURN
-$IPT -A syn-flood -j LOG --log-level info --log-prefix '#### Syn Flood ####'
-$IPT -A syn-flood -j DROP
-
-$IPT -N bad_tcp_packets
-$IPT -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j LOG --log-prefix "New not syn:"
-$IPT -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -j DROP
-$IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 5/m -j LOG --log-level info --log-prefix '#### Stealth Scan ####'
-$IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK,FIN,RST RST -j DROP
-$IPT -A bad_tcp_packets -p tcp --tcp-flags ALL FIN,URG,PSH -m limit --limit 5/m -j LOG --log-level info --log-prefix '#### XMAS Scan ####'
-$IPT -A bad_tcp_packets -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
-$IPT -A bad_tcp_packets -p tcp --tcp-flags ALL NONE -m limit --limit 5/m -j LOG --log-level info --log-prefix '#### NULL Scan ####'
-$IPT -A bad_tcp_packets -p tcp --tcp-flags ALL NONE -j DROP
-$IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,RST SYN,RST -m limit --limit 5/m -j LOG --log-level info --log-prefix '#### SYN/RST Scan ####'
-$IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-$IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,FIN SYN,FIN -m limit --limit 5/m -j LOG --log-level info --log-prefix '#### SYN/FIN Scan ####'
-$IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-$IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK -m state --state NEW -m limit --limit 5/m -j LOG --log-level info --log-prefix '#### SYN/ACK Scan ####'
-$IPT -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK -m state --state NEW -j REJECT --reject-with tcp-reset
-
-$IPT -t filter -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Checking for naughty packets
-$IPT -A FORWARD -p tcp --syn -j syn-flood
-$IPT -A FORWARD -p tcp -j bad_tcp_packets
-
-$IPT -t filter -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Checking for naughty packets
-$IPT -A INPUT -p tcp --syn -j syn-flood
-$IPT -A INPUT -p tcp -j bad_tcp_packets
-
-Thank you in advance.
-
-Kind Regarda
-Brent Clark
+M4
 
 
