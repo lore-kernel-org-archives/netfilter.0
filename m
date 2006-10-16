@@ -1,16 +1,13 @@
-From: Kamal <kamash@gmail.com>
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
 Subject: Re: NAT POSTROUTING accounting
-Date: Mon, 16 Oct 2006 16:22:50 +0300
-Message-ID: <8a1be4700610160622q533ac28di9ab37f5735ddd554@mail.gmail.com>
-References: <8a1be4700610150743t6c089bfcm7648174d88793c00@mail.gmail.com>
-	<45327967.8080406@rtij.nl>
-	<8a1be4700610160500r3bee8e52taa1e7f0c4765eb8c@mail.gmail.com>
-	<45337B04.4040808@freemail.hu>
+Date: Mon, 16 Oct 2006 16:03:20 +0200
+Message-ID: <45339128.4010609@freemail.hu>
+References: <8a1be4700610150743t6c089bfcm7648174d88793c00@mail.gmail.com>	<45327967.8080406@rtij.nl>	<8a1be4700610160500r3bee8e52taa1e7f0c4765eb8c@mail.gmail.com>	<45337B04.4040808@freemail.hu>
+	<8a1be4700610160622q533ac28di9ab37f5735ddd554@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45337B04.4040808@freemail.hu>
-Content-Disposition: inline
+In-Reply-To: <8a1be4700610160622q533ac28di9ab37f5735ddd554@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,35 +19,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Kamal <kamash@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-This is one way, but isn't there a more graceful way other than
-putting duplicate entries in NAT POSTROUTING & mangle POSTROUTING.
+Kamal =EDrta:
+> This is one way, but isn't there a more graceful way other than
+> putting duplicate entries in NAT POSTROUTING & mangle POSTROUTING.
+>
+> Thanks
+>
+Hmm... I do not understand you clearly... What do you mean "more=20
+graceful"... ? :)
 
-Thanks
+1. You may do some changes on the packets... (SNAT/DNAT, etc...)
 
-On 10/16/06, G=E1sp=E1r Lajos <swifty@freemail.hu> wrote:
-> Kamal =EDrta:
-> > On 10/15/06, Martijn Lievaart <m@rtij.nl> wrote:
-> >
-> >> Create a seperate rule in FORWARD that jumps to an empty chain. Put th=
-is
-> >> rule before the -m state rule(s).
-> >
-> > I will try to guess that by FORWARD you mean the filter FORWARD chain
-> > (as opposed to mangle FORWARD), & the empty chain that you're
-> > referring to is a user-defined chain,
-> > but I didn't get what you eman by "the -m state rule" since in my
-> > example I didn't use the state module.
-> >
-> > But in any case, doesn't the FORWARD chain only accounts for forwarded
-> > packets through the machine. What about locally generated packets?
-> >
-> > Thanks
-> >
->
-> Maybe you can use the mangle POSTROUTING chain...
->
-> Swifty
->
+2.a. You have to mark or identify the packets you want to count in other=20
+chains ... (MARK target or direct rules)
+
+2.b. You can use the mangle POSTROUTING chain for counting specified=20
+packets because this is the "last" chain BEFORE every packet leaves the=20
+system.
+(I know that there is a "raw" table...)
+
+So... How do you want to do it "more graceful" ?
+
+Swifty
 
