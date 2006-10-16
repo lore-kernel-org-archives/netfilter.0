@@ -1,13 +1,14 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: hi all
-Date: Mon, 16 Oct 2006 13:57:39 +0200 (CEST)
-Message-ID: <58531.193.173.147.3.1160999859.squirrel@webmail.sterenborg.info>
-References: <20061015171523.3ac5ebe3@localhost>
-	<20061016110201.58e06085@localhost>
+From: Kamal <kamash@gmail.com>
+Subject: Re: NAT POSTROUTING accounting
+Date: Mon, 16 Oct 2006 15:00:13 +0300
+Message-ID: <8a1be4700610160500r3bee8e52taa1e7f0c4765eb8c@mail.gmail.com>
+References: <8a1be4700610150743t6c089bfcm7648174d88793c00@mail.gmail.com>
+	<45327967.8080406@rtij.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20061016110201.58e06085@localhost>
+In-Reply-To: <45327967.8080406@rtij.nl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,48 +19,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Mon, October 16, 2006 13:02, Alberto Negri wrote:
-> On Sun, 15 Oct 2006 17:15:23 +0000
-> Alberto Negri <negri@cs.unibo.it> wrote:
->
->
-> any suggestions? am i wrong Mailing list? ping :) Alberto
->
->> hi all,
->>
->> i post here after spoke with people into #iptables irc channel in part=
-icular
->> with "Taube". At the end of my problem explanation he suggested me to =
-use a
->> script instead of iptables-{save,restore} commands, but reading iptabl=
-es
->> tutorial in particular here:
->> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#SAVEANDR=
-ESTOR
->> E i get the advice to use iptables-{save,restore} instead of a bash
->> script...now i thought to post here... So now my problem:
->>
->> Using iptables-{save,restore} on a gentoo box iptables crashes at star=
-t up.
->>  my error message(doing /etc/init.d/iptables start):
+On 10/15/06, Martijn Lievaart <m@rtij.nl> wrote:
 
-[Snip lots of info]
+> Create a seperate rule in FORWARD that jumps to an empty chain. Put this
+> rule before the -m state rule(s).
 
-I thought that the main benefit of these script was speed when
-saving/restoring rules (someone please correct me if I'm wrong). I don't =
-think
-your ruleset is big enough to notice the difference.
+I will try to guess that by FORWARD you mean the filter FORWARD chain
+(as opposed to mangle FORWARD), & the empty chain that you're
+referring to is a user-defined chain,
+but I didn't get what you eman by "the -m state rule" since in my
+example I didn't use the state module.
 
-If you're having trouble using iptables-[save|restore] then you can creat=
-e
-your own script: it's just a matter of preference.
+But in any case, doesn't the FORWARD chain only accounts for forwarded
+packets through the machine. What about locally generated packets?
 
-
-Gr,
-Rob
-
-
+Thanks
 
