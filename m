@@ -1,15 +1,16 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: hi all
-Date: Mon, 16 Oct 2006 14:51:57 +0200 (CEST)
-Message-ID: <65468.193.173.147.3.1161003117.squirrel@webmail.sterenborg.info>
-References: <20061015171523.3ac5ebe3@localhost>
-	<20061016110201.58e06085@localhost>
-	<58531.193.173.147.3.1160999859.squirrel@webmail.sterenborg.info>
-	<20061016122458.56980859@localhost>
+From: Kamal <kamash@gmail.com>
+Subject: Re: NAT POSTROUTING accounting
+Date: Mon, 16 Oct 2006 16:22:50 +0300
+Message-ID: <8a1be4700610160622q533ac28di9ab37f5735ddd554@mail.gmail.com>
+References: <8a1be4700610150743t6c089bfcm7648174d88793c00@mail.gmail.com>
+	<45327967.8080406@rtij.nl>
+	<8a1be4700610160500r3bee8e52taa1e7f0c4765eb8c@mail.gmail.com>
+	<45337B04.4040808@freemail.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20061016122458.56980859@localhost>
+In-Reply-To: <45337B04.4040808@freemail.hu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,50 +21,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Mon, October 16, 2006 14:24, Alberto Negri wrote:
-> LOG_LEVEL=3D1 :D
+This is one way, but isn't there a more graceful way other than
+putting duplicate entries in NAT POSTROUTING & mangle POSTROUTING.
+
+Thanks
+
+On 10/16/06, G=E1sp=E1r Lajos <swifty@freemail.hu> wrote:
+> Kamal =EDrta:
+> > On 10/15/06, Martijn Lievaart <m@rtij.nl> wrote:
+> >
+> >> Create a seperate rule in FORWARD that jumps to an empty chain. Put th=
+is
+> >> rule before the -m state rule(s).
+> >
+> > I will try to guess that by FORWARD you mean the filter FORWARD chain
+> > (as opposed to mangle FORWARD), & the empty chain that you're
+> > referring to is a user-defined chain,
+> > but I didn't get what you eman by "the -m state rule" since in my
+> > example I didn't use the state module.
+> >
+> > But in any case, doesn't the FORWARD chain only accounts for forwarded
+> > packets through the machine. What about locally generated packets?
+> >
+> > Thanks
+> >
 >
+> Maybe you can use the mangle POSTROUTING chain...
 >
-> The most difficult thing speaking with expert linux user is setup the r=
-ight
-> log_level :D (when you don't post infos other says you: "post same
-> datails...how do you think we can help you without them?", when you pos=
-t too
-> many datails...) Anyway thanks for your replay, Rob! ;)
-
-In fact I wasn't really helping you and for my answer the information was=
- not
-relevant; also, your problem didn't go away (yet?). :-)
-I was responding to what people suggested and I suggest that if you're ha=
-ving
-a problem using iptables-[save|restore] you can write a script that works=
- for
-you.
-
-> So debug of those tools will be neglected?
-
-I don't know if it is. (Can't imagine, but this is a user list; not devel=
-oper)
-
-> P.S.: the point was not to make my firewall working...the point is
-> understanding why those tools does not work. ;) but if that does not in=
-terest
-> at netfilter mailing list...
-
-Well, I'm not using it so no: I'm not really that interested. But others =
-may
-be. ;-)
-The latest version of iptables is 1.3.6. Since you're using 1.3.5, the la=
-test
-version may solve your problem with iptables-[save|restore].
-
-
-
-Grts,
-Rob
-
-
+> Swifty
+>
 
