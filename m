@@ -1,11 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: how to write different ip sources on a single rule
-Date: Mon, 16 Oct 2006 16:35:08 -0400 (EDT)
-Message-ID: <Pine.LNX.4.64.0610161634240.2583@darkstar.sysinfo.com>
-References: <OF19100943.C82981C2-ONC22571F7.00439BBB-C22571F7.004445A5@gunessigorta.com.tr>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: hi all
+Date: Mon, 16 Oct 2006 23:26:33 +0200
+Message-ID: <4533F909.4090002@rtij.nl>
+References: <20061015171523.3ac5ebe3@localhost>	<20061016110201.58e06085@localhost>	<58531.193.173.147.3.1160999859.squirrel@webmail.sterenborg.info>	<20061016122458.56980859@localhost>	<65468.193.173.147.3.1161003117.squirrel@webmail.sterenborg.info>
+	<20061016172646.2b82a25d@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <OF19100943.C82981C2-ONC22571F7.00439BBB-C22571F7.004445A5@gunessigorta.com.tr>
+In-Reply-To: <20061016172646.2b82a25d@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,79 +18,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Alberto Negri <negri@cs.unibo.it>
 Cc: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Alberto Negri wrote:
 
-On Thu, 28 Sep 2006, Burak Ozgoren wrote:
-
->> On Thu, September 28, 2006 13:35, Burak Ozgoren wrote:
->>> Hi,
->>>
->>>
->>> I know i can write source ip within a ip range or with a network mask.
-> For
->>> example: 192.168.0.5-192.168.0.15 or 192.168.0.0/24
->>>
->>>
->>> Can i write it for single ip. Like 192.168.0.5 and 192.168.0.9
->>
->> You can use the second notation (192.168.0.0/24), but for the first you
-> need
->> the iprange match.
->>
->>
-> http://www.netfilter.org/projects/patch-o-matic/pom-base.html#pom-base-iprange
->>
->>
->>
->> Grts,
->> Rob
->>
+>Ok...but before i'll see changelog ;)
 >
-> I know about range, and mask but need a rule like for example:
+>Do you think that this problem could be interesting for developers? 
+>Is there some way to let it see at some devel before posting (and probably spamming) on devel
+>mailing list?
 >
-> Accept port 22 connections from 192.168.0.5, 10.10.60.163, 212.12.X.X
+>  
 >
-> Now i am writing 3 different rules for these.
 
+By all means, post it to the netfilter-devel list, but after you tried 
+1.3.6. If it is a real bug, and it's still there, that is the fastest 
+way of getting it solved. Apart from fixing it yourself, that is.
 
+M4
 
-Well, yes and no, it depends upon how you write you iptable script, is it 
-a flat file of rule, rule, rule... or a more dynamic script.  Yeppers a 
-iptable script can contain most any bash-ish convention, like:
-
-gdhosts="192.168.0.5 10.10.60.163 212.12.X.X"
-
-for h in gdhosts do
-...
-
-This will result in 3 rules, but certainly has the ability to grow and 
-shrink as needed, and is likely far easier to read, especially with some 
-comments in the script to keep you in the original mindset...
-
-
-Thanks,
-
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            admin & senior security consultant:  sysinfo.com
-                            http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                    -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFFM+z/st+vzJSwZikRAsbuAKC1vp75R+ddUWPohkx6kgzzxlLthwCglMrW
-sFQVBYsZN1EvpgVMl3k4tlQ=
-=SrvL
------END PGP SIGNATURE-----
 
