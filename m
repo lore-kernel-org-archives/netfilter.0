@@ -1,13 +1,14 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: NAT POSTROUTING accounting
-Date: Mon, 16 Oct 2006 16:03:20 +0200
-Message-ID: <45339128.4010609@freemail.hu>
-References: <8a1be4700610150743t6c089bfcm7648174d88793c00@mail.gmail.com>	<45327967.8080406@rtij.nl>	<8a1be4700610160500r3bee8e52taa1e7f0c4765eb8c@mail.gmail.com>	<45337B04.4040808@freemail.hu>
-	<8a1be4700610160622q533ac28di9ab37f5735ddd554@mail.gmail.com>
+From: "Nathan @ Netdigix Systems" <lists@netdigix.com>
+Subject: Re: Two identical ips connected
+Date: Mon, 16 Oct 2006 07:48:17 -0700
+Message-ID: <1161010097.45339bb107dc6@mail.dreamtoy.net>
+References: <20061016095557.058bbde3@vmm1.chaosbringer.de>
+	<49542.193.173.147.3.1160991666.squirrel@webmail.sterenborg.info>
+	<20061016120211.6ab1d49b@vmm1.chaosbringer.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8a1be4700610160622q533ac28di9ab37f5735ddd554@mail.gmail.com>
+In-Reply-To: <20061016120211.6ab1d49b@vmm1.chaosbringer.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +19,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Kamal <kamash@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Julian Hagenauer <chaosbringer@gmx.de>
+Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
 
-Kamal =EDrta:
-> This is one way, but isn't there a more graceful way other than
-> putting duplicate entries in NAT POSTROUTING & mangle POSTROUTING.
->
-> Thanks
->
-Hmm... I do not understand you clearly... What do you mean "more=20
-graceful"... ? :)
+Pretty sure that will not work,  if you want to do some sort of failover or 
+load balancing you should look at Keepalived or Ultramonkey.
 
-1. You may do some changes on the packets... (SNAT/DNAT, etc...)
 
-2.a. You have to mark or identify the packets you want to count in other=20
-chains ... (MARK target or direct rules)
 
-2.b. You can use the mangle POSTROUTING chain for counting specified=20
-packets because this is the "last" chain BEFORE every packet leaves the=20
-system.
-(I know that there is a "raw" table...)
+Quoting Julian Hagenauer <chaosbringer@gmx.de>:
 
-So... How do you want to do it "more graceful" ?
+> Hi
+> 
+> > If you packet would make it to the router and the router had this
+> configuration:
+> > - eth0: 192.168.1.0/24
+> > - eth1: 192.168.1.0/24
+> > the router cannot distinguish the subnets.
+> > 
+> 
+> Why so complicated.
+> eth0: 192.168.1.4
+> eth1: 192.168.1.4
+> 
+> (Hostbased routing) would be enough. Sure the router can not distinguish
+> between the IPs, but he could distinguish between the MACs, so would it be
+> possible to do Masquerading based on MAC-Adresses?
+> 
+> > But you'd not even get that far.
+> > When you send a packet from a client to the server and this server has same
+> IP
+> > as the client (thus src and dst IP are the same), then the packet wouldn't
+> > even make it to the router: it would be sent to itself.
+> 
+> Mhm, i don't understand that. Let me explain my setup in greater detail:
+> 
+> 	Server1---------|
+> 			|
+> 			|
+> 			|
+> 	Server2-------Router-------Client
+> 			|
+> 			|
+> 			DB
+> 
+> I want that Server 1 and Server2 have the same IP, although only Server1
+> should be accessible for clients.
+> The reason for that is, that i want do some kind of load-balancing.
+> The problem is, that both Servers need permanent access to the db, so the
+> router should somehow translate/masquerade the ip of the server2, so that
+> both servers can access the db at the same time.
+> 
+> I know it sound weird :-)
+> 
+> Sincerely,
+> Julian
+> 
 
-Swifty
+
+
+
+thanks,
+-Nathan
+-http://www.netdigix.net
+
 
