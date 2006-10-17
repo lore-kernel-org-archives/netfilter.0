@@ -1,12 +1,11 @@
-From: piraguasu <grtruchet@gigared.com>
-Subject: Re: Re: Can't get access remote LAN through firewall
-Date: Tue, 17 Oct 2006 15:41:03 -0300
-Message-ID: <453523BF.3020902@gigared.com>
-References: <453178E2.5020602@gigared.com> <453233EB.3080404@plouf.fr.eu.org>
+From: "Wilson, Richard E" <richard.wilson@eds.com>
+Subject: Ip_conntrack enhancement idea
+Date: Tue, 17 Oct 2006 16:46:54 -0500
+Message-ID: <F1B471B6CE5CFA458DFED6C7669D039706C21D75@usplm234.amer.corp.eds.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <453233EB.3080404@plouf.fr.eu.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Pascal Hambourg wrote:
-> Hello,
->
->
->>
->> I have two LAN, both connected to Internet through proxy/firewall on 
->> Linux. One is my working LAN and other remote. I want to see internal 
->> machines of remote LAN from any computers of my LAN, for this I setup 
->> a tunnel and when the  firewall  is down in both LAN, all OK.
->>
->> When firewall is up, my problem is forwarding between tunnel device 
->> and internal card (eth1), I can't get pass through firewall, iptables 
->> rules don't work.
->
-> Does the FORWARD chain contains rules which accept packets between the 
-> tunnel interface and the LAN interface in both directions ?
->
-> Something like :
-> iptables -A FORWARD -i eth1 -o tun0 -j ACCEPT
-> iptables -A FORWARD -i tun0 -o eth1 -j ACCEPT
->
->
-Hi Pascal
+All,
 
-Yes, the rules are:
-#
-# On my LAN
+I am having some issues with servers that run caching DNS and iptables
+-- the ip_conntrack table overflows resulting in dropped packets.  I am
+wondering what the value is in tracking connections whose source and
+destination are both 127.0.0.1 -- would it be possible to flag such
+packets so that no ip_conntrack table entry gets created for them at
+all?  For my servers this can represent a third of the total tracked
+connections (ip_conntrack_max is set at 65536 on systems with 2GB of
+RAM).
 
-iptables -A FORWARD -i eth1 -s $MY_LAN -d $REMOTE_LAN -o tun0 -j ACCEPT
-iptables -A FORWARD -i tun0 -s $REMOTE_LAN  -d $MY_LAN -o eth1 -j ACCEPT
+I know this can be addressed other ways -- I am working to get the
+server upgraded from its current kernel (2.4.21) to something newer so
+that I can change the default ip_conntrack timeout value (I don't really
+want to increase the ip_conntrack_max), but thought I should bring this
+up.  Perhaps in other situations it's desirable to track localhost
+connections, but I can't think of a good reason why.
 
-#
-# On remote LAN
+Thanks,
 
-iptables -A FORWARD -i eth1 -s $REMOTE_LAN -d $MY_LAN -o tun0 -j ACCEPT
-iptables -A FORWARD -i tun0 -s $MY_LAN  -d $REMOTE_LAN -o eth1 -j ACCEPT
+Richard Wilson
 
-
-The packets can't gain access to tunnel tcpdump say me.
-
-If you have any idea, wellcome ........
-Thank you
-Gerardo
+richard dot wilson at eds dot com
 
 
