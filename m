@@ -1,12 +1,11 @@
-From: aoliva <aoliva@it.uc3m.es>
-Subject: Re: How to know inside a match which chain is calling
-Date: Tue, 17 Oct 2006 13:16:06 +0200
-Message-ID: <4534BB76.7060500@it.uc3m.es>
-References: <2FEE63312285CF428A8480B07AC1C359036187D0@CHN-SNR-MBX01.wipro.com>
+From: <anisha.chandrasekaran@wipro.com>
+Subject: RE: How to know inside a match which chain is calling
+Date: Tue, 17 Oct 2006 16:53:24 +0530
+Message-ID: <2FEE63312285CF428A8480B07AC1C35903618919@CHN-SNR-MBX01.wipro.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2FEE63312285CF428A8480B07AC1C359036187D0@CHN-SNR-MBX01.wipro.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,14 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: aoliva@it.uc3m.es
 Cc: netfilter@lists.netfilter.org
 
+
+Dear Antonio,
+     No sorries please. I jus wanted to get more clear on your doubt.
+Did you refer to the ipt_state or ipt_conntrack files for idea? They
+involve  number of structure and functional references. Is that what you
+were looking for or am I taking you in a wrong direction?
+
+=0D
+ Regards,
+
+Anisha Chandrasekaran
+Email : anisha.chandrasekaran@wipro.com =0D
+ =0D
+        =0D
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of aoliva
+Sent: Tuesday, October 17, 2006 4:46 PM
+Cc: netfilter@lists.netfilter.org
+Subject: Re: How to know inside a match which chain is calling
+
 Dear Anisha,
-Sorry for being unspecific. I have implemented a match, this match is 
-called in the chains OUTPUT and INPUT. I would like to know a way of 
-accessing an structure or calling a function or something similar in 
-order to be able of doing a switch inside the match changing the 
+Sorry for being unspecific. I have implemented a match, this match is=0D
+called in the chains OUTPUT and INPUT. I would like to know a way of=0D
+accessing an structure or calling a function or something similar in=0D
+order to be able of doing a switch inside the match changing the=0D
 behaviour if the match is called from OUTPUT or INPUT.
 
 Thank you very much
@@ -34,16 +56,17 @@ Antonio
 anisha.chandrasekaran@wipro.com wrote:
 > Can you be a little more specific on what you have asked.
 >
-> Is it that you want to know how to develop a new match??? Something like
+> Is it that you want to know how to develop a new match??? Something
+like
 > a "state" or "conntrack" that has already been developed
 >
 >
 >  Regards,
 >
 > Anisha Chandrasekaran
-> Email : anisha.chandrasekaran@wipro.com 
->  
->         
+> Email : anisha.chandrasekaran@wipro.com=0D
+> =0D
+>        =0D
 >
 > -----Original Message-----
 > From: netfilter-bounces@lists.netfilter.org
@@ -60,12 +83,36 @@ anisha.chandrasekaran@wipro.com wrote:
 >
 >
 >
-> The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments.
+> The information contained in this electronic message and any
+attachments to this message are intended for the exclusive use of the
+addressee(s) and may contain proprietary, confidential or privileged
+information. If you are not the intended recipient, you should not
+disseminate, distribute or copy this e-mail. Please notify the sender
+immediately and destroy all copies of this message and any attachments.
 >
-> WARNING: Computer viruses can be transmitted via email. The recipient should check this email and any attachments for the presence of viruses. The company accepts no liability for any damage caused by any virus transmitted by this email.
+> WARNING: Computer viruses can be transmitted via email. The recipient
+should check this email and any attachments for the presence of viruses.
+The company accepts no liability for any damage caused by any virus
+transmitted by this email.
 >
 > www.wipro.com
 >
->   
+>  =0D
 
+
+
+
+The information contained in this electronic message and any attachments to=
+ this message are intended for the exclusive use of the addressee(s) and=
+ may contain proprietary, confidential or privileged information. If you=
+ are not the intended recipient, you should not disseminate, distribute or=
+ copy this e-mail. Please notify the sender immediately and destroy all=
+ copies of this message and any attachments.=0D
+
+WARNING: Computer viruses can be transmitted via email. The recipient=
+ should check this email and any attachments for the presence of viruses.=
+ The company accepts no liability for any damage caused by any virus=
+ transmitted by this email.
+=0D
+www.wipro.com
 
