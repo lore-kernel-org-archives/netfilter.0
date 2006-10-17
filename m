@@ -1,48 +1,59 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: work on ip%ip ipset
-Date: Tue, 17 Oct 2006 10:09:31 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0610171000110.17511@blackhole.kfki.hu>
-References: <b322db070610162309x379e504eud538c7e4f05ae045@mail.gmail.com>
+From: "Gregory Machin" <gregory.machin@gmail.com>
+Subject: looking for the developer of webcbq
+Date: Tue, 17 Oct 2006 10:35:26 +0200
+Message-ID: <30200a940610170135j78592c29uc4cf0bdbe99ec2f4@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <b322db070610162309x379e504eud538c7e4f05ae045@mail.gmail.com>
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_164892_17372837.1161074126143"
+Return-path: <php-general-return-243239-php-php-general=m.gmane.org@lists.php.net>
+list-help: <mailto:php-general-help@lists.php.net>
+list-unsubscribe: <mailto:php-general-unsubscribe@lists.php.net>
+list-post: <mailto:php-general@lists.php.net>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+To: netfilter@lists.netfilter.org, "PHP General (E-mail)" <php-general@lists.php.net>
+
+------=_Part_164892_17372837.1161074126143
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-To: Retesh <retesh.chadha@gmail.com>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Disposition: inline
 
-On Tue, 17 Oct 2006, Retesh wrote:
+Hi
+I'm looking for the developer of webcbq, I'm trying to get it to work on
+fc5_64 but I have hit a wall there are some errors I can't see why the
+variables are being populated ... and I think is was writtn in php 3 because
+I have had to change alot on the syntax of the code to get it half way
+working ...
 
-> Currently, is there any work going on, for developing a IPSet like
-> ipiphash containing a pair of IPs as ip1%ip2, similiar to ipporthash
-> as ip%port.
+here are the errors ....
 
-ipset is in maintenace mode: bugfixes and minor (backward-compatible)
-changes are accepted/added to the code only.
+*Notice*: Undefined variable: nuevoPadre in *
+/var/www/html/webcbq/parents.php* on line *38*
 
-nfset is under development (alas, with a huge gap in the active work),
-focusing on the follwing features:
+*Notice*: Undefined variable: borrarRegla in *
+/var/www/html/webcbq/parents.php* on line *53*
 
-- netlink kernel-user interface instead of [sg]etopt
-- "binding" is dropped as a dead-end and new set types
-  like the one you mentioned will be introduced: ip-ip pairs, etc.
-- IPv6 address support
+*Notice*: Undefined variable: modificarRegla in *
+/var/www/html/webcbq/parents.php* on line *67*
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+*Notice*: Undefined variable: cambiarNombre in *
+/var/www/html/webcbq/parents.php* on line *76*
 
+*Notice*: Undefined variable: nuevaRegla in *
+/var/www/html/webcbq/children.php* on line *38*
+
+*Notice*: Undefined variable: borrarRegla in *
+/var/www/html/webcbq/children.php* on line *51*
+
+*Notice*: Undefined variable: modificarRegla in *
+/var/www/html/webcbq/children.php* on line *63*
+
+*Notice*: Undefined variable: cambiarNombre in *
+/var/www/html/webcbq/children.php* on line *72*
+
+Many thanks
+-- 
+Gregory Machin
+gregory.machin@gmail.com
+www.linuxpro.co.za
+
+------=_Part_164892_17372837.1161074126143--
