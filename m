@@ -1,31 +1,26 @@
-From: Retesh <retesh.chadha@gmail.com>
-Subject: Re: work on ip%ip ipset
-Date: Tue, 17 Oct 2006 14:15:27 +0530
-Message-ID: <b322db070610170145o53e74571icdb4cd4aae9e7184@mail.gmail.com>
-References: <b322db070610162309x379e504eud538c7e4f05ae045@mail.gmail.com>
-	<Pine.LNX.4.58.0610171000110.17511@blackhole.kfki.hu>
+From: aoliva <aoliva@it.uc3m.es>
+Subject: How to know inside a match which chain is calling
+Date: Tue, 17 Oct 2006 10:56:57 +0200
+Message-ID: <45349AD9.5030804@it.uc3m.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.58.0610171000110.17511@blackhole.kfki.hu>
-Content-Disposition: inline
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi Jozsef
-When is nfset implementation expected to be released?
+Hi all, I would like to know a way of programing in a match function a 
+way of knowing which is the chain which is calling the match.
 
-Thanks & Regards
-Retesh Chadha
+Thanks in advance
+Antonio de la Oliva
 
