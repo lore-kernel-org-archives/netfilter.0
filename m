@@ -1,39 +1,64 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: work on ip%ip ipset
-Date: Tue, 17 Oct 2006 11:07:15 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0610171106150.18869@blackhole.kfki.hu>
-References: <b322db070610162309x379e504eud538c7e4f05ae045@mail.gmail.com> 
-	<Pine.LNX.4.58.0610171000110.17511@blackhole.kfki.hu>
-	<b322db070610170145o53e74571icdb4cd4aae9e7184@mail.gmail.com>
+From: <anisha.chandrasekaran@wipro.com>
+Subject: RE: How to know inside a match which chain is calling
+Date: Tue, 17 Oct 2006 14:49:06 +0530
+Message-ID: <2FEE63312285CF428A8480B07AC1C359036187D0@CHN-SNR-MBX01.wipro.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <b322db070610170145o53e74571icdb4cd4aae9e7184@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Retesh <retesh.chadha@gmail.com>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: aoliva@it.uc3m.es, netfilter@lists.netfilter.org
 
-On Tue, 17 Oct 2006, Retesh wrote:
 
-> When is nfset implementation expected to be released?
+Can you be a little more specific on what you have asked.
 
-I expect it to be released in the first quarter of 2007.
+Is it that you want to know how to develop a new match??? Something like
+a "state" or "conntrack" that has already been developed
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+=0D
+ Regards,
+
+Anisha Chandrasekaran
+Email : anisha.chandrasekaran@wipro.com =0D
+ =0D
+        =0D
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of aoliva
+Sent: Tuesday, October 17, 2006 2:27 PM
+To: netfilter@lists.netfilter.org
+Subject: How to know inside a match which chain is calling
+
+Hi all, I would like to know a way of programing in a match function a=0D
+way of knowing which is the chain which is calling the match.
+
+Thanks in advance
+Antonio de la Oliva
+
+
+
+The information contained in this electronic message and any attachments to=
+ this message are intended for the exclusive use of the addressee(s) and=
+ may contain proprietary, confidential or privileged information. If you=
+ are not the intended recipient, you should not disseminate, distribute or=
+ copy this e-mail. Please notify the sender immediately and destroy all=
+ copies of this message and any attachments.=0D
+
+WARNING: Computer viruses can be transmitted via email. The recipient=
+ should check this email and any attachments for the presence of viruses.=
+ The company accepts no liability for any damage caused by any virus=
+ transmitted by this email.
+=0D
+www.wipro.com
 
