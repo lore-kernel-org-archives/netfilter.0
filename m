@@ -1,13 +1,11 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: hi all
-Date: Mon, 16 Oct 2006 23:26:33 +0200
-Message-ID: <4533F909.4090002@rtij.nl>
-References: <20061015171523.3ac5ebe3@localhost>	<20061016110201.58e06085@localhost>	<58531.193.173.147.3.1160999859.squirrel@webmail.sterenborg.info>	<20061016122458.56980859@localhost>	<65468.193.173.147.3.1161003117.squirrel@webmail.sterenborg.info>
-	<20061016172646.2b82a25d@localhost>
+From: David Lang <dlang@digitalinsight.com>
+Subject: Re: Two identical ips connected
+Date: Mon, 16 Oct 2006 17:34:11 -0700 (PDT)
+Message-ID: <Pine.LNX.4.63.0610161729270.1754@qynat.qvtvafvgr.pbz>
+References: <20061016095557.058bbde3@vmm1.chaosbringer.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20061016172646.2b82a25d@localhost>
+In-Reply-To: <20061016095557.058bbde3@vmm1.chaosbringer.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alberto Negri <negri@cs.unibo.it>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Julian Hagenauer <chaosbringer@gmx.de>
 Cc: netfilter@lists.netfilter.org
 
-Alberto Negri wrote:
+On Mon, 16 Oct 2006, Julian Hagenauer wrote:
 
->Ok...but before i'll see changelog ;)
+> Hi,
+> is it possible somehow possible to attach two computers with the same ip
+> to a router, and let the router rewrite/masquerade the ip of one of
+> those computers with iptables, so that both could be accessed with different ips?
 >
->Do you think that this problem could be interesting for developers? 
->Is there some way to let it see at some devel before posting (and probably spamming) on devel
->mailing list?
->
->  
+> Can you give my some hints how this could be achieved?
 >
 
-By all means, post it to the netfilter-devel list, but after you tried 
-1.3.6. If it is a real bug, and it's still there, that is the fastest 
-way of getting it solved. Apart from fixing it yourself, that is.
+you can't do it with one router, but you could with two routers
 
-M4
+machineA 10.0.0.1
+   |      machineB Natted as 10.0.0.2 by router1 (from the 192.168.1.2 that
+   |      router2 makes it)
+router1
+   |      machine A Natted as 192.168.1.1 (by router1)
+   |      machine B Natted as 192.168.1.2 (by router2)
+router2
+   |      machineA Natted as 10.0.0.2 by router2 (from the 192.168.1.1 that
+   |      router2 makes it)
+machineB 10.0.0.1
 
+each machine would see the other as 10.0.0.2
+
+very ugly, but if you can't do anything else, this approach can work.
+
+David Lang
 
