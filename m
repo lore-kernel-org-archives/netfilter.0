@@ -1,11 +1,13 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: Two identical ips connected
-Date: Thu, 19 Oct 2006 10:35:04 +0100 (BST)
-Message-ID: <Pine.LNX.4.58.0610191030530.31797@mail3.jubileegroup.co.uk>
-References: <200610160944.k9G9iEZi013530@mail3.jubileegroup.co.uk>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Can't get access remote LAN through firewall
+Date: Thu, 19 Oct 2006 11:46:21 +0200
+Message-ID: <4537496D.7010707@plouf.fr.eu.org>
+References: <453178E2.5020602@gigared.com> <453233EB.3080404@plouf.fr.eu.org>
+	<453523BF.3020902@gigared.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200610160944.k9G9iEZi013530@mail3.jubileegroup.co.uk>
+In-Reply-To: <453523BF.3020902@gigared.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,30 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi there,
+piraguasu a =E9crit :
+> #
+> # On my LAN
+>=20
+> iptables -A FORWARD -i eth1 -s $MY_LAN -d $REMOTE_LAN -o tun0 -j ACCEPT
+> iptables -A FORWARD -i tun0 -s $REMOTE_LAN  -d $MY_LAN -o eth1 -j ACCEP=
+T
+>=20
+> #
+> # On remote LAN
+>=20
+> iptables -A FORWARD -i eth1 -s $REMOTE_LAN -d $MY_LAN -o tun0 -j ACCEPT
+> iptables -A FORWARD -i tun0 -s $MY_LAN  -d $REMOTE_LAN -o eth1 -j ACCEP=
+T
 
-On Mon, 16 Oct 2006 netfilter-request@lists.netfilter.org wrote:
+What happens if you remove the -s and -d options ?
+No SNAT/MASQUERADE on the tunnel ?
+Could it be that the tunnel packets are dropped on the WAN interface ?
+What kind of tunnel protocol is it ?
 
-> On Mon, October 16, 2006 09:55, Julian Hagenauer wrote:
-> >
-> > is it possible somehow possible to attach two computers with the same ip
->
-> I don't think you can.
+> The packets can't gain access to tunnel tcpdump say me.
 
-You can, but you don't want to.  It's one of many techniques used by
-criminals to breach security.  You have to use some means of flooding
-one of the machines' interfaces with so much traffic that it can't
-respond as it should to IP traffic, then 'steal' packets to which it
-would otherwise respond before it has a chance to do so.
-
-You aren't thinking of becoming a criminal, are you?
-
---
-
-73,
-Ged.
+Can you explain this please ? My tcpdump only shows packets which enter=20
+and leave a network interface, it does not tell anything about getting=20
+access or not.
 
