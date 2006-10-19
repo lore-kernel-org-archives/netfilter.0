@@ -1,7 +1,7 @@
 From: "Thomas Sandquist" <tomslists@sandquisttech.net>
-Subject: (no subject)
-Date: Wed, 18 Oct 2006 18:28:37 -0700 (PDT)
-Message-ID: <1857.209.160.56.254.1161221317.squirrel@www.toms-games.com>
+Subject: Ipt_random module questions
+Date: Wed, 18 Oct 2006 18:42:27 -0700 (PDT)
+Message-ID: <2025.209.160.56.254.1161222147.squirrel@www.toms-games.com>
 Reply-To: tomslists@sandquisttech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,6 +41,7 @@ that might be better for my routing purposes).
 
 Thanks,
 Thomas Sandquist
+
 
 
 
