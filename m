@@ -1,11 +1,13 @@
-From: "Gabor Szokoli" <szocske@gmail.com>
-Subject: Managed proxy between private network
-Date: Thu, 19 Oct 2006 12:03:41 +0200
-Message-ID: <de47c0230610190303v37e0b55aia98d80d1bfac9db@mail.gmail.com>
+From: Wakko Warner <wakko@animx.eu.org>
+Subject: Re: recent match and DNAT.
+Date: Thu, 19 Oct 2006 06:48:09 -0400
+Message-ID: <20061019104809.GA18016@animx.eu.org>
+References: <20061019021140.GA16667@animx.eu.org>
+	<4536E82E.8040207@rlworkman.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
+In-Reply-To: <4536E82E.8040207@rlworkman.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,46 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Robby Workman <netfilter@rlworkman.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi There,
+Robby Workman wrote:
+> Wakko Warner wrote:
+> >Is it possible to use the recent match and dnat to dynamically forward
+> >incoming packets destined for a specific port (ident in this case) to the
+> >machine that initiated the connection?  Or is anything like this possible 
+> >at
+> >all?
+> 
+> There may very well be a way to do it, but if there is, I can't 
+> seem to find it, and I know of at least one other person who's 
+> messed with it.  Best I can tell, midentd on the gateway is going 
+> to be your best option.
+> You might find this useful as well - I wrote it up quite some 
+> time ago, but coupled with midentd, I think you'll have a 
+> workable solution.
+> http://howtos.rlworkman.net/irc-identd
 
-I am new and have some questions:
+I was looking for a pure netfilter way of doing it.  But it's no big deal
+really, I have ident forwarded to one machine which is most likely to be the
+source of the outgoing packets anyway.
 
-We have a linux box (complete control) connected to multiple private
-networks with possibly overlapping IP addressing. Its role is to
-dynamically create and tear down individual port forwardings between
-them.
-Our basic idea was to create conntrack entries from the controlling application.
-Having imagined conntrack to be like Cisco Express Forwarding, I was
-supprised to find out the conntrack lists do not contain the incoming
-and outgoing interfaces, only IP addresses which are then routed via
-the normal path. Sadly, IP address based routing makes no sense
-between the independent private networks which are reusing the same
-IPaddresses.
-
-We see two paths, both quite rickety:
-
--Modify the conntrack module to contain the incoming and outgoing interfaces.
-(practically merging the route cache functionality into contrack, may
-even have performance benefits)
-
--Use connmark to paint flows intended for each interface, act on it
-with policy routing. Determining the incoming interface might be mad
-unnecessary by assigning the incoming forwarded ports uniquely across
-interfaces, but we would prefer to avoid this.
-
-I promissed a question so here it is :-)
-How would you guys do this?
-Must be able to handle thousnads of flows busy with tiny packets
-(upside: no fragmentation), so we have a supertitious affinity to
-conntrack.
-Any of the patches we should look at?
-
-Sidenote:
-We tried to make linux forward more packets by throwing more CPUs at
-it, but have learned a huge conservative lock prevents paralellism in
-network processing. Does anyone here know about any plans on improving
-linux networking oerformance on SMP?
+-- 
+ Lab tests show that use of micro$oft causes cancer in lab animals
+ Got Gas???
 
