@@ -1,12 +1,13 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Netbios over NAT
-Date: Thu, 19 Oct 2006 11:38:52 -0400
-Message-ID: <1161272332.3212.12.camel@localhost>
-References: <af07baa70610190728o14b82f89u40525a9e35340e6e@mail.gmail.com>
+From: Oskar Andreasson <oan@frozentux.net>
+Subject: [rfc][update]iptables-tutorial 1.2.2
+Date: Thu, 19 Oct 2006 18:20:19 +0200
+Message-ID: <1161274820.22792.91.camel@LAPTOP4.MSHOME>
+Reply-To: oan@frozentux.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-CkHj5zM+jQNF241ZUvFJ"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <af07baa70610190728o14b82f89u40525a9e35340e6e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +18,102 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jeremy <jnhefner@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
-On Thu, 2006-10-19 at 10:28 -0400, Jeremy wrote:
-> Has anyone been able to hack netfilter in order to get it to work with
-> Netbios over NAT? I've been searching online and I read some posts
-> from 2002 that said it didn't, but I was wondering if anyone has
-> written anything for it recently to allow those types of connections?
 
-As far as I know, most NetBIOS functionality works across NAT except for
-browsing (and perhaps name registration). That seems to embed the IP
-address in the upper layer data.
+--=-CkHj5zM+jQNF241ZUvFJ
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-We had an interest in partially sponsoring this addition which is
-apparently near trivial.  In the ISCS network security management
-project, we have a feature to map one network to another address to help
-resolve internal IP address conflicts.  It's not a perfect solution but
-it helps in a pinch.  The failure of browsing working across the NAT is
-one of its major shortcomings.
+Hi All,=20
 
-Patrick McHardy was interested in writing the helper but we never found
-full sponsorship.  If I recall, it was only around an US$800 job.  I do
-not believe anyone else has added this functionality.
+Thought I'd make a small update on the iptables-tutorial since it's now
+been longer than I originally anticipated for this release. I'm still
+waiting for the first copy of the book to arrive, hence the delay.=20
 
-It's one of the very few areas where I have found iptables falling short
-of the major commercial firewalls many of whom have a NetBIOS NAT helper
-- John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+I still have a few things to add to get up to 2.6.18 standards, but I
+got (hopefully) 1-2 weeks before my personal deadline for the project.=20
 
-If you would like to participate in the development of an open source
-enterprise class network security management system, please visit
-http://iscs.sourceforge.net
+Would anyone care to give any suggestions on things that are either more
+important than the ones in the listed TODO, or that you believe should
+be included?=20
 
+Also, the book will be 'perfect bound' hard-cover, 9x6", and right now
+is closing in on 400 pages, and that's where I hope it will stop for
+now :-). The page count can go up/down pending any layout changes
+however. It will run at 33-35 USD + shipping per copy.=20
+
+Sidenote, the current french translation seems to be done directly from
+the chunky html source, as noted in the TODO. Would anyone be willing to
+make a change of this?
+
+Also, basically all the translations needs to be updated if anyone feels
+inclined...
+
+The current changelog looks as follows:=20
+1.2.2
+* Added SCTP match.
+* Added addrtype match.
+* Added link to policy routing using linux by Matthew G. Marsh.
+* Added some internal links for better cross linking.
+* Added comment match.
+* Added hashlimit match.
+* Added new --cmd-owner to owner match.
+* Added realm match.
+* Added important.gif image sign.
+* Fixed --limit-burst, bad explanation.
+* Fixed s/package/packet/ in MARK target. ("G.W. Haywood"
+<gedATjubileegroupDOTcoDOTuk>)
+* Added raw table in traversing_of_tables_and_chains.sgml
+* Updated tables_traverse.gif with raw table and switched fonts.
+* Added UNTRACKED and new untracked connections section in
+statemachine.sgml.
+* Removed internal catalogs etc, living off of local ones instead.
+* Added SCTP characteristics section to tcp_ip_repetition.sgml
+* Added all images for the SCTP chapters.
+* Remade all header images from the tcp_ip_repetition.sgml chapter.
+* Added SCTP headers section in the tcp_ip_repetition.sgml chapter.
+
+My TODO for the tutorial looks like this:
+* nf-log??
+* Add all new targets in 2.6 kernel and iptables-1.3.6.
+-- CLUSTERIP
+-- CONNMARK
+-- CONNSECMARK?
+-- SECMARK?
+-- NOTRACK
+-- NFQUEUE?
+* Remake flow images (Basically all images except header images).
+* Add section about VPN and iptables (ie, private incoming traffic to
+netfilter box with public iface and vpn iface on top). including
+routing. nat'ed ipsec, openvpn. filtering ipsec, openvpn.
+* French translation needs to be done in DocBook SGML, please? Should
+fix problem with wrong charset encoding.
+* Improve explanation of chain traversal. Add explanation of user
+defined chains.
+* Create index.
+
+
+--=20
+--
+Oskar Andreasson
+http://www.frozentux.net
+mail/sip: oan@frozentux.net
+icq: 33147668
+msn: allostra@hotmail.com
+
+
+--=-CkHj5zM+jQNF241ZUvFJ
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQBFN6XDGadwPDPpB60RAs1hAKCIongPaos0zC7SRPSJrEnxrt0pkQCg4t0d
+XcGmYNBsoPHHAIWrT75dV18=
+=e8d1
+-----END PGP SIGNATURE-----
+
+--=-CkHj5zM+jQNF241ZUvFJ--
 
