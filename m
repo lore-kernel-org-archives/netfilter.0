@@ -1,13 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Netbios over NAT
-Date: Thu, 19 Oct 2006 19:14:53 +0200
-Message-ID: <4537B28D.4020708@plouf.fr.eu.org>
-References: <af07baa70610190728o14b82f89u40525a9e35340e6e@mail.gmail.com>
-	<1161272332.3212.12.camel@localhost>
+From: "TechSafe Seguranca" <techsafe.sec@gmail.com>
+Subject: Check-List
+Date: Thu, 19 Oct 2006 15:27:42 -0200
+Message-ID: <50c841770610191027p688d5e59r699e30b843083de6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1161272332.3212.12.camel@localhost>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,15 +17,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+Exists some check-list of vulnerabilities that must be prevented in firewal=
+l?
 
-John A. Sullivan III a =E9crit :
->=20
-> As far as I know, most NetBIOS functionality works across NAT except fo=
-r
-> browsing (and perhaps name registration).
-
-Isn't it because these functionnalities use IP broadcasts ?
+Compliments Cordials
+--=20
+______________________________
+                 TechSafe
+Sua seguran=E7a sob nossa prote=E7=E3o
 
