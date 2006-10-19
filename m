@@ -1,13 +1,11 @@
-From: Oskar Andreasson <oan@frozentux.net>
-Subject: [rfc][update]iptables-tutorial 1.2.2
-Date: Thu, 19 Oct 2006 18:20:19 +0200
-Message-ID: <1161274820.22792.91.camel@LAPTOP4.MSHOME>
-Reply-To: oan@frozentux.net
+From: "Robert LeBlanc" <robert@leblancnet.us>
+Subject: RE: IPtables and bridge interface
+Date: Thu, 19 Oct 2006 11:06:44 -0600
+Message-ID: <A78C6C481BFAE949BC5990E1EEB2FE1258C1@q.LeBlancNet.us>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-CkHj5zM+jQNF241ZUvFJ"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,102 +16,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Anyone with ideas how to troubleshoot this problem? I'm up for anything,
+it's getting really annoying.
 
---=-CkHj5zM+jQNF241ZUvFJ
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Robert LeBlanc
 
-Hi All,=20
+BioAg Computer Support
 
-Thought I'd make a small update on the iptables-tutorial since it's now
-been longer than I originally anticipated for this release. I'm still
-waiting for the first copy of the book to arrive, hence the delay.=20
+Brigham Young University
 
-I still have a few things to add to get up to 2.6.18 standards, but I
-got (hopefully) 1-2 weeks before my personal deadline for the project.=20
+(801)422-1882
 
-Would anyone care to give any suggestions on things that are either more
-important than the ones in the listed TODO, or that you believe should
-be included?=20
+leblanc@byu.edu
 
-Also, the book will be 'perfect bound' hard-cover, 9x6", and right now
-is closing in on 400 pages, and that's where I hope it will stop for
-now :-). The page count can go up/down pending any layout changes
-however. It will run at 33-35 USD + shipping per copy.=20
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> bounces@lists.netfilter.org] On Behalf Of Robert LeBlanc
+> Sent: Wednesday, October 18, 2006 8:13 AM
+> To: netfilter@lists.netfilter.org
+> Subject: IPtables and bridge interface
+>=20
+> Hi all,
+>   I'm having a problem with my new gateway set-up and I'm not sure
+where
+> to start with the troubleshooting. I set up a gateway with two NICs in
+> bridge mode to allow for my public IP addresses to pass straight
+through
+> and then set up two virtual addresses on the bridge interface to NAT
+the
+> remainder of the machines on my network, but still keep then in
+> differing collision domains. The problem that I see is that Internet
+> connectivity is sporadic at best. The connection will stay up for a
+> minute or so, then go down for 5-60 seconds and then come back up. The
+> odd thing is that machines with public addresses never see this
+problem,
+> only the ones behind the NAT. I am running Debian Etch with kernel
+>=20
+> Linux debian 2.6.16-2-686 #1 Fri Aug 18 19:01:49 UTC 2006 i686
+GNU/Linux
+>=20
+> I've also tried the 2.6.17-2-686 kernel with the same results. My
+> iptables script is pretty bare:
+>=20
+> #! /bin/bash
+>=20
+> modprobe ip_conntrack_ftp iptables_nat iptables_mangle ip_nat_ftp
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+>=20
+> iptables -t nat -F
+>=20
+> iptables --out-interface br0 -t nat -A POSTROUTING -s 192.168.1.0/22
+-j
+> SNAT --to EXTERNALIP
+>=20
+> I had two iptables rules before, one for each subnet, but combined
+them
+> into one rule to see if that would help, but no luck. Can anyone point
+> me to how to get debug information from iptables or what I might try
+to
+> remedy this problem?
+>=20
+> Thank you,
+> Robert LeBlanc
 
-Sidenote, the current french translation seems to be done directly from
-the chunky html source, as noted in the TODO. Would anyone be willing to
-make a change of this?
-
-Also, basically all the translations needs to be updated if anyone feels
-inclined...
-
-The current changelog looks as follows:=20
-1.2.2
-* Added SCTP match.
-* Added addrtype match.
-* Added link to policy routing using linux by Matthew G. Marsh.
-* Added some internal links for better cross linking.
-* Added comment match.
-* Added hashlimit match.
-* Added new --cmd-owner to owner match.
-* Added realm match.
-* Added important.gif image sign.
-* Fixed --limit-burst, bad explanation.
-* Fixed s/package/packet/ in MARK target. ("G.W. Haywood"
-<gedATjubileegroupDOTcoDOTuk>)
-* Added raw table in traversing_of_tables_and_chains.sgml
-* Updated tables_traverse.gif with raw table and switched fonts.
-* Added UNTRACKED and new untracked connections section in
-statemachine.sgml.
-* Removed internal catalogs etc, living off of local ones instead.
-* Added SCTP characteristics section to tcp_ip_repetition.sgml
-* Added all images for the SCTP chapters.
-* Remade all header images from the tcp_ip_repetition.sgml chapter.
-* Added SCTP headers section in the tcp_ip_repetition.sgml chapter.
-
-My TODO for the tutorial looks like this:
-* nf-log??
-* Add all new targets in 2.6 kernel and iptables-1.3.6.
--- CLUSTERIP
--- CONNMARK
--- CONNSECMARK?
--- SECMARK?
--- NOTRACK
--- NFQUEUE?
-* Remake flow images (Basically all images except header images).
-* Add section about VPN and iptables (ie, private incoming traffic to
-netfilter box with public iface and vpn iface on top). including
-routing. nat'ed ipsec, openvpn. filtering ipsec, openvpn.
-* French translation needs to be done in DocBook SGML, please? Should
-fix problem with wrong charset encoding.
-* Improve explanation of chain traversal. Add explanation of user
-defined chains.
-* Create index.
-
-
---=20
---
-Oskar Andreasson
-http://www.frozentux.net
-mail/sip: oan@frozentux.net
-icq: 33147668
-msn: allostra@hotmail.com
-
-
---=-CkHj5zM+jQNF241ZUvFJ
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQBFN6XDGadwPDPpB60RAs1hAKCIongPaos0zC7SRPSJrEnxrt0pkQCg4t0d
-XcGmYNBsoPHHAIWrT75dV18=
-=e8d1
------END PGP SIGNATURE-----
-
---=-CkHj5zM+jQNF241ZUvFJ--
 
