@@ -1,12 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Ip_conntrack enhancement idea
-Date: Thu, 19 Oct 2006 12:12:51 +0200
-Message-ID: <45374FA3.7010006@plouf.fr.eu.org>
-References: <F1B471B6CE5CFA458DFED6C7669D039706C21D76@usplm234.amer.corp.eds.com>
+From: "Gabor Szokoli" <szocske@gmail.com>
+Subject: Managed proxy between private network
+Date: Thu, 19 Oct 2006 12:03:41 +0200
+Message-ID: <de47c0230610190303v37e0b55aia98d80d1bfac9db@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <F1B471B6CE5CFA458DFED6C7669D039706C21D76@usplm234.amer.corp.eds.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,21 +16,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi There,
 
-Wilson, Richard E a =E9crit :
->=20
-> Thanks, I've been trying to find out more information on NOTRACK -- do
-> you know what kernel revision it came with?
+I am new and have some questions:
 
-According to the kernel changelogs, the 'raw' table, which contains the=20
-NOTRACK target, was included in kernel version 2.6.6.
-However, the related 'raw' patch for 2.4 kernels is in patch-o-matic-ng=20
-snaphots up to patch-o-matic-ng-20050918.
-The 'raw' patch for 2.6 kernels was in the patch-o-matic-ng-20040621=20
-release but removed in later snapshots, probably due to its inclusion=20
-into the 2.6 kernel tree.
+We have a linux box (complete control) connected to multiple private
+networks with possibly overlapping IP addressing. Its role is to
+dynamically create and tear down individual port forwardings between
+them.
+Our basic idea was to create conntrack entries from the controlling application.
+Having imagined conntrack to be like Cisco Express Forwarding, I was
+supprised to find out the conntrack lists do not contain the incoming
+and outgoing interfaces, only IP addresses which are then routed via
+the normal path. Sadly, IP address based routing makes no sense
+between the independent private networks which are reusing the same
+IPaddresses.
+
+We see two paths, both quite rickety:
+
+-Modify the conntrack module to contain the incoming and outgoing interfaces.
+(practically merging the route cache functionality into contrack, may
+even have performance benefits)
+
+-Use connmark to paint flows intended for each interface, act on it
+with policy routing. Determining the incoming interface might be mad
+unnecessary by assigning the incoming forwarded ports uniquely across
+interfaces, but we would prefer to avoid this.
+
+I promissed a question so here it is :-)
+How would you guys do this?
+Must be able to handle thousnads of flows busy with tiny packets
+(upside: no fragmentation), so we have a supertitious affinity to
+conntrack.
+Any of the patches we should look at?
+
+Sidenote:
+We tried to make linux forward more packets by throwing more CPUs at
+it, but have learned a huge conservative lock prevents paralellism in
+network processing. Does anyone here know about any plans on improving
+linux networking oerformance on SMP?
 
