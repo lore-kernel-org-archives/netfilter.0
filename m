@@ -1,7 +1,7 @@
 From: tarak@ossindia.com
-Subject: Re: IPTABLES
-Date: Thu, 19 Oct 2006 10:38:59 +0530 (IST)
-Message-ID: <3299.50044765628$1161234013@news.gmane.org>
+Subject: Iptables problem
+Date: Thu, 19 Oct 2006 10:22:09 +0530 (IST)
+Message-ID: <23137.3765659102$1161234127@news.gmane.org>
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,9 +17,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-
-
-
 
 hello experts,
 
