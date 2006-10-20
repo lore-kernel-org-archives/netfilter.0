@@ -1,11 +1,12 @@
-From: Bo Yang <struggle@mail.nankai.edu.cn>
-Subject: Need help !
-Date: Thu, 19 Oct 2006 15:29:39 +0800
-Message-ID: <361329646.25736@mail.nankai.edu.cn>
+From: "Eray Aslan" <eray.aslan@caf.com.tr>
+Subject: Re: [rfc][update]iptables-tutorial 1.2.2
+Date: Fri, 20 Oct 2006 11:59:25 +0300 (EEST)
+Message-ID: <1682.10.0.0.24.1161334765.squirrel@mail.caf.com.tr>
+References: <1161274820.22792.91.camel@LAPTOP4.MSHOME>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Message-ID: <45372963.6030402@mail.nankai.edu.cn>
+In-Reply-To: <1161274820.22792.91.camel@LAPTOP4.MSHOME>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +20,27 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Thu, October 19, 2006 7:20 pm, Oskar Andreasson wrote:
+> Hi All,
+>
+> Thought I'd make a small update on the iptables-tutorial since it's now
+> been longer than I originally anticipated for this release. I'm still
+> waiting for the first copy of the book to arrive, hence the delay.
+>
+> I still have a few things to add to get up to 2.6.18 standards, but I
+> got (hopefully) 1-2 weeks before my personal deadline for the project.
+>
+> Would anyone care to give any suggestions on things that are either mor=
+e
+> important than the ones in the listed TODO, or that you believe should
+> be included?
+[snip]
 
-Hi ,
-    Everybody , I am on the list for a month ,
-everytime I saw your question and answers , I
-just want to reproduct your enviroment and trouble ,
-and then slove it .
-    But your troubles almost occur in the very
-complicated enviroment such as two router with four
-LANs and a PPP interface and etc.
+Some mention and appropriate links/addresses for l7-filter and p2p addons
+would be nice.
 
-    How can I simulate such a condition ?
-I have thought about do it using VMWare , but I need
-many vms , and my system can't afford such a load !
-    Is there any software to achive such a task ?
+--=20
+Eray
 
-Thank you !
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFFNylj7tZp58UCwyMRAswLAKDb6M51SSCwdTzZEkE/RE0Iwt4s0ACfUnqf
-YDVevTQAXnzCK0WJJuCHxPY=
-=8cfF
------END PGP SIGNATURE-----
 
