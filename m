@@ -1,14 +1,11 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: NAT PREROUTING vs. filter FORWARD
-Date: Sat, 21 Oct 2006 08:46:31 +0200
-Message-ID: <4539C247.9020803@rtij.nl>
-References: <8ca422820610191125k16f58f03t3ce33bd4e1d22c28@mail.gmail.com>	
-	<4429765974127559812@unknownmsgid>
-	<8ca422820610201004w4fe2091bnbdb4fbba7a0b5b6@mail.gmail.com>
+From: Bo Yang <struggle@mail.nankai.edu.cn>
+Subject: Some simulator ?
+Date: Fri, 20 Oct 2006 15:10:46 +0800
+Message-ID: <361414896.21252@mail.nankai.edu.cn>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8ca422820610201004w4fe2091bnbdb4fbba7a0b5b6@mail.gmail.com>
+Message-ID: <45387676.7090001@mail.nankai.edu.cn>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,22 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mike <1100100@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Mike wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Martijn,
-> The sciprt idea sounds quite clever and efficient!
-> I would be very interested to see your method by script, if it is not
-> a security risk, etc.
-> Thank you very much for your response and idea.
+Hi ,
+    Everybody , I am on the list for a month ,
+everytime I saw your question and answers , I
+just want to reproduct your enviroment and trouble ,
+and then slove it .
+    But your troubles almost occur in the very
+complicated enviroment such as two router with four
+LANs and a PPP interface and etc.
 
+    How can I simulate such a condition ?
+    Is there any software to achive such a task ?
 
-It is pretty efficient. I write my firewall rules in perl. The loader 
-executes this script and pipes the output into iptables-restore. It is 
-not in a stage that I want to release it to the world yet, however.
+Thank you !
 
-M4
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFFOHZ17tZp58UCwyMRAhgfAJ9RsnnZDZiKdeHra+hoYFqEDmkHBQCgiP5t
+Pn0ZTHCLjK7wUVPjjXlN6dU=
+=+UrL
+-----END PGP SIGNATURE-----
 
