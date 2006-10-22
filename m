@@ -1,14 +1,11 @@
-From: Bo Yang <struggle@mail.nankai.edu.cn>
-Subject: Re: Need help !
-Date: Fri, 20 Oct 2006 19:11:04 +0800
-Message-ID: <361429304.03341@mail.nankai.edu.cn>
-References: <361329646.25736@mail.nankai.edu.cn>
-	<361428794.18279@mail.nankai.edu.cn>
+From: Pollywog <linux@shadypond.com>
+Subject: installing ipsets
+Date: Sun, 22 Oct 2006 01:05:15 +0000
+Message-ID: <200610220105.15805.linux@shadypond.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Message-ID: <4538AEC8.1040809@mail.nankai.edu.cn>
-In-Reply-To: <361428794.18279@mail.nankai.edu.cn>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,30 +17,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
- 
-Jasbir Khehra :
+I am running Debian Sarge and I have just installed iptables following the 
+instructions at http://ipset.netfilter.org/   This documentation does not say 
+whether I need to remove the iptables package provided by Debian, but I would 
+guess this is necessary.  It appears the iptables version I downloaded from 
+the ipsets homepage is a newer version of iptables than what is present in 
+Debian Sarge but if I remove the Debian iptables package, I will need to put 
+a dummy package in its place so as not to cause shorewall to be removed.
 
-
-Thank you !
-I am downloading it now !
-And I have take a look at the introduction , good tools .
-But I also want to know  ,
-Does netkit has the ablity to let my VMWare machine to be a node in
-the vitual network ?
-I have read the introduction , found it may not !
+Does the old package need to be removed?
 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
- 
-iD8DBQFFOK7H7tZp58UCwyMRAso3AKDKMUPq0Xcj9yCdzq46i/v9HdFymwCdF8sN
-51cyO5ticY62uW2s+/bv40M=
-=i+/6
------END PGP SIGNATURE-----
-
+thanks
 
