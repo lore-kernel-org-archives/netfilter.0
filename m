@@ -1,12 +1,12 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: installing ipsets
-Date: Sun, 22 Oct 2006 12:45:42 +0200
-Message-ID: <453B4BD6.8080003@rtij.nl>
-References: <200610220105.15805.linux@shadypond.com>
+From: Nathan <lists@netdigix.com>
+Subject: Re: Need help !
+Date: Sun, 22 Oct 2006 11:49:14 -0700
+Message-ID: <1161542954.453bbd2a1b3f6@mail.dreamtoy.net>
+References: <361329646.25736@mail.nankai.edu.cn> <4539FD6E.2050709@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200610220105.15805.linux@shadypond.com>
+In-Reply-To: <4539FD6E.2050709@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +17,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pollywog <linux@shadypond.com>
+Content-Type: text/plain; charset="us-ascii"
+To: jasbir.k@gmail.com
 Cc: netfilter@lists.netfilter.org
 
-Pollywog wrote:
+Try Xen or V-Server
 
->I am running Debian Sarge and I have just installed iptables following the 
->instructions at http://ipset.netfilter.org/   This documentation does not say 
->whether I need to remove the iptables package provided by Debian, but I would 
->guess this is necessary.  It appears the iptables version I downloaded from 
->the ipsets homepage is a newer version of iptables than what is present in 
->Debian Sarge but if I remove the Debian iptables package, I will need to put 
->a dummy package in its place so as not to cause shorewall to be removed.
->
->Does the old package need to be removed?
->  
->
 
-You can install the new package next to the old one (f.i. in /usr/local) 
-but I would look at packaging the new version. As you have the old 
-package, this should be relatively trivial.
+Quoting Jasbir Khehra <jasbir.k@gmail.com>:
 
-M4
+> Bo Yang wrote:
+> 
+> >-----BEGIN PGP SIGNED MESSAGE-----
+> >Hash: SHA1
+> >
+> >Hi ,
+> >    Everybody , I am on the list for a month ,
+> >everytime I saw your question and answers , I
+> >just want to reproduct your enviroment and trouble ,
+> >and then slove it .
+> >    But your troubles almost occur in the very
+> >complicated enviroment such as two router with four
+> >LANs and a PPP interface and etc.
+> >
+> >    How can I simulate such a condition ?
+> >I have thought about do it using VMWare , but I need
+> >many vms , and my system can't afford such a load !
+> >    Is there any software to achive such a task ?
+> >
+> >Thank you !
+> >
+> >-----BEGIN PGP SIGNATURE-----
+> >Version: GnuPG v1.4.5 (MingW32)
+> >Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+> >
+> >iD8DBQFFNylj7tZp58UCwyMRAswLAKDb6M51SSCwdTzZEkE/RE0Iwt4s0ACfUnqf
+> >YDVevTQAXnzCK0WJJuCHxPY=
+> >=8cfF
+> >-----END PGP SIGNATURE----
+> >
+> netkit >> netkit.org
+> HTH
+> -Jasbir
+> 
+
+
+
+
+Thanks
+
+- Nathan
+- http://www.linuxcare.ca
 
 
