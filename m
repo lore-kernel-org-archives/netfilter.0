@@ -1,7 +1,8 @@
-From: "Scot Harkins" <scoth@bigfoot.com>
-Subject: Fwd UDP packets to multiple destinations
-Date: Mon, 23 Oct 2006 13:09:14 -0700
-Message-ID: <013301c6f6df$1d4922b0$640fa8c0@harkinshome>
+From: Victor Toni <netfilter-list@kromo.org>
+Subject: Howto access modem behind router
+Date: Mon, 23 Oct 2006 23:31:57 +0200
+Message-ID: <453D34CD.904@kromo.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,33 +16,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Howdy,
+Hello,
+
+I have one of these modems which is a router by itself. The modem is
+configured to work in bridged mode.
+Connected to the modem is a router which connects via pppoe via the
+modem with my ISP.
+
+   |<---------- PPPOE link ------------->|    
+   |                                     |    |====== 
+  ISP ======= bridged ================= WRT ========= PCs
+               modem |                 |   |  |======
+                     |                 |   |
+                     |<- 169.254.1.x ->|   |<-- 192.168.1.x -->>
 
 
-I am looking for a way to set up a simple trap forwarder that doesn't mess 
-with the packets.  I want to have SNMP traps in UDP coming into one 
-destination and use perhaps iptables to distribute the traps to multiple 
-servers.
 
-I am about to experiment with a few things involving the netfilter tools, 
-starting with iptables.
+The modem has a web interface and and telnet which I would like to
+connect to from within the LAN but this doesn't seem to work.
+I tried the instructions from:
+http://www.dd-wrt.com/wiki/index.php/Access_To_Modem_Configuration
+but this makes the modem only available from the router and not from the
+LAN.
+I have currently some trouble with my connection and would like to use a
+tool to monitor the modem's error status but this fails due to the
+configuration.
+The modem has the static IP 169.254.1.1 and the router has the static
+IPs 169.254.1.100 and 192.168.1.1.
+I can ping "169.254.1.100" from any LAN machine on 192.168.1.0/24 but
+that's it.
 
-Has this problem already been licked?  Can you point me to the solution?
+Any help is very much appreciated.
 
-
-Thanks!
-sh
-
---
-Scot Harkins (KA5KDU)
-Greenbank, WA
-360-544-8750
-877-303-4656
-scoth@bigfoot.com
-http://www.bigfoot.com/~scoth
-
-
+Kindest regards,
+Victor
 
