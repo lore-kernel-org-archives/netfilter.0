@@ -1,15 +1,11 @@
-From: Wakko Warner <wakko@animx.eu.org>
-Subject: Re: mac match and FORWARD chain
-Date: Mon, 23 Oct 2006 12:24:35 -0400
-Message-ID: <20061023162435.GA2441@animx.eu.org>
-References: <361567501.01771@mail.nankai.edu.cn>
-	<453C1F0B.4010707@mail.nankai.edu.cn>
-	<361601544.29487@mail.nankai.edu.cn>
-	<453CA7DB.5000509@mail.nankai.edu.cn>
+From: Alan Ezust <alan.ezust@presinet.com>
+Subject: understanding how conntrack works
+Date: Mon, 23 Oct 2006 11:19:12 -0700
+Message-ID: <200610231119.13034.alan.ezust@presinet.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <453CA7DB.5000509@mail.nankai.edu.cn>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,73 +17,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Bo Yang <struggle@mail.nankai.edu.cn>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Bo Yang wrote:
-> Wakko Warner :
-> > Bo Yang wrote:
-> >> MAC address is some concept in the link layer , so how do
-> >> you get the packet sender mac if the packet is routed to your
-> >> box through some other routers ?
-> >
-> > I understand.  However, the machine I was using for this was directly
-> > connected to both system.  There were no other routers.
-> >
-> > Take this for instance:
-> >
-> > Box A -> (eth1)firewall/router(eth0) -> Box B
-> >
-> > firewall/router does not trust eth1 and uses MAC addresses to allow access,
-> > so it does this:
-> > -I FORWARD -j ACCEPT -i eth1 -m mac --mac BOXAMAC
-> > -I FORWARD -j DROP -i eth1
-> >
-> > firewall/router knows the mac of both box a and b (obviously, box a doesn't
-> > know box b's mac and vice versa).  Consider the above the only rules in the
-> > firewall and box A and B have no rules at all.
-> >
-> > Box A pings Box B and fails.  The reason is the mac test above is
-> seeing the
-> > MAC of eth0, not of Box A.
-> >
-> > This is what I'm referring to and I had to add a MARK rule in PREROUTING to
-> > mark packets that I want to allow and then allow in the forward chain based
-> > upon the mark.
-> >
-> I think when  the packet is in the FORWARD chain , the routing must
-> have been affect the packet , so that
-> is the reason why you see the eth0 mac in the rule .
+Greetings all, I'm exploring the kernel source trying to understand better how 
+the conntrack facility works. I had a couple of questions which I hope 
+someone more familiar with the code can answer...
 
-Yes, and the reason I wanted to request that it not be allowed to match in
-the FORWARD chain (or have a note in the man page about this)
+Q: Where in the code does a table entry get added to the conntrack table? 
+nf_conntrack_put doesn't seem to contain much code related to that.
 
-> You can just add a rule in the PREROUTING chain in the mangle table ,
-> and DROP the packat you don't
-> want there . Why you must mark it first , and then drop it in another
-> chain ?
+Q: Where in the code is the conntrack data lines being written, and using what 
+mechanism? (kprintf? procfs?)
 
-Actually, I was tinkering and using MARK was the first thing that came to
-mind.  After thinking about it, I think the best place would be in
-nat/PREROUTING (since nat is already loaded on the firewall machine).  I do
-not need mangle at all if I'm not marking.  At the time, I didn't think the
-filtering place should be in the mangle or nat tables, afterall, that is
-what the filter table is for =)
+I did some ctags jumping and keep coming to the nf_conntrack_put function, 
+which I expected to contain the code. Instead it only contains a
 
-In the nat/PREROUTING chain, are all incoming packets passed through this or
-just the initial packets?  In my current setup, I have br0 (eth0 and some
-vpns) that are routed through ppp0 to get to the internet.  eth1 is
-connected to a wireless ap and I do not want ANY access from anything on
-that network except ICMP, VPN, and the web/snmp port to the WAP (I need a GUI
-browser to configure the thing and the firewall has no GUI installed which
-is why I am using forwarding).  On eth1, I only allow specific MACs to
-be able to connect at all.
+<pre>
+// ip_conntrack.h:
+static inline void
+ip_conntrack_put(struct ip_conntrack *ct)
+{
+	IP_NF_ASSERT(ct);
+	nf_conntrack_put(&ct->ct_general);
+}
 
-I do appreciate the idea to block in the prerouting chain instead of marking
-then blocking.
+// skbuff.h:
+#ifdef CONFIG_NETFILTER
+static inline void nf_conntrack_put(struct nf_conntrack *nfct)
+{
+	if (nfct && atomic_dec_and_test(&nfct->use))
+		nfct->destroy(nfct);
+}
+</pre>
 
--- 
- Lab tests show that use of micro$oft causes cancer in lab animals
- Got Gas???
+The "destroy" call is an indirect function call, which appears to be a call 
+(most of the time) to nf_conntrack_core.c:541
+<pre>
+static void destroy_conntrack(struct nf_conntrack *nfct)
+</pre>
+
+I hope the table updating and kprintf lines are not embedded within the 
+destroy code?
+
+Q: What is "master"?
+
+It seems that conntrack data has a concept called "master". When a connection 
+is "destroyed", a call to the "master" destroy is also made. What is the 
+relationship between the nf_conntrack and the master of an nf_conntrack 
+(appears to be a tree or a linked list). It seems to be an ownership 
+relationship.
+
+
 
