@@ -1,12 +1,10 @@
-From: "Michael P. Brininstool" <mikepb@hoplite.org>
-Subject: RE: mac match and FORWARD chain
-Date: Mon, 23 Oct 2006 13:34:29 -0600
-Message-ID: <00f901c6f6da$45b04080$c84f949b@nasw.ds.army.mil>
-References: <20061023162435.GA2441@animx.eu.org>
+From: "Scot Harkins" <scoth@bigfoot.com>
+Subject: Fwd UDP packets to multiple destinations
+Date: Mon, 23 Oct 2006 13:09:14 -0700
+Message-ID: <013301c6f6df$1d4922b0$640fa8c0@harkinshome>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20061023162435.GA2441@animx.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
- I think you are doing this the hard way.  This is what I do and it works
-just fine
-(MAC's altered, I control eth[0134] via physical access security i.e. locked
-room):
+Howdy,
 
-===============================================
--A FORWARD -i eth2 -j macchk
-...
-===============================================
--A macchk -m mac --mac-source 00:xx:xx:xx:8F:FD -j RETURN
-...
--A macchk -m mac --mac-source 00:xx:xx:xx:8C:B6 -j RETURN
--A macchk -j logmac
-===============================================
--A logmac -j LOG --log-prefix "PACKET_FROM_MAC_DROPPED "
--A logmac -j DROP
-===============================================
 
-Remove first line of FORWARD (shown above) to remove the restrictions.
+I am looking for a way to set up a simple trap forwarder that doesn't mess 
+with the packets.  I want to have SNMP traps in UDP coming into one 
+destination and use perhaps iptables to distribute the traps to multiple 
+servers.
 
-I have a program generate macchk whenever the database of allowed machines
-changes.  It does this by removing the reference to macchk in the forward
-change, flushing the macchk chain, rebuilding it (with the logmac reference
-on the end, and it re-inserts the reference to macchk at beginning of
-FORWARD.
+I am about to experiment with a few things involving the netfilter tools, 
+starting with iptables.
+
+Has this problem already been licked?  Can you point me to the solution?
+
+
+Thanks!
+sh
+
+--
+Scot Harkins (KA5KDU)
+Greenbank, WA
+360-544-8750
+877-303-4656
+scoth@bigfoot.com
+http://www.bigfoot.com/~scoth
 
 
 
