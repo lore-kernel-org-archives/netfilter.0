@@ -1,12 +1,10 @@
-From: Nathan <lists@netdigix.com>
-Subject: Re: Need help !
-Date: Sun, 22 Oct 2006 11:49:14 -0700
-Message-ID: <1161542954.453bbd2a1b3f6@mail.dreamtoy.net>
-References: <361329646.25736@mail.nankai.edu.cn> <4539FD6E.2050709@gmail.com>
+From: Wakko Warner <wakko@animx.eu.org>
+Subject: mac match and FORWARD chain
+Date: Sun, 22 Oct 2006 21:20:29 -0400
+Message-ID: <20061023012029.GA32086@animx.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4539FD6E.2050709@gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,55 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: jasbir.k@gmail.com
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Try Xen or V-Server
+Keep me in CC.
 
+I'd like to request that the mac match not be allowed in the FORWARD chain
+as it does not function the way that some may think.
 
-Quoting Jasbir Khehra <jasbir.k@gmail.com>:
+The tests I've performed indicate that the match will match the MAC address
+of the transmitting interface (not what one would expect if attempting to
+allow based on the mac address of the sender and blocking all other packets)
 
-> Bo Yang wrote:
-> 
-> >-----BEGIN PGP SIGNED MESSAGE-----
-> >Hash: SHA1
-> >
-> >Hi ,
-> >    Everybody , I am on the list for a month ,
-> >everytime I saw your question and answers , I
-> >just want to reproduct your enviroment and trouble ,
-> >and then slove it .
-> >    But your troubles almost occur in the very
-> >complicated enviroment such as two router with four
-> >LANs and a PPP interface and etc.
-> >
-> >    How can I simulate such a condition ?
-> >I have thought about do it using VMWare , but I need
-> >many vms , and my system can't afford such a load !
-> >    Is there any software to achive such a task ?
-> >
-> >Thank you !
-> >
-> >-----BEGIN PGP SIGNATURE-----
-> >Version: GnuPG v1.4.5 (MingW32)
-> >Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-> >
-> >iD8DBQFFNylj7tZp58UCwyMRAswLAKDb6M51SSCwdTzZEkE/RE0Iwt4s0ACfUnqf
-> >YDVevTQAXnzCK0WJJuCHxPY=
-> >=8cfF
-> >-----END PGP SIGNATURE----
-> >
-> netkit >> netkit.org
-> HTH
-> -Jasbir
-> 
+I'd like to hear comments about this.  If it is not fesable to do this, I'd
+recommend adding text to the man page so that others do not fall into the
+same problem I did.
 
+I have already worked around this problem in my setup.
 
-
-
-Thanks
-
-- Nathan
-- http://www.linuxcare.ca
-
+-- 
+ Lab tests show that use of micro$oft causes cancer in lab animals
+ Got Gas???
 
