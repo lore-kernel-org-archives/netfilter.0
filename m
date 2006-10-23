@@ -1,10 +1,12 @@
-From: Per Jessen <per@computer.org>
-Subject: tarpitting?
-Date: Mon, 23 Oct 2006 11:08:10 +0200
-Message-ID: <ehi0pq$sbj$1@saturn.local.net>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: tarpitting?
+Date: Mon, 23 Oct 2006 11:44:05 +0200 (CEST)
+Message-ID: <62608.193.173.147.3.1161596645.squirrel@webmail.sterenborg.info>
+References: <ehi0pq$sbj$1@saturn.local.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <ehi0pq$sbj$1@saturn.local.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +20,35 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I'm using iptables 1.3.6 on a SUSE 10.1 box with 2.6.16 - and I just
-cannot get tarpitting to work. 
+On Mon, October 23, 2006 11:08, Per Jessen wrote:
+> I'm using iptables 1.3.6 on a SUSE 10.1 box with 2.6.16 - and I just
+> cannot get tarpitting to work.
+>
+> # iptables -A INPUT -p tcp -m tcp --dport 135  -j TARPIT
+> iptables: No chain/target/match by that name
+>
+>
+> Can someone guide me in the right direction, please?
+>
+>
+> When I asked this on another mailing list it was suggested I need to
+> install/run patch-o-matic to get the latest kernel-patches, but when I =
+tried
+> that nothing got applied.
 
-# iptables -A INPUT -p tcp -m tcp --dport 135  -j TARPIT
-iptables: No chain/target/match by that name
+I don't know exactly what you've tried and if TARPIT is already in kernel
+2.6.16, but, if you want to patch your kernel then do it like this:
 
-Can someone guide me in the right direction, please?  
+KERNEL_DIR=3D/path/to/kernel_src \
+IPTABLES_DIR=3D/path/to/iptables_src \
+./runme extra
 
-When I asked this on another mailing list it was suggested I need to
-install/run patch-o-matic to get the latest kernel-patches, but when I
-tried that nothing got applied. 
+Next, you have to configure your kernel for the TARPIT extension and
+compile/install it.
 
 
-Per Jessen, Zurich
+Grts,
+Rob
+
 
 
