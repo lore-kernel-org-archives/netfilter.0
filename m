@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: tarpitting?
-Date: Mon, 23 Oct 2006 11:44:05 +0200 (CEST)
-Message-ID: <62608.193.173.147.3.1161596645.squirrel@webmail.sterenborg.info>
-References: <ehi0pq$sbj$1@saturn.local.net>
+From: "Yakov Lerner" <iler.ml@gmail.com>
+Subject: psd
+Date: Mon, 23 Oct 2006 12:08:38 +0200
+Message-ID: <f36b08ee0610230308n479c6b70h34b362266fd2aa6e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <ehi0pq$sbj$1@saturn.local.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Mon, October 23, 2006 11:08, Per Jessen wrote:
-> I'm using iptables 1.3.6 on a SUSE 10.1 box with 2.6.16 - and I just
-> cannot get tarpitting to work.
->
-> # iptables -A INPUT -p tcp -m tcp --dport 135  -j TARPIT
-> iptables: No chain/target/match by that name
->
->
-> Can someone guide me in the right direction, please?
->
->
-> When I asked this on another mailing list it was suggested I need to
-> install/run patch-o-matic to get the latest kernel-patches, but when I =
-tried
-> that nothing got applied.
+I'm sorry I must be missing something totally obvious.
+I patch-o-matic-ng-20060921 and iptables-1.3.6.tar.bz2
+picked kernel 2.6.18 and, but in none of them I can [not]
+see kernel-part of psd module.
 
-I don't know exactly what you've tried and if TARPIT is already in kernel
-2.6.16, but, if you want to patch your kernel then do it like this:
+I see that psd exists somewhere for 2.6 but why I can't
+find it ? It is builtin in 2.4, but for 2.6, I'd like to find exactly
+from where download it (the kernel part).
 
-KERNEL_DIR=3D/path/to/kernel_src \
-IPTABLES_DIR=3D/path/to/iptables_src \
-./runme extra
-
-Next, you have to configure your kernel for the TARPIT extension and
-compile/install it.
-
-
-Grts,
-Rob
-
-
+Thanks
+Yakov
 
