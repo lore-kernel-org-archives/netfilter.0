@@ -1,10 +1,12 @@
-From: "Facundo Barrera" <facubarrera@gmail.com>
-Subject: Blocking MSN
-Date: Mon, 23 Oct 2006 12:45:52 -0300
-Message-ID: <c544f7190610230845uf32bd1fka58f02f9b39cd533@mail.gmail.com>
+From: "Thomas d'Otreppe" <tdotreppe@gmail.com>
+Subject: Re: Blocking MSN
+Date: Mon, 23 Oct 2006 17:48:33 +0200
+Message-ID: <78a2adce0610230848n74f54f71s5efe7c4582212d2b@mail.gmail.com>
+References: <c544f7190610230845uf32bd1fka58f02f9b39cd533@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <c544f7190610230845uf32bd1fka58f02f9b39cd533@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,19 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Facundo Barrera <facubarrera@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi list:
-         I need to block MSN to certain IP's of my LAN, i'm using
-iptables on Slackware linux, please can u help me, or send me any link
-to read about it.
+You should have a look at Layer-7: l7-filter.sourceforge.net
 
-Thanks.
+Thomas
 
-
-
--- 
-Facundo Agustin Barrera
-IT Management.
-Buenos Aires - Argentina.
+2006/10/23, Facundo Barrera <facubarrera@gmail.com>:
+> Hi list:
+>         I need to block MSN to certain IP's of my LAN, i'm using
+> iptables on Slackware linux, please can u help me, or send me any link
+> to read about it.
+>
+> Thanks.
+>
+>
+>
+> --
+> Facundo Agustin Barrera
+> IT Management.
+> Buenos Aires - Argentina.
+>
+>
 
