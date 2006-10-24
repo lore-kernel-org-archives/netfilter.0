@@ -1,87 +1,128 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: Daily svn snapshots now working again (was Re: patch-o-matic-ng
-	stopped ?)
-Date: Tue, 24 Oct 2006 13:35:51 +0200
-Message-ID: <20061024113551.GN6045@sunbeam.de.gnumonks.org>
-References: <1265.85.68.10.218.1161688632.squirrel@www.on-fire.net>
+From: "=?ISO-8859-1?Q?Juan_Carlos_Pel=E1ez_Mendoza?=" <jcpelaez@gmail.com>
+Subject: Blocking SMTP Worm
+Date: Tue, 24 Oct 2006 08:54:41 -0500
+Message-ID: <19fb1ac90610240654x44bdd20em7e04b21469739a10@mail.gmail.com>
+References: <19fb1ac90610240653x69cc1951g9766d7c809ddecef@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8jNwmpfkpox/fiJK"
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1265.85.68.10.218.1161688632.squirrel@www.on-fire.net>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: Wilfried BARNAVON <wbarnavon@on-fire.net>
-Cc: Netfilter Mailinglist <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, technique@on-fire.net
-
-
---8jNwmpfkpox/fiJK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 24, 2006 at 01:17:12PM +0200, Wilfried BARNAVON wrote:
-=20
-> I was used to test new linux kernels with
-> experimental patches for netfilter, and - oh surprise !- the last month
-> patch-o-matic-ng archives are more and more little, and finally with a
-> null content !
-
-You can find the current patch-o-matic-ng repository at
-http://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/
-
-> What happens ? Is this the end of a centralized and structured
-> iptables developpement ? Is there a break in the developpement team ?=20
-
-patch-o-matic[-ng] alwayas was a collection of various contributions
-=66rom people around the net, not a form of centralized and structured
-development
-
-> Is there a secret replacement of netfilter that justifies this
-> carelessness ?=20
-
-nobody is careless.  you just seem to be the first person to report that
-problem to me.
-
-> Just a bug in the patch-o-matic-ng "tar-gz" generator ?
-
-Exactly.  It's fixed now, please use the=20
-ftp://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/patch-o-matic-ng-2006=
-1024.tar.bz2
-snapshot that I just created.
-
-Cheers,
-
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---8jNwmpfkpox/fiJK
-Content-Type: application/pgp-signature
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <19fb1ac90610240653x69cc1951g9766d7c809ddecef@mail.gmail.com>
 Content-Disposition: inline
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
+Hi list,
 
-iD8DBQFFPfqXXaXGVTD0i/8RAsSCAJ9Zg+EkGFGQzm73SC88aG/wpoDX+gCdEO1C
-1mjmbDwWKfFlsexot92GwxM=
-=Itfn
------END PGP SIGNATURE-----
+My IP Address have been listed in the RBL's too many times, I
+installed into my linux box MailScanner + Spamassassin + Clamavmodule
++ FProt, I set up the iptables rules allowing only smtp, pop and ssh
+traffic, but when I see the traffic with tcpdump I see this strange
+behavior:
 
---8jNwmpfkpox/fiJK--
+17:14:42.255867 IP 192.168.0.92.2802 >
+Static-IP-cr2001181.cable.net.co.smtp: S 396792405:396792405(0) win
+16384 <mss 1460,nop,nop,sackOK>
+17:14:43.457612 IP 192.168.0.92.2803 >
+Static-IP-cr2001181.cable.net.co.smtp  : S 760094736:760094736(0) win
+16384 <mss 1460,nop,nop,sackOK>
+17:14:46.512975 IP 192.168.0.92.2804 >
+Static-IP-cr2001181.cable.net.co.smtp: S 804817506:804817506(0) win
+16384 <mss 1460,nop,nop,sackOK>
+17:14:49.466442 IP 192.168.0.92.2804 >
+Static-IP-cr2001181.cable.net.co.smtp: S 804817506:804817506(0) win
+16384 <mss 1460,nop,nop,sackOK>
+17:14:50.118528 IP 192.168.0.92.2805 > mailgw2.diveo.net.co.smtp  : S
+2079962326:2079962326(0) win 16384 <mss 1460,nop,nop,sackOK>
+17:14:53.071734 IP 192.168.0.92.2805 > mailgw2.diveo.net.co.smtp: S
+2079962326:2079962326(0) win 16384 <mss 1460,nop,nop,sackOK>
+
+I see the traffic today and still getting that result after blocking
+the traffic for the  192.168.0.92 address:
+
+08:40:10.664379 IP 192.168.0.92.2728 >
+emt200-31-197-53.emtelco.com.smtp: S 3599806789:3599806789(0) win
+16384 <mss 1460,nop,nop,sackOK>
+08:40:16.683771  IP 192.168.0.92.2728 >
+emt200-31-197-53.emtelco.com.smtp: S 3599806789:3599806789(0) win
+16384 <mss 1460,nop,nop,sackOK>
+08:40:20.731636 IP 192.168.0.92.2731 >
+bbvaganadero.telefonica.net.co.smtp: S 4026584844:4026584844(0) win
+16384 <mss 1460,nop,nop,sackOK>
+08:40:23.706369 IP 192.168.0.92.2731 >
+bbvaganadero.telefonica.net.co.smtp: S 4026584844:4026584844(0) win
+16384 <mss 1460,nop,nop,sackOK>
+
+
+What can I do to stop and block this worm???
+
+Here are my basic rules for IPtables.
+
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables --flush
+modprobe ip_conntrack
+modprobe ip_conntrack_ftp
+modprobe ip_nat_ftp
+modprobe ip_conntrack_irc
+
+iptables --table nat --flush
+
+  iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUER=
+ADE
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+
+#Blocking  192.168.0.92 SMTP Traffic
+ iptables -A FORWARD -p tcp --dport 25 -s 192.168.0.92 -j DROP
+
+iptables -A FORWARD -i eth1 -j ACCEPT
+
+echo "Enrutamiento Activado..."
+
+# Bloqueando ip  218.55.23.50
+iptables -A INPUT -s 218.55.23.50 -j DROP
+
+# Bloqueando ip  201.160.33.60
+iptables -A INPUT -s  201.160.33.60 -j DROP
+
+iptables -A INPUT -s 192.168.0.92 -j DROP
+iptables -A FORWARD -p tcp --dport 25 -j DROP
+
+#Permitir trafico de entrada a puertos SMTP, POP, SSH
+ iptables -A INPUT -p tcp --dport 25 -s 192.168.0.0/24 -d PRIVATE_IP -j ACC=
+EPT
+iptables -t filter -A INPUT -p tcp -s 0/0 -d  PUBLIC_IP --dport 25 -j ACCEP=
+T
+iptables -t filter -A INPUT -p tcp --dport 25 -s  192.168.0.0/24 -d 0/0 -j =
+DROP
+iptables -A INPUT -p tcp -s 0/0 -d   192.168.0.0/24 --sport 25 -i eth0 -j D=
+ROP
+
+iptables -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 110 -j ACCEPT
+iptables -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 22 -j ACCEPT
+iptables -t filter -A INPUT -p tcp -s 0/0 -d 0/0 --dport 3306 -j REJECT
+
+
+# Botar paquetes que vayan de la Lan por el puerto 25
+iptables -A FORWARD -p tcp --dport 25 -j DROP
+
+
+
+Can anybody help me with this???
+
+
+Thanks,
+
+
+
+Juan Carlos Pel=E1ez Mendoza
 
