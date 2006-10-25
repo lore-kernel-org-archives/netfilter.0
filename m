@@ -1,10 +1,12 @@
-From: <anisha.chandrasekaran@wipro.com>
-Subject: RE: understanding how conntrack works
-Date: Wed, 25 Oct 2006 08:44:27 +0530
-Message-ID: <2FEE63312285CF428A8480B07AC1C35903657F21@CHN-SNR-MBX01.wipro.com>
+From: "Eduardo Spremolla" <edspremolla@antel.com.uy>
+Subject: Re: outgoing skype ports
+Date: Wed, 25 Oct 2006 11:21:23 -0300
+Message-ID: <1161786083.21404.3.camel@fly.in.iantel.com.uy>
+References: <4535BC9B.1010605@asiaa.sinica.edu.tw>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4535BC9B.1010605@asiaa.sinica.edu.tw>
 Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,105 +18,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: alan.ezust@presinet.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Joshua, C.S. Chen" <cschen@asiaa.sinica.edu.tw>
+Cc: netfilter@lists.netfilter.org
+
+Take a look here:
+
+http://www.skype.com/help/guides/firewall.html
 
 
-Hello all,
-     Alan, I jus read your below mail regarding the conntrack facility.
-I am sorry that I am not able to help you with an answer to your query.
-I am actually writing this mail to ask you if you could help me know
-what are the structures that store conntrack details, i.e, if I want to
-drop a particular connection that is established which structure entry I
-should be parsing and deleting??????
-     Since I am also doing an analysis on the kernel code for conntrack
-facility I thought you may be able to help me out...
-
-=0D
- Regards,
-
-Anisha Chandrasekaran
-Email : anisha.chandrasekaran@wipro.com =0D
- =0D
-        =0D
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Alan Ezust
-Sent: Monday, October 23, 2006 11:49 PM
-To: netfilter@lists.netfilter.org
-Subject: understanding how conntrack works
-
-Greetings all, I'm exploring the kernel source trying to understand
-better how=0D
-the conntrack facility works. I had a couple of questions which I hope=0D
-someone more familiar with the code can answer...
-
-Q: Where in the code does a table entry get added to the conntrack
-table?=0D
-nf_conntrack_put doesn't seem to contain much code related to that.
-
-Q: Where in the code is the conntrack data lines being written, and
-using what=0D
-mechanism? (kprintf? procfs?)
-
-I did some ctags jumping and keep coming to the nf_conntrack_put
-function,=0D
-which I expected to contain the code. Instead it only contains a
-
-<pre>
-// ip_conntrack.h:
-static inline void
-ip_conntrack_put(struct ip_conntrack *ct)
-{
-	IP_NF_ASSERT(ct);
-	nf_conntrack_put(&ct->ct_general);
-}
-
-// skbuff.h:
-#ifdef CONFIG_NETFILTER
-static inline void nf_conntrack_put(struct nf_conntrack *nfct)
-{
-	if (nfct && atomic_dec_and_test(&nfct->use))
-		nfct->destroy(nfct);
-}
-</pre>
-
-The "destroy" call is an indirect function call, which appears to be a
-call=0D
-(most of the time) to nf_conntrack_core.c:541
-<pre>
-static void destroy_conntrack(struct nf_conntrack *nfct)
-</pre>
-
-I hope the table updating and kprintf lines are not embedded within the=0D
-destroy code?
-
-Q: What is "master"?
-
-It seems that conntrack data has a concept called "master". When a
-connection=0D
-is "destroyed", a call to the "master" destroy is also made. What is the
-
-relationship between the nf_conntrack and the master of an nf_conntrack=0D
-(appears to be a tree or a linked list). It seems to be an ownership=0D
-relationship.
+On Wed, 2006-10-18 at 13:33 +0800, Joshua, C.S. Chen wrote:
+> Hi folks,
+> I am maintaining a small office fw/gw using iptables. And the rules =
+are,
+> only open outgoing connection for port (destination port) 80 and 443.
+> And stateful allowing returned/concerned sessions.
+> Now we want to allow skype traffic. My question is
+> What port(s) should be opened (outgoing) to use skype?
+>=20
+> Thanks in advance
+>=20
+> Cheers
+> Joshua
+>=20
+>=20
+--=20
+Ing. Eduardo Spremolla
+Gerente de Desarrollo Aplicado
+Antel
+Uruguay
 
 
-
-
-
-The information contained in this electronic message and any attachments to=
- this message are intended for the exclusive use of the addressee(s) and=
- may contain proprietary, confidential or privileged information. If you=
- are not the intended recipient, you should not disseminate, distribute or=
- copy this e-mail. Please notify the sender immediately and destroy all=
- copies of this message and any attachments.=0D
-
-WARNING: Computer viruses can be transmitted via email. The recipient=
- should check this email and any attachments for the presence of viruses.=
- The company accepts no liability for any damage caused by any virus=
- transmitted by this email.
-=0D
-www.wipro.com
+Este e-mail y cualquier posible archivo adjunto est=E1 dirigido =
+=FAnicamente al destinatario del mensaje y contiene informaci=F3n que =
+puede ser confidencial. Si Ud. no es el destinatario correcto por favor =
+notifique al remitente respondiendo este mensaje y elimine =
+inmediatamente el e-mail y los posibles archivos adjuntos al mismo de su =
+sistema. Est=E1 prohibida cualquier utilizaci=F3n, difusi=F3n o copia de =
+este e-mail por cualquier persona o entidad que no sean las =
+espec=EDficas destinatarias del mensaje. ANTEL no acepta ninguna =
+responsabilidad con respecto a cualquier comunicaci=F3n que haya sido =
+emitida incumpliendo nuestra Pol=EDtica de Seguridad de la =
+Informaci=F3n.
+. . . . . . . . .
+This e-mail and any attachment is confidential and is intended solely =
+for the addressee(s). If you are not intended recipient please inform =
+the sender immediately, answering this e-mail and delete it as well as =
+the attached files. Any use, circulation or copy of this e-mail by any =
+person or entity that is not the specific addressee(s) is prohibited. =
+ANTEL is not responsible for any communication emitted without =
+respecting our Information Security Policy.
 
