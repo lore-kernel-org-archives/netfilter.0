@@ -1,12 +1,13 @@
-From: Tommy Sandquist <tomslists@sandquisttech.net>
-Subject: Re: Ipt_random module questions
-Date: Tue, 24 Oct 2006 09:53:51 -0700
-Message-ID: <453E451F.1000900@sandquisttech.net>
-References: <BAY103-F7AC52059E001ADA6EF7DBB20C0@phx.gbl>
+From: Alan Ezust <alan.ezust@presinet.com>
+Subject: Re: understanding how conntrack works
+Date: Wed, 25 Oct 2006 09:02:27 -0700
+Message-ID: <200610250902.27939.alan.ezust@presinet.com>
+References: <2FEE63312285CF428A8480B07AC1C35903657F21@CHN-SNR-MBX01.wipro.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY103-F7AC52059E001ADA6EF7DBB20C0@phx.gbl>
+In-Reply-To: <2FEE63312285CF428A8480B07AC1C35903657F21@CHN-SNR-MBX01.wipro.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,25 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: anisha.chandrasekaran@wipro.com
+Cc: netfilter@lists.netfilter.org
 
-Thanks for the help! Do you know where I can find more information on 
-this statistic match module in 2.6.18. I compiled IPTables 1.3.6 and 
-installed it and am now able to add the module to my command line put 
-there is very poor documentation on this modules use and capabilities. 
-The syntax in iptables didn't help me a whole lot either. I tried using 
-this module in random mode and am assuming from the error I was getting 
-earlier that I must use a decimal for the probability but then I get 
-errors about chain, target, or match not existing when I try to jump 
-from that table to my packet marking table (for iproute2 to use). Any 
-additional information or sites you can provide with information would 
-be of great value.
-Also, probably not for this discussion but does anyone know the proper 
-way to rebuild the iptables 1.3.6 tarball in to a rpm file? I seriously 
-doubt my issues are related to this but just thought I'd ask since the 
-binary package is a little cleaner on the package based systems.
-Thanks for all the help so far.
+On Tuesday 24 October 2006 20:14, anisha.chandrasekaran@wipro.com wrote:
+> Hello all,
+>      Alan, I jus read your below mail regarding the conntrack facility.
+> I am sorry that I am not able to help you with an answer to your query.
+> I am actually writing this mail to ask you if you could help me know
+> what are the structures that store conntrack details, i.e, if I want to
+> drop a particular connection that is established which structure entry I
+> should be parsing and deleting??????
 
-Tom
+After some searching, I came across these parts of the code:
+nfct_create_conntrack (libnetfilter_conntrack.c:951)
+This code creates a struct nfct_conntrack. 
+
+Then there is the nf_conntrack_tuple 
+(linux/include/net/netfilter/nf_conntrack_tuple.h:64)
+which contains "the information to distinguish a connection")
+
+I *think* this is the right place in the code. I hope someone else will 
+correct me if this answer is wrong or incomplete :-)
+
 
