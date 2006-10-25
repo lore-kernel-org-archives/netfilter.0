@@ -1,13 +1,12 @@
-From: Victor Toni <netfilter-list@kromo.org>
-Subject: Re: Howto access modem behind router
-Date: Tue, 24 Oct 2006 20:05:51 +0200
-Message-ID: <453E55FF.7000705@kromo.org>
-References: <453D34CD.904@kromo.org>
-Reply-To: netfilter@lists.netfilter.org
+From: Harald Welte <laforge@netfilter.org>
+Subject: [ADMINISTRATIVE] netfilter.org service downtime
+Date: Wed, 25 Oct 2006 23:11:03 +0200
+Message-ID: <20061025211103.GG6264@sunbeam.de.gnumonks.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oj4kGyHlBMXGt3Le"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <453D34CD.904@kromo.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +17,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Mailinglist <netfilter@lists.netfilter.org>
+Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, coreteam@netfilter.org, Netfilter Announcement List <netfilter-announce@lists.netfilter.org>
 
-Victor Toni wrote:
-> Hello,
->
-> I have one of these modems which is a router by itself. The modem is
-> configured to work in bridged mode.
-> Connected to the modem is a router which connects via pppoe via the
-> modem with my ISP.
->
->    |<---------- PPPOE link ------------->|    
->    |                                     |    |====== 
->   ISP ======= bridged ================= WRT ========= PCs
->                modem |                 |   |  |======
->                      |                 |   |
->                      |<- 169.254.1.x ->|   |<-- 192.168.1.x -->>
->
->
->
-> The modem has a web interface and and telnet which I would like to
-> connect to from within the LAN but this doesn't seem to work.
-> I tried the instructions from:
-> http://www.dd-wrt.com/wiki/index.php/Access_To_Modem_Configuration
-> but this makes the modem only available from the router and not from the
-> LAN.
-> I have currently some trouble with my connection and would like to use a
-> tool to monitor the modem's error status but this fails due to the
-> configuration.
-> The modem has the static IP 169.254.1.1 and the router has the static
-> IPs 169.254.1.100 and 192.168.1.1.
-> I can ping "169.254.1.100" from any LAN machine on 192.168.1.0/24 but
-> that's it.
->
-> Any help is very much appreciated.
->   
 
-Is there any additional information I could provide? I have really no
-clue about iptables so I would rather have my firewall open or NAT not
-working anymore after my experiments.
+--oj4kGyHlBMXGt3Le
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Victor
+Hi!
 
+As some of you have noticed already, there was a downtime for about 24
+hours in delivery of netfilter.org mails, including all mailinglist.
+
+Also, bugzilla.netfilter.org is down for the same period of time.
+
+=3D=3D=3D This service outage was brought to you by Gentoo updates =3D=3D=3D
+
+Mail delivery is now up and running again, bugzilla will take some more
+time.
+
+I'm really sorry, but apparently every time you update gentoo packages
+for security reasons on ppc64, it results in major breakage :(
+
+For years I want to migrate to debian/ppc32 on that ppc64 box, but that
+is likely to take at least two full days, and I'm a bit short in time at
+the moment.
+
+Sorry for any inconvenience caused.
+
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
+
+--oj4kGyHlBMXGt3Le
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFP9LnXaXGVTD0i/8RAmxpAKCkCyCtr98J9SIgAk9btkeB5R9vHACfUvWu
+f+DBdIHSqTbOedyQL0g8EiI=
+=edM0
+-----END PGP SIGNATURE-----
+
+--oj4kGyHlBMXGt3Le--
 
