@@ -1,15 +1,10 @@
-From: "Marco Nicoloso" <nicolm@gmail.com>
-Subject: Re: Cannot go out the firewall
-Date: Thu, 26 Oct 2006 21:37:08 +0400
-Message-ID: <e8c943190610261037q17b3efa5s979ef4c316c46dc4@mail.gmail.com>
-References: <e8c943190610260223r232897fdi1aa4ed3e6d1a98b8@mail.gmail.com>
-	<454082CB.4070805@freemail.hu>
-	<e8c943190610260255o8496543w731c103623050d10@mail.gmail.com>
-	<45408AA7.5050106@freemail.hu>
+From: vwf <vwf@vulkor.net>
+Subject: how to filter on applications?
+Date: Thu, 26 Oct 2006 20:53:57 +0200
+Message-ID: <20061026185357.GA4832@trane.vulkor.net>
+Reply-To: vwf <vwf@vulkor.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45408AA7.5050106@freemail.hu>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,51 +16,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-2006/10/26, G=E1sp=E1r Lajos <swifty@freemail.hu>:
-> Marco Nicoloso =EDrta:
-> >> iptables -vnL
-> >
-> >    0     0 DROP       all  -f  *      *       0.0.0.0/0
-> > 0.0.0.0/0
-> ...
->
-> hmmm...
->
-> Something wrong with your kernel or iptables...
-> Or you just entered these command right after your firewall script...
-> The counts of packets in the chains should be mostly more than 0 ! :)
->
-> >> iptables -vnL -t nat
-> > iptables: Table does not exist (do you need to insmod?)
-> Well...
-> You need it.
->
-> In this command:
->
-> iptables -t nat -A POSTROUTING -o eth1 -s 192.168.7.0/24 -j SNAT --to
-> 81.xx.xxx.xxx
->
-> Try this in the head of your script:
->
-> modprobe ip_conntrack >/dev/null 2>/dev/null
-> modprobe ip_conntrack_ftp >/dev/null 2>/dev/null
-> modprobe ip_conntrack_irc >/dev/null 2>/dev/null
-> modprobe ip_nat >/dev/null 2>/dev/null
-> modprobe ip_nat_ftp >/dev/null 2>/dev/null
-> modprobe ip_nat_irc >/dev/null 2>/dev/null
-> modprobe iptable_filter >/dev/null 2>/dev/null
-> modprobe iptable_mangle >/dev/null 2>/dev/null
-> modprobe iptable_nat >/dev/null 2>/dev/null
->
-I found out that module ip_nat isn't found, this is likely the cause
-of the problem. Which options of the kernel enables it.
+Hello,
 
-Thank you very much.
-Dosto
->
->
+I want to filter outgoing traffic based on the originating application.
+How do I do this? Please tell me iptables can do this. If not, how can I
+lock down my system?
+
+Thanks.
 
