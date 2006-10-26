@@ -1,10 +1,14 @@
-From: Don Gould <don@bowenvale.co.nz>
-Subject: IPTables script problem...
-Date: Thu, 26 Oct 2006 22:48:43 +1300
-Message-ID: <4540847B.8080407@bowenvale.co.nz>
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: Cannot go out the firewall
+Date: Thu, 26 Oct 2006 12:15:03 +0200
+Message-ID: <45408AA7.5050106@freemail.hu>
+References: <e8c943190610260223r232897fdi1aa4ed3e6d1a98b8@mail.gmail.com>	
+	<454082CB.4070805@freemail.hu>
+	<e8c943190610260255o8496543w731c103623050d10@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <e8c943190610260255o8496543w731c103623050d10@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,103 +19,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Marco Nicoloso <nicolm@gmail.com>
+Cc: netfilter@lists.netfilter.org, =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
 
-Can anyone tell me why this isn't working?
+Marco Nicoloso =EDrta:
+>> iptables -vnL
+>
+>    0     0 DROP       all  -f  *      *       0.0.0.0/0           =20
+> 0.0.0.0/0
+=2E..
 
-If I add the ip to the filter manually from the cmd line then it works,
-if I try to do it in the script is doesn't.
+hmmm...
 
- From below...
+Something wrong with your kernel or iptables...
+Or you just entered these command right after your firewall script...
+The counts of packets in the chains should be mostly more than 0 ! :)
 
-iptables -A traffic_in -d $3  >> /home/shared/dhcpconnect.log
-iptables -A traffic_out -s $3  >> /home/shared/dhcpconnect.log
+>> iptables -vnL -t nat
+> iptables: Table does not exist (do you need to insmod?)
+Well...
+You need it.
 
-doesn't seem to add the IP, but...
+In this command:
 
-iptables -A traffic_out -s 192.168.3.151
+iptables -t nat -A POSTROUTING -o eth1 -s 192.168.7.0/24 -j SNAT --to
+81.xx.xxx.xxx
 
-will work just fine...
+Try this in the head of your script:
 
-Chain traffic_in (4 references)
-  pkts bytes target     prot opt in     out     source
-destination
-  7707 4745K            all  --  *      *       0.0.0.0/0
-192.168.2.148
-   678  529K            all  --  *      *       0.0.0.0/0
-192.168.2.136
-Chain traffic_out (3 references)
-  pkts bytes target     prot opt in     out     source
-destination
-  7402 1328K            all  --  *      *       192.168.2.148
-0.0.0.0/0
-   582 95736            all  --  *      *       192.168.2.136
-0.0.0.0/0
-     0     0            all  --  *      *       192.168.3.151
-0.0.0.0/0
-
-As you can see, I only added 151 to one filter manually.  It should have
-been added automatically when the script was next called by dnsmasq.
-
-
-==== And now for the offending script...
+modprobe ip_conntrack >/dev/null 2>/dev/null
+modprobe ip_conntrack_ftp >/dev/null 2>/dev/null
+modprobe ip_conntrack_irc >/dev/null 2>/dev/null
+modprobe ip_nat >/dev/null 2>/dev/null
+modprobe ip_nat_ftp >/dev/null 2>/dev/null
+modprobe ip_nat_irc >/dev/null 2>/dev/null
+modprobe iptable_filter >/dev/null 2>/dev/null
+modprobe iptable_mangle >/dev/null 2>/dev/null
+modprobe iptable_nat >/dev/null 2>/dev/null
 
 
-[root@bowenvale shared]# cat dhcp.src
-#!/bin/sh
-nowdate=$(date)
-# echo $nowdate, $0, $1, $2, $3 >> /home/shared/dhcpconnect.log
+>> iptables -vnL -t mangle
+> iptables: Table does not exist (do you need to insmod?)
+>
+Not now :) Maybe later... :)
 
-echo $nowdate, $2, $3 >> /home/shared/dhcpconnect.log
+> But modules iptable_nat and iptable_mangle (although, I think,
+> iptable_mangle is not necessary for me) are loaded.
+>
+Are you sure?
+> Do I need to create table nat, or it is built-in?
+>
+It is built-in, but should be loaded if you compiled as a module in you=20
+kernel.
 
-echo "Start" >> /home/shared/dhcpconnect.log
+ From "man iptables":
 
-mysql -h bowenvale -u oncs -pbutterfly -e "INSERT INTO
-oncs.tblSessionRequest (MACAddress, IPAddress) VALUES('$2', '$3
-    ');" &> /home/shared/dhcpconnect.log
-
-echo "Done - database log" >> /home/shared/dhcpconnect.log
-
-# Now we start the data accounting bit using IP tables...
-# Make sure the iptables rules exist!  This should return errors because
-these rules should always already exist.
-iptables -N traffic_in  >> /home/shared/dhcpconnect.log
-iptables -N traffic_out  >> /home/shared/dhcpconnect.log
-
-echo $nowdate, $2, $3 >> /home/shared/dhcpconnect.log
-
-echo "Done - rule create" >> /home/shared/dhcpconnect.log
-
-# Create Rule for IP to count the data.
-iptables -A traffic_in -d $3  >> /home/shared/dhcpconnect.log
-iptables -A traffic_out -s $3  >> /home/shared/dhcpconnect.log
-
-echo "Done - counter add" >> /home/shared/dhcpconnect.log
-
-#add chains as target to FORWARD rule - after the first time, this
-should always be already done.
-iptables -I FORWARD 1 -j traffic_in  >> /home/shared/dhcpconnect.log
-iptables -I FORWARD 2 -j traffic_out  >> /home/shared/dhcpconnect.log
+              If the kernel  is
+              configured  with  automatic  module loading, an attempt=20
+will be made to load the appropriate module for
+              that table if it is not already there.
 
 
-echo "Done forward rule add" >> /home/shared/dhcpconnect.log
-
-echo "Done", $2, $3  >> /home/shared/dhcpconnect.log
-
-
-
-[root@bowenvale shared]#
-
-
-
-Cheers Don
--- 
-Don Gould
-www.thinkdesignprint.co.nz - www.tcn.bowenvale.co.nz -
-www.bowenvale.co.nz - www.hearingbooks.co.nz - www.buxtonsquare.co.nz -
-SkypeMe:  ThinkDesignPrint - Good ideas:  www.solarking.co.nz
-
-
+Swifty
 
 
