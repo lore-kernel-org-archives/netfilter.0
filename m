@@ -1,12 +1,13 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: IPTables script problem...
-Date: Thu, 26 Oct 2006 14:06:51 +0200
-Message-ID: <4540A4DB.6080001@freemail.hu>
-References: <4540847B.8080407@bowenvale.co.nz>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Two identical ips connected
+Date: Thu, 26 Oct 2006 11:47:23 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0610261145440.15161@darkstar.sysinfo.com>
+References: <20061016095557.058bbde3@vmm1.chaosbringer.de>
+	<49542.193.173.147.3.1160991666.squirrel@webmail.sterenborg.info>
+	<20061016120211.6ab1d49b@vmm1.chaosbringer.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4540847B.8080407@bowenvale.co.nz>
+In-Reply-To: <20061016120211.6ab1d49b@vmm1.chaosbringer.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,67 +18,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Don Gould <don@bowenvale.co.nz>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Julian Hagenauer <chaosbringer@gmx.de>
+Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@lists.netfilter.org
 
-Don Gould =EDrta:
-> Can anyone tell me why this isn't working?
->
-=2E..
->
-> [root@bowenvale shared]# cat dhcp.src
-> #!/bin/sh
-For debug try this:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-#!/bin/bash -x
+On Mon, 16 Oct 2006, Julian Hagenauer wrote:
 
-> nowdate=3D$(date)
-> # echo $nowdate, $0, $1, $2, $3 >> /home/shared/dhcpconnect.log
+> Hi
 >
-> echo $nowdate, $2, $3 >> /home/shared/dhcpconnect.log
+>> If you packet would make it to the router and the router had this configuration:
+>> - eth0: 192.168.1.0/24
+>> - eth1: 192.168.1.0/24
+>> the router cannot distinguish the subnets.
+>>
 >
-> echo "Start" >> /home/shared/dhcpconnect.log
+> Why so complicated.
+> eth0: 192.168.1.4
+> eth1: 192.168.1.4
 >
-> mysql -h bowenvale -u oncs -pbutterfly -e "INSERT INTO
-> oncs.tblSessionRequest (MACAddress, IPAddress) VALUES('$2', '$3
->    ');" &> /home/shared/dhcpconnect.log
-hmm...
-You mean:
-&>>/home
-???
-> echo "Done - database log" >> /home/shared/dhcpconnect.log
+> (Hostbased routing) would be enough. Sure the router can not distinguish between the IPs, but he could distinguish between the MACs, so would it be possible to do Masquerading based on MAC-Adresses?
 >
-> # Now we start the data accounting bit using IP tables...
-> # Make sure the iptables rules exist!  This should return errors becaus=
-e
-> these rules should always already exist.
-> iptables -N traffic_in  >> /home/shared/dhcpconnect.log
-> iptables -N traffic_out  >> /home/shared/dhcpconnect.log
+>> But you'd not even get that far.
+>> When you send a packet from a client to the server and this server has same IP
+>> as the client (thus src and dst IP are the same), then the packet wouldn't
+>> even make it to the router: it would be sent to itself.
 >
-> echo $nowdate, $2, $3 >> /home/shared/dhcpconnect.log
+> Mhm, i don't understand that. Let me explain my setup in greater detail:
 >
-> echo "Done - rule create" >> /home/shared/dhcpconnect.log
+> 	Server1---------|
+> 			|
+> 			|
+> 			|
+> 	Server2-------Router-------Client
+> 			|
+> 			|
+> 			DB
 >
-> # Create Rule for IP to count the data.
-> iptables -A traffic_in -d $3  >> /home/shared/dhcpconnect.log
-> iptables -A traffic_out -s $3  >> /home/shared/dhcpconnect.log
->
-> echo "Done - counter add" >> /home/shared/dhcpconnect.log
->
-> #add chains as target to FORWARD rule - after the first time, this
-> should always be already done.
-> iptables -I FORWARD 1 -j traffic_in  >> /home/shared/dhcpconnect.log
-> iptables -I FORWARD 2 -j traffic_out  >> /home/shared/dhcpconnect.log
->
->
-> echo "Done forward rule add" >> /home/shared/dhcpconnect.log
->
-> echo "Done", $2, $3  >> /home/shared/dhcpconnect.log
->
-What is in dhcpconnect.log ??? :)
-Could you post it? :)
+> I want that Server 1 and Server2 have the same IP, although only Server1 should be accessible for clients.
+> The reason for that is, that i want do some kind of load-balancing.
+> The problem is, that both Servers need permanent access to the db, so the router should somehow translate/masquerade the ip of the server2, so that both servers can access the db at the same time.
 
-Swifty
 
+The VIP goes on the load balancer, the servers behind it have distict 
+IP's, then your setup would work.  But, you are going to have to obtain or 
+setup a server in front of the two servers to do the load balancing bhind 
+to those servers.
+
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFQNiOst+vzJSwZikRAqyCAJ0bGx/8bMaxjyb/ISS5cKWWJbcGzACfQb0H
+aMXNMR0g+jdCUe9IGQ+HBlM=
+=KJJA
+-----END PGP SIGNATURE-----
 
