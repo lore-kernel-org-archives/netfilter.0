@@ -1,13 +1,8 @@
-From: "Gabor Szokoli" <szocske@gmail.com>
-Subject: Re: understanding how conntrack works
-Date: Thu, 26 Oct 2006 09:04:48 +0200
-Message-ID: <de47c0230610260004p311d17eap31126b486f8f78da@mail.gmail.com>
-References: <2FEE63312285CF428A8480B07AC1C35903657F21@CHN-SNR-MBX01.wipro.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: tarak@ossindia.com
+Subject: firewall configuration
+Date: Thu, 26 Oct 2006 13:01:57 +0530 (IST)
+Message-ID: <4165.56686764142$1161848600@news.gmane.org>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2FEE63312285CF428A8480B07AC1C35903657F21@CHN-SNR-MBX01.wipro.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +13,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On 10/25/06, anisha.chandrasekaran@wipro.com
-
-> [...]
-> what are the structures that store conntrack details, i.e, if I want to
-> drop a particular connection that is established which structure entry I
-> should be parsing and deleting??????
-
-Hi!
-
-I have no idea, but if I were you, I'd look at the source of the
-conntrack command line utility which does just that.
-Google code search for a string literal from its usage notes:
-http://www.google.com/codesearch?q=+%22Tool+to+manipulate+conntrack+and+expectations%22+show:RD63OKff6uI:4Aj5uJ7HKoA:cv34qD7QSD4&sa=N&cd=2&ct=rc&cs_p=http://ftp.netfilter.org/pub/conntrack/conntrack-1.00beta2.tar.bz2&cs_f=conntrack-1.00beta2/src/conntrack.c#a0
-
-There, links to libnetfilter_conntrack, you continue :-)
 
 
-Hope it helps:
 
-Gabor Szokoli
+>
+hi all,
+>
+>              i have a problem in iptables, i want to customize the
+>firewall. through iptable i want run a shell script which will keep an
+>watch
+>on each and every ip addresses in my organization, that how much amount
+>of
+>data downloading and uploading from those ip addresses...... seperately..
+>is
+>this possible to do,,,, if so please tell me how to do...
+>
+>thanks in advance
+>
+>Regards,
+>Tarak Ranjan
+>
+>
+>
+
 
