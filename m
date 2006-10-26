@@ -1,9 +1,9 @@
-From: Balazs Fulop <balazs.fulop@initon.com>
-Subject: multiple uplinks masquerading
-Date: Thu, 26 Oct 2006 11:30:43 +0200
-Message-ID: <45408043.2080403@initon.com>
+From: Philip Pemberton <usenet06@philpem.me.uk>
+Subject: NATing on a single interface?
+Date: Thu, 26 Oct 2006 10:08:38 +0100
+Message-ID: <ehptuc$bo6$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050601020305050103050406"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,62 +15,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------050601020305050103050406
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi,
+   I've got an ADSL router with a built-in firewall. It's a nice little box,
+the ADSL front-end is solid (and ADSL2+ compatible, which is nice). Only
+problem is, it has a maximum of 16 firewall port-forward rules and no support
+for time-based firewalling. What I'd like to do is make the router forward
+packets onto my firewall box, then have iptables deal with NATing and stuff 
+like that.
 
-I am on the list now. Sorry for causing too much traffic.
+   At the moment, the network looks like this:
+ADSL ---SpeedtouchUSB@ppp0---> FIREWALL ---eth0---> Other machines
 
+   What I want is something more like:
 
---------------050601020305050103050406
-Content-Type: message/rfc822;
- name="multiple uplinks masquerading"
-Content-Disposition: inline;
- filename="multiple uplinks masquerading"
-Content-Transfer-Encoding: 7bit
+         10.1.0.2  10.1.0.1   10.0.0.1      10.0.0.0/16
+ADSL Router ----------> Firewall ------(nat)-----> LAN
 
-Message-ID: <45407F91.2030201@initon.com>
-Date: Thu, 26 Oct 2006 11:27:45 +0200
-From: Balazs Fulop <balazs.fulop@initon.com>
-User-Agent: Debian Thunderbird 1.0.2 (X11/20060926)
-X-Accept-Language: en-us, en
-MIME-Version: 1.0
-To: netfilter@lists.netfilter.org
-Subject: multiple uplinks masquerading
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: quoted-printable
+ADSL Router: 10.1.0.2/16
+Firewall: 10.0.0.1/16 and 10.1.0.1/16
+LAN: 10.0.0.0/16
 
-Dear List!
+   Ordinarily I'd fit another NIC into the firewall, then use Arno's IPtables 
+script to do the NATing from eth0 (external) to eth1 (internal). Problem is, 
+the firewall server can't take another NIC - it's only got one onboard and no 
+facility to add another (the server is a Linksys NSLU2 - an embedded server in 
+other words) unless I add a USB adapter, which would be a bit less than ideal 
+for LAN routing (I hear the USB adapters are quite slow and prone to packet loss).
 
-I am a system administrator at an IT company. We have recently
-subscribed to a PPPoE Internet connection besides the one we are
-currently using. I thought it would be a good idea to use them in
-parallel, as described in the LARTC HOWTO
-(http://lartc.org/howto/lartc.rpdb.multiple-links.html). I have set up
-the two pppoe connections as described there and created the following
-two rules in my iptables setup:
--t nat -A POSTROUTING -o ppp0 -j MASQUERADE
--t nat -A POSTROUTING -o ppp1 -j MASQUERADE
-It worked more or less. In most cases the HTTP downloads were faster,
-however, we had strange experiences. Sometimes SSH didn't seem to work
-at all. SSH client asked for a password, but after that it hanged. FTP
-never worked, but I have a thought that it won't ever work because of
-that it uses two ports (control, data), and my links are weighted 1 - 1.
-Important versions:
-Linux 2.6.17.11-grsec
-iproute2-ss041019
-iptables v1.3.5
-Could you please tell me if I did anything wrong? Please answer to the
-sender address, I am not on the list. Thanks in advance.
+   So what I'd like to do is have the DSL router forwarding to the firewall 
+server, then have the firewall server do NATing and firewalling for the entire 
+LAN subnet, all on a single interface. Is this doable, or do I really need to 
+add another Ethernet interface?
 
-F=FCl=F6p Bal=E1zs
+   I've read a few IPtables HOWTOs and I just don't understand how it's all 
+supposed to work (which is why I used the Arno script in the first place)...
 
+Thanks.
+-- 
+Phil.                         |  (\_/)  This is Bunny. Copy and paste Bunny
+usenet06@philpem.me.uk        | (='.'=) into your signature to help him gain
+http://www.philpem.me.uk/     | (")_(") world domination.
+If mail bounces, replace "06" with the last two digits of the current year.
 
-
-
-
---------------050601020305050103050406--
 
