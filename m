@@ -1,14 +1,10 @@
-From: "Marco Nicoloso" <nicolm@gmail.com>
-Subject: Re: Cannot go out the firewall
-Date: Thu, 26 Oct 2006 13:55:39 +0400
-Message-ID: <e8c943190610260255o8496543w731c103623050d10@mail.gmail.com>
-References: <e8c943190610260223r232897fdi1aa4ed3e6d1a98b8@mail.gmail.com>
-	<454082CB.4070805@freemail.hu>
+From: Don Gould <don@bowenvale.co.nz>
+Subject: IPTables script problem...
+Date: Thu, 26 Oct 2006 22:48:43 +1300
+Message-ID: <4540847B.8080407@bowenvale.co.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <454082CB.4070805@freemail.hu>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,114 +15,103 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-2006/10/26, G=E1sp=E1r Lajos <swifty@freemail.hu>:
-> Would you please post the output of these commands?
+Can anyone tell me why this isn't working?
 
-Immediately
+If I add the ip to the filter manually from the cmd line then it works,
+if I try to do it in the script is doesn't.
 
-> iptables -vnL
+ From below...
 
-    0     0 DROP       all  -f  *      *       0.0.0.0/0            0.0.0.0=
-/0
-    0     0 DROP       all  --  *      *       0.0.0.0/0
-0.0.0.0/0           state INVALID
-    0     0 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0=
-/0
-    8   528 ACCEPT     all  --  eth1   *       0.0.0.0/0            0.0.0.0=
-/0
-    0     0 ACCEPT     all  --  eth0   *       0.0.0.0/0
-0.0.0.0/0           state RELATED,ESTABLISHED
-    0     0 ACCEPT     udp  --  eth0   *       0.0.0.0/0
-0.0.0.0/0           udp spt:53
-    0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0
-0.0.0.0/0           tcp spt:53
-    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-0.0.0.0/0           tcp dpt:3128
-    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-0.0.0.0/0           tcp dpt:80
-    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0           tcp dpt:22
-    0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0
-0.0.0.0/0           tcp dpt:25
-    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-0.0.0.0/0           tcp dpt:25
-    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0           icmp type 3
-    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0           icmp type 4
-    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0           icmp type 11
-    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0           icmp type 12
-    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0           icmp type 5
-    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0           icmp type 9
-    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0           icmp type 8
-    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0           icmp type 0
+iptables -A traffic_in -d $3  >> /home/shared/dhcpconnect.log
+iptables -A traffic_out -s $3  >> /home/shared/dhcpconnect.log
 
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-    0     0 laninet    all  --  eth1   eth0    0.0.0.0/0            0.0.0.0=
-/0
-    0     0 inetlan    all  --  eth0   eth1    0.0.0.0/0            0.0.0.0=
-/0
+doesn't seem to add the IP, but...
 
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-    0     0 DROP       all  -f  *      *       0.0.0.0/0            0.0.0.0=
-/0
-    0     0 DROP       all  --  *      *       0.0.0.0/0
-0.0.0.0/0           state INVALID
-    0     0 ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0=
-/0
-    5   540 ACCEPT     all  --  *      eth1    0.0.0.0/0            0.0.0.0=
-/0
-    0     0 ACCEPT     all  --  *      eth0    0.0.0.0/0
-0.0.0.0/0           state NEW,RELATED,ESTABLISHED
+iptables -A traffic_out -s 192.168.3.151
 
-Chain inetlan (1 references)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-    0     0 DROP       all  --  *      *       192.168.7.0/24       0.0.0.0=
-/0
-    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0           tcp spt:53
-    0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
-0.0.0.0/0           udp spt:53
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0           state RELATED,ESTABLISHED
-    0     0 REJECT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0           reject-with tcp-reset
+will work just fine...
 
-Chain laninet (1 references)
- pkts bytes target     prot opt in     out     source               destina=
-tion
-    0     0 DROP       all  --  *      *      !192.168.7.0/24       0.0.0.0=
-/0
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0=
-/0
-> iptables -vnL -t nat
-iptables: Table does not exist (do you need to insmod?)
-> iptables -vnL -t mangle
-iptables: Table does not exist (do you need to insmod?)
+Chain traffic_in (4 references)
+  pkts bytes target     prot opt in     out     source
+destination
+  7707 4745K            all  --  *      *       0.0.0.0/0
+192.168.2.148
+   678  529K            all  --  *      *       0.0.0.0/0
+192.168.2.136
+Chain traffic_out (3 references)
+  pkts bytes target     prot opt in     out     source
+destination
+  7402 1328K            all  --  *      *       192.168.2.148
+0.0.0.0/0
+   582 95736            all  --  *      *       192.168.2.136
+0.0.0.0/0
+     0     0            all  --  *      *       192.168.3.151
+0.0.0.0/0
 
-But modules iptable_nat and iptable_mangle (although, I think,
-iptable_mangle is not necessary for me) are loaded.
+As you can see, I only added 151 to one filter manually.  It should have
+been added automatically when the script was next called by dnsmasq.
 
-Do I need to create table nat, or it is built-in?
 
-> Thanx
->
-> Swifty
->
->
+==== And now for the offending script...
+
+
+[root@bowenvale shared]# cat dhcp.src
+#!/bin/sh
+nowdate=$(date)
+# echo $nowdate, $0, $1, $2, $3 >> /home/shared/dhcpconnect.log
+
+echo $nowdate, $2, $3 >> /home/shared/dhcpconnect.log
+
+echo "Start" >> /home/shared/dhcpconnect.log
+
+mysql -h bowenvale -u oncs -pbutterfly -e "INSERT INTO
+oncs.tblSessionRequest (MACAddress, IPAddress) VALUES('$2', '$3
+    ');" &> /home/shared/dhcpconnect.log
+
+echo "Done - database log" >> /home/shared/dhcpconnect.log
+
+# Now we start the data accounting bit using IP tables...
+# Make sure the iptables rules exist!  This should return errors because
+these rules should always already exist.
+iptables -N traffic_in  >> /home/shared/dhcpconnect.log
+iptables -N traffic_out  >> /home/shared/dhcpconnect.log
+
+echo $nowdate, $2, $3 >> /home/shared/dhcpconnect.log
+
+echo "Done - rule create" >> /home/shared/dhcpconnect.log
+
+# Create Rule for IP to count the data.
+iptables -A traffic_in -d $3  >> /home/shared/dhcpconnect.log
+iptables -A traffic_out -s $3  >> /home/shared/dhcpconnect.log
+
+echo "Done - counter add" >> /home/shared/dhcpconnect.log
+
+#add chains as target to FORWARD rule - after the first time, this
+should always be already done.
+iptables -I FORWARD 1 -j traffic_in  >> /home/shared/dhcpconnect.log
+iptables -I FORWARD 2 -j traffic_out  >> /home/shared/dhcpconnect.log
+
+
+echo "Done forward rule add" >> /home/shared/dhcpconnect.log
+
+echo "Done", $2, $3  >> /home/shared/dhcpconnect.log
+
+
+
+[root@bowenvale shared]#
+
+
+
+Cheers Don
+-- 
+Don Gould
+www.thinkdesignprint.co.nz - www.tcn.bowenvale.co.nz -
+www.bowenvale.co.nz - www.hearingbooks.co.nz - www.buxtonsquare.co.nz -
+SkypeMe:  ThinkDesignPrint - Good ideas:  www.solarking.co.nz
+
+
+
 
