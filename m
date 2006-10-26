@@ -1,13 +1,10 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Blocking SMTP Worm
-Date: Thu, 26 Oct 2006 11:27:50 +0200
-Message-ID: <45407F96.8090000@freemail.hu>
-References: <19fb1ac90610240653x69cc1951g9766d7c809ddecef@mail.gmail.com>	<19fb1ac90610240654x44bdd20em7e04b21469739a10@mail.gmail.com>	<453E1D84.6080803@freemail.hu>	<19fb1ac90610240719p75fc3580mc45c621cfb616502@mail.gmail.com>	<9e12c5a529145622a46a6cbe5fc05e4b@former03.de>
-	<19fb1ac90610241253u1bc73507u42f133845f60e3cc@mail.gmail.com>
+From: Balazs Fulop <balazs.fulop@initon.com>
+Subject: multiple uplinks masquerading
+Date: Thu, 26 Oct 2006 11:30:43 +0200
+Message-ID: <45408043.2080403@initon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------050601020305050103050406"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <19fb1ac90610241253u1bc73507u42f133845f60e3cc@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,53 +15,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?Juan_Carlos_Pel=E1ez_Mendoza?= <jcpelaez@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Juan Carlos Pel=E1ez Mendoza =EDrta:
-> Baltasar,
->
-> I think what you say is right, the traffic that the tcpdump shows is
-> before applying the filters and rules, The IP that I mentioned it's
-> now blocked, but another IP's are beggining to send traffic through
-> the interface,
->
-> how can I do to stop the traffic to my LAN but not to my linux box,
-> because this is my Mail Server and is the only one that I want to send
-> traffic at this port???
->
+This is a multi-part message in MIME format.
+--------------050601020305050103050406
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: 7bit
 
-iptables -A FORWARD -j DROP -p tcp --dport 25
-
-This will drop every smtp traffic that goes through your box!
-Remember: This is the FORWARD chain!
-
-It is not the nicest solution... :)
-
-Take a look on my script ! :)
-
-https://lists.netfilter.org/pipermail/netfilter/2006-August/066404.html
-
-Swifty
-> 14:51:55.442934 IP 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp >
-> 192.168.0.163.4115: P 168:192(24) ack 168 win 17353
-> 14:51:55.443055 IP 192.168.0.163.4115 >
-> 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp: . ack 192 win 65344
-> 14:51:55.659325 IP 192.168.0.163.4115 >
-> 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp: P 168:190(22) ack
-> 192 win 65344
-> 14:51:56.554482 IP 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp >
-> 192.168.0.163.4115: P 192:210(18) ack 190 win 17331
-> 14:51:56.665159 IP 192.168.0.163.4115 >
-> 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp: . ack 210 win 65326
->
->
-> Thanks,
->
->
-> Juan Carlos  Pel=E1ez Mendoza
->
+I am on the list now. Sorry for causing too much traffic.
 
 
+--------------050601020305050103050406
+Content-Type: message/rfc822;
+ name="multiple uplinks masquerading"
+Content-Disposition: inline;
+ filename="multiple uplinks masquerading"
+Content-Transfer-Encoding: 7bit
+
+Message-ID: <45407F91.2030201@initon.com>
+Date: Thu, 26 Oct 2006 11:27:45 +0200
+From: Balazs Fulop <balazs.fulop@initon.com>
+User-Agent: Debian Thunderbird 1.0.2 (X11/20060926)
+X-Accept-Language: en-us, en
+MIME-Version: 1.0
+To: netfilter@lists.netfilter.org
+Subject: multiple uplinks masquerading
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+Dear List!
+
+I am a system administrator at an IT company. We have recently
+subscribed to a PPPoE Internet connection besides the one we are
+currently using. I thought it would be a good idea to use them in
+parallel, as described in the LARTC HOWTO
+(http://lartc.org/howto/lartc.rpdb.multiple-links.html). I have set up
+the two pppoe connections as described there and created the following
+two rules in my iptables setup:
+-t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+-t nat -A POSTROUTING -o ppp1 -j MASQUERADE
+It worked more or less. In most cases the HTTP downloads were faster,
+however, we had strange experiences. Sometimes SSH didn't seem to work
+at all. SSH client asked for a password, but after that it hanged. FTP
+never worked, but I have a thought that it won't ever work because of
+that it uses two ports (control, data), and my links are weighted 1 - 1.
+Important versions:
+Linux 2.6.17.11-grsec
+iproute2-ss041019
+iptables v1.3.5
+Could you please tell me if I did anything wrong? Please answer to the
+sender address, I am not on the list. Thanks in advance.
+
+F=FCl=F6p Bal=E1zs
+
+
+
+
+
+--------------050601020305050103050406--
 
