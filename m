@@ -1,10 +1,13 @@
-From: Balazs Fulop <balazs.fulop@initon.com>
-Subject: multiple uplinks masquerading
-Date: Thu, 26 Oct 2006 11:27:45 +0200
-Message-ID: <45407F91.2030201@initon.com>
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: Blocking SMTP Worm
+Date: Thu, 26 Oct 2006 11:27:50 +0200
+Message-ID: <45407F96.8090000@freemail.hu>
+References: <19fb1ac90610240653x69cc1951g9766d7c809ddecef@mail.gmail.com>	<19fb1ac90610240654x44bdd20em7e04b21469739a10@mail.gmail.com>	<453E1D84.6080803@freemail.hu>	<19fb1ac90610240719p75fc3580mc45c621cfb616502@mail.gmail.com>	<9e12c5a529145622a46a6cbe5fc05e4b@former03.de>
+	<19fb1ac90610241253u1bc73507u42f133845f60e3cc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <19fb1ac90610241253u1bc73507u42f133845f60e3cc@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +19,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: =?ISO-8859-1?Q?Juan_Carlos_Pel=E1ez_Mendoza?= <jcpelaez@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Dear List!
+Juan Carlos Pel=E1ez Mendoza =EDrta:
+> Baltasar,
+>
+> I think what you say is right, the traffic that the tcpdump shows is
+> before applying the filters and rules, The IP that I mentioned it's
+> now blocked, but another IP's are beggining to send traffic through
+> the interface,
+>
+> how can I do to stop the traffic to my LAN but not to my linux box,
+> because this is my Mail Server and is the only one that I want to send
+> traffic at this port???
+>
 
-I am a system administrator at an IT company. We have recently
-subscribed to a PPPoE Internet connection besides the one we are
-currently using. I thought it would be a good idea to use them in
-parallel, as described in the LARTC HOWTO
-(http://lartc.org/howto/lartc.rpdb.multiple-links.html). I have set up
-the two pppoe connections as described there and created the following
-two rules in my iptables setup:
--t nat -A POSTROUTING -o ppp0 -j MASQUERADE
--t nat -A POSTROUTING -o ppp1 -j MASQUERADE
-It worked more or less. In most cases the HTTP downloads were faster,
-however, we had strange experiences. Sometimes SSH didn't seem to work
-at all. SSH client asked for a password, but after that it hanged. FTP
-never worked, but I have a thought that it won't ever work because of
-that it uses two ports (control, data), and my links are weighted 1 - 1.
-Important versions:
-Linux 2.6.17.11-grsec
-iproute2-ss041019
-iptables v1.3.5
-Could you please tell me if I did anything wrong? Please answer to the
-sender address, I am not on the list. Thanks in advance.
+iptables -A FORWARD -j DROP -p tcp --dport 25
 
-F=FCl=F6p Bal=E1zs
+This will drop every smtp traffic that goes through your box!
+Remember: This is the FORWARD chain!
 
+It is not the nicest solution... :)
+
+Take a look on my script ! :)
+
+https://lists.netfilter.org/pipermail/netfilter/2006-August/066404.html
+
+Swifty
+> 14:51:55.442934 IP 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp >
+> 192.168.0.163.4115: P 168:192(24) ack 168 win 17353
+> 14:51:55.443055 IP 192.168.0.163.4115 >
+> 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp: . ack 192 win 65344
+> 14:51:55.659325 IP 192.168.0.163.4115 >
+> 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp: P 168:190(22) ack
+> 192 win 65344
+> 14:51:56.554482 IP 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp >
+> 192.168.0.163.4115: P 192:210(18) ack 190 win 17331
+> 14:51:56.665159 IP 192.168.0.163.4115 >
+> 61-64-104-223-adsl-tai.STATIC.so-net.net.tw.smtp: . ack 210 win 65326
+>
+>
+> Thanks,
+>
+>
+> Juan Carlos  Pel=E1ez Mendoza
+>
 
 
 
