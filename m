@@ -1,9 +1,13 @@
-From: netdev@sc-software.com
-Subject: ethernet mac filter configuration (fwd)
-Date: Fri, 27 Oct 2006 04:27:44 -0700 (PDT)
-Message-ID: <Pine.LNX.4.63.0610270426570.14561@sc-software.com>
+From: "Pablo Sanchez" <pablo@blueoakdb.com>
+Subject: RE: how to filter on applications?
+Date: Fri, 27 Oct 2006 08:54:19 -0400
+Message-ID: <013001c6f9c7$049aa690$0419a8c0@fly>
+References: <20061027110442.GA6607@trane.vulkor.net>
+Reply-To: pablo@blueoakdb.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20061027110442.GA6607@trane.vulkor.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,39 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'Netfilter IPtableMailinglist' <netfilter@lists.netfilter.org>
 
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org 
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of vwf
+> Sent: Friday, October 27, 2006 7:05 AM
+> To: Netfilter IPtableMailinglist
+> Subject: Re: how to filter on applications?
+> 
+> Thank you. Your assumptions are right. I filter on application on the
+> workstation, and on port/destination on the router.
 
+I find this e-mail list generally very courteous.  English is a difficult
+language and it's not the primary language for a lot of people on this list.
 
-What, if any, user space command is available/recommended
-for adding/deleting MAC addresses and masks to hardware
-based ARC/CAM/MAC address filter memory on chip.
+In my opinion what is important is to strive to understand what the poster
+is trying to say.  Posters should strive to put as much detail as possible
+in their post to cut down on the 'discovery cycle.'  Make it clear; don't
+leave anything to be assumed (if you can help it).
 
-I've done a driver for a new 10/100 MAC/PHY combo (currently
-running on ARM) that has on chip memory and logic for
-this kind of filtration.
+Provide diagrams if possible (emacs' picture-mode works very well!  ;)
 
-I'm aware of the kernel multicast support and I've tied
-my set_multicast_list() function to needed chip interface
-but can't find a standard user space command to instantiate
-the list with MAC addresses/masks.
-
-
-Thnx v much,
-johnh
-
-
-.
-===========================================================
-John Heil
-South Coast Software
-Custom firmware, device drivers and board bring up services
-Ph: 1-714-774-6952
-Fx: 1-714-774-7053
-www.sc-software.com
-email: johnhscs@sc-software.com
-===========================================================
+Now, back to filtering... 
+---
+Pablo Sanchez - Blueoak Database Engineering, Inc
+Ph:    819.459.1926          Toll free:  888.459.1926
+Cell:  819.918.9731                Pgr:  pablo_p@blueoakdb.com
+Fax:   603.720.7723 (US)
 
 
