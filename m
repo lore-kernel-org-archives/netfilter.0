@@ -1,11 +1,11 @@
-From: "Yakov Lerner" <iler.ml@gmail.com>
-Subject: 2.4 vs 2.6 in linux routers ?
-Date: Fri, 27 Oct 2006 23:42:44 +0200
-Message-ID: <f36b08ee0610271442k6290a741me112fe2abf97ca25@mail.gmail.com>
+From: "Lawrence - Daltron" <ingsiong@daltron.com.pg>
+Subject: How to block Chikka chatting
+Date: Sat, 28 Oct 2006 08:20:40 +1000
+Message-ID: <009101c6fa16$23191a30$7700000a@comservwinxp>
+References: <BAY103-F7AC52059E001ADA6EF7DBB20C0@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,17 +16,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: netfilter@lists.netfilter.org
 
-I'd like to collect some estimates about 2.4 vs 2.6 share
-in [small] linux routers in 2006.
+Hi,
+    Anyone can advice me how to block chikka chatting at firewall ?
+    thank in advance.
 
-My own estimate is that definite majority is 2.4 (I'd say >75% ar 2.4),
-in small linux routers in 2006. Can anyone offer his estimates ?
-And if 2.4 is indeed more used than 2.6, than why ? Which factors make
-2.4 or 2.6 more attractive for small linux router (128-256 mb RAM) ?
+Lawrence Tang
 
-Yakov Lerner
-P.S. If this is off-topic in this list, can anyone suggest better forum ?
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Scanned with Copfilter Version 0.83beta2 (ProxSMTP 1.3.91)
+AntiVirus: ClamAV 0.88.3/2126 - Fri Oct 27 23:48:55 2006
+by Markus Madlener @ http://www.copfilter.org
 
