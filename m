@@ -1,13 +1,12 @@
-From: Robert Nichols <rnicholsNOSPAM@comcast.net>
-Subject: Re: NATing on a single interface?
-Date: Fri, 27 Oct 2006 09:40:11 -0500
-Message-ID: <eht5oc$mte$1@sea.gmane.org>
-References: <ehptuc$bo6$1@sea.gmane.org>	<ehql65$f08$1@sea.gmane.org>	<ehr6m6$v00$1@sea.gmane.org>	<ehrhod$17a$1@sea.gmane.org>
-	<ehsic6$has$1@sea.gmane.org>
+From: Jakov Sosic <jsosic@jsosic.homeunix.org>
+Subject: Re: why DROP in PREROUTING
+Date: Fri, 27 Oct 2006 16:52:56 +0200
+Message-ID: <20061027165256.57d2e6d3@localhost>
+References: <4541D552.2070802@eccotours.co.za> <4541D89E.1080507@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <ehsic6$has$1@sea.gmane.org>
+In-Reply-To: <4541D89E.1080507@freemail.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,20 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Philip Pemberton wrote:
-> Well, I've read the chapter on TCP/IP, now I'm just skimming through the 
-> stuff on DNAT and Masquerading. Problem with DNAT is that it seems to be 
-> more of a port-forwarding system rather than allowing more than one 
-> machine to access the Internet from one public IP.
+On Fri, 27 Oct 2006 11:59:58 +0200
+G=E1sp=E1r Lajos <swifty@freemail.hu> wrote:
 
-Well, you started out saying that your router's limitation of "a
-maximum of 16 firewall port-forward rules" was a problem, so I
-jumped to the conclusion that you were trying to do port forwarding.
+> You can filter all of these packets at one point no matter where they=20
+> coming from and going to....
 
--- 
-Bob Nichols         Yes, "NOSPAM" is really part of my email address.
+Oscar is against it in his tutorial, he even says a reason. If I
+remember correctly, it's beacuse only the first packet hits that rule,
+and others get the same action without further checking, and that's not
+a good idea to do.
 
+
+
+--=20
+|   Jakov Sosic   |   ICQ: 28410271   |   PGP: 0x244F89CA   |
+| http://jsosic.homeunix.org  |  jsosic@jsosic.homeunix.org |
+--
 
