@@ -1,11 +1,12 @@
-From: "Lawrence - Daltron" <ingsiong@daltron.com.pg>
-Subject: How to block Chikka chatting
-Date: Sat, 28 Oct 2006 08:20:40 +1000
-Message-ID: <009101c6fa16$23191a30$7700000a@comservwinxp>
-References: <BAY103-F7AC52059E001ADA6EF7DBB20C0@phx.gbl>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: How to block Chikka chatting
+Date: Sun, 29 Oct 2006 11:23:34 +0100
+Message-ID: <000b01c6fb44$4bc09ce0$0101000a@tanjian>
+References: <009101c6fa16$23191a30$7700000a@comservwinxp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <009101c6fa16$23191a30$7700000a@comservwinxp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,17 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-    Anyone can advice me how to block chikka chatting at firewall ?
-    thank in advance.
+> Hi,
+>     Anyone can advice me how to block chikka chatting at firewall ?  
+> thank in advance. 
 
-Lawrence Tang
+What have you tried already?
 
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Scanned with Copfilter Version 0.83beta2 (ProxSMTP 1.3.91)
-AntiVirus: ClamAV 0.88.3/2126 - Fri Oct 27 23:48:55 2006
-by Markus Madlener @ http://www.copfilter.org
+This post seems to allow Chikka. If that works then it shouldn't be too
+hard to rework the rule for iptables to block Chikka.
+http://lists.freebsd.org/pipermail/freebsd-net/2003-October/001578.html
+
+This list has a posting with hints about blocking Chikka servers:
+http://www.freelists.org/archives/isalist/02-2006/
+
+To be short: use a packet sniffer to see where a Chikka clients connects
+to and block that.
+
+
+Grts,
+Rob
+
 
