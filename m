@@ -1,7 +1,7 @@
 From: "Kaleb D. Tuimala" <kaleb_tuimala@sanityloss.com>
-Subject: (no subject)
-Date: Sun, 29 Oct 2006 21:57:25 -0500 (EST)
-Message-ID: <13521.69.129.144.25.1162177045.squirrel@www.sanityloss.com>
+Subject: How to apply iptables patches...
+Date: Sun, 29 Oct 2006 21:58:11 -0500 (EST)
+Message-ID: <13529.69.129.144.25.1162177091.squirrel@www.sanityloss.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -26,4 +26,7 @@ detailed instructions on how to use the patches I would greatly appreciate
 it.
 
 -- Kaleb
+
+
+
 
