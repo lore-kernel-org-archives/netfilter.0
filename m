@@ -1,8 +1,7 @@
-From: Benny Amorsen <benny+usenet@amorsen.dk>
-Subject: Re: 2.4 vs 2.6 in linux routers ?
-Date: 30 Oct 2006 15:03:11 +0100
-Message-ID: <m33b95ucio.fsf@ursa.amorsen.dk>
-References: <f36b08ee0610271442k6290a741me112fe2abf97ca25@mail.gmail.com>
+From: Marc Cozzi <cozzi@nd.edu>
+Subject: Packet mangle and re-directing
+Date: Mon, 30 Oct 2006 11:02:43 -0500
+Message-ID: <F163413C9250D211A55C0060979D5280014F34A2@hertz.rad.nd.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -18,18 +17,28 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
-Cc: netfilter-devel@lists.netfilter.org
 
->>>>> "YL" == Yakov Lerner <iler.ml@gmail.com> writes:
+I am using RH ESr4 configured as a bridge device with
+two Ethernet cards. Bridging and IPTABLES works
+well for filtering and blocking. No NAT is being used
+on this box.
 
-YL> Which factors make 2.4 or 2.6 more attractive for small linux
-YL> router (128-256 mb RAM) ?
+I'm not sure I understand the IPTABLES mangle interaction
+with NAT or forwarding.
 
-Many vendors use proprietary kernel modules which are unavailable for
-2.6.
+What I would like to do is the following:
+an unregistered user plugs their laptop into the Ethernet and
+their MAC address is not recognize by the IPTABLES filter rules,
+they try to open any default web page outside of the controlled area,
+the destination address: port 80, should be re-directed.
 
+Redirect them to a local web page clearly informing them what
+needs to be done in order to use their laptop on the local LANs
+and who to see.
 
-/Benny
+Is this possible?
 
+Thanks for any help,
 
+  --marco
 
