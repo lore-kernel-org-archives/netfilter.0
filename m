@@ -1,10 +1,12 @@
-From: "" <chenggh04@st.lzu.edu.cn>
-Subject: Does anyone have the tool which could be used for protocol
-	transmission?
-Date: Tue, 31 Oct 2006 12:35:49 +0800
-Message-ID: <362269349.29086@st.lzu.edu.cn>
-Reply-To: chenggh04@st.lzu.edu.cn
+From: "Manish Jain" <manish.jain@globallogic.com>
+Subject: maximum tuple support of hashlimit
+Date: Tue, 31 Oct 2006 15:28:31 +0530
+Message-ID: <002101c6fcd3$1ef3a1e0$6f00a8c0@synapse.com>
+References: <453B4BD6.8080003@rtij.nl>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <453B4BD6.8080003@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,24 +17,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi, everyone:
-	Now I have a project. In this project I have to transmit the TCP protocol into
-UDP protocol. The basic structure is like this:
-	1    tcp    2    udp     3   tcp  4  MyProject
-	1                   tcp 		   4  in common
-	In common when the 1 and 4 communicate with each other they use tcp/ip protocol.
-But in my project because of some reasons I have to add 2 proxies in this line
-such as 2 and 3 based on udp protocol.
-	I want to know if you have the better resolution or good protocol transmisson
-tool?
-	Best wishes.
-	Thank you.
-				                  		cheng
+Hello Friends,
 
+I am using hashlimit with hashlimit-mode as srcip-dstip. My expectation is
+to have hashlimit for source-ip and destination ip tuple.
+
+My question is, how many tuple, hashlimit can manage at any instance of
+time?
+
+Best Regards,
+Manish Jain
 
 
