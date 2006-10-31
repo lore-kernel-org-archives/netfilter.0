@@ -1,13 +1,12 @@
-From: "Pablo Sanchez" <pablo@blueoakdb.com>
-Subject: RE: maximum tuple support of hashlimit
-Date: Tue, 31 Oct 2006 08:58:19 -0500
-Message-ID: <013301c6fcf4$9f019a60$0419a8c0@fly>
-References: <002101c6fcd3$1ef3a1e0$6f00a8c0@synapse.com>
-Reply-To: pablo@blueoakdb.com
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Subject: Re: Does anyone have the tool which could be used for protocol
+ transmission?
+Date: Tue, 31 Oct 2006 15:15:50 +0000 (GMT)
+Message-ID: <Pine.LNX.4.58.0610311503440.3740@mail3.jubileegroup.co.uk>
+References: <200610311402.k9VE1neX001537@mail3.jubileegroup.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <002101c6fcd3$1ef3a1e0$6f00a8c0@synapse.com>
+In-Reply-To: <200610311402.k9VE1neX001537@mail3.jubileegroup.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +17,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'Manish Jain' <manish.jain@globallogic.com>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
- 
+Hi there,
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org 
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
-> Manish Jain
-> Sent: Tuesday, October 31, 2006 4:59 AM
-> To: netfilter@lists.netfilter.org
-> Subject: maximum tuple support of hashlimit
-> 
-> Hello Friends,
-> 
-> I am using hashlimit with hashlimit-mode as srcip-dstip. My 
-> expectation is
-> to have hashlimit for source-ip and destination ip tuple.
-> 
-> My question is, how many tuple, hashlimit can manage at any 
-> instance of
-> time?
+On Tue, 31 Oct 2006 chenggh04@st.lzu.edu.cn wrote:
 
-Hi,
+> Now I have a project. In this project I have to transmit the TCP
+> protocol into UDP protocol. [...]  I want to know if you have the better
+> resolution or good protocol transmisson tool?
 
-I'm not entirely sure about your question.  The 'man iptables' shows for
-'hashlimit' the following two tunable parameters which may address your
-question(?):
+I think your .edu establishment is trying to get you to think about it.
 
-       --hashlimit-htable-size num
-              The number of buckets of the hash table
+If you truly want to encapsulate TCP in UDP then you're going to have
+to find out what TCP does that UDP doesn't do.  There's no substitute
+for reading the documentation here, you can easily find what you need
+on the Web using Google (even in China:).
 
-       --hashlimit-htable-max num
-              Maximum entries in the hash
+Then you're going to have to come up with some code which can take a
+TCP connection and transmit/receive/maintain all the data, status etc.
+associated with it over some medium (I gues it doesn't matter what the
+medium is?) using UDP so that your code makes up for what UDP lacks.
+(Hint: TCP is intended to be a 'reliable' protocol, UDP is not.)
 
-Cheers,
----
-Pablo Sanchez - Blueoak Database Engineering, Inc
-Ph:    819.459.1926          Toll free:  888.459.1926
-Cell:  819.918.9731                Pgr:  pablo_p@blueoakdb.com
-Fax:   603.720.7723 (US)
+OpenVPN for example can do this, it might help you to look at that
+project.  I think this is well Off Topic for the netfilter List.
 
+73,
+Ged.
 
