@@ -1,12 +1,14 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: Does anyone have the tool which could be used for protocol
- transmission?
-Date: Tue, 31 Oct 2006 15:15:50 +0000 (GMT)
-Message-ID: <Pine.LNX.4.58.0610311503440.3740@mail3.jubileegroup.co.uk>
-References: <200610311402.k9VE1neX001537@mail3.jubileegroup.co.uk>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Blocking SMTP Worm
+Date: Tue, 31 Oct 2006 19:54:11 +0000 (UTC)
+Message-ID: <Pine.LNX.4.64.0610311952090.12621@darkstar.sysinfo.com>
+References: <19fb1ac90610240653x69cc1951g9766d7c809ddecef@mail.gmail.com>
+	<19fb1ac90610240654x44bdd20em7e04b21469739a10@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="1028002384-1264329823-1162324451=:12621"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200610311402.k9VE1neX001537@mail3.jubileegroup.co.uk>
+In-Reply-To: <19fb1ac90610240654x44bdd20em7e04b21469739a10@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +19,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: =?ISO-8859-1?Q?Juan_Carlos_Pel=E1ez_Mendoza?= <jcpelaez@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi there,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Tue, 31 Oct 2006 chenggh04@st.lzu.edu.cn wrote:
+--1028002384-1264329823-1162324451=:12621
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by darkstar.sysinfo.com id
+	k9VJsGB5014215
 
-> Now I have a project. In this project I have to transmit the TCP
-> protocol into UDP protocol. [...]  I want to know if you have the better
-> resolution or good protocol transmisson tool?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I think your .edu establishment is trying to get you to think about it.
+On Tue, 24 Oct 2006, Juan Carlos Pel=E1ez Mendoza wrote:
 
-If you truly want to encapsulate TCP in UDP then you're going to have
-to find out what TCP does that UDP doesn't do.  There's no substitute
-for reading the documentation here, you can easily find what you need
-on the Web using Google (even in China:).
+> Hi list,
+>
+> My IP Address have been listed in the RBL's too many times, I
+> installed into my linux box MailScanner + Spamassassin + Clamavmodule
+> + FProt, I set up the iptables rules allowing only smtp, pop and ssh
+> traffic, but when I see the traffic with tcpdump I see this strange
+> behavior:
+>
+ 		[SNIP]
+>
+> What can I do to stop and block this worm???
+>
 
-Then you're going to have to come up with some code which can take a
-TCP connection and transmit/receive/maintain all the data, status etc.
-associated with it over some medium (I gues it doesn't matter what the
-medium is?) using UDP so that your code makes up for what UDP lacks.
-(Hint: TCP is intended to be a 'reliable' protocol, UDP is not.)
+Wipe out the OS on 192.168.0.92, reinstall from scratch and apply all=20
+patches and updates prior to exposing to the internet.  that should clear=
+=20
+up the sapm worm.
 
-OpenVPN for example can do this, it might help you to look at that
-project.  I think this is well Off Topic for the netfilter List.
+Thanks,
 
-73,
-Ged.
+
+Ron DuFresne
+- --=20
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint =3D 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFR6nnst+vzJSwZikRAnNPAJ9F4HQkzAQjkKSaNVr6+uNg4FE44ACfSsDf
+CrGJLJ9MZPZbV1wJu76Faos=3D
+=3D4IZ+
+-----END PGP SIGNATURE-----
+--1028002384-1264329823-1162324451=:12621--
 
