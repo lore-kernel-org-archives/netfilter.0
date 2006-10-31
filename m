@@ -1,12 +1,10 @@
-From: "Manish Jain" <manish.jain@globallogic.com>
-Subject: maximum tuple support of hashlimit
-Date: Tue, 31 Oct 2006 15:28:31 +0530
-Message-ID: <002101c6fcd3$1ef3a1e0$6f00a8c0@synapse.com>
-References: <453B4BD6.8080003@rtij.nl>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Petr Pisar <xpisar@fi.muni.cz>
+Subject: Re: Does anyone have the tool which could be used for protocol
+	transmission?
+Date: Tue, 31 Oct 2006 12:21:21 +0000 (UTC)
+Message-ID: <slrnekefu1.64v.xpisar@album.ics.muni.cz>
+References: <362269349.29086@st.lzu.edu.cn>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <453B4BD6.8080003@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,18 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello Friends,
+On 2006-10-31,   <chenggh04@st.lzu.edu.cn> wrote:
+> Hi, everyone:
+> 	Now I have a project. In this project I have to transmit the TCP
+> 	protocol into UDP protocol.
+[...]
+> 	I want to know if you have the better resolution or good protocol
+> 	transmisson tool?
 
-I am using hashlimit with hashlimit-mode as srcip-dstip. My expectation is
-to have hashlimit for source-ip and destination ip tuple.
+There exists a protocol called AYIYA
+[http://www.sixxs.net/tools/ayiya/], but it does more thigs like
+autentization.
 
-My question is, how many tuple, hashlimit can manage at any instance of
-time?
-
-Best Regards,
-Manish Jain
+-- Petr
 
 
