@@ -1,15 +1,9 @@
-From: Alan Ezust <alan.ezust@presinet.com>
-Subject: Re: iptables: Unknown error 4294967295
-Date: Tue, 31 Oct 2006 14:38:00 -0800
-Message-ID: <200610311438.05556.alan.ezust@presinet.com>
-References: <20060926000301.GC10112@fmp.com>
-	<200609260041.k8Q0fikT014394@toshiba.co.jp>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4698925.oa1xjyR90x";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+From: "" <chenggh04@st.lzu.edu.cn>
+Subject: Re: Does anyone have the tool which could be used for protocol
+Date: Wed, 01 Nov 2006 09:33:51 +0800
+Message-ID: <362344831.02567@st.lzu.edu.cn>
+Reply-To: chenggh04@st.lzu.edu.cn
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200609260041.k8Q0fikT014394@toshiba.co.jp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,94 +14,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
-Cc: fmouse-netfilter@fmp.com, fmouse-m14acd@fmp.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: ged@jubileegroup.co.uk
+Cc: netfilter@lists.netfilter.org
 
---nextPart4698925.oa1xjyR90x
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-I was getting this too, and my problem was related to the fact that my kern=
-el=20
-was configued with CONFIG_NETFILTER_NETLINK=3Dm. I changed that to a "y" an=
-d my
-UNKNOWN ERROR went away. And yes, I was loading the module at the right tim=
-e=20
-in my /etc/modules, but that didn't seem to make a difference to netfilter.
+transmission?
+Content-Type: text/plain
 
 
+> I think your .edu establishment is trying to get you to think about it.
+> 
+> If you truly want to encapsulate TCP in UDP then you're going to have
+> to find out what TCP does that UDP doesn't do.  There's no substitute
+> for reading the documentation here, you can easily find what you need
+> on the Web using Google (even in China:).
 
-On Monday 25 September 2006 17:41, Yasuyuki KOZAKAI wrote:
-> Hello,
->
-> From: Lindsay Haisley <fmouse-netfilter@fmp.com>
-> Date: Mon, 25 Sep 2006 19:03:01 -0500
->
-> > When I execute the following:
-> >
-> > iptables -t nat -I PREROUTING -s 10.8.0.1 -i tap0 -j SNAT --to-source
-> > 216.110.12.105
-> >
-> > ... I'm getting the error:
-> >
-> > iptables: Unknown error 4294967295
-> >
-> > (4294967295 =3D an unsigned representation of a signed long int of -1)
-> >
-> > Running this under strace shows the following:
-> >
-> >
-> > mmap2(NULL, 7648, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0)=
- =3D
-> > 0xb7fbb000
-> > mmap2(0xb7fbc000, 4096, PROT_READ|PROT_WRITE,
-> > MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) =3D 0xb7fbc000 close(3)     =
-   =20
-> >                       =3D 0
-> > socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  =3D 3
-> > getsockopt(3, SOL_IP, 0x40 /* IP_??? */,
-> > "nat\0\1\0\0\0\335g\21\300\0\0\0\0\224\313F\300\1\0\0\0"..., [84]) =3D 0
-> > getsockopt(3, SOL_IP, 0x41 /* IP_??? */,
-> > "nat\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., [656]) =
-=3D 0
-> > setsockopt(3, SOL_IP, 0x40 /* IP_??? */,
-> > "nat\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 876) =3D =
-=2D1
-> > EINVAL (Invalid argument) write(2, "iptables: Unknown error 42949672"..=
-=2E,
-> > 35iptables: Unknown error 4294967295 ) =3D 35
-> > exit_group(1)                           =3D ?
-> > Process 10231 detached
-> >
-> > Apprently the error is originating in a malformed socket option call.=20
-> > What's happening here, and how can I fix it?   I'm running kernel
-> > 2.6.17-gentoo-r4, iptables v1.3.5.
-> >
-> > I have about every possible kernel netfilter capability compiled as a
-> > module, or built into the kernel.
->
-> Is your iptables 32bit binary and do you run it on 64bit kernel ?
-> And did syslog output anything ?
->
-> -- Yasuyuki Kozakai
+   Yes, I know I could use google and I think all chinese know google. And in
+china there is a more popular search technology ISP named baidu than google. I
+only want to get some  resolution method. 
+   The simplest method is to programe with socket. I receive the TCP packet and
+send  it out with UDP packet. It is ok. But if i implement it by myself I think
+the efficiency is a problem.
+   Yesterday I communicate with my friends about this problem. They suggest the
+tunnel proxy may be a good method. When I need to transform the TCP to UDP I could
+encapsulate the UDP to the payload of TCP protocol. If I need to transfrom the UDP
+to TCP I could encapsulate the TCP to the payload of UDP protocol. I think it is a
+good suggestion.
+   Because I have ever done some work about IPv6. In Ipv6 over IPv4 they use
+tunnel 
+   I don't like anyone to teach me how to code or programe and I only want to get
+a solution. :)
 
-=2D-=20
-Alan Ezust            www.presinet.com
-Presinet, inc         alan.ezust@presinet.com
-           Victoria, BC,Canada
+> Then you're going to have to come up with some code which can take a
+> TCP connection and transmit/receive/maintain all the data, status etc.
+> associated with it over some medium (I gues it doesn't matter what the
+> medium is?) using UDP so that your code makes up for what UDP lacks.
+> (Hint: TCP is intended to be a 'reliable' protocol, UDP is not.)
+   
+  Thank you. In every textbook it tells us the TCP reliable but UDP is not even in
+Chinese textbook. :)
 
---nextPart4698925.oa1xjyR90x
-Content-Type: application/pgp-signature
+> OpenVPN for example can do this, it might help you to look at that
+> project.  I think this is well Off Topic for the netfilter List.
+   
+   OpenVPN may be a good method. But I think it is too complex for my project. I
+like the simple solution. 
+   In the end. Thank you very much :)
+   Best wishes.
+                                                  cheng
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
 
-iD8DBQBFR9BNsJbtw6GURksRAme6AJ9DHhWPcnAHMc6curQkMQT+4ekzcgCdETs9
-4xuJ2RxzPCLbm6AvEeG5fmA=
-=Fg9o
------END PGP SIGNATURE-----
-
---nextPart4698925.oa1xjyR90x--
 
