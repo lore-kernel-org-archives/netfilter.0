@@ -1,13 +1,11 @@
-From: "will_u_tellmemore will_u_tellmemore" <will.u.tellmemore@gmail.com>
-Subject: Fwd: using netfilter for implementing ft-fcp
-Date: Wed, 1 Nov 2006 18:45:21 +0530
-Message-ID: <97993dc40611010515p4b04bd35l9ec2c66e558bff5c@mail.gmail.com>
-References: <97993dc40610300239xbd3f40qb33831e95f83aa86@mail.gmail.com>
+From: <anisha.chandrasekaran@wipro.com>
+Subject: RE: INPUT and PORTS
+Date: Wed, 1 Nov 2006 19:05:01 +0530
+Message-ID: <2FEE63312285CF428A8480B07AC1C359037A19B1@CHN-SNR-MBX01.wipro.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <97993dc40610300239xbd3f40qb33831e95f83aa86@mail.gmail.com>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +16,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Hi all,
-I am not very sure if this is the right mailing list to post this
-question . Point me to correct one if this is wrong ..
-
-I am trying to implement Fault tolerant TCP as explained in
-
- http://citeseer.ist.psu.edu/alvisi00wrapping.html
-
-While looking for some information regarding how to implement this , i
-came across netfilter framework.
-I am new to linux world so i would like to have some help about this
-before i proceed.
- The idea in paper is to implement a kernel module which will
-intercept all the packets coming to server tcp and log them to stable
-buffer.If server crashes , then replay these logs. Also to handle
-client connection correctly ,it intercepts all outgoing packets and
-modifies the sequence number and thus the "segment"  depending upon
-the packet's state in stable buffer( i.e. commited /no ).
-
-So i was wondering ,is netfilter the right choice to about it ?? or
-does it intercept packet below IP layer (in PRE_ROUTING)  ??
-Is thr a way to sit between TCP and IP protocol implementation and
-intercept all the communication between them ??
+Content-Type: text/plain; charset="us-ascii"
+To: devnull@plugthebox.net, netfilter@lists.netfilter.org
 
 
-What is  the other way to achieve this if not netfilter framework ??
+I would like to have a little more clear idea on what you need to do
+exactly????
 
-Any help in this regard is highly appreciated  ...
+That is, DO you need to allow only 80 and 20 ports from the specified
+ip?
+In that case you can have=0D
+Iptables -P FORWARD DROP
+Iptables -A FORWARD -p tcp -s 10.2.2.115 -m multiport --dports 80,22 -j
+ACCEPT
 
-Regards,
-TellMeMore
+The above rule will allow only 80 and 22 requests from that ip. Is this
+clear or am I not answering what you are asking????
+
+=0D
+ Regards,
+
+Anisha Chandrasekaran
+=0D
+ =0D
+        =0D
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
+plugthebox.net /dev/null
+Sent: Wednesday, November 01, 2006 6:19 PM
+To: netfilter
+Subject: INPUT and PORTS
+
+Hello,
+I want to do the following, accept in comings from 10.2.2.115 only
+restricting to port 80,22
+
+is this correct?=0D
+
+-P rules ...
+-F rules ...
+/sbin/iptables -A FORWARD -d 10.2.2.115 -j ACCEPT
+/sbin/iptables -A FORWARD -s 10.2.2.115 -j ACCEPT
+/sbin/iptables -A INPUT -s 10.2.2.115 -j ACCEPT
+/sbin/iptables -A FORWARD -m multiport -p tcp --ports 80,22 -j ACCEPT
+/sbin/iptables -A INPUT -m multiport -p tcp --ports 80,22 -j ACCEPT
+
+Eventhough i saw this setup in many tutorials/howtos,  when ever i want
+to block 10.2.2.115 (by not listing him in the INPUT -j ACCEPT), that ip
+can still connect to port 80 and 22.
+
+
+
+Thanks
+Sincerely,
+
+
+
+
+The information contained in this electronic message and any attachments to=
+ this message are intended for the exclusive use of the addressee(s) and=
+ may contain proprietary, confidential or privileged information. If you=
+ are not the intended recipient, you should not disseminate, distribute or=
+ copy this e-mail. Please notify the sender immediately and destroy all=
+ copies of this message and any attachments.=0D
+
+WARNING: Computer viruses can be transmitted via email. The recipient=
+ should check this email and any attachments for the presence of viruses.=
+ The company accepts no liability for any damage caused by any virus=
+ transmitted by this email.
+=0D
+www.wipro.com
 
