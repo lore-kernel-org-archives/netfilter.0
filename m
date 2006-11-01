@@ -1,13 +1,12 @@
-From: Wakko Warner <wakko@animx.eu.org>
-Subject: Re: RE: INPUT and PORTS
-Date: Wed, 1 Nov 2006 12:40:30 -0500
-Message-ID: <20061101174030.GC25768@animx.eu.org>
-References: <20061101145719.564.qmail@webmail91.rediffmail.com>
-	<1162394816.17873.41.camel@localhost>
+From: Alan Ezust <alan.ezust@presinet.com>
+Subject: conntrack -E -i not allowed?
+Date: Wed, 1 Nov 2006 10:43:49 -0800
+Message-ID: <200611011043.53370.alan.ezust@presinet.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart3811157.igghJE88Cc";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1162394816.17873.41.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,71 +17,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "plugthebox.net /dev/null" <devnull@plugthebox.net>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-plugthebox.net /dev/null wrote:
-> I want to thank you all for contributing. 
-> 
-> I'm currently setting up a firewall and a web interface for it. My
-> strategy is to have:
-> 
-> /sbin/iptables -P INPUT -j DROP
-> /sbin/iptables -P FORWARD -j DROP
-> /sbin/iptables -A FORWARD -d 10.2.2.115 -j ACCEPT
-> /sbin/iptables -A FORWARD -s 10.2.2.115 -j ACCEPT
-> /sbin/iptables -A INPUT -s 10.2.2.115 -j ACCEPT
-> /sbin/iptables -A FORWARD -d 10.2.2.116 -j ACCEPT
-> /sbin/iptables -A FORWARD -s 10.2.2.116 -j ACCEPT
-> /sbin/iptables -A INPUT -s 10.2.2.116 -j ACCEPT
-> /sbin/iptables -A FORWARD -d 10.2.2.117 -j ACCEPT
-> /sbin/iptables -A FORWARD -s 10.2.2.117 -j ACCEPT
-> /sbin/iptables -A INPUT -s 10.2.2.117 -j ACCEPT
-> etc...
-> /sbin/iptables -A INPUT -j DROP
-> /sbin/iptables -A FORWARD -j DROP
-> 
-> Meaning, i want to accept the connections from these 3 IPs, and drop all
-> the rest. Now i want to let those allowed IPs to only use 3 ports for
-> the INPUT and more than 30 ports for FORWARDs (p2p and misc ports).
-> 
-> I can't use -m multiport for each FORWARD, there are too many ports that
-> 1 FORWARD line can run. 
-> 
-> I thought by allowing the ports BEFORE the IPs, that it would accept
-> allow only the ports ACCEPTed to the IPs ACCEPTed, is that correct?
+--nextPart3811157.igghJE88Cc
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-If I understand what you are wanting correctly, something I'm currently
-doing may be what you want.
+I'm trying to get conntrack -E to show me events, with conntrack IDs.
+At the moment, the ctid is now showing up in the output unless there is an=
+=20
+[UNREPLIED] part to the line.
 
-If you want to only allow specific IPs to connect to specific ports, you
-might want to try this:
+$ conntrack -E -i
+conntrack v1.00beta2: Illegal option `-i' with this command
 
-create 2 chains:  ip and port (or whatever you want to name them.
 
-iptables -A INPUT -j ip
-iptables -A FORWARD -j ip
+   [NEW] udp      17 30 src=3D10.10.100.100 dst=3D204.174.64.1 sport=3D4536=
+ dport=3D53=20
+packets=3D1 bytes=3D67 [UNREPLIED] src=3D204.174.64.1 dst=3D10.10.100.100 s=
+port=3D53=20
+dport=3D4536 packets=3D0 bytes=3D0
 
-in ip:
-iptables -A ip -j port -s 10.2.2.115
-iptables -A ip -j port -d 10.2.2.115
-...
+Is there a trick to getting the ctids to be sent to the output of this?
 
-in port:
-iptables -A port -j ACCEPT -p tcp --dport 80
-iptables -A port -j ACCEPT -p tcp --dport 22
-...
+conntrack -L -i seems to work, showing me the id. Personally, I think=20
+conntrack should always output the id.
 
-Since you have the policy already to drop, there's probably no reason to add
-DROP rules to INPUT and FORWARD.
 
-If you want to allow any IPs, just ad them to the ip chain.  If you want to
-allow the current list of ips to access different ports, just ad that port
-to the port chain.
 
--- 
- Lab tests show that use of micro$oft causes cancer in lab animals
- Got Gas???
+--nextPart3811157.igghJE88Cc
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+
+iD8DBQBFSOrpsJbtw6GURksRAvjyAJ4l2kqv8B1bbRsl/wXSR75UyeM+rQCZAYen
+OMjqBm53CMrekygS0hN557M=
+=rpyC
+-----END PGP SIGNATURE-----
+
+--nextPart3811157.igghJE88Cc--
 
