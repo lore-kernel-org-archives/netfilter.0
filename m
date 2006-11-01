@@ -1,10 +1,12 @@
-From: "Yakov Lerner" <iler.ml@gmail.com>
-Subject: cooperation between connection tracking and traffic shaping
-Date: Wed, 1 Nov 2006 12:11:02 +0200
-Message-ID: <f36b08ee0611010211r598a4857u383de5d0c721887a@mail.gmail.com>
+From: "Filip Sneppe" <filip.sneppe@gmail.com>
+Subject: Re: cooperation between connection tracking and traffic shaping
+Date: Wed, 1 Nov 2006 11:21:43 +0100
+Message-ID: <9151ac2a0611010221i3e062172pc9c6ee5e636b94b3@mail.gmail.com>
+References: <f36b08ee0611010211r598a4857u383de5d0c721887a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <f36b08ee0611010211r598a4857u383de5d0c721887a@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,23 +19,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Yakov Lerner <iler.ml@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-To the sip conntrack module, I added the code that creates
-the corresponding QoS rule (via netlink) when conntrack detects
-the port of the voice traffic (qos/tc by itself could not shape
-dynamically by conntrack ports ..., and I wanted traffic
-shaping on voice traffic by conntrack-recognized ports).
+Hi Yakov,
 
-It worked. But I think it was ugly because:
+On 11/1/06, Yakov Lerner <iler.ml@gmail.com> wrote:
+> It worked. But I think it was ugly because:
+>
+>      (1) I want qos-to-conntrack cooperation for more protocols
+> with dynamic ports ... can I have it/do it without hacking every
+> conntrack module ?
+>
+>     (2) maybe there is a much easier way to achieve this
+> qos-to-conntrack cooperation [than hacking conntrack modules] ?
+>
+Yes, the general way to do this, is to use the MARK target from
+netfilter to mark the packets you want to QoS and then use the fwmark
+from within your tc rules.
 
-     (1) I want qos-to-conntrack cooperation for more protocols
-with dynamic ports ... can I have it/do it without hacking every
-conntrack module ?
+That works without hacking any code. Note that the fwmarks can also
+be used between netfilter and the advanced routing framework in the
+Linux kernel (ip route, ip rule, etc.)
 
-    (2) maybe there is a much easier way to achieve this
-qos-to-conntrack cooperation [than hacking conntrack modules] ?
-
-Thanks
-Yakov
+Best regards,
+Filip
 
