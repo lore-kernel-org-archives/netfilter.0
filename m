@@ -1,11 +1,12 @@
-From: <anisha.chandrasekaran@wipro.com>
+From: "plugthebox.net /dev/null" <devnull@plugthebox.net>
 Subject: RE: INPUT and PORTS
-Date: Wed, 1 Nov 2006 19:05:01 +0530
-Message-ID: <2FEE63312285CF428A8480B07AC1C359037A19B1@CHN-SNR-MBX01.wipro.com>
+Date: Wed, 01 Nov 2006 15:41:22 +0200
+Message-ID: <1162388483.17873.33.camel@localhost>
+References: <!&!AAAAAAAAAAAuAAAAAAAAAKTyXRN5/+lGvU59a+P7CFMBAN6gY+ZG84BMpVQcAbDh1IQAAAATbSgAABAAAABaalp1/Z/jRK7sKuE7ceDgAQAAAAA=@iname.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <!&!AAAAAAAAAAAuAAAAAAAAAKTyXRN5/+lGvU59a+P7CFMBAN6gY+ZG84BMpVQcAbDh1IQAAAATbSgAABAAAABaalp1/Z/jRK7sKuE7ceDgAQAAAAA=@iname.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,74 +18,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: devnull@plugthebox.net, netfilter@lists.netfilter.org
-
-
-I would like to have a little more clear idea on what you need to do
-exactly????
-
-That is, DO you need to allow only 80 and 20 ports from the specified
-ip?
-In that case you can have=0D
-Iptables -P FORWARD DROP
-Iptables -A FORWARD -p tcp -s 10.2.2.115 -m multiport --dports 80,22 -j
-ACCEPT
-
-The above rule will allow only 80 and 22 requests from that ip. Is this
-clear or am I not answering what you are asking????
-
-=0D
- Regards,
-
-Anisha Chandrasekaran
-=0D
- =0D
-        =0D
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
-plugthebox.net /dev/null
-Sent: Wednesday, November 01, 2006 6:19 PM
-To: netfilter
-Subject: INPUT and PORTS
+To: frnkblk@iname.com
+Cc: netfilter@lists.netfilter.org
 
 Hello,
-I want to do the following, accept in comings from 10.2.2.115 only
-restricting to port 80,22
+But i still have other users that only need to access 80 and 22.
 
-is this correct?=0D
+Let me clarify my setup.
 
--P rules ...
--F rules ...
-/sbin/iptables -A FORWARD -d 10.2.2.115 -j ACCEPT
-/sbin/iptables -A FORWARD -s 10.2.2.115 -j ACCEPT
-/sbin/iptables -A INPUT -s 10.2.2.115 -j ACCEPT
-/sbin/iptables -A FORWARD -m multiport -p tcp --ports 80,22 -j ACCEPT
-/sbin/iptables -A INPUT -m multiport -p tcp --ports 80,22 -j ACCEPT
+I have 3 users (they're around 2000 but lets use 3 for now), i want them
+all to be able to connect INPUT to ports 80 and 22, sometimes, i want to
+block some users, by not including them in the INPUT -s -j ACCEPT, but i
+want to keep the other users INPUT -s -j ACCEPT to use 80 and 22
 
-Eventhough i saw this setup in many tutorials/howtos,  when ever i want
-to block 10.2.2.115 (by not listing him in the INPUT -j ACCEPT), that ip
-can still connect to port 80 and 22.
+thanks
 
+On Wed, 2006-11-01 at 06:51 -0600, Frank Bulk wrote:
+> That's because you still have a rule that matches, specifically:
+> 	/sbin/iptables -A FORWARD -m multiport -p tcp --ports 80,22 -j
+> ACCEPT
+> 	/sbin/iptables -A INPUT -m multiport -p tcp --ports 80,22 -j ACCEPT
+> 
+> Frank
+> 
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of plugthebox.net
+> /dev/null
+> Sent: Wednesday, November 01, 2006 6:49 AM
+> To: netfilter
+> Subject: INPUT and PORTS
+> 
+> Hello,
+> I want to do the following, accept in comings from 10.2.2.115 only
+> restricting to port 80,22
+> 
+> is this correct? 
+> 
+> -P rules ...
+> -F rules ...
+> /sbin/iptables -A FORWARD -d 10.2.2.115 -j ACCEPT
+> /sbin/iptables -A FORWARD -s 10.2.2.115 -j ACCEPT
+> /sbin/iptables -A INPUT -s 10.2.2.115 -j ACCEPT
+> /sbin/iptables -A FORWARD -m multiport -p tcp --ports 80,22 -j ACCEPT
+> /sbin/iptables -A INPUT -m multiport -p tcp --ports 80,22 -j ACCEPT
+> 
+> Eventhough i saw this setup in many tutorials/howtos,  when ever i want
+> to block 10.2.2.115 (by not listing him in the INPUT -j ACCEPT), that ip
+> can still connect to port 80 and 22.
+> 
+> 
+> 
+> Thanks
+> Sincerely,
+> 
+> 
+> 
 
-
-Thanks
-Sincerely,
-
-
-
-
-The information contained in this electronic message and any attachments to=
- this message are intended for the exclusive use of the addressee(s) and=
- may contain proprietary, confidential or privileged information. If you=
- are not the intended recipient, you should not disseminate, distribute or=
- copy this e-mail. Please notify the sender immediately and destroy all=
- copies of this message and any attachments.=0D
-
-WARNING: Computer viruses can be transmitted via email. The recipient=
- should check this email and any attachments for the presence of viruses.=
- The company accepts no liability for any damage caused by any virus=
- transmitted by this email.
-=0D
-www.wipro.com
 
