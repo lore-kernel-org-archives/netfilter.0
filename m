@@ -1,12 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: odd issues with connections to external websites
-Date: Thu, 02 Nov 2006 12:55:38 +0100
-Message-ID: <4549DCBA.405@plouf.fr.eu.org>
-References: <Pine.LNX.4.64.0611021116410.4764@novak.ethosuk.org.uk>
+From: "lee nookx" <lnookx@googlemail.com>
+Subject: Transparent splitting
+Date: Thu, 2 Nov 2006 15:23:59 +0000
+Message-ID: <40d14a940611020723k6a73bd1fudbd831624cf1a214@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.64.0611021116410.4764@novak.ethosuk.org.uk>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hi,
 
-Scott van Looy a =E9crit :
-> Noticed this in the last month or so:
-> When running my IPTables firewall I can't get to some websites, eg=20
-> www.adobe.com or jdl.sun.com
-> when I disable IPTables I can
->=20
-> Anyone got any ideas as to why this could be the case?
+I am trying to find a way of transparently intercepting packets
+flowing across my network, so that I can transform them for use in
+another application.
 
-www.adobe.com -> www.wip3.adobe.com -> 192.150.20.61
-jdl.sun.com -> 192.18.97.144
+The reason I am trying to do this transparently is so that TCP
+clients/servers can operate seamlessly without having to worry about
+the proxy machine(s).
 
-Both addresses start with 192. My guess is you have some rule intended=20
-to filter out the private range 192.168.0.0/16 but with a wrong=20
-mask/prefix length.
+I know that I can redirect the traffic to a proxy of my choice (a la
+-j REDIRECT), but I don't want to have to replicate the client/server
+interactions.
+
+I was thinking I might be able to do this just using a kernel module
+with netfilter hooks, but I can't see any obvious way of doing this.
+
+Can anyone help me, please?
+
+
+
+Thanks.
+
+
+--
 
