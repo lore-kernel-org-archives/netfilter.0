@@ -1,11 +1,9 @@
-From: Alan Ezust <alan.ezust@presinet.com>
-Subject: conntrack -E -i not allowed?
-Date: Wed, 1 Nov 2006 10:43:49 -0800
-Message-ID: <200611011043.53370.alan.ezust@presinet.com>
+From: Monty Ree <montyree2@yahoo.com>
+Subject: iptables performance and Dual CPU
+Date: Wed, 1 Nov 2006 16:33:53 -0800 (PST)
+Message-ID: <20061102003353.36438.qmail@web56115.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3811157.igghJE88Cc";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,46 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
---nextPart3811157.igghJE88Cc
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hello...
 
-I'm trying to get conntrack -E to show me events, with conntrack IDs.
-At the moment, the ctid is now showing up in the output unless there is an=
-=20
-[UNREPLIED] part to the line.
+I have tested iptables using bridge mode.
+ 
+linux centos 3.x 
+        kernel 2.6.x 
+        Opteron dual CPU 
+        2G RAM 
+        conntrack enabled 
 
-$ conntrack -E -i
-conntrack v1.00beta2: Illegal option `-i' with this command
+When I generating lots of of packets throught
+iptables, 
+one CPU upto 100% but the other CPU just idle..
+and the performance degrades... 
 
+As I know the performance of the iptables has
+relations with CPU.
+But, dual CPU can't help with iptables?
+If I set dual bridge, can use dual CPU? 
 
-   [NEW] udp      17 30 src=3D10.10.100.100 dst=3D204.174.64.1 sport=3D4536=
- dport=3D53=20
-packets=3D1 bytes=3D67 [UNREPLIED] src=3D204.174.64.1 dst=3D10.10.100.100 s=
-port=3D53=20
-dport=3D4536 packets=3D0 bytes=3D0
-
-Is there a trick to getting the ctids to be sent to the output of this?
-
-conntrack -L -i seems to work, showing me the id. Personally, I think=20
-conntrack should always output the id.
+Anyone who can provide me with some information 
+about how to configure SMP system, 
+so that both processors share the traffic load??
 
 
+Thanks... 
 
---nextPart3811157.igghJE88Cc
-Content-Type: application/pgp-signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
 
-iD8DBQBFSOrpsJbtw6GURksRAvjyAJ4l2kqv8B1bbRsl/wXSR75UyeM+rQCZAYen
-OMjqBm53CMrekygS0hN557M=
-=rpyC
------END PGP SIGNATURE-----
+ 
+____________________________________________________________________________________
+Get your email and see which of your friends are online - Right on the New Yahoo.com 
+(http://www.yahoo.com/preview) 
 
---nextPart3811157.igghJE88Cc--
 
