@@ -1,10 +1,14 @@
-From: "lubasi" <lubasi@zamnet.zm>
-Subject: REF: Blocking Yahoo
-Date: Fri, 3 Nov 2006 08:54:43 +0200
-Message-ID: <380-22006115365443640@zamnet.zm>
+From: "Steffen Heil" <lists@steffen-heil.de>
+Subject: RE: Blocking Yahoo
+Date: Fri, 3 Nov 2006 10:23:03 +0100
+Message-ID: <003901c6ff29$bf9c2060$0b4613ac@shs1>
+References: <380-22006115365443640@zamnet.zm>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=SHA1;
+	protocol="application/x-pkcs7-signature";
+	boundary="----=_NextPart_000_0034_01C6FF32.0AC2BCE0"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <380-22006115365443640@zamnet.zm>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,85 +19,91 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'lubasi' <lubasi@zamnet.zm>, netfilter@lists.netfilter.org
 
-Dear All,
+This is a multi-part message in MIME format.
 
-I'm new to this list and netfilter as a whole=2E
+------=_NextPart_000_0034_01C6FF32.0AC2BCE0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-I have setup rules on my iptables and when i block yahoo, only those
-using gaim IM client using yahoo are blocked but the native yahoo IM
-client is passing through my firewall=2E Whats wrong with my chains
-below=2E Thank you in advance=2E
+Hi
 
-My chains
+> I have setup rules on my iptables and when i block yahoo, 
+> only those using gaim IM client using yahoo are blocked but 
+> the native yahoo IM client is passing through my firewall. 
+> Whats wrong with my chains below. Thank you in advance.
 
-#Allow local loopback connections
-/sbin/iptables -A INPUT -i lo -j ACCEPT
-# Drop
-/sbin/iptables -A INPUT   -m state --state INVALID -j DROP
-/sbin/iptables -A OUTPUT  -m state --state INVALID -j DROP
-/sbin/iptables -A FORWARD -m state --state INVALID -j DROP
+http tunneling?
+Watch you squid logs.
 
-# Allow all established and related
-/sbin/iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-/sbin/iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j
-ACCEPT
-/sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j
-ACCEPT
+Regards,
+  Steffen
 
-# Allow connection to my ISP's DNS Server
-/sbin/iptables -A OUTPUT  -d [isp dns 1] -m state --state NEW -p udp
---dport 53 -o eth0 -j ACCEPT
-/sbin/iptables -A OUTPUT  -d [isp dns 2] -m state --state NEW -p udp
---dport 53 -o eth0 -j ACCEPT
-/sbin/iptables -A FORWARD -d [isp dns 1] -m state --state NEW -p udp
---dport 53 -i eth1 -o eth0 -j ACCEPT
-/sbin/iptables -A FORWARD -d [isp dns 2] -m state --state NEW -p udp
---dport 53 -i eth1 -o eth0 -j ACCEPT
+------=_NextPart_000_0034_01C6FF32.0AC2BCE0
+Content-Type: application/x-pkcs7-signature;
+	name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="smime.p7s"
 
-#Allow Mail POP3 and SMTP Connections
-/sbin/iptables -A OUTPUT  -d [isp smtp server] -m state --state NEW
--p tcp -m multiport --dport smtp,pop3 -o eth0 -j ACCEPT
-/sbin/iptables -A OUTPUT  -d [isp pop mail server] -m state --state
-NEW -p tcp -m multiport --dport smtp,pop3 -o eth0 -j ACCEPT
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII7zCCAncw
+ggHgoAMCAQICEHFq86eyOql3ddKe2FfbzY0wDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UEBhMCWkEx
+JTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQ
+ZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA2MDkxNDExMTAzOFoXDTA3MDkxNDExMTAz
+OFowXjENMAsGA1UEBBMESGVpbDEQMA4GA1UEKhMHU3RlZmZlbjEVMBMGA1UEAxMMU3RlZmZlbiBI
+ZWlsMSQwIgYJKoZIhvcNAQkBFhVsaXN0c0BzdGVmZmVuLWhlaWwuZGUwgZ8wDQYJKoZIhvcNAQEB
+BQADgY0AMIGJAoGBAKvA06Njh2P1tD+FND7wgmo8x6Xi/ZtxU9Z8BBaTZdf6pkW+9vQmJgdo9c4d
+hVjinwpNCGh9+aYWoUwxkbQhkvOAfwRWES1xpgiW8taUBTI0dy7OUeurmysxkZ20gPk+xLCuVkAb
+pATG/DgqOu4TQoeMx5ZMcqz2Q6IuNtssY25LAgMBAAGjMjAwMCAGA1UdEQQZMBeBFWxpc3RzQHN0
+ZWZmZW4taGVpbC5kZTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBQUAA4GBABIa3ylgDipIIofn
+3RzCHvQIEChAhxWIxJ8Csmw/mDv7rHTXFo60rAOeWlIFVulD6CddRZKjNE69IpwWBi2kiOw+0h5h
+lJDvJtDEsE8b+I8DTY9gUKIWtWagj9gz4ikBYL/DTyclgIwaVw4CXmuSMwiFxhQ7vCbA9I0iubsb
+JJmTMIIDLTCCApagAwIBAgIBADANBgkqhkiG9w0BAQQFADCB0TELMAkGA1UEBhMCWkExFTATBgNV
+BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29u
+c3VsdGluZzEoMCYGA1UECxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UE
+AxMbVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1m
+cmVlbWFpbEB0aGF3dGUuY29tMB4XDTk2MDEwMTAwMDAwMFoXDTIwMTIzMTIzNTk1OVowgdExCzAJ
+BgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgG
+A1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMg
+RGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3
+DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAw
+gYkCgYEA1GnX1LCUZFtx6UfYDFG26nKRsIRefS0Nj3sS34UldSh0OkIsYyeflXtL734Zhx2G6qPd
+uc6WZBrCFG5ErHzmj+hND3EfQDimAKOHePb5lIZererAXnbr2RSjXW56fAylS1V/Bhkpf56aJtVq
+uzgkCGqYx7Hao5iR/Xnb5VrEHLkCAwEAAaMTMBEwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0B
+AQQFAAOBgQDH7JJ+Tvj1lqVnYiqk8E0RYNBvjWBYYawmu1I1XAjPMPuoSpaKH2JCI4wXD/S6ZJwX
+rEcp352YXtJsYHFcoqzceePnbgBHH7UNKOgCneSa/RP0ptl8sfjcXyMmCZGAc9AUG95DqYMl8uac
+LxXK/qarigd1iwzdUYRr5PjRzneigTCCAz8wggKooAMCAQICAQ0wDQYJKoZIhvcNAQEFBQAwgdEx
+CzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEa
+MBgGA1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2Vydmlj
+ZXMgRGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqG
+SIb3DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMzA3MTcwMDAwMDBaFw0x
+MzA3MTYyMzU5NTlaMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAo
+UHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTCB
+nzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAxKY8VXNV+065yplaHmjAdQRwnd/p/6Me7L3N9Vvy
+Gna9fww6YfK/Uc4B1OVQCjDXAmNaLIkVcI7dyfArhVqqP3FWy688Cwfn8R+RNiQqE88r1fOCdz0D
+viv+uxg+B79AgAJk16emu59l0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sCAwEAAaOBlDCBkTASBgNV
+HRMBAf8ECDAGAQH/AgEAMEMGA1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9jcmwudGhhd3RlLmNvbS9U
+aGF3dGVQZXJzb25hbEZyZWVtYWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjApBgNVHREEIjAgpB4wHDEa
+MBgGA1UEAxMRUHJpdmF0ZUxhYmVsMi0xMzgwDQYJKoZIhvcNAQEFBQADgYEASIzRUIPqCy7MDaNm
+rGcPf6+svsIXoUOWlJ1/TCG4+DYfqi2fNi/A9BxQIJNwPP2t4WFiw9k6GX6EsZkbAMUaC4J0niVQ
+lGLH2ydxVyWN3amcOY6MIE9lX5Xa9/eH1sYITq726jTlEBpbNU1341YheILcIRk13iSx0x1G/11f
+ZU8xggL4MIIC9AIBATB2MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGlu
+ZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBD
+QQIQcWrzp7I6qXd10p7YV9vNjTAJBgUrDgMCGgUAoIIB2DAYBgkqhkiG9w0BCQMxCwYJKoZIhvcN
+AQcBMBwGCSqGSIb3DQEJBTEPFw0wNjExMDMwOTIzMDJaMCMGCSqGSIb3DQEJBDEWBBS6UZ1R3k/F
+e05euqrCHmF/WiZMgzBnBgkqhkiG9w0BCQ8xWjBYMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIA
+gDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDAHBgUrDgMCGjAKBggqhkiG
+9w0CBTCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENv
+bnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElz
+c3VpbmcgQ0ECEHFq86eyOql3ddKe2FfbzY0wgYcGCyqGSIb3DQEJEAILMXigdjBiMQswCQYDVQQG
+EwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhh
+d3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECEHFq86eyOql3ddKe2FfbzY0wDQYJKoZI
+hvcNAQEBBQAEgYArDHdYRRJJ51JfOxZr0DM9qLx1mJzsggpFT+oCWJBja3utn7ZTrllW8M0QaHwB
+aVCNifscLYwDY1R8Heoz4HbgjRLG2BFWBpQsFyjxGOxkHCXHz0ZCiQzhQ4gmZQ2DQThf53/fcl2R
+K6EvKXoGZ2wEzkCyKeP4/la5Gc2SmSg9SgAAAAAAAA==
 
-/sbin/iptables -A FORWARD -d [isp smtp server] -m state --state NEW
--p tcp -m multiport --dport smtp,pop3 -o eth0 -j ACCEPT
-/sbin/iptables -A FORWARD -d [isp pop server] -m state --state NEW -p
-tcp -m multiport --dport smtp,pop3 -o eth0 -j ACCEPT
-
-#Log all other attempts out going connections
-/sbin/iptables -A OUTPUT -o [ExternalNET] -j LOG
-/sbin/iptables -A FORWARD -j LOG
-
-#Nating
-/sbin/iptables -t nat -A POSTROUTING -o [ExternalNET] -j SNAT --to
-[ExternalNET IP ADDRESS]
-
-# Route all www traffic to port 3128 for http acceleration
-/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j
-REDIRECT --to-port 3128
-
-#Block Yahoo Messnger
-/sbin/iptables -I FORWARD -s MYNETWORK/24 -d 216=2E155=2E193=2E0/22 -j DRO=
-P
-
-
-Kind regards
-
-Teddy L=2E
-------------------------------------------------------
-Teddy L=2E Nyambe
-Open Source Zambia
-www=2Eopensource=2Eorg=2Ezm
-
-+260 97 760473
-
-* Know that today is yesterday's future Be the change you want to see
-in the world
-* To Err is Human, but to really mess things up, you need a PC
+------=_NextPart_000_0034_01C6FF32.0AC2BCE0--
 
 
