@@ -1,15 +1,10 @@
-From: "Yakov Lerner" <iler.ml@gmail.com>
-Subject: Re: cooperation between connection tracking and traffic shaping
-Date: Thu, 2 Nov 2006 22:02:15 +0200
-Message-ID: <f36b08ee0611021202y54a25cc0s16a05ba6ae9b25db@mail.gmail.com>
-References: <f36b08ee0611010211r598a4857u383de5d0c721887a@mail.gmail.com>
-	<9151ac2a0611010221i3e062172pc9c6ee5e636b94b3@mail.gmail.com>
-	<1162377918.18395.13.camel@localhost>
+From: "lubasi" <lubasi@zamnet.zm>
+Subject: REF: Blocking Yahoo
+Date: Fri, 3 Nov 2006 08:54:43 +0200
+Message-ID: <380-22006115365443640@zamnet.zm>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1162377918.18395.13.camel@localhost>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,36 +15,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Eric Leblond <eric@inl.fr>
-Cc: Filip Sneppe <filip.sneppe@gmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 11/1/06, Eric Leblond <eric@inl.fr> wrote:
-> Hi,
->
-> Le mercredi 01 novembre 2006 =E0 11:21 +0100, Filip Sneppe a =E9crit :
-> > Hi Yakov,
-> >
-> > On 11/1/06, Yakov Lerner <iler.ml@gmail.com> wrote:
-> > > It worked. But I think it was ugly because:
-> > >     (2) maybe there is a much easier way to achieve this
-> > > qos-to-conntrack cooperation [than hacking conntrack modules] ?
-> > >
-> > Yes, the general way to do this, is to use the MARK target from
-> > netfilter to mark the packets you want to QoS and then use the fwmark
-> > from within your tc rules.
-> >
-> > That works without hacking any code. Note that the fwmarks can also
-> > be used between netfilter and the advanced routing framework in the
-> > Linux kernel (ip route, ip rule, etc.)
->
-> Yes, but you have to use CONNMARK on top of that
+Dear All,
 
-And what's the solution for 2.4 ?
+I'm new to this list and netfilter as a whole=2E
 
-> to be able to put the
-> mark on all packets of a connections. It also works with RELATED
-> packets. This will be useful with SIP ...
+I have setup rules on my iptables and when i block yahoo, only those
+using gaim IM client using yahoo are blocked but the native yahoo IM
+client is passing through my firewall=2E Whats wrong with my chains
+below=2E Thank you in advance=2E
 
-Yakov
+My chains
+
+#Allow local loopback connections
+/sbin/iptables -A INPUT -i lo -j ACCEPT
+# Drop
+/sbin/iptables -A INPUT   -m state --state INVALID -j DROP
+/sbin/iptables -A OUTPUT  -m state --state INVALID -j DROP
+/sbin/iptables -A FORWARD -m state --state INVALID -j DROP
+
+# Allow all established and related
+/sbin/iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+/sbin/iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+/sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+
+# Allow connection to my ISP's DNS Server
+/sbin/iptables -A OUTPUT  -d [isp dns 1] -m state --state NEW -p udp
+--dport 53 -o eth0 -j ACCEPT
+/sbin/iptables -A OUTPUT  -d [isp dns 2] -m state --state NEW -p udp
+--dport 53 -o eth0 -j ACCEPT
+/sbin/iptables -A FORWARD -d [isp dns 1] -m state --state NEW -p udp
+--dport 53 -i eth1 -o eth0 -j ACCEPT
+/sbin/iptables -A FORWARD -d [isp dns 2] -m state --state NEW -p udp
+--dport 53 -i eth1 -o eth0 -j ACCEPT
+
+#Allow Mail POP3 and SMTP Connections
+/sbin/iptables -A OUTPUT  -d [isp smtp server] -m state --state NEW
+-p tcp -m multiport --dport smtp,pop3 -o eth0 -j ACCEPT
+/sbin/iptables -A OUTPUT  -d [isp pop mail server] -m state --state
+NEW -p tcp -m multiport --dport smtp,pop3 -o eth0 -j ACCEPT
+
+/sbin/iptables -A FORWARD -d [isp smtp server] -m state --state NEW
+-p tcp -m multiport --dport smtp,pop3 -o eth0 -j ACCEPT
+/sbin/iptables -A FORWARD -d [isp pop server] -m state --state NEW -p
+tcp -m multiport --dport smtp,pop3 -o eth0 -j ACCEPT
+
+#Log all other attempts out going connections
+/sbin/iptables -A OUTPUT -o [ExternalNET] -j LOG
+/sbin/iptables -A FORWARD -j LOG
+
+#Nating
+/sbin/iptables -t nat -A POSTROUTING -o [ExternalNET] -j SNAT --to
+[ExternalNET IP ADDRESS]
+
+# Route all www traffic to port 3128 for http acceleration
+/sbin/iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j
+REDIRECT --to-port 3128
+
+#Block Yahoo Messnger
+/sbin/iptables -I FORWARD -s MYNETWORK/24 -d 216=2E155=2E193=2E0/22 -j DRO=
+P
+
+
+Kind regards
+
+Teddy L=2E
+------------------------------------------------------
+Teddy L=2E Nyambe
+Open Source Zambia
+www=2Eopensource=2Eorg=2Ezm
+
++260 97 760473
+
+* Know that today is yesterday's future Be the change you want to see
+in the world
+* To Err is Human, but to really mess things up, you need a PC
+
 
