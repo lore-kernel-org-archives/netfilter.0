@@ -1,9 +1,10 @@
-From: "lubasi" <lubasi@zamnet.zm>
-Subject: RE: Blocking Yahoo
-Date: Fri, 3 Nov 2006 15:18:51 +0200
-Message-ID: <380-220061153131851765@zamnet.zm>
+From: "Lawrence - Daltron" <ingsiong@daltron.com.pg>
+Subject: Allow few workstation to access internet but deny others by Mac
+	address
+Date: Sat, 4 Nov 2006 11:27:11 +1000
+Message-ID: <019b01c6ffb0$5a0c2470$7700000a@comservwinxp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,30 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: lists@steffen-heil.de, lubasi@zamnet.zm, netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Netfilter <netfilter@lists.netfilter.org>
 
->>
->>http tunneling=3F
->>Watch you squid logs=2E
->>
->>Regards,
->>  Steffen
+Hi,
+    what is the firewall rules to allow specific PC (Mac address) to access 
+internet and block the others ?
+    Block access mean block MSN, Web, POP3.... everything.
+    I have a internet gateway with 2 nic install with IPCOP.
 
-I dont understand what you mean, please explain in less technical
-words
+Best Regards,
 
-Teddy L=2E
+Lawrence Tang 
 
-------------------------------------------------------
-Teddy L=2E Nyambe
-Open Source Zambia
-www=2Eopensource=2Eorg=2Ezm
-
-+260 97 760473
-
-* Know that today is yesterday's future Be the change you want to see
-in the world
-* To Err is Human, but to really mess things up, you need a PC
-
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Scanned with Copfilter Version 0.83beta2 (ProxSMTP 1.3.91)
+AntiVirus: ClamAV 0.88.3/2160 - Sat Nov  4 04:46:27 2006
+by Markus Madlener @ http://www.copfilter.org
 
