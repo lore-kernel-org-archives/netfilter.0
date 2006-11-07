@@ -1,13 +1,16 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: "beep" on match
-Date: Tue, 7 Nov 2006 17:07:24 +0100
-Message-ID: <20061107170724.3b610de9.arnt@c2i.net>
-References: <454FB587.9010806@gmx.de>
-	<45502D05.1050807@expertron.co.za>
+From: Alan Ezust <alan.ezust@presinet.com>
+Subject: Re: conntrack -E -i not allowed?
+Date: Tue, 7 Nov 2006 10:37:44 -0800
+Message-ID: <200611071037.52450.alan.ezust@presinet.com>
+References: <200611011043.53370.alan.ezust@presinet.com>
+	<200611021111.19134.alan.ezust@presinet.com>
+	<45507ED0.4000709@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="nextPart3354888.uiJvBxjKEH";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45502D05.1050807@expertron.co.za>
+In-Reply-To: <45507ED0.4000709@netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +21,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, 07 Nov 2006 08:51:50 +0200, Justin wrote in message 
-<45502D05.1050807@expertron.co.za>:
+--nextPart3354888.uiJvBxjKEH
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-> Erik Alberti wrote:
-> > Hallo!
-> > 
-> > Ich suche nach einer Möglichkeit ein externes Programm bei einem
-> > match einer Regel auszuführen. Beispiel:
-> > 
-> >   iptables ... -j exec("/usr/bin/beep -f 5000 -l 1000")
-> > 
-> > -------------------------------------------------------------------
-> > -----
-> > 
-> > Hello!
-> > 
-> > I am looking for a possibility of executing an external program in
-> > the field of a match of a rule. Example:
-> > 
-> >   iptables ... -j exec("/usr/bin/beep -f 5000 -l 1000")
->  
-> I doubt you will ever be able to do that directly, but it should be no
->  problem to make a simple application using lipipulog, and
-> 
-> iptables ... -j ULOG
-> 
-> So the iptables match sends the packet to the userspace logging
-> daemon,  which then does the 'beep'.  Could even use the --ulog-prefix
-> option to  specify the text of the command to execute...
-> 
+We need to be able to determine when we get an UPDATE or a DISCONNECT, whic=
+h=20
+connections they correspond to. I assumed that was the purpose of the CT id=
+=2E=20
+Why are you removing it?=20
 
-..schrägemusik enthusiasts might even wanna try chop up 
-conntrack data to feed beep's -f 'n -l...<shudder/>
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;o)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+On Tuesday 07 November 2006 04:40, Pablo Neira Ayuso wrote:
+> Alan Ezust wrote:
+> >> Is there a trick to getting the ctids to be sent to the output of this?
+>
+> There is not.
+>
+> >> conntrack -L -i seems to work, showing me the id. Personally, I think
+> >> conntrack should always output the id.
+>
+> No, actually we have plans to remove it soon. Why do you need the id?
 
+=2D-=20
+Alan Ezust            www.presinet.com
+Presinet, inc         alan.ezust@presinet.com
+           Victoria, BC,Canada
+
+--nextPart3354888.uiJvBxjKEH
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQBFUNKAsJbtw6GURksRAm1fAJkBQWxUX1YIPbSKYrVobLF2bDMfjQCdFtSX
+5uk0VKcX6ighHVPEsi3r9sc=
+=UfPi
+-----END PGP SIGNATURE-----
+
+--nextPart3354888.uiJvBxjKEH--
 
