@@ -1,12 +1,10 @@
-From: Justin Schoeman <justin@expertron.co.za>
-Subject: Re: "beep" on match
-Date: Tue, 07 Nov 2006 08:51:50 +0200
-Message-ID: <45502D05.1050807@expertron.co.za>
-References: <454FB587.9010806@gmx.de>
+From: utteerna <utteerna@gmail.com>
+Subject: Small doubt from a newbie :)
+Date: Tue, 07 Nov 2006 14:04:33 +0530
+Message-ID: <45504519.3070907@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <454FB587.9010806@gmx.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Erik Alberti <erik.alberti@gmx.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-I doubt you will ever be able to do that directly, but it should be no=20
-problem to make a simple application using lipipulog, and
+Hi all,
 
-iptables ... -j ULOG
+I want to use the iptables "-m random" option.
 
-So the iptables match sends the packet to the userspace logging daemon,=20
-which then does the 'beep'.  Could even use the --ulog-prefix option to=20
-specify the text of the command to execute...
+I visited - http://www.netfilter.org/documentati...O-2.html#ss2.1 
+<http://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO-2.html#ss2.1>
 
--justin
+to get p-o-m but login failed. Can anyone guide me on how to install 
+this patch.
 
-Erik Alberti wrote:
-> Hallo!
->=20
-> Ich suche nach einer M=F6glichkeit ein externes Programm bei einem matc=
-h
-> einer Regel auszuf=FChren. Beispiel:
->=20
->   iptables ... -j exec("/usr/bin/beep -f 5000 -l 1000")
->=20
-> -----------------------------------------------------------------------=
--
->=20
-> Hello!
->=20
-> I am looking for a possibility of executing an external program in the
-> field of a match of a rule. Example:
->=20
->   iptables ... -j exec("/usr/bin/beep -f 5000 -l 1000")
->=20
->=20
-> Erik
->=20
+In the iptables source dowloaded from net i see the libipt_random.c but 
+when i do a make it doesn't complile to generate a ".so".
 
+Can someone tell me how to
+
+Thanks
+Uttee :)
 
