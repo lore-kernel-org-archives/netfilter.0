@@ -1,12 +1,14 @@
-From: "Manish Jain" <manish.jain@globallogic.com>
-Subject: Use of set-counters option of iptables
-Date: Tue, 7 Nov 2006 17:23:00 +0530
-Message-ID: <009801c70263$46e4dc10$1900a8c0@synapse.com>
-References: <013301c6fcf4$9f019a60$0419a8c0@fly>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: Re: Small doubt from a newbie :)
+Date: Tue, 7 Nov 2006 13:19:32 +0100 (CET)
+Message-ID: <53025.193.173.147.3.1162901972.squirrel@webmail.sterenborg.info>
+References: <45504519.3070907@gmail.com>
+	<63384.193.173.147.3.1162891542.squirrel@webmail.sterenborg.info>
+	<45506D6C.5040804@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <013301c6fcf4$9f019a60$0419a8c0@fly>
+In-Reply-To: <45506D6C.5040804@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,14 +22,14 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello Friends,
+On Tue, November 7, 2006 12:26, utteerna wrote:
+> I tried this. But whatever patch, i try to apply i get the message "n
 
-What is the use of set-counters option of iptables ?
+Go for Marco Berizzi's solution.
 
-Basically I wish to generate 1 ULOG/LOG message if I receive 20,000 packets
-in a minute.
 
-Best Regards,
-Manish Jain
+Grts,
+Rob
+
 
 
