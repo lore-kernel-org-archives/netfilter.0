@@ -1,12 +1,11 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [announce] pyctd 0.1, a connection tracking XML-RPC server
-Date: Wed, 08 Nov 2006 20:42:45 +0100
-Message-ID: <45523335.3060604@netfilter.org>
-References: <1162999883.8096.27.camel@localhost.localdomain>
+From: "Dan Bogda" <dan.bogda@kintera.com>
+Subject: DNS Manipulation via IPTables?
+Date: Wed, 8 Nov 2006 12:06:16 -0800
+Message-ID: <9685603FA2D84E48A85D428D36ED23332BEEB8@clavin.kintera.int>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1162999883.8096.27.camel@localhost.localdomain>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +16,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eric Leblond <eric@inl.fr>
-Cc: pyctd-dev@inl.fr, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Eric Leblond wrote:
-> INL devel team is proud to announce the availability of pyctd, PYthon
-> Conntrack Daemon.
-> 
-> pyctd is a XML-RPC service for monitoring and altering Netfilter
-> connections tracking for network admins.
+Guys,
+I'm looking to see if an IPTables solution exists for NATing DNS
+responses? I am already using multiple views within Bind to address this
+and I would like to find a way to alter just the records I need, rather
+than deploy duplicate zones. I thought I could alter DNS responses with
+IPTables, but I can't find any reference to this. Does this
+functionality exist natively or via a plug-in module or not at all?
 
-It seems that you are producing interesting stuff for sysadmins.
+Thanks,
+Dan
 
-> It has the following functionnalities :
->       * Connection listing (with byterate of each connections)
-
-So, I assume that you are dumping the conntrack every N seconds, I'd 
-like to know what is the impact of this in terms of performance on a 
-busy firewall (lots of conntrack entries).
-
->       * Entries removal
->       * Modification of connection mark and timeout
-> 
-> pyctd is a free software released under GNU General Public License.
-
-I don't know if you had the chance to have a look at conntrackd, its 
-statistics mode is still poor but can be improved quite easily. I want 
-to implement conntrack dumping in XML format via conntrackd, this can be 
-interesting for 3rd party apps. My impression is that this daemon would 
-look very similar to mine, so would you consider integrating this with 
-conntrackd?
-
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of 
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
 
