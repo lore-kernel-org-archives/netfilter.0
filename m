@@ -1,12 +1,14 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: DNS Manipulation via IPTables?
-Date: Wed, 08 Nov 2006 16:00:16 -0600
-Message-ID: <45525370.3050807@riverviewtech.net>
-References: <9685603FA2D84E48A85D428D36ED23332BEEB8@clavin.kintera.int>
+From: Clemens <clemens.schaefer@gmx.de>
+Subject: Re: How to configure firewall rules through a website
+Date: Wed, 08 Nov 2006 23:33:13 +0100
+Message-ID: <45525B29.1050304@gmx.de>
+References: <4550B5B8020000930000417A@DBNSMTP.UKZN.AC.ZA>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigC685745616550AC08C15A1B8"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <9685603FA2D84E48A85D428D36ED23332BEEB8@clavin.kintera.int>
+In-Reply-To: <4550B5B8020000930000417A@DBNSMTP.UKZN.AC.ZA>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,24 +19,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Dan Bogda wrote:
-> Guys,
-> I'm looking to see if an IPTables solution exists for NATing DNS
-> responses? I am already using multiple views within Bind to address this
-> and I would like to find a way to alter just the records I need, rather
-> than deploy duplicate zones. I thought I could alter DNS responses with
-> IPTables, but I can't find any reference to this. Does this
-> functionality exist natively or via a plug-in module or not at all?
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigC685745616550AC08C15A1B8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I think you could use the layer 7 match extension to match the packets, but
-I don't know of a way that you could alter them, sort of using netlink to
-send the packet to user space (if I have my terms correct).
+> I've just been introduced to netfilter. I would like to know if it is
+> possible to configure the firewall rules from a text file that is
+> written to by some script attached to a website. I am trying to
+> configure a firewall on Snapgear linux which is hosting a website which=
+
+> is supposed to alllow a user to enter configuration rules. I hope to
+> save these to a text file from which i would like the netfilter program=
+
+> to read from. Is this possible. I only have a week to get this done, so=
+
+> any help is greatly appreciated.
 
 
+iptables-restore and iptables-save is exactly what you want :)
 
-Grant. . . .
 
+greets, clemens
+
+
+--------------enigC685745616550AC08C15A1B8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFFUlswnDei4azjmoERAoucAJ9+l9Qw+IytRIPuuMz3dAg3SbuUTACbBNw1
+Ebjc2mtzPsol/rK+lhQrAaY=
+=NJyd
+-----END PGP SIGNATURE-----
+
+--------------enigC685745616550AC08C15A1B8--
 
