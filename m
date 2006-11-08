@@ -1,12 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: PPTP issue
-Date: Wed, 08 Nov 2006 01:08:34 +0100
-Message-ID: <45512002.5090406@plouf.fr.eu.org>
-References: <4D82EB5486E2904A912F7A3A2089B54801683979@sydexch.sydney.uw.local>
+From: "Branko Kokanovic" <branko.kokanovic@gmail.com>
+Subject: drop by mac address, but only to packets to other interface
+Date: Wed, 8 Nov 2006 01:39:45 +0100
+Message-ID: <91ff8a190611071639s27882dfatdc39cdcb8f222e5d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4D82EB5486E2904A912F7A3A2089B54801683979@sydexch.sydney.uw.local>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,36 +16,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+hi all,
+I'm pretty layman on this topic. I have two interfaces, one in local
+network (192.168.0.0) and other to isp. Now, I want to block certain
+mac address from local network from reaching internet, but i want to
+allow him to reach server (for samba, etc...). I tried several
+commands, read on manuals, but all I can get is either all or none
+(either that mac address have internet access and server access, or he
+can't get to internet and server at all ("server" is at 192.168.0.1))
 
-Jason Neurohr a =E9crit :
-> Hello, trying to connect to pptp server through linux iptables firewall=
-.
-> I have the ip_conntrack_pptp and ip_nat_pptp modules loaded. Anyone kno=
-w
-> what the below means and how to fix it?
-[...]
-> 20:10:31.180676 IP pptpserver > xxxxxxxx: GREv1, call 4131, seq 3,
-> length 48: CHAP, Challenge (0x01), id 2, Value
-> bf1e69be064b99fd81c1810a9d05b0e5, Name 192.168.10.22
+I hope I said all relevant details, if not, ask me and I'll try to tell
 
-The server asks for authentication using CHAP.
+Here is my script I use, if that can help a bit:
+................
+$IPTABLES -P INPUT ACCEPT
+$IPTABLES -F INPUT
+$IPTABLES -P OUTPUT ACCEPT
+$IPTABLES -F OUTPUT
+$IPTABLES -P FORWARD DROP
+$IPTABLES -F FORWARD
+$IPTABLES -t nat -F
 
-> 20:10:31.219988 IP xxxxxxxx > pptpserver: GREv1, call 0, seq 3, ack 3,
-> length 55: CHAP, Response (0x02), id 2, Value
-> 50e507db3f5f8330dc3622846e7ffbb3, Name aaa__aaaaaaa
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
 
-The client sends the authentication using CHAP, name aaa__aaaaaaa.
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
 
-> 20:10:31.249508 IP pptpserver > xxxxxxxx: GREv1, call 4131, seq 4, ack
-> 3, length 64: CHAP, Fail (0x04), id 2, Msg CHAP authentication failure,
-> unit 578938[|chap]
 
-"CHAP authentication failure" means that the PPTP client failed to=20
-authenticate itself on the server. Probably wrong login/password. The=20
-TCP connection and GRE tunnel communications seem OK so I don't think=20
-this has anything to do with Netfilter/iptables.
+# I tried this
+#iptables -A PREROUTING -t nat -p ALL -m mac --mac-source
+00:15:F2:33:B5:92 -j DROP
+# and this
+#iptables -A FORWARD -p ALL -m mac --mac-source 00:15:F2:33:B5:92 -j DROP
+
+
+Thanks in advance, Branko Kokanovic
 
