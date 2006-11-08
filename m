@@ -1,15 +1,12 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrack -E -i not allowed?
-Date: Wed, 08 Nov 2006 20:29:47 +0100
-Message-ID: <4552302B.1030509@netfilter.org>
-References: <200611011043.53370.alan.ezust@presinet.com>
-	<200611021111.19134.alan.ezust@presinet.com>
-	<45507ED0.4000709@netfilter.org>
-	<200611071037.52450.alan.ezust@presinet.com>
+Subject: Re: [announce] pyctd 0.1, a connection tracking XML-RPC server
+Date: Wed, 08 Nov 2006 20:42:45 +0100
+Message-ID: <45523335.3060604@netfilter.org>
+References: <1162999883.8096.27.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200611071037.52450.alan.ezust@presinet.com>
+In-Reply-To: <1162999883.8096.27.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,20 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alan Ezust <alan.ezust@presinet.com>
-Cc: netfilter@lists.netfilter.org
+To: Eric Leblond <eric@inl.fr>
+Cc: pyctd-dev@inl.fr, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Alan Ezust wrote:
-> We need to be able to determine when we get an UPDATE or a DISCONNECT, which 
-> connections they correspond to. I assumed that was the purpose of the CT id.
+Eric Leblond wrote:
+> INL devel team is proud to announce the availability of pyctd, PYthon
+> Conntrack Daemon.
+> 
+> pyctd is a XML-RPC service for monitoring and altering Netfilter
+> connections tracking for network admins.
 
-The purpose was to uniquely identify a connection but we currenlty 
-assume that the tuple {src, portsrc, dst, portdst, l3protonum, protonum} 
-is enough.
+It seems that you are producing interesting stuff for sysadmins.
 
-> Why are you removing it? 
+> It has the following functionnalities :
+>       * Connection listing (with byterate of each connections)
 
-http://lists.netfilter.org/pipermail/netfilter-devel/2005-June/019923.html
+So, I assume that you are dumping the conntrack every N seconds, I'd 
+like to know what is the impact of this in terms of performance on a 
+busy firewall (lots of conntrack entries).
+
+>       * Entries removal
+>       * Modification of connection mark and timeout
+> 
+> pyctd is a free software released under GNU General Public License.
+
+I don't know if you had the chance to have a look at conntrackd, its 
+statistics mode is still poor but can be improved quite easily. I want 
+to implement conntrack dumping in XML format via conntrackd, this can be 
+interesting for 3rd party apps. My impression is that this daemon would 
+look very similar to mine, so would you consider integrating this with 
+conntrackd?
 
 -- 
 The dawn of the fourth age of Linux firewalling is coming; a time of 
