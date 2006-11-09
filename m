@@ -1,9 +1,8 @@
-From: "Seferovic Edvin" <edvin.seferovic@kolp.at>
-Subject: RE: iptables  + ROUTE
-Date: Thu, 9 Nov 2006 07:44:11 +0100
-Message-ID: <8546.44913129068$1163054762@news.gmane.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: iptables  + ROUTE
+Date: Thu, 09 Nov 2006 11:11:33 +0100
+Message-ID: <4552FED5.8070701@plouf.fr.eu.org>
 References: <20061109054042.267180@gmx.net>
-Reply-To: edvin.seferovic@kolp.at
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,65 +17,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello,
 
-I am not sure, but you are probably missing the extra module from
-patch-o-matic-ng...
+Mato Vidovic a =E9crit :
+>=20
+> I have a need to perform TOS based traffic routing.=20
+> That means I have two interfaces (say eth0 and eth1) to backbone
+> and I need to route the real-time critical=20
+> IP traffic over eth1 and the remaining IP traffic over eth0.=20
+> After a lot of experimenting I came to the conclusion that something
+> like the following would do:=20
+>=20
+> # iptables -t mangle -A POSTROUTING -m tos --tos  16 -j ROUTE --oif eth=
+1=20
+> # iptables -t mangle -A POSTROUTING -m tos --tos !16 -j ROUTE --oif eth=
+0=20
 
-http://www.netfilter.org/projects/patch-o-matic/pom-extra.html#pom-extra-=
-ROU
-TE
+Why not just use the TOS selection feature in advanced routing=20
+(involving routing rules and alternate routing tables) ?
+Something like :
 
-E:S
+ip rule add tos 16 lookup tos16 priority 100
+ip route add default dev eth1 table tos16
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Mato Vidovic
-Sent: Donnerstag, 09. November 2006 06:41
-To: netfilter@lists.netfilter.org
-Subject: iptables + ROUTE=20
+> Unfortunately the Linux box says:=20
+> "No chain/target/match by that name"=20
+>
+> The kernel I use is 2.6.18, iptables version is the last debian
+> stable version 1.2.11.=20
+>=20
+> Any idea what is wrong here (am I missing something in the
+> configuration, or a library, or am I completely wrong maybe...)?
 
-Hi,=20
-
-I am new in iptables world - and after reading many discussions and =
-studying
-iptables manpages etc. I am=20
-still missing a piece of puzzle to solve the following problem.=20
-I have a need to perform TOS based traffic routing.=20
-That means I have two interfaces (say eth0 and eth1) to backbone and I =
-need
-to route the real-time critical=20
-IP traffic over eth1 and the remaining IP traffic over eth0.=20
-After a lot of experimenting I came to the conclusion that something =
-like
-the following would do:=20
-
-# iptables -t mangle -A POSTROUTING -m tos --tos  16 -j ROUTE --oif eth1 =
-
-# iptables -t mangle -A POSTROUTING -m tos --tos !16 -j ROUTE --oif eth0 =
-
-
-Unfortunately the Linux box says:=20
-"No chain/target/match by that name"=20
-
-The kernel I use is 2.6.18, iptables version is the last debian stable
-version 1.2.11.=20
-
-Any idea what is wrong here (am I missing something in the =
-configuration, or
-a library, or am I completely wrong maybe.)?
-
-Thanks for any help.=20
-
-Br.=20
-Mato=20
-
---=20
-Der GMX SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!=20
-Ideal f=FCr Modem und ISDN: http://www.gmx.net/de/go/smartsurfer
-
-
+As Edvin Seferovic wrote, the kernel part of the ROUTE target is not=20
+included in the mainstream kernel yet. You can add it to your kernel=20
+source tree with the patch-o-matic-ng a build a ROUTE-capable kernel.
 
