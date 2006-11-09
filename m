@@ -1,12 +1,16 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Conntrack timeout
-Date: Thu, 09 Nov 2006 15:51:43 +0100
-Message-ID: <4553407F.1060707@netfilter.org>
-References: <J8GVB6$58359DC0230295AB48BF9CF1D57F3A80@laposte.net>
+From: Alan Ezust <alan.ezust@presinet.com>
+Subject: Re: conntrack -E -i not allowed?
+Date: Thu, 9 Nov 2006 08:52:10 -0800
+Message-ID: <200611090852.14878.alan.ezust@presinet.com>
+References: <200611011043.53370.alan.ezust@presinet.com>
+	<200611071037.52450.alan.ezust@presinet.com>
+	<4552302B.1030509@netfilter.org>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1486872.uSFkXzkcE9";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <J8GVB6$58359DC0230295AB48BF9CF1D57F3A80@laposte.net>
+In-Reply-To: <4552302B.1030509@netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +21,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "mael.boutin" <mael.boutin@laposte.net>
-Cc: netfilter-devel <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+--nextPart1486872.uSFkXzkcE9
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I've cc'ed this email to netfilter users mailling list since I think 
-that this question is not so related with the development.
 
-mael.boutin wrote:
-> I wanted to know if it is possible to change the default
-> timeout for conntrack entries. And if a modification of these
-> timeout will not have border effects on other system features.
+Thanks for the reply. Ok, I can see how I can generate some IDs, but I firs=
+t=20
+want to make sure i have all of the information I need.
 
-You can change them via:
-- /proc/sys/net/ipv4/netfilter/ip_conntrack_[tcp|udp]_*
-- conntrack tool/libnetfilter_conntrack library
+When I run conntrack, I only see one protocol number. I think it is a layer=
+4=20
+protocol (tcp vs udp). If I'm not seeing an l3proto in my output, why might=
+=20
+that be?
 
-What do you mean with border effects? Of course the behaviour will 
-change, think about halted TCP connections for whatever reason, if the 
-timeout is higher then they will get stuck longer in the conntrack table.
+udp      17 12 src=3D10.10.201.2 dst=3D204.174.64.1 sport=3D54475 dport=3D5=
+3=20
+src=3D204.174.64.1 dst=3D209.53.156.2 sport=3D53 dport=3D54475 use=3D1 mark=
+=3D0
+tcp      6 420332 ESTABLISHED src=3D10.10.100.3 dst=3D10.10.1.22 sport=3D13=
+56=20
+dport=3D5432 src=3D10.10.1.22 dst=3D10.10.100.3 sport=3D5432 dport=3D1356 [=
+ASSURED]=20
+use=3D1 mark=3D0
 
-> I noticed for example that the UDP timeout is set to 30
-> seconds if the connection is not assured and 180 in the other
-> case.
-> 
-> The problem i am facing is that i want to detect the end of a
-> connection as soon as possible and a delay of 1 or 2 minutes
-> is clearly not acceptable.
-> 
-> I found some conf files in /proc/sys/net/netfilter, however
-> not all the timeouts are represented
 
-Which timers are you referring to?
+On Wednesday 08 November 2006 11:29, Pablo Neira Ayuso wrote:
+> Alan Ezust wrote:
+> > We need to be able to determine when we get an UPDATE or a DISCONNECT,
+> > which connections they correspond to. I assumed that was the purpose of
+> > the CT id.
+>
+> The purpose was to uniquely identify a connection but we currenlty
+> assume that the tuple {src, portsrc, dst, portdst, l3protonum, protonum}
+> is enough.
+>
+> > Why are you removing it?
+>
+> http://lists.netfilter.org/pipermail/netfilter-devel/2005-June/019923.html
 
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of 
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+=2D-=20
+Alan Ezust            www.presinet.com
+Presinet, inc         alan.ezust@presinet.com
+           Victoria, BC,Canada
+
+--nextPart1486872.uSFkXzkcE9
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQBFU1y+sJbtw6GURksRAiFpAJ9Q3imOyJzD0vyr09Wd7pBKe9MMiACfWXyU
+tEnaaDZQCtBxf+YSwtULCoI=
+=76sf
+-----END PGP SIGNATURE-----
+
+--nextPart1486872.uSFkXzkcE9--
 
