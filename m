@@ -1,7 +1,7 @@
-From: "=?ISO-8859-1?Q?Fran=E7ois_Barel?=" <frabar666@gmail.com>
-Subject: CONNMARK target's dependency on MANGLE table
-Date: Sun, 12 Nov 2006 22:16:54 +0100
-Message-ID: <168561c90611121316n6286e055mbc80463882fd93d2@mail.gmail.com>
+From: "Hal Moroff" <halm90@gmail.com>
+Subject: Architecture advice for a newbie
+Date: Sun, 12 Nov 2006 22:12:15 -0800
+Message-ID: <e1663d820611122212g3738e01ay37651c50eca8ec81@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,33 +19,42 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi list,
+I'm fairly experienced with Linux and find myself on a project in an
+area that is new to me.
 
-My setup is:
-  - kernel 2.6.18.2, iptables 1.3.5,
-  - only IPv4, no IPv6,
-  - kernel .config includes CONFIG_IP_NF_MANGLE=n (no mangle table).
+We have a Debian based firewall.  When a client (of our own
+design/implementation)
+contacts the firewall I wish to connect it to a device behind the
+firewall.  The hole
+through the firewall should be closed until the client is explicitly
+authenticated, and
+should only remain open for a specific amount of time or until the
+client disconnects.
+When the hole is opened WAN traffic between the client and the
+firewall should be
+encrypted.
 
-I simply want to use the CONNMARK target (and the associated connmark
-match) in the filter table (OUTPUT chain).
-I'm aware that I won't be able to use the "--restore-mark" option
-since I won't be in the mangle table (I saw that
-net/netfilter/xt_CONNMARK.c's checkentry prevents it -- unless I'm
-missing something, that's the only mangle-related thing in that file).
-But I should be able to use the "--set-mark" option in the filter
-table, shouldn't I?
+I'm thinking that the client should VPN IPSec to the target, and
+netfilter can manage
+the hole.
 
+There are 2 small wrinkles to add to this:
+  1 - we have our own authentication scheme we wish to use, above and beyond
+    any preshared keys
 
-Unfortunately, the kernel configurator doesn't let me select the
-CONNMARK target: in net/netfilter/Kconfig,
-NETFILTER_XT_TARGET_CONNMARK has a dependency on IP_NF_MANGLE ||
-IP6_NF_MANGLE (both of which are "n" here, so no CONNMARK target for
-me).
+  2 - the target devices are generally dumb and aren't capable of VPN/encryption
+    (I should add that the internal LAN is trusted, so traffic inside
+the LAN can be
+    unencrypted)
 
-I was wondering, what is the reason for this? It feels weird having to
-activate the mangle table when I don't want it, only in order to be
-allowed to compile xt_CONNMARK.c...
+I've just started reading up on VPN's and netfilter docs.  It isn't
+(yet) clear to me how
+to manipulate netfilter at runtime like this (to open and close the hole).
 
-Thanks,
-Francois
+Regarding the "dumb target" in wrinkle #2, I'm thinking that traffic
+can be routed to
+another process on the firewall.  That process would serve as the "go between"
+between the LAN dumb target and the rest of the world.
+
+Can anyone advise where to start investigating this?
 
