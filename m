@@ -1,7 +1,7 @@
-From: Danny <dineshg@hostway.com>
-Subject: Iptables for load balancing internet traffic
-Date: Mon, 13 Nov 2006 22:26:24 +0530
-Message-ID: <4558A3B8.9080905@hostway.com>
+From: Pedro Werneck <pedro.werneck@terra.com.br>
+Subject: WAN DHCP for machines in LAN
+Date: Mon, 13 Nov 2006 15:25:13 -0200
+Message-ID: <20061113152513.5dc94410.pedro.werneck@terra.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,111 +15,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi everyone,
+
+Hi all
 
 
-Is there a perfect solution to use iptables for load balancing outgoing 
-internet traffic ?
-
-I am using Debian Sarge 3.1 [ kernel 2.4.27 ] [ iptables v1.2.11 ]  I 
-chose this kernel specifically for this purpose.
-
-I have tried the below 2 techniques  : -
+I have here a small network with a linux box working as router and
+production too... I use a cable modem ISP with DHCP and have 4 IPs
+available. Everything on the LAN is static, no DHCP; some machines and
+the router itself runs virtual machines (VMware) too.
 
 
-1 > Tried using random patch
-iptables -t mangle -A OUTPUT -o ! eth0    -m random --average 50 -j MARK 
---set-mark 1
-iptables -t mangle -A PREROUTING -i eth0  -m random --average 50 -j MARK 
---set-mark 1
-ip ro add table 10 default via 10.90.101.1  dev eth2
-ip ru add fwmark 1 table 10
-ip ro fl ca
+Currently I use only one of the IPs, with the router box, sharing it to
+the LAN, but I want some machines on the LAN to have access to the ISP
+ips, as well as virtual machines (VMware) running on the router box.
 
 
-iptables -t mangle -A OUTPUT -o ! eth0   -m random --average 50 -j MARK 
---set-mark 2
-iptables -t mangle -A PREROUTING -i eth0 -m random --average 50 -j MARK 
---set-mark 2
-ip ro add table 20 default via 10.90.102.1 dev eth3
-ip ru add fwmark 2 table 20
-ip ro fl ca
+I have the same setup working fine with Windows and a linksys router
+somewhere else, and just for testing I did it with a Windows VM on a
+Windows box, so I guess there's no problem in doing the same with Linux.
+
+But, it doesn't work... with tcpdump I can see DHCP packets can't get
+past the gateway interface on the router box. It seems obvious it's
+something wrong with routing, but the setup is something so simple I
+really can't figure what's wrong with it.
+
+These are the routes, where eth0 goes to the LAN, eth1 to the modem and
+vmnet8 the virtual device used by the VM on the router box.
+
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use
+Iface
+localnet        *               255.255.255.0   U     0      0        0 eth0
+172.16.79.0     *               255.255.255.0   U     0      0        0 vmnet8
+201.37.168.0    *               255.255.248.0   U     0      0        0 eth1
+loopback        *               255.0.0.0       U     0      0        0 lo
+default         c925a801.virtua 0.0.0.0         UG    0      0        0 eth1
 
 
-iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to 10.90.101.2
-iptables -t nat -A POSTROUTING -o eth3 -j SNAT --to 10.90.102.2
-ip ro add default nexthop via 10.90.101.1  dev eth2 weight 1 nexthop via 
-10.90.102.1 dev eth3 weight 1
+On iptables, for testing, all policies set to accept, and the relevant
+parts are:
 
-#-------------end -------------
-Well this didnt do the job for me ! It was breaking TCP connections. It 
-was load balancing UDP packets well though !
-
-
-2> Tried using nth patch
-iptables -t mangle -A PREROUTING -i eth0 -m state --state NEW   -m nth 
---every 2 --counter 2  --packet 0  -j CONNMARK  --set-mark 1
-iptables -t mangle -A PREROUTING -i eth0 -m state --state NEW   -m nth 
---every 2 --counter 2  --packet 1  -j CONNMARK  --set-mark 2
-iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to 10.90.101.2
-iptables -t nat -A POSTROUTING -o eth3 -j SNAT --to 10.90.102.2
-ip ro add table 10 default via 10.90.101.1  dev eth2
-ip ru add fwmark 1 table 10
-ip ro fl ca
-ip ro add table 20 default via 10.90.102.1 dev eth3
-ip ru add fwmark 2 table 20
-ip ro fl ca
-ip ro add default nexthop via 10.90.101.1  dev eth2 weight 1 nexthop via 
-10.90.102.1 dev eth3 weight 1
-#----end
-
-This kept the tcp connections intact. But it wasnt distributing the 
-internet traffic evenly.
-The ditribution of connections through the links are not even.
-
-# iptables -L PREROUTING -t mangle -nv
-Chain PREROUTING (policy ACCEPT 82796 packets, 20M bytes)
-pkts bytes target     prot opt in     out     source               
-destination
-  8   480 CONNMARK   all  --  eth0   *       0.0.0.0/0            
-0.0.0.0/0           state NEW every 2th counter #2 packet #0 CONNMARK 
-set 0x1
-  8   480 CONNMARK   all  --  eth0   *       0.0.0.0/0            
-0.0.0.0/0           state NEW every 2th counter #2 packet #1 CONNMARK 
-set 0x2
-
--- this shows that connections have been marked evenly. But 
-/proc/net/ip_conntrack doesnt show even number of connections.
-
-# sed  's/^.*\(mark=[12]\).*$/\1/g'   /proc/net/ip_conntrack  | grep -v 
-"mark=0"
-mark=2
-mark=2
-mark=2
-mark=2
-mark=2
-mark=2
-mark=2
-mark=1
-mark=2
-mark=2
+iptables -A INPUT -j ACCEPT -s 192.168.1.0/24
+iptables -A INPUT -j ACCEPT -i eth1 -m state --state ESTABLISHED,RELATED
+iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j MASQUERADE
+iptables -A FORWARD -j ACCEPT -i eth1
+iptables -A FORWARD -j ACCEPT -s 192.168.1.0/24
 
 
-Most of the connections here are marked 2. [ sometime most of them are 
-marked 1 ]
+Any ideas on what is wrong, missing or what can I do to help find the
+problem ?
 
 
+Thanks for your time... 
 
-Is there any other perfect solution for load balancing internet traffic ?
-
-I have gone through many forums, but I havent got the perfect solution yet.
-
-
-Thank you,
-Danny
-
-
+-- 
+Pedro Werneck
 
