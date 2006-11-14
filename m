@@ -1,12 +1,8 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: cannot find -ldl
-Date: Tue, 14 Nov 2006 13:46:30 +0100
-Message-ID: <1163508390.8996.1.camel@localhost.localdomain>
-References: <A656C409D135BD44A5901A88AD851E5E04B16F@tlvex02.alvarion.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: Eric Belhomme <{gmane}+no/spam@ricospirit.net>
+Subject: maybe a bug in the conntrack ?
+Date: Tue, 14 Nov 2006 13:25:07 +0000 (UTC)
+Message-ID: <Xns987B92ACDEE86ericbelhommefreefr@80.91.229.5>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <A656C409D135BD44A5901A88AD851E5E04B16F@tlvex02.alvarion.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,77 +13,100 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
-To: Vladimir Iskoz <Vladimir.Iskoz@alvarion.com>
-Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
 Hi,
 
-Le mardi 14 novembre 2006 =E0 13:27 +0200, Vladimir Iskoz a =E9crit :
-> Hi all,
-> I'm trying to add firewall functionality to my current project. I'm start=
-ing with adding iptables (1.3.4) to my project using Buildroot menucofig to=
-ol.
-> Unfortunately I received the following error during the link:
-> cannot find -ldl
+I'm not a guru on netfilter nor linux ip stack, but I have a strange=20
+problem and I suspect =E0 bug :
 
-You should try to compile it statically as you plan to use it on an
-embededded system.
-In iptables Makefile uncommment :
-# NO_SHARED_LIBS =3D 1
+My config : Debian Sarge with a vanilla 2.6.18.2 kernel, iptables 1.2.11
 
-BR,
+there is 3 eth intefaces on this gateway :
 
->=20
-> I tried to removed -ldl from iptables Makefile but receive the other erro=
-rs:
-> undefined reference to 'dl_open'
-> ...
->=20
-> I'm using armeb-linux-uclibc-gcc=20
->=20
-> Where are I can find corresponding libdl.a (I did not find it in my proje=
-ct)?
-> What workaround can be done?
->=20
-> The last rows during Buildroot compilation before the Error are:
-> /home/vladimir/R2/osdk/buildroot/build_armeb_nofpu/staging_dir/bin/armeb-=
-linux-uclibc-gcc -Os -pipe  -membedded-pic -Wall -Wunused -I/include -Iincl=
-ude/ -DIPTABLES_VERSION=3D\"1.3.4\"  -D_UNKNOWN_KERNEL_POINTER_SIZE -DIPT_L=
-IB_DIR=3D\"/usr/lib/iptables\" -rdynamic -o iptables iptables-standalone.c =
-iptables.o libiptc/libiptc.a -ldl -lnsl
-> /home/vladimir/R2/osdk/buildroot/build_armeb_nofpu/staging_dir/bin-ccache=
-/../lib/gcc/armeb-linux-uclibc/3.4.5/../../../../armeb-linux-uclibc/bin/ld:=
- cannot find -ldl
->=20
-> What is a preferable way to add iptables: add them to Buildroot menu or e=
-xplicitly to Linux Kernel menu in Network Options?
->=20
-> My Target details:
-> Architecture: ARM
-> OS: uClinux
-> Linux Kernel: 2.6.14
-> Cross Compilation Tool: Buildroot
->=20
-> Thanks a lot for any help
->=20
-> Vladi Iskoz
->=20
->=20
->=20
->=20
-> =20
->=20
-> *************************************************************************=
-***********
-> This footnote confirms that this email message has been scanned by
-> PineApp Mail-SeCure for the presence of malicious code, vandals & compute=
-r viruses(42).
-> *************************************************************************=
-***********
->=20
->=20
->=20
->=20
+* eth0 192.168.1.254/24 connected to my lan
+* eth1 connected to my isp (I have a static public ip address)
+* eth2 10.75.1.254 connected to a DMZ
+
+There is also an alias on eth0:1 192.168.100.0/24 for a pseudo dmz
+the goal is a host from LAN _must_ be routed on the linux box to connect to=
+=20
+a host 192.168.100.254, even if they are on the same ethernet segment.
+
+this is the begining of my FORWARD rules (default policy is DROP)
+
+Chain FORWARD (policy DROP)
+target     prot opt source           destination
+ACCEPT     tcp  --  0.0.0.0/0        0.0.0.0/0        state ESTABLISHED
+ACCEPT     udp  --  0.0.0.0/0        0.0.0.0/0        state ESTABLISHED
+log_drop   tcp  --  0.0.0.0/0        0.0.0.0/0        state INVALID
+log_drop   udp  --  0.0.0.0/0        0.0.0.0/0        state INVALID
+ACCEPT     tcp  --  192.168.1.0/24   192.168.100.0/24 state NEW
+
+So a host 192.168.1.125 should be able to connect to 192.168.100.1, but=20
+look at a tcpdum session on the router :
+
+# tcpdump -n -i eth0 net 192.168.100.254
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
+13:46:08.297208 IP 192.168.1.125.3580 > 192.168.100.254.22: S=20
+3913030203:3913030203(0) win 65535 <mss 1460,nop,nop,sackOK>
+13:46:08.297289 IP 192.168.1.125.3580 > 192.168.100.254.22: S=20
+3913030203:3913030203(0) win 65535 <mss 1460,nop,nop,sackOK>
+13:46:08.297585 IP 192.168.1.125.3580 > 192.168.100.254.22: . ack=20
+2474300259 win 65535
+13:46:11.497946 IP 192.168.1.125.3580 > 192.168.100.254.22: . ack 1 win=20
+65535
+13:46:17.496303 IP 192.168.1.125.3580 > 192.168.100.254.22: . ack 1 win=20
+65535
+
+
+You can see the source host emits a SYN packet entering on eth0, then=20
+reemitted on the same interface, then it emits a ACK, while the dest hosts =
+
+didn't acknowledged the SYN by a SYN-ACK packet !
+
+The cause is on my /var/log/message :
+
+# tail -n 1000 /var/log/messages|grep 192.168.100.254
+Nov 14 13:46:08 localhost kernel: IPT_DROP: IN=3Deth0 OUT=3Deth0 SRC=3D
+192.168.1.125 DST=3D192.168.100.254 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D1=
+27 ID=3D
+51586 DF PROTO=3DTCP SPT=3D3580 DPT=3D22 WINDOW=3D65535 RES=3D0x00 ACK URGP=
+=3D0
+Nov 14 13:46:11 localhost kernel: IPT_DROP: IN=3Deth0 OUT=3Deth0 SRC=3D
+192.168.1.125 DST=3D192.168.100.254 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D1=
+27 ID=3D
+51589 DF PROTO=3DTCP SPT=3D3580 DPT=3D22 WINDOW=3D65535 RES=3D0x00 ACK URGP=
+=3D0
+=20
+So packets from dest host to source host are rejected by netfilter because =
+
+conntrack macked them as INVALID !
+
+I done a test by moving rule 5 at 1st position in FORWARD table, and insert=
+=20
+a new rule :
+# iptables -I FORWARD 2 -i eth0 -o eth0 -s 192.168.100.0/24 -d=20
+192.168.1.0/24 -j ACCEPT
+
+In this case the SYN-ACK packet comes back, but next packet are DROPPED.
+So I replaced the 1st rule by this one :
+# iptables -R FORWARD 1 -i eth0 -o eth0 -s 192.168.1.0/24 -d=20
+192.168.100.0/24 -j ACCEPT
+
+and now the connection goes ok... while it is macked as and INVALID=20
+connection !
+
+So what are you thinking about that ?
+
+Regards,
+
+--=20
+Rico
+
 
 
