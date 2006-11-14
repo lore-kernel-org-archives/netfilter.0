@@ -1,10 +1,11 @@
-From: "Marcos Gileno" <gileno@digilab.com.br>
-Subject: Mutlicast Routing
-Date: Tue, 14 Nov 2006 12:10:18 +0200 (BRST)
-Message-ID: <43531.192.168.2.1.1163513418.squirrel@200.174.44.5>
+From: "Vladimir Iskoz" <Vladimir.Iskoz@alvarion.com>
+Subject: RE: cannot find -ldl
+Date: Tue, 14 Nov 2006 16:14:42 +0200
+Message-ID: <A656C409D135BD44A5901A88AD851E5E04B171@tlvex02.alvarion.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;boundary="----=_20061114121018_82336"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,220 +16,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Eric Leblond <eric@inl.fr>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-------=_20061114121018_82336
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Hi Eric,
+Thanks a lot for your help.
+I uncommented NO+AF8-SHARED+AF8-LIBS +AD0- 1 in the iptables Makefile but received:
+undefined reference to 'dl+AF8-open'
+It seems that some files are still looking for libdl.a or libdl.so.
+I found them in /usr/lib but I don't know whether they are relevant to uClinux or not.
 
-Hi there,
+I will very thankfull for any help
 
-I have a test case which is to communicate 3 machines with an application
-that replicates data.
-The first machine CC is the server and the others CR1 and CR2 are the
-clients. The server has to pass through router CG and RedeB  to announce
-the list of files it has to replicate, and the clients tell the server
-what is to be replicated using another network RedeC, through the same
-router, making the server start the replication via MULTICAST via REDE B.
-So, the REQUEST uses REDE C from the clients to the server and the server
-starts to transmit the MULTICAST data via REDE B. I=B4m sending a diagram
-showing the circuit.
+BR 
+Vladi
 
-IP1 =3D 192.168.1.44
-IP6 =3D 192.168.1.62
-IP7 =3D 192.168.4.1
-IP8 =3D 192.168.5.1
-IP2 =3D 192.168.4.2
-IP3 =3D 192.168.5.2
-IP4 =3D 192.168.4.3
-IP5 =3D 192.168.5.3
++AD4- Hi all,
++AD4- I'm trying to add firewall functionality to my current project. I'm starting with adding iptables (1.3.4) to my project using Buildroot menucofig tool.
++AD4- Unfortunately I received the following error during the link:
++AD4- cannot find -ldl
 
-The route table of the router is:
+You should try to compile it statically as you plan to use it on an
+embededded system.
+In iptables Makefile uncommment :
++ACM- NO+AF8-SHARED+AF8-LIBS +AD0- 1
 
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Ifa=
-ce
-192.168.5.0     0.0.0.0         255.255.255.0   U     0      0        0 eth2
-192.168.4.0     0.0.0.0         255.255.255.0   U     0      0        0 eth1
-192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
-224.0.0.0       0.0.0.0           240.0.0.0     U     0      0        0 eth0
-0.0.0.0       192.168.1.250     0.0.0.0         UG    0      0        0 eth0
+BR,
+
++AD4- 
++AD4- I tried to removed -ldl from iptables Makefile but receive the other errors:
++AD4- undefined reference to 'dl+AF8-open'
++AD4- ...
++AD4- 
++AD4- I'm using armeb-linux-uclibc-gcc 
++AD4- 
++AD4- Where are I can find corresponding libdl.a (I did not find it in my project)?
++AD4- What workaround can be done?
++AD4- 
++AD4- The last rows during Buildroot compilation before the Error are:
++AD4- /home/vladimir/R2/osdk/buildroot/build+AF8-armeb+AF8-nofpu/staging+AF8-dir/bin/armeb-linux-uclibc-gcc -Os -pipe  -membedded-pic -Wall -Wunused -I/include -Iinclude/ -DIPTABLES+AF8-VERSION+AD0AXAAi-1.3.4+AFwAIg-  -D+AF8-UNKNOWN+AF8-KERNEL+AF8-POINTER+AF8-SIZE -DIPT+AF8-LIB+AF8-DIR+AD0AXAAi-/usr/lib/iptables+AFwAIg- -rdynamic -o iptables iptables-standalone.c iptables.o libiptc/libiptc.a -ldl -lnsl
++AD4- /home/vladimir/R2/osdk/buildroot/build+AF8-armeb+AF8-nofpu/staging+AF8-dir/bin-ccache/../lib/gcc/armeb-linux-uclibc/3.4.5/../../../../armeb-linux-uclibc/bin/ld: cannot find -ldl
++AD4- 
++AD4- What is a preferable way to add iptables: add them to Buildroot menu or explicitly to Linux Kernel menu in Network Options?
++AD4- 
++AD4- My Target details:
++AD4- Architecture: ARM
++AD4- OS: uClinux
++AD4- Linux Kernel: 2.6.14
++AD4- Cross Compilation Tool: Buildroot
++AD4- 
++AD4- Thanks a lot for any help
++AD4- 
++AD4- Vladi Iskoz
++AD4- 
 
 
-My problem is that the MULTICAST is always coming from the same card
-(network) that the REQUEST is made.
-Even if I see the MULTICAST ariving to all interfaces of the clients. Does
-anybody know how do I set IPTABLES to force the REQUEST and the MULTICAST
-come from distint interfaces ? I=B4m using a box with Fedora core 4 as the
-router.
 
-Thank=B4s in advance
+ 
+ 
+************************************************************************************
+This footnote confirms that this email message has been scanned by
+PineApp Mail-SeCure for the presence of malicious code, vandals & computer viruses(43).
+************************************************************************************
 
----
-Marcos Gileno M. Santos
-SysAdmin - DIGILAB S.A.
-(48) 3234-4041 r.215
 
-"CONFIDENCIAL: As informa=E7=F5es contidas nesta mensagem s=E3o de
-propriedade da DIGILAB. Caso n=E3o seja o destinat=E1rio favor contatar
-imediatamente o remetente e eliminar esta mensagem sem a reproduzir,
-armazenar ou divulgar a qualquer entidade".
-
-"CONFIDENTIALITY: The information contained in this message is the
-sole property of Digilab. In case you are not the intended addressee
-of this message, please notify the sender immediately and delete this
-message without reproducing, storing or publishing it".
-------=_20061114121018_82336
-Content-Type: application/octet-stream; name="Imagem Teste_Replica"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="Imagem Teste_Replica"
-
-PCFET0NUWVBFIGh0bWwgUFVCTElDICItLy9XM0MvL0RURCBYSFRNTCAxLjAgVHJhbnNpdGlvbmFs
-Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL3hodG1sMS9EVEQveGh0bWwxLXRyYW5zaXRpb25h
-bC5kdGQiPgo8aHRtbCB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgeG1sOmxh
-bmc9IlB0IiBkaXI9Imx0ciIgbGFuZz0iUHQiPjxoZWFkPg0KDQogIA0KICAgIDxtZXRhIGh0dHAt
-ZXF1aXY9IkNvbnRlbnQtVHlwZSIgY29udGVudD0idGV4dC9odG1sOyBjaGFyc2V0PXV0Zi04Ij4N
-CiAgICA8bWV0YSBuYW1lPSJLRVlXT1JEUyIgY29udGVudD0iSW1hZ2VtOlRlc3RlIFJlcGxpY2Eu
-cG5nIj4NCjxtZXRhIG5hbWU9InJvYm90cyIgY29udGVudD0iaW5kZXgsZm9sbG93Ij4NCjxsaW5r
-IHJlbD0ic2hvcnRjdXQgaWNvbiIgaHJlZj0iaHR0cDovLzE5Mi4xNjguMS4yOC9mYXZpY29uLmlj
-byI+PHRpdGxlPkltYWdlbTpUZXN0ZSBSZXBsaWNhLnBuZyAtIERpZ2lwZWRpYTwvdGl0bGU+DQog
-ICAgDQogICAgPHN0eWxlIHR5cGU9InRleHQvY3NzIiBtZWRpYT0ic2NyZWVuLHByb2plY3Rpb24i
-Pi8qPCFbQ0RBVEFbKi8gQGltcG9ydCAiL3dpa2kvc2tpbnMvbW9ub2Jvb2svbWFpbi5jc3MiOyAv
-Kl1dPiovPC9zdHlsZT4NCiAgICA8bGluayByZWw9InN0eWxlc2hlZXQiIHR5cGU9InRleHQvY3Nz
-IiBtZWRpYT0icHJpbnQiIGhyZWY9IkltYWdlbSUyMFRlc3RlX1JlcGxpY2EucG5nX2FycXVpdm9z
-L2NvbW1vblByaW50LmNzcyI+PCEtLVtpZiBsdCBJRSA1LjUwMDBdPjxzdHlsZSB0eXBlPSJ0ZXh0
-L2NzcyI+QGltcG9ydCAiL3dpa2kvc2tpbnMvbW9ub2Jvb2svSUU1MEZpeGVzLmNzcyI7PC9zdHls
-ZT48IVtlbmRpZl0tLT48IS0tW2lmIElFIDUuNTAwMF0+PHN0eWxlIHR5cGU9InRleHQvY3NzIj5A
-aW1wb3J0ICIvd2lraS9za2lucy9tb25vYm9vay9JRTU1Rml4ZXMuY3NzIjs8L3N0eWxlPjwhW2Vu
-ZGlmXS0tPjwhLS1baWYgZ3RlIElFIDZdPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+QGltcG9ydCAi
-L3dpa2kvc2tpbnMvbW9ub2Jvb2svSUU2MEZpeGVzLmNzcyI7PC9zdHlsZT48IVtlbmRpZl0tLT48
-IS0tW2lmIElFXT48c2NyaXB0IHR5cGU9InRleHQvamF2YXNjcmlwdCIgc3JjPSIvd2lraS9za2lu
-cy9jb21tb24vSUVGaXhlcy5qcyI+PC9zY3JpcHQ+CiAgICA8bWV0YSBodHRwLWVxdWl2PSJpbWFn
-ZXRvb2xiYXIiIGNvbnRlbnQ9Im5vIiAvPjwhW2VuZGlmXS0tPg0KICAgIA0KICAgIA0KICAgIA0K
-ICAgIA0KICAgIDxzY3JpcHQgdHlwZT0idGV4dC9qYXZhc2NyaXB0IiBzcmM9IkltYWdlbSUyMFRl
-c3RlX1JlcGxpY2EucG5nX2FycXVpdm9zL2luZGV4LnBocCI+PC9zY3JpcHQ+ICAgIDxzY3JpcHQg
-dHlwZT0idGV4dC9qYXZhc2NyaXB0IiBzcmM9IkltYWdlbSUyMFRlc3RlX1JlcGxpY2EucG5nX2Fy
-cXVpdm9zL3dpa2liaXRzLmpzIj48L3NjcmlwdD4NCiAgICA8c3R5bGUgdHlwZT0idGV4dC9jc3Mi
-Pi8qPCFbQ0RBVEFbKi8NCkBpbXBvcnQgIi93aWtpL2luZGV4LnBocD90aXRsZT1NZWRpYVdpa2k6
-TW9ub2Jvb2suY3NzJmFjdGlvbj1yYXcmY3R5cGU9dGV4dC9jc3Mmc21heGFnZT0xODAwMCI7DQpA
-aW1wb3J0ICIvd2lraS9pbmRleC5waHA/dGl0bGU9LSZhY3Rpb249cmF3Jmdlbj1jc3MiOw0KLypd
-XT4qLzwvc3R5bGU+PC9oZWFkPjxib2R5IGNsYXNzPSJucy02Ij4NCiAgICA8ZGl2IGlkPSJnbG9i
-YWxXcmFwcGVyIj4NCiAgICAgIDxkaXYgaWQ9ImNvbHVtbi1jb250ZW50Ij4NCgk8ZGl2IGlkPSJj
-b250ZW50Ij4NCgkgIDxhIG5hbWU9InRvcCIgaWQ9ImNvbnRlbnRUb3AiPjwvYT4NCgkgIAkgIDxo
-MSBjbGFzcz0iZmlyc3RIZWFkaW5nIj5JbWFnZW06VGVzdGUgUmVwbGljYS5wbmc8L2gxPg0KCSAg
-PGRpdiBpZD0iYm9keUNvbnRlbnQiPg0KCSAgICA8aDMgaWQ9InNpdGVTdWIiPk9yaWdlbTogRGln
-aXBlZGlhLCBhIGVuY2ljbG9ww6lkaWEgbGl2cmUuPC9oMz4NCgkgICAgPGRpdiBpZD0iY29udGVu
-dFN1YiI+PC9kaXY+DQoJICAgIAkgICAgCSAgICA8IS0tIHN0YXJ0IGNvbnRlbnQgLS0+DQoJICAg
-IDxkaXYgY2xhc3M9ImZ1bGxJbWFnZUxpbmsiPjxpbWcgc3JjPSJJbWFnZW0lMjBUZXN0ZV9SZXBs
-aWNhLnBuZ19hcnF1aXZvcy9UZXN0ZV9SZXBsaWNhLnBuZyIgYWx0PSIiIGJvcmRlcj0iMCIgaGVp
-Z2h0PSIyNzUiIHdpZHRoPSI0NzEiPjwvZGl2Pg0KPGgyPkhpc3TDs3JpY28gZGFzIGltYWdlbnM8
-L2gyPg0KPHA+TGVnZW5kYTogKGN1cikgPSBlc3RhIMOpIGEgaW1hZ2VtIGF0dWFsLCAoZGVsKSA9
-IGRlbGV0YXINCmVzdGEgdmVyc8OjbyBhbnRpZ2EsIChyZXYpID0gcmV2ZXJ0ZXIgcGFyYSBlc3Rh
-IHZlcnPDo28gYW50aWdhLg0KPGJyPjxpPkNsaXF1ZSBlbSBkYXRhIHBhcmEgdmVyIGRhcyBpbWFn
-ZW5zIGNhcnJlZ2FkYXMgbmVzdGEgZGF0YTwvaT4uPC9wPg0KPHVsIGNsYXNzPSJzcGVjaWFsIj48
-bGk+IChkZWwpIChhdHUpIDxhIGhyZWY9Imh0dHA6Ly8xOTIuMTY4LjEuMjgvd2lraS9pbWFnZXMv
-My8zMy9UZXN0ZV9SZXBsaWNhLnBuZyIgdGl0bGU9Ii93aWtpL2ltYWdlcy8zLzMzL1Rlc3RlIFJl
-cGxpY2EucG5nIj4yMTowNywgNiBPdXQgMjAwNjwvYT4gLiAuIDxhIGhyZWY9Imh0dHA6Ly8xOTIu
-MTY4LjEuMjgvd2lraS9pbmRleC5waHAvVXN1JUMzJUExcmlvOlN1c2luIiB0aXRsZT0iVXN1w6Fy
-aW86U3VzaW4iPlN1c2luPC9hPiAoNjU0MyBieXRlcyk8L2xpPg0KPC91bD4NCjxoMj5MaW5rcyBk
-YXMgaW1hZ2VuczwvaDI+DQo8cD5BcyBww6FnaW5hcyBzZWd1aW50ZXMgYXBvbnRhbSBwYXJhIGVz
-dGEgaW1hZ2VtOjwvcD4NCjx1bD48bGk+PGEgaHJlZj0iaHR0cDovLzE5Mi4xNjguMS4yOC93aWtp
-L2luZGV4LnBocC9NaWRpYUNlbnRyb18xLjIvQ2Fzb3NfZGVfVGVzdGVfLV9BY2Vydm8iIHRpdGxl
-PSJNaWRpYUNlbnRybyAxLjIvQ2Fzb3MgZGUgVGVzdGUgLSBBY2Vydm8iPk1pZGlhQ2VudHJvIDEu
-Mi9DYXNvcyBkZSBUZXN0ZSAtIEFjZXJ2bzwvYT48L2xpPg0KPC91bD4NCjxkaXYgY2xhc3M9InBy
-aW50Zm9vdGVyIj4NClJldGlyYWRvIGRlICAiPGEgaHJlZj0iaHR0cDovLzE5Mi4xNjguMS4yOC93
-aWtpL2luZGV4LnBocC9JbWFnZW06VGVzdGVfUmVwbGljYS5wbmciPmh0dHA6Ly8xOTIuMTY4LjEu
-Mjgvd2lraS9pbmRleC5waHAvSW1hZ2VtOlRlc3RlX1JlcGxpY2EucG5nPC9hPiI8L2Rpdj4NCgkg
-ICAgCSAgICA8IS0tIGVuZCBjb250ZW50IC0tPg0KCSAgICA8ZGl2IGNsYXNzPSJ2aXN1YWxDbGVh
-ciI+PC9kaXY+DQoJICA8L2Rpdj4NCgk8L2Rpdj4NCiAgICAgIDwvZGl2Pg0KICAgICAgPGRpdiBp
-ZD0iY29sdW1uLW9uZSI+DQoJPGRpdiBpZD0icC1jYWN0aW9ucyIgY2xhc3M9InBvcnRsZXQiPg0K
-CSAgPGg1PlZpZXdzPC9oNT4NCgkgIDx1bD4NCgkgICAgPGxpIGlkPSJjYS1uc3RhYi1pbWFnZSIg
-Y2xhc3M9InNlbGVjdGVkIj48YSB0aXRsZT0iVmlldyB0aGUgaW1hZ2UgcGFnZSBbYWx0LWNdIiBh
-Y2Nlc3NrZXk9ImMiIGhyZWY9Imh0dHA6Ly8xOTIuMTY4LjEuMjgvd2lraS9pbmRleC5waHAvSW1h
-Z2VtOlRlc3RlX1JlcGxpY2EucG5nIj5JbWFnZTwvYT48L2xpPjxsaSBpZD0iY2EtdGFsayIgY2xh
-c3M9Im5ldyI+PGEgdGl0bGU9IkRpc2N1c3Npb24gYWJvdXQgdGhlIGNvbnRlbnQgcGFnZSBbYWx0
-LXRdIiBhY2Nlc3NrZXk9InQiIGhyZWY9Imh0dHA6Ly8xOTIuMTY4LjEuMjgvd2lraS9pbmRleC5w
-aHA/dGl0bGU9SW1hZ2VtX0Rpc2N1c3MlQzMlQTNvOlRlc3RlX1JlcGxpY2EucG5nJmFtcDthY3Rp
-b249ZWRpdCI+RGlzY3Vzc2lvbjwvYT48L2xpPjxsaSBpZD0iY2EtZWRpdCI+PGEgdGl0bGU9Illv
-dSBjYW4gZWRpdCB0aGlzIHBhZ2UuIFBsZWFzZSB1c2UgdGhlIHByZXZpZXcgYnV0dG9uIGJlZm9y
-ZSBzYXZpbmcuIFthbHQtZV0iIGFjY2Vzc2tleT0iZSIgaHJlZj0iaHR0cDovLzE5Mi4xNjguMS4y
-OC93aWtpL2luZGV4LnBocD90aXRsZT1JbWFnZW06VGVzdGVfUmVwbGljYS5wbmcmYW1wO2FjdGlv
-bj1lZGl0Ij5FZGl0PC9hPjwvbGk+PGxpIGlkPSJjYS1oaXN0b3J5Ij48YSB0aXRsZT0iUGFzdCB2
-ZXJzaW9ucyBvZiB0aGlzIHBhZ2UuIFthbHQtaF0iIGFjY2Vzc2tleT0iaCIgaHJlZj0iaHR0cDov
-LzE5Mi4xNjguMS4yOC93aWtpL2luZGV4LnBocD90aXRsZT1JbWFnZW06VGVzdGVfUmVwbGljYS5w
-bmcmYW1wO2FjdGlvbj1oaXN0b3J5Ij5IaXN0b3J5PC9hPjwvbGk+CSAgPC91bD4NCgk8L2Rpdj4N
-Cgk8ZGl2IGNsYXNzPSJwb3J0bGV0IiBpZD0icC1wZXJzb25hbCI+DQoJICA8aDU+UGVyc29uYWwg
-dG9vbHM8L2g1Pg0KCSAgPGRpdiBjbGFzcz0icEJvZHkiPg0KCSAgICA8dWw+DQoJICAgIDxsaSBp
-ZD0icHQtbG9naW4iPjxhIHRpdGxlPSJZb3UgYXJlIGVuY291cmFnZWQgdG8gbG9nIGluLCBpdCBp
-cyBub3QgbWFuZGF0b3J5IGhvd2V2ZXIuIFthbHQtb10iIGFjY2Vzc2tleT0ibyIgaHJlZj0iaHR0
-cDovLzE5Mi4xNjguMS4yOC93aWtpL2luZGV4LnBocD90aXRsZT1Fc3BlY2lhbDpVc2VybG9naW4m
-YW1wO3JldHVybnRvPUltYWdlbTpUZXN0ZV9SZXBsaWNhLnBuZyI+RW50cmFyPC9hPjwvbGk+CSAg
-ICA8L3VsPg0KCSAgPC9kaXY+DQoJPC9kaXY+DQoJPGRpdiBjbGFzcz0icG9ydGxldCIgaWQ9InAt
-bG9nbyI+DQoJICA8YSBzdHlsZT0iYmFja2dyb3VuZC1pbWFnZTogdXJsKC93aWtpL3NraW5zL2Nv
-bW1vbi9pbWFnZXMvd2lraS5wbmcpOyIgaHJlZj0iaHR0cDovLzE5Mi4xNjguMS4yOC93aWtpL2lu
-ZGV4LnBocC9QJUMzJUExZ2luYV9wcmluY2lwYWwiIHRpdGxlPSJQw6FnaW5hIHByaW5jaXBhbCI+
-PC9hPg0KCTwvZGl2Pg0KCTxzY3JpcHQgdHlwZT0idGV4dC9qYXZhc2NyaXB0Ij4gaWYgKHdpbmRv
-dy5pc01TSUU1NSkgZml4YWxwaGEoKTsgPC9zY3JpcHQ+DQoJPGRpdiBjbGFzcz0icG9ydGxldCIg
-aWQ9InAtbmF2Ij4NCgkgIDxoNT5OYXZpZ2F0aW9uPC9oNT4NCgkgIDxkaXYgY2xhc3M9InBCb2R5
-Ij4NCgkgICAgPHVsPg0KCSAgICAgIAkgICAgICA8bGkgaWQ9Im4tbWFpbnBhZ2UiPjxhIHRpdGxl
-PSJWaXNpdCB0aGUgTWFpbiBQYWdlIFthbHQtel0iIGFjY2Vzc2tleT0ieiIgaHJlZj0iaHR0cDov
-LzE5Mi4xNjguMS4yOC93aWtpL2luZGV4LnBocC9QJUMzJUExZ2luYV9wcmluY2lwYWwiPlDDoWdp
-bmEgcHJpbmNpcGFsPC9hPjwvbGk+CSAgICAgIDxsaSBpZD0ibi1wb3J0YWwiPjxhIHRpdGxlPSJB
-Ym91dCB0aGUgcHJvamVjdCwgd2hhdCB5b3UgY2FuIGRvLCB3aGVyZSB0byBmaW5kIHRoaW5ncyIg
-aHJlZj0iaHR0cDovLzE5Mi4xNjguMS4yOC93aWtpL2luZGV4LnBocC9EaWdpcGVkaWE6Q29tbXVu
-aXR5X1BvcnRhbCI+Q29tbXVuaXR5IHBvcnRhbDwvYT48L2xpPgkgICAgICA8bGkgaWQ9Im4tY3Vy
-cmVudGV2ZW50cyI+PGEgdGl0bGU9IkZpbmQgYmFja2dyb3VuZCBpbmZvcm1hdGlvbiBvbiBjdXJy
-ZW50IGV2ZW50cyIgaHJlZj0iaHR0cDovLzE5Mi4xNjguMS4yOC93aWtpL2luZGV4LnBocC9DdXJy
-ZW50X2V2ZW50cyI+RXZlbnRvcyBhdHVhaXM8L2E+PC9saT4JICAgICAgPGxpIGlkPSJuLXJlY2Vu
-dGNoYW5nZXMiPjxhIHRpdGxlPSJUaGUgbGlzdCBvZiByZWNlbnQgY2hhbmdlcyBpbiB0aGUgd2lr
-aS4gW2FsdC1yXSIgYWNjZXNza2V5PSJyIiBocmVmPSJodHRwOi8vMTkyLjE2OC4xLjI4L3dpa2kv
-aW5kZXgucGhwL0VzcGVjaWFsOlJlY2VudGNoYW5nZXMiPk11ZGFuw6dhcyBSZWNlbnRlczwvYT48
-L2xpPgkgICAgICA8bGkgaWQ9Im4tcmFuZG9tcGFnZSI+PGEgdGl0bGU9IkxvYWQgYSByYW5kb20g
-cGFnZSBbYWx0LXhdIiBhY2Nlc3NrZXk9IngiIGhyZWY9Imh0dHA6Ly8xOTIuMTY4LjEuMjgvd2lr
-aS9pbmRleC5waHAvRXNwZWNpYWw6UmFuZG9tcGFnZSI+UMOhZ2luYSByYW5kw7RtaWNhPC9hPjwv
-bGk+CSAgICAgIDxsaSBpZD0ibi1oZWxwIj48YSB0aXRsZT0iVGhlIHBsYWNlIHRvIGZpbmQgb3V0
-LiIgaHJlZj0iaHR0cDovLzE5Mi4xNjguMS4yOC93aWtpL2luZGV4LnBocC9EaWdpcGVkaWE6QWp1
-ZGEiPkFqdWRhPC9hPjwvbGk+CSAgICA8L3VsPg0KCSAgPC9kaXY+DQoJPC9kaXY+DQoJPGRpdiBp
-ZD0icC1zZWFyY2giIGNsYXNzPSJwb3J0bGV0Ij4NCgkgIDxoNT48bGFiZWwgZm9yPSJzZWFyY2hJ
-bnB1dCI+QnVzY2E8L2xhYmVsPjwvaDU+DQoJICA8ZGl2IGNsYXNzPSJwQm9keSI+DQoJICAgIDxm
-b3JtIG5hbWU9InNlYXJjaGZvcm0iIGFjdGlvbj0iL3dpa2kvaW5kZXgucGhwL0VzcGVjaWFsOlNl
-YXJjaCIgaWQ9InNlYXJjaGZvcm0iPg0KCSAgICAgIDxpbnB1dCBpZD0ic2VhcmNoSW5wdXQiIG5h
-bWU9InNlYXJjaCIgYWNjZXNza2V5PSJmIiB2YWx1ZT0iIiB0eXBlPSJ0ZXh0Ij4NCgkgICAgICA8
-aW5wdXQgbmFtZT0iZ28iIGNsYXNzPSJzZWFyY2hCdXR0b24iIGlkPSJzZWFyY2hHb0J1dHRvbiIg
-dmFsdWU9InZhaSIgdHlwZT0ic3VibWl0Ij4mbmJzcDs8aW5wdXQgbmFtZT0iZnVsbHRleHQiIGNs
-YXNzPSJzZWFyY2hCdXR0b24iIHZhbHVlPSJCdXNjYSIgdHlwZT0ic3VibWl0Ij4NCgkgICAgPC9m
-b3JtPg0KCSAgPC9kaXY+DQoJPC9kaXY+DQoJPGRpdiBjbGFzcz0icG9ydGxldCIgaWQ9InAtdGIi
-Pg0KCSAgPGg1PlRvb2xib3g8L2g1Pg0KCSAgPGRpdiBjbGFzcz0icEJvZHkiPg0KCSAgICA8dWw+
-DQoJCSAgCQkgIDxsaSBpZD0idC13aGF0bGlua3NoZXJlIj48YSB0aXRsZT0iTGlzdCBvZiBhbGwg
-d2lraSBwYWdlcyB0aGF0IGxpbmsgaGVyZSBbYWx0LWpdIiBhY2Nlc3NrZXk9ImoiIGhyZWY9Imh0
-dHA6Ly8xOTIuMTY4LjEuMjgvd2lraS9pbmRleC5waHA/dGl0bGU9RXNwZWNpYWw6V2hhdGxpbmtz
-aGVyZSZhbXA7dGFyZ2V0PUltYWdlbSUzQVRlc3RlX1JlcGxpY2EucG5nIj5BcnRpZ29zIFJlbGFj
-aW9uYWRvPC9hPjwvbGk+DQoJCSAgCQkgIDxsaSBpZD0idC1yZWNlbnRjaGFuZ2VzbGlua2VkIj48
-YSB0aXRsZT0iUmVjZW50IGNoYW5nZXMgaW4gcGFnZXMgbGlua2VkIGZyb20gdGhpcyBwYWdlIFth
-bHQta10iIGFjY2Vzc2tleT0iayIgaHJlZj0iaHR0cDovLzE5Mi4xNjguMS4yOC93aWtpL2luZGV4
-LnBocD90aXRsZT1Fc3BlY2lhbDpSZWNlbnRjaGFuZ2VzbGlua2VkJmFtcDt0YXJnZXQ9SW1hZ2Vt
-JTNBVGVzdGVfUmVwbGljYS5wbmciPlDDoWdpbmFzIHJlbGFjaW9uYWRhczwvYT48L2xpPg0KCQkg
-IAkgICAgICAJICAgICAgCSAgICAgIAkgICAgICAJICAgICAgCSAgICAgIAkgICAgICAJICAgICAg
-CSAgICAgIDxsaSBpZD0idC1zcGVjaWFscGFnZXMiPjxhIHRpdGxlPSJMaXN0IG9mIGFsbCBzcGVj
-aWFsIHBhZ2VzIFthbHQtcV0iIGFjY2Vzc2tleT0icSIgaHJlZj0iaHR0cDovLzE5Mi4xNjguMS4y
-OC93aWtpL2luZGV4LnBocC9Fc3BlY2lhbDpTcGVjaWFscGFnZXMiPlDDoWdpbmFzIGVzcGVjaWFp
-czwvYT48L2xpPgkgICAgICAJICAgIDwvdWw+DQoJICA8L2Rpdj4NCgk8L2Rpdj4NCgkgICAgICA8
-L2Rpdj48IS0tIGVuZCBvZiB0aGUgbGVmdCAoYnkgZGVmYXVsdCBhdCBsZWFzdCkgY29sdW1uIC0t
-Pg0KICAgICAgPGRpdiBjbGFzcz0idmlzdWFsQ2xlYXIiPjwvZGl2Pg0KICAgICAgPGRpdiBpZD0i
-Zm9vdGVyIj4NCiAgICA8ZGl2IGlkPSJmLXBvd2VyZWRieWljbyI+PGEgaHJlZj0iaHR0cDovL3d3
-dy5tZWRpYXdpa2kub3JnLyI+PGltZyBzcmM9IkltYWdlbSUyMFRlc3RlX1JlcGxpY2EucG5nX2Fy
-cXVpdm9zL3Bvd2VyZWRieV9tZWRpYXdpa2lfODh4MzEucG5nIiBhbHQ9Ik1lZGlhV2lraSI+PC9h
-PjwvZGl2PgkJPHVsIGlkPSJmLWxpc3QiPg0KCSAgPGxpIGlkPSJmLWxhc3Rtb2QiPiBFc3TDoSBw
-w6FnaW5hIGZvaSBtb2RpZmljYWRhIHBlbGEgw7psdGltYSB2ZXogZW0gMjE6MDcsIDYgT3V0IDIw
-MDYuPC9saT4JICA8bGkgaWQ9ImYtdmlld2NvdW50Ij5Fc3RhIHDDoWdpbmEgZm9pIGFjZXNzYWRh
-IDMgdmV6ZXMuPC9saT4JICAJICAJICA8bGkgaWQ9ImYtYWJvdXQiPjxhIGhyZWY9Imh0dHA6Ly8x
-OTIuMTY4LjEuMjgvd2lraS9pbmRleC5waHAvRGlnaXBlZGlhOlNvYnJlIiB0aXRsZT0iRGlnaXBl
-ZGlhOlNvYnJlIj5Tb2JyZSBhIERpZ2lwZWRpYTwvYT48L2xpPgkgIDxsaSBpZD0iZi1kaXNjbGFp
-bWVyIj48YSBocmVmPSJodHRwOi8vMTkyLjE2OC4xLjI4L3dpa2kvaW5kZXgucGhwL0RpZ2lwZWRp
-YTpHZW5lcmFsX2Rpc2NsYWltZXIiIHRpdGxlPSJEaWdpcGVkaWE6R2VuZXJhbCBkaXNjbGFpbWVy
-Ij5EaXNjbGFpbWVyczwvYT48L2xpPgk8L3VsPg0KICAgICAgPC9kaXY+DQogICAgPC9kaXY+DQog
-ICAgPCEtLSBTZXJ2ZWQgYnkgc2VyYXB5cy5kaWdpbGFiLmNvbS5iciBpbiAwLjMzIHNlY3MuIC0t
-Pg0KICA8L2JvZHk+PC9odG1sPg==
-------=_20061114121018_82336--
 
 
