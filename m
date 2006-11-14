@@ -1,14 +1,8 @@
-From: "Marco Nicoloso" <nicolm@gmail.com>
-Subject: Re: Cannot go out the firewall from internal network (NAT)
-Date: Tue, 14 Nov 2006 22:58:13 +0300
-Message-ID: <e8c943190611141158x489ed2feh36fe6fad2cb2fdc8@mail.gmail.com>
-References: <e8c943190611130715g6d88ccabu4d87bc6ecf3826d9@mail.gmail.com>
-	<4559A9B3.8080205@gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Alex Feldman <alex@alexandrite.boisestate.edu>
+Subject: opening up an ipchain
+Date: Tue, 14 Nov 2006 13:55:02 -0700
+Message-ID: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4559A9B3.8080205@gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,53 +13,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pradeep Jindal <praddyjindal@gmail.com>, netfilter@lists.netfilter.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-> #Forward delle catene
-> iptables -A FORWARD -i eth1 -o eth0 -j laninet
-> iptables -A FORWARD -i eth0 -o eth1 -j inetlan
->
-> Above shows eth1 is your LAN interface and eth0 is your WAN interface.
->
-> but....
->
-> #Setting up NAT
-> iptables -t nat -A POSTROUTING -o eth1 -s 192.168.7.0/24 -j SNAT --to
-> xxx.xxx.xxx.xxx
->
-> this shows eth1 is your WAN interface, please clarify on this thing.
->
-> Pradeep
->
+Hi,
 
-Yes, thnk you very much Pradeep, I was wrong, I corrected it but...
+I will start out by admitting I know very little about iptables.  I have
+read several tutorials and tried to find the answer to this on the web
+in the list archive and elsewhere, but I could not.  So this question
+may be frighteningly easy or ill-posed, and I would appreciate help
+regarding where to look for an answer as well as the answer itself.  And
+I know nothing about ipchains.
 
-...anyway still it doesn't work as I want. For now it is acting only
-like a NAT, I want to understand how NAT + Packet Filtering work
-together, I read the howtos provided by netfilter.org. And
-particularly I didn't understand:
+I have a computer running FC5 that I mostly want closed off to the
+world.  The two things I want to come in are email and http requests, as
+I run a web server there.  I left iptables on in sysconfig, but it
+appears to do very little if anything, so I added my own chains that I
+run out of rc.local.  Here is the guts of what I do:
 
-1) POSTROUTING chain is processed after the FORWARD chain, isn't it?
-But do I really need the FORWARD chain? If yes, do I need to setup my
-rules for filtering the packets coming from my LAN which I want to
-pass through the firewall (using a DROP policy) in the FORWARD or just
-in the INPUT chain, or in both of them?
+*****************************************************************
 
-2) Which is the right place for the NATting rules in my script? That
-is, NAT rules must be placed before or after PF rules (for me after,
-but as NAT controls different chains because `nat' is a different
-table... maybe it's the same)
+iptables --policy INPUT   DROP
+iptables --policy OUTPUT  ACCEPT
+iptables --policy FORWARD DROP
 
-3) Someone can verify the following sentence if I understood
-correctly: "Packet coming from any network connected to the firewall
-enters the chain INPUT: rules are processed from the first in order to
-the end, if a suiting rule for it is found, then the faith of the
-packet depends only on that rule; if not packet is either dropped or
-accepted, depending on the general policy of the chain above
-mentioned"
+iptables -t nat --policy POSTROUTING ACCEPT
+iptables -t nat --policy PREROUTING ACCEPT
 
-Thanks.
+#---------------------------------------------------------------
+# The loopback interface should accept all traffic
+# Necessary for X-Windows and other socket based services
+#---------------------------------------------------------------
 
-Marco Nicoloso
+iptables -A INPUT  -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+#---------------------------------------------------------------
+
+iptables -A INPUT -p tcp -i eth0 --dport 25 --sport 1024:65535 -m state 
+--state NEW -j ACCEPT
+
+iptables -A INPUT -p udp -i eth0 --sport 53 --dport 1024:65535 -j ACCEPT
+iptables -A INPUT -p tcp -i eth0 --sport 53 --dport 1024:65535 -j ACCEPT
+
+iptables -A INPUT -p tcp -i eth0 --dport 80 --sport 1024:65535 -m state 
+--state NEW -j ACCEPT
+
+#---------------------------------------------------------------
+# Allow previously established connections
+#---------------------------------------------------------------
+iptables -A INPUT -j ACCEPT -m state --state ESTABLISHED,RELATED -i eth0 
+-p tcp
+
+*********************************************************************
+
+Some of this I copied off the web, and I do not understand why I need
+all of it, e.g., all the 1024:65535 port identifiers.  But it works, or
+seems to, and I am happy with it.
+
+However, I would like to open up the computer further, maybe not all the
+way but for the moment that would be OK, to my own laptop via its mac
+address - I figure that would be pretty safe, but if not, I'd like to
+hear why not.  So I added the line:
+
+iptables -A INPUT -m mac --mac-source XX:XX:XX:XX:XX:XX -j ACCEPT
+
+and some variations on it, like with "-p all" in there, at various
+places in the file, but none of them worked (and they all had my real
+mac address in there, I just took it out before I displayed this to the
+world). 
+
+Is the problem that I have it in the wrong place in the chain, or
+something else?  I really don't understand the difference between -A and
+-I, especially since the basic file seems to work even though the first
+thing I do is drop all input, and then allow some back later.
+
+I'd appreciate any help I can get here.  Thanks very much.
+
+-- 
+	--alex			alex@math.boisestate.edu
+
+        <a href="http://math.boisestate.edu/~alex/">Alex Feldman</a>
 
