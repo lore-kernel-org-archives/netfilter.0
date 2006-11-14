@@ -1,12 +1,12 @@
-From: Pradeep Jindal <praddyjindal@gmail.com>
-Subject: Re: Cannot go out the firewall from internal network (NAT)
-Date: Tue, 14 Nov 2006 17:04:11 +0530
-Message-ID: <4559A9B3.8080205@gmail.com>
-References: <e8c943190611130715g6d88ccabu4d87bc6ecf3826d9@mail.gmail.com>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: cannot find -ldl
+Date: Tue, 14 Nov 2006 13:46:30 +0100
+Message-ID: <1163508390.8996.1.camel@localhost.localdomain>
+References: <A656C409D135BD44A5901A88AD851E5E04B16F@tlvex02.alvarion.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e8c943190611130715g6d88ccabu4d87bc6ecf3826d9@mail.gmail.com>
+In-Reply-To: <A656C409D135BD44A5901A88AD851E5E04B16F@tlvex02.alvarion.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,263 +17,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Marco Nicoloso <nicolm@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Vladimir Iskoz <Vladimir.Iskoz@alvarion.com>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Marco Nicoloso wrote:
-> Hi there,
->
-> I have already written before,  but still my firewall doesn''t work at
-> all (or, from another point of view, works too much!!!!). That is, I
-> resolved a big problem (my kernel did not load modules for nat and now
-> it does), but still there is another.
->
-> I want machines in my internal network resolve by themselves IP
-> addresses and can connect to some server (like SMTP and PPP belonging
-> to the ISP who is serving my company).
->
-> Both of my desires are not realised for now.
->
-> I post my configuration files and the output of command iptables.
->
-> Will you help me, please?
->
-> Thanks in advance.
->
-> Marco Nicoloso.
->
-> Configuration script
-> #!/bin/bash
->
-> ## RESET DELLE REGOLE ##
-> iptables -F
-> iptables -t mangle -F
-> iptables -t nat -F
-> iptables -X
-> iptables -t mangle -X
-> iptables -t nat -X
->
->
-> ## TABELLA FILTER ##
->
-> # Definizione criterio generale
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
-> iptables -P OUTPUT ACCEPT
->
-> #Creazione nuove catene
->
-> #Definizione catena int->ext
-> iptables -N laninet
-> #Definizione catena ext->int
-> iptables -N inetlan
->
-> #Forward delle catene
-> iptables -A FORWARD -i eth1 -o eth0 -j laninet
-> iptables -A FORWARD -i eth0 -o eth1 -j inetlan
->
-> # Frammenti e pacchetti non validi
-> iptables -A INPUT -f -j DROP
-> iptables -A INPUT -m state --state INVALID -j DROP
-> iptables -A OUTPUT -f -j DROP
-> iptables -A OUTPUT -m state --state INVALID -j DROP
->
-> # Traffico di loopback
-> iptables -A INPUT -i lo -j ACCEPT
-> iptables -A OUTPUT -o lo -j ACCEPT
->
-> #Traffico rete interna
-> iptables -A INPUT -i eth1 -j ACCEPT
-> iptables -A OUTPUT -o eth1 -j ACCEPT
->
-> ## TABELLA FILTER - INGRESSO ##
-> # Accetta pacchetti di connessioni esistenti
-> iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A OUTPUT -o eth0 -m state --state NEW,ESTABLISHED,RELATED -j 
-> ACCEPT
->
-> #Drop di tutti pacchetti non facenti parte delle catene
-> iptables -A laninet -s ! 192.168.7.0/24 -j DROP
-> iptables -A inetlan -s 192.168.7.0/24 -j DROP
->
->
-> # Accettiamo il traffico in ingresso nelle porte del client
-> iptables -A INPUT -i eth0 -p udp --sport 53 -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --sport 53 -j ACCEPT
-> iptables -A INPUT -i eth1 -p tcp --dport 3128 -j ACCEPT
-> iptables -A INPUT -i eth1 -p tcp --dport 80 -j ACCEPT
-> iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-> iptables -A INPUT -i eth0 -p tcp --dport 25 -j ACCEPT
-> iptables -A INPUT -i eth1 -p tcp --dport 25 -j ACCEPT
->
-> #Enabling some of the ICMP Packets
-> iptables -A INPUT -p icmp --icmp-type destination-unreachable -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type source-quench -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type time-exceeded -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type parameter-problem -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type redirect -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type router-advertisement -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
-> iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
->
-> #Forward from the internal network
-> iptables -A laninet -d 0/0 -j ACCEPT
->
-> #Forward from the internet
-> iptables -A inetlan -p tcp --sport 53 -j ACCEPT
-> iptables -A inetlan -p udp --sport 53 -j ACCEPT
-> iptables -A inetlan -m state --state ESTABLISHED,RELATED -j ACCEPT
-> iptables -A inetlan -p tcp -j REJECT --reject-with tcp-reset
->
-> #Setting up NAT
-> iptables -t nat -A POSTROUTING -o eth1 -s 192.168.7.0/24 -j SNAT --to
-> 81.22.222.236
->
-> Output of common instances of iptables.
->
-> #iptables -vnL
->
-> Chain INPUT (policy DROP 32 packets, 3605 bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->    0     0 DROP       all  -f  *      *       0.0.0.0/0            
-> 0.0.0.0/0
->    0     0 DROP       all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           state INVALID
->    0     0 ACCEPT     all  --  lo     *       0.0.0.0/0            
-> 0.0.0.0/0
-> 16791  729K ACCEPT     all  --  eth1   *       0.0.0.0/0            
-> 0.0.0.0/0
-> 33506   46M ACCEPT     all  --  eth0   *       0.0.0.0/0
-> 0.0.0.0/0           state RELATED,ESTABLISHED
->    0     0 ACCEPT     udp  --  eth0   *       0.0.0.0/0
-> 0.0.0.0/0           udp spt:53
->    0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0
-> 0.0.0.0/0           tcp spt:53
->    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-> 0.0.0.0/0           tcp dpt:3128
->    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-> 0.0.0.0/0           tcp dpt:80
->    1    48 ACCEPT     tcp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           tcp dpt:22
->    0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0
-> 0.0.0.0/0           tcp dpt:25
->    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0
-> 0.0.0.0/0           tcp dpt:25
->    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-> 0.0.0.0/0           icmp type 3
->    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-> 0.0.0.0/0           icmp type 4
->    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-> 0.0.0.0/0           icmp type 11
->    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-> 0.0.0.0/0           icmp type 12
->    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-> 0.0.0.0/0           icmp type 5
->    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-> 0.0.0.0/0           icmp type 9
->    2   122 ACCEPT     icmp --  *      *       0.0.0.0/0
-> 0.0.0.0/0           icmp type 8
->    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0
-> 0.0.0.0/0           icmp type 0
->
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->  341 22672 laninet    all  --  eth1   eth0    0.0.0.0/0            
-> 0.0.0.0/0
->    0     0 inetlan    all  --  eth0   eth1    0.0.0.0/0            
-> 0.0.0.0/0
->
-> Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->    0     0 DROP       all  -f  *      *       0.0.0.0/0            
-> 0.0.0.0/0
->    0     0 DROP       all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           state INVALID
->    0     0 ACCEPT     all  --  *      lo      0.0.0.0/0            
-> 0.0.0.0/0
-> 31529   46M ACCEPT     all  --  *      eth1    0.0.0.0/0            
-> 0.0.0.0/0
-> 22566 1409K ACCEPT     all  --  *      eth0    0.0.0.0/0
-> 0.0.0.0/0           state NEW,RELATED,ESTABLISHED
->
-> Chain inetlan (1 references)
-> pkts bytes target     prot opt in     out     source               
-> destination
->    0     0 DROP       all  --  *      *       192.168.7.0/24       
-> 0.0.0.0/0
->    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           tcp spt:53
->    0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           udp spt:53
->    0     0 ACCEPT     all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           state RELATED,ESTABLISHED
->    0     0 REJECT     tcp  --  *      *       0.0.0.0/0
-> 0.0.0.0/0           reject-with tcp-reset
->
-> Chain laninet (1 references)
-> pkts bytes target     prot opt in     out     source               
-> destination
->    0     0 DROP       all  --  *      *      !192.168.7.0/24       
-> 0.0.0.0/0
->  341 22672 ACCEPT     all  --  *      *       0.0.0.0/0            
-> 0.0.0.0/0
->
-> #iptables -vnL -t nat
->
-> Chain PREROUTING (policy ACCEPT 263K packets, 22M bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->
-> Chain POSTROUTING (policy ACCEPT 195K packets, 11M bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->    0     0 SNAT       all  --  *      eth1    192.168.7.0/24
-> 0.0.0.0/0           to:81.22.222.236
->
-> Chain OUTPUT (policy ACCEPT 186K packets, 11M bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->
-> #iptables -vnL -t mangle
->
-> Chain PREROUTING (policy ACCEPT 4253K packets, 2003M bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->
-> Chain INPUT (policy ACCEPT 4157K packets, 1996M bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->
-> Chain FORWARD (policy ACCEPT 25604 packets, 1239K bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->
-> Chain OUTPUT (policy ACCEPT 4708K packets, 2448M bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->
-> Chain POSTROUTING (policy ACCEPT 4733K packets, 2449M bytes)
-> pkts bytes target     prot opt in     out     source               
-> destination
->
->
-#Forward delle catene
-iptables -A FORWARD -i eth1 -o eth0 -j laninet
-iptables -A FORWARD -i eth0 -o eth1 -j inetlan
+Hi,
 
-Above shows eth1 is your LAN interface and eth0 is your WAN interface.
+Le mardi 14 novembre 2006 =E0 13:27 +0200, Vladimir Iskoz a =E9crit :
+> Hi all,
+> I'm trying to add firewall functionality to my current project. I'm start=
+ing with adding iptables (1.3.4) to my project using Buildroot menucofig to=
+ol.
+> Unfortunately I received the following error during the link:
+> cannot find -ldl
 
-but....
+You should try to compile it statically as you plan to use it on an
+embededded system.
+In iptables Makefile uncommment :
+# NO_SHARED_LIBS =3D 1
 
-#Setting up NAT
-iptables -t nat -A POSTROUTING -o eth1 -s 192.168.7.0/24 -j SNAT --to
-81.22.222.236
+BR,
 
-this shows eth1 is your WAN interface, please clarify on this thing.
+>=20
+> I tried to removed -ldl from iptables Makefile but receive the other erro=
+rs:
+> undefined reference to 'dl_open'
+> ...
+>=20
+> I'm using armeb-linux-uclibc-gcc=20
+>=20
+> Where are I can find corresponding libdl.a (I did not find it in my proje=
+ct)?
+> What workaround can be done?
+>=20
+> The last rows during Buildroot compilation before the Error are:
+> /home/vladimir/R2/osdk/buildroot/build_armeb_nofpu/staging_dir/bin/armeb-=
+linux-uclibc-gcc -Os -pipe  -membedded-pic -Wall -Wunused -I/include -Iincl=
+ude/ -DIPTABLES_VERSION=3D\"1.3.4\"  -D_UNKNOWN_KERNEL_POINTER_SIZE -DIPT_L=
+IB_DIR=3D\"/usr/lib/iptables\" -rdynamic -o iptables iptables-standalone.c =
+iptables.o libiptc/libiptc.a -ldl -lnsl
+> /home/vladimir/R2/osdk/buildroot/build_armeb_nofpu/staging_dir/bin-ccache=
+/../lib/gcc/armeb-linux-uclibc/3.4.5/../../../../armeb-linux-uclibc/bin/ld:=
+ cannot find -ldl
+>=20
+> What is a preferable way to add iptables: add them to Buildroot menu or e=
+xplicitly to Linux Kernel menu in Network Options?
+>=20
+> My Target details:
+> Architecture: ARM
+> OS: uClinux
+> Linux Kernel: 2.6.14
+> Cross Compilation Tool: Buildroot
+>=20
+> Thanks a lot for any help
+>=20
+> Vladi Iskoz
+>=20
+>=20
+>=20
+>=20
+> =20
+>=20
+> *************************************************************************=
+***********
+> This footnote confirms that this email message has been scanned by
+> PineApp Mail-SeCure for the presence of malicious code, vandals & compute=
+r viruses(42).
+> *************************************************************************=
+***********
+>=20
+>=20
+>=20
+>=20
 
-Pradeep
 
