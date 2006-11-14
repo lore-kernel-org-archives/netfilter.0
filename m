@@ -1,8 +1,12 @@
-From: Alex Feldman <alex@alexandrite.boisestate.edu>
-Subject: opening up an ipchain
-Date: Tue, 14 Nov 2006 13:55:02 -0700
-Message-ID: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
+From: gary douglas <GM-Douglas@wiu.edu>
+Subject: Re: connlimit where has it gone?
+Date: Tue, 14 Nov 2006 16:02:30 -0600
+Message-ID: <C7B35B2A-0AF8-4801-B919-24D1850252C5@wiu.edu>
+References: <m31wo9va6x.fsf@ccs.covici.com>
+Mime-Version: 1.0 (Apple Message framework v752.2)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <m31wo9va6x.fsf@ccs.covici.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,87 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Does anybody have any information on this. I tried a couple months  
+ago to rebuild the Firewalls that we use and was unable to get the  
+connlimit to compile. I am in the process of starting to get a build  
+of these boxes again and need connlimit.
 
-I will start out by admitting I know very little about iptables.  I have
-read several tutorials and tried to find the answer to this on the web
-in the list archive and elsewhere, but I could not.  So this question
-may be frighteningly easy or ill-posed, and I would appreciate help
-regarding where to look for an answer as well as the answer itself.  And
-I know nothing about ipchains.
+Thank you
+Gary Douglas
 
-I have a computer running FC5 that I mostly want closed off to the
-world.  The two things I want to come in are email and http requests, as
-I run a web server there.  I left iptables on in sysconfig, but it
-appears to do very little if anything, so I added my own chains that I
-run out of rc.local.  Here is the guts of what I do:
 
-*****************************************************************
+On Nov 11, 2006, at 5:24 PM, John Covici wrote:
 
-iptables --policy INPUT   DROP
-iptables --policy OUTPUT  ACCEPT
-iptables --policy FORWARD DROP
+> I am trying to patch a recent kernel (2.6.17) but connlimit seems to
+> no longer be in patch-o-matic-ng as of the snapshop 20061110.
+>
+> Any assistance would be appreciated.
+>
+> -- 
+> Your life is like a penny.  You're going to lose it.  The question is:
+> How do
+> you spend it?
+>
+>          John Covici
+>          covici@ccs.covici.com
 
-iptables -t nat --policy POSTROUTING ACCEPT
-iptables -t nat --policy PREROUTING ACCEPT
-
-#---------------------------------------------------------------
-# The loopback interface should accept all traffic
-# Necessary for X-Windows and other socket based services
-#---------------------------------------------------------------
-
-iptables -A INPUT  -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
-
-#---------------------------------------------------------------
-
-iptables -A INPUT -p tcp -i eth0 --dport 25 --sport 1024:65535 -m state 
---state NEW -j ACCEPT
-
-iptables -A INPUT -p udp -i eth0 --sport 53 --dport 1024:65535 -j ACCEPT
-iptables -A INPUT -p tcp -i eth0 --sport 53 --dport 1024:65535 -j ACCEPT
-
-iptables -A INPUT -p tcp -i eth0 --dport 80 --sport 1024:65535 -m state 
---state NEW -j ACCEPT
-
-#---------------------------------------------------------------
-# Allow previously established connections
-#---------------------------------------------------------------
-iptables -A INPUT -j ACCEPT -m state --state ESTABLISHED,RELATED -i eth0 
--p tcp
-
-*********************************************************************
-
-Some of this I copied off the web, and I do not understand why I need
-all of it, e.g., all the 1024:65535 port identifiers.  But it works, or
-seems to, and I am happy with it.
-
-However, I would like to open up the computer further, maybe not all the
-way but for the moment that would be OK, to my own laptop via its mac
-address - I figure that would be pretty safe, but if not, I'd like to
-hear why not.  So I added the line:
-
-iptables -A INPUT -m mac --mac-source XX:XX:XX:XX:XX:XX -j ACCEPT
-
-and some variations on it, like with "-p all" in there, at various
-places in the file, but none of them worked (and they all had my real
-mac address in there, I just took it out before I displayed this to the
-world). 
-
-Is the problem that I have it in the wrong place in the chain, or
-something else?  I really don't understand the difference between -A and
--I, especially since the basic file seems to work even though the first
-thing I do is drop all input, and then allow some back later.
-
-I'd appreciate any help I can get here.  Thanks very much.
-
--- 
-	--alex			alex@math.boisestate.edu
-
-        <a href="http://math.boisestate.edu/~alex/">Alex Feldman</a>
 
