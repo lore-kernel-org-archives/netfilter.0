@@ -1,10 +1,17 @@
-From: Pedro Werneck <pedro.werneck@terra.com.br>
-Subject: WAN DHCP for machines in LAN
-Date: Mon, 13 Nov 2006 15:25:13 -0200
-Message-ID: <20061113152513.5dc94410.pedro.werneck@terra.com.br>
+From: utteerna <utteerna@gmail.com>
+Subject: Re: Small doubt from a newbie :)
+Date: Tue, 14 Nov 2006 09:52:30 +0530
+Message-ID: <45594486.9010304@gmail.com>
+References: <45504519.3070907@gmail.com>
+	<BAY103-DAV5241D586B5D06014EBF3FB2F20@phx.gbl>
+	<4551C53D.6020306@gmail.com>
+	<BAY103-DAV23E7F7CB054F62AA05D7BB2F00@phx.gbl>
+	<45543A8E.7070606@gmail.com>
+	<BAY103-DAV16BF505A53F02FE4107FF9B2F70@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY103-DAV16BF505A53F02FE4107FF9B2F70@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,62 +22,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Marco Berizzi <pupilla@hotmail.com>
+Cc: netfilter@lists.netfilter.org
 
+Working finally :) :) :).
+Thank you Marco for your time and patience for helping me out. I really 
+appreciate it :).
 
-Hi all
-
-
-I have here a small network with a linux box working as router and
-production too... I use a cable modem ISP with DHCP and have 4 IPs
-available. Everything on the LAN is static, no DHCP; some machines and
-the router itself runs virtual machines (VMware) too.
-
-
-Currently I use only one of the IPs, with the router box, sharing it to
-the LAN, but I want some machines on the LAN to have access to the ISP
-ips, as well as virtual machines (VMware) running on the router box.
-
-
-I have the same setup working fine with Windows and a linksys router
-somewhere else, and just for testing I did it with a Windows VM on a
-Windows box, so I guess there's no problem in doing the same with Linux.
-
-But, it doesn't work... with tcpdump I can see DHCP packets can't get
-past the gateway interface on the router box. It seems obvious it's
-something wrong with routing, but the setup is something so simple I
-really can't figure what's wrong with it.
-
-These are the routes, where eth0 goes to the LAN, eth1 to the modem and
-vmnet8 the virtual device used by the VM on the router box.
-
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use
-Iface
-localnet        *               255.255.255.0   U     0      0        0 eth0
-172.16.79.0     *               255.255.255.0   U     0      0        0 vmnet8
-201.37.168.0    *               255.255.248.0   U     0      0        0 eth1
-loopback        *               255.0.0.0       U     0      0        0 lo
-default         c925a801.virtua 0.0.0.0         UG    0      0        0 eth1
-
-
-On iptables, for testing, all policies set to accept, and the relevant
-parts are:
-
-iptables -A INPUT -j ACCEPT -s 192.168.1.0/24
-iptables -A INPUT -j ACCEPT -i eth1 -m state --state ESTABLISHED,RELATED
-iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j MASQUERADE
-iptables -A FORWARD -j ACCEPT -i eth1
-iptables -A FORWARD -j ACCEPT -s 192.168.1.0/24
-
-
-Any ideas on what is wrong, missing or what can I do to help find the
-problem ?
-
-
-Thanks for your time... 
-
--- 
-Pedro Werneck
+Marco Berizzi wrote:
+> utteerna wrote:
+>
+>   
+>> 3)Downloaded patch-o-matic-ng-20061108.tar and put it in /usr/src dir
+>> and untarred it
+>>     
+>
+> You don't need POM.
+>
+>   
+>> ---QUESTION-->> Do i have to compile them in to the kernel rather than
+>> compiling them as modules???
+>>     
+>
+> There is no difference. If you compile as a module
+> you must load it before use. Nothing else.
+>
+>   
+>> 8) cd /usr/src/iptables-1.3.6
+>> [/usr/src/iptables-1.3.6]# make clean
+>> [/usr/src/iptables-1.3.6]#make
+>>     
+>
+> Nope! You must run 'make KERNEL_DIR=/usr/src/linux-2.6.18.2'
+>
+>   
+>> [/usr/src/iptables-1.3.6]#make install
+>>     
+>
+> Nope! You must run 'make install KERNEL_DIR=/usr/src/linux-2.6.18.2'
+>
+>
+>
+>   
 
