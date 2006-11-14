@@ -1,12 +1,12 @@
-From: gary douglas <GM-Douglas@wiu.edu>
-Subject: Re: connlimit where has it gone?
-Date: Tue, 14 Nov 2006 16:02:30 -0600
-Message-ID: <C7B35B2A-0AF8-4801-B919-24D1850252C5@wiu.edu>
-References: <m31wo9va6x.fsf@ccs.covici.com>
-Mime-Version: 1.0 (Apple Message framework v752.2)
-Content-Transfer-Encoding: 7bit
+From: "former03 | Baltasar Cevc" <baltasar.cevc@former03.de>
+Subject: Re: opening up an ipchain
+Date: Tue, 14 Nov 2006 23:40:24 +0100
+Message-ID: <5950b335a1ae99d1fb0593c324f4b67b@former03.de>
+References: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
+Mime-Version: 1.0 (Apple Message framework v624)
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <m31wo9va6x.fsf@ccs.covici.com>
+In-Reply-To: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: Alex Feldman <alex@alexandrite.boisestate.edu>
+Cc: netfilter@lists.netfilter.org
 
-Does anybody have any information on this. I tried a couple months  
-ago to rebuild the Firewalls that we use and was unable to get the  
-connlimit to compile. I am in the process of starting to get a build  
-of these boxes again and need connlimit.
+Hi Alex,
 
-Thank you
-Gary Douglas
+> However, I would like to open up the computer further, maybe not all=20=
 
-
-On Nov 11, 2006, at 5:24 PM, John Covici wrote:
-
-> I am trying to patch a recent kernel (2.6.17) but connlimit seems to
-> no longer be in patch-o-matic-ng as of the snapshop 20061110.
+> the
+> way but for the moment that would be OK, to my own laptop via its mac
+> address - I figure that would be pretty safe, but if not, I'd like to
+> hear why not.  So I added the line:
 >
-> Any assistance would be appreciated.
->
-> -- 
-> Your life is like a penny.  You're going to lose it.  The question is:
-> How do
-> you spend it?
->
->          John Covici
->          covici@ccs.covici.com
+> iptables -A INPUT -m mac --mac-source XX:XX:XX:XX:XX:XX -j ACCEPT
+
+That should be the rule you want to add. You don't need a -p all (which
+esentially means the same as leving it out - "-p all" - match all
+protocols or without that: ignore the protocol).
+
+I suspect you either have some more rules added somewhere (check that
+using "iptables -L -v", look for REJECT and DROP targets), a typo in
+the mac (you may try whether "arp" shows you an address for your other
+computer) or an error unrelated to packet filtering.
+
+For debugging, try the following:
+1) Add logging (-A INPUT -j LOG --log-prefix SOME_PREFIX___), look for
+    the output in the syslog kernel log (the location depends on your
+    distribution - I don't know FC - I've seen these outputs at
+    /var/log/kern* mostly)
+2) try whether the connection works if you switch off packet filtering
+    for a short while (iptables -F; iptables -X; iptables -t nat -F;
+    iptables -t nat -X)
+
+Baltasar
+
+Baltasar Cevc
+
+_____ former 03 gmbh
+_____ infanteriestra=DFe 19 haus 6 eg
+_____ D-80797 muenchen
+
+_____ http://www.former03.de
 
 
