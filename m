@@ -1,12 +1,16 @@
-From: "former03 | Baltasar Cevc" <baltasar.cevc@former03.de>
-Subject: Re: opening up an ipchain
-Date: Tue, 14 Nov 2006 23:40:24 +0100
-Message-ID: <5950b335a1ae99d1fb0593c324f4b67b@former03.de>
-References: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Transfer-Encoding: quoted-printable
+From: "=?UTF-8?Q?Jorge_Ner=C3=ADn?=" <jnerin@gmail.com>
+Subject: Re: Iptables for load balancing internet traffic
+Date: Wed, 15 Nov 2006 01:35:41 +0100
+Message-ID: <30df48470611141635x34f53dfdj8c1ff63ca73e7c88@mail.gmail.com>
+References: <4558A3B8.9080905@hostway.com> <45597F2B.4060101@alinto.com>
+	<45598EAD.8090900@hostway.com>
+	<30df48470611140215w1e9a030fy9194256b08134550@mail.gmail.com>
+	<4559A7E1.6050302@hostway.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
+In-Reply-To: <4559A7E1.6050302@hostway.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +21,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="macroman"; format="flowed"
-To: Alex Feldman <alex@alexandrite.boisestate.edu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi Alex,
-
-> However, I would like to open up the computer further, maybe not all=20=
-
-> the
-> way but for the moment that would be OK, to my own laptop via its mac
-> address - I figure that would be pretty safe, but if not, I'd like to
-> hear why not.  So I added the line:
->
-> iptables -A INPUT -m mac --mac-source XX:XX:XX:XX:XX:XX -j ACCEPT
-
-That should be the rule you want to add. You don't need a -p all (which
-esentially means the same as leving it out - "-p all" - match all
-protocols or without that: ignore the protocol).
-
-I suspect you either have some more rules added somewhere (check that
-using "iptables -L -v", look for REJECT and DROP targets), a typo in
-the mac (you may try whether "arp" shows you an address for your other
-computer) or an error unrelated to packet filtering.
-
-For debugging, try the following:
-1) Add logging (-A INPUT -j LOG --log-prefix SOME_PREFIX___), look for
-    the output in the syslog kernel log (the location depends on your
-    distribution - I don't know FC - I've seen these outputs at
-    /var/log/kern* mostly)
-2) try whether the connection works if you switch off packet filtering
-    for a short while (iptables -F; iptables -X; iptables -t nat -F;
-    iptables -t nat -X)
-
-Baltasar
-
-Baltasar Cevc
-
-_____ former 03 gmbh
-_____ infanteriestra=DFe 19 haus 6 eg
-_____ D-80797 muenchen
-
-_____ http://www.former03.de
-
+T24gMTEvMTQvMDYsIERhbm55IDxkaW5lc2hnQGhvc3R3YXkuY29tPiB3cm90ZToKPiBKb3JnZSBO
+ZXLDrW4gd3JvdGU6Cj4gPgo+ID4gWWVzIHRoZXJlIGlzIGEgd2F5LCBpZiB5b3Ugc2VhcmNoIHlv
+dSB3aWxsIGZpbmQgdGhpczoKPiA+Cj4gPiBSb3V0aW5nIGZvciBtdWx0aXBsZSB1cGxpbmtzL3By
+b3ZpZGVycwo+ID4gaHR0cDovL2xhcnRjLm9yZy9ob3d0by9sYXJ0Yy5ycGRiLm11bHRpcGxlLWxp
+bmtzLmh0bWwKPiA+Cj4gPiBJdCB3b3Jrcy4KPiA+Cj4gID4+IE5vdGUgdGhhdCBiYWxhbmNpbmcg
+d2lsbCBub3QgYmUgcGVyZmVjdCwgYXMgaXQgaXMgcm91dGUgYmFzZWQsIGFuZAo+IHJvdXRlcyBh
+cmUgY2FjaGVkLgo+Cj4gWXVwICEgSSB0ZXN0ZWQgdGhpcy4gQnV0IGl0IGRvZXNudCBkbyBhIHBl
+cmZlY3QgUm91bmQgUm9iaW4gWyBpbiB0aGlzCj4gY2FzZSBudGggcGF0Y2ggd29ya2VkIGJldHRl
+ciBdLgo+Cj4KPiAtIERhbm55Cj4KPgoKWW91IHdpbGwgbm90IGdldCBhIHBlcmZlY3Qgcm91bmQg
+cm9iaW4gd2l0aCBmZXcgY29uZWN0aW9ucyBiZWNhdXNlIGFsbAp0aGUgcGFja2V0cyByZWxhdGVk
+IHRvIGEgY29ubmVjdGlvbiBtdXN0IHVzZSBhbHdheXMgdGhlIHNhbWUgaW50ZXJmYWNlCm9yIGVs
+c2UgaXQgd291bGQgYnJlYWsgYXMgdGhlIGlwIGFkZHJlc3Mgd291bGQgYmUgY2hhbmdpbmcgYXMg
+c2VlbiBieQp0aGUgb3RoZXIgc2lkZS4KCklmIHlvdSBoYXZlIGEgbG90IG9mIGNvbm5lY3Rpb25z
+IHRoaXMgd2lsbCB3b3JrIGFsbW9zdCBwZXJmZWN0bHkgYXMKdGhlIGRldmlhdGlvbiBmcm9tIHRo
+ZSBwZXJmZWN0IHJvdW5kIHJvYmluIHdpbGwgZ2V0IHNtYWxsZXIgd2hlbiB0aGUKbnVtYmVyIG9m
+IHNhbXBsZXMgKGNvbm5lY3Rpb25zKSBnZXRzIGJpZ2dlciBhbmQgYWxsIG9mIHRoZW0gYmFsYW5j
+ZQplYWNoIG90aGVyLgoKLS0gCkpvcmdlIE5lcsOtbgo8am5lcmluQGdtYWlsLmNvbT4K
 
