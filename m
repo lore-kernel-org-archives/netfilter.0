@@ -1,10 +1,12 @@
-From: Mahmoud Aghapour <maabox@yahoo.com>
-Subject: NAPT with loab balance does not work with iptables 1.2.11, RHEL 3
-Date: Wed, 15 Nov 2006 06:23:06 -0800 (PST)
-Message-ID: <729782.32953.qm@web55015.mail.re4.yahoo.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Alex Feldman <alex@alexandrite.boisestate.edu>
+Subject: Re: opening up an ipchain
+Date: Wed, 15 Nov 2006 07:34:35 -0700
+Message-ID: <200611151434.kAFEYZvn019639@alexandrite.boisestate.edu>
+References: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
+	<5950b335a1ae99d1fb0593c324f4b67b@former03.de>
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-reply-to: <5950b335a1ae99d1fb0593c324f4b67b@former03.de>
+	(baltasar.cevc@former03.de)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,35 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: baltasar.cevc@former03.de
+Cc: netfilter@lists.netfilter.org
 
-Dear All
+Thanks very much, Baltasar - I will try what you said, particularly with
+looking at the log file - the two computers are in different locations
+(and different from the one I am in now), so it takes at least a day to
+try anything, but I would greatly appreciate some elaboration on one of
+the things you wrote:
 
-I want to use iptables to translate incoming
-destination port 500 to
-10000-10009 with (round robin or any other method)
-load balancing.
-I used the following command in RHEL 3 with iptables
-2.11:
- 
-       Iptables -A PREROUTING -p tcp --dport 500 -j
-DNAT --to :10000-10009
+:> I suspect you either have some more rules added somewhere (check that
+:> using "iptables -L -v", look for REJECT and DROP targets), a typo in
+:> the mac (you may try whether "arp" shows you an address for your
+:> other computer) or an error unrelated to packet filtering.
 
-But always port 10000 are used for translation and
-other ports never used.
- 
-Please help
-Thanks in advance,
-MAA
+This gets at the heart of my larger question, as opposed to simply "what
+do I have to do to get this to work?"  What other rules would interfere
+with this?  This is either the last or the second to last rule I add,
+and the first rules I have are:
 
+iptables --policy INPUT   DROP
+iptables --policy OUTPUT  ACCEPT
+iptables --policy FORWARD DROP
 
+So I begin by dropping everything, and then pick up a few things I want,
+like this mac address.  Could any rule I put in before the one that
+accepts the mac address interfere with this one?  If so, how?  And is
+this the kind of thing where it makes a difference if you use -A or -I?
+I'm all but certain there are no other iptables rules around - if I
+remove the file that has these in them, my computer appears to be open
+to the whole world.
 
- 
-____________________________________________________________________________________
-Sponsored Link
+Thanks very much.
 
-$420k for $1,399/mo. 
-Think You Pay Too Much For Your Mortgage? 
-Find Out! www.LowerMyBills.com/lre
+-- 
+	--alex			alex@math.boisestate.edu
+
+        <a href="http://math.boisestate.edu/~alex/">Alex Feldman</a>
 
