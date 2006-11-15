@@ -1,12 +1,11 @@
-From: Alex Feldman <alex@alexandrite.boisestate.edu>
-Subject: Re: opening up an ipchain
-Date: Wed, 15 Nov 2006 07:34:35 -0700
-Message-ID: <200611151434.kAFEYZvn019639@alexandrite.boisestate.edu>
-References: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
-	<5950b335a1ae99d1fb0593c324f4b67b@former03.de>
+From: "Vladimir Iskoz" <Vladimir.Iskoz@alvarion.com>
+Subject: Can not run iptables
+Date: Wed, 15 Nov 2006 17:39:21 +0200
+Message-ID: <A656C409D135BD44A5901A88AD851E5E04B174@tlvex02.alvarion.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <5950b335a1ae99d1fb0593c324f4b67b@former03.de>
-	(baltasar.cevc@former03.de)
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,44 +16,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: baltasar.cevc@former03.de
-Cc: netfilter@lists.netfilter.org
+To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Thanks very much, Baltasar - I will try what you said, particularly with
-looking at the log file - the two computers are in different locations
-(and different from the one I am in now), so it takes at least a day to
-try anything, but I would greatly appreciate some elaboration on one of
-the things you wrote:
+Hi all,
+I'm really new to uClinux and Netfilter and trying to run it.
+My target is ARM
+Kernel: linux-2.6.14
+GNU 3.4.5
+Cross compiler - Buildroot.
+Buildroot produces the file system that is loaded to flash while kernel image is loaded to RAM using TFTP.
+I'm trying to add the Netfilter to the kernel using menuconfig.
+It seems to be OK and I received zImage for loading on target.
+After loading the image I'm trying to run some iptables command but receive that 
+iptables: applets not found (or file not found)
+It seems that I'm running it from wrong place, I don't know.
+I see that Ip tables package is configured (may be partially) according to some prints during initialization. 
+What can I check (do) to clear the situation?
 
-:> I suspect you either have some more rules added somewhere (check that
-:> using "iptables -L -v", look for REJECT and DROP targets), a typo in
-:> the mac (you may try whether "arp" shows you an address for your
-:> other computer) or an error unrelated to packet filtering.
+Thank you very much for your help and time
 
-This gets at the heart of my larger question, as opposed to simply "what
-do I have to do to get this to work?"  What other rules would interfere
-with this?  This is either the last or the second to last rule I add,
-and the first rules I have are:
+Vladi
 
-iptables --policy INPUT   DROP
-iptables --policy OUTPUT  ACCEPT
-iptables --policy FORWARD DROP
 
-So I begin by dropping everything, and then pick up a few things I want,
-like this mac address.  Could any rule I put in before the one that
-accepts the mac address interfere with this one?  If so, how?  And is
-this the kind of thing where it makes a difference if you use -A or -I?
-I'm all but certain there are no other iptables rules around - if I
-remove the file that has these in them, my computer appears to be open
-to the whole world.
 
-Thanks very much.
+ 
+ 
+************************************************************************************
+This footnote confirms that this email message has been scanned by
+PineApp Mail-SeCure for the presence of malicious code, vandals & computer viruses(42).
+************************************************************************************
 
--- 
-	--alex			alex@math.boisestate.edu
 
-        <a href="http://math.boisestate.edu/~alex/">Alex Feldman</a>
+
 
