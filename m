@@ -1,12 +1,14 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Alex Feldman <alex@alexandrite.boisestate.edu>
 Subject: Re: opening up an ipchain
-Date: Thu, 16 Nov 2006 18:14:02 +0100
-Message-ID: <455C9C5A.2090905@plouf.fr.eu.org>
+Date: Thu, 16 Nov 2006 12:53:06 -0700
+Message-ID: <200611161953.kAGJr6Sn027476@alexandrite.boisestate.edu>
 References: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
+	<455C9C5A.2090905@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
+In-reply-to: <455C9C5A.2090905@plouf.fr.eu.org> (message from Pascal Hambourg
+	on Thu, 16 Nov 2006 18:14:02 +0100)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,112 +19,112 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: pascal.mail@plouf.fr.eu.org
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+>>>>> ":" =3D=3D Pascal Hambourg <pascal.mail@plouf.fr.eu.org> writes:
 
-Alex Feldman a =E9crit :
->=20
-> I know nothing about ipchains.
+:> Hello, Alex Feldman a =C3=A9crit :
+>>  I know nothing about ipchains.
 
-Fine, here we're talking about iptable, the successor of ipchains. :-)
+:> Fine, here we're talking about iptable, the successor of
+:> ipchains. :-)
 
-> *****************************************************************
->=20
-> iptables --policy INPUT   DROP
-> iptables --policy OUTPUT  ACCEPT
-> iptables --policy FORWARD DROP
->=20
-> iptables -t nat --policy POSTROUTING ACCEPT
-> iptables -t nat --policy PREROUTING ACCEPT
+Right, but evry tutorial or FAQ I pick up seems to refer back to
+ipchains, an I wanted to discourage people from ding that here.
 
-+ iptables -t nat --policy OUTPUT ACCEPT
+>> iptables -A INPUT -p udp -i eth0 --sport 53 --dport 1024:65535 -j
+>> ACCEPT iptables -A INPUT -p tcp -i eth0 --sport 53 --dport 1024:65535
+>> -j ACCEPT
 
->=20
-> #---------------------------------------------------------------
-> # The loopback interface should accept all traffic
-> # Necessary for X-Windows and other socket based services
-> #---------------------------------------------------------------
->=20
-> iptables -A INPUT  -i lo -j ACCEPT
-> iptables -A OUTPUT -o lo -j ACCEPT
->=20
-> #---------------------------------------------------------------
->=20
-> iptables -A INPUT -p tcp -i eth0 --dport 25 --sport 1024:65535 -m state=
-=20
-> --state NEW -j ACCEPT
->=20
-> iptables -A INPUT -p udp -i eth0 --sport 53 --dport 1024:65535 -j ACCEP=
-T
-> iptables -A INPUT -p tcp -i eth0 --sport 53 --dport 1024:65535 -j ACCEP=
-T
+:> These two rules are possibly harmful : they allow any incoming packet
+:> to a non privileged local port from any host using source port
+:> 53. Better deal with DNS replies in the generic rule allowing
+:> established/related connections.
 
-These two rules are possibly harmful : they allow any incoming packet to=20
-a non privileged local port from any host using source port 53. Better=20
-deal with DNS replies in the generic rule allowing established/related=20
-connections.
+Yes, good point.  Even if they aren't harmful, that's a better way to do
+it.=20
 
-> iptables -A INPUT -p tcp -i eth0 --dport 80 --sport 1024:65535 -m state=
-=20
-> --state NEW -j ACCEPT
->=20
-> #---------------------------------------------------------------
-> # Allow previously established connections
-> #---------------------------------------------------------------
-> iptables -A INPUT -j ACCEPT -m state --state ESTABLISHED,RELATED -i eth=
-0=20
-> -p tcp
+>> iptables -A INPUT -p tcp -i eth0 --dport 80 --sport 1024:65535 -m
+>> state --state NEW -j ACCEPT
+>>=20
+>> #---------------------------------------------------------------
+>> # Allow previously established connections
+>> #---------------------------------------------------------------
+>> iptables -A INPUT -j ACCEPT -m state --state ESTABLISHED,RELATED -i
+>> eth0 -p tcp
 
-Don't restrict this rule to TCP. It's also needed for other protocols :=20
-DNS replies using UDP, ICMP ping and traceroute replies, ICMP signalling=20
-messages...
+:> Don't restrict this rule to TCP. It's also needed for other protocols
+:> : DNS replies using UDP, ICMP ping and traceroute replies, ICMP
+:> signalling messages...
 
-> *********************************************************************
->=20
-> Some of this I copied off the web, and I do not understand why I need
-> all of it, e.g., all the 1024:65535 port identifiers.
+Again, good point.  Thanks.
 
-"--sport 1024:65535" means that connections to your services should are=20
-expected to come from unprivileged source ports, which is usually true.=20
-However it's not really useful.
+>> *********************************************************************
+>>=20
+>> Some of this I copied off the web, and I do not understand why I need
+>> all of it, e.g., all the 1024:65535 port identifiers.
 
-> However, I would like to open up the computer further, maybe not all th=
-e
-> way but for the moment that would be OK, to my own laptop via its mac
-> address - I figure that would be pretty safe, but if not, I'd like to
-> hear why not.
+:> "--sport 1024:65535" means that connections to your services should
+:> are expected to come from unprivileged source ports, which is usually
+:> true.  However it's not really useful.
 
-It is not safe because it is very easy to spoof a MAC address.
+Good.  Thanks.
 
->  So I added the line:
->=20
-> iptables -A INPUT -m mac --mac-source XX:XX:XX:XX:XX:XX -j ACCEPT
->=20
-> and some variations on it, like with "-p all" in there, at various
-> places in the file, but none of them worked (and they all had my real
-> mac address in there, I just took it out before I displayed this to the
-> world).
+>> However, I would like to open up the computer further, maybe not all
+>> the way but for the moment that would be OK, to my own laptop via its
+>> mac address - I figure that would be pretty safe, but if not, I'd
+>> like to hear why not.
 
-Be aware that this will work only when the client and the server are on=20
-the same network (link layer). MAC addresses don't go through routers.
+:> It is not safe because it is very easy to spoof a MAC address.
 
-> Is the problem that I have it in the wrong place in the chain, or
-> something else?  I really don't understand the difference between -A an=
-d
-> -I,
+OK.  This was just for use around the house, but it didn't work anyway,
+see below.
 
--A =3D append at the end of the chain
--I =3D insert at the beginning (or explicit location) of the chain
+>> So I added the line:
+>>=20
+>> iptables -A INPUT -m mac --mac-source XX:XX:XX:XX:XX:XX -j ACCEPT
+>>=20
+>> and some variations on it, like with "-p all" in there, at various
+>> places in the file, but none of them worked (and they all had my real
+>> mac address in there, I just took it out before I displayed this to
+>> the world).
 
-> especially since the basic file seems to work even though the first
-> thing I do is drop all input, and then allow some back later.
+:> Be aware that this will work only when the client and the server are
+:> on the same network (link layer). MAC addresses don't go through
+:> routers.
 
-No, you don't drop first then allow later, else nothing would work. The=20
-first three commands (--policy or -P) just set the default policy of the=20
-chains to DROP. The default policy tells what to do when the packet=20
-doesn't match any rule with a "terminal" target and reaches the end of=20
-the chain. So it's rules first then default policy, regardless of the=20
-location of the --policy commands in the script.
+And apparantly the wireless box I have that the phone company sold me
+does this.  I thought it wouldn't be a problem, since I treat the house
+as one segment, but apparantly it is.
+
+>> especially since the basic file seems to work even though the first
+>> thing I do is drop all input, and then allow some back later.
+
+:> No, you don't drop first then allow later, else nothing would
+:> work. The first three commands (--policy or -P) just set the default
+:> policy of the chains to DROP. The default policy tells what to do
+:> when the packet doesn't match any rule with a "terminal" target and
+:> reaches the end of the chain. So it's rules first then default
+:> policy, regardless of the location of the --policy commands in the
+:> script.
+
+Thanks, I finally figured this out, and it is nice to have it further
+clarified.=20
+
+OK, so here is my idea now: Open up the computer to port 22 for a ssh
+connection, with keys that I put on my computer at home and my laptop.
+THen I can ssh in, securely.  The risk is that I leave my laptop
+somewhere, there would be no way to get in without that key.  Once in
+via ssh, I would open up a few other ports via ipchains to let me get my
+IMAP mail or whatever else, and then close them right back down again.
+That seems simple enough.
+
+Thanks very much - this has been very halpful.
+
+--=20
+	--alex			alex@math.boisestate.edu
+
+        <a href=3D"http://math.boisestate.edu/~alex/">Alex Feldman</a>
 
