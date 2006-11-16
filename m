@@ -1,11 +1,10 @@
-From: "Baining Zhu" <baining.zhu@utstar.com>
-Subject: FW: About writing my hook function
-Date: Thu, 16 Nov 2006 10:29:32 +0800
-Message-ID: <B51E5145D3A7DF4E8688CDB825310E3C0193DC4E@SZMAIL11.cn.utstarcom.com>
+From: Mogens Kjaer <mk@crc.dk>
+Subject: NAT with two external IP numbers
+Date: Thu, 16 Nov 2006 13:37:14 +0100
+Message-ID: <455C5B7A.5040702@crc.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,58 +15,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Hi, all
+I'm trying to solve a problem:
 
-Why there is no reply to my question? :-(
-Have you received the following mail?
-I am eager to know the answer...
-=20
-Best Regards,
-Baining
-=20
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Baining Zhu
-Sent: Wednesday, November 15, 2006 11:02 AM
-To: netfilter@lists.netfilter.org
-Subject: About writing my hook function
+We have now:
+Internal network: 172.20.0.0/16
+External network: 130.226.184.38
 
-Hi, all
+This works without problems running a Linux
+box with iptables and MASQUERADING
 
-I am new to netfilter.
+The problem is, that due to a license agreement
+(online journal access), some of our users on
+the 172.20.0.0 network must have access, and some
+don't.
 
-These days I am using netfilter to make kernel module which behaves like =
-a gateway. More exactly, this module runs on a machine that has two =
-NICs, one connects to internal network and the other connects to a =
-router that can access the Internet. The module will inspect (and modify =
-if necessary) the packets that come from one NIC, then transfer them to =
-another NIC.
+My idea was:
 
-I plan to add a hook function to NF_IP_PRE_ROUTING to do this.
-Now I have several questions about writing my hook function, as listed =
-below:
-1. Inside the hook function, how could I know which NIC the packet comes =
-from? Through the Destination MAC Address that contained in the struct =
-sk_buff? (it cannot work on a broadcast packet whose Destination MAC =
-Address is 0xffffffffffff...)
-2. For any ARP request, I want to give a reply of my own MAC (ARP =
-spoofing), which function should I use for send back an ARP reply? What =
-is more, after sending out reply, my hook function should return =
-NF_STOLEN?
-3. For some TCP/UDP packets, after modifying some fields (for example, =
-destination IP or Port number), I want to forward it directly to another =
-NIC without passing them to protocol stack and application, how can I =
-achieve this? Again, my hook function should return NF_STOLEN?
+Give the linux box two IP numbers externally,
+e.g. 130.226.184.38 and 130.226.184.39, register
+130.226.184.38 with the journal, change the
+internal IP numbers so that:
 
-Thanks in advance.
+172.20.0.0/17 has access
+172.20.128.0/17 does not have access
 
-=A0
-Best Regards,
-Baining
-=A0
+So I want 172.20.0.1 - 172.20.127.255 to be
+masqueraded as 130.226.184.38 externally,
+and 172.20.128.0 - 172.20.255.254 to be
+masqueraded as 130.226.184.39
 
+I've tried adding two IP numbers externally:
 
+# ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:02:55:11:EF:03
+           inet addr:130.226.184.38  Bcast:130.226.184.255 
+Mask:255.255.255.0
+           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+           RX packets:1774 errors:0 dropped:0 overruns:0 frame:0
+           TX packets:2543 errors:0 dropped:0 overruns:0 carrier:0
+           collisions:0 txqueuelen:1000
+           RX bytes:298539 (291.5 KiB)  TX bytes:237100 (231.5 KiB)
+
+eth0:1    Link encap:Ethernet  HWaddr 00:02:55:11:EF:03
+           inet addr:130.226.184.39  Bcast:130.226.184.255 
+Mask:255.255.255.0
+           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+and use the following when setting up masquerading:
+
+/sbin/iptables -t nat -A POSTROUTING -s 172.20.0.0/17 -o eth0 -j MASQUERADE
+/sbin/iptables -t nat -A POSTROUTING -s 172.20.128.0/17 -o eth0:1 -j 
+MASQUERADE
+
+but it doesn't work. Packages comming from 172.20.128.0 addresses
+does not get their source address changed, e.g. if I ping another
+machine on the 130.226.184.x network from the 172.20.128.x network,
+the machine will receive packets with a 172.20.128.x from address,
+not 130.226.184.39
+
+How do I solve this problem?
+
+Mogens
+
+-- 
+Mogens Kjaer, Carlsberg A/S, Computer Department
+Gamle Carlsberg Vej 10, DK-2500 Valby, Denmark
+Phone: +45 33 27 53 25, Fax: +45 33 27 47 08
+Email: mk@crc.dk Homepage: http://www.crc.dk
 
