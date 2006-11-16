@@ -1,13 +1,12 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: NAPT with loab balance does not work with iptables 1.2.11, RHEL
- 3
-Date: Thu, 16 Nov 2006 17:33:20 +0100
-Message-ID: <455C92D0.1080004@plouf.fr.eu.org>
-References: <729782.32953.qm@web55015.mail.re4.yahoo.com>
+Subject: Re: opening up an ipchain
+Date: Thu, 16 Nov 2006 18:14:02 +0100
+Message-ID: <455C9C5A.2090905@plouf.fr.eu.org>
+References: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <729782.32953.qm@web55015.mail.re4.yahoo.com>
+In-Reply-To: <200611142055.kAEKt2IY017525@alexandrite.boisestate.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,23 +22,107 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
-Mahmoud Aghapour a =E9crit :
+Alex Feldman a =E9crit :
 >=20
-> I want to use iptables to translate incoming destination port 500 to
-> 10000-10009 with (round robin or any other method) load balancing.
-> I used the following command in RHEL 3 with iptables 2.11:
-> =20
-> Iptables -A PREROUTING -p tcp --dport 500 -j DNAT --to :10000-10009
+> I know nothing about ipchains.
+
+Fine, here we're talking about iptable, the successor of ipchains. :-)
+
+> *****************************************************************
 >=20
-> But always port 10000 are used for translation and other ports never us=
-ed.
+> iptables --policy INPUT   DROP
+> iptables --policy OUTPUT  ACCEPT
+> iptables --policy FORWARD DROP
+>=20
+> iptables -t nat --policy POSTROUTING ACCEPT
+> iptables -t nat --policy PREROUTING ACCEPT
 
-DNAT (and SNAT, I guess) does "load balancing" only with IP addresses,=20
-not with ports. It will use always the first port in the interval unless=20
-the resulting connection collides with an existing connection. Only in=20
-this case it will try the next port in the interval, and so on...
++ iptables -t nat --policy OUTPUT ACCEPT
 
-Since your port interval is rather short, you may try to do load=20
-balancing with the 'nth', 'random', or 'statistic' match and one rule=20
-per destination port.
+>=20
+> #---------------------------------------------------------------
+> # The loopback interface should accept all traffic
+> # Necessary for X-Windows and other socket based services
+> #---------------------------------------------------------------
+>=20
+> iptables -A INPUT  -i lo -j ACCEPT
+> iptables -A OUTPUT -o lo -j ACCEPT
+>=20
+> #---------------------------------------------------------------
+>=20
+> iptables -A INPUT -p tcp -i eth0 --dport 25 --sport 1024:65535 -m state=
+=20
+> --state NEW -j ACCEPT
+>=20
+> iptables -A INPUT -p udp -i eth0 --sport 53 --dport 1024:65535 -j ACCEP=
+T
+> iptables -A INPUT -p tcp -i eth0 --sport 53 --dport 1024:65535 -j ACCEP=
+T
+
+These two rules are possibly harmful : they allow any incoming packet to=20
+a non privileged local port from any host using source port 53. Better=20
+deal with DNS replies in the generic rule allowing established/related=20
+connections.
+
+> iptables -A INPUT -p tcp -i eth0 --dport 80 --sport 1024:65535 -m state=
+=20
+> --state NEW -j ACCEPT
+>=20
+> #---------------------------------------------------------------
+> # Allow previously established connections
+> #---------------------------------------------------------------
+> iptables -A INPUT -j ACCEPT -m state --state ESTABLISHED,RELATED -i eth=
+0=20
+> -p tcp
+
+Don't restrict this rule to TCP. It's also needed for other protocols :=20
+DNS replies using UDP, ICMP ping and traceroute replies, ICMP signalling=20
+messages...
+
+> *********************************************************************
+>=20
+> Some of this I copied off the web, and I do not understand why I need
+> all of it, e.g., all the 1024:65535 port identifiers.
+
+"--sport 1024:65535" means that connections to your services should are=20
+expected to come from unprivileged source ports, which is usually true.=20
+However it's not really useful.
+
+> However, I would like to open up the computer further, maybe not all th=
+e
+> way but for the moment that would be OK, to my own laptop via its mac
+> address - I figure that would be pretty safe, but if not, I'd like to
+> hear why not.
+
+It is not safe because it is very easy to spoof a MAC address.
+
+>  So I added the line:
+>=20
+> iptables -A INPUT -m mac --mac-source XX:XX:XX:XX:XX:XX -j ACCEPT
+>=20
+> and some variations on it, like with "-p all" in there, at various
+> places in the file, but none of them worked (and they all had my real
+> mac address in there, I just took it out before I displayed this to the
+> world).
+
+Be aware that this will work only when the client and the server are on=20
+the same network (link layer). MAC addresses don't go through routers.
+
+> Is the problem that I have it in the wrong place in the chain, or
+> something else?  I really don't understand the difference between -A an=
+d
+> -I,
+
+-A =3D append at the end of the chain
+-I =3D insert at the beginning (or explicit location) of the chain
+
+> especially since the basic file seems to work even though the first
+> thing I do is drop all input, and then allow some back later.
+
+No, you don't drop first then allow later, else nothing would work. The=20
+first three commands (--policy or -P) just set the default policy of the=20
+chains to DROP. The default policy tells what to do when the packet=20
+doesn't match any rule with a "terminal" target and reaches the end of=20
+the chain. So it's rules first then default policy, regardless of the=20
+location of the --policy commands in the script.
 
