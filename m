@@ -1,12 +1,13 @@
-From: "former03 | Baltasar Cevc" <baltasar.cevc@former03.de>
-Subject: Re: NAT with two external IP numbers
-Date: Thu, 16 Nov 2006 17:32:06 +0100
-Message-ID: <7e67d4983f901ba3347a12c19f4fe4ce@former03.de>
-References: <455C5B7A.5040702@crc.dk>
-Mime-Version: 1.0 (Apple Message framework v624)
-Content-Transfer-Encoding: 7bit
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: NAPT with loab balance does not work with iptables 1.2.11, RHEL
+ 3
+Date: Thu, 16 Nov 2006 17:33:20 +0100
+Message-ID: <455C92D0.1080004@plouf.fr.eu.org>
+References: <729782.32953.qm@web55015.mail.re4.yahoo.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <455C5B7A.5040702@crc.dk>
+In-Reply-To: <729782.32953.qm@web55015.mail.re4.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,41 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mogens Kjaer <mk@crc.dk>
-Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi Mogens,
+Hello,
 
-> Give the linux box two IP numbers externally,
-> e.g. 130.226.184.38 and 130.226.184.39, register
-> 130.226.184.38 with the journal, change the
-> internal IP numbers so that:
->
- > [...]
->
-> /sbin/iptables -t nat -A POSTROUTING -s 172.20.0.0/17 -o eth0 -j 
-> MASQUERADE
-> /sbin/iptables -t nat -A POSTROUTING -s 172.20.128.0/17 -o eth0:1 -j 
-> MASQUERADE
+Mahmoud Aghapour a =E9crit :
+>=20
+> I want to use iptables to translate incoming destination port 500 to
+> 10000-10009 with (round robin or any other method) load balancing.
+> I used the following command in RHEL 3 with iptables 2.11:
+> =20
+> Iptables -A PREROUTING -p tcp --dport 500 -j DNAT --to :10000-10009
+>=20
+> But always port 10000 are used for translation and other ports never us=
+ed.
 
-eth0:1 is not a real interface so no packets can go out there. It would 
-be
-good if iptables would throw an error, but probably it's hard for the 
-software
-to tell what are 'real' interfaces.
+DNAT (and SNAT, I guess) does "load balancing" only with IP addresses,=20
+not with ports. It will use always the first port in the interval unless=20
+the resulting connection collides with an existing connection. Only in=20
+this case it will try the next port in the interval, and so on...
 
-You must use the SNAT target to achieve what you want:
-/sbin/iptables -t nat -A POSTROUTING -s 172.20.0.0/17 -o eth0 -j SNAT 
---to 130.226.184.38
-/sbin/iptables -t nat -A POSTROUTING -s 172.20.128.0/17 -o eth0 -j SNAT 
---to 130.226.184.39
-
-(Please note that both rules use eth0 as that's the interface where the 
-packets
-go out).
-
-Hope that helps,
-Baltasar
-
+Since your port interval is rather short, you may try to do load=20
+balancing with the 'nth', 'random', or 'statistic' match and one rule=20
+per destination port.
 
