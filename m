@@ -1,9 +1,9 @@
-From: Mogens Kjaer <mk@crc.dk>
-Subject: NAT with two external IP numbers
-Date: Thu, 16 Nov 2006 13:37:14 +0100
-Message-ID: <455C5B7A.5040702@crc.dk>
+From: "Marcos Gileno" <gileno@digilab.com.br>
+Subject: Multicast route table
+Date: Thu, 16 Nov 2006 10:37:48 -0200
+Message-ID: <018d01c7097c$0ee67f10$4401a8c0@Gileno>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,74 +15,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format="flowed"; charset="iso-8859-1"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
-I'm trying to solve a problem:
+Hi there people!
 
-We have now:
-Internal network: 172.20.0.0/16
-External network: 130.226.184.38
+I have a linux box as a multi-homed host, 3 interfaces, and I want to route=
+=20
+a multicast traffic that comes in one of the interface to another, let=B4s =
 
-This works without problems running a Linux
-box with iptables and MASQUERADING
+say, eth0 receveis the multicast and I want eth1 to forward it.
 
-The problem is, that due to a license agreement
-(online journal access), some of our users on
-the 172.20.0.0 network must have access, and some
-don't.
+route add -net 224.0.0.0 netmask 240.0.0.0 dev eth1
 
-My idea was:
+Then my route table is:
 
-Give the linux box two IP numbers externally,
-e.g. 130.226.184.38 and 130.226.184.39, register
-130.226.184.38 with the journal, change the
-internal IP numbers so that:
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use=20
+Iface
+192.168.5.0     0.0.0.0         255.255.255.0   U     0      0        0 eth2
+192.168.4.0     0.0.0.0         255.255.255.0   U     0      0        0 eth1
+192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
+224.0.0.0       0.0.0.0              240.0.0.0       U     0      0        =
+0=20
+eth1
+0.0.0.0       192.168.1.250       0.0.0.0         UG    0      0        0=20
+eth0
 
-172.20.0.0/17 has access
-172.20.128.0/17 does not have access
+But when I tcpdump the interfaces, I see that all interfaces still have the=
+=20
+traffic.
+Does anybody could have an idea ?
+Thank=B4s in advance !
 
-So I want 172.20.0.1 - 172.20.127.255 to be
-masqueraded as 130.226.184.38 externally,
-and 172.20.128.0 - 172.20.255.254 to be
-masqueraded as 130.226.184.39
+---
+Marcos Gileno M. Santos
+SysAdmin - DIGILAB S.A.
+(48) 3234-4041 r.215
 
-I've tried adding two IP numbers externally:
+"CONFIDENCIAL: As informa=E7=F5es contidas nesta mensagem s=E3o de
+propriedade da DIGILAB. Caso n=E3o seja o destinat=E1rio favor contatar
+imediatamente o remetente e eliminar esta mensagem sem a reproduzir,
+armazenar ou divulgar a qualquer entidade".
 
-# ifconfig
-eth0      Link encap:Ethernet  HWaddr 00:02:55:11:EF:03
-           inet addr:130.226.184.38  Bcast:130.226.184.255 
-Mask:255.255.255.0
-           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-           RX packets:1774 errors:0 dropped:0 overruns:0 frame:0
-           TX packets:2543 errors:0 dropped:0 overruns:0 carrier:0
-           collisions:0 txqueuelen:1000
-           RX bytes:298539 (291.5 KiB)  TX bytes:237100 (231.5 KiB)
+"CONFIDENTIALITY: The information contained in this message is the
+sole property of Digilab. In case you are not the intended addressee
+of this message, please notify the sender immediately and delete this
+message without reproducing, storing or publishing it".=20
 
-eth0:1    Link encap:Ethernet  HWaddr 00:02:55:11:EF:03
-           inet addr:130.226.184.39  Bcast:130.226.184.255 
-Mask:255.255.255.0
-           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-
-and use the following when setting up masquerading:
-
-/sbin/iptables -t nat -A POSTROUTING -s 172.20.0.0/17 -o eth0 -j MASQUERADE
-/sbin/iptables -t nat -A POSTROUTING -s 172.20.128.0/17 -o eth0:1 -j 
-MASQUERADE
-
-but it doesn't work. Packages comming from 172.20.128.0 addresses
-does not get their source address changed, e.g. if I ping another
-machine on the 130.226.184.x network from the 172.20.128.x network,
-the machine will receive packets with a 172.20.128.x from address,
-not 130.226.184.39
-
-How do I solve this problem?
-
-Mogens
-
--- 
-Mogens Kjaer, Carlsberg A/S, Computer Department
-Gamle Carlsberg Vej 10, DK-2500 Valby, Denmark
-Phone: +45 33 27 53 25, Fax: +45 33 27 47 08
-Email: mk@crc.dk Homepage: http://www.crc.dk
 
