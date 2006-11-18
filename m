@@ -1,9 +1,9 @@
-From: Paul Reilly <paul@astropaul.com>
-Subject: MATCH_PHYSDEV missing from 2.6.16.29 ??
-Date: Sat, 18 Nov 2006 08:22:52 -0800
-Message-ID: <1163866972.455f335c3fc1d@mail.third-rock.net>
+From: Mike Wright <xktnniuymlla@mailinator.com>
+Subject: ipset: how to run non-root
+Date: Sat, 18 Nov 2006 14:49:13 -0800
+Message-ID: <455F8DE9.8060105@mailinator.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,32 +15,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi all,
 
-Hello,
-I need to use kernel 2.6.16.29, but oddly enough it appears there
-is no MATCH_PHYSDEV option? A fresh kernel source only has these
-match targets (see below). Is it gone? Or have I missed something?
+I'm trying to use ipset from a php script on an apache server.
 
-Paul
+ipset requires root user in order to execute, but the webserver is 
+running as apache.  suexec is not a possibility because it won't execute 
+programs with root permissions.  It is possible to have a cron job 
+perform the task but that introduces a time delay.
 
-# grep XT_MATCH .config
-CONFIG_NETFILTER_XT_MATCH_COMMENT=3Dy
-CONFIG_NETFILTER_XT_MATCH_CONNBYTES=3Dy
-CONFIG_NETFILTER_XT_MATCH_CONNMARK=3Dy
-CONFIG_NETFILTER_XT_MATCH_CONNTRACK=3Dy
-CONFIG_NETFILTER_XT_MATCH_DCCP=3Dy
-CONFIG_NETFILTER_XT_MATCH_HELPER=3Dy
-CONFIG_NETFILTER_XT_MATCH_LENGTH=3Dy
-CONFIG_NETFILTER_XT_MATCH_LIMIT=3Dy
-CONFIG_NETFILTER_XT_MATCH_MAC=3Dy
-CONFIG_NETFILTER_XT_MATCH_MARK=3Dy
-CONFIG_NETFILTER_XT_MATCH_PKTTYPE=3Dy
-CONFIG_NETFILTER_XT_MATCH_REALM=3Dy
-CONFIG_NETFILTER_XT_MATCH_SCTP=3Dy
-CONFIG_NETFILTER_XT_MATCH_STATE=3Dy
-CONFIG_NETFILTER_XT_MATCH_STRING=3Dy
-CONFIG_NETFILTER_XT_MATCH_TCPMSS=3Dy
+I've tried changing ownership of ipset to apache:apache but that didn't 
+work.  Still received the "must be root" warning.
+
+I looked into the source of ipset.c but it seems like the socket() call 
+must be done as root, and I don't know how to hack around that.
+
+Does anybody know how I might accomplish this?
+
+Thanks,
+Mike Wright
 
