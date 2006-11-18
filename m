@@ -1,9 +1,9 @@
-From: tom <tom@t0mb.net>
-Subject: inotify in netfilter socket
-Date: Fri, 17 Nov 2006 23:30:39 +0000
-Message-ID: <455E461F.7030605@t0mb.net>
+From: Paul Reilly <paul@astropaul.com>
+Subject: MATCH_PHYSDEV missing from 2.6.16.29 ??
+Date: Sat, 18 Nov 2006 08:22:52 -0800
+Message-ID: <1163866972.455f335c3fc1d@mail.third-rock.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,13 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Guys,
 
-I'm wondering if it's possible to set up an inotify watch on a netfilter socket.  I want to monitor for incoming packets to the netfilter QUEUE target, but I can't seem to do it. select.select works on it, but i wanted to use inotify really.  Is there any way to create a tangible file which i can hook in to the netfilter socket?  I was using python-inotify and the ipqueue module.  Any suggestions welcome.
+Hello,
+I need to use kernel 2.6.16.29, but oddly enough it appears there
+is no MATCH_PHYSDEV option? A fresh kernel source only has these
+match targets (see below). Is it gone? Or have I missed something?
 
-Tom.
+Paul
 
+# grep XT_MATCH .config
+CONFIG_NETFILTER_XT_MATCH_COMMENT=3Dy
+CONFIG_NETFILTER_XT_MATCH_CONNBYTES=3Dy
+CONFIG_NETFILTER_XT_MATCH_CONNMARK=3Dy
+CONFIG_NETFILTER_XT_MATCH_CONNTRACK=3Dy
+CONFIG_NETFILTER_XT_MATCH_DCCP=3Dy
+CONFIG_NETFILTER_XT_MATCH_HELPER=3Dy
+CONFIG_NETFILTER_XT_MATCH_LENGTH=3Dy
+CONFIG_NETFILTER_XT_MATCH_LIMIT=3Dy
+CONFIG_NETFILTER_XT_MATCH_MAC=3Dy
+CONFIG_NETFILTER_XT_MATCH_MARK=3Dy
+CONFIG_NETFILTER_XT_MATCH_PKTTYPE=3Dy
+CONFIG_NETFILTER_XT_MATCH_REALM=3Dy
+CONFIG_NETFILTER_XT_MATCH_SCTP=3Dy
+CONFIG_NETFILTER_XT_MATCH_STATE=3Dy
+CONFIG_NETFILTER_XT_MATCH_STRING=3Dy
+CONFIG_NETFILTER_XT_MATCH_TCPMSS=3Dy
 
