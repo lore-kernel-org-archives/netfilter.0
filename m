@@ -1,9 +1,14 @@
-From: Rodrigo Lazo <rlazo.paz@gmail.com>
-Subject: need advice - research project
-Date: Sun, 19 Nov 2006 21:39:36 -0500
-Message-ID: <8664daaljr.fsf@mash.doux>
+From: Sven Schuster <schuster.sven@gmx.de>
+Subject: Re: Dynamic chain alternatives
+Date: Mon, 20 Nov 2006 07:55:09 +0100
+Message-ID: <20061120065509.GA18079@zion.homelinux.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE5829024ED10@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE5829024ED10@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,36 +19,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter list <netfilter@lists.netfilter.org>
+To: "Gary W. Smith" <gary@primeexalia.com>
+Cc: netfilter@lists.netfilter.org
 
-hi everyone,
 
-I need some advice. I'm doing a research project about load balancing
-and I want to build an application to test some algorithms. 
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Right now all I need to do is:
-- pick up all packages arriving to a specific port
-- modify their destination MAC address
-- send them to their new destination.
 
-I'm trying to build something like this
-(http://www.linuxvirtualserver.org/VS-DRouting.html). In this
-configuration, all the machines have the same ip address but is set as
-an alias to a non-arp interface except for the load-balancer. So when
-a packet arrives you only need to modify its MAC to redirect it.
+Hi Gary,
 
-How could I build this app? I was thinking about using libipq and
-NF_QUEUE to build it on userspace so I can modify it more easily, but
-I'm not sure if this is how it should be done (or even if it is
-posible to do it this way). 
+On Sun, Nov 19, 2006 at 05:23:53PM -0800, Gary W. Smith told us:
+> I have a need to create a dynamic table in that will have random IP's
+> inserted and deleted on a regular basis.  Currently we do this by
+> creating a chain at load time and on a scheduled basis we flush that
+> chain and then to a iptables-restore -n < dynamic_rules.txt. =20
+>
+> Is there a better approach to doing this?
 
-Any sugestion will be greatly appreciated
+what about using ipset??
+http://www.netfilter.org/projects/ipset/index.html
 
-Best regards
+hope that helps,
 
--- 
 
-Rodrigo Lazo (rlazo)
+Sven
+
+> Gary Wayne Smith
+>
+
+--=20
+Linux zion.homelinux.com 2.6.18-1.2849.fc6xen #1 SMP Fri Nov 10 13:56:52 ES=
+T 2006 i686 athlon i386 GNU/Linux
+ 07:54:34 up 4 days,  9:12,  1 user,  load average: 0.07, 0.13, 0.13
+
+--PEIAKu/WMn1b1Hv9
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFYVFNo4FAdB2PneQRAjQ5AJ0fiiZVq5wrzqDgDMpCJURDy+LVewCeOswG
+sjdwPm6wKL/mg4PdZK5ommI=
+=3cqQ
+-----END PGP SIGNATURE-----
+
+--PEIAKu/WMn1b1Hv9--
 
