@@ -1,13 +1,13 @@
-From: "Noman Jamil" <njamil@gmail.com>
-Subject: Fwd: multiple DNAT alternative?
-Date: Mon, 20 Nov 2006 16:07:58 +0500
-Message-ID: <f5e96a3c0611200307y6dfc367fr574ced2a39f6d739@mail.gmail.com>
-References: <f5e96a3c0611200306x1edc99f1hb848246cd48634e1@mail.gmail.com>
+From: "Pablo Sanchez" <pablo@blueoakdb.com>
+Subject: RE: [announce] iptables-tutorial 1.2.2 book
+Date: Mon, 20 Nov 2006 08:50:08 -0500
+Message-ID: <001a01c70caa$ca5f5f10$0419a8c0@fly>
+References: <1164010686.5127.31.camel@LAPTOP4.MSHOME>
+Reply-To: pablo@blueoakdb.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <f5e96a3c0611200306x1edc99f1hb848246cd48634e1@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <1164010686.5127.31.camel@LAPTOP4.MSHOME>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: oan@frozentux.net, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org, lartc@mailman.ds9a.nl
 
-Hi all,
+ 
 
- Is there any alternative of multiple DNAT's  which is been droped in
-the latest kernels or after 2.6.10.x kernel tree. All i want to do is,
-traffic meant for a particular internal IP should be forward to
-multiple destinations not as load balacing but as per the connection
-tracking. Blow are the desired command of DNAT.
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org 
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
+> Oskar Andreasson
+> Sent: Monday, November 20, 2006 3:18 AM
+> To: netfilter@lists.netfilter.org; 
+> netfilter-devel@lists.netfilter.org; lartc@mailman.ds9a.nl
+> Subject: [announce] iptables-tutorial 1.2.2 book
+> 
+> Hi all,
+> 
+> I'm glad to first of all announce that the iptables-tutorial 1.2.2 has
+> finally been released
 
+Hi Oskar,
 
- iptables -t nat -A PREROUTING -p udp -s 0/0 -d 10.0.2.107 -j DNAT
---to 202.125.136.60-202.125.136.70
-  (This command is fine and it works too, but i want to do is  not to
-load balance between the ips but to pick up the ip for which data is
-meant for)
+I haven't had a chance to look at the documentation yet but except for the
+first page or two.  From what I can tell, you've put in a fair amount of
+effort.  I wanted to say thank you as I need something like this!  :)
 
+Cheers,
+---
+Pablo Sanchez - Blueoak Database Engineering, Inc
+Ph:    819.459.1926          Toll free:  888.459.1926
+Cell:  819.918.9731                Pgr:  pablo_p@blueoakdb.com
+Fax:   603.720.7723 (US)
 
- iptables -t nat -A PREROUTING -p udp -s 0/0 -d 10.0.2.107 -j DNAT
---to-destination 202.125.136.60 --to-destination 194.202.94.1
- (Any alternative for this command which is depricited after 2.6.10
-kernel tree.)
-
- I would be very thankful for your prompt response.
-
- Regards,
- Nouman
-
--- 
-Deciving Looks
-
--- 
-Deceving Looks
 
