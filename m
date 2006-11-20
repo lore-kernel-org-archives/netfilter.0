@@ -1,15 +1,11 @@
-From: PINTU <pintu9@gmail.com>
-Subject: Re: ipset: how to run non-root
-Date: Sun, 19 Nov 2006 12:31:54 +0530
-Message-ID: <fce4a540611182301i74440a65waf4d41e838c74e8@mail.gmail.com>
-References: <455F8DE9.8060105@mailinator.com>
-	<20061119001541.GA13056@outback.rfc2324.org>
-	<455FB202.1060702@mailinator.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: Dynamic chain alternatives
+Date: Sun, 19 Nov 2006 17:23:53 -0800
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024ED10@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <455FB202.1060702@mailinator.com>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,40 +16,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mike Wright <xktnniuymlla@mailinator.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-You can also try sudo
+I have a need to create a dynamic table in that will have random IP's
+inserted and deleted on a regular basis.  Currently we do this by
+creating a chain at load time and on a scheduled basis we flush that
+chain and then to a iptables-restore -n < dynamic_rules.txt. =20
 
-On 11/19/06, Mike Wright <xktnniuymlla@mailinator.com> wrote:
-> Maximilian Wilhelm wrote:
-> > Am Samstag, den 18 November hub Mike Wright folgendes in die Tasten:
-> >>
-> >>I'm trying to use ipset from a php script on an apache server.
-> >
-> >>Does anybody know how I might accomplish this?
-> >
-> >
-> > I never used ipset, but you could use a generic trick:
-> >  Set the owner of the ipset binary back to root and set the suid bit
-> >  which will result in the ability for everyone who can execute the
-> >  binary to do this "as root".
-> >
-> Excellent!  Worked out of the box with no problems.
->
-> > You might want to think about an execution restriction (e.g. via the group)
-> > to prevent people who should no fiddle with ipset from doing so.
-> >
-> Done!  As a paranoid I really like that advice.
->
-> > I hope you have some access control via your web application...
-> >
-> https, ip, user
->
-> Danke,
-> :m)
->
->
->
+Is there a better approach to doing this?
+
+Gary Wayne Smith
+
 
