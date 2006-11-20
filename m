@@ -1,11 +1,9 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: Dynamic chain alternatives
-Date: Sun, 19 Nov 2006 17:23:53 -0800
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024ED10@pxtbenexd01.pxt.primeexalia.com>
+From: Rodrigo Lazo <rlazo.paz@gmail.com>
+Subject: need advice - research project
+Date: Sun, 19 Nov 2006 21:39:36 -0500
+Message-ID: <8664daaljr.fsf@mash.doux>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,15 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter list <netfilter@lists.netfilter.org>
 
-I have a need to create a dynamic table in that will have random IP's
-inserted and deleted on a regular basis.  Currently we do this by
-creating a chain at load time and on a scheduled basis we flush that
-chain and then to a iptables-restore -n < dynamic_rules.txt. =20
+hi everyone,
 
-Is there a better approach to doing this?
+I need some advice. I'm doing a research project about load balancing
+and I want to build an application to test some algorithms. 
 
-Gary Wayne Smith
+Right now all I need to do is:
+- pick up all packages arriving to a specific port
+- modify their destination MAC address
+- send them to their new destination.
 
+I'm trying to build something like this
+(http://www.linuxvirtualserver.org/VS-DRouting.html). In this
+configuration, all the machines have the same ip address but is set as
+an alias to a non-arp interface except for the load-balancer. So when
+a packet arrives you only need to modify its MAC to redirect it.
+
+How could I build this app? I was thinking about using libipq and
+NF_QUEUE to build it on userspace so I can modify it more easily, but
+I'm not sure if this is how it should be done (or even if it is
+posible to do it this way). 
+
+Any sugestion will be greatly appreciated
+
+Best regards
+
+-- 
+
+Rodrigo Lazo (rlazo)
 
