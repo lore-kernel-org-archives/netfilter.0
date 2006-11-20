@@ -1,13 +1,12 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Dynamic chain alternatives
-Date: Mon, 20 Nov 2006 08:21:49 -0800
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024ED16@pxtbenexd01.pxt.primeexalia.com>
-References: <20061120065509.GA18079@zion.homelinux.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: ipset: how to run non-root
+Date: Mon, 20 Nov 2006 19:52:22 +0000 (UTC)
+Message-ID: <Pine.LNX.4.64.0611201951120.15481@darkstar.sysinfo.com>
+References: <455F8DE9.8060105@mailinator.com>
+	<20061119001541.GA13056@outback.rfc2324.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <20061120065509.GA18079@zion.homelinux.com>
+In-Reply-To: <20061119001541.GA13056@outback.rfc2324.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +17,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Sven Schuster <schuster.sven@gmx.de>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Maximilian Wilhelm <max@rfc2324.org>
 Cc: netfilter@lists.netfilter.org
 
-That should work.  Thanks.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
------Original Message-----
-From: Sven Schuster [mailto:schuster.sven@gmx.de]=20
-Sent: Sunday, November 19, 2006 10:55 PM
-To: Gary W. Smith
-Cc: netfilter@lists.netfilter.org
-Subject: Re: Dynamic chain alternatives
+On Sun, 19 Nov 2006, Maximilian Wilhelm wrote:
 
-
-Hi Gary,
-
-On Sun, Nov 19, 2006 at 05:23:53PM -0800, Gary W. Smith told us:
-> I have a need to create a dynamic table in that will have random IP's
-> inserted and deleted on a regular basis.  Currently we do this by
-> creating a chain at load time and on a scheduled basis we flush that
-> chain and then to a iptables-restore -n < dynamic_rules.txt. =20
+> Am Samstag, den 18 November hub Mike Wright folgendes in die Tasten:
 >
-> Is there a better approach to doing this?
-
-what about using ipset??
-http://www.netfilter.org/projects/ipset/index.html
-
-hope that helps,
-
-
-Sven
-
-> Gary Wayne Smith
+> Hi!
+>
+>> I'm trying to use ipset from a php script on an apache server.
+>
+>> ipset requires root user in order to execute, but the webserver is
+>> running as apache.  suexec is not a possibility because it won't execute
+>> programs with root permissions.  It is possible to have a cron job
+>> perform the task but that introduces a time delay.
+>
+>> I've tried changing ownership of ipset to apache:apache but that didn't
+>> work.  Still received the "must be root" warning.
+>
+>> I looked into the source of ipset.c but it seems like the socket() call
+>> must be done as root, and I don't know how to hack around that.
+>
+>> Does anybody know how I might accomplish this?
+>
+> I never used ipset, but you could use a generic trick:
+> Set the owner of the ipset binary back to root and set the suid bit
+> which will result in the ability for everyone who can execute the
+> binary to do this "as root".
+>
+> You might want to think about an execution restriction (e.g. via the group)
+> to prevent people who should no fiddle with ipset from doing so.
+>
+> I hope you have some access control via your web application...
 >
 
---=20
-Linux zion.homelinux.com 2.6.18-1.2849.fc6xen #1 SMP Fri Nov 10 13:56:52
-EST 2006 i686 athlon i386 GNU/Linux
- 07:54:34 up 4 days,  9:12,  1 user,  load average: 0.07, 0.13, 0.13
+better advice would be to leave the bits alone and think of perhaps 
+allowing sudo access if really required, but it should be seriously 
+considered from a security context.
+
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD4DBQFFYgd5st+vzJSwZikRAmNSAJdv1VMRX0tZq2kX4i+i+ayXCxQFAJ9VkarI
+C8T2g8d7mh/WbHBmquX9jA==
+=ibec
+-----END PGP SIGNATURE-----
 
