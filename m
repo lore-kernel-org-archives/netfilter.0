@@ -1,12 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Passive FTP sees remote's _internal_ IP!!??
-Date: Mon, 27 Nov 2006 22:26:18 +0100
-Message-ID: <456B57FA.5020000@plouf.fr.eu.org>
-References: <20061127184454.0BD73DB@brinstar.nerim.net>
+From: Mike Williams <mike@v6.gaima.co.uk>
+Subject: Re: How to measure CPU usage of netfilter
+Date: Tue, 21 Nov 2006 01:10:11 +0000
+Message-ID: <200611210110.11338.mike@v6.gaima.co.uk>
+References: <1164069640.4057.31.camel@mfarooq-1.tango-networks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20061127184454.0BD73DB@brinstar.nerim.net>
+In-Reply-To: <1164069640.4057.31.camel@mfarooq-1.tango-networks.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,72 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+On Tuesday 21 November 2006 00:40, Mohammad Farooq wrote:
+> Hi Guys,
+>
+>   I have about 1000 rules in the iptables. All these rules just forward
+> the incoming traffic to other systems. I am trying to measure CPU usage
+> of the netfilter. I tried to measure with top command but some how it
+> always shows that CPU is 95% idle. I am not sure if top is the
+> appropriate command to measure CPU usage of the netfilter. Since all the
+> filtering is happening inside the kernel there should be some other command
+> to measure kernel's CPU usage. I would appreciate if someone can point to
+> the right direction. Thanks.
 
-Maxime Ducharme a =E9crit :
-> This happens when the remote server has a bad
-> NAT configuration for FTP.
+While I don't know if there is a "right way", 5% is probably about right, even 
+taking into account the top overhead.
+I have a fairly complex iptable setup on a PIII 800 pushing over 40Mbps of 
+mostly web traffic, NATting it to a varity of webservers on 2 different 
+physical networks. Conntrack gets upto and over 60000. The busiest webserver 
+handles in excess of 300 requests a second coming through the firewall.
+We've just passed peak usage and the CPU usage averaged a little over 20% over 
+the period, according to the nice rrdtool graphs cacti generates for me from 
+snmp.
 
-I fully agree, the problem seems to be on the server side.
+I'm also using ulogd to log dropped packets. CPU usage can average ~40% higher 
+if that gets too large, or fills the disk (which it's done a couple times). I 
+should turn it off really...
 
-> Maybe SonicWALL is able to "fix" this itself, I dont
-> know this product very well.
+-- 
+Mike Williams
 
-If it does so, I'd be happy to know how.
-
-> some suggestions :
->=20
-> 1. Fix NAT for FTP on remote firewall
->=20
-> 2. Configure remote server to explicitly send
-> external IP for passive connections (most of FTP
-> software allows to configure this)
->=20
-> 3. Configure your FTP client to use active mode.
-> If server is running on another port than 21,
-> you must tell ip_nat_ftp to "listen" for FTP
-> traffic on this port. Someone on this list can
-> tell us how ? (I dont remember how)
-
-$ modprobe ip_conntrack_ftp ports=3D21,alternate_port
-$ modprobe ip_nat_ftp ports=3D21,alternate_port
-
-Both commands are needed because AFAIK, ip_nat_ftp loads automatically=20
-ip_conntrack_ftp if not already loaded but does not pass the port list=20
-to it. Duh.
-
-3b. Use extended passive mode (EPSV) if the client, the remote server=20
-and their firewall/NATs support it, because an EPSV reply does not=20
-contains the server address.
-
-[Read on]
-> -----Message d'origine-----
-> De : netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org] De la part de gypsy
-> Envoy=E9 : 27 novembre, 2006 10:33
-> =C0 : netfilter@lists.netfilter.org
-> Objet : Passive FTP sees remote's _internal_ IP!!??
->=20
-> We don't think this is a netfilter problem.
-
-I agree, at least not on the client side.
-
-> The kernel should tell the
-> remote end that it can't use the "nonroutable" IP - shouldn't it?
-
-No, the kernel is not supposed to do this. All the Netfilter FTP NAT=20
-helper module can do is translate "internal" addresses. However the=20
-wrong PASV reply comes from the outside.
-
->>>When the default GW is set to the linux box (192.168.223.254) and
->>>passive FTP to a remote server is initiated, the FTP fails after
->>>connection because the internal IP of the remote machine (192.168.1.11=
-)
->>>is seen rather than its external IP.  This problem occurs only when
->>>passive FTP is used.
-
-Does this happen with any FTP server or only a specific one ?
+-- 
+Mike Williams
 
