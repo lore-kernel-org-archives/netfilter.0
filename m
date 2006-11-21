@@ -1,11 +1,11 @@
-From: "Tim Edwards" <t.edwards@tideway.com>
-Subject: (no subject)
-Date: Tue, 21 Nov 2006 09:25:09 -0000
-Message-ID: <B81183566FF73947875C3A207CD60AA6027C722D@LONEX01.tideway.com>
+From: "ArioS" <christian@wanxp.net>
+Subject: load balancing multiple isp
+Date: Tue, 21 Nov 2006 17:08:19 +0700
+Message-ID: <006601c70d54$f992a620$0503800a@wanxpe2773a9cb>
+References: <1164069640.4057.31.camel@mfarooq-1.tango-networks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +16,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Dear,
 
-I don't know if this makes much sense with the way iptables works.
-Anyway I'm trying to instantly stop all outgoing traffic from a machine,
-even from processes that are currently running and may have connections
-active.
+anyone have experience bout load balancing on multiple isp ? i have 3 
+connection from different isp (A = 64kb , B = 128kb , C = 128kb). howto mix 
+these 3 isp into 1 virtually.. so if bw on ISP A is lacked then the 
+connection will move to ISP B. currently i did manual route for specific 
+network to specific ISP... it really hard to balance it with manual route. 
+any clue ? 
 
-Is this possible with iptables?=20
-
-Thanks=20
-
-Tim Edwards
-
-This email and any attachment may contain confidential, privileged =
-information for the sole use of the intended recipient. If you are not =
-the intended recipient, do not disclose, reproduce, disseminate or =
-otherwise use this communication. If you received this communication in =
-error, please immediately notify the sender via email and delete the =
-communication from your system.
 
