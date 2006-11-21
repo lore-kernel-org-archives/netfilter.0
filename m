@@ -1,11 +1,13 @@
-From: "Tim Edwards" <t.edwards@tideway.com>
-Subject: RE: (no subject)
-Date: Tue, 21 Nov 2006 13:26:32 -0000
-Message-ID: <B81183566FF73947875C3A207CD60AA6027C73D0@LONEX01.tideway.com>
+From: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Subject: Re: load balancing multiple isp
+Date: Tue, 21 Nov 2006 09:27:54 -0600
+Message-ID: <45631AFA.50102@riverviewtech.net>
+References: <1164069640.4057.31.camel@mfarooq-1.tango-networks.com>
+	<006601c70d54$f992a620$0503800a@wanxpe2773a9cb>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <006601c70d54$f992a620$0503800a@wanxpe2773a9cb>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,89 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: ArioS <christian@wanxp.net>
+Cc: netfilter@lists.netfilter.org
 
-> -----Original Message-----
-> From: Bernd Petrovitsch [mailto:bernd@firmix.at]
-> Sent: 21 November 2006 10:54
-> To: Tim Edwards
-> Cc: netfilter@lists.netfilter.org
-> Subject: RE: (no subject)
->=20
-> On Tue, 2006-11-21 at 10:44 +0000, Tim Edwards wrote:
-> >
-> > -----Original Message-----
-> > From: Bernd Petrovitsch [mailto:bernd@firmix.at]
-> > Sent: 21 November 2006 10:13
-> > To: Tim Edwards
-> > Cc: netfilter@lists.netfilter.org
-> > Subject: Re: (no subject)
-> >
-> > > Yes. Just insert such a rule into the OUTPUT chain.
-> >
-> > Ok I have the following rules but it still isn't cutting off
-existing
-> > connections:
->=20
-> Yup.
->=20
-> > #!/bin/bash
-> >
-> > # First clear all rules (and set the policy to DROP on the default
-> > chains)
-> > iptables -F
-> > # Second delete all the extra (user-defined) chains
-> > iptables -X
-> > # Set polcy on the default chains
-> > iptables -P INPUT DROP
-> > iptables -P OUTPUT DROP
-> > iptables -P FORWARD DROP
-> > # allow anything over loopback
-> > iptables -A INPUT -i lo -j ACCEPT
-> > iptables -A OUTPUT -o lo -j ACCEPT
-> > # Allow incoming ssh and http/s connections
-> > iptables -A INPUT -p tcp -m tcp -m multiport --dports 22,80,443 -j
-> > ACCEPT
-> > iptables -A INPUT -j LOG --log-prefix=3D"INPUT REJECT"
---log-level=3Dinfo
-> > iptables -A INPUT -j REJECT
-> > # Allow already established ssh and http/s connections back out
-through
-> > the firewall
-> > iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j
-ACCEPT
->=20
-> This allows all existing connections. If the above comment should be
-> correct, you probably forgot here something.
->=20
-> > iptables -A OUTPUT -j LOG --log-prefix=3D"OUTPUT REJECT"
---log-level=3Dinfo
-> > iptables -A OUTPUT -j REJECT
-> > iptables -A FORWARD -j LOG --log-prefix=3D"FORWARD REJECT"
-> > --log-level=3Dinfo
-> > iptables -A FORWARD -j REJECT
+ArioS wrote:
+> anyone have experience bout load balancing on multiple isp ? i have 3 
+> connection from different isp (A = 64kb , B = 128kb , C = 128kb). howto 
+> mix these 3 isp into 1 virtually.. so if bw on ISP A is lacked then the 
+> connection will move to ISP B. currently i did manual route for specific 
+> network to specific ISP... it really hard to balance it with manual 
+> route. any clue ?
 
-Good point, that line was definitely wrong. What I'm trying to do this
-block all traffic, including active connections, except incoming ssh and
-http/s connections. From testing I've found the above does block all
-traffic while allowing ssh and http/s in, but doesn't cutoff existing
-connections.
+Look in to the "--next-hop" "ip route" command option.  I think you will 
+find what you are looking for in the fact that you can have multiple next hops.
 
-I've tried this line instead of the one above but now all traffic,
-including incoming ssh and http/s, seems to be blocked:
-iptables -A OUTPUT -m tcp -m multiport --sports 22,80,443 -m state
---state NEW,ESTABLISHED,RELATED -j ACCEPT
+Something to keep in mind is that if you are NATing each ISP connection, you 
+can not have a stream migrate from one ISP to another b/c you will break 
+connection state on your end, or even if your end could handle it, the 
+server you are connecting to would flip out.  From the server's point of 
+view, it would be talking to Bob and Bob would stop mid sentence and Tom 
+would start where Bob left of with out the ability to correlate what Bob and 
+Tom were saying in to one coherent stream.
 
-Any suggestions?
 
-Thanks
 
-Tim
-This email and any attachment may contain confidential, privileged =
-information for the sole use of the intended recipient. If you are not =
-the intended recipient, do not disclose, reproduce, disseminate or =
-otherwise use this communication. If you received this communication in =
-error, please immediately notify the sender via email and delete the =
-communication from your system.
+Grant. . . .
 
