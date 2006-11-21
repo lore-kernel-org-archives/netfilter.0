@@ -1,10 +1,11 @@
-From: Mohammad Farooq <mohammadfarooq@tango-networks.com>
-Subject: How to measure CPU usage of netfilter
-Date: Mon, 20 Nov 2006 18:40:40 -0600
-Message-ID: <1164069640.4057.31.camel@mfarooq-1.tango-networks.com>
+From: "Tim Edwards" <t.edwards@tideway.com>
+Subject: (no subject)
+Date: Tue, 21 Nov 2006 09:25:09 -0000
+Message-ID: <B81183566FF73947875C3A207CD60AA6027C722D@LONEX01.tideway.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +19,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Guys,
-   
-  I have about 1000 rules in the iptables. All these rules just forward 
-the incoming traffic to other systems. I am trying to measure CPU usage 
-of the netfilter. I tried to measure with top command but some how it 
-always shows that CPU is 95% idle. I am not sure if top is the 
-appropriate command to measure CPU usage of the netfilter. Since all the 
-filtering is happening inside the kernel there should be some other command to 
-measure kernel's CPU usage. I would appreciate if someone can point to 
-the right direction. Thanks.
-   
-  mf
+Hi,
 
+I don't know if this makes much sense with the way iptables works.
+Anyway I'm trying to instantly stop all outgoing traffic from a machine,
+even from processes that are currently running and may have connections
+active.
+
+Is this possible with iptables?=20
+
+Thanks=20
+
+Tim Edwards
+
+This email and any attachment may contain confidential, privileged =
+information for the sole use of the intended recipient. If you are not =
+the intended recipient, do not disclose, reproduce, disseminate or =
+otherwise use this communication. If you received this communication in =
+error, please immediately notify the sender via email and delete the =
+communication from your system.
 
