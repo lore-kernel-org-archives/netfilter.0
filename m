@@ -1,10 +1,13 @@
-From: "lubasi" <lubasi@zamnet.zm>
+From: "Pablo Sanchez" <pablo@blueoakdb.com>
 Subject: RE: Someone is using too much bandwidth???
-Date: Tue, 21 Nov 2006 19:22:26 +0200
-Message-ID: <380-2200611221172226406@zamnet.zm>
+Date: Tue, 21 Nov 2006 13:13:12 -0500
+Message-ID: <003f01c70d98$b4f1bd00$0419a8c0@fly>
+References: <380-2200611221172226406@zamnet.zm>
+Reply-To: pablo@blueoakdb.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <380-2200611221172226406@zamnet.zm>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +21,46 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+ 
 
-Indeed its true, and i dont know what machine it is=2E I have MRTG
-installed and my bandwidth looks green all the the time as much as
-138Kbps, and my ISP gives me 128Kbps=2E
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org 
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of lubasi
+> Sent: Tuesday, November 21, 2006 12:22 PM
+> To: netfilter@lists.netfilter.org
+> Subject: RE: Someone is using too much bandwidth???
+> 
+> Hello,
+> 
+> Indeed its true, and i dont know what machine it is. 
 
-How can i interprate the #tail -f /var/logs/messages to determin
-which machine is doing kazaa or any other P2P=3F=3F=3Fconsuming the
-bandwidth=2E
+You could setup an iptables rule to log all traffic or do what I believe may
+be simpler:  use tcpdump
 
-And how do i block these popular P2P=3F=3F=3F
+Let's say you have two NIC's on your machine:
 
-Kind regards
 
-Teddy L=2E
-------------------------------------------------------
-Teddy L=2E Nyambe
-Open Source Zambia
-www=2Eopensource=2Eorg=2Ezm
+	// Internet // - [eth0] - [gateway] - [eth1] - // Internal Network
+//
 
-+260 97 760473
+You can run tcpdump on your Internet Network:
 
-* Know that today is yesterday's future Be the change you want to see
-in the world
-* To Err is Human, but to really mess things up, you need a PC
+	tcpdump -i eth1
+
+If you've ssh'd to your gateway machine from your Internal Network, your
+host and ssh information will also be spewed.  Probably not what you want.
+
+A simple tweak will handle it:
+
+	tcpdump -i eth1 not host your.IP.address.here
+
+The above should give you some quick answers.
+
+Cheers,
+---
+Pablo Sanchez - Blueoak Database Engineering, Inc
+Ph:    819.459.1926          Toll free:  888.459.1926
+Cell:  819.918.9731                Pgr:  pablo_p@blueoakdb.com
+Fax:   603.720.7723 (US)
 
 
