@@ -1,13 +1,10 @@
-From: Danny <dineshg@hostway.com>
-Subject: Re: Someone is using too much bandwidth???
-Date: Wed, 22 Nov 2006 11:18:48 +0530
-Message-ID: <4563E4C0.30608@hostway.com>
-References: <380-2200611221172226406@zamnet.zm>	<4563448D.7000401@riverviewtech.net>
-	<4563454B.6000609@t0mb.net>
+From: "lubasi" <lubasi@zamnet.zm>
+Subject: RE: Someone is using too much bandwidth???
+Date: Wed, 22 Nov 2006 07:57:17 +0200
+Message-ID: <380-220061132255717968@zamnet.zm>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4563454B.6000609@t0mb.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,77 +15,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: pablo@blueoakdb.com, netfilter@lists.netfilter.org
 
-Hi,
+Okey thanks for tcpdump=2E
 
-ntop is a good solution too.  It gives you current thoroughput and total 
-bandwidth consumption.
-It gives you info about the transmission type as well - TCP/UDP.
+But got a problem=2E I cant seem to realy figure out what those lines
+mean=3F say these four (4) lines:
+
+08:01:42=2E131982 IP 192=2E168=2E0=2E71=2E1054 > mail=2Eparliament=2Egov=2E=
+zm=2Esquid:
+=2E ack 6755 win 65535
+08:01:42=2E225114 IP 213=2E155=2E151=2E150=2Ehttp > 192=2E168=2E0=2E183=2E=
+3011: P
+1:334(333) ack 170 win 5840
+08:01:42=2E229863 IP 192=2E168=2E0=2E183=2E3011 > 213=2E155=2E151=2E150=2E=
+http: F
+170:170(0) ack 334 win 63907
+08:01:42=2E229968 IP 213=2E155=2E151=2E150=2Ehttp > 192=2E168=2E0=2E183=2E=
+3011: F
+334:334(0) ack 171 win 5840
 
 
-http://www.ntop.org/overview.html
+Okey seen the date part, the IP address then looks like the port on
+which the connection is listening on is appended to the requesting IP
+address then the greater than=3F=3F=3F=3F confused from that point=2E
 
+Anything i can use to graph this information=3F=3F=3F=3F
 
-All the best !!
-
-- Danny
-
-
-tom wrote:
-> Taylor, Grant wrote:
->> lubasi wrote:
->>> How can i interprate the #tail -f /var/logs/messages to determin
->>> which machine is doing kazaa or any other P2P???consuming the
->>> bandwidth.
->>
->> By default /var/log/messages will not record any thing about traffic 
->> that is
->> passing through the system.  You can add IPTables rules that will cause
->> matched packets to be logged via Syslog which you can then see in
->> /var/log/messages.
->>
->> However to get a better idea of what traffic is running on your network,
->> consider TCPDump or a GUI front end like Etherial.  This will give you a
->> real time report of what traffic is flowing in to / out of / through 
->> your
->> system (presuming you sniff the correct interface).  You can tell 
->> from this,
->> which computer is consuming more bandwidth than it should based on the
->> frequency of the source / destination IP showing up in TCPDump's output.
->>
->> You could add rules to IPTables that match specific IPs in question and
->> watch the hit counters to see which system(s) are incrementing their
->> counters at an exceptional rate.  One (or more) system(s) should jump 
->> out at
->> you as being the culprit(s).
->>
->>> And how do i block these popular P2P???
->>
->> First you need to find out more about the type of P2P traffic that 
->> you are
->> experiencing so that you can more accurately filter it out / rate 
->> limit it.
->>  I will say that you may have better luck with rate limiting.  If you
->> completely block a users access to something they will find a different
->> method to get to what they want to get to.  If your users switch to
->> something else you then have to learn about that too.  Where as if 
->> you let
->> your users use one system but control the amount of bandwidth 
->> consumed and /
->> or the priority you may not play the above game nearly as often.
->>
->> My family has a saying, "Give 20% to get 80% of what you want.".
->>
->>
->>
->> Grant. . . .
->>
->>
-> iftop will suit your needs for monitoring like that. 
-> http://freshmeat.net/*iftop*
+Teddy L=2E
 >
 >
+>
+>---- Original Message ----
+>From: pablo@blueoakdb=2Ecom
+>To: netfilter@lists=2Enetfilter=2Eorg
+>Subject: RE: Someone is using too much bandwidth=3F=3F=3F
+>Date: Tue, 21 Nov 2006 13:13:12 -0500
+>
+>>=20
+>>
+>>> -----Original Message-----
+>>> From: netfilter-bounces@lists=2Enetfilter=2Eorg=20
+>>> [mailto:netfilter-bounces@lists=2Enetfilter=2Eorg] On Behalf Of lubasi=
+
+>>> Sent: Tuesday, November 21, 2006 12:22 PM
+>>> To: netfilter@lists=2Enetfilter=2Eorg
+>>> Subject: RE: Someone is using too much bandwidth=3F=3F=3F
+>>>=20
+>>> Hello,
+>>>=20
+>>> Indeed its true, and i dont know what machine it is=2E=20
+>>
+>>You could setup an iptables rule to log all traffic or do what I
+>believe may
+>>be simpler:  use tcpdump
+>>
+>>Let's say you have two NIC's on your machine:
+>>
+>>
+>>=09// Internet // - [eth0] - [gateway] - [eth1] - // Internal Network
+>>//
+>>
+>>You can run tcpdump on your Internet Network:
+>>
+>>=09tcpdump -i eth1
+>>
+>>If you've ssh'd to your gateway machine from your Internal Network,
+>your
+>>host and ssh information will also be spewed=2E  Probably not what you
+>want=2E
+>>
+>>A simple tweak will handle it:
+>>
+>>=09tcpdump -i eth1 not host your=2EIP=2Eaddress=2Ehere
+>>
+>>The above should give you some quick answers=2E
+>>
+>>Cheers,
+>>---
+>>Pablo Sanchez - Blueoak Database Engineering, Inc
+>>Ph:    819=2E459=2E1926          Toll free:  888=2E459=2E1926
+>>Cell:  819=2E918=2E9731                Pgr:  pablo=5Fp@blueoakdb=2Ecom
+>>Fax:   603=2E720=2E7723 (US)
+
+------------------------------------------------------
+Teddy L=2E Nyambe
+Open Source Zambia
+www=2Eopensource=2Eorg=2Ezm
+
++260 97 760473
+
+* Know that today is yesterday's future Be the change you want to see
+in the world
+* To Err is Human, but to really mess things up, you need a PC
 
 
