@@ -1,12 +1,13 @@
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: What happened to ipt_physdev.c ?
-Date: Wed, 22 Nov 2006 12:24:45 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0611221223100.4043@localhost.localdomain>
-References: <1164206481.456461916ec06@mail.third-rock.net>
-	<45648336.1010003@andyfurniss.entadsl.com>
+From: Andy Furniss <lists@andyfurniss.entadsl.com>
+Subject: Re: Multicast route table
+Date: Wed, 22 Nov 2006 18:25:09 +0000
+Message-ID: <45649605.3040905@andyfurniss.entadsl.com>
+References: <018d01c7097c$0ee67f10$4401a8c0@Gileno>
+Reply-To: lists@andyfurniss.entadsl.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45648336.1010003@andyfurniss.entadsl.com>
+In-Reply-To: <018d01c7097c$0ee67f10$4401a8c0@Gileno>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andy Furniss <lists@andyfurniss.entadsl.com>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Marcos Gileno <gileno@digilab.com.br>
 Cc: netfilter@lists.netfilter.org
 
-On Wed, 22 Nov 2006, Andy Furniss wrote:
+Marcos Gileno wrote:
+> Hi there people!
+>=20
+> I have a linux box as a multi-homed host, 3 interfaces, and I want to=20
+> route a multicast traffic that comes in one of the interface to another=
+,=20
+> let=B4s say, eth0 receveis the multicast and I want eth1 to forward it.
 
-> Paul Reilly wrote:
-> > In recent kernels, 2.6.16.x   there is no longer any
-> >
-> > net/ipv4/netfilter/ipt_physdev.c
-> >
-> > and no option in kernel config to enable CONFIG_NETFILTER_XT_MATCH_PHYSDEV
-> > So I have no physdev in /proc/net/ip_tables_matches
-> > and my rules which include a -m physdev fail with:
-> >
-> > iptables: No chain/target/match by that name
-> >
-> > Has PHYSDEV been moved somewhere else?
-> > How do I enable it?
-> >
-> > Paul
-> >
-> >
->
-> It's there in 17 & 19 somewhere :-)
->
-> grep -i phy /boot/config-2.6.19-rc6
-> ...
-> CONFIG_NETFILTER_XT_MATCH_PHYSDEV=m
-> ...
+I guess you need a daemon like smcroute
 
-if you have a kernel source tree, just pop into "make menuconfig" and
-do a search for any matching options:
+www.cschill.de/smcroute/ was OK on 2.6s last time I tried.
 
-/physdev
+I only ever did enough with multicast routing to get what I wanted=20
+working, so don't know all the ins and outs, but for locally generated=20
+traffic it seems that the interface with the mcast route will get it.
 
-Symbol: NETFILTER_XT_MATCH_PHYSDEV [=m]
-Prompt: "physdev" match support
-  Defined at net/netfilter/Kconfig:368
-  Depends on: NET && NETFILTER && NETFILTER_XTABLES && BRIDGE &&
+Maybe it's because I was comparing pppX and ethX rather than eths, but=20
+by default local generated mcast would go out on ppp0(default route=20
+created by pppd) which was not what I wanted, doing -
 
-... etc etc ...
+ip ro add dev br0 224.0.0.0/4
 
-rday
+stopped it going out on ppp0 - Maybe what you see is because tcpdump=20
+puts ethX into promisc or something.
+
+Andy.
+
+
 
