@@ -1,13 +1,13 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: iptables/bridge/nfs
-Date: Tue, 21 Nov 2006 10:53:59 -0800
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024ED61@pxtbenexd01.pxt.primeexalia.com>
-References: <57F9959B46E0FA4D8BA88AEDFBE5829024ED21@pxtbenexd01.pxt.primeexalia.com>
+From: Danny <dineshg@hostway.com>
+Subject: Re: Someone is using too much bandwidth???
+Date: Wed, 22 Nov 2006 11:18:48 +0530
+Message-ID: <4563E4C0.30608@hostway.com>
+References: <380-2200611221172226406@zamnet.zm>	<4563448D.7000401@riverviewtech.net>
+	<4563454B.6000609@t0mb.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE5829024ED21@pxtbenexd01.pxt.primeexalia.com>
+In-Reply-To: <4563454B.6000609@t0mb.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,41 +18,77 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "Gary W. Smith" <gary@primeexalia.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-This had nothing to do with Netfilter.  It appears that the NFS server
-failed to accept connections from anyone (even though there were already
-established connections).  Restarting NFS solved my problem.
+Hi,
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> bounces@lists.netfilter.org] On Behalf Of Gary W. Smith
-> Sent: Monday, November 20, 2006 2:18 PM
-> To: netfilter@lists.netfilter.org
-> Subject: iptables/bridge/nfs
->=20
-> I'm trying to get NFS (udp) to work through an iptables firewall that
-> also has a bridge.
->=20
-> The bridge is eth0 and eth2.  The NFS server resides on eth3, the
-client
-> exist on eth2 the internet is on eth0.  My iptables contains this as
-the
-> FORWARD rule:
->=20
-> -A FORWARD -m physdev  --physdev-in eth2 -j ACCEPT
->=20
-> -A FORWARD -i eth3 -j ACCEPT
->=20
-> We did have it locked down pretty much but we want to try to find out
-> why this doesn't work.  Some posts say that if the MTU is different
-then
-> it might fragment but in this case they are both 1500.
->=20
-> Does anyone have any basic ideas why this might not be working?
->=20
-> Gary Wayne Smith
->=20
+ntop is a good solution too.  It gives you current thoroughput and total 
+bandwidth consumption.
+It gives you info about the transmission type as well - TCP/UDP.
+
+
+http://www.ntop.org/overview.html
+
+
+All the best !!
+
+- Danny
+
+
+tom wrote:
+> Taylor, Grant wrote:
+>> lubasi wrote:
+>>> How can i interprate the #tail -f /var/logs/messages to determin
+>>> which machine is doing kazaa or any other P2P???consuming the
+>>> bandwidth.
+>>
+>> By default /var/log/messages will not record any thing about traffic 
+>> that is
+>> passing through the system.  You can add IPTables rules that will cause
+>> matched packets to be logged via Syslog which you can then see in
+>> /var/log/messages.
+>>
+>> However to get a better idea of what traffic is running on your network,
+>> consider TCPDump or a GUI front end like Etherial.  This will give you a
+>> real time report of what traffic is flowing in to / out of / through 
+>> your
+>> system (presuming you sniff the correct interface).  You can tell 
+>> from this,
+>> which computer is consuming more bandwidth than it should based on the
+>> frequency of the source / destination IP showing up in TCPDump's output.
+>>
+>> You could add rules to IPTables that match specific IPs in question and
+>> watch the hit counters to see which system(s) are incrementing their
+>> counters at an exceptional rate.  One (or more) system(s) should jump 
+>> out at
+>> you as being the culprit(s).
+>>
+>>> And how do i block these popular P2P???
+>>
+>> First you need to find out more about the type of P2P traffic that 
+>> you are
+>> experiencing so that you can more accurately filter it out / rate 
+>> limit it.
+>>  I will say that you may have better luck with rate limiting.  If you
+>> completely block a users access to something they will find a different
+>> method to get to what they want to get to.  If your users switch to
+>> something else you then have to learn about that too.  Where as if 
+>> you let
+>> your users use one system but control the amount of bandwidth 
+>> consumed and /
+>> or the priority you may not play the above game nearly as often.
+>>
+>> My family has a saying, "Give 20% to get 80% of what you want.".
+>>
+>>
+>>
+>> Grant. . . .
+>>
+>>
+> iftop will suit your needs for monitoring like that. 
+> http://freshmeat.net/*iftop*
+>
+>
 
 
