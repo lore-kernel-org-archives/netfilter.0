@@ -1,13 +1,12 @@
-From: Andy Furniss <lists@andyfurniss.entadsl.com>
-Subject: Re: Multicast route table
-Date: Wed, 22 Nov 2006 18:25:09 +0000
-Message-ID: <45649605.3040905@andyfurniss.entadsl.com>
-References: <018d01c7097c$0ee67f10$4401a8c0@Gileno>
-Reply-To: lists@andyfurniss.entadsl.com
+From: Alan Ezust <alan.ezust@presinet.com>
+Subject: problems building conntrack w/ uclibc - no output
+Date: Wed, 22 Nov 2006 11:43:57 -0800
+Message-ID: <200611221144.00766.alan.ezust@presinet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="nextPart1380289.gWvHOil26d";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <018d01c7097c$0ee67f10$4401a8c0@Gileno>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +17,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Marcos Gileno <gileno@digilab.com.br>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Marcos Gileno wrote:
-> Hi there people!
->=20
-> I have a linux box as a multi-homed host, 3 interfaces, and I want to=20
-> route a multicast traffic that comes in one of the interface to another=
-,=20
-> let=B4s say, eth0 receveis the multicast and I want eth1 to forward it.
+--nextPart1380289.gWvHOil26d
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I guess you need a daemon like smcroute
+using libnetfilter_conntrack-0.0.31, libnfnetlink (SVN) and=20
+conntrack 1.00beta2.=20
 
-www.cschill.de/smcroute/ was OK on 2.6s last time I tried.
+Hi Folks, I was just wondering, if I'm the only one in this boat.=20
 
-I only ever did enough with multicast routing to get what I wanted=20
-working, so don't know all the ins and outs, but for locally generated=20
-traffic it seems that the interface with the mcast route will get it.
+I'm trying to build conntrack for a box that runs uclibc, so I am using a=20
+scratchbox to build (i386-gcc-3.3.2-uclibc-0.9.26), and I've managed to bui=
+ld=20
+and insteall each of the three libraries, and they can run without any link=
+er=20
+errors, but when I am running it on the embedded box, in -e mode,=20
+I see no output - when I strace, I see this in the output:
 
-Maybe it's because I was comparing pppX and ethX rather than eths, but=20
-by default local generated mcast would go out on ppp0(default route=20
-created by pppd) which was not what I wanted, doing -
+recvmsg(3, {msg_name(12)=3D{sa_family=3DAF_NETLINK, pid=3D0, groups=3D00000=
+002},=20
+msg_iov(1)=3D[{"\274\0\0\0\0\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..=
+=2E,=20
+8192}], msg_controllen=3D0, msg_flags=3D0}, 0) =3D 188
+recvmsg(3, {msg_name(12)=3D{sa_family=3DAF_NETLINK, pid=3D0, groups=3D00000=
+002},=20
+msg_iov(1)=3D[{"\274\0\0\0\0\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..=
+=2E,=20
+8192}], msg_controllen=3D0, msg_flags=3D0}, 0) =3D 188
+recvmsg(3, {msg_name(12)=3D{sa_family=3DAF_NETLINK, pid=3D0, groups=3D00000=
+002},=20
+msg_iov(1)=3D[{"\274\0\0\0\0\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..=
+=2E,=20
+8192}], msg_controllen=3D0, msg_flags=3D0}, 0) =3D 188
+recvmsg(3, {msg_name(12)=3D{sa_family=3DAF_NETLINK, pid=3D0, groups=3D00000=
+004},=20
+msg_iov(1)=3D[{"\244\0\0\0\2\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..=
+=2E,=20
+8192}], msg_controllen=3D0, msg_flags=3D0}, 0) =3D 164
+recvmsg(3, {msg_name(12)=3D{sa_family=3DAF_NETLINK, pid=3D0, groups=3D00000=
+004},=20
+msg_iov(1)=3D[{"\244\0\0\0\2\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..=
+=2E,=20
+8192}], msg_controllen=3D0, msg_flags=3D0}, 0) =3D 164
+recvmsg(3, {msg_name(12)=3D{sa_family=3DAF_NETLINK, pid=3D0, groups=3D00000=
+004},=20
+msg_iov(1)=3D[{"\244\0\0\0\2\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..=
+=2E,=20
+8192}], msg_controllen=3D0, msg_flags=3D0}, 0) =3D 164
+recvmsg(3, {msg_name(12)=3D{sa_family=3DAF_NETLINK, pid=3D0, groups=3D00000=
+004},=20
+msg_iov(1)=3D[{"\244\0\0\0\2\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..=
+=2E,=20
+8192}], msg_controllen=3D0, msg_flags=3D0}, 0) =3D 164
 
-ip ro add dev br0 224.0.0.0/4
-
-stopped it going out on ppp0 - Maybe what you see is because tcpdump=20
-puts ethX into promisc or something.
-
-Andy.
+So it seems conntrack is receiving messages but not printing them out=20
+properly. Has anyone else seen this problem? This is a hard problem to sear=
+ch=20
+for, since there are no error messages.
 
 
+Any advice?=20
+
+
+
+=2D-=20
+Alan Ezust            www.presinet.com
+Presinet, inc         alan.ezust@presinet.com
+           Victoria, BC, Canada
+
+--nextPart1380289.gWvHOil26d
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQBFZKiAsJbtw6GURksRAruiAJ0fuFHKXp5fKevq4jbu6mnmW51ujQCfWu/5
+4GqfNLvZZIyuXMI2UPXyG6Q=
+=oZ3u
+-----END PGP SIGNATURE-----
+
+--nextPart1380289.gWvHOil26d--
 
