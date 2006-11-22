@@ -1,10 +1,13 @@
-From: "lubasi" <lubasi@zamnet.zm>
+From: "Gavin White" <white.gavin@gmail.com>
 Subject: Re: Someone is using too much bandwidth???
-Date: Wed, 22 Nov 2006 16:44:14 +0200
-Message-ID: <380-220061132214441431@zamnet.zm>
+Date: Wed, 22 Nov 2006 15:08:07 +0000
+Message-ID: <451eaded0611220708r755b045cs3c5a5c7518a47d1c@mail.gmail.com>
+References: <380-220061132214441431@zamnet.zm>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <380-220061132214441431@zamnet.zm>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,58 +18,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: dineshg@hostway.com, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: lubasi <lubasi@zamnet.zm>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+What distribution are you using? Fedora, debian, redhat?
 
-Ntop! wow looks interestig but for the past few 5 hours or so i have
-been struggling compiling it=2E I can seem to resolve the configure
-error=2E=2E=2E
-
-checking sctp=2E=2E=2E no
-checking for xmldump=2E=2E=2E configure: WARNING: error
-
-*******************************************************************
-*
-* WARNING:  One or more items required for the xmldump plugin are
-*           missing:
-*
-*                  libxml2=2Eso or libxml2=2Ea=2E=2E=2Eyes
-*                  gdome=2Eh=2E=2E=2Eno
-*                  libgdome=2Eso or libgdome=2Ea=2E=2E=2Eno
-*                  glib=2Eh=2E=2E=2Eno
-*                  libglib=2Eso or libglib=2Ea=2E=2E=2Eno
-*                  glibconfig=2Eh=2E=2E=2Eno
-*
-*           (yes means it was found, no means it was not found)
-*
-*       ntop will run just fine without this plugin=2E
-*
-*>>>    If you want to use the xmldump plugin,
-*
-*=3F=3F=3F     1=2E Install the necessary headers and libraries=2E
-*=3F=3F=3F    and rerun =2E/configure
-
->>ntop is a good solution too=2E  It gives you current thoroughput and
->total=20
->>bandwidth consumption=2E
->>It gives you info about the transmission type as well - TCP/UDP=2E
-
-
-Am terribly stack!
-
-Teddy L=2E
-
-------------------------------------------------------
-Teddy L=2E Nyambe
-Open Source Zambia
-www=2Eopensource=2Eorg=2Ezm
-
-+260 97 760473
-
-* Know that today is yesterday's future Be the change you want to see
-in the world
-* To Err is Human, but to really mess things up, you need a PC
-
+On 11/22/06, lubasi <lubasi@zamnet.zm> wrote:
+> Hello,
+>
+> Ntop! wow looks interestig but for the past few 5 hours or so i have
+> been struggling compiling it. I can seem to resolve the configure
+> error...
+>
+> checking sctp... no
+> checking for xmldump... configure: WARNING: error
+>
+> *******************************************************************
+> *
+> * WARNING:  One or more items required for the xmldump plugin are
+> *           missing:
+> *
+> *                  libxml2.so or libxml2.a...yes
+> *                  gdome.h...no
+> *                  libgdome.so or libgdome.a...no
+> *                  glib.h...no
+> *                  libglib.so or libglib.a...no
+> *                  glibconfig.h...no
+> *
+> *           (yes means it was found, no means it was not found)
+> *
+> *       ntop will run just fine without this plugin.
+> *
+> *>>>    If you want to use the xmldump plugin,
+> *
+> *???     1. Install the necessary headers and libraries.
+> *???    and rerun ./configure
+>
+> >>ntop is a good solution too.  It gives you current thoroughput and
+> >total
+> >>bandwidth consumption.
+> >>It gives you info about the transmission type as well - TCP/UDP.
+>
+>
+> Am terribly stack!
+>
+> Teddy L.
+>
+> ------------------------------------------------------
+> Teddy L. Nyambe
+> Open Source Zambia
+> www.opensource.org.zm
+>
+> +260 97 760473
+>
+> * Know that today is yesterday's future Be the change you want to see
+> in the world
+> * To Err is Human, but to really mess things up, you need a PC
+>
+>
+>
 
