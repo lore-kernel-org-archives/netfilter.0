@@ -1,10 +1,13 @@
-From: Paul Reilly <paul@astropaul.com>
-Subject: Re: What happened to ipt_physdev.c ?
-Date: Wed, 22 Nov 2006 15:55:41 -0800
-Message-ID: <1164239741.4564e37d888c2@mail.third-rock.net>
+From: "Yakov Lerner" <iler.ml@gmail.com>
+Subject: Re: How to measure CPU usage of netfilter
+Date: Thu, 23 Nov 2006 04:45:12 +0200
+Message-ID: <f36b08ee0611221845r9195f8bjee5d592c8b90dba6@mail.gmail.com>
+References: <1164069640.4057.31.camel@mfarooq-1.tango-networks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1164069640.4057.31.camel@mfarooq-1.tango-networks.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,40 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Cc: netfilter@lists.netfilter.org, Andy Furniss <lists@andyfurniss.entadsl.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mohammad Farooq <mohammadfarooq@tango-networks.com>
+Cc: netfilter@lists.netfilter.org
 
+On 11/21/06, Mohammad Farooq <mohammadfarooq@tango-networks.com> wrote:
+>   I have about 1000 rules in the iptables. All these rules just forward
+> the incoming traffic to other systems. I am trying to measure CPU usage
+> of the netfilter. I tried to measure with top command but some how it
+> always shows that CPU is 95% idle. I am not sure if top is the
+> appropriate command to measure CPU usage of the netfilter. Since all the
+> filtering is happening inside the kernel there should be some other command to
+> measure kernel's CPU usage. I would appreciate if someone can point to
+> the right direction. Thanks.
 
-> > grep -i phy /boot/config-2.6.19-rc6
-> > CONFIG_NETFILTER_XT_MATCH_PHYSDEV=3Dm
+You can try 'cpusoak'  tool from Andrew Morton zc toolset:
+    http://www.zipworld.com.au/~akpm/linux/zc.tar.gz
+cpusoak which accurately measures cpu consumption by the kernel.
 
-Yes, I can see it in 2.6.18.3 as well.
-There's no longer an ipt_physdev.c in netfilter, so it must
-be included in another c file.
-
-However I need to use 2.6.16.2x and it seems to be either missing
-or buggy in there. For example it's in Kconfig, but enabling
-all the dependencies does not display it in menuconfig, and when
-you output the .config it's not listed in there at all.
-
-Paul
-
-> if you have a kernel source tree, just pop into "make menuconfig" and
-> do a search for any matching options:
->
-> /physdev
->
-> Symbol: NETFILTER_XT_MATCH_PHYSDEV [=3Dm]
-> Prompt: "physdev" match support
->   Defined at net/netfilter/Kconfig:368
->   Depends on: NET && NETFILTER && NETFILTER_XTABLES && BRIDGE &&
->
-> ... etc etc ...
->
-> rday
->
-
-
---=20
+Yakov
 
