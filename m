@@ -1,12 +1,13 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Where to get SIP conntrack and nat for pre-2.6.18 kernel?
-Date: Sat, 25 Nov 2006 16:37:30 +0100
-Message-ID: <4568633A.6060704@plouf.fr.eu.org>
-References: <BAY119-F8D5AF68C7D422EA54C475D6E30@phx.gbl>
+Subject: Re: Fwd: multiple DNAT alternative?
+Date: Sat, 25 Nov 2006 17:03:59 +0100
+Message-ID: <4568696F.2060307@plouf.fr.eu.org>
+References: <f5e96a3c0611200306x1edc99f1hb848246cd48634e1@mail.gmail.com>
+	<f5e96a3c0611200307y6dfc367fr574ced2a39f6d739@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY119-F8D5AF68C7D422EA54C475D6E30@phx.gbl>
+In-Reply-To: <f5e96a3c0611200307y6dfc367fr574ced2a39f6d739@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,39 +23,32 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
-Andrew Kraslavsky a =E9crit :
+Noman Jamil a =E9crit :
 >=20
-> I see that the netfilter SVN includes a version of SIP conntrack and NA=
-T=20
-> for 2.6.11, 2.6.12 and 2.6.13 but nothing after that.  If my kernel=20
-> version is higher (e.g. 2.6.15) should I use the 2.6.13 source from the=
-=20
-> netfilter SVN or is there some other repository I should use?
+> Is there any alternative of multiple DNAT's  which is been droped in
+> the latest kernels or after 2.6.10.x kernel tree. All i want to do is,
+> traffic meant for a particular internal IP should be forward to
+> multiple destinations not as load balacing but as per the connection
+> tracking. Blow are the desired command of DNAT.
+>=20
+> iptables -t nat -A PREROUTING -p udp -s 0/0 -d 10.0.2.107 -j DNAT
+> --to 202.125.136.60-202.125.136.70
+>  (This command is fine and it works too, but i want to do is  not to
+> load balance between the ips but to pick up the ip for which data is
+> meant for)
 
-The sip-conntrack-nat patch in the lastest patch-o-matic-ng snapshot=20
-(http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/) applies and=20
-builds on a vanilla 2.6.16 kernel tree at least. However I don't know=20
-how functional it is.
+I don't understand what you mean with "load balancing" and "pick up the=20
+ip for which data is meant for". NAT is always based on connection=20
+tracking and applies to a whole connection.
 
-> I found some mailing list discussion suggesting that SIP source will be=
-=20
-> included in the kernel repository as of 2.6.18 but, even assuming that=20
-> is not just a rumor, it seems a bit risky to try to use 2.6.18 versions=
-=20
-> of the SIP conntrack and NAT modules on an older kernel.
+> iptables -t nat -A PREROUTING -p udp -s 0/0 -d 10.0.2.107 -j DNAT
+> --to-destination 202.125.136.60 --to-destination 194.202.94.1
+> (Any alternative for this command which is depricited after 2.6.10
+> kernel tree.)
 
-It is not a rumor, SIP conntrack and NAT support was actually added in=20
-kernel 2.6.18. Changelog-2.6.18 says :
-
-  [NETFILTER]: Add SIP connection tracking helper
-
-  Add SIP connection tracking helper. Originally written by
-  Christian Hentschel <chentschel@arnet.com.ar>, some cleanup, minor
-  fixes and bidirectional SIP support added by myself.
-
-  [NETFILTER]: SIP helper: expect RTP streams in both directions
-
-  Since we don't know in which direction the first packet will arrive, we
-  need to create one expectation for each direction, which is currently
-  prevented by max_expected beeing set to 1.
+You can replace this rule with multiple rules, each with one --to=20
+option, in combination with the nth, random or statistic match. The nth=20
+and random matches are provided by the patch-o-matic-ng up to=20
+patch-o-matic-ng-20060511. The statistic match is included in kernel=20
+2.6.18 and requires iptables 1.3.6 at least.
 
