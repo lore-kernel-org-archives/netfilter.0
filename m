@@ -1,12 +1,12 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: What happened to ipt_physdev.c ?
-Date: Sat, 25 Nov 2006 13:56:36 +0100
-Message-ID: <45683D84.6030202@plouf.fr.eu.org>
-References: <1164206481.456461916ec06@mail.third-rock.net>
+Subject: Re: Where to get SIP conntrack and nat for pre-2.6.18 kernel?
+Date: Sat, 25 Nov 2006 16:37:30 +0100
+Message-ID: <4568633A.6060704@plouf.fr.eu.org>
+References: <BAY119-F8D5AF68C7D422EA54C475D6E30@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1164206481.456461916ec06@mail.third-rock.net>
+In-Reply-To: <BAY119-F8D5AF68C7D422EA54C475D6E30@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,47 +22,39 @@ To: netfilter@lists.netfilter.org
 
 Hello,
 
-Paul Reilly a =E9crit :
-> In recent kernels, 2.6.16.x   there is no longer any
+Andrew Kraslavsky a =E9crit :
 >=20
-> net/ipv4/netfilter/ipt_physdev.c
+> I see that the netfilter SVN includes a version of SIP conntrack and NA=
+T=20
+> for 2.6.11, 2.6.12 and 2.6.13 but nothing after that.  If my kernel=20
+> version is higher (e.g. 2.6.15) should I use the 2.6.13 source from the=
+=20
+> netfilter SVN or is there some other repository I should use?
 
-Yes, since 2.6.16 it was replaced by net/netfilter/xt_physdev.c.
+The sip-conntrack-nat patch in the lastest patch-o-matic-ng snapshot=20
+(http://ftp.netfilter.org/pub/patch-o-matic-ng/snapshot/) applies and=20
+builds on a vanilla 2.6.16 kernel tree at least. However I don't know=20
+how functional it is.
 
-> and no option in kernel config to enable CONFIG_NETFILTER_XT_MATCH_PHYS=
-DEV
+> I found some mailing list discussion suggesting that SIP source will be=
+=20
+> included in the kernel repository as of 2.6.18 but, even assuming that=20
+> is not just a rumor, it seems a bit risky to try to use 2.6.18 versions=
+=20
+> of the SIP conntrack and NAT modules on an older kernel.
 
-Yes there is. I just checked in vanilla 2.6.16 and 2.6.16.20.
+It is not a rumor, SIP conntrack and NAT support was actually added in=20
+kernel 2.6.18. Changelog-2.6.18 says :
 
-> So I have no physdev in /proc/net/ip_tables_matches
-> and my rules which include a -m physdev fail with:
->=20
-> iptables: No chain/target/match by that name
->=20
-> Has PHYSDEV been moved somewhere else?
+  [NETFILTER]: Add SIP connection tracking helper
 
-Since 2.6.16 the corresponding module is named xt_physdev.ko and depends=20
-on x_tables and bridge.
+  Add SIP connection tracking helper. Originally written by
+  Christian Hentschel <chentschel@arnet.com.ar>, some cleanup, minor
+  fixes and bidirectional SIP support added by myself.
 
-> How do I enable it?
+  [NETFILTER]: SIP helper: expect RTP streams in both directions
 
-Symbol: NETFILTER_XT_MATCH_PHYSDEV [=3Dm]
-Prompt: "physdev" match support
-   Defined at net/netfilter/Kconfig:282
-   Depends on: NET && NETFILTER && NETFILTER_XTABLES && BRIDGE_NETFILTER
-   Location:
-     -> Networking
-       -> Networking support (NET [=3Dy])
-         -> Networking options
-           -> Network packet filtering (replaces ipchains) (NETFILTER [=3D=
-y])
-             -> Core Netfilter Configuration
-               -> Netfilter Xtables support (required for ip_tables)=20
-(NETFILTER_XTABLES [=3Dm])
-
-CONFIG_NETFILTER_XT_MATCH_PHYSDEV is located in the "Core Netfilter=20
-Configuration" submenu and depends on CONFIG_NETFILTER_XTABLES=20
-(Netfilter Xtables support) and CONFIG_BRIDGE_NETFILTER (Bridged IP/ARP=20
-packets filtering) which depends on CONFIG_BRIDGE (802.1d Ethernet=20
-Bridging).
+  Since we don't know in which direction the first packet will arrive, we
+  need to create one expectation for each direction, which is currently
+  prevented by max_expected beeing set to 1.
 
