@@ -1,12 +1,13 @@
-From: Elvir Kuric <omasnjak@yahoo.com>
-Subject: Re: iptables MAC problem
-Date: Sun, 26 Nov 2006 11:05:15 -0800 (PST)
-Message-ID: <962922.35634.qm@web56202.mail.re3.yahoo.com>
-References: <200611251000.53462.tommy@svearike.sytes.net>
+From: "William Lima" <wrochalima@linuxit.com.br>
+Subject: Re: Passive FTP sees remote's _internal_ IP!!??
+Date: Sun, 26 Nov 2006 17:18:13 -0300
+Message-ID: <774b63b30611261218l243de934tc399f3d197573609@mail.gmail.com>
+References: <456957FF.807EA6C@iswest.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200611251000.53462.tommy@svearike.sytes.net>
+In-Reply-To: <456957FF.807EA6C@iswest.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +18,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: tommy@svearike.sytes.net, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: gypsy <gypsy@iswest.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi all, 
+Dear,
 
-I think dual homed machine ( two NICs...one for
-internal network and one for external network ) 
+Load modules:
 
-using next rule you will restict  particular user to
-access to internet
-iptables -A FORWARD -m mac --mac-source
-XX:XX:XX:XX:XX:XX -j DROP
+modprobe ip_nat_ftp
 
-XX:XX:XX:XX:XX:XX represent MAC address of host you
-want to block
-Using the same logic you can implement rules to forbid
-a host to access particular part of your network, some
-services an so on.
-The useful place to visit and read material there is 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+Abs,
 
-Regards 
+2006/11/26, gypsy <gypsy@iswest.com>:
+> In our network, we have 2 gateways.  The main GW is a Slackware 10.0 box
+> and the other is a SonicWALL firewall appliance.  Each connects to a
+> different external IP but both are in the same /29 network.
+>
+> Note: No machine in our LAN has an IP of 192.168.1.11.
+>
+> When the default GW is set to the linux box (192.168.223.254) and
+> passive FTP to a remote server is initiated, the FTP fails after
+> connection because the internal IP of the remote machine (192.168.1.11)
+> is seen rather than its external IP.  This problem occurs only when
+> passive FTP is used.
+>
+> We do not believe that the OS or FTP daemon of the remote host matters
+> because when the default GW is set to the SonicWALL (192.168.223.1), the
+> passive FTP succeeds.
+>
+> Therefore, we conclude that there is something wrong with our linux box.
+>
+> But WHAT?
+>
+> Note that the connection has already occurred when port negotation is
+> attempted - which is when the FTP fails.
+>
+> If anyone has advice, we will sincerely appreciate it.
+>
+> The kernel is 2.4.32.
+>
+> #!/bin/bash
+> iptables -P FORWARD ACCEPT
+> iptables -P INPUT DROP
+> iptables -P OUTPUT DROP
+> iptables -t nat -A POSTROUTING -o eth1 -s 192.168.223.0/24 -j SNAT --to
+> 68.171.136.91
+> iptables -A FORWARD -j LOG
+>
+> Nov 26 00:32:10 GWbox kernel: IN=eth0 OUT=eth1 SRC=192.168.223.4
+> DST=192.168.1.11 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=56473 DF PROTO=TCP
+> SPT=1069 DPT=1090 WINDOW=60352 RES=0x00 SYN URGP=0
+> Nov 26 00:32:10 GWbox kernel: IN=eth0 OUT=eth1 SRC=192.168.223.4
+> DST=192.168.1.11 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=56500 DF PROTO=TCP
+> SPT=1070 DPT=1091 WINDOW=60352 RES=0x00 SYN URGP=0
+> Nov 26 00:32:14 GWbox kernel: IN=eth0 OUT=eth1 SRC=192.168.223.4
+> DST=192.168.1.11 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=56506 DF PROTO=TCP
+> SPT=1070 DPT=1091 WINDOW=60352 RES=0x00 SYN URGP=0
+> Nov 26 00:32:20 GWbox kernel: IN=eth0 OUT=eth1 SRC=192.168.223.4
+> DST=192.168.1.11 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=56507 DF PROTO=TCP
+> SPT=1070 DPT=1091 WINDOW=60352 RES=0x00 SYN URGP=0
+> --
+> gypsy
+>
+>
 
---- Tommy W <tommy@svearike.sytes.net> wrote:
 
-> On Saturday 25 November 2006 09:10, alok pathak
-> wrote:
-> > I am using CentOS3.8 (with kernel version
-> 2.4.21-47.EL, iptables
-> > version 1.2.8-12.3, on AMD sampron x68_64).  I
-> want to restrict my
-> > users based on their MAC, and used the command:
-> >
-> > # iptables -A INPUT -m --mac-source
-> 12:12:12:12:12:12 -j DROP
-> 
-> It should be like this I recon
-> 
->  # iptables -A INPUT -m mac --mac-source
-> 12:12:12:12:12:12 -j DROP
-> 
-> 
-
-
-
- 
-____________________________________________________________________________________
-Want to start your own business?
-Learn how on Yahoo! Small Business.
-http://smallbusiness.yahoo.com/r-index
+-- 
+William R. Lima
+wrochalima@linuxit.com.br
 
