@@ -1,11 +1,11 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Watched a DDoS attack for hours and couldn't do much :S
-Date: Mon, 27 Nov 2006 08:38:30 +0000 (GMT)
-Message-ID: <Pine.LNX.4.58.0611270829210.30530@mail3.jubileegroup.co.uk>
-References: <200611270803.kAR81k2Y030892@mail3.jubileegroup.co.uk>
+From: "alok pathak" <alokpathak79@gmail.com>
+Subject: Iptables, squid
+Date: Mon, 27 Nov 2006 14:18:52 +0530
+Message-ID: <c31bf6690611270048w653eed56m375636d92e98c3ab@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200611270803.kAR81k2Y030892@mail3.jubileegroup.co.uk>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,39 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi there,
+Hi all,
 
-On Mon, 27 Nov 2006 AntiProxy wrote:
-
-> One of my servers was hit by a DDoS attack earlier today,
-> and the pattern was different to these i've seen before.
->
-> netstat doesn't show any TCP or UDP connections in any state.
->
-> however, TCPDUMP shows the following (i'm posting a few lines of
-> millions):
-> [...]
-> what does it tell you?
-
-Somebody is trying to spoof a machine on your network?
-
-I'd have thought a reasonable box could drop 15k packets/second OK but
-you might need to put rules in the INPUT chain to drop everything from
-the offending IPs.  For this kind of thing I use a Perl script to scan
-the logs and insert rules into iptables in real time.  Its input is
-piped from syslog-ng.  It takes a bit of setting up but it's worth it.
-If there are large numbers (thousands) of attacking IPs you'll need to
-look at something like ipset as iptables will begin to creak a bit.
-
-If this continues you might want to contact your upstream provider.
-They will want to help if they're at all reputable.
-
---
-
-73,
-Ged.
+The problem with me:
+1. I want my users to access the internet(but bandwith must be limited
+to each of them say 64kbps).
+2. I configured delay pools in squid for this.
+3. I also don't want to specify proxy settings on each users computer.
+4. I also want to let my users use Yahoo WebCam, Bittorrent clients
+etc, but without proxy settings.
+5. I configured transparent proxy, but able to impose bandwidth limit
+on http traffic only (port 80)
+Can I use something other than squid?
+Please help.
+Thanks,
+Alok Pathak
 
