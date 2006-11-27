@@ -1,13 +1,11 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: Watched a DDoS attack for hours and couldn't do much :S
-Date: Mon, 27 Nov 2006 12:57:26 -0600
-Message-ID: <456B3516.8060309@riverviewtech.net>
-References: <200611270803.kAR81k2Y030892@mail3.jubileegroup.co.uk>	<Pine.LNX.4.58.0611270829210.30530@mail3.jubileegroup.co.uk>
-	<1164647806.21896.18.camel@srv1.iihs.net>
+From: "Wilson, Richard E" <richard.wilson@eds.com>
+Subject: NOTRACK not working as expected
+Date: Mon, 27 Nov 2006 15:06:34 -0600
+Message-ID: <DE0BDC6DCC1F724882C0828AD2D3E684093116@usplm203.amer.corp.eds.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1164647806.21896.18.camel@srv1.iihs.net>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,32 +16,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-AntiProxy wrote:
-> Actually, it's an external attack, apparently from a whole bunch of
-> compromised machines..
+All,
 
-Do you have any idea who initiated the attack and / or why?
+Running RH EL 4 Kernel 2.6.9-42.0.3.ELsmp, iptables v1.2.11
 
-> One thing i thought off, was to pipe tcpdump's output into a couple awks
-> and seds and generate IPTABLE rules on the fly..
+I added the following rule to prevent the ip_conntrack table from
+tracking localhost connections:
 
-Something you might consider would be to look at either how the ULog daemon
-works, or possibly NetLink (CONFIG_IP_NF_QUEUE) directly.  Either way, I
-believe it would be possible to write a daemon that can have the kernel
-communicate which packets it is seeing that are not already (explicitly)
-processed by IPTables rules and then use a different method (NetFilter
-APIs?) to dynamically update the firewall rule(s) on the fly.
+iptables -t raw -A PREROUTING -i lo -j NOTRACK
 
-I have no experience in this area, probably evident by using the wrong terms
-/ names for the existing resources to communicate with the kernel.  However
-I think there is at least a direction to go with this.  If you would like
-help developing such, I'm willing to try to help.
+The monitor script in place to allow us to reboot this system gracefully
+when the ip_conntrack table runs out of space reports when it reaches
+90% of capacity (determined by ip_conntrack | wc -l / ip_conntrack_max).
+I now have a couple copies of the ip_conntrack table a short time before
+it ran out of space and I find a LOT (5k+) of connections with
+"src=3D127.0.0.1 dst=3D127.0.0.0" in the table.  Is there a better way =
+to
+create a rule to not track localhost connections?
 
+This server has 4GB of RAM and uses the default value of 65536 for the
+ip_conntrack table size.  I have already changed the
+ip_conntrack_tcp_timeout_established value from its default of 432000 (5
+days) to 172800 (2 days) and it still ran out of table slots.  This
+change was made earlier today, a couple hours before the table filled
+up.  The localhost traffic cited above is mostly udp traffic (complex
+DNS stuff going on).  The server handles mail to/from the Internet, so
+has a lot of short term connections.
 
+From what I've read, increasing the size of the ip_conntrack table is
+best done by powers of 2 -- is this still the case?  I calculated that
+the current table size is roughly 40MB of non-swappable RAM, so I have
+room to increase it if all else fails.
 
-Grant. . . .
+Thanks in advance,=20
+
+Richard Wilson
+EDS
+richard dot wilson at eds dot com
+
 
 
