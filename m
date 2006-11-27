@@ -1,7 +1,7 @@
 From: Danny <dineshg@hostway.com>
 Subject: Re: Watched a DDoS attack for hours and couldn't do much :S
-Date: Mon, 27 Nov 2006 13:29:10 +0530
-Message-ID: <456A9ACE.5060209@hostway.com>
+Date: Mon, 27 Nov 2006 13:33:39 +0530
+Message-ID: <456A9BDB.4030605@hostway.com>
 References: <1164609380.21896.14.camel@srv1.iihs.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -20,23 +20,12 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: admin@antiproxy.com, netfilter@lists.netfilter.org
 
-Hi,
+Hey !
 
-Hmm,,, this seems to a different version of SYN attack. All the SYN 
-requests were violating TCP/IP stack. Hence there were no SYN_RECEIVED 
-state in netstat output.
-
-Try figuring out the complete TCP option field, using tcpdump or snort.
-
-Try using this ! [ might work !! ] 
-
-$IPTABLES -A INPUT -p tcp --syn -m limit --limit 10/second --limit-burst 15 -j LOG --log-prefix "SYN flood: "
- 
-
-All the best.
+also : what does 'netstat -s -t' show ?
 
 
-- Danny
+Danny
 
 AntiProxy wrote:
 > Dear all,
