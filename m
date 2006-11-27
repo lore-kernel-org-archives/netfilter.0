@@ -1,8 +1,11 @@
-From: "Shaun" <mailinglists@unix-scripts.com>
-Subject: iptables binary version vs kernel version?
-Date: Mon, 27 Nov 2006 00:44:23 -0800
-Message-ID: <eke8h7$2gr$1@sea.gmane.org>
+From: "Mike S. Matsumoto" <mikematsumoto@gmail.com>
+Subject: This is possible?
+Date: Mon, 27 Nov 2006 10:16:17 -0200
+Message-ID: <c576e5da0611270416v2baae792v786457639970f83@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,21 +16,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Does it matter what version of iptables binary you use compared to the 
-module in the kernel?
+	    		INTERNET
+                           /      \
+                         /          \
+                       /              \
+                     /                  \
+                   /                      \
+                 /                          \
+ ------------------------                    	  ----------------------------
+|Connection 1  |                     | Connection 2  |
+|IP no-dynamic|                     |  Dynamic IP   |
+ ---------------------------                       ---------------------------
+                   \                        /
+                     \                    /
+                       \                /
+                         \            /
+                           \        /
+  		 	----------------------
+		       | FIREWALL |
+	    		----------------------
+                          /          \
+                        /              \
+                      /                  \
+                    /                      \
+	          /                          \
+ -----------------------------                    ------------------------
+| DMZ Segment |                 | Internal NET |
+| Public ips        |                 | Private ips    |
+ ----------------------                        -----------------------
 
-For example, will the latest version of the iptables user tools work with a 
-older kernel version say 2.6.18.29 or do i need to match things up?
 
--- 
+Guys, this is possible?
 
-~Shaun 
+I have two connections with Internet. And I need that DMZ use
+Connection 1 and Internal NET use Connection 2 for access Internet.
+
+So, i will have one default gw for connection 1 and another for connection 2.
+
+How this work? Any tutorial or link for help me?
 
 
-
+Thanks.
+---
+Mike
 
