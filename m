@@ -1,9 +1,11 @@
-From: Brane F.=?utf-8?Q?Gra=C4=8Dnar?= <bfg@frost.ath.cx>
-Subject: strange udp redirect problem
-Date: Tue, 28 Nov 2006 08:44:40 +0100 (CET)
-Message-ID: <13930.86.61.71.111.1164699880.squirrel@86.61.71.111>
+From: gypsy <gypsy@iswest.com>
+Subject: Re: Passive FTP sees remote's _internal_ IP!!??
+Date: Tue, 28 Nov 2006 01:14:33 -0800
+Message-ID: <456BFDF9.AD6CEF5D@iswest.com>
+References: <20061127184454.0BD73DB@brinstar.nerim.net>
+	<456B57FA.5020000@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,53 +19,75 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
-Cc: laforge@gnumonks.org
 
-Hello there.
+gypsy wrote:
+> >>>When the default GW is set to the linux box (192.168.223.254) and
+> >>>passive FTP to a remote server is initiated, the FTP fails after
+> >>>connection because the internal IP of the remote machine (192.168.1.11)
+> >>>is seen rather than its external IP.  This problem occurs only when
+> >>>passive FTP is used.
 
-I have strange udp port redirection problem.
+We created a workaround for this by forcing all FTP to be active, not
+passive.  We did this with jftpgw (
+http://www.mcknight.de/jftpgw/jftpgw-0.13.5.tar.gz ) with a transparent
+proxy setup.
 
+This is the configuration:
+#!/bin/sh
 
-Here is my setup:
+./configure \
+"--prefix=/usr" \
+"--sysconfdir=/etc" \
+"--localstatedir=/var" \
+"--enable-crypt" \
+"--enable-libwrap" \
+"--with-logpath=/var/log" \
+"$@"
 
+make all install
 
-A (192.168.221.101) -> (192.168.221.100) GW (192.168.222.100) ->
-(192.168.222.101) B
+And the jftpgw.conf:
+<global>
+	serverport		21
+	defaultmode		active
+	debuglevel		8
+	changeroot		never
+	dropprivileges		startsetup
+	runasuser		nobody
+	loginstyle		0
+	logintime		user
+	commandtimeout		60
+	dnslookups		no
+	forwardlookups		no
+	hostcachetimeout	28800
+	initialsyst		yes
+	reverselookups		no
+	strictasciiconversion	on
+	syslogfacility		daemon
+	transfertimeout		120
+	transparent-proxy	on
+	welcomeline		.
+</global>
+<servertype standalone>
+	listen			192.168.223.254:2370
+	logstyle		files
+	logfile			/var/log/jftpgw.log
+	pidfile			/var/run/jftpgw.pid
+</servertype>
+<servertype inetd>
+	logstyle		syslog
+</servertype>
+<from 0.0.0.0/0>
+	access deny
+</from>
+<from 192.168.223.0/24>
+	access allow
+</from>
 
-I would like to redirect packet when A would sends udp packet to
-192.168.222.101 port 6000 to 192.168.221.100 port 7000 where runs udp
-proxy server.
+And the iptables line:
+iptables -t nat -A PREROUTING -p tcp -s 192.168.223.0/24 --dport 21 -j
+DNAT --to 192.168.223.254:2370
 
-Well, hosts A and B can ping/telnet eachother, but port redirect does not
-work:
-
-iptables -t nat -A PREROUTING -p udp --dport 6000 -j REDIRECT --to-port 7=
-000
-
-Well, noting happens... packets traverse firewall/gw without any
-redirection...
-
-Why?
-
-The same thing works flawlessly with tcp protocol (-p tcp, running tcp
-listening server on port 7000)...
-
-What am i doing wrong?
-
-Brane
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+--
+gypsy
 
