@@ -1,12 +1,12 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: problems building conntrack w/ uclibc - no output
-Date: Tue, 28 Nov 2006 03:36:40 +0100
-Message-ID: <456BA0B8.3050607@netfilter.org>
-References: <200611221144.00766.alan.ezust@presinet.com>
+From: gypsy <gypsy@iswest.com>
+Subject: Re: Passive FTP sees remote's _internal_ IP!!??
+Date: Mon, 27 Nov 2006 20:46:42 -0800
+Message-ID: <456BBF32.877BE99C@iswest.com>
+References: <20061127184454.0BD73DB@brinstar.nerim.net>
+	<456B57FA.5020000@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200611221144.00766.alan.ezust@presinet.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,56 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Alan Ezust <alan.ezust@presinet.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
+Cc: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 
-Alan Ezust wrote:
-> using libnetfilter_conntrack-0.0.31, libnfnetlink (SVN) and 
-> conntrack 1.00beta2. 
-> 
-> Hi Folks, I was just wondering, if I'm the only one in this boat. 
-> 
-> I'm trying to build conntrack for a box that runs uclibc, so I am using a 
-> scratchbox to build (i386-gcc-3.3.2-uclibc-0.9.26), and I've managed to build 
-> and insteall each of the three libraries, and they can run without any linker 
-> errors, but when I am running it on the embedded box, in -e mode, 
-> I see no output - when I strace, I see this in the output:
-> 
-> recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000002}, 
-> msg_iov(1)=[{"\274\0\0\0\0\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..., 
-> 8192}], msg_controllen=0, msg_flags=0}, 0) = 188
-> recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000002}, 
-> msg_iov(1)=[{"\274\0\0\0\0\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..., 
-> 8192}], msg_controllen=0, msg_flags=0}, 0) = 188
-> recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000002}, 
-> msg_iov(1)=[{"\274\0\0\0\0\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..., 
-> 8192}], msg_controllen=0, msg_flags=0}, 0) = 188
-> recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000004}, 
-> msg_iov(1)=[{"\244\0\0\0\2\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..., 
-> 8192}], msg_controllen=0, msg_flags=0}, 0) = 164
-> recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000004}, 
-> msg_iov(1)=[{"\244\0\0\0\2\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..., 
-> 8192}], msg_controllen=0, msg_flags=0}, 0) = 164
-> recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000004}, 
-> msg_iov(1)=[{"\244\0\0\0\2\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..., 
-> 8192}], msg_controllen=0, msg_flags=0}, 0) = 164
-> recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000004}, 
-> msg_iov(1)=[{"\244\0\0\0\2\1\0\0\0\0\0\0\0\0\0\0\2\0\0\0004\0\1\200\24"..., 
-> 8192}], msg_controllen=0, msg_flags=0}, 0) = 164
-> 
-> So it seems conntrack is receiving messages but not printing them out 
-> properly. Has anyone else seen this problem? This is a hard problem to search 
-> for, since there are no error messages.
-> 
-> Any advice? 
+Pascal Hambourg wrote:
+>=20
+> Hello,
+>=20
+> Maxime Ducharme a =E9crit :
+> > This happens when the remote server has a bad
+> > NAT configuration for FTP.
+>=20
+> I fully agree, the problem seems to be on the server side.
+>=20
+> > Maybe SonicWALL is able to "fix" this itself, I dont
+> > know this product very well.
+>=20
+> If it does so, I'd be happy to know how.
 
-Strange. Unfortunately I don't have access to such environment so I
-would require a considerable amount of time to set it up and I'm
-currently totally burden in many things. Could you run conntrack inside
-gdb and try to figure out what it wrong?
+SonicWALL does fix this, and we also would REALLY like to know how!!  At
+the present time, our only "solution" is to reconfigure the clients to
+gateway to the SonicWALL because everyone's browser only does passive
+FTP.
 
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+> Does this happen with any FTP server or only a specific one ?
+
+It happens with more than one server, but as far as I can tell, all
+Unix/Linux/*BSD FTP servers work; only MS Windows servers seem to fail.=20
+But because of the success with the SonicWALL, it does not seem likely
+that getting a remote site to change (or even look at) their setup will
+ever happen.
+
+SPECULATION:  In a google search for FTP servers, much comes up about
+configuring IIS FTP, so perhaps it is a difficult thing to do, and
+therefore it often is done wrongly.
+
+Could it be worthwhile to run an FTP proxy such as
+http://www.mcknight.de/jftpgw/jftpgw-0.13.4.tar.gz ?
+--
+gypsy
 
