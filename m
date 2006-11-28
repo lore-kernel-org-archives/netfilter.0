@@ -1,9 +1,9 @@
-From: Brent Clark <bclark@eccotours.co.za>
-Subject: would like to use match limit
-Date: Tue, 28 Nov 2006 09:35:01 +0200
-Message-ID: <456BE6A5.50106@eccotours.co.za>
+From: Brane F.=?utf-8?Q?Gra=C4=8Dnar?= <bfg@frost.ath.cx>
+Subject: strange udp redirect problem
+Date: Tue, 28 Nov 2006 08:44:40 +0100 (CET)
+Message-ID: <13930.86.61.71.111.1164699880.squirrel@86.61.71.111>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,26 +15,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: laforge@gnumonks.org
 
-Hey all
+Hello there.
 
-I have the following last four rules in my ruleset.
-
-4863  234K REJECT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           reject-with icmp-port-unreachable
-1800 86165 REJECT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0           reject-with icmp-port-unreachable
-0     0 REJECT     0    --  *      *       0.0.0.0/0            0.0.0.0/0           reject-with icmp-host-unreachable
-0     0 REJECT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           reject-with tcp-reset
+I have strange udp port redirection problem.
 
 
-What I was thinking / or hoping to add was the match limit, where by ill match these rules for a certain period, but 
-then after that it moves to my default policy, which is DROP.
+Here is my setup:
 
-The question is, would this be a good feasable solution, and b) what would be a good time period (how much burst).
 
-Thanks to those who reply in advance.
+A (192.168.221.101) -> (192.168.221.100) GW (192.168.222.100) ->
+(192.168.222.101) B
 
-Kind Regards
-Brent Clark
+I would like to redirect packet when A would sends udp packet to
+192.168.222.101 port 6000 to 192.168.221.100 port 7000 where runs udp
+proxy server.
+
+Well, hosts A and B can ping/telnet eachother, but port redirect does not
+work:
+
+iptables -t nat -A PREROUTING -p udp --dport 6000 -j REDIRECT --to-port 7=
+000
+
+Well, noting happens... packets traverse firewall/gw without any
+redirection...
+
+Why?
+
+The same thing works flawlessly with tcp protocol (-p tcp, running tcp
+listening server on port 7000)...
+
+What am i doing wrong?
+
+Brane
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
