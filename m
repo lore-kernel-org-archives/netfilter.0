@@ -1,13 +1,15 @@
-From: Denis <denismpa@gmail.com>
-Subject: -j SNAT
-Date: Tue, 28 Nov 2006 14:20:10 -0300
-Message-ID: <e9aeeef80611280920n4cde4f1bj469a15688e28cee2@mail.gmail.com>
-References: <e9aeeef80611280916r2a6b2ba1w52b65d81a2b0416f@mail.gmail.com>
+From: Alan Ezust <alan.ezust@presinet.com>
+Subject: Re: problems building conntrack w/ uclibc - no output
+Date: Tue, 28 Nov 2006 09:38:19 -0800
+Message-ID: <200611280938.23127.alan.ezust@presinet.com>
+References: <200611221144.00766.alan.ezust@presinet.com>
+	<456BA0B8.3050607@netfilter.org>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1945130.3LbSQcm8zL";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e9aeeef80611280916r2a6b2ba1w52b65d81a2b0416f@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <456BA0B8.3050607@netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +20,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@lists.netfilter.org
 
-Good afternoon everybody.
+--nextPart1945130.3LbSQcm8zL
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+On Monday 27 November 2006 18:36, Pablo Neira Ayuso wrote:
+
+>
+> Strange. Unfortunately I don't have access to such environment so I
+> would require a considerable amount of time to set it up and I'm
+> currently totally burden in many things. Could you run conntrack inside
+> gdb and try to figure out what it wrong?
+
+I can run gdb with conntrack on my own box (debian unstable x86), but that'=
+s=20
+got glibc and all the other modern libraries/tools. When I try to run it=20
+there, I now get a segfault (posted about earlier). I wonder if this is=20
+caused by one of the patchlets I applied from the patch-o-matic archive. In=
+=20
+any case, I already posted the stack trace and info about that attempt.
+
+But anyway, to get conntrack running the embedded box, I build conntrack an=
+d=20
+its related libs in scratchbox, and then I send the binaries over to the=20
+embedded box. And that's when I run into this weird problem which up to now=
+=20
+I've only been able to get strace running.=20
+
+I am not sure how to debug conntrack in scratchbox because when I try to ru=
+n=20
+it, recalc_rebind_subscriptions: bind(netlink): Operation not permitted
+conntrack v1.00beta2: Can't open handler
+
+I'm also not sure yet how to build gdb for the embedded box - so far, every=
+=20
+time I try, it seems I am missing glibc or something that depends on glibc=
+=20
+(termcap). Are there instructions for configuring gdb for an embedded syste=
+m=20
+on top of uclibc anywhere? Or is there another debugger I should build=20
+instead?
 
 
-I'm having a problem with a SNAT and wanna know if somebody here can help-me.
 
 
-the issue is as following:
 
 
-I have a Proxy Load Balanced and when my users try to access bank's
-sites on ssl protocol (port 443)
+=2D-=20
+Alan Ezust            www.presinet.com
+Presinet, inc         alan.ezust@presinet.com
+           Victoria, BC, Canada
 
-when the connection  is balanced by the two proxy nodes the bank site
-notes that ip source change and the user is disconnected
+--nextPart1945130.3LbSQcm8zL
+Content-Type: application/pgp-signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-to solve this problem I thinked to do a SNAT on my two nodes as follow
+iD8DBQBFbHQPsJbtw6GURksRAqMCAJ9lu67auR1w42VXoLxMwaGn/yjp9gCbBBhu
+2ueL6V6/daZ9EcQ2s6LdzhY=
+=Nfvp
+-----END PGP SIGNATURE-----
 
-Node 1 (Ip 202.188.94.66)
-
-iptables -t nat -A POSTROUTING -p tcp -o eth1 --dport 443 -j SNAT
---to-source 202.188.94.68:6001-7000
-
-
-and on Node 2 (IP 202.188.94.67)
-
-iptables -t nat -A POSTROUTING -p tcp -o eth1 --dport 443 -j SNAT
---to-source 202.188.94.68:7001-8000
-
-so, the connection arrives on the destination translated as have to
-be, but the connection doesn't get established.
-
-This is as the destination machine can't return the package.
-
-
-Some body have any idea to help me?
+--nextPart1945130.3LbSQcm8zL--
 
