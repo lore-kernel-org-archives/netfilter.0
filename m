@@ -1,16 +1,13 @@
-From: Alan Ezust <alan.ezust@presinet.com>
-Subject: Re: problems building conntrack w/ uclibc - no output
-Date: Tue, 28 Nov 2006 15:14:28 -0800
-Message-ID: <200611281514.31756.alan.ezust@presinet.com>
-References: <200611221144.00766.alan.ezust@presinet.com>
-	<456BA0B8.3050607@netfilter.org>
-	<200611280938.23127.alan.ezust@presinet.com>
+From: Danny <dineshg@hostway.com>
+Subject: Re: -j SNAT
+Date: Wed, 29 Nov 2006 11:33:00 +0530
+Message-ID: <456D2294.3020002@hostway.com>
+References: <e9aeeef80611280916r2a6b2ba1w52b65d81a2b0416f@mail.gmail.com>
+	<e9aeeef80611280920n4cde4f1bj469a15688e28cee2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1472701.KluNqegR6m";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200611280938.23127.alan.ezust@presinet.com>
+In-Reply-To: <e9aeeef80611280920n4cde4f1bj469a15688e28cee2@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,72 +18,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Denis <denismpa@gmail.com>, netfilter@lists.netfilter.org
 
---nextPart1472701.KluNqegR6m
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hey !
 
-You can ignore my questions about building gdb. I have it on the embedded b=
-ox=20
-now.
-It's still not quite giving me what I want yet, but conntrack is hanging he=
-re:
+Its better you dont disclose the IP of your server, and that the site is 
+of a bank !
 
-root@PresiNET-99996:/root/ctdebug> gdb
-GNU gdb 6.3
-Copyright 2004 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you are
-welcome to change it and/or distribute copies of it under certain condition=
-s.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for details.
-This GDB was configured as "i386-pc-linux-gnu".
-Using host libthread_db library "/lib/libthread_db.so.1".
-Breakpoint 1 at 0x8049df0: file conntrack.c, line 606.
+I think you are better of disconnecting the user, if the client's IP has 
+changed ! Or have I understood u wrong !
 
-Breakpoint 1, main (argc=3D2, argv=3D0xbfe54f24) at conntrack.c:606
-warning: Source file is more recent than executable.
-
-606             unsigned int command =3D 0, options =3D 0;
-=46unction "nfnl_listen()" not defined.
-=46unction "nfct_get_conntrack()" not defined.
-Breakpoint 2 at 0xb7f49b40: file libnetfilter_conntrack.c, line 1082.
-
-Program received signal SIGINT, Interrupt.
-0xb7f2dcdc in __socketcall () from /lib/libc.so.0
-(gdb) where
-#0  0xb7f2dcdc in __socketcall () from /lib/libc.so.0
-#1  0xb7f1cd14 in recvmsg () from /lib/libc.so.0
-#2  0xb7f4d55b in nfnl_listen () from /usr/local/lib/libnfnetlink.so.1
-#3  0xb7f49cca in nfct_event_conntrack (cth=3D0x804db30) at=20
-libnetfilter_conntrack.c:1135
-#4  0x0804b38c in main (argc=3D2, argv=3D0xbfe54f24) at conntrack.c:1090
-
-Even though I'm building these libs with debugging symbols, gdb is having=20
-trouble finding them... I'll post more if I get more info.
+How have you load balanced ?
 
 
+Hmm ... NATing incoming requests would not help you in future >> digging 
+out access logs and tracking HTTP requests.  !!
 
-On Tuesday 28 November 2006 09:38, Alan Ezust wrote:
-> On Monday 27 November 2006 18:36, Pablo Neira Ayuso wrote:
-> > Strange. Unfortunately I don't have access to such environment so I
-> > would require a considerable amount of time to set it up and I'm
-> > currently totally burden in many things. Could you run conntrack inside
-> > gdb and try to figure out what it wrong?
+You should be using LVS with Direct Routing ! [ with arptables ]  + 
+ldirectord  [ Long term solution ]
 
---nextPart1472701.KluNqegR6m
-Content-Type: application/pgp-signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
+- Danny
 
-iD8DBQBFbMLXsJbtw6GURksRAnqnAKCMNenwuXyf87DARkxxDVwECq+phgCfciR4
-Xq/J0jnzpMelJnQq3s8OvEk=
-=rsKP
------END PGP SIGNATURE-----
+Denis wrote:
+> Good afternoon everybody.
+>
+>
+> I'm having a problem with a SNAT and wanna know if somebody here can 
+> help-me.
+>
+>
+> the issue is as following:
+>
+>
+> I have a Proxy Load Balanced and when my users try to access bank's
+> sites on ssl protocol (port 443)
+>
+> when the connection  is balanced by the two proxy nodes the bank site
+> notes that ip source change and the user is disconnected
+>
+>
+> to solve this problem I thinked to do a SNAT on my two nodes as follow
+>
+> Node 1 (Ip 202.188.94.66)
+>
+> iptables -t nat -A POSTROUTING -p tcp -o eth1 --dport 443 -j SNAT
+> --to-source 202.188.94.68:6001-7000
+>
+>
+> and on Node 2 (IP 202.188.94.67)
+>
+> iptables -t nat -A POSTROUTING -p tcp -o eth1 --dport 443 -j SNAT
+> --to-source 202.188.94.68:7001-8000
+>
+> so, the connection arrives on the destination translated as have to
+> be, but the connection doesn't get established.
+>
+> This is as the destination machine can't return the package.
+>
+>
+> Some body have any idea to help me?
+>
+>
 
---nextPart1472701.KluNqegR6m--
 
