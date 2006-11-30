@@ -1,13 +1,14 @@
-From: "victor oliveira" <victor.oliveira@concretesolutions.com.br>
-Subject: -i interface filter not working for firewall
-Date: Thu, 30 Nov 2006 14:08:37 -0300
-Message-ID: <b020b8120611300908r386fda2apf6dc55fe09aee2b@mail.gmail.com>
-References: <b020b8120611300905t7f440ef9mf940a128fd8d46e6@mail.gmail.com>
+From: Alan Ezust <alan.ezust@presinet.com>
+Subject: Re: Patch for h323 conntack for certain kernels
+Date: Thu, 30 Nov 2006 09:29:39 -0800
+Message-ID: <200611300929.42277.alan.ezust@presinet.com>
+References: <59064.195.55.244.106.1164885677.squirrel@www.arcoscom.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1258356.6OmY20EuUI";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <b020b8120611300905t7f440ef9mf940a128fd8d46e6@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <59064.195.55.244.106.1164885677.squirrel@www.arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +19,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, linux@arcoscom.com
 
-I have 4 network interfaces, eth0, eth1 (external) and eth2, eht3 (internal).
-I have started to add rules for the iptables.
-These are the interfaces:
-# External 1
-ifconfig eth0   5.5.5.1 netmask 255.255.255.0
-# External 2
-ifconfig eth1   6.6.6.1 netmask 255.255.255.0
-# Internal 1
-ifconfig eth2   10.10.1.9 netmask 255.255.255.0
-# Internal 2
-ifconfig eth3   10.10.1.8 netmask 255.255.255.0
+--nextPart1258356.6OmY20EuUI
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-My intent is to only allow connection with the firewall for ssh by the
-eth2 interface, so the following are my rules:
 
-#1 SSH firewall to eth2
-iptables -A INPUT -i eth2 -p tcp -m tcp --dport 22 -s 10.10.1.0/24 -d
-10.10.1.0/24 -j ACCEPT
-iptables -A OUTPUT -o eth2 -p tcp -s 10.10.1.0/24 -d 10.10.1.0/24 -j ACCEPT
-#21 marcando pacotes da eth2 para a rota da tabela 3
-iptables -t mangle -A PREROUTING -i eth2 -s 10.10.1.0/24 -j MARK --set-mark 3
-#22 marcando pacotes da eth2 para a rota da tabela 4
-iptables -t mangle -A PREROUTING -i eth3 -s 10.10.1.0/24 -j MARK --set-mark 4
-#3 NAT
-iptables -t nat -A POSTROUTING -o eth1  -s 10.10.1.0/24 -j SNAT
---to-source 5.5.5.1
-iptables -t nat -A POSTROUTING -o eth0  -s 10.10.1.0/24 -j SNAT
---to-source 5.5.5.2
-#4 forward da eth2 (interna) para eth0
-/sbin/iptables -A FORWARD -i eth0 -o eth2 -m state --state
-RELATED,ESTABLISHED -j ACCEPT
-/sbin/iptables -A FORWARD -i eth2 -o eth0 -j ACCEPT
-#7 forward da eth2 (interna) para eth1
-/sbin/iptables -A FORWARD -i eth1 -o eth2 -m state --state
-RELATED,ESTABLISHED -j ACCEPT
-/sbin/iptables -A FORWARD -i eth2 -o eth1 -j ACCEPT
-#7 forward da eth3 (interna) para eth0
-/sbin/iptables -A FORWARD -i eth0 -o eth3 -m state --state
-RELATED,ESTABLISHED -j ACCEPT
-/sbin/iptables -A FORWARD -i eth3 -o eth0 -j ACCEPT
-#8 deny para todos os pacotes
-iptables -A INPUT -j DROP
-iptables -A OUTPUT -j DROP
-iptables -A FORWARD -j DROP
-iptables -Z
+I grabbed the h323 patch from the svn repository, since it is still availab=
+le=20
+(out of trunk, though). I wanted to apply it to 2.6.16.29.
 
-My problem is the following: I am able to connect from my machine to
-the firewall using both eth2 and eth3. However, note that the INPUT
-default is DROP, and the only rule on the INPUT SHOULD be filtering
-and only allowing connections to the eth2 and not the eth3
-interface...
+I haven't been able to verify that it actually works yet though. I'm trying=
+ to=20
+use it with l7 filters and so far, it doesn't detect any of our h323 traffi=
+c.
 
-Any toughts ?
+Your idea is probably better, but I'll be interested to know what works for=
+=20
+you since we're in the same boat.
 
-Regards,
-Victor
+
+On Thursday 30 November 2006 03:21, ArcosCom Linux User wrote:
+> Hi, I'm trying to patch kernel 2.6.16.34 with h323 conntrack patches, but
+> I don't found it in pom-ng.
+>
+> I'm thinking in take it from 2.6.19 kernel (the *h323* files and take a
+> view in Kconfigs and Makefiles files).
+>
+> I know from 2.6.17 series, h323 where into kernel and they patched
+> sometimes h323 sources.
+>
+> Could anybody say me if copying the files into 2.6.16.34 sources and
+> modifiying Kconfig and Makefile files it will work?
+>
+> Thanks
+
+=2D-=20
+Alan Ezust            www.presinet.com
+Presinet, inc         alan.ezust@presinet.com
+           Victoria, BC, Canada
+
+--nextPart1258356.6OmY20EuUI
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQBFbxUGsJbtw6GURksRAlTyAJ9MA7sW9aI9Wz8Mz62d0uCGXLSCUgCgo/7F
+S9g0wGuxP8wr/Pq5y5IcER0=
+=Rbss
+-----END PGP SIGNATURE-----
+
+--nextPart1258356.6OmY20EuUI--
 
