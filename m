@@ -1,10 +1,13 @@
-From: sean <seandarcy2@gmail.com>
-Subject: how do I set the MAC address in POSTROUTING?
-Date: Thu, 30 Nov 2006 19:23:07 -0500
-Message-ID: <eknslc$rpq$1@sea.gmane.org>
+From: Daniel Musketa <Daniel@musketa.de>
+Subject: Re: how do I set the MAC address in POSTROUTING?
+Date: Fri, 1 Dec 2006 01:53:55 +0100
+Message-ID: <200612010153.55904.Daniel@musketa.de>
+References: <eknslc$rpq$1@sea.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <eknslc$rpq$1@sea.gmane.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,26 +18,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I want to use -m mac --mac-source on our server. 
-Unfortunately,  lots of packets are coming in without the 
-MAC address set:
+On Friday 01 December 2006 01:23, sean wrote:
+>   MAC-ADDRESS-TEST: IN=ppp0 OUT= MAC= SRC=ww.xx.yy.zz
 
-  MAC-ADDRESS-TEST: IN=ppp0 OUT= MAC= SRC=ww.xx.yy.zz 
-DST=zz.yy.xx.ww LEN=52
-  TOS=0x00 PREC=0x00 TTL=51 ID=41426 DF PROTO=TCP SPT=52437 
-DPT=445 WINDOW=63 RES=0x00 ACK URGP=0
+> Is this even an iptables issue? 
 
-This is from a linux client.
+AFAIK MAC addresses are used in ethernet to address ethernet frames. On ip 
+routed ppp0 no ethernet frames arrive.
 
-How do I set up the client to insert its MAC address? Can I 
-use some mange voodoo on the client PSOTROUTING chain?
-
-Is this even an iptables issue? Is the MAC address being 
-stripped out somewhere?
-
-sean
-
+Daniel
 
