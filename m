@@ -1,51 +1,62 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: ROUTE target and kernel 2.6.19
-Date: Fri, 1 Dec 2006 10:30:01 +0100 (CET)
-Message-ID: <35999.195.55.244.106.1164965401.squirrel@www.arcoscom.com>
-Reply-To: linux@arcoscom.com
+From: Retesh <retesh.chadha@gmail.com>
+Subject: hashlimit not working in iptable chains
+Date: Fri, 1 Dec 2006 17:06:44 +0530
+Message-ID: <b322db070612010336v62e5f822pf9b6e1397b22b859@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, netfilter-request@lists.netfilter.org
 
-Hi, I'm using:
-   iptables 1.3.5 (FC5 distro with ROUTE target enabled)
-   kernel 2.6.19
-   pom-ng 20061129
+Hi All
+I am having a scenario where the iptables hashlimit feature is not
+working as expected. Following is the list of IP rules
 
-My box is a dual xeon machine (SMP kernel).
+INPUT (policy ACCEPT 1342 packets, 488K bytes)
+1840  755K TEST       all  --  any    any     anywhere             anywhere
 
-I'm using 2 uplinks to connect my network to internet and its working
-fine, but some disconnection isues using messenger (amsn, gaim, m$msn,
-msn-messenger, etc...) needs I route all -p tcp --dport msnp over one
-uplink.
+TEST (1 references)
+0     0 CHAIN2     all  --  any    any     anywhere
+anywhere            set SET2 dst
+1840  755K CHAIN1     all  --  any    any     anywhere
+anywhere            set SET1 dst
 
-To solve this problem, I want to try -j ROUTE target, to route all msnp
-traffic only for one uplink (I don't know if this will solve the problem,
-but I want to try). For this purpose, I wrote:
+CHAIN1 (1 references)
+919  375K ACCEPT     all  --  any    any     anywhere
+anywhere            limit: avg 200/sec burst 10 mode dstip
+921  380K LOG        all  --  any    any     anywhere
+anywhere            LOG level warning prefix `_SET1'
 
-iptables -t mangle -A PREROUTING -p tcp --dport msnp -j ROUTE --gw
-<uplink> --continue
+CHAIN2 (1 references)
+0     0 ACCEPT     all  --  any    any     anywhere
+anywhere            limit: avg 50/sec burst 10 mode dstip
+0     0 LOG        all  --  any    any     anywhere
+anywhere            LOG level warning prefix `_SET2'
 
-The error is:
-iptables: Unknown error 4294967295
+Here, SET1 and SET2 are iphash
 
-In dmesg:
-ipt_ROUTE: targinfosize 0 != 40
+Now after applying the above rules, irrespective of which set (SET1 or
+SET2), I send the packets from I find that the limit that is used is
+50/s, even though there are different chains for different sets. That
+is packets from SET1  match CHAIN1 but the hashlimit value thats used
+is 50/s.
+So effectively the hashlimit that is set for all the chains is the one
+in the chain that occurs first.
 
-Any help about this?
+Am I doing something wrong here, or is this a limitation with hashlimit?
 
-Thanks
-
+Thanks in advance
+With Regards
+Retesh Chadha
 
