@@ -1,11 +1,12 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: ROUTE target broken under 2.6.18.3 kernel
-Date: Fri, 1 Dec 2006 16:19:47 +0100 (CET)
-Message-ID: <50267.84.123.236.132.1164986387.squirrel@www.arcoscom.com>
-Reply-To: linux@arcoscom.com
+From: sean <seandarcy2@gmail.com>
+Subject: Re: how do I set the MAC address in POSTROUTING?
+Date: Fri, 01 Dec 2006 10:17:20 -0500
+Message-ID: <ekph22$1va$1@sea.gmane.org>
+References: <eknslc$rpq$1@sea.gmane.org> <200612010153.55904.Daniel@musketa.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200612010153.55904.Daniel@musketa.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,41 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org
 
-I had problems with 2.6.19 kernel, appears to be some "binaries" problems
-about iptables and kernel modules, then I pass to try the 2.6.18.3 kernel
-to tests some things.
+Daniel Musketa wrote:
+> On Friday 01 December 2006 01:23, sean wrote:
+>>   MAC-ADDRESS-TEST: IN=ppp0 OUT= MAC= SRC=ww.xx.yy.zz
+> 
+>> Is this even an iptables issue? 
+> 
+> AFAIK MAC addresses are used in ethernet to address ethernet frames. On ip 
+> routed ppp0 no ethernet frames arrive.
+> 
+> Daniel
+> 
 
-When I put -j ROUTE into -t mangle table and PREROUTING chain, I have no
-problems, but when I try -j ROUTE into POSTROUTING chain, my system loss
-all network access (and it is posible it crash, I'm not there to view
-screen).
+OK. If that's the case, then the --mac-source target would 
+only work on a LAN, not over the ethernet. This would mean 
+thatthe --mac-sourse target has very limited use - only on 
+local LANs.
 
-My system has:
-   SMP kernel (dual Xeon 3,0 GHz)
-   2.6.18.3 kernel + connlimit + layer7 + ROUTE patches
-   1.3.5 iptables (FC5 distro sources) with connlimit + layer7 + ROUTE
-patches (as I see, I only need change the makefile into distro sources
-to allow connlimit and ROUTE work)
+But there is still a place for a MAC address. How can I  put 
+one in the packet on the client side? This would allow me to 
+use it over the internet.
 
-The command that break off network (and posibility crash the machine) is:
+sean
 
-iptables -t mangle -A POSTROUTING -p tcp --dport msnp -j ROUTE --gw <mygw>
---continue
-
-I have 2 uplinks with 2 diferents gw ip's, and I detected disconnection
-problems with messenger clients (amsn, windows msn, msn-messenger, gaim,
-etc....) and I only want to route all msn traffic into only one uplink.
-
-Any help about this? It is really a bug with ROUTE Patch and 2.6.8.3
-kernel? Or its a bug with the 1.3.5 iptables version (FC5 distro sources).
-
-Please, help me a bit to solve this problem.
-
-Thanks
 
 
 
