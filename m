@@ -1,62 +1,43 @@
-From: Retesh <retesh.chadha@gmail.com>
-Subject: hashlimit not working in iptable chains
-Date: Fri, 1 Dec 2006 17:06:44 +0530
-Message-ID: <b322db070612010336v62e5f822pf9b6e1397b22b859@mail.gmail.com>
+From: "Tim Heagarty" <tim@heagarty.com>
+Subject: What do you wish somebody had told you?
+Date: Fri, 1 Dec 2006 09:11:59 -0500
+Message-ID: <LJELKDOLLLOLLEFCCMCFGEMHEHAA.tim@heagarty.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, netfilter-request@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi All
-I am having a scenario where the iptables hashlimit feature is not
-working as expected. Following is the list of IP rules
+Group,
 
-INPUT (policy ACCEPT 1342 packets, 488K bytes)
-1840  755K TEST       all  --  any    any     anywhere             anywhere
+What do you wish somebody had shared with you about iptables and Netfilter
+when you were starting out? What did you discover later that would have
+saved you much time and trouble when implementing a level of protection?
 
-TEST (1 references)
-0     0 CHAIN2     all  --  any    any     anywhere
-anywhere            set SET2 dst
-1840  755K CHAIN1     all  --  any    any     anywhere
-anywhere            set SET1 dst
+Thanks in advance for your experiences and tips.
 
-CHAIN1 (1 references)
-919  375K ACCEPT     all  --  any    any     anywhere
-anywhere            limit: avg 200/sec burst 10 mode dstip
-921  380K LOG        all  --  any    any     anywhere
-anywhere            LOG level warning prefix `_SET1'
+Thank you,
 
-CHAIN2 (1 references)
-0     0 ACCEPT     all  --  any    any     anywhere
-anywhere            limit: avg 50/sec burst 10 mode dstip
-0     0 LOG        all  --  any    any     anywhere
-anywhere            LOG level warning prefix `_SET2'
+Tim Heagarty, CISSP, CISA, MCSE
+http://www.TheaSecure.com/
+(928) 533-9690
+"There are 10 kinds of people in the world; those that understand binary,
+and those that don't."
 
-Here, SET1 and SET2 are iphash
+--
+No virus found in this outgoing message.
+Checked by AVG Free Edition.
+Version: 7.5.430 / Virus Database: 268.15.3/561 - Release Date: 12/1/2006
+6:36 AM
 
-Now after applying the above rules, irrespective of which set (SET1 or
-SET2), I send the packets from I find that the limit that is used is
-50/s, even though there are different chains for different sets. That
-is packets from SET1  match CHAIN1 but the hashlimit value thats used
-is 50/s.
-So effectively the hashlimit that is set for all the chains is the one
-in the chain that occurs first.
-
-Am I doing something wrong here, or is this a limitation with hashlimit?
-
-Thanks in advance
-With Regards
-Retesh Chadha
 
