@@ -1,9 +1,10 @@
-From: "Tim Heagarty" <tim@heagarty.com>
-Subject: What do you wish somebody had told you?
-Date: Fri, 1 Dec 2006 09:11:59 -0500
-Message-ID: <LJELKDOLLLOLLEFCCMCFGEMHEHAA.tim@heagarty.com>
+From: "ArcosCom Linux User" <linux@arcoscom.com>
+Subject: ROUTE target broken under 2.6.18.3 kernel
+Date: Fri, 1 Dec 2006 16:19:47 +0100 (CET)
+Message-ID: <50267.84.123.236.132.1164986387.squirrel@www.arcoscom.com>
+Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,27 +18,39 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org
 
-Group,
+I had problems with 2.6.19 kernel, appears to be some "binaries" problems
+about iptables and kernel modules, then I pass to try the 2.6.18.3 kernel
+to tests some things.
 
-What do you wish somebody had shared with you about iptables and Netfilter
-when you were starting out? What did you discover later that would have
-saved you much time and trouble when implementing a level of protection?
+When I put -j ROUTE into -t mangle table and PREROUTING chain, I have no
+problems, but when I try -j ROUTE into POSTROUTING chain, my system loss
+all network access (and it is posible it crash, I'm not there to view
+screen).
 
-Thanks in advance for your experiences and tips.
+My system has:
+   SMP kernel (dual Xeon 3,0 GHz)
+   2.6.18.3 kernel + connlimit + layer7 + ROUTE patches
+   1.3.5 iptables (FC5 distro sources) with connlimit + layer7 + ROUTE
+patches (as I see, I only need change the makefile into distro sources
+to allow connlimit and ROUTE work)
 
-Thank you,
+The command that break off network (and posibility crash the machine) is:
 
-Tim Heagarty, CISSP, CISA, MCSE
-http://www.TheaSecure.com/
-(928) 533-9690
-"There are 10 kinds of people in the world; those that understand binary,
-and those that don't."
+iptables -t mangle -A POSTROUTING -p tcp --dport msnp -j ROUTE --gw <mygw>
+--continue
 
---
-No virus found in this outgoing message.
-Checked by AVG Free Edition.
-Version: 7.5.430 / Virus Database: 268.15.3/561 - Release Date: 12/1/2006
-6:36 AM
+I have 2 uplinks with 2 diferents gw ip's, and I detected disconnection
+problems with messenger clients (amsn, windows msn, msn-messenger, gaim,
+etc....) and I only want to route all msn traffic into only one uplink.
+
+Any help about this? It is really a bug with ROUTE Patch and 2.6.8.3
+kernel? Or its a bug with the 1.3.5 iptables version (FC5 distro sources).
+
+Please, help me a bit to solve this problem.
+
+Thanks
+
 
 
