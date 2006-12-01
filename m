@@ -1,56 +1,66 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: how do I set the MAC address in POSTROUTING?
-Date: Fri, 01 Dec 2006 16:49:48 +0100
-Message-ID: <45704F1C.7070703@plouf.fr.eu.org>
-References: <eknslc$rpq$1@sea.gmane.org> <200612010153.55904.Daniel@musketa.de>
-	<ekph22$1va$1@sea.gmane.org>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: hashlimit not working in iptable chains
+Date: Fri, 01 Dec 2006 17:27:32 +0100
+Message-ID: <457057F4.3050703@trash.net>
+References: <b322db070612010336v62e5f822pf9b6e1397b22b859@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <ekph22$1va$1@sea.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <b322db070612010336v62e5f822pf9b6e1397b22b859@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Retesh <retesh.chadha@gmail.com>
+Cc: netfilter-request@lists.netfilter.org, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hello,
+Retesh wrote:
+> Hi All
+> I am having a scenario where the iptables hashlimit feature is not
+> working as expected. Following is the list of IP rules
+> 
+> INPUT (policy ACCEPT 1342 packets, 488K bytes)
+> 1840  755K TEST       all  --  any    any     anywhere             anywhere
+> 
+> TEST (1 references)
+> 0     0 CHAIN2     all  --  any    any     anywhere
+> anywhere            set SET2 dst
+> 1840  755K CHAIN1     all  --  any    any     anywhere
+> anywhere            set SET1 dst
+> 
+> CHAIN1 (1 references)
+> 919  375K ACCEPT     all  --  any    any     anywhere
+> anywhere            limit: avg 200/sec burst 10 mode dstip
+> 921  380K LOG        all  --  any    any     anywhere
+> anywhere            LOG level warning prefix `_SET1'
+> 
+> CHAIN2 (1 references)
+> 0     0 ACCEPT     all  --  any    any     anywhere
+> anywhere            limit: avg 50/sec burst 10 mode dstip
+> 0     0 LOG        all  --  any    any     anywhere
+> anywhere            LOG level warning prefix `_SET2'
+> 
+> Here, SET1 and SET2 are iphash
+> 
+> Now after applying the above rules, irrespective of which set (SET1 or
+> SET2), I send the packets from I find that the limit that is used is
+> 50/s, even though there are different chains for different sets. That
+> is packets from SET1  match CHAIN1 but the hashlimit value thats used
+> is 50/s.
+> So effectively the hashlimit that is set for all the chains is the one
+> in the chain that occurs first.
+> 
+> Am I doing something wrong here, or is this a limitation with hashlimit?
 
-sean a =E9crit :
-> Daniel Musketa wrote:
->>
->> AFAIK MAC addresses are used in ethernet to address ethernet frames.=20
->> On ip routed ppp0 no ethernet frames arrive.
->=20
-> OK. If that's the case, then the --mac-source target would only work on=
-=20
-> a LAN, not over the ethernet.
 
-I guess you mean over the *in*ternet. Ethernet is a LAN technology.
-
-> This would mean thatthe --mac-sourse=20
-> target has very limited use - only on local LANs.
-
-Indeed, the scope of a MAC address is link local, limited to the LAN.
-
-> But there is still a place for a MAC address.
-
-On an IP/PPP link ? No way. A PPP interface has no MAC address, it is=20
-useless. There is a place only in the lines that the LOG target prints=20
-because they have a fixed format.
-
-> How can I  put one in the=20
-> packet on the client side? This would allow me to use it over the inter=
-net.
-
-You cannot use MAC addresses over an IP/PPP link. You cannot rely on MAC=20
-addresses over the internet either because this is layer 2 information=20
-that is not routed by definition.
+This is a know problem, the limit is a property of the hashlimit table,
+not the individual rules. You have to use seperate --hashlimit-name
+parameters.
 
