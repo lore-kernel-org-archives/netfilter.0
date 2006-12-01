@@ -1,12 +1,13 @@
-From: sean <seandarcy2@gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: how do I set the MAC address in POSTROUTING?
-Date: Fri, 01 Dec 2006 10:17:20 -0500
-Message-ID: <ekph22$1va$1@sea.gmane.org>
+Date: Fri, 01 Dec 2006 16:49:48 +0100
+Message-ID: <45704F1C.7070703@plouf.fr.eu.org>
 References: <eknslc$rpq$1@sea.gmane.org> <200612010153.55904.Daniel@musketa.de>
+	<ekph22$1va$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200612010153.55904.Daniel@musketa.de>
+In-Reply-To: <ekph22$1va$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +18,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Daniel Musketa wrote:
-> On Friday 01 December 2006 01:23, sean wrote:
->>   MAC-ADDRESS-TEST: IN=ppp0 OUT= MAC= SRC=ww.xx.yy.zz
-> 
->> Is this even an iptables issue? 
-> 
-> AFAIK MAC addresses are used in ethernet to address ethernet frames. On ip 
-> routed ppp0 no ethernet frames arrive.
-> 
-> Daniel
-> 
+Hello,
 
-OK. If that's the case, then the --mac-source target would 
-only work on a LAN, not over the ethernet. This would mean 
-thatthe --mac-sourse target has very limited use - only on 
-local LANs.
+sean a =E9crit :
+> Daniel Musketa wrote:
+>>
+>> AFAIK MAC addresses are used in ethernet to address ethernet frames.=20
+>> On ip routed ppp0 no ethernet frames arrive.
+>=20
+> OK. If that's the case, then the --mac-source target would only work on=
+=20
+> a LAN, not over the ethernet.
 
-But there is still a place for a MAC address. How can I  put 
-one in the packet on the client side? This would allow me to 
-use it over the internet.
+I guess you mean over the *in*ternet. Ethernet is a LAN technology.
 
-sean
+> This would mean thatthe --mac-sourse=20
+> target has very limited use - only on local LANs.
 
+Indeed, the scope of a MAC address is link local, limited to the LAN.
 
+> But there is still a place for a MAC address.
 
+On an IP/PPP link ? No way. A PPP interface has no MAC address, it is=20
+useless. There is a place only in the lines that the LOG target prints=20
+because they have a fixed format.
+
+> How can I  put one in the=20
+> packet on the client side? This would allow me to use it over the inter=
+net.
+
+You cannot use MAC addresses over an IP/PPP link. You cannot rely on MAC=20
+addresses over the internet either because this is layer 2 information=20
+that is not routed by definition.
 
