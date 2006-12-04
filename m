@@ -1,8 +1,9 @@
-From: Frederik Deweerdt <deweerdt@free.fr>
-Subject: T/TCP connections not NATed
-Date: Mon, 4 Dec 2006 08:23:55 +0000
-Message-ID: <20061204082355.GF3136@slug>
+From: "Syed AbuBakr" <syed.abubakr@gmail.com>
+Subject: Multiple Mac Addresses as Source
+Date: Mon, 4 Dec 2006 17:06:23 +0500
+Message-ID: <7e53eda20612040406g714db122s34870004374153df@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -15,36 +16,16 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi...!
 
-We're trying to use a home brewed T/TCP stack in addition to Linux plain
-SNAT. Everything works as expected, except for the first packet, which
-is not NATed. Communication is as follows:
+I want to use multiple mac addresses as source for my rules, well they
+r in hundreds. if i make a file of these mac addresses and give it's
+path instead of writing hundreds of rules.so my question is that is
+their any way to input them as a file.or file path?
 
-	C		S
-1.	SYN*
-2.	DATA
-3.			SYN/ACK*
-4.	ACK*
-5.	REST_OF_COM*
-
-[*] The packet is NATed
-
-
-Our hypothesis du jour, is that packet #2 is not NATed because it is
-not currently part of a connection from netfilter point of view. Hence
-my questions:
-- Does our hypothesis seem you reasonable?
-	- If yes, is it possible to tell NAT to ignore the connection
-	tracking informations, and NAT all the packets getting out of
-	a given interface
-	- If not, what do you reckon could be the cause for having the
-	#2 packet not NATed?
-
-Thanks,
-Frederik
+regards
+Ali
 
