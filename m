@@ -1,11 +1,10 @@
-From: "Joris Dobbelsteen" <Joris@familiedobbelsteen.nl>
-Subject: Traffic auditing per user
-Date: Mon, 4 Dec 2006 00:11:17 +0100
-Message-ID: <73427AD314CC364C8DF0FFF9C4D693FF544D@nehemiah.joris2k.local>
+From: Frederik Deweerdt <deweerdt@free.fr>
+Subject: T/TCP connections not NATed
+Date: Mon, 4 Dec 2006 08:23:55 +0000
+Message-ID: <20061204082355.GF3136@slug>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +16,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm looking for a solution to audit network traffic usage per user.
-After a long enough search I was not able to find a solution that suited
-my needs.
+Hi,
 
-It must fit the following requirements:
-* The traffic must be logged on a uid basis.
-* Some traffic should not be counted, which is protocol (i.e. non-IP)
-and IP address based (i.e. no local network).
-* Of course not have a dramatic effect on performance
+We're trying to use a home brewed T/TCP stack in addition to Linux plain
+SNAT. Everything works as expected, except for the first packet, which
+is not NATed. Communication is as follows:
 
-Hopefully its not to hard for me, thus the tool has some (decent)
-instructions/documentation.
-Further I want to keep using my stock application. The platform is
-Ubuntu 6.06 LTS, and I prefer to have the packages from the
-repositories, rather than my own complications. Mostly for reasons of
-testing and maintenance.
+	C		S
+1.	SYN*
+2.	DATA
+3.			SYN/ACK*
+4.	ACK*
+5.	REST_OF_COM*
 
-I would guess this is not directly a netfilter question, but it should
-be close enough.
+[*] The packet is NATed
 
-- Joris
+
+Our hypothesis du jour, is that packet #2 is not NATed because it is
+not currently part of a connection from netfilter point of view. Hence
+my questions:
+- Does our hypothesis seem you reasonable?
+	- If yes, is it possible to tell NAT to ignore the connection
+	tracking informations, and NAT all the packets getting out of
+	a given interface
+	- If not, what do you reckon could be the cause for having the
+	#2 packet not NATed?
+
+Thanks,
+Frederik
 
