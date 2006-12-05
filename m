@@ -1,12 +1,11 @@
-From: "Taylor, Grant" <gtaylor@riverviewtech.net>
-Subject: Re: How to hide a NAT router?
-Date: Tue, 05 Dec 2006 16:00:11 -0600
-Message-ID: <4575EBEB.4040807@riverviewtech.net>
-References: <4575E11B.4060007@arturaz.net>
+From: "Javier A Toledano" <jatoledano@gmail.com>
+Subject: Multihoming problem
+Date: Tue, 5 Dec 2006 20:27:08 -0300
+Message-ID: <b06b831a0612051527p15895c7yd0b1d9bb813c4105@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4575E11B.4060007@arturaz.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Art=C5=ABras =C5=A0lajus wrote:
-> Any ideas how to do that on 2.6 and latest netfilter?
+Hello To everyone:
 
-It looks as if the project is fairly well dead.  I did some quick sleuthi=
-ng and found that there is a little bit of information in the mailing lis=
-t for the project and you can still download patches from the BitKeeper r=
-epository for the project.  2.4.21 was the most recent kernel that I saw =
-referenced mid '03.
+I've setup a linux box with 3 ethernet cards.
+One in the 10.0.0.0/8 net in the eth0,
+the other in the 192.168.10.0/24 in the eth2 and
+the other is connected to dsl modemwith with eth1.
 
-Here are some URLs you may want to go through:
+I've setup forwarding with, net.ipv4.ip_forward = 1.
+A strange phenomenon happens that I don't understantd. When I make an
+echo request from a host in the net 10.0.0.0 to a host in the
+192.168.10.0 the packet arrives to the eth0 interface but it seems
+that it doesn't traverse the linux because with tcpdump I see no icmp
+packet in eth2
+But when a make an echo request from the 192.168.10.0 to a host in
+10.0.0.0 , I receive the echo reply and, inmediatley the echo request
+originated in 10.0.0.0 receives the echo replies from 192.168.10.0.
 
-http://ippersonality.sourceforge.net/
-http://linux-cd.bkbits.net/
-http://linux-cd.bkbits.net:8080/linux-2.4-ippersonality/cset@3deb9cf5k3AY=
-4rHNAB5Vcyg6--jQOQ?nav=3Dindex.html|ChangeSet
-(TinyURL of the above "http://tinyurl.com/yk3d9a")
+If would appreciate any idea, Sorry for my poor English.
 
-It looked like the mailing list archive was over run with spam, but there=
- may still be some stuff in there.
-
-
-
-Grant. . . .
+Thanks in advance
 
