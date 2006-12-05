@@ -1,14 +1,10 @@
-From: Pollywog <linux@shadypond.com>
-Subject: Re: How make virtual interfaces ( subinterfaces ) on linux machine
-Date: Tue, 5 Dec 2006 20:15:59 +0000
-Message-ID: <200612052016.00066.linux@shadypond.com>
-References: <428559.74702.qm@web56206.mail.re3.yahoo.com>
-	<4575D2D9.4020308@riverviewtech.net>
+From: =?UTF-8?B?QXJ0xatyYXMgxaBsYWp1cw==?= <x11@arturaz.net>
+Subject: How to hide a NAT router?
+Date: Tue, 05 Dec 2006 23:14:03 +0200
+Message-ID: <4575E11B.4060007@arturaz.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4575D2D9.4020308@riverviewtech.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,18 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Tuesday 05 December 2006 20:13, Taylor, Grant wrote:
-> Elvir Kuric wrote:
-> > I want to know is there some manual or even better
-> > book how to make virtual interfaces  ( subinterfaces )
-> > on linux machine and attach VLANs which are
-> > implemented on switch to these virtaul interfaces.
->
-> I'm not quite sure exactly what you mean by virtual interfaces.
+Hello,
 
-Is "IP aliasing" what the OP was describing?  There are HOWTO's for that if 
-that is what it is.  Perhaps I misunderstood.
+I've stepped on this mail in list:
+http://lists.netfilter.org/pipermail/netfilter/2004-November/056947.html
+
+But I still haven't found any solutions for these two problems:
+
+the second method, sterilizing IP
+header information and stripping unneeded TCP flags would successfully
+undermine this scheme. For the last Method, counting hosts behind a
+router.
+Striping the fragmentation flag for syn packets, and setting the IP ID to
+'0', (like Linux and Free BSD both do) would make it impossible to count
+hosts behind a NAT router.
+
+Any ideas how to do that on 2.6 and latest netfilter?
+-- 
+Pagarbiai,
+ArtÅ«ras Å lajus
+--
+Skype: arturaz_
+ICQ: 157929934
+Jabber: arturaz@akl.lt
+IRC: arturaz @ irc.data.lt, irc.freenode.net, irc.lcirc.net
 
