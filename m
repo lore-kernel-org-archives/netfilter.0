@@ -1,39 +1,101 @@
-From: Petr Pisar <xpisar@fi.muni.cz>
-Subject: Re: How make virtual interfaces ( subinterfaces ) on linux machine
-Date: Wed, 6 Dec 2006 11:05:57 +0000 (UTC)
-Message-ID: <slrnend90r.5up.xpisar@album.ics.muni.cz>
-References: <4575D2D9.4020308@riverviewtech.net>
-	<20061206063409.75053.qmail@web56211.mail.re3.yahoo.com>
-Return-path: <netfilter-bounces@lists.netfilter.org>
+From: Netfilter Core Team <coreteam@netfilter.org>
+Subject: Re: Release of iptables-1.3.7
+Date: Wed, 06 Dec 2006 10:54:02 +0100
+Message-ID: <4576933A.7080006@netfilter.org>
+References: <45769244.3060508@netfilter.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------050605090806010602070101"
+Return-path: <netfilter-announce-bounces@lists.netfilter.org>
+In-Reply-To: <45769244.3060508@netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
+	<mailto:netfilter-announce-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-announce>
+List-Post: <mailto:netfilter-announce@lists.netfilter.org>
+List-Help: <mailto:netfilter-announce-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
+	<mailto:netfilter-announce-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-announce-bounces@lists.netfilter.org
+Errors-To: netfilter-announce-bounces@lists.netfilter.org
+To: netfilter-announce@lists.netfilter.org, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Cc: lwn@lwn.net
+
+This is a multi-part message in MIME format.
+--------------050605090806010602070101
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
 
-On 2006-12-06, Elvir Kuric <omasnjak@yahoo.com> wrote:
-> I will try this, but I need to read more about this
-> topic, so that is reason why I asked for materail to
-> read, you wrote solution, and that is great, but if I
-> want relly understand this I need to read much more?
+Netfilter Core Team wrote:
+> Hi!
+> 
+> The netfilter coreteam proudly presents:
+> 
+> 	iptables version 1.3.7
+> 
+> The 1.3.7 version contains accumulated bugfixes to the last 1.3.6
+> version. This comes a bit earlier after the last release than
+> usual because the endian annotations in 2.6.19 broke iptables
+> compilation, which is fixed with this version.
+> 
+> The ChangeLog is attached to this mail.
 
-Iptables Tutorial [http://iptables-tutorial.frozentux.net/]
-Linux Advanced Routing & Traffic Control [http://www.lartc.org/]
+It should have been at least :)
 
-I know, it's only a summary but nice to read.
 
-One hint: study iproute2. It's replacement for ifconfig/route commands
-and provides a lot of more features than the old ones.
 
--- Petr
+--------------050605090806010602070101
+Content-Type: text/plain;
+ name="changes-iptables-1.3.7.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changes-iptables-1.3.7.txt"
 
+Bugs fixed since 1.3.6:
+
+- Fix compilation error with linux 2.6.19
+  [ Patrick McHardy ]
+
+- Fix LOG target segfault with --log-prefix ""
+  [ Mike Frysinger, Bugzilla #516 ]
+
+- Fix conflicting getsockopt optname values for IP6T_SO_GET_REVISION_{MATCH,TARGET}
+  [ Yasuyuki KOZAKAI ]
+
+- Fix -E (rename) in iptables/ip6tables
+  [ Krzysztof Piotr Oledzki ]
+
+- Fix /etc/network usage
+  [ Pablo Neira ]
+
+- Fix iptables-save not printing -s/-d ! 0/0
+  [ Patrick McHardy ]
+
+- Fix ip6tables-save unnecessarily printing -s/-d options for zero prefix length
+  [ Daniel De Graaf ]
+
+New features since 1.3.6:
+
+- Add revision support for ip6tables
+  [ R?mi Denis-Courmont ]
+
+- Add port range support for ip6tables multiport match
+  [ R?mi Denis-Courmont ]
+
+- Add sctp match extension for ip6tables
+  [ Patrick McHardy ]
+
+- Add iptables-xml tool
+  [ Amin Azez ]
+
+- Add hashlimit support for ip6tables (needs kernel > 2.6.19)
+  [ Patrick McHardy ]
+
+- Use /lib/modules/$(shell uname -r)/build instead of /usr/src/linux to look for kernel source
+  [ Patrick McHardy ]
+
+- Add NFLOG target extension for iptables/ip6tables (needs kernel > 2.6.19)
+  [ Patrick McHardy ]
+
+
+--------------050605090806010602070101--
 
