@@ -1,101 +1,71 @@
-From: Netfilter Core Team <coreteam@netfilter.org>
-Subject: Re: Release of iptables-1.3.7
-Date: Wed, 06 Dec 2006 10:54:02 +0100
-Message-ID: <4576933A.7080006@netfilter.org>
-References: <45769244.3060508@netfilter.org>
+From: Elvir Kuric <omasnjak@yahoo.com>
+Subject: Re: How make virtual interfaces ( subinterfaces ) on linux machine
+Date: Wed, 6 Dec 2006 04:20:51 -0800 (PST)
+Message-ID: <358911.96670.qm@web56206.mail.re3.yahoo.com>
+References: <slrnend90r.5up.xpisar@album.ics.muni.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050605090806010602070101"
-Return-path: <netfilter-announce-bounces@lists.netfilter.org>
-In-Reply-To: <45769244.3060508@netfilter.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <slrnend90r.5up.xpisar@album.ics.muni.cz>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
-	<mailto:netfilter-announce-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-announce>
-List-Post: <mailto:netfilter-announce@lists.netfilter.org>
-List-Help: <mailto:netfilter-announce-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
-	<mailto:netfilter-announce-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-announce-bounces@lists.netfilter.org
-Errors-To: netfilter-announce-bounces@lists.netfilter.org
-To: netfilter-announce@lists.netfilter.org, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
-Cc: lwn@lwn.net
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Petr Pisar <xpisar@fi.muni.cz>, netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------050605090806010602070101
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Thank you, 
 
-Netfilter Core Team wrote:
-> Hi!
+when I post this thread I thought it will not be
+interesting for some disscusion but it is.
+I think this thread about VLANs on linux is very
+interesting and it will be very useful for memeber of
+netfilter mailing list to talk more about it.
+
+
+Regards and best wishes to all of you 
+
+Elvir
+--- Petr Pisar <xpisar@fi.muni.cz> wrote:
+
+> On 2006-12-06, Elvir Kuric <omasnjak@yahoo.com>
+> wrote:
+> > I will try this, but I need to read more about
+> this
+> > topic, so that is reason why I asked for materail
+> to
+> > read, you wrote solution, and that is great, but
+> if I
+> > want relly understand this I need to read much
+> more?
 > 
-> The netfilter coreteam proudly presents:
+> Iptables Tutorial
+> [http://iptables-tutorial.frozentux.net/]
+> Linux Advanced Routing & Traffic Control
+> [http://www.lartc.org/]
 > 
-> 	iptables version 1.3.7
+> I know, it's only a summary but nice to read.
 > 
-> The 1.3.7 version contains accumulated bugfixes to the last 1.3.6
-> version. This comes a bit earlier after the last release than
-> usual because the endian annotations in 2.6.19 broke iptables
-> compilation, which is fixed with this version.
+> One hint: study iproute2. It's replacement for
+> ifconfig/route commands
+> and provides a lot of more features than the old
+> ones.
 > 
-> The ChangeLog is attached to this mail.
-
-It should have been at least :)
-
-
-
---------------050605090806010602070101
-Content-Type: text/plain;
- name="changes-iptables-1.3.7.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changes-iptables-1.3.7.txt"
-
-Bugs fixed since 1.3.6:
-
-- Fix compilation error with linux 2.6.19
-  [ Patrick McHardy ]
-
-- Fix LOG target segfault with --log-prefix ""
-  [ Mike Frysinger, Bugzilla #516 ]
-
-- Fix conflicting getsockopt optname values for IP6T_SO_GET_REVISION_{MATCH,TARGET}
-  [ Yasuyuki KOZAKAI ]
-
-- Fix -E (rename) in iptables/ip6tables
-  [ Krzysztof Piotr Oledzki ]
-
-- Fix /etc/network usage
-  [ Pablo Neira ]
-
-- Fix iptables-save not printing -s/-d ! 0/0
-  [ Patrick McHardy ]
-
-- Fix ip6tables-save unnecessarily printing -s/-d options for zero prefix length
-  [ Daniel De Graaf ]
-
-New features since 1.3.6:
-
-- Add revision support for ip6tables
-  [ R?mi Denis-Courmont ]
-
-- Add port range support for ip6tables multiport match
-  [ R?mi Denis-Courmont ]
-
-- Add sctp match extension for ip6tables
-  [ Patrick McHardy ]
-
-- Add iptables-xml tool
-  [ Amin Azez ]
-
-- Add hashlimit support for ip6tables (needs kernel > 2.6.19)
-  [ Patrick McHardy ]
-
-- Use /lib/modules/$(shell uname -r)/build instead of /usr/src/linux to look for kernel source
-  [ Patrick McHardy ]
-
-- Add NFLOG target extension for iptables/ip6tables (needs kernel > 2.6.19)
-  [ Patrick McHardy ]
+> -- Petr
+> 
+> 
+> 
 
 
---------------050605090806010602070101--
+
+ 
+____________________________________________________________________________________
+Need a quick answer? Get one in minutes from people who know.
+Ask your question on www.Answers.yahoo.com
 
