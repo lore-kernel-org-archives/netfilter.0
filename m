@@ -1,12 +1,15 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
+From: Clemens <clemens.schaefer@gmx.de>
 Subject: Re: How make virtual interfaces ( subinterfaces ) on linux machine
-Date: Wed, 06 Dec 2006 00:40:42 -0600
-Message-ID: <457665EA.1030709@riverviewtech.net>
-References: <20061206063409.75053.qmail@web56211.mail.re3.yahoo.com>
+Date: Wed, 06 Dec 2006 08:57:51 +0100
+Message-ID: <457677FF.1010605@gmx.de>
+References: <428559.74702.qm@web56206.mail.re3.yahoo.com>
+	<4575D2D9.4020308@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig537E87833943109B16811A76"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20061206063409.75053.qmail@web56211.mail.re3.yahoo.com>
+In-Reply-To: <4575D2D9.4020308@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +20,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On 12/06/06 00:34, Elvir Kuric wrote:
-> Thank you very much Taylor.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig537E87833943109B16811A76
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-You are welcome.
+>=20
+> Then use IPTables / EBTables / ARPTables to your heart's content. If yo=
+u
+> enable layer 3 matching on layer 2 for ebtables, you can use IPTables t=
+o
+> filter bridged traffic.
 
-> I will try this, but I need to read more about this
-> topic, so that is reason why I asked for materail to
-> read, you wrote solution, and that is great, but if I
-> want relly understand this I need to read much more?
+this is very interesting, because i was trying to set up a firewall
+on a vmware server (vmware creates a bridge, which is not a linux
+bridge (so brctl and ebtables do not work on this) , and connects
+all virtual machines to this bridge in order to give access to the
+network).
 
-I'm sorry, I was trying to say that I don't have or know of a good 
-concise location to read about this information.  Try reading some 
-tutorials on bridging, vlan / trunking, and bonding.  I think you will 
-pick up a lot of what you are wanting there.  If there is a location to 
-start reading, it will be a networking tutorial that introduces concepts 
-that you can then find out how to implement them on Linux.
+i did the exact thing as you described, created a dummy interface,
+bridged my eth0 via a linuxbridge to the dummy interface, and then
+connected the vmware bridge to my dummy interface. that way, i am
+able to firewall the vmware traffic using ebtables.
 
-> Anyway thank you very much for this.
+but now my question: what are you using the is there any advantage
+in using iptables to filter bridged traffic as you noted in my quote
+above? i use ebtables to do all the filtering in the linuxbridge,
+and it works pretty well..
 
-You are welcome.
+thanks for your reply,
+
+clemens
 
 
 
-Grant. . . .
+--------------enig537E87833943109B16811A76
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFFdngEnDei4azjmoERAo73AJ9Y/y2VWhhNN27UwaWIIG76KDS2BQCfXBOT
+iBg1sxOTat92o+7slLXlXqc=
+=xEzd
+-----END PGP SIGNATURE-----
+
+--------------enig537E87833943109B16811A76--
 
