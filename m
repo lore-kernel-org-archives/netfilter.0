@@ -1,13 +1,11 @@
-From: Clemens <clemens.schaefer@gmx.de>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: How make virtual interfaces ( subinterfaces ) on linux machine
-Date: Wed, 06 Dec 2006 09:21:02 +0100
-Message-ID: <45767D6E.10706@gmx.de>
+Date: Wed, 06 Dec 2006 02:09:01 -0600
+Message-ID: <45767A9D.8030301@riverviewtech.net>
 References: <428559.74702.qm@web56206.mail.re3.yahoo.com>	<4575D2D9.4020308@riverviewtech.net>
 	<457677FF.1010605@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enigBFA3DD2B3B4EBD28B1E83A13"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <457677FF.1010605@gmx.de>
 List-Id: <netfilter.vger.kernel.org>
@@ -20,41 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigBFA3DD2B3B4EBD28B1E83A13
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-sorry, i did not go through my email after writing, just neglect the
-"what are you using the" part :)
-
+On 12/06/06 01:57, Clemens wrote:
 > but now my question: what are you using the is there any advantage
 > in using iptables to filter bridged traffic as you noted in my quote
 > above? i use ebtables to do all the filtering in the linuxbridge,
 > and it works pretty well..
->=20
-> thanks for your reply,
->=20
-> clemens
->=20
->=20
+
+EBTables is a very good basic layer 2 filtering mechanism.  However, I
+don't think you can do statefull matching with EBTables like you can
+with IPTables.  By using IPTables to filter traffic for bridges, you can
+take advantage of all of the advanced match extensions that you can not
+do with EBTables.
 
 
---------------enigBFA3DD2B3B4EBD28B1E83A13
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+Grant. . . .
 
-iD8DBQFFdn1unDei4azjmoERArALAJ9Tx9KuC/rdJKQU23oeCr7RlHr/uwCeME3L
-3UCqwxYvG1i0CzfTCoEJI9U=
-=YhvO
------END PGP SIGNATURE-----
-
---------------enigBFA3DD2B3B4EBD28B1E83A13--
 
