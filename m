@@ -1,12 +1,8 @@
-From: Alexandru Dragoi <alex@zoomnet.ro>
-Subject: Re: How make virtual interfaces ( subinterfaces ) on linux machine
-Date: Thu, 07 Dec 2006 13:41:44 +0200
-Message-ID: <4577FDF8.80401@zoomnet.ro>
-References: <428559.74702.qm@web56206.mail.re3.yahoo.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: "Marco Berizzi" <pupilla@hotmail.com>
+Subject: load balacing with https home banking
+Date: Thu, 7 Dec 2006 15:08:00 +0100
+Message-ID: <BAY103-DAV15AB5602B35808C59F7111B2DC0@phx.gbl>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <428559.74702.qm@web56206.mail.re3.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +13,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Elvir Kuric <omasnjak@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Elvir Kuric wrote:
-> Hi all, 
->
-> I want to know is there some manual or even better
-> book how to make virtual interfaces  ( subinterfaces )
-> on linux machine and attach VLANs which are
-> implemented on switch to these virtaul interfaces.
->
-> I just need suggestions for some good reading.
->
-> Thank you in advance and regards
->
->
->  
-> ____________________________________________________________________________________
-> Do you Yahoo!?
-> Everyone is raving about the all-new Yahoo! Mail beta.
-> http://new.mail.yahoo.com
->
->   
-You ned to make sure you have 8021q module loaded
+Hello everybody.
+I'm running linux 2.6.19 with nth match to
+alternatively snat outgoing connections to
+two different ip addresses.
+Here is:
 
-# modprobe 8021q
+$IPTABLES -t nat -A POSTROUTING -s my_ip --protocol tcp -m
+multiport --dports 80,443 -m statistic --mode nth --every 2 -j SNAT --to
+adslA
+$IPTABLES -t nat -A POSTROUTING -s my_ip --protocol tcp -m
+multiport --dports 80,443 -j SNAT --to adslB
 
-Then use vconfig to attach 802.1q tags to ethernet frames
+Things are working pretty good, but some
+applications (home banking for example),
+don't work correctly. Is there a way to
+tell iptables to snat always with the same
+source ip for the same destination host?
 
-# vconfig add ethx 20
 
-(x is a index of ethernet interface card)
-
-This will create the interface ethx.20 (the naming can be change with 
-set_name_type option of vconfig, check the manual) wich is similar to a 
-cisco subinterface with encapsulation dot1q 20. You can add ip with 
-ifconfig, or do everything else you you with a network interface in linux.
 
