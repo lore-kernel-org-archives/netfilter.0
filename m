@@ -1,7 +1,8 @@
-From: "P. Harlow" <wolf-r1@wispertel.net>
-Subject: IPTables not starting with Fedora 6
-Date: Thu, 07 Dec 2006 17:51:31 -0700
-Message-ID: <4578B713.8020406@wispertel.net>
+From: Richhmond Dyes <rdyes@monroehosp.org>
+Subject: Problem with re-directing from 2 sources to one server
+Date: Thu, 07 Dec 2006 21:46:43 -0500
+Message-ID: <4578D213.2000607@monroehosp.org>
+Reply-To: rdyes@monroehosp.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,24 +19,50 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This might be better posted to an SELinux list however I thought I'd 
-start here.
+I have a server that I have to reach from 2 different networks, the
+Internet and another private network called downtown and I also have to
+reach from the server both networks.  If I have one of the set of rules
+running, it works fine, but if I put both set of rules on, it doesn't
+work.  below are my set of rules.  Can anyone tell me a how this can be
+done?
 
-I have a fresh install of Fedora Core 6. All works well with IPTables 
-however when I try to get it started at boot I get the following SELinux 
-error:
+Here is the setup.
+mynetwork 172.31.0.0/21
+eth0 172.31.4.254 my network interface
+eth1 192.168.14.1 interface to downtown which on that network's side
+routes to 10.0.0.0/9
+eth2 publicIP to the internet
+publicnetwork.100 is the virtual address on eth2 called eth2:100
+172.31.5.100 is the private ip address of the server I want reached
+192.168.14.10 is the virtual ip address on eth1 called eth1:10
 
-type=AVC msg=audit(1165530432.263:80): avc: denied { read } for pid=2995 
-comm="iptables-restor" name="iptables" dev=dm-0 ino=11599885 
-scontext=user_u:system_r:iptables_t:s0 
-tcontext=user_u:object_r:etc_runtime_t:s0 tclass=file
-type=SYSCALL msg=audit(1165530432.263:80): arch=40000003 syscall=5 
-success=no exit=-13 a0=bffb4f67 a1=0 a2=1b6 a3=927e008 items=0 ppid=2986 
-pid=2995 auid=501 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 
-fsgid=0 tty=(none) comm="iptables-restor" exe="/sbin/iptables-restore" 
-subj=user_u:system_r:iptables_t:s0 key=(null)
 
-No matter what I do the machine refuses to read that file. Even if I 
-re-create it manually. Has anyone run into this where iptables-restore 
-is not allowed to read this file?
+$IPT -t nat -A PREROUTING -d publicnetwork.100 -j DNAT --to-destination
+172.31.5.100
+$IPT -t nat -A POSTROUTING -s 172.31.5.100 -j SNAT --to-source
+publicnetwork.100
+
+$IPT -t nat -A PREROUTING -d 192.168.14.10  -j DNAT --to-destination
+172.31.5.100
+$IPT -t nat -A POSTROUTING -s 172.31.5.100 -j SNAT --to-source 
+192.168.14.10
+
+Then I forward all my 10.0.0.0/9  ip requests to  downtown
+
+$IPT -A FORWARD -m state --state NEW -i eth0 -s 172.31.0.0/21  -o eth1
+-d 10.0.0.0/8  -j ACCEPT
+
+Then I forward ip requests from downtown for the server to it.
+$IPT -A FORWARD -i eth1 -s 10.0.0.0/8 -d 172.31.5.100 -m state --state
+NEW -j ACCEPT
+
+Then I forward ip request from the internet to the server.
+$IPT -A FORWARD -i eth2 -s 0/0 -o eth0 -d 172.31.5.100 -m state --state
+NEW -m multiport -p tcp  --dport 22,80,1352 -j ACCEPT
+
+Again when I have both set of rules on, it does not work.  any ideas?
+
+
+
+
 
