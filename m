@@ -1,14 +1,14 @@
-From: Jorge Augusto Senger <jorge@br10.com.br>
-Subject: Re: IPTables not starting with Fedora 6
-Date: Fri, 08 Dec 2006 08:19:14 -0200
-Message-ID: <45793C22.8050008@br10.com.br>
-References: <4578B713.8020406@wispertel.net>
+From: "Arthur Liew" <geniusbb@gmail.com>
+Subject: NFQNL_COPY_META questions
+Date: Fri, 8 Dec 2006 13:26:12 +0000
+Message-ID: <bb5ff7280612080526h3215bf5bx8840cb3fcffefb76@mail.gmail.com>
+References: <bb5ff7280612080521u5a2e584cm77b85a3433d47c48@mail.gmail.com>
+	<bb5ff7280612080523x37040ceexa557f36c3693d02c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig8E3ACE19ABD59013A3395173"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4578B713.8020406@wispertel.net>
+In-Reply-To: <bb5ff7280612080523x37040ceexa557f36c3693d02c@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,67 +19,139 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig8E3ACE19ABD59013A3395173
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+ Dear All,
 
-< setenforce 0 > ?
+ I am trying to extract length of packet from netfilter without the
+need to copy complete data (avoid using NFQNL_COPY_PACKET). I have
+tried  NFQNL_COPY_META but nfq_get_payload(tb, &data) gives me -1. Is
+there a way to extract packet len without using  NFQNL_COPY_PACKET to
+reduce packet copy overhead ? I uses the test code below.
 
-P. Harlow escreveu:
-> This might be better posted to an SELinux list however I thought I'd
-> start here.
->=20
-> I have a fresh install of Fedora Core 6. All works well with IPTables
-> however when I try to get it started at boot I get the following SELinu=
-x
-> error:
->=20
-> type=3DAVC msg=3Daudit(1165530432.263:80): avc: denied { read } for pid=
-=3D2995
-> comm=3D"iptables-restor" name=3D"iptables" dev=3Ddm-0 ino=3D11599885
-> scontext=3Duser_u:system_r:iptables_t:s0
-> tcontext=3Duser_u:object_r:etc_runtime_t:s0 tclass=3Dfile
-> type=3DSYSCALL msg=3Daudit(1165530432.263:80): arch=3D40000003 syscall=3D=
-5
-> success=3Dno exit=3D-13 a0=3Dbffb4f67 a1=3D0 a2=3D1b6 a3=3D927e008 item=
-s=3D0 ppid=3D2986
-> pid=3D2995 auid=3D501 uid=3D0 gid=3D0 euid=3D0 suid=3D0 fsuid=3D0 egid=3D=
-0 sgid=3D0
-> fsgid=3D0 tty=3D(none) comm=3D"iptables-restor" exe=3D"/sbin/iptables-r=
-estore"
-> subj=3Duser_u:system_r:iptables_t:s0 key=3D(null)
->=20
-> No matter what I do the machine refuses to read that file. Even if I
-> re-create it manually. Has anyone run into this where iptables-restore
-> is not allowed to read this file?
->=20
->=20
+ Thanks.
+ Arthur.
 
---=20
-Atenciosamente,
-
-Jorge Augusto Senger
-BR10 Ltda - Ger=EAncia de TI
-jorge@br10.com.br
-42 32252888 / 84015330
+ ----------------------------------
 
 
---------------enig8E3ACE19ABD59013A3395173
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <linux/netfilter.h>		/* for NF_ACCEPT */
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+#include <libnetfilter_queue/libnetfilter_queue.h>
 
-iD8DBQFFeTwliOnIWGbribERAopAAKDlM0fC2mTaDuvnF9aT5bnPQAvpAACgxe3j
-bCrU8Lk8I4Lbra7lhk7OtYA=
-=ObcF
------END PGP SIGNATURE-----
+/* returns packet id */
+static u_int32_t print_pkt (struct nfq_data *tb)
+{
+	int id = 0;
+	struct nfqnl_msg_packet_hdr *ph;
+	u_int32_t mark,ifi;
+	int ret;
+	char *data;
+	
+	ph = nfq_get_msg_packet_hdr(tb);
+	if (ph){
+		id = ntohl(ph->packet_id);
+		printf("hw_protocol=0x%04x hook=%u id=%u ",
+			ntohs(ph->hw_protocol), ph->hook, id);
+	}
+	
+	mark = nfq_get_nfmark(tb);
+	if (mark)
+		printf("mark=%u ", mark);
 
---------------enig8E3ACE19ABD59013A3395173--
+	ifi = nfq_get_indev(tb);
+	if (ifi)
+		printf("indev=%u ", ifi);
+
+	ifi = nfq_get_outdev(tb);
+	if (ifi)
+		printf("outdev=%u ", ifi);
+
+	ret = nfq_get_payload(tb, &data);
+	if (ret >= 0)
+		printf("payload_len=%d ", ret);
+
+	fputc('\n', stdout);
+
+	return id;
+}
+	
+
+static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
+	      struct nfq_data *nfa, void *data)
+{
+	u_int32_t id = print_pkt(nfa);
+	printf("entering callback\n");
+	return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
+}
+
+int main(int argc, char **argv)
+{
+	struct nfq_handle *h;
+	struct nfq_q_handle *qh;
+	struct nfnl_handle *nh;
+	int fd;
+	int rv;
+	char buf[4096];
+
+	printf("opening library handle\n");
+	h = nfq_open();
+	if (!h) {
+		fprintf(stderr, "error during nfq_open()\n");
+		exit(1);
+	}
+
+	printf("unbinding existing nf_queue handler for AF_INET (if any)\n");
+	if (nfq_unbind_pf(h, AF_INET) < 0) {
+		fprintf(stderr, "error during nfq_unbind_pf()\n");
+		exit(1);
+	}
+
+	printf("binding nfnetlink_queue as nf_queue handler for AF_INET\n");
+	if (nfq_bind_pf(h, AF_INET) < 0) {
+		fprintf(stderr, "error during nfq_bind_pf()\n");
+		exit(1);
+	}
+
+	printf("binding this socket to queue '0'\n");
+	qh = nfq_create_queue(h,  0, &cb, NULL);
+	if (!qh) {
+		fprintf(stderr, "error during nfq_create_queue()\n");
+		exit(1);
+	}
+
+	printf("setting copy_packet mode\n");
+	if (nfq_set_mode(qh, NFQNL_COPY_META, 0xffff) < 0) {
+		fprintf(stderr, "can't set packet_copy mode\n");
+		exit(1);
+	}
+
+	nh = nfq_nfnlh(h);
+	fd = nfnl_fd(nh);
+
+	while ((rv = recv(fd, buf, sizeof(buf), 0)) && rv >= 0) {
+		printf("pkt received\n");
+		nfq_handle_packet(h, buf, rv);
+	}
+
+	printf("unbinding from queue 0\n");
+	nfq_destroy_queue(qh);
+
+#ifdef INSANE
+	/* normally, applications SHOULD NOT issue this command, since
+	 * it detaches other programs/sockets from AF_INET, too ! */
+	printf("unbinding from AF_INET\n");
+	nfq_unbind_pf(h, AF_INET);
+#endif
+
+	printf("closing library handle\n");
+	nfq_close(h);
+
+	exit(0);
+}
 
