@@ -1,14 +1,12 @@
-From: sean <seandarcy2@gmail.com>
-Subject: Re: how do I set the MAC address in POSTROUTING?
-Date: Sun, 10 Dec 2006 11:44:15 -0500
-Message-ID: <457C395F.1000702@gmail.com>
-References: <eknslc$rpq$1@sea.gmane.org>
-	<200612010153.55904.Daniel@musketa.de>	<ekph22$1va$1@sea.gmane.org>
-	<45704F1C.7070703@plouf.fr.eu.org>
+From: Elvir Kuric <omasnjak@yahoo.com>
+Subject: Re: how do I target a specific machine - not ip address?
+Date: Sun, 10 Dec 2006 09:47:58 -0800 (PST)
+Message-ID: <187188.90378.qm@web56209.mail.re3.yahoo.com>
+References: <elhd9c$ema$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45704F1C.7070703@plouf.fr.eu.org>
+In-Reply-To: <elhd9c$ema$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,53 +17,68 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: sean <seandarcy2@gmail.com>, netfilter@lists.netfilter.org
 
-Pascal Hambourg wrote:
-> Hello,
->=20
-> sean a =E9crit :
->> Daniel Musketa wrote:
->>>
->>> AFAIK MAC addresses are used in ethernet to address ethernet frames.=20
->>> On ip routed ppp0 no ethernet frames arrive.
->>
->> OK. If that's the case, then the --mac-source target would only work=20
->> on a LAN, not over the ethernet.
->=20
-> I guess you mean over the *in*ternet. Ethernet is a LAN technology.
->=20
->> This would mean thatthe --mac-sourse target has very limited use -=20
->> only on local LANs.
->=20
-> Indeed, the scope of a MAC address is link local, limited to the LAN.
->=20
->> But there is still a place for a MAC address.
->=20
-> On an IP/PPP link ? No way. A PPP interface has no MAC address, it is=20
-> useless. There is a place only in the lines that the LOG target prints=20
-> because they have a fixed format.
->=20
->> How can I  put one in the packet on the client side? This would allow=20
->> me to use it over the internet.
->=20
-> You cannot use MAC addresses over an IP/PPP link. You cannot rely on MAC =
+Hi Sean, 
 
-> addresses over the internet either because this is layer 2 information=20
-> that is not routed by definition.
->=20
->=20
+MAC address will not help you. But you can implenment
+many other ways to connect to your server. 
+First you can change ssh port to listen different than
+22, no mater which, I am hoping you know do this. 
+Second you can implement iptables rule to accept all 
+ssh connections to that port ... something like 
+iptables -A INPUT -p tcp --dport 32022 -s any/0 -d
+your_server_ip -j ACCEPT
+Then implement rules to accept only 2 or more ( it
+depends on you ) ssh connection per minute, and you
+can make some rule for port knocking in combination
+with iptables ( I know port knocking is clear text,
+but posible intruder will get only ssh prompt ). 
 
-But I don't want to use the MAC address to route anything. I=20
-just want to stick it in the packet so _iptables_ will see it.
+Of course there are many other security considerations
+and I am hoping that other list member will take part
+in this discussion.
 
-The internet routers just look at the ip address, so I=20
-wouldn't think they'd strip out the MAC address, do they?
+I hope this helps 
 
-If not, then if the client inserts a MAC address, couldn't=20
-iptables use it when it finally arrives.
+Regards 
+Elvir Kuric
 
-sean
 
+--- sean <seandarcy2@gmail.com> wrote:
+
+> I want to connect from travel to my server. Since
+> I'm 
+> connecting through hot-spots or hotel connections,
+> my ip 
+> address will be all over the place.
+> 
+> I thought about putting the laptop's MAC address in
+> the 
+> packet, and using mac-source, but I've it seems to
+> MAC 
+> address is stripped out over the internet.
+> 
+> So, how do I set it up so the server will know my
+> laptop 
+> from whatever ip address I happen to have.
+> 
+> BTW, the laptop is linux, so I can mangle
+> POSTROUTING if 
+> that helps.
+> 
+> I can ssh, but what I want to do is set up an NFS
+> mount.
+> 
+> sean
+> 
+> 
+> 
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
