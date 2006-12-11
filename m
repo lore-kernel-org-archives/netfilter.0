@@ -1,11 +1,14 @@
-From: <murugan.venugopal@wipro.com>
-Subject: when will the netfilter conntrack helper will be called?
-Date: Mon, 11 Dec 2006 08:56:54 +0530
-Message-ID: <2A1A6E935323B04BB28608B01B9B077A034B2C9D@CHN-SNR-MBX01.wipro.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: how do I set the MAC address in POSTROUTING?
+Date: Mon, 11 Dec 2006 07:29:56 +0100
+Message-ID: <1165818596.13113.9.camel@anduril.intranet.cartel-securite.net>
+References: <eknslc$rpq$1@sea.gmane.org>
+	<200612010153.55904.Daniel@musketa.de>	<ekph22$1va$1@sea.gmane.org>
+	<45704F1C.7070703@plouf.fr.eu.org>  <457C395F.1000702@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <457C395F.1000702@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,44 +19,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: sean <seandarcy2@gmail.com>
+Cc: netfilter@lists.netfilter.org
+
+Le dimanche 10 d=E9cembre 2006 =E0 11:44 -0500, sean a =E9crit :
+> The internet routers just look at the ip address, so I=20
+> wouldn't think they'd strip out the MAC address, do they?
+
+MAC addresses are layer 2 addresses. They don't propagate outside
+ethernet network when packet is handled by a router.
+
+So, yes your local router can see your client MAC address and you can
+use -m mac in iptables to match it. If you're sitting outside your
+client's LAN, you won't see its MAC address.
 
 
-Hai,
-     when will the netfilter conntrack helper funtion will be called for
-a router? It will be in input chain, forward chain or output chain for
-the first packet detected matching the helper registration parameters.=20
-=20
-i printed skbuff contents for TFTP which i found after SNAT done .will
-it not be before doing NAT?..can any one guide me if i am wrong
-=20
-My setup is=20
- client              router               server=20
- 192.168.0.1    10.145.2.23(wan)     10.145.6.78=20
-=20
-c2b682a4: 17 192.168.0.1:32770 -> 10.145.6.78:69=20
-rep tuple c2b682bc: 17 10.145.6.78:69 -> 10.145.2.23:32770=20
-and skbuff contents as 10.145.2.23:32770 -> 10.145.6.78:69=20
-=20
-can i directly change tupule contents to redirect the packet to any
-ipaddress or port?
-=20
-regards,
-murugan
-
-
-The information contained in this electronic message and any attachments to=
- this message are intended for the exclusive use of the addressee(s) and=
- may contain proprietary, confidential or privileged information. If you=
- are not the intended recipient, you should not disseminate, distribute or=
- copy this e-mail. Please notify the sender immediately and destroy all=
- copies of this message and any attachments.=20
-
-WARNING: Computer viruses can be transmitted via email. The recipient=
- should check this email and any attachments for the presence of viruses.=
- The company accepts no liability for any damage caused by any virus=
- transmitted by this email.
-=20
-www.wipro.com
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
