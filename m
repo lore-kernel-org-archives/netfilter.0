@@ -1,16 +1,14 @@
-From: "rabbtux rabbtux" <rabbtux@gmail.com>
-Subject: Re: ipsec NAT pass through rule(s)?
-Date: Mon, 11 Dec 2006 09:50:41 -0800
-Message-ID: <5cc9c8f90612110950x3ec0dbd0g6497c87182edc866@mail.gmail.com>
-References: <5cc9c8f90612091547r4dd21922i8bf63d84b9c59c8@mail.gmail.com>
-	<1165747742.5125.15.camel@anduril.intranet.cartel-securite.net>
-	<5cc9c8f90612102233g68f9b03o88e68614d0082445@mail.gmail.com>
-	<1165830405.28768.38.camel@anduril.intranet.cartel-securite.net>
+From: Richmond Dyes <rdyes@monroehosp.org>
+Subject: Re: Problem with re-directing from 2 sources to one server
+Date: Mon, 11 Dec 2006 15:06:21 -0500
+Message-ID: <457DBA3D.8080206@monroehosp.org>
+References: <4578D213.2000607@monroehosp.org>
+	<457D7C57.3090301@riverviewtech.net>
+Reply-To: Richmond.Dyes@monroehosp.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1165830405.28768.38.camel@anduril.intranet.cartel-securite.net>
-Content-Disposition: inline
+In-Reply-To: <457D7C57.3090301@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,62 +19,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Taylor, Grant" <gtaylor@riverviewtech.net>
+Cc: "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
 
-Thanks for your patience with me :-)
-I am ISP for a few customers and all customers are on a private
-network behind my iptables firewall.  Some customer residential
-routers have a 'feature' checkbox for IPSEC pass through that I don't
-understand but want to be sure my firewall can do the same thing.
+Thanks by putting the output device in, it worked.
 
-Customer's IT people ask, "is your ipsec, or vpn pass-thru box
-checked?" so I need to know what iptables rules that linksys/dlink
-have behind this 'feature'.
+Taylor, Grant wrote:
+> Richhmond Dyes wrote:
+>> I have a server that I have to reach from 2 different networks, the
+>> Internet and another private network called downtown and I also have to
+>> reach from the server both networks.  If I have one of the set of rules
+>> running, it works fine, but if I put both set of rules on, it doesn't
+>> work.  below are my set of rules.  Can anyone tell me a how this can be
+>> done?
+>>
+>> Here is the setup.
+>> mynetwork 172.31.0.0/21
+>> eth0 172.31.4.254 my network interface
+>> eth1 192.168.14.1 interface to downtown which on that network's side
+>> routes to 10.0.0.0/9
+>> eth2 publicIP to the internet
+>> publicnetwork.100 is the virtual address on eth2 called eth2:100
+>> 172.31.5.100 is the private ip address of the server I want reached
+>> 192.168.14.10 is the virtual ip address on eth1 called eth1:10
+>
+> What you are wanting to do is a simple enough request and should be 
+> possible to do.
+>
+>> $IPT -t nat -A PREROUTING -d publicnetwork.100 -j DNAT --to-destination
+>> 172.31.5.100
+>> $IPT -t nat -A POSTROUTING -s 172.31.5.100 -j SNAT --to-source
+>> publicnetwork.100
+>>
+>> $IPT -t nat -A PREROUTING -d 192.168.14.10  -j DNAT --to-destination
+>> 172.31.5.100
+>> $IPT -t nat -A POSTROUTING -s 172.31.5.100 -j SNAT --to-source 
+>> 192.168.14.10
+>
+> I believe your two POSTROUTING rules are the problem here.  Both rules 
+> SNAT *ANY* traffic from your internal server.  I would alter the rules 
+> so that they only applied on traffic as it left your two different 
+> network interfaces.
+>
+> I.e.
+>
+> $IPT -t nat -A POSTROUTING -o eth2 -s 172.31.5.100 -j SNAT --to-source 
+> publicnetwork.100
+>
+> and
+>
+> $IPT -t nat -A POSTROUTING -o eth1 -s 172.31.5.100 -j SNAT --to-source 
+> 192.168.14.10
+>
+>
+>> Then I forward all my 10.0.0.0/9  ip requests to  downtown
+>>
+>> $IPT -A FORWARD -m state --state NEW -i eth0 -s 172.31.0.0/21  -o eth1
+>> -d 10.0.0.0/8  -j ACCEPT
+>>
+>> Then I forward ip requests from downtown for the server to it.
+>> $IPT -A FORWARD -i eth1 -s 10.0.0.0/8 -d 172.31.5.100 -m state --state
+>> NEW -j ACCEPT
+>>
+>> Then I forward ip request from the internet to the server.
+>> $IPT -A FORWARD -i eth2 -s 0/0 -o eth0 -d 172.31.5.100 -m state --state
+>> NEW -m multiport -p tcp  --dport 22,80,1352 -j ACCEPT
+>>
+>> Again when I have both set of rules on, it does not work.  any ideas?
+>
+>
+>
+> Grant. . . .
 
-Thank you kindly,
-marshall
 
-On 12/11/06, Cedric Blancher <blancher@cartel-securite.fr> wrote:
-> Le dimanche 10 d=E9cembre 2006 =E0 22:33 -0800, rabbtux rabbtux a =E9crit=
- :
-> > Cedric,  I understand how to do nat to IPSEC ports and all others.  My
-> > question is about any special rules required so that the encrypted
-> > ipsec TCP headers don't get mangled?
->
-> TCP headers can't get mangled as they're protected by ESP. That's the
-> whole point of IPSEC ;) BTW, your question seems more about "how to NAT
-> IPSEC" than Netfilter related. Basicly, there are two situations in
-> which you'll break things NATing IPSEC:
->
->         1. AH. As AH protects whole IPSEC packet including IP header,
->            NATing such packets will break AH verification. Therefore, AH
->            does not cope with NAT at all.
->
->         2. TCP in ESP transport mode. As transport mode only
->            encapsulates IP payload (e.g. TCP, UDP, ICMP layers) and
->            TCP checksum is computed with IP addresses, crossing NAT will
->            break TCP checksum verification as it is protected by ESP (so
->            you can't mangle it to reflect your NAT). Therefore, ESP
->            transport mode does not cope with NAT, unless you disable TCP
->            checksum verification, which is a pretty bad idea to me.
->
-> So, at the end of the day, if you want IPSEC to cross NAT, your only
-> option is ESP tunnel mode only[1]. And it won't affect Netfilter ruleset
-> in any way as most packet is encrypted. The only thing Netfilter could
-> do about IPSEC is looking at SPI to ensure there's no SPI collision
-> between two concurrent IPSEC tunnels with the same external gateway, but
-> it won't help much in the end if it happens...
->
->
-> [1] NAT-T being ESP tunnel mode over UDP for gateways refusing other IP
->     protocols than TCP/UDP/ICMP.
->
-> --
-> http://sid.rstack.org/
-> PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
-> >> Hi! I'm your friendly neighbourhood signature virus.
-> >> Copy me to your signature file and help me spread!
->
 
