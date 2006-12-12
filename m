@@ -1,11 +1,13 @@
-From: "Matt" <Matt@PlumSoftware.co.uk>
-Subject: Routing & NAT Problem take #2
-Date: Tue, 12 Dec 2006 10:29:39 -0000
-Message-ID: <117F5E7DA31C17478948DC39E01B948B400F58@frost.PlumSoftwareLtd.local>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Newbie request
+Date: Tue, 12 Dec 2006 11:47:45 +0100
+Message-ID: <457E88D1.8020100@plouf.fr.eu.org>
+References: <457E5B99.7050005@gmail.com>
+	<1153.193.173.119.247.1165912318.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <1153.193.173.119.247.1165912318.squirrel@webmail.sterenborg.info>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,63 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hello,
 
+Rob Sterenborg a =E9crit :
+> On Tue, December 12, 2006 08:34, Nandan Bhat wrote:
+>>
+>>I need some machines on 192.168.1.0/24 network to be able to get/send
+>>mail using 192.168.0.10 . Mail is limited to these networks and does no=
+t go to
+>>the outside world.
+>>
+>>My question is: Do I need a SNAT rule or should I try something with
+>>nat+FORWARD?
+>=20
+> No. You can just route from 192.168.0.0/24 to 192.168.1.0/24 and back w=
+ithout
+> using NAT.
 
-Related problem to the earlier one, I'm afraid. Current network layout:
+But then you need that host 192.168.0.10 has a route back to=20
+192.168.1.0/24, either directly via eth1 IP address (so it'd better be=20
+fixed), or indirectly via the default gateway which must have a route to=20
+192.168.1.0/24 via eth1 IP address. Else you must do SNAT or MASQUERADE=20
+for 192.168.1.0/24 on eth1 :
 
+iptables -t nat -A POSTROUTING -o eth1 -s 192.168.1.0/24 -j MASQUERADE
 
-                Internet                 =20
-                   |                     =20
-         ----100.100.251.217----          =20
-        /      (router)        \                  Internet
-       |                        |                     |
- 100.100.251.220           100.100.251.218        200.200.64.139
-       |                        |                     |
- 192.168.100.x                   \                   /
-(Office Network)                  \                 /
-				         Linux Multihomed Router
-                                       192.168.0.254
-                                             |
-                                             |
-                                        192.168.0.6
-                                      Internal Server
+> $ipt -A FORWARD -m state --state NEW -s 192.168.0.0/24 \
+>   -d 192.168.1.0/24 -m mport -p tcp --dports 25,110 -j ACCEPT
+> $ipt -A FORWARD -m state --state NEW -s 192.168.1.0/24 \
+>   -d 192.168.0.0/24 -m mport -p tcp --dports 25,110 -j ACCEPT
+>=20
+> The last 2 rules can also be split into 4 rules if you don't have the m=
+port
+> module :
 
-
-I got the above working on our test bed, where users can get to the =
-internal server 192.168.0.6 via either Internet connection. The problem =
-is getting from our Office Network to 200.200.64.139:56100
-
-What appears to be happening is this:
-
-1. Packet is sent from internal router, arrives at 100.100.251.220, is =
-routed through 100.100.251.217 to the Internet.
-2. Packet arrives at 200.200.64.139, DNAT'd to 192.168.0.6.
-3. Internal Server replies, sends it to it's default gateway =
-(192.168.0.254)
-4. Linux server sees 100.100.251.220 as destination, sends to =
-100.100.251.218 instead of back out of 200.200.64.139. (This is not =
-expected as I'm marking incoming connections at the linux router using =
-CONNMARK/MARK, and connections go in and out of the correct interface =
-when the destination is outside the 100.100.251.216/29 network)
-
-(Note: I don't know if the returning connections are SNAT'd back to =
-200.200.64.139)
-
-So...
-
-Is there a way around this? i.e. so that the multihoming still works?
-
-It seems that normal routing to the 100.100.251.216/29 network takes =
-precedence over my connection marked rule, that would instruct the =
-packet to be sent out over the correct interface (and maybe therefore =
-SNAT'd correctly too).
-
-Not sure what's going on. Can anyone point me in the correct direction?
-
-Thanks,
-
-Matt
+Or just use the more standard 'multiport' match instead.
 
