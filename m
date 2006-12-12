@@ -1,18 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ipsec NAT pass through rule(s)?
-Date: Tue, 12 Dec 2006 18:05:47 +0100
-Message-ID: <1165943147.4096.28.camel@anduril.intranet.cartel-securite.net>
-References: <5cc9c8f90612091547r4dd21922i8bf63d84b9c59c8@mail.gmail.com>
-	<1165747742.5125.15.camel@anduril.intranet.cartel-securite.net>
-	<5cc9c8f90612102233g68f9b03o88e68614d0082445@mail.gmail.com>
-	<1165830405.28768.38.camel@anduril.intranet.cartel-securite.net>
-	<5cc9c8f90612110950x3ec0dbd0g6497c87182edc866@mail.gmail.com>
-	<1165868251.4392.18.camel@anduril.intranet.cartel-securite.net>
-	<5cc9c8f90612120839p1d24e7cnf05ac777a8aba646@mail.gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: is it possible to nat to the routed IP?
+Date: Tue, 12 Dec 2006 18:54:27 +0100
+Message-ID: <000301c71e16$91295f70$0101000a@tanjian>
+References: <ad41208c0612120718q3fff3c3ai2e668e62b5fb4408@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5cc9c8f90612120839p1d24e7cnf05ac777a8aba646@mail.gmail.com>
+In-Reply-To: <ad41208c0612120718q3fff3c3ai2e668e62b5fb4408@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,20 +17,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: rabbtux rabbtux <rabbtux@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le mardi 12 d=E9cembre 2006 =E0 08:39 -0800, rabbtux rabbtux a =E9crit :
-> Thank you Cedric!  So my iptables firewall that NATs everything
-> already has the "vpn pass-thru" box checked?
+> Thanks a lot, now it works perfect.
+> 
+> Now the another issue is coming:
+> 
+> before we monitor the gateway network traffic via snmp, because I
+> assign 210.153.22.y to eth1, so I get snmp figure from eth1, and then
+> draw the network traffic, but  I am lazy to IP alias, so I use:
+> ip addr add 210.153.22.y dev eth1
+> 
+> Ofcs, the result is that I couldn't monitor it via snmp, at this kind
+> status, how could I monitor network traffic?
+> 
+> any tips, thanks a lot,
 
-Basicly, yes.
+I'm not sure but I thought traffic statistics were related to the NIC,
+not to an IP address, so you might not be able to do this..
+There may be an application that can however, but I'm not aware of it.
+Maybe someone else is.
 
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Grts,
+Rob
+
 
