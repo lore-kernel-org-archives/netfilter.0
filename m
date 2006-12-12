@@ -1,69 +1,107 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: Re: Newbie request
-Date: Tue, 12 Dec 2006 12:10:50 +0100 (CET)
-Message-ID: <1267.193.173.119.247.1165921850.squirrel@webmail.sterenborg.info>
-References: <457E5B99.7050005@gmail.com>
-	<1153.193.173.119.247.1165912318.squirrel@webmail.sterenborg.info>
-	<457E88D1.8020100@plouf.fr.eu.org>
+From: "ArcosCom Linux User" <linux@arcoscom.com>
+Subject: Re: Routing & NAT Problem take #2
+Date: Tue, 12 Dec 2006 12:44:21 +0100 (CET)
+Message-ID: <46154.195.55.244.106.1165923861.squirrel@www.arcoscom.com>
+References: <117F5E7DA31C17478948DC39E01B948B400F58@frost.PlumSoftwareLtd.local>
+Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <457E88D1.8020100@plouf.fr.eu.org>
+Return-path: <lartc-bounces@mailman.ds9a.nl>
+In-Reply-To: <117F5E7DA31C17478948DC39E01B948B400F58@frost.PlumSoftwareLtd.local>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
+List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Sender: lartc-bounces@mailman.ds9a.nl
+Errors-To: lartc-bounces@mailman.ds9a.nl
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, LARTC@mailman.ds9a.nl
 
-On Tue, December 12, 2006 11:47, Pascal Hambourg wrote:
-> Hello,
+Try to SNAT the incoming conection too, then your server see only the
+200.x.x.x IP for the incoming calls.
+
+You have DNAT for redirections, add a postrouting SNAT. I supose that you
+are DNATing in PREROUTING and you will add a rule (only for example) for
+SNAT the incoming calls from 200.x.x.x router:
+
+iptables -t nat -A POSTROUTING -d <internal server ip> -j MASQUERADE
+
+Perhaps you'll need to put before that rule some rules to allow internal
+traffic to that server without SNAT.
+
+Other solution is to configure the routing fules/tables/filters in your
+routers to more specific fules/filters.
+
+Perhaps LARTC is better list than this to allow you to find a good answer
+about your routing problem.
+
+Regards
+
+P.D.: My english isn't perfect, sorry.
+
+El Mar, 12 de Diciembre de 2006, 11:29, Matt escribi=F3:
 >
-> Rob Sterenborg a =EF=BF=BDcrit :
 >
->>> My question is: Do I need a SNAT rule or should I try something with
->>> nat+FORWARD?
->>
->> No. You can just route from 192.168.0.0/24 to 192.168.1.0/24 and back
->> without using NAT.
+> Related problem to the earlier one, I'm afraid. Current network layout:
 >
-> But then you need that host 192.168.0.10 has a route back to
-> 192.168.1.0/24, either directly via eth1 IP address (so it'd better be
-> fixed), or indirectly via the default gateway which must have a route t=
-o
-> 192.168.1.0/24 via eth1 IP address. Else you must do SNAT or MASQUERADE
-> for 192.168.1.0/24 on eth1 :
-
-Yes, I was assuming that the default gateway is set to the router's IP, b=
-ut in
-fact we don't know about the connection to the internet which is there
-somewhere.
-
->> $ipt -A FORWARD -m state --state NEW -s 192.168.0.0/24 \
->> -d 192.168.1.0/24 -m mport -p tcp --dports 25,110 -j ACCEPT
->> $ipt -A FORWARD -m state --state NEW -s 192.168.1.0/24 \
->> -d 192.168.0.0/24 -m mport -p tcp --dports 25,110 -j ACCEPT
->>
->>
->> The last 2 rules can also be split into 4 rules if you don't have the =
-mport
->>  module :
 >
-> Or just use the more standard 'multiport' match instead.
-
-I keep getting confused with these two.. I thought it was mport but somed=
-ay
-I'll remember.
-
-
-Grts,
-Rob
-
-
-
+>                 Internet
+>                    |
+>          ----100.100.251.217----
+>         /      (router)        \                  Internet
+>        |                        |                     |
+>  100.100.251.220           100.100.251.218        200.200.64.139
+>        |                        |                     |
+>  192.168.100.x                   \                   /
+> (Office Network)                  \                 /
+> 				         Linux Multihomed Router
+>                                        192.168.0.254
+>                                              |
+>                                              |
+>                                         192.168.0.6
+>                                       Internal Server
+>
+>
+> I got the above working on our test bed, where users can get to the
+> internal server 192.168.0.6 via either Internet connection. The problem=
+ is
+> getting from our Office Network to 200.200.64.139:56100
+>
+> What appears to be happening is this:
+>
+> 1. Packet is sent from internal router, arrives at 100.100.251.220, is
+> routed through 100.100.251.217 to the Internet.
+> 2. Packet arrives at 200.200.64.139, DNAT'd to 192.168.0.6.
+> 3. Internal Server replies, sends it to it's default gateway
+> (192.168.0.254)
+> 4. Linux server sees 100.100.251.220 as destination, sends to
+> 100.100.251.218 instead of back out of 200.200.64.139. (This is not
+> expected as I'm marking incoming connections at the linux router using
+> CONNMARK/MARK, and connections go in and out of the correct interface w=
+hen
+> the destination is outside the 100.100.251.216/29 network)
+>
+> (Note: I don't know if the returning connections are SNAT'd back to
+> 200.200.64.139)
+>
+> So...
+>
+> Is there a way around this? i.e. so that the multihoming still works?
+>
+> It seems that normal routing to the 100.100.251.216/29 network takes
+> precedence over my connection marked rule, that would instruct the pack=
+et
+> to be sent out over the correct interface (and maybe therefore SNAT'd
+> correctly too).
+>
+> Not sure what's going on. Can anyone point me in the correct direction?
+>
+> Thanks,
+>
+> Matt
+>
+>
