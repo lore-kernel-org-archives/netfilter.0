@@ -1,11 +1,10 @@
-From: "Zhen Zhou" <zhouzhenzj@gmail.com>
-Subject: is it possible to nat to the routed IP?
-Date: Tue, 12 Dec 2006 14:34:31 +0800
-Message-ID: <ad41208c0612112234m5f2e564fm217faff87955641a@mail.gmail.com>
+From: Nandan Bhat <nlbhat@gmail.com>
+Subject: Newbie request
+Date: Tue, 12 Dec 2006 13:04:49 +0530
+Message-ID: <457E5B99.7050005@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,41 +15,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-content-type: text/plain; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+Hi,
 
-one example network looks like:
+I am trying to setup an old machine having two NICs with Fedora Core 5.
+I have two Class C networks (I hope I got that right).
+eth0 is assigned 192.168.1.6/255.255.255.0 .
+eth1 is set to DHCP and is part of 192.168.0.0/24 .
 
-        210.153.22.x, 210.153.22.y
-                        eth1
-                          |
-                     gateway
-                          |
-                        eth0
-                  192.168.5.201
-                          \
-                            \
-                              \
-                       192.168.5.202
-                             eth0
-                                  \
-                                 router
-                                      \
-                                     eth4
-                                 192.168.3.254
-                                          |
-                                     Internal
-                                          |
-                                 192.168.3.208
+I need some machines on 192.168.1.0/24 network to be able to get/send 
+mail using 192.168.0.10 . Mail is limited to these networks and does not 
+go to the outside world.
 
+I have gone through the Linux-IP-Masquerade HOWTO and feel that I don't 
+need a very liberal ruleset. Only smtp,pop functionality, especially 
+connecting with 192.168.0.10 is sufficient.
 
-So is it possible to nat from 210.153.22.y to 192.168.2.208?
-If possible, how to do it=1B
+My question is: Do I need a SNAT rule or should I try something with 
+nat+FORWARD? I just went through iptables manual and am somewhat able to 
+understand the rules in the HOWTO - stronger firewall example.
 
-Thanks a lot,
+Thanks in advance,
 
-
-Zhou
+Nandan Bhat
 
