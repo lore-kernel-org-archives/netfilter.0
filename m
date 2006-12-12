@@ -1,10 +1,13 @@
-From: "Javier A Toledano" <jatoledano@gmail.com>
-Subject: Forwarding Problem
-Date: Tue, 12 Dec 2006 09:53:45 -0300
-Message-ID: <b06b831a0612120453r8e1169fg8cad7f88d4c5c7d0@mail.gmail.com>
+From: "Zhen Zhou" <zhouzhenzj@gmail.com>
+Subject: Re: is it possible to nat to the routed IP?
+Date: Tue, 12 Dec 2006 23:18:42 +0800
+Message-ID: <ad41208c0612120718q3fff3c3ai2e668e62b5fb4408@mail.gmail.com>
+References: <ad41208c0612112234m5f2e564fm217faff87955641a@mail.gmail.com>
+	<1148.193.173.119.247.1165911824.squirrel@webmail.sterenborg.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1148.193.173.119.247.1165911824.squirrel@webmail.sterenborg.info>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,81 +19,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+content-type: text/plain; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Routing Problem
+On 12/12/06, Rob Sterenborg <rob@sterenborg.info> wrote:
+>
+> On Tue, December 12, 2006 07:34, Zhen Zhou wrote:
+> > Hi all,
+> >
+> >
+> > one example network looks like:
+>
+> [ASCII image skipped)
+>
+> > So is it possible to nat from 210.153.22.y to 192.168.2.208?
+> > If possible, how to do it=1B
+>
+> The gateway must have a route for 192.168.2.x set to 192.168.5.202.
+> The default gateway for the router must be 192.168.5.201.
+> The default gateway for 192.168.2.208 must be 192.168.3.254.
+>
+> Packet arrives at 210.153.22.y.
+> Packet is DNAT-ed to 192.168.2.208.
+> Gateway sends packet to 192.168.5.202.
+> Router at 192.168.5.202 routes packet to 192.168.2.208.
+>
+> Example, http:
+>
+> $ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> $ipt -A FORWARD -m state --state NEW -d 192.168.2.208 \
+>   -p tcp --dport 80 -j ACCEPT
+>
+> $ipt -t nat -A PREROUTING -d 210.153.22.y -p tcp --dport 80 \
+>   -j DNAT --to 192.168.2.208
+>
+>
+> Grts,
+> Rob
+>
 
+Thanks a lot, now it works perfect.
 
-	
-   Internet
-         |
-         |
- DSL Router with NAT Enabled
-         192.168.93.2/24
-                                  |
-		  |	 		
-   		  |
-		  |
-	192.168.93.1/24 (eth1)
-		  |				
-Linux Multihomed Router -- 10.0.0.25/8 (eth0) ------------------10.0.0.1 (host)
-		  |		  |
-		  192.168.10.2/24 (eth2)
-		  |
-		  |
-		  |
-		  |
-		192.168.10.49 (host)
+Now the another issue is coming:
 
-				
+before we monitor the gateway network traffic via snmp, because I
+assign 210.153.22.y to eth1, so I get snmp figure from eth1, and then
+draw the network traffic, but  I am lazy to IP alias, so I use:
+ip addr add 210.153.22.y dev eth1
 
+Ofcs, the result is that I couldn't monitor it via snmp, at this kind
+status, how could I monitor network traffic?
 
-The linux is running Centos 4.2. I have 3 ethernet cards, eth1
-(davicom Semiconductor, Inc 21x4x DEC -Tulip Compatible), eth0 (VIA
-Technologies, Ic VT6105 Rhine III)
-Eth2 (intel Corporation 82547Gi Gigabit Ethernet Controller)
+any tips, thanks a lot,
 
-
-I don't have any rules of iptables applied to the kernel.
-
-
-the content of sysctl.conf is below:
-
-# Kernel sysctl configuration file for Red Hat Linux
-#
-# For binary values, 0 is disabled, 1 is enabled.  See sysctl(8) and
-# sysctl.conf(5) for more details.
-
-# Controls IP packet forwarding
-net.ipv4.ip_forward = 1
-
-# Controls source route verification
-net.ipv4.conf.default.rp_filter = 0
-
-# Do not accept source routing
-net.ipv4.conf.default.accept_source_route = 0
-
-# Controls the System Request debugging functionality of the kernel
-kernel.sysrq = 0
-
-# Controls whether core dumps will append the PID to the core filename.
-# Useful for debugging multi-threaded applications.
-kernel.core_uses_pid = 1
-
-
-The problem is that forwarding is enabled but when I try to probe
-connectivity from a host in the 10.0.0.0 net , eg 10.0.0.1 making an
-echo request
-to a host in 192.168.10.0 net , eg 192.168.10.49 the icmp packets
-arrive to the linux box (interface eth0) but don't traverset it.
-After I iniate an echo request from 192.168.10.49 to 10.0.0.1, the
-packets iniatated in 10.0.0.0 net starts to traverse the router
-magically.
-It seems that It needs a packet from the 192.168.10.0 to start working.
-
-I would appreciate any idea.
-Thanks in advance.
-
-Javier Toledano
+Zhou
 
