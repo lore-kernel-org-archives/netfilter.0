@@ -1,16 +1,11 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: ipsec NAT pass through rule(s)?
-Date: Mon, 11 Dec 2006 21:17:30 +0100
-Message-ID: <1165868251.4392.18.camel@anduril.intranet.cartel-securite.net>
-References: <5cc9c8f90612091547r4dd21922i8bf63d84b9c59c8@mail.gmail.com>
-	<1165747742.5125.15.camel@anduril.intranet.cartel-securite.net>
-	<5cc9c8f90612102233g68f9b03o88e68614d0082445@mail.gmail.com>
-	<1165830405.28768.38.camel@anduril.intranet.cartel-securite.net>
-	<5cc9c8f90612110950x3ec0dbd0g6497c87182edc866@mail.gmail.com>
+From: "Matt" <Matt@PlumSoftware.co.uk>
+Subject: Routing & NAT Problem take #2
+Date: Tue, 12 Dec 2006 10:29:39 -0000
+Message-ID: <117F5E7DA31C17478948DC39E01B948B400F58@frost.PlumSoftwareLtd.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5cc9c8f90612110950x3ec0dbd0g6497c87182edc866@mail.gmail.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,42 +16,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: rabbtux rabbtux <rabbtux@gmail.com>
-Cc: netfilter@lists.netfilter.org
-
-Le lundi 11 d=E9cembre 2006 =E0 09:50 -0800, rabbtux rabbtux a =E9crit :
-> Thanks for your patience with me :-)
-
-:P
-
-> Customer's IT people ask, "is your ipsec, or vpn pass-thru box
-> checked?" so I need to know what iptables rules that linksys/dlink
-> have behind this 'feature'.
-
-So you want to know what Linksys does when one checks IPSEC passthrough
-box ?... Well, actually, they just do nothing. They do something when
-the box is unchecked in fact.
-
-From WRT54G source code, you'll see IPSec Passthrough being activated by
-default, i.e. when ipsec_pass=3D1 in NVRAM. Then look at firewall.c file:
-
-    /* DROP packets for IPsec pass through */
-    if (nvram_match("ipsec_pass", "0"))
-        save2file("-A FORWARD -o %s -p udp -m udp --dport %d -j %s\n"
-                , wanface, ISAKMP_PORT, log_drop);
-
-The same goes for PPTP and L2TP. So basicly, they NAT everything, and if
-you happen to uncheck a VPN protocol passthrough checkbox, they block
-this protocol.
-
-So back to what I was saying: IPSEC with ESP only in transport mode or
-NAT-Traversal.
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+
+Related problem to the earlier one, I'm afraid. Current network layout:
+
+
+                Internet                 =20
+                   |                     =20
+         ----100.100.251.217----          =20
+        /      (router)        \                  Internet
+       |                        |                     |
+ 100.100.251.220           100.100.251.218        200.200.64.139
+       |                        |                     |
+ 192.168.100.x                   \                   /
+(Office Network)                  \                 /
+				         Linux Multihomed Router
+                                       192.168.0.254
+                                             |
+                                             |
+                                        192.168.0.6
+                                      Internal Server
+
+
+I got the above working on our test bed, where users can get to the =
+internal server 192.168.0.6 via either Internet connection. The problem =
+is getting from our Office Network to 200.200.64.139:56100
+
+What appears to be happening is this:
+
+1. Packet is sent from internal router, arrives at 100.100.251.220, is =
+routed through 100.100.251.217 to the Internet.
+2. Packet arrives at 200.200.64.139, DNAT'd to 192.168.0.6.
+3. Internal Server replies, sends it to it's default gateway =
+(192.168.0.254)
+4. Linux server sees 100.100.251.220 as destination, sends to =
+100.100.251.218 instead of back out of 200.200.64.139. (This is not =
+expected as I'm marking incoming connections at the linux router using =
+CONNMARK/MARK, and connections go in and out of the correct interface =
+when the destination is outside the 100.100.251.216/29 network)
+
+(Note: I don't know if the returning connections are SNAT'd back to =
+200.200.64.139)
+
+So...
+
+Is there a way around this? i.e. so that the multihoming still works?
+
+It seems that normal routing to the 100.100.251.216/29 network takes =
+precedence over my connection marked rule, that would instruct the =
+packet to be sent out over the correct interface (and maybe therefore =
+SNAT'd correctly too).
+
+Not sure what's going on. Can anyone point me in the correct direction?
+
+Thanks,
+
+Matt
 
