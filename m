@@ -1,12 +1,12 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Routing & NAT Problem take #2
-Date: Tue, 12 Dec 2006 20:43:29 -0600
-Message-ID: <457F68D1.5090508@riverviewtech.net>
-References: <117F5E7DA31C17478948DC39E01B948B400F58@frost.PlumSoftwareLtd.local>
+Subject: Re: Forwarding Problem
+Date: Tue, 12 Dec 2006 20:45:10 -0600
+Message-ID: <457F6936.5070900@riverviewtech.net>
+References: <b06b831a0612120453r8e1169fg8cad7f88d4c5c7d0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <117F5E7DA31C17478948DC39E01B948B400F58@frost.PlumSoftwareLtd.local>
+In-Reply-To: <b06b831a0612120453r8e1169fg8cad7f88d4c5c7d0@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,40 +22,39 @@ To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
 (Cross post of my answer on the LARTC mailing list.)
 
-On 12/12/06 04:29, Matt wrote:
-> I got the above working on our test bed, where users can get to the internal server 192.168.0.6 via either Internet connection. The problem is getting from our Office Network to 200.200.64.139:56100
+On 12/12/06 06:53, Javier A Toledano wrote:
+ > Routing Problem
 
-*nod*  This is a weird routing issue.  (See below.)
+<snip>
 
-> What appears to be happening is this:
->
-> 1. Packet is sent from internal router, arrives at 100.100.251.220, is routed through 100.100.251.217 to the Internet.
-> 2. Packet arrives at 200.200.64.139, DNAT'd to 192.168.0.6.
-> 3. Internal Server replies, sends it to it's default gateway (192.168.0.254)
-> 4. Linux server sees 100.100.251.220 as destination, sends to 100.100.251.218 instead of back out of 200.200.64.139. (This is not expected as I'm marking incoming connections at the linux router using CONNMARK/MARK, and connections go in and out of the correct interface when the destination is outside the 100.100.251.216/29 network)
+ > The problem is that forwarding is enabled but when I try to probe
+ > connectivity from a host in the 10.0.0.0 net , eg 10.0.0.1 making an
+ > echo request
+ > to a host in 192.168.10.0 net , eg 192.168.10.49 the icmp packets
+ > arrive to the linux box (interface eth0) but don't traverset it.
+ > After I iniate an echo request from 192.168.10.49 to 10.0.0.1, the
+ > packets iniatated in 10.0.0.0 net starts to traverse the router
+ > magically.
+ > It seems that It needs a packet from the 192.168.10.0 to start working.
+ >
+ > I would appreciate any idea.
 
-Presuming that you are not doing any custom routing with IPRoute2, this is as I would expect.  What is happening is your "Linux Multihomed Router" has a direct route back to your office's internet router.  Per standard routing mechanisms, your router will choose a directly connected route, or any other (non default) route that it knows of over your default route.  So, really your Linux router is doing what it should be doing.  Unfortunately what it should be doing is not what you want it to be doing.
+I'm not a CentOS user so I can not say for sure.  However I would expect 
+that (despite what you say) that there is some sort of IPTables stateful 
+packet inspection going on from your 10/ network to your 192.168/ 
+network.  If this is indeed the case and the rule is a basic state of 
+ESTABLISHED, RELATED, then any traffic from 10/ to 192.168/ AFTER you 
+sent traffic from 192.168/ to 10/ would be considered RELATED and thus 
+allowed through.
 
-> (Note: I don't know if the returning connections are SNAT'd back to 200.200.64.139)
+However, if as you say, there are no IPTables rules in play at all 
+something else is interfering with your traffic, what it would be, I'm 
+not sure.
 
-A simple TCPDump will tell you if this is the case or not.  However, I suspect that the packets are being SNATed to 100.100.251.218.
-
-> Is there a way around this? i.e. so that the multihoming still works?
-
-Yes, multiple.
-
-One is to make your office router know that it can reach the 200.200.64.139 host via the 100.100.251.218 router.  However, this is probably not what you really want to do.  I say this is probably not want you want to do b/c I'm willing to bet that you are wanting to be able to test things across the internet from your office, which would be circumvented with this routing.
-
-> It seems that normal routing to the 100.100.251.216/29 network takes precedence over my connection marked rule, that would instruct the packet to be sent out over the correct interface (and maybe therefore SNAT'd correctly too).
-
-Yes (see above).  This is because IPTables usually does not interact with any routing decisions.  (Usually b/c IPTables can be configured to do exactly that.)  IPTables usually acts on packets before and after routing decisions have been made.
-
-> Not sure what's going on. Can anyone point me in the correct direction?
-
-A different and probably my recommended solution (presuming that you want the traffic to cross the internet) would be to use a custom routing table for traffic that is to use the 200.200.64.139 interface.  This custom routing table would not include any knowledge of the 100.100.251.218 network.  Thus any traffic back to the office at 100.100.251.220 would be routed through the default gateway and out across the internet back to the office.  Presuming that you have MARK and CONNMARK working correctly you could use an "ip rule" to look for the firewall mark to instruct the Linux kernel to use the alternant routing table.
+Try running iptables-save to make sure that there are absolutely no 
+rules in effect any where.
 
 
 
 Grant. . . .
-
 
