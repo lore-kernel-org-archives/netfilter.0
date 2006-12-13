@@ -1,126 +1,153 @@
-From: "Matt" <Matt@PlumSoftware.co.uk>
-Subject: RE: Routing & NAT Problem take #2
-Date: Wed, 13 Dec 2006 11:15:38 -0000
-Message-ID: <117F5E7DA31C17478948DC39E01B948B400F66@frost.PlumSoftwareLtd.local>
+From: Mike Williams <mike@v6.gaima.co.uk>
+Subject: Re: problem with (incorrectly?) INVALID packets
+Date: Wed, 13 Dec 2006 12:39:34 +0000
+Message-ID: <200612131239.35043.mike@v6.gaima.co.uk>
+References: <200612121942.19276.mike@v6.gaima.co.uk>
+	<457F6F58.3010005@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <lartc-bounces@mailman.ds9a.nl>
-Content-class: urn:content-classes:message
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <457F6F58.3010005@riverviewtech.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
-Sender: lartc-bounces@mailman.ds9a.nl
-Errors-To: lartc-bounces@mailman.ds9a.nl
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: "LARTC (E-mail)" <lartc@mailman.ds9a.nl>, "Netfilter (E-mail)" <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-
-Cross posted to Netfilter and LARTC...
-
-Grant & ArcosCom Linux User
-
-Thanks for your replies.
-
-Firstly, one problem was with my Token Bucket Filler on one of the =
-interfaces, as it was dropping lots of packets and stopping connections =
-from working over that interface. This lead to some strange results, =
-with apparent partial success.
-
-Secondly, I've decided against trying to get it working over the =
-Internet, as actually it makes better sense for us if it doesn't. (it =
-works a little quicker)
-
-Grant - yes, this is a wierd routing issue! :) We looked at various =
-multihoming solutions, and they either involved excessive cost with AS =
-numbers and BGP and cisco routers, pointless montly renting for a third =
-partly to do similar, and then I found that we could do something more =
-or less the same without any of the cost using Linux... and here we are. =
-It doesn't matter to us that users have to change IP address to use the =
-2nd line. We don't users on the 2nd line unless the 1st line is broken =
-as it is also our office internet line!
-
-Anyway, thanks again, your comments helped me understand what was going =
-on at the wire.
-
-Cheers!
-
-Matt
-
-On 12/12/06 04:29, Matt wrote:
-> I got the above working on our test bed, where users can get to the =
-internal server 192.168.0.6 via either Internet connection. The problem =
-is getting from our Office Network to 200.200.64.139:56100
-
-*nod*  This is a weird routing issue.  (See below.)
-
-> What appears to be happening is this:
+On Wednesday 13 December 2006 03:11, Grant Taylor wrote:
+> > The bridge has a rule for traffic from 90.1...1.64/27 to go via a default
+> > gateway of 81.1...7.49, as it can route to that.
 >
-> 1. Packet is sent from internal router, arrives at 100.100.251.220, is =
-routed through 100.100.251.217 to the Internet.
-> 2. Packet arrives at 200.200.64.139, DNAT'd to 192.168.0.6.
-> 3. Internal Server replies, sends it to it's default gateway =
-(192.168.0.254)
-> 4. Linux server sees 100.100.251.220 as destination, sends to =
-100.100.251.218 instead of back out of 200.200.64.139. (This is not =
-expected as I'm marking incoming connections at the linux router using =
-CONNMARK/MARK, and connections go in and out of the correct interface =
-when the destination is outside the 100.100.251.216/29 network)
+> What do you mean by "... bridge has a rule ..."?  What sort of rule are
+> you talking about?  Are you referring to a route, or an IPTables rule,
+> or an EBTables rule, or something else?  Or is this part of your question?
 
-Presuming that you are not doing any custom routing with IPRoute2, this =
-is as I would expect.  What is happening is your "Linux Multihomed =
-Router" has a direct route back to your office's internet router.  Per =
-standard routing mechanisms, your router will choose a directly =
-connected route, or any other (non default) route that it knows of over =
-your default route.  So, really your Linux router is doing what it =
-should be doing.  Unfortunately what it should be doing is not what you =
-want it to be doing.
+Oh, sorry.
+# ip rule add from 90.1...1.65/27 table temp90
+# ip route add default via 81.1...7.49 dev br2 table temp90
 
-> (Note: I don't know if the returning connections are SNAT'd back to =
-200.200.64.139)
+> > To add a bit more difficultly, the interface on LFW with public IPs is
+> > also a bridge, some may remember my question about bridging and NATting,
+> > this is the machine which will be doing that.
+>
+> Do you mean to say that the interface on LFW with the public ip is the
+> bridge port (i.e. bri0) of the bridge that contains the 81.1...7.48/28
+> and 90.1...1.64/27 networks?
 
-A simple TCPDump will tell you if this is the case or not.  However, I =
-suspect that the packets are being SNATed to 100.100.251.218.
+br2 is the bridge on "bridge" in the diagram, and has a 90... and 81... IP.
+br0 is the bridge on LFW, it has several 90... IPs.
 
-> Is there a way around this? i.e. so that the multihoming still works?
+> > When I ping things from LFW I get an ICMP redirect to 81.1...7.49, but I
+> > don't see anyway I can reach it directly from 90.1...1.67. This is
+> > however a minor annoyance.
+>
+> What "things" per say are you trying to ping?  Where are you trying to
+> ping them from?  What IP address is used during your pinging?
 
-Yes, multiple.
+Anything on the internet. LFW. Any of the 90... IPs assigned to it.
 
-One is to make your office router know that it can reach the =
-200.200.64.139 host via the 100.100.251.218 router.  However, this is =
-probably not what you really want to do.  I say this is probably not =
-want you want to do b/c I'm willing to bet that you are wanting to be =
-able to test things across the internet from your office, which would be =
-circumvented with this routing.
+> This leads me to believe that you don't have your routing set up quite
+> right.
 
-> It seems that normal routing to the 100.100.251.216/29 network takes =
-precedence over my connection marked rule, that would instruct the =
-packet to be sent out over the correct interface (and maybe therefore =
-SNAT'd correctly too).
+I'd love some suggestions on how to make it right :)
 
-Yes (see above).  This is because IPTables usually does not interact =
-with any routing decisions.  (Usually b/c IPTables can be configured to =
-do exactly that.)  IPTables usually acts on packets before and after =
-routing decisions have been made.
+> > 0.0/24 can do all the things they are supposed to be able to do to
+> > 136.0/24. 136.0/24 can do all they things they are supposed to be able to
+> > do against the internet.
+> > 136.0/24 however can't do anything to 0.0/24, as the packets coming back
+> > from 0.0/24 get blocked by rules designed to stop non-authorised traffic
+> > being initiated from 0.0/24 to 136.0/24.
+>
+> I'll presume that you are talking IPTables rules here.  It sounds like
+> there is a slight problem in your rules.
 
-> Not sure what's going on. Can anyone point me in the correct =
-direction?
+Yes, rules here are iptables.
+The rule set is basically the same as the rule set we currently use in 
+production. It's modified to change interface names, public side IP address, 
+add an additional internal zone, and add some more limits on what zones can 
+do to each other.
+On all the other firewalls I run using fwbuilder you allow packets from here 
+to there, and the ACCEPT on ESTABLISHED or RELATED automatically allows the 
+returning packets.
 
-A different and probably my recommended solution (presuming that you =
-want the traffic to cross the internet) would be to use a custom routing =
-table for traffic that is to use the 200.200.64.139 interface.  This =
-custom routing table would not include any knowledge of the =
-100.100.251.218 network.  Thus any traffic back to the office at =
-100.100.251.220 would be routed through the default gateway and out =
-across the internet back to the office.  Presuming that you have MARK =
-and CONNMARK working correctly you could use an "ip rule" to look for =
-the firewall mark to instruct the Linux kernel to use the alternant =
-routing table.
+> > Pretty much the first rules I have say any ESTABLISHED or RELATED packets
+> > get accepted. Which should match these returning packets, and does on the
+> > more "normal" firewalls I run.
+>
+> VPNs make things more complicated.  Depending on which VPN technology
+> and / or implementation there of, you may or may not get devices to use
+> in your IPTables rules.  The existence or lack there of can complicate
+> things.  Usually the lack of the devices means you will have to open up
+> your firewall rules on interfaces that the traffic does come in to be
+> able to match based on IP address.
 
+Openswan on 2.6 native IPsec, so no ipsec devices.
+On the other firewalls I run firewalling is done on IP addresses.
 
+> > For some reason I have failed to fathom, all the returning packets that
+> > come in over any of the VPNs (there are 3), are INVALID not the
+> > ESTABLISHED or RELATED they should be.
+>
+> 3 VPNs?  Where are they too?  What VPN technology and version there of
+> are you using?  Where do these other VPNs connect to?  What subnets are
+> on the other ends of the VPNs?
 
-Grant. . . .
+At the moment, yes 3, later to be 5. Our other office across the Pennines, my 
+house. All openswan, all linux 2.6, all native ipsec. All VPNs terminate at 
+90.1...1.67. 192.168.0.0/24, 192.168.22.0/24, 192.168.30.0/24.
+
+> > Can anyone help?
+>
+> Can / will you please provide us with some more information to be able
+> to help you?  Namely, all the subnets you are trying to connect together
+> as well as your full IPTables rules.  You can easily get your IPTables
+> rules for us via via iptables-save command.
+
+Yep, I will provide as much information as I can.
+
+Here's an example of what is blocked, incorrectly
+
+192.168.136.203 ~ # wget -S -O /dev/null 192.168.0.210
+....
+Connecting to 192.168.0.210:80...
+
+LFW ~ # tail -f /var/log/blah
+.... RULE 35 -- REJECT IN=br0 OUT=bond2 
+MAC=00:04:23:d7:f3:33:00:02:a5:60:0f:52:08:00 SRC=192.168.0.210 
+DST=192.168.136.203 LEN=60 TOS=00 PREC=0x00 TTL=62 ID=0 DF PROTO=TCP SPT=80 
+DPT=50067 SEQ=1894035948 ACK=1130147629 WINDOW=5792 ACK SYN URGP=0
+
+(br0 is bond0 and bond4, bond0 connects to the internet, bond4 has nothing on 
+it yet. bond2 is the 136.0/24 network)
+
+192 168.0.210 does run a webserver. 192.168.136.0/24 has no restriction, at 
+either end, to 192.168.0.0/24. Rule 35 boils down to:
+{INPUT,FORWARD} -s 192.168.0.0/16 -d 192.168.136.0/24 -j REJECT
+However, the very first rules added are:
+$IPTABLES -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+And inbetween there are rules to allow packets in to 136.0/24 from some /24s 
+in 0.0/16, like I can ssh from 0.228 to 136.203.
+
+Obviously I could remove that REJECT rule, but the packets reach the end of 
+the rule set and get DENY'd by the catch all at the end, as the packets 
+coming back are INVALID, not RELATED to an existing connection like they 
+should be.
+Hmm, which suggests they aren't being tracked properly... And after some 
+investigation traffic going to any of the VPN networks from 136.0/24 aren't 
+being conntrack'd, whereas on the other firewalls I run they are (i.e. the 
+VPN between 0.0/24 and 30.0/24). Is there any peculiar about conntrack'ing 
+packets over/out a bridge?
+
+-- 
+Mike Williams
+
