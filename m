@@ -1,13 +1,12 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Newbie request
-Date: Tue, 12 Dec 2006 20:37:29 -0600
-Message-ID: <457F6769.8030705@riverviewtech.net>
-References: <457E5B99.7050005@gmail.com>	<1153.193.173.119.247.1165912318.squirrel@webmail.sterenborg.info>	<457E88D1.8020100@plouf.fr.eu.org>
-	<1267.193.173.119.247.1165921850.squirrel@webmail.sterenborg.info>
+Subject: Re: Routing & NAT Problem take #2
+Date: Tue, 12 Dec 2006 20:43:29 -0600
+Message-ID: <457F68D1.5090508@riverviewtech.net>
+References: <117F5E7DA31C17478948DC39E01B948B400F58@frost.PlumSoftwareLtd.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1267.193.173.119.247.1165921850.squirrel@webmail.sterenborg.info>
+In-Reply-To: <117F5E7DA31C17478948DC39E01B948B400F58@frost.PlumSoftwareLtd.local>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,25 +20,42 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-On 12/12/06 05:10, Rob Sterenborg wrote:
-> Yes, I was assuming that the default gateway is set to the router's IP, but in
-> fact we don't know about the connection to the internet which is there
-> somewhere.
+(Cross post of my answer on the LARTC mailing list.)
 
-No, we do not know about the gateway.  However, recall from the OP that 
-"eth1 is set to DHCP and is part of 192.168.0.0/24", which means that 
-the route back to the 192.168.1.0/24 network could change as the 
-""router in question reboots.  So, either the routers are running some 
-sort of routing protocol, or the 192.168.1.0/24 network needs to be 
-""hidden from the 192.168.0.0/24 network.  This is very easily 
-accomplished with SNAT / MASQUERADE.
+On 12/12/06 04:29, Matt wrote:
+> I got the above working on our test bed, where users can get to the internal server 192.168.0.6 via either Internet connection. The problem is getting from our Office Network to 200.200.64.139:56100
 
-Something to keep in mind is that the source IP is a dynamic IP on the 
-192.168.0.0/24 network, so it would be better if MASQUERADE was used 
-verses SNAT.  SNAT does not clear out stale nat translations like 
-MASQUERADE does when the IP for the interface changes.
+*nod*  This is a weird routing issue.  (See below.)
+
+> What appears to be happening is this:
+>
+> 1. Packet is sent from internal router, arrives at 100.100.251.220, is routed through 100.100.251.217 to the Internet.
+> 2. Packet arrives at 200.200.64.139, DNAT'd to 192.168.0.6.
+> 3. Internal Server replies, sends it to it's default gateway (192.168.0.254)
+> 4. Linux server sees 100.100.251.220 as destination, sends to 100.100.251.218 instead of back out of 200.200.64.139. (This is not expected as I'm marking incoming connections at the linux router using CONNMARK/MARK, and connections go in and out of the correct interface when the destination is outside the 100.100.251.216/29 network)
+
+Presuming that you are not doing any custom routing with IPRoute2, this is as I would expect.  What is happening is your "Linux Multihomed Router" has a direct route back to your office's internet router.  Per standard routing mechanisms, your router will choose a directly connected route, or any other (non default) route that it knows of over your default route.  So, really your Linux router is doing what it should be doing.  Unfortunately what it should be doing is not what you want it to be doing.
+
+> (Note: I don't know if the returning connections are SNAT'd back to 200.200.64.139)
+
+A simple TCPDump will tell you if this is the case or not.  However, I suspect that the packets are being SNATed to 100.100.251.218.
+
+> Is there a way around this? i.e. so that the multihoming still works?
+
+Yes, multiple.
+
+One is to make your office router know that it can reach the 200.200.64.139 host via the 100.100.251.218 router.  However, this is probably not what you really want to do.  I say this is probably not want you want to do b/c I'm willing to bet that you are wanting to be able to test things across the internet from your office, which would be circumvented with this routing.
+
+> It seems that normal routing to the 100.100.251.216/29 network takes precedence over my connection marked rule, that would instruct the packet to be sent out over the correct interface (and maybe therefore SNAT'd correctly too).
+
+Yes (see above).  This is because IPTables usually does not interact with any routing decisions.  (Usually b/c IPTables can be configured to do exactly that.)  IPTables usually acts on packets before and after routing decisions have been made.
+
+> Not sure what's going on. Can anyone point me in the correct direction?
+
+A different and probably my recommended solution (presuming that you want the traffic to cross the internet) would be to use a custom routing table for traffic that is to use the 200.200.64.139 interface.  This custom routing table would not include any knowledge of the 100.100.251.218 network.  Thus any traffic back to the office at 100.100.251.220 would be routed through the default gateway and out across the internet back to the office.  Presuming that you have MARK and CONNMARK working correctly you could use an "ip rule" to look for the firewall mark to instruct the Linux kernel to use the alternant routing table.
 
 
 
 Grant. . . .
+
 
