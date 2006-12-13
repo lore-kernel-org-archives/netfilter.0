@@ -1,12 +1,10 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Arkeia Software Information
-Date: Wed, 13 Dec 2006 12:02:10 -0600
-Message-ID: <45804022.4020906@riverviewtech.net>
-References: <23211483.1166030596745.JavaMail.sfdc@eu0-app4-3-sjl.ops.sfdc.net>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Unable to use MARK target with iptables-1.3.7
+Date: Wed, 13 Dec 2006 20:18:23 +0000
+Message-ID: <1166041103.4316.5.camel@andybev.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <23211483.1166030596745.JavaMail.sfdc@eu0-app4-3-sjl.ops.sfdc.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,19 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Kelly Skaggs wrote:
-> If you would like pricing for either one of these options, please let me know which one and give me the details of your configuration and I will work up an official quote for you.
+Hi,
 
-I do have a single Linux server with less than 500 GB of storage that I 
-would like to back up to a single Sony AIT (IDE) drive.  If you could / 
-would please work up a formal quote, I'd appreciate it.
+I've just installed iptables 1.3.7. However, when I run:
+
+iptables -t mangle -A POSTROUTING -p tcp --dport 22 -j MARK \
+--set-mark 10
+
+I get:
+
+FATAL: Module ip_tables not found.
+
+However, if I drop back to version 1.3.6 all works fine.
+
+To compile I use:
+
+make PREFIX=/usr LIBDIR=/lib BINDIR=/sbin install
+
+There are no compile errors when making. Kernel is 2.6.17.14
+
+Thanks,
+
+Andy Beverley
 
 
-
-Thank you and have a good day,
-
-Grant. . . .
 
