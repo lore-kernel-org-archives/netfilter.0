@@ -1,11 +1,13 @@
-From: Luca Bedogni <ml@lucabedogni.it>
-Subject: ipq_set_verdict()
-Date: Thu, 14 Dec 2006 18:12:18 +0100
-Message-ID: <200612141812.18142.ml@lucabedogni.it>
+From: "Sietse van Zanen" <sietse@wizdom.nu>
+Subject: RE: Install questions
+Date: Thu, 14 Dec 2006 19:14:42 +0100
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C49C9F@knowledge.wizdom.nu>
+References: <45817E39.9000905@fletcheracademy.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
+In-Reply-To: <45817E39.9000905@fletcheracademy.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,20 +19,185 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+To: Ken Arany <it@fletcheracademy.com>, netfilter@lists.netfilter.org
+
+A simple look on the netfilter project page reveals:
+
+Dependencies
+libnfnetlink requires and a kernel that features the nfnetlink
+subsystem. This includes all 2.6.x kernels >=3D 2.6.14.
+
+http://www.netfilter.org/projects/libnfnetlink/index.html
+
+You should download and compile a new kernel, as RHEL doesn't supply
+2.6.14 or higher.
+
+-Sietse
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Ken Arany
+Sent: Thursday, December 14, 2006 5:39 PM
 To: netfilter@lists.netfilter.org
+Subject: Install questions
 
-Hi all
-	first message for me here.
-I'm trying to study netfilter and the kernel, in particular for the part 
-regarding MTU. I'm having a bit of trouble understanding a thing:
-if i get a packet from the netfilter queue, adding 4 bit and exceeding the 
-MTU, and then call ipq_set_verdict with parameter NF_ACCEPT, what happens? Is 
-the packet dropped by the kernel, by iptables or he can goes freely?
+Hello,
 
-Regards
--- 
-Debian Powered GNU/Linux User #373118
-Bedogni Luca - 	Blog | http://blog.lucabedogni.it
-		Site | http://www.lucabedogni.it
-Debianizzati - www.debianizzati.org | Founder Member
+I'm new to this list so bear with me if I'm asking a question that has=20
+been answered many times before.
+
+I have a RHEL AS 4 server AMD_64 bit version running kernel 2.6.9-42. I=20
+have tried to install the libnfnetlink from source and it gives me a lot
+
+of errors. Is this because I'm running an older version of the kernel?=20
+If so, then I'm not really interested in upgrading my kernel and may=20
+have to find another solution.
+
+Basically here is what I get when I run the make command  (after=20
+./configure).
+> In file included from libnfnetlink.c:40:
+> /usr/include/linux/netlink.h:22: error: syntax error before "__u32"
+> /usr/include/linux/netlink.h:28: error: syntax error before "__u32"
+> /usr/include/linux/netlink.h:30: error: syntax error before
+"nlmsg_flags"
+> /usr/include/linux/netlink.h:31: error: syntax error before
+"nlmsg_seq"
+> /usr/include/linux/netlink.h:32: error: syntax error before
+"nlmsg_pid"
+> /usr/include/linux/netlink.h:82: error: field `msg' has incomplete
+type
+> In file included from libnfnetlink.c:42:
+> ../include/libnfnetlink/libnfnetlink.h:36: error: field `nlh' has=20
+> incomplete type
+> libnfnetlink.c:73: error: field `local' has incomplete type
+> libnfnetlink.c:74: error: field `peer' has incomplete type
+> libnfnetlink.c: In function `nfnl_dump_packet':
+> libnfnetlink.c:84: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:85: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:86: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:86: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:96: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:96: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:97: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:97: error: dereferencing pointer to incomplete type
+> libnfnetlink.c: In function `nfnl_send':
+> libnfnetlink.c:288: error: dereferencing pointer to incomplete type
+> libnfnetlink.c: In function `nfnl_fill_hdr':
+> libnfnetlink.c:337: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:339: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:339: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:340: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:341: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:342: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:343: error: dereferencing pointer to incomplete type
+> libnfnetlink.c: In function `nfnl_parse_hdr':
+> libnfnetlink.c:355: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:355: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:358: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:358: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:367: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c: In function `nfnl_recv':
+> libnfnetlink.c:376: error: storage size of 'peer' isn't known
+> libnfnetlink.c:379: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:395: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:376: warning: unused variable `peer'
+> libnfnetlink.c: In function `nfnl_listen':
+> libnfnetlink.c:422: error: storage size of 'nladdr' isn't known
+> libnfnetlink.c:465: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:467: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:468: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:480: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:485: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:486: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:422: warning: unused variable `nladdr'
+> libnfnetlink.c: In function `nfnl_talk':
+> libnfnetlink.c:519: error: storage size of 'nladdr' isn't known
+> libnfnetlink.c:524: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:538: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:541: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:569: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:570: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:571: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:583: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:584: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:593: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:594: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:601: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:609: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:519: warning: unused variable `nladdr'
+> libnfnetlink.c: In function `nfnl_addattr_l':
+> libnfnetlink.c:645: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:646: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:651: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:655: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:655: error: dereferencing pointer to incomplete type
+> libnfnetlink.c: In function `nfnl_get_msg_first':
+> libnfnetlink.c:829: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:829: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:829: error: dereferencing pointer to incomplete type
+> libnfnetlink.c: In function `nfnl_get_msg_next':
+> libnfnetlink.c:853: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:854: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:862: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:862: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:862: warning: left-hand operand of comma expression has
+
+> no effect
+> libnfnetlink.c:864: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:864: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:864: error: dereferencing pointer to incomplete type
+> libnfnetlink.c: In function `nfnl_check_attributes':
+> libnfnetlink.c:900: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:901: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:917: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:918: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:923: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:924: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:925: error: dereferencing pointer to incomplete type
+> libnfnetlink.c: In function `__nfnl_handle_msg':
+> libnfnetlink.c:950: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:951: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:959: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:959: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c: In function `nfnl_handle_packet':
+> libnfnetlink.c:980: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:984: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:985: error: invalid application of `sizeof' to=20
+> incomplete type `nlmsghdr'
+> libnfnetlink.c:985: error: dereferencing pointer to incomplete type
+> libnfnetlink.c:988: error: dereferencing pointer to incomplete type
+> make[1]: *** [libnfnetlink.lo] Error 1
+> make[1]: Leaving directory `/root/Desktop/libnfnetlink-0.0.16/src'
+> make: *** [all-recursive] Error 1
+
+This is a fresh install of the server that it will eventually go on, so=20
+I don't believe I have any other apps conflicting.
+
+Any Help would be very appreciated.
+
+Thanks in advance
+
+Ken Arany
+Fletcher Academy
+
+
+
+
 
