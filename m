@@ -1,12 +1,10 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Question about iptables and bridging
-Date: Fri, 15 Dec 2006 20:05:53 -0600
-Message-ID: <45835481.4090006@riverviewtech.net>
-References: <C874DBE9D30B584587F8CD0EC34DA8BE0377F879@EX00.idirect.net>
+From: wlagmay@yanbulink.net
+Subject: re: Dos and DDoS
+Date: Sat, 16 Dec 2006 07:22:10 +0300
+Message-ID: <1166242930.458374729f072@webmail.yanbulink.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <C874DBE9D30B584587F8CD0EC34DA8BE0377F879@EX00.idirect.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,22 +15,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Snyder, Brian wrote:
-> Is there something I am missing here? I would assume there is a way to
-> do this (tell direction over bridge) but I don't know what it is.... so
-> any help or pointers would be greatly appreciated.
-
-Yes.  Take a look in the mailing list archive for my post "A word about 
-bridging to the wise..." 
-(http://lists.netfilter.org/pipermail/netfilter/2006-December/067540.html). 
-  It depends if you have your kernel configured to allow IPTables, which 
-operates on OSI Layer 3 to be able to see OSI Layer 2 traffic, which is 
-where bridging takes place.
 
 
+Hi all,
 
-Grant. . . .
+I'm having a problem from an attack maybe Denial of Service (DoS). I'm using
+Linux for my servers and cisco for my routers and switches. My question what is
+the best tools for detecting and preventing DoS? Is an Intrution detection
+system can do the work? I need a system that can detect and block any DoS, then
+create a report so that I can disable or warn the client afterwards.
+
+Thank you very much,
+
+Wennie
+
 
