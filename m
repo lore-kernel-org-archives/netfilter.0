@@ -1,7 +1,7 @@
-From: Mike Wright <xktnniuymlla@mailinator.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Question about iptables and bridging
-Date: Fri, 15 Dec 2006 14:08:10 -0800
-Message-ID: <45831CCA.2000907@mailinator.com>
+Date: Fri, 15 Dec 2006 20:05:53 -0600
+Message-ID: <45835481.4090006@riverviewtech.net>
 References: <C874DBE9D30B584587F8CD0EC34DA8BE0377F879@EX00.idirect.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -18,61 +18,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Snyder, Brian" <bsnyder@idirect.net>
-Cc: netfilter@lists.netfilter.org
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
 Snyder, Brian wrote:
-> Hi all,
->  
-> I am currently using iptablesv1.3.5 on fedora core 5.  At this point I
-> am just playing around and trying to learn the system, but my general
-> idea is to setup my linux box as a bridge.  Ultimatly I then plan on
-> using firewalling to redirect/drop whatever traffic is deemed worthy.
->  
-> So I have linux setup correctly as a bridge as so:
->  
-> br0    :   inet addr - 172.20.134.7
-> eth0  and eth1 are unaddressed and part of the bridge.
->  
-> I set this up as follows:
-> sudo ifdown eth1
-> sudo ifdown eth1
-> sudo ifconfig eth0 0.0.0.0
-> sudo ifconfig eth1 0.0.0.0
-> sudo brctl addbr "br0"
-> sudo brctl setfd br0 0
-> sudo brctl addif br0 eth1
-> sudo brctl addif br0 eth0
-> sudo ifup br0
-> sudo ifconfig  br0 172.20.134.7 netmask 255.255.0.0
-> sudo ip route add default 172.20.255.254
->  
->  
->  
-> Now my problem with iptable is the following:
->  
-> I tried to setup a rule to look for ICMP from a particular interface as
-> such.
->  
-> iptables -t filter -A FORWARD -p icmp -i eth0
-> iptables -t filter -A FORWARD -p icmp -i eth1
-> iptables -t filter -A FORWARD -p icmp -i br0
->  
-> Now, the only filter that ever matches any packets is br0.  So because
-> of the way the bridge works, if I can't use eth0 or eth1 as input/output
-> interfaces, then I can't really tell 'direction' of traffic between my
-> lan and my wan.  
->  
 > Is there something I am missing here? I would assume there is a way to
 > do this (tell direction over bridge) but I don't know what it is.... so
 > any help or pointers would be greatly appreciated.
 
-Hi Brian,.
+Yes.  Take a look in the mailing list archive for my post "A word about 
+bridging to the wise..." 
+(http://lists.netfilter.org/pipermail/netfilter/2006-December/067540.html). 
+  It depends if you have your kernel configured to allow IPTables, which 
+operates on OSI Layer 3 to be able to see OSI Layer 2 traffic, which is 
+where bridging takes place.
 
-iptables -match physdev
 
- From the iptables manpage: This module matches on the bridge port input 
-and output devices enslaved to a bridge device.
 
-HTH
+Grant. . . .
 
