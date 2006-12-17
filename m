@@ -1,12 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Help on Iptables
-Date: Sat, 16 Dec 2006 20:20:11 +0100
-Message-ID: <458446EB.8030005@plouf.fr.eu.org>
-References: <1166288655.4584270fe0f14@webmail.yanbulink.net>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: looking for a tool to handle initial configuration of a firewall
+Date: Sun, 17 Dec 2006 02:17:20 +0100
+Message-ID: <45849AA0.4080104@rtij.nl>
+References: <bf0ca81a0612141614k1ef0c90bxba62e74d433d9e9d@mail.gmail.com>
+	<bf0ca81a0612150859y4af782b7n855bb5e20efc6c8a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1166288655.4584270fe0f14@webmail.yanbulink.net>
+In-Reply-To: <bf0ca81a0612150859y4af782b7n855bb5e20efc6c8a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,25 +18,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Bill Ries-Knight <steelhoof@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Bill Ries-Knight wrote:
 
-wlagmay@yanbulink.net a =E9crit :
->=20
-> I just want to know How am I going to do a blocking of multiple ports o=
-n a
-> single line let say port 700 to 800.
->=20
-> Im trying this command but it is not working
->=20
-> iptables -A OUTPUT -p tcp -m state --state NEW -m tcp --dport 700-800 -=
-j DROP
-> iptables -A OUTPUT -p tcp -m state --state NEW -m tcp --dport 700 --to =
-800 -j
-> DROP
+> I just installed a new system with debian etch.  I need to configure
+> it as a router/firewall to protect the very vulnurable windows
+> machines.  I am wondering if there a tool handy to help with this, or
+> a good sample script I could use?
+>
 
-man iptables says the port range syntax in port matches is "700:800".=20
-The port range syntax "700-800" is used only in NAT targets.
+fwbuilder is a decent tool.
+
+HTH,
+M4
 
