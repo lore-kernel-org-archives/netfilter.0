@@ -1,14 +1,13 @@
-From: "Zhen Zhou" <zhouzhenzj@gmail.com>
-Subject: Re: is it possible to nat to the routed IP?
-Date: Sun, 17 Dec 2006 18:08:12 +0800
-Message-ID: <ad41208c0612170208h70c43da2ldb684d1ccbf76767@mail.gmail.com>
-References: <000f01c720e8$f75b5d50$0202fea9@tanjian>
-	<4583D232.1040402@plouf.fr.eu.org>
+From: wlagmay@yanbulink.net
+Subject: Re: Help on Iptables
+Date: Sun, 17 Dec 2006 15:08:38 +0300
+Message-ID: <1166357318.458533468def6@webmail.yanbulink.net>
+References: <1166288655.4584270fe0f14@webmail.yanbulink.net>
+	<458446EB.8030005@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4583D232.1040402@plouf.fr.eu.org>
-Content-Disposition: inline
+In-Reply-To: <458446EB.8030005@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,74 +18,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@lists.netfilter.org
 
-On 12/16/06, Pascal Hambourg <pascal.mail@plouf.fr.eu.org> wrote:
+Thanks Pascal, anyway maybe you can help me with my other problem, I already
+post it but up to now I don't have any reply so I'm just thinking that you
+might help me.
+
+You see I'm using "SAME" for my Network Address translation. example
+
+-A POSTROUTING -s 192.168.64.0/255.255.224.0 -j SAME --nodst --to
+212.xxx.xxx.9-212.xxx.xxx.14
+
+My question is, how can I log and trace which private IP is using a certain
+public IP a any given time and date.
+
+example let say, somebody is complaining that there is a network flood or a=
+ttack
+coming form 212.xxx.xxx.14, so in order for me to trace which machine is ma=
+king
+the flood I should know whick private IP address is using 212.xxx.xxx.14 at
+that given time.
+
+Thank you very much and I hope that you can help me.
+
+Wennie
+
+
+Quoting Pascal Hambourg <pascal.mail@plouf.fr.eu.org>:
+
 > Hello,
 >
-> Rob Sterenborg a =E9crit :
-> >>>
-> >>>$ipt -t nat -A PREROUTING -d 210.153.22.y -p tcp --dport 80 \   -j
-> >>>DNAT --to 192.168.2.208
+> wlagmay@yanbulink.net a =E9crit :
 > >
-> >Zhen Zhou wrote:
-> >>
-> >>Now another issue is pop up:
-> >>
-> >>210.153.22.x is Internet gateway IP, 210.153.22.y is a public ip for
-> >>publish 192.168.3.208. ofcs, from Internet traffic to 192.168.3.208,
-> >>is go through 210.153.22.y. But in the another hand all the traffic
-> >>from 192.168.3.208 to outside, it will go to 210.153.22.x, could it
-> >>be a possible go via 210.153.22.y under some protocols? How to
-> >>configure?
->
-> Insert this kind of rule before the generic SNAT rule :
->
-> $ipt -t nat -A POSTROUTING -o <interface> -s 192.168.2.208 -p <proto> \
->    [--dport <port>] -j SNAT --to 210.153.22.y
->
-> [...]
-> > A http connection is made to the server at destination port 80/tcp.
-> > [...] So, return packets are coming from source port 80/tcp.
-> > I think this is what you want:
+> > I just want to know How am I going to do a blocking of multiple ports o=
+n a
+> > single line let say port 700 to 800.
 > >
-> > $ipt -t nat -A POSTROUTING -s 192.168.2.208 -p tcp --sport 80 \
-> >   -j SNAT 210.153.22.y
+> > Im trying this command but it is not working
+> >
+> > iptables -A OUTPUT -p tcp -m state --state NEW -m tcp --dport 700-800 -j
+> DROP
+> > iptables -A OUTPUT -p tcp -m state --state NEW -m tcp --dport 700 --to =
+800
+> -j
+> > DROP
 >
-> This rule is useless to handle HTTP return packets. Return packets are
-> in the ESTABLISHED state and don't traverse the 'nat' chains.
+> man iptables says the port range syntax in port matches is "700:800".
+> The port range syntax "700-800" is used only in NAT targets.
 >
-> > Packets from 192.168.2.208:80 are SNAT-ed to 210.153.22.y
->
-> Yes, but not because of this SNAT rule but because of the DNAT rule
-> above and because stateful DNAT does implicit SNAT on return packets.
 >
 
-Thanks for your help, but the issue is still there, so I post what I
-add iptables rules in the system then we could analyze where is the
-issue:
 
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -m state --state NEW -d 192.168.3.208 -p tcp
---dport 80 -j ACCEPT
-iptables -t nat -A PREROUTING -d 210.153.22.y -p tcp --dport 80 -j
-DNAT --to 192.168.3.208
-iptables -t nat -A POSTROUTING -o 210.153.22.y -s 192.168.3.208 -p tcp
---sport 80 -j SNAT --to 210.153.22.y
 
-I assign:
-ip addr add 210.153.22.y dev eth1 label eth1:1
 
-in the another hand, I want to track the network link when I access
-web to some sites, nothing show me via:
-netstat -ant | grep 192.168.3.208
-nothing .....
-
-Maybe eth1:1 couldn't show on this way? is it?
-
-Maybe that is the issue, but I couldn't find any idea how to deal, any tips=
-, TIA
-
-Zhou
 
