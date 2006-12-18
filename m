@@ -1,13 +1,12 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: ipsec on 2.6.16+ question
-Date: Mon, 18 Dec 2006 01:39:22 -0800
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024EEE8@pxtbenexd01.pxt.primeexalia.com>
-References: <BAY103-DAV2730F1927552670E0B615B2C90@phx.gbl>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Interesting article about punching holes in firewalls...
+Date: Mon, 18 Dec 2006 23:34:30 +0100
+Message-ID: <45871776.20402@rtij.nl>
+References: <45860240.2040102@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <BAY103-DAV2730F1927552670E0B615B2C90@phx.gbl>
+In-Reply-To: <45860240.2040102@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +17,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Marco Berizzi <pupilla@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Linux Advanced Routing and Traffic Control <lartc@mailman.ds9a.nl>, Mail List - Netfilter <netfilter@lists.netfilter.org>
 
+Grant Taylor wrote:
 
-Marco,
+> I ran across an interesting article 
+> (http://www.heise-security.co.uk/articles/print/82481) (1) that I 
+> think any and all firewall administrators should take a few moments to 
+> read.
+>
+> I personally have known that using "-m state --state 
+> ESTABLISHED,RELATED" was not the most secure thing to use for 
+> returning traffic.  Namely this will allow you to make a valid 
+> connection to a web server, say to retrieve a picture.  Then said web 
+> server could send malicious traffic back to your computer and pass 
+> through your firewall.  This is because the traffic coming from the 
+> web server to your computer is now deemed as RELATED.  Previously I 
+> have written this off as not needing to worry about this (much) YET.  
+> Yet being the operative word.  I have long known that I would, 
+> especially on more secure installs (read not SOHO) need to filter 
+> inbound traffic based on source / destination port.  I just have not 
+> thought that it was important enough to do presently for my 
+> clientele.  Unfortunately, the day where we do as much filtering on 
+> related traffic as we do on non related traffic may be closer at hand 
+> than we all would like to admit.  :(
+>
+>
 
-What you have included below makes sense.  I will take a look at getting
-1.3.5 in place.  Not sure how long that will take me though.  The work
-around in place is working for me (but I have some 30 entries in there
--- wide wan net of IPSEC firewalls).
+Well, this only works for UDP, and only if you allow everything out. 
+Fortunately, on any non-soho setup, you should not allow everything out, 
+only what you really need to leave the network. problem solved.
 
-I did read someone about using the policy modules BUT I couldn't find
-any reference to what version it was in.  Now I know :)
+(Well the only problem solved is hole punching, not that skype, 
+messenger, etc can use about any transport that is open. The only thing 
+they don't do yet is tunnel over DNS I think :-).
 
-Thanks,=20
-
-Gary Wayne Smith
-
-> >Current working:
-> >-A POSTROUTING -s 10.0.16.0/255.255.248.0 -d 10.0.32.0/255.255.255.0
--o
-> >eth1 -j ACCEPT
-> >-A POSTROUTING -o eth1 -j MASQUERADE
->=20
-> I havent't understood your message.
-> Since 2.6.16 outgoing ipsec packets are seeing twice:
-> clear & encrypted on the outgoing interface (which if
-> I correctly understand is eth1 for you).
-> You must upgrade to iptables >=3D1.3.5 and take a look
-> for the new 'policy' match.
-> Something like this should do the trick (linux will
-> not snat packets which will be sent through the (any)
-> ipsec tunnel(s)):
->=20
-> $IPTABLES -t nat -I POSTROUTING -m policy --dir out --pol ipsec -j
-> ACCEPT
->=20
->=20
+HTH,
+M4
 
 
