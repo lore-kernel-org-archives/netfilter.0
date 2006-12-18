@@ -1,12 +1,13 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Interesting article about punching holes in firewalls...
-Date: Mon, 18 Dec 2006 23:50:25 +0100
-Message-ID: <45871B31.90700@plouf.fr.eu.org>
-References: <45860240.2040102@riverviewtech.net>
+Subject: Re: is it possible to nat to the routed IP?
+Date: Tue, 19 Dec 2006 00:06:23 +0100
+Message-ID: <45871EEF.3070008@plouf.fr.eu.org>
+References: <000f01c720e8$f75b5d50$0202fea9@tanjian>	<4583D232.1040402@plouf.fr.eu.org>
+	<ad41208c0612170208h70c43da2ldb684d1ccbf76767@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45860240.2040102@riverviewtech.net>
+In-Reply-To: <ad41208c0612170208h70c43da2ldb684d1ccbf76767@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +19,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hello,
-
-Grant Taylor a =E9crit :
+Zhen Zhou a =E9crit :
+> On 12/16/06, Pascal Hambourg <pascal.mail@plouf.fr.eu.org> wrote:
+>>
+>> Insert this kind of rule before the generic SNAT rule :
+>>
+>> $ipt -t nat -A POSTROUTING -o <interface> -s 192.168.2.208 -p <proto> =
+\
+>>    [--dport <port>] -j SNAT --to 210.153.22.y
 >=20
-> I personally have known that using "-m state --state=20
-> ESTABLISHED,RELATED" was not the most secure thing to use for returning=
-=20
-> traffic.  Namely this will allow you to make a valid connection to a we=
-b=20
-> server, say to retrieve a picture.  Then said web server could send=20
-> malicious traffic back to your computer and pass through your firewall.=
-=20
->  This is because the traffic coming from the web server to your compute=
-r=20
-> is now deemed as RELATED.
+> Thanks for your help, but the issue is still there, so I post what I
+> add iptables rules in the system then we could analyze where is the
+> issue:
+>=20
+> iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> iptables -A FORWARD -m state --state NEW -d 192.168.3.208 -p tcp
+> --dport 80 -j ACCEPT
+> iptables -t nat -A PREROUTING -d 210.153.22.y -p tcp --dport 80 -j
+> DNAT --to 192.168.3.208
 
-I do not agree with this. AFAIK the only traffic that can be labelled=20
-RELATED to an HTTP connection or any "simple" TCP or UDP or whatever=20
-connection (not special protocols such as FTP) is some ICMP signalling=20
-messages. This said, I do filter out some RELATED ICMP types I do not lik=
-e.
+So far so good.
 
-"Hole punching" is a completely different thing and requires active=20
-cooperation from the inside.
+> iptables -t nat -A POSTROUTING -o 210.153.22.y -s 192.168.3.208 -p tcp
+> --sport 80 -j SNAT --to 210.153.22.y
+
+The -o (output interface) option takes a network interface name, not an=20
+IP address. Also, why do you match on source port 80 ? NAT rules can=20
+match only packets in the NEW state opening a new connection, but TCP=20
+packets with source port 80 are usually return packets (thus in=20
+ESTABLISHED state) from a web server.
+
+> I assign:
+> ip addr add 210.153.22.y dev eth1 label eth1:1
+>=20
+> in the another hand, I want to track the network link when I access
+> web to some sites, nothing show me via:
+> netstat -ant | grep 192.168.3.208
+> nothing .....
+
+netstat shows only the state of local sockets, not forwarded=20
+connections. To see the the state of all tracked connections (incoming,=20
+outgoing and forwarded), use :
+
+cat /proc/net/ip_conntrack
 
