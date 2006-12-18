@@ -1,10 +1,10 @@
-From: Martijn Lievaart <m@rtij.nl>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Interesting article about punching holes in firewalls...
-Date: Mon, 18 Dec 2006 23:34:30 +0100
-Message-ID: <45871776.20402@rtij.nl>
+Date: Mon, 18 Dec 2006 23:50:25 +0100
+Message-ID: <45871B31.90700@plouf.fr.eu.org>
 References: <45860240.2040102@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <45860240.2040102@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
@@ -17,44 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Linux Advanced Routing and Traffic Control <lartc@mailman.ds9a.nl>, Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Grant Taylor wrote:
+Hello,
 
-> I ran across an interesting article 
-> (http://www.heise-security.co.uk/articles/print/82481) (1) that I 
-> think any and all firewall administrators should take a few moments to 
-> read.
->
-> I personally have known that using "-m state --state 
-> ESTABLISHED,RELATED" was not the most secure thing to use for 
-> returning traffic.  Namely this will allow you to make a valid 
-> connection to a web server, say to retrieve a picture.  Then said web 
-> server could send malicious traffic back to your computer and pass 
-> through your firewall.  This is because the traffic coming from the 
-> web server to your computer is now deemed as RELATED.  Previously I 
-> have written this off as not needing to worry about this (much) YET.  
-> Yet being the operative word.  I have long known that I would, 
-> especially on more secure installs (read not SOHO) need to filter 
-> inbound traffic based on source / destination port.  I just have not 
-> thought that it was important enough to do presently for my 
-> clientele.  Unfortunately, the day where we do as much filtering on 
-> related traffic as we do on non related traffic may be closer at hand 
-> than we all would like to admit.  :(
->
->
+Grant Taylor a =E9crit :
+>=20
+> I personally have known that using "-m state --state=20
+> ESTABLISHED,RELATED" was not the most secure thing to use for returning=
+=20
+> traffic.  Namely this will allow you to make a valid connection to a we=
+b=20
+> server, say to retrieve a picture.  Then said web server could send=20
+> malicious traffic back to your computer and pass through your firewall.=
+=20
+>  This is because the traffic coming from the web server to your compute=
+r=20
+> is now deemed as RELATED.
 
-Well, this only works for UDP, and only if you allow everything out. 
-Fortunately, on any non-soho setup, you should not allow everything out, 
-only what you really need to leave the network. problem solved.
+I do not agree with this. AFAIK the only traffic that can be labelled=20
+RELATED to an HTTP connection or any "simple" TCP or UDP or whatever=20
+connection (not special protocols such as FTP) is some ICMP signalling=20
+messages. This said, I do filter out some RELATED ICMP types I do not lik=
+e.
 
-(Well the only problem solved is hole punching, not that skype, 
-messenger, etc can use about any transport that is open. The only thing 
-they don't do yet is tunnel over DNS I think :-).
-
-HTH,
-M4
-
+"Hole punching" is a completely different thing and requires active=20
+cooperation from the inside.
 
