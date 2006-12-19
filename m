@@ -1,13 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Interesting article about punching holes in firewalls...
-Date: Tue, 19 Dec 2006 12:46:54 +0100
-Message-ID: <4587D12E.9070500@plouf.fr.eu.org>
-References: <45860240.2040102@riverviewtech.net>	<1166426813.8007.10.camel@anduril.intranet.cartel-securite.net>	<4587B400.6080206@rtij.nl>
-	<Pine.LNX.4.64.0612191128180.11364@blackhole.kfki.hu>
+From: Dai MIKURUBE <dmikurube@acm.org>
+Subject: Generating pseudo-packets with netfilter
+Date: Tue, 19 Dec 2006 22:50:23 +0900
+Message-ID: <4587EE1F.8050203@acm.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.64.0612191128180.11364@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +15,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Jozsef Kadlecsik a =E9crit :
->=20
-> The article must be corrected at one place: the claim: "After an=20
-> outgoing SYN packet the firewall / NAT router will forward incoming=20
-> packets with suitable IP addresses and ports to the LAN even if they fa=
-il=20
-> to confirm, or confirm the wrong sequence number (ACK). Linux firewalls=
- at=20
-> least, clearly fail to evaluate this information consistently." is=20
-> outdated and not true for 2.6 kernels.
+Hi,
 
-For *recent* 2.6 kernels, with "recent" meaning 2.6.9 and above.
+I'm a student at Tokyo Institute of Technology.
+
+I'd like to do following operations, and I thought do them
+with netfilter. But I don't know hot to do this actually.
+
+Could you tell me...
+- Can I do the following operations with netfilter?
+- If I can, how to do them?
+
+
+
+My purpose is to make the Linux Kernel believe that a packet
+has come. (In fact, any packet has not arrived.)
+
+
+I could do this without netfilter but with tunneling device as follows.
+
+[Any UserProcess] - [Kernel] - <Tunnel> - [Intermediate Process] - <Physical eth0>
+
+"Intermediate Process" usually passes any packet through,
+and send a packet into "Kernel" via "Tunnel" if necessary.
+
+
+
+Finally, I'd like to do this without tunneling device as follows.
+
+[Any UserProcess] - [Kernel] - ((???)) - [Physical eth0]
+
+At first, I thought that netfilter can act as ((???)) with
+my Kernel Module. But netfilter seems to be not able to
+generate packets out of nothing...
+
+
+Can I do this with netfilter?
+# If not, I'd like to know another way to do this... :-(
+
+Thanks,
+
+-- 
+Dai MIKURUBE
+    dmikurube@acm.org
 
