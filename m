@@ -1,15 +1,11 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: Interesting article about punching holes in firewalls...
-Date: Tue, 19 Dec 2006 19:53:19 +0100
-Message-ID: <4588351F.1040806@rtij.nl>
-References: <45860240.2040102@riverviewtech.net>	
-	<1166426813.8007.10.camel@anduril.intranet.cartel-securite.net>	
-	<4587B400.6080206@rtij.nl>
-	<1166526302.12238.12.camel@anduril.intranet.cartel-securite.net>
+From: Dennis Taylor <dennis@hollywoodcenter.com>
+Subject: SNAT and iChat
+Date: Tue, 19 Dec 2006 11:33:34 -0800
+Message-ID: <1166556814.26124.33.camel@netop-cmd-00.internal>
+Reply-To: dennis@hollywoodcenter.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1166526302.12238.12.camel@anduril.intranet.cartel-securite.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,48 +16,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Cedric Blancher <blancher@cartel-securite.fr>
-Cc: Mail List - Netfilter <netfilter@lists.netfilter.org>, Grant Taylor <gtaylor@riverviewtech.net>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Cedric Blancher wrote:
+I'm running a router based on a custom Linux 2.6.6 kernel, with all
+netfilter options either compiled-in or available as modules.
 
->>It is possible netfilter does this to accomodate bridging setups. Anyone 
->>can comment on this? If this opens up the connection for any other ICMP 
->>traffic, I think that's a bug. But I cannot imagine netfilter does this, 
->>anyone know for sure?
->>    
->>
->
->We also have a protocol problem here. However, as Pascal stated before,
->you can explicitly deny ICMP redirects.
->
->As a more general matter, ICMP filtering is tricky:
->
->	. ICMP filtering can (and do) break connectivity: PPPoE users
->	  with broken PMTUD knows about it...
->	. ICMP messages authentication is weak.
->
->On one hand we have a protocol we have to implement because we need it
->for IP to work smoothly, and on the other hand, it's quite easy to
->abuse. And we have to cope with it.
->  
->
+I use SNAT so that all traffic from a given private subnet appears to
+originate from a single routable IP address.  Each private subnet has a
+unique corresponding routable IP address.
 
-ICMP filtering is not tricky. Just remember the rules.
-1) NEVER, EVER, EVER filter out fragmentation needed.
-2) You may filter out ping, and the various destination unreachables, 
-the consequences are yours.
-3) Everything else can be filtered without consequences.
+In general, this works very well.  The trouble I'm having is in passing
+iChat AV traffic for an entire private subnet.
 
-If you mean, it is hard for a firewall to filter malicious ICMPs but not 
-beneign ICMPs, the we agree. I have not heard of an fragmentation needed 
-attack yet, but I can imagine it happening (analogous to the zero 
-windowsize attack).
+For example, let's say I have two routable IP addresses assigned to
+eth0: 69.54.179.2 and 69.54.179.3, and private IP address
+192.168.10.1/24 assigned to eth1.  Clients are connected to eth1, while
+eth0 is my link to the internet.
 
-But as Jozsef explained, iptables does check what it is possible, for 
-the rest we mostly have to live with it.
+If I use SNAT for the entire private subnet, iChat fails.  In order to
+make it work, I need to use a 1:1 mapping and DNAT.
 
-M4
+This causes iChat to fail:
+
+iptables -t nat -A POSTROUTING -s 192.168.10.0/24 -j SNAT --to-source
+69.54.179.2
+
+This works:
+
+iptables -t nat -A POSTROUTING -s 192.168.10.3 -j SNAT --to-source
+69.54.179.3
+iptables -t nat -A PREROUTING -d 69.54.179.3 -j DNAT --to-destination
+192.168.10.3
+
+The private subnet in question can have any number of nodes using iChat
+at a given time.  I need to avoid reserving a unique public IP address
+for each node that may possibly participate.
+
+
+What am I missing?  Is this expected behavior?
+
+Thanks!
+Dennis
+
+
 
 
