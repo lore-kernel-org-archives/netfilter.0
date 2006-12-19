@@ -1,10 +1,15 @@
-From: Tolga Onbay <tolgaonbay@yahoo.com>
-Subject: Filtering a web site returned from a Proxy
-Date: Tue, 19 Dec 2006 06:53:52 -0800 (PST)
-Message-ID: <20061219145352.40461.qmail@web56607.mail.re3.yahoo.com>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Interesting article about punching holes in firewalls...
+Date: Tue, 19 Dec 2006 19:53:19 +0100
+Message-ID: <4588351F.1040806@rtij.nl>
+References: <45860240.2040102@riverviewtech.net>	
+	<1166426813.8007.10.camel@anduril.intranet.cartel-securite.net>	
+	<4587B400.6080206@rtij.nl>
+	<1166526302.12238.12.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1166526302.12238.12.camel@anduril.intranet.cartel-securite.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,35 +20,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Cedric Blancher <blancher@cartel-securite.fr>
+Cc: Mail List - Netfilter <netfilter@lists.netfilter.org>, Grant Taylor <gtaylor@riverviewtech.net>
 
-=0A=0AHi,=0A=0A=0A =0A=0A=0AI have=0Ainstalled a firewall running on linux =
-on summer. In the server firewall,=0Acontent filtering and proxy are runnin=
-g. P2P and IM programs are also blocked=0Awith l7 filter. And there is a ru=
-le that sends all http connections to content=0Afiltering software. I think=
- this is transparent proxy. :) The rule is as below=0A=0A=0A-A=0APREROUTING=
- -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080=0A=0A=0A =0A=0A=0AAny=
-way, but=0Athe users found another gap on the system, now they can connect =
-any web site=0Awith free or university proxies. Firstly I found a solution =
-which if I send connections=0Aon port of Proxy to content filtering softwar=
-e, the content filtering software=0Acan handle this. But there is 65534 por=
-ts to forward. :)=0A=0A=0A =0A=0A=0AThen,=0Al7-filter save me one more time=
-. Now I send the connections having destination=0Aport other than 80 and pr=
-otocol http to content filtering software. It is ok until=0Anow. But the co=
-nnections are directly being made with the firewall. (Not connecting to des=
-ired proxy). The users on the network want to connect to proxy because they=
- want to research=0Aon libraries that can be only accessible via university=
- proxy. =0A=0A=0A =0A=0A=0AI mean I=0Ahave to send the proxy connections to=
- proxy and the returned data must be filtered=0Avia content filtering softw=
-are. The diagram of this situation is=0A=0A=0A =0A=0A=0AHost -->=0AFirewall=
- -->  Content Filtering Software --> Proxy --> Proxy of University --> Http=
- Server --> Proxy of=0AUniversity --> Proxy --> Content Filtering Software =
---> Firewall --> Host=0A=0A=0A=0ABut the system are running as follows (Def=
-ining proxy on browser doesn't matter)=0A=0A =0AHost -->=0AFirewall -->  Co=
-ntent Filtering Software --> Proxy --> Http Server --> Proxy --> Content Fi=
-ltering Software --> Firewall --> Host=0A=0A=0A=0A=0A=0A=0A=0AThanks for=0A=
-your help=0A=0A=0A =0A=0A=0A =0A=0A=0A=0A=0A=0A____________________________=
-______________________=0ADo You Yahoo!?=0ATired of spam?  Yahoo! Mail has t=
-he best spam protection around =0Ahttp://mail.yahoo.com 
+Cedric Blancher wrote:
+
+>>It is possible netfilter does this to accomodate bridging setups. Anyone 
+>>can comment on this? If this opens up the connection for any other ICMP 
+>>traffic, I think that's a bug. But I cannot imagine netfilter does this, 
+>>anyone know for sure?
+>>    
+>>
+>
+>We also have a protocol problem here. However, as Pascal stated before,
+>you can explicitly deny ICMP redirects.
+>
+>As a more general matter, ICMP filtering is tricky:
+>
+>	. ICMP filtering can (and do) break connectivity: PPPoE users
+>	  with broken PMTUD knows about it...
+>	. ICMP messages authentication is weak.
+>
+>On one hand we have a protocol we have to implement because we need it
+>for IP to work smoothly, and on the other hand, it's quite easy to
+>abuse. And we have to cope with it.
+>  
+>
+
+ICMP filtering is not tricky. Just remember the rules.
+1) NEVER, EVER, EVER filter out fragmentation needed.
+2) You may filter out ping, and the various destination unreachables, 
+the consequences are yours.
+3) Everything else can be filtered without consequences.
+
+If you mean, it is hard for a firewall to filter malicious ICMPs but not 
+beneign ICMPs, the we agree. I have not heard of an fragmentation needed 
+attack yet, but I can imagine it happening (analogous to the zero 
+windowsize attack).
+
+But as Jozsef explained, iptables does check what it is possible, for 
+the rest we mostly have to live with it.
+
+M4
+
 
