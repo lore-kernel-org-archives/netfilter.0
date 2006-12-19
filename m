@@ -1,10 +1,12 @@
 From: Dai MIKURUBE <dmikurube@acm.org>
-Subject: Generating pseudo-packets with netfilter
-Date: Tue, 19 Dec 2006 22:50:23 +0900
-Message-ID: <4587EE1F.8050203@acm.org>
+Subject: Re: Generating pseudo-packets with netfilter
+Date: Tue, 19 Dec 2006 23:27:13 +0900
+Message-ID: <4587F6C1.3070904@acm.org>
+References: <4587EE1F.8050203@acm.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4587EE1F.8050203@acm.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,43 +22,32 @@ To: netfilter@lists.netfilter.org
 
 Hi,
 
-I'm a student at Tokyo Institute of Technology.
-
-I'd like to do following operations, and I thought do them
-with netfilter. But I don't know hot to do this actually.
-
-Could you tell me...
-- Can I do the following operations with netfilter?
-- If I can, how to do them?
+I make a supplementary explanation.
 
 
+Finally, my purpose is to make "Pseudo 3-Way Handshake".
 
-My purpose is to make the Linux Kernel believe that a packet
-has come. (In fact, any packet has not arrived.)
+At first, a user process create a socket (with socket())
+and make it TCP_LISTEN (with listen()).
 
-
-I could do this without netfilter but with tunneling device as follows.
-
-[Any UserProcess] - [Kernel] - <Tunnel> - [Intermediate Process] - <Physical eth0>
-
-"Intermediate Process" usually passes any packet through,
-and send a packet into "Kernel" via "Tunnel" if necessary.
-
+Next, I'd like to make it's status CONNECTED without any
+external computers for some reason. In order to do this,
+it's necessary that the Linux Kernel believes a SYN packet
+has come. So, of cource, to handle a SYN+ACK pakcet and to
+reply an ACK packet are required.
 
 
-Finally, I'd like to do this without tunneling device as follows.
+If netfilter cannot generate packets out of nothing,
+I think to take the following way:
 
-[Any UserProcess] - [Kernel] - ((???)) - [Physical eth0]
+1. My module call netif_receive_skb() directly to send a SYN packet.
+2. Kernel replys a SYN+ACK packet,
+     and my module catches it with netfilter.
+3. My module DROPs the packet,
+     and my module replys an ACK packet with netif_receive_skb().
 
-At first, I thought that netfilter can act as ((???)) with
-my Kernel Module. But netfilter seems to be not able to
-generate packets out of nothing...
-
-
-Can I do this with netfilter?
-# If not, I'd like to know another way to do this... :-(
-
-Thanks,
+But it seems to be a little hard. I'm happy if it can be done
+with netfilter.
 
 -- 
 Dai MIKURUBE
