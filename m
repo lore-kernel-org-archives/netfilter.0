@@ -1,9 +1,9 @@
-From: wlagmay@yanbulink.net
-Subject: Iptables logging problem
-Date: Thu, 21 Dec 2006 11:41:19 +0300
-Message-ID: <1166690479.458a48af53596@webmail.yanbulink.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Brian McNally <bmcnally@u.washington.edu>
+Subject: "iptables: No chain/target/match by that name"
+Date: Thu, 21 Dec 2006 10:48:37 -0800
+Message-ID: <2FFB10CA-345B-432D-9669-128232B12051@u.washington.edu>
+Mime-Version: 1.0 (Apple Message framework v752.3)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,52 +15,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hello,
 
+I'm running Red Hat Enterprise Linux 3 with the 2.4.21-27.0.2.ELsmp  
+kernel and iptables 1.2.8. When I try and insert the following rule:
 
-Hi all,
+iptables -A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to- 
+ports 8080
 
-Im using SAME for my NATting example:
+I get the following error:
 
--A POSTROUTING -s 192.168.15.0/255.255.255.0 -j SAME --nodst --to
-212.xxx.xxx.10-212.xxx.xxx.15
+iptables: No chain/target/match by that name
 
-I have tried using the below logging commands:
+$ lsmod | grep ipt
+iptable_nat            22808   0  (autoclean) (unused)
+ipt_REJECT              4632   1  (autoclean)
+ipt_state               1080   5  (autoclean)
+ip_conntrack           29800   2  (autoclean) [iptable_nat ipt_state]
+iptable_filter          2412   1  (autoclean)
+ip_tables              16544   6  [iptable_nat ipt_REJECT ipt_state  
+iptable_filter]
 
-1. iptables -t nat -I PREROUTING -i eth0 -j LOG --log-prefix "incoming"
---log-level 6
+Any ideas? I'm wondering if I'm missing a kernel module that iptables  
+needs, but my understanding was that it should load the modules it  
+needs on the fly.
 
-2. iptables -t nat -I PREROUTING -i eth1 -j LOG --log-prefix "outgoing"
---log-level 6
+Thanks,
 
-3. iptables -I FORWARD -i eth0 -j LOG --log-prefix "incoming" --log-level 6
-
-4. iptables -I FORWARD -i eth0 -j LOG --log-prefix "incoming" --log-level 6
-
-Either of the above logging command I can log the source IP and the destination
-IP, example, source = 192.168.15.35 destination = 209.73.186.238. this is but
-what I'm more concern is the NATting portion since 192.168.15.0/24 is my
-private IP, I want to also the PUBLIC IP its using before the destination.
-
-Information that I need:
-1. Source private IP = 192.168.15.35  <<< this is ok I can see it on the log
-
-2. Source Public IP = ?  <<<< This is the one I'm looking at which I cannot
-find, suppose to be from the range 212.xxx.xxx.10 to 212.xxx.xxx.15
-
-3. Destination IP = 209.73.186.238 << this is ok I can see it on the log
-
-
-Is there a way to log this?
-
-Thank you very much and I hope that you can help me on my problem.
-
-Wennie
-
-
-
+--
+Brian McNally
 
 
 
