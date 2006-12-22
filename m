@@ -1,12 +1,12 @@
-From: Elvir Kuric <omasnjak@yahoo.com>
-Subject: Re: Dropping Connections
-Date: Fri, 22 Dec 2006 06:46:52 -0800 (PST)
-Message-ID: <503576.13829.qm@web56206.mail.re3.yahoo.com>
-References: <20061222083041.39413.qmail@web56608.mail.re3.yahoo.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Port forwarding - what's wrong with my setup?
+Date: Fri, 22 Dec 2006 13:53:11 +0100
+Message-ID: <458BD537.1040808@plouf.fr.eu.org>
+References: <458B87EF.6060007@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20061222083041.39413.qmail@web56608.mail.re3.yahoo.com>
+In-Reply-To: <458B87EF.6060007@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,111 +17,97 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Tolga Onbay <tolgaonbay@yahoo.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi Tolga, 
+Hello,
 
-iptables working in way that it first check first
-rules that are writen in your firewall script.
-So you first have to allow everything you want and
-after that to stop traffic you do not wanted.
+Nandan Bhat a =E9crit :
+>=20
+> I intend to have clients connect to 192.168.1.6 on port 11002=20
+> (arbitrary) and have such traffic to be forwarded to 192.168.0.10 on=20
+> port 110. Likewise on 192.168.1.6:25000 to 192.168.0.10:25.
+[...]
+> I expected to be able to telnet 192.168.1.6 on port 11002 and be shown=20
+> the response of 192.168.0.10 for the POP server. But I get connection=20
+> refused. Any pointers?
 
-If you have rules , A, B , C , D written in script in
-this order 
-A
-B
-C
-D
-iptables will check rule A first and so on. If rule A
-drop some traffic it will be droped even if you allow
-it again in rule B, or some other rule after A.
-for example 
-iptables -A INPUT -p tcp -m state --state
-NEW,RELATED,ESTABLISHED -j DROP
+Is the connection refused immediately or does it hangs and fail ?
+Do you see related lines in the reject logs ?
+Did you try from this box or from hosts in the internal network ? NAT=20
+rules in the PREROUTING chain do not work with locally generated packets.
 
-iptables -A INPUT -p tcp -m state --state
-NEW,RELATED,ESTABLISHED -j ACCEPT 
+> 07 INTIP=3D"192.168.1.6/24"
 
-the first  rule will be just checked and you will not
-be able to accept new connections in INPUT chain (
-first rule ) even you allow it in seccond one. 
+A single IP address has a /32 prefix length or no prefix length. Here I=20
+think 192.168.1.6/24 is equivalent to 192.168.1.0/24 (bits beyond the=20
+prefix length are ignored) so it makes -s/-d matches broader than they=20
+should be.
 
+> 27 $IPTABLES -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
 
-To drop everything you can use for example 
-iptables -A INPUT -s 0/0 -p tcp --syn -j DROP
-iptables -A INPUT -s 0/0 -p udp -j DROP
+My advice is don't overload the rules with useless matches. If a rule=20
+does not care about a given packet parameter (source/destination=20
+address/port, protocol, ICMP type, state...), just don't put the match.=20
+It will make your rules shorter and more readable.
 
-but apply these rules after all your rules that allow
-necessary traffic.
-I recommend you to read ( in my opinion the best
-manual  I ever read )
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+> 30 $IPTABLES -A INPUT -i $EXTIF -p ICMP -s $UNIVERSE -d $EXTIP -j ACCEP=
+T
 
+If you don't trust the external network, you don't want to accept all=20
+ICMP types on the external interface.
 
-So conclusion will be,iptables looks first rules
-first.
-See of course man iptables.
+> 39 $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $INTIP -m state --state N=
+EW \
+> 40  -m tcp -p tcp --dport 21 -j ACCEPT
+> 41 $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $INTIP -m state --state N=
+EW \
+> 42  -m tcp -p tcp --dport 22 -j ACCEPT
+> 43 $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $INTIP -m state --state N=
+EW \
+> 44  -m tcp -p tcp --dport 25 -j ACCEPT
+> 45 $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $INTIP -m state --state N=
+EW \
+> 46  -m tcp -p tcp --dport 80 -j ACCEPT
+> 47 $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $INTIP -m state --state N=
+EW \
+> 48  -m udp -p udp --dport 137 -j ACCEPT
+> 49 $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $INTIP -m state --state N=
+EW \
+> 50  -m udp -p udp --dport 138 -j ACCEPT
+> 51 $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $INTIP -m state --state N=
+EW \
+> 52  -m tcp -p tcp --dport 139 -j ACCEPT
+> 53 $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $INTIP -m state --state N=
+EW \
+> 54  -m tcp -p tcp --dport 445 -j ACCEPT
+> 55 $IPTABLES -A INPUT -i $INTIF -s $INTNET -d $INTIP -m state --state N=
+EW \
+> 56  -m tcp -p tcp --dport 3306 -j ACCEPT
 
-Regards 
+You can replace all this with two rules with the 'multiport' match. Or=20
+you can "factorize" the common matches "-i $INTIF -s $INTNET -d $INTIP=20
+-m state --state NEW" with a user defined chain to make the rules=20
+shorter (thus more readable). :-)
 
-Elvir Kuric
+> 69 $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+> 70
+> 71 $IPTABLES -A FORWARD -i $INTIF -p tcp -s $INTNET --sport 11002 \
+> 72  -d 192.168.0.10 --dport 110 -j ACCEPT
+> 73 $IPTABLES -A FORWARD -i $INTIF -p tcp -s $INTNET --sport 25000 \
+> 74  -d 192.168.0.10 --dport 25 -j ACCEPT
 
+There is no reason that the source port of the DNATed packets would be=20
+equal to the original destination port, so these two rules would not=20
+match. However they are unused because the rule in line #69 accepts the=20
+packets before.
 
-To drop everything you can use for example 
-iptables -A INPUT -s 0/0 -p tcp --syn -j DROP
-iptables -A INPUT -s 0/0 -p udp -j DROP
+> 77 $IPTABLES -t nat -A PREROUTING -p tcp -i $INTIF -d $INTIP \
+> 78  --dport 11002 -j DNAT --to 192.168.0.10:110
+> 79 $IPTABLES -t nat -A PREROUTING -p tcp -i $INTIF -d $INTIP \
+> 80  --dport 25000 -j DNAT --to 192.168.0.10:25
 
-but apply these rules after all your rules that allow
-necessary traffic.
-I recommend you to read ( in my opinion the best
-manual  I ever read )
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-
-
-So conclusion will be,iptables looks first rules
-first.
-See of course man iptables.
-
-Regards 
-
-Elvir Kuric 
-
-
---- Tolga Onbay <tolgaonbay@yahoo.com> wrote:
-
-> Hi,
-> 
-> I want to drop all connections from/to subnet if I
-> don't allow. For example, accept msnmessenger
-> protocol with l7-filter and forward all 80
-> connections to content filtering software. Then I
-> want to drop all connections. I write the rules and
-> add the default action type to Drop. But now the
-> clients cannot connect to msnmessenger. (I write the
-> msnmessenger rule to FORWARD chain) 
-> 
-> Also, noone answer my previous mail, If I asked to
-> wrong group or something wrong with the subject
-> please remind me.
-> 
-> Thanks
-> 
-> 
-> Tolga
-> 
-> 
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam
-> protection around 
-> http://mail.yahoo.com
-> 
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Isn't there a MASQUERADE rule in the POSTROUTING chain for packets=20
+leaving $EXTIF from $INTNET ? The server 192.168.0.10 may refuse=20
+communications from this netblock.
 
