@@ -1,45 +1,39 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Distro Choice for iptables as Enterprise Firewall
-Date: Sun, 31 Dec 2006 17:58:22 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0612311757070.32449@yvahk01.tjqt.qr>
-References: <4597E5CD.8050104@rackage.com>
+Subject: chaostables 0.2
+Date: Mon, 1 Jan 2007 03:00:22 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0701010248480.29991@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4597E5CD.8050104@rackage.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932859AbXAACAq@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Rackage | Randles <randles@rackage.com>
-Cc: netfilter@lists.netfilter.org
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+
+Hi list(s),
 
 
-On Dec 31 2006 16:31, Rackage | Randles wrote:
->
-> I'm new to iptables and this list so forgive me if this subject has been
-> covered previously.
 
-(Hint: Search the archives)
+chaostables is a small package containing some nice netfilter magic:
+a module xt_portscan which matches the nmap scan types (including -sS) 
+and more, and a xt_CHAOS module which slows down network scanners by 
+triggering their codepaths for handling slow-working/'broken' operating 
+systems.
 
-> I'm sure this topic is a cause for much debate with no definitive answer
-> however I would be glad to hear suggestions never the less.
+Documentation is not yet fully complete, but it explains the details 
+behind the portscan match and how it can be implemented without using 
+the xt_portscan.ko module. By looking at the code and some example 
+files, it should be possible to figure out how to use these (obviously, 
+-m portscan [types] and -j CHAOS -- but a little self-experimenting is 
+always good, too.)
 
-(See above)
+http://jengelh.hopto.org/f/chaostables/chaostables-0.2.tar.bz2
+(it is a remake of what was previously known, and now inaccessible, as 
+AS_IPFW)
 
-> What Distro's are recommended for deploying iptables as a dedicated firewall?
+I happily take comments on anything.
 
-It does not matter, netfilter is a kernel component, hence works with 
-any thing even self-rolled init-only scripts (like WRT54G with Linux 
-use).
-
-	-`J'
+Thanks and, FWIW, happy  new Year(),
+Jan
 -- 
-
