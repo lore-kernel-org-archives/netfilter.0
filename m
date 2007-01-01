@@ -1,31 +1,38 @@
-From: "Shannon Roddy" <sroddy@gmail.com>
-Subject: Re: Distro Choice for iptables as Enterprise Firewall
-Date: Sun, 31 Dec 2006 22:09:56 -0600
-Message-ID: <8d48b6ba0612312009l7330c6e9xf5022b95522df462@mail.gmail.com>
-References: <4597E5CD.8050104@rackage.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: chaostables-0.2 & 2.6.19.1
+Date: Mon, 1 Jan 2007 15:44:18 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0701011541130.21491@yvahk01.tjqt.qr>
+References: <20070101143812.GA7816@vanheusden.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4597E5CD.8050104@rackage.com>
-Content-Disposition: inline
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755217AbXAAOp1@vger.kernel.org>
+In-Reply-To: <20070101143812.GA7816@vanheusden.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Folkert van Heusden <folkert@vanheusden.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
-On 12/31/06, Rackage | Randles <randles@rackage.com> wrote:
 
-> What Distro's are recommended for deploying iptables as a dedicated
-> firewall?
+On Jan 1 2007 15:38, Folkert van Heusden wrote:
+>Hi,
 >
+>I'm trying to compile chaostables v0.2 on a system with kernel 2.6.19.1
+>and c-compiler 3.4.6:
+>
+>root@muur:/usr/src/chaostables-0.2/kernel# make all
+>make -C /lib/modules/2.6.19.1/build M=$PWD modules;
+>make[1]: Entering directory `/usr/src/linux-2.6.19.1'
+>  CC [M]  /usr/src/chaostables-0.2/kernel/xt_CHAOS.o
+>/usr/src/chaostables-0.2/kernel/xt_CHAOS.c: In function `xt_chaos_target':
+>/usr/src/chaostables-0.2/kernel/xt_CHAOS.c:53: error: too many arguments to function
 
-FWIW, I often use gentoo.
+Yes I found this one this morning. The issue is simple: function 
+signatures have changed in 2.6.19 and 2.6.20 which I did not all catch 
+yet. chaostables compiles fine with 2.6.18 however. I shall have it 
+workarounded in the next release. Thanks for noticing! (cc to 
+linuxkernel and netfilter before more people run into the same problem)
 
+
+Jan
+-- 
