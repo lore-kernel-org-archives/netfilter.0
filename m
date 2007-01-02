@@ -1,9 +1,9 @@
-From: Vitek <zaklik@gmail.com>
-Subject: ways to modify iptables inside C/C++ aplication
-Date: Tue, 02 Jan 2007 17:17:01 +0100
-Message-ID: <459A857D.3020703@gmail.com>
+From: "epankala@cc.hut.fi" <epankala@cc.hut.fi>
+Subject: xtables monitoring via NETLINK (or similar)
+Date: Tue, 02 Jan 2007 20:04:34 +0200
+Message-ID: <459A9EB2.1000809@cc.hut.fi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,75 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Mailing List <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi,
 
-============================================
-Short version:
+I have been looking into how kernel supplies userspace with what is
+happening inside kernel via NETLINK socket and how udevd->hald->dbus->use=
+r
+benefits from it.
+(NETLINK_ROUTE protocol reports for example interface up/down events
+and KOBJECT report device add/remove && insmod/rmmod events)
 
-Is there any way to include iptables sources to c++ aplication and just 
-call do_command() ?
 
-If I'll use libiptc library:
-Is it possible to use libiptc in C++?
-How can I access layer7 match?
+I was wondering is there a way to monitor iptables (xtables)
+replace_table/(un)register_target/...  events somehow.
+(could not see it in kernel code but that doesn't mean it's not there.
+NETLINK_FIREWALL seems to be about queuing packets to userspace)
 
-============================================
-Long version:
+Main incentive for me is that it would be better to listen for a socket=20
+than
+poll for firewall changes manually.
 
-I have a project for analyzing network flow of services on server 
-providing Internet connection for small LAN. I created a perl script for 
-setting iptables firewall (from text filelist of users) and reading 
-counters calling system("iptables -L vxn") and spliting data in perl 
-script. This is too slow for real time statistic, so I decide to create 
-C/C++ aplication for this purpose.
+If such does not exist would there be intrest to add such capability.
+I could volunteer to do bit of design/implementation if such feature=20
+would be welcomed.
 
-I have few requirements on this application:
-
-- I need to use Layer7 extension for iptables - for recognizing some 
-services (p2p for example)
-- Clint/Server based model ( I would like to modify/read iptables 
-structure using webbase client - php )
-- If it's possible - have access to database server (I'm not sure if 
-this is possible in C)
-
-I already create piece of C code using libiptc to access iptables 
-counters and create new chains, but I couldn't find any learn examples 
-how to insert rules using libiptc etc..
-I think that it will be quicker and better to use iptables sources and 
-just call do_command(), but...
-
-The questions:
-Is there any way to include iptables sources to c++ aplication and just 
-call do_command() ?
-
-If I will use libiptc
-Is it possible to use it in C++?
-How can I access layer7 match?
-
-I see 3 solutions:
-
-1)
-Create C++ aplication and just call system( .. ) everywhere when i need 
-to modify/read firewall - but I'm sure that it will be still too slow.
-
-2)
-Use Libiptc just for reading counters and all other do by calling 
-system() - not very nice solution and I'm not sure if this is possible 
-in C++
-
-3)
-Use pure C using iptables source codes - but how? I was testing just by 
-modifing iptables-standalone.c - it works fine.
-
-It seems that it will be little bit challange for me (I'm not 
-experienced C/C++ programmer ;)
-
-Thank you very much for answers!
-
-Cheers,
-Vitek
+--=20
+Janne (orshouldthisgotonetfilter-devel) P=E4nk=E4l=E4
 
 
