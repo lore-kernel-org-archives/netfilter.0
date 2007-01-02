@@ -1,10 +1,13 @@
-From: "epankala@cc.hut.fi" <epankala@cc.hut.fi>
-Subject: xtables monitoring via NETLINK (or similar)
-Date: Tue, 02 Jan 2007 20:04:34 +0200
-Message-ID: <459A9EB2.1000809@cc.hut.fi>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: Distro Choice for iptables as Enterprise Firewall
+Date: Tue, 2 Jan 2007 12:51:55 -0800
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024EF31@pxtbenexd01.pxt.primeexalia.com>
+References: <4597E5CD.8050104@rackage.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
+In-Reply-To: <4597E5CD.8050104@rackage.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,32 +18,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: randles@rackage.com, netfilter@lists.netfilter.org
 
+I've played around with using rPath.  It allows for distro's of 200mb
+and runs with 64mb ram.  Bare install is just that, almost nothing but
+basic kernel components and a few essentials. =20
 
-I have been looking into how kernel supplies userspace with what is
-happening inside kernel via NETLINK socket and how udevd->hald->dbus->use=
-r
-benefits from it.
-(NETLINK_ROUTE protocol reports for example interface up/down events
-and KOBJECT report device add/remove && insmod/rmmod events)
+Now at the enterprise level you can also include the optional components
+that you might want.
 
+Seems to work well for me.
 
-I was wondering is there a way to monitor iptables (xtables)
-replace_table/(un)register_target/...  events somehow.
-(could not see it in kernel code but that doesn't mean it's not there.
-NETLINK_FIREWALL seems to be about queuing packets to userspace)
+We also use RHEL4 for some of our bigger environments but the min
+install there includes the kitchen sink.
 
-Main incentive for me is that it would be better to listen for a socket=20
-than
-poll for firewall changes manually.
-
-If such does not exist would there be intrest to add such capability.
-I could volunteer to do bit of design/implementation if such feature=20
-would be welcomed.
-
---=20
-Janne (orshouldthisgotonetfilter-devel) P=E4nk=E4l=E4
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
+> bounces@lists.netfilter.org] On Behalf Of Rackage | Randles
+> Sent: Sunday, December 31, 2006 8:31 AM
+> To: netfilter@lists.netfilter.org
+> Subject: Distro Choice for iptables as Enterprise Firewall
+>=20
+> Hi,
+>=20
+> I'm new to iptables and this list so forgive me if this subject has
+been
+> covered previously.
+>=20
+> I'm sure this topic is a cause for much debate with no definitive
+answer
+> however I would be glad to hear suggestions never the less.
+>=20
+> What Distro's are recommended for deploying iptables as a dedicated
+> firewall?
+>=20
+> What server hardening steps would you recommend? (/Bastille?)
+>=20
+> Thx in advance.
+>=20
+> Regards
+>=20
+> Ben
+>=20
+>=20
+>=20
+>=20
+>=20
 
 
