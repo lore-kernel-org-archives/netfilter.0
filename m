@@ -1,13 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: chaostables-0.2 & 2.6.19.1
-Date: Mon, 1 Jan 2007 16:23:53 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0701011622040.21491@yvahk01.tjqt.qr>
-References: <20070101143812.GA7816@vanheusden.com>
-	<Pine.LNX.4.61.0701011541130.21491@yvahk01.tjqt.qr>
-	<20070101151505.GE7816@vanheusden.com>
+From: Vitek <zaklik@gmail.com>
+Subject: ways to modify iptables inside C/C++ aplication
+Date: Tue, 02 Jan 2007 17:17:01 +0100
+Message-ID: <459A857D.3020703@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070101151505.GE7816@vanheusden.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,33 +15,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Folkert van Heusden <folkert@vanheusden.com>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+Hi,
 
-On Jan 1 2007 16:15, Folkert van Heusden wrote:
+============================================
+Short version:
 
->> >I'm trying to compile chaostables v0.2 on a system with kernel 2.6.19.1
->> >and c-compiler 3.4.6:
->> >/usr/src/chaostables-0.2/kernel/xt_CHAOS.c: In function `xt_chaos_target':
->> >/usr/src/chaostables-0.2/kernel/xt_CHAOS.c:53: error: too many arguments to function
->>
->> Yes I found this one this morning. The issue is simple: function 
->> signatures have changed in 2.6.19 and 2.6.20 which I did not all catch 
->> yet. chaostables compiles fine with 2.6.18 however. I shall have it 
->> workarounded in the next release. Thanks for noticing! (cc to 
->> linuxkernel and netfilter before more people run into the same problem)
->
->Not wanting to put you under pressure but when is that version expected?
+Is there any way to include iptables sources to c++ aplication and just 
+call do_command() ?
 
-Just about now, I just made a snapshot.
-http://jengelh.hopto.org/f/chaostables/chaostables-0.3.tar.bz2
-(The new (note above: snapshot) SREJECT is not complete. Just fixed the 2.6.19
-and 2.6.20 compiles.)
+If I'll use libiptc library:
+Is it possible to use libiptc in C++?
+How can I access layer7 match?
 
+============================================
+Long version:
 
-	-`J'
--- 
+I have a project for analyzing network flow of services on server 
+providing Internet connection for small LAN. I created a perl script for 
+setting iptables firewall (from text filelist of users) and reading 
+counters calling system("iptables -L vxn") and spliting data in perl 
+script. This is too slow for real time statistic, so I decide to create 
+C/C++ aplication for this purpose.
+
+I have few requirements on this application:
+
+- I need to use Layer7 extension for iptables - for recognizing some 
+services (p2p for example)
+- Clint/Server based model ( I would like to modify/read iptables 
+structure using webbase client - php )
+- If it's possible - have access to database server (I'm not sure if 
+this is possible in C)
+
+I already create piece of C code using libiptc to access iptables 
+counters and create new chains, but I couldn't find any learn examples 
+how to insert rules using libiptc etc..
+I think that it will be quicker and better to use iptables sources and 
+just call do_command(), but...
+
+The questions:
+Is there any way to include iptables sources to c++ aplication and just 
+call do_command() ?
+
+If I will use libiptc
+Is it possible to use it in C++?
+How can I access layer7 match?
+
+I see 3 solutions:
+
+1)
+Create C++ aplication and just call system( .. ) everywhere when i need 
+to modify/read firewall - but I'm sure that it will be still too slow.
+
+2)
+Use Libiptc just for reading counters and all other do by calling 
+system() - not very nice solution and I'm not sure if this is possible 
+in C++
+
+3)
+Use pure C using iptables source codes - but how? I was testing just by 
+modifing iptables-standalone.c - it works fine.
+
+It seems that it will be little bit challange for me (I'm not 
+experienced C/C++ programmer ;)
+
+Thank you very much for answers!
+
+Cheers,
+Vitek
+
 
