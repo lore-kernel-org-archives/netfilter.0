@@ -1,35 +1,76 @@
-From: Arthur Kerpician <arthur@bluechip.ro>
-Subject: Different routes
-Date: Thu, 04 Jan 2007 22:18:15 +0200
-Message-ID: <459D6107.6030007@bluechip.ro>
+From: "ArcosCom Linux User" <linux@arcoscom.com>
+Subject: Re: dst cache overflow
+Date: Thu, 4 Jan 2007 22:32:48 +0100 (CET)
+Message-ID: <55635.10.1.1.10.1167946368.squirrel@www.arcoscom.com>
+References: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>
+Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <lartc-bounces@mailman.ds9a.nl>
+In-Reply-To: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Sender: lartc-bounces@mailman.ds9a.nl
+Errors-To: lartc-bounces@mailman.ds9a.nl
+Content-Type: text/plain; charset="iso-8859-9"
+To: linux@arcoscom.com
+Cc: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hi,
-The server I'm using is doing SNAT for the local network and has 2 NICs 
-for 2 different ISPs and 1 NIC for the LAN. One of the ISPs is the 
-backup one and the default gateway on the server is switched to this one 
-if the primary one is down.
-Now, how can I route several LAN clients (not all) through the backup 
-connection, instead of the default one?
+The log says:
 
-Thanks for the help,
-Arthur
+Dec 30 00:52:27 cura kernel: dst cache overflow
+Dec 30 00:52:27 cura kernel: MASQUERADE: No route: Rusty's brain broke!
+Dec 30 00:52:27 cura kernel: dst cache overflow
+Dec 30 00:52:28 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+Dec 30 00:52:28 cura kernel: zlan0: topology change detected, propagating
+Dec 30 00:52:28 cura kernel: dst cache overflow
+Dec 30 00:52:30 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+Dec 30 00:52:30 cura kernel: zlan0: topology change detected, propagating
+Dec 30 00:52:32 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+Dec 30 00:52:32 cura kernel: zlan0: topology change detected, propagating
+Dec 30 00:52:32 cura kernel: printk: 15 messages suppressed.
+Dec 30 00:52:32 cura kernel: dst cache overflow
+Dec 30 00:52:34 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+Dec 30 00:52:34 cura kernel: zlan0: topology change detected, propagating
+Dec 30 00:52:36 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+Dec 30 00:52:36 cura kernel: zlan0: topology change detected, propagating
+Dec 30 00:52:37 cura kernel: printk: 40 messages suppressed.
+Dec 30 00:52:37 cura kernel: dst cache overflow
 
-SPECS:
-FC5
-2.6.15-1.2054_FC5smp
+zlan0 is a bridge (with STP configured) between some LANs.
 
+Thanks
+
+P.D.: I'm a bit desesperated with this error, I changed "MASQUERADE" with
+"SNAT" with no sense. Some hours after router is booted up, the network
+appears to be UP but all ifaces haven't responses.
+
+El Mar, 2 de Enero de 2007, 23:24, ArcosCom Linux User escribi=F3:
+> Hi all, I'm having this problem with this system configuration:
+>    1) iptables 1.3.7
+>    2) kernel 2.6.19.1
+>    3) SMP computer
+>    4) 2 external links + 2 internal (bridged).
+>
+> Some hours after the system is working without any troubles, all networ=
+k
+> devices stop respond.
+>
+> Anyone could help me to fix this problem?
+>
+> Googling some ours I detect that this was a problem with old kernels an=
+d
+> were solved with 2.6.11 kernel version.
+>
+> Any help will be appretiated.
+>
+> Regards.
+>
+> P.D.: With MASQUERADE the problem begans more quickly than with SNAT
+> target.
