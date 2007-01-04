@@ -1,8 +1,11 @@
-From: Ted Phelps <phelps@gnusto.com>
-Subject: Fwd: Ted Phelps: issue with 2.6.20rc3 and nf_nat
-Date: Thu, 04 Jan 2007 05:58:13 -0600
-Message-ID: <31051.1167911893@laika.gnusto.com>
+From: Luca Bedogni <ml@lucabedogni.it>
+Subject: Does netfilter fragments packect exceeding MTU
+Date: Thu, 4 Jan 2007 13:21:40 +0100
+Message-ID: <200701041321.41095.ml@lucabedogni.it>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -13,36 +16,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi
+	i'm trying to find out what i've said on topic. I've taken a look at this 
+mail:
+http://lists.netfilter.org/pipermail/netfilter/2000-August/004878.html
+So i think that if you pass a packet to POSTROUTING taht exceeds MTU, 
+netfilter will try to send it anyway right? Because you have to fragment 
+before, 'cos netfilter doesn't expect a packet exceeding MTU right?
+But that fragmentation how could be done? I've seen in the above mail some 
+C-code building a fragmentation module for doing this, but it's not included 
+in the official kernel tree?
 
-I'm trying to use the new netfilter nf_nat module in linux-2.6.20-rc3
-and running into a minor issue: when I load the iptable_nat module, all
-existing connections stop working, as if the packets are being dropped.
-This is somewhat irritating since the root partition of the machine in
-question is mounted via NFS and, or course, that stops working.
+Another question: in this mail i've not understood if fragmentation is done by 
+such module or by a /proc entry; the mail it's quite old, so what's the 
+situation actually?
 
-I've poked around a bit and this bit of nf_net_standalone.c appears to
-be the culprit:
+thanks for any RTFM or help :)
 
-    120:	/* Don't try to NAT if this packet is not conntracked */
-    121:	if (ct == &nf_conntrack_untracked)
-    122:		return NF_ACCEPT;
-    123:
-    124:        nat = nfct_nat(ct);
-->  125:        if (!nat)
-->  126:                return NF_DROP;
-
-
-If I read this correctly, packets for connections which aren't tracked
-at all are accepted, but packets for connections which are being tracked
-don't have NAT knowledge are dropped.
-
-Is there a good reason why line 126 shouldn't return NF_ACCEPT?
-
-Cheers,
--Ted
+Regards
+-- 
+Debian Powered GNU/Linux User #373118
+Bedogni Luca - 	Blog | http://blog.lucabedogni.it
+		        Site | http://www.lucabedogni.it
+Debianizzati - www.debianizzati.org | Founder Member
+--
+Token Ring, n.: a local area network architecture, perhaps a future
+replacement for SNA. Not to be confused with the Tolkien Ring, although
+the purposes are similar: "One Ring to rule them all, one ring to find
+them, one ring to bring them all and in the darkness bind them, in a LAN
+with more nodes where the stations lie." 
 
