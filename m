@@ -1,11 +1,12 @@
-From: "Chris Nighswonger" <cnighswonger@foundations.edu>
-Subject: POP, SMTP forward question
-Date: Thu, 4 Jan 2007 08:50:30 -0500
-Message-ID: <cdae243a0701040550h58991057q3d7b6ef9edd77cce@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Does netfilter fragments packect exceeding MTU
+Date: Thu, 04 Jan 2007 15:35:03 +0100
+Message-ID: <459D1097.6070903@plouf.fr.eu.org>
+References: <200701041321.41095.ml@lucabedogni.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <200701041321.41095.ml@lucabedogni.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,52 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi all,
-  I'm fairly new to iptables and would like some input on my firewall
-config. I have a linux box setup as a proxy to the internet. It is the
-only box on the network with internet access. I use browser proxy
-configurations on the client machines to send all http, etc traffic to
-the linux box. I want to be able to permit pop and smtp traffic to
-flow through the linux box to the internet unproxied, but deny any
-other traffic. My current iptables config appears to meet these
-requirements well, however, I would like the config to be as tight as
-possible without being over paranoid. Here is my current iptables
-config. Any suggestions regarding this config are welcome.
+Hello,
 
-# eth2 192.168.2.0/24 Dirty side
-# eth0 192.168.0.0/24 Clean side
-*nat
-:PREROUTING ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s 192.168.0.0/255.255.255.0 -o eth2 -j MASQUERADE
-COMMIT
-*mangle
-:PREROUTING ACCEPT [862:117148]
-:INPUT ACCEPT [862:117148]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [861:116919]
-:POSTROUTING ACCEPT [861:116919]
-COMMIT
-*filter
-:FORWARD DROP [0:0]
-:INPUT ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
--A FORWARD -m state -o eth0 --state NEW,RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -m state -i eth0 --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -p tcp -m tcp -m multiport -i eth0 -j ACCEPT --dports 25,110,465,995
--A FORWARD -p tcp -m tcp -o eth2 --dport 31337:31340 --sport 31337:31340 -j DROP
--A FORWARD -s 192.168.0.0/255.255.255.0 -i eth2 -j DROP
--A OUTPUT -p tcp -m tcp -o eth2 --dport 31337:31340 --sport 31337:31340 -j DROP
-COMMIT
+Luca Bedogni a =E9crit :
+> So i think that if you pass a packet to POSTROUTING taht exceeds MTU,=20
+> netfilter will try to send it anyway right? Because you have to fragmen=
+t=20
+> before, 'cos netfilter doesn't expect a packet exceeding MTU right?
+> But that fragmentation how could be done?
 
--- 
-Chris Nighswonger
-Network & Systems Director
-Foundations Bible College & Seminary
-www.foundations.edu
-cnighswonger >at< foundations >daught< edu
+Netfilter does not send packets : it just drops them, mangles them or=20
+lets them through.
+
+Disclaimer : I observed the following in the 2.4.18 kernel and cannot=20
+assert whether it is still true for 2.6 kernels with ip_conntrack or=20
+nf_conntrack or even for recent 2.4 kernels.
+
+If needed (packet size > output path MTU), the IP stacks fragments :
+- locally generated packets before the NF_IP_LOCAL_OUT Netfilter hook=20
+(where the iptables OUTPUT chains are located) ;
+- forwarded packets after the NF_IP_FORWARD Netfilter hook (where the=20
+iptables FORWARD chains are located).
+
+BUT, when the ip_conntrack module is loaded (or built-in), which is=20
+needed for connection tracking and stateful NAT operation, it can=20
+perform an extra fragmentation in the NF_IP_POST_ROUTING Netfilter hook=20
+after the POSTROUTING iptables chains. The reason is ip_conntrack needs=20
+to reassemble packets first in the NF_IP_LOCAL_OUT Netfilter hook before=20
+the OUTPUT iptables chains.
+
+You can see all this (and more) in the following diagram :
+http://www.plouf.fr.eu.org/bazar/netfilter/schema_netfilter.txt
+
+So, if you generate a packet of the maximum size for an interface, use=20
+advanced routing to reroute it to another interface with a smaller MTU=20
+and ip_conntrack is not present, the packet will not be fragmented. It=20
+will just be forwarded to the network device driver "as is".
 
