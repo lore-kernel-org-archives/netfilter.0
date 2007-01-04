@@ -1,76 +1,97 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: Re: dst cache overflow
-Date: Thu, 4 Jan 2007 22:32:48 +0100 (CET)
-Message-ID: <55635.10.1.1.10.1167946368.squirrel@www.arcoscom.com>
-References: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>
-Reply-To: linux@arcoscom.com
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: SNAT on the loopback interface
+Date: Thu, 04 Jan 2007 23:53:27 +0100
+Message-ID: <459D8567.5010501@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <lartc-bounces@mailman.ds9a.nl>
-In-Reply-To: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
-Sender: lartc-bounces@mailman.ds9a.nl
-Errors-To: lartc-bounces@mailman.ds9a.nl
-Content-Type: text/plain; charset="iso-8859-9"
-To: linux@arcoscom.com
-Cc: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter <netfilter@lists.netfilter.org>
 
-The log says:
+Hello,
+I was playing a bit with SNAT on the loopback interface and observed 
+strange things. You may say that doing SNAT on the loopback interface is 
+not so useful but hey, I'm just curious.
 
-Dec 30 00:52:27 cura kernel: dst cache overflow
-Dec 30 00:52:27 cura kernel: MASQUERADE: No route: Rusty's brain broke!
-Dec 30 00:52:27 cura kernel: dst cache overflow
-Dec 30 00:52:28 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
-Dec 30 00:52:28 cura kernel: zlan0: topology change detected, propagating
-Dec 30 00:52:28 cura kernel: dst cache overflow
-Dec 30 00:52:30 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
-Dec 30 00:52:30 cura kernel: zlan0: topology change detected, propagating
-Dec 30 00:52:32 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
-Dec 30 00:52:32 cura kernel: zlan0: topology change detected, propagating
-Dec 30 00:52:32 cura kernel: printk: 15 messages suppressed.
-Dec 30 00:52:32 cura kernel: dst cache overflow
-Dec 30 00:52:34 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
-Dec 30 00:52:34 cura kernel: zlan0: topology change detected, propagating
-Dec 30 00:52:36 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
-Dec 30 00:52:36 cura kernel: zlan0: topology change detected, propagating
-Dec 30 00:52:37 cura kernel: printk: 40 messages suppressed.
-Dec 30 00:52:37 cura kernel: dst cache overflow
+The rule :
+iptables -t nat -A POSTROUTING -o lo -s 127.0.0.2 -d 127.0.0.2 \
+   -j SNAT --to 127.0.0.3
 
-zlan0 is a bridge (with STP configured) between some LANs.
+I also added LOG rules to log packets in all mangle and filter chains. 
+Then I tested the rule with a TCP connection to 127.0.0.2:22. The 
+--log-prefix is composed of abbreviations of the chain, table and state 
+names.
 
-Thanks
+What I observed on a 2.4.33.6 kernel :
 
-P.D.: I'm a bit desesperated with this error, I changed "MASQUERADE" with
-"SNAT" with no sense. Some hours after router is booted up, the network
-appears to be UP but all ifaces haven't responses.
+[SYN packet is generated]
+> OUT_mgl_NEW OUT=lo SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=32772 DPT=22 SYN
+> OUT_flt_NEW OUT=lo SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=32772 DPT=22 SYN
+> PST_mgl_NEW OUT=lo SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=32772 DPT=22 SYN
+[SYN packet is SNATed, reaches lo and loops back]
+> PRE_mgl_NEW IN=lo  SRC=127.0.0.3 DST=127.0.0.2 PROTO=TCP SPT=32772 DPT=22 SYN
+>  IN_mgl_NEW IN=lo  SRC=127.0.0.3 DST=127.0.0.2 PROTO=TCP SPT=32772 DPT=22 SYN
+>  IN_flt_NEW IN=lo  SRC=127.0.0.3 DST=127.0.0.2 PROTO=TCP SPT=32772 DPT=22 SYN
 
-El Mar, 2 de Enero de 2007, 23:24, ArcosCom Linux User escribi=F3:
-> Hi all, I'm having this problem with this system configuration:
->    1) iptables 1.3.7
->    2) kernel 2.6.19.1
->    3) SMP computer
->    4) 2 external links + 2 internal (bridged).
->
-> Some hours after the system is working without any troubles, all networ=
-k
-> devices stop respond.
->
-> Anyone could help me to fix this problem?
->
-> Googling some ours I detect that this was a problem with old kernels an=
-d
-> were solved with 2.6.11 kernel version.
->
-> Any help will be appretiated.
->
-> Regards.
->
-> P.D.: With MASQUERADE the problem begans more quickly than with SNAT
-> target.
+[SYN/ACK reply packet is generated]
+> OUT_mgl_EST OUT=lo SRC=127.0.0.2 DST=127.0.0.3 PROTO=TCP SPT=22 DPT=32772 ACK SYN
+> OUT_flt_EST OUT=lo SRC=127.0.0.2 DST=127.0.0.3 PROTO=TCP SPT=22 DPT=32772 ACK SYN
+> PST_mgl_EST OUT=lo SRC=127.0.0.2 DST=127.0.0.3 PROTO=TCP SPT=22 DPT=32772 ACK SYN
+[SYN/ACK reply packet reaches lo and loops back]
+> PRE_mgl_EST IN=lo  SRC=127.0.0.2 DST=127.0.0.3 PROTO=TCP SPT=22 DPT=32772 ACK SYN
+[SYN packet is lost]
+
+The initial SYN packet is SNATed as expected. The SYN/ACK reply packet 
+is sent and classified as ESTABLISHED but is lost after the mangle 
+PREROUTING chain ; it does not seem to reach the NF_IP_LOCAL_IN hook 
+which contains the INPUT chains. How and where does this happens ? If I 
+understand correctly, this could happen in two "places" : the 
+NF_IP_PRE_ROUTING iptable_nat hook or the input routing decision. I 
+cannot see any reason why the input routing decision would drop the 
+packet. The remaining choice is the iptable_nat hook, where the packet 
+destination should be restored to the original source address of the SYN 
+packet. Did something go wrong during this process ?
+
+What I observed on a 2.6.18.2 kernel :
+
+[SYN packet is generated]
+> OUT_mgl_NEW IN= OUT=lo SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=1160 DPT=22 SYN
+> OUT_flt_NEW IN= OUT=lo SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=1160 DPT=22 SYN
+> PST_mgl_NEW IN= OUT=lo SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=1160 DPT=22 SYN
+[SYN packet is SNATed, reaches lo and loops back]
+> PRE_mgl_NEW IN=lo OUT= SRC=127.0.0.3 DST=127.0.0.2 PROTO=TCP SPT=1160 DPT=22 SYN
+>  IN_mgl_NEW IN=lo OUT= SRC=127.0.0.3 DST=127.0.0.2 PROTO=TCP SPT=1160 DPT=22 SYN
+>  IN_flt_NEW IN=lo OUT= SRC=127.0.0.3 DST=127.0.0.2 PROTO=TCP SPT=1160 DPT=22 SYN
+
+[SYN/ACK reply packet is generated]
+> OUT_mgl_EST IN= OUT=lo SRC=127.0.0.2 DST=127.0.0.3 PROTO=TCP SPT=22 DPT=1160 ACK SYN
+> OUT_flt_EST IN= OUT=lo SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=22 DPT=1160 ACK SYN
+[Wow ! see what just happenened to the destination address]
+> PST_mgl_EST IN= OUT=lo SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=22 DPT=1160 ACK SYN
+[SYN/ACK reply packet reaches lo and loops back]
+> PRE_mgl_EST IN=lo OUT= SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=22 DPT=1160 ACK SYN
+>  IN_mgl_EST IN=lo OUT= SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=22 DPT=1160 ACK SYN
+>  IN_flt_EST IN=lo OUT= SRC=127.0.0.2 DST=127.0.0.2 PROTO=TCP SPT=22 DPT=1160 ACK SYN
+
+This time, the reply packet reaches the INPUT chains and the TCP/IP 
+stack upper layer. Surprisingly (to me, at least), the destination 
+address of the the reply packet is changed in the NF_IP_LOCAL_OUT 
+(OUTPUT) iptable_nat hook which lies between the mangle and filter 
+OUTPUT chains. I expected this would happen in the NF_IP_PRE_ROUTING 
+iptable_nat hook, as it happens for reply packets not going through the 
+loopback interface. Why is that so ?
+
+I understand that there must be some tricks for proper conntrack and NAT 
+operation through the loopback interface, but I cannot explain these 
+things. Can anyone ?
+
