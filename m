@@ -1,11 +1,12 @@
-From: Ted Phelps <phelps@gnusto.com>
-Subject: Re: GRE Packet in IPSec not Inbound?
-Date: Fri, 05 Jan 2007 02:10:36 -0600
-Message-ID: <17305.1167984636@laika.gnusto.com>
-References: <00ea01c73096$671bc7d0$35535770$@com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Removal from list
+Date: Fri, 5 Jan 2007 09:27:12 +0100
+Message-ID: <002401c730a3$4cc3eea0$0b0ffe0a@NS006819>
+References: <64527.86.43.68.60.1167952523.squirrel@www.goldsmith.ie>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: Your message of Thu, 04 Jan 2007 23:54:53 MST. 
-	<00ea01c73096$671bc7d0$35535770$@com> 
+In-Reply-To: <64527.86.43.68.60.1167952523.squirrel@www.goldsmith.ie>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: info@goldsmith.ie
+Cc: netfilter@lists.netfilter.org
+
+> Hi,
+> 
+> What a f*cked up mailing list system you are using!
+...
+> I have been submitting all e-mails I receive to the various
+> spam lists and eventually they will start blocking your list.
+
+I remember an American (don't recall his name, nor do I feel compelled
+to try and find it) back in 2001 or so, who thought he could shutdown
+this list (or something like that). There was a good laugh about it and
+he eventually stopped harassing the list users. It could be just me but
+I'm recognizing silimar foolishness here.
+
+Please just unsubscribe as mentioned in other posts. It really works: I
+tried when I went on holliday.
 
 
-"Joshua Perry" writes:
-> Ok so the problem I have is that in the interface chain for the interface
-> that is connected to the internet Shorewall puts a policy match filter "--m
-> policy --dir in --pol none" When the ESP packets come in it matches that
-> policy because it is inbound.  The GRE packet that gets excised from the ESP
-> begins again at INPUT but that packet does not match that rule for some
-> reason.  At first I wasn't sure if this was by design or not so I manually
-> put in a jump rule without the policy match which worked good.
+Grts,
+Rob
 
-The IPsec packet matches the vpn1_in policy because it matches this rule:
 
-    1   152 ACCEPT     esp  --  *      *       67.42.31.242    0.0.0.0/0
-
-It's not surprisng that the packet no longer matches this once the ESP
-wrapper is stripped away.  If you want to accept the packet because it
-matched this rule when it first came in (which I assume is what you
-want) then you need to mark it as having arrived on a secure interface.
-
-Have a look at the LARTC HOWTO:
-
-    http://tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.netfilter.html
-
-Cheers,
--Ted
 
