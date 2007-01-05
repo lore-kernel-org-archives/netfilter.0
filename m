@@ -1,12 +1,9 @@
-From: =?ISO-8859-1?Q?S=E9bastien_CRAMATTE?= <scramatte@zensoluciones.com>
-Subject: Re: layer 7
-Date: Fri, 05 Jan 2007 14:27:42 +0100
-Message-ID: <459E524E.3050003@zensoluciones.com>
-References: <459E48A6.4030206@eccotours.co.za>
+From: "Tom Blane" <tomblane@hotmail.com>
+Subject: Destination NAT from an LKM
+Date: Fri, 05 Jan 2007 16:02:27 +0000
+Message-ID: <BAY101-F173439B62595972E816E8CDDBF0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------040809020609030800090406"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <459E48A6.4030206@eccotours.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +14,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Brent Clark <bclark@eccotours.co.za>, netfilter@lists.netfilter.org
-
-This is a multi-part message in MIME format.
---------------040809020609030800090406
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; format=flowed; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
-Layer7 requires to patch iptables and kernel
-Moreover you must have  ip_conntrack module loaded too else layer7
-wouldn't work ...
-ipt_layer7 depends of ip_conntrack but doesn't load it automaticaly
+Hi everyone, Any help or pointers in the right direction would be greatly=20
+appreciated.
 
-Regards
+I have an LKM that hooks into the NF_IP_PRE_ROUTING hook for IP traffic. Th=
+e=20
+kernel module examines certain fields of the IP header and then makes a=20
+decision as to either allow the packet on to its intended destination or to=
+=20
+re-route the packet to another system.
 
-Brent Clark a =E9crit :
-> Hey all
->
-> Was wondering if someone could please help.
->
-> Im trying go get layer7 working, problem is that I dont see it in
-> /lib/iptables.
->
-> Weird thing is I patched the kernel and its even loaded
->
-> root@cptgate:/lib/iptables# lsmod | grep -i layer
-> ipt_layer7             10788  0
-> x_tables               13252  22
-> ipt_layer7,ipt_TOS,ipt_SET,ipt_TARPIT,ipt_ROUTE,ip6t_LOG,ip6_tables,ipt=
-_owner,ipt_hashlimit,ipt_SAME,ipt_REDIRECT,iptable_nat,ipt_TCPMSS,ipt_TTL=
-,ipt_CLUSTERIP,ip_tables,ipt_LOG,ipt_MASQUERADE,ipt_REJECT,ipt_ULOG,ipt_i=
-prange,xt_MARK
->
-> root@cptgate:/lib/iptables#
->
-> My question is, do I have to get the source and compile iptables its,
-> or can have I missed something.
-> I comparing from using patchomatic, a part from having the source, not
-> much more was needed.
->
-> If someone could assist, I would greatfully be appreciated.
->
-> Kind Regards
-> Brent Clark
->
+However I=91m having a problem re-routing the traffic. I can change the IP =
 
+address but this invalidates the TCP checksum and simple won=92t work for t=
+he=20
+TCP handshake anyway. I=92d like to use DNAT to hold connection tracking=20
+information and to handle changing IP addresses and checksums but have been=
+=20
+unable to use iptables for this; although I=92m not too sure why iptables=20
+doesn=92t work (I think it could be something to do with the fact that both=
+=20
+the iptables version of DNAT and my LKM use the same NF hook, although my=20
+LKM NF hook has a priority of NF_IP_PRI_FIRST).
 
---------------040809020609030800090406--
+Anyway, I guess my question is:
+	Does anyone know how to implement DNAT from within an LKM?
+	And if so, is it possible to just call the same functions iptables would=20
+call? Or would it be necessary to shamelessly steel the code straight from =
+
+the iptables source? Both would be fine for me!
+
+Any pointers towards code or articles would be great.
+Thanks for reading, Tom
+
+_________________________________________________________________
+MSN Hotmail is evolving =96 check out the new Windows Live Mail=20
+http://ideas.live.com
+
 
