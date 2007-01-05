@@ -1,14 +1,13 @@
-From: Luca Bedogni <ml@lucabedogni.it>
-Subject: Re: Does netfilter fragments packect exceeding MTU
-Date: Fri, 5 Jan 2007 11:59:24 +0100
-Message-ID: <200701051159.25078.ml@lucabedogni.it>
-References: <200701041321.41095.ml@lucabedogni.it>
-	<459D1097.6070903@plouf.fr.eu.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: Ted Phelps <phelps@gnusto.com>
+Subject: Re: GRE Packet in IPSec not Inbound?
+Date: Fri, 05 Jan 2007 05:29:00 -0600
+Message-ID: <26294.1167996540@laika.gnusto.com>
+References: <00ea01c73096$671bc7d0$35535770$@com>
+	<17305.1167984636@laika.gnusto.com>
+	<00ed01c730a5$69b846d0$3d28d470$@com>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <459D1097.6070903@plouf.fr.eu.org>
-Content-Disposition: inline
+In-reply-to: Your message of Fri, 05 Jan 2007 01:42:20 MST. 
+	<00ed01c730a5$69b846d0$3d28d470$@com> 
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,61 +18,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Joshua Perry <josh@6bit.com>, netfilter@lists.netfilter.org
 
-On Thursday 04 January 2007 15:35, Pascal Hambourg wrote:
-> Hello,
->
-> Luca Bedogni a =E9crit :
-> > So i think that if you pass a packet to POSTROUTING taht exceeds MTU,
-> > netfilter will try to send it anyway right? Because you have to fragment
-> > before, 'cos netfilter doesn't expect a packet exceeding MTU right?
-> > But that fragmentation how could be done?
->
-> Netfilter does not send packets : it just drops them, mangles them or
-> lets them through.
+"Joshua Perry" writes:
+> Huh?  I'm I reading the config wrong?  There are no ipsec packets that
+> hit the vpn1_in chain only the actual data packets get to vpn1_in
+> after ESP and GRE are stripped.  When the raw data packet makes its
+> run through netfilter it never hits the rule that you mentioned,
+> right?
 
-Yes I know that, sorry for my misspelling.
+Sorry, I typed vpn1 when I meant vlan4.
 
-> Disclaimer : I observed the following in the 2.4.18 kernel and cannot
-> assert whether it is still true for 2.6 kernels with ip_conntrack or
-> nf_conntrack or even for recent 2.4 kernels.
->
-> If needed (packet size > output path MTU), the IP stacks fragments :
-> - locally generated packets before the NF_IP_LOCAL_OUT Netfilter hook
-> (where the iptables OUTPUT chains are located) ;
-> - forwarded packets after the NF_IP_FORWARD Netfilter hook (where the
-> iptables FORWARD chains are located).
->
-> BUT, when the ip_conntrack module is loaded (or built-in), which is
-> needed for connection tracking and stateful NAT operation, it can
-> perform an extra fragmentation in the NF_IP_POST_ROUTING Netfilter hook
-> after the POSTROUTING iptables chains. The reason is ip_conntrack needs
-> to reassemble packets first in the NF_IP_LOCAL_OUT Netfilter hook before
-> the OUTPUT iptables chains.
->
-> You can see all this (and more) in the following diagram :
-> http://www.plouf.fr.eu.org/bazar/netfilter/schema_netfilter.txt
->
-> So, if you generate a packet of the maximum size for an interface, use
-> advanced routing to reroute it to another interface with a smaller MTU
-> and ip_conntrack is not present, the packet will not be fragmented. It
-> will just be forwarded to the network device driver "as is".
 
-So in fact netfilter, if ip_conntrack is loaded, fragments packet if they=20
-exceeds MTU for such interface, and do this after POSTROUTING.
-I know we're speaking about kernel 2.4.18, but i think it would be interest=
-ing=20
-discover what's going on in 2.6.x kernel, if that has changed or not.=20
-I'll try do find this out, thank you for your infos :)
+> I have it working, the caveat is that Shorewall by default adds that
+> "-m policy --dir in --pol none" to the inbound rules and only the
+> original ESP packet and the bare data packet match that rule and jump
+> to their respective zone chains. When I remove that policy everything
+> works great, I'm just wondering if the asymmetric handling of the
+> policy is a netfilter bug, or if I should ask the Shorewall guys to
+> look at changing that default policy.
 
-Regards
-=2D-=20
-Debian Powered GNU/Linux User #373118
-Bedogni Luca - 	Blog | http://blog.lucabedogni.it
-		        Site | http://www.lucabedogni.it
-Debianizzati - www.debianizzati.org | Founder Member
-=2D-
-Book: A non-volatile information storage medium.=20
+I think you disable your firewall if you remove that policy, so I expect
+that you'll want to keep it.
+
+So the ESP packet comes in on vlan4, gets bounced to the vlan4_in chain
+and from there either to the dynamic or the inet2fw chain depending on
+whether or not its part of an established connection.  You haven't told
+us what the dynamic chain looks like, but if it goes to the inet2fw
+chain then it will match the 3rd rule (prot=esp) and be accepted.  Then
+the ESP header is stripped of, revealing a GRE packet and the process
+starts again...
+
+The GRE packet comes in on the vlan4 interface, gets bounced to the
+vlan4_in chain and from there to either dynamic or inet2fw, depending on
+whether or not its part of an established connection.  If it's part of
+an established connection then it will match the 5th rule (prot=47) and
+be accepted, but without seeing what the dynamic chain looks like I
+can't say if it you would be able to get it to that state in the first
+place.
+
+> [packet dumps stripped]
+
+
+> You can see that the ESP got accepted because of the rule you mentioned, but
+> the policy match filter keeps the GRE packets from getting ACCEPTED (they
+> don't even make it into the inet2fw chain because of it).
+
+I think you're misunderstanding the policy match rule.  This rule...
+
+   37  6072 inet2fw    all  --  *      *       0.0.0.0/0
+0.0.0.0/0           policy match dir in pol none
+
+... says that packets which are inbound and don't match any existing
+policy get bounced to the inet2fw chain.  It doesn't prevent packets
+from going to that chain; it's the only thing that can send them there.
+
+I suspect that the default policy for vlan4_in is to accept, in which
+case the absence of this rule will disable your firewall.  I think it's
+more likely that the missing packets are matching the previous rule:
+
+   31  3512 dynamic    all  --  *      *       0.0.0.0/0
+0.0.0.0/0           state INVALID,NEW
+
+I would guess that the dynamic chain is the place where things are going
+awry, but again you haven't told us what that looks like, so I'm just
+guessing that it's dropping your GRE packets.
+
+
+Hope that helps?
+
+Cheers,
+-Ted
 
