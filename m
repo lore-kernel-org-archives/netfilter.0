@@ -1,11 +1,11 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+From: Tim Evans <tkevans@tkevans.com>
 Subject: RE: Looking for automation scripts
-Date: Sat, 6 Jan 2007 15:35:13 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0701061534460.22558@yvahk01.tjqt.qr>
-References: <005701c73150$49f64710$0300a8c0@bandwidthco.com>
+Date: Sat, 6 Jan 2007 09:55:40 -0500 (EST)
+Message-ID: <200701061455.l06EtejU010151@osprey.tkevans.com>
+Reply-To: Tim Evans <tkevans@tkevans.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <005701c73150$49f64710$0300a8c0@bandwidthco.com>
+Content-MD5: b7siQszjsv6DSqmomFWiHw==
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,21 +16,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: TEXT/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: markee <markee@bandwidthco.com>
-Cc: netfilter@lists.netfilter.org
+To: jengelh@linux01.gwdg.de, netfilter@lists.netfilter.org
 
->
->I've seen a few references here to scripts that monitor attacks and
->dynamically update iptables rules to knock down the attacks. Can anyone
->provide some good research starting points or sample scripts that they use?
 
-denyhosts.sf.net?
+>denyhosts.sf.net?
 
->I've found a few things with google but respect the collective out here much
->more.
+This is a great package, but it doesn't touch iptables rules.  Rather, it relies 
+on tcp wrapper (ssh must be built with libwrap) and it dynamically adds IP's to 
+/etc/hosts.deny
+--
+Tim Evans, TKEvans.com, Inc.	|    5 Chestnut Court
+tkevans@tkevans.com		|    Owings Mills, MD 21117
+http://www.tkevans.com/		|    443-394-3864
+http://www.come-here.com/News/	|    
 
-	-`J'
--- 
 
