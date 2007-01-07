@@ -1,66 +1,67 @@
-From: William Perry <wlperry@williamperry.com>
-Subject: Re: Looking for automation scripts
-Date: Sat, 06 Jan 2007 15:20:19 -0800
-Message-ID: <45A02EB3.60102@williamperry.com>
-References: <005701c73150$49f64710$0300a8c0@bandwidthco.com>	<Pine.LNX.4.61.0701061534460.22558@yvahk01.tjqt.qr>	<20070106152740.GA13781@minastirith>
-	<0dd44240578edb703165547e121ceb7c@afm-koeln.de>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: [announce] chaostables 0.4
+Date: Sun, 7 Jan 2007 20:55:31 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0701072014550.4365@yvahk01.tjqt.qr>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <0dd44240578edb703165547e121ceb7c@afm-koeln.de>
+Return-path: <nmap-dev-bounces@insecure.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+List-Unsubscribe: <http://cgi.insecure.org/mailman/listinfo/nmap-dev>,
+	<mailto:nmap-dev-request@insecure.org?subject=unsubscribe>
+List-Post: <mailto:nmap-dev@insecure.org>
+List-Help: <mailto:nmap-dev-request@insecure.org?subject=help>
+List-Subscribe: <http://cgi.insecure.org/mailman/listinfo/nmap-dev>,
+	<mailto:nmap-dev-request@insecure.org?subject=subscribe>
+Sender: nmap-dev-bounces@insecure.org
+Errors-To: nmap-dev-bounces@insecure.org
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Netfilter Mailing List <netfilter@lists.netfilter.org>, nmap-dev@insecure.org
 
-See http://fut.patch.com
-
-I am planning and working on an extension to fut that will permit 
-sysadmins to share the ip's of idiots.
-
-William Perry
+[Not sure if netfilter/nmap-dev bounce when you are not subscribed, 
+remove if in doubt.]
 
 
-cm@afm-koeln.de wrote:
-> Am 06.01.2007 um 16:27 schrieb Michael Rash:
->
->> On Jan 06, 2007, Jan Engelhardt wrote:
->>
->>>> I've seen a few references here to scripts that monitor attacks and
->>>> dynamically update iptables rules to knock down the attacks. Can 
->>>> anyone
->>>> provide some good research starting points or sample scripts that 
->>>> they use?
->>>
->>> denyhosts.sf.net?
->>
->> While denyhosts is a good concept, I question whether it provides a real
->> security benefit.  If a new remotely exploitable vulnerability is
->> discovered in OpenSSH (or other ssh implementation) it will most likely
->> have nothing to do with trying to brute force passwords.  Doing a quick
->> search through http://www.securityfocus.com/bid/ turns up recent SSH
->> security issues (not necessarily highly critical, but it is only a
->> matter of time).
->
-> .. its recommendable as a second instance of a "firewall" framework.
->
-> -- 
->
-> This sounds also good: http://fail2ban.sourceforge.net
->
-> Best Regards
->
-> CM
->
->
->
+Hello lists,
 
 
+chaostables 0.4 has been released. This is a package containing some 
+netfilter modules to work against nmap and port scans. 'portscan' can 
+match on stealth, syn, connect scans, also finds FIN-connect scans and 
+simple banner grabbing. 'DELUDE' works like TARPIT, making it look like 
+the port is open, but actually does not hold the connection like TARPIT, 
+hence should not fill up conntrack. 'CHAOS' will deliver what it says: 
+slows down nmap scans[1] and provides back bogus non-deterministic 
+replies -- the more even with DELUDE/TARPIT.
+
+For Linux 2.6.18, .19, .20, iptables 1.3.6, 1.3.7. CHAOS 
+currently requires TARPIT during build and runtime.
+
+'portscan' and 'CHAOS' can also be synthesized by rule logic "only"[2], 
+giving way to possibly implement it on BSD ipf* too. Details in 
+doc/fw.html.
+
+Suggestions for improvement are welcome.
+Please discuss the usefulness and let me
+hear [LKML] any objections for inclusion in Linux mainline too.
+
+	http://freshmeat.net/releases/244538/ - this release
+	http://freshmeat.net/p/chaostables/   - generally
+
+
+Thanks,
+Jan
+
+
+[1] nmap 3.81 timings have been done back in 2005, but things have 
+changed a little since 4.x. Redoing the timing benchmarks is already on 
+TODO.
+
+[2] Requires: connmark && CONNMARK &&
+              (conntrack || state) &&
+              (random || nth || statistic || hashlimit)
+    or equivalent. Depends on how you implement it.
+
+_______________________________________________
+Sent through the nmap-dev mailing list
+http://cgi.insecure.org/mailman/listinfo/nmap-dev
+Archived at http://SecLists.Org
