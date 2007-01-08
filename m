@@ -1,11 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: max number of connection
-Date: Mon, 8 Jan 2007 21:43:24 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0701082143060.23737@yvahk01.tjqt.qr>
-References: <BAY110-DAV3EC00E1ACEC181C4B8FFFBABC0@phx.gbl>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Determine the netfilter load
+Date: Mon, 8 Jan 2007 21:43:59 +0100
+Message-ID: <003d01c73365$b95afd50$0101000a@tanjian>
+References: <64de5c8b0701072336q6ff16d57ra2ba56cde9cbf0dd@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY110-DAV3EC00E1ACEC181C4B8FFFBABC0@phx.gbl>
+In-Reply-To: <64de5c8b0701072336q6ff16d57ra2ba56cde9cbf0dd@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,20 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Carlos Eduardo R. L. de Miranda" <cerlm@hotmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+> I have a netfilter firewall which is running at around 20k packets per
+> second. I want to know how much load the current packet rate is
+> causing to the server? The usual w does not give any thing. More
+> importantly how do I know if this packet rate is hitting or about to
+> hit any limits? How much more pps will my system take?
+
+Maybe atop has what you need.
+http://www.atcomputing.nl/Tools/atop
 
 
->Hello all,
->
->Is it possible to limit the number of concurrent connection (input/output -
->tcp/udp) each IP (node) can have at any given time?
+Grts,
+Rob
 
--m connlimit
-
-
-	-`J'
--- 
 
