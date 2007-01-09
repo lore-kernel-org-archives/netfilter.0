@@ -1,12 +1,14 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Natted packets
-Date: Mon, 08 Jan 2007 21:06:42 -0600
-Message-ID: <45A306C2.7000809@riverviewtech.net>
-References: <45A2BB09.90405@eternet.cc>
+From: "Rajkumar S" <rajkumars@gmail.com>
+Subject: Re: Determine the netfilter load
+Date: Tue, 9 Jan 2007 10:52:44 +0530
+Message-ID: <64de5c8b0701082122t2fcd4d9bh6850a20769faf901@mail.gmail.com>
+References: <64de5c8b0701072336q6ff16d57ra2ba56cde9cbf0dd@mail.gmail.com>
+	<Pine.LNX.4.61.0701082125430.23737@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45A2BB09.90405@eternet.cc>
+In-Reply-To: <Pine.LNX.4.61.0701082125430.23737@yvahk01.tjqt.qr>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +20,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On 01/08/07 15:43, Lucas Diaz wrote:
-> Is it possible to know if a packet passing through my router is (s)natted?
-> And the original (s)natted IP?
-> Thank a lot.
+On 1/9/07, Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
+> On Jan 8 2007 13:06, Rajkumar S wrote:
+> > importantly how do I know if this packet rate is hitting or about to
+> > hit any limits? How much more pps will my system take?
+>
+> If any packets you feed in don't come out again (two network cards - a
+> forwarding setup)
 
-Are you wanting to know if you are doing the NATing, or if some other 
-router somewhere else on the net has NATed the traffic?
+Exactly the scenario I want to avoid :)
 
-If you want to know if you have NATed the packet, I believe the answer 
-is yes 
-(https://lists.netfilter.org/pipermail/netfilter/2007-January/067687.html).
+My setup is a bridge firewall, so two interfaces in a bridge, no
+userspace programs except an ssh. Correct me if I am wrong here. I
+believe most of the work done by my system is processing the nic
+interrupts and inside netfilter code. So if my system has to drop the
+packet it would mean that the inturrupts are coming so fast that the
+system cannot cope up with it. If I could determine how much time it
+takes to service an interrupt or at lest get an indication as  to when
+there are some "near miss" I can avoid packet loss.
 
-If you want to know if someone else has NATed the packet, possibly, 
-however it is MUCH harder to do if you are not the outbound ISP.
+regards,
 
-Which question are you asking?
-
-
-
-Grant. . . .
+raj
 
