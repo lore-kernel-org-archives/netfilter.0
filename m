@@ -1,12 +1,13 @@
-From: Lucas Diaz <lucasdiaz@eternet.cc>
-Subject: Re: Natted packets
-Date: Tue, 09 Jan 2007 08:58:42 -0300
-Message-ID: <45A38372.7090609@eternet.cc>
-References: <45A2BB09.90405@eternet.cc> <45A306C2.7000809@riverviewtech.net>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: max number of connection
+Date: Tue, 9 Jan 2007 16:01:48 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0701091601020.31427@yvahk01.tjqt.qr>
+References: <BAY110-DAV3EC00E1ACEC181C4B8FFFBABC0@phx.gbl>
+	<Pine.LNX.4.61.0701082143060.23737@yvahk01.tjqt.qr>
+	<45A305C3.2020809@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45A306C2.7000809@riverviewtech.net>
+In-Reply-To: <45A305C3.2020809@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +18,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-My question is if some other router somewhere else on the net (inside my 
-lan) has NATed the traffic?
-And the original NATed IP?
-This router NATing traffic and my router are in the same network...
 
-Grant Taylor wrote:
-> On 01/08/07 15:43, Lucas Diaz wrote:
->> Is it possible to know if a packet passing through my router is 
->> (s)natted?
->> And the original (s)natted IP?
->> Thank a lot.
+>> -m connlimit
 >
-> Are you wanting to know if you are doing the NATing, or if some other 
-> router somewhere else on the net has NATed the traffic?
->
-> If you want to know if you have NATed the packet, I believe the answer 
-> is yes 
-> (https://lists.netfilter.org/pipermail/netfilter/2007-January/067687.html). 
->
->
-> If you want to know if someone else has NATed the packet, possibly, 
-> however it is MUCH harder to do if you are not the outbound ISP.
->
-> Which question are you asking?
->
->
->
-> Grant. . . .
->
->
->
+> Not to be a stickler, but does connlimit have a way to control the 
+> total number of combined in AND out bound connections a host has?
 
+That does not exist yet AFAICS. You would have to combine hashlimit with 
+connlimit, creating a new kernel module, somehow... 
+
+-- 
 
