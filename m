@@ -1,13 +1,12 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Lucas Diaz <lucasdiaz@eternet.cc>
 Subject: Re: Natted packets
-Date: Tue, 09 Jan 2007 11:13:51 +0100
-Message-ID: <45A36ADF.1090506@netfilter.org>
-References: <45A2BB09.90405@eternet.cc>
-	<Pine.LNX.4.61.0701082259240.23737@yvahk01.tjqt.qr>
+Date: Tue, 09 Jan 2007 08:58:42 -0300
+Message-ID: <45A38372.7090609@eternet.cc>
+References: <45A2BB09.90405@eternet.cc> <45A306C2.7000809@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0701082259240.23737@yvahk01.tjqt.qr>
+In-Reply-To: <45A306C2.7000809@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Jan Engelhardt wrote:
->> Is it possible to know if a packet passing through my router is (s)natted?
-> 
-> I think `-m conntrack --ctstate SNAT` should do that.
-> 
+My question is if some other router somewhere else on the net (inside my 
+lan) has NATed the traffic?
+And the original NATed IP?
+This router NATing traffic and my router are in the same network...
+
+Grant Taylor wrote:
+> On 01/08/07 15:43, Lucas Diaz wrote:
+>> Is it possible to know if a packet passing through my router is 
+>> (s)natted?
 >> And the original (s)natted IP?
-> 
-> For userspace there's a getsockopt() call that you can use to find out.
+>> Thank a lot.
+>
+> Are you wanting to know if you are doing the NATing, or if some other 
+> router somewhere else on the net has NATed the traffic?
+>
+> If you want to know if you have NATed the packet, I believe the answer 
+> is yes 
+> (https://lists.netfilter.org/pipermail/netfilter/2007-January/067687.html). 
+>
+>
+> If you want to know if someone else has NATed the packet, possibly, 
+> however it is MUCH harder to do if you are not the outbound ISP.
+>
+> Which question are you asking?
+>
+>
+>
+> Grant. . . .
+>
+>
+>
 
-That getsockopt() interface is deprecated. If you're in userspace,
-better use the libnetfilter_conntrack library. It has a function to
-check if a conntrack has been snatted.
-
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
 
