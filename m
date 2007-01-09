@@ -1,13 +1,12 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: max number of connection
-Date: Mon, 08 Jan 2007 21:02:27 -0600
-Message-ID: <45A305C3.2020809@riverviewtech.net>
-References: <BAY110-DAV3EC00E1ACEC181C4B8FFFBABC0@phx.gbl>
-	<Pine.LNX.4.61.0701082143060.23737@yvahk01.tjqt.qr>
+Subject: Re: Natted packets
+Date: Mon, 08 Jan 2007 21:06:42 -0600
+Message-ID: <45A306C2.7000809@riverviewtech.net>
+References: <45A2BB09.90405@eternet.cc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0701082143060.23737@yvahk01.tjqt.qr>
+In-Reply-To: <45A2BB09.90405@eternet.cc>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,25 +20,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-On 01/08/07 14:43, Jan Engelhardt wrote:
-> -m connlimit
+On 01/08/07 15:43, Lucas Diaz wrote:
+> Is it possible to know if a packet passing through my router is (s)natted?
+> And the original (s)natted IP?
+> Thank a lot.
 
+Are you wanting to know if you are doing the NATing, or if some other 
+router somewhere else on the net has NATed the traffic?
 
-Not to be a stickler, but does connlimit have a way to control the total 
-number of combined in AND out bound connections a host has?  I.e. if you 
-were to run this on a gateway where you wanted to limit a computer 
-behind it to a grand total of 10 connections?  Wouldn't connlimit 
-usually be applied in such a way as to watch traffic in one direction 
-and another rule to watch the traffic in the other direction?  I.e. 10 
-outbound connections in addition to 3 inbound connections thus totaling 
-13 connections?  Or does connlimit take care of this internally?
+If you want to know if you have NATed the packet, I believe the answer 
+is yes 
+(https://lists.netfilter.org/pipermail/netfilter/2007-January/067687.html).
 
-I think an answer that I have seen to this in the past has used bridging 
-where you would watch for packets entering the bridge and leaving the 
-bridge at the same time.  This way, one rule would catch all inbound AND 
-outbound traffic.
+If you want to know if someone else has NATed the packet, possibly, 
+however it is MUCH harder to do if you are not the outbound ISP.
 
-Thoughts / comments / opinions / suggestions are welcomed.
+Which question are you asking?
 
 
 
