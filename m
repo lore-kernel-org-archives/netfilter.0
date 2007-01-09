@@ -1,43 +1,45 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Determine the netfilter load
-Date: Tue, 9 Jan 2007 16:03:11 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0701091602230.31427@yvahk01.tjqt.qr>
-References: <64de5c8b0701072336q6ff16d57ra2ba56cde9cbf0dd@mail.gmail.com>
-	<Pine.LNX.4.61.0701082125430.23737@yvahk01.tjqt.qr>
-	<64de5c8b0701082122t2fcd4d9bh6850a20769faf901@mail.gmail.com>
+From: Linus Torvalds <torvalds@osdl.org>
+Subject: Re: 2.6.20-rc4: regression: iptables failed to load rules
+Date: Tue, 9 Jan 2007 09:33:32 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.0701090929160.3594@woody.osdl.org>
+References: <5157576d0701082329o1875911j20f6679e2d35bb17@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <64de5c8b0701082122t2fcd4d9bh6850a20769faf901@mail.gmail.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932289AbXAIRd5@vger.kernel.org>
+In-Reply-To: <5157576d0701082329o1875911j20f6679e2d35bb17@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Rajkumar S <rajkumars@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: Tomasz Kvarsin <kvarsin@gmail.com>, "David S. Miller" <davem@davemloft.net>
+Cc: bunk@stusta.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
 
-> On 1/9/07, Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
->> On Jan 8 2007 13:06, Rajkumar S wrote:
->> > importantly how do I know if this packet rate is hitting or about to
->> > hit any limits? How much more pps will my system take?
->> 
->> If any packets you feed in don't come out again (two network cards - a
->> forwarding setup)
+
+On Tue, 9 Jan 2007, Tomasz Kvarsin wrote:
 >
-> Exactly the scenario I want to avoid :)
+> During boot into 2.6.20-rc4 iptables says
+> iptables-restore: line 15 failed.
+> And works fine with my default kernel: 2.6.18.x
 
-Nah, the suggestion was: flood your box, and see when it drops, then you 
-know the packet rate your cpu+ruleset can handle.
+I bet you enabled the new transport-agnostic netfilter, and didn't enable 
+some of the actual rules needed for your iptables setup (they have new 
+config names).
 
+I do think that the netfilter team has been very irritating in changing 
+the config names, even if it "is logical". 
 
-	-`J'
--- 
+Somebody should stop the madness, and tell people what config options they 
+need for a regular iptables setup like this. Rather than say "just compile 
+everything". There's about a million different filters, and they all 
+depend on one infrastructure or another.
 
+And then the networking people should F*NG STOP that config name changing 
+madness! The config names should match the _usage_, not some 
+implementation detail. And failing that, leave the config options named 
+something illogical, as long as people don't have to change their config 
+file all the time and answer millions of questions that they don't care 
+about!
+
+David, please crack some heads.
+
+		Linus
