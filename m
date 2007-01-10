@@ -1,75 +1,58 @@
-From: Harald Welte <laforge@netfilter.org>
-Subject: [ADMINISTRATIVE] IPv6 renumbering of netfilter.org servers
-Date: Wed, 10 Jan 2007 02:23:29 +0100
-Message-ID: <20070110012329.GB23020@prithivi.gnumonks.org>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: dst cache overflow
+Date: Wed, 10 Jan 2007 08:15:58 +0100
+Message-ID: <45A492AE.2030909@trash.net>
+References: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>
+	<55635.10.1.1.10.1167946368.squirrel@www.arcoscom.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Return-path: <lartc-bounces@mailman.ds9a.nl>
+In-Reply-To: <55635.10.1.1.10.1167946368.squirrel@www.arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: netfilter-mirrors@lists.netfilter.org, Netfilter Mailinglist <netfilter@lists.netfilter.org>
+List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Sender: lartc-bounces@mailman.ds9a.nl
+Errors-To: lartc-bounces@mailman.ds9a.nl
+Content-Type: text/plain; charset="us-ascii"
+To: linux@arcoscom.com
+Cc: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+
+ArcosCom Linux User wrote:
+> The log says:
+> 
+> Dec 30 00:52:27 cura kernel: dst cache overflow
+> Dec 30 00:52:27 cura kernel: MASQUERADE: No route: Rusty's brain broke!
+> Dec 30 00:52:27 cura kernel: dst cache overflow
+> Dec 30 00:52:28 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+> Dec 30 00:52:28 cura kernel: zlan0: topology change detected, propagating
+> Dec 30 00:52:28 cura kernel: dst cache overflow
+> Dec 30 00:52:30 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+> Dec 30 00:52:30 cura kernel: zlan0: topology change detected, propagating
+> Dec 30 00:52:32 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+> Dec 30 00:52:32 cura kernel: zlan0: topology change detected, propagating
+> Dec 30 00:52:32 cura kernel: printk: 15 messages suppressed.
+> Dec 30 00:52:32 cura kernel: dst cache overflow
+> Dec 30 00:52:34 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+> Dec 30 00:52:34 cura kernel: zlan0: topology change detected, propagating
+> Dec 30 00:52:36 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+> Dec 30 00:52:36 cura kernel: zlan0: topology change detected, propagating
+> Dec 30 00:52:37 cura kernel: printk: 40 messages suppressed.
+> Dec 30 00:52:37 cura kernel: dst cache overflow
+> 
+> zlan0 is a bridge (with STP configured) between some LANs.
+> 
+> Thanks
+> 
+> P.D.: I'm a bit desesperated with this error, I changed "MASQUERADE" with
+> "SNAT" with no sense. Some hours after router is booted up, the network
+> appears to be UP but all ifaces haven't responses.
 
 
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-This is just a short notice that I've had to renumber our IPv6 addresses
-a couple of hours ago.  The prefix for all current machines has changed from
-
-	2001:780:0:1d::/64
-
-to=20
-
-	2001:780:45:1d::/64
-
-The DNS record should all have been updated accordingly.  As an "extra",
-we now also finally have valid v6 reverse lookups.
-
-And if you're now asking yourelf, why did we have to do this?  The
-allocation for my set of co-located servers (among them *.netfilter.org)
-has been enlarged from an initial /64 up to a /48.  And that I need for
-"fire+forget" stateless autoconfiguration of my many OpenVZ virtual
-hosts, which so far have only been reachable via IPv4.
-
-Cheers,
-
---=20
-- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-  "Fragmentation is like classful addressing -- an interesting early
-   architectural error that shows how much experimentation was going
-   on while IP was being designed."                    -- Paul Vixie
-
---5vNYLRcllDrimb99
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFFpEAQXaXGVTD0i/8RAr+DAKC0eMQpEjjVAcmwJYIXDwqGzMX9jACfYyYA
-LSrAcW6/zOioDLpsrC4uODM=
-=5N93
------END PGP SIGNATURE-----
-
---5vNYLRcllDrimb99--
-
+The MASQUERADE message is just an effect of the problem. Please describe
+your setup in more detail (what kind of devices, how are they connected,
+ebtables/iptables rules, routing, ...).
