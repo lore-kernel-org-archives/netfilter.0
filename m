@@ -1,12 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: REDIRECT ports in forward chain
-Date: Wed, 10 Jan 2007 22:28:29 +0100
-Message-ID: <45A55A7D.1030604@plouf.fr.eu.org>
-References: <001201c734e9$8052c1c0$cf00000a@maku>
+From: Bill Davidsen <davidsen@tmr.com>
+Subject: Re: 2.6.20-rc4: regression: iptables failed to load rules
+Date: Wed, 10 Jan 2007 17:10:27 -0500
+Message-ID: <45A56453.9060707@tmr.com>
+References: <5157576d0701082329o1875911j20f6679e2d35bb17@mail.gmail.com>
+	<Pine.LNX.4.64.0701090929160.3594@woody.osdl.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001201c734e9$8052c1c0$cf00000a@maku>
+In-Reply-To: <Pine.LNX.4.64.0701090929160.3594@woody.osdl.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,52 +18,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, bunk@stusta.de
 
-Hello,
+Linus Torvalds wrote:
+> 
+> On Tue, 9 Jan 2007, Tomasz Kvarsin wrote:
+>> During boot into 2.6.20-rc4 iptables says
+>> iptables-restore: line 15 failed.
+>> And works fine with my default kernel: 2.6.18.x
+> 
+> I bet you enabled the new transport-agnostic netfilter, and didn't enable 
+> some of the actual rules needed for your iptables setup (they have new 
+> config names).
+> 
+> I do think that the netfilter team has been very irritating in changing 
+> the config names, even if it "is logical". 
+> 
+> Somebody should stop the madness, and tell people what config options they 
+> need for a regular iptables setup like this. Rather than say "just compile 
+> everything". There's about a million different filters, and they all 
+> depend on one infrastructure or another.
+> 
+> And then the networking people should F*NG STOP that config name changing 
+> madness! The config names should match the _usage_, not some 
+> implementation detail. And failing that, leave the config options named 
+> something illogical, as long as people don't have to change their config 
+> file all the time and answer millions of questions that they don't care 
+> about!
 
-marko a =E9crit :
->=20
-> is it possible to change the --dport on a packet that is forwarded thro=
-ugh?
-
-You cannot do NAT in the FORWARD chain. However you can do it in the=20
-PREROUTING chain.
-
-> for example, two pc's and internet in between. both pc's have linux as=20
-> gateways. both gateways do NAT. now, i'd like to access port 8080 on=20
-> machine A from machine B. for example telnet X.X.X.X 8080. normally i'd=
-=20
-> have to do a DNAT on machine A's gateway for that port, right? but i=20
-> would like the port to change during internet. like i type telnet to=20
-> port 8080, but linux redirects it to port 18080 on machine B's network=20
-> and on machine A's gateway i'd have to a DNAT from 18080 to 8080. so i'=
-d=20
-> telnet to 8080 seemingly, the linux B redirects it to 18080 and it=20
-> travels over the net to linux A to port 18080 and the it is DNAT'ed to=20
-> 8080 to machine B.
-
-No problem, DNAT in the PREROUTING chain can handle that.
-
-> but the redirection doesn't work. as i understood if=20
-> i redirect on nat table's prerouting chain the packet the travels to=20
-> INPUT chain instead on FORWARD chain.
-
-REDIRECT is intended to redirect connections to the local host, this is=20
-not what you want to do. You need the DNAT target instead. DNAT can do=20
-destination address and/or port translation. For instance, on B's gateway=
- :
-
-iptables -t nat -A PREROUTING -d $original_dst_ip -p tcp --dport 8080 \
-   -j DNAT -to $apparent_dst_ip:18080
-
-If you don't want to change the destination address, just remove=20
-"$apparent_dst_ip"). If you want to catch any connection on port 8080,=20
-just remove "-d $original_dst_ip".
-
-And on A's gateway :
-
-iptables -t nat -A PREROUTING -d $apparent_dst_ip -p tcp --dport 18080 \
-   -j DNAT --to $final_dst_ip:8080
+This could apply to some other things, like PAE support. Instead of 
+having to know what memory models set what option which impact 
+virtualization, set the option if the feature is needed for any config 
+option choice. This probably hits people wanting virtualization on small 
+memory machines more than others.
 
