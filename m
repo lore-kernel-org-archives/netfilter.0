@@ -1,110 +1,68 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: dst cache overflow (bridged wan interfaces)
-Date: Wed, 10 Jan 2007 21:14:00 +0100 (CET)
-Message-ID: <41878.84.123.236.132.1168460040.squirrel@www.arcoscom.com>
-Reply-To: linux@arcoscom.com
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: REDIRECT ports in forward chain
+Date: Wed, 10 Jan 2007 22:28:29 +0100
+Message-ID: <45A55A7D.1030604@plouf.fr.eu.org>
+References: <001201c734e9$8052c1c0$cf00000a@maku>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Return-path: <lartc-bounces@mailman.ds9a.nl>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <001201c734e9$8052c1c0$cf00000a@maku>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
-Sender: lartc-bounces@mailman.ds9a.nl
-Errors-To: lartc-bounces@mailman.ds9a.nl
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, lartc@mailman.ds9a.nl
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-I recompiled yet 2.6.19.1 kernel (using iptables with the same patches to=
-o).
+Hello,
 
-The configuration for this test is:
-   1) linux box with 2.6.19.1 kernel (SMP machine) with these
-patches/modules:
-      a) l7-filter
-      b) ipp2p
-      c) connlimit
-      d) set
-   2) 4 ethernet interfaces:
-      a) 2 external (eth1 and eth3) interfaces with balanced links (as
-described in nato-howto) bridged as wan0 with static IPs assigned to
-wan0 and wan0:1
-      b) 2 internal ineterfaces (eth0 and eth2) in bridge zlan0 with STP
-enabled and configured.
+marko a =E9crit :
+>=20
+> is it possible to change the --dport on a packet that is forwarded thro=
+ugh?
 
-IPTABLES relevant configuration:
-# iptables -t nat -vn -L POSTROUTING
-Chain POSTROUTING (policy ACCEPT 185 packets, 16649 bytes)
- pkts bytes target     prot opt in     out     source             =20
-destination
-   26  1529 MASQUERADE  0    --  *      wan0    10.1.1.0/27        =20
-0.0.0.0/0
-    0     0 MASQUERADE  0    --  *      wan0:1  10.1.1.0/27        =20
-0.0.0.0/0
+You cannot do NAT in the FORWARD chain. However you can do it in the=20
+PREROUTING chain.
 
+> for example, two pc's and internet in between. both pc's have linux as=20
+> gateways. both gateways do NAT. now, i'd like to access port 8080 on=20
+> machine A from machine B. for example telnet X.X.X.X 8080. normally i'd=
+=20
+> have to do a DNAT on machine A's gateway for that port, right? but i=20
+> would like the port to change during internet. like i type telnet to=20
+> port 8080, but linux redirects it to port 18080 on machine B's network=20
+> and on machine A's gateway i'd have to a DNAT from 18080 to 8080. so i'=
+d=20
+> telnet to 8080 seemingly, the linux B redirects it to 18080 and it=20
+> travels over the net to linux A to port 18080 and the it is DNAT'ed to=20
+> 8080 to machine B.
 
-ROUTES CONFIGURATION:
-# service rt status
-=3D=3D=3D REGLAS DE ENRUTAMIENTO =3D=3D=3D
-0:      from all lookup local
-50:     from all lookup main
-151:    from NET_PUB1 lookup 151
-152:    from NET_PUB2 lookup 152
-220:    from all lookup 220
-32766:  from all lookup main
-32767:  from all lookup default
-=3D=3D=3D TABLAS DE RUTAS =3D=3D=3D
-=3D=3D=3D MAIN =3D=3D=3D
-NET_PUB1/26 dev wan0  proto kernel  scope link  src IP_PUB1
-NET_PUB2/24 dev wan0  proto kernel  scope link  src IP_PUB2
-192.168.3.0/24 dev zlan0  proto kernel  scope link  src 192.168.3.247
-192.168.2.0/24 dev zlan0  proto kernel  scope link  src 192.168.2.247
-192.168.1.0/24 dev zlan0  proto kernel  scope link  src 192.168.1.247
-10.1.1.0/24 dev zlan0  proto kernel  scope link  src 10.1.1.6
-169.254.0.0/16 dev zlan0  scope link
-239.0.0.0/8 dev zlan0  scope link
-=3D=3D=3D wan0 TABLA 151 =3D=3D=3D
-default via GW_PUB1 dev wan0  proto static  src IP_PUB1
-prohibit default  proto static  metric 1
-=3D=3D=3D wan0 TABLA 152 =3D=3D=3D
-default via GW_PUB2 dev wan0  proto static  src IP_PUB2
-prohibit default  proto static  metric 1
-=3D=3D=3D TABLA 220 (defecto) =3D=3D=3D
-default  proto static
-        nexthop via GW_PUB1  dev wan0 weight 1
-        nexthop via GW_PUB2  dev wan0 weight 1
+No problem, DNAT in the PREROUTING chain can handle that.
 
-ROUTING parameters configuration:
-# grep . /proc/sys/net/ipv4/route/*
-/proc/sys/net/ipv4/route/error_burst:5000
-/proc/sys/net/ipv4/route/error_cost:1000
-grep: /proc/sys/net/ipv4/route/flush: Operaci=F3n no permitida
-/proc/sys/net/ipv4/route/gc_elasticity:8
-/proc/sys/net/ipv4/route/gc_interval:60
-/proc/sys/net/ipv4/route/gc_min_interval:0
-/proc/sys/net/ipv4/route/gc_min_interval_ms:500
-/proc/sys/net/ipv4/route/gc_thresh:32768
-/proc/sys/net/ipv4/route/gc_timeout:300
-/proc/sys/net/ipv4/route/max_delay:10
-/proc/sys/net/ipv4/route/max_size:524288
-/proc/sys/net/ipv4/route/min_adv_mss:256
-/proc/sys/net/ipv4/route/min_delay:2
-/proc/sys/net/ipv4/route/min_pmtu:552
-/proc/sys/net/ipv4/route/mtu_expires:600
-/proc/sys/net/ipv4/route/redirect_load:20
-/proc/sys/net/ipv4/route/redirect_number:9
-/proc/sys/net/ipv4/route/redirect_silence:20480
-/proc/sys/net/ipv4/route/secret_interval:600
+> but the redirection doesn't work. as i understood if=20
+> i redirect on nat table's prerouting chain the packet the travels to=20
+> INPUT chain instead on FORWARD chain.
 
-When I test it along some weeks with intensive traffic I'll put here more
-info about this test.
+REDIRECT is intended to redirect connections to the local host, this is=20
+not what you want to do. You need the DNAT target instead. DNAT can do=20
+destination address and/or port translation. For instance, on B's gateway=
+ :
 
-If somebody has any idea on how to solve the problem, please, tell us. I'=
-m
-a bit desesperate with this issue.
+iptables -t nat -A PREROUTING -d $original_dst_ip -p tcp --dport 8080 \
+   -j DNAT -to $apparent_dst_ip:18080
 
-Regards
+If you don't want to change the destination address, just remove=20
+"$apparent_dst_ip"). If you want to catch any connection on port 8080,=20
+just remove "-d $original_dst_ip".
+
+And on A's gateway :
+
+iptables -t nat -A PREROUTING -d $apparent_dst_ip -p tcp --dport 18080 \
+   -j DNAT --to $final_dst_ip:8080
+
