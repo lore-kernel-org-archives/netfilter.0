@@ -1,25 +1,25 @@
 From: "ArcosCom Linux User" <linux@arcoscom.com>
 Subject: Re: dst cache overflow
-Date: Wed, 10 Jan 2007 12:33:09 +0100 (CET)
-Message-ID: <59046.195.55.244.106.1168428789.squirrel@www.arcoscom.com>
+Date: Wed, 10 Jan 2007 12:40:33 +0100 (CET)
+Message-ID: <60568.195.55.244.106.1168429233.squirrel@www.arcoscom.com>
 References: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>
 	<55635.10.1.1.10.1167946368.squirrel@www.arcoscom.com>
 	<45A492AE.2030909@trash.net>
 Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 In-Reply-To: <45A492AE.2030909@trash.net>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
 To: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
@@ -104,6 +104,7 @@ El Mie, 10 de Enero de 2007, 8:15, Patrick McHardy escribi=F3:
 > ebtables/iptables rules, routing, ...).
 >
 >
+
 
 
 
