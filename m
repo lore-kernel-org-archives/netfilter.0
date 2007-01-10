@@ -1,46 +1,78 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: Re: connlimit
-Date: Wed, 10 Jan 2007 17:05:44 +0100 (CET)
-Message-ID: <41039.84.123.236.132.1168445144.squirrel@www.arcoscom.com>
-References: <BAY110-W72EF8C8D86CC3FC5A3A1CBAB20@phx.gbl>
-Reply-To: linux@arcoscom.com
+From: Linus Torvalds <torvalds@osdl.org>
+Subject: Re: 2.6.20-rc4: regression: iptables failed to load rules
+Date: Wed, 10 Jan 2007 08:15:55 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.0701100803270.3594@woody.osdl.org>
+References: <5157576d0701082329o1875911j20f6679e2d35bb17@mail.gmail.com>
+ <Pine.LNX.4.64.0701090929160.3594@woody.osdl.org> <45A49C47.6080407@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY110-W72EF8C8D86CC3FC5A3A1CBAB20@phx.gbl>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S964934AbXAJQTi@vger.kernel.org>
+In-Reply-To: <45A49C47.6080407@trash.net>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
-
-./runme --download
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Tomasz Kvarsin <kvarsin@gmail.com>, "David S. Miller" <davem@davemloft.net>, bunk@stusta.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
 
 
 
-El Mie, 10 de Enero de 2007, 15:16, Carlos Miranda escribi=F3:
->
-> After downloading patch-o-matic-20031219.tar.bz2 and running "#
-> KERNEL_DIR=3D/usr/src/redhat/BUILD/kernel-2.6.18/linux-2.6.18.i586 ./runme
-> pending", I could not see CONNLIMIT module to path the kernel.
->
-> anyone to tell with patch need to be installed to have connlimit working?
->
-> Thank you,
-> Carlos
->
-> _________________________________________________________________
-> Ligue para os seus amigos gr=E1tis. Fa=E7a chamadas de PC-para-PC pelo
-> messenger-- GR=C1TIS
-> http://get.live.com/messenger/overview
->
+On Wed, 10 Jan 2007, Patrick McHardy wrote:
+> 
+> In the x_tables case it really caused a lot of unnecessary confusion,
+> the recent connection tracking changes however needed new config
+> options since we're keeping the old implementation around for a few more
+> releases.
 
+It's too late now, but it _could_ have fairly easily been handled totally 
+differently: namely by having the user-visible config options be 
+INDEPENDENT of the actual back-end.
 
+The Kconfig language is actually pretty powerful for configuration issues, 
+and the way to do this is relatively straightforward:
 
+	config CONNTRACK
+		tristate "Netfilter support"
+		...
+
+	config NEW_CONTRACK_SUPPORT
+		bool "Layer 3 Independent Connection tracking"
+		...
+
+	config CONNTRACK_MARK
+		bool  'Connection mark tracking support'
+		depends on CONNTRACK
+		...
+
+	config OLD_CONNTRACK_MARK
+		bool
+		depends on CONNTRACK_MARK && CONNTRACK && !NEW_CONTRACK_SUPPORT
+		default y
+
+	config NEW_CONNTRACK_MARK
+		bool
+		depends on CONNTRACK_MARK && CONNTRACK && NEW_CONTRACK_SUPPORT
+		default y
+
+See? The _user_ just sees a single "CONNTRACK_MARK" option (that just 
+depends on the *generic* CONNTRACK config option), but then the Kconfig 
+file splits that into "OLD_CONNTRACK_MARK" or "NEW_CONNTRACK_MARK" 
+depending on whether "NEW_CONTRACK_SUPPORT" was set or not.
+
+> It probably won't be necessary anymore to make changes like this in
+> the future, but in case it is I'll make sure to at least provide
+> compatibility options for a few releases.
+
+In general, I'd much rather see the config options impact what the "user 
+experience" should be. Notice how the above does exactly that: all the 
+USER really cares about whether the connection marks are enabled or not, 
+and the "NEW_CONTRACK_SUPPORT" is _not_ part of the user-visible config 
+(apart from the _one_ question that asks about which implementation you 
+want to pick), but it is only used to pick which _implementation_ to 
+choose.
+
+So making the Kconfig files more user-oriented and less implementation- 
+oriented automatically solves the problem with config options that change 
+names (because if the effect is the same, it should have the same name - 
+regardless of how it is implemented!).
+
+		Linus
