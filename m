@@ -1,58 +1,80 @@
-From: Techside Security <security@techside.it>
-Subject: Re: 2 Internet connection and one local network -- RESOLVED
-Date: Wed, 10 Jan 2007 16:44:07 +0100
-Message-ID: <45A509C7.1010201@techside.it>
-References: <117F5E7DA31C17478948DC39E01B948B400F9F@frost.PlumSoftwareLtd.local>
+From: "ArcosCom Linux User" <linux@arcoscom.com>
+Subject: Re: dst cache overflow
+Date: Wed, 10 Jan 2007 17:01:44 +0100 (CET)
+Message-ID: <34737.84.123.236.132.1168444904.squirrel@www.arcoscom.com>
+References: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>
+	<55635.10.1.1.10.1167946368.squirrel@www.arcoscom.com>
+	<45A492AE.2030909@trash.net>
+	<54528.195.55.244.106.1168435239.squirrel@www.arcoscom.com>
+	<Pine.LNX.4.61.0701101556310.28241@ask.diku.dk>
+Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <117F5E7DA31C17478948DC39E01B948B400F9F@frost.PlumSoftwareLtd.local>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <lartc-bounces@mailman.ds9a.nl>
+In-Reply-To: <Pine.LNX.4.61.0701101556310.28241@ask.diku.dk>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Sender: lartc-bounces@mailman.ds9a.nl
+Errors-To: lartc-bounces@mailman.ds9a.nl
+Content-Type: text/plain; charset="iso-8859-1"
+To: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Ok, i've tried to use it because it seems that firewall don't understand 
-the packet coming from old line (without rule)....
-the result i great!!!
+Here are:
 
-Now all works, I have setup the rule for all the two ethernet card of 
-the internet lines.
-
-echo 0 > /proc/sys/net/ipv4/conf/eth1/rp_filter
-echo 0 > /proc/sys/net/ipv4/conf/eth2/rp_filter
-
-Thanks a lot!!
-
-Matt ha scritto:
-> Sorry I missed this part:
-> 
->>>> What is the meaning of: echo 0 > /proc/sys/net/ipv4/conf/eth1/rp_filter
-> 
-> I think it disables the reverse path filter for that interface (eth1). Now you might ask, what is the reverse path filter? And I don't know! Apparently it does this:
-> 
->> # prevent incoming packets on masqueraded connections from being dropped
->> # as "martians" due to the destination address being translated before the
->> # rp_filter check is performed
-> 
-> However, when I commented out the line it made no difference so I've left it there for people to comment back in if they find they have problems as described.
-> 
-> 
-> Regards,
-> 
-> Matt.
-> 
-> 
-> 
-> 
-> 
+# grep . /proc/sys/net/ipv4/route/*
+/proc/sys/net/ipv4/route/error_burst:5000
+/proc/sys/net/ipv4/route/error_cost:1000
+grep: /proc/sys/net/ipv4/route/flush: Operaci=F3n no permitida
+/proc/sys/net/ipv4/route/gc_elasticity:8
+/proc/sys/net/ipv4/route/gc_interval:60
+/proc/sys/net/ipv4/route/gc_min_interval:0
+/proc/sys/net/ipv4/route/gc_min_interval_ms:500
+/proc/sys/net/ipv4/route/gc_thresh:32768
+/proc/sys/net/ipv4/route/gc_timeout:300
+/proc/sys/net/ipv4/route/max_delay:10
+/proc/sys/net/ipv4/route/max_size:524288
+/proc/sys/net/ipv4/route/min_adv_mss:256
+/proc/sys/net/ipv4/route/min_delay:2
+/proc/sys/net/ipv4/route/min_pmtu:552
+/proc/sys/net/ipv4/route/mtu_expires:600
+/proc/sys/net/ipv4/route/redirect_load:20
+/proc/sys/net/ipv4/route/redirect_number:9
+/proc/sys/net/ipv4/route/redirect_silence:20480
+/proc/sys/net/ipv4/route/secret_interval:600
 
 
+El Mie, 10 de Enero de 2007, 16:01, Jesper Dangaard Brouer escribi=F3:
+>
+>
+> On Wed, 10 Jan 2007, ArcosCom Linux User wrote:
+>
+>> El Mie, 10 de Enero de 2007, 8:15, Patrick McHardy escribi=F3:
+>>> ArcosCom Linux User wrote:
+>>>> The log says:
+>>>> Dec 30 00:52:27 cura kernel: dst cache overflow
+>
+> The log message "dst cache overflow" is normally related to overflow of
+> the route cache.  The max_size of the route cache can be adjusted throu=
+gh
+> /proc/sys/net/ipv4/route/max_size.
+>
+> What is your settings in /proc/sys/net/ipv4/route/?
+>
+> Run command:
+>   grep . /proc/sys/net/ipv4/route/*
+>
+> Hilsen
+>    Jesper Brouer
+>
+> --
+> -------------------------------------------------------------------
+> MSc. Master of Computer Science
+> Dept. of Computer Science, University of Copenhagen
+> Author of http://www.adsl-optimizer.dk
+> -------------------------------------------------------------------
