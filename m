@@ -1,10 +1,11 @@
-From: "marko" <minimal@mail.ee>
-Subject: REDIRECT ports in forward chain
-Date: Wed, 10 Jan 2007 20:59:47 +0200
-Message-ID: <001201c734e9$8052c1c0$cf00000a@maku>
+From: "Snyder, Brian" <bsnyder@idirect.net>
+Subject: Q about netfilter and packet modifications
+Date: Wed, 10 Jan 2007 14:09:45 -0500
+Message-ID: <C874DBE9D30B584587F8CD0EC34DA8BE03A60FC1@EX00.idirect.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,24 +16,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi all,
 
-is it possible to change the --dport on a packet that is forwarded through?
+I'm working on a test program using libipq and iptables (to route packet
+to userspace). =20
 
-for example, two pc's and internet in between. both pc's have linux as 
-gateways. both gateways do NAT. now, i'd like to access port 8080 on machine 
-A from machine B. for example telnet X.X.X.X 8080. normally i'd have to do a 
-DNAT on machine A's gateway for that port, right? but i would like the port 
-to change during internet. like i type telnet to port 8080, but linux 
-redirects it to port 18080 on machine B's network and on machine A's gateway 
-i'd have to a DNAT from 18080 to 8080. so i'd telnet to 8080 seemingly, the 
-linux B redirects it to 18080 and it travels over the net to linux A to port 
-18080 and the it is DNAT'ed to 8080 to machine B. but the redirection 
-doesn't work. as i understood if i redirect on nat table's prerouting chain 
-the packet the travels to INPUT chain instead on FORWARD chain.
+I have a test program working that does all of the above, now I want to
+start adding some of my smarts into the program, and one thing I want to
+do is add some TCP options into certain types of TCP packets.
 
-marko. 
+So I believe I understand what I have to do, or at least I'm rather
+close, but I would just like some confirmation that I'm on the correct
+path:
 
+
+1) Create a totally new 'message buffer' of the appropriate size, to
+house the original packet in it's entirety, plus the extra bytes I need
+to add for my new TCP option.
+2) Copy over all the orignal headers into this new memory space... Then
+add in my own TCP headers.
+3) 'Merge' the tcp data packet itself into the new structure, AFTER my
+added tcp header.
+4) Re-compute all required checksums
+5) Reaim - msg->payload to my new structure.
+6) ??  Do I need to free the old msg->payload or does the kernel know to
+do this for me ??
+7) Send back a ipq_set_verdict, with all the params set to show I
+mangled the packet a bit.
+
+
+
+
+I'm concerned about the processing this will take, as it looks like
+there will need to be 2 different calls to memcopy, totalling the full
+length of every packet.
+
+Can I mangle JUST the header's if I set the mode to IPQ_COPY_META, and
+would it integrate my header changes in with the packet data
+automagically?  That would save me a lot of the memcopy for large
+packets.
+
+I plan on setting the MTU in accordance with the space needed to add my
+options, so it shouldn't cause any fragmentation.
+
+Thanks,
+brian
 
