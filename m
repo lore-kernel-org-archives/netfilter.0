@@ -1,78 +1,38 @@
-From: Linus Torvalds <torvalds@osdl.org>
-Subject: Re: 2.6.20-rc4: regression: iptables failed to load rules
-Date: Wed, 10 Jan 2007 08:15:55 -0800 (PST)
-Message-ID: <Pine.LNX.4.64.0701100803270.3594@woody.osdl.org>
-References: <5157576d0701082329o1875911j20f6679e2d35bb17@mail.gmail.com>
- <Pine.LNX.4.64.0701090929160.3594@woody.osdl.org> <45A49C47.6080407@trash.net>
+From: "marko" <minimal@mail.ee>
+Subject: REDIRECT ports in forward chain
+Date: Wed, 10 Jan 2007 20:59:47 +0200
+Message-ID: <001201c734e9$8052c1c0$cf00000a@maku>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S964934AbXAJQTi@vger.kernel.org>
-In-Reply-To: <45A49C47.6080407@trash.net>
-Sender: linux-kernel-owner@vger.kernel.org
-List-Id: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: Tomasz Kvarsin <kvarsin@gmail.com>, "David S. Miller" <davem@davemloft.net>, bunk@stusta.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
 
 
+is it possible to change the --dport on a packet that is forwarded through?
 
-On Wed, 10 Jan 2007, Patrick McHardy wrote:
-> 
-> In the x_tables case it really caused a lot of unnecessary confusion,
-> the recent connection tracking changes however needed new config
-> options since we're keeping the old implementation around for a few more
-> releases.
+for example, two pc's and internet in between. both pc's have linux as 
+gateways. both gateways do NAT. now, i'd like to access port 8080 on machine 
+A from machine B. for example telnet X.X.X.X 8080. normally i'd have to do a 
+DNAT on machine A's gateway for that port, right? but i would like the port 
+to change during internet. like i type telnet to port 8080, but linux 
+redirects it to port 18080 on machine B's network and on machine A's gateway 
+i'd have to a DNAT from 18080 to 8080. so i'd telnet to 8080 seemingly, the 
+linux B redirects it to 18080 and it travels over the net to linux A to port 
+18080 and the it is DNAT'ed to 8080 to machine B. but the redirection 
+doesn't work. as i understood if i redirect on nat table's prerouting chain 
+the packet the travels to INPUT chain instead on FORWARD chain.
 
-It's too late now, but it _could_ have fairly easily been handled totally 
-differently: namely by having the user-visible config options be 
-INDEPENDENT of the actual back-end.
+marko. 
 
-The Kconfig language is actually pretty powerful for configuration issues, 
-and the way to do this is relatively straightforward:
 
-	config CONNTRACK
-		tristate "Netfilter support"
-		...
-
-	config NEW_CONTRACK_SUPPORT
-		bool "Layer 3 Independent Connection tracking"
-		...
-
-	config CONNTRACK_MARK
-		bool  'Connection mark tracking support'
-		depends on CONNTRACK
-		...
-
-	config OLD_CONNTRACK_MARK
-		bool
-		depends on CONNTRACK_MARK && CONNTRACK && !NEW_CONTRACK_SUPPORT
-		default y
-
-	config NEW_CONNTRACK_MARK
-		bool
-		depends on CONNTRACK_MARK && CONNTRACK && NEW_CONTRACK_SUPPORT
-		default y
-
-See? The _user_ just sees a single "CONNTRACK_MARK" option (that just 
-depends on the *generic* CONNTRACK config option), but then the Kconfig 
-file splits that into "OLD_CONNTRACK_MARK" or "NEW_CONNTRACK_MARK" 
-depending on whether "NEW_CONTRACK_SUPPORT" was set or not.
-
-> It probably won't be necessary anymore to make changes like this in
-> the future, but in case it is I'll make sure to at least provide
-> compatibility options for a few releases.
-
-In general, I'd much rather see the config options impact what the "user 
-experience" should be. Notice how the above does exactly that: all the 
-USER really cares about whether the connection marks are enabled or not, 
-and the "NEW_CONTRACK_SUPPORT" is _not_ part of the user-visible config 
-(apart from the _one_ question that asks about which implementation you 
-want to pick), but it is only used to pick which _implementation_ to 
-choose.
-
-So making the Kconfig files more user-oriented and less implementation- 
-oriented automatically solves the problem with config options that change 
-names (because if the effect is the same, it should have the same name - 
-regardless of how it is implemented!).
-
-		Linus
