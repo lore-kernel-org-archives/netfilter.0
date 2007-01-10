@@ -1,73 +1,58 @@
-From: Jesper Dangaard Brouer <hawk@diku.dk>
-Subject: Re: dst cache overflow
-Date: Wed, 10 Jan 2007 16:01:17 +0100 (CET)
-Message-ID: <Pine.LNX.4.61.0701101556310.28241@ask.diku.dk>
-References: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>   
-	<55635.10.1.1.10.1167946368.squirrel@www.arcoscom.com>
-	<45A492AE.2030909@trash.net>
-	<54528.195.55.244.106.1168435239.squirrel@www.arcoscom.com>
+From: Techside Security <security@techside.it>
+Subject: Re: 2 Internet connection and one local network -- RESOLVED
+Date: Wed, 10 Jan 2007 16:44:07 +0100
+Message-ID: <45A509C7.1010201@techside.it>
+References: <117F5E7DA31C17478948DC39E01B948B400F9F@frost.PlumSoftwareLtd.local>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="-511516320-824992256-1168441277=:28241"
-Return-path: <lartc-bounces@mailman.ds9a.nl>
-In-Reply-To: <54528.195.55.244.106.1168435239.squirrel@www.arcoscom.com>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
-Sender: lartc-bounces@mailman.ds9a.nl
-Errors-To: lartc-bounces@mailman.ds9a.nl
-To: ArcosCom Linux User <linux@arcoscom.com>
-Cc: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
-
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
----511516320-824992256-1168441277=:28241
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On Wed, 10 Jan 2007, ArcosCom Linux User wrote:
-
-> El Mie, 10 de Enero de 2007, 8:15, Patrick McHardy escribi=F3:
->> ArcosCom Linux User wrote:
->>> The log says:
->>> Dec 30 00:52:27 cura kernel: dst cache overflow
-
-The log message "dst cache overflow" is normally related to overflow of=20
-the route cache.  The max_size of the route cache can be adjusted through=
-=20
-/proc/sys/net/ipv4/route/max_size.
-
-What is your settings in /proc/sys/net/ipv4/route/?
-
-Run command:
-  grep . /proc/sys/net/ipv4/route/*
-
-Hilsen
-   Jesper Brouer
-
---
--------------------------------------------------------------------
-MSc. Master of Computer Science
-Dept. of Computer Science, University of Copenhagen
-Author of http://www.adsl-optimizer.dk
--------------------------------------------------------------------
----511516320-824992256-1168441277=:28241
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <117F5E7DA31C17478948DC39E01B948B400F9F@frost.PlumSoftwareLtd.local>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-_______________________________________________
-LARTC mailing list
-LARTC@mailman.ds9a.nl
-http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc
+Ok, i've tried to use it because it seems that firewall don't understand 
+the packet coming from old line (without rule)....
+the result i great!!!
 
----511516320-824992256-1168441277=:28241--
+Now all works, I have setup the rule for all the two ethernet card of 
+the internet lines.
+
+echo 0 > /proc/sys/net/ipv4/conf/eth1/rp_filter
+echo 0 > /proc/sys/net/ipv4/conf/eth2/rp_filter
+
+Thanks a lot!!
+
+Matt ha scritto:
+> Sorry I missed this part:
+> 
+>>>> What is the meaning of: echo 0 > /proc/sys/net/ipv4/conf/eth1/rp_filter
+> 
+> I think it disables the reverse path filter for that interface (eth1). Now you might ask, what is the reverse path filter? And I don't know! Apparently it does this:
+> 
+>> # prevent incoming packets on masqueraded connections from being dropped
+>> # as "martians" due to the destination address being translated before the
+>> # rp_filter check is performed
+> 
+> However, when I commented out the line it made no difference so I've left it there for people to comment back in if they find they have problems as described.
+> 
+> 
+> Regards,
+> 
+> Matt.
+> 
+> 
+> 
+> 
+> 
+
+
