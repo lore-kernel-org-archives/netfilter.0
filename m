@@ -1,11 +1,13 @@
-From: Carlos Miranda <cerlm@hotmail.com>
-Subject: connlimit
-Date: Wed, 10 Jan 2007 17:16:24 +0300
-Message-ID: <BAY110-W72EF8C8D86CC3FC5A3A1CBAB20@phx.gbl>
+From: "Matt" <Matt@PlumSoftware.co.uk>
+Subject: RE: 2 Internet connection and one local network
+Date: Wed, 10 Jan 2007 14:39:35 -0000
+Message-ID: <117F5E7DA31C17478948DC39E01B948B400F9F@frost.PlumSoftwareLtd.local>
+References: <45A3520F.9020400@techside.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
+In-Reply-To: <45A3520F.9020400@techside.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,20 +18,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Sorry I missed this part:
 
-After downloading patch-o-matic-20031219.tar.bz2 and running "# KERNEL_DIR=
-=3D/usr/src/redhat/BUILD/kernel-2.6.18/linux-2.6.18.i586 ./runme pending", =
-I could not see CONNLIMIT module to path the kernel.
+>>>What is the meaning of: echo 0 > =
+/proc/sys/net/ipv4/conf/eth1/rp_filter
 
-anyone to tell with patch need to be installed to have connlimit working?
+I think it disables the reverse path filter for that interface (eth1). =
+Now you might ask, what is the reverse path filter? And I don't know! =
+Apparently it does this:
 
-Thank you,
-Carlos
+> # prevent incoming packets on masqueraded connections from being =
+dropped
+> # as "martians" due to the destination address being translated before =
+the
+> # rp_filter check is performed
 
-_________________________________________________________________
-Ligue para os seus amigos gr=E1tis. Fa=E7a chamadas de PC-para-PC pelo mess=
-enger-- GR=C1TIS
-http://get.live.com/messenger/overview=
+However, when I commented out the line it made no difference so I've =
+left it there for people to comment back in if they find they have =
+problems as described.
+
+
+Regards,
+
+Matt.
+
+
+
 
