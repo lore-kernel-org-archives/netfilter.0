@@ -1,12 +1,15 @@
-From: Techside Security <security@techside.it>
-Subject: Re: 2 Internet connection and one local network
-Date: Wed, 10 Jan 2007 15:43:37 +0100
-Message-ID: <45A4FB99.1000307@techside.it>
-References: <117F5E7DA31C17478948DC39E01B948B400F98@frost.PlumSoftwareLtd.local>
+From: "ArcosCom Linux User" <linux@arcoscom.com>
+Subject: Re: dst cache overflow
+Date: Wed, 10 Jan 2007 14:17:40 +0100 (CET)
+Message-ID: <53385.195.55.244.106.1168435060.squirrel@www.arcoscom.com>
+References: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>
+	<55635.10.1.1.10.1167946368.squirrel@www.arcoscom.com>
+	<45A492AE.2030909@trash.net>
+Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <117F5E7DA31C17478948DC39E01B948B400F98@frost.PlumSoftwareLtd.local>
+In-Reply-To: <45A492AE.2030909@trash.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,79 +20,92 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hi.
+The configuration is:
+   1) linux box with 2.6.19.1 kernel with these patches/modules:
+      a) l7-filter
+      b) multipath patch (from nano-howto)
+      c) IMQ
+      d) ipp2p
+      e) connlimit
+   2) 4 ethernet interfaces:
+      a) 2 external (eth1 and eth3) interfaces with balanced links (as
+described in nato-howto).
+      b) 2 internal ineterfaces (eth0 and eth2) in bridge zlan0 with STP
+enabled and configured.
+   3) For tests I load manually ALL conntrack/nat kernel modules.
 
-Unfortunately all server have set the default gw to the internal ip of 
-the firewall...
-With tcpdump seems that the packet don't reach the internal server but
-reach the external ethernet of the firewall (this sounds very strange....)
+My first attempt (to allow UPnP daemon to handle only 1 external iface)
+where put eth1 and eth3 in a bridge without STP enabled and the NAT were
+done only with -j MASQUERADE and appeared to work fine, but when I run
+some amule clients along the network, the problem appear in one day (after
+some weeks working without peers to peers software).
+
+Then I broke the wan bridge and put each static external IP into their
+iface, and the problem appears too in two days instead 1 day.
+
+My next step were use SNAT instead MASQUERADE and the problem appears 3
+days after the change.
+
+Always I had the multipath enableded along these described steps.
+
+A production linux box with 2.6.17.14 kernel and the same patches/modules
+and only 1 wan iface and 1 lan iface and with connlimit match enabled by
+host is working fine with 100 more p2p traffic than the test machine (the
+linux box that has de dst cache overflow problem).
+
+If you need more info about this to help me in solve this problem, please,
+say me, I'll get all you need and put here.
+
+Thanks
+
+El Mie, 10 de Enero de 2007, 8:15, Patrick McHardy escribi=F3:
+> ArcosCom Linux User wrote:
+>> The log says:
+>>
+>> Dec 30 00:52:27 cura kernel: dst cache overflow
+>> Dec 30 00:52:27 cura kernel: MASQUERADE: No route: Rusty's brain broke!
+>> Dec 30 00:52:27 cura kernel: dst cache overflow
+>> Dec 30 00:52:28 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+>> Dec 30 00:52:28 cura kernel: zlan0: topology change detected,
+>> propagating
+>> Dec 30 00:52:28 cura kernel: dst cache overflow
+>> Dec 30 00:52:30 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+>> Dec 30 00:52:30 cura kernel: zlan0: topology change detected,
+>> propagating
+>> Dec 30 00:52:32 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+>> Dec 30 00:52:32 cura kernel: zlan0: topology change detected,
+>> propagating
+>> Dec 30 00:52:32 cura kernel: printk: 15 messages suppressed.
+>> Dec 30 00:52:32 cura kernel: dst cache overflow
+>> Dec 30 00:52:34 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+>> Dec 30 00:52:34 cura kernel: zlan0: topology change detected,
+>> propagating
+>> Dec 30 00:52:36 cura kernel: zlan0: received tcn bpdu on port 1(eth0)
+>> Dec 30 00:52:36 cura kernel: zlan0: topology change detected,
+>> propagating
+>> Dec 30 00:52:37 cura kernel: printk: 40 messages suppressed.
+>> Dec 30 00:52:37 cura kernel: dst cache overflow
+>>
+>> zlan0 is a bridge (with STP configured) between some LANs.
+>>
+>> Thanks
+>>
+>> P.D.: I'm a bit desesperated with this error, I changed "MASQUERADE"
+>> with
+>> "SNAT" with no sense. Some hours after router is booted up, the network
+>> appears to be UP but all ifaces haven't responses.
+>
+>
+> The MASQUERADE message is just an effect of the problem. Please describe
+> your setup in more detail (what kind of devices, how are they connected,
+> ebtables/iptables rules, routing, ...).
+>
+>
 
 
-ping rqst -----> PUBLIC IP1 ----> |FRW|  --\  \--- internal srv
-(this don't work)
-
-ping rqst -----> PUBLIC IP2 (default gw) ----> |FRW|  ----> internal srv
-(this work)
-
-My configuration is little different about yours; i nat entire server IP 
-  not only port from the 2 isp lines.
-
-Now the only way to use the new line for all the service (except sigh 
-the servers) is to setup the default gw to the new router and to 
-maintain the old line with the server (now all the service use this old
-public ip) whith the rule:
-
-ip rule add from <internalsrvip> table oldline
 
 
-If I delete this rule the server respond to the new line but not respond 
-to the call from the old line.
-
-thks.
-
-Matt ha scritto:
-> Hi.
-> 
-> The default gateway on your internal servers should point to the internal IP of the linux firewall box. It sounds to me that you've set the default gateway to the public IP of one of your internet lines - doing this will certainly stop it from working.
-> 
-> This configuration should remember what internet line the packet arrived at, and when the reply from the internal server arrives back at the linux box, it should be routed back out the same internet line it arrived at.
-> 
-> Hope that helps,
-> 
-> Matt
-> 
-> 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Techside
-> Security
-> Sent: 09 January 2007 08:28
-> To: netfilter@lists.netfilter.org
-> Subject: RE: 2 Internet connection and one local network
-> 
-> 
-> Hi, this configuration don't work for me.
-> I have traced the packet that arrive from internet to a internal server;
-> when the packet is sended to public ip that corrspond to default 
-> internet line all is ok, but when i send a packet to public ip that 
-> correspond to second internet line the packet arrive to firewall and
-> don't go forward to internal server. This seems to be an nat or 
-> forwarding error but I if add the table rule (iproute2)
-> ip rule add from <internal server ip> table line2
-> the packet go to server and return from the second line.
-> All the test is made with the iptables and iproute rule
-> described in the reply post.
-> 
-> What is the meaning of: echo 0 > /proc/sys/net/ipv4/conf/eth1/rp_filter
-> 
-> I'm using debian sarge with 2.6.17 kernel and iptables 1.3.7
-> 
-> Any suggestion on what I'm wrong ?
-> 
-> Sorry for my bad english.
-> Fabio.
-> 
 
