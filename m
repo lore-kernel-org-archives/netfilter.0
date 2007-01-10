@@ -1,67 +1,142 @@
-From: "Snyder, Brian" <bsnyder@idirect.net>
-Subject: Q about netfilter and packet modifications
-Date: Wed, 10 Jan 2007 14:09:45 -0500
-Message-ID: <C874DBE9D30B584587F8CD0EC34DA8BE03A60FC1@EX00.idirect.net>
+From: Jesper Dangaard Brouer <hawk@diku.dk>
+Subject: Re: Re: dst cache overflow
+Date: Wed, 10 Jan 2007 20:40:31 +0100 (CET)
+Message-ID: <Pine.LNX.4.61.0701102023390.7998@ask.diku.dk>
+References: <60665.10.1.1.10.1167776653.squirrel@www.arcoscom.com>
+	<55635.10.1.1.10.1167946368.squirrel@www.arcoscom.com>
+	<45A492AE.2030909@trash.net>
+	<54528.195.55.244.106.1168435239.squirrel@www.arcoscom.com>
+	<Pine.LNX.4.61.0701101556310.28241@ask.diku.dk>
+	<34737.84.123.236.132.1168444904.squirrel@www.arcoscom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+Content-Type: MULTIPART/MIXED; BOUNDARY="-511516320-473059512-1168458031=:7998"
+Return-path: <lartc-bounces@mailman.ds9a.nl>
+In-Reply-To: <34737.84.123.236.132.1168444904.squirrel@www.arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
+List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Sender: lartc-bounces@mailman.ds9a.nl
+Errors-To: lartc-bounces@mailman.ds9a.nl
+To: ArcosCom Linux User <linux@arcoscom.com>
+Cc: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---511516320-473059512-1168458031=:7998
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+
+The values looks reasonable, garbage collection start (gc_thresh:32768)=20
+fairly early, but I often see that the GC cannot keep up.
+
+The maximum size of the route cache max_size=3D524288 is okay, but it=20
+depends on the usage pattern.  On my production systems I has increased=20
+max_size to 2 million, to keep up!
+
+Another interesting value is secret_interval:600, which is the interval=20
+the route cache is flushed, in seconds, that is 10 minuts.
+
+  524288/600 =3D 873 packet/sec to new destinations.
+
+You should realize that filling the route cache in 10 minuts can happen,=20
+as it only requires 873 packet/sec to new destinations.
+
+
+What to do next:
+
+Monitor the route cache, to see whats actually happening. The route cache=
+=20
+counters are located in /proc/net/stat/rt_cache, but is not very human=20
+readable.  Use the tool "rtstat" to monitor the route cache.
+
+The rtstat tool can be downloaded from Roberts site:
+  ftp://robur.slu.se/pub/Linux/net-development/rt_cache_stat
+
+Cheers,
+   Jesper Brouer
+
+--
+-------------------------------------------------------------------
+MSc. Master of Computer Science
+Dept. of Computer Science, University of Copenhagen
+Author of http://www.adsl-optimizer.dk
+-------------------------------------------------------------------
+
+
+
+On Wed, 10 Jan 2007, ArcosCom Linux User wrote:
+
+> Here are:
+>
+> # grep . /proc/sys/net/ipv4/route/*
+> /proc/sys/net/ipv4/route/error_burst:5000
+> /proc/sys/net/ipv4/route/error_cost:1000
+> grep: /proc/sys/net/ipv4/route/flush: Operaci=F3n no permitida
+> /proc/sys/net/ipv4/route/gc_elasticity:8
+> /proc/sys/net/ipv4/route/gc_interval:60
+> /proc/sys/net/ipv4/route/gc_min_interval:0
+> /proc/sys/net/ipv4/route/gc_min_interval_ms:500
+> /proc/sys/net/ipv4/route/gc_thresh:32768
+> /proc/sys/net/ipv4/route/gc_timeout:300
+> /proc/sys/net/ipv4/route/max_delay:10
+> /proc/sys/net/ipv4/route/max_size:524288
+> /proc/sys/net/ipv4/route/min_adv_mss:256
+> /proc/sys/net/ipv4/route/min_delay:2
+> /proc/sys/net/ipv4/route/min_pmtu:552
+> /proc/sys/net/ipv4/route/mtu_expires:600
+> /proc/sys/net/ipv4/route/redirect_load:20
+> /proc/sys/net/ipv4/route/redirect_number:9
+> /proc/sys/net/ipv4/route/redirect_silence:20480
+> /proc/sys/net/ipv4/route/secret_interval:600
+>
+>
+> El Mie, 10 de Enero de 2007, 16:01, Jesper Dangaard Brouer escribi=F3:
+>>
+>>
+>> On Wed, 10 Jan 2007, ArcosCom Linux User wrote:
+>>
+>>> El Mie, 10 de Enero de 2007, 8:15, Patrick McHardy escribi=F3:
+>>>> ArcosCom Linux User wrote:
+>>>>> The log says:
+>>>>> Dec 30 00:52:27 cura kernel: dst cache overflow
+>>
+>> The log message "dst cache overflow" is normally related to overflow o=
+f
+>> the route cache.  The max_size of the route cache can be adjusted thro=
+ugh
+>> /proc/sys/net/ipv4/route/max_size.
+>>
+>> What is your settings in /proc/sys/net/ipv4/route/?
+>>
+>> Run command:
+>>   grep . /proc/sys/net/ipv4/route/*
+>>
+>> Hilsen
+>>    Jesper Brouer
+>>
+>> --
+>> -------------------------------------------------------------------
+>> MSc. Master of Computer Science
+>> Dept. of Computer Science, University of Copenhagen
+>> Author of http://www.adsl-optimizer.dk
+>> -------------------------------------------------------------------
+
+---511516320-473059512-1168458031=:7998
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Hi all,
+_______________________________________________
+LARTC mailing list
+LARTC@mailman.ds9a.nl
+http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc
 
-I'm working on a test program using libipq and iptables (to route packet
-to userspace). =20
-
-I have a test program working that does all of the above, now I want to
-start adding some of my smarts into the program, and one thing I want to
-do is add some TCP options into certain types of TCP packets.
-
-So I believe I understand what I have to do, or at least I'm rather
-close, but I would just like some confirmation that I'm on the correct
-path:
-
-
-1) Create a totally new 'message buffer' of the appropriate size, to
-house the original packet in it's entirety, plus the extra bytes I need
-to add for my new TCP option.
-2) Copy over all the orignal headers into this new memory space... Then
-add in my own TCP headers.
-3) 'Merge' the tcp data packet itself into the new structure, AFTER my
-added tcp header.
-4) Re-compute all required checksums
-5) Reaim - msg->payload to my new structure.
-6) ??  Do I need to free the old msg->payload or does the kernel know to
-do this for me ??
-7) Send back a ipq_set_verdict, with all the params set to show I
-mangled the packet a bit.
-
-
-
-
-I'm concerned about the processing this will take, as it looks like
-there will need to be 2 different calls to memcopy, totalling the full
-length of every packet.
-
-Can I mangle JUST the header's if I set the mode to IPQ_COPY_META, and
-would it integrate my header changes in with the packet data
-automagically?  That would save me a lot of the memcopy for large
-packets.
-
-I plan on setting the MTU in accordance with the space needed to add my
-options, so it shouldn't cause any fragmentation.
-
-Thanks,
-brian
-
+---511516320-473059512-1168458031=:7998--
