@@ -1,12 +1,11 @@
-From: snowcrash+netfilter <schneecrash+netfilter@gmail.com>
-Subject: simple usage Q on setting sysctl opts in fw script
-Date: Wed, 10 Jan 2007 14:29:42 -0800
-Message-ID: <70f41ba20701101429m44c8cb65l2b99bd950ae62e23@mail.gmail.com>
-Reply-To: netfilter@lists.netfilter.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] Release of libnfnetlink,
+	libnfnetlink_conntrack and libnetfilter_queue
+Date: Thu, 11 Jan 2007 01:58:59 +0100
+Message-ID: <45A58BD3.1010000@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070703040805050801090809"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +16,113 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: lwn@lwn.net
 
-i've a question about usage in setting SYSCTL options @ fw build/load time.
+This is a multi-part message in MIME format.
+--------------070703040805050801090809
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-i've found numerous examples online used in/by iptables
-scripts/generators/etc, and i see two different implementations.
+Hi!
 
-e.g., for redirects, this,
+The netfilter project proudly presents:
 
-	for f in /proc/sys/net/ipv4/conf/*/accept_redirects; do
-	    echo 0 > $f
-	done
+	libnfnetlink-0.0.25
+	libnfnetlink_conntrack-0.0.50
+	libnetfilter_queue-0.0.13
 
-versus,
+libnfnetlink
+	is the low-level userspace library for nfnetlink based
+	communication between the kernel-side netfilter and the
+	userspace world.
 
-	echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
+libnfnetlink_conntrack
+	is the library for userspace access to the in-kernel connection
+	tracking table.
 
-is _not_ "/all/" equivalent to a recurse across "/*/" in,
+libnetfilter_queue
+	is the library to filter and mangle packets from userspace
 
-	% ls /proc/sys/net/ipv4/conf
-		all      br0      default  lo       ppp0
+You can download the three releases from
+	http://www.netfilter.org/projects/libnfnetlink/files/libnfnetlink-0.0.25.tar.bz2
+http://www.netfilter.org/projects/libnetfilter_conntrack/files/libnetfilter_conntrack-0.0.50.tar.bz2
 
-?
+http://www.netfilter.org/projects/libnetfilter_queue/files/libnetfilter_queue-0.0.13.tar.bz2
 
-i've yet to find a simple/clear statement as to the difference, if any.
+Attached to this email the changelog. Upgrade is recommended.
 
-thanks.
+Happy firewalling,
+
+	Pablo Neira Ayuso (for the Netfilter Project)
+
+p.s: the signature verification can complain about the key expiration
+date, sorry for that, we are still in the process of the renewal.
+
+-- 
+The dawn of the fourth age of Linux firewalling is coming; a time of
+great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+
+--------------070703040805050801090809
+Content-Type: text/plain;
+ name="ChangeLog"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog"
+
+libnfnetlink 0.0.25
+======================================================================
+
+Changes from 0.0.16:
+
+- Add iterator API
+	[ Pablo Neira ]
+
+- Add replacements for nfnl_listen and nfnl_talk
+	[ Pablo Neira ]
+
+- Fix error handling
+	[ Pablo Neira ]
+
+- Add assertions
+	[ Pablo Neira ]
+
+- Add documentation
+	[ Pablo Neira ]
+
+- Minor cleanups
+	[ Pablo Neira ]
+
+- Initialize callback structure
+	[ Victor Stinner ]
+
+libnetfilter_conntrack 0.0.50
+======================================================================
+
+Changes from 0.0.31:
+
+- Introduce new API and documentation
+	[ Pablo Neira ]
+
+- Fix minor nitpick in the XML output
+	[ Victor Stinner ]
+
+- Minor fix in the counters parsing
+	[ Pablo Neira ]
+
+- Implement getter for the ATTR_USE attribute
+	[ Victor Stinner ]
+
+- ATTR_*_COUNTER_*, ATTR_USE and ATTR_ID are unsettable
+	[ Victor Stinner ]
+
+libnetfilter_queue 0.0.13
+======================================================================
+
+Changes from 0.0.12:
+
+- Set maximum queue length
+	[ Eric Leblond ]
+
+--------------070703040805050801090809--
 
