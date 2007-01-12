@@ -1,52 +1,81 @@
 From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: Example on using fwmark with masks. Please help!!
-Date: Fri, 12 Jan 2007 21:26:30 +0100 (CET)
-Message-ID: <52633.84.123.236.132.1168633590.squirrel@www.arcoscom.com>
+Subject: CONNMARK versus MARK
+Date: Fri, 12 Jan 2007 22:00:00 +0100 (CET)
+Message-ID: <50031.84.123.236.132.1168635600.squirrel@www.arcoscom.com>
 Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <lartc-bounces@mailman.ds9a.nl>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
-Sender: lartc-bounces@mailman.ds9a.nl
-Errors-To: lartc-bounces@mailman.ds9a.nl
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: lartc@mailman.ds9a.nl, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
-   could anyone provides any example about the use of ip route command to
-force the use of one route using masks in the mark?
+Another question, this time is about CONNMARK and MARK.
 
-The configuration is:
-   1 LAN (zlan0) iface
-   N WAN (wan0 ... wanN) ifaces with static IPs and load balanced.
-   iptables 1.3.7
-   kernel 2.6.19.2
-   iproute 2.6.19
+I stand that when CONNMARK put a mark, this mark will be applied for every
+related traffic (I supose conntrack modules do it) after CONNMARK put the
+mark. Am I in truth?
 
-I'm yet setting marks into packets for QoS and its working, I now want to
-set some bits (OR) at the end of the mark.
+Analogous with MARK, that only applies to the frame. Is it?
 
-For example, I want to use 0x8000 to add another mark to the packet for
-routing. The packet is market yet with a QoS mark (--set-mark), 0x5 (for
-example).
+Fine, using the above, when 1 client start TCP connection, that has not
+any specific conntrack module for it, and I use something as this:
 
-I need:
-   1) The packet been marked with 0x8000 OR 0x0005 =3D 0x8005
-   2) Route the packet with 0x8005 AND 0x8000 =3D 0x8000 over wan0 (for
-example)
-   3) Classify the packet with 0x8005 AND 0x0005 into wan0 1:4 class (for
-example)
+iptables -t mangle -A POSTROUTING ${condition} -m state --state NEW -j
+CONNMARK --set-mark 0x1
 
-I know how to do this not having sense about MASKs, but ... Could anybody
-put here how to do it with them?
+Then:
 
-Another question: What is the length of the mask? 16bit? 32bit?
+iptables -t mangle -A PREROUTING -m state --state RELATED,ESTABLISHED -j
+CONNMARK --save-mark
+iptables -t mangle -A PREROUTING -m state --state RELATED,ESTABLISHED -m
+connmark ! --mark 0x0 -j RETURN
+
+Can I supose that when the connection is in state RELATED or ESTABLISHED
+the core netfilter will automaticaly mark the response frame (ACK) with
+the same mark? or I must be more accurate using MARK/mark?
+
+Explain a bit the question:
+   1) The frame should be TCP or UDP and is marked as 0x1 when go out from
+(or forwading) the box.
+   2) The frame is responsed (TCP with ACK or UDP with another frame to
+the same source port).
+   3) How netfilter will mark the connection if it has not handled by a
+conntrack module? Will it mark the connection? or I have to control the
+answered frame too?.
+
+I'm a bit confuse with the iptables help/man text about this question:
+
+MARK target v1.3.7 options:
+  --set-mark value                   Set nfmark value
+  --and-mark value                   Binary AND the nfmark with value
+  --or-mark  value                   Binary OR  the nfmark with value
+
+CONNMARK target v1.3.7 options:
+  --set-mark value[/mask]       Set conntrack mark value
+  --save-mark [--mask mask]     Save the packet nfmark in the connection
+  --restore-mark [--mask mask]  Restore saved nfmark value
+
+CONNMARK match v1.3.7 options:
+[!] --mark value[/mask]         Match nfmark value with optional mask
+
+MARK match v1.3.7 options:
+[!] --mark value[/mask]         Match nfmark value with optional mask
+
+And, sometimes, I think that there are two fields for the mark, one for
+the whole connection and another for the frame.
+
+Anyone more experienced could explain this a bit?
 
 Thanks!!
+
+
