@@ -1,13 +1,12 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Natted packets
-Date: Fri, 12 Jan 2007 23:38:09 -0600
-Message-ID: <45A87041.4070500@riverviewtech.net>
-References: <45A2BB09.90405@eternet.cc> <45A306C2.7000809@riverviewtech.net>
-	<45A38372.7090609@eternet.cc>
+Subject: Re: Need to solve a NAT problem, any takers.
+Date: Fri, 12 Jan 2007 23:45:17 -0600
+Message-ID: <45A871ED.9070500@riverviewtech.net>
+References: <57F9959B46E0FA4D8BA88AEDFBE5829024EF8A@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45A38372.7090609@eternet.cc>
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE5829024EF8A@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,33 +20,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-On 01/09/07 05:58, Lucas Diaz wrote:
-> My question is if some other router somewhere else on the net (inside my 
-> lan) has NATed the traffic?
-> And the original NATed IP?
-> This router NATing traffic and my router are in the same network...
+On 01/11/07 21:35, Gary W. Smith wrote:
+> Internally our DNS server are split giving us internal IP's when queried
+> internally and external's when queried externally.  This works fine.
+> Our second DNS server internally slaves the primary.  Because we are
+> using this split functionality when it slaves the internal IP's it gets
+> the internal IP configuration.  Works great.  But in order to replicate
+> the external range it must do so by replicating from the external IP.
+> This fails at the IP's is NAT'd in by port only.  Years ago we solved
+> this by running a second POSTROUTING rule and an OUTPUT rule on the
+> firewall.  When I load these rules now 
 
-Ok, you are wanting to see if there is an additional NATing router 
-somewhere in your LAN?
+I know this is not an IPTables / NAT answer, but I think it may possibly 
+be an answer to your need.  What if you add a different subnet to your 
+two DNS servers that each of them consider to be for the external view. 
+  Tell your secondary to contact the primary on it's IP in this external 
+view subnet.
 
-(I'll presume yes for the rest of this post)
-
-There are some ways that you can attempt to find IP addresses with 
-specific types of behavior (all beyond me) that can be indicative of 
-NATed IPs.  I believe that (some of) these tests are based on the TCP 
-sequence number.  More specifically, an IP stack *usually* behaves in a 
-predictable way.  Thus you can look at the TCP sequence numbers of 
-packets coming from an IP address to see patterns of ranges / sliding 
-windows of TCP sequence numbers.  If there are multiple (fuzzy) 
-definable groups, there is a good chance that each group is a given 
-computer.  However, this can possibly be hidden by the NATing device.
-
-Much beyond that and I don't know any more.  However, I do know that 
-there is a lot of discussion about this on the reverse side on the net. 
-  Namely I have stumbled across a lot of discussion where people were 
-trying to use NATing technology on providers that did not want them to, 
-i.e. they charged per device, and what they did to hide them selves from 
-the provider.
+Just a thought.
 
 
 
