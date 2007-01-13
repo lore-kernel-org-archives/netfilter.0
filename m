@@ -1,11 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: CONNMARK versus MARK
-Date: Fri, 12 Jan 2007 23:46:34 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0701122343290.19224@yvahk01.tjqt.qr>
-References: <50031.84.123.236.132.1168635600.squirrel@www.arcoscom.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Natted packets
+Date: Fri, 12 Jan 2007 23:38:09 -0600
+Message-ID: <45A87041.4070500@riverviewtech.net>
+References: <45A2BB09.90405@eternet.cc> <45A306C2.7000809@riverviewtech.net>
+	<45A38372.7090609@eternet.cc>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <50031.84.123.236.132.1168635600.squirrel@www.arcoscom.com>
+In-Reply-To: <45A38372.7090609@eternet.cc>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,89 +18,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ArcosCom Linux User <linux@arcoscom.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+
+On 01/09/07 05:58, Lucas Diaz wrote:
+> My question is if some other router somewhere else on the net (inside my 
+> lan) has NATed the traffic?
+> And the original NATed IP?
+> This router NATing traffic and my router are in the same network...
+
+Ok, you are wanting to see if there is an additional NATing router 
+somewhere in your LAN?
+
+(I'll presume yes for the rest of this post)
+
+There are some ways that you can attempt to find IP addresses with 
+specific types of behavior (all beyond me) that can be indicative of 
+NATed IPs.  I believe that (some of) these tests are based on the TCP 
+sequence number.  More specifically, an IP stack *usually* behaves in a 
+predictable way.  Thus you can look at the TCP sequence numbers of 
+packets coming from an IP address to see patterns of ranges / sliding 
+windows of TCP sequence numbers.  If there are multiple (fuzzy) 
+definable groups, there is a good chance that each group is a given 
+computer.  However, this can possibly be hidden by the NATing device.
+
+Much beyond that and I don't know any more.  However, I do know that 
+there is a lot of discussion about this on the reverse side on the net. 
+  Namely I have stumbled across a lot of discussion where people were 
+trying to use NATing technology on providers that did not want them to, 
+i.e. they charged per device, and what they did to hide them selves from 
+the provider.
 
 
->Another question, this time is about CONNMARK and MARK.
->
->I stand that when CONNMARK put a mark, this mark will be applied for every
->related traffic (I supose conntrack modules do it) after CONNMARK put the
->mark. Am I in truth?
 
-man iptables:
-
-   CONNMARK
-       This module sets the netfilter mark value associated with a 
-       connection
-
-
->
->Analogous with MARK, that only applies to the frame. Is it?
-
-Ethernet frames?
-
-
->Fine, using the above, when 1 client start TCP connection, that has not
->any specific conntrack module for it, and I use something as this:
->
->iptables -t mangle -A POSTROUTING ${condition} -m state --state NEW -j
->CONNMARK --set-mark 0x1
->
->Then:
->
->iptables -t mangle -A PREROUTING -m state --state RELATED,ESTABLISHED -j
->CONNMARK --save-mark
->iptables -t mangle -A PREROUTING -m state --state RELATED,ESTABLISHED -m
->connmark ! --mark 0x0 -j RETURN
->
->Can I supose that when the connection is in state RELATED or ESTABLISHED
->the core netfilter will automaticaly mark the response frame (ACK) with
->the same mark? or I must be more accurate using MARK/mark?
-
-Not sure if --save-mark is inteded here.
-
->Explain a bit the question:
->   1) The frame should be TCP or UDP and is marked as 0x1 when go out from
->(or forwading) the box.
->   2) The frame is responsed (TCP with ACK or UDP with another frame to
->the same source port).
->   3) How netfilter will mark the connection if it has not handled by a
->conntrack module? Will it mark the connection? or I have to control the
->answered frame too?.
->
->I'm a bit confuse with the iptables help/man text about this question:
->
->MARK target v1.3.7 options:
->  --set-mark value                   Set nfmark value
->  --and-mark value                   Binary AND the nfmark with value
->  --or-mark  value                   Binary OR  the nfmark with value
->
->CONNMARK target v1.3.7 options:
->  --set-mark value[/mask]       Set conntrack mark value
->  --save-mark [--mask mask]     Save the packet nfmark in the connection
->  --restore-mark [--mask mask]  Restore saved nfmark value
->
->CONNMARK match v1.3.7 options:
->[!] --mark value[/mask]         Match nfmark value with optional mask
->
->MARK match v1.3.7 options:
->[!] --mark value[/mask]         Match nfmark value with optional mask
->
->And, sometimes, I think that there are two fields for the mark, one for
->the whole connection and another for the frame.
-
-Correct. (packet, not frame) There are yet more, though.
-
->
->Anyone more experienced could explain this a bit?
->
->Thanks!!
->
->
-
-	-`J'
--- 
+Grant. . . .
 
