@@ -1,13 +1,14 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: Re: CONNMARK versus MARK
-Date: Sun, 14 Jan 2007 22:21:52 +0100 (CET)
-Message-ID: <48928.84.123.236.132.1168809712.squirrel@www.arcoscom.com>
-References: <50031.84.123.236.132.1168635600.squirrel@www.arcoscom.com>
-Reply-To: linux@arcoscom.com
+From: TheGesus <thegesus@gmail.com>
+Subject: Re: QUEUE - ipq_set_verdict overridden?
+Date: Sun, 14 Jan 2007 17:44:16 -0500
+Message-ID: <5e70f6530701141444q40ea9c0as5be86ce944668fa@mail.gmail.com>
+References: <5e70f6530701141310t66399aabx6b5d6cdc65b2afa9@mail.gmail.com>
+	<45AAA920.5040005@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <50031.84.123.236.132.1168635600.squirrel@www.arcoscom.com>
+In-Reply-To: <45AAA920.5040005@netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,75 +19,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter <netfilter@lists.netfilter.org>
 
-Any help?
-
-Thanks
-
-El Vie, 12 de Enero de 2007, 22:00, ArcosCom Linux User escribi=F3:
-> Another question, this time is about CONNMARK and MARK.
+On 1/14/07, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> TheGesus wrote:
+> > However, for any "ESTABLISHED" connections nothing happens.
+> > ipq_set_verdict returns the same status (IPQM_PACKET - 0x1C) in both
+> > cases but the packets breeze on through for "ESTABLISHED" connections.
+> >
+> > I should note I'm doing nothing to the packets and simply returning an
+> > NF_DROP or NF_ACCEPT.
+> >
+> > The iptables rules are kept as simple as possible.  I have tried both
+> >
+> > -A INPUT -p udp -m udp --dport 7777 -j QUEUE
 >
-> I stand that when CONNMARK put a mark, this mark will be applied for every
-> related traffic (I supose conntrack modules do it) after CONNMARK put the
-> mark. Am I in truth?
->
-> Analogous with MARK, that only applies to the frame. Is it?
->
-> Fine, using the above, when 1 client start TCP connection, that has not
-> any specific conntrack module for it, and I use something as this:
->
-> iptables -t mangle -A POSTROUTING ${condition} -m state --state NEW -j
-> CONNMARK --set-mark 0x1
->
-> Then:
->
-> iptables -t mangle -A PREROUTING -m state --state RELATED,ESTABLISHED -j
-> CONNMARK --save-mark
-> iptables -t mangle -A PREROUTING -m state --state RELATED,ESTABLISHED -m
-> connmark ! --mark 0x0 -j RETURN
->
-> Can I supose that when the connection is in state RELATED or ESTABLISHED
-> the core netfilter will automaticaly mark the response frame (ACK) with
-> the same mark? or I must be more accurate using MARK/mark?
->
-> Explain a bit the question:
->    1) The frame should be TCP or UDP and is marked as 0x1 when go out from
-> (or forwading) the box.
->    2) The frame is responsed (TCP with ACK or UDP with another frame to
-> the same source port).
->    3) How netfilter will mark the connection if it has not handled by a
-> conntrack module? Will it mark the connection? or I have to control the
-> answered frame too?.
->
-> I'm a bit confuse with the iptables help/man text about this question:
->
-> MARK target v1.3.7 options:
->   --set-mark value                   Set nfmark value
->   --and-mark value                   Binary AND the nfmark with value
->   --or-mark  value                   Binary OR  the nfmark with value
->
-> CONNMARK target v1.3.7 options:
->   --set-mark value[/mask]       Set conntrack mark value
->   --save-mark [--mask mask]     Save the packet nfmark in the connection
->   --restore-mark [--mask mask]  Restore saved nfmark value
->
-> CONNMARK match v1.3.7 options:
-> [!] --mark value[/mask]         Match nfmark value with optional mask
->
-> MARK match v1.3.7 options:
-> [!] --mark value[/mask]         Match nfmark value with optional mask
->
-> And, sometimes, I think that there are two fields for the mark, one for
-> the whole connection and another for the frame.
->
-> Anyone more experienced could explain this a bit?
->
-> Thanks!!
->
->
+> Probably there is one rule before this one above that let packets that
+> belong to establish connections go through.
 >
 
-
+No.  There isn't.  There is one ACCEPT rule beyond it which deals with
+the other ports (udp 7778-7790), which are of no interest to the QUEUE
+code.  There are only two rules.
 
