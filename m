@@ -1,58 +1,68 @@
-From: Anil Gunturu <anil@mistletoetech.com>
-Subject: Re: tcp conn tracking
-Date: Mon, 15 Jan 2007 08:57:20 -0800 (PST)
-Message-ID: <25296252.199981168880240692.JavaMail.root@smtp1.mistletoetech.com>
-References: <Pine.LNX.4.64.0701150843190.9059@blackhole.kfki.hu>
+From: "ArcosCom Linux User" <linux@arcoscom.com>
+Subject: Re: Example on using fwmark with masks. Please help!!
+Date: Sun, 14 Jan 2007 22:19:55 +0100 (CET)
+Message-ID: <42219.84.123.236.132.1168809595.squirrel@www.arcoscom.com>
+References: <52633.84.123.236.132.1168633590.squirrel@www.arcoscom.com>
+Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.64.0701150843190.9059@blackhole.kfki.hu>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <lartc-bounces@mailman.ds9a.nl>
+In-Reply-To: <52633.84.123.236.132.1168633590.squirrel@www.arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Sender: lartc-bounces@mailman.ds9a.nl
+Errors-To: lartc-bounces@mailman.ds9a.nl
+content-type: text/plain
+To: lartc@mailman.ds9a.nl, netfilter@lists.netfilter.org
 
-Thank you for the response. 
+Any help?
 
-So, ftp connection tracking doesn't work always. Just curious about what is the rationale for such a solution? Is it assumed that if the packet with PORT command is fragmented someone is deliberatly attacking the system?
-
-Cheers,
-
--Anil
-
------ Original Message -----
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-To: Anil Gunturu <anil@mistletoetech.com>
-Cc: netfilter@lists.netfilter.org
-Sent: Sunday, January 14, 2007 11:47:23 PM GMT-0800 US/Pacific
-Subject: Re: tcp conn tracking
-
-On Sun, 14 Jan 2007, Anil Gunturu wrote:
-
-> Does the tcp connection tracking reorder and reassemble the tcp data. I 
-> am particularly interested in how ip_conntrack_ftp works, if the tcp 
-> data for port commnad comes in two different out-of-order segments.
-
-The connection tracking in netfilter defragments fragmented packets but 
-does not reorder out of order packets. Moreover FTP connection tracking 
-won't work on PORT/etc commands which arrive in multiple (not fragmented) 
-packets, even if those are in order.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-           H-1525 Budapest 114, POB. 49, Hungary
-
-
+El Vie, 12 de Enero de 2007, 21:26, ArcosCom Linux User escribi=F3:
+> Hi,
+>    could anyone provides any example about the use of ip route command =
+to
+> force the use of one route using masks in the mark?
+>
+> The configuration is:
+>    1 LAN (zlan0) iface
+>    N WAN (wan0 ... wanN) ifaces with static IPs and load balanced.
+>    iptables 1.3.7
+>    kernel 2.6.19.2
+>    iproute 2.6.19
+>
+> I'm yet setting marks into packets for QoS and its working, I now want =
+to
+> set some bits (OR) at the end of the mark.
+>
+> For example, I want to use 0x8000 to add another mark to the packet for
+> routing. The packet is market yet with a QoS mark (--set-mark), 0x5 (fo=
+r
+> example).
+>
+> I need:
+>    1) The packet been marked with 0x8000 OR 0x0005 =3D 0x8005
+>    2) Route the packet with 0x8005 AND 0x8000 =3D 0x8000 over wan0 (for
+> example)
+>    3) Classify the packet with 0x8005 AND 0x0005 into wan0 1:4 class (f=
+or
+> example)
+>
+> I know how to do this not having sense about MASKs, but ... Could anybo=
+dy
+> put here how to do it with them?
+>
+> Another question: What is the length of the mask? 16bit? 32bit?
+>
+> Thanks!!
+>
+>
+>
+>
+>
+>
