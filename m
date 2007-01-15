@@ -1,12 +1,11 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: QUEUE - ipq_set_verdict overridden?
-Date: Sun, 14 Jan 2007 22:49:03 +0100
-Message-ID: <45AAA54F.5040905@netfilter.org>
-References: <5e70f6530701141310t66399aabx6b5d6cdc65b2afa9@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: tcp conn tracking
+Date: Mon, 15 Jan 2007 08:47:23 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0701150843190.9059@blackhole.kfki.hu>
+References: <29495170.198881168838061557.JavaMail.root@smtp1.mistletoetech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5e70f6530701141310t66399aabx6b5d6cdc65b2afa9@mail.gmail.com>
+In-Reply-To: <29495170.198881168838061557.JavaMail.root@smtp1.mistletoetech.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,18 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: TheGesus <thegesus@gmail.com>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Anil Gunturu <anil@mistletoetech.com>
+Cc: netfilter@lists.netfilter.org
 
-TheGesus wrote:
-> I am aware of libnetfilter-queue but until there is some documentation
-> I'm sticking with libipq.
+On Sun, 14 Jan 2007, Anil Gunturu wrote:
 
-It would be a good idea moving to libnetfilter_queue since libipq is
-deprecated.
+> Does the tcp connection tracking reorder and reassemble the tcp data. I 
+> am particularly interested in how ip_conntrack_ftp works, if the tcp 
+> data for port commnad comes in two different out-of-order segments.
 
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+The connection tracking in netfilter defragments fragmented packets but 
+does not reorder out of order packets. Moreover FTP connection tracking 
+won't work on PORT/etc commands which arrive in multiple (not fragmented) 
+packets, even if those are in order.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+           H-1525 Budapest 114, POB. 49, Hungary
 
