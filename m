@@ -1,14 +1,11 @@
-From: TheGesus <thegesus@gmail.com>
-Subject: Re: QUEUE - ipq_set_verdict overridden?
-Date: Sun, 14 Jan 2007 17:44:16 -0500
-Message-ID: <5e70f6530701141444q40ea9c0as5be86ce944668fa@mail.gmail.com>
-References: <5e70f6530701141310t66399aabx6b5d6cdc65b2afa9@mail.gmail.com>
-	<45AAA920.5040005@netfilter.org>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: tcp conn tracking
+Date: Mon, 15 Jan 2007 19:42:31 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0701151926260.9996@blackhole.kfki.hu>
+References: <33219704.200191168881881760.JavaMail.root@smtp1.mistletoetech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45AAA920.5040005@netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <33219704.200191168881881760.JavaMail.root@smtp1.mistletoetech.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +16,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Anil Gunturu <anil@mistletoetech.com>
+Cc: netfilter@lists.netfilter.org
 
-On 1/14/07, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> TheGesus wrote:
-> > However, for any "ESTABLISHED" connections nothing happens.
-> > ipq_set_verdict returns the same status (IPQM_PACKET - 0x1C) in both
-> > cases but the packets breeze on through for "ESTABLISHED" connections.
-> >
-> > I should note I'm doing nothing to the packets and simply returning an
-> > NF_DROP or NF_ACCEPT.
-> >
-> > The iptables rules are kept as simple as possible.  I have tried both
-> >
-> > -A INPUT -p udp -m udp --dport 7777 -j QUEUE
->
-> Probably there is one rule before this one above that let packets that
-> belong to establish connections go through.
->
+On Mon, 15 Jan 2007, Anil Gunturu wrote:
 
-No.  There isn't.  There is one ACCEPT rule beyond it which deals with
-the other ports (udp 7778-7790), which are of no interest to the QUEUE
-code.  There are only two rules.
+> OK. Does the same thing apply to ftp when NAT is involved? If the port 
+> command comes fragmented and out-of-order, and the conntrack module 
+> doesn't reassemble the packets, the "inside" ip address goes out 
+> untranslated. Is this considered a security breach.
+
+[Please do not top-post. Thanks.]
+
+NAT is built on top of conntrack. So fragmented packets get defragmented 
+before processing but out of order packets are not reordered by netfilter.
+
+A deliberate attacker can force to break up PORT commands and PASV 
+responses to be carried in multiple non-fragmented packets and those then 
+"slip through" without NATing. However what can be gained by this? 
+Conntrack cannot detect the IP address/port so the data channel won't be 
+"opened up" by conntrack. The attacker can discover the real IP address of 
+the other side, that's all. NAT is not meant to be a security solution.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+           H-1525 Budapest 114, POB. 49, Hungary
 
