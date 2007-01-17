@@ -1,12 +1,12 @@
-From: Maximilian Wilhelm <max@rfc2324.org>
-Subject: Re: Problems with the ROUTE extension on a 2.6.18 or 2.6.19 Kernel
-Date: Wed, 17 Jan 2007 17:27:08 +0100
-Message-ID: <20070117162708.GD14333@outback.rfc2324.org>
-References: <87ABB5B9BD11A240B9CBB3F0485AEC8901509E2F@IMCSRV4.MITRE.ORG>
+From: Michael Gale <michael.gale@pason.com>
+Subject: Re: Fw: PPTP Problem with 2.6.20-rc1 >=
+Date: Wed, 17 Jan 2007 10:19:55 -0700
+Message-ID: <45AE5ABB.2070005@pason.com>
+References: <088601c739c2$a7115c80$0a01a8c0@pcjorge>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <87ABB5B9BD11A240B9CBB3F0485AEC8901509E2F@IMCSRV4.MITRE.ORG>
+In-Reply-To: <088601c739c2$a7115c80$0a01a8c0@pcjorge>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +17,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jorge Bastos <mysql.jorge@decimal.pt>
+Cc: netfilter@lists.netfilter.org
 
-Am Mittwoch, den 17 Januar hub Feighery, Patrick D. folgendes in die Tasten:
+Hey,
 
-> I have an application that makes use of the ROUTE extension which has
-> been running on a 2.6.17 kernel for some time now.  I am trying move
-> this app to either a 2.6.18 or a 2.6.19 based kernel.  This requires
-> getting the ROUTE extension to work with that kernel. 
- 
-> I started with a 2.6.18.2 kernel and iptables version 1.3.6 after I
-> applied patch-o-matic and rebuilt the kernel, I tried something simple
-> like
+Check out the pptp site for more info:
 
-> 	iptables -t ROUTE -F
-[...]
+http://pptpclient.sourceforge.net
+http://pptpclient.sourceforge.net/howto-diagnosis.phtml#mppe_kernel
 
-Are you sure that this has worked before?
-As far as I know ROUTE is a target (to be used via -j ROUTE) and *not*
-an iptables *table* like filter, nat, mangle or raw.
+--snip--
+Check MPPE in kernel Support
+Make sure the MPPE module can be loaded:
 
-Maybe 
-$ iptables -j ROUTE --help
-is a starting point?
+# modprobe ppp-compress-18
 
-So the question is what have you done with older kernels regarding the
-ROUTE target and if *that* is still working.
+If this module loads without error, then all is well with it. If errors are generated, you must find the cause and fix it. There are numerous causes of a failure to load. 
+Some of the causes are;
 
-Ciao
-Max
+    1. depmod -a was not run after loading a kernel-mppe rpm,
+    2. the MPPE module cannot be found in the appropriate /lib/modules directory,
+    3. the MPPE module that was found cannot be loaded because of version conflicts,
+
+    4. an old mppe.o file was left around after an upgrade that provided an ppp_mppe.o file (which results in "init_module: File exists" error if the mppe.o module is 
+loaded somehow),
+
+2003-08-01
+	
+
+    5. the ppp_generic module cannot activate the MPPE module when it finds it needs it, because you are using PPP-MPPE 2.4.0 and the /etc/modules.conf file does not have 
+an entry for alias ppp-compress-18 mppe,
+    6. the PPP modules were compiled into the kernel statically (they must be modules for MPPE to work as a module),
+    7. the ppp_async module cannot be loaded (although pptp does not use a serial port, the ppp_async module is required for data transfer with the psuedo-tty device).
+--snip--
+
+
+
+Jorge Bastos wrote:
+> Hum...
+> Well i don't use iptables-save, i just have all rules and the modprobe's in
+> a startup file.
+> Anyway Linus isn't talking about a solution, is there one already?
+> 
+> 
+> ----- Original Message ----- From: "TheGesus" <thegesus@gmail.com>
+> To: "Jorge Bastos" <mysql.jorge@decimal.pt>
+> Cc: <netfilter@lists.netfilter.org>
+> Sent: Tuesday, January 16, 2007 9:02 PM
+> Subject: Re: PPTP Problem with 2.6.20-rc1 >=
+> 
+> 
+>> On 1/16/07, Jorge Bastos <mysql.jorge@decimal.pt> wrote:
+>>> Hum... Yes
+>>>
+>>> There's changes now?
+>>>
+>>
+>> http://lkml.org/lkml/2007/1/9/217
+>>
+> 
+> 
+
 -- 
-	Follow the white penguin.
+Michael Gale
+
+Red Hat Certified Engineer
+Network Administrator
+Pason Systems Corp.
 
