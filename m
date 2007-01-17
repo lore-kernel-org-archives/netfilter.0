@@ -1,7 +1,7 @@
-From: "Jorge Bastos" <mysql.jorge@decimal.pt>
-Subject: Fw: PPTP Problem with 2.6.20-rc1 >=
-Date: Tue, 16 Jan 2007 23:04:18 -0000
-Message-ID: <088601c739c2$a7115c80$0a01a8c0@pcjorge>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] conntrackd-0.9.2 released
+Date: Wed, 17 Jan 2007 03:49:11 +0100
+Message-ID: <45AD8EA7.6030705@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,30 +15,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, netfilter <netfilter@lists.netfilter.org>, Netfilter-failover list <netfilter-failover@lists.netfilter.org>
+Cc: lwn@lwn.net
 
-Hum...
-Well i don't use iptables-save, i just have all rules and the modprobe's in
-a startup file.
-Anyway Linus isn't talking about a solution, is there one already?
+Overview:
 
+Conntrackd is the userspace daemon for the Connection Tracking System.
+This daemon maintains a copy of the Connection Tracking System in
+userspace. It is entirely written in C and is highly configurable and
+easily extensible. Currently it covers the specific aspects of Stateful
+Linux firewalls to enable High Availability (HA) solutions and can be
+used as statistics collector of the firewall use.
 
------ Original Message ----- 
-From: "TheGesus" <thegesus@gmail.com>
-To: "Jorge Bastos" <mysql.jorge@decimal.pt>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Tuesday, January 16, 2007 9:02 PM
-Subject: Re: PPTP Problem with 2.6.20-rc1 >=
+Status:
 
+This project is under development, people feeling brave are encouraged
+to test a send nice reports ;)
 
-> On 1/16/07, Jorge Bastos <mysql.jorge@decimal.pt> wrote:
->> Hum... Yes
->>
->> There's changes now?
->>
->
-> http://lkml.org/lkml/2007/1/9/217
-> 
+Main changes:
+- the unnofficial libraries are not required anymore
+- a new NACK based protocol
 
+More information available at:
+
+http://people.netfilter.org/pablo/conntrackd/
+
+P.S: There is a TODO file inside the tarball that includes some pending
+stuff that needs to be done in case that you are thinking about
+contributing to the project.
+
+-- 
+The dawn of the fourth age of Linux firewalling is coming; a time of
+great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
 
