@@ -1,10 +1,11 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] conntrackd-0.9.2 released
-Date: Wed, 17 Jan 2007 03:49:11 +0100
-Message-ID: <45AD8EA7.6030705@netfilter.org>
+From: "Feighery, Patrick D." <feighery@mitre.org>
+Subject: Problems with the ROUTE extension on a 2.6.18 or 2.6.19 Kernel
+Date: Wed, 17 Jan 2007 11:09:55 -0500
+Message-ID: <87ABB5B9BD11A240B9CBB3F0485AEC8901509E2F@IMCSRV4.MITRE.ORG>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,36 +17,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, netfilter <netfilter@lists.netfilter.org>, Netfilter-failover list <netfilter-failover@lists.netfilter.org>
-Cc: lwn@lwn.net
+To: netfilter@lists.netfilter.org
 
-Overview:
+I have an application that makes use of the ROUTE extension which has
+been running on a 2.6.17 kernel for some time now.  I am trying move
+this app to either a 2.6.18 or a 2.6.19 based kernel.  This requires
+getting the ROUTE extension to work with that kernel.=20
 
-Conntrackd is the userspace daemon for the Connection Tracking System.
-This daemon maintains a copy of the Connection Tracking System in
-userspace. It is entirely written in C and is highly configurable and
-easily extensible. Currently it covers the specific aspects of Stateful
-Linux firewalls to enable High Availability (HA) solutions and can be
-used as statistics collector of the firewall use.
+I started with a 2.6.18.2 kernel and iptables version 1.3.6 after I
+applied patch-o-matic and rebuilt the kernel, I tried something simple
+like
 
-Status:
+	iptables -t ROUTE -F
 
-This project is under development, people feeling brave are encouraged
-to test a send nice reports ;)
+Iptables returns :Can't initialize iptables table 'ROUTE': Table does
+not exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
-Main changes:
-- the unnofficial libraries are not required anymore
-- a new NACK based protocol
+lsmod | grep ROUTE      indicates the modules is there and dmesg does
+not show anything
 
-More information available at:
+I then tried the same with a 2.6.19.2 kernel and iptables versions
+1.3.7.  Again applied patch-o-matic and rebuilt the kernel.
+Unfortunately the same error occurred.
 
-http://people.netfilter.org/pablo/conntrackd/
+I realize that the ROUTE extension may be unsupported.  But it allows
+you to perform some really cool features that I can't find any other
+techniques to provide a similar function.
 
-P.S: There is a TODO file inside the tarball that includes some pending
-stuff that needs to be done in case that you are thinking about
-contributing to the project.
+Any thoughts...
 
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+
+	Pat
+
+feighery@mitre.org
+
+
 
