@@ -1,10 +1,12 @@
-From: "Andrew J. Millar" <am@dpdo.com>
-Subject: IPSec Protocol 4 (ipcomp) traffic dropped
-Date: Thu, 18 Jan 2007 17:08:43 -0000 (GMT)
-Message-ID: <4430.10.11.1.250.1169140123.squirrel@www.dpdo.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Filtering in PREROUTING
+Date: Thu, 18 Jan 2007 20:19:07 +0100
+Message-ID: <45AFC82B.6030505@plouf.fr.eu.org>
+References: <1169069905.10134.18.camel@len.t-t-l.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1169069905.10134.18.camel@len.t-t-l.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,78 +17,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Dear all
+Hello,
 
-I've noticed something strange since upgrading from Gentoo kernel
-2.6.14-r7-hardened to 2.6.18-hardened, and wonder if anyone could shed
-some light one it.
+george a =E9crit :
+> I've seen a few places telling me that you shouldn't filter in the
+> mangle table.  However, it seems sensible to me to drop junk packets in
+> PREROUTING rather than have to duplicate those rules in both INPUT and
+> FORWARD.
+>=20
+> Having done this, I'm seeing packets dropped as invalid when I would
+> expect them to be OK (but most traffic is behaving as expected).  Befor=
+e
+> I start digging into this I want to check if filtering in the mangle
+> table really is stupid.
 
-Notes:
+My thoughts about filtering in PREROUTING/mangle.
 
-HOST-A: IPaddress AAA.AAA.AAA.AAA, kernel-2.6.18-hardened,   
-iptables-1.3.5-r4, OpenSwan-2.4.4
-HOST-A: IPaddress BBB.BBB.BBB.BBB, kernel-2.6.14-hardened-r2,
-iptables-1.3.5-r4, Openswan-2.4.4
+Note :
+Most of the following also applies to filtering in mangle/OUTPUT,=20
+replacing PREROUTING, INPUT and FORWARD with OUTPUT.
 
-Basically, IPtables is seeing, and dropping protocol 4 (IP Payload
-Compression Protocol) packets relating to an OpenSwan IPSec tunnel as
-follows, and I have never seen this happen before:
+* Disadvantages :
 
-(telnet to HOST-A:22 from host B)
-HOST-B linux # nc AAA.AAA.AAA.AAA 22
+- The 'mangle' table was not designed for filtering. The REJECT target=20
+only exists only in the 'filter' table, so it cannot be used in other=20
+tables to do filtering. You can only use DROP.
 
-(tcpdump for ESP traffic on Host A - these are the ESP/IPCOMP encapsulated
-SYNs to HOST-A:22)
-HOST-A linux # tcpdump -i eth0 proto 50
-tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
-listening on eth0, link-type EN10MB (Ethernet), capture size 68 bytes
-16:52:35.344573 IP BBB.BBB.BBB.BBB > AAA.AAA.AAA.AAA:
-ESP(spi=0x6713a6f4,seq=0x13), length 100
-16:52:38.344340 IP BBB.BBB.BBB.BBB > AAA.AAA.AAA.AAA:
-ESP(spi=0x6713a6f4,seq=0x14), length 100
-16:52:44.345300 IP BBB.BBB.BBB.BBB > AAA.AAA.AAA.AAA:
-ESP(spi=0x6713a6f4,seq=0x15), length 100
+- As pointed out by Grant, in the case of forwarded packets the=20
+PREROUTING chains ignore the output interface. So any filtering rule=20
+relying on the output interface cannot be put in PREROUTING.
 
-3 packets captured
-6 packets received by filter
-0 packets dropped by kernel
+* Advantages (true or supposed) :
 
-(check for dropped packets from HOST-B in HOST-A's logs, these are the
-IPCOMP encapsulated SYNs to HOST-A:22 being dropped.)
-HOST-A linux # tail /var/log/kern.log | grep BBB.BBB.BBB.BBB
-Jan 18 16:52:35 HOST-A INPUT DROPPED: IN=eth0 OUT= MAC=00:<snip>:00
-SRC=BBB.BBB.BBB.BBB DST=AAA.AAA.AAA.AAA LEN=80 TOS=0x00 PREC=0x00 TTL=56
-ID=23130 DF PROTO=4
-Jan 18 16:52:38 HOST-A INPUT DROPPED: IN=eth0 OUT= MAC=00:<snip>:00
-SRC=BBB.BBB.BBB.BBB DST=AAA.AAA.AAA.AAA LEN=80 TOS=0x00 PREC=0x00 TTL=56
-ID=23130 DF PROTO=4
-Jan 18 16:52:44 HOST-A INPUT DROPPED: IN=eth0 OUT= MAC=00:<snip>:00
-SRC=BBB.BBB.BBB.BBB DST=AAA.AAA.AAA.AAA LEN=80 TOS=0x00 PREC=0x00 TTL=56
-ID=23130 DF PROTO=4
-HOST-A linux #
+- Avoid duplicating rules in filter/INPUT and filter/FORWARD.
+Wrong : as pointed out by Grant, you can put the common rules in=20
+user-defined chains called from both INPUT and FORWARD.
 
-Only when I add a rule to allow protocol 4 on HOST-A as follows, is the
-attempt to reach HOST-A:22 successful.
+- Drop "junk" packets (malformed, INVALID state, invalid source or=20
+destination...) as soon as possible and save the CPU overhead in=20
+nat/PREROUTING and the routing decision. It may also save memory space=20
+in the routing cache.
+However, packets in the INVALID state already skip the 'nat' table, and=20
+the routing code can drop some packets with invalid source or=20
+destination on its own (e.g. rp_filter).
 
-iptables -A INPUT -s BBB.BBB.BBB.BBB -d AAA.AAA.AAA.AAA -p 4 -j ACCEPT
+- As Grant and Alexandru pointed out, you can go furthur and drop "junk"=20
+packets in the 'raw' table and save the connection tracking CPU overhead.
 
-I of course have the usual set of rules associated with OpenSwan tunnels:
+Alexandru wrote :
+> If you use conntrack, it is even best to do the filtering in raw table
+> in PREROUTING, this way your conntrack table is saved from being filled=
+.
 
-iptables -A INPUT -s BBB.BBB.BBB.BBB -d AAA.AAA.AAA.AAA -p udp -m
-multiport --dports 500,4500 -j ACCEPT
-iptables -A INPUT -s BBB.BBB.BBB.BBB -d AAA.AAA.AAA.AAA -p 50  -j ACCEPT
+I do not agree : filtering in the 'raw' table would have no effect on=20
+the size of the connection tracking table because these packets would be=20
+dropped later anyway and the connection tracking entry cleared. It would=20
+just save some CPU. However, I agree with Grant : you can save the=20
+conntrack CPU overhead by using the NOTRACK target in the 'raw' table,=20
+which it was designed for. If an attacker wants to fill the conntrack=20
+table, he'd better use "regular" packets.
 
-The OpenSwan config for the tunnel has not changed, and I have never seen
-protocol 4 traffic in this manner before, and have never had to have an
-iptables rule to allow it. Any ideas why this has suddenly changed? Note I
-have also tried this with HOST-A running 2.6.16-hardened-r11, and the same
-thing has happened.
+- When there is a DNAT rule in nat/PREROUTING redirecting packets from a=20
+publicly visible address to a private hidden address, you may wish to=20
+prevent direct access to the private address and drop such packets in=20
+the 'mangle' table before they reach nat/PREROUTING.
+Wrong : You can achieve the same result by just marking packets in the=20
+mangle table and filtering them later in the 'filter' table based on the=20
+mark. And anyway, is it important to drop such packets, how is it a=20
+security issue ?
 
-Kind regards
-Andrew Millar
-
-
+My conclusion :
+Early filtering in the 'raw' or 'mangle' table may save some CPU used=20
+for the routing decision and the 'nat' table.
+It may also save some memory space in the routing cache.
+It does not save memory space in the connection tracking table.
+It is not needed to save CPU for the connection tracking, use NOTRACK=20
+instead.
+It is not needed to avoid rule duplication, use user-defined chains inste=
+ad.
+It does not add security, except when there would be vulnerabilities in=20
+the routing or connection tracking code.
 
