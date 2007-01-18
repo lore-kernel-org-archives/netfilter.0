@@ -1,12 +1,11 @@
-From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Filtering in PREROUTING
-Date: Thu, 18 Jan 2007 12:52:54 +0200
-Message-ID: <45AF5186.9080201@gmail.com>
+Date: Thu, 18 Jan 2007 08:25:07 -0600
+Message-ID: <45AF8343.7000006@riverviewtech.net>
 References: <1169069905.10134.18.camel@len.t-t-l.co.uk>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig44041BEEE183530F8469F75D"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <1169069905.10134.18.camel@len.t-t-l.co.uk>
 List-Id: <netfilter.vger.kernel.org>
@@ -19,43 +18,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: george <gk@t-t-l.co.uk>
-Cc: netfilter@lists.netfilter.org
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig44041BEEE183530F8469F75D
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
 george wrote:
-<snip>
-> Can anyone explain this to me, or point me somewhere that will tell me
-> please.  I haven't found anything other than a simple statement
-> anywhere.
+> I've seen a few places telling me that you shouldn't filter in the
+> mangle table.  However, it seems sensible to me to drop junk packets in
+> PREROUTING rather than have to duplicate those rules in both INPUT and
+> FORWARD.
 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TRAVERSINGO=
-FTABLES
+Rather than taking an absolutely closed minded approach and trying to 
+convince you that I disagree and why, I'll ask this:
 
---=20
-regards,
-Georgi Alexandrov
+Are your (any one posting to this thread) statements based on things you 
+your self have experienced, or been told, or seen others experience, or 
+are they based on theory by the fact that you could improve efficiency 
+by filtering in the very first possible place?
 
-key server - pgp.mit.edu :: key id - 0x37B4B3EE
-Key fingerprint =3D E429 BF93 FA67 44E9 B7D4  F89E F990 01C1 37B4 B3EE
+What sort of system(s) are you using for your firewalls / routers?
+What sort of bandwidth are they filtering?
+How many rules are in your rule set(s)?
+
+I ask, because I'd like to hear constructive discussion on both sides of 
+the fence.
+
+I personally have always done my filtering in the filter table.  I can 
+also say that I have never had a system even come close to weakening 
+under load.  Granted most of my firewalls / routers are 233 MHz - 1 GHz 
+systems (what ever is laying around) with at least a quarter gig of 
+memory.  I'm also only filtering / firewalling for SOHO (DSL / Cable) or 
+possibly a 10 / 100 network between subnets.  I have had one system that 
+was filtering a full bleat 100 BaseT network and it never showed any 
+signs of failure or even slow down.
+
+That being said, I could see why you might want to filter in 
+mangle:PREROUTING on a 486 with 16 MB RAM.
+
+Thoughts / opinions / comments / critiques  are welcomed and encouraged.
 
 
---------------enig44041BEEE183530F8469F75D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iD8DBQFFr1GK+ZABwTe0s+4RAj8sAJ9iufyi8wujteIqWdrZvJOTOGL97wCfehc8
-U4AS1HDQVDDvz5kGiEguqfs=
-=x/LA
------END PGP SIGNATURE-----
-
---------------enig44041BEEE183530F8469F75D--
+Grant. . . .
 
