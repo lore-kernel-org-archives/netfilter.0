@@ -1,7 +1,7 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Filtering in PREROUTING
-Date: Thu, 18 Jan 2007 08:25:07 -0600
-Message-ID: <45AF8343.7000006@riverviewtech.net>
+Subject: Re: Filtering in PREROUTING --- Some random thoughts / points...
+Date: Thu, 18 Jan 2007 08:57:59 -0600
+Message-ID: <45AF8AF7.5070207@riverviewtech.net>
 References: <1169069905.10134.18.camel@len.t-t-l.co.uk>
 Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
@@ -27,34 +27,54 @@ george wrote:
 > PREROUTING rather than have to duplicate those rules in both INPUT and
 > FORWARD.
 
-Rather than taking an absolutely closed minded approach and trying to 
-convince you that I disagree and why, I'll ask this:
+(Just some random thoughts / points for this discussion thread.)
 
-Are your (any one posting to this thread) statements based on things you 
-your self have experienced, or been told, or seen others experience, or 
-are they based on theory by the fact that you could improve efficiency 
-by filtering in the very first possible place?
+  - If you put most (all) of your rules (that you can) in the 
+mangle:PREROUTING chain, you will need to optimize the order of the 
+rules to make sure your traffic passes through as few rules as possible.
 
-What sort of system(s) are you using for your firewalls / routers?
-What sort of bandwidth are they filtering?
-How many rules are in your rule set(s)?
+  - In the mangle:PREROUTING chain, you can not use the -o flag to 
+specify the output interface for forwarded traffic.  This means that any 
+traffic that is not forwarded will still have to pass through the rules 
+just for forwarded traffic.  Sure, you can add other options to the rule 
+that will help decide what traffic needs to be parsed by the rule(s). 
+If you use the other (what I'll call) more appropriate tables / chains 
+to filter in you will have some inherent separation of which traffic 
+will enter a given table / chain.
 
-I ask, because I'd like to hear constructive discussion on both sides of 
-the fence.
+  - Locally generated packets do not traverse the mangle:PREROUTING 
+chain, thus can not be filtered there.
 
-I personally have always done my filtering in the filter table.  I can 
-also say that I have never had a system even come close to weakening 
-under load.  Granted most of my firewalls / routers are 233 MHz - 1 GHz 
-systems (what ever is laying around) with at least a quarter gig of 
-memory.  I'm also only filtering / firewalling for SOHO (DSL / Cable) or 
-possibly a 10 / 100 network between subnets.  I have had one system that 
-was filtering a full bleat 100 BaseT network and it never showed any 
-signs of failure or even slow down.
+  - You can generate a sub chain (with in a table) that can be called 
+from multiple other chains.  I.e. create a small chain that filters for 
+NetBEUI traffic and jump to it from filter:INPUT / filter:FORWARD / 
+filter:OUTPUT.  I.e.
 
-That being said, I could see why you might want to filter in 
-mangle:PREROUTING on a 486 with 16 MB RAM.
+iptables -N Drop_NetBEUI
+iptables -A Drop_NetBEUI -p tcp --sport 137 -j DROP
+iptables -A Drop_NetBEUI -p udp --sport 137 -j DROP
+iptables -A Drop_NetBEUI -p tcp --sport 138 -j DROP
+iptables -A Drop_NetBEUI -p udp --sport 138 -j DROP
+iptables -A Drop_NetBEUI -p tcp --sport 139 -j DROP
+iptables -A Drop_NetBEUI -p udp --sport 139 -j DROP
+iptables -A Drop_NetBEUI -p tcp --sport 445 -j DROP
+iptables -A Drop_NetBEUI -p udp --sport 445 -j DROP
+iptables -A Drop_NetBEUI -p tcp --dport 137 -j DROP
+iptables -A Drop_NetBEUI -p udp --dport 137 -j DROP
+iptables -A Drop_NetBEUI -p tcp --dport 138 -j DROP
+iptables -A Drop_NetBEUI -p udp --dport 138 -j DROP
+iptables -A Drop_NetBEUI -p tcp --dport 139 -j DROP
+iptables -A Drop_NetBEUI -p udp --dport 139 -j DROP
+iptables -A Drop_NetBEUI -p tcp --dport 445 -j DROP
+iptables -A Drop_NetBEUI -p udp --dport 445 -j DROP
+iptables -A Drop_NetBEUI -j RETURN
 
-Thoughts / opinions / comments / critiques  are welcomed and encouraged.
+Then just jump to the chain from any where with in the filter table that 
+you want to.  I.e.
+
+iptables -A INPUT -j Drop_NetBEUI
+iptables -A FORWARD -j Drop_NetBEUI
+iptables -A OUTPUT -j Drop_NetBEUI
 
 
 
