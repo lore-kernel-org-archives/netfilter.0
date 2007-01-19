@@ -1,7 +1,7 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: Problem for nfq_set_queue_maxlen of libnetfilter_queue
-Date: Fri, 19 Jan 2007 20:07:08 +0100
-Message-ID: <45B116DC.3070601@netfilter.org>
+Date: Fri, 19 Jan 2007 20:07:30 +0100
+Message-ID: <45B116F2.40102@netfilter.org>
 References: <bb5ff7280701180736j5473b100q31709f6ebb9effe@mail.gmail.com>	
 	<45B10C2E.6080204@netfilter.org>	
 	<bb5ff7280701191031h67b845dw12fbf9fdb6bf3133@mail.gmail.com>	
@@ -29,7 +29,7 @@ Arthur Liew wrote:
 > Do you mind to tell me where to find the patch The link below no longer
 > works
 
-http://www.linuxarkivet.se/mlists/netfilter-devel/0610/msg00157.htmlhttp://www.linuxarkivet.se/mlists/netfilter-devel/0610/msg00157.html
+http://www.linuxarkivet.se/mlists/netfilter-devel/0610/msg00157.html
 
 -- 
 The dawn of the fourth age of Linux firewalling is coming; a time of
