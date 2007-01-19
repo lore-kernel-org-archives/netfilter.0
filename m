@@ -1,12 +1,13 @@
-From: "Michael Steinmann" <msl@calivia.com>
-Subject: Re: [nf-failover] [ANNOUNCE] conntrackd-0.9.2 released
-Date: Fri, 19 Jan 2007 13:40:29 +0100 (CET)
-Message-ID: <35679.193.5.216.100.1169210429.squirrel@www2.calivia.com>
-References: <45AD8EA7.6030705@netfilter.org>
+From: george <gk@t-t-l.co.uk>
+Subject: Re: Filtering in PREROUTING
+Date: Fri, 19 Jan 2007 13:17:22 +0000
+Message-ID: <1169212643.16267.0.camel@len.t-t-l.co.uk>
+References: <1169069905.10134.18.camel@len.t-t-l.co.uk>
+	<45AF8343.7000006@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45AD8EA7.6030705@netfilter.org>
+In-Reply-To: <45AF8343.7000006@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,74 +19,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: lwn@lwn.net, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, netfilter <netfilter@lists.netfilter.org>, Netfilter-failover list <netfilter-failover@lists.netfilter.org>
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-On Wed, January 17, 2007 3:49 am, Pablo Neira Ayuso wrote:
-> This project is under development, people feeling brave are encouraged
-> to test a send nice reports ;)
+On Thu, 2007-01-18 at 08:25 -0600, Grant Taylor wrote:
+> george wrote:
+> > I've seen a few places telling me that you shouldn't filter in the
+> > mangle table.  However, it seems sensible to me to drop junk packets in
+> > PREROUTING rather than have to duplicate those rules in both INPUT and
+> > FORWARD.
+> 
+> Rather than taking an absolutely closed minded approach and trying to 
+> convince you that I disagree and why, I'll ask this:
+> 
+> Are your (any one posting to this thread) statements based on things you 
+> your self have experienced, or been told, or seen others experience, or 
+> are they based on theory by the fact that you could improve efficiency 
+> by filtering in the very first possible place?
 
-thanks for the new release.
-I noticed a small glitch with keyword case in the persistent mode example
-config files:
+The efficiency theory.
+> 
+> What sort of system(s) are you using for your firewalls / routers?
 
-examples/sync/persistent/node1/conntrackd.conf
-       mode PERSISTENT {
+It's a VIA miniITX 600M with 521M RAM but it's also my SOHO/home almost
+everything except shared storage server. (Yes I know but the risk to
+SOHO doesn't merit running multiple boxes).
 
-examples/sync/persistent/node2/conntrackd.conf
-       Mode PERSISTENT {
+> What sort of bandwidth are they filtering?
 
-The Mode keyword is case sensitive which will lead to the following error
-when starting node1:
+100M LAN with single figures boxes to 2M ADSL.#
 
-Error parsing config file: line (5), symbol 'mode': syntax error
+> How many rules are in your rule set(s)?
 
+3 in nat (really doing nat)
+20 in mangle (including the arguable ones)
+80 in filter
 
-
-Also, to build conntrackd I had to patch two include files:
-
---- /usr/local/include/libnfnetlink/libnfnetlink.h.orig 2007-01-19
-08:46:42.000000000 +0100
-+++ /usr/local/include/libnfnetlink/libnfnetlink.h      2007-01-19
-13:35:19.000000000 +0100
-@@ -16,7 +16,6 @@
- #endif
-
- #include <linux/types.h>
--#include <sys/socket.h>        /* for sa_family_t */
- #include <linux/netlink.h>
- #include <libnfnetlink/linux_nfnetlink.h>
-
-
----
-/usr/local/include/libnetfilter_conntrack/libnetfilter_conntrack.h.orig  =
-=20
- 2007-01-19 08:48:13.000000000 +0100
-+++ /usr/local/include/libnetfilter_conntrack/libnetfilter_conntrack.h=20
-2007-01-19 13:34:47.000000000 +0100
-@@ -8,7 +8,6 @@
- #ifndef _LIBNETFILTER_CONNTRACK_H_
- #define _LIBNETFILTER_CONNTRACK_H_
-
--#include <netinet/in.h>
- #include <libnfnetlink/linux_nfnetlink.h>
- #include <libnfnetlink/libnfnetlink.h>
- #include <libnetfilter_conntrack/linux_nfnetlink_conntrack.h>
-@@ -338,7 +337,6 @@
-
- /* high level API */
-
--#include <sys/types.h>
-
- /* conntrack object */
- struct nf_conntrack;
-
-
-This is with libnfnetlink-0.0.25 and libnetfilter_conntrack-0.0.50 as per
-the docs. Kernel is 2.6.20.
-
---
-mike
-
+> 
+> I ask, because I'd like to hear constructive discussion on both sides of 
+> the fence.
+> 
+> I personally have always done my filtering in the filter table.  I can 
+> also say that I have never had a system even come close to weakening 
+> under load.  Granted most of my firewalls / routers are 233 MHz - 1 GHz 
+> systems (what ever is laying around) with at least a quarter gig of 
+> memory.  I'm also only filtering / firewalling for SOHO (DSL / Cable) or 
+> possibly a 10 / 100 network between subnets.  I have had one system that 
+> was filtering a full bleat 100 BaseT network and it never showed any 
+> signs of failure or even slow down.
+> 
+> That being said, I could see why you might want to filter in 
+> mangle:PREROUTING on a 486 with 16 MB RAM.
+> 
+> Thoughts / opinions / comments / critiques  are welcomed and encouraged.
+> 
+> 
+> 
+> Grant. . . .
+> 
+> 
 
 
