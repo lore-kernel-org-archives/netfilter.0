@@ -1,16 +1,12 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Problem for nfq_set_queue_maxlen of libnetfilter_queue
-Date: Fri, 19 Jan 2007 20:07:30 +0100
-Message-ID: <45B116F2.40102@netfilter.org>
-References: <bb5ff7280701180736j5473b100q31709f6ebb9effe@mail.gmail.com>	
-	<45B10C2E.6080204@netfilter.org>	
-	<bb5ff7280701191031h67b845dw12fbf9fdb6bf3133@mail.gmail.com>	
-	<45B111BB.3030603@netfilter.org>
-	<bb5ff7280701191103h55e89962xaa4bcc2a042252fd@mail.gmail.com>
+From: "Tim Heagarty" <tim@heagarty.com>
+Subject: RE: p0f patch
+Date: Fri, 19 Jan 2007 14:23:36 -0500
+Message-ID: <LJELKDOLLLOLLEFCCMCFEEMPEIAA.tim@heagarty.com>
+References: <LJELKDOLLLOLLEFCCMCFMELPEIAA.tim@heagarty.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <bb5ff7280701191103h55e89962xaa4bcc2a042252fd@mail.gmail.com>
+In-Reply-To: <LJELKDOLLLOLLEFCCMCFMELPEIAA.tim@heagarty.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,16 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Arthur Liew <geniusbb@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Arthur Liew wrote:
-> Do you mind to tell me where to find the patch The link below no longer
-> works
+So does anybody know of a Netfilter/Iptables patch that supports the p0f log
+scanning utility? The link from the p0f site to netfilter.org is broken. I'm
+suspecting that the patch was never fully released or supported.
 
-http://www.linuxarkivet.se/mlists/netfilter-devel/0610/msg00157.html
 
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+
+Thank you,
+
+Tim Heagarty, CISSP, CISA, MCSE
+http://www.TheaSecure.com/
+(928) 533-9690
+"There are 10 kinds of people in the world; those that understand binary,
+and those that don't."
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Tim Heagarty
+Sent: Wednesday, January 17, 2007 11:44 PM
+To: netfilter@lists.netfilter.org
+Subject: p0f patch
+
+
+Is anybody aware of a POM for p0f? They say there is one but I can't find
+it.
+
+Thank you,
+
+Tim Heagarty, CISSP, CISA, MCSE
+http://www.TheaSecure.com/
+(928) 533-9690
+"There are 10 kinds of people in the world; those that understand binary,
+and those that don't."
+
+
+
 
