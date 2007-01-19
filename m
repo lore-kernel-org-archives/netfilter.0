@@ -1,12 +1,12 @@
-From: "Tim Heagarty" <tim@heagarty.com>
-Subject: RE: p0f patch
-Date: Fri, 19 Jan 2007 14:23:36 -0500
-Message-ID: <LJELKDOLLLOLLEFCCMCFEEMPEIAA.tim@heagarty.com>
-References: <LJELKDOLLLOLLEFCCMCFMELPEIAA.tim@heagarty.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: redirecting on a local machine
+Date: Fri, 19 Jan 2007 20:24:41 +0100
+Message-ID: <45B11AF9.8060209@plouf.fr.eu.org>
+References: <008101c73bf9$dc9d99c0$0700a8c0@stormbook>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <LJELKDOLLLOLLEFCCMCFMELPEIAA.tim@heagarty.com>
+In-Reply-To: <008101c73bf9$dc9d99c0$0700a8c0@stormbook>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-So does anybody know of a Netfilter/Iptables patch that supports the p0f log
-scanning utility? The link from the p0f site to netfilter.org is broken. I'm
-suspecting that the patch was never fully released or supported.
+Hello,
 
+saspan a =E9crit :
+>=20
+> iptables -t -nat -A OUTPUT -m owner ! --owner-uid squid -p tcp --dport=20
+> 80 -j REDIRECT --to-destination 3128
 
+'--to-destination' is not a valid option for REDIRECT. The only valid=20
+option is '--to-ports'.
 
-Thank you,
+> doesn't seem to work,
 
-Tim Heagarty, CISSP, CISA, MCSE
-http://www.TheaSecure.com/
-(928) 533-9690
-"There are 10 kinds of people in the world; those that understand binary,
-and those that don't."
+That does not provide much info. Can you elaborate ?
 
+> cause a browser would not be expecting a reply=20
+> from a transparent proxy when waiting for replies to its requests.
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Tim Heagarty
-Sent: Wednesday, January 17, 2007 11:44 PM
-To: netfilter@lists.netfilter.org
-Subject: p0f patch
-
-
-Is anybody aware of a POM for p0f? They say there is one but I can't find
-it.
-
-Thank you,
-
-Tim Heagarty, CISSP, CISA, MCSE
-http://www.TheaSecure.com/
-(928) 533-9690
-"There are 10 kinds of people in the world; those that understand binary,
-and those that don't."
-
-
-
+Huh ?
 
