@@ -1,13 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: redirecting on a local machine
-Date: Fri, 19 Jan 2007 23:34:03 +0100
-Message-ID: <45B1475B.7010906@plouf.fr.eu.org>
-References: <008101c73bf9$dc9d99c0$0700a8c0@stormbook>	<45B11AF9.8060209@plouf.fr.eu.org>
-	<009901c73c02$d046cad0$0700a8c0@stormbook>
+From: Michael Rash <mbr@cipherdyne.org>
+Subject: Re: p0f patch
+Date: Fri, 19 Jan 2007 21:23:15 -0500
+Message-ID: <20070120022315.GB18433@minastirith>
+References: <LJELKDOLLLOLLEFCCMCFMELPEIAA.tim@heagarty.com>
+	<LJELKDOLLLOLLEFCCMCFEEMPEIAA.tim@heagarty.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <009901c73c02$d046cad0$0700a8c0@stormbook>
+In-reply-to: <LJELKDOLLLOLLEFCCMCFEEMPEIAA.tim@heagarty.com>
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +18,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-saspan a =E9crit :
->=20
-> See: The browser sends http-request to e.g. 99.9.9.9.1:80.
-> The request is redirected to proxy on 127.0.0.1:3128.
-> Browser waits for reply from 99.9.9.9:80.
-> Actually the reply will come from proxy on 127.0.0.1:3128.
+Here is a link, but I have not tried the patch:
 
-Yes. Then the NAT code is supposed to translate it back to 99.9.9.9:80=20
-on its way to the browser. Is this actually what happens ?
-What is the kernel version ?
+http://svn.netfilter.org/cgi-bin/viewcvs.cgi/trunk/patch-o-matic-ng/patchlets/osf/linux-2.6/net/ipv4/netfilter/?rev=4018
+
+If you are looking for something that is Netfilter-specific, psad
+implements the p0f algorithm over Netfilter log messages (requires the
+--log-tcp-options argument to iptables when creating the LOG rule):
+
+http://www.cipherdyne.org/psad/
+
+--
+Michael Rash
+http://www.cipherdyne.org/
+Key fingerprint = 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
+
+
+
+On Jan 19, 2007, Tim Heagarty wrote:
+
+> So does anybody know of a Netfilter/Iptables patch that supports the p0f log
+> scanning utility? The link from the p0f site to netfilter.org is broken. I'm
+> suspecting that the patch was never fully released or supported.
+> 
+> 
+> 
+> Thank you,
+> 
+> Tim Heagarty, CISSP, CISA, MCSE
+> http://www.TheaSecure.com/
+> (928) 533-9690
+> "There are 10 kinds of people in the world; those that understand binary,
+> and those that don't."
+> 
+> 
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org]On Behalf Of Tim Heagarty
+> Sent: Wednesday, January 17, 2007 11:44 PM
+> To: netfilter@lists.netfilter.org
+> Subject: p0f patch
+> 
+> 
+> Is anybody aware of a POM for p0f? They say there is one but I can't find
+> it.
+> 
+> Thank you,
+> 
+> Tim Heagarty, CISSP, CISA, MCSE
+> http://www.TheaSecure.com/
+> (928) 533-9690
+> "There are 10 kinds of people in the world; those that understand binary,
+> and those that don't."
+> 
+> 
+> 
 
