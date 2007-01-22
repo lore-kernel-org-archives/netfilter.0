@@ -1,9 +1,8 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: What is wrong ???
-Date: Mon, 22 Jan 2007 11:52:43 +0100
-Message-ID: <45B4977B.8060906@freemail.hu>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: "Marco Berizzi" <pupilla@hotmail.com>
+Subject: Re: What is wrong ???
+Date: Mon, 22 Jan 2007 12:25:36 +0100
+Message-ID: <BAY103-DAV115D0A522A376BCE62C591B2AE0@phx.gbl>
+References: <45B4977B.8060906@freemail.hu>
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,36 +14,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter IPtableMailinglist <netfilter@lists.netfilter.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: =?unknown-8bit?q?G=E1sp=E1r?= Lajos <swifty@freemail.hu>
+Cc: Netfilter IPtableMailinglist <netfilter@lists.netfilter.org>
 
-Hi list,
+G=E1sp=E1r Lajos wrote:
 
-Why do I get these errors when I compile my new kernel ???
+> POM-ng: 20070121
 
-net/ipv4/netfilter/ipt_ipv4options.c:161: warning: initialization from 
-incompatible pointer type
-
-net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c: In function `target':
-net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:33: warning: implicit declaration 
-of function `skb_ip_make_writable'
-net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c: At top level:
-net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:72: warning: initialization from 
-incompatible pointer type
-net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.c:73: warning: initialization from 
-incompatible pointer type
-
-WARNING: "skb_ip_make_writable" 
-[net/ipv4/netfilter/ipt_IPV4OPTSSTRIP.ko] undefined!
-make[2]: *** [__modpost] Error 1
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.19.2'
-make: *** [debian/stamp-build-kernel] Error 2
+Did you try without pom?
 
 
-kernel: 2.6.19.2
-iptables: 1.3.7
-POM-ng: 20070121
-
-Swifty
 
