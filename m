@@ -1,11 +1,14 @@
-From: "Carlos Eduardo R. L. de Miranda" <cerlm@hotmail.com>
-Subject: what I am doing wrong?
-Date: Mon, 22 Jan 2007 15:11:59 -0300
-Message-ID: <BAY110-DAV157444A1BAE5D5181484A8BAAE0@phx.gbl>
+From: Alan Ezust <alan.ezust@presinet.com>
+Subject: Re: where psd match gone ?
+Date: Mon, 22 Jan 2007 11:05:25 -0800
+Message-ID: <200701221105.34257.alan.ezust@presinet.com>
+References: <1169207692.7799.23.camel@POSTER_IT_S_KRA>
 Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart106336569.ugtcoHbJVi";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Message-ID: <004001c73e50$cf31ed50$7400a8c0@ws1>
+In-Reply-To: <1169207692.7799.23.camel@POSTER_IT_S_KRA>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,76 +19,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org, pawel.pilat@streamcn.pl
 
-I am trying to limit the number of tcp connections each IP can keep
-ESTABLISHED at any given time. Checking ip_conntrack file, I notice that
-connlimit is not working. All connlimit rules are before NAT rules. What I
-am doing wrong?
+--nextPart106336569.ugtcoHbJVi
+Content-Type: text/plain;
+  charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Any help will be appreciated
+See the thread on this list with subject "Searching a home for psd" from=20
+2006-08-11.
 
--Carlos
+On Friday 19 January 2007 03:54, Pawe=B3 Pi=B3at wrote:
+> Hello,
+>
+> Could anyone tell me where the psd match gone ?
+> I can't find it in 2.6.19 kernel tree (on earlier versions too), from
+> patch-o-matic it was removed some time ago...
+>
+> My question is: how to get it working with 2.6.19 kernel and iptables
+> 1.3.7 ?
+>
+> My last working psd setup was 2.6.14 kernel tree and iptables 1.3.5
+>
+> Thanks for any advices
+> Best Regards
 
+=2D-=20
+Alan Ezust            www.presinet.com
+Presinet, inc         alan.ezust@presinet.com
+           Victoria, BC, Canada
 
-modprobe iptable_nat
-modprobe ip_conntrack
-modprobe ip_conntrack_ftp
-modprobe ip_nat_ftp
-modprobe ipt_limit
-modprobe ipt_state
+--nextPart106336569.ugtcoHbJVi
+Content-Type: application/pgp-signature
 
-iptables -t filter -P INPUT DROP
-iptables -t filter -P FORWARD DROP
-iptables -N CONNLIMIT
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
 
-iptables -A FORWARD -p TCP -d 0/0 --dport 1024:1862 -j CONNLIMIT
-iptables -A FORWARD -p TCP -d 0/0 --dport 1864:3127 -j CONNLIMIT
-iptables -A FORWARD -p TCP -d 0/0 --dport 3129:5599 -j CONNLIMIT
-iptables -A FORWARD -p TCP -d 0/0 --dport 5601:5899 -j CONNLIMIT
-iptables -A FORWARD -p TCP -d 0/0 --dport 5901:7776 -j CONNLIMIT
-iptables -A FORWARD -p TCP -d 0/0 --dport 7778:65535 -j CONNLIMIT
-iptables -A CONNLIMIT -p TCP -m state ! --state RELATED -m connlimit
---connlimit-above 12 --connlimit-mask 32 -j DROP
+iD8DBQBFtQr+sJbtw6GURksRAsL9AJ0Q8MW6tr36bnrIsmmjRxadZu8U2ACdEtoj
+1SyjnWqL9p+CI5OjHzfYeTU=
+=XhiX
+-----END PGP SIGNATURE-----
 
-
-# iptables -L
-... deleted ...
-CONNLIMIT  tcp  --  anywhere             anywhere            tcp
-dpts:1024:techra-server
-CONNLIMIT  tcp  --  anywhere             anywhere            tcp
-dpts:paradym-31port:ctx-bridge
-CONNLIMIT  tcp  --  anywhere             anywhere            tcp
-dpts:netport-id:esinstall
-CONNLIMIT  tcp  --  anywhere             anywhere            tcp
-dpts:esmagent:5899
-CONNLIMIT  tcp  --  anywhere             anywhere            tcp
-dpts:5901:7776
-CONNLIMIT  tcp  --  anywhere             anywhere            tcp
-dpts:interwise:65535
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain CONNLIMIT (6 references)
-target     prot opt source               destination
-DROP       tcp  --  anywhere             anywhere            state
-INVALID,NEW,ESTABLISHED,UNTRACKED #conn/32 > 12
-
-
-
-
-
-  _____  
-
-avast! Antivirus <http://www.avast.com> : Outbound message clean. 
-
-
-Virus Database (VPS): 000704-1, 22/01/2007
-Tested on: 22/1/2007 15:11:59
-avast! - copyright (c) 2000-2007 ALWIL Software.
-
-
-
+--nextPart106336569.ugtcoHbJVi--
 
