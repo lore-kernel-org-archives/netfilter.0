@@ -1,65 +1,30 @@
-From: Alan Ezust <alan.ezust@presinet.com>
-Subject: Re: where psd match gone ?
-Date: Mon, 22 Jan 2007 11:05:25 -0800
-Message-ID: <200701221105.34257.alan.ezust@presinet.com>
-References: <1169207692.7799.23.camel@POSTER_IT_S_KRA>
+From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
+Subject: determine internet connection duration
+Date: Tue, 23 Jan 2007 15:06:36 +0800
+Message-ID: <00af01c73ebd$054fb7c0$0100a8c0@newlife>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart106336569.ugtcoHbJVi";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1169207692.7799.23.camel@POSTER_IT_S_KRA>
+Return-path: <lartc-bounces@mailman.ds9a.nl>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org, pawel.pilat@streamcn.pl
+List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
+List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
+List-Post: <mailto:lartc@mailman.ds9a.nl>
+List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
+List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
+	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
+Sender: lartc-bounces@mailman.ds9a.nl
+Errors-To: lartc-bounces@mailman.ds9a.nl
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org, lartc@mailman.ds9a.nl
 
---nextPart106336569.ugtcoHbJVi
-Content-Type: text/plain;
-  charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-See the thread on this list with subject "Searching a home for psd" from=20
-2006-08-11.
+Anyone has idea of what would be the best way to track 
+connection time some a particular user to the internet ?
 
-On Friday 19 January 2007 03:54, Pawe=B3 Pi=B3at wrote:
-> Hello,
->
-> Could anyone tell me where the psd match gone ?
-> I can't find it in 2.6.19 kernel tree (on earlier versions too), from
-> patch-o-matic it was removed some time ago...
->
-> My question is: how to get it working with 2.6.19 kernel and iptables
-> 1.3.7 ?
->
-> My last working psd setup was 2.6.14 kernel tree and iptables 1.3.5
->
-> Thanks for any advices
-> Best Regards
+Imagine a wifi network where the users will connect to the
+system via DHCP ( there is no PPPOE session involved ).
+If there is a need to track internet usage based on connection
+time ( to the internet ), what would be the best way to track it ?
 
-=2D-=20
-Alan Ezust            www.presinet.com
-Presinet, inc         alan.ezust@presinet.com
-           Victoria, BC, Canada
-
---nextPart106336569.ugtcoHbJVi
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBFtQr+sJbtw6GURksRAsL9AJ0Q8MW6tr36bnrIsmmjRxadZu8U2ACdEtoj
-1SyjnWqL9p+CI5OjHzfYeTU=
-=XhiX
------END PGP SIGNATURE-----
-
---nextPart106336569.ugtcoHbJVi--
-
+Appreciate any input or ideas.
