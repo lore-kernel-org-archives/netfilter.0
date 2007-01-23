@@ -1,7 +1,7 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: netfilter_queue: how to obtain address info from queued packet
-Date: Tue, 23 Jan 2007 11:27:45 +0100
-Message-ID: <45B5E321.90608@freemail.hu>
+Date: Tue, 23 Jan 2007 11:31:55 +0100
+Message-ID: <1169548315.4178.61.camel@anduril.intranet.cartel-securite.net>
 References: <45B5DD80.70809@siemens.com> <45B5DF09.6030001@freemail.hu>
 	<45B5E0DC.2020703@siemens.com>
 Mime-Version: 1.0
@@ -18,36 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: Michal Martinek <michal.martinek@siemens.com>
 Cc: netfilter@lists.netfilter.org
 
-
-Michal Martinek =EDrta:
->
->
-> G=E1sp=E1r Lajos wrote:
->>
->> Michal Martinek =EDrta:
->>> Hello all,
->>>
->>> I am quite a newbie to the netfilter world, so maybe my approach is=20
->>> naive. I would like to block communication coming from/to some ports =
-
->>> according to the content of packets. Unfortunately these ports are=20
->>> not static, so port specific netfilter rule cannot be used. So my=20
->>> question is:
->>>
->> Do you know the STRING module ?
->
+Le mardi 23 janvier 2007 =E0 11:18 +0100, Michal Martinek a =E9crit :
+> > Do you know the STRING module ?
 > I'm afraid not. Can you give me some explanation (or link)?
-Well... :) man iptables...
-iptables -A FORWARD -j DROP -p tcp -m string --string 'Some string'=20
---algo kmp
->
->>> Is it possible to obtain some address info (source/destination=20
->>> address and ports) from the packet queued from netfilter?
->
->
 
+http://www.google.com/search?q=3Dnetfilter+string
+
+By the way, string match is completely irrelevant to your question as it
+would allow you to match a given packet with a fixed already known
+value, not to extract a value you don't know from the packet.
+
+What you want to achieve is a conntrack helper. You can have a look at
+existing ones, such as ip_conntrack_ftp, ip_conntack_irc, etc. You could
+also use QUEUE target to do the job in userland.
+
+
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
