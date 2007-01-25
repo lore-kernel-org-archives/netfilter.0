@@ -1,13 +1,12 @@
-From: =?ISO-8859-1?Q?Patrik_Kar=E9n?= <patrik.karen@home.se>
-Subject: Re: Dropped fin acks (iptables + lvs)
-Date: Thu, 25 Jan 2007 22:30:14 +0100
-Message-ID: <45B92166.4000400@home.se>
-References: <163461433411784@lycos-europe.com>
-	<Pine.LNX.4.61.0701242315170.32656@yvahk01.tjqt.qr>
+From: Bill Tangren <bjt@aa.usno.navy.mil>
+Subject: Re: DMZ problems
+Date: Thu, 25 Jan 2007 17:22:09 -0500
+Message-ID: <45B92D91.8070500@aa.usno.navy.mil>
+References: <45B12F3B.5020306@aa.usno.navy.mil> <45B61EAB.1040706@pason.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0701242315170.32656@yvahk01.tjqt.qr>
+In-Reply-To: <45B61EAB.1040706@pason.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,44 +18,89 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Cc: netfilter@lists.netfilter.org
 
-Jan Engelhardt skrev:
->> I am running iptables and lvs on two boxes loadbalancing http[s] and ssh traffic to two real servers.
->> Everything is working just fine from the users point of view. However, 
->> I keep seeing a lot of dropped packets of type ack/fin and ack/rst in 
->> my iptables log. Seems like the connection tracking isn't working the 
->> way I expect it to. The iptables config in short is:
->>     
->
-> RST-ACK is received as a response to SYN to a closed port, and hence, is 
-> not part of a connection.
->
->   
->> #This is the rule that should allow established connections, right?
->> $IPTABLES -A Firewall-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->>     
->
->   
->> Jan 24 16:46:11 10.0.1.107 kernel: drop: IN=eth0 OUT= 
->> MAC=00:15:c5:ee:48:a7:00:04:de:18:18:00:08:00 SRC=<CLIENTIP> 
->> DST=<$VIP1_e> LEN=52 TOS=0x00 PREC=0x00 TTL=49 ID=28407 PROTO=TCP 
->> SPT=48404 DPT=443 WINDOW=65535 RES=0x00 ACK FIN URGP=0
->>     
->
-> The FIN-ACK case however looks worth looking into. I'd say do it without 
-> -m limit and see if _every_ connection ends up that way. Also use 
-> tcpdump to match sessions.
->
->
-> 	-`J'
->   
-Yes, the FIN-ACKs are the ones that bother me. There are lots of them, 
-but I don't know if they occur for every single tcp session.
-I'm going to do some tcpdumping tomorrow on different interfaces to see 
-if I can find a pattern.
+Michael Gale wrote:
+> Hey,
+> 
+>     Why can you not use DNAT ?
+> 
 
-//Patrik
+We are not allowed to "hide" servers in a private network behind a firewall. All 
+servers have to have public IP numbers.
+
+   eth0:199.202.112.127/28  |  eth1:199.202.112.127/29      199.202.112.132
+                       ------------                            ----------
+{Internet}----------->| Firewall |--------------------------->| server |
+                       ------------                            ----------
+
+Let's say I've been allocated 199.202.112.127/28 (these are made up addresses) 
+by my ISP, and I'm told to netmask as 255.255.255.0. Let's say I assign my 
+firewall the IP address of 199.202.112.130 with a netmask of 255.255.255.0 as 
+required. My /etc/sysconfig/network-scripts/ifcfg-eth0 will look something like 
+this:
+
+DEVICE=eth0
+BOOTPROTO=static
+BROADCAST=199.202.112.255
+HWADDR=00:10:20:30:40:50
+IPADDR=199.202.112.130
+NETMASK=255.255.255.0
+ONBOOT=yes
+TYPE=Ethernet
+GATEWAY=199.202.112.1
+
+I can then subnet eth1 as, let's say 199.202.112.127/29, but I cannot create a 
+private network, so /etc/sysconfig/network-scripts/ifcfg-eth1 would have to look 
+something like this:
+
+DEVICE=eth1
+BOOTPROTO=static
+BROADCAST=199.202.112.134
+HWADDR=00:10:20:30:40:50
+IPADDR=199.202.112.127
+NETMASK=255.255.255.248
+ONBOOT=yes
+TYPE=Ethernet
+
+The problem I'm having is the netmask for the outside NIC (eth0) overlaps the 
+netmask for the DMZ side NIC (eth1). If I try to ping a server connected via hub 
+to eth1 on the firewall FROM the firewall:
+
+# ping 199.202.112.132
+Destination host unreachable
+
+but
+
+# ping -I eth1 199.202.112.132
+
+works. I need to have all of the servers on the DMZ pingable from the Internet, 
+but still protected by a firewall.
+
+I believe I have iptables set up to adequately protect the DMZ, but I have not 
+been able to solve the problem outlined above.
+
+> If you can not NAT the traffic then it needs to function as a router or 
+> a bridge. A lot of companies use a "Interconnect". the ISP will provide 
+> a small public subnet which is available behind a public IP.
+> 
+> So our ISP provides us with a /27 subnet of public IP's available behind 
+> a public IP:
+> 
+> ISP -> route (X.X.X.X/27) -> external IP (Cisco router) Internal 
+> IP[X.X.X.X/27]
+> 
+> So on the "internal" side of our Cisco router is a small /27 public 
+> routeable network. We then assign the public IP's to our firewall and 
+> other systems if needed.
+> 
+> You could do the same, if you were provided a small subnet. You could 
+> also create bridge.
+> 
+> Michael
+> 
+> 
+
+Sorry Michael about the off list post.
 
 
