@@ -1,12 +1,13 @@
-From: Sebastian <netfilter@basti79.de>
-Subject: Re: owner-Match in 2.6.20-rc5
-Date: Thu, 25 Jan 2007 20:16:17 +0100
-Message-ID: <1169752577.6235.6.camel@calypso>
-References: <1169717001.9575.7.camel@basti79.freenet-ag.de>
+From: =?ISO-8859-1?Q?Patrik_Kar=E9n?= <patrik.karen@home.se>
+Subject: Re: Dropped fin acks (iptables + lvs)
+Date: Thu, 25 Jan 2007 22:30:14 +0100
+Message-ID: <45B92166.4000400@home.se>
+References: <163461433411784@lycos-europe.com>
+	<Pine.LNX.4.61.0701242315170.32656@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-UzeIImtjt/uAk/xeVi/I"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1169717001.9575.7.camel@basti79.freenet-ag.de>
+In-Reply-To: <Pine.LNX.4.61.0701242315170.32656@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,62 +18,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
+Jan Engelhardt skrev:
+>> I am running iptables and lvs on two boxes loadbalancing http[s] and ssh traffic to two real servers.
+>> Everything is working just fine from the users point of view. However, 
+>> I keep seeing a lot of dropped packets of type ack/fin and ack/rst in 
+>> my iptables log. Seems like the connection tracking isn't working the 
+>> way I expect it to. The iptables config in short is:
+>>     
+>
+> RST-ACK is received as a response to SYN to a closed port, and hence, is 
+> not part of a connection.
+>
+>   
+>> #This is the rule that should allow established connections, right?
+>> $IPTABLES -A Firewall-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+>>     
+>
+>   
+>> Jan 24 16:46:11 10.0.1.107 kernel: drop: IN=eth0 OUT= 
+>> MAC=00:15:c5:ee:48:a7:00:04:de:18:18:00:08:00 SRC=<CLIENTIP> 
+>> DST=<$VIP1_e> LEN=52 TOS=0x00 PREC=0x00 TTL=49 ID=28407 PROTO=TCP 
+>> SPT=48404 DPT=443 WINDOW=65535 RES=0x00 ACK FIN URGP=0
+>>     
+>
+> The FIN-ACK case however looks worth looking into. I'd say do it without 
+> -m limit and see if _every_ connection ends up that way. Also use 
+> tcpdump to match sessions.
+>
+>
+> 	-`J'
+>   
+Yes, the FIN-ACKs are the ones that bother me. There are lots of them, 
+but I don't know if they occur for every single tcp session.
+I'm going to do some tcpdumping tomorrow on different interfaces to see 
+if I can find a pattern.
 
---=-UzeIImtjt/uAk/xeVi/I
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Am Donnerstag, den 25.01.2007, 10:23 +0100 schrieb Sebastian Cla=DFen:
-> Hi...
->=20
-> Kernel:   2.6.20-rc5
-> Iptables: v1.3.7-20070118
->=20
-> The owner-Match seems not to match TCP-Packets any more. Can be tested
-> by inserting the rule:
-> iptables -I OUTPUT -m owner --uid-owner test-user -j LOG
->=20
-> Simply su to the specified user and using netcat (nc) to send UDP and
-> TCP packets shows only log entried with PROTO=3DUDP but none with TCP.
->=20
-> Anyone can reproduce this and pearhaps got a solution??
->=20
-> Greets
->   Sebastian.
->=20
-
-Hi again...
-
-I've just found out where the problem is. In 2.6.20-rc1 changelog the
-following thing was modified:
-[TCP]: Don't set SKB owner in tcp_transmit_skb().
-
-That seems to break the owner-match for TCP packets. I was able to undo
-the change with the attached one-line patch which fixed the problem for
-me.
-
-Greets
-  Sebastian.
-
-
---=-UzeIImtjt/uAk/xeVi/I
-Content-Disposition: attachment; filename=owner-fix.diff
-Content-Type: text/x-patch; name=owner-fix.diff; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
---- linux-2.6.20-rc5.orig/net/ipv4/tcp_output.c	2007-01-25 20:10:04.000000000 +0100
-+++ linux-2.6.20-rc5/net/ipv4/tcp_output.c	2007-01-25 14:43:48.000000000 +0100
-@@ -467,6 +467,7 @@ static int tcp_transmit_skb(struct sock 
- 
- 	th = (struct tcphdr *) skb_push(skb, tcp_header_size);
- 	skb->h.th = th;
-+	skb_set_owner_w(skb, sk);
- 
- 	/* Build TCP header and checksum it. */
- 	th->source		= inet->sport;
-
---=-UzeIImtjt/uAk/xeVi/I--
+//Patrik
 
 
