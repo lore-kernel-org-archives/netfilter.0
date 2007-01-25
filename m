@@ -1,11 +1,10 @@
-From: Retesh <retesh.chadha@gmail.com>
-Subject: ULOG with hashlimit not working as expected
-Date: Thu, 25 Jan 2007 11:39:44 +0530
-Message-ID: <b322db070701242209l2a8cbef4yc8869e592dec8162@mail.gmail.com>
+From: Sebastian =?ISO-8859-1?Q?Cla=DFen?= <netfilter@basti79.de>
+Subject: owner-Match in 2.6.20-rc5
+Date: Thu, 25 Jan 2007 10:23:21 +0100
+Message-ID: <1169717001.9575.7.camel@basti79.freenet-ag.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,40 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi All
-I am facing a issue with ULOG along with hashlimit, where hashlimit is
-not working as expected.
+Hi...
 
-I have rules as follows
+Kernel:   2.6.20-rc5
+Iptables: v1.3.7-20070118
 
-1. iptables -A INPUT -m set --set SET1 src -m hashlimit --hashlimit
-100/s --hashlimitname foo1 -j ACCEPT
-2. iptables -A INPUT -m set --set SET1 src -m hashlimit --hashlimit
-200/s --hashlimitname foo2 -j DROP
-3. iptables -A INPUT -m set --set SET1 src -m hashlimit --hashlimit
-1/min --hashlimitname foo3 -j ULOG
-4. iptables -A INPUT -m set --set SET1 src -m hashlimit --hashlimit
-1/min --hashlimitname foo4 -j LOG
-5. iptables -A INPUT -j DROP
+The owner-Match seems not to match TCP-Packets any more. Can be tested
+by inserting the rule:
+iptables -I OUTPUT -m owner --uid-owner test-user -j LOG
 
-Here I have noticed that hashlimit of 1/min is not working, even
-though the hashlimits of 1st 2 rules is working fine. What is
-happening is that I am bombarding the system from a source endpoint in
-SET1, with 300/s.
-My expectation is that 100 packets will be accepted (1), another 100
-will be dropped (2), and rest all will be dropped with ULOG/LOG
-happening 1 per minutes (3,4,5). But ULOG is not happening at 1/min.
-What i see is that if say I bombard for 90 seconds at the rate of
-300/s, ULOG/LOG messages that are generated are 11.
+Simply su to the specified user and using netcat (nc) to send UDP and
+TCP packets shows only log entried with PROTO=UDP but none with TCP.
 
-Anyone aware if this is a  limitation of hashlimit or am I missing
-something here.
+Anyone can reproduce this and pearhaps got a solution??
 
-Thanks in advance
+Greets
+  Sebastian.
 
-With Regards
-Retesh Chadha
 
