@@ -1,16 +1,16 @@
-From: Ted Phelps <phelps@gnusto.com>
-Subject: Re: Iptables problem
-Date: Fri, 26 Jan 2007 09:55:59 -0600
-Message-ID: <5085.1169826959@laika.gnusto.com>
-References: <9c9832d0701260319q2b686090k28d63d92e2c58646@mail.gmail.com>
-	<4587.1169819624@laika.gnusto.com>
-	<9c9832d0701260617m1393f7b4gf8b94985a641adf6@mail.gmail.com>
-	<27132.1169824672@laika.gnusto.com>
-	<9c9832d0701260749r8093a6p5d47aca6a840e5dd@mail.gmail.com>
-Reply-To: support@mantara.com
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: iptables NEW TABLE request. WAS[Re: Catching un-DNAT'ed packets]
+Date: Fri, 26 Jan 2007 17:12:31 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0701261707190.22295@yvahk01.tjqt.qr>
+References: <1167054030.16171.10.camel@localhost.localdomain> 
+	<459102EC.50402@plouf.fr.eu.org>
+	<1169810473.8286.8.camel@localhost.localdomain>
+	<Pine.LNX.4.61.0701261223430.22295@yvahk01.tjqt.qr>
+	<1169814795.5004.11.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: Your message of Fri, 26 Jan 2007 21:19:11 +0530. 
-	<9c9832d0701260749r8093a6p5d47aca6a840e5dd@mail.gmail.com> 
+In-Reply-To: <1169814795.5004.11.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,43 +21,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?= =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Cc: netfilter@lists.netfilter.org, Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 
-"Saurabh Mehrotra" writes:
-> Can you guide me how to set up TCP dump on RHEL 4 and test.
 
-I'm afraid I don't use Red Hat Linux or RPMs so I'm not going to be able
-to help you instal tcpdump.  There's a good chance that it's installed
-by default, though.  To run it and monitor DNS traffic, do this:
+>В Птн, 26/01/2007 в 12:24 +0100, Jan Engelhardt пишет:
+>> >http://www.meteor.dp.ua/casper/firewill.pdf
+>> >
+>> >how would I make a "feature request" to ask for, say, "mangle2" table
+>> >that is just after "nat" in POSTROUTING? The only reason for this move
+>> >is the need for ability to catch un-DNAT'ed packets with -j ULOG or
+>> >(better) to -j QUEUE.
+>> 
+>> And  -t nat -A POSTROUTING -m conntrack ! --ctstate DNAT
+>> as a last rule won't do?
+>
+>This will (probably) catch packets that hasn't been DNAT'ed.
+>BUT, the thing I need it to catch replay packets that has already passed
+>"un-DNAT" procedure.
 
-    tcpdump port 53
- 
-> Can u explain this more so that I will calculate that..
-> 
-> "  packet counts for each rule, which
->  should help you to determine which rule is dropping or failing to
->  forward the DNS packets."
+Ah, now I get what you mean with un-DNAT. (Unwrapping I'd say ;-)
+Too bad, I don't see a way. But as an intermediate workaround, you could
+copy ULOG/QUEUE to a new module, say, MYULOG/MYQUEUE and modify it so as to
+display the original address pair (which should easily be possible with kernel
+code).
 
-(1) Run iptables -v -L
-(2) Look at the rules you believe should match UDP traffic on port 53
-    between trench1 and 212.165.108.4.  Note the number of packets which
-    have matched these rules.
-(3) Run nslookup
-(4) Run iptables -v -L again
-(5) Look at the rules you believe should match UDP traffic on port 53
-    between trench1 and 212.165.108.4.  Note the number of packets which
-    have matched these rules.
-(6) Compare the numbers from steps (2) and (5) to see if they've
-    changed.  If not then the rules aren't doing what you think they
-    are.
 
-You may find a command like the following helpful:
-
-    watch iptables -v -L
-
-Cheers,
--Ted
+	-`J'
+-- 
 
