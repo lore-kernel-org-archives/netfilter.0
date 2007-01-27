@@ -1,14 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: redirecting on a local machine
-Date: Sat, 27 Jan 2007 15:57:00 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0701271555430.22295@yvahk01.tjqt.qr>
-References: <008101c73bf9$dc9d99c0$0700a8c0@stormbook>
-	<45B11AF9.8060209@plouf.fr.eu.org>
-	<009901c73c02$d046cad0$0700a8c0@stormbook>
-	<Pine.LNX.4.61.0701192323040.18606@yvahk01.tjqt.qr>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Dropped fin acks (iptables + lvs)
+Date: Sat, 27 Jan 2007 17:19:44 +0100
+Message-ID: <45BB7BA0.5030605@plouf.fr.eu.org>
+References: <163461433411784@lycos-europe.com>
+	<Pine.LNX.4.61.0701242315170.32656@yvahk01.tjqt.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0701192323040.18606@yvahk01.tjqt.qr>
+In-Reply-To: <Pine.LNX.4.61.0701242315170.32656@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,30 +18,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: saspan <saspan@web.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hello,
 
+Jan Engelhardt a =E9crit :
+>>I am running iptables and lvs on two boxes loadbalancing http[s] and ss=
+h traffic to two real servers.
+>>Everything is working just fine from the users point of view. However,=20
+>>I keep seeing a lot of dropped packets of type ack/fin and ack/rst in=20
+>>my iptables log. Seems like the connection tracking isn't working the=20
+>>way I expect it to.
+>=20
+> RST-ACK is received as a response to SYN to a closed port, and hence, i=
+s=20
+> not part of a connection.
 
-On Jan 19 2007 23:23, Jan Engelhardt wrote:
->On Jan 19 2007 20:48, saspan wrote:
->>> > cause a browser would not be expecting a reply from a transparent
->>> > proxy when waiting for replies to its requests.
->>> 
->>> Huh ?
->>
->> See: The browser sends http-request to e.g. 99.9.9.9.1:80.
->> The request is redirected to proxy on 127.0.0.1:3128.
->> Browser waits for reply from 99.9.9.9:80.
->> Actually the reply will come from proxy on 127.0.0.1:3128.
->>
->> Do you see the problem?
-
-And the box doing the redirect has which IP address (is where in your 
-network scheme)?
-
-	-`J'
--- 
+At Netfilter connection tracking level, ACK/RST in response to SYN is=20
+part of a connection and is supposed to be in the ESTABLISHED state,=20
+even though at TCP level the connection is not established.
 
