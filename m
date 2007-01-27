@@ -1,14 +1,11 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: RE: port forwarding through localhost
-Date: Sat, 27 Jan 2007 00:09:02 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0701270008040.22295@yvahk01.tjqt.qr>
-References: <000001c74194$d484d9b0$0d01a8c0@Mobi>
-	<45BA7E51.40505@plouf.fr.eu.org><000301c74199$7db871f0$0d01a8c0@Mobi>
-	<45BA85AF.5010907@plouf.fr.eu.org>
-	<000001c7419d$0bab38f0$0d01a8c0@Mobi>
+Subject: Re: Routing packets via a C program
+Date: Sat, 27 Jan 2007 15:55:29 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0701271553330.22295@yvahk01.tjqt.qr>
+References: <200701220958.51794.bedogniluca-linux@yahoo.it>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000001c7419d$0bab38f0$0d01a8c0@Mobi>
+In-Reply-To: <200701220958.51794.bedogniluca-linux@yahoo.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,27 +18,31 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Andy B." <globi@hot.lu>
+To: Luca Bedogni <bedogniluca-linux@yahoo.it>
 Cc: netfilter@lists.netfilter.org
 
 
->I am using 2.6.19.2.
+On Jan 22 2007 09:58, Luca Bedogni wrote:
 >
->An intermediate tcp proxy method doesn't sound so nice, since iptables is
->way more flexible to me :-/
+>Hi all
+>	i'm writing down a simple program for routing the packets manually. The
+>idea is: if a packet comes from a specific IP (192.168.0.2) I set ip->saddr to
+>my ip and then accept it. And, if a packets comes from the outside, i set
+>ip->daddr to 192.168.0.2 and then accept it. I recalculate the checksum and
+>it's correct (i can see that by printing out it).
 
-In fact, using such a proxy doubles the amount of packets transferred.
+What for - are you trying some nifty SNAT/DNAT trick?
 
-What you should have better done: use DNS instead of fixed IP addresses. That
-way you could have had
+>The basic problem is that, sniffing packets with wireshark, i can see the 
+>packet from 192.168.0.2 to outside, but not mine to outside.
+>
+>I also tried with NF_REPEAT and NF_ACCEPT and NF_QUEUE when calling 
+>ipq_set_verdict, but nothing changed..
 
-  mysql IN A 127.0.0.1
+You should be fine by QUEUEing packets in PREROUTING (or at least somewhere
+before the <Routing Decision> in [PacketFlow]), modify them in your userspace
+program, reinject them, and have the <Routing Decision> do the right then.
 
-before, and now change it noproblem to
-
-  mysql IN A 192.168.123.45
-
-But you have not, so better deal with it ;-)
 
 	-`J'
 -- 
