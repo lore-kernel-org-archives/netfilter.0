@@ -1,11 +1,14 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Routing packets via a C program
-Date: Sat, 27 Jan 2007 15:55:29 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0701271553330.22295@yvahk01.tjqt.qr>
-References: <200701220958.51794.bedogniluca-linux@yahoo.it>
+Subject: Re: redirecting on a local machine
+Date: Sat, 27 Jan 2007 15:57:00 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0701271555430.22295@yvahk01.tjqt.qr>
+References: <008101c73bf9$dc9d99c0$0700a8c0@stormbook>
+	<45B11AF9.8060209@plouf.fr.eu.org>
+	<009901c73c02$d046cad0$0700a8c0@stormbook>
+	<Pine.LNX.4.61.0701192323040.18606@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200701220958.51794.bedogniluca-linux@yahoo.it>
+In-Reply-To: <Pine.LNX.4.61.0701192323040.18606@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +21,27 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Luca Bedogni <bedogniluca-linux@yahoo.it>
+To: saspan <saspan@web.de>
 Cc: netfilter@lists.netfilter.org
 
 
-On Jan 22 2007 09:58, Luca Bedogni wrote:
->
->Hi all
->	i'm writing down a simple program for routing the packets manually. The
->idea is: if a packet comes from a specific IP (192.168.0.2) I set ip->saddr to
->my ip and then accept it. And, if a packets comes from the outside, i set
->ip->daddr to 192.168.0.2 and then accept it. I recalculate the checksum and
->it's correct (i can see that by printing out it).
 
-What for - are you trying some nifty SNAT/DNAT trick?
+On Jan 19 2007 23:23, Jan Engelhardt wrote:
+>On Jan 19 2007 20:48, saspan wrote:
+>>> > cause a browser would not be expecting a reply from a transparent
+>>> > proxy when waiting for replies to its requests.
+>>> 
+>>> Huh ?
+>>
+>> See: The browser sends http-request to e.g. 99.9.9.9.1:80.
+>> The request is redirected to proxy on 127.0.0.1:3128.
+>> Browser waits for reply from 99.9.9.9:80.
+>> Actually the reply will come from proxy on 127.0.0.1:3128.
+>>
+>> Do you see the problem?
 
->The basic problem is that, sniffing packets with wireshark, i can see the 
->packet from 192.168.0.2 to outside, but not mine to outside.
->
->I also tried with NF_REPEAT and NF_ACCEPT and NF_QUEUE when calling 
->ipq_set_verdict, but nothing changed..
-
-You should be fine by QUEUEing packets in PREROUTING (or at least somewhere
-before the <Routing Decision> in [PacketFlow]), modify them in your userspace
-program, reinject them, and have the <Routing Decision> do the right then.
-
+And the box doing the redirect has which IP address (is where in your 
+network scheme)?
 
 	-`J'
 -- 
