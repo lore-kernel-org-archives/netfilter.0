@@ -1,14 +1,16 @@
-From: Fabio Muzzi <liste@kurgan.org>
-Subject: Re: SNAT seems to "miss" some packets
-Date: Mon, 29 Jan 2007 15:29:28 +0100
-Message-ID: <367643499.20070129152928@kurgan.org>
-References: <1003211157.20070129141238@kurgan.org>
-	<45BDFFBA.9090706@plouf.fr.eu.org>
-Reply-To: Fabio Muzzi <liste@kurgan.org>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	=?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: iptables NEW TABLE request. WAS[Re: Catching un-DNAT'ed packets]
+Date: Mon, 29 Jan 2007 17:58:24 +0200
+Message-ID: <1170086305.11285.4.camel@localhost.localdomain>
+References: <1167054030.16171.10.camel@localhost.localdomain>
+	<459102EC.50402@plouf.fr.eu.org>
+	<1169810473.8286.8.camel@localhost.localdomain>
+Reply-To: casper@meteor.dp.ua
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45BDFFBA.9090706@plouf.fr.eu.org>
+In-Reply-To: <1169810473.8286.8.camel@localhost.localdomain>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +21,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@lists.netfilter.org
 
-Hello Pascal,
+Excuse me for double asking, but is this the place for such a feature
+request?
 
-Monday, January 29, 2007, 3:07:54 PM, you wrote:
+Thanks in advance for your help/time.
 
-
-PH> This may be related to the thread "Dropped fin acks (iptables + lvs)"
-PH> above, as in both cases most affected packets seem to be FIN/ACK and 
-PH> RST/ACK.
-
-I have not read the archives, I'll download and read them soon.
-
-Anyway,  it seems that you are right, it misses only FIN packets... but it
-probably  misses  them  in PREROUTING, as I have stated in another post in
-this thread.
-
-
+В Птн, 26/01/2007 в 13:21 +0200, Покотиленко Костик пишет:
+> Hi.
+> 
+> After analizing the situation I have come to decide to request NEW TABLE
+> in iptables.
+> 
+> Considering the scheme at:
+> 
+> http://www.meteor.dp.ua/casper/firewill.pdf
+> 
+> how would I make a "feature request" to ask for, say, "mangle2" table
+> that is just after "nat" in POSTROUTING? The only reason for this move
+> is the need for ability to catch un-DNAT'ed packets with -j ULOG or
+> (better) to -j QUEUE.
+> 
+> В Вто, 26/12/2006 в 12:09 +0100, Pascal Hambourg пишет:
+> > Hello,
+> > 
+> > Pokotilenko Kostik a écrit :
+> > > 
+> > > Is it possible to catch un-DNAT'ed packets with iptables' -j ULOG
+> > > target?
+> > 
+> > I'm afraid no.
+> > 
+> > > Where does the un-DNAT occurs and is there table/chain that is
+> > > processed after un-DNAT?
+> > 
+> > In 2.4 kernels, when DNAT occurs in the PREROUTING chain, un-DNAT occurs 
+> > at the same place as (and in place of) the POSTROUTING chain of the 
+> > 'nat' table, and there is no chain after it. In 2.4 kernels >= 2.4.19, 
+> > when DNAT occurs in the OUTPUT chain, un-DNAT occurs after the INPUT 
+> > chain of the 'filter' table, and there is no chain after it either. I 
+> > suppose it has not changed in 2.6 kernels.
+> > 
+> > > The problem I have is that replay packets got catched with real source
+> > > address, not the one the client has initially connected to. I was
+> > > catching replay packets in mangle/POSTROUTING.
+> > 
+> > The POSTROUTING chain of the 'mangle' table is just before the un-DNAT 
+> > place.
+> > 
+> > 
 -- 
-
-  Fabio "Kurgan" Muzzi
+Покотиленко Костик <casper@meteor.dp.ua>
 
 
