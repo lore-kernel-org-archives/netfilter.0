@@ -1,12 +1,14 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: "Martijn Lievaart" <m@rtij.nl>
 Subject: Re: Connect to localhost bound port from outside?
-Date: Wed, 31 Jan 2007 11:13:59 +0100
-Message-ID: <45C06BE7.2080208@plouf.fr.eu.org>
+Date: Wed, 31 Jan 2007 11:39:49 +0100 (CET)
+Message-ID: <26048.2318969027$1170240095@news.gmane.org>
 References: <eppgne$mc1$1@sea.gmane.org>
+	<1170234205.4464.0.camel@localhost.localdomain>
+	<eppobl$dem$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <eppgne$mc1$1@sea.gmane.org>
+In-Reply-To: <eppobl$dem$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +19,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: jan_bar <herkule9s@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+[ Please don't toppost. Thank you ]
 
-jan_bar a =E9crit :
->=20
-> I want to connect from my VPN interface to the port that is bound to
-> (listening on) localhost. The server listens only on localhost, so it i=
-s not
-> visible to outside world and it seems that I cannot use iptables to for=
-ward
-> outside traffice from VPN to that port.
+<citaat van="jan_bar">
+> Thank you, but REDIRECT works fine only if the server listens on 0.0.0.0,
+> when the server listens on 127.0.0.1, it doesn't work.
+>
+> kernel:  2.6.9-gentoo-r14
+> iptables: iptables-1.3.5-r4
 
-Iptables will happily redirect anything you like to localhost, but the=20
-kernel IP routing prohibits communications with a loopback address on a=20
-non loopback interface and thus will drop the packets. This is similar=20
-to the problem in the above thread "port forwarding through localhost",=20
-and the same workaround is applicable.
+Did you try DNAT? That should work.
+
+HTH,
+M4
+
 
