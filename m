@@ -1,10 +1,12 @@
-From: "jan_bar" <herkule9s@yahoo.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Connect to localhost bound port from outside?
-Date: Wed, 31 Jan 2007 10:43:17 +0100
-Message-ID: <eppobl$dem$1@sea.gmane.org>
+Date: Wed, 31 Jan 2007 11:13:59 +0100
+Message-ID: <45C06BE7.2080208@plouf.fr.eu.org>
 References: <eppgne$mc1$1@sea.gmane.org>
-	<1170234205.4464.0.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <eppgne$mc1$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,22 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-VGhhbmsgeW91LCBidXQgUkVESVJFQ1Qgd29ya3MgZmluZSBvbmx5IGlmIHRoZSBzZXJ2ZXIgbGlz
-dGVucyBvbiAwLjAuMC4wLAp3aGVuIHRoZSBzZXJ2ZXIgbGlzdGVucyBvbiAxMjcuMC4wLjEsIGl0
-IGRvZXNuJ3Qgd29yay4KCmtlcm5lbDogIDIuNi45LWdlbnRvby1yMTQKaXB0YWJsZXM6IGlwdGFi
-bGVzLTEuMy41LXI0CgpKYW4KCi0tIApKYW4gQmFyZXMKaHR0cDovL2phbi52ZWdldGJhbmQuY3oK
-CgoiPz8/Pz8/Pz8/Pz8gPz8/Pz8/IiA8Y2FzcGVyQG1ldGVvci5kcC51YT4gd3JvdGUgaW4gbWVz
-c2FnZQpuZXdzOjExNzAyMzQyMDUuNDQ2NC4wLmNhbWVsQGxvY2FsaG9zdC5sb2NhbGRvbWFpbi4u
-Lgo+IPcg80/ELCAzMS8wMS8yMDA3INcgMDg6MzMgKzAxMDAsIGphbl9iYXIgP8lVQdQ6Cj4gPiBI
-aSwKPiA+Cj4gPiBJIHdhbnQgdG8gY29ubmVjdCBmcm9tIG15IFZQTiBpbnRlcmZhY2UgdG8gdGhl
-IHBvcnQgdGhhdCBpcyBib3VuZCB0bwo+ID4gKGxpc3RlbmluZyBvbikgbG9jYWxob3N0LiBUaGUg
-c2VydmVyIGxpc3RlbnMgb25seSBvbiBsb2NhbGhvc3QsIHNvIGl0IGlzCm5vdAo+ID4gdmlzaWJs
-ZSB0byBvdXRzaWRlIHdvcmxkIGFuZCBpdCBzZWVtcyB0aGF0IEkgY2Fubm90IHVzZSBpcHRhYmxl
-cyB0bwpmb3J3YXJkCj4gPiBvdXRzaWRlIHRyYWZmaWNlIGZyb20gVlBOIHRvIHRoYXQgcG9ydC4K
-Pgo+IC1qIFJFRElSRUNUIHNob3VsZCBkbyB0aGUgam9iLgo+Cj4gLS0gCj4gP0nLSdTJSUHOy0kg
-60nT1MnLIDxjYXNwZXJAbWV0ZW9yLmRwLnVhPgo+Cj4KPgoKCgoK
+Hello,
+
+jan_bar a =E9crit :
+>=20
+> I want to connect from my VPN interface to the port that is bound to
+> (listening on) localhost. The server listens only on localhost, so it i=
+s not
+> visible to outside world and it seems that I cannot use iptables to for=
+ward
+> outside traffice from VPN to that port.
+
+Iptables will happily redirect anything you like to localhost, but the=20
+kernel IP routing prohibits communications with a loopback address on a=20
+non loopback interface and thus will drop the packets. This is similar=20
+to the problem in the above thread "port forwarding through localhost",=20
+and the same workaround is applicable.
+
