@@ -1,13 +1,14 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Connect to localhost bound port from outside?
-Date: Thu, 01 Feb 2007 00:01:48 +0100
-Message-ID: <45C11FDC.4030908@plouf.fr.eu.org>
-References: <eppgne$mc1$1@sea.gmane.org>	<45C06BE7.2080208@plouf.fr.eu.org>	<45C0B772.2090201@riverviewtech.net>	<45C0BDDE.2030905@plouf.fr.eu.org>
-	<45C0E06F.3080405@riverviewtech.net>
+Date: Wed, 31 Jan 2007 17:57:29 -0600
+Message-ID: <45C12CE9.2000401@riverviewtech.net>
+References: <eppgne$mc1$1@sea.gmane.org>	<45C06BE7.2080208@plouf.fr.eu.org>	<45C0B772.2090201@riverviewtech.net>	<45C0BDDE.2030905@plouf.fr.eu.org>	<45C0E06F.3080405@riverviewtech.net>
+	<45C11FDC.4030908@plouf.fr.eu.org>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45C0E06F.3080405@riverviewtech.net>
+In-Reply-To: <45C11FDC.4030908@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,94 +19,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Grant Taylor a =E9crit :
->=20
->>> I have often considered using lo for local only but using dummy as a=20
->>> spur network to bind services to and then route traffic in to the=20
->>> spur network.  Thoughts / Opinions?
->>
->> A dummy interface is a black hole, a kind of "/dev/null" interface,=20
->> traffic you route to it is lost. This is very different from a=20
->> loopback interface, whose traffic you route to it loops back and is=20
->> received by the local host. It is fine to use a dummy interface if you=
-=20
->> want to add an extra address to the host and bind services to it, but=20
->> I guess you could do the same with the loopback interface.
->=20
-> I beg to differ.  Loop back is ONLY for the local host.  However, Dummy=
-=20
-> is not only for local host.  Dummy is *usually* used for local host=20
-> only, however this is not an kernel enforced limitation.
+Pascal Hambourg wrote:
+> You can remove "else". A network card that does not talk to anything.
 
-So far, we both agree that loopback and dummy interfaces are very=20
-different. :-)
+Ok.
 
-> Dummy network=20
-> is akin to a network card that does not talk to any thing else.
+> Yes. But actually you access nothing but void.
 
-You can remove "else". A network card that does not talk to anything.
+Not being able to access any thing but your self is vastly different 
+than your data streaming in to /dev/null with no replies.  This is what 
+I was trying to imply.  I suppose that I should say that I took what you 
+said earlier about dummy being null to say that any traffic you sent to 
+ti would be unacknowledged, which is not the case.
 
-> I.e. if=20
-> I put a loop back plug in an ethernet card so that it sees its self UP=20
-> and UP (Cisco terms).  Then I can configure any computer to access the=20
-> dummy network VIA the computer that dummy is on.
+> Yes, but doing this you do not access the dummy network. You just access 
+> the dummy interface _address_ like any other address owned by that host. 
+> The dummy interface nevers sees that traffic. You could do the same just 
+> by adding that address to any other interface, including the loopback 
+> interface lo.
 
-Yes. But actually you access nothing but void.
+Hum.
 
-> To verify this, I just brought my dummy net up with a 192.0.2.254 IP=20
-> address.  I then went to my Windows VM session and added a route to the=
-=20
-> 192.0.2.x/24 network via my Linux host.  My Windows VM was able to ping=
-=20
-> the 192.0.2.254 IP address on the dummy network.
+> I am not sure I get what you mean... Maybe an example would help.
 
-Yes, but doing this you do not access the dummy network. You just access=20
-the dummy interface _address_ like any other address owned by that host.=20
-The dummy interface nevers sees that traffic. You could do the same just=20
-by adding that address to any other interface, including the loopback=20
-interface lo.
+dummy0=192.0.2.254
+eth0=192.168.1.123
+lo=127.0.0.1
 
-> With this in mind, if the dummy network is used to bind services to, it=
-=20
-> would be possible to DNAT traffic destined to the local system in to th=
-e=20
-> dummy network with out being stopped the way that loop back does.
+iptables -t nat -A PREROUTING -i eth0 -d 192.168.1.123 -p tcp --dport 
+1234 -j DNAT --to-destination 192.0.2.254:1234
 
-I am not sure I get what you mean... Maybe an example would help.
+>> Now, what I'm not sure about is if it would be possible to not use lo 
+>> but use dummy in place of it.  I.e. lo is down and down with dummy up 
+>> and up with 127.0.0.1 on it.
+> 
+> Hmm... You don't want lo to be down, else the host cannot communicate 
+> with itself any more.
 
-> Now, what I'm not sure about is if it would be possible to not use lo=20
-> but use dummy in place of it.  I.e. lo is down and down with dummy up=20
-> and up with 127.0.0.1 on it.
+Why would a host not be able to communicate with its self if it is 
+trying to communicate from / to 127.0.0.1 if that IP address is on a 
+different interface?  Or are there other things that communicate over lo 
+with out using IP.  If the latter is the case, have lo up with out an IP 
+address.
 
-Hmm... You don't want lo to be down, else the host cannot communicate=20
-with itself any more.
+> The routing code does not say that only 127.0.0.0/8 (not /24) can talk 
+> to 127.0.0.0/8. Actually any address allocated to any interface on the 
+> host (which I call a local address) can talk to 127.0.0.0/8 and 
+> conversely. The routing code says that you can talk to or from 
+> 127.0.0.0/8 only through the loopback interface. So giving 127.0.0.1 to 
+> another interface won't help.
 
-> In this case I don't know if you could=20
-> DNAT traffic in to 127.0.0.1 from external or not.  And as I write this=
-,=20
-> I think that this may be more of a problem with routing than interface.=
-=20
-> If it is the routing code that says the only thing that can speak to=20
-> 127.x.y.z/24 is 127.x.y.z/24 then this will do no good.
+Hum.
 
-The routing code does not say that only 127.0.0.0/8 (not /24) can talk=20
-to 127.0.0.0/8. Actually any address allocated to any interface on the=20
-host (which I call a local address) can talk to 127.0.0.0/8 and=20
-conversely. The routing code says that you can talk to or from=20
-127.0.0.0/8 only through the loopback interface. So giving 127.0.0.1 to=20
-another interface won't help.
+> Huh ? Traffic destined to a local service goes through the INPUT chain, 
+> not the FORWARD chain. Whether the IP address you bind the service to 
+> belongs to a loopback interface, a dummy interface or any other 
+> interface does not make a difference. All local addresses belong to the 
+> host and create a local route in the special "local" routing table.
 
-> One thing that I do see as an advantage of using dummy in this way is=20
-> that it would be possible to bind services to the dummy IP which would=20
-> cause traffic destined for public services to pass through the=20
-> filter:FORWARD table / chain.
+Ok, I think I you and I have a different understanding of how traffic 
+traverses the kernel.  I am under the impressions that any traffic that 
+is forwarded from one interface to another passes through 
+filter:FORWARD.  ....  However, repeating the test that I did earlier 
+and looking at the packet counters, you are indeed correct.  This fact 
+makes a later part of what I was saying very much moot and / or 
+incorrect.  I think my confusion comes from a lack of understanding of 
+how IPs translate / relate to Sockets and where services actually bind to.
 
-Huh ? Traffic destined to a local service goes through the INPUT chain,=20
-not the FORWARD chain. Whether the IP address you bind the service to=20
-belongs to a loopback interface, a dummy interface or any other=20
-interface does not make a difference. All local addresses belong to the=20
-host and create a local route in the special "local" routing table.
+In light of this new information and the fact that the kernel will only 
+allow local sources / destinations to talk to 127.0.0.1, I can only 
+think of one thing that will allow the OP to redirect traffic in to the 
+127.0.0.1 IP address, that being a proxy of some sort that is running on 
+the local host that would initiate a local request for the internal 
+service.  I also believe a proxy was previously mentioned in the 
+referenced thread.
+
+
+
+Grant. . . .
 
