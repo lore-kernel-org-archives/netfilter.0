@@ -1,11 +1,13 @@
-From: Alexander Pyhalov <alp@rosten.elektra.ru>
-Subject: Wrong ips
-Date: Thu, 1 Feb 2007 08:51:14 +0300
-Message-ID: <200702010851.14795.alp@rosten.elektra.ru>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nfnl_listen: recvmsg overrun: No buffer space available"
+ in	nfct_event_conntrack() call
+Date: Thu, 01 Feb 2007 09:58:15 +0100
+Message-ID: <45C1ABA7.80600@netfilter.org>
+References: <42261c2c0701311431t6211428uffa34273c4dcc112@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <42261c2c0701311431t6211428uffa34273c4dcc112@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,91 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: =?UTF-8?B?0J/QsNCy0LXQuyDQmtC+0LrQvtC70LXQvNC40L0=?= <pavelkok@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello.
-Maybe I'm doing something wrong, but I have the following trouble.
-I have kernel 2.6.17.11 and options, related to netfilter in it :
-//////////////////////////////////////////////
-CONFIG_NETFILTER=y
-CONFIG_NETFILTER_NETLINK=m
-CONFIG_NETFILTER_NETLINK_LOG=m
-CONFIG_NETFILTER_XTABLES=m
-CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
-CONFIG_IP_NF_CONNTRACK=m	
-CONFIG_IP_NF_FTP=m
-CONFIG_IP_NF_IRC=m
-CONFIG_IP_NF_TFTP=m
-CONFIG_IP_NF_AMANDA=m
-CONFIG_IP_NF_QUEUE=m
-CONFIG_IP_NF_IPTABLES=m
-CONFIG_IP_NF_MATCH_IPRANGE=m
-CONFIG_IP_NF_FILTER=m
-CONFIG_IP_NF_TARGET_REJECT=m
-CONFIG_IP_NF_TARGET_LOG=m
-CONFIG_IP_NF_TARGET_ULOG=m
-//////////////////////////////////////////////
+Hi,
 
-lsmod shows, that all related to netfilter (as I think)  modules are loaded:
-af_packet              16904  0
-xt_tcpudp               3584  0
-ip_queue                8480  0
-ipt_iprange             1920  0
-ipt_REJECT              4608  0
-ipt_LOG                 6656  0
-iptable_filter          2816  0
-ip_tables              14556  1 iptable_filter
-x_tables               12932  5 xt_tcpudp,ipt_iprange,ipt_REJECT,ipt_LOG,ip_tables
-capability              5128  0
-commoncap               7424  1 capability
-...
+Павел Коколемин wrote:
+> I am using libnetfilter_conntrack for log all connections passing via my 
+> router (new & destroy messages).
+> 
+> When LAN users start network scanners (NetLook, for example),
+> sometimes I receive error in console:
+> "nfnl_listen: recvmsg overrun: No buffer space available"
+> generated in nfct_event_conntrack() (recvmsg() returns ENOBUFS error code).
+> This message generated in nfnl_listen().
 
-iptables version is 1.3.6
+Increase netlink buffer size via nfnl_rcvsiz() (libnfnetlink), the 
+default size is available in /proc/sys/net/core/rmem_max. BTW, this 
+message means that you have probably lost some log messages because the 
+rate was so high that the buffer could not back off.
 
-I'm trying to add some rules, but they don't work, when contain port numbers: 
-
-When I'm adding the following rule
-
-#  Access to HTTP server
-iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-#  Access to SSH is allowed to all
-iptables -A INPUT -p tcp -m --dport 22 -j ACCEPT
-#  Access to Tomcat
-iptables -A INPUT  -s <ip1>ACCEPT
-iptables -A INPUT  -s <ip2>  -j ACCEPT
-# Access to SMB is allowed to all
-iptables -A INPUT -p tcp -m --dport 139   -j ACCEPT 
-iptables -A INPUT -p tcp -m --dport 445   -j ACCEPT 
-iptables -P INPUT REJECT 
-
-I can't ssh to server. 
-When I do 
-iptables -A INPUT -s <my ip> -j ACCEPT
-everything is fine.
-
-Now I do 
-
-iptables -A INPUT -p tcp -m tcp -s <my ip>   -j LOG
-
-and got something strange in log:
-eb  1 08:15:12 athena kernel: IN=eth0 OUT= MAC=00:0d:60:eb:a7:7c:00:02:b3:d6:be:9d:08:00 SRC=58.48.57.58 DST=255.255.0.13 LEN=15942 TOS=0x14
- PREC=0x20 TTL=49 ID=25954 MF FRAG:32 PROTO=32
-Feb  1 08:15:12 athena kernel: IN=eth0 OUT= MAC=00:0d:60:eb:a7:7c:00:02:b3:d6:be:9d:08:00 SRC=58.48.57.58 DST=47.98.0.13 LEN=15942 TOS=0x14 P
-REC=0x20 TTL=49 ID=25954 MF FRAG:32 PROTO=32
-Feb  1 08:15:12 athena kernel: IN=eth0 OUT= MAC=00:0d:60:eb:a7:7c:00:02:b3:d6:be:9d:08:00 SRC=0.0.8.0 DST=0.0.0.13 LEN=0 TOS=0x00 PREC=0x00 T
-TL=0 ID=0 PROTO=0
-Feb  1 08:15:12 athena kernel: IN=eth0 OUT= MAC=00:0d:60:eb:a7:7c:00:02:b3:d6:be:9d:08:00 SRC=58.48.57.58 DST=0.0.0.13 LEN=15942 TOS=0x14 PRE
-C=0x20 TTL=49 ID=25954 MF FRAG:32 PROTO=32
-Feb  1 08:15:12 athena kernel: IN=eth0 OUT= MAC=00:0d:60:eb:a7:7c:00:02:b3:d6:be:9d:08:00 SRC=58.49.48.58 DST=255.255.0.13 LEN=15942 TOS=0x14
- PREC=0x20 TTL=49 ID=25954 MF FRAG:32 PROTO=32
-Feb  1 08:15:13 athena kernel: IN=eth0 OUT= MAC=00:0d:60:eb:a7:7c:00:02:b3:d6:be:9d:08:00 SRC=58.48.57.58 DST=255.255.0.13 LEN=15942 TOS=0x14
- PREC=0x20 TTL=49 ID=25954 MF FRAG:32 PROTO=32
-Feb  1 08:15:13 athena kernel: IN=eth0 OUT= MAC=00:0d:60:eb:a7:7c:00:02:b3:d6:be:9d:08:00 SRC=0.0.0.0 DST=0.0.0.13 LEN=19526 TOS=0x04 PREC=0x
-40 TTL=0 ID=257 FRAG:256 PROTO=0
-
-But these ip addresses are not my ip addresses.
-They even don't exist in network environment....
-
- 
+-- 
+The dawn of the fourth age of Linux firewalling is coming; a time of 
+great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
 
