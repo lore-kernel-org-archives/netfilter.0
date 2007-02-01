@@ -1,12 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Wrong ips
-Date: Thu, 01 Feb 2007 17:25:58 +0100
-Message-ID: <45C21496.7000306@plouf.fr.eu.org>
-References: <200702010851.14795.alp@rosten.elektra.ru>
+From: fender <frozenspot@gmail.com>
+Subject: Re: SSHBrute Force: False Postives
+Date: Thu, 1 Feb 2007 13:32:18 -0300
+Message-ID: <7e36c7130702010832s7523c8a5vfaedca18e15f026a@mail.gmail.com>
+References: <02a601c745a8$9f7e1110$2904b00a@au.schpac.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200702010851.14795.alp@rosten.elektra.ru>
+In-Reply-To: <02a601c745a8$9f7e1110$2904b00a@au.schpac.local>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,71 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Dominic Caputo <jec6jec6@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+On 1/31/07, Dominic Caputo <jec6jec6@gmail.com> wrote:
+> I have been reading up on iptables and i am by no means an expert but i have
+> a problem with SSH brute force attacks on port 22. I am currently using the
+> config below to minimise these threats but i am constantly getting false
+> positives (logs actually say that my connection has been flagged as a brute
+> force connection even on the on the first attempt-but then on others it
+> connects first time with no problems)
+>
+> #SSH Brute-Force Scan Check
+> $IPTABLES -N SSH_Brute_Force
+> $IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name
+> SSH --set --rsource -j SSH_Brute_Force
+> $IPTABLES -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount
+> 4 --name SSH --rsource -j ACCEPT
+> $IPTABLES -A SSH_Brute_Force -j LOG --log-level info --log-prefix "SSH Brute
+> Force Attempt:  "
+> $IPTABLES -A SSH_Brute_Force -p tcp -j DROP
+>
+> Any help with this problem would be great
 
-Alexander Pyhalov a =E9crit :
-> I'm trying to add some rules, but they don't work, when contain port nu=
-mbers:=20
->=20
-> When I'm adding the following rule
->=20
-> #  Access to HTTP server
-> iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-> #  Access to SSH is allowed to all
-> iptables -A INPUT -p tcp -m --dport 22 -j ACCEPT
-> #  Access to Tomcat
-> iptables -A INPUT  -s <ip1>ACCEPT
-> iptables -A INPUT  -s <ip2>  -j ACCEPT
-> # Access to SMB is allowed to all
-> iptables -A INPUT -p tcp -m --dport 139   -j ACCEPT=20
-> iptables -A INPUT -p tcp -m --dport 445   -j ACCEPT=20
-> iptables -P INPUT REJECT=20
 
-There are typoes. Can you copy the output of iptables-save ?
+About the problem with ssh brute force attacks, you can use portknocking
+[1]. There are several portknocking projects, but you can use
+portknocko project [2]. This is a netfilter module that implements
+portknocking in an easy way. This module works in kernel 2.6.15, for
+now. It will work in newer versions soon. We need more feedback about
+this project.
 
-> I can't ssh to server.=20
+We will be thankful for your comments.
 
-"Server" =3D the host on which the above rules are created ?
 
-> iptables -A INPUT -p tcp -m tcp -s <my ip>   -j LOG
->=20
-> and got something strange in log:
-> eb  1 08:15:12 athena kernel: IN=3Deth0 OUT=3D MAC=3D00:0d:60:eb:a7:7c:=
-00:02:b3:d6:be:9d:08:00 SRC=3D58.48.57.58 DST=3D255.255.0.13 LEN=3D15942 =
-TOS=3D0x14
->  PREC=3D0x20 TTL=3D49 ID=3D25954 MF FRAG:32 PROTO=3D32
-> Feb  1 08:15:12 athena kernel: IN=3Deth0 OUT=3D MAC=3D00:0d:60:eb:a7:7c=
-:00:02:b3:d6:be:9d:08:00 SRC=3D58.48.57.58 DST=3D47.98.0.13 LEN=3D15942 T=
-OS=3D0x14 P
-> REC=3D0x20 TTL=3D49 ID=3D25954 MF FRAG:32 PROTO=3D32
-> Feb  1 08:15:12 athena kernel: IN=3Deth0 OUT=3D MAC=3D00:0d:60:eb:a7:7c=
-:00:02:b3:d6:be:9d:08:00 SRC=3D0.0.8.0 DST=3D0.0.0.13 LEN=3D0 TOS=3D0x00 =
-PREC=3D0x00 T
-> TL=3D0 ID=3D0 PROTO=3D0
-> Feb  1 08:15:12 athena kernel: IN=3Deth0 OUT=3D MAC=3D00:0d:60:eb:a7:7c=
-:00:02:b3:d6:be:9d:08:00 SRC=3D58.48.57.58 DST=3D0.0.0.13 LEN=3D15942 TOS=
-=3D0x14 PRE
-> C=3D0x20 TTL=3D49 ID=3D25954 MF FRAG:32 PROTO=3D32
-> Feb  1 08:15:12 athena kernel: IN=3Deth0 OUT=3D MAC=3D00:0d:60:eb:a7:7c=
-:00:02:b3:d6:be:9d:08:00 SRC=3D58.49.48.58 DST=3D255.255.0.13 LEN=3D15942=
- TOS=3D0x14
->  PREC=3D0x20 TTL=3D49 ID=3D25954 MF FRAG:32 PROTO=3D32
-> Feb  1 08:15:13 athena kernel: IN=3Deth0 OUT=3D MAC=3D00:0d:60:eb:a7:7c=
-:00:02:b3:d6:be:9d:08:00 SRC=3D58.48.57.58 DST=3D255.255.0.13 LEN=3D15942=
- TOS=3D0x14
->  PREC=3D0x20 TTL=3D49 ID=3D25954 MF FRAG:32 PROTO=3D32
-> Feb  1 08:15:13 athena kernel: IN=3Deth0 OUT=3D MAC=3D00:0d:60:eb:a7:7c=
-:00:02:b3:d6:be:9d:08:00 SRC=3D0.0.0.0 DST=3D0.0.0.13 LEN=3D19526 TOS=3D0=
-x04 PREC=3D0x
-> 40 TTL=3D0 ID=3D257 FRAG:256 PROTO=3D0
->=20
-> But these ip addresses are not my ip addresses.
+[1] http://www.portknocking.org
+[2] http://portknocko.berlios.de
 
-Invalid IP address (DST=3D0.0.0.13), huge packet length (LEN=3D15942),=20
-unknown protocol number (PROTO=3D32)... It looks like the LOG output is=20
-completely messed up. Can you compare this to a network packet capture=20
-using tcpdump/ethereal/wireshark/other ?
+--
+Federico
 
