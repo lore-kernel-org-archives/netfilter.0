@@ -1,14 +1,11 @@
-From: Michael Rash <mbr@cipherdyne.org>
-Subject: Re: SSHBrute Force: False Postives
-Date: Fri, 02 Feb 2007 09:38:15 -0500
-Message-ID: <20070202143815.GA30820@minastirith>
-References: <20070201120648.GA19604@animx.eu.org>
-	<20070201131319.71585.qmail@web25512.mail.ukl.yahoo.com>
-	<20070201231733.GA21833@animx.eu.org>
+From: Steve Wilson <netfilter@credulous.org>
+Subject: Trouble compiling libipt_time.so on iptables 1.3.7 with 2.6.19.2
+	kernel
+Date: Fri, 02 Feb 2007 17:15:03 +0000
+Message-ID: <1170436503.25117.20.camel@clarkew.steve-eddy.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <20070201231733.GA21833@animx.eu.org>
-Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,31 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-On Feb 01, 2007, Wakko Warner wrote:
+Hello, I must be doing something wrong, but for the life of me cannot
+work out what !!
 
-> franck joncourt wrote:
-> > In order to prevent such attacks, you can write iptables rules to set up port knocking. This is the way, I do.
-> 
-> I thought about doing this, but I ultimately decided against it.  The
-> problems of doing the knocking outweighted the benefits.  I prefer to let
-> them try a few times before my current rules ban them.
+I am trying to use '-m time' in my iptables config, I have never used it
+before and thought that as a first step I would upgrade to the latest an
+greatest kernel and also iptables source. 
 
-If someone finds a remote exploit in sshd, then just allowing
-connections at all can potentially expose you to compromise.  As far as
-port knocking is concerned, I agree, there are a ton of problems.  There
-is a better alternative called Single Packet Authorization:
+I pulled iptables 1.3.7 and patch-o-matic-mg from subversion, and with
+my new kernel all I have basic iptables working, however when I use the
+following :-
 
-http://www.cipherdyne.org/fwknop/docs/SPA.html
+./runme --download --kernel-path /usr/src/linux
+--iptables-path /usr/local/src/netfilter/iptables/ external
 
-Fwknop is an implementation that is based around iptables:
+to patch Kernel and iptables with code for time, the kernel compiles
+fine and I have a module 'ipt_time.ko'. However when I recompile
+iptables I do not get a corresponding 'libipt_time.so' created, indeed
+when I do 'make' I get the following output :-
 
-http://www.cipherdyne.org/fwknop/
+ Extensions found: IPv4:CLUSTERIP IPv4:connbytes IPv4:dccp IPv4:quota
+IPv4:recent IPv4:statistic IPv4:string IPv6:ah IPv6:esp IPv6:frag
+IPv6:ipv6header IPv6:REJECT IPv6:rt IPv6:sctp
 
---
-Michael Rash
-http://www.cipherdyne.org/
-Key fingerprint = 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
+Any ideas would be welcome, I have been banging my head against this all
+day !!
+
+Thanks
+
+
+Steve Wilson
+
 
