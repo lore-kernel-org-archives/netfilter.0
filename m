@@ -1,11 +1,11 @@
-From: Mike Boyer <boyer@administrative.com>
-Subject: static build of iptables 1.3.7 modules question
-Date: Fri, 2 Feb 2007 20:07:52 -0600 (CST)
-Message-ID: <200702030207.l1327qV05575@triclops.administrative.com>
-Reply-To: Mike Boyer <boyer@administrative.com>
+From: "James Shewey" <jdshewey@gmail.com>
+Subject: DNAT to ALL addresses in a range (at once)
+Date: Sat, 3 Feb 2007 00:27:06 -0800
+Message-ID: <da3a2a260702030027h36acac1bn423b26b0a1b7e28a@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-MD5: YfbQyl5Db1ikyJQGiHIZ0g==
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,39 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I've build a new kernel 2.4.34 with all the netfilter options selected and most of the networking options turned on.  I've built 
-iptables 1.3.7 using the following command line:
+is it possible in iptables to forward a port, range of ports or all
+ports (ideally all ports) to all addresses on a subnet (rather than
+select an ip address at random from the subnet as would be done with
+the "-to-destination 192.168.0.2 192.168.0.254" switch)?
 
-make KERNEL_DIR=/export/build/linux-2.4.34 DO_IPV6=0 NO_SHARED_LIBS=1 
-BINDIR=/usr/local/iptables/bin LIBDIR=/usr/local/iptables/lib 
-MANDIR=/usr/local/iptables/man
+Thanks for your help
+James
 
-make DO_IPV6=0 NO_SHARED_LIBS=1 BINDIR=/usr/local/iptables/bin 
-LIBDIR=/usr/local/iptables/lib MANDIR=/usr/local/iptables/man install
+--=20
+On 5/17/6, a spammer known as PharmaMaster (PM) attacked Blue Security (BS)=
+.
 
-this produces a static executable as I would expect with no shared libraries 
-however when I try to use any of the extensions, for example
+Using a program called Blue Frog, BS created a distributed network of
+over =BD mil users who would automatically send opt out requests to
+spammers' clients. This was so effective that PM declared that BS
+"found the right solution to stop spam, and I can't let this
+continue." PM then DDoSd BS, endangered the net by hacking a major
+router on the net's backbone to block BS' webpage and finally attacked
+typepad, where BS had just surrendered 30 min earlier. This attack
+caused about 2000 servers to go down including typepad and
+livejournal.While BS gave up because they felt this would "prevent a
+full-scale cyber-war that we just don't have the authority to start"
+The community disagreed and started a Blue Frog clone called okopipi
+which will prevents DDOS attacks by using decentralization.
 
-iptables  -A INPUT -p tcp --syn --dport 23 -m connlimit --connlimit-above 2 -j 
-REJECT
-
-I get:
-
-modprobe: Can't locate module ip_tables
-iptables: No chain/target/match by that name
-
-everything netfilter extensions related is built into the new kernel and
-the reciprocal objects are in the iptables static executable.  I'm not
-sure why its asking for an external module (I'm missing something).
-
-Up to this point my work with iptables has been pretty basic but I wanted to
-start using some more advanced matches.  Any help or suggestions would be
-greatly appreciated.
-
---Mike Boyer
-
+With your help we can fight back against PM and his spam mafia. Please
+join at okopipi.org and help take back our internet.
 
