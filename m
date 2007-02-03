@@ -1,13 +1,11 @@
-From: franck <joncourt_franck@yahoo.co.uk>
-Subject: Re: SSHBrute Force: False Postives
-Date: Fri, 02 Feb 2007 21:39:28 +0100
-Message-ID: <45C3A180.2020700@yahoo.co.uk>
-References: <20070201120648.GA19604@animx.eu.org>	<20070201131319.71585.qmail@web25512.mail.ukl.yahoo.com>	<20070201231733.GA21833@animx.eu.org>	<20070202143815.GA30820@minastirith>
-	<20070202172654.GA24236@animx.eu.org>
+From: Mike Boyer <boyer@administrative.com>
+Subject: static build of iptables 1.3.7 modules question
+Date: Fri, 2 Feb 2007 20:07:52 -0600 (CST)
+Message-ID: <200702030207.l1327qV05575@triclops.administrative.com>
+Reply-To: Mike Boyer <boyer@administrative.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070202172654.GA24236@animx.eu.org>
+Content-MD5: YfbQyl5Db1ikyJQGiHIZ0g==
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,62 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+I've build a new kernel 2.4.34 with all the netfilter options selected and most of the networking options turned on.  I've built 
+iptables 1.3.7 using the following command line:
 
-Wakko Warner wrote:
-> Michael Rash wrote:
->>> franck joncourt wrote:
->>>> In order to prevent such attacks, you can write iptables rules to set up port knocking. This is the way, I do.
->>> I thought about doing this, but I ultimately decided against it.  The
->>> problems of doing the knocking outweighted the benefits.  I prefer to let
->>> them try a few times before my current rules ban them.
->> If someone finds a remote exploit in sshd, then just allowing
->> connections at all can potentially expose you to compromise.  As far as
-> 
-> True.
-> 
->> port knocking is concerned, I agree, there are a ton of problems.  There
->> is a better alternative called Single Packet Authorization:
->>
->> http://www.cipherdyne.org/fwknop/docs/SPA.html
->>
->> Fwknop is an implementation that is based around iptables:
->>
->> http://www.cipherdyne.org/fwknop/
-> 
-> This still means that all authorized users have to do this which is not what
-> I want to do.  What if I'm at someone's house and decide I want in to my
-> system and they don't have any way of performing the port knocking or the
-> fwknop.
-> 
+make KERNEL_DIR=/export/build/linux-2.4.34 DO_IPV6=0 NO_SHARED_LIBS=1 
+BINDIR=/usr/local/iptables/bin LIBDIR=/usr/local/iptables/lib 
+MANDIR=/usr/local/iptables/man
 
-According to me, the only way to safely use ssh without having any
-sequence to perform, is the use of private/public key with passphrase.
+make DO_IPV6=0 NO_SHARED_LIBS=1 BINDIR=/usr/local/iptables/bin 
+LIBDIR=/usr/local/iptables/lib MANDIR=/usr/local/iptables/man install
 
-I have already heard about encrypted knocks, and this one seems great. I
-will give it a try.
+this produces a static executable as I would expect with no shared libraries 
+however when I try to use any of the extensions, for example
 
-- --
-Franck Joncourt
-http://www.debian.org
-http://smhteam.info/wiki/
-GPG server : pgpkeys.mit.edu
-Fingerprint : C10E D1D0 EF70 0A2A CACF  9A3C C490 534E 75C0 89FE
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+iptables  -A INPUT -p tcp --syn --dport 23 -m connlimit --connlimit-above 2 -j 
+REJECT
 
-iD8DBQFFw6GAxJBTTnXAif4RAvVCAKDPqJCbdfkwUY/BBqB5wbsVLWJqlwCgq3/3
-jv30ZCnHgUxBAy25ekdnmBw=
-=x2og
------END PGP SIGNATURE-----
+I get:
 
-		
-___________________________________________________________ 
-Inbox full of spam? Get leading spam protection and 1GB storage with All New Yahoo! Mail. http://uk.docs.yahoo.com/nowyoucan.html
+modprobe: Can't locate module ip_tables
+iptables: No chain/target/match by that name
+
+everything netfilter extensions related is built into the new kernel and
+the reciprocal objects are in the iptables static executable.  I'm not
+sure why its asking for an external module (I'm missing something).
+
+Up to this point my work with iptables has been pretty basic but I wanted to
+start using some more advanced matches.  Any help or suggestions would be
+greatly appreciated.
+
+--Mike Boyer
 
 
