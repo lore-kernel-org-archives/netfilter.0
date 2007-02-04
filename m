@@ -1,11 +1,9 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: DNAT to ALL addresses in a range (at once)
-Date: Sat, 3 Feb 2007 12:42:58 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0702031241540.27840@yvahk01.tjqt.qr>
-References: <da3a2a260702030027h36acac1bn423b26b0a1b7e28a@mail.gmail.com>
+From: "Tom Schemaitat" <tom_schemaitat@hotmail.com>
+Subject: H.323 or E.164 Extension
+Date: Sun, 04 Feb 2007 21:51:09 +0000
+Message-ID: <BAY122-F735171EF719ECFD260C0FFF990@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <da3a2a260702030027h36acac1bn423b26b0a1b7e28a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,22 +14,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: James Shewey <jdshewey@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
+Hi, I'm an audio visual systems engineer researching netfilter for use as an 
+H.323 router.
 
-> is it possible in iptables to forward a port, range of ports or all
-> ports (ideally all ports) to all addresses on a subnet (rather than
-> select an ip address at random from the subnet as would be done with
-> the "-to-destination 192.168.0.2 192.168.0.254" switch)?
+Is it possible to configure netfilter to route an inbound H.323 call to a 
+private IP based on the H.323 or E.164 extension entry? I'd expect to 
+reconfigure iptables on the fly by reading an extension and private IP 
+address out of a text file. I'm using ubuntu edgy (kernel 2.6.17-10)with 
+Polycom PVX, Polycom VSX7000, and Tandberg MPX6000 systems. Thank you.
 
-Sort of "Broadcast DNAT"? Not that I know of. (But you could write a 
-userspace replicator in conjunction with using tproxying.)
+_________________________________________________________________
+Get in the mood for Valentine's Day. View photos, recipes and more on your 
+Live.com page. 
+http://www.live.com/?addTemplate=ValentinesDay&ocid=T001MSN30A0701
 
-
-Jan
--- 
-ft: http://freshmeat.net/p/chaostables/
 
