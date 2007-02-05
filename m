@@ -1,9 +1,12 @@
-From: "Tom Schemaitat" <tom_schemaitat@hotmail.com>
-Subject: H.323 or E.164 Extension
-Date: Sun, 04 Feb 2007 21:51:09 +0000
-Message-ID: <BAY122-F735171EF719ECFD260C0FFF990@phx.gbl>
+From: Alan =?iso-8859-2?q?Krasi=F1ski?= <krasinski@dipol.com.pl>
+Subject: nat localhost
+Date: Mon, 5 Feb 2007 10:35:04 +0000
+Message-ID: <200702051035.04547.krasinski@dipol.com.pl>
+Reply-To: krasinski@dipol.com.pl
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,22 +17,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi, I'm an audio visual systems engineer researching netfilter for use as an 
-H.323 router.
-
-Is it possible to configure netfilter to route an inbound H.323 call to a 
-private IP based on the H.323 or E.164 extension entry? I'd expect to 
-reconfigure iptables on the fly by reading an extension and private IP 
-address out of a text file. I'm using ubuntu edgy (kernel 2.6.17-10)with 
-Polycom PVX, Polycom VSX7000, and Tandberg MPX6000 systems. Thank you.
-
-_________________________________________________________________
-Get in the mood for Valentine's Day. View photos, recipes and more on your 
-Live.com page. 
-http://www.live.com/?addTemplate=ValentinesDay&ocid=T001MSN30A0701
-
+Helo everybody.
+	I'm triying to nat myself on a single machne but without success. I'm using 
+two internet connections. Default route is through eth1 and i would like to 
+redirect dns traffic to eth0 (so to snat udp trafic on port 53 to ip of 
+eth0) . I'm a noob in this kind of traffic shapping so any kind of help would 
+be appreciateed. I'm now reading Linux Advanced Routing & Traffic Control 
+HOWTO.
 
