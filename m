@@ -1,14 +1,12 @@
-From: Sergey Alexanov <freak@volia.net>
-Subject: Re: ip_conntrack hashsize problem
-Date: Tue, 06 Feb 2007 19:37:12 +0200
-Message-ID: <45C8BCC8.3090808@volia.net>
-References: <45C89FD5.4020508@volia.net>
-	<Pine.LNX.4.61.0702061810530.30216@yvahk01.tjqt.qr>
-Reply-To: freak@volia.net
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Connect to localhost bound port from outside?
+Date: Tue, 6 Feb 2007 14:13:44 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0702061413090.3777@darkstar.sysinfo.com>
+References: <eppgne$mc1$1@sea.gmane.org> <45C06BE7.2080208@plouf.fr.eu.org>
+	<45C0B772.2090201@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0702061810530.30216@yvahk01.tjqt.qr>
+In-Reply-To: <45C0B772.2090201@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,78 +17,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Jan Engelhardt =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> On Feb 6 2007 17:33, Sergey Alexanov wrote:
->=20
->>can anybody suggest me in the following issue:
->>
->># grep ip_conntrack /etc/modprobe.conf
->>options ip_conntrack hashsize=3D2097152
->>
->>#  modprobe ip_conntrack
->>#  lsmod | grep ip_conntrack
->>ip_conntrack           53924  0
->>
->># cat /proc/sys/net/ipv4/netfilter/ip_conntrack_max
->>16777216
->># cat /proc/sys/net/ipv4/netfilter/ip_conntrack_buckets
->>2097152
->>
->>looking fine..
->>
->>but if i try to insert above 16000 rules with connection tracking i get=
-ting an
->>error:
->=20
->=20
-> "number of rules" is completely different to "ip_conntrack_max".
->=20
->=20
->=20
-> Jan
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Jan, im not completely understand what you mean...
+On Wed, 31 Jan 2007, Grant Taylor wrote:
 
-i try to aplly large set of rules without connection tracking,
-# wc -l ./firewall2.sav
-32771 ./firewall2.sav
-
-#less ./firewall2.sav
-*mangle
--A PREROUTING -p tcp -d xx.yy.240.0 --dport 80 -j MARK --set-mark 80
--A PREROUTING -p tcp -s xx.yy.240.0 --sport 80 -j MARK --set-mark 80
-[..skipped..]
--A PREROUTING -p tcp -d xx.yy.255.255 --dport 82 -j MARK --set-mark 82
--A PREROUTING -p tcp -s xx.yy.255.255 --sport 82 -j MARK --set-mark 82
-COMMIT
-
-and whooalah:
-# iptables-restore < ./firewall2.sav
-
-without errors and warnings
-
-# iptables -t mangle -L -n | wc -l
-32782
+> Pascal Hambourg wrote:
+>> Iptables will happily redirect anything you like to localhost, but the 
+>> kernel IP routing prohibits communications with a loopback address on a non 
+>> loopback interface and thus will drop the packets. This is similar to the 
+>> problem in the above thread "port forwarding through localhost", and the 
+>> same workaround is applicable.
+>
+> Does this apply if the reverse path filter is turned off?  Or is this a hard 
+> coded filter in the kernel that can not be gotten around?
+>
+> Another thought to the OP would be to use the Dummy interface in lieu of the 
+> Loop Back interface as I believe it does not have the same restrictions that 
+> Loop Back does.  However I could be mistaken.
+>
+> I have often considered using lo for local only but using dummy as a spur 
+> network to bind services to and then route traffic in to the spur network. 
+> Thoughts / Opinions?
+>
 
 
-in addition to connection tracking issues,
-in messages log file arised following warning all time when i try to=20
-apply ruleset with connection tracking:
+What's a "dummy" interface?
 
-kernel: allocation failed: out of vmalloc space - use vmalloc=3D<size> to=
-=20
-increase size.
+Thanks,
 
-unfortunately i dont have strong knowledge about tuning memory=20
-allocation and kernel hacking.. :(
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
 
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
 
---=20
-Sergey Alexanov
-SA1215-RIPE
-freak@volia.net
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
 
+iD8DBQFFyNNrst+vzJSwZikRAsmSAJ9yEz0ES2p3uwqd2nI6rqQ1+zFXNgCeNi8Z
+kcbjNi0RSrT0Q63CTUHlWxA=
+=SGzJ
+-----END PGP SIGNATURE-----
 
