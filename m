@@ -1,15 +1,11 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: How to filter packets resulting from hosts with
-	dynamic	IP-address
-Date: Tue, 06 Feb 2007 10:30:33 -0600
-Message-ID: <45C8AD29.2080108@riverviewtech.net>
-References: <200702061042.21497.frank.petran@inpho.de>	<45C896E7.3010105@riverviewtech.net>
-	<200702061652.24892.frank.petran@inpho.de>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: ip_conntrack hashsize problem
+Date: Tue, 6 Feb 2007 18:11:38 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0702061810530.30216@yvahk01.tjqt.qr>
+References: <45C89FD5.4020508@volia.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200702061652.24892.frank.petran@inpho.de>
+In-Reply-To: <45C89FD5.4020508@volia.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,20 +16,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
-
-Frank Petran wrote:
-> Port knocking is in my opinion a little bit clumsy to use especially if the 
-> users involved are no experts and something goes wrong.
-
-I was thinking that the port knocking would be for nothing more than a 
-request for the router to initiate an update with the information that 
-it found, not with any thing that is provided by the port knock. I.e. 
-the only thing that a port knock will do is request an update, NOT 
-provide the information for the update.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Sergey Alexanov <freak@volia.net>
+Cc: netfilter@lists.netfilter.org
 
 
+On Feb 6 2007 17:33, Sergey Alexanov wrote:
+> can anybody suggest me in the following issue:
+>
+> # grep ip_conntrack /etc/modprobe.conf
+> options ip_conntrack hashsize=2097152
+>
+> #  modprobe ip_conntrack
+> #  lsmod | grep ip_conntrack
+> ip_conntrack           53924  0
+>
+> # cat /proc/sys/net/ipv4/netfilter/ip_conntrack_max
+> 16777216
+> # cat /proc/sys/net/ipv4/netfilter/ip_conntrack_buckets
+> 2097152
+>
+> looking fine..
+>
+> but if i try to insert above 16000 rules with connection tracking i getting an
+> error:
 
-Grant. . . .
+"number of rules" is completely different to "ip_conntrack_max".
+
+
+
+Jan
+-- 
 
