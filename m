@@ -1,14 +1,14 @@
 From: Frank Petran <frank.petran@inpho.de>
 Subject: Re: How to filter packets resulting from hosts with dynamic
 	IP-address
-Date: Tue, 6 Feb 2007 16:52:24 +0100
-Message-ID: <200702061652.24892.frank.petran@inpho.de>
+Date: Tue, 6 Feb 2007 17:07:21 +0100
+Message-ID: <200702061707.22039.frank.petran@inpho.de>
 References: <200702061042.21497.frank.petran@inpho.de>
-	<45C896E7.3010105@riverviewtech.net>
+	<slrnesh7qv.82c.xpisar@album.ics.muni.cz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45C896E7.3010105@riverviewtech.net>
+In-Reply-To: <slrnesh7qv.82c.xpisar@album.ics.muni.cz>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -23,33 +23,15 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Thank you for your reply.
-
-On Tuesday 06 February 2007 15:55, Grant Taylor wrote:
-> Use some sort of port knocking setup that will trigger some 
-> process on your firewall 
-Port knocking is in my opinion a little bit clumsy to use especially if the 
-users involved are no experts and something goes wrong.
-
-> Another option might be to look at writing some sort of user space
-> daemon that you could have IPTables pass the packets to and return a yes
-> / no to the kernel.
-I suspected that. 
-
-> However, this would be duplicating some of / a lot 
-> of the effort that has gone in to IPTables and thus again sub optimal as
-> far as development is concerned.
-Well, hooking up to the ip_queue module using the QUEUE target does not seem 
-to be a too bad idea. I can still use iptables mechanisms to send only 
-packets destined for a special port to the queue target. All that needs to be 
-done by the user space deamon is to do a hostname lookup for allowed 
-hostnames, compare the looked up IP with the incoming IP and return 
-true/false depending on the match.
-
-I know, that this method will not be usefull in very busy routers since 
-hostname lookups generate additional traffic and CPU load. Traffic and CPU 
-load however is usually not a problem on typical small business or home 
-setups on a DSL line with dynamic IP assignment.
+On Tuesday 06 February 2007 16:31, Petr Pisar wrote:
+> As you can see, relaing on IP address is not secure. You should consider
+> using some type of authentication (e.g. IPsec).
+Yes, you are perfectly right. But authetication is only one part of the 
+solution. I have pretty bad experience with an open ssh port, although no one 
+has managed so far to break in, considerable amount of traffic was generated 
+on my connection trying to brute force their way in almost resulting in a 
+DOS. Preselecting who I would like to allow access, will reduce those attacs 
+to virtually zero.
 
 Frank
 -- 
