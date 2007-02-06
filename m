@@ -1,11 +1,14 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+From: Sergey Alexanov <freak@volia.net>
 Subject: Re: ip_conntrack hashsize problem
-Date: Tue, 6 Feb 2007 18:11:38 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0702061810530.30216@yvahk01.tjqt.qr>
+Date: Tue, 06 Feb 2007 19:37:12 +0200
+Message-ID: <45C8BCC8.3090808@volia.net>
 References: <45C89FD5.4020508@volia.net>
+	<Pine.LNX.4.61.0702061810530.30216@yvahk01.tjqt.qr>
+Reply-To: freak@volia.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45C89FD5.4020508@volia.net>
+In-Reply-To: <Pine.LNX.4.61.0702061810530.30216@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,36 +19,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Sergey Alexanov <freak@volia.net>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 Cc: netfilter@lists.netfilter.org
 
+Jan Engelhardt =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> On Feb 6 2007 17:33, Sergey Alexanov wrote:
+>=20
+>>can anybody suggest me in the following issue:
+>>
+>># grep ip_conntrack /etc/modprobe.conf
+>>options ip_conntrack hashsize=3D2097152
+>>
+>>#  modprobe ip_conntrack
+>>#  lsmod | grep ip_conntrack
+>>ip_conntrack           53924  0
+>>
+>># cat /proc/sys/net/ipv4/netfilter/ip_conntrack_max
+>>16777216
+>># cat /proc/sys/net/ipv4/netfilter/ip_conntrack_buckets
+>>2097152
+>>
+>>looking fine..
+>>
+>>but if i try to insert above 16000 rules with connection tracking i get=
+ting an
+>>error:
+>=20
+>=20
+> "number of rules" is completely different to "ip_conntrack_max".
+>=20
+>=20
+>=20
+> Jan
 
-On Feb 6 2007 17:33, Sergey Alexanov wrote:
-> can anybody suggest me in the following issue:
->
-> # grep ip_conntrack /etc/modprobe.conf
-> options ip_conntrack hashsize=2097152
->
-> #  modprobe ip_conntrack
-> #  lsmod | grep ip_conntrack
-> ip_conntrack           53924  0
->
-> # cat /proc/sys/net/ipv4/netfilter/ip_conntrack_max
-> 16777216
-> # cat /proc/sys/net/ipv4/netfilter/ip_conntrack_buckets
-> 2097152
->
-> looking fine..
->
-> but if i try to insert above 16000 rules with connection tracking i getting an
-> error:
+Jan, im not completely understand what you mean...
 
-"number of rules" is completely different to "ip_conntrack_max".
+i try to aplly large set of rules without connection tracking,
+# wc -l ./firewall2.sav
+32771 ./firewall2.sav
+
+#less ./firewall2.sav
+*mangle
+-A PREROUTING -p tcp -d xx.yy.240.0 --dport 80 -j MARK --set-mark 80
+-A PREROUTING -p tcp -s xx.yy.240.0 --sport 80 -j MARK --set-mark 80
+[..skipped..]
+-A PREROUTING -p tcp -d xx.yy.255.255 --dport 82 -j MARK --set-mark 82
+-A PREROUTING -p tcp -s xx.yy.255.255 --sport 82 -j MARK --set-mark 82
+COMMIT
+
+and whooalah:
+# iptables-restore < ./firewall2.sav
+
+without errors and warnings
+
+# iptables -t mangle -L -n | wc -l
+32782
 
 
+in addition to connection tracking issues,
+in messages log file arised following warning all time when i try to=20
+apply ruleset with connection tracking:
 
-Jan
--- 
+kernel: allocation failed: out of vmalloc space - use vmalloc=3D<size> to=
+=20
+increase size.
+
+unfortunately i dont have strong knowledge about tuning memory=20
+allocation and kernel hacking.. :(
+
+
+--=20
+Sergey Alexanov
+SA1215-RIPE
+freak@volia.net
+
 
