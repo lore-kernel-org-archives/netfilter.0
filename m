@@ -1,13 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Connect to localhost bound port from outside?
-Date: Tue, 6 Feb 2007 20:38:34 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0702062038020.22760@yvahk01.tjqt.qr>
-References: <eppgne$mc1$1@sea.gmane.org> <45C06BE7.2080208@plouf.fr.eu.org>
-	<45C0B772.2090201@riverviewtech.net>
-	<Pine.LNX.4.64.0702061413090.3777@darkstar.sysinfo.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: SSHBrute Force: False Postives
+Date: Tue, 6 Feb 2007 15:53:36 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0702061552320.3777@darkstar.sysinfo.com>
+References: <02a601c745a8$9f7e1110$2904b00a@au.schpac.local>
+	<7e36c7130702010832s7523c8a5vfaedca18e15f026a@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.64.0702061413090.3777@darkstar.sysinfo.com>
+In-Reply-To: <7e36c7130702010832s7523c8a5vfaedca18e15f026a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,23 +17,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: "R. DuFresne" <dufresne@sysinfo.com>
-Cc: Mail List - Netfilter <netfilter@lists.netfilter.org>, Grant Taylor <gtaylor@riverviewtech.net>
+To: fender <frozenspot@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-On Feb 6 2007 14:13, R. DuFresne wrote:
+On Thu, 1 Feb 2007, fender wrote:
+
+> On 1/31/07, Dominic Caputo <jec6jec6@gmail.com> wrote:
+>> I have been reading up on iptables and i am by no means an expert but i 
+>> have
+>> a problem with SSH brute force attacks on port 22. I am currently using the
+>> config below to minimise these threats but i am constantly getting false
+>> positives (logs actually say that my connection has been flagged as a brute
+>> force connection even on the on the first attempt-but then on others it
+>> connects first time with no problems)
+>> 
+>> #SSH Brute-Force Scan Check
+>> $IPTABLES -N SSH_Brute_Force
+>> $IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name
+>> SSH --set --rsource -j SSH_Brute_Force
+>> $IPTABLES -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount
+>> 4 --name SSH --rsource -j ACCEPT
+>> $IPTABLES -A SSH_Brute_Force -j LOG --log-level info --log-prefix "SSH 
+>> Brute
+>> Force Attempt:  "
+>> $IPTABLES -A SSH_Brute_Force -p tcp -j DROP
+>> 
+>> Any help with this problem would be great
 >
-> What's a "dummy" interface?
+>
+> About the problem with ssh brute force attacks, you can use portknocking
+> [1]. There are several portknocking projects, but you can use
+> portknocko project [2]. This is a netfilter module that implements
+> portknocking in an easy way. This module works in kernel 2.6.15, for
+> now. It will work in newer versions soon. We need more feedback about
+> this project.
+>
+> We will be thankful for your comments.
+>
+>
+> [1] http://www.portknocking.org
+> [2] http://portknocko.berlios.de
+>
+> --
+> Federico
+>
 
-	modprobe dummy
-	ip a a 192.168.222.222/24 dev dummy0
+portknocking is merely security through obscurity, is it not?
 
-it's not particularly useful, but well, it's there for whatever reason one
-might need it.
+especially so with modules that reside with preset defaults...
 
+Thanks,
 
-regs,
-Jan
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFyOrTst+vzJSwZikRAkjqAJ0TbijLmTG4qZMVl7ZwXQu2cABfLACfRO/0
+B78mFQx8+DCkDi/gY0vHgoo=
+=dZEg
+-----END PGP SIGNATURE-----
 
