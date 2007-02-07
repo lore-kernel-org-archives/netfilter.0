@@ -1,12 +1,14 @@
-From: franck <joncourt_franck@yahoo.co.uk>
-Subject: Re: a whitelist for outgoing syn port 80, 443 traffic for hosting
-Date: Wed, 07 Feb 2007 19:40:14 +0100
-Message-ID: <45CA1D0E.2040603@yahoo.co.uk>
-References: <45CA0B2A.7010704@pacific.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: IPTables and different types of NAT
+Date: Wed, 07 Feb 2007 13:01:21 -0600
+Message-ID: <45CA2201.7040205@riverviewtech.net>
+References: <45C9F509.8010309@gmail.com> <45C9FBFB.9090607@riverviewtech.net>
+	<45CA160E.90102@plouf.fr.eu.org>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45CA0B2A.7010704@pacific.net>
+In-Reply-To: <45CA160E.90102@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,49 +19,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Pascal Hambourg wrote:
+> No. Please read more carefully the definitions of "restricted cone NAT" 
+> and "port restricted cone NAT". Neither can be implemented with iptables 
+> because they do not fit in the per-connection model.
 
-Ken A wrote:
-> Hello,
-> 
+"""With restricted cone NAT, all requests from the same internal IP 
+address and port are mapped to the same external IP address and port. 
+Unlike a full cone NAT, an external host can send a packet to the 
+internal host only if the internal host had previously sent a packet to 
+it."""
 
-Hi,
+"""Port restricted cone NAT or symmetric NAT is like a restricted cone 
+NAT, but the restriction includes port numbers. Specifically, an 
+external host can send a packet to a particular port on the internal 
+host only if the internal host had previously sent a packet from that 
+port to the external host."""
 
-> Is anyone aware of a whitelist of hostnames of port 80,443 OUTGOING
-> traffic that should be considered 'normal' in a hosting environment?
-> ie: SYN traffic to ups.com, authorize.net, technorati, for ecommerce,
-> blogging, etc..
-> 
-> Categorizing traffic as good/bad is useful in this day of many php
-> remote file include bugs.
-> 
-> Thanks,
+The only other thing that comes to mind is that IPTables by its self 
+does not by default filter based on connection(s) and / or state. 
+However, there are match extensions that can be used to augment a basic 
+IPTables rule to do just that.  I.e.  CONNMARK in conjunction with MARK.
 
-Maybe this is what you are looking for :
+> "Symmetric NAT" works on a per-connection basis and is the NAT form that 
+> is the easiest to implement with iptables using SNAT or MASQUERADE.
 
-http://someonewhocares.org/hosts/zero/
+I understood Symetric NAT to be a form of "one to many" or "many to 
+many" NATing.  The key part being the "... to many" in where multiple 
+external IPs would be used.  I know that it is possible (though I have 
+not done it) to specify a range to SNAT traffic with IPTables to a range 
+of IP addresses.  I was not aware that MASQUERADE would do the same 
+thing.  I was under the impression that MASQUERADE used the single IP on 
+an interface as the IP to SNAT traffic to.
 
-- --
-Franck Joncourt
-http://www.debian.org
-http://smhteam.info/wiki/
-GPG server : pgpkeys.mit.edu
-Fingerprint : C10E D1D0 EF70 0A2A CACF  9A3C C490 534E 75C0 89FE
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQFFyh0NxJBTTnXAif4RAoThAKDXxecdEq5gWmncfj7TmOcb5EAdbgCfZrnx
-S/QzndrwWbq1CPhal5eQy8k=
-=mf7k
------END PGP SIGNATURE-----
 
-		
-___________________________________________________________ 
-The all-new Yahoo! Mail goes wherever you go - free your email address from your Internet provider. http://uk.docs.yahoo.com/nowyoucan.html
-
+Grant. . . .
 
