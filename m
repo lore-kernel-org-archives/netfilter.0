@@ -1,13 +1,12 @@
-From: =?ISO-8859-15?Q?Pedro_Gon=E7alves?= <pedro.pandre@gmail.com>
-Subject: Re: IPTables and different types of NAT
-Date: Wed, 07 Feb 2007 18:23:05 +0000
-Message-ID: <45CA1909.6000807@gmail.com>
-References: <45C9F509.8010309@gmail.com> <45C9FBFB.9090607@riverviewtech.net>
-	<45CA160E.90102@plouf.fr.eu.org>
+From: franck <joncourt_franck@yahoo.co.uk>
+Subject: Re: a whitelist for outgoing syn port 80, 443 traffic for hosting
+Date: Wed, 07 Feb 2007 19:40:14 +0100
+Message-ID: <45CA1D0E.2040603@yahoo.co.uk>
+References: <45CA0B2A.7010704@pacific.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45CA160E.90102@plouf.fr.eu.org>
+In-Reply-To: <45CA0B2A.7010704@pacific.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,40 +17,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Pascal Hambourg wrote:
->> "Full Cone Nat" could easily be implemented with inbound redirection 
->> to the internal system.
->
-> "Full cone NAT" can be implemented with 1-to-1 bidirectional NAT using 
-> SNAT+DNAT or NETMAP.
->
->> "Port Restricted Cone NAT" is nothing more than "Restricted Cone NAT" 
->> with port filtering.  This is what is usually done if you have a 
->> server behind a NATing router / firewall.  In this case, you only 
->> port forward the ports that you need.
->
-> No. Please read more carefully the definitions of "restricted cone 
-> NAT" and "port restricted cone NAT". Neither can be implemented with 
-> iptables because they do not fit in the per-connection model.
->
->> I'm not sure if there is inherent support for "Symmetric NAT" or not. 
->
-> "Symmetric NAT" works on a per-connection basis and is the NAT form 
-> that is the easiest to implement with iptables using SNAT or MASQUERADE.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-This is the main reason why I am asking: some people say it is possible 
-to implement all this types of NAT, some say it's not.
+Ken A wrote:
+> Hello,
+> 
 
-Pascal, can you tell me where can I find information regarding the 
-implementation of "Full Cone NAT" and "Symmetric NAT" using IPTables?
-All I can find is discussions about whether it is possible or not to 
-implement this.
+Hi,
 
-Thanks a lot
-Pedro
+> Is anyone aware of a whitelist of hostnames of port 80,443 OUTGOING
+> traffic that should be considered 'normal' in a hosting environment?
+> ie: SYN traffic to ups.com, authorize.net, technorati, for ecommerce,
+> blogging, etc..
+> 
+> Categorizing traffic as good/bad is useful in this day of many php
+> remote file include bugs.
+> 
+> Thanks,
+
+Maybe this is what you are looking for :
+
+http://someonewhocares.org/hosts/zero/
+
+- --
+Franck Joncourt
+http://www.debian.org
+http://smhteam.info/wiki/
+GPG server : pgpkeys.mit.edu
+Fingerprint : C10E D1D0 EF70 0A2A CACF  9A3C C490 534E 75C0 89FE
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFFyh0NxJBTTnXAif4RAoThAKDXxecdEq5gWmncfj7TmOcb5EAdbgCfZrnx
+S/QzndrwWbq1CPhal5eQy8k=
+=mf7k
+-----END PGP SIGNATURE-----
+
+		
+___________________________________________________________ 
+The all-new Yahoo! Mail goes wherever you go - free your email address from your Internet provider. http://uk.docs.yahoo.com/nowyoucan.html
 
 
