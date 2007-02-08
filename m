@@ -1,16 +1,14 @@
-From: fender <frozenspot@gmail.com>
-Subject: Re: SSHBrute Force: False Postives
-Date: Thu, 8 Feb 2007 00:17:01 -0300
-Message-ID: <7e36c7130702071917t7b07bb57na349c866aa80d872@mail.gmail.com>
-References: <02a601c745a8$9f7e1110$2904b00a@au.schpac.local>
-	<7e36c7130702010832s7523c8a5vfaedca18e15f026a@mail.gmail.com>
-	<Pine.LNX.4.64.0702061552320.3777@darkstar.sysinfo.com>
-	<20070207020141.GA6726@minastirith>
+From: =?ISO-8859-1?Q?Pedro_Gon=E7alves?= <pedro.pandre@gmail.com>
+Subject: Fwd: IPTables and different types of NAT
+Date: Thu, 08 Feb 2007 14:47:56 +0000
+Message-ID: <45CB381C.3030301@gmail.com>
+References: <45C9F509.8010309@gmail.com> <45C9FBFB.9090607@riverviewtech.net>	
+	<45CA160E.90102@plouf.fr.eu.org>
+	<45CA2201.7040205@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070207020141.GA6726@minastirith>
-Content-Disposition: inline
+In-Reply-To: <45CA2201.7040205@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,122 +21,60 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
-Cc: luis.floreani@gmail.com
 
-On 2/6/07, Michael Rash <mbr@cipherdyne.org> wrote:
-> On Feb 06, 2007, R. DuFresne wrote:
->
-> > -----BEGIN PGP SIGNED MESSAGE-----
-> > Hash: SHA1
-> >
-> > On Thu, 1 Feb 2007, fender wrote:
-> >
-> > >On 1/31/07, Dominic Caputo <jec6jec6@gmail.com> wrote:
-> > >>I have been reading up on iptables and i am by no means an expert but i
-> > >>have
-> > >>a problem with SSH brute force attacks on port 22. I am currently using
-> > >>the
-> > >>config below to minimise these threats but i am constantly getting false
-> > >>positives (logs actually say that my connection has been flagged as a
-> > >>brute
-> > >>force connection even on the on the first attempt-but then on others it
-> > >>connects first time with no problems)
-> > >>
-> > >>#SSH Brute-Force Scan Check
-> > >>$IPTABLES -N SSH_Brute_Force
-> > >>$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --name
-> > >>SSH --set --rsource -j SSH_Brute_Force
-> > >>$IPTABLES -A SSH_Brute_Force -m recent ! --rcheck --seconds 60 --hitcount
-> > >>4 --name SSH --rsource -j ACCEPT
-> > >>$IPTABLES -A SSH_Brute_Force -j LOG --log-level info --log-prefix "SSH
-> > >>Brute
-> > >>Force Attempt:  "
-> > >>$IPTABLES -A SSH_Brute_Force -p tcp -j DROP
-> > >>
-> > >>Any help with this problem would be great
-> > >
-> > >
-> > >About the problem with ssh brute force attacks, you can use portknocking
-> > >[1]. There are several portknocking projects, but you can use
-> > >portknocko project [2]. This is a netfilter module that implements
-> > >portknocking in an easy way. This module works in kernel 2.6.15, for
-> > >now. It will work in newer versions soon. We need more feedback about
-> > >this project.
-> > >
-> > >We will be thankful for your comments.
-> > >
-> > >
-> > >[1] http://www.portknocking.org
-> > >[2] http://portknocko.berlios.de
-> > >
-> > >--
-> > >Federico
-> > >
-> >
-> > portknocking is merely security through obscurity, is it not?
-> >
-> > especially so with modules that reside with preset defaults...
->
-> Section 4.1 of the following document provides a good argument for why
-> port knocking is not security through obscurity:
->
-> http://web.mac.com/s.j/iWeb/Security/Port%20Knocking%20and%20Single%20Packet%20Authorization/Port%20Knocking%20and%20Single%20Packet%20Authorization_files/An%20Analysis%20of%20Port%20Knocking%20and%20Single%20Packet%20Authorization%20%28Sebastien%20J.%20-%20ISG%202006%29_1.pdf
->
-> (Sorry for the length of that URL).
->
-> This argument applies equally well to single packet authorization, and
-> combine this with other security properties of SPA that are much more
-> robust that port knocking implementations; SPA is the way to go.  In
-> summary, these properties are:
->
-> - SPA does not suffer from the replay problem.
-> - SPA supports much more data communication (so things like asymmetric
->   encryption algorithms can be supported).
-> - SPA cannot be trivially broken just by spoofing a duplicate packet
->   into the port sequence.
-> - SPA does not look like a port scan to any intermediate IDS.
->
+I still don't have a clear answer whether it is possible or not to 
+implement all types of NAT.
 
-The portknocko project implements both security techniques:
-portknocking and "SPA". In our opinion, SPA is a portknocking variant,
-that is why
-we don't make a difference between them.
+So, has anyone implemented *any* kind of NAT?
+If so, how have you done?
+
+Best Regards
+Pedro
 
 
-Usage [1]:
+---------- Forwarded message ----------
+From: *Grant Taylor* <gtaylor@riverviewtech.net 
+<mailto:gtaylor@riverviewtech.net>>
+Date: Feb 7, 2007 7:01 PM
+Subject: Re: IPTables and different types of NAT
+To: Mail List - Netfilter <netfilter@lists.netfilter.org 
+<mailto:netfilter@lists.netfilter.org>>
+
+Pascal Hambourg wrote:
+ > No. Please read more carefully the definitions of "restricted cone NAT"
+ > and "port restricted cone NAT". Neither can be implemented with iptables
+ > because they do not fit in the per-connection model.
+
+"""With restricted cone NAT, all requests from the same internal IP
+address and port are mapped to the same external IP address and port.
+Unlike a full cone NAT, an external host can send a packet to the
+internal host only if the internal host had previously sent a packet to
+it."""
+
+"""Port restricted cone NAT or symmetric NAT is like a restricted cone
+NAT, but the restriction includes port numbers. Specifically, an
+external host can send a packet to a particular port on the internal
+host only if the internal host had previously sent a packet from that
+port to the external host."""
+
+The only other thing that comes to mind is that IPTables by its self
+does not by default filter based on connection(s) and / or state.
+However, there are match extensions that can be used to augment a basic
+IPTables rule to do just that.  I.e.  CONNMARK in conjunction with MARK.
+
+ > "Symmetric NAT" works on a per-connection basis and is the NAT form that
+ > is the easiest to implement with iptables using SNAT or MASQUERADE.
+
+I understood Symetric NAT to be a form of "one to many" or "many to
+many" NATing.  The key part being the "... to many" in where multiple
+external IPs would be used.  I know that it is possible (though I have
+not done it) to specify a range to SNAT traffic with IPTables to a range
+of IP addresses.  I was not aware that MASQUERADE would do the same
+thing.  I was under the impression that MASQUERADE used the single IP on
+an interface as the IP to SNAT traffic to.
 
 
-# iptables -P INPUT DROP
-# iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
+Grant. . . .
 
-1) "the simplest way": one rule portknocking:
-
-
-# iptables -A INPUT -p tcp -m state --state NEW
-            -m pknock --knockports 2002,2001,2004 --name SSH
-            -m tcp --dport 22 -j ACCEPT
-
-
-2) or "the secure way" (or "SPA"): hmac auth with two iptables rules:
-
-
-# iptables -A INPUT -p udp -m state --state NEW
-            -m pknock --knockports 2000 --name SSH
-            --opensecret your_opensecret --closesecret your_closesecret -j DROP
-
-# iptables -A INPUT -p tcp -m state --state NEW
-            -m pknock --checkip --name SSH -m tcp --dport 22 -j ACCEPT
-
-
-That's all, without daemons and without configuration files. Just
-iptables to configure your firewall rules ;)
-
-
-Best regards,
-
-[1] http://portknocko.berlios.de/README.html
-
---
-Federico
 
