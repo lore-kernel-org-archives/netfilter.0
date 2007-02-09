@@ -1,12 +1,13 @@
-From: Elvir Kuric <omasnjak@yahoo.com>
-Subject: Re: Route aggregaton/deaggregation from eth to g.703 and vica versa
-Date: Fri, 9 Feb 2007 11:39:12 -0800 (PST)
-Message-ID: <457351.86118.qm@web56212.mail.re3.yahoo.com>
-References: <20070209162256.7218b902@pulsar.inexo.com.br>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Iptables proxy to a different network
+Date: Fri, 09 Feb 2007 20:56:19 +0100
+Message-ID: <45CCD1E3.6010800@plouf.fr.eu.org>
+References: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>	<45CC5A91.4090200@plouf.fr.eu.org><Pine.LNX.4.61.0702091338030.31955@yvahk01.tjqt.qr>	<45CC919C.7030104@plouf.fr.eu.org><D392D4803D14354CBC49D772E19DD0CD45660B@zeus.w2k.nrlmry.navy.mil>	<45CCA8CC.6060205@plouf.fr.eu.org>
+	<D392D4803D14354CBC49D772E19DD0CD45660D@zeus.w2k.nrlmry.navy.mil>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070209162256.7218b902@pulsar.inexo.com.br>
+In-Reply-To: <D392D4803D14354CBC49D772E19DD0CD45660D@zeus.w2k.nrlmry.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,47 +18,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "Ethy H. Brito" <ethy.brito@inexo.com.br>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-I will read about this. The main " problem" is how
-encapsulate ethernet packets into multiple g.703
-lines, transfer it over multiple g.703 lines and join
-them again at other end.
+Andrus, Mr. Brian (Contractor) a =E9crit :
+>=20
+> In the diagram:
+> System A: Client
+> System B: Proxy
+> System C: Server
+[...]
+>>+---------------+
+>>|   System A    |
+>>+-------+-------+
+>>        |
+>>{=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D}
+>>{    Internet   }
+>>{=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D}
+>>        |
+>>+---------------+        +---A.B.C.x-----+
+>>|    Router     +--------|   System B    +
+>>+-------+-------+        +---------------+
+>>        |
+>>+-------+-------+
+>>|   System C    |
+>>+---X.Y.Z.x-----+
 
-Thanks 
+If you have the following rule in system B's nat table :
 
---- "Ethy H. Brito" <ethy.brito@inexo.com.br> wrote:
+-A PREROUTING -p tcp --dport 80 -j DNAT --to ip_C
 
-> On Fri, 9 Feb 2007 09:57:49 -0800 (PST)
-> Elvir Kuric <omasnjak@yahoo.com> wrote:
-> 
-> > 
-> > My question is: is possible ( I mean if someone
-> know
-> > and want to share knowledge ) make some route
-> > aggregation at locatioA from eth--to---four g.703
-> (
-> > 2MB) links and transfer data at ~10Mbps from
-> locationA
-> > to locationB, and at locationB join it again at
-> one   
-> >    
-> > 10Mbps link?
-> 
-> Maybe this helps:
-> http://tldp.org/HOWTO/NET3-4-HOWTO-6.html#ss6.2
-> 
-> Ethy
-> 
-> 
-> 
+you just need to add the following rule :
 
+-A POSTROUTING -d ip_C -p tcp --dport 80 -j SNAT --to ip_B
 
+System C will see ip_B as the client address and will send the replies=20
+back to it, so system B can put back the original addresses.
 
- 
-____________________________________________________________________________________
-The fish are biting. 
-Get more visitors on your site using Yahoo! Search Marketing.
-http://searchmarketing.yahoo.com/arp/sponsoredsearch_v2.php
+I suppose you are aware that the router would be a much better place to=20
+to the DNAT that system B. Actually you would not need system B. I am=20
+not sure I understand the purpose of this setup.
 
