@@ -1,12 +1,9 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Iptables proxy to a different network
-Date: Fri, 09 Feb 2007 12:27:13 +0100
-Message-ID: <45CC5A91.4090200@plouf.fr.eu.org>
-References: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>
+From: Scott van Looy <scott@ethosuk.org.uk>
+Subject: throttling an internal IP's upstream bandwidth
+Date: Fri, 9 Feb 2007 11:38:00 +0000 (GMT)
+Message-ID: <Pine.LNX.4.64.0702091134220.18820@novak.ethosuk.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +14,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
 
-Andrus, Mr. Brian (Contractor) a =E9crit :
-> I have a system with a single nic and ip address a.b.c.1 (system A)
-> I want to proxy incoming requests to port 80 to a different system on a
-> different subnet of x.y.z.1 (system B)
->=20
-> On system a.b.c.1, I am trying the following in my
-> /etc/sysconfig/iptables:
-> -----------
-> *nat
-> -A PREROUTING -p tcp --dport 80 -j DNAT --to x.y.z:80
-> COMMIT
-> -----------
->=20
-> This seems to ALMOST work. The request from a client system (System C)
-> go to System A, get rewritten and are received by system B. System B
-> seems to be responding, trying to send to System C directly, but (I
-> think) System C is expecting its response to be from system A, not
-> System B, so it ignores the responses.
+I'm on DSL, I only have small upstream and big downstream. Everything goes 
+through a 1:1 NAT iptables firewall - so internal IPs are directly mapped 
+to an external IP. I want to throttle the internal upstream bandwidth so 
+the internal machines can't upload at more than 25k/s as the maxing out of 
+the upstream is killing the much faster downstream...is there a way to do 
+this using iptables?
 
-As usual. Known issue.
-If you cannot or do not wish to prevent direct routing between the=20
-client and the server, you must SNAT the forwarded connections in the=20
-POSTROUTING chain.
+-- 
+Scott van Looy - email:me@ethosuk.org.uk | web:www.ethosuk.org.uk
+site:www.freakcity.net - the in place for outcasts since 2003
+PGP Fingerprint: 7180 5543 C6C4 747B 7E74  802C 7CF9 E526 44D9 D4A7
+       -------------------------------------------
+       |/// /// /// /// WIDE LOAD /// /// /// ///|
+       -------------------------------------------
+
+"It ain't so much the things we don't know that get us in trouble.  It's the
+things we know that ain't so."
+-- Artemus Ward aka Charles Farrar Brown
 
