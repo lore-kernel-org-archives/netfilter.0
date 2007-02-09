@@ -1,11 +1,12 @@
-From: "Andrus, Mr. Brian \(Contractor\)" <brian.andrus@nrlmry.navy.mil>
-Subject: Iptables proxy to a different network
-Date: Thu, 8 Feb 2007 16:41:40 -0800
-Message-ID: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Iptables proxy to a different network
+Date: Fri, 09 Feb 2007 12:27:13 +0100
+Message-ID: <45CC5A91.4090200@plouf.fr.eu.org>
+References: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Ok, this is maybe an odd one.
-I have a system with a single nic and ip address a.b.c.1 (system A)
-I want to proxy incoming requests to port 80 to a different system on a
-different subnet of x.y.z.1 (system B)
+Hello,
 
-On system a.b.c.1, I am trying the following in my
-/etc/sysconfig/iptables:
------------
-*nat
--A PREROUTING -p tcp --dport 80 -j DNAT --to x.y.z:80
-COMMIT
------------
+Andrus, Mr. Brian (Contractor) a =E9crit :
+> I have a system with a single nic and ip address a.b.c.1 (system A)
+> I want to proxy incoming requests to port 80 to a different system on a
+> different subnet of x.y.z.1 (system B)
+>=20
+> On system a.b.c.1, I am trying the following in my
+> /etc/sysconfig/iptables:
+> -----------
+> *nat
+> -A PREROUTING -p tcp --dport 80 -j DNAT --to x.y.z:80
+> COMMIT
+> -----------
+>=20
+> This seems to ALMOST work. The request from a client system (System C)
+> go to System A, get rewritten and are received by system B. System B
+> seems to be responding, trying to send to System C directly, but (I
+> think) System C is expecting its response to be from system A, not
+> System B, so it ignores the responses.
 
-This seems to ALMOST work. The request from a client system (System C)
-go to System A, get rewritten and are received by system B. System B
-seems to be responding, trying to send to System C directly, but (I
-think) System C is expecting its response to be from system A, not
-System B, so it ignores the responses. At least, I see that kind of
-traffic with tcpdump on each system.
-
-Any help/ideas here? Perhaps there is a different approach other than
-iptables too. FWIW, I want System A to be able to proxy http, dns and
-ftp to System B on a different network.
-
-
-Brian Andrus
+As usual. Known issue.
+If you cannot or do not wish to prevent direct routing between the=20
+client and the server, you must SNAT the forwarded connections in the=20
+POSTROUTING chain.
 
