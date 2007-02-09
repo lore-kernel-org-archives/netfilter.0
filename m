@@ -1,12 +1,11 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Iptables proxy to a different network
-Date: Fri, 9 Feb 2007 13:38:51 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0702091338030.31955@yvahk01.tjqt.qr>
-References: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>
-	<45CC5A91.4090200@plouf.fr.eu.org>
+From: Steve <netfilter@arntzen.us>
+Subject: How to mangle source packet source ports to a fixed range
+Date: Fri, 9 Feb 2007 09:15:56 -0600
+Message-ID: <200702090915.56546.netfilter@arntzen.us>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45CC5A91.4090200@plouf.fr.eu.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+I have a need to set the source packet's high (unprivileged) source ports to a 
+fixed range of high  ports on a firewall providing NAT.
 
-On Feb 9 2007 12:27, Pascal Hambourg wrote:
->> -----------
->> *nat
->> -A PREROUTING -p tcp --dport 80 -j DNAT --to x.y.z:80
->> COMMIT
->> -----------
->> 
->> This seems to ALMOST work. The request from a client system (System C)
->> go to System A, get rewritten and are received by system B. System B
->> seems to be responding, trying to send to System C directly, but (I
->> think) System C is expecting its response to be from system A, not
->> System B, so it ignores the responses.
->
-> As usual. Known issue.
-> If you cannot or do not wish to prevent direct routing between the client and
-> the server, you must SNAT the forwarded connections in the POSTROUTING chain.
+The goal is to be able to identify the inside machines at the destination 
+after NAT has changed the addresses.  This is for identification only.  I do 
+not need to connect back to the machines inside the firewall.  I realize this 
+may break certain protocols which may use dedicated unprivileged ports.
 
-Or make it so that any packets from C pass B. For example, by setting up
-your proxy box as a router or bridge (both approaches work) in the middle.
+i.e.:
 
+PREROUTING -i eth0 -p tcp -m tcp -s 192.168.0.x  --sport 1024:65535 -j 
+REDIRECT --to-ports 2000-2200
 
-Jan
--- 
-ft: http://freshmeat.net/p/chaostables/
+The above modifies the destination port based on the source port.  I wish to 
+modify the source port (  --from-ports ? ).
+
+By already knowing the range of high ports used per internal IP address, I can 
+tell which machine inside is sending the data.
+
+If someone knows another way of doing this, I would appreciate any 
+suggestions.
+
+Thanks,
+
+Steve.
 
