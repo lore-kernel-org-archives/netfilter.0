@@ -1,14 +1,12 @@
-From: "Andrus, Mr. Brian \(Contractor\)" <brian.andrus@nrlmry.navy.mil>
-Subject: RE: Iptables proxy to a different network
-Date: Fri, 9 Feb 2007 10:50:55 -0800
-Message-ID: <D392D4803D14354CBC49D772E19DD0CD45660D@zeus.w2k.nrlmry.navy.mil>
-References: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>	<45CC5A91.4090200@plouf.fr.eu.org><Pine.LNX.4.61.0702091338030.31955@yvahk01.tjqt.qr>	<45CC919C.7030104@plouf.fr.eu.org><D392D4803D14354CBC49D772E19DD0CD45660B@zeus.w2k.nrlmry.navy.mil>
-	<45CCA8CC.6060205@plouf.fr.eu.org>
+From: Elvir Kuric <omasnjak@yahoo.com>
+Subject: Re: Route aggregaton/deaggregation from eth to g.703 and vica versa
+Date: Fri, 9 Feb 2007 11:39:12 -0800 (PST)
+Message-ID: <457351.86118.qm@web56212.mail.re3.yahoo.com>
+References: <20070209162256.7218b902@pulsar.inexo.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <45CCA8CC.6060205@plouf.fr.eu.org>
+In-Reply-To: <20070209162256.7218b902@pulsar.inexo.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,59 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Ethy H. Brito" <ethy.brito@inexo.com.br>, netfilter@lists.netfilter.org
 
-My apologies.
+I will read about this. The main " problem" is how
+encapsulate ethernet packets into multiple g.703
+lines, transfer it over multiple g.703 lines and join
+them again at other end.
 
-In the diagram:
-System A: Client
-System B: Proxy
-System C: Server=20
+Thanks 
+
+--- "Ethy H. Brito" <ethy.brito@inexo.com.br> wrote:
+
+> On Fri, 9 Feb 2007 09:57:49 -0800 (PST)
+> Elvir Kuric <omasnjak@yahoo.com> wrote:
+> 
+> > 
+> > My question is: is possible ( I mean if someone
+> know
+> > and want to share knowledge ) make some route
+> > aggregation at locatioA from eth--to---four g.703
+> (
+> > 2MB) links and transfer data at ~10Mbps from
+> locationA
+> > to locationB, and at locationB join it again at
+> one   
+> >    
+> > 10Mbps link?
+> 
+> Maybe this helps:
+> http://tldp.org/HOWTO/NET3-4-HOWTO-6.html#ss6.2
+> 
+> Ethy
+> 
+> 
+> 
 
 
 
-Brian Andrus
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org =
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Pascal =
-Hambourg
-Sent: Friday, February 09, 2007 9:01 AM
-To: netfilter@lists.netfilter.org
-Subject: Re: Iptables proxy to a different network
-
-Andrus, Mr. Brian (Contractor) a =E9crit :
->=20
-> So to properly do this, I _must_ SNAT the connection
-
-It is a possibility.
-
-> and route them back from system C via system B?
-
-"Or", not "and". If you SNAT, the return traffic will be routed =
-properly.
-
-> Diagram:
->=20
-> +---------------+
-> |   System A    |
-> +-------+-------+
->         |
-> {=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D}
-> {    Internet   }
-> {=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D}
->         |
-> +---------------+        +---A.B.C.x-----+
-> |    Router     +--------|   System B    +
-> +-------+-------+        +---------------+
->         |
-> +-------+-------+
-> |   System C    |
-> +---X.Y.Z.x-----+
-
-This is getting complicated...
-In your first message, you said that A (the proxy) was a.b.c.1 and  B =
-(the server) was x.y.z.1.
-In this diagram, where are the client, the proxy and the server ?
+ 
+____________________________________________________________________________________
+The fish are biting. 
+Get more visitors on your site using Yahoo! Search Marketing.
+http://searchmarketing.yahoo.com/arp/sponsoredsearch_v2.php
 
