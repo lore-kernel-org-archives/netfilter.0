@@ -1,12 +1,14 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How to mangle source packet source ports to a fixed range
-Date: Fri, 09 Feb 2007 16:34:04 +0100
-Message-ID: <45CC946C.4060201@plouf.fr.eu.org>
-References: <200702090915.56546.netfilter@arntzen.us>
+From: "Andrus, Mr. Brian \(Contractor\)" <brian.andrus@nrlmry.navy.mil>
+Subject: RE: Iptables proxy to a different network
+Date: Fri, 9 Feb 2007 08:04:28 -0800
+Message-ID: <D392D4803D14354CBC49D772E19DD0CD45660B@zeus.w2k.nrlmry.navy.mil>
+References: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>	<45CC5A91.4090200@plouf.fr.eu.org><Pine.LNX.4.61.0702091338030.31955@yvahk01.tjqt.qr>
+	<45CC919C.7030104@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200702090915.56546.netfilter@arntzen.us>
+Content-class: urn:content-classes:message
+In-Reply-To: <45CC919C.7030104@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +19,71 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hmmm.
 
-Steve a =E9crit :
-> I have a need to set the source packet's high (unprivileged) source por=
-ts to a=20
-> fixed range of high  ports on a firewall providing NAT.
+So to properly do this, I _must_ SNAT the connection and route them back =
+from system C via system B?
+I was afraid of that. Not sure how I would route them because System C =
+is on a different subnet than system B.
 
-NAT =3D source NAT (or masquerading) ?
+Diagram:
 
-> The goal is to be able to identify the inside machines at the destinati=
-on=20
-> after NAT has changed the addresses.  This is for identification only. =
- I do=20
-> not need to connect back to the machines inside the firewall.  I realiz=
-e this=20
-> may break certain protocols which may use dedicated unprivileged ports.
++---------------+
+|   System A    |
++-------+-------+
+        |
+{=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D}
+{    Internet   }
+{=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D}
+        |
++---------------+        +---A.B.C.x-----+
+|    Router     +--------|   System B    +
++-------+-------+        +---------------+
+        |
++-------+-------+
+|   System C    |
++---X.Y.Z.x-----+
+
+
+To make matters worse, System C runs Windoze. I am trying to have =
+A.B.C.x be my DMZ with System B as my proxy for various services.
+
+Brian
+
+
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org =
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Pascal =
+Hambourg
+Sent: Friday, February 09, 2007 7:22 AM
+To: netfilter@lists.netfilter.org
+Subject: Re: Iptables proxy to a different network
+
+Jan Engelhardt a =E9crit :
+> On Feb 9 2007 12:27, Pascal Hambourg wrote:
 >=20
-> i.e.:
+>>>-----------
+>>>*nat
+>>>-A PREROUTING -p tcp --dport 80 -j DNAT --to x.y.z:80 COMMIT
+>>>-----------
+>>
+>>If you cannot or do not wish to prevent direct routing between the=20
+>>client and the server, you must SNAT the forwarded connections in the =
+POSTROUTING chain.
 >=20
-> PREROUTING -i eth0 -p tcp -m tcp -s 192.168.0.x  --sport 1024:65535 -j=20
-> REDIRECT --to-ports 2000-2200
->=20
-> The above modifies the destination port based on the source port.
+> Or make it so that any packets from C pass B.
 
-Not only it modifies the destination port but also the destination addres=
-s.
+This is what I meant when I wrote "prevent direct routing between the =
+client and the server".
 
->  I wish to modify the source port (  --from-ports ? ).
+> For example, by setting up
+> your proxy box as a router or bridge (both approaches work) in the =
+middle.
 
-POSTROUTING [...] -j SNAT --to-source [ipaddr[-ipaddr]]:port-port
-or
-POSTROUTING [...] -j MASQUERADE --to-ports port-port
+I may be wrong, but doing IP NAT on a bridge seems to me quite unnatural =
+and troublesome.
 
