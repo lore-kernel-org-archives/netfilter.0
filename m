@@ -1,11 +1,13 @@
-From: Steve <netfilter@arntzen.us>
-Subject: How to mangle source packet source ports to a fixed range
-Date: Fri, 9 Feb 2007 09:15:56 -0600
-Message-ID: <200702090915.56546.netfilter@arntzen.us>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Iptables proxy to a different network
+Date: Fri, 09 Feb 2007 16:22:04 +0100
+Message-ID: <45CC919C.7030104@plouf.fr.eu.org>
+References: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>	<45CC5A91.4090200@plouf.fr.eu.org>
+	<Pine.LNX.4.61.0702091338030.31955@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0702091338030.31955@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +18,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I have a need to set the source packet's high (unprivileged) source ports to a 
-fixed range of high  ports on a firewall providing NAT.
+Jan Engelhardt a =E9crit :
+> On Feb 9 2007 12:27, Pascal Hambourg wrote:
+>=20
+>>>-----------
+>>>*nat
+>>>-A PREROUTING -p tcp --dport 80 -j DNAT --to x.y.z:80
+>>>COMMIT
+>>>-----------
+>>
+>>If you cannot or do not wish to prevent direct routing between the clie=
+nt and
+>>the server, you must SNAT the forwarded connections in the POSTROUTING =
+chain.
+>=20
+> Or make it so that any packets from C pass B.
 
-The goal is to be able to identify the inside machines at the destination 
-after NAT has changed the addresses.  This is for identification only.  I do 
-not need to connect back to the machines inside the firewall.  I realize this 
-may break certain protocols which may use dedicated unprivileged ports.
+This is what I meant when I wrote "prevent direct routing between the=20
+client and the server".
 
-i.e.:
+> For example, by setting up
+> your proxy box as a router or bridge (both approaches work) in the midd=
+le.
 
-PREROUTING -i eth0 -p tcp -m tcp -s 192.168.0.x  --sport 1024:65535 -j 
-REDIRECT --to-ports 2000-2200
-
-The above modifies the destination port based on the source port.  I wish to 
-modify the source port (  --from-ports ? ).
-
-By already knowing the range of high ports used per internal IP address, I can 
-tell which machine inside is sending the data.
-
-If someone knows another way of doing this, I would appreciate any 
-suggestions.
-
-Thanks,
-
-Steve.
+I may be wrong, but doing IP NAT on a bridge seems to me quite=20
+unnatural and troublesome.
 
