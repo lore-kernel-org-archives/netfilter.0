@@ -1,11 +1,11 @@
-From: "Jorge Canas" <jcanas2000@hotmail.com>
-Subject: Re: How to loop back internal traffic?
-Date: Sat, 10 Feb 2007 15:48:13 -0500
-Message-ID: <BAY101-F17E518D8A7EE43BD96442BD9930@phx.gbl>
-References: <1171105666.4319.5.camel@anduril.intranet.cartel-securite.net>
+From: "Sven Agnew" <sven.agnew@gmail.com>
+Subject: Assistance required marking packets for access to l2tp
+Date: Sun, 11 Feb 2007 01:29:58 +0200
+Message-ID: <fa4605890702101529u858a9ccqdda403774ff9c428@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1171105666.4319.5.camel@anduril.intranet.cartel-securite.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,48 +16,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-To: blancher@cartel-securite.fr
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
->From: Cedric Blancher <blancher@cartel-securite.fr>
->To: Jorge Canas <jcanas2000@hotmail.com>
->
->Le samedi 10 f=E9vrier 2007 =E0 03:45 -0500, Jorge Canas a =E9crit :
-> > How do I configure the firewall rules on the gw so that the port=20
->forwarding
-> > also occurs when my other local network machines try to go to the=20
->website
-> > via the public domain name?
->
->You have to extend your SNAT rule so thoses machines egts NATed when
->trying to reach this webserver using its public IP, otherwise, you'll
->get a triangle situation where your webserver sends its SYN/ACK directly
->through the LAN with its private IP.
->
->Something like:
->
->	iptables -t nat -A POSTROUTING -s $LAN -d $WebServPrivIP \
->		-j SNAT --to-source $GWPrivIP
->
->
->BTW, it's a FAQ, but I agree it might be difficult to find relevant
->answers in the wild.
+ Hello everyone,
 
-Thanks for the reply Cedric.  I tried the rule but it did not work.  I got =
-a=20
-connection refused message. This is the rule I added:
+    I am new to iptables. I am hoping someone can assist me with a
+    problem setting a mark for esp packets and then matching them to
+    allow access to l2tpd for the purpose of creating a vpn from a WinXP
+roadwarrior ( client )
+    to our Linux server.
+    below are the iptables commands that i am using ( found at
+    www.funknet.org/doc/tunnel/l2tp.html).
+    The configuration of iptables is being done with firehol thusly:-
+    #iptables -t mangle -A PREROUTING -i eth0 -p esp -j MARK --set-mark 1
+    #iptables -A INPUT -i eth0 -m mark --mark 1 -j ACCEPT
+    #
+    #iptables -A OUTPUT -s a.b.c.d -p udp -m udp --sport 1701 -j ACCEPT
+    #
+    #iptables -A INPUT -p esp -j ACCEPT
+    #iptables -A OUTPUT -p esp -j ACCEPT
+    #
+    #iptables -A INPUT -d a.b.c.d -p udp -m udp --dport 500 -j ACCEPT
 
-iptables -A POSTROUTING -s 192.168.123.0/24  -d 192.168.123.164 -j SNAT=20
---to-source 192.168.123.161 -t nat
+- Ignored:
+    #iptables -A OUTPUT -s a.b.c.d -p udp -m udp --sport 500 -j ACCEPT
+    #
+      -where a.b.c.d is the external ip address of the firehol host.
 
-My internal webserver is running at 192.168.123.164
-The internal interface of the GW is 192.168.123.161
+    I am then trying to match the packets and allow access to l2tpd, so
+    that the firewall will allow tunneled data access to hosts and
+    services behind it.
+    Thus:
 
-_________________________________________________________________
-Don=92t miss your chance to WIN 10 hours of private jet travel from Microso=
-ft=20
-Office Live http://clk.atdmt.com/MRT/go/mcrssaub0540002499mrt/direct/01/
+    #server_l2tp_ports="udp/1701"
+    #client_l2tp_ports="any"
 
+    #interface eth0 internet
+    #server l2tp accept mark 1
+
+    I am running the following OS
+
+    #host ~ # uname -a
+    #Linux fw 2.6.16-gentoo-r9 #2 SMP Fri Dec 8 10:00:15 UTC 2006 i686
+    Intel(R) Pentium(R) 4 CPU 3.00GHz GenuineIntel GNU/Linux
+
+    and my version of iptables is
+
+    #host ~ # iptables --version
+    #iptables v1.3.5
+
+    Thanking  you in advance,
+
+    - --
+    Sven Agnew
 
