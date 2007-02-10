@@ -1,17 +1,9 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Iptables proxy to a different network
-Date: Fri, 9 Feb 2007 23:22:07 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0702092307520.31955@yvahk01.tjqt.qr>
-References: <D392D4803D14354CBC49D772E19DD0CD45660A@zeus.w2k.nrlmry.navy.mil>
-	<45CC5A91.4090200@plouf.fr.eu.org>
-	<Pine.LNX.4.61.0702091338030.31955@yvahk01.tjqt.qr>
-	<45CC919C.7030104@plouf.fr.eu.org>
-	<Pine.LNX.4.61.0702091848340.31955@yvahk01.tjqt.qr>
-	<45CCE9D0.6080808@plouf.fr.eu.org>
+From: "Jorge Canas" <jcanas2000@hotmail.com>
+Subject: How to loop back internal traffic?
+Date: Sat, 10 Feb 2007 03:45:00 -0500
+Message-ID: <BAY101-F34372C92C74BBC676F0D39D9930@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45CCE9D0.6080808@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,41 +14,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
+Hi,
 
-On Feb 9 2007 22:38, Pascal Hambourg wrote:
-> Jan Engelhardt a =C3=A9crit :
->> >=20
->> > I may be wrong, but doing IP NAT on a bridge seems to me quite
->> > unnatural and
->> > troublesome.
->>=20
->> A bridge is like a 'direct connection' so you cannot use NAT.
->
-> My idea of a bridge is a kind of software switch.
-> Then why did you mention "setting up your proxy box as bridge" ?
+I have a machine configured as my gateway: nat, fw & dhcp server for other 
+machines inside my local network.  The gw machine has a public IP (assigned 
+via DHCP from ISP) and a public domain name (updated through ddns).
 
-Ok so I confused what the OP wanted [-t nat -A PREROUTING -p tcp --dport 80=
- -j
---DNAT to x.y.z:80] with "the box does an rinetd-style approach" [e.g. squi=
-d],
-so that the connection is not DNATed (A->C) but two connections actually ex=
-ist
-(A->B, B->C).
+I have one of my other internal machines running a webserver.  The gw just 
+does port forwarding of external traffic (destined for port 80) to this 
+other internal machine.
 
+How do I configure the firewall rules on the gw so that the port forwarding 
+also occurs when my other local network machines try to go to the website 
+via the public domain name?
 
-However, the more I think of it, there actually is a way with
-proxy-on-a-bridge. Though, it's more like "degrading the bridge to a router=
-":
+Thanks.
 
-ebtables -t broute -A BROUTING -i Intern -p tcp --dport 80 -j DROP;
-ebtables -t broute -A BROUTING -o Extern -p tcp --sport 80 -j DROP;
+_________________________________________________________________
+Invite your Hotmail contacts to join your friends list with Windows Live 
+Spaces 
+http://clk.atdmt.com/MSN/go/msnnkwsp0070000001msn/direct/01/?href=http://spaces.live.com/spacesapi.aspx?wx_action=create&wx_url=/friends.aspx&mkt=en-us
 
-
-Jan
---=20
-ft: http://freshmeat.net/p/chaostables/
 
