@@ -1,11 +1,10 @@
-From: "Sven Agnew" <sven.agnew@gmail.com>
-Subject: Assistance required marking packets for access to l2tp
-Date: Sun, 11 Feb 2007 01:29:58 +0200
-Message-ID: <fa4605890702101529u858a9ccqdda403774ff9c428@mail.gmail.com>
+From: Franck Joncourt <joncourt_franck@yahoo.co.uk>
+Subject: Classify target
+Date: Sun, 11 Feb 2007 15:13:11 +0100
+Message-ID: <45CF2477.4070906@yahoo.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,58 +15,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
 
- Hello everyone,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-    I am new to iptables. I am hoping someone can assist me with a
-    problem setting a mark for esp packets and then matching them to
-    allow access to l2tpd for the purpose of creating a vpn from a WinXP
-roadwarrior ( client )
-    to our Linux server.
-    below are the iptables commands that i am using ( found at
-    www.funknet.org/doc/tunnel/l2tp.html).
-    The configuration of iptables is being done with firehol thusly:-
-    #iptables -t mangle -A PREROUTING -i eth0 -p esp -j MARK --set-mark 1
-    #iptables -A INPUT -i eth0 -m mark --mark 1 -j ACCEPT
-    #
-    #iptables -A OUTPUT -s a.b.c.d -p udp -m udp --sport 1701 -j ACCEPT
-    #
-    #iptables -A INPUT -p esp -j ACCEPT
-    #iptables -A OUTPUT -p esp -j ACCEPT
-    #
-    #iptables -A INPUT -d a.b.c.d -p udp -m udp --dport 500 -j ACCEPT
+Hello,
 
-- Ignored:
-    #iptables -A OUTPUT -s a.b.c.d -p udp -m udp --sport 500 -j ACCEPT
-    #
-      -where a.b.c.d is the external ip address of the firehol host.
+I am looking for a set of rules in order to allow me to set priority on
+traffic. I mean, when I use ftp my full bandwidth is used, and waiting
+for a result on google for a minute is not a pleasure.
 
-    I am then trying to match the packets and allow access to l2tpd, so
-    that the firewall will allow tunneled data access to hosts and
-    services behind it.
-    Thus:
+So, by now, I have found the classify match could be of interest to me.
 
-    #server_l2tp_ports="udp/1701"
-    #client_l2tp_ports="any"
+Here is an example fom the iptables tutorial :
 
-    #interface eth0 internet
-    #server l2tp accept mark 1
+iptables -t mangle -A POSTROUTING -p tcp --dport 80 -j CLASSIFY
+- --set-class 20:10
 
-    I am running the following OS
+I have read quickly the lartc howto (15.10.1) and it does not seem that
+easy. I suppose I have to create two classes, one for ftp traffic and
+another one for the main traffic.
 
-    #host ~ # uname -a
-    #Linux fw 2.6.16-gentoo-r9 #2 SMP Fri Dec 8 10:00:15 UTC 2006 i686
-    Intel(R) Pentium(R) 4 CPU 3.00GHz GenuineIntel GNU/Linux
+Could anyone confirm that the way I have to do ? If not, do you have a
+clue or a link ?
 
-    and my version of iptables is
+- --
+Franck Joncourt
+http://www.debian.org
+http://smhteam.info/wiki/
+GPG server : pgpkeys.mit.edu
+Fingerprint : C10E D1D0 EF70 0A2A CACF  9A3C C490 534E 75C0 89FE
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-    #host ~ # iptables --version
-    #iptables v1.3.5
+iD8DBQFFzyR3xJBTTnXAif4RAhBWAJwNKl53L4v1tG98zfaeY0uvw2f1twCgk6nQ
+jD7nJQS75jGg3EZvsCOUiSg=3D
+=3DBR6n
+-----END PGP SIGNATURE-----
 
-    Thanking  you in advance,
+	=09
+___________________________________________________________=20
+Try the all-new Yahoo! Mail. "The New Version is radically easier to use" =
+=96 The Wall Street Journal=20
+http://uk.docs.yahoo.com/nowyoucan.html
 
-    - --
-    Sven Agnew
 
