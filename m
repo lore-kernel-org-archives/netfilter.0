@@ -1,12 +1,11 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Can iptables or other firewall solutions can do this for me?
-Date: Mon, 12 Feb 2007 18:48:07 +0100
-Message-ID: <000a01c74ecd$f416ddf0$0101000a@tanjian>
-References: <b66ddc900702120716p6c9f1d5dibb6ad85ea4fc8df@mail.gmail.com>
+From: "Hal Moroff" <halm90@gmail.com>
+Subject: Trying to use libiptc
+Date: Mon, 12 Feb 2007 14:51:13 -0800
+Message-ID: <e1663d820702121451w6cbaec8cq4362d7686b0341b5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <b66ddc900702120716p6c9f1d5dibb6ad85ea4fc8df@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,42 +16,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-netfilter-bounces@lists.netfilter.org <> wrote:
-> Let me tell the background first...
-> 
-> We have a web server, recently received a lot of requests from oversea
-> proxy. The requests are to spam our applications (i.e. leave
-> comments). They don't success, since they never get the correct
-> captacha. 
-> 
-> But the problem is: They are doing requests & requests forever (even
-> with no success). This lead to:
-> 
-> 1. Waste of CPU time of our web server
-> 2. Waste of oversea bandwidth
-> 
-> 
-> Can iptables or related tools or packages can do this for me?
-> 
-> p.s. Since they are changing proxy all the time, so might be need a
-> automatic solutions, 
+I've seen no references to libiptc anywhere, perhaps this is out of
+date/outmoded?
 
-Not directly, but this would be a solution I would think of:
+I'm trying to create rules dynamically from within a C program.  I can create
+and query chains, but can't seem to create rules for that chain.  I haven't been
+able to find any sample code doing anything like this.
 
-You could modify the comment-script so that it logs the IP from the
-hosts that attempt to leave a comment but fail doing so (if the script
-doesn't do this already).
-After that you can write a script that parses and clears the logfile
-every x minutes to filter the largest offenders. You can enter these
-offending IP's in a user defined blocking-chain which is called in the
-INPUT chain (or FORWARD chain, depending on your setup) to block further
-requests from these IP's.
+Here's a stripped down sample of my code:
+
+#include <stdio.h>
+#include <errno.h>
+#include <libiptc/libiptc.h>
+#include <iptables.h>
+
+int main( int argc, char * argv[] )
+{
+iptc_handle_t       ipH;
+struct ipt_entry    e;
+char              * chain = "mychain";
+
+  if( (ipH = iptc_init("filter")) ) printf("init succeeded\n");
+  if( iptc_create_chain(chain, &ipH) ) printf("created chain <%s>\n", chain);
+  if( iptc_commit(&ipH) ) printf("committed newly created chain\n");
+
+  if( (ipH = iptc_init("filter")) ) printf("(re)init succeeded\n");
+
+  memset(&e, 0, sizeof(e));
+  inet_aton( "192.168.1.114", &e.ip.src  );
+  inet_aton( "192.168.2.2",   &e.ip.dst  );
+  inet_aton( "255.255.255.0", &e.ip.dmsk );
+  strncpy(e.ip.iniface,  "eth0", sizeof(e.ip.iniface) );
+  strncpy(e.ip.outiface, "eth1", sizeof(e.ip.outiface));
+  e.ip.proto     = 8;
+
+  if( iptc_insert_entry("mychain", &e, 0, &ipH) == 0 ) {
+    printf("insert entry failed\n");
+    exit(-1);
+  }
+  printf("insert entry succeeded\n");
+
+  if( ! iptc_commit( &ipH ) ) {
+    printf("new entry commit failed: %s\n", iptc_strerror(errno));
+    exit(-1);
+  }
+  printf("new entry commit succeeded\n");
+}
 
 
-Grts,
-Rob
+When I run I get this:
 
+~/work/iptc# ./simple
+init succeeded
+created chain <mychain>
+committed newly created chain
+(re)init succeeded
+insert entry succeeded
+new entry commit failed: Target problem
 
