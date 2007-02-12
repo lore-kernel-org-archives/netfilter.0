@@ -1,29 +1,23 @@
-From: Harvey Muller <hlmuller@yahoo.com>
-Subject: iptables-1.3.7 Requires ip_tables to be built as module
-Date: Mon, 12 Feb 2007 11:49:12 -0800 (PST)
-Message-ID: <936822.57379.qm@web53605.mail.yahoo.com>
+From: David Miller <davem@davemloft.net>
+Subject: Re: 2.6.20-rc4: regression: iptables failed to load rules
+Date: Mon, 12 Feb 2007 12:17:14 -0800 (PST)
+Message-ID: <20070212.121714.41636131.davem@davemloft.net>
+References: <5157576d0701082329o1875911j20f6679e2d35bb17@mail.gmail.com>
+	<Pine.LNX.4.64.0701090929160.3594@woody.osdl.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S965327AbXBLURR@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0701090929160.3594@woody.osdl.org>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: torvalds@osdl.org
+Cc: kvarsin@gmail.com, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org, bunk@stusta.de
 
-Graham,=0A=0AAssuming you've built ip_tables into the kernel (not as a modu=
-le), then I'd be interested in learning the difference in the process you u=
-sed to install iptables between versions 1.3.5 and 1.3.7.  Version 1.3.5 wo=
-rks fine for me with kernel version 2.6.20 built in (not as a module).  But=
- when I use the same install process for 1.3.7, I get the error messages.  =
-And when I go back and configure ip_tables as a module, then the error mess=
-age goes away, which is what one would expect.=0A=0AThanks,=0A=0AHarvey=0A=
-=0A
+From: Linus Torvalds <torvalds@osdl.org>
+Date: Tue, 9 Jan 2007 09:33:32 -0800 (PST)
 
+> David, please crack some heads.
+
+I have some patches from Patrick in my queue which try to add some
+sanity to this situation, we'll see how much better we can make it.
