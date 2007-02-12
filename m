@@ -1,9 +1,12 @@
-From: Steve Brueckner <steve@atc-nycorp.com>
-Subject: Troubleshooting SNAT
-Date: Mon, 12 Feb 2007 15:16:51 -0500
-Message-ID: <60D45469A1AAD311A04C009027B6BF68060E9CCC@SERVER20>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Can iptables or other firewall solutions can do this for me?
+Date: Mon, 12 Feb 2007 18:48:07 +0100
+Message-ID: <000a01c74ecd$f416ddf0$0101000a@tanjian>
+References: <b66ddc900702120716p6c9f1d5dibb6ad85ea4fc8df@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <b66ddc900702120716p6c9f1d5dibb6ad85ea4fc8df@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,57 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I have an FC5 (2.6.16.13-xen kernel) box with 2 interfaces:
-eth0 is 192.168.1.221 (external network)
-eth1 is 192.168.10.1 (internal network)
+netfilter-bounces@lists.netfilter.org <> wrote:
+> Let me tell the background first...
+> 
+> We have a web server, recently received a lot of requests from oversea
+> proxy. The requests are to spam our applications (i.e. leave
+> comments). They don't success, since they never get the correct
+> captacha. 
+> 
+> But the problem is: They are doing requests & requests forever (even
+> with no success). This lead to:
+> 
+> 1. Waste of CPU time of our web server
+> 2. Waste of oversea bandwidth
+> 
+> 
+> Can iptables or related tools or packages can do this for me?
+> 
+> p.s. Since they are changing proxy all the time, so might be need a
+> automatic solutions, 
 
-I've got to nat traffic through this box from host 192.168.10.2 
-to host 192.168.1.12.  So I enabled ip forwarding and source nat 
-on the multi-homed box:
-# sysctl -w net.ipv4.ip_forward=1
-# iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to 192.168.1.221
+Not directly, but this would be a solution I would think of:
 
-That didn't work; the packets were indeed forwarded but their 
-source address was unchanged (still 192.168.10.2):
-# tcpdump -n -i eth0
-18:14:12.425317 IP 192.168.10.2 > 192.168.1.12: ICMP echo 
-request, id 2617, seq 9, length 64
+You could modify the comment-script so that it logs the IP from the
+hosts that attempt to leave a comment but fail doing so (if the script
+doesn't do this already).
+After that you can write a script that parses and clears the logfile
+every x minutes to filter the largest offenders. You can enter these
+offending IP's in a user defined blocking-chain which is called in the
+INPUT chain (or FORWARD chain, depending on your setup) to block further
+requests from these IP's.
 
-I also tried plain old Masquerading:
-# iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-This also does not change the packets' source address, but 
-it does forward them from eth1 to eth0 again.
 
-This similar command has a different but still incorrect effect:
-# iptables -t nat -A POSTROUTING -j MASQUERADE
-It changes the source address of the packets on eth1 but 
-of course does not forward them to eth0.
+Grts,
+Rob
 
-Nothing seems to work.  Packets are either forwarded but without 
-new source IPs or they get new source IPs but aren't forwarded.  
-My filter table is wide open (no rules).
-
-The same kernel can do SNAT just fine using Debian.  I'm starting 
-to think FC5 is missing something.  However, I seem to have the following 
-modules, which appear sufficient to me:
-# lsmod | grep ip
-ipt_MASQUERADE          3776  0
-iptable_filter          3104  1
-iptable_nat             8836  1
-ip_nat                 18092  2 ipt_MASQUERADE,iptable_nat
-ip_conntrack           55800  4 xt_state,ipt_MASQUERADE,iptable_nat,ip_nat
-nfnetlink               6520  2 ip_nat,ip_conntrack
-ip_tables              13636  2 iptable_filter,iptable_nat
-x_tables               13188  6
-xt_state,ipt_MASQUERADE,xt_tcpudp,xt_physdev,iptable_nat,ip_tables
-ipv6                  269056  14
-
-Any ideas on how to proceed with troubleshooting this?
-
-Thanks,
-
-Steve Brueckner, ATC-NY
 
