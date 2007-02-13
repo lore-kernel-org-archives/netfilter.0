@@ -1,7 +1,7 @@
 From: Steve Brueckner <steve@atc-nycorp.com>
 Subject: RE: Troubleshooting SNAT
-Date: Tue, 13 Feb 2007 11:33:03 -0500
-Message-ID: <60D45469A1AAD311A04C009027B6BF68060E9D02@SERVER20>
+Date: Tue, 13 Feb 2007 11:42:18 -0500
+Message-ID: <60D45469A1AAD311A04C009027B6BF68060E9D03@SERVER20>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -18,26 +18,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Good idea, but this is the only rule I have!  So there's no other rules
-to get in the way.
+The FC5 I referred to in my original message is my distro; it stands for 
+"Fedora Core 5."  I will ask on that list next but I figured they were
+generalists and this list had the iptables experts.
 
-I think what I need is some sort of debug mode for iptables.
+I'm not really a visual person, and prefer to understand what's going on 
+under the hood, but thanks for the GUI idea.  My syntax seems to be
+correct; as I said in my original message this works fine on another 
+machine.
+
+This is the only rule I have, so there is no script of other rules to
+show.  The rule in my original message is the only one in play.  I 
+should have mentioned that earlier.
+
+I included the partial output from lsmod in my original message in case 
+anyone on this list could point out a missing module.
 
  - Steve
 
-Matt Richards wrote:
-> Hello  :)
+James Shewey wrote:
+> What distro are you using? Perhaps someone on that distro can offer
+> some advice. Also, if you are a more visual person, you might think
+> about kmyfirewall which is still gives you the conceptual overview
+> while alleviating questions about whether you go the syntax right.
+> Also, you might consider sending the script of your iptables rules to
+> the list so that they can make sure there aren't any problems there. 
+> Also, you can make sure you have all your kernel modules loaded using
+> lsmod. 
 > 
-> donno if this will help much but have you tried inserting the rule
-> and not appending it ? -I POSTROUTING -t nat -o eth0 -j SNAT --to
-> 
-> I have been a little stumped by rules jumping packets to other chains
-> before they hit my newly entered rule before. 
-> 
-> huh,
-> Matty.
 > On 2/12/07, Steve Brueckner <steve@atc-nycorp.com> wrote:
-> 
+>> Thanks, but using the --to-source switch seems to have the same
+>> effect as just using --to.  And my attempt to use Masquerading
+>> failed as well. 
+>> 
+>> I'm new to iptables, but it doesn't seem too complex as a user to try
+>> to do this, so I really think the problem isn't with my usage of
+>> iptables but that something is either broken or missing in my kernel.
+>> 
+>> I think what we need to do is some debugging, but I was hoping for
+>> some ideas on how to do that from this list.
+>> 
+>> Thanks
+>> 
+>> Steve Brueckner, ATC-NY
+>> 
+>> James Shewey wrote:
+>>> did you try "iptables -t nat -A POSTROUTING -o eth0 -j SNAT
+>>> --to-source 192.168.1.221" 
+>>> 
+>>> Perhaps this will yeild better results.
+>>> 
+>>> You should also be able to do what you want with _all_ traffic that
+>>> flows through the router too using the masquerade table. This may
+>>> not work for you solution though.
+>>> 
+>>> 
+>>> On 2/12/07, Steve Brueckner <steve@atc-nycorp.com> wrote:
 >>>> I have an FC5 (2.6.16.13-xen kernel) box with 2 interfaces:
 >>>> eth0 is 192.168.1.221 (external network)
 >>>> eth1 is 192.168.10.1 (internal network)
@@ -78,8 +114,7 @@ Matt Richards wrote:
 >>>> ip_conntrack           55800  4
 >>>> xt_state,ipt_MASQUERADE,iptable_nat,ip_nat nfnetlink 6520  2
 >>>> ip_nat,ip_conntrack ip_tables              13636  2
->>>> iptable_filter,iptable_nat 
->>>> x_tables               13188  6
+>>>> iptable_filter,iptable_nat x_tables               13188  6
 >>>> xt_state,ipt_MASQUERADE,xt_tcpudp,xt_physdev,iptable_nat,ip_tables
 >>>> ipv6                  269056  14
 >>>> 
