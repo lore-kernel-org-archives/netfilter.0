@@ -1,10 +1,11 @@
-From: Harvey Muller <hlmuller@yahoo.com>
-Subject: Re: iptables-1.3.7 Requires ip_tables to be built as module
-Date: Tue, 13 Feb 2007 05:46:41 -0800 (PST)
-Message-ID: <208603.80703.qm@web53604.mail.yahoo.com>
+From: Jeff Weber <jweber@amsuper.com>
+Subject: NAT for heritage iptables-1.2.10
+Date: Tue, 13 Feb 2007 08:54:36 -0600
+Message-ID: <200702130854.36379.jweber@amsuper.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,11 +19,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Graham,=0A=0AThanks, that's information I can use.  I'll research the ebuil=
-ds to see what=0Athe Gentoo devs did differently between versions.=0A=0AI c=
-ome from Gentoo userland, but am using LFS/CLFS variants lately to learn=0A=
-more about what goes into the guts of building a distribution.  So presentl=
-y,=0AI can't lean on portage to do things automatically for me.  But I'll c=
-heck the=0Aebuilds out to see what I can learn.=0A=0ABest regards,=0A=0AHar=
-vey=0A=0A
+Hello:
+
+I am replicating a firewall from from an iptables v1.3.3 system, to an older 
+iptables v1.2.10 (and Linux-2.4.27) system.  The older system cannot be 
+upgraded to newer software at this time.
+
+The following iptables command works on the newer system:
+/usr/sbin/iptables -t nat -A PREROUTING -p tcp -d 192.168.100.50 --dport 502 \ 
+-i eth1 -j DNAT --to 172.26.0.88:502
+
+but is invalid on the iptables-1.2.10 system, specifically the "--dport" and 
+"--to" options are unknown arguments.
+
+I've been unable to find any documentation on NAT for the older iptables.  How 
+can I implement the same NAT functionality above using iptables-1.2.10 ?
+
+thanks,
+	Jeff
 
