@@ -1,11 +1,9 @@
-From: Jeff Weber <jweber@amsuper.com>
-Subject: NAT for heritage iptables-1.2.10
-Date: Tue, 13 Feb 2007 08:54:36 -0600
-Message-ID: <200702130854.36379.jweber@amsuper.com>
+From: Steve Brueckner <steve@atc-nycorp.com>
+Subject: RE: Troubleshooting SNAT
+Date: Tue, 13 Feb 2007 11:33:03 -0500
+Message-ID: <60D45469A1AAD311A04C009027B6BF68060E9D02@SERVER20>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,24 +15,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello:
+Good idea, but this is the only rule I have!  So there's no other rules
+to get in the way.
 
-I am replicating a firewall from from an iptables v1.3.3 system, to an older 
-iptables v1.2.10 (and Linux-2.4.27) system.  The older system cannot be 
-upgraded to newer software at this time.
+I think what I need is some sort of debug mode for iptables.
 
-The following iptables command works on the newer system:
-/usr/sbin/iptables -t nat -A PREROUTING -p tcp -d 192.168.100.50 --dport 502 \ 
--i eth1 -j DNAT --to 172.26.0.88:502
+ - Steve
 
-but is invalid on the iptables-1.2.10 system, specifically the "--dport" and 
-"--to" options are unknown arguments.
+Matt Richards wrote:
+> Hello  :)
+> 
+> donno if this will help much but have you tried inserting the rule
+> and not appending it ? -I POSTROUTING -t nat -o eth0 -j SNAT --to
+> 
+> I have been a little stumped by rules jumping packets to other chains
+> before they hit my newly entered rule before. 
+> 
+> huh,
+> Matty.
+> On 2/12/07, Steve Brueckner <steve@atc-nycorp.com> wrote:
+> 
+>>>> I have an FC5 (2.6.16.13-xen kernel) box with 2 interfaces:
+>>>> eth0 is 192.168.1.221 (external network)
+>>>> eth1 is 192.168.10.1 (internal network)
+>>>> 
+>>>> I've got to nat traffic through this box from host 192.168.10.2 to
+>>>> host 192.168.1.12.  So I enabled ip forwarding and source nat on
+>>>> the multi-homed box: # sysctl -w net.ipv4.ip_forward=1 # iptables
+>>>> -t nat -A POSTROUTING -o eth0 -j SNAT --to 192.168.1.221
+>>>> 
+>>>> That didn't work; the packets were indeed forwarded but their
+>>>> source address was unchanged (still 192.168.10.2):
+>>>> # tcpdump -n -i eth0
+>>>> 18:14:12.425317 IP 192.168.10.2 > 192.168.1.12: ICMP echo request,
+>>>> id 2617, seq 9, length 64 
+>>>> 
+>>>> I also tried plain old Masquerading:
+>>>> # iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE This also
+>>>> does not change the packets' source address, but it does forward
+>>>> them from eth1 to eth0 again. 
+>>>> 
+>>>> This similar command has a different but still incorrect effect:
+>>>> # iptables -t nat -A POSTROUTING -j MASQUERADE It changes the
+>>>> source address of the packets on eth1 but of course does not
+>>>> forward them to eth0. 
+>>>> 
+>>>> Nothing seems to work.  Packets are either forwarded but without
+>>>> new source IPs or they get new source IPs but aren't forwarded.
+>>>> My filter table is wide open (no rules).
+>>>> 
+>>>> The same kernel can do SNAT just fine using Debian.  I'm starting
+>>>> to think FC5 is missing something.  However, I seem to have the
+>>>> following modules, which appear sufficient to me:
+>>>> # lsmod | grep ip
+>>>> ipt_MASQUERADE          3776  0
+>>>> iptable_filter          3104  1
+>>>> iptable_nat             8836  1
+>>>> ip_nat                 18092  2 ipt_MASQUERADE,iptable_nat
+>>>> ip_conntrack           55800  4
+>>>> xt_state,ipt_MASQUERADE,iptable_nat,ip_nat nfnetlink 6520  2
+>>>> ip_nat,ip_conntrack ip_tables              13636  2
+>>>> iptable_filter,iptable_nat 
+>>>> x_tables               13188  6
+>>>> xt_state,ipt_MASQUERADE,xt_tcpudp,xt_physdev,iptable_nat,ip_tables
+>>>> ipv6                  269056  14
+>>>> 
+>>>> Any ideas on how to proceed with troubleshooting this?
+>>>> 
+>>>> Thanks,
+>>>> 
+>>>> Steve Brueckner, ATC-NY
 
-I've been unable to find any documentation on NAT for the older iptables.  How 
-can I implement the same NAT functionality above using iptables-1.2.10 ?
-
-thanks,
-	Jeff
 
