@@ -1,14 +1,13 @@
-From: Frank Petran <frank.petran@inpho.de>
-Subject: Re: https permit/deny
-Date: Tue, 13 Feb 2007 08:58:27 +0100
-Message-ID: <200702130858.28088.frank.petran@inpho.de>
-References: <1171210904.25395.95.camel@act17.actcom.co.il>
-	<45CF6392.4080300@solutti.com.br>
-	<1171351738.32168.42.camel@act17.actcom.co.il>
+From: "Ross Cameron" <ross.cameron@linuxpro.co.za>
+Subject: Re: Tor
+Date: Tue, 13 Feb 2007 10:16:17 +0200
+Message-ID: <35f70db10702130016q529de1e8g5e23c6e3e5e56eaa@mail.gmail.com>
+References: <45D021A6.4050805@eccotours.co.za>
+Reply-To: ross.cameron@linuxpro.co.za
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1171351738.32168.42.camel@act17.actcom.co.il>
+In-Reply-To: <45D021A6.4050805@eccotours.co.za>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,16 +19,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Brent Clark <bclark@eccotours.co.za>
+Cc: netfilter@lists.netfilter.org
 
-On Tuesday 13 February 2007 08:28, vects wrote:
-> As I said I have some condition, I can't contact customers and ask them
-> to define proxy server, this prevents me to use application proxy for
-> https.
-Why don't you just setup an automatic proxy configuration? All, the customer 
-needs to do than, is to select "automatic proxy discovery" in his/her 
-Browser. The Internet Explorer, which most people tend to use anyway, already 
-has this preconfigured.
+On 12/02/07, Brent Clark <bclark@eccotours.co.za> wrote:
+> Hi all
+>
+> After read the following article
+>
+> http://chronicle.com/temp/email2.php?id=zht45qPrsddjvvgfcjwWPjxhFwqxyfVX
+>
+> It lead to ask / wonder about and I wanted to ask.
+>
+> Firstly I would like to know, how would it have have possible for them to track that Tor was been used, and more
+> importantly, how on earth did they know it was the the gentleman in question.
 
+Logging the use of TOR inside you're own network is easy, TOR only
+protects you're anonymity from withing the bounds of the Internet not
+a LAN.
+
+And as for how to locate him,... a simple packet sniffing utility
+could pick up TOR's signatures on the network.
+
+>
+> Other question is, how do we stop Tor from been used. Although Im for all for securing your traffic / activity etc, but
+> for a corporate network, that unfortunately does not work, esp with some of the activities that the end user gets up too,
+
+L7-filtering on IPtables should do it once you have an application
+signature for TOR.
+
+>
+> Just something I was thinking.
+>
+> Kind Regards
+> Brent Clark
+>
+>
+
+
+-- 
+________  ___ ________
+  )_   ( '-,) )   _(
+    )_  \_//_/  _(      Ross Cameron
+      )___  ___(     	ross@goal.co.za
+          ))
+         ((          	http://www.goal.co.za
+          ``-
 
