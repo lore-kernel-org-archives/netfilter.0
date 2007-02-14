@@ -1,12 +1,12 @@
 From: Tim Perton <grpanosgr@yahoo.com>
-Subject: RE: iptables: hide the real web server from users
-Date: Wed, 14 Feb 2007 07:44:17 -0800 (PST)
-Message-ID: <176687.44934.qm@web33313.mail.mud.yahoo.com>
-References: <A78C6C481BFAE949BC5990E1EEB2FE12595D@q.LeBlancNet.us>
+Subject: Re: iptables: hide the real web server from users
+Date: Wed, 14 Feb 2007 08:36:40 -0800 (PST)
+Message-ID: <533163.22377.qm@web33303.mail.mud.yahoo.com>
+References: <45D32DD7.80006@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <A78C6C481BFAE949BC5990E1EEB2FE12595D@q.LeBlancNet.us>
+In-Reply-To: <45D32DD7.80006@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,105 +19,83 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: gtaylor@riverviewtech.net
 
-Thank you all for your quick reply.
-Ok for web traffic squid is fine.
-But if I have a binary socket input/output thread and
-want to pass them transparently between the user and
-System B through System A, i think that only iptables
-can do that in tcp layer.
+Dear Grant,
+thank you very much for your quick reply.
 
-Any ideas on this?
+I agree to the 3 conditions/caveats in your previous
+email. I have already tried an example on this.
+Let's say I want to connect to www.google.com
+(216.239.59.103) so System B is www.google.com
 
+According to your example I issue the following
+commands (after stop/start iptables to be fresh):
+
+iptables -A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
+
+iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d -p
+tcp --dport 1099 -j DNAT --to-destination
+216.239.59.103:80
+
+iptables -t nat -A POSTROUTING -o eth0 -d
+216.239.59.103 -p tcp --dport 1099 -j SNAT --to-source
+a.b.c.d
+
+I am trying http://a.b.c.d:1099  or with telnet
+a.b.c.d 1099 (Trying a.b.c.d... telnet: Unable to
+connect to remote host: Connection refused)
+
+My regards,
 Tim
 
---- Robert LeBlanc <robert@leblancnet.us> wrote:
+--- Grant Taylor <gtaylor@riverviewtech.net> wrote:
 
-> Squid would also do this for you.
-> 
-> Robert LeBlanc
-> 
-> > -----Original Message-----
-> > From: netfilter-bounces@lists.netfilter.org
-> [mailto:netfilter-
-> > bounces@lists.netfilter.org] On Behalf Of Rodrigo
-> Montoro (Sp0oKeR)
-> > Sent: Wednesday, February 14, 2007 6:08 AM
-> > To: Tim Perton
-> > Cc: netfilter@lists.netfilter.org
-> > Subject: Re: iptables: hide the real web server
-> from users
-> > 
-> >    I don' t think iptables is your best option for
-> that.
-> >    Try mod_security, mod_rewrite or apache proxy .
-> > 
-> > Regards,
-> > 
-> > On 2/14/07, Tim Perton <grpanosgr@yahoo.com>
-> wrote:
-> > > Dear friends,
-> > > I have a web server running on system B. I run
-> my main
-> > > services to System B but I do not want my users
-> to
-> > > talk to system B directly.
-> > > So I have another server (System A) in a
-> differrent
-> > > ISP & a completely different C class IP address
-> like
-> > > below:
-> > >
-> > > -----------------------------
-> > > --- System A (IP=a.b.c.d) ---
-> > > -----------------------------
-> > >
-> > > -----------------------------
-> > > --- System B (IP=e.f.g.h) ---
-> > > -----------------------------
-> > >
-> > > System A runs iptables(redhat EL4).
-> > >
-> > > I want my users to do a request like
-> > > http://a.b.c.d/1.php and then machine A to make
+> Tim Perton wrote:
+> > I want my users to do a request like
+> > http://a.b.c.d/1.php and then machine A to make
 > the
-> > > same request to System B, get the results and
-> send
-> > > them back to the user transparently.
-> > > Practically System A to act as an intermediatery
-> to
-> > > the real machine (System B).
-> > >
-> > > Any idea on how to do this?
-> > >
-> > > Regards,
-> > > Tim Perton
-> > >
-> > >
-> > >
-> > >
-> >
->
-________________________________________________________________________
-> __
-> > __________
-> > > Food fight? Enjoy some healthy debate
-> > > in the Yahoo! Answers Food & Drink Q&A.
-> > >
->
-http://answers.yahoo.com/dir/?link=list&sid=396545367
-> > >
-> > >
-> > 
-> > 
-> > --
-> > =====================
-> >  Rodrigo Ribeiro Montoro
-> > Desenvolvedor BRMAlinux
-> >   spooker@brc.com.br
-> >        RHCE/LPIC-I
-> > =====================
+> > same request to System B, get the results and send
+> > them back to the user transparently.
 > 
+> Technically you can do what you are wanting to do. 
+> However there are a 
+> few caveats that you need to be aware of when doing
+> such.
+> 
+> 1)  System B will see System A as the connecting
+> host, not the real client.
+> 2)  If System B is not ""behind System A (as you
+> have described it to 
+> not be) it will have to send the traffic back to
+> System A which will 
+> then send the traffic back to the client. 
+> Translation, System B can not 
+> send the traffic directly to the client with out
+> breaking the TCP 
+> connection state on the client.
+> 3)  System A will be using more bandwidth by doing
+> this.
+> 
+> If all the above are ok with you, consider doing the
+> following on system A.
+> 
+> # Port forward web traffic originally to System A
+> over to System B.
+> iptables -t nat -A PREROUTING -i $INet -d
+> $SystemA_IP -p tcp --dport 80 
+> -j DNAT --to-destination $SystemB_IP:$SystemB_Port
+> # SNAT traffic to System B's web server to appear to
+> be from System A.
+> iptables -t nat -A POSTROUTING -o $INet -d
+> $SystemB_IP -p tcp --dport 
+> $SystemB_Port -j SNAT --to-source $SystemA_IP
+> 
+> If you have any questions, ask.
+> 
+> 
+> 
+> Grant. . . .
 > 
 > 
 
@@ -125,7 +103,7 @@ http://answers.yahoo.com/dir/?link=list&sid=396545367
 
  
 ____________________________________________________________________________________
-Sucker-punch spam with award-winning protection. 
-Try the free Yahoo! Mail Beta.
-http://advision.webevents.yahoo.com/mailbeta/features_spam.html
+Looking for earth-friendly autos? 
+Browse Top Cars by "Green Rating" at Yahoo! Autos' Green Center.
+http://autos.yahoo.com/green_center/
 
