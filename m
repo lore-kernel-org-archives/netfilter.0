@@ -1,12 +1,13 @@
-From: Tim Perton <grpanosgr@yahoo.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: iptables: hide the real web server from users
-Date: Wed, 14 Feb 2007 08:36:40 -0800 (PST)
-Message-ID: <533163.22377.qm@web33303.mail.mud.yahoo.com>
-References: <45D32DD7.80006@riverviewtech.net>
+Date: Wed, 14 Feb 2007 11:59:29 -0600
+Message-ID: <45D34E01.8050900@riverviewtech.net>
+References: <533163.22377.qm@web33303.mail.mud.yahoo.com>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45D32DD7.80006@riverviewtech.net>
+In-Reply-To: <533163.22377.qm@web33303.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,93 +18,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
-Cc: gtaylor@riverviewtech.net
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Dear Grant,
-thank you very much for your quick reply.
+Tim Perton wrote:
+> Dear Grant,
+> thank you very much for your quick reply.
 
-I agree to the 3 conditions/caveats in your previous
-email. I have already tried an example on this.
-Let's say I want to connect to www.google.com
-(216.239.59.103) so System B is www.google.com
+You are welcome.
 
-According to your example I issue the following
-commands (after stop/start iptables to be fresh):
+> I agree to the 3 conditions/caveats in your previous
+> email. I have already tried an example on this.
+> Let's say I want to connect to www.google.com
+> (216.239.59.103) so System B is www.google.com
 
-iptables -A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
+Ok.
 
-iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d -p
-tcp --dport 1099 -j DNAT --to-destination
-216.239.59.103:80
-
-iptables -t nat -A POSTROUTING -o eth0 -d
-216.239.59.103 -p tcp --dport 1099 -j SNAT --to-source
-a.b.c.d
-
-I am trying http://a.b.c.d:1099  or with telnet
-a.b.c.d 1099 (Trying a.b.c.d... telnet: Unable to
-connect to remote host: Connection refused)
-
-My regards,
-Tim
-
---- Grant Taylor <gtaylor@riverviewtech.net> wrote:
-
-> Tim Perton wrote:
-> > I want my users to do a request like
-> > http://a.b.c.d/1.php and then machine A to make
-> the
-> > same request to System B, get the results and send
-> > them back to the user transparently.
+> According to your example I issue the following
+> commands (after stop/start iptables to be fresh):
 > 
-> Technically you can do what you are wanting to do. 
-> However there are a 
-> few caveats that you need to be aware of when doing
-> such.
+> iptables -A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
+
+What filtering do you have in place?  If you do not have default 
+policies of ACCEPT, you will also need to add rules to your 
+filter:FORWARD chain to allow this traffic to pass through.  I.e.
+
+iptables -A FORWARD -i eth0 -o eth0 -d 216.239.59.103 -p tcp --dport 80 
+-j ACCEPT
+
+iptables -A FORWARD -i eth0 -o eth0 -s 216.239.59.103 -p tcp --sport 80 
+-j ACCEPT
+
+> iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d -p
+> tcp --dport 1099 -j DNAT --to-destination
+> 216.239.59.103:80
 > 
-> 1)  System B will see System A as the connecting
-> host, not the real client.
-> 2)  If System B is not ""behind System A (as you
-> have described it to 
-> not be) it will have to send the traffic back to
-> System A which will 
-> then send the traffic back to the client. 
-> Translation, System B can not 
-> send the traffic directly to the client with out
-> breaking the TCP 
-> connection state on the client.
-> 3)  System A will be using more bandwidth by doing
-> this.
-> 
-> If all the above are ok with you, consider doing the
-> following on system A.
-> 
-> # Port forward web traffic originally to System A
-> over to System B.
-> iptables -t nat -A PREROUTING -i $INet -d
-> $SystemA_IP -p tcp --dport 80 
-> -j DNAT --to-destination $SystemB_IP:$SystemB_Port
-> # SNAT traffic to System B's web server to appear to
-> be from System A.
-> iptables -t nat -A POSTROUTING -o $INet -d
-> $SystemB_IP -p tcp --dport 
-> $SystemB_Port -j SNAT --to-source $SystemA_IP
-> 
-> If you have any questions, ask.
-> 
-> 
-> 
-> Grant. . . .
-> 
-> 
+> iptables -t nat -A POSTROUTING -o eth0 -d
+> 216.239.59.103 -p tcp --dport 1099 -j SNAT --to-source
+> a.b.c.d
+
+These commands look ok to me.
+
+> I am trying http://a.b.c.d:1099  or with telnet
+> a.b.c.d 1099 (Trying a.b.c.d... telnet: Unable to
+> connect to remote host: Connection refused)
+
+I think you will have better luck playing with telnet to start with. 
+Keep in mind that just because you enter "http://a.b.c.d..." in your web 
+browser, you are doing more than connecting to that address.  You are 
+also asking for a page off of the domain a.b.c.d.  So for testing, I'd 
+stick with telnet, or set up a temporary hosts entry for the test domain.
 
 
 
- 
-____________________________________________________________________________________
-Looking for earth-friendly autos? 
-Browse Top Cars by "Green Rating" at Yahoo! Autos' Green Center.
-http://autos.yahoo.com/green_center/
+Grant. . . .
 
