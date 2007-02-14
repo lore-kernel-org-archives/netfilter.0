@@ -1,9 +1,9 @@
-From: Sebastien Tricaud <sebastien.tricaud@wengo.com>
-Subject: ruby iptables network displayer
-Date: Wed, 14 Feb 2007 11:58:33 +0100
-Message-ID: <45D2EB59.1040905@wengo.com>
+From: Tim Perton <grpanosgr@yahoo.com>
+Subject: iptables: hide the real web server from users
+Date: Wed, 14 Feb 2007 04:53:30 -0800 (PST)
+Message-ID: <354862.54159.qm@web33304.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,27 +18,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi folks,
+Dear friends,
+I have a web server running on system B. I run my main
+services to System B but I do not want my users to
+talk to system B directly.
+So I have another server (System A) in a differrent
+ISP & a completely different C class IP address like
+below:
 
-I wrote a simple tool parsing "iptables-save" output in order to produce
-a svg image.
-It is still in early age, however it works for my own purposes.
+-----------------------------
+--- System A (IP=a.b.c.d) ---
+-----------------------------
 
-There is a color scheme where green means accept, red drop and blue
-queue. The state connection tracking is very basic but makes you
-understand the netflow authorized. And the interface is colorized
-according to its default policy. Chains jumps aren't recognized yet.
+-----------------------------
+--- System B (IP=e.f.g.h) ---
+-----------------------------
 
-Feel free to give feedback, positive and/or negative to make this tool
-better.
+System A runs iptables(redhat EL4).
 
-Url: http://freshmeat.net/projects/ruined/
-MD5 for security addicts : 128ca4ad8eefbf50ab968447dc5818fb 
-ruined-0.6.tar.gz
+I want my users to do a request like
+http://a.b.c.d/1.php and then machine A to make the
+same request to System B, get the results and send
+them back to the user transparently.
+Practically System A to act as an intermediatery to
+the real machine (System B).
+
+Any idea on how to do this?
+
+Regards,
+Tim Perton
 
 
-Thanks,
-Sebastien.
-
-
+ 
+____________________________________________________________________________________
+Food fight? Enjoy some healthy debate 
+in the Yahoo! Answers Food & Drink Q&A.
+http://answers.yahoo.com/dir/?link=list&sid=396545367
 
