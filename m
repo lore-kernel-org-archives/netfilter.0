@@ -1,12 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: MAC Address filtering
-Date: Thu, 15 Feb 2007 10:08:32 +0100
-Message-ID: <1171530512.4229.24.camel@anduril.intranet.cartel-securite.net>
-References: <907894.27356.qm@web43118.mail.sp1.yahoo.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Need help with iptables and iprange module
+Date: Thu, 15 Feb 2007 11:45:47 +0100
+Message-ID: <45D439DB.8090105@plouf.fr.eu.org>
+References: <b6d73fa90702141745k3326bc2ei2c202cf91ca30bd6@mail.gmail.com>
+	<20070215030134.5bac19da.michel@mitch-it.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <907894.27356.qm@web43118.mail.sp1.yahoo.com>
+In-Reply-To: <20070215030134.5bac19da.michel@mitch-it.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,28 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Allan Parreno <atparreno@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Le mercredi 14 f=E9vrier 2007 =E0 22:37 -0800, Allan Parreno a =E9crit :
-> Computer1:  99:99:99:99
-> Computer2:  98:98:98:98
-> Computer3:  97:97:97:97
+Hello,
 
-MAC addresses are 48 bits long, thus 6 hexa digits couples, not 4...
+Michel van der Klei a =E9crit :
+> On Wed, 14 Feb 2007 20:45:41 -0500 TheNokia <nokiairc@gmail.com> wrote:
+>=20
+>>debian:/glftpd/ftp-data/users# modprobe ipt_iprange
+>>modprobe: Can't locate module ipt_iprange
+>>
+>>My version kernel is 2.4.27-2-386
+>=20
+> It's like i said in my previous mail ..... you'll need kernel=20
+> 2.6.18 for the ipt_iprange module _without_ patch-o-matic.
 
-> Now I want those computers1,2 and 3 can access the net, all others
-> will be block.
-
-Just have to match their MAC address for an ACCEPT rule.
-
-iptables -m mac --help
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+Actually the iprange match support is included in all standard 2.6=20
+kernels, since version 2.6.0. But indeed you need to patch the kernel=20
+sources in order to add this feature to a 2.4 kernel.
 
