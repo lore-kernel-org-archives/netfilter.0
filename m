@@ -1,12 +1,12 @@
-From: Tim Perton <grpanosgr@yahoo.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: iptables: hide the real web server from users
-Date: Thu, 15 Feb 2007 06:28:02 -0800 (PST)
-Message-ID: <869165.54710.qm@web33305.mail.mud.yahoo.com>
-References: <45D34E01.8050900@riverviewtech.net>
+Date: Thu, 15 Feb 2007 16:08:56 +0100
+Message-ID: <45D47788.4050105@plouf.fr.eu.org>
+References: <869165.54710.qm@web33305.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45D34E01.8050900@riverviewtech.net>
+In-Reply-To: <869165.54710.qm@web33305.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,123 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: gtaylor+reply@riverviewtech.net, Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-I tried the forward rules too but nothing.
-Still telnet a.b.c.d 1099 does not work after issuing
-the following commands(no other firewalling made to
-prohibit packets):
+Tim Perton a =E9crit :
+> I tried the forward rules too but nothing.
+> Still telnet a.b.c.d 1099 does not work after issuing
+> the following commands(no other firewalling made to
+> prohibit packets):
+>=20
+> iptables -A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
 
-iptables -A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
-iptables -A FORWARD -i eth0 -o eth0 -d 216.239.59.103
--p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -i eth0 -o eth0 -s 216.239.59.103
--p tcp --sport 80 -j ACCEPT
+This rule is useless because connections to port 1099 are forwarded to=20
+another host. INPUT chains see only traffic for the local host.
 
-iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d -p
-tcp --dport 1099 -j DNAT --to-destination
-216.239.59.103:80
-iptables -t nat -A POSTROUTING -o eth0 -d
-216.239.59.103 -p tcp --dport 1099 -j SNAT --to-source
-a.b.c.d
+> iptables -A FORWARD -i eth0 -o eth0 -d 216.239.59.103
+> -p tcp --dport 80 -j ACCEPT
 
-Telnet gives:
-telnet a.b.c.d 1099
-Trying a.b.c.d...
-telnet: connect to address a.b.c.d: Operation timed
-out
-telnet: Unable to connect to remote host
+Ok.
 
-Is it a good idea to accept all udp packets too? I do
-not know.
+> iptables -A FORWARD -i eth0 -o eth0 -s 216.239.59.103
+> -p tcp --sport 80 -j ACCEPT
 
-Has anyone used those rules and worked?
+Use the connection tracking (-m state --state ESTABLISHED) to deal with=20
+return traffic.
 
-Tim.
+> iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d -p
+> tcp --dport 1099 -j DNAT --to-destination
+> 216.239.59.103:80
 
---- Grant Taylor <gtaylor@riverviewtech.net> wrote:
+Ok.
 
-> Tim Perton wrote:
-> > Dear Grant,
-> > thank you very much for your quick reply.
-> 
-> You are welcome.
-> 
-> > I agree to the 3 conditions/caveats in your
-> previous
-> > email. I have already tried an example on this.
-> > Let's say I want to connect to www.google.com
-> > (216.239.59.103) so System B is www.google.com
-> 
-> Ok.
-> 
-> > According to your example I issue the following
-> > commands (after stop/start iptables to be fresh):
-> > 
-> > iptables -A INPUT -p tcp -m tcp --dport 1099 -j
-> ACCEPT
-> 
-> What filtering do you have in place?  If you do not
-> have default 
-> policies of ACCEPT, you will also need to add rules
-> to your 
-> filter:FORWARD chain to allow this traffic to pass
-> through.  I.e.
-> 
-> iptables -A FORWARD -i eth0 -o eth0 -d
-> 216.239.59.103 -p tcp --dport 80 
-> -j ACCEPT
-> 
-> iptables -A FORWARD -i eth0 -o eth0 -s
-> 216.239.59.103 -p tcp --sport 80 
-> -j ACCEPT
-> 
-> > iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d
-> -p
-> > tcp --dport 1099 -j DNAT --to-destination
-> > 216.239.59.103:80
-> > 
-> > iptables -t nat -A POSTROUTING -o eth0 -d
-> > 216.239.59.103 -p tcp --dport 1099 -j SNAT
-> --to-source
-> > a.b.c.d
-> 
-> These commands look ok to me.
-> 
-> > I am trying http://a.b.c.d:1099  or with telnet
-> > a.b.c.d 1099 (Trying a.b.c.d... telnet: Unable to
-> > connect to remote host: Connection refused)
-> 
-> I think you will have better luck playing with
-> telnet to start with. 
-> Keep in mind that just because you enter
-> "http://a.b.c.d..." in your web 
-> browser, you are doing more than connecting to that
-> address.  You are 
-> also asking for a page off of the domain a.b.c.d. 
-> So for testing, I'd 
-> stick with telnet, or set up a temporary hosts entry
-> for the test domain.
-> 
-> 
-> 
-> Grant. . . .
-> 
-> 
+> iptables -t nat -A POSTROUTING -o eth0 -d
+> 216.239.59.103 -p tcp --dport 1099 -j SNAT --to-source
+> a.b.c.d
 
-
-
- 
-____________________________________________________________________________________
-We won't tell. Get more on shows you hate to love 
-(and love to hate): Yahoo! TV's Guilty Pleasures list.
-http://tv.yahoo.com/collections/265 
-
-
- 
-____________________________________________________________________________________
-The fish are biting. 
-Get more visitors on your site using Yahoo! Search Marketing.
-http://searchmarketing.yahoo.com/arp/sponsoredsearch_v2.php
+The rule must match on destination port 80 instead of 1099, because it=20
+occurs after the destination port has been translated. Remember the path=20
+is :
+PREROUTING (DNAT) -> FORWARD -> POSTROUTING (SNAT)
 
