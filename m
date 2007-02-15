@@ -1,12 +1,9 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: iptables: hide the real web server from users
-Date: Thu, 15 Feb 2007 16:08:56 +0100
-Message-ID: <45D47788.4050105@plouf.fr.eu.org>
-References: <869165.54710.qm@web33305.mail.mud.yahoo.com>
+From: "saravanan chanemouganandam" <saravanan_sprt@hotmail.com>
+Subject: bridge problem
+Date: Thu, 15 Feb 2007 22:06:44 +0530
+Message-ID: <BAY131-F1857AFF907BF1716A253BBE2960@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <869165.54710.qm@web33305.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +14,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: bridge@lists.osdl.org
+Cc: netfilter@lists.netfilter.org
 
-Tim Perton a =E9crit :
-> I tried the forward rules too but nothing.
-> Still telnet a.b.c.d 1099 does not work after issuing
-> the following commands(no other firewalling made to
-> prohibit packets):
->=20
-> iptables -A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
+Hi,
 
-This rule is useless because connections to port 1099 are forwarded to=20
-another host. INPUT chains see only traffic for the local host.
+I am a newbie to use the bridge utils and after some serious tests I am 
+posting this issue. Actually, I am fascing packet forwarding problem in the 
+following network setup under linux 2.6.16. The 2.6.16 kernel is also 
+configured to include 802.1d Ethernet bridging, Network packet filtering, IP 
+netfilter configuration and Bridge netfilter configuration.
 
-> iptables -A FORWARD -i eth0 -o eth0 -d 216.239.59.103
-> -p tcp --dport 80 -j ACCEPT
+The target ARM board is made to act as a bridge between the Host and the 
+Router as shown below.
 
-Ok.
+10.1.111.3 Host(eth0)<---->{ eth0 bridge(10.1.111.1) eth1 }<--->Router( 
+10.1.111.254)
 
-> iptables -A FORWARD -i eth0 -o eth0 -s 216.239.59.103
-> -p tcp --sport 80 -j ACCEPT
+On the target board
 
-Use the connection tracking (-m state --state ESTABLISHED) to deal with=20
-return traffic.
+ifconfig eth0 0.0.0.0
+ifconfig eth1 0.0.0.0
+brctl addbr br0
+brctl addif br0 eth0
+brctl addif br0 eth1
+ifconfig br0 10.1.111.1 netmask 255.255.255.0 up
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-> iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d -p
-> tcp --dport 1099 -j DNAT --to-destination
-> 216.239.59.103:80
+are configured. The problem is that, I can't ping the Router from the Host. 
+But from the bridge, I can ping Router and Host. The "arp reply" from the 
+Router is not reaching the Host as there's a problem in the bridge 
+(bridge-utils 1.2) interface.
 
-Ok.
+I have cross checked the kernel configuration to include all the packet 
+forwarding and bridging. But still panic.
 
-> iptables -t nat -A POSTROUTING -o eth0 -d
-> 216.239.59.103 -p tcp --dport 1099 -j SNAT --to-source
-> a.b.c.d
+Can any one please precise what could cause this packet forward problem ?
 
-The rule must match on destination port 80 instead of 1099, because it=20
-occurs after the destination port has been translated. Remember the path=20
-is :
-PREROUTING (DNAT) -> FORWARD -> POSTROUTING (SNAT)
+Thanks
+Sara
+
+_________________________________________________________________
+Gossips, movie reviews, photogallery and more 
+http://content.msn.co.in/Entertainment/Default
+
 
