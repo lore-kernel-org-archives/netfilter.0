@@ -1,9 +1,11 @@
-From: "saravanan chanemouganandam" <saravanan_sprt@hotmail.com>
-Subject: bridge problem
-Date: Thu, 15 Feb 2007 22:06:44 +0530
-Message-ID: <BAY131-F1857AFF907BF1716A253BBE2960@phx.gbl>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: bridge problem
+Date: Thu, 15 Feb 2007 17:54:39 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0702151753450.786@yvahk01.tjqt.qr>
+References: <BAY131-F1857AFF907BF1716A253BBE2960@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <BAY131-F1857AFF907BF1716A253BBE2960@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,50 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: bridge@lists.osdl.org
-Cc: netfilter@lists.netfilter.org
+To: saravanan chanemouganandam <saravanan_sprt@hotmail.com>
+Cc: netfilter@lists.netfilter.org, bridge@lists.osdl.org
 
-Hi,
 
-I am a newbie to use the bridge utils and after some serious tests I am 
-posting this issue. Actually, I am fascing packet forwarding problem in the 
-following network setup under linux 2.6.16. The 2.6.16 kernel is also 
-configured to include 802.1d Ethernet bridging, Network packet filtering, IP 
-netfilter configuration and Bridge netfilter configuration.
+On Feb 15 2007 22:06, saravanan chanemouganandam wrote:
+>
+> ifconfig eth0 0.0.0.0
+> ifconfig eth1 0.0.0.0
 
-The target ARM board is made to act as a bridge between the Host and the 
-Router as shown below.
+That's a no-op. What you need is `ip l s eth0 up` (same for eth1)
 
-10.1.111.3 Host(eth0)<---->{ eth0 bridge(10.1.111.1) eth1 }<--->Router( 
-10.1.111.254)
+> are configured. The problem is that, I can't ping the Router from the Host. But
 
-On the target board
+brctl sethello br0 1
 
-ifconfig eth0 0.0.0.0
-ifconfig eth1 0.0.0.0
-brctl addbr br0
-brctl addif br0 eth0
-brctl addif br0 eth1
-ifconfig br0 10.1.111.1 netmask 255.255.255.0 up
-echo 1 > /proc/sys/net/ipv4/ip_forward
 
-are configured. The problem is that, I can't ping the Router from the Host. 
-But from the bridge, I can ping Router and Host. The "arp reply" from the 
-Router is not reaching the Host as there's a problem in the bridge 
-(bridge-utils 1.2) interface.
 
-I have cross checked the kernel configuration to include all the packet 
-forwarding and bridging. But still panic.
-
-Can any one please precise what could cause this packet forward problem ?
-
-Thanks
-Sara
-
-_________________________________________________________________
-Gossips, movie reviews, photogallery and more 
-http://content.msn.co.in/Entertainment/Default
-
+Jan
+-- 
+ft: http://freshmeat.net/p/chaostables/
 
