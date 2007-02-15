@@ -1,11 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: bridge problem
-Date: Thu, 15 Feb 2007 17:54:39 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0702151753450.786@yvahk01.tjqt.qr>
-References: <BAY131-F1857AFF907BF1716A253BBE2960@phx.gbl>
+From: Harvey Muller <hlmuller@yahoo.com>
+Subject: iptables-1.3.7 Requires ip_tables to be built as module
+Date: Thu, 15 Feb 2007 10:41:16 -0800 (PST)
+Message-ID: <720457.59647.qm@web53612.mail.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY131-F1857AFF907BF1716A253BBE2960@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +15,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: saravanan chanemouganandam <saravanan_sprt@hotmail.com>
-Cc: netfilter@lists.netfilter.org, bridge@lists.osdl.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-
-On Feb 15 2007 22:06, saravanan chanemouganandam wrote:
->
-> ifconfig eth0 0.0.0.0
-> ifconfig eth1 0.0.0.0
-
-That's a no-op. What you need is `ip l s eth0 up` (same for eth1)
-
-> are configured. The problem is that, I can't ping the Router from the Host. But
-
-brctl sethello br0 1
-
-
-
-Jan
--- 
-ft: http://freshmeat.net/p/chaostables/
+Yasuyuki,=0A=0AI did not see your post until Wednesday.  I tried all the me=
+thods the Gentoo devs used in their ebuild,=0Abut I still get the error, FA=
+TAL: module ip_tables not found.=0A=0AI understand from your post that ipta=
+bles is probably still working correctly despite the errors.=0A=0AI've only=
+ begun to learn C, so much of the source I read is still unclear to me.  Bu=
+t after reviewing iptables.c,=0AI believe the problem is related to functio=
+n load_iptables_ko.  It is the only new addition to the code that would=0As=
+eem to be creating the problem.=0A=0ABest regards,=0A=0AHarvey=0A=0A
 
