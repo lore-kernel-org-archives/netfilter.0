@@ -1,12 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Need help with iptables and iprange module
-Date: Thu, 15 Feb 2007 13:56:42 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0702151356270.786@yvahk01.tjqt.qr>
-References: <b6d73fa90702141615y138d3f0dh176f309ca9ea74dd@mail.gmail.com>
-	<20070215014932.d5815394.michel@mitch-it.com>
+From: Tim Perton <grpanosgr@yahoo.com>
+Subject: Re: iptables: hide the real web server from users
+Date: Thu, 15 Feb 2007 06:28:02 -0800 (PST)
+Message-ID: <869165.54710.qm@web33305.mail.mud.yahoo.com>
+References: <45D34E01.8050900@riverviewtech.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070215014932.d5815394.michel@mitch-it.com>
+In-Reply-To: <45D34E01.8050900@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +17,123 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Michel van der Klei <michel@mitch-it.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: gtaylor+reply@riverviewtech.net, Mail List - Netfilter <netfilter@lists.netfilter.org>
+
+I tried the forward rules too but nothing.
+Still telnet a.b.c.d 1099 does not work after issuing
+the following commands(no other firewalling made to
+prohibit packets):
+
+iptables -A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth0 -d 216.239.59.103
+-p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth0 -s 216.239.59.103
+-p tcp --sport 80 -j ACCEPT
+
+iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d -p
+tcp --dport 1099 -j DNAT --to-destination
+216.239.59.103:80
+iptables -t nat -A POSTROUTING -o eth0 -d
+216.239.59.103 -p tcp --dport 1099 -j SNAT --to-source
+a.b.c.d
+
+Telnet gives:
+telnet a.b.c.d 1099
+Trying a.b.c.d...
+telnet: connect to address a.b.c.d: Operation timed
+out
+telnet: Unable to connect to remote host
+
+Is it a good idea to accept all udp packets too? I do
+not know.
+
+Has anyone used those rules and worked?
+
+Tim.
+
+--- Grant Taylor <gtaylor@riverviewtech.net> wrote:
+
+> Tim Perton wrote:
+> > Dear Grant,
+> > thank you very much for your quick reply.
+> 
+> You are welcome.
+> 
+> > I agree to the 3 conditions/caveats in your
+> previous
+> > email. I have already tried an example on this.
+> > Let's say I want to connect to www.google.com
+> > (216.239.59.103) so System B is www.google.com
+> 
+> Ok.
+> 
+> > According to your example I issue the following
+> > commands (after stop/start iptables to be fresh):
+> > 
+> > iptables -A INPUT -p tcp -m tcp --dport 1099 -j
+> ACCEPT
+> 
+> What filtering do you have in place?  If you do not
+> have default 
+> policies of ACCEPT, you will also need to add rules
+> to your 
+> filter:FORWARD chain to allow this traffic to pass
+> through.  I.e.
+> 
+> iptables -A FORWARD -i eth0 -o eth0 -d
+> 216.239.59.103 -p tcp --dport 80 
+> -j ACCEPT
+> 
+> iptables -A FORWARD -i eth0 -o eth0 -s
+> 216.239.59.103 -p tcp --sport 80 
+> -j ACCEPT
+> 
+> > iptables -t nat -A PREROUTING -i eth0 -d a.b.c.d
+> -p
+> > tcp --dport 1099 -j DNAT --to-destination
+> > 216.239.59.103:80
+> > 
+> > iptables -t nat -A POSTROUTING -o eth0 -d
+> > 216.239.59.103 -p tcp --dport 1099 -j SNAT
+> --to-source
+> > a.b.c.d
+> 
+> These commands look ok to me.
+> 
+> > I am trying http://a.b.c.d:1099  or with telnet
+> > a.b.c.d 1099 (Trying a.b.c.d... telnet: Unable to
+> > connect to remote host: Connection refused)
+> 
+> I think you will have better luck playing with
+> telnet to start with. 
+> Keep in mind that just because you enter
+> "http://a.b.c.d..." in your web 
+> browser, you are doing more than connecting to that
+> address.  You are 
+> also asking for a page off of the domain a.b.c.d. 
+> So for testing, I'd 
+> stick with telnet, or set up a temporary hosts entry
+> for the test domain.
+> 
+> 
+> 
+> Grant. . . .
+> 
+> 
 
 
-On Feb 15 2007 01:49, Michel van der Klei wrote:
->> 
->> I try to install the crap-patch-o-matic, impossible to install without
->> 100 years of linux knowledge.
->
->Which kernelversion is there installed on your Debian machine. Since kernel
->2.6.18 it's no longer needed to run patch-o-matic. 
->
->modprobe ipt_iprange will do that trick for you.
 
-And iptables will autoload it for you if it's there, so the trick is already
-done.
+ 
+____________________________________________________________________________________
+We won't tell. Get more on shows you hate to love 
+(and love to hate): Yahoo! TV's Guilty Pleasures list.
+http://tv.yahoo.com/collections/265 
 
-Jan
--- 
-ft: http://freshmeat.net/p/chaostables/
+
+ 
+____________________________________________________________________________________
+The fish are biting. 
+Get more visitors on your site using Yahoo! Search Marketing.
+http://searchmarketing.yahoo.com/arp/sponsoredsearch_v2.php
 
