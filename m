@@ -1,11 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Whats faster? multiple rules vs. multiport match
-Date: Sat, 17 Feb 2007 14:55:48 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0702171428540.32079@yvahk01.tjqt.qr>
+Date: Sat, 17 Feb 2007 15:24:25 +0100
+Message-ID: <45D71019.2010405@plouf.fr.eu.org>
 References: <20070215213729.GA27689@outback.rfc2324.org>
+	<Pine.LNX.4.61.0702171428540.32079@yvahk01.tjqt.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070215213729.GA27689@outback.rfc2324.org>
+In-Reply-To: <Pine.LNX.4.61.0702171428540.32079@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,48 +18,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Maximilian Wilhelm <max@rfc2324.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hello,
 
-On Feb 15 2007 22:37, Maximilian Wilhelm wrote:
->Subject: Whats faster? multiple rules vs. multiport match
+Jan Engelhardt a =E9crit :
+>=20
+> To match N ports with N/20 rules using a multiport spec  [...]
 
-Of course a multiport match. Not that I have any hard proof for that, but
-it's a feeling.
-
-To match N ports with N rules, you will need to call N times into
-xt_tcpudp of cost T.
-
-To match N ports with N/20 rules using a multiport spec, you will need to
-call N/20 times into xt_tcpudp of cost T and N/20 times into xt_multiport
-of cost M.
-
-For
-
-  T*N < T*N/20 + M*N/20,  with N->Infinity
-
-to hold,
-
-In[9]:= Reduce[t*n < t*n/20+m*n/20, t]
-
-                                             m                    m
-Out[9]= m \[Element] Reals && ((n < 0 && t > --) || (n > 0 && t < --))
-                                             19                   19
-
-we need T < M/19, or interpreted, xt_tcpudp needs to run through about 19
-times less instruction/lines than xt_multiport, which seems unrealistic,
-since xt_multiport's match function has (by eye) roughly the same number
-of LoCs as xt_tcpudp.
-
-Of course this is just theory, there might be a bug in my thinking, or
-it's a close tie, and only a benchmark - I am not aware of any yet - can
-prove it.
-
-
-Jan
--- 
-ft: http://freshmeat.net/p/chaostables/
+Note that the multiport match does not support more than 15 ports (and a=20
+port range counts as two ports). ;-)
 
