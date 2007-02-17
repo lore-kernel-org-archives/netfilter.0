@@ -1,8 +1,9 @@
-From: Maximilian Wilhelm <max@rfc2324.org>
-Subject: Whats faster? multiple rules vs. multiport match
-Date: Thu, 15 Feb 2007 22:37:29 +0100
-Message-ID: <20070215213729.GA27689@outback.rfc2324.org>
+From: "Abdul-Wahid Paterson" <abdulwahid@gmail.com>
+Subject: creating artificial latency
+Date: Sat, 17 Feb 2007 11:42:46 +0300
+Message-ID: <995fcdb00702170042u478d6c2arf139d4f05ac6164c@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
@@ -15,34 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter List <netfilter@lists.netfilter.org>
 
-Hi!
+It is probably not the normal thing that people would want to slow
+down packets but I have to remote sites and have a few different
+options for connecting them. There is no copper or fibre so I am
+restricted to certain wireless and satellite systems.
 
-While hacking on alff [42] I asked myself what would be more wise to
-use for matching multiple ports on multiple servers/ips
+I know what the latency of these proposed systems would be but I need
+to make a realistic evaluation of the different systems in terms of
+using our in house applications to test what latency would be
+acceptable for users to actually work effectively.
 
- a) on rule for every ip/port combination
- b) two rules for every server, one for tcp and one for udp
-    (assumend I only have to match for udp and tcp stuff).
+Is there a way using iptables (or another linux method) that I can
+create artificial latency by adding say 500 msecs to each packet
+before it is forwarded?
 
-(The whole scenario is the following:
- I generate rules to regulate access to different services.
- Every service is transalted into an own chain.
- Therein I generate a matrix of host running this service and port
- related to it - like a))
+Thanks and regards,
 
-As there are some services with ~ 20 ports (think: Windows(r) DC)
-there might be some advantage in choosing the faster way.
 
-Is there any "benchmark" which might enligthen me which way to use?
-Any comments?
-
-Thanks in advance
-Ciao
-Max
--- 
-	Follow the white penguin.
+Abdul-Wahid
 
