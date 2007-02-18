@@ -1,14 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Whats faster? multiple rules vs. multiport match
-Date: Sat, 17 Feb 2007 16:33:08 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0702171632220.32079@yvahk01.tjqt.qr>
-References: <20070215213729.GA27689@outback.rfc2324.org>
-	<Pine.LNX.4.61.0702171428540.32079@yvahk01.tjqt.qr>
-	<45D71019.2010405@plouf.fr.eu.org>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: throttling an internal IP's upstream bandwidth
+Date: Sun, 18 Feb 2007 12:46:04 +0100
+Message-ID: <45D83C7C.6000501@rtij.nl>
+References: <Pine.LNX.4.64.0702091134220.18820@novak.ethosuk.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45D71019.2010405@plouf.fr.eu.org>
+In-Reply-To: <Pine.LNX.4.64.0702091134220.18820@novak.ethosuk.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Scott van Looy <scott@ethosuk.org.uk>
 Cc: netfilter@lists.netfilter.org
 
-Hi,
-
-
-> Jan Engelhardt a =C3=A9crit :
->>=20
->> To match N ports with N/20 rules using a multiport spec  [...]
+Scott van Looy wrote:
 >
-> Note that the multiport match does not support more than 15 ports (and a =
-port
-> range counts as two ports). ;-)
+> I'm on DSL, I only have small upstream and big downstream. Everything 
+> goes through a 1:1 NAT iptables firewall - so internal IPs are 
+> directly mapped to an external IP. I want to throttle the internal 
+> upstream bandwidth so the internal machines can't upload at more than 
+> 25k/s as the maxing out of the upstream is killing the much faster 
+> downstream...is there a way to do this using iptables?
+>
 
-Oh right. Then substitute 20 by 15 and 19 by 14.
+Google for wondershaper.
 
+HTH,
+M4
 
-Jan
---=20
-ft: http://freshmeat.net/p/chaostables/
 
