@@ -1,18 +1,16 @@
-From: Pedro Abreu <pedro.abreu@anubisnetworks.com>
+From: Gregory Carter <gcarter@aesgi.com>
 Subject: Re: throttling an internal IP's upstream bandwidth
-Date: Mon, 19 Feb 2007 13:04:05 +0000
-Message-ID: <1171890245.5374.19.camel@localhost.localdomain>
+Date: Mon, 19 Feb 2007 09:52:46 -0600
+Message-ID: <45D9C7CE.6060301@aesgi.com>
 References: <Pine.LNX.4.64.0702091134220.18820@novak.ethosuk.org.uk>
 	<45D83C7C.6000501@rtij.nl>
 	<Pine.LNX.4.64.0702181232550.32641@novak.ethosuk.org.uk>
-	<45D858AD.5060501@rtij.nl>
-Reply-To: pedro.abreu@anubisnetworks.com
+	<45D858AD.5060501@rtij.nl> <45D90B6E.3020801@aesgi.com>
+	<Pine.LNX.4.64.0702191106070.32641@novak.ethosuk.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=sha1;
-	protocol="application/x-pkcs7-signature";
-	boundary="=-VDtl3Kb0jSW6hkdChCsv"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45D858AD.5060501@rtij.nl>
+In-Reply-To: <Pine.LNX.4.64.0702191106070.32641@novak.ethosuk.org.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,145 +21,521 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Ok, here it is:
 
---=-VDtl3Kb0jSW6hkdChCsv
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+This is the QoS policy I have on my BGP routers.
 
-On Sun, 2007-02-18 at 14:46 +0100, Martijn Lievaart wrote:
-> Scott van Looy wrote:
-> > Today Martijn Lievaart did spake thusly:
-> >
-> >> Scott van Looy wrote:
-> >>>
-> >>> I'm on DSL, I only have small upstream and big downstream.=20
-> >>> Everything goes through a 1:1 NAT iptables firewall - so internal=20
-> >>> IPs are directly mapped to an external IP. I want to throttle the=20
-> >>> internal upstream bandwidth so the internal machines can't upload at=20
-> >>> more than 25k/s as the maxing out of the upstream is killing the=20
-> >>> much faster downstream...is there a way to do this using iptables?
-> >>>
-> >>
-> >> Google for wondershaper.
-> >
-> > I use wondershaper, it doesn't let me throttle on a per machine basis=20
-> > tho - I want the firewall to only allow a max of 25k out for each of=20
-> > my internal machines
-> >
->=20
-> Ah, then you have to do some work yourself. The answer is most probably=20
-> tc, not netfilter. If you don't have a lot of internal machines, you can=20
-> add a filter/qdisc for all of them but for large amounts of internal=20
-> machines (or with dhcp), this gets unwieldy.
->=20
-> However, wondershaper should do what you ultimately want, shape traffic=20
-> so uploads don't disturb downloads. It works for me.
->=20
-> M4
->=20
->=20
+It is a fairly basic policy that allows me to dynamically adjust 
+bandwidth based on need and priority.
 
-I use tc filter to distribute traffic between classes:
+You will note that this QoS policy is divided up into three policies or 
+channels.
 
-## ssh
-tc filter add dev $DEV protocol ip parent 1:0 prio 10 u32\
-      match ip dport 22 0xfffe flowid 1:10
-## dns
-tc filter add dev $DEV protocol ip parent 1:0 prio 11 u32\
-      match ip dport 53 0xfffe flowid 1:10
-## pings
-tc filter add dev $DEV parent 1:0 protocol ip prio 12 u32 \
-      match ip protocol 1 0xff flowid 1:10
-## small packets (<64 bytes)
-tc filter add dev $DEV parent 1: protocol ip prio 13 u32 \
-      match ip protocol 6 0xff \
-      match u8 0x05 0x0f at 0 \
-      match u16 0x0000 0xffc0 at 2 \
-      flowid 1:10
+Channel #1 is the highest priority and this is where all of my ssh 
+session traffic and windows terminal server traffic goes.
 
-The easiest way should be to create a class for each machine and then tc
-filter based on ip... alternatively it should be possible to mark
-packets with iptables then match different marks with tc filter.
+Essentially this is RDP and NX traffic as all of the my desktops in the 
+office, and also on our forklifts are a combination of KDE and Windows 
+using NX clients.
+
+NX works over port 22 and so on.
+
+Notice that the recipe has three channels and these channels have to add 
+up to and not exceed the UPRATE.
+
+(i.e. PRIORATE1+PRIORATE2+PRIORATE3=UPRATE)
+
+Right now for example my upstream capacity on my cable line is 1Mbit.   
+So, in order for queueing to happen so I can properly prioritize the 
+traffic, I have to reduce the upstream rate to a point where it is 
+backing up on the BGP router, not the cable modem.   I found 768K to be 
+very reliable in all cases.
+
+You have to get that right otherwise QoS may be erratic or simply not work.
+
+I think the script is pretty self documenting but if you want me to 
+spell out the details about how it works, and what is what with the 
+iptables portion of the script I would be happy to answer any questions.
+
+-gc
+
+#! /bin/sh
+##
+# Author: Gregory Carter <gcarter@aesgi.com>
+#
+# /etc/init.d/qos
+#
+
+### BEGIN INIT INFO
+# Provides:       qos
+# Required-Start: $network
+# Required-Stop:
+# Default-Start:  2 3 5
+# Default-Stop:
+# Description:    quality of service policy gurantees for network services
+### END INIT INFO
 
 
---=20
+# Shell functions sourced from /etc/rc.status:
+#      rc_check         check and set local and overall rc status
+#      rc_status        check and set local and overall rc status
+#      rc_status -v     ditto but be verbose in local rc status
+#      rc_status -v -r  ditto and clear the local rc status
+#      rc_failed        set local and overall rc status to failed
+#      rc_failed <num>  set local and overall rc status to <num><num>
+#      rc_reset         clear local rc status (overall remains)
+#      rc_exit          exit appropriate to overall rc status
+. /etc/rc.status
 
-Pedro Abreu
-AnubisNetworks
-Rua Alexander Fleming, 5B
-1600-054 Lisboa, Portugal
-Tel. : +351 21 7252110
-Mobile : +351 91 9302990
-Fax : +351 21 7252119
-pedro.abreu@anubisnetworks.com
-http://www.anubisnetworks.com
+# First reset status of this service
+rc_reset
 
---=-VDtl3Kb0jSW6hkdChCsv
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
+# Return values acc. to LSB for all commands but status:
+# 0 - success
+# 1 - generic or unspecified error
+# 2 - invalid or excess argument(s)
+# 3 - unimplemented feature (e.ga "reload")
+# 4 - insufficient privilege
+# 5 - program is not installed
+# 6 - program is not configured
+# 7 - program is not running
+#
+# Note that starting an already running service, stopping
+# or restarting a not-running service as well as the restart
+# with force-reload (in case signalling is not supported) are
+# considered a success.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJNzCCAvYw
-ggJfoAMCAQICEDeznNX5WhrhbL3Bm2Y111cwDQYJKoZIhvcNAQEEBQAwYjELMAkGA1UEBhMCWkEx
-JTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQ
-ZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA2MDcwNTE2MTI0MVoXDTA3MDcwNTE2MTI0
-MVowUDEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEtMCsGCSqGSIb3DQEJARYecGVk
-cm8uYWJyZXVAYW51YmlzbmV0d29ya3MuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvEe5/KzzO6Hmvh3hqBdPaUmb6qn6M6VMCXGw6MG6VORuBNHjfVJ3Pf8uPy/BeWLYFN3kpdbO
-LRi875pS7hmDr6a3xvx/bWW305k23GX7dm4HGlnRpdrhHDijac5RUQCt8tlgNLmyrZ2e4YquLpns
-2YsHv4akqh39D3iocicpUbmx78whFz6YiQXvkih9dKxIlekP4sL+yrnYs/vP27XLLvCHPgCOziJQ
-g9qtvQZjA6e51USxjOwa7ri+Ifhw3ctOL/lg4uCkwOpv6Vf+V4795W+H4eh4x0Y96RDvrtUzzv7v
-0IDfeUkxbULgA1+xhZcPl2o8dgwX74+5e2dl973MZQIDAQABozswOTApBgNVHREEIjAggR5wZWRy
-by5hYnJldUBhbnViaXNuZXR3b3Jrcy5jb20wDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQQFAAOB
-gQCKClESJCG5i3ltBSQcsXa+HIEzRLZvXAJlWpuh3/dRLjnPvlo3019oeQsC4dkXEWbFbYzeL/i7
-oCxeaI2HkYCFL19aXp050qYi2FciOK0QPEbVtLJ8xT18CafG6rbQDkRx1W+h2dm+r2UoXJVqiX7L
-Z5uHDqzIex1rHg8IkMo2FzCCAvYwggJfoAMCAQICEDeznNX5WhrhbL3Bm2Y111cwDQYJKoZIhvcN
-AQEEBQAwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0
-ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA2MDcw
-NTE2MTI0MVoXDTA3MDcwNTE2MTI0MVowUDEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJl
-cjEtMCsGCSqGSIb3DQEJARYecGVkcm8uYWJyZXVAYW51YmlzbmV0d29ya3MuY29tMIIBIjANBgkq
-hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvEe5/KzzO6Hmvh3hqBdPaUmb6qn6M6VMCXGw6MG6VORu
-BNHjfVJ3Pf8uPy/BeWLYFN3kpdbOLRi875pS7hmDr6a3xvx/bWW305k23GX7dm4HGlnRpdrhHDij
-ac5RUQCt8tlgNLmyrZ2e4YquLpns2YsHv4akqh39D3iocicpUbmx78whFz6YiQXvkih9dKxIlekP
-4sL+yrnYs/vP27XLLvCHPgCOziJQg9qtvQZjA6e51USxjOwa7ri+Ifhw3ctOL/lg4uCkwOpv6Vf+
-V4795W+H4eh4x0Y96RDvrtUzzv7v0IDfeUkxbULgA1+xhZcPl2o8dgwX74+5e2dl973MZQIDAQAB
-ozswOTApBgNVHREEIjAggR5wZWRyby5hYnJldUBhbnViaXNuZXR3b3Jrcy5jb20wDAYDVR0TAQH/
-BAIwADANBgkqhkiG9w0BAQQFAAOBgQCKClESJCG5i3ltBSQcsXa+HIEzRLZvXAJlWpuh3/dRLjnP
-vlo3019oeQsC4dkXEWbFbYzeL/i7oCxeaI2HkYCFL19aXp050qYi2FciOK0QPEbVtLJ8xT18CafG
-6rbQDkRx1W+h2dm+r2UoXJVqiX7LZ5uHDqzIex1rHg8IkMo2FzCCAz8wggKooAMCAQICAQ0wDQYJ
-KoZIhvcNAQEFBQAwgdExCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNV
-BAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRp
-ZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVl
-bWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0w
-MzA3MTcwMDAwMDBaFw0xMzA3MTYyMzU5NTlaMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3
-dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1h
-aWwgSXNzdWluZyBDQTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAxKY8VXNV+065yplaHmjA
-dQRwnd/p/6Me7L3N9VvyGna9fww6YfK/Uc4B1OVQCjDXAmNaLIkVcI7dyfArhVqqP3FWy688Cwfn
-8R+RNiQqE88r1fOCdz0Dviv+uxg+B79AgAJk16emu59l0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sC
-AwEAAaOBlDCBkTASBgNVHRMBAf8ECDAGAQH/AgEAMEMGA1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9j
-cmwudGhhd3RlLmNvbS9UaGF3dGVQZXJzb25hbEZyZWVtYWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjAp
-BgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxhYmVsMi0xMzgwDQYJKoZIhvcNAQEFBQAD
-gYEASIzRUIPqCy7MDaNmrGcPf6+svsIXoUOWlJ1/TCG4+DYfqi2fNi/A9BxQIJNwPP2t4WFiw9k6
-GX6EsZkbAMUaC4J0niVQlGLH2ydxVyWN3amcOY6MIE9lX5Xa9/eH1sYITq726jTlEBpbNU1341Yh
-eILcIRk13iSx0x1G/11fZU8xggMQMIIDDAIBATB2MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxU
-aGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJl
-ZW1haWwgSXNzdWluZyBDQQIQN7Oc1flaGuFsvcGbZjXXVzAJBgUrDgMCGgUAoIIBbzAYBgkqhkiG
-9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0wNzAyMTkxMzA0MDVaMCMGCSqGSIb3
-DQEJBDEWBBTOmjBhJVpdMH7/VA77YgFUqanLRzCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQG
-EwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhh
-d3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECEDeznNX5WhrhbL3Bm2Y111cwgYcGCyqG
-SIb3DQEJEAILMXigdjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcg
-KFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0EC
-EDeznNX5WhrhbL3Bm2Y111cwDQYJKoZIhvcNAQEBBQAEggEAVTg13K0ALDjbzaGrK9P7few1IEx6
-dZ+tVfcODUz2/e4Z64U0RHfcg0qi1IxnAzBD8GdqUcxVHm4JOkIIGzIxH16QuG/iPxnFUF92nyWf
-XNzpRiAUABdf2ATTNJX5yQPLDsUOs8OUugbdZdfYfldxfipftbKtS5k6hiOH+i4pU3MNB0dTq4MC
-sdvHtblxJK55hY3afZ9aSbX5eRkDGPFdfH2QRzi0Fwj+lLRvka/yLaqJHZZUHaua/41A4hbyV0Ur
-Vjo9qwMixhjnbD1WqqDBX7dcFMcQsGCWUg1CwU5pJP7liso3tb/Bocq8hoqcvTNAwOlBG9zHmobX
-za/U6DkjwAAAAAAAAA==
+# Real Physical Interface
+IFACE=eth2
+
+# Priority Channels
+
+MARKPRIO1="1"
+MARKPRIO2="2"
+MARKPRIO3="3"
 
 
---=-VDtl3Kb0jSW6hkdChCsv--
+# Master Rate
+UPRATE="768"
+
+# Channel Rates
+PRIORATE1="340"
+PRIORATE2="128"
+PRIORATE3="300"
+
+case "$1" in
+    start)
+        echo -n "Starting Quality of Service Policy"
+        ## Start daemon with startproc(8). If this fails
+        ## the echo return value is set appropriate.
+
+        echo "TOS Settings"
+     # Set priorities by marking packets.
+
+     #
+     # TOS Matching
+     #
+     # Make sure the TOS headers in each TCP transaction are prioritized 
+first
+     #
+          iptables -t mangle -A PREROUTING -m tos --tos 
+Minimize-Delay      -j MARK --set-mark $MARKPRIO1
+          iptables -t mangle -A PREROUTING -m tos --tos 
+Minimize-Delay      -j RETURN
+          iptables -t mangle -A PREROUTING -m tos --tos 
+Minimize-Cost       -j MARK --set-mark $MARKPRIO2
+          iptables -t mangle -A PREROUTING -m tos --tos 
+Minimize-Cost       -j RETURN
+          iptables -t mangle -A PREROUTING -m tos --tos 
+Maximize-Throughput -j MARK --set-mark $MARKPRIO3
+          iptables -t mangle -A PREROUTING -m tos --tos 
+Maximize-Throughput -j RETURN
+
+          iptables -t mangle -A OUTPUT -m tos --tos Minimize-Delay      
+-j MARK --set-mark $MARKPRIO1
+          iptables -t mangle -A OUTPUT -m tos --tos Minimize-Delay      
+-j RETURN
+          iptables -t mangle -A OUTPUT -m tos --tos Minimize-Cost       
+-j MARK --set-mark $MARKPRIO2
+          iptables -t mangle -A OUTPUT -m tos --tos Minimize-Cost       
+-j RETURN
+          iptables -t mangle -A OUTPUT -m tos --tos Maximize-Throughput 
+-j MARK --set-mark $MARKPRIO3
+          iptables -t mangle -A OUTPUT -m tos --tos Maximize-Throughput 
+-j RETURN
+
+     # Maximum Priority Services
+
+     echo "SSH Priority 1"
+     # ssh
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 22 -j 
+MARK --set-mark $MARKPRIO1
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 22 -j 
+RETURN
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 22 -j 
+MARK --set-mark $MARKPRIO1
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 22 -j 
+RETURN
+
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 22 -j MARK 
+--set-mark $MARKPRIO1
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 22 -j RETURN
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 22 -j MARK 
+--set-mark $MARKPRIO1
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 22 -j RETURN
+
+     echo "Terminal Services Priority 1"
+     # Terminal Services
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 3389 -j 
+MARK --set-mark $MARKPRIO1
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 3389 -j 
+RETURN
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 3389 -j 
+MARK --set-mark $MARKPRIO1
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 3389 -j 
+RETURN
+
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 3389 -j 
+MARK --set-mark $MARKPRIO1
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 3389 -j RETURN
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 3389 -j 
+MARK --set-mark $MARKPRIO1
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 3389 -j RETURN
+
+
+     # Services trying to establish an initial connection between 
+locations must be
+     # at highest priority as they are already slow over the back haul.
+
+     echo "TCP Connection States Priority 1"
+
+          iptables -t mangle -I PREROUTING -p tcp -m tcp --tcp-flags 
+SYN,RST,ACK SYN -j MARK --set-mark $MARKPRIO1
+          iptables -t mangle -I PREROUTING -p tcp -m tcp --tcp-flags 
+SYN,RST,ACK SYN -j RETURN
+
+          iptables -t mangle -I OUTPUT -p tcp -m tcp --tcp-flags 
+SYN,RST,ACK SYN -j MARK --set-mark $MARKPRIO1
+          iptables -t mangle -I OUTPUT -p tcp -m tcp --tcp-flags 
+SYN,RST,ACK SYN -j RETURN
+
+
+     # Prio 2
+     #
+     # 2nd Class Priority Services
+     #
+
+     echo "Freightlink Clients Priority 2"
+     # Freightlink Client
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 52272 
+-j MARK --set-mark $MARKPRIO2
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 52272 
+-j RETURN
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 52272 
+-j MARK --set-mark $MARKPRIO2
+          iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 52272 
+-j RETURN
+
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 52272 -j 
+MARK --set-mark $MARKPRIO2
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 52272 -j RETURN
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 52272 -j 
+MARK --set-mark $MARKPRIO2
+          iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 52272 -j RETURN
+
+     echo "DNS Priority 2"
+     # DNS
+       iptables -t mangle -A PREROUTING -p udp -m udp --sport 53 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p udp -m udp --sport 53 -j RETURN
+       iptables -t mangle -A PREROUTING -p udp -m udp --dport 53 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p udp -m udp --dport 53 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p udp -m udp --sport 53 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p udp -m udp --sport 53 -j RETURN
+       iptables -t mangle -A OUTPUT -p udp -m udp --dport 53 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p udp -m udp --dport 53 -j RETURN
+
+
+
+     echo "SMTP Priority 2"
+     # SMTP
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 25 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 25 -j RETURN
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 25 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 25 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 25 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 25 -j RETURN
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 25 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 25 -j RETURN
+
+     echo "POP3 Priority 2"
+     # POP3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 110 -j 
+MARK --set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 110 -j RETURN
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 110 -j 
+MARK --set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 110 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 110 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 110 -j RETURN
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 110 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 110 -j RETURN
+
+
+     echo "LDAP Priority 2"
+     # LDAP
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 389 -j 
+MARK --set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 389 -j RETURN
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 389 -j 
+MARK --set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 389 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 389 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 389 -j RETURN
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 389 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 389 -j RETURN
+
+
+     # LDAPS
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 636 -j 
+MARK --set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 636 -j RETURN
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 636 -j 
+MARK --set-mark $MARKPRIO2
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 636 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 636 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 636 -j RETURN
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 636 -j MARK 
+--set-mark $MARKPRIO2
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 636 -j RETURN
+
+     # Prio 3
+     #
+     # 3th Class Priority Services
+     #
+     echo "SMB over TCP Priority 3 (Bulk Default Channel)"
+     # Microsoft SMB over TCP File Server Traffic
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 445 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 445 -j RETURN
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 445 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 445 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 445 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 445 -j RETURN
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 445 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 445 -j RETURN
+
+     echo "SMB over NETBIOS Priority 3 (Bulk Default Channel)"
+     # Microsoft SMB over NETBIOS Name Service
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 137 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 137 -j RETURN
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 137 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 137 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 137 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 137 -j RETURN
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 137 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 137 -j RETURN
+
+
+     echo "SMB over NETBIOS Datagram Service Priority 3 (Bulk Default 
+Channel)"
+     # Microsoft SMB over NETBIOS Datagram Service
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 138 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 138 -j RETURN
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 138 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 138 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 138 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 138 -j RETURN
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 138 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 138 -j RETURN
+
+     echo "SMB over NETBIOS Session Service Priority 3 (Bulk Default 
+Channel)"
+     # Microsoft SMB over NETBIOS Session Service
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 139 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 139 -j RETURN
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 139 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 139 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 139 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 139 -j RETURN
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 139 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 139 -j RETURN
+
+     echo "AXIS Web Services Gateway Priority 3 (Bulk Default Channel)"
+     # AXIS Web Services Gateway Traffic
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 8080 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --sport 8080 -j RETURN
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 8080 -j 
+MARK --set-mark $MARKPRIO3
+       iptables -t mangle -A PREROUTING -p tcp -m tcp --dport 8080 -j RETURN
+
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 8080 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 8080 -j RETURN
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 8080 -j MARK 
+--set-mark $MARKPRIO3
+       iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 8080 -j RETURN
+
+     echo "Set Interface Target Q"
+     # Set queue length for IFACE
+          ifconfig $IFACE txqueuelen 16
+
+     echo "Setting Queue Type...."
+     # Specify queue discipline
+          tc qdisc add dev $IFACE root handle 1:0 htb default 103 r2q 1
+
+     echo "Setting Root Class"
+     # Set root class
+          tc class add dev $IFACE parent 1:0 classid 1:1 htb rate 
+${UPRATE}kbit ceil ${UPRATE}kbit
+
+     # Specify sub classes
+          tc class add dev $IFACE parent 1:1 classid 1:101 htb rate 
+${PRIORATE1}kbit ceil ${UPRATE}kbit prio 0
+          tc class add dev $IFACE parent 1:1 classid 1:102 htb rate 
+${PRIORATE2}kbit ceil ${UPRATE}kbit prio 1
+          tc class add dev $IFACE parent 1:1 classid 1:103 htb rate 
+${PRIORATE3}kbit ceil ${UPRATE}kbit prio 2
+
+     # Filter packets
+          tc filter add dev $IFACE parent 1:0 protocol ip prio 1 handle 
+$MARKPRIO1 fw classid 1:101
+          tc filter add dev $IFACE parent 1:0 protocol ip prio 1 handle 
+$MARKPRIO2 fw classid 1:102
+          tc filter add dev $IFACE parent 1:0 protocol ip prio 1 handle 
+$MARKPRIO3 fw classid 1:103
+
+     # Add queuing disciplines
+          tc qdisc add dev $IFACE parent 1:101 sfq perturb 16
+          tc qdisc add dev $IFACE parent 1:102 sfq perturb 16
+          tc qdisc add dev $IFACE parent 1:103 sfq perturb 16
+
+        # Remember status and be verbose
+        rc_status -v
+        ;;
+    stop)
+        echo -n "Removing QoS Policies.....done"
+        ## Stop daemon with killproc(8) and if this fails
+        ## set echo the echo return value.
+
+        tc qdisc del dev $IFACE root handle 1:0 htb default 103 r2q 1
+
+        rc_status -v
+        ;;
+    status)
+        echo -n "Currrent QoS queue stats: "
+        ## Check status with checkproc(8), if process is running
+        ## checkproc will return with exit status 0.
+
+        # Status has a slightly different for the status command:
+        # 0 - service running
+        # 1 - service dead, but /var/run/  pid  file exists
+        # 2 - service dead, but /var/lock/ lock file exists
+        # 3 - service not running
+
+        # NOTE: checkproc returns LSB compliant status values.
+
+        tc -s -d class show dev $IFACE
+
+        rc_status -v
+        ;;
+    *)
+        echo "Usage: $0 
+{start|stop|status|try-restart|restart|force-reload|reload}"
+        exit 1
+        ;;
+esac
+rc_exit
+
+
+Scott van Looy wrote:
+> ooh, please!
+>
+> On Feb 18 Gregory Carter did spake thusly:
+>
+>> I can post a simple tc / iptables recipe if need be to address this 
+>> problem.
+>>
+>> -gc
+>>
+>> Martijn Lievaart wrote:
+>>
+>>> Scott van Looy wrote:
+>>>
+>>>> Today Martijn Lievaart did spake thusly:
+>>>>
+>>>>> Scott van Looy wrote:
+>>>>>
+>>>>>>
+>>>>>> I'm on DSL, I only have small upstream and big downstream. 
+>>>>>> Everything goes through a 1:1 NAT iptables firewall - so internal 
+>>>>>> IPs are directly mapped to an external IP. I want to throttle the 
+>>>>>> internal upstream bandwidth so the internal machines can't upload 
+>>>>>> at more than 25k/s as the maxing out of the upstream is killing 
+>>>>>> the much faster downstream...is there a way to do this using 
+>>>>>> iptables?
+>>>>>>
+>>>>>
+>>>>> Google for wondershaper.
+>>>>
+>>>>
+>>>> I use wondershaper, it doesn't let me throttle on a per machine 
+>>>> basis tho - I want the firewall to only allow a max of 25k out for 
+>>>> each of my internal machines
+>>>>
+>>>
+>>> Ah, then you have to do some work yourself. The answer is most 
+>>> probably tc, not netfilter. If you don't have a lot of internal 
+>>> machines, you can add a filter/qdisc for all of them but for large 
+>>> amounts of internal machines (or with dhcp), this gets unwieldy.
+>>>
+>>> However, wondershaper should do what you ultimately want, shape 
+>>> traffic so uploads don't disturb downloads. It works for me.
+>>>
+>>> M4
+>>>
+>>
+>>
+>
 
 
