@@ -1,15 +1,11 @@
-From: =?iso-8859-15?Q?Ren=E9?= Pfeiffer <lynx@luchs.at>
-Subject: Re: Netfilter rule notation and rule parsers
-Date: Mon, 19 Feb 2007 23:54:31 +0100
-Message-ID: <20070219225430.GM24517@nightfall.luchs.at>
-References: <20070219152509.GL19622@nightfall.luchs.at>
-	<45D9FCAC.6090607@yahoo.co.uk>
+From: "Jean-Philippe Mignon" <jp.mignon@gmail.com>
+Subject: Source port NAT
+Date: Tue, 20 Feb 2007 15:38:24 +0100
+Message-ID: <f30a73bb0702200638k62c45db6t7c65f361416ba558@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IR1Y5IvQhrKgS4e6"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <45D9FCAC.6090607@yahoo.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,82 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+HI.
 
---IR1Y5IvQhrKgS4e6
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ I need some helps with port forwarding.
+ I have a SNMP agent listen on port 1610 (not 161 for rights restriction).
+ External applications send query to 161 port and wait response from this port.
+ Here's my configuration:
 
-On Feb 19, 2007 at 2038 +0100, Franck Joncourt appeared and said:
-> Ren=E9 Pfeiffer wrote:
-> > I am aware that there are several rule editors out there (such as
-> > FWbuilder). I am more interested in a low-level approach having simple
-> > rules that can be parsed easily and possibly distributed among multiple
-> > firewall systems.
->=20
-> I do not think there is another way to work at low level without writing
-> rules by yourself. The more you write, the more you understand.
+ eth0:  192.168.0.1
+ eth0:0 192.168.0.2
 
-Well, yes, but maybe my mail wasn't written well enough. I agree that
-people who really want to learn the capabilities and the internals of
-Netfilter should do that by writing scripts. My question was directed at
-another scenario - time for an example. I am sysadmin for a couple of
-Netfilter firewalls that run smoothly for many years now. Most setups
-are fairly static or only changed by sysadmins who know what they are
-doing. Some firewalls protect a NATed DMZ with development servers
-running on a Xen host. The developers frequently start new servers with
-new services (mostly HTTP and HTTPS) on a virtualised server with a
-static IP. They need this server for a couple of weeks or months, then
-they deactivated it. Maybe they wish to reactivate it after a period of
-time just to run some additional tests.
+ iptables -t nat -I PREROUTING -p udp -d 192.168.0.2 --dport 161 -j
+DNAT --to-destination 192.168.0.1:1610
+ iptables -t nat -I POSTROUTING -p udp -s 192.168.0.1 --sport 1611 -j
+SNAT --to-source 192.168.0.2:161
 
-Now the rule you need for this setup are NAT/NAPT translation rules and,
-of course, filter rules. The Netfilter machine in question handles this
-by virtue of a Bash script that contains a couple of functions. The
-problem is that the developers wish to tell the firewall which IP and
-port to translate and to allow access to by using a minimal set of
-parameters. They don't care for NAT, NAPT, marking packets or policy
-routing. They simply wish to switch on a service and switch it off
-again. (IMHO this is not the "right" approach to firewalling, but this
-is another story.)
+ When I query agent on 192.168.0.1:1610, I receive correct response from
+ 192.168.0.2:161. But, when I query agent on 192.168.0.2:161, agent
+log an error:
+ IOException: Operation not permitted.
 
-So that's the reason I why I asked before writing yet another rule
-language and yet another parser.
+ If anybody can help me it would be appreciated.
 
-> This is not my job, and I am far from being an expert, but I should
-> say, distibuted rules among multiple systems, is not that simple ; it
-> depends on your needs. Can a script for a router be useful for a
-> server ? It can be complicated to get a script working on both
-> systems.
-
-Yes, the distribution of rules was another use I had in mind, mainly as
-a means to copy a working configuration to another firewall machine in
-case of deceased hardware. I don't intend to magically "autoparse" rules
-between machines that have completely different roles. ;)
-
-Best regards,
-Ren=E9.
-
---=20
-  )\._.,--....,'``.      Let GNU/Linux work for you while you take a nap.
- /,   _.. \   _\  (`._ ,. R. Pfeiffer <lynx at luchs.at> + http://web.luchs=
-=2Eat/
-`._.-(,_..'--(,_..'`-.;.'  - System administration + Consulting + Teaching -
-Got mail delivery problems?  http://web.luchs.at/information/blockedmail.php
-
---IR1Y5IvQhrKgS4e6
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD4DBQFF2iqmeMu5lRpXJ7kRApm7AJjl4E1iWbtFABMJPWBJgjZBEWvsAKCV1KQ2
-cK/YhgUB+HC1MSPuCwhTOQ==
-=9t3X
------END PGP SIGNATURE-----
-
---IR1Y5IvQhrKgS4e6--
+ Thank you !
 
