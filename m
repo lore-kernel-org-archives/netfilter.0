@@ -1,18 +1,11 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: -s THIS ? (address belongs to one of of interfaces of local
-	machine)
-Date: Wed, 21 Feb 2007 14:39:29 -0500
-Message-ID: <20070221193929.GC6207@salty>
-References: <f36b08ee0702210408h5db5027bmb1105d0d7d74cb17@mail.gmail.com>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: "Hal Moroff" <halm90@gmail.com>
+Subject: need help with libiptc
+Date: Wed, 21 Feb 2007 12:00:27 -0800
+Message-ID: <e1663d820702211200m468fb6dr6ab79fcdac756922@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <f36b08ee0702210408h5db5027bmb1105d0d7d74cb17@mail.gmail.com>
-	(from
-	+nfcan+jimlaur+16eee38966.iler.ml#gmail.com@spamgourmet.com on
-	Wed, Feb 21, 2007 at 07:08:17 -0500)
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,22 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="Flowed"; delsp="Yes"; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On 2007.02.21 07:08, Yakov Lerner - iler.ml@gmail.com wrote:
-> Is there an easy way to specify '-s LOCAL', meaning
-> not 127.0.0.1, but meaning that address matches any of
-> addresses of interfaces belonging this this machine ?
+I'm writing an application that needs to dynamically add & remove iptables
+rules at runtime.  I'm trying to use libiptc and finding it quite hard
+to fathom.  I
+can create/destroy chains, but there's no real documentation on
+iptc_insert_entry.
 
-In the filter table this distinction is implicit
-in the choice of the Input/Output or Forward chains.
-So 'Local' packets do not normally traverse Forward.
-Is that enough?
+I find it hard to believe that this isn't more commonly done.  Aren't there any
+other apps out there that do this?
 
--- 
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
+About the only doc I can find on libiptc is Leonardo Balliache's "Querying
+libiptc HOWTO".  It's good, but far from complete.  In particular he says
+little/nothing on how to construct the ipt_entry struct that you must pass to
+iptc_insert_entry.  He extracts the structure definition from the
+header file, but
+there's much more to it than that.
+
+Looking at the iptables.c source I can see that in order to insert an entry
+the ipt_entry struct must contain a list of current targets, but I can't find
+how to create that list.
+
+Can anybody offer any help at all on dynamically adding rules to iptables
+by calls into libiptc?  If there's a better / simpler way to do this I'm open to
+that as well.
 
