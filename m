@@ -1,7 +1,8 @@
-From: "Jean-Philippe Mignon" <jp.mignon@gmail.com>
-Subject: Source port NAT
-Date: Tue, 20 Feb 2007 15:38:24 +0100
-Message-ID: <f30a73bb0702200638k62c45db6t7c65f361416ba558@mail.gmail.com>
+From: "Yakov Lerner" <iler.ml@gmail.com>
+Subject: -s THIS ? (address belongs to one of of interfaces of local
+	machine) ?
+Date: Wed, 21 Feb 2007 07:08:17 -0500
+Message-ID: <f36b08ee0702210408h5db5027bmb1105d0d7d74cb17@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -19,27 +20,9 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-HI.
+Is there an easy way to specify '-s LOCAL', meaning
+not 127.0.0.1, but meaning that address matches any of
+addresses of interfaces belonging this this machine ?
 
- I need some helps with port forwarding.
- I have a SNMP agent listen on port 1610 (not 161 for rights restriction).
- External applications send query to 161 port and wait response from this port.
- Here's my configuration:
-
- eth0:  192.168.0.1
- eth0:0 192.168.0.2
-
- iptables -t nat -I PREROUTING -p udp -d 192.168.0.2 --dport 161 -j
-DNAT --to-destination 192.168.0.1:1610
- iptables -t nat -I POSTROUTING -p udp -s 192.168.0.1 --sport 1611 -j
-SNAT --to-source 192.168.0.2:161
-
- When I query agent on 192.168.0.1:1610, I receive correct response from
- 192.168.0.2:161. But, when I query agent on 192.168.0.2:161, agent
-log an error:
- IOException: Operation not permitted.
-
- If anybody can help me it would be appreciated.
-
- Thank you !
+Yakov
 
