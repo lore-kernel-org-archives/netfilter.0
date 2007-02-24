@@ -1,9 +1,9 @@
-From: <mabra@manfbraun.de>
-Subject: debian [testing/etch] redirected broadcasts not working
-Date: Sat, 24 Feb 2007 12:03:19 +0100
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAA5vnGI+hMzxGNBQCASISWKcKAAAAQAAAA/XFtDOjSZEyQI/6EoCSUaAEAAAAA@manfbraun.de>
+From: Harvey Muller <hlmuller@yahoo.com>
+Subject: Fw: [RFC][PATCH][IPTABLES]: suppress the error of modprobe
+Date: Sat, 24 Feb 2007 04:01:55 -0800 (PST)
+Message-ID: <970870.93727.qm@web53615.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,30 +18,21 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi All!
-
-I am struggling with ipfilters to redirect broadcast from the internet into
-my LAN, which I need for Wake On LAN(WAN). I have just moved from NetBSD to
-Debian and have set it up to be a router, which does well. I am new to
-ipfilters, but I got all of my nat-based redirects of ports running, except
-this one:
-
-iptables -t nat -A PREROUTING -i $EXTIF -p udp --dport 8888 -j DNAT --to
-192.168.26.255
-
-This is syntactically accepted by ipfilters, but there are no redirected
-packages in the LAN, which I track with tcpdump. The packages reach my
-public interface, but not more. In NetBSD, I had to set the kernel variable
-"net.inet.ip.directed-broadcast" to allow the redirected broadcast. After
-long serches, I discovered "net.ipv4.ip_echo_ignore_broadcasts" for Debian
-from a posting. But if I try to set this variable, I get only "unknown key"
-[I use "sysctl -w ...] as an error message.
-
-Is this a limitation to the testing version, or am I completely wrong with
-my attempt?
-Any help would be great!
-
-Best regards,
-Manfred 
-
+I didn't see this on netfilter-devel.   Forwarding to netfilter for Yasuyuk=
+i's benefit.=0A=0A----- Forwarded Message ----=0AFrom: Harvey Muller <hlmul=
+ler@yahoo.com>=0ATo: netfilter-devel@lists.netfilter.org=0ASent: Wednesday,=
+ February 21, 2007 11:45:16 AM=0ASubject: [RFC][PATCH][IPTABLES]: suppress =
+the error of modprobe=0A=0AYasuyuki,=0A=0AI was unable to patch using the t=
+ext you provided in the post, as it kept complaining about malformed text.=
+=0A=0AI did however make the corrections by hand using the iptables 1.3.7 r=
+elease, and created a patch.  What I=0Anoticed is that all of the line numb=
+ers match in your post match, except for those in ip6tables.c.  So you=0Ama=
+y have made changes to a version different than that noted above.=0A=0AThe =
+patch applies successfully, but the following error message is emitted duri=
+ng make:=0A=0A=3D=3D=3D Error Message Starts =3D=3D=3D=0Aip6tables.c:1749: =
+error: conflicting types for 'ip6tables_insmod'=0Ainclude/ip6tables.h:174: =
+error: previous declaration of 'ip6tables_insmod' was here=0Amake: *** [ip6=
+tables.o] Error 1=0Arm libiptc/libip6tc.o libiptc/libip4tc.o=0A=3D=3D=3D Er=
+ror Message Ends =3D=3D=3D=0A=0AI hope this is helpful and best regards,=0A=
+=0AHarvey=0A=0A=0A=0A=0A
 
