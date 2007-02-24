@@ -1,7 +1,7 @@
-From: "Alec Matusis" <alecm@chatango.com>
-Subject: "distributed router" question
-Date: Fri, 23 Feb 2007 22:50:19 -0800
-Message-ID: <9494.44433576918$1172303504@news.gmane.org>
+From: <mabra@manfbraun.de>
+Subject: debian [testing/etch] redirected broadcasts not working
+Date: Sat, 24 Feb 2007 12:03:19 +0100
+Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAA5vnGI+hMzxGNBQCASISWKcKAAAAQAAAA/XFtDOjSZEyQI/6EoCSUaAEAAAAA@manfbraun.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,33 +18,30 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am wondering if I am doing something legitimate, or it's against TCP/IP (I
-am a physicist by education, so I do not know):
+Hi All!
 
-I have box A that has one connection to WAN and one connection to LAN. On
-box A, eth0 has a public ip 1.2.3.4 and eth1 has a private ip 10.0.0.1
+I am struggling with ipfilters to redirect broadcast from the internet into
+my LAN, which I need for Wake On LAN(WAN). I have just moved from NetBSD to
+Debian and have set it up to be a router, which does well. I am new to
+ipfilters, but I got all of my nat-based redirects of ports running, except
+this one:
 
-I have box B that also has one connection to WAN and another one to the same
-LAN. On B, eth0 has a public ip 5.6.7.8 and eth1 has a private ip 10.0.0.2
+iptables -t nat -A PREROUTING -i $EXTIF -p udp --dport 8888 -j DNAT --to
+192.168.26.255
 
-I configured iptables in box A to forward packets destined for 1.2.3.4:3000
-to the destination 10.0.0.2:3000 , i.e. to box B. This part works, I checked
-with tcpdumps.
+This is syntactically accepted by ipfilters, but there are no redirected
+packages in the LAN, which I track with tcpdump. The packages reach my
+public interface, but not more. In NetBSD, I had to set the kernel variable
+"net.inet.ip.directed-broadcast" to allow the redirected broadcast. After
+long serches, I discovered "net.ipv4.ip_echo_ignore_broadcasts" for Debian
+from a posting. But if I try to set this variable, I get only "unknown key"
+[I use "sysctl -w ...] as an error message.
 
-Now, the box B after receiving a SYN packet via box A on eth1, sends an ACK
-packet directly through its WAN interface eth0 to the client. If I do not
-configure POSTROUTING SNAT , those ACK packets appear to originate from
-10.0.0.2, so they are rejected by the client. 
-My question is: if I configure SNAT on box B so that ACK packets appear to
-come from box A (i.e. from 1.2.3.4), would this be a legitimate
-configuration?
+Is this a limitation to the testing version, or am I completely wrong with
+my attempt?
+Any help would be great!
 
-In other words, a SYN packet is sent to one machine, forwarded via LAN to
-another machine, and the ACK packet is sent from the second machine having
-the source ip of the first machine. For that matter, all incoming packets
-from the client are received by A, then forwarded to B, and all response
-packets are sent directly from B to the client. Is this a legitimate
-configuration?
-
+Best regards,
+Manfred 
 
 
