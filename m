@@ -1,12 +1,11 @@
-From: "Alec Matusis" <alecm@chatango.com>
-Subject: RE: "distributed router" question
-Date: Sat, 24 Feb 2007 23:30:26 -0800
-Message-ID: <539.336764677678$1172388665@news.gmane.org>
-References: <erqqgn$omf$1@sea.gmane.org>
+From: "johnpeng" <johnpeng@unitytek.com.tw>
+Subject: RE: Using SAME target problems
+Date: Mon, 26 Feb 2007 11:55:57 +0800
+Message-ID: <12511.7737021812$1172462244@news.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <erqqgn$omf$1@sea.gmane.org>
+In-Reply-To: 
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,68 +16,44 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@lists.netfilter.org
-Cc: rnichols@comcats.com
 
-Thanks Robert.
+Dear all:
+=A0=A0=A0I find two problems of using =93SAME=94 target, I am using =
+kernel 2.6.17.7
+and iptables 1.3.5
+1. =A0Multiple calls of check function:
+=A0=A0=A0=A0=A0When we turn on the Debug messages ( by recompiling), I =
+find that the
+check function of SAME target would be called multiple times,=20
+i.e =A0=A0iptables =96t nat =96A PREROUTING =96d 10.10.10.1 -j SAME =
+=96to
+172.31.0.1-172.31.0.3
+=A0=A0=A0=A0=A0iptables =96t nat =96A PREROUTING =96d 10.10.10.2 =96j =
+DNAT =96to-destination
+192.168.1.1
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=85. Other NAT rules
 
-My requirement is to have a transparent proxy in some sense: the TCP packets
-should be proxied by box A to a server on box B, and back from B to the
-client (via A I guess). The server on box B should see the original IP
-address of the client. When I do SNAT on A, the original IP becomes
-invisible for box B.
+=A0=A0=A0=A0=A0netfilter travels the second DNAT rules, but calls the =
+check function
+of the first rules of =93SAME=94 target
+=A0=A0=A0=A0=A0, so does every following NAT rules.
+=A0=A0=A0=A0My question is , I didn=91t see the same situation in kernel =
+2.4 , is that
+due to some framework change in kernel 2.6 ?
 
-Is there a way to do this without using squid, with iptables only? 
+2. Can=92t remove the =93SAME=94 target:
+When we issue the removal =93iptables =96t nat =96D PREROUTING =96d =
+10.10.10.1 -j
+SAME =96to 172.31.0.1-172.31.0.3=94,=20
+Iptables get reply of =93iptables: No chain/target/match by that =
+name=94,
+=A0it seems the memory comparison is not equal with user level and =
+kernel
+level passed target info data structure,=20
+Any solution?
 
->-----Original Message-----
->From: netfilter-bounces@lists.netfilter.org 
->[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
->Robert Nichols
->Sent: Saturday, February 24, 2007 5:59 PM
->To: netfilter@lists.netfilter.org
->Subject: Re: "distributed router" question
->
->Alec Matusis wrote:
->> Hi Silvio,
->> 
->> Thanks for your response. 
->> 
->> I still do not understand why SNATting in B to public IP of 
->box A would not
->> work?
->> By this I mean the following:
->> 
->> 1) Client sends packet to box A ( src: 9.10.11.12 dst: 1.2.3.4 )
->> 2) Box A does DNAT (PREROUTING) to box B ( src: 9.10.11.12 
->dst: 10.0.0.2 )
->> 
->> Box B receives the packet and replies directly to the client:
->> 1) Box B does SNAT (POSTROUTING) using box A WAN as source 
->(src: 1.2.3.4
->> dst: 9.10.11.12)
->> 
->> There are two reasons why I'd like to implement it this way:
->> 
->> a) Reduce the load on box A so that the packets from B go 
->directly to the
->> client 9.10.11.12, bypassing A.
->> b) The server on box B must log the IPs of all clients (i.e. log the
->> original client IP  9.10.11.12) 
->> 
->> Thank you,
->> 
->> Alec Matusis
->
->You can make that work for UDP, but for TCP box A will see 
->only half-open
->connections (it will never see the SYN/ACK) and reject the 
->payload packets
->as invalid.
->
->-- 
->Bob Nichols         Yes, "NOSPAM" is really part of my email address.
->
->
+Thanks for your help!!
 
 
