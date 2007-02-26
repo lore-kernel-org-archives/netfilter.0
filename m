@@ -1,10 +1,13 @@
-From: angico <angico@yahoo.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: strange behaviour
-Date: Mon, 26 Feb 2007 08:21:33 -0800 (PST)
-Message-ID: <768065.25159.qm@web36815.mail.mud.yahoo.com>
+Date: Mon, 26 Feb 2007 18:43:56 +0100
+Message-ID: <45E31C5C.8010707@plouf.fr.eu.org>
+References: <20070226124547.69013.qmail@web36804.mail.mud.yahoo.com>	<45E2F479.7020804@plouf.fr.eu.org>	<1172502565.4265.118.camel@anduril.intranet.cartel-securite.net>	<45E2FE20.90701@plouf.fr.eu.org>
+	<1172506681.4265.155.camel@anduril.intranet.cartel-securite.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1172506681.4265.155.camel@anduril.intranet.cartel-securite.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,25 +18,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-GREAT, GUYS! IT WORKED!!!!!! I THANK YOU VERY MUCH for the help!=0Aangico.=
-=0A=0A=0A----- Original Message ----=0AFrom: Cedric Blancher <blancher@cart=
-el-securite.fr>=0ATo: angico <angico@yahoo.com>=0ACc: netfilter@lists.netfi=
-lter.org=0ASent: Monday, February 26, 2007 1:07:55 PM=0ASubject: Re: strang=
-e behaviour=0A=0ALe lundi 26 f=E9vrier 2007 =E0 07:35 -0800, angico a =E9cr=
-it :=0A> hi, buddys. thanks for your attention, but...=0A> nothing works, y=
-et. and this option "--clamp-mss-to-pmtu" just send me an error: "iptables:=
- Invalid argument". =0A> angico.=0A=0AMy mistake.=0AAs Pascal stated, you h=
-ave to specify a "-p tcp --tcp-flags SYN,RST SYN"=0Aas well, as TCPMSS clam=
-ping only works on TCP packets with SYN flag set:=0A=0A        iptables -t =
-mangle -A FORWARD -o ppp0 -p tcp \=0A           --tcp-flags SYN,RST SYN -j =
-TCPMSS --clamp-mss-to-pmtu=0A=0AIt should work better.=0A=0A=0A-- =0Ahttp:/=
-/sid.rstack.org/=0APGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA24=
-0008B480E157E98EE=0A>> Hi! I'm your friendly neighbourhood signature virus.=
-=0A>> Copy me to your signature file and help me spread!=0A=0A=0A=0A=0A=0A =
-=0A________________________________________________________________________=
-____________=0AHave a burning question?  =0AGo to www.Answers.yahoo.com and=
- get answers from real people who know.
+Cedric Blancher a =E9crit :
+> Le lundi 26 f=E9vrier 2007 =E0 16:34 +0100, Pascal Hambourg a =E9crit :
+>=20
+>>Also, wouldn't it be useful to do it in both directions to avoid=20
+>>fragmentation if host (b) does not use path MTU discovery ?
+>=20
+> No, because you don't want to clamp inbound traffic to your MTU, but to
+> your peer MTU.
+
+I want to clamp both, so TCP segments length does not exceed 1452 in=20
+either direction.
+
+> It's your peer job to advertise correctly its own MSS.
+
+Yes, but the MSS advertised by the peer may not be the best one : if it=20
+exceeds the PPP link MTU - 40 (typically 1492 - 40 =3D 1452) and host=20
+(b)'s MTU (typically 1500) exceeds the PPP link MTU and host (b) does=20
+not use path MTU discovery, then host (b) may send TCP datagrams bigger=20
+than the PPP link MTU that the server/router would need to fragment. So=20
+IMO it would be better that host (b) always see peers' MSS not bigger=20
+than the PPP link MTU - 40.
+
+> Now, if you look more closely, you'll see you clamp MSS against
+> destination PMTU. As PMTU from your firewall to your server  is most
+> probably ethernet MTU, you will clamp it to 1500.
+
+You mean "from the server/router to host (b)" ?
+Yes, you have a point. It's useless.
+
+> So, if your peer
+> advertise 1452 as MSS, you will overwrite it to a higher value of 1460
+> and break everything.
+
+Actually "clamp" means "decrease if bigger", the MSS is clamped only=20
+when it is bigger than PMTU - 40. So it won't break anything. It will=20
+just have no effect.
+
+What about :
+iptables -t mangle -A FORWARD -o eth1 -p tcp --tcp-flags SYN,RST SYN \
+   -m tcpmss --mss 1453: -j TCPMSS --set-mss 1452
 
