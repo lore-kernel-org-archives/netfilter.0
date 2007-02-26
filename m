@@ -1,10 +1,11 @@
-From: Vincent Elderkamp <vincent@ducky.nl>
-Subject: FTP Problem
-Date: Mon, 26 Feb 2007 20:46:12 +0100
-Message-ID: <45E33904.4060103@ducky.nl>
+From: "Chris Nighswonger" <cnighswonger@foundations.edu>
+Subject: Port redirection failover
+Date: Mon, 26 Feb 2007 15:07:26 -0500
+Message-ID: <cdae243a0702261207oad161base1d24682d3a3a728@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,69 +16,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi all,
 
-I'm a new user for netfilter en doesn't have experience with it...
+Some background:
+  We have redundant broadcast servers for our webradio stream. One of
+the types of streams we use is a "pull" where a remote Windows Media
+Server "Pulls" the stream from our broadcast server. This is
+accomplished by doing a DNAT so that the pull request from the WMS is
+directed to the broadcast server. It works great.
 
-I have written a simple firewall script in the past it works perfect,
-but know the FTP section doesn't work at all....
+Issue:
+  I need some type of failover configuration where when one of the
+broadcast servers is not available the DNAT will forward traffic to
+the other broadcast server.
 
-Maybe can somebody help me.
+Question:
+  Is this possible using iptables? (OS is Fedora Core 6)
 
-Here is my code :
+Thanks,
+Chris
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p tcp -i eth0 -s any/0 -d any/0 --dport 21 -j ACCEPT
-iptables -A OUTPUT -p tcp -o eth0 -s any/0 --sport 21 -d any/0 ! --syn
--j ACCEPT
-iptables -A INPUT -p tcp -i eth0 -s any/0 -d any/0 --dport 20 -j ACCEPT
-iptables -A OUTPUT -p tcp -o eth0 -s any/0 --sport 20 -d any/0 ! --syn
--j ACCEPT
-
-
-I have found some code on the internet but that doesn't work at all :
-
-## FTP
-# Allow ftp outbound.
-iptables -A INPUT  -i eth0 -p tcp --sport 21 -m state --state
-ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -o eth0 -p tcp --dport 21 -m state --state
-NEW,ESTABLISHED -j ACCEPT
-# Now for the connection tracking part of ftp. This is discussed more
-completely in my section
-# on connection tracking to be found here.
-# 1) Active ftp.
-# This involves a connection INbound from port 20 on the remote machine,
-to a local port
-# passed over the ftp channel via a PORT command. The ip_conntrack_ftp
-module recognizes
-# the connection as RELATED to the original outgoing connection to port
-21 so we don't
-# need NEW as a state match.
-iptables -A INPUT  -i eth0 -p tcp --sport 20 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -o eth0 -p tcp --dport 20 -m state --state
-ESTABLISHED -j ACCEPT
-# 2) Passive ftp.
-# This involves a connection outbound from a port >1023 on the local
-machine, to a port >1023
-# on the remote machine previously passed over the ftp channel via a
-PORT command. The
-# ip_conntrack_ftp module recognizes the connection as RELATED to the
-original outgoing
-# connection to port 21 so we don't need NEW as a state match.
-iptables -A INPUT  -i eth0 -p tcp --sport 1024:65535 --dport 1024:65535 \
-  -m state --state ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -o eth0 -p tcp --sport 1024:65535 --dport 1024:65535 \
-  -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-
-Hope someone can help me,
-
-Thank you very much
-
-Vincent
+-- 
+Chris Nighswonger
+Network & Systems Director
+Foundations Bible College & Seminary
+www.foundations.edu
+www.fbcradio.org
 
