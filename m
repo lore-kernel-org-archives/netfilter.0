@@ -1,13 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: strange behaviour
-Date: Mon, 26 Feb 2007 18:43:56 +0100
-Message-ID: <45E31C5C.8010707@plouf.fr.eu.org>
-References: <20070226124547.69013.qmail@web36804.mail.mud.yahoo.com>	<45E2F479.7020804@plouf.fr.eu.org>	<1172502565.4265.118.camel@anduril.intranet.cartel-securite.net>	<45E2FE20.90701@plouf.fr.eu.org>
-	<1172506681.4265.155.camel@anduril.intranet.cartel-securite.net>
+From: Vincent Elderkamp <vincent@ducky.nl>
+Subject: FTP Problem
+Date: Mon, 26 Feb 2007 20:46:12 +0100
+Message-ID: <45E33904.4060103@ducky.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1172506681.4265.155.camel@anduril.intranet.cartel-securite.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +15,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Cedric Blancher a =E9crit :
-> Le lundi 26 f=E9vrier 2007 =E0 16:34 +0100, Pascal Hambourg a =E9crit :
->=20
->>Also, wouldn't it be useful to do it in both directions to avoid=20
->>fragmentation if host (b) does not use path MTU discovery ?
->=20
-> No, because you don't want to clamp inbound traffic to your MTU, but to
-> your peer MTU.
+Hi,
 
-I want to clamp both, so TCP segments length does not exceed 1452 in=20
-either direction.
+I'm a new user for netfilter en doesn't have experience with it...
 
-> It's your peer job to advertise correctly its own MSS.
+I have written a simple firewall script in the past it works perfect,
+but know the FTP section doesn't work at all....
 
-Yes, but the MSS advertised by the peer may not be the best one : if it=20
-exceeds the PPP link MTU - 40 (typically 1492 - 40 =3D 1452) and host=20
-(b)'s MTU (typically 1500) exceeds the PPP link MTU and host (b) does=20
-not use path MTU discovery, then host (b) may send TCP datagrams bigger=20
-than the PPP link MTU that the server/router would need to fragment. So=20
-IMO it would be better that host (b) always see peers' MSS not bigger=20
-than the PPP link MTU - 40.
+Maybe can somebody help me.
 
-> Now, if you look more closely, you'll see you clamp MSS against
-> destination PMTU. As PMTU from your firewall to your server  is most
-> probably ethernet MTU, you will clamp it to 1500.
+Here is my code :
 
-You mean "from the server/router to host (b)" ?
-Yes, you have a point. It's useless.
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p tcp -i eth0 -s any/0 -d any/0 --dport 21 -j ACCEPT
+iptables -A OUTPUT -p tcp -o eth0 -s any/0 --sport 21 -d any/0 ! --syn
+-j ACCEPT
+iptables -A INPUT -p tcp -i eth0 -s any/0 -d any/0 --dport 20 -j ACCEPT
+iptables -A OUTPUT -p tcp -o eth0 -s any/0 --sport 20 -d any/0 ! --syn
+-j ACCEPT
 
-> So, if your peer
-> advertise 1452 as MSS, you will overwrite it to a higher value of 1460
-> and break everything.
 
-Actually "clamp" means "decrease if bigger", the MSS is clamped only=20
-when it is bigger than PMTU - 40. So it won't break anything. It will=20
-just have no effect.
+I have found some code on the internet but that doesn't work at all :
 
-What about :
-iptables -t mangle -A FORWARD -o eth1 -p tcp --tcp-flags SYN,RST SYN \
-   -m tcpmss --mss 1453: -j TCPMSS --set-mss 1452
+## FTP
+# Allow ftp outbound.
+iptables -A INPUT  -i eth0 -p tcp --sport 21 -m state --state
+ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --dport 21 -m state --state
+NEW,ESTABLISHED -j ACCEPT
+# Now for the connection tracking part of ftp. This is discussed more
+completely in my section
+# on connection tracking to be found here.
+# 1) Active ftp.
+# This involves a connection INbound from port 20 on the remote machine,
+to a local port
+# passed over the ftp channel via a PORT command. The ip_conntrack_ftp
+module recognizes
+# the connection as RELATED to the original outgoing connection to port
+21 so we don't
+# need NEW as a state match.
+iptables -A INPUT  -i eth0 -p tcp --sport 20 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --dport 20 -m state --state
+ESTABLISHED -j ACCEPT
+# 2) Passive ftp.
+# This involves a connection outbound from a port >1023 on the local
+machine, to a port >1023
+# on the remote machine previously passed over the ftp channel via a
+PORT command. The
+# ip_conntrack_ftp module recognizes the connection as RELATED to the
+original outgoing
+# connection to port 21 so we don't need NEW as a state match.
+iptables -A INPUT  -i eth0 -p tcp --sport 1024:65535 --dport 1024:65535 \
+  -m state --state ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth0 -p tcp --sport 1024:65535 --dport 1024:65535 \
+  -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+Hope someone can help me,
+
+Thank you very much
+
+Vincent
 
