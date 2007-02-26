@@ -1,10 +1,15 @@
-From: angico <angico@yahoo.com>
-Subject: strange behaviour
-Date: Mon, 26 Feb 2007 04:45:47 -0800 (PST)
-Message-ID: <20070226124547.69013.qmail@web36804.mail.mud.yahoo.com>
+From: Askar Ali <askarali@gmail.com>
+Subject: Re: strange behaviour
+Date: Mon, 26 Feb 2007 18:03:47 +0500
+Message-ID: <45E2DAB3.8010201@gmail.com>
+References: <20070226124547.69013.qmail@web36804.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:subject:references:in-reply-to:content-type:content-transfer-encoding;
+	b=RZ2+AynqvVZwLiVunNnz3Q65Mowg3/Pqkxpp/WYDojYsEchY6eOPoDrsAY5KtChH/aV4DyS5vVZJwsrk9hcxp8TKb8NtthVtEkkyEzrq3Pn4FslyvW3fOFV2wNEOSGEGOStmHWnpSc430BXkP55VF1haoNOZ+9wWfvaHEczMdxs=
+In-Reply-To: <20070226124547.69013.qmail@web36804.mail.mud.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +23,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-hi, everybody!=0Ai have a problem that you may help to solve, surely.=0Ai h=
-ave a server (a) connected to the internet via eth0/ppp0 (adsl).=0Aanother =
-computer (b) is connected to this server thru eth1, and it should reach the=
- internet via the server which is its gateway. and so it did!... up to a mo=
-nth ago.=0Ai think nothing's changed. all i did was a re-installing of my g=
-entoo based system on the server, due to problems on the hard-disk. but fir=
-ewall rules (iptables) remain the same. and the netted computer can't reach=
- the internet anymore! =0Athings got exquisite because:=0A- i ping any site=
- on the internet from (b) and i can see their pongs.=0A- irc (msn) also wor=
-ks fine!=0A- google's pages load correctly!=0Aand for my despair i can acce=
-ss <facilcotacao.com>, but can't access <facilcotacao.com/autopecas>!!!!=0A=
-please, help me! what the hell is wrong with my firewall?=0Amany thanks in =
-advance,=0Aangico.=0A=0Atable filter is:=0A=0AChain INPUT (policy DROP)=0An=
-um  target     prot opt source               destination         =0A1    AC=
-CEPT     all  --  192.168.0.0/24       boitata.jlm         =0A2    ACCEPT  =
-   tcp  --  anywhere             anywhere            state RELATED,ESTABLIS=
-HED =0A3    ACCEPT     udp  --  anywhere             anywhere            ud=
-p spt:domain =0A4    ACCEPT     udp  --  anywhere             anywhere     =
-       udp spt:http state NEW,RELATED,ESTABLISHED =0A5    ACCEPT     icmp -=
--  anywhere             anywhere            icmp echo-reply =0A6    ACCEPT =
-    icmp --  anywhere             anywhere            icmp echo-request =0A=
-=0A=0AChain FORWARD (policy ACCEPT)=0Anum  target     prot opt source      =
-         destination         =0A1    LOG        all  --  anywhere          =
-   anywhere            LOG level warning prefix `IPT-FWD: ' =0A2    ACCEPT =
-    all  --  anywhere             anywhere            =0A=0AChain OUTPUT (p=
-olicy ACCEPT)=0Anum  target     prot opt source               destination  =
-       =0A1    LOG        all  --  anywhere             anywhere           =
- LOG level warning prefix `IPT-OUT: ' =0A2    ACCEPT     all  --  boitata.j=
-lm          192.168.0.0/24      =0A=0A=0A=0Aand table nat is:=0A=0AChain PR=
-EROUTING (policy ACCEPT)=0Anum  target     prot opt source               de=
-stination         =0A=0AChain POSTROUTING (policy ACCEPT)=0Anum  target    =
- prot opt source               destination         =0A1    MASQUERADE  all =
- --  anywhere             anywhere            =0A2    MASQUERADE  all  --  =
-anywhere             anywhere            =0A=0AChain OUTPUT (policy ACCEPT)=
-=0Anum  target     prot opt source               destination         =0A=0A=
-=0A=0A=0A=0A =0A___________________________________________________________=
-_________________________=0AGet your own web address.  =0AHave a HUGE year =
-through Yahoo! Small Business.=0Ahttp://smallbusiness.yahoo.com/domains/?p=
-=3DBESTDEAL
+angico, on 02/26/2007 05:45 PM [GMT+500], wrote :
+> hi, everybody!
+> i have a problem that you may help to solve, surely.
+> i have a server (a) connected to the internet via eth0/ppp0 (adsl).
+> another computer (b) is connected to this server thru eth1, and it should reach the internet via the server which is its gateway. and so it did!... up to a month ago.
+> i think nothing's changed. all i did was a re-installing of my gentoo based system on the server, due to problems on the hard-disk. but firewall rules (iptables) remain the same. and the netted computer can't reach the internet anymore! 
+> things got exquisite because:
+>   
+Try this rule on  your gateway..
+
+
+iptables -A POSTROUTING -t nat -o ppp0 -j MASQUERADE
+
+Thanks
 
