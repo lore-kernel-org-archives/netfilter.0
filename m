@@ -1,11 +1,12 @@
-From: "Chris Nighswonger" <cnighswonger@foundations.edu>
-Subject: Port redirection failover
-Date: Mon, 26 Feb 2007 15:07:26 -0500
-Message-ID: <cdae243a0702261207oad161base1d24682d3a3a728@mail.gmail.com>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: FTP Problem
+Date: Tue, 27 Feb 2007 09:23:02 +0100
+Message-ID: <000a01c75a48$7f786410$0b0ffe0a@NS006819>
+References: <45E33904.4060103@ducky.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <45E33904.4060103@ducky.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+> Hi,
+> 
+> I'm a new user for netfilter en doesn't have experience with it...
+> 
+> I have written a simple firewall script in the past it works perfect,
+> but know the FTP section doesn't work at all....
+> 
+> Maybe can somebody help me.
+> 
+> Here is my code :
+> 
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> iptables -A INPUT -p tcp -i eth0 -s any/0 -d any/0 --dport 21 -j
+> ACCEPT iptables -A OUTPUT -p tcp -o eth0 -s any/0 --sport 21 -d any/0
+> ! --syn -j ACCEPT iptables -A INPUT -p tcp -i eth0 -s any/0 -d any/0
+> --dport 20 -j ACCEPT iptables -A OUTPUT -p tcp -o eth0 -s any/0
+> --sport 20 -d any/0 ! --syn -j ACCEPT 
 
-Some background:
-  We have redundant broadcast servers for our webradio stream. One of
-the types of streams we use is a "pull" where a remote Windows Media
-Server "Pulls" the stream from our broadcast server. This is
-accomplished by doing a DNAT so that the pull request from the WMS is
-directed to the broadcast server. It works great.
+Did you "modprobe ip_conntrack_ftp" and "modprobe ip_nat_ftp" ?
 
-Issue:
-  I need some type of failover configuration where when one of the
-broadcast servers is not available the DNAT will forward traffic to
-the other broadcast server.
 
-Question:
-  Is this possible using iptables? (OS is Fedora Core 6)
+Grts,
+Rob
 
-Thanks,
-Chris
 
--- 
-Chris Nighswonger
-Network & Systems Director
-Foundations Bible College & Seminary
-www.foundations.edu
-www.fbcradio.org
 
