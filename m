@@ -1,12 +1,9 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: DNAT Problems
-Date: Thu, 1 Mar 2007 00:11:02 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0703010010350.23355@yvahk01.tjqt.qr>
-References: <431a83ad0702280632w5c72b1d8rec20f41424b1927c@mail.gmail.com>
-	<431a83ad0702280633w2c0a88ddsa2132c44d3cbbe39@mail.gmail.com>
+From: "Andrew Kraslavsky" <andykras@hotmail.com>
+Subject: Blocking direct private IP address
+Date: Wed, 28 Feb 2007 15:20:49 -0800
+Message-ID: <BAY119-F18E57FAE6C344557F46010D6810@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <431a83ad0702280633w2c0a88ddsa2132c44d3cbbe39@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +14,81 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rafael Paris <raparis@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
+Hello,
 
-On Feb 28 2007 10:33, Rafael Paris wrote:
->
-> I have been trying to have access to my internal mail server from
-> internet but always get connection timed out.
-> This is a very short set of rules being used for testing purposes with
-> no success:
->
-> iptables -t nat -A PREROUTING -p tcp -i ppp0 -d <external_fixed_ip>
-> --dport 110 -j DNAT --to-destination <internal_ip:110>
-> iptables -t nat -A PREROUTING -p tcp -i ppp0 -d <external_fixed_ip>
-> --dport 25 -j DNAT --to-destination <internal_ip:25>
->
-> iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to <external_fixed_ip>
->
-> I'm using one ethernet device with my lan ip address and I can reach
-            ^^^
+I am experiencing an unusual problem relating to a DNAT causing a private I=
+P=20
+address to become accessible from the public network and I am hoping for=20
+advice on how to avoid this problem.
 
-There in lies your problem. All packets that came after the first one don't
-even pass your box.
+The set up (slightly simplified to avoid clutter) is:
 
+One external/public interface (eth0) on the firewall/router - IP 10.0.0.1/24
+One internal/private interface (eth1) on the firewall/router - IP=20
+192.168.0.1/24
+A Web server on the internal/private network - IP 192.168.0.99
 
+If I add this rule to the nat:PREROUTING chain...
 
-Jan
--- 
+iptables -t nat -A PREROUTING -d 10.0.0.1 -j DNAT --to-destination=20
+192.168.0.99
+
+...traffic addressed to the firewall/router at 10.0.0.1 has the destination=
+=20
+IP address changed to 192.168.0.99 as expected and that traffic is forwarde=
+d=20
+to the Web server.
+
+So far so good.  Now, here's the bad part.
+
+If I set up a host on the external/public network with a static route that =
+
+causes it to send traffic addressed to 192.168.0.0/24 to the 10.0.0.1=20
+external/public IP address of the firewall/router and then attempt to acces=
+s=20
+the Web server using 192.168.0.99 as the address, these directly addressed =
+
+packets get through the firewall.
+
+The reason these packets are not dropped by my filter:FORWARD chain is=20
+because, at that point, the destination IP is 192.168.0.99 regardless of=20
+whether the destination was NATted or not. I.e., I do not how to create a=20
+filtering rule that says "allow traffic from eth0 to 192.168.0.99 on eth1, =
+
+but only if it was NATted".
+
+I can certainly drop the directly addressed packets in the mangle:PREROUTIN=
+G=20
+chain, either by adding a rule that tests for and drops all possible local =
+
+subnets IP address destinations on incoming eth0 traffic or, probably more =
+
+cleanly, add a rule in mangle:PREROUTING that only allows through packets=20
+from eth0 with a destination IP of 10.0.0.1, but it seems like the iptables=
+=20
+guidlelines are to only do filtering in the filter table.
+
+I also did some research on /proc settings but could not find one that=20
+seemed to meet my needs.
+
+The other option I was considering was to define some advanced routing=20
+stuff, but I have not really looked into that in detail yet.
+
+Any advice would be greatly appreciated.  Hopefully this is simply one of=20
+those "d'oh!" kinds of things and I have missed a very easy answer=20
+somewhere.
+
+Thanks,
+
+- Andrew Kraslavsky
+
+_________________________________________________________________
+Find a local pizza place, movie theater, and more=85.then map the best rout=
+e!=20
+http://maps.live.com/?icid=3Dhmtag1&FORM=3DMGAC01
+
 
