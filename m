@@ -1,14 +1,16 @@
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-Subject: Re: Re IPv6 MARK support
-Date: Wed, 28 Feb 2007 21:38:13 +0900 (JST)
-Message-ID: <200702281238.l1SCcEL0012637@toshiba.co.jp>
-References: <200702281053.l1SArNIC025800@toshiba.co.jp>
-	<200702281136.l1SBaJLe019021@toshiba.co.jp>
-	<2acb06d50702280353q10529555vebd20e93ee7040e1@mail.gmail.com>
+From: "Rafael Paris" <raparis@gmail.com>
+Subject: DNAT Problems
+Date: Wed, 28 Feb 2007 10:33:19 -0400
+Message-ID: <431a83ad0702280633w2c0a88ddsa2132c44d3cbbe39@mail.gmail.com>
+References: <431a83ad0702280632w5c72b1d8rec20f41424b1927c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2acb06d50702280353q10529555vebd20e93ee7040e1@mail.gmail.com>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=j7/FIVknQVrNFX+8yfqAFZrHVddQhb8UoBoYVfgbzth80TCZ3NN6X2cDCI/XsWTW8tr4MwIm9GC0fE5pYTCzT3A/j+kM90xrOuwz3igY7VgNn+w5+TfS6T/Pd98tPQb11S2aUgdjU6vCmHTdJefyjnvf8bTriItKBvCxThwG5hQ=
+In-Reply-To: <431a83ad0702280632w5c72b1d8rec20f41424b1927c@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,62 +21,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: Text/Plain; charset="iso-8859-1"
-To: mael.boutin@laposte.net
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Good morning everyone...
 
-Hi,
+I have been trying to have access to my internal mail server from
+internet but always get connection timed out.
+This is a very short set of rules being used for testing purposes with
+no success:
 
-From: "Boutin Ma=EBl" <mael.boutin@laposte.net>
-Date: Wed, 28 Feb 2007 12:53:44 +0100
+iptables -P FORWARD ACCEPT
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
 
-> Thanks for the patch, however it does not work, the kernel does not c=
-ompile :
-> =
+iptables -t nat -A PREROUTING -p tcp -i ppp0 -d <external_fixed_ip>
+--dport 110 -j DNAT --to-destination <internal_ip:110>
+iptables -t nat -A PREROUTING -p tcp -i ppp0 -d <external_fixed_ip>
+--dport 25 -j DNAT --to-destination <internal_ip:25>
 
-> line 18:
-> =
+iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to <external_fixed_ip>
 
-> struct sk_buff has no member named mark (it should be nfmark no ?)
-> unknown field "mark" specified in initializer
+I'm using one ethernet device with my lan ip address and I can reach
+the mail server from this host.
+ My kernel is 2.6.19.2 with iptables 1.3.7
 
-Ah yes. nfmark is renamed to mark at 2.6.20.
+I also used these rules with kernel 2.4.34 and nothing.
 
-> To answer your previous questions :
-> yes i have logs in the kernel for both out6 and post6.
+Thanks in advanced for any comments.
 
-Thanks.
-
-> Of course i can try 2.6.20 but it seems to me that there is the same
-> problem (i tried before)
-
-I think so.
-
-> In my opinion the problem is due to the fact that the routing decisio=
-n
-> is made before OUTPUT chain but not relaunched once the nfmark routin=
-g
-> key is changed which is i think how it should work.
-
-Yes. That is what ip6_route_me_harder does.
-
-How about this for 2.6.19 ?
-
-[NETFILTER]: ip6_route_me_harder should take into account mark
-
-Signed-off-by: Yasuyuki Kozakai <yasuyuki.kozakai@toshiba.co.jp>
-
-diff --git a/net/ipv6/netfilter.c b/net/ipv6/netfilter.c
-index f6294e5..ca50b58 100644
---- a/net/ipv6/netfilter.c
-+++ b/net/ipv6/netfilter.c
-@@ -15,6 +15,7 @@ int ip6_route_me_harder(struct sk_buff *
- 	struct dst_entry *dst;
- 	struct flowi fl =3D {
- 		.oif =3D skb->sk ? skb->sk->sk_bound_dev_if : 0,
-+		.mark =3D skb->nfmark,
- 		.nl_u =3D
- 		{ .ip6_u =3D
- 		  { .daddr =3D iph->daddr,
+Cheers,
+Rafael
 
