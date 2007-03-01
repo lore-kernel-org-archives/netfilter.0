@@ -1,13 +1,12 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Blocking direct private IP address
-Date: Thu, 1 Mar 2007 08:30:56 +0100
-Message-ID: <000001c75bd3$8d74af10$0b0ffe0a@NS006819>
-References: <Pine.LNX.4.61.0703010449120.23355@yvahk01.tjqt.qr>
-	<BAY119-F39A4E5F3A07FF3275AC4E0D6800@phx.gbl>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Blocking direct private IP address
+Date: Thu, 01 Mar 2007 10:20:34 +0100
+Message-ID: <45E69AE2.9040401@plouf.fr.eu.org>
+References: <BAY119-F18E57FAE6C344557F46010D6810@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY119-F39A4E5F3A07FF3275AC4E0D6800@phx.gbl>
+In-Reply-To: <BAY119-F18E57FAE6C344557F46010D6810@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,58 +17,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-> My focus here is really on how to differentiate traffic that
-> gets DNATted from 10.0.0.1 to 192.168.0.99 from traffic that
-> was actually directly addressed to 192.168.0.99. 
+Hello,
 
-By matching destination-port for example.
-If you match packets for 10.0.0.1:80 and forward it using
-PREROUTING/DNAT to 192.168.0.99, *all* packets that match this criteria
-are DNATed.
-Packets sent to other ports are *not* DNATed, also, they are not sent to
-the FORWARD chain but to the INPUT chain..
+Andrew Kraslavsky a =E9crit :
+>=20
+> iptables -t nat -A PREROUTING -d 10.0.0.1 -j DNAT --to-destination=20
+> 192.168.0.99
+>=20
+> If I set up a host on the external/public network with a static route=20
+> that causes it to send traffic addressed to 192.168.0.0/24 to the=20
+> 10.0.0.1 external/public IP address of the firewall/router and then=20
+> attempt to access the Web server using 192.168.0.99 as the address,=20
+> these directly addressed packets get through the firewall.
 
-> In both cases, by the time the packet arrives in the filter
-> table FORWARD chain, the destination is simply 192.168.0.99,
-> there is no trace of the original pre-DNAT IP address, if
-> any....at least, that is where I got stuck anyway.
+Yes.
 
-I'm not clear on why you need that information, because...
+> The reason these packets are not dropped by my filter:FORWARD chain is=20
+> because, at that point, the destination IP is 192.168.0.99 regardless o=
+f=20
+> whether the destination was NATted or not. I.e., I do not how to create=
+=20
+> a filtering rule that says "allow traffic from eth0 to 192.168.0.99 on=20
+> eth1, but only if it was NATted".
 
-> I hope that explains it a bit more clearly.
-> 
-> The approach I am playing with at the moment is to add a rule
-> in the mangle table PREROUTING chain that marks any packets
-> that show up from eth0 that are not addressed to 10.0.0.1.
+Yes.
 
-If you match packets to port 80/tcp, other ports are *not* forwarded.
+> I can certainly drop the directly addressed packets in the=20
+> mangle:PREROUTING chain, either by adding a rule that tests for and=20
+> drops all possible local subnets IP address destinations on incoming=20
+> eth0 traffic or, probably more cleanly, add a rule in mangle:PREROUTING=
+=20
+> that only allows through packets from eth0 with a destination IP of=20
+> 10.0.0.1, but it seems like the iptables guidlelines are to only do=20
+> filtering in the filter table.
+>=20
+> I also did some research on /proc settings but could not find one that=20
+> seemed to meet my needs.
 
-> Then, in the filter table FORWARD chain, I added rules to
-> test for that mark and log and drop any packets that match.
-> 
-> I know I could simply put the logging and drop rules directly
-> in the mangle table PREROUTING chain but, based on various
-> guidelines for iptables I have read, I am trying to keep all
-> filtering activities within the filter table.
+You won't find anything in /proc.
 
-I think that if you do something like this:
+> The other option I was considering was to define some advanced routing=20
+> stuff, but I have not really looked into that in detail yet.
 
-$ipt -P FORWARD DROP
-$ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-$ipt -A FORWARD -m state --state NEW -d 192.168.0.99 \
-  -p tcp --dport 80 -j ACCEPT
-$ipt -t nat -A PREROUTING -i eth0 -d 10.0.0.1 \
-  -p tcp --dport 80 -j DNAT 192.168.0.99
+Advanced routing won't help you much either. Routing occurs after the=20
+PREROUTING chain and doesn't know about the original destination address.
 
-it'll do what you want it to and you'll have the option to forward other
-ports to other destination IP's.
+You have a handful of options :
 
+1) DROP in the mangle/PREROUTING chain before it is DNATed. Sure, it is=20
+not recommended in guidelines, but it is simple and it works.
 
-Grts,
-Rob
+iptables -t mangle -A PREROUTING -i eth0 -d 192.168.0.0/24 -j DROP
 
+2) DNAT traffic originally destined to the private address into an=20
+invalid address such as a loopback address, so that the routing drops it.
 
+iptables -t nat -A PREROUTING -i eth0 -d 192.168.0.0/24 \
+   -j DNAT --to 127.0.0.0
+
+* Note that this rule won't match packets in the INVALID state (and=20
+UNTRACKED, but you should know when you use the NOTRACK target), so you=20
+have to make sure they are dropped in the FORWARD chain.
+
+3) Mark traffic in the mangle/PREROUTING chain before it is DNATed and=20
+filter in the FORWARD chain according to the mark.
+
+iptables -t mangle -A PREROUTING -i eth0 -d ! 10.0.0.1 \
+   -j MARK --set-mark 1
+iptables -A FORWARD -i eth0 -m mark --mark 1 -j DROP
+
+You can also use marks in the other way, to mark valid packets and=20
+accept only those. Or you can use the mark with advanced routing with a=20
+"blackhole" or "unreachable" route.
+
+4) Check the original destination address with the "conntrack" match.
+
+iptables -A FORWARD -i eth0 -d 192.168.0.99 -p tcp --dport 80 \
+   -m conntrack --ctstate DNAT --ctorigdst 10.0.0.1 -j ACCEPT
+
+5) And last, my favourite option : just don't care about it. After all,=20
+why bother ? ;-)
 
