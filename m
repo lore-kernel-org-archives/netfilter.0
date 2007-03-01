@@ -1,13 +1,12 @@
-From: Brandon Seaver <brandon.seaver@gmail.com>
-Subject: iptables, DNAT, and SMTP
-Date: Thu, 1 Mar 2007 15:41:19 -0500
-Message-ID: <1832A25C-5FC3-4F24-B55A-C6069A71CD5D@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v752.2)
-Content-Transfer-Encoding: 7bit
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Blocking direct private IP address
+Date: Thu, 01 Mar 2007 22:02:52 +0100
+Message-ID: <45E73F7C.1000605@plouf.fr.eu.org>
+References: <BAY119-F1661D1CA6F86B692550992D6800@phx.gbl>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:mime-version:content-transfer-encoding:message-id:content-type:to:from:subject:date:x-mailer;
-	b=pn25knME7sGBFn/dy/1CXo9YVIeNH8KntsnXTqg7bkDejhP88VNLuARehi41wO8e3kU5MXqoLaaAXEmSbNqsgb29aWKLujuOxgRbxJo28yOiq5d109F3I5906ps03rNPZ3+niQxU3L57xtYZMq9FFfCyG0/FVImUPNAriQqKru4=
+In-Reply-To: <BAY119-F1661D1CA6F86B692550992D6800@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +17,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Andrew Kraslavsky a =E9crit :
+>=20
+> 2) The reason I care about not allowing the private address to work=20
+> directly is that, well, it is a private address and should not be=20
+> meaningful on the public network and why give clues to any hackers out=20
+> there?
 
-I've been reading for a couple days now and my mind has gone numb.
+s/hackers/bad guys/
 
-I'm hoping to get some help from the community, and I'm sure I'm just  
-overlooking something simple. My goal is to forward smtp traffic  
-destined for one machine to another based on source.
+What kind of clue do you give by allowing direct access with the private=20
+address ? First, people can use it only if they already know it. Second,=20
+what can they do with the private address that they could not already do=20
+with the public address ?
 
-I have done this: echo 1 > /proc/sys/net/ipv4/ip_forward
+> Perhaps the confusion surrounding this interest was again clouded by my=
+=20
+> attempt to keep my example simple -- I used 10.0.0.1, a reserved privat=
+e=20
+> address, as my public IP address in my explanation while in reality the=
+=20
+> public IP address is one that is valid on the Internet.
 
-I've enabled the loading of iptable_nat in the iptables config file.
-
-This is the base of what I'm using in my /etc/sysconfig/iptables  
-file. Any direction on what I'm missing would be greatly appreciated.
-
-*filter
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [52442:19228811]
-COMMIT
-*mangle
-:PREROUTING ACCEPT [60986:54771131]
-:INPUT ACCEPT [60982:54770891]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [52445:19228943]
-:POSTROUTING ACCEPT [52445:19228943]
-COMMIT
-*nat
-:PREROUTING ACCEPT [1581:83538]
--A PREROUTING -s xxx.xxx.66.0/24 -i eth0 -p tcp -d xxx.xxx.64.3 -- 
-dport 25 -j DNAT --to-destination xxx.xxx.65.15:25
-:POSTROUTING ACCEPT [74:4438]
-:OUTPUT ACCEPT [525:34512]
-COMMIT
-
-
+You could use instead the 192.0.2.0/24 range which is reserved for=20
+documentation and examples.
 
