@@ -1,12 +1,22 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Blocking direct private IP address
-Date: Thu, 01 Mar 2007 22:02:52 +0100
-Message-ID: <45E73F7C.1000605@plouf.fr.eu.org>
-References: <BAY119-F1661D1CA6F86B692550992D6800@phx.gbl>
+From: "=?ISO-8859-1?Q?Boutin_Ma=EBl?=" <mael.boutin@gmail.com>
+Subject: Re: Re IPv6 MARK support
+Date: Thu, 1 Mar 2007 22:31:06 +0100
+Message-ID: <2acb06d50703011331h3c842350t5dfcba190a904d52@mail.gmail.com>
+References: <200702281053.l1SArNIC025800@toshiba.co.jp>
+	<200702281136.l1SBaJLe019021@toshiba.co.jp>
+	<2acb06d50702280353q10529555vebd20e93ee7040e1@mail.gmail.com>
+	<200702281238.l1SCcE4F016826@toshiba.co.jp>
+	<2acb06d50703010232k64325368l2cfab895b460c9b7@mail.gmail.com>
+	<2acb06d50703010305u3bc7a1d9h862b8d01bed685c4@mail.gmail.com>
+	<45E6EEA9.4050009@plouf.fr.eu.org> <45E6F45B.4090509@caf.com.tr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY119-F1661D1CA6F86B692550992D6800@phx.gbl>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=ISyn1a6r/dBGIrswDMxP8QSygHu0IZ0bzFV4mzK6XKRb/koY0ChgaErocHzQsZ1G50FPBShxAWdqP4d51FVI47ms0WF8a2t5zxJXjwIIHrr+M9gqlu3f8vQJ9JQWi2X5Yo790cHCvSVj3uXdEr6sgkJOaPNIDvCdvEpPq/S2UGY=
+In-Reply-To: <45E6F45B.4090509@caf.com.tr>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +27,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Eray Aslan <eray.aslan@caf.com.tr>
+Cc: netfilter@lists.netfilter.org
 
-Andrew Kraslavsky a =E9crit :
->=20
-> 2) The reason I care about not allowing the private address to work=20
-> directly is that, well, it is a private address and should not be=20
-> meaningful on the public network and why give clues to any hackers out=20
-> there?
+Ok... Well i will see what we can do
 
-s/hackers/bad guys/
+Thank you evrybody for ur help and particularly Yasuyuki for his patch
 
-What kind of clue do you give by allowing direct access with the private=20
-address ? First, people can use it only if they already know it. Second,=20
-what can they do with the private address that they could not already do=20
-with the public address ?
+On 3/1/07, Eray Aslan <eray.aslan@caf.com.tr> wrote:
+> Pascal Hambourg wrote:
+>  >> and
+> >> not the IPv6 adress of the default route. Is it possible on PREROUTING
+> >> hook to change the IPv6 address of the outgoing packets ?
+> >
+> > I'm afraid not. This is not even possible in IPv4. It is possible to NAT
+> > the IPv4 source address in the POSTROUTING chain, but there is no such
+> > support for IPv6 NAT (and don't think there will ever be any).
+>
+> I remember reading a comment for such a request from a member of the
+> core team (think it was Harald Welte).  The comment was  "over my dead
+> body".  So yeah it is a pretty safe bet that it won't happen.
+>
+> --
+> Eray
+>
+>
 
-> Perhaps the confusion surrounding this interest was again clouded by my=
-=20
-> attempt to keep my example simple -- I used 10.0.0.1, a reserved privat=
-e=20
-> address, as my public IP address in my explanation while in reality the=
-=20
-> public IP address is one that is valid on the Internet.
 
-You could use instead the 192.0.2.0/24 range which is reserved for=20
-documentation and examples.
+-- 
+echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq'|dc
 
