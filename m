@@ -1,22 +1,14 @@
-From: "=?ISO-8859-1?Q?Boutin_Ma=EBl?=" <mael.boutin@gmail.com>
-Subject: Re: Re IPv6 MARK support
-Date: Thu, 1 Mar 2007 22:31:06 +0100
-Message-ID: <2acb06d50703011331h3c842350t5dfcba190a904d52@mail.gmail.com>
-References: <200702281053.l1SArNIC025800@toshiba.co.jp>
-	<200702281136.l1SBaJLe019021@toshiba.co.jp>
-	<2acb06d50702280353q10529555vebd20e93ee7040e1@mail.gmail.com>
-	<200702281238.l1SCcE4F016826@toshiba.co.jp>
-	<2acb06d50703010232k64325368l2cfab895b460c9b7@mail.gmail.com>
-	<2acb06d50703010305u3bc7a1d9h862b8d01bed685c4@mail.gmail.com>
-	<45E6EEA9.4050009@plouf.fr.eu.org> <45E6F45B.4090509@caf.com.tr>
+From: Franck Joncourt <franck.joncourt@wanadoo.fr>
+Subject: Re: iptables:  "COMMIT"
+Date: Thu, 1 Mar 2007 19:46:36 +0100
+Message-ID: <20070301184636.GA19677@toystory.lan>
+References: <000901c75bfe$8e75bcd0$6401a8c0@apollosjf>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=ISyn1a6r/dBGIrswDMxP8QSygHu0IZ0bzFV4mzK6XKRb/koY0ChgaErocHzQsZ1G50FPBShxAWdqP4d51FVI47ms0WF8a2t5zxJXjwIIHrr+M9gqlu3f8vQJ9JQWi2X5Yo790cHCvSVj3uXdEr6sgkJOaPNIDvCdvEpPq/S2UGY=
-In-Reply-To: <45E6F45B.4090509@caf.com.tr>
 Content-Disposition: inline
+In-Reply-To: <000901c75bfe$8e75bcd0$6401a8c0@apollosjf>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -27,34 +19,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eray Aslan <eray.aslan@caf.com.tr>
-Cc: netfilter@lists.netfilter.org
-
-Ok... Well i will see what we can do
-
-Thank you evrybody for ur help and particularly Yasuyuki for his patch
-
-On 3/1/07, Eray Aslan <eray.aslan@caf.com.tr> wrote:
-> Pascal Hambourg wrote:
->  >> and
-> >> not the IPv6 adress of the default route. Is it possible on PREROUTING
-> >> hook to change the IPv6 address of the outgoing packets ?
-> >
-> > I'm afraid not. This is not even possible in IPv4. It is possible to NAT
-> > the IPv4 source address in the POSTROUTING chain, but there is no such
-> > support for IPv6 NAT (and don't think there will ever be any).
->
-> I remember reading a comment for such a request from a member of the
-> core team (think it was Harald Welte).  The comment was  "over my dead
-> body".  So yeah it is a pretty safe bet that it won't happen.
->
-> --
-> Eray
->
->
+To: netfilter@lists.netfilter.org
 
 
--- 
-echo '[q]sa[ln0=aln256%Pln256/snlbx]sb3135071790101768542287578439snlbxq'|dc
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Mar 01, 2007 at 07:38:39AM -0500, woger151 wrote:
+> I can't find any documentation on the COMMIT keyword, nor is it mentioned=
+=20
+> in the Linux firewalls book I have.
+>=20
+> What is it?  Is it necessary to use in firewall scripts?
+>=20
+> TIA=20
+>=20
+>=20
+
+=46rom the Iptables Tutorial, section iptables-save :
+
+"The COMMIT keyword tells us that at this point we should commit all
+rules currently in the pipeline to kernel"
+
+You do not need to use it in your script. This one is only used to "commit"
+rules from the output of the iptables-save command, as you would do with
+a SQL script.
+
+--=20
+Franck Joncourt
+http://www.debian.org
+http://smhteam.info/wiki/
+GPG server : pgpkeys.mit.edu
+Fingerprint : C10E D1D0 EF70 0A2A CACF  9A3C C490 534E 75C0 89FE
+
+--PEIAKu/WMn1b1Hv9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFF5x+MxJBTTnXAif4RAotXAJ9AET2IPsL4bNi/AXB8Mob1NeuynACeJ3j6
+JI/cvQ0frTLqBLwygahVNAg=
+=WKpH
+-----END PGP SIGNATURE-----
+
+--PEIAKu/WMn1b1Hv9--
+
 
