@@ -1,11 +1,15 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+From: Franck Joncourt <franck.joncourt@wanadoo.fr>
 Subject: Re: TCP Flags combination
-Date: Sat, 3 Mar 2007 21:44:49 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0703032142420.23714@yvahk01.tjqt.qr>
+Date: Sat, 3 Mar 2007 22:18:58 +0100
+Message-ID: <20070303211858.GA10155@toystory.lan>
 References: <3115d56e0703030812l24187a2we154e60971de81f3@mail.gmail.com>
+	<Pine.LNX.4.61.0703032142420.23714@yvahk01.tjqt.qr>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VbJkn9YxBvnuCH5J"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3115d56e0703030812l24187a2we154e60971de81f3@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0703032142420.23714@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,36 +20,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: afshin lamei <afshinlamei@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
 
-On Mar 3 2007 19:42, afshin lamei wrote:
->
-> Dear list,
-> I'm running a test box with an iptables rule like this (to detect "FIN
-> no ACK" port scanning):
->
-> iptables -A INPUT -p tcp --tcp-flags FIN,ACK FIN -j LOG
->
-> is that a correct rule for "FIN no ACK" scan?
+--VbJkn9YxBvnuCH5J
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-See http://jengelh.hopto.org/p/chaostables/#se2
+On Sat, Mar 03, 2007 at 09:44:49PM +0100, Jan Engelhardt wrote:
+>=20
+> See http://jengelh.hopto.org/p/chaostables/#se2
+>=20
 
-> The rule generates more than 15 log entries per minute in my /var/log/messages:
->
-> IN=br0 OUT= PHYSIN=eth1 MAC=<"my box" SRC=<"Some valid IPs" DST="My
-> box" LEN=52 TOS=0x00 PREC=0x00 TTL=40 ID=59216 DF PROTO=TCP SPT=59005
-> DPT=3128 WINDOW=65535 RES=0x00 FIN URGP=0
->
-> The logs are continuing to appear for more than 2 weeks! How can I
-> find the cause of this?
-> best regards,
-> afshin lamei
->
+I was looking for something like that some times ago. That's a great job
+! Thank you.
 
-Jan
--- 
+--=20
+Franck Joncourt
+http://www.debian.org
+http://smhteam.info/wiki/
+GPG server : pgpkeys.mit.edu
+Fingerprint : C10E D1D0 EF70 0A2A CACF  9A3C C490 534E 75C0 89FE
+
+--VbJkn9YxBvnuCH5J
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFF6eZCxJBTTnXAif4RAiETAKC4Cxru1jK35I9582yMn0Ugnl4LpQCeNG1m
+oPn7HrGDxRd5j8eH5Q4Ynb0=
+=TS9s
+-----END PGP SIGNATURE-----
+
+--VbJkn9YxBvnuCH5J--
+
 
