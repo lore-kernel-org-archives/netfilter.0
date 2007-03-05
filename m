@@ -1,7 +1,7 @@
 From: Brandon Seaver <brandon.seaver@gmail.com>
 Subject: Re: iptables, DNAT, and SMTP
-Date: Mon, 5 Mar 2007 15:49:34 -0500
-Message-ID: <EDB9C20C-B2E4-458C-9505-135D66A5CC6C@gmail.com>
+Date: Mon, 5 Mar 2007 16:04:01 -0500
+Message-ID: <307D6312-6BDD-467B-A532-05FCF905907F@gmail.com>
 References: <1832A25C-5FC3-4F24-B55A-C6069A71CD5D@gmail.com>
 	<Pine.LNX.4.61.0703030403120.23714@yvahk01.tjqt.qr>
 	<99223CBD-A23B-43BE-A316-070BFA672696@gmail.com>
@@ -10,8 +10,8 @@ Mime-Version: 1.0 (Apple Message framework v752.2)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:mime-version:in-reply-to:references:content-type:message-id:content-transfer-encoding:from:subject:date:to:x-mailer;
-	b=orlvGoxqRhF0bjUywFIOi1GKkwf8oZIfX7IUeiAjqSp+NVqI1pEYopa//zbLd63v7kOhIs5sopBSOw9Q9iFDYkhJmmE6zfpw5xpS8am1L0+hOVvR1R2nsK2UqprzxzshbKKLk5LhVgrHaYwHziHcLFrvszk4sjqaMj7AIi0GKFE=
+	h=domainkey-signature:received:received:in-reply-to:references:mime-version:content-type:message-id:cc:content-transfer-encoding:from:subject:date:to:x-mailer;
+	b=Cdq9Eic4wkA9zWAafcpHT2K2MIP8pICjvmOolKbwDyBCpKsJjHThmJrAGBhMLV26L3M2AYpe/A3FC6RIfNMw1StrhV+FuxKM3upc5k9aPiQ7HFjNzmj92eSerS4t9mHXSJI2jAYDsYX883+pPKtW8fPVFSjaARhSAcXF+8cBo3g=
 In-Reply-To: <Pine.LNX.4.61.0703052137400.24366@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -24,10 +24,10 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-65.15 is a spam filtering appliance, so I do not think that will  
-work. I thank you for taking the time to look at this for me.
+Is there a table/target I can use to accomplish this?
 
 
 On Mar 5, 2007, at 3:39 PM, Jan Engelhardt wrote:
