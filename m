@@ -1,7 +1,7 @@
 From: dhottinger@harrisonburg.k12.va.us
 Subject: Re: redirect
-Date: Wed, 07 Mar 2007 11:43:58 -0500
-Message-ID: <20070307114358.yro4pt0uo8s00ggc@webmail.harrisonburg.k12.va.us>
+Date: Wed, 07 Mar 2007 11:50:36 -0500
+Message-ID: <20070307115036.qfmk9u7lwkkkoskw@webmail.harrisonburg.k12.va.us>
 References: <20070306094208.csonro2nwc8kogso@webmail.harrisonburg.k12.va.us>
 	<45EEE4DD.9090508@gmail.com>
 Mime-Version: 1.0
@@ -54,10 +54,9 @@ s?
 >
 >
 
-That seems to work.  I did:
-$IPC -t nat -A PREROUTING -p tcp -i $IF --dport 80 -d 17.0.0.0/8 -j RETURN
+Never mind.  Doesnt seem to be working.  Any other ideas?
 
-Dont see the connections in my access.log on my proxy now.
+ddh
 
 
 --=20
