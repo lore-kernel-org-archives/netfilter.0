@@ -1,16 +1,17 @@
-From: "Daniel De Graaf" <danieldegraaf@gmail.com>
-Subject: Re: iptables-retore very slow
-Date: Tue, 6 Mar 2007 14:32:08 -0600
-Message-ID: <427c54c0703061232v56d082dbn50f42c14a11af873@mail.gmail.com>
-References: <45EC5CFF.5000209@rackage.com>
+From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
+Subject: Re: [libipq] owner of packet, possible patch
+Date: Wed, 07 Mar 2007 15:42:36 +0200
+Message-ID: <45EEC14C.30002@gmail.com>
+References: <619420780703060739k18ec820dnc8f681b8fc517825@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigB2E4F6F0D8A816BEE2262217"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=TcFD271c0MLMd5VkvvwP6JhKHBYtp1xRfMCYt0wUQdcwrqCW/Zf3YFfTRoE67vYlo3dubg7oGmWFuKCTZ93SmmWDH2oTBU9TiEmieoZ41bFd3dTdon79C/D47Gma1A9wF7Fn2Jgh6cGdb+v1yBk8krkj7JSpstyT74qpzmRk8+k=
-In-Reply-To: <45EC5CFF.5000209@rackage.com>
-Content-Disposition: inline
+	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:cc:subject:references:in-reply-to:x-enigmail-version:content-type;
+	b=SLBnK8caB2plZ1WfvbNFi9CWEwTrz9xX72O9i/YovWfZQ0dFh1/K6LJVJOmSht+AsW/FIzu9MP0HsvG0UkbPhnMSbpUxxw0+EcQOnPp7oei5PcORH2Yt4HDeNPMyS1o4Lx/7vHJGb5SUvvTFCiHINu5hAmqnzt+Zb0KEiHnIzFg=
+In-Reply-To: <619420780703060739k18ec820dnc8f681b8fc517825@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,53 +22,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Jack Bauer <mlsubscriber@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-iptables-restore has some flags that could be useful: --verbose,
---test (to prevent the actual sending back to the kernel), --noflush
-(to prevent flushing already existing chains)
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigB2E4F6F0D8A816BEE2262217
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-If that doesn't help at all, you could either use strace to find if it
-is hanging on a syscall, or add #define DEBUG to the top of
-iptables-restore.c and recompile to enable more debugging output.
-
-Are there rules on tables other than filter? Those aren't flushed by
-iptables -F and could possibly be slowing it down if there were many
-of them.
-
-Hope that helps,
-Daniel De Graaf
-
-On 3/5/07, Rackage | Randles <randles@rackage.com> wrote:
+Jack Bauer wrote:
 > Hi,
->
-> I recently noticed that one of my firewalls was taking a very long time
-> to reboot. Which was odd as its a very new  machine.
->
-> On investigation is seemed to be the iptables-restore command that was
-> adding 10+ minutes to the boot-up times.
->
-> I ran iptables-restore from a terminal and found that it was indeed
-> taking an amazingly long time.
->
-> Obviously I assumed it was related to the rules on the server, so I
-> flushed all rules and all user defined tables from the firewall (nat,
-> mangle and filter) and used iptables-save which took less than 1
-> millisecond :) on the empty rule set.
->
-> However iptables-restore is still taking 10+ minutes even with no rules
-> to read / apply.
->
-> Has anyone seen the behaviour before?  or has anybody got some bright
-> ideas on how I might continue debugging this issue?
->
-> Thanks in Advance
->
-> Regards
->
-> Ben
->
->
->
+>=20
+> I'm a student in computer science and for my master thesis i have to
+> handle packets in a userspace queue. Libipq works fine for me, except
+> one information which is missing: the owner of a (transmitted) packet.
+>=20
+> With the following two additional lines, the problem seems to be solved=
+:
+<snip*>
+
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#OWNERMATCH
+
+That's implemented a long time ago.
+
+--=20
+regards,
+Georgi Alexandrov
+
+key server - pgp.mit.edu :: key id - 0x37B4B3EE
+Key fingerprint =3D E429 BF93 FA67 44E9 B7D4  F89E F990 01C1 37B4 B3EE
+
+
+--------------enigB2E4F6F0D8A816BEE2262217
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+
+iD8DBQFF7sFM+ZABwTe0s+4RAqm3AJ98UTbo83axkx2n5c0gPHoTFf/zrwCghsED
+5BSQJdadNgQR3GsDxQY6esI=
+=MT9p
+-----END PGP SIGNATURE-----
+
+--------------enigB2E4F6F0D8A816BEE2262217--
 
