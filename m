@@ -1,14 +1,13 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: nfnetlinkf ctnetlink ct-event
-Date: Thu, 08 Mar 2007 17:31:41 +0100
-Message-ID: <1173371501.31743.2.camel@localhost.localdomain>
-References: <009801c7619e$dff4adf0$7100000a@W2KMPLOURDE>
+From: richard lucassen <mailinglists@lucassen.org>
+Subject: Re: conntrack problem
+Date: Thu, 8 Mar 2007 18:59:30 +0100
+Message-ID: <20070308185930.6e0bab44.mailinglists@lucassen.org>
+References: <20070308142948.00f38080.mailinglists@lucassen.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-WpMtqcOTfppoSJW4amjY"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <009801c7619e$dff4adf0$7100000a@W2KMPLOURDE>
+In-Reply-To: <20070308142948.00f38080.mailinglists@lucassen.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,46 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Michael Plourde <mplourde@digicom.ca>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+On Thu, 8 Mar 2007 14:29:48 +0100
+richard lucassen <mailinglists@lucassen.org> wrote:
 
---=-WpMtqcOTfppoSJW4amjY
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+> # conntrack -L -p udp --orig-port-dst 1194
+> Operation failed: invalid parameters
+> 
+> According to an example in the "Changelog" this should work.
+> 
+> Am I missing something crucial? Anyone a hint?
 
-Hi,
+Forget it. 2.6.20.1 works fine.
 
-Le jeudi 08 mars 2007 =E0 11:28 -0500, Michael Plourde a =E9crit :
-> Hi,
->=20
-> i want to patch my kernel 2.4.25 to use conntrack-1.00.=20
-> Could someone give me tips and URL to get those patchs?
+-- 
+___________________________________________________________________
+It is better to remain silent and be thought a fool, than to speak
+aloud and remove all doubt.
 
-This can not be done as nfnetlink infrastructure is only available for
-2.6.14 and over.
-
-I fear you need to upgrade your kernel or do a huge backport.
-
-BR,
---=20
-=C9ric Leblond, eleblond@inl.fr
-T=E9l=E9phone : 01 44 89 46 39, Fax : 01 44 89 45 01
-INL, http://www.inl.fr
-
---=-WpMtqcOTfppoSJW4amjY
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQBF8DpsnxA7CdMWjzIRAsKSAJ4k1gxMjKhHI6t3MTu5R3OreSSmdgCaAu3F
-OzPZUKqp+PKyYHSELL4F7C4=
-=9syF
------END PGP SIGNATURE-----
-
---=-WpMtqcOTfppoSJW4amjY--
-
++------------------------------------------------------------------+
+| Richard Lucassen, Utrecht                                        |
+| Public key and email address:                                    |
+| http://www.lucassen.org/mail-pubkey.html                         |
++------------------------------------------------------------------+
 
