@@ -1,10 +1,11 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: conntrack problem
-Date: Thu, 8 Mar 2007 14:29:48 +0100
-Message-ID: <20070308142948.00f38080.mailinglists@lucassen.org>
-Reply-To: netfilter@lists.netfilter.org
+From: "Hanno =?utf-8?q?B=C3=B6ck?=" <ml@hboeck.de>
+Subject: nf-hipac for current kernels?
+Date: Thu, 8 Mar 2007 15:38:00 +0100
+Message-ID: <200703081538.00702.ml@hboeck.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg=pgp-sha1;
+	boundary="=_schokokeks.org-31888-1173364762-0001-2"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,38 +17,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello list,
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-I downloaded and compiled on a Debian Sarge box running a vanilla kernel
-2.6.16.43:
+--=_schokokeks.org-31888-1173364762-0001-2
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-libnfnetlink-0.0.16
-libnetfilter_conntrack-0.0.31
-conntrack-1.00beta2
+Hi,
 
-I read the manpage and even found some syntax examples, but conntrack
-exits with an error:
+wanted to ask if there's information about the status of nf-hipac. I couldn=
+'t=20
+find any patches to up-to-date kernels.
 
-# conntrack -L -p udp --orig-port-dst 1194
-Operation failed: invalid parameters
+Is there any development happening or is the project considered dead? Are=20
+there plans to merge stuff with iptables/replace in-kernel stuff with it?
 
-According to an example in the "Changelog" this should work.
+=2D-=20
+Hanno B=C3=B6ck		Blog:   http://www.hboeck.de/
+GPG: 3DBD3B20		Jabber: jabber@hboeck.de
 
-Am I missing something crucial? Anyone a hint?
+--=_schokokeks.org-31888-1173364762-0001-2
+Content-Type: application/pgp-signature
+Content-Transfer-Encoding: 7bit
 
-Richard.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.2 (GNU/Linux)
 
--- 
-___________________________________________________________________
-It is better to remain silent and be thought a fool, than to speak
-aloud and remove all doubt.
+iD8DBQBF8B/Ir2QksT29OyARAq6rAJ9xSIDX9mjCV5GAY/j+LfELFpVMkQCeJ0XV
+rYyLk1EuSi28N2RJuSo2Yts=
+=hTgq
+-----END PGP SIGNATURE-----
 
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
+--=_schokokeks.org-31888-1173364762-0001-2--
 
