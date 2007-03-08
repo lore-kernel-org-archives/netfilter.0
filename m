@@ -1,13 +1,11 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: Re: conntrack problem
-Date: Thu, 8 Mar 2007 18:59:30 +0100
-Message-ID: <20070308185930.6e0bab44.mailinglists@lucassen.org>
-References: <20070308142948.00f38080.mailinglists@lucassen.org>
-Reply-To: netfilter@lists.netfilter.org
+From: "Michael Plourde" <mplourde@digicom.ca>
+Subject: Re: nfnetlinkf ctnetlink ct-event
+Date: Thu, 8 Mar 2007 14:43:23 -0500
+Message-ID: <00a801c761ba$08ab8be0$7100000a@W2KMPLOURDE>
+References: <009801c7619e$dff4adf0$7100000a@W2KMPLOURDE>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070308142948.00f38080.mailinglists@lucassen.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,26 +19,25 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 8 Mar 2007 14:29:48 +0100
-richard lucassen <mailinglists@lucassen.org> wrote:
+If i can patch my 2.4 kernel, is there a way to manage conntrack ?
+(Other way than rmmod , insmod to flush all) 
 
-> # conntrack -L -p udp --orig-port-dst 1194
-> Operation failed: invalid parameters
+----- Original Message ----- 
+From: "Michael Plourde" <mplourde@digicom.ca>
+To: <netfilter@lists.netfilter.org>
+Sent: Thursday, March 08, 2007 11:28 AM
+Subject: nfnetlinkf ctnetlink ct-event
+
+
+> Hi,
 > 
-> According to an example in the "Changelog" this should work.
+> i want to patch my kernel 2.4.25 to use conntrack-1.00. 
+> Could someone give me tips and URL to get those patchs? 
 > 
-> Am I missing something crucial? Anyone a hint?
+> Thanks,
+> 
+> Michael Plourde
+> 
+> 
 
-Forget it. 2.6.20.1 works fine.
-
--- 
-___________________________________________________________________
-It is better to remain silent and be thought a fool, than to speak
-aloud and remove all doubt.
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
 
