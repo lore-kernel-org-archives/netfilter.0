@@ -1,13 +1,13 @@
 From: Piotr Chytla <pch@packetconsulting.pl>
 Subject: Re: nf-hipac for current kernels?
-Date: Thu, 8 Mar 2007 23:44:46 +0100
-Message-ID: <20070308224446.GB24342@packetconsulting.pl>
-References: <200703081538.00702.ml@hboeck.de>
+Date: Fri, 9 Mar 2007 00:01:13 +0100
+Message-ID: <20070308230113.GC24342@packetconsulting.pl>
+References: <200703081538.00702.ml@hboeck.de> <45F020FE.8020704@zoomnet.ro>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <200703081538.00702.ml@hboeck.de>
+In-Reply-To: <45F020FE.8020704@zoomnet.ro>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,34 +19,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
-To: Hanno =?iso-8859-2?Q?B=F6ck?= <ml@hboeck.de>
+To: Alexandru Dragoi <alex@zoomnet.ro>
 Cc: netfilter@lists.netfilter.org
 
-On Thu, Mar 08, 2007 at 03:38:00PM +0100, Hanno B=F6ck wrote:
-> Hi,
+On Thu, Mar 08, 2007 at 04:43:10PM +0200, Alexandru Dragoi wrote:
+> Hanno B=F6ck wrote:
+> >Hi,
+> >
+> >wanted to ask if there's information about the status of nf-hipac. I=20
+> >couldn't find any patches to up-to-date kernels.
+> >
+> >Is there any development happening or is the project considered dead? Ar=
+e=20
+> >there plans to merge stuff with iptables/replace in-kernel stuff with it?
+> >
+> > =20
+> You can find one for 2.6.17 kernels on google, i think posted in this=20
+> list. But i don't really recomend it. On a dual P3 machine, i=20
+> experimented random and then almoust total packet drop, and i couldn't=20
+> remove the module from kernel, so i rebooted, and never used it again.=20
+> That happened a few months ago on a 2.6.17 kernel (with imq).
 >
-Hi
-=20
-> wanted to ask if there's information about the status of nf-hipac. I coul=
-dn't=20
-> find any patches to up-to-date kernels.
->
-Here you are :
-
-for kernel 2.6.17.13:
-
-http://packetconsulting.pl/~pch/patches/nf-hipac-0.9.1-2.6.17.patch.gz
-
-2.6.18.2:
-
-http://packetconsulting.pl/~pch/patches/nf-hipac-0.9.1-2.6.17-to-2.6.18.2.d=
-iff=20
-
-> Is there any development happening or is the project considered dead?=20
-I don't know official status of nf-hipac project but I think it is more
-or less dead . Above patch for nf-hipac is version for 2.6.14 kernels
-moved to .17/.18 (some minor changes in code).
-
+Huh , I'm pushing about 150Mbit/s on single 3GHz Xeon, and about
+100Mbit/s on dual 2Ghz Xeon machine , both have nf-hipac and imq.=20
+In my setups I'm not using nf-hipac for some complex firewall, only for=20
+simple blacklisting spybots and other network crap.=20
 
 /pch
 
