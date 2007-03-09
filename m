@@ -1,13 +1,18 @@
-From: Piotr Chytla <pch@packetconsulting.pl>
-Subject: Re: nf-hipac for current kernels?
-Date: Fri, 9 Mar 2007 00:01:13 +0100
-Message-ID: <20070308230113.GC24342@packetconsulting.pl>
-References: <200703081538.00702.ml@hboeck.de> <45F020FE.8020704@zoomnet.ro>
+From: Georgi Alexandrov <georgi.alexandrov@gmail.com>
+Subject: Re: redirect (nfcan: addressed to exclusive sender for this address)
+Date: Fri, 09 Mar 2007 17:07:01 +0200
+Message-ID: <45F17815.6030703@gmail.com>
+References: <20070306094208.csonro2nwc8kogso@webmail.harrisonburg.k12.va.us>	<45EEE4DD.9090508@gmail.com>	<20070307115036.qfmk9u7lwkkkoskw@webmail.harrisonburg.k12.va.us>	<45EFB4C4.9040707@gmail.com>	<20070308063421.y4spggseocogsc48@mail.harrisonburg.k12.va.us>	<20070308145008.GA11462@salty>
+	<20070308095809.0jo1ofvyo80ok88w@webmail.harrisonburg.k12.va.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig14E915BD38FFF28C12CBBFBE"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <45F020FE.8020704@zoomnet.ro>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:cc:subject:references:in-reply-to:x-enigmail-version:content-type;
+	b=WKGSNTYtVXj/wRJ4QGqWY0CGHTnu6oVvthpE6BU8FxIMcAFP3z99MAK5E73iOzQZeTtBKZQ1qRxJ93MD0sKavlYc/EAGBhM0ozlGTuFjSC8jE2rk+99YBaG781s+cmNnYW5LTK+3xU1hCRbozCxJbPeFhe50P/2zvEQVojn3Lr8=
+In-Reply-To: <20070308095809.0jo1ofvyo80ok88w@webmail.harrisonburg.k12.va.us>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +23,98 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Alexandru Dragoi <alex@zoomnet.ro>
+To: dhottinger@harrisonburg.k12.va.us
 Cc: netfilter@lists.netfilter.org
 
-On Thu, Mar 08, 2007 at 04:43:10PM +0200, Alexandru Dragoi wrote:
-> Hanno B=F6ck wrote:
-> >Hi,
-> >
-> >wanted to ask if there's information about the status of nf-hipac. I=20
-> >couldn't find any patches to up-to-date kernels.
-> >
-> >Is there any development happening or is the project considered dead? Ar=
-e=20
-> >there plans to merge stuff with iptables/replace in-kernel stuff with it?
-> >
-> > =20
-> You can find one for 2.6.17 kernels on google, i think posted in this=20
-> list. But i don't really recomend it. On a dual P3 machine, i=20
-> experimented random and then almoust total packet drop, and i couldn't=20
-> remove the module from kernel, so i rebooted, and never used it again.=20
-> That happened a few months ago on a 2.6.17 kernel (with imq).
->
-Huh , I'm pushing about 150Mbit/s on single 3GHz Xeon, and about
-100Mbit/s on dual 2Ghz Xeon machine , both have nf-hipac and imq.=20
-In my setups I'm not using nf-hipac for some complex firewall, only for=20
-simple blacklisting spybots and other network crap.=20
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig14E915BD38FFF28C12CBBFBE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-/pch
+dhottinger@harrisonburg.k12.va.us wrote:
+> Quoting Jim Laurino <nfcan.x.jimlaur@dfgh.net>:
+>=20
+>> On 2007.03.08 06:34, dhottinger@harrisonburg.k12.va.us wrote:
+>>> Quoting Georgi Alexandrov <georgi.alexandrov@gmail.com>:
+>>>
+>> .....
+>>>>>>> I would like to have any traffic destined for apple.com excluded
+>>>>>>> from
+>>>>>>> this redirect.  I cant seem to get the syntax right.  Anyone got =
+any
+>>>>>>> ideas?
+>>>>>> <snip*>
+>>>>>>
+>>>>>> iptables -t nat -A PREROUTING -p tcp -i $iface --dport 80 -d
+>>>>>> $apples_net
+>>>>>> -j RETURN
+>>>>>>
+>> ....
+>>>
+>>> $IPC -t nat -A PREROUTING -p tcp -i $IF --dport 80 -d 17.250.0.0
+>>> -j RETURN
+>>>
+>>> Is not routing apple.com traffice away from my proxy.  Apple.com
+>>> traffic is
+>>> still getting routed to proxy server.  I have the rule placed above
+>>> my dnat
+>>> rule for the proxy.  Any other ideas?
+>>
+>> The example was non-specific, -d $apples_net.
+>> Your implementation, -d 17.250.0.0, is for a specific ip address.
+>> You probably meant to specify a range.
+>> Iptables allows you to use netmask or cidr syntax.
+>> You can cover all of Apple with 17.0.0.0/8 for instance.
+>>
+>> --=20
+>> Jim Laurino
+>> nfcan.x.jimlaur@dfgh.net
+>> Please reply to the list.
+>> Only mail from the listserver reaches this address.
+>>
+>=20
+> Yes I know.
+>  Sorry I forgot part of my script.  I did
+> $IPC -t nat -A PREROUTING -p tcp -i $IF --dport 80 -d 17.250.0.0/16 -j
+> RETURN
+>=20
+> Where $IF is the interface that connects to the internet.
+
+No, it should be the interface that your clients are behind.
+First try to imagine it in your head then "draw" it with iptables rules ;=
+-)
+
+"I have to redirect all requests coming from my clients to the proxy
+server which is here. But I also want requests that are coming from my
+clients destined to apple's networks not hit the proxy and go directly
+to apple"
+
+in rules it goes like this:
+iptables -t nat -A PREROUTING -p tcp -i $clients_interface --dport 80 -d
+17.0.0.0/8 -j RETURN
+iptables -t nat -A PREROUTING -p tcp -i $clients_interface --dport 80 -j
+DNAT --to $proxy_server:$proxy_port
 
 --=20
-Dyslexia bug unpatched since 1977 ...
-exploit has been leaked to the underground.
+regards,
+Georgi Alexandrov
+
+key server - pgp.mit.edu :: key id - 0x37B4B3EE
+Key fingerprint =3D E429 BF93 FA67 44E9 B7D4  F89E F990 01C1 37B4 B3EE
+
+
+--------------enig14E915BD38FFF28C12CBBFBE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+
+iD8DBQFF8XgV+ZABwTe0s+4RAi5WAJ9VF08L0oLU46IYc9uHNfm5/IumXgCgnoD8
+Zi6hJjR617Mw0tfZGroEjY8=
+=C7P5
+-----END PGP SIGNATURE-----
+
+--------------enig14E915BD38FFF28C12CBBFBE--
 
