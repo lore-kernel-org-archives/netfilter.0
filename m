@@ -1,7 +1,8 @@
-From: Andrei-Florian Staicu <andrei.staicu@ipso.ro>
-Subject: PPTP NAT
-Date: Fri, 09 Mar 2007 18:33:53 +0200
-Message-ID: <45F18C71.4090007@ipso.ro>
+From: "Bc. Miroslav Kopecek" <kopecek@email.cz>
+Subject: Connlimit problem k2.6.18.2 , ipt1.3.7
+Date: Fri, 9 Mar 2007 18:59:05 +0100
+Message-ID: <00fd01c76274$a089c3e0$3464000a@oksystem.local>
+Reply-To: kopecek@email.cz
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,26 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello list,
+Hi,
+   I have Debian Sarge 3.1 testing, compiled kernel 2.6.18.2 and actual
+iptables 1.3.7 compiled and installed
 
-I know that this isn't the first (or the last) time somebody asks you 
-this, but is it currently possible to have two clients behind a  NAT, 
-connecting to the same VPN (PPTP) server?
-If the answer is in the list somewhere, a link would suffice. Since the 
-mail list archive doesen't have searching capability, I wasn't able to 
-find anything on the subject.
+I need to solve problem with full ip_conntrack on my router. One client with
+some agressive P2P makes ip_conntack full. So I need to limit connections
+per that IP address
 
-Thanks in advance for any info.
+I can't add connlimit rule? What's wrong? Any suggestion?
 
-slackware 11.0, iptables 1.3.7, kernel 2.6.20
+-----------------------------------------
+iptables -m connlimit -h
+connlimit v1.3.7 options:
+[!] --connlimit-above n         match if the number of existing tcp
+connections is (not) above n
+ --connlimit-mask n             group hosts using mask
 
--- 
-Andrei-Florian STAICU
-Network administrator
-Tel: (+40) 741.227.014
-IPSO S.A.
+-----------------------------------------
+RouterBM:/home/kopecek# iptables -A FORWARD -p tcp -s 10.88.99.71 -m
+connlimit --connlimit-above 300 --connlimit-mask 32  -j REJECT --reject-with
+tcp-reset
+iptables: No chain/target/match by that name
+
+RouterBM:/home/kopecek# iptables -A FORWARD -p tcp -m connlimit
+--connlimit-above 300 --connlimit-mask 32  -j REJECT --reject-with tcp-reset
+iptables: No chain/target/match by that name
+
+RouterBM:/home/kopecek# iptables -A FORWARD -p tcp -m connlimit
+--connlimit-above 300 --connlimit-mask 32  -j DROP
+iptables: No chain/target/match by that name
+
 
 
