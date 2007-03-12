@@ -1,12 +1,10 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: Remote Access Via Mac Address and Unknown IPs
-Date: Mon, 12 Mar 2007 06:44:41 +0100
-Message-ID: <1173678281.7841.1.camel@anduril.intranet.cartel-securite.net>
-References: <45F4B8CC.390FD831@isp-systems.com>
+From: Rudi Starcevic <tech@wildcash.com>
+Subject: Odd -m state Error Msg
+Date: Mon, 12 Mar 2007 14:11:17 +0800
+Message-ID: <45F4EF05.3060202@wildcash.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45F4B8CC.390FD831@isp-systems.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +15,83 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: OTR Comm <otrcomm@isp-systems.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Le dimanche 11 mars 2007 =E0 19:19 -0700, OTR Comm a =E9crit :
-> I have seached Google and the archives but I can not find anything that
-> tells me how to use iptables and mac addresses to allow a user at a
-> remote location to access a server when the remote IP address is
-> unknown.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+ 
+Hi,
 
-You can't. A host MAC address is only visible on local network. After
-the first router, you don't see it anymore...
+I've just built a new 2.6.20.1 kernel and am seeing
+this error from my standard firewall script:
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables: Invalid argument
+
+I've checked and checked and just not sure why my INPUT
+state command is now not happy ???
+
+Any ideas what I've done wrong with this new kernel?
+
+Any advise much appreciated .. thanks ...
 
 
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
+/usr/src/linux# grep -i netfilter .config
+
+CONFIG_NETFILTER=y
+# CONFIG_NETFILTER_DEBUG is not set
+CONFIG_BRIDGE_NETFILTER=y
+# Core Netfilter Configuration
+# CONFIG_NETFILTER_NETLINK is not set
+CONFIG_NETFILTER_XTABLES=m
+# CONFIG_NETFILTER_XT_TARGET_CLASSIFY is not set
+# CONFIG_NETFILTER_XT_TARGET_MARK is not set
+# CONFIG_NETFILTER_XT_TARGET_NFQUEUE is not set
+# CONFIG_NETFILTER_XT_TARGET_NFLOG is not set
+# CONFIG_NETFILTER_XT_MATCH_COMMENT is not set
+# CONFIG_NETFILTER_XT_MATCH_CONNBYTES is not set
+CONFIG_NETFILTER_XT_MATCH_CONNTRACK=m
+# CONFIG_NETFILTER_XT_MATCH_DCCP is not set
+# CONFIG_NETFILTER_XT_MATCH_DSCP is not set
+# CONFIG_NETFILTER_XT_MATCH_ESP is not set
+# CONFIG_NETFILTER_XT_MATCH_HELPER is not set
+# CONFIG_NETFILTER_XT_MATCH_LENGTH is not set
+CONFIG_NETFILTER_XT_MATCH_LIMIT=m
+# CONFIG_NETFILTER_XT_MATCH_MAC is not set
+# CONFIG_NETFILTER_XT_MATCH_MARK is not set
+# CONFIG_NETFILTER_XT_MATCH_POLICY is not set
+# CONFIG_NETFILTER_XT_MATCH_MULTIPORT is not set
+# CONFIG_NETFILTER_XT_MATCH_PHYSDEV is not set
+# CONFIG_NETFILTER_XT_MATCH_PKTTYPE is not set
+# CONFIG_NETFILTER_XT_MATCH_QUOTA is not set
+# CONFIG_NETFILTER_XT_MATCH_REALM is not set
+# CONFIG_NETFILTER_XT_MATCH_SCTP is not set
+CONFIG_NETFILTER_XT_MATCH_STATE=m
+# CONFIG_NETFILTER_XT_MATCH_STATISTIC is not set
+# CONFIG_NETFILTER_XT_MATCH_STRING is not set
+# CONFIG_NETFILTER_XT_MATCH_TCPMSS is not set
+# CONFIG_NETFILTER_XT_MATCH_HASHLIMIT is not set
+# IP: Netfilter Configuration
+# IPv6: Netfilter Configuration (EXPERIMENTAL)
+# DECnet: Netfilter Configuration
+# Bridge: Netfilter Configuration
+
+
+- --
+Thank you.
+Regards,
+Rudi.
+
+- -- Wildcash.com Support
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+ 
+iD8DBQFF9O8FgOUisCetzRYRAgZ4AJkBf7Kxs7b0OAeeV2qHY/Y4ArHXpACfV+2S
+xjEh4Xq8PRD/a2LyuQDrwlY=
+=16xX
+-----END PGP SIGNATURE-----
+
 
