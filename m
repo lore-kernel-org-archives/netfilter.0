@@ -1,14 +1,14 @@
-From: "Bc. Miroslav Kopecek" <kopecek@email.cz>
-Subject: RE: Connlimit problem k2.6.18.2 , ipt1.3.7
-Date: Mon, 12 Mar 2007 09:08:16 +0100
-Message-ID: <012a01c7647d$96aa6ef0$3464000a@oksystem.local>
-References: <00fd01c76274$a089c3e0$3464000a@oksystem.local><45F4390F.5050106@plouf.fr.eu.org>
-	<Pine.LNX.4.61.0703120026370.18623@yvahk01.tjqt.qr>
-Reply-To: kopecek@email.cz
+From: "hitesh sharma" <engineerhitesh@gmail.com>
+Subject: Problem @ SNAT and FTP ...plz help .....
+Date: Mon, 12 Mar 2007 15:46:12 +0530
+Message-ID: <58cbfaa70703120316w7b4755cdgab49769df7969753@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0703120026370.18623@yvahk01.tjqt.qr>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=ueA1GNDfabXRgI5K0AinJH36n6fvUi1Pn2xNEZ5Zd3Bk6Dd5F4eSTFvNbkHlNTkJtYe+XIzsgmRPZNf11pT0DDEmJN+pOt2BA/9DcAYlZJu5yUalgzhaL/Eri3zmit1LrsUD8A5ejSqtDLvUJgx8Y4iQ4rh1ysjXPdbQR/exfJc=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,62 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
-  so is any "safer" and "suported" way to limit number of connections per IP
-address? 
+hello all ,
 
+1.     actually i m doing SANT to convert my 10.10.189.125 ip  to
+192.168.14.190 to make the ftp connection in the same LAN. So , doing
+the same , i m SANTind 10.10.189.125 to 192.168.15.190.
 
+but i want to know that , if i m doing the SNAT  one of the inteface ,
+then will i have to do DNAT at the same interface to convert the
+destination address (in the packet coming form lan to my machine i.e.
+192.168.15.190) into my machine's address i.e 10.10.189.125.??
 
+or kernel will take care of that ?
 
->-----Original Message-----
->From: netfilter-bounces@lists.netfilter.org 
->[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
->Jan Engelhardt
->Sent: Monday, March 12, 2007 12:27 AM
->To: Pascal Hambourg
->Cc: netfilter@lists.netfilter.org
->Subject: Re: Connlimit problem k2.6.18.2 , ipt1.3.7
->
->
->On Mar 11 2007 18:14, Pascal Hambourg wrote:
->>> I can't add connlimit rule? What's wrong? Any suggestion?
->>> 
->>> -----------------------------------------
->>> iptables -m connlimit -h
->>> connlimit v1.3.7 options:
->>> [!] --connlimit-above n         match if the number of existing tcp
->>> connections is (not) above n
->>> --connlimit-mask n             group hosts using mask
->>> 
->>> -----------------------------------------
->>> RouterBM:/home/kopecek# iptables -A FORWARD -p tcp -s 10.88.99.71 -m
->>> connlimit --connlimit-above 300 --connlimit-mask 32  -j REJECT
->>> --reject-with
->>> tcp-reset
->>> iptables: No chain/target/match by that name
->>
->> Your kernel probably does not support the connlimit match. 
->The connlimit match
->> is not part of the standard kernel. It used to be included 
->as a kernel patch in
->> the patch-o-matic-ng, but has been removed from the daily 
->snapshots since
->> 2006/07/26.
->
->connlimit is still there (not in pomng though), it's 
->out-of-out-off-tree,
->so to say. You have to patch pomng, and then patch the kernel 
->*whirl* ...
->
->
->Jan
->-- 
->
->
->
+2. agian , i want to make only ftp from my machine to any to LAN
+machine , so for that i wrote some rule set , everything is going well
+, but when i ftp to lan machine , it makes the connection successfully
+, but when i run "dir" or "ls " command , it shows nothing and behaves
+like hang.
 
-
+so , plz help me .............
 
