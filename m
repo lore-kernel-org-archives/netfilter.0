@@ -1,13 +1,14 @@
-From: Rudi Starcevic <tech@wildcash.com>
-Subject: Re: Odd -m state Error Msg
-Date: Mon, 12 Mar 2007 14:46:18 +0800
-Message-ID: <45F4F73A.4010500@wildcash.com>
-References: <45F4EF05.3060202@wildcash.com>
-	<8764970xzi.fsf@newton.gmurray.org.uk>
+From: "Bc. Miroslav Kopecek" <kopecek@email.cz>
+Subject: RE: Connlimit problem k2.6.18.2 , ipt1.3.7
+Date: Mon, 12 Mar 2007 08:42:39 +0100
+Message-ID: <012501c7647a$029e8780$3464000a@oksystem.local>
+References: <00fd01c76274$a089c3e0$3464000a@oksystem.local>
+	<20070309194013.GA23835@toystory.lan>
+Reply-To: kopecek@email.cz
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8764970xzi.fsf@newton.gmurray.org.uk>
+In-Reply-To: <20070309194013.GA23835@toystory.lan>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,37 +22,49 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+ipp2p is only for limiting p2p trafic. I don't want to limit trafic and do
+trafic shaping for p2p (or block p2p).
+
+I want only to solve problem with ip_conntrack. I need any solution to limit
+connections per IP address.
+
+Mirek
  
-Hi Graham,
 
-Thanks but still same error msg:
+>-----Original Message-----
+>From: netfilter-bounces@lists.netfilter.org 
+>[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
+>Franck Joncourt
+>Sent: Friday, March 09, 2007 8:40 PM
+>To: netfilter@lists.netfilter.org
+>Subject: Re: Connlimit problem k2.6.18.2 , ipt1.3.7
+>
+>On Fri, Mar 09, 2007 at 06:59:05PM +0100, Bc. Miroslav Kopecek wrote:
+>> Hi,
+>
+>Hi,
+>
+>>    I have Debian Sarge 3.1 testing, compiled kernel 2.6.18.2 
+>and actual
+>> iptables 1.3.7 compiled and installed
+>> 
+>> I need to solve problem with full ip_conntrack on my router. 
+>One client with
+>> some agressive P2P makes ip_conntack full. So I need to 
+>limit connections
+>> per that IP address
+>
+>Have you tried that :
+>
+>http://www.ipp2p.org/docu_en.html
+>
+>-- 
+>Franck Joncourt
+>http://www.debian.org
+>http://smhteam.info/wiki/
+>GPG server : pgpkeys.mit.edu
+>Fingerprint : C10E D1D0 EF70 0A2A CACF  9A3C C490 534E 75C0 89FE
+>
 
-iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables: Invalid argument
-
-Some more info:
-
-/lib/modules/2.6.20.1/kernel/net/netfilter# ls
-nf_conntrack.ko  nf_conntrack_ftp.ko  x_tables.ko  xt_conntrack.ko
-xt_limit.ko  xt_state.ko  xt_tcpudp.ko
-
-Strange why I'm getting this error .... it's a standard 2.6 build and the
-same firewall script/commands I use regularly on earlier kernels.
-
-- --
-Thank you.
-Regards,
-Rudi.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
- 
-iD8DBQFF9Pc6gOUisCetzRYRAvp2AJkBAHi+IBwduQ/Ty4V4BPK5SKmmpgCfQYJX
-HBQhcDh043BiwomvF0uDhuw=
-=ucQr
------END PGP SIGNATURE-----
 
 
