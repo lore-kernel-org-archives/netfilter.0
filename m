@@ -1,14 +1,14 @@
 From: "Bc. Miroslav Kopecek" <kopecek@email.cz>
 Subject: RE: Connlimit problem k2.6.18.2 , ipt1.3.7
-Date: Mon, 12 Mar 2007 08:42:39 +0100
-Message-ID: <012501c7647a$029e8780$3464000a@oksystem.local>
-References: <00fd01c76274$a089c3e0$3464000a@oksystem.local>
-	<20070309194013.GA23835@toystory.lan>
+Date: Mon, 12 Mar 2007 09:08:16 +0100
+Message-ID: <012a01c7647d$96aa6ef0$3464000a@oksystem.local>
+References: <00fd01c76274$a089c3e0$3464000a@oksystem.local><45F4390F.5050106@plouf.fr.eu.org>
+	<Pine.LNX.4.61.0703120026370.18623@yvahk01.tjqt.qr>
 Reply-To: kopecek@email.cz
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070309194013.GA23835@toystory.lan>
+In-Reply-To: <Pine.LNX.4.61.0703120026370.18623@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,48 +22,58 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-ipp2p is only for limiting p2p trafic. I don't want to limit trafic and do
-trafic shaping for p2p (or block p2p).
+Hi,
+  so is any "safer" and "suported" way to limit number of connections per IP
+address? 
 
-I want only to solve problem with ip_conntrack. I need any solution to limit
-connections per IP address.
 
-Mirek
- 
+
 
 >-----Original Message-----
 >From: netfilter-bounces@lists.netfilter.org 
 >[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
->Franck Joncourt
->Sent: Friday, March 09, 2007 8:40 PM
->To: netfilter@lists.netfilter.org
+>Jan Engelhardt
+>Sent: Monday, March 12, 2007 12:27 AM
+>To: Pascal Hambourg
+>Cc: netfilter@lists.netfilter.org
 >Subject: Re: Connlimit problem k2.6.18.2 , ipt1.3.7
 >
->On Fri, Mar 09, 2007 at 06:59:05PM +0100, Bc. Miroslav Kopecek wrote:
->> Hi,
 >
->Hi,
+>On Mar 11 2007 18:14, Pascal Hambourg wrote:
+>>> I can't add connlimit rule? What's wrong? Any suggestion?
+>>> 
+>>> -----------------------------------------
+>>> iptables -m connlimit -h
+>>> connlimit v1.3.7 options:
+>>> [!] --connlimit-above n         match if the number of existing tcp
+>>> connections is (not) above n
+>>> --connlimit-mask n             group hosts using mask
+>>> 
+>>> -----------------------------------------
+>>> RouterBM:/home/kopecek# iptables -A FORWARD -p tcp -s 10.88.99.71 -m
+>>> connlimit --connlimit-above 300 --connlimit-mask 32  -j REJECT
+>>> --reject-with
+>>> tcp-reset
+>>> iptables: No chain/target/match by that name
+>>
+>> Your kernel probably does not support the connlimit match. 
+>The connlimit match
+>> is not part of the standard kernel. It used to be included 
+>as a kernel patch in
+>> the patch-o-matic-ng, but has been removed from the daily 
+>snapshots since
+>> 2006/07/26.
 >
->>    I have Debian Sarge 3.1 testing, compiled kernel 2.6.18.2 
->and actual
->> iptables 1.3.7 compiled and installed
->> 
->> I need to solve problem with full ip_conntrack on my router. 
->One client with
->> some agressive P2P makes ip_conntack full. So I need to 
->limit connections
->> per that IP address
+>connlimit is still there (not in pomng though), it's 
+>out-of-out-off-tree,
+>so to say. You have to patch pomng, and then patch the kernel 
+>*whirl* ...
 >
->Have you tried that :
 >
->http://www.ipp2p.org/docu_en.html
->
+>Jan
 >-- 
->Franck Joncourt
->http://www.debian.org
->http://smhteam.info/wiki/
->GPG server : pgpkeys.mit.edu
->Fingerprint : C10E D1D0 EF70 0A2A CACF  9A3C C490 534E 75C0 89FE
+>
+>
 >
 
 
