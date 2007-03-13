@@ -1,10 +1,12 @@
-From: Giovanni Lovato <giovanni.lovato@aldu.net>
-Subject: Matching packets by HTTP header "Host"
-Date: Tue, 13 Mar 2007 11:47:53 +0100
-Message-ID: <45F68159.5040606@aldu.net>
+From: "Joris Dobbelsteen" <Joris@familiedobbelsteen.nl>
+Subject: RE: Matching packets by HTTP header "Host"
+Date: Tue, 13 Mar 2007 12:15:21 +0100
+Message-ID: <73427AD314CC364C8DF0FFF9C4D693FF0379EC@nehemiah.joris2k.local>
+References: <45F68159.5040606@aldu.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +18,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Giovanni Lovato <giovanni.lovato@aldu.net>, netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+>-----Original Message-----
+>From: netfilter-bounces@lists.netfilter.org=20
+>[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+>Giovanni Lovato
+>Sent: dinsdag 13 maart 2007 11:48
+>To: netfilter@lists.netfilter.org
+>Subject: Matching packets by HTTP header "Host"
+>
+>-----BEGIN PGP SIGNED MESSAGE-----
+>Hash: SHA1
+>
+>Hi all.
+>I'm trying to forward packets to different hosts depending on=20
+>the "Host"
+>header in HTTP packets, e.g. packets on port 80 requesting "Host:
+>one.example.org" to 192.168.0.1 and all other on port 80 to=20
+>192.128.0.2.
 
-Hi all.
-I'm trying to forward packets to different hosts depending on the "Host"
-header in HTTP packets, e.g. packets on port 80 requesting "Host:
-one.example.org" to 192.168.0.1 and all other on port 80 to 192.128.0.2.
-I did:
+This processing is at a too high level for NetFilter (without proper
+extensions).
+You should rather use a HTTP proxy, like squid or apache with proxy
+module, for this operation. These are capable of handling such requests.
 
-iptables -t nat -A PREROUTING -p TCP -i eth0 -m string --algo bm
-- --string "Host: one.example.org" --destination-port 80 -j DNAT
-- --to-destination 192.168.0.1
+>I did:
+>iptables -t nat -A PREROUTING -p TCP -i eth0 -m string --algo bm
+>- --string "Host: one.example.org" --destination-port 80 -j DNAT
+>- --to-destination 192.168.0.1
+>
+>iptables -t nat -A PREROUTING -p TCP -i eth0=20
+>--destination-port 80 -j DNAT --to-destination 192.168.0.2
+>
+>But all packets are going to 192.168.0.2. Do I miss something?
 
-iptables -t nat -A PREROUTING -p TCP -i eth0 --destination-port 80 -j
-DNAT --to-destination 192.168.0.2
+The problem is that at connection-time there you cannot make the choice
+to which server you must connect. This can only be decided when you are
+already connected.
 
-But all packets are going to 192.168.0.2. Do I miss something?
+- Joris
 
-Regards,
-G.L.
-- --
-www.aldu.net/~heruan
-giovanni.lovato@aldu.net
-ldaps://pgpkeys.aldu.net
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFF9oFZaWLXrn9dopwRAjfbAKCAyWaZ5h/1w9Bvaj5aOhmsj0GIgACfXbbM
-l3+Z0tatK47gMv7iMANg6u4=
-=LAJU
------END PGP SIGNATURE-----
 
