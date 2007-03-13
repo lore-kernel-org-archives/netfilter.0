@@ -1,12 +1,11 @@
-From: Alexandru Dragoi <alex@zoomnet.ro>
-Subject: Re: Please help with my bridge/router
-Date: Tue, 13 Mar 2007 09:46:18 +0200
-Message-ID: <45F656CA.7080104@zoomnet.ro>
-References: <20070312221935.55027.qmail@web50411.mail.re2.yahoo.com>
+From: richard lucassen <mailinglists@lucassen.org>
+Subject: time module
+Date: Tue, 13 Mar 2007 10:16:04 +0100
+Message-ID: <20070313101604.6db3dc22.mailinglists@lucassen.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070312221935.55027.qmail@web50411.mail.re2.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Serge Matovic <matovics@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Serge Matovic wrote:
-> Hi to all. I'm a bit hesitant to bug you with this
-> basic problem of mine, and I just hope that I'm not
-> wasting your time.
-> OK, here is the situation. I have a Linux machine with
-> 4 NICs. I have configured 3 of these NICs into a
-> bridge (br0), and the 4th NIC is connected to an ADSL
-> modem (ppp0), which, in turn, is connected to
-> Internet. This NIC is getting a DHCP address from my
-> ISP. I'm using the iptable script from dranch's
-> IP-MASQ-HOWTO. (and I tried many other ones, as well).
->
-> Now here is the problem: When I try to go Internet
-> from my Client computer (connected to one of the 3
-> NICs of this bridge/router) some sites (like
-> Google.ca) connect and work perfectly, ***BUT*** some
-> sites (like globaltv.com) do not load at all. But I
-> know that they work fine when I connect to them
-> without going thru my bridge/router.
->
-> Does anyone have a thought on why some sites work and
-> some don't?
->
-> Many thanks, and best regards,
-> serge.
->
->
->
->  
-> ____________________________________________________________________________________
-> Never miss an email again!
-> Yahoo! Toolbar alerts you the instant new Mail arrives.
-> http://tools.search.yahoo.com/toolbar/features/mail/
->
->   
-Try:
+I try to compile iptables-1.3.7 with the time module. AFAICS there is no
+need anymore for the patch-o-matic. There is a libipt_time.c in the
+extensions directory but no libipt_time.h in the
+include/linux/netfilter_ipv4 directory.
 
-iptables -I FORWARD -j TCPMSS  -o ppp0 -p tcp --tcp-flags SYN,RST SYN 
---clamp-mss-to-pmtu
+I searched here and there and found the extensions/Makefile. I added the
+time module to this Makefile, but with this result:
 
+Unable to resolve dependency on linux/netfilter_ipv4/ipt_time.h.
 
-In the man table of iptables you can see the explanation too.
+Anyone a hint?
+
+R.
+
+-- 
+___________________________________________________________________
+It is better to remain silent and be thought a fool, than to speak
+aloud and remove all doubt.
+
++------------------------------------------------------------------+
+| Richard Lucassen, Utrecht                                        |
+| Public key and email address:                                    |
+| http://www.lucassen.org/mail-pubkey.html                         |
++------------------------------------------------------------------+
 
