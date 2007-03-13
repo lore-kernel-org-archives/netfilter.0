@@ -1,14 +1,16 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: Re: Please help with my bridge/router
-Date: Tue, 13 Mar 2007 12:41:55 +0100 (CET)
-Message-ID: <46040.195.55.244.106.1173786115.squirrel@www.arcoscom.com>
-References: <20070312221935.55027.qmail@web50411.mail.re2.yahoo.com>
-	<45F656CA.7080104@zoomnet.ro>
-Reply-To: linux@arcoscom.com
+From: "Bc. Miroslav Kopecek" <kopecek@email.cz>
+Subject: RE: Connlimit problem k2.6.18.2 , ipt1.3.7
+Date: Tue, 13 Mar 2007 12:48:46 +0100
+Message-ID: <001901c76565$8edf2740$3464000a@oksystem.local>
+References: <00fd01c76274$a089c3e0$3464000a@oksystem.local><45F4390F.5050106@plouf.fr.eu.org><Pine.LNX.4.61.0703120026370.18623@yvahk01.tjqt.qr>
+	<012a01c7647d$96aa6ef0$3464000a@oksystem.local>
+	<000301c76552$f723f140$3464000a@oksystem.local>
+	<44634.195.55.244.106.1173785610.squirrel@www.arcoscom.com>
+Reply-To: kopecek@email.cz
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45F656CA.7080104@zoomnet.ro>
+In-Reply-To: <44634.195.55.244.106.1173785610.squirrel@www.arcoscom.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,56 +24,161 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Note: take care that it will be used into "mangle" table.
+Off course I want help of anybody ;-)
 
-iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN \
-                   -j TCPMSS --clamp-mss-to-pmtu
+What you wrote is actually what I need! Simple step by step which let me
+know, what i need to make connlimit works.
 
+So If I understand, my problem is, that I don't have netfilter connlimit
+extension in my kernel. So I need to use latest patch-o-magic with =
+download
+and compile connlimit (which is not standard part of it now) patch my =
+kernel
+and add this extension... Am I right?
 
-El Mar, 13 de Marzo de 2007, 8:46, Alexandru Dragoi escribi=F3:
-> Serge Matovic wrote:
->> Hi to all. I'm a bit hesitant to bug you with this
->> basic problem of mine, and I just hope that I'm not
->> wasting your time.
->> OK, here is the situation. I have a Linux machine with
->> 4 NICs. I have configured 3 of these NICs into a
->> bridge (br0), and the 4th NIC is connected to an ADSL
->> modem (ppp0), which, in turn, is connected to
->> Internet. This NIC is getting a DHCP address from my
->> ISP. I'm using the iptable script from dranch's
->> IP-MASQ-HOWTO. (and I tried many other ones, as well).
->>
->> Now here is the problem: When I try to go Internet
->> from my Client computer (connected to one of the 3
->> NICs of this bridge/router) some sites (like
->> Google.ca) connect and work perfectly, ***BUT*** some
->> sites (like globaltv.com) do not load at all. But I
->> know that they work fine when I connect to them
->> without going thru my bridge/router.
->>
->> Does anyone have a thought on why some sites work and
->> some don't?
->>
->> Many thanks, and best regards,
->> serge.
->>
->>
->>
->>
->> ________________________________________________________________________=
-____________
->> Never miss an email again!
->> Yahoo! Toolbar alerts you the instant new Mail arrives.
->> http://tools.search.yahoo.com/toolbar/features/mail/
->>
->>
-> Try:
+Many thanks for help. My English is not very well, so maybe I can't =
+express
+myself corectlly...
+Mirek=20
+=20
+
+>-----Original Message-----
+>From: ArcosCom Linux User [mailto:linux@arcoscom.com]=20
+>Sent: Tuesday, March 13, 2007 12:33 PM
+>To: netfilter@lists.netfilter.org
+>Cc: kopecek@email.cz
+>Subject: RE: Connlimit problem k2.6.18.2 , ipt1.3.7
 >
-> iptables -I FORWARD -j TCPMSS  -o ppp0 -p tcp --tcp-flags SYN,RST SYN
-> --clamp-mss-to-pmtu
+>Yes, there are many guys helping to you, think if you want their help.
+>
+>The solution:
+>   1) Download your kernel and iptables sources.
+>   2) Apply patch-o-matic
+>      a) ./runme --download (connlimit is diferent repository)
+>      b) ./runme connlimit
+>   3) Select the "connlimit" extension into your kernel config.
+>   4) Compile and install
+>   5) Reestart using your new kernel.
+>
+>If you have "iptables -m connlimit --help", then you don't=20
+>need to rebuild
+>your iptables. The iptables connlimit extension is included=20
+>yet, you only
+>need kernel netfilter connlimit extension.
+>
+>Sugestions:
+>   1) Use a well known working kernel configuration file and=20
+>only enable
+>the connlimit extension (plus the predefined and enabled yet).
+>   2) If you don't know how to configure/compile your kernel,=20
+>this is not
+>the correct list to answer about this questions (try "devel's lists").
+>   3) Patch-o-matic "./runme --help" command can help and=20
+>you'll need to
+>put your kernel source and iptables source directories.
+>   4) connlimit (patch-o-matic) only patch kernel, your=20
+>iptables 1.3.7 is
+>prepared with connlimit yet.
+>   5) All distros have their own "kernel compile process", look for it
+>into your distro documentation.
+>
+>Last notes:
+>   1) Well known to working configurations are:
+>      kernel 2.6.19.7 and iptables 1.3.7
+>      kernel 2.6.18.x and iptables 1.3.7
+>   2) When "connlimit" were included into main stream kernel,=20
+>will be an
+>"official way", for now, you'll need to use patch-o-matic and patch
+>your kernel. Take a look into http://www.netfilter.org and read all the
+>documentation to learn what is the "offical" way.
+>
+>Good luck and enjoy.
+>
+>El Mar, 13 de Marzo de 2007, 10:35, Bc. Miroslav Kopecek escribi=F3:
+>> Hi,
+>>    nobody can help with limiting maximum number of connection per IP
+>> adress?
+>> Is any "supported and official" way to do that?
+>>
+>> Mirek
+>>
+>>
+>>
+>>>-----Original Message-----
+>>>From: netfilter-bounces@lists.netfilter.org
+>>>[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
+>>>Bc. Miroslav Kopecek
+>>>Sent: Monday, March 12, 2007 9:08 AM
+>>>To: netfilter@lists.netfilter.org
+>>>Subject: RE: Connlimit problem k2.6.18.2 , ipt1.3.7
+>>>
+>>>Hi,
+>>>  so is any "safer" and "suported" way to limit number of
+>>>connections per IP
+>>>address?
+>>>
+>>>
+>>>
+>>>
+>>>>-----Original Message-----
+>>>>From: netfilter-bounces@lists.netfilter.org
+>>>>[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of
+>>>>Jan Engelhardt
+>>>>Sent: Monday, March 12, 2007 12:27 AM
+>>>>To: Pascal Hambourg
+>>>>Cc: netfilter@lists.netfilter.org
+>>>>Subject: Re: Connlimit problem k2.6.18.2 , ipt1.3.7
+>>>>
+>>>>
+>>>>On Mar 11 2007 18:14, Pascal Hambourg wrote:
+>>>>>> I can't add connlimit rule? What's wrong? Any suggestion?
+>>>>>>
+>>>>>> -----------------------------------------
+>>>>>> iptables -m connlimit -h
+>>>>>> connlimit v1.3.7 options:
+>>>>>> [!] --connlimit-above n         match if the number of=20
+>existing tcp
+>>>>>> connections is (not) above n
+>>>>>> --connlimit-mask n             group hosts using mask
+>>>>>>
+>>>>>> -----------------------------------------
+>>>>>> RouterBM:/home/kopecek# iptables -A FORWARD -p tcp -s
+>>>10.88.99.71 -m
+>>>>>> connlimit --connlimit-above 300 --connlimit-mask 32  -j REJECT
+>>>>>> --reject-with
+>>>>>> tcp-reset
+>>>>>> iptables: No chain/target/match by that name
+>>>>>
+>>>>> Your kernel probably does not support the connlimit match.
+>>>>The connlimit match
+>>>>> is not part of the standard kernel. It used to be included
+>>>>as a kernel patch in
+>>>>> the patch-o-matic-ng, but has been removed from the daily
+>>>>snapshots since
+>>>>> 2006/07/26.
+>>>>
+>>>>connlimit is still there (not in pomng though), it's
+>>>>out-of-out-off-tree,
+>>>>so to say. You have to patch pomng, and then patch the kernel
+>>>>*whirl* ...
+>>>>
+>>>>
+>>>>Jan
+>>>>--
+>>>>
+>>>>
+>>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>
+>>
+>>
+>>
 >
 >
-> In the man table of iptables you can see the explanation too.
 >
 >
 
