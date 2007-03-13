@@ -1,7 +1,7 @@
-From: Serge Matovic <matovics@yahoo.com>
-Subject: Please help with my bridge/router
-Date: Mon, 12 Mar 2007 15:19:34 -0700 (PDT)
-Message-ID: <20070312221935.55027.qmail@web50411.mail.re2.yahoo.com>
+From: "Nathan @ Netdigix Systems" <lists@netdigix.com>
+Subject: Fwd: Routing to and from an IP on an interface
+Date: Mon, 12 Mar 2007 21:33:01 -0700
+Message-ID: <1173760381.45f6297d9a03d@mail.dreamtoy.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,36 +18,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi to all. I'm a bit hesitant to bug you with this
-basic problem of mine, and I just hope that I'm not
-wasting your time.
-OK, here is the situation. I have a Linux machine with
-4 NICs. I have configured 3 of these NICs into a
-bridge (br0), and the 4th NIC is connected to an ADSL
-modem (ppp0), which, in turn, is connected to
-Internet. This NIC is getting a DHCP address from my
-ISP. I'm using the iptable script from dranch's
-IP-MASQ-HOWTO. (and I tried many other ones, as well).
+Hi I have an issue where the internal interface wants to always talk from the 
+primary ip address,  what kind of rule can I add to make the traffic comming 
+from a specific source ip leave the router interface from a specific secondary 
+ip address?
 
-Now here is the problem: When I try to go Internet
-from my Client computer (connected to one of the 3
-NICs of this bridge/router) some sites (like
-Google.ca) connect and work perfectly, ***BUT*** some
-sites (like globaltv.com) do not load at all. But I
-know that they work fine when I connect to them
-without going thru my bridge/router.
+Thanks
 
-Does anyone have a thought on why some sites work and
-some don't?
-
-Many thanks, and best regards,
-serge.
+- Brad Chang
+- http://www.linuxcare.ca
 
 
 
- 
-____________________________________________________________________________________
-Never miss an email again!
-Yahoo! Toolbar alerts you the instant new Mail arrives.
-http://tools.search.yahoo.com/toolbar/features/mail/
 
