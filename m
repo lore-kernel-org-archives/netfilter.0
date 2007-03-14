@@ -1,13 +1,12 @@
-From: "Pablo Sanchez" <pablo@blueoakdb.com>
-Subject: RE: https on non-standard port
-Date: Wed, 14 Mar 2007 09:59:58 -0400
-Message-ID: <001401c76641$0dd50480$0419a8c0@fly>
-References: <3115d56e0703132353l6773de8av8dcc7db10c618553@mail.gmail.com>
-Reply-To: pablo@blueoakdb.com
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Routing to and from an IP on an interface
+Date: Wed, 14 Mar 2007 17:27:13 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0703141727030.1199@yvahk01.tjqt.qr>
+References: <20070312221935.55027.qmail@web50411.mail.re2.yahoo.com>
+	<1173760231.45f628e7a40d2@mail.dreamtoy.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3115d56e0703132353l6773de8av8dcc7db10c618553@mail.gmail.com>
+In-Reply-To: <1173760231.45f628e7a40d2@mail.dreamtoy.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +17,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'afshin lamei' <afshinlamei@gmail.com>, netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Nathan <lists@linuxcare.ca>
+Cc: netfilter@lists.netfilter.org
 
- 
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org 
-> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of 
-> afshin lamei
-> Sent: Wednesday, March 14, 2007 2:54 AM
-> To: netfilter@lists.netfilter.org
-> Subject: https on non-standard port
-> 
-> Dear all,
-> I'm trying to detect the HTTPS traffic which is not on port 443. As
-> I've seen in Layer7 documents at http://l7-filter.sourceforge.net
-> there is no a predefined pattern for that.
+On Mar 12 2007 21:30, Nathan wrote:
 
-Hi,
+>Date: Mon, 12 Mar 2007 21:30:31 -0700
+>From: Nathan <lists@linuxcare.ca>
+>To: netfilter@lists.netfilter.org
+>Subject: Routing to and from an IP on an interface
+>
+>Hi I have an issue where the internal interface wants to always talk from the 
+>primary ip address,  what kind of rule can I add to make the traffic comming 
+>from a specific source ip leave the router interface from a specific secondary 
+>ip address?
 
-I think you may have misunderstood the L7 documentation; L7 can and will
-identify SSL (HTTPS) traffic independent of port number.
+iptables -j SNAT ...
 
-Here's the pattern it uses:
 
-	
-<http://l7-filter.sourceforge.net/layer7-protocols/protocols/ssl.pat>
-
-Cheers,
--pablo
-
+Jan
+-- 
 
