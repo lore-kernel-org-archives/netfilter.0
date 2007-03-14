@@ -1,14 +1,12 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: Re: time module
-Date: Wed, 14 Mar 2007 11:11:32 +0100
-Message-ID: <20070314111132.0fe3ad6c.mailinglists@lucassen.org>
-References: <20070313101604.6db3dc22.mailinglists@lucassen.org>
-	<Pine.LNX.4.61.0703140310560.20730@yvahk01.tjqt.qr>
-Reply-To: netfilter@lists.netfilter.org
+From: Serge Matovic <matovics@yahoo.com>
+Subject: Re: Please help with my bridge/router
+Date: Wed, 14 Mar 2007 04:15:52 -0700 (PDT)
+Message-ID: <20070314111552.75479.qmail@web50405.mail.re2.yahoo.com>
+References: <45F74865.5090008@rtij.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0703140310560.20730@yvahk01.tjqt.qr>
+In-Reply-To: <45F74865.5090008@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,47 +18,132 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Martijn Lievaart <m@rtij.nl>
+Cc: netfilter@lists.netfilter.org
 
-On Wed, 14 Mar 2007 03:11:07 +0100 (MET)
-Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
+Thank you Martijn Lievaart for offering to help. I am
+quite new to this topic and I am hesitant to say much,
+because it will probably be so stupid. But I must say
+that I'm quite proud of my achievement (with all help
+from this mailing list) in setting (and making it
+work) my home bridge/router/server, all on one Linux
+PC.
+As you requested here is my script:
 
-> >Unable to resolve dependency on linux/netfilter_ipv4/ipt_time.h.
-> >
-> >Anyone a hint?
+=======================================================
+#!/bin/sh
+### This scriptis is addapted from
+http://wiki.linuxquestions.org/wiki/A_basic_firewall_configuration_suitable_for_a_gateway/nat
+### BUT modified by me to add my bridge (br0)
+
+ifconfig br0 down
+brctl delbr br0
+ifconfig eth1 down
+ifconfig eth2 down
+brctl addbr br0
+brctl stp br0 off
+brctl addif br0 eth1
+brctl addif br0 eth2
+ifconfig eth1 down
+ifconfig eth2 down
+ifconfig eth1 0.0.0.0 up
+ifconfig eth2 0.0.0.0 up
+ifconfig br0 192.168.0.20 up
+
+ipt=/sbin/iptables
+extip=ppp0   # Connected to Sympatico ADSL modem
+lan=br0 # My Home LAN
+
+iptables -F
+iptables -t nat -F
+iptables -t mangle -F
+
+# start firewall
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# default policies
+$ipt -P INPUT DROP
+$ipt -P FORWARD DROP
+
+# NAT
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+
+# INPUT chain
+$ipt -A INPUT -i lo -j ACCEPT
+$ipt -A INPUT -i br0 -j ACCEPT
+$ipt -A INPUT -i ppp0 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+$ipt -A INPUT -p tcp --destination-port 22 -j ACCEPT
+
+# FORWARD chain
+$ipt -A FORWARD -i br0 -j ACCEPT
+$ipt -A FORWARD -i ppp0 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
+
+#The following line solved the inabilty to load some
+sites, like globaltv.com. It was suggested by
+Alexandru Dragoi after I posted the question to
+netfilter@lists.netfilter.org
+iptables -I FORWARD -j TCPMSS  -o ppp0 -p tcp
+--tcp-flags SYN,RST SYN --clamp-mss-to-pmtu
+
+#The following line was also suggested by ArcosCom
+Linux User after I posted the question to
+netfilter@lists.netfilter.org in an effort to solve
+the inabilty to load some sites, like globaltv.com,
+but I haven't tried it yet.
+#iptables -t mangle -A FORWARD -p tcp --tcp-flags
+SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+
+exit 0
+=======================================================
+
+Thank you, and best regards,
+serge.
+
+
+--- Martijn Lievaart <m@rtij.nl> wrote:
+
+> Serge Matovic wrote:
+> > Alexandru !!! THANK YOU/THANK YOU/THANK YOU !!!!
+> > I typed in your line (at the end of all of my
+> commands
+> > to setup the bridge and router) and it WORKS !!!
+> > Now, I must find out what your line did to enable
+> > those sites that failed to load before, to load
+> now.
+> >   
 > 
-> You still have to apply ipt_time to the kernel.
+> Most of the time, this means you don't allow the 
+> icmp-fragmentation-needed-but-df-bit-is set packets
+> in. If you don't 
+> have these rules
+> 
+> -A FORWARD -m state --state ESTABLISHED,RELATED -j
+> ACCEPT
+> -A INPUT -m state --state ESTABLISHED,RELATED -j
+> ACCEPT
+> 
+> right on the top of your ruleset, that is your
+> problem.
+> 
+> /me goes to bed, wondering how many bad recipes for
+> iptables are on the 
+> net. You're only the third this month....
+> 
+> Post the output of iptables-save so we can examine
+> your ruleset please.
+> 
+> HTH,
+> M4
+> 
+> 
 
-Just for information to the list (vanilla kernel 2.6.20.3). I sent a
-copy to Fabrice.
 
-[..]
-CC [M]  net/ipv4/netfilter/ipt_time.o
-net/ipv4/netfilter/ipt_time.c: In function ___match___:
-net/ipv4/netfilter/ipt_time.c:69: error: ___const struct sk_buff___ has
-no member ___named stamp___
-net/ipv4/netfilter/ipt_time.c: At top level:
-net/ipv4/netfilter/ipt_time.c:128: warning: initialization from
-incompatible pointer type
-net/ipv4/netfilter/ipt_time.c:128: warning: initialization from
-incompatible pointer type
-net/ipv4/netfilter/ipt_time.c:128: warning: initialization from
-incompatible pointer type
-make[4]: *** [net/ipv4/netfilter/ipt_time.o] Error 1
-make[3]: *** [net/ipv4/netfilter] Error 2
-make[2]: *** [net/ipv4] Error 2 
-make[1]: *** [net] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.20.3'
-make: *** [debian/stamp-build-kernel] Error 2
 
--- 
-___________________________________________________________________
-It is better to remain silent and be thought a fool, than to speak
-aloud and remove all doubt.
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
+ 
+____________________________________________________________________________________
+Never miss an email again!
+Yahoo! Toolbar alerts you the instant new Mail arrives.
+http://tools.search.yahoo.com/toolbar/features/mail/
 
