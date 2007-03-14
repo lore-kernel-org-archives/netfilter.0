@@ -1,12 +1,12 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: Please help with my bridge/router
-Date: Wed, 14 Mar 2007 01:57:09 +0100
-Message-ID: <45F74865.5090008@rtij.nl>
-References: <20070313115927.9894.qmail@web50404.mail.re2.yahoo.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Fwd: Routing to and from an IP on an interface
+Date: Wed, 14 Mar 2007 03:05:03 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0703140304470.20730@yvahk01.tjqt.qr>
+References: <1173760381.45f6297d9a03d@mail.dreamtoy.net>
+	<slrnevcv6v.610.xpisar@album.ics.muni.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070313115927.9894.qmail@web50404.mail.re2.yahoo.com>
+In-Reply-To: <slrnevcv6v.610.xpisar@album.ics.muni.cz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,33 +17,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Serge Matovic <matovics@yahoo.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Petr Pisar <xpisar@fi.muni.cz>
 Cc: netfilter@lists.netfilter.org
 
-Serge Matovic wrote:
-> Alexandru !!! THANK YOU/THANK YOU/THANK YOU !!!!
-> I typed in your line (at the end of all of my commands
-> to setup the bridge and router) and it WORKS !!!
-> Now, I must find out what your line did to enable
-> those sites that failed to load before, to load now.
->   
 
-Most of the time, this means you don't allow the 
-icmp-fragmentation-needed-but-df-bit-is set packets in. If you don't 
-have these rules
+On Mar 13 2007 10:28, Petr Pisar wrote:
+>On 2007-03-13, Nathan @ Netdigix Systems <lists@netdigix.com> wrote:
+>> Hi I have an issue where the internal interface wants to always talk
+>> from the primary ip address,  what kind of rule can I add to make the
+>> traffic comming from a specific source ip leave the router interface
+>> from a specific secondary ip address?
+>>
+>Source IP address, if not specified by bind(2), depends on routing
+>table.
+>
+>You can add rule which specifies source address explicitly like this:
+>
+>ip route add default via <MY_GW> dev <OUT_DEV> src <SRC_IP>
+>
+>Maybe, the dev part is optionable.
 
--A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+You can also use netfilter's SNAT to force a specific IP on outgoing
+connections.
 
-right on the top of your ruleset, that is your problem.
 
-/me goes to bed, wondering how many bad recipes for iptables are on the 
-net. You're only the third this month....
-
-Post the output of iptables-save so we can examine your ruleset please.
-
-HTH,
-M4
-
+Jan
+-- 
 
