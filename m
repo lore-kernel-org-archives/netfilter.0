@@ -1,12 +1,11 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Fwd: Routing to and from an IP on an interface
-Date: Wed, 14 Mar 2007 03:05:03 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0703140304470.20730@yvahk01.tjqt.qr>
-References: <1173760381.45f6297d9a03d@mail.dreamtoy.net>
-	<slrnevcv6v.610.xpisar@album.ics.muni.cz>
+Subject: Re: time module
+Date: Wed, 14 Mar 2007 03:11:07 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0703140310560.20730@yvahk01.tjqt.qr>
+References: <20070313101604.6db3dc22.mailinglists@lucassen.org>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <slrnevcv6v.610.xpisar@album.ics.muni.cz>
+In-Reply-To: <20070313101604.6db3dc22.mailinglists@lucassen.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,28 +18,30 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Petr Pisar <xpisar@fi.muni.cz>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
 
-On Mar 13 2007 10:28, Petr Pisar wrote:
->On 2007-03-13, Nathan @ Netdigix Systems <lists@netdigix.com> wrote:
->> Hi I have an issue where the internal interface wants to always talk
->> from the primary ip address,  what kind of rule can I add to make the
->> traffic comming from a specific source ip leave the router interface
->> from a specific secondary ip address?
->>
->Source IP address, if not specified by bind(2), depends on routing
->table.
->
->You can add rule which specifies source address explicitly like this:
->
->ip route add default via <MY_GW> dev <OUT_DEV> src <SRC_IP>
->
->Maybe, the dev part is optionable.
+On Mar 13 2007 10:16, richard lucassen wrote:
 
-You can also use netfilter's SNAT to force a specific IP on outgoing
-connections.
+>Date: Tue, 13 Mar 2007 10:16:04 +0100
+>From: richard lucassen <mailinglists@lucassen.org>
+>Reply-To: netfilter@lists.netfilter.org
+>To: netfilter@lists.netfilter.org
+>Subject: time module
+>
+>I try to compile iptables-1.3.7 with the time module. AFAICS there is no
+>need anymore for the patch-o-matic. There is a libipt_time.c in the
+>extensions directory but no libipt_time.h in the
+>include/linux/netfilter_ipv4 directory.
+>
+>I searched here and there and found the extensions/Makefile. I added the
+>time module to this Makefile, but with this result:
+>
+>Unable to resolve dependency on linux/netfilter_ipv4/ipt_time.h.
+>
+>Anyone a hint?
+
+You still have to apply ipt_time to the kernel.
 
 
 Jan
