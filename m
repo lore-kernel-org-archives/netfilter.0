@@ -1,12 +1,13 @@
 From: "Sietse van Zanen" <sietse@wizdom.nu>
 Subject: RE: bytes count question
-Date: Thu, 15 Mar 2007 18:00:27 +0100
-Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C49CBF@knowledge.wizdom.nu>
+Date: Thu, 15 Mar 2007 18:03:27 +0100
+Message-ID: <02BB8A4AC86C564C89C7F14CF98CE0C49CC0@knowledge.wizdom.nu>
 References: <45F95EA9.3030201@unipex.it>
+	<02BB8A4AC86C564C89C7F14CF98CE0C49CBF@knowledge.wizdom.nu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45F95EA9.3030201@unipex.it>
+In-Reply-To: <02BB8A4AC86C564C89C7F14CF98CE0C49CBF@knowledge.wizdom.nu>
 Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,7 +20,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>, netfilter@lists.netfilter.org
+To: Sietse van Zanen <sietse@wizdom.nu>, Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>, netfilter@lists.netfilter.org
+
+Uh, no I think I may be wrong here. That might only count for NAT
+packets.
+
+The 600.000 bytes might be due to compression. How did you download the
+file?
+
+-Sietse
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Sietse van
+Zanen
+Sent: Thursday, March 15, 2007 18:00
+To: Michele Petrazzo - Unipex srl; netfilter@lists.netfilter.org
+Subject: RE: bytes count question
 
 Yes, only the first packet of a connection is counted. You should use a
 traffic analyzer for what you want to do.
@@ -51,5 +68,6 @@ I'm missing something?
 
 Thanks,
 Michele
+
 
 
