@@ -1,12 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Maximilian Wilhelm <max@rfc2324.org>
 Subject: Re: forwarding local ports
-Date: Fri, 16 Mar 2007 20:36:19 +0100
-Message-ID: <45FAF1B3.2000601@plouf.fr.eu.org>
+Date: Fri, 16 Mar 2007 21:03:55 +0100
+Message-ID: <20070316200354.GA10582@galois.math.uni-paderborn.de>
 References: <2700.4272-9683-164045092-1174070512@seznam.cz>
+	<45FAF1B3.2000601@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2700.4272-9683-164045092-1174070512@seznam.cz>
+Content-Disposition: inline
+In-Reply-To: <45FAF1B3.2000601@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
+Am Friday, den 16. March hub Pascal Hambourg folgendes in die Tasten:
 
-Martin Korous a =E9crit :
->=20
-> I want forward local ports to remote server, for example:
-> for `telnet localhost 80` must answer webserver from remote IP
->=20
-> I have this rule:
-> iptables -t nat -A OUTPUT -p TCP -d 127.0.0.1 --dport 80 -j DNAT --to 1=
-92.168.0.254:80
-> but doesnt work.
-> of course i have support of routing, iptables and nat in kernel=20
->=20
-> Im sure that rule is right and in kernel 2.4 works.
-> Is problem in 2.6 or where?
->=20
-> kernel 2.6.18
+Hi!
 
-The problem, which  has already been discussed in this list, is in=20
-kernels 2.6.11 and above. In Changelog-2.6.11 you can read :
+> >I want forward local ports to remote server, for example:
+> >for `telnet localhost 80` must answer webserver from remote IP
 
-    [PATCH] Remove do_extra_mangle: double NAT on LOCAL_OUT
+> The problem, which  has already been discussed in this list, is in 
+> kernels 2.6.11 and above. In Changelog-2.6.11 you can read :
+[...]
 
-    On NF_IP_LOCAL_OUT, when destination NAT changes the destination
-    interface, we also change the source address, so the packet is the
-    same as if it were generated to go that way in the first place.  This
-    is not strictly necessary, I believe.
+> For this to work you must use a local address outside 127.0.0.0/8.
 
-    This patch rips that code out to see what breaks.
+Or consider using something different than netfilter for this task,
+e.g. the rinetd daemon (which works only for tcp, but that should fit
+your need in this case.)
 
-Sorry, you've just seen what breaks. The kernel routing code prohibits=20
-sending packets with source address in 127.0.0.0/8 outside the host=20
-(i.e. on another interface than lo) so the packets are dropped after=20
-leaving the OUTPUT chains.
+From the debian package description:
+ rinetd redirects TCP connections from one IP address and port to
+ another, with basic IP-based access control.
 
-For this to work you must use a local address outside 127.0.0.0/8.
+Ciao
+Max
+-- 
+|           |                 Follow the white penguin.
+|  |\/|  |  |-----------------------------------------------------------.
+|  |  |/\|  |  Rechnerbetrieb Mathematik  |   Meine Baustellen:  TSM    |
+|           |  Universitaet Paderborn     |   Hostmaster, Linux, LDAP   | 
 
