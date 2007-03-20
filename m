@@ -1,13 +1,13 @@
-From: "Dominic Caputo" <jec6jec6@gmail.com>
+From: "Dominic Caputo" <dominic.caputo@gmail.com>
 Subject: Accept DNS Suffix
-Date: Tue, 20 Mar 2007 11:08:50 +1100
-Message-ID: <000f01c76a83$f8563dd0$6f05b00a@au.schpac.local>
+Date: Tue, 20 Mar 2007 11:02:26 +1100
+Message-ID: <013901c76a83$0deb8f70$6f05b00a@au.schpac.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
 	h=domainkey-signature:received:received:message-id:from:to:subject:date:mime-version:content-type:content-transfer-encoding:x-priority:x-msmail-priority:x-mailer:x-mimeole;
-	b=Pf+1McaDPjsiboMgHdS5cixIvA7qaHAa1PIFoVDvBowoOwDUdxYuucjusPGcqllh5o9KAUp36r1HEbJ/YsYkvlkijN64JGb632FW4toq2GN6n67mNMFpjiDjX8orM7cKih4pF5cdkAN3hwx0b6XgnSMioQ/nF7+PJC8jxwfhNv0=
+	b=ItvtAKBE/VetZOggcIK22uu3hLJp0Xav64+UmTJCgH5hT+C9Ygn4sM0WYOQccCyy4af+p0iGsdlsRBYzIMxsacYHO+TVqiFmUntgtETgFe8S90y2wRkifcPX0K1p3IKJ+5LslS+TBprl23LA8/FsqtvDUNU4wU204EU8CZqL6Sk=
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
