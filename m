@@ -1,11 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: bridged firewall wont DNAT http to proxy
-Date: Wed, 21 Mar 2007 23:08:12 +0100 (MET)
-Message-ID: <Pine.LNX.4.61.0703212306180.486@yvahk01.tjqt.qr>
+From: "Ricardo Meechan" <rico@rm83.co.uk>
+Subject: RE: bridged firewall wont DNAT http to proxy
+Date: Wed, 21 Mar 2007 23:40:12 -0000
+Message-ID: <002901c76c12$45415870$6701a8c0@vaio>
 References: <002801c76bfc$b68971e0$6701a8c0@vaio>
+	<Pine.LNX.4.61.0703212306180.486@yvahk01.tjqt.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <002801c76bfc$b68971e0$6701a8c0@vaio>
+In-Reply-To: <Pine.LNX.4.61.0703212306180.486@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,21 +18,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ricardo Meechan <rico@rm83.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Jan Engelhardt' <jengelh@linux01.gwdg.de>
 Cc: netfilter@lists.netfilter.org
+
+Hi jan,
+
+Many thanks for your reply!
+
+I assumed that iptables was seeing the data since I can add a prerouting /
+postrouting rule that will LOG the port 80 going through iptables?
+Even if I add the default gateway on the Server(s) to the bridged firewall
+(instead of the BT router) that this will be non-bridged (and should work),
+but it will still not work (even though it can log the data and also route
+it through).
+
+What will work is redirecting the data port from say 80 to 22 since this
+redirects to the local port (on the bridge/router)
+I can then telnet to the port 80 and receive ssh text.
+
+I guess I could install squid locally on the bridge/router (then redirect)
+but this will not be possible due to the low cpu/space on this machine.
+
+I'm sorry to sound dumb, It's been a while since I'v played with iptables
+and I'm a windows Admin ;-) 
+
+-----Original Message-----
+From: Jan Engelhardt [mailto:jengelh@linux01.gwdg.de] 
+Sent: 21 March 2007 22:08
+To: Ricardo Meechan
+Cc: netfilter@lists.netfilter.org
+Subject: Re: bridged firewall wont DNAT http to proxy
 
 
 On Mar 21 2007 21:05, Ricardo Meechan wrote:
 >Subject: bridged firewall wont DNAT http to proxy
           ^^^^^^^               ^^^^
 
-I can already see your problem in the subject. Having a bridge bypasses Layer3,
-don't you know?
+I can already see your problem in the subject. Having a bridge bypasses
+Layer3, don't you know?
 
->I want all http 80 traffic that is about to leave the network (entering the 
->bridged router) to redirect into another server running squid.
+>I want all http 80 traffic that is about to leave the network (entering 
+>the bridged router) to redirect into another server running squid.
 >
 >The problem is the routing of data.
 >
@@ -39,23 +68,24 @@ don't you know?
 >I added the following rule to the nat prerouting using only one of the 
 >servers as a source for testing.:
 >
->-A PREROUTING -p tcp -s 194.72.xxx.xxx --dport 80 -j DNAT --to-destination 
->192.168.x.x:80
+>-A PREROUTING -p tcp -s 194.72.xxx.xxx --dport 80 -j DNAT 
+>--to-destination 192.168.x.x:80
 
 ebtables -t broute -A BROUTING -d 194.72.xxx.xxx --sport 80 -j DROP
 
 >
->But nothing happens. I tried the destination address as a 194.72 but it also
+>But nothing happens. I tried the destination address as a 194.72 but it 
+>also
 >
 >didnt work.
 >
->Routes are all working and the servers/squid/bridge (has a local ip on br0) 
->can talk to each other ok. ipv4 forwarding is enabled.
+>Routes are all working and the servers/squid/bridge (has a local ip on 
+>br0) can talk to each other ok. ipv4 forwarding is enabled.
 >
 >
 >
->I probably haven't been detailed enough but if anyone has any solutions or 
->require more info then I would really really appreciate your help!
+>I probably haven't been detailed enough but if anyone has any solutions 
+>or require more info then I would really really appreciate your help!
 >
 >
 >Many thanks in advance!
@@ -76,7 +106,8 @@ ebtables -t broute -A BROUTING -d 194.72.xxx.xxx --sport 80 -j DROP
 >          RX bytes:1813830 (1.7 MiB)  TX bytes:2222767 (2.1 MiB)
 >
 >br0:0     Link encap:Ethernet  HWaddr 00:02:B3:B4:60:20
->          inet addr:192.168.xxx.xxx  Bcast:192.168.1.255  Mask:255.255.255.0
+>          inet addr:192.168.xxx.xxx  Bcast:192.168.1.255
+Mask:255.255.255.0
 >          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
 >
 >br0:1     Link encap:Ethernet  HWaddr 00:02:B3:B4:60:20
@@ -121,4 +152,5 @@ ebtables -t broute -A BROUTING -d 194.72.xxx.xxx --sport 80 -j DROP
 
 Jan
 -- 
+
 
