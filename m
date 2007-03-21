@@ -1,8 +1,9 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
+From: "John Arthur" <lists@davey.net.au>
 Subject: RE: Accept DNS Suffix
-Date: Tue, 20 Mar 2007 19:13:41 +0100
-Message-ID: <000601c76b1b$7da62d00$0101000a@tanjian>
+Date: Wed, 21 Mar 2007 10:35:31 +1030
+Message-ID: <000001c76b4c$a41fea30$f6801eac@tau>
 References: <000f01c76a83$f8563dd0$6f05b00a@au.schpac.local>
+Reply-To: lists@davey.net.au
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -18,20 +19,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: 'Dominic Caputo' <jec6jec6@gmail.com>, netfilter@lists.netfilter.org
 
-> I currently have an ISP that has multiple address ranges that I wish
-> to accept in my iptables ruleset. Is it possible for me to use the
-> DNS Suffix instead of the actual ip as they are currently dynamically
-> assigned. e.g. iptables -s nsw.bigpond.net.au   (current assigned
-> address is cpe-203-45-103-100.nsw.bigpond.net.au).
+Dominic
 
-AFAIK: no.
-An iptables rule will do a DNS lookup for a *hostname*, but only once:
-when the rule is created.
+> I currently have an ISP that has multiple address ranges that 
+> I wish to 
+> accept in my iptables ruleset. Is it possible for me to use 
+> the DNS Suffix 
+> instead of the actual ip as they are currently dynamically 
+> assigned. e.g. 
+> iptables -s nsw.bigpond.net.au   (current assigned address is 
+> cpe-203-45-103-100.nsw.bigpond.net.au).
+
+ 
+ dig -t ptr 254.127.45.203.in-addr.arpa
+
+2 minutes with dig.. Tells me that Bigponds block for nsw is
+203.45.64.0/18
+
+CPE-203-45-64-0.nsw.bigpond.net.au.
+CPE-203-45-127-255.nsw.bigpond.net.au.
 
 
-Grts,
-Rob
+Which is what you want but I'm not sure I'd want to let all the bots
+through my firewall
+
+John
+
+
 
 
