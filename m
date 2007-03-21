@@ -1,13 +1,12 @@
-From: "John Arthur" <lists@davey.net.au>
-Subject: RE: Accept DNS Suffix
-Date: Wed, 21 Mar 2007 10:35:31 +1030
-Message-ID: <000001c76b4c$a41fea30$f6801eac@tau>
-References: <000f01c76a83$f8563dd0$6f05b00a@au.schpac.local>
-Reply-To: lists@davey.net.au
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	=?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: 2.6.8 vs 2.6.18 tcpdump chapture point changed?
+Date: Wed, 21 Mar 2007 13:41:36 +0200
+Message-ID: <1174477296.15877.20.camel@localhost.localdomain>
+Reply-To: casper@meteor.dp.ua
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000f01c76a83$f8563dd0$6f05b00a@au.schpac.local>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: 'Dominic Caputo' <jec6jec6@gmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="koi8-r"
+To: netfilter@lists.netfilter.org
 
-Dominic
-
-> I currently have an ISP that has multiple address ranges that 
-> I wish to 
-> accept in my iptables ruleset. Is it possible for me to use 
-> the DNS Suffix 
-> instead of the actual ip as they are currently dynamically 
-> assigned. e.g. 
-> iptables -s nsw.bigpond.net.au   (current assigned address is 
-> cpe-203-45-103-100.nsw.bigpond.net.au).
-
- 
- dig -t ptr 254.127.45.203.in-addr.arpa
-
-2 minutes with dig.. Tells me that Bigponds block for nsw is
-203.45.64.0/18
-
-CPE-203-45-64-0.nsw.bigpond.net.au.
-CPE-203-45-127-255.nsw.bigpond.net.au.
-
-
-Which is what you want but I'm not sure I'd want to let all the bots
-through my firewall
-
-John
-
-
-
-
+SGkgdGhlcmUuCgpCYWNrZ3JvdW5kOiAKQ2xpZW50cygxMC4xMC4wLjAvMTYpIDwtPiBSb3V0ZXIo
+YnIwOjEwLjEwLjEwMC4xLCBldGgwOjE5Mi4xNjguMS4xKSA8LT4KU2VydmVycygxOTIuMTY4LjEu
+MC8yNSkKU2VydmVyMjogMTkyLjE2OC4xLjMKCk5hdCBydWxlIG9uIFJvdXRlcjoKCiMgV1dXLXNl
+cnZpY2VzIG9uIFNlcnZlcjIKaXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkgYnIwIC1k
+IDE5Mi4xNjguMS4xMzAgLXAgdGNwIC1tIHRjcAotLWRwb3J0IDgwIC1qIEROQVQgLS10by1kZXN0
+aW5hdGlvbiAxOTIuMTY4LjEuMzo4MAoKU29tZSB0aW1lIGFnbywgd2hlbiB0aGUgUm91dGVyIGtl
+cm5lbCB3YXMgMi42LjggZG9pbmcgdGNwZHVtcCAtaSBicjAgSQp3YXMgYWJsZSB0byBzZWUgRE5B
+VCdlZCB0cmFmZmljIGxpa2UgaXQgd2FzIHNlZW4gYmUgY2xpZW50cywgZS5nCjEwLjEwLjEwMi4x
+Mzk6KiA8LT4gMTkyLjE2OC4xLjEzMDo4MC4gTm93IHRoZSByb3V0ZXIgcnVucyAyLjYuMTgsCmlw
+dGFibGVzIHJ1bGVzIGRpZCBub3QgY2hhbmdlLCB0aGUgcGljdHVyZSBJIHNlZSBpczoKCiN0Y3Bk
+dW1wIC1pIGJyMCAtbiBuZXQgMTkyLjE2OC4xLjAvMjQKMTM6MTU6MzIuOTIyMDU1IElQIDEwLjEw
+LjEwMi4xMzkuMTA3NSA+IDE5Mi4xNjguMS4zLjgwOiBTCjQwMTAyMjgwOTo0MDEwMjI4MDkoMCkg
+d2luIDY1NTM1IDxtc3MgMTQ2MCxub3Asbm9wLHNhY2tPSz4KMTM6MTU6MzIuOTIyMzUwIElQIDE5
+Mi4xNjguMS4xMzAuODAgPiAxMC4xMC4xMDIuMTM5LjEwNzU6IFMKNzk2ODY3NzcwOjc5Njg2Nzc3
+MCgwKSBhY2sgNDAxMDIyODEwIHdpbiA1ODQwIDxtc3MgMTQ2MCxub3Asbm9wLHNhY2tPSz4KMTM6
+MTU6MzIuOTIyNTU4IElQIDEwLjEwLjEwMi4xMzkuMTA3NSA+IDE5Mi4xNjguMS4zLjgwOiAuIGFj
+ayA3OTY4Njc3NzEKd2luIDY1NTM1CjEzOjE1OjMyLjkyNzgwMiBJUCAxMC4xMC4xMDIuMTM5LjEw
+NzUgPiAxOTIuMTY4LjEuMy44MDogUCAwOjQ2OSg0NjkpIGFjawoxIHdpbiA2NTUzNQoxMzoxNToz
+Mi45MjgyMzQgSVAgMTkyLjE2OC4xLjEzMC44MCA+IDEwLjEwLjEwMi4xMzkuMTA3NTogLiBhY2sg
+NDcwIHdpbgo2NDMyCjEzOjE1OjMzLjE3NjQ3MSBJUCAxOTIuMTY4LjEuMTMwLjgwID4gMTAuMTAu
+MTAyLjEzOS4xMDc1OiAuIDE6MTQ2MSgxNDYwKQphY2sgNDcwIHdpbiA2NDMyCjEzOjE1OjMzLjE3
+NjUzNCBJUCAxOTIuMTY4LjEuMTMwLjgwID4gMTAuMTAuMTAyLjEzOS4xMDc1OiAuCjE0NjE6Mjky
+MSgxNDYwKSBhY2sgNDcwIHdpbiA2NDMyCgpTbyBpdCBzZWVtcyBsaWtlIGluIDIuNi44IHRjcGR1
+bXAgY2FwdHVyZWQgcGFja2V0cyBiZWZvcmUgRE5BVCBhbmQgYWZ0ZXIKdW4tRE5BVCwgYnV0IGlu
+IDIuNi4xOCB0Y3BkdW1wIGNhcHR1cmVzIEFGVEVSIEROQVQsIGFuZCBhZnRlciB1bi1ETkFULgoK
+Q2FuIHNvbWVvbmUgY29tZmlybSBteSB0aG91Z2h0cz8KCi0tIArwz8vP1MnMxc7LzyDrz9PUycsg
+PGNhc3BlckBtZXRlb3IuZHAudWE+CgoK
