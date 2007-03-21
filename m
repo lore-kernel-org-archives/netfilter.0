@@ -1,11 +1,9 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	=?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: 2.6.8 vs 2.6.18 tcpdump chapture point changed?
-Date: Wed, 21 Mar 2007 13:41:36 +0200
-Message-ID: <1174477296.15877.20.camel@localhost.localdomain>
-Reply-To: casper@meteor.dp.ua
+From: "Ricardo Meechan" <rico@rm83.co.uk>
+Subject: bridged firewall wont DNAT http to proxy
+Date: Wed, 21 Mar 2007 21:05:54 -0000
+Message-ID: <002801c76bfc$b68971e0$6701a8c0@vaio>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -17,33 +15,103 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="koi8-r"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-SGkgdGhlcmUuCgpCYWNrZ3JvdW5kOiAKQ2xpZW50cygxMC4xMC4wLjAvMTYpIDwtPiBSb3V0ZXIo
-YnIwOjEwLjEwLjEwMC4xLCBldGgwOjE5Mi4xNjguMS4xKSA8LT4KU2VydmVycygxOTIuMTY4LjEu
-MC8yNSkKU2VydmVyMjogMTkyLjE2OC4xLjMKCk5hdCBydWxlIG9uIFJvdXRlcjoKCiMgV1dXLXNl
-cnZpY2VzIG9uIFNlcnZlcjIKaXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkgYnIwIC1k
-IDE5Mi4xNjguMS4xMzAgLXAgdGNwIC1tIHRjcAotLWRwb3J0IDgwIC1qIEROQVQgLS10by1kZXN0
-aW5hdGlvbiAxOTIuMTY4LjEuMzo4MAoKU29tZSB0aW1lIGFnbywgd2hlbiB0aGUgUm91dGVyIGtl
-cm5lbCB3YXMgMi42LjggZG9pbmcgdGNwZHVtcCAtaSBicjAgSQp3YXMgYWJsZSB0byBzZWUgRE5B
-VCdlZCB0cmFmZmljIGxpa2UgaXQgd2FzIHNlZW4gYmUgY2xpZW50cywgZS5nCjEwLjEwLjEwMi4x
-Mzk6KiA8LT4gMTkyLjE2OC4xLjEzMDo4MC4gTm93IHRoZSByb3V0ZXIgcnVucyAyLjYuMTgsCmlw
-dGFibGVzIHJ1bGVzIGRpZCBub3QgY2hhbmdlLCB0aGUgcGljdHVyZSBJIHNlZSBpczoKCiN0Y3Bk
-dW1wIC1pIGJyMCAtbiBuZXQgMTkyLjE2OC4xLjAvMjQKMTM6MTU6MzIuOTIyMDU1IElQIDEwLjEw
-LjEwMi4xMzkuMTA3NSA+IDE5Mi4xNjguMS4zLjgwOiBTCjQwMTAyMjgwOTo0MDEwMjI4MDkoMCkg
-d2luIDY1NTM1IDxtc3MgMTQ2MCxub3Asbm9wLHNhY2tPSz4KMTM6MTU6MzIuOTIyMzUwIElQIDE5
-Mi4xNjguMS4xMzAuODAgPiAxMC4xMC4xMDIuMTM5LjEwNzU6IFMKNzk2ODY3NzcwOjc5Njg2Nzc3
-MCgwKSBhY2sgNDAxMDIyODEwIHdpbiA1ODQwIDxtc3MgMTQ2MCxub3Asbm9wLHNhY2tPSz4KMTM6
-MTU6MzIuOTIyNTU4IElQIDEwLjEwLjEwMi4xMzkuMTA3NSA+IDE5Mi4xNjguMS4zLjgwOiAuIGFj
-ayA3OTY4Njc3NzEKd2luIDY1NTM1CjEzOjE1OjMyLjkyNzgwMiBJUCAxMC4xMC4xMDIuMTM5LjEw
-NzUgPiAxOTIuMTY4LjEuMy44MDogUCAwOjQ2OSg0NjkpIGFjawoxIHdpbiA2NTUzNQoxMzoxNToz
-Mi45MjgyMzQgSVAgMTkyLjE2OC4xLjEzMC44MCA+IDEwLjEwLjEwMi4xMzkuMTA3NTogLiBhY2sg
-NDcwIHdpbgo2NDMyCjEzOjE1OjMzLjE3NjQ3MSBJUCAxOTIuMTY4LjEuMTMwLjgwID4gMTAuMTAu
-MTAyLjEzOS4xMDc1OiAuIDE6MTQ2MSgxNDYwKQphY2sgNDcwIHdpbiA2NDMyCjEzOjE1OjMzLjE3
-NjUzNCBJUCAxOTIuMTY4LjEuMTMwLjgwID4gMTAuMTAuMTAyLjEzOS4xMDc1OiAuCjE0NjE6Mjky
-MSgxNDYwKSBhY2sgNDcwIHdpbiA2NDMyCgpTbyBpdCBzZWVtcyBsaWtlIGluIDIuNi44IHRjcGR1
-bXAgY2FwdHVyZWQgcGFja2V0cyBiZWZvcmUgRE5BVCBhbmQgYWZ0ZXIKdW4tRE5BVCwgYnV0IGlu
-IDIuNi4xOCB0Y3BkdW1wIGNhcHR1cmVzIEFGVEVSIEROQVQsIGFuZCBhZnRlciB1bi1ETkFULgoK
-Q2FuIHNvbWVvbmUgY29tZmlybSBteSB0aG91Z2h0cz8KCi0tIArwz8vP1MnMxc7LzyDrz9PUycsg
-PGNhc3BlckBtZXRlb3IuZHAudWE+CgoK
+Hi all, hope you can help me with this little problem!
+
+
+For the past couple of years we have had a linux machine (fedora) running as
+
+a bridged/transparent router between our windows servers (that has a public 
+IP) and the gateway router (provided by BT).
+
+Everything has been great but I'm looking to add a little more 
+functionality...
+
+I want all http 80 traffic that is about to leave the network (entering the 
+bridged router) to redirect into another server running squid.
+
+The problem is the routing of data.
+
+I have tried many options but to no avail.
+
+I added the following rule to the nat prerouting using only one of the 
+servers as a source for testing.:
+
+-A PREROUTING -p tcp -s 194.72.xxx.xxx --dport 80 -j DNAT --to-destination 
+192.168.x.x:80
+
+But nothing happens. I tried the destination address as a 194.72 but it also
+
+didnt work.
+
+Routes are all working and the servers/squid/bridge (has a local ip on br0) 
+can talk to each other ok. ipv4 forwarding is enabled.
+
+
+
+I probably haven't been detailed enough but if anyone has any solutions or 
+require more info then I would really really appreciate your help!
+
+
+Many thanks in advance!
+
+rico.
+
+# uname -r
+2.6.19-1.2911.6.5.fc6
+
+
+[root@xxxxxxx~]# ifconfig
+br0       Link encap:Ethernet  HWaddr 00:02:B3:B4:60:20
+          inet6 addr: fe80::202:b3ff:feb4:6020/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:26881 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:10798 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:1813830 (1.7 MiB)  TX bytes:2222767 (2.1 MiB)
+
+br0:0     Link encap:Ethernet  HWaddr 00:02:B3:B4:60:20
+          inet addr:192.168.xxx.xxx  Bcast:192.168.1.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+br0:1     Link encap:Ethernet  HWaddr 00:02:B3:B4:60:20
+          inet addr:194.72.xxx.xxx  Bcast:194.72.111.191 
+Mask:255.255.255.240
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+
+eth0      Link encap:Ethernet  HWaddr 00:02:B3:B4:60:20
+          inet6 addr: fe80::202:b3ff:feb4:6020/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:141519 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:139218 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:1176 txqueuelen:1000
+          RX bytes:21761332 (20.7 MiB)  TX bytes:111661372 (106.4 MiB)
+
+eth1      Link encap:Ethernet  HWaddr 00:02:B3:B4:60:21
+          inet6 addr: fe80::202:b3ff:feb4:6021/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:157758 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:143081 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:112414496 (107.2 MiB)  TX bytes:21491683 (20.4 MiB)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:50 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:50 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:4510 (4.4 KiB)  TX bytes:4510 (4.4 KiB)
+
+iptables:
+
+
+
+
+
+
+
+
