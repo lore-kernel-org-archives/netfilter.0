@@ -1,29 +1,39 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Multilink + bridge + nat problem
-Date: Thu, 22 Mar 2007 12:11:54 +0100
-Message-ID: <4602647A.1030202@trash.net>
-References: <48254.84.123.233.184.1174345071.squirrel@www.arcoscom.com>
-	<55003.195.55.244.106.1174552139.squirrel@www.arcoscom.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: bridged firewall wont DNAT http to proxy
+Date: Thu, 22 Mar 2007 17:21:36 +0100 (MET)
+Message-ID: <Pine.LNX.4.61.0703221720540.9555@yvahk01.tjqt.qr>
+References: <002801c76bfc$b68971e0$6701a8c0@vaio>
+	<Pine.LNX.4.64.0703212022510.23217@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <lartc-bounces@mailman.ds9a.nl>
-In-Reply-To: <55003.195.55.244.106.1174552139.squirrel@www.arcoscom.com>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <Pine.LNX.4.64.0703212022510.23217@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
-Sender: lartc-bounces@mailman.ds9a.nl
-Errors-To: lartc-bounces@mailman.ds9a.nl
-Content-Type: text/plain; charset="us-ascii"
-To: linux@arcoscom.com
-Cc: lartc@mailman.ds9a.nl, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, bridge@osdl.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "R. DuFresne" <dufresne@sysinfo.com>
+Cc: netfilter@lists.netfilter.org
 
-ArcosCom Linux User wrote:
-> Any help please?
 
-Please attach your scripts, your mailer wrapped the lines which
-makes them pretty unreadable.
+On Mar 21 2007 20:24, R. DuFresne wrote:
+>
+> I believe you need ebtables to do any real firewalling with a bridged system.
+> Which requires a kernel patch and the ebtables package.
+
+ebtables: shipped by distro
+kernel side code: included in mainline, hence shipped by distro
+
+All set! :)
+
+
+Jan
+-- 
+
