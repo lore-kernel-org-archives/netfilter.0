@@ -1,14 +1,11 @@
-From: Klaas Jan Wierenga <k.j.wierenga@home.nl>
-Subject: Re: Long sessions through LVS DR director
-	terminatedbyicmp-host-prohibited (ICMP type 3 code 10)
-Date: Mon, 26 Mar 2007 10:27:31 +0200
-Message-ID: <1644A6E7-9788-4CBD-83A8-A42DA5A461B9@home.nl>
-References: <45F700BB.2090006@home.nl>
-Mime-Version: 1.0 (Apple Message framework v752.3)
+From: <mondgrav-netfilter@yahoo.com>
+Subject: Netfilter architectural documentation ?
+Date: Mon, 26 Mar 2007 08:56:44 -0700 (PDT)
+Message-ID: <415701.68957.qm@web38715.mail.mud.yahoo.com>
+Reply-To: mondgrav-netfilter@yahoo.com
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.64.0703131547590.19322@wm7d.net>
-References: <Pine.LNX.4.64.0703131547590.19322@wm7d.net>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,128 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
-Content-Transfer-Encoding: 7bit
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Also posting to netfilter@lists.netfilter.org to point netfilter  
-people to this problem.
+Is there documentation (other than the source code) of
+aspects of the software architecture of netfilter in
+the Linux kernel, i.e., whether/when inspected packet
+headers are cached for future lookups; when/how the
+different hash tables get used, etc.? I understand
+iptables, conntrack, networking, and firewalls. I need
+to make some performance assessments of iptables
+constructs for config files for a high performance
+application. E.g., whether there is a performance hit
+for using IP range match and multiport range
+constructs. I haven't found appropriate documentation.
 
----
+thank you.
 
-A while ago I posted about a problem I was having with long mp3  
-streaming sessions which were terminated because the streaming LVS  
-cluster (managed by me) was sending icmp-host-prohibited on an  
-established connection to the client which was causing the connection  
-to be terminated.
-
-The original post (this thread): http:// 
-archive.linuxvirtualserver.org/html/lvs-users/2007-03/msg00057.html
-
-Initially I suspected the LVS director but after some investigation I  
-found out that it never sends icmp-host-prohibited. The only other  
-possibility was netfilter sending it.
-
-The relevant parts of my initial iptables was (/etc/sysconfig/iptables):
-
-*filter
-:FORWARD ACCEPT [0:0]
-:INPUT ACCEPT [0:0]
-:RH-Firewall-1-INPUT - [0:0]
-:OUTPUT ACCEPT [0:0]
--A FORWARD -j RH-Firewall-1-INPUT
--A INPUT -j RH-Firewall-1-INPUT
--A RH-Firewall-1-INPUT -i lo -j ACCEPT
--A RH-Firewall-1-INPUT -p icmp -m icmp --icmp-type any -j ACCEPT
--A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A RH-Firewall-1-INPUT -p tcp -m state -m tcp --dport 80 --state NEW - 
-j ACCEPT
--A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
-COMMIT
-
-After I changed the port 80 rule to the one below effectively  
-disabling connection tracking on port 80 the problem disappeared.
--A RH-Firewall-1-INPUT -p tcp --dport 80 -j ACCEPT
-
-Initially I made this iptables change on the LVS director, but then  
-the realservers would send icmp-host-prohibited sometimes on  
-established connections, after also changing iptables on the  
-realservers did the problem go away.
-
-It is still unclear to me why netfilter would decide to send icmp- 
-host-unreachable on established connection when connection tracking  
-is active. Maybe someone on the netfilter list can shed some light on  
-this.
-
-Regards,
-
-Klaas Jan Wierenga
-
-Op 14-mrt-2007, om 0:00 heeft Joseph Mack NA3T het volgende geschreven:
-
-> On Tue, 13 Mar 2007, Klaas Jan Wierenga wrote:
->
->> Hi all,
->
-> thanks for the nice complete report.
->
-> short answer - I don't know, but I'm not as close to the code as  
-> others on the ml.
->
->> I have a problem where sometimes some long standing mp3 streaming  
->> sessions over HTTP are terminated because the LVS-DR director  
->> sends an "ICMP type 3 code 10 - host unreachable" packet to the  
->> client (which is the source of the mp3 stream). When this happens  
->> the client stops sending packets for 15 minutes 15 minutes (the  
->> TCP idle session timeout of LVS?)
->
-> well possibly. the idle timeout is only for idle connections. Not  
-> having any other ideas, you could double it and see what happens.
->
->> 2. Where is this ICMP packet generated in linux/net/ipv4/ipvs/*  
->> source files? Answer: nowhere!, at least not with type 3 code 10
->>
->>
->> 3. Could it be that this ICMP packet is generated by some sort of  
->> denial-of-service defense code that I'm unaware of?
->
-> nope. nothing hidden in LVS.
->
->> Answer: net/ipv4/netfilter/ipt_REJECT.c:                 
->> send_unreach(*pskb, ICMP_HOST_ANO);
->>
->> So it appears that netfilter (iptables?) is sending it. Why?
->
-> do you have any iptables rules? (if so delete them for the moment).
->
->> This could be due to the firewall rule:
->
-> OK you do.
->
->> REJECT     all  --  anywhere             anywhere             
->> reject-with icmp-host-prohibited
->>
->>
->> But why is this sent on an existing, established and active  
->> connection? Or is there some TCP timeout because the director only  
->> sees incoming packets on the connection? Maybe this rings a bell  
->> with someone.
->
-> unlikely. In LVS-DR the director makes reasonable guesses as to the  
-> state of the realserver's connection, based on timeouts etc.  
-> Hopefully it's behaviour looks the same as a normal 2-ended  
-> connection, at least on the outside.
->
->
-> Joe
-> --
-> Joseph Mack NA3T EME(B,D), FM05lw North Carolina
-> jmack (at) wm7d (dot) net - azimuthal equidistant map
-> generator at http://www.wm7d.net/azproj.shtml
-> Homepage http://www.austintek.com/ It's GNU/Linux!
-> _______________________________________________
-> LinuxVirtualServer.org mailing list - lvs-users@LinuxVirtualServer.org
-> Send requests to lvs-users-request@LinuxVirtualServer.org
-> or go to http://www.in-addr.de/mailman/listinfo/lvs-users
 
 
