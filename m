@@ -1,28 +1,26 @@
 From: Klaas Jan Wierenga <k.j.wierenga@home.nl>
 Subject: Re: Long sessions through LVS DR director
 	terminatedbyicmp-host-prohibited (ICMP type 3 code 10)
-Date: Mon, 26 Mar 2007 10:25:38 +0200
-Message-ID: <564D018A-5A76-47CD-9C69-1B0584EC2354@home.nl>
+Date: Mon, 26 Mar 2007 10:27:31 +0200
+Message-ID: <1644A6E7-9788-4CBD-83A8-A42DA5A461B9@home.nl>
 References: <45F700BB.2090006@home.nl>
-Reply-To: "LinuxVirtualServer.org users mailing list." <lvs-users@LinuxVirtualServer.org>
 Mime-Version: 1.0 (Apple Message framework v752.3)
-Return-path: <lvs-users-bounces@LinuxVirtualServer.org>
+Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <Pine.LNX.4.64.0703131547590.19322@wm7d.net>
 References: <Pine.LNX.4.64.0703131547590.19322@wm7d.net>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://www.in-addr.de/mailman/listinfo/lvs-users>,
-	<mailto:lvs-users-request@LinuxVirtualServer.org?subject=unsubscribe>
-List-Archive: <http://www.in-addr.de/pipermail/lvs-users>
-List-Post: <mailto:lvs-users@LinuxVirtualServer.org>
-List-Help: <mailto:lvs-users-request@LinuxVirtualServer.org?subject=help>
-List-Subscribe: <http://www.in-addr.de/mailman/listinfo/lvs-users>,
-	<mailto:lvs-users-request@LinuxVirtualServer.org?subject=subscribe>
-Sender: lvs-users-bounces@LinuxVirtualServer.org
-Errors-To: lvs-users-bounces@LinuxVirtualServer.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: "LinuxVirtualServer.org users mailing list." <lvs-users@LinuxVirtualServer.org>
 Cc: netfilter@lists.netfilter.org
 
 Also posting to netfilter@lists.netfilter.org to point netfilter  
@@ -144,3 +142,5 @@ Op 14-mrt-2007, om 0:00 heeft Joseph Mack NA3T het volgende geschreven:
 > LinuxVirtualServer.org mailing list - lvs-users@LinuxVirtualServer.org
 > Send requests to lvs-users-request@LinuxVirtualServer.org
 > or go to http://www.in-addr.de/mailman/listinfo/lvs-users
+
+
