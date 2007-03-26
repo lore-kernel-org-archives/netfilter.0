@@ -1,397 +1,146 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: Re: Re: Multilink + bridge + nat problem [with attached 
-	txt files]
-Date: Mon, 26 Mar 2007 00:55:51 +0200 (CEST)
-Message-ID: <53159.84.123.233.184.1174863351.squirrel@www.arcoscom.com>
-References: <48254.84.123.233.184.1174345071.squirrel@www.arcoscom.com>
-	<55003.195.55.244.106.1174552139.squirrel@www.arcoscom.com>
-	<40558.84.123.233.184.1174602247.squirrel@www.arcoscom.com>
-Reply-To: linux@arcoscom.com
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <lartc-bounces@mailman.ds9a.nl>
-In-Reply-To: <40558.84.123.233.184.1174602247.squirrel@www.arcoscom.com>
+From: Klaas Jan Wierenga <k.j.wierenga@home.nl>
+Subject: Re: Long sessions through LVS DR director
+	terminatedbyicmp-host-prohibited (ICMP type 3 code 10)
+Date: Mon, 26 Mar 2007 10:25:38 +0200
+Message-ID: <564D018A-5A76-47CD-9C69-1B0584EC2354@home.nl>
+References: <45F700BB.2090006@home.nl>
+Reply-To: "LinuxVirtualServer.org users mailing list." <lvs-users@LinuxVirtualServer.org>
+Mime-Version: 1.0 (Apple Message framework v752.3)
+Return-path: <lvs-users-bounces@LinuxVirtualServer.org>
+In-Reply-To: <Pine.LNX.4.64.0703131547590.19322@wm7d.net>
+References: <Pine.LNX.4.64.0703131547590.19322@wm7d.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=unsubscribe>
-List-Archive: <http://mailman.ds9a.nl/pipermail/lartc>
-List-Post: <mailto:lartc@mailman.ds9a.nl>
-List-Help: <mailto:lartc-request@mailman.ds9a.nl?subject=help>
-List-Subscribe: <http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc>,
-	<mailto:lartc-request@mailman.ds9a.nl?subject=subscribe>
-Sender: lartc-bounces@mailman.ds9a.nl
-Errors-To: lartc-bounces@mailman.ds9a.nl
-content-type: text/plain
-To: lartc@mailman.ds9a.nl, netfilter@lists.netfilter.org, bridge@osdl.org, netfilter-devel@lists.netfilter.org
+List-Unsubscribe: <http://www.in-addr.de/mailman/listinfo/lvs-users>,
+	<mailto:lvs-users-request@LinuxVirtualServer.org?subject=unsubscribe>
+List-Archive: <http://www.in-addr.de/pipermail/lvs-users>
+List-Post: <mailto:lvs-users@LinuxVirtualServer.org>
+List-Help: <mailto:lvs-users-request@LinuxVirtualServer.org?subject=help>
+List-Subscribe: <http://www.in-addr.de/mailman/listinfo/lvs-users>,
+	<mailto:lvs-users-request@LinuxVirtualServer.org?subject=subscribe>
+Sender: lvs-users-bounces@LinuxVirtualServer.org
+Errors-To: lvs-users-bounces@LinuxVirtualServer.org
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: "LinuxVirtualServer.org users mailing list." <lvs-users@LinuxVirtualServer.org>
+Cc: netfilter@lists.netfilter.org
 
-In previous message I attached files with the required info.
+Also posting to netfilter@lists.netfilter.org to point netfilter  
+people to this problem.
 
-In /var/log/messages I have seen that --physdev-out is deprecated now (ba=
-d
-notices for me).
+---
 
-Anyone can help me with the issues explained previously?
+A while ago I posted about a problem I was having with long mp3  
+streaming sessions which were terminated because the streaming LVS  
+cluster (managed by me) was sending icmp-host-prohibited on an  
+established connection to the client which was causing the connection  
+to be terminated.
 
-Thanks
+The original post (this thread): http:// 
+archive.linuxvirtualserver.org/html/lvs-users/2007-03/msg00057.html
 
-El Vie, 23 de Marzo de 2007, 0:24, ArcosCom Linux User escribi=F3:
-> I attach 2 txt files:
->    rt_status: ip route info + iptables mangle info.
->    iptables_nat.txt: iptables -t nat -vnL
+Initially I suspected the LVS director but after some investigation I  
+found out that it never sends icmp-host-prohibited. The only other  
+possibility was netfilter sending it.
+
+The relevant parts of my initial iptables was (/etc/sysconfig/iptables):
+
+*filter
+:FORWARD ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:RH-Firewall-1-INPUT - [0:0]
+:OUTPUT ACCEPT [0:0]
+-A FORWARD -j RH-Firewall-1-INPUT
+-A INPUT -j RH-Firewall-1-INPUT
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -p icmp -m icmp --icmp-type any -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state -m tcp --dport 80 --state NEW - 
+j ACCEPT
+-A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+
+After I changed the port 80 rule to the one below effectively  
+disabling connection tracking on port 80 the problem disappeared.
+-A RH-Firewall-1-INPUT -p tcp --dport 80 -j ACCEPT
+
+Initially I made this iptables change on the LVS director, but then  
+the realservers would send icmp-host-prohibited sometimes on  
+established connections, after also changing iptables on the  
+realservers did the problem go away.
+
+It is still unclear to me why netfilter would decide to send icmp- 
+host-unreachable on established connection when connection tracking  
+is active. Maybe someone on the netfilter list can shed some light on  
+this.
+
+Regards,
+
+Klaas Jan Wierenga
+
+Op 14-mrt-2007, om 0:00 heeft Joseph Mack NA3T het volgende geschreven:
+
+> On Tue, 13 Mar 2007, Klaas Jan Wierenga wrote:
 >
-> The questions and the issues are in the original e-mail (above).
+>> Hi all,
 >
-> Thanks
+> thanks for the nice complete report.
 >
-> El Jue, 22 de Marzo de 2007, 9:28, ArcosCom Linux User escribi=F3:
->> Any help please?
->>
->> Thanks.
->>
->> El Lun, 19 de Marzo de 2007, 23:57, ArcosCom Linux User escribi=F3:
->>> Hi, I have a suspicious problem with multiple uplinks configuration.
->>> First of all my configuration:
->>>    1) kernel 2.6.20.3
->>>    2) iptables 1.3.7
->>>    3) last iproute (for masked marks)
->>>
->>> All wan interfaces are bridged (stp disabled) in only one interface
->>> (wan0), all lan interfaces are bridged (stp enabled) in only one
->>> interface
->>> (zlan0).
->>>
->>> The wan0 bridge is to allow UPnP works.
->>>
->>> To allow related incoming traffic from one fisical interface I mark
->>> connections, and the same to allow outgoing related.
->>>
->>> The routing rules are the same than lartc documentation plus a rule b=
-y
->>> interface to allow the routing using marks (masked).
->>>
->>> The comands I use are:
->>>
->>> =3D=3DBEGIN=3D=3D
->>> /sbin/ip rule del prio 50 table main
->>> /sbin/ip rule del prio 100 fwmark 0x8000/0xf000 table 150
->>> /sbin/ip rule del prio 150 from 217.125.139.204/26 table 150
->>> /sbin/ip rule del prio 101 fwmark 0x4000/0xf000 table 151
->>> /sbin/ip rule del prio 151 from 80.32.61.58/24 table 151
->>> /sbin/ip rule del prio 200 table 200
->>> /sbin/ip route flush table 150
->>> /sbin/ip route flush table 151
->>> /sbin/ip route flush table 200
->>> /sbin/iptables -t mangle -D PREROUTING -j MARCAR_IFACE
->>> /sbin/iptables -t mangle -F MARCAR_IFACE
->>> /sbin/iptables -t mangle -X MARCAR_IFACE
->>> /sbin/iptables -t mangle -F MARCAR_IFACE_TRAFICO
->>> /sbin/iptables -t mangle -X MARCAR_IFACE_TRAFICO
->>> /sbin/iptables -t mangle -D POSTROUTING -j MARCAR_IFACE_OUT
->>> /sbin/iptables -t mangle -F MARCAR_IFACE_OUT
->>> /sbin/iptables -t mangle -X MARCAR_IFACE_OUT
->>> /sbin/iptables -t mangle -N MARCAR_IFACE
->>> /sbin/iptables -t mangle -N MARCAR_IFACE_TRAFICO
->>> /sbin/iptables -t mangle -A MARCAR_IFACE -j CONNMARK --restore-mark
->>> /sbin/iptables -t mangle -A MARCAR_IFACE -m mark ! --mark 0x0000/0xf0=
-00
->>> -j
->>> RETURN
->>> /sbin/iptables -t mangle -A MARCAR_IFACE -m mark --mark 0x0000/0xf000
->>> -j
->>> MARCAR_IFACE_TRAFICO
->>> /sbin/iptables -t mangle -N MARCAR_IFACE_OUT
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -j CONNMARK --restore-ma=
-rk
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark ! --mark
->>> 0x0000/0xf000 -j RETURN
->>> /sbin/iptables -t mangle -A MARCAR_IFACE -m mark --mark 0x0000/0xf000
->>> -i
->>> wan0 -m physdev --physdev-in eth1 -m state --state NEW -j MARK
->>> --or-mark
->>> 0x8000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -m conntrack --ctreplsrc 217.125.139.204 -j MARK --or-mark
->>> 0x8000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -m conntrack --ctrepldst 217.125.139.204 -j MARK --or-mark
->>> 0x8000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -s 217.125.139.204 -j MARK --or-mark 0x8000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -m conntrack --ctorigsrc 217.125.139.204 -j MARK --or-mark
->>> 0x8000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -m conntrack --ctorigdst 217.125.139.204 -j MARK --or-mark
->>> 0x8000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE -m mark --mark 0x0000/0xf000
->>> -i
->>> wan0 -m physdev --physdev-in eth3 -m state --state NEW -j MARK
->>> --or-mark
->>> 0x4000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -m conntrack --ctreplsrc 80.32.61.58 -j MARK --or-mark 0x4000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -m conntrack --ctrepldst 80.32.61.58 -j MARK --or-mark 0x4000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -s 80.32.61.58 -j MARK --or-mark 0x4000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -m conntrack --ctorigsrc 80.32.61.58 -j MARK --or-mark 0x4000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -m mark --mark
->>> 0x0000/0xf000
->>> -o wan0 -m conntrack --ctorigdst 80.32.61.58 -j MARK --or-mark 0x4000
->>> /sbin/iptables -t mangle -A MARCAR_IFACE -j CONNMARK --save-mark
->>> /sbin/iptables -t mangle -A MARCAR_IFACE -j RETURN
->>> /sbin/iptables -t mangle -I PREROUTING -j MARCAR_IFACE
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -j CONNMARK --save-mark
->>> /sbin/iptables -t mangle -A MARCAR_IFACE_OUT -j RETURN
->>> /sbin/iptables -t mangle -I POSTROUTING -j MARCAR_IFACE_OUT
->>> /sbin/ip rule add prio 50 table main
->>> /sbin/ip rule add prio 100 fwmark 0x8000/0xf000 table 150
->>> /sbin/ip rule add prio 150 from 217.125.139.204/26 table 150
->>> /sbin/ip route add default via 217.125.139.193 dev wan0 src
->>> 217.125.139.204 proto static table 150
->>> /sbin/ip route append prohibit default table 150 metric 1 proto stati=
-c
->>> /sbin/ip rule add prio 101 fwmark 0x4000/0xf000 table 151
->>> /sbin/ip rule add prio 151 from 80.32.61.58/24 table 151
->>> /sbin/ip route add default via 80.32.61.1 dev wan0 src 80.32.61.58
->>> proto
->>> static table 151
->>> /sbin/ip route append prohibit default table 151 metric 1 proto stati=
-c
->>> /sbin/ip rule add prio 200 table 200
->>> /sbin/ip route add default table 200 proto static nexthop via
->>> 217.125.139.193 dev wan0 weight 1 nexthop via 80.32.61.1 dev wan0
->>> weight
->>> 1
->>> /sbin/ip route flush cache
->>> =3D=3DEND=3D=3D
->>>
->>> I have this "output" for all chains and routes:
->>> =3D=3DBEGIN=3D=3D
->>> =3D=3D=3D REGLAS IPTABLES PARA EL ENRUTADO =3D=3D=3D
->>> Chain PREROUTING (policy ACCEPT 8664K packets, 5097M bytes)
->>> num   pkts bytes target     prot opt in     out     source
->>> destination
->>> 1    3348K 1832M MARCAR_IFACE  0    --  *      *       0.0.0.0/0
->>>  0.0.0.0/0
->>> Chain MARCAR_IFACE (1 references)
->>> num   pkts bytes target     prot opt in     out     source
->>> destination
->>> 1    3348K 1832M CONNMARK   0    --  *      *       0.0.0.0/0
->>> 0.0.0.0/0           CONNMARK restore
->>> 2    2841K 1653M RETURN     0    --  *      *       0.0.0.0/0
->>> 0.0.0.0/0           MARK match !0x0/0xf000
->>> 3     507K  179M MARCAR_IFACE_TRAFICO  0    --  *      *
->>> 0.0.0.0/0
->>>          0.0.0.0/0           MARK match 0x0/0xf000
->>> 4    40690 2721K MARK       0    --  wan0   *       0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 PHYSDEV match --physdev-in
->>> eth1
->>> state NEW MARK or 0x8000
->>> 5    48680 3062K MARK       0    --  wan0   *       0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 PHYSDEV match --physdev-in
->>> eth3
->>> state NEW MARK or 0x4000
->>> 6     507K  179M CONNMARK   0    --  *      *       0.0.0.0/0
->>> 0.0.0.0/0           CONNMARK save
->>> 7     507K  179M RETURN     0    --  *      *       0.0.0.0/0
->>> 0.0.0.0/0
->>> Chain MARCAR_IFACE_TRAFICO (1 references)
->>> num   pkts bytes target     prot opt in     out     source
->>> destination
->>> Chain POSTROUTING (policy ACCEPT 16M packets, 8665M bytes)
->>> num   pkts bytes target     prot opt in     out     source
->>> destination
->>> 1    6483K 3397M MARCAR_IFACE_OUT  0    --  *      *       0.0.0.0/0
->>>      0.0.0.0/0
->>> Chain MARCAR_IFACE_OUT (1 references)
->>> num   pkts bytes target     prot opt in     out     source
->>> destination
->>> 1    6483K 3397M CONNMARK   0    --  *      *       0.0.0.0/0
->>> 0.0.0.0/0           CONNMARK restore
->>> 2    5781K 2966M RETURN     0    --  *      *       0.0.0.0/0
->>> 0.0.0.0/0           MARK match !0x0/0xf000
->>> 3        0     0 MARK       0    --  *      wan0    0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 ctreplsrc 217.125.139.204
->>> MARK
->>> or 0x8000
->>> 4     104K 7470K MARK       0    --  *      wan0    0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 ctrepldst 217.125.139.204
->>> MARK
->>> or 0x8000
->>> 5      135  7091 MARK       0    --  *      wan0    217.125.139.204
->>> 0.0.0.0/0           MARK match 0x0/0xf000 MARK or 0x8000
->>> 6        0     0 MARK       0    --  *      wan0    0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 ctorigsrc 217.125.139.204
->>> MARK
->>> or 0x8000
->>> 7        0     0 MARK       0    --  *      wan0    0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 ctorigdst 217.125.139.204
->>> MARK
->>> or 0x8000
->>> 8        0     0 MARK       0    --  *      wan0    0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 ctreplsrc 80.32.61.58 MARK =
-or
->>> 0x4000
->>> 9     101K 7298K MARK       0    --  *      wan0    0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 ctrepldst 80.32.61.58 MARK =
-or
->>> 0x4000
->>> 10     175  7578 MARK       0    --  *      wan0    80.32.61.58
->>> 0.0.0.0/0           MARK match 0x0/0xf000 MARK or 0x4000
->>> 11       0     0 MARK       0    --  *      wan0    0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 ctorigsrc 80.32.61.58 MARK =
-or
->>> 0x4000
->>> 12       1    48 MARK       0    --  *      wan0    0.0.0.0/0
->>> 0.0.0.0/0           MARK match 0x0/0xf000 ctorigdst 80.32.61.58 MARK =
-or
->>> 0x4000
->>> 13    702K  431M CONNMARK   0    --  *      *       0.0.0.0/0
->>> 0.0.0.0/0           CONNMARK save
->>> 14    702K  431M RETURN     0    --  *      *       0.0.0.0/0
->>> 0.0.0.0/0
->>> =3D=3D=3D REGLAS DE ENRUTAMIENTO =3D=3D=3D
->>> 0:      from all lookup local
->>> 50:     from all lookup main
->>> 100:    from all fwmark 0x8000/0xf000 lookup uno
->>> 101:    from all fwmark 0x4000/0xf000 lookup dos
->>> 150:    from 217.125.139.204/26 lookup uno
->>> 151:    from 80.32.61.58/24 lookup dos
->>> 200:    from all lookup defecto
->>> 32766:  from all lookup main
->>> 32767:  from all lookup default
->>> =3D=3D=3D TABLAS DE RUTAS =3D=3D=3D
->>> =3D=3D=3D MAIN =3D=3D=3D
->>> 217.125.139.192/26 dev wan0  proto kernel  scope link  src
->>> 217.125.139.204
->>> 80.32.61.0/24 dev wan0  proto kernel  scope link  src 80.32.61.58
->>> 192.168.3.0/24 dev zlan0  proto kernel  scope link  src 192.168.3.247
->>> 192.168.2.0/24 dev zlan0  proto kernel  scope link  src 192.168.2.247
->>> 192.168.1.0/24 dev zlan0  proto kernel  scope link  src 192.168.1.247
->>> 10.1.1.0/24 dev zlan0  proto kernel  scope link  src 10.1.1.6
->>> 169.254.0.0/16 dev zlan0  scope link
->>> 239.0.0.0/8 dev zlan0  scope link
->>> =3D=3D=3D wan0 TABLA 150 =3D=3D=3D
->>> default via 217.125.139.193 dev wan0  proto static  src 217.125.139.2=
-04
->>> prohibit default  proto static  metric 1
->>> =3D=3D=3D wan0 TABLA 151 =3D=3D=3D
->>> default via 80.32.61.1 dev wan0  proto static  src 80.32.61.58
->>> prohibit default  proto static  metric 1
->>> =3D=3D=3D TABLA 200 (defecto) =3D=3D=3D
->>> default  proto static
->>>         nexthop via 217.125.139.193  dev wan0 weight 1
->>>         nexthop via 80.32.61.1  dev wan0 weight 1
->>>
->>> =3D=3DEND=3D=3D
->>>
->>> The -t nat POSTROUTING rules:
->>> =3D=3DBEGIN=3D=3DChain POSTROUTING (policy ACCEPT 58524 packets, 42M =
-bytes)
->>>  pkts bytes target     prot opt in     out     source
->>> destination
->>>     0     0 SNAT       0    --  *      eth3    10.1.1.0/24
->>> 0.0.0.0/0           to:80.32.61.58
->>>     0     0 SNAT       0    --  *      eth1    10.1.1.0/24
->>> 0.0.0.0/0           to:217.125.139.204
->>>     0     0 SNAT       0    --  *      wan0    10.1.1.0/24
->>> 0.0.0.0/0           PHYSDEV match --physdev-out eth3 to:80.32.61.58
->>>     0     0 SNAT       0    --  *      wan0    10.1.1.0/24
->>> 0.0.0.0/0           PHYSDEV match --physdev-out eth1
->>> to:217.125.139.204
->>>     0     0 SNAT       0    --  *      eth3    10.1.1.0/24
->>> 0.0.0.0/0           to:80.32.61.58
->>>     0     0 SNAT       0    --  *      eth1    10.1.1.0/24
->>> 0.0.0.0/0           to:217.125.139.204
->>>  578K   39M MASQUERADE  0    --  *      wan0    10.1.1.0/24
->>> 0.0.0.0/0
->>>     0     0 MASQUERADE  0    --  *      wan0:1  10.1.1.0/24
->>> 0.0.0.0/0
->>>     0     0 SNAT       0    --  *      wan0    10.1.1.0/24
->>> 0.0.0.0/0           to:80.32.61.58
->>>     0     0 SNAT       0    --  *      wan0    10.1.1.0/24
->>> 0.0.0.0/0           to:217.125.139.204
->>>
->>> =3D=3DEND=3D=3D
->>>
->>> The problems I have are:
->>>    1) If I make ssh conections from internet to the router (not to an=
-y
->>> pc
->>> into the lan zone), sometimes the ssh sesions disconnect.
->>>    2) If I run tcpdump as these:
->>> tcpdump -n -i eth3 not host 80.32.61.58
->>> tcpdump -n -i eth1 not host 217.125.139.204
->>>       I can see :
->>>           a) IP frames not nated, where the source address is from la=
-n
->>> zone.
->>>           b) Source IPs are not the correct.
->>>       With tcpdump command I expect don't see anything, instead I can
->>> see
->>> frames as described below.
->>>
->>> Because the wan interface is only 1 (with 2 ip's), I only can use "-j
->>> MASQUERADE" for the nating, I can't use -m physdev --physdev-out,
->>> netfilter layer appears don't know what is the real outgoing interfac=
-e
->>> in
->>> the bridge wan0 and "wan0:1" is not handled by netfilter layer.
->>>
->>> The questions:
->>>    1) Does anyone know if this is a known issue (the tcpdump output a=
-nd
->>> physdev issue)?
->>>    2) Does anyone know how to use SNAT in this case (I cant use -j
->>> SNAT)?
->>>    3) With 2.6.19.7 I were using "-m physdev --physdev-out" into the
->>> chain
->>> "MARCAR_IFACE_OUT", but with the 2.6.20.3 updated kernel, the -m
->>> physdev appears to be broken and I then must use -m conntrack. Is thi=
-s
->>> a good solution?
->>>
->>> Please, I need any help, with this configuration I discovered these
->>> problems but I don't know how to solve them:
->>>    1) wan0 bridge don't appears to be working 100% of time (appears
->>> that
->>> packets from one IP in the bridge are sent to the other interface).
->>>    2) NAT appears to be a bit confused and don't nat all packets,
->>> MASQUERADE don't want to be working all time.
->>>    3) -m physdev --physdev-out don't know what is the read physical
->>> interface where the packets a sent. (Whith 2.6.19.7 kernel, this
->>> extension were working, or, at least, there were counters in the rule=
-s.
->>>    4) Conections from internet to the router machine are lost randoml=
-y.
->>>
->>> I have no problem to use POSTROUTING chain in nat table to DROP o
->>> REJECT
->>> incorrect packets, but ... really need I to do that?
->>>
->>> Thanks!! All help are apretiated!!
->>>
->>> Regards.
->>>
->>> P.D.: Sorry, my english is a bit poor.
->>>
+> short answer - I don't know, but I'm not as close to the code as  
+> others on the ml.
+>
+>> I have a problem where sometimes some long standing mp3 streaming  
+>> sessions over HTTP are terminated because the LVS-DR director  
+>> sends an "ICMP type 3 code 10 - host unreachable" packet to the  
+>> client (which is the source of the mp3 stream). When this happens  
+>> the client stops sending packets for 15 minutes 15 minutes (the  
+>> TCP idle session timeout of LVS?)
+>
+> well possibly. the idle timeout is only for idle connections. Not  
+> having any other ideas, you could double it and see what happens.
+>
+>> 2. Where is this ICMP packet generated in linux/net/ipv4/ipvs/*  
+>> source files? Answer: nowhere!, at least not with type 3 code 10
 >>
 >>
+>> 3. Could it be that this ICMP packet is generated by some sort of  
+>> denial-of-service defense code that I'm unaware of?
+>
+> nope. nothing hidden in LVS.
+>
+>> Answer: net/ipv4/netfilter/ipt_REJECT.c:                 
+>> send_unreach(*pskb, ICMP_HOST_ANO);
+>>
+>> So it appears that netfilter (iptables?) is sending it. Why?
+>
+> do you have any iptables rules? (if so delete them for the moment).
+>
+>> This could be due to the firewall rule:
+>
+> OK you do.
+>
+>> REJECT     all  --  anywhere             anywhere             
+>> reject-with icmp-host-prohibited
 >>
 >>
+>> But why is this sent on an existing, established and active  
+>> connection? Or is there some TCP timeout because the director only  
+>> sees incoming packets on the connection? Maybe this rings a bell  
+>> with someone.
+>
+> unlikely. In LVS-DR the director makes reasonable guesses as to the  
+> state of the realserver's connection, based on timeouts etc.  
+> Hopefully it's behaviour looks the same as a normal 2-ended  
+> connection, at least on the outside.
+>
+>
+> Joe
+> --
+> Joseph Mack NA3T EME(B,D), FM05lw North Carolina
+> jmack (at) wm7d (dot) net - azimuthal equidistant map
+> generator at http://www.wm7d.net/azproj.shtml
+> Homepage http://www.austintek.com/ It's GNU/Linux!
 > _______________________________________________
-> LARTC mailing list
-> LARTC@mailman.ds9a.nl
-> http://mailman.ds9a.nl/cgi-bin/mailman/listinfo/lartc
->
+> LinuxVirtualServer.org mailing list - lvs-users@LinuxVirtualServer.org
+> Send requests to lvs-users-request@LinuxVirtualServer.org
+> or go to http://www.in-addr.de/mailman/listinfo/lvs-users
