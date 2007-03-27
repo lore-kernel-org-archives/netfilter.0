@@ -1,16 +1,11 @@
-From: "=?ISO-8859-1?Q?Isma=EBl_BALLO?=" <isma.ballo@gmail.com>
-Subject: [ipset] Minor non-blocking "sleep" bugs
-Date: Tue, 27 Mar 2007 15:56:21 +0200
-Message-ID: <513bde910703270656k3125b5bl1c20d063c622e45a@mail.gmail.com>
-References: <513bde910703270005q2fe38dddp6ed5a4233a2c1c5d@mail.gmail.com>
+From: Pierre JUHEN <pierre.juhen@wanadoo.fr>
+Subject: Re: Multi ISP router/firewall ...
+Date: Tue, 27 Mar 2007 17:32:38 +0200 (CEST)
+Message-ID: <3564089.276511175009558150.JavaMail.www@wwinf1504>
+Reply-To: pierre.juhen@wanadoo.fr
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=F61zfCV72cIWiC3G5zqMnEKSoxCCDbOQvjB+9LUT57TU50o9Msotcm/1qiIouTCMxuo+FZ7iEX4KssOsvUb1IsO2Ipa8A8dyNypLlzcMIAilMAZ67QoW+uq4ezCFduG5B3dhlzqHM0h3x4cbKX5NxjxNA36M4DpL97AJgwTRM0M=
-In-Reply-To: <513bde910703270005q2fe38dddp6ed5a4233a2c1c5d@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,108 +16,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
-
-Hi,
-
-I use ipset 2.2.9a on kernel 2.6.19.7 compiled (from kernel.org) with
-these options
-(iptables 1.3.6)
-I have a minor bug (non blocking) when I load ipsets ( it seems it
-happens when I have a large numbers of bindings)
-I try too with  (256) Maximum number of IP sets       (same behaviour)
-
-<M> IP set support
-                            (512) Maximum number of IP sets
-                          (1024) Hash size for bindings of IP sets
-                          <M>   ipmap set support
-                          <M>   macipmap set support
-                          <M>   portmap set support
-                         <M>   iphash set support
-                          <M>   nethash set support
-                          <M>   ipporthash set support
-                          <M>   iptree set support
-                          <M>   set match support
-                          <M>   SET target support
+Content-Type: text/plain; charset="iso-8859-1"
+To: spoons@rchq.co.za, Netfilter <netfilter@lists.netfilter.org>
 
 
-and other : What can we chose best parameters for hashsize, probes, resize ?
+Suggested reading : http://www.ssi.bg/~ja/nano.txt
+
+It explains how the routing is done.
+
+Using the ROUTE patch, you force the routing outside the=20
+routing table.
+
+When a packet comes back on an established connection,
+the kernel lookup in the cache, with the input interface=20
+as part of the matching.
+
+Since in the cache, you have the other interface (ISP1)
+for this connection, it doesn't route the packet.
+
+You should use something else than the ROUTE target, for example
+what is explained in nano.txt.
 
 
-Mar 23 14:45:10 fwa01 kernel: BUG: sleeping function called from
-invalid context at mm/slab.c:3007
-Mar 23 14:45:10 fwa01 kernel: in_atomic():1, irqs_disabled():0
-Mar 23 14:45:10 fwa01 kernel:  [<c0158e6c>] kmem_cache_alloc+0x1b/0x55
-Mar 23 14:45:10 fwa01 kernel:  [<f89a77b8>] ip_set_hash_add+0xe7/0x142 [ip_set]
-Mar 23 14:45:10 fwa01 kernel:  [<f89a8680>]
-ip_set_sockfn_get+0x9bb/0xac8 [ip_set]
-Mar 23 14:45:10 fwa01 kernel:  [<c02fac5c>] _read_unlock_irq+0x5/0x7
-Mar 23 14:45:10 fwa01 kernel:  [<c01463bf>]
-__do_page_cache_readahead+0x118/0x201
-Mar 23 14:45:10 fwa01 kernel:  [<c0115086>] __wake_up+0x32/0x43
-Mar 23 14:45:10 fwa01 kernel:  [<c02b2500>] nf_sockopt+0x64/0xe2
-Mar 23 14:45:10 fwa01 kernel:  [<c02b259e>] nf_getsockopt+0x20/0x25
-Mar 23 14:45:10 fwa01 kernel:  [<c02bcdaf>] ip_getsockopt+0x547/0x581
-Mar 23 14:45:10 fwa01 kernel:  [<c016d453>] touch_atime+0x60/0x91
-Mar 23 14:45:10 fwa01 kernel:  [<c01414b0>] do_generic_mapping_read+0x414/0x45b
-Mar 23 14:45:10 fwa01 kernel:  [<c01431bc>] generic_file_aio_read+0x1a6/0x1ee
-Mar 23 14:45:10 fwa01 kernel:  [<c014097a>] file_read_actor+0x0/0xdb
-Mar 23 14:45:10 fwa01 kernel:  [<c01cfcfa>] vsnprintf+0x44e/0x48c
-Mar 23 14:45:10 fwa01 kernel:  [<c017fb74>] inotify_d_instantiate+0x44/0x72
-Mar 23 14:45:10 fwa01 kernel:  [<c016a427>] d_rehash+0x26/0x32
-Mar 23 14:45:10 fwa01 kernel:  [<c0292be3>] sock_attach_fd+0x72/0xd5
-Mar 23 14:45:10 fwa01 kernel:  [<c02943fe>] sock_common_getsockopt+0x1d/0x22
-Mar 23 14:45:10 fwa01 kernel:  [<c02929c4>] sys_getsockopt+0x7d/0x9c
-Mar 23 14:45:10 fwa01 kernel:  [<c02941f4>] sys_socketcall+0x22a/0x261
-Mar 23 14:45:10 fwa01 kernel:  [<c0102a99>] sysenter_past_esp+0x56/0x79
-Mar 23 14:45:10 fwa01 kernel:  [<c02f007b>] xfrm_user_rcv_msg+0x124/0x143
-Mar 23 14:45:11 fwa01 kernel:  =======================
 
+> Message du 27/03/07 14:54
+> De : "Ray Leach" <spoons@rchq.co.za>
+> A : "Netfilter" <netfilter@lists.netfilter.org>
+> Copie =C3=A0 :=20
+> Objet : Multi ISP router/firewall ...
+>=20
+> Hi All
+>=20
+> I've been trying to configure a router/firewall with 5 zones (2 of which
+> are ISP links) unsuccessfully.
+>=20
+> So far I've managed to patch the kernel with the ROUTE target, and I've
+> got rules as follows:
+>=20
+> FORWARD chain filter table:
+> ACCEPT     0    --  ethxx0 eth4    10.0.0.0/24    0.0.0.0/0          =20
+> ACCEPT     0    --  eth4   ethxx0  0.0.0.0/0      10.0.0.0/24
+>=20
+> FORWARD chain mangle table:
+> ROUTE      tcp  --  *      *       10.0.0.67    !192.168.1.0/24      tcp
+> dpts:80:90 ROUTE oif:eth4 continue
+>=20
+>=20
+> POSTROUTING chain nat table:
+> SNAT       0    --  *      eth4    0.0.0.0/0    0.0.0.0/0  to:10.1.0.2
+>=20
+>=20
+> ethxx0 is my internal LAN
+> eth4 is my 2nd ISP connection
+> 10.0.0.67 is my workstation
+> 10.1.0.2 is the ip bound to eth4
+>=20
+> The other ISP link is working, we host around 12 websites on servers in
+> our DMZ, we have outgoing web browsing, email, MSN, etc. using various
+> nat rules for that interface, they all work.
+>=20
+> I can see using tcpdump that the packets are leaving my workstation,
+> being mangles to change the route, going out the 2nd ISP link, coming
+> back into the 2nd ISP link, but then they disappear.
+>=20
+> My forwarding rules as shown above do not show any traffic.
+>=20
+> This has me stumped.
+>=20
+> As I've stated, I have nat (both SNAT and DNAT) working on the other ISP
+> interface on the same machine.
+>=20
+> Where should I start looking?
+>=20
+> Regards
+>=20
+> Ray
+> --=20
+> Raymond Leach
+> RCHQ Hobbies (http://www.rchq.co.za/)
+> (T)+27-82-575-6975 (F)+27-86-652-2773
+>=20
+>=20
+>=20
+>
 
-ipset -R < ipsets
-
-# Generated by ipset 2.2.9a on Mon Mar 26 17:41:02 2007
--N ADM_SET1 iphash --hashsize 1024 --probes 4 --resize 25
--A ADM_SET1  192.168.50.66
--A ADM_SET1 192.168.50.67
--A ADM_SET1 192.168.50.10
--A ADM_SET1  192.168.50.1
--A ADM_SET1 192.168.50.64
--A ADM_SET1 192.168.50.11
--A ADM_SET1 192.168.50.70
--A ADM_SET1  192.168.50.34
--A ADM_SET1 192.168.50.68
--A ADM_SET1 192.168.50.97
--A ADM_SET1  192.168.50.65
--A ADM_SET1 192.168.50.12
--A ADM_SET1 192.168.50.71
--A ADM_SET1 192.168.50.98
--A ADM_SET1  192.168.50.69
--A ADM_SET1 192.168.50.3
--A ADM_SET1 192.168.50.33
--N ADM_SET2 iphash --hashsize 1024 --probes 4 --resize 25
--A ADM_SET2 192.168.51.26
--A ADM_SET2 192.168.50.45
--B ADM_SET1 192.168.50.98 -b ADM_SET2
--B ADM_SET1  192.168.50.34 -b ADM_SET2
--B ADM_SET1 192.168.50.1 -b ADM_SET2
--B ADM_SET1 192.168.50.64 -b ADM_SET2
--B ADM_SET1  192.168.50.71 -b ADM_SET2
--B ADM_SET1 192.168.50.97 -b ADM_SET2
--B ADM_SET1 192.168.50.3 -b ADM_SET2
--B ADM_SET1  192.168.50.65 -b ADM_SET2
--B ADM_SET1 192.168.50.11 -b ADM_SET2
--B ADM_SET1 192.168.50.69 -b ADM_SET2
--B ADM_SET1  192.168.50.67 -b ADM_SET2
--B ADM_SET1 192.168.50.66 -b ADM_SET2
--B ADM_SET1 192.168.50.33 -b ADM_SET2
--B ADM_SET1  192.168.50.70 -b ADM_SET2
--B ADM_SET1 192.168.50.12 -b ADM_SET2
--B ADM_SET1 192.168.50.68 -b ADM_SET2
--B ADM_SET1  192.168.50.10 -b ADM_SET2
-COMMIT
-# Completed on Mon Mar 26 17:41:02 2007
-
-Thanks in advance.
 
