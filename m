@@ -1,14 +1,14 @@
-From: Tom Eastep <teastep@shorewall.net>
+From: tom <tom@t0mb.net>
 Subject: Re: will --cmd-owner ever return?
-Date: Tue, 27 Mar 2007 11:51:55 -0700
-Message-ID: <460967CB.7020608@shorewall.net>
+Date: Tue, 27 Mar 2007 20:25:34 +0100
+Message-ID: <46096FAE.6060202@t0mb.net>
 References: <20070327184526.GA5168@trane.vulkor.net>
+	<460967CB.7020608@shorewall.net>
+Reply-To: tom@t0mb.net
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enigF33ABB72D30F1130C1F59359"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070327184526.GA5168@trane.vulkor.net>
+In-Reply-To: <460967CB.7020608@shorewall.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,41 +19,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: vwf <vwf@vulkor.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Tom Eastep <teastep@shorewall.net>
+Cc: netfilter@lists.netfilter.org, vwf <vwf@vulkor.net>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigF33ABB72D30F1130C1F59359
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+If a connection is established, then you can find the owner by comparing 
+the inode in /proc/net/tcp with the /proc/<PID> tree [all the numbered 
+folders].  In each of these there is a folder named fd which provides 
+symbolic links to the open file descriptors which that PID is using.  a 
+quick ls -l will give you the information you need to resolve it to a 
+socket inode, you'll usually see socket:[32424] or something similar.  
+You then know which PID owns the conection.  I have some python code 
+which resolves this all to program names if you want it?
 
-vwf wrote:
+Tom Eastep wrote:
+> vwf wrote:
+>
+>   
+>> How can I lock my workstation down on application level?
+>>     
+>
+> tuxguardian.sf.net
+>
+> -Tom
+>   
 
-> How can I lock my workstation down on application level?
-
-tuxguardian.sf.net
-
--Tom
---=20
-Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
-Shoreline,     \ http://shorewall.net
-Washington USA  \ teastep@shorewall.net
-PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
-
-
---------------enigF33ABB72D30F1130C1F59359
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD4DBQFGCWfLO/MAbZfjDLIRAr6aAJ9MSGn76/VKCgE0GfusAx1YMOeUQwCYofIL
-Rh00FXEJDrIZ68ISudHR1g==
-=1oeS
------END PGP SIGNATURE-----
-
---------------enigF33ABB72D30F1130C1F59359--
 
