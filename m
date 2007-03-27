@@ -1,10 +1,16 @@
-From: Julian Hagenauer <chaosbringer@gmx.de>
-Subject: Droping all SYN
-Date: Tue, 27 Mar 2007 15:15:21 +0200
-Message-ID: <20070327151521.371d4312@notebook.chaosbringer.de>
+From: "=?ISO-8859-1?Q?Isma=EBl_BALLO?=" <isma.ballo@gmail.com>
+Subject: [ipset] Minor non-blocking "sleep" bugs
+Date: Tue, 27 Mar 2007 15:56:21 +0200
+Message-ID: <513bde910703270656k3125b5bl1c20d063c622e45a@mail.gmail.com>
+References: <513bde910703270005q2fe38dddp6ed5a4233a2c1c5d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=F61zfCV72cIWiC3G5zqMnEKSoxCCDbOQvjB+9LUT57TU50o9Msotcm/1qiIouTCMxuo+FZ7iEX4KssOsvUb1IsO2Ipa8A8dyNypLlzcMIAilMAZ67QoW+uq4ezCFduG5B3dhlzqHM0h3x4cbKX5NxjxNA36M4DpL97AJgwTRM0M=
+In-Reply-To: <513bde910703270005q2fe38dddp6ed5a4233a2c1c5d@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,18 +21,108 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
 Hi,
-this may be a simple Question.
-I have a xen-domain which is acting as a server.
-For some experiments i want, that every attempt to connect to a services on this server is blocked, but none of the existing connections is affected. 
-So, the ip of the server is 192.168.1.4 and the interface on dom0 is vif1.0. Dom0 acts as a arpproxy.
-Would 'iptables -A FORWARD -d 192.168.1.4 -o vif1.0 -p tcp --syn -j DROP' enough?
 
-Its crucial for me, so i have to be sure that the syntax is correct.
+I use ipset 2.2.9a on kernel 2.6.19.7 compiled (from kernel.org) with
+these options
+(iptables 1.3.6)
+I have a minor bug (non blocking) when I load ipsets ( it seems it
+happens when I have a large numbers of bindings)
+I try too with  (256) Maximum number of IP sets       (same behaviour)
 
-Thanks,
-Julian
+<M> IP set support
+                            (512) Maximum number of IP sets
+                          (1024) Hash size for bindings of IP sets
+                          <M>   ipmap set support
+                          <M>   macipmap set support
+                          <M>   portmap set support
+                         <M>   iphash set support
+                          <M>   nethash set support
+                          <M>   ipporthash set support
+                          <M>   iptree set support
+                          <M>   set match support
+                          <M>   SET target support
+
+
+and other : What can we chose best parameters for hashsize, probes, resize ?
+
+
+Mar 23 14:45:10 fwa01 kernel: BUG: sleeping function called from
+invalid context at mm/slab.c:3007
+Mar 23 14:45:10 fwa01 kernel: in_atomic():1, irqs_disabled():0
+Mar 23 14:45:10 fwa01 kernel:  [<c0158e6c>] kmem_cache_alloc+0x1b/0x55
+Mar 23 14:45:10 fwa01 kernel:  [<f89a77b8>] ip_set_hash_add+0xe7/0x142 [ip_set]
+Mar 23 14:45:10 fwa01 kernel:  [<f89a8680>]
+ip_set_sockfn_get+0x9bb/0xac8 [ip_set]
+Mar 23 14:45:10 fwa01 kernel:  [<c02fac5c>] _read_unlock_irq+0x5/0x7
+Mar 23 14:45:10 fwa01 kernel:  [<c01463bf>]
+__do_page_cache_readahead+0x118/0x201
+Mar 23 14:45:10 fwa01 kernel:  [<c0115086>] __wake_up+0x32/0x43
+Mar 23 14:45:10 fwa01 kernel:  [<c02b2500>] nf_sockopt+0x64/0xe2
+Mar 23 14:45:10 fwa01 kernel:  [<c02b259e>] nf_getsockopt+0x20/0x25
+Mar 23 14:45:10 fwa01 kernel:  [<c02bcdaf>] ip_getsockopt+0x547/0x581
+Mar 23 14:45:10 fwa01 kernel:  [<c016d453>] touch_atime+0x60/0x91
+Mar 23 14:45:10 fwa01 kernel:  [<c01414b0>] do_generic_mapping_read+0x414/0x45b
+Mar 23 14:45:10 fwa01 kernel:  [<c01431bc>] generic_file_aio_read+0x1a6/0x1ee
+Mar 23 14:45:10 fwa01 kernel:  [<c014097a>] file_read_actor+0x0/0xdb
+Mar 23 14:45:10 fwa01 kernel:  [<c01cfcfa>] vsnprintf+0x44e/0x48c
+Mar 23 14:45:10 fwa01 kernel:  [<c017fb74>] inotify_d_instantiate+0x44/0x72
+Mar 23 14:45:10 fwa01 kernel:  [<c016a427>] d_rehash+0x26/0x32
+Mar 23 14:45:10 fwa01 kernel:  [<c0292be3>] sock_attach_fd+0x72/0xd5
+Mar 23 14:45:10 fwa01 kernel:  [<c02943fe>] sock_common_getsockopt+0x1d/0x22
+Mar 23 14:45:10 fwa01 kernel:  [<c02929c4>] sys_getsockopt+0x7d/0x9c
+Mar 23 14:45:10 fwa01 kernel:  [<c02941f4>] sys_socketcall+0x22a/0x261
+Mar 23 14:45:10 fwa01 kernel:  [<c0102a99>] sysenter_past_esp+0x56/0x79
+Mar 23 14:45:10 fwa01 kernel:  [<c02f007b>] xfrm_user_rcv_msg+0x124/0x143
+Mar 23 14:45:11 fwa01 kernel:  =======================
+
+
+ipset -R < ipsets
+
+# Generated by ipset 2.2.9a on Mon Mar 26 17:41:02 2007
+-N ADM_SET1 iphash --hashsize 1024 --probes 4 --resize 25
+-A ADM_SET1  192.168.50.66
+-A ADM_SET1 192.168.50.67
+-A ADM_SET1 192.168.50.10
+-A ADM_SET1  192.168.50.1
+-A ADM_SET1 192.168.50.64
+-A ADM_SET1 192.168.50.11
+-A ADM_SET1 192.168.50.70
+-A ADM_SET1  192.168.50.34
+-A ADM_SET1 192.168.50.68
+-A ADM_SET1 192.168.50.97
+-A ADM_SET1  192.168.50.65
+-A ADM_SET1 192.168.50.12
+-A ADM_SET1 192.168.50.71
+-A ADM_SET1 192.168.50.98
+-A ADM_SET1  192.168.50.69
+-A ADM_SET1 192.168.50.3
+-A ADM_SET1 192.168.50.33
+-N ADM_SET2 iphash --hashsize 1024 --probes 4 --resize 25
+-A ADM_SET2 192.168.51.26
+-A ADM_SET2 192.168.50.45
+-B ADM_SET1 192.168.50.98 -b ADM_SET2
+-B ADM_SET1  192.168.50.34 -b ADM_SET2
+-B ADM_SET1 192.168.50.1 -b ADM_SET2
+-B ADM_SET1 192.168.50.64 -b ADM_SET2
+-B ADM_SET1  192.168.50.71 -b ADM_SET2
+-B ADM_SET1 192.168.50.97 -b ADM_SET2
+-B ADM_SET1 192.168.50.3 -b ADM_SET2
+-B ADM_SET1  192.168.50.65 -b ADM_SET2
+-B ADM_SET1 192.168.50.11 -b ADM_SET2
+-B ADM_SET1 192.168.50.69 -b ADM_SET2
+-B ADM_SET1  192.168.50.67 -b ADM_SET2
+-B ADM_SET1 192.168.50.66 -b ADM_SET2
+-B ADM_SET1 192.168.50.33 -b ADM_SET2
+-B ADM_SET1  192.168.50.70 -b ADM_SET2
+-B ADM_SET1 192.168.50.12 -b ADM_SET2
+-B ADM_SET1 192.168.50.68 -b ADM_SET2
+-B ADM_SET1  192.168.50.10 -b ADM_SET2
+COMMIT
+# Completed on Mon Mar 26 17:41:02 2007
+
+Thanks in advance.
 
