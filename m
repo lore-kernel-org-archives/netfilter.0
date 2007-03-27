@@ -1,11 +1,14 @@
-From: vwf <vwf@vulkor.net>
-Subject: will --cmd-owner ever return?
-Date: Tue, 27 Mar 2007 20:45:26 +0200
-Message-ID: <20070327184526.GA5168@trane.vulkor.net>
-Reply-To: vwf <vwf@vulkor.net>
+From: Tom Eastep <teastep@shorewall.net>
+Subject: Re: will --cmd-owner ever return?
+Date: Tue, 27 Mar 2007 11:51:55 -0700
+Message-ID: <460967CB.7020608@shorewall.net>
+References: <20070327184526.GA5168@trane.vulkor.net>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigF33ABB72D30F1130C1F59359"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <20070327184526.GA5168@trane.vulkor.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,23 +19,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: vwf <vwf@vulkor.net>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigF33ABB72D30F1130C1F59359
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Since kernel 2.6.15, command owner matching is gone (-m owner
---cmd-owner). I consider this match vital for securing a workstation.
-Programs are calling home (including well known very free source ones),
-emails contain all kinds of tricks to report back (some of them I cannot
-delete unseen), some programs are simply too insecure to be alowed to
-connect to some server (e.g. media players), and often I simply want my
-workstation to be absolutely quiet (except when I specificly ask for
-something).
+vwf wrote:
 
-How can I lock my workstation down on application level?
-Please tell me Netfilter can do this. Or can't it?
+> How can I lock my workstation down on application level?
+
+tuxguardian.sf.net
+
+-Tom
+--=20
+Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
+Shoreline,     \ http://shorewall.net
+Washington USA  \ teastep@shorewall.net
+PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
 
 
+--------------enigF33ABB72D30F1130C1F59359
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD4DBQFGCWfLO/MAbZfjDLIRAr6aAJ9MSGn76/VKCgE0GfusAx1YMOeUQwCYofIL
+Rh00FXEJDrIZ68ISudHR1g==
+=1oeS
+-----END PGP SIGNATURE-----
+
+--------------enigF33ABB72D30F1130C1F59359--
 
