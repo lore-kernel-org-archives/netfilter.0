@@ -1,7 +1,7 @@
 From: Gregory Carter <gcarter@aesgi.com>
 Subject: Re: Does iptables have any certificate?
-Date: Tue, 27 Mar 2007 18:46:48 -0600
-Message-ID: <4609BAF8.2030808@aesgi.com>
+Date: Tue, 27 Mar 2007 18:51:02 -0600
+Message-ID: <4609BBF6.1050008@aesgi.com>
 References: <6a0b550065ef4f0fa319a862e2caeac8@virasoft.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -20,9 +20,16 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I guess I do not get the question.
+Scratch that.
 
-What do you mean certificate?
+This guy obviously doesn't exist and it is a ill disguised Ad.
+
+This Email address has shown up on several lists with the same question, 
+advertising the link below.
+
+He posted the exact same question to the iptables group.
+
+Kill the account, and don't ever buy anything from the link posted.
 
 -gc
 
