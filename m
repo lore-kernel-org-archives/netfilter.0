@@ -1,17 +1,12 @@
-From: =?ISO-8859-2?Q?Isma=EBl_BALLO?= <isma.ballo@gmail.com>
-Subject: Re: [ipset] Minor non-blocking "sleep" bugs
-Date: Thu, 29 Mar 2007 22:01:36 +0200
-Message-ID: <460C1B20.1060107@gmail.com>
-References: <513bde910703270005q2fe38dddp6ed5a4233a2c1c5d@mail.gmail.com>
-	<513bde910703270656k3125b5bl1c20d063c622e45a@mail.gmail.com>
-	<Pine.LNX.4.64.0703281855530.13447@blackhole.kfki.hu>
-	<513bde910703290616t5f0b4b92m1caedb1da3dcddfc@mail.gmail.com>
-	<Pine.LNX.4.64.0703291957540.14898@blackhole.kfki.hu>
-Reply-To: isma.ballo@gmail.com
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: stateful UDP with unknown source port on INPUT?
+Date: Fri, 30 Mar 2007 01:06:15 +0200
+Message-ID: <460C4667.1090406@rtij.nl>
+References: <BAY121-F279EE21E84B52D2FA87CB1A9740@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.64.0703291957540.14898@blackhole.kfki.hu>
+In-Reply-To: <BAY121-F279EE21E84B52D2FA87CB1A9740@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,46 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+To: noa levy <noalevy@hotmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Jozsef Kadlecsik a =E9crit :
+noa levy wrote:
 > Hi,
+> I am working on a machine that needs to send SNMP informs, and receive=
+ 
+> ACKs for these informs. I am using iptables as my firewall, and I need=
+ 
+> to find a way to open a pinhole for the ACK to get back to me. My 
+> problem is that SNMP informs are sent to a predefined UDP port (162) 
+> but the ACKs are returned from a random port.
+> The following rules exist to allow established UDP sessions:
+> iptables -A INPUT-p udp -m state =96state ESTABLISHED -j ACCEPT
+> iptables -A OUTPUT -p udp -m state =96state NEW,ESTABLISHED -j ACCEPT
 >
-> On Thu, 29 Mar 2007, Isma=EBl BALLO wrote:
->
->> The compilation fails unless you put
->> u_int32_t  min_ip, max_ip; (instead of  __be32 )
->> in  KERNEL_DIR/ include/linux/netfilter_ipv4/ipt_iprange.h
->
-> That's an independent problem, not related to ipset ;-).
-Ok.
->
->> When I want to flush and delete all rules.
->> (after ipset -U :all: :all: ; ipset -F ; ipset -X and iptables -D <on
->> appropriate rules using sets >)
->>
->> Sometimes, references stays on some sets.
->
-> The order is important: you cannot destroy a set if you haven't=20
-> deleted previously the iptables rule referencing the set.
->
-Sorru,  you're right.( I've written too quick ..)
-But the problem is still there
+> My problem is that, since the source port of the ACK is a random one, 
+> the ACKs are dropped. Is there a way to allow all incoming UDP packets=
+ 
+> with an unknown source port and an established dest port?
 
- 1 - iptables -D <on all appropriate rules using sets > ...
- 2 - ipset -U :all: :all: ; ipset -F ; ipset -X
+Not directly, but you could use the recent match for this. On outgoing 
+requests, add the IP to the recent set. On incoming packets, first match=
+ 
+on the destination port, then match on recent to see if the IP had an 
+recent outgoing request.
 
-Sometimes, there still exists references.
-How can we see them ?Is there a way to flush them ?
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
+I use a similar strategy to reject (instead of drop) indent queries from=
+ 
+hosts I made a tcp connection to and that works, so this should to.
 
+HTH,
+M4
 
 
