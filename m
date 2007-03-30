@@ -1,14 +1,10 @@
-From: Pablo Sanchez <pablo@blueoakdb.com>
-Subject: Re: Band limit without squid
-Date: Fri, 30 Mar 2007 17:33:37 -0400
-Message-ID: <200703301733.38276.pablo@blueoakdb.com>
-References: <200703301822.56518.davividal@siscompar.com.br>
-	<Pine.LNX.4.61.0703302327570.31834@yvahk01.tjqt.qr>
+From: spaminator@web.de
+Subject: Debian 2.6.8/bridge/iptables/passive ftp
+Date: Fri, 30 Mar 2007 14:15:28 +0200
+Message-ID: <351646215@web.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0703302327570.31834@yvahk01.tjqt.qr>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,27 +18,72 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Friday 30 March 2007 at 5:28 pm, Jan Engelhardt wrote:
-> On Mar 30 2007 18:22, Davi wrote:
-> >Hi all!
-> >
-> >I would like to reserve some band to some services.
-> >Like 30 Kb to HTTP, 60 Kb to POP/IMAP, 20 Kb to SMTP and FTP, i.e.
-> >
-> >Can I do this using iptables + iproute or I must use Squid?
->
-> No to all three questions.
+Hi there,
 
-... so you should take a look at doing some traffic shaping.  
+I'm experiencing a strange problem when trying to FTP through a firewalling bridge.
 
-Point your browser to a search engine and type:
+My FTP client connects to the FTP server ok. But when the client switches to passive mode to get the directory's file list I get 
 
-      Linux traffic shaping
+stuck.
 
-You'll get oodles of information.
+The bridge is running on a Debian Sarge box with kernel 2.6.8-3, iptables 1.2.11-10 and bridge-utils 1.0.4-1. The bridge is built from the physical devices eth0 and eth1.
 
-Cheers,
---
-pablo
+The bridge is assigned an IP address too to be able to manage it remotely. Hence the INPUT and OUTPUT rules in my /etc/firewall.up.rules. As far as I understood, iptables only uses the FORWARD chain for the bridged packets.
+
+Here is my /etc/firewall.up.rules:
+#
+# is invoked by /etc/network/interfaces as pre-up for br0
+#
+*filter
+#
+:INPUT DROP [0:0]
+# some input rules
+#
+:FORWARD DROP [0:0]
+-A FORWARD -m state --state INVALID -j DROP
+-A FORWARD -p icmp -j ACCEPT
+# client to server
+-A FORWARD -p tcp -s ! 217.17.69.18/255.255.255.224 --sport 1024:65535 \
+	-d 217.17.69.18/255.255.255.224 --dport 21 \
+	-m conntrack --ctstate NEW,RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -p tcp -s ! 217.17.69.18/255.255.255.224 --sport 1024:65535 \
+	-d 217.17.69.18/255.255.255.224 --dport 1024:65535 \
+	-m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+# server to client
+-A FORWARD -p tcp -s 217.17.69.18/255.255.255.224 --sport 21 \
+	-d ! 217.17.69.18/255.255.255.224 --dport 1024:65535 \
+	-m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -p tcp -s 212.117.69.128/255.255.255.224 --sport 1024:65535 \
+	-d ! 217.17.69.18/255.255.255.224 --dport 1024:65535 \
+	-m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+# logging
+-A FORWARD -j ULOG --ulog-nlgroup 1
+#
+:OUTPUT DROP [0:0]
+# some output rules
+#
+COMMIT
+#
+
+
+These are all rules in the FORWARD chain. Using "! --syn" or "-m state --state RELATED,ESTABLISHED" instead of "-m conntrack --ctstate RELATED,ESTABLISHED" leads to the same result:
+
+When I look into the logfile I find an entry where my client:somehighport tries to tcp the server:somehighport. To me it looks like the client seems to want to establish a data-connection and iptables does not recognize these packet as RELATED or ESTABLISHED.
+
+Just for the crack of it I temporarily added NEW to the second "client to server"-rule. With that it works fine, but leaves the boxes behind the bridge open for any attack on the high ports.
+
+http, https or anything else is working properly, if I implement them in the FORWARD chain.
+
+Any suggestions out there?
+
+bye and TIA
+Jo
+
+
+
+
+_______________________________________________________________
+SMS schreiben mit WEB.DE FreeMail - einfach, schnell und
+kostenguenstig. Jetzt gleich testen! http://f.web.de/?mc=021192
 
 
