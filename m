@@ -1,11 +1,11 @@
-From: Davi <davividal@siscompar.com.br>
-Subject: Band limit without squid
-Date: Fri, 30 Mar 2007 18:22:56 -0300
-Message-ID: <200703301822.56518.davividal@siscompar.com.br>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Band limit without squid
+Date: Fri, 30 Mar 2007 23:28:34 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0703302327570.31834@yvahk01.tjqt.qr>
+References: <200703301822.56518.davividal@siscompar.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <200703301822.56518.davividal@siscompar.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,39 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Davi <davividal@siscompar.com.br>
+Cc: netfilter@lists.netfilter.org
 
 
-Hi all!
+On Mar 30 2007 18:22, Davi wrote:
 
-I would like to reserve some band to some services.
-Like 30 Kb to HTTP, 60 Kb to POP/IMAP, 20 Kb to SMTP and FTP, i.e.
+>Hi all!
+>
+>I would like to reserve some band to some services.
+>Like 30 Kb to HTTP, 60 Kb to POP/IMAP, 20 Kb to SMTP and FTP, i.e.
+>
+>Can I do this using iptables + iproute or I must use Squid?
 
-Can I do this using iptables + iproute or I must use Squid?
+No to all three questions.
 
-TIA
 
+Jan
 -- 
-Davi Vidal
-davividal@siscompar.com.br
-davividal@gmail.com
---
-
-Agora com fortune:
-"Microsoft Mandatory Survey (#9)
-
-Customers who want to upgrade to Windows 98 Second Edition must now fill
-out a Microsoft survey online before they can order the bugfix/upgrade.
-
-Question 9: Which of the following do you prefer as a replacement for the
-            current Microsoft slogan? 
-
-A. "Over 20 Years of Innovation" 
-B. "Wintel Inside" 
-C. "Your Windows And Gates To The World"
-D. "Because Anti-Trust Laws Are Obsolete" 
-E. "One Microsoft Way. It's Much More Than An Address!" 
-F. "This Motto Is Not Anti-Competitive. And Neither Is Microsoft." 
-G. "Fighting the Department of Injustice Since Day One" "
 
