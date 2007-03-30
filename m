@@ -1,11 +1,11 @@
-From: Davi <davividal@siscompar.com.br>
+From: Pablo Sanchez <pablo@blueoakdb.com>
 Subject: Re: Band limit without squid
-Date: Fri, 30 Mar 2007 18:34:50 -0300
-Message-ID: <200703301834.50784.davividal@siscompar.com.br>
+Date: Fri, 30 Mar 2007 17:33:37 -0400
+Message-ID: <200703301733.38276.pablo@blueoakdb.com>
 References: <200703301822.56518.davividal@siscompar.com.br>
 	<Pine.LNX.4.61.0703302327570.31834@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <Pine.LNX.4.61.0703302327570.31834@yvahk01.tjqt.qr>
 Content-Disposition: inline
@@ -19,10 +19,10 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Em Sexta 30 Mar=E7o 2007 18:28, voc=EA escreveu:
+On Friday 30 March 2007 at 5:28 pm, Jan Engelhardt wrote:
 > On Mar 30 2007 18:22, Davi wrote:
 > >Hi all!
 > >
@@ -32,25 +32,17 @@ Em Sexta 30 Mar=E7o 2007 18:28, voc=EA escreveu:
 > >Can I do this using iptables + iproute or I must use Squid?
 >
 > No to all three questions.
->
->
-> Jan
 
-Sorry... =3DP
-Just one question: can I do this (band limit) without Squid?
+... so you should take a look at doing some traffic shaping.  
 
-Searching here, I found CBQ...
-Anyone has used it?
+Point your browser to a search engine and type:
 
-TIA
+      Linux traffic shaping
 
+You'll get oodles of information.
 
-=2D-=20
-Davi Vidal
-davividal@siscompar.com.br
-davividal@gmail.com
-=2D-
+Cheers,
+--
+pablo
 
-Agora com fortune:
-"This is a NO-FRILLS flight -- hold th' CANADIAN BACON!!"
 
