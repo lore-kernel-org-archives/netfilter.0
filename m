@@ -1,12 +1,17 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: nubee ++ using iptables to block bit torrent ..
-Date: Fri, 30 Mar 2007 01:12:05 +0200
-Message-ID: <460C47C5.1020104@rtij.nl>
-References: <30200a940703270610u2d75f17cra4620615ea53a388@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ipset] Minor non-blocking "sleep" bugs
+Date: Fri, 30 Mar 2007 08:55:12 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0703300852220.15610@blackhole.kfki.hu>
+References: <513bde910703270005q2fe38dddp6ed5a4233a2c1c5d@mail.gmail.com>
+	<513bde910703270656k3125b5bl1c20d063c622e45a@mail.gmail.com>
+	<Pine.LNX.4.64.0703281855530.13447@blackhole.kfki.hu>
+	<513bde910703290616t5f0b4b92m1caedb1da3dcddfc@mail.gmail.com>
+	<Pine.LNX.4.64.0703291957540.14898@blackhole.kfki.hu>
+	<460C1B20.1060107@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="110391808-514018059-1175237712=:15610"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <30200a940703270610u2d75f17cra4620615ea53a388@mail.gmail.com>
+In-Reply-To: <460C1B20.1060107@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +22,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Gregory Machin <gregory.machin@gmail.com>
+To: =?ISO-8859-2?Q?Isma=EBl_BALLO?= <isma.ballo@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Gregory Machin wrote:
-> Hi
-> I have a routing / firewall box that provides routing for the lan, dmz
-> some routed vpn, and the internet..
->
-> I have been asked to block all traffice going from that lan,then give
-> limited ip's full access to the internet and other limited access, via
-> certian ports for say mail and http..
->
-> and this seems to be working fine, execpt that, bit torrent and msn
-> and google talk seem the be slipping by ...
->
-> by my understanding everything should be locked down ... appart from
-> the http/s going via squid, which i'll tackel next ..
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-That's your problem. MSN, Kazaa, whatever, all tunnel over port 80 if no 
-other means to communicate is found (i.e. direct ports open). You need 
-content inspection to block that.
+--110391808-514018059-1175237712=:15610
+Content-Type: TEXT/PLAIN; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-HTH,
-M4
+On Thu, 29 Mar 2007, Isma=EBl BALLO wrote:
 
+> But the problem is still there
+>
+> 1 - iptables -D <on all appropriate rules using sets > ...
+> 2 - ipset -U :all: :all: ; ipset -F ; ipset -X
+
+That should be enough to destroy the sets.
+
+> Sometimes, there still exists references.
+> How can we see them ?Is there a way to flush them ?
+
+Send me the example (in private) which triggers the problem
+so that I could reproduce it.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+           H-1525 Budapest 114, POB. 49, Hungary
+--110391808-514018059-1175237712=:15610--
 
