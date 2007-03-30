@@ -1,17 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ipset] Minor non-blocking "sleep" bugs
-Date: Fri, 30 Mar 2007 08:55:12 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0703300852220.15610@blackhole.kfki.hu>
-References: <513bde910703270005q2fe38dddp6ed5a4233a2c1c5d@mail.gmail.com>
-	<513bde910703270656k3125b5bl1c20d063c622e45a@mail.gmail.com>
-	<Pine.LNX.4.64.0703281855530.13447@blackhole.kfki.hu>
-	<513bde910703290616t5f0b4b92m1caedb1da3dcddfc@mail.gmail.com>
-	<Pine.LNX.4.64.0703291957540.14898@blackhole.kfki.hu>
-	<460C1B20.1060107@gmail.com>
+From: Davi <davividal@siscompar.com.br>
+Subject: Band limit without squid
+Date: Fri, 30 Mar 2007 18:22:56 -0300
+Message-ID: <200703301822.56518.davividal@siscompar.com.br>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="110391808-514018059-1175237712=:15610"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <460C1B20.1060107@gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,37 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: =?ISO-8859-2?Q?Isma=EBl_BALLO?= <isma.ballo@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---110391808-514018059-1175237712=:15610
-Content-Type: TEXT/PLAIN; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Hi all!
 
-On Thu, 29 Mar 2007, Isma=EBl BALLO wrote:
+I would like to reserve some band to some services.
+Like 30 Kb to HTTP, 60 Kb to POP/IMAP, 20 Kb to SMTP and FTP, i.e.
 
-> But the problem is still there
->
-> 1 - iptables -D <on all appropriate rules using sets > ...
-> 2 - ipset -U :all: :all: ; ipset -F ; ipset -X
+Can I do this using iptables + iproute or I must use Squid?
 
-That should be enough to destroy the sets.
+TIA
 
-> Sometimes, there still exists references.
-> How can we see them ?Is there a way to flush them ?
+-- 
+Davi Vidal
+davividal@siscompar.com.br
+davividal@gmail.com
+--
 
-Send me the example (in private) which triggers the problem
-so that I could reproduce it.
+Agora com fortune:
+"Microsoft Mandatory Survey (#9)
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-           H-1525 Budapest 114, POB. 49, Hungary
---110391808-514018059-1175237712=:15610--
+Customers who want to upgrade to Windows 98 Second Edition must now fill
+out a Microsoft survey online before they can order the bugfix/upgrade.
+
+Question 9: Which of the following do you prefer as a replacement for the
+            current Microsoft slogan? 
+
+A. "Over 20 Years of Innovation" 
+B. "Wintel Inside" 
+C. "Your Windows And Gates To The World"
+D. "Because Anti-Trust Laws Are Obsolete" 
+E. "One Microsoft Way. It's Much More Than An Address!" 
+F. "This Motto Is Not Anti-Competitive. And Neither Is Microsoft." 
+G. "Fighting the Department of Injustice Since Day One" "
 
