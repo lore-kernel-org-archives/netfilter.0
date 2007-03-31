@@ -1,12 +1,12 @@
 From: Arnd-Hendrik Mathias <arnd-hendrik.mathias@nefkom.net>
-Subject: Re: Debian 2.6.8/bridge/iptables/passive ftp
-Date: Sat, 31 Mar 2007 15:41:57 +0200
-Message-ID: <460E6525.2070007@nefkom.net>
-References: <351646215@web.de>
+Subject: Re: Droping all SYN
+Date: Sat, 31 Mar 2007 17:01:29 +0200
+Message-ID: <460E77C9.3060400@nefkom.net>
+References: <20070327151521.371d4312@notebook.chaosbringer.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <351646215@web.de>
+In-Reply-To: <20070327151521.371d4312@notebook.chaosbringer.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,124 +20,29 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi Jo,
-the first thing I am wondering about is that you open ports 1024:65535 
-while I would expect the initial data connection at port 20.
-Nevertheless, the main problem you are facing is that you try to 
-conntrack FTP on your own. FTP is a little bit too complex for that so 
-you'll get by with a little help from your friend: The helper module may 
-be the solution for your problem.
-I built my linux from scratch so I cannot tell you much about any 
-distributions or util packages, but my PC serves as gateway for the both 
-of my local home-networks to the internet and my ftp routing works well 
-so I paste the corresponding section of my configuration in order to 
-give an example. Since you don't seem to be masquerading you can omit 
-the last rule and replace the IP-adresses and interface names. Note that 
-these rules only accept outgoing FTP connections, so if you're driving a 
-server you'll have to add NEW to the --ctstate of the second rule.
+Hey Julian,
+I'm not sure if I get your question right but it sounds like
 
+iptables -A FORWARD -d 192.168.1.4 -o vif1.0 -p tcp -m conntrack --ctstate NEW -j DROP
 
-
-###########################
-# forwarding tcp sessions to global net #
-###########################
-*filter
--A FORWARD -s 10.0.0.0/255.255.255.224 -d ! 10.0.0.0/255.255.255.224 -i 
-! ppp0 -o ppp0 -p tcp --dport 21 -m conntrack --ctstate NEW,ESTABLISHED 
--j ACCEPT
--A FORWARD -d 10.0.0.0/255.255.255.224 -s ! 10.0.0.0/255.255.255.224 -i 
-ppp0 -o ! ppp0 -p tcp --sport 21 -m conntrack --ctstate ESTABLISHED -j 
-ACCEPT
--A FORWARD -d 10.0.0.0/255.255.255.224 -s ! 10.0.0.0/255.255.255.224 -i 
-ppp0 -o ! ppp0 -p tcp -m helper --helper ftp-21 -m conntrack --ctstate 
-RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -s 10.0.0.0/255.255.255.224 -d ! 10.0.0.0/255.255.255.224 -i 
-! ppp0 -o ppp0 -p tcp -m helper --helper ftp-21 -m conntrack --ctstate 
-RELATED,ESTABLISHED -j ACCEPT
-COMMIT
-
-*nat
--A POSTROUTING -s 10.0.0.0/255.255.255.224 -o ppp0 -p tcp --dport 21 -m 
-conntrack --ctstate NEW -j MASQUERADE
-COMMIT
-
-
-
-Good luck
+Have you checked this out?
+Greetz
 
 Arnd-Hendrik
 
+Julian Hagenauer wrote:
 
-spaminator@web.de wrote:
-
->Hi there,
+>Hi,
+>this may be a simple Question.
+>I have a xen-domain which is acting as a server.
+>For some experiments i want, that every attempt to connect to a services on this server is blocked, but none of the existing connections is affected. 
+>So, the ip of the server is 192.168.1.4 and the interface on dom0 is vif1.0. Dom0 acts as a arpproxy.
+>Would 'iptables -A FORWARD -d 192.168.1.4 -o vif1.0 -p tcp --syn -j DROP' enough?
 >
->I'm experiencing a strange problem when trying to FTP through a firewalling bridge.
+>Its crucial for me, so i have to be sure that the syntax is correct.
 >
->My FTP client connects to the FTP server ok. But when the client switches to passive mode to get the directory's file list I get 
->
->stuck.
->
->The bridge is running on a Debian Sarge box with kernel 2.6.8-3, iptables 1.2.11-10 and bridge-utils 1.0.4-1. The bridge is built from the physical devices eth0 and eth1.
->
->The bridge is assigned an IP address too to be able to manage it remotely. Hence the INPUT and OUTPUT rules in my /etc/firewall.up.rules. As far as I understood, iptables only uses the FORWARD chain for the bridged packets.
->
->Here is my /etc/firewall.up.rules:
->#
-># is invoked by /etc/network/interfaces as pre-up for br0
->#
->*filter
->#
->:INPUT DROP [0:0]
-># some input rules
->#
->:FORWARD DROP [0:0]
->-A FORWARD -m state --state INVALID -j DROP
->-A FORWARD -p icmp -j ACCEPT
-># client to server
->-A FORWARD -p tcp -s ! 217.17.69.18/255.255.255.224 --sport 1024:65535 \
->	-d 217.17.69.18/255.255.255.224 --dport 21 \
->	-m conntrack --ctstate NEW,RELATED,ESTABLISHED -j ACCEPT
->-A FORWARD -p tcp -s ! 217.17.69.18/255.255.255.224 --sport 1024:65535 \
->	-d 217.17.69.18/255.255.255.224 --dport 1024:65535 \
->	-m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-># server to client
->-A FORWARD -p tcp -s 217.17.69.18/255.255.255.224 --sport 21 \
->	-d ! 217.17.69.18/255.255.255.224 --dport 1024:65535 \
->	-m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
->-A FORWARD -p tcp -s 212.117.69.128/255.255.255.224 --sport 1024:65535 \
->	-d ! 217.17.69.18/255.255.255.224 --dport 1024:65535 \
->	-m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-># logging
->-A FORWARD -j ULOG --ulog-nlgroup 1
->#
->:OUTPUT DROP [0:0]
-># some output rules
->#
->COMMIT
->#
->
->
->These are all rules in the FORWARD chain. Using "! --syn" or "-m state --state RELATED,ESTABLISHED" instead of "-m conntrack --ctstate RELATED,ESTABLISHED" leads to the same result:
->
->When I look into the logfile I find an entry where my client:somehighport tries to tcp the server:somehighport. To me it looks like the client seems to want to establish a data-connection and iptables does not recognize these packet as RELATED or ESTABLISHED.
->
->Just for the crack of it I temporarily added NEW to the second "client to server"-rule. With that it works fine, but leaves the boxes behind the bridge open for any attack on the high ports.
->
->http, https or anything else is working properly, if I implement them in the FORWARD chain.
->
->Any suggestions out there?
->
->bye and TIA
->Jo
->
->
->
->
->_______________________________________________________________
->SMS schreiben mit WEB.DE FreeMail - einfach, schnell und
->kostenguenstig. Jetzt gleich testen! http://f.web.de/?mc=021192
->
+>Thanks,
+>Julian
 >
 >
 >
