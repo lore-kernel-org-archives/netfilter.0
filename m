@@ -1,13 +1,13 @@
-From: Robert Nichols <rnicholsNOSPAM@comcast.net>
-Subject: Re: stateful UDP with unknown source port on INPUT?
-Date: Mon, 02 Apr 2007 00:28:58 -0500
-Message-ID: <euq4ar$m1l$1@sea.gmane.org>
-References: <460C4667.1090406@rtij.nl>
-	<BAY121-F1848947AF48B36B0E9D801A9610@phx.gbl>
+From: gabrix <sickuser@gmail.com>
+Subject: only checking if i make correct custom chains
+Date: Sat, 31 Mar 2007 15:39:44 +0200
+Message-ID: <460E64A0.2040000@gabrix.ath.cx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY121-F1848947AF48B36B0E9D801A9610@phx.gbl>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:received:message-id:date:user-agent:mime-version:to:subject:x-enigmail-version:content-type:content-transfer-encoding:from;
+	b=WFGZa/HxcFhL3wBwtJbHvxjblvSmhBW5uqo5nqBuvQkls01ozDr0nHo/RLdInH89wdAEXSbB+OqImPxCYBodnSdvuDiNDCPTymhxM+19+HsUrXvL7mCjsYAV5BrYFUaaso67FreYEWBTB6/MROvRy7FhJAVkEGzMA2OYjot2mpg=
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,36 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-noa levy wrote:
-> Thanks!
-> I forgot to mention, though, that my source port for the SNMP informs is 
-> also random, so I can't match against the destination port for the 
-> incoming packet - does the recent target also maintain a port list or is 
-> it IP addresses only?
-
-How about something like this:
-
-iptables -t nat -A POSTROUTING -p udp --dport 162 -j SNAT --to-source :29999
-iptables -t mangle -A PREROUTING -p udp --dport 29999 -j MARK --set-mark 99
-iptables -A input -p udp -dport ! 29999 -m mark --mark 99 -j ACCEPT
-
-That 29999 source port is an arbitrary number outside the bounds set in
-/proc/sys/net/ipv4/ip_local_port_range.  The mark number is also arbitrary.
-The overall effect is that your SNMP inform packets will all appear to
-come from port 29999.  Replies to that port will be marked prior to being
-de-SNAT-ed.  Now, in the filter table you can ACCEPT marked packets that
-have been recognized by de-SNAT and thus no longer have a destination
-port of 29999.  Any bogus packets sent to port 29999 will still contain
-that port number when they hit the filter rule, and thus will not be
-accepted.
-
-I have no way to test any of the above, so view it all with appropriate
-suspicion.
+I only want to see if i interpret iptables custom chains correctly .In
+this chain EXAMPLE i want to build a jump that make various things.This
+is an example :
+IPT=/sbin/iptables
+$IPT -N EXAMPLE
+$IPT -A EXAMPLE -p tcp --dport 80 -j ACCEPT
+$IPT -A EXAMPLE -p tcp --dport 1:65535 DROP
+$IPT -A EXAMPLE -p udp --dport 1024:65535 -j DROP
+$IPT -A EXAMPLE -p icmp --icmp-type any -j ULOG --ulog-prefix
+"DROPPED_ICMP :"
+$IPT -A EXAMPLE -p icmp --icmp-type any -j DROP
+$IPT -I INPUT -i eth0 -p all -d Myhost -j EXAMPLE
+Is all this correct ???? i want for the jump EXAMPLE to accept tcp
+connections on port 80 , drop all others , drop all udp on unprivileged
+ports , ulog all icmp and than drop them all in one jump and that is
+going to happen first of all "I".I'd correct ?Thanks for the attenction !!!
 
 -- 
-Bob Nichols         Yes, "NOSPAM" is really part of my email address.
+http://tor.gabrix.ath.cx
 
 
