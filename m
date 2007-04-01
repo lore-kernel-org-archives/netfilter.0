@@ -1,12 +1,11 @@
-From: Arnd-Hendrik Mathias <arnd-hendrik.mathias@nefkom.net>
-Subject: Re: Droping all SYN
-Date: Sat, 31 Mar 2007 17:01:29 +0200
-Message-ID: <460E77C9.3060400@nefkom.net>
-References: <20070327151521.371d4312@notebook.chaosbringer.de>
+From: "noa levy" <noalevy@hotmail.com>
+Subject: Re: stateful UDP with unknown source port on INPUT?
+Date: Sun, 01 Apr 2007 15:39:30 +0300
+Message-ID: <BAY121-F1848947AF48B36B0E9D801A9610@phx.gbl>
+References: <460C4667.1090406@rtij.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070327151521.371d4312@notebook.chaosbringer.de>
+In-Reply-To: <460C4667.1090406@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +16,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+To: m@rtij.nl
+Cc: netfilter@lists.netfilter.org
 
-Hey Julian,
-I'm not sure if I get your question right but it sounds like
+Thanks!
+I forgot to mention, though, that my source port for the SNMP informs is=20
+also random, so I can't match against the destination port for the incoming=
+=20
+packet - does the recent target also maintain a port list or is it IP=20
+addresses only?
 
-iptables -A FORWARD -d 192.168.1.4 -o vif1.0 -p tcp -m conntrack --ctstate NEW -j DROP
 
-Have you checked this out?
-Greetz
+>From: Martijn Lievaart <m@rtij.nl>
+>To: noa levy <noalevy@hotmail.com>
+>CC: netfilter@lists.netfilter.org
+>Subject: Re: stateful UDP with unknown source port on INPUT?
+>Date: Fri, 30 Mar 2007 01:06:15 +0200
+>
+>noa levy wrote:
+>>Hi,
+>>I am working on a machine that needs to send SNMP informs, and receive=20
+>>ACKs for these informs. I am using iptables as my firewall, and I need to=
+=20
+>>find a way to open a pinhole for the ACK to get back to me. My problem is=
+=20
+>>that SNMP informs are sent to a predefined UDP port (162) but the ACKs ar=
+e=20
+>>returned from a random port.
+>>The following rules exist to allow established UDP sessions:
+>>iptables -A INPUT-p udp -m state =96state ESTABLISHED -j ACCEPT
+>>iptables -A OUTPUT -p udp -m state =96state NEW,ESTABLISHED -j ACCEPT
+>>
+>>My problem is that, since the source port of the ACK is a random one, the=
+=20
+>>ACKs are dropped. Is there a way to allow all incoming UDP packets with a=
+n=20
+>>unknown source port and an established dest port?
+>
+>Not directly, but you could use the recent match for this. On outgoing=20
+>requests, add the IP to the recent set. On incoming packets, first match o=
+n=20
+>the destination port, then match on recent to see if the IP had an recent =
 
-Arnd-Hendrik
+>outgoing request.
+>
+>I use a similar strategy to reject (instead of drop) indent queries from=20
+>hosts I made a tcp connection to and that works, so this should to.
+>
+>HTH,
+>M4
+>
 
-Julian Hagenauer wrote:
+_________________________________________________________________
+Don't just search. Find. Check out the new MSN Search!=20
+http://search.msn.com/
 
->Hi,
->this may be a simple Question.
->I have a xen-domain which is acting as a server.
->For some experiments i want, that every attempt to connect to a services on this server is blocked, but none of the existing connections is affected. 
->So, the ip of the server is 192.168.1.4 and the interface on dom0 is vif1.0. Dom0 acts as a arpproxy.
->Would 'iptables -A FORWARD -d 192.168.1.4 -o vif1.0 -p tcp --syn -j DROP' enough?
->
->Its crucial for me, so i have to be sure that the syntax is correct.
->
->Thanks,
->Julian
->
->
->
->  
->
 
