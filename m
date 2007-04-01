@@ -1,78 +1,57 @@
-From: Franck Joncourt <franck.joncourt@wanadoo.fr>
-Subject: Re: stateful UDP with unknown source port on INPUT?
-Date: Sun, 1 Apr 2007 15:24:00 +0200
-Message-ID: <20070401132400.GJ7936@toystory.lan>
-References: <460C4667.1090406@rtij.nl>
-	<BAY121-F1848947AF48B36B0E9D801A9610@phx.gbl>
+From: edwardspl@ita.org.mo
+Subject: Configuration of NAT
+Date: Sun, 01 Apr 2007 22:13:07 +0800
+Message-ID: <460FBDF3.3060306@ita.org.mo>
+Reply-To: For users of Fedora <fedora-list@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vkEkAx9hr54EJ73W"
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <BAY121-F1848947AF48B36B0E9D801A9610@phx.gbl>
+Content-Transfer-Encoding: 7bit
+Return-path: <fedora-list-bounces@redhat.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/fedora-list>,
+	<mailto:fedora-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/archives/fedora-list>
+List-Post: <mailto:fedora-list@redhat.com>
+List-Help: <mailto:fedora-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/fedora-list>,
+	<mailto:fedora-list-request@redhat.com?subject=subscribe>
+Sender: fedora-list-bounces@redhat.com
+Errors-To: fedora-list-bounces@redhat.com
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
+Cc: "fedora-list@redhat.com" <fedora-list@redhat.com>
+
+Dear All,
+
+If all of service ( include Firewall ) in the same server, and the 
+server use Private IP and connection with Router / HUB...
+Then, how to define the NAT ( iptable function ) to transfer the IP 
+Address ( Public <-> Private ) and auto assign the IP range for Client 
+PCs ( LAN users ) ?
+Is there an simple sample for reference ?
+
+eg :
+For Public IP ( from ISP ) :
+IP range : 202.175.123.123 ~ 202.175.123.129 ( I want to assign IP 123 
+for the Server first )
+subnet mask : 255.255.255.240
+Router IP : 202.175.123.128
+
+For Private IP ( All of Server under LAN environment ) :
+IP :  192.168.0.1 ( I want to tranfer to 202.175.123.123 )
+subnet mask : 255.255.255.0 ( I want to tranfer to 255.255.255.240 )
+Router IP : 192.168.0.254 ( I want to tranfer to 202.175.123.128 )
+
+For Client IP ( via NAT + DHCP of the Server ) :
+Ip : 192.168.1.1 ~ 192.168.1.50
+
+Edward.
 
 
---vkEkAx9hr54EJ73W
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Apr 01, 2007 at 03:39:30PM +0300, noa levy wrote:
-> Thanks!
-> I forgot to mention, though, that my source port for the SNMP informs is=
-=20
-> also random, so I can't match against the destination port for the incomi=
-ng=20
-> packet - does the recent target also maintain a port list or is it IP=20
-> addresses only?
->=20
-
-=46rom the iptables tutorial :
-
-iptables -A INPUT -m recent --name example --rsource
-The --rsource match is used to tell the recent match to save the source
-address and port in the recent list. This is the default behavior of the
-recent match.
-
-iptables -A INPUT -m recent --name example --rdest
-The --rdest match is the opposite of the --rsource match in that it
-tells the recent match to save the destination address and port to the
-recent list.
-
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#RECENTMATCH
 
 
---=20
-Franck Joncourt
-http://www.debian.org
-http://smhteam.info/wiki/
-GPG server : pgpkeys.mit.edu
-Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
-
---vkEkAx9hr54EJ73W
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFGD7JwxJBTTnXAif4RAmrpAKCXWVOtMtoTI9b3WKTRRj1q77+CIwCgnAU0
-v8H4mFyfClSpGXuWoFs9kqA=
-=u7Xm
------END PGP SIGNATURE-----
-
---vkEkAx9hr54EJ73W--
 
 
+-- 
+fedora-list mailing list
+fedora-list@redhat.com
+To unsubscribe: https://www.redhat.com/mailman/listinfo/fedora-list
