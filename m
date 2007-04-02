@@ -1,11 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Limit connections per IP
-Date: Sun, 1 Apr 2007 23:55:57 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0704012355420.1245@yvahk01.tjqt.qr>
-References: <8d158e1f0703231031g261ca993s7c9e4f3ef62108c8@mail.gmail.com>
+From: Robert Nichols <rnicholsNOSPAM@comcast.net>
+Subject: Re: stateful UDP with unknown source port on INPUT?
+Date: Mon, 02 Apr 2007 00:28:58 -0500
+Message-ID: <euq4ar$m1l$1@sea.gmane.org>
+References: <460C4667.1090406@rtij.nl>
+	<BAY121-F1848947AF48B36B0E9D801A9610@phx.gbl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8d158e1f0703231031g261ca993s7c9e4f3ef62108c8@mail.gmail.com>
+In-Reply-To: <BAY121-F1848947AF48B36B0E9D801A9610@phx.gbl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +18,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick Ale <patrick.ale@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+noa levy wrote:
+> Thanks!
+> I forgot to mention, though, that my source port for the SNMP informs is 
+> also random, so I can't match against the destination port for the 
+> incoming packet - does the recent target also maintain a port list or is 
+> it IP addresses only?
 
-On Mar 23 2007 18:31, Patrick Ale wrote:
-> I want to limit the connections per IP on port 80 to 4.
->
-> I googled a lot and found several options, iplimit, connlimit-above..
-> But none of these seem to be available for me :(
->
-> I run kernel 2.6.21-rc4-git7 and also tried 2.6.20.3 with iptables
-> 1.3.7 and the path-o-matic patch set.
->
-> Any ideas?
+How about something like this:
 
-D/L pom-ng, run ./download and let ipt_connlimit compile.
+iptables -t nat -A POSTROUTING -p udp --dport 162 -j SNAT --to-source :29999
+iptables -t mangle -A PREROUTING -p udp --dport 29999 -j MARK --set-mark 99
+iptables -A input -p udp -dport ! 29999 -m mark --mark 99 -j ACCEPT
 
+That 29999 source port is an arbitrary number outside the bounds set in
+/proc/sys/net/ipv4/ip_local_port_range.  The mark number is also arbitrary.
+The overall effect is that your SNMP inform packets will all appear to
+come from port 29999.  Replies to that port will be marked prior to being
+de-SNAT-ed.  Now, in the filter table you can ACCEPT marked packets that
+have been recognized by de-SNAT and thus no longer have a destination
+port of 29999.  Any bogus packets sent to port 29999 will still contain
+that port number when they hit the filter rule, and thus will not be
+accepted.
 
-Jan
+I have no way to test any of the above, so view it all with appropriate
+suspicion.
+
 -- 
+Bob Nichols         Yes, "NOSPAM" is really part of my email address.
+
 
