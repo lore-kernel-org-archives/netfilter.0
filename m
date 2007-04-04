@@ -1,9 +1,8 @@
-From: larytet.48654039@bloglines.com
-Subject: integration with network processor
-Date: 4 Apr 2007 07:08:06 -0000
-Message-ID: <1175670486.2731537351.26060.sendItem@bloglines.com>
+From: "noa levy" <noalevy@hotmail.com>
+Subject: RE:  re: stateful UDP with unknown source port on INPUT?
+Date: Wed, 04 Apr 2007 12:14:57 +0300
+Message-ID: <BAY121-F24F8FB198A2F8143004F2DA9660@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,80 +14,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
+Thanks all for your help. I'm trying to create the rules using the Recent 
+match now, and was wondering if there was a way to look at the recent list 
+so I could see what's actually in there to help testing and debugging?
+Noa
+
+>Message: 10
+>Date: Sun, 1 Apr 2007 15:24:00 +0200
+>From: Franck Joncourt <franck.joncourt@wanadoo.fr>
+>Subject: Re: stateful UDP with unknown source port on INPUT?
+>To: netfilter@lists.netfilter.org
+>Message-ID: <20070401132400.GJ7936@toystory.lan>
+>Content-Type: text/plain; charset="utf-8"
+
+>On Sun, Apr 01, 2007 at 03:39:30PM +0300, noa levy wrote:
+>>Thanks!
+>>I forgot to mention, though, that my source port for the SNMP informs is 
+>>also random, so I can't match against the destination port for the 
+>>incoming packet - does the recent target also maintain a port list or is 
+>>it IP addresses only?
+>>
+
+From the iptables tutorial :
+
+>iptables -A INPUT -m recent --name example --rsource
+>The --rsource match is used to tell the recent match to save the source
+>address and port in the recent list. This is the default behavior of the
+>recent match.
+
+>iptables -A INPUT -m recent --name example --rdest
+>The --rdest match is the opposite of the --rsource match in that it
+>tells the recent match to save the destination address and port to the
+>recent list.
+
+>http://iptables-tutorial.frozentux.net/iptables-tutorial.html#RECENTMATCH
 
 
+>--
+>Franck Joncourt
+>http://www.debian.org
+>http://smhteam.info/wiki/
+>GPG server : pgpkeys.mit.edu
+>Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
+>-------------- next part --------------
+>A non-text attachment was scrubbed...
+>Name: not available
+>Type: application/pgp-signature
+>Size: 189 bytes
+>Desc: Digital signature
+>Url : /pipermail/netfilter/attachments/20070401/291d45b9/attachment.pgp
 
-Here is the goal
+------------------------------
 
-
-
-We have general purpose CPU (MIPS with MMU)
-and a simple network processor - all in one ASIC. Microcode running in the
-network processor  executes lookups according to the packet address/port source/destination,
-protocol type, MAC address source/destination. Depending on the outcome of
-the lookup network processor can 
-
-- drop the packet
-
-- forward the packet
-to one of the interfaces
-
-- forward the packet to the CPU
-
-Microcode is fairly
-flexible and can be extended to provide counters of the packets per logical
-flow, etc. Network processor works with EMAC packets - handles packets containing
-MAC header.
-
-
-
-We are running 2.6 Linux kernel in the CPU. 
-
-
-
-Naturally I
-would like to use netfilter for 
-
-management of the network processor and
-use 
-
-the fast network processor to forward as many 
-
-packets as possible
-without CPU intervention. 
-
-
-
-I read through the documentation and started
-to 
-
-study the source code. It appears, that it's 
-
-possible to solve the
-problem. But I would like to 
-
-avoid solving the same time problem twice.
-Is 
-
-there any example(s) of integration of the network 
-
-processor and netfilter
-? If there is no code any 
-
-documentation/tips/links could save me lot of
-
-
-time.
-
-
-
-
-
-thank you
-
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today it's FREE! 
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
 
 
