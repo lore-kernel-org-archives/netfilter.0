@@ -1,18 +1,10 @@
-From: "Rafael Dewes" <rafael.dws@gmail.com>
-Subject: Re: Iptables - Error: No chain/target/match by that name
-Date: Tue, 3 Apr 2007 22:34:40 -0300
-Message-ID: <cdcab2540704031834u33de72dfle579ba394570ea6a@mail.gmail.com>
-References: <cdcab2540704031418m1c25bf55hbcfabf8340db546b@mail.gmail.com>
-	<4612C82D.9020109@mailinator.com>
-	<20070403204120.lndmfrhslc0g048w@webmail.harrisonburg.k12.va.us>
+From: larytet.48654039@bloglines.com
+Subject: integration with network processor
+Date: 4 Apr 2007 07:08:06 -0000
+Message-ID: <1175670486.2731537351.26060.sendItem@bloglines.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=Ll1e8MnIEaGg15e59RuXwEoNFf1A1eDjlDDAJT5RY4jszzYt2g4Z0ZFOBCyFmuuQLzaCXVBrAqu1WBjHd8I5TYFXKNxL4+/yiIsTxa+A8dmw3qQLDaOroJNTfmPq3EAWnAiRdQb1vTsUEhPFTTDRVwhB8jmEY7pXUFRc4eGymGI=
-In-Reply-To: <20070403204120.lndmfrhslc0g048w@webmail.harrisonburg.k12.va.us>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,18 +15,80 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> > Try this.
-> >
-> > iptables -I INPUT -s 192.168.0.0/24 -p tcp -m tcp --dport 21 -j ACCEPT
-I tried, but error persists.
+Hello,
 
-> I started getting the same error message a couple of weeks ago.  Does
-> it usually mean one of the rules is not good?  Im having a problem
-> trying to find the bad rule.
-In my case, the firewall dont have any other rule.
 
--Regards.
+
+Here is the goal
+
+
+
+We have general purpose CPU (MIPS with MMU)
+and a simple network processor - all in one ASIC. Microcode running in the
+network processor  executes lookups according to the packet address/port source/destination,
+protocol type, MAC address source/destination. Depending on the outcome of
+the lookup network processor can 
+
+- drop the packet
+
+- forward the packet
+to one of the interfaces
+
+- forward the packet to the CPU
+
+Microcode is fairly
+flexible and can be extended to provide counters of the packets per logical
+flow, etc. Network processor works with EMAC packets - handles packets containing
+MAC header.
+
+
+
+We are running 2.6 Linux kernel in the CPU. 
+
+
+
+Naturally I
+would like to use netfilter for 
+
+management of the network processor and
+use 
+
+the fast network processor to forward as many 
+
+packets as possible
+without CPU intervention. 
+
+
+
+I read through the documentation and started
+to 
+
+study the source code. It appears, that it's 
+
+possible to solve the
+problem. But I would like to 
+
+avoid solving the same time problem twice.
+Is 
+
+there any example(s) of integration of the network 
+
+processor and netfilter
+? If there is no code any 
+
+documentation/tips/links could save me lot of
+
+
+time.
+
+
+
+
+
+thank you
+
+
 
