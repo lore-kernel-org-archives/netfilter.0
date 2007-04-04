@@ -1,10 +1,10 @@
-From: Martijn Lievaart <m@rtij.nl>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Debian 2.6.8/bridge/iptables/passive ftp
-Date: Wed, 04 Apr 2007 19:37:04 +0200
-Message-ID: <4613E240.3000608@rtij.nl>
+Date: Wed, 04 Apr 2007 19:44:27 +0200
+Message-ID: <4613E3FB.1030008@plouf.fr.eu.org>
 References: <361462969@web.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <361462969@web.de>
 List-Id: <netfilter.vger.kernel.org>
@@ -17,29 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: spaminator@web.de
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-spaminator@web.de wrote:
-> Rebooting the bridge box left me again with an unloaded ip_conntrack_ftp. So I made an entry in /etc/modules which caters for the module to be loaded on (re)boot. Strange thing that, because other modules related to iptables are being loaded automatically, although they are not compiled into the kernel too. Are there other "surprise"-modules that have to be loaded via /etc/modules?
->   
+Hello,
 
-All the ip_conntrack_* modules, so all the connection helpers. You could 
-load them all, but I only load what I need.
+spaminator@web.de a =E9crit :
+>=20
+> Rebooting the bridge box left me again with an unloaded
+> ip_conntrack_ftp. So I made an entry in /etc/modules which caters for
+> the module to be loaded on (re)boot. Strange thing that, because other
+> modules related to iptables are being loaded automatically, although
+> they are not compiled into the kernel too. Are there other
+> "surprise"-modules that have to be loaded via /etc/modules?
 
-These modules are what account for (most of the) -m state --state 
-RELATED matches. Related in this case are all the data connections for 
-ftp, so you don't need any rule for those data connections.
-
-IOW to make ftp work you need:
-
-- To load ip_conntrack_ftp
-- Have a rule that allows ESTABLISHED,RELATED
-- Have a rule that allows the initial SYN to port 21.
-
-
-HTH,
-M4
-
+Only modules related to iptables rules are loaded automatically, when=20
+needed by a table, target or match in a newly created rule. Conntrack=20
+and NAT helper modules for special protocols (FTP, IRC DCC, TFTP, H.323,=20
+SIP...) are not related to any rule, thus not loaded automatically.
 
