@@ -1,17 +1,10 @@
-From: MKS <rekordmeister@gmail.com>
-Subject: Re: packets to local addresses
-Date: Sat, 7 Apr 2007 14:13:49 +0000
-Message-ID: <fad2fb270704070713w37a73f82o3caaf14f987a0f7a@mail.gmail.com>
-References: <fad2fb270704060522r4322a223g4e2e40605b3fb6a@mail.gmail.com>
-	<46167157.3080409@rtij.nl>
+From: Dupond Jean <mootrul@yahoo.fr>
+Subject: IETF RFC 4787 and NAT behaviour recommendations
+Date: Fri, 6 Apr 2007 02:45:47 -0700 (PDT)
+Message-ID: <689965.86296.qm@web51408.mail.re2.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=tUH0o2VSl/Wjs7gh0/geT+EgdNGDC2SMFsv6UXhp1o555S2HC6kRkI/Ii+mp32/aXibd4sHBumrDl1WYwFvlf+STo5Qpg7fYQtxPBQupNeQEDs7zh6bpqHwiRej0RX+1S52BWvT+dPgbtoUftwsrMNlv3BXQYN7dzbAWfR41N6Y=
-In-Reply-To: <46167157.3080409@rtij.nl>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,38 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-On 4/6/07, Martijn Lievaart <m@rtij.nl> wrote:
-> MKS wrote:
-> > Hello list
-> >
-> > I have a scenario the a computer has 2 PPP connections, where the
-> > computer is the ppp client.
-> >
-> > $ifconfig
-> >
-> > ppp0   inet  10.0.0.1 p-t-p  192.168.1.1 mask 255.255.255.255
-> >
-> > ppp1 inet  10.0.1.1 p-t-p 192.168.1.1 mask  255.255.255.255
-> >
-> > for testing purpuses I want packets from ppp0 to ppp1 to actually go
-> > over the physical connection
-> >
-> > e.g.
-> >
-> > ping  10.0.0.1 -I ppp1 should send the packet over the ppp1 (and out
-> > underlyging physical interface eth0) and it should arrive on the ppp0
-> > interface. (routing is taken care of at the ppp server)
->
-> The -I flag only changes the source address of the packets, not the
-> routing. And as the packet is destined for the machine itself, it goes
-> over the loopback interface.
-
-What is the best way to change this behaviour, that is force "general"
-packets out a specific interface. iptables route target???
-
-Thanks
-MKS
+=0A=0AHi,=0A=0A=0A=0AI saw new recommendation about NAT behaviour have been=
+ (or are about to be) released :=0A=0Ahttp://tools.ietf.org/html/draft-ietf=
+-behave-tcp=0A=0Ahttp://tools.ietf.org/html/rfc4787=0A=0A=0A=0AI=0Amade a r=
+apid test that seems to show that actual version of=0Anetfilter/iptables wi=
+th a basic SNAT or MASQUERADE rule like this :=0A=0Aiptables -t nat -A POST=
+ROUTING -o ppp0 -j MASQUERADE=0A=0Aimplement a "Address and port dependant =
+filering behaviour" (for UDP).=0A=0A=0A=0A(recommendation is Endpoint indep=
+endent or Address dependent filtering)=0A=0A=0A=0AIs it possible (how ?) to=
+ have a "Endpoint independent" for example ?=0A=0AIf not, is the netfilter =
+developpement team generaly tending to try to be compliant with IETF recomm=
+endations ?=0A=0A=0ABest Regards,=0A=0A=0AJean=0A=0A=0A=0A=0A=0A=0A=0A=09=
+=0A=0A=09=0A=09=09=0A______________________________________________________=
+_____________________ =0AD=E9couvrez une nouvelle fa=E7on d'obtenir des r=
+=E9ponses =E0 toutes vos questions ! =0AProfitez des connaissances, des opi=
+nions et des exp=E9riences des internautes sur Yahoo! Questions/R=E9ponses =
+=0Ahttp://fr.answers.yahoo.com
 
