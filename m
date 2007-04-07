@@ -1,30 +1,40 @@
-From: "Patrick Ale" <patrick.ale@gmail.com>
-Subject: Re: [PATCH] ip_tables.h
-Date: Sat, 7 Apr 2007 19:57:18 +0200
-Message-ID: <8d158e1f0704071057k515d4cc3yc1d444f63da6b577@mail.gmail.com>
-References: <8d158e1f0704071043w5483f60ayc9f240abb1039392@mail.gmail.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: packets to local addresses
+Date: Sat, 7 Apr 2007 20:40:39 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0704072040300.22181@yvahk01.tjqt.qr>
+References: <fad2fb270704060522r4322a223g4e2e40605b3fb6a@mail.gmail.com>
+	<46167157.3080409@rtij.nl>
+	<fad2fb270704070713w37a73f82o3caaf14f987a0f7a@mail.gmail.com>
+	<4617BC88.102@rtij.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S933630AbXDGR5U@vger.kernel.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed;
-        d=gmail.com; s=beta;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        b=pacKDvOvvRm0gTCfFJMSKHWLWKzz7GJK5BfCgFpk3pOxu3ev4eUAAwJofcKhHltD0hGUOc3qudOKgnpAh0My9ggNt1dbCLh4tHq+SPRa2KBqOO9QtWUZgQwKuvF9EgKz7+91sz52+WuUpH99rDIMfAmK/JthWJpiLrsWjEjQob8=
-In-Reply-To: <8d158e1f0704071043w5483f60ayc9f240abb1039392@mail.gmail.com>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4617BC88.102@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: linux-kernel <linux-kernel@vger.kernel.org>, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Martijn Lievaart <m@rtij.nl>
+Cc: netfilter@lists.netfilter.org, MKS <rekordmeister@gmail.com>
 
-On 4/7/07, Patrick Ale <patrick.ale@gmail.com> wrote:
-> Hi lads,
 
-Oh! And! I don't want to take credit for things I didn't write, which
-is this exactly.
-I merely got the ip_tables.h header from 2.6.20 and filtered out what
-I needed to get things work.
-So, the actual credit for the code in the patch goes to the person who
-put it in ip_tables.h under 2.6.20.
+On Apr 7 2007 17:45, Martijn Lievaart wrote:
+> MKS wrote:
+>> What is the best way to change this behaviour, that is force "general"
+>> packets out a specific interface. iptables route target???
+>
+> Dunno. Maybe the ROUTE target can be of assistence. As I said earlier, hping2
+> probably can do this.
 
-So whoever you are, thanks :)
+Use MARK and iproute2.
+
+Jan
+-- 
+
