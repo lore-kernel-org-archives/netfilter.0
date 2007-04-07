@@ -1,7 +1,7 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: [PATCH 7/7] ipt_u32 compile fix for 2.6.21
-Date: Sat, 7 Apr 2007 20:50:33 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0704072050240.22181@yvahk01.tjqt.qr>
+Subject: [PATCH 6/7] ipt_time compile fix for 2.6.21
+Date: Sat, 7 Apr 2007 20:50:22 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0704072050120.22181@yvahk01.tjqt.qr>
 References: <8d158e1f0704070955x2bb50060ueb8d2c0b91acba00@mail.gmail.com>
 	<Pine.LNX.4.61.0704072045320.22181@yvahk01.tjqt.qr>
 Mime-Version: 1.0
@@ -22,52 +22,47 @@ Content-Transfer-Encoding: 7bit
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Fix compilation of ipt_u32.
+Fix compilation of ipt_time.
 
 Signed-off-by: Jan Engelhardt <jengelh@gmx.de>
 
-Index: linux-2.6.21-rc5/net/ipv4/netfilter/ipt_u32.c
+Index: linux-2.6.21-rc5/net/ipv4/netfilter/ipt_time.c
 ===================================================================
---- linux-2.6.21-rc5.orig/net/ipv4/netfilter/ipt_u32.c
-+++ linux-2.6.21-rc5/net/ipv4/netfilter/ipt_u32.c
-@@ -201,35 +201,22 @@ match(const struct sk_buff *skb,
+--- linux-2.6.21-rc5.orig/net/ipv4/netfilter/ipt_time.c
++++ linux-2.6.21-rc5/net/ipv4/netfilter/ipt_time.c
+@@ -97,7 +97,6 @@ checkentry(const char *tablename,
+             const struct xt_match *match,
+ #endif
+            void *matchinfo,
+-           unsigned int matchsize,
+            unsigned int hook_mask)
+ {
+ 	struct ipt_time_info *info = matchinfo;   /* match info for rule */
+@@ -127,9 +126,10 @@ checkentry(const char *tablename,
  	return 1;
  }
  
--static int
--checkentry(const char *tablename,
--           const void *ip,
--           const struct xt_match *match,
--           void *matchinfo,
--           unsigned int matchsize,
--           unsigned int hook_mask)
--{
--	if (matchsize != IPT_ALIGN(sizeof(struct ipt_u32)))
--		return 0;
--	return 1;
--}
--
--static struct ipt_match u32_match = { 
-+static struct xt_match u32_match = { 
- 	.name 		= "u32",
-+	.family		= AF_INET,
+-static struct ipt_match time_match = {
++static struct xt_match time_match = {
+ 	.name		= "time",
  	.match		= &match,
- 	.matchsize	= sizeof(struct ipt_u32),
--	.checkentry	= &checkentry,
- 	.me		= THIS_MODULE
- };
- 
++	.family		= AF_INET,
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,17)
+ 	.matchsize      = sizeof(struct ipt_time_info),
+ #endif
+@@ -140,12 +140,12 @@ static struct ipt_match time_match = {
  static int __init init(void)
  {
--	return ipt_register_match(&u32_match);
-+	return xt_register_match(&u32_match);
+ 	printk("ipt_time loading\n");
+-	return ipt_register_match(&time_match);
++	return xt_register_match(&time_match);
  }
  
  static void __exit fini(void)
  {
--	ipt_unregister_match(&u32_match);
-+	xt_unregister_match(&u32_match);
+-	ipt_unregister_match(&time_match);
++	xt_unregister_match(&time_match);
+ 	printk("ipt_time unloaded\n");
  }
  
- module_init(init);
 
