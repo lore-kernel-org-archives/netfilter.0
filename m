@@ -1,12 +1,17 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: iptables, multiple hosts, one IP
-Date: Sat, 07 Apr 2007 10:25:28 +0200
-Message-ID: <46175578.3050600@rtij.nl>
-References: <06fe01c778ad$c063a6a0$7c01a8c0@peg>
+From: MKS <rekordmeister@gmail.com>
+Subject: Re: packets to local addresses
+Date: Sat, 7 Apr 2007 14:13:49 +0000
+Message-ID: <fad2fb270704070713w37a73f82o3caaf14f987a0f7a@mail.gmail.com>
+References: <fad2fb270704060522r4322a223g4e2e40605b3fb6a@mail.gmail.com>
+	<46167157.3080409@rtij.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <06fe01c778ad$c063a6a0$7c01a8c0@peg>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=tUH0o2VSl/Wjs7gh0/geT+EgdNGDC2SMFsv6UXhp1o555S2HC6kRkI/Ii+mp32/aXibd4sHBumrDl1WYwFvlf+STo5Qpg7fYQtxPBQupNeQEDs7zh6bpqHwiRej0RX+1S52BWvT+dPgbtoUftwsrMNlv3BXQYN7dzbAWfR41N6Y=
+In-Reply-To: <46167157.3080409@rtij.nl>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +23,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: jj <jj_rocks2003@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-jj wrote:
-> Hi,
+On 4/6/07, Martijn Lievaart <m@rtij.nl> wrote:
+> MKS wrote:
+> > Hello list
+> >
+> > I have a scenario the a computer has 2 PPP connections, where the
+> > computer is the ppp client.
+> >
+> > $ifconfig
+> >
+> > ppp0   inet  10.0.0.1 p-t-p  192.168.1.1 mask 255.255.255.255
+> >
+> > ppp1 inet  10.0.1.1 p-t-p 192.168.1.1 mask  255.255.255.255
+> >
+> > for testing purpuses I want packets from ppp0 to ppp1 to actually go
+> > over the physical connection
+> >
+> > e.g.
+> >
+> > ping  10.0.0.1 -I ppp1 should send the packet over the ppp1 (and out
+> > underlyging physical interface eth0) and it should arrive on the ppp0
+> > interface. (routing is taken care of at the ppp server)
 >
-> I searched all over the internet, but cant find this in any forum, so
-> hopefully someone can help.  I dont even know if iptables can help, but
-> hopefully it will.
->
-> I have only dedicated IP address, and I have 3 hosts (same for physical or
-> virtual hosts, I guess) and what I would like is:
->
-> to have each host have its own LAMP hosting its own domains, but from the
-> outside world, everyone should only see www.whatever.tld, without the need
-> to add port numbers, etc
->
-> can this be done with some form of iptables, apache redirects (via a control
-> panel like ispconfig, or similar)?
->   
+> The -I flag only changes the source address of the packets, not the
+> routing. And as the packet is destined for the machine itself, it goes
+> over the loopback interface.
 
-Use apache with mod_proxy. This cannot be done with iptables, the 
-hostname is not in the first packet (the SYN) that iptables sees, after 
-that it is to late to do anything about it as you cannot suddenly rejank 
-the connection to another host.
+What is the best way to change this behaviour, that is force "general"
+packets out a specific interface. iptables route target???
 
-> can it be done, or must I have multiple dedicated IP's?
->   
-
-For https you will need dedicated ips, for http use mod_proxy.
-
-HTH,
-M4
-
+Thanks
+MKS
 
