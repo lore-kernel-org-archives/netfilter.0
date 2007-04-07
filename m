@@ -1,7 +1,7 @@
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: [PATCH 3/7] ipt_TARPIT compile fix for 2.6.21
-Date: Sat, 7 Apr 2007 20:49:48 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0704072049350.22181@yvahk01.tjqt.qr>
+Subject: [PATCH 4/7] ipt_connlimit compile fix for 2.6.21
+Date: Sat, 7 Apr 2007 20:49:58 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0704072049490.22181@yvahk01.tjqt.qr>
 References: <8d158e1f0704070955x2bb50060ueb8d2c0b91acba00@mail.gmail.com>
 	<Pine.LNX.4.61.0704072045320.22181@yvahk01.tjqt.qr>
 Mime-Version: 1.0
@@ -22,55 +22,37 @@ Content-Transfer-Encoding: 7bit
 To: Netfilter Mailing List <netfilter@lists.netfilter.org>
 
 
-Fixes compilation of ipt_TARPIT.
+Fix compilation of ipt_connlimit.
 
 Signed-off-by: Jan Engelhardt <jengelh@gmx.de>
 
-Index: linux-2.6.21-rc5/net/ipv4/netfilter/ipt_TARPIT.c
+Index: linux-2.6.21-rc5/net/ipv4/netfilter/ipt_connlimit.c
 ===================================================================
---- linux-2.6.21-rc5.orig/net/ipv4/netfilter/ipt_TARPIT.c
-+++ linux-2.6.21-rc5/net/ipv4/netfilter/ipt_TARPIT.c
-@@ -100,7 +100,7 @@ static void tarpit_tcp(struct sk_buff *o
- 		return;
- 
- 	/* Check checksum. */
--	if (tcp_v4_check(otcph, otcplen, oskb->nh.iph->saddr,
-+	if (tcp_v4_check(otcplen, oskb->nh.iph->saddr,
- 			 oskb->nh.iph->daddr,
- 			 csum_partial((char *)otcph, otcplen, 0)) != 0)
- 		return;
-@@ -158,7 +158,7 @@ static void tarpit_tcp(struct sk_buff *o
- 
- 	/* Adjust TCP checksum */
- 	ntcph->check = 0;
--	ntcph->check = tcp_v4_check(ntcph, sizeof(struct tcphdr),
-+	ntcph->check = tcp_v4_check(sizeof(struct tcphdr),
- 				   nskb->nh.iph->saddr,
- 				   nskb->nh.iph->daddr,
- 				   csum_partial((char *)ntcph,
-@@ -269,8 +269,9 @@ static int check(const char *tablename,
- 	return 1;
+--- linux-2.6.21-rc5.orig/net/ipv4/netfilter/ipt_connlimit.c
++++ linux-2.6.21-rc5/net/ipv4/netfilter/ipt_connlimit.c
+@@ -291,8 +291,9 @@ static void destroy(
+ 	kfree(info->data);
  }
  
--static struct ipt_target ipt_tarpit_reg = {
-+static struct xt_target ipt_tarpit_reg = {
- 	.name = "TARPIT",
-+	.family = AF_INET,
- 	.target = tarpit,
- 	.checkentry = check,
- 	.me = THIS_MODULE
-@@ -278,12 +279,12 @@ static struct ipt_target ipt_tarpit_reg 
+-static struct ipt_match connlimit_match = { 
++static struct xt_match connlimit_match = {
+ 	.name		= "connlimit",
++	.family		= AF_INET,
+ 	.match		= &match,
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,17)
+ 	.matchsize	= sizeof(struct ipt_connlimit_info),
+@@ -304,12 +305,12 @@ static struct ipt_match connlimit_match 
  
  static int __init init(void)
  {
--	return ipt_register_target(&ipt_tarpit_reg);
-+	return xt_register_target(&ipt_tarpit_reg);
+-	return ipt_register_match(&connlimit_match);
++	return xt_register_match(&connlimit_match);
  }
  
  static void __exit fini(void)
  {
--	ipt_unregister_target(&ipt_tarpit_reg);
-+	xt_unregister_target(&ipt_tarpit_reg);
+-	ipt_unregister_match(&connlimit_match);
++	xt_unregister_match(&connlimit_match);
  }
  
  module_init(init);
