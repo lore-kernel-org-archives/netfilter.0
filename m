@@ -1,19 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: packets to local addresses
-Date: Tue, 10 Apr 2007 18:20:41 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0704101820030.21664@yvahk01.tjqt.qr>
-References: <fad2fb270704060522r4322a223g4e2e40605b3fb6a@mail.gmail.com> 
-	<46167157.3080409@rtij.nl>
-	<fad2fb270704070713w37a73f82o3caaf14f987a0f7a@mail.gmail.com>
-	<4617BC88.102@rtij.nl>
-	<Pine.LNX.4.61.0704072040300.22181@yvahk01.tjqt.qr>
-	<46180FAD.50209@rtij.nl>
-	<fad2fb270704100452p74fdde26k33f7a666ba9c1a59@mail.gmail.com>
-	<Pine.LNX.4.61.0704101721060.21664@yvahk01.tjqt.qr>
-	<fad2fb270704100853o52810bf9k56c1cef4c93f4c8c@mail.gmail.com>
+From: "Oliver Schulze L." <oliver@samera.com.py>
+Subject: Default syslog level from -j LOG
+Date: Tue, 10 Apr 2007 14:43:33 -0400
+Message-ID: <461BDAD5.8020208@samera.com.py>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <fad2fb270704100853o52810bf9k56c1cef4c93f4c8c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,25 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: MKS <rekordmeister@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Hi,
+I'm trying to get all the iptables log messages out of /var/log/messages
+in a Centos 4.4 server.
 
-On Apr 10 2007 15:53, MKS wrote:
->> 
->> What exactly are you trying to achieve?
->> To simply test transmission, `ping -I interface -bf 255.255.255.255`
->> does the job.
->
-> I want to generate load on the NAS by making a traffic matrix over n
-> ppp connections.
-> e.g. ppp0 will send traffic to ppp1-pppN, etc.
+I tryied using this config in iptables and syslog and it still gets into 
+/var/log/messages
 
-I don't think that's what ppp is for. Use bonding or bridging perhaps.
+# iptables -j LOG --log-level crit
 
+in /etc/syslog.conf
+------------------------------------------
+kern.crit            /var/log/critical
+kern.none;....       /var/log/messages
+# have no other call to kern o crit in syslog.conf
+------------------------------------------
 
-Jan
+Any help is welcomed
+
+Thanks
+Oliver
+
 -- 
+Oliver Schulze L.   | Get my e-mail after a captcha in:
+Asuncion - Paraguay | http://tinymailto.com/oliver 
+
 
