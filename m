@@ -1,10 +1,11 @@
-From: "Oliver Schulze L." <oliver@samera.com.py>
-Subject: Default syslog level from -j LOG
-Date: Tue, 10 Apr 2007 14:43:33 -0400
-Message-ID: <461BDAD5.8020208@samera.com.py>
+From: switcher <switcher@linuxwall.info>
+Subject: TCP dynamic redirection
+Date: Tue, 10 Apr 2007 18:16:11 +0200
+Message-ID: <20070410181611.cfq6jw4xkz48408c@webmail.microgate.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,32 +16,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-I'm trying to get all the iptables log messages out of /var/log/messages
-in a Centos 4.4 server.
+Hi all,
 
-I tryied using this config in iptables and syslog and it still gets into 
-/var/log/messages
+I'm currently working on attack redirection between honeyd and a high-level
+interaction honeypot. The idea is to find interesting incoming connection to
+redirect them to the high-level interaction honeypot, and I have a few
+questions to ask to the list about that.
 
-# iptables -j LOG --log-level crit
+So, the idea is :
+A TCP connection is handled by a daemon (honeyd, but it doesn't matter), and I
+want to set up a kind of proxy in front of this daemon to record and redirect
+connections transparently. Because this is an honeypot, I want to avoid the
+possibility for an attacker to detect something, this means :
+* The processing time has to be very short ;
+and
+* Several headers, such as sequence numbers, timestamp and so on, has to be
+rewrite.
 
-in /etc/syslog.conf
-------------------------------------------
-kern.crit            /var/log/critical
-kern.none;....       /var/log/messages
-# have no other call to kern o crit in syslog.conf
-------------------------------------------
+This kind of architecture is defined more deeply in : (p. 5/6, chap. 3)
+http://www.eecs.umich.edu/techreports/cse/2004/CSE-TR-499-04.pdf
 
-Any help is welcomed
+I guess that netfilter, and most probably libipq, can do that work. This is not
+properly the aim this list but I guess you can help me or perhaps just give me
+some directions.
 
-Thanks
-Oliver
+Regards,
 
--- 
-Oliver Schulze L.   | Get my e-mail after a captcha in:
-Asuncion - Paraguay | http://tinymailto.com/oliver 
+julien
+
 
 
