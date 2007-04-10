@@ -1,14 +1,21 @@
-From: Franck Joncourt <franck.joncourt@wanadoo.fr>
-Subject: Re: Error using MARK
-Date: Mon, 9 Apr 2007 23:15:27 +0200
-Message-ID: <20070409211527.GN13330@toystory.lan>
-References: <482D4DF4-6CE2-4F90-9387-02268CB5DE34@iacookie.net>
+From: MKS <rekordmeister@gmail.com>
+Subject: Re: packets to local addresses
+Date: Tue, 10 Apr 2007 11:52:10 +0000
+Message-ID: <fad2fb270704100452p74fdde26k33f7a666ba9c1a59@mail.gmail.com>
+References: <fad2fb270704060522r4322a223g4e2e40605b3fb6a@mail.gmail.com>
+	<46167157.3080409@rtij.nl>
+	<fad2fb270704070713w37a73f82o3caaf14f987a0f7a@mail.gmail.com>
+	<4617BC88.102@rtij.nl>
+	<Pine.LNX.4.61.0704072040300.22181@yvahk01.tjqt.qr>
+	<46180FAD.50209@rtij.nl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dPW7zu3hTOhZvCDO"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=cRjqTOWSZEhStdFw8sxUGSxthfE3pdR+iuAeSiJRDNCiCnZk4rb6hDsqhO6eSlPhZnUmlSi9BYS37mcPFp+wbD9Z65i2BwaVX315Xw57dZqvVMOMjgLVHPHsHHXVu/DfVHNT6mMEl9PsSsopp0D3K4MJHH/DYduj3BwCUwSxeKc=
+In-Reply-To: <46180FAD.50209@rtij.nl>
 Content-Disposition: inline
-In-Reply-To: <482D4DF4-6CE2-4F90-9387-02268CB5DE34@iacookie.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,57 +26,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Martijn Lievaart <m@rtij.nl>
+Cc: netfilter@lists.netfilter.org
 
+On 4/7/07, Martijn Lievaart <m@rtij.nl> wrote:
+> Jan Engelhardt wrote:
+> > On Apr 7 2007 17:45, Martijn Lievaart wrote:
+> >
+> >> MKS wrote:
+> >>
+> >>> What is the best way to change this behaviour, that is force "general"
+> >>> packets out a specific interface. iptables route target???
+> >>>
+> >> Dunno. Maybe the ROUTE target can be of assistence. As I said earlier, hping2
+> >> probably can do this.
+> >>
+> >
+> > Use MARK and iproute2.
+> >
+>
+> Are you sure? I thought you couldn't overrule the local table.
 
---dPW7zu3hTOhZvCDO
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's not possible to override the local table nor bypass or delete from it.
 
-On Mon, Apr 09, 2007 at 04:58:08PM -0400, cookie wrote:
->=20
-> Hello-
->   Can anyone tell me the error of my ways using
->=20
-> /sbin/iptables -v -t mangle -I SHAPER -p tcp --sport 8118 -j MARK --=20
-> set-mark 0x14
-> MARK  tcp opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  tcp spt:8118 =20
-> MARK set 0x14
-> iptables: Invalid argument
->=20
-> I was sure that I had the correct syntax, but it keeps coming up =20
-> Invalid argument.
-> Thanks
-> Brian
->=20
+When I use hping -I ppp0 and ping to 10.0.1.1 (ppp1) then I don't get
+any response and I can see that the packet never leaves the system
+(tcpdump -i ppp0) and that it never arrives on the NAS (using debug on
+the NAS)
 
-iptables -t mangle -A traffic_shaping -p ! tcp -j CONNMARK --set-mark
-0x81
+Does someone know a trick to override the local routing table? or does
+that require hacking the kernel?
 
-I set mark 0x81 on non tcp paquets from a user defined chain
-"traffic_shaping"
-
---=20
-Franck Joncourt
-http://www.debian.org
-http://smhteam.info/wiki/
-GPG server : pgpkeys.mit.edu
-Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
-
---dPW7zu3hTOhZvCDO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFGGqzvxJBTTnXAif4RAm8VAJ9wf2JUKG/cHZLsDnvw1L7/3SWF9QCfUin/
-43RhU9QP34gYZa00+Y8/iI8=
-=axWS
------END PGP SIGNATURE-----
-
---dPW7zu3hTOhZvCDO--
-
+Regards MKS
 
