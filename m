@@ -1,10 +1,12 @@
-From: Anton Sidorov <asidorov@mfmdb.com>
-Subject: ESTABLISHED makes possible to connect to internal servers
-Date: Tue, 10 Apr 2007 18:39:10 +0100
-Message-ID: <461BCBBE.5060003@mfmdb.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: iptables-retore very slow
+Date: Tue, 10 Apr 2007 19:45:16 +0200
+Message-ID: <461BCD2C.6020808@netfilter.org>
+References: <45EC5CFF.5000209@rackage.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <45EC5CFF.5000209@rackage.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,46 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: randles@rackage.com
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Rackage | Randles wrote:
+> I recently noticed that one of my firewalls was taking a very long time 
+> to reboot. Which was odd as its a very new  machine.
+> 
+> On investigation is seemed to be the iptables-restore command that was 
+> adding 10+ minutes to the boot-up times.
 
-I have a slight problem and can not find any answers myself or in the
-Internet.
+Are you using iptables >= 1.3.x?
 
-I run iptables on Debian based router/firewall.
-
-I do not use nat and private IP addresses.
-vlan2 and vlan3 are external connections to ISPs
-vlan101 and vlan82 are internal interfaces.
-
-The problem is that if I put
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-or just
-iptables -A FORWARD -m state --state ESTABLISHED -j ACCEPT
-
-it is possible to access my internal web server (and not only web
-server) from outside
-despite I did not open port 80 in FORWARD chain and policy for FORWARD
-is DROP.
-
-As soon as I remove those lines I can not connect to the Internet from
-behind the firewall.
-
-I've been fighting with that problem for two weeks now.
-I rewrite my script several times and brought it to bare basic but
-nothing has fixed the problem.
-
-kernel 2.6.18-4-686
-iptables v1.3.6
-
-Please any hints or tips would be really appreciated.
-
-Best regards,
-
-Anton.
-
-
-
+-- 
+The dawn of the fourth age of Linux firewalling is coming; a time of 
+great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
 
