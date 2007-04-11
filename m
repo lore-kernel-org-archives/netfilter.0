@@ -1,12 +1,14 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: iptables-retore very slow
-Date: Tue, 10 Apr 2007 19:45:16 +0200
-Message-ID: <461BCD2C.6020808@netfilter.org>
-References: <45EC5CFF.5000209@rackage.com>
+From: "allug4me allug4me" <allug4me@gmail.com>
+Subject: SIP ALG TOS Marking
+Date: Wed, 11 Apr 2007 12:03:58 +0530
+Message-ID: <ceaf8eaa0704102333j5f855ef0j4f6bececf4266a86@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <45EC5CFF.5000209@rackage.com>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=DA9R1Pa3uxMnCAb0awPykeKYvoqJGEMzBo/WC0ilJVfNf3SzxlsBL+Zl2ukROxXUeUi9F8JEPb14c1FS3auKRWrhwtIyXtow6b/hQFPj1429Gu3CVsaLOgUI/dhTOKyYgHt78+7dpoMoYK+0+eRD5k9EhmETgi9feKfHup6A3wE=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,19 +20,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: randles@rackage.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Rackage | Randles wrote:
-> I recently noticed that one of my firewalls was taking a very long time 
-> to reboot. Which was odd as its a very new  machine.
-> 
-> On investigation is seemed to be the iptables-restore command that was 
-> adding 10+ minutes to the boot-up times.
+Hi,
 
-Are you using iptables >= 1.3.x?
+I am developing a module for a linux router. All the packets from LAN
+to WAN are natted. I am using linux 2.6.18.2 kernel. Hence for SIP/RTP
+packets from LAN to pass through I am using SIP Protocol Support of
+Netfilter by enabling CONFIG_IP_NF_SIP as module.
 
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of 
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+The module I am developing needs to  mark the SIP, RTP and RTCP
+packets with TOS/DSCP in IP Header and COS in the VLAN header.
+
+Can anyone please help me to achieve this task?
+
+Any pointers like documentation/suggestions to achieve this are
+greatly appreciated.
+
+Thank you very much for your help.
+
+Best Regards,
+marc
 
