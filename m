@@ -1,12 +1,17 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Default syslog level from -j LOG
-Date: Wed, 11 Apr 2007 19:41:25 +0200
-Message-ID: <461D1DC5.5020307@plouf.fr.eu.org>
-References: <461BDAD5.8020208@samera.com.py> <461CFF02.9080905@samera.com.py>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Time module included in the default Fedora
+Date: Wed, 11 Apr 2007 19:44:30 +0200
+Message-ID: <461D1E7E.1060705@trash.net>
+References: <b317600c0704110750x30861e6ft6cd0a53d415cba74@mail.gmail.com>
+	<b317600c0704110752g2f9a82a1x8b18adaae15f775e@mail.gmail.com>,
+	<1165438164.4846.3.camel@localhost.localdomain>
+	<Pine.LNX.4.61.0704111749490.32056@yvahk01.tjqt.qr>
+	<461D0DD7.7050408@trash.net>
+	<Pine.LNX.4.61.0704111932500.20436@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <461CFF02.9080905@samera.com.py>
+In-Reply-To: <Pine.LNX.4.61.0704111932500.20436@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,18 +22,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-Hello,
+Jan Engelhardt wrote:
+> On Apr 11 2007 18:33, Patrick McHardy wrote:
+> 
+>>The question whether to merge the time module came up repeatedely
+>>at netfilter workshops, but it was always decided against it so far,
+>>mainly because it apparently can't deal with timezones and daylight
+>>saving time.
+> 
+> 
+> Why, let iptables, or more precisely, ipt_time.c, handle timezones,
+> and pass an UTC value to the kernel -- that's what it is best at
+> dealing with.
 
-Oliver Schulze L. a =E9crit :
-> what is the default syslog level for the LOG target?
 
-You should file a bug report against CentOS for providing a broken=20
-manpage for iptables. Mine says :
+Than it wouldn't be able to deal with DST I guess. As I said, the
+kernel already has knowledge about the timezone, so it should be
+possible to do this properly quite easily, but I have no interest
+in doing this myself.
 
---log-level level
-         Level  of  logging  (numeric or see syslog.conf(5)). The default
-         level is warning.
+>>IIRC Harald had strong feelings about it, I personally
+>>don't care much about this shortcoming as long as its documented.
+>>I'm not even sure its correct since the kernel has sys_tz. So if
+>>anyone finds out and submits a patch, I'll consider it.
+>>
+>>
+>>>Though that leaves me puzzled why connlimit has not gone in yet
+>>>(it all simplifies maintenance so much IMO). BTW, how about it?
+>>
+>>As I stated multiple times, the reason why its not included is that
+>>its horribly slow. But since I don't see any better way to do this
+>>and I know quite a few people are using this, I would consider this
+>>as well if someone sends me a patch, which has not happened so far.
+> 
+> 
+> So it's just that I need to pull the pomng code and make a diff out
+> of it, is that all? (Plus any compilation and perhaps runtime fixes,
+> of course.)
+
+
+From a quick look I'd say:
+
+- move to x_tables
+- remove ip_conntrack stuff
+- clean up
+- fix up for recent API changes and improvements
+- fix 32/64 bit issues
+- use proper list macros
+- use kzalloc
+
+And explain to me why it needs knowledge about TCP states. That should
+be enough to get a discussion started.
+
+
 
