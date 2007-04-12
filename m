@@ -1,13 +1,11 @@
-From: "Michael Ransburg" <michael.ransburg@gmail.com>
-Subject: Using Netfilter to modify the payload of an IP packet?
-Date: Thu, 12 Apr 2007 11:42:58 +0200
-Message-ID: <22b256140704120242q112719dcid2a129068038c665@mail.gmail.com>
+From: Steve <netfilter@arntzen.us>
+Subject: No timestamp on log entries.
+Date: Thu, 12 Apr 2007 07:26:46 -0500
+Message-ID: <200704120726.46248.netfilter@arntzen.us>
+Reply-To: netfilter@arntzen.us
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=UjhGeoNCxOgNOLP6q0v/0turQqAKzPxQ5ZUKyg2qOR2oDPn5fTkvhEVFZl4EhyJJTrTVqD8R5pCDSTIyh0ygopASw9/gvvd4/QITIgjyOij7BLWGl+E1IMjs7hewPvil82ZCBhIsxvkhdVZ5Lp8ngI5c3R5tyzbyzY0gqxcBf9w=
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,42 +17,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+I am running DSL with kernel 2.4.26 and iptables 1.2.6a.
 
-I currently use the "winpkfilter" framework (www.ntkernel.com) on
-Windows to discard parts of the payload of IP packets transparently to
-the sender and receiver. I.e., I use the promiscious mode to
-accomplish this on a computer B while the packets go from computer A
-to computer C.
+When I use -j Log, I see the log of blocked packets, but without a timestamp.  
+I can't seem to find out why and don't know if there is an iptables or 
+syslog/klog option to use to add the timestamp.
 
-For this I need to:
-1) Capture all ethernet frames which belong to a certain IP packet
-2) Reassemble the payload of the IP packet from all the ethernet frame payloads
-3) Remove parts of this payload according to my appliation
-4) Update TCP/IP headers (length, checksums, ...)
-5) Refragment the modified payload into ethernet frames
-6) Send the ethernet frames to their original destination
+Thanks in advance for your help,
 
-As you can see, this is quite complex since the winpkfilter framework
-is based on capturing ethernet frames.
+Steve.
 
-I'm now investigating netfilter for the tasks outlined above and I
-have two questions:
-
-1) Can the actions described above be performed using a linux based
-netfilter framework?
-
-2) Will using the netfilter framework make my life easier, i.e., are
-for example modifications of the payload based on IP level possible
-(which would already take some complexity out of my appliation).
-
-Any further hints / pointers which you can provide are highly appreciated.
-
-Many thanks,
-Michael
--- 
-icq: 71772353 | skype: daneel1409 | msn: mike@unfolded.com
 
