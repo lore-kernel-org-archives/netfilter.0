@@ -1,11 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: No timestamp on log entries.
-Date: Thu, 12 Apr 2007 14:47:01 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0704121446320.14441@yvahk01.tjqt.qr>
-References: <200704120726.46248.netfilter@arntzen.us>
+From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+Subject: Re: IPtables l7 string
+Date: Thu, 12 Apr 2007 09:41:11 -0300
+Message-ID: <20070412094111.5a89eb79@pulsar.inexo.com.br>
+References: <3da957060704112139i476fcbc1q1d22c698e538514a@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200704120726.46248.netfilter@arntzen.us>
+In-Reply-To: <3da957060704112139i476fcbc1q1d22c698e538514a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,25 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Steve <netfilter@arntzen.us>
+Content-Type: text/plain; charset="us-ascii"
+To: Stephan Higuti <higuti.sam@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
+On Thu, 12 Apr 2007 01:39:53 -0300
+"Stephan Higuti" <higuti.sam@gmail.com> wrote:
 
-On Apr 12 2007 07:26, Steve wrote:
->
->I am running DSL with kernel 2.4.26 and iptables 1.2.6a.
->
->When I use -j Log, I see the log of blocked packets, but without a timestamp.  
->I can't seem to find out why and don't know if there is an iptables or 
->syslog/klog option to use to add the timestamp.
->
->Thanks in advance for your help,
+> Hello, anybody can help me with this:
+> 
+> osiris:~# iptables -t filter -A FORWARD -m string --string "orkut" -j DROP
+> iptables v1.3.4: STRING match: You must specify `--algo'
 
-Set /sys/modules/printk/parameters/printk_time to 1 instead
-or boot with the "time" parameter.
+from iptables man page:
 
-Jan
--- 
+--algo  bm|kmp
+           Select the pattern matching strategy. (bm = Boyer-Moore,
+             kmp  = Knuth-Pratt-Morris)
+
+Ethy
+
 
