@@ -1,14 +1,10 @@
 From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Subject: Re: IPtables l7 string
-Date: Thu, 12 Apr 2007 16:29:48 -0300
-Message-ID: <20070412162948.3093b5c7@pulsar.inexo.com.br>
-References: <3da957060704112139i476fcbc1q1d22c698e538514a@mail.gmail.com>
-	<20070412094111.5a89eb79@pulsar.inexo.com.br>
-	<3da957060704120912s3719b9bcs56d426ce771a5060@mail.gmail.com>
+Subject: two ISP but only one NAT
+Date: Thu, 12 Apr 2007 17:54:10 -0300
+Message-ID: <20070412175410.4e97a929@pulsar.inexo.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3da957060704120912s3719b9bcs56d426ce771a5060@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,27 +16,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Stephan Higuti <higuti.sam@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Thu, 12 Apr 2007 13:12:22 -0300
-"Stephan Higuti" <higuti.sam@gmail.com> wrote:
 
-> > from iptables man page:
-> >
-> > --algo  bm|kmp
-> >            Select the pattern matching strategy. (bm = Boyer-Moore,
-> >              kmp  = Knuth-Pratt-Morris)
-> >
-> > Ethy
-> 
-> So, should i use --algo bm or --algo kmp right?
-> Wich is better?
+Hi All
 
-Depends on what you are triyng to achieve.
-Take some time to read the first lines from lib/ts_bm.c and lib/ts_kmp.c
-under kernel tree. 
-The answer is there (I think!).
+Let's see if I can make that clear.
+
+I have two ISP. ISP-A gave me just one IP and ISP-B gave a hole class-C.
+Both ISPs are connected to a Linux Router via ethernet cards
+
+I need that connections originated inside my Class-C be "NATed" thru
+ISP-A IP.
+And connections from outside to one of my Class-C IPs be NOT "NATed" when
+outgoing.
+
+i.e it must be possible to someone outside my Class-C to connect to some
+host inside it without "NATing" the packages that goes out.
+
+something like (i did not tried that. I am still wondering how to)
+
+iptables -t nat -A PREROUNTING -o ISP-A \
+		-m state --state  NEW \
+		-j SNAT --to_source SOME_IP 
+
+(will this rule continue to NAT the packets that follows the NEW one (the
+ESTABLISHED or RELATED ones for instance)?
+
+Fuzzy??
+
+Regards
 
 Ethy
 
