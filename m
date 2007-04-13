@@ -1,13 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: tom <tom@t0mb.net>
 Subject: Re: RELATED connections and the feeling of security
-Date: Fri, 13 Apr 2007 19:54:09 +0200
-Message-ID: <461FC3C1.1090906@plouf.fr.eu.org>
-References: <200704131202.27971.Hugo.Mildenberger@t-online.de>	<1176463828.9361.14.camel@anduril.intranet.cartel-securite.net>
-	<200704131457.59976.Hugo.Mildenberger@t-online.de>
+Date: Fri, 13 Apr 2007 19:05:53 +0100
+Message-ID: <461FC681.20609@t0mb.net>
+References: <200704131202.27971.Hugo.Mildenberger@t-online.de>
+Reply-To: tom@t0mb.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200704131457.59976.Hugo.Mildenberger@t-online.de>
+In-Reply-To: <200704131202.27971.Hugo.Mildenberger@t-online.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,17 +18,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Hugo Mildenberger <Susan.Scheibe@t-online.de>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Hugo Mildenberger wrote:
+> Sifting through a workstation firewall log file some time ago, I stumbled on 
+> an ip-address translating to a webserver of a well known German newspaper 
+> (actually it was www.faz.net) which apparently had tried to intiate a 
+> connection to port 80 of my workstation, which itself was sitting behind an 
+> NATing router running an iptables based firewall on top of linux.
+>
+> But it  was not iptables, who prevented this form of professional curiosity, 
+> it was the windows firewall running on the workstation itself, who stopped 
+> and disclosed it.
+>
+> Looking at my iptables rule set, I asked myself, why all over the world nearby 
+> everybody suggests inexperienced users to allow connections based 
+> on "RELATED" state. You can find  literally thousands of such well-meant 
+> hints: oh, you need a firewall setup, here it is:
+>
+> "iptables -A INPUT -m state --state ESTABLISHED, RELATED - j ACCEPT"
+>   
+Could it be related to the syntax error above hehe
+> This means to allow inbound connections having nothing in common with the 
+> initiating outbound connection, except for the ip-address pair used by the 
+> initiating connection, leaving your nominal firewalled systems exposed to any 
+> malicious site you accidentally stumble on, whereas using "ESTABLISHED" alone 
+> here would restrict connections to be outbound only.
+>
+> Also the "Shorewall" firewall ruleset actually builds upon "RELATED" state, 
+> and has dropped any provisions it made in earlier revisions to switch off 
+> this feature at least optionally. 
+>
+> I felt alienated when I noticed a certain thread concerning that very same 
+> issue on Tom Eastep's "Shorewall" site. A user (not me), who had complained 
+> about this insecure prerequisite was informed by Mr. Eastep personally, that 
+> he had the choice either to use Shorewall and accept those related inbound
+> connections, or not to use shorewall at all.
+>
+> The balance is: What kind of security a SPI firewall product provides, when 
+> each host you contact from inside is able to invade your private network 
+> within a few milliseconds? Most users are not aware that following the simple 
+> ruleset once proposed in a popular netfilter FAQ leads to a system showing 
+> the behavior of a molten polarity protection diode: you would not notice it 
+> just until the moment someone permutes the poles.
+>
+>
+> Best Regards
+>
+> Hugo Mildenberger
+>
+>   
 
-Hugo Mildenberger a =E9crit :
-> should the ftp-conntrack helper expose arbitrary ports on=20
-> the originating host?
-
-Yes it should, for the following two reasons :
-1) The host explicitly asked for it over the FTP control connection.
-2) The firewall administrator allowed it by loading the FTP conntrack=20
-module.
 
