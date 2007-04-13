@@ -1,14 +1,13 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: RELATED connections and the feeling of security
-Date: Fri, 13 Apr 2007 16:31:04 +0200
-Message-ID: <1176474664.9361.17.camel@anduril.intranet.cartel-securite.net>
-References: <200704131202.27971.Hugo.Mildenberger@t-online.de>
-	<1176463828.9361.14.camel@anduril.intranet.cartel-securite.net>
-	<200704131457.59976.Hugo.Mildenberger@t-online.de>
+From: "Oliver Schulze L." <oliver@samera.com.py>
+Subject: Re: Default syslog level from -j LOG
+Date: Fri, 13 Apr 2007 11:37:47 -0400
+Message-ID: <461FA3CB.8090909@samera.com.py>
+References: <461BDAD5.8020208@samera.com.py> <461CFF02.9080905@samera.com.py>
+	<461D1DC5.5020307@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200704131457.59976.Hugo.Mildenberger@t-online.de>
+In-Reply-To: <461D1DC5.5020307@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,39 +18,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Hugo Mildenberger <Hugo.Mildenberger@t-online.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Le vendredi 13 avril 2007 =E0 14:57 +0200, Hugo Mildenberger a =E9crit :
-> I base this solely on my observation and did not descend into sources unt=
-il=20
-> now.  But I am nearby sure that I had  not tried to establish an ftp=20
-> connection to the site named in my original post. Even if so, following=20
-> your remarks, should the ftp-conntrack helper expose arbitrary ports on=20
-> the originating host?
+I have an old iptables I think (iptables v1.2.11):
+    --log-level level
+              Level of logging (numeric or see syslog.conf(5)).
 
-There's a few conntrack helper around: FTP, IRC, H323, SIP, etc.
+Thanks!
+Oliver
 
-> Until today my understanding of this matter was, that the difference betw=
-een=20
-> related and established states would be, that within ESTABLISHED state=20
-> ip-address and port are considered pairwise, while within RELATED state o=
-nly=20
-> ip-addresses are considered, making the described attack possible.
+Pascal Hambourg wrote:
+>
+> --log-level level
+>         Level  of  logging  (numeric or see syslog.conf(5)). The default
+>         level is warning.
+>
 
-No that's not.
+-- 
+Oliver Schulze L.   | Get my e-mail after a captcha in:
+Asuncion - Paraguay | http://tinymailto.com/oliver 
 
-> Perhaps we could setup a test case? My equipment here has changed, and=20
-> for the moment I have no shell access to my DSL router at the internet fr=
-ont.
-
-The very first step to me is reliably reproducing your issue.
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
 
