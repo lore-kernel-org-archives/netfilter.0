@@ -1,8 +1,8 @@
-From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Subject: two ISP but only one NAT
-Date: Thu, 12 Apr 2007 17:54:10 -0300
-Message-ID: <20070412175410.4e97a929@pulsar.inexo.com.br>
-Mime-Version: 1.0
+From: Neubauer Christian <neu@musictrace.de>
+Subject: Problem compiling nth match
+Date: Fri, 13 Apr 2007 10:56:29 +0200
+Message-ID: <35D33283-D6A0-407D-AE3E-F03A3D364B70@musictrace.de>
+Mime-Version: 1.0 (Apple Message framework v752.3)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -15,38 +15,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Dear members,
 
-Hi All
+I am trying to get nth running. I have downloaded a fresh kernel  
+2.6.18, iptables-1.3.7 and latest patch-o-matic.
 
-Let's see if I can make that clear.
+It looks to me that nth is not anymore a patch, but is included in  
+the regular iptables distri. Is that correct ?
 
-I have two ISP. ISP-A gave me just one IP and ISP-B gave a hole class-C.
-Both ISPs are connected to a Linux Router via ethernet cards
+Here are my problems:
+1. When I compile iptables it is running through without errors but  
+does not compile the nth sourcefile. So I dont get libipt_nth.so.
 
-I need that connections originated inside my Class-C be "NATed" thru
-ISP-A IP.
-And connections from outside to one of my Class-C IPs be NOT "NATed" when
-outgoing.
+2. Moreover my kernel net/ipv4/netfilter/ does not contain ipt_nth.c  
+or something alike. How do I get nth into the kernel?
 
-i.e it must be possible to someone outside my Class-C to connect to some
-host inside it without "NATing" the packages that goes out.
-
-something like (i did not tried that. I am still wondering how to)
-
-iptables -t nat -A PREROUNTING -o ISP-A \
-		-m state --state  NEW \
-		-j SNAT --to_source SOME_IP 
-
-(will this rule continue to NAT the packets that follows the NEW one (the
-ESTABLISHED or RELATED ones for instance)?
-
-Fuzzy??
+Any help is appreciated.
 
 Regards
+Christian
 
-Ethy
 
 
