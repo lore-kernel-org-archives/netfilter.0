@@ -1,11 +1,13 @@
-From: Robert Hogan <lists@roberthogan.net>
-Subject: i/o stats per inode in /proc/net/tcp
-Date: Sun, 15 Apr 2007 10:13:00 +0100
-Message-ID: <200704151013.00303.lists@roberthogan.net>
+From: Ronald <ronald645@gmail.com>
+Subject: Unable to block ICMP
+Date: Sun, 15 Apr 2007 17:13:54 +0200
+Message-ID: <46224132.4080702@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:subject:content-type:content-transfer-encoding;
+	b=NLQ7WPgymBUHaJGjsXQSL1oelbwxufnqUlyDKZOhJXvFAdFZmFN/UHYEpE9FO+CVHfrbbIV7N6po4NjjBeYeRs00H1eWYeeQa4VhePxpogA/lyrZGRmLHmY4mLFIXb0axocieoVczCj7dp4KzHK6SN5h0wAgoyag+GAVFWSJvxY=
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,30 +18,15 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-This may be a more appropriate question for lkml, but:
+Check this thread (posted by me):
 
-Why does /proc/net/tcp not give i/o stats per inode? Briefly looking at 
-tcp_ipv4.c and co., it seems none of the sock structures associated with a 
-tcp sock contain i/o counters so it may be reasons of non-triviality. That 
-said, it does seem as if tcp_input.c and tcp_output.c could implement 
-counting if there was a counter available in tcp_sock or the like.
+http://forums.fedoraforum.org/forum/showthread.php?t=152539
 
-Is there another /proc file that can be used in conjuction with /proc/net/tcp 
-to gather per inode i/o stats? 
+Could anyone help me here with the problem please ?
 
-It just seems like such a natural thing to offer - as a user I'm always 
-wondering where that little trickle of i/o on my bw monitor is coming from.
-
-Can someone enlighten me?
-
-
-Thanks,
-Robert
--- 
-
-KlamAV - An Anti-Virus Manager for KDE - http://www.klamav.net
-TorK   - A Tor Controller For KDE      - http://tork.sf.net
+                                                                         
+                                 Ronald
 
