@@ -1,11 +1,12 @@
-From: Dean Anderson <dean@av8.com>
+From: Michael Hissler <mhis38@yahoo.de>
 Subject: Re: Unable to block ICMP
-Date: Sun, 15 Apr 2007 16:29:31 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44.0704151606090.16569-100000@citation2.av8.net>
-References: <46225C81.6070503@gmail.com>
+Date: Mon, 16 Apr 2007 00:01:08 +0200
+Message-ID: <4622A0A4.70007@yahoo.de>
+References: <46224132.4080702@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46225C81.6070503@gmail.com>
+In-Reply-To: <46224132.4080702@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,38 +17,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ronald <ronald645@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, 15 Apr 2007, Ronald wrote:
+Ronald wrote:
+> Check this thread (posted by me):
+> 
+> http://forums.fedoraforum.org/forum/showthread.php?t=152539
+> 
+> Could anyone help me here with the problem please ?
+> 
+>                                                                        
+>                                 Ronald
 
-> Well, what I actually wanted (which I probably explained wrong) is that 
-> my ports that are not in use (closed) are being invisible (no ICMP 
-> echo). That better?
+Hi Ronald,
 
-ICMP echo is not a per-port operation.  I don't know what the site you
-quote means by 'closed'.  Also, blocking all ICMP is never a really good
-idea: (recently updated)
+I don't know why your ports are 'closed' instead of 'stealthed', but it
+has nothing to do with ICMP. ICMP doesn't use ports, so it's impossible
+to send a ping to a port, especially a TCP or UDP port as those are
+completly different protocols.
 
-http://www.av8.net/ICMPTypes.txt
+Are you using the 'Stealth Test'? This test sends TCP and UDP packets to
+your IP, but no ICMP packets. There's a test called 'TCP ping packet',
+but this has nothing to do with ICMP echo request, so dropping ICMP will
+not solve your problem.
 
-I agree with the other posters': that you should block TCP and UDP
-connections to all ports by default, and open only those that you trust
-are exposable to the world, or better, just to whomever you have to
-expose them to.
+BTW: Dropping *all* incoming ICMP packets is a bad idea. You should
+ACCEPT ICMP type 3 (destination unreachable), type 11 (time exceeded)
+and perhaps type 12 (parameter problem), as those ICMP packets indicate
+transmission errors you (your applications) probably want to know about.
 
-I suggest searching for instructions on how to do linux firewalls, and
-following them, rather than trying to roll your own rules by trial and
-error.
+I just tried the 'Stealth Test' on pcflank.com and the result is
+'stealthed' for all tests, but the following could be the interesting part:
 
-		--Dean
+"We have sent following packets to TCP:1 port of your machine:"
 
--- 
-Av8 Internet   Prepared to pay a premium for better service?
-www.av8.net         faster, more reliable, better service
-617 344 9000   
+If my interpretation is correct, it means that the packets are sent to
+port 1/tcp (and the UDP packet to port 1/udp).
+
+Add the following line to your rules:
+
+iptables -A INPUT -p tcp --dport 1 -j DROP
+
+Then, the test should result in 'stealthed' for all TCP tests, but
+'closed' for the UDP test.
 
 
+michael
 
