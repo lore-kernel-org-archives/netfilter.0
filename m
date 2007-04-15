@@ -1,12 +1,11 @@
-From: Arnd-Hendrik Mathias <arnd-hendrik.mathias@nefkom.net>
-Subject: Re: ESTABLISHED makes possible to connect to internal servers
-Date: Sat, 14 Apr 2007 16:11:46 +0200
-Message-ID: <4620E122.5090708@nefkom.net>
-References: <461BCBBE.5060003@mfmdb.com> <461D22A5.90309@mfmdb.com>
+From: Robert Hogan <lists@roberthogan.net>
+Subject: i/o stats per inode in /proc/net/tcp
+Date: Sun, 15 Apr 2007 10:13:00 +0100
+Message-ID: <200704151013.00303.lists@roberthogan.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <461D22A5.90309@mfmdb.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,67 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi Anton,
+This may be a more appropriate question for lkml, but:
 
->>it is possible to access my internal web server (and not only web
->>server) from outside
->>   =20
->>
-sorry, for the silly question: How exactly do you test this and where=20
-are your server and your test client running?
+Why does /proc/net/tcp not give i/o stats per inode? Briefly looking at 
+tcp_ipv4.c and co., it seems none of the sock structures associated with a 
+tcp sock contain i/o counters so it may be reasons of non-triviality. That 
+said, it does seem as if tcp_input.c and tcp_output.c could implement 
+counting if there was a counter available in tcp_sock or the like.
 
->>despite I did not open port 80 in FORWARD chain and policy for FORWARD
->>is DROP.
->>   =20
->>
-By the way DROP is your last rule and thus a somewhat "implicit policy".=20
-Corresponding to your script your policy is ACCEPT. But that won't=20
-affect the behavior you described. Anyway it will be more secure to set=20
-your real policies to DROP and as a following of this you can omit the=20
-last rules of each chain.
+Is there another /proc file that can be used in conjuction with /proc/net/tcp 
+to gather per inode i/o stats? 
 
->*filter
->:INPUT ACCEPT [0:0]
->:FORWARD ACCEPT [0:0]
->:OUTPUT ACCEPT [0:0]
->
->-A INPUT -i lo -j ACCEPT
->-A INPUT -i vlan101 -j ACCEPT
->-A INPUT -i vlan82 -j ACCEPT
->
->-A INPUT -p 47 -j ACCEPT
->
->-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->
->-A INPUT -p tcp --dport 179 -j ACCEPT
->
->-A INPUT -j DROP
->
->-A FORWARD -i vlan101 -j ACCEPT
->-A FORWARD -i vlan82 -j ACCEPT
->
->-A FORWARD -p 47 -j ACCEPT
->
->-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
->-A FORWARD -j DROP
->
->COMMIT
-> =20
->
-Maybe messing around with other protocols like "Border Gateway Protocol"=20
-or "General Routing Encapsulation" is unlikely to ease debugging your=20
-HTTP connections. So I'd disable these rules temporaryly for debugging=20
-purposes.
-One other silly question: Do you flush your tables before appending=20
-these rules? Sorry for this kind of questions, but we're all humans and=20
-sometimes the problems are closer (and easier) than we expect them to be=20
-;=C2=B0) At least these information will help to judge your scenario and =
-find=20
-out the nature of your problem.
-Cheers
+It just seems like such a natural thing to offer - as a user I'm always 
+wondering where that little trickle of i/o on my bw monitor is coming from.
 
-Arnd-Hendrik
+Can someone enlighten me?
+
+
+Thanks,
+Robert
+-- 
+
+KlamAV - An Anti-Virus Manager for KDE - http://www.klamav.net
+TorK   - A Tor Controller For KDE      - http://tork.sf.net
 
