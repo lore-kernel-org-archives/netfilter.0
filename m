@@ -1,12 +1,10 @@
-From: Michael Hissler <mhis38@yahoo.de>
-Subject: Re: Unable to block ICMP
-Date: Mon, 16 Apr 2007 00:01:08 +0200
-Message-ID: <4622A0A4.70007@yahoo.de>
-References: <46224132.4080702@gmail.com>
+From: "Bury!" <bury1@wp.pl>
+Subject: ip packet fields  modyfications
+Date: Mon, 16 Apr 2007 16:58:22 +0200
+Message-ID: <003901c78037$adb9cca0$0501a8c0@burywin>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46224132.4080702@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,51 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-Ronald wrote:
-> Check this thread (posted by me):
-> 
-> http://forums.fedoraforum.org/forum/showthread.php?t=152539
-> 
-> Could anyone help me here with the problem please ?
-> 
->                                                                        
->                                 Ronald
+hi!!!
 
-Hi Ronald,
+I'm in the middle of writing program to changing source port in outgoing 
+packets / destination port in incomings packets...
+iit will me part of something bigger (my Master of IT Science) and will 
+provides port spoofing :)
 
-I don't know why your ports are 'closed' instead of 'stealthed', but it
-has nothing to do with ICMP. ICMP doesn't use ports, so it's impossible
-to send a ping to a port, especially a TCP or UDP port as those are
-completly different protocols.
+my problem is...
+i want to catch outgoing packet to specifik IP:PORT and modyfie sourc port 
+numer... and the same situation with destination port in incomming 
+packets... i'll try to use libpcap / libnet but those API only copy packet, 
+not recive it from. So my modufication is worthless....
 
-Are you using the 'Stealth Test'? This test sends TCP and UDP packets to
-your IP, but no ICMP packets. There's a test called 'TCP ping packet',
-but this has nothing to do with ICMP echo request, so dropping ICMP will
-not solve your problem.
+mayby You can help me... i'm looking for lib, which support reciving, 
+changing and reinjecting ip packet's...
+i study libipq.. but i need netfilter module and iptables -A OUTPUT -p 
+TCP/UDP -j QUEUE to do that.
+is anywhere in the net something what i may use?
 
-BTW: Dropping *all* incoming ICMP packets is a bad idea. You should
-ACCEPT ICMP type 3 (destination unreachable), type 11 (time exceeded)
-and perhaps type 12 (parameter problem), as those ICMP packets indicate
-transmission errors you (your applications) probably want to know about.
+sorry for may bad english :)
 
-I just tried the 'Stealth Test' on pcflank.com and the result is
-'stealthed' for all tests, but the following could be the interesting part:
+Peter 
 
-"We have sent following packets to TCP:1 port of your machine:"
-
-If my interpretation is correct, it means that the packets are sent to
-port 1/tcp (and the UDP packet to port 1/udp).
-
-Add the following line to your rules:
-
-iptables -A INPUT -p tcp --dport 1 -j DROP
-
-Then, the test should result in 'stealthed' for all TCP tests, but
-'closed' for the UDP test.
-
-
-michael
 
