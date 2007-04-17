@@ -1,11 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Where has NAT gone?
-Date: Tue, 17 Apr 2007 11:02:46 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0704171038470.8056@yvahk01.tjqt.qr>
-References: <20070417081253.A6BF9DBAB7@mail5.inspire.net.nz>
+From: Michael Hissler <mhis38@freenet.de>
+Subject: Re: Unable to block ICMP
+Date: Tue, 17 Apr 2007 11:20:36 +0200
+Message-ID: <46249164.1020902@freenet.de>
+References: <46224132.4080702@gmail.com> <4622A0A4.70007@yahoo.de>
+	<4623AA24.4000002@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070417081253.A6BF9DBAB7@mail5.inspire.net.nz>
+In-Reply-To: <4623AA24.4000002@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,23 +18,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: richard@net-solutions.net.nz
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Ronald wrote:
+
+[...]
+
+> That is weird, if you block ICMP outgoing in comodo, all the closed
+> ports are shown as stealthed. This is really confusing ...
+
+What is comodo?
+
+Which scan test are you using? If it's a UDP scan this is not weird. If
+a closed port (i.e. a port no service is listening on) is contacted, an
+ICMP port unreachable message is sent back. By blocking this ICMP
+message (or blocking all outgoing ICMP traffic), you get the same result
+as if you blocked the incoming packet: the sender doesn't get a response
+and so the port is 'stealthed'.
+If it's a TCP scan, the kernel sends back a TCP Reset. In this case
+blocking ICMP should have no effect (in this case: yes, it's weird).
 
 
-On Apr 17 2007 08:12, richard@net-solutions.net.nz wrote:
->Hi all
->This is hopefully a quick question. Today I upgraded my system from Linux
->Kernel 2.6.16.20 to 2.6.20.7 because I needed an updated NIC driver. Upon
->running make menuconfig, I noticed that the options for NAT seem to have
->vanished from the config menu. 
+BTW: If you block traffic to ports services are listening on, but accept
+traffic to closed ports, someone who scans your IP knows:
 
-Many CONFIG_IP_NF changed to CONFIG_NF; from the old
-"Layer3-dependent" to "layer3-independent". Check it out using menuconfig.
+1. You are there. He gets ICMP port unreachable messages or TCP Reset
+for the closed but unblocked (not 'stealthed') ports.
+2. He knows which ports you are running services on (-> the ports he
+doesn't get the ICMP messages or TCP Reset).
+
+This may not be what you want.
 
 
-Jan
--- 
+You wrote that skype requires to have everything open above port 1024.
+This can't be true!
+Skype works perfectly if you accept all outgoing traffic and
+
+a) configure skype to use a certain port and accept incoming traffic to
+this port,
+
+or (better)
+
+b) drop *all* incoming traffic and use connection tracking. This lets
+pass all incoming packets belonging to a connection initialized by your
+computer:
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+(you can leave out the ',RELATED' but then you'll run into trouble with
+e.g. FTP and ICMP error messages)
+
+
+
+michael
+
+
+
+
 
