@@ -1,16 +1,17 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
+From: Cedric Blancher <blancher@cartel-securite.fr>
 Subject: Re: Unable to block ICMP
-Date: Tue, 17 Apr 2007 11:46:11 +0200
-Message-ID: <20070417094611.GD13613@torres.zugschlus.de>
+Date: Tue, 17 Apr 2007 08:12:41 -0700
+Message-ID: <1176822761.2408.14.camel@anduril.intranet.cartel-securite.net>
 References: <46224132.4080702@gmail.com>
 	<78a2adce0704150816o77d64848x5982caafd70c30df@mail.gmail.com>
 	<46224EFE.6060409@gmail.com>
 	<78a2adce0704150914y4e9fd552m8e316ebd1b00ae79@mail.gmail.com>
 	<46225C81.6070503@gmail.com>
+	<20070417094611.GD13613@torres.zugschlus.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <46225C81.6070503@gmail.com>
+In-Reply-To: <20070417094611.GD13613@torres.zugschlus.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,28 +22,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Marc Haber <mh+netfilter@zugschlus.de>
+Cc: netfilter@lists.netfilter.org
 
-On Sun, Apr 15, 2007 at 07:10:25PM +0200, Ronald wrote:
-> Well, what I actually wanted (which I probably explained wrong) is that 
-> my ports that are not in use (closed) are being invisible (no ICMP 
-> echo). That better?
+Le mardi 17 avril 2007 =E0 11:46 +0200, Marc Haber a =E9crit :
+> Bad idea. All you're going to achive is that everybody knows "there is
+> something that is frantically trying to be invisible", which is kind
+> of a beacon instead of "blending into the crowd".
 
-Bad idea. All you're going to achive is that everybody knows "there is
-something that is frantically trying to be invisible", which is kind
-of a beacon instead of "blending into the crowd".
+I agree. Moreover, a non-existent host is signaled by ICMP errors in
+normal operation.
 
-If you want to be invisible, pull your network cable. As soon as you
-talk to the outside, you're going to be visible.
+Say your packet reaches the router attached to network containing target
+IP address and there's no host on that very IP address. Then router will
+issue an ARP request and won't get any answer. In this case, it should
+send back a Host Unreachable ICMP message.
 
-Greetings
-Marc
+It's a very common mistake around to think that probing non existing
+hosts don't generate any answer...
 
--- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 3221 2323190
+
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
