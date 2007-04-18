@@ -1,10 +1,14 @@
-From: =?ISO-8859-1?Q?Pedro_Gon=E7alves?= <pedro.pandre@gmail.com>
-Subject: Setup of different types of NAT
-Date: Wed, 18 Apr 2007 10:10:16 +0100
-Message-ID: <4625E078.1020301@gmail.com>
+From: "Stephan Higuti" <higuti.sam@gmail.com>
+Subject: Firewall L7
+Date: Wed, 18 Apr 2007 09:38:03 -0300
+Message-ID: <3da957060704180538m12ec86edr2536867007a8d05@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=G+kOpPuDgAYuyvBNfKvIxwMz3FFRwmHaEMYjNhkd8WGYGHMkHlV/Bj+V51VuGfNTE7f1l4P+15V1LIihD7HUORdeMbS4ZkBBTYmBDGgUO8uWUAxJzEwW4TR0+4DA5o0kvDoOmIo2qgytB63XMk8T//KHQotaFZr33f6Kc4uAQvE=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,32 +20,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Hello everyone
+Hello guys.
 
-I want to know *how to* setup this types of NAT:
-/-Full Cone NAT/
-/-Restricted Cone NAT/
-/-Port Restricted Cone NAT/
-/-Symmetric NAT/
+I have a firewall L7 as a bridge in my work.
+The firewall are blocking Gmail, Hotmail, and attachments from my mail
+server....
+Anybody can help me?   =D
 
-Using iptables, I set all policies to "ACCEPT" and I was able to setup 
-two kinds of NAT:
-(192.168.2.170 is my "public" address and 10.0.0.1 is my "private" address
+Best Regards
 
-/-"Full Cone NAT", with the following rules:/
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.2.170
-iptables -t nat -A PREROUTING -i eth0 -j DNAT --to-destination 10.0.0.1
+Stephan
 
 
-/-"Port Restricted Cone NAT", with just a single rule:/
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.2.170/
-
-/
-Now does anyone know how to setup Restricted Cone NAT and Symmetric NAT?
-
-Thanks in advance
-Pedro
-//
+-- 
+---------------------------------------------------------------------
+Stephan Higuti
+MSN: higutisam@hotmail.com
+Email: higuti.sam@gmail.com
+---------------------------------------------------------------------
 
