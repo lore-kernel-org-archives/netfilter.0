@@ -1,14 +1,13 @@
-From: "Patrick Ale" <patrick.ale@gmail.com>
-Subject: Empty archives?
-Date: Wed, 18 Apr 2007 15:42:08 +0200
-Message-ID: <8d158e1f0704180642u26f18e59gc94da6727723b996@mail.gmail.com>
+From: dominiaz <dominiaz@gmail.com>
+Subject: ipt_connlimit.c + kernel 2.6.20 = big problem. HELP
+Date: Wed, 18 Apr 2007 16:10:57 +0200
+Message-ID: <462626F1.6050402@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=gFDLmOcfuTHlPqjC5FJHWoGjq9GRJxzHmJjKTMnRwUOW+DG09VAFBRl+PfwagZTHO/0hVMeGHRKjlHqauJ7/WQaLrA6dSGiZscqCclL9Oe/74U2vpJL1w6lbGiJHP4dAbovhcZEm+25n/tMRbtV0uNOWFM7rqf6NZtPw/WIKt7w=
-Content-Disposition: inline
+	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:subject:content-type:content-transfer-encoding;
+	b=HacCfDQ05jJRoaJDfGFKYzFByBOzFD/6rlCaD+Vkij225t5ClwsdshavSphWn8tB8bYuDgizztfVVN3VCttmaIVt9ANvfsvcTOd5ZiQGvL/rjU9SOpoa3VIzSKRcoLCulyV3d6N3g4KaCERv08qu+Q4pv/mmDyNcrxNoVqxltLk=
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,11 +21,17 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello!
 
-Can it be that something goes wrong with the patch-o-matic archives as
-of the 15th?
-The tar.bz2 files are 1K each and unpacking them leaves you with nothing.
+I`ve got the newest snapshot of p-o-m from 14.04.2007. When i include
+ipt_connlimit.c to my kernel something isn`t ok. When i try to compile
+it then get an error like:
 
-Patrick
+net/built-in.o: In function `match':
+ipt_connlimit.c:(.text+0x6ae49): undefined reference to
+`nf_conntrack_find_get'
+make: *** [.tmp_vmlinux1] Error 1
+
+Does someone know how to resolve that problem?
+
 
