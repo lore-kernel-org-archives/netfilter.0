@@ -1,13 +1,12 @@
-From: "Stephan Higuti" <higuti.sam@gmail.com>
-Subject: Firewall L7
-Date: Wed, 18 Apr 2007 09:38:03 -0300
-Message-ID: <3da957060704180538m12ec86edr2536867007a8d05@mail.gmail.com>
+From: Pablo Sanchez <pablo@blueoakdb.com>
+Subject: Re: Firewall L7
+Date: Wed, 18 Apr 2007 08:42:38 -0400
+Message-ID: <200704180842.38335.pablo@blueoakdb.com>
+References: <3da957060704180538m12ec86edr2536867007a8d05@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=G+kOpPuDgAYuyvBNfKvIxwMz3FFRwmHaEMYjNhkd8WGYGHMkHlV/Bj+V51VuGfNTE7f1l4P+15V1LIihD7HUORdeMbS4ZkBBTYmBDGgUO8uWUAxJzEwW4TR0+4DA5o0kvDoOmIo2qgytB63XMk8T//KHQotaFZr33f6Kc4uAQvE=
+In-Reply-To: <3da957060704180538m12ec86edr2536867007a8d05@mail.gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,25 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello guys.
+On Wednesday 18 April 2007 at 8:38 am, Stephan Higuti etched:
+> Hello guys.
+>
+> I have a firewall L7 as a bridge in my work.  The firewall are
+> blocking Gmail, Hotmail, and attachments from my mail server....
+> Anybody can help me?  =D
 
-I have a firewall L7 as a bridge in my work.
-The firewall are blocking Gmail, Hotmail, and attachments from my mail
-server....
-Anybody can help me?   =D
+If you have a home server, you can tunnel from work to it and
+circumvent the 'problem'
 
-Best Regards
+Depending on what you're running on your desktop at work (Unix or
+Windows), you can use either ssh or putty, to create a local SOCKS
+server, which tunnels to your home server.
 
-Stephan
+If work blocks port 22, setup your sshd daemon at home to listen to
+port 443.  ;)
 
+Cheers,
+---
+pablo
 
--- 
----------------------------------------------------------------------
-Stephan Higuti
-MSN: higutisam@hotmail.com
-Email: higuti.sam@gmail.com
----------------------------------------------------------------------
 
