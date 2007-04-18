@@ -1,7 +1,9 @@
-From: netsol3@inspire.net.nz
-Subject: Where has NAT gone?
-Date: Tue, 17 Apr 2007 08:07:38 GMT
-Message-ID: <20070417080738.EB8A5DBAAA@mail5.inspire.net.nz>
+From: =?ISO-8859-1?Q?Pedro_Gon=E7alves?= <pedro.pandre@gmail.com>
+Subject: Setup of different types of NAT
+Date: Wed, 18 Apr 2007 10:10:16 +0100
+Message-ID: <4625E078.1020301@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -13,50 +15,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Hi all
-This is hopefully a quick question. Today I upgraded my system from Linux
-Kernel 2.6.16.20 to 2.6.20.7 because I needed an updated NIC driver. Upon
-running make menuconfig, I noticed that the options for NAT seem to have
-vanished from the config menu. 
+Hello everyone
 
-At first, I used my .config file from 2.6.16.20, but under such a method
-there were no netfilter options available at all. So I removed the .config
-file and ran make menuconfig from scratch - this time, I got netfilter
-options, but no sign of NAT. I then hunted through the source tree and
-found plenty of sections that still mention CONFIG_IP_NF_NAT, which ruled
-out the possibility that NAT has been merged under a different section of
-the kernel compilation. Then I edited the .config file by hand, and added
-CONFIG_IP_NF_NAT=yes. After building the kernel (which didn't add any nat
-functionality) I checked the .config file and found that the make process
-had actually removed the NF data from the file.
+I want to know *how to* setup this types of NAT:
+/-Full Cone NAT/
+/-Restricted Cone NAT/
+/-Port Restricted Cone NAT/
+/-Symmetric NAT/
 
-I have enabled:
-CONFIG PACKET NF CONNTRACK
-CONFIG IP NF IPTABLES
-CONFIG IP NF FILTER
-CONFIG_IP_NF_NAT
-CONFIG IP NF MATCH STATE
+Using iptables, I set all policies to "ACCEPT" and I was able to setup 
+two kinds of NAT:
+(192.168.2.170 is my "public" address and 10.0.0.1 is my "private" address
 
-IPTables works fine. I have a firewall that works. It's just that as soon
-as I try to refer to the 'nat' table, it tells me this is not possible as
-it's not compiled into my kernel.
-
-I'm not sure if this is the right place to ask but the kernel mailing list
-was slow at responding so I thought I'd try here.
-
-Any help would be greatly appreciated
-
-Regards
-Richard
-
-------------------------------------------------
-This message was sent using InSPire Net Webmail.
-http://www.inspire.net.nz
+/-"Full Cone NAT", with the following rules:/
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.2.170
+iptables -t nat -A PREROUTING -i eth0 -j DNAT --to-destination 10.0.0.1
 
 
+/-"Port Restricted Cone NAT", with just a single rule:/
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.2.170/
+
+/
+Now does anyone know how to setup Restricted Cone NAT and Symmetric NAT?
+
+Thanks in advance
+Pedro
+//
 
