@@ -1,15 +1,13 @@
-From: Lars =?UTF-8?Q?T=C3=A4uber?= <taeuber@bbaw.de>
-Subject: Problem resolved!
-Date: Thu, 19 Apr 2007 13:10:56 +0200
-Message-ID: <20070419131056.8ba9bbcc.taeuber@bbaw.de>
-References: <20070418151941.c689b07c.taeuber@bbaw.de>
-	<web-69045730@bk1.webmaillogin.com>
-	<20070419083348.364c873e.taeuber@bbaw.de>
-	<20070419112338.a3f379bb.taeuber@bbaw.de>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: DNAT not working
+Date: Thu, 19 Apr 2007 13:15:09 +0200
+Message-ID: <46274F3D.8040407@freemail.hu>
+References: <20070418162604.GA10834@tranquility.scriptkitchen.com>	<462656A8.3090003@rtij.nl>
+	<20070419033123.GB22763@tranquility.scriptkitchen.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070419112338.a3f379bb.taeuber@bbaw.de>
+In-Reply-To: <20070419033123.GB22763@tranquility.scriptkitchen.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,61 +18,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org, payal-iptables@scriptkitchen.com
 
-Jorge was very right.
+Payal Rathod =EDrta:
+> On Wed, Apr 18, 2007 at 07:34:32PM +0200, Martijn Lievaart wrote:
+>  =20
+>> Payal Rathod wrote:
+>>    =20
+>>>      =20
+=2E..
+>> Try -d 1.2.3.4 instead of -s.
+>>    =20
+>
+> But now it is timing out instead of connecting.
+> The new ruleset is at,
+>
+> http://pastebin.ca/447539
+>
+> Can someone tell what might be wrong?
+>  =20
+=2E..
 
-The routing tables where not ballanced.
-The gateway has had a route to the 194.95.188.0/26 network and so the req=
-uests for a tcp connection into this network have never been seen by the =
-firewall. That's why the answers are invalid.
+1. Your FORWARD policy is ACCEPT... You do not need the lines 14 and 15. =
 
-Sorry for this disturbance. But sometimes it helps to simply talk about p=
-roblems.
+(AFAIK: If the target IP is on your computer then it fill not be=20
+FORWARDed but will be sent to a LOCAL process.)
+2. You did not wrote but I assume you have a dynamically assigned IP=20
+connection. (Line 22.) If it is true then I would specify in this line=20
+the output interface: "-A POSTROUTING -s 10.10.0.0/255.255.255.0 -o=20
+???ppp+??? -j MASQUERADE"
+3. Line 23: ???? Why do you DNAT an outgoing connection back to you ???=20
+Maybe you do not need that line at all...
 
-Thanks.
-Lars
+Hope that helps.
 
-Am Thu, 19 Apr 2007 11:23:38 +0200 schrieb Lars T=C3=A4uber <taeuber@bbaw=
-.de>:
+ Swifty
 
-> Hi!
->=20
-> To enhance the problem:
->=20
-> The ICMP redirects are also blocked as invalid:
->=20
-> kernel: RULE -1 -- DENY IN=3D OUT=3Deth2 SRC=3D194.95.188.7 DST=3D194.9=
-5.188.37 LEN=3D76 TOS=3D0x00 PREC=3D0xC0 TTL=3D64 ID=3D18322 PROTO=3DICMP=
- TYPE=3D5 CODE=3D1 GATEWAY=3D194.95.188.25 [SRC=3D194.95.188.37 DST=3D194=
-.95.188.245 LEN=3D48 TOS=3D0x00 PREC=3D0x00 TTL=3D63 ID=3D0 DF PROTO=3DTC=
-P SPT=3D80 DPT=3D1246 WINDOW=3D5840 RES=3D0x00 ACK SYN URGP=3D0 ]=20
->=20
-> What is invalid with this?
->=20
-> Here again the rules that match (first rules of firewall script):
->  $IPTABLES -N drop_invalid
->  $IPTABLES -A OUTPUT   -m state --state INVALID  -j drop_invalid
->  $IPTABLES -A INPUT    -m state --state INVALID  -j drop_invalid
->  $IPTABLES -A FORWARD  -m state --state INVALID  -j drop_invalid
->  $IPTABLES -A drop_invalid  -j LOG  --log-level debug --log-prefix "RUL=
-E -1 -- DENY "
->  $IPTABLES -A drop_invalid  -j DROP
->=20
-> I think it could have something to do with the ACK and SYN flags. It se=
-ems to me the kernel doesn't recognise this packet as part of an establis=
-hed connection.
-> Anyone with an explaination here or someone that shows me my nescience?
->=20
-> Thanks
-> Lars
->=20
-
-
---=20
-                            Informationstechnologie
-Berlin-Brandenburgische Akademie der Wissenschaften
-J=C3=A4gerstrasse 22-23                     10117 Berlin
-Tel.: +49 30 20370-352           http://www.bbaw.de
 
