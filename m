@@ -1,10 +1,17 @@
-From: Ben Greear <greearb@candelatech.com>
-Subject: Question on MASQUERADE in virtual-router configuration.
-Date: Thu, 19 Apr 2007 10:27:19 -0700
-Message-ID: <4627A677.4080102@candelatech.com>
+From: "Stephan Higuti" <higuti.sam@gmail.com>
+Subject: Re: Firewall L7
+Date: Thu, 19 Apr 2007 15:15:17 -0300
+Message-ID: <3da957060704191115v62303fdh838beab7328ed331@mail.gmail.com>
+References: <3da957060704180538m12ec86edr2536867007a8d05@mail.gmail.com>
+	<462612C7.3090504@solutti.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=PO7w39WG+UjHsgK0Eetzj6fPVGRTqS3eADMzZ9PemgXKPZWxPhJv6AYSkhB+9zx+L+C/RSLVgjhj0qhBftPHDua6dMc9vmWI2foYzPFTHcIQH5fIZrvLiE/Y0lCD0sTLRoVJIynNofGez5aaDXtyGvEMBfZn6mLersqkOm33dfQ=
+In-Reply-To: <462612C7.3090504@solutti.com.br>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,80 +23,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
+Cc: netfilter@lists.netfilter.org
 
-Hello!
+My rulez....
 
-I'm trying to set up a fairly strange configuration, and having
-no luck getting MASQUERADE to work.  My configuration requires
-a few patches to the kernel to allow send-to-self and some
-routing table upgrades.  I can post these if someone wishes to
-see them.
+## Limpando as regras do IPTABLES
+iptables -F
+iptables -t nat -F
+iptables -t mangle -F
 
-I suspect that my virtual router configuration is confusing iptables
-somehow, perhaps causing the -o [port] to be ignored,
-so I'm looking for ideas on how to better debug this.
+## Ativando repasse de pacotes ##
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-The configuration is a sort of virtual router.  You could think of it
-similar to this, though I am actually using virtual devices similar
-to the etun devices recently posted to netdev instead of real ethernet
-devices with loopback cables.
+## instalando modulos do IPTABLES ##
+modprobe iptable_nat
+modprobe ip_nat_ftp
+modprobe ip_conntrack
+modprobe ipt_conntrack
+modprobe ip_conntrack_ftp
+modprobe ip_tables
+modprobe ipt_LOG
+modprobe ipt_limit
+modprobe ipt_REJECT
+modprobe ipt_layer7
 
-One machine:
-eth0 and eth1 act as a router (using policy based routing to filter
-     on packets entering these interfaces to a certain routing table, etc)
-eth2 and eth3 act as a second router.
+# Criando NAT para toda a rede.
+#iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o eth1 -j MASQUERADE
 
-eth1 is connected with loop-back cable to eth2 (subnet 2.2.2.0/24)
+## Ativando regras do Layer 7
+# Bloqueando de skype para skype
+iptables -A FORWARD -m layer7 --l7proto skypetoskype -j DROP
 
-eth0 is connected to eth4 via loopback cable  (subnet 172.1.1.0/24)
-eth3 is connected to the5 via loopback cable. (subnet 4.4.4.0/24)
+# Bloqueando o Skypeout
+iptables -A FORWARD -m layer7 --l7proto skypeout -j DROP
 
-I am trying to pass traffic from eth4 to eth5, through the virtual
-routers.  This works fine without NAT, and I can sniff on each of the
-interfaces and see expected traffic.
+# Bloqueando o Messenger
+#iptables -A FORWARD -m layer7 --l7proto msnmessenger -j DROP
+#iptables -A PREROUTING -m layer7 --l7proto msnmessenger -j DROP
+iptables -t filter -A FORWARD -m layer7 --l7proto msnmessenger -j DROP
 
-The traffic path is:  eth4 -- eth0 { router-1 logic } eth1 -- eth2 { router-2 logic } eth3 -- eth5
+#Bloqueando o Goddamn ORKUT por string usando o Algoritmo bm (pode-se
+usar o km tambem)
+iptables -t filter -A FORWARD -m string --string "orkut" -j DROP --algo bm
 
-I then tried enabling NAT on eth1 so that all packets entering eth2 will appear
-to come from eth1's IP address with a command similar to this:
+#Bloquendo torrents
+iptables -t filter -A FORWARD -m layer7 --l7proto bittorrent -j DROP
 
-iptables -A POSTROUTING -t nat -o eth1 -j MASQUERADE
-
-When sniffing eth2, I still see the source IP as that of eth4, not eth1.
-
-I also tried using the SNAT target with this command:
-iptables -A POSTROUTING -t nat -o eth1  -j SNAT --to 2.2.2.2
-
-The rule appears to be in the kernel, but it still does not work:
-
-[root@lanforge-33-46 lanforge]# iptables -t nat -L -n
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-[root@lanforge-33-46 lanforge]# iptables -t nat -L -n
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-SNAT       all  --  0.0.0.0/0            0.0.0.0/0           to:2.2.2.2
+# Mudando para Statefull
+#iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 
-If anyone has any ideas how to better diagnose this, please let
-me know.
+These rules are blockin' gmail, hotmail and my mail server.....
+But its just a few rulez....
+Some wrong?
 
-Thanks,
-Ben
+Cheers
 
+Stephan
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+---------------------------------------------------------------------
+Stephan Higuti
+MSN: higutisam@hotmail.com
+Email: higuti.sam@gmail.com
+---------------------------------------------------------------------
 
