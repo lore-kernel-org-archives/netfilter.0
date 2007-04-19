@@ -1,11 +1,9 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: ipt_connlimit.c + kernel 2.6.20 = big problem. HELP
-Date: Thu, 19 Apr 2007 09:28:29 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0704190922400.30549@yvahk01.tjqt.qr>
-References: <462626F1.6050402@gmail.com>
+From: Lokesh <lokeshnb@intoto.com>
+Subject: Async processing using NetFilters
+Date: Thu, 19 Apr 2007 13:05:15 +0530
+Message-ID: <200704190730.l3J7UmvK019008@brahma.intotoind.com>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <462626F1.6050402@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,28 +14,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: dominiaz <dominiaz@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+Hi All,
+I'm using Linux RedHat 9  kernel version 2.4.20-8
+I want to do some asynchronous processing of packets in my kernel 
+module that is registered as
+Netfilter Hook. I tried to make use of NF_QUEUE but found that only 
+one call back function per
+protocol family (PF) is provided and already some module (probably 
+NET_LINK socket interface)
+is making use of it for PF_INET.  Is there any way to use NF_QUEUE 
+facility without disturbing
+NET_LINK ? why per hook registration of call back function of 
+NF_QUEUE is not provided?
+How to proceed if someone had to do async processing of packets so 
+that pkts can be queued to crypto hardware processing unit and can be 
+safely reinjected back into kernel later so that other registered 
+hooks can get pkts?
+any help is highly appreciated.
+Thanks
+-Lokesh.
 
 
-On Apr 18 2007 16:10, dominiaz wrote:
-> I`ve got the newest snapshot of p-o-m from 14.04.2007. When i include
-> ipt_connlimit.c to my kernel something isn`t ok. When i try to compile
-> it then get an error like:
->
-> net/built-in.o: In function `match':
-> ipt_connlimit.c:(.text+0x6ae49): undefined reference to
-> `nf_conntrack_find_get'
-> make: *** [.tmp_vmlinux1] Error 1
->
-> Does someone know how to resolve that problem?
 
-http://freshmeat.net/p/ccj_kernel/
-pick the 2.6.20 tarball, there's a compile fix in it from me.
+********************************************************************************
+This email message (including any attachments) is for the sole use of the intended recipient(s) 
+and may contain confidential, proprietary and privileged information. Any unauthorized review, 
+use, disclosure or distribution is prohibited. If you are not the intended recipient, 
+please immediately notify the sender by reply email and destroy all copies of the original message. 
+Thank you.
+ 
+Intoto Inc. 
 
-
-Jan
--- 
 
