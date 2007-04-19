@@ -1,13 +1,13 @@
-From: Payal Rathod <payal-iptables@scriptkitchen.com>
-Subject: Re: DNAT not working
-Date: Wed, 18 Apr 2007 23:31:23 -0400
-Message-ID: <20070419033123.GB22763@tranquility.scriptkitchen.com>
-References: <20070418162604.GA10834@tranquility.scriptkitchen.com>
-	<462656A8.3090003@rtij.nl>
+From: Lars =?UTF-8?Q?T=C3=A4uber?= <taeuber@bbaw.de>
+Subject: Re: Valid packets blocked as invalid?
+Date: Thu, 19 Apr 2007 08:33:48 +0200
+Message-ID: <20070419083348.364c873e.taeuber@bbaw.de>
+References: <20070418151941.c689b07c.taeuber@bbaw.de>
+	<web-69045730@bk1.webmaillogin.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <462656A8.3090003@rtij.nl>
+In-Reply-To: <web-69045730@bk1.webmaillogin.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,27 +19,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Martijn Lievaart <m@rtij.nl>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, Apr 18, 2007 at 07:34:32PM +0200, Martijn Lievaart wrote:
-> Payal Rathod wrote:
-> >Hi,
-> >My gateway server is Ubuntu 6.06.1 LTS, iptables v1.3.3.  By ifconfig I 
-> >have added one more ip say 1.2.3.4 (eth0:1). iptables-save gives me the 
-> >output at,
-> >http://pastebin.ca/446625
-> >
-> Try -d 1.2.3.4 instead of -s.
+Hallo Jorge!
 
-But now it is timing out instead of connecting.
-The new ruleset is at,
+> I'm guessing a routing problem here. If you see the log you can see that the 
+> packet marked as invalid have the same incoming/outgoing interface.
 
-http://pastebin.ca/447539
+Yes, it's the same interface but that is intention.
 
-Can someone tell what might be wrong?
+ 
+> Your diagram, as you said is:
+> 
+> eth2
+> |
+> |
+> +--- gtw 194.95.188.25 --- LAN 194.95.188.192/26
+> |
+> |
+> LAN 194.95.188.0/26
 
-With warm regards,
--Payal
+You'r right that's the situation.
+
+We know the problem could be solved by setting appropriate routes to the gateways in all servers in the 194.95.188.0/26 network. But we don't like that.
+Is the routing the reason for the kernel to mark this packet as invalid?
+
+The firewall is our default gateway and also a gateway to some more networks. We don't want to put detailed routes in all servers in the 194.95.188.0/26 network. They all only know the default gateway (and firewall) 194.95.188.7. They all get the information about the better next hop by the fireall via icmp redirects automatically we think.
+
+But why is the packet invalid?
+
+Regards
+Lars
 
