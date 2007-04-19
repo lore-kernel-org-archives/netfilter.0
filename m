@@ -1,7 +1,9 @@
-From: richard@net-solutions.net.nz
-Subject: Re: Where has NAT gone?
-Date: Thu, 19 Apr 2007 09:37:00 GMT
-Message-ID: <20070419093659.E25F2DBAAD@mail5.inspire.net.nz>
+From: Kiran Murari <kmurari@embeddedinfotech.com>
+Subject: NAT Issue
+Date: Thu, 19 Apr 2007 15:39:14 +0530
+Message-ID: <46273FCA.4020200@embeddedinfotech.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -13,60 +15,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Torsten Luettgert <t.luettgert@pressestimmen.de>, richard@net-solutions.net.nz, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-> On Tue, 2007-04-17 at 08:12 +0000, richard@net-solutions.net.nz wrote:
-> > Today I upgraded my system from Linux
-> > Kernel 2.6.16.20 to 2.6.20.7 because I needed an updated NIC driver. Upon
-> > running make menuconfig, I noticed that the options for NAT seem to have
-> > vanished from the config menu. 
-> ....
-> > I'm not sure if this is the right place to ask but the kernel mailing list
-> > was slow at responding so I thought I'd try here.
-> 
-> Exactly the right place to ask, don't worry.
-> 
-> What you're probably missing is conntrack, which moved to
-> 
-> Networking ->
-> Networking options ->
-> Network packet filtering framework (Netfilter) ->
-> Core Netfilter Configuration
-> 
-> There, enable "Netfilter connection tracking support"
-> (CONFIG_NF_CONNTRACK_ENABLED) and "Netfilter Xtables support"
-> (CONFIG_NETFILTER_XTABLES).
-> 
-> Then, one menu up and into "IP: Netfilter Configuration",
-> enable
-> 
-> IPv4 connection tracking support (CONFIG_NF_CONNTRACK_IPV4)
-> IP tables support (CONFIG_IP_NF_IPTABLES)
-> Full NAT (CONFIG_NF_NAT)
-> 
-> and optionally MASQUERADE / REDIRECT.
-> 
-> I understand those config options were moved because they are
-> actually not IPv4 specific ("iptables") but more general,
-> IPv4 / IPv6 / ARP ("xtables").
-> The binary for setting the rules is still called "iptables", though.
-> 
-> Hth,
-> Torsten
-> 
+Hi All,
+I am facing an issue related to NAT.
 
-Thanks Torsten, that was very helpful. Glad I found the right place first
-time round!
+My setup is as shown below.
+PC--------Router---------ISP
 
-Regards
-Richard
+I established a connection with the ISP (PPP link) and I am pinging 
+google.com from LAN side host.
+Now if I disable WAN (leave the ping running) and then enable it, the 
+session does not resume.
+Moreover, packet capture on the WAN interface shows LAN host address, 
+but not the WAN IP.
 
-------------------------------------------------
-This message was sent using InSPire Net Webmail.
-http://www.inspire.net.nz
+The SNAT rules are in place.
+# iptables -t nat -L POSTROUTING -n -v
+Chain POSTROUTING (policy ACCEPT 13927 packets, 458K bytes)
+ pkts bytes target     prot opt in     out      source           destination
+    0     0   SNAT     all  --  *      ppp0     0.0.0.0/0        
+0.0.0.0/0      to:xx:xx:xx:xx
+    0     0   SNAT     all  --  *      *        0.0.0.0/0        
+0.0.0.0/0      MARK match 0x1111 to:zz:zz:zz:zz
 
+ip_conntrack shows the following entry:
+# cat /proc/net/ip_conntrack | grep icmp
+icmp     1 29 src=yy:yy:yy:yy dst=64.233.167.99 type=8 code=0 id=16446 
+packets=575 bytes=48300 [UNREPLIED]
+src=yy:yy:yy:yy dst=192.168.10.100 type=0 code=0 id=16446 packets=0 
+bytes=0 mark=0 use=1
+yy:yy:yy:yy being the IP address of the LAN host.
 
+But if I kill the ping session and start a new session, this gets NAT'ed 
+properly.
+
+Couldn't understand why the running session does not resume after the 
+WAN is enabled.
+
+Any help in this aspect is highly appreciated.
+
+Best Regards,
+Kiran
 
