@@ -1,13 +1,17 @@
-From: =?ISO-8859-1?Q?S=E9bastien_CRAMATTE?= <scramatte@zensoluciones.com>
-Subject: Re: [RESOLVED] Can't change  ipt_conntrack hashsize under debian
- sarge  ???
-Date: Thu, 19 Apr 2007 09:30:43 +0200
-Message-ID: <46271AA3.1020508@zensoluciones.com>
-References: <46266B31.1040505@zensoluciones.com>
+From: Ronald <ronald645@gmail.com>
+Subject: Re: Unable to block ICMP
+Date: Thu, 19 Apr 2007 11:23:39 +0200
+Message-ID: <4627351B.8010205@gmail.com>
+References: <46224132.4080702@gmail.com>
+	<4622A0A4.70007@yahoo.de>	<4623AA24.4000002@gmail.com>
+	<46249164.1020902@freenet.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050204060407090803010401"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46266B31.1040505@zensoluciones.com>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:cc:subject:references:in-reply-to:content-type:content-transfer-encoding;
+	b=cOJ9H3CnAG/pJHU0JN5YIUoL7gSF64senAEXvHg5iJ/bKKrKJWQFvbZZIk7guxRsoDOqO3Bnpi7JW7KwOxIfacIgazr5Z2BccnJx9LIoB2QT1NGCZO9ulqC4Za50uM91VFSr6/QLf+D3QEGRzMCcMhblQBz1CWlAloBb6CsAbes=
+In-Reply-To: <46249164.1020902@freenet.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,127 +22,78 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Michael Hissler <mhis38@freenet.de>
 Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------050204060407090803010401
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Michael Hissler schreef:
+> Ronald wrote:
+>
+> [...]
+>
+>   
+>> That is weird, if you block ICMP outgoing in comodo, all the closed
+>> ports are shown as stealthed. This is really confusing ...
+>>     
+>
+> What is comodo?
+>
+> Which scan test are you using? If it's a UDP scan this is not weird. If
+> a closed port (i.e. a port no service is listening on) is contacted, an
+> ICMP port unreachable message is sent back. By blocking this ICMP
+> message (or blocking all outgoing ICMP traffic), you get the same result
+> as if you blocked the incoming packet: the sender doesn't get a response
+> and so the port is 'stealthed'.
+> If it's a TCP scan, the kernel sends back a TCP Reset. In this case
+> blocking ICMP should have no effect (in this case: yes, it's weird).
+>
+>
+> BTW: If you block traffic to ports services are listening on, but accept
+> traffic to closed ports, someone who scans your IP knows:
+>
+> 1. You are there. He gets ICMP port unreachable messages or TCP Reset
+> for the closed but unblocked (not 'stealthed') ports.
+> 2. He knows which ports you are running services on (-> the ports he
+> doesn't get the ICMP messages or TCP Reset).
+>
+> This may not be what you want.
+>
+>
+> You wrote that skype requires to have everything open above port 1024.
+> This can't be true!
+> Skype works perfectly if you accept all outgoing traffic and
+>
+> a) configure skype to use a certain port and accept incoming traffic to
+> this port,
+>
+> or (better)
+>
+> b) drop *all* incoming traffic and use connection tracking. This lets
+> pass all incoming packets belonging to a connection initialized by your
+> computer:
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> (you can leave out the ',RELATED' but then you'll run into trouble with
+> e.g. FTP and ICMP error messages)
+>
+>
+>
+> michael
+>
+>
+>
+>
+>
+>
+>   
+THANKS! That:
 
-Hello,
-
-Was just a typografic problem !!!!
-El module is   ip_conntrack and not  ipt_conntrack  ...
-
-Works well now
-
-S=E9bastien CRAMATTE a =E9crit :
-> Hello,
->
-> I've tried to  change  ipt_conntrack hashsize and con   under my debian
-> charge  but doesn't work !
-> Ive got 2876Mb available for conntrack so I've  done  (according to som=
-e
-> previous mail and this
-> http://www.wallfire.org/misc/netfilter_conntrack_perf.txt)
->
-> This server running  debian sarge 3.1 + 2.6.18 kernel
->
-> CONNTRACK_MAX =3D 2876 * 64 =3D 184064
-> HASHSIZE =3D 2876 * 8 =3D 23002
->
-> But the near  power of  2 is 2^16  =3D 131072  ...  I'm not sure that i=
-f
-> it better to put 184064 or 131072 ?
-> Seems that netfilter algorythm is more eficient with power of 2  value =
-?
->
-> I can set the CONNTRACK_MAX value but not the HASHSIZE ... I've tried
-> add hashsize=3D paremeter   in /etc/modules or in
-> /etc/modprobe.d/arch/i386 and I've done an "update-modules" ...  When
-> reboot the server the value still 8192  ???? Any Ideas ?
->
-> Moreover I've read somewhere that is better to augment HASHSIZE value
-> to 1:2 ratio ... in my case 65440
-> But how can I determine the best value ? My computer is P4 Hyper
-> Threading  3.6 Ghz  ... Might be I should put 131072 as CONNTRACK_MAX ?
-> This server is a bridge that only do L7 QoS  (filter + o - 70 Mbits for
->  =20
->> 600 customers ).
->>    =20
->
-> # cat /etc/sysctl.conf
-> net.ipv4.netfilter.ip_conntrack_max =3D 131072
->
-> #cat /proc/sys/net/ipv4/netfilter/ip_conntrack_max
-> 131072
->
-> # cat /proc/sys/net/ipv4/netfilter/ip_conntrack_buckets
-> 8192
->
-> #cat /etc/modprobe.d/arch/i386
->
-> alias eth0 tg3
-> alias eth1 tg3
-> alias eth2 e1000
->
-> options ipt_conntrack hashsize=3D65440
->
-> What about the patch 76_conntrack_bucket_sysctl.patch ?
-> Many thanks for you help
-> Regards
->
->
->
->
->  =20
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 
---=20
-ZEN SOLUCIONES - Be in XForms take your "Concentr=E9"
-S=E9bastien CRAMATTE=20
+Was just what I was looking for :D . I recompiled my kernel with support 
+for it and it works amazing :D .
+Way to go :)
 
-Plaza Sandoval, 5, piso 4b
-30004 Murcia - ESPA=D1A
-
-M=F3vil : +34 627 66 52 83
-Fijo : +34 968 29 29 65
-
-E-mail : scramatte@zensoluciones.com
-Site : www.zensoluciones.com
-
-Skype : scramatte
-Msn : scramatte@hotmail.com
-Jabber: scramatte@jabber.org
---
-
-CONCENTR=C9
-xml entreprise grade framework
-http://concentre.zensoluciones.com
-
---
-This e-mail is privileged and may contain confidential information intend=
-ed only for the person(s) named above. If you receive this e-mail in erro=
-r, please notify the sender immediately and delete it. E-mail and interne=
-t transmissions can't be warrant privacy, integrity or correct reception.=
- The sender will not be liable for any damages resulting.=20
-
-Este mensaje va dirigido, de manera exclusiva, a su destinatario y puede =
-contener informaci=F3n confidencial. En caso de haber recibido este mensa=
-je por error, informe al emisor inmediatamente y proceda a su eliminaci=F3=
-n. El correo electr=F3nico y las comunicaciones por medio de Internet no =
-permiten garantizar la confidencialidad de los mensajes transmitidos, as=ED=
- como tampoco su integridad o su correcta de recepci=F3n. El emisor no as=
-ume responsabilidad alguna por tales circunstancias.
-
-Ce message est destin=E9 exclusivement =E0 son destinataire et peut conte=
-nir des informations confidentielles. En cas de r=E9ception d'un tel mess=
-age par erreur, informez l'exp=E9diteur imm=E9diatement et proc=E9dez =E0=
- son effacement. Il n'est pas possible de garantir la confidentialit=E9, =
-l'int=E9grit=E9 ou la r=E9ception correcte du courrier =E9lectronique ain=
-si que des communications par internet. L'exp=E9diteur ne peut =EAtre ten=
-u pour responsable d'=E9ventuels dommages commis.
-
-
---------------050204060407090803010401--
+                                                                         
+                                                Ronald
 
