@@ -1,16 +1,16 @@
-From: "Stephan Higuti" <higuti.sam@gmail.com>
-Subject: Re: Firewall L7
-Date: Thu, 19 Apr 2007 15:15:17 -0300
-Message-ID: <3da957060704191115v62303fdh838beab7328ed331@mail.gmail.com>
-References: <3da957060704180538m12ec86edr2536867007a8d05@mail.gmail.com>
-	<462612C7.3090504@solutti.com.br>
+From: Denis <denismpa@gmail.com>
+Subject: Re: Setup of different types of NAT
+Date: Thu, 19 Apr 2007 16:21:59 -0300
+Message-ID: <e9aeeef80704191221nd64959eof73edd6be5df931d@mail.gmail.com>
+References: <235535.26076.qm@web56203.mail.re3.yahoo.com>
+	<4627766B.3010809@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=PO7w39WG+UjHsgK0Eetzj6fPVGRTqS3eADMzZ9PemgXKPZWxPhJv6AYSkhB+9zx+L+C/RSLVgjhj0qhBftPHDua6dMc9vmWI2foYzPFTHcIQH5fIZrvLiE/Y0lCD0sTLRoVJIynNofGez5aaDXtyGvEMBfZn6mLersqkOm33dfQ=
-In-Reply-To: <462612C7.3090504@solutti.com.br>
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=HKZMuUxmb/rmmegpPIIVbTLzeIt+kQRIthlWkrAlw5RS5FcrKpAp8evMIBXa+oBxT89CP2EeNLDTIJwe0dLbE2A6LeDRLMlpoJfX15fiwzw1g7C9c7SrSy/0OugwdGjMZzaPJ+hkvv4SKOD9EWh1+O1C3jXIltc5ObncE+q8+g4=
+In-Reply-To: <4627766B.3010809@gmail.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,70 +22,146 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-My rulez....
+>   Symmetric: A symmetric NAT is one where all requests from the
+>      same internal IP address and port, to a specific destination IP
+>      address and port, are mapped to the same external IP address and
+>      port.  If the same host sends a packet with the same source
+>      address and port, but to a different destination, a different
+>      mapping is used.  Furthermore, only the external host that
+>      receives a packet can send a UDP packet back to the internal host.
+>
+> (...)
+>
+> I just want to know how to setup Symmetric NAT
+>
+U can setup that symmetric as follow:
 
-## Limpando as regras do IPTABLES
-iptables -F
-iptables -t nat -F
-iptables -t mangle -F
-
-## Ativando repasse de pacotes ##
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-## instalando modulos do IPTABLES ##
-modprobe iptable_nat
-modprobe ip_nat_ftp
-modprobe ip_conntrack
-modprobe ipt_conntrack
-modprobe ip_conntrack_ftp
-modprobe ip_tables
-modprobe ipt_LOG
-modprobe ipt_limit
-modprobe ipt_REJECT
-modprobe ipt_layer7
-
-# Criando NAT para toda a rede.
-#iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o eth1 -j MASQUERADE
-
-## Ativando regras do Layer 7
-# Bloqueando de skype para skype
-iptables -A FORWARD -m layer7 --l7proto skypetoskype -j DROP
-
-# Bloqueando o Skypeout
-iptables -A FORWARD -m layer7 --l7proto skypeout -j DROP
-
-# Bloqueando o Messenger
-#iptables -A FORWARD -m layer7 --l7proto msnmessenger -j DROP
-#iptables -A PREROUTING -m layer7 --l7proto msnmessenger -j DROP
-iptables -t filter -A FORWARD -m layer7 --l7proto msnmessenger -j DROP
-
-#Bloqueando o Goddamn ORKUT por string usando o Algoritmo bm (pode-se
-usar o km tambem)
-iptables -t filter -A FORWARD -m string --string "orkut" -j DROP --algo bm
-
-#Bloquendo torrents
-iptables -t filter -A FORWARD -m layer7 --l7proto bittorrent -j DROP
-
-# Mudando para Statefull
-#iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -t nat -A POSTROUTING -p udp -s x.x.x.x --sport aaaa -d
+y.y.y.y --dport bbbb -j snat --to-source z.z.z.z
+iptables -t nat -A POSTROUTING -p udp -s x.x.x.x --sport aaaa -d
+0.0.0.0 --dport bbbb -j MASQUERADE
 
 
-These rules are blockin' gmail, hotmail and my mail server.....
-But its just a few rulez....
-Some wrong?
 
-Cheers
+I think that these two rules can make the service that u want to.
 
-Stephan
+At your own taste and requirements u can specify or not the source
+port and destination port.
 
--- 
----------------------------------------------------------------------
-Stephan Higuti
-MSN: higutisam@hotmail.com
-Email: higuti.sam@gmail.com
----------------------------------------------------------------------
+If u do not specify that, the translation will occurs for all ports,
+but keeping your idea of one translation specific for one specific
+destination and another for other destinations.
+
+
+
+Denis Anjos.
+
+
+2007/4/19, Pedro Gon=E7alves <pedro.pandre@gmail.com>:
+> Hi Elvir
+>
+> Sorry if the terms I used are not familiar to everyone.
+> The types of NAT I am talking about are defined by STUN RFC 3489
+> (http://www.faqs.org/rfcs/rfc3489.html, section 5):
+> (...)
+>
+> Full Cone: A full cone NAT is one where all requests from the
+>      same internal IP address and port are mapped to the same external
+>      IP address and port.  Furthermore, any external host can send a
+>      packet to the internal host, by sending a packet to the mapped
+>      external address.
+>
+>   Restricted Cone: A restricted cone NAT is one where all requests
+>      from the same internal IP address and port are mapped to the same
+>      external IP address and port.  Unlike a full cone NAT, an external
+>      host (with IP address X) can send a packet to the internal host
+>      only if the internal host had previously sent a packet to IP
+>      address X.
+>
+>   Port Restricted Cone: A port restricted cone NAT is like a
+>      restricted cone NAT, but the restriction includes port numbers.
+>      Specifically, an external host can send a packet, with source IP
+>      address X and source port P, to the internal host only if the
+>      internal host had previously sent a packet to IP address X and
+>      port P.
+>
+>   Symmetric: A symmetric NAT is one where all requests from the
+>      same internal IP address and port, to a specific destination IP
+>      address and port, are mapped to the same external IP address and
+>      port.  If the same host sends a packet with the same source
+>      address and port, but to a different destination, a different
+>      mapping is used.  Furthermore, only the external host that
+>      receives a packet can send a UDP packet back to the internal host.
+>
+> (...)
+>
+> I just want to know how to setup Symmetric NAT
+>
+> Thanks in advance
+> Pedro
+>
+>
+> Elvir Kuric wrote:
+> > Hi Pedro,
+> > what is Cone? Some abbervation or what else ?
+> > Please for clearability describe what you want achieve
+> > using NAT?
+> >
+> > Regards
+> >
+> > Elvir Kuric
+> >
+> > --- Pedro Gon=E7alves <pedro.pandre@gmail.com> wrote:
+> >
+> >
+> >> Hello everyone
+> >>
+> >> I want to know *how to* setup this types of NAT:
+> >> /-Full Cone NAT/
+> >> /-Restricted Cone NAT/
+> >> /-Port Restricted Cone NAT/
+> >> /-Symmetric NAT/
+> >>
+> >> Using iptables, I set all policies to "ACCEPT" and I
+> >> was able to setup
+> >> two kinds of NAT:
+> >> (192.168.2.170 is my "public" address and 10.0.0.1
+> >> is my "private" address
+> >>
+> >> /-"Full Cone NAT", with the following rules:/
+> >> iptables -t nat -A POSTROUTING -o eth0 -j SNAT
+> >> --to-source 192.168.2.170
+> >> iptables -t nat -A PREROUTING -i eth0 -j DNAT
+> >> --to-destination 10.0.0.1
+> >>
+> >>
+> >> /-"Port Restricted Cone NAT", with just a single
+> >> rule:/
+> >> iptables -t nat -A POSTROUTING -o eth0 -j SNAT
+> >> --to-source 192.168.2.170/
+> >>
+> >> /
+> >> Now does anyone know how to setup Restricted Cone
+> >> NAT and Symmetric NAT?
+> >>
+> >> Thanks in advance
+> >> Pedro
+> >> //
+> >>
+> >>
+> >>
+> >
+> >
+> > __________________________________________________
+> > Do You Yahoo!?
+> > Tired of spam?  Yahoo! Mail has the best spam protection around
+> > http://mail.yahoo.com
+> >
+> >
+>
+>
+>
 
