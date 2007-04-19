@@ -1,12 +1,12 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Setup of different types of NAT
-Date: Thu, 19 Apr 2007 21:49:19 +0200
-Message-ID: <4627C7BF.5000406@plouf.fr.eu.org>
-References: <4625E078.1020301@gmail.com>
+Subject: Re: NAT Issue
+Date: Fri, 20 Apr 2007 00:24:07 +0200
+Message-ID: <4627EC07.5040207@plouf.fr.eu.org>
+References: <46273FCA.4020200@embeddedinfotech.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4625E078.1020301@gmail.com>
+In-Reply-To: <46273FCA.4020200@embeddedinfotech.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +18,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
 Hello,
 
-Pedro Gon=E7alves a =E9crit :
+Kiran Murari a =E9crit :
 >=20
-> I want to know *how to* setup this types of NAT:
-> /-Full Cone NAT/
-> /-Restricted Cone NAT/
-> /-Port Restricted Cone NAT/
-> /-Symmetric NAT/
+> My setup is as shown below.
+> PC--------Router---------ISP
+>=20
+> I established a connection with the ISP (PPP link) and I am pinging=20
+> google.com from LAN side host.
+> Now if I disable WAN
 
-Again ? I thought I already answered the last time you asked.
+What do you mean exactly ?
 
-> Using iptables, I set all policies to "ACCEPT" and I was able to setup=20
-> two kinds of NAT:
-> (192.168.2.170 is my "public" address and 10.0.0.1 is my "private" addr=
-ess
-[...]
-> /-"Port Restricted Cone NAT", with just a single rule:/
-> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 192.168.2.17=
-0/
+> (leave the ping running) and then enable it, the=20
+> session does not resume.
 
-This is "symmetric NAT", not "restricted cone NAT".
+What session ?
 
-> Now does anyone know how to setup Restricted Cone NAT and Symmetric NAT=
-?
+> The SNAT rules are in place.
+> # iptables -t nat -L POSTROUTING -n -v
+> Chain POSTROUTING (policy ACCEPT 13927 packets, 458K bytes)
+> pkts bytes target     prot opt in     out      source           destina=
+tion
+>    0     0   SNAT     all  --  *      ppp0     0.0.0.0/0       =20
+> 0.0.0.0/0      to:xx:xx:xx:xx
 
-AFAIK, you cannot do "restricted cone NAT" nor "port restricted cone=20
-NAT" with the stock Netfilter/iptables. It would require dedicated=20
-conntrack and NAT helper modules.
+Is the public address fixed or can it change at each PPP connection ?
+
+> # cat /proc/net/ip_conntrack | grep icmp
+> icmp     1 29 src=3Dyy:yy:yy:yy dst=3D64.233.167.99 type=3D8 code=3D0 i=
+d=3D16446=20
+> packets=3D575 bytes=3D48300 [UNREPLIED]
+> src=3Dyy:yy:yy:yy dst=3D192.168.10.100 type=3D0 code=3D0 id=3D16446 pac=
+kets=3D0=20
+> bytes=3D0 mark=3D0 use=3D1
+> yy:yy:yy:yy being the IP address of the LAN host.
+
+I doubt that the source address of the expected reply is the LAN host=20
+address. What is 192.168.10.100 ?
 
