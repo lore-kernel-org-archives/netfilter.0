@@ -1,12 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Failed to establish TCP connection when Masqueradeing
-Date: Fri, 20 Apr 2007 20:50:35 +0200
-Message-ID: <46290B7B.2030509@plouf.fr.eu.org>
-References: <600b8cdc0704200745x5509ccdw807a866f997224b5@mail.gmail.com>
+From: Nagy Zoltan <nagy.zoltan@cit.hu>
+Subject: Re: NAT Issue
+Date: Fri, 20 Apr 2007 22:54:41 +0200
+Message-ID: <46292891.80004@cit.hu>
+References: <46289F30.9030800@embeddedinfotech.com>	<200704201125.l3KBPGSw018412@toshiba.co.jp>
+	<4628AD71.7060101@embeddedinfotech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <600b8cdc0704200745x5509ccdw807a866f997224b5@mail.gmail.com>
+In-Reply-To: <4628AD71.7060101@embeddedinfotech.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,26 +18,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Kiran Murari wrote:
+>>>
+>>> Is there a way to flush the conntrack entries that have been created 
+>>> during a specific interval.
+>>
+>> -- Yasuyuki Kozakai
+>>   
+> Yeah I have seen the 'conntrack'.
+> But this requires linnetfilter_conntrack and libnfnetlink support.
+> I am running a 2.6.14 on an Xscale processor.
+> 
+> So is there a means to flush the entries, other than porting the 
+> 'conntrack' to Xscale.
+> 
+> - Kiran
+> 
+> 
 
-Simon Olofsson a =E9crit :
->=20
-> I would like all traffic to use the ethernet interface except traffic
-> from a specific user. I would like the traffic from this specific user
-> to use the ppp interface.
->=20
-> When I try to establish a TCP connection from the specified user I see
-> that the syn packet is sent out on the correct interface with the
-> correct source address and the syn,ack is received, but it seems like
-> the syn,ack is lost somewhere on my host because a new syn is sent
-> after a while.
->=20
-> What is missing?
 
-Check that source validation by reversed path is disabled at least for=20
-the PPP interface (/proc/sys/net/ipv4/conf/ppp0/rp_filter=3D0 or=20
-/proc/sys/net/ipv4/conf/all/rp_filter=3D0).
+i've just a minimal coding experience with conntrack,
+but i think you need something like 'removing conntrack entries which 
+routes are invalid' - as a kernel level feature - i think in this case 
+when the wan interface is down you dont have a valid default route...so 
+the logic would match on it - and remove them
+i think this can be implemented and it would be logical to remove 
+invalid routes from the conntrack anyway - i've tried on my 
+desktop(2.6.19-gentoo-r5) and it won't removed anything
+
+
+kirk
 
