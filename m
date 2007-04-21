@@ -1,14 +1,12 @@
-From: "crux crux" <cruxam@gmail.com>
-Subject: Forwarding packets on iptables firewall
-Date: Sat, 21 Apr 2007 14:25:25 +0200
-Message-ID: <4fccc36f0704210525md4c677frcb2d508c12655894@mail.gmail.com>
+From: Marc Haber <mh+netfilter@zugschlus.de>
+Subject: Re: Forwarding packets on iptables firewall
+Date: Sat, 21 Apr 2007 14:32:00 +0200
+Message-ID: <20070421123200.GB30659@torres.zugschlus.de>
+References: <4fccc36f0704210525md4c677frcb2d508c12655894@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=kPsTHvtmF/jVi8rpASr5qjsoIMlrMF6fJE+R6K1AnPug3ITs5Rbc0zaOxadJOH3qjAip0Hkvv3QZqRzdU0CkCs4cO6WS5xz7kMA9iLo6ze6f38Byd39I04awn0KHCggmuPs8od6kfvsU2pJUz3TcPqwLZ1Ltm+bEFJkAyHflTaE=
 Content-Disposition: inline
+In-Reply-To: <4fccc36f0704210525md4c677frcb2d508c12655894@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,36 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi people,
+On Sat, Apr 21, 2007 at 02:25:25PM +0200, crux crux wrote:
+> OS is debian. Any help is welcome.
 
-I have two machines which are connected to iptables firewall.
-On firewall I have following rules
+install iproute2, and show us "ip addr" and "ip route" from all three
+boxes in question.
 
-iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+Greetings
+Marc
 
-
-echo 1 > /proc/sys/net/ipv4/ip_forward  ( on firewall )
-
-ip address of machineA is 192.168.1.2
-ip address of machineB is 10.1.1.2
-default gateway for machineA is 192.168.1.1 ( eth0 )
-default gateway for machineB is 10.1.1.1  ( eth1 )
-
-
-machineA -------- eth0(firewall)eth1-----
--machineB
-I want make possible traffic flow from machineA to machineB.
-
-The above rules should do that, but because of something I cannot ping
-machineB from machineA.
-
-OS is debian. Any help is welcome.
-
-Regards
-
-Crux
+-- 
+-----------------------------------------------------------------------------
+Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
+Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
+Nordisch by Nature |  How to make an American Quilt | Fax: *49 3221 2323190
 
