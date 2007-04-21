@@ -1,13 +1,12 @@
-From: "Elvir Kuric" <omasnjak@gmail.com>
-Subject: Geoip patch and its features
-Date: Sun, 22 Apr 2007 11:12:41 +0200
-Message-ID: <1814bfe70704220212w75466abeo663c7349586b6d99@mail.gmail.com>
+From: Oleg <xsov@mail.ru>
+Subject: Re: Iptables rule on span traffic
+Date: Sat, 21 Apr 2007 17:46:42 +0400
+Message-ID: <200704211746.54974.xsov@mail.ru>
+References: <E8AFFEFDBE97C94E9297963F0527A07B01DFAED8@pmi00exf00.us.packetmotion.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=BIKRIq+XWBRTw0Cy1YE68/h6KtCA5mDhPIO3wrINoQsrRS/myj+4CpIvySijgqcfNpZR9vgQ5FbN0iSHtc3f52hpqmmISYAF73XoyxBIPa2W3Gn1vEvqTdeptEvB4Neg3rBy/9oKjelm3W3yySFZiK0K/Qw5WvG98RXvBplLtnk=
+In-Reply-To: <E8AFFEFDBE97C94E9297963F0527A07B01DFAED8@pmi00exf00.us.packetmotion.com>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,28 +18,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi all,
+> Anyway, here is my situation.
+> I have fwsnort generate iptables rule (based on snort IDS rules) which are
+> running on a machine with two interfaces. One of the interfaces (eth1) ?is
+> connected to a SPAN port that mirrors traffic on part of our network, this
+> interface is in promiscuous mode. The other interface (eth0) is a regular
+> addressable interface. For some reason, the iptables rules seem to have no
+> effect on traffic seen by the SPAN port.
+AFAIK pcap library gets traffic before iptables rule processing (because it's 
+promiscous mode), so snort and tcpdump (and any other tool which uses pcap) 
+continues to see 'blocked by iptables' traffic.
 
-last night I implemented geoip feature in my firewall. Using geoip I
-can protect my firewall from any kind of traffic from particular
-countries ( someone call id racism routing ). I am wondering now if
-use this patch in combination with other iptables features will this
-prevent for example different kind of attacks like dos, unauthorized
-logging and so on. I know it is impossible to stop all attacks, but we
-can maje their results smaller.  I think geoip is very good in cases
-when you for example know that you are not going to log from  Bosnia
-just simpli put Bosnian's IPs on black list.
-What is your opinion about advantages and disadvantages of geoip patch.
-I think it is very usefull.
-
-Best wishes and regards
-
-Elvir Kuric
-
-PS : List of ip addresses which belong to particular countries is not
-complete, and it will not be- I mean we can not know all addresses and
-their mappings to countries.
+-- 
+Best regards, Oleg
 
