@@ -1,13 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Iptables rule on span traffic
-Date: Sat, 21 Apr 2007 23:20:20 +0200
-Message-ID: <462A8014.6000105@plouf.fr.eu.org>
-References: <E8AFFEFDBE97C94E9297963F0527A07B01DFAED8@pmi00exf00.us.packetmotion.com>	<1177172639.25008.1.camel@anduril.intranet.cartel-securite.net>
-	<E8AFFEFDBE97C94E9297963F0527A07B01DFB0EC@pmi00exf00.us.packetmotion.com>
+From: Michael Rash <mbr@cipherdyne.org>
+Subject: fwsnort-1.0 release
+Date: Sat, 21 Apr 2007 18:20:10 -0400
+Message-ID: <20070421222010.GA23691@minastirith>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <E8AFFEFDBE97C94E9297963F0527A07B01DFB0EC@pmi00exf00.us.packetmotion.com>
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,22 +15,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
+fwsnort-1.0 has been released (http://www.cipherdyne.org/fwsnort).  If
+you are running fwsnort along with psad, you might want to upgrade
+fwsnort.  Here is a blog post that discusses a strategy for using
+fwsnort to enhance the performance of snort_inline:
 
-Krishnamoorthy (Siva) Sivakumar a =E9crit :
->=20
-> When I run this rule, and try to access a .txt file (with a web
-> browser on a different machine) on the machine running the iptables, I
-> get a log message and the file access is blocked. However, if I try to
-> do the same but for a .txt file residing on a third machine (machine
-> running iptables is able to see the related packets on its interface
-> connected to the span port), I see no log or blocking.=20
+http://michaelrash.blogspot.com/2007/04/kernel-string-matching-and-ips.html
 
-As C=E9dric said, packets which are not destined to the box do not go=20
-through the INPUT chains. And since the box is not forwarding traffic,=20
-these packets are dropped at the input routing decision stage and do not=20
-go through the FORWARD chains either.
+Here is the ChangeLog for the fwsnort-1.0 release:
+
+- Major update to include support for the NFQUEUE and QUEUE targets
+  with new command line options --NFQUEUE and --QUEUE.  This changes the
+  default LOG target to the NFQUEUE or QUEUE targets instead, and at the
+  same time builds a parallel Snort rule set in the
+  /etc/fwsnort/snort_rules_queue directory.  Every Snort rule in this
+  directory has at least one "content" keyword, which fwsnort uses in
+  the resulting iptables policy.  This policy only sends those packets
+  to snort_inline via the NFQUEUE or QUEUE target that match a content
+  field within some Snort rule.  The end result is that snort_inline
+  should run faster because the vast majority of packets (which are not
+  malicious) are processed via the Linux kernel without ever having to
+  be sent to userspace for analysis.  There is a tradeoff here in terms
+  of attack detection; snort_inline does not receive all packets
+  associated with a stream, so it cannot detect attacks quite as
+  effectively (snort_inline does not have an opportunity to look at
+  reassembled buffers).  However, this trade off may be acceptable for
+  large sites where performance is more important.
+- Bug fix to remove any existing jump rules from the built-in INPUT,
+  OUTPUT, and FORWARD chains before creating a new jump rules.  This
+  allows the fwsnort.sh script to be executed multiple times without
+  creating a new jump rule into the fwsnort chains for each execution.
+- Added the -X command line argument to allow fwsnort to delete all of
+  the fwsnort chains; this emulates the iptables command line argument
+  of the same name.
+- Minor output enhancements and bugfixes to give more insight into the
+  translation process.  For example, if fwsnort is run in --snort-sid
+  mode but is unable to translate the specified signatures, the user is
+  notified.  Also, any existing /etc/fwsnort/fwsnort.sh script is not
+  archived and erased until fwsnort is actually going to write a new
+  one.
+- Added sid values to iptables comment match string.
+- Bugfix for iptables string match --from and --to values to skip past
+  packet headers.  This is an approximation until a new --payload
+  option can be added to the string match extension.
+- Added a single iptables rule testing API internally within fwsnort;
+  this adds a measure of consistency and removes some duplicate code.
+- Added fwsnort mailing list at SourceForge.
+
+
+--
+Michael Rash
+http://www.cipherdyne.org/
+Key fingerprint = 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
 
