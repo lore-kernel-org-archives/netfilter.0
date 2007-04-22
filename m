@@ -1,13 +1,10 @@
-From: Oleg <xsov@mail.ru>
-Subject: Re: Iptables rule on span traffic
-Date: Sat, 21 Apr 2007 17:46:42 +0400
-Message-ID: <200704211746.54974.xsov@mail.ru>
-References: <E8AFFEFDBE97C94E9297963F0527A07B01DFAED8@pmi00exf00.us.packetmotion.com>
+From: =?ISO-8859-1?Q?S=E9bastien_CRAMATTE?= <scramatte@zensoluciones.com>
+Subject: Conntrack table full  freeze  my Heavy loaded QoS manager...
+Date: Mon, 23 Apr 2007 01:27:18 +0200
+Message-ID: <462BEF56.10006@zensoluciones.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070003020105050004010101"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <E8AFFEFDBE97C94E9297963F0527A07B01DFAED8@pmi00exf00.us.packetmotion.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,20 +15,74 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> Anyway, here is my situation.
-> I have fwsnort generate iptables rule (based on snort IDS rules) which are
-> running on a machine with two interfaces. One of the interfaces (eth1) ?is
-> connected to a SPAN port that mirrors traffic on part of our network, this
-> interface is in promiscuous mode. The other interface (eth0) is a regular
-> addressable interface. For some reason, the iptables rules seem to have no
-> effect on traffic seen by the SPAN port.
-AFAIK pcap library gets traffic before iptables rule processing (because it's 
-promiscous mode), so snort and tcpdump (and any other tool which uses pcap) 
-continues to see 'blocked by iptables' traffic.
+This is a multi-part message in MIME format.
+--------------070003020105050004010101
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Best regards, Oleg
+Hello
+
+I'm running  a  L7 QoS manager with 2.6.18 kernel  under debian sarge 3.1
+The server is p4 hyper threading  + 3 gb of ram.
+
+The server freeze under heavy traffic ...
+I've increased  conntrack_max   but is insuficient !
+
+# cat /etc/sysctl.conf
+> net.ipv4.netfilter.ip_conntrack_max =3D 131072
+
+
+Any ideas, tips ?
+
+Regards
+
+--=20
+ZEN SOLUCIONES - Be in XForms take your "Concentr=E9"
+S=E9bastien CRAMATTE=20
+
+Plaza Sandoval, 5, piso 4b
+30004 Murcia - ESPA=D1A
+
+M=F3vil : +34 627 66 52 83
+Fijo : +34 968 29 29 65
+
+E-mail : scramatte@zensoluciones.com
+Site : www.zensoluciones.com
+
+Skype : scramatte
+Msn : scramatte@hotmail.com
+Jabber: scramatte@jabber.org
+--
+
+CONCENTR=C9
+xml entreprise grade framework
+http://concentre.zensoluciones.com
+
+--
+This e-mail is privileged and may contain confidential information intend=
+ed only for the person(s) named above. If you receive this e-mail in erro=
+r, please notify the sender immediately and delete it. E-mail and interne=
+t transmissions can't be warrant privacy, integrity or correct reception.=
+ The sender will not be liable for any damages resulting.=20
+
+Este mensaje va dirigido, de manera exclusiva, a su destinatario y puede =
+contener informaci=F3n confidencial. En caso de haber recibido este mensa=
+je por error, informe al emisor inmediatamente y proceda a su eliminaci=F3=
+n. El correo electr=F3nico y las comunicaciones por medio de Internet no =
+permiten garantizar la confidencialidad de los mensajes transmitidos, as=ED=
+ como tampoco su integridad o su correcta de recepci=F3n. El emisor no as=
+ume responsabilidad alguna por tales circunstancias.
+
+Ce message est destin=E9 exclusivement =E0 son destinataire et peut conte=
+nir des informations confidentielles. En cas de r=E9ception d'un tel mess=
+age par erreur, informez l'exp=E9diteur imm=E9diatement et proc=E9dez =E0=
+ son effacement. Il n'est pas possible de garantir la confidentialit=E9, =
+l'int=E9grit=E9 ou la r=E9ception correcte du courrier =E9lectronique ain=
+si que des communications par internet. L'exp=E9diteur ne peut =EAtre ten=
+u pour responsable d'=E9ventuels dommages commis.
+
+
+--------------070003020105050004010101--
 
