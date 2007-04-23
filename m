@@ -1,12 +1,17 @@
-From: Nagy Zoltan <nagy.zoltan@cit.hu>
-Subject: Re: How to filter this packet?
-Date: Mon, 23 Apr 2007 18:22:25 +0200
-Message-ID: <462CDD41.8020505@cit.hu>
-References: <450608.64360.qm@web63507.mail.re1.yahoo.com>
+From: "Krishnamoorthy (Siva) Sivakumar" <ksivakumar@packetmotion.com>
+Subject: RE: Iptables rule on span traffic
+Date: Mon, 23 Apr 2007 09:53:09 -0700
+Message-ID: <E8AFFEFDBE97C94E9297963F0527A07B01DFB227@pmi00exf00.us.packetmotion.com>
+References: <E8AFFEFDBE97C94E9297963F0527A07B01DFAED8@pmi00exf00.us.packetmotion.com>	<1177172639.25008.1.camel@anduril.intranet.cartel-securite.net><E8AFFEFDBE97C94E9297963F0527A07B01DFB0EC@pmi00exf00.us.packetmotion.com>	<462A8014.6000105@plouf.fr.eu.org>
+	<E8AFFEFDBE97C94E9297963F0527A07B01DFB16F@pmi00exf00.us.packetmotion.com>
+	<462C4337.1060508@rtij.nl>
+	<E8AFFEFDBE97C94E9297963F0527A07B01DFB187@pmi00exf00.us.packetmotion.com>
+	<462C47CB.8030806@rtij.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <450608.64360.qm@web63507.mail.re1.yahoo.com>
+Content-class: urn:content-classes:message
+In-Reply-To: <462C47CB.8030806@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,54 +22,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: monty denis <montydenis@yahoo.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Martijn Lievaart <m@rtij.nl>
+Cc: netfilter@lists.netfilter.org, Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 
-monty denis wrote:
-> Hello, all.
-> 
-> I can filter some protocol packet like below.
-> 
-> iptables -A INPUT -p x 
-> 
-> But how can I filtre like (proto 0) below?
-> proto 0 means protocol 0 ?
-> 
-> I can find protocol 0 information at  
-> http://www.iana.org/assignments/protocol-numbers
-> 
-> 
->  11.34.254.146 -> xx.xx.xx.xx [proto 0]
->   ........WinSock 2.0.....LG@.
+That was easy :-) I will try that and see how it goes.=20
 
-hi
-you can use: l7,string,u32
-string is the simplest and cheapest for this,
-but if you place a rule like:
-$ipt -m string --from 8 --to 16 --string WinSock
-you maybe have to face with false positives.
+Thanks,
+Siva
 
-or you can create a chain and return for all legal protocols, in this 
-way you can provide a negate for the others, and kick out proto 0 (and 
-others as well)
-or you can go ahead and implement handling of protocol 255 it's reserved 
-anyway ;)
-that way netfilter can use proto 255 for marking any protocol is ok
-and use 0 and others as protocol identifiers
+-----Original Message-----
+From: Martijn Lievaart [mailto:m@rtij.nl]=20
+Sent: Sunday, April 22, 2007 10:45 PM
+To: Krishnamoorthy (Siva) Sivakumar
+Cc: Pascal Hambourg; netfilter@lists.netfilter.org
+Subject: Re: Iptables rule on span traffic
 
-eg:
+Krishnamoorthy (Siva) Sivakumar wrote:
+> You could try to turn on forwarding and block all traffic that makes
+it=20
+> through the snort rules.
+>
+> HTH,
+> M4
+>
+> [Siva:]=20
+> Can you explain in more detail (sorry I am a novice)? How do you turn
+on forwarding? Does this require the iptables machine to be inline (in
+addition to a regular firewall/router that does the actual forwarding)?=20
+>
+>  =20
 
-table INPUT
-ipt -j PROTONEG
+http://www.google.nl/search?q=3Dlinux+forwarding   :-)
 
-table PROTONEG
-ipt -p tcp -j RETURN
-ipt -p udp -j RETURN
-ipt -p icmp -j RETURN
-ipt -j DROP
+HTH,
+M4
 
-
-good luck ;)
-kirk
 
