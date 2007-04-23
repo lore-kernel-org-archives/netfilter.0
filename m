@@ -1,12 +1,9 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: How to filter this packet?
-Date: Mon, 23 Apr 2007 20:23:14 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0704232020570.31254@yvahk01.tjqt.qr>
-References: <450608.64360.qm@web63507.mail.re1.yahoo.com>
-	<462CDD41.8020505@cit.hu>
+From: "Andrew Kraslavsky" <andykras@hotmail.com>
+Subject: SYN Proxy for iptables?
+Date: Mon, 23 Apr 2007 12:24:01 -0700
+Message-ID: <BAY119-F18F1AA6AF53F9D4D9CDFCBD64B0@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <462CDD41.8020505@cit.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +14,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nagy Zoltan <nagy.zoltan@cit.hu>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: netfilter@lists.netfilter.org
 
+Hello,
 
-On Apr 23 2007 18:22, Nagy Zoltan wrote:
-> monty denis wrote:
->> Hello, all.
->> 
->> I can filter some protocol packet like below.
->> 
->> iptables -A INPUT -p x 
->> But how can I filtre like (proto 0) below?
->> proto 0 means protocol 0 ?
->> 
->> I can find protocol 0 information at
->> http://www.iana.org/assignments/protocol-numbers
->> 
->> 
->> 11.34.254.146 -> xx.xx.xx.xx [proto 0]
->> ........WinSock 2.0.....LG@.
+For SYN flood protection, it seems OpenBSD's pf deploys something they call=
+=20
+a "SYN proxy" whereby the 3 step TCP handshake is completed by this proxy s=
+o=20
+as to avoid SYN floods to the actual target.
 
-according to /etc/protocols, proto 0 is IPv6-HOPBYHOP ...
+This OpenBSD pf feature is described here:
+http://www.openbsd.org/faq/pf/filter.html#synproxy
 
+The target is only brought into the picture if and when the handshake is=20
+complete.
 
-Jan
--- 
+I guess pf must then adjust the real target's sequence numbers so as not to=
+=20
+confuse the initiator of the connection.
+
+Has something like this been implemented via iptables?
+
+If not, are there any plans to do so?
+
+Thanks,
+
+- Andrew Kraslavsky
+
+_________________________________________________________________
+MSN is giving away a trip to Vegas to see Elton John.=A0 Enter to win today=
+.=20
+http://msnconcertcontest.com?icid-nceltontagline
+
 
