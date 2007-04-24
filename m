@@ -1,9 +1,9 @@
 From: =?ISO-8859-1?Q?S=E9bastien_CRAMATTE?= <scramatte@zensoluciones.com>
-Subject: IPMark won't compile on a vanilla 2.6.20 kernel
-Date: Tue, 24 Apr 2007 15:54:09 +0200
-Message-ID: <462E0C01.5080405@zensoluciones.com>
+Subject: Very strange  ip_conntrack_max value with kernel 2.6.20 !!!
+Date: Tue, 24 Apr 2007 21:06:16 +0200
+Message-ID: <462E5528.5050503@zensoluciones.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080005030200000501040402"
+Content-Type: multipart/mixed; boundary="------------000408070600050607000007"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -18,36 +18,79 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
 This is a multi-part message in MIME format.
---------------080005030200000501040402
+--------------000408070600050607000007
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
-IPMark won't compile on a vanilla 2.6.20 kernel
-I obtain this error during the compilation under debian sarge 3.1
+I've build  a 2.6.20 kernel  and  conntrack max have an huge value (in
+reality the limit fixed in the source code)
 
-  CC [M]  net/ipv4/netfilter/ipt_TTL.o
-  CC [M]  net/ipv4/netfilter/ipt_IPMARK.o
-net/ipv4/netfilter/ipt_IPMARK.c: In function `target':
-net/ipv4/netfilter/ipt_IPMARK.c:37: error: structure has no member named
-`nfmark'
-net/ipv4/netfilter/ipt_IPMARK.c:38: error: structure has no member named
-`nfmark'
-net/ipv4/netfilter/ipt_IPMARK.c: At top level:
-net/ipv4/netfilter/ipt_IPMARK.c:77: warning: initialization from
-incompatible pointer type
-net/ipv4/netfilter/ipt_IPMARK.c:81: warning: initialization from
-incompatible pointer type
-make[4]: *** [net/ipv4/netfilter/ipt_IPMARK.o] Error 1
-make[3]: *** [net/ipv4/netfilter] Error 2
-make[2]: *** [net/ipv4] Error 2
-make[1]: *** [net] Error 2
-make[1]: Leaving directory
-`/usr/src/sarge-router-0.3.2/linux/linux-2.6.20.7'
+*#cat /proc/sys/net/ipv4/netfilter/ip_conntrack_max
+524288
+*
+In my sysctl.conf I've got
+
+net.ipv4.netfilter.ip_conntrack_max =3D 131072
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_established=3D 86400
+
+After I've forced  a reload of sysctl   proc value is updated   !
+
+#sysctl. -p
+# cat /proc/sys/net/ipv4/netfilter/ip_conntrack_max
+131072
 
 Any ideas ?
+Regards
 
 
---------------080005030200000501040402--
+
+--=20
+ZEN SOLUCIONES - Be in XForms take your "Concentr=E9"
+S=E9bastien CRAMATTE=20
+
+Plaza Sandoval, 5, piso 4b
+30004 Murcia - ESPA=D1A
+
+M=F3vil : +34 627 66 52 83
+Fijo : +34 968 29 29 65
+
+E-mail : scramatte@zensoluciones.com
+Site : www.zensoluciones.com
+
+Skype : scramatte
+Msn : scramatte@hotmail.com
+Jabber: scramatte@jabber.org
+--
+
+CONCENTR=C9
+xml entreprise grade framework
+http://concentre.zensoluciones.com
+
+--
+This e-mail is privileged and may contain confidential information intend=
+ed only for the person(s) named above. If you receive this e-mail in erro=
+r, please notify the sender immediately and delete it. E-mail and interne=
+t transmissions can't be warrant privacy, integrity or correct reception.=
+ The sender will not be liable for any damages resulting.=20
+
+Este mensaje va dirigido, de manera exclusiva, a su destinatario y puede =
+contener informaci=F3n confidencial. En caso de haber recibido este mensa=
+je por error, informe al emisor inmediatamente y proceda a su eliminaci=F3=
+n. El correo electr=F3nico y las comunicaciones por medio de Internet no =
+permiten garantizar la confidencialidad de los mensajes transmitidos, as=ED=
+ como tampoco su integridad o su correcta de recepci=F3n. El emisor no as=
+ume responsabilidad alguna por tales circunstancias.
+
+Ce message est destin=E9 exclusivement =E0 son destinataire et peut conte=
+nir des informations confidentielles. En cas de r=E9ception d'un tel mess=
+age par erreur, informez l'exp=E9diteur imm=E9diatement et proc=E9dez =E0=
+ son effacement. Il n'est pas possible de garantir la confidentialit=E9, =
+l'int=E9grit=E9 ou la r=E9ception correcte du courrier =E9lectronique ain=
+si que des communications par internet. L'exp=E9diteur ne peut =EAtre ten=
+u pour responsable d'=E9ventuels dommages commis.
+
+
+--------------000408070600050607000007--
 
