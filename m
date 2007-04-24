@@ -1,11 +1,10 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Geoip patch and its features
-Date: Tue, 24 Apr 2007 15:03:06 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0704241501200.2490@yvahk01.tjqt.qr>
-References: <1814bfe70704220212w75466abeo663c7349586b6d99@mail.gmail.com>
+From: =?ISO-8859-1?Q?S=E9bastien_CRAMATTE?= <scramatte@zensoluciones.com>
+Subject: IPMark won't compile on a vanilla 2.6.20 kernel
+Date: Tue, 24 Apr 2007 15:54:09 +0200
+Message-ID: <462E0C01.5080405@zensoluciones.com>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------080005030200000501040402"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1814bfe70704220212w75466abeo663c7349586b6d99@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +15,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+This is a multi-part message in MIME format.
+--------------080005030200000501040402
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-To: Elvir Kuric <omasnjak@gmail.com>
-Cc: netfilter@lists.netfilter.org
+
+Hello,
+
+IPMark won't compile on a vanilla 2.6.20 kernel
+I obtain this error during the compilation under debian sarge 3.1
+
+  CC [M]  net/ipv4/netfilter/ipt_TTL.o
+  CC [M]  net/ipv4/netfilter/ipt_IPMARK.o
+net/ipv4/netfilter/ipt_IPMARK.c: In function `target':
+net/ipv4/netfilter/ipt_IPMARK.c:37: error: structure has no member named
+`nfmark'
+net/ipv4/netfilter/ipt_IPMARK.c:38: error: structure has no member named
+`nfmark'
+net/ipv4/netfilter/ipt_IPMARK.c: At top level:
+net/ipv4/netfilter/ipt_IPMARK.c:77: warning: initialization from
+incompatible pointer type
+net/ipv4/netfilter/ipt_IPMARK.c:81: warning: initialization from
+incompatible pointer type
+make[4]: *** [net/ipv4/netfilter/ipt_IPMARK.o] Error 1
+make[3]: *** [net/ipv4/netfilter] Error 2
+make[2]: *** [net/ipv4] Error 2
+make[1]: *** [net] Error 2
+make[1]: Leaving directory
+`/usr/src/sarge-router-0.3.2/linux/linux-2.6.20.7'
+
+Any ideas ?
 
 
-On Apr 22 2007 11:12, Elvir Kuric wrote:
->
-> last night I implemented geoip feature in my firewall. Using geoip I
-> can protect my firewall from any kind of traffic from particular
-> countries ( someone call id racism routing ). I am wondering now if
-> use this patch in combination with other iptables features will this
-> prevent for example different kind of attacks like dos, unauthorized
-> logging and so on.
-
-But geoip won't help with that.
-
-> I know it is impossible to stop all attacks, but we
-> can maje their results smaller.  I think geoip is very good in cases
-> when you for example know that you are not going to log from  Bosnia
-> just simpli put Bosnian's IPs on black list.
-
-In that cast you could just unlock all the IP ranges you will
-ever log in from. For me that's like 4 addresses only.
-Should you happen to login from vacation, ssh to your frontend box first.
-
-
-Jan
--- 
+--------------080005030200000501040402--
 
