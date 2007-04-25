@@ -1,14 +1,12 @@
-From: Henrik Martin <henrik@netgate.net>
-Subject: Re: Yet another local nat/port redirecting question
-Date: Wed, 25 Apr 2007 00:07:08 -0700
-Message-ID: <200704250007.10789.henrik@netgate.net>
-References: <200704241701.28038.henrik@netgate.net> <462EEC21.5020306@rtij.nl>
-Reply-To: Henrik Martin <henrik@netgate.net>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: tcp_window_tracking / tcp sequence number tracking ?
+Date: Wed, 25 Apr 2007 15:02:31 +0200
+Message-ID: <462F5167.9050905@plouf.fr.eu.org>
+References: <462CEFB5.20507@pason.com> <462ECA28.60102@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <462EEC21.5020306@rtij.nl>
-Content-Disposition: inline
+In-Reply-To: <462ECA28.60102@netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,36 +17,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Martijn Lievaart <m@rtij.nl>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Tuesday 24 April 2007 22:50, Martijn Lievaart wrote:
+Hello,
 
-> The output rule will never be hit, the packet is already redirected by
-> the predirect rule. You don't need that second rule.
+Pablo Neira Ayuso a =E9crit :
+>=20
+> This feature is available in the Linux kernel since 2.6.11 (if my mind
+> serves well)
 
-Ok I figured that was the case, but I had seen it in another example
-so I thought I'd try it.
-
-> This should work. It works for me, I use redirects quite frequently. The
-> only thing I can think of is that the webserver listens on a specific IP
-> and you try to connect to another.
->
-> HTH,
-> M4
-
-What OS do you run? I'm running OpenSuSE 10.2. I've read a few
-postings on the list that claim that some SuSE kernels have problems
-with local port forwarding. BTW, I even tried to have it forward to
-another host, but it didn't make a difference. I've also tried to
-set /proc/sys/net/ipv4/ip_forward to 1, but it has no effect. I've
-tried redirecting to ports that are bound via 0.0.0.0, 127.0.0.1, etc,
-and it doesn't matter. I simply cannot get it to work and it really
-frustrates me. Rgds,
-
-/Henrik
-
-
-
+According to my kernel changelog archive, the TCP window tracking patch=20
+was included in 2.6.9. A few bugfixes and improvements came with 2.6.10=20
+and 2.6.11.
 
