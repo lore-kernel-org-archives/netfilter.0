@@ -1,10 +1,12 @@
-From: Ben Greear <greearb@candelatech.com>
-Subject: Masquerade based on skb->mark ?
-Date: Tue, 24 Apr 2007 20:06:52 -0700
-Message-ID: <462EC5CC.4080300@candelatech.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: tcp_window_tracking / tcp sequence number tracking ?
+Date: Wed, 25 Apr 2007 05:25:28 +0200
+Message-ID: <462ECA28.60102@netfilter.org>
+References: <462CEFB5.20507@pason.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <462CEFB5.20507@pason.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,39 +17,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Michael Gale <michael.gale@pason.com>
+Cc: netfilter@lists.netfilter.org
 
-I'm now trying to masquerade packets that have been marked
-a certain way.  I'm using these commands:
+Michael Gale wrote:
+> Is this feature only available via patch-o-matic ?
 
-# I'm not sure this is doing the right thing, but it is not giving errors.
-iptables -A POSTROUTING -t nat -j MASQUERADE -m mark --mark 10001
-
-# This appears to work as planned.
-iptables -t mangle -A PREROUTING -i eth1  -j MARK --set-mark 10001
-iptables -t mangle -A PREROUTING -i eth2  -j MARK --set-mark 10001
-
-I added a u32 'mark' field to the conn-track tuple, and I now get
-different conn-tracking objects for the same source/dest but with
-different 'mark'.  However, the ct->status bit does not have the
-IPS_SRC_NAT flag set.
-
-I think I need to figure out what code creates the initial conn-track
-and make sure it is setting the status bits correctly based on the
-skb->mark, but I am not sure where this code exists.
-
-Any ideas on where to start looking?  I've been trying to follow
-the code path in the netfilter/nat logic, but it's proving
-slow going!
-
-Thanks,
-Ben
-
-PS.  If anyone does this sort of work for hire, please contact me off-list.
+This feature is available in the Linux kernel since 2.6.11 (if my mind
+serves well)
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+The dawn of the fourth age of Linux firewalling is coming; a time of
+great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
 
