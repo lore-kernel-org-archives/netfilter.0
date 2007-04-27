@@ -1,11 +1,12 @@
-From: "Alex" <alex@hackgod.org>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Subject: Re: Wireless Login Page
-Date: Fri, 27 Apr 2007 12:41:07 +0100
-Message-ID: <00d501c788c0$f460c730$0a00080a@rhea>
+Date: Fri, 27 Apr 2007 17:17:07 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0704271716460.506@yvahk01.tjqt.qr>
 References: <1177606092.3828.108.camel@ws1.walco02.com>
+	<00d501c788c0$f460c730$0a00080a@rhea>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <00d501c788c0$f460c730$0a00080a@rhea>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +17,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Kirk Wallace <kwallace@wallacecompany.com>, netfilter@lists.netfilter.org
-
-You don't need contrack for the redirection part. I've achived the same 
-thing on my router using -j REDIRECT
-
-You could do it for only port 80 trafic, but I've done it for all traffic. 
-You get some entertaining attempts from people trying to work out why they 
-have a valid DHCP lease but now internet conductivity.
-
------ Original Message ----- 
-From: "Kirk Wallace" <kwallace@wallacecompany.com>
-To: <netfilter@lists.netfilter.org>
-Sent: Thursday, April 26, 2007 5:48 PM
-Subject: Wireless Login Page
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Alex <alex@hackgod.org>
+Cc: netfilter@lists.netfilter.org
 
 
->I have a wireless card installed on Fedora 4 system. I have the wireless
-> connection open, DHCP enabled and have disabled forwarding for the
-> "open" network. I use Poptop and Radius to authenticate and assign IP
-> addresses on the tunnel and then allow forwarding for the tunnel address
-> range. I now want to have all http requests from the "open" network to
-> be directed to a opening/login page on the wireless server. Can this be
-> done with iptables (conntrack?)? Would anyone suggest links or keywords
-> for finding more information? Thank you.
+On Apr 27 2007 12:41, Alex wrote:
 >
-> Kirk
->
->
-> 
+> You don't need contrack for the redirection part. I've achived the same thing
+> on my router using -j REDIRECT
 
+REDIRECT does use connection tracking (by means of a NAT mapping).
+
+
+Jan
+-- 
 
