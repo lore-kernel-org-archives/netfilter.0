@@ -1,14 +1,13 @@
-From: =?iso-8859-2?B?SvpsaXVzIEJlbbk=?= <julius.bems@gmail.com>
-Subject: in-memory table change
-Date: Sat, 28 Apr 2007 11:17:51 +0200
-Message-ID: <46331171.0580d666.73d8.ffffc398@mx.google.com>
+From: "Neil Aggarwal" <neil@JAMMConsulting.com>
+Subject: RE: Port forwarding not working (nfcan: to exclusive) (nfcan: to
+	exclusive)
+Date: Sun, 29 Apr 2007 08:06:44 -0500
+Message-ID: <000c01c78a5f$3d392570$dededede@neilhp>
+References: <1177830613l.3596l.1l@soapy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:from:to:subject:date:mime-version:content-type:content-transfer-encoding:x-mailer:thread-index:content-language:message-id;
-	b=ElCBZXM+97bMAkZ0CkT3UuqQMmJbACgQoQV/KdOPWvQ2JPARopfrfe3WU0rthNTJO515Es2Fn04AGBq9/I1XUoDWjEnB7umdErXYAPN7NA4ErkVfElsCowxE3KIJgndgS5hEuw9h+D4Q1UCp6sLnAGnNnM6/KqTsXQd5+TOZsp8=
-Content-Language: sk
+In-Reply-To: <1177830613l.3596l.1l@soapy>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,27 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Jim:
 
-I have to try solve this problem:
--If there is a lot of rules in the packet filter table, it takes a quite
-long time for 'iptables' to add a new rule (the change will be seen
-sometimes in 30 seconds).
--I don't know how 'iptables' exactly works, but I thinked about =
-changing=A0
-rules exactly in the table, which is in-memory. It could take less time =
-than
-'iptables'
+> Maybe you could use SNAT to make the packets appear
+> to come from the firewall, then they ought to come back. 
 
-So my question is: Is this what I have described real? If yes, are there
-some utilities by which I can change in-memory packet filter table? =
-Because
-I want avoid writing some code in c.
+How do I set up the SNAT rule?
 
-Thank You for reply
+Thanks,
+	Neil
 
+
+--
+Neil Aggarwal, (832)245-7314, www.JAMMConsulting.com
+FREE! Eliminate junk email and reclaim your inbox.
+Visit http://www.spammilter.com for details.
 
 
