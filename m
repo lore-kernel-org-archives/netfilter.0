@@ -1,10 +1,17 @@
-From: "Adam" <adam@sccode.com>
-Subject: Layer (5,6,7) based NAT
-Date: Sun, 29 Apr 2007 07:42:23 -0600 (MDT)
-Message-ID: <44301.80.177.104.4.1177854143.squirrel@webmail.modwest.com>
+From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
+Subject: Re: Port forwarding not working
+Date: Sun, 29 Apr 2007 10:39:54 -0400
+Message-ID: <1177857594l.3596l.2l@soapy>
+References: <1177830613l.3596l.1l@soapy>
+	<000c01c78a5f$3d392570$dededede@neilhp>
+Reply-To: nfcan.x.jimlaur@dfgh.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <000c01c78a5f$3d392570$dededede@neilhp> (from
+	+nfcan+jimlaur+ce6b708e36.neil#JAMMConsulting.com@spamgourmet.com on
+	Sun Apr 29 09:06:44 2007)
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,18 +25,31 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I am wondering weather this is possible. I have one port and one public I=
-P
-address lets say:
+On 04/29/2007 09:06:44 AM, Neil Aggarwal - neil@JAMMConsulting.com wrote:
+> Jim:
+>=20
+> > Maybe you could use SNAT to make the packets appear
+> > to come from the firewall, then they ought to come back.=20
+>=20
+> How do I set up the SNAT rule?
+>=20
 
-34.123.22.33:5615
+This will make the packet look like it came from the firewall:
 
-If I connect using SSH I want to DNAT to port 22, if I connect using SSL =
-I
-want to DNAT to port 443, if I connect using HTTP I want to DNAT to port
-80.
+/sbin/iptables -t nat -I POSTROUTING -o eth1 -d $LINKSYS_VPN_IP \=20
+  -p tcp --dport 1723 -j SNAT --to-source 192.168.1.1
 
-If this kind of upper layer protocol determination possible? If so, is
-netfiter the application to do it?
+(where 192.168.1.1 is the ip address of the firewall on eth1 side)
+
+If postrouting still has a default drop policy etc.
+then this rule must be found before the accept rule,
+that is why it has -I, to put it first.
+
+HTH
+--=20
+Jim Laurino
+nfcan.x.jimlaur@dfgh.net
+Please reply to the list.
+Only mail from the listserver reaches this address.
 
 
