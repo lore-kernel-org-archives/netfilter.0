@@ -1,10 +1,9 @@
-From: Phil Rhoades <phil@pricom.com.au>
-Subject: DHCP & remote ssh logins
-Date: Sun, 29 Apr 2007 23:33:58 +1000
-Message-ID: <1177853638.11131.46.camel@prix.pricom.com.au>
-Reply-To: phil@pricom.com.au
+From: "Adam" <adam@sccode.com>
+Subject: Layer (5,6,7) based NAT
+Date: Sun, 29 Apr 2007 07:42:23 -0600 (MDT)
+Message-ID: <44301.80.177.104.4.1177854143.squirrel@webmail.modwest.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,30 +18,18 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-People,
+I am wondering weather this is possible. I have one port and one public I=
+P
+address lets say:
 
-If iptables are setup to only accept ssh logins from particular IPs, how
-do people login when they are on the move and have a DHCP allocated IP?
+34.123.22.33:5615
 
-I thought I could do this by sending a mail (from the remote DHCP IP)
-formatted in a particular way, to a particular user on the destination
-server which would then be processed, which would then cause a change to
-the iptables setup.  However, I assume other people have had to solve
-this problem and I don't want to re-invent wheels . .
+If I connect using SSH I want to DNAT to port 22, if I connect using SSL =
+I
+want to DNAT to port 443, if I connect using HTTP I want to DNAT to port
+80.
 
-Suggestions appreciated!
-
-Regards,
-
-Phil.
--- 
-Philip Rhoades
-
-Pricom Pty Limited  (ACN 003 252 275  ABN 91 003 252 275)
-GPO Box 3411
-Sydney NSW      2001
-Australia
-Fax:     +61:(0)2-8221-9599
-E-mail:  phil@pricom.com.au
+If this kind of upper layer protocol determination possible? If so, is
+netfiter the application to do it?
 
 
