@@ -1,7 +1,7 @@
-From: Kirk Wallace <kwallace@wallacecompany.com>
+From: Martijn Lievaart <m@rtij.nl>
 Subject: Re: Layer (5,6,7) based NAT
-Date: Sun, 29 Apr 2007 09:33:59 -0700
-Message-ID: <1177864439.3828.235.camel@ws1.walco02.com>
+Date: Sun, 29 Apr 2007 18:50:17 +0200
+Message-ID: <4634CCC9.2000201@rtij.nl>
 References: <44301.80.177.104.4.1177854143.squirrel@webmail.modwest.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -17,33 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Adam <adam@sccode.com>
+Cc: netfilter@lists.netfilter.org
 
-Adam
-
-I was looking at this to solve another problem, but it may help you
-solve yours?
-
-http://l7-filter.sourceforge.net/
-
-Kirk
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-On Sun, 2007-04-29 at 07:42 -0600, Adam wrote:
+Adam wrote:
 > I am wondering weather this is possible. I have one port and one public IP
 > address lets say:
-> 
+>
 > 34.123.22.33:5615
-> 
+>
 > If I connect using SSH I want to DNAT to port 22, if I connect using SSL I
 > want to DNAT to port 443, if I connect using HTTP I want to DNAT to port
 > 80.
-> 
+>
 > If this kind of upper layer protocol determination possible? If so, is
 > netfiter the application to do it?
-> 
-> 
-> 
-> 
+>   
+
+No, this is not (easily) possible, and certainly not with iptables. The 
+reason is that you need a complete three way handshake before data 
+starts flowing and you can determine what protocol is spoken. However, 
+NAT must act at all packets, from the first. Besides, if you could start 
+NATting at a certain point, the recipient would not see the three way 
+handshake, so you cannot connect to your final destination.
+
+Your only hope is some kind of proxy. And if you find  it, please let me 
+know, I would be very interested as well.
+
+HTH,
+M4
 
 
