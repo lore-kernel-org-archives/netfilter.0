@@ -1,17 +1,12 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: Port forwarding not working
-Date: Sun, 29 Apr 2007 10:39:54 -0400
-Message-ID: <1177857594l.3596l.2l@soapy>
-References: <1177830613l.3596l.1l@soapy>
-	<000c01c78a5f$3d392570$dededede@neilhp>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: in-memory table change
+Date: Sun, 29 Apr 2007 17:09:07 +0200
+Message-ID: <4634B513.2020706@rtij.nl>
+References: <46331171.0580d666.73d8.ffffc398@mx.google.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000c01c78a5f$3d392570$dededede@neilhp> (from
-	+nfcan+jimlaur+ce6b708e36.neil#JAMMConsulting.com@spamgourmet.com on
-	Sun Apr 29 09:06:44 2007)
-Content-Disposition: inline
+In-Reply-To: <46331171.0580d666.73d8.ffffc398@mx.google.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,34 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-2?Q?J=FAlius_Bem=B9?= <julius.bems@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-On 04/29/2007 09:06:44 AM, Neil Aggarwal - neil@JAMMConsulting.com wrote:
-> Jim:
->=20
-> > Maybe you could use SNAT to make the packets appear
-> > to come from the firewall, then they ought to come back.=20
->=20
-> How do I set up the SNAT rule?
->=20
+J=FAlius Bem=B9 wrote:
+> Hello,
+>
+> I have to try solve this problem:
+> -If there is a lot of rules in the packet filter table, it takes a qui=
+te
+> long time for 'iptables' to add a new rule (the change will be seen
+> sometimes in 30 seconds).
+> -I don't know how 'iptables' exactly works, but I thinked about changi=
+ng 
+> rules exactly in the table, which is in-memory. It could take less tim=
+e than
+> 'iptables'
+>
+> So my question is: Is this what I have described real? If yes, are the=
+re
+> some utilities by which I can change in-memory packet filter table? Be=
+cause
+> I want avoid writing some code in c.
+>   
 
-This will make the packet look like it came from the firewall:
+Do you use iptables--restore? If not, look into that. If yes, well, I'm 
+afraid I cannot help you.
 
-/sbin/iptables -t nat -I POSTROUTING -o eth1 -d $LINKSYS_VPN_IP \=20
-  -p tcp --dport 1723 -j SNAT --to-source 192.168.1.1
-
-(where 192.168.1.1 is the ip address of the firewall on eth1 side)
-
-If postrouting still has a default drop policy etc.
-then this rule must be found before the accept rule,
-that is why it has -I, to put it first.
-
-HTH
---=20
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
+HTH,
+M4
 
 
