@@ -1,19 +1,10 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: Port forwarding not working (nfcan: to exclusive) (nfcan: to 
- exclusive)
-Date: Sun, 29 Apr 2007 03:10:13 -0400
-Message-ID: <1177830613l.3596l.1l@soapy>
-References: <000001c78a0c$a7b02cd0$dededede@neilhp>
-	<1177819456l.3596l.0l@soapy>
-	<1077.70.240.185.92.1177822593.squirrel@ssl.jammconsulting.com>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: <sneak@ipnoc.co.za>
+Subject: NATing Not wotking
+Date: Sun, 29 Apr 2007 14:14:49 +0200
+Message-ID: <000d01c78a57$fbe2ef90$648045ac@Sneak>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1077.70.240.185.92.1177822593.squirrel@ssl.jammconsulting.com>
-	(from +nfcan+jimlaur+ce6b708e36.neil#JAMMConsulting.com@spamgourmet.com
-	on Sun Apr 29 00:56:33 2007)
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,66 +15,142 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-On 04/29/2007 12:56:33 AM, neil@JAMMConsulting.com wrote:
-> Jim:
->=20
-> > The outside should be able to initiate
-> > so the first rule looks good:
-> >
-> > /sbin/iptables -A FORWARD -i eth0 -o eth1 -d $LINKSYS_VPN_IP
-> > 	-p tcp --sport 1024: --dport 1723
-> > 	-m state --state NEW,ESTABLISHED -j ACCEPT
-> >
-> > But you need to accept the return packets.
-> > How about this for the return pattern:
-> >
-> > /sbin/iptables -A FORWARD -i eth1 -o eth0 -s $LINKSYS_VPN_IP
-> > 	-p tcp --sport 1723
-> > 	-m state --state ESTABLISHED -j ACCEPT
->=20
-> That is my point.  Without this rule, I should see packets
-> hitting the firewall in the log.  I dont see them.
+Hi,
 
-I guess "hitting the firewall" means showing up in a drop count.
-I agree, if the packets come in they should be counted.
-But you do need some rule to accept them in filter.
+as shown below Ive got 3 machines, i try ping machine 3 (IP 172.15.0.1) from 
+Machine 1 (IP 10.22.200.25)
+which has a route pointing to NAT server (IP 10.22.200.1), in hope that it 
+would be natted to (172.15.0.15)
+and machine3 would be able to speak to machine1. Now this is not the case. 
+the TCP dump Below Indicates that
+the Natting is happening, And I have enabled Ipforwading in /etc/sysctl.conf 
+.. On that nat server im running Centos5 kernel 2.6.18-8
 
-If the packets do not come back, maybe that is a routing problem?
-I can also imagine that a vpn box might not want to talk to hosts
-not on the local network it was hooked up to.
-Some security folks might get upset :)
-Maybe you could use SNAT to make the packets appear
-to come from the firewall, then they ought to come back.
-I think that is a better use of the postrouting chain.
-The mantra is always "filter in filter", etc.,
-and my experience has been that it is good advice.
+But I dont get any reply from Machine3 and when I do a tcpdump on machine3 I 
+get ping requests
+from 10.22.200.25 and not its natted address 172.15.0.15.
 
-> I can add this rule, but I don't think the return packets are
-> coming back correctly.
 
-I think a sniffer, e.g. wireshark (ex ethereal), would
-be able to tell you if there were loose packets
-floating around on the eth1 side trying to get somewhere else.
-You could filter on tcp and source ip:port
-and see what the destination was.
+Is there something im missing in my iptables commands?
+or kernel modules?
 
-If the packets were destined for the outside originator,
-would the firewall route them there?
 
->=20
-> > The accept in the nat postrouting can be removed.
->=20
-> I need that as I also set the nat postrouting to drop
-> by default.
-see above, not recommended
+ +---------+          +---------+         +---------+
+ |                |          |CentOS 5 |          |                |
+ |machine 1 |          |   NAT     |          |machine 3 |
+ |                |          |kernel       |          |                |
+ |                |          |2.6.18-8   |          |                |
+ +---------+          +---------+          +---------+
+           a.|              b.|eth0 c.|eth1           d.|
+  +--------------------------------------------------------------+
+  | 
+|
+  | Switch 
+|
+  +--------------------------------------------------------------+
 
---=20
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
+a.10.22.200.25 (natted address 172.15.0.15)
+b.10.22.200.1
+c.172.15.0.5
+d.172.15.0.1
+
+
+
+Machine 1 Routing table
+=======================
+
+
+
+[root@mach1 ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use 
+Iface
+10.22.200.0     0.0.0.0         255.255.255.128 U     0      0        0 eth1
+172.69.128.0    0.0.0.0         255.255.255.128 U     0      0        0 eth0
+172.15.0.0      10.22.200.1     255.255.255.0   UG    0      0        0 eth1
+169.254.0.0     0.0.0.0         255.255.0.0     U     0      0        0 eth1
+0.0.0.0         172.69.128.1    0.0.0.0         UG    0      0        0 eth0
+
+
+
+Nat rules on Nat server
+=======================
+iptables -t nat -A POSTROUTING -o eth1 -s 10.22.200.25   -j SNAT --to 
+172.15.0.15
+iptables -t nat -A PREROUTING -i eth1 -d 172.15.0.15   -j DNAT --to 
+10.22.200.25
+
+
+
+
+
+
+-------
+
+[root@mach1 ~]# ping 172.15.0.1
+PING 172.15.0.1 (172.15.0.1) 56(84) bytes of data.
+
+--- 172.15.0.1 ping statistics ---
+25 packets transmitted, 0 received, 100% packet loss, time 23997ms
+
+
+--------
+
+[root@nat ~]# tcpdump -i eth1
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
+
+
+
+14:12:16.329663 arp who-has 172.15.0.1 tell 172.15.0.5
+14:12:16.329718 arp reply 172.15.0.1 is-at 00:11:25:6e:05:4f (oui Unknown)
+14:12:16.329725 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 0, length 64
+14:12:17.328748 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 1, length 64
+14:12:18.328540 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 2, length 64
+14:12:19.328356 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 3, length 64
+14:12:20.328139 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 4, length 64
+14:12:21.327945 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 5, length 64
+14:12:22.327752 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 6, length 64
+14:12:22.370038 arp who-has 172.15.0.15 tell 172.15.0.1
+14:12:23.328546 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 7, length 64
+14:12:24.328346 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 8, length 64
+14:12:25.328148 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 9, length 64
+14:12:26.327939 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 10, length 64
+14:12:27.327745 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 11, length 64
+14:12:28.327537 IP 172.15.0.15 > 172.15.0.1: ICMP echo request, id 58439, 
+seq 12, length 64
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
