@@ -1,13 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Forking inside netfilter queue
-Date: Tue, 1 May 2007 10:32:19 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0705011030220.18504@yvahk01.tjqt.qr>
-References: <4635EC8E.4090905@saudi.net.sa>
-	<Pine.LNX.4.61.0704301547010.29151@yvahk01.tjqt.qr>
-	<4636DE7E.80600@saudi.net.sa>
+From: "Joel Lindsay" <joel@waveteq.com>
+Subject: Can't get --dport to work
+Date: Tue, 1 May 2007 11:27:04 -0700
+Message-ID: <006b01c78c1e$515f5c20$aa64a8c0@JOELDESKTOP>
+References: <4635EC8E.4090905@saudi.net.sa><Pine.LNX.4.61.0704301547010.29151@yvahk01.tjqt.qr><4636DE7E.80600@saudi.net.sa>
+	<Pine.LNX.4.61.0705011030220.18504@yvahk01.tjqt.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4636DE7E.80600@saudi.net.sa>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +17,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rayed <rayed@saudi.net.sa>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@lists.netfilter.org
+
+Hi,
+
+At one time I had this working.  I could match on the ports and deny http 
+traffic from certain interfaces.
+
+Now I get an error message and I am not sure what is causing it.  Can anyone 
+help?
+
+# iptables -A OUTPUT -i ath0 -p tcp --dport 80 -j ACCEPT
+iptables v1.3.6-20061129: Unknown arg `--dport'
+Try `iptables -h' or 'iptables --help' for more information.
 
 
-On May 1 2007 09:30, Rayed wrote:
->
-> Thanks Jan for the reply.
->
-> I know how preforking works (almost), what I want to know if multi processes
-> can access the same queue API without breaking anything.
+Thanks,
 
-Well, you should be aware that calling ipq_read() [or whatever it's
-called now] in a thread may return a packet that does not actually
-belong to the connection you created a certain thread for.
-Maybe you even need to pthread_mutex_* around calls to ipq_*,
-I am not sure if libipq (or whatever we use now) does that by
-itself.
+Joel Lindsay, B.Eng
+Project Engineer 
 
-
-Jan
--- 
 
