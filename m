@@ -1,14 +1,13 @@
-From: "Sanjoy Dey" <sdpmops@gmail.com>
-Subject: SIP conntrack question
-Date: Mon, 30 Apr 2007 14:48:09 -0700
-Message-ID: <3931e0d50704301448u354ae3afo81e155e6ecfff09d@mail.gmail.com>
+From: Rayed <rayed@saudi.net.sa>
+Subject: Re: Forking inside netfilter queue
+Date: Tue, 01 May 2007 09:30:22 +0300
+Message-ID: <4636DE7E.80600@saudi.net.sa>
+References: <4635EC8E.4090905@saudi.net.sa>
+	<Pine.LNX.4.61.0704301547010.29151@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=lztuRnDYgOeb/8R86UwtQlenktJxIMS3wD7rG8Fie0DTKMrd5NQiiWs57WWaqgU5zRQfE3PGgyqo9Cc25/x+JktUozBOQ0yidoCVfvhapZGJxfBgd0thLY/sG0CWQcDjAKGg/JU4VIkwlac3bK5euac5qHG8MQv2CuhLHPHZEnw=
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0704301547010.29151@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,17 +19,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-Hi:
+Thanks Jan for the reply.
 
-I am trying to find out whether the SIP connection tracking module
-that was introduced in 2.6.18 works even if SIP runs on ports OTHER
-THAN 5060. Would the helper module listen on all ports for a SIP/SDP
-header to find out which ports to open up for RTP or RTCP?
+I know how preforking works (almost), what I want to know if multi 
+processes can access the same queue API without breaking anything.
 
-Any help will be appreciated.
 
-Regards,
-- Sanjoy
+Jan Engelhardt wrote:
+> On Apr 30 2007 16:18, Rayed wrote:
+>   
+>> I am building netfilter queue application, that implement simple
+>> HTTP filter.
+>>
+>> It basically will capture the packet, extract the URL, and issue
+>> MySQL lookup to see if the address is permitted or blocked.
+>>
+>> My only fear that address lookup will block the traffic until I get
+>> the lookup reply, so I am thinking of using preforking model to
+>> fork 10-20 processes to handle the same queue.
+>>
+>> Has any one done multi prcoess handling of the queue, is it even doable?
+>>     
+>
+> See Apache, it uses preforking. But perhaps threading is much simpler
+> and equally fast.
+>
+>
+> Jan
+>   
+
 
