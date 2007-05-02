@@ -1,15 +1,15 @@
 From: "Elvir Kuric" <omasnjak@gmail.com>
-Subject: Re: Port forwarding question
-Date: Wed, 2 May 2007 14:00:51 +0200
-Message-ID: <1814bfe70705020500m24c58888y4bb9fcb595cfafa2@mail.gmail.com>
-References: <4636295F.7040202@gmail.com>
+Subject: Re: my DNAT not working...help
+Date: Wed, 2 May 2007 14:05:32 +0200
+Message-ID: <1814bfe70705020505g735a96cal7bfe355faa10aef1@mail.gmail.com>
+References: <001a01c78b35$77917f20$648045ac@Sneak>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
 	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=B3b8oRUQwjb4ZOe4BXwXVKnMoC/nAaH2cog8Gh2cRghc/AdEF1yL/rJJYRkivSbqhPSwGoS6MeSakiiVLo0sMgH1FN5WcBhYDfUh91gE0szGu+p8f7ddFKuKpmANUJN70WbTCzCFTzNCwhmwsC2EHXNXpjvkD2zCFinoAXeBf6I=
-In-Reply-To: <4636295F.7040202@gmail.com>
+	b=UPY/LA2A+vDzhTTDD6egdI7IZbnvo+Qmun7Lv0a7A99HEjvKwEQTQMLZTvK2lJ0yj/5HAlTgifBWdlcPEtTgfGIAoftj4V8g9MsT9lEs6Ad0gecwk1YLHRugFKGQkEa3S9VgXgFtEf1SQ4qpCS8H5BVKAy2LK1xZ6SOoioHIuwE=
+In-Reply-To: <001a01c78b35$77917f20$648045ac@Sneak>
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,52 +22,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: David <shadoweyez@gmail.com>
+To: "sneak@ipnoc.co.za" <sneak@ipnoc.co.za>
 Cc: netfilter@lists.netfilter.org
 
-Hi all,
-maybe you can try this
- iptables -t nat -A PREROUTING -p tcp --dport 10000 -i ppp0 -m iprange
---dst-range 192.168.0.2-192.168.0.254 -j DNAT --to-destination
-192.168.0.2-192.168..254
+Hi,
 
-or check
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#IPRANGEMATCH
+maybe try
+
+route add default gw 10.x.x.x  .... what is default gateway for
+10.22.200.25 host ( or for that network ) .....
+please copy/paste   route -n on host 10.22.200.25
 
 Regards
 
 Elvir Kuric
 
 
-
-On 4/30/07, David <shadoweyez@gmail.com> wrote:
-> Hi all - first post, should be a simple question but google and the docs are not
-> helping
+On 4/30/07, sneak@ipnoc.co.za <sneak@ipnoc.co.za> wrote:
+> Hi my DNAT is no longer working?
 >
-> I want to forward port 10000 from internal hosts to the internet and it works with:
+>  This used to work on kernel 2.6.10 FC3, i am now running kernel 2.6.18 on
+> CentOS5 due to hardware upgrade
 >
-> iptables -t nat -A PREROUTING -p tcp --dport 10000 -i ppp0 -j DNAT --to 192.168.0.2
+> These are my nat rules  ..
 >
-> for the host with ip 192.168.0.2, but how do I forward it for a range of hosts,
-> ie 192.168.0.2-192.168.0.254
+>  iptables -t nat -A POSTROUTING -o eth1 -s 10.22.200.25 -j SNAT --to
+> 172.15.0.15
+>  iptables -t nat -A PREROUTING -i eth1 -d 172.15.0.15 -j DNAT --to
+> 10.22.200.25
 >
-> I try
+>  I can see my traffic getting natted to 172.15.0.15 but though a tcpdump but
+> not back to 10.22.200.25
+>  any ideas?
 >
-> iptables -t nat -A PREROUTING -p tcp --dport 10000 -i ppp0 -j DNAT --to
-> 192.168.0.2-192.168.0.254
->
-> but it does not work for any other hosts
->
-> iptables -L -v -t nat
-> gives the range, but does not actually forward the port in any apps
-> tcp dpt:10000 to:192.168.0.2-192.168.0.254
->
-> How do I forward the range of ports?
-> TIA,
-> David
->
-> ==============================================
-> Running gentoo 2.16.18.4, iptables 1.3.5
 >
 >
 
