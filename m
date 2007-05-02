@@ -1,14 +1,16 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: Question about running nf_queue
-Date: Wed, 02 May 2007 08:55:42 +0200
-Message-ID: <1178088942.861.19.camel@localhost>
-References: <46382E5A.9060201@amnafzar.com>
+From: "Elvir Kuric" <omasnjak@gmail.com>
+Subject: Re: Port forwarding question
+Date: Wed, 2 May 2007 14:00:51 +0200
+Message-ID: <1814bfe70705020500m24c58888y4bb9fcb595cfafa2@mail.gmail.com>
+References: <4636295F.7040202@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-i/RRvoCWCIGfPXc0r9CO"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46382E5A.9060201@amnafzar.com>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=B3b8oRUQwjb4ZOe4BXwXVKnMoC/nAaH2cog8Gh2cRghc/AdEF1yL/rJJYRkivSbqhPSwGoS6MeSakiiVLo0sMgH1FN5WcBhYDfUh91gE0szGu+p8f7ddFKuKpmANUJN70WbTCzCFTzNCwhmwsC2EHXNXpjvkD2zCFinoAXeBf6I=
+In-Reply-To: <4636295F.7040202@gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,50 +21,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Bahamin Takhtaei <takhtaei@amnafzar.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: David <shadoweyez@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
+Hi all,
+maybe you can try this
+ iptables -t nat -A PREROUTING -p tcp --dport 10000 -i ppp0 -m iprange
+--dst-range 192.168.0.2-192.168.0.254 -j DNAT --to-destination
+192.168.0.2-192.168..254
 
---=-i/RRvoCWCIGfPXc0r9CO
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+or check
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#IPRANGEMATCH
 
-Hi,
+Regards
 
-Le mercredi 02 mai 2007 =E0 10:53 +0430, Bahamin Takhtaei a =E9crit :
-> Hi,
-> I installed libnfnetlink_0.0.16 and libnetfilter-queue_0.0.12,
-> now please tell me how can I use nf_queue instead ip_queue?
+Elvir Kuric
 
-The API has changed and you need to use a modified version of the
-software you use. Thus look at configure option to see if nf_queue
-support is already available.
 
-If you are interested in porting the software, you can have a look to
-nfqnl_test.c in libnetfilter_queue source or to NuFW code.
 
-You can find a doxygen documentation of the more interesting field
-related to this subject here:
-	http://docs.nufw.org/doxygen/trunk/html/packetsrv_8c-source.html
-
-Best regard,
---=20
-Eric Leblond <eric@inl.fr>
-INL
-
---=-i/RRvoCWCIGfPXc0r9CO
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBGODXunxA7CdMWjzIRAjp8AJ9m0bVcFCUlEvyTMwEnQS8sJ7BylgCeLxHb
-m/QX+lEXRArmzoRD9n1A3No=
-=O1jY
------END PGP SIGNATURE-----
-
---=-i/RRvoCWCIGfPXc0r9CO--
-
+On 4/30/07, David <shadoweyez@gmail.com> wrote:
+> Hi all - first post, should be a simple question but google and the docs are not
+> helping
+>
+> I want to forward port 10000 from internal hosts to the internet and it works with:
+>
+> iptables -t nat -A PREROUTING -p tcp --dport 10000 -i ppp0 -j DNAT --to 192.168.0.2
+>
+> for the host with ip 192.168.0.2, but how do I forward it for a range of hosts,
+> ie 192.168.0.2-192.168.0.254
+>
+> I try
+>
+> iptables -t nat -A PREROUTING -p tcp --dport 10000 -i ppp0 -j DNAT --to
+> 192.168.0.2-192.168.0.254
+>
+> but it does not work for any other hosts
+>
+> iptables -L -v -t nat
+> gives the range, but does not actually forward the port in any apps
+> tcp dpt:10000 to:192.168.0.2-192.168.0.254
+>
+> How do I forward the range of ports?
+> TIA,
+> David
+>
+> ==============================================
+> Running gentoo 2.16.18.4, iptables 1.3.5
+>
+>
 
