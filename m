@@ -1,16 +1,16 @@
-From: "Elvir Kuric" <omasnjak@gmail.com>
-Subject: Re: my DNAT not working...help
-Date: Wed, 2 May 2007 14:05:32 +0200
-Message-ID: <1814bfe70705020505g735a96cal7bfe355faa10aef1@mail.gmail.com>
-References: <001a01c78b35$77917f20$648045ac@Sneak>
+From: Michelle Konzack <linux4michelle@freenet.de>
+Subject: Re: Wireless Login Page
+Date: Wed, 2 May 2007 19:18:59 +0200
+Message-ID: <20070502171859.GG1894@freenet.de>
+References: <1177772620.3828.176.camel@ws1.walco02.com>
+	<46338845.1020605@lopsch.com>
+	<1177785807.3828.227.camel@ws1.walco02.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="r5lq+205vWdkqwtk"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=UPY/LA2A+vDzhTTDD6egdI7IZbnvo+Qmun7Lv0a7A99HEjvKwEQTQMLZTvK2lJ0yj/5HAlTgifBWdlcPEtTgfGIAoftj4V8g9MsT9lEs6Ad0gecwk1YLHRugFKGQkEa3S9VgXgFtEf1SQ4qpCS8H5BVKAy2LK1xZ6SOoioHIuwE=
-In-Reply-To: <001a01c78b35$77917f20$648045ac@Sneak>
 Content-Disposition: inline
+In-Reply-To: <1177785807.3828.227.camel@ws1.walco02.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,40 +21,72 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "sneak@ipnoc.co.za" <sneak@ipnoc.co.za>
-Cc: netfilter@lists.netfilter.org
-
-Hi,
-
-maybe try
-
-route add default gw 10.x.x.x  .... what is default gateway for
-10.22.200.25 host ( or for that network ) .....
-please copy/paste   route -n on host 10.22.200.25
-
-Regards
-
-Elvir Kuric
+To: netfilter@lists.netfilter.org
 
 
-On 4/30/07, sneak@ipnoc.co.za <sneak@ipnoc.co.za> wrote:
-> Hi my DNAT is no longer working?
->
->  This used to work on kernel 2.6.10 FC3, i am now running kernel 2.6.18 on
-> CentOS5 due to hardware upgrade
->
-> These are my nat rules  ..
->
->  iptables -t nat -A POSTROUTING -o eth1 -s 10.22.200.25 -j SNAT --to
-> 172.15.0.15
->  iptables -t nat -A PREROUTING -i eth1 -d 172.15.0.15 -j DNAT --to
-> 10.22.200.25
->
->  I can see my traffic getting natted to 172.15.0.15 but though a tcpdump but
-> not back to 10.22.200.25
->  any ideas?
->
->
->
+--r5lq+205vWdkqwtk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Kirk and *,
+
+Am 2007-04-28 11:43:27, schrieb Kirk Wallace:
+> I was using 192.168.21.2 just to test whether httpd would respond to any
+> IP address sent on the 192.168.21.0/24 address space.=20
+>=20
+> I envision that a person would boot their wireless laptop and scan for
+> hotspots. They would see my hotspot and connect. Then my DHCP server
+> would give the laptop an IP address, subnet mask, gateway address, DNS1
+> and DNS2. Then the user would start firefox and try to open a link to
+> anywhere.com, but I have FORWARD denied to all but logged in users
+> (which have a tunnel IP address on another subnet). At this point, I
+> want the anywhere.com request to invoke the httpd on the wireless router
+> to reply with a login page. Currently dhcpd, httpd, radiusd and pptpd
+> are on the same PC.
+
+This is exactly what I want to do to.
+
+But if the $CLIENT has gotten its DHCP-IP-Addressm then ANY
+connections (any Ports except DNS and DHCP) nust be blocked
+until the user has once started a Webbrowser and authentificated.
+
+I was thinking, that if the $USER open a connection plus auth,
+the connection will be droped for example 5 minutes after the
+last traffic going over the Interface with the specified MAC/IP.
+
+I have not found any examples ho to do this.
+
+Would you like to share your config?
+
+And speciay how you have setup your "fist-connect" page to auth?
+
+Greetings
+    Michelle Konzack
+    Systemadministrator
+    Tamay Dogan Network
+    Debian GNU/Linux Consultant
+
+
+--=20
+Linux-User #280138 with the Linux Counter, http://counter.li.org/
+##################### Debian GNU/Linux Consultant #####################
+Michelle Konzack   Apt. 917                  ICQ #328449886
+                   50, rue de Soultz         MSN LinuxMichi
+0033/6/61925193    67100 Strasbourg/France   IRC #Debian (irc.icq.com)
+
+--r5lq+205vWdkqwtk
+Content-Type: application/pgp-signature; name="signature.pgp"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFGOMgDC0FPBMSS+BIRAvXpAJ4weGsbdTLWBc7nhG//QXXvuDTJRgCgt87k
+q68wCUc8OWO5xGeQf7Qsw6Q=
+=5vrB
+-----END PGP SIGNATURE-----
+
+--r5lq+205vWdkqwtk--
 
