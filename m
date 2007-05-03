@@ -1,47 +1,31 @@
-From: Alan Ezust <alan.ezust@presinet.com>
-Subject: missing DESTROY events in conntrack -e output?
-Date: Wed, 2 May 2007 16:56:43 -0700
-Message-ID: <200705021656.45401.alan.ezust@presinet.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [ANNOUNCE] new match extension about Port Knocking and SPA
+Date: Thu, 03 May 2007 13:01:36 +0200
+Message-ID: <4639C110.6000407@trash.net>
+References: <7e36c7130705021606kcbae516g1e34adabd3b441f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4456921.ojjUmG2HS5";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <7e36c7130705021606kcbae516g1e34adabd3b441f@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: fender <frozenspot@gmail.com>
+Cc: Harald Welte <laforge@netfilter.org>, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
---nextPart4456921.ojjUmG2HS5
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-I was just wondering, has anyone else observed that conntrack -e (running i=
-n=20
-events mode) sometimes shows me DESTROY events and sometimes does not, even=
-=20
-for TCP protocol packets. Why would this be?
+fender wrote:
+> We hope that this project can be added to the p-o-m, as netfilter
+> experimental part.
 
 
---nextPart4456921.ojjUmG2HS5
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBGOSU9sJbtw6GURksRAnK/AJ9XumyAB7C463YxpWizlqh0KY+4GgCghxWZ
-iQl/VgcOCVpikvMbCZvNJqo=
-=Qw20
------END PGP SIGNATURE-----
-
---nextPart4456921.ojjUmG2HS5--
+We don't add entirely externally developed things to pom anymore,
+but we could add an external repository to the sources.list.
 
