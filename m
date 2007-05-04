@@ -1,11 +1,14 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+From: Tommy W <tommy@svearike.sytes.net>
 Subject: Re: Simulating a "bad" connection.
-Date: Fri, 4 May 2007 23:11:29 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0705042310550.18504@yvahk01.tjqt.qr>
+Date: Fri, 4 May 2007 23:42:26 +0200
+Message-ID: <200705042342.26764.tommy@svearike.sytes.net>
 References: <200705042201.21985.tommy@svearike.sytes.net>
+	<Pine.LNX.4.61.0705042310550.18504@yvahk01.tjqt.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200705042201.21985.tommy@svearike.sytes.net>
+In-Reply-To: <Pine.LNX.4.61.0705042310550.18504@yvahk01.tjqt.qr>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,39 +19,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Tommy W <tommy@svearike.sytes.net>
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Cc: netfilter@lists.netfilter.org
 
-
-On May 4 2007 22:01, Tommy W wrote:
-
->Hi,
->I was just wondering if someone knows of a good way to simulate a "bad" 
->network?.
->I want high latency AND/OR high packet loss.
+On Friday 04 May 2007 23:11, you wrote:
+> On May 4 2007 22:01, Tommy W wrote:
+> >Hi,
+> >I was just wondering if someone knows of a good way to simulate a "bad"
+> >network?.
+> >I want high latency AND/OR high packet loss.
+> >
+> >I was thinking along the lines
+> >iptables -I INPUT -m random --average 90 -j DROP
+> >
+> >but then I get libipt_random.so doesn't exist.
 >
->I was thinking along the lines  
->iptables -I INPUT -m random --average 90 -j DROP
+>   -m statistic --mode random
 >
->but then I get libipt_random.so doesn't exist.
+> It might not exist yet either.
 
-  -m statistic --mode random
+Thanks for the tip, although I did not have that either :\
+Is it included in a newer version of netfilter/iptables ?
 
-It might not exist yet either.
-
->I see that it is not included, how do you get it ?
->
->kernel: 2.6.16-rc5
->iptables: 1.3.4
->
->or is there some other more simple solution?
->
->Thanks in advance
->/Tommy
->
-
-Jan
--- 
+/Tommy
 
