@@ -1,10 +1,9 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: conntrack: Operation failed: invalid parameters
-Date: Fri, 4 May 2007 11:54:03 +0200
-Message-ID: <20070504115403.0f5c023d.mailinglists@lucassen.org>
-Reply-To: netfilter@lists.netfilter.org
+From: Darmoul Ramzi <dardiration@yahoo.fr>
+Subject: libipt_time.so
+Date: Fri, 4 May 2007 11:09:27 +0000 (GMT)
+Message-ID: <683717.39696.qm@web26303.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,31 +15,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-When using the 2.6.16.x branch (which is still maintained) I get an
-error using conntrack:
-
-# conntrack -L
-Operation failed: invalid parameters
-
-When using kernel 2.6.20.7 there's no problem. I'd like to use the
-kernel 2.6.16.x branch, but I cannot find the patch which resolves the
-above mentioned problem.
-
-Does someone know which patch to apply to 2.6.16.x?
-
-R.
-
--- 
-___________________________________________________________________
-It is better to remain silent and be thought a fool, than to speak
-aloud and remove all doubt.
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
+I use Fedora 6=0Ai try to use ipatables -time but i have a problem libipt_t=
+ime.so.=0A=0Aplease help me i peapare a QoS project=0A =0ABest Regards=0A =
+=0ADarmoul Ramzi=0A=0A=0A      =0A_________________________________________=
+__________________________________ =0AD=E9couvrez une nouvelle fa=E7on d'ob=
+tenir des r=E9ponses =E0 toutes vos questions ! =0AProfitez des connaissanc=
+es, des opinions et des exp=E9riences des internautes sur Yahoo! Questions/=
+R=E9ponses =0Ahttp://fr.answers.yahoo.com
 
