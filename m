@@ -1,11 +1,11 @@
-From: Tommy W <tommy@svearike.sytes.net>
-Subject: Simulating a "bad" connection.
-Date: Fri, 4 May 2007 22:01:21 +0200
-Message-ID: <200705042201.21985.tommy@svearike.sytes.net>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: libipt_time.so
+Date: Fri, 4 May 2007 23:05:08 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0705042303580.18504@yvahk01.tjqt.qr>
+References: <683717.39696.qm@web26303.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <683717.39696.qm@web26303.mail.ukl.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,25 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Darmoul Ramzi <dardiration@yahoo.fr>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
-I was just wondering if someone knows of a good way to simulate a "bad" 
-network?.
-I want high latency AND/OR high packet loss.
 
-I was thinking along the lines  
-iptables -I INPUT -m random --average 90 -j DROP
+On May 4 2007 11:09, Darmoul Ramzi wrote:
+>
+>I use Fedora 6
+>i try to use ipatables -time but i have a problem libipt_time.so.
+>
+>please help me i peapare a QoS project
+> 
+>Best Regards
+> 
+>Darmoul Ramzi
+>
 
-but then I get libipt_random.so doesn't exist.
-I see that it is not included, how do you get it ?
+Unfortunately we cannot help you since you do not tell us what problem.
 
-kernel: 2.6.16-rc5
-iptables: 1.3.4
 
-or is there some other more simple solution?
-
-Thanks in advance
-/Tommy
+Jan
+-- 
 
