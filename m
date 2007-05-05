@@ -1,13 +1,12 @@
-From: Cedric Blancher <blancher@cartel-securite.fr>
-Subject: Re: [OT] iptables and 802.1x authenticator
-Date: Sat, 05 May 2007 17:31:24 +0200
-Message-ID: <1178379084.6720.11.camel@localhost>
-References: <1178329218.8026.0.camel@localhost>
-	<1178347689.2956.4.camel@localhost> <1178378601.6574.3.camel@localhost>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Advanced routing problem
+Date: Sat, 05 May 2007 17:47:36 +0200
+Message-ID: <463CA718.4060509@rtij.nl>
+References: <1178377643.463c9daba4959@www.umrk.to>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1178378601.6574.3.camel@localhost>
+In-Reply-To: <1178377643.463c9daba4959@www.umrk.to>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,35 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jaap Winius <jwinius@umrk.to>
 Cc: netfilter@lists.netfilter.org
 
-Le samedi 05 mai 2007 =E0 11:23 -0400, John A. Sullivan III a =E9crit :
-> Thank you, Cedric.
+Jaap Winius wrote:
+> Hi all,
+>   
 
-You're welcome.
+Ha Jaap,
 
-> Now I just need to see if we can create iptables rules based upon what
-> the authentication server returns through the authenticator. If anyone
-> has experience in doing that, please let me know.
+> After having configured my first iptables firewall, it looks as though
+> I've already found something it can't handle. Well, I hope not...
+>
+> All was fine until a secondary external interface was added. I was
+> hoping that I could configure the firewall to allow remote users to use
+> either external interface to access a Windows server on a private net
+> behind the firewall using VNC.
+>
+> At first I couldn't access the firewall via the secondary external
+> interface at all, because the firewall was routing its responses out
+> its default route -- the primary external interface -- and the ISP was
+> dropping those packets (hot potato routing). However, after installing
+> the advanced routing package (iproute), I configured a second default
+> route and solved that problem.
+>   
 
-That would be great.
+That's strange. that means you have some very funny routing. You'ld 
+better explain how your routing is set up. Also post the output of 'ip ro'.
 
-You have to configure your RADIUS in order to push specific attributes
-linked to user identity, group, whatever to the authenticator, that will
-do whatever is needed.
-
-I played a bit with usual VLAN assignment on switches and access points.
-Each user is thus assigned a dedicated VLAN based on his identity when
-authenticated. Works great, would be nice to have this on hostapd...
-
-
---=20
-http://sid.rstack.org/
-PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
->> Hi! I'm your friendly neighbourhood signature virus.
->> Copy me to your signature file and help me spread!
-
+M4
 
 
