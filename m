@@ -1,13 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Simulating a "bad" connection.
-Date: Fri, 04 May 2007 23:58:06 +0200
-Message-ID: <463BAC6E.8010909@plouf.fr.eu.org>
-References: <200705042201.21985.tommy@svearike.sytes.net>	<Pine.LNX.4.61.0705042310550.18504@yvahk01.tjqt.qr>
-	<463BABDC.6000106@plouf.fr.eu.org>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: [OT] iptables and 802.1x authenticator
+Date: Fri, 04 May 2007 21:40:18 -0400
+Message-ID: <1178329218.8026.0.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <463BABDC.6000106@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,13 +15,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Pascal Hambourg a =E9crit :
->=20
-> The 'random' match is supported by iptables 1.3.4, but not by the=20
-> standard kernel. It needs to be patched with the 'connlimit' patch
+Hello, all. Does anyone know of an open source linux 802.1x
+authenticator? I see XSupplicant for the supplicant and FreeRADIUS for
+the authentication server but I can't seem to find an authenticator.
 
-Dunno why I wrote 'connlimit'. I meant the 'random' patch of course.
+We've been toying with combining iptables with the ISCS network
+management project (http://iscs.sourceforge.net) and 802.1x.  If we can
+do what we think we can do, the results should be quite stunning.  We
+should be able to create true, perimeterless network security.  That
+means we can stop LAN based worms dead in their tracks, foil ARP
+poisoning attacks and other nefarious activities -- all without end
+point clients (not that we have anything against end point clients).
+
+I'm in the prototype building stage and hence the need for a testbed
+802.1x implementation.  So, if you can kindly point me in the right
+direction, I'd greatly appreciate it.  Thanks - John
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+Financially sustainable open source development
+http://www.opensourcedevel.com
+
 
