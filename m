@@ -1,12 +1,13 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: Rules review
-Date: Sat, 05 May 2007 17:51:44 +0200
-Message-ID: <463CA810.8020804@rtij.nl>
-References: <463C9FA5.4020203@unixheads.com>
+From: Andy Furniss <lists@andyfurniss.entadsl.com>
+Subject: Re: Simulating a "bad" connection.
+Date: Sat, 05 May 2007 20:07:28 +0100
+Message-ID: <463CD5F0.8090904@andyfurniss.entadsl.com>
+References: <200705042201.21985.tommy@svearike.sytes.net>
+Reply-To: lists@andyfurniss.entadsl.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <463C9FA5.4020203@unixheads.com>
+In-Reply-To: <200705042201.21985.tommy@svearike.sytes.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,23 +19,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Scott <scott@unixheads.com>
+To: Tommy W <tommy@svearike.sytes.net>
 Cc: netfilter@lists.netfilter.org
 
-Scott wrote:
-> I wanted to see if it would be proper to post my rules to this list to 
-> get comments on them.. I am a bit rusty on IPTables :-)
+Tommy W wrote:
+> Hi,
+> I was just wondering if someone knows of a good way to simulate a "bad" 
+> network?.
+> I want high latency AND/OR high packet loss.
+> 
+> I was thinking along the lines  
+> iptables -I INPUT -m random --average 90 -j DROP
+> 
+> but then I get libipt_random.so doesn't exist.
+> I see that it is not included, how do you get it ?
+> 
+> kernel: 2.6.16-rc5
+> iptables: 1.3.4
+> 
+> or is there some other more simple solution?
+> 
+> Thanks in advance
+> /Tommy
+> 
+> 
 
-Well, yes and no. If your ruleset is a mess without comments, it 
-probably will not be reviewed. If it is large, make doubly sure it is 
-readable. Otherwise, as long as such requests don't swamp the list 
-(which they don't) it's fine with me (others may disagree).
+http://linux-net.osdl.org/index.php/Netem
 
-As an added bonus, discussing rulesets may give all mailinglist 
-participants additional insights on how to set up rulesets, so I welcome 
-such reviews once in a while.
+Is in kernel.
 
-HTH,
-M4
+Andy.
 
 
