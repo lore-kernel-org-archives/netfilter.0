@@ -1,14 +1,10 @@
-From: Tommy W <tommy@svearike.sytes.net>
-Subject: Re: Simulating a "bad" connection.
-Date: Sun, 6 May 2007 13:00:29 +0200
-Message-ID: <200705061300.29733.tommy@svearike.sytes.net>
-References: <200705042201.21985.tommy@svearike.sytes.net>
-	<463CD5F0.8090904@andyfurniss.entadsl.com>
+From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+Subject: Fw: conntrack and SIP
+Date: Sun, 6 May 2007 11:54:26 -0300
+Message-ID: <20070506115426.79246333@babalu.inexo.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <463CD5F0.8090904@andyfurniss.entadsl.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,36 +16,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: lists@andyfurniss.entadsl.com
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Saturday 05 May 2007 21:07, Andy Furniss wrote:
-> Tommy W wrote:
-> > Hi,
-> > I was just wondering if someone knows of a good way to simulate a "bad"
-> > network?.
-> > I want high latency AND/OR high packet loss.
-> >
-> > I was thinking along the lines
-> > iptables -I INPUT -m random --average 90 -j DROP
-> >
-> > but then I get libipt_random.so doesn't exist.
-> > I see that it is not included, how do you get it ?
-> >
-> > kernel: 2.6.16-rc5
-> > iptables: 1.3.4
-> >
-> > or is there some other more simple solution?
-> >
-> > Thanks in advance
-> > /Tommy
->
-> http://linux-net.osdl.org/index.php/Netem
->
-> Is in kernel.
 
-Thanks, this looks alot like what I'm looking for
-and that it's already included in my kernel is a real plus.
+Hello
 
-/Tommy
+I posted this a few days ago and got no answers. Can anyone point me some
+directions?
+
+Regards
+
+Ethy
+
+Begin forwarded message:
+
+Date: Thu, 3 May 2007 15:45:20 -0300
+From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+To: netfilter@lists.netfilter.org
+Subject: conntrack and SIP
+
+
+
+Hello
+
+I have these two SIP clients behind two linux NAT. they both connect to
+the same server.
+
+On client 1 I have:
+
+udp      17 174 src=192.168.0.201 dst=X.X.X.X sport=5060 dport=5060
+src=X.X.X.X dst=Y.Y.Y.Y sport=5060 dport=5060 [ASSURED] use=1 
+
+Note that the sport and dport were not changed from in and out.
+
+But on client 2:
+
+udp      17 171 src=10.172.40.118 dst=X.X.X.X sport=5060 dport=5060
+src=X.X.X.X dst=Z.Z.Z.Z sport=5060 dport=1024 [ASSURED] use=1 
+
+What could cause the change in dport?? I have no SNAT or DNAT rules in any
+of them.
+
+Is that a way to copy the client 1 behavior to client 2?
+
+Client 1 is iptables version 1.3.3 and kernel 2.4.33
+
+Client 2 is iptables version 1.3.5 and kernel 2.4.33.3
+
+-- 
+
+Ethy H. Brito         /"\
+InterNexo Ltda.       \ /  CAMPANHA DA FITA ASCII - CONTRA MAIL HTML
++55 (12) 3797-6860     X   ASCII RIBBON CAMPAIGN - AGAINST HTML MAIL
+S.J.Campos - Brasil   / \ 
+
+
+
+-- 
+
+Ethy H. Brito         /"\
+InterNexo Ltda.       \ /  CAMPANHA DA FITA ASCII - CONTRA MAIL HTML
++55 (12) 3797-6860     X   ASCII RIBBON CAMPAIGN - AGAINST HTML MAIL
+S.J.Campos - Brasil   / \ 
 
