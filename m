@@ -1,7 +1,7 @@
 From: "Pieter De Wit" <Pieter.DeWit@vodacom.co.za>
 Subject: DNAT and local hosts
 Date: Mon, 7 May 2007 17:49:01 +0200
-Message-ID: <C3FA62B1A90D7440B9B6C7C31895994F03663A2D@zadbn02100.vodacom.corp>
+Message-ID: <C3FA62B1A90D7440B9B6C7C31895994F03663A2E@zadbn02100.vodacom.corp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
