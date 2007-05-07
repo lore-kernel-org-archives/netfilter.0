@@ -1,81 +1,64 @@
-From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Subject: Fw: conntrack and SIP
-Date: Sun, 6 May 2007 11:54:26 -0300
-Message-ID: <20070506115426.79246333@babalu.inexo.com.br>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Netfilter Workshop 2007 in Karlsruhe, Germany
+Date: Mon, 07 May 2007 02:39:22 +0200
+Message-ID: <463E753A.4060300@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <netfilter-announce-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
+	<mailto:netfilter-announce-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-announce>
+List-Post: <mailto:netfilter-announce@lists.netfilter.org>
+List-Help: <mailto:netfilter-announce-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
+	<mailto:netfilter-announce-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-announce-bounces@lists.netfilter.org
+Errors-To: netfilter-announce-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter-failover list <netfilter-failover@lists.netfilter.org>, netfilter <netfilter@lists.netfilter.org>, netfilter-announce@lists.netfilter.org
+Cc: lwn@lwn.net
 
+= Overview =
 
-Hello
+Following the lastest successful workshop in Sevilla, Andalusia, Spain
+in september 2005. We are happy to announce the next edition in the
+workshop series. This year the event will be hosted in Karlsruhe,
+Germany from October 11th to 14th, 2007. For more information, please
+visit the official website of the workshop [1].
 
-I posted this a few days ago and got no answers. Can anyone point me some
-directions?
+= Attendance =
 
-Regards
+The attendance is free but requires an invitation. You may consider
+attending if you are involved in any aspect of the Netfilter
+development. Please, send us an email to coreteam@netfilter.org before
+July 7th, 2007 (strict deadline). We have a very limited number of
+invitations!
 
-Ethy
+= Call for Participants =
 
-Begin forwarded message:
+Are you involved in any awesome third party Netfilter related project?
+If your answer is yes then you have a chance to come and show us your
+project during the workshop days.
 
-Date: Thu, 3 May 2007 15:45:20 -0300
-From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-To: netfilter@lists.netfilter.org
-Subject: conntrack and SIP
+In case that you are interested, please send us a fast abstract before
+July 7th, 2007 (strict deadline) to coreteam@netfilter.org in latex,
+docbook or odt format. The abstract must have 1000 words maximum
+provinding an introduction, targets, solution proposed and experimental
+results if any. You must also provide the source code under a
+GPL-compatible free software license. The source code requirement is
+mandatory.
 
+The program committee will select two candidates from all applications
+received whose travel and accomodation expenses will be funded by our
+sponsors.
 
+Pablo,
+on behalf of the Netfilter core team
 
-Hello
-
-I have these two SIP clients behind two linux NAT. they both connect to
-the same server.
-
-On client 1 I have:
-
-udp      17 174 src=192.168.0.201 dst=X.X.X.X sport=5060 dport=5060
-src=X.X.X.X dst=Y.Y.Y.Y sport=5060 dport=5060 [ASSURED] use=1 
-
-Note that the sport and dport were not changed from in and out.
-
-But on client 2:
-
-udp      17 171 src=10.172.40.118 dst=X.X.X.X sport=5060 dport=5060
-src=X.X.X.X dst=Z.Z.Z.Z sport=5060 dport=1024 [ASSURED] use=1 
-
-What could cause the change in dport?? I have no SNAT or DNAT rules in any
-of them.
-
-Is that a way to copy the client 1 behavior to client 2?
-
-Client 1 is iptables version 1.3.3 and kernel 2.4.33
-
-Client 2 is iptables version 1.3.5 and kernel 2.4.33.3
+[1] http://workshop.netfilter.org/2007/
 
 -- 
-
-Ethy H. Brito         /"\
-InterNexo Ltda.       \ /  CAMPANHA DA FITA ASCII - CONTRA MAIL HTML
-+55 (12) 3797-6860     X   ASCII RIBBON CAMPAIGN - AGAINST HTML MAIL
-S.J.Campos - Brasil   / \ 
-
-
-
--- 
-
-Ethy H. Brito         /"\
-InterNexo Ltda.       \ /  CAMPANHA DA FITA ASCII - CONTRA MAIL HTML
-+55 (12) 3797-6860     X   ASCII RIBBON CAMPAIGN - AGAINST HTML MAIL
-S.J.Campos - Brasil   / \ 
+The dawn of the fourth age of Linux firewalling is coming; a time of
+great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
 
