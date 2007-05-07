@@ -1,40 +1,51 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [ANNOUNCE] Netfilter Workshop 2007 in Karlsruhe, Germany
-Date: Mon, 07 May 2007 02:47:04 +0200
-Message-ID: <463E7708.5020002@netfilter.org>
-References: <463E753A.4060300@netfilter.org>
+From: "Pieter De Wit" <Pieter.DeWit@vodacom.co.za>
+Subject: DNAT and local hosts
+Date: Mon, 7 May 2007 17:54:37 +0200
+Message-ID: <C3FA62B1A90D7440B9B6C7C31895994F03663A32@zadbn02100.vodacom.corp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <463E753A.4060300@netfilter.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: lwn@lwn.net, netfilter <netfilter@lists.netfilter.org>, netfilter-announce@lists.netfilter.org, Netfilter-failover list <netfilter-failover@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@lists.netfilter.org
 
-Pablo Neira Ayuso wrote:
-> = Overview =
-> 
-> Following the lastest successful workshop in Sevilla, Andalusia, Spain
-> in september 2005. We are happy to announce the next edition in the
-> workshop series. This year the event will be hosted in Karlsruhe,
-> Germany from October 11th to 14th, 2007. For more information, please
-> visit the official website of the workshop [1].
+Hello Guys,
+=20
+I have the following setup:
+=20
+C1 --.
+=20    |
+=20    |-FW--- internet
+=20    |
+C2 --'
 
-Wrong dates, sorry. I meant from september 11th to 14th, 2007.
+Ok - for this email, I will give C1 192.168.0.10 and C2 192.168.0.11.
+The Firewall (FW) has two ethernet connections, eth0 and eth1. eth1 is
+used to an adsl modem in bridged mode, which creates ppp0. Lets say for
+this email, ppp0 get 1.2.3.4.
 
-[1] http://workshop.netfilter.org/2007/
+Now, all connections are routed out via FW:ppp0 and at NAT'ed. There is
+a rule that allows connections to ppp0 on port 1234 and DNAT's them to
+C1. When C2 makes a connection to 1.2.3.4:1234 it fails with "Connection
+refused" since there is no "server" listening on the firewall's
+ppp0,port 1234.
 
--- 
-The dawn of the fourth age of Linux firewalling is coming; a time of
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+How can I solve this ? I need FW to DNAT "local/C2" connections back to
+C1.
+
+Thanks,
+
+Pieter
+=93This e-mail is sent on the Terms and Conditions that can be accessed b=
+y Clicking on this link http://www.vodacom.co.za/legal/email.jsp "
 
