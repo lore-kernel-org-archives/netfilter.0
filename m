@@ -1,15 +1,12 @@
-From: Maximilian Wilhelm <max@rfc2324.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: iptables NAT routing issues
-Date: Wed, 9 May 2007 00:48:06 +0200
-Message-ID: <20070508224806.GD23200@outback.rfc2324.org>
-References: <4640E893.1010206@bserved.nl>
-	<Pine.LNX.4.61.0705090024450.2342@yvahk01.tjqt.qr>
-	<4640FAD0.9050301@plouf.fr.eu.org>
-	<Pine.LNX.4.61.0705090036060.2342@yvahk01.tjqt.qr>
+Date: Wed, 09 May 2007 01:03:54 +0200
+Message-ID: <464101DA.4070102@plouf.fr.eu.org>
+References: <4640E893.1010206@bserved.nl>	<Pine.LNX.4.61.0705090024450.2342@yvahk01.tjqt.qr>	<4640FAD0.9050301@plouf.fr.eu.org>	<Pine.LNX.4.61.0705090036060.2342@yvahk01.tjqt.qr>
 	<4640FDA9.5000706@bserved.nl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <4640FDA9.5000706@bserved.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -21,39 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Am Wednesday, den  9 May hub Bas Verhoeven folgendes in die Tasten:
+Bas Verhoeven a =E9crit :
+>>
+>>> Assuming that the outbound server is the default gateway for the web=20
+>>> server and receives the return traffic, of course.
+>>
+>> You'd be kinda screwed if that was not the case.
+>=20
+> The webserver has its own gateway, and that's not the outer box.
 
-> Jan Engelhardt wrote:
-> >
-> >>Assuming that the outbound server is the default gateway for the web 
-> >>server and
-> >>receives the return traffic, of course.
-> >>    
-> >
-> >You'd be kinda screwed if that was not the case. Because the 'nat' table
-> >is only consulted for NEW connections afaics, the reply packets do _not_
-> >get SNATed, since the _first_ packet was the TCP SYN, which makes the
-> >connection ESTABLISHED when input processing is done.
-
-  
-> The webserver has its own gateway, and that's not the outer box. You 
-> seem to be describing the exact problem i'm seeing in tcpdump; new 
-> connections get snat'ed, 'forwarded' connections do not.
+Don't look further. Here is why it does not work.
 
 > Is there really no solution for this?
 
-The solution is to use OUTBOUND SERVER as default gateway or do the
-DNATing on the gateway.
+Use the outer box as a gateway, if it is in the same network. You do not=20
+have to use it as the default gateway for all traffic but at least for=20
+the HTTP return traffic. This could be done with iptables and advanced=20
+routing on the web server, for instance using the source port 80 to MARK=20
+packets or using CONNMARK/connmark.
 
-Or stop DNATing and use "normal" rules to only allow traffic to
-WEBSERVER 80/tcp and reject the remaining traffic.
-
-Ciao
-Max
--- 
-	Follow the white penguin.
+You could try to use the NOTRACK target on the web server in order to=20
+prevent the incoming SYN packets from creating a new connection, so the=20
+replies could be SNATed. But I would not bet a euro-cent on such a dirty=20
+method. If someone asks who suggested it, don't say it's me. ;-)
 
