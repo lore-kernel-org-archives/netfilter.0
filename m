@@ -1,16 +1,11 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: IPset included in distro
-Date: Tue, 08 May 2007 22:31:08 +0200
-Message-ID: <1178656268.20039.1.camel@localhost>
-References: <20070508112319.GA2953330@metu.edu.tr>
-	<Pine.LNX.4.64.0705082058001.29654@blackhole.kfki.hu>
-	<47A63D8907C4DE419BE33AEA2DF95BB31FBBAB@SUEXCL-02.ad.syr.edu>
+From: David Lang <david.lang@digitalinsight.com>
+Subject: Re: Two NICs, same network...
+Date: Tue, 8 May 2007 12:56:21 -0700 (PDT)
+Message-ID: <Pine.LNX.4.63.0705081251200.20281@qynat.qvtvafvgr.pbz>
+References: <e53321d30705081317w3d7e6f5bsb38161f155c883da@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-XruE0f3/OrxMi0ht2Ms2"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <47A63D8907C4DE419BE33AEA2DF95BB31FBBAB@SUEXCL-02.ad.syr.edu>
+In-Reply-To: <e53321d30705081317w3d7e6f5bsb38161f155c883da@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,44 +16,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Randall C Grimshaw <rgrimsha@syr.edu>
-Cc: netfilter@lists.netfilter.org, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: semi linux <linuxsemi@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
+On Tue, 8 May 2007, semi linux wrote:
 
---=-XruE0f3/OrxMi0ht2Ms2
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+> I've got an odd problem where I've got two NICs on the same network
+> and I want all traffic to one IP to go out one interface and all other
+> traffic to use the second interface.  I'm going to try an simplify my
+> actual setup, because a lot of it makes no difference to this post...
+>
+> I know this has to be a iptables sort of setup since the routing table
+> can only make a difference on different networks and not based on
+> looking for a specific IP address.
+>
+> The question is:
+>
+> eth0 IP: 10.1.1.1
+> eth1 IP: 10.1.1.2
+>
+> target: 10.1.1.3
+>
+> (these IPs are just examples, there are no hard-fast rules surrounding
+> the other possibilities)
+>
+> How do I make sure this goes out eth1 instead of eth0?  Do I use the
+> mangle rule with the physdev module?
+>
+> I feel like I'm overlooking something or forgetting my basic network
+> ideas here...
 
-Hi,
+you haven't quite given enough info here
 
-Le mardi 08 mai 2007 =E0 16:25 -0400, Randall C Grimshaw a =E9crit :
-> Does anyone know of a mainstream distribution that does not require a
-> custom kernel to use IPset?=20
+if you have target2 10.1.1.4 and you want all traffic to target to go out eth0 
+and all traffic to target2 to go out eth1 then you would want to start out with 
+defining host routes (the routing table _can_ look at specific hosts, not just 
+networks)
 
-Mandriva is using Ipset for some of its tools :
-	http://www.mandriva.com/
+in addition, I believe that you will need to play around with arp filtering to 
+make sure that each NIC only responds to arp requests for it's IP addresses.
 
-> Is devil-linux approaching that class?
-I don't know.
+if you really only have one remote IP address and two local addresses and you 
+want all communications between the target and  10.1.1.1 to use eth0 while 
+all communications between the target and 10.1.1.2 to use eth1 things get more 
+complicated
 
-BR,
---=20
-Eric Leblond <eric@inl.fr>
-INL
+you would need to look into packet/connection tagging and iptables routeing 
+decisions.
 
---=-XruE0f3/OrxMi0ht2Ms2
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+rather then try and go into that right now why don't you try to be a little 
+clearer about exactly what you are trying to do.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBGQN4MnxA7CdMWjzIRAtnjAJ0aoOPitA34SmhkMpBgN5X00d97DwCaA8EI
-zrzcRi19jSl5FCVL/Z6Kojs=
-=nUM3
------END PGP SIGNATURE-----
-
---=-XruE0f3/OrxMi0ht2Ms2--
-
+David Lang
 
