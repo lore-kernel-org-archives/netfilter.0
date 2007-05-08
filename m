@@ -1,11 +1,10 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: IPset and IPv6 support
-Date: Tue, 8 May 2007 20:59:33 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0705082058001.29654@blackhole.kfki.hu>
-References: <20070508112319.GA2953330@metu.edu.tr>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: 'tcpmss' match for ip6tables ?
+Date: Tue, 08 May 2007 21:26:13 +0200
+Message-ID: <4640CED5.7050301@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070508112319.GA2953330@metu.edu.tr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,23 +15,17 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: husnu demir <hdemir@metu.edu.tr>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Tue, 8 May 2007, husnu demir wrote:
+Hello,
 
-> Is there any thought on the IPv6 support?
+I see with great pleasure that the 'TCPMSS' target for IPv6 has been 
+added in the latest kernel and will be supported by the next ip6tables 
+release. This will be useful for some people I know who have MTU trouble 
+with PPPoE connections.
 
-Yep, it's on my TODO list. At last it seems I'm going to have time to 
-proceed...
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-           H-1525 Budapest 114, POB. 49, Hungary
+Now my question : are there similar plans for the 'tcpmss' match ? I do 
+not see support for it in the next ip6tables, although the kernel part 
+has been moved to xtables.
 
