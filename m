@@ -1,13 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Maximilian Wilhelm <max@rfc2324.org>
 Subject: Re: iptables NAT routing issues
-Date: Wed, 09 May 2007 00:33:52 +0200
-Message-ID: <4640FAD0.9050301@plouf.fr.eu.org>
+Date: Wed, 9 May 2007 00:37:36 +0200
+Message-ID: <20070508223736.GC23200@outback.rfc2324.org>
 References: <4640E893.1010206@bserved.nl>
-	<Pine.LNX.4.61.0705090024450.2342@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0705090024450.2342@yvahk01.tjqt.qr>
+Content-Disposition: inline
+In-Reply-To: <4640E893.1010206@bserved.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +18,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Am Tuesday, den  8 May hub Bas Verhoeven folgendes in die Tasten:
 
-Jan Engelhardt a =E9crit :
-> On May 8 2007 23:16, Bas Verhoeven wrote:
->=20
->>OUTBOUND SERVER:
->>
->>iptables -t nat -A PREROUTING -p tcp --dport 80 -d <ext_web_ip> -j DNAT
->>--to-destination <webserver_ip>:80
->>
->>Note: We didn't touch this as it seems to works fine.
->>
->>WEBSERVER:
->=20
-> You do not need any rules here. The outbound server will do the transla=
-tion
-> in both directions.
+Hi!
 
-Assuming that the outbound server is the default gateway for the web=20
-server and receives the return traffic, of course.
+> We're having some problems with iptables, have been playing ~3 hours 
+> with this and I need some advice.
+
+> We want to 'forward' port 80 from one ip to another ip (other server) - 
+> mainly to protect the webserver. One could say that you could use basic 
+> portforwarding for this, but as far as i know this also breaks the 
+> source ip for apache logs, etc. So we decided that we needed NAT'ing.
+[...]
+
+> OUTBOUND SERVER:
+
+> iptables -t nat -A PREROUTING -p tcp --dport 80 -d <ext_web_ip> -j DNAT 
+> --to-destination <webserver_ip>:80
+
+That´s fine.
+This will also make netfilter care of answer packages.
+
+> Note: We didn't touch this as it seems to works fine.
+> 
+> WEBSERVER:
+[...]
+There are no NAT rules needed here.
+All you have to accomplish is that the answer packages from WEBSERVER
+to $client are routed via OUTBOUND SERVER.
+
+I guess that´s just true by the network architecture.
+
+e.g.
+
+client network / inet  <--->  OUTBOUND SERVER  <->  WEBSERVER
+
+HTH
+Ciao
+Max
+-- 
+	Follow the white penguin.
 
