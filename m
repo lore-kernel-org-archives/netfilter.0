@@ -1,13 +1,14 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: DNAT and local hosts
-Date: Tue, 08 May 2007 11:03:34 +0200
-Message-ID: <46403CE6.5010700@plouf.fr.eu.org>
-References: <C3FA62B1A90D7440B9B6C7C31895994F03663A32@zadbn02100.vodacom.corp>
-	<46403616.60103@plouf.fr.eu.org>
+From: "Ramsurrun Visham" <vishamr@gmail.com>
+Subject: Unable to see entries in ip_conntrack file!!
+Date: Tue, 8 May 2007 14:45:20 +0400
+Message-ID: <802220ef0705080345u7ac7890eq8e3f3435a8ca268e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46403616.60103@plouf.fr.eu.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=QWyzcJzHoUHkWjMYJjvy7ANRRb6bd0A27IXoc1MXNbk70Nb/B1bO9iV8S7zmjnzDgVbV/dfK0p1fdhYQaQkg99B///1WwZXiqcT7B9cFAZW4PJA+k+CWzTYUuP0hv43RQqYOGXrpSLtIjgG/WRERbuvJs65UBeK/u5GQqVqqdnk=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +19,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Pascal Hambourg a =E9crit :
->=20
-> 3) NAT or MASQUERADE the source address of the redirected connections,=20
-> so the replies from C1 are routed back to the firewall and can be=20
-> properly un-DNATed before they reach C2 :
->=20
-> iptables -t nat POSTROUTING -o eth0 -d 192.168.0.10 \
->   -p tcp --dport 1234 -j SNAT --to-source <eth0_address>
+Hi to all,
 
-Oops, I forgot "-s 192.168.0.0/24" in order to avoid hiding=20
-unnecessarily the source address of external connections to C2.
+I'm trying to see the connections established on a firewall by looking
+at the contents of the file ip_conntrack by using this command:
 
-> or :
->=20
-> iptables -t nat POSTROUTING -o eth0 -d 192.168.0.10 \
->   -p tcp --dport 1234 -j MASQUERADE
+cat /proc/net/ip_conntrack
 
-Same here.
+The rules used on the firewall are:
+
+iptables -P FORWARD DROP
+iptables -A FORWARD -s 192.168.10.0/24 -d 192.168.10.0/24 -p icmp -m
+state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+I have chosen all the modules related to connection tracking in my
+2.6.20.4 kernel on the firewall machine. I'm using iptables 1.3.7 and
+Fedora Core 5.
+
+What might be going wrong?
+
+Warm regards,
+Visham
 
