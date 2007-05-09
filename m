@@ -1,13 +1,18 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: iptables NAT routing issues
-Date: Wed, 09 May 2007 01:03:54 +0200
-Message-ID: <464101DA.4070102@plouf.fr.eu.org>
-References: <4640E893.1010206@bserved.nl>	<Pine.LNX.4.61.0705090024450.2342@yvahk01.tjqt.qr>	<4640FAD0.9050301@plouf.fr.eu.org>	<Pine.LNX.4.61.0705090036060.2342@yvahk01.tjqt.qr>
-	<4640FDA9.5000706@bserved.nl>
+From: "Elvir Kuric" <omasnjak@gmail.com>
+Subject: Re: IPset included in distro
+Date: Wed, 9 May 2007 12:27:48 +0200
+Message-ID: <1814bfe70705090327n2ef7e7eel7613b2254206a128@mail.gmail.com>
+References: <20070508112319.GA2953330@metu.edu.tr>
+	<Pine.LNX.4.64.0705082058001.29654@blackhole.kfki.hu>
+	<47A63D8907C4DE419BE33AEA2DF95BB31FBBAB@SUEXCL-02.ad.syr.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4640FDA9.5000706@bserved.nl>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=ZlxwKQsF7bWBXb0r3aR1L86KGSqO7EafFdmByiobHPPobxMbkKDqR3h15jXSuxMV93hEEJeaNSzlOhKClAJlCDL7KO1aE6pIviW2Bdscq9ibTNtZcFLZzLtckRnjp/Yh10PE88fkgmoEyQDHrjDBcYapxYKEe4gDi7AFM1ZUdc4=
+In-Reply-To: <47A63D8907C4DE419BE33AEA2DF95BB31FBBAB@SUEXCL-02.ad.syr.edu>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +23,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Randall C Grimshaw <rgrimsha@syr.edu>
+Cc: netfilter@lists.netfilter.org
 
-Bas Verhoeven a =E9crit :
->>
->>> Assuming that the outbound server is the default gateway for the web=20
->>> server and receives the return traffic, of course.
->>
->> You'd be kinda screwed if that was not the case.
->=20
-> The webserver has its own gateway, and that's not the outer box.
+Maybe try this,
 
-Don't look further. Here is why it does not work.
+http://packages.debian.org/unstable/net/ipset ....
 
-> Is there really no solution for this?
+Regards
 
-Use the outer box as a gateway, if it is in the same network. You do not=20
-have to use it as the default gateway for all traffic but at least for=20
-the HTTP return traffic. This could be done with iptables and advanced=20
-routing on the web server, for instance using the source port 80 to MARK=20
-packets or using CONNMARK/connmark.
+PS: Debian is mainstream distribution, is not it?
 
-You could try to use the NOTRACK target on the web server in order to=20
-prevent the incoming SYN packets from creating a new connection, so the=20
-replies could be SNATed. But I would not bet a euro-cent on such a dirty=20
-method. If someone asks who suggested it, don't say it's me. ;-)
+Elvir Kuric
+
+On 5/8/07, Randall C Grimshaw <rgrimsha@syr.edu> wrote:
+>
+> Does anyone know of a mainstream distribution that does not require a
+> custom kernel to use IPset? Is devil-linux approaching that class?
+> <><Randy
+>
+>
 
