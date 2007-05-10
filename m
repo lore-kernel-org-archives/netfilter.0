@@ -1,14 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Filter a TCP stream based on a text appearing in the initial IP
- packet of the stream
-Date: Thu, 10 May 2007 23:25:51 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0705102321570.6426@yvahk01.tjqt.qr>
-References: <22b256140705100551q3a67e680nb184c23f4966cb1d@mail.gmail.com>
-	<Pine.LNX.4.61.0705101611360.32349@yvahk01.tjqt.qr>
-	<464377CC.7000502@plouf.fr.eu.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: iptables NAT routing issues
+Date: Fri, 11 May 2007 00:14:07 +0200
+Message-ID: <4643992F.4050001@plouf.fr.eu.org>
+References: <4640E893.1010206@bserved.nl>	<Pine.LNX.4.61.0705090024450.2342@yvahk01.tjqt.qr>	<4640FAD0.9050301@plouf.fr.eu.org>	<Pine.LNX.4.61.0705090036060.2342@yvahk01.tjqt.qr>	<4640FDA9.5000706@bserved.nl>	<464101DA.4070102@plouf.fr.eu.org>	<46432A84.2010409@bserved.nl>	<464372FE.1070802@plouf.fr.eu.org>
+	<46437B28.5000805@bserved.nl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <464377CC.7000502@plouf.fr.eu.org>
+In-Reply-To: <46437B28.5000805@bserved.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,47 +18,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
+Bas Verhoeven a =E9crit :
+>=20
+>> Which option did you choose ?
+[...]
+> On the webserver we now mark all outgoing web packets:
+[...]
+> And we use iproute2 to forward them back to the outbound server:
+[...]
 
-On May 10 2007 21:51, Pascal Hambourg wrote:
+Ok. You seem to know how to use advanced routing, I am a bit surprised=20
+you said you "weren't aware of that option".
 
->> > I know that there is a certain phrase at the top of the
->> > website, let's say "foobar", which will therefore be part of the first
->> > IP packet of this TCP stream.
->
-> Do you mean the page title enclosed in the <title> tag, which most browsers
-> conveniently display in the title bar ?
-> No, it is not part of the first IP packet. The first packets in a TCP stream
-> are SYN packets used for synchronisation, which contain no TCP data.
+> Couldn't test with CONNMARK, as the box doesn't ship with that, but MAR=
+K=20
+> works great for now.
 
-Well. One may match by l7 or similar, and filter by it. But NAT
-operations need to happen on the very first packet.
+The 'CONNMARK' target and the 'connmark' match were included in the=20
+kernel 2.6.10. Earlier kernel versions had to be patched with the=20
+patch-o-matic-ng.
 
-That said, magically -A OUTPUT -m layer7 --l7proto http never worked
-for me, i.e. the counters just did not increase.
+> I did test your last option too, but that just didn't work and sounded=20
+> very hacky-ish, not something we could rely on, even if it worked.
 
->> The first return packet is not guaranteed to carry the first byte
->> of the HTML page.
->
-> Don't you mean "the first return packet *is* guaranteed *not to* carry the
-> first byte of the HTML page", or "the first return TCP *segment* is not
-> guaranteed to carry the first byte of the HTML page" ? ;-)
-
-"The packet that contains the first byte of the HTTP reply may not
-necessarily carry the first byte(s) of the HTML/XML/etc. data."
-
->> -m string --string foobar -j CONNMARK --set-mark 1
->> -m connmark --mark 1 -j DROP/REJECT/whatever.
->
-> Does this work if the string is split in two consecutive segments ?
-
-I suppose not, hence l7 exists (also because it can do regexp).
-
-
-	Jan
--- 
+Huh, what last option ? I don't know what you're talking about. ;-)
 
