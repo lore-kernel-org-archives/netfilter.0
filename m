@@ -1,14 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Filter a TCP stream based on a text appearing in the initial
- IP packet of the stream
-Date: Thu, 10 May 2007 21:51:40 +0200
-Message-ID: <464377CC.7000502@plouf.fr.eu.org>
-References: <22b256140705100551q3a67e680nb184c23f4966cb1d@mail.gmail.com>
-	<Pine.LNX.4.61.0705101611360.32349@yvahk01.tjqt.qr>
+From: Bas Verhoeven <netfilter@bserved.nl>
+Subject: Re: iptables NAT routing issues
+Date: Thu, 10 May 2007 22:06:00 +0200
+Message-ID: <46437B28.5000805@bserved.nl>
+References: <4640E893.1010206@bserved.nl>	<Pine.LNX.4.61.0705090024450.2342@yvahk01.tjqt.qr>	<4640FAD0.9050301@plouf.fr.eu.org>	<Pine.LNX.4.61.0705090036060.2342@yvahk01.tjqt.qr>	<4640FDA9.5000706@bserved.nl>	<464101DA.4070102@plouf.fr.eu.org>	<46432A84.2010409@bserved.nl>
+	<464372FE.1070802@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0705101611360.32349@yvahk01.tjqt.qr>
+In-Reply-To: <464372FE.1070802@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,54 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Pascal Hambourg wrote:
+> Which option did you choose ?
+We still have the outbound server DNAT-ing connections to the 
+webserver's ip, that worked fine.
+On the webserver we now mark all outgoing web packets:
 
-Jan Engelhardt a =E9crit :
-> On May 10 2007 14:51, Michael Ransburg wrote:
->>
->>let's say someone is downloading a website using http/tcp/ip. This
->>website is very large, i.e., there will be many IP packets in this TCP
->>stream.
+# iptables -t mangle -A OUTPUT -s <webserver_inner_ip> -p tcp --sport 80 
+-j MARK --set-mark 2
 
-There may even be many different TCP connections.
+And we use iproute2 to forward them back to the outbound server:
 
->>I know that there is a certain phrase at the top of the
->>website, let's say "foobar", which will therefore be part of the first
->>IP packet of this TCP stream.
+# ip rule add fwmark 2 pref 10 table web.out
+# ip route add default via <outbound_box_ip> dev eth0 table web.out
 
-Do you mean the page title enclosed in the <title> tag, which most=20
-browsers conveniently display in the title bar ?
-No, it is not part of the first IP packet. The first packets in a TCP=20
-stream are SYN packets used for synchronisation, which contain no TCP dat=
-a.
+Couldn't test with CONNMARK, as the box doesn't ship with that, but MARK 
+works great for now.
 
-> The first return packet is not guaranteed to carry the first byte of th=
-e HTML
-> page.
-
-Don't you mean "the first return packet *is* guaranteed *not to* carry=20
-the first byte of the HTML page", or "the first return TCP *segment* is=20
-not guaranteed to carry the first byte of the HTML page" ? ;-)
-
-> If the HTTP header is "big enough"
-
-And/or the HTML header contents before the <title> tag is big enough.
-
-> and the MTU is "small enough",
-> then it is likely that the packet is split before foobar.
-[...]
->>So what I want to say in a rule is:
->>If the first (or simply "a") IP packet of a TCP stream contains a
->>given phrase, then please filter (match) all IP packets which belong
->>to this TCP stream.
->>
->>Can this be done using iptables / netfilter?
->=20
-> -m string --string foobar -j CONNMARK --set-mark 1
-> -m connmark --mark 1 -j DROP/REJECT/whatever.
-
-Does this work if the string is split in two consecutive segments ?
+I did test your last option too, but that just didn't work and sounded 
+very hacky-ish, not something we could rely on, even if it worked.
 
