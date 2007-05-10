@@ -1,13 +1,15 @@
-From: Bas Verhoeven <netfilter@bserved.nl>
-Subject: Re: iptables NAT routing issues
-Date: Thu, 10 May 2007 16:21:56 +0200
-Message-ID: <46432A84.2010409@bserved.nl>
-References: <4640E893.1010206@bserved.nl>	<Pine.LNX.4.61.0705090024450.2342@yvahk01.tjqt.qr>	<4640FAD0.9050301@plouf.fr.eu.org>	<Pine.LNX.4.61.0705090036060.2342@yvahk01.tjqt.qr>	<4640FDA9.5000706@bserved.nl>
-	<464101DA.4070102@plouf.fr.eu.org>
+From: Wakko Warner <wakko@animx.eu.org>
+Subject: Re: delete NAT conntrack entry.
+Date: Thu, 10 May 2007 12:16:55 -0400
+Message-ID: <20070510161655.GA29151@animx.eu.org>
+References: <000a01c792d2$3e07e240$8f0ba8c0@swparkt1>
+	<Pine.LNX.4.61.0705101150510.32349@yvahk01.tjqt.qr>
+	<20070510111403.GA27624@animx.eu.org>
+	<Pine.LNX.4.61.0705101442020.32349@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <464101DA.4070102@plouf.fr.eu.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0705101442020.32349@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,24 +20,38 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
 Cc: netfilter@lists.netfilter.org
 
-Pascal Hambourg wrote:
-> Use the outer box as a gateway, if it is in the same network. You do 
-> not have to use it as the default gateway for all traffic but at least 
-> for the HTTP return traffic. This could be done with iptables and 
-> advanced routing on the web server, for instance using the source port 
-> 80 to MARK packets or using CONNMARK/connmark.
-I wasn't aware of that option, it seems to work fine ;-)
+Jan Engelhardt wrote:
+> 
+> On May 10 2007 07:14, Wakko Warner wrote:
+> >
+> >If it were possible that when a rule like that is deleted, all
+> >active conntrack entries that this rule causes would be removed.
+> 
+> Problem 1: We would have to record in a ct entry what rule caused
+> the ct to come alive. What if we have an empty ruleset? Conntracking
+> still runs even when no iptables rules are in position.
 
-Thanks.
->
-> You could try to use the NOTRACK target on the web server in order to 
-> prevent the incoming SYN packets from creating a new connection, so 
-> the replies could be SNATed. But I would not bet a euro-cent on such a 
-> dirty method. If someone asks who suggested it, don't say it's me. ;-)
->
+I figured something like that would be required.  I do realize that
+conntrack tracks connections regardless of iptable rules.
 
+> Problem 2: If I wanted to move a rule inside a chain,
+> deleting/reinserting it would kill the ct entry and - given some
+> ruleset* (there are many more that would apply) - stops all
+> connections immediately.
+> 
+>   -P INPUT DROP
+>   -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+>   -A INPUT -m conntrack --ctstate NEW -p tcp --syn -j ACCEPT
+
+I understood this before I wrote it.  How often does one move things around
+in their firewall (after their experiemental stage)?
+
+-- 
+ Lab tests show that use of micro$oft causes cancer in lab animals
+ Got Gas???
 
