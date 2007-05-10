@@ -1,13 +1,14 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: iptables NAT routing issues
-Date: Thu, 10 May 2007 21:31:10 +0200
-Message-ID: <464372FE.1070802@plouf.fr.eu.org>
-References: <4640E893.1010206@bserved.nl>	<Pine.LNX.4.61.0705090024450.2342@yvahk01.tjqt.qr>	<4640FAD0.9050301@plouf.fr.eu.org>	<Pine.LNX.4.61.0705090036060.2342@yvahk01.tjqt.qr>	<4640FDA9.5000706@bserved.nl>	<464101DA.4070102@plouf.fr.eu.org>
-	<46432A84.2010409@bserved.nl>
+Subject: Re: Filter a TCP stream based on a text appearing in the initial
+ IP packet of the stream
+Date: Thu, 10 May 2007 21:51:40 +0200
+Message-ID: <464377CC.7000502@plouf.fr.eu.org>
+References: <22b256140705100551q3a67e680nb184c23f4966cb1d@mail.gmail.com>
+	<Pine.LNX.4.61.0705101611360.32349@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46432A84.2010409@bserved.nl>
+In-Reply-To: <Pine.LNX.4.61.0705101611360.32349@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,21 +22,51 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Bas Verhoeven a =E9crit :
+Hello,
+
+Jan Engelhardt a =E9crit :
+> On May 10 2007 14:51, Michael Ransburg wrote:
+>>
+>>let's say someone is downloading a website using http/tcp/ip. This
+>>website is very large, i.e., there will be many IP packets in this TCP
+>>stream.
+
+There may even be many different TCP connections.
+
+>>I know that there is a certain phrase at the top of the
+>>website, let's say "foobar", which will therefore be part of the first
+>>IP packet of this TCP stream.
+
+Do you mean the page title enclosed in the <title> tag, which most=20
+browsers conveniently display in the title bar ?
+No, it is not part of the first IP packet. The first packets in a TCP=20
+stream are SYN packets used for synchronisation, which contain no TCP dat=
+a.
+
+> The first return packet is not guaranteed to carry the first byte of th=
+e HTML
+> page.
+
+Don't you mean "the first return packet *is* guaranteed *not to* carry=20
+the first byte of the HTML page", or "the first return TCP *segment* is=20
+not guaranteed to carry the first byte of the HTML page" ? ;-)
+
+> If the HTTP header is "big enough"
+
+And/or the HTML header contents before the <title> tag is big enough.
+
+> and the MTU is "small enough",
+> then it is likely that the packet is split before foobar.
+[...]
+>>So what I want to say in a rule is:
+>>If the first (or simply "a") IP packet of a TCP stream contains a
+>>given phrase, then please filter (match) all IP packets which belong
+>>to this TCP stream.
+>>
+>>Can this be done using iptables / netfilter?
 >=20
->> Use the outer box as a gateway, if it is in the same network. You do=20
->> not have to use it as the default gateway for all traffic but at least=
-=20
->> for the HTTP return traffic. This could be done with iptables and=20
->> advanced routing on the web server, for instance using the source port=
-=20
->> 80 to MARK packets or using CONNMARK/connmark.
->=20
-> I wasn't aware of that option, it seems to work fine ;-)
+> -m string --string foobar -j CONNMARK --set-mark 1
+> -m connmark --mark 1 -j DROP/REJECT/whatever.
 
-Which option did you choose ?
-
-> Thanks.
-
-You're welcome.
+Does this work if the string is split in two consecutive segments ?
 
