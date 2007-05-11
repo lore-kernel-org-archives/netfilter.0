@@ -1,14 +1,13 @@
-From: "Ramsurrun Visham" <vishamr@gmail.com>
-Subject: Re: Problem with connection tracking in IPtables!!
-Date: Fri, 11 May 2007 14:43:19 +0400
-Message-ID: <802220ef0705110343w38864b3ew9194a49ffa3ab9fb@mail.gmail.com>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: Policy targets...
+Date: Fri, 11 May 2007 13:03:20 +0200
+Message-ID: <46444D78.7040809@freemail.hu>
+References: <464441F7.3050808@freemail.hu> <464443AE.5020904@gmail.com>
+	<464446C5.8090301@freemail.hu> <46444B26.6010206@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=bOP4YFsKyuZIBlLB2cvSFbL47bkJqjHesgUtD/sdzZx62DL5XSLUtk5OhigCO/Wu9baS7Oj6BARV2T0EJsYq7IJVyitFy0VOvsFN8AJlsUuKdJ/ftSM6Eqc4k1261MJzX8t9IHt0Y3UjP8WWB/FPX5sSYvb67OukvsHDJ2NZMs8=
-Content-Disposition: inline
+In-Reply-To: <46444B26.6010206@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,15 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-2?Q?Pedro_Gon=E7alves?= <pedro.pandre@gmail.com>
+Cc: Netfilter IPtableMailinglist <netfilter@lists.netfilter.org>
 
-Hi to all,
+Pedro Gon=E7alves =EDrta:
+>> Thanx for the answer but my question was that what happens when the=20
+>> CHAIN POLICY is RETURN...=20
+> Sorry, I didn't understand that in you original email.
+No problem... :D
+> I don't think that "RETURN" is a valid policy target, I think that=20
+> only "ACCEPT" or "DROP" may be used as policy targets.
+> At least, I've never used that target neither seen anyone using it,=20
+> but maybe someone in the list can provide more info.
+I tried and it gives me an error:
 
-I am unable to see the contents of the ip_conntrack file. I have built
-the iptables modules in my 2.6.20.4 kernel itself. Is that what might
-causing this problem? Should I select the options as modules?
+fw1:~# iptables -t nat -P PREROUTING RETURN
+iptables: Bad policy name
 
-Warm regards,
-Visham
+So you won !
+Maybe someone should fix the manual....
+> Best Regards
+> pandre
+Thanx anyway... :D
+
+Swifty
+
 
