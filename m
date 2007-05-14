@@ -1,9 +1,12 @@
-From: Lokesh <lokeshnb@intoto.com>
-Subject: Async processing using NetFilters
-Date: Mon, 14 May 2007 17:22:24 +0530
-Message-ID: <200705141147.l4EBlAbV017164@brahma.intotoind.com>
+From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+Subject: Re: Problem with connection tracking in IPtables!!
+Date: Mon, 14 May 2007 21:03:17 +0900 (JST)
+Message-ID: <200705141203.l4EC3IEv028786@toshiba.co.jp>
+References: <802220ef0705110343w38864b3ew9194a49ffa3ab9fb@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <802220ef0705110343w38864b3ew9194a49ffa3ab9fb@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,81 +17,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: vishamr@gmail.com
+Cc: netfilter@lists.netfilter.org
 
-Sorry for sending this again. anybody can please give me a clue ?
+From: "Ramsurrun Visham" <vishamr@gmail.com>
+Date: Fri, 11 May 2007 14:43:19 +0400
 
->X-Mailer: QUALCOMM Windows Eudora Version 7.1.0.9
->Date: Thu, 19 Apr 2007 13:05:15 +0530
->To: netfilter@lists.netfilter.org
->From: Lokesh <lokeshnb@intoto.com>
->X-Virus-Scanned: by Intoto Anti-X 1.0; Thu, 19 Apr 2007 13:00:54 +0530
->X-Spam-Scanned: by Intoto Anti-X 1.0; Thu, 19 Apr 2007 13:00:54 +0530
->X-Spam-RefID: str=0001.0A090208.46271AAD.00D3,ss=1,fgs=0
->X-Virus-Scanned: by Intoto Anti-X 1.0; Thu, 19 Apr 2007 13:00:49 +0530
->X-Spam-Scanned: by Intoto Anti-X 1.0; Thu, 19 Apr 2007 13:00:49 +0530
->X-Spam-RefID: str=0001.0A090208.46271AA8.00DA,ss=1,fgs=0
->X-Scanned-By: MIMEDefang 2.41
->Subject: Async processing using NetFilters
->X-Virus-Scanned: by Intoto Anti-X 1.0;
->                 Thu, 19 Apr 2007 13:26:37 +0530
->X-Spam-Scanned: by Intoto Anti-X 1.0;
->                 Thu, 19 Apr 2007 13:26:37 +0530
->X-Spam-RefID: str=0001.0A090204.462720B5.0025:SCGMAF58662,ss=1,fgs=0
->X-BeenThere: netfilter@lists.netfilter.org
->X-Mailman-Version: 2.1.5
->List-Id: General discussion and user questions <netfilter.lists.netfilter.org>
->List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
->         <mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
->List-Archive: </pipermail/netfilter>
->List-Post: <mailto:netfilter@lists.netfilter.org>
->List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
->List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
->         <mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
->Sender: netfilter-bounces@lists.netfilter.org
->
->Hi All,
->I'm using Linux RedHat 9  kernel version 2.4.20-8
->I want to do some asynchronous processing of packets in my kernel 
->module that is registered as
->Netfilter Hook. I tried to make use of NF_QUEUE but found that only 
->one call back function per
->protocol family (PF) is provided and already some module (probably 
->NET_LINK socket interface)
->is making use of it for PF_INET.  Is there any way to use NF_QUEUE 
->facility without disturbing
->NET_LINK ? why per hook registration of call back function of 
->NF_QUEUE is not provided?
->How to proceed if someone had to do async processing of packets so 
->that pkts can be queued to crypto hardware processing unit and can 
->be safely reinjected back into kernel later so that other registered 
->hooks can get pkts?
->any help is highly appreciated.
->Thanks
->-Lokesh.
->
->
->
->********************************************************************************
->This email message (including any attachments) is for the sole use 
->of the intended recipient(s) and may contain confidential, 
->proprietary and privileged information. Any unauthorized review, 
->use, disclosure or distribution is prohibited. If you are not the 
->intended recipient, please immediately notify the sender by reply 
->email and destroy all copies of the original message. Thank you.
->Intoto Inc.
+> Hi to all,
+> 
+> I am unable to see the contents of the ip_conntrack file. I have built
+> the iptables modules in my 2.6.20.4 kernel itself. Is that what might
+> causing this problem? Should I select the options as modules?
 
+AFAIK your .config in previous mail, you are using nf_conntrack, not
+ip_conntrack. nf_conntrack is new module. But it is compatible with
+ip_conntrack, if you also load nf_conntrack_ipv4. Don't worry.
 
+Regards,
 
-********************************************************************************
-This email message (including any attachments) is for the sole use of the intended recipient(s) 
-and may contain confidential, proprietary and privileged information. Any unauthorized review, 
-use, disclosure or distribution is prohibited. If you are not the intended recipient, 
-please immediately notify the sender by reply email and destroy all copies of the original message. 
-Thank you.
- 
-Intoto Inc. 
-
+-- Yasuyuki Kozakai
 
