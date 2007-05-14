@@ -1,10 +1,21 @@
-From: Sumit Malik <sumit_malik1@yahoo.com>
-Subject: 12 interface FTP server - Possible routing problem - Please help
-Date: Sun, 13 May 2007 13:30:41 -0700 (PDT)
-Message-ID: <535519.69724.qm@web31508.mail.mud.yahoo.com>
+From: "Stephan Higuti" <higuti.sam@gmail.com>
+Subject: Re: Firewall L7
+Date: Mon, 14 May 2007 14:17:59 -0300
+Message-ID: <3da957060705141017x700eee6bq7c1781f0b4756c39@mail.gmail.com>
+References: <3da957060704180538m12ec86edr2536867007a8d05@mail.gmail.com>
+	<462612C7.3090504@solutti.com.br>
+	<3da957060704191115v62303fdh838beab7328ed331@mail.gmail.com>
+	<6bb85d880704191258r4b3638adye6669cee42b16485@mail.gmail.com>
+	<3da957060705111053o72da3957q7887879d7e9cc87d@mail.gmail.com>
+	<4644CC76.80502@zensoluciones.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=aKL3jOSbfFPQdU2HLzyxukYq6m0+yL4fRqQ7lSoruVACRZ3P0cYSNTD7gSwumW5IA75WY0eU7vsjInjvXCmjp2CmYgDKxUWbpzfSFX26Q0kjPSnOVB0KrkC8id++BrYcVXT9icw09cZt3JnepCYv/toaTIRHyfSNR7UTOFFItfk=
+In-Reply-To: <4644CC76.80502@zensoluciones.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,87 +26,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: =?ISO-8859-1?Q?S=E9bastien_CRAMATTE?= <scramatte@zensoluciones.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Thankz guys!
 
-I have proFTPd setup on an Ubuntu server with 12
-network interfaces, each one connected to a separate
-DSL line. The server binds to the 12 interfaces fine
-but has trouble taking connections on the 11 other
-than the first interface.
+My block rules isn't works!
+I'm using this rules to block msn protocol...
 
-- Each DSL line has a dynamic IP and is mapped to a
-DynDNS name.
-- Each interface is behind a NAT in the DSL router.
-(An incoming connection is able to get to the server
-so the incoming NAT is working fine)
-- All relevant ports are opened for FTP on each router
-and forwarded to the appropriate internal IP
-- Each interface in proFTPd is setup to use a DNS
-service to lookup the interface IP for PASV transfers.
-Each interface has a different DNS name
-- All interfaces are visible and enabled in the
-interface list
-- Each of the interfaces has an internal IP of
-192.168.n.11 and the router has an IP of 192.168.n.1.
-- The server is running Ubuntu Server 6.10 with no
-firewall software
 
-With these routes below I am able to ftp to each
-interface independently and get directory listings. I
-am also able to upload data from the client to each of
-the 12 interfaces.
+iptables -t filter -A FORWARD -m layer7 --l7proto msnmessenger -j DROP
 
-ip route add 192.168.2.0/24 dev eth2 src 192.168.2.11
-table r2
-ip route add 192.168.3.0/24 dev eth3 src 192.168.3.11
-table r3
-...
-ip route add 192.168.12.0/24 dev eth12 src
-192.168.12.11 table r12
 
-ip rule add from 192.168.2.11 table r2
-ip rule add from 192.168.3.11 table r3
-...
-ip rule add from 192.168.12.11 table r12
+Any idea?
 
-ip route add default via 192.168.2.1 table r2
-ip route add default via 192.168.3.1 table r3
-...
-ip route add default via 192.168.12.1 table r12
+Best Regards
 
-The strange part is that I am actually able to
-download in ascii mode but not in binary mode from any
-of the interfaces other than the default interface
-(eth1)
+Stephan
 
-I also tried loading ip_conntrack and ip_conntrack_ftp
-but that did not work. I also added the following
-iptable entries but they didn't help either.
-
-iptables -A INPUT -i eth2 -p tcp --sport 1024: --dport
-1024: -d 192.168.2.11 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -o eth2 -p tcp --sport 1024:
---dport 1024: -s 192.168.2.11 -m state --state
-ESTABLISHED -j ACCEPT
-
-So now I am able to do the following using PASSIVE
-mode
-- Upload from Client -> Server in ASCII and BINARY
-mode
-- Download from Server -> Client in ASCII mode only.
-
-I have also tried several ftp clients.
-
-Any ideas why BINARY mode is not working for
-downloads?
-
-Thanks for your help in advance.
-
-Regards,
-
--Sumit
+-
+---------------------------------------------------------------------
+Stephan Higuti
+MSN: higutisam@hotmail.com
+Email: higuti.sam@gmail.com
+---------------------------------------------------------------------
 
