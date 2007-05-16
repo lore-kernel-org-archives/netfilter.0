@@ -1,10 +1,11 @@
-From: Nicholas Kline <kakster7@sbcglobal.net>
-Subject: Questions about DHCP firewall rules
-Date: Wed, 16 May 2007 13:37:37 -0700 (PDT)
-Message-ID: <461550.70641.qm@web83807.mail.sp1.yahoo.com>
+From: "k bah" <kbah@linuxmail.org>
+Subject: Match specific netbios flag?
+Date: Thu, 17 May 2007 07:00:58 +0800
+Message-ID: <20070516230058.CB1692477C@ws5-3.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,54 +19,77 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Questions about DHCP firewall rules
 
-Greetings,
+ Hi,
 
-I am in the process of learning Netfilter/IPtables.  I
-plan on using Netfilter/IPtables to protect my Linux
-desktop computers and servers.  We're talking
-host-based firewalls, not one firewall protecting all
-of the desktops and servers.
+ I'm using kernel 2.6.17, iptables 1.3.5.
+=20
+ Is there a way to match specific netbios ns flags? I did not find any on t=
+he iptables man page.
 
-I have a basic question I am hoping someone on this
-mailing list can answer.  I am a little confused about
-configuring Netfilter/IPtables on a Linux desktop
-computer.  Specifically, this situation:
+ I'm trying to log it like this:
 
-a linux desktop computer that is configured to use
-DHCP and configured to use the following rule:
+ -A INPUT -s 10.1.1.15 -i eth1 -p udp -m string --string "elease" --algo bm=
+ --to 65535 -j LOG --log-prefix "received release from 015"
 
-$IPTABLES -A INPUT -s $IP_LOCAL -j LOG --log-prefix
-"Spoofed source IP"
-$IPTABLES -A INPUT -s $IP_LOCAL -j DROP
+ where 10.1.1.1 is the machine with iptables, the internal net router. 10.1=
+.1.15 is Windows XP.
 
-I would like to include the previous rule as part of a
-standard rule set.
+ I would like to match it with a flag, not a string, to be more secure (net=
+bios ns flag 0x3010)
 
-From how I understand this situation, the firewall
-would have to be able to automatically detect when the
-computers IP address changes, right?  Manually
-inputting the computers IP address each time it
-changes would get really old.
+ the packet captured with wireshark is:
+-------------
+...
+11164 11877.336283 10.1.1.15              10.1.1.255            NBNS     Re=
+lease NB HT015<20>
+...
+NetBIOS Name Service
+    Transaction ID: 0x808f
+    Flags: 0x3010 (Release)
+        0... .... .... .... =3D Response: Message is a query
+        .011 0... .... .... =3D Opcode: Release (6)
+        .... ..0. .... .... =3D Truncated: Message is not truncated
+        .... ...0 .... .... =3D Recursion desired: Don't do query recursive=
+ly
+        .... .... ...1 .... =3D Broadcast: Broadcast packet
+    Questions: 1
+    Answer RRs: 0
+    Authority RRs: 0
+    Additional RRs: 1
+    Queries
+        HT015<20>: type NB, class IN
+            Name: HT015<20> (Server service)
+            Type: NB
+            Class: IN
+    Additional records
+        HT015<20>: type NB, class IN
+            Name: HT015<20> (Server service)
+            Type: NB
+            Class: IN
+            Time to live: 0 time
+            Data length: 6
+            Flags: 0x0 (B-node, unique)
+                0... .... .... .... =3D Unique name
+                .00. .... .... .... =3D B-node
+            Addr: 10.1.1.15
+-------------
 
-I'm using several books as references for learning
-Netfilter/IPtables and they discuss implementing
-"dynamic firewall scripts".  In this case, a dynamic
-firewall script that recognizes when the computers IP
-address changes.
+ I want to know when that host went offline by turning the computer off, or=
+ because of some physical failure, as a broken cable, or disconnected cable=
+ on the switch.
 
-So, my questions are:
+ thanks,
 
-1.) If I am using a computer that is configured to
-obtain its IP address through DHCP, what firewall
-rules do I need to setup?
+ kbah
 
-2.) Additionally, how do I configure the firewall to
-automatically detect changes in the computers network
-configuration (IP address change, etc.)?
+=3D
+ERP - Accounting Software, SQL Edition
+SQL, fully customizable free SDK.
+http://a8-asy.a8ww.net/a8-ads/adftrclick?redirectid=3Dea7c49bd3fe7f7a95586c=
+9ff6c085471
 
-Thank you for your time,
 
-*Nick*
+--=20
+Powered by Outblaze
 
