@@ -1,9 +1,9 @@
-From: Marc Cozzi <cozzi@nd.edu>
-Subject: RE: is it possible to block ip packets that contains experimental
-	tcp options ?
-Date: Wed, 16 May 2007 08:18:32 -0400
-Message-ID: <F163413C9250D211A55C0060979D5280016AB33A@hertz.rad.nd.edu>
+From: "Vasantha Kumar Puttappa" <vasanthakumar@iitb.ac.in>
+Subject: Packets lost
+Date: Wed, 16 May 2007 18:37:01 +0530 (IST)
+Message-ID: <3388.10.107.26.27.1179320821.squirrel@gpo.iitb.ac.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,42 +16,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+Hi All,
+ Please somebody guide me here.
 
-Glenn,
+I am tracking all udp packets (in particular, SIP based UDP packets)that
+goes through iptables using LOG mechanism.
+I use the following command,
+    iptables -A INPUT -p udp -j LOG --log-level-4.
 
-Not sure what you mean by "experimental" however, there are
-some conditions of flags that should never occur on the
-network. These can be trapped with rules similar to the following.
+In addition, i also run 'Ethereal' to make sure that all the packets
+captured goes through iptables as well.
 
-iptables -A BLOCKED -m state --state INVALID -j LOG-AND-DROP
-iptables -A BLOCKED -p tcp --tcp-flags ALL ALL -j LOG-AND-DROP
-iptables -A BLOCKED -p tcp --tcp-flags ALL NONE -j LOG-AND-DROP
+Here is the problem,
+  Sometimes, a random number of packets doesnot go through IPtables and
+they are completely lost. Although, I can see those packets in Ethereal.
 
-  --marc
+ I tried increasing the backlog queue and ip_queue length, but still no use.
+ I am using Netgear's wireless network card (WG511, made in taiwan).
 
 
-> -----Original Message-----
-> From: Glenn Terjesen [mailto:glenn@webcat.no] 
-> Sent: Wednesday, May 16, 2007 5:24 AM
-> To: netfilter@lists.netfilter.org
-> Subject: is it possible to block ip packets that contains 
-> experimental tcp options ?
-> 
-> Hello,
-> got a iptables firewall filtering our servers.
-> 
-> Is it possible to block tcp packets that contains 
-> experimental tcp options ?
-> 
-> AND is it smart to do so ?
-> 
-> 
-> --
-> Mvh Glenn Terjesen @ Webcat AS
-> Tlf: +47 37 02 20 20
-> E-post: support@webcat.no
-> 
+ Somebody please guide me. How do I findout the cause of this.
+
+ Regards
+ Vasanth
+
+
+
+
+
 
