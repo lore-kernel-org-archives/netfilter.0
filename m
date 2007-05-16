@@ -1,12 +1,12 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Packets lost
-Date: Wed, 16 May 2007 16:48:09 +0200
-Message-ID: <464B19A9.700@freemail.hu>
-References: <3388.10.107.26.27.1179320821.squirrel@gpo.iitb.ac.in>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: RE: is it possible to block ip packets that contains experimental
+ tcp options ?
+Date: Wed, 16 May 2007 20:04:29 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0705162002420.9019@yvahk01.tjqt.qr>
+References: <F163413C9250D211A55C0060979D5280016AB33A@hertz.rad.nd.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <3388.10.107.26.27.1179320821.squirrel@gpo.iitb.ac.in>
+In-Reply-To: <F163413C9250D211A55C0060979D5280016AB33A@hertz.rad.nd.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Vasantha Kumar Puttappa <vasanthakumar@iitb.ac.in>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Marc Cozzi <cozzi@nd.edu>
 Cc: netfilter@lists.netfilter.org
 
-Vasantha Kumar Puttappa =EDrta:
-> Hi All,
->  Please somebody guide me here.
->
-> I am tracking all udp packets (in particular, SIP based UDP packets)tha=
-t
-> goes through iptables using LOG mechanism.
-> I use the following command,
->     iptables -A INPUT -p udp -j LOG --log-level-4.
->  =20
-Maybe you also need the following rule:
-iptables -A FORWARD -p udp -j LOG --log-level-4
-> In addition, i also run 'Ethereal' to make sure that all the packets
-> captured goes through iptables as well.
->  =20
-Ethereal sees the packets BEFORE iptables.
-So maybe some of your rules drops the packet.
-> Here is the problem,
->   Sometimes, a random number of packets doesnot go through IPtables and=
 
-> they are completely lost. Although, I can see those packets in Ethereal=
-=2E
+On May 16 2007 08:18, Marc Cozzi wrote:
 >
->  I tried increasing the backlog queue and ip_queue length, but still no=
- use.
->  I am using Netgear's wireless network card (WG511, made in taiwan).
+>Not sure what you mean by "experimental" however, there are
+>some conditions of flags that should never occur on the
+>network. These can be trapped with rules similar to the following.
 >
->
->  Somebody please guide me. How do I findout the cause of this.
->
->  Regards
->  Vasanth
->  =20
-Swifty
+>iptables -A BLOCKED -m state --state INVALID -j LOG-AND-DROP
+>iptables -A BLOCKED -p tcp --tcp-flags ALL ALL -j LOG-AND-DROP
+>iptables -A BLOCKED -p tcp --tcp-flags ALL NONE -j LOG-AND-DROP
 
+Uhm, I think it is valid for a packet to carry no flags at all.
+(Regular data packet without TCP Selective ACK)
+
+Check up on http://jengelh.hopto.org/p/chaostables/ to see how
+to block evil stuff.
+
+
+	Jan
+-- 
 
