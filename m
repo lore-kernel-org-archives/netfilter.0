@@ -1,12 +1,13 @@
 From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Re: Match specific netbios flag?
-Date: Wed, 16 May 2007 18:14:48 -0600
-Message-ID: <web-14761470@bk3.webmaillogin.com>
-References: <20070516230058.CB1692477C@ws5-3.us4.outblaze.com>
+Subject: Re: Looking for a how-to type battle plan for 2 physical
+ subnets and an	openvpn tunnel.
+Date: Wed, 16 May 2007 18:53:20 -0600
+Message-ID: <web-14764344@bk3.webmaillogin.com>
+References: <bf0ca81a0705161135y12499869yc93ea9043eec44bc@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070516230058.CB1692477C@ws5-3.us4.outblaze.com>
+In-Reply-To: <bf0ca81a0705161135y12499869yc93ea9043eec44bc@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,102 +18,96 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: k bah <kbah@linuxmail.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Bill Ries-Knight <steelhoof@gmail.com>, netfilter@lists.netfilter.org
 
-May you must try something different instead of iptables.
+My approach to this:
 
-For loggin the connection/disconnection is enough the configuration of the =
+Internet
+!
+!
++-----+
+!     !
+!     !
+eth0  tun0
+!     !
+!     ???
+!
++--eth1 (administration/teachers)
+!
+!
++
+eth2 (lab)
 
-loggin in the smb configuration file.
+Sorry for don't put in the diagram the allowed access for the roadwarriors.
 
-If you really want monitoring may you want use Nagios.
+-> "Without ipmasq there is no name based browsing at all" and "VPN happy 
+but no browsing"
 
-Hope this help,
+The OpenVPN client configuration is telling to the clients use another DNS 
+servers than the configured in the gateways? If the answer is true, your 
+firewall rules takes in consideration that kind of traffic?
 
-Jorge D=E1vila.
+Are you speaking about local network navigation using WINS or DNS resolution 
+browsing the Internet?
 
-On Thu, 17 May 2007 07:00:58 +0800
-  "k bah" <kbah@linuxmail.org> wrote:
->=20
-> Hi,
->=20
-> I'm using kernel 2.6.17, iptables 1.3.5.
->=20
-> Is there a way to match specific netbios ns flags? I did not find any on =
+To figure out better the situation you must put the result of:
 
->the iptables man page.
->=20
-> I'm trying to log it like this:
->=20
-> -A INPUT -s 10.1.1.15 -i eth1 -p udp -m string --string "elease" --algo b=
-m=20
->--to 65535 -j LOG --log-prefix "received release from 015"
->=20
-> where 10.1.1.1 is the machine with iptables, the internal net router.=20
->10.1.1.15 is Windows XP.
->=20
-> I would like to match it with a flag, not a string, to be more secure=20
->(netbios ns flag 0x3010)
->=20
-> the packet captured with wireshark is:
-> -------------
-> ...
-> 11164 11877.336283 10.1.1.15              10.1.1.255            NBNS=20
->    Release NB HT015<20>
-> ...
-> NetBIOS Name Service
->    Transaction ID: 0x808f
->    Flags: 0x3010 (Release)
->        0... .... .... .... =3D Response: Message is a query
->        .011 0... .... .... =3D Opcode: Release (6)
->        .... ..0. .... .... =3D Truncated: Message is not truncated
->        .... ...0 .... .... =3D Recursion desired: Don't do query recursiv=
-ely
->        .... .... ...1 .... =3D Broadcast: Broadcast packet
->    Questions: 1
->    Answer RRs: 0
->    Authority RRs: 0
->    Additional RRs: 1
->    Queries
->        HT015<20>: type NB, class IN
->            Name: HT015<20> (Server service)
->            Type: NB
->            Class: IN
->    Additional records
->        HT015<20>: type NB, class IN
->            Name: HT015<20> (Server service)
->            Type: NB
->            Class: IN
->            Time to live: 0 time
->            Data length: 6
->            Flags: 0x0 (B-node, unique)
->                0... .... .... .... =3D Unique name
->                .00. .... .... .... =3D B-node
->            Addr: 10.1.1.15
-> -------------
->=20
-> I want to know when that host went offline by turning the computer off, o=
-r=20
->because of some physical failure, as a broken cable, or disconnected cable=
-=20
->on the switch.
->=20
-> thanks,
->=20
-> kbah
->=20
-> =3D
-> ERP - Accounting Software, SQL Edition
-> SQL, fully customizable free SDK.
-> http://a8-asy.a8ww.net/a8-ads/adftrclick?redirectid=3Dea7c49bd3fe7f7a9558=
-6c9ff6c085471
->=20
->=20
-> --=20
-> Powered by Outblaze
->=20
->=20
+ip r
+ip a
+iptables -L -nvx
+
+And, additionally you must ask about the OpenVPN issues in the OpenVPN 
+mailing list.
+
+May this help you,
+
+Jorge.
+
+On Wed, 16 May 2007 11:35:10 -0700
+  "Bill Ries-Knight" <steelhoof@gmail.com> wrote:
+> ok, I have a solution issue...
+> 
+> We just had a server cracked (fc4, built by my predecessor)
+> 
+> The server acts as a firewall, VPN Server, content filtering system,
+> samba server for files and ssh tunnel to the network.
+> 
+> There are 3 nics covering 2 physical subnets , school
+> administration/teachers and computer lab for the sudents, each with
+> thier own NIC and the gateway to the internet on the third.  Openvpn
+> provides a tun interface with a third subnet to manage.
+> 
+> Software we are running is iptables for the firewall, Openvpn for the
+> vpn tunnel between physical sites, samba and clamav/squid/dansguardian
+> for content filtering and openssh for remote access.
+> 
+> I am using Debia Etch for the server.
+> 
+> Is there anyone with a reference on how to manage this one?
+> 
+> I can get the old firewall rules into place, but adding ipmasq munges
+> it all up.  Without ipmasq there is no name based browsing at all.
+> 
+> At various times I can get the vpn happy, but no browsing.  if I try
+> to bring both physical subnets into play, it munges.  I have issues
+> with name based internet browsing, or a few minutes later, I have
+> issues with the ip address based access.  Ie: I can ping out, but not
+> name browse..  a bit later I cannot even ping out.
+> 
+> I am really lost here.
+> 
+> Help!
+> Please.
+> 
+> -- 
+> -- 
+> Bill Ries-Knight
+> Stockton, CA
+> 
+> Respect the process, Vote.
+> 
+> 
 
 Jorge Isaac Davila Lopez
 Nicaragua Open Source
