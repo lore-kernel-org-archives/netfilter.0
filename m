@@ -1,13 +1,16 @@
-From: "Vasantha Kumar Puttappa" <vasanthakumar@iitb.ac.in>
-Subject: Re: Packets lost
-Date: Thu, 17 May 2007 12:24:43 +0530 (IST)
-Message-ID: <1845.10.107.26.27.1179384883.squirrel@gpo.iitb.ac.in>
-References: <3388.10.107.26.27.1179320821.squirrel@gpo.iitb.ac.in>
-	<464B19A9.700@freemail.hu>
+From: "Elvir Kuric" <omasnjak@gmail.com>
+Subject: Re: Questions about DHCP firewall rules
+Date: Thu, 17 May 2007 10:09:21 +0200
+Message-ID: <1814bfe70705170109w3676d645nb51c01413fd0e57@mail.gmail.com>
+References: <461550.70641.qm@web83807.mail.sp1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <464B19A9.700@freemail.hu>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=pMYledCkmW0AHVlob4J3KgnHwpAILu47QljXkzWUDGia4n3Q6ZXG0n9Fevm7HFV5NW8uUXyzQitfbGsMMMUcu6vYP/Pnx9uHtEwPMSZ8Qepdhfqnt1bFDux6hwzN1ftNZyV8DsoOcabRQaa9pxYvvlnn6rPlk6ZtrbkP05IpoWs=
+In-Reply-To: <461550.70641.qm@web83807.mail.sp1.yahoo.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,70 +21,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Cc: Vasantha Kumar Puttappa <vasanthakumar@iitb.ac.in>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Nicholas Kline <kakster7@sbcglobal.net>
+Cc: netfilter@lists.netfilter.org
 
-Hi Lajos,
- Thanks for responding so fast. I did try adding the forward rule, but
-still packets are missing.
- Let me give you more insight into what I am trying do.
- I have a vitrual network interface and 2 physical network interface (one
-Ethernet based, and other 802.11 based). The virtual network interface
-dynamically binds to any one of the above physical interfaces for packet
-transmission. The issue of packet loss occurs **only** during link
-switching.
+Hi all,
+On 5/16/07, Nicholas Kline <kakster7@sbcglobal.net> wrote:
+> Questions about DHCP firewall rules
+>
+> Greetings,
+>
+> I am in the process of learning Netfilter/IPtables.  I
+> plan on using Netfilter/IPtables to protect my Linux
+> desktop computers and servers.  We're talking
+> host-based firewalls, not one firewall protecting all
+> of the desktops and servers.
+>
+> I have a basic question I am hoping someone on this
+> mailing list can answer.  I am a little confused about
+> configuring Netfilter/IPtables on a Linux desktop
+> computer.  Specifically, this situation:
+>
+> a linux desktop computer that is configured to use
+> DHCP and configured to use the following rule:
+>
+> $IPTABLES -A INPUT -s $IP_LOCAL -j LOG --log-prefix
+> "Spoofed source IP"
+> $IPTABLES -A INPUT -s $IP_LOCAL -j DROP
+>
+> I would like to include the previous rule as part of a
+> standard rule set.
+>
+> >From how I understand this situation, the firewall
+> would have to be able to automatically detect when the
+> computers IP address changes, right?  Manually
+> inputting the computers IP address each time it
+> changes would get really old.
+>
+> I'm using several books as references for learning
+> Netfilter/IPtables and they discuss implementing
+> "dynamic firewall scripts".  In this case, a dynamic
+> firewall script that recognizes when the computers IP
+> address changes.
+>
+> So, my questions are:
+>
+> 1.) If I am using a computer that is configured to
+> obtain its IP address through DHCP, what firewall
+> rules do I need to setup?
 
-I feel that the following issues might be the possible reasons for the
-packet loss.
+So, you need to allow DHCP ports that use clinet to send an request to
+server and server to sent an offer to client. I do not what is
+configuation of your network but in case you are implementing iptables
+firewall on client then it should look like
 
-1. Due to missing soft_IRQ interrupt for packets and hence packet loss ( i
-have no proof to back this)
-2. Due to incompatible wireless device driver.
-
-
-Any thoughts on this ?
-
-
-
-
-
+iptables -A INPUT -p udp --dport 68 -j ACCEPT
+This will accept all messages in INPUT chain that are destinated to
+port 67 ( the port that is used by dhcp server to send replays to
+clinets )
+DHCP uses udp as transport protocol.
+In OUTPUT chain you probably will not have any restriction, but in
+case you have, server accepts dhcp requests on port 67.
 
 
+>
+> 2.) Additionally, how do I configure the firewall to
+> automatically detect changes in the computers network
+> configuration (IP address change, etc.)?
+>
 
-> Vasantha Kumar Puttappa =EDrta:
->> Hi All,
->>  Please somebody guide me here.
->>
->> I am tracking all udp packets (in particular, SIP based UDP packets)that
->> goes through iptables using LOG mechanism.
->> I use the following command,
->>     iptables -A INPUT -p udp -j LOG --log-level-4.
->>
-> Maybe you also need the following rule:
-> iptables -A FORWARD -p udp -j LOG --log-level-4
->> In addition, i also run 'Ethereal' to make sure that all the packets
->> captured goes through iptables as well.
->>
-> Ethereal sees the packets BEFORE iptables.
-> So maybe some of your rules drops the packet.
->> Here is the problem,
->>   Sometimes, a random number of packets doesnot go through IPtables and
->> they are completely lost. Although, I can see those packets in Ethereal.
->>
->>  I tried increasing the backlog queue and ip_queue length, but still no
->> use.
->>  I am using Netgear's wireless network card (WG511, made in taiwan).
->>
->>
->>  Somebody please guide me. How do I findout the cause of this.
->>
->>  Regards
->>  Vasanth
->>
-> Swifty
+for this I think you can take that information from DHCP server or,
+make some kind of logging on iptables firewall, ...
+
+take a look at
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+Regards
+
+Elvir Kuric
+
+> Thank you for your time,
+>
+> *Nick*
 >
 >
-
-
 
