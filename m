@@ -1,14 +1,13 @@
-From: TheNokia <nokiairc@gmail.com>
-Subject: iptables doesn't keep chain list after reboot
-Date: Thu, 17 May 2007 10:41:16 -0400
-Message-ID: <b6d73fa90705170741o690baad4u9b37ff8b51cf530a@mail.gmail.com>
+From: =?iso-8859-1?Q?Paul_Blond=E9?= <jpb@entel.ca>
+Subject: RE: iptables doesn't keep chain list after reboot
+Date: Thu, 17 May 2007 08:00:01 -0700
+Message-ID: <001801c79894$0b0fe000$5a05a8c0@nisgaa.net>
+References: <b6d73fa90705170741o690baad4u9b37ff8b51cf530a@mail.gmail.com>
+Reply-To: jpb@entel.ca
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=aYC9dRssPvnewxvN9oXMk0/auaWzvfPr8u0pVySF0NtZDjPIe/8thmq4naPQtygMUEzpL/XdQlMvJz/BKnnWqEHV0ae12mJDhPm6/s9oSNcJ31/TmlM8vv9OTYsO2uAH8hGneLgzjG9ymvRbr4i2O8KGr8I3iwGUSK/SY71SYx8=
-Content-Disposition: inline
+In-reply-to: <b6d73fa90705170741o690baad4u9b37ff8b51cf530a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,15 +18,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi,
+This is to keep you from making a mistake and not being able to get back
+into your server. One reboot, and everything is back to the way it was
+before the change. Of course, you can take other measures to regain =
+access
+without having to take your server down, but this is a last-ditch method =
+in
+case you didn't take any other precautions.
 
-iptables doesn't keep chan list after rebooting. I need to recreate
-all of them.
+Once you have a rule set that you are confident with, you have to make =
+it a
+part of your server's startup sequence, much like a personal firewall
+automatically makes itself a part of your Windows startup.
 
-Is there something to do?
+You will find all this and more here: http://www.iptablesrocks.org
 
-Thanks.
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Paul Blond=E9
+
+
+
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of TheNokia
+> Sent: Thursday, May 17, 2007 7:41 AM
+> To: netfilter@lists.netfilter.org
+> Subject: iptables doesn't keep chain list after reboot
+>=20
+>=20
+> Hi,
+>=20
+> iptables doesn't keep chan list after rebooting. I need to recreate
+> all of them.
+>=20
+> Is there something to do?
+>=20
+> Thanks.
+>=20
+
 
