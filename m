@@ -1,13 +1,9 @@
-From: "Joris Dobbelsteen" <Joris@familiedobbelsteen.nl>
-Subject: RE: Help with DOS attack
-Date: Sun, 20 May 2007 14:04:50 +0200
-Message-ID: <73427AD314CC364C8DF0FFF9C4D693FF037B34@nehemiah.joris2k.local>
-References: <cce02b410705192222s38bc0562g47aef08eba4e7@mail.gmail.com>
-	<cce02b410705192228r42bf262aj2e5367ef3db02d74@mail.gmail.com>
+From: Tiron Adrian <tiron_adrian@yahoo.com>
+Subject: pptp and iptables
+Date: Fri, 18 May 2007 10:38:28 -0700 (PDT)
+Message-ID: <785505.87708.qm@web58312.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,165 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Jonny K <mrjk600@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Two things you probably want to do:
+Hello,
 
-1)
-Enable Syn cookies (disables use of the TCP backlog). Its used in most
-systems to reduce the effects of a SYN flooding attack.
+Can somebody please explain me how should i set up forwarding (as i understood) with iptables for the
+poptopserver to work?I've read a little on forums about this but i didn't understand much.
+Also if you could explain in detail so i could understand(not just to work for me) it would be great.
 
-2)
-Contact your ISP. They can usually help you with such problems. In
-general they are not happy with attacks directed to their networks.
+Thank you.
 
-- Joris
 
->-----Original Message-----
->From: netfilter-bounces@lists.netfilter.org=20
->[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jonny K
->Sent: zondag 20 mei 2007 7:28
->To: netfilter@lists.netfilter.org
->Subject: Re: Help with DOS attack
->
->> it looks like someone dos attack my server any ideas how i=20
->can handle=20
->> it ?
->>
->> (i allready sysctl and change the backlog queue to 4096=20
->insted of 1024   and i mange SYN timeout to 9 sec)
->>
->> any other ideas ?
->>
->>
->> here is my netstat outputs
->>
->>
->> [root@MYHOST ~]# netstat -an | grep SYN_REC  | wc
->>     372    2232   33108
->> [root@MYHOST ~]#
->>
->>
->>
->>
->> Ip:
->>     496709034 total packets received
->>     0 forwarded
->>
->>     0 incoming packets discarded
->>     496547054 incoming packets delivered
->>     389034562 requests sent out
->>     55 fragments dropped after timeout
->>     499 reassemblies required
->>     54 packets reassembled ok
->>
->>     55 packet reassembles failed
->>     2 fragments received ok
->> Icmp:
->>     17083 ICMP messages received
->>     25 input ICMP message failed.
->>     ICMP input histogram:
->>         destination unreachable: 11255
->>
->>         timeout in transit: 1579
->>         source quenches: 353
->>         echo requests: 3880
->>         echo replies: 16
->>     24339 ICMP messages sent
->>     0 ICMP messages failed
->>     ICMP output histogram:
->>         destination unreachable: 20459
->>
->>         echo replies: 3880
->> Tcp:
->>     33725 active connections openings
->>     38693945 passive connection openings
->>     312156 failed connection attempts
->>     521243 connection resets received
->>     3 connections established
->>
->>     495811236 segments received
->>     388303537 segments send out
->>     14565173 segments retransmited
->>     10279 bad segments received.
->>     136512 resets sent
->> Udp:
->>     718164 packets received
->>     571 packets to unknown port received.
->>
->>     0 packet receive errors
->>     720360 packets sent
->> TcpExt:
->>     421 SYN cookies sent
->>     99 SYN cookies received
->>     43807 invalid SYN cookies received
->>     1188232 resets received for embryonic SYN_RECV sockets
->>
->>     14 packets pruned from receive queue because of socket=20
->buffer overrun
->>     221 ICMP packets dropped because they were out-of-window
->>     71 ICMP packets dropped because socket was locked
->>     34829434 TCP sockets finished time wait in fast timer
->>
->>     2 time wait sockets recycled by time stamp
->>     15358 packets rejects in established connections because=20
->of timestamp
->>     256833 delayed acks sent
->>     2653 delayed acks further delayed because of locked socket
->>
->>     Quick ack mode was activated 119773 times
->>     74580 times the listen queue of a socket overflowed
->>     74580 SYNs to LISTEN sockets ignored
->>     39205589 packets directly queued to recvmsg prequeue.
->>     8376974 packets directly received from backlog
->>
->>     2265096902 packets directly received from prequeue
->>     806823 packets header predicted
->>     36687371 packets header predicted and directly queued to user
->>     238781476 acknowledgments not containing data received
->>
->>     125709890 predicted acknowledgments
->>     29275 times recovered from packet loss due to fast retransmit
->>     1927589 times recovered from packet loss due to SACK data
->>     1362 bad SACKs received
->>     Detected reordering 6628 times using FACK
->>
->>     Detected reordering 4312 times using SACK
->>     Detected reordering 4875 times using reno fast retransmit
->>     Detected reordering 11976 times using time stamp
->>     6435 congestion windows fully recovered
->>
->>     66640 congestion windows partially recovered using Hoe heuristic
->>     TCPDSACKUndo: 957
->>     16664 congestion windows recovered after partial ack
->>     4188573 TCP data loss events
->>     TCPLostRetransmit: 1192
->>
->>     5491 timeouts after reno fast retransmit
->>     260050 timeouts after SACK recovery
->>     200153 timeouts in loss state
->>     6505780 fast retransmits
->>     695080 forward retransmits
->>     4881678 retransmits in slow start
->>
->>     1084146 other TCP timeouts
->>     TCPRenoRecoveryFail: 14786
->>     306771 sack retransmits failed
->>     2225 times receiver scheduled too late for direct processing
->>     294 packets collapsed in receive queue due to low socket buffer
->>
->>     121753 DSACKs sent for old packets
->>     64 DSACKs sent for out of order packets
->>     1007539 DSACKs received
->>     1099 DSACKs for out of order packets received
->>     10295 connections reset due to unexpected data
->>
->>     102 connections reset due to early user close
->>     64688 connections aborted due to timeout
->>
->>
->
->
 
+
+
+       
+____________________________________________________________________________________Yahoo! oneSearch: Finally, mobile search 
+that gives answers, not web links. 
+http://mobile.yahoo.com/mobileweb/onesearch?refer=1ONXIC
 
