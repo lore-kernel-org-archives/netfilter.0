@@ -1,7 +1,7 @@
 From: Alex Tang <altitude@funkware.com>
 Subject: Re: redirect 127.0.0.1:25 -> 127.0.0.1:2000
-Date: Fri, 18 May 2007 15:42:44 -0700
-Message-ID: <464E2BE4.1060606@funkware.com>
+Date: Fri, 18 May 2007 15:46:04 -0700
+Message-ID: <464E2CAC.8060702@funkware.com>
 References: <464E2A63.3020903@funkware.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -20,7 +20,23 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-In looking through the mail archive, i see this post:
+ARGH.  Sorry about my premature previous post...lemme try this again...
+
+Hi again,
+
+In looking through the mail archive, i see this thread,
+
+http://lists.netfilter.org/pipermail/netfilter/2004-November/057098.html
+
+which answered my question. 
+
+I verified that the kernel had IP_NF_NAT_LOCAL set to y, and i see that 
+I was missing the "iptables -t nat -A OUTUPT" line.  Everything works 
+now. Whoohoo!
+
+Thanks.
+
+...alex...
 
 
 Alex Tang wrote:
