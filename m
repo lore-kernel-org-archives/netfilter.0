@@ -1,12 +1,11 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: TCP RST vulnerability - handling question
-Date: Fri, 18 May 2007 08:54:29 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0705180852160.12211@blackhole.kfki.hu>
-References: <bd0eabd0705161756q79024a91y74a132e34616c7fa@mail.gmail.com>
-	<bd0eabd0705171634wc4b54k8fa75afe3992adfa@mail.gmail.com>
+From: "Filka Michal" <Michal.Filka@sitronicsts.com>
+Subject: problem when compiling lbnfnetlink
+Date: Fri, 18 May 2007 12:09:05 +0200
+Message-ID: <2DD3CA89774593478BC28081C7392595BC8A1F@exalfa.stromtelecom.cz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <bd0eabd0705171634wc4b54k8fa75afe3992adfa@mail.gmail.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,38 +16,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Mike C <smith.not.western@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Fri, 18 May 2007, Mike C wrote:
+Hi all,
 
-> On 5/17/07, Mike C <smith.not.western@gmail.com> wrote:
->> I am using an iptables 1.3.5 based setup and wonder if there are any
->> tools or techniques available to prevent or mitigate the TCP RST
->> spoofing issue (http://osvdb.org/displayvuln.php?osvdb_id=4030)
->
-> I just realised that I posted the wrong issue. The one I am referring
-> to is where a third party sends a RST with a sequence number less than
-> the current window, which is still treated as a valid RST by the end
-> point.
-[...]
-> I should outline my situation a bit more. I have a firewall that I
-> want to prevent passing illegal RST packets to an inside host. In my
-> case the host is patched against this issue, but this may not always
-> be the case, so need to stop the invalid resets from traversing the
-> firewall in the first place.
+I have been trying to compile libnfnetlink library.
+I did autoconf, ./configure and make
+The result of make was
+src/Makefile.am:9: Libtool library used but `LIBTOOL' is undefined
+src/Makefile.am:9:   The usual way to define `LIBTOOL' is to add
+`AC_PROG_LIBTOOL'
+src/Makefile.am:9:   to `configure.in' and run `aclocal' and `autoconf'
+again.
+src/Makefile.am:9:   If `AC_PROG_LIBTOOL' is in `configure.in', make
+sure
+src/Makefile.am:9:   its definition is in aclocal's search path.
+make[1]: *** [Makefile.in] Error 1
 
-Any recent kernel from the 2.6 series come with TCP window tracking in 
-netfilter, which makes sure that the RST segment is in the window.
-Nothing is needed besides enabling connection tracking.
+I'm not so experienced in automake, so I invite any help ... I suppose
+that it is configuration problem.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-           H-1525 Budapest 114, POB. 49, Hungary
+Current configuration:
+Debian 2.6.20
+automake 1.10
+aclocal 1.10
+
+trying to compile libnfnetlink-0.0.16
+
+thanks for any suggestions,
+
+Michal Filka
 
