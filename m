@@ -1,12 +1,9 @@
-From: "Eric Leblond" <eric@inl.fr>
-Subject: Re: problem when compiling lbnfnetlink
-Date: Fri, 18 May 2007 12:15:00 +0200 (CEST)
-Message-ID: <58870.194.167.180.10.1179483300.squirrel@mail.inl.fr>
-References: <2DD3CA89774593478BC28081C7392595BC8A1F@exalfa.stromtelecom.cz>
+From: Tiron Adrian <tiron_adrian@yahoo.com>
+Subject: iptables and poptop
+Date: Fri, 18 May 2007 10:46:07 -0700 (PDT)
+Message-ID: <274713.44426.qm@web58309.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <2DD3CA89774593478BC28081C7392595BC8A1F@exalfa.stromtelecom.cz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +15,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hello,
 
-> I'm not so experienced in automake, so I invite any help ... I suppose
-> that it is configuration problem.
->
-> Current configuration:
-> Debian 2.6.20
-> automake 1.10
-> aclocal 1.10
+Can somebody please explain me how should i set up forwarding (as i understood) with iptables for the
+poptopserver to work?I've read a little on forums about this but i didn't understand much.
+Also if you could explain in detail so i could understand(not just to work for me) it would be great.
 
-Have you "libtool" installed ?
-
->
-> trying to compile libnfnetlink-0.0.16
->
-> thanks for any suggestions,
->
-> Michal Filka
->
->
+Thank you.
 
 
+
+
+       
+____________________________________________________________________________________
+Moody friends. Drama queens. Your life? Nope! - their life, your story. Play Sims Stories at Yahoo! Games.
+http://sims.yahoo.com/  
 
