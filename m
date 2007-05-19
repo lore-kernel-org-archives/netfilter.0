@@ -1,9 +1,11 @@
-From: Tiron Adrian <tiron_adrian@yahoo.com>
-Subject: pptp and iptables
-Date: Fri, 18 May 2007 10:38:28 -0700 (PDT)
-Message-ID: <785505.87708.qm@web58312.mail.re3.yahoo.com>
+From: "Craig Bernstein" <cbernstein@cbernstein.com>
+Subject: Logging NAT Translations
+Date: Fri, 18 May 2007 20:15:32 -0700
+Message-ID: <ae1f24730705182015j533102bah985e9ad0e905cd2a@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,24 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+I can't believe this isn't a FAQ; I apologize if I missed something in
+my searches.
 
-Can somebody please explain me how should i set up forwarding (as i understood) with iptables for the
-poptopserver to work?I've read a little on forums about this but i didn't understand much.
-Also if you could explain in detail so i could understand(not just to work for me) it would be great.
+Is there a way to log connections along with all of their NAT translation data?
 
-Thank you.
+I am using a Debian (Sarge) system to SNAT guest users from private
+address space to the Internet, and I need to keep a record that
+includes both their internal and external addresses.
 
+Simply logging before the SNAT rule leaves out the external address,
+leaving me only with the original RFC1918 source address.
+/proc/net/ip_conntrack has the information I need, but no way to send
+it to the log it at the beginning and/or end of the session.
 
+There HAS to be an easy way to do this!  Right?
 
+Thank you...
 
-
-       
-____________________________________________________________________________________Yahoo! oneSearch: Finally, mobile search 
-that gives answers, not web links. 
-http://mobile.yahoo.com/mobileweb/onesearch?refer=1ONXIC
+-- 
+...Craig
 
