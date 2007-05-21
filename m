@@ -1,13 +1,14 @@
 From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Policy targets...
-Date: Mon, 21 May 2007 18:13:01 +0200
-Message-ID: <4651C50D.7080605@freemail.hu>
-References: <464441F7.3050808@freemail.hu>
-	<slrnf4j5ek.ic3.xpisar@album.ics.muni.cz>
+Subject: Re: Packets lost
+Date: Mon, 21 May 2007 17:59:39 +0200
+Message-ID: <4651C1EB.8090004@freemail.hu>
+References: <3388.10.107.26.27.1179320821.squirrel@gpo.iitb.ac.in>
+	<464B19A9.700@freemail.hu>
+	<1845.10.107.26.27.1179384883.squirrel@gpo.iitb.ac.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <slrnf4j5ek.ic3.xpisar@album.ics.muni.cz>
+In-Reply-To: <1845.10.107.26.27.1179384883.squirrel@gpo.iitb.ac.in>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,61 +20,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Petr Pisar <xpisar@fi.muni.cz>
+To: Vasantha Kumar Puttappa <vasanthakumar@iitb.ac.in>
 Cc: netfilter@lists.netfilter.org
 
-Hi!
-
-Petr Pisar =EDrta:
-> On 2007-05-11, G?sp?r Lajos <swifty@freemail.hu> wrote:
+Vasantha Kumar Puttappa =EDrta:
+> Hi Lajos,
+>  Thanks for responding so fast. I did try adding the forward rule, but
+> still packets are missing.
+>  Let me give you more insight into what I am trying do.
+>  I have a vitrual network interface and 2 physical network interface (o=
+ne
+> Ethernet based, and other 802.11 based). The virtual network interface
+> dynamically binds to any one of the above physical interfaces for packe=
+t
+> transmission. The issue of packet loss occurs **only** during link
+> switching.
 >  =20
->> Hi all,
->>
->> I was reading the iptables manual because I needed the correct argumen=
-ts=20
->> of the policy (-P) command.
->> Here it is:
->>
->>        -P, --policy chain target
->>               Set the policy for the chain to the given target.  See t=
-he=20
->> section TARGETS for the legal targets.  Only built-in (non-user-define=
-d)=20
->> chains can
->>               have policies, and neither built-in nor user-defined=20
->> chains can be policy targets.
->>
->> So I checked the TARGETS.
->>
->> TARGETS
->>        A  firewall rule specifies criteria for a packet, and a target.=
- =20
->> If the packet does not match, the next rule in the chain is the=20
->> examined; if it does
->>        match, then the next rule is specified by the value of the=20
->> target, which can be the name of a user-defined chain or one of the=20
->> special values ACCEPT,
->>        DROP, QUEUE, or RETURN.
->>
->> My question is: What is the difference between the ACCEPT and the RETU=
-RN=20
->> target in policy ??? :D
->>
->>    =20
-> I think this is missunderstadning in man page. If you read the TARGETS
-> section carefully you could see here is nothing about policy even if -P=
-
-> paragraph referres to it.
->  =20
-Okay. That is right. There is nothing about policy in TARGETS section.=20
-But there is no "POLICYTARGETS" section! :D
-> My opinion is ACCEPT and DROP only are valid policies. I don't know
-> where I have this idea from but I'm pretty sure that other targets have=
-
-> not sense in policy context.
+What is this "link switching" in real ? What about routing and source=20
+addresses ?
+> I feel that the following issues might be the possible reasons for the
+> packet loss.
 >
-> -- Petr
-I agree! I was just curious. :D
+> 1. Due to missing soft_IRQ interrupt for packets and hence packet loss =
+( i
+> have no proof to back this)
+> 2. Due to incompatible wireless device driver.
+>
+>
+> Any thoughts on this ?
+>  =20
+What if you use a bridge on those three and the condition extension of=20
+iptables?
 
 Swifty
 
