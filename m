@@ -1,15 +1,13 @@
-From: Glenn Terjesen <glenn@webcat.no>
-Subject: RE: is it possible to block ip packets that contains experimental
-	tcp options ?
-Date: Mon, 21 May 2007 13:55:44 +0200
-Message-ID: <1179748544.32083.25.camel@bathory.webcat.no>
-References: <F163413C9250D211A55C0060979D5280016AB361@hertz.rad.nd.edu>
-	<1179747134.32083.19.camel@bathory.webcat.no>
-Reply-To: glenn@webcat.no
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: Rohit Grover <rgrover1@gmail.com>
+Subject: using packet filtering to discover TCP end-to-end latency
+Date: Mon, 21 May 2007 16:05:10 +1200
+Message-ID: <C4794891-5098-4238-BC18-2D54D2CB9859@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v752.2)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1179747134.32083.19.camel@bathory.webcat.no>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:mime-version:content-transfer-encoding:message-id:content-type:to:from:subject:date:x-mailer;
+	b=BdzZ7pL5ml4rRGSg2mR1p9kuVf9w6vMUEbfz4qgfhbyCDHKNfB+zRLEamC6oujN5vKc4VKh3QSp0MXVxy2cT6tzaQccxBMJ8ZXn86A26YRD7mPq64wRiPXY2K1x2T3h3NME36DZ5PzwAy8X+NvbEgBPSQcNxZJk9l44jcWjuN+Y=
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,119 +18,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Was a little to fast there..
+Hello,
 
-iptables -A FORWARD -p tcp --tcp-flags ALL ALL -j DROP
-iptables -A FORWARD -p tcp --tcp-flags ALL NONE -j DROP
+I need to discover the TCP end-to-end latency between web clients and  
+servers transparently (i.e. without altering the clients or the  
+servers in any way). I have squid running as a proxy server on a  
+linux box, sitting between the clients and the servers. I can have  
+the clients change their proxy settings to have requests pass through  
+squid. Squid can measure latencies between itself and the web  
+servers. The problem is to measure the network latency when squid  
+tries to forward the server responses back to clients.
 
-did not fix it..
+Can packet filtering help me with this? Can I, for example, filter  
+for the client ACK of the last bit of data sent from squid back to  
+the client?
 
-Im gonna take a look at the Paul Blond=E9 suggestion and just ignore the
-traffic I suppose..
+Also, I still need to device a solution to measure network latency  
+experienced by the client's SYN sent to the squid box. Any ideas?
 
-
-On Mon, 2007-05-21 at 13:32 +0200, Glenn Terjesen wrote:
-> Hi,
-> What i meant with "experimental tcp options" is that my ids (snort)
-> keept logging these "experimental tcp options"
->=20
-> #
-> code 76
-> length 8
-> data 01019DEDBEF00005
->=20
-> I know this aint a snort list, but my servers don't serve any services
-> that require this kind of traffic.
->=20
-> So i was wondering if iptables has any way of blocking these.
->=20
-> These to magic lines fixed it all
-> iptables -A FORWARD -p tcp --tcp-flags ALL ALL -j DROP
-> iptables -A FORWARD -p tcp --tcp-flags ALL NONE -j DROP
->=20
->=20
-> Thanks alot for the help.
->=20
->=20
-> On Thu, 2007-05-17 at 13:18 -0400, Marc Cozzi wrote:
-> >  Paul,
-> >=20
-> > I believe that's correct. Although I'm still not
-> > Sure what was originally meant by "experimental tcp options".
-> >=20
-> >   -marc
-> >=20
-> > > -----Original Message-----
-> > > From: Paul Blond=E9 [mailto:jpb@entel.ca]=20
-> > > Sent: Thursday, May 17, 2007 11:09 AM
-> > > To: netfilter@lists.netfilter.org
-> > > Subject: RE: is it possible to block ip packets that contains=20
-> > > experimentaltcp options ?
-> > >=20
-> > > I assume that LOG-AND-DROP is your own chain, crafted so that=20
-> > > you can perform both functions with a single entry?
-> > >=20
-> > >=20
-> > >=20
-> > > ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > Paul Blond=E9
-> > > =20
-> > >=20
-> > >=20
-> > > > -----Original Message-----
-> > > > From: netfilter-bounces@lists.netfilter.org
-> > > > [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
-> > > Marc Cozzi
-> > > > Sent: Wednesday, May 16, 2007 5:19 AM
-> > > > To: netfilter@lists.netfilter.org
-> > > > Subject: RE: is it possible to block ip packets that contains=20
-> > > > experimentaltcp options ?
-> > > >=20
-> > > >=20
-> > > >=20
-> > > > Glenn,
-> > > >=20
-> > > > Not sure what you mean by "experimental" however, there are some=20
-> > > > conditions of flags that should never occur on the network.=20
-> > > These can=20
-> > > > be trapped with rules similar to the following.
-> > > >=20
-> > > > iptables -A BLOCKED -m state --state INVALID -j=20
-> > > LOG-AND-DROP iptables=20
-> > > > -A BLOCKED -p tcp --tcp-flags ALL ALL -j LOG-AND-DROP iptables -A=20
-> > > > BLOCKED -p tcp --tcp-flags ALL NONE -j LOG-AND-DROP
-> > > >=20
-> > > >   --marc
-> > > >=20
-> > > >=20
-> > > > > -----Original Message-----
-> > > > > From: Glenn Terjesen [mailto:glenn@webcat.no]
-> > > > > Sent: Wednesday, May 16, 2007 5:24 AM
-> > > > > To: netfilter@lists.netfilter.org
-> > > > > Subject: is it possible to block ip packets that contains=20
-> > > > > experimental tcp options ?
-> > > > >=20
-> > > > > Hello,
-> > > > > got a iptables firewall filtering our servers.
-> > > > >=20
-> > > > > Is it possible to block tcp packets that contains=20
-> > > experimental tcp=20
-> > > > > options ?
-> > > > >=20
-> > > > > AND is it smart to do so ?
-> > > > >=20
-> > > > >=20
-> > > > > --
-> > > > > Mvh Glenn Terjesen @ Webcat AS
-> > > > > Tlf: +47 37 02 20 20
-> > > > > E-post: support@webcat.no
-> > > > >=20
-> > > >=20
-> > >=20
-> > >=20
-> >=20
->=20
+thanks in advance,
+Rohit Grover.
 
