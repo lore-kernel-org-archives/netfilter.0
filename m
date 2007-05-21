@@ -1,14 +1,13 @@
-From: TheNokia <nokiairc@gmail.com>
-Subject: iptables doesn't keep chain list after reboot
-Date: Mon, 21 May 2007 15:12:20 -0400
-Message-ID: <b6d73fa90705211212g3cd8464lf48e380a9256a79d@mail.gmail.com>
+From: "Muzinich, Mike" <MuziniM@losrios.edu>
+Subject: URL Logging
+Date: Mon, 21 May 2007 12:50:59 -0700
+Message-ID: <922E6125ECDCDB4F9F1B845B7DE99ECA015CCFCF@do-exch04.do.ad.losrios.edu>
+References: <922E6125ECDCDB4F9F1B845B7DE99ECA015CCFCE@do-exch04.do.ad.losrios.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=sS6BhJAzauGtBdk2lfhPxtV6tpF9zJl90PqPu2XcTdNyvsffAFHLf3ow7U1cVEdpp05IfPZ5kBjoKEvoPMQBvv4igDEL3WshKlGzSjEn6ncRekjPaXNtR2VNlEtjNGQz5tv2hz5f9+rr9liLUpV932O+OeAE4Wegt1Tp4Zn4I7Y=
-Content-Disposition: inline
+Content-class: urn:content-classes:message
+In-Reply-To: <922E6125ECDCDB4F9F1B845B7DE99ECA015CCFCE@do-exch04.do.ad.losrios.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,10 +18,11 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Ok, both of you tell me to put in /etc/rc.local but can you give me an example ?
-
-I don't want to do something wrong.
+Is anyone aware of a non-proxy product i.e. Squid that will log full URL =
+information for HTTP requests that is meant to be run as a daemon on a =
+Linux router/firewall?=A0 I don't believe there is an elegant way to do =
+this with IPTABLES.
 
