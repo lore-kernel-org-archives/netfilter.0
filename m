@@ -1,14 +1,12 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Conntrack rule timeout problem
-Date: Wed, 23 May 2007 18:27:55 +0200
-Message-ID: <46546B8B.9040705@freemail.hu>
-References: <1179765250.12001.18.camel@thales.lan>	
-	<465437E1.9030600@freemail.hu>
-	<1179927731.28690.16.camel@thales.lan>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: using packet filtering to discover TCP end-to-end latency
+Date: Mon, 21 May 2007 19:25:05 +0200
+Message-ID: <4651D5F1.2080701@rtij.nl>
+References: <C4794891-5098-4238-BC18-2D54D2CB9859@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1179927731.28690.16.camel@thales.lan>
+In-Reply-To: <C4794891-5098-4238-BC18-2D54D2CB9859@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,33 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Pat Riehecky <prieheck@iwu.edu>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Rohit Grover <rgrover1@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Pat Riehecky =EDrta:
-> I am about 90% certain that I am not being scanned as a bunch of the
-> dropped packets are coming from places like the New York Times,
-> Microsoft, and Google.  Admittedly they could be spoofed IP addresses.
-> but the packets are all coming from 80 or 443 and they are all destined=
-
-> for TCP Ports in the ephemeral range.  Additionally in my squid logs I
-> have a corresponding entry requesting data from that server.
+Rohit Grover wrote:
+> Hello,
 >
->  =20
-Well... Read this:
-
-http://www.hackinthebox.org/modules.php?op=3Dmodload&name=3DNews&file=3Da=
-rticle&sid=3D10640&mode=3Dthread&order=3D0&thold=3D0
-
-The interesting part starts at *"Camouflaging your ip address"...*
-> All evidence I have points to some sort of conntrack timeout.
-> Occasionally I can find the IP addresses in the output from iptstate,
-> but...=20
+> I need to discover the TCP end-to-end latency between web clients and 
+> servers transparently (i.e. without altering the clients or the 
+> servers in any way). I have squid running as a proxy server on a linux 
+> box, sitting between the clients and the servers. I can have the 
+> clients change their proxy settings to have requests pass through 
+> squid. Squid can measure latencies between itself and the web servers. 
+> The problem is to measure the network latency when squid tries to 
+> forward the server responses back to clients.
 >
-> Thanks for the ideas, any chance for more theories?
-> Pat
->  =20
-Swifty
+> Can packet filtering help me with this? Can I, for example, filter for 
+> the client ACK of the last bit of data sent from squid back to the 
+> client?
+>
+> Also, I still need to device a solution to measure network latency 
+> experienced by the client's SYN sent to the squid box. Any ideas?
+>
+
+I would hire a packeteer for this. Expensive, but is perfect for this 
+job. Otherwise, capture with wireshark (formerly Ethereal), export to 
+csv, write a small program. (I don't think wireshark has a plugin for 
+exactly this).
+
+I would NOT do this with packet filtering unless I need (near) realtime 
+analysis. And even then.
+
+HTH,
+M4
 
 
