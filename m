@@ -1,13 +1,13 @@
-From: Rohit Grover <rgrover1@gmail.com>
-Subject: using packet filtering to discover TCP end-to-end latency
-Date: Mon, 21 May 2007 16:05:10 +1200
-Message-ID: <C4794891-5098-4238-BC18-2D54D2CB9859@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v752.2)
-Content-Transfer-Encoding: 7bit
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: Policy targets...
+Date: Mon, 21 May 2007 18:13:01 +0200
+Message-ID: <4651C50D.7080605@freemail.hu>
+References: <464441F7.3050808@freemail.hu>
+	<slrnf4j5ek.ic3.xpisar@album.ics.muni.cz>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:mime-version:content-transfer-encoding:message-id:content-type:to:from:subject:date:x-mailer;
-	b=BdzZ7pL5ml4rRGSg2mR1p9kuVf9w6vMUEbfz4qgfhbyCDHKNfB+zRLEamC6oujN5vKc4VKh3QSp0MXVxy2cT6tzaQccxBMJ8ZXn86A26YRD7mPq64wRiPXY2K1x2T3h3NME36DZ5PzwAy8X+NvbEgBPSQcNxZJk9l44jcWjuN+Y=
+In-Reply-To: <slrnf4j5ek.ic3.xpisar@album.ics.muni.cz>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,27 +18,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Petr Pisar <xpisar@fi.muni.cz>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+Hi!
 
-I need to discover the TCP end-to-end latency between web clients and  
-servers transparently (i.e. without altering the clients or the  
-servers in any way). I have squid running as a proxy server on a  
-linux box, sitting between the clients and the servers. I can have  
-the clients change their proxy settings to have requests pass through  
-squid. Squid can measure latencies between itself and the web  
-servers. The problem is to measure the network latency when squid  
-tries to forward the server responses back to clients.
+Petr Pisar =EDrta:
+> On 2007-05-11, G?sp?r Lajos <swifty@freemail.hu> wrote:
+>  =20
+>> Hi all,
+>>
+>> I was reading the iptables manual because I needed the correct argumen=
+ts=20
+>> of the policy (-P) command.
+>> Here it is:
+>>
+>>        -P, --policy chain target
+>>               Set the policy for the chain to the given target.  See t=
+he=20
+>> section TARGETS for the legal targets.  Only built-in (non-user-define=
+d)=20
+>> chains can
+>>               have policies, and neither built-in nor user-defined=20
+>> chains can be policy targets.
+>>
+>> So I checked the TARGETS.
+>>
+>> TARGETS
+>>        A  firewall rule specifies criteria for a packet, and a target.=
+ =20
+>> If the packet does not match, the next rule in the chain is the=20
+>> examined; if it does
+>>        match, then the next rule is specified by the value of the=20
+>> target, which can be the name of a user-defined chain or one of the=20
+>> special values ACCEPT,
+>>        DROP, QUEUE, or RETURN.
+>>
+>> My question is: What is the difference between the ACCEPT and the RETU=
+RN=20
+>> target in policy ??? :D
+>>
+>>    =20
+> I think this is missunderstadning in man page. If you read the TARGETS
+> section carefully you could see here is nothing about policy even if -P=
 
-Can packet filtering help me with this? Can I, for example, filter  
-for the client ACK of the last bit of data sent from squid back to  
-the client?
+> paragraph referres to it.
+>  =20
+Okay. That is right. There is nothing about policy in TARGETS section.=20
+But there is no "POLICYTARGETS" section! :D
+> My opinion is ACCEPT and DROP only are valid policies. I don't know
+> where I have this idea from but I'm pretty sure that other targets have=
 
-Also, I still need to device a solution to measure network latency  
-experienced by the client's SYN sent to the squid box. Any ideas?
+> not sense in policy context.
+>
+> -- Petr
+I agree! I was just curious. :D
 
-thanks in advance,
-Rohit Grover.
+Swifty
+
 
