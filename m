@@ -1,10 +1,14 @@
-From: Pat Riehecky <prieheck@iwu.edu>
-Subject: Conntrack rule timeout problem
-Date: Mon, 21 May 2007 11:34:10 -0500
-Message-ID: <1179765250.12001.18.camel@thales.lan>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: is it possible to block ip packets that contains experimental
+ tcp options ?
+Date: Mon, 21 May 2007 20:27:15 +0200
+Message-ID: <4651E483.9000204@plouf.fr.eu.org>
+References: <F163413C9250D211A55C0060979D5280016AB361@hertz.rad.nd.edu>
+	<1179747134.32083.19.camel@bathory.webcat.no>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1179747134.32083.19.camel@bathory.webcat.no>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,77 +19,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-I seem to be capturing way more packets than I intend (or even expect!).
-I am running squid and have the firewall rules below running on it.  For
-some reason I am capturing hundreds of packets that I don't think should
-be caught.
+Hello,
 
-I have increased the timeouts in /proc/ (via sysctl) to fix this, but no
-dice.  Anyone have any idea why the sample packet below would be
-captured?  It is getting picked up by either the 
--A INPUT -p tcp -m tcp ! --syn -m conntrack --ctstate INVALID -j DROP
-but sometimes the
--A INPUT -p tcp -m tcp ! --syn -m state --state NEW -j DROP
+Glenn Terjesen a =E9crit :
+> What i meant with "experimental tcp options" is that my ids (snort)
+> keept logging these "experimental tcp options"
+>=20
+> #
+> code 76
+> length 8
+> data 01019DEDBEF00005
+>=20
+> I know this aint a snort list, but my servers don't serve any services
+> that require this kind of traffic.
+>=20
+> So i was wondering if iptables has any way of blocking these.
 
-The packet looks to have been requested by squid, it is coming on port
-80...  I also seem to be having the same behavior on the squid side
-where the FIN/ACK packets are being caught by the conntrack rule...
+If you have a black list of options you want to drop (or a white list of=20
+allowed options), what about the "--tcp-option" option of the "tcp" match=
+ ?
 
-I know I have something wrong, just what exactly is eluding me...
+> These to magic lines fixed it all
+> iptables -A FORWARD -p tcp --tcp-flags ALL ALL -j DROP
+> iptables -A FORWARD -p tcp --tcp-flags ALL NONE -j DROP
 
-Any help would be helpful!
-
---- sample capture A ---
-IN=eth0 OUT= MAC=00:0a:e9:6b:9e:ba:00:10:80:ec:37:5f:08:00
-SRC=199.239.137.245 DST=XXX.YYY.ZZZ.AAA LEN=64 TOS=0x00 PREC=0x00 TTL=56
-ID=620 DF PROTO=TCP SPT=80 DPT=60338 WINDOW=37260 RES=0x00 ACK URGP=0
-
---sample capture B ---
-IN=eth0 OUT= MAC=00:0a:a9:60:9e:ba:00:10:80:ec:37:5f:08:00
-SRC=222.28.249.164 DST=XXX.YYY.ZZZ.AAA LEN=40 TOS=0x00 PREC=0x00 TTL=109
-ID=34912 DF PROTO=TCP SPT=1802 DPT=3128 WINDOW=65535 RES=0x00 ACK FIN
-URGP=0
-
---- sysctl.conf ---
-net.ipv4.netfilter.ip_conntrack_tcp_be_liberal=0
-net.ipv4.netfilter.ip_conntrack_udp_timeout = 20
-net.ipv4.netfilter.ip_conntrack_udp_timeout_stream = 95
-net.ipv4.netfilter.ip_conntrack_generic_timeout=650
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_close=20
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_close_wait=180
-
---- rules ---
--A INPUT -i lo -j ACCEPT
--A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state
---state NEW -j DROP
--A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m conntrack
---ctstate INVALID -j DROP
--A INPUT -p tcp -m tcp --tcp-flags SYN,ACK SYN,ACK -m state --state NEW
--j REJECT --reject-with tcp-reset
--A INPUT -p icmp -m icmp --icmp-type 8 -m limit --limit 4/sec
---limit-burst 9 -j ACCEPT
--A INPUT -p icmp -m icmp --icmp-type 8 -j DROP
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -j ACCEPT
--A INPUT -p tcp -m tcp --dport 113 -j REJECT --reject-with tcp-reset
--A INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3128 -m state --state NEW -j ACCEPT
--A INPUT -j DROP
--A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -o lo -j ACCEPT
--A OUTPUT -s 255.0.0.0/255.0.0.0 -j DROP
--A OUTPUT -s 0.0.0.0/255.0.0.0 -j DROP
--A OUTPUT -s 192.168.0.0/255.255.0.0 -j DROP
--A OUTPUT -p icmp -m icmp --icmp-type 8 -m limit --limit 9/sec
---limit-burst 15 -j ACCEPT
--A OUTPUT -p icmp -m icmp --icmp-type 8 -j DROP
--A OUTPUT -p tcp -m tcp --dport 53 -m state --state NEW -j ACCEPT
--A OUTPUT -p udp -m udp --dport 53 -m state --state NEW -j ACCEPT
--A OUTPUT -p tcp -m multiport --dports 80,443 -m state --state NEW -j
-ACCEPT
--A OUTPUT -j DROP
-
+I wonder how these rules could drop packets according to TCP options.=20
+TCP flag combinations are not TCP options.
 
