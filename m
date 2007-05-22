@@ -1,12 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: URL Logging
-Date: Tue, 22 May 2007 22:26:00 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0705222225350.4452@yvahk01.tjqt.qr>
-References: <922E6125ECDCDB4F9F1B845B7DE99ECA015CCFCF@do-exch04.do.ad.losrios.edu>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: Petr Pisar <xpisar@fi.muni.cz>
+Subject: Re: Bridge Transparent Proxy
+Date: Tue, 22 May 2007 21:39:58 +0000 (UTC)
+Message-ID: <slrnf56ope.emr.xpisar@album.ics.muni.cz>
+References: <C2787F66.1C272%robert@leblancnet.us>
+	<465336C4.5060600@riverviewtech.net>
+	<46533842.9080404@plouf.fr.eu.org>
+	<46533B98.9030706@riverviewtech.net>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <922E6125ECDCDB4F9F1B845B7DE99ECA015CCFCF@do-exch04.do.ad.losrios.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,21 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: "Muzinich, Mike" <MuziniM@losrios.edu>
-Cc: netfilter@lists.netfilter.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-
-On May 21 2007 12:50, Muzinich, Mike wrote:
+On 2007-05-22, Grant Taylor <gtaylor@riverviewtech.net> wrote:
+> On 05/22/07 13:36, Pascal Hambourg wrote:
+>> I'm curious : why is a bridge needed for this ? Doesn't a simple router 
+>> do the job as well ?
 >
->Is anyone aware of a non-proxy product i.e. Squid that will log full
->URL information for HTTP requests that is meant to be run as a
->daemon on a Linux router/firewall?=C2=A0 I don't believe there is an
->elegant way to do this with IPTABLES.
+> No.
+>
+> Let me re-layout the network including IP addresses.
+>
+> (INet [A.B.C.Z]) --- (BRouter [A.B.C.D]) --- ([A.B.C.E] Server(s)
+>                         [192.168.144.254] --- ([192.168.144.1-100])
+>
+> Here you can see that you have the same subnet of A.B.C.x on both sides 
+> of the bridging router.  There is no good (read easy) way to have the 
+> same subnet on multiple sides of a router short of double natting which 
+> in and of its self is not easy to do on a singular box.
+>
+> So what you do is bridge the A.B.C.x traffic to both networks and route 
+> the other subnet(s) as needed.
+>
+Or you switch on arp proxy on the public interface of router ;)
 
-_What_ can't squid do for you?
+-- Petr
 
-
-	Jan
---=20
 
