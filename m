@@ -1,13 +1,14 @@
-From: Andre =?iso-8859-1?q?Guimar=E3es?= <ramoni@databras.com.br>
+From: "Tim Evans" <tkevans@tkevans.com>
 Subject: Re: NAT addresses - RFC or tradition?
-Date: Tue, 22 May 2007 16:46:25 -0300
-Message-ID: <200705221646.25925.ramoni@databras.com.br>
+Date: Tue, 22 May 2007 15:57:07 -0400
+Message-ID: <20070522195618.M46626@tkevans.com>
 References: <001c01c79ca7$0c1717e0$5a05a8c0@nisgaa.net>
+	<200705221646.25925.ramoni@databras.com.br>
+Reply-To: tkevans@tkevans.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001c01c79ca7$0c1717e0$5a05a8c0@nisgaa.net>
-Content-Disposition: inline
+In-Reply-To: <200705221646.25925.ramoni@databras.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,50 +20,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: =?ISO-8859-1?Q?Andre_Guimar=E3es_?= <ramoni@databras.com.br>, netfilter@lists.netfilter.org
+Cc: tkevans@tkevans.com
 
-It's quite simple.
-You're using public IPs in your internal networks.
-Some of these IPs may exist and have an owner an maybe even a web site.
-You'll be in trouble in the day you wish to acess one of these IPs on the=20
-internet because you won't reach them because you have them on your network=
-=20
-and so won't route the packets to the internet.
+On Tue, 22 May 2007 16:46:25 -0300, Andre Guimar=E3es wrote
+> It's quite simple.
+> You're using public IPs in your internal networks.
+> Some of these IPs may exist and have an owner an maybe even a web site.
+> You'll be in trouble in the day you wish to acess one of these IPs=20
+> on the internet because you won't reach them because you have them=20
+> on your network and so won't route the packets to the internet.
 
-The IP's in fact, don't have any thing different, so you can use them and=20
-iptables will not have any problems. It's just a route problem, that as you=
-=20
-chose to use these IP's, you won't be able to reach these real public IP's =
-in=20
-the internet.
+In other words, the RFC addresses are specifically for use in internal
+networks, since they are guaranteed not to be used on the public internet=
+, and
+not routed to by any public internet router.
+--
+Tim Evans, TKEvans.com, Inc.    |    5 Chestnut Court
+tkevans@tkevans.com             |    Owings Mills, MD 21117
+http://www.tkevans.com/         |    443-394-3864
+http://www.come-here.com/News/  |
 
-Sorry for the bad english.
-
-On Tuesday 22 May 2007 16:26, Paul Blond=E9 wrote:
-> I've noticed that a lot of people use the 192.168.X.X subnet for internal
-> networks, is this (and the less-used 10-series) a requirement of some RFC,
-> or a recommendation that has become tradition?
->
-> We are using a completely different subnet, something similar to (for
-> example) 42.127.129.X to further obfuscate the internal network from
-> outside. This, and many other examples, produces a class-A subnet mask
-> (some produce a class-B) when entered in WinXP's TCP/IP dialog, although
-> the actual mask we use with it is class-C.
->
-> Is this a no-no? Will it break our server's IPTables when communicating
-> with it? Am I in for a lot of trouble? The addresses don't seem to cause
-> any problems, but I don't want this to jump up and bite us in the bottom
-> sometime down the road.
->
->
->
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> Paul Blond=E9
-
-=2D-=20
-Andr=E9 Guimar=E3es
-Databras Inform=E1tica
-Matriz RJ - 55 (21) 2518-2363
-=46ilial ES - 55 (27) 3233-0098
-http://www.databras.com.br
 
