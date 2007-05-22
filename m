@@ -1,10 +1,11 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Bridge Transparent Proxy
-Date: Tue, 22 May 2007 18:06:12 +0200
-Message-ID: <465314F4.1060007@plouf.fr.eu.org>
+Date: Tue, 22 May 2007 11:09:28 -0500
+Message-ID: <465315B8.1070304@riverviewtech.net>
 References: <C2785BE6.1C244%robert@leblancnet.us>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <C2785BE6.1C244%robert@leblancnet.us>
 List-Id: <netfilter.vger.kernel.org>
@@ -17,21 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+On 05/22/07 09:35, Robert LeBlanc wrote:
+> You will need to look at ebtables. Bridging will bypass iptables. Ebtables
+> is much like iptables, but there are some subtle differences that may choke
+> you up. Haven't worked much with it though.
 
-Robert LeBlanc a =E9crit :
-> You will need to look at ebtables. Bridging will bypass iptables.
+You can configure the kernel to apply IPTables Net Filters (Layer 3) to 
+EBTables bridged (Layer 2) traffic.
 
-Bridged IPv4 packets traverse the iptables chains if the kernel was=20
-compiled with Netfilter bridge support (CONFIG_BRIDGE_NETFILTER=3Dy). It=20
-allows finer filtering than ebtables, for instance accepting only=20
-outgoing HTTP/HTTPS connections and related ICMP messages in both=20
-directions thanks to connection tracking, e.g. :
+To quote the (2.6.8.1) kernel source:
+"""
+CONFIG_BRIDGE_NETFILTER - Enabling this option will let arptables resp. 
+iptables see bridged ARP resp. IP traffic. If you want a bridging 
+firewall, you probably want this option enabled.
 
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -m physdev --physdev-in eth1 -m state --state NEW \
-   -p tcp -m multiport --dports 80,443 -j ACCEPT
+Enabling or disabling this option doesn't enable or disable ebtables.
+"""
+
+
+
+
+Grant. . . .
 
