@@ -1,13 +1,11 @@
-From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?=
-	<leolistas@solutti.com.br>
-Subject: Re: NAT addresses - RFC or tradition?
-Date: Tue, 22 May 2007 17:02:52 -0300
-Message-ID: <46534C6C.3050706@solutti.com.br>
-References: <001c01c79ca7$0c1717e0$5a05a8c0@nisgaa.net>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: Logging NAT Translations
+Date: Tue, 22 May 2007 22:09:56 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0705222208440.4452@yvahk01.tjqt.qr>
+References: <ae1f24730705182015j533102bah985e9ad0e905cd2a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001c01c79ca7$0c1717e0$5a05a8c0@nisgaa.net>
+In-Reply-To: <ae1f24730705182015j533102bah985e9ad0e905cd2a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,60 +16,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: jpb@entel.ca
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Craig Bernstein <cbernstein@cbernstein.com>
 Cc: netfilter@lists.netfilter.org
 
 
-
-Paul Blond=E9 escreveu:
-> I've noticed that a lot of people use the 192.168.X.X subnet for intern=
-al
-> networks, is this (and the less-used 10-series) a requirement of some R=
-FC,
-> or a recommendation that has become tradition?
+On May 18 2007 20:15, Craig Bernstein wrote:
 >
-> We are using a completely different subnet, something similar to (for
-> example) 42.127.129.X to further obfuscate the internal network from
-> outside. This, and many other examples, produces a class-A subnet mask =
-(some
-> produce a class-B) when entered in WinXP's TCP/IP dialog, although the
-> actual mask we use with it is class-C.
+> I can't believe this isn't a FAQ; I apologize if I missed something in
+> my searches.
 >
-> Is this a no-no? Will it break our server's IPTables when communicating=
- with
-> it? Am I in for a lot of trouble? The addresses don't seem to cause any=
+> Is there a way to log connections along with all of their NAT translation
+> data?
 
-> problems, but I don't want this to jump up and bite us in the bottom
-> sometime down the road.
->  =20
+iptables -t nat -N yes_do_me_1
+iptables -t nat -A yes_do_me_1 -j LOG ...
+iptables -t nat -A yes_do_me_1 -j SNAT ...
 
-    Yes, those 'reserved' IP addresses are declared by RFC 1918. Please=20
-check:
+iptables -t nat -s 134.76.0.0/16 -d whatever -p tcp -j yes_do_me_1
 
-http://tools.ietf.org/html/rfc1918
-http://en.wikipedia.org/wiki/Private_network
-
-    Your network will work with no problems, except if you had to access =
-
-some far-far-far away network which uses your local addresses, which=20
-should never be used as local ones.
-
-  =20
-
---=20
+Or you could use `conntrack -E`... or conntrack -L for a momentary
+state.
 
 
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
+>
+> I am using a Debian (Sarge) system to SNAT guest users from private
+> address space to the Internet, and I need to keep a record that
+> includes both their internal and external addresses.
+>
+> Simply logging before the SNAT rule leaves out the external address,
+> leaving me only with the original RFC1918 source address.
+> /proc/net/ip_conntrack has the information I need, but no way to send
+> it to the log it at the beginning and/or end of the session.
+>
+> There HAS to be an easy way to do this!  Right?
+>
+> Thank you...
+>
+> -- 
+> ...Craig
+>
+>
 
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
+	Jan
+-- 
 
