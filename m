@@ -1,11 +1,9 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: redirect 127.0.0.1:25 -> 127.0.0.1:2000
-Date: Wed, 23 May 2007 09:43:48 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0705230943120.4452@yvahk01.tjqt.qr>
-References: <464E2A63.3020903@funkware.com> <464E2CAC.8060702@funkware.com>
-Mime-Version: 1.0
+From: trellmor@freewlan.info
+Subject: Rules to block traffic form an interface to a netblock
+Date: Wed, 23 May 2007 11:22:16 +0200 (CEST)
+Message-ID: <20070523092216.A3B1320A8CB7@server11.web4a.de>
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <464E2CAC.8060702@funkware.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,25 +14,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Alex Tang <altitude@funkware.com>
-Cc: netfilter@lists.netfilter.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
+
+Hello!
+
+I tried to create a rule to block all traffic from a interface (ath1) to
+a netblock (192.168.0.0/16).
+The device is a WLAN router and the ath1 interface is unencrypted,
+allowing visitors to login. But i want to restrict access to my private
+lan (192.168.0.0/16). The router performs nat between the ath1 and the
+ath0. So forwared packets need to reach the next hop (192.168.0.1),
+allowing visitors to access the internet. The router itself (and other
+interfaces on the router) should still be able to reach 192.168.0.0/16.
+
+I tried to come up with a rule for that, but my solutions doesn't seem
+to work. I hope anyone can give me a solution for this problem, or at
+least an idea how to solve it.
+
+-- Yours truly
+Daniel Triendl
+trellmor@freewlan.info
+http://dani.tac-ops.net
 
 
-On May 18 2007 15:46, Alex Tang wrote:
->
-> which answered my question. 
-> I verified that the kernel had IP_NF_NAT_LOCAL set to y, and i see that I was
-> missing the "iptables -t nat -A OUTUPT" line.  Everything works now. Whoohoo!
 
-IP_NF_NAT_LOCAL is removed in later kernels, so don't even think
-about starting to use it.
-
-You will be perfectly fine when not having that enabled, -A OUTPUT
-does it all.
-
-
-	Jan
--- 
 
