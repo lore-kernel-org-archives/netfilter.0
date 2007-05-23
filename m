@@ -1,9 +1,12 @@
-From: trellmor@freewlan.info
-Subject: Rules to block traffic form an interface to a netblock
-Date: Wed, 23 May 2007 11:22:16 +0200 (CEST)
-Message-ID: <20070523092216.A3B1320A8CB7@server11.web4a.de>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: Conntrack rule timeout problem
+Date: Wed, 23 May 2007 14:47:29 +0200
+Message-ID: <465437E1.9030600@freemail.hu>
+References: <1179765250.12001.18.camel@thales.lan>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1179765250.12001.18.camel@thales.lan>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -14,30 +17,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pat Riehecky <prieheck@iwu.edu>
+Cc: netfilter@lists.netfilter.org
 
-Hello!
+Hi,
 
-I tried to create a rule to block all traffic from a interface (ath1) to
-a netblock (192.168.0.0/16).
-The device is a WLAN router and the ath1 interface is unencrypted,
-allowing visitors to login. But i want to restrict access to my private
-lan (192.168.0.0/16). The router performs nat between the ath1 and the
-ath0. So forwared packets need to reach the next hop (192.168.0.1),
-allowing visitors to access the internet. The router itself (and other
-interfaces on the router) should still be able to reach 192.168.0.0/16.
-
-I tried to come up with a rule for that, but my solutions doesn't seem
-to work. I hope anyone can give me a solution for this problem, or at
-least an idea how to solve it.
-
--- Yours truly
-Daniel Triendl
-trellmor@freewlan.info
-http://dani.tac-ops.net
-
-
+Pat Riehecky =EDrta:
+> I seem to be capturing way more packets than I intend (or even expect!)=
+=2E
+> I am running squid and have the firewall rules below running on it.  Fo=
+r
+> some reason I am capturing hundreds of packets that I don't think shoul=
+d
+> be caught.
+>  =20
+Maybe someone is scanning you....
+> I have increased the timeouts in /proc/ (via sysctl) to fix this, but n=
+o
+> dice.  Anyone have any idea why the sample packet below would be
+> captured?  It is getting picked up by either the=20
+> -A INPUT -p tcp -m tcp ! --syn -m conntrack --ctstate INVALID -j DROP
+> but sometimes the
+> -A INPUT -p tcp -m tcp ! --syn -m state --state NEW -j DROP
+>  =20
+Take a look on nmap...
+> The packet looks to have been requested by squid, it is coming on port
+> 80...  I also seem to be having the same behavior on the squid side
+> where the FIN/ACK packets are being caught by the conntrack rule...
+>
+> I know I have something wrong, just what exactly is eluding me...
+>
+> Any help would be helpful!
+>  =20
+Swifty
 
 
