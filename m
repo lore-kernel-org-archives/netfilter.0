@@ -1,13 +1,14 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Bridge Transparent Proxy
-Date: Tue, 22 May 2007 19:25:56 -0500
-Message-ID: <46538A14.608@riverviewtech.net>
-References: <C2787F66.1C272%robert@leblancnet.us>	<465336C4.5060600@riverviewtech.net>	<46533842.9080404@plouf.fr.eu.org>	<46533B98.9030706@riverviewtech.net>
-	<465369AF.2060107@plouf.fr.eu.org>
+From: "Filka Michal" <Michal.Filka@sitronicsts.com>
+Subject: RE: simple question
+Date: Wed, 23 May 2007 07:33:41 +0200
+Message-ID: <2DD3CA89774593478BC28081C7392595BEC47B@exalfa.stromtelecom.cz>
+References: <2DD3CA89774593478BC28081C7392595BEC225@exalfa.stromtelecom.cz>
+	<da3a2a260705221120x3216601doee80f297904493a0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <465369AF.2060107@plouf.fr.eu.org>
+Content-class: urn:content-classes:message
+In-Reply-To: <da3a2a260705221120x3216601doee80f297904493a0@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,44 +19,60 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 5/22/2007 5:07 PM, Pascal Hambourg wrote:
-> Now I see. But wouldn't it be worth subnetting A.B.C.x ?
+I would like to somehow use conntrack's events for very simple
+synchronization of two connection tracking tables. So, I need to know
+what should be a reason for particular events. As far as I know there
+are NEW, UPDATE and DESTROY events available. In case of UPDATE event
+I'm not sure when it occurs ... So, when is UPDATE event issued?
 
-If you have the option, yes.  However, that is seldom an option, even 
-less so with out the providers support.
-
-Consider a cable modem / DSL install where you get 4 IP addresses, 
-having nothing to do with subnets.  I.e. .62, .63, .64, and .65.  You 
-can not do any viable subnetting with this.
-
-Even if you can viably do subnetting, you have to have the provider 
-configure the remaining IPs available via the IP facing them.
-
-It has been my experience that it is much easier to do BRouting in these 
-cases.
-
-> Do you mean that ARP proxy would not be a good way ? Ok, I guess it 
-> would disrupt IP broadcasts a bit...
-
-I have never actually used ARP proxy, so I can't say for sure.  However 
-when I have read about ARP proxying in the past, it never sat very well 
-with me.  It always seemed like it solved part of the problem but caused 
-others.
-
-> Anyway NAT is evil. Don't use unless you can't avoid it.
-
-I'll have to disagree with you on that statement.  Now if you amend it a 
-bit, I can live with it.  "NATing in the wrong locations is evil."  NAT 
-in and of its self is a good tool to use.  However it is not the end 
-all, be all tool that some would like it to be.  NATing a private 
-network out to a single IP on the internet for outbound internet access 
-is very good.  If you want to start having some inbound internet access 
-it is not as good for very long.
+Thanks,
+Michal Filka
 
 
-
-Grant. . . .
+>=20
+> I'm assuming that "update" originates from the idea of a database
+> trigger. A trigger is an action performed after another action occurs.
+> For example, when entering a new record, you could call a procedure to
+> error check the formatting of the entry. Another example might be to
+> add a record to a log table which logs the activity which occurs after
+> a record is updated.
+>=20
+> I'd imagine that what you are talking about (update) is an event
+> similar to a trigger. This means that the answer would depend on what
+> the trigger is set for. Maybe it is when state is updated, or maybe it
+> is when the configuration is updated. Maybe both.
+>=20
+> I have no idea to what you are referring or asking about, so beyond
+> what I have detailed above, I cannot give you an aswer.
+>=20
+> Sorry.
+>=20
+> On 5/22/07, Filka Michal <Michal.Filka@sitronicsts.com> wrote:
+> > Hi,
+> >
+> > Can anyone tell me what exactly means an update event. Of course, I
+have
+> > an idea, but I need to confirm it.
+> >
+> > So, does it mean that "state" attribute changed (E.g. connection
+state,
+> > counter, ... ), or is it related to a "configuration" attribute?
+> >
+> > Thanks,
+> >
+> > Michal Filka
+> >
+> >
+> >
+>=20
+>=20
+>=20
+> --
+> I thought about building you a boat to survive the river of tears I'm
+> crying for you, but the world's smallest violins just aren't a
+> reliable source of lumber, and that cross you're nailing yourself to
+> seems buoyant enough anyways - Dr Gregory House, M.D.
 
