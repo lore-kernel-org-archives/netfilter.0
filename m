@@ -1,14 +1,12 @@
-From: "Filka Michal" <Michal.Filka@sitronicsts.com>
-Subject: RE: simple question
-Date: Wed, 23 May 2007 07:33:41 +0200
-Message-ID: <2DD3CA89774593478BC28081C7392595BEC47B@exalfa.stromtelecom.cz>
-References: <2DD3CA89774593478BC28081C7392595BEC225@exalfa.stromtelecom.cz>
-	<da3a2a260705221120x3216601doee80f297904493a0@mail.gmail.com>
+From: Jon Tim <lcguy229@yahoo.com>
+Subject: Re: Bridge Transparent Proxy
+Date: Tue, 22 May 2007 22:56:55 -0700 (PDT)
+Message-ID: <390179.89889.qm@web38509.mail.mud.yahoo.com>
+References: <465314F4.1060007@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <da3a2a260705221120x3216601doee80f297904493a0@mail.gmail.com>
+In-Reply-To: <465314F4.1060007@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,60 +17,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-I would like to somehow use conntrack's events for very simple
-synchronization of two connection tracking tables. So, I need to know
-what should be a reason for particular events. As far as I know there
-are NEW, UPDATE and DESTROY events available. In case of UPDATE event
-I'm not sure when it occurs ... So, when is UPDATE event issued?
+Hello,
 
-Thanks,
-Michal Filka
+Many thanks for all reply to my Bridge Transparent
+Proxy post.
+
+But, please let me know more how to enable "netfilter
+Bridge Support" in kernel. Can I add a linke
+CONFIG_BRIDGE_NETFILTER=3Dy" in /etc/sysctl.conf ??
+
+And, in the second iptables command what is physdev
+and physdev-in?? Does this mean physdev=3D eth0 and
+physdev-in =3D eth1??
+
+Sorry for my quetion. I am newbie in iptables and
+don't understand very well?
+
+My another qutesion is, do I need to use NAT command
+in iptables? As I have all public address and why I
+have to use NAT to redirect?
+
+Jon.
 
 
+
+--- Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+wrote:
+
+> Hello,
 >=20
-> I'm assuming that "update" originates from the idea of a database
-> trigger. A trigger is an action performed after another action occurs.
-> For example, when entering a new record, you could call a procedure to
-> error check the formatting of the entry. Another example might be to
-> add a record to a log table which logs the activity which occurs after
-> a record is updated.
+> Robert LeBlanc a =E9crit :
+> > You will need to look at ebtables. Bridging will
+> bypass iptables.
 >=20
-> I'd imagine that what you are talking about (update) is an event
-> similar to a trigger. This means that the answer would depend on what
-> the trigger is set for. Maybe it is when state is updated, or maybe it
-> is when the configuration is updated. Maybe both.
+> Bridged IPv4 packets traverse the iptables chains if
+> the kernel was=20
+> compiled with Netfilter bridge support
+> (CONFIG_BRIDGE_NETFILTER=3Dy). It=20
+> allows finer filtering than ebtables, for instance
+> accepting only=20
+> outgoing HTTP/HTTPS connections and related ICMP
+> messages in both=20
+> directions thanks to connection tracking, e.g. :
 >=20
-> I have no idea to what you are referring or asking about, so beyond
-> what I have detailed above, I cannot give you an aswer.
->=20
-> Sorry.
->=20
-> On 5/22/07, Filka Michal <Michal.Filka@sitronicsts.com> wrote:
-> > Hi,
-> >
-> > Can anyone tell me what exactly means an update event. Of course, I
-have
-> > an idea, but I need to confirm it.
-> >
-> > So, does it mean that "state" attribute changed (E.g. connection
-state,
-> > counter, ... ), or is it related to a "configuration" attribute?
-> >
-> > Thanks,
-> >
-> > Michal Filka
-> >
-> >
-> >
+> iptables -A FORWARD -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+> iptables -A FORWARD -m physdev --physdev-in eth1 -m
+> state --state NEW \
+>    -p tcp -m multiport --dports 80,443 -j ACCEPT
 >=20
 >=20
->=20
-> --
-> I thought about building you a boat to survive the river of tears I'm
-> crying for you, but the world's smallest violins just aren't a
-> reliable source of lumber, and that cross you're nailing yourself to
-> seems buoyant enough anyways - Dr Gregory House, M.D.
+
+
+
+      =20
+___________________________________________________________________________=
+_________Luggage? GPS? Comic books?=20
+Check out fitting gifts for grads at Yahoo! Search
+http://search.yahoo.com/search?fr=3Doni_on_mail&p=3Dgraduation+gifts&cs=3Dbz
 
