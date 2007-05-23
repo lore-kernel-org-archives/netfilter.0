@@ -1,12 +1,11 @@
-From: Jon Tim <lcguy229@yahoo.com>
-Subject: Re: Bridge Transparent Proxy
-Date: Tue, 22 May 2007 22:56:55 -0700 (PDT)
-Message-ID: <390179.89889.qm@web38509.mail.mud.yahoo.com>
-References: <465314F4.1060007@plouf.fr.eu.org>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: redirect 127.0.0.1:25 -> 127.0.0.1:2000
+Date: Wed, 23 May 2007 09:43:48 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0705230943120.4452@yvahk01.tjqt.qr>
+References: <464E2A63.3020903@funkware.com> <464E2CAC.8060702@funkware.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <465314F4.1060007@plouf.fr.eu.org>
+In-Reply-To: <464E2CAC.8060702@funkware.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,65 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
-
-Hello,
-
-Many thanks for all reply to my Bridge Transparent
-Proxy post.
-
-But, please let me know more how to enable "netfilter
-Bridge Support" in kernel. Can I add a linke
-CONFIG_BRIDGE_NETFILTER=3Dy" in /etc/sysctl.conf ??
-
-And, in the second iptables command what is physdev
-and physdev-in?? Does this mean physdev=3D eth0 and
-physdev-in =3D eth1??
-
-Sorry for my quetion. I am newbie in iptables and
-don't understand very well?
-
-My another qutesion is, do I need to use NAT command
-in iptables? As I have all public address and why I
-have to use NAT to redirect?
-
-Jon.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Alex Tang <altitude@funkware.com>
+Cc: netfilter@lists.netfilter.org
 
 
+On May 18 2007 15:46, Alex Tang wrote:
+>
+> which answered my question. 
+> I verified that the kernel had IP_NF_NAT_LOCAL set to y, and i see that I was
+> missing the "iptables -t nat -A OUTUPT" line.  Everything works now. Whoohoo!
 
---- Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-wrote:
+IP_NF_NAT_LOCAL is removed in later kernels, so don't even think
+about starting to use it.
 
-> Hello,
->=20
-> Robert LeBlanc a =E9crit :
-> > You will need to look at ebtables. Bridging will
-> bypass iptables.
->=20
-> Bridged IPv4 packets traverse the iptables chains if
-> the kernel was=20
-> compiled with Netfilter bridge support
-> (CONFIG_BRIDGE_NETFILTER=3Dy). It=20
-> allows finer filtering than ebtables, for instance
-> accepting only=20
-> outgoing HTTP/HTTPS connections and related ICMP
-> messages in both=20
-> directions thanks to connection tracking, e.g. :
->=20
-> iptables -A FORWARD -m state --state
-> ESTABLISHED,RELATED -j ACCEPT
-> iptables -A FORWARD -m physdev --physdev-in eth1 -m
-> state --state NEW \
->    -p tcp -m multiport --dports 80,443 -j ACCEPT
->=20
->=20
+You will be perfectly fine when not having that enabled, -A OUTPUT
+does it all.
 
 
-
-      =20
-___________________________________________________________________________=
-_________Luggage? GPS? Comic books?=20
-Check out fitting gifts for grads at Yahoo! Search
-http://search.yahoo.com/search?fr=3Doni_on_mail&p=3Dgraduation+gifts&cs=3Dbz
+	Jan
+-- 
 
