@@ -1,11 +1,12 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: Rules to block traffic form an interface to a netblock
-Date: Thu, 24 May 2007 18:37:50 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0705241836500.31549@yvahk01.tjqt.qr>
-References: <20070523092216.A3B1320A8CB7@server11.web4a.de>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Dynamic kernel module load
+Date: Thu, 24 May 2007 19:08:55 +0200
+Message-ID: <4655C6A7.2050303@rtij.nl>
+References: <9875566032E2AE41ADB6D9CF037D312652F8F2@skyline.skld.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070523092216.A3B1320A8CB7@server11.web4a.de>
+In-Reply-To: <9875566032E2AE41ADB6D9CF037D312652F8F2@skyline.skld.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +17,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: trellmor@freewlan.info
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Paul Harlow <pharlow@skld.com>
+Cc: Netfilter Lists <netfilter@lists.netfilter.org>
 
-
-On May 23 2007 11:22, trellmor@freewlan.info wrote:
+Paul Harlow wrote:
+> Hi all,
 >
->Hello!
+> Fedora 5 patched, i386 SMP
 >
->I tried to create a rule to block all traffic from a interface (ath1) to
->a netblock (192.168.0.0/16).
-
--i ath1 -d 192.168.0.0/16 ...
-
->The device is a WLAN router and the ath1 interface is unencrypted,
->allowing visitors to login. But i want to restrict access to my private
->lan (192.168.0.0/16). The router performs nat between the ath1 and the
->ath0. So forwared packets need to reach the next hop (192.168.0.1),
->allowing visitors to access the internet. The router itself (and other
->interfaces on the router) should still be able to reach 192.168.0.0/16.
+> I am looking for info on how to dynamically load a particular kernel module when I restart IPTables. I have firewalling rules in place for FTP traffic (both passive and active) however when I restart IPTables I notice that the module ip_conntrack_ftp does not load, I have to load it manually. This presents a problem if someone other than myself has to reload firewall rules on this machine but isn't aware of the FTP rules/needs.
 >
->I tried to come up with a rule for that, but my solutions doesn't seem
->to work. I hope anyone can give me a solution for this problem, or at
->least an idea how to solve it.
+> Will adding the line "ip_conntrack_ftp" to the modules.conf file solve this problem and leave the particular module in permanently?
+>   
 
+Patch /etc/sysconfig/iptables-config, mine looks like:
 
-	Jan
--- 
+# Additional iptables modules (nat helper)
+# Default: -empty-
+IPTABLES_MODULES="ip_conntrack_ftp"
+
+(snip)
+
+HTH,
+M4
+
 
