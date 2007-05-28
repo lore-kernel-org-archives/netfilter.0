@@ -1,17 +1,10 @@
-From: "Francisco Perea" <faperea@gmail.com>
-Subject: Newbies questions compiling uClinux-dist-20070130 with
-	m68k-uclinux-tools-20061214
-Date: Fri, 25 May 2007 11:41:01 -0500
-Message-ID: <6bc01b0f0705250941q445d1099m33d066d1272e2fe9@mail.gmail.com>
-References: <6bc01b0f0705241228w3e37e968if4ea3c7fe5c261d0@mail.gmail.com>
+From: dummy@sapmail.pg.com
+Subject: Port forwarding without masquerading..???
+Date: Sun, 27 May 2007 20:21:36 -0600 (MDT)
+Message-ID: <3143.67.190.128.248.1180318896.squirrel@webmail.usermail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=taeLHtlfFTViIHgNxeavGfzww/4YIVSb6Cnx6D9qNTylcU4jJ+eAcSL7eTX4kztYe2XQPM6RNAQ+CFWEU2uvge7X+j0fJSJYamSVb7+SBldIvKFhRP6VLo3ju03T0t8mj9pqeSauCQoNWiywZDXVIhgGOt1LdR3ywoiAypgD67M=
-In-Reply-To: <6bc01b0f0705241228w3e37e968if4ea3c7fe5c261d0@mail.gmail.com>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,64 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org, netfilter-devel@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi,
+All,
 
-I'm newbie in Linux land. I'm trying to build a small router for GPRS
-applications and I downloaded last version of uclinux
-(uClinux-dist-20070130) and m68k-tools (m68k-uclinux-tools-20061214)
-for a M5272C3 EVB.
+I am changing data centers and want to forward traffic hitting server A to
+Server B in another data center.  I was using masquerading and it was
+working fine, however a problem has popped its ugly head.  Server B needs
+to know the IP address of the client connecting to it.  If it gets
+forwarded through Server A, the IP address of Server A is what is given.
 
-It compiles fine for default options, but when I set routing
-functions, linker stage for libnfnetlink doesn't works.
-Here it's output:
+I tried to make this work without masquerading but I break the port
+forwarding.  I've also Googled myself silly.
 
-make[5]: Entering directory `/uClinux-dist/lib/libnfnetlink/build/src'
-/bin/sh ../libtool --mode=link ucfront-gcc m68k-elf-gcc -m5307
--DCONFIG_COLDFIRE -fPIC -Wall -O2 -g -fomit-frame-pointer -pipe
--fno-common -fno-builtin -Wall   -DEMBED -msep-data -Dlinux
--D__linux__ -Dunix -D__uClinux__  -Wl,--fatal-warnings -Wl,-elf2flt
--Wl,-move-rodata -msep-data -Wl,--fatal-warnings -Wl,-elf2flt
--Wl,-move-rodata -msep-data -o libnfnetlink.la -rpath /lib
--Wc,-nostartfiles libnfnetlink.lo
-rm -fr  .libs/libnfnetlink.so.0.0.0.elf .libs/libnfnetlink.so.0.0.0.elf2flt
-ucfront-gcc m68k-elf-gcc -m5307 -DCONFIG_COLDFIRE -shared
-.libs/libnfnetlink.o   -m5307 -msep-data -Wl,--fatal-warnings
--Wl,-elf2flt -Wl,-move-rodata -msep-data -Wl,--fatal-warnings
--Wl,-elf2flt -Wl,-move-rodata -msep-data -nostartfiles -Wl,-soname
--Wl,libnfnetlink.so.0 -o .libs/libnfnetlink.so.0.0.0
-/usr/local/lib/gcc/m68k-uclinux/4.1.1/../../../../m68k-uclinux/bin/ld.real:
-warning: cannot find entry symbol _start; defaulting to 00000000
-.libs/libnfnetlink.so.0.0.0.elf2flt: In function `__uClibc_start_main':
-: undefined reference to `main'
-collect2: ld returned 1 exit status
-make[5]: *** [libnfnetlink.la] Error 1
-make[5]: Leaving directory `/uClinux-dist/lib/libnfnetlink/build/src'
-make[4]: *** [all-recursive] Error 1
-make[4]: Leaving directory `/uClinux-dist/lib/libnfnetlink/build'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory `/uClinux-dist/lib/libnfnetlink'
-make[2]: *** [libnfnetlink] Error 2
-make[2]: Leaving directory `/uClinux-dist/lib'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/uClinux-dist/lib'
-make: *** [subdirs] Error 1
-[root@localhost uClinux-dist]#
+Any thoughts?
 
-It didn't works for kernel 2.4 neither kernel 2.6
-I also compile my own version of tools just to see if that solves the
-problem, but it doesn't.
-I guess all problem is a symbolink link to tell compiler where to
-search for uClibc libraries. But problem is where to put symbolic
-link?
-I also have tried switching from uClibc to uC-lib and kernel and
-libraries stages compile fine, but user apps won't compile.
-By the way, uC-lib isn't to old now for user apps now?
+TIA,
 
-I also change user to root, isn't the best practice, but I have to try! ;)
---
-Francisco Perea
-Ing. Electricista
+Q
+
 
