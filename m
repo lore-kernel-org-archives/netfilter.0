@@ -1,12 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: Looking for a how-to type battle plan for 2 physical subnets
- and an openvpn tunnel.
-Date: Tue, 29 May 2007 11:33:11 -0400 (EDT)
-Message-ID: <Pine.LNX.4.64.0705291126290.8300@darkstar.sysinfo.com>
-References: <bf0ca81a0705161135y12499869yc93ea9043eec44bc@mail.gmail.com>
+From: =?iso-8859-1?Q?Paul_Blond=E9?= <jpb@entel.ca>
+Subject: RE: T1 router and multiple public ips
+Date: Tue, 29 May 2007 08:39:02 -0700
+Message-ID: <001801c7a207$7b734090$5a05a8c0@nisgaa.net>
+References: <5009b2270705282025q2a2243b6u7e4d3e1d7dcbd0c@mail.gmail.com>
+Reply-To: jpb@entel.ca
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <bf0ca81a0705161135y12499869yc93ea9043eec44bc@mail.gmail.com>
+In-Reply-To: <5009b2270705282025q2a2243b6u7e4d3e1d7dcbd0c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,86 +18,98 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Bill Ries-Knight <steelhoof@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Shouldn't the T1 router be configured to handle the traffic between the =
+two
+public IPs? Or are the gateways able to talk to one another from the
+"inside"?
 
-On Wed, 16 May 2007, Bill Ries-Knight wrote:
+Are your gateways both using the same segment? I would have floyd1 using
+192.168.10.x and floyd2 using 192.168.11.x or something like that so you
+could do the following:
 
-> ok, I have a solution issue...
->
-> We just had a server cracked (fc4, built by my predecessor)
->
-> The server acts as a firewall, VPN Server, content filtering system,
-> samba server for files and ssh tunnel to the network.
->
-> There are 3 nics covering 2 physical subnets , school
-> administration/teachers and computer lab for the sudents, each with
-> thier own NIC and the gateway to the internet on the third.  Openvpn
-> provides a tun interface with a third subnet to manage.
->
-> Software we are running is iptables for the firewall, Openvpn for the
-> vpn tunnel between physical sites, samba and clamav/squid/dansguardian
-> for content filtering and openssh for remote access.
->
-> I am using Debia Etch for the server.
->
-> Is there anyone with a reference on how to manage this one?
->
-> I can get the old firewall rules into place, but adding ipmasq munges
-> it all up.  Without ipmasq there is no name based browsing at all.
->
-> At various times I can get the vpn happy, but no browsing.  if I try
-> to bring both physical subnets into play, it munges.  I have issues
-> with name based internet browsing, or a few minutes later, I have
-> issues with the ip address based access.  Ie: I can ping out, but not
-> name browse..  a bit later I cannot even ping out.
->
-> I am really lost here.
->
+Set up hosts files on the gateways to point traffic directed to each =
+others'
+networks at each other (or on each machine, but that's a pain unless you
+insert in each users' startup script a command to copy the hosts from =
+from a
+file server), so for example if you have a domain
+"www.floyd1sapacheserver.com" that points to the public IP 13.47.77.2, =
+you
+would have an entry in the hosts file of floyd2 point to 192.168.10.x, =
+and
+the reverse applies to "www.floyd2siisserver.com", you would have an =
+entry
+in the hosts file of floyd1 that pointed to 192.168.11.x, at least =
+that's
+what I would try.
 
-First off, a firewall is a security device.  And should be a dedicated 
-device for that purpose only.  Perhapos the open vpn might reside here, 
-but all the rest, belongs on different secured systems.  Especially samba!
 
-I'd at this point look at a project to divide all these services to their 
-own secured systems, and redo the firewall, perhaps with vpn tunneling 
-application as it's own dedicated system.  Anything less, and you are 
-likely to be facing the same issue of trying to recover hacked/cracked 
-servers in the near future again.
 
-As for samba services, they should either be stopped at the inside 
-perimiter of the network, or if really reqiured outside the network then 
-only provided in a secure tunnle.  This is ancient knowledge in the 
-security realm.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Paul Blond=E9
 
-The point here is;  there is no quick fix for this setup.  Once a system 
-is hacked as you state yours has been, you face a total remake of the 
-system<s> involved.  And in this case, since the setup was dubious to 
-begin with, you have a major project no at hand.
 
-thanks,
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org=20
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of=20
+> jamil egdemir
+> Sent: Monday, May 28, 2007 8:26 PM
+> To: netfilter@lists.netfilter.org
+> Subject: T1 router and multiple public ips
+>=20
+>=20
+> Hi,
+>=20
+> I have a T1 router that provides me with two public ips: 13.47.77.2
+> and 13.47.77.3.  There are two linux boxes, (each with two Ethernet
+> cards) acting as the gateways to a 192.168.1.0 network sitting behind
+> each public ip.  My question is how do I get a browser on 192.168.1.30
+> sitting behind 13.47.77.2 to reach a web server on 192.168.1.2 sitting
+> behind 13.47.77.3.
+>=20
+> Usually I use something like the following rule to forward ports from
+> outside ips to internal ips on the 192.168.1.0 networks:
+>=20
+> '/sbin/iptables -t nat -A PREROUTING -p tcp --dport $MYPORT=20
+> -j DNAT --to
+> 192.168.1.2:80'
+>=20
+> so.. all my previous natting experience was for trying to let machines
+> on the outside communicate with my networks behind the 13.47.77.2 and
+> 13.47.77.3 public ips.. the iptables command above works great fot
+> that.
+>=20
+> let's say the hostname(eth0-ip, eth1-ip) of the first gateway are
+> floyd1(13.47.77.2, 192.168.1.1) and the hostname(eth0-ip, eth1-ip) of
+> the 2nd gateway floyd2(13.47.77.3, 192.168.1.1)and I'm trying to make
+> a browser on 192.168.1.30 behind floyd1 talk to the web server on
+> 192.168.1.2 behind floyd2 that is listening on port 80.  The default
+> gateways are currently set to 13.47.77.1 on both floyd1 and floyd2.
+>=20
+> What are the iptables commands that I need to make this thing fly?  I
+> feel like I should have a pair of iptables commands on each gateway to
+> do the job. One of them being a -j DNAT and the other being a -j SNAT
+> to handle both directions..
+>=20
+> I'm also wondering what is the 'best practice' for this situation
+> where you have a T1 router with networks sitting behind each public ip
+> that need to talk to each other..
+>=20
+>=20
+> --=20
+> -jamil
+>=20
+> -------------------------------------------------------------
+> Jamil Egdemir
+> unclejamil@gmail.com
+> AIM: unclejamil
+> YahooMessenger: uncle_jamil
+> http://grad.physics.sunysb.edu/~jamil
+> (631) 338-3170 (cell)
+> -------------------------------------------------------------
+>=20
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFGXEe6st+vzJSwZikRAkHNAJ9ZQebF8ovwk3ReSIvGvYNa9sDT3gCfReD0
-c/BVC8mYqqIrqip8NiLtLIw=
-=xz2P
------END PGP SIGNATURE-----
 
