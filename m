@@ -1,23 +1,12 @@
-From: Gopinath <gopinath.u@gmail.com>
-Subject: Re: Default deny rule
-Date: Tue, 29 May 2007 20:14:44 +0530
-Message-ID: <d2af4f000705290744i4518ae7bu11b1fb7e2eb14a68@mail.gmail.com>
-References: <d2af4f000705092228x3746eb10u9b81264581a57e46@mail.gmail.com>
-	<464440C4.7000605@freemail.hu>
-	<d2af4f000705132302t3d8b2c8eo6158406d02af9f91@mail.gmail.com>
-	<4648570D.4040308@freemail.hu>
-	<d2af4f000705150134r4d5bbf84r96d0f91aae9a725d@mail.gmail.com>
-	<4651C2EE.2080803@freemail.hu>
-	<d2af4f000705280645j74a57571j65bb21ab0bfcee40@mail.gmail.com>
-	<465C24E0.8010001@freemail.hu>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: Looking for a how-to type battle plan for 2 physical subnets
+ and an openvpn tunnel.
+Date: Tue, 29 May 2007 11:33:11 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0705291126290.8300@darkstar.sysinfo.com>
+References: <bf0ca81a0705161135y12499869yc93ea9043eec44bc@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=lwR4XN5SGZY9vmnIi6cqSwfkeJsI569eFKaRQzuQPKlu38wkf48uQQobUDrfDnU1j0BG0XGzOtnAcafgscK2vao5Obt/Mu64IHlEIGR70jMroODliy0QuQeO0nDaPZQ4JsI8eqmmGgA7JUiQ3c56/EBtex3+OL+03xmq7gPXQyc=
-In-Reply-To: <465C24E0.8010001@freemail.hu>
-Content-Disposition: inline
+In-Reply-To: <bf0ca81a0705161135y12499869yc93ea9043eec44bc@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -28,55 +17,86 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Bill Ries-Knight <steelhoof@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Thank your very much Lajos !!!!!!!!!!!!!!!
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-It is working fine now after adding the line "-m conntrack --ctstate
-DNAT" in the ACCEPT statement of the FORWARD chain as you've said in
-previous mail.
+On Wed, 16 May 2007, Bill Ries-Knight wrote:
 
-Could you please explain how it works after adding the line "-m
-conntrack --ctstate DNAT" in the ACCEPT stmt of FORWARD chain ? I'm
-very eager to know this :-)
-
-Regards,
-Gopinath.U
-
-
-I have also upgraded my iptables to version 1.3.7
-
-On 5/29/07, G=E1sp=E1r Lajos <swifty@freemail.hu> wrote:
-> Hi Gopinath,
-> > Hi Lajos,
-> >
-> > Thanks for your suggestion.
-> >
-> > I had upgraded my OS  to fedora 6, and also enabled logging option for
-> > the DROP packets. Now the Default denying functionality is working
-> > fine. But this time I face another problem. ie., i have applied static
-> > NAT on my firewall. In my simulation setup i am able to connect the
-> > other end (INTERNAL) machine using the NAT IP assigned, from the
-> > EXTERNAL machine as well through the actual IP of the
-> > machine(INTERNAL). This spoil my purpose for NATTING. I don't know why
-> > this happen. I suspect that there could be some problem with my NAT
-> > module. Please suggest...
-> I think that this is not a NATing but a routing problem.
-> I do not know your current script but maybe there is an accept that
-> allows this state.
-> I would add the following option to the ACCEPT rule in the FORWARD chain:
+> ok, I have a solution issue...
 >
-> -m conntrack --ctstate DNAT
+> We just had a server cracked (fc4, built by my predecessor)
 >
-> >
-> > Is there any need to upgrade my kernel to add further support ?
-> >
-> I do not think so but it is good to have an up-to-date system.
-> > Regards,
-> > Gopinath. U
+> The server acts as a firewall, VPN Server, content filtering system,
+> samba server for files and ssh tunnel to the network.
 >
-> Swifty
+> There are 3 nics covering 2 physical subnets , school
+> administration/teachers and computer lab for the sudents, each with
+> thier own NIC and the gateway to the internet on the third.  Openvpn
+> provides a tun interface with a third subnet to manage.
 >
+> Software we are running is iptables for the firewall, Openvpn for the
+> vpn tunnel between physical sites, samba and clamav/squid/dansguardian
+> for content filtering and openssh for remote access.
+>
+> I am using Debia Etch for the server.
+>
+> Is there anyone with a reference on how to manage this one?
+>
+> I can get the old firewall rules into place, but adding ipmasq munges
+> it all up.  Without ipmasq there is no name based browsing at all.
+>
+> At various times I can get the vpn happy, but no browsing.  if I try
+> to bring both physical subnets into play, it munges.  I have issues
+> with name based internet browsing, or a few minutes later, I have
+> issues with the ip address based access.  Ie: I can ping out, but not
+> name browse..  a bit later I cannot even ping out.
+>
+> I am really lost here.
+>
+
+First off, a firewall is a security device.  And should be a dedicated 
+device for that purpose only.  Perhapos the open vpn might reside here, 
+but all the rest, belongs on different secured systems.  Especially samba!
+
+I'd at this point look at a project to divide all these services to their 
+own secured systems, and redo the firewall, perhaps with vpn tunneling 
+application as it's own dedicated system.  Anything less, and you are 
+likely to be facing the same issue of trying to recover hacked/cracked 
+servers in the near future again.
+
+As for samba services, they should either be stopped at the inside 
+perimiter of the network, or if really reqiured outside the network then 
+only provided in a secure tunnle.  This is ancient knowledge in the 
+security realm.
+
+The point here is;  there is no quick fix for this setup.  Once a system 
+is hacked as you state yours has been, you face a total remake of the 
+system<s> involved.  And in this case, since the setup was dubious to 
+begin with, you have a major project no at hand.
+
+thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFGXEe6st+vzJSwZikRAkHNAJ9ZQebF8ovwk3ReSIvGvYNa9sDT3gCfReD0
+c/BVC8mYqqIrqip8NiLtLIw=
+=xz2P
+-----END PGP SIGNATURE-----
 
