@@ -1,11 +1,12 @@
-From: "Martin McKeay" <mmckeay@stillsecure.com>
-Subject: Looking for feedback on our GUI
-Date: Tue, 29 May 2007 10:51:46 -0600
-Message-ID: <5C9E8CCEEB81ED498AC0C3B0054704F3029374C1@webmail.latis.com>
+From: Michael Gale <michael.gale@pason.com>
+Subject: Re: NAT rules for VPN only allowing one user?
+Date: Wed, 30 May 2007 08:37:07 -0600
+Message-ID: <465D8C13.6010904@pason.com>
+References: <000001c7a279$c93477f0$dededede@neilhp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <000001c7a279$c93477f0$dededede@neilhp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,42 +17,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Neil Aggarwal <neil@JAMMConsulting.com>
+Cc: netfilter@lists.netfilter.org
 
-My name is Martin McKeay and I've been lurking on the list for a little
-while.  I'm the Product Evangelist for Cobia and I've been working at
-StillSecure for about 3 months now.  A large part of my job is outreach
-and getting feedback from the community.  We think we've come up with an
-exciting product in Cobia, our unified network platform, but we'd like
-to get some feedback from the people who are the experts on Iptables so
-we can make it better. =20
+Hey,
 
-One of the first modules we've created is a web interface for Iptables.
-We're very proud of the GUI, it's easy to use whether you're a new user
-or an expert.  What I'd like to know is if we've missed anything; is
-there a feature in Iptables that we've missed or not implemented as well
-as we could of?  Or have we done something that's confusing or poorly
-documented?  Or could we just be doing it better?
+This sounds like a problem on the VPN gateway device, you should remove the rule:
 
-Cobia comes as an ISO or a VMWare image and can be downloaded at
-http://cobia.stillsecure.com/?q=3Dnode/16.  Cobia is free to download, =
-and
-our existing modules are based on open source projects like Iptables.
-We have partners who are working on creating additional modules, but
-it's the firewall module that I'd like some feedback on.  Please give it
-a try and let me know what you think, either on the list, in the Cobia
-forums or by contacting me directly.
+"/sbin/iptables -t nat -A POSTROUTING -o eth1
+	-d $LINKSYS_VPN_IP -p tcp --dport 1723
+	-j SNAT --to-source $ETH1_IP"
 
-Thanks,
+And resolve that issue, what is most likely currently happening. Your VPN router is only setup for or only supports 1 VPN connection per IP address. So a second connection 
+would over write the first one.
 
-Martin
+Michael
 
-Martin McKeay, CISSP, GSNA
-Product Evangelist
-StillSecure
-martin@stillsecure.com <mailto:mmckeay@stillsecure.com>=20
-707-495-7926
-http://cobia.stillsecure.com/mckeay
+Neil Aggarwal wrote:
+> Jan:
+> 
+> Actually, I need the SNAT rule to make my remote
+> users look like they are coming from the local network.
+> 
+> For some reason, the Linksys does not respond to the
+> connection unless I have that.
+> 
+> Thanks,
+> 	Neil
+> 
+> --
+> Neil Aggarwal, (832)245-7314, www.JAMMConsulting.com
+> FREE! Eliminate junk email and reclaim your inbox.
+> Visit http://www.spammilter.com for details.
+> 
+> -----Original Message-----
+> From: netfilter-bounces@lists.netfilter.org
+> [mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Jan Engelhardt
+> Sent: Tuesday, May 29, 2007 1:13 PM
+> To: Neil Aggarwal
+> Cc: netfilter@lists.netfilter.org
+> Subject: Re: NAT rules for VPN only allowing one user?
+> 
+> On May 29 2007 12:31, Neil Aggarwal wrote:
+> 
+>> /sbin/iptables -t nat -A POSTROUTING -o eth1 
+>> 	-d $LINKSYS_VPN_IP -p tcp --dport 1723 
+>> 	-j SNAT --to-source $ETH1_IP
+> 
+> This is redundant.
+> 
+>> Either one of my remote users can connect to the VPN using
+>> the Windows XP VPN client.  But, if one of them is connected
+>> and the other tries to connect, the second person gets to
+>> the verifying username and password screen and then
+>> gets an Error 619 that they are not able to connect.
+>>
+>> I think somehow the existing connection is mis-routing
+>> the login for the second connection.
+>>
+>> Any ideas what could be going on?
+> 
+> Use the holy tcpdump.
+> 
+> 
+> 	Jan
 
+-- 
+Michael Gale
+
+Red Hat Certified Engineer
+Network Administrator
+Pason Systems Corp.
 
