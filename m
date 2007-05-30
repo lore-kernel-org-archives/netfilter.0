@@ -1,13 +1,12 @@
-From: "Martin McKeay" <mmckeay@stillsecure.com>
-Subject: RE: NAT rules for VPN only allowing one user?
-Date: Wed, 30 May 2007 10:12:13 -0600
-Message-ID: <5C9E8CCEEB81ED498AC0C3B0054704F302937827@webmail.latis.com>
-References: <000001c7a2ce$6d4a5860$dededede@neilhp>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: NAT rules for VPN only allowing one user?
+Date: Wed, 30 May 2007 23:06:37 +0200
+Message-ID: <465DE75D.5070006@rtij.nl>
+References: <000c01c7a217$2e0ab670$dededede@neilhp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <000001c7a2ce$6d4a5860$dededede@neilhp>
+In-Reply-To: <000c01c7a217$2e0ab670$dededede@neilhp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,108 +17,61 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Neil Aggarwal <neil@JAMMConsulting.com>, netfilter@lists.netfilter.org
-
-I took a quick look at the user guide but didn't see a lot of
-information on the VPN.  Does Linksys have a forum or mailing list that
-addresses this?  Maybe someone there's run into a similar problem.=20
-=20
-
-Martin McKeay, CISSP, GSNA=20
-Cobia Product Evangelist=20
-StillSecure=20
-martin@stillsecure.com <mailto:mmckeay@stillsecure.com> =20
-707-495-7926=20
-http:// <http:///> www.cobiablog.com=20
-
-=20
-
-________________________________
-
-From: Neil Aggarwal [mailto:neil@JAMMConsulting.com]=20
-Sent: Wednesday, May 30, 2007 9:23 AM
-To: Martin McKeay; netfilter@lists.netfilter.org
-Subject: RE: NAT rules for VPN only allowing one user?
-
-
-
-Martin:
-
-I am using the LinkSys RV042:
-http://www.linksys.com/servlet/Satellite?c=3DL_Product_C2&childpagename=3D=
-US
-%2FLayout&cid=3D1123638171618&pagename=3DLinksys%2FCommon%2FVisitorWrappe=
-r&l
-id=3D7161822279B01
-<http://www.linksys.com/servlet/Satellite?c=3DL_Product_C2&childpagename=3D=
-U
-S%2FLayout&cid=3D1123638171618&pagename=3DLinksys%2FCommon%2FVisitorWrapp=
-er&
-lid=3D7161822279B01>=20
-
-Neil
-
---
-Neil Aggarwal, (832)245-7314, www.JAMMConsulting.com
-FREE! Eliminate junk email and reclaim your inbox.
-Visit http://www.spammilter.com <http://www.spammilter.com>  for
-details.
-
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org
-<mailto:netfilter-bounces@lists.netfilter.org> ] On Behalf Of Martin
-McKeay
-Sent: Wednesday, May 30, 2007 10:17 AM
-To: netfilter@lists.netfilter.org
-Subject: RE: NAT rules for VPN only allowing one user?
-
-So this is a limitation of the Linksys router, correct?  What are the
-real requirements for user connections?=20
-
-Linksys has the BEFVP41, that supports up to 50 VPN connections.  Maybe
-an upgrade to this box is in order.  It's on Amazon for $99.  What
-router are you using right now?  If it's a WRT54 series wireless router,
-there might even be an image you can flash it with to do what you want
-right now.
-
-Martin
-
-
-Martin McKeay, CISSP, GSNA
-Product Evangelist
-StillSecure
-martin@stillsecure.com
-707-495-7926
-http://cobia.stillsecure.com/mckeay
-<http://cobia.stillsecure.com/mckeay>=20
-
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org
-<mailto:netfilter-bounces@lists.netfilter.org> ] On Behalf Of Michael
-Gale
-Sent: Wednesday, May 30, 2007 8:37 AM
-To: Neil Aggarwal
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Neil Aggarwal <neil@JAMMConsulting.com>
 Cc: netfilter@lists.netfilter.org
-Subject: Re: NAT rules for VPN only allowing one user?
 
-Hey,
+Neil Aggarwal wrote:
+> Hello:
+>
+> I have a Linux machine acting as a firewall for my
+> network.  I have a couple of remote users that need
+> access to the internal network, so I put a Linksys
+> RV042 VPN Router on my internal switch.
+>
+> On the Linux box, I set these iptables rules (Line breaks
+> added for readability):
+>
+> /sbin/iptables -t nat -A PREROUTING -p tcp 
+> 	-i eth0 -d $ETH0_IP 
+> 	--sport 1024: --dport 1723 
+> 	-j DNAT --to $LINKSYS_VPN_IP:1723
+> /sbin/iptables -A FORWARD -i eth0 -o eth1 
+> 	-d $LINKSYS_VPN_IP -p tcp 
+> 	--sport 1024: --dport 1723 
+> 	-m state --state NEW,ESTABLISHED -j ACCEPT
+> /sbin/iptables -t nat -A POSTROUTING -o eth1 
+> 	-d $LINKSYS_VPN_IP -p tcp --dport 1723 
+> 	-j SNAT --to-source $ETH1_IP
+> /sbin/iptables -t nat -A PREROUTING -p gre -i eth0 
+> 	-j DNAT --to $LINKSYS_VPN_IP
+> /sbin/iptables -A FORWARD -i eth0 -o eth1 
+> 	-d $LINKSYS_VPN_IP -p gre -j ACCEPT
+> /sbin/iptables -t nat -A POSTROUTING -o eth1 
+> 	-d $LINKSYS_VPN_IP -p gre -j SNAT --to-source $ETH1_IP
+> /sbin/iptables -t nat -A PREROUTING -s $LINKSYS_VPN_IP 
+> 	-d $ETH1_IP -p gre -j ACCEPT
+> /sbin/iptables -A FORWARD -i eth1 -o eth0 
+> 	-s $LINKSYS_VPN_IP -p gre -j ACCEPT
+>
+> Either one of my remote users can connect to the VPN using
+> the Windows XP VPN client.  But, if one of them is connected
+> and the other tries to connect, the second person gets to
+> the verifying username and password screen and then
+> gets an Error 619 that they are not able to connect.
+>
+> I think somehow the existing connection is mis-routing
+> the login for the second connection.
+>   
 
-This sounds like a problem on the VPN gateway device, you should remove
-the rule:
+IIRC, for this to work a helper must be loaded to fixup the GRE stream. 
+And older implementations only allowed one connection. I might be 
+totally of on this one, but maybe a newer kernel will fix your problem.
 
-"/sbin/iptables -t nat -A POSTROUTING -o eth1
-        -d $LINKSYS_VPN_IP -p tcp --dport 1723
-        -j SNAT --to-source $ETH1_IP"
+You might ask in the netfilter-devel list where there is more expertise 
+on this.
 
-And resolve that issue, what is most likely currently happening. Your
-VPN router is only setup for or only supports 1 VPN connection per IP
-address. So a second connection would over write the first one.
-
-Michael
-
+HTH,
+M4
 
 
