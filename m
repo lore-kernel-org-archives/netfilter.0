@@ -1,11 +1,13 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: syn DDoS attack solution
-Date: Thu, 31 May 2007 15:57:27 -0400 (EDT)
-Message-ID: <Pine.LNX.4.64.0705311556240.17506@darkstar.sysinfo.com>
+From: "Ric Messier" <kilroy@WasHere.COM>
+Subject: RE: syn DDoS attack solution
+Date: Thu, 31 May 2007 14:08:01 -0600
+Message-ID: <015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>
 References: <465EF582.4070904@bgs.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <465EF582.4070904@bgs.hu>
+Content-Language: en-us
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,63 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Bgs <bgs@bgs.hu>
-Cc: netfilter@lists.netfilter.org
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-On Thu, 31 May 2007, Bgs wrote:
-
->
-> Hi all,
->
->
-> We recently got under a low traffic botnet DDoS attack. All attacker nodes 
-> opened a single tcp session (just SYN part) and then did nothing. This rules 
-> out rate limiting solutions and syncookie doesn't help either. (Thousands of 
-> attacking nodes).
->
->
-> I'd like to know you thoughts about two possible approaches in solving this:
->
-> - syn proxy: already used for example by Cisco. The router handles the first 
-> part of the connection and only routes packets to the client if the 
-> connection seems good. (Good against single/spoofed incoming SYNs but may be 
-> used to wait for the first packet with actual data as well).
-> - Implement a conntrack solution that gives a timestamp to the connection. 
-> Then this timestamp could be used to drop the connection if no data arrives 
-> within a configured time limit (good for open inactive connections only). Of 
-> course appropriate close toward the local client has to be done as well.
->
-> What's your opinion?
->
+Content-Type: text/plain; charset="us-ascii"
+To: 'Bgs' <bgs@bgs.hu>, netfilter@lists.netfilter.org
 
 
-That you knowledge ot TCP/IP is poor.
+Bgs writes:
+> 
+>   We recently got under a low traffic botnet DDoS attack. All attacker
+> nodes opened a single tcp session (just SYN part) and then did nothing.
+> This rules out rate limiting solutions and syncookie doesn't help
+> either. (Thousands of attacking nodes).
+> 
 
+This is simply a SYN flood attack. It may or may not be a botnet (though
+saying botnet makes it sound sexier :-) ). A decent SYN flood attack tool
+would randomize the source address anyway. 
 
+You should try reading the following as a starting point:
 
-Thanks,
+http://www.securityfocus.com/infocus/1729
 
-Ron DuFresne
-- -- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+Your second suggestion has been implemented in the TCP/IP stack forever. The
+article above gives guidance on how to tune it in a Linux implementation.
 
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
+Ric
 
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFGXyiqst+vzJSwZikRAih2AJ0SY0npal/EqdwWK+/4SYOGaXY/uACggRtl
-uhPlH5F7JzCJGHf2RgryJT4=
-=Y3xX
------END PGP SIGNATURE-----
 
