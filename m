@@ -1,7 +1,7 @@
 From: bilal.amna@yahoo.com
-Subject: Confirm your subscription
-Date: Thu, 31 May 2007 04:09:17 -0700 (PDT)
-Message-ID: <20070531110917.CA39E17D79@localhost.localdomain>
+Subject: Welcome to the Mailing List.
+Date: Thu, 31 May 2007 04:14:23 -0700 (PDT)
+Message-ID: <20070531111423.533E518DAED@localhost.localdomain>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
@@ -18,13 +18,10 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Please click the link below to confirm your subscription to the Mailing List .
+You have successfully been added to the Mailing List at . Thank you for joining!
 
-http://pub6.bravenet.com/elist/add.php?usernum=512018650&action=confirm&id=4676834
-
-
-If you like The Oprah Winfrey Show, sign up now for a free trip for you and a friend to see her live, including airfare and hotel accommodations. Click here! (US Residents Only)
-http://mercury.bravenet.com/rover/c?id=42003
+Take a short survey for a chance to win a $50,000 scholarship or $50,000 cash! Click here!
+http://mercury.bravenet.com/rover/c?id=39241
 
 
 
