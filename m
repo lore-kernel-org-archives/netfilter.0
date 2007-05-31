@@ -1,12 +1,12 @@
-From: Gregory Carter <gcarter@aesgi.com>
-Subject: Re: NAT rules for VPN only allowing one user?
-Date: Wed, 30 May 2007 19:24:11 -0500
-Message-ID: <465E15AB.2070305@aesgi.com>
-References: <000c01c7a217$2e0ab670$dededede@neilhp> <465DE75D.5070006@rtij.nl>
+From: "Neil Aggarwal" <neil@JAMMConsulting.com>
+Subject: RE: NAT rules for VPN only allowing one user?
+Date: Wed, 30 May 2007 20:07:55 -0500
+Message-ID: <000001c7a320$1fb1b790$dededede@neilhp>
+References: <465E15AB.2070305@aesgi.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <465DE75D.5070006@rtij.nl>
+In-Reply-To: <465E15AB.2070305@aesgi.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,8 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
+Gregory:
+
+I originally installed CentOS 4.4, I have
+done some yum updates since the install.
+
+I just ran another yum update and it tells
+me there is a 2.6.9-55.EL kernel available.
+I started the update just now.
+
+Will that kernel have the fix for the GRE stream
+in it?
+
+Thanks,
+	Neil
+
+--
+Neil Aggarwal, (832)245-7314, www.JAMMConsulting.com
+FREE! Eliminate junk email and reclaim your inbox.
+Visit http://www.spammilter.com for details.
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Gregory Carter
+Sent: Wednesday, May 30, 2007 7:24 PM
+To: netfilter@lists.netfilter.org
+Subject: Re: NAT rules for VPN only allowing one user?
 
 That is correct.
 
