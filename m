@@ -1,9 +1,9 @@
-From: amna bilal <bilal.amna@yahoo.com>
-Subject: Need to get source and destination IP?
-Date: Thu, 31 May 2007 04:18:01 -0700 (PDT)
-Message-ID: <731014.57000.qm@web57411.mail.re1.yahoo.com>
+From: Bgs <bgs@bgs.hu>
+Subject: syn DDoS attack solution
+Date: Thu, 31 May 2007 18:19:14 +0200
+Message-ID: <465EF582.4070904@bgs.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,25 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
 
-I would like to know if there is any way of getting
-the source and the destination IP of the packet when
-it has been sent of to the userspace Queue by
-iptables. i.e. is there any way of determining the
-source and destination ip of the packet in userspace,
-i mean can I access it in userspace somehow. Any other
-way besides the logs.
-
-Thanks
-Amna Bilal
+  Hi all,
 
 
-       
-____________________________________________________________________________________Be a better Globetrotter. Get better travel answers from someone who knows. Yahoo! Answers - Check it out.
-http://answers.yahoo.com/dir/?link=list&sid=396545469
+  We recently got under a low traffic botnet DDoS attack. All attacker 
+nodes opened a single tcp session (just SYN part) and then did nothing. 
+This rules out rate limiting solutions and syncookie doesn't help 
+either. (Thousands of attacking nodes).
 
+
+  I'd like to know you thoughts about two possible approaches in solving 
+this:
+
+- syn proxy: already used for example by Cisco. The router handles the 
+first part of the connection and only routes packets to the client if 
+the connection seems good. (Good against single/spoofed incoming SYNs 
+but may be used to wait for the first packet with actual data as well).
+- Implement a conntrack solution that gives a timestamp to the 
+connection. Then this timestamp could be used to drop the connection if 
+no data arrives within a configured time limit (good for open inactive 
+connections only). Of course appropriate close toward the local client 
+has to be done as well.
+
+What's your opinion?
+
+Bye
+Bgs
 
