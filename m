@@ -1,12 +1,13 @@
-From: "Tony.Ho" <support@idccenter.cn>
-Subject: Re: syn DDoS attack solution
-Date: Fri, 01 Jun 2007 09:20:26 +0800
-Message-ID: <465F745A.7040603@idccenter.cn>
-References: <465EF582.4070904@bgs.hu> <015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>
+From: Ernest Davnis <mark@renton.name>
+Subject: Re: -m owner and INPUT chain
+Date: Fri, 1 Jun 2007 11:22:02 +0400
+Message-ID: <20070601072202.GA36920@diabolo.evga.ru>
+References: <20070528174650.GA50672@diabolo.evga.ru>
+	<465B2A25.7030502@intrace.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>
+Content-Disposition: inline
+In-Reply-To: <465B2A25.7030502@intrace.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,48 +18,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ric Messier <kilroy@WasHere.COM>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Fernando R. Durso" <fernando@intrace.com.br>
+Cc: netfilter@lists.netfilter.org
 
-I have a thought about this.
-I can use ipset and iptables on a bridge firewall.
+On Mon, May 28, 2007 at 04:14:45PM -0300, Fernando R. Durso wrote:
+> Have you tried "iptables -D OUTPUT -o lo -m owner --uid-owner 500 -p all 
+> -j ACCEPT" ????
+> I mean specifying the output interface as lo with -o lo ????
 
-ipt_recent module compares the SYN package and ACK package's TTL. If not 
-match then drop.
-ipt_hashlimit module stores the concurrent connections. When the 
-connections exceed the threshold iptables would store the IP in ipset.
-ipset's iptree modules can store the IP in a fixed time. When a IP which 
-is in the iptree's list comes the firewall iptables would TARPIT its tcp 
-connection.
+Sorry, I mistyped.
+Of cause you need to use -A.
 
-Is this setting effective?
+The problem with the input traff is still not solved. Do you have any
+ideas? Thanks.
 
+ 
+> Ernest Davnis escreveu:
+> >Hi,
+> >
+> >I've got a problem which i can't solve with the help of Linux. The
+> >problem is such:
+> >there's a server with many shell accounts, i have to check what
+> >incoming/outcoming traffic generate these users.
+> >No problem with outgoing traff:
+> >
+> >iptables -D OUTPUT -m owner --uid-owner 500 -p all -j ACCEPT
+> >but it's said in man iptables:
+> >
+> >owner
+> >This module attempts to match various characteristics of the
+> >packet creator,  for  locally-generated  packets.
+> >It  is  only  valid  in the OUTPUT chain, and even this
+> >some packets (such as ICMP ping responses) may have no
+> >owner, and hence never match.
+> >
+> >It means that I can't use owner module for INPUT chain
+> >I've also found a patch:
+> >http://svn.netfilter.org/cgi-bin/viewcvs.cgi/branches/patch-o-matic-ng/linux-2.6.11/owner-socketlookup/
+> >but i can't make it work on linux kernel 2.6.20+, as there's a
+> >difference in tcp.h, udp.h and etc or anything else that
+> >I don't know.
+> >
+> >Using FreeBSD to solve such a problem is the following:
+> ># ipfw add ip from any to me in uid 500
+> ># ipfw add ip from me to any out uid 500
+> >
+> >Can I make smth similar on Linux?
+> >
+> >  
 
-Ric Messier wrote:
-> Bgs writes:
->   
->>   We recently got under a low traffic botnet DDoS attack. All attacker
->> nodes opened a single tcp session (just SYN part) and then did nothing.
->> This rules out rate limiting solutions and syncookie doesn't help
->> either. (Thousands of attacking nodes).
->>
->>     
->
-> This is simply a SYN flood attack. It may or may not be a botnet (though
-> saying botnet makes it sound sexier :-) ). A decent SYN flood attack tool
-> would randomize the source address anyway. 
->
-> You should try reading the following as a starting point:
->
-> http://www.securityfocus.com/infocus/1729
->
-> Your second suggestion has been implemented in the TCP/IP stack forever. The
-> article above gives guidance on how to tune it in a Linux implementation.
->
-> Ric
->
->
->
->   
-
+-- 
+BRGDS. Ernest Davnis.
 
