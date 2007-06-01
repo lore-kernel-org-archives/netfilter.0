@@ -1,13 +1,12 @@
-From: Ernest Davnis <mark@renton.name>
-Subject: Re: -m owner and INPUT chain
-Date: Fri, 1 Jun 2007 11:22:02 +0400
-Message-ID: <20070601072202.GA36920@diabolo.evga.ru>
-References: <20070528174650.GA50672@diabolo.evga.ru>
-	<465B2A25.7030502@intrace.com.br>
+From: Bgs <bgs@bgs.hu>
+Subject: Re: syn DDoS attack solution
+Date: Fri, 01 Jun 2007 11:44:34 +0200
+Message-ID: <465FEA82.709@bgs.hu>
+References: <465EF582.4070904@bgs.hu> <015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <465B2A25.7030502@intrace.com.br>
+In-Reply-To: <015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,57 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Fernando R. Durso" <fernando@intrace.com.br>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ric Messier <kilroy@WasHere.COM>
 Cc: netfilter@lists.netfilter.org
 
-On Mon, May 28, 2007 at 04:14:45PM -0300, Fernando R. Durso wrote:
-> Have you tried "iptables -D OUTPUT -o lo -m owner --uid-owner 500 -p all 
-> -j ACCEPT" ????
-> I mean specifying the output interface as lo with -o lo ????
 
-Sorry, I mistyped.
-Of cause you need to use -A.
+> This is simply a SYN flood attack. It may or may not be a botnet (though
+> saying botnet makes it sound sexier :-) ). A decent SYN flood attack tool
+> would randomize the source address anyway. 
 
-The problem with the input traff is still not solved. Do you have any
-ideas? Thanks.
+Some more info about the attack: All IPs were real IPs otherway the tcp 
+handshake wouldn't have made it. The attacker IPs were also consistent. 
+They also new about the blocked IPs as after a new bunch of blocked IPs 
+we fared OK then they added another bunch new IPs... we played this for 
+quite some time...
 
- 
-> Ernest Davnis escreveu:
-> >Hi,
-> >
-> >I've got a problem which i can't solve with the help of Linux. The
-> >problem is such:
-> >there's a server with many shell accounts, i have to check what
-> >incoming/outcoming traffic generate these users.
-> >No problem with outgoing traff:
-> >
-> >iptables -D OUTPUT -m owner --uid-owner 500 -p all -j ACCEPT
-> >but it's said in man iptables:
-> >
-> >owner
-> >This module attempts to match various characteristics of the
-> >packet creator,  for  locally-generated  packets.
-> >It  is  only  valid  in the OUTPUT chain, and even this
-> >some packets (such as ICMP ping responses) may have no
-> >owner, and hence never match.
-> >
-> >It means that I can't use owner module for INPUT chain
-> >I've also found a patch:
-> >http://svn.netfilter.org/cgi-bin/viewcvs.cgi/branches/patch-o-matic-ng/linux-2.6.11/owner-socketlookup/
-> >but i can't make it work on linux kernel 2.6.20+, as there's a
-> >difference in tcp.h, udp.h and etc or anything else that
-> >I don't know.
-> >
-> >Using FreeBSD to solve such a problem is the following:
-> ># ipfw add ip from any to me in uid 500
-> ># ipfw add ip from me to any out uid 500
-> >
-> >Can I make smth similar on Linux?
-> >
-> >  
+All connections were in the ESTABLISHED state.
 
--- 
-BRGDS. Ernest Davnis.
+> 
+> You should try reading the following as a starting point:
+> 
+> http://www.securityfocus.com/infocus/1729
+> 
+> Your second suggestion has been implemented in the TCP/IP stack forever. The
+> article above gives guidance on how to tune it in a Linux implementation.
+
+That part is about syncookies, backlog queue and half open timeouts. 
+None of them applies here as all connections are legitimate in terms of 
+SYN packets and tcp handshake.
+
+How is the handling of ESTABLISHED connections implemented in the TCP/IP 
+stack?
 
