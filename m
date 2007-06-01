@@ -1,13 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Two NICs, same network...
-Date: Fri, 01 Jun 2007 00:41:03 +0200
-Message-ID: <465F4EFF.9010801@plouf.fr.eu.org>
-References: <e53321d30705081317w3d7e6f5bsb38161f155c883da@mail.gmail.com>	<Pine.LNX.4.63.0705081251200.20281@qynat.qvtvafvgr.pbz>	<e53321d30705081402n2fa7e3c5pcd0ed7baeecebef4@mail.gmail.com>	<4641CC42.2000005@alpha2.com>	<e53321d30705241312l6aee149bp3557f72476940bc@mail.gmail.com>
-	<e53321d30705311516w353ffebbhcc0cacdde6d3fe67@mail.gmail.com>
+From: Robby Workman <netfilter@rlworkman.net>
+Subject: Re: Enabling internal connections to transparently connect via
+ external IP address
+Date: Thu, 31 May 2007 19:09:30 -0500
+Message-ID: <465F63BA.3060101@rlworkman.net>
+References: <BBC99700C9F0FA49A9C6E005863D603107A19C1920@MULTAN.castellan.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e53321d30705311516w353ffebbhcc0cacdde6d3fe67@mail.gmail.com>
+In-Reply-To: <BBC99700C9F0FA49A9C6E005863D603107A19C1920@MULTAN.castellan.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Chris Willis <chris@castellan.net>
+Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>
 
-Hello,
+Chris Willis wrote:
+> Environment:
+> Windows XP laptop machine, part of domain acme.int, IP 192.168.1.150
+> Windows 2003 Server running Exchange 2003 (exchange.acme.int, 192.168.1.10)
+> External Domain: acme.com (T1 line, firewall external IP & MX record mail.acme.com 60.60.60.60)
+> Firewall: PC running Fedora Core 6, IPTables, using FWBuilder to create a ruleset, 2 NICs (eth0 192.168.1.1, eth1 60.60.60.60)
+> 
+> Problem: when a laptop user (works in office and remotely) goes to https://mail.acme.com, it works fine from the outside, but not from the inside.
+> 
+> Goal: when an internal (192.168.1.X) client goes to https://mail.acme.com, the firewall should accept the packets, route them to the exchange box, and then route return packets back to the client.
+> 
+> This works just fine on a netscreen firewall I tested with at the client site (same IP addresses as  linux box above).
 
-semi linux a =E9crit :
->=20
-> Let me ask this question another way - How to I setup my machine to
-> use one interface (eth0) for ALL traffic with the exception of one IP
-> destination/source port (which is on eth1)?
 
-You need to setup a routing policy.
+There's the "dirty" way (IMHO):
+http://iptables-tutorial.frozentux.net/chunkyhtml/x4033.html
 
-> Is this an iptables thing or is it a routing table thing?
+There's the cleaner way (IMHO):
+Have your DNS server setup to serve internal clients the internal
+address of mail.acme.com.
 
-Both.
-
-> Can someone point me in the right direction?
-
-Linux Advanced Routing & Traffic Control (LARTC) HOWTO.
-Chapters 4 & 11.
+RW
 
