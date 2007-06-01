@@ -1,14 +1,13 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: Enabling internal connections to transparently connect via
- external IP address
-Date: Fri, 01 Jun 2007 11:00:59 +0200
-Message-ID: <465FE04B.9060000@rtij.nl>
-References: <BBC99700C9F0FA49A9C6E005863D603107A19C1920@MULTAN.castellan.net>
-	<465F63BA.3060101@rlworkman.net>
+From: Bgs <bgs@bgs.hu>
+Subject: Re: syn DDoS attack solution
+Date: Fri, 01 Jun 2007 17:37:06 +0200
+Message-ID: <46603D22.4020608@bgs.hu>
+References: <465EF582.4070904@bgs.hu> <015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>
+	<465FEA82.709@bgs.hu> <007101c7a45d$bc50e380$34f2aa80$@COM>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <465F63BA.3060101@rlworkman.net>
+In-Reply-To: <007101c7a45d$bc50e380$34f2aa80$@COM>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,37 +19,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Robby Workman <netfilter@rlworkman.net>
-Cc: "'netfilter@lists.netfilter.org'" <netfilter@lists.netfilter.org>, Chris Willis <chris@castellan.net>
+To: Ric Messier <kilroy@WasHere.COM>
+Cc: netfilter@lists.netfilter.org
 
-Robby Workman wrote:
-> Chris Willis wrote:
->   
->> Environment:
->> Windows XP laptop machine, part of domain acme.int, IP 192.168.1.150
->> Windows 2003 Server running Exchange 2003 (exchange.acme.int, 192.168.1.10)
->> External Domain: acme.com (T1 line, firewall external IP & MX record mail.acme.com 60.60.60.60)
->> Firewall: PC running Fedora Core 6, IPTables, using FWBuilder to create a ruleset, 2 NICs (eth0 192.168.1.1, eth1 60.60.60.60)
->>
->> Problem: when a laptop user (works in office and remotely) goes to https://mail.acme.com, it works fine from the outside, but not from the inside.
->>
->> Goal: when an internal (192.168.1.X) client goes to https://mail.acme.com, the firewall should accept the packets, route them to the exchange box, and then route return packets back to the client.
->>
->> This works just fine on a netscreen firewall I tested with at the client site (same IP addresses as  linux box above).
->>     
->
->
-> There's the "dirty" way (IMHO):
-> http://iptables-tutorial.frozentux.net/chunkyhtml/x4033.html
->
-> There's the cleaner way (IMHO):
-> Have your DNS server setup to serve internal clients the internal
-> address of mail.acme.com.
->   
 
-Or even cleaner, set up the Exchange server in a DMZ (you still have to 
-do the split-dns unless you get multiple IPAs).
+Sorry if my first mail was misleading, I only slept about 5-6 hours this 
+week in all :/
 
-M4
+>> How is the handling of ESTABLISHED connections implemented in the
+>> TCP/IP
+>> stack?
+> 
+> There is likely a timer somewhere to time out connections that are just
+> hanging around doing nothing. You'd have to dig around to find it and turn
+> it down. You could also use something like tcpkill to get rid of them for
+> you. 
+
+What I'd like to achieve is different from the normal tcp timeouts. I 
+only want a different (quite short in terms of everyday tcp traffic) 
+timeout for connections that have not sent any data after the tcp 
+handshake. The connections that did any traffic would become normal or 
+'legitimate' and the usual tcp timeouts would apply.
+
+
+About the netlink approach, here is what I was thinking about. I have 
+never coded in the netlink/netfilter space so I'm completely in the dark 
+if this can be done at all or not:
+
+Client sends SYN to server. It arrives to the firewall. An info is sent 
+to the userspace portion and the SYN packet is DROPed. The user space 
+program logs the SYN packet and sends out an appropriately constructed 
+SYN/ACK to the client. Client sends the ACK. The info is sent to util 
+which logs the packet and puts the connection in allowed state as it 
+knows from it's own db that the tcp handshake was ok. At this point it 
+either starts the next phase or waits for the first data packet and 
+starts the next phase then (allowing the data packet after it). The next 
+phase is: userland replays the SYN handshake with the server thus making 
+it receptive to the tcp stream to come. Through netlinks firewall part 
+it would allow all subsequent traffic.
+
+The main point is almost identical to the syn proxy thingie in bsd and 
+ios, the main difference would be the ability to add some policy about 
+when and how to let the traffic through to the server. For example with 
+delayed replay, connections in ESTABLISHED state but without data would 
+be dropped from the replay db stopping the culprit at the firewall.
+
+Just a thought... can it be done (technically) or should I simply go to 
+bed :)
+
+Regards
+Bgs
+
+
 
 
