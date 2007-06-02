@@ -1,10 +1,16 @@
-From: t@tomdeb.org
-Subject: conntrack-tools fails to compile
-Date: Sat, 2 Jun 2007 10:32:48 +0100
-Message-ID: <20070602103248.62320224@snoopy>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: How to match protocol 0
+Date: Sat, 2 Jun 2007 20:49:37 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0706022042100.5076@yvahk01.tjqt.qr>
+References: <20070428220206.GA26272@linuxace.com>
+	<463524E7.60107@netfilter.org>
+	<Pine.LNX.4.61.0704301038100.22744@yvahk01.tjqt.qr>
+	<20070430171317.GA6904@linuxace.com>
+	<Pine.LNX.4.61.0704301924021.29151@yvahk01.tjqt.qr>
+	<20070430173654.GB6904@linuxace.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <20070430173654.GB6904@linuxace.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,62 +21,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter Mailing List <netfilter@lists.netfilter.org>, Netfilter Developer Mailing List <netfilter-devel@lists.netfilter.org>
+Cc: Phil Oester <kernel@linuxace.com>
 
-Hi,
-
-I am trying to compile conntrack-tools on centos5. After
-successfully built and installed rpms of libnfnetlink and
-libnetfilter_conntrack, I get the following error when making
-conntrack_tools:
-
-In file included from /usr/include/sys/uio.h:24,
-                 from /usr/include/sys/socket.h:27,
-                 from /usr/include/libnfnetlink/libnfnetlink.h:19,
-                 from proxy.c:19:
-/usr/include/sys/types.h:62: error: conflicting types for 'dev_t'
-/usr/include/linux/types.h:13: error: previous declaration of 'dev_t'
-was here /usr/include/sys/types.h:67: error: conflicting types for
-'gid_t' /usr/include/linux/types.h:27: error: previous declaration of
-'gid_t' was here /usr/include/sys/types.h:72: error: conflicting types
-for 'mode_t' /usr/include/linux/types.h:15: error: previous declaration
-of 'mode_t' was here /usr/include/sys/types.h:77: error: conflicting
-types for 'nlink_t' /usr/include/linux/types.h:16: error: previous
-declaration of 'nlink_t' was here /usr/include/sys/types.h:82: error:
-conflicting types for 'uid_t' /usr/include/linux/types.h:26: error:
-previous declaration of 'uid_t' was here In file included
-from /usr/include/sys/types.h:133, from /usr/include/sys/uio.h:24,
-                 from /usr/include/sys/socket.h:27,
-                 from /usr/include/libnfnetlink/libnfnetlink.h:19,
-                 from proxy.c:19:
-/usr/include/time.h:105: error: conflicting types for 'timer_t'
-/usr/include/linux/types.h:22: error: previous declaration of 'timer_t'
-was here In file included from /usr/include/sys/types.h:220,
-                 from /usr/include/sys/uio.h:24,
-                 from /usr/include/sys/socket.h:27,
-                 from /usr/include/libnfnetlink/libnfnetlink.h:19,
-                 from proxy.c:19:
-/usr/include/sys/select.h:78: error: conflicting types for 'fd_set'
-/usr/include/linux/types.h:12: error: previous declaration of 'fd_set'
-was here In file included from /usr/include/sys/uio.h:24,
-                 from /usr/include/sys/socket.h:27,
-                 from /usr/include/libnfnetlink/libnfnetlink.h:19,
-                 from proxy.c:19:
-/usr/include/sys/types.h:235: error: conflicting types for 'blkcnt_t'
-/usr/include/linux/types.h:114: error: previous declaration of
-'blkcnt_t' was
-he                                                           re
-make[1]: *** [proxy.o] Error 1 make[1]: Leaving directory
-`/home/t/conntrack-tools/src' make: *** [all-recursive] Error 1
+Hello all,
 
 
-I get the same results on 0.9.3 and the svn trunk 
+regarding your questions in
+http://lists.netfilter.org/pipermail/netfilter/2007-April/068496.html 
+and the thread
+http://lists.netfilter.org/pipermail/netfilter-devel/2007-April/027675.html
+
+I think it's actually quite easy. How about:
+
+	iptables -m u32 --u32 "8&0x0F00=0"
+
+This takes bytes 8+4 of a packet (bytes 8,9,10,11), ANDs it with 0x0F00, 
+so as to get only byte 9 (which is the IPv4 field for the Layer4 
+protocol) and see if it is 0.
+
+(Yes, we would have to use a shift before comparing, but since comparing 
+for protocol zero, it does not matter.)
+
+Ok, everyone got that? :)
 
 
-any help would be greatly appreciated.
-
-Tom
-
-any 
+	Jan
+-- 
 
