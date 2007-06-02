@@ -1,14 +1,10 @@
-From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Subject: Re: syn DDoS attack solution
-Date: Fri, 1 Jun 2007 20:09:10 -0300
-Message-ID: <20070601200910.0800d23d@babalu.inexo.com.br>
-References: <465EF582.4070904@bgs.hu> <015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>
-	<465FEA82.709@bgs.hu> <007101c7a45d$bc50e380$34f2aa80$@COM>
-	<466090CA.2050806@rtij.nl>
+From: t@tomdeb.org
+Subject: conntrack-tools fails to compile
+Date: Sat, 2 Jun 2007 10:32:48 +0100
+Message-ID: <20070602103248.62320224@snoopy>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <466090CA.2050806@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,29 +18,59 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Fri, 01 Jun 2007 23:34:02 +0200
-Martijn Lievaart <m@rtij.nl> wrote:
+Hi,
 
-> > Then your original description was incorrect or at least inadequate. It has
-> > nothing to do with SYN as originally suggested since an ESTABLISHED
-> > connection has blown past SYN, through SYN/ACK and by ACK. It has completed
-> > the TCP handshake, as you note above. A SYN attack/flood would stop after
-> > sending the initial SYN and leave the connection half-open to exhaust the
-> > half-open buffers.
-> >   
-> 
-> An connection is in the ESTABLISHED state once a packet has been seen. 
-> So once the SYN is seen, the state is ESTABLISHED.
+I am trying to compile conntrack-tools on centos5. After
+successfully built and installed rpms of libnfnetlink and
+libnetfilter_conntrack, I get the following error when making
+conntrack_tools:
 
-I think you meant "So once the SYN is seen, the state is NEW".
+In file included from /usr/include/sys/uio.h:24,
+                 from /usr/include/sys/socket.h:27,
+                 from /usr/include/libnfnetlink/libnfnetlink.h:19,
+                 from proxy.c:19:
+/usr/include/sys/types.h:62: error: conflicting types for 'dev_t'
+/usr/include/linux/types.h:13: error: previous declaration of 'dev_t'
+was here /usr/include/sys/types.h:67: error: conflicting types for
+'gid_t' /usr/include/linux/types.h:27: error: previous declaration of
+'gid_t' was here /usr/include/sys/types.h:72: error: conflicting types
+for 'mode_t' /usr/include/linux/types.h:15: error: previous declaration
+of 'mode_t' was here /usr/include/sys/types.h:77: error: conflicting
+types for 'nlink_t' /usr/include/linux/types.h:16: error: previous
+declaration of 'nlink_t' was here /usr/include/sys/types.h:82: error:
+conflicting types for 'uid_t' /usr/include/linux/types.h:26: error:
+previous declaration of 'uid_t' was here In file included
+from /usr/include/sys/types.h:133, from /usr/include/sys/uio.h:24,
+                 from /usr/include/sys/socket.h:27,
+                 from /usr/include/libnfnetlink/libnfnetlink.h:19,
+                 from proxy.c:19:
+/usr/include/time.h:105: error: conflicting types for 'timer_t'
+/usr/include/linux/types.h:22: error: previous declaration of 'timer_t'
+was here In file included from /usr/include/sys/types.h:220,
+                 from /usr/include/sys/uio.h:24,
+                 from /usr/include/sys/socket.h:27,
+                 from /usr/include/libnfnetlink/libnfnetlink.h:19,
+                 from proxy.c:19:
+/usr/include/sys/select.h:78: error: conflicting types for 'fd_set'
+/usr/include/linux/types.h:12: error: previous declaration of 'fd_set'
+was here In file included from /usr/include/sys/uio.h:24,
+                 from /usr/include/sys/socket.h:27,
+                 from /usr/include/libnfnetlink/libnfnetlink.h:19,
+                 from proxy.c:19:
+/usr/include/sys/types.h:235: error: conflicting types for 'blkcnt_t'
+/usr/include/linux/types.h:114: error: previous declaration of
+'blkcnt_t' was
+he                                                           re
+make[1]: *** [proxy.o] Error 1 make[1]: Leaving directory
+`/home/t/conntrack-tools/src' make: *** [all-recursive] Error 1
 
-The state will change to ESTABLISHED as soon as netfiletr sees the SYN+ACK
-response.
 
-My 2 cents.
-Cheers.
-
-Ethy
+I get the same results on 0.9.3 and the svn trunk 
 
 
+any help would be greatly appreciated.
+
+Tom
+
+any 
 
