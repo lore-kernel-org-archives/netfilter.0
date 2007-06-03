@@ -1,51 +1,41 @@
-From: Valdis.Kletnieks@vt.edu
-Subject: Re: [PATCH 0/2] xt_u32 - match arbitrary bits and bytes of a packet
-Date: Sun, 03 Jun 2007 01:07:27 -0400
-Message-ID: <18087.1180847247@turing-police.cc.vt.edu>
-References: <Pine.LNX.4.61.0706022322340.28357@yvahk01.tjqt.qr>
+From: Gardner <gbickford@gmail.com>
+Subject: Enforce Per User IP Traffic Quota
+Date: Sun, 3 Jun 2007 18:55:04 +1200
+Message-ID: <980676420706022355x3d0e9cfap2be074cef08396b8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1180847247_3873P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1763994AbXFCFHt@vger.kernel.org>
-In-Reply-To: Your message of "Sat, 02 Jun 2007 23:46:46 +0200."
-             <Pine.LNX.4.61.0706022322340.28357@yvahk01.tjqt.qr>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=Z4dtUoSFl2vHd7k4CdnqL/yv4QOBTg2g6bX6ujV3zEGKCF9pdIDf44kFmaz5TuPTDSSeA+DHXOdUPeuyaDo/TvHX3W/SoLJNudlyE/WStWbYz8vHXnzPgv1F+Css3yw56pmlgbZGV5yAUzoWQEwwI1mHLp+DHaVvkoDwY6m853A=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>, Netfilter Developer Mailing List <netfilter-devel@lists.netfilter.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
---==_Exmh_1180847247_3873P
-Content-Type: text/plain; charset=us-ascii
+Hello,
+  I have been searching for a way to limit certain users to a certain
+amount of IP traffic per month. So far I have found the quota
+extension but it seems very simple in the way that it tracks traffic.
+I would like to be able to save the quota data to disk every hour or
+so in case the machine goes down and automatically add a filter. I am
+also concerned that inbound traffic will not match the owner filter.
 
-On Sat, 02 Jun 2007 23:46:46 +0200, Jan Engelhardt said:
+Am I attempting to use the incorrect tools? What is the best way to
+enforce a per user ip traffic quota?
 
-> along comes xt_u32, a revamped ipt_u32,
+Thank you,
+  Gardner
 
-+1 for doing this - I've been dragging along a local ipt_u32 patch for a while,
-and been wishing it had ipv6 support.
+-- 
+http://psychicblast.com/gardner-public-key.txt
 
->     *	Reduced the buffer size to 17 KB. I think that is quite ok since 
-> 	I added an overflow check,  SHOULD THERE BE ANY device with an 
-> 	MTU larger than our loopback masterpiece (16436 bytes).
-> 
-> 	Are there such devices that support Megasuperjumboframes?
-
-IP over Infiniband? I think those have some outrageous MTU?  Personally,
-I wouldn't need it for anything bigger than 9K ethernet jumbograms, but
-that one's a decision for others.
-
-
---==_Exmh_1180847247_3873P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.7 (GNU/Linux)
-Comment: Exmh version 2.5 07/13/2001
-
-iD8DBQFGYkyPcC3lWbTT17ARAgUrAJ9uKK1dIGLxjHTLVbINo5VkfBb/4wCfVpIM
-KWETgfVCEUrItMy08VcThOc=
-=XZFc
------END PGP SIGNATURE-----
-
---==_Exmh_1180847247_3873P--
