@@ -1,42 +1,41 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Re: Enforce Per User IP Traffic Quota
-Date: Sun, 3 Jun 2007 09:23:32 +0200
-Message-ID: <20070603072332.GB6442@torres.zugschlus.de>
-References: <980676420706022355x3d0e9cfap2be074cef08396b8@mail.gmail.com>
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Subject: Re: [PATCH 0/2] xt_u32 - match arbitrary bits and bytes of a packet
+Date: Sun, 3 Jun 2007 10:20:13 +0200 (MEST)
+Message-ID: <Pine.LNX.4.61.0706031007320.10578@yvahk01.tjqt.qr>
+References: <Pine.LNX.4.61.0706022322340.28357@yvahk01.tjqt.qr>
+ <18087.1180847247@turing-police.cc.vt.edu>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <980676420706022355x3d0e9cfap2be074cef08396b8@mail.gmail.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1763392AbXFCIV5@vger.kernel.org>
+In-Reply-To: <18087.1180847247@turing-police.cc.vt.edu>
+Sender: linux-kernel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Valdis.Kletnieks@vt.edu
+Cc: Netfilter Mailing List <netfilter@lists.netfilter.org>, Netfilter Developer Mailing List <netfilter-devel@lists.netfilter.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 
-On Sun, Jun 03, 2007 at 06:55:04PM +1200, Gardner wrote:
->  I have been searching for a way to limit certain users to a certain
-> amount of IP traffic per month.
 
-You need to first find out how you plan to securely _identify_ your
-users to prevent them from stealing each others traffic. Depending on
-which method of identification you choose, you may have means to
-impose the traffic limit at a place where it is easier to impose than
-from within netfilter.
+On Jun 3 2007 01:07, Valdis.Kletnieks@vt.edu wrote:
+>On Sat, 02 Jun 2007 23:46:46 +0200, Jan Engelhardt said:
+>
+>> along comes xt_u32, a revamped ipt_u32,
+>
+>+1 for doing this - I've been dragging along a local ipt_u32 patch for a while,
+>and been wishing it had ipv6 support.
+>
+>>     *	Reduced the buffer size to 17 KB. I think that is quite ok since 
+>> 	I added an overflow check,  SHOULD THERE BE ANY device with an 
+>> 	MTU larger than our loopback masterpiece (16436 bytes).
+>> 
+>> 	Are there such devices that support Megasuperjumboframes?
+>
+>IP over Infiniband? I think those have some outrageous MTU?  Personally,
+>I wouldn't need it for anything bigger than 9K ethernet jumbograms, but
+>that one's a decision for others.
 
-Greetings
-Marc
+Can you find out? For such supersize packets, I'd like to switch to
+kmalloc/vmalloc rather than keeping a big buffer in the .bss.
 
+
+	Jan
 -- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 3221 2323190
-
