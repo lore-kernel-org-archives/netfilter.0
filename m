@@ -1,13 +1,13 @@
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+From: Andrew Beverley <andy@andybev.com>
 Subject: Re: [PATCH 1/2] xt_connlimit (kernel) - connection limiting
-Date: Sun, 3 Jun 2007 14:35:46 +0200 (MEST)
-Message-ID: <Pine.LNX.4.61.0706031434530.10578@yvahk01.tjqt.qr>
+Date: Sun, 03 Jun 2007 18:00:22 +0100
+Message-ID: <1180890022.6601.6.camel@andybev>
 References: <Pine.LNX.4.61.0706031248290.10578@yvahk01.tjqt.qr>
 	<Pine.LNX.4.61.0706031312450.10578@yvahk01.tjqt.qr>
-	<200706031146.l53BkuaZ011945@toshiba.co.jp>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <200706031146.l53BkuaZ011945@toshiba.co.jp>
+In-Reply-To: <Pine.LNX.4.61.0706031312450.10578@yvahk01.tjqt.qr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
 	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-devel-bounces@lists.netfilter.org
 Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: Netfilter Developer Mailing List <netfilter-devel@lists.netfilter.org>, Netfilter Mailing List <netfilter@lists.netfilter.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 
-Hello,
+On Sun, 2007-06-03 at 13:12 +0200, Jan Engelhardt wrote:
+> Adds the connlimit match that has been in POM-NG for a long time.
+> 
+>     *	works with 2.6.22, xtables'ified and all that
+> 
+>     *	will request nf_conntrack_ipv4 upon load
+> 	(otherwise it hotdrops every packet - a glitch that goes back
+> 	to at least 2.6.20.2)
 
->From: Jan Engelhardt <jengelh@linux01.gwdg.de>
->Date: Sun, 3 Jun 2007 13:12:55 +0200 (MEST)
->
->> +static int __init xt_connlimit_init(void)
->> +{
->> +	need_conntrack_ipv4();
->> +	return xt_register_match(&xt_connlimit_reg);
->> +}
->
->You can use nf_ct_l3proto_try_module_get() instead of introducing
->need_conntrack_ipv4(). Please refer xt_state.c and xt_conntrack.c as
->example.
+Excellent! This has been at the back of my mind for a while.
 
-Thank you for this hint. I will add it and post updates versions
-of the patch(es) when I am done with all.
-
+Is there any chance of getting UDP flows added as well as TCP
+connections? I use connlimit for detecting p2p software, but some p2p
+software now uses UDP instead.
 
 Thanks,
-	Jan
--- 
+
+Andy Beverley
+
+
 
