@@ -1,14 +1,16 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Restricting applications/protocols to use specific ports using
- iptables, is this possible
-Date: Mon, 04 Jun 2007 16:18:08 +0200
-Message-ID: <46641F20.1080402@freemail.hu>
-References: <1814bfe70706040437i34b282d8ocf15b698160e05b5@mail.gmail.com>	<20070604120611.GC28171@torres.zugschlus.de>
-	<1814bfe70706040539x61ca3113rb8679da3cc29b304@mail.gmail.com>
+From: "Ric Messier" <kilroy@WasHere.COM>
+Subject: RE: syn DDoS attack solution
+Date: Mon, 4 Jun 2007 08:22:05 -0600
+Message-ID: <00f101c7a6b3$bac44450$304cccf0$@COM>
+References: <465EF582.4070904@bgs.hu>
+	<015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>	<465FEA82.709@bgs.hu>
+	<007101c7a45d$bc50e380$34f2aa80$@COM>	<46603D22.4020608@bgs.hu>
+	<Pine.LNX.4.64.0706021446290.18235@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1814bfe70706040539x61ca3113rb8679da3cc29b304@mail.gmail.com>
+In-Reply-To: <Pine.LNX.4.64.0706021446290.18235@darkstar.sysinfo.com>
+Content-Language: en-us
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,68 +21,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Elvir Kuric <omasnjak@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: "'R. DuFresne'" <dufresne@sysinfo.com>, 'Bgs' <bgs@bgs.hu>
 Cc: netfilter@lists.netfilter.org
 
-Elvir Kuric =EDrta:
-> On 6/4/07, Marc Haber <mh+netfilter@zugschlus.de> wrote:
->> On Mon, Jun 04, 2007 at 01:37:07PM +0200, Elvir Kuric wrote:
->> > I am interested in one thing, is possible using iptables software
->> > limit particular application/protocol to use/bind to particular port=
-s.
->>
-I think this is application and not netfilter specific. You may only be=20
-able to use the owner match.
-But if it is good for you ??? I do not know !!!! :D
-You can DROP/REJECT packets that came from an disabled port/application=20
-but you can not disable the bind function on a specific port to an=20
-application.
->> Why do you want to do that?
->
-> :) I want to control which ports are open in output chain. Testing,=20
-> exploring.
->
-> I know it is not important which ports are open in output chain,
-> usually putting output policy to accept.
->
-AFAIK, this has only meaning in the lower range of ports... (0-1023)
->>
->> > For example I want to send all reqestes from my machine using ports =
-I
->> > specify, not random ones,
->>
->> Why?
->>
->> >  or accept ping echo-replay on specific ports.
->>
->> Pleas get your facts straight. ICMP does not have ports.
->
-> ICMP was just example, first on my mind in that moment :)
-TCP,UDP... Many things to think about :D
->
-> Regards
->
-> Elvir Kuric
->>
->> Greetings
->> Marc
->>
->> --=20
->> ----------------------------------------------------------------------=
--------=20
->>
->> Marc Haber         | "I don't trust Computers. They | Mailadresse im=20
->> Header
->> Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621=20
->> 72739834
->> Nordisch by Nature |  How to make an American Quilt | Fax: *49 3221=20
->> 2323190
->>
->>
->
->
-Swifty
+
+R. DuFresne writes:
+> There have been and will continue to be some
+> rather decently funded companies with some fairly decent pipes wiped
+> out
+> of business or their internet presence closed up due to some of these
+> kinds of attacks over extended periods of time.  Goverments across the
+> globe have had internet services disrupted for extended periods.
+> Microsoft has had to relocate servers to new net/ip addresses to divert
+> the flow from such attacks and stay somewhat online...
+> 
+
+I won't even tell you what we ended up having to do to get the first large,
+commercial DDoS targets back online (Stacheldraht, anyone). The great thing
+about DoS attacks is that they tend to be self-propagating. In order to get
+them to go away, you generally end up doing things that kills legitimate
+connections. Just a casualty of war. Either that or you ride them out.
+Invariably, you have to go upstream to get help in stopping them if they are
+worth noticing.
+
+Ric
 
 
 
