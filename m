@@ -1,11 +1,15 @@
-From: "Richard Hauswald" <richard.hauswald@gmx.de>
-Subject: problem matching marked packets in nat PREROUTING chain
-Date: Mon, 04 Jun 2007 13:27:04 +0200
-Message-ID: <20070604112704.44000@gmx.net>
+From: "Elvir Kuric" <omasnjak@gmail.com>
+Subject: Restricting applications/protocols to use specific ports using
+	iptables, is this possible
+Date: Mon, 4 Jun 2007 13:37:07 +0200
+Message-ID: <1814bfe70706040437i34b282d8ocf15b698160e05b5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=XnGMyyypnUTRhEQdE7vfNV9qh9KcLZzj8L85NtaRuHuyYx+QxW65A1E84g35GTltflA3IKJXTekqibs33QIXwRZ8eSuWyeowVALT5TwH25cxS+KU6sjzIYyrIE564QIckh/XetYfgvh5SrOJvR0/yN0bZ3E/Q+P/3MU0soM/EbI=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,57 +20,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello folks,
-i'm trying to do the following:
+Hi all,
 
-mangle - PREROUTING : marking packets with 23 containing a string "formula1"
-nat_PREROUTING: matching packets marked with 23 and Log them
+I am interested in one thing, is possible using iptables software
+limit particular application/protocol to use/bind to particular ports.
+For example I want to send all reqestes from my machine using ports I
+specify, not random ones, or accept ping echo-replay on specific
+ports.
 
-I used the following commands:
-iptables -t mangle -A PREROUTING -m string --string formula1 --algo kmp -j MARK --set-mark 23
-iptables -t nat -I PREROUTING -p tcp -m mark --mark 23 -j LOG
+Any idea or hint is welcome
 
-For debug purpose i added the following rule to the mangle PREROUTING
-iptables -t mangle -A PREROUTING -p tcp -m mark --mark 23 -j LOG
+Best wishes,
 
-then i send the packets to the network interface and used the following commands to check if the rules are working correctly:
-iptables -t mangle -vnL:
-
-Chain PREROUTING (policy ACCEPT 557K packets, 326M bytes)
- pkts bytes target     prot opt in     out     source               destination
-    1   482 MARK       0    --  *      *       0.0.0.0/0            0.0.0.0/0           STRING match "formula1" ALGO name kmp TO 65535MARK set 0x17
-    1   241 LOG        tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           MARK match 0x17 LOG flags 0 level 4
-
-Chain INPUT (policy ACCEPT 12380 packets, 1786K bytes)
- pkts bytes target     prot opt in     out     source               destination
-
-Chain FORWARD (policy ACCEPT 544K packets, 325M bytes)
- pkts bytes target     prot opt in     out     source               destination
-
-Chain OUTPUT (policy ACCEPT 11765 packets, 1841K bytes)
- pkts bytes target     prot opt in     out     source               destination
-
-Chain POSTROUTING (policy ACCEPT 554K packets, 326M bytes)
- pkts bytes target     prot opt in     out     source               destination
-
-Chain PREROUTING (policy ACCEPT 3707 packets, 424K bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 LOG        tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           MARK match 0x17 LOG flags 0 level 4
-
-Chain POSTROUTING (policy ACCEPT 2224 packets, 294K bytes)
- pkts bytes target     prot opt in     out     source               destination
-
-Chain OUTPUT (policy ACCEPT 2284 packets, 188K bytes)
- pkts bytes target     prot opt in     out     source               destination
-
-
-My question is now why doas the rule placed in the mangle matches the mark and the same one in nat doas not?
-
-Thanks a lot,
-Richard
--- 
-GMX FreeMail: 1 GB Postfach, 5 E-Mail-Adressen, 10 Free SMS.
-Alle Infos und kostenlose Anmeldung: http://www.gmx.net/de/go/freemail
+Elvir Kuric
 
