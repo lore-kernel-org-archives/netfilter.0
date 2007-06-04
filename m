@@ -1,7 +1,7 @@
 From: "Richard Hauswald" <richard.hauswald@gmx.de>
 Subject: problem matching marked packets in nat PREROUTING chain
-Date: Mon, 04 Jun 2007 13:29:59 +0200
-Message-ID: <20070604112959.44020@gmx.net>
+Date: Mon, 04 Jun 2007 13:27:04 +0200
+Message-ID: <20070604112704.44000@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
