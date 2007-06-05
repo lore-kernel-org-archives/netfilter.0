@@ -1,15 +1,14 @@
-From: Steven M Campbell <Netfilter@SCampbell.net>
-Subject: Re: ..prevention, was: syn DDoS attack solution
-Date: Tue, 05 Jun 2007 11:40:36 -0400
-Message-ID: <030f37e8000023b8@intmail01.analysts.com>
-References: <5C9E8CCEEB81ED498AC0C3B0054704F3029B6DE0@webmail.latis.com>	<46651F04.9020709@bgs.hu>
-	<46657048.4040600@SCampbell.net>
-	<20070605172248.5a156549.arnt@c2i.net>
+From: jwlargent <jwlargent@vlsmaps.com>
+Subject: Re: Restricting applications/protocols to use specific ports using
+ iptables, is this possible
+Date: Tue, 05 Jun 2007 11:00:30 -0500
+Message-ID: <4665889E.2030201@vlsmaps.com>
+References: <1814bfe70706040437i34b282d8ocf15b698160e05b5@mail.gmail.com>	<20070604120611.GC28171@torres.zugschlus.de>
+	<1814bfe70706040539x61ca3113rb8679da3cc29b304@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Message-ID: <466583F4.8080107@SCampbell.net>
-In-Reply-To: <20070605172248.5a156549.arnt@c2i.net>
+In-Reply-To: <1814bfe70706040539x61ca3113rb8679da3cc29b304@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,41 +19,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Arnt Karlsen <arnt@c2i.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Elvir Kuric <omasnjak@gmail.com>
+Cc: Marc Haber <mh+netfilter@zugschlus.de>, netfilter@lists.netfilter.org
 
-Arnt Karlsen wrote:
-> On Tue, 05 Jun 2007 10:16:40 -0400, Steven wrote in message 
-> <46657048.4040600@SCampbell.net>:
->
->   
->> And, most important for folks here, do egress filtering on your 
->> firewall!    Help prevent zombie machines on your own networks from 
->> being a problem, you can't stop your end users from bringing infections 
->> into your network but you can control their spread.
->>     
->
-> ..what tricks _are_ out there?  Set up some kinda p0f deamon and 
-> cut 'n tarpit any and all Wintendo network traffic attempts?  
-> Or even feed them LROS thru ActiveX if they need firm hints?
->
->   
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Not really very tricky, limit outbound traffic to what is needed.   Do 
-all of your workstations need UDP ports outbound?  Smtp?    For a lot of 
-sites the average workstations internet requirements are very small, 
-especially if proxys are used for SMTP,HTTP,FTP, etc.  Just by blocking 
-most of the end users from direct internet access (or at least to a 
-small set of outbound protocol/ports) we render those machines pretty 
-useless to the bad guys. 
+Elvir Kuric wrote:
+> On 6/4/07, Marc Haber <mh+netfilter@zugschlus.de> wrote:
+>> On Mon, Jun 04, 2007 at 01:37:07PM +0200, Elvir Kuric wrote:
+>> > I am interested in one thing, is possible using iptables software
+>> > limit particular application/protocol to use/bind to particular
+>> ports.
+>>
+>> Why do you want to do that?
+>
+> :) I want to control which ports are open in output chain. Testing,
+> exploring.
+>
+> I know it is not important which ports are open in output chain,
+> usually putting output policy to accept.
 
-It does, however, become very tricky if it's not done up front.  It's 
-really really tough to figure out what the requirements are if anyone 
-could historically do anything they wanted.    It's far better to 
-seriously restrict things up front and put in the exceptions as you find 
-them.   Sites that have historically allowed all outbound traffic are a 
-two fold problem, it's hard to fix and they are exactly the sorts of 
-sites the bad guys like to use.
+It is important to know what ports are open in the output chain.  This
+is exactly the attitude
+that helps the spread of Trojans and Viruses.
+You should only open ports you need, for example a user brings in
+a Trojan that tries to infect other systems and connects back to a monitor
+somewhere to let it know about the host it just took over.  If you are
+blocking the ports it
+uses to infect other systems you limit the damage it does.  Now there
+is nothing that keeps it
+from using a port you have open, say port 80 http., but at least you
+have tried to limit your exposure.
+
+>
+>>
+>> > For example I want to send all reqestes from my machine using
+>> ports I
+>> > specify, not random ones,
+>>
+>> Why?
+>>
+>> >  or accept ping echo-replay on specific ports.
+>>
+>> Pleas get your facts straight. ICMP does not have ports.
+>
+> ICMP was just example, first on my mind in that moment :)
+>
+> Regards
+>
+> Elvir Kuric
+>>
+>> Greetings
+>> Marc
+>>
+>> --
+>>
+-----------------------------------------------------------------------------
+>>
+>> Marc Haber         | "I don't trust Computers. They | Mailadresse
+>> im Header
+>> Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621
+>> 72739834
+>> Nordisch by Nature |  How to make an American Quilt | Fax: *49 3221
+>> 2323190
+>>
+>>
+
+
+- --
+Jeff Largent
+System Administrator
+Visual Lease Services Inc.
+http://www.vlsmaps.com
+(405) 379-5280
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.7 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFGZYidd02kARNrtZkRAnIpAJ9DaulTYHRPSX4SWrwhH6n00LcxUQCg4qug
+41YEjFzdoMVSJaBKJyfg15Q=
+=dTnF
+-----END PGP SIGNATURE-----
 
 
