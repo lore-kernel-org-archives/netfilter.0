@@ -1,17 +1,15 @@
-From: Marc Haber <mh+netfilter@zugschlus.de>
-Subject: Re: Restricting applications/protocols to use specific ports using
-	iptables, is this possible
-Date: Tue, 5 Jun 2007 19:42:56 +0200
-Message-ID: <20070605174256.GE658@torres.zugschlus.de>
-References: <1814bfe70706040437i34b282d8ocf15b698160e05b5@mail.gmail.com>
-	<20070604120611.GC28171@torres.zugschlus.de>
-	<1814bfe70706040539x61ca3113rb8679da3cc29b304@mail.gmail.com>
-	<4665889E.2030201@vlsmaps.com>
-	<1814bfe70706051000j42f785fcv14789482cc77f0c7@mail.gmail.com>
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: Re: ..prevention, was: syn DDoS attack solution
+Date: Tue, 5 Jun 2007 20:34:34 +0200
+Message-ID: <20070605203434.6fb554f3.arnt@c2i.net>
+References: <5C9E8CCEEB81ED498AC0C3B0054704F3029B6DE0@webmail.latis.com>
+	<46651F04.9020709@bgs.hu> <46657048.4040600@SCampbell.net>
+	<20070605172248.5a156549.arnt@c2i.net>
+	<030f37e8000023b8@intmail01.analysts.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <1814bfe70706051000j42f785fcv14789482cc77f0c7@mail.gmail.com>
+In-Reply-To: <030f37e8000023b8@intmail01.analysts.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,32 +21,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+To: Steven M Campbell <Netfilter@SCampbell.net>
+Cc: netfilter@lists.netfilter.org
 
-On Tue, Jun 05, 2007 at 07:00:31PM +0200, Elvir Kuric wrote:
-> Hi all,  I realised that I did not ask question on right way in my
-> last mail to this list. I am trying to find  out some tool or whatever
-> else to open in input and output chain only ports I need, I mean to
-> control which ports are open.
-> In other words to have evidence which ports are open and why. Maybe
-> this is funny for more experience users, but I asked this question
-> here because I thought that iptables can help / and maybe can, but I
-> do not know that :).
+On Tue, 05 Jun 2007 11:40:36 -0400, Steven wrote in message 
+<030f37e8000023b8@intmail01.analysts.com>:
 
-Netfilter can help you here, but if I wanted to learn, I'd use tcpdump
-and/or wireshark. An "ACCEPT and log" rule in iptables might help as
-well.
+> Arnt Karlsen wrote:
+> > On Tue, 05 Jun 2007 10:16:40 -0400, Steven wrote in message 
+> > <46657048.4040600@SCampbell.net>:
+> >
+> >   
+> > > And, most important for folks here, do egress filtering on your 
+> > > firewall!    Help prevent zombie machines on your own networks from 
+> > > being a problem, you can't stop your end users from bringing infections 
+> > > into your network but you can control their spread.
+> > >     
+> >
+> > ..what tricks _are_ out there?  Set up some kinda p0f deamon and 
+> > cut 'n tarpit any and all Wintendo network traffic attempts?  
+> > Or even feed them LROS thru ActiveX if they need firm hints?
+> > 
+> 
+> Not really very tricky, limit outbound traffic to what is needed.   Do 
+> all of your workstations need UDP ports outbound?  Smtp?    For a lot of 
+> sites the average workstations internet requirements are very small, 
+> especially if proxys are used for SMTP,HTTP,FTP, etc.  Just by blocking 
+> most of the end users from direct internet access (or at least to a 
+> small set of outbound protocol/ports) we render those machines pretty 
+> useless to the bad guys. 
 
-Generally, the port from which a connection originates does only
-matter in exceptional cases.
+..no problem, GNU/Linux only /25 shop here.
 
-Greetings
-Marc
+..but I also want to deny all windroids access to internet and make 
+them fetch and use some safe os off my (Debian etc) lan mirror, before 
+I allow them outbound.  Just a wee wifi spot biz idea, but if Microsoft
+can't secure their "OS", HTFAISTDI?  ;o)
+
+> It does, however, become very tricky if it's not done up front.  It's 
+> really really tough to figure out what the requirements are if anyone 
+> could historically do anything they wanted.    It's far better to 
+> seriously restrict things up front and put in the exceptions as you find 
+> them.   Sites that have historically allowed all outbound traffic are a 
+> two fold problem, it's hard to fix and they are exactly the sorts of 
+> sites the bad guys like to use.
+
+..aye, but easy if it's your net, just enforce your ban on Wintendo.  
+Now, I'm GNU+Linux only shop and have no recent Wintendo experience
+since early 1998, I had Wintendo95 and ran away, so I look for pointers
+on "ID their OS first, then chk if they have paid my bill and deserve
+access."
+
 
 -- 
------------------------------------------------------------------------------
-Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
-Mannheim, Germany  |  lose things."    Winona Ryder | Fon: *49 621 72739834
-Nordisch by Nature |  How to make an American Quilt | Fax: *49 3221 2323190
+..med vennlig hilsen = with Kind Regards from Arnt... ;o)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
+
 
