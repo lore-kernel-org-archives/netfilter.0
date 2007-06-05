@@ -1,7 +1,7 @@
 From: Jorge Davila <davila@nicaraguaopensource.com>
 Subject: Re: SNAT before IPSec
-Date: Tue, 05 Jun 2007 16:40:30 -0600
-Message-ID: <web-17532572@bk3.webmaillogin.com>
+Date: Tue, 05 Jun 2007 16:43:39 -0600
+Message-ID: <web-17532885@bk3.webmaillogin.com>
 References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>
 	<web-74829660@bk1.webmaillogin.com>
 	<8bd3dfad0706051429r7c37e29dhcd8d2550a613bab3@mail.gmail.com>
@@ -23,10 +23,8 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: noa levy <noalevy@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-OK - Let me now if I'm wrong ...
-
-Are you trying to modify the source address of the packet before the packet 
-gets encryption?
+Let me know if I'm wrong... Are you trying to modify the source address of 
+the packets before the packets get encryption?
 
 Jorge.
 
