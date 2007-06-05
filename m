@@ -1,13 +1,13 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: SNAT before IPSec
-Date: Tue, 05 Jun 2007 09:36:59 -0500
-Message-ID: <4665750B.9020805@riverviewtech.net>
-References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Arnt Karlsen <arnt@c2i.net>
+Subject: ..prevention, was: syn DDoS attack solution
+Date: Tue, 5 Jun 2007 17:22:48 +0200
+Message-ID: <20070605172248.5a156549.arnt@c2i.net>
+References: <5C9E8CCEEB81ED498AC0C3B0054704F3029B6DE0@webmail.latis.com>
+	<46651F04.9020709@bgs.hu> <46657048.4040600@SCampbell.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>
+In-Reply-To: <46657048.4040600@SCampbell.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,32 +18,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 06/05/07 07:29, noa levy wrote:
-> SNAT takes place in POST_ROUTING. Can IPSec be applied after that? I
-> have read that after IPSec the packet gets injected to LOCAL_OUT
-> again, but when does the actual IPSec policy decision take place?
-> Won't it happen *before* SNAT? Can I control it?
+On Tue, 05 Jun 2007 10:16:40 -0400, Steven wrote in message 
+<46657048.4040600@SCampbell.net>:
 
-Last I looked (it's been a while) the basic methodology at the time was 
-that (unencrypted) traffic would pass through the kernel like regular 
-traffic.  Then after everything else was done it would be encrypted and 
-looped back through the system in its encrypted form.  So what you would 
-do is selectively do what ever you wanted to do to the traffic before it 
-was encrypted by matching that traffic with filters.  In short, do what 
-ever you want to with the clear text traffic, then do what ever you want 
-with cypher text traffic.
+> And, most important for folks here, do egress filtering on your 
+> firewall!    Help prevent zombie machines on your own networks from 
+> being a problem, you can't stop your end users from bringing infections 
+> into your network but you can control their spread.
 
-There use to be a series of patches that needed to be applied to the 
-kernel to make this packet flow possible.  I do not know if these 
-patches are still required or not, though I would expect it to be main 
-line by now.
+..what tricks _are_ out there?  Set up some kinda p0f deamon and 
+cut 'n tarpit any and all Wintendo network traffic attempts?  
+Or even feed them LROS thru ActiveX if they need firm hints?
 
-Can / will any one confirm / refute this please?
+-- 
+..med vennlig hilsen = with Kind Regards from Arnt... ;o)
+...with a number of polar bear hunters in his ancestry...
+  Scenarios always come in sets of three: 
+  best case, worst case, and just in case.
 
-
-
-Grant. . . .
 
