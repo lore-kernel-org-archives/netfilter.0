@@ -1,12 +1,11 @@
-From: Bgs <bgs@bgs.hu>
-Subject: Re: syn DDoS attack solution
-Date: Tue, 05 Jun 2007 10:29:56 +0200
-Message-ID: <46651F04.9020709@bgs.hu>
-References: <5C9E8CCEEB81ED498AC0C3B0054704F3029B6DE0@webmail.latis.com>
+From: Werner Maier <maier@fidion.de>
+Subject: Problem with FTP and NAT
+Date: Tue, 05 Jun 2007 10:43:52 +0200
+Message-ID: <E80175D89344E0193465FF03@[192.168.42.19]>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5C9E8CCEEB81ED498AC0C3B0054704F3029B6DE0@webmail.latis.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,98 +16,79 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Martin McKeay <mmckeay@stillsecure.com>
-Cc: Ric Messier <kilroy@WasHere.COM>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-  You can have defense against many kind of ddos attacks but victory is 
-not sure at all. Take the case for example when a very large number of 
-distributed bots issues many but slow SYN/ACK bounce attacks or plain 
-protocol connections to your site. If they do it 'right' you will end up 
-with up to millions of sources doing 'ordinary' things with random 
-sources. No source will ever trigger anything above an average user. One 
-important step in taking ddos seriously was when the first ISP went 
-broke because it was a target.
 
-  So take up the fight when it happens. Most attackers are not 
-resourceful enough (either by available hw/bots or technical knowledge), 
-so on the long term you can usually win. But loosing the war is always a 
-possibility no matter how good you are...
+Hi there,
 
-Martin McKeay wrote:
-> I'm glad you summed up the technical aspects of the conversation so far.
-> A DDoS attack is a serious problem, no matter what form it takes.
-> 
-> I have one question for you: do you really believe that there's no
-> defense other than not waking the lion, that the battle is already lost?
-> That doesn't paint a pretty picture to me.  Are you basing this on
-> published work or personal experience?  Which I guess makes two
-> questions, so I'll quit while I'm ahead.
-> 
-> Martin
-> 
-> Martin McKeay, CISSP, GSNA
-> Cobia Product Evangelist
-> StillSecure
-> martin@stillsecure.com
-> 707-495-7926
-> http://www.cobiablog.com
-> 
-> -- R. DuFrense wrote --
-> 
-> 
-> DDOS attacks work against resources, the tcp/ip stack <half opens
-> (syn's) left hanging>, memory <cache of data in your syn-flood db>,
-> drive space <system logs with overzealous logging of packet flow in
-> limited space, or how much disk is devoted to a syn-flood db>, the size
-> of your pipe...
-> 
-> 
-> In any but the most simplistic low bandwith attacks there is little one
-> can do in such cases but either ride out the storm or go upstream for
-> help in resolution <mist often a block of the damaging traffic>.  Even
-> an semi-decent firewall defense against a simple low bandwith syn flood
-> will need to be totally rework for defense in the case of a simple
-> lowbandwidth ping flood, etc.  And once the attack level is amplified
-> above the flow capabilities of your pipe, all bets are off.  In a
-> serious flooding attack the firewall simply become a stopgate from
-> preventing work on the local net from being affected.  There have been
-> and will continue to be some rather decently funded companies with some
-> fairly decent pipes wiped out of business or their internet presence
-> closed up due to some of these kinds of attacks over extended periods of
-> time.  Goverments across the globe have had internet services disrupted
-> for extended periods. 
-> Microsoft has had to relocate servers to new net/ip addresses to divert
-> the flow from such attacks and stay somewhat online...
-> 
-> 
-> Best way to avoid such problems is to not get into a whose prick is
-> bigger contest with some kid in IRC that controls a 10,000-100,000 or
-> larger series of zombies in their botnet.
-> 
-> It's the nature of the game, all in the design...
-> 
-> 
-> 
-> Thanks,
-> 
-> Ron DuFresne
-> - --
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->          admin & senior security consultant:  sysinfo.com
->                          http://sysinfo.com Key fingerprint = 9401 4B13
-> B918 164C 647A  E838 B2DF AFCC 94B0 6629
-> 
-> ...We waste time looking for the perfect lover instead of creating the
-> perfect love.
-> 
->                  -Tom Robbins <Still Life With Woodpecker> -----BEGIN
-> PGP SIGNATURE-----
-> Version: GnuPG v1.4.5 (GNU/Linux)
-> 
-> iD8DBQFGYcADst+vzJSwZikRApiLAJ444UDiM3HZnoNLO7ECHocT31r88wCeMhmS
-> Zv2jS1v6fCcb3gLbx9+KqHQ=
-> =iZ/G
-> -----END PGP SIGNATURE-----
-> 
+I've seen this problem has been announced on this list at least once,
+but I did not find the answer in the archive.
+
+I'd have checked the bugzilla, but the bugzilla throws errors like
+
+DBD::mysql::st execute failed: Unknown column 'grant_type' in 'where clause' [for Statement "SELECT groups.name,...
+
+when trying to log in.
+
+anyway: I'm searching for hints:
+
+Setup:
+Server behind Firewall, Server has private IP.
+Firewall running Kernel 2.6.19 (gentoo-r6), iptables-1.3.5
+
+Server does FTP traffic to external FTP Server (download).
+
+after some time I can trace (firewall, external interface) things like
+this:
+
+Server IP external (after NAT) : a.b.c.d,
+Server IP internal (before NAT): 192.168.1.161
+External Server: w.x.y.z
+
+4.107198 a.b.c.d -> w.x.y.z FTP Request: PORT a,b,c,d,179,87
+4.330290 a.b.c.d -> w.x.y.z FTP [TCP Retransmission] Request: PORT 192,168,1,161,179,87
+
+so, if the answer of the external host takes too long,
+the internal hosts issues an TCP Retransmission and (I guess)
+the conntrack_ftp does not SNAT the PORT command a second time,
+as it should.
+
+After switching from outgoing active to outgoing passive FTP,
+it is working again, but this is only a workaround for outgoing
+traffic, as long as the remote server does not run the same
+configuration (linux/nat/netfilter/iptables).
+
+I can observe the same problem with incoming FTP traffic as well.
+everytime the Server issues an PORT command (this time it is
+incoming passive ftp), the same thing happens: everytime the
+remote host does not answer a PORT request fast enough,
+there will be a TCP retransmission. And in that retransmission
+the PORT request there is no second NAT and the private IP
+is shown in the port
+
+Of course there would be other workarounds for this:
+
+A)
+- using stateless rules for port 21 and a portrange for the
+  data connectinos
+- configuring the ftp server to "masquerade as" external ip
+- configuring the ftp server to use only the portrange
+  mentioned above.
+
+B)
+- dont use nat at all, use external IPs in the DMZ. just let
+  the firewall do routing and not masquerading.
+
+But these are only workarounds.
+
+Any hints or pointers?
+
+best regards
+
+Werner Maier
+--
+Werner Maier, Dipl.-Ing. Univ.         Friedrich-Bergius-Ring 15
+fidion GmbH                            97076 W=FCrzburg
+
 
