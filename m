@@ -1,15 +1,12 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: ..prevention, was: syn DDoS attack solution
-Date: Tue, 5 Jun 2007 20:34:34 +0200
-Message-ID: <20070605203434.6fb554f3.arnt@c2i.net>
-References: <5C9E8CCEEB81ED498AC0C3B0054704F3029B6DE0@webmail.latis.com>
-	<46651F04.9020709@bgs.hu> <46657048.4040600@SCampbell.net>
-	<20070605172248.5a156549.arnt@c2i.net>
-	<030f37e8000023b8@intmail01.analysts.com>
+From: Jorge Davila <davila@nicaraguaopensource.com>
+Subject: Re: SNAT before IPSec
+Date: Tue, 05 Jun 2007 14:15:21 -0600
+Message-ID: <web-74829660@bk1.webmaillogin.com>
+References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <030f37e8000023b8@intmail01.analysts.com>
+In-Reply-To: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,63 +17,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Steven M Campbell <Netfilter@SCampbell.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: noa levy <noalevy@gmail.com>, netfilter@lists.netfilter.org
 
-On Tue, 05 Jun 2007 11:40:36 -0400, Steven wrote in message 
-<030f37e8000023b8@intmail01.analysts.com>:
+I'm guessing that you can use the "normal" approach and apply the SNAT rules 
+to the outgoing traffic flowing in the ipsec interfaces.
 
-> Arnt Karlsen wrote:
-> > On Tue, 05 Jun 2007 10:16:40 -0400, Steven wrote in message 
-> > <46657048.4040600@SCampbell.net>:
-> >
-> >   
-> > > And, most important for folks here, do egress filtering on your 
-> > > firewall!    Help prevent zombie machines on your own networks from 
-> > > being a problem, you can't stop your end users from bringing infections 
-> > > into your network but you can control their spread.
-> > >     
-> >
-> > ..what tricks _are_ out there?  Set up some kinda p0f deamon and 
-> > cut 'n tarpit any and all Wintendo network traffic attempts?  
-> > Or even feed them LROS thru ActiveX if they need firm hints?
-> > 
+The ipsec encryption algorithm is a kernel space tool and iptables is a user 
+space tool to the netfilter kernel module.
+
+All traffic that pass the POSTROUTING chain in the NAT table is leaving the 
+firewall box (through a physical interface e.g.:eth0 or through a virtual 
+interface e.g.:ipsec0).
+
+Jorge Davila..
+
+On Tue, 5 Jun 2007 15:29:47 +0300
+  "noa levy" <noalevy@gmail.com> wrote:
+> Hi All,
 > 
-> Not really very tricky, limit outbound traffic to what is needed.   Do 
-> all of your workstations need UDP ports outbound?  Smtp?    For a lot of 
-> sites the average workstations internet requirements are very small, 
-> especially if proxys are used for SMTP,HTTP,FTP, etc.  Just by blocking 
-> most of the end users from direct internet access (or at least to a 
-> small set of outbound protocol/ports) we render those machines pretty 
-> useless to the bad guys. 
+> I have a setup where I need to SNAT traffic that will be going out via
+> an IPSec tunnel. The NAT must take place before the IPSec
+> encryption+encapsulation, so I need the packet to first go through
+> SNAT and then match an IPSec policy. After being IPSec-ified, I need
+> the packets to go through routing again.
+> My question:
+> SNAT takes place in POST_ROUTING. Can IPSec be applied after that? I
+> have read that after IPSec the packet gets injected to LOCAL_OUT
+> again, but when does the actual IPSec policy decision take place?
+> Won't it happen *before* SNAT? Can I control it?
+> 
+> Thanks,
+> Noa
+> 
+> 
 
-..no problem, GNU/Linux only /25 shop here.
-
-..but I also want to deny all windroids access to internet and make 
-them fetch and use some safe os off my (Debian etc) lan mirror, before 
-I allow them outbound.  Just a wee wifi spot biz idea, but if Microsoft
-can't secure their "OS", HTFAISTDI?  ;o)
-
-> It does, however, become very tricky if it's not done up front.  It's 
-> really really tough to figure out what the requirements are if anyone 
-> could historically do anything they wanted.    It's far better to 
-> seriously restrict things up front and put in the exceptions as you find 
-> them.   Sites that have historically allowed all outbound traffic are a 
-> two fold problem, it's hard to fix and they are exactly the sorts of 
-> sites the bad guys like to use.
-
-..aye, but easy if it's your net, just enforce your ban on Wintendo.  
-Now, I'm GNU+Linux only shop and have no recent Wintendo experience
-since early 1998, I had Wintendo95 and ran away, so I look for pointers
-on "ID their OS first, then chk if they have paid my bill and deserve
-access."
-
-
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;o)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
-
+Jorge Isaac Davila Lopez
+Nicaragua Open Source
++505 430 5462
+davila@nicaraguaopensource.com
 
