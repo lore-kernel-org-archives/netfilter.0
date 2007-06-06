@@ -1,16 +1,16 @@
-From: "Craig Bernstein" <cbernstein@cbernstein.com>
-Subject: Re: Logging NAT Translations
-Date: Wed, 6 Jun 2007 00:15:54 -0700
-Message-ID: <ae1f24730706060015j40c0fe5ek78a81c8816a0c5b5@mail.gmail.com>
-References: <ae1f24730705182015j533102bah985e9ad0e905cd2a@mail.gmail.com>
-	<Pine.LNX.4.61.0705222208440.4452@yvahk01.tjqt.qr>
-	<ae1f24730706051910o2538955drfc7ec59cf9aa3927@mail.gmail.com>
-	<Pine.LNX.4.61.0706060759470.1547@yvahk01.tjqt.qr>
+From: Jorge Davila <davila@nicaraguaopensource.com>
+Subject: Re: SNAT before IPSec
+Date: Wed, 06 Jun 2007 09:39:12 -0600
+Message-ID: <web-73936562@bk2.webmaillogin.com>
+References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>
+	<web-74829660@bk1.webmaillogin.com>
+	<4665C771.4040609@riverviewtech.net>
+	<web-74831651@bk1.webmaillogin.com>
+	<4665F77D.8050603@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0706060759470.1547@yvahk01.tjqt.qr>
-Content-Disposition: inline
+In-Reply-To: <4665F77D.8050603@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,21 +22,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Cc: netfilter@lists.netfilter.org
+To: Grant Taylor <gtaylor@riverviewtech.net>, Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-On 6/5/07, Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
-> iptables -t nat -N ydm1
-> iptables -t nat -A ydm1 -j LOG "[Adress got SNATed to 134.76.13.21] "
-> iptables -t nat -A ydm1 -j SNAT --to 134.76.13.21
->
-> iptables -t nat -A POSTROUTING <-d condition -m condition or whatever> -j ydm1
->
-> It already was a complete example. When you SNAT, you know you do.
+Grant,
 
---to-source can be (and is, in this case) a range of IP addresses.  I
-know I SNATed, but not to which source IP address and port.
+to be honest, reading, re-reading before the rfc the same doubt come to my 
+mind but now, my understanding is that the paragraph is really doing 
+reference to an interface to manage the traffic according to the policies 
+defined.
 
--- 
-...Craig
+Jorge Davila.
+
+On Tue, 05 Jun 2007 18:53:33 -0500
+  Grant Taylor <gtaylor@riverviewtech.net> wrote:
+> On 6/5/2007 3:45 PM, Jorge Davila wrote:
+>> For every IPsec implementation, there MUST be an administrative 
+>> interface that allows a user or system administrator to manage the 
+>> SPD.  Specifically, every inbound or outbound packet is subject to 
+>> processing by IPsec and the SPD must specify what action will be 
+>> taken in each case.  Thus the administrative interface must allow the 
+>> user (or system administrator) to specify the security processing to 
+>> be applied to any packet entering or exiting the system, on a packet 
+>> by packet basis.
+> 
+> I take this to mean some sort of management point, not necissarily a 
+>network interface managed by ifconfig.  Or did I misunderstand your earlier 
+>comment to mean the management point?
+> 
+> 
+> 
+> Grant. . . .
+> 
+> 
+
+Jorge Isaac Davila Lopez
+Nicaragua Open Source
++505 430 5462
+davila@nicaraguaopensource.com
 
