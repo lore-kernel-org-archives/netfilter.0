@@ -1,14 +1,9 @@
-From: "Christos Panagiotakis" <chrismfz@gmail.com>
-Subject: Limitations on connections
-Date: Sun, 10 Jun 2007 12:12:30 +0300
-Message-ID: <dac71d7b0706100212u52e0f7bep9ad3644f19332875@mail.gmail.com>
+From: Yaniv Fine <yfine@jacada.com>
+Subject: iptables port forwarding to tun0 device
+Date: Wed, 6 Jun 2007 16:45:24 +0300
+Message-ID: <OF00836A91.C83C2AC5-ONC22572F2.004ABBD7-C22572F2.004B9171@jacada.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=uP2oHPTvqBwiXvCttTAaMxkeFLpY7TOy4HHWFY1T7IXPyONKwUVfIX9bJTqhDaQB5CdwtwHr74fAHsxETmRpDKEPCTx2Yt8NjUxaLaTlrebdn1VubBK6+/lJAFGB00KK/pWgoEMwUxoBk0V8s4eWvoU1Jfg6XQ50NI0D5p/rfj4=
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,22 +14,76 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-7"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-SGkgcGVvcGxlIQoKUGxlYXNlIGRvbid0IGZsYW1lL2JsYW1lIG1lIEkgZG9uJ3Qga25vdyBtdWNo
-IGFib3V0IGlwdGFibGVzICh5ZXQsIEkKaG9wZSBzby4uIDotKQoKSSB3YXMgd29uZGVyaW5nIGlm
-IEkgY2FuIGxpbWl0IHRoZSBlc3RhYmxpc2hlZCBjb25uZWN0aW9ucyBvbiBhIHNwZWNpZmljIHBv
-cnQKdXNpbmcgaXB0YWJsZXMgcnVsZXMuCgpGb3IgZXhhbXBsZSwgbGV0cyBzYXkgdGhhdCB3ZSBo
-YXZlIGFuIGlyYyBkYWVtb24gKGlyY2QpIHJ1bm5pbmcgb24gNjY2Nyw2NjY4IGV0YwphbmQvb3Ig
-KGFub3RoZXIgZXhhbXBsZSB0byBiZSBtb3JlIHNwZWNpZmljKSBhIHNob3V0IGNhc3Qgc3RyZWFt
-aW5nIHNlcnZlcgpsaXN0ZW5pbmcgdG8gODAwMCBvciBvdGhlciBwb3J0LgoKQ2FuIEkgbGltaXQg
-b24gYSkgaXJjZCB0aGUgdXNlcnMgY29ubmVjdGluZyBvciBiKSBlLmcuIHRoZSBsaXN0ZW5lcnMK
-b24gc2hvdXQgY2FzdCB0byBhCnNwZWNpZmljIG51bWJlcj8KTGV0cyBzYXkgdGhhdCBJIGRvbid0
-IHdhbnQgbW9yZSB0aGFuIDIwIGxpc3RlbmVycyBzaW11bHRhbmVvdXNseS4KSWYgSSBhbSBub3Qg
-d3JvbmcsIHRoYXQgbWVhbnMgSSBkb24ndCB3YW50IG1vcmUgdGhhbiAyMCBlc3RhYmxpc2hlZApj
-b25uZWN0aW9ucyBvbiBwb3J0IDgwMDAuCgpJcyB0aGlzIHBvc3NpYmxlIHVzaW5nIGlwdGFibGVz
-IHJ1bGVzIGFuZCBpZiB5ZXMsIGl0IGlzIGdvaW5nIHRvIHdvcmsKcHJvcGVybHkgPwoKLS0gCsrh
-9Nwg4tzo7/Ig5d/s4ekg9+Hx7/3s5e3v8iwg5On89Okg5OXtIPDl8ens3e35IO3hIOzv9SDz9ezi
-5d8g6tz06SDj6eEK7eEg7en+8/kg6uHr3C4K
+
+Hi experts
+
+i have the following configuration
+eth0.10.90.20.3/24
+tun0=172.16.10.x/24
+
+eth0 configure as Wan interface
+eth1/tun0 are lan interface .
+tun0 network 172.16.10.200 =>  web server
+in side my tun0 there is a web server i need to manage for the outside
+world (eth0, it can also be restricted to specific ip address )
+i am trying to find a way using port forwarding to enable this .
+can some one please help me modify my correct iptables rules
+
+
+
+
+IPTABLES="/sbin/iptables"
+EXTIF="eth0"
+INTIF="eth1"
+
+#Flush all rules
+$IPTABLES -F
+$IPTABLES -F -t nat
+$IPTABLES -F -t mangle
+
+#Set default behaviour
+$IPTABLES -P INPUT DROP
+$IPTABLES -P FORWARD ACCEPT
+$IPTABLES -P OUTPUT ACCEPT
+
+#Allow related and established on all interfaces (input)
+$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+#Allow releated, established and ssh on $EXTIF. Reject everything else.
+$IPTABLES -A INPUT -i $EXTIF -p tcp -m tcp --dport 22 --syn -j ACCEPT
+#$IPTABLES -A INPUT -i $EXTIF -p tcp -m tcp --dport 80 --syn -j ACCEPT
+$IPTABLES -A INPUT -i $EXTIF -j REJECT
+
+#Allow related and established from $INTIF. Drop everything else.
+$IPTABLES -A INPUT -i $INTIF -j DROP
+
+#Allow http and https on other interfaces (input).
+#This is only needed if authentication server is on same server as chilli
+$IPTABLES -A INPUT -p tcp -m tcp --dport 80 --syn -j ACCEPT
+$IPTABLES -A INPUT -p tcp -m tcp --dport 443 --syn -j ACCEPT
+
+#Allow 3990 on other interfaces (input).
+$IPTABLES -A INPUT -p tcp -m tcp --dport 3990 --syn -j ACCEPT
+
+#Allow ICMP echo on other interfaces (input).
+$IPTABLES -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+
+#Allow everything on loopback interface.
+$IPTABLES -A INPUT -i lo -j ACCEPT
+
+# Drop everything to and from $INTIF (forward)
+# This means that access points can only be managed from ChilliSpot
+$IPTABLES -A FORWARD -i $INTIF -j DROP
+$IPTABLES -A FORWARD -o $INTIF -j DROP
+
+#Enable NAT on output device
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+
+
+thank you !
+
 
