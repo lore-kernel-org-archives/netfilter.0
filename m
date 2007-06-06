@@ -1,13 +1,14 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: SNAT before IPSec
-Date: Tue, 05 Jun 2007 18:53:33 -0500
-Message-ID: <4665F77D.8050603@riverviewtech.net>
-References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>	<web-74829660@bk1.webmaillogin.com>	<4665C771.4040609@riverviewtech.net>
-	<web-74831651@bk1.webmaillogin.com>
+From: "Craig Bernstein" <cbernstein@cbernstein.com>
+Subject: Re: Logging NAT Translations
+Date: Tue, 5 Jun 2007 19:10:09 -0700
+Message-ID: <ae1f24730706051910o2538955drfc7ec59cf9aa3927@mail.gmail.com>
+References: <ae1f24730705182015j533102bah985e9ad0e905cd2a@mail.gmail.com>
+	<Pine.LNX.4.61.0705222208440.4452@yvahk01.tjqt.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-74831651@bk1.webmaillogin.com>
+In-Reply-To: <Pine.LNX.4.61.0705222208440.4452@yvahk01.tjqt.qr>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +20,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+To: Jan Engelhardt <jengelh@linux01.gwdg.de>
+Cc: netfilter@lists.netfilter.org
 
-On 6/5/2007 3:45 PM, Jorge Davila wrote:
-> For every IPsec implementation, there MUST be an administrative 
-> interface that allows a user or system administrator to manage the 
-> SPD.  Specifically, every inbound or outbound packet is subject to 
-> processing by IPsec and the SPD must specify what action will be 
-> taken in each case.  Thus the administrative interface must allow the 
-> user (or system administrator) to specify the security processing to 
-> be applied to any packet entering or exiting the system, on a packet 
-> by packet basis.
+On 5/22/07, Jan Engelhardt <jengelh@linux01.gwdg.de> wrote:
+> iptables -t nat -N yes_do_me_1
+> iptables -t nat -A yes_do_me_1 -j LOG ...
+> iptables -t nat -A yes_do_me_1 -j SNAT ...
+>
+> iptables -t nat -s 134.76.0.0/16 -d whatever -p tcp -j yes_do_me_1
+>
+> Or you could use `conntrack -E`... or conntrack -L for a momentary
+> state.
 
-I take this to mean some sort of management point, not necissarily a 
-network interface managed by ifconfig.  Or did I misunderstand your 
-earlier comment to mean the management point?
+Jan, thank you for your suggestion, but setting it up that way gives
+me the same results as before.  The log entry looks like this:
 
+IN= OUT=eth0 SRC=10.1.2.3 DST=209.85.139.147 LEN=48 TOS=0x00 PREC=0x00
+TTL=125 ID=52743 DF PROTO=TCP SPT=1535 DPT=80 WINDOW=16384 RES=0x00
+SYN URGP=0
 
+"SRC" is the inside client address.  "DST" is the outside server
+address.  I still need to log the outside address the client is SNATed
+to, i.e. the public Internet address the server will see.
 
-Grant. . . .
+`cat /proc/net/ip_conntrack` will give me the momentary state, but I
+want each connection syslogged at set-up and/or tear-down.
+
+Petr recommended the conntrack tool, which may work but will require
+upgrading a box that is currently running Debian Sarge.  Is that my
+only option?
+
+Thanks,
+Craig
 
