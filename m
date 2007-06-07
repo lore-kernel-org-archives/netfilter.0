@@ -1,11 +1,22 @@
-From: Stefan Mayr <stefan@mayr-stefan.de>
-Subject: Using DNAT and SNAT to do a local redirection does not work (want
- to do what rinetd does with iptables)
-Date: Thu, 07 Jun 2007 22:30:57 +0200
-Message-ID: <46686B01.6080605@mayr-stefan.de>
+From: Jorge Davila <davila@nicaraguaopensource.com>
+Subject: Re: SNAT before IPSec
+Date: Thu, 07 Jun 2007 14:57:56 -0600
+Message-ID: <web-75050127@bk1.webmaillogin.com>
+References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>
+	<web-74829660@bk1.webmaillogin.com>
+	<8bd3dfad0706051429r7c37e29dhcd8d2550a613bab3@mail.gmail.com>
+	<web-17532572@bk3.webmaillogin.com>
+	<8bd3dfad0706051540t626bf02fk15e20eace4818b3e@mail.gmail.com>
+	<web-17534558@bk3.webmaillogin.com>
+	<8bd3dfad0706051605u49cdbf17jca76d1d74ebdd26b@mail.gmail.com>
+	<web-73937813@bk2.webmaillogin.com>
+	<8bd3dfad0706070840i2b80fa4bl5a9a4ae5973b0e01@mail.gmail.com>
+	<46683B69.8000303@riverviewtech.net>
+	<4668488A.8040102@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4668488A.8040102@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,93 +27,69 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: gtaylor+reply@riverviewtech.net
+Cc: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
+Grant,
 
-assume the following clustering setup:
+In your analysis you forget that the packet delivered by the Router A to 
+Router B (or viceversa) is an encrypted packet. Once the packet in decrypted 
+in the other end the headers are the headers of the original packets. Then, 
+the scenary is more funny.
 
-Loadbalancer              Server1:
-eth0: 192.168.1.1/24  ->  eth0: 192.168.1.2/24
-eth0: 192.168.1.101/32    lo0:  192.168.1.101/32 JBoss-Web bound to 8080
-eth0: 192.168.1.102/32    lo0:  192.168.1.102/32 JBoss-Web bound to 8080
-eth0: 192.168.1.103/32    lo0:  192.168.1.103/32 JBoss-Web bound to 8080
-...                       ...
+Jorge.
 
-                          Server2:
-                      ->  eth0: 192.168.1.3/24
-                          lo0:  192.168.1.101/32 JBoss-Web bound to 8080
-                          lo0:  192.168.1.102/32 JBoss-Web bound to 8080
-                          lo0:  192.168.1.103/32 JBoss-Web bound to 8080
-                          ...
+On Thu, 07 Jun 2007 13:03:54 -0500
+  Grant Taylor <gtaylor@riverviewtech.net> wrote:
+> On 06/07/07 12:07, Grant Taylor wrote:
+>> iptables -t nat -A PREROUTING -i $WAN -d D.E.F.x/24 -j NETMAP --to 
+>> A.B.C.x/24
+>> iptables -t nat -A POSTROUTING -o $LAN -s A.B.C.x/24 -j NETMAP --to 
+>> D.E.F.x/24
+>> 
+>> This should cause the NETMAPing to happen at the remote end of the vpn 
+>> link and (hopefully) not confuse the router at the local end of the vpn 
+>> link.
+> 
+> I've done some more thinking and I think it would be better to do the SNAT 
+>at the local end of the vpn link.  Doing the SNAT on the remote end will 
+>work, but it is not as scalable as doing it on the local end.
+> 
+> If you consider your situation where you have multiple networks (3 or 
+>more) that are all the same subnet that you want to tie together, you have 
+>to SNAT and DNAT for each network.  DNATing should be done at the remove 
+>end to change from the bogus address to the real address.  If SNATing is 
+>done at the remove end, the remote end will have to have rules for each and 
+>every other network to know what to SNAT to.  If SNATing is done at the 
+>local end, the local router knows what to SNAT to and the remote end will 
+>just DNAT and reply.  So a slightly modified version of the above rules 
+>would be:
+> 
+> iptables -t nat -A PREROUTING -i $WAN -d D.E.F.x/24 -j NETMAP --to 
+>A.B.C.x/24
+> iptables -t nat -A POSTROUTING -o $WAN -d D.E.N.x/16 -j NETMAP --to 
+>D.E.M.x/24
+> 
+> Where D.E.N.x/16 is the larger class B that encompasses all remote 
+>networks.  I.e. selectively SNAT only when you are going to a remote 
+>network.
+> 
+> Where D.E.M.x/24 is the local bogus network.
+> 
+> This *SHOULD* allow you to have two rules on each system to allow all of 
+>them to communicate with each other presuming that they have routes for the 
+>D.E.N.x/16 (sub)network(s), be it an ethernet link, IPSec VPN, ATM WAN, or 
+>what ever.
+> 
+> 
+> 
+> Grant. . . .
+> 
+> 
 
-all Linux machines (Balancer is Linux virtual server + keepalived with
-direct routing setup)
-
-Loadbalancing works so far:
-1. Balancer receives packet and forwards it to Server1 or Server2 (L2
-via MAC-address)
-2. Server responds direct to the client (no backward traffic over the
-loadbalancer)
-
-And here comes the problem:
-the loadbalancer should check whether the JBoss-Webservers are still
-alive but internal check-utils can only connect to the ip eth0. The
-different JBoss instances are not bound to this IP because they only the
-first could bind to port 8080. But I can specify another port for each
-health check. So my thought was:
-Health check against Server1:
-1. JBoss: check against 192.168.1.2:10001, NAT it to 192.168.1.101:8080
-2. JBoss: check against 192.168.1.2:10002, NAT it to 192.168.1.102:8080
-3. JBoss: check against 192.168.1.2:10003, NAT it to 192.168.1.103:8080
-and so on for the next server.
-
-I thought this would be easy to do with some simple iptables rules on
-Server1/2. Maybe I am to stupid but I cannot get it to work.
-
-I thought to use the following rules:
-# Clear rules
-iptables -t nat -F PREROUTING
-iptables -t nat -F POSTROUTING
-# Setup NAT to change destination
-iptables -t nat -A PREROUTING  -p tcp -d 192.168.1.2  --dport 10001 -j
-DNAT --to-destination 192.168.1.101:8080
-iptables -t nat -A PREROUTING  -p tcp -d 192.168.1.2  --dport 10002 -j
-DNAT --to-destination 192.168.1.102:8080
-iptables -t nat -A PREROUTING  -p tcp -d 192.168.1.2  --dport 10003 -j
-DNAT --to-destination 192.168.1.103:8080
-# make my answers appear from the server-ip and change source back
-iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.101  --sport 8080
--j SNAT --to-source=192.168.1.2:10001
-iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.102  --sport 8080
--j SNAT --to-source=192.168.1.2:10002
-iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.103  --sport 8080
--j SNAT --to-source=192.168.1.2:10003
-
-so far my idea - but it doesn't work. I added some logging to these
-rules an found out the following:
-1. when I open a connection to the server, e.g. 192.168.1.2:10001, the
-DNAT works (at least I see the "SYN" in the nat-PREROUTING-LOG)
-2. the server responds with "ACK RST" but from 192.168.1.101:8080
-(filter-OUTPUT-LOG)
-
-- Why does the response not go through nat-POSTROUTING?
-- Why the "RST"? Or do I read the logs all wrong?
-
-I hope somebody can help me with this.
-
-What I want to achive is the functionality of rinetd with NAT to
-addresses/ports on the same machine instead of a daemon that acts like a
-proxy (only another process that could die ...)
-
-Thanks in advance,
-
-    Stefan
-
-PS: The "big picture" with by JBoss-instances is only my example setup.
-To exclude the JBoss as problem I tested it also with httpd and telnetd.
-rinetd works - but I prefer having this done in the linux kernel - if it
-can do it. Just to eliminate sources of failure.
-
+Jorge Isaac Davila Lopez
+Nicaragua Open Source
++505 430 5462
+davila@nicaraguaopensource.com
 
