@@ -1,23 +1,13 @@
-From: "noa levy" <noalevy@gmail.com>
-Subject: Re: SNAT before IPSec
-Date: Thu, 7 Jun 2007 18:40:35 +0300
-Message-ID: <8bd3dfad0706070840i2b80fa4bl5a9a4ae5973b0e01@mail.gmail.com>
-References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>
-	<web-74829660@bk1.webmaillogin.com>
-	<8bd3dfad0706051429r7c37e29dhcd8d2550a613bab3@mail.gmail.com>
-	<web-17532572@bk3.webmaillogin.com>
-	<8bd3dfad0706051540t626bf02fk15e20eace4818b3e@mail.gmail.com>
-	<web-17534558@bk3.webmaillogin.com>
-	<8bd3dfad0706051605u49cdbf17jca76d1d74ebdd26b@mail.gmail.com>
-	<web-73937813@bk2.webmaillogin.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Combining rules
+Date: Thu, 07 Jun 2007 11:22:58 -0500
+Message-ID: <466830E2.3000204@riverviewtech.net>
+References: <2B31733C-BA34-44B8-AB44-FBBFA81BE9B0@ianmoyce.co.uk>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=kDyk6TLgCXDClZl0kNknTakAz9lcPt2KR4Xvhy19xvSVzHVQWYa8Xsdjy8wk6IIlWfjcMWqTBKfm7l6tLpeHibcmNn5q8z2wAL1VL92uDkymOT31/ORItapJeZp8yQawn4mdojSv0ebAcbJCiRQLoyGD4PAYFZ04VKmYN9JINK4=
-In-Reply-To: <web-73937813@bk2.webmaillogin.com>
-Content-Disposition: inline
+In-Reply-To: <2B31733C-BA34-44B8-AB44-FBBFA81BE9B0@ianmoyce.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -28,141 +18,150 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jorge Davila <davila@nicaraguaopensource.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Well, I agree with you in principle, but it's been this way for years,
-so routing practices are in place to handle it. I'm trying to recreate
-the setup we have now, which is using commercial VPN gateways, with
-Linux-based ones, but the addressing scheme is a given, I have no
-control over it
+On 06/07/07 04:18, Ian Moyce wrote:
+> I am trying to combine a load of ip rules, but I am having problems=20
+> fathoming it out.
+>=20
+> I run a VPS with openVPN. I have the following rules:
+>=20
+> iptables -t nat -A POSTROUTING -s 192.168.2.3 -j SNAT --to 85.234.144.2=
+36
+> iptables -t nat -A POSTROUTING -s 192.168.2.4 -j SNAT --to 85.234.144.2=
+36
+> iptables -t nat -A POSTROUTING -s 192.168.2.5 -j SNAT --to 85.234.144.2=
+36
+> iptables -t nat -A POSTROUTING -s 192.168.2.6 -j SNAT --to 85.234.144.2=
+36
+> iptables -t nat -A POSTROUTING -s 192.168.2.7 -j SNAT --to 85.234.144.2=
+36
+> iptables -t nat -A POSTROUTING -s 192.168.2.8 -j SNAT --to 85.234.144.2=
+36
+> iptables -t nat -A POSTROUTING -s 192.168.2.9 -j SNAT --to 85.234.144.2=
+36
+> iptables -t nat -A POSTROUTING -s 192.168.2.10 -j SNAT --to 85.234.144.=
+236
 
-On 6/6/07, Jorge Davila <davila@nicaraguaopensource.com> wrote:
-> Ah!!!!
->
-> Noa, in my humble opinion, you *must* assign new addresses to the internal
-> networks. You may will live a routing nightmare if you decides stay with the
-> actual address assignment.
->
-> Best regards,
->
-> Jorge Davila.
->
-> On Wed, 6 Jun 2007 02:05:53 +0300
->  "noa levy" <noalevy@gmail.com> wrote:
-> > The situation here is that several geographically diverse parts of the
-> > network (several branches of the same company) use the same internal
-> > addressing space. This was done to make it easy to centrally configure
-> > the branches. As a result, however, when talking to the center via
-> > VPN, we have to map each branch's network to another network allocated
-> > by the center.
-> >
-> > Noa
-> >
-> > On 6/6/07, Jorge Davila <davila@nicaraguaopensource.com> wrote:
-> >> Uhm ... well, may another approach works.
-> >>
-> >> But, why reports another source IP address to the remote internal
-> >>network???
-> >>
-> >> Jorge Davila.
-> >>
-> >> On Wed, 6 Jun 2007 01:40:34 +0300
-> >>  "noa levy" <noalevy@gmail.com> wrote:
-> >> > Yes, I want to change the source IP address of the original IP packet
-> >> > before encryption.
-> >> >
-> >> > On 6/6/07, Jorge Davila <davila@nicaraguaopensource.com> wrote:
-> >> >> OK - Let me now if I'm wrong ...
-> >> >>
-> >> >> Are you trying to modify the source address of the packet before the
-> >> >>packet
-> >> >> gets encryption?
-> >> >>
-> >> >> Jorge.
-> >> >>
-> >> >> On Wed, 6 Jun 2007 00:29:51 +0300
-> >> >>  "noa levy" <noalevy@gmail.com> wrote:
-> >> >> > Thanks for all the help so far.
-> >> >> > Jorge - I'm actually using the native 2.6 kernel ipsec (netkey) and
-> >> >> > not KLIPS, so I don't have the "ipsecN" virtual interfaces and can't
-> >> >> > use that.
-> >> >> > In response to Grant's reply - I think I have a problem, since I'm
-> >> >> > using the 2.6.10 kernel (can't upgrade anytime soon). Can anyone
-> >>point
-> >> >> > me to where I can find the relevant ipsec patches that enable the
-> >> >> > double passage through netfilter hooks?
-> >> >> > Thanks,
-> >> >> > Noa
-> >> >> >
-> >> >> > On 6/5/07, Jorge Davila <davila@nicaraguaopensource.com> wrote:
-> >> >> >> I'm guessing that you can use the "normal" approach and apply the
-> >>SNAT
-> >> >> >>rules
-> >> >> >> to the outgoing traffic flowing in the ipsec interfaces.
-> >> >> >>
-> >> >> >> The ipsec encryption algorithm is a kernel space tool and iptables
-> >>is a
-> >> >> >>user
-> >> >> >> space tool to the netfilter kernel module.
-> >> >> >>
-> >> >> >> All traffic that pass the POSTROUTING chain in the NAT table is
-> >>leaving
-> >> >> >>the
-> >> >> >> firewall box (through a physical interface e.g.:eth0 or through a
-> >> >>virtual
-> >> >> >> interface e.g.:ipsec0).
-> >> >> >>
-> >> >> >> Jorge Davila..
-> >> >> >>
-> >> >> >> On Tue, 5 Jun 2007 15:29:47 +0300
-> >> >> >>  "noa levy" <noalevy@gmail.com> wrote:
-> >> >> >> > Hi All,
-> >> >> >> >
-> >> >> >> > I have a setup where I need to SNAT traffic that will be going out
-> >> >>via
-> >> >> >> > an IPSec tunnel. The NAT must take place before the IPSec
-> >> >> >> > encryption+encapsulation, so I need the packet to first go through
-> >> >> >> > SNAT and then match an IPSec policy. After being IPSec-ified, I
-> >>need
-> >> >> >> > the packets to go through routing again.
-> >> >> >> > My question:
-> >> >> >> > SNAT takes place in POST_ROUTING. Can IPSec be applied after that?
-> >>I
-> >> >> >> > have read that after IPSec the packet gets injected to LOCAL_OUT
-> >> >> >> > again, but when does the actual IPSec policy decision take place?
-> >> >> >> > Won't it happen *before* SNAT? Can I control it?
-> >> >> >> >
-> >> >> >> > Thanks,
-> >> >> >> > Noa
-> >> >> >> >
-> >> >> >> >
-> >> >> >>
-> >> >> >> Jorge Isaac Davila Lopez
-> >> >> >> Nicaragua Open Source
-> >> >> >> +505 430 5462
-> >> >> >> davila@nicaraguaopensource.com
-> >> >> >>
-> >> >> >
-> >> >>
-> >> >> Jorge Isaac Davila Lopez
-> >> >> Nicaragua Open Source
-> >> >> +505 430 5462
-> >> >> davila@nicaraguaopensource.com
-> >> >>
-> >> >
-> >>
-> >> Jorge Isaac Davila Lopez
-> >> Nicaragua Open Source
-> >> +505 430 5462
-> >> davila@nicaraguaopensource.com
-> >>
-> >
->
-> Jorge Isaac Davila Lopez
-> Nicaragua Open Source
-> +505 430 5462
-> davila@nicaraguaopensource.com
->
+I'm not sure why you would be wanting to SNAT 8 systems to the same IP, b=
+ut hey, it's your script.  The rules them selves look good enough.
+
+> Which works great. However, I am wanting to pass any IP traffic from=20
+> the 192.168.2.x range to be passed through a socks proxy on a specific=20
+> port, which I have been told can work with:
+
+(Comments in line below)
+
+> #!/bin/sh
+>=20
+> LOCAL_NET=3D192.168.2.0/24
+> /sbin/iptables -F
+> /sbin/iptables -t nat -F
+> /sbin/iptables -P INPUT ACCEPT
+> /sbin/iptables -P FORWARD DROP
+> /sbin/iptables -P OUTPUT DROP
+
+A default of DROP in the OUTPUT can catch you on a LOT of things.
+
+> /sbin/iptables -t nat -P OUTPUT ACCEPT
+> /sbin/iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destinat=
+ion 127.0.0.1:5353
+> /sbin/iptables -t nat -A OUTPUT -o lo -j RETURN
+> /sbin/iptables -t nat -A OUTPUT -d 127.0.0.1 -j RETURN
+> /sbin/iptables -t nat -A OUTPUT -d $LOCAL_NET -j RETURN
+> /sbin/iptables -t nat -A OUTPUT -m owner --uid-owner 103 -j RETURN
+> /sbin/iptables -t nat -A OUTPUT -p tcp --syn -j DNAT --to-destination 1=
+27.0.0.1:1211
+
+So you are wanting to block all outbound traffic except for the following=
+ conditions:
+ - Loop back traffic
+ - Local host network traffic
+ - Local network traffic
+ - Any thing sent by uid 103
+
+Is this really what you are wanting to do?
+
+Loop back and local host network are really about the same unless you hav=
+e other subnets bound to your loop back interface or for some strange rea=
+son the 127.0.0.0/8 subnet bound to something other than loop back.
+
+It looks like you are using a local DNS (proxy?) server and redirecting a=
+ny DNS queries to it.
+
+Then there is the main critter where you are redirecting any new TCP traf=
+fic to a service on the local host.  I'm not quite sure what will happen =
+to the destination IP and port of the request traffic.  I'm afraid that t=
+hey will be translated to be the local host and port you are DNATing to, =
+not the original destination.  If the original destination is lost, how i=
+s your proxy going to work?  I guess I should as, are you trying to trans=
+parent proxy or are you really telling your client systems that they are =
+using a proxy?
+
+> /sbin/iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> /sbin/iptables -A OUTPUT -o lo -j ACCEPT
+> /sbin/iptables -A OUTPUT -d 127.0.0.1 -j ACCEPT
+> /sbin/iptables -A OUTPUT -d $LOCAL_NET -j ACCEPT
+> /sbin/iptables -A OUTPUT -m owner --uid-owner 103 -j ACCEPT
+> /sbin/iptables -A OUTPUT -j LOG
+> /sbin/iptables -A OUTPUT -j REJECT=20
+
+Again, you are wanting to block all outbound traffic except for the follo=
+wing conditions:
+ - Loop back traffic
+ - Local host network traffic
+ - Local network traffic
+ - Any thing sent by uid 103
+
+Any thing that is not allowed out is logged and rejected.
+
+The state rule is the normal short cut to by pass the rules for previousl=
+y seen traffic.
+
+As an aside:  Why are you filtering in your nat table?  Filtering really =
+is better done in the filter table.
+
+> If someone is able to help me figure this out, I am offering a=20
+> reward of =A350 (about $100) as it is driving me insane!!!
+
+I don't see any thing to out standing other than the fact, which may be m=
+y unfamiliarity with Socks, that any traffic not explicitly allowed TCP t=
+raffic is being redirected in to one port on the system.  I'm not sure th=
+at this will work.  However like I have said, I do not use Socks so I am =
+not familiar with it.  To me, when you are DNATing to the local port, you=
+ are going to loose your destination IP and port.  Thus, how will your se=
+rvice know where to send the traffic to unless there is some sort of indi=
+cator in what is coming in to the service.  If there is data coming in to=
+ the service telling it where to connect to, then you have obviously conf=
+igured the clients to talk to the service.  If you have configured the cl=
+ient to talk to the service, why are you having to redirect the traffic? =
+ Why did you not configure the client to talk directly to the correct por=
+t of the service?
+
+It almost sounds like you are wanting to do transparent proxy with Squid.=
+  Squid is an entirely different prosy than Socks.  Socks (to my knowledg=
+e) is a system for a client to request that an intermediary (bastion) hos=
+t make the connection on the client's behalf.  With Socks, the client pas=
+ses information on where it wants to connect to the Socks proxy.
+
+Squid transparent proxy on the other hand is entirely different.  Squid i=
+s primarily used to proxy HTTP / HTTPS requests on behalf of clients.  Pa=
+rt of the HTTP protocol is the information that you are trying to request=
+.  I.e. you pass what host (name) and item that you want.  Squid can inte=
+rpret these requests and make the appropriate connection on your behalf. =
+ Or, you can do the standard thing and configure Squid as a standard prox=
+y and just point the clients to it and it will behave more like a Socks p=
+roxy where the client tells Squid what it wants and Squid then goes and g=
+ets it.
+
+Incidentally, setting Squid up as a transparent proxy and redirecting any=
+ and all HTTP traffic in to it is not difficult and can be done in a very=
+ similar manner (as far as the redirects on the router).
+
+Digest this and let me know if you have any more questions.
+
+
+
+Grant. . . .
 
