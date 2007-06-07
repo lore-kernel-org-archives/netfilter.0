@@ -1,14 +1,13 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: SNAT before IPSec
-Date: Thu, 07 Jun 2007 13:03:54 -0500
-Message-ID: <4668488A.8040102@riverviewtech.net>
-References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>	<web-74829660@bk1.webmaillogin.com>	<8bd3dfad0706051429r7c37e29dhcd8d2550a613bab3@mail.gmail.com>	<web-17532572@bk3.webmaillogin.com>	<8bd3dfad0706051540t626bf02fk15e20eace4818b3e@mail.gmail.com>	<web-17534558@bk3.webmaillogin.com>	<8bd3dfad0706051605u49cdbf17jca76d1d74ebdd26b@mail.gmail.com>	<web-73937813@bk2.webmaillogin.com>	<8bd3dfad0706070840i2b80fa4bl5a9a4ae5973b0e01@mail.gmail.com>
-	<46683B69.8000303@riverviewtech.net>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: "Martin McKeay" <mmckeay@stillsecure.com>
+Subject: RE: ..prevention, was: syn DDoS attack solution
+Date: Thu, 7 Jun 2007 12:41:44 -0600
+Message-ID: <5C9E8CCEEB81ED498AC0C3B0054704F302A2379F@webmail.latis.com>
+References: <466583F4.8080107@SCampbell.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46683B69.8000303@riverviewtech.net>
+Content-class: urn:content-classes:message
+In-Reply-To: <466583F4.8080107@SCampbell.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,33 +18,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 06/07/07 12:07, Grant Taylor wrote:
-> iptables -t nat -A PREROUTING -i $WAN -d D.E.F.x/24 -j NETMAP --to 
-> A.B.C.x/24
-> iptables -t nat -A POSTROUTING -o $LAN -s A.B.C.x/24 -j NETMAP --to 
-> D.E.F.x/24
-> 
-> This should cause the NETMAPing to happen at the remote end of the vpn 
-> link and (hopefully) not confuse the router at the local end of the vpn 
-> link.
-
-I've done some more thinking and I think it would be better to do the SNAT at the local end of the vpn link.  Doing the SNAT on the remote end will work, but it is not as scalable as doing it on the local end.
-
-If you consider your situation where you have multiple networks (3 or more) that are all the same subnet that you want to tie together, you have to SNAT and DNAT for each network.  DNATing should be done at the remove end to change from the bogus address to the real address.  If SNATing is done at the remove end, the remote end will have to have rules for each and every other network to know what to SNAT to.  If SNATing is done at the local end, the local router knows what to SNAT to and the remote end will just DNAT and reply.  So a slightly modified version of the above rules would be:
-
-iptables -t nat -A PREROUTING -i $WAN -d D.E.F.x/24 -j NETMAP --to A.B.C.x/24
-iptables -t nat -A POSTROUTING -o $WAN -d D.E.N.x/16 -j NETMAP --to D.E.M.x/24
-
-Where D.E.N.x/16 is the larger class B that encompasses all remote networks.  I.e. selectively SNAT only when you are going to a remote network.
-
-Where D.E.M.x/24 is the local bogus network.
-
-This *SHOULD* allow you to have two rules on each system to allow all of them to communicate with each other presuming that they have routes for the D.E.N.x/16 (sub)network(s), be it an ethernet link, IPSec VPN, ATM WAN, or what ever.
+I writing a blog post about the rules for blocking the bogon IP's
+(unused IP networks) using the firewall module of our Cobia,  I was
+considering including the equivalent iptables rules.  Would this be of
+interest to anyone?
 
 
+Martin McKeay, CISSP, GSNA
+Cobia Product Evangelist
+StillSecure
+martin@stillsecure.com
+707-495-7926
+http://www.cobiablog.com
 
-Grant. . . .
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Steven M
+Campbell
+Sent: Tuesday, June 05, 2007 9:41 AM
+To: Arnt Karlsen
+Cc: netfilter@lists.netfilter.org
+Subject: Re: ..prevention, was: syn DDoS attack solution
+
+Arnt Karlsen wrote:
+> On Tue, 05 Jun 2007 10:16:40 -0400, Steven wrote in message
+> <46657048.4040600@SCampbell.net>:
+>
+>  =20
+>> And, most important for folks here, do egress filtering on your=20
+>> firewall!    Help prevent zombie machines on your own networks from=20
+>> being a problem, you can't stop your end users from bringing=20
+>> infections into your network but you can control their spread.
+>>    =20
+>
+> ..what tricks _are_ out there?  Set up some kinda p0f deamon and cut=20
+> 'n tarpit any and all Wintendo network traffic attempts?
+> Or even feed them LROS thru ActiveX if they need firm hints?
+>
+>  =20
+
+Not really very tricky, limit outbound traffic to what is needed.   Do=20
+all of your workstations need UDP ports outbound?  Smtp?    For a lot of
+
+sites the average workstations internet requirements are very small,
+especially if proxys are used for SMTP,HTTP,FTP, etc.  Just by blocking
+most of the end users from direct internet access (or at least to a
+small set of outbound protocol/ports) we render those machines pretty
+useless to the bad guys.=20
+
+It does, however, become very tricky if it's not done up front.  It's
+really really tough to figure out what the requirements are if anyone=20
+could historically do anything they wanted.    It's far better to=20
+seriously restrict things up front and put in the exceptions as you find
+
+them.   Sites that have historically allowed all outbound traffic are a=20
+two fold problem, it's hard to fix and they are exactly the sorts of
+sites the bad guys like to use.
+
+
 
