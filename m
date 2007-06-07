@@ -1,22 +1,9 @@
-From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Re: SNAT before IPSec
-Date: Thu, 07 Jun 2007 14:57:56 -0600
-Message-ID: <web-75050127@bk1.webmaillogin.com>
-References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>
-	<web-74829660@bk1.webmaillogin.com>
-	<8bd3dfad0706051429r7c37e29dhcd8d2550a613bab3@mail.gmail.com>
-	<web-17532572@bk3.webmaillogin.com>
-	<8bd3dfad0706051540t626bf02fk15e20eace4818b3e@mail.gmail.com>
-	<web-17534558@bk3.webmaillogin.com>
-	<8bd3dfad0706051605u49cdbf17jca76d1d74ebdd26b@mail.gmail.com>
-	<web-73937813@bk2.webmaillogin.com>
-	<8bd3dfad0706070840i2b80fa4bl5a9a4ae5973b0e01@mail.gmail.com>
-	<46683B69.8000303@riverviewtech.net>
-	<4668488A.8040102@riverviewtech.net>
+From: John Zavgren <john@zavgren.com>
+Subject: linux-2.6.21 iptables and NAT
+Date: Thu, 07 Jun 2007 14:42:54 -0700
+Message-ID: <20070607144254.857d60f3cb0f91334d2d3f4f7d335ff9.26b3e9b4ca.wbe@email.secureserver.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4668488A.8040102@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -27,69 +14,65 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: gtaylor+reply@riverviewtech.net
-Cc: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: TEXT/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-Grant,
+I'm trying to build NAT functionality into the 2.6.21 kernel but it
+seems to have been stripped out.
 
-In your analysis you forget that the packet delivered by the Router A to 
-Router B (or viceversa) is an encrypted packet. Once the packet in decrypted 
-in the other end the headers are the headers of the original packets. Then, 
-the scenary is more funny.
+The default 2.6.15 kernel that comes with Fedora Core 5 contains the
+following parameter setting:
+CONFIG_IP_NF_NAT=m
 
-Jorge.
+I cannot activate such a "rule" in 2.6.21. The complete list of options
+is:
+# IP: Netfilter Configuration
+#
+CONFIG_IP_NF_QUEUE=m
+CONFIG_IP_NF_IPTABLES=m
+CONFIG_IP_NF_MATCH_IPRANGE=m
+CONFIG_IP_NF_MATCH_TOS=m
+CONFIG_IP_NF_MATCH_RECENT=m
+CONFIG_IP_NF_MATCH_ECN=m
+# CONFIG_IP_NF_MATCH_AH is not set
+CONFIG_IP_NF_MATCH_TTL=m
+CONFIG_IP_NF_MATCH_OWNER=m
+CONFIG_IP_NF_MATCH_ADDRTYPE=m
+CONFIG_IP_NF_FILTER=m
+CONFIG_IP_NF_TARGET_REJECT=m
+CONFIG_IP_NF_TARGET_LOG=m
+CONFIG_IP_NF_TARGET_ULOG=m
+CONFIG_IP_NF_MANGLE=m
+CONFIG_IP_NF_TARGET_TOS=m
+CONFIG_IP_NF_TARGET_ECN=m
+CONFIG_IP_NF_TARGET_TTL=m
+CONFIG_IP_NF_RAW=m
+CONFIG_IP_NF_ARPTABLES=m
 
-On Thu, 07 Jun 2007 13:03:54 -0500
-  Grant Taylor <gtaylor@riverviewtech.net> wrote:
-> On 06/07/07 12:07, Grant Taylor wrote:
->> iptables -t nat -A PREROUTING -i $WAN -d D.E.F.x/24 -j NETMAP --to 
->> A.B.C.x/24
->> iptables -t nat -A POSTROUTING -o $LAN -s A.B.C.x/24 -j NETMAP --to 
->> D.E.F.x/24
->> 
->> This should cause the NETMAPing to happen at the remote end of the vpn 
->> link and (hopefully) not confuse the router at the local end of the vpn 
->> link.
-> 
-> I've done some more thinking and I think it would be better to do the SNAT 
->at the local end of the vpn link.  Doing the SNAT on the remote end will 
->work, but it is not as scalable as doing it on the local end.
-> 
-> If you consider your situation where you have multiple networks (3 or 
->more) that are all the same subnet that you want to tie together, you have 
->to SNAT and DNAT for each network.  DNATing should be done at the remove 
->end to change from the bogus address to the real address.  If SNATing is 
->done at the remove end, the remote end will have to have rules for each and 
->every other network to know what to SNAT to.  If SNATing is done at the 
->local end, the local router knows what to SNAT to and the remote end will 
->just DNAT and reply.  So a slightly modified version of the above rules 
->would be:
-> 
-> iptables -t nat -A PREROUTING -i $WAN -d D.E.F.x/24 -j NETMAP --to 
->A.B.C.x/24
-> iptables -t nat -A POSTROUTING -o $WAN -d D.E.N.x/16 -j NETMAP --to 
->D.E.M.x/24
-> 
-> Where D.E.N.x/16 is the larger class B that encompasses all remote 
->networks.  I.e. selectively SNAT only when you are going to a remote 
->network.
-> 
-> Where D.E.M.x/24 is the local bogus network.
-> 
-> This *SHOULD* allow you to have two rules on each system to allow all of 
->them to communicate with each other presuming that they have routes for the 
->D.E.N.x/16 (sub)network(s), be it an ethernet link, IPSec VPN, ATM WAN, or 
->what ever.
-> 
-> 
-> 
-> Grant. . . .
-> 
-> 
+Of course... if I try to set up a NAT rule with iptables... it fails:
 
-Jorge Isaac Davila Lopez
-Nicaragua Open Source
-+505 430 5462
-davila@nicaraguaopensource.com
+[root@adrastea linux-2.6.21]# iptables -t nat -L
+iptables v1.3.7: can't initialize iptables table `nat': Table does not
+exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
+
+because there is no KLM for nat.... nor can I build it.
+
+What's going on here?
+
+RSVP
+and
+Thanks!
+
+
+John Zavgren
+john@zavgren.com
+603-371-0513 (home)
+603-801-2094 (mobile)
+
+Vote in the National Cheney Impeachment Poll
+http://www.usalone.com/blogvoices.php?Cheney%20Impeachment%3F
+
+
 
