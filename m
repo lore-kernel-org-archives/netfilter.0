@@ -1,13 +1,11 @@
-From: "Martin McKeay" <mmckeay@stillsecure.com>
-Subject: RE: ..prevention, was: syn DDoS attack solution
-Date: Thu, 7 Jun 2007 12:41:44 -0600
-Message-ID: <5C9E8CCEEB81ED498AC0C3B0054704F302A2379F@webmail.latis.com>
-References: <466583F4.8080107@SCampbell.net>
+From: Stefan Mayr <stefan@mayr-stefan.de>
+Subject: Using DNAT and SNAT to do a local redirection does not work (want
+ to do what rinetd does with iptables)
+Date: Thu, 07 Jun 2007 22:30:57 +0200
+Message-ID: <46686B01.6080605@mayr-stefan.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <466583F4.8080107@SCampbell.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,62 +19,90 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I writing a blog post about the rules for blocking the bogon IP's
-(unused IP networks) using the firewall module of our Cobia,  I was
-considering including the equivalent iptables rules.  Would this be of
-interest to anyone?
+Hi,
 
+assume the following clustering setup:
 
-Martin McKeay, CISSP, GSNA
-Cobia Product Evangelist
-StillSecure
-martin@stillsecure.com
-707-495-7926
-http://www.cobiablog.com
+Loadbalancer              Server1:
+eth0: 192.168.1.1/24  ->  eth0: 192.168.1.2/24
+eth0: 192.168.1.101/32    lo0:  192.168.1.101/32 JBoss-Web bound to 8080
+eth0: 192.168.1.102/32    lo0:  192.168.1.102/32 JBoss-Web bound to 8080
+eth0: 192.168.1.103/32    lo0:  192.168.1.103/32 JBoss-Web bound to 8080
+...                       ...
 
------Original Message-----
-From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Steven M
-Campbell
-Sent: Tuesday, June 05, 2007 9:41 AM
-To: Arnt Karlsen
-Cc: netfilter@lists.netfilter.org
-Subject: Re: ..prevention, was: syn DDoS attack solution
+                          Server2:
+                      ->  eth0: 192.168.1.3/24
+                          lo0:  192.168.1.101/32 JBoss-Web bound to 8080
+                          lo0:  192.168.1.102/32 JBoss-Web bound to 8080
+                          lo0:  192.168.1.103/32 JBoss-Web bound to 8080
+                          ...
 
-Arnt Karlsen wrote:
-> On Tue, 05 Jun 2007 10:16:40 -0400, Steven wrote in message
-> <46657048.4040600@SCampbell.net>:
->
->  =20
->> And, most important for folks here, do egress filtering on your=20
->> firewall!    Help prevent zombie machines on your own networks from=20
->> being a problem, you can't stop your end users from bringing=20
->> infections into your network but you can control their spread.
->>    =20
->
-> ..what tricks _are_ out there?  Set up some kinda p0f deamon and cut=20
-> 'n tarpit any and all Wintendo network traffic attempts?
-> Or even feed them LROS thru ActiveX if they need firm hints?
->
->  =20
+all Linux machines (Balancer is Linux virtual server + keepalived with
+direct routing setup)
 
-Not really very tricky, limit outbound traffic to what is needed.   Do=20
-all of your workstations need UDP ports outbound?  Smtp?    For a lot of
+Loadbalancing works so far:
+1. Balancer receives packet and forwards it to Server1 or Server2 (L2
+via MAC-address)
+2. Server responds direct to the client (no backward traffic over the
+loadbalancer)
 
-sites the average workstations internet requirements are very small,
-especially if proxys are used for SMTP,HTTP,FTP, etc.  Just by blocking
-most of the end users from direct internet access (or at least to a
-small set of outbound protocol/ports) we render those machines pretty
-useless to the bad guys.=20
+And here comes the problem:
+the loadbalancer should check whether the JBoss-Webservers are still
+alive but internal check-utils can only connect to the ip eth0. The
+different JBoss instances are not bound to this IP because they only the
+first could bind to port 8080. But I can specify another port for each
+health check. So my thought was:
+Health check against Server1:
+1. JBoss: check against 192.168.1.2:10001, NAT it to 192.168.1.101:8080
+2. JBoss: check against 192.168.1.2:10002, NAT it to 192.168.1.102:8080
+3. JBoss: check against 192.168.1.2:10003, NAT it to 192.168.1.103:8080
+and so on for the next server.
 
-It does, however, become very tricky if it's not done up front.  It's
-really really tough to figure out what the requirements are if anyone=20
-could historically do anything they wanted.    It's far better to=20
-seriously restrict things up front and put in the exceptions as you find
+I thought this would be easy to do with some simple iptables rules on
+Server1/2. Maybe I am to stupid but I cannot get it to work.
 
-them.   Sites that have historically allowed all outbound traffic are a=20
-two fold problem, it's hard to fix and they are exactly the sorts of
-sites the bad guys like to use.
+I thought to use the following rules:
+# Clear rules
+iptables -t nat -F PREROUTING
+iptables -t nat -F POSTROUTING
+# Setup NAT to change destination
+iptables -t nat -A PREROUTING  -p tcp -d 192.168.1.2  --dport 10001 -j
+DNAT --to-destination 192.168.1.101:8080
+iptables -t nat -A PREROUTING  -p tcp -d 192.168.1.2  --dport 10002 -j
+DNAT --to-destination 192.168.1.102:8080
+iptables -t nat -A PREROUTING  -p tcp -d 192.168.1.2  --dport 10003 -j
+DNAT --to-destination 192.168.1.103:8080
+# make my answers appear from the server-ip and change source back
+iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.101  --sport 8080
+-j SNAT --to-source=192.168.1.2:10001
+iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.102  --sport 8080
+-j SNAT --to-source=192.168.1.2:10002
+iptables -t nat -A POSTROUTING -p tcp -s 192.168.1.103  --sport 8080
+-j SNAT --to-source=192.168.1.2:10003
 
+so far my idea - but it doesn't work. I added some logging to these
+rules an found out the following:
+1. when I open a connection to the server, e.g. 192.168.1.2:10001, the
+DNAT works (at least I see the "SYN" in the nat-PREROUTING-LOG)
+2. the server responds with "ACK RST" but from 192.168.1.101:8080
+(filter-OUTPUT-LOG)
+
+- Why does the response not go through nat-POSTROUTING?
+- Why the "RST"? Or do I read the logs all wrong?
+
+I hope somebody can help me with this.
+
+What I want to achive is the functionality of rinetd with NAT to
+addresses/ports on the same machine instead of a daemon that acts like a
+proxy (only another process that could die ...)
+
+Thanks in advance,
+
+    Stefan
+
+PS: The "big picture" with by JBoss-instances is only my example setup.
+To exclude the JBoss as problem I tested it also with httpd and telnetd.
+rinetd works - but I prefer having this done in the linux kernel - if it
+can do it. Just to eliminate sources of failure.
 
 
