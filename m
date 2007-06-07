@@ -1,10 +1,11 @@
-From: "Hu" <budget@apocyber.net>
-Subject: iptables/pptp restriction
-Date: Sat, 9 Jun 2007 08:22:06 -0500 (CDT)
-Message-ID: <61039.67.184.120.135.1181395326.squirrel@67.184.120.135>
+From: "Vincent Wen" <vincent.wen@advantechamt.com>
+Subject: linux-2.6.21 and iptables1.3.7 modprobe could not parse modules.dep
+Date: Thu, 7 Jun 2007 10:54:15 -0400
+Message-ID: <1A60C93388AFD3419AEE0E20A116D320028E1951@exch2k>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,20 +19,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a pptp server (3.1.1.3) that allows technicians to gain access to
-my network.
+Hi,
 
-I have a particular user who I am granted a static ip address to (3.1.1.200).
+I have a problem with the linux 2.6.21 and iptables 1.3.7, I've built
+ip_tables into the kernel with CONFIG_IP_NF_IPTABLES=3Dy and build the
+iptables with NO_SHARED_LIBS=3D1, now when I start the iptables,  I got
+the error message, modprobe :could not parse modules.dep.=20
 
-I only want this user to have access to, for instance, servers 3.1.1.10
-and 3.1.1.20.
+I have tried with CONFIG_IP_NF_IPTABLES=3Dm, there are still some error.
 
-How do I, using iptables on 3.1.1.3, restrict this user to only have
-access to .10 and .20?
+when I build the itables without the "NO_SHARED_LIBS=3D1",  no modprobe
+error message, but the iptables couldn't get --dport work.
 
-Any assistance will be greatly appreciated.
+Some advice would be very welcome. Thanks very much.
 
-Thanks in advance,
-Hu
-
+Vincent
 
