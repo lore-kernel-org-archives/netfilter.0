@@ -1,13 +1,14 @@
-From: Arnt Karlsen <arnt@c2i.net>
-Subject: Re: ..prevention, was: syn DDoS attack solution
-Date: Fri, 8 Jun 2007 03:40:49 +0200
-Message-ID: <20070608034049.f5a0e1b7.arnt@c2i.net>
-References: <466583F4.8080107@SCampbell.net>
-	<5C9E8CCEEB81ED498AC0C3B0054704F302A2379F@webmail.latis.com>
+From: "semi linux" <linuxsemi@gmail.com>
+Subject: rtacct: history is aged out, resetting
+Date: Fri, 8 Jun 2007 08:56:51 -0700
+Message-ID: <e53321d30706080856m28ff0a21k397289bb5432377b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <5C9E8CCEEB81ED498AC0C3B0054704F302A2379F@webmail.latis.com>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=ScXocrm5OLrNU5mcxWONPUw7MLYxxQhQormBWbhpwvxjHczaJIUDDiVzRwfWTi7Zszk9SO8FPDNw0hetMdfoRvR+eSZ2Jn/iaqJi4pNC+tbNbZz0609GNANuSjXE8PaX3xedA0uILoSe79K2zRv5Shn7H7G2agVpuou537TWJMs=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,38 +19,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Martin McKeay <mmckeay@stillsecure.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Thu, 7 Jun 2007 12:41:44 -0600, Martin wrote in message 
-<5C9E8CCEEB81ED498AC0C3B0054704F302A2379F@webmail.latis.com>:
+I'm trying to debug a routing setup where I have iptables running to
+mangle and NAT packets on a bridge... I can see my packets being
+mangled by hitting both rules but when trying to verify they hit an
+alternate table using rtacct I get the following error message and
+output:
 
-> I writing a blog post about the rules for blocking the bogon IP's
-> (unused IP networks) using the firewall module of our Cobia,  I was
-> considering including the equivalent iptables rules.  Would this be of
-> interest to anyone?
-
-..yup.  Is _why_ I posted.
- 
-> Martin McKeay, CISSP, GSNA
-> Cobia Product Evangelist
-> StillSecure
-> martin@stillsecure.com
-> 707-495-7926
-> http://www.cobiablog.com
-> 
-> Arnt Karlsen wrote:
-> >
-> > ..what tricks _are_ out there?  Set up some kinda p0f deamon and cut 
-> > 'n tarpit any and all Wintendo network traffic attempts?
-> > Or even feed them LROS thru ActiveX if they need firm hints?
+[root@localhost ~]# rtacct
+rtacct: history is aged out, resetting
+#kernel
+Realm    BytesTo    PktsTo    BytesFrom    PktsFrom
+         BPSTo    PPSTo    BPSFrom    PPSFrom
 
 
--- 
-..med vennlig hilsen = with Kind Regards from Arnt... ;o)
-...with a number of polar bear hunters in his ancestry...
-  Scenarios always come in sets of three: 
-  best case, worst case, and just in case.
+Here's my route command:
+# ip route add default via $GATEWAY dev br0 table $TABLE_NAME realms 2
 
+And the command is successful with the realm properly listed as "2"...
+
+I just want to see if my packets are hitting this table or not... Any ideas?
+
+TIA,
+    Gareth
 
