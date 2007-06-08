@@ -1,14 +1,14 @@
-From: "semi linux" <linuxsemi@gmail.com>
-Subject: rtacct: history is aged out, resetting
-Date: Fri, 8 Jun 2007 08:56:51 -0700
-Message-ID: <e53321d30706080856m28ff0a21k397289bb5432377b@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: SNAT before IPSec
+Date: Fri, 08 Jun 2007 12:57:28 -0500
+Message-ID: <46699888.5000004@riverviewtech.net>
+References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>	<web-74829660@bk1.webmaillogin.com>	<8bd3dfad0706051429r7c37e29dhcd8d2550a613bab3@mail.gmail.com>	<web-17532572@bk3.webmaillogin.com>	<8bd3dfad0706051540t626bf02fk15e20eace4818b3e@mail.gmail.com>	<web-17534558@bk3.webmaillogin.com>	<8bd3dfad0706051605u49cdbf17jca76d1d74ebdd26b@mail.gmail.com>	<web-73937813@bk2.webmaillogin.com>	<8bd3dfad0706070840i2b80fa4bl5a9a4ae5973b0e01@mail.gmail.com>	<46683B69.8000303@riverviewtech.net>	<4668488A.8040102@riverviewtech.net>
+	<web-75050127@bk1.webmaillogin.com>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=ScXocrm5OLrNU5mcxWONPUw7MLYxxQhQormBWbhpwvxjHczaJIUDDiVzRwfWTi7Zszk9SO8FPDNw0hetMdfoRvR+eSZ2Jn/iaqJi4pNC+tbNbZz0609GNANuSjXE8PaX3xedA0uILoSe79K2zRv5Shn7H7G2agVpuou537TWJMs=
-Content-Disposition: inline
+In-Reply-To: <web-75050127@bk1.webmaillogin.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,28 +20,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-I'm trying to debug a routing setup where I have iptables running to
-mangle and NAT packets on a bridge... I can see my packets being
-mangled by hitting both rules but when trying to verify they hit an
-alternate table using rtacct I get the following error message and
-output:
+On 06/07/07 15:57, Jorge Davila wrote:
+> In your analysis you forget that the packet delivered by the Router A 
+> to Router B (or viceversa) is an encrypted packet. Once the packet in 
+> decrypted in the other end the headers are the headers of the 
+> original packets. Then, the scenary is more funny.
 
-[root@localhost ~]# rtacct
-rtacct: history is aged out, resetting
-#kernel
-Realm    BytesTo    PktsTo    BytesFrom    PktsFrom
-         BPSTo    PPSTo    BPSFrom    PPSFrom
+I was aware that IPSec encryption / decryption was going to take place. 
+  It is my experience that current IPSec implementations which tunnel 
+traffic do so with the traffic looping through through the kernel twice, 
+once unencrypted and once encrypted then on the receiving end once 
+encrypted and then once decrypted.  I was talking about doing the NATing 
+on the unencrypted / decrypted passes, not the encrypted pass.
+
+You are right that including the encryption / decryption in the 
+discussion would have made things much more complex and entertaining to 
+look at.
+
+Thankfully what I was trying to convey is done regardless of IPSec (the 
+way that I have messed with it) so it did not need to come in to the 
+discussion.
+
+Thanks for the pointer.  ;)
 
 
-Here's my route command:
-# ip route add default via $GATEWAY dev br0 table $TABLE_NAME realms 2
 
-And the command is successful with the realm properly listed as "2"...
-
-I just want to see if my packets are hitting this table or not... Any ideas?
-
-TIA,
-    Gareth
+Grant. . . .
 
