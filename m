@@ -1,16 +1,13 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Logging NAT Translations
-Date: Fri, 08 Jun 2007 00:36:31 +0200
-Message-ID: <4668886F.6080800@plouf.fr.eu.org>
-References: <ae1f24730705182015j533102bah985e9ad0e905cd2a@mail.gmail.com>
-	<Pine.LNX.4.61.0705222208440.4452@yvahk01.tjqt.qr>
-	<ae1f24730706051910o2538955drfc7ec59cf9aa3927@mail.gmail.com>
-	<Pine.LNX.4.61.0706060759470.1547@yvahk01.tjqt.qr>	<ae1f24730706060015j40c0fe5ek78a81c8816a0c5b5@mail.gmail.com>
-	<Pine.LNX.4.61.0706071009200.1547@yvahk01.tjqt.qr>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Using DNAT and SNAT to do a local redirection does not work
+ (want to do what rinetd does with iptables)
+Date: Thu, 07 Jun 2007 19:17:30 -0500
+Message-ID: <4668A01A.9060304@riverviewtech.net>
+References: <46686B01.6080605@mayr-stefan.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.61.0706071009200.1547@yvahk01.tjqt.qr>
+In-Reply-To: <46686B01.6080605@mayr-stefan.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,32 +18,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Hello,
+On 6/7/2007 3:30 PM, Stefan Mayr wrote:
+> And here comes the problem:  The loadbalancer should check whether 
+> the JBoss-Webservers are still alive but internal check-utils can 
+> only connect to the ip eth0. The different JBoss instances are not 
+> bound to this IP because they only the first could bind to port 8080. 
+> But I can specify another port for each health check. So my thought 
+> was:
 
-Jan Engelhardt a =E9crit :
->
->>>iptables -t nat -A ydm1 -j LOG "[Adress got SNATed to 134.76.13.21] "
->>>iptables -t nat -A ydm1 -j SNAT --to 134.76.13.21
->>>
->>>It already was a complete example. When you SNAT, you know you do.
+If you are using the loop back interface, this will not work.
 
-Not always.
-- A NAT may fail due to a conflict with an existing mapping, so you=20
-believe you SNAT but actually don't. However I do admit that this=20
-situation is unlikely to happen when you don't retrict the port range in=20
-the SNAT target.
-- Implicit SNAT may be performed to avoid conflict with an existing=20
-rule, so you SNAT but do not know you do.
+> I thought this would be easy to do with some simple iptables rules on
+> Server1/2. Maybe I am to stupid but I cannot get it to work.
 
-> I rarely need ranges, mostly because it does not RR over
-> them like I thought it does :(
+No, you are not stupid.  At least I don't think you are.
 
-It used to, prior to kernel version 2.6.11. And I believe it still does=20
-in the latest 2.4 kernel. But the developpers thought this behaviour was=20
-not desirable because it broke some usages and replaced the round robin=20
-with a hash so the same original source+destination pair always gets the=20
-same address in the SNAT range.
+> so far my idea - but it doesn't work. I added some logging to these
+> rules an found out the following:
+> 
+> 1. when I open a connection to the server, e.g. 192.168.1.2:10001,
+> the DNAT works (at least I see the "SYN" in the nat-PREROUTING-LOG)
+> 2. the server responds with "ACK RST" but from 192.168.1.101:8080
+> (filter-OUTPUT-LOG)
+> 
+> - Why does the response not go through nat-POSTROUTING?
+> - Why the "RST"? Or do I read the logs all wrong?
+
+You are using the loop back interface. Loop back is a very special 
+network interface.  If I recall correctly, it will only allow its self 
+to talk to it.  Thus you can not NAT traffic in to the loop back 
+interface.  The kernel will block this.  I think this is why you are 
+seeing the RST packets.
+
+> I hope somebody can help me with this.
+
+Try using a dummy network interface, or an ethernet interface that is 
+not connected to any thing.
+
+You could also probably bind the address to the main ethernet interface 
+and use ARPTables to prevent each node from responding to ARP request by 
+preventing it from ever seeing the ARP request.  The ARP issue (as I'm 
+sure you are aware) is why you usually use other interfaces.
+
+
+
+Grant. . . .
 
