@@ -1,8 +1,9 @@
-From: Yaniv Fine <yfine@jacada.com>
-Subject: iptables port forwarding to tun0 device
-Date: Wed, 6 Jun 2007 16:45:24 +0300
-Message-ID: <OF00836A91.C83C2AC5-ONC22572F2.004ABBD7-C22572F2.004B9171@jacada.com>
+From: "Hu" <budget@apocyber.net>
+Subject: iptables/pptp restriction
+Date: Sat, 9 Jun 2007 08:22:06 -0500 (CDT)
+Message-ID: <61039.67.184.120.135.1181395326.squirrel@67.184.120.135>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,75 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
+I have a pptp server (3.1.1.3) that allows technicians to gain access to
+my network.
 
-Hi experts
+I have a particular user who I am granted a static ip address to (3.1.1.200).
 
-i have the following configuration
-eth0.10.90.20.3/24
-tun0=172.16.10.x/24
+I only want this user to have access to, for instance, servers 3.1.1.10
+and 3.1.1.20.
 
-eth0 configure as Wan interface
-eth1/tun0 are lan interface .
-tun0 network 172.16.10.200 =>  web server
-in side my tun0 there is a web server i need to manage for the outside
-world (eth0, it can also be restricted to specific ip address )
-i am trying to find a way using port forwarding to enable this .
-can some one please help me modify my correct iptables rules
+How do I, using iptables on 3.1.1.3, restrict this user to only have
+access to .10 and .20?
 
+Any assistance will be greatly appreciated.
 
-
-
-IPTABLES="/sbin/iptables"
-EXTIF="eth0"
-INTIF="eth1"
-
-#Flush all rules
-$IPTABLES -F
-$IPTABLES -F -t nat
-$IPTABLES -F -t mangle
-
-#Set default behaviour
-$IPTABLES -P INPUT DROP
-$IPTABLES -P FORWARD ACCEPT
-$IPTABLES -P OUTPUT ACCEPT
-
-#Allow related and established on all interfaces (input)
-$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-#Allow releated, established and ssh on $EXTIF. Reject everything else.
-$IPTABLES -A INPUT -i $EXTIF -p tcp -m tcp --dport 22 --syn -j ACCEPT
-#$IPTABLES -A INPUT -i $EXTIF -p tcp -m tcp --dport 80 --syn -j ACCEPT
-$IPTABLES -A INPUT -i $EXTIF -j REJECT
-
-#Allow related and established from $INTIF. Drop everything else.
-$IPTABLES -A INPUT -i $INTIF -j DROP
-
-#Allow http and https on other interfaces (input).
-#This is only needed if authentication server is on same server as chilli
-$IPTABLES -A INPUT -p tcp -m tcp --dport 80 --syn -j ACCEPT
-$IPTABLES -A INPUT -p tcp -m tcp --dport 443 --syn -j ACCEPT
-
-#Allow 3990 on other interfaces (input).
-$IPTABLES -A INPUT -p tcp -m tcp --dport 3990 --syn -j ACCEPT
-
-#Allow ICMP echo on other interfaces (input).
-$IPTABLES -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
-
-#Allow everything on loopback interface.
-$IPTABLES -A INPUT -i lo -j ACCEPT
-
-# Drop everything to and from $INTIF (forward)
-# This means that access points can only be managed from ChilliSpot
-$IPTABLES -A FORWARD -i $INTIF -j DROP
-$IPTABLES -A FORWARD -o $INTIF -j DROP
-
-#Enable NAT on output device
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-
-
-thank you !
+Thanks in advance,
+Hu
 
 
