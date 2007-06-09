@@ -1,14 +1,14 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: SNAT before IPSec
-Date: Fri, 08 Jun 2007 12:57:28 -0500
-Message-ID: <46699888.5000004@riverviewtech.net>
-References: <8bd3dfad0706050529s484d42b6t9ef4ae0fd1730367@mail.gmail.com>	<web-74829660@bk1.webmaillogin.com>	<8bd3dfad0706051429r7c37e29dhcd8d2550a613bab3@mail.gmail.com>	<web-17532572@bk3.webmaillogin.com>	<8bd3dfad0706051540t626bf02fk15e20eace4818b3e@mail.gmail.com>	<web-17534558@bk3.webmaillogin.com>	<8bd3dfad0706051605u49cdbf17jca76d1d74ebdd26b@mail.gmail.com>	<web-73937813@bk2.webmaillogin.com>	<8bd3dfad0706070840i2b80fa4bl5a9a4ae5973b0e01@mail.gmail.com>	<46683B69.8000303@riverviewtech.net>	<4668488A.8040102@riverviewtech.net>
-	<web-75050127@bk1.webmaillogin.com>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Stefan Mayr <stefan@mayr-stefan.de>
+Subject: Re: Using DNAT and SNAT to do a local redirection does not work
+ (want to do what rinetd does with iptables)
+Date: Sat, 09 Jun 2007 21:25:51 +0200
+Message-ID: <466AFEBF.6000609@mayr-stefan.de>
+References: <46686B01.6080605@mayr-stefan.de>
+	<4668A01A.9060304@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-75050127@bk1.webmaillogin.com>
+In-Reply-To: <4668A01A.9060304@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,33 +19,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 06/07/07 15:57, Jorge Davila wrote:
-> In your analysis you forget that the packet delivered by the Router A 
-> to Router B (or viceversa) is an encrypted packet. Once the packet in 
-> decrypted in the other end the headers are the headers of the 
-> original packets. Then, the scenary is more funny.
+Grant Taylor wrote:
+> On 6/7/2007 3:30 PM, Stefan Mayr wrote:
+> 
+> If you are using the loop back interface, this will not work.
 
-I was aware that IPSec encryption / decryption was going to take place. 
-  It is my experience that current IPSec implementations which tunnel 
-traffic do so with the traffic looping through through the kernel twice, 
-once unencrypted and once encrypted then on the receiving end once 
-encrypted and then once decrypted.  I was talking about doing the NATing 
-on the unencrypted / decrypted passes, not the encrypted pass.
+An answer I often read but nobody says what's wrong with loopback. I
+thought it depended on the rules of the scenarios (obviously too much
+thinking involved here).
 
-You are right that including the encryption / decryption in the 
-discussion would have made things much more complex and entertaining to 
-look at.
+> 
+> You are using the loop back interface. Loop back is a very special
+> network interface.  If I recall correctly, it will only allow its self
+> to talk to it.  Thus you can not NAT traffic in to the loop back
+> interface.  The kernel will block this.  I think this is why you are
+> seeing the RST packets.
 
-Thankfully what I was trying to convey is done regardless of IPSec (the 
-way that I have messed with it) so it did not need to come in to the 
-discussion.
+I really have to thank you for this enlightenment.
 
-Thanks for the pointer.  ;)
+> Try using a dummy network interface, or an ethernet interface that is
+> not connected to any thing.
+
+I used dummy0 and now my iptables ruleset works.
+
+> You could also probably bind the address to the main ethernet interface
+> and use ARPTables to prevent each node from responding to ARP request by
+> preventing it from ever seeing the ARP request.  The ARP issue (as I'm
+> sure you are aware) is why you usually use other interfaces.
+
+That is why I used the loopback-device and my /etc/sysctl.conf contains
+the following lines:
+net.ipv4.conf.all.arp_ignore = 1
+net.ipv4.conf.all.arp_announce = 2
+
+So arp-requests/announces are always answered/sent from the right interface.
+
+Now the lesson is learned, setup is up and running.
+
+Thanks,
+
+	Stefan
 
 
 
-Grant. . . .
+
+
+
 
