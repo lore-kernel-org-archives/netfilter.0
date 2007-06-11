@@ -1,13 +1,14 @@
-From: Olivier <olivierk@club-internet.fr>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: --match recent
-Date: Mon, 11 Jun 2007 20:12:13 +0200
-Message-ID: <20070611181213.GA12937@vvma.net>
-References: <mnet1.1181553816.24811.olivierk@club-internet.fr>
-	<466D5578.8070905@riverviewtech.net>
+Date: Mon, 11 Jun 2007 13:28:21 -0500
+Message-ID: <466D9445.5080101@riverviewtech.net>
+References: <mnet1.1181553816.24811.olivierk@club-internet.fr>	<466D5578.8070905@riverviewtech.net>
+	<20070611181213.GA12937@vvma.net>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <466D5578.8070905@riverviewtech.net>
+In-Reply-To: <20070611181213.GA12937@vvma.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +19,18 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Hello Grant,
+On 06/11/07 13:12, Olivier wrote:
+> I intend to count/limit only connection initiations, leaving alone the
+> rest. I can't figure out where I catch more than I think I catch.
 
-Thanks for youy response.
+What is your FORWARD chain's default policy?
 
-> Just a quick guess, but it looks like you are matching all SSH
-> packets, not just those of a connection trying to be established.
+What does netstat have to say about the connection(s)?
 
-I was thinking I was:
 
- 1. Letting NEW packet just pass ('la' stands for log&accept) but
-    counting them. (those I take are initiating the client connection
-    to the server)
 
- 2. Limiting those NEW paquets at 5 every 60 seconds. ('ld' stands for
-    log&drop)
-
-I intend to count/limit only connection initiations, leaving alone the
-rest. I can't figure out where I catch more than I think I catch.
-
-Best regards,
-
--- 
-Olivier K
+Grant. . . .
 
