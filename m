@@ -1,14 +1,11 @@
-From: "=?ISO-8859-1?Q?Martin_Schi=F8tz?=" <malinux@gmail.com>
-Subject: iptables state transfer
-Date: Mon, 11 Jun 2007 12:55:11 +0200
-Message-ID: <e208f5d10706110355o42796f61va19167b7ac2282b6@mail.gmail.com>
+From: Petr Pisar <petr.pisar@atlas.cz>
+Subject: Re: iptables state transfer
+Date: Mon, 11 Jun 2007 11:22:47 +0000 (UTC)
+Message-ID: <slrnf6qc46.71g.petr.pisar@album.ics.muni.cz>
+References: <e208f5d10706110355o42796f61va19167b7ac2282b6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=DM/UUoT/2PAviy1TtOf+FD7yvOqXs2NQIFrS2/fAOPsp++kqOqAbcGD7eDB44YCT/8G5iB2Xm2GV1y6yuzUAnevMrHoBfAwPf9+ZolWREaYhHpQ7R77DpYwS98TTItMyOz7PpoROnqvndwZea2Psz8lq/dSxvYgx9NWJA0UsbqU=
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,16 +16,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi
+On 2007-06-11, Martin Schi=F8tz <malinux@gmail.com> wrote:
+>
+> Can iptables do state transfer between two firewalls for failover
+> purpose. Something like PF sync with PF in BSD.
+>
+> I want to do NAT with failover.
+>
 
-Can iptables do state transfer between two firewalls for failover
-purpose. Something like PF sync with PF in BSD.
+Try conntrack-tools
+http://people.netfilter.org/pablo/conntrack-tools/
 
-I want to do NAT with failover.
+-- Petr
 
-Best regards,
-Martin
 
