@@ -1,13 +1,13 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: multiple routing tables for internal router programs
-Date: Mon, 11 Jun 2007 10:58:28 -0500
-Message-ID: <466D7124.9090107@riverviewtech.net>
-References: <466D5F4E.3010605@gmail.com>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Olivier <olivierk@club-internet.fr>
+Subject: Re: --match recent
+Date: Mon, 11 Jun 2007 20:12:13 +0200
+Message-ID: <20070611181213.GA12937@vvma.net>
+References: <mnet1.1181553816.24811.olivierk@club-internet.fr>
+	<466D5578.8070905@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <466D5F4E.3010605@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <466D5578.8070905@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,26 +18,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-On 06/11/07 09:42, Andrea wrote:
-> But how can I reach the same result for programs that are working 
-> INTO the linux box? All I want is that a program (ping, for examples, 
-> or a VOIP server, better) uses a secondary routing table in the same 
-> machine. In this mode, I can manipulate route settings for different 
-> classes of program in my router.
+Hello Grant,
 
-Just like you are using IPTables to mark packets now and then based 
-routing decisions based on the IPTables mark, mark packets inbound as 
-you want to.
+Thanks for youy response.
 
-There is no limit on the number of ways that you can mark packets, 
-inbound, outbound, source port, destination port, what ever.
+> Just a quick guess, but it looks like you are matching all SSH
+> packets, not just those of a connection trying to be established.
 
-(That is if I have understood you correctly.)
+I was thinking I was:
 
+ 1. Letting NEW packet just pass ('la' stands for log&accept) but
+    counting them. (those I take are initiating the client connection
+    to the server)
 
+ 2. Limiting those NEW paquets at 5 every 60 seconds. ('ld' stands for
+    log&drop)
 
-Grant. . . .
+I intend to count/limit only connection initiations, leaving alone the
+rest. I can't figure out where I catch more than I think I catch.
+
+Best regards,
+
+-- 
+Olivier K
 
