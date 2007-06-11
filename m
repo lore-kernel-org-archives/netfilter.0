@@ -1,13 +1,13 @@
-From: Andrea <andang76@gmail.com>
-Subject: multiple routing tables for internal router programs
-Date: Mon, 11 Jun 2007 16:42:22 +0200
-Message-ID: <466D5F4E.3010605@gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: multiple routing tables for internal router programs
+Date: Mon, 11 Jun 2007 10:58:28 -0500
+Message-ID: <466D7124.9090107@riverviewtech.net>
+References: <466D5F4E.3010605@gmail.com>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:subject:content-type:content-transfer-encoding;
-	b=Y/VxYr42vRfDFmdQ5Wq2Vg6CNelZCmKYikR0NZF71prRzXYoxl+3jfppDy93gAvkCiQDAz/Z67Uc42/pxSCsKdZWgsn0jWvk7jkytkPRLidKwhHXqJ1wxKXRX5dqJx+rLEQgkO5zGgLZEA1Blc16nAXk05SnKZG+e/7ahKhU5XA=
+In-Reply-To: <466D5F4E.3010605@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +19,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Maybe a strange request, I'll try to explain this as clearer as I can 
-(forgive my bad english, please :-) ).
+On 06/11/07 09:42, Andrea wrote:
+> But how can I reach the same result for programs that are working 
+> INTO the linux box? All I want is that a program (ping, for examples, 
+> or a VOIP server, better) uses a secondary routing table in the same 
+> machine. In this mode, I can manipulate route settings for different 
+> classes of program in my router.
 
-I'm setting a linux box as a router. My router uses multiple routing 
-tables, so I can address the traffic from specific ip addresses of my 
-lan to distinct ISPs providers (specifying a different default gateway 
-fo r each table), marking packets with iptables (prerouting marks).
+Just like you are using IPTables to mark packets now and then based 
+routing decisions based on the IPTables mark, mark packets inbound as 
+you want to.
 
-This works with the forwarding traffic (lan-ISPs) that crosses my router.
+There is no limit on the number of ways that you can mark packets, 
+inbound, outbound, source port, destination port, what ever.
 
-But how can I reach the same result for programs that are working INTO 
-the linux box? All I want is that a program (ping, for examples, or a 
-VOIP server, better) uses a secondary routing table in the same machine. 
-In this mode, I can manipulate route settings for different classes of 
-program in my router.
+(That is if I have understood you correctly.)
 
-Is it possible?
 
-Thanks
+
+Grant. . . .
 
