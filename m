@@ -1,12 +1,13 @@
-From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Re: ipsec connection problems though netfilter.
-Date: Tue, 12 Jun 2007 09:42:14 -0600
-Message-ID: <web-18078693@bk3.webmaillogin.com>
-References: <466BF725.3010000@systems-pro.net>
+From: "Martin McKeay" <mmckeay@stillsecure.com>
+Subject: RE: ..prevention, was: syn DDoS attack solution
+Date: Tue, 12 Jun 2007 12:10:03 -0600
+Message-ID: <5C9E8CCEEB81ED498AC0C3B0054704F302A83EDE@webmail.latis.com>
+References: <5C9E8CCEEB81ED498AC0C3B0054704F302A2379F@webmail.latis.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <466BF725.3010000@systems-pro.net>
+Content-class: urn:content-classes:message
+In-Reply-To: <5C9E8CCEEB81ED498AC0C3B0054704F302A2379F@webmail.latis.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,84 +18,91 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Martin Cheatle <marche@systems-pro.net>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Martin:
+As promised, I wrote a blog entry on the blocking the bogon IP's and
+included the full set of Iptables rules.
+http://cobia.typepad.com/cobia_community_blog/how_to_use_cobia/index.htm
+l
 
-If the only difference is a fragmentation issue you may want try one of two 
-paths:
+Thanks,
 
-(a) Allow fragmented packets to pass the firewall -not a good option
-(b) Reduce the mtu size of the packets in the device that generates packets 
-with a size greater than the mtu value.
+Martin   =20
 
-By the way, ask your question in the openswan mailing list.
 
-Hope this helps,
+Martin McKeay, CISSP, GSNA
+Cobia Product Evangelist
+StillSecure
+martin@stillsecure.com
+707-495-7926
+http://www.cobiablog.com
 
-Jorge Davila.
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Martin
+McKeay
+Sent: Thursday, June 07, 2007 12:42 PM
+To: netfilter@lists.netfilter.org
+Subject: RE: ..prevention, was: syn DDoS attack solution
 
-On Sun, 10 Jun 2007 14:05:41 +0100
-  Martin Cheatle <marche@systems-pro.net> wrote:
-> My Network
-> 
->               internet
->                  |
->      +----------------------+
->      |                      |
->     eth2                    |
->      |                      |
->  Firewall-eth1-----netB----ISA
->      |
->     eth0
->      |
->     netA
-> 
->Firewall Rules
-> iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to-source 'external ip 
->address'
-> iptables -A FORWARD -i eth0 -o eth2 -m state --state 
->NEW,RELATED,ESTABLISHED -j ACCEPT
-> iptables -A FORWARD -i eth2 -o eth0 -m state --state RELATED,ESTABLISHED 
->-j ACCEPT
-> iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-> iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
-> 
-> 
-> MS/ISA Server listening for ipsec/l2tp on both adapters
-> 
-> My Problem
-> 
-> If I connect a MS/XP client to the MS/ISA server via ipsec/l2tp directly 
->from netB or the internet every thing works fine.
-> If I try to connect from netA through to netB the client fails to connect.
-> If try to connect from netA to the MS/ISA server via the internet address 
->all works ok.
-> 
-> The only difference in my rules is that the traffic gets NAT'ed on the way 
->out to the internet.
-> I have tried NATing the traffic leaving the firewall on eth1 but this did 
->not resolve the issue.
-> I have added -m state rules from eth0 to eth1 and back, this did not help.
-> 
-> The only difference I have seen in the traffic between the connections 
->through the firewall is a ip-fragment between netA and netB during the 
->isakmp stage of the connection both then procced to start ESP traffic.
-> 
-> Has anyone seen this type of problem before?
-> 
-> Eventually I do want to remove the ISA server of the internet and route 
->the ipsec/l2tp traffic through the firewall but I can't do that until i can 
->get this bit working.
-> 
-> Thanks in advance
-> Martin
-> 
-> 
+I writing a blog post about the rules for blocking the bogon IP's
+(unused IP networks) using the firewall module of our Cobia,  I was
+considering including the equivalent iptables rules.  Would this be of
+interest to anyone?
 
-Jorge Isaac Davila Lopez
-Nicaragua Open Source
-+505 430 5462
-davila@nicaraguaopensource.com
+
+Martin McKeay, CISSP, GSNA
+Cobia Product Evangelist
+StillSecure
+martin@stillsecure.com
+707-495-7926
+http://www.cobiablog.com
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of Steven M
+Campbell
+Sent: Tuesday, June 05, 2007 9:41 AM
+To: Arnt Karlsen
+Cc: netfilter@lists.netfilter.org
+Subject: Re: ..prevention, was: syn DDoS attack solution
+
+Arnt Karlsen wrote:
+> On Tue, 05 Jun 2007 10:16:40 -0400, Steven wrote in message
+> <46657048.4040600@SCampbell.net>:
+>
+>  =20
+>> And, most important for folks here, do egress filtering on your=20
+>> firewall!    Help prevent zombie machines on your own networks from=20
+>> being a problem, you can't stop your end users from bringing=20
+>> infections into your network but you can control their spread.
+>>    =20
+>
+> ..what tricks _are_ out there?  Set up some kinda p0f deamon and cut=20
+> 'n tarpit any and all Wintendo network traffic attempts?
+> Or even feed them LROS thru ActiveX if they need firm hints?
+>
+>  =20
+
+Not really very tricky, limit outbound traffic to what is needed.   Do=20
+all of your workstations need UDP ports outbound?  Smtp?    For a lot of
+
+sites the average workstations internet requirements are very small,
+especially if proxys are used for SMTP,HTTP,FTP, etc.  Just by blocking
+most of the end users from direct internet access (or at least to a
+small set of outbound protocol/ports) we render those machines pretty
+useless to the bad guys.=20
+
+It does, however, become very tricky if it's not done up front.  It's
+really really tough to figure out what the requirements are if anyone=20
+could historically do anything they wanted.    It's far better to=20
+seriously restrict things up front and put in the exceptions as you find
+
+them.   Sites that have historically allowed all outbound traffic are a=20
+two fold problem, it's hard to fix and they are exactly the sorts of
+sites the bad guys like to use.
+
+
+
 
