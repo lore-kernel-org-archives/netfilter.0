@@ -1,10 +1,11 @@
-From: Fran Fabrizio <fran@cis.uab.edu>
-Subject: Any advantage of multicore for netfilter/iptables?
-Date: Thu, 14 Jun 2007 14:36:59 -0500
-Message-ID: <467198DB.7080107@cis.uab.edu>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: RE: ..prevention, was: syn DDoS attack solution
+Date: Thu, 14 Jun 2007 15:43:46 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0706141541020.9595@darkstar.sysinfo.com>
+References: <5C9E8CCEEB81ED498AC0C3B0054704F302A8427E@webmail.latis.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <5C9E8CCEEB81ED498AC0C3B0054704F302A8427E@webmail.latis.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,42 +16,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Martin McKeay <mmckeay@stillsecure.com>
+Cc: Arnt Karlsen <arnt@c2i.net>, netfilter@lists.netfilter.org
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On Wed, 13 Jun 2007, Martin McKeay wrote:
+
+> I'm not directly involved in the firewall for the corporation in my
+> current postion, but as the Security Manager at my last employer, one of
+> the things we did was set up a schedule of regular firewall reviews by a
+> committee consisting of the firewall admin, the network admin and
+> myself. We had a check list of the minimum requirements for the
+> firewalls, including the bogons and a final deny all rule.  It was a
+> e-commerce software/hosting company, so we had over 30 firewalls we
+> managed.  Our entire IT department, including myself and the IT Director
+> was 7 people, so you can guess this wasn't something people liked making
+> time for, but it saved us a more than once when someone had made a
+> mistake in the firewall configuration.
+>
+> I like the idea of an automatic update, but I think it's more important
+> to have regular peer review of the firewall configuration.  It's worked
+> well for me in the past
+>
 
 
-I am configuring a new router/firewall.  I'm making the hardware
-purchase and I need to decide what processor(s) I want. 
+That's kinda a lame cop-out for not wanting to update your online 
+documentation and work up some scripts to accompany it.  Such a review 
+does not have to negate an automated function to deall with blocking bogon 
+blocks nor spam controls.  And automating such tasks is a good way to make 
+sure rules and info are uptodate and currnet, even prior to a review.
 
-My thought process went thusly:  netfilter/iptables is part of the
-kernel, the kernel is threaded, so does this imply that on a multicore
-machine it is in theory possible that iptables might use a different
-core to examine each packet, and if so, is there any possibility for
-concurrency or is it strictly linear?  I'm -real- fuzzy on how the
-kernel does its threading in relation to modules and specifically the
-netfilter hooks (as made obvious by me asking this).
-
-The practical question is that if you were setting up a router/firewall
-server right now, would you prefer a slower clock speed but more cores,
-or the fastest individual core speed, all other things being equal?
-
-A valid related question is, does it even matter or would any modern
-processor and server be able to easily inspect traffic on a 1Gbit link
-with iptables without breaking a sweat?  This will be a Dell PowerEdge
-1950 server with Xeon dual or quad core, I plan to use Intel Pro server
-NICs, either 2 or 4 port PCIe cards. 
-
-Would appreciate any feedback you folks might have.
 
 Thanks,
-Fran
 
--- 
-Fran Fabrizio
-Senior Systems Analyst
-Department of Computer and Information Sciences
-University of Alabama at Birmingham
-http://www.cis.uab.edu/
-205.934.0653 
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
 
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFGcZp1st+vzJSwZikRAuv+AKDRGgGHaO010LFNxEqB5lYQoFzY4QCdEA4L
+5QXNf/5/W6UUAyGLgH7O7+M=
+=uzzl
+-----END PGP SIGNATURE-----
 
