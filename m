@@ -1,11 +1,13 @@
-From: "Daniel Castelhano" <CastelhanoD@emigrant.com>
-Subject: weird mac address format
-Date: Wed, 13 Jun 2007 14:11:58 -0400
-Message-ID: <466FFB2D.6422.0055.0@emigrant.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Bridge, DNAT, New Tables and ip rules
+Date: Wed, 13 Jun 2007 22:47:16 -0500
+Message-ID: <4670BA44.9010802@riverviewtech.net>
+References: <e53321d30706111535w3a1ce636we890c7207b3233dd@mail.gmail.com>	<466DE959.8020609@riverviewtech.net>
+	<e53321d30706121212r3dabccb2na62e2c07c2b3902b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <e53321d30706121212r3dabccb2na62e2c07c2b3902b@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,34 +18,85 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Hi,=0D=0A=20=0D=0ADoes anyone know why iptables would log a mac address in =
-this fashion:=0D=0A=20=0D=0AJun 12 22:00:42 servername kernel: FW filter IN=
-PUT Chain:IN=3Dext OUT=3D MAC=3D02:00:00:00:00:09:00:06:2a:73:f0:70:08:00:4=
-5:00:00:28:94:7b:40:00:35:06:db:02:9c:37:85:=0D=0A58:44:a3:70:1f:01:bb:da:e=
-1:87:0f:30:c4:00:00:00:00:50:04:c2:10:83:0d:00:00:00:00:00:00:00:00:87:61:7=
-5:e8:92:64:cd:6e:f6:ce:91:bc:ed:ee:37:6e:b3:db:64:8b:18:59=0D=0A SRC=3D<som=
-e source ip> DST=3D<some destination ip> LEN=3D40 TOS=3D0x00 PREC=3D0x00 TT=
-L=3D53 ID=3D38011 DF PROTO=3DTCP SPT=3D443 DPT=3D56033 WINDOW=3D49680 RES=3D=
-0x00 RST URGP=3D0=0D=0A=0D=0AIts been determined the mac=3D portion is a co=
-mbined string for:=0D=0A2:00:00:00:00:09:00:06:2a:73:f0:70: --> SMAC and DM=
-AC address combined=0D=0A08:00:  --> type IP=0D=0A45:00:00:2c: --> IP v4 he=
-ader, TOS and Length fields=0D=0Aa2:d7:00:00: --> ID, flags and frag offset=0D=
-=0Af2:06:50:c1: --> TTL, protocol (TCP) and checksum=20=0D=0Ad0:4e:50:22:44=
-:a3:70:1f: --> SrcIP and DstIP=0D=0A00:50:e3:99: --> SrcPort (HTTP) and Des=
-tPort=0D=0A=20=0D=0AWe are running iptables 1.2.9. Only packets from the fi=
-lter input chain get logged in this fashion and we don't know why. Such a l=
-ong mac address makes it hard to analyze the logs and figure out what's goi=
-ng on.=20=0D=0A=20=0D=0AWhy does the mac get logged this way=3F And is ther=
-e anyway to prevent it from logging in this manner=3F=0D=0A=0D=0AThanks,=0D=
-=0ADan=0D=0A=0D=0A_____________=0D=0ALEGAL NOTICE=0D=0AUnless expressly sta=
-ted otherwise, this message is confidential=0D=0Aand may be privileged. It =
-is intended for the addressee(s) only.=0D=0AAccess to this E-mail by anyone=
- else is unauthorized.=0D=0AIf you are not an addressee, any disclosure or =
-copying of the=0D=0Acontents of this E-mail or any action taken (or not tak=
-en) in=0D=0Areliance on it is unauthorized and may be unlawful. If you are =
-not an=0D=0Aaddressee, please inform the sender immediately, then delete th=
-is=0D=0Amessage and empty from your trash.=0D=0A
+On 6/12/2007 2:12 PM, semi linux wrote:
+> Yes, I've had this setup running for quite a while but when adding a 
+> new ethernet card (on the same or different networks) I get a 
+> problem.
+
+Ok, I just had to ask.
+
+> Actually, I've renamed two ports on a dual-port card to be eth50 and 
+> eth51 (done using udev rules) and they have a bridge interface of 
+> br0.
+
+Do you really have that many interfaces, or are you just skipping a 
+bunch of interfaces?
+
+> All other traffic flows just like normal through the bridge.
+
+*nod*
+
+> The second rule is in place just in case Dan initiates conversation, 
+> instead of Jack.  When the source is local, wouldn't the outgoing 
+> traffic be processed as follows?:
+
+Does this rule ever match any packets?
+
+> program -> routing decision -> mangle::output, nat::output, 
+> filter::output, mangle::postrouting, nat::postrouting, interface, 
+> wire.
+
+Sorry, with my current state of mind, I can't respond to this.
+
+> Therefore it'd never hit the nat::prerouting (or _any_ ::prerouting 
+> rules), right?
+
+(See above.)
+
+> Jose has two IP address, eth0 and br0... they could be on the same 
+> subnet or different subnets (depending on install details).
+
+Hum.
+
+> This is the crux of the problem, let me try to clarify... Jose does 
+> talk to Jack, but it's through the wrong interface (eth0 instead of 
+> br0 (eth50/eth51)).  The packets that are coming out of eth0 are the 
+> proper responses, with Dan is listed as the source and Jack is the 
+> destination.  The question is, w/o knowing Jack's IP how do I route 
+> them through br0?
+
+Baring in mind that (by default) Linux will (primarily) use one 
+interface on a subnet unless you do something to alter it.  To this end 
+I think you will need to match based on Dan's IP be it source or 
+destination.
+
+> I was pointed in that direction by the good folks over on the Fedora 
+> mailing list but I'm all ears to try anything here and have no 
+> problem testing _sny_ suggestions.
+
+I'm still not convinced that you need to mark the packets.  In my 
+opinion it is so much easier to match the source or destination IP.
+
+> br0 - eth50/51 - bridged. eth0,1,2,3,etc... independent. New NIC are 
+> brought-up in a typical fashion... added, with default gateway, etc.
+
+Ok, I feel like I'm missing your config.  Will you please list out your 
+interfaces (logical and physical) as well as subnets.  Granted the 
+subnets can be a.b.c.x, d.e.f.x, g.h.i.x, etc.
+
+> I'm guess with the information I've provided above, you're going to 
+> suggest something different... I've already looked into bonding and 
+> STP... even adding eth0 to the bridge, none of those solutions seem 
+> to do the trick.  Let me know if I should reconsider some of these in 
+> light of the above.
+
+You will probably have to use custom routing tables including the tables 
+including link addresses.
+
+
+
+Grant. . . .
 
