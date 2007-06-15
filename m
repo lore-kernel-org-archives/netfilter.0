@@ -1,13 +1,13 @@
-From: "semi linux" <linuxsemi@gmail.com>
-Subject: Bonding & Bridging.
-Date: Fri, 15 Jun 2007 15:14:43 -0700
-Message-ID: <e53321d30706151514u5882efaapaf153a91537bd253@mail.gmail.com>
+From: "Yang" <aybtdym02@sneakemail.com>
+Subject: getsockopt failed strangely: Invalid argument
+Date: Fri, 15 Jun 2007 16:01:07 -0700
+Message-ID: <18962-92451@sneakemail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
 	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=r2c8mlYU/N6JKZ4CA5B2Zt9Pq03mPYMgPXjKgjLXchQscSsVvBmj9wpITIMNuu8z4IYO8CGhULku2W2C3qPEmppGsAGtIyBUYrCBQL82N9Xc9iYRCipudmi8lMBafrNEaQeG/GRP7ssMmxoXWVJ/ZDd+caFguysGWuorFewvHmc=
+	b=ttLGMIpK4e0uyfOosFlFeXoT6KxpDAz44Y8h0QaRhRMH18P5Cx76zVPNvITyt0if+AB2eFyvR47qc/ELW+nbpnj28t+U9EOUnM1f5jl1np9eflIHpkOYv9+wrwSEkWbAXBDGyHyMXwsfMEMSYdpR9xhKBxr2LboklzEkG0rUWFs=
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -20,20 +20,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-Can you bond two Ethernet ports together and then bridge that bond to
-a third interface?
+Can anybody explain what's going on? My (otherwise normal-behaving)
+workstation spits out the following:
 
-It would look something like this...
+$ uname -a
+Linux myhostname 2.6.18.5-gg10-mixed64-32 #1 SMP Tue May 8 22:29:42
+PDT 2007 x86_64 GNU/Linux
 
-A       B       C
- |       |       |
---bond0--       |
-    |           |
-    ------br0----
+$ sudo iptables -L
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+getsockopt failed strangely: Invalid argument
+ACCEPT     tcp  --  anywhere             anywhere
 
-Any problems with doing this?
+Please let me know what other information, if any, would be useful.
 
--Gareth
+Thanks in advance,
+
+Yang
 
