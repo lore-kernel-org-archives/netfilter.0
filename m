@@ -1,13 +1,13 @@
 From: "Yang" <aybtdym02@sneakemail.com>
 Subject: getsockopt failed strangely: Invalid argument
-Date: Fri, 15 Jun 2007 16:01:07 -0700
-Message-ID: <18962-92451@sneakemail.com>
+Date: Fri, 15 Jun 2007 16:07:32 -0700
+Message-ID: <24400-70061@sneakemail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
 	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=ttLGMIpK4e0uyfOosFlFeXoT6KxpDAz44Y8h0QaRhRMH18P5Cx76zVPNvITyt0if+AB2eFyvR47qc/ELW+nbpnj28t+U9EOUnM1f5jl1np9eflIHpkOYv9+wrwSEkWbAXBDGyHyMXwsfMEMSYdpR9xhKBxr2LboklzEkG0rUWFs=
+	b=QI6BAzF53ArR42uJTcj/054P4XhWx+e7WiXucTT562ZYF8B7xQsJoRoVTDahaUt1BWbzsvWEUoOjjx9ev6Ls/52u32hOny/usuj+qasdI3MxEkQSyyPwlxtoc1EzO4T9cTSsIG7lw5vMT2Y+c1/aQ9Hr0mJRRNyNDYHcw+5Ir6o=
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
