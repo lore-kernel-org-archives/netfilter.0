@@ -1,13 +1,11 @@
-From: Marcos Granero Vaz - Informatica/MTZ <MarcosGranero@granero.com.br>
-Subject: Re: ""how can i allow IP protocol 47 "" on iptables to connet
- a	pptpVPN server.
-Date: Sat, 16 Jun 2007 12:12:38 -0300
-Message-ID: <4673FDE6.9040605@granero.com.br>
-References: <000e01c7b01a$0c8305a0$dededede@neilhp>
+From: Jordan Russell <jr-list-2007@quo.to>
+Subject: ICMP packets associated with NAT connections sent out wrong
+	interface?
+Date: Sat, 16 Jun 2007 11:43:06 -0500
+Message-ID: <f513uq$kvi$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080007050000090509090307"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000e01c7b01a$0c8305a0$dededede@neilhp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,47 +16,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Neil Aggarwal <neil@JAMMConsulting.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------080007050000090509090307
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Hi,
 
-I had this kind of problem too. And i figured out that only one  GRE
-protocol VPN connection works at a time. I think this problem is in the
-kernel or in iptables conntrack (maybe the way they control the flow),
-but there is a way, you have to use a PPTP proxy. I use a pptpproxy from
-http://www.mgix.com/pptpproxy/ and works fine! Now i have 6 GRE VPN
-connection simultaneously.
+My machine is functioning as a NAT box. It has two NICs:
+- eth0, connected to the LAN, IP address 192.168.0.1
+- eth1, connected to the Internet, IP address 123.23.23.23
 
-Regards
+In the OUTPUT chain, I accept packets sent out eth0 with a destination
+address of 192.168.0.x. Any packets sent out other interfaces with a
+destination address of 192.168.0.x are logged and dropped:
 
-Neil Aggarwal escreveu:
-> Rajiv:
->  
->   
->> Is it possible to put vpn server befind firewall?
->> Is anybody did this before?
->>     
->
-> I tried it.  I was able to get things working for the
-> most part, but had intermittent problems.
->
-> I eventualy moved my VPN server outside the firewall.
->
-> I hope this reference point helps.
->
-> 	Neil
->
-> --
-> Neil Aggarwal, (832)245-7314, www.JAMMConsulting.com
-> FREE! Eliminate junk email and reclaim your inbox.
-> Visit http://www.spammilter.com for details.
->
->
->   
+-A OUTPUT -d 192.168.0.0/24 -o eth0 -j ACCEPT
+-A OUTPUT -d 192.168.0.0/24 -j LOG '[outdrop] '
+-A OUTPUT -d 192.168.0.0/24 -j DROP
 
---------------080007050000090509090307--
+In kernel 2.6.19 and earlier, the LOG & DROP rules never matched
+anything, just as expected.
+
+With 2.6.20.12 and 2.6.21.5, however, they occasionally catch "ICMP
+TYPE=3 CODE=3" packets going out eth1. Example:
+
+[outdrop] IN= OUT=eth1 SRC=123.23.23.23 DST=192.168.0.4 LEN=68 TOS=0x00
+PREC=0xC0 TTL=64 ID=61136 PROTO=ICMP TYPE=3 CODE=3 [SRC=192.168.0.4
+DST=123.23.23.23 LEN=40 TOS=0x00 PREC=0x20 TTL=53 ID=16088 PROTO=TCP
+SPT=1229 DPT=44851 WINDOW=0 RES=0x00 ACK RST FIN URGP=0 ]
+
+What the logged packets have in common:
+
+1. The second SRC= is always a machine on the LAN (192.168.0.x).
+   (Note: The machines aren't doing anything 'weird', just normal web
+   browsing.)
+2. The second DST= is always the address of the Internet interface
+   (123.23.23.23). (This doesn't seem right as no machines on the LAN
+   ever connect to that address directly?)
+3. DPT is always within the range of ports I have allocated for NAT use
+   (I use "-p tcp --to-ports 41800-59999" in my MASQUERADE rule).
+
+Any ideas as to what's causing packets destined for the LAN to be sent
+out the Internet interface, and only in 2.6.20+? Does the
+"DST=123.23.23.23" indicate a failure to perform address translation?
+(Could a conntrack entry be expiring prematurely?)
+
+Thanks.
+-- 
+Jordan Russell
+
 
