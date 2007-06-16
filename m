@@ -1,11 +1,16 @@
-From: Jordan Russell <jr-list-2007@quo.to>
-Subject: ICMP packets associated with NAT connections sent out wrong
-	interface?
-Date: Sat, 16 Jun 2007 11:43:06 -0500
-Message-ID: <f513uq$kvi$1@sea.gmane.org>
+From: Kashif Ali Bukhari <kbukhari@gmail.com>
+Subject: Re: regarding iptables and DROP
+Date: Sun, 17 Jun 2007 02:20:46 +0500
+Message-ID: <4674542E.5090800@gmail.com>
+References: <34b8543c0706160514g966862cj31dddbdd9cbc7da9@mail.gmail.com>
+	<34b8543c0706160519g4c238ffdkc867eac3eff5990c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:cc:subject:references:in-reply-to:content-type:content-transfer-encoding;
+	b=VJ1f0QG+IjbYFXDUNyJ9rkIY7fDiI+6OLYsJ4N5W2sN/PIr4ciIqRmFwfcZcQ0v0vOHEL8lx1wKAPl0FUjd+SEZ5fj0a2cvl0vCmyKU3lDtwIz5SZ3E5P+tWLw6jLLMLzMJfhbaoL0rnRbjwITunakOHApwEKpbM5OGLZWCrV08=
+In-Reply-To: <34b8543c0706160519g4c238ffdkc867eac3eff5990c@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,52 +21,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mohammad Norouzi <mnrz57@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Hi,
+Mohammad Norouzi wrote:
+> Hello
+> I am new to this mailing list, I have a problem with iptables 
+> configuration
+>
+> I have an iptables file with following content:
+>
+> [I just briefed the content]
+> --------------------------
+> :PREROUTING ACCEPT [831:64633]
+> :POSTROUTING ACCEPT [20:1927]
+> :OUTPUT ACCEPT [11:1333]
+>
+>
+> -A POSTROUTING -s 192.168.0.1 -o eth1 -j MASQUERADE   # LINE 1
+> -A PREROUTING  -s 192.168.0.1  -p tcp -m mac --mac-source !
+> 00:30:48:54:AA:5A  -j DROP  #LINE 2
+> ------------------------------
+>
+> at first it was just "LINE 1" but soon I figured out that some users
+> cloning the existing IPs and try to connect to the internet. so I
+> added the "LINE 2" to match their MAC Address and drop the packets if
+> it isnt original.
+>
+> but now it seems that internet pages loading speed is diminished, I
+> think this action (adding line 2) caused  checking packets too much
+> and that is why the it is slowed down.
+>
 
-My machine is functioning as a NAT box. It has two NICs:
-- eth0, connected to the LAN, IP address 192.168.0.1
-- eth1, connected to the Internet, IP address 123.23.23.23
-
-In the OUTPUT chain, I accept packets sent out eth0 with a destination
-address of 192.168.0.x. Any packets sent out other interfaces with a
-destination address of 192.168.0.x are logged and dropped:
-
--A OUTPUT -d 192.168.0.0/24 -o eth0 -j ACCEPT
--A OUTPUT -d 192.168.0.0/24 -j LOG '[outdrop] '
--A OUTPUT -d 192.168.0.0/24 -j DROP
-
-In kernel 2.6.19 and earlier, the LOG & DROP rules never matched
-anything, just as expected.
-
-With 2.6.20.12 and 2.6.21.5, however, they occasionally catch "ICMP
-TYPE=3 CODE=3" packets going out eth1. Example:
-
-[outdrop] IN= OUT=eth1 SRC=123.23.23.23 DST=192.168.0.4 LEN=68 TOS=0x00
-PREC=0xC0 TTL=64 ID=61136 PROTO=ICMP TYPE=3 CODE=3 [SRC=192.168.0.4
-DST=123.23.23.23 LEN=40 TOS=0x00 PREC=0x20 TTL=53 ID=16088 PROTO=TCP
-SPT=1229 DPT=44851 WINDOW=0 RES=0x00 ACK RST FIN URGP=0 ]
-
-What the logged packets have in common:
-
-1. The second SRC= is always a machine on the LAN (192.168.0.x).
-   (Note: The machines aren't doing anything 'weird', just normal web
-   browsing.)
-2. The second DST= is always the address of the Internet interface
-   (123.23.23.23). (This doesn't seem right as no machines on the LAN
-   ever connect to that address directly?)
-3. DPT is always within the range of ports I have allocated for NAT use
-   (I use "-p tcp --to-ports 41800-59999" in my MASQUERADE rule).
-
-Any ideas as to what's causing packets destined for the LAN to be sent
-out the Internet interface, and only in 2.6.20+? Does the
-"DST=123.23.23.23" indicate a failure to perform address translation?
-(Could a conntrack entry be expiring prematurely?)
-
-Thanks.
--- 
-Jordan Russell
+False! It should work fine may be its just due to some other reason or 
+you are using slow processor ( i.e celeron)
+> my question is if there is another way to determine the cloned IPs and
+> drop them.
+> is REJECTING faster than DROP? if yes how to use REJECT option ?
+>
+Reject is the fast method, which tels the source that packet is 
+rejected. and DROP method will not alert the source.
+> any suggestion would be of a great help.
+>
+> thank you very much in advance.
+>
+>
+>
 
 
