@@ -1,13 +1,16 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: ""how can i allow IP protocol 47 "" on iptables to connet a pptp
- VPN server.
-Date: Sat, 16 Jun 2007 13:24:44 +0200
-Message-ID: <4673C87C.4050609@freemail.hu>
-References: <000e01c7b005$cb371be0$1664a8c0@ssplscu22>
+From: "Mohammad Norouzi" <mnrz57@gmail.com>
+Subject: regarding iptables and DROP
+Date: Sat, 16 Jun 2007 15:49:51 +0330
+Message-ID: <34b8543c0706160519g4c238ffdkc867eac3eff5990c@mail.gmail.com>
+References: <34b8543c0706160514g966862cj31dddbdd9cbc7da9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000e01c7b005$cb371be0$1664a8c0@ssplscu22>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=NNsp/eYYG+XLuEu26Jy6Wpiv0x/qLjWzayyUX/LI9AziG2k0xgOYxXC3KyckIeDBhNrq4VRb9gqBf5rn+RP2QyGpYukXx4tOOzLZbl4IvqmCCPXHrObt8ity0lXdlPfB7Tm/SQU8jzobNsc/rUJKBwjtF50j2yGGl9RJXEhuPVQ=
+In-Reply-To: <34b8543c0706160514g966862cj31dddbdd9cbc7da9@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,46 +21,49 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: "rajeev.sekhar" <rajeev.sekhar@sumasoft.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-rajeev.sekhar =EDrta:
-> hi list ,
->
-> Right now my PPTP VPN server is outside the firewall consuming 2=20
-> Static IPaddress,
->
-> I want to pleace my PPTP VPN server behind firewall.
->
-> i followed good docs on=20
-> http://tldp.org/HOWTO/VPN-Masquerade-HOWTO-5.html , but still cant=20
-> understand some words in it.
->
-> I DNATed 1723, and 500 (which is used for control channels on pptp) to =
+Hello
+I am new to this mailing list, I have a problem with iptables configuration
 
-> my vpn server behind my firewall.
-> The encrypted data channel in PPTP is carried over GRE, IP protocol=20
-> 47,  Now how can allow IP protocol 47 from outside , Is this possible? =
+I have an iptables file with following content:
 
-> ( pretty new for me)
-iptables -p 47 ....
-or
-iptables -p gre
-
-see /etc/protocols
-> They are telling to   ""masquerade ALL protocol traffic"  What they=20
-> mean by this?
-> I am pasting my firewall rules.
->
->
->
-> Is it possible to put vpn server befind firewall?
-Maybe... :D
-> Is anybody did this before?
-I neved did :D
+[I just briefed the content]
+--------------------------
+:PREROUTING ACCEPT [831:64633]
+:POSTROUTING ACCEPT [20:1927]
+:OUTPUT ACCEPT [11:1333]
 
 
-Swifty
+-A POSTROUTING -s 192.168.0.1 -o eth1 -j MASQUERADE   # LINE 1
+-A PREROUTING  -s 192.168.0.1  -p tcp -m mac --mac-source !
+00:30:48:54:AA:5A  -j DROP  #LINE 2
+------------------------------
 
+at first it was just "LINE 1" but soon I figured out that some users
+cloning the existing IPs and try to connect to the internet. so I
+added the "LINE 2" to match their MAC Address and drop the packets if
+it isnt original.
+
+but now it seems that internet pages loading speed is diminished, I
+think this action (adding line 2) caused  checking packets too much
+and that is why the it is slowed down.
+
+my question is if there is another way to determine the cloned IPs and
+drop them.
+is REJECTING faster than DROP? if yes how to use REJECT option ?
+
+any suggestion would be of a great help.
+
+thank you very much in advance.
+
+
+
+-- 
+Regards,
+Mohammad
+--------------------------
+see my blog: http://brainable.blogspot.com/
+another in Persian: http://fekre-motefavet.blogspot.com/
 
