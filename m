@@ -1,14 +1,12 @@
-From: "Yang" <aybtdym02@sneakemail.com>
-Subject: getsockopt failed strangely: Invalid argument
-Date: Fri, 15 Jun 2007 16:07:32 -0700
-Message-ID: <24400-70061@sneakemail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Bonding & Bridging.
+Date: Fri, 15 Jun 2007 20:14:29 -0500
+Message-ID: <46733975.90301@riverviewtech.net>
+References: <e53321d30706151514u5882efaapaf153a91537bd253@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=QI6BAzF53ArR42uJTcj/054P4XhWx+e7WiXucTT562ZYF8B7xQsJoRoVTDahaUt1BWbzsvWEUoOjjx9ev6Ls/52u32hOny/usuj+qasdI3MxEkQSyyPwlxtoc1EzO4T9cTSsIG7lw5vMT2Y+c1/aQ9Hr0mJRRNyNDYHcw+5Ir6o=
-Content-Disposition: inline
+In-Reply-To: <e53321d30706151514u5882efaapaf153a91537bd253@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,24 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Can anybody explain what's going on? My (otherwise normal-behaving)
-workstation spits out the following:
+On 6/15/2007 5:14 PM, semi linux wrote:
+> Can you bond two Ethernet ports together and then bridge that bond to
+> a third interface?
 
-$ uname -a
-Linux myhostname 2.6.18.5-gg10-mixed64-32 #1 SMP Tue May 8 22:29:42
-PDT 2007 x86_64 GNU/Linux
+You should be able to do this.
 
-$ sudo iptables -L
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-getsockopt failed strangely: Invalid argument
-ACCEPT     tcp  --  anywhere             anywhere
+> It would look something like this...
+> 
+> A       B       C
+> |       |       |
+> +-bond0-+       |
+>     |           |
+>     +----br0----+
 
-Please let me know what other information, if any, would be useful.
+> Any problems with doing this?
 
-Thanks in advance,
+So long as you don't run in to bandwidth limitations, there should not 
+be any problems.  I.e. two bonded 100 BaseT connections going in to one 
+100 BaseT connection.  Or at least no more bandwidth than the single 
+connection can handle.
 
-Yang
+I don't recall how bonding alters frames, if at all.  I don't think that 
+it does, but just be aware that if it does, you may end up with 
+different MTUs on your single segment verses your bonded segment.
+
+
+
+Grant. . . .
 
