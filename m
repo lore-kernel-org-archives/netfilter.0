@@ -1,11 +1,11 @@
-From: Chris Spiegel <netfilter@happyjack.org>
-Subject: NAT blocking HTTP .. But only some of it.
-Date: Fri, 15 Jun 2007 23:06:02 -0700
-Message-ID: <200706152306.02114.netfilter@happyjack.org>
+From: "rajeev.sekhar" <rajeev.sekhar@sumasoft.net>
+Subject: ""how can i allow IP protocol 47 "" on iptables to connet a pptp
+	VPN server.
+Date: Sat, 16 Jun 2007 16:32:12 +0530
+Message-ID: <000e01c7b005$cb371be0$1664a8c0@ssplscu22>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,42 +16,87 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@lists.netfilter.org
 
-I'm having a bit of an issue with IP masquerading: Boxes behind my NAT 
-system work, to a degree.  Some protocols seem fine; IRC and rsync both 
-appear to work.  HTTP acts very strange, though.
+hi list ,
 
-I can issue a HEAD request.  That works fine.  If I issue a GET request that 
-results in a 301 redirect, that works fine.  If, on the other hand, I issue 
-a GET request that results in a 200 OK, things break down.  The headers are 
-sent just fine, as is the \r\n\r\n signalling the end of the headers.  But 
-the page never comes.  The same thing happens with a 404.  Headers, no 
-body.
+Right now my PPTP VPN server is outside the firewall consuming 2 Static 
+IPaddress,
 
-FTP is dodgy.  Ftping sometimes gives me just one line of response before 
-hanging, sometimes I can log in.  Sometimes I can get directory listings, 
-although I've never successfully been able to download a file; I do have 
-FTP connection tracking enabled.  It seems to depend on the FTP server.
+I want to pleace my PPTP VPN server behind firewall.
 
-The precision of the problem would make me think that it's perhaps an issue 
-with my ISP, but everything works fine on kernel 2.6.17 (and 2.6.17.14, for 
-that matter).  The problem arose in 2.6.18-rc1 and persists to my current 
-setup, 2.6.21.5.  I hadn't really noticed it until recently when I put a 
-real computer behind the box; till then I only used qemu, and that 
-sporadically.
+i followed good docs on http://tldp.org/HOWTO/VPN-Masquerade-HOWTO-5.html , 
+but still cant understand some words in it.
 
-My iptables setup is the following:
-$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state \
-  --state ESTABLISHED,RELATED -j ACCEPT
-$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-$IPTABLES -A INPUT -i $INTIF -j ACCEPT
+I DNATed 1723, and 500 (which is used for control channels on pptp) to my 
+vpn server behind my firewall.
+The encrypted data channel in PPTP is carried over GRE, IP protocol 47,  Now 
+how can allow IP protocol 47 from outside , Is this possible? ( pretty new 
+for me)
+They are telling to   ""masquerade ALL protocol traffic"  What they mean by 
+this?
+I am pasting my firewall rules.
 
-I generally have more rules (not related to NAT), but I've tested with just 
-the above, resulting in the same problems.  It seems something happened 
-with 2.6.18-rc1, and for the life of me I don't know what.
 
-Chris
+##################################
+#       Default policy is to drop on
+#       INPUT And FORWARD and allow
+#       every thing On OUTPUT chain
+##################################
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
+
+iptables -A INPUT -s 127.0.0.1 -j ACCEPT
+iptables -A INPUT -s 192.168.1.0/24 -j ACCEPT
+iptables -A OUTPUT -s 192.168.1.0/24 -j ACCEPT
+iptables -A INPUT -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -s 192.168.1.0/24 -j ACCEPT
+#### SNATing VPN server to go out #########################
+iptables -A FORWARD -d 192.168.1.34 -j ACCEPT
+iptables -A POSTROUTING -t nat -s 192.168.1.34 -j SNAT --to-source 
+203.129.224.181
+####  DNATing 1723 and 500 port for VPN server ##############
+iptables -A PREROUTING -t nat -p tcp --dport 1723 -i eth1 -d 
+203.129.224.181 -j DNAT --to-destination 192.168.1.34:1723
+iptables -A PREROUTING -t nat -p udp --dport 500 -i eth1 -d 
+203.129.224.181 -j DNAT --to-destination 192.168.1.34:500
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+optionally i tried masqurading too, But it didnt worked.
+The rule i tried is
+#### MASQURADE rule on server
+iptables -t nat -A POSTROUTING -o  eth1 -j MASQUERADE
+
+
+
+I tried to NAT port 41 so that protocol 41 will work ( But as expected it 
+didnt worked)
+#### DNATing 41 port
+iptables -t nat -A PREROUTING -i eth1 -p 41 -j DNAT --to 192.168.1.34
+iptables -t filter -A FORWARD -i eth1 -p 41 -d 192.168.1.34 -j ACCEPT
+
+
+Is it possible to put vpn server befind firewall?
+Is anybody did this before?
+
+
+Regards
+---------------------------------------------
+Rajeev Sekhar
+Suma Soft Pvt. Ltd
+Jr System Administrator
+Ph no :91-020-25425655
+cell no :91-9370677989
+email:rajeev.sekhar@sumasoft.net
+
+----------------------------------------------
+Confidentiality Note: This e-mail message and any attachments to it are
+intended only for the named recipients and may contain legally privileged
+and/or confidential information. If you are not one of the intended
+recipients, please notify the sender and do not duplicate or forward this
+e-mail message and immediately delete it from your computer.
+----------------------------------------------
 
