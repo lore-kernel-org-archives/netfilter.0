@@ -1,7 +1,7 @@
 From: mess-mate <mess-mate@wanadoo.fr>
 Subject: ip_tables: policy match: invalid size 308 != 116
-Date: Sun, 17 Jun 2007 11:46:21 +0200
-Message-ID: <20070617094621.GA2208@eric.orange.fr>
+Date: Sun, 17 Jun 2007 11:50:50 +0200
+Message-ID: <20070617095050.GA2244@eric.orange.fr>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
@@ -20,10 +20,10 @@ Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@lists.netfilter.org>
 
 Hi list,
-i've installed shorewall (didn't have a firewall/iptables before)
-and when compiling i've above error message.
+i've installed shorewall (didn't have a firewall/iptables before)and
+syslog-ng and when starting syslog-ng i've above error message.
 What do this mean and can i resolve it?
-best ragrds
+best ragards
 mess-mate                               
 -- 
 
