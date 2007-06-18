@@ -1,15 +1,12 @@
-From: "R. DuFresne" <dufresne@sysinfo.com>
-Subject: Re: NAT addresses - RFC or tradition?
-Date: Mon, 18 Jun 2007 13:27:30 -0400 (EDT)
-Message-ID: <Pine.LNX.4.64.0706181326240.25318@darkstar.sysinfo.com>
-References: <001c01c79ca7$0c1717e0$5a05a8c0@nisgaa.net>
-	<200705221646.25925.ramoni@databras.com.br>
-	<20070522195618.M46626@tkevans.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Check connection state in libipq hook
+Date: Mon, 18 Jun 2007 20:15:19 +0200
+Message-ID: <4676CBB7.4080808@netfilter.org>
+References: <20070618161548.120li24u9dcsok0k@webmail.microgate.fr>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="1028002384-2046396866-1182187650=:25318"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070522195618.M46626@tkevans.com>
+In-Reply-To: <20070618161548.120li24u9dcsok0k@webmail.microgate.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,59 +17,58 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: Tim Evans <tkevans@tkevans.com>
-Cc: netfilter@lists.netfilter.org, =?ISO-8859-1?Q?Andre_Guimar=E3es_?= <ramoni@databras.com.br>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: switcher <switcher@linuxwall.info>
+Cc: netfilter@lists.netfilter.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+switcher wrote:
+>  I'm coding a software that check if an incoming packet is part of an active
+>  connection.
+>  I'm using libipq to get the packet and I tried to submit it to
+>  ip_conntrack_find_get() as a tuple create with ip_conntrack_tuple but it
+>  doesn't work so I have some questions about that.
+> 
+>  I'm creating the tuple and submitting it with that piece of code :
+>  --------
+>  struct ip_conntrack_tuple *tuple;
+>  tuple->src.ip                 = iph->saddr;
+>  tuple->src.u.tcp.port         = tcp->source;
+>  tuple->dst.ip                 = iph->daddr;
+>  tuple->dst.u.tcp.port         = tcp->dest;
+>  tuple->dst.protonum         = iph->protocol;
+>  tuple->dst.dir                = 0;
+>  if (NULL == ip_conntrack_find_get(tuple, NULL))
+>  {
+>       fprintf(stdout, "tuple IS NOT part of an active connection");
+>  }
+>  else {
+>       fprintf(stdout, "tuple IS part of an active connection");
+>  }
+>  --------
+>  But I don't know what to put in tuple->dst.dir value... is it a static value ?
+> 
+>  Moreover, I included <linux/netfilter.h>,
+>  <linux/netfilter_ipv4/ip_conntrack_tuple.h> and
+>  <linux/netfilter_ipv4/ip_conntrack_core.h> (kernel 2.6.17.7) but when I try to
+>  compile it, I have an error message :
+>  --------
+>  /usr/include/linux/netfilter_ipv4/ip_conntrack_core.h: In function
+>  'ip_conntrack_confirm':
+>  /usr/include/linux/netfilter_ipv4/ip_conntrack_core.h:44: error: dereferencing
+>  pointer to incomplete type
+>  /usr/include/linux/netfilter_ipv4/ip_conntrack_core.h: At top level:
+>  /usr/include/linux/netfilter_ipv4/ip_conntrack_core.h:59: error: syntax error
+>  before 'ip_conntrack_lock'
+>  --------
+> 
+>  I'm not manipulating 'ip_conntrack_confirm' nor 'ip_conntrack_lock' so I guess
+>  I've made a mistake somewhere but I don't know where...
+>  Could you help me ?
 
---1028002384-2046396866-1182187650=:25318
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by darkstar.sysinfo.com id
-	l5IHRZDg025718
+Misconception: The connection tracking is a kernel module. libipq is a 
+userspace library. You can't invoke such functions from userspace.
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-On Tue, 22 May 2007, Tim Evans wrote:
-
-> On Tue, 22 May 2007 16:46:25 -0300, Andre Guimar=E3es wrote
->> It's quite simple.
->> You're using public IPs in your internal networks.
->> Some of these IPs may exist and have an owner an maybe even a web site.
->> You'll be in trouble in the day you wish to acess one of these IPs
->> on the internet because you won't reach them because you have them
->> on your network and so won't route the packets to the internet.
->
-> In other words, the RFC addresses are specifically for use in internal
-> networks, since they are guaranteed not to be used on the public intern=
-et, and
-> not routed to by any public internet router.
-
-
-"should not" be publically routed, there are itiots out there in the=20
-world, one can't fix stupid.
-
-Thanks,
-
-Ron DuFresne
-- --=20
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         admin & senior security consultant:  sysinfo.com
-                         http://sysinfo.com
-Key fingerprint =3D 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
-
-...We waste time looking for the perfect lover
-instead of creating the perfect love.
-
-                 -Tom Robbins <Still Life With Woodpecker>
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQFGdsCGst+vzJSwZikRAvYIAJ0fFaAVU0xlLtkL6S4XJqEZcYrlMgCcDEf3
-qsBjsVnL0PyYWgl5ingpEPw=3D
-=3DIssI
------END PGP SIGNATURE-----
---1028002384-2046396866-1182187650=:25318--
+-- 
+The dawn of the fourth age of Linux firewalling is coming; a time of 
+great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
 
