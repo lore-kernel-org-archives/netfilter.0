@@ -1,9 +1,8 @@
-From: "Krishantha Dinesh" <krishantha@krishantha.com>
-Subject: change reply message of icmp request
-Date: Mon, 18 Jun 2007 13:31:29 +0530
-Message-ID: <21845.8591065884$1182152955@news.gmane.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Petr Pisar <petr.pisar@atlas.cz>
+Subject: Re: change reply message of icmp request
+Date: Mon, 18 Jun 2007 07:55:29 +0000 (UTC)
+Message-ID: <slrnf7cejh.5vt.petr.pisar@album.ics.muni.cz>
+References: <10928.154763724$1182148430@news.gmane.org>
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,20 +14,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi guys
-I am petty new for linux firewall. Now I want to change the reply massage of
-REJECT icmp request.
-Eg;- if my firewall got ping request I need  send massage as "Ping request
-not ALLOWED by this IP" or something like this.
-I am going to reject icmp like this
+On 2007-06-18, Krishantha Dinesh <krishantha@krishantha.com> wrote:
+> Eg;- if my firewall got ping request I need  send massage as "Ping request
+> not ALLOWED by this IP" or something like this.
+> I am going to reject icmp like this
+>
+> Iptables -A INPUT -p icmp -j REJECT
+>
+The match filter is wrong, because it blocks all ICMP messages. Even
+responses from remote hosts.
 
-Iptables -A INPUT -p icmp -j REJECT
+Try this:
 
-If any body know this please help me.
-Krisha
+iptatbles -A INPUT -p icmp --icmp-type echo-request \
+    -j REJECT --reject-with=icmp-host-prohibited
+
+-- Petr
 
 
 
