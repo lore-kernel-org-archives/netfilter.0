@@ -1,13 +1,11 @@
-From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?=
-	<leolistas@solutti.com.br>
-Subject: Re: Comments at end of iptables statements
-Date: Mon, 18 Jun 2007 09:14:49 -0300
-Message-ID: <46767739.4090306@solutti.com.br>
-References: <4675658C.6010309@victorex.com>
+From: switcher <switcher@linuxwall.info>
+Subject: Check connection state in libipq hook
+Date: Mon, 18 Jun 2007 16:15:48 +0200
+Message-ID: <20070618161548.120li24u9dcsok0k@webmail.microgate.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4675658C.6010309@victorex.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,63 +16,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: "John V. Kjellman" <johnk@victorex.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
+Hi All,
 
+ I'm coding a software that check if an incoming packet is part of an active
+ connection.
+ I'm using libipq to get the packet and I tried to submit it to
+ ip_conntrack_find_get() as a tuple create with ip_conntrack_tuple but it
+ doesn't work so I have some questions about that.
 
-John V. Kjellman escreveu:
-> Any chance that a "#" or other character will one day be allowed as a=20
-> comment character at the end of iptables statements?
->
+ I'm creating the tuple and submitting it with that piece of code :
+ --------
+ struct ip_conntrack_tuple *tuple;
+ tuple->src.ip                 = iph->saddr;
+ tuple->src.u.tcp.port         = tcp->source;
+ tuple->dst.ip                 = iph->daddr;
+ tuple->dst.u.tcp.port         = tcp->dest;
+ tuple->dst.protonum         = iph->protocol;
+ tuple->dst.dir                = 0;
+ if (NULL == ip_conntrack_find_get(tuple, NULL))
+ {
+      fprintf(stdout, "tuple IS NOT part of an active connection");
+ }
+ else {
+      fprintf(stdout, "tuple IS part of an active connection");
+ }
+ --------
+ But I don't know what to put in tuple->dst.dir value... is it a static value ?
 
-    You can use the comment module !! It allows you to easily grep=20
-'iptables -nL -v' output. I used it a LOT for creating IP Accounting=20
-rules which will be graphed by cacti.
+ Moreover, I included <linux/netfilter.h>,
+ <linux/netfilter_ipv4/ip_conntrack_tuple.h> and
+ <linux/netfilter_ipv4/ip_conntrack_core.h> (kernel 2.6.17.7) but when I try to
+ compile it, I have an error message :
+ --------
+ /usr/include/linux/netfilter_ipv4/ip_conntrack_core.h: In function
+ 'ip_conntrack_confirm':
+ /usr/include/linux/netfilter_ipv4/ip_conntrack_core.h:44: error: dereferencing
+ pointer to incomplete type
+ /usr/include/linux/netfilter_ipv4/ip_conntrack_core.h: At top level:
+ /usr/include/linux/netfilter_ipv4/ip_conntrack_core.h:59: error: syntax error
+ before 'ip_conntrack_lock'
+ --------
 
+ I'm not manipulating 'ip_conntrack_confirm' nor 'ip_conntrack_lock' so I guess
+ I've made a mistake somewhere but I don't know where...
+ Could you help me ?
 
-iptables -A accounting_local_saida -p tcp --dport 80 -m comment=20
---comment servidor_web
-iptables -A accounting_local_saida -p tcp --sport 80 -m comment=20
---comment servidor_web
-
-iptables -A accounting_local_entrada -p tcp --dport 25 -m comment=20
---comment entrada_emails
-iptables -A accounting_local_saida -p tcp --sport 25 -m comment=20
---comment entrada_emails
-
-
-Chain accounting_local_entrada (1 references)
- pkts bytes target     prot opt in     out     source              =20
-destination       =20
-73718   85M            tcp  --  *      *       0.0.0.0/0           =20
-0.0.0.0/0           tcp dpt:25 /* entrada_emails */
-  231 50718            tcp  --  *      *       0.0.0.0/0           =20
-0.0.0.0/0           tcp dpt:80 /* servidor_web */
-
-
-Chain accounting_local_saida (1 references)
- pkts bytes target     prot opt in     out     source              =20
-destination       =20
-54932 2640K            tcp  --  *      *       0.0.0.0/0           =20
-0.0.0.0/0           tcp spt:25 /* entrada_emails */
-  202  113K            tcp  --  *      *       0.0.0.0/0           =20
-0.0.0.0/0           tcp spt:80 /* servidor_web */
-
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
+ Thanks,
+ julien
 
 
