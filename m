@@ -1,13 +1,10 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Check connection state in libipq hook
-Date: Mon, 18 Jun 2007 21:20:13 +0200
-Message-ID: <4676DAED.1050003@netfilter.org>
-References: <20070618161548.120li24u9dcsok0k@webmail.microgate.fr>	<4676CBB7.4080808@netfilter.org>
-	<20070618202242.wa8gjjs892ysg0w8@webmail.microgate.fr>
+From: David Ford <david@blue-labs.org>
+Subject: ipt_recent failure
+Date: Mon, 18 Jun 2007 20:36:09 -0400
+Message-ID: <467724F9.2030904@blue-labs.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070618202242.wa8gjjs892ysg0w8@webmail.microgate.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,25 +15,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: switcher <switcher@linuxwall.info>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-switcher wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> a =E9crit :
->> Misconception: The connection tracking is a kernel module. libipq is=20
->> a userspace library. You can't invoke such functions from userspace.
->=20
-> Errr...
-> So, do you know another technique that I can use to do so in userspace ?
-> I could maintain a connection state table in userspace but I think it's=20
-> a waste of time to redo netfilter's job...
+http://pastebin.ca/575409
 
-Well, it depends on what you want to do. Anyway, you may also use=20
-libnetfilter_conntrack to listen to conntrack events. BTW, libipq has=20
-been superseded by libnetfilter_queue and the NFQUEUE target.
+I can't for the life of me get -m recent to function.  I upgrade my 
+kernel from 2.6.19 to 2.6.21-gentoo-r3 and recompiled iptables to match.
 
---=20
-The dawn of the fourth age of Linux firewalling is coming; a time of=20
-great struggle and heroic deeds -- J.Kadlecsik got inspired by J.Morris
+I am using this same (slightly more detailed of course) rule on several 
+other machines and it works fine everywhere else.
+
+I have ipt_recent.ko loaded just fine along with everything else.  All 
+other rules are working just fine.
+
+I have /proc/net/ipt_recent/ which is empty and it is listed in 
+/proc/net/ip_tables_matches.
+
+Can someone enlighten me with this please?  Details of code traces are 
+in the pastebin and I will be happy to provide additional details if needed.
+
+Thank you,
+David
+
 
