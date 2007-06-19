@@ -1,13 +1,13 @@
-From: "rajeev.sekhar" <rajeev.sekhar@sumasoft.net>
-Subject: Re: ""how can i allow IP protocol 47 "" on iptables to connet
-	a	pptpVPN server.
-Date: Tue, 19 Jun 2007 19:13:27 +0530
-Message-ID: <042501c7b277$d1a1e950$1664a8c0@ssplscu22>
-References: <000e01c7b01a$0c8305a0$dededede@neilhp>
-	<4673FDE6.9040605@granero.com.br>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: syn DDoS attack solution
+Date: Tue, 19 Jun 2007 14:22:51 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0706191422070.29334@darkstar.sysinfo.com>
+References: <465EF582.4070904@bgs.hu> <015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>
+	<465FEA82.709@bgs.hu> <007101c7a45d$bc50e380$34f2aa80$@COM>
+	<466090CA.2050806@rtij.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <466090CA.2050806@rtij.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,86 +18,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Marcos Granero Vaz - Informatica/MTZ <MarcosGranero@granero.com.br>, Neil Aggarwal <neil@JAMMConsulting.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Martijn Lievaart <m@rtij.nl>
+Cc: Ric Messier <kilroy@WasHere.COM>, netfilter@lists.netfilter.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
+On Fri, 1 Jun 2007, Martijn Lievaart wrote:
 
------ Original Message ----- 
-From: "Marcos Granero Vaz - Informatica/MTZ" <MarcosGranero@granero.com.br>
-To: "Neil Aggarwal" <neil@JAMMConsulting.com>
-Cc: <netfilter@lists.netfilter.org>
-Sent: Saturday, June 16, 2007 8:42 PM
-Subject: Re: ""how can i allow IP protocol 47 "" on iptables to connet a 
-pptpVPN server.
-
-
->I had this kind of problem too. And i figured out that only one  GRE
-> protocol VPN connection works at a time. I think this problem is in the
-hi Neil
-Its seem i am also facing the same problem,
-I configured VPN befind the firewall, with the rules given by Pascal 
-Hambourg.
-
-But when i connect more than one client, the old client connection get 
-terminated.
-
-My rule are
-#### SNATing 192.168.1.33
-iptables -A FORWARD -s 192.168.1.33 -j ACCEPT
-iptables -t nat -A POSTROUTING -s 192.168.1.33 -j SNAT --to-source 
-203.129.224.180
-#### DNATing 192.168.1.33 on port 1723 and protocol 47
-iptables -A FORWARD -d 192.168.1.33 -j ACCEPT
-iptables -t nat -A PREROUTING -p tcp -i eth1 -d 203.129.224.180 --dport 
-1723 -j DNAT --to-destination 192.168.1.33:1723
-iptables -t nat -A PREROUTING -i eth1 -d 203.129.224.180 -p 47 -j DNAT --to 
-192.168.1.33
-iptables -A FORWARD -i eth1 -d 192.168.1.33 -p 47 -j ACCEPT
-
-Is any one is facing the same problem,
-
-Or i have to go for pprpproxy?
-
-> kernel or in iptables conntrack (maybe the way they control the flow),
-> but there is a way, you have to use a PPTP proxy. I use a pptpproxy from
-> http://www.mgix.com/pptpproxy/ and works fine! Now i have 6 GRE VPN
-> connection simultaneously.
->
-> Regards
->
-> Neil Aggarwal escreveu:
->> Rajiv:
->>
->>
->>> Is it possible to put vpn server befind firewall?
->>> Is anybody did this before?
+> Ric Messier wrote:
+>> Bgs writes:
+>> 
+>>> Some more info about the attack: All IPs were real IPs otherway the tcp
+>>> handshake wouldn't have made it. The attacker IPs were also consistent.
+>>> They also new about the blocked IPs as after a new bunch of blocked IPs
+>>> we fared OK then they added another bunch new IPs... we played this for
+>>> quite some time...
+>>> 
+>>> All connections were in the ESTABLISHED state.
 >>>
->>
->> I tried it.  I was able to get things working for the
->> most part, but had intermittent problems.
->>
->> I eventualy moved my VPN server outside the firewall.
->>
->> I hope this reference point helps.
->>
->> Neil
->>
->> --
->> Neil Aggarwal, (832)245-7314, www.JAMMConsulting.com
->> FREE! Eliminate junk email and reclaim your inbox.
->> Visit http://www.spammilter.com for details.
->>
->>
->>
-> 
+>>> 
+>> 
+>> Then your original description was incorrect or at least inadequate. It has
+>> nothing to do with SYN as originally suggested since an ESTABLISHED
+>> connection has blown past SYN, through SYN/ACK and by ACK. It has completed
+>> the TCP handshake, as you note above. A SYN attack/flood would stop after
+>> sending the initial SYN and leave the connection half-open to exhaust the
+>> half-open buffers.
+>> 
+>
+> An connection is in the ESTABLISHED state once a packet has been seen. So 
+> once the SYN is seen, the state is ESTABLISHED.
+>
 
-----------------------------------------------
-Confidentiality Note: This e-mail message and any attachments to it are
-intended only for the named recipients and may contain legally privileged
-and/or confidential information. If you are not one of the intended
-recipients, please notify the sender and do not duplicate or forward this
-e-mail message and immediately delete it from your computer.
-----------------------------------------------
+
+No, it is in state "new" with a mere syn sent.
+
+
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFGeB7/st+vzJSwZikRAmbnAKDPbPVQcBsCzAkmoETaYT61EHVOAgCgwl0P
+gTWFY+m1/+x1np1D7Rr1ulA=
+=Eq4t
+-----END PGP SIGNATURE-----
 
