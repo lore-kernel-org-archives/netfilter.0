@@ -1,19 +1,16 @@
-From: Petr Pisar <petr.pisar@atlas.cz>
-Subject: Re: ebtables v/s arptables
-Date: Wed, 20 Jun 2007 14:33:27 +0000 (UTC)
-Message-ID: <slrnf7ieln.83n.petr.pisar@album.ics.muni.cz>
-References: <d41814cf0706130120x5609dfc2o285a07ceda1ba21b@mail.gmail.com>
-	<1181755998.2976.1.camel@localhost.localdomain>
-	<d41814cf0706140125i52cef5a6u6e73ab3395290e35@mail.gmail.com>
-	<1181837804.2972.16.camel@localhost.localdomain>
-	<d41814cf0706142221u735ff9a8v1b1debf802c3f400@mail.gmail.com>
-	<Pine.LNX.4.64.0706150833230.27797@fbirervta.pbzchgretzou.qr>
-	<d41814cf0706142341m427b0c56p6ade6d2f3925cd15@mail.gmail.com>
-	<Pine.LNX.4.64.0706150855530.27797@fbirervta.pbzchgretzou.qr>
-	<d41814cf0706180517v58e4aa98r687e6ee957524c25@mail.gmail.com>
-	<4678C3F1.5000804@plouf.fr.eu.org>
-	<d41814cf0706200426n3a78297elf53733b29791e261@mail.gmail.com>
+From: switcher <switcher@linuxwall.info>
+Subject: Re: Check connection state in libipq hook
+Date: Wed, 20 Jun 2007 18:29:08 +0200
+Message-ID: <20070620182908.i7yr5rr7ei8sggcc@webmail.microgate.fr>
+References: <20070618161548.120li24u9dcsok0k@webmail.microgate.fr>
+	<4676CBB7.4080808@netfilter.org>
+	<20070618202242.wa8gjjs892ysg0w8@webmail.microgate.fr>
+	<4676DAED.1050003@netfilter.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <4676DAED.1050003@netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,24 +21,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On 2007-06-20, pankaj jain <jainp1979@gmail.com> wrote:
-> On 6/20/07, Pascal Hambourg <pascal.mail@plouf.fr.eu.org> wrote:
-> Plumbing means I did not assign the IP 203.200.192.24 to any of my
-> interfaces, instead I was using arptables to respond the arp requests
-> for this IP.
-> The gateway exists on the same subnet but because I did not assign the
-> IP to any of my interfaces, ip route rejects the gateway add command.
-> but now I understood that first I had to add the network route for that gateway.
+Pablo Neira Ayuso <pablo@netfilter.org> a =E9crit :
 
-Or use "dev DEVICE onlink" suffix:
+> switcher wrote:
+>> Pablo Neira Ayuso <pablo@netfilter.org> a =E9crit :
+>>> Misconception: The connection tracking is a kernel module. libipq 
+>>> is a userspace library. You can't invoke such functions from 
+>>> userspace.
+>>
+>> Errr...
+>> So, do you know another technique that I can use to do so in userspace ?
+>> I could maintain a connection state table in userspace but I think 
+>> it's a waste of time to redo netfilter's job...
+>
+> Well, it depends on what you want to do. Anyway, you may also use 
+> libnetfilter_conntrack to listen to conntrack events. BTW, libipq has 
+> been superseded by libnetfilter_queue and the NFQUEUE target.
+>
 
-ip route add default via 203.200.192.1 dev eth0 onlink
+Alright, I'm reading libnetfilter_conntrack utils right now, but it 
+sounds like
+you forgot to add some comments :p
+I want to check if an incoming packet is part of an active (tcp & udp)
+connection. With util should I follow ?
 
--- Petr
+Thanks,
+julien
+
 
 
