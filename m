@@ -1,11 +1,10 @@
-From: switcher <switcher@linuxwall.info>
-Subject: nfct_query return code
-Date: Thu, 21 Jun 2007 22:53:43 +0200
-Message-ID: <20070621225343.mzl7x1joxx4w4s4g@webmail.microgate.fr>
+From: Bruce Ferrell <bferrell@baywinds.org>
+Subject: Looking to exclude certain destinations from masquarade
+Date: Thu, 21 Jun 2007 14:21:21 -0700
+Message-ID: <467AEBD1.10009@baywinds.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +15,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi All,
-Just a little question about nfct_query used to check the state of a connection.
-What is it supposed to return ?
-I guess it's 0 if the packet is part of an active connection (tell me if I'm
-wrong) but what does a "-1" value mean ? An error or a packet seen for the
-first time ?
+I am trying to establish an ipsec tunnel from a system that is also a 
+snat router.  so far I seem to be able to have my masquerade or my vpn 
+tunnel but not both.
 
-For information, my piece (truncated) of code :
-ct = nfct_new();
-nfct_set_attr_u8(ct, ATTR_ORIG_L3PROTO, AF_INET);
-nfct_set_attr_u32(ct, ATTR_ORIG_IPV4_SRC, iph->saddr);
-nfct_set_attr_u32(ct, ATTR_ORIG_IPV4_DST, iph->daddr);
-nfct_set_attr_u8(ct, ATTR_ORIG_L4PROTO, iph->protocol);
-nfct_set_attr_u16(ct, ATTR_ORIG_PORT_SRC, tcp->source);
-nfct_set_attr_u16(ct, ATTR_ORIG_PORT_DST, tcp->dest);
-cth = nfct_open(CONNTRACK, 0);
-nfct_callback_register(cth, NFCT_T_ALL, cb, NULL)
-conn_state = nfct_query(cth, NFCT_Q_GET, ct);
-nfct_close(cth);
-return conn_state;
+the basic rules I'm using are these:
+
+$IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+$IPTABLES -A FORWARD -j LOG
+$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
 
 
-Thanks,
-julien
--- 
-
-www.linuxwall.info
-
+Any suggestions?
 
