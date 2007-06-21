@@ -1,18 +1,15 @@
-From: "=?ISO-8859-1?Q?Juan_Le=F3n?=" <debjuanca@gmail.com>
-Subject: Re: Netfilter Hooks
-Date: Thu, 21 Jun 2007 14:14:47 -0400
-Message-ID: <6bb85d880706211114p50a552e6mdf294b1f8b3119c4@mail.gmail.com>
-References: <f9432b90706201841p7cf4cf95u25dcaa0a55124fac@mail.gmail.com>
-	<498E8850061D9A008669D70D@192.168.42.19>
-	<467A997A.9080706@genesilico.pl>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: syn DDoS attack solution
+Date: Thu, 21 Jun 2007 14:26:52 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0706211424400.5714@darkstar.sysinfo.com>
+References: <465EF582.4070904@bgs.hu> <015e01c7a3bf$64fbe7e0$2ef3b7a0$@COM>
+	<465FEA82.709@bgs.hu> <007101c7a45d$bc50e380$34f2aa80$@COM>
+	<466090CA.2050806@rtij.nl>
+	<Pine.LNX.4.64.0706191422070.29334@darkstar.sysinfo.com>
+	<f59kpi$1vs$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=iQuf6KZ32i+DgjMoYdx0NTIk0RSkkl5QStU9KXPaijvNGL0liEkRC84yeQa91RzMHs9J3FdOamePU2h6lysg9sM7456pyR9jZDcMRwLpAQWzLLHLJVICEwc+wFUGf2W2fnYxkakujo6P6aClNztt7nJ/nUtGzsyNOMLWMh3ECa4=
-In-Reply-To: <467A997A.9080706@genesilico.pl>
-Content-Disposition: inline
+In-Reply-To: <f59kpi$1vs$1@sea.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,60 +20,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Kogut <jkogut@genesilico.pl>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Robert Nichols <rnicholsNOSPAM@comcast.net>
 Cc: netfilter@lists.netfilter.org
 
-2007/6/21, Jan Kogut <jkogut@genesilico.pl>:
-> Hi,
-> >
-> > look for "string" in the manpage to iptables.
-> >
-> > iptables ... -m string --string "GOOGLE" --algo bm ...
-> >
-> > should be the right pointer for you.
-> >
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On Tue, 19 Jun 2007, Robert Nichols wrote:
+
+> R. DuFresne wrote:
+>> 
+>> On Fri, 1 Jun 2007, Martijn Lievaart wrote:
+>>> 
+>>> An connection is in the ESTABLISHED state once a packet has been seen. So 
+>>> once the SYN is seen, the state is ESTABLISHED.
+>>> 
+>> 
+>> 
+>> No, it is in state "new" with a mere syn sent.
 >
-> I am wondering about the usability of the Knuth-Pratt-Morris algorithm
-> (--algo kmp).
->
-> here
-> http://www-igm.univ-mlv.fr/~lecroq/string/node14.html#SECTION00140
-> vs
-> http://www-igm.univ-mlv.fr/~lecroq/string/node8.html#SECTION0080
->
-> we can see that Boyer-Moore gives definitely better performance than
-> Knuth-Pratt-Morris.
-> That is why I am curious about when kmp is better than bm ?
->
-> Cheers,
-> JK
->
-> --
-> Regards,
->
-> Jan Kogut
-> Computer Systems Administrator
-> Laboratory of Bioinformatics and Protein Engineering
-> International Institute of Molecular and Cell Biology
->
-> ul. Ks. Trojdena 4
-> 02-109 Warsaw, Poland
-> http://genesilico.pl
->
->
-> :.
->
+> You have to specify whether you are talking about the TCP connection
+> status or the conntrack status.  A mere SYN is sufficient to make an
+> ESTABLISHED status in conntrack.  If that were not true, then when
+> I send a TCP SYN packet the SYN/ACK would never make it back through
+> my firewall.
 >
 >
 
-if you use a string match and match for a specific string inside the
-packet, lets say get /index.html. Will that work? Normally, yes.
-However, if the packet size is very small, it will not. The reason is
-that iptables is built to work on a per packet basis, which means that
-if the string is split into several separate packets, iptables will
-not see that whole string. For this reason, you are much, much better
-off using a proxy of some sort for filtering in the application layer.
+remember, you fiter upon the state, new established and related <ignoring 
+invalid here>.  I was correct, you need to review the filtering contexts <smile>.
 
-Use Squid.
+
+Thanks,
+
+Ron DuFresne
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
+
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
+
+                 -Tom Robbins <Still Life With Woodpecker>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFGesLxst+vzJSwZikRAtJXAJ4xGDmYV/xjS1rRQ1RwLUqNY5ulnQCbBkrL
+oOttmX+tQwr8Ot1SSesPRBg=
+=KF5d
+-----END PGP SIGNATURE-----
 
