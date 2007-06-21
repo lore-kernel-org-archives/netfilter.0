@@ -1,13 +1,12 @@
-From: Werner Maier <maier@fidion.de>
-Subject: Re: Netfilter Hooks
-Date: Thu, 21 Jun 2007 09:09:57 +0200
-Message-ID: <498E8850061D9A008669D70D@[192.168.42.19]>
-References: <f9432b90706201841p7cf4cf95u25dcaa0a55124fac@mail.gmail.com>
+From: amna bilal <bilal.amna@yahoo.com>
+Subject: Re: libipq library
+Date: Thu, 21 Jun 2007 04:18:28 -0700 (PDT)
+Message-ID: <389278.91119.qm@web57411.mail.re1.yahoo.com>
+References: <467903A9.6070101@imperialnet.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <f9432b90706201841p7cf4cf95u25dcaa0a55124fac@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <467903A9.6070101@imperialnet.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,29 +17,62 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: patric <pakar@imperialnet.org>
+Cc: netfilter@lists.netfilter.org
+
+Thank you Patric
+
+Regards,
+
+Amna Bilal
+--- patric <pakar@imperialnet.org> wrote:
+
+> Quite simple,
+> 
+> Check out the code i have here for a simple example:
+> 
+> http://bladerunner.mine.nu/CJ
+> 
+> Check the "case IPQM_PACKET" statement.
+> 
+> 
+> 
+> 
+> 
+> amna bilal wrote:
+> 
+> > Hi everyone,
+> >
+> > I would like to know the source and destination
+> port
+> > in user space packet provided by the libipq
+> library.
+> >
+> > Thanks
+> > Amna Bilal.
+> >
+> >
+> >        
+> >
+>
+____________________________________________________________________________________
+> > Moody friends. Drama queens. Your life? Nope! -
+> their life, your story. Play Sims Stories at Yahoo!
+> Games.
+> > http://sims.yahoo.com/  
+> >
+> >
+> >   
+> 
+> 
+> 
 
 
-Hi,
 
-> Imagine that I want to create a filter, that blocks/allow every packet
-> that contains the word, for example, "GOOGLE" in it. I don't want to
-> block a packet deriving from some IP, or something like that, I want
-> to filter the content. For example, be able to parse a XML file in a
-> packet, or parse some protocol, something like that.
-
-look for "string" in the manpage to iptables.
-
-iptables ... -m string --string "GOOGLE" --algo bm ...
-
-should be the right pointer for you.
-
-regards
-
-Werner Maier
---
-Werner Maier, Dipl.-Ing. Univ.         Friedrich-Bergius-Ring 15
-fidion GmbH                            97076 W=FCrzburg
-
+       
+____________________________________________________________________________________
+Sick sense of humor? Visit Yahoo! TV's 
+Comedy with an Edge to see what's on, when. 
+http://tv.yahoo.com/collections/222
 
