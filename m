@@ -1,12 +1,16 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: Improve queue handler performance
-Date: Tue, 19 Jun 2007 16:30:57 +0200
-Message-ID: <1182263457.1834.12.camel@localhost.localdomain>
-References: <4671BB67.7020209@saudi.net.sa>
+From: "Elvir Kuric" <omasnjak@gmail.com>
+Subject: Re: Netfilter Hooks
+Date: Thu, 21 Jun 2007 14:09:33 +0200
+Message-ID: <1814bfe70706210509t10723b5awa5baf3f2218f9760@mail.gmail.com>
+References: <f9432b90706201841p7cf4cf95u25dcaa0a55124fac@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4671BB67.7020209@saudi.net.sa>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=Gvr9SONYAr8mnGj37/IBc1czux2HrMlYrrLUGvExUPf7J5mTsEBKyCJ7sFkODMkKddBsyeZiTzuO7KYNvFJwAZlXeTn72vXzYBy7Zpu0X2InDpJS5jKSdloKsqk7wdDbidFMxgCK4p6YXDprS84TPTc+KaIf48Xdton7+lqYIng=
+In-Reply-To: <f9432b90706201841p7cf4cf95u25dcaa0a55124fac@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,44 +21,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-9"
-To: Rayed Alrashed <rayed@saudi.net.sa>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Tercio F. Gaudencio Filho" <terciofilho@gmail.com>
 Cc: netfilter@lists.netfilter.org
 
-Hi,
+Hi all,
 
-Could you send your code I'd like to run it on my platform. I want to
-see I I came to the same result and I will try next to optimize
-libnetfilter_queue.
+take a look at http://www.squid-cache.org/ .
 
-In fact, I've done some bench on NuFW and found a similar result. Here's
-the article (in french) with some graphs :
-http://nufw.org/Tests-de-performance-intensifs-sur.html
+Squid cache is very good :)
 
-BR,
+Regards
 
-Le vendredi 15 juin 2007 =E0 01:04 +0300, Rayed Alrashed a =E9crit :
-> Hello everyone,
->=20
-> I am playing with nf_netlink_queue handler and built an empty handler=20
-> based on "nfqnl_test.c" from the distribution, it just accept all packet=20
-> without any checks at all.
->=20
-> To test its performance I installed Lighttpd on the same machine, and=20
-> used http_load to benchmark the performance.
->=20
-> Without any thing queued to the user space I achieved ~20000K fetches=20
-> per second, but when I enabled user space filtering the performance=20
-> dropped to ~2600 fetches per second.
->=20
-> I used this rule to queue all HTTP traffic to the queue handler:
-> # iptables -A myhttp -p tcp --dport 80 -j QUEUE
->=20
-> Is this drop in performance normal, and is there any way to improve the=20
-> performance.
->=20
-> Thanks,
-> Rayed
+Elvir Kuric
 
-
+On 6/21/07, Tercio F. Gaudencio Filho <terciofilho@gmail.com> wrote:
+> Hi All!
+>
+> I'm new in Netfilter world and I'm with some doubts...
+>
+> I want to create "something" that can analyze packets that get in and
+> get out from my machine, but I want to analyze the packet data not
+> it's origin or destination, it's content.
+>
+> Imagine that I want to create a filter, that blocks/allow every packet
+> that contains the word, for example, "GOOGLE" in it. I don't want to
+> block a packet deriving from some IP, or something like that, I want
+> to filter the content. For example, be able to parse a XML file in a
+> packet, or parse some protocol, something like that.
+>
+> Question, is it possible to do with netfilter hooks? I read sometime
+> ago, about netfilter hooks, and it seems to be pretty simple, with
+> restrictions.... but I'm not sure about that.
+>
+> If not possible with netfilter hooks, is that possible in another way?
+> Which way?
+>
+> Thanks all!
+>
+> Tercio.
+>
+>
 
