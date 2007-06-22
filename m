@@ -1,10 +1,10 @@
-From: "Roger Venable" <roger38@mdve.net>
-Subject: Unexpected UDP behavior using ipt_recent
-Date: Sun, 24 Jun 2007 10:39:57 -0400 (EDT)
-Message-ID: <56659.68.79.98.92.1182695997.squirrel@www.mdve.net>
-Reply-To: roger38@mdve.net
+From: sandra-llistes <sandra-llistes@fib.upc.edu>
+Subject: ipp2p problems
+Date: Fri, 22 Jun 2007 13:21:14 +0200
+Message-ID: <467BB0AA.9090202@fib.upc.edu>
+Reply-To: sandra-llistes@fib.upc.edu
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -16,113 +16,139 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+I have a SunFire X4100M2 with OpenSUSE 10.2 64 bits installed. Kernel 2.6.18.8 and 
+iptables v1.3.6
+I've succesfully installed ipp2p thanks to a patch that change this line in Makefile:
+-       ld -shared -o libipt_ipp2p.so libipt_ipp2p.o
++       $(CC) -shared -o libipt_ipp2p.so libipt_ipp2p.o
 
-Hello, I have a problem with UDP traffic and use of the 'recent' module. 
-I've recently modified my firewall script to use the ipt_recent module to
-help block SSH dictionary attacks, as well as attacks on certain trigger
-ports targetted by vulnerability scanning scripts. An excerpt of my
-firewall script appears below.  Notice that I am using two ipt_recent
-lists, one for SSH and one for 'scram' ports used in vulnerability scans.
+But now, when I try to load one rule, I get the following error:
+# iptables -I FORWARD 1 -p tcp -m ipp2p --edk -j LOGDROPG
+iptables: Invalid argument
 
-One of the ports I watch is UDP 1434, a Microsoft SQL Server port
-targetted by the SQL Slammer worm.  When iptables detects a new connection
-to that port, it adds the source IP to the 'scram' list, and a rule near
-the top (just after allowing established/related) eliminates further
-traffic from that source IP until timeout.  However, if I don't specify
-"-p tcp" in that enforcement rule just after established/related, it
-appears that all UDP traffic (even from source IPs not in the list) are
-dropped by those enforcement rules.
+and in messages:
+Jun 22 11:58:36 kernel: ip_tables: ipp2p match: invalid size 16 != 8
 
-I'm expecting that traffic on UDP 1434 to hit the trigger, further traffic
-from that source IP gets blocked by the 'scram' enforcement rule, and all
-other UDP traffic (like NTP) passes through to the rest of the rules. 
-What is happening is that all UDP traffic is dropped.
+I try with a strace to get more information:
 
-What can I do to make this work?  I think it's more to do with UDP
-connection states rather than a bug, but I'm not sure how or if I can
-structure this to operate like I want.  (Previously I was using a ulogd
-custom plugin to dynamically add mangle table rules, and a forked thread
-to clear them after timeout.  It was goofy, but it worked.)
+# strace iptables -I FORWARD 1 -p tcp -m ipp2p --edk -j DROP
+execve("/usr/sbin/iptables", ["iptables", "-I", "FORWARD", "1", "-p", "tcp", "-m", 
+"ipp2p", "--edk", "-j", "DROP"], [/* 54 vars */]) = 0
+brk(0)                                  = 0x60e000
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x2adde7885000
+uname({sys="Linux", node="elion", ...}) = 0
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=63223, ...}) = 0
+mmap(NULL, 63223, PROT_READ, MAP_PRIVATE, 3, 0) = 0x2adde7886000
+close(3)                                = 0
+open("/lib64/libdl.so.2", O_RDONLY)     = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\220\17\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=19896, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x2adde7896000
+mmap(NULL, 2109728, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x2adde7a87000
+fadvise64(3, 0, 2109728, POSIX_FADV_WILLNEED) = 0
+mprotect(0x2adde7a89000, 2097152, PROT_NONE) = 0
+mmap(0x2adde7c89000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 
+0x2000) = 0x2adde7c89000
+close(3)                                = 0
+open("/lib64/libnsl.so.1", O_RDONLY)    = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0A\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=105734, ...}) = 0
+mmap(NULL, 2189680, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x2adde7c8b000
+fadvise64(3, 0, 2189680, POSIX_FADV_WILLNEED) = 0
+mprotect(0x2adde7c9f000, 2093056, PROT_NONE) = 0
+mmap(0x2adde7e9e000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 
+0x13000) = 0x2adde7e9e000
+mmap(0x2adde7ea0000, 6512, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 
+0) = 0x2adde7ea0000
+close(3)                                = 0
+open("/lib64/libc.so.6", O_RDONLY)      = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\340\333"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1595305, ...}) = 0
+mmap(NULL, 3412216, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x2adde7ea2000
+fadvise64(3, 0, 3412216, POSIX_FADV_WILLNEED) = 0
+mprotect(0x2adde7fdb000, 2093056, PROT_NONE) = 0
+mmap(0x2adde81da000, 20480, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 
+0x138000) = 0x2adde81da000
+mmap(0x2adde81df000, 16632, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 
+0) = 0x2adde81df000
+close(3)                                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x2adde81e4000
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x2adde81e5000
+arch_prctl(ARCH_SET_FS, 0x2adde81e4e30) = 0
+mprotect(0x2adde81da000, 12288, PROT_READ) = 0
+munmap(0x2adde7886000, 63223)           = 0
+brk(0)                                  = 0x60e000
+brk(0x62f000)                           = 0x62f000
+open("/etc/nsswitch.conf", O_RDONLY)    = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=1192, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x2adde7886000
+read(3, "#\n# /etc/nsswitch.conf\n#\n# An ex"..., 4096) = 1192
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+munmap(0x2adde7886000, 4096)            = 0
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=63223, ...}) = 0
+mmap(NULL, 63223, PROT_READ, MAP_PRIVATE, 3, 0) = 0x2adde7886000
+close(3)                                = 0
+open("/lib64/libnss_files.so.2", O_RDONLY) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\300!\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=53809, ...}) = 0
+mmap(NULL, 2139464, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x2adde81e6000
+fadvise64(3, 0, 2139464, POSIX_FADV_WILLNEED) = 0
+mprotect(0x2adde81f0000, 2093056, PROT_NONE) = 0
+mmap(0x2adde83ef000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 
+0x9000) = 0x2adde83ef000
+close(3)                                = 0
+munmap(0x2adde7886000, 63223)           = 0
+open("/etc/protocols", O_RDONLY)        = 3
+fcntl(3, F_GETFD)                       = 0
+fcntl(3, F_SETFD, FD_CLOEXEC)           = 0
+fstat(3, {st_mode=S_IFREG|0644, st_size=23232, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x2adde7886000
+read(3, "# See also: protocols(5), http:/"..., 4096) = 4096
+close(3)                                = 0
+munmap(0x2adde7886000, 4096)            = 0
+open("/usr/lib64/iptables/libipt_ipp2p.so", O_RDONLY) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\340\10\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=14743, ...}) = 0
+mmap(NULL, 2106088, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x2adde83f1000
+fadvise64(3, 0, 2106088, POSIX_FADV_WILLNEED) = 0
+mprotect(0x2adde83f3000, 2093056, PROT_NONE) = 0
+mmap(0x2adde85f2000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 
+0x1000) = 0x2adde85f2000
+close(3)                                = 0
+mprotect(0x2adde85f2000, 4096, PROT_READ) = 0
+open("/usr/lib64/iptables/libipt_standard.so", O_RDONLY) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\340\6\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=6488, ...}) = 0
+mmap(NULL, 2101536, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x2adde85f4000
+fadvise64(3, 0, 2101536, POSIX_FADV_WILLNEED) = 0
+mprotect(0x2adde85f5000, 2093056, PROT_NONE) = 0
+mmap(0x2adde87f4000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 
+0) = 0x2adde87f4000
+close(3)                                = 0
+socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
+getsockopt(3, SOL_IP, 0x40 /* IP_??? */, 
+"filter\0\377\210\355\"\200\377\377\377\377@\0\0\0\0\0\0"..., [84]) = 0
+getsockopt(3, SOL_IP, 0x41 /* IP_??? */, 
+"filter\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., [15392]) = 0
+setsockopt(3, SOL_IP, 0x40 /* IP_??? */, 
+"filter\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 15640) = -1 EINVAL (Invalid 
+argument)
+write(2, "iptables: Invalid argument\n", 27iptables: Invalid argument
+) = 27
+exit_group(1)                           = ?
+Process 30291 detached
 
-I don't think the use of more than one list has anything to do with this,
-but I thought I should include it for completeness.  I know I'm using the
-new re-written ipt_recent.c module (kernel is 2.6.18.8).  Is this a bug or
-am I missing something silly?  Thanks very much in advance for your
-assistance, all constructive comments are appreciated.
+So, is a problem with setsockopt function but I don't know how to solve this.
+Any help?
 
---Roger Venable
---Ann Arbor, Michigan
+Thanks,
 
-Kernel: Linux 2.6.18.8-0.1-default #1 SMP Fri Mar 2 13:51:59 UTC 2007 i686
-athlon i386 GNU/Linux
-iptables: v1.3.6
-
-# some rules not pertaining to this example were cut
-# (and IP addresses changed to protect the innocent)
-
-# default drop
-iptables -P OUTPUT  DROP
-iptables -P INPUT   DROP
-iptables -P FORWARD DROP
-
-# accept established / related
-iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# SCRAM rules
-# if '-p tcp' not specified here, all UDP traffic gets dropped
-# even from source addresses that are not in a 'recent' list
-iptables -A INPUT  -i eth0  -p tcp -m recent --update --seconds 60
---hitcount 4 --name SSH  -j DROP
-iptables -A INPUT  -i eth0  -p tcp -m recent --update --seconds 3600
---name SCRAM  -j DROP
-
-# <SNIP> more rules...
-
-# SSH
-# dictionary attacks get lost
-#
-iptables -N In_RULE_13
-iptables -A INPUT  -i eth0 -p tcp -m tcp  -d 192.168.1.68  --dport 22  -j
-In_RULE_13
-iptables -A INPUT  -i eth0 -p tcp -m tcp  -d 192.168.1.69  --dport 22  -j
-In_RULE_13
-iptables -A In_RULE_13  -j ULOG  --ulog-nlgroup 1 --ulog-prefix "SSH
-RECENT " --ulog-qthreshold 1
-iptables -A In_RULE_13 -m recent --name SSH --set -j ACCEPT
-
-# <SNIP> more rules...
-
-# scan triggers
-# when trigger ports hit by script kiddies, add to 'scram' recent table #
-iptables -N In_RULE_30
-iptables -A INPUT  -i eth0 -p tcp -m tcp  --dport 1023:1029  -j In_RULE_30
-iptables -A INPUT  -i eth0 -p tcp -m tcp  -m multiport  --dports
-1433,3128,1761,12345,2967,37,5900  -j In_RULE_30
-iptables -A INPUT  -i eth0 -p udp -m udp  --dport 1025:1029  -j In_RULE_30
-iptables -A INPUT  -i eth0 -p udp -m udp  -m multiport  --dports 1434,500
--j In_RULE_30
-iptables -A In_RULE_30  -j ULOG  --ulog-nlgroup 1 --ulog-prefix "SCRAM "
---ulog-qthreshold 1
-iptables -A In_RULE_30 -m recent --name SCRAM --set -j DROP
-
-# <SNIP> more rules...
-# Here accept other UDP traffic, like NTP on UDP 123
-
-# So, Grim, you reap around here, do you?
-iptables -N RULE_36
-iptables -A OUTPUT  -j RULE_36
-iptables -A INPUT  -j RULE_36
-iptables -A RULE_36  -j ULOG  --ulog-nlgroup 1 --ulog-prefix "DEATH "
---ulog-qthreshold 1
-iptables -A RULE_36  -j DROP
-
-# 601
-
-
-
-
+Sandra
 
