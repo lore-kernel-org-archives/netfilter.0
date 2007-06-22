@@ -1,13 +1,12 @@
-From: Rayed Alrashed <rayed@saudi.net.sa>
-Subject: Re: Improve queue handler performance
-Date: Fri, 22 Jun 2007 13:46:02 +0300
-Message-ID: <467BA86A.5030509@saudi.net.sa>
-References: <4671BB67.7020209@saudi.net.sa>
-	<1182263457.1834.12.camel@localhost.localdomain>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: Looking to exclude certain destinations from masquarade
+Date: Fri, 22 Jun 2007 15:29:33 +0200
+Message-ID: <467BCEBD.7030309@freemail.hu>
+References: <467AEBD1.10009@baywinds.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1182263457.1834.12.camel@localhost.localdomain>
+In-Reply-To: <467AEBD1.10009@baywinds.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eric Leblond <eric@regit.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Bruce Ferrell <bferrell@baywinds.org>
 Cc: netfilter@lists.netfilter.org
 
-Hi,
-> Could you send your code I'd like to run it on my platform.
-I will send the code directly to your email, it is basically this file:
-libnetfilter_queue-0.0.13/utils/nfqnl_test.c
+Bruce Ferrell =EDrta:
+> I am trying to establish an ipsec tunnel from a system that is also a=20
+> snat router.  so far I seem to be able to have my masquerade or my vpn =
 
-With printf commented out, and the while loop changed from:
-while ((rv = recv(fd, buf, sizeof(buf), 0)) && rv >= 0)
-To:
-while ( ((rv = recv(fd, buf, sizeof(buf), 0)) && rv >= 0)  || 
-(errno==105) )
+> tunnel but not both.
+>
+> the basic rules I'm using are these:
+>
+> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state=20
+> ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
+> $IPTABLES -A FORWARD -j LOG
+> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+>
+These are VERY BASIC rules...
+>
+> Any suggestions?
+>
+>
+You can use the MARK/CONNMARK target ot mark the vpn/nat packets.
+With that information you will be able to do the NATing or leting=20
+through the vpn...
 
-Looking back to it I don't know why I added this check but it used to 
-break the loop after few hundreds of packets.
+Swifty
 
-> In fact, I've done some bench on NuFW and found a similar result. Here's
-> the article (in french) with some graphs :
-> http://nufw.org/Tests-de-performance-intensifs-sur.html
->   
-Unfortunately I don't know french :(
-
-Best regards,
-Rayed
 
