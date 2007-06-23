@@ -1,12 +1,13 @@
-From: Ray Leach <spoons@rchq.co.za>
-Subject: Re: Looking to exclude certain destinations from masquarade
-Date: Sat, 23 Jun 2007 09:30:03 +0200
-Message-ID: <467CCBFB.2080002@rchq.co.za>
-References: <467AEBD1.10009@baywinds.org> <467BCEBD.7030309@freemail.hu>
+From: Daniel Lopes <lopsch@lopsch.com>
+Subject: Re: filter by application name
+Date: Sat, 23 Jun 2007 17:06:38 +0200
+Message-ID: <467D36FE.4040606@lopsch.com>
+References: <467C452A.1050303@gmail.com> <467C467D.8060002@shorewall.net>
+	<Pine.LNX.4.64.0706230215230.10809@darkstar.sysinfo.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------030905010907010902080703"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <467BCEBD.7030309@freemail.hu>
+In-Reply-To: <Pine.LNX.4.64.0706230215230.10809@darkstar.sysinfo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,59 +18,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Cc: Bruce Ferrell <bferrell@baywinds.org>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "R. DuFresne" <dufresne@sysinfo.com>
+Cc: Deb ian <debian70@gmail.com>, netfilter@lists.netfilter.org, Tom Eastep <teastep@shorewall.net>
 
-This is a multi-part message in MIME format.
---------------030905010907010902080703
-Content-Type: text/plain; charset="iso-8859-2"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+R. DuFresne schrieb:
 
+> Interesting.  I get the impression tuxguardian is not quite a deep 
+> inspection FW nor an real application proxy, but has hooks to permit and 
+> eny on command hashes?  I'd like to see more of their docs, not alot 
+> online that I saw.  Might have to go through their code if more info is 
+> not available...
+> 
+> 
+> Thanks,
+> 
+> Ron DuFresne
 
+Hi,
 
-G=E1sp=E1r Lajos wrote:
-> Bruce Ferrell =EDrta:
->> I am trying to establish an ipsec tunnel from a system that is also a=20
->> snat router.  so far I seem to be able to have my masquerade or my=20
->> vpn tunnel but not both.
->>
->> the basic rules I'm using are these:
->>
->> $IPTABLES -A FORWARD -i $EXTIF -o $INTIF -m state --state=20
->> ESTABLISHED,RELATED -j ACCEPT
->> $IPTABLES -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
->> $IPTABLES -A FORWARD -j LOG
-or you could use a rule like this:
-$IPTABLES -t nat -A POSTROUTING -o $EXITIF -s $EXCLUDED_IP -j RETURN
+they seem to use the LSM framework (like apparmor). This are the hooks, 
+they can use to allow or deny socket opening for example, I guess.
 
+greetings
 
->> $IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
->>
-> These are VERY BASIC rules...
->>
->> Any suggestions?
->>
->>
-> You can use the MARK/CONNMARK target ot mark the vpn/nat packets.
-> With that information you will be able to do the NATing or leting=20
-> through the vpn...
->
-> Swifty
->
->
->
->
->
+Daniel
 
---=20
-<img src=3D'http://www.danasoft.com/sig/spoonssig.jpg' />
---------------------------------------------------
-RCHQ Hobbies cc
-http://www.rchq.co.za and http://store.rchq.co.za
-Fax: +27 86 652 2773       eMail: admin@rchq.co.za
-P O Box 10376, Vorna Valley, Midrand, 1686
---------------------------------------------------
-
-
---------------030905010907010902080703--
 
