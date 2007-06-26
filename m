@@ -1,12 +1,12 @@
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-Subject: Re: patches against 2.6.21 and a small script
-Date: Tue, 26 Jun 2007 15:52:56 +0900 (JST)
-Message-ID: <200706260652.l5Q6qvKh018982@toshiba.co.jp>
-References: <467FF58A.1010000@freemail.hu>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: transparent proxy with captive page - ipt_recent?
+Date: Tue, 26 Jun 2007 09:43:22 +0200
+Message-ID: <4680C39A.7030902@rtij.nl>
+References: <467FE1E4.2040306@sbirmc.ac.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <467FF58A.1010000@freemail.hu>
+In-Reply-To: <467FE1E4.2040306@sbirmc.ac.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,59 +17,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: Text/Plain; charset="iso-8859-1"
-To: swifty@freemail.hu
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Martin Whinnery <martin.whinnery@sbirmc.ac.uk>
 Cc: netfilter@lists.netfilter.org
 
+Martin Whinnery wrote:
+> /sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -m recent 
+> --rcheck --seconds 30 -j REDIRECT --to-ports 8080
+> /sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -m recent --set 
+> -j REDIRECT --to-ports 82
+>
+> So I thought the first rule wouldn't match first time around. Then the 
+> second rule would provide the proxy instructions page, and make the 
+> /proc/sys/net/ipt_recent/DEFAULT entry. This works fine.
+>
+> But the first rule should match on the next request. And it doesn't 
+> seem to. And I don't understand.
+>
 
-Hi,
-
-From: G=E1sp=E1r Lajos <swifty@freemail.hu>
-Date: Mon, 25 Jun 2007 19:04:10 +0200
-
-> Hi list!
-> =
-
-> I found that many pom patches are out of date so I "upgraded" them...=
-
-> And also attached a small diff script. (Just rename the old source to=
- =
-
-> .orig and you will get all of those modifications you did if you run =
-
-> this script.)
-
-Thanks, please post such patches to netfilter-devel list from next time=
-.=
+I think you need to replace rcheck with update.
 
 
-> --- ./patchlets/ipv4options/linux-2.6/net/ipv4/netfilter/ipt_ipv4opti=
-ons.c.orig	2007-05-02 15:32:49.000000000 +0200
-> +++ ./patchlets/ipv4options/linux-2.6/net/ipv4/netfilter/ipt_ipv4opti=
-ons.c	2007-06-25 18:40:25.000000000 +0200
-> @@ -154,8 +154,16 @@
->  	return 1;
->  }
->  =
+HTH,
+M4
 
-> +#if LINUX_VERSION_CODE >=3D KERNEL_VERSION(2,6,21)
-> +static struct xt_match ipv4options_match =3D { =
-
-> +#else
->  static struct ipt_match ipv4options_match =3D { =
-
-> +#endif
-
-You don't need to support old kernel in one file.
-Please assume that you are writing for only the recent kernel.
-
-> --- ./patchlets/connlimit/linux-2.6/net/ipv4/netfilter/ipt_connlimit.=
-c.orig	2007-03-06 14:47:13.000000000 +0100
-> +++ ./patchlets/connlimit/linux-2.6/net/ipv4/netfilter/ipt_connlimit.=
-c	2007-06-25 18:32:06.000000000 +0200
-
-Jan Engelhardt is improving connlimit match. Please refer
-netfilter-devel archive in detail.
-
--- Yasuyuki Kozakai
 
