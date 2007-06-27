@@ -1,51 +1,84 @@
-From: Mike Wright <xktnniuymlla@mailinator.com>
-Subject: Re: icmp-type question
-Date: Wed, 27 Jun 2007 10:09:56 -0700
-Message-ID: <468299E4.3020906@mailinator.com>
-References: <35f70db10706270926u708cc4f4ta0a962ca219ce91e@mail.gmail.com>
-	<35f70db10706270927j3e15b87anc134c458a621b146@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] Release libnetfilter_conntrack
+Date: Wed, 27 Jun 2007 19:31:52 +0200
+Message-ID: <46829F08.6030607@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <35f70db10706270927j3e15b87anc134c458a621b146@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="------------010206010207070609020600"
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: lwn@lwn.net
 
-Ross Cameron wrote:
-> Hi there list,...
-> 
-> I need to block all
->     timestamp-request      and
->     timestamp-reply
-> 
-> On eth0 (Inet facing fast ethernet segment on a multi homed Linux
-> router) but not on eth1 (LAN facing range).
->
+This is a multi-part message in MIME format.
+--------------010206010207070609020600
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I don't know how to test this so here's a guess.  Hope it works.
+Hi!
 
-Drop requests from the internet:
-iptables -A input -p icmp --icmp-type timestamp-request -i eth0 -j DROP
+The netfilter project proudly presents libnetfilter_conntrack-0.0.80
 
-My thought is that if no timestamp requests are accepted no timestamp 
-replies would be generated.  In case that's an invalid assumption you 
-could also filter the output chain.
+libnetfilter_conntrack is a userspace library providing a programming
+interface (API) to the in-kernel connection tracking state table.
 
-...and drop answers to the internet:
-iptables -A output -p icmp --icmp-type timestamp-reply -o eth0 -j DROP
+This release includes accumulated bugfixes. See ChangeLog for more
+details. Upgrade is recommended.
 
-Depending on what else you are doing you may need matching rules in your 
-forward chains, too.
+You can download it from:
 
-:m)
+http://www.netfilter.org/projects/libnetfilter_conntrack/
+ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
+
+Happy tracking,
+
+	Pablo (on behalf of the Netfilter Project)
+
+--=20
+"Pa=EDses en desarrollo es el nombre con que los expertos designan a los
+pa=EDses arrollados por el desarrollo ajeno" -- Patas Arriba. La Escuela
+del Mundo al Rev=E9s -- E. Galeano
+
+--------------010206010207070609020600
+Content-Type: text/plain;
+ name="ChangeLog"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog"
+
+libnetfilter_conntrack 0.0.80
+======================================================================
+
+Changes from 0.0.75:
+
+- fix typo in snprintf_default.c 
+	[Jozsef Kladecsik]
+
+- Introduce NFCT_Q_CREATE_UPDATE: create conntrack, if it exists, update it
+	[Pablo Neira Ayuso]
+
+- nf[ct|exp]_snprintf behaves as snprintf C99
+	[Pablo Neira Ayuso]
+
+- introduce NFCT_SOPT_SETUP_* options to simplify object setup
+	[Pablo Neira Ayuso]
+
+- fix silly bug in nfct_getobjopt(..., NFCT_GOPT_IS_*NAT)
+	[Pablo Neira Ayuso]
+
+- fix invalid argument error: status flags may not be present in update message
+	[Pablo Neira Ayuso]
+
+- add support for 64 bits counters
+	[Krzysztof Oledzki]
+
+--------------010206010207070609020600--
 
