@@ -1,15 +1,12 @@
-From: Ivan Dubrov <wfragg@gmail.com>
-Subject: Routing decision after FORWARD
-Date: Wed, 27 Jun 2007 20:15:58 +0700
-Message-ID: <4682630E.30406@gmail.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: Re: How to remove TCP options when doing NAT?
+Date: Wed, 27 Jun 2007 17:12:59 +0200
+Message-ID: <1182957179.4157.14.camel@localhost>
+References: <917D8AC5A524D343B28848D8BBFFEC0701B22523@klmail1.kl.imgtec.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig61E1BE44BF1945CE600AFEC4"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:subject:x-enigmail-version:content-type;
-	b=odoWgIGGtugMJ0tQgefPyh9s2J/YDYuEbIzHtzrHJcJF4L08+db+JXI9m7OKdk4l8n/9ptu0wwOkYVj4PDas9Ye+lyQ0uhc2vea/bw42XXjv4TeQYPXGhO4nj4b9zGTzatOsMoEY+3LMf3Rdt2+cWzGqCm7ctJ4BlT5HTPqEmHQ=
+In-Reply-To: <917D8AC5A524D343B28848D8BBFFEC0701B22523@klmail1.kl.imgtec.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,43 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Fabrice Triboix <Fabrice.Triboix@imgtec.com>
+Cc: netfilter@lists.netfilter.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig61E1BE44BF1945CE600AFEC4
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Le mercredi 27 juin 2007 =E0 10:51 +0100, Fabrice Triboix a =E9crit :
+> I have noticed that to handle masquerading, linux adds some TCP
+> options to the output packets (for a TCP stream, of course).
 
-Hello,
-
-Look here:
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TRAVERSINGG=
-ENERAL
-
-According to the diagram, there is routing decision after
-filter/FORWARD. However, according to the tables before, there is no
-such routing (there is only one routing before mangle/FORWARD). The
-question is, which one is correct?
+What kind of options ? I just looked at a NATed (by a Linux box) TCP
+stream between 2 linux boxes, and I don't see any additional TCP option.
 
 
 --=20
-WBR,
-Ivan S. Dubrov
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
-
-
---------------enig61E1BE44BF1945CE600AFEC4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.7 (GNU/Linux)
-
-iD8DBQFGgmMQLZ+Fnc2HIX4RAsR3AJ9C2hN51hOUreqxSxfVrfzKsYLYkgCfUYeB
-Iiphlzj778+VhLW79Kf/80w=
-=qS8a
------END PGP SIGNATURE-----
-
---------------enig61E1BE44BF1945CE600AFEC4--
 
