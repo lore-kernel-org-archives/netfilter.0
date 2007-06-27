@@ -1,12 +1,13 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: ipt_account / iptables 1.3.8
-Date: Wed, 27 Jun 2007 18:43:47 +0200
-Message-ID: <1182962627.16585.6.camel@localhost>
+From: Mike Wright <xktnniuymlla@mailinator.com>
+Subject: Re: icmp-type question
+Date: Wed, 27 Jun 2007 10:09:56 -0700
+Message-ID: <468299E4.3020906@mailinator.com>
+References: <35f70db10706270926u708cc4f4ta0a962ca219ce91e@mail.gmail.com>
+	<35f70db10706270927j3e15b87anc134c458a621b146@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-BIbJXz3TP1o0g/NbTJ0/"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <35f70db10706270927j3e15b87anc134c458a621b146@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,37 +18,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
+Ross Cameron wrote:
+> Hi there list,...
+> 
+> I need to block all
+>     timestamp-request      and
+>     timestamp-reply
+> 
+> On eth0 (Inet facing fast ethernet segment on a multi homed Linux
+> router) but not on eth1 (LAN facing range).
+>
 
---=-BIbJXz3TP1o0g/NbTJ0/
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I don't know how to test this so here's a guess.  Hope it works.
 
-Hi List,
+Drop requests from the internet:
+iptables -A input -p icmp --icmp-type timestamp-request -i eth0 -j DROP
 
-It appears that ipt_account has vanished from
-iptables 1.3.8 (it was still there in 1.3.7) could
-someone please comment on the why?
+My thought is that if no timestamp requests are accepted no timestamp 
+replies would be generated.  In case that's an invalid assumption you 
+could also filter the output chain.
 
-The changelogs do not mention anything about it, neither
-does the source, and also I couldn't find anything
-googling thru the mailing list archives.
+...and drop answers to the internet:
+iptables -A output -p icmp --icmp-type timestamp-reply -o eth0 -j DROP
 
-    T Jacob
+Depending on what else you are doing you may need matching rules in your 
+forward chains, too.
 
---=-BIbJXz3TP1o0g/NbTJ0/
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQBGgpPDgF9cFv867HwRAmB1AJ4oN9/HPXR++4d1eq45R8Qth2NnrgCg1fob
-o50xmEK5tBRYnZsElR4R4Jo=
-=9Qmd
------END PGP SIGNATURE-----
-
---=-BIbJXz3TP1o0g/NbTJ0/--
-
+:m)
 
