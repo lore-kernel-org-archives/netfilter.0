@@ -1,84 +1,44 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] Release libnetfilter_conntrack
-Date: Wed, 27 Jun 2007 19:31:52 +0200
-Message-ID: <46829F08.6030607@netfilter.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: ipt_account / iptables 1.3.8
+Date: Wed, 27 Jun 2007 20:16:33 +0200
+Message-ID: <4682A981.3090608@plouf.fr.eu.org>
+References: <1182962627.16585.6.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010206010207070609020600"
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: lwn@lwn.net
-
-This is a multi-part message in MIME format.
---------------010206010207070609020600
-Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1182962627.16585.6.camel@localhost>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi!
+Hello,
 
-The netfilter project proudly presents libnetfilter_conntrack-0.0.80
+Thomas Jacob a =E9crit :
+>=20
+> It appears that ipt_account has vanished from
+> iptables 1.3.8 (it was still there in 1.3.7) could
+> someone please comment on the why?
+>=20
+> The changelogs do not mention anything about it
 
-libnetfilter_conntrack is a userspace library providing a programming
-interface (API) to the in-kernel connection tracking state table.
+They do, in a rather laconic way though :
 
-This release includes accumulated bugfixes. See ChangeLog for more
-details. Upgrade is recommended.
+<quote>
+- Remove extensions for unmaintained/obsolete patchlets
+</quote>
 
-You can download it from:
-
-http://www.netfilter.org/projects/libnetfilter_conntrack/
-ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
-
-Happy tracking,
-
-	Pablo (on behalf of the Netfilter Project)
-
---=20
-"Pa=EDses en desarrollo es el nombre con que los expertos designan a los
-pa=EDses arrollados por el desarrollo ajeno" -- Patas Arriba. La Escuela
-del Mundo al Rev=E9s -- E. Galeano
-
---------------010206010207070609020600
-Content-Type: text/plain;
- name="ChangeLog"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ChangeLog"
-
-libnetfilter_conntrack 0.0.80
-======================================================================
-
-Changes from 0.0.75:
-
-- fix typo in snprintf_default.c 
-	[Jozsef Kladecsik]
-
-- Introduce NFCT_Q_CREATE_UPDATE: create conntrack, if it exists, update it
-	[Pablo Neira Ayuso]
-
-- nf[ct|exp]_snprintf behaves as snprintf C99
-	[Pablo Neira Ayuso]
-
-- introduce NFCT_SOPT_SETUP_* options to simplify object setup
-	[Pablo Neira Ayuso]
-
-- fix silly bug in nfct_getobjopt(..., NFCT_GOPT_IS_*NAT)
-	[Pablo Neira Ayuso]
-
-- fix invalid argument error: status flags may not be present in update message
-	[Pablo Neira Ayuso]
-
-- add support for 64 bits counters
-	[Krzysztof Oledzki]
-
---------------010206010207070609020600--
+AFAIK, the concerned extensions are : fuzzy, nth, random (both=20
+superseded by statistic), ROUTE, account, BALANCE, childlevel,=20
+connlimit, dstlimit, FTOS, IPMARK, ipv4options, IPV4OPTSSTRIP, mport,=20
+NETLINK, osf, psd, record_rpc, rpc, TARPIT, TCPLAG, time, TRACE, u32, XOR=
+.
 
