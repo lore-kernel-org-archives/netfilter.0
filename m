@@ -1,12 +1,11 @@
-From: hdemir@metu.edu.tr
-Subject: Re: 'recent' matching when less than hitcount hits
-Date: Wed, 27 Jun 2007 12:41:46 +0300
-Message-ID: <20070627094145.GB4288764@metu.edu.tr>
-References: <20070627090043.GC31525@sliderule.msquared.com.au>
+From: "Fabrice Triboix" <Fabrice.Triboix@imgtec.com>
+Subject: How to remove TCP options when doing NAT?
+Date: Wed, 27 Jun 2007 10:51:45 +0100
+Message-ID: <917D8AC5A524D343B28848D8BBFFEC0701B22523@klmail1.kl.imgtec.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20070627090043.GC31525@sliderule.msquared.com.au>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +17,14 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Msquared <1.list.netfilter@msquared.id.au>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Wed, Jun 27, 2007 at 05:00:43PM +0800, Msquared wrote:
-> Hi people!
-> 
-> I seem to be having a problem where a rule with --hitcount is matching
-> when there are fewer hits than is listed in the hitcount parameter.
-> 
-> I have the following two rules in a chain called service-ssh:
-> 
->   -m recent --update --seconds 40 --hitcount 5 --name SSH --rsource -j DROP
->   -m recent --set --name SSH --rsource -j ACCEPT
-> 
-> The rules are in a chain that is only hit for incoming SSH connections.
-> EG: I have this rule in the INPUT chain:
-> 
->   -m tcp --dport 22 -j service-ssh
-> 
-You are sending all the traffic to the port 22. Use -m state --state NEW, so that only new ssh connections can be updated. 
-
-
-hdemir.
-
-
+Hi,=0D=0A=0D=0AI have noticed that to handle masquerading, linux adds some =
+TCP=0D=0Aoptions to the output packets (for a TCP stream, of course).=0D=0A=0D=
+=0AI would like to know if there is a way to avoid that=3F Or more=0D=0Aacc=
+urately: is it possible to tell the linux kernel to do the=0D=0Amasqueradin=
+g without adding these TCP options=3F=0D=0A=0D=0AThank you very much for an=
+y help,=0D=0A=0D=0A  Fabrice Triboix=0D=0A-=0D=0AThis message is subject to=
+ Imagination Technologies' e-mail terms: http://www.imgtec.com/e-mail.htm=0D=
+=0A-=0D=0A
 
