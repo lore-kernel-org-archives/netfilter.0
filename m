@@ -1,94 +1,63 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] Release conntrack-tools 0.9.4
-Date: Mon, 02 Jul 2007 15:27:58 +0200
-Message-ID: <4688FD5E.9070709@netfilter.org>
+From: Ivan Dubrov <wfragg@gmail.com>
+Subject: Is there routing decision after FORWARD?
+Date: Wed, 27 Jun 2007 19:02:49 +0700
+Message-ID: <468251E9.5040407@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060107050909010603000400"
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig273757529CA49382D46BC7A3"
+Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:subject:x-enigmail-version:content-type;
+	b=d8iA4yi3beKYB7kfhCeHXIwlig/4NwedUa8hRwbFYpqF1/YlK5hCg7vJ+TRCQcKoAjOqgPW7MSrKgjK9tAFHT7OrT2g9r5Ep8uPb+fRh8H7GFrCv021ZBETgs6xs/TVuvI5u+EyASk/pop3HtaLUrGP953AXLWUkQWUqmkyv180=
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter-failover list <netfilter-failover@lists.netfilter.org>, lwn@lwn.net
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------060107050909010603000400
-Content-Type: text/plain; charset="iso-8859-1"
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig273757529CA49382D46BC7A3
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Hello,
 
-The netfilter project proudly presents another development release of
-the conntrack-tools. The conntrack-tools are:
+Look here:
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TRAVERSINGG=
+ENERAL
 
-- The userspace daemon so-called conntrackd that covers the specific
-aspects of stateful Linux firewalls to enable high availability
-solutions. It can be used as statistics collector of the firewall use as
-well. The daemon is highly configurable and easily extensible.
+According to the diagram, there is routing decision after
+filter/FORWARD. However, according to the tables before, there is no
+such routing (there is only one routing before mangle/FORWARD). The
+question is, which one is correct?
 
-- The command line interface (CLI) conntrack that provides an interface
-to add, delete and update flow entries, list current active flows in
-plain text/XML, current IPv4 NAT'ed flows, reset counters, and flush the
-complete connection tracking table among many other.
-
-You can download it from:
-
-http://www.netfilter.org/projects/conntrack-tools/downloads.html
-
-Changelog is attached.
-
-Ab alio expectes alteri quod feceris,
-	Pablo (on behalf of the Netfilter Project)
+Please CC me since I'm not subscribed to the list.
 
 --=20
-"Pa=EDses en desarrollo es el nombre con que los expertos designan a los
-pa=EDses arrollados por el desarrollo ajeno" -- Patas Arriba. La Escuela
-del Mundo al Rev=E9s -- E. Galeano
+WBR,
+Ivan S. Dubrov
 
---------------060107050909010603000400
-Content-Type: text/plain;
- name="ChangeLog"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ChangeLog"
 
-conntrack-tools version 0.9.4
------------------------------
 
-Changes from 0.9.3:
+--------------enig273757529CA49382D46BC7A3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-- fix error message in configure.in (Eric Leblond)
-	[Eric Leblond]
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.7 (GNU/Linux)
 
-- fix segfault with conntrack --output
-	[Krzysztof Oledzky]
+iD8DBQFGglHrLZ+Fnc2HIX4RAkodAJ4+327LWhskuj5TMEzg9LwrwavRGwCfdrFL
+EJK1e3eYYoLTSlQHVfZaDRE=
+=0Rse
+-----END PGP SIGNATURE-----
 
-- use NFCT_SOPT_SETUP_* facilities: nfct_setobjopt
-- remove bogus option to get a conntrack in test.sh example file
-- add aliases --sport and --dport to make it more iptables-like
-- add support for `-L --src-nat' and `-L --dst-nat' to show natted connections
-- update conntrack(8) manpage
-- remove dlopen infrastructure
-- add library dependency checking to configure.in
-- simplify checksum code: use UDP/multicast checksum facilities
-- fix silly bug in build_network_message: out of bound memset
-- remove useless backlog parameter in multicast sockets
-- remove reminiscents of delay destroy message and relax transitions
-- remove confusing StripNAT parameter: NAT support enabled by default
-- relax event tracking: *_update callbacks use cache_update_force
-- use wraparound-aware functions after/before/between
-- commit phase: if conntrack exists, update it
-- local requests return EXIT_FAILURE if it can't connect to the daemon
-- remove several debug statements
-- fork when internal/external dump and commit requests are received
-- lots of cleanups
-	[Pablo Neira Ayuso]
-
---------------060107050909010603000400--
+--------------enig273757529CA49382D46BC7A3--
 
