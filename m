@@ -1,16 +1,12 @@
-From: Maximilian Wilhelm <max@rfc2324.org>
-Subject: Re: icmp-type question
-Date: Thu, 28 Jun 2007 12:26:42 +0200
-Message-ID: <20070628102642.GA29575@outback.rfc2324.org>
-References: <35f70db10706270926u708cc4f4ta0a962ca219ce91e@mail.gmail.com>
-	<35f70db10706270927j3e15b87anc134c458a621b146@mail.gmail.com>
-	<468299E4.3020906@mailinator.com>
-	<4682B79C.3040304@riverviewtech.net>
-	<35f70db10706280048o72c1bc8u5b20a5cceddf3fd8@mail.gmail.com>
+From: Cedric Blancher <blancher@cartel-securite.fr>
+Subject: RE: How to remove TCP options when doing NAT?
+Date: Thu, 28 Jun 2007 13:32:28 +0200
+Message-ID: <1183030348.8967.41.camel@localhost>
+References: <917D8AC5A524D343B28848D8BBFFEC0701B226A4@klmail1.kl.imgtec.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <35f70db10706280048o72c1bc8u5b20a5cceddf3fd8@mail.gmail.com>
+In-Reply-To: <917D8AC5A524D343B28848D8BBFFEC0701B226A4@klmail1.kl.imgtec.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,37 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Fabrice Triboix <Fabrice.Triboix@imgtec.com>
+Cc: netfilter@lists.netfilter.org
 
-Am Thursday, den 28 June hub Ross Cameron folgendes in die Tasten:
+Le jeudi 28 juin 2007 =E0 12:00 +0100, Fabrice Triboix a =E9crit :
+> From ethereal, I can see 20 bytes of options added on each TCP packets.
+> These are TCP options that are added after the standard TCP header of 2=
+0
+> bytes, thus the total TCP header size is 40 bytes.
+> These 20 bytes of options are (dixit ethereal):
+>  - Maximum segment size: 1460 bytes (I can understand that: 1500 - 40)
+>  - SACK permitted
+>  - Timestamps: TSval 360225, TSecr 0
+>  - NOP
+>  - Window scale: 0 (multiply by 1)
 
-[filter icmp timestamp-*]
+What were the options that were not present _before_ the gateway ?
 
-> How do you create sub-chains?
-> I've heard the term before but never found an example that uses it.
+> Anyone knows how I can configure Linux not to do that?
 
-This is a simple task:
+I don't know of any mangling extension for TCP options, like
+IPV4OPTSSTRIP for IP options.
 
- iptables -N yourChainName
 
-For your problem:
 
- iptables -N icmp_timestamp
- iptables -A icmp_timestamp -p icmp --icmp-type timestamp-request -j REJECT --reject-with icmp-admin-prohibited
- iptables -A icmp_timestamp -p icmp --icmp-type timestamp-reply -j REJECT --reject-with icmp-admin-prohibited
- 
- iptables -A INPUT -i eth0 -p icmp -j icmp_timestamp
- iptables -A OUTPUT -o eth0 -p icmp -j icmp_timestamp
+PS: pls keep the list Cced...
 
-(The interesting question here might be if it is wise to put these two
- simple rules in a subchain when thinking about rule processing
- speed.)
+--=20
+http://sid.rstack.org/
+PGP KeyID: 157E98EE FingerPrint: FA62226DA9E72FA8AECAA240008B480E157E98EE
+>> Hi! I'm your friendly neighbourhood signature virus.
+>> Copy me to your signature file and help me spread!
 
-HTH
-Ciao
-Max
--- 
-	Follow the white penguin.
 
