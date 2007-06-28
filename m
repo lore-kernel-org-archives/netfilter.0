@@ -1,13 +1,16 @@
-From: "CrackyBlue" <crackyblue@gmail.com>
-Subject: Compiling iptables 1.3.8 over kernel 2.6.21 woes
-Date: Thu, 28 Jun 2007 10:21:47 +0800
-Message-ID: <46831b8b.26d7720a.51fc.ffffd2e3@mx.google.com>
+From: Msquared <1.list.netfilter@msquared.id.au>
+Subject: Re: 'recent' matching when less than hitcount hits
+Date: Thu, 28 Jun 2007 12:03:48 +0800
+Message-ID: <20070628040348.GD31525@sliderule.msquared.com.au>
+References: <20070627090043.GC31525@sliderule.msquared.com.au>
+	<20070627094145.GB4288764@metu.edu.tr>
+	<20070627090043.GC31525@sliderule.msquared.com.au>
+	<468228DA.2040809@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:from:to:subject:date:mime-version:content-type:content-transfer-encoding:x-mailer:thread-index:x-mimeole:message-id;
-	b=kbACJEQ4ylU7T8hxWjWT/rWXfqjXXirNC8R7F/eaPEP3faQNAUJAe+HJ77TjYV4/hRZn9bPAmD9fieW7AWDvQ6G7MHD2kiejW04wbJRcfLCw6PIT5o+6Bs1v9DWiHmsWkbrdenXGrkPrSm/VJfajfQDUYECLHSftuAth7SuxSC4=
+Content-Disposition: inline
+In-Reply-To: <20070627094145.GB4288764@metu.edu.tr>
+	<468228DA.2040809@trash.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,15 +22,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi,
- 
-Im trying to configure iptables 1.3.8 and patches over kernel 2.6.21, all is
-well except for patch-o-matic which seems do not patch. Anyway as i breeze
-thru the menu for setting up my kernel, ive noticed that i cant see MASQ nor
-DNAT nor SNAT modules, does it need to be there? Thanks for any advice..
- 
-Nats
+On Wed, Jun 27, 2007 at 11:07:38AM +0200, Patrick McHardy wrote:
 
+> > I seem to be having a problem where a rule with --hitcount is matching
+> > when there are fewer hits than is listed in the hitcount parameter.
+> 
+> Which kernel version are you using?
+
+2.4.22-1.2199.8.legacy.nptl
+
+
+On Wed, Jun 27, 2007 at 12:41:46PM +0300, hdemir@metu.edu.tr wrote:
+
+> > The rules are in a chain that is only hit for incoming SSH connections.
+> > EG: I have this rule in the INPUT chain:
+> > 
+> >   -m tcp --dport 22 -j service-ssh
+> 
+> You are sending all the traffic to the port 22. Use -m state --state
+> NEW, so that only new ssh connections can be updated. 
+
+I already tried that, but it made no difference (perhaps because -m state
+--state ESTABLISHED,RELATED -j ACCEPT higher in the INPUT chain).
+
+Note from the iptables -vnL output that I showed that it only counted one
+hit on the --set rule and a number of hits on the --update rule.
+
+Regards, Msquared...
 
