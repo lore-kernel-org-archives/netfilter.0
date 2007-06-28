@@ -1,16 +1,14 @@
-From: Msquared <1.list.netfilter@msquared.id.au>
-Subject: Re: 'recent' matching when less than hitcount hits
-Date: Thu, 28 Jun 2007 12:03:48 +0800
-Message-ID: <20070628040348.GD31525@sliderule.msquared.com.au>
-References: <20070627090043.GC31525@sliderule.msquared.com.au>
-	<20070627094145.GB4288764@metu.edu.tr>
-	<20070627090043.GC31525@sliderule.msquared.com.au>
-	<468228DA.2040809@trash.net>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: ICMP packets associated with NAT connections sent
+	out	wrong	interface?
+Date: Thu, 28 Jun 2007 08:56:37 +0200
+Message-ID: <46835BA5.3080705@rtij.nl>
+References: <f513uq$kvi$1@sea.gmane.org> <46819191.10808@rtij.nl>
+	<1182944650.6183.17.camel@ray-linux.internal>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20070627094145.GB4288764@metu.edu.tr>
-	<468228DA.2040809@trash.net>
+In-Reply-To: <1182944650.6183.17.camel@ray-linux.internal>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,35 +19,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ray Leach <spoons@rchq.co.za>
+Cc: Jordan Russell <jr-list-2007@quo.to>, netfilter@lists.netfilter.org
 
-On Wed, Jun 27, 2007 at 11:07:38AM +0200, Patrick McHardy wrote:
+Ray Leach wrote:
+> On Wed, 2007-06-27 at 00:22 +0200, Martijn Lievaart wrote:
+>   
+>> Jordan Russell wrote:
+>>     
+>>> Hi,
+>>>
+>>> My machine is functioning as a NAT box. It has two NICs:
+>>> - eth0, connected to the LAN, IP address 192.168.0.1
+>>> - eth1, connected to the Internet, IP address 123.23.23.23
+>>>
+>>>       
 
-> > I seem to be having a problem where a rule with --hitcount is matching
-> > when there are fewer hits than is listed in the hitcount parameter.
-> 
-> Which kernel version are you using?
+(snip)
 
-2.4.22-1.2199.8.legacy.nptl
+>>> [outdrop] IN= OUT=eth1 SRC=123.23.23.23 DST=192.168.0.4 LEN=68 TOS=0x00
+>>> PREC=0xC0 TTL=64 ID=61136 PROTO=ICMP TYPE=3 CODE=3 [SRC=192.168.0.4
+>>> DST=123.23.23.23 LEN=40 TOS=0x00 PREC=0x20 TTL=53 ID=16088 PROTO=TCP
+>>> SPT=1229 DPT=44851 WINDOW=0 RES=0x00 ACK RST FIN URGP=0 ]
+>>>   
+>>>       
+>> That's a port unreachable message, seemingly coming from the outside, in 
+>> response to a RST coming from the inside. That in itself is not very 
+>> usual, but it can happen.
+>>
+>> This packet going out the wrong interface seems like a pretty serious 
+>> bug. I advice you to repost on the netfilter-devel list, there are many 
+>> more people there that are really into this. However, this may be a bug 
+>> in the network code, not the netfilter code. Or something else completely.
+>>
+>>
+>> HTH,
+>> M4
+>>
+>>     
+> Doesn't seem like a bug ...
+>
+> The port unreachable ICMP replay is coming from your machine in response
+> to a packet coming in eth1 trying to get to 192.168.0.x ...
+> You have just denied the echo replies by youe DROP rule.
+>   
 
+The source of the packet is 123.23.23.23, it comes from the Internet. 
+The destination is local. Why do you think this packet is generated locally?
 
-On Wed, Jun 27, 2007 at 12:41:46PM +0300, hdemir@metu.edu.tr wrote:
+M4
 
-> > The rules are in a chain that is only hit for incoming SSH connections.
-> > EG: I have this rule in the INPUT chain:
-> > 
-> >   -m tcp --dport 22 -j service-ssh
-> 
-> You are sending all the traffic to the port 22. Use -m state --state
-> NEW, so that only new ssh connections can be updated. 
-
-I already tried that, but it made no difference (perhaps because -m state
---state ESTABLISHED,RELATED -j ACCEPT higher in the INPUT chain).
-
-Note from the iptables -vnL output that I showed that it only counted one
-hit on the --set rule and a number of hits on the --update rule.
-
-Regards, Msquared...
 
