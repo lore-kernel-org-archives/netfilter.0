@@ -1,12 +1,12 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: link redudancy, not load-balancing
-Date: Fri, 29 Jun 2007 19:10:11 +0200
-Message-ID: <1183137011.19759.22.camel@localhost>
-References: <OF6EB5F11D.33F06DA2-ON83257309.004CA1AE-83257309.005BD989@powers.com.br>
+From: Jorge Davila <davila@nicaraguaopensource.com>
+Subject: Re: Routing decision after FORWARD
+Date: Fri, 29 Jun 2007 11:41:59 -0600
+Message-ID: <46854467.7060309@nicaraguaopensource.com>
+References: <4682630E.30406@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <OF6EB5F11D.33F06DA2-ON83257309.004CA1AE-83257309.005BD989@powers.com.br>
+In-Reply-To: <4682630E.30406@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,117 +17,46 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Ivan Dubrov <wfragg@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Check out the CONNMARK target, and
-the connmark matcher module.
+Ivan:
 
-The following is a setup pattern for
-sending back traffic related to a connection to the router it was
-initiated
-from, to give you a rough idea, it's probably not a workable config
-though...
+There are three escenaries:
 
+(1) Packets destined to our machine
+(2) Packets originated inside our machine
+(3) Packets forwarded
 
-# mark connections by router src MAC (you can probably just use the
-incoming interface in your case).
-iptables -t mangle -N MANGLE_IN
-iptables -t mangle -A PREROUTING -i <EXT_IF> -j MANGLE_IN
+The table only have a reference to escenary (1) and the diagram after=20
+the tables hits all escenaries.
 
-iptables -t mangle -A MANGLE_IN -m mac --mac <ROUTER_ONE_MAC> \
-   -j CONNMARK --set-mark 1
-iptables -t mangle -A MANGLE_IN -m mac --mac <ROUTER_TWO_MAC> \
-   -j CONNMARK --set-mark 2
+Not all packets traverse all chains, that depends on the escenary.
 
-# Restoring mark from connmark
-iptables -t mangle -N MANGLE_OUT
-iptables -t mangle -A PREROUTING -i <INT_IF> -j MANGLE_OUT
-iptables -t mangle -A MANGLE_OUT -d <LOCAL_NET> -j RETURN
-iptables -t mangle -A MANGLE_OUT -m connmark ! --mark 0 -j CONNMARK \  
-   --restore-mark
+Hope this helps,
 
+Jorge D=E1vila.
 
-# iproute stuff
-ip rule add fwmark 1 pref 10001 table 100
-ip route add default via <ROUTER_ONE_GW> table 101
-
-ip rule add fwmark 2 pref 10002 table 101
-ip route add default via <ROUTER_TWO_GW> table 102
+Ivan Dubrov wrote:
+> Hello,
+>=20
+> Look here:
+> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TRAVERSIN=
+GGENERAL
+>=20
+> According to the diagram, there is routing decision after
+> filter/FORWARD. However, according to the tables before, there is no
+> such routing (there is only one routing before mangle/FORWARD). The
+> question is, which one is correct?
+>=20
+>=20
 
 
-
-
-On Fri, 2007-06-29 at 13:45 -0300, thiago@powers.com.br wrote:
-> Whats up list,
-> 
-> I'll try to make my question clean and clear, but unfortunatelly not too
-> short. The scenario is:
-> 
-> 2 internet providers connected to one linux router/firewall box (provider1,
-> which is my default route, and provider2)
-> 1 local network connected to the same box, with services running on
-> different servers/internal ip addresses (localnet)
-> 
-> I need to hit services running on servers of this internal network, having
-> the option of doing this using one internet connection or another, or both
-> at the same time.
-> 
-> If the connection comes in through 'provider1', there's no mangle
-> treatment, the packet that comes in also goes out through the default
-> route.
-> 
-> If the connection comes in through 'provider2', directed to a service that
-> runs on the router itself, using iproute2 + iptables/mangle I make it work;
-> - I set a mark on both INPUT and OUTPUT mangle tables, marking the packet
-> from/to its IP address,
-> - and insert a routing rule to match the packet mark and redirect it to a
-> 'secondary' routing table, which has provider2' gateway as default route,
-> sending the established connection back through the correct path..
-> 
-> But lets say I want to hit, for example, the telnet service (tcp/23)  that
-> is running on a server that is behing this nat.
-> 
-> Again, I want to be able to use this telnet service from the internet,
-> throught provider1 and provider2 at the same time (its not link load
-> balance; its a redundant path). The rules for 'provider1' are simple, as
-> provider1 is my default route; my problem is how to match the traffic to
-> use the secondary routing table when the internal server replies. Giving
-> some names:
-> 
-> firewall/router box:
-> provider1 / eth1 / internet address 1.2.3.4
-> provider2 / eth2 / internet address 2.3.4.5
-> localnet / eth3 / local address 10.0.0.1
-> -
-> internal server:
-> server1 / local address 10.0.0.2
-> --
-> provider1 rules (as usual):
-> 
-> # established return
-> iptables -A FORWARD -i eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
-> # routing, forwarding
-> iptables -t nat -A PREROUTING -i eth1 -p tcp -d 1.2.3.4 --dport 23 -j DNAT
-> --to 10.0.0.2
-> iptables -A FORWARD -i eth1 -p tcp -d 10.0.0.2 --dport 23 -m state --state
-> NEW -j ACCEPT
-> # source nat
-> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 1.2.3.4
-> 
-> And now: how do I mangle, this same scenario, to work with provider2 ? I
-> understand that the FORWARD, PREROUTING and POSTROUTING rules are needed
-> for provider2 as well.. but how do I arrange the mangle table to match
-> server1's reply, and send it out using the secondary routing table, only if
-> the connection came in through provider2 ?
-> 
-> Thanks for you time !
-> 
-> 
-> --
-> Thiago
-> 
-> 
-
+--=20
+Jorge Isaac Davila Lopez
+Nicaragua Open Source
++505 430 5462
+davila@nicaraguaopensource.com
 
 
