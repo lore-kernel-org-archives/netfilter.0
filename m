@@ -1,12 +1,11 @@
-From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Re: Routing decision after FORWARD
-Date: Fri, 29 Jun 2007 11:41:59 -0600
-Message-ID: <46854467.7060309@nicaraguaopensource.com>
-References: <4682630E.30406@gmail.com>
+From: "Gustavo L. P. dos Santos" <gustavo.santos@inep.gov.br>
+Subject: NAT 1:N
+Date: Fri, 29 Jun 2007 17:01:41 -0300
+Message-ID: <A9413ED3DA1D5A47ADDF30EC379CEDA207670E@inepmail.inep.gov.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4682630E.30406@gmail.com>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,46 +16,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Ivan Dubrov <wfragg@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-Ivan:
+Hi,
 
-There are three escenaries:
+	I=B4m new on the list, so don=B4t get mad if my question was posted =
+before. I need some help to configure a NAT 1:N with iptables. I need =
+some examples of the syntax to implement this.
 
-(1) Packets destined to our machine
-(2) Packets originated inside our machine
-(3) Packets forwarded
+	Here is the solution, that i want to implement: I have two machines in =
+my LAN, that i want to be visible on the Internet using only one valid =
+IP.
 
-The table only have a reference to escenary (1) and the diagram after=20
-the tables hits all escenaries.
+	Sorry for the bad english.
 
-Not all packets traverse all chains, that depends on the escenary.
+Cheers,
 
-Hope this helps,
+-------------------------------------------------
+ ,=3D ,-_-. =3D.  Gustavo Lima Peres dos Santos
+(( /)0 0(\_)) Security Analyst - INEP=20
+ `-'(. .)`-'  <gustavo.santos@inep.gov.br>
+     \_/      Tel.: +55-61-2104-7684/9080
+-------------------------------------------------
 
-Jorge D=E1vila.
+Esta mensagem eletr=F4nica pode conter informa=E7=F5es privilegiadas =
+e/ou confidenciais, portanto fica o seu receptor notificado de que =
+qualquer dissemina=E7=E3o, distribui=E7=E3o ou c=F3pia n=E3o autorizada =
+=E9 estritamente proibida. Se voc=EA recebeu esta mensagem indevidamente =
+ou por engano, por favor, informe este fato ao remetente e a apague de =
+seu computador imediatamente.
 
-Ivan Dubrov wrote:
-> Hello,
->=20
-> Look here:
-> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#TRAVERSIN=
-GGENERAL
->=20
-> According to the diagram, there is routing decision after
-> filter/FORWARD. However, according to the tables before, there is no
-> such routing (there is only one routing before mangle/FORWARD). The
-> question is, which one is correct?
->=20
->=20
-
-
---=20
-Jorge Isaac Davila Lopez
-Nicaragua Open Source
-+505 430 5462
-davila@nicaraguaopensource.com
-
+This e-mail message may contain legally privileged and/or confidential =
+information, therefore, the recipient is hereby notified that any =
+unauthorized dissemination, distribution or copying is strictly =
+prohibited. If you have received this e-mail message inappropriately or =
+accidentally, please notify the sender and delete it from your computer =
+immediately.=20
 
