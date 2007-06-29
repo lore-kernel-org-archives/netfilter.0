@@ -1,61 +1,65 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: experiences with ipt_ACCOUNT (was Re: ipt_account / iptables 1.3.8)
-Date: Fri, 29 Jun 2007 10:53:12 +0200
-Message-ID: <1183107192.19759.0.camel@localhost>
-References: <1182962627.16585.6.camel@localhost>
-	<4682A981.3090608@plouf.fr.eu.org>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: 'recent' matching when less than hitcount hits
+Date: Fri, 29 Jun 2007 14:23:35 +0200
+Message-ID: <4684F9C7.4080603@trash.net>
+References: <20070627090043.GC31525@sliderule.msquared.com.au>
+	<20070627094145.GB4288764@metu.edu.tr>
+	<20070627090043.GC31525@sliderule.msquared.com.au>
+	<468228DA.2040809@trash.net>
+	<20070628040348.GD31525@sliderule.msquared.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4682A981.3090608@plouf.fr.eu.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <20070628040348.GD31525@sliderule.msquared.com.au>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Msquared <1.list.netfilter@msquared.id.au>
+Cc: hdemir@metu.edu.tr, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
 
-Oh well, thanks for the info. A pity, as in kernels up to 2.6.18
-the module was doing its job nicely, but I've now tried it with 2.6.21.5
-and
-there it doesn't even compile anymore.
-
-There's an alternative module called ipt_ACCOUNT however, where
-the docs say that it does support 2.6.21.
-
-=3D=3D> http://www.intra2net.com/de/produkte/opensource/ipt_account/
-
-I wonder if anyone would like to share experiences with
-that particular module in terms of performance and
-stability in a 70-100kpps load scenario.
-
-On Wed, 2007-06-27 at 20:16 +0200, Pascal Hambourg wrote:
-> Hello,
->=20
-> Thomas Jacob a =E9crit :
-> >=20
-> > It appears that ipt_account has vanished from
-> > iptables 1.3.8 (it was still there in 1.3.7) could
-> > someone please comment on the why?
-> >=20
-> > The changelogs do not mention anything about it
->=20
-> They do, in a rather laconic way though :
->=20
-> <quote>
-> - Remove extensions for unmaintained/obsolete patchlets
-> </quote>
->=20
-> AFAIK, the concerned extensions are : fuzzy, nth, random (both=20
-> superseded by statistic), ROUTE, account, BALANCE, childlevel,=20
-> connlimit, dstlimit, FTOS, IPMARK, ipv4options, IPV4OPTSSTRIP, mport,=20
-> NETLINK, osf, psd, record_rpc, rpc, TARPIT, TCPLAG, time, TRACE, u32, XOR.
+Msquared wrote:
+> On Wed, Jun 27, 2007 at 11:07:38AM +0200, Patrick McHardy wrote:
+> 
+> 
+>>>I seem to be having a problem where a rule with --hitcount is matching
+>>>when there are fewer hits than is listed in the hitcount parameter.
+>>
+>>Which kernel version are you using?
+> 
+> 
+> 2.4.22-1.2199.8.legacy.nptl
+> 
+> 
+> On Wed, Jun 27, 2007 at 12:41:46PM +0300, hdemir@metu.edu.tr wrote:
+> 
+> 
+>>>The rules are in a chain that is only hit for incoming SSH connections.
+>>>EG: I have this rule in the INPUT chain:
+>>>
+>>>  -m tcp --dport 22 -j service-ssh
+>>
+>>You are sending all the traffic to the port 22. Use -m state --state
+>>NEW, so that only new ssh connections can be updated. 
+> 
+> 
+> I already tried that, but it made no difference (perhaps because -m state
+> --state ESTABLISHED,RELATED -j ACCEPT higher in the INPUT chain).
+> 
+> Note from the iptables -vnL output that I showed that it only counted one
+> hit on the --set rule and a number of hits on the --update rule.
 
 
+I think I know what the reason is. My rewritten version of the recent
+match matches if the current packet is the nth hit and in that case
+doesn't note the entry. So you're only seeing n-1 entries in /proc.
+
+Did the old version behave differently here?
 
