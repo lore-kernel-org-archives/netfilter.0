@@ -1,12 +1,11 @@
-From: "Eljas Alakulppi" <Buzer@buzer.net>
-Subject: Re: NAT 1:N
-Date: Fri, 29 Jun 2007 23:19:02 +0300
-Message-ID: <op.tuo9d0w0rtqp7s@hagumi>
-References: <A9413ED3DA1D5A47ADDF30EC379CEDA207670E@inepmail.inep.gov.br>
+From: "Gustavo L. P. dos Santos" <gustavo.santos@inep.gov.br>
+Subject: RES: NAT 1:N
+Date: Fri, 29 Jun 2007 17:29:05 -0300
+Message-ID: <A9413ED3DA1D5A47ADDF30EC379CEDA207670F@inepmail.inep.gov.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <A9413ED3DA1D5A47ADDF30EC379CEDA207670E@inepmail.inep.gov.br>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,64 +16,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="utf-8"
-To: "Gustavo L. P. dos Santos" <gustavo.santos@inep.gov.br>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: Eljas Alakulppi <Buzer@buzer.net>, netfilter@lists.netfilter.org
 
-First I recomend you to read some basic documentation about iptables (thi=
-s =20
-is covered in about every iptables howto). Anyway, the command is (of =20
-course, make sure you have the required modules loaded/compiled in kernel=
-):
-iptables -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-
-Gustavo L. P. dos Santos <gustavo.santos@inep.gov.br> kirjoitti Fri, 29 =20
-Jun 2007 23:01:41 +0300:
-
-> Hi,
->
-> 	I=C2=B4m new on the list, so don=C2=B4t get mad if my question was pos=
-ted before. =20
-> I need some help to configure a NAT 1:N with iptables. I need some =20
-> examples of the syntax to implement this.
->
-> 	Here is the solution, that i want to implement: I have two machines in=
- =20
-> my LAN, that i want to be visible on the Internet using only one valid =
-=20
-> IP.
->
-> 	Sorry for the bad english.
->
-> Cheers,
->
-> -------------------------------------------------
->  ,=3D ,-_-. =3D.  Gustavo Lima Peres dos Santos
-> (( /)0 0(\_)) Security Analyst - INEP
->  `-'(. .)`-'  <gustavo.santos@inep.gov.br>
->      \_/      Tel.: +55-61-2104-7684/9080
-> -------------------------------------------------
->
-> Esta mensagem eletr=C3=B4nica pode conter informa=C3=A7=C3=B5es privile=
-giadas e/ou =20
-> confidenciais, portanto fica o seu receptor notificado de que qualquer =
-=20
-> dissemina=C3=A7=C3=A3o, distribui=C3=A7=C3=A3o ou c=C3=B3pia n=C3=A3o a=
-utorizada =C3=A9 estritamente =20
-> proibida. Se voc=C3=AA recebeu esta mensagem indevidamente ou por engan=
-o, por =20
-> favor, informe este fato ao remetente e a apague de seu computador =20
-> imediatamente.
->
-> This e-mail message may contain legally privileged and/or confidential =
-=20
-> information, therefore, the recipient is hereby notified that any =20
-> unauthorized dissemination, distribution or copying is strictly =20
-> prohibited. If you have received this e-mail message inappropriately or=
- =20
-> accidentally, please notify the sender and delete it from your computer=
- =20
-> immediately.
->
-
-
+TWF5YmUgSSB3YXNuwrR0IGNsZWFyIGVub3VnaHQgd2l0aCBteSBxdWVzdGlvbiwgdGhlIHR3byBt
+YWNoaW5lcyBhcmUgd2ViIHNlcnZlcnMgdmlzaWJsZSBvbiB0aGUgSW50ZXJuZXQsIGFuZCBJIGNh
+bsK0dCB1c2UgTUFTUVVFUkFERSBmb3IgdGhpcy4gSWYgaXQgd2FzIHRoZSBiYXNpY3MgaSB3b3Vs
+ZG7CtHQgYm90aGVyIHlvdSBhbGwuIEFuZCBzb3JyeSBmb3IgdGhlIGFubm95YW5jZS4NCg0KQ2hl
+ZXJzLiwNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQ0KICw9ICwtXy0uID0uICBHdXN0YXZvIExpbWEgUGVyZXMgZG9zIFNhbnRvcw0KKCggLykwIDAo
+XF8pKSBTZWN1cml0eSBBbmFseXN0IC0gSU5FUCANCiBgLScoLiAuKWAtJyAgPGd1c3Rhdm8uc2Fu
+dG9zQGluZXAuZ292LmJyPg0KICAgICBcXy8gICAgICBUZWwuOiArNTUtNjEtMjEwNC03Njg0Lzkw
+ODANCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0K
+RXN0YSBtZW5zYWdlbSBlbGV0csO0bmljYSBwb2RlIGNvbnRlciBpbmZvcm1hw6fDtWVzIHByaXZp
+bGVnaWFkYXMgZS9vdSBjb25maWRlbmNpYWlzLCBwb3J0YW50byBmaWNhIG8gc2V1IHJlY2VwdG9y
+IG5vdGlmaWNhZG8gZGUgcXVlIHF1YWxxdWVyIGRpc3NlbWluYcOnw6NvLCBkaXN0cmlidWnDp8Oj
+byBvdSBjw7NwaWEgbsOjbyBhdXRvcml6YWRhIMOpIGVzdHJpdGFtZW50ZSBwcm9pYmlkYS4gU2Ug
+dm9jw6ogcmVjZWJldSBlc3RhIG1lbnNhZ2VtIGluZGV2aWRhbWVudGUgb3UgcG9yIGVuZ2Fubywg
+cG9yIGZhdm9yLCBpbmZvcm1lIGVzdGUgZmF0byBhbyByZW1ldGVudGUgZSBhIGFwYWd1ZSBkZSBz
+ZXUgY29tcHV0YWRvciBpbWVkaWF0YW1lbnRlLg0KDQpUaGlzIGUtbWFpbCBtZXNzYWdlIG1heSBj
+b250YWluIGxlZ2FsbHkgcHJpdmlsZWdlZCBhbmQvb3IgY29uZmlkZW50aWFsIGluZm9ybWF0aW9u
+LCB0aGVyZWZvcmUsIHRoZSByZWNpcGllbnQgaXMgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgYW55IHVu
+YXV0aG9yaXplZCBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWluZyBpcyBzdHJp
+Y3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGUtbWFpbCBtZXNzYWdl
+IGluYXBwcm9wcmlhdGVseSBvciBhY2NpZGVudGFsbHksIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRl
+ciBhbmQgZGVsZXRlIGl0IGZyb20geW91ciBjb21wdXRlciBpbW1lZGlhdGVseS4gDQoNCi0tLS0t
+TWVuc2FnZW0gb3JpZ2luYWwtLS0tLQ0KRGU6IEVsamFzIEFsYWt1bHBwaSBbbWFpbHRvOkJ1emVy
+QGJ1emVyLm5ldF0NCkVudmlhZGEgZW06IHNleHRhLWZlaXJhLCAyOSBkZSBqdW5obyBkZSAyMDA3
+IDE3OjE5DQpQYXJhOiBHdXN0YXZvIEwuIFAuIGRvcyBTYW50b3M7IG5ldGZpbHRlckBsaXN0cy5u
+ZXRmaWx0ZXIub3JnDQpBc3N1bnRvOiBSZTogTkFUIDE6Tg0KDQoNCkZpcnN0IEkgcmVjb21lbmQg
+eW91IHRvIHJlYWQgc29tZSBiYXNpYyBkb2N1bWVudGF0aW9uIGFib3V0IGlwdGFibGVzICh0aGlz
+ICANCmlzIGNvdmVyZWQgaW4gYWJvdXQgZXZlcnkgaXB0YWJsZXMgaG93dG8pLiBBbnl3YXksIHRo
+ZSBjb21tYW5kIGlzIChvZiAgDQpjb3Vyc2UsIG1ha2Ugc3VyZSB5b3UgaGF2ZSB0aGUgcmVxdWly
+ZWQgbW9kdWxlcyBsb2FkZWQvY29tcGlsZWQgaW4ga2VybmVsKToNCmlwdGFibGVzIC10IG5hdCAt
+QSBQT1NUUk9VVElORyAtbyAkRVhUSUYgLWogTUFTUVVFUkFERQ0KDQpHdXN0YXZvIEwuIFAuIGRv
+cyBTYW50b3MgPGd1c3Rhdm8uc2FudG9zQGluZXAuZ292LmJyPiBraXJqb2l0dGkgRnJpLCAyOSAg
+DQpKdW4gMjAwNyAyMzowMTo0MSArMDMwMDoNCg0KPiBIaSwNCj4NCj4gCUnCtG0gbmV3IG9uIHRo
+ZSBsaXN0LCBzbyBkb27CtHQgZ2V0IG1hZCBpZiBteSBxdWVzdGlvbiB3YXMgcG9zdGVkIGJlZm9y
+ZS4gIA0KPiBJIG5lZWQgc29tZSBoZWxwIHRvIGNvbmZpZ3VyZSBhIE5BVCAxOk4gd2l0aCBpcHRh
+Ymxlcy4gSSBuZWVkIHNvbWUgIA0KPiBleGFtcGxlcyBvZiB0aGUgc3ludGF4IHRvIGltcGxlbWVu
+dCB0aGlzLg0KPg0KPiAJSGVyZSBpcyB0aGUgc29sdXRpb24sIHRoYXQgaSB3YW50IHRvIGltcGxl
+bWVudDogSSBoYXZlIHR3byBtYWNoaW5lcyBpbiAgDQo+IG15IExBTiwgdGhhdCBpIHdhbnQgdG8g
+YmUgdmlzaWJsZSBvbiB0aGUgSW50ZXJuZXQgdXNpbmcgb25seSBvbmUgdmFsaWQgIA0KPiBJUC4N
+Cj4NCj4gCVNvcnJ5IGZvciB0aGUgYmFkIGVuZ2xpc2guDQo+DQo+IENoZWVycywNCj4NCj4gLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAgLD0gLC1f
+LS4gPS4gIEd1c3Rhdm8gTGltYSBQZXJlcyBkb3MgU2FudG9zDQo+ICgoIC8pMCAwKFxfKSkgU2Vj
+dXJpdHkgQW5hbHlzdCAtIElORVANCj4gIGAtJyguIC4pYC0nICA8Z3VzdGF2by5zYW50b3NAaW5l
+cC5nb3YuYnI+DQo+ICAgICAgXF8vICAgICAgVGVsLjogKzU1LTYxLTIxMDQtNzY4NC85MDgwDQo+
+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4NCj4g
+RXN0YSBtZW5zYWdlbSBlbGV0csO0bmljYSBwb2RlIGNvbnRlciBpbmZvcm1hw6fDtWVzIHByaXZp
+bGVnaWFkYXMgZS9vdSAgDQo+IGNvbmZpZGVuY2lhaXMsIHBvcnRhbnRvIGZpY2EgbyBzZXUgcmVj
+ZXB0b3Igbm90aWZpY2FkbyBkZSBxdWUgcXVhbHF1ZXIgIA0KPiBkaXNzZW1pbmHDp8OjbywgZGlz
+dHJpYnVpw6fDo28gb3UgY8OzcGlhIG7Do28gYXV0b3JpemFkYSDDqSBlc3RyaXRhbWVudGUgIA0K
+PiBwcm9pYmlkYS4gU2Ugdm9jw6ogcmVjZWJldSBlc3RhIG1lbnNhZ2VtIGluZGV2aWRhbWVudGUg
+b3UgcG9yIGVuZ2FubywgcG9yICANCj4gZmF2b3IsIGluZm9ybWUgZXN0ZSBmYXRvIGFvIHJlbWV0
+ZW50ZSBlIGEgYXBhZ3VlIGRlIHNldSBjb21wdXRhZG9yICANCj4gaW1lZGlhdGFtZW50ZS4NCj4N
+Cj4gVGhpcyBlLW1haWwgbWVzc2FnZSBtYXkgY29udGFpbiBsZWdhbGx5IHByaXZpbGVnZWQgYW5k
+L29yIGNvbmZpZGVudGlhbCAgDQo+IGluZm9ybWF0aW9uLCB0aGVyZWZvcmUsIHRoZSByZWNpcGll
+bnQgaXMgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgYW55ICANCj4gdW5hdXRob3JpemVkIGRpc3NlbWlu
+YXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIGlzIHN0cmljdGx5ICANCj4gcHJvaGliaXRl
+ZC4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgbWVzc2FnZSBpbmFwcHJvcHJpYXRl
+bHkgb3IgIA0KPiBhY2NpZGVudGFsbHksIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVs
+ZXRlIGl0IGZyb20geW91ciBjb21wdXRlciAgDQo+IGltbWVkaWF0ZWx5Lg0KPg0KDQoNCg==
 
