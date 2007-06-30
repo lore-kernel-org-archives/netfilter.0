@@ -1,18 +1,10 @@
-From: Ivan Dubrov <wfragg@gmail.com>
-Subject: Re: NAT 1:N
-Date: Sat, 30 Jun 2007 14:54:29 +0700
-Message-ID: <46860C35.6060805@gmail.com>
-References: <A9413ED3DA1D5A47ADDF30EC379CEDA207670F@inepmail.inep.gov.br>
-	<007201c7ba8c$cd856e10$68904a30$@COM>
+From: =?koi8-r?B?8M/Qz9cg6cfP0tgg7snLz8zBxdfJ3iA=?= <igorpopov@newmail.ru>
+Subject: howto make SNAT preserve translation ip for all connections from
+	the same internal ip
+Date: Sat, 30 Jun 2007 14:58:22 +0400
+Message-ID: <20070630105822.31406.qmail@flock1.newmail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enigDD0FA6D3039E0318866FC17F"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:subject:references:in-reply-to:x-enigmail-version:content-type;
-	b=jB4rT2BFw+q6xV1WtUiWRXQgXSNfdDQu78tjntzKkjl5CmjIhqQ2HndHI8aj7X+4ULcSwbOL40Cd8gZlYHUr0fr28qASAAGiq6LSrSTGMBCi00kalY+5VdFmt7gyXD0PtltLJq8fXxGptCrQTlKz4SU6roXNIc3CIKJcemNAQTs=
-In-Reply-To: <007201c7ba8c$cd856e10$68904a30$@COM>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,44 +15,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigDD0FA6D3039E0318866FC17F
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+    Hi, all.
+Say, I use iptables -t nat -A POSTROUTING -p tcp -o eth0 -j SNAT --to-source 194.236.50.1-194.236.50.7 for NAT. Accordingly to man:
+The source IP for each stream that we open would then be allocated randomly from these (194.236.50.1-194.236.50.7), and a single stream would always use the same IP address for all packets within that stream.
 
-Ric Messier wrote:
-> Are you looking for redirect rules?
-> -A PREROUTING -d w.x.y.z -p tcp -m tcp --dport 80 -j DNAT --to-destinat=
-ion 172.16.0.2
->
->
-> You can't have two Web servers redirected through one IP address becaus=
-e there is only one port 80. You'd have to move the other Web server to a=
-nother port. If you are looking for load balancing, you may need to look =
-elsewhere.
->  =20
-This cannot be done via iptables only, but this can be done with Apache
-mod_proxy module. Install Apache on the router and proxy requests to
-backend server discriminating by the servername (for example, proxy all
-requests to http://web1.example.com/ to first Web server,
-http://web2.example.com/ to the second).
+What if I want that internal ip from block 192.168.0.0/24 is always translated into the same external ip?
+PF from OpenBSD does it:
 
+     For nat and rdr rules, (as well as for the route-to, reply-to and dup-to
+     rule options) for which there is a single redirection address which has a
+     subnet mask smaller than 32 for IPv4 or 128 for IPv6 (more than one IP
+     address), a variety of different methods for assigning this address can
+     be used:
 
+     bitmask
+           The bitmask option applies the network portion of the redirection
+           address to the address to be modified (source with nat, destination
+           with rdr).
 
---------------enigDD0FA6D3039E0318866FC17F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+     random
+           The random option selects an address at random within the defined
+           block of addresses.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.7 (GNU/Linux)
+     source-hash
+           The source-hash option uses a hash of the source address to deter-
+           mine the redirection address, ensuring that the redirection address
+           is always the same for a given source.  An optional key can be
+           specified after this keyword either in hex or as a string; by de-
+           fault pfctl(8) randomly generates a key for source-hash every time
+           the ruleset is reloaded.
 
-iD8DBQFGhgw4LZ+Fnc2HIX4RAlpaAKDCKUB8oWyh2Vof8XtYtdXFTv2IJQCgi0K8
-h9yBe1aEe2c5zb1L28wP7X0=
-=KNTh
------END PGP SIGNATURE-----
+     round-robin
+           The round-robin option loops through the redirection address(es).
 
---------------enigDD0FA6D3039E0318866FC17F--
+           When more than one redirection address is specified, round-robin is
+           the only permitted pool type.
+
+     static-port
+           With nat rules, the static-port option prevents pf(4) from modify-
+           ing the source port on TCP and UDP packets.
+
+     Additionally, the sticky-address option can be specified to help ensure
+     that multiple connections from the same source are mapped to the same
+     redirection address.  This option can be used with the random and round-
+     robin pool options.  Note that by default these associations are de-
+     stroyed as soon as there are no longer states which refer to them; in or-
+     der to make the mappings last beyond the lifetime of the states, increase
+     the global options with set timeout src.track.  See STATEFUL TRACKING
+     OPTIONS for more ways to control the source tracking. 
+   
 
