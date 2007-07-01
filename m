@@ -1,13 +1,11 @@
-From: Stephen Frost <sfrost@snowman.net>
+From: Mike Wright <xktnniuymlla@mailinator.com>
 Subject: Re: can this be written as one rule ?
-Date: Sun, 1 Jul 2007 11:04:05 -0400
-Message-ID: <20070701150405.GA4887@tamriel.snowman.net>
+Date: Sun, 01 Jul 2007 09:42:53 -0700
+Message-ID: <4687D98D.7070105@mailinator.com>
 References: <4687C1D4.3090704@gatworks.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="azLHFNyN32YCQGCU"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
 In-Reply-To: <4687C1D4.3090704@gatworks.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,39 +17,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "U. George" <netbeans@gatworks.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@lists.netfilter.org>
 
-
---azLHFNyN32YCQGCU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-* U. George (netbeans@gatworks.com) wrote:
+U. George wrote:
 >> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.124.176.0/20 -j DROP
->
-> And so on ?
+>> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.124.32.0/20 -j DROP
+>> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.127.64.0/17 -j DROP
+<snip />
+>> And so on ?
+> 
+You could use ipset:
+     http://ipset.netfilter.org
 
-You can (ab)use ipt_recent to do it.  There might be other ways but the
-gist of it would be to build an ipt_recent table with those addresses at
-boot and then reference it using an --rcheck or similar.
+Once a set of type nethash has been created and populated its usage is
+very simple.   e.g. To test whether a source|destination address is in a
+nethash set named BADNETS use:
 
-	Enjoy,
+     iptables -A INPUT -m set --set BADNETS src|dst -j NETHANDLER
 
-		Stephen
+Not sure if this extension is in the kernel yet but it's relatively easy
+to add by following the instructions at their website.
 
---azLHFNyN32YCQGCU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+:m)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFGh8JlrzgMPqB3kigRAve3AKCYhjpzw5P1wmsgSPUDQGXLSRmvpgCcCTJc
-Bs0gGK3TiWba7e5lJX0pHmc=
-=ZNPr
------END PGP SIGNATURE-----
-
---azLHFNyN32YCQGCU--
 
