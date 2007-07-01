@@ -1,12 +1,10 @@
-From: Frank Gruellich <frank@der-frank.org>
-Subject: Re: RES: NAT 1:N
-Date: Sun, 1 Jul 2007 12:44:10 +0200
-Message-ID: <20070701104410.GS17386@der-frank.org>
-References: <A9413ED3DA1D5A47ADDF30EC379CEDA207670F@inepmail.inep.gov.br>
+From: "U. George" <netbeans@gatworks.com>
+Subject: can this be written as one rule ?
+Date: Sun, 01 Jul 2007 11:01:40 -0400
+Message-ID: <4687C1D4.3090704@gatworks.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <A9413ED3DA1D5A47ADDF30EC379CEDA207670F@inepmail.inep.gov.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +15,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.124.176.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.124.32.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.127.64.0/17 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.128.94.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.130.126.128/26 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.132.194.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.139.164.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.139.198.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.141.9.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.142.125.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.142.3.128/25 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.145.21.128/25 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.146.201.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.152.32.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.153.78.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.153.98.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.155.196.0/25 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.158.66.128/25 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.16.0.0/13 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.224.0.0/12 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.24.0.0/14 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.254.15.0/24 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.32.0.0/14 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.36.0.0/16 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.36.64.0/18 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.51.0.0/16 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.54.208.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.54.224.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.55.128.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.55.144.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.55.160.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.55.64.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.68.0.0/14 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.88.32.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.88.64.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.96.0.0/15 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.0.128.0/17 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.100.48.0/20 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.169.0.0/19 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.169.100.0/23 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.199.106.0/22 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.199.90.0/23 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.2.0.0/15 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.202.128.0/17 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.254.128.0/17 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 122.32.0.0/12 -j DROP
+> $IPTABLES -t nat -A PREROUTING -i $INET_I
 
-* Gustavo L. P. dos Santos <gustavo.santos@inep.gov.br> 29. Jun 07:
-> Maybe I wasn??t clear enought with my question, the two machines are
-> web servers visible on the Internet, and I can??t use MASQUERADE for
-> this. If it was the basics i wouldn??t bother you all. And sorry for
-> the annoyance.
+And so on ?
 
-Don't worry, seems you're not the only one who should do some RTFM on
-this list...
-
-The situation you have is clearly described at Oskar Andreassons great
-tutorial (a Must-Read for iptables users, IMHO):
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#DNATTARGET
-
-You should use a range of IP#s for --to-destination.  Note, that single
-TCP streams will allways be directed to same server while different
-streams will be directed in a simple load balancing manner (I think
-round robin).  This implies that you don't have any problems with rather
-static content, but if you keep session information at server you have
-to distribute that to all your webservers.
-
-HTH, kind regards,
- Frank.
--- 
-Sigmentation fault
 
