@@ -1,80 +1,94 @@
-From: Msquared <1.list.netfilter@msquared.id.au>
-Subject: Re: 'recent' matching when less than hitcount hits
-Date: Mon, 2 Jul 2007 14:19:15 +0800
-Message-ID: <20070702061915.GB6529@sliderule.msquared.com.au>
-References: <20070627090043.GC31525@sliderule.msquared.com.au>
-	<20070627094145.GB4288764@metu.edu.tr>
-	<20070627090043.GC31525@sliderule.msquared.com.au>
-	<468228DA.2040809@trash.net>
-	<20070628040348.GD31525@sliderule.msquared.com.au>
-	<4684F9C7.4080603@trash.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] Release conntrack-tools 0.9.4
+Date: Mon, 02 Jul 2007 15:27:58 +0200
+Message-ID: <4688FD5E.9070709@netfilter.org>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <4684F9C7.4080603@trash.net>
+Content-Type: multipart/mixed; boundary="------------060107050909010603000400"
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter-failover list <netfilter-failover@lists.netfilter.org>, lwn@lwn.net
+
+This is a multi-part message in MIME format.
+--------------060107050909010603000400
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+The netfilter project proudly presents another development release of
+the conntrack-tools. The conntrack-tools are:
+
+- The userspace daemon so-called conntrackd that covers the specific
+aspects of stateful Linux firewalls to enable high availability
+solutions. It can be used as statistics collector of the firewall use as
+well. The daemon is highly configurable and easily extensible.
+
+- The command line interface (CLI) conntrack that provides an interface
+to add, delete and update flow entries, list current active flows in
+plain text/XML, current IPv4 NAT'ed flows, reset counters, and flush the
+complete connection tracking table among many other.
+
+You can download it from:
+
+http://www.netfilter.org/projects/conntrack-tools/downloads.html
+
+Changelog is attached.
+
+Ab alio expectes alteri quod feceris,
+	Pablo (on behalf of the Netfilter Project)
+
+--=20
+"Pa=EDses en desarrollo es el nombre con que los expertos designan a los
+pa=EDses arrollados por el desarrollo ajeno" -- Patas Arriba. La Escuela
+del Mundo al Rev=E9s -- E. Galeano
+
+--------------060107050909010603000400
+Content-Type: text/plain;
+ name="ChangeLog"
 Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Content-Disposition: inline;
+ filename="ChangeLog"
 
-On Fri, Jun 29, 2007 at 02:23:35PM +0200, Patrick McHardy wrote:
+conntrack-tools version 0.9.4
+-----------------------------
 
-> >>>The rules are in a chain that is only hit for incoming SSH connections.
-> >>>EG: I have this rule in the INPUT chain:
-> >>>
-> >>>  -m tcp --dport 22 -j service-ssh
-> >>
-> >>You are sending all the traffic to the port 22. Use -m state --state
-> >>NEW, so that only new ssh connections can be updated. 
-> > 
-> > 
-> > I already tried that, but it made no difference (perhaps because -m state
-> > --state ESTABLISHED,RELATED -j ACCEPT higher in the INPUT chain).
-> > 
-> > Note from the iptables -vnL output that I showed that it only counted one
-> > hit on the --set rule and a number of hits on the --update rule.
-> 
-> 
-> I think I know what the reason is. My rewritten version of the recent
-> match matches if the current packet is the nth hit and in that case
-> doesn't note the entry. So you're only seeing n-1 entries in /proc.
+Changes from 0.9.3:
 
-I'm not sure if that's relevant or not.  Are you basing that on there
-being 4 hits listed in my /proc output, whereas I have the hitcount at 5?
+- fix error message in configure.in (Eric Leblond)
+	[Eric Leblond]
 
-The problem persists even with the hitcount at 10.  Actually, it seems to
-continue to misbehave up until 20, but seems to behave at 21 or higher
-(with --seconds 40).
+- fix segfault with conntrack --output
+	[Krzysztof Oledzky]
 
-If my second attempt to connect is more than 40 seconds after the first,
-it connects OK, but if it's less than 40 seconds after the first, it won't
-let me connect.  It's as if it's ignoring the hitcount unless it's higher
-than 20.
+- use NFCT_SOPT_SETUP_* facilities: nfct_setobjopt
+- remove bogus option to get a conntrack in test.sh example file
+- add aliases --sport and --dport to make it more iptables-like
+- add support for `-L --src-nat' and `-L --dst-nat' to show natted connections
+- update conntrack(8) manpage
+- remove dlopen infrastructure
+- add library dependency checking to configure.in
+- simplify checksum code: use UDP/multicast checksum facilities
+- fix silly bug in build_network_message: out of bound memset
+- remove useless backlog parameter in multicast sockets
+- remove reminiscents of delay destroy message and relax transitions
+- remove confusing StripNAT parameter: NAT support enabled by default
+- relax event tracking: *_update callbacks use cache_update_force
+- use wraparound-aware functions after/before/between
+- commit phase: if conntrack exists, update it
+- local requests return EXIT_FAILURE if it can't connect to the daemon
+- remove several debug statements
+- fork when internal/external dump and commit requests are received
+- lots of cleanups
+	[Pablo Neira Ayuso]
 
-I tried with --seconds 30 and could find no correlation to the duration of
-time between first and second attempts and whether the second attempt was
-successful or not.
-
-It's as if I just don't understand the interaction between --seconds and
---hitcount.  I believe they interact like so:
-
-  If there have been [hitcount] packets from the source IP in the last
-  [seconds] seconds, then the rule will match
-
-Is this correct?
-
-> Did the old version behave differently here?
-
-I'm not sure, I've only ever had this version set up.
-
-Regards, Msquared...
+--------------060107050909010603000400--
 
