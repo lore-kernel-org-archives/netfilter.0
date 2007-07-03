@@ -1,13 +1,13 @@
-From: Clister <clist@uah.es>
-Subject: Re: can this be written as one rule ?
-Date: Mon, 2 Jul 2007 22:03:14 +0200
-Message-ID: <200707022203.14830.clist@uah.es>
-References: <4687C1D4.3090704@gatworks.com>
-Reply-To: clist@uah.es
+From: "=?ISO-8859-1?Q?Martin_Schi=F8tz?=" <malinux@gmail.com>
+Subject: NAT
+Date: Tue, 3 Jul 2007 08:52:46 +0200
+Message-ID: <e208f5d10707022352j39395f6awc172a563a8b0d4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4687C1D4.3090704@gatworks.com>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=Ykm/0BcGCJA50r0XSLA2NaPmTxQ43T8L//A6+ZauSWMN9GEXZoM7R9tZ4lR0I/GVysWUdjUO8bA8CwbacIvphEyAizaI0eXm00UlozFDUnNeEQYFzyx8MXAerkOuIS6HB+TqIbcHJ8em+KjFSqv/gTy3e9D2u5DgGoTH5RnMG0k=
 Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -19,89 +19,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Did you try ipsets?
+Hi
 
-Just create a ipset  populate it and then
+I'm going to setup a bridged NAT linux box for many users. I want one
+outside IP address to serve for instance 10.0.0.0/22.
 
-i$IPTABLES -t nat -A PREROUTING -i $INET_IFACE -m set --set $IPSET src -j D=
-ROP
+I want to be sure that each local IP address always has 1024 NAT
+sessions available and that sessions is kept even if the timeout is
+reached. If 1024 sessions is reached and a new session is being
+established then it will take over the oldest (timed out) session.
 
-et voila!!
-Just try this:
-http://ipset.netfilter.org/
+Is this possible with iptables?
 
-or dig on the netfilter home page
-
-Regards,
-El Domingo, 1 de Julio de 2007 17:01, U. George escribi=F3:
-> > $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.124.176.0/20 -j DR=
-OP
-> > $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.124.32.0/20 -j DROP
-> > $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.127.64.0/17 -j DROP
-> > $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.128.94.0/24 -j DROP
-> > $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.130.126.128/26 -j
-> > DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.132.194.0/24 =
-=2Dj
-> > DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.139.164.0/24 =
-=2Dj
-> > DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.139.198.0/24 =
-=2Dj
-> > DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.141.9.0/24 -j
-> > DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.142.125.0/24 =
-=2Dj
-> > DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.142.3.128/25 =
-=2Dj
-> > DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.145.21.128/25
-> > -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.146.201.0/=
-24
-> > -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.152.32.0/24
-> > -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.153.78.0/24
-> > -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.153.98.0/24
-> > -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 121.155.196.0/=
-25
-> > -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.158.66.128/25 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE
-> > -s 121.16.0.0/13 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE =
-=2Ds
-> > 121.224.0.0/12 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.24.0.0/14 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.254.15.0/24 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.32.0.0/14 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.36.0.0/16 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.36.64.0/18 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.51.0.0/16 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.54.208.0/20 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.54.224.0/20 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.55.128.0/20 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.55.144.0/20 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.55.160.0/20 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.55.64.0/20 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.68.0.0/14 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.88.32.0/20 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.88.64.0/20 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 121.96.0.0/15 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 122.0.128.0/17 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 122.100.48.0/20 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 122.169.0.0/19 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 122.169.100.0/23 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE =
-=2Ds
-> > 122.199.106.0/22 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE =
-=2Ds
-> > 122.199.90.0/23 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 122.2.0.0/15 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s
-> > 122.202.128.0/17 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE =
-=2Ds
-> > 122.254.128.0/17 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_IFACE =
-=2Ds
-> > 122.32.0.0/12 -j DROP $IPTABLES -t nat -A PREROUTING -i $INET_I
->
-> And so on ?
-
-=2D-=20
-=2D---------------------------
-Universidad de Alcal=E1 (UAH)
-=2D---------------------------
+- Martin
 
