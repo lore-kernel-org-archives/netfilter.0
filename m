@@ -1,10 +1,13 @@
-From: erik.rousset@free.fr
-Subject: problem for filtering multicast 224.0.0.2
-Date: Wed, 04 Jul 2007 13:35:07 +0200
-Message-ID: <1183548907.468b85eb96a10@imp.free.fr>
+From: dhottinger@harrisonburg.k12.va.us
+Subject: Re: connect to a Netware 6.5 server
+Date: Wed, 04 Jul 2007 07:41:54 -0400
+Message-ID: <20070704074154.odxrxz1wkk0g8wc0@webmail.harrisonburg.k12.va.us>
+References: <468B3029.6040906@monroehosp.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <468B3029.6040906@monroehosp.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,23 +18,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Quoting Richmond Dyes <rdyes@monroehosp.org>:
 
-Hello,
+> I want to allow another network to connect to my Netware 6.5 server
+> using Novell clients.  Does anyone know the ports I must open to the
+> netware server over the firewall?
 
-My computeur have :(OS linux FC6)
-- a network card (eth0) in network 10.1.2.0/24
-- a network card (eth1) in network 192.168.1.0/24
+Im sure a search of support.novell.com will list the ports in a TID.   
+Some of the ports are going to depend on what services you are  
+running.  NDPS, iFolder, etc.
 
-I try to filter packet with destination 224.0.0.2 (multicast) which comes=
- from
-CISCO'switch  with protocol HSRP because they are present on eth1 in netw=
-ork
-192.168.1.0 and it's bad trafic.
+-- 
+Dwayne Hottinger
+Network Administrator
+Harrisonburg City Public Schools
 
-Have you the good rules to do that ?
-
-Thank you.
 
