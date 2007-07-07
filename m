@@ -1,50 +1,40 @@
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+From: Jordan Russell <jr-list-2007@quo.to>
 Subject: Re: ICMP packets associated with NAT connections sent out wrong
- interface?
-Date: Sun, 08 Jul 2007 02:48:40 +0900 (JST)
-Message-ID: <200707071748.l67HmfF1026109@toshiba.co.jp>
-References: <200707071224.l67COMEg022741@toshiba.co.jp>
-	<Pine.LNX.4.64.0707071727580.1808@x2>
-	<200707071728.l67HStWh022546@toshiba.co.jp>
+	interface?
+Date: Sat, 07 Jul 2007 16:04:37 -0500
+Message-ID: <468FFFE5.3090506@quo.to>
+References: <468C86C9.7050204@quo.to>
+	<468E7F00.5070307@quo.to>	<200707070627.l676R79T003388@toshiba.co.jp>
+	<200707071224.l67COMEg022741@toshiba.co.jp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <200707071728.l67HStWh022546@toshiba.co.jp>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <200707071224.l67COMEg022741@toshiba.co.jp>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: Text/Plain; charset="us-ascii"
-To: yasuyuki.kozakai@toshiba.co.jp
-Cc: jr-list-2007@quo.to, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, kaber@trash.net
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-Date: Sun, 08 Jul 2007 02:28:54 +0900 (JST)
+Yasuyuki KOZAKAI wrote:
+> OK, I try to explain what the current netfilter does in Jordan's situation.
+> I also attach the patch to fix this problem. Jordan, can you try it ?
 
-> From: Patrick McHardy <kaber@trash.net>
-> Date: Sat, 7 Jul 2007 17:34:49 +0200 (CEST)
-> > 
-> > The local ICMP tracking is basically useless nowadays since we always
-> > manually attach the conntrack reference from the original packet
-> > (exactly because of the half-done double NAT FIXME quoted above).
-> > But this is an interesting case, the connection tracking code itself
-> > thought the RST was invalid, but ICMP tracking will still associate
-> > the ICMP containing the RST with the original connection. I'm wondering
-> > whether it should really do that. In case it shouldn't, just removing
-> > all locally generated ICMP special-casing should also fix the bug,
-> > right?
-> 
-> At first I thought so. But I didn't come up with any bad situation caused
-> by returning ICMP error to such invalid packets.
+Excellent. The patch does appear to fix the problem. I repeated the
+BitTorrent test, and no packets matched my LOG rule.
 
-Can kernel correctly return ICMP error without conntrack in this case ?
-If so, I agree. (maybe yes, I'll check it after waking up).
+I'll keep watching the logs and report back if it happens again.
 
--- Yasuyuki Kozakai
+Thanks for looking into this!
+
+-- 
+Jordan Russell
 
