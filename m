@@ -1,65 +1,44 @@
-From: David Liontooth <liontooth@cogweb.net>
-Subject: Re: NFS using iptables PREROUTING?
-Date: Sun, 08 Jul 2007 23:22:28 -0700
-Message-ID: <4691D424.5040109@cogweb.net>
-References: <46918404.7050107@cogweb.net>
+From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+Subject: Re: ICMP packets associated with NAT connections sent out wrong
+ interface?
+Date: Mon, 09 Jul 2007 16:03:08 +0900 (JST)
+Message-ID: <200707090703.l69738Dt004529@toshiba.co.jp>
+References: <200707070627.l676R79T003388@toshiba.co.jp>
+	<200707071224.l67COMEg022741@toshiba.co.jp>
+	<468FFFE5.3090506@quo.to>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46918404.7050107@cogweb.net>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <468FFFE5.3090506@quo.to>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: jr-list-2007@quo.to
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, yasuyuki.kozakai@toshiba.co.jp
 
-David Liontooth wrote:
->
-> Is it possible to access an NFS (v.3) server on a private network from a
-> machine on a public network? 
-It turns out to be a lot simpler than I thought -- no need to worry 
-about lockd, portmap, or statd.
 
-On the host A, set the mount port in /etc/default/nfs-kernel-server:
+From: Jordan Russell <jr-list-2007@quo.to>
 
-    RPCMOUNTDOPTS="--port 4000"
+> Yasuyuki KOZAKAI wrote:
+> > OK, I try to explain what the current netfilter does in Jordan's situation.
+> > I also attach the patch to fix this problem. Jordan, can you try it ?
+> 
+> Excellent. The patch does appear to fix the problem. I repeated the
+> BitTorrent test, and no packets matched my LOG rule.
+> 
+> I'll keep watching the logs and report back if it happens again.
+> 
+> Thanks for looking into this!
 
-In the gateway G's /etc/network/if-up.d/00-firewall, forward the NFS and 
-the mountd ports
+Thanks for testing.
 
-    # NFS: Forward udp on port 2049 to A on the private network
-    iptables -t nat -A PREROUTING -p udp -d 128.65.183.178 --dport 9101 
--j DNAT --to 192.168.0.3:2049
-
-    # Forward tcp and udp for mountd on A (port assigned in 
-A:/etc/default/nfs-common)
-    iptables -t nat -A PREROUTING -p tcp -d 128.65.183.178 --dport 9201 
--j DNAT --to 192.168.0.3:4000
-    iptables -t nat -A PREROUTING -p udp -d 128.65.183.178 --dport 9201 
--j DNAT --to 192.168.0.3:4000
-
-In the client B's /etc/hosts, define an alias for the NFS host behind 
-the firewall, using the IP address of the gateway:
-
-   128.65.183.178  a.fully.qualified.domain.name   A
-
-And in the client B's /etc/fstab, define the mount, adding the gateway's 
-ports that forward NFS and mount to the host:
-
-   A:/db1 /mnt/a1 nfs 
-noauto,user,exec,rw,rsize=16k,wsize=16k,hard,intr,port=9101,mountport=9201 
-0 0
-
-Works beautifully and transparently. Or does someone spot a potential 
-problem?
-
-Cheers,
-Dave
+-- Yasuyuki Kozakai
 
