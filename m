@@ -1,118 +1,106 @@
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-Subject: Re: ICMP packets associated with NAT connections sent out wrong
- interface?
-Date: Sun, 08 Jul 2007 15:31:41 +0900 (JST)
-Message-ID: <200707080631.l686VgrU024722@toshiba.co.jp>
-References: <Pine.LNX.4.64.0707071727580.1808@x2>
-	<200707071728.l67HStWh022546@toshiba.co.jp>
-	<200707071748.l67HmfF1026109@toshiba.co.jp>
+From: David Liontooth <liontooth@cogweb.net>
+Subject: NFS using iptables PREROUTING?
+Date: Sun, 08 Jul 2007 17:40:36 -0700
+Message-ID: <46918404.7050107@cogweb.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <200707071748.l67HmfF1026109@toshiba.co.jp>
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: Text/Plain; charset="us-ascii"
-To: yasuyuki.kozakai@toshiba.co.jp
-Cc: jr-list-2007@quo.to, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, kaber@trash.net
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
 
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+Is it possible to access an NFS (v.3) server on a private network from a
+machine on a public network?
 
-> From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
->
-> > From: Patrick McHardy <kaber@trash.net>
-> > Date: Sat, 7 Jul 2007 17:34:49 +0200 (CEST)
-> > > 
-> > > The local ICMP tracking is basically useless nowadays since we always
-> > > manually attach the conntrack reference from the original packet
-> > > (exactly because of the half-done double NAT FIXME quoted above).
-> > > But this is an interesting case, the connection tracking code itself
-> > > thought the RST was invalid, but ICMP tracking will still associate
-> > > the ICMP containing the RST with the original connection. I'm wondering
-> > > whether it should really do that. In case it shouldn't, just removing
-> > > all locally generated ICMP special-casing should also fix the bug,
-> > > right?
-> > 
-> > At first I thought so. But I didn't come up with any bad situation caused
-> > by returning ICMP error to such invalid packets.
-> 
-> Can kernel correctly return ICMP error without conntrack in this case ?
-> If so, I agree. (maybe yes, I'll check it after waking up).
+I have a Debian Sid box B on a private network visible only to a gateway 
+G. B has drive partitions I would like to mount on outside box A.
+To make B visible to A, I use this sort of thing for ssh:
 
-I've tested following patch in some situations. Unless I used state or
-conntrack match in OUTPUT (e.g. --state INVALID -j DROP), there is
-no change of behavior. But can we accept this change ? ICMP error itself
-is not invalid.
+   iptables -t nat -A PREROUTING -p tcp -d 128.65.183.178 --dport 9000 -j
+DNAT --to 192.168.0.1:22
 
+This allows me to ssh directly from A to B, as if B were on a public
+network. Can I do the same with NFS? I use iptables 1.3.6.0debian1-5.
 
-[NETFILTER]: nf_conntrack: Don't track locally generated special ICMP error
+So far, I've figured out how to fix the port of mountd, statd, and
+lockd, and I can preroute these ports, along with 2049 for nfs and 111
+for portmap. For each of these, I can preroute tcp and udp packets on G:
 
-The conntrack assigned to locally generated ICMP error is usually the one
-assigned to the original packet which has caused the error. But if
-the original packet is handled as invalid by nf_conntrack, no conntrack
-is assigned to the original packet. Then nf_ct_attach() cannot assign
-any conntrack to the ICMP error packet. In that case the current
-nf_conntrack_icmp assigns appropriate conntrack to it. But the current
-code mistakes the direction of the packet. As a result, NAT code mistakes
-the address to be mangled.
+# Forward tcp and udp on port 111 for portmap on A
+   iptables -t nat -A PREROUTING -p tcp -d 128.65.183.178 --dport 9200 -j
+DNAT --to 192.168.0.3:111
+   iptables -t nat -A PREROUTING -p udp -d 128.65.183.178 --dport 9200 -j
+DNAT --to 192.168.0.3:111
 
-To fix the bug, this changes nf_conntrack_icmp not to assign conntrack
-to such ICMP error. Actually no address is necessary to be mangled
-in this case.
+# Forward tcp and upd for port 2049 for nfs to A (tcp may not be needed)
+   iptables -t nat -A PREROUTING -p tcp -d 128.65.183.178 --dport 9201 -j
+DNAT --to 192.168.0.3:2049
+   iptables -t nat -A PREROUTING -p udp -d 128.65.183.178 --dport 9201 -j
+DNAT --to 192.168.0.3:2049
 
-Spotted by Jordan Russell.
+# Forward tcp and udp for lockd (port assigned in A:/boot/grub/menu.lst)
+   iptables -t nat -A PREROUTING -p tcp -d 128.65.183.178 --dport 9202 -j
+DNAT --to 192.168.0.3:4000
+   iptables -t nat -A PREROUTING -p udp -d 128.65.183.178 --dport 9202 -j
+DNAT --to 192.168.0.3:4000
 
-Signed-off-by: Yasuyuki Kozakai <yasuyuki.kozakai@toshiba.co.jp>
----
- net/ipv4/netfilter/nf_conntrack_proto_icmp.c |   22 +++++-----------------
- 1 files changed, 5 insertions(+), 17 deletions(-)
+# Forward tcp and udp for mountd (port assigned in
+A:/etc/default/nfs-common)
+   iptables -t nat -A PREROUTING -p tcp -d 128.65.183.178 --dport 9203 -j
+DNAT --to 192.168.0.3:4001
+   iptables -t nat -A PREROUTING -p udp -d 128.65.183.178 --dport 9203 -j
+DNAT --to 192.168.0.3:4001
 
-diff --git a/net/ipv4/netfilter/nf_conntrack_proto_icmp.c b/net/ipv4/netfilter/nf_conntrack_proto_icmp.c
-index f4fc657..474b4ce 100644
---- a/net/ipv4/netfilter/nf_conntrack_proto_icmp.c
-+++ b/net/ipv4/netfilter/nf_conntrack_proto_icmp.c
-@@ -189,25 +189,13 @@ icmp_error_message(struct sk_buff *skb,
- 
- 	h = nf_conntrack_find_get(&innertuple, NULL);
- 	if (!h) {
--		/* Locally generated ICMPs will match inverted if they
--		   haven't been SNAT'ed yet */
--		/* FIXME: NAT code has to handle half-done double NAT --RR */
--		if (hooknum == NF_IP_LOCAL_OUT)
--			h = nf_conntrack_find_get(&origtuple, NULL);
--
--		if (!h) {
--			DEBUGP("icmp_error_message: no match\n");
--			return -NF_ACCEPT;
--		}
--
--		/* Reverse direction from that found */
--		if (NF_CT_DIRECTION(h) == IP_CT_DIR_REPLY)
--			*ctinfo += IP_CT_IS_REPLY;
--	} else {
--		if (NF_CT_DIRECTION(h) == IP_CT_DIR_REPLY)
--			*ctinfo += IP_CT_IS_REPLY;
-+		DEBUGP("icmp_error_message: no match\n");
-+		return -NF_ACCEPT;
- 	}
- 
-+	if (NF_CT_DIRECTION(h) == IP_CT_DIR_REPLY)
-+		*ctinfo += IP_CT_IS_REPLY;
-+
- 	/* Update skb to refer to this connection */
- 	skb->nfct = &nf_ct_tuplehash_to_ctrack(h)->ct_general;
- 	skb->nfctinfo = *ctinfo;
--- 
-1.5.2.2
+# Forward tcp and udp for statd (port assigned in A:/etc/default/nfs-common)
+   iptables -t nat -A PREROUTING -p tcp -d 128.65.183.178 --dport 9204 -j
+DNAT --to 192.168.0.3:4002
+   iptables -t nat -A PREROUTING -p udp -d 128.65.183.178 --dport 9204 -j
+DNAT --to 192.168.0.3:4002
+# Do you need a POSTROUTING line to take outgoing tcp/udp for statd on
+port 4003?
+
+Is there a way on the client A to specify where to look for the
+different NFS resources on B (via G)?
+
+How do I tell NFS that for this particular mount B, and only for B,
+portmap is on 9200, nfs is on 9201, lockd on 9202, mountd on 9203, and
+statd on 9204? Can I specify all of this in /etc/fstab? For ssh, I can 
+specify host:port in /etc/ssh/ssh_config, but it uses only one service.
+
+On A, I also mount several other NFS drives, and they need the default
+ports, so I can't forward the normal NFS ports on A indiscriminately to 
+the new ports needed by B through G. G, the gateway, also exports its 
+own drives to A via NFS, using the default ports, so I can't just remap 
+its ports either.
+
+I would prefer straight NFS with iptables to ssh tunneling, but can it
+be done? I'm extremly grateful for the functionality iptables provides 
+-- I use it to give SSH and Munin access to the private network, and the 
+private network access to the outside -- but I'm completely new to it 
+and found no examples of what I want to do with NFs.
 
 
+Cheers,
+Dave
+
+
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by DB2 Express
+Download DB2 Express C - the FREE version of DB2 express and take
+control of your XML. No limits. Just data. Click to get it now.
+http://sourceforge.net/powerbar/db2/
+_______________________________________________
+NFS maillist  -  NFS@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/nfs
 
