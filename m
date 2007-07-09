@@ -1,61 +1,56 @@
-From: "Pedro Luis D. L." <carcadiz@hotmail.com>
-Subject: Kernel Hangs after hook registration
-Date: Mon, 09 Jul 2007 14:40:23 +0200
-Message-ID: <BAY122-F1175820D7FB4F1883760D8CA060@phx.gbl>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: ICMP packets associated with NAT connections sent out wrong
+	interface?
+Date: Mon, 09 Jul 2007 15:34:46 +0200
+Message-ID: <46923976.605@trash.net>
+References: <200707071224.l67COMEg022741@toshiba.co.jp>	<Pine.LNX.4.64.0707071727580.1808@x2>	<200707071728.l67HStWh022546@toshiba.co.jp>
+	<200707071748.l67HmfE2005051@toshiba.co.jp>
 Mime-Version: 1.0
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <200707071748.l67HmfE2005051@toshiba.co.jp>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+Cc: jr-list-2007@quo.to, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Hi everybody,
+Yasuyuki KOZAKAI wrote:
+> From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
+> Date: Sun, 08 Jul 2007 02:28:54 +0900 (JST)
+> 
+> 
+>>From: Patrick McHardy <kaber@trash.net>
+>>Date: Sat, 7 Jul 2007 17:34:49 +0200 (CEST)
+>>
+>>>The local ICMP tracking is basically useless nowadays since we always
+>>>manually attach the conntrack reference from the original packet
+>>>(exactly because of the half-done double NAT FIXME quoted above).
+>>>But this is an interesting case, the connection tracking code itself
+>>>thought the RST was invalid, but ICMP tracking will still associate
+>>>the ICMP containing the RST with the original connection. I'm wondering
+>>>whether it should really do that. In case it shouldn't, just removing
+>>>all locally generated ICMP special-casing should also fix the bug,
+>>>right?
+>>
+>>At first I thought so. But I didn't come up with any bad situation caused
+>>by returning ICMP error to such invalid packets.
+> 
+> 
+> Can kernel correctly return ICMP error without conntrack in this case ?
+> If so, I agree. (maybe yes, I'll check it after waking up).
 
-I'm developing an audio sink in an ethernet rtp stream communication using =
 
-an embedded platform. For this purpose I had to write an I2S driver to send=
-=20
-the sound info to an external amplifier. In order to decrease the memory an=
-d=20
-CPU usage I'm planning to use a hook to intercept the RTP stream and copy i=
-t=20
-directly to the I2S driver.
-The I2S driver registers an audio device under ALSA.
-Right now the hook is not implemented and I'm using a small example that=20
-intercepts a packet and if it's a RTP packet
-The problem I've found when I modify the I2S driver to include the hook=20
-registration is that the system hangs and can not be recovered once the hoo=
-k=20
-is registered. However, if I try to register the hook on a separated module=
-=20
-it works fine, so it's not a problem of the hook function (always returns=20
-NF_ACCEPT).
-For some design requirements, implementing the hook and the I2S audio drive=
-r=20
-together is encouraged.
-I thought that it could be a problem of initialization or something so I=20
-compiled alsa as a module, but it has the same behaviour.
-
-Anybody has a clue why this hang may happen?
-
-I'm using a 2.6.16 kernel for an MPC5200 platform.
-
-Thanks in advance.
-
-Pedro L. Dom=EDnguez
-
-_________________________________________________________________
-=BFEst=E1s pensando en cambiar de coche? Todas los modelos de serie y extra=
-s en=20
-MSN Motor. http://motor.msn.es/researchcentre/
-
+All locally generated ICMP errors are already associated with the
+original conntrack and packets skip connection tracking. The
+only locally generated ICMP packets that are handled by conntrack
+are errors for INVALID packets.
 
