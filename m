@@ -1,56 +1,99 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: ICMP packets associated with NAT connections sent out wrong
-	interface?
-Date: Mon, 09 Jul 2007 15:34:46 +0200
-Message-ID: <46923976.605@trash.net>
-References: <200707071224.l67COMEg022741@toshiba.co.jp>	<Pine.LNX.4.64.0707071727580.1808@x2>	<200707071728.l67HStWh022546@toshiba.co.jp>
-	<200707071748.l67HmfE2005051@toshiba.co.jp>
+From: "nano bug" <linnewbye@gmail.com>
+Subject: contrack-tools compile error
+Date: Mon, 9 Jul 2007 17:21:18 +0300
+Message-ID: <d39c36500707090721x4db02d68n9d51f3d0de1fd772@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <200707071748.l67HmfE2005051@toshiba.co.jp>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=RobU+Z8VI0T44ZBfZ/cUU8hqnk/ATmQUCprb+4P/00XnAS/CKBumUGUgzCLIBjoTaLQGZmKwSgYyxBePdxfAQmGCRluwoof3UKFweDATV3y4jma/sROQcCiE9MfxGWzuqJtEgGW5pCIlLmbw1D+vpwmhMpJyYyLo7vQN0cOa4yE=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-Cc: jr-list-2007@quo.to, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Yasuyuki KOZAKAI wrote:
-> From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-> Date: Sun, 08 Jul 2007 02:28:54 +0900 (JST)
-> 
-> 
->>From: Patrick McHardy <kaber@trash.net>
->>Date: Sat, 7 Jul 2007 17:34:49 +0200 (CEST)
->>
->>>The local ICMP tracking is basically useless nowadays since we always
->>>manually attach the conntrack reference from the original packet
->>>(exactly because of the half-done double NAT FIXME quoted above).
->>>But this is an interesting case, the connection tracking code itself
->>>thought the RST was invalid, but ICMP tracking will still associate
->>>the ICMP containing the RST with the original connection. I'm wondering
->>>whether it should really do that. In case it shouldn't, just removing
->>>all locally generated ICMP special-casing should also fix the bug,
->>>right?
->>
->>At first I thought so. But I didn't come up with any bad situation caused
->>by returning ICMP error to such invalid packets.
-> 
-> 
-> Can kernel correctly return ICMP error without conntrack in this case ?
-> If so, I agree. (maybe yes, I'll check it after waking up).
+Hello,
+
+I'm trying to compile contrack-tools 0.9.4 and I get the following error :
 
 
-All locally generated ICMP errors are already associated with the
-original conntrack and packets skip connection tracking. The
-only locally generated ICMP packets that are handled by conntrack
-are errors for INVALID packets.
+Making all in extensions
+make[1]: Entering directory `/root/workspace/conntrack-tools-0.9.4/extensions'
+make[1]: Nothing to be done for `all'.
+make[1]: Leaving directory `/root/workspace/conntrack-tools-0.9.4/extensions'
+Making all in src
+make[1]: Entering directory `/root/workspace/conntrack-tools-0.9.4/src'
+if gcc -DPACKAGE_NAME=\"conntrack
+-tools\" -DPACKAGE_TARNAME=\"conntrack-tools\" -DPACKAGE_VERSION=\"
+0.9.4\" -DPACKAGE_STRING=\"conntrack-tools\ 0.9.4\"
+-DPACKAGE_BUGREPORT=\"pablo@netfilter.org\"
+-DPACKAGE=\"conntrack-tools\" -DVERSION=\"0.9.4\" -DSTDC_HEADERS=1
+-DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1
+-DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1
+-DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1
+-DHAVE_DLFCN_H=1 -DYYTEXT_POINTER=1 -DHAVE_LINUX_CAPABILITY_H=1
+-DHAVE_LIBNFNETLINK=1 -DHAVE_LIBNETFILTER_CONNTRACK=1
+-DHAVE_LIBPTHREAD=1 -DHAVE_ARPA_INET_H=1 -DHAVE_INET_PTON=1
+-DHAVE_INET_PTON_IPV6=1 -I. -I.  -I../include    -g -O2 -MT proxy.o
+-MD -MP -MF ".deps/proxy.Tpo" \
+          -c -o proxy.o `test -f 'proxy.c' || echo './'`proxy.c; \
+        then mv -f ".deps/proxy.Tpo" ".deps/proxy.Po"; \
+        else rm -f ".deps/proxy.Tpo"; exit 1; \
+        fi
+In file included from /usr/include/sys/uio.h:24,
+                 from /usr/include/sys/socket.h:27,
+                 from /usr/local/include/libnfnetlink/libnfnetlink.h:19,
+                 from  proxy.c:19:
+/usr/include/sys/types.h:62: error: conflicting types for 'dev_t'
+/usr/include/linux/types.h:22: error: previous declaration of 'dev_t' was here
+/usr/include/sys/types.h:67: error: conflicting types for 'gid_t'
+/usr/include/linux/types.h:54: error: previous declaration of 'gid_t' was here
+/usr/include/sys/types.h:72: error: conflicting types for 'mode_t'
+/usr/include/linux/types.h:24: error: previous declaration of 'mode_t' was here
+/usr/include/sys/types.h:77: error: conflicting types for 'nlink_t'
+/usr/include/linux/types.h:25: error: previous declaration of 'nlink_t' was here
+/usr/include/sys/types.h:82: error: conflicting types for 'uid_t'
+/usr/include/linux/types.h:53: error: previous declaration of 'uid_t' was here
+In file included from /usr/include/sys/types.h:133,
+                 from /usr/include/sys/uio.h:24,
+                 from /usr/include/sys/socket.h:27,
+                 from /usr/local/include/libnfnetlink/libnfnetlink.h:19,
+                 from proxy.c:19:
+/usr/include/time.h:105: error: conflicting types for 'timer_t'
+/usr/include/linux/types.h:31: error: previous declaration of
+'timer_t' was here
+In file included from /usr/include/sys/types.h:220,
+                 from /usr/include/sys/uio.h:24,
+                 from /usr/include/sys/socket.h:27,
+                 from /usr/local/include/libnfnetlink/libnfnetlink.h:19,
+                 from proxy.c:19:
+/usr/include/sys/select.h:78: error: conflicting types for 'fd_set'
+/usr/include/linux/types.h:21: error: previous declaration of 'fd_set' was here
+In file included from /usr/include/sys/uio.h:24,
+                 from /usr/include/sys/socket.h:27,
+                 from /usr/local/include/libnfnetlink/libnfnetlink.h:19,
+                 from proxy.c:19:
+/usr/include/sys/types.h:235: error: conflicting types for 'blkcnt_t'
+/usr/include/linux/types.h:152: error: previous declaration of
+'blkcnt_t' was here
+make[1]: *** [proxy.o] Error 1
+make[1]: Leaving directory `/root/workspace/conntrack-tools-0.9.4/src'
+make: *** [all-recursive] Error 1
+
+
+I'm using libnetfilter_conntrack-0.0.80 and libnfnetlink-0.0.25 and
+gcc version 4.1.2 on Slackware 12.0. Can someone tell how can I fix
+this ?
+
+Regards
 
