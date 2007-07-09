@@ -1,14 +1,9 @@
-From: "pankaj jain" <jainp1979@gmail.com>
-Subject: Packet reaching POST-ROUTING but not going out
-Date: Mon, 9 Jul 2007 16:45:13 +0530
-Message-ID: <d41814cf0707090415p51ac0743q5628a53212d27cf6@mail.gmail.com>
+From: "Pedro Luis D. L." <carcadiz@hotmail.com>
+Subject: Kernel Hangs after hook registration
+Date: Mon, 09 Jul 2007 14:40:23 +0200
+Message-ID: <BAY122-F1175820D7FB4F1883760D8CA060@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=otJ9Fx4m3xArt1hQk9MVwBaxckPccRjwaPQS0Jnxuas0NdxkarmvaHQ7mBLOp4i05xp1XGmk5pWLYxe4PGPDQKTZAQG7ZFk++8QAdNseJjZdSH4EKUkJx2k3H0tDNUClgpnvy1lt1zZ/fuyIxomvy1CaHIJ5lXuLgta4T0VJ/dE=
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +14,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 To: netfilter@lists.netfilter.org
 
-Hi
-I have SNAT rule to change source ip for outgoing packets. My ping
-packets seems to be matching SNAT rule but they don't show up in
-ethereal traces at both ends.
+Hi everybody,
 
-eth0      -> 127.0.33.3
+I'm developing an audio sink in an ethernet rtp stream communication using =
 
-eth0:1   -> 169.254.1.1
+an embedded platform. For this purpose I had to write an I2S driver to send=
+=20
+the sound info to an external amplifier. In order to decrease the memory an=
+d=20
+CPU usage I'm planning to use a hook to intercept the RTP stream and copy i=
+t=20
+directly to the I2S driver.
+The I2S driver registers an audio device under ALSA.
+Right now the hook is not implemented and I'm using a small example that=20
+intercepts a packet and if it's a RTP packet
+The problem I've found when I modify the I2S driver to include the hook=20
+registration is that the system hangs and can not be recovered once the hoo=
+k=20
+is registered. However, if I try to register the hook on a separated module=
+=20
+it works fine, so it's not a problem of the hook function (always returns=20
+NF_ACCEPT).
+For some design requirements, implementing the hook and the I2S audio drive=
+r=20
+together is encouraged.
+I thought that it could be a problem of initialization or something so I=20
+compiled alsa as a module, but it has the same behaviour.
 
+Anybody has a clue why this hang may happen?
 
+I'm using a 2.6.16 kernel for an MPC5200 platform.
 
-SNAT Rule: To convert source from 169.254.1.1 to 172.16.45.200
+Thanks in advance.
 
-DNAT Rule: To convert destination 172.16.45.200 to 169.254.1.1
+Pedro L. Dom=EDnguez
 
-There are arptables rules also to responds arp of 172.16.45.200
+_________________________________________________________________
+=BFEst=E1s pensando en cambiar de coche? Todas los modelos de serie y extra=
+s en=20
+MSN Motor. http://motor.msn.es/researchcentre/
 
-Any clue?
-
-
-
--- 
-Thanks
-Pankaj Jain
 
