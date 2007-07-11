@@ -1,7 +1,7 @@
-From: Bahamin Takhtaei <takhtaei@amnafzar.com>
-Subject: Question about NFQUEUE
-Date: Tue, 10 Jul 2007 11:01:13 +0330
-Message-ID: <469335C1.5020808@amnafzar.com>
+From: =?us-ascii?Q?=20?= <tomasnull@seznam.cz>
+Subject: per socket nfmark
+Date: Wed, 11 Jul 2007 16:06:18 +0200 (CEST)
+Message-ID: <16.19-30594-1397228818-1184162778@seznam.cz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,17 +15,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: dean@arctic.org
 
-Hi everyone!
-I add some rules to iptables such as:
-"iptables -A INPUT -p icmp -j NFQUEUE"
-and handle icmp packets by a program in userspace,
-but I want that the packets come back to NFQUEUE later.
-Please tell me what should I do?
+Hi,
 
-Thank you,
-Bahamin
+ I would like to bring up the question, if there is a way to associate a nfmark with a socket. It would be very helpful as it saves the matching against iptables rules which would have to than match the packet and associate the nfmark. 
 
+The same question was already posted here:
+http://lists.netfilter.org/pipermail/netfilter/2002-October/039074.html
+
+Thanks for your responses
+Tomas
+
+
+
+ 
 
