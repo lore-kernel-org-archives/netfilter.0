@@ -1,13 +1,10 @@
-From: Dmitry Zamaruev <avenger@nixsolutions.com>
-Subject: Re: netfilter scan detect
-Date: Thu, 12 Jul 2007 17:33:59 +0300
-Message-ID: <46963BD7.3050406@nixsolutions.com>
-References: <46924d18.05a0660a.252d.16afSMTPIN_ADDED@mx.google.com>
-	<46927FE7.8040104@gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: tcp match --syn option and FIN flag
+Date: Thu, 12 Jul 2007 23:12:27 +0200
+Message-ID: <4696993B.6070605@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46927FE7.8040104@gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,24 +16,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Liste Netfilter <netfilter@lists.netfilter.org>
 
-Try to use 'stealth' module from GRsecurity patchset.
-It will detect stealth scans, but you need patched kernel and iptables.
+Hello,
 
-debian wrote:
-> Hello,
->
-> i search a solution to detect scan port, i find psd patch, but now 
-> with the last version of iptables, psd patch is not supported. An over 
-> solution is possible?
->
-> Thanks you.
--- 
-Best regards,
-Dmitry Zamaruev,
-Team leader,
-System integration dept.,
-NIX Solutions Ltd.
+Found in iptables 1.3.2 changelog :
 
+- Include FIN bit in mask of "--syn" bits
+
+With this change a TCP packet must have the FIN flag cleared in order to 
+match the --syn option, while it was not necessary with previous 
+iptables versions.
+Why ? Isn't the SYN flag supposed to have precedence over the FIN flag, 
+so shouldn't FIN be ignored when SYN is set ?
+Besides, this change has been applied only to libipt_tcp.c, not to 
+libip6t_tcp.c. Is there a reason to this ?
+
+Thanks for your attention.
 
