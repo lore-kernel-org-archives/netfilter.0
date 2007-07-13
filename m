@@ -1,12 +1,10 @@
-From: Yasuyuki KOZAKAI <yasuyuki.kozakai@toshiba.co.jp>
-Subject: Re: iptables 1.2 in an AMD64 bit kernel howto ??
-Date: Fri, 13 Jul 2007 18:49:10 +0900 (JST)
-Message-ID: <200707130949.l6D9nBlY008820@toshiba.co.jp>
-References: <4697479B.9040707@ditro.com>
+From: Vikram <vikramd@kritikalsolutions.com>
+Subject: SNAT Delay
+Date: Fri, 13 Jul 2007 15:55:58 +0530
+Message-ID: <46975336.2030303@kritikalsolutions.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <4697479B.9040707@ditro.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,30 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: Text/Plain; charset="us-ascii"
-To: bipindas.k@ditro.com
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-From: BipinDas - Ditro <bipindas.k@ditro.com>
-Date: Fri, 13 Jul 2007 15:06:27 +0530
+Hi,
 
-> Dear List,
-> 
-> I do have a server with Debian-2.6.8-12-amd64-generic kernel image on 
-> AMD64 processor.
-> When i try to enter the command iptables -L -n -v the following error 
-> happens.
-> 
-> "iptables v1.2.11: can't initialize iptables table `filter': Module is 
-> wrong version
-> Perhaps iptables or your kernel needs to be upgraded"
-> 
->  Please let me know how can i solve it?
+I m using a simple NAT scenario. My Linux router has 2 interfaces 
+connected to 2 machines, M1 and M2.
 
-The old kernels have '64bit kernel and 32bit userland' problem.
-Your iptables is 32bit binary (try readelf -a `which iptables`) ? If so,
-building 64bit binary of iptables will solve the problem. Upgrading the
-recent kernel should also solve it, of cause.
+         M1                      Linux NAT Router                    M2
+[192.168.1.2]<----->[192.168.1.1][10.0.0.1]<----->[10.0.0.2]
 
--- Yasuyuki Kozakai
+Forwarding is enabled on the router. All the tables in iptables are 
+flushed. I have enabled continuous ping from M1 to M2. I get no response.
+
+I execute the following iptables command:-
+
+iptables -t nat -A POSTROUTING -o eth0 -s 192.168.1.2 -j SNAT 
+--to-source 10.0.0.1
+
+I am still unable to receive any instant ping response. The NAT 
+translations start happening after an unacceptable interval of time 
+after which I am able to receive response.
+
+Is this normal? Is there a workaround so that NAT translations begin 
+instantly as and when a rule has been inserted?
+
+Vikram
+
 
