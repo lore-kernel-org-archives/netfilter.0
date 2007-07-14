@@ -1,51 +1,71 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: REDIRECT and IPv6
-Date: Thu, 19 Jul 2007 10:59:55 +0200
-Message-ID: <469F280B.3070900@trash.net>
-References: <1246.130.217.140.56.1184804730.squirrel@webmail.treenet.co.nz>
+From: "=?ISO-8859-2?Q?B=B3a=BFej_=A6lusarek?=" <blazej.86@gmail.com>
+Subject: No masquerade?
+Date: Sat, 14 Jul 2007 02:01:03 +0200
+Message-ID: <5de7cdb50707131701y2584d4f3q2cddbc9206e8aadb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <1246.130.217.140.56.1184804730.squirrel@webmail.treenet.co.nz>
+Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=arMgiMEtnETGe9dv4OCOTOxxyOP2VSnaXNwTQhjFvQNY/7MnIvZSR9wXrKq86e7AkpFKVCwqB6cPiAEDwwneuylz5WW2V9GtVG6zePcVAv+TCSBgdaxavjvvGR+xRM4/zu9vITLKFnxW2HtN349TtW0/HUPIIw8QWPdNAmJOQ04=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: squid3@treenet.co.nz
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-squid3@treenet.co.nz wrote:
-> Greetings,
-> 
-> Pardon if this is a dumb question. But I have searched the web, and the
-> source code for a solution to this one and have reached a brick wall.
-> 
-> I'm upgrading a user-space proxy (squid3) which has in the past done
-> transparent connections under IPv4-only using SO_ORIGINAL_DST.
-> 
-> The Firewall/router uses iptables and REDIRECT port 80 outbound to port
-> 81. All is fine and dandy when squid listens on 0.0.0.0:81.
-> 
-> With the new code I have to use an IPv6 socket ( [::]:81 ) as the
-> receiver. With that getsockopt(..., SO_ORIGINAL_DST, ...) always returns
-> err "92 Protocol not supported." regardless of the IP-level parameters
-> passed in.
-> 
-> NOTE: All traffic for testing so far has been from IPv4 clients to what
-> they think is an IPv4 server, but with a dual-enabled middleman. The
-> 'middleman' Software is iptables 1.3.6 on Debian 2.6.21-2-486 (unstable),
-> squid3 built with g++ 4.1.3.
+Hello all, I want to ask for help in setting a simple home network, as
+it became more complicated than I thought :( The idea is something
+like that:
+
+[ Gateway (192.168.100.1) ] <-- Wireless connection ---> [ My PC
+(192.168.100.134 / 10.0.0.1 In my home network) ] <-- Crossed LAN
+cable --> [ My laptop (10.0.0.249) ]
+
+As you can figure out, the Internet comes from gateway :) I've set up
+everything on my PC : DHCP, DNS and, of course, iptables. Everything
+seems to work except the masquerade :( When I send an icmp packet from
+my laptop, everything works fine - I can ping google.com for example;
+two computers can also communicate (FTP / SSH) but I cannot get any
+TCP (or any other packet) from the outside :( My iptables script is:
+
+#!/bin/bash
+iptables -F
+iptables -F -t nat
+iptables -F -t mangle
+iptables -F -t filter
+iptables -X
 
 
-You're right, nf_conntrack_ipv4 only registeres SO_ORIGINAL_DST for
-AF_INET, changing that should make it work I believe. I feel like
-I'm missing something though ..
+iptables -t filter -A FORWARD -p icmp   -j ACCEPT
+iptables -t filter -A FORWARD  -p tcp -j ACCEPT
+iptables -t nat -A POSTROUTING -p icmp  -j MASQUERADE
+iptables -t nat -A POSTROUTING -p tcp  -j MASQUERADE
 
+What gives me
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     icmp --  anywhere             anywhere
+ACCEPT     tcp  --  anywhere             anywhere
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+You can find some other example at
+http://wpk.p.lodz.pl/~bejus/wireshark.txt . It seems to me that
+packets from laptop are routed to www.google.com, they return, but
+they aren't sent back to my Laptop.
+Can this be caused by 64bit system on my PC box?  Any help will be appreciated.
 
