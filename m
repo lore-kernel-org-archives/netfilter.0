@@ -1,14 +1,13 @@
-From: Franck Joncourt <franck.joncourt@wanadoo.fr>
+From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
 Subject: Re: limit extension problem
-Date: Mon, 16 Jul 2007 20:11:56 +0200
-Message-ID: <20070716181156.GA5264@toystory.lan>
-References: <469BA216.6000802@unipex.it>
+Date: Mon, 16 Jul 2007 20:43:00 +0200
+Message-ID: <469BBC34.10306@unipex.it>
+References: <469BA216.6000802@unipex.it> <20070716181156.GA5264@toystory.lan>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+	micalg=sha1; boundary="------------ms090307040400090209040200"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <469BA216.6000802@unipex.it>
+In-Reply-To: <20070716181156.GA5264@toystory.lan>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,52 +20,94 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
+This is a cryptographically signed message in MIME format.
 
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--------------ms090307040400090209040200
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jul 16, 2007 at 06:51:34PM +0200, Michele Petrazzo - Unipex srl wro=
-te:
-> Hi all,
-> I'm on debian etch with the default kernel (iptables 1.3.6 and 2.6.18).
->
-> I'm trying the limit extension, but the invert flag doesn't work like
-> the man page say:
-> """
-> iptables -t filter -A FORWARD -m mark --mark 2 -p icmp --icmp-type 8 -m
-> limit ! --limit 20/min -j ACCEPT
-> iptables v.1.3.6: limit does not support invert
-> """
-> What I want it's to "limit" the log for icmp protocol to 20/minute
->
+Franck Joncourt wrote:
+> Is that what you are looking for :
+> 
+> iptables -A FORWARD -p icmp --icmp-type echo-request -m mark --mark 2 -j ACCEPT
+> iptables -A FORWARD -p icmp -m limit --limit 20/min -j LOG_ICMP
 
-Is that what you are looking for :
+Not really.
+I want to log only 20 ping forwarded on a minute. May be that I need to
+invert those lines? I think yes!
 
-iptables -A FORWARD -p icmp --icmp-type echo-request -m mark --mark 2 -j AC=
-CEPT
 iptables -A FORWARD -p icmp -m limit --limit 20/min -j LOG_ICMP
+iptables -A FORWARD -p icmp --icmp-type echo-request -m mark --mark 2 -j 
+ACCEPT
 
---=20
-Franck Joncourt
-http://www.debian.org - http://smhteam.info/wiki/
-GPG server : pgpkeys.mit.edu
-Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
+Michele
 
---GvXjxJ+pjyke8COw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+--------------ms090307040400090209040200
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFGm7TsxJBTTnXAif4RAmGQAKCcixX71zIX/i3uBGANg/mfr/z/MQCgqRXL
-Sze5MaUAENc63aRl15n8vZA=
-=zhA9
------END PGP SIGNATURE-----
-
---GvXjxJ+pjyke8COw--
-
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJJzCC
+Au4wggJXoAMCAQICEHiManFVDKLShj2ugvsxjwowDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
+BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMT
+I1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA2MTIwNzExMTE1OFoX
+DTA3MTIwNzExMTE1OFowTDEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEpMCcG
+CSqGSIb3DQEJARYabWljaGVsZS5wZXRyYXp6b0B1bmlwZXguaXQwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQC7mtBl9IqcOhjRfry9HlVsbTSb1k9ITVtnKZknSZcnMonQoVkX
+Axs4hXW0lC2aonPrHEKXa6mM0DMafCAbyGofv/+Hh8oQsAIhmKSWtX+R/cjgKLt+I3AHsz3T
+23RVhm4kATxuXVcRSc75aWXuJ4WfVE/gAVNT/2eSxOwygYR3A7aiZYF+tE+PRRWuu5x9LlY/
+wcd/mvKgY02xvOLTi+RGl7WqxNNYhh1mAZz/0vmlTrgrwpgaTwx2m2WXq8NVq4Th3C7zvHDW
+SLKY/XtkEcrQo8N7VuwmIWdpMfXDQBXq4JDt/FpX+Tnf2rJJDJkenOZ0T2IzkJW3G6s17u6t
+7+ufAgMBAAGjNzA1MCUGA1UdEQQeMByBGm1pY2hlbGUucGV0cmF6em9AdW5pcGV4Lml0MAwG
+A1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEFBQADgYEAfWEtOU2ijzYheb9ShoYGJ0kn5mSLrr65
+5nPgib0TWP7HPJ7HDTZgwvwm8Vk3p6/1T7oYC2leW3ansutFkg1Vog6eSvEFMlTeG1/i2nAr
+7RQKX5n4n8HSQFNQcE4jXXba0UdZYUtSn5b9hI2/bweXmN2xIxoCxGn6N8tuwhU7fWAwggLu
+MIICV6ADAgECAhB4jGpxVQyi0oY9roL7MY8KMA0GCSqGSIb3DQEBBQUAMGIxCzAJBgNVBAYT
+AlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNU
+aGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTAeFw0wNjEyMDcxMTExNThaFw0w
+NzEyMDcxMTExNThaMEwxHzAdBgNVBAMTFlRoYXd0ZSBGcmVlbWFpbCBNZW1iZXIxKTAnBgkq
+hkiG9w0BCQEWGm1pY2hlbGUucGV0cmF6em9AdW5pcGV4Lml0MIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEAu5rQZfSKnDoY0X68vR5VbG00m9ZPSE1bZymZJ0mXJzKJ0KFZFwMb
+OIV1tJQtmqJz6xxCl2upjNAzGnwgG8hqH7//h4fKELACIZiklrV/kf3I4Ci7fiNwB7M909t0
+VYZuJAE8bl1XEUnO+Wll7ieFn1RP4AFTU/9nksTsMoGEdwO2omWBfrRPj0UVrrucfS5WP8HH
+f5ryoGNNsbzi04vkRpe1qsTTWIYdZgGc/9L5pU64K8KYGk8Mdptll6vDVauE4dwu87xw1kiy
+mP17ZBHK0KPDe1bsJiFnaTH1w0AV6uCQ7fxaV/k539qySQyZHpzmdE9iM5CVtxurNe7ure/r
+nwIDAQABozcwNTAlBgNVHREEHjAcgRptaWNoZWxlLnBldHJhenpvQHVuaXBleC5pdDAMBgNV
+HRMBAf8EAjAAMA0GCSqGSIb3DQEBBQUAA4GBAH1hLTlNoo82IXm/UoaGBidJJ+Zki66+ueZz
+4Im9E1j+xzyexw02YML8JvFZN6ev9U+6GAtpXlt2p7LrRZINVaIOnkrxBTJU3htf4tpwK+0U
+Cl+Z+J/B0kBTUHBOI1122tFHWWFLUp+W/YSNv28Hl5jdsSMaAsRp+jfLbsIVO31gMIIDPzCC
+AqigAwIBAgIBDTANBgkqhkiG9w0BAQUFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdl
+c3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3Vs
+dGluZzEoMCYGA1UECxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UE
+AxMbVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25h
+bC1mcmVlbWFpbEB0aGF3dGUuY29tMB4XDTAzMDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVow
+YjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4x
+LDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqG
+SIb3DQEBAQUAA4GNADCBiQKBgQDEpjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/
+DDph8r9RzgHU5VAKMNcCY1osiRVwjt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+
+K/67GD4Hv0CAAmTXp6a7n2XRxSpUhQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIG
+A1UdEwEB/wQIMAYBAf8CAQAwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUu
+Y29tL1RoYXd0ZVBlcnNvbmFsRnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQi
+MCCkHjAcMRowGAYDVQQDExFQcml2YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBI
+jNFQg+oLLswNo2asZw9/r6y+whehQ5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZ
+foSxmRsAxRoLgnSeJVCUYsfbJ3FXJY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfj
+ViF4gtwhGTXeJLHTHUb/XV9lTzGCA2QwggNgAgEBMHYwYjELMAkGA1UEBhMCWkExJTAjBgNV
+BAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJz
+b25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAhB4jGpxVQyi0oY9roL7MY8KMAkGBSsOAwIaBQCg
+ggHDMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA3MDcxNjE4
+NDMwMFowIwYJKoZIhvcNAQkEMRYEFJVDlRlamsTB+OqBzWZ4af0T021rMFIGCSqGSIb3DQEJ
+DzFFMEMwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsO
+AwIHMA0GCCqGSIb3DQMCAgEoMIGFBgkrBgEEAYI3EAQxeDB2MGIxCzAJBgNVBAYTAlpBMSUw
+IwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUg
+UGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIQeIxqcVUMotKGPa6C+zGPCjCBhwYLKoZI
+hvcNAQkQAgsxeKB2MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGlu
+ZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWlu
+ZyBDQQIQeIxqcVUMotKGPa6C+zGPCjANBgkqhkiG9w0BAQEFAASCAQC6T8jyS/2Sy73Sy3yu
+IaKmVJVIpnYmfN6VJbkiqY0rZqTvoznRyXL22lN+ChG6ALZq8STAqouTcNW1zMq6GTGgKkT1
+aR0m3BN3Ic4Xu9qyBbm12K5i8ZwC63FFq0UINMIdgmaoWHmeQXTuk+sKYZwu0AtrinTHLwlg
+nl9L1LtRwoLDH9zeMbOhX1oQgipDGWDQxFXaRTrU39c4EhgAQV5OK05T2eQu72KKI1rrs7Rv
+tMvXiNI12NxziN1wLQGReOS73VMz6HoKlfo6MeyH1qG0W/9n1/c/TXIBA1FlycZYqhQLtJlT
+0O+c6zI2ITiInehsG/tjpuewddJWZXnrsMy6AAAAAAAA
+--------------ms090307040400090209040200--
 
