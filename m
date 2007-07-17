@@ -1,13 +1,18 @@
-From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
-Subject: Re: limit extension problem
-Date: Mon, 16 Jul 2007 20:43:00 +0200
-Message-ID: <469BBC34.10306@unipex.it>
-References: <469BA216.6000802@unipex.it> <20070716181156.GA5264@toystory.lan>
+From: Wakko Warner <wakko@animx.eu.org>
+Subject: Re: Block LAN DHCP broadcast
+Date: Mon, 16 Jul 2007 20:43:55 -0400
+Message-ID: <20070717004355.GA13667@animx.eu.org>
+References: <3130eec50707160652r7fe3285amfafc695b45ee4800@mail.gmail.com>
+	<1184595437.17688.72.camel@localhost>
+	<3130eec50707160738o418b7a9m43f68af0c6a9afe4@mail.gmail.com>
+	<1184599806.17688.105.camel@localhost>
+	<3130eec50707160907x44cfbcc8u294ffd6118de7e9c@mail.gmail.com>
+	<20070716163705.GA11481@animx.eu.org>
+	<3130eec50707161010q62a32011p527c11ca9026f07f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=sha1; boundary="------------ms090307040400090209040200"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070716181156.GA5264@toystory.lan>
+Content-Disposition: inline
+In-Reply-To: <3130eec50707161010q62a32011p527c11ca9026f07f@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,96 +23,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
-
-This is a cryptographically signed message in MIME format.
-
---------------ms090307040400090209040200
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Gnarlodious <lists.gnarlodious@gmail.com>
+Cc: netfilter@lists.netfilter.org
 
-Franck Joncourt wrote:
-> Is that what you are looking for :
+Please keep list mail on the list.
+
+Gnarlodious wrote:
+> On 7/16/07, Wakko Warner wrote:
+> >Gnarlodious wrote:
+> >> I would need to have another
+> >> device on the UPS battery. I want to have only two devices taking
+> >> power from the UPS battery, the modem and the server.
+> >
+> >A diagram might be more helpful.
+> http://etc.Gnarlodious.com/Images/Lan1.png
+
+So you have a dsl connection with 3 computers and a wireless router
+connected directly to it.  I would assume that you want to keep those 3
+computers from getting an IP via DHCP from the dsl modem?  From the
+networking perspective, unless the ups is actually networked, has nothing to
+do with the network.  (Personally, I would assign a static IP to the UPS).
+
+Does the DSL modem have a built in hub?
+
+From the AP1 you have 2 PCs and another wireless router.  Are these getting
+their IP from AP1?
+
+From AP2 you have 2 PCs and nothing else.  Since I don't know the interfaces
+on the AP devices, I don't know if they are routing traffic or switching
+traffic.
+
+I guess the real question is, does the 4 devices connected (according to
+your diagram) directly to your DSL modem have non-private IPs?
+(private IP ranges: http://tools.ietf.org/html/rfc1918 section 3).
+
+> >DHCP is broadcast when one requests an IP.  That's why it's D(ynamic)HCP.
+> OK, I'm starting to understand that what I want can't be done.
 > 
-> iptables -A FORWARD -p icmp --icmp-type echo-request -m mark --mark 2 -j ACCEPT
-> iptables -A FORWARD -p icmp -m limit --limit 20/min -j LOG_ICMP
+> >The best way I can think of is to have a system (computer, router, whatever
+> >running linux) with 2 bridged interfaces and block DHCP traffic going 
+> >across
+> >the bridge.
+> Any page that explains how to set that up? I'm not a network pro...
 
-Not really.
-I want to log only 20 ping forwarded on a minute. May be that I need to
-invert those lines? I think yes!
+The man page for ebtables and brctl.  You'll need a linux kernel with
+bridging (802.1d support), ebtables enabled (Personaly, I just enable all
+the netfilter modules and let the system decide at runtime which onces to
+load), the drivers for 2 nics (I used 3c905b cards on a celeron 600 pc,
+throughput is around 8-9mb/sec).
 
-iptables -A FORWARD -p icmp -m limit --limit 20/min -j LOG_ICMP
-iptables -A FORWARD -p icmp --icmp-type echo-request -m mark --mark 2 -j 
-ACCEPT
+> And thanks for the hint about ebtables.
 
-Michele
+You could probably do it with iptables on a bridging interface, but ebtables
+might be easier.
 
---------------ms090307040400090209040200
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJJzCC
-Au4wggJXoAMCAQICEHiManFVDKLShj2ugvsxjwowDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
-BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMT
-I1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA2MTIwNzExMTE1OFoX
-DTA3MTIwNzExMTE1OFowTDEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEpMCcG
-CSqGSIb3DQEJARYabWljaGVsZS5wZXRyYXp6b0B1bmlwZXguaXQwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQC7mtBl9IqcOhjRfry9HlVsbTSb1k9ITVtnKZknSZcnMonQoVkX
-Axs4hXW0lC2aonPrHEKXa6mM0DMafCAbyGofv/+Hh8oQsAIhmKSWtX+R/cjgKLt+I3AHsz3T
-23RVhm4kATxuXVcRSc75aWXuJ4WfVE/gAVNT/2eSxOwygYR3A7aiZYF+tE+PRRWuu5x9LlY/
-wcd/mvKgY02xvOLTi+RGl7WqxNNYhh1mAZz/0vmlTrgrwpgaTwx2m2WXq8NVq4Th3C7zvHDW
-SLKY/XtkEcrQo8N7VuwmIWdpMfXDQBXq4JDt/FpX+Tnf2rJJDJkenOZ0T2IzkJW3G6s17u6t
-7+ufAgMBAAGjNzA1MCUGA1UdEQQeMByBGm1pY2hlbGUucGV0cmF6em9AdW5pcGV4Lml0MAwG
-A1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEFBQADgYEAfWEtOU2ijzYheb9ShoYGJ0kn5mSLrr65
-5nPgib0TWP7HPJ7HDTZgwvwm8Vk3p6/1T7oYC2leW3ansutFkg1Vog6eSvEFMlTeG1/i2nAr
-7RQKX5n4n8HSQFNQcE4jXXba0UdZYUtSn5b9hI2/bweXmN2xIxoCxGn6N8tuwhU7fWAwggLu
-MIICV6ADAgECAhB4jGpxVQyi0oY9roL7MY8KMA0GCSqGSIb3DQEBBQUAMGIxCzAJBgNVBAYT
-AlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNU
-aGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTAeFw0wNjEyMDcxMTExNThaFw0w
-NzEyMDcxMTExNThaMEwxHzAdBgNVBAMTFlRoYXd0ZSBGcmVlbWFpbCBNZW1iZXIxKTAnBgkq
-hkiG9w0BCQEWGm1pY2hlbGUucGV0cmF6em9AdW5pcGV4Lml0MIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEAu5rQZfSKnDoY0X68vR5VbG00m9ZPSE1bZymZJ0mXJzKJ0KFZFwMb
-OIV1tJQtmqJz6xxCl2upjNAzGnwgG8hqH7//h4fKELACIZiklrV/kf3I4Ci7fiNwB7M909t0
-VYZuJAE8bl1XEUnO+Wll7ieFn1RP4AFTU/9nksTsMoGEdwO2omWBfrRPj0UVrrucfS5WP8HH
-f5ryoGNNsbzi04vkRpe1qsTTWIYdZgGc/9L5pU64K8KYGk8Mdptll6vDVauE4dwu87xw1kiy
-mP17ZBHK0KPDe1bsJiFnaTH1w0AV6uCQ7fxaV/k539qySQyZHpzmdE9iM5CVtxurNe7ure/r
-nwIDAQABozcwNTAlBgNVHREEHjAcgRptaWNoZWxlLnBldHJhenpvQHVuaXBleC5pdDAMBgNV
-HRMBAf8EAjAAMA0GCSqGSIb3DQEBBQUAA4GBAH1hLTlNoo82IXm/UoaGBidJJ+Zki66+ueZz
-4Im9E1j+xzyexw02YML8JvFZN6ev9U+6GAtpXlt2p7LrRZINVaIOnkrxBTJU3htf4tpwK+0U
-Cl+Z+J/B0kBTUHBOI1122tFHWWFLUp+W/YSNv28Hl5jdsSMaAsRp+jfLbsIVO31gMIIDPzCC
-AqigAwIBAgIBDTANBgkqhkiG9w0BAQUFADCB0TELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdl
-c3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29uc3Vs
-dGluZzEoMCYGA1UECxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UE
-AxMbVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25h
-bC1mcmVlbWFpbEB0aGF3dGUuY29tMB4XDTAzMDcxNzAwMDAwMFoXDTEzMDcxNjIzNTk1OVow
-YjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4x
-LDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMIGfMA0GCSqG
-SIb3DQEBAQUAA4GNADCBiQKBgQDEpjxVc1X7TrnKmVoeaMB1BHCd3+n/ox7svc31W/Iadr1/
-DDph8r9RzgHU5VAKMNcCY1osiRVwjt3J8CuFWqo/cVbLrzwLB+fxH5E2JCoTzyvV84J3PQO+
-K/67GD4Hv0CAAmTXp6a7n2XRxSpUhQ9IBH+nttE8YQRAHmQZcmC3+wIDAQABo4GUMIGRMBIG
-A1UdEwEB/wQIMAYBAf8CAQAwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL2NybC50aGF3dGUu
-Y29tL1RoYXd0ZVBlcnNvbmFsRnJlZW1haWxDQS5jcmwwCwYDVR0PBAQDAgEGMCkGA1UdEQQi
-MCCkHjAcMRowGAYDVQQDExFQcml2YXRlTGFiZWwyLTEzODANBgkqhkiG9w0BAQUFAAOBgQBI
-jNFQg+oLLswNo2asZw9/r6y+whehQ5aUnX9MIbj4Nh+qLZ82L8D0HFAgk3A8/a3hYWLD2ToZ
-foSxmRsAxRoLgnSeJVCUYsfbJ3FXJY3dqZw5jowgT2Vfldr394fWxghOrvbqNOUQGls1TXfj
-ViF4gtwhGTXeJLHTHUb/XV9lTzGCA2QwggNgAgEBMHYwYjELMAkGA1UEBhMCWkExJTAjBgNV
-BAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJz
-b25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAhB4jGpxVQyi0oY9roL7MY8KMAkGBSsOAwIaBQCg
-ggHDMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA3MDcxNjE4
-NDMwMFowIwYJKoZIhvcNAQkEMRYEFJVDlRlamsTB+OqBzWZ4af0T021rMFIGCSqGSIb3DQEJ
-DzFFMEMwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsO
-AwIHMA0GCCqGSIb3DQMCAgEoMIGFBgkrBgEEAYI3EAQxeDB2MGIxCzAJBgNVBAYTAlpBMSUw
-IwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUg
-UGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIQeIxqcVUMotKGPa6C+zGPCjCBhwYLKoZI
-hvcNAQkQAgsxeKB2MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGlu
-ZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWlu
-ZyBDQQIQeIxqcVUMotKGPa6C+zGPCjANBgkqhkiG9w0BAQEFAASCAQC6T8jyS/2Sy73Sy3yu
-IaKmVJVIpnYmfN6VJbkiqY0rZqTvoznRyXL22lN+ChG6ALZq8STAqouTcNW1zMq6GTGgKkT1
-aR0m3BN3Ic4Xu9qyBbm12K5i8ZwC63FFq0UINMIdgmaoWHmeQXTuk+sKYZwu0AtrinTHLwlg
-nl9L1LtRwoLDH9zeMbOhX1oQgipDGWDQxFXaRTrU39c4EhgAQV5OK05T2eQu72KKI1rrs7Rv
-tMvXiNI12NxziN1wLQGReOS73VMz6HoKlfo6MeyH1qG0W/9n1/c/TXIBA1FlycZYqhQLtJlT
-0O+c6zI2ITiInehsG/tjpuewddJWZXnrsMy6AAAAAAAA
---------------ms090307040400090209040200--
+-- 
+ Lab tests show that use of micro$oft causes cancer in lab animals
+ Got Gas???
 
