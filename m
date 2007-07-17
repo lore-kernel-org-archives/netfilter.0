@@ -1,14 +1,13 @@
-From: "=?ISO-8859-2?Q?B=B3a=BFej_=A6lusarek?=" <blazej.86@gmail.com>
-Subject: No masquerade?
-Date: Sat, 14 Jul 2007 02:01:03 +0200
-Message-ID: <5de7cdb50707131701y2584d4f3q2cddbc9206e8aadb@mail.gmail.com>
-Mime-Version: 1.0
+From: Jeff Welling <jeff.welling@gmail.com>
+Subject: Trouble POM-ing ROUTE
+Date: Tue, 17 Jul 2007 13:18:40 -0700
+Message-ID: <9D8084AE-732B-47C1-9D48-46C6BF9CC249@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v752.3)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=arMgiMEtnETGe9dv4OCOTOxxyOP2VSnaXNwTQhjFvQNY/7MnIvZSR9wXrKq86e7AkpFKVCwqB6cPiAEDwwneuylz5WW2V9GtVG6zePcVAv+TCSBgdaxavjvvGR+xRM4/zu9vITLKFnxW2HtN349TtW0/HUPIIw8QWPdNAmJOQ04=
-Content-Disposition: inline
+	h=domainkey-signature:received:received:mime-version:content-transfer-encoding:message-id:content-type:to:subject:date:x-mailer:from;
+	b=t83c3hZXkujlP7+ASGhyxaBVtVdILzz4YoTeKSS4OxyvZY+aZCudWQSU+2Rz9IES2s0D2oMBUY0mVtjtyfNtpSFJHT5BvKD/bDwe4RN6W3Oh30IHYh34EyO4WdzVm9XKNK2ebFnM52mhDIT6JH41EsAMEO5SpqHNLIETNoyPdiA=
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,53 +18,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello all, I want to ask for help in setting a simple home network, as
-it became more complicated than I thought :( The idea is something
-like that:
+Hello all,
+I'm in a situation where I need to route traffic based on a specific  
+port, our a different interface.  We have a Linux gateway, connected  
+to 2 Internet connections, and we want to route some of our packets  
+out eth0 and other packets out eth2, traffic which comes from a LAN.
 
-[ Gateway (192.168.100.1) ] <-- Wireless connection ---> [ My PC
-(192.168.100.134 / 10.0.0.1 In my home network) ] <-- Crossed LAN
-cable --> [ My laptop (10.0.0.249) ]
+I am aware that there are other ways of doing this, and by all means  
+if you have a suggestion about an alternative method please send it  
+to me, but I am very interested in ROUTE's potential.
 
-As you can figure out, the Internet comes from gateway :) I've set up
-everything on my PC : DHCP, DNS and, of course, iptables. Everything
-seems to work except the masquerade :( When I send an icmp packet from
-my laptop, everything works fine - I can ping google.com for example;
-two computers can also communicate (FTP / SSH) but I cannot get any
-TCP (or any other packet) from the outside :( My iptables script is:
+Currently working with;
 
-#!/bin/bash
-iptables -F
-iptables -F -t nat
-iptables -F -t mangle
-iptables -F -t filter
-iptables -X
+kernel -	linux-2.6.22.1
+iptables - iptables-1.3.6
+patch-o-matic-ng - patch-o-matic-ng-20070713   (rotating through  
+daily snapshots)
 
+/usr/src/linux  && /usr/src/iptables           are both symlinks to  
+the iptables and linux source code dirs.
 
-iptables -t filter -A FORWARD -p icmp   -j ACCEPT
-iptables -t filter -A FORWARD  -p tcp -j ACCEPT
-iptables -t nat -A POSTROUTING -p icmp  -j MASQUERADE
-iptables -t nat -A POSTROUTING -p tcp  -j MASQUERADE
+I run the `runme` executable in POM, and when I get to ROUTE,
+a `T` gives me
+'./patchlets/ROUTE/linux-2.6.11.patch: ERROR (1 missing files)'
 
-What gives me
+I will continue to wrestle with this by trying alternate snapshots of  
+POM-ng, and perhaps attempting to use the 2.6.11 kernel, as it seems  
+to make an appearance in the error message there.
 
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-ACCEPT     icmp --  anywhere             anywhere
-ACCEPT     tcp  --  anywhere             anywhere
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-You can find some other example at
-http://wpk.p.lodz.pl/~bejus/wireshark.txt . It seems to me that
-packets from laptop are routed to www.google.com, they return, but
-they aren't sent back to my Laptop.
-Can this be caused by 64bit system on my PC box?  Any help will be appreciated.
+If anyone is able to contribute any bits of info to my adventure, I  
+would very much appreciate it.
+Thanks for your time,
+Jeff.
 
