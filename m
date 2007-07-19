@@ -1,44 +1,50 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: REDIRECT and IPv6
-Date: Thu, 19 Jul 2007 12:20:39 +0200
-Message-ID: <469F3AF7.6040006@trash.net>
-References: <1246.130.217.140.56.1184804730.squirrel@webmail.treenet.co.nz>	<469F280B.3070900@trash.net>
-	<20070719.182116.64281593.yoshfuji@linux-ipv6.org>
+From: "Robert LeBlanc" <robert@leblancnet.us>
+Subject: Target SAME not working
+Date: Thu, 19 Jul 2007 08:13:14 -0600
+Message-ID: <BBDDF0B7CFFFCE4FB5110F0A37CE6003E77E@q.leblancnet.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <20070719.182116.64281593.yoshfuji@linux-ipv6.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-2022-jp"
-To: YOSHIFUJI Hideaki <yoshfuji@linux-ipv6.org>
-Cc: squid3@treenet.co.nz, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org, kaber@trash.net
-
-YOSHIFUJI Hideaki / $B5HF#1QL@ wrote:
-> In article <469F280B.3070900@trash.net> (at Thu, 19 Jul 2007 10:59:55 +0200), Patrick McHardy <kaber@trash.net> says:
-> 
-> 
->>You're right, nf_conntrack_ipv4 only registeres SO_ORIGINAL_DST for
->>AF_INET, changing that should make it work I believe. I feel like
->>I'm missing something though ..
-> 
-> 
-> BTW, the name of the socket option is rather bogus.
-> It should be named IP_xxx, not SO_xxx because
-> it is in IP level, not in socket level...
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
 
-True, but its too late to change, we'd need to keep it around at
-least for userspace. With TPROXY redirection should work with all
-families, so presuming we'll merge it some day this might actually
-be useful.
+I've set-up a NAT pool using SAME with the -nodst option and it works
+well, but every now and then it seems to cough and not function
+correctly. A user is trying to sign into sharepoint services using port
+80 and most of the traffic comes from the same source IP address and
+then it changes source IP for abouta dozen packets then goes back to the
+original source IP address. I think this is causing a failure during the
+login process.
+
+Stock Debian kernel 2.6.18-4-686 (etch)
+iptables v1.3.6
+
+22:35:27.127468 IP 65.121.23.28.80 > 67.128.39.174.4303: F 2129:2129(0)
+ack 597 win 64940 <nop,nop,timestamp 6747637 698698053>
+22:35:27.127530 IP 67.128.39.174.4303 > 65.121.23.28.80: . ack 2130 win
+1092 <nop,nop,timestamp 698698060 6747637>
+22:35:27.128368 IP 67.128.39.134.1430 > 65.121.23.28.80: S
+3143683502:3143683502(0) win 5840 <mss 1460,sackOK,timestamp 698698060
+0,nop,wscale 3>
+22:35:27.143836 IP 65.121.23.28.80 > 67.128.39.134.1430: S
+1823111154:1823111154(0) ack 3143683503 win 16384 <mss 1460,nop,wscale
+0,nop,nop,timestamp 0 0,nop,nop,sackOK>
+22:35:27.143911 IP 67.128.39.134.1430 > 65.121.23.28.80: . ack 1 win 730
+<nop,nop,timestamp 698698064 0>
+
+Thanks,
+Robert
 
 
