@@ -1,18 +1,13 @@
-From: Thomas Jacob <jacob@internet24.de>
+From: Konstantin Svist <kostya@relevad.com>
 Subject: Re: need advice for high traffic network
-Date: Fri, 20 Jul 2007 01:28:36 +0200
-Message-ID: <20070719232836.GA17202@internet24.de>
-References: <469FE2DC.90300@relevad.com>
-	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>
-	<469FE85B.3010502@relevad.com>
-	<20070719225931.GA17114@internet24.de>
-	<469FF100.5020509@relevad.com>
+Date: Thu, 19 Jul 2007 16:35:11 -0700
+Message-ID: <469FF52F.5010301@relevad.com>
+References: <469FE2DC.90300@relevad.com>	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>	<469FE85B.3010502@relevad.com>	<20070719225931.GA17114@internet24.de>	<469FF100.5020509@relevad.com>
+	<20070719232836.GA17202@internet24.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <469FF100.5020509@relevad.com>
+In-Reply-To: <20070719232836.GA17202@internet24.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -23,31 +18,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Sorry, I meant:
+Which parameters are those and what values would you recommend?
 
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jul 19, 2007 at 04:17:20PM -0700, Konstantin Svist wrote:
-> How do I reduce those timers?
-
-echo <VALUE>  > /proc/sys/net/ipv4/netfilter/<SETTING>
+Thanks!
 
 
---T4sUOijqQbZv57TR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFGn/OkgF9cFv867HwRAqXUAKClbYn0bD45t+TmEZKmid4Y1IYaCgCgzCXj
-wQocAfM35Zarh8uLNFioLXE=
-=0zQH
------END PGP SIGNATURE-----
-
---T4sUOijqQbZv57TR--
+Thomas Jacob wrote:
+> On Thu, Jul 19, 2007 at 04:17:20PM -0700, Konstantin Svist wrote:
+>   
+>> How do I reduce those timers?
+>>     
+>
+> echo <VALUE>  > /proc/sys/net/ipv4/netfilter/<SETTING>
+>
+>   
 
