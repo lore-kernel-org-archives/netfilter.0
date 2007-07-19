@@ -1,11 +1,10 @@
-From: "Robert LeBlanc" <robert@leblancnet.us>
-Subject: Target SAME not working
-Date: Thu, 19 Jul 2007 08:13:14 -0600
-Message-ID: <BBDDF0B7CFFFCE4FB5110F0A37CE6003E77E@q.leblancnet.us>
+From: Konstantin Svist <kostya@relevad.com>
+Subject: need advice for high traffic network
+Date: Thu, 19 Jul 2007 15:17:00 -0700
+Message-ID: <469FE2DC.90300@relevad.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +15,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
+Hi,
 
-I've set-up a NAT pool using SAME with the -nodst option and it works
-well, but every now and then it seems to cough and not function
-correctly. A user is trying to sign into sharepoint services using port
-80 and most of the traffic comes from the same source IP address and
-then it changes source IP for abouta dozen packets then goes back to the
-original source IP address. I think this is causing a failure during the
-login process.
+I have a network (LAN) consisting of (mostly) gigabit ethernet on a few 
+switches. Most of the traffic is taken up by small HTTP reqests. All 
+computers are running Fedora (all are core 4 through 7).
 
-Stock Debian kernel 2.6.18-4-686 (etch)
-iptables v1.3.6
+I've been having some problems with servers not being accessible and 
+just last night noticed that the problems disappear when I turn off the 
+firewall.
+What happens is that there are lots of small HTTP requests and 
+apparently at some point the firewall starts dropping or disallowing new 
+connections. This has been verified with both ab (apache benchmark) and 
+plain SSH - a lot of times the connections time out or take a long time 
+to get established.
+There are ~25 rules total (as listed by 'iptables -L')
 
-22:35:27.127468 IP 65.121.23.28.80 > 67.128.39.174.4303: F 2129:2129(0)
-ack 597 win 64940 <nop,nop,timestamp 6747637 698698053>
-22:35:27.127530 IP 67.128.39.174.4303 > 65.121.23.28.80: . ack 2130 win
-1092 <nop,nop,timestamp 698698060 6747637>
-22:35:27.128368 IP 67.128.39.134.1430 > 65.121.23.28.80: S
-3143683502:3143683502(0) win 5840 <mss 1460,sackOK,timestamp 698698060
-0,nop,wscale 3>
-22:35:27.143836 IP 65.121.23.28.80 > 67.128.39.134.1430: S
-1823111154:1823111154(0) ack 3143683503 win 16384 <mss 1460,nop,wscale
-0,nop,nop,timestamp 0 0,nop,nop,sackOK>
-22:35:27.143911 IP 67.128.39.134.1430 > 65.121.23.28.80: . ack 1 win 730
-<nop,nop,timestamp 698698064 0>
+As a temporary measure, I've turned off firewalls on more of the servers 
+until I can figure out a better solution - I'd like to have a firewall 
+on each server, but performance is more important.
 
-Thanks,
-Robert
+I'l looking at nf-HiPAC right now - will probably try it some time soon. 
+Beyond that, I'm out of ideas for the moment.
+
+Is there anything else I can do?
+Any other firewalls? Tricks with rearranging the rules?
+etc...
+
+
+Thanks!
+
+
+
+Notes:
+* Problems do not seem to be limited to any specific Fedora version or 
+hardware.
+* external firewalls are out of the question, unless they're really 
+small & cheap: there are >40 servers in the internal network and the 
+number is growing
+
+
 
 
