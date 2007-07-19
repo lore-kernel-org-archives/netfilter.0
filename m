@@ -1,7 +1,7 @@
 From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: need advice for high traffic network
-Date: Fri, 20 Jul 2007 01:44:58 +0200
-Message-ID: <20070719234458.GA17253@internet24.de>
+Subject: even hash tables sizes, FAQ entry
+Date: Fri, 20 Jul 2007 01:47:41 +0200
+Message-ID: <20070719234741.GB17253@internet24.de>
 References: <469FE2DC.90300@relevad.com>
 	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>
 	<469FE85B.3010502@relevad.com>
@@ -11,7 +11,7 @@ References: <469FE2DC.90300@relevad.com>
 	<469FF52F.5010301@relevad.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
+	protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
 In-Reply-To: <469FF52F.5010301@relevad.com>
@@ -28,39 +28,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
 
---wac7ysb48OaltWcw
+--Fba/0zbH8Xs+Fj9o
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hmm, not sure really, but lower TIME WAIT settings should keep
-your conntrack table afloat at least ;-)
+The FAQ says
+=20
+"Please note that due to the nature of the current hashing algorithm, an ev=
+en hash bucket count (and esp. values of the power of two) are a bad choice=
+=2E"
 
-I'd rather increase ip_conntrack_max and ip_conntrack_buckets
-to the values suggested by David,=20
+Is this still true? What is the reason for this? And: Does
+any odd hashtable size work as well as other odd hash tables sizes
+in the same order of magnitude?
 
-
-http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html#ss3.7
-
-On Thu, Jul 19, 2007 at 04:35:11PM -0700, Konstantin Svist wrote:
-> Sorry, I meant:
-> Which parameters are those and what values would you recommend?
->=20
-> Thanks!
->=20
->=20
-> Thomas Jacob wrote:
-> >On Thu, Jul 19, 2007 at 04:17:20PM -0700, Konstantin Svist wrote:
-> > =20
-> >>How do I reduce those timers?
-> >>   =20
-> >
-> >echo <VALUE>  > /proc/sys/net/ipv4/netfilter/<SETTING>
-> >
-> > =20
->=20
-
---wac7ysb48OaltWcw
+--Fba/0zbH8Xs+Fj9o
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -68,10 +51,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.2.2 (GNU/Linux)
 
-iD8DBQFGn/d6gF9cFv867HwRArd8AJ9wQTbv1vGkP7dMAcnwVxrNqRr7RgCeID94
-kW3D5fWU7eWSVr+irC7xdUY=
-=9bPZ
+iD8DBQFGn/gdgF9cFv867HwRAgrtAKDSoPkWBtzvl4cBDMywG8jJbXgLWgCgiflR
+5jjr8VxWTQdl5XTtmu/NEFo=
+=M//0
 -----END PGP SIGNATURE-----
 
---wac7ysb48OaltWcw--
+--Fba/0zbH8Xs+Fj9o--
 
