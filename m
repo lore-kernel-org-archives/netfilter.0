@@ -1,13 +1,12 @@
-From: Konstantin Svist <kostya@relevad.com>
+From: David Lang <david.lang@digitalinsight.com>
 Subject: Re: need advice for high traffic network
-Date: Thu, 19 Jul 2007 16:17:20 -0700
-Message-ID: <469FF100.5020509@relevad.com>
-References: <469FE2DC.90300@relevad.com>	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>	<469FE85B.3010502@relevad.com>
-	<20070719225931.GA17114@internet24.de>
+Date: Thu, 19 Jul 2007 16:16:13 -0700 (PDT)
+Message-ID: <Pine.LNX.4.63.0707191615490.23721@qynat.qvtvafvgr.pbz>
+References: <469FE2DC.90300@relevad.com> <20070719224909.GA17077@internet24.de>
+	<469FEB68.2070905@relevad.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070719225931.GA17114@internet24.de>
+In-Reply-To: <469FEB68.2070905@relevad.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,30 +17,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Konstantin Svist <kostya@relevad.com>
+Cc: netfilter@lists.netfilter.org
 
-How do I reduce those timers?
+On Thu, 19 Jul 2007, Konstantin Svist wrote:
 
+> as I said, the current (and default) value is 65536
+> what would you suggest changing it to?
 
-Thomas Jacob wrote:
-> On Thu, Jul 19, 2007 at 03:40:27PM -0700, Konstantin Svist wrote:
->   
->> # cat /proc/sys/net/netfilter/nf_conntrack_max
->> 65536
+I have it set to 256000 on my low traffic boxes and 1024000 on my high traffic 
+boxes.
+
+David Lang
+
+> Thomas Jacob wrote:
+>>> I'l looking at nf-HiPAC right now - will probably try it some time soon. 
+>>> Beyond that, I'm out of ideas for the moment.
+>>> 
+>> 
+>> nf-HiPAC won't help there if you just have 25 rules
+>> ( => http://people.netfilter.org/kadlec/nftest.pdf ), the problem is
+>> very likely down to you using the default parameters for the conntrack hash 
+>> table,
+>> just like the other reply indicated.
 >>
->> somehow I doubt I have THAT many connections :)
->>
->> highest load right now is around 600 requests per second, and ~60% 
->> complete within 10ms - the rest complete within 200ms (unless the 
->> firewall is turned on - then some start timing out 3s and up)
->>     
+>> 
 >
-> 600s * 120s ip_conntrack_tcp_timeout_time_wait = 72000 entries
 >
-> ( =>  http://www.isi.edu/touch/pubs/infocomm99/infocomm99-web/ )
->
-> You might want to try to reduce those timers or just push
-> up your hash bucket = max entry values to maybe twice that.
-
 
