@@ -1,10 +1,14 @@
-From: aragonx@dcsnow.com
-Subject: Please help redirecting locally generated traffic
-Date: Thu, 19 Jul 2007 18:45:23 -0400 (EDT)
-Message-ID: <18563.192.35.79.70.1184885123.squirrel@www.dcsnow.com>
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Re: need advice for high traffic network
+Date: Fri, 20 Jul 2007 00:49:09 +0200
+Message-ID: <20070719224909.GA17077@internet24.de>
+References: <469FE2DC.90300@relevad.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <469FE2DC.90300@relevad.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,28 +19,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-I have a situation where an application on my box wants to talk to the
-wrong IP address.  The developers will gladly fix the bug in the next
-version but I need a quicker fix.
 
-Here is the situation.  I have traffic that is going to 10.0.0.1 and needs
-to got to 198.162.0.1.  It's created on the machine that I need to do the
-routing on.  It's a Linux machine using iptables 1.2.9.  Neither SNAT or
-DNAT seem to work.  DNAT wants to work on the incomming packets but does
-what I need.  SNAT will work on the outgoing packets but doesn't do what I
-need.  Mangle seems to only want to send packets to my 127.0.0.1.
+--zhXaljGHf11kAtnf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment
+Content-Transfer-Encoding: quoted-printable
 
-Any help would be appreciated.
+> I'l looking at nf-HiPAC right now - will probably try it some time soon.=
+=20
+> Beyond that, I'm out of ideas for the moment.
 
-Will
+nf-HiPAC won't help there if you just have 25 rules
+( =3D> http://people.netfilter.org/kadlec/nftest.pdf ), the problem is
+very likely down to you using the default parameters for the conntrack hash=
+ table,
+just like the other reply indicated.
 
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+--zhXaljGHf11kAtnf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQFGn+plgF9cFv867HwRAmUIAJ40k7HEI3NMbrn59fiHPU/pXDD4fgCggLd8
+TGD5coMyLuNG/6pGEvjkmKM=
+=8/IC
+-----END PGP SIGNATURE-----
+
+--zhXaljGHf11kAtnf--
 
