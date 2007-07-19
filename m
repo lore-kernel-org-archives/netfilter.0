@@ -1,13 +1,10 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: PROXY Arp and VLAN
-Date: Wed, 18 Jul 2007 09:52:57 -0500
-Message-ID: <469E2949.3010107@riverviewtech.net>
-References: <OF5250BB5F.BB210A5B-ONC125731C.00222C2A-C125731C.00223407@Selex-Comms.com>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: squid3@treenet.co.nz
+Subject: REDIRECT and IPv6
+Date: Thu, 19 Jul 2007 12:25:30 +1200 (NZST)
+Message-ID: <1246.130.217.140.56.1184804730.squirrel@webmail.treenet.co.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <OF5250BB5F.BB210A5B-ONC125731C.00222C2A-C125731C.00223407@Selex-Comms.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,68 +15,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 07/18/07 01:13, Klaus.Frank@selex-comms.com wrote:
-> sorry if this is the wrong place to ask my questions. But maybe you've got 
-> a minute to read which problem I've got and direct me to a better place or 
-> even help me to solve my problem.
+Greetings,
 
-I think this question would be better asked on the EBTables mailing 
-list, but I'll give it a go any way.
+Pardon if this is a dumb question. But I have searched the web, and the
+source code for a solution to this one and have reached a brick wall.
 
-> There is a subnet consisting of a PC, a box with an ethernet interface, 
-> some IP phones and a router to another subnet with some IP phones and the 
-> counterpart of the box..
-> The PC has two ethernet ports eth0 and eth1.
-> The PC is mainly used for VoIP using Asterisk on eth0.
-> The box is connected to eth1and PROXY ARPed to eth0 because the box does 
-> not have a subnet mask or default gateway address.
-> I'm using CentOS3 kernel version is 2.4.21-50EL
-> Things are working fine and stable.
+I'm upgrading a user-space proxy (squid3) which has in the past done
+transparent connections under IPv4-only using SO_ORIGINAL_DST.
 
-Except for Proxy ARP verses Bridging, I think this scenario is ok.
+The Firewall/router uses iptables and REDIRECT port 80 outbound to port
+81. All is fine and dandy when squid listens on 0.0.0.0:81.
 
-> Now I must virtually separate VoIP data and data from the box using 2 
-> VLANs. All IP phones support VLAN, the box does not support VLAN.
+With the new code I have to use an IPv6 socket ( [::]:81 ) as the
+receiver. With that getsockopt(..., SO_ORIGINAL_DST, ...) always returns
+err "92 Protocol not supported." regardless of the IP-level parameters
+passed in.
 
-Use trunking and bridging.
+NOTE: All traffic for testing so far has been from IPv4 clients to what
+they think is an IPv4 server, but with a dual-enabled middleman. The
+'middleman' Software is iptables 1.3.6 on Debian 2.6.21-2-486 (unstable),
+squid3 built with g++ 4.1.3.
 
-> Surfing the internet gave me some idea that VLAN, iptables and bridging 
-> could do the job, but I can't figure out how to configurate it.
+Can anyone point me in the right direction for a solution that will work?
+Ideally one that is protocol-independant, but anything is welcome even an
+'upgrade to X'.
 
-Add support for bridging (802.1d) and VLANs / trunking (802.1q) to your 
-kernel.  Then set up corresponding VLAN interfaces on all your ethernet 
-interfaces.  Once you have your VLAN interfaces set up, you will be 
-bridging them together.
-
-So what was:
-
-eth0
-eth1
-
-becomes:
-
-eth0.001
-eth0.002
-eth1.001
-eth1.002
-
-With two bridges
-
-bri1
-    eth0.001
-    eth1.001
-bri2
-    eth0.002
-    eth1.002
-
-Do this on both ends and your systems will now bridge the data from the 
-two different VLANs (respectively) across the systems while maintaining 
-the separation of data.
+Amos Jeffries
+Squid3 Development Team
 
 
-
-Grant. . . .
 
