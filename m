@@ -1,12 +1,16 @@
-From: Konstantin Svist <kostya@relevad.com>
+From: Thomas Jacob <jacob@internet24.de>
 Subject: Re: need advice for high traffic network
-Date: Thu, 19 Jul 2007 15:53:28 -0700
-Message-ID: <469FEB68.2070905@relevad.com>
-References: <469FE2DC.90300@relevad.com> <20070719224909.GA17077@internet24.de>
+Date: Fri, 20 Jul 2007 00:59:31 +0200
+Message-ID: <20070719225931.GA17114@internet24.de>
+References: <469FE2DC.90300@relevad.com>
+	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>
+	<469FE85B.3010502@relevad.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jI8keyz6grp/JLjh"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070719224909.GA17077@internet24.de>
+Content-Disposition: inline
+In-Reply-To: <469FE85B.3010502@relevad.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,22 +21,43 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Thomas Jacob <jacob@internet24.de>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-as I said, the current (and default) value is 65536
-what would you suggest changing it to?
 
-Thomas Jacob wrote:
->> I'l looking at nf-HiPAC right now - will probably try it some time soon. 
->> Beyond that, I'm out of ideas for the moment.
->>     
->
-> nf-HiPAC won't help there if you just have 25 rules
-> ( => http://people.netfilter.org/kadlec/nftest.pdf ), the problem is
-> very likely down to you using the default parameters for the conntrack hash table,
-> just like the other reply indicated.
->
->   
+--jI8keyz6grp/JLjh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jul 19, 2007 at 03:40:27PM -0700, Konstantin Svist wrote:
+> # cat /proc/sys/net/netfilter/nf_conntrack_max
+> 65536
+>=20
+> somehow I doubt I have THAT many connections :)
+>=20
+> highest load right now is around 600 requests per second, and ~60%=20
+> complete within 10ms - the rest complete within 200ms (unless the=20
+> firewall is turned on - then some start timing out 3s and up)
+
+600s * 120s ip_conntrack_tcp_timeout_time_wait =3D 72000 entries
+
+( =3D>  http://www.isi.edu/touch/pubs/infocomm99/infocomm99-web/ )
+
+You might want to try to reduce those timers or just push
+up your hash bucket =3D max entry values to maybe twice that.
+
+--jI8keyz6grp/JLjh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQFGn+zTgF9cFv867HwRAgY0AKCyoanzALgAVckZb0CfSjLPZN2v/gCfd2SC
+rJWmd1I2KeOBCx+xq2To738=
+=6UiL
+-----END PGP SIGNATURE-----
+
+--jI8keyz6grp/JLjh--
 
