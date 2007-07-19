@@ -1,14 +1,12 @@
-From: Thomas Jacob <jacob@internet24.de>
+From: Konstantin Svist <kostya@relevad.com>
 Subject: Re: need advice for high traffic network
-Date: Fri, 20 Jul 2007 00:49:09 +0200
-Message-ID: <20070719224909.GA17077@internet24.de>
-References: <469FE2DC.90300@relevad.com>
+Date: Thu, 19 Jul 2007 15:53:28 -0700
+Message-ID: <469FEB68.2070905@relevad.com>
+References: <469FE2DC.90300@relevad.com> <20070719224909.GA17077@internet24.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <469FE2DC.90300@relevad.com>
+In-Reply-To: <20070719224909.GA17077@internet24.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,37 +17,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Thomas Jacob <jacob@internet24.de>
+Cc: netfilter@lists.netfilter.org
 
+as I said, the current (and default) value is 65536
+what would you suggest changing it to?
 
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment
-Content-Transfer-Encoding: quoted-printable
-
-> I'l looking at nf-HiPAC right now - will probably try it some time soon.=
-=20
-> Beyond that, I'm out of ideas for the moment.
-
-nf-HiPAC won't help there if you just have 25 rules
-( =3D> http://people.netfilter.org/kadlec/nftest.pdf ), the problem is
-very likely down to you using the default parameters for the conntrack hash=
- table,
-just like the other reply indicated.
-
-
---zhXaljGHf11kAtnf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFGn+plgF9cFv867HwRAmUIAJ40k7HEI3NMbrn59fiHPU/pXDD4fgCggLd8
-TGD5coMyLuNG/6pGEvjkmKM=
-=8/IC
------END PGP SIGNATURE-----
-
---zhXaljGHf11kAtnf--
+Thomas Jacob wrote:
+>> I'l looking at nf-HiPAC right now - will probably try it some time soon. 
+>> Beyond that, I'm out of ideas for the moment.
+>>     
+>
+> nf-HiPAC won't help there if you just have 25 rules
+> ( => http://people.netfilter.org/kadlec/nftest.pdf ), the problem is
+> very likely down to you using the default parameters for the conntrack hash table,
+> just like the other reply indicated.
+>
+>   
 
