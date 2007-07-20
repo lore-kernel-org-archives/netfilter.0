@@ -1,17 +1,17 @@
-From: "=?ISO-8859-2?Q?B=B3a=BFej_=A6lusarek?=" <blazej.86@gmail.com>
-Subject: Re: No masquerade?
-Date: Fri, 20 Jul 2007 16:27:44 +0200
-Message-ID: <5de7cdb50707200727v2b2447c2k539fafc16ca5f8e6@mail.gmail.com>
-References: <5de7cdb50707131701y2584d4f3q2cddbc9206e8aadb@mail.gmail.com>
-	<5c6851530707190939odb6cdc5jc0bb909f80aa261a@mail.gmail.com>
+From: David Lang <david.lang@digitalinsight.com>
+Subject: Re: even hash tables sizes, FAQ entry
+Date: Fri, 20 Jul 2007 10:44:50 -0700 (PDT)
+Message-ID: <Pine.LNX.4.63.0707201044390.24729@qynat.qvtvafvgr.pbz>
+References: <469FE2DC.90300@relevad.com>
+	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>
+	<469FE85B.3010502@relevad.com> <20070719225931.GA17114@internet24.de>
+	<469FF100.5020509@relevad.com> <20070719232836.GA17202@internet24.de>
+	<469FF52F.5010301@relevad.com> <20070719234741.GB17253@internet24.de>
+	<Pine.LNX.4.63.0707191712150.23721@qynat.qvtvafvgr.pbz>
+	<20070720074134.GB17809@internet24.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=UPB2Xp0LkA+3SWBroeV9zIkEHZRYk+cuxuGRNMxN9apSN7Mw6BCE2HaLb8VfVzd+c2+GMhYRklxHBUI7t6umsjHnEot0H6ms/JtyFXna9Ft4pZDjyVC06QHRZi9n0n1kbZDsD86medgSh7t2YohfkImDYLBeMbgEPQNv/M6d9Ug=
-In-Reply-To: <5c6851530707190939odb6cdc5jc0bb909f80aa261a@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <20070720074134.GB17809@internet24.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,23 +22,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Thomas Jacob <jacob@internet24.de>
+Cc: netfilter@lists.netfilter.org
 
-No,
-sysctl -a | grep forward:
-net.ipv4.conf.ra0.mc_forwarding = 0
-net.ipv4.conf.ra0.forwarding = 1
-net.ipv4.conf.eth0.mc_forwarding = 0
-net.ipv4.conf.eth0.forwarding = 1
-net.ipv4.conf.lo.mc_forwarding = 0
-net.ipv4.conf.lo.forwarding = 1
-net.ipv4.conf.default.mc_forwarding = 0
-net.ipv4.conf.default.forwarding = 1
-net.ipv4.conf.all.mc_forwarding = 0
-net.ipv4.conf.all.forwarding = 1
-net.ipv4.ip_forward = 1
+On Fri, 20 Jul 2007, Thomas Jacob wrote:
 
-The -s or -o options don't work either, maybe it's amd64? I am on
-gentoo 2.6.19-r5.
+> On Thu, Jul 19, 2007 at 05:13:11PM -0700, David Lang wrote:
+> [..]
+>>> Is this still true? What is the reason for this? And: Does
+>>> any odd hashtable size work as well as other odd hash tables sizes
+>>> in the same order of magnitude?
+>>
+>> changing conntrack_max is not chaning the hash bucket count, that change
+>> can only be done in the code or as a module parameter at module load time.
+>
+> Sure, I meant odd hash bucket counts of course, so is this
+> FAQ still accurate?
+
+as far as I know.
+
+David Lang
 
