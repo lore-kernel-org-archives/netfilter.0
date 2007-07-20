@@ -1,20 +1,15 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: even hash tables sizes, FAQ entry
-Date: Fri, 20 Jul 2007 01:47:41 +0200
-Message-ID: <20070719234741.GB17253@internet24.de>
+From: David Lang <david.lang@digitalinsight.com>
+Subject: Re: even hash tables sizes, FAQ entry
+Date: Thu, 19 Jul 2007 17:13:11 -0700 (PDT)
+Message-ID: <Pine.LNX.4.63.0707191712150.23721@qynat.qvtvafvgr.pbz>
 References: <469FE2DC.90300@relevad.com>
 	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>
-	<469FE85B.3010502@relevad.com>
-	<20070719225931.GA17114@internet24.de>
-	<469FF100.5020509@relevad.com>
-	<20070719232836.GA17202@internet24.de>
-	<469FF52F.5010301@relevad.com>
+	<469FE85B.3010502@relevad.com> <20070719225931.GA17114@internet24.de>
+	<469FF100.5020509@relevad.com> <20070719232836.GA17202@internet24.de>
+	<469FF52F.5010301@relevad.com> <20070719234741.GB17253@internet24.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <469FF52F.5010301@relevad.com>
+In-Reply-To: <20070719234741.GB17253@internet24.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -25,36 +20,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Thomas Jacob <jacob@internet24.de>
+Cc: netfilter@lists.netfilter.org
 
+On Fri, 20 Jul 2007, Thomas Jacob wrote:
 
---Fba/0zbH8Xs+Fj9o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> The FAQ says
+>
+> "Please note that due to the nature of the current hashing algorithm, an even hash bucket count (and esp. values of the power of two) are a bad choice."
+>
+> Is this still true? What is the reason for this? And: Does
+> any odd hashtable size work as well as other odd hash tables sizes
+> in the same order of magnitude?
 
-The FAQ says
-=20
-"Please note that due to the nature of the current hashing algorithm, an ev=
-en hash bucket count (and esp. values of the power of two) are a bad choice=
-=2E"
+changing conntrack_max is not chaning the hash bucket count, that change can 
+only be done in the code or as a module parameter at module load time.
 
-Is this still true? What is the reason for this? And: Does
-any odd hashtable size work as well as other odd hash tables sizes
-in the same order of magnitude?
+David Lang
 
---Fba/0zbH8Xs+Fj9o
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFGn/gdgF9cFv867HwRAgrtAKDSoPkWBtzvl4cBDMywG8jJbXgLWgCgiflR
-5jjr8VxWTQdl5XTtmu/NEFo=
-=M//0
------END PGP SIGNATURE-----
-
---Fba/0zbH8Xs+Fj9o--
 
