@@ -1,16 +1,13 @@
-From: David Lang <david.lang@digitalinsight.com>
-Subject: Re: need advice for high traffic network
-Date: Fri, 20 Jul 2007 10:51:59 -0700 (PDT)
-Message-ID: <Pine.LNX.4.63.0707201044550.24729@qynat.qvtvafvgr.pbz>
-References: <469FE2DC.90300@relevad.com>
-	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>
-	<469FE85B.3010502@relevad.com> <20070719225931.GA17114@internet24.de>
-	<469FF100.5020509@relevad.com> <20070719232836.GA17202@internet24.de>
-	<469FF52F.5010301@relevad.com> <20070719234458.GA17253@internet24.de>
-	<469FFF4B.5030704@relevad.com> <20070720074854.GC17809@internet24.de>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Please help redirecting locally generated traffic
+Date: Fri, 20 Jul 2007 13:10:50 -0500
+Message-ID: <46A0FAAA.3080203@riverviewtech.net>
+References: <18563.192.35.79.70.1184885123.squirrel@www.dcsnow.com>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070720074854.GC17809@internet24.de>
+In-Reply-To: <18563.192.35.79.70.1184885123.squirrel@www.dcsnow.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,59 +18,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Thomas Jacob <jacob@internet24.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-On Fri, 20 Jul 2007, Thomas Jacob wrote:
+On 07/19/07 17:45, aragonx@dcsnow.com wrote:
+> I have a situation where an application on my box wants to talk to 
+> the wrong IP address.  The developers will gladly fix the bug in the 
+> next version but I need a quicker fix.
 
-> On Thu, Jul 19, 2007 at 05:18:19PM -0700, Konstantin Svist wrote:
->> alright, so far I have:
->>
->> net.ipv4.tcp_window_scaling = 1
->> net.ipv4.tcp_syncookies = 1
->> net.core.rmem_max = 16777216
->> net.core.wmem_max = 16777216
->> net.ipv4.tcp_rmem = 4096 87380 16777216
->> net.ipv4.tcp_wmem = 4096 65536 16777216
->> net.ipv4.tcp_no_metrics_save = 1
->
-> AFAIK those values do not influence netfilter performance,
-> just local tcp socket performance.
->
->> net.ipv4.netfilter.ip_conntrack_max = 1024000
->>
->>
->> what would you recommend for the buckets? is default (8192) reasonable?
->
-> At the moment I am always setting this to the value of ip_conntrack_max
-> (on the theory that this should result in constant lookup times), as I
-> can spare the memory. But I haven't run any real performance tests with
-> lower hash bucket counts....
+Typical...
 
-you should run the tests. doing a hash across too many buckets ends up costing 
-performance as well.
+> Here is the situation.  I have traffic that is going to 10.0.0.1 and 
+> needs to got to 198.162.0.1.  It's created on the machine that I need 
+> to do the routing on.  It's a Linux machine using iptables 1.2.9. 
+> Neither SNAT or DNAT seem to work.  DNAT wants to work on the 
+> incomming packets but does what I need.  SNAT will work on the 
+> outgoing packets but doesn't do what I need.  Mangle seems to only 
+> want to send packets to my 127.0.0.1.
 
-you want the list per bucket to not be too long, but you also don't want to 
-spend more effort and ram on empty buckets.
+Ugh.  You are wanting to redirect traffic that is not following the 
+normal packet flow through the kernel.
 
-setting conntrack_max equal to the number of buckets doesn't mean that you will 
-have one entry in each bucket, it means that you will have a lot of empty 
-buckets and other buckets with several items in them.
+> Any help would be appreciated.
 
-hash algorithms have collisions (cases where different input generates the same 
-output) cryptographicly strong hashes mean that it's really hard to create a 
-second input that results in the same output as some other existing input. but 
-collisions do happen there.
+Have you considered adding the 10.0.0.1 IP address to equipment with a 
+corresponding 10.0.0.x IP address to your system?
 
-> The FAQ says though, that one should use odd hash bucket counts, so you
-> might want to decrease that by one.
+Or you may be able to look in to some sort of (socks?) proxy rapper that 
+will bind a 10.0.0.1 and allow you to redirect the traffic over to 
+198.162.0.1.
 
-it's not unusual for simple (i.e. cheap to use) has algorithims to have 
-pathalogical results for specific sizes. ideally you want the bucket count to be 
-a prime number, if it's not (for example a even power of 2) you can get 
-situations where it only puts things in a very small number of buckets.
 
-David Lang
+
+Grant. . . .
 
