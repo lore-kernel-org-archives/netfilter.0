@@ -1,12 +1,17 @@
-From: Gregory Carter <gcarter@aesgi.com>
-Subject: Re: need advice for high traffic network
-Date: Fri, 20 Jul 2007 09:16:19 -0500
-Message-ID: <46A0C3B3.7030705@aesgi.com>
-References: <469FE2DC.90300@relevad.com>
+From: "=?ISO-8859-2?Q?B=B3a=BFej_=A6lusarek?=" <blazej.86@gmail.com>
+Subject: Re: No masquerade?
+Date: Fri, 20 Jul 2007 16:27:44 +0200
+Message-ID: <5de7cdb50707200727v2b2447c2k539fafc16ca5f8e6@mail.gmail.com>
+References: <5de7cdb50707131701y2584d4f3q2cddbc9206e8aadb@mail.gmail.com>
+	<5c6851530707190939odb6cdc5jc0bb909f80aa261a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <469FE2DC.90300@relevad.com>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=UPB2Xp0LkA+3SWBroeV9zIkEHZRYk+cuxuGRNMxN9apSN7Mw6BCE2HaLb8VfVzd+c2+GMhYRklxHBUI7t6umsjHnEot0H6ms/JtyFXna9Ft4pZDjyVC06QHRZi9n0n1kbZDsD86medgSh7t2YohfkImDYLBeMbgEPQNv/M6d9Ug=
+In-Reply-To: <5c6851530707190939odb6cdc5jc0bb909f80aa261a@mail.gmail.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,57 +23,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Konstantin Svist <kostya@relevad.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-You are running firewalls on the servers AND the routers?
+No,
+sysctl -a | grep forward:
+net.ipv4.conf.ra0.mc_forwarding = 0
+net.ipv4.conf.ra0.forwarding = 1
+net.ipv4.conf.eth0.mc_forwarding = 0
+net.ipv4.conf.eth0.forwarding = 1
+net.ipv4.conf.lo.mc_forwarding = 0
+net.ipv4.conf.lo.forwarding = 1
+net.ipv4.conf.default.mc_forwarding = 0
+net.ipv4.conf.default.forwarding = 1
+net.ipv4.conf.all.mc_forwarding = 0
+net.ipv4.conf.all.forwarding = 1
+net.ipv4.ip_forward = 1
 
-Why?
-
--gc
-
-
-Konstantin Svist wrote:
-> Hi,
->
-> I have a network (LAN) consisting of (mostly) gigabit ethernet on a 
-> few switches. Most of the traffic is taken up by small HTTP reqests. 
-> All computers are running Fedora (all are core 4 through 7).
->
-> I've been having some problems with servers not being accessible and 
-> just last night noticed that the problems disappear when I turn off 
-> the firewall.
-> What happens is that there are lots of small HTTP requests and 
-> apparently at some point the firewall starts dropping or disallowing 
-> new connections. This has been verified with both ab (apache 
-> benchmark) and plain SSH - a lot of times the connections time out or 
-> take a long time to get established.
-> There are ~25 rules total (as listed by 'iptables -L')
->
-> As a temporary measure, I've turned off firewalls on more of the 
-> servers until I can figure out a better solution - I'd like to have a 
-> firewall on each server, but performance is more important.
->
-> I'l looking at nf-HiPAC right now - will probably try it some time 
-> soon. Beyond that, I'm out of ideas for the moment.
->
-> Is there anything else I can do?
-> Any other firewalls? Tricks with rearranging the rules?
-> etc...
->
->
-> Thanks!
->
->
->
-> Notes:
-> * Problems do not seem to be limited to any specific Fedora version or 
-> hardware.
-> * external firewalls are out of the question, unless they're really 
-> small & cheap: there are >40 servers in the internal network and the 
-> number is growing
->
->
->
-
+The -s or -o options don't work either, maybe it's amd64? I am on
+gentoo 2.6.19-r5.
 
