@@ -1,7 +1,7 @@
 From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: even hash tables sizes, FAQ entry
-Date: Fri, 20 Jul 2007 09:41:34 +0200
-Message-ID: <20070720074134.GB17809@internet24.de>
+Subject: Re: need advice for high traffic network
+Date: Fri, 20 Jul 2007 09:48:54 +0200
+Message-ID: <20070720074854.GC17809@internet24.de>
 References: <469FE2DC.90300@relevad.com>
 	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>
 	<469FE85B.3010502@relevad.com>
@@ -9,14 +9,14 @@ References: <469FE2DC.90300@relevad.com>
 	<469FF100.5020509@relevad.com>
 	<20070719232836.GA17202@internet24.de>
 	<469FF52F.5010301@relevad.com>
-	<20070719234741.GB17253@internet24.de>
-	<Pine.LNX.4.63.0707191712150.23721@qynat.qvtvafvgr.pbz>
+	<20070719234458.GA17253@internet24.de>
+	<469FFF4B.5030704@relevad.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CdrF4e02JqNVZeln"
+	protocol="application/pgp-signature"; boundary="adJ1OR3c6QgCpb/j"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.63.0707191712150.23721@qynat.qvtvafvgr.pbz>
+In-Reply-To: <469FFF4B.5030704@relevad.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -30,25 +30,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
 
---CdrF4e02JqNVZeln
+--adJ1OR3c6QgCpb/j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 19, 2007 at 05:13:11PM -0700, David Lang wrote:
-[..]
-> >Is this still true? What is the reason for this? And: Does
-> >any odd hashtable size work as well as other odd hash tables sizes
-> >in the same order of magnitude?
+On Thu, Jul 19, 2007 at 05:18:19PM -0700, Konstantin Svist wrote:
+> alright, so far I have:
 >=20
-> changing conntrack_max is not chaning the hash bucket count, that change=
-=20
-> can only be done in the code or as a module parameter at module load time.
+> net.ipv4.tcp_window_scaling =3D 1
+> net.ipv4.tcp_syncookies =3D 1
+> net.core.rmem_max =3D 16777216
+> net.core.wmem_max =3D 16777216
+> net.ipv4.tcp_rmem =3D 4096 87380 16777216
+> net.ipv4.tcp_wmem =3D 4096 65536 16777216
+> net.ipv4.tcp_no_metrics_save =3D 1
 
-Sure, I meant odd hash bucket counts of course, so is this
-FAQ still accurate?
+AFAIK those values do not influence netfilter performance,
+just local tcp socket performance.
 
---CdrF4e02JqNVZeln
+> net.ipv4.netfilter.ip_conntrack_max =3D 1024000
+>=20
+>=20
+> what would you recommend for the buckets? is default (8192) reasonable?
+
+At the moment I am always setting this to the value of ip_conntrack_max
+(on the theory that this should result in constant lookup times), as I
+can spare the memory. But I haven't run any real performance tests with
+lower hash bucket counts....
+
+The FAQ says though, that one should use odd hash bucket counts, so you
+might want to decrease that by one.
+
+
+--adJ1OR3c6QgCpb/j
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -56,10 +71,10 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.2.2 (GNU/Linux)
 
-iD8DBQFGoGcugF9cFv867HwRAvV3AKDFrBG029U1LbMm1m05ya5YcGF5cQCgpAC9
-PVm18X0h2cvtTf5b01nI1JU=
-=IXsY
+iD8DBQFGoGjmgF9cFv867HwRAv5eAJ99p0MauvEDBqTsBV6EgEdT4ph49wCfRL9x
+c2a3zjOFyeoS1SEn+6ho5GE=
+=yUZJ
 -----END PGP SIGNATURE-----
 
---CdrF4e02JqNVZeln--
+--adJ1OR3c6QgCpb/j--
 
