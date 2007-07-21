@@ -1,11 +1,11 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: even hash tables sizes, FAQ entry
-Date: Sat, 21 Jul 2007 07:41:27 +0100 (BST)
-Message-ID: <Pine.LNX.4.58.0707210740080.16635@mail3.jubileegroup.co.uk>
-References: <200707202319.l6KNJMwx014487@mail3.jubileegroup.co.uk>
+From: Georg Hohenberger <Georg@Hohenberger-online.de>
+Subject: linux server as load-balanced gateway inside a network with 2
+ routers using only one network interface
+Date: Sat, 21 Jul 2007 23:22:44 +0200
+Message-ID: <46A27924.8030402@Hohenberger-online.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200707202319.l6KNJMwx014487@mail3.jubileegroup.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,26 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi guys,
+hi,
+i am planing to use my linux-file-server as getway for the lan
 
-On Sat, 21 Jul 2007 Patrick McHardy wrote:
+this file-server has 3 network interfaces:
+    Gigabit --> lan (switch)
+    Gigabit --> my computer
+    100Mbit --> lan (switch)
 
-> >> ... is this FAQ still accurate?
-> >
-> > as far as I know.
->
-> None of this is :)
+inside the lan there are two dsl router (my and my neighbours)
 
-Is this?
+linux-file-server should do load-balancing using this routers to be the 
+gateway to other pc in the lan and even do port-fowarding and qos 
+(Quality of Service) for voice-over-ip
 
-http://www.wallfire.org/misc/netfilter_conntrack_perf.txt
+all this should be done over the 100mbit network interface
 
---
+i would like to know if this is possible to do or not
 
-73,
-Ged.
+ofcorse tips and hints would be great
+
+thanks in advance
+
+Georg form germany
 
