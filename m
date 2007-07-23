@@ -1,16 +1,12 @@
-From: "=?ISO-8859-2?Q?B=B3a=BFej_=A6lusarek?=" <blazej.86@gmail.com>
-Subject: Re: Netfilter iptables on 64-bit architecture
-Date: Tue, 24 Jul 2007 16:21:38 +0200
-Message-ID: <5de7cdb50707240721m3de1182fr93ffc60b5011e5fe@mail.gmail.com>
-References: <OFA4F03C41.F489FF2E-ON65257321.004187E8-65257321.0083402D@in.ibm.com>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Error accepting new connection
+Date: Mon, 23 Jul 2007 21:46:42 +0200
+Message-ID: <46A505A2.6040304@rtij.nl>
+References: <46A49E6C.70403@unipex.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=Dd8a4wq7s17lLrXQ/S1ze8Z1LfJefRQY+EPmbyIxQfQEYFRvAsogFMUO/CZfDJBEMXpx046fjRu4SQMqAfcZZE9LMDFeMo/Elr1vhPHUCcxoOhjfEGh2ly+mK42YXlaFW5yF8KonHTeGEPDHlkCieULt4NmUXDJccrA50VmjacY=
-In-Reply-To: <OFA4F03C41.F489FF2E-ON65257321.004187E8-65257321.0083402D@in.ibm.com>
-Content-Disposition: inline
+In-Reply-To: <46A49E6C.70403@unipex.it>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,32 +18,28 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Chinnakka K Batakurki <chinnakka.batakurki@in.ibm.com>
+To: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
 Cc: netfilter@lists.netfilter.org
 
-I believe there is no problem about that.
+Michele Petrazzo - Unipex srl wrote:
+> Hi list,
+> I don't know if this are a iptables or a kernel or where it come from,
+> but after this, I cannot more login on my server, so I think that it's a
+> kernel/net problem, so I ask here :)
+>
+> I see that on my syslog there are a ton (milions) of:
+>
+> Jul 22 11:44:51 srv syslog-ng[22054]: Error accepting new connection;
+> error='Too many open files (24)'
+>
+> But this is a "simple" server that do only nat and some other, simple,
+> tasks, and there are no programs that can open so many files.
 
-On 7/23/07, Chinnakka K Batakurki <chinnakka.batakurki@in.ibm.com> wrote:
->
-> Hi,
->
-> Could you please let me know whether netfilter can be build on 64 bit
-> operating system
-> We are using RHEL3 for building
->
-> Thanks!
->
-> Regards
-> -----------------------
-> Chinnakka Batakurki
-> IBM  India Pvt. Ltd,
-> IBM Internet Security Systems,
-> 6th floor, Golden Enclave
-> Airport Road, Bangalore,
-> India,
-> Email: chinnakka.batakurki@in.ibm.com
-> Mobile: +91-9845704118
->
->
->
+Doesn't seem like a netfilter problem. Try using lsof (before the point 
+where you cannot login, or on a previous login if that still works) and 
+netstat to see where those filehandles go.
+
+HTH,
+M4
+
 
