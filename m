@@ -1,12 +1,16 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: question on libnetfilter_conntrack
-Date: Tue, 24 Jul 2007 16:10:36 +0200
-Message-ID: <46A6085C.7020800@netfilter.org>
-References: <FA1AA529CBCAB24E9C8A43D01537060909DFD8@extemp.stromtelecom.cz>
+From: "=?ISO-8859-2?Q?B=B3a=BFej_=A6lusarek?=" <blazej.86@gmail.com>
+Subject: Re: Netfilter iptables on 64-bit architecture
+Date: Tue, 24 Jul 2007 16:21:38 +0200
+Message-ID: <5de7cdb50707240721m3de1182fr93ffc60b5011e5fe@mail.gmail.com>
+References: <OFA4F03C41.F489FF2E-ON65257321.004187E8-65257321.0083402D@in.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <FA1AA529CBCAB24E9C8A43D01537060909DFD8@extemp.stromtelecom.cz>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=Dd8a4wq7s17lLrXQ/S1ze8Z1LfJefRQY+EPmbyIxQfQEYFRvAsogFMUO/CZfDJBEMXpx046fjRu4SQMqAfcZZE9LMDFeMo/Elr1vhPHUCcxoOhjfEGh2ly+mK42YXlaFW5yF8KonHTeGEPDHlkCieULt4NmUXDJccrA50VmjacY=
+In-Reply-To: <OFA4F03C41.F489FF2E-ON65257321.004187E8-65257321.0083402D@in.ibm.com>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +21,33 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Filka Michal <Michal.Filka@sitronicsts.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Chinnakka K Batakurki <chinnakka.batakurki@in.ibm.com>
 Cc: netfilter@lists.netfilter.org
 
-Filka Michal wrote:
-> I use api provided by libnetfilter_conntrack library. When creating connt=
-rack (nfct_conntrack_alloc) record I assign it an id. Then conntrack is suc=
-cessfully created (nfct_create_conntrack). However, when I try to delete it=
- later on using the same id call (nfct_delete_conntrack) fails (NFNETLINK a=
-nswers: No such file or directory). If I look at conntrack using "conntrack=
- -L -i" I see that created record has another id than I assigned it in nfct=
-_conntrack_alloc.
->=20
-> Does libnetfilter_conntrack ignore given id? If not, what can be wrong?
->=20
-> Configuration:
-> Linux debian, kernel 2.6.20.8
-> libnetfilter_conntrack 0.0.31
-                            ^^^
+I believe there is no problem about that.
 
-This version is really from the cavemen era. Please upgrade to 0.0.80
-and check the new API (see utils/ example files).
-
---=20
-"Pa=EDses en desarrollo es el nombre con que los expertos designan a los
-pa=EDses arrollados por el desarrollo ajeno" -- Patas Arriba. La Escuela
-del Mundo al Rev=E9s -- E. Galeano
+On 7/23/07, Chinnakka K Batakurki <chinnakka.batakurki@in.ibm.com> wrote:
+>
+> Hi,
+>
+> Could you please let me know whether netfilter can be build on 64 bit
+> operating system
+> We are using RHEL3 for building
+>
+> Thanks!
+>
+> Regards
+> -----------------------
+> Chinnakka Batakurki
+> IBM  India Pvt. Ltd,
+> IBM Internet Security Systems,
+> 6th floor, Golden Enclave
+> Airport Road, Bangalore,
+> India,
+> Email: chinnakka.batakurki@in.ibm.com
+> Mobile: +91-9845704118
+>
+>
+>
 
