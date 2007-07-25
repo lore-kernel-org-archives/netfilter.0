@@ -1,7 +1,8 @@
-From: Philippe <netfilter@rootsucks.com>
-Subject: Transparent proxying to all hosts/all ports
-Date: Tue, 24 Jul 2007 23:40:44 +0200
-Message-ID: <46A671DC.9030004@rootsucks.com>
+From: =?ISO-8859-1?Q?=22Thomas_B=2E_Preu=DFer=22?=
+ <tp14@inf.tu-dresden.de>
+Subject: Problems with Kernel 2.6.22.1
+Date: Wed, 25 Jul 2007 09:34:26 +0200
+Message-ID: <46A6FD02.6050805@inf.tu-dresden.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -15,42 +16,51 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi ! (Please be kind with my poor English...)
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
+Hello,
 
-Main goal: having ALL connections using Linux TCP/IP stack.
+having updated my kernel from 2.6.19.2 to 2.6.22.1 both taken as vanilla
+source from kernel.org, I now receive errors when trying to insert rules
+using the state or conntrack modules. I expect other extensions to fail
+as well. The produced error messages suggest some incompatibility
+between the kernel and the userspace iptables:
 
+# iptables -v -A FORWARD -j ACCEPT -m state --state RELATED,ESTABLISHED
+ACCEPT  all opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  state
+RELATED,ESTABLISHED
+iptables: Invalid argument
 
-Is there a way to run a fully transparent UDP/TCP proxy on a Linux
-gateway instead of "just" forwarding packets with Netfilter ?
+# iptables -v -A FORWARD -j ACCEPT -m conntrack --ctstate
+RELATED,ESTABLISHED
+ACCEPT  all opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  ctstate
+RELATED,ESTABLISHED
+iptables: Invalid argument
 
-What I would like to achieve is to intercept all outgoing connections
-from hosts in the LAN and force Linux to act as a transparent proxy,
-being the only one "talking" on Internet.
+This problem occurs with both the iptables v1.3.6 coming with Debian and
+a self-compiled iptables v1.3.8 from the netfilter.org download page.
 
-TPROXY (maybe REDIRECT ?) seems to be the right Target for the
-interception part because SRC/DST host:port are not altered but, correct
-me if I am wrong, it does only allow to forward packets to one host.
+Is any such issue known? May there be any non-automatic dependencies in
+the kernel configuration going beyond:
 
-Is there a tool that could inspect incoming packets and, using the
-Dst addr/Dst port, connect to the right remote host and tranfer only
-application data ? (HTTP, SMTP, DNS, NTP, etc.)
+CONFIG_NETFILTER_NETLINK=y
+CONFIG_NF_CONNTRACK_ENABLED=y
+CONFIG_NF_CONNTRACK=y
+CONFIG_NETFILTER_XT_MATCH_CONNTRACK=y
+CONFIG_NETFILTER_XT_MATCH_STATE=y
 
-Thanks !
+Thanks,
+Thomas
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-Philippe
-
-
-
-
-
-
-
-
-
-
-
+iD8DBQFGpvz/0Kh0pbgr4w8RAnf+AJwJBl7c1IggMMi0SotiqOpJg5c62QCfThRM
+M6sXBxEVroOKyQPUAvxx1VM=
+=0lyq
+-----END PGP SIGNATURE-----
 
