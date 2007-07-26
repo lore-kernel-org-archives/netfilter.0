@@ -1,61 +1,41 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Problems with Kernel 2.6.22.1
-Date: Wed, 25 Jul 2007 17:35:18 +0200
-Message-ID: <46A76DB6.5030303@trash.net>
-References: <46A6FD02.6050805@inf.tu-dresden.de>
+From: Bahamin Takhtaei <takhtaei@amnafzar.com>
+Subject: nf_queue question
+Date: Thu, 26 Jul 2007 10:11:18 +0330
+Message-ID: <46A8420E.3020200@amnafzar.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <46A6FD02.6050805@inf.tu-dresden.de>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-15?Q?=22Thomas_B=2E_Preu=DFer=22?= <tp14@inf.tu-dresden.de>
-Cc: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Thomas B. Preu=DFer wrote:
-> Hello,
->=20
-> having updated my kernel from 2.6.19.2 to 2.6.22.1 both taken as vanill=
-a
-> source from kernel.org, I now receive errors when trying to insert rule=
-s
-> using the state or conntrack modules. I expect other extensions to fail
-> as well. The produced error messages suggest some incompatibility
-> between the kernel and the userspace iptables:
->=20
-> # iptables -v -A FORWARD -j ACCEPT -m state --state RELATED,ESTABLISHED
-> ACCEPT  all opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  state
-> RELATED,ESTABLISHED
-> iptables: Invalid argument
->=20
-> # iptables -v -A FORWARD -j ACCEPT -m conntrack --ctstate
-> RELATED,ESTABLISHED
-> ACCEPT  all opt -- in * out *  0.0.0.0/0  -> 0.0.0.0/0  ctstate
-> RELATED,ESTABLISHED
-> iptables: Invalid argument
->=20
-> This problem occurs with both the iptables v1.3.6 coming with Debian an=
-d
-> a self-compiled iptables v1.3.8 from the netfilter.org download page.
->=20
-> Is any such issue known? May there be any non-automatic dependencies in
-> the kernel configuration going beyond:
->=20
-> CONFIG_NETFILTER_NETLINK=3Dy
-> CONFIG_NF_CONNTRACK_ENABLED=3Dy
-> CONFIG_NF_CONNTRACK=3Dy
-> CONFIG_NETFILTER_XT_MATCH_CONNTRACK=3Dy
-> CONFIG_NETFILTER_XT_MATCH_STATE=3Dy
+Hi everyone!
+I install libnfnetlink_0.0.16 and libnetfilter_queue-0.0.12 and upgrade 
+my kernel to
+linux-2.6.17.13. Then I run libnetfilter_queue-0.0.12/utils/nfqnl_test , 
+but encounter with
+this message:
+nfnl_talk: sendmsg(netlink) Connection refused
+error during nfq_unbind_pf()
 
+#lsmod
+ip_queue
+xt_NFQUEUE
+iptables_filter
+iptables
 
-Do you also have CONFIG_NF_CONNTRACK_IPV4 enabled?
+Please tell me how I can handle this error?
+
+Thank you in advanced,
+Bahamin
+
 
