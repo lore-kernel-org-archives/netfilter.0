@@ -1,9 +1,10 @@
-From: Chris Kanich <ckanich@cs.ucsd.edu>
-Subject: load balancing over a very large number of outgoing addresses?
-Date: Thu, 26 Jul 2007 18:27:59 -0700
-Message-ID: <46A94A1F.4000107@cs.ucsd.edu>
+From: Alexander  Bondarenko <bond_a_v@inbox.ru>
+Subject: multiple match string don't work
+Date: Fri, 27 Jul 2007 11:31:19 +0400
+Message-ID: <E1IEKIB-0001Io-00.bond_a_v-inbox-ru@f102.mail.ru>
+Reply-To: Alexander Bondarenko <bond_a_v@inbox.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,28 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
-I have recently developed a need to multiplex connections from within a 
-NAT over several (hundred, even thousand if possible) external IPs. I 
-can have all of these IPs routed to a single interface on my NAT box, 
-however I am not exactly sure how to set up a random/round robin load 
-balancing scheme such that outgoing connections from my network each get 
-a random source address from my source address pool.
+Hello all ! 
 
-I have come across this how-to:
-http://lartc.org/howto/lartc.rpdb.multiple-links.html
+I'm trying to use fwsnort on CentOS 5.0.  My kernel is 2.6.18-8  and iptables v. 1.3.5.  It created several rules with fwsnort  for Netfilter but fast all of them have several match string options, such as :
 
-However it seems that I cannot scale these routing rules past 255 
-routes, and unlike the example, I am not multiplexing interfaces but 
-only IPs in roughly a contiguous /16 range being routed to this linux 
-machine.
+iptables -A INPUT -d 192.168.52.10 -m string --string  "GET" --algo bm -m string --string "passwd" -algo bm -j DROP
 
-Any suggestions on how to get this up and running would be greatly 
-appreciated.
+but all these commands fail to execute with the following error:
 
-Many thanks,
-Chris Kanich
+iptables v1.3.5:  Unknown arg  passwd'
+
+when I manually run this command only with the first match condition:
+
+iptables -A INPUT -d 192.168.52.10 -m string --string  "GET" --algo bm -j DROP
+
+it works, but not for two or more match string conditions.  I don't know what to do.  I man page of iptables a see that I can specify several match strings.  Why it's not working for me ?
+
+Regards, Alex
+
+
 
