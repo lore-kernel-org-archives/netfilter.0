@@ -1,12 +1,14 @@
-From: "Eljas Alakulppi" <Buzer@buzer.net>
-Subject: Re: problem with  postrouting chain
-Date: Fri, 27 Jul 2007 19:16:20 +0300
-Message-ID: <op.tv4stinlrtqp7s@hagumi.dsl.inet.fi>
-References: <46A9C574.70701@baibrama.cult.cu>
+From: =?iso-8859-2?B?SvpsaXVzIEJlbbk=?= <julius.bems@gmail.com>
+Subject: adding rules - slow
+Date: Fri, 27 Jul 2007 23:30:11 +0200
+Message-ID: <46aa63fb.120b420a.16f8.0c23@mx.google.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46A9C574.70701@baibrama.cult.cu>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:from:to:subject:date:mime-version:content-type:content-transfer-encoding:x-mailer:thread-index:content-language:message-id;
+	b=rJAtxGqOO6capMjWp5RvQB7hY8Zwu74i5HYuIImUfvzfTf0lVahvzApgrcmLkBjkShXNSMILg3Lvnlcmm3KkFKUfgOy5qhfBd5TOX8NkY9B4GBmGRgA4evaL/YPZRuDZcNDLSIa9GUzGYjXXK4hpJ6lRhAF6VwGLhnxIaGwfNMM=
+Content-Language: sk
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,50 +19,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="iso-8859-1"
-To: zuniga@baibrama.cult.cu, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Add "-t nat" before -A POSTROUTING
+Hi,
 
-jose a. z=FA=F1iga <zuniga@baibrama.cult.cu> kirjoitti Fri, 27 Jul 2007 =20
-13:14:12 +0300:
+When I need to add som rules (in my case 100) to some chain it takes various
+time, depending on the number of existing rules in the chain. So when I add
+100 rules to empty chain, it takes 1.8sec. If tehere is 1000 rules int the
+chain, it takes 4.5sec and if there is 10000 rules it takes 21sec. 
 
-> Hi:
->
-> I'm running pre compilied 2.6.18-4 kernel on debian etch.
->
-> I=3DB4ve load this modules:
->
-> ip_nat_irc
-> ip_conntrack_irc
-> iptable_nat
-> ip_tables
-> ip_nat_ftp
-> ip_nat
-> ip_conntrack_ftp
-> ip_conntrack
->
-> When I try to run this rules:
->
-> /sbin/iptables -A POSTROUTING -s 192.168.1.0/24 -d XXX.XXX.XXX.XXX -o=3D=
-20
-> YYY.YYY.YYY.YYY -p tcp -m tcp --dport 110 -j SNAT --to-source=3D20
-> YYY.YYY.YYY.YYY
->
-> I get this error.
->
-> iptables: No chain/target/match by that name
->
-> If I insert chain type: INPUT, OUTPUT or FORWARD they run without =20
-> problem.
->
-> What's happen exactly???? There's a problem in kernel?
->
-> Thanks
->
-> Zng
->
->
+My problem is, that i need to add this rules to chain which contains 20000
+rules in short time. I think, that the way of adding rules into chain is
+very innefective. 
 
+Could someone tell me how the adding works internally? What data structures
+are used? Because I need solve this and find the way how to add new rules
+quickly.
+
+Thanks for replies
 
 
