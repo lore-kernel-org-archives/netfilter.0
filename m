@@ -1,12 +1,15 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+From: Tom Eastep <teastep@shorewall.net>
 Subject: Re: adding rules - slow
-Date: Fri, 27 Jul 2007 17:38:04 -0400
-Message-ID: <1185572284.10031.2.camel@localhost>
+Date: Fri, 27 Jul 2007 15:31:24 -0700
+Message-ID: <46AA723C.4090307@shorewall.net>
 References: <46aa63fb.120b420a.16f8.0c23@mx.google.com>
+	<1185572284.10031.2.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig7CA2225DEA054121D21956FD"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46aa63fb.120b420a.16f8.0c23@mx.google.com>
+In-Reply-To: <1185572284.10031.2.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,58 +20,48 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?Q?J=C3=BAlius_Bem=C5=A1?= <julius.bems@gmail.com>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-On Fri, 2007-07-27 at 23:30 +0200, J=C3=BAlius Bem=C5=A1 wrote:
-> Hi,
->=20
-> When I need to add som rules (in my case 100) to some chain it takes vari=
-ous
-> time, depending on the number of existing rules in the chain. So when I a=
-dd
-> 100 rules to empty chain, it takes 1.8sec. If tehere is 1000 rules int th=
-e
-> chain, it takes 4.5sec and if there is 10000 rules it takes 21sec.=20
->=20
-> My problem is, that i need to add this rules to chain which contains 2000=
-0
-> rules in short time. I think, that the way of adding rules into chain is
-> very innefective.=20
->=20
-> Could someone tell me how the adding works internally? What data structur=
-es
-> are used? Because I need solve this and find the way how to add new rules
-> quickly.
->=20
-> Thanks for replies
->=20
->=20
-We face the same problem on the ISCS project
-(http://iscs.sourceforge.net).  There, do to micro-perimeter network
-security, we frequently generate thousands or tens of thousands of rules
-with the click of a mouse.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig7CA2225DEA054121D21956FD
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-We handle it by adding rules via iptables-restore rather than iptables.
-The load time difference is remarkable.  You write your rules into files
-with very similar syntax to iptables and then direct them into
-iptables-restore, e.g.,=20
+John A. Sullivan III wrote:
 
-iptables-restore < /etc/PEP/rules.txt
+>=20
+> We handle it by adding rules via iptables-restore rather than iptables.=
 
-or, if you do not want to overwrite existing rules,
+> The load time difference is remarkable.  You write your rules into file=
+s
+> with very similar syntax to iptables and then direct them into
+> iptables-restore, e.g.,=20
 
-iptables-restore -n < /etc/PEP/runtimerules.txt
+The new Perl-based Shorewall rules compiler has adopted this same strateg=
+y.
+As John says, the difference in performance is remarkable.
 
-Hope this helps - John
+-Tom
 --=20
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+Tom Eastep    \ Nothing is foolproof to a sufficiently talented fool
+Shoreline,     \ http://shorewall.net
+Washington USA  \ teastep@shorewall.net
+PGP Public Key   \ https://lists.shorewall.net/teastep.pgp.key
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
 
+--------------enig7CA2225DEA054121D21956FD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFGqnJBO/MAbZfjDLIRAqR3AKCY/cCa4NRPJJq0ZbPEZL5Xw+M7vQCgsEQC
+BpZTwZ9VsEfKka9BkubKgtg=
+=ksNm
+-----END PGP SIGNATURE-----
+
+--------------enig7CA2225DEA054121D21956FD--
 
