@@ -1,12 +1,11 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: filtering in mangle table
-Date: Fri, 27 Jul 2007 07:59:56 -0400
-Message-ID: <1185537596.6574.2.camel@localhost>
-References: <dae53550707270302r6887a6a4g3c9ddfd7d070afab@mail.gmail.com>
+From: =?ISO-8859-1?Q?=22jose_a=2E_z=FA=F1iga=22?= <zuniga@baibrama.cult.cu>
+Subject: problem with  postrouting chain
+Date: Fri, 27 Jul 2007 12:14:12 +0200
+Message-ID: <46A9C574.70701@baibrama.cult.cu>
+Reply-To: zuniga@baibrama.cult.cu
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <dae53550707270302r6887a6a4g3c9ddfd7d070afab@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,39 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Ganesan Natarajan <natrajputra@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On Fri, 2007-07-27 at 15:32 +0530, Ganesan Natarajan wrote:
-> Hi,
->        My requirement is before giving the packets to user space
-> application(even before routing) I need to filter the packets. This
-> has to be done for all packets irrespective of particular protocol.
-> 
-> so I am using the the mangle table with PREROUTING chain to filter as
-> well as to queue the packets using the DROP, QUEUE targets of
-> "iptables". But in man pages it is specified that the filter rules
-> should not be added into mangle table.
-> 
-> Is there any issues if I proceed with that?
-> 
-> Ganesan
-> 
-We have been doing something very similar in the open source ISCS
-network security management project (http://iscs.sourceforge.net).
-Although the bulk of the tens of thousands of access control rules we
-create for complex internal and micro-perimeter security are added to
-our filter table, we handle malicious packet checks (spoofs, ping
-floods, malformed packets, etc.) in the mangle table.  Seems to be
-working fine for us! - John
--- 
-John A. Sullivan III
-Open Source Development Corporation
-+1 207-985-7880
-jsullivan@opensourcedevel.com
+Hi:
 
-Financially sustainable open source development
-http://www.opensourcedevel.com
+I'm running pre compilied 2.6.18-4 kernel on debian etch.
+
+I=B4ve load this modules:
+
+ip_nat_irc
+ip_conntrack_irc
+iptable_nat
+ip_tables
+ip_nat_ftp
+ip_nat
+ip_conntrack_ftp
+ip_conntrack
+
+When I try to run this rules:
+
+/sbin/iptables -A POSTROUTING -s 192.168.1.0/24 -d XXX.XXX.XXX.XXX -o=20
+YYY.YYY.YYY.YYY -p tcp -m tcp --dport 110 -j SNAT --to-source=20
+YYY.YYY.YYY.YYY
+
+I get this error.
+
+iptables: No chain/target/match by that name
+
+If I insert chain type: INPUT, OUTPUT or FORWARD they run without problem.
+
+What's happen exactly???? There's a problem in kernel?
+
+Thanks
+
+Zng
 
 
