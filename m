@@ -1,12 +1,13 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: filtering in mangle table
-Date: Sat, 28 Jul 2007 12:24:23 +0200
-Message-ID: <46AB1957.6020607@plouf.fr.eu.org>
-References: <dae53550707270302r6887a6a4g3c9ddfd7d070afab@mail.gmail.com>
+Subject: Re: problem with  postrouting chain
+Date: Sat, 28 Jul 2007 12:36:50 +0200
+Message-ID: <46AB1C42.50106@plouf.fr.eu.org>
+References: <46A9C574.70701@baibrama.cult.cu>
+	<op.tv4stinlrtqp7s@hagumi.dsl.inet.fi>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <dae53550707270302r6887a6a4g3c9ddfd7d070afab@mail.gmail.com>
+In-Reply-To: <op.tv4stinlrtqp7s@hagumi.dsl.inet.fi>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,23 +21,31 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hello,
+Hello
 
-Ganesan Natarajan a =E9crit :
->        My requirement is before giving the packets to user space
-> application(even before routing) I need to filter the packets.
+Eljas Alakulppi a =E9crit :
+> jose a. z=FA=F1iga <zuniga@baibrama.cult.cu> kirjoitti Fri, 27 Jul 2007=
+ =20
+> 13:14:12 +0300:
+>>
+>> When I try to run this rules:
+>>
+>> /sbin/iptables -A POSTROUTING -s 192.168.1.0/24 -d XXX.XXX.XXX.XXX -o=3D=
+20
+>> YYY.YYY.YYY.YYY -p tcp -m tcp --dport 110 -j SNAT --to-source=3D20
+>> YYY.YYY.YYY.YYY
 
-Why even before routing ? (Yes, I'm curious)
+I suppose that the =3D20 are not really part of the rule but probably the=
+=20
+trace of some quoted-printable encoding.
 
-> so I am using the the mangle table with PREROUTING chain to filter as
-> well as to queue the packets using the DROP, QUEUE targets of
-> "iptables". But in man pages it is specified that the filter rules
-> should not be added into mangle table.
+>> I get this error.
+>>
+>> iptables: No chain/target/match by that name
+>>
+> Add "-t nat" before -A POSTROUTING
 
-Built-in targets such as DROP and QUEUE can be used in any table and=20
-chain. But target extensions may have limitations. For exemple the=20
-REJECT target can be used only in the filter table, so it cannot be used=20
-in the mangle table. Also, filtering in the nat table is not recommended=20
-because the nat table does not see all packets but only packets in the=20
-NEW state which are the first packet of a connection.
+Also, the -o option takes an interface name (eth0, ppp0...), not an IP=20
+address. However iptables does not check that the specified interface=20
+name actually exists. So this rule is not likely to match anything.
 
