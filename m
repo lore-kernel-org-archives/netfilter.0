@@ -1,51 +1,69 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: problem with  postrouting chain
-Date: Sat, 28 Jul 2007 12:36:50 +0200
-Message-ID: <46AB1C42.50106@plouf.fr.eu.org>
-References: <46A9C574.70701@baibrama.cult.cu>
-	<op.tv4stinlrtqp7s@hagumi.dsl.inet.fi>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: libnetfilter_conntrack 0.0.81 release
+Date: Sat, 28 Jul 2007 14:38:04 +0200
+Message-ID: <46AB38AC.5050509@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <op.tv4stinlrtqp7s@hagumi.dsl.inet.fi>
+Content-Type: multipart/mixed; boundary="------------090204010302050004090205"
+Return-path: <netfilter-announce-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
+	<mailto:netfilter-announce-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter-announce>
+List-Post: <mailto:netfilter-announce@lists.netfilter.org>
+List-Help: <mailto:netfilter-announce-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
+	<mailto:netfilter-announce-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-announce-bounces@lists.netfilter.org
+Errors-To: netfilter-announce-bounces@lists.netfilter.org
+To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: lwn@lwn.net
 
-Hello
+This is a multi-part message in MIME format.
+--------------090204010302050004090205
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Eljas Alakulppi a =E9crit :
-> jose a. z=FA=F1iga <zuniga@baibrama.cult.cu> kirjoitti Fri, 27 Jul 2007=
- =20
-> 13:14:12 +0300:
->>
->> When I try to run this rules:
->>
->> /sbin/iptables -A POSTROUTING -s 192.168.1.0/24 -d XXX.XXX.XXX.XXX -o=3D=
-20
->> YYY.YYY.YYY.YYY -p tcp -m tcp --dport 110 -j SNAT --to-source=3D20
->> YYY.YYY.YYY.YYY
+Hi!
 
-I suppose that the =3D20 are not really part of the rule but probably the=
-=20
-trace of some quoted-printable encoding.
+The netfilter project proudly presents libnetfilter_conntrack-0.0.81
 
->> I get this error.
->>
->> iptables: No chain/target/match by that name
->>
-> Add "-t nat" before -A POSTROUTING
+libnetfilter_conntrack is a userspace library providing a programming
+interface (API) to the in-kernel connection tracking state table.
 
-Also, the -o option takes an interface name (eth0, ppp0...), not an IP=20
-address. However iptables does not check that the specified interface=20
-name actually exists. So this rule is not likely to match anything.
+This release includes minor changes and bugfixes. See ChangeLog for more
+details. Upgrade is recommended.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnetfilter_conntrack/
+ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
+
+Pablo (on behalf of the Netfilter Project)
+
+--=20
+"Ser=E1 preciso viajar a trav=E9s de los ojos de los idiotas" -- Poeta en
+Nueva York -- Federico Garc=EDa Lorca.
+
+--------------090204010302050004090205
+Content-Type: text/plain;
+ name="ChangeLog"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog"
+
+libnetfilter_conntrack 0.0.81
+======================================================================
+
+Changes from 0.0.80:
+
+- add layer 4 protocol comparison to nfct_compare()
+	[Pablo Neira Ayuso]
+
+- introduce nfct_nfnlh() to use functions like nfnl_rcvbufsiz()
+	[Pablo Neira Ayuso]
+
+- remove unused build_id() from build.c
+	[Pablo Neira Ayuso]
+
+--------------090204010302050004090205--
 
