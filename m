@@ -1,69 +1,50 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: libnetfilter_conntrack 0.0.81 release
-Date: Sat, 28 Jul 2007 14:38:04 +0200
-Message-ID: <46AB38AC.5050509@netfilter.org>
+From: Michael Rash <mbr@cipherdyne.org>
+Subject: psad-2.0.8 release - visualizing iptables logs
+Date: Sat, 28 Jul 2007 23:20:21 -0400
+Message-ID: <20070729032021.GB14958@minastirith>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090204010302050004090205"
-Return-path: <netfilter-announce-bounces@lists.netfilter.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
-	<mailto:netfilter-announce-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-announce>
-List-Post: <mailto:netfilter-announce@lists.netfilter.org>
-List-Help: <mailto:netfilter-announce-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
-	<mailto:netfilter-announce-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-announce-bounces@lists.netfilter.org
-Errors-To: netfilter-announce-bounces@lists.netfilter.org
-To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: lwn@lwn.net
-
-This is a multi-part message in MIME format.
---------------090204010302050004090205
-Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-disposition: inline
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: </pipermail/netfilter>
+List-Post: <mailto:netfilter@lists.netfilter.org>
+List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
+	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-bounces@lists.netfilter.org
+Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Hi!
+Hi -
 
-The netfilter project proudly presents libnetfilter_conntrack-0.0.81
+psad-2.0.8 has been released:
 
-libnetfilter_conntrack is a userspace library providing a programming
-interface (API) to the in-kernel connection tracking state table.
+http://www.cipherdyne.org/psad/download/
 
-This release includes minor changes and bugfixes. See ChangeLog for more
-details. Upgrade is recommended.
+This release adds a whole new set of --gnuplot options so that iptables
+log data can be visualized with Gnuplot in addition to AfterGlow.  I
+gave a talk about this at OSCON, and here are the slides in case anyone
+is interested (the talk included visualizations of iptables log data
+=66rom the Honeynet Scan34 challenge):
 
-You can download it from:
+http://www.cipherdyne.org/talks/Michael_Rash_OSCON_2007.pdf
 
-http://www.netfilter.org/projects/libnetfilter_conntrack/
-ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
+Here is a blog post with a couple of the graphs visible:
 
-Pablo (on behalf of the Netfilter Project)
+http://www.cipherdyne.org/blog/2007/07/oscon-2007-talk-slides-iptables-atta=
+ck-visualization.html
 
---=20
-"Ser=E1 preciso viajar a trav=E9s de los ojos de los idiotas" -- Poeta en
-Nueva York -- Federico Garc=EDa Lorca.
+Here is the psad-2.0.8 ChangeLog (many thanks to all who have
+contributed):
 
---------------090204010302050004090205
-Content-Type: text/plain;
- name="ChangeLog"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ChangeLog"
+http://trac.cipherdyne.org/trac/psad/browser/psad/tags/psad-2.0.8/ChangeLog
 
-libnetfilter_conntrack 0.0.81
-======================================================================
-
-Changes from 0.0.80:
-
-- add layer 4 protocol comparison to nfct_compare()
-	[Pablo Neira Ayuso]
-
-- introduce nfct_nfnlh() to use functions like nfnl_rcvbufsiz()
-	[Pablo Neira Ayuso]
-
-- remove unused build_id() from build.c
-	[Pablo Neira Ayuso]
-
---------------090204010302050004090205--
+--
+Michael Rash
+http://www.cipherdyne.org/
+Key fingerprint =3D 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
 
