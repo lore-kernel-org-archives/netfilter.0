@@ -1,11 +1,10 @@
-From: Michael Rash <mbr@cipherdyne.org>
-Subject: psad-2.0.8 release - visualizing iptables logs
-Date: Sat, 28 Jul 2007 23:20:21 -0400
-Message-ID: <20070729032021.GB14958@minastirith>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] Release conntrack-tools 0.9.5
+Date: Sun, 29 Jul 2007 16:14:13 +0200
+Message-ID: <46ACA0B5.7030608@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------030302010800080706070103"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,35 +15,73 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, Netfilter-failover list <netfilter-failover@lists.netfilter.org>, lwn@lwn.net
 
-Hi -
+This is a multi-part message in MIME format.
+--------------030302010800080706070103
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-psad-2.0.8 has been released:
+Hi!
 
-http://www.cipherdyne.org/psad/download/
+The netfilter project proudly presents another development release of
+the conntrack-tools. The conntrack-tools are:
 
-This release adds a whole new set of --gnuplot options so that iptables
-log data can be visualized with Gnuplot in addition to AfterGlow.  I
-gave a talk about this at OSCON, and here are the slides in case anyone
-is interested (the talk included visualizations of iptables log data
-=66rom the Honeynet Scan34 challenge):
+- The userspace daemon so-called conntrackd that covers the specific
+aspects of stateful Linux firewalls to enable high availability
+solutions. It can be used as statistics collector of the firewall use as
+well. The daemon is highly configurable and easily extensible.
 
-http://www.cipherdyne.org/talks/Michael_Rash_OSCON_2007.pdf
+- The command line interface (CLI) conntrack that provides an interface
+to add, delete and update flow entries, list current active flows in
+plain text/XML, current IPv4 NAT'ed flows, reset counters, and flush the
+complete connection tracking table among many other.
 
-Here is a blog post with a couple of the graphs visible:
+You can download it from:
 
-http://www.cipherdyne.org/blog/2007/07/oscon-2007-talk-slides-iptables-atta=
-ck-visualization.html
+http://www.netfilter.org/projects/conntrack-tools/downloads.html
 
-Here is the psad-2.0.8 ChangeLog (many thanks to all who have
-contributed):
+Changelog is attached.
 
-http://trac.cipherdyne.org/trac/psad/browser/psad/tags/psad-2.0.8/ChangeLog
+Pablo (on behalf of the Netfilter Project)
 
---
-Michael Rash
-http://www.cipherdyne.org/
-Key fingerprint =3D 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
+--=20
+"Ser=E1 preciso viajar a trav=E9s de los ojos de los idiotas" -- Poeta en
+Nueva York -- Federico Garc=EDa Lorca.
+
+--------------030302010800080706070103
+Content-Type: text/plain;
+ name="ChangeLog"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog"
+
+version 0.9.5 (2007/07/29)
+------------------------------
+
+= conntrackd =
+o conntrack-tools requires libnetfilter_conntrack >= 0.0.81 
+o add len field to nethdr
+o implement buffered send/recv to batch messages
+o use buffer of MTU size
+o stop using netlink format for network messages: use similar TLV-based format
+o reduce synchronization messages size up to 60%
+o introduce periodic alive messages for sync-nack protocol
+o timeslice alarm implementation: remove alarm pthread, remove locking
+o simplify debugging functions: use nfct_snprintf instead
+o remove major use of libnfnetlink functions: use libnetfilter_conntrack API
+o deprecate conntrackd -F, use conntrack -F instead
+o major rework of the network infrastructure: much simple, less messy
+o simplify cache_flush function: use cache_del()
+o remove current script_fault.sh when we reach fault state
+o conntrackd requires the connection tracking event API: insist more in INSTALL
+
+= conntrack =
+o better protocol argument checkings
+o fix per-protocol filtering, eg. conntrack -L -p tcp 
+o show per-protocol help, ie. conntrack -h -p tcp
+o add alias --src for --orig-src and alias --dst for --orig-dst
+o include protocol filters in the manpage
+
+--------------030302010800080706070103--
 
