@@ -1,12 +1,10 @@
-From: m2 <martina2@yak.thum.ath.cx>
-Subject: delete conntrack entry - how
-Date: Mon, 30 Jul 2007 08:08:44 +0200
-Message-ID: <20070730080844.0732287e@alice.thum.ath.cx>
-References: <46AB38AC.5050509@netfilter.org>
+From: Pawel <pzlist@mp.pl>
+Subject: two subnets...
+Date: Mon, 30 Jul 2007 12:31:12 +0200
+Message-ID: <46ADBDF0.3020200@mp.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46AB38AC.5050509@netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,31 +15,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-hi,
+Hi,
+I need to remove 3 machines from one subnet (192.168.0.0/25) to new 
+physical subnet.
+I want to add new network card to my linux router and create new subnet 
+(192.168.0.96/29).
 
-I want to delete this stale conntrack entry:
-conntrack -L
-tcp      6 259996 ESTABLISHED src=85.214.110.62
-dst=217.199.190.234 sport=44895 dport=80 packets=1 bytes=40 [UNREPLIED]
-src=217.199.190.234 dst=85.214.110.62 sport=80 dport=44895 packets=0
-bytes=0 mark=0 use=1
+My  issuse:  I cannot touch any IPs  of any machine ....
 
-iptstate shows:
-Source Destination  Proto State       TTL
-85.214.110.62:44895 217.199.190.234:80 tcp ESTABLISHED  72:10:59
 
-so I dont want to wait 72 hours more;
-I've already reduced some values,
-e.g.
-echo 216000
-> /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established
+how to do it?
+What is the best solution? (proxy arp, additional routing table?)
 
-but the connection was already EST
+Thanks for any suggestion
 
-an example for deleteing such an entry within the man page would be fine
+Pawel
 
-Regards
+
 
