@@ -1,7 +1,7 @@
 From: m2 <martina2@yak.thum.ath.cx>
 Subject: delete conntrack entry - how
-Date: Mon, 30 Jul 2007 08:22:20 +0200
-Message-ID: <20070730082220.3d21fa92@alice.thum.ath.cx>
+Date: Mon, 30 Jul 2007 08:08:44 +0200
+Message-ID: <20070730080844.0732287e@alice.thum.ath.cx>
 References: <46AB38AC.5050509@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -44,10 +44,4 @@ but the connection was already EST
 an example for deleteing such an entry within the man page would be fine
 
 Regards
-
--- 
- . ___
- |  |  Irmund     Thum
- |  |  +49 6374 992542
-       +49 163 9889576
 
