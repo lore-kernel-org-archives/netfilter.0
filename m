@@ -1,11 +1,12 @@
-From: Alexander  Bondarenko <bond_a_v@inbox.ru>
-Subject: multiple match string don't work
-Date: Fri, 27 Jul 2007 11:31:19 +0400
-Message-ID: <E1IEKIB-0001Io-00.bond_a_v-inbox-ru@f102.mail.ru>
-Reply-To: Alexander Bondarenko <bond_a_v@inbox.ru>
+From: m2 <martina2@yak.thum.ath.cx>
+Subject: delete conntrack entry - how
+Date: Mon, 30 Jul 2007 08:22:20 +0200
+Message-ID: <20070730082220.3d21fa92@alice.thum.ath.cx>
+References: <46AB38AC.5050509@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <46AB38AC.5050509@netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +20,34 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello all ! 
+hi,
 
-I'm trying to use fwsnort on CentOS 5.0.  My kernel is 2.6.18-8  and iptables v. 1.3.5.  It created several rules with fwsnort  for Netfilter but fast all of them have several match string options, such as :
+I want to delete this stale conntrack entry:
+conntrack -L
+tcp      6 259996 ESTABLISHED src=85.214.110.62
+dst=217.199.190.234 sport=44895 dport=80 packets=1 bytes=40 [UNREPLIED]
+src=217.199.190.234 dst=85.214.110.62 sport=80 dport=44895 packets=0
+bytes=0 mark=0 use=1
 
-iptables -A INPUT -d 192.168.52.10 -m string --string  "GET" --algo bm -m string --string "passwd" -algo bm -j DROP
+iptstate shows:
+Source Destination  Proto State       TTL
+85.214.110.62:44895 217.199.190.234:80 tcp ESTABLISHED  72:10:59
 
-but all these commands fail to execute with the following error:
+so I dont want to wait 72 hours more;
+I've already reduced some values,
+e.g.
+echo 216000
+> /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established
 
-iptables v1.3.5:  Unknown arg  passwd'
+but the connection was already EST
 
-when I manually run this command only with the first match condition:
+an example for deleteing such an entry within the man page would be fine
 
-iptables -A INPUT -d 192.168.52.10 -m string --string  "GET" --algo bm -j DROP
+Regards
 
-it works, but not for two or more match string conditions.  I don't know what to do.  I man page of iptables a see that I can specify several match strings.  Why it's not working for me ?
-
-Regards, Alex
-
-
+-- 
+ . ___
+ |  |  Irmund     Thum
+ |  |  +49 6374 992542
+       +49 163 9889576
 
