@@ -1,15 +1,12 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: two subnets...
-Date: Wed, 01 Aug 2007 16:04:13 +0200
-Message-ID: <46B092DD.7030700@plouf.fr.eu.org>
-References: <46ADBDF0.3020200@mp.pl>
-	<46AF4FC7.1000500@riverviewtech.net>	<46AF8D63.8080900@interia.pl>
-	<46AF9694.1060709@riverviewtech.net>	<46AFBA57.3040702@mailinator.com>	<46AFC5BB.7050701@riverviewtech.net>
-	<20070801133804.GB8336@outback.rfc2324.org>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: Filtering Query?
+Date: Mon, 30 Jul 2007 22:05:07 +0200
+Message-ID: <46AE4473.8060500@rtij.nl>
+References: <358385.10946.qm@web57412.mail.re1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070801133804.GB8336@outback.rfc2324.org>
+In-Reply-To: <358385.10946.qm@web57412.mail.re1.yahoo.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,22 +17,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: amna bilal <bilal.amna@yahoo.com>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
+amna bilal wrote:
+> Hi,
+>
+> Looking for some insight here. What I would like to do
+> is:
+>
+> I have four main tables
+> INTERNET_IN
+> INTERNET_OUT
+> LAN_IN
+> LAN_OUT
+>
+> I have a few filters I want I named them
+> ALLOW_UDP
+> ALLOW_TCP
+> DENY_ACCESS
+>
+> Is it possible to set up iptables to filter down a
+> list some thing like this:
+>
+> iptables -A INTERNET_IN -j ALLOW_UDP
+> iptables -A INTERNET_IN -j ALLOW_TCP
+> iptables -A INTERNET_IN -j DENY_ACCESS
+>
+> What I want to accomplish is that if it doesn't meet a
+> filter in ALLOW_UDP it continues to ALLOW_TCP, then to
+> DENY_ACCESS, the it goes into the system.
+>   
 
-Maximilian Wilhelm a =E9crit :
-> Am Tuesday, den 31 July hub Grant Taylor folgendes in die Tasten:
->=20
->>I have never worked with the physdev match extension so I can not say=20
->>for sure.  I do not recall which features were being taken out of main=20
->>line NetFilter code, but I want to say that physdev was one of them [..=
-.]
->=20
-> The physdev match is in the vanilla kernel for some time now.
+Yes, absolutely. And with these very clear chain names, it is easy to 
+follow the logic as well.
 
-AFAIK, the physdev match for iptables is in the 2.6 vanilla kernel since=20
-version 2.6.0 (as well as bridge-neftilter) and has never been removed.=20
-The physdev match for ip6tables was added in version 2.6.9.
+OTOH, You could also opt for:
+
+-A INTERNET_IN -p udp -j UDP_IN
+-A INTERNET_IN -p tcp -j TCP_IN
+
+-A INTERNET_IN -j DENY_ACCESS
+
+And end both UDP_IN and TCP_IN with a -j DENY_ACCESS.
+
+
+Both work, the second is a bit more efficient.
+
+HTH,
+M4
+
+
+
 
