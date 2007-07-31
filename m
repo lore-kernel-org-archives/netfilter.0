@@ -1,9 +1,9 @@
-From: Klaus Wacker <klaus_gr_W_kl_Acker@web.de>
-Subject: getting iptables into embedded kernel
-Date: Tue, 31 Jul 2007 11:24:44 +0200
-Message-ID: <1529899887@web.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnfnetlink release 0.0.30
+Date: Tue, 31 Jul 2007 11:26:31 +0200
+Message-ID: <46AF0047.9020705@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------080903030609000601090107"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,57 +15,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Cc: lwn@lwn.net
+
+This is a multi-part message in MIME format.
+--------------080903030609000601090107
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: quoted-printable
 
->> How to get iptables into a ppc kernel (2.6, netfilter
->> enabled) and where to store what to have functionality from the
->> start=3F I used NO=5FSHARED=5FLIBS=3D1
->> I am able to download start the kernel, but do not find iptables.
->=20
-> AFAIK you cannot.
-> Iptables is a *user*space utility to configure the Netfilter framework
-> and I don't see how you'd compile that into the kernel.
->=20
->=20
-> Rob
->=20
->=20
-> Ok, I am a little confused with kernel modules. Anyhow I would like to
-> do something like this here (from the install):
-> "
-> 4) If you want to build a statically linked version of the iptables
->    binary, without the need for loading the plugins at runtime (e.g.
->    for an embedded device or router-on-a-disk), please use
->=20
-> 	% make NO=5FSHARED=5FLIBS=3D1
-> "
->=20
-> and I get a rather large executable binary (700kB). But I
-> can't execute this nor do I know how to make it run inside my target.
-> Klaus
+Hi!
 
->This is something different from compiling things "into" the kernel.
->You've just built a statically linked iptables binary: those binaries
->don't need external libraries, which is why they are larger because the
->functionality in the libraries must be present in the binary to actually
->make it standalone.
+The netfilter project proudly presents libnfnetlink 0.0.30
 
->So, you still get a binary called iptables which must be run from some
->shell (I guess).
+libnfnetlink is the low-level library for netfilter related
+kernel/userspace communication. It provides a generic messaging
+infrastructure for in-kernel netfilter subsystems (such as
+nfnetlink_log, nfnetlink_queue, nfnetlink_conntrack) and their
+respective users and/or management tools in userspace.
 
+You can download it from:
 
->Rob
+http://www.netfilter.org/projects/libnfnetlink/downloads.html
 
-Yes, did that and then I try to run it but it only says "cannot execute bi=
-nary file"
-even I can execute other files.
-Klaus
+Pablo (on behalf of the Netfilter Project)
 
+--=20
+"Ser=E1 preciso viajar a trav=E9s de los ojos de los idiotas" -- Poeta en
+Nueva York -- Federico Garc=EDa Lorca.
 
+--------------080903030609000601090107
+Content-Type: text/plain;
+ name="ChangeLog"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog"
 
-=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
-Jetzt neu! Sch=FCtzen Sie Ihren PC mit McAfee und WEB.DE. 3 Monate
-kostenlos testen. http://www.pc-sicherheit.web.de/startseite/=3Fmc=3D022220
+libnfnetlink 0.0.30
+======================================================================
 
+Changes from 0.0.25:
+
+- update linux_nfnetlink.h from kernel sources
+	[Pablo Neira Ayuso]
+
+- remove the nest bit: we don't send it to kernel anymore
+	[Pablo Neira Ayuso]
+
+- remove linux/types.h include from libnfnetlink.h
+	[Eric Leblond]
+
+- introduce index2interface API
+	[Eric Leblond]
+
+- added a test file to utils/iftest.c
+	[Pablo Neira Ayuso]
+
+- compile fix with old glibc
+	[Thomas Jarosch]
+
+--------------080903030609000601090107--
 
