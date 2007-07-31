@@ -1,10 +1,13 @@
-From: Pawel <pzlist@mp.pl>
-Subject: two subnets...
-Date: Mon, 30 Jul 2007 12:31:12 +0200
-Message-ID: <46ADBDF0.3020200@mp.pl>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: load balancing over a very large number of outgoing addresses?
+Date: Tue, 31 Jul 2007 10:01:32 -0500
+Message-ID: <46AF4ECC.20305@riverviewtech.net>
+References: <46A94A1F.4000107@cs.ucsd.edu>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <46A94A1F.4000107@cs.ucsd.edu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,23 +19,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Hi,
-I need to remove 3 machines from one subnet (192.168.0.0/25) to new 
-physical subnet.
-I want to add new network card to my linux router and create new subnet 
-(192.168.0.96/29).
+On 07/26/07 20:27, Chris Kanich wrote:
+> I have recently developed a need to multiplex connections from within a 
+> NAT over several (hundred, even thousand if possible) external IPs. I 
+> can have all of these IPs routed to a single interface on my NAT box, 
+> however I am not exactly sure how to set up a random/round robin load 
+> balancing scheme such that outgoing connections from my network each get 
+> a random source address from my source address pool.
 
-My  issuse:  I cannot touch any IPs  of any machine ....
+If I understand what you are wanting to do correctly, that is many to 
+many NAT, why not use a range of IP addresses on your SNAT rule?  I.e.:
+
+iptables -t nat -A POSTROUTING -j SNAT --to-source A.B.0.1-A.B.7.255
+
+Would SNAT to an IP in the range of A.B.0.1 through A.B.7.255, thus a 
+little over 2000 IPs.
+
+One thing I'm not sure of is how the kernel decides which IP in the 
+range to assign, though I bet someone on this mailing list can help 
+better answer this.
+
+> However it seems that I cannot scale these routing rules past 255 
+> routes, and unlike the example, I am not multiplexing interfaces but 
+> only IPs in roughly a contiguous /16 range being routed to this linux 
+> machine.
+
+*nod*  I don't think this is what you are wanting to do.
+
+> Any suggestions on how to get this up and running would be greatly 
+> appreciated.
+
+See if what I presented above is any where close to what you are wanting 
+to do.
 
 
-how to do it?
-What is the best solution? (proxy arp, additional routing table?)
 
-Thanks for any suggestion
-
-Pawel
-
-
+Grant. . . .
 
