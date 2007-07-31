@@ -1,7 +1,7 @@
 From: Klaus Wacker <klaus_gr_W_kl_Acker@web.de>
 Subject: getting iptables into embedded kernel
-Date: Tue, 31 Jul 2007 12:32:32 +0200
-Message-ID: <1530036879@web.de>
+Date: Tue, 31 Jul 2007 13:44:48 +0200
+Message-ID: <1530165788@web.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
@@ -28,10 +28,14 @@ On Tuesday 31 July 2007 11:24, Klaus Wacker wrote:
 >binary that will not run on Power-PC architecture.
 
 >Frank
-I compile on a PC linux box, my target is a PPC 85xx. I use a denx distro.
-First I thought this goes into the kernel and the KERNEL_DIR takes care of that. 
-I did have set my CROSS_COMPILE to my target and did set the PATH as well. I've just tried again with ARCH=ppc and CROSS_COMPILE=ppc_85xx-  
-;this doesn't work either.
+>I compile on a PC linux box, my target is a PPC 85xx. I use a denx distro.
+>First I thought this goes into the kernel and the KERNEL_DIR takes care of that. 
+>I did have set my CROSS_COMPILE to my target and did set the PATH as well. I've just tried again with ARCH=ppc and CROSS_COMPILE=ppc_85xx-  
+>;this doesn't work either.
+>Klaus
+
+My tool chain does not work. I used "readelf" and it does tell me the file is been compiled for a 80386 
+So I will dig more into that direction. Cheers
 Klaus
 _____________________________________________________________________
 Der WEB.DE SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!
