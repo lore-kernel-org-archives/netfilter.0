@@ -1,13 +1,14 @@
-From: fd4 <fd4@itsec4u.de>
-Subject: Re: delete conntrack entry - how
-Date: Mon, 30 Jul 2007 16:12:18 +0200
-Message-ID: <20070730161218.774be78b@alice.thum.ath.cx>
-References: <46AB38AC.5050509@netfilter.org>
-	<20070730133240.730c0ef4@alice.thum.ath.cx>
+From: "Sashan Govender" <sashang@gmail.com>
+Subject: compiling extension modules with -std=c99 fails
+Date: Tue, 31 Jul 2007 12:14:32 +1000
+Message-ID: <23738f080707301914p65be54c2o9ef6e840c86920e6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070730133240.730c0ef4@alice.thum.ath.cx>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=SNUq6xNfWeWLV1nwGiU3pckmxf/s0FCX6lWgwrd6qpAWwJ8wV0mQeQNY5mlyDeV1BsFqswA16cej1fsXmND2Xx0mqGwZGnOdXStkc2xkS09hz80QYB7mJlmuLSVZCg7KfJyyUzr928x3SPsmBT2llK32M/jHzD+8IzXK1ZTu8vw=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,9 +22,24 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi
 
-> an example for deleteing such an entry within the man page would be fine
+Is there any reason why compiling the iptables extensions should fail
+when using -std=c99?
 
-maybe this one (thanks to a readers help :-)
-conntrack -D [conntrack] -s 172.16.31.31 -d 172.16.31.255 -p udp --orig-port-src 138 --orig-port-dst 138
+cc -O2 -Wall -Wunused
+-I/usr/src/kernels/2.6.18-1.2798.fc6-i586/include -Iinclude/
+-DIPTABLES_VERSION=\"1.3.5\"
+-DIPT_LIB_DIR=\"/usr/local/lib/iptables\" -rdynamic -o iptables
+iptables-standalone.c iptables.o libiptc/libiptc.a -ldl -lnsl -std=c99
+In file included from include/libiptc/libiptc.h:6,
+                 from include/iptables.h:5,
+                 from iptables-standalone.c:38:
+/usr/src/kernels/2.6.18-1.2798.fc6-i586/include/linux/netfilter_ipv4/ip_tables.h:43:
+error: IFNAMSIZ undeclared here (not in a function)
+
+
+-- 
+sashan
+http://sashang.orcon.net.nz/
 
