@@ -1,12 +1,12 @@
-From: Gregory Carter <gcarter@aesgi.com>
-Subject: Re: compiling extension modules with -std=c99 fails
-Date: Mon, 30 Jul 2007 21:37:05 -0500
-Message-ID: <46AEA051.1@aesgi.com>
-References: <23738f080707301914p65be54c2o9ef6e840c86920e6@mail.gmail.com>
+From: "Wacker, Klaus" <Klaus.Wacker@inteq.com>
+Subject: getting iptables into embedded kernel
+Date: Tue, 31 Jul 2007 09:35:41 +0200
+Message-ID: <4244373FF2155241B4AEDE42D89F665DDB8430@MSGCELMBX.ent.bhicorp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <23738f080707301914p65be54c2o9ef6e840c86920e6@mail.gmail.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,35 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Lots of reasons.
+How to get iptables into a ppc kernel (2.6, netfilter enabled) and where
+to store what to have functionality from the start?
+I used NO_SHARED_LIBS=3D1=20
+I am able to download start the kernel, but do not find iptables.=20
 
-What version of kernel development shipped with your distro?
+Sorry for this newbie question, but I have to start somewhere.
+Thanks a lot
+Klaus
+Baker Hughes INTEQ GmbH
+Baker-Hughes-Strasse 1, D - 29221 Celle
+Tel.: +49 5141 203 0, Fax: +49 5141 203 296
+Sitz der Gesellschaft: Celle, Amtsgericht Lueneburg HRB 100845
+Geschaeftsfuehrer: Hermann Rathkamp, Ruediger Lichte, Friedhelm Makohl, Dr.=
+ Hans-Werner Hesse
 
-What version of gcc are you using?
+Diese Nachricht ist ausschliesslich fuer die Person oder Organisation besti=
+mmt, an die sie adressiert ist. =20
+Sie kann herstellerspezifische, nur fuer bestimmte Personen bestimmte,  ver=
+trauliche oder andere Informationen enthalten,=20
+die kraft Gesetzes nicht offen gelegt werden muessen.  Wenn Sie nicht der i=
+n der Adresse genannte Empfaenger sind oder=20
+versehentlich in der Adresszeile angesprochen werden, sind Sie nicht berech=
+tigt, diese Nachricht oder Teile davon zu lesen,=20
+zu drucken, aufzubewahren, zu kopieren oder zu verbreiten.  Sollten Sie die=
+se Nachricht irrtuemlich erhalten haben,=20
+benachrichtigen Sie bitte den Absender umgehend per Email und vernichten Si=
+e saemtliche Kopien der Nachricht.=20
+ =20
+This message is intended exclusively for the individual or entity to which =
+it is addressed. This communication may contain=20
+information that is proprietary, privileged or confidential or otherwise le=
+gally exempt from disclosure.=20
+If you are not the named addressee, or have been inadvertently and erroneou=
+sly referenced in the address line=20
+you are not authorized to read, print, retain, copy or disseminate this mes=
+sage or any part of it.=20
+If you have received this message in error, please notify the sender immedi=
+ately by e-mail and delete all copies of the message.=20
 
--gc
-
-Sashan Govender wrote:
-> Hi
->
-> Is there any reason why compiling the iptables extensions should fail
-> when using -std=c99?
->
-> cc -O2 -Wall -Wunused
-> -I/usr/src/kernels/2.6.18-1.2798.fc6-i586/include -Iinclude/
-> -DIPTABLES_VERSION=\"1.3.5\"
-> -DIPT_LIB_DIR=\"/usr/local/lib/iptables\" -rdynamic -o iptables
-> iptables-standalone.c iptables.o libiptc/libiptc.a -ldl -lnsl -std=c99
-> In file included from include/libiptc/libiptc.h:6,
->                  from include/iptables.h:5,
->                  from iptables-standalone.c:38:
-> /usr/src/kernels/2.6.18-1.2798.fc6-i586/include/linux/netfilter_ipv4/ip_tables.h:43:
-> error: IFNAMSIZ undeclared here (not in a function)
->
->
->   
+DISC-GER-A
 
 
