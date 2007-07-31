@@ -1,13 +1,13 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: two subnets...
-Date: Tue, 31 Jul 2007 18:28:59 -0500
-Message-ID: <46AFC5BB.7050701@riverviewtech.net>
-References: <46ADBDF0.3020200@mp.pl>	<46AF4FC7.1000500@riverviewtech.net>	<46AF8D63.8080900@interia.pl>	<46AF9694.1060709@riverviewtech.net>
-	<46AFBA57.3040702@mailinator.com>
+Subject: Re: blocking access to port 22 when INPUT policy is ACCEPT
+Date: Tue, 31 Jul 2007 18:40:00 -0500
+Message-ID: <46AFC850.5060307@riverviewtech.net>
+References: <b400c69a0707311002j46a9505du414c2058edbe79e2@mail.gmail.com>	<b400c69a0707311504g653c5bcdv86f100f5278a8fda@mail.gmail.com>
+	<20070731221833.GA589@outback.rfc2324.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46AFBA57.3040702@mailinator.com>
+In-Reply-To: <20070731221833.GA589@outback.rfc2324.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,76 +21,61 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-On 7/31/2007 5:40 PM, Mike Wright wrote:
-> Your knowledge never cease to amaze me.
+On 7/31/2007 5:18 PM, Maximilian Wilhelm wrote:
+> You can't.
 
-*nod*  Thank you.  I like to share my trials and tribulations with 
-others so that they do not have to fight the same problems that I have 
-had to fight.  I'm still working on getting our sales staff to not write 
-such big checks with their moths that I can hardly cash with my sweat.
+Yes you can.  Well if you understand the concepts of latter logic used 
+when electro-mechanical relays were used to control elevators you can.
 
-> Could one use iptables to do this?
+> But what's wrong with the two rules?
 
-Possibly.  If you enable the "Bridged IP/ARP packets filtering" 
-(CONFIG_BRIDGE_NETFILTER) support in the kernel, yes IPTables would be 
-able to filter this.  However I do not know if it would be better to do 
-this with EBTables or IPTables.  The only thing that I can say to this 
-effect is that EBTables is (native) OSI Layer 2 and IPTables is (native) 
-OSI Layer 3+.  With the "Bridged IP/ARP packets filtering" option 
-enabled, you can use the OSI Layer 3+ features of IPTables on OSI Layer 
-2, however you are using a higher layer and more complex match than is 
-in my opinion really needed.  I think it would be akin to opening up 
-Excel to calculate some numbers via formula verses using calculator. 
-Seeing as how EBTables is (native) OSI Layer 2, which is where you are 
-really needing to do you work, I think it would be a better solution.
+Nothing.  The old saying "If it isn't broke, don't fix it..." with it's 
+third stanza "...optimize it!" comes to mind.
 
-Question, does the box that you are adding this 3rd NIC to already have 
-IPTables set up and installed?  If the answer is yes, I suppose that it 
-would work just fine.  If the answer is no (you are doing your SNAT / 
-Masquerading elsewhere) then EBTables's basic match of in / out 
-interface may work just as easily.  Consider the complexity of what is 
-in kernel.
+> What you could do if you like is to pass every connection to port 22 
+> to a subchain like this:
+> 
+> iptables -N filter_ssh_access
+> iptables -A INPUT -p tcp --dport 22 -j filter_ssh_access
 
-If you do do your NATing / Masquerading on the system in question, you 
-could have (for maintenance reasons) a clear separation of where your 
-OSI Layer 2 and OSI Layer 3 filtering is done, with EBTables and 
-IPTables respectively.
+Yes...
 
-If you are concerned about needing to learn a new filtering structure 
-and command syntax, don't be as EBTables is so similar to IPTables that 
-it is uncanny.  Incidentally so is ARPTables from what I remember.  Nor 
-do I think this similarity is by accident.
+> iptables -A filter_ssh_access -s ! a.b.c.d/29 -j REJECT --reject-with 
+> icmp-admin-prohibited
+> iptables -A filter_ssh_access -s ! e.f.g.h -j REJECT --reject-with 
+> icmp-admin-prohibited
 
-> -A FORWARD -physdev --physdev-in eth0 --physdev-out eth2 -j DROP
-> -A FORWARD -physdev --physdev-in eth2 --physdev-out eth0 -j DROP
-> -A FORWARD -j ACCEPT
+Oh, so close.
 
-I have never worked with the physdev match extension so I can not say 
-for sure.  I do not recall which features were being taken out of main 
-line NetFilter code, but I want to say that physdev was one of them, 
-thus meaning you would have to keep patching the kernel when you upgrade 
-to make this work.  Thus in my opinion making the EBTables option more 
-maintainable and thus more appealing.
+> You might have noticed that I've changed the "DROP" to "REJECT" with 
+> fitting type which will make the live of you and other people easier 
+> when debugging anything related to ssh access to this box.
 
+The problem with this is that if you have an IP address of e.f.g.h, the 
+first rule will reject the connection.  Negative logic does not work 
+quite as you would expect it to.  You have to work with inverted 
+positive logic below (invert the result of the entire set of logic).
 
-> Regardless, I'd still be very interested in seeing the ebtables 
-> ruleset to accomplish this.
+There is also the fact that fewer and fewer things know how to handle 
+error messages like this, or if they do they do not display them to the 
+end user.  (Thanks M$!)  You may have better luck with a basic REJECT 
+target than one that specifies the ICMP error code unless you know that 
+you are working with a client application that can correctly interpret.
 
-ebtables -A FORWARD -i eth0 -o eth2 -j DROP
-ebtables -A FORWARD -i eth2 -o eth0 -j DROP
+Try this on for size.
 
-Note, you do not need to set the ACCEPT target because the default 
-policy is to ACCEPT.
+iptables -N filter_ssh_access
+iptables -A INPUT -p tcp --dport 22 -j filter_ssh_access
 
-> Thanks,
+iptables -A filter_ssh_access -s a.b.c.d/29 -j ACCEPT
+iptables -A filter_ssh_access -s e.f.g.h -j ACCEPT
+iptables -A filter_ssh_access -j REJECT --reject-with icmp-admin-prohibited
 
-*nod*
-
-> ps pls reply to list; my email is a throwaway.
-
-No problem.  I generally only reply to the list / news group unless 
-explicitly asked to do so.  That way the answer is in the archives for 
-others to benefit from.
+In this case, you are jumping to a sub-chain just like Max suggested. 
+However the difference is that you are accepting on known good and then 
+rejecting after the list of known good has been exhausted.  This will 
+scale compared to rules conflicting with each other, which is what the 
+OP and Max had happening.
 
 
 
