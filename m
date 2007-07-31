@@ -1,13 +1,10 @@
-From: Frank Petran <frank.petran@inpho.de>
-Subject: Re: getting iptables into embedded kernel
-Date: Tue, 31 Jul 2007 12:09:30 +0200
-Message-ID: <200707311209.30984.frank.petran@inpho.de>
-References: <1529899887@web.de>
+From: Klaus Wacker <klaus_gr_W_kl_Acker@web.de>
+Subject: getting iptables into embedded kernel
+Date: Tue, 31 Jul 2007 12:32:32 +0200
+Message-ID: <1530036879@web.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1529899887@web.de>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,17 +21,20 @@ To: netfilter@lists.netfilter.org
 On Tuesday 31 July 2007 11:24, Klaus Wacker wrote:
 > Yes, did that and then I try to run it but it only says "cannot execute
 > binary file"
-What machine were you using to compile the iptables binary?
+>What machine were you using to compile the iptables binary?
 
-You mentioned, your target machine is a PPC, if you compile iptables on an x86 
-machine without cross compiling option for PPC, you will end up with an Intel 
-binary that will not run on Power-PC architecture.
+>You mentioned, your target machine is a PPC, if you compile iptables on an x86 
+>machine without cross compiling option for PPC, you will end up with an Intel 
+>binary that will not run on Power-PC architecture.
 
-Frank
--- 
-INPHO GmbH   *   Smaragdweg 1   *   70174 Stuttgart   *   Germany
-phone: +49 711 2288 10  *  fax: +49 711 2288 111  *  web: www.inpho.de
-place of business: Stuttgart    *   managing director: Johannes Saile
-commercial register: Stuttgart, HRB 9586
-Visit us at Trimble Dimensions 2007
+>Frank
+I compile on a PC linux box, my target is a PPC 85xx. I use a denx distro.
+First I thought this goes into the kernel and the KERNEL_DIR takes care of that. 
+I did have set my CROSS_COMPILE to my target and did set the PATH as well. I've just tried again with ARCH=ppc and CROSS_COMPILE=ppc_85xx-  
+;this doesn't work either.
+Klaus
+_____________________________________________________________________
+Der WEB.DE SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!
+http://smartsurfer.web.de/?mc=100071&distributionid=000000000066
+
 
