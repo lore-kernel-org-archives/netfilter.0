@@ -1,13 +1,12 @@
-From: "CrackyBlue" <crackyblue@gmail.com>
-Subject: Common installation error
-Date: Tue, 31 Jul 2007 10:29:26 +0800
-Message-ID: <46ae9eec.26d7720a.2cfb.ffffbc40@mx.google.com>
+From: Gregory Carter <gcarter@aesgi.com>
+Subject: Re: compiling extension modules with -std=c99 fails
+Date: Mon, 30 Jul 2007 21:37:05 -0500
+Message-ID: <46AEA051.1@aesgi.com>
+References: <23738f080707301914p65be54c2o9ef6e840c86920e6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:from:to:subject:date:mime-version:content-type:content-transfer-encoding:x-mailer:thread-index:x-mimeole:message-id;
-	b=sVahEV/isZykA24yr4GTU5wgZZ8Te2oxh1KtbsYgTAtXE9uRC5yqANCRB/Dyi0O8xlc4uKpPtvn7PPzBVptxq+VqJZbDEoTtYum+R/bqDL5XB8OLhUj8qsmCDZYafmeEZiybh6Q3VpaLwD47jMfNRLfTunLFli9ZSWyPx6EFsyk=
+In-Reply-To: <23738f080707301914p65be54c2o9ef6e840c86920e6@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,21 +17,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Lots of reasons.
 
-I just upgraded to 1.3.8 of iptables with Kernel 2.6.21.  When I run my
-iptables script, it seems that it doesn't recognize the tables and modules I
-have.  I have script for 5 years now and it doesn't bark at me with older
-iptable version and older kernel.  
+What version of kernel development shipped with your distro?
 
-Anyway, whats the common iptables installation errors that caused this, I
-followed the instructions on the INSTALL?
+What version of gcc are you using?
 
-TIA 
+-gc
 
-
+Sashan Govender wrote:
+> Hi
+>
+> Is there any reason why compiling the iptables extensions should fail
+> when using -std=c99?
+>
+> cc -O2 -Wall -Wunused
+> -I/usr/src/kernels/2.6.18-1.2798.fc6-i586/include -Iinclude/
+> -DIPTABLES_VERSION=\"1.3.5\"
+> -DIPT_LIB_DIR=\"/usr/local/lib/iptables\" -rdynamic -o iptables
+> iptables-standalone.c iptables.o libiptc/libiptc.a -ldl -lnsl -std=c99
+> In file included from include/libiptc/libiptc.h:6,
+>                  from include/iptables.h:5,
+>                  from iptables-standalone.c:38:
+> /usr/src/kernels/2.6.18-1.2798.fc6-i586/include/linux/netfilter_ipv4/ip_tables.h:43:
+> error: IFNAMSIZ undeclared here (not in a function)
+>
+>
+>   
 
 
