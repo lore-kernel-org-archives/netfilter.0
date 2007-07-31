@@ -1,10 +1,13 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnfnetlink release 0.0.30
-Date: Tue, 31 Jul 2007 11:26:31 +0200
-Message-ID: <46AF0047.9020705@netfilter.org>
+From: Frank Petran <frank.petran@inpho.de>
+Subject: Re: getting iptables into embedded kernel
+Date: Tue, 31 Jul 2007 12:09:30 +0200
+Message-ID: <200707311209.30984.frank.petran@inpho.de>
+References: <1529899887@web.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080903030609000601090107"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <1529899887@web.de>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,63 +18,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
-Cc: lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------080903030609000601090107
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Tuesday 31 July 2007 11:24, Klaus Wacker wrote:
+> Yes, did that and then I try to run it but it only says "cannot execute
+> binary file"
+What machine were you using to compile the iptables binary?
 
-Hi!
+You mentioned, your target machine is a PPC, if you compile iptables on an x86 
+machine without cross compiling option for PPC, you will end up with an Intel 
+binary that will not run on Power-PC architecture.
 
-The netfilter project proudly presents libnfnetlink 0.0.30
-
-libnfnetlink is the low-level library for netfilter related
-kernel/userspace communication. It provides a generic messaging
-infrastructure for in-kernel netfilter subsystems (such as
-nfnetlink_log, nfnetlink_queue, nfnetlink_conntrack) and their
-respective users and/or management tools in userspace.
-
-You can download it from:
-
-http://www.netfilter.org/projects/libnfnetlink/downloads.html
-
-Pablo (on behalf of the Netfilter Project)
-
---=20
-"Ser=E1 preciso viajar a trav=E9s de los ojos de los idiotas" -- Poeta en
-Nueva York -- Federico Garc=EDa Lorca.
-
---------------080903030609000601090107
-Content-Type: text/plain;
- name="ChangeLog"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ChangeLog"
-
-libnfnetlink 0.0.30
-======================================================================
-
-Changes from 0.0.25:
-
-- update linux_nfnetlink.h from kernel sources
-	[Pablo Neira Ayuso]
-
-- remove the nest bit: we don't send it to kernel anymore
-	[Pablo Neira Ayuso]
-
-- remove linux/types.h include from libnfnetlink.h
-	[Eric Leblond]
-
-- introduce index2interface API
-	[Eric Leblond]
-
-- added a test file to utils/iftest.c
-	[Pablo Neira Ayuso]
-
-- compile fix with old glibc
-	[Thomas Jarosch]
-
---------------080903030609000601090107--
+Frank
+-- 
+INPHO GmbH   *   Smaragdweg 1   *   70174 Stuttgart   *   Germany
+phone: +49 711 2288 10  *  fax: +49 711 2288 111  *  web: www.inpho.de
+place of business: Stuttgart    *   managing director: Johannes Saile
+commercial register: Stuttgart, HRB 9586
+Visit us at Trimble Dimensions 2007
 
