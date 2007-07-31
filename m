@@ -1,16 +1,12 @@
-From: "Maxim Veksler" <hq4ever@gmail.com>
-Subject: blocking access to port 22 when INPUT policy is ACCEPT
-Date: Wed, 1 Aug 2007 01:04:20 +0300
-Message-ID: <b400c69a0707311504g653c5bcdv86f100f5278a8fda@mail.gmail.com>
-References: <b400c69a0707311002j46a9505du414c2058edbe79e2@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Multiple PPTP connections from same public IP ?
+Date: Wed, 01 Aug 2007 00:12:51 +0200
+Message-ID: <46AFB3E3.4050505@plouf.fr.eu.org>
+References: <46AFAB54.5020602@pason.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-	b=KDLijLw6AhcwLJGfscGWlWFzKa+SI33LbeHpQwDzZCoVtmIYWiZ0Q7PzgRJtuN7m+EEJNuc3DtZ/qeFtVBd8IiyI+Jq03Pb7C9kCYGOMrJofVEIHRKXjAqNWQXG2G18BtrH/Vvwo+vllcUzudnJ0/4f1yk+ks4FjNi9DkRSK99w=
-In-Reply-To: <b400c69a0707311002j46a9505du414c2058edbe79e2@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <46AFAB54.5020602@pason.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,29 +17,21 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@lists.netfilter.org
 
 Hello,
 
-I have my machine configured to allow all traffic in INPUT table, but
-I would like to block access to port tcp22 from all besides several
-ip's.
+Michael Gale wrote :
+> 
+> Am I correct that mutliple GRE (proto 47) tunnels would be a problem 
+> when the clients have the same IP address ?
 
-The following rules as the basic of what I'm trying to achieve:
+Yes, unless the NAT in "firewall A" has PPTP support.
 
-/sbin/iptables -A INPUT -s ! a.b.c.d/29 -p tcp --dport 22 -j DROP
-/sbin/iptables -A INPUT -s ! e.f.g.h -p tcp --dport 22 -j DROP
+> We are running the standard kernel 2.6.9-42.0.3.EL.
 
-How can I do a "AND" between them as in
- if (-s ! a.b.c.d/29 AND -s ! e.f.g.h) then -j DROP ?
-
-Thank you,
-Maxim.
-
--- 
-Cheers,
-Maxim Veksler
-
-"Free as in Freedom" - Do u GNU ?
+On "firewall A" ? If so, can't you use a more recent kernel ? PPTP 
+conntrack and NAT support, formerly in the patch-o-matic-ng, was added 
+in the mainline kernel in version 2.6.14.
 
