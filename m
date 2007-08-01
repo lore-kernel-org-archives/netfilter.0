@@ -1,12 +1,13 @@
-From: Michael Gale <michael.gale@pason.com>
-Subject: Re: Multiple PPTP connections from same public IP ?
-Date: Wed, 01 Aug 2007 13:38:32 -0600
-Message-ID: <46B0E138.6040505@pason.com>
-References: <46AFAB54.5020602@pason.com> <46AFB3E3.4050505@plouf.fr.eu.org>
+From: Pawel Zawora <pzawora@interia.pl>
+Subject: Re: two subnets...
+Date: Wed, 01 Aug 2007 22:14:43 +0200
+Message-ID: <46B0E9B3.6050008@interia.pl>
+References: <46ADBDF0.3020200@mp.pl>	<46AF4FC7.1000500@riverviewtech.net>	<46AF8D63.8080900@interia.pl>	<46AF9694.1060709@riverviewtech.net>
+	<46AFBA57.3040702@mailinator.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46AFB3E3.4050505@plouf.fr.eu.org>
+In-Reply-To: <46AFBA57.3040702@mailinator.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,43 +19,157 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@lists.netfilter.org
-
-Hey,
-
-	Thanks for the reply, I will look into upgrading this kernel.
-
-Michael
+To: netfilter <netfilter@lists.netfilter.org>
 
 
-Pascal Hambourg wrote:
-> Hello,
-> 
-> Michael Gale wrote :
+I have no experience with bridgging ...
+Is there any way to use my linux router as bridge ?
+I'm using multiple routing tables  (source routing) to route between 
+interfaces (3 IPS , 4 local networks + tunells)
+
+Is there no way to use routing instead of  bridging?
+Can I mark packet (via iptables) and next create routing rules based on 
+the mark?  (on the router)
+How to enforce routing via gw (my router) from machines in "my" subnet 
+to "foregin" subnet?  (by default thay seem that host a.b.c.97 is in 
+local subnet ?
+Is any way to enfore routing (somethig like DR used by LVS? ) )
+
+
+   my subnet                                                     foreign 
+subnet
++------------+         +----------------+          +------------+
+| a.b.c.2/25   +---+  | router (bride?)   + -----+| a.b.c.97/29 +
++------------+     |   +----------------+           +------------+
++------------+     |
+| a.b.c.3/25   +---+
++------------+     |
+
+
+Thanks for suggestions...
+
+Pawel
+
+
+Mike Wright wrote:
+> Grant Taylor wrote:
+>> On 07/31/07 14:28, Pawel Zawora wrote:
 >>
->> Am I correct that mutliple GRE (proto 47) tunnels would be a problem 
->> when the clients have the same IP address ?
-> 
-> Yes, unless the NAT in "firewall A" has PPTP support.
-> 
->> We are running the standard kernel 2.6.9-42.0.3.EL.
-> 
-> On "firewall A" ? If so, can't you use a more recent kernel ? PPTP 
-> conntrack and NAT support, formerly in the patch-o-matic-ng, was added 
-> in the mainline kernel in version 2.6.14.
-> 
+>>> I need separate 3 foreign machines (security reason - firewall 
+>>> between subnets is required).
+>>
+>>
+>> *nod*  This is not a problem at all.
+>>
+>>> I cannot divide one 128 pubic IPs  subnet...
+>>
+>>
+>> You do not need to.
+>>
+>>> Foreign machines have to use public IPs....
+>>
+>>
+>> *nod*
+>>
+>> Say you have the following systems:
+>>
+>> +---------+
+>> | a.b.c.1 +---+
+>> +---------+   |
+>> | a.b.c.3 +---+
+>> +---------+   |
+>> | a.b.c.5 +---+
+>> +---------+   |   +--------+
+>> | a.b.c.7 +---+---+ Router +---(Internet)
+>> +---------+   |   +--------+
+>> | a.b.c.9 +---+
+>> +---------+   |
+>> | a.b.c.8 +---+
+>> +---------+   |
+>> | a.b.c.6 +---+
+>> +---------+
+>>
+>> And you want to split some of the computers off on to their own 
+>> segment so that they can not talk to the others and others can not 
+>> talk to them.
+>>
+>> +---------+
+>> | a.b.c.1 +---+
+>> +---------+   |
+>> | a.b.c.3 +---+
+>> +---------+   |
+>> | a.b.c.5 +---+
+>> +---------+   |
+>> | a.b.c.7 +---+---+
+>> +---------+       |   +-------------------------------+
+>>                   +---+                               |
+>> ======================| Bridge / OSI Layer 2 Firewall +---(Internet)
+>>                   +---+                               |
+>> +---------+       |   +-------------------------------+
+>> | a.b.c.9 +---+---+
+>> +---------+   |
+>> | a.b.c.8 +---+
+>> +---------+   |
+>> | a.b.c.6 +---+
+>> +---------+
+>>
+>> Let's assume that:
+>>  - eth0 (top) goes to the top set of computers
+>>  - eth1 (middle) goes to the internet
+>>  - eth2 (bottom) goes to the bottom set of computers
+>>
+>> Add eth0 and eth2 to the bridge.
+>>
+>> Allow all traffic to pass through the bridge by default.
+>> Block traffic from coming in to the bridge from eth0 and going out eth2.
+>> Block traffic from coming in to the bridge from eth2 and going out eth0.
+>>
+>> This allows traffic to come in eth0 and go out eth1.
+>> This allows traffic to come in eth1 and go out either eth0 or eth2.
+>> This allows traffic to come in eth2 and go out eth1.
+>>
+>> This prevents computers on either part of the bridge from talking 
+>> with each other.  Thus your computers that you can not change the IP 
+>> addresses on are still at the same IP address.
+>>
+>> This allows you to have two logically separated LANs so that they can 
+>> not communicate with each other.
+>>
+>> Does this help explain what I'm talking about?  Again, I have used 
+>> this scenario MANY MANY times and have been EXTREMELY pleased with 
+>> it.  Let me know if I need to try to explain this differently.
+>>
+>> If this is what you are wanting to do, EBTables can VERY easily 
+>> accomplish this.  Let me know if this is what you need and I'll help 
+>> provide you with a mach EBTables set up.
+>>
+>>
+>
+> Hi Grant,
+>
+> Your knowledge never cease to amaze me.
+>
+> Could one use iptables to do this?
+>
+> -A FORWARD -physdev --physdev-in eth0 --physdev-out eth2 -j DROP
+> -A FORWARD -physdev --physdev-in eth2 --physdev-out eth0 -j DROP
+> -A FORWARD -j ACCEPT
+>
+> Regardless, I'd still be very interested in seeing the ebtables 
+> ruleset to accomplish this.
+>
+> Thanks,
+> Mike Wright :m)
+>
+> ps pls reply to list; my email is a throwaway.
+>
+>
+>
 
--- 
-Michael Gale
 
-Red Hat Certified Engineer
-Network Administrator
-Pason Systems Corp.
+----------------------------------------------------------------------
+Najseksowniejsi chlopcy, najladniejsze dziewczyny, sprawdz i ocen 
 
-"Life is not easy for any of us, but what of that? We must have perseverance and above all confidence in ourselves. We must believe that we are gifted in something, and 
-that this thing, at whatever cost, must be attained."
+>>>http://link.interia.pl/f1b23
 
-Marie Curie
-French (Polish-born) chemist & physicist (1867 - 1934)
 
