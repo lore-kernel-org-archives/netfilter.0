@@ -1,11 +1,10 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: blocking access to port 22 when INPUT policy is ACCEPT
-Date: Wed, 1 Aug 2007 09:30:04 +0100 (BST)
-Message-ID: <Pine.LNX.4.58.0708010840140.20822@mail3.jubileegroup.co.uk>
-References: <200708010731.l717Vte0020939@mail3.jubileegroup.co.uk>
+From: "Thiago Lucas" <thiago@powers.com.br>
+Subject: Re: UDP port redirect
+Date: Wed, 1 Aug 2007 09:52:26 -0300
+Message-ID: <OFAACBDF09.F1B5FCC2-ON8325732A.0046B24A-8325732A.0046B865@powers.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200708010731.l717Vte0020939@mail3.jubileegroup.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,37 +15,45 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="koi8-r"
 To: netfilter@lists.netfilter.org
 
-Hi there,
-
-On Wed, 1 Aug 2007 Grant Taylor wrote:
-
-> Wrong logic operator.  The question could also be written as "How do I
-> block all connections not from the set A or B or C or ...".
->
-> One way to achieve this is with the IPSet match extension (which I
-> have not worked with, so this may not be syntactically correct).
->
-> iptables -A INPUT ! -m set --set sshclients src -j DROP
-
-Looks good to me.  Here's the most recent addition to my roughly two
-dozen ipsets:
-
-iptables -I INPUT 98 -m set --set BLOCKSET08 src -j DROP
-
-(My BLOCKSET08 set blocks /8 IP ranges.  :)
-
-FWIW I have currently block a little over 26,000 IP ranges in 25 sets
-and the performance is fine on very modest hardware.
-
-At present I believe there are some issues compiling ipsets and the
-latest 2.6 kernels, probably worth looking before you leap.
-
---
-
-73,
-Ged.
+8M/Lz9TJzMXOy88g68/T1MnLIDxjYXNwZXJAbWV0ZW9yLmRwLnVhPiBncmF2b3UgZW0gMDEvMDgv
+MjAwNyAwNDowNTowNToNCg0KPiD3IPfUzywgMzEvMDcvMjAwNyDXIDIwOjA0IC0wMzAwLCB0aGlh
+Z29AcG93ZXJzLmNvbS5iciDQydvF1DoNCj4gPiBIZWxsbyBhbGwsDQo+ID4gDQo+ID4gSSBnb3Qg
+YSBwcm9ibGVtIHdoZW4gcmVkaXJlY3RpbmcgYSBVRFAgcG9ydC4gVGhlIHJ1bGVzIGFyZToNCj4g
+PiANCj4gPiAjIFRDUCBwb3J0IHJlZGlyZWN0IC0gd29ya2luZyBmaW5lOg0KPiA+IA0KPiA+IGlw
+dGFibGVzIC10IG5hdCAtQSBQUkVST1VUSU5HIC1pIDxleHRfaWY+IC1wIHRjcCAtZCA8ZXh0X2lw
+PiAtLWRwb3J0IA0KMjIgLWoNCj4gPiBETkFUIC1tIHN0YXRlIC0tc3RhdGUgTkVXIC0tdG8gPGlu
+dF9pcD46MTE5NA0KPiA+IGlwdGFibGVzIC1BIEZPUldBUkQgLWkgPGV4dF9pZj4gLXAgdGNwIC1k
+IDxpbnRfaXA+IC0tZHBvcnQgMTE5NCAtbSANCnN0YXRlDQo+ID4gLS1zdGF0ZSBORVcgLWogQUND
+RVBUDQo+IA0KPiAiLW0gc3RhdGUgLS1zdGF0ZSBORVciIC0gd2hhdCBpcyB0aGlzIGZvcj8gTmF0
+IHRhYmxlIG9ubHkgc2VlcyBwYWNrZXRzDQo+IGluaXRpYXRpbmcgY29ubmVjdGlvbiwgaXNuJ3Qg
+aXQ/DQoNCllvdSBnb3QgaXQgcmlnaHQsIHRoZXJlJ3Mgbm8gbmVlZCBmb3IgdGhhdC4gSSBtYWRl
+IHRoYXQgY2hhbmdlIGluIGEgDQpwcmV2aW91cyBzZWFyY2ggJiByZXBsYWNlLi4gZm9yZ2V0IGFi
+b3V0IGl0Lg0KDQoNCj4gDQo+ID4gIyBVRFAgcG9ydCByZWRpcmVjdCAtIG5vdCBnb2luZyB0aHJv
+dWdoDQo+ID4gDQo+ID4gaXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkgPGV4dF9pZj4g
+LXAgdWRwIC1kIDxleHRfaXA+IC0tZHBvcnQgDQoyMiAtag0KPiA+IEROQVQgLW0gc3RhdGUgLS1z
+dGF0ZSBORVcgLS10byA8aW50X2lwPjoxMTk0DQo+ID4gaXB0YWJsZXMgLUEgRk9SV0FSRCAtaSA8
+ZXh0X2lmPiAtcCB1ZHAgLWQgPGludF9pcD4gLS1kcG9ydCAxMTk0IC1tIA0Kc3RhdGUNCj4gPiAt
+LXN0YXRlIE5FVyAtaiBBQ0NFUFQNCj4gDQo+IFlvdSBhY2NlcHRpbmcgTkVXIHBhY2tldHMgaW4g
+ZmlsdGVyIHRhYmxlLCBjb25zaWRlciBtYWtlIHN1cmUgcmVzdCB3b3VsZA0KPiBwYXNzIHRocm91
+Z2guDQoNCkdvb2QgcmVtaW5kLCBidXQgaXQgaXMgc3RhdGVmdWwsIGZvciBzdXJlLg0KDQo+IA0K
+PiA+IEkgaGl0IHRoZSBuYXQvcHJlcm91dGluZyBydWxlLCBidXQgbmV2ZXIgcmVhY2ggdGhlIGZp
+bHRlci9mb3J3YXJkIG9uZS4NCj4gPiBBcyB5b3UgY2FuIHNlZSB0aGUgb25seSBjaGFuZ2UgSSd2
+ZSBtYWRlIGZyb20gdGhlIHRjcCBydWxlIHRvIHVkcCANCnJ1bGUsIGlzDQo+ID4ganVzdCB0aGUg
+bWF0Y2hpbmcgcHJvdG9jb2wuDQo+ID4gSSBjYW4gZGVidWcgaXQgYSBsaXR0bGUgbW9yZSwgYnV0
+IGFsc28gd291bGQgbGlrZSB0byBoZWFyIGZyb20geW91IA0KZ3V5cyBpZg0KPiA+IHlvdSBoYXZl
+IGFueSBoaW50cy4NCj4gDQo+IEFsc28sIEkndmUgZXhwZXJpZW5zZWQgc2l0dWF0aW9uIGZvciBV
+RFAgd2hlbiBuYXQgcnVsZXMgZG9lc24ndCBtYXRjaCANCmJlY2F1c2UNCj4gdGhlcmUgd2FzIHN1
+Y2ggY29ubmVjdGlvbiBiZWZvcmUgdGhlIHJ1bGUgaW5zZXJ0ZWQgYW5kIGNvbm50cmFjayBhbHJl
+YWR5IA0Kc2F3DQo+IGl0IGFuZCBoYXMgaXQgY291bnRlZC4gVURQIGNvbm5lY3Rpb24gdHJhY2tp
+bmcgKHNpbmNlIGl0J3MgYSANCmNvbm5lY3Rpb25sZXNzDQo+IHByb3RvY29sKSBnb2VzIGJ5IHNy
+Yy9kc3QgcG9ydHMuIFBhY2tldHMgY2FuIGJlbG9uZyB0byBkaWZmZXJlbnQNCj4gImNvbm5lY3Rp
+b25zIi4gVGhlIHNvbHV0aW9uIGZvciBtZSB3YXMgdG8gc3RvcCBVRFAgY29ubmVjdGlvbiBmb3Ig
+DQpzZXZlcmFsDQo+IG1pbnV0ZXMgdG8gbWFrZSBjb25udHJhY2sgZm9yZ2V0IGl0IGFuZCB0aGVu
+IHRyeSBhZ2Fpbi4gDQoNCkhhZCB0aGUgc2FtZSAobm90IHBsZWFzYW50KSBleHBlcmllbmNlIHdp
+dGggdGhhdCBiZWZvcmUsIHRvby4gQ29ubnRyYWNrIA0KdHVuYWJsZXMgaW4gL3Byb2Mvc3lzL25l
+dC9pcHY0L25ldGZpbHRlci8gaGVscGVkIG1lIGEgbG90Lg0KDQoNClRoYW5rcyBhbnl3YXkgIQ0K
+DQo=
 
