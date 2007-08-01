@@ -1,9 +1,15 @@
-From: "Thiago Lucas" <thiago@powers.com.br>
-Subject: Re: UDP port redirect
-Date: Wed, 1 Aug 2007 09:52:38 -0300
-Message-ID: <OFA4C855BE.5EB3EB70-ON8325732A.0046BADD-8325732A.0046BD2D@powers.com.br>
+From: Maximilian Wilhelm <max@rfc2324.org>
+Subject: Re: blocking access to port 22 when INPUT policy is ACCEPT
+Date: Wed, 1 Aug 2007 15:28:25 +0200
+Message-ID: <20070801132825.GA8336@outback.rfc2324.org>
+References: <b400c69a0707311002j46a9505du414c2058edbe79e2@mail.gmail.com>
+	<b400c69a0707311504g653c5bcdv86f100f5278a8fda@mail.gmail.com>
+	<20070731221833.GA589@outback.rfc2324.org>
+	<46AFC850.5060307@riverviewtech.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <46AFC850.5060307@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,54 +24,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello Martijn,
+Am Tuesday, den 31 July hub Grant Taylor folgendes in die Tasten:
 
+> >But what's wrong with the two rules?
 
-Martijn Lievaart <m@rtij.nl> gravou em 01/08/2007 03:07:23:
+> Nothing.  The old saying "If it isn't broke, don't fix it..." with it's 
+> third stanza "...optimize it!" comes to mind.
 
-> Not sure why this doesn't work, but you don't need the state match in 
-> the NAT rule.
+:)
 
-That state match in nat/prerouting, my mistake.. it shouldn't be there. 
-But I don't believe that was the problem, as it just does nothing..
+[...]
+> >You might have noticed that I've changed the "DROP" to "REJECT" with 
+> >fitting type which will make the live of you and other people easier 
+> >when debugging anything related to ssh access to this box.
 
-> iptables -t nat -A PREROUTING -i <ext_if> -p udp -d <ext_ip> --dport
-> 22 -j DNAT  --to <int_ip>:1194
-> iptables -A FORWARD -i <ext_if> -p udp -d <int_ip> --dport 1194 -m 
-> state --state NEW -j ACCEPT
-> 
-> should work.
+> The problem with this is that if you have an IP address of e.f.g.h, the 
+> first rule will reject the connection.  Negative logic does not work 
+> quite as you would expect it to.  You have to work with inverted 
+> positive logic below (invert the result of the entire set of logic).
 
-It should ! :-)
+Argh.
+I should not write mails when totally tired.
+I'm really sorry for the fnord.
+Thanks for getting it right.
 
-> 
-> You may want to add an explicit LOG rule:
-> 
-> iptables -A FORWARD -i <ext_if> -p udp -d <int_ip> --dport 1194 -j 
-> LOG --log-prefix "WRONG: "
-> 
-> or even
-> 
-> iptables -A FORWARD -p udp --dport 1194 -j LOG --log-prefix "WRONG: "
+> There is also the fact that fewer and fewer things know how to handle 
+> error messages like this, or if they do they do not display them to the 
+> end user.  (Thanks M$!)  You may have better luck with a basic REJECT 
+> target than one that specifies the ICMP error code unless you know that 
+> you are working with a client application that can correctly interpret.
+[...]
 
+You're sadly right here, too.
+But I have to state that tcpdump (which most probably will be most
+often used when debugging network problems) shows this correct.
+I think ethereal^Wwhireshark will do so, too.
 
-The connection never goes through :/
-
-fw:/etc/iptables # iptables -t nat -L PREROUTING -n -v | grep -E 
-'udp.*22.*1194'
-    1    70 DNAT       udp  --  eth0   *       0.0.0.0/0 <ext_ip> udp 
-dpt:22 to:192.168.10.254:1194 
-
-fw:/etc/iptables # iptables -L FORWARD -n -v | grep -E 'LOG.*udp.*1194'
-    0     0 LOG        udp  --  eth0   *       0.0.0.0/0 192.168.10.254  
-udp dpt:1194 LOG flags 0 level 4 prefix `WRONG: ' 
-
-> 
-> 
-> after the ACCEPT rule to debug this.
-> 
-> M4
-> 
-> 
-
+Ciao
+Max
+-- 
+	Follow the white penguin.
 
