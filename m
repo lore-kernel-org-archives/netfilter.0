@@ -1,14 +1,14 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	=?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: UDP port redirect
-Date: Wed, 01 Aug 2007 10:05:05 +0300
-Message-ID: <1185951905.4759.12.camel@localhost.localdomain>
-References: <OF83D375B4.D0B6CF03-ON83257329.007CF9E3-83257329.007EC41C@powers.com.br>
-Reply-To: casper@meteor.dp.ua
+From: =?UTF-8?B?SsO6bGl1cyBCZW3FoQ==?= <julo@atknet.sk>
+Subject: RE: adding rules - slow
+Date: Wed, 1 Aug 2007 09:24:21 +0200
+Message-ID: <002f01c7d40c$fb1b87d0$f1529770$@sk>
+References: <46aa63fb.120b420a.16f8.0c23@mx.google.com>
+	<1185572284.10031.2.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <OF83D375B4.D0B6CF03-ON83257329.007CF9E3-83257329.007EC41C@powers.com.br>
+In-Reply-To: <1185572284.10031.2.camel@localhost>
+Content-Language: sk
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,37 +19,75 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="koi8-r"
-To: thiago@powers.com.br
+Content-Type: text/plain; charset="utf-8"
+To: "'John A. Sullivan III'" <jsullivan@opensourcedevel.com>
 Cc: netfilter@lists.netfilter.org
 
-9yD31M8sIDMxLzA3LzIwMDcg1yAyMDowNCAtMDMwMCwgdGhpYWdvQHBvd2Vycy5jb20uYnIg0Mnb
-xdQ6Cj4gSGVsbG8gYWxsLAo+IAo+IEkgZ290IGEgcHJvYmxlbSB3aGVuIHJlZGlyZWN0aW5nIGEg
-VURQIHBvcnQuIFRoZSBydWxlcyBhcmU6Cj4gCj4gIyBUQ1AgcG9ydCByZWRpcmVjdCAtIHdvcmtp
-bmcgZmluZToKPiAKPiBpcHRhYmxlcyAtdCBuYXQgLUEgUFJFUk9VVElORyAtaSA8ZXh0X2lmPiAt
-cCB0Y3AgLWQgPGV4dF9pcD4gLS1kcG9ydCAyMiAtago+IEROQVQgLW0gc3RhdGUgLS1zdGF0ZSBO
-RVcgLS10byA8aW50X2lwPjoxMTk0Cj4gaXB0YWJsZXMgLUEgRk9SV0FSRCAtaSA8ZXh0X2lmPiAt
-cCB0Y3AgLWQgPGludF9pcD4gLS1kcG9ydCAxMTk0IC1tIHN0YXRlCj4gLS1zdGF0ZSBORVcgLWog
-QUNDRVBUCgoiLW0gc3RhdGUgLS1zdGF0ZSBORVciIC0gd2hhdCBpcyB0aGlzIGZvcj8gTmF0IHRh
-YmxlIG9ubHkgc2VlcyBwYWNrZXRzCmluaXRpYXRpbmcgY29ubmVjdGlvbiwgaXNuJ3QgaXQ/Cgo+
-ICMgVURQIHBvcnQgcmVkaXJlY3QgLSBub3QgZ29pbmcgdGhyb3VnaAo+IAo+IGlwdGFibGVzIC10
-IG5hdCAtQSBQUkVST1VUSU5HIC1pIDxleHRfaWY+IC1wIHVkcCAtZCA8ZXh0X2lwPiAtLWRwb3J0
-IDIyIC1qCj4gRE5BVCAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAtLXRvIDxpbnRfaXA+OjExOTQKPiBp
-cHRhYmxlcyAtQSBGT1JXQVJEIC1pIDxleHRfaWY+IC1wIHVkcCAtZCA8aW50X2lwPiAtLWRwb3J0
-IDExOTQgLW0gc3RhdGUKPiAtLXN0YXRlIE5FVyAtaiBBQ0NFUFQKCllvdSBhY2NlcHRpbmcgTkVX
-IHBhY2tldHMgaW4gZmlsdGVyIHRhYmxlLCBjb25zaWRlciBtYWtlIHN1cmUgcmVzdCB3b3VsZApw
-YXNzIHRocm91Z2guCgo+IEkgaGl0IHRoZSBuYXQvcHJlcm91dGluZyBydWxlLCBidXQgbmV2ZXIg
-cmVhY2ggdGhlIGZpbHRlci9mb3J3YXJkIG9uZS4KPiBBcyB5b3UgY2FuIHNlZSB0aGUgb25seSBj
-aGFuZ2UgSSd2ZSBtYWRlIGZyb20gdGhlIHRjcCBydWxlIHRvIHVkcCBydWxlLCBpcwo+IGp1c3Qg
-dGhlIG1hdGNoaW5nIHByb3RvY29sLgo+IEkgY2FuIGRlYnVnIGl0IGEgbGl0dGxlIG1vcmUsIGJ1
-dCBhbHNvIHdvdWxkIGxpa2UgdG8gaGVhciBmcm9tIHlvdSBndXlzIGlmCj4geW91IGhhdmUgYW55
-IGhpbnRzLgoKQWxzbywgSSd2ZSBleHBlcmllbnNlZCBzaXR1YXRpb24gZm9yIFVEUCB3aGVuIG5h
-dCBydWxlcyBkb2Vzbid0IG1hdGNoIGJlY2F1c2UKdGhlcmUgd2FzIHN1Y2ggY29ubmVjdGlvbiBi
-ZWZvcmUgdGhlIHJ1bGUgaW5zZXJ0ZWQgYW5kIGNvbm50cmFjayBhbHJlYWR5IHNhdwppdCBhbmQg
-aGFzIGl0IGNvdW50ZWQuIFVEUCBjb25uZWN0aW9uIHRyYWNraW5nIChzaW5jZSBpdCdzIGEgY29u
-bmVjdGlvbmxlc3MKcHJvdG9jb2wpIGdvZXMgYnkgc3JjL2RzdCBwb3J0cy4gUGFja2V0cyBjYW4g
-YmVsb25nIHRvIGRpZmZlcmVudAoiY29ubmVjdGlvbnMiLiBUaGUgc29sdXRpb24gZm9yIG1lIHdh
-cyB0byBzdG9wIFVEUCBjb25uZWN0aW9uIGZvciBzZXZlcmFsCm1pbnV0ZXMgdG8gbWFrZSBjb25u
-dHJhY2sgZm9yZ2V0IGl0IGFuZCB0aGVuIHRyeSBhZ2Fpbi4gCgo+IGlwdGFibGVzIHYxLjMuOAo+
-IDIuNi4xNi4zNi1kZWZhdWx0Cj4gCj4gVGhhbmtzICEKPiAKPiBUaGlhZ28uCj4gCj4gCj4gCi0t
-IArwz8vP1MnMxc7LzyDrz9PUycsgPGNhc3BlckBtZXRlb3IuZHAudWE+CgoK
+Thank you very much ... good idea.
+But do you know why is iptables so slow? Because I think about writing =
+my own utility for adding new rules.
+
+-----Original Message-----
+From: netfilter-bounces@lists.netfilter.org =
+[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of John A. =
+Sullivan III
+Sent: Friday, July 27, 2007 11:38 PM
+To: J=C3=BAlius Bem=C5=A1
+Cc: netfilter@lists.netfilter.org
+Subject: Re: adding rules - slow
+
+On Fri, 2007-07-27 at 23:30 +0200, J=C3=BAlius Bem=C5=A1 wrote:
+> Hi,
+>=20
+> When I need to add som rules (in my case 100) to some chain it takes =
+various
+> time, depending on the number of existing rules in the chain. So when =
+I add
+> 100 rules to empty chain, it takes 1.8sec. If tehere is 1000 rules int =
+the
+> chain, it takes 4.5sec and if there is 10000 rules it takes 21sec.=20
+>=20
+> My problem is, that i need to add this rules to chain which contains =
+20000
+> rules in short time. I think, that the way of adding rules into chain =
+is
+> very innefective.=20
+>=20
+> Could someone tell me how the adding works internally? What data =
+structures
+> are used? Because I need solve this and find the way how to add new =
+rules
+> quickly.
+>=20
+> Thanks for replies
+>=20
+>=20
+We face the same problem on the ISCS project
+(http://iscs.sourceforge.net).  There, do to micro-perimeter network
+security, we frequently generate thousands or tens of thousands of rules
+with the click of a mouse.
+
+We handle it by adding rules via iptables-restore rather than iptables.
+The load time difference is remarkable.  You write your rules into files
+with very similar syntax to iptables and then direct them into
+iptables-restore, e.g.,=20
+
+iptables-restore < /etc/PEP/rules.txt
+
+or, if you do not want to overwrite existing rules,
+
+iptables-restore -n < /etc/PEP/runtimerules.txt
+
+Hope this helps - John
+--=20
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+Financially sustainable open source development
+http://www.opensourcedevel.com
+
+
+
+
