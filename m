@@ -1,15 +1,15 @@
 From: Maximilian Wilhelm <max@rfc2324.org>
-Subject: Re: blocking access to port 22 when INPUT policy is ACCEPT
-Date: Wed, 1 Aug 2007 15:28:25 +0200
-Message-ID: <20070801132825.GA8336@outback.rfc2324.org>
-References: <b400c69a0707311002j46a9505du414c2058edbe79e2@mail.gmail.com>
-	<b400c69a0707311504g653c5bcdv86f100f5278a8fda@mail.gmail.com>
-	<20070731221833.GA589@outback.rfc2324.org>
-	<46AFC850.5060307@riverviewtech.net>
+Subject: Re: two subnets...
+Date: Wed, 1 Aug 2007 15:38:04 +0200
+Message-ID: <20070801133804.GB8336@outback.rfc2324.org>
+References: <46ADBDF0.3020200@mp.pl> <46AF4FC7.1000500@riverviewtech.net>
+	<46AF8D63.8080900@interia.pl> <46AF9694.1060709@riverviewtech.net>
+	<46AFBA57.3040702@mailinator.com>
+	<46AFC5BB.7050701@riverviewtech.net>
 Mime-Version: 1.0
 Return-path: <netfilter-bounces@lists.netfilter.org>
 Content-Disposition: inline
-In-Reply-To: <46AFC850.5060307@riverviewtech.net>
+In-Reply-To: <46AFC5BB.7050701@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -26,39 +26,25 @@ To: netfilter@lists.netfilter.org
 
 Am Tuesday, den 31 July hub Grant Taylor folgendes in die Tasten:
 
-> >But what's wrong with the two rules?
+Hi!
 
-> Nothing.  The old saying "If it isn't broke, don't fix it..." with it's 
-> third stanza "...optimize it!" comes to mind.
+[..].
+> >-A FORWARD -physdev --physdev-in eth0 --physdev-out eth2 -j DROP
+> >-A FORWARD -physdev --physdev-in eth2 --physdev-out eth0 -j DROP
+> >-A FORWARD -j ACCEPT
 
-:)
+> I have never worked with the physdev match extension so I can not say 
+> for sure.  I do not recall which features were being taken out of main 
+> line NetFilter code, but I want to say that physdev was one of them, 
+> thus meaning you would have to keep patching the kernel when you upgrade 
+> to make this work.  Thus in my opinion making the EBTables option more 
+> maintainable and thus more appealing.
 
-[...]
-> >You might have noticed that I've changed the "DROP" to "REJECT" with 
-> >fitting type which will make the live of you and other people easier 
-> >when debugging anything related to ssh access to this box.
+The physdev match is in the vanilla kernel for some time now.
+I've used it on several bridgewall without patching the kernel.
 
-> The problem with this is that if you have an IP address of e.f.g.h, the 
-> first rule will reject the connection.  Negative logic does not work 
-> quite as you would expect it to.  You have to work with inverted 
-> positive logic below (invert the result of the entire set of logic).
-
-Argh.
-I should not write mails when totally tired.
-I'm really sorry for the fnord.
-Thanks for getting it right.
-
-> There is also the fact that fewer and fewer things know how to handle 
-> error messages like this, or if they do they do not display them to the 
-> end user.  (Thanks M$!)  You may have better luck with a basic REJECT 
-> target than one that specifies the ICMP error code unless you know that 
-> you are working with a client application that can correctly interpret.
-[...]
-
-You're sadly right here, too.
-But I have to state that tcpdump (which most probably will be most
-often used when debugging network problems) shows this correct.
-I think ethereal^Wwhireshark will do so, too.
+max@pandora:linux-2.6.21.3$ grep PHYSDEV net/netfilter/Kconfig 
+config NETFILTER_XT_MATCH_PHYSDEV
 
 Ciao
 Max
