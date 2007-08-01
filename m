@@ -1,12 +1,10 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: UDP port redirect
-Date: Wed, 01 Aug 2007 08:07:23 +0200
-Message-ID: <46B0231B.9050507@rtij.nl>
-References: <OF83D375B4.D0B6CF03-ON83257329.007CF9E3-83257329.007EC41C@powers.com.br>
+From: David Coulson <david@davidcoulson.net>
+Subject: SNAT w/ uid-owner issue
+Date: Wed, 01 Aug 2007 10:51:02 -0400
+Message-ID: <46B09DD6.1090403@davidcoulson.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <OF83D375B4.D0B6CF03-ON83257329.007CF9E3-83257329.007EC41C@powers.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,56 +16,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: thiago@powers.com.br
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-thiago@powers.com.br wrote:
-> Hello all,
->
-> I got a problem when redirecting a UDP port. The rules are:
->
-> # TCP port redirect - working fine:
->
-> iptables -t nat -A PREROUTING -i <ext_if> -p tcp -d <ext_ip> --dport 22 -j
-> DNAT -m state --state NEW --to <int_ip>:1194
-> iptables -A FORWARD -i <ext_if> -p tcp -d <int_ip> --dport 1194 -m state
-> --state NEW -j ACCEPT
->
-> # UDP port redirect - not going through
->
-> iptables -t nat -A PREROUTING -i <ext_if> -p udp -d <ext_ip> --dport 22 -j
-> DNAT -m state --state NEW --to <int_ip>:1194
-> iptables -A FORWARD -i <ext_if> -p udp -d <int_ip> --dport 1194 -m state
-> --state NEW -j ACCEPT
->
-> I hit the nat/prerouting rule, but never reach the filter/forward one.
-> As you can see the only change I've made from the tcp rule to udp rule, is
-> just the matching protocol.
-> I can debug it a little more, but also would like to hear from you guys if
-> you have any hints.
->   
+I have a pretty simple NAT rule going on here:
 
-Not sure why this doesn't work, but you don't need the state match in 
-the NAT rule.
+iptables -t nat -A POSTROUTING -d ! 10.0.0.0/8 -s 207.166.219.93 -p ! 
+esp -m owner --uid-owner dante -j SNAT --to 207.166.203.150
 
-iptables -t nat -A PREROUTING -i <ext_if> -p udp -d <ext_ip> --dport 22 -j DNAT  --to <int_ip>:1194
-iptables -A FORWARD -i <ext_if> -p udp -d <int_ip> --dport 1194 -m state --state NEW -j ACCEPT
+Not rocket science - danted is running on 10.1.1.2, I'm connecting from 
+10.6.1.40 over IPSec - Hence why I 1) tell it to ignore ESP (which says 
+it comes from 219.93, plus it's still using 'dante' as the uid) 2) I'm 
+telling it to ignore everything going to 10.0.0.0/8.
 
+With this rule in place, I see this in my conntrack table:
 
-should work.
+tcp      6 267 ESTABLISHED src=10.1.1.2 dst=10.6.1.40 sport=1080 
+dport=2097 [UNREPLIED] src=10.6.1.40 dst=207.166.203.150 sport=2097 
+dport=1080 mark=0 use=1
 
-You may want to add an explicit LOG rule:
+Clearly wrong - There are no other rules related to my 150 address in my 
+tables. Indeed, if I take out the SNAT rule, it will work fine. Now, if 
+I change the SNAT to a 'LOG' entry, it only logs the rule hits that are 
+correct, and not these ones that are wrong. I'm running a 2.6.15.1 
+kernel, which I realized is older than the hills, but other than this it 
+has been working happily.
 
-iptables -A FORWARD -i <ext_if> -p udp -d <int_ip> --dport 1194 -j LOG --log-prefix "WRONG: "
-
-or even
-
-iptables -A FORWARD -p udp --dport 1194 -j LOG --log-prefix "WRONG: "
-
-
-after the ACCEPT rule to debug this.
-
-M4
-
-
+Any ideas? I may try upgrading to 2.6.22.1 shortly, but I don't even 
+know if that will fix it.
 
