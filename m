@@ -1,12 +1,12 @@
 From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: Filtering Query?
-Date: Mon, 30 Jul 2007 22:05:07 +0200
-Message-ID: <46AE4473.8060500@rtij.nl>
-References: <358385.10946.qm@web57412.mail.re1.yahoo.com>
+Subject: Re: UDP port redirect
+Date: Wed, 01 Aug 2007 08:07:23 +0200
+Message-ID: <46B0231B.9050507@rtij.nl>
+References: <OF83D375B4.D0B6CF03-ON83257329.007CF9E3-83257329.007EC41C@powers.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <358385.10946.qm@web57412.mail.re1.yahoo.com>
+In-Reply-To: <OF83D375B4.D0B6CF03-ON83257329.007CF9E3-83257329.007EC41C@powers.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,56 +18,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: amna bilal <bilal.amna@yahoo.com>
+To: thiago@powers.com.br
 Cc: netfilter@lists.netfilter.org
 
-amna bilal wrote:
-> Hi,
+thiago@powers.com.br wrote:
+> Hello all,
 >
-> Looking for some insight here. What I would like to do
-> is:
+> I got a problem when redirecting a UDP port. The rules are:
 >
-> I have four main tables
-> INTERNET_IN
-> INTERNET_OUT
-> LAN_IN
-> LAN_OUT
+> # TCP port redirect - working fine:
 >
-> I have a few filters I want I named them
-> ALLOW_UDP
-> ALLOW_TCP
-> DENY_ACCESS
+> iptables -t nat -A PREROUTING -i <ext_if> -p tcp -d <ext_ip> --dport 22 -j
+> DNAT -m state --state NEW --to <int_ip>:1194
+> iptables -A FORWARD -i <ext_if> -p tcp -d <int_ip> --dport 1194 -m state
+> --state NEW -j ACCEPT
 >
-> Is it possible to set up iptables to filter down a
-> list some thing like this:
+> # UDP port redirect - not going through
 >
-> iptables -A INTERNET_IN -j ALLOW_UDP
-> iptables -A INTERNET_IN -j ALLOW_TCP
-> iptables -A INTERNET_IN -j DENY_ACCESS
+> iptables -t nat -A PREROUTING -i <ext_if> -p udp -d <ext_ip> --dport 22 -j
+> DNAT -m state --state NEW --to <int_ip>:1194
+> iptables -A FORWARD -i <ext_if> -p udp -d <int_ip> --dport 1194 -m state
+> --state NEW -j ACCEPT
 >
-> What I want to accomplish is that if it doesn't meet a
-> filter in ALLOW_UDP it continues to ALLOW_TCP, then to
-> DENY_ACCESS, the it goes into the system.
+> I hit the nat/prerouting rule, but never reach the filter/forward one.
+> As you can see the only change I've made from the tcp rule to udp rule, is
+> just the matching protocol.
+> I can debug it a little more, but also would like to hear from you guys if
+> you have any hints.
 >   
 
-Yes, absolutely. And with these very clear chain names, it is easy to 
-follow the logic as well.
+Not sure why this doesn't work, but you don't need the state match in 
+the NAT rule.
 
-OTOH, You could also opt for:
-
--A INTERNET_IN -p udp -j UDP_IN
--A INTERNET_IN -p tcp -j TCP_IN
-
--A INTERNET_IN -j DENY_ACCESS
-
-And end both UDP_IN and TCP_IN with a -j DENY_ACCESS.
+iptables -t nat -A PREROUTING -i <ext_if> -p udp -d <ext_ip> --dport 22 -j DNAT  --to <int_ip>:1194
+iptables -A FORWARD -i <ext_if> -p udp -d <int_ip> --dport 1194 -m state --state NEW -j ACCEPT
 
 
-Both work, the second is a bit more efficient.
+should work.
 
-HTH,
+You may want to add an explicit LOG rule:
+
+iptables -A FORWARD -i <ext_if> -p udp -d <int_ip> --dport 1194 -j LOG --log-prefix "WRONG: "
+
+or even
+
+iptables -A FORWARD -p udp --dport 1194 -j LOG --log-prefix "WRONG: "
+
+
+after the ACCEPT rule to debug this.
+
 M4
-
 
 
 
