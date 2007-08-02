@@ -1,12 +1,11 @@
-From: "Michael P. Brininstool" <mikepb@hoplite.org>
-Subject: RE: two subnets...
-Date: Thu, 2 Aug 2007 08:14:16 -0600
-Message-ID: <005901c7d50f$6a1fe790$4e6f949b@nasw.ds.army.mil>
-References: <Pine.LNX.4.58.0708020651430.12756@mail3.jubileegroup.co.uk>
+From: Florin Andrei <florin@andrei.myip.org>
+Subject: NAT on stateless firewall ?
+Date: Thu, 02 Aug 2007 16:08:48 -0700
+Message-ID: <46B26400.7050504@andrei.myip.org>
+Reply-To: netfilter@lists.netfilter.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-reply-to: <Pine.LNX.4.58.0708020651430.12756@mail3.jubileegroup.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,34 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: "'G.W. Haywood'" <ged@jubileegroup.co.uk>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
->From: netfilter-bounces@lists.netfilter.org
-[mailto:netfilter-bounces@lists.netfilter.org] On Behalf Of G.W. Haywood
+I need to build a firewall in front of a cluster of HTTP servers. The 
+firewall has 2 interfaces, "inside" (facing the cluster) and "outside" 
+(facing the Internet).
+Each server has a private IP address, so the firewall must translate 
+each server address to a public address on the external interface (I 
+guess that's called 1:1 NAT, it's exactly what a PIX firewall would do 
+via a "static (inside,outside) foobar-out foobar-in netmask 
+255.255.255.255" statement).
 
->Hi guys,
+Since HTTP is the only thing traversing the firewall, I don't really 
+need a stateful firewall. In fact, in order to build some redundancy 
+into the firewalling layer, a stateless firewall is even better: I just 
+build 2 or more stateless firewalls and only transfer the IP and MAC if 
+the primary fails - no need to transfer the state.
+Moreover, since the total bandwidth will be very high, that's one more 
+reason to not do stateful filtering (less work for the firewall).
 
->On Thu, 2 Aug 2007 Grant Taylor wrote:
+The problem is, NAT seems to imply stateful filtering. The moment I 
+start playing with the nat table, the ip_conntrack module gets loaded.
 
->> > On 8/1/2007 5:44 PM, Pawel Zawora wrote:
->> > I have one "big" subnet (assume 1.1.1.0/24) now I want remove 3
->> > machines (1.1.1.98 - 100) to separete "small" subnet  "small" subnet:
->>
->> If you would be more comfortable discussing details off of news
->> group just drop me a line.
+Questions:
 
->Obviously you should remove from your posts any information which you
->think is too sensitive for publication, but for those of us following
->this with interest, please try to keep it on the list if you can.
->--
->73,
->Ged.
+Is there a way to do NAT on a true stateless firewall? (no conntrack loaded)
 
-I think he already sanitized the IPs!
-The 1.0.0.0/8 net is reserved and unassigned.
---
-73,
-KE5FBT
+If the answer to the previous q is negative, can I just ignore conntrack 
+and build the filter and nat tables as if conntrack would not exist? I'm 
+trying to figure out if there's any interaction with conntrack in this 
+scenario, but I don't know netfilter well enough to be 100% sure.
 
+-- 
+Florin Andrei
+
+http://florin.myip.org/
 
