@@ -1,14 +1,13 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Iptables rules processing
-Date: Fri, 03 Aug 2007 14:29:37 -0500
-Message-ID: <46B38221.2070108@riverviewtech.net>
-References: <20070803170735.GC7815@sid.toystory.lan>	<001b01c7d5f4$91781110$0101000a@tanjian>
-	<20070803174410.GA11029@sid.toystory.lan>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: NAT on stateless firewall ?
+Date: Fri, 03 Aug 2007 21:53:01 +0200
+Message-ID: <46B3879D.2010005@plouf.fr.eu.org>
+References: <46B26400.7050504@andrei.myip.org>	<46B2FB97.3090605@plouf.fr.eu.org>	<46B3729A.8030605@andrei.myip.org>
+	<46B37DD2.8020606@andrei.myip.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070803174410.GA11029@sid.toystory.lan>
+In-Reply-To: <46B37DD2.8020606@andrei.myip.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,20 +18,31 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-On 08/03/07 12:44, Franck Joncourt wrote:
-> This is waht I wanted to know, I can't get such a processing without 
-> the user defined chains ; Iptables doesn't do it by itself.
+Florin Andrei a =E9crit :
+>> Grant Taylor wrote:
+>>>
+>>> Dare I ask why you are wanting to use Proxy ARP?
+>>
+>> Well, it's required by DNAT, isn't it?
 
-The IPTables rules you have posted do not do it, though I think you
-could use a mport match to accomplish what you are wanting to do.  I.e.:
+No it's not. Proxy ARP may be useful as a workaround for broken routing=20
+setups, when the source host thinks the destination host is on the same=20
+link but actually it is behind a router.
 
-iptables -A INPUT -s 192.168.10.14 -p tcp -m mport --source-ports 80,443
--j ACCEPT
+[...]
+> To make proxy ARP work with DNAT, an IP alias must be created on the=20
+> external interface, with the public IP address of the machine behind th=
+e=20
+> firewall.
 
+If you do that you do not need proxy ARP.
 
+> It's not even necessary to play with proxy_arp in /proc. Just the IP=20
+> alias and DNAT.
 
-Grant. . . .
+Right. I guess another way would have been to add a route to the virtual=20
+public IP addresses pool and enable proxy ARP (not tested though).
 
