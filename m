@@ -1,12 +1,15 @@
-From: Ray Leach <spoons@rchq.co.za>
+From: Franck Joncourt <franck.joncourt@wanadoo.fr>
 Subject: Re: Iptables rules processing
-Date: Fri, 03 Aug 2007 18:23:10 +0200
-Message-ID: <46B3566E.1010407@rchq.co.za>
+Date: Fri, 3 Aug 2007 19:07:35 +0200
+Message-ID: <20070803170735.GC7815@sid.toystory.lan>
 References: <20070803161302.GB7815@sid.toystory.lan>
+	<46B3566E.1010407@rchq.co.za>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010601080700000507070308"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="i7F3eY7HS/tUJxUd"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070803161302.GB7815@sid.toystory.lan>
+Content-Disposition: inline
+In-Reply-To: <46B3566E.1010407@rchq.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,48 +22,88 @@ Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 To: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------010601080700000507070308
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
+--i7F3eY7HS/tUJxUd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-
-Franck Joncourt wrote:
-> Hi,
+On Fri, Aug 03, 2007 at 06:23:10PM +0200, Ray Leach wrote:
 >
-> Assuming we have the next two rules in our ruleset :
 >
-> iptables -A INPUT -s 192.168.10.14 -p tcp --dport 80 -j ACCEPT
-> iptables -A INPUT -s 192.168.10.14 -p tcp --dport 443 -j ACCEPT
+> Franck Joncourt wrote:
+>> Hi,
+>>
+>> Assuming we have the next two rules in our ruleset :
+>>
+>> iptables -A INPUT -s 192.168.10.14 -p tcp --dport 80 -j ACCEPT
+>> iptables -A INPUT -s 192.168.10.14 -p tcp --dport 443 -j ACCEPT
+>>
+>> I was wondering whether rules are processed one by one.
+>> In the two rules above, we have to check the source address
+>> 192.168.10.14, so I think this is done for the first one, and then for
+>> the second one. I am not quite sure ; Can anyone confirm that ?
+>>
+>>  =20
+> Yes, rules are processed one by one until a rule matches the packet.
 >
-> I was wondering whether rules are processed one by one.
-> In the two rules above, we have to check the source address
-> 192.168.10.14, so I think this is done for the first one, and then for
-> the second one. I am not quite sure ; Can anyone confirm that ?
+> So the first rule above would be matched for traffic coming from=20
+> 192.168.10.14 going to port 80 (192.168.10.14 browses a website)
+> The second rule would be matched when 192.168.10.14 tried to browse a=20
+> secure website.
 >
->   
-Yes, rules are processed one by one until a rule matches the packet.
+> Since bothe these rules are in the INPUT chain, they will only be matched=
+=20
+> when the source ip tried to access those ports on the machine running=20
+> iptables.
+>
 
-So the first rule above would be matched for traffic coming from 
-192.168.10.14 going to port 80 (192.168.10.14 browses a website)
-The second rule would be matched when 192.168.10.14 tried to browse a 
-secure website.
+I meant, there can't be no such processing  ?
 
-Since bothe these rules are in the INPUT chain, they will only be 
-matched when the source ip tried to access those ports on the machine 
-running iptables.
-
-
--- 
-<img src='http://www.danasoft.com/sig/spoonssig.jpg' />
---------------------------------------------------
-RCHQ Hobbies cc
-http://www.rchq.co.za and http://store.rchq.co.za
-Fax: +27 86 652 2773       eMail: admin@rchq.co.za
-P O Box 10376, Vorna Valley, Midrand, 1686
---------------------------------------------------
+1/
+-> ...
+-> match for the source address 192.168.10.14
+    |-> match for destination port 80 -> ACCEPT
+    |-> match for the destination port 443 -> ACCEPT
+-> ...
 
 
---------------010601080700000507070308--
+According to me, it works this way :
+
+2/
+-> ...=20
+-> match source address 192.168.10.14 AND destination port 80
+    |-> ACCEPT
+-> match source address 192.168.10.14 AND destination port 443
+    |-> ACCEPT
+->...
+
+In the case 1, we check the source address once, and in the second one,
+twice. So the first case would be quicker to process than the second
+one where there is no optimalisation.
+
+I know what these rules do, but this is just an example, and I know how
+the user chains work as well :p!
+
+--=20
+Franck Joncourt
+http://www.debian.org - http://smhteam.info/wiki/
+GPG server : pgpkeys.mit.edu
+Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
+
+--i7F3eY7HS/tUJxUd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFGs2DXxJBTTnXAif4RApddAKCsmWHsKM5jh87DposiyCRrskxKQACeIZeB
+bix+UGpZzh0eHl5GCRbHZuI=
+=ZXkT
+-----END PGP SIGNATURE-----
+
+--i7F3eY7HS/tUJxUd--
+
 
