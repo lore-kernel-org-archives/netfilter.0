@@ -1,14 +1,13 @@
-From: Florin Andrei <florin@andrei.myip.org>
-Subject: Re: NAT on stateless firewall ?
-Date: Fri, 03 Aug 2007 11:23:22 -0700
-Message-ID: <46B3729A.8030605@andrei.myip.org>
-References: <46B26400.7050504@andrei.myip.org>
-	<46B2FB97.3090605@plouf.fr.eu.org>
-Reply-To: netfilter@lists.netfilter.org
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: Iptables rules processing
+Date: Fri, 03 Aug 2007 14:43:57 -0400
+Message-ID: <1186166637.6697.5.camel@localhost>
+References: <20070803161302.GB7815@sid.toystory.lan>
+	<46B3566E.1010407@rchq.co.za> <20070803170735.GC7815@sid.toystory.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46B2FB97.3090605@plouf.fr.eu.org>
+In-Reply-To: <20070803170735.GC7815@sid.toystory.lan>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,62 +18,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Franck Joncourt <franck.joncourt@wanadoo.fr>
+Cc: netfilter@lists.netfilter.org
 
-Pascal Hambourg wrote:
-> Florin Andrei a =E9crit :
->> Since HTTP is the only thing traversing the firewall,
->=20
-> Really ? No ICMP error messages, no outgoing DNS queries ?
+On Fri, 2007-08-03 at 19:07 +0200, Franck Joncourt wrote:
+> On Fri, Aug 03, 2007 at 06:23:10PM +0200, Ray Leach wrote:
+> >
+> >
+> > Franck Joncourt wrote:
+> >> Hi,
+> >>
+> >> Assuming we have the next two rules in our ruleset :
+> >>
+> >> iptables -A INPUT -s 192.168.10.14 -p tcp --dport 80 -j ACCEPT
+> >> iptables -A INPUT -s 192.168.10.14 -p tcp --dport 443 -j ACCEPT
+> >>
+> >> I was wondering whether rules are processed one by one.
+> >> In the two rules above, we have to check the source address
+> >> 192.168.10.14, so I think this is done for the first one, and then for
+> >> the second one. I am not quite sure ; Can anyone confirm that ?
+> >>
+> >>   
+> > Yes, rules are processed one by one until a rule matches the packet.
+> >
+> > So the first rule above would be matched for traffic coming from 
+> > 192.168.10.14 going to port 80 (192.168.10.14 browses a website)
+> > The second rule would be matched when 192.168.10.14 tried to browse a 
+> > secure website.
+> >
+> > Since bothe these rules are in the INPUT chain, they will only be matched 
+> > when the source ip tried to access those ports on the machine running 
+> > iptables.
+> >
+> 
+> I meant, there can't be no such processing  ?
+> 
+> 1/
+> -> ...
+> -> match for the source address 192.168.10.14
+>     |-> match for destination port 80 -> ACCEPT
+>     |-> match for the destination port 443 -> ACCEPT
+> -> ...
+> 
+> 
+> According to me, it works this way :
+> 
+> 2/
+> -> ... 
+> -> match source address 192.168.10.14 AND destination port 80
+>     |-> ACCEPT
+> -> match source address 192.168.10.14 AND destination port 443
+>     |-> ACCEPT
+> ->...
+> 
+> In the case 1, we check the source address once, and in the second one,
+> twice. So the first case would be quicker to process than the second
+> one where there is no optimalisation.
+> 
+> I know what these rules do, but this is just an example, and I know how
+> the user chains work as well :p!
+> 
+Yes, you are correct that user defined chains are a way to optimize
+this.  I do not know much about ipsets but I wonder if that would also
+help.
 
-Right, some ICMP stuff required by TCP, which can also be handled stateless.
-DNS is separate. The traffic on the "master blaster" is kept very simple.
+We face this constantly on the ISCS network security management project
+(http://iscs.sourceforge.net).  We use it to create micro-perimeter
+solutions where network access is on an as-needed basis only. Thus we
+have to describe every information flow within the organization. The
+result can be hundreds of thousands of rules.
 
->> I stumbled upon "-t raw" and I'm testing it, looks like it does what I=20
->> need.
->=20
-> If you mean using the NOTRACK target, this is a bad idea. Packets in the =
+To optimize the processing, we break the question of WHO has ACCESS to
+WHAT into three separate stages and answer each separate, i.e., WHO are
+you, what kind of ACCESS do you have and WHAT are you trying to access.
 
-> UNTRACKED state will be ignored by the connection tracking *and* thus by =
+This gives us two advantages:
+1) it dramatically reduces the size of complex rule sets because we only
+need one rule for each WHAT, ACCESS and WHAT instead of a separate rule
+for each possible combination of WHO, ACCESS and WHAT.
+2) It makes traversal of the rule set more efficient.  It is, in effect,
+indexed.  Once we know WHO you are, we only need to worry about the
+rules that pertain to you.
 
-> the stateful NAT which depends on it.
+We have been wondering if ipsets wouldn't further optimize our
+processing. If anyone out there with a good understanding of ipsets
+would like to give us a hand with this project, please let me know.
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
 
-You're right. :-(
-I assume I can still pretend that conntrack does not exist, and just=20
-write the rules as if it was a stateless firewall. It will waste CPU=20
-cycles and memory, but that's fine. I can even tweak the netfilter=20
-parameters so that the connection tracking expires much faster, to keep=20
-the size down.
-A stateless firewall will fail over much more quickly and more reliably=20
-than any stateful firewall.
+Financially sustainable open source development
+http://www.opensourcedevel.com
 
-I would use conntrackd, I just don't know how well tested it is in=20
-high-bandwidth high-reliability setups. I may revise that decision, but=20
-right now I'm focusing on stateless.
-
-Security with stateless should not be a problem in such a simple=20
-configuration (only one open port, well-behaved protocol, all traffic=20
-initiated from outside).
-
-Grant Taylor wrote:
- >
- > Dare I ask why you are wanting to use Proxy ARP?
-
-Well, it's required by DNAT, isn't it? It looks like even SNAT to an=20
-address different than the main IP on the firewall interface requires it=20
-for the return traffic.
-I'm snooping the traffic, I see the ARP request for the DNAT'ed address,=20
-but there's no reply. So the firewall must be told to answer that request.
-
-I'm not yet sure why this is so complicated. I remember doing proxy ARP=20
-on Slackware 10 years ago (that was, like, kernel 2.0 or something like=20
-that) and it was a very straightforward job.
-
-<sigh> back to doing tests.
-
---=20
-Florin Andrei
-
-http://florin.myip.org/
 
