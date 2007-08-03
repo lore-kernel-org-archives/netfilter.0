@@ -1,14 +1,14 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Iptables rules processing
-Date: Fri, 03 Aug 2007 15:23:17 -0500
-Message-ID: <46B38EB5.1010000@riverviewtech.net>
-References: <20070803161302.GB7815@sid.toystory.lan><46B3566E.1010407@rchq.co.za>	<20070803170735.GC7815@sid.toystory.lan>
-	<001b01c7d5f4$91781110$0101000a@tanjian>
+Date: Fri, 03 Aug 2007 15:24:10 -0500
+Message-ID: <46B38EEA.7020506@riverviewtech.net>
+References: <20070803170735.GC7815@sid.toystory.lan>	<001b01c7d5f4$91781110$0101000a@tanjian>	<20070803174410.GA11029@sid.toystory.lan>	<46B38221.2070108@riverviewtech.net>
+	<46B38A2D.2030204@plouf.fr.eu.org>
 Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <001b01c7d5f4$91781110$0101000a@tanjian>
+In-Reply-To: <46B38A2D.2030204@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,25 +22,13 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-On 08/03/07 12:34, Rob Sterenborg wrote:
-> This would IMHO only be of real use if you have lots of rules and you 
-> want to narrow down the number of rules to be matched.
+On 08/03/07 15:03, Pascal Hambourg wrote:
+> Don't you mean the 'multiport' match ? The 'mport' match was never
+> included in the vanilla kernel, is now deprecated and has been removed
+> from the latest iptables release (1.3.8).
 
-Agreed.  This is an example of how to optimize the packet flow through
-the IPTables chains and rules.  Really it comes down to how many
-decisions have to be made for any given packet and trying to rearrange
-the chains and rules for optimal packet flow.  Rules are processed
-serially / linearly / one by one / (what ever you want to call it) with
-in a chain, so the idea is to reduce the number of individual rules and
-the complexity there is to make packet traversal as fast as possible.
-
-> In this case you won't notice the difference.
-
-Presuming that the rules that we saw were the only rules in the OPs rule
-set I'll agree.  However if there were 10s to 100s to 1000s (or more) of
-these sets of rules, then the OPs rule set could very likely benefit
-from optimization.  Depending on the number of rules it may be very much
-worth the time to split a /24 block in to multiple smaller blocks.
+I don't ever use it so I can not say for sure, so "Yes".  I just pulled
+up a man page of IPTables on the web and found it so I used it.
 
 
 
