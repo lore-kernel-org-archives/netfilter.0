@@ -1,14 +1,12 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: NAT on stateless firewall ?
-Date: Fri, 03 Aug 2007 15:51:51 -0500
-Message-ID: <46B39567.5080004@riverviewtech.net>
-References: <46B26400.7050504@andrei.myip.org>	<46B2FB97.3090605@plouf.fr.eu.org>	<46B3729A.8030605@andrei.myip.org>	<46B37DD2.8020606@andrei.myip.org>	<46B37EB5.3060803@rtij.nl>
-	<46B38856.1020003@andrei.myip.org>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Franck Joncourt <franck.joncourt@wanadoo.fr>
+Subject: SYN/ACK and NEW packets
+Date: Sat, 4 Aug 2007 21:21:09 +0200
+Message-ID: <20070804192109.GB4205@sid.toystory.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46B38856.1020003@andrei.myip.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,25 +17,57 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On 08/03/07 14:56, Florin Andrei wrote:
-> arp -s XXX.YYY.ZZZ.KKK -i eth0 -D eth0 pub
 
-Remember that ARP (cache) entries are just to tell a host where (what
-MAC) an IP address (on the same subnet) is at so that the local host
-does not have to ARP for it.
+--SkvwRMAIpAhPCcCJ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I tested it, but it doesn't seem to work. I see the ARP requests, but 
-> the server does not respond to it.
+Hi,
 
-Just because traffic may be coming to the correct MAC address, there is
-no guarantee that any thing will be listening or responding at that MAC
-address for the IP address in question.  You would actually have to bind
-the IP to the MAC for any thing of value to happen out side of sniffing.
+Looking at this :
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#SYNACKANDNEW
 
+I understand that in order to prevent my ip address from being spoofed,
+I should reject NEW packets with the SYN/ACK flags set and the others
+cleared.
 
+However, with the following nmap command I have tried to check it out :
 
-Grant. . . .
+nmap --scanflags SYNACK 192.168.0.1
+
+all packets are known to be in the INVALID state rather than in the NEW
+state.
+
+state NEW tcp flags:FIN,SYN,RST,ACK/SYN,ACK -> 0 packet
+state INVALID tcp flags:FIN,SYN,RST,ACK/SYN,ACK -> 170 packets
+
+They talk about sequence number, as well, in the document, but I can't
+figure out what difference it makes.
+
+Did I miss anything ?
+
+--=20
+Franck Joncourt
+http://www.debian.org - http://smhteam.info/wiki/
+GPG server : pgpkeys.mit.edu
+Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
+
+--SkvwRMAIpAhPCcCJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFGtNGlxJBTTnXAif4RArAdAKDEPpm95MXDNxIdGx90iWhSoD64WQCfWu1D
+qFV8+u7/3jtRH/Vm4QO563c=
+=7Lr0
+-----END PGP SIGNATURE-----
+
+--SkvwRMAIpAhPCcCJ--
+
 
