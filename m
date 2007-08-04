@@ -1,12 +1,16 @@
-From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Re: SYN/ACK and NEW packets
-Date: Sat, 04 Aug 2007 14:26:12 -0600
-Message-ID: <web-22036612@bk3.webmaillogin.com>
-References: <20070804192109.GB4205@sid.toystory.lan>
+From: "Elvir Kuric" <omasnjak@gmail.com>
+Subject: Re: Iptables rules processing
+Date: Sat, 4 Aug 2007 22:37:52 +0200
+Message-ID: <1814bfe70708041337n59bfc528n9cc3665f33bbd55d@mail.gmail.com>
+References: <20070803161302.GB7815@sid.toystory.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070804192109.GB4205@sid.toystory.lan>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+	b=A4zaqBgRuTeJ/qy/UXqWUXvcghmfD+35Vbx7MkNfhkMZ+PqJJ9beKu/m0GLK/Q6sG+qrb2frCFF9a9OsJUMfRjAvg+lRJiY2+7O1WNtcETI9E3jOawmYvtIUt7NGTufeYdiUNDwb6kneH3nAaoPirQmqepZubjhWWDjfV9Q5CMs=
+In-Reply-To: <20070803161302.GB7815@sid.toystory.lan>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,70 +21,54 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Franck Joncourt <franck.joncourt@wanadoo.fr>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Well, in the three-way handshake the flags in the packets are:
+Hi all,
 
-1) syn packet sent by the client
-2) syn,ack sent by the server
-3) ack sent by the client
+in iptables like in many other firewall/access list  ( like in Cisco )
+programs firewall rules are checked one by one, so in many cases is
+problem if we do not care about specific requests and forget to
+include all neccesary in firewall rules.
 
-The packets in the NEW state for a statefull firewall (as iptables) are 
-packets that belongs to a new "data stream", marked with the syn flag.
+According to me, best place for all related to iptables is this
+mailing list and next web location
 
-The packets in the INVALID state are packets, in your case specifically, 
- that implies a new "data stream" (or more properly, packets that does not 
-belongs to a connection previously ESTABLISHED or to a connection RELATED to 
-a connection previously ESTABLISHED) but this new "data stream" is not 
-negotiating for open a new socket, is just sending "data".
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
 
-To extend the analogy of the three-way handshake, someone is trying to shake 
-your hand but you see the persone until you have the sense of the other hand 
-in your hand, then you are surprised, retire your hand and face the other 
-person trying to recognize who is, does not shake his hand and does not 
-speak to him.
+Best wishes
 
-In fact, there are 0 packets with the state NEW with the flags 
-FIN,SYN,RST,ACK/SYN,ACK because the packets that you sent does not have the 
-right flags to be considered a valid packets to open a new connection.
 
-Jorge.
+Elvir Kuric
 
-On Sat, 4 Aug 2007 21:21:09 +0200
-  Franck Joncourt <franck.joncourt@wanadoo.fr> wrote:
+
+
+On 8/3/07, Franck Joncourt <franck.joncourt@wanadoo.fr> wrote:
 > Hi,
-> 
-> Looking at this :
-> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#SYNACKANDNEW
-> 
-> I understand that in order to prevent my ip address from being spoofed,
-> I should reject NEW packets with the SYN/ACK flags set and the others
-> cleared.
-> 
-> However, with the following nmap command I have tried to check it out :
-> 
-> nmap --scanflags SYNACK 192.168.0.1
-> 
-> all packets are known to be in the INVALID state rather than in the NEW
-> state.
-> 
-> state NEW tcp flags:FIN,SYN,RST,ACK/SYN,ACK -> 0 packet
-> state INVALID tcp flags:FIN,SYN,RST,ACK/SYN,ACK -> 170 packets
-> 
-> They talk about sequence number, as well, in the document, but I can't
-> figure out what difference it makes.
-> 
-> Did I miss anything ?
-> 
-> -- 
->Franck Joncourt
+>
+> Assuming we have the next two rules in our ruleset :
+>
+> iptables -A INPUT -s 192.168.10.14 -p tcp --dport 80 -j ACCEPT
+> iptables -A INPUT -s 192.168.10.14 -p tcp --dport 443 -j ACCEPT
+>
+> I was wondering whether rules are processed one by one.
+> In the two rules above, we have to check the source address
+> 192.168.10.14, so I think this is done for the first one, and then for
+> the second one. I am not quite sure ; Can anyone confirm that ?
+>
+> --
+> Franck Joncourt
 > http://www.debian.org - http://smhteam.info/wiki/
 > GPG server : pgpkeys.mit.edu
->Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
-
-Jorge Isaac Davila Lopez
-Nicaragua Open Source
-+505 430 5462
-davila@nicaraguaopensource.com
+> Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
+>
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v1.4.6 (GNU/Linux)
+>
+> iD8DBQFGs1QOxJBTTnXAif4RAmR0AJ9v7hd+KU7PNzrb5O7hnTQwdVGEvQCgziNX
+> NBHg4yEhbaFKlArhH722UE4=
+> =capX
+> -----END PGP SIGNATURE-----
+>
+>
 
