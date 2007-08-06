@@ -1,14 +1,15 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: NAT on stateless firewall ?
-Date: Mon, 06 Aug 2007 09:11:49 -0500
-Message-ID: <46B72C25.8000902@riverviewtech.net>
-References: <46B26400.7050504@andrei.myip.org>	<46B2FB97.3090605@plouf.fr.eu.org>	<46B3729A.8030605@andrei.myip.org>	<46B37DD2.8020606@andrei.myip.org>	<46B37EB5.3060803@rtij.nl>	<46B38856.1020003@andrei.myip.org>	<46B39567.5080004@riverviewtech.net>	<46B6300A.7020404@rtij.nl>	<46B673A5.6030303@riverviewtech.net>
-	<46B6AB25.3050906@rtij.nl>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Franck Joncourt <franck.joncourt@wanadoo.fr>
+Subject: Re: SYN/ACK and NEW packets
+Date: Mon, 6 Aug 2007 20:20:27 +0200
+Message-ID: <20070806182027.GA11849@sid.toystory.lan>
+References: <20070804192109.GB4205@sid.toystory.lan>
+	<web-22036612@bk3.webmaillogin.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="X1bOJ3K7DJ5YkBrT"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46B6AB25.3050906@rtij.nl>
+Content-Disposition: inline
+In-Reply-To: <web-22036612@bk3.webmaillogin.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,35 +20,109 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
-
-On 08/06/07 00:01, Martijn Lievaart wrote:
-> The sender wants to send a packet. It uses arp to find out which MAC to
-> send to. It sends it. The packet arrives at the destination nic. That's
-> all I ment, not more, not less.
-
-Ok, agreed.  The only thing I'll add is that ARP is one way for the
-sender to identify the MAC to send the packet to, there are other ways too.
-
-> However, having arrived at the nic, the packet is then transfered to the
-> stack. If the stack does not know about the destination IP, the packet
-> is dropped by routing, iirc. However, before routing (in PREROUTING) the
-> destination is changed to something the stack does know about. So how
-> comes it does not work?
-
-I would think that this could work if you caught the packet in time to
-re-direct it elsewhere.  I will have to go back and re-read this thread
-to better respond later (when I have time).  At the moment, I agree that
-this should work if it is implemented correctly.
-
-So long as you can direct the packet where you want to and there is no
-firewalling and / or kernel based filtering like reverse path filters
-causing the low level networking to drop the packets this should work.
-In fact, the receiving hosts actions is this is the bases for many
-different solutions.
+To: netfilter@lists.netfilter.org
 
 
+--X1bOJ3K7DJ5YkBrT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Grant. . . .
+> On Sat, 4 Aug 2007 21:21:09 +0200
+>  Franck Joncourt <franck.joncourt@wanadoo.fr> wrote:
+>> Hi,
+>> Looking at this :
+>> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#SYNACKANDN=
+EW
+>> I understand that in order to prevent my ip address from being spoofed,
+>> I should reject NEW packets with the SYN/ACK flags set and the others
+>> cleared.
+>> However, with the following nmap command I have tried to check it out :
+>> nmap --scanflags SYNACK 192.168.0.1
+>> all packets are known to be in the INVALID state rather than in the NEW
+>> state.
+>> state NEW tcp flags:FIN,SYN,RST,ACK/SYN,ACK -> 0 packet
+>> state INVALID tcp flags:FIN,SYN,RST,ACK/SYN,ACK -> 170 packets
+>> They talk about sequence number, as well, in the document, but I can't
+>> figure out what difference it makes.
+>> Did I miss anything ?
+
+On Sat, Aug 04, 2007 at 02:26:12PM -0600, Jorge Davila wrote:
+> Well, in the three-way handshake the flags in the packets are:
+>
+> 1) syn packet sent by the client
+> 2) syn,ack sent by the server
+> 3) ack sent by the client
+
+So far, I agree :p!
+
+> The packets in the NEW state for a statefull firewall (as iptables) are=
+=20
+> packets that belongs to a new "data stream", marked with the syn flag.
+
+What about sending packets with only the ACK flag set.
+
+Those packets matched the following rule every time on random ports :
+
+iptables -A INPUT -m state --state NEW \
+	-p tcp SYN,FIN,RST,ACK ACK -j RETURN
+
+using nmap --scanflags ACK 192.168.0.1
+
+So, there is something wrong since I did not send any SYN packets. 530
+packets send and 530 packets matched. And none of them are part of a
+connection.
+
+> The packets in the INVALID state are packets, in your case specifically,=
+=20
+> that implies a new "data stream" (or more properly, packets that does not=
+=20
+> belongs to a connection previously ESTABLISHED or to a connection RELATED=
+=20
+> to a connection previously ESTABLISHED) but this new "data stream" is not=
+=20
+> negotiating for open a new socket, is just sending "data".
+
+I understand what you mean, I hope so. The flags SYN/ACK are not
+sufficent to be matched as a NEW state since there is nothing in the
+data stream "to negotiate for a new socket".
+
+>
+> In fact, there are 0 packets with the state NEW with the flags=20
+> FIN,SYN,RST,ACK/SYN,ACK because the packets that you sent does not have t=
+he=20
+> right flags to be considered a valid packets to open a new connection.
+
+Ok.
+
+Do not worry about the ACK packets, unless you have an explanation and
+the time to put it down. There must be something in the RFC 793 about
+it.
+
+Thanks
+
+I apologize for the delay, but I saw your message when I was sorting
+out my spams.
+
+--=20
+Franck Joncourt
+http://www.debian.org - http://smhteam.info/wiki/
+GPG server : pgpkeys.mit.edu
+Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
+
+--X1bOJ3K7DJ5YkBrT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFGt2ZrxJBTTnXAif4RAraeAKCRhdfjtms64bp4GwseDXNp1ljaYgCg1SBq
+xpj0liVFiGJmJhIsgOIrqAw=
+=4HLc
+-----END PGP SIGNATURE-----
+
+--X1bOJ3K7DJ5YkBrT--
+
 
