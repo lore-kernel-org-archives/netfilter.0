@@ -1,15 +1,15 @@
-From: Franck Joncourt <franck.joncourt@wanadoo.fr>
-Subject: Re: SYN/ACK and NEW packets
-Date: Mon, 6 Aug 2007 20:20:27 +0200
-Message-ID: <20070806182027.GA11849@sid.toystory.lan>
-References: <20070804192109.GB4205@sid.toystory.lan>
-	<web-22036612@bk3.webmaillogin.com>
+From: "R. DuFresne" <dufresne@sysinfo.com>
+Subject: Re: need advice for high traffic network
+Date: Mon, 6 Aug 2007 14:50:00 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0708061449110.7484@darkstar.sysinfo.com>
+References: <469FE2DC.90300@relevad.com>
+	<Pine.LNX.4.63.0707191516340.23721@qynat.qvtvafvgr.pbz>
+	<469FE85B.3010502@relevad.com> <20070719225931.GA17114@internet24.de>
+	<469FF100.5020509@relevad.com> <20070719232836.GA17202@internet24.de>
+	<469FF52F.5010301@relevad.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X1bOJ3K7DJ5YkBrT"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <web-22036612@bk3.webmaillogin.com>
+In-Reply-To: <469FF52F.5010301@relevad.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,109 +20,59 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Konstantin Svist <kostya@relevad.com>
+Cc: netfilter@lists.netfilter.org
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
 
---X1bOJ3K7DJ5YkBrT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-> On Sat, 4 Aug 2007 21:21:09 +0200
->  Franck Joncourt <franck.joncourt@wanadoo.fr> wrote:
->> Hi,
->> Looking at this :
->> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#SYNACKANDN=
-EW
->> I understand that in order to prevent my ip address from being spoofed,
->> I should reject NEW packets with the SYN/ACK flags set and the others
->> cleared.
->> However, with the following nmap command I have tried to check it out :
->> nmap --scanflags SYNACK 192.168.0.1
->> all packets are known to be in the INVALID state rather than in the NEW
->> state.
->> state NEW tcp flags:FIN,SYN,RST,ACK/SYN,ACK -> 0 packet
->> state INVALID tcp flags:FIN,SYN,RST,ACK/SYN,ACK -> 170 packets
->> They talk about sequence number, as well, in the document, but I can't
->> figure out what difference it makes.
->> Did I miss anything ?
 
-On Sat, Aug 04, 2007 at 02:26:12PM -0600, Jorge Davila wrote:
-> Well, in the three-way handshake the flags in the packets are:
+
+ROFL!  Why read docs and get the info for yourself when others can spoon 
+feed ya eh?
+
+
+Thanks,
+
+Ron DuFresne
+
+On Thu, 19 Jul 2007, Konstantin Svist wrote:
+
+> Sorry, I meant:
+> Which parameters are those and what values would you recommend?
 >
-> 1) syn packet sent by the client
-> 2) syn,ack sent by the server
-> 3) ack sent by the client
-
-So far, I agree :p!
-
-> The packets in the NEW state for a statefull firewall (as iptables) are=
-=20
-> packets that belongs to a new "data stream", marked with the syn flag.
-
-What about sending packets with only the ACK flag set.
-
-Those packets matched the following rule every time on random ports :
-
-iptables -A INPUT -m state --state NEW \
-	-p tcp SYN,FIN,RST,ACK ACK -j RETURN
-
-using nmap --scanflags ACK 192.168.0.1
-
-So, there is something wrong since I did not send any SYN packets. 530
-packets send and 530 packets matched. And none of them are part of a
-connection.
-
-> The packets in the INVALID state are packets, in your case specifically,=
-=20
-> that implies a new "data stream" (or more properly, packets that does not=
-=20
-> belongs to a connection previously ESTABLISHED or to a connection RELATED=
-=20
-> to a connection previously ESTABLISHED) but this new "data stream" is not=
-=20
-> negotiating for open a new socket, is just sending "data".
-
-I understand what you mean, I hope so. The flags SYN/ACK are not
-sufficent to be matched as a NEW state since there is nothing in the
-data stream "to negotiate for a new socket".
-
+> Thanks!
 >
-> In fact, there are 0 packets with the state NEW with the flags=20
-> FIN,SYN,RST,ACK/SYN,ACK because the packets that you sent does not have t=
-he=20
-> right flags to be considered a valid packets to open a new connection.
+>
+> Thomas Jacob wrote:
+>> On Thu, Jul 19, 2007 at 04:17:20PM -0700, Konstantin Svist wrote:
+>> 
+>>> How do I reduce those timers?
+>>> 
+>> 
+>> echo <VALUE>  > /proc/sys/net/ipv4/netfilter/<SETTING>
+>>
+>>
 
-Ok.
+- -- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         admin & senior security consultant:  sysinfo.com
+                         http://sysinfo.com
+Key fingerprint = 9401 4B13 B918 164C 647A  E838 B2DF AFCC 94B0 6629
 
-Do not worry about the ACK packets, unless you have an explanation and
-the time to put it down. There must be something in the RFC 793 about
-it.
+...We waste time looking for the perfect lover
+instead of creating the perfect love.
 
-Thanks
-
-I apologize for the delay, but I saw your message when I was sorting
-out my spams.
-
---=20
-Franck Joncourt
-http://www.debian.org - http://smhteam.info/wiki/
-GPG server : pgpkeys.mit.edu
-Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
-
---X1bOJ3K7DJ5YkBrT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
+                 -Tom Robbins <Still Life With Woodpecker>
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-iD8DBQFGt2ZrxJBTTnXAif4RAraeAKCRhdfjtms64bp4GwseDXNp1ljaYgCg1SBq
-xpj0liVFiGJmJhIsgOIrqAw=
-=4HLc
+iD8DBQFGt21bst+vzJSwZikRAvqAAJ9+jrvhFa8BrM8oh4X/tWYuZee4FACeK5vF
+Zcf8EsQBMhHxGJ8io6Awt4U=
+=TUol
 -----END PGP SIGNATURE-----
-
---X1bOJ3K7DJ5YkBrT--
-
 
