@@ -1,14 +1,11 @@
-From: Franck Joncourt <franck.joncourt@wanadoo.fr>
-Subject: Re: How to tarpit without loading conntrack modules?
-Date: Mon, 6 Aug 2007 15:01:41 +0200
-Message-ID: <20070806130141.GA7805@sid.toystory.lan>
-References: <46B13903.2060206@instant.com.br>
+From: <bblount@Automationdirect.com>
+Subject: U32 Netfilter Module
+Date: Mon, 6 Aug 2007 09:37:12 -0400
+Message-ID: <2D6500C11B9BB7449D65291CE922EACF09C85702@srv-mail03.automationdirect.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VbJkn9YxBvnuCH5J"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <46B13903.2060206@instant.com.br>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,71 +16,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+I would like to use the U32 match with IPTables. I am having a huge
+amount of trouble getting it to work though. I have tried POM-ng, the
+xt_u32 patch on the dev list, SVN versions of IP Tables, IP Tables
+1.3.8, 1.3.5, all to no avail. I am compiling the U32 module as a module
+in the kernel, and every time I have gotten iptables: Invalid Argument
+when I try to use iptables -A INPUT -m u32 --u32 '2&0xFFFF=3D0x2:0x0100'
+-j DROP or anything related to u32. dmesg shows: ip_tables: u32 match:
+invalid size 1984 !=3D 2028. I have tried changing the defines in
+/usr/src/linux/include/linux/netfilter/xt_u32.h so that the structure
+has the same size, but I'm a bit worried this will break other things
+(and it didn't fix it anyway).=20
 
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Has anyone had any luck with this module, and if so, what versions are
+you using and where did you get the U32 module?
 
-On Wed, Aug 01, 2007 at 10:53:07PM -0300, Juan Carlos Castro y Castro wrote:
-> (Please CC me as I'm not on the list)
->
-> Is it possible to use the TARPIT module without auto-loading conntrack=20
-> modules and still leaving the machine able to make outbound connections? =
-I=20
-> tried the following and it didn't work. Using -m state --state ESTABLISHE=
-D=20
-> loads the conntrack modules and therefore leaves the machine open to=20
-> resource waste by connections that get tarpitted. Is there a solution? Or=
-=20
-> will I have to separate a machine for the purpose, and leave it unable to=
-=20
-> make outbound TCP connections?
->
-> -A INPUT -s 127.0.0.0/8 -j ACCEPT
-> -A INPUT -s (some source) -p tcp -m tcp --dport (some port) -j ACCEPT
-> -A INPUT -s (other source) -p tcp -m tcp --dport (other port) -j ACCEPT
-> -A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j TARPIT
-> -A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK ACK -j TARPIT
->
+I'm currently using gentoo patched kernel 2.6.21-r4 and iptables 1.3.8.
 
-According to the iptables man page, you have to use the NOTRACK target
-to avoid that.
-
-[quote]
-If you use the conntrack module while you are using TARPIT, you should
-also use the NOTRACK target,  or the kernel will unnecessarily allocate
-resources for each TARPITted connection. To TARPIT incoming connections=20
-to the standard IRC port while using conntrack, you could:
-
-iptables -t raw -A PREROUTING -p tcp --dport 6667 -j NOTRACK
-
-iptables -A INPUT -p tcp --dport 6667 -j TARPIT
-[/quote]
-
-Does it help ?
-
---=20
-Franck Joncourt
-http://www.debian.org - http://smhteam.info/wiki/
-GPG server : pgpkeys.mit.edu
-Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
-
---VbJkn9YxBvnuCH5J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFGtxu1xJBTTnXAif4RAsaDAJ96wA5k/+Tu6fqyiFnHdK7knHpDSACfTPgr
-vGu+p1XBomEnFTn/D10Pxo8=
-=4SEn
------END PGP SIGNATURE-----
-
---VbJkn9YxBvnuCH5J--
-
+Thanks!
 
