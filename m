@@ -1,10 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: conntrackd
-Date: Tue, 7 Aug 2007 15:39:49 +0200
-Message-ID: <00d601c7d8f8$6d082d90$0b0ffe0a@NS006819>
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Re: Asymmetric routing and connection tracking
+Date: Tue, 07 Aug 2007 15:47:26 +0200
+Message-ID: <1186494447.28140.57.camel@localhost>
+References: <46B81A0D.6090900@linpro.no>
+	<1186487970.28140.20.camel@localhost>  <46B87149.20505@linpro.no>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <46B87149.20505@linpro.no>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,68 +21,40 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+>   There are no rules that does stateful matching for traffic that is
+>  forwarded between two routers.  Such rules are only applied for traffic
+>  that is forwarded to an access LAN (like eth2).  Traffic that comes in
+>  from a transit provider and are forwarded directly to another router is
+>  only filtered based on simple source/destination matches in the IP.
+> 
+>   If such rules do not match, and the router is the last hop before a
+>  packet reaches its destination, it will apply stateful matching.  But
+>  this happens only for packets to/from access VLANs like eth2 in my
+>  drawing.
 
-I'm trying to setup conntrackd according to
-http://people.netfilter.org/pablo/conntrackd/install.html. It looks like
-I'm doing something wrong but I can't find out what it is.
+So in the scenario described, R1 wouldn't do any stateful packet
+filtering for packets to and from the internal server network? But
+the connections will be added to the connection tracking table of
+R1 nonetheless (unless you use the NOTRACK target
+in raw), only not with an ESTABLISHED state which probably
+means they timeout more often than needed and you have
+more insert/remove actions over the connection tracking hash
+table, maybe that's the source of your problem.
 
-I'm using:
-- CentOS 5
-- kernel 2.6.22.1
-- libnfnetlink-20070712
-- libnetfilter_conntrack-20070712
-- conntrack-tools-20070712
-- keepalived-1.1.13
+You could try the NOTRACK/raw thing on the (internal-)standby-router,
+or you could route the packets of connections that have incoming data
+from
+R1 back out over R1 with a policy routing setup (+connmark) on R2.
 
-I've installed keepalived and got that part working.
-Next, I installed/configured conntrackd, but when trying to start it I
-receive this error:
+>   I have several transit providers, but since it's not really relevant
+>  for the problem (at least I don't think so) I didn't bother to draw
+>  them.  You're right that using some form of VRRP could have been a
+>  possible solution though if I had only one, so I should have mentioned
+>  it.  Apologies.
 
-# conntrackd -C /usr/local/etc/conntrackd/conntrackd.conf
-ERROR: conntrackd cannot start, please check the logfile for more info
+OK that makes sense, otherwise this would be high
+up on my list for "most complicated solution for a simple problem" :-)
 
-# tail /var/log/conntrackd.log
-[...]
-[Mon Aug  6 13:25:03 2007] (pid=5701) --- starting in console mode ---
-[Mon Aug  6 13:25:03 2007] (pid=5701) [FAIL] can't open multicast
-server!
-[Mon Aug  6 13:25:03 2007] (pid=5701) [FAIL] initialization failed
-
-So, I thought I may lack some options in the kernel. To sum it up:
-
-CONFIG_IP_MULTICAST=y
-
-CONFIG_NF_CONNTRACK_ENABLED=m
-
-The doc says I need:
-# nfnetlink
-# ctnetlink (ip_conntrack_netlink) 
-
-This would be nfnetlink (?):
-CONFIG_NETFILTER_NETLINK=m
-CONFIG_NETFILTER_NETLINK_QUEUE=m
-CONFIG_NETFILTER_NETLINK_LOG=m
-
-CONFIG_NF_CT_NETLINK=m
-This produces nf_conntrack_netlink.o.
-In 2.6.18 (RHEL5 source) upto 26.21.7 (vanilla) I find
-CONFIG_IP_NF_CONNTRACK_NETLINK=m (which produces ip_conntack_netlink.o),
-but in 2.6.22.1 it's not there. I don't see anything about this in the
-changelog for 2.6.22 or 2.6.22.1: has this been replaced by
-nf_conntrack_netlink.o?
-
-About "connection tracking event notification API", I suppose it's this?
-CONFIG_NF_CONNTRACK=m
-CONFIG_NF_CONNTRACK_ENABLE=m
-(CONFIG_NF_CONNTRACK_EVENTS=y)
-
-I don't know where else to look and Google didn't exactly give me much.
-Can someone please enlighten me what it is that I'm missing here?
-
-
-Thanks,
-Rob
-
+  Thomas
 
 
