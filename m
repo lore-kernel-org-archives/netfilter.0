@@ -1,7 +1,7 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: conntrackd
-Date: Tue, 07 Aug 2007 16:28:54 +0200
-Message-ID: <46B881A6.4030508@netfilter.org>
+Date: Tue, 07 Aug 2007 16:31:26 +0200
+Message-ID: <46B8823E.5050607@netfilter.org>
 References: <00d601c7d8f8$6d082d90$0b0ffe0a@NS006819>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -22,24 +22,20 @@ To: Rob Sterenborg <rob@sterenborg.info>
 Cc: netfilter@lists.netfilter.org, Netfilter-failover list <netfilter-failover@lists.netfilter.org>
 
 Rob Sterenborg wrote:
-> # conntrackd -C /usr/local/etc/conntrackd/conntrackd.conf
-> ERROR: conntrackd cannot start, please check the logfile for more info
+> Hi,
 >=20
-> # tail /var/log/conntrackd.log
-> [...]
-> [Mon Aug  6 13:25:03 2007] (pid=3D5701) --- starting in console mode ---
-> [Mon Aug  6 13:25:03 2007] (pid=3D5701) [FAIL] can't open multicast
-> server!
-> [Mon Aug  6 13:25:03 2007] (pid=3D5701) [FAIL] initialization failed
+> I'm trying to setup conntrackd according to
+> http://people.netfilter.org/pablo/conntrackd/install.html. It looks like
+> I'm doing something wrong but I can't find out what it is.
+>=20
+> I'm using:
+> - CentOS 5
+> - kernel 2.6.22.1
+> - libnfnetlink-20070712
+> - libnetfilter_conntrack-20070712
+> - conntrack-tools-20070712
 
-Extracted from conntrackd.conf:
-
-        Multicast {
-                IPv4_address 225.0.0.50
-                IPv4_interface 192.168.100.100 # IP of dedicated link
-                                    ^^^
-Did you setup an interface with this IP? Otherwise the multicast sender
-won't work, i.e. your dedicated link (ethX) must use the IP 192.168.100.100.
+BTW, please use latest official releases.
 
 --=20
 "Ser=E1 preciso viajar a trav=E9s de los ojos de los idiotas" -- Poeta en
