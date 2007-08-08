@@ -1,9 +1,9 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] Netfilter-related Linux kernel security updates
-Date: Wed, 08 Aug 2007 13:37:04 +0200
-Message-ID: <46B9AAE0.70001@netfilter.org>
+From: Hrad Miroslav <m.hrad@intv.cz>
+Subject: Kernel-2-6 and iptables issue
+Date: Wed, 08 Aug 2007 15:44:09 +0200
+Message-ID: <46B9C8A9.6010805@intv.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,23 +15,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Hi!
+Hi
+I would like to have one questionregarding to the compilation of the 
+linux-kernel (2.6) and iptables.
 
-Nowadays, Linux Kernel related security issues are handled through the
--stable series. Since the Netfilter project has part of his software in
-the Linux kernel, please do not expect to find updated kernel-related
-security announces in our security section [1]. That section will
-contain only userspace-related problems (i.e. those regarding libraries
-and tools).
+I need to run a firewall within the linux box, which could support at 
+least ipp2p filtering, l7-layer filtering, connlimit, quota, tarpit, 
+ip_mark.
 
-Pablo (on behalf of the Netfilter Core Team)
+I would like to know which version of the kernel, iptables, 
+patch-o-magic and other patchs to use to make compilation of the kernel 
+and iptables without any errors.
 
-[1] http://www.netfilter.org/security/index.html
+I have aleady tried to use kernels and iptables of many versions but the 
+compilation of kernel was broken with some errors.
 
---=20
-"Ser=E1 preciso viajar a trav=E9s de los ojos de los idiotas" -- Poeta en
-Nueva York -- Federico Garc=EDa Lorca.
+For instance I used this packages:
+linux-2.6.16.27.tar.bz2
+iptables-1.3.5.tar.bz2
+patch-o-matic-ng-20060626.tar.bz2
+patch-o-matic-ng-20060511.tar.bz2
+
+linux-2.6.16-imq2.diff
+iptables-1.3.0-imq1.diff
+esfq-2.6.15.1.tar.gz
+
+netfilter-layer7-v2.2.tar.gz
+l7-protocols-2006-05-21.tar.gz
+
+- but without success. (there was incompatibily pointer with connlimit 
+and tarpit)
+
+
+Please, can you tell me which version can I use for proper kernel 
+compilation ?
+
+Thanks
+
+Regards
+
+Miroslav
 
