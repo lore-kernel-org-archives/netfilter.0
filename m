@@ -1,13 +1,10 @@
-From: Tore Anderson <tore@linpro.no>
-Subject: Re: Asymmetric routing and connection tracking
-Date: Wed, 08 Aug 2007 09:55:25 +0200
-Message-ID: <46B976ED.30902@linpro.no>
-References: <46B81A0D.6090900@linpro.no>	<1186487970.28140.20.camel@localhost>
-	<46B87149.20505@linpro.no> <1186494447.28140.57.camel@localhost>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] Netfilter-related Linux kernel security updates
+Date: Wed, 08 Aug 2007 13:37:04 +0200
+Message-ID: <46B9AAE0.70001@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1186494447.28140.57.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,28 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Thomas Jacob <jacob@internet24.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter-announce@lists.netfilter.org, netfilter <netfilter@lists.netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>
 
-* Thomas Jacob
+Hi!
 
-> So in the scenario described, R1 wouldn't do any stateful packet 
-> filtering for packets to and from the internal server network? But 
-> the connections will be added to the connection tracking table of R1
-> nonetheless (unless you use the NOTRACK target in raw), only not with
-> an ESTABLISHED state which probably means they timeout more often
-> than needed and you have more insert/remove actions over the
-> connection tracking hash table, maybe that's the source of your
-> problem.
-> 
-> You could try the NOTRACK/raw thing on the (internal-)standby-router,
+Nowadays, Linux Kernel related security issues are handled through the
+-stable series. Since the Netfilter project has part of his software in
+the Linux kernel, please do not expect to find updated kernel-related
+security announces in our security section [1]. That section will
+contain only userspace-related problems (i.e. those regarding libraries
+and tools).
 
-  Hmm.  I was not aware of NOTRACK/raw.  This is very interesting and
- on first look it seems like exactly the thing I needed.  Thank you very
- much for the pointer!  I'll dig into it now.  :-)
+Pablo (on behalf of the Netfilter Core Team)
 
-Regards
--- 
-Tore Anderson
+[1] http://www.netfilter.org/security/index.html
+
+--=20
+"Ser=E1 preciso viajar a trav=E9s de los ojos de los idiotas" -- Poeta en
+Nueva York -- Federico Garc=EDa Lorca.
 
