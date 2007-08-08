@@ -1,13 +1,13 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: conntrackd
-Date: Tue, 7 Aug 2007 17:00:05 +0200
-Message-ID: <00eb01c7d903$a447d9d0$0b0ffe0a@NS006819>
-References: <00d601c7d8f8$6d082d90$0b0ffe0a@NS006819>
-	<46B881A6.4030508@netfilter.org>
+From: Tore Anderson <tore@linpro.no>
+Subject: Re: Asymmetric routing and connection tracking
+Date: Wed, 08 Aug 2007 09:55:25 +0200
+Message-ID: <46B976ED.30902@linpro.no>
+References: <46B81A0D.6090900@linpro.no>	<1186487970.28140.20.camel@localhost>
+	<46B87149.20505@linpro.no> <1186494447.28140.57.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46B881A6.4030508@netfilter.org>
+In-Reply-To: <1186494447.28140.57.camel@localhost>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,36 +19,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Thomas Jacob <jacob@internet24.de>
+Cc: netfilter@lists.netfilter.org
 
-netfilter-bounces@lists.netfilter.org wrote:
-> Rob Sterenborg wrote:
->> # conntrackd -C /usr/local/etc/conntrackd/conntrackd.conf
->> ERROR: conntrackd cannot start, please check the logfile for more
->> info 
+* Thomas Jacob
 
-[...]
-
-> Extracted from conntrackd.conf:
+> So in the scenario described, R1 wouldn't do any stateful packet 
+> filtering for packets to and from the internal server network? But 
+> the connections will be added to the connection tracking table of R1
+> nonetheless (unless you use the NOTRACK target in raw), only not with
+> an ESTABLISHED state which probably means they timeout more often
+> than needed and you have more insert/remove actions over the
+> connection tracking hash table, maybe that's the source of your
+> problem.
 > 
->         Multicast {
->                 IPv4_address 225.0.0.50
->                 IPv4_interface 192.168.100.100 # IP of dedicated link
->                                     ^^^
-> Did you setup an interface with this IP? Otherwise the multicast
-> sender won't work, i.e. your dedicated link (ethX) must use the IP
-> 192.168.100.100.
+> You could try the NOTRACK/raw thing on the (internal-)standby-router,
 
-Hmm. Of course.
-Sorry, I missed the obvious..
+  Hmm.  I was not aware of NOTRACK/raw.  This is very interesting and
+ on first look it seems like exactly the thing I needed.  Thank you very
+ much for the pointer!  I'll dig into it now.  :-)
 
-> BTW, please use latest official releases.
-
-Will do.
-
-
-Thanks,
-Rob
-
-
+Regards
+-- 
+Tore Anderson
 
