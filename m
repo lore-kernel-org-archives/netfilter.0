@@ -1,14 +1,13 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	=?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: NAT performance + table processing
-Date: Thu, 09 Aug 2007 21:26:46 +0300
-Message-ID: <1186684006.4613.7.camel@localhost.localdomain>
-References: <000b01c7daac$f4b57030$de205090$@sk>
-Reply-To: casper@meteor.dp.ua
+From: "Sussman, Scott" <ssussman@starentnetworks.com>
+Subject: queue_max_length configuration
+Date: Fri, 10 Aug 2007 14:24:41 -0400
+Message-ID: <7CCD07160348804497EF29E9EA5560D702233DD4@exchtewks2.starentnetworks.com>
+References: <7CCD07160348804497EF29E9EA5560D702233DD3@exchtewks2.starentnetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <000b01c7daac$f4b57030$de205090$@sk>
+Content-Class: urn:content-classes:message
+In-Reply-To: <7CCD07160348804497EF29E9EA5560D702233DD3@exchtewks2.starentnetworks.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,31 +18,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?Q?J=C3=BAlius_Bem=C5=A1?= <julo@atknet.sk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-В Чтв, 09/08/2007 в 19:44 +0200, Július Bemš пишет:
-> Hi,
-> 
-> I wrote some performance tests of NAT table. The main idea is, that I add
-> 10000 random+senseless rules to the NAT table (snat, postrouting) and then I
-> add some rule to specific position which will stop traversing of NAT table.
-> I use UDP packets. 
-> 
-> When I insert my reasonable rule to position 2000 and  run my test, it shows
-> delay of packets cca 300ms. But when I run it more times, this delay is 2ms.
-> I don't understand why, because I use UDP(connectionless) - so I think, that
-> netfilter must process each packet and find appropriate rule. Is this true?
-> Or does netfilter do some optimalization? Because this behavior is expected
-> in TCP, but not UDP.
 
-UDP is connectionless, you are right. But conntrack thinks of it like of
-connection-oriented. If several UDP packets have the same source IPs and
-ports and same destination IPs and ports conntrack thinks those are
-belonging to the same "connection".
 
--- 
-Покотиленко Костик <casper@meteor.dp.ua>
+I need to increase the default size of the queue_max_length but do not
+see where in the code this is defined. Can someone send me a pointer to
+the location in the code so I can re-compile with a larger value?
 
+Thanks,
+
+Scott Sussman
+
+
+"This email message and any attachments are confidential information of =
+Starent Networks, Corp. The information transmitted may not be used to =
+create or change any contractual obligations of Starent Networks, Corp.  =
+Any review, retransmission, dissemination or other use of, or taking of =
+any action in reliance upon this e-mail and its attachments by persons =
+or entities other than the intended recipient is prohibited. If you are =
+not the intended recipient, please notify the sender immediately -- by =
+replying to this message or by sending an email to =
+postmaster@starentnetworks.com -- and destroy all copies of this message =
+and any attachments without reading or disclosing their contents. Thank =
+you."
 
