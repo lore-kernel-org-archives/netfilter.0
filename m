@@ -1,13 +1,13 @@
-From: "Sussman, Scott" <ssussman@starentnetworks.com>
-Subject: queue_max_length configuration
-Date: Fri, 10 Aug 2007 14:24:41 -0400
-Message-ID: <7CCD07160348804497EF29E9EA5560D702233DD4@exchtewks2.starentnetworks.com>
-References: <7CCD07160348804497EF29E9EA5560D702233DD3@exchtewks2.starentnetworks.com>
+From: fd4 <fd4@itsec4u.de>
+Subject: Re: ip_conntrack growing indefinitely
+Date: Sat, 11 Aug 2007 09:38:08 +0200
+Message-ID: <20070811093808.466e77ca@alice.thum.ath.cx>
+References: <46AB38AC.5050509@netfilter.org>
+	<20070730133240.730c0ef4@alice.thum.ath.cx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Class: urn:content-classes:message
-In-Reply-To: <7CCD07160348804497EF29E9EA5560D702233DD3@exchtewks2.starentnetworks.com>
+In-Reply-To: <20070730133240.730c0ef4@alice.thum.ath.cx>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,26 +21,22 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+> For now it has been patched setting ip_conntrack_max to 65536 but 
+> connections still grow indefinitely (seems NAT never drops old
+> connections). Any idea of the reasons? Could be related with the kernel
+> version (2 years old) we're running?
 
+I've a similar phenomen using kernel 2.6.18-4-vserver-686 :
+conntrack -L|wc -l
+3340
+nearly all started at a similar time from two ports to random
 
-I need to increase the default size of the queue_max_length but do not
-see where in the code this is defined. Can someone send me a pointer to
-the location in the code so I can re-compile with a larger value?
+example iptstate:
+Source Destination   Proto  State       TTL
+1.2.3.4:42573 1.2.3.4:842 tcp ESTABLISHED 10:44:43
+1.2.3.4:42574 1.2.3.4:1501 tcp ESTABLISHED 10:43:51
+1.2.3.4:42573 1.2.3.4:1392 tcp ESTABLISHED 10:43:20
 
-Thanks,
-
-Scott Sussman
-
-
-"This email message and any attachments are confidential information of =
-Starent Networks, Corp. The information transmitted may not be used to =
-create or change any contractual obligations of Starent Networks, Corp.  =
-Any review, retransmission, dissemination or other use of, or taking of =
-any action in reliance upon this e-mail and its attachments by persons =
-or entities other than the intended recipient is prohibited. If you are =
-not the intended recipient, please notify the sender immediately -- by =
-replying to this message or by sending an email to =
-postmaster@starentnetworks.com -- and destroy all copies of this message =
-and any attachments without reading or disclosing their contents. Thank =
-you."
+well :- on my wish list now something like that:
+conntrack -D -s 1.2.3.4 -d 1.2.3.4 -p tcp --orig-port-src 42573 --orig-port-dst *
 
