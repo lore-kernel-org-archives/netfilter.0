@@ -1,14 +1,11 @@
-From: Eric Leblond <eric@inl.fr>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
 Subject: Re: ip_conntrack growing indefinitely
-Date: Sat, 11 Aug 2007 10:04:28 +0200
-Message-ID: <14829.5065774166$1186819557@news.gmane.org>
-References: <46AB38AC.5050509@netfilter.org>
-	<20070730133240.730c0ef4@alice.thum.ath.cx>
-	<20070811093808.466e77ca@alice.thum.ath.cx>
+Date: Sat, 11 Aug 2007 11:19:08 +0100 (BST)
+Message-ID: <Pine.LNX.4.58.0708111115530.25740@mail3.jubileegroup.co.uk>
+References: <200708110801.l7B81Oj2025252@mail3.jubileegroup.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070811093808.466e77ca@alice.thum.ath.cx>
+In-Reply-To: <200708110801.l7B81Oj2025252@mail3.jubileegroup.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,22 +16,39 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: fd4 <fd4@itsec4u.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQ0KSGFzaDogU0hBMQ0KDQpIaSwNCg0K
-TGUgU2F0LCAxMSBBdWcgMjAwNyAwOTozODowOCArMDIwMCwNCmZkNCA8ZmQ0QGl0c2VjNHUuZGU+
-IGEgw6ljcml0IDoNCg0KPiA+IEZvciBub3cgaXQgaGFzIGJlZW4gcGF0Y2hlZCBzZXR0aW5nIGlw
-X2Nvbm50cmFja19tYXggdG8gNjU1MzYgYnV0IA0KPiANCj4gd2VsbCA6LSBvbiBteSB3aXNoIGxp
-c3Qgbm93IHNvbWV0aGluZyBsaWtlIHRoYXQ6DQo+IGNvbm50cmFjayAtRCAtcyAxLjIuMy40IC1k
-IDEuMi4zLjQgLXAgdGNwIC0tb3JpZy1wb3J0LXNyYyA0MjU3Mw0KPiAtLW9yaWctcG9ydC1kc3Qg
-Kg0KDQpZb3Ugc2hvdWxkIHRyeSB0aGlzOg0KaHR0cDovL3NvZnR3YXJlLmlubC5mci90cmFjL3Ry
-YWMuY2dpL3dpa2kvcHluZXRmaWx0ZXJfY29ubnRyYWNrDQoNCkl0IGRvZXMgZXhhY3RseSB3aGF0
-IHlvdSB3YW50Lg0KDQpCUiwNCi0gLS0gDQpFcmljIExlYmxvbmQgPGVyaWNAcmVnaXQub3JnPg0K
-TnVGVywgTm93IFVzZXIgRmlsdGVyaW5nIFdvcmtzIDogaHR0cDovL3d3dy5udWZ3Lm9yZw0KLS0t
-LS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0NClZlcnNpb246IEdudVBHIHYxLjQuNiAoR05VL0xp
-bnV4KQ0KDQppRDhEQlFGR3ZXMlBueEE3Q2RNV2p6SVJBbjR4QUpzRkQvN2RiL0ZDTnc2aXdUQnl6
-bm5ZNVBEcGRBQ2ZkZWdFDQpwc2xaaU5wQVk2VHRxVDBGMEl3NEhUdz0NCj02RzU5DQotLS0tLUVO
-RCBQR1AgU0lHTkFUVVJFLS0tLS0NCg==
+Hi there,
+
+On Sat, 11 Aug 2007 fd4 wrote:
+
+> > For now it has been patched setting ip_conntrack_max to 65536 but
+> > connections still grow indefinitely (seems NAT never drops old
+> > connections). Any idea of the reasons? Could be related with the
+> > kernel version (2 years old) we're running?
+>
+> I've a similar phenomen using kernel 2.6.18-4-vserver-686 :
+> conntrack -L|wc -l
+> 3340
+> nearly all started at a similar time from two ports to random
+>
+> example iptstate:
+> Source Destination   Proto  State       TTL
+> 1.2.3.4:42573 1.2.3.4:842 tcp ESTABLISHED 10:44:43
+> 1.2.3.4:42574 1.2.3.4:1501 tcp ESTABLISHED 10:43:51
+> 1.2.3.4:42573 1.2.3.4:1392 tcp ESTABLISHED 10:43:20
+>
+> well :- on my wish list now something like that:
+> conntrack -D -s 1.2.3.4 -d 1.2.3.4 -p tcp --orig-port-src 42573 --orig-port-dst *
+
+I don't think it grows indefinitely.  The timeout is five days.
+
+http://lists.netfilter.org/pipermail/netfilter-devel/2005-June/020081.html
+
+--
+
+73,
+Ged.
 
