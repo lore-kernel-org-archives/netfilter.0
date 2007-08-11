@@ -1,13 +1,10 @@
-From: fd4 <fd4@itsec4u.de>
-Subject: Re: ip_conntrack growing indefinitely
-Date: Sat, 11 Aug 2007 09:38:08 +0200
-Message-ID: <20070811093808.466e77ca@alice.thum.ath.cx>
-References: <46AB38AC.5050509@netfilter.org>
-	<20070730133240.730c0ef4@alice.thum.ath.cx>
+From: "Ammad Shah" <ammads@khi.comsats.net.pk>
+Subject: pptp
+Date: Sat, 11 Aug 2007 12:59:19 +0500 (PKT)
+Message-ID: <33152.202.69.36.149.1186819159.squirrel@khimail.comsats.net.pk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070730133240.730c0ef4@alice.thum.ath.cx>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,22 +18,19 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-> For now it has been patched setting ip_conntrack_max to 65536 but 
-> connections still grow indefinitely (seems NAT never drops old
-> connections). Any idea of the reasons? Could be related with the kernel
-> version (2 years old) we're running?
+Dear all,
 
-I've a similar phenomen using kernel 2.6.18-4-vserver-686 :
-conntrack -L|wc -l
-3340
-nearly all started at a similar time from two ports to random
+i am using linux as firewall and proxy server, having some problem
+regarding Microsoft VPN,
+my network users connect Microsoft vpn server. the problem is only one
+user is able to connect vpn, while othere can't do this at same time.
 
-example iptstate:
-Source Destination   Proto  State       TTL
-1.2.3.4:42573 1.2.3.4:842 tcp ESTABLISHED 10:44:43
-1.2.3.4:42574 1.2.3.4:1501 tcp ESTABLISHED 10:43:51
-1.2.3.4:42573 1.2.3.4:1392 tcp ESTABLISHED 10:43:20
+if i restart firewall, then any one can connect on First come first
+server. but only one.
+so i clear all rules, and default policy to ACCEPT, and used this rule
 
-well :- on my wish list now something like that:
-conntrack -D -s 1.2.3.4 -d 1.2.3.4 -p tcp --orig-port-src 42573 --orig-port-dst *
+iptables -t nat -A POSTROUTING -i eth1 -s 10.0.0.0/24 -j MASQUERADE
+iptables -A FORWARD -s 10.0.0.0/24 -j ACCEPT
+
+i try this on 2.6(rhel 5) and 2.4 (rhel3)
 
