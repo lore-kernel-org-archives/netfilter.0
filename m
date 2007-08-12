@@ -1,16 +1,13 @@
-From: Jim Laurino <nfcan.x.jimlaur@dfgh.net>
-Subject: Re: iptables/mac address filtering question (nfcan: to exclusive)
-Date: Sat, 11 Aug 2007 14:55:51 -0400
-Message-ID: <1186858551l.31324l.0l@soapy>
-References: <1b5f39a10708111046w55a4b00axb39c018a0ab54fb9@mail.gmail.com>
-Reply-To: nfcan.x.jimlaur@dfgh.net
+From: fd4 <fd4@itsec4u.de>
+Subject: Re: ip_conntrack growing indefinitely
+Date: Sun, 12 Aug 2007 08:23:15 +0200
+Message-ID: <20070812082315.7f7bad51@alice.thum.ath.cx>
+References: <200708110801.l7B81Oj2025252@mail3.jubileegroup.co.uk>
+	<Pine.LNX.4.58.0708111115530.25740@mail3.jubileegroup.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1b5f39a10708111046w55a4b00axb39c018a0ab54fb9@mail.gmail.com>
-	(from +nfcan+jimlaur+0d697027d9.jsprenkle#gmail.com@spamgourmet.com on
-	Sat Aug 11 13:46:51 2007)
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0708111115530.25740@mail3.jubileegroup.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,28 +21,15 @@ Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On 08/11/2007 01:46:51 PM, Jay Sprenkle - jsprenkle@gmail.com wrote:
+Am Sat, 11 Aug 2007 11:19:08 +0100 (BST)
+schrieb "G.W. Haywood" <ged@jubileegroup.co.uk>:
 
-....
-> I've put in a rule in my iptables chain but notice when I try to
-> connect it's rejected. The mac address I'm getting is not the same as
-> what iwconfig reports on my device. If a packet is passed through
-> routers on it's way to my box do they change the mac address of the
-> packet?
+> I don't think it grows indefinitely.  The timeout is five days.
 
-Yes, the MAC address is lost when a packet leaves an ethernet segment.
-Recall that a MAC address is how devices sharing an ethernet address each o=
-ther.
-Routers operate on IP addresses and do not use or preserve ethernet address=
-es.
-Maybe bridging, if you could do that, would preserve the MAC address.
+about 11 hrs in that case :-)
+(of course I've reduced the standard value)
 
-Regards,
+and I've said a similar case - just wondering, cleaned it with conntrack -F
 
---=20
-Jim Laurino
-nfcan.x.jimlaur@dfgh.net
-Please reply to the list.
-Only mail from the listserver reaches this address.
-
+the growing to more than 3300 entries has started by an unknown local event triggering conntrack on local connections; I could not find any reason in the logs or somehow else. happened within a minute or 2 from 2 local ports
 
