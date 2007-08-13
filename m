@@ -1,10 +1,12 @@
-From: Klaus Wacker <klaus_gr_W_kl_Acker@web.de>
-Subject: iptables /nat and route
-Date: Mon, 13 Aug 2007 10:58:09 +0200
-Message-ID: <1549989276@web.de>
+From: "Nesser, Phil" <nesser@amazon.com>
+Subject: rule limit question
+Date: Mon, 13 Aug 2007 15:52:22 -0700
+Message-ID: <4D25F22093241741BC1D0EEBC2DBB1DA365FFC74@EX-SEA5-D.ant.amazon.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Language: en-US
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,80 +17,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@lists.netfilter.org
+To: "netfilter@lists.netfilter.org" <netfilter@lists.netfilter.org>
 
-Hi, it seems it is a simple task, but can't get it going.
-I want have a couple of private machines accessing a public one  (and othe=
-r way around) through a router/gateway
-At the moment I do not care about ports (one to one is enough for me), jus=
-t try to get a ping through in both directions including a change of sourc=
-e and destination ip
-The default gateways address of the public machine I did set to OUTIP  res=
-pectively INIP for internal machine.=20
-Here is my setup:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-echo #rc.my.iptables
+For relatively obscure reasons, I am trying to build a set of rules that ru=
+n into the hundreds of thousands.  I was experimenting on a Redhat Release =
+5 machine with 2.6.18 kernel and 1.3.5  iptables.  I was able to load aroun=
+d 340k rules before getting an error of iptables-restore: line XXXXXX faile=
+d.
 
-####network######
-#given IP (not yet DHCP)
-PUP=5FIP=3D"192.168.10.99"
+So I try it out on a server (much beefier, 8G ram, dual quad core 2GHz proc=
+) running the same kernel/iptables versions.  This time it died in the same=
+ way at about 40k rules.  After some research I found a log message on Vmal=
+loc failures, so I figured what the hell and rebuilt the server using the 6=
+4 bit version of RH 5.  Now no more vmalloc failures, but still dies at aro=
+und 40k entries.
 
-#internal devices (might be a range)
-NET=5FIP1=3D"192.168.9.1"
+I am more than happy to build a custom kernel if that what I need to do.  I=
+ have poked around the sources and it is not obvious what needs to change.
 
-####router#######
-OUT=5FINFC=3D"eth0"
-IN=5FINFC=3D"eth2"
-INIP=3D"192.168.9.200"
-OUTIP=3D"192.168.10.200"
+Any help would be appreciated.
 
+Thanks!
 
-### iptables #####
-##for incoming from puplic ###
-iptables -t nat   -A PREROUTING -i $IN=5FINFC -s $PUP=5FIP -d $INIP -j DNAT --=
-to $NET=5FIP1
-iptables -t filter -A FORWARD -s $PUP=5FIP -d $NET=5FIP1 -j ACCEPT
+- --->  Phil
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (MingW32)
 
-###return way ###=20
-iptables -t nat   -A POSTROUTING -d $PUP=5FIP -s $NET=5FIP1 -j SNAT  --to $INI=
-P
-#(have tried without next line)
-iptables -t filter -A FORWARD -s $NET=5FIP1 -d $PUP=5FIP -j ACCEPT
-
-
-## keep things going, (have tried without)###
-iptables -A FORWARD -i eth0  -o eth2  -m state --state RELATED,ESTABLISHED=
- -j ACCEPT
-iptables -A FORWARD -i eth2  -o eth0  -m state --state RELATED,ESTABLISHED=
- -j ACCEPT
-=20
-
-It does not work in any direction. I am wondering it may have something to=
- do with my route settings:
-
-
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use If=
-ace
-default         192.168.10.1    255.255.255.0   UG    0      0        0 et=
-h0
-default         192.168.9.1     255.255.255.0   UG    0      0        0 et=
-h2
-192.168.10.0    *               255.255.255.0   U     0      0        0 et=
-h0
-192.168.9.0     *               255.255.255.0   U     0      0        0 et=
-h2
-default         127.0.0.0       0.0.0.0         UG    0      0        0 lo=
-
-=20
-
-Cheers
-Klaus
-
-
-=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
-Jetzt neu! Sch=FCtzen Sie Ihren PC mit McAfee und WEB.DE. 3 Monate
-kostenlos testen. http://www.pc-sicherheit.web.de/startseite/=3Fmc=3D022220
-
+iD8DBQFGwOCma2RfHGe2XK4RAtP8AJ4n0b6GrDHtrWJtHJO+4HXj+mDzhQCeNuBZ
+focPiQFfyved9SKA/ZmAoqM=3D
+=3DGETn
+-----END PGP SIGNATURE-----
 
