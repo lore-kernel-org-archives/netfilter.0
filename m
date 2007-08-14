@@ -1,7 +1,7 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: not [!] rule is not working
-Date: Tue, 14 Aug 2007 09:27:56 -0500
-Message-ID: <46C1BBEC.8030102@riverviewtech.net>
+Date: Tue, 14 Aug 2007 09:36:56 -0500
+Message-ID: <46C1BE08.6070409@riverviewtech.net>
 References: <d41814cf0708132345t45ec0be0vee36c6c88cc5088a@mail.gmail.com>
 Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
@@ -25,10 +25,11 @@ On 08/14/07 01:45, pankaj jain wrote:
 > I was trying to drop arp packets such that only specific interface 
 > should answer the arp requests.
 
-I don't know if it applies to your situation or not, but have you tried
-the configurations used in the Linux Virtual Server (a.k.a. LVS) to
-prevent an interface from responding to ARP requests, i.e. via /proc
-settings?
+Will you please elaborate a bit more on why you are trying to accomplish
+this and what your situation is?  I feel like there is more to this
+puzzle that will help us help you.  For example, do you have multiple
+(VLAN) physical interfaces on the same subnet or do you have an overly
+large netmask that encompasses both IPs in your post?
 
 
 
