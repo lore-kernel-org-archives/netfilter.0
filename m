@@ -1,13 +1,10 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: not [!] rule is not working
-Date: Tue, 14 Aug 2007 09:36:56 -0500
-Message-ID: <46C1BE08.6070409@riverviewtech.net>
-References: <d41814cf0708132345t45ec0be0vee36c6c88cc5088a@mail.gmail.com>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Micheal Scofield <dtsmedia@easynet.co.uk>
+Subject: libipq
+Date: Tue, 14 Aug 2007 21:33:12 +0400
+Message-ID: <1187112792.5915.9.camel@linux.site>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <d41814cf0708132345t45ec0be0vee36c6c88cc5088a@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,19 +16,24 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On 08/14/07 01:45, pankaj jain wrote:
-> I was trying to drop arp packets such that only specific interface 
-> should answer the arp requests.
+I'm trying to use the libipq fucntions such as ipq_create_handle in C,
+but I keep getting the error 
 
-Will you please elaborate a bit more on why you are trying to accomplish
-this and what your situation is?  I feel like there is more to this
-puzzle that will help us help you.  For example, do you have multiple
-(VLAN) physical interfaces on the same subnet or do you have an overly
-large netmask that encompasses both IPs in your post?
+too many arguments to function `ipq_create_handle'
 
+I tried downloading the latest libnetfilter_queue files by wget-ing it,
+and I can see after "./configure"ing, "make"ing and "make install"ing it
+that there is a new libipq.h file with 2 arguments for the function
+"ipq_create_handle", but I'm not sure how to successfully get those into
+my include files. I tried "cp"ing it, but that ended up with more errors
+after I compiled.
 
+Luckily I kept a backup of the old libipq.h file and put it back... It
+was a stupid idea, I know. but what am I supposed to do to use the
+updated functions.
 
-Grant. . . .
+Your help is grately apreeshiated.
+
 
