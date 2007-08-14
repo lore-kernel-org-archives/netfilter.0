@@ -1,14 +1,11 @@
-From: "pankaj jain" <jainp1979@gmail.com>
-Subject: not [!] rule is not working
-Date: Tue, 14 Aug 2007 12:15:42 +0530
-Message-ID: <d41814cf0708132345t45ec0be0vee36c6c88cc5088a@mail.gmail.com>
+From: "Filka Michal" <Michal.Filka@sitronicsts.com>
+Subject: conntrackd
+Date: Tue, 14 Aug 2007 10:01:19 +0200
+Message-ID: <56FFE36FCA3A3842AE12EE8B3A32229D14625E@exbbc.stromtelecom.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-	b=tVfNBQoDDa+r9sNzhr/NJrNkKy25kj6UGdhRc+F4lQMPeTviPT12vd2YrjjJpx703NfYBzOCSLyKd5+kf+76634wilRN5bSl4VTYoy+Vrm7w567spvZKID26yYgYasP/d7Ia/jUZr8KXpCozIGwQHFdHDTYHYIGO/nkU6P7ygXg=
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +16,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-Hi,
-I was trying to drop arp packets such that only specific interface
-should answer the arp requests.
-I added following rules in input chain.
--j DROP -i !eth1 -o * -d 10.19.1.102 --opcode 1 , pcnt=0 -- bcnt=0
--j DROP -i !eth2 -o * -d 10.19.51.102 --opcode 1 , pcnt=0 -- bcnt=0
+Hi all,
 
-as packet count suggests these are not matching against any packet.
-when I do arping from other machine to the 10.19.1.102 (assigned to
-the eth1 interface)
-arp requests are responded from eth0 (ip-10.19.0.102).
-why the rules are not having any effect.
+Is there any paper, howto or something else with deeper information =
+about conntrackd available?
 
--- 
-Thanks
-Pankaj Jain
+Thanks for answer ...
+
+Michal Filka
+System Software Engineer
+
+SITRONICS Telecom Solutions, Czech Republic a.s.
+
+
+Tel.: +420 211 029 247
+BB Centrum - Beta, Vysko=E8ilova 1461/2a, 140 00  Praha 4, Czech =
+Republic
+www.sitronicsts.com
+
+DISCLAIMER
+This e-mail may be privileged and/or confidential, and the sender does =
+not waive any related rights and obligations. Any distribution, use or =
+copying of this e-mail or the information it contains by other than an =
+intended recipient is unauthorized. If you received this e-mail in =
+error, please advise me (by return e-mail or otherwise) immediately.
+
 
