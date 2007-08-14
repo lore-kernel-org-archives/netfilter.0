@@ -1,13 +1,12 @@
-From: Ray Leach <spoons@rchq.co.za>
-Subject: Re: Capitalization conflicts in netfilter code apparently break
- tortise subversion
-Date: Tue, 14 Aug 2007 21:07:54 +0200
-Message-ID: <46C1FD8A.4050804@rchq.co.za>
-References: <20070814173337.GA9922@freya.hsd1.ca.comcast.net>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: libipq
+Date: Tue, 14 Aug 2007 22:02:48 +0200
+Message-ID: <17147.47277224$1187121799@news.gmane.org>
+References: <1187112792.5915.9.camel@linux.site>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020500000002010003000409"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070814173337.GA9922@freya.hsd1.ca.comcast.net>
+In-Reply-To: <1187112792.5915.9.camel@linux.site>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,90 +17,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "Adam J. Richter" <adam@yggdrasil.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Micheal Scofield <dtsmedia@easynet.co.uk>
 Cc: netfilter@lists.netfilter.org
 
-This is a multi-part message in MIME format.
---------------020500000002010003000409
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-
-Adam J. Richter wrote:
-> 	I am sorry if this is a frequently raised topic, but I have
-> done some web searches for it, including ones limited to
-> netfilter.org, and looked through the past few months of mailing list
-> archives without finding anything about it.
->
-> 	netfilter appears to be the only part of the linux kernel that
-> contains file names that differ only by capitalization.  I infer from
-> a quick glance at the source tree that the netfilter code currently
-> uses the caplitation to distinguish between "targets" and "matches",
-> which I would assume somehow helps in the readability of iptables
-> output or something like that.
->
-> 	File names that collide when compared case insensitively
-> result in errors in the use of TortoiseSVN on Windows clients using a
-> subversion source tree that has a copy of the linux kernel checked in.
->
-> 	Although I would welcome tips about some kludge available in
-> TortoiseSVN to work around this problem so that I don't have to admit
-> that Linux is incompatible with the primary client of this particular
-> company's chosen version control system, and have found some
-> discussion of this subversion issue on the net already, the primary
-> point of my letter is that file names that differ only in
-> capitalization in the real world do add a little bit to costs of and
-> potential arguments against linux.  Incompatability with our
-> colleagues' case insensitive file systems also impedes software
-> sharing minutely and may erode the inclination of others to accomodate
-> conventions that may make our lives easier (7 bit characters in file
-> names, no spaces, control characters, slashes, semicolons, no files
-> named "..", etc.).
->
-> 	I don't expect the netfilter contributors immediately to jump
-> and fix this problem, which I imagine would have implications in user
-> level code and system administration scripts.  Rather, I submit it for
-> contributors to contemplate in future planning.  For example, perhaps
-> in the future, the FILTERNAME/filtername convention could be migrated
-> to the use of suffixes like filtername_in/filtername_out.
->
-> 	Thanks for your time.
->
-> Adam Richter
->
->
->
->
->   
-
-Thanks Adam
-
-This appears to be an OS specific and not a subversion issue. The 
-subversion server allows you to check in duplicate filenames with 
-different case. The problem comes in when you try and check the code out 
-again on an OS which is case insensitive (ala Windows). See this link on 
-the Tigris website for more info :
-http://subversion.tigris.org/servlets/ReadMsg?listName=dev&msgNo=38144
-
-Bottom line is, if the code was checked into the repository 
-successfully, then it would have been done from a client on an OS that 
-supports case sensitivity and probably was expected to be checked out on 
-a compatible OS.
-
-Regards
-
-Ray
-
--- 
-<img src='http://www.danasoft.com/sig/spoonssig.jpg' />
---------------------------------------------------
-RCHQ Hobbies cc
-http://www.rchq.co.za and http://store.rchq.co.za
-Fax: +27 86 652 2773       eMail: admin@rchq.co.za
-P O Box 10376, Vorna Valley, Midrand, 1686
---------------------------------------------------
-
-
---------------020500000002010003000409--
+LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQ0KSGFzaDogU0hBMQ0KDQpIaSwNCg0K
+TGUgVHVlLCAxNCBBdWcgMjAwNyAyMTozMzoxMiArMDQwMCwNCk1pY2hlYWwgU2NvZmllbGQgPGR0
+c21lZGlhQGVhc3luZXQuY28udWs+IGEgw6ljcml0IDoNCg0KPiBJJ20gdHJ5aW5nIHRvIHVzZSB0
+aGUgbGliaXBxIGZ1Y250aW9ucw0KDQpEb24ndCB1c2UgbGliaXBxLCBpdCdzIGZ1bGx5IGRlcHJl
+Y2F0ZWQuDQoNCg0KPiBzdWNoIGFzIGlwcV9jcmVhdGVfaGFuZGxlIGluIEMsDQo+IGJ1dCBJIGtl
+ZXAgZ2V0dGluZyB0aGUgZXJyb3IgDQo+IA0KPiBZb3VyIGhlbHAgaXMgZ3JhdGVseSBhcHJlZXNo
+aWF0ZWQuDQoNCklmIHlvdSBuZWVkIHRvIHBvcnQgc29tZSBjb2RlIHRvIGxpYm5ldGZpbHRlcl9x
+dWV1ZSwgcGxlYXNlIGhhdmUgYSBsb29rDQp0byBzbm9ydC1pbmxpbmUgb3IgbnVmdyB3aGljaCBj
+YW4gdXNlIGJvdGggc3lzdGVtcy4NCg0Kc25vcnQtaW5saW5lOiBodHRwOi8vc25vcnQtaW5saW5l
+LnNvdXJjZWZvcmdlLm5ldC8NCm51Znc6IGh0dHA6Ly93d3cubnVmdy5vcmcNCg0KQlIsDQotIC0t
+IA0KRXJpYyBMZWJsb25kIDxlcmljQHJlZ2l0Lm9yZz4NCk51RlcsIE5vdyBVc2VyIEZpbHRlcmlu
+ZyBXb3JrcyA6IGh0dHA6Ly93d3cubnVmdy5vcmcNCi0tLS0tQkVHSU4gUEdQIFNJR05BVFVSRS0t
+LS0tDQpWZXJzaW9uOiBHbnVQRyB2MS40LjYgKEdOVS9MaW51eCkNCg0KaUQ4REJRRkd3Z3BzbnhB
+N0NkTVdqeklSQW9SVEFKNHdJSEhQZnh1UWp1SUx3N3BFdkRJdFNqOGw2UUNmWkl3Tw0KZEl5QUFU
+K3JoNk96M05MK0s4U25SbUk9DQo9N3lNRA0KLS0tLS1FTkQgUEdQIFNJR05BVFVSRS0tLS0tDQo=
 
