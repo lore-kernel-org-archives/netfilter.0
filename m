@@ -1,10 +1,11 @@
-From: Micheal Scofield <dtsmedia@easynet.co.uk>
-Subject: libipq
-Date: Tue, 14 Aug 2007 21:33:12 +0400
-Message-ID: <1187112792.5915.9.camel@linux.site>
+From: "Adam J. Richter" <adam@yggdrasil.com>
+Subject: Capitalization conflicts in netfilter code apparently break tortise
+	subversion
+Date: Tue, 14 Aug 2007 10:33:37 -0700
+Message-ID: <20070814173337.GA9922@freya.hsd1.ca.comcast.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,24 +17,47 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-I'm trying to use the libipq fucntions such as ipq_create_handle in C,
-but I keep getting the error 
+	I am sorry if this is a frequently raised topic, but I have
+done some web searches for it, including ones limited to
+netfilter.org, and looked through the past few months of mailing list
+archives without finding anything about it.
 
-too many arguments to function `ipq_create_handle'
+	netfilter appears to be the only part of the linux kernel that
+contains file names that differ only by capitalization.  I infer from
+a quick glance at the source tree that the netfilter code currently
+uses the caplitation to distinguish between "targets" and "matches",
+which I would assume somehow helps in the readability of iptables
+output or something like that.
 
-I tried downloading the latest libnetfilter_queue files by wget-ing it,
-and I can see after "./configure"ing, "make"ing and "make install"ing it
-that there is a new libipq.h file with 2 arguments for the function
-"ipq_create_handle", but I'm not sure how to successfully get those into
-my include files. I tried "cp"ing it, but that ended up with more errors
-after I compiled.
+	File names that collide when compared case insensitively
+result in errors in the use of TortoiseSVN on Windows clients using a
+subversion source tree that has a copy of the linux kernel checked in.
 
-Luckily I kept a backup of the old libipq.h file and put it back... It
-was a stupid idea, I know. but what am I supposed to do to use the
-updated functions.
+	Although I would welcome tips about some kludge available in
+TortoiseSVN to work around this problem so that I don't have to admit
+that Linux is incompatible with the primary client of this particular
+company's chosen version control system, and have found some
+discussion of this subversion issue on the net already, the primary
+point of my letter is that file names that differ only in
+capitalization in the real world do add a little bit to costs of and
+potential arguments against linux.  Incompatability with our
+colleagues' case insensitive file systems also impedes software
+sharing minutely and may erode the inclination of others to accomodate
+conventions that may make our lives easier (7 bit characters in file
+names, no spaces, control characters, slashes, semicolons, no files
+named "..", etc.).
 
-Your help is grately apreeshiated.
+	I don't expect the netfilter contributors immediately to jump
+and fix this problem, which I imagine would have implications in user
+level code and system administration scripts.  Rather, I submit it for
+contributors to contemplate in future planning.  For example, perhaps
+in the future, the FILTERNAME/filtername convention could be migrated
+to the use of suffixes like filtername_in/filtername_out.
 
+	Thanks for your time.
+
+Adam Richter
 
