@@ -1,12 +1,14 @@
-From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Re: Forward port to openvpn client
-Date: Tue, 14 Aug 2007 16:19:43 -0600
-Message-ID: <web-80100806@bk1.webmaillogin.com>
-References: <BAY113-F334B7FEC24D2CD5B0520D5E4DD0@phx.gbl>
+From: "Adam J. Richter" <adam@yggdrasil.com>
+Subject: Re: Capitalization conflicts in netfilter code apparently break
+	tortise subversion
+Date: Tue, 14 Aug 2007 16:41:47 -0700
+Message-ID: <20070814234147.GA6973@freya.hsd1.ca.comcast.net>
+References: <20070814173337.GA9922@freya.hsd1.ca.comcast.net>
+	<46C1FD8A.4050804@rchq.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <BAY113-F334B7FEC24D2CD5B0520D5E4DD0@phx.gbl>
+Content-Disposition: inline
+In-Reply-To: <46C1FD8A.4050804@rchq.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,67 +19,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Johan ?hrn <johan_oern@hotmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ray Leach <spoons@rchq.co.za>
+Cc: netfilter@lists.netfilter.org
 
-Johan:
+On Tue, Aug 14, 2007 at 09:07:54PM +0200, Ray Leach wrote:
+> Adam J. Richter wrote:
+[...]
+> >	netfilter appears to be the only part of the linux kernel that
+> >contains file names that differ only by capitalization. [...]
+> >
+> >	File names that collide when compared case insensitively
+> >result in errors in the use of TortoiseSVN on Windows clients using a
+> >subversion source tree that has a copy of the linux kernel checked in.
+[...]
+> 
+> Thanks Adam
+> 
+> This appears to be an OS specific and not a subversion issue. The 
+> subversion server allows you to check in duplicate filenames with 
+> different case. The problem comes in when you try and check the code out 
+> again on an OS which is case insensitive (ala Windows). See this link on 
+> the Tigris website for more info :
+> http://subversion.tigris.org/servlets/ReadMsg?listName=dev&msgNo=38144
+> 
+> Bottom line is, if the code was checked into the repository 
+> successfully, then it would have been done from a client on an OS that 
+> supports case sensitivity and probably was expected to be checked out on 
+> a compatible OS.
 
-May you must ask in the openvpn mailing list.
+	Thanks for the link to that discussion.
 
-Well, check this list:
+	The sitation arose with an automated merge someone was
+attempting from Windows on a large source tree that included a linux
+kernel source subtree.  If I understand correctly, it appears that
+TortoiseSVN from Windows cannot currently safely do merges of Linux
+source trees, due to the naming capitalization collisions in
+netfilter.  It also may effect the ability of someone working on
+Windows to quickly check the effected parts of the linux kernel source
+tree from this version control system or, even without a version
+control system, just unpacking a linux source tar file.
 
-1) You must have in your firewall an open path for the tcp traffic to the=20
-port 3739.
+	For the purposes of the netfilter list, I just wanted to bring
+the downsides of these caplitalization collisions to everyone's
+attention in the hopes that they might be eliminated in the course of
+future development, especially if some other occasion for renaming
+things arises, as has occurred with the transition to "ip tools", and
+the ipchains to iptables transition.
 
-2) Check the openvpn configuration files to see if the references to the=20
-virtual addresses are ok
+Adam Richter
 
-3) Check in your firewall if exists an open path to tun0 virtual interface.
 
-Hope this helps,
-
-Jorge D=E1vila.
-
-On Tue, 14 Aug 2007 23:59:56 +0200
-  "Johan =D6hrn" <johan_oern@hotmail.com> wrote:
-> Hi,
->=20
-> I want to forward port 3739 on my firewall (openvpn server) to an openvpn=
-=20
->client on port 3739.
->=20
-> This is my setup:
->=20
-> firewall:
-> external interface: eth2
-> external ip: 87.251.222.104
-> openvpn interface: tun0
->=20
-> openvpn client:
-> ip: 10.0.10.6
->=20
-> I can't figure out how to do the forward. I've tried everything I could=20
->find on google and nothing seem to help. I can connect from the server to =
-
->the client on port 3739 so it's not a firewall issue on the client side.=20
->Someone sugested that iptables might not be able to forward a port over an=
-=20
->ipsec interface.
->=20
-> Can someone tell me if what I'm trying to do is possible and if so, how?
->=20
-> / Johan
->=20
-> _________________________________________________________________
-> Express yourself instantly with MSN Messenger! Download today it's FREE! =
-
->http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
->=20
->=20
->=20
-
-Jorge Isaac Davila Lopez
-Nicaragua Open Source
-+505 430 5462
-davila@nicaraguaopensource.com
+P.S. Going a bit off topic for the netfilter list, TortoiseSVN is
+designed to access a unix-supporting version control system
+(subversion) from Windows.  I understand that the capitalization
+collision problem is not limited to TortoiseSVN, but, fall back to
+some name when such problems occur would be pretty central to
+TortoiseSVN's purpose (as opposed to accomodating VMS naming support
+as was mentioned in the thread you identified), regardless of whether
+the netfilter capitalization collisions get fixed.
 
