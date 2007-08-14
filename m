@@ -1,12 +1,15 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: libipq
-Date: Tue, 14 Aug 2007 22:02:48 +0200
-Message-ID: <17147.47277224$1187121799@news.gmane.org>
-References: <1187112792.5915.9.camel@linux.site>
+From: gabrix <sickuser@gmail.com>
+Subject: change from eth0 ---- router interface , to ppp0 --- ethernet modem
+ interface
+Date: Tue, 14 Aug 2007 22:32:39 +0200
+Message-ID: <46C21167.8050005@gabrix.ath.cx>
+Reply-To: gabrix@gabrix.ath.cx
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1187112792.5915.9.camel@linux.site>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:received:message-id:date:reply-to:organization:user-agent:mime-version:to:subject:x-enigmail-version:content-type:content-transfer-encoding:from;
+	b=CuPQlv9IaIrGqOMohU8QsQxRKCdKCmGEAfz0Y1I2XSfih+Fgn89ZJeKp80eBwIucWtPd1eEaIMrYcEgd3ORhRQZ30gscVWPB7Uga7ufYIcvUg5gFdKhGfMqxPL2tUjXc11lClQOVaL++iv0LthLWqu8CIxptsos0OAc3W9XF4zA=
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,23 +20,56 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: Micheal Scofield <dtsmedia@easynet.co.uk>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-LS0tLS1CRUdJTiBQR1AgU0lHTkVEIE1FU1NBR0UtLS0tLQ0KSGFzaDogU0hBMQ0KDQpIaSwNCg0K
-TGUgVHVlLCAxNCBBdWcgMjAwNyAyMTozMzoxMiArMDQwMCwNCk1pY2hlYWwgU2NvZmllbGQgPGR0
-c21lZGlhQGVhc3luZXQuY28udWs+IGEgw6ljcml0IDoNCg0KPiBJJ20gdHJ5aW5nIHRvIHVzZSB0
-aGUgbGliaXBxIGZ1Y250aW9ucw0KDQpEb24ndCB1c2UgbGliaXBxLCBpdCdzIGZ1bGx5IGRlcHJl
-Y2F0ZWQuDQoNCg0KPiBzdWNoIGFzIGlwcV9jcmVhdGVfaGFuZGxlIGluIEMsDQo+IGJ1dCBJIGtl
-ZXAgZ2V0dGluZyB0aGUgZXJyb3IgDQo+IA0KPiBZb3VyIGhlbHAgaXMgZ3JhdGVseSBhcHJlZXNo
-aWF0ZWQuDQoNCklmIHlvdSBuZWVkIHRvIHBvcnQgc29tZSBjb2RlIHRvIGxpYm5ldGZpbHRlcl9x
-dWV1ZSwgcGxlYXNlIGhhdmUgYSBsb29rDQp0byBzbm9ydC1pbmxpbmUgb3IgbnVmdyB3aGljaCBj
-YW4gdXNlIGJvdGggc3lzdGVtcy4NCg0Kc25vcnQtaW5saW5lOiBodHRwOi8vc25vcnQtaW5saW5l
-LnNvdXJjZWZvcmdlLm5ldC8NCm51Znc6IGh0dHA6Ly93d3cubnVmdy5vcmcNCg0KQlIsDQotIC0t
-IA0KRXJpYyBMZWJsb25kIDxlcmljQHJlZ2l0Lm9yZz4NCk51RlcsIE5vdyBVc2VyIEZpbHRlcmlu
-ZyBXb3JrcyA6IGh0dHA6Ly93d3cubnVmdy5vcmcNCi0tLS0tQkVHSU4gUEdQIFNJR05BVFVSRS0t
-LS0tDQpWZXJzaW9uOiBHbnVQRyB2MS40LjYgKEdOVS9MaW51eCkNCg0KaUQ4REJRRkd3Z3BzbnhB
-N0NkTVdqeklSQW9SVEFKNHdJSEhQZnh1UWp1SUx3N3BFdkRJdFNqOGw2UUNmWkl3Tw0KZEl5QUFU
-K3JoNk96M05MK0s4U25SbUk9DQo9N3lNRA0KLS0tLS1FTkQgUEdQIFNJR05BVFVSRS0tLS0tDQo=
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+I finally changed device to connect to internet on my gateway linux box
+, from a netgear router to an ethernet modem device.
+Offcourse occourred some changes in my iptables script , what before was
+192.168.0.2 ip for eth0 and 192.168.0.1 for my front router now has a
+eth0 with no ip and a ethernet router with my dynamic isp ip i grab with
+this script :
+
+> EXTIF=ppp0
+> EXTIP="`ifconfig $EXTIF | grep inet | cut -d : -f 2 | cut -d \  -f 1`"
+
+- -------
+behind my gateway linuxbox (Debian etch) i have two more servers a mail
+server and a web ftp server .Mail is working great with this iptables:
+> ARGO="`ifconfig ppp0 | grep inet | cut -d : -f 2 | cut -d \  -f 1`"
+> $IPT -t nat -A PREROUTING -p tcp -i $IF0 -d $ARGO --dport 25 -j DNAT --to $MAIL:25
+> $IPT -A FORWARD -i $IF0 -o $IF1 -p tcp --dport 25 -d $MAIL -j ACCEPT
+
+
+I have problems with http e https where i'm using this code:
+> IF0=ppp0
+> IF1=eth1
+> $IPT -t nat -A PREROUTING -p tcp -i $IF0 -d $ARGO --dport 80 -j DNAT --to $WWW:80
+> $IPT -t nat -A PREROUTING -p tcp -i $IF0 -d $ARGO --dport 443 -j DNAT --to $WWW:443
+> $IPT -A FORWARD -i $IF0 -o $IF1 -p tcp --dport 80 -d $WWW -j ACCEPT
+> $IPT -A FORWARD -i $IF0 -o $IF1 -p tcp --dport 443 -d $WWW -j ACCEPT
+
+I'm using apache2 with mod_rewrite rewriting connecions from port 80 to 443.
+What's wrong with my configuration ? I will try to remove that -d $ARGO
+like this:
+>$IPT -t nat -A PREROUTING -p tcp -i $IF0 --dport 80 -j DNAT --to $WWW:80
+>$IPT -t nat -A PREROUTING -p tcp -i $IF0 --dport 443 -j DNAT --to $WWW:443
+And invite you to give it a try http://www.gabrix.ath.cx let's see how
+it goes.
+Thanks for the attenction !
+gabriele
+
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFGwhFnaSnKyogvewwRAhpMAKCsepaqX5XZZpuY7/Zg+cmNwNdtcACfSAyC
+vLmZeFzdXaXnqio8fXXTouo=
+=UdWg
+-----END PGP SIGNATURE-----
 
