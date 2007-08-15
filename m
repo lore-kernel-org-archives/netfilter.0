@@ -1,9 +1,9 @@
-From: Neville Dempsey <Neville.Dempsey@NetBoxBlue.com>
-Subject: revisit: ipset nethash set type limited to /31
-Date: Wed, 15 Aug 2007 14:56:11 +1000
-Message-ID: <46C2876B.6030602@NetBoxBlue.com>
+From: =?iso-8859-1?Q?S=E9bastien_lorandel?= <slorandel.nf@hotmail.com>
+Subject: iptables v1.3.8: can't initialize iptables table `filter'
+Date: Wed, 15 Aug 2007 09:31:00 +0100
+Message-ID: <BAY144-W1031A33CB8746DB70BC74289DE0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,49 +15,139 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+
 
 Hi,
 
-My employer has an interest in having enhancing the functionality of
-netfilter/trunk/ipset/ipset_nethash.c with the 2.6.18+ kernels and is
-exploring the possibility of sponsoring a netfilter developer to make
-this happen.
+I just updated to linux kernel 2.1.22 and when trying to use iptables, I ge=
+t the following answer:
 
-As ipset_nethash.c stands it handles subnet masks from /1 to /31 fine,
-but the cases /0 & /32 are required to be handled in a different chain.
-unifying these would vastly simplify and reduce our rules.  And reduce
-the delay it takes to update some rule sets.  Is there anyone interested
-in doing this?
+# iptables -L
+iptables v1.3.8: can't initialize iptables table `filter': Table does not e=
+xist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
-There has been some previous discussion on this in March last year:
-http://lists.netfilter.org/pipermail/netfilter/2006-March/065088.html
-http://lists.netfilter.org/pipermail/netfilter/2006-March/065090.html
+I read on other forums that it could come from the /boot/config file. And i=
+t should be true, when I compare my file to old ones I see that lot of thin=
+gs aren't configured.
+Let's look at its Networking part:
 
-In particular:
-http://lists.netfilter.org/pipermail/netfilter/2006-March/065091.html
-This explains that the IPAddr & Mask is stored in 32 bits, leaving no
-room for /0 & /32.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D#
+# Networking
+#
+CONFIG_NET=3Dy
 
-http://lists.netfilter.org/pipermail/netfilter/2006-March/065130.html
-Jozsef suggested a potentially alternative method of a "union" set type.
-Did anyone manage to implement this new type?
+#
+# Networking options
+#
+CONFIG_PACKET=3Dy
+# CONFIG_PACKET_MMAP is not set
+CONFIG_UNIX=3Dy
+# CONFIG_NET_KEY is not set
+CONFIG_INET=3Dy
+CONFIG_IP_MULTICAST=3Dy
 
-We are still wondering about the /0 & /32 "subnets".  /0 could be handled
-as a special case, if the IPAddr & Mask was allowed to use more then 4
-bytes, eg 5.  Then at the cost of 25% more memory in the hash we could
-in some cases half the number of netfilter entries.
+#
+# added by seb on 08/13/07
+# enables conntrack
+#CONFIG_NF_CONNTRACK_ENABLED=3Dm
+#
+CONFIG_NF_CONNTRACK=3Dm
+CONFIG_NF_CONNTRACK_IPV4=3Dm
 
-If it helps, we also have resources available to test development versions
-of the ipset_nethash.c
+# CONFIG_IP_ADVANCED_ROUTER is not set
+CONFIG_IP_FIB_HASH=3Dy
+CONFIG_IP_PNP=3Dy
+CONFIG_IP_PNP_DHCP=3Dy
+# CONFIG_IP_PNP_BOOTP is not set
+# CONFIG_IP_PNP_RARP is not set
+# CONFIG_NET_IPIP is not set
+# CONFIG_NET_IPGRE is not set
+# CONFIG_IP_MROUTE is not set
+# CONFIG_ARPD is not set
+# CONFIG_SYN_COOKIES is not set
+# CONFIG_INET_AH is not set
+# CONFIG_INET_ESP is not set
+# CONFIG_INET_IPCOMP is not set
+# CONFIG_INET_XFRM_TUNNEL is not set
+CONFIG_INET_TUNNEL=3Dy
+# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+# CONFIG_INET_XFRM_MODE_BEET is not set
+CONFIG_INET_DIAG=3Dy
+CONFIG_INET_TCP_DIAG=3Dy
+# CONFIG_TCP_CONG_ADVANCED is not set
+CONFIG_TCP_CONG_CUBIC=3Dy
+CONFIG_DEFAULT_TCP_CONG=3D"cubic"
+# CONFIG_TCP_MD5SIG is not set
+CONFIG_IPV6=3Dy
+# CONFIG_IPV6_PRIVACY is not set
+# CONFIG_IPV6_ROUTER_PREF is not set
+# CONFIG_IPV6_OPTIMISTIC_DAD is not set
+# CONFIG_INET6_AH is not set
+# CONFIG_INET6_ESP is not set
+# CONFIG_INET6_IPCOMP is not set
+# CONFIG_IPV6_MIP6 is not set
+# CONFIG_INET6_XFRM_TUNNEL is not set
+# CONFIG_INET6_TUNNEL is not set
+# CONFIG_INET6_XFRM_MODE_TRANSPORT is not set
+# CONFIG_INET6_XFRM_MODE_TUNNEL is not set
+# CONFIG_INET6_XFRM_MODE_BEET is not set
+# CONFIG_INET6_XFRM_MODE_ROUTEOPTIMIZATION is not set
+CONFIG_IPV6_SIT=3Dy
+# CONFIG_IPV6_TUNNEL is not set
+# CONFIG_IPV6_MULTIPLE_TABLES is not set
+# CONFIG_NETWORK_SECMARK is not set
 
-ThanX
-Neville Dempsey
-Developer @ NetBox Blue (http://netboxblue.com)
 
+#
+# CONFIG_NETFILTER is not set
+# netfilter configuration by seb:
+#
+CONFIG_NETFILTER_NETLINK=3Dm
+CONFIG_NF_CT_NETLINK=3Dm
+CONFIG_NF_CONNTRACK_EVENTS=3Dy
 
-Scanned by the NetBox from NetBox Blue
-(http://netboxblue.com/)
+# CONFIG_IP_DCCP is not set
+# CONFIG_IP_SCTP is not set
+# CONFIG_TIPC is not set
+# CONFIG_ATM is not set
+# CONFIG_BRIDGE is not set
+# CONFIG_VLAN_8021Q is not set
+# CONFIG_DECNET is not set
+# CONFIG_LLC2 is not set
+# CONFIG_IPX is not set
+# CONFIG_ATALK is not set
+# CONFIG_X25 is not set
+# CONFIG_LAPB is not set
+# CONFIG_ECONET is not set
+# CONFIG_WAN_ROUTER is not set
 
+#
+# QoS and/or fair queueing
+#
+# CONFIG_NET_SCHED is not set
+
+#
+# Network testing
+#
+# CONFIG_NET_PKTGEN is not set
+# CONFIG_NET_TCPPROBE is not set
+# CONFIG_HAMRADIO is not set
+# CONFIG_IRDA is not set
+# CONFIG_BT is not set
+# CONFIG_AF_RXRPC is not set
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+hope you can help me, thanks
+Sebastien.
+_________________________________________________________________
+With Windows Live Hotmail, you can personalize your inbox with your favorit=
+e color.
+www.windowslive-hotmail.com/learnmore/personalize.html?locale=3Den-us&ocid=
+=3DTXT_TAGLM_HMWL_reten_addcolor_0607=
 
