@@ -1,19 +1,14 @@
-From: Franck Joncourt <franck.joncourt@wanadoo.fr>
-Subject: Re: not [!] rule is not working
-Date: Thu, 16 Aug 2007 23:47:11 +0200
-Message-ID: <20070816214711.GA4374@sid.toystory.lan>
-References: <d41814cf0708132345t45ec0be0vee36c6c88cc5088a@mail.gmail.com>
-	<46C1BE08.6070409@riverviewtech.net>
-	<d41814cf0708152256w2e5e146cs7306e9e40e3b6872@mail.gmail.com>
-	<46C46195.9070500@riverviewtech.net>
-	<46C4683B.3090702@plouf.fr.eu.org>
-	<46C46CE4.70308@riverviewtech.net>
+From: "Ben Carbery" <ben.carbery@gmail.com>
+Subject: packet replication
+Date: Fri, 17 Aug 2007 15:14:18 +1000
+Message-ID: <ab82fd6c0708162214w64bf1b00pabc4e456de734b52@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=USUmKLuziuVrBAgR4QensgCy4H8Rc5ZF3hl6QpC37H9GdSAgO5pXPOOG3UaAQrjrDHIcab+1635hEH6lcTJm+aWqmm0F5tcyHECpsDHChqH5y05FP++cZ1qjlFwCFnB5WABzp5h5JHEJ0ogcM0BzTebfAP9XT6/xmF0HBoAD0EA=
 Content-Disposition: inline
-In-Reply-To: <46C46CE4.70308@riverviewtech.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -24,46 +19,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
+Hi,
 
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have a couple of questions regarding netfilter capability.
 
-On Thu, Aug 16, 2007 at 10:27:32AM -0500, Grant Taylor wrote:
-> On 08/16/07 10:07, Pascal Hambourg wrote:
-> > The default behaviour is to reply on any interface for any local
-> > address. It can be changed on a per-interface basis with the kernel
-> > parameter /proc/sys/net/ipv4/conf/<interface>/arp_ignore. Definitions
-> > and values are in Documentation/networking/ip-sysctl.txt :
+I am building a network management system (a set of servers and
+software on a large network) and encountering a number of challenges.
+I would like to be able to send all NMS traffic (snmp, syslog, netflow
+etc) to a single linux-based server per location, which then forwards
+the traffic to an associated grouping of servers that are 'behind'
+this server or on the same subnet.
 
-[...]
-> So I can correctly update my references, where did you copy and past
-> that documentation from?
+However I have multiple servers that want to receive the same (udp)
+traffic stream. This is partly to achieve redundancy, partly because
+there are limitation in how many destinations can be set on the device
+sending the traffic.
 
-It comes from the kernel Documentation.
+SO, iptables can handle the forwarding and NAT, but can I forward a
+udp stream to more than one device?
 
---=20
-Franck Joncourt
-http://www.debian.org - http://smhteam.info/wiki/
-GPG server : pgpkeys.mit.edu
-Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
+Secondly - and this is a big ask but I am mainly looking for ideas
+about how I might achieve this - I would like the status or
+reachability of the end device to be tracked by the packet forwarder,
+such that if the device becomes unreachable the traffic is disk cached
+on the gateway until it becomes reachable again, or storage limits are
+reached.
 
---DocE+STaALJfprDB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+To illustrate this, imagine I have a router sending syslog to the "NMS
+gateway" - the server running iptables. The gateway translates the dst
+address in the ip header to that of a logging server - the final
+destination of the syslog traffic. After a while it determines the
+logging server is unreachable, and forwarded traffic is probably not
+getting through. It starts caching all traffic on disk. A short time
+later the logging server becomes reachable and the cached traffic is
+forwarded. One way to achieve this would be by converting the udp
+stream to individual tcp streams.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
+Is there an application/feature/tool that can handle this?
 
-iD8DBQFGxMXfxJBTTnXAif4RAsqEAKDLCxZNzAN+cQdFbV/N1yEleJL43gCggpJB
-LGInaZwP4LmTJyCtMqttmcE=
-=xGSq
------END PGP SIGNATURE-----
+Would appreciate any info or pointers in the right direction.
 
---DocE+STaALJfprDB--
+cheers,
 
+Ben
 
