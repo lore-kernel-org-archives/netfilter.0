@@ -1,13 +1,11 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: packet replication
-Date: Fri, 17 Aug 2007 10:08:16 -0500
-Message-ID: <46C5B9E0.2090706@riverviewtech.net>
-References: <ab82fd6c0708162214w64bf1b00pabc4e456de734b52@mail.gmail.com>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: "Sussman, Scott" <ssussman@starentnetworks.com>
+Subject: compile-time errors
+Date: Fri, 17 Aug 2007 15:39:39 -0400
+Message-ID: <7CCD07160348804497EF29E9EA5560D7037798FD@exchtewks2.starentnetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <ab82fd6c0708162214w64bf1b00pabc4e456de734b52@mail.gmail.com>
+Content-Class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,67 +17,88 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+To: netfilter@lists.netfilter.org
 
-On 08/17/07 00:14, Ben Carbery wrote:
-> However I have multiple servers that want to receive the same (udp) 
-> traffic stream. This is partly to achieve redundancy, partly because 
-> there are limitation in how many destinations can be set on the 
-> device sending the traffic.
+Hi,
+=20
+I am trying to compile libnetfilters_queue.0.0.15 with
+libnfnetlink-0.0.16 and am getting the following compile time errors,
+any help would be appreciated:
+=20
+ gcc -DPACKAGE_NAME=3D\"\" -DPACKAGE_TARNAME=3D\"\" =
+-DPACKAGE_VERSION=3D\"\"
+-DPACKAGE_STRING=3D\"\" -DPACKAGE_BUGREPORT=3D\"\"
+-DPACKAGE=3D\"libnetfilter_queue\" -DVERSION=3D\"0.0.15\" =
+-DSTDC_HEADERS=3D1
+-DHAVE_SYS_TYPES_H=3D1 -DHAVE_SYS_STAT_H=3D1 -DHAVE_STDLIB_H=3D1
+-DHAVE_STRING_H=3D1 -DHAVE_MEMORY_H=3D1 -DHAVE_STRINGS_H=3D1
+-DHAVE_INTTYPES_H=3D1 -DHAVE_STDINT_H=3D1 -DHAVE_UNISTD_H=3D1 =
+-DHAVE_DLFCN_H=3D1
+-I. -I. -I../include -I
+-I/localdisk/netfilters/libnfnetlink-0.0.30/include/ -fPIC -Wall -g -O2
+-I/home/ssussman/lib/include -MT libnetfilter_queue.lo -MD -MP -MF
+.deps/libnetfilter_queue.Tpo -c libnetfilter_queue.c  -fPIC -DPIC -o
+.libs/libnetfilter_queue.o
+In file included from libnetfilter_queue.c:33:
+../include/libnetfilter_queue/libnetfilter_queue.h:84: warning: `struct
+nlif_handle' declared inside parameter list
+../include/libnetfilter_queue/libnetfilter_queue.h:84: warning: its
+scope is only this definition or declaration, which is probably not what
+you want
+../include/libnetfilter_queue/libnetfilter_queue.h:86: warning: `struct
+nlif_handle' declared inside parameter list
+../include/libnetfilter_queue/libnetfilter_queue.h:88: warning: `struct
+nlif_handle' declared inside parameter list
+../include/libnetfilter_queue/libnetfilter_queue.h:90: warning: `struct
+nlif_handle' declared inside parameter list
+libnetfilter_queue.c:423: warning: `struct nlif_handle' declared inside
+parameter list
+libnetfilter_queue.c:424: error: conflicting types for
+`nfq_get_indev_name'
+../include/libnetfilter_queue/libnetfilter_queue.h:84: error: previous
+declaration of `nfq_get_indev_name'
+libnetfilter_queue.c: In function `nfq_get_indev_name':
+libnetfilter_queue.c:426: warning: implicit declaration of function
+`nlif_index2name'
+libnetfilter_queue.c: At top level:
+libnetfilter_queue.c:430: warning: `struct nlif_handle' declared inside
+parameter list
+libnetfilter_queue.c:431: error: conflicting types for
+`nfq_get_physindev_name'
+../include/libnetfilter_queue/libnetfilter_queue.h:86: error: previous
+declaration of `nfq_get_physindev_name'
+libnetfilter_queue.c:437: warning: `struct nlif_handle' declared inside
+parameter list
+libnetfilter_queue.c:438: error: conflicting types for
+`nfq_get_outdev_name'
+../include/libnetfilter_queue/libnetfilter_queue.h:88: error: previous
+declaration of `nfq_get_outdev_name'
+libnetfilter_queue.c:444: warning: `struct nlif_handle' declared inside
+parameter list
+libnetfilter_queue.c:445: error: conflicting types for
+`nfq_get_physoutdev_name'
+../include/libnetfilter_queue/libnetfilter_queue.h:90: error: previous
+declaration of `nfq_get_physoutdev_name'
+make[1]: *** [libnetfilter_queue.lo] Error 1
+make[1]: Leaving directory
+`/localdisk/netfilters/libnetfilter_queue-0.0.15/src'
+make: *** [all-recursive] Error 1
 
-(See below.)
 
-> SO, iptables can handle the forwarding and NAT, but can I forward a 
-> udp stream to more than one device?
+Thanks,
 
-To my knowledge, IPTables its self does not have this capability.
-
-> Secondly - and this is a big ask but I am mainly looking for ideas 
-> about how I might achieve this - I would like the status or 
-> reachability of the end device to be tracked by the packet forwarder, 
-> such that if the device becomes unreachable the traffic is disk 
-> cached on the gateway until it becomes reachable again, or storage 
-> limits are reached.
-
-(See below.)
-
-> Is there an application/feature/tool that can handle this?
-
-Not per say, at least not as far as I'm aware of.  There is nothing that
-I'm aware of that will duplicate traffic to multiple destinations like
-you are wanting to nor is there any thing that will queue your traffic
-in the event that the endpoint can not be reached.
-
-However there are a couple of different options you may want to
-investigate.  Namely, the ULOG target and the method that allows you to
-send packets from kernel space to user space (and then back if so
-desired) to decide how to process the packets.  The intent being to
-intercept packets in their path, hand them off to a user space process
-that will do the duplication and queuing that you are talking about.  If
-it were me, I'd queue everything and then have another process that
-empties the queue by transferring the traffic to your end point
-system(s).  This will make the process that diverts the traffic simpler.
-
-Have the kernel divert the traffic, have a user space process log the
-traffic, have one or more user space processes send the traffic to an
-end point, have a final user space process remove the previously
-transmitted traffic from the queue.  This type of structure will allow
-you to send the traffic to as many places as you would like also with
-out the concern of the kernel or the logging process having to know any
-thing about the end points.  This system would be very modular and
-probably fairly scalable.  The only potential problem that I see is that
-as stated above, is that if there are multiple end points over the same
-WAN link you may end up transferring the same data across the WAN link
-multiple times.  However if the logging process speaks the same (to be
-defined) protocol as the sending process you could in theory put another
-logging process at the remote end and transfer the data one time from
-one log to another log and then duplicate it from there.  Hence saleability.
-
-> Would appreciate any info or pointers in the right direction.
-
-If you would like to discuss details drop me a line.
+Scott
 
 
-
-Grant. . . .
+"This email message and any attachments are confidential information of =
+Starent Networks, Corp. The information transmitted may not be used to =
+create or change any contractual obligations of Starent Networks, Corp.  =
+Any review, retransmission, dissemination or other use of, or taking of =
+any action in reliance upon this e-mail and its attachments by persons =
+or entities other than the intended recipient is prohibited. If you are =
+not the intended recipient, please notify the sender immediately -- by =
+replying to this message or by sending an email to =
+postmaster@starentnetworks.com -- and destroy all copies of this message =
+and any attachments without reading or disclosing their contents. Thank =
+you."
 
