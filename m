@@ -1,13 +1,11 @@
-From: Bertram Scharpf <lists@bertram-scharpf.de>
-Subject: Re: Port forwarding inside local domain
-Date: Mon, 20 Aug 2007 21:10:01 +0200
-Message-ID: <20070820191001.GA23822@bart.bertram-scharpf.homelinux.com>
-References: <20070820141102.GA19046@bart.bertram-scharpf.homelinux.com>
-	<200708201634.31185.r.laban@ism.nl>
-Mime-Version: 1.0
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: REJECT target not as policy
+Date: Mon, 20 Aug 2007 21:11:53 +0200
+Message-ID: <000801c7e35d$f7d39210$0101000a@tanjian>
+References: <20070820135206.GA18644@bart.bertram-scharpf.homelinux.com>	<200708201608.39032.r.laban@ism.nl>	<46C9B8A2.5040201@plouf.fr.eu.org><20070820174642.GA22613@bart.bertram-scharpf.homelinux.com>
+	<46C9E0E4.2080200@plouf.fr.eu.org>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <200708201634.31185.r.laban@ism.nl>
+In-Reply-To: <46C9E0E4.2080200@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,40 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ruben Laban <r.laban@ism.nl>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Hi,
+>> On an other list I was told it were a good idea to set
+>> REJECT as policy.
+>
+> I could be a good idea if it was possible. Maybe the person who told
+> you mixed up iptables and ipchains, its "predecessor" for 2.2
+> kernels. IIRC ipchains allowed REJECT as a policy.
 
-Am Montag, 20. Aug 2007, 16:34:31 +0200 schrieb Ruben Laban:
-> On Monday 20 August 2007, Bertram Scharpf wrote:
-> >
-> >   # iptables -t nat -A PREROUTING -d 192.168.7.33 -p tcp --dport 80 \
-> >       -j DNAT --to 192.168.7.49:80
-> >
-> > Besides that I want to know what is going wrong here,
-> 
-> You need to 'fix' the reply traffic, by using a rule like:
->   # iptables -t nat -A POSTROUTING -i eth0 -d 192.168.7.49 -p tcp --dport 80 \
->        -j SNAT --to 192.168.7.33
+You could emulate a REJECT policy by having this as the very last rules:
 
-iptables v1.3.5: Can't use -i with POSTROUTING
+$ipt -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+$ipt -A INPUT -j REJECT
 
-> With recent kernels this can be done more elegantly by using the conntrack 
-> module:
->   # iptables -t nat -A POSTROUTING -d 192.168.7.49 -m conntrack --ctorigdst \
->         192.168.7.49 -j SNAT --to 192.168.7.33
-
-Seems it's "... --ctorigdst 192.168.7.33 -j ...".
-
-Works fine. Thanks!
-
-Bertram
+(I thought it was like this..)
+But, if you dynamically add rules then you have to take care of at/from
+which position you insert/delete them.
 
 
--- 
-Bertram Scharpf
-Stuttgart, Deutschland/Germany
-http://www.bertram-scharpf.de
 
