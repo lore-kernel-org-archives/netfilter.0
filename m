@@ -1,13 +1,13 @@
-From: Ruben Laban <r.laban@ism.nl>
-Subject: Re: Port forwarding inside local domain
-Date: Mon, 20 Aug 2007 16:34:31 +0200
-Message-ID: <200708201634.31185.r.laban@ism.nl>
-References: <20070820141102.GA19046@bart.bertram-scharpf.homelinux.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: REJECT target not as policy
+Date: Mon, 20 Aug 2007 17:52:02 +0200
+Message-ID: <46C9B8A2.5040201@plouf.fr.eu.org>
+References: <20070820135206.GA18644@bart.bertram-scharpf.homelinux.com>
+	<200708201608.39032.r.laban@ism.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070820141102.GA19046@bart.bertram-scharpf.homelinux.com>
-Content-Disposition: inline
+In-Reply-To: <200708201608.39032.r.laban@ism.nl>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +18,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Monday 20 August 2007, Bertram Scharpf wrote:
-> Hi,
->
-> just another question. Let my router be 192.168.7.33 with
-> interfaces eth0 and ppp0; then this works perfectly here:
->
->   # iptables -t nat -A PREROUTING -i ppp+ -p tcp --dport 80 \
->       -j DNAT --to 192.168.7.49:80
->
-> However, I want to request from inside my local domain the
-> same way. This seems to end in a drop or an infinite loop:
->
->   # iptables -t nat -A PREROUTING -d 192.168.7.33 -p tcp --dport 80 \
->       -j DNAT --to 192.168.7.49:80
->
-> Besides that I want to know what is going wrong here,
+Hello,
 
-You need to 'fix' the reply traffic, by using a rule like:
-  # iptables -t nat -A POSTROUTING -i eth0 -d 192.168.7.49 -p tcp --dport 80 \
-       -j SNAT --to 192.168.7.33
+Ruben Laban a =E9crit :
+> On Monday 20 August 2007, Bertram Scharpf wrote:
+>=20
+>>on one of my machines the REJECT target doesn't behave as I
+>>expect. It is inserted into a chain but it is not accepted
+>>as a policy.
 
-With recent kernels this can be done more elegantly by using the conntrack 
-module:
-  # iptables -t nat -A POSTROUTING -d 192.168.7.49 -m conntrack --ctorigdst \
-        192.168.7.49 -j SNAT --to 192.168.7.33
+It behaves as expected. REJECT is an extension, not a built-in target,=20
+and cannot be used as a policy. Check man iptables.
 
-I never used the latter myself due to me working with older kernels mainly.
+> The REJECT target is only valid when either the tcp or udp module is lo=
+aded.=20
 
-> I further would like to ask how I could debug this.
-
-tcpdump and/or wireshark is/are your best friend(s).
-
-HTH,
--- 
-Ruben
+AFAIK, REJECT is not dependant on tcp or udp and can be used with any=20
+protocol. Only the "--reject-with tcp-reset" option can be used only=20
+with tcp.
 
