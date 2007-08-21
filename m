@@ -1,17 +1,11 @@
-From: "michel banguerski" <banguerski+nfdev@gmail.com>
-Subject: Re: ipset performance question
-Date: Tue, 21 Aug 2007 16:48:28 +0200
-Message-ID: <cba9bb580708210748x382b06a2v1a9d1a1bc94a9ce7@mail.gmail.com>
-References: <cba9bb580708201630q7f8b1691naccd6cbd3422ce88@mail.gmail.com>
-	<Pine.LNX.4.64.0708211428300.28106@blackhole.kfki.hu>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Rout looping through local host.
+Date: Tue, 21 Aug 2007 11:14:48 -0500
+Message-ID: <46CB0F78.3060107@riverviewtech.net>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references:x-google-sender-auth;
-	b=abMVJJbC/yIX5/vt5awaGvGHSLokTCl39FSn2zCnTlMnYPgFsZnoadU/O2BJfcqcQhS1N6tEf9sTfEa2pnVfcX+XDfo/X3HVIaAhe6giwQ7pXsYbGiHMEcYnPcRb0aZZ6p8uiJZus0kAXNPu3IF8zozRRRp7gLnjPMIJ75Blw98=
-In-Reply-To: <Pine.LNX.4.64.0708211428300.28106@blackhole.kfki.hu>
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -22,97 +16,100 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-content-type: text/plain
-To: kadlec@blackhole.kfki.hu
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@lists.netfilter.org>
 
-Thank You for the answer Jozsef.
-[...]
-> > - is this worth doing at all ?
-> > we may have one rule with four matches (three if we resort to binding
-> > but it seems obsolete):
-> >  iptables -A A_CHAIN -m set --set snh src \! --set siph src --set dnh
-> > dst \! --set diph dst -j A_TARGET
-> > instead of four rules with one match each (see example above).
->
-> Hard to say much. From ipset point of view, iff there are identical number
-> of set lookups, then it does not matter, but ipmap types are faster than
-> hashes. From iptables point of view, due to the implicit internal
-> checkings (src/dst IP addresses and interfaces) you should minimize the
-> number of the iptables rules.
+After many many hours of frustration and failures I'm almost to the 
+point that I don't think this is even currently possible with Linux.
 
-As I understand it, here's the choice:
+With out going in to too much detail, I am effectively wanting to do the 
+following.
 
-a) 4 rules; 2 ipmap and 2 nethash tests with hope to skip nethash(s)
-and 1(2) rules if the address(es) of inspected packet are in ipmap(s)
-b) 1 rule; 2 ipmap and 2 nethash tests with no hope to skip any of them
+I want to be able to take traffic in from a local LAN on eth0 and route 
+it out eth1 to a default gateway with a static IP.  I want said default 
+gateway with the static IP to be assigned to eth2.  I then want to route 
+and masquerade traffic that came in eth2 out eth3.
 
-To recap I'd say it depends of the ratio <number of subnets>/<number of IPs>
-if the ratio is high and most packets are probably going through
-nethash test anyway, choice (b) makes sense. Otherwise stick with (a)
+(Enter ASCII art)
+
+--------------+
+   Context 0   |
+        +------+      +-----------+
+    +---+ eth0 |------+ Local LAN |
+    |   +------+      +-----------+
+    |          |
+    |   +------+
+    +---+ eth1 +---+
+        +------+   |
+               |   |
+==============|===|===
+   Context 1   |   |
+        +------+   |
+    +---+ eth2 +---+
+    |   +------+
+    |          |
+    |   +------+      +----------+
+    +---+ eth3 +------+ Internet |
+        +------+      +----------+
+               |
+--------------+
+
+I want the ""router in context 0 to effectively (for the sake of 
+discussion) do basic static NAT routing for the local LAN.  This router 
+will have two static IP addresses, LAN facing and upstream router facing.
+
+I want the ""router in context 1 to effectively (for the sake of 
+discussion) do basic MASQUERADing for the equipment behind it.  This 
+router will have one static IP facing the LAN and one dynamic IP facing 
+its upstream provider.
+
+I have followed Julian Anastasov's directions 
+(http://www.ssi.bg/~ja/send-to-self.txt) and applied his Send-to-Self 
+patch (http://www.ssi.bg/~ja/send-to-self-2.6.22-1.diff) to a stock 
+2.6.22 kernel and I am able to ping the IP address assigned to eth2 from 
+eth1 with out any problems.  However I don't think Julian's patch covers 
+routing traffic through (not terminating at or originating locally) the 
+cross over cable.
+
+I have also done some experimenting on my own to see if this is even 
+remotely possible to do by altering the routing tables in the kernel. 
+The closest that I can come is to remove all references to eth2 from the 
+kernel's 'local' routing table so that the kernel is not aware that the 
+IP address in question is local to the system thus making it think that 
+it needs to send the traffic out eth1 which is on the same subnet as the 
+target IP assigned to eth2.
+
+I can tell from packet counters that this does indeed send the traffic 
+like it is suppose to do.  However when the packet arrives in eth2 the 
+kernel does not know what to do with it as it does not see the IP in 
+question as being bound to any thing any where and drops the packet.
+
+To this end I have re-added the entries from the 'local' routing table 
+to a new routing table 'local_new' and set up an 'ip rule' that 
+indicates that any traffic coming in the eth2 interface should use this 
+'local_new' routing table.  However I have no way to know if this is 
+doing any good or not as I can not progress further.  I have also tried 
+with out success to use the CONNMARKing in conjunction with (packet) 
+MARKing to use an additional 'ip rule' to specify that any traffic that 
+would be leaving the system should also use the 'local_new' routing 
+table.  However all of this is to no avail.
+
+If I stick more with Julian's 'Send-to-Self' document and just alter 
+source IPs for different destinations (per the end of said document) I 
+can get the traffic to flow through the system, but not as I want it to. 
+  To the best of my knowledge traffic will come in eth0 and go directly 
+out eth3 while somehow in the return path passing through eth2, but 
+never touching eth1.
+
+If I can not get this to work the way that I need / want it to I will 
+have to fall back to UML routers to fulfill the role of the context 1 
+""router.  So any help that any one could provide would be _*GREATLY*_ 
+appreciated.
 
 
->
-> > - wouldn't it be more efficient to use ipmap instead of iphash ? (I think yes)
->
-> Yes.
->
-> > - what about multiple ipmap sets if {C\B} is too sparse ?
->
-> That'd involve multiple iptables rules as you cannot express OR matches in
-> one rule, just AND ones (and there is no "union" set type yet).
-True, "OR" is our enemy here.
-But since we need ~{C\B} actually, it becomes an AND:
-~{C1\B} AND ... AND ~{Cn\B} = ~({C1\B} OR .. OR {Cn\B})
-so it's OK.
-The question here is: how N*ipmap (used in the same rule) compares to 1*iphash?
-What are the values of N when one iphash is faster?
 
->
-> > - using similar tricks sometimes it may be possible to use in the same
-> > rule two nethash sets of total size smaller than the size of the
-> > original one nethash could it be efficient?
->
-> Real testing could answer it best.
->
-> But please take into account how much resource you use to compute the
-> "best" set/rule combination. Does it worth if you cannot gain really much
-> or if you loose the possibility to quickly add or delete IP addresses from
-> anywhere?
-Yes, this is an issue I am aware of.
-In my case sets will be treated as read-only.
+Thanks in advance for any and all help that any one can provide,
 
-The fact is that I deal with hierarchical groups and later I will add
-intersections subtractions between them.
-Any change to the original rule-base/groups will lead to a
-recompilation of a new iptables/ipset configuration.
-This means that I could not take advantage of some cool features like
-changing sets from rules or swap them for faster configurations.
-To make things even worse I plan to generate in the future a BDD
-structure of chains that will "refine" the packet before applying only
-a subset of real rules, making the whole mess totally unreadable and
-unmodifiable by a human (a single IP change could lead to a whole new
-BDD).
+Grant. . . .
 
-To cope with limitations above, my compiler generates versioned chains
-subtrees that could coexist in the same table allowing an instant
-roll-out and roll-back and even to process a packet by multiple
-rule-bases.
-In addition this approach leaves room for independent uses of iptables
-where ipset could be fully exploited.
-
-In this perspective, resources needed to generate required sets are to
-estimate on another scale (I'd say that for a complex ruleset
-1-2minutes to compile are perfectly acceptable).
-
-BTW I saw it is planned to replace binding with something else, is it
-possible to have some insight on what it will look like?
->
-> Best regards,
-> Jozsef
-[...]
-
-Thank You
-Best regards,
-Michel
 
