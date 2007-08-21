@@ -1,11 +1,16 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Rout looping through local host.
-Date: Tue, 21 Aug 2007 11:14:48 -0500
-Message-ID: <46CB0F78.3060107@riverviewtech.net>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: "michel banguerski" <banguerski+nfdev@gmail.com>
+Subject: Re: Rout looping through local host.
+Date: Tue, 21 Aug 2007 19:36:15 +0200
+Message-ID: <cba9bb580708211036x5238f265med415e4ce2cbcde0@mail.gmail.com>
+References: <46CB0F78.3060107@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references:x-google-sender-auth;
+	b=K7k9+/kzY6WeGvEeW8p3Yu9zGDs5rH3cEik5AIs+W0/iYlZb7JDzJ9MQolhOfSbOyQ2fIumOb2BDCu5s0zwupNWR7lUn1wwt22/0HGfRWD6VE34htdXfVyfysLrpVFME2zryKiFHP9kbKo2FHU4L7G/ccntEDf1KKyQlks0aBXE=
+In-Reply-To: <46CB0F78.3060107@riverviewtech.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,100 +21,55 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@lists.netfilter.org
 
-After many many hours of frustration and failures I'm almost to the 
-point that I don't think this is even currently possible with Linux.
+Hi Grant,
 
-With out going in to too much detail, I am effectively wanting to do the 
-following.
+here's  my 2=A2:
+there is no need to patch the kernel.
+what you should do is PBR and little arp hacking:
+let's say your eth0 is 10.0.0.1/24
+what i'd do is to put eth1 and eth2 in different subnets:
+eth1 -> 10.0.1.1/24
+eth2 -> 10.0.2.1/24
 
-I want to be able to take traffic in from a local LAN on eth0 and route 
-it out eth1 to a default gateway with a static IP.  I want said default 
-gateway with the static IP to be assigned to eth2.  I then want to route 
-and masquerade traffic that came in eth2 out eth3.
+default routes:
+ip ro add default via 10.0.1.254 table 252 # from eth1 to eth2
+ip ro add default via <gateway on eth3 side> table default # from eth3
+to outside
 
-(Enter ASCII art)
+PBR rules:
+ip rule del prio 32766 # we need to put rules between lookup to main and de=
+fault
+ip rule add prio 100 lookup main # rule 32766 becomes 100
+ip rule add 200 lookup 252 iif eth0 # alternative default route for local L=
+AN
 
---------------+
-   Context 0   |
-        +------+      +-----------+
-    +---+ eth0 |------+ Local LAN |
-    |   +------+      +-----------+
-    |          |
-    |   +------+
-    +---+ eth1 +---+
-        +------+   |
-               |   |
-==============|===|===
-   Context 1   |   |
-        +------+   |
-    +---+ eth2 +---+
-    |   +------+
-    |          |
-    |   +------+      +----------+
-    +---+ eth3 +------+ Internet |
-        +------+      +----------+
-               |
---------------+
+arp override:
+arp -s 10.0.1.254 <ETH addr of eth2>
 
-I want the ""router in context 0 to effectively (for the sake of 
-discussion) do basic static NAT routing for the local LAN.  This router 
-will have two static IP addresses, LAN facing and upstream router facing.
-
-I want the ""router in context 1 to effectively (for the sake of 
-discussion) do basic MASQUERADing for the equipment behind it.  This 
-router will have one static IP facing the LAN and one dynamic IP facing 
-its upstream provider.
-
-I have followed Julian Anastasov's directions 
-(http://www.ssi.bg/~ja/send-to-self.txt) and applied his Send-to-Self 
-patch (http://www.ssi.bg/~ja/send-to-self-2.6.22-1.diff) to a stock 
-2.6.22 kernel and I am able to ping the IP address assigned to eth2 from 
-eth1 with out any problems.  However I don't think Julian's patch covers 
-routing traffic through (not terminating at or originating locally) the 
-cross over cable.
-
-I have also done some experimenting on my own to see if this is even 
-remotely possible to do by altering the routing tables in the kernel. 
-The closest that I can come is to remove all references to eth2 from the 
-kernel's 'local' routing table so that the kernel is not aware that the 
-IP address in question is local to the system thus making it think that 
-it needs to send the traffic out eth1 which is on the same subnet as the 
-target IP assigned to eth2.
-
-I can tell from packet counters that this does indeed send the traffic 
-like it is suppose to do.  However when the packet arrives in eth2 the 
-kernel does not know what to do with it as it does not see the IP in 
-question as being bound to any thing any where and drops the packet.
-
-To this end I have re-added the entries from the 'local' routing table 
-to a new routing table 'local_new' and set up an 'ip rule' that 
-indicates that any traffic coming in the eth2 interface should use this 
-'local_new' routing table.  However I have no way to know if this is 
-doing any good or not as I can not progress further.  I have also tried 
-with out success to use the CONNMARKing in conjunction with (packet) 
-MARKing to use an additional 'ip rule' to specify that any traffic that 
-would be leaving the system should also use the 'local_new' routing 
-table.  However all of this is to no avail.
-
-If I stick more with Julian's 'Send-to-Self' document and just alter 
-source IPs for different destinations (per the end of said document) I 
-can get the traffic to flow through the system, but not as I want it to. 
-  To the best of my knowledge traffic will come in eth0 and go directly 
-out eth3 while somehow in the return path passing through eth2, but 
-never touching eth1.
-
-If I can not get this to work the way that I need / want it to I will 
-have to fall back to UML routers to fulfill the role of the context 1 
-""router.  So any help that any one could provide would be _*GREATLY*_ 
-appreciated.
+disable antispoof on eth{1,2} (may be not needed if you do NAT)
+ echo 0 > /proc/sys/net/ipv4/conf/eth1/rp_filter
+ echo 0 > /proc/sys/net/ipv4/conf/eth2/rp_filter
 
 
+there is one thing to look after: the dhcp client will put its default
+route in table main(252) and you should move it from here to table
+default(253)
 
-Thanks in advance for any and all help that any one can provide,
+This setup should work with or without NAT
 
-Grant. . . .
+one last thing:
 
+if you happen to snat packets from local LAN(received by eth0) to
+10.0.1.1(address of eth1) then IIRC you *will* need to patch the
+kernel as incoming packets with source address that the linux box
+considers as its own are dropped.
+
+
+Hope this works(did not test this exact setup) and helps
+
+Best regards
+Michel
 
