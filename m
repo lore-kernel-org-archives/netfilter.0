@@ -1,14 +1,11 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Rout looping through local host.
-Date: Tue, 21 Aug 2007 16:21:06 -0500
-Message-ID: <46CB5742.4080300@riverviewtech.net>
-References: <46CB0F78.3060107@riverviewtech.net>	<cba9bb580708211026p721c0de8md6d66b3440d5b298@mail.gmail.com>	<46CB3835.80401@riverviewtech.net>
-	<cba9bb580708211347u459897bcofce3a48a59e50a93@mail.gmail.com>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: "Filka Michal" <Michal.Filka@sitronicsts.com>
+Subject: question on conntracd
+Date: Wed, 22 Aug 2007 14:10:24 +0200
+Message-ID: <56FFE36FCA3A3842AE12EE8B3A32229D18B9C1@exbbc.stromtelecom.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <cba9bb580708211347u459897bcofce3a48a59e50a93@mail.gmail.com>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,23 +16,22 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 08/21/07 15:47, michel banguerski wrote:
-> Grant, You are 100% right about return path, it needs to be set up 
-> and I hope the VRF will prove to be more adequate for your needs.
+Hi,
 
-Michel, thank you for your help.  I will keep what you have pointed out 
-in mind.  However for now I'm pursuing the VRF route as I think it will 
-better handle my problem and scale better, especially considering I need 
-to not NAT what is coming out of eth1 on its way to eth2.
+I have a couple of question on conntrackd
 
-I'll keep everyone apprised on what I find out.
+1) could anyone share results of testing highly loaded system with
+synchronization of conntrack tables using conntrackd? We plan deploying
+on system with >50 of new records per minute and >10000 records in table
+in one time. Does anyone have any experiences on similar system?
 
+2) which transport protocol is used for synchronization info exchange?
+Did anyone test different ones?
 
+Thanks,
 
-Thanks again,
-
-Grant. . . .
+Michal Filka
 
