@@ -1,12 +1,13 @@
-From: "Carlos Mario Mora \(c4y0\)" <c4y0@yahoo.com.mx>
-Subject: Re: netfilter scan detect
-Date: Wed, 22 Aug 2007 16:12:20 -0500 (CDT)
-Message-ID: <964249.69510.qm@web63911.mail.re1.yahoo.com>
-References: <46927FE7.8040104@gmail.com>
+From: "CrackyBlue" <crackyblue@gmail.com>
+Subject: about ipt_string
+Date: Thu, 23 Aug 2007 09:19:43 +0800
+Message-ID: <46cce0f3.22bd720a.5b5c.ffffc703@mx.google.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46927FE7.8040104@gmail.com>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:from:to:subject:date:mime-version:content-type:content-transfer-encoding:x-mailer:thread-index:x-mimeole:message-id;
+	b=YibZCgrJm8sKuyqTwhYZ1uHYT6zdc87gRg90tGysxnMdWTprifUm9Cktd8xzKlOKafQNctVV9DGm8Df/RlSG1UoSD+SmxZnLIMR0FGBbrnu1A7yWgTFXhn/7nt21PACjMlABtO8SRAYC1th4/tmbhBgt+0FkcDW5dxxObpzRI2o=
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,32 +18,19 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: debian <debian70@gmail.com>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-maybe portsentry???
+Hi,
 
---- debian <debian70@gmail.com> escribi=F3:
+I am just wondering why this script don't block 
+ 
+iptables -A INPUT -p tcp -m string --string 'bittorent' --algo kmp -d 0/0
+--dport 80 -j REJECT
 
-> Hello,
->=20
-> i search a solution to detect scan port, i find psd
-> patch, but now with=20
-> the last version of iptables, psd patch is not
-> supported. An over=20
-> solution is possible?
->=20
-> Thanks you.
->=20
->=20
->=20
+I have iptables 1.3.8 and 2.6.17 kernel and ipt_string is already loaded
 
 
+Thanks
 
-      _____________________________________________________________________=
-_______________
-=A1S=E9 un mejor ambientalista!
-Encuentra consejos para cuidar el lugar donde vivimos.                     =
- =20
-http://mx.yahoo.com/promos/mejorambientalista.html
 
