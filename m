@@ -1,14 +1,10 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: netfilter optimization.
-Date: Sat, 25 Aug 2007 16:29:29 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024F4BB@pxtbenexd01.pxt.primeexalia.com>
-References: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B7@pxtbenexd01.pxt.primeexalia.com><46D06DA0.1010706@solutti.com.br><57F9959B46E0FA4D8BA88AEDFBE5829024F4B9@pxtbenexd01.pxt.primeexalia.com><20070825225837.GA26251@internet24.de>
-	<20070825232124.GA26316@internet24.de>
+From: KARIM SATTAR <karimas@kfupm.edu.sa>
+Subject: Iptables List operation
+Date: Sun, 26 Aug 2007 02:27:32 +0300 (AST)
+Message-ID: <4957697.1188084452277.JavaMail.karimas@kfupm.edu.sa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <20070825232124.GA26316@internet24.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,34 +16,26 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Jacob <jacob@internet24.de>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-> Ehm, you're original question was about
-> setting conntrack values :-)
->=20
-> Originally you couldn't change the hash bucket number after the
-> ipt_conntrack module had been loaded, you needed to do that at load
-> time (for instance through /etc/sysctl.cnf), but I gather that current
-> netfilter versions allow changing the number of hash buckets at
-runtime
-> through:
->=20
-> /sys/module/ip_conntrack/parameters/hashsize
->=20
-> Setting #hash buckets=3Dconntrack max should be fine that's what we do
-as
-> well.
->=20
-> Maybe you want to carefully reduce some of the
-> /proc/sys/net/ipv4/netfilter/ip_conntrack_*timeout* parameters to
-> reduce the number of entries in the connection tracking hash.
->=20
+Hi
+I am working on some performance measures of the IPtables these days. I 
+want to know; Is it possible that output of iptables list command i.e. 
+iptables -L with -n -v can be changed so that I can view  my variables 
+along with the other chains. I have tried to find out; but i am still 
+in searching.
 
-This is what I was looking for.  I'll play around with it.  I just 1)
-needed to know where to start and 2) wanted to know what people who
-handle this type of traffic currently do.
+My work is related to protocols and is therefore I want to print output 
+along with the list of rules. Since the rules in each chain has been 
+implemented in the link list format; it is very difficult to print 
+variables through proc filesystem due to the variability nature of the 
+link list.
 
-Thanks,=20
+I have tried with strace to find which module does this operation 
+calls; and I have come with libipt_standard.so library file. I have 
+seen the code; but didnt find which function is processing the list 
+request.
 
-Gary
+Regards
+
 
