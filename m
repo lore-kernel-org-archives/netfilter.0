@@ -1,14 +1,14 @@
-From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?=
-	<leolistas@solutti.com.br>
-Subject: Re: netfilter optimization.
-Date: Sat, 25 Aug 2007 14:57:52 -0300
-Message-ID: <46D06DA0.1010706@solutti.com.br>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: netfilter optimization.
+Date: Sat, 25 Aug 2007 11:51:14 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B9@pxtbenexd01.pxt.primeexalia.com>
 References: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B7@pxtbenexd01.pxt.primeexalia.com>
+	<46D06DA0.1010706@solutti.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=sha1; boundary="------------ms010703030804050005020507"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B7@pxtbenexd01.pxt.primeexalia.com>
+Content-class: urn:content-classes:message
+In-Reply-To: <46D06DA0.1010706@solutti.com.br>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,181 +19,70 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: "Gary W. Smith" <gary@primeexalia.com>
+Content-Type: text/plain; charset="us-ascii"
+To: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
 Cc: netfilter@lists.netfilter.org
 
-This is a cryptographically signed message in MIME format.
+>     You missed some important informations. How many machines are
+> behind
+> this firewall ? Are they client machines or are they servers ? Are we
+> talking of lots of machines that generates low traffic of we're =
+talking
+> of some machines that generate LOTS of traffic ??
+>=20
+>     Please tell us about your network cenary.
+>=20
+Leonardo,=20
 
---------------ms010703030804050005020507
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Approximately 50 physical servers running about 300 Xen instances as =
+well as other Windows stuff.  We have three class C IP ranges coming in. =
+ We balance some of this internally with ipvsadm.  So, in most cases, we =
+have one physical external IP coming in per VIP, going to one of several =
+machines on the back end. =20
 
+Then we have several other machines that are NAT'd for very specific =
+ports.  In particular, we have a set of web servers that get an extreme =
+number of connections, usually in the afternoon, PST, which will exhaust =
+the pool.
 
+We have tried to balance direct routing and NAT'ing when we can.  That =
+is, if we can direct route, we do it.  In some cases, we simply don't =
+have the IP's for it.
 
-Gary W. Smith escreveu:
-> I'm looking for some firewall tweaking advice.  We have a dedicated
-> firewall which hit ran out of conntrack slots recently.  We had already=
+So, this leads us to solving the connection pooling issue.  We have two =
+1.8ghz machine with 512MB, one is the active firewall, the other one =
+would be the failover.  Each one has 4 nics, two onboard 100MB and a =
+dual 1GB.  Here is the config:
 
-> tweaked the number max_conntracks to 131072. That box was an RHEL 4 box=
-=2E
-> We are building a new firewall, based on 2.6.22.  Reading some older
-> docs, they mention that if you can, set conntrack_buckets to the same a=
-s
-> conntack_max, if memory permits.  This box has plenty 512mb.  In the
-> sample reference doc, it says that you can do about 1048576 at a cost o=
-f
-> about 300mb of ram.  This is fine.
->
-> Since this is a dedicated firewall box, with only ssh, cron, smartd and=
+eth0 -> INET (100MB)
+eth1 -> Private, heartbeat for linux-HA (100MB) -- Future implementation
+eth2 -> DMZ (1GB)
+eth3 -> Internal (1GB)
 
-> sysstat running on it, what would you recommend the settings to be?  An=
-d
-> what is the best way to set these (/etc/sysctl.conf)?
->
-> Playing around I found that I can set nf_conntrack_max to the value, bu=
-t
-> when I set nf_conntrack_buckets to the same I get permission denied.
-> nf_conntrack_buckets is set to 4096, which if I read the documentation
-> correctly, would slow down the link list parsing as it would have to
-> refer to the conntrack list more often.
->
->  =20
+DMZ has public IP's and private IP's.
 
-    You missed some important informations. How many machines are behind =
+x.x.51.0/24, x.x.52.0/24, x.x.53.0/24, 10.0.64.0/21.
 
-this firewall ? Are they client machines or are they servers ? Are we=20
-talking of lots of machines that generates low traffic of we're talking=20
-of some machines that generate LOTS of traffic ??
+IP, such that x.x.51.128/25 goes to an ipvs instance, which then =
+forwards it to something on the 10.0.64.0/24 range.
+IP, such that x.x.52.0/24 goes to an ipvs instance, which then forwards =
+it to something on the 10.0.68.0/22 range.
+IP, such that x.x.53.0/24 gets direct routed in most cases.
+IP, such that x.x.51.0/25 gets routed in a couple different ways (both =
+direct and ivps).
 
-    Please tell us about your network cenary.
+As for client workstations behind it, zero, but we do have both direct =
+and NAT'd traffic originating from inside the network (email, Windows =
+update requests, etc).
 
---=20
+I used to have a good png file from Visio that showed this but it's so =
+outdated...  I need to update it. =20
 
+Anyway, this is one of the reasons we are rebuilding the firewalls.  The =
+other reason being a spinlock but in that kernel version.  So, we wanted =
+to go with something fresher.
 
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
+This is the overall high level layout.
 
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
-
---------------ms010703030804050005020507
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRlzCC
-BN0wggPFoAMCAQICEHGS++YZX6xNEoV0cTSiGKcwDQYJKoZIhvcNAQEFBQAwezELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgMEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBwwHU2FsZm9yZDEa
-MBgGA1UECgwRQ29tb2RvIENBIExpbWl0ZWQxITAfBgNVBAMMGEFBQSBDZXJ0aWZpY2F0ZSBT
-ZXJ2aWNlczAeFw0wNDAxMDEwMDAwMDBaFw0yODEyMzEyMzU5NTlaMIGuMQswCQYDVQQGEwJV
-UzELMAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUg
-VVNFUlRSVVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2
-MDQGA1UEAxMtVVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWls
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5
-ShpHornMSMxqmNVNNRm5pELlzkniii8efNIxB8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqk
-kqgX8pgV8pPMyaQylbsMTzC9mKALi+VuG6JG+ni8om+rWV6lL8/K2m2qL+usobNqqrcuZzWL
-eeEeaYji5kbNoKXqvgvOdjp6Dpvq/NonWz1zHyLmSGHGTPNpsaguG7bUMSAsvIKKjqQOpdeJ
-Q/wWWq8dcdcRWdq6hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7NlyP0e03RiqhjKaJMeoYV+9Udl
-y/hNVyh00jT/MLbu9mIwFIws6wIDAQABo4IBJzCCASMwHwYDVR0jBBgwFoAUoBEKIz6W8Qfs
-4q8p74Klf9AwpLQwHQYDVR0OBBYEFImCZ33EnSZwAEu0UEh83j2uBG59MA4GA1UdDwEB/wQE
-AwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAR
-BgNVHSAECjAIMAYGBFUdIAAwewYDVR0fBHQwcjA4oDagNIYyaHR0cDovL2NybC5jb21vZG9j
-YS5jb20vQUFBQ2VydGlmaWNhdGVTZXJ2aWNlcy5jcmwwNqA0oDKGMGh0dHA6Ly9jcmwuY29t
-b2RvLm5ldC9BQUFDZXJ0aWZpY2F0ZVNlcnZpY2VzLmNybDARBglghkgBhvhCAQEEBAMCAQYw
-DQYJKoZIhvcNAQEFBQADggEBAJ2Vyzy4fqUJxB6/C8LHdo45PJTGEKpPDMngq4RdiVTgZTvz
-bRx8NywlVF+WIfw3hJGdFdwUT4HPVB1rbEVgxy35l1FM+WbKPKCCjKbI8OLp1Er57D9Wyd12
-jMOCAU9sAPMeGmF0BEcDqcZAV5G8ZSLFJ2dPV9tkWtmNH7qGL/QGrpxp7en0zykX2OBKnxog
-L5dMUbtGB8SKN04g4wkxaMeexIud6H4RvDJoEJYRmETYKlFgTYjrdDrfQwYyyDlWjDoRUtNB
-pEMD9O3vMyfbOeAUTibJ2PU54om4k123KSZB6rObroP8d3XK6Mq1/uJlSmM+RMTQw16Hc6mY
-HK9/FX8wggZXMIIFP6ADAgECAhEAtQOW9QEF+4D7358uHbrqtDANBgkqhkiG9w0BAQUFADCB
-rjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEe
-MBwGA1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVz
-ZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0
-aW9uIGFuZCBFbWFpbDAeFw0wNzA3MjUwMDAwMDBaFw0wODA3MjQyMzU5NTlaMIHwMTUwMwYD
-VQQLEyxDb21vZG8gVHJ1c3QgTmV0d29yayAtIFBFUlNPTkEgTk9UIFZBTElEQVRFRDFGMEQG
-A1UECxM9VGVybXMgYW5kIENvbmRpdGlvbnMgb2YgdXNlOiBodHRwOi8vd3d3LmNvbW9kby5u
-ZXQvcmVwb3NpdG9yeTEfMB0GA1UECxMWKGMpMjAwMyBDb21vZG8gTGltaXRlZDElMCMGA1UE
-AxMcTGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaGFlczEnMCUGCSqGSIb3DQEJARYYbGVvbGlz
-dGFzQHNvbHV0dGkuY29tLmJyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvmPE
-RsBVfxgAuuEeQFqd9PufbFYFkHgS1t+OjeXRxuEMM3J2powPOrd+LQl9n6ufyxT8BUWDlY5m
-WbOJLdYeBkBpyZuGbKXdiwISOgv7gmf5P2t1dxXnZ4iv878BOCE7oxnky++E6U913Htp2MQR
-Jtimsnyj6en/MltAuzV/sHaL/9ho2LMPilUMVZqOv7h3IdbyMA2VwRV+GoPulUEC+Ft9vVN7
-wkOwNVx9fvPeQz1xqisMMghSQ4vIpRLPI2CbPdWf35FV4cpjQOzxdPIgvv6cu1v5gHj07JRK
-aPMz5Iko9XQnecXdN32EYaJPstHCZYqi80WbkxqBAx+O0/cG7wIDAQABo4ICKjCCAiYwHwYD
-VR0jBBgwFoAUiYJnfcSdJnAAS7RQSHzePa4Ebn0wHQYDVR0OBBYEFG+PJOF4e+6ExlTxx36j
-W7cVS+ULMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZMBcGCCsGAQUF
-BwMEBgsrBgEEAbIxAQMFAjARBglghkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7BgwrBgEE
-AbIxAQIBAQEwKzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMw
-gaUGA1UdHwSBnTCBmjBMoEqgSIZGaHR0cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJG
-aXJzdC1DbGllbnRBdXRoZW50aWNhdGlvbmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2Ny
-bC5jb21vZG8ubmV0L1VUTi1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFp
-bC5jcmwwfAYIKwYBBQUHAQEEcDBuMDYGCCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9VVE5BQUFDbGllbnRDQS5jcnQwNAYIKwYBBQUHMAKGKGh0dHA6Ly9jcnQuY29tb2Rv
-Lm5ldC9VVE5BQUFDbGllbnRDQS5jcnQwIwYDVR0RBBwwGoEYbGVvbGlzdGFzQHNvbHV0dGku
-Y29tLmJyMA0GCSqGSIb3DQEBBQUAA4IBAQA3/bG1wT5OJ+cmq5RKB7LV/nFn0cmJ6EfSzs+d
-gleCZyn8QyL79F+0E9NjzR6mrcbEcz/uPYBLNJRYa7IjRqi25BSHC+gKRRy3PDagnWDlSp9U
-pnQ2yiOzaXiEk2NlC0K7Dpglw9FTijsoMoB4WbXfc4h/BLehVZ11Pd3zBwuYgv/cW1poF3Vu
-Yca7eBHSegHPZrwetxDkGLRTOHmrXuUJwrPJm7bE5OtFWddU9RBXfOR+NK68q5Ekb1Zc+9+A
-WYOuXKevHMsDAOZcE2iY//MSoimBJ2VhQ1h9dk/SrVI43TTmvKTBe7TOk/+uBIInrurVYLEr
-ZeYiQoYr5cSLCHaDMIIGVzCCBT+gAwIBAgIRALUDlvUBBfuA+9+fLh266rQwDQYJKoZIhvcN
-AQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtl
-IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDov
-L3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDcwNzI1MDAwMDAwWhcNMDgwNzI0MjM1OTU5WjCB
-8DE1MDMGA1UECxMsQ29tb2RvIFRydXN0IE5ldHdvcmsgLSBQRVJTT05BIE5PVCBWQUxJREFU
-RUQxRjBEBgNVBAsTPVRlcm1zIGFuZCBDb25kaXRpb25zIG9mIHVzZTogaHR0cDovL3d3dy5j
-b21vZG8ubmV0L3JlcG9zaXRvcnkxHzAdBgNVBAsTFihjKTIwMDMgQ29tb2RvIExpbWl0ZWQx
-JTAjBgNVBAMTHExlb25hcmRvIFJvZHJpZ3VlcyBNYWdhbGhhZXMxJzAlBgkqhkiG9w0BCQEW
-GGxlb2xpc3Rhc0Bzb2x1dHRpLmNvbS5icjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
-ggEBAL5jxEbAVX8YALrhHkBanfT7n2xWBZB4Etbfjo3l0cbhDDNydqaMDzq3fi0JfZ+rn8sU
-/AVFg5WOZlmziS3WHgZAacmbhmyl3YsCEjoL+4Jn+T9rdXcV52eIr/O/ATghO6MZ5MvvhOlP
-ddx7adjEESbYprJ8o+np/zJbQLs1f7B2i//YaNizD4pVDFWajr+4dyHW8jANlcEVfhqD7pVB
-Avhbfb1Te8JDsDVcfX7z3kM9caorDDIIUkOLyKUSzyNgmz3Vn9+RVeHKY0Ds8XTyIL7+nLtb
-+YB49OyUSmjzM+SJKPV0J3nF3Td9hGGiT7LRwmWKovNFm5MagQMfjtP3Bu8CAwEAAaOCAiow
-ggImMB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59MB0GA1UdDgQWBBRvjyTheHvu
-hMZU8cd+o1u3FUvlCzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAgBgNVHSUEGTAX
-BggrBgEFBQcDBAYLKwYBBAGyMQEDBQIwEQYJYIZIAYb4QgEBBAQDAgUgMEYGA1UdIAQ/MD0w
-OwYMKwYBBAGyMQECAQEBMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9kby5u
-ZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL1VU
-Ti1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwSqBIoEaGRGh0
-dHA6Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0aW9u
-YW5kRW1haWwuY3JsMHwGCCsGAQUFBwEBBHAwbjA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5j
-b21vZG9jYS5jb20vVVROQUFBQ2xpZW50Q0EuY3J0MDQGCCsGAQUFBzAChihodHRwOi8vY3J0
-LmNvbW9kby5uZXQvVVROQUFBQ2xpZW50Q0EuY3J0MCMGA1UdEQQcMBqBGGxlb2xpc3Rhc0Bz
-b2x1dHRpLmNvbS5icjANBgkqhkiG9w0BAQUFAAOCAQEAN/2xtcE+TifnJquUSgey1f5xZ9HJ
-iehH0s7PnYJXgmcp/EMi+/RftBPTY80epq3GxHM/7j2ASzSUWGuyI0aotuQUhwvoCkUctzw2
-oJ1g5UqfVKZ0Nsojs2l4hJNjZQtCuw6YJcPRU4o7KDKAeFm133OIfwS3oVWddT3d8wcLmIL/
-3FtaaBd1bmHGu3gR0noBz2a8HrcQ5Bi0Uzh5q17lCcKzyZu2xOTrRVnXVPUQV3zkfjSuvKuR
-JG9WXPvfgFmDrlynrxzLAwDmXBNomP/zEqIpgSdlYUNYfXZP0q1SON005rykwXu0zpP/rgSC
-J67q1WCxK2XmIkKGK+XEiwh2gzGCBFMwggRPAgEBMIHEMIGuMQswCQYDVQQGEwJVUzELMAkG
-A1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRS
-VVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UE
-AxMtVVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsAhEAtQOW
-9QEF+4D7358uHbrqtDAJBgUrDgMCGgUAoIICYzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0wNzA4MjUxNzU3NTJaMCMGCSqGSIb3DQEJBDEWBBSaMgPSfJmm
-NsOkMKAB0zFMtl74VTBSBgkqhkiG9w0BCQ8xRTBDMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMC
-AgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCB1QYJKwYBBAGC
-NxAEMYHHMIHEMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQg
-TGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0
-dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVROLVVTRVJGaXJzdC1DbGllbnQg
-QXV0aGVudGljYXRpb24gYW5kIEVtYWlsAhEAtQOW9QEF+4D7358uHbrqtDCB1wYLKoZIhvcN
-AQkQAgsxgceggcQwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2Fs
-dCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMY
-aHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVu
-dCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEQC1A5b1AQX7gPvfny4duuq0MA0GCSqGSIb3
-DQEBAQUABIIBABtFSTs/r9rUR1Nhwt+T28XRah8tgV2t4HFi67kwMugt0LIWVwhoCPOTdfEB
-khIGH94v/fsRJVQvwNh0Ws9adPmO7tn3ZQj9AlONJt++rGUIfOMFOd3MIodEVSXoQK6ZuWw4
-oO1k2TCePWFJMUcS+Y9m+OofplL/36j0+dXTvYBZrkmGCLcruYR0HFVZbm3fy1XFI2oJnybA
-bllKYosTe27ZTVF132f8qNt1fQsVfY3M7dK81ImNsIa0SZgcuNPCr9jN92MLZyXkPlmo1PMx
-RkRvCoF3O8zWvaEspiiU38NB9FYLdgdSdYh9jiQGoUQ30IYShUjfeJFb3mB8w1Mmrd8AAAAA
-AAA=
---------------ms010703030804050005020507--
+Gary
 
