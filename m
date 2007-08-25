@@ -1,11 +1,16 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: stop/start iptables vs. "iptables-restore"
-Date: Sat, 25 Aug 2007 23:11:18 +0100 (BST)
-Message-ID: <Pine.LNX.4.58.0708252219290.11021@mail3.jubileegroup.co.uk>
-References: <200708251004.l7PA4Q5a008128@mail3.jubileegroup.co.uk>
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Re: netfilter optimization.
+Date: Sun, 26 Aug 2007 00:58:37 +0200
+Message-ID: <20070825225837.GA26251@internet24.de>
+References: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B7@pxtbenexd01.pxt.primeexalia.com>
+	<46D06DA0.1010706@solutti.com.br>
+	<57F9959B46E0FA4D8BA88AEDFBE5829024F4B9@pxtbenexd01.pxt.primeexalia.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HlL+5n6rz5pIUxbD"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <200708251004.l7PA4Q5a008128@mail3.jubileegroup.co.uk>
+Content-Disposition: inline
+In-Reply-To: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B9@pxtbenexd01.pxt.primeexalia.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,79 +21,64 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hi there,
 
-On Sat, 25 Aug 2007 Alex Tang wrote:
+--HlL+5n6rz5pIUxbD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> We run a linux based product (RHEL4 based, kernel-2.6.9-55, and
-> iptables-1.2.11).
+> So, this leads us to solving the connection pooling issue.  We have two 1=
+=2E8ghz machine with 512MB, one is the active firewall, the other one would=
+ be the failover.  Each one has 4 nics, two onboard 100MB and a dual 1GB.  =
+Here is the config:
+>=20
+> eth0 -> INET (100MB)
+> eth1 -> Private, heartbeat for linux-HA (100MB) -- Future implementation
+> eth2 -> DMZ (1GB)
+> eth3 -> Internal (1GB)
 
-Both versions sound a little old but I guess the guys at RH know what
-they're doing.
+Unless you have a lot of traffic between the dmz and the internal network, =
+and assuming
+100MB means 100Mbps, and that you have some decent NICs (maybe with NAPI/in=
+terrupt
+throttling, Intel's work nicely) you should probably be fine. We're running=
+ something similar=20
+with about 400mbps peak traffic and a P4 3Ghz and it's maybe at 30-40% capa=
+city in peak hours.
 
-> During the running of the product, when we make changes to the
-> iptables configuration, we use the SysV-like RHEL script
-> "/etc/init.d/iptables restart", which effectively stops iptables,
-> unloads all of the iptables based kernel modules, then starts
-> iptables and all the kernel stuff.
+Good NICs, good buses (PCI-Express), high memory transfer rates & large
+cache sizes all make a difference though.
 
-There's no iptables 'daemon', the iptables binary just modifies some
-table in the kernel, so the script in init.d doesn't really stop (nor
-start) anything.  The script probably just removes all the rules and
-replaces them.  While you have no rules in the tables, you might have
-no firewalling!
+Harald Welte gave a talk once about selecting hardware for netfilter firewa=
+lls,
+the notes are available online, maybe it's helpful to you:
 
-> A colleague recently asked why we're not using "iptables-restore"
+http://www.heinlein-support.de/upload/slac/network_performance.pdf
 
-I might have asked the same question. :)
+> Anyway, this is one of the reasons we are rebuilding the firewalls.  The =
+other reason being a spinlock but in that kernel version.  So, we wanted to=
+ go with something fresher.
 
-> I'm looking to see if you know of any reasons why we should or
-> should not use iptables-restore vs. "stop/start".  Does it matter if
-> the number of connections on the system is high?
+In kernel 2.4 there are some "nice" effects under various load levels and a=
+ttacks, 2.6
+kernels is much more robust there. We've added a packet rate limiter
+(using hash limit) for good measure and since then never had any troubles
+again....
 
-It depends what you're doing, what you want to know, exactly what's in
-the script, and who is trying to do what to your machine.  You won't
-break any connections if you delete the rules in the kernel's table
-using the iptables command, but you might break them if you add rules
-which prevent packets reaching their destination when your previous
-rules allowed them.  I'd feel exposed if my start-stop script was
-allowing unlimited access to a machine of mine even for brief periods.
+--HlL+5n6rz5pIUxbD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-We have tens of thousands of rules, and we also log packet and byte
-counts.  Using simple scripts like those found in many distros isn't
-an option for us on performance grounds alone (iptables is notoriously
-slow to insert large numbers of rules) and using the '-c' option of
-iptables-restore allows us to maintain the packet and byte counts.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
 
-The iptables kernel code is very slow to process packets through large
-rulesets unless you use something like ipsets.  Performance with a few
-hundred rules might be acceptable but if you have many more rules than
-that, and if you have a lot of traffic, you should probably be looking
-at better ways of doing it.  There are quite a few good reports on the
-performance of iptables and other packet filtering tools.  Google will
-find them for you.
+iD8DBQFG0LQdgF9cFv867HwRAgPeAKDAdyoZC67AEV5tqteXiW9rie5htgCggU6L
+3OVG8dCoLuWVZpNYvVKW+0s=
+=g28p
+-----END PGP SIGNATURE-----
 
-Our rules are dynamically modified by scripts which call the iptables
-and ipset binaries to add/delete individual rules.  Rulesets with
-thousands of entries (generally blocking sources of network abuse) are
-handled using ipset, rulests with small numbers of entries (things like
-permitting ssh access for our remote users) by iptables.  Rulesets are
-saved periodically as a backup by iptables-save (also ipset --save),
-running from the crontab.  At boot time (i.e. at least once a year:)
-the rulesets are restored from the backups using iptables-restore and
-ipset --restore.
-
-Unfortunately using ipsets means patching the kernel, that might not
-be an option for you unless either RH have included the appropriate
-patches in their kernel or you're prepared to build your own (and no
-doubt lose some RH support).
-
---
-
-73,
-Ged.
+--HlL+5n6rz5pIUxbD--
 
