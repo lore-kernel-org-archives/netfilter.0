@@ -1,14 +1,11 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: netfilter optimization.
-Date: Sat, 25 Aug 2007 11:51:14 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B9@pxtbenexd01.pxt.primeexalia.com>
-References: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B7@pxtbenexd01.pxt.primeexalia.com>
-	<46D06DA0.1010706@solutti.com.br>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Subject: Re: stop/start iptables vs. "iptables-restore"
+Date: Sat, 25 Aug 2007 23:11:18 +0100 (BST)
+Message-ID: <Pine.LNX.4.58.0708252219290.11021@mail3.jubileegroup.co.uk>
+References: <200708251004.l7PA4Q5a008128@mail3.jubileegroup.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <46D06DA0.1010706@solutti.com.br>
+In-Reply-To: <200708251004.l7PA4Q5a008128@mail3.jubileegroup.co.uk>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,70 +16,79 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: =?iso-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
-Cc: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
->     You missed some important informations. How many machines are
-> behind
-> this firewall ? Are they client machines or are they servers ? Are we
-> talking of lots of machines that generates low traffic of we're =
-talking
-> of some machines that generate LOTS of traffic ??
->=20
->     Please tell us about your network cenary.
->=20
-Leonardo,=20
+Hi there,
 
-Approximately 50 physical servers running about 300 Xen instances as =
-well as other Windows stuff.  We have three class C IP ranges coming in. =
- We balance some of this internally with ipvsadm.  So, in most cases, we =
-have one physical external IP coming in per VIP, going to one of several =
-machines on the back end. =20
+On Sat, 25 Aug 2007 Alex Tang wrote:
 
-Then we have several other machines that are NAT'd for very specific =
-ports.  In particular, we have a set of web servers that get an extreme =
-number of connections, usually in the afternoon, PST, which will exhaust =
-the pool.
+> We run a linux based product (RHEL4 based, kernel-2.6.9-55, and
+> iptables-1.2.11).
 
-We have tried to balance direct routing and NAT'ing when we can.  That =
-is, if we can direct route, we do it.  In some cases, we simply don't =
-have the IP's for it.
+Both versions sound a little old but I guess the guys at RH know what
+they're doing.
 
-So, this leads us to solving the connection pooling issue.  We have two =
-1.8ghz machine with 512MB, one is the active firewall, the other one =
-would be the failover.  Each one has 4 nics, two onboard 100MB and a =
-dual 1GB.  Here is the config:
+> During the running of the product, when we make changes to the
+> iptables configuration, we use the SysV-like RHEL script
+> "/etc/init.d/iptables restart", which effectively stops iptables,
+> unloads all of the iptables based kernel modules, then starts
+> iptables and all the kernel stuff.
 
-eth0 -> INET (100MB)
-eth1 -> Private, heartbeat for linux-HA (100MB) -- Future implementation
-eth2 -> DMZ (1GB)
-eth3 -> Internal (1GB)
+There's no iptables 'daemon', the iptables binary just modifies some
+table in the kernel, so the script in init.d doesn't really stop (nor
+start) anything.  The script probably just removes all the rules and
+replaces them.  While you have no rules in the tables, you might have
+no firewalling!
 
-DMZ has public IP's and private IP's.
+> A colleague recently asked why we're not using "iptables-restore"
 
-x.x.51.0/24, x.x.52.0/24, x.x.53.0/24, 10.0.64.0/21.
+I might have asked the same question. :)
 
-IP, such that x.x.51.128/25 goes to an ipvs instance, which then =
-forwards it to something on the 10.0.64.0/24 range.
-IP, such that x.x.52.0/24 goes to an ipvs instance, which then forwards =
-it to something on the 10.0.68.0/22 range.
-IP, such that x.x.53.0/24 gets direct routed in most cases.
-IP, such that x.x.51.0/25 gets routed in a couple different ways (both =
-direct and ivps).
+> I'm looking to see if you know of any reasons why we should or
+> should not use iptables-restore vs. "stop/start".  Does it matter if
+> the number of connections on the system is high?
 
-As for client workstations behind it, zero, but we do have both direct =
-and NAT'd traffic originating from inside the network (email, Windows =
-update requests, etc).
+It depends what you're doing, what you want to know, exactly what's in
+the script, and who is trying to do what to your machine.  You won't
+break any connections if you delete the rules in the kernel's table
+using the iptables command, but you might break them if you add rules
+which prevent packets reaching their destination when your previous
+rules allowed them.  I'd feel exposed if my start-stop script was
+allowing unlimited access to a machine of mine even for brief periods.
 
-I used to have a good png file from Visio that showed this but it's so =
-outdated...  I need to update it. =20
+We have tens of thousands of rules, and we also log packet and byte
+counts.  Using simple scripts like those found in many distros isn't
+an option for us on performance grounds alone (iptables is notoriously
+slow to insert large numbers of rules) and using the '-c' option of
+iptables-restore allows us to maintain the packet and byte counts.
 
-Anyway, this is one of the reasons we are rebuilding the firewalls.  The =
-other reason being a spinlock but in that kernel version.  So, we wanted =
-to go with something fresher.
+The iptables kernel code is very slow to process packets through large
+rulesets unless you use something like ipsets.  Performance with a few
+hundred rules might be acceptable but if you have many more rules than
+that, and if you have a lot of traffic, you should probably be looking
+at better ways of doing it.  There are quite a few good reports on the
+performance of iptables and other packet filtering tools.  Google will
+find them for you.
 
-This is the overall high level layout.
+Our rules are dynamically modified by scripts which call the iptables
+and ipset binaries to add/delete individual rules.  Rulesets with
+thousands of entries (generally blocking sources of network abuse) are
+handled using ipset, rulests with small numbers of entries (things like
+permitting ssh access for our remote users) by iptables.  Rulesets are
+saved periodically as a backup by iptables-save (also ipset --save),
+running from the crontab.  At boot time (i.e. at least once a year:)
+the rulesets are restored from the backups using iptables-restore and
+ipset --restore.
 
-Gary
+Unfortunately using ipsets means patching the kernel, that might not
+be an option for you unless either RH have included the appropriate
+patches in their kernel or you're prepared to build your own (and no
+doubt lose some RH support).
+
+--
+
+73,
+Ged.
 
