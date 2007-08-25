@@ -1,16 +1,13 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: netfilter optimization.
-Date: Sun, 26 Aug 2007 01:21:24 +0200
-Message-ID: <20070825232124.GA26316@internet24.de>
-References: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B7@pxtbenexd01.pxt.primeexalia.com>
-	<46D06DA0.1010706@solutti.com.br>
-	<57F9959B46E0FA4D8BA88AEDFBE5829024F4B9@pxtbenexd01.pxt.primeexalia.com>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: netfilter optimization.
+Date: Sat, 25 Aug 2007 16:27:44 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024F4BA@pxtbenexd01.pxt.primeexalia.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B7@pxtbenexd01.pxt.primeexalia.com><46D06DA0.1010706@solutti.com.br><57F9959B46E0FA4D8BA88AEDFBE5829024F4B9@pxtbenexd01.pxt.primeexalia.com>
 	<20070825225837.GA26251@internet24.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
 In-Reply-To: <20070825225837.GA26251@internet24.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -22,49 +19,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Thomas Jacob <jacob@internet24.de>, netfilter@lists.netfilter.org
 
+> Unless you have a lot of traffic between the dmz and the internal
+> network, and assuming 100MB means 100Mbps, and that you have some
 
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thomas,
 
-Ehm, you're original question was about
-setting conntrack values :-)
+The internal network pulls backups from the DMZ.  DMZ and Internal
+network are on a dual 1GB nic (Intel).  That works fine since it's
+pretty much direct router. =20
 
-Originally you couldn't change the hash bucket=20
-number after the ipt_conntrack module had been loaded,
-you needed to do that at load time (for
-instance through /etc/sysctl.cnf), but
-I gather that current netfilter versions
-allow changing the number of hash buckets
-at runtime through:
+> Harald Welte gave a talk once about selecting hardware for netfilter
+> firewalls, the notes are available online, maybe it's helpful to you:
 
-/sys/module/ip_conntrack/parameters/hashsize
+We're not really seeing any hardware problems per say, but rather
+limitations to the number of active connections tracked through
+netfilter.  We've bumped up the value, but as per the original email, I
+see recommendations that we should also increase the buckets for
+performance reasons.  This is a problem as NF_CONNTRACK_BUCKETS is read
+only.
 
-Setting #hash buckets=3Dconntrack max should be
-fine that's what we do as well.
+So the question is should I just increase the NF_CONNTRACK_MAX to
+something like 1M since this is a dedicated machine, OR will I run into
+some other gotcha.
 
-Maybe you want to carefully reduce some of
-the /proc/sys/net/ipv4/netfilter/ip_conntrack_*timeout* parameters
-to reduce the number of entries in the connection
-tracking hash.
+Overall everything else runs pretty nicely and we're happy with the
+performance, we just don't want to lose connections because of a full
+conntrack.
 
-
-
---5vNYLRcllDrimb99
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFG0Ll0gF9cFv867HwRArFSAJwPLF4v4JtXm1n7QqX7mzKhQidMzQCgmGSy
-UPplfkSA3ly3TdKkAGpRQ2E=
-=6onI
------END PGP SIGNATURE-----
-
---5vNYLRcllDrimb99--
+Gary
 
