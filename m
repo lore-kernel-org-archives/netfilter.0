@@ -1,10 +1,14 @@
-From: KARIM SATTAR <karimas@kfupm.edu.sa>
-Subject: Netfilter/Iptables Architecture
-Date: Sun, 26 Aug 2007 02:57:47 +0300 (AST)
-Message-ID: <673315.1188086267785.JavaMail.karimas@kfupm.edu.sa>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: netfilter optimization.
+Date: Sat, 25 Aug 2007 17:03:58 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024F4BC@pxtbenexd01.pxt.primeexalia.com>
+References: <57F9959B46E0FA4D8BA88AEDFBE5829024F4B7@pxtbenexd01.pxt.primeexalia.com><46D06DA0.1010706@solutti.com.br><57F9959B46E0FA4D8BA88AEDFBE5829024F4B9@pxtbenexd01.pxt.primeexalia.com><20070825225837.GA26251@internet24.de>
+	<20070825232124.GA26316@internet24.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-class: urn:content-classes:message
+In-Reply-To: <20070825232124.GA26316@internet24.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,55 +20,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+To: Thomas Jacob <jacob@internet24.de>, netfilter@lists.netfilter.org
 
-Hi
-Currently I am studying the architecture of netfilter/iptables and 
-unfortunately I didnt find much information regarding them. Although 
-different articles (such as produced by Russel and other authors) have 
-given me the idea to dig more into the Linux firewall.
+> Originally you couldn't change the hash bucket number after the
+> ipt_conntrack module had been loaded, you needed to do that at load
+> time (for instance through /etc/sysctl.cnf), but I gather that current
+> netfilter versions allow changing the number of hash buckets at
+runtime
+> through:
 
-I have three questions related to the architecture of the 
-netfilter/iptables; and if any one can answer it in a little bit 
-detailed then I will be very grateful.
+So this *should* work:
 
-1) Through the article "The journey of a packet through the Linux 
-2.6.10 network stack" by Harald Welte; I have an idea of how packet has 
-been traversed and captured by the different NF hooks. Similarly though 
-different papers and a book named Understanding LINUX Network 
-INTERNALS; I have found the other part i.e. regarding iptables part 
-that how the rules are being saved in a link list and how ipt_do_table 
-and other functions have been called and do the operations etc. But I 
-didnt find the interconnection between the two architectures. I Meant 
-to say that e.g. if NF_HOOK using NP_IP_LOCAL_IN has been called in the 
-ip_local_deliver function; <---> ipt_hook (which has been registered 
-during initialization)  it will call ipt_do_table. There should be a 
-bridge which I have tried to discover but didnt find much.
+net.netfilter.nf_conntrack_max=3D1048576
+net.netfilter.nf_conntrack_buckets=3D1048576
 
-I am thinking now that either my finding is wrong or there is some 
-other function calls or message passing between the two architecture.
+But it only does for nf_conntrack_max.  I did overwrite it by going to
+/sys/modules/nf_conntrack/parameters/hashsize and it did take it on the
+second try.  The first time it complained about file descriptors.  The
+second time it seemed to set it, which I verified by looking at
+/proc/sys/net/netfilter/nf_conntrack_buckets.
 
-2) I have first analyzed the code of iptables which comes with the 
-standard kernel; in which I have found the detailed code of iptables 
-under ip_tables.c iptables_filter.c etc but when I have downloaded the 
-new version of iptables from the website; that one is totally different 
-from the one implemented in the Linux Kernel. 
-
-Is the code which is on the website is related to the iptables 
-implementation in the user space as I have get this information after 
-looking different library files in the package which I have downloaded 
-from the website.
-
-3) During the reboot of the system; service iptables has been started 
-but I didnt find any service/daemon when I have seen the TOP or ps 
-command. 
-I want to know that when the init.d started the services so when the 
-service iptables started; does the script enable the different hooks 
-for the iptables to work.
-
-Thanks for the patience for reading my questions. Although I am not new 
-to Linux but to the implementation of it on the Kernel level.
-
-Regards
-Karim Asif Sattar
+Is there a way to set this on startup? =20
 
