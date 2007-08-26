@@ -1,13 +1,14 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: IPSET iptree problem
-Date: Sun, 26 Aug 2007 15:12:12 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0708261505170.5050@blackhole.kfki.hu>
-References: <C9039844-4303-4FD1-9704-41366AFF5884@stanford.edu>
-	<op.txij6pdb343eys@comnetlap2.biuro.lan>
-	<Pine.LNX.4.64.0708231523370.1184@blackhole.kfki.hu>
+From: "Gary W. Smith" <gary@primeexalia.com>
+Subject: RE: netfilter optimization.
+Date: Sun, 26 Aug 2007 13:27:58 -0700
+Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024F4BE@pxtbenexd01.pxt.primeexalia.com>
+References: <20070825232124.GA26316@internet24.de><57F9959B46E0FA4D8BA88AEDFBE5829024F4BC@pxtbenexd01.pxt.primeexalia.com>
+	<20070826105855.GB15249@internet24.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <Pine.LNX.4.64.0708231523370.1184@blackhole.kfki.hu>
+Content-class: urn:content-classes:message
+In-Reply-To: <20070826105855.GB15249@internet24.de>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,57 +19,36 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: =?iso-8859-2?B?o3VrYXN6IE5pZXJ5Y2izbw==?= <nofast@welnowiec.net>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: Thomas Jacob <jacob@internet24.de>, netfilter@lists.netfilter.org
 
-Hi,
+> Oh yes sorry,  you can't set it in sysctl.conf then, since the module
+> must probably already be loaded if you can use that. Try the module
+> load parameters instead (options ip_conntrack hashsize=3DXXXX in
+> /etc/modprobe.d/somefile worked in older kernels).
+>=20
+> I am actually just patching the numbers in to the kernel version
+> myself, since I don't want to have a module-based kernel on my
+firewall
+> box.
 
-On Thu, 23 Aug 2007, Jozsef Kadlecsik wrote:
+I've also found the same setting in a couple of list groups.  Here's
+what I have, but it doesn't seem to work:
 
->> After IPTREE_GC_TIME all is ok for some unknown period of
->> time, but finally this malfunction comes again.
->
-> Thank you the reports, on the weekend I'll be able to debug it.
-> Please stay tuned.
+[root@localhost etc]# cat /etc/modprobe.conf
+options ip_conntrack hashsize=3D1048576
 
-Hm, I'm unable to reproduce it. There *was* an endian-related bug in 
-the iptree type, but even that could not cause such behaviour.
+alias eth0 eepro100
+...
 
-Please give a try to the upcoming release, which you can get
-as http://ipset.netfilter.org/ipset-2.6.23-rc3.patch.
+I'm going to play around with it for a while.  If I can't get it to work
+through modprobe I'll just tweak /etc/init.d/iptables to populate
+/sys/...  since that seemed to work.  I was just looking for a more
+elegant solution.
 
-If you still see the bug, please do the following:
+Thanks for all of the help.  This solve my problem of hitting the limits
+in any event.
 
-- recompile ipset in the kernel with debugging enabled, i.e. change
+Gary
 
-#if 0
-#define IP_SET_DEBUG
-#endif
-
-   to
-
-#if 1
-#define IP_SET_DEBUG
-#endif
-
-   in <kernel-src>/include/linux/netfilter_ipv4/ip_set.h
-
-- then after recompiling issue the following commands and report the
-   resulted kernel logs:
-
-# ipset -N viruses iptree --timeout 100
-# ipset -A viruses 172.16.14.12
-# ipset -T viruses 172.16.14.12
-# ipset -T viruses 172.16.14.111
-# ipset -n -L viruses
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-           H-1525 Budapest 114, POB. 49, Hungary
 
