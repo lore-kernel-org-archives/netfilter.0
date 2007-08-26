@@ -1,14 +1,12 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: netfilter optimization.
-Date: Sun, 26 Aug 2007 13:27:58 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024F4BE@pxtbenexd01.pxt.primeexalia.com>
-References: <20070825232124.GA26316@internet24.de><57F9959B46E0FA4D8BA88AEDFBE5829024F4BC@pxtbenexd01.pxt.primeexalia.com>
-	<20070826105855.GB15249@internet24.de>
+From: Michael Rash <mbr@cipherdyne.org>
+Subject: Re: about ipt_string
+Date: Sun, 26 Aug 2007 17:02:27 -0400
+Message-ID: <20070826210227.GA11193@minastirith>
+References: <46cce0f3.22bd720a.5b5c.ffffc703@mx.google.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <20070826105855.GB15249@internet24.de>
+In-reply-to: <46cce0f3.22bd720a.5b5c.ffffc703@mx.google.com>
+Content-disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,35 +18,53 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Jacob <jacob@internet24.de>, netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@lists.netfilter.org
 
-> Oh yes sorry,  you can't set it in sysctl.conf then, since the module
-> must probably already be loaded if you can use that. Try the module
-> load parameters instead (options ip_conntrack hashsize=3DXXXX in
-> /etc/modprobe.d/somefile worked in older kernels).
->=20
-> I am actually just patching the numbers in to the kernel version
-> myself, since I don't want to have a module-based kernel on my
-firewall
-> box.
+On Aug 23, 2007, CrackyBlue wrote:
 
-I've also found the same setting in a couple of list groups.  Here's
-what I have, but it doesn't seem to work:
+> Hi,
+> 
+> I am just wondering why this script don't block 
+>  
+> iptables -A INPUT -p tcp -m string --string 'bittorent' --algo kmp -d 0/0
+> --dport 80 -j REJECT
+> 
+> I have iptables 1.3.8 and 2.6.17 kernel and ipt_string is already loaded
 
-[root@localhost etc]# cat /etc/modprobe.conf
-options ip_conntrack hashsize=3D1048576
+The Snort community has two rules that are designed to detect Bittorrent
+communications in the 'p2p.rules' file, and you could use fwsnort to
+recast these into iptables rules:
 
-alias eth0 eepro100
-...
+http://www.cipherdyne.org/fwsnort/
 
-I'm going to play around with it for a while.  If I can't get it to work
-through modprobe I'll just tweak /etc/init.d/iptables to populate
-/sys/...  since that seemed to work.  I was just looking for a more
-elegant solution.
+The Snort rule ID's are 2180 and 2181, and if you want fwsnort to use the
+REJECT target against Bittorrent traffic, then use the --ipt-reject
+argument like so:
 
-Thanks for all of the help.  This solve my problem of hitting the limits
-in any event.
+# fwsnort --snort-sids 2180,2181 --ipt-reject
+[+] Parsing Snort rules files...
+[+] Found sid: 2180 in p2p.rules
+    Successful translation.
+[+] Found sid: 2181 in p2p.rules
+    Successful translation.
 
-Gary
+[+] Logfile: /var/log/fwsnort.log
+[+] iptables script: /etc/fwsnort/fwsnort.sh
 
+Here is an example iptables command that fwsnort will execute to block
+Bittorrent traffic (where 192.168.10.0/24 is an internal network
+protected by iptables):
+
+$IPTABLES -A FWSNORT_FORWARD_ESTAB -s 192.168.10.0/24 -p tcp --dport
+6881:6889 -m string --hex-string "|13|BitTorrent protocol" --algo bm
+--to 84 -j REJECT --reject-with tcp-reset
+
+(If you want to try this, then please install fwsnort-1.0.2 since there
+have been some bug fixes).
+
+--
+Michael Rash
+http://www.cipherdyne.org/
+Key fingerprint = 53EA 13EA 472E 3771 894F  AC69 95D8 5D6B A742 839F
 
