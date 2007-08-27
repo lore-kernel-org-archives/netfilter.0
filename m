@@ -1,11 +1,16 @@
-From: "Manish Jain" <manish.jain@globallogic.com>
-Subject: Sometimes SNAT is not working
-Date: Mon, 27 Aug 2007 14:05:06 +0530
-Message-ID: <A192455967CC5A498A520879D99A5775E30B08@ex2-del1.synapse.com>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	=?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: Question about /etc/iptables.down.rules
+Date: Mon, 27 Aug 2007 11:42:30 +0300
+Message-ID: <1188204150.13621.19.camel@localhost.localdomain>
+References: <1224801D-F4F1-40D1-8C8C-94C14C3C38EC@tinyapps.org>
+	<1188201131.13621.3.camel@localhost.localdomain>
+	<F4B37970-02BE-4A40-B9E3-1BE5B7D5AAEF@tinyapps.org>
+Reply-To: casper@meteor.dp.ua
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <F4B37970-02BE-4A40-B9E3-1BE5B7D5AAEF@tinyapps.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,20 +21,37 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="koi8-r"
+To: "TinyApps.Org" <miles@tinyapps.org>
+Cc: netfilter@lists.netfilter.org
 
-Hello,
-
-I am using some internal IPs (169.254.x.x) on my box and then performing
-SNAT and DNAT from/to this IP to/from actual public IP.
-
-It has been observed that sometimes SNAT does not work and internal IP
-exposed to outside world.
-
-Please share your experiences. Whether it has to do with connection
-tracking in some way or other?
-
-Best Regards,
-Manish Jain
-
+9yD308ssIDI2LzA4LzIwMDcg1yAyMjowMSAtMTAwMCwgVGlueUFwcHMuT3JnINDJ28XUOgo+IFRo
+YW5rcyBmb3IgeW91ciByZXBseSwg8M/Lz9TJzMXOy88hIChJIGhvcGUgdGhhdCBpcyB0aGUgY29y
+cmVjdCBuYW1lICAKPiB0byB1c2UuKQo+IE15IHJlcGx5IGlzIGF0IHRoZSBib3R0b20gb2YgdGhp
+cyBtZXNzYWdlOgo+IAo+ID4+IEkgdW5kZXJzdGFuZCB0aGF0IGl0IGlzIGJlc3QgdG8gc2V0dXAg
+YSBzZXQgb2YgcnVsZXMgdG8gYmUgYXBwbGllZAo+ID4+IHdoZW4gdGhlIG5ldHdvcmsgaW50ZXJm
+YWNlIGlzIGRvd24sIHNhdmluZyBpdCB0bzoKPiA+Pgo+ID4+ICAgL2V0Yy9pcHRhYmxlcy5kb3du
+LnJ1bGVzCj4gPj4KPiA+PiBhbmQgYXBwbHlpbmcgaW4gL2V0Yy9uZXR3b3JrL2ludGVyZmFjZXMg
+dmlhOgo+ID4+Cj4gPj4gcG9zdC1kb3duIGlwdGFibGVzLXJlc3RvcmUgPCAvZXRjL2lwdGFibGVz
+LmRvd24ucnVsZXMKPiA+Pgo+ID4+IFdoYXQgc2hvdWxkIHRoaXMgc2V0IG9mIHJ1bGVzIGxvb2sg
+bGlrZT8gVGhlIGV4YWN0IG9wcG9zaXRlCj4gPj4gb2YgL2V0Yy9pcHRhYmxlcy51cC5ydWxlcyA/
+IE9yIGp1c3QgYSBzaW1wbGUgZmx1c2ggY29tbWFuZD8KPiA+PiBPciBzb21ldGhpbmcgZWxzZSBh
+bHRvZ2V0aGVyPwo+ID4KPiA+IFlvdSBjYW4gZG8gYSBzaW1wbGUgZmx1c2gsIGJ1dCB0aGlzIGlz
+IG5vdCByZXF1aXJlZCwgc2luY2UgYWxsIHJ1bGVzCj4gPiB3aWxsIGJlIG92ZXJ3cml0dGVuIGJ5
+IGlwdGFibGVzLXJlc3RvcmUgd2hlbiB5b3UgYnJpbmcgbmV0d29yayAgCj4gPiBpbnRlcmZhY2UK
+PiA+IHVwIG5leHQgdGltZS4KPiAKPiBJIGhhZCBzdHVtYmxlZCBhY3Jvc3MgdGhlIGZvbGxvd2lu
+ZyBjb21tZW50Ogo+IAo+ICJCdXQgdG8gZG8gdGhpcyByZWFsbHkgY2xlYW4sIHdlIG5lZWQgdG8g
+aGF2ZSBhIHNjcmlwdCB0aGF0IHJlbW92ZXMgIAo+IHRoZSBydWxlcyBhcyB3ZWxsIGZvciB3aGVu
+IHRoZSBpbnRlcmZhY2UgZ29lcyBkb3duLiBKdXN0IHRvIG1ha2Ugc3VyZSAgCj4gdGhlIHJ1bGVz
+IGFyZSBuZXZlciBhZGRlZCB0d2ljZS4iCj4gCj4gb24gdGhpcyBzaXRlOgo+IGh0dHA6Ly9teS5v
+cGVyYS5jb20vSmFkYTAwMDcvYmxvZy9zaG93LmRtbC8xMjEzMzU0Cj4gCj4gYW5kIHRoZXJlZm9y
+ZSB3b25kZXJlZCBpZiB0aGVyZSB3ZXJlIGV2ZXIgYSBjYXNlIGluIHdoaWNoCj4gdGhlIHJ1bGVz
+IGNvdWxkIGJlIGFwcGxpZWQgdHdpY2UuLi4gYnkgY3JlYXRpbmcgYSAvZXRjLyAKPiBpcHRhYmxl
+cy5kb3duLnJ1bGVzCj4gZmlsZSwgSSBob3BlZCB0byBhdm9pZCBzdWNoIGEgcG9zc2liaWxpdHku
+CgptYW4gaXB0YWJsZXMtcmVzdG9yZSBzdGF0ZXM6Ci4uLgogICAgICAgLW4sIC0tbm9mbHVzaAoK
+ICAgICAgIGRvbid0IGZsdXNoIHRoZSBwcmV2aW91cyBjb250ZW50cyBvZiB0aGUgdGFibGUuIElm
+IG5vdCBzcGVjaWZpZWQsCiAgICAgICAgICAgICAgaXB0YWJsZXMtcmVzdG9yZSBmbHVzaGVzIChk
+ZWxldGVzKSBhbGwgcHJldmlvdXMgY29udGVudHMKb2YgIHRoZQogICAgICAgICAgICAgIHJlc3Bl
+Y3RpdmUgSVAgVGFibGUuCi4uLgoKU28sIG1ha2Ugc3VyZSB5b3Ugd29uJ3QgdXNlICItbiIgb3B0
+aW9uIHdoZW4gY2FsbGluZyBpcHRhYmxlcy1yZXN0b3JlLgoKLS0gCvDPy8/UyczFzsvPIOvP09TJ
+yyA8Y2FzcGVyQG1ldGVvci5kcC51YT4KCgo=
