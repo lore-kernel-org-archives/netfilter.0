@@ -1,13 +1,11 @@
-From: "TinyApps.Org" <miles@tinyapps.org>
-Subject: Re: Question about /etc/iptables.down.rules
-Date: Sun, 26 Aug 2007 22:01:21 -1000
-Message-ID: <F4B37970-02BE-4A40-B9E3-1BE5B7D5AAEF@tinyapps.org>
-References: <1224801D-F4F1-40D1-8C8C-94C14C3C38EC@tinyapps.org>
-	<1188201131.13621.3.camel@localhost.localdomain>
-Mime-Version: 1.0 (Apple Message framework v752.3)
+From: "Manish Jain" <manish.jain@globallogic.com>
+Subject: Sometimes SNAT is not working
+Date: Mon, 27 Aug 2007 14:05:06 +0530
+Message-ID: <A192455967CC5A498A520879D99A5775E30B08@ex2-del1.synapse.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1188201131.13621.3.camel@localhost.localdomain>
+Content-class: urn:content-classes:message
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,50 +16,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="koi8-r"; delsp="yes"; format="flowed"
-To: casper@meteor.dp.ua
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Thanks for your reply, =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF! (I hope that =
-is the correct name =20
-to use.)
-My reply is at the bottom of this message:
+Hello,
 
->> I understand that it is best to setup a set of rules to be applied
->> when the network interface is down, saving it to:
->>
->>   /etc/iptables.down.rules
->>
->> and applying in /etc/network/interfaces via:
->>
->> post-down iptables-restore < /etc/iptables.down.rules
->>
->> What should this set of rules look like? The exact opposite
->> of /etc/iptables.up.rules ? Or just a simple flush command?
->> Or something else altogether?
->
-> You can do a simple flush, but this is not required, since all rules
-> will be overwritten by iptables-restore when you bring network =20
-> interface
-> up next time.
+I am using some internal IPs (169.254.x.x) on my box and then performing
+SNAT and DNAT from/to this IP to/from actual public IP.
 
-I had stumbled across the following comment:
+It has been observed that sometimes SNAT does not work and internal IP
+exposed to outside world.
 
-"But to do this really clean, we need to have a script that removes =20
-the rules as well for when the interface goes down. Just to make sure =20=
+Please share your experiences. Whether it has to do with connection
+tracking in some way or other?
 
-the rules are never added twice."
-
-on this site:
-http://my.opera.com/Jada0007/blog/show.dml/1213354
-
-and therefore wondered if there were ever a case in which
-the rules could be applied twice... by creating a /etc/=20
-iptables.down.rules
-file, I hoped to avoid such a possibility.
-
-Sincerely,
-
-Miles
-
+Best Regards,
+Manish Jain
 
