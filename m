@@ -1,12 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Sometimes SNAT is not working
-Date: Mon, 27 Aug 2007 16:41:14 +0200
-Message-ID: <46D2E28A.1090503@plouf.fr.eu.org>
-References: <A192455967CC5A498A520879D99A5775E30B08@ex2-del1.synapse.com>
+From: "quesera2" <quesera2@earthlink.net>
+Subject: Implement single firewall login for access to all ports on LAN?
+Date: Mon, 27 Aug 2007 10:45:17 -0400
+Message-ID: <00e301c7e8b8$e34b7c30$1ad8d346@rtt42p>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <A192455967CC5A498A520879D99A5775E30B08@ex2-del1.synapse.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,27 +15,35 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hello,
+The normal apologies for the noobie-type question...
 
-Manish Jain a =E9crit :
->=20
-> I am using some internal IPs (169.254.x.x) on my box and then performin=
-g
-> SNAT and DNAT from/to this IP to/from actual public IP.
+We have IPCop nicely segregating our orange (DMZ) and green (blocked) LANs.
+As time has gone on, I've realized that I'd like many more of our services
+to be on the orange or red networks so they can be easily reached by
+customers/consultants who may not have fixed IPs. Many of our users are not
+SSH savvy and might not want us installing a tunneling client on their
+systems.
 
-Note : you should consider using an address range other that=20
-169.254.0.0/16 which is reserved for non routable link local=20
-communications (see RFC 3330). You could use a private address range in=20
-10.0.0.0/8, 172.16.0.0/12 or 192.168.0.0/16 (see RFC 1918) instead.
+Most of these services that I want to expose have some form of
+authentication but some of that is not terribly robust (mediawiki, mysql,
+bugzilla). Some are targets for DoS (SQL Server) or other attacks. 
 
-> It has been observed that sometimes SNAT does not work and internal IP
-> exposed to outside world.
->=20
-> Please share your experiences. Whether it has to do with connection
-> tracking in some way or other?
+My thoughts are to have a strong challenge/response login from a client to
+the firewall. This could be done via https to a non-standard port on the
+firewall. If this login succeeded, all (or configurable) ports would be
+available from the client to services inside the firewall as long as the
+'session' was active. The session would be based on the client's IP and
+would have an inactivity time-out. The original https login would not need
+to stay active.
 
-Probably. NAT does not work on packets in the INVALID or NOTRACK state.
+Valid user logins could be either via statically configured tables on the
+firewall or via LDAP, etc.
+
+I think I remember a scheme like this when I was using the Wingate proxy
+server. Is this available using iptables?
+
+
 
