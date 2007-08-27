@@ -1,10 +1,11 @@
-From: dirk <tigger@lipsia.de>
-Subject: Example-module for ip_queue
-Date: Mon, 27 Aug 2007 17:31:45 +0200
-Message-ID: <46D2EE61.1050907@lipsia.de>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Re : IPSET iptree problem
+Date: Mon, 27 Aug 2007 18:40:36 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0708271837440.6383@blackhole.kfki.hu>
+References: <E1IPe95-0001aO-B9@welnowiec.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <E1IPe95-0001aO-B9@welnowiec.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,21 +16,27 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-user <netfilter@lists.netfilter.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: nofast@welnowiec.net
+Cc: netfilter@lists.netfilter.org
 
-hi,
+On Mon, 27 Aug 2007, nofast@welnowiec.net wrote:
 
+> I preformed two tests, one shortly after boot and another few minutes later.
+> The results are different.
+> I hope this will help you.
 
-I search for an small example-module (I'm right that patch-o-matic is a
-ip_queue-Application?) which is used by ip_queue - yes the old one for
-2.4 kernel. So I have take a look to the netfilter-SVN but can't find
-something and Google was not my friend. I'd like write a "TCP-Delay"
-unfortunately  without practice programming-skills :-( so that I hope to
-learn by larding from modules or other hints - I have read the
-netfilter-hack HOWTO but with more new questions as answers.
+It did helped: please give a try to the new version as
+http://ipset.netfilter.org/ipset-2.6.23-rc3.patch2.
 
+Please report that it indeed solves the false iptree test results.
 
-thanks
-Dirk
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+           H-1525 Budapest 114, POB. 49, Hungary
 
