@@ -1,14 +1,11 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	=?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: Question about /etc/iptables.down.rules
-Date: Mon, 27 Aug 2007 10:52:11 +0300
-Message-ID: <1188201131.13621.3.camel@localhost.localdomain>
-References: <1224801D-F4F1-40D1-8C8C-94C14C3C38EC@tinyapps.org>
-Reply-To: casper@meteor.dp.ua
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Change ip_conntrack_sip default port
+Date: Mon, 27 Aug 2007 09:52:05 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0708270945220.5615@blackhole.kfki.hu>
+References: <DIIE.00000DE000044CE3@aressi.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1224801D-F4F1-40D1-8C8C-94C14C3C38EC@tinyapps.org>
+In-Reply-To: <DIIE.00000DE000044CE3@aressi.fr>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,29 +16,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="koi8-r"
-To: "TinyApps.Org" <miles@tinyapps.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Sebastien VECTEN <svecten@aressi.fr>
 Cc: netfilter@lists.netfilter.org
 
-9yD308ssIDI2LzA4LzIwMDcg1yAxNTo1MSAtMTAwMCwgVGlueUFwcHMuT3JnINDJ28XUOgo+IEkg
-aGF2ZSBhIHZlcnkgc2ltcGxlIHNldCBvZiBpcHRhYmxlcyBydWxlczoKPiAKPiAjIGlwdGFibGVz
-IC1BIElOUFVUIC1tIHN0YXRlIC0tc3RhdGUgRVNUQUJMSVNIRUQsUkVMQVRFRCAtaiBBQ0NFUFQK
-PiAjIGlwdGFibGVzIC1BIElOUFVUIC1wIHRjcCAtaSBldGgwIC0tZHBvcnQgc3NoIC1qIEFDQ0VQ
-VAo+ICMgaXB0YWJsZXMgLUkgSU5QVVQgLWkgbG8gLWogQUNDRVBUCj4gIyBpcHRhYmxlcyAtQSBJ
-TlBVVCAtaiBEUk9QCj4gCj4gd2hpY2ggaGFzIGJlZW4gc2F2ZWQgdG8gL2V0Yy9pcHRhYmxlcy51
-cC5ydWxlcyAuCj4gCj4gSSBoYXZlIGFsc28gbW9kaWZpZWQgL2V0Yy9uZXR3b3JrL2ludGVyZmFj
-ZXMgdG8gdXNlIHRoZSBydWxlc2V0Ogo+IAo+ICAgICAgICAgICAgIGlmYWNlIGV0aDAgaW5ldCBz
-dGF0aWMKPiAgICAgICAgICAgICAgICAgICAgIGFkZHJlc3MgeC54LngueAo+ICAgICAgICAgICAg
-ICAgICAgICAgWy4uIGludGVyZmFjZSBjb25maWd1cmF0aW9uIC4uXQo+ICAgICAgICAgICAgICAg
-ICAgICAgcHJlLXVwIGlwdGFibGVzLXJlc3RvcmUgPCAvZXRjL2lwdGFibGVzLnVwLnJ1bGVzCj4g
-Cj4gSSB1bmRlcnN0YW5kIHRoYXQgaXQgaXMgYmVzdCB0byBzZXR1cCBhIHNldCBvZiBydWxlcyB0
-byBiZSBhcHBsaWVkCj4gd2hlbiB0aGUgbmV0d29yayBpbnRlcmZhY2UgaXMgZG93biwgc2F2aW5n
-IGl0IHRvOgo+IAo+ICAgL2V0Yy9pcHRhYmxlcy5kb3duLnJ1bGVzCj4gCj4gYW5kIGFwcGx5aW5n
-IGluIC9ldGMvbmV0d29yay9pbnRlcmZhY2VzIHZpYToKPiAKPiBwb3N0LWRvd24gaXB0YWJsZXMt
-cmVzdG9yZSA8IC9ldGMvaXB0YWJsZXMuZG93bi5ydWxlcwo+IAo+IFdoYXQgc2hvdWxkIHRoaXMg
-c2V0IG9mIHJ1bGVzIGxvb2sgbGlrZT8gVGhlIGV4YWN0IG9wcG9zaXRlCj4gb2YgL2V0Yy9pcHRh
-Ymxlcy51cC5ydWxlcyA/IE9yIGp1c3QgYSBzaW1wbGUgZmx1c2ggY29tbWFuZD8KPiBPciBzb21l
-dGhpbmcgZWxzZSBhbHRvZ2V0aGVyPwoKWW91IGNhbiBkbyBhIHNpbXBsZSBmbHVzaCwgYnV0IHRo
-aXMgaXMgbm90IHJlcXVpcmVkLCBzaW5jZSBhbGwgcnVsZXMKd2lsbCBiZSBvdmVyd3JpdHRlbiBi
-eSBpcHRhYmxlcy1yZXN0b3JlIHdoZW4geW91IGJyaW5nIG5ldHdvcmsgaW50ZXJmYWNlCnVwIG5l
-eHQgdGltZS4KCi0tIArwz8vP1MnMxc7LzyDrz9PUycsgPGNhc3BlckBtZXRlb3IuZHAudWE+CgoK
+On Mon, 27 Aug 2007, Sebastien VECTEN wrote:
+
+> Thank you for your response, the good solution is the helper module to 
+> change the defaut port.
+>
+> -m helper --helper sip-5068 in a rule.
+
+That is absolutely false: that is a *match*, which cannot do whatsoever 
+with the ports of the helpers.
+
+The SIP helper supports to specify the ports to listen to:
+
+# modprobe ip_conntrack_sip ports=5060[,up to 8 ports]
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+           H-1525 Budapest 114, POB. 49, Hungary
+
