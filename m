@@ -1,9 +1,9 @@
-From: "TinyApps.Org" <miles@tinyapps.org>
-Subject: Question about /etc/iptables.down.rules
-Date: Sun, 26 Aug 2007 15:51:44 -1000
-Message-ID: <1224801D-F4F1-40D1-8C8C-94C14C3C38EC@tinyapps.org>
-Mime-Version: 1.0 (Apple Message framework v752.3)
-Content-Transfer-Encoding: 7bit
+From: "Sebastien VECTEN" <svecten@aressi.fr>
+Subject: Re: Change ip_conntrack_sip default port
+Date: Mon, 27 Aug 2007 06:51:42 +0000
+Message-ID: <DIIE.00000DE000044CE3@aressi.fr>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
@@ -15,40 +15,23 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@lists.netfilter.org
 
-I have a very simple set of iptables rules:
+Hi,
+=20
+Thank you for your response, the good solution is the helper module to =
+change the defaut port.
+=20
+-m helper --helper sip-5068 in a rule.
+=20
+Thanks.
+=20
+VECTEN S=E9bastien
 
-# iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-# iptables -A INPUT -p tcp -i eth0 --dport ssh -j ACCEPT
-# iptables -I INPUT -i lo -j ACCEPT
-# iptables -A INPUT -j DROP
+To: netfilter@lists.netfilter.org
+Cc: netfilter-failover@lists.netfilter.org
 
-which has been saved to /etc/iptables.up.rules .
 
-I have also modified /etc/network/interfaces to use the ruleset:
-
-            iface eth0 inet static
-                    address x.x.x.x
-                    [.. interface configuration ..]
-                    pre-up iptables-restore < /etc/iptables.up.rules
-
-I understand that it is best to setup a set of rules to be applied
-when the network interface is down, saving it to:
-
-  /etc/iptables.down.rules
-
-and applying in /etc/network/interfaces via:
-
-post-down iptables-restore < /etc/iptables.down.rules
-
-What should this set of rules look like? The exact opposite
-of /etc/iptables.up.rules ? Or just a simple flush command?
-Or something else altogether?
-
-Sincerely,
-
-Miles
 
 
