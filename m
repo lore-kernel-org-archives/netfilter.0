@@ -1,10 +1,15 @@
-From: "quesera2" <quesera2@earthlink.net>
-Subject: Implement single firewall login for access to all ports on LAN?
-Date: Mon, 27 Aug 2007 09:43:12 -0400
-Message-ID: <00db01c7e8b0$3750f890$1ad8d346@rtt42p>
+From: Sami Farin <safari-netfilter@safari.iki.fi>
+Subject: Re: IPSET iptree problem
+Date: Mon, 27 Aug 2007 23:52:50 +0300
+Message-ID: <20070827205249.o36eoudvhz3sqymk@m.safari.iki.fi>
+References: <E1IPe95-0001aO-B9@welnowiec.net>
+	<Pine.LNX.4.64.0708271837440.6383@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="r6ntgpq7ce3fkrxd"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0708271837440.6383@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,35 +20,52 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-The normal apologies for the noobie-type question...
 
-We have IPCop nicely segregating our orange (DMZ) and green (blocked) LANs.
-As time has gone on, I've realized that I'd like many more of our services
-to be on the orange or red networks so they can be easily reached by
-customers/consultants who may not have fixed IPs. Many of our users are not
-SSH savvy and might not want us installing a tunneling client on their
-systems.
+--r6ntgpq7ce3fkrxd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Most of these services that I want to expose have some form of
-authentication but some of that is not terribly robust (mediawiki, mysql,
-bugzilla). Some are targets for DoS (SQL Server) or other attacks. 
+On Mon, Aug 27, 2007 at 18:40:36 +0200, Jozsef Kadlecsik wrote:
+> On Mon, 27 Aug 2007, nofast@welnowiec.net wrote:
+>
+>> I preformed two tests, one shortly after boot and another few minutes=20
+>> later.
+>> The results are different.
+>> I hope this will help you.
+>
+> It did helped: please give a try to the new version as
+> http://ipset.netfilter.org/ipset-2.6.23-rc3.patch2.
 
-My thoughts are to have a strong challenge/response login from a client to
-the firewall. This could be done via https to a non-standard port on the
-firewall. If this login succeeded, all (or configurable) ports would be
-available from the client to services inside the firewall as long as the
-'session' was active. The session would be based on the client's IP and
-would have an inactivity time-out. The original https login would not need
-to stay active.
+Your mask_to_bits function results into infinite loop if called
+with parameter 1, for example.
 
-Valid user logins could be either via statically configured tables on the
-firewall or via LDAP, etc.
+If you care only about first set bit, i.e. you do not bother checking
+is netmask valid, you can use:
 
-I think I remember a scheme like this when I was using the Wingate proxy
-server. Is this available using iptables?
+static inline unsigned int mask_to_bits(ip_set_ip_t mask)
+{
+  if (mask =3D=3D 0) return 0;
+  return 33 - ffs(mask);
+}
+
+--=20
+Do what you love because life is too short for anything else.
 
 
+--r6ntgpq7ce3fkrxd
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.3 (GNU/Linux)
+
+iD8DBQFG0zmhMCYCLUwuV18RAlcTAJ9MyfwigXKpM+dvX1bc6D45BmXBYACfbBSY
+bPA6nPp4P0voY+8N3J7aVPw=
+=vX6s
+-----END PGP SIGNATURE-----
+
+--r6ntgpq7ce3fkrxd--
 
