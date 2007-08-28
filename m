@@ -1,15 +1,11 @@
-From: Sami Farin <safari-netfilter@safari.iki.fi>
-Subject: Re: IPSET iptree problem
-Date: Mon, 27 Aug 2007 23:52:50 +0300
-Message-ID: <20070827205249.o36eoudvhz3sqymk@m.safari.iki.fi>
-References: <E1IPe95-0001aO-B9@welnowiec.net>
-	<Pine.LNX.4.64.0708271837440.6383@blackhole.kfki.hu>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: [ANNOUNCE] ipset 2.3.0 released
+Date: Tue, 28 Aug 2007 14:19:02 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0708281417590.3018@fbirervta.pbzchgretzou.qr>
+References: <Pine.LNX.4.64.0708281258370.6983@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="r6ntgpq7ce3fkrxd"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0708271837440.6383@blackhole.kfki.hu>
+In-Reply-To: <Pine.LNX.4.64.0708281258370.6983@blackhole.kfki.hu>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,52 +16,40 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
 
---r6ntgpq7ce3fkrxd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Aug 27, 2007 at 18:40:36 +0200, Jozsef Kadlecsik wrote:
-> On Mon, 27 Aug 2007, nofast@welnowiec.net wrote:
+On Aug 28 2007 13:05, Jozsef Kadlecsik wrote:
 >
->> I preformed two tests, one shortly after boot and another few minutes=20
->> later.
->> The results are different.
->> I hope this will help you.
+> I'm happy to announce the new ipset release. The main changes are
 >
-> It did helped: please give a try to the new version as
-> http://ipset.netfilter.org/ipset-2.6.23-rc3.patch2.
+> - jiffies rollover bug in iptree type fixed (reported by Lukasz Nierycho
+>   and others)
+> - endiannes bug in iptree type fixed (spotted by Jan Engelhardt)
 
-Your mask_to_bits function results into infinite loop if called
-with parameter 1, for example.
+Was it really a bug? We were not sure about what order (hostorder,
+networkorder) the tree is.
 
-If you care only about first set bit, i.e. you do not bother checking
-is netmask valid, you can use:
+> - iptreemap type added (submitted by Sven Wegener)
+> - 2.6.22/23 compatibility fixes (Jeremy Jacque)
+> - typo fixes in ipset (Neville D)
+> - separator changed to ':' from '%' (old one still supported) in ipset
+>
+> The manpage was updated as well.
+>
+> Please upgrade if you use the iptree map type.
+>
+> http://ipset.netfilter.org/
 
-static inline unsigned int mask_to_bits(ip_set_ip_t mask)
-{
-  if (mask =3D=3D 0) return 0;
-  return 33 - ffs(mask);
-}
-
---=20
-Do what you love because life is too short for anything else.
+I'm kinda missing the kernel files. There is iptables, ipset-2.3.0, and
+patch-o-matic, the latter of which contains no ipset kernel code even after
+runme --download.
 
 
---r6ntgpq7ce3fkrxd
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.3 (GNU/Linux)
-
-iD8DBQFG0zmhMCYCLUwuV18RAlcTAJ9MyfwigXKpM+dvX1bc6D45BmXBYACfbBSY
-bPA6nPp4P0voY+8N3J7aVPw=
-=vX6s
------END PGP SIGNATURE-----
-
---r6ntgpq7ce3fkrxd--
+	Jan
+-- 
 
