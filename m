@@ -1,12 +1,11 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Netfilter_queue test program question
-Date: Wed, 29 Aug 2007 11:42:59 +0200
-Message-ID: <46D53FA3.9030805@freemail.hu>
-References: <6043bfd00708290113j38b0f153k7acd38d09ab9c16e@mail.gmail.com>
+From: David Leangen <netfilter@leangen.net>
+Subject: Debugging network problems
+Date: Wed, 29 Aug 2007 19:33:42 +0900
+Message-ID: <1188383622.29330.9.camel@sonoda.bioscene.co.jp>
+Reply-To: netfilter@leangen.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <6043bfd00708290113j38b0f153k7acd38d09ab9c16e@mail.gmail.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,40 +16,66 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Andy Cristina <acristin@gmail.com>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-Andy Cristina =EDrta:
-> I've been attempting to play with netfilter_queue to see how effective
-> a certain similarity hashing technique would work for identifying
-> parts of documents being sent out over the network, but I haven't had
-> much progress even getting the test program to work.
-Just a few questions:
 
-- Why do you want to do such things?
-- How would you come over on the compressed files, MIME encodings?
-- Are you attempting to stop some information thiefing?
-> I can compile and link nfq_test.c fine, using both the old versions of
-> libnfnetfiler and libnetfilter_queue available from ubuntu's apt, and
-> by using the newest released versions compiled from source.
->
-> However, in any case when I run the compiled nfq_test, the program
-> seems to do nothing after setting the packet copy mode.  So it seems
-> to me as if it is perpetually waiting for a packet to be sent over the
-> netlink, but one never arrives, no matter how much network traffic I
-> have.
->
-> Am I missing some vital piece of setup?  When I run nfq_test, there
-> are two netfilter modules loaded.  Should there be more?  Do they need
-> to be configured somehow?  Is this the expected behavior?
->
-> I have tested this both on my ubuntu install and on a friend's debian,
-> both machines exhibit the same behavior.  Any help is certainly
-> appreciated.
->
->  =20
-Swifty
+Hello!
+
+My network was just changed from a vanilla ADSL connection to direct
+ftth. There is now a network connector with a  100MB/s entry, which gets
+routed to a Buffalo Broad station.
+
+I'm having some troubles and my debugging so far has not been
+successful, so I'm hoping some more experienced hands can give me some
+advice.
+
+
+First of all, my previous setup was working exactly as I wanted.
+Essentially, when making the switch to the new network, on my
+firewall/proxy machine, I just did:
+
+  adsl-stop (to stop the pppoe daemon)
+  ifconfig eth0 new.ip.address up
+  route add default gw ip.address.of.broad.station
+
+Then in my iptables, I changed:
+
+  -A POSTROUTING -o ppp0 -j MASQUERADE
+
+to 
+
+  -A POSTROUTING -o eth0 -j MASQUERADE
+
+
+Here's what's happening now...
+
+Generally, I can connect to the outside world, and the outside world can
+connect to me. By this, I mean that each of the local machines behind my
+proxy can connect.
+
+However, the connections back to my own URL are sporadic. In other
+words, sometimes I can connect, sometimes I can't. Assuming my domain is
+my.company.com, when I try to connect to my.company.com from within my
+network, sometimes I can, sometimes I can't, but I have not at all
+figured out a pattern.
+
+When this happens, domain names are being resolved, but I get
+"Connection timed out" errors.
+
+I guess I first need to check to see if I can't get out, or I can't get
+back in.
+
+
+Any advice as to how/where I can look for the cause would be greatly
+appreciated! I suspect it may have something to do with NAT, but I'm not
+experienced at debugging this stuff.
+
+
+Thanks so much!!!
+
+David
+
 
 
 
