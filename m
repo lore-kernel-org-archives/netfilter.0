@@ -1,13 +1,14 @@
-From: David Lang <david.lang@digitalinsight.com>
-Subject: Re: netfilter optimization.
-Date: Mon, 27 Aug 2007 09:48:34 -0700 (PDT)
-Message-ID: <Pine.LNX.4.63.0708270948160.4742@qynat.qvtvafvgr.pbz>
-References: <20070825232124.GA26316@internet24.de>
-	<57F9959B46E0FA4D8BA88AEDFBE5829024F4BC@pxtbenexd01.pxt.primeexalia.com>
-	<20070826105855.GB15249@internet24.de>
+From: "Andy Cristina" <acristin@gmail.com>
+Subject: Netfilter_queue test program question
+Date: Wed, 29 Aug 2007 03:13:42 -0500
+Message-ID: <6043bfd00708290113j38b0f153k7acd38d09ab9c16e@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070826105855.GB15249@internet24.de>
+DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	b=ORvcUQ/HgYq/VuSbMpFmiOpldDy4FrRIqT7r0lmslQN8oNrcM4b6xUhgh9FdcxVRqJXT8aWN7RG/qBReivLINY5zOsOjeCLd26uvANehfm5H/kaJbfLiB6fJtPWx+wSINb33U9pUvyV+gCA9OP4g6tTizvKMn/YiyoRj3Hv4Nz4=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,31 +19,29 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Thomas Jacob <jacob@internet24.de>
-Cc: netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On Sun, 26 Aug 2007, Thomas Jacob wrote:
+I've been attempting to play with netfilter_queue to see how effective
+a certain similarity hashing technique would work for identifying
+parts of documents being sent out over the network, but I haven't had
+much progress even getting the test program to work.
 
->> net.netfilter.nf_conntrack_max=1048576
->> net.netfilter.nf_conntrack_buckets=1048576
->>
->> But it only does for nf_conntrack_max.  I did overwrite it by going to
->> /sys/modules/nf_conntrack/parameters/hashsize and it did take it on the
->> second try.  The first time it complained about file descriptors.  The
->> second time it seemed to set it, which I verified by looking at
->> /proc/sys/net/netfilter/nf_conntrack_buckets.
->>
->> Is there a way to set this on startup?
->
-> Oh yes sorry,  you can't set it in sysctl.conf then, since the
-> module must probably already be loaded if you can use that. Try
-> the module load parameters instead (options ip_conntrack hashsize=XXXX
-> in /etc/modprobe.d/somefile worked in older kernels).
+I can compile and link nfq_test.c fine, using both the old versions of
+libnfnetfiler and libnetfilter_queue available from ubuntu's apt, and
+by using the newest released versions compiled from source.
 
-how can you do this if you don't use modules?
+However, in any case when I run the compiled nfq_test, the program
+seems to do nothing after setting the packet copy mode.  So it seems
+to me as if it is perpetually waiting for a packet to be sent over the
+netlink, but one never arrives, no matter how much network traffic I
+have.
 
-David Lang
+Am I missing some vital piece of setup?  When I run nfq_test, there
+are two netfilter modules loaded.  Should there be more?  Do they need
+to be configured somehow?  Is this the expected behavior?
 
+I have tested this both on my ubuntu install and on a friend's debian,
+both machines exhibit the same behavior.  Any help is certainly
+appreciated.
 
