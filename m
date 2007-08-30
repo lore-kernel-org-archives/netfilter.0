@@ -1,10 +1,10 @@
-From: KARIM SATTAR <karimas@kfupm.edu.sa>
-Subject: Re: iptables: Unknown error 4294967295
-Date: Thu, 30 Aug 2007 19:49:16 +0300 (AST)
-Message-ID: <5686909.1188492556761.JavaMail.karimas@kfupm.edu.sa>
-Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: iptables: Unknown error 4294967295
+Date: Thu, 30 Aug 2007 18:59:11 +0200
+Message-ID: <000301c7eb27$16bd11d0$0101000a@tanjian>
+References: <5686909.1188492556761.JavaMail.karimas@kfupm.edu.sa>
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <5686909.1188492556761.JavaMail.karimas@kfupm.edu.sa>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,40 +15,30 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-SG93IGNhbiBJIHJlY29tcGlsZSB0aGUga2VybmVsIGFuZCBub3QgaXB0YWJsZXMuDQoNCktBUklN
-IFNBVFRBUiBlc2NyZXZldToNCj4gSGkNCj4NCj4gSSBhbSBnZXR0aW5nIHRoZSBlcnJvciBhcyBt
-ZW50aW9uZWQgYmVsb3c7IHRoZSBwcm9ibGVtIGFyb3NlIHdoZW4gSSAgDQo+IGhhdmUgY2hhbmdl
-ZCB0aGUgZGF0YSBzdHJ1Y3R1cmUgb2YgdGhlIGlwdF9lbnRyeSB3aGljaCBzdG9yZXMgdGhlDQog
-cnVsZXMgDQo+ICBhbmQgb3RoZXIgaW5mb3JtYXRpb24uIEkgaGF2ZSBjaGFuZ2VkIGluIHRoZSBh
-bHNvIG90aGVyIGFwcHJvcHJpYXRlIA0KPiBpbml0aWFsaXphdGlvbiBvZiB0aGUgc3RydWN0dXJl
-IGluIGlwX25hdF9ydWxlIGFuZCBvdGhlciBmaWxlcy4NCj4gSSBoYXZlIGp1c3QgYWRkZWQgb25l
-IHZhcmlhYmxlIG9mIHR5cGUgdW5zaWduZWQgaW50LiBDYW4gYW55IG9uZSBoYXZlDQogDQo+IGlk
-ZWEgcmVnYXJkaW5nIHRoaXMgcHJvYmxlbS4NCj4NCj4gQmVmb3JlIGFkZGluZyB0aGlzIHZhcmlh
-YmxlLCBpcHRhYmxlcyB3YXMgd29ya2luZyBmaW5lLg0KPiBDYW4gYW55IG9uZSBoZWxwIG1lIGlu
-IHRoaXMgcHJvYmxlbS4NCj4NCj4gW3Jvb3RAbG9jYWxob3N0IH5dIyBzZXJ2aWNlIGlwdGFibGVz
-IHN0YXJ0DQo+IEZsdXNoaW5nIGZpcmV3YWxsIHJ1bGVzOiBpcHRhYmxlczogVW5rbm93biBlcnJv
-ciA0Mjk0OTY3Mjk1DQo+IGlwdGFibGVzOiBVbmtub3duIGVycm9yIDQyOTQ5NjcyOTUNCj4gaXB0
-YWJsZXM6IFVua25vd24gZXJyb3IgNDI5NDk2NzI5NQ0KPiBpcHRhYmxlczogVW5rbm93biBlcnJv
-ciA0Mjk0OTY3Mjk1DQo+IGlwdGFibGVzOiBVbmtub3duIGVycm9yIDQyOTQ5NjcyOTUNCj4gaXB0
-YWJsZXM6IFVua25vd24gZXJyb3IgNDI5NDk2NzI5NQ0KPiBpcHRhYmxlczogVW5rbm93biBlcnJv
-ciA0Mjk0OTY3Mjk1DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgW0ZBSUxFRF0NCj4gU2V0dGluZyBjaGFpbnMgdG8gcG9saWN5IEFD
-Q0VQVDogcmF3IGlwdGFibGVzOiBVbmtub3duIGVycm9yDQogNDI5NDk2NzI5NQ0KPiBuYXQgaXB0
-YWJsZXM6IFVua25vd24gZXJyb3IgNDI5NDk2NzI5NQ0KPiBtYW5nbGUgaXB0YWJsZXM6IFVua25v
-d24gZXJyb3IgNDI5NDk2NzI5NQ0KPiBmaWx0ZXIgaXB0YWJsZXM6IFVua25vd24gZXJyb3IgNDI5
-NDk2NzI5NQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIFtGQUlMRURdDQo+IFVubG9hZGluZyBpcHRhYmxlcyBtb2R1bGVzOiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgWyAgT0sgIF0NCj4NCj4gQWxsIHRoZSBtb2R1bGVz
-IGhhdmUgYmVlbiBsb2FkZWQgYXMgcGVybWFuZW50IG1vZHVsZXMgcmF0aGVyIHRoYW4gYXMgDQo+
-IGxvYWRhYmxlIG1vZHVsZXMuDQo+DQo+ICAgDQoNCj4gICAgSSByZWFsbHkgZG9udCBrbm93IGlm
-IHRoYXQgd2lsbCBiZSB5b3VyIGNhc2UsIGJ1dCBpIGhhdmUNCj4gZXhwZXJpZW5jZWQgDQo+c2V2
-ZXJhbCAnVW5rbm93biBlcnJvciB4eHh4eHh4eHh4JyBhZnRlciByZWNvbXBpbGVkIGtlcm5lbCBh
-bmQgPk5PVCANCj5yZWNvbXBpbGVkIGlwdGFibGVzLg0KDQo+IC0tIA0KDQoNCj4JQXRlbmNpb3Nh
-bWVudGUgLyBTaW5jZXJpbHksDQo+CUxlb25hcmRvIFJvZHJpZ3Vlcw0KPglTb2x1dHRpIFRlY25v
-bG9naWENCj4JaHR0cDovL3d3dy5zb2x1dHRpLmNvbS5icg0KDQo+CU1pbmhhIGFybWFkaWxoYSBk
-ZSBTUEFNLCBOw4PGkk8gbWFuZGVtIGVtYWlsDQo+CWdlcnRydWRlc0Bzb2x1dHRpLmNvbS5icg0K
-PglNeSBTUEFNVFJBUCwgZG8gbm90IGVtYWlsIGl0DQoNCg==
+> How can I recompile the kernel and not iptables.
+
+Simple. They are separate packages (iptables is not the same as
+netfilter; it's part of the project). So it's possible to just compile
+the kernel but not iptables, which is only the userspace utility to
+create rules.
+
+If you haven't compiled iptables you can download it from
+ftp.netfilter.org.
+If you patched the kernel before compiling using patch-o-matic-ng, it's
+possible that iptables also had to be patched before compiling it so it
+may not be enough to just compile and install iptables.
+Also, keep in mind that you probably have an older version of iptables
+installed that comes with your distro and you should uninstall that
+version.
+
+
+Grts,
+Rob
+
+
 
