@@ -1,12 +1,10 @@
-From: Jorge Davila <davila@nicaraguaopensource.com>
-Subject: Re: Alternatives to window shaping?
-Date: Thu, 30 Aug 2007 14:56:35 -0600
-Message-ID: <web-81149085@bk1.webmaillogin.com>
-References: <46D69FD7.3000405@expertron.co.za>
+From: Fred Moyer <fred@redhotpenguin.com>
+Subject: Setting skb->len
+Date: Thu, 30 Aug 2007 15:12:54 -0700
+Message-ID: <46D740E6.8030705@redhotpenguin.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46D69FD7.3000405@expertron.co.za>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,76 +15,34 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Justin Schoeman <justin@expertron.co.za>, netfilter@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@lists.netfilter.org
 
-Justin:
+Hi netfilter list,
 
-TCP window scaling is an inherent behaviour of the tcp protocol and the=20
-parameter can be tunned.
+This is my first post to this list, so if this question is better 
+handled by a different list, or offtopic, please kindly inform me that 
+is the case.  My C is a bit rusty also, so please forgive me if I'm 
+asking something that is not clear.  In addition, this is my first 
+netfilter module :-)
 
-Because you didn't references the devices involved in the problematic link =
+In a netfilter module I am working on I alter the packet data such that 
+the length of the packet is reduced by an amount diff.  I then set 
+skb->len via the following code:
 
-is very hard give you an opinion about the cause of the problem.
+   skb->len -= diff;
 
-You mentioned the problem with the ingress shapping. Maybe is a problem wit=
-h=20
-different mtu crossing the frontier (e.g.: optical fiber to ethernet media)=
-=20
-or maybe is a problem in the traffic shapping itself (e.g.:bad=20
-configuration).
+This worked fine with gcc 2.96 but when cross-compiling this module for 
+OpenWrt with gcc 4.1.2 I get the following error:
 
-In any event, I think that is not a good option "hacks" the protocol=20
-inyecting packets to the tcp sessions.
+   error: assignment of read-only member 'len'
 
-Having a more information (like a traffic trace when the problem is=20
-happening) will give us more elements to answer your question.
+Is there a function I can use to set skb->len or do I need to poke 
+around the kernel code and modify this member to be read-write.  I 
+accept the fact that what I'm doing is probably a hack, but I would like 
+to get this module working first, then make it well coded second.
 
-Jorge D=E1vila.
+Thanks in advance for any advice,
 
-On Thu, 30 Aug 2007 12:45:43 +0200
-  Justin Schoeman <justin@expertron.co.za> wrote:
-> I have posted this before under another thread, but did not get many=20
->replies. So I thought I would post it under a more appropriate subject.
->=20
-> OK, so we have a link that has a fair bandwidth, and a high latency. This=
-=20
->means that TCP windows get nice and big.
->=20
-> Now I have a problem with ingress shaping, because the current=20
->implementation just drops packets.  This means that we have to wait for th=
-e=20
->sender to notice the packet drop (OK, or for the receiver to notice at out=
-=20
->of order inbound backet). But either of these can take quite a while,=20
->during which the sender is still sending data at a rate higher than what=20
->you want to throttle it to.
->=20
-> What I was considering was, instead of just dropping the packet, send out=
-=20
->an ACK packet (to the sender of the packet we are dropping), repeating the=
-=20
->last ack sequence, as recorded in the conntrack table.
->=20
-> This should be the second ack the sender receives, which should=20
->immediately start a 'slow start' procedure, and get the sender to back off.
->=20
-> This is still as wastefull as just dropping the packet, but should have a=
-=20
->more immediate effect.
->=20
-> The problem is, how will the sender and receiver respond? They may now=20
->receive a number of packets in completely unexpected order.
->=20
-> Is this practical? Will it work? Will it help?
->=20
-> Thanks!
-> Justin
->=20
->=20
-
-Jorge Isaac Davila Lopez
-Nicaragua Open Source
-+505 430 5462
-davila@nicaraguaopensource.com
+Fred
 
