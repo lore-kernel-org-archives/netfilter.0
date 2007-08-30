@@ -1,10 +1,14 @@
-From: Justin Schoeman <justin@expertron.co.za>
-Subject: Alternatives to window shaping?
-Date: Thu, 30 Aug 2007 12:45:43 +0200
-Message-ID: <46D69FD7.3000405@expertron.co.za>
+From: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?=
+	<leolistas@solutti.com.br>
+Subject: Re: iptables: Unknown error 4294967295
+Date: Thu, 30 Aug 2007 07:58:27 -0300
+Message-ID: <46D6A2D3.7050800@solutti.com.br>
+References: <5418410.1188466946209.JavaMail.karimas@kfupm.edu.sa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+	micalg=sha1; boundary="------------ms070407020702030704030109"
 Return-path: <netfilter-bounces@lists.netfilter.org>
+In-Reply-To: <5418410.1188466946209.JavaMail.karimas@kfupm.edu.sa>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -15,37 +19,185 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@lists.netfilter.org
+To: KARIM SATTAR <karimas@kfupm.edu.sa>
+Cc: netfilter@lists.netfilter.org
 
-I have posted this before under another thread, but did not get many 
-replies. So I thought I would post it under a more appropriate subject.
+This is a cryptographically signed message in MIME format.
 
-OK, so we have a link that has a fair bandwidth, and a high latency. 
-This means that TCP windows get nice and big.
+--------------ms070407020702030704030109
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Now I have a problem with ingress shaping, because the current 
-implementation just drops packets.  This means that we have to wait for 
-the sender to notice the packet drop (OK, or for the receiver to notice 
-at out of order inbound backet). But either of these can take quite a 
-while, during which the sender is still sending data at a rate higher 
-than what you want to throttle it to.
 
-What I was considering was, instead of just dropping the packet, send 
-out an ACK packet (to the sender of the packet we are dropping), 
-repeating the last ack sequence, as recorded in the conntrack table.
 
-This should be the second ack the sender receives, which should 
-immediately start a 'slow start' procedure, and get the sender to back off.
+KARIM SATTAR escreveu:
+> Hi
+>
+> I am getting the error as mentioned below; the problem arose when I =20
+> have changed the data structure of the ipt_entry which stores the rules=
+=20
+>  and other information. I have changed in the also other appropriate=20
+> initialization of the structure in ip_nat_rule and other files.
+> I have just added one variable of type unsigned int. Can any one have=20
+> idea regarding this problem.
+>
+> Before adding this variable, iptables was working fine.
+> Can any one help me in this problem.
+>
+> [root@localhost ~]# service iptables start
+> Flushing firewall rules: iptables: Unknown error 4294967295
+> iptables: Unknown error 4294967295
+> iptables: Unknown error 4294967295
+> iptables: Unknown error 4294967295
+> iptables: Unknown error 4294967295
+> iptables: Unknown error 4294967295
+> iptables: Unknown error 4294967295
+>                                                            [FAILED]
+> Setting chains to policy ACCEPT: raw iptables: Unknown error 4294967295=
 
-This is still as wastefull as just dropping the packet, but should have 
-a more immediate effect.
+> nat iptables: Unknown error 4294967295
+> mangle iptables: Unknown error 4294967295
+> filter iptables: Unknown error 4294967295
+>                                                            [FAILED]
+> Unloading iptables modules:                                [  OK  ]
+>
+> All the modules have been loaded as permanent modules rather than as=20
+> loadable modules.
+>
+>  =20
 
-The problem is, how will the sender and receiver respond? They may now 
-receive a number of packets in completely unexpected order.
+    I really dont know if that will be your case, but i have experienced =
 
-Is this practical? Will it work? Will it help?
+several 'Unknown error xxxxxxxxxx' after recompiled kernel and NOT=20
+recompiled iptables.
 
-Thanks!
-Justin
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3=83O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
+
+
+--------------ms070407020702030704030109
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRlzCC
+BN0wggPFoAMCAQICEHGS++YZX6xNEoV0cTSiGKcwDQYJKoZIhvcNAQEFBQAwezELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgMEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBwwHU2FsZm9yZDEa
+MBgGA1UECgwRQ29tb2RvIENBIExpbWl0ZWQxITAfBgNVBAMMGEFBQSBDZXJ0aWZpY2F0ZSBT
+ZXJ2aWNlczAeFw0wNDAxMDEwMDAwMDBaFw0yODEyMzEyMzU5NTlaMIGuMQswCQYDVQQGEwJV
+UzELMAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUg
+VVNFUlRSVVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2
+MDQGA1UEAxMtVVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWls
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5
+ShpHornMSMxqmNVNNRm5pELlzkniii8efNIxB8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqk
+kqgX8pgV8pPMyaQylbsMTzC9mKALi+VuG6JG+ni8om+rWV6lL8/K2m2qL+usobNqqrcuZzWL
+eeEeaYji5kbNoKXqvgvOdjp6Dpvq/NonWz1zHyLmSGHGTPNpsaguG7bUMSAsvIKKjqQOpdeJ
+Q/wWWq8dcdcRWdq6hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7NlyP0e03RiqhjKaJMeoYV+9Udl
+y/hNVyh00jT/MLbu9mIwFIws6wIDAQABo4IBJzCCASMwHwYDVR0jBBgwFoAUoBEKIz6W8Qfs
+4q8p74Klf9AwpLQwHQYDVR0OBBYEFImCZ33EnSZwAEu0UEh83j2uBG59MA4GA1UdDwEB/wQE
+AwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAR
+BgNVHSAECjAIMAYGBFUdIAAwewYDVR0fBHQwcjA4oDagNIYyaHR0cDovL2NybC5jb21vZG9j
+YS5jb20vQUFBQ2VydGlmaWNhdGVTZXJ2aWNlcy5jcmwwNqA0oDKGMGh0dHA6Ly9jcmwuY29t
+b2RvLm5ldC9BQUFDZXJ0aWZpY2F0ZVNlcnZpY2VzLmNybDARBglghkgBhvhCAQEEBAMCAQYw
+DQYJKoZIhvcNAQEFBQADggEBAJ2Vyzy4fqUJxB6/C8LHdo45PJTGEKpPDMngq4RdiVTgZTvz
+bRx8NywlVF+WIfw3hJGdFdwUT4HPVB1rbEVgxy35l1FM+WbKPKCCjKbI8OLp1Er57D9Wyd12
+jMOCAU9sAPMeGmF0BEcDqcZAV5G8ZSLFJ2dPV9tkWtmNH7qGL/QGrpxp7en0zykX2OBKnxog
+L5dMUbtGB8SKN04g4wkxaMeexIud6H4RvDJoEJYRmETYKlFgTYjrdDrfQwYyyDlWjDoRUtNB
+pEMD9O3vMyfbOeAUTibJ2PU54om4k123KSZB6rObroP8d3XK6Mq1/uJlSmM+RMTQw16Hc6mY
+HK9/FX8wggZXMIIFP6ADAgECAhEAtQOW9QEF+4D7358uHbrqtDANBgkqhkiG9w0BAQUFADCB
+rjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEe
+MBwGA1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVz
+ZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0
+aW9uIGFuZCBFbWFpbDAeFw0wNzA3MjUwMDAwMDBaFw0wODA3MjQyMzU5NTlaMIHwMTUwMwYD
+VQQLEyxDb21vZG8gVHJ1c3QgTmV0d29yayAtIFBFUlNPTkEgTk9UIFZBTElEQVRFRDFGMEQG
+A1UECxM9VGVybXMgYW5kIENvbmRpdGlvbnMgb2YgdXNlOiBodHRwOi8vd3d3LmNvbW9kby5u
+ZXQvcmVwb3NpdG9yeTEfMB0GA1UECxMWKGMpMjAwMyBDb21vZG8gTGltaXRlZDElMCMGA1UE
+AxMcTGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaGFlczEnMCUGCSqGSIb3DQEJARYYbGVvbGlz
+dGFzQHNvbHV0dGkuY29tLmJyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvmPE
+RsBVfxgAuuEeQFqd9PufbFYFkHgS1t+OjeXRxuEMM3J2powPOrd+LQl9n6ufyxT8BUWDlY5m
+WbOJLdYeBkBpyZuGbKXdiwISOgv7gmf5P2t1dxXnZ4iv878BOCE7oxnky++E6U913Htp2MQR
+Jtimsnyj6en/MltAuzV/sHaL/9ho2LMPilUMVZqOv7h3IdbyMA2VwRV+GoPulUEC+Ft9vVN7
+wkOwNVx9fvPeQz1xqisMMghSQ4vIpRLPI2CbPdWf35FV4cpjQOzxdPIgvv6cu1v5gHj07JRK
+aPMz5Iko9XQnecXdN32EYaJPstHCZYqi80WbkxqBAx+O0/cG7wIDAQABo4ICKjCCAiYwHwYD
+VR0jBBgwFoAUiYJnfcSdJnAAS7RQSHzePa4Ebn0wHQYDVR0OBBYEFG+PJOF4e+6ExlTxx36j
+W7cVS+ULMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZMBcGCCsGAQUF
+BwMEBgsrBgEEAbIxAQMFAjARBglghkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7BgwrBgEE
+AbIxAQIBAQEwKzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMw
+gaUGA1UdHwSBnTCBmjBMoEqgSIZGaHR0cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJG
+aXJzdC1DbGllbnRBdXRoZW50aWNhdGlvbmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2Ny
+bC5jb21vZG8ubmV0L1VUTi1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFp
+bC5jcmwwfAYIKwYBBQUHAQEEcDBuMDYGCCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9VVE5BQUFDbGllbnRDQS5jcnQwNAYIKwYBBQUHMAKGKGh0dHA6Ly9jcnQuY29tb2Rv
+Lm5ldC9VVE5BQUFDbGllbnRDQS5jcnQwIwYDVR0RBBwwGoEYbGVvbGlzdGFzQHNvbHV0dGku
+Y29tLmJyMA0GCSqGSIb3DQEBBQUAA4IBAQA3/bG1wT5OJ+cmq5RKB7LV/nFn0cmJ6EfSzs+d
+gleCZyn8QyL79F+0E9NjzR6mrcbEcz/uPYBLNJRYa7IjRqi25BSHC+gKRRy3PDagnWDlSp9U
+pnQ2yiOzaXiEk2NlC0K7Dpglw9FTijsoMoB4WbXfc4h/BLehVZ11Pd3zBwuYgv/cW1poF3Vu
+Yca7eBHSegHPZrwetxDkGLRTOHmrXuUJwrPJm7bE5OtFWddU9RBXfOR+NK68q5Ekb1Zc+9+A
+WYOuXKevHMsDAOZcE2iY//MSoimBJ2VhQ1h9dk/SrVI43TTmvKTBe7TOk/+uBIInrurVYLEr
+ZeYiQoYr5cSLCHaDMIIGVzCCBT+gAwIBAgIRALUDlvUBBfuA+9+fLh266rQwDQYJKoZIhvcN
+AQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtl
+IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDov
+L3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDcwNzI1MDAwMDAwWhcNMDgwNzI0MjM1OTU5WjCB
+8DE1MDMGA1UECxMsQ29tb2RvIFRydXN0IE5ldHdvcmsgLSBQRVJTT05BIE5PVCBWQUxJREFU
+RUQxRjBEBgNVBAsTPVRlcm1zIGFuZCBDb25kaXRpb25zIG9mIHVzZTogaHR0cDovL3d3dy5j
+b21vZG8ubmV0L3JlcG9zaXRvcnkxHzAdBgNVBAsTFihjKTIwMDMgQ29tb2RvIExpbWl0ZWQx
+JTAjBgNVBAMTHExlb25hcmRvIFJvZHJpZ3VlcyBNYWdhbGhhZXMxJzAlBgkqhkiG9w0BCQEW
+GGxlb2xpc3Rhc0Bzb2x1dHRpLmNvbS5icjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAL5jxEbAVX8YALrhHkBanfT7n2xWBZB4Etbfjo3l0cbhDDNydqaMDzq3fi0JfZ+rn8sU
+/AVFg5WOZlmziS3WHgZAacmbhmyl3YsCEjoL+4Jn+T9rdXcV52eIr/O/ATghO6MZ5MvvhOlP
+ddx7adjEESbYprJ8o+np/zJbQLs1f7B2i//YaNizD4pVDFWajr+4dyHW8jANlcEVfhqD7pVB
+Avhbfb1Te8JDsDVcfX7z3kM9caorDDIIUkOLyKUSzyNgmz3Vn9+RVeHKY0Ds8XTyIL7+nLtb
++YB49OyUSmjzM+SJKPV0J3nF3Td9hGGiT7LRwmWKovNFm5MagQMfjtP3Bu8CAwEAAaOCAiow
+ggImMB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59MB0GA1UdDgQWBBRvjyTheHvu
+hMZU8cd+o1u3FUvlCzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAgBgNVHSUEGTAX
+BggrBgEFBQcDBAYLKwYBBAGyMQEDBQIwEQYJYIZIAYb4QgEBBAQDAgUgMEYGA1UdIAQ/MD0w
+OwYMKwYBBAGyMQECAQEBMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9kby5u
+ZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL1VU
+Ti1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwSqBIoEaGRGh0
+dHA6Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0aW9u
+YW5kRW1haWwuY3JsMHwGCCsGAQUFBwEBBHAwbjA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5j
+b21vZG9jYS5jb20vVVROQUFBQ2xpZW50Q0EuY3J0MDQGCCsGAQUFBzAChihodHRwOi8vY3J0
+LmNvbW9kby5uZXQvVVROQUFBQ2xpZW50Q0EuY3J0MCMGA1UdEQQcMBqBGGxlb2xpc3Rhc0Bz
+b2x1dHRpLmNvbS5icjANBgkqhkiG9w0BAQUFAAOCAQEAN/2xtcE+TifnJquUSgey1f5xZ9HJ
+iehH0s7PnYJXgmcp/EMi+/RftBPTY80epq3GxHM/7j2ASzSUWGuyI0aotuQUhwvoCkUctzw2
+oJ1g5UqfVKZ0Nsojs2l4hJNjZQtCuw6YJcPRU4o7KDKAeFm133OIfwS3oVWddT3d8wcLmIL/
+3FtaaBd1bmHGu3gR0noBz2a8HrcQ5Bi0Uzh5q17lCcKzyZu2xOTrRVnXVPUQV3zkfjSuvKuR
+JG9WXPvfgFmDrlynrxzLAwDmXBNomP/zEqIpgSdlYUNYfXZP0q1SON005rykwXu0zpP/rgSC
+J67q1WCxK2XmIkKGK+XEiwh2gzGCBFMwggRPAgEBMIHEMIGuMQswCQYDVQQGEwJVUzELMAkG
+A1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRS
+VVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UE
+AxMtVVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsAhEAtQOW
+9QEF+4D7358uHbrqtDAJBgUrDgMCGgUAoIICYzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0wNzA4MzAxMDU4MjdaMCMGCSqGSIb3DQEJBDEWBBSdoYexjwlF
+leMjkvcElWEwbsvKSjBSBgkqhkiG9w0BCQ8xRTBDMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMC
+AgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCB1QYJKwYBBAGC
+NxAEMYHHMIHEMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQg
+TGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0
+dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVROLVVTRVJGaXJzdC1DbGllbnQg
+QXV0aGVudGljYXRpb24gYW5kIEVtYWlsAhEAtQOW9QEF+4D7358uHbrqtDCB1wYLKoZIhvcN
+AQkQAgsxgceggcQwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2Fs
+dCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMY
+aHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVu
+dCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEQC1A5b1AQX7gPvfny4duuq0MA0GCSqGSIb3
+DQEBAQUABIIBADys5t9tLHtmTCK6huD3OAyDXRGOy+GXUQ67vpAgF2Ba0w8q9F1Un42kepPP
+JuaiJ0r+ijatBPXAnG1hXsWETqxNFkfXP8pQn8qglJIwCGrvWdvBDaHfw/bMqatG0tAbW92i
+TYVZyo1qDQq8sJh1OKJgRfe41iVvj+ADo6R4ZPFSpleshystQO/kFcVIsN8KT1xAbZszwMKj
+4m+OobhyrAHfLyXc/lm4jZcC3OmMShm1eiSIOER+TsP7YY2OImac4pRzsMRL1wB5UWa3dOZt
+WeOKDw6QjdwcPoMpCFuuxZ0kSq0QQSSgfBXmApfKv6ukOyu4pbLwEtf7BWA4sopAtSUAAAAA
+AAA=
+--------------ms070407020702030704030109--
 
