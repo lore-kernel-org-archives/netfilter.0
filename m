@@ -1,15 +1,12 @@
-From: David Leangen <netfilter@leangen.net>
-Subject: Re: Debugging network problems
-Date: Mon, 03 Sep 2007 11:15:11 +0900
-Message-ID: <1188785711.25206.3.camel@sonoda.bioscene.co.jp>
-References: <1188383622.29330.9.camel@sonoda.bioscene.co.jp>
-	<46D7A814.40108@rtij.nl>
-	<1188546227.29330.34.camel@sonoda.bioscene.co.jp>
-Reply-To: netfilter@leangen.net
+From: Eric Leblond <eric@inl.fr>
+Subject: [Announce] Nulog 2.0-alpha1, log analysis tool for Netfilter
+Date: Mon, 03 Sep 2007 23:34:09 +0200
+Message-ID: <1188855249.4004.19.camel@ghlodit.inl.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-9mP0RWULVvbMifJXf8FZ"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <1188546227.29330.34.camel@sonoda.bioscene.co.jp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -20,162 +17,63 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
+Cc: progs@inl.fr
 
 
-Some more info:
+--=-9mP0RWULVvbMifJXf8FZ
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-One of my major issues is during svn operations. In the middle of an
-operation such svn up, the update starts ok, then at some point, I can
-no longer connect to my server.
+Hi,
 
-Each time, it stops at a different file, so that also doesn't tell me
-anything about packet sizes or whatever, since I am unable to see any
-pattern in all of this.
+INL Devel Team is proud to announce the availability of the first
+preview of Nulog2.
 
+Nulog2 is a complete rewrite of Nulog the historical filtering log
+analysis solution from INL. Nulog2 is an application build upon Twisted,
+an advanced Python framework.
 
-Any ideas would be greatly appreciated before I lose the little hair I
-have left.
+Nulog2 has all Nulog features:
+      * Index page with a summary of firewall activity:=20
+              * Packet dropped per host
+              * Packets dropped per UDP port
+              * Packets dropped per TCP port
+              * Packets dropped per user (NuFW only)
+      * Fully browsable tables
+      * Search capability
 
-:-)
+It also has exclusive new features:
+      * Graphing capabilities (display array, histogram or pie for a
+        dataset)
+      * SOAP request system for integration with other systems
+      * IPv6 support.
 
+More informations and download:
+Nulog2:	http://software.inl.fr/trac/trac.cgi/wiki/EdenWall/NuLog2
+INL: http://www.inl.fr/
+NuFW: http://www.nufw.org/
 
+Thanks to Romain Bignon for his work.
 
+Best regards,
+--=20
+Eric Leblond <eric@inl.fr>
+INL SARL
 
-On Fri, 2007-08-31 at 16:43 +0900, David Leangen wrote:
-> Thank you, Martijn,
-> 
-> My reply inline.
-> 
-> 
-> > > Generally, I can connect to the outside world, and the outside world can
-> > > connect to me. By this, I mean that each of the local machines behind my
-> > > proxy can connect.
-> > >
-> > > However, the connections back to my own URL are sporadic. In other
-> > > words, sometimes I can connect, sometimes I can't. Assuming my domain is
-> > > my.company.com, when I try to connect to my.company.com from within my
-> > > network, sometimes I can, sometimes I can't, but I have not at all
-> > > figured out a pattern.
-> > >
-> > > When this happens, domain names are being resolved, but I get
-> > > "Connection timed out" errors.
-> > >
-> 
-> > Sounds like an PMTUD issue. Do you allow all ESTABLISHED packets in, not 
-> > just tcp?
-> 
-> Yes, I'm letting all packets in:
-> 
->   -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> 
-> 
-> This is my iptables file (below).
-> 
-> Maybe somebody can spot the problem?
-> 
-> 
-> Cheers,
-> David
-> 
-> 
-> 
-> *mangle
-> :PREROUTING ACCEPT [0:0]
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :POSTROUTING ACCEPT [0:0]
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-> FIN,PSH,URG -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j
-> DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-> FIN,PSH,URG -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j
-> DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-> FIN,PSH,URG -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j
-> DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
-> FIN,PSH,URG -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j
-> DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
-> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-> COMMIT
-> 
-> *nat
-> :PREROUTING ACCEPT [0:0]
-> :POSTROUTING ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> -A PREROUTING -p tcp --dport 5433 -j DNAT --to 192.168.2.10:5432
-> -A PREROUTING -p udp --dport 5433 -j DNAT --to 192.168.2.10:5432
-> -A PREROUTING -p tcp --dport 5434 -j DNAT --to 192.168.2.11:5432
-> -A PREROUTING -p udp --dport 5434 -j DNAT --to 192.168.2.11:5432
-> -A POSTROUTING -d 192.168.2.10 -s 192.168.0.0/255.255.0.0 -p tcp -j SNAT
-> --to 192.168.11.100
-> -A PREROUTING -p tcp -s 202.238.89.88 --dport 50000:50100 -j DNAT --to
-> 192.168.2.5
-> -A POSTROUTING -o eth0 -j MASQUERADE
-> 
-> COMMIT
-> *filter
-> :INPUT DROP [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :BLACKLIST - [0:0]
-> :LOG_ACCEPT - [0:0]
-> :LOG_DROP - [0:0]
-> :icmp_packets - [0:0]
-> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 20 -j LOG_ACCEPT
-> -A INPUT -p tcp -m tcp --dport 21 -j LOG_ACCEPT
-> -A INPUT -p tcp -m tcp --dport 22 -j LOG_ACCEPT
-> -A INPUT -p tcp -m tcp --dport 25 -j LOG_ACCEPT
-> -A INPUT -p udp -m udp --dport 53 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 110 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 143 -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 443 -j LOG_ACCEPT
-> -A INPUT -p tcp -m tcp --dport 993 -j ACCEPT
-> -A INPUT -p udp -m udp -s 192.168.0.0/255.255.0.0 --dport 10080 -j
-> ACCEPT
-> # The following line is for FTP passive ports
-> -A INPUT -p tcp -m tcp --dport 55000:55500 -j LOG_ACCEPT
-> -A INPUT -s 127.0.0.1 -j ACCEPT
-> -A INPUT -p icmp -j icmp_packets
-> -A INPUT -j LOG_DROP
-> -A OUTPUT -p tcp -m tcp --dport 50000:50100 -j LOG_ACCEPT
-> -A OUTPUT -p udp -m udp --dport 700:710 -j LOG_ACCEPT
-> -A BLACKLIST -j LOG_DROP
-> -A LOG_ACCEPT -j LOG --log-prefix "[IPTABLES ACCEPT] : "
-> --log-tcp-options --log-ip-options
-> -A LOG_ACCEPT -j ACCEPT
-> -A LOG_DROP -j LOG --log-prefix "[IPTABLES DROP] : " --log-tcp-options
-> --log-ip-options
-> -A LOG_DROP -j DROP
-> -A icmp_packets -p icmp -m icmp --icmp-type 0 -j ACCEPT
-> -A icmp_packets -s 192.168.0.0/255.255.255.0 -p icmp -m icmp --icmp-type
-> 8 -j ACCEPT
-> -A icmp_packets -s 192.168.1.0/255.255.255.0 -p icmp -m icmp --icmp-type
-> 8 -j ACCEPT
-> -A icmp_packets -s 192.168.2.0/255.255.255.0 -p icmp -m icmp --icmp-type
-> 8 -j ACCEPT
-> -A icmp_packets -p icmp -m icmp --icmp-type 8 -j ACCEPT
-> -A icmp_packets -p icmp -m icmp --icmp-type 3 -j ACCEPT
-> -A icmp_packets -p icmp -m icmp --icmp-type 11 -j ACCEPT
-> COMMIT
-> 
-> 
-> 
+--=-9mP0RWULVvbMifJXf8FZ
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBG3H3RnxA7CdMWjzIRApXrAJ413j9h1e2ewFa0/Uc3IJN5Bag8tACdGJu6
+fXkePVapWNfzTO1G2cJGJXs=
+=1lOn
+-----END PGP SIGNATURE-----
+
+--=-9mP0RWULVvbMifJXf8FZ--
 
 
