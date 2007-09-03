@@ -1,13 +1,15 @@
-From: "Gary W. Smith" <gary@primeexalia.com>
-Subject: RE: Firewall Issues
-Date: Sun, 2 Sep 2007 09:05:34 -0700
-Message-ID: <57F9959B46E0FA4D8BA88AEDFBE5829024F4D0@pxtbenexd01.pxt.primeexalia.com>
-References: <F354ED761879468F86DCB19505DD6DB5@mikePC>
+From: David Leangen <netfilter@leangen.net>
+Subject: Re: Debugging network problems
+Date: Mon, 03 Sep 2007 11:15:11 +0900
+Message-ID: <1188785711.25206.3.camel@sonoda.bioscene.co.jp>
+References: <1188383622.29330.9.camel@sonoda.bioscene.co.jp>
+	<46D7A814.40108@rtij.nl>
+	<1188546227.29330.34.camel@sonoda.bioscene.co.jp>
+Reply-To: netfilter@leangen.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <F354ED761879468F86DCB19505DD6DB5@mikePC>
-Content-class: urn:content-classes:message
+In-Reply-To: <1188546227.29330.34.camel@sonoda.bioscene.co.jp>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,68 +21,161 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Mike <catchall@stengele.biz>, netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
 
-Mike,=20
 
-You may also need to put an entry on the output in the NAT table as
-well.  Here is what I have had to do in the past, to make things work.
-Please note that many people noted that this isn't necessary, and
-recommend using split DNS instead.  But for some of the small officers I
-have setup, split DNS really wasn't an option.
+Some more info:
 
-Here is a sample.
+One of my major issues is during svn operations. In the middle of an
+operation such svn up, the update starts ok, then at some point, I can
+no longer connect to my server.
 
--A PREROUTING -d 216.x.x.x -j DNAT --to-destination 10.94.17.2=20
--A POSTROUTING -s 10.94.17.2 -o eth0 -j SNAT --to-source 216.x.x.x=20
-# We had to add this to it so people on the local subnet would be able=20
-# to see the servers as if they are external. =20
--A POSTROUTING -s 10.94.17.0/255.255.255.0 -d 10.94.17.2 -o eth0 -j SNAT
---to-source 216.x.x.x=20
--A POSTROUTING -o eth0 -p ! ipv6-crypt -j SNAT --to-source 216.x.x.x
+Each time, it stops at a different file, so that also doesn't tell me
+anything about packet sizes or whatever, since I am unable to see any
+pattern in all of this.
 
-Now, in your case, the 192.168 if on a different 172.24 range, so it
-should have worked for you to begin with but you might need to do
-something like we've done above.
 
-HTH,=20
+Any ideas would be greatly appreciated before I lose the little hair I
+have left.
 
-Gary
+:-)
 
-> -----Original Message-----
-> From: netfilter-bounces@lists.netfilter.org [mailto:netfilter-
-> bounces@lists.netfilter.org] On Behalf Of Mike
-> Sent: Tuesday, August 21, 2007 5:05 AM
-> To: netfilter@lists.netfilter.org
-> Subject: Firewall Issues
->=20
-> Hi all,
-> I have an issue with my linux iptables firewall and cannot figure out
-> what
-> to do.
-> I will make this as short and sweet as I can.
-> My Network is setup as follows:
-> Static IP: 24.106.xxx.xx
-> Firewall IP ETH1:(Static points to this) 172.24.xxx.xx
-> All my servers are ETH0: 192.168.0.xx
-> I have 2 game servers, 1 mail server and a web server.
-> My problem is I cannot see my websites, or join game servers unless I
-> put
-> this firewall rule in: iptables -A PREROUTING -d 24.xxx.xxx.xx -i eth0
-> -j
-> DNAT --to-destination 192.xxx.x.35 (192.xxx.x.35 being my web server
-IP
-> Address)
-> With this rule I can from the inside of my network go to my website
-via
-> www.xxx.com but cannot join any of my game servers unless I chnage the
-> above
-> rule to the game server IP.
->=20
-> Can anyone help me on this?
->=20
-> Thanks in advance,
-> Mike
->=20
+
+
+
+On Fri, 2007-08-31 at 16:43 +0900, David Leangen wrote:
+> Thank you, Martijn,
+> 
+> My reply inline.
+> 
+> 
+> > > Generally, I can connect to the outside world, and the outside world can
+> > > connect to me. By this, I mean that each of the local machines behind my
+> > > proxy can connect.
+> > >
+> > > However, the connections back to my own URL are sporadic. In other
+> > > words, sometimes I can connect, sometimes I can't. Assuming my domain is
+> > > my.company.com, when I try to connect to my.company.com from within my
+> > > network, sometimes I can, sometimes I can't, but I have not at all
+> > > figured out a pattern.
+> > >
+> > > When this happens, domain names are being resolved, but I get
+> > > "Connection timed out" errors.
+> > >
+> 
+> > Sounds like an PMTUD issue. Do you allow all ESTABLISHED packets in, not 
+> > just tcp?
+> 
+> Yes, I'm letting all packets in:
+> 
+>   -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> 
+> 
+> This is my iptables file (below).
+> 
+> Maybe somebody can spot the problem?
+> 
+> 
+> Cheers,
+> David
+> 
+> 
+> 
+> *mangle
+> :PREROUTING ACCEPT [0:0]
+> :INPUT ACCEPT [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> :POSTROUTING ACCEPT [0:0]
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> FIN,PSH,URG -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j
+> DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> FIN,PSH,URG -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j
+> DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> FIN,PSH,URG -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j
+> DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG
+> FIN,PSH,URG -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j
+> DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+> -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+> COMMIT
+> 
+> *nat
+> :PREROUTING ACCEPT [0:0]
+> :POSTROUTING ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> -A PREROUTING -p tcp --dport 5433 -j DNAT --to 192.168.2.10:5432
+> -A PREROUTING -p udp --dport 5433 -j DNAT --to 192.168.2.10:5432
+> -A PREROUTING -p tcp --dport 5434 -j DNAT --to 192.168.2.11:5432
+> -A PREROUTING -p udp --dport 5434 -j DNAT --to 192.168.2.11:5432
+> -A POSTROUTING -d 192.168.2.10 -s 192.168.0.0/255.255.0.0 -p tcp -j SNAT
+> --to 192.168.11.100
+> -A PREROUTING -p tcp -s 202.238.89.88 --dport 50000:50100 -j DNAT --to
+> 192.168.2.5
+> -A POSTROUTING -o eth0 -j MASQUERADE
+> 
+> COMMIT
+> *filter
+> :INPUT DROP [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> :BLACKLIST - [0:0]
+> :LOG_ACCEPT - [0:0]
+> :LOG_DROP - [0:0]
+> :icmp_packets - [0:0]
+> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 20 -j LOG_ACCEPT
+> -A INPUT -p tcp -m tcp --dport 21 -j LOG_ACCEPT
+> -A INPUT -p tcp -m tcp --dport 22 -j LOG_ACCEPT
+> -A INPUT -p tcp -m tcp --dport 25 -j LOG_ACCEPT
+> -A INPUT -p udp -m udp --dport 53 -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 110 -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 143 -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 443 -j LOG_ACCEPT
+> -A INPUT -p tcp -m tcp --dport 993 -j ACCEPT
+> -A INPUT -p udp -m udp -s 192.168.0.0/255.255.0.0 --dport 10080 -j
+> ACCEPT
+> # The following line is for FTP passive ports
+> -A INPUT -p tcp -m tcp --dport 55000:55500 -j LOG_ACCEPT
+> -A INPUT -s 127.0.0.1 -j ACCEPT
+> -A INPUT -p icmp -j icmp_packets
+> -A INPUT -j LOG_DROP
+> -A OUTPUT -p tcp -m tcp --dport 50000:50100 -j LOG_ACCEPT
+> -A OUTPUT -p udp -m udp --dport 700:710 -j LOG_ACCEPT
+> -A BLACKLIST -j LOG_DROP
+> -A LOG_ACCEPT -j LOG --log-prefix "[IPTABLES ACCEPT] : "
+> --log-tcp-options --log-ip-options
+> -A LOG_ACCEPT -j ACCEPT
+> -A LOG_DROP -j LOG --log-prefix "[IPTABLES DROP] : " --log-tcp-options
+> --log-ip-options
+> -A LOG_DROP -j DROP
+> -A icmp_packets -p icmp -m icmp --icmp-type 0 -j ACCEPT
+> -A icmp_packets -s 192.168.0.0/255.255.255.0 -p icmp -m icmp --icmp-type
+> 8 -j ACCEPT
+> -A icmp_packets -s 192.168.1.0/255.255.255.0 -p icmp -m icmp --icmp-type
+> 8 -j ACCEPT
+> -A icmp_packets -s 192.168.2.0/255.255.255.0 -p icmp -m icmp --icmp-type
+> 8 -j ACCEPT
+> -A icmp_packets -p icmp -m icmp --icmp-type 8 -j ACCEPT
+> -A icmp_packets -p icmp -m icmp --icmp-type 3 -j ACCEPT
+> -A icmp_packets -p icmp -m icmp --icmp-type 11 -j ACCEPT
+> COMMIT
+> 
+> 
+> 
 
 
