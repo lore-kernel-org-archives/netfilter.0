@@ -1,12 +1,13 @@
-From: <stevesz@enternet.hu>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: ipt_MASQUERADE issue
-Date: Thu, 6 Sep 2007 17:58:55 +0200
-Message-ID: <e10edde8f4df7199c6d1910e8747b603@62.112.192.6>
+Date: Thu, 06 Sep 2007 18:38:06 +0200
+Message-ID: <46E02CEE.2030503@plouf.fr.eu.org>
 References: <46E0132F.5020802@plouf.fr.eu.org>
+	<e10edde8f4df7199c6d1910e8747b603@62.112.192.6>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46E0132F.5020802@plouf.fr.eu.org>
+In-Reply-To: <e10edde8f4df7199c6d1910e8747b603@62.112.192.6>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,59 +18,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@lists.netfilter.org
 
-On Thu, 06 Sep 2007 16:48:15 +0200, Pascal Hambourg
-<pascal.mail@plouf.fr.eu.org> wrote:
-> Hello,
+stevesz@enternet.hu a =E9crit :
+>>
+>>I am not sure I understand what the problem is. When the IP address=20
+>>changes, any existing connections that were using the old IP address ar=
+e=20
+>>broken. So new connections have to be established using the new IP=20
+>>address. New P2P connections should be identified and marked again by=20
+>>ipp2p and CONNMARK, as the old ones were. Or am I missing something ?
 >=20
-> stevesz@enternet.hu a =C3=A9crit :
->>=20
->> I'm using kernel v. 2.6.22.1, iptables v. 1.3.8.
->> I have an ADSL connection with dynamic IP.
->> I use ipp2p to indentify and CONNMARK to mark p2p
->> traffic. Then I classify the marked packets to a
->> low-prio class. This all work fine until the first
->> ip change comes. Because ipt_MASQUERADE flushes all
->> the conntrack entries which belong to my external
->> interface, so the marks are reset along with this.
->> Then the p2p traffic goes to the default class, which
->> is not good for me.
->=20
-> I am not sure I understand what the problem is. When the IP address=20
-> changes, any existing connections that were using the old IP address are =
+> In my firewall config it is allowed for any packet to go out from my lo=
+cal
+> network to the internet even it is not in the conntrack.
 
-> broken. So new connections have to be established using the new IP=20
-> address. New P2P connections should be identified and marked again by=20
-> ipp2p and CONNMARK, as the old ones were. Or am I missing something ?
+Ok. You could change this behaviour by blocking outgoing packets in the=20
+INVALID state.
 
-In my firewall config it is allowed for any packet to go out from my local
-network to the internet even it is not in the conntrack. So after my IP
-has changed and the conntrack table's got flushed, TCP connections continue
-traversing through the firewall and they get a new entry in the conntrack
-table, but
-without a mark. Because they don't get lost, they are not set up again,
-therefore ipp2p does not recognize them. :-(
->=20
->> Is it possible to tell ipt_MASQUERADE not to flush
->> these entries, just update them with the new IP?
->> Or is there an alternative solution for this?
->=20
-> You may use SNAT instead of MASQUERADE. Of course you will have to=20
-> update the SNAT rule after each IP address change. Or you may hack the=20
-> kernel source by commenting out the two ip_ct_iterate_cleanup() calls in =
+> So after my IP
+> has changed and the conntrack table's got flushed, TCP connections cont=
+inue
+> traversing through the firewall
 
-> net/ipv4/netfilter/ipt_MASQUERADE.C and rebuild a new kernel.
->=20
-> But be aware that either way will let the conntrack table filled with=20
-> obsolete connections for several days after an IP address change.
+Sorry but I still do no see how this is possible. The remote hosts=20
+cannot continue previously established TCP connections ("established"=20
+according to the TCP/IP stack, not Netfilter conntrack) with you if your=20
+apparent IP address changes. They will continue to send traffic to your=20
+old IP address and ignore traffic from your new address. A TCP=20
+connection is defined by the source and destination addresses and ports.=20
+If any of these 4 elements changes, the connection is broken.
 
-I was thinking of hacking, just wanted to ask people, if there is some
-other solution. My plan is to modify the code, so it would replace the old
-addresses with the new one in the conntrack table keeping the port
-assignments.
+> My plan is to modify the code, so it would replace the old
+> addresses with the new one in the conntrack table keeping the port
+> assignments.
 
-Thanx again. I'll try it.
-
+Same remark as above. You cannot change the address of an established=20
+TCP connection.
 
