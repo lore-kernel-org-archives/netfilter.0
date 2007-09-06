@@ -1,13 +1,16 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: ipt_MASQUERADE issue
-Date: Thu, 06 Sep 2007 18:38:06 +0200
-Message-ID: <46E02CEE.2030503@plouf.fr.eu.org>
-References: <46E0132F.5020802@plouf.fr.eu.org>
-	<e10edde8f4df7199c6d1910e8747b603@62.112.192.6>
+From: =?utf-8?q?O=C4=9Fuz_Yar=C4=B1mtepe?= <comp.ogz@gmail.com>
+Subject: 3 ethernet card package transfer
+Date: Thu, 6 Sep 2007 23:08:12 +0300
+Message-ID: <200709062308.12951.comp.ogz@gmail.com>
+Reply-To: comp.ogz@gmail.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <e10edde8f4df7199c6d1910e8747b603@62.112.192.6>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:from:reply-to:to:subject:date:user-agent:mime-version:content-type:content-transfer-encoding:content-disposition:message-id;
+	bh=g5BzDgQTr3FRtjr8xhIzasGs8TRO9BIUtqJIS40C1zU=;
+	b=ELIvk4MDAZEkaFARA4a+nf5Oy6ZVoZMNtkrH5OZvz3KMVsd+VEYqmBt76xUAyIgCYSErEEwho808szr3x22PTaaPYgt51qu5KpcetAvKCRLD89v8+RRPZjPPY1PrA9/GzFmmKeQZ9sTFNa+azPCc3NR2WvgKkixkhOwMEX2VDZo=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,42 +21,50 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@lists.netfilter.org
 
-stevesz@enternet.hu a =E9crit :
->>
->>I am not sure I understand what the problem is. When the IP address=20
->>changes, any existing connections that were using the old IP address ar=
+Hi,
+
+In my machine i have 3 ethernet cards: eth0, eth1 and eth2
+
+eth0 had 192.168.1.20, eth1 192.168.1.1 and eth2 had 10.0.0.1 ip. eth1 and=
+=20
+eth2 are connection to pcs that have the gateway information of those ips.=
+=20
+What i was trying was to send a package using eth1 to eth2, so i was sendin=
+g=20
+tcp packagex using hping2 from the pc that has the gateway of 192.168.1.1=20
+(pc1, 192.168.1.2) to the other pc that has the gateway of 10.0.0.1 (pc2,=20
+10.0.0.2). Every ethernet card was plugged to the same switch, also pc1 and=
+=20
+pc2. What my expectation was to see a traffic at eth1 and eth2 after the=20
+iptables rules here: http://rafb.net/p/8bLvVP45.html and after adding=20
+iptables -I FORWARD 1 -s 192.168.1.2 -d 10.0.0.2 -j ACCEPT
+
+But i saw a traffic at eth0 and eth2.=20
+
+=46irst, how can i fix it with iptables configuration?
+
+When change 192.168.1.1 ip to 172.16.0.1 and configure the pc1 according to=
+=20
+that gateway i saw only traffic at eth1 and eth2, so it seems the problem w=
+as=20
+beeing in the same network.=20
+
+If i change eth1 to 192.168.1.1, eth2 to 192.168.2.1 and eth0 to 192.168.3.=
+1=20
+will it work again, which will fix being on a different network?
+
+And my last question at the 172.16. example, that is when the packages are=
+=20
+being transfered from eth1 to eth2, a routing is done internally. Is that=20
+done automatically, or how can the the machine decide when it gets a packag=
 e=20
->>broken. So new connections have to be established using the new IP=20
->>address. New P2P connections should be identified and marked again by=20
->>ipp2p and CONNMARK, as the old ones were. Or am I missing something ?
->=20
-> In my firewall config it is allowed for any packet to go out from my lo=
-cal
-> network to the internet even it is not in the conntrack.
+from eth1 and sees the destination ip and say ok i should send to the eth2?
 
-Ok. You could change this behaviour by blocking outgoing packets in the=20
-INVALID state.
-
-> So after my IP
-> has changed and the conntrack table's got flushed, TCP connections cont=
-inue
-> traversing through the firewall
-
-Sorry but I still do no see how this is possible. The remote hosts=20
-cannot continue previously established TCP connections ("established"=20
-according to the TCP/IP stack, not Netfilter conntrack) with you if your=20
-apparent IP address changes. They will continue to send traffic to your=20
-old IP address and ignore traffic from your new address. A TCP=20
-connection is defined by the source and destination addresses and ports.=20
-If any of these 4 elements changes, the connection is broken.
-
-> My plan is to modify the code, so it would replace the old
-> addresses with the new one in the conntrack table keeping the port
-> assignments.
-
-Same remark as above. You cannot change the address of an established=20
-TCP connection.
+Thanx.
+=2D-=20
+O=C4=9Fuz Yar=C4=B1mtepe
+http://www.yarimtepe.com/en
 
