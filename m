@@ -1,12 +1,10 @@
-From: <stevesz@enternet.hu>
-Subject: Re: ipt_MASQUERADE issue
-Date: Fri, 7 Sep 2007 09:51:32 +0200
-Message-ID: <fc263e8bf456fa849f0cb7b1e4602138@62.112.192.6>
-References: <46E02CEE.2030503@plouf.fr.eu.org>
+From: "Christoph J. Thompson" <cthompson@libertysurf.fr>
+Subject: Cryptic ulogd 2.0.0beta1 error message
+Date: Fri, 7 Sep 2007 23:34:38 +0200
+Message-ID: <20070907233438.aefd66ca.cthompson@libertysurf.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <46E02CEE.2030503@plouf.fr.eu.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,57 +15,41 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-On Thu, 06 Sep 2007 18:38:06 +0200, Pascal Hambourg
-<pascal.mail@plouf.fr.eu.org> wrote:
-> stevesz@enternet.hu a =C3=A9crit :
->>>
->>>I am not sure I understand what the problem is. When the IP address=20
->>>changes, any existing connections that were using the old IP address are
->=20
->>>broken. So new connections have to be established using the new IP=20
->>>address. New P2P connections should be identified and marked again by=20
->>>ipp2p and CONNMARK, as the old ones were. Or am I missing something ?
->>=20
->> In my firewall config it is allowed for any packet to go out from my
-> local
->> network to the internet even it is not in the conntrack.
->=20
-> Ok. You could change this behaviour by blocking outgoing packets in the=20
-> INVALID state.
->=20
->> So after my IP
->> has changed and the conntrack table's got flushed, TCP connections
-> continue
->> traversing through the firewall
->=20
-> Sorry but I still do no see how this is possible. The remote hosts=20
-> cannot continue previously established TCP connections ("established"=20
-> according to the TCP/IP stack, not Netfilter conntrack) with you if your =
+Greetings,
 
-> apparent IP address changes. They will continue to send traffic to your=20
-> old IP address and ignore traffic from your new address. A TCP=20
-> connection is defined by the source and destination addresses and ports. =
+I'm trying to get ulogd 2.0.0beta1 to work but each time I start the daemon I get this in my log file:
 
-> If any of these 4 elements changes, the connection is broken.
->=20
->> My plan is to modify the code, so it would replace the old
->> addresses with the new one in the conntrack table keeping the port
->> assignments.
->=20
-> Same remark as above. You cannot change the address of an established=20
-> TCP connection.
+Fri Sep  7 22:21:45 2007 <5> ulogd.c:257 registering plugin `NFLOG'
+Fri Sep  7 22:21:45 2007 <5> ulogd.c:257 registering plugin `NFCT'
+Fri Sep  7 22:21:45 2007 <5> ulogd.c:257 registering plugin `IFINDEX'
+Fri Sep  7 22:21:45 2007 <5> ulogd.c:257 registering plugin `LOGEMU'
+Fri Sep  7 22:21:45 2007 <5> ulogd.c:257 registering plugin `OPRINT'
+Fri Sep  7 22:21:45 2007 <5> ulogd.c:257 registering plugin `BASE'
+Fri Sep  7 22:21:45 2007 <8> ulogd.c:928 not even a single working plugin stack
 
-Hey, UR absolutely right. I've been thinking too fast. Thanx for correcting
-me. But I still don't know why ipp2p does not recognize the resetup. Maybe,
-it does not know that 'command'. I think, I'll have to make a capture and
-try to isolate the resetup message(s), and the report it to the developer
-of
-ipp2p.
+I tried strace on ulogd to see if there was any file missing or something it couldn't load, but I haven't seen anything missing. I'm using Slackware 12.0 with Linux 2.6.22.6 with all possible netfilter stuff compiled as modules except what's obsolete. Iptables works fine and I've got these modules loaded:
 
-Thanx again.
-Steve
+Module                  Size  Used by
+nfnetlink_queue         7712  0
+nfnetlink_log           6916  0
+nfnetlink               3896  2 nfnetlink_queue,nfnetlink_log
+xt_limit                1856  1
+ipt_LOG                 4800  1
+nf_conntrack_ipv4      11276  4
+xt_state                1696  4
+nf_conntrack           41864  2 nf_conntrack_ipv4,xt_state
+xt_tcpudp               2528  4
+xt_mac                  1408  1
+iptable_filter          2016  1
+ip_tables               8616  1 iptable_filter
+x_tables                9764  6 xt_limit,ipt_LOG,xt_state,xt_tcpudp,xt_mac,ip_tables
+af_packet              13832  0
 
+I understand that ipt_ULOG is for ulogd 1.x or am I wrong?
+I'm not sure also if there's a /dev entry I should mknod for nfnetlink (I'm not using udev on this box) (a quick locate didn't reveal any docs for nfnetlink coming with the kernel) Some clues as to why there's "not even a single working plugin stack" would be greatly appreciated.
+
+C.T.
 
