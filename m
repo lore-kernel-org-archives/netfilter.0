@@ -1,10 +1,12 @@
-From: Eric Leblond <eleblond@inl.fr>
+From: Eric Leblond <eric@inl.fr>
 Subject: Re: Cryptic ulogd 2.0.0beta1 error message
-Date: Fri, 07 Sep 2007 23:50:23 +0200
-Message-ID: <1189201823.8516.2.camel@localhost>
+Date: Fri, 07 Sep 2007 23:51:16 +0200
+Message-ID: <1189201876.8516.4.camel@localhost>
 References: <20070907233438.aefd66ca.cthompson@libertysurf.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-nuwKEa13rvPYQndQ++mn"
 Return-path: <netfilter-bounces@lists.netfilter.org>
 In-Reply-To: <20070907233438.aefd66ca.cthompson@libertysurf.fr>
 List-Id: <netfilter.vger.kernel.org>
@@ -17,9 +19,12 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"
-To: "Christoph J. Thompson" <cthompson@libertysurf.fr>
-Cc: netfilter@lists.netfilter.org
+To: netfilter@lists.netfilter.org
+
+
+--=-nuwKEa13rvPYQndQ++mn
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
@@ -43,7 +48,23 @@ Use svn version, it should fix the bug :
 https://svn.netfilter.org/netfilter/branches/ulog/ulogd2
 
 BR,
---
-Eric Leblond
+--=20
+Eric Leblond <eric@inl.fr>
+INL
+
+--=-nuwKEa13rvPYQndQ++mn
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD4DBQBG4cfUnxA7CdMWjzIRApPrAJ0UdnZ4mnR0EIhdh9Lgw8rZG0ObMQCYmTfb
+xiyCvkEbkc+j8pZoP3wWpA==
+=YcEI
+-----END PGP SIGNATURE-----
+
+--=-nuwKEa13rvPYQndQ++mn--
 
 
