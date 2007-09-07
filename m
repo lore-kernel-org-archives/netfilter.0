@@ -1,16 +1,10 @@
-From: =?utf-8?q?O=C4=9Fuz_Yar=C4=B1mtepe?= <comp.ogz@gmail.com>
-Subject: 3 ethernet card package transfer
-Date: Thu, 6 Sep 2007 23:08:12 +0300
-Message-ID: <200709062308.12951.comp.ogz@gmail.com>
-Reply-To: comp.ogz@gmail.com
+From: KARIM SATTAR <karimas@kfupm.edu.sa>
+Subject: Initialization of local variable in a iptables datastructure
+Date: Fri, 07 Sep 2007 05:50:13 +0300 (AST)
+Message-ID: <1253262.1189133413006.JavaMail.karimas@kfupm.edu.sa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-bounces@lists.netfilter.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=beta;
-	h=domainkey-signature:received:received:from:reply-to:to:subject:date:user-agent:mime-version:content-type:content-transfer-encoding:content-disposition:message-id;
-	bh=g5BzDgQTr3FRtjr8xhIzasGs8TRO9BIUtqJIS40C1zU=;
-	b=ELIvk4MDAZEkaFARA4a+nf5Oy6ZVoZMNtkrH5OZvz3KMVsd+VEYqmBt76xUAyIgCYSErEEwho808szr3x22PTaaPYgt51qu5KpcetAvKCRLD89v8+RRPZjPPY1PrA9/GzFmmKeQZ9sTFNa+azPCc3NR2WvgKkixkhOwMEX2VDZo=
-Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -21,50 +15,32 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@lists.netfilter.org
 
-Hi,
+Hi
+I have introduced a variable in xt_counters data structure of type 
+uint_64t to be used as a counter in ipt_entry data structure. I have 
+installed iptable new version source code from its website. In this 
+userspace, I am printing the variable with other packet and byte 
+counters. Till now iptables are working fine and every thing is all 
+right -- except with the problem that the variable which I introduced 
+is showing garbage values mostly 0's ( when print several times with 
+iptables -L command). I have initialized the variable on the location 
+where its required but I am not getting a constant value which is in my 
+case should be only 0 (during testing). Can any one puts a light on 
+this. I didnt know what the Linux kernel might do if its encounter an 
+uninitialized variable.
 
-In my machine i have 3 ethernet cards: eth0, eth1 and eth2
+Also since I am printing the counters with the help of iptables-save -c 
+and iptables -L -n -v and in both cases I am getting this non-obvious 
+results; there fore I had also tried with initiailizing the variable in 
+ipt_do_table function under the do_while loop and make the variable 
+initialized always to 0, but this also not useful as I am still viewing 
+the same results.
 
-eth0 had 192.168.1.20, eth1 192.168.1.1 and eth2 had 10.0.0.1 ip. eth1 and=
-=20
-eth2 are connection to pcs that have the gateway information of those ips.=
-=20
-What i was trying was to send a package using eth1 to eth2, so i was sendin=
-g=20
-tcp packagex using hping2 from the pc that has the gateway of 192.168.1.1=20
-(pc1, 192.168.1.2) to the other pc that has the gateway of 10.0.0.1 (pc2,=20
-10.0.0.2). Every ethernet card was plugged to the same switch, also pc1 and=
-=20
-pc2. What my expectation was to see a traffic at eth1 and eth2 after the=20
-iptables rules here: http://rafb.net/p/8bLvVP45.html and after adding=20
-iptables -I FORWARD 1 -s 192.168.1.2 -d 10.0.0.2 -j ACCEPT
 
-But i saw a traffic at eth0 and eth2.=20
 
-=46irst, how can i fix it with iptables configuration?
-
-When change 192.168.1.1 ip to 172.16.0.1 and configure the pc1 according to=
-=20
-that gateway i saw only traffic at eth1 and eth2, so it seems the problem w=
-as=20
-beeing in the same network.=20
-
-If i change eth1 to 192.168.1.1, eth2 to 192.168.2.1 and eth0 to 192.168.3.=
-1=20
-will it work again, which will fix being on a different network?
-
-And my last question at the 172.16. example, that is when the packages are=
-=20
-being transfered from eth1 to eth2, a routing is done internally. Is that=20
-done automatically, or how can the the machine decide when it gets a packag=
-e=20
-from eth1 and sees the destination ip and say ok i should send to the eth2?
-
-Thanx.
-=2D-=20
-O=C4=9Fuz Yar=C4=B1mtepe
-http://www.yarimtepe.com/en
+Regards
+Karim Asif Sattar
 
