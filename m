@@ -1,13 +1,15 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Route packets from an interface to another
-Date: Mon, 10 Sep 2007 10:23:20 -0500
-Message-ID: <46E56168.4010909@riverviewtech.net>
-References: <930617.62310.qm@web33307.mail.mud.yahoo.com>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: "Sathish Kumar R" <geosathish@gmail.com>
+Subject: broadcasting over ipsec vpn..?
+Date: Tue, 11 Sep 2007 17:20:05 +0530
+Message-ID: <3e5af7bc0709110450t283367b0tdf815de5b616a3f2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <930617.62310.qm@web33307.mail.mud.yahoo.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=beta;
+	h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+	bh=awQfP9fYBrGaLddqyw2YHL5rn0Rp2C5CsolTKb13n7I=;
+	b=DP1zSPwflVNca+qI/zEAJK0cfl0WkE2+8Mmmwc+OknTKTqSrqv1FbknRW70tiGGFAXrVO2Up35+OBjuHqjLGPm7GNYQcxMBzGA6waT9+TYtanzCjUR6LF6jT0NHi1kNKPWVZ51f043I0nVVcCEmAx2k5Tio0tjxVIeHv1SkN/1U=
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,78 +20,42 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@lists.netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@lists.netfilter.org
 
-On 09/10/07 07:18, vinod K D wrote:
-> My gateway has two network interfaces: eth0 & eth1.
-> 
-> eth0 (192.168.1.1) is connected to public network and eth1 (10.0.1.1) 
-> is connected to LAN.
-> 
-> MyServer, which is in the LAN, has ip 10.0.1.2.
+Hello everybody,
 
-Ok, reasonable enough.
+i need to know the possibilities of iptables for the following setup..
 
-> I created a virtual interface eth0:0 (192.168.1.2) in the gateway. 
-> Using ipvsadm, I can route the packets, destined for this IP address 
-> and a port,  to myServer.
-> 
-> And in myServer, I enabled ip_forwarding and assigned 192.168.1.2 for 
-> the loopback interface.  So my server application receives and serves 
-> the packets properly.
+My gateway security device has three interfaces
 
-I'm surprised that having the 192.168.1.2 address on the loopback 
-interface is working as expected at all as the kernel will usually 
-protect the loopback interface from any thing not local to the system.
+Device-1
+--------
+eth0 - WAN - (192.168.1.10)
+eth1 - LAN - (192.168.50.1)
+eth2 - DMZ - (10.10.10.1)
 
-> The problem is in the return path. (Remember the packets have source 
-> addres 192.168.1.2). While they reach the gateway, the packets are 
-> being dropped.
+and i am making a ipsec VPN connection with another device Device-2,
 
-*nod*  You will indeed have some reverse path issues to work out.
+Device-2
+--------
+eth0 - WAN - (192.168.1.15)
+eth1 - LAN - (192.168.60.1)
+eth2 - DMZ - (10.10.20.1)
 
-> (I think, the reason is nothing but the address 192.168.1.2 is 
-> assigned to the gateway. Hence router assumes the packets are 
-> traversing though a loop.)
+VPN connection gets established successfully,
 
-*nod*
+here my requirement is regarding broadcast messages to remote subnet over vpn.
 
-> I can't use masquerading, because I need to get the source & 
-> destination IPs of the packets.
+i have one broadcast server in Device-1 and it is binded with
+192.168.50.1 interface and broadcasting to 255.255.255.255,
 
-Ok...
+the 192.168.50.0/24 subnet can able to receive the broadcast messages,
 
-I have to ask, why does your server have a private class C address on 
-its external interface?  Either you are doing something weird and your 
-external is not external to the internet or you are already in a 
-situation where the packets have been modified as you are trying to 
-avoid.  I'm just saying / opening the door for an answer.
+is it possible to communicate the same broadcast message to the remote
+subnet(192.168.60.0/24) via ipsec tunnel  ...?
 
-> Can anyone suggest a way to redirect packets from an interface to 
-> another (ie, eth1 to eth0) without making any change in the packet 
-> header.
+with regards,
 
-Why redirect the packets at all.  Why not let the packets come in 
-directly to the router?
-
-I'd suggest that you turn your router in to a bridging router.  I.e. 
-bridge traffic to / from 192.168.1.2 through eth0 and eth1 while routing 
-192.168.1.1 traffic for your LAN?  This way your server would have 
-192.168.1.2 bound to its NIC and be able to reply directly to the world 
-with out any problem at all.  If you are worried about not having a 
-firewall, you can easily do either EBTables (layer 2) or IPTables (layer 
-3) on the bridged (layer 2) traffic so your system will still be protected.
-
-Do some light reading of section 7 of the following page: 
-http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html#section7  I think 
-this will help depict what I'm talking about.
-
-> PS: The latest versions of netfilter doen't have inbuilt ipt_ROUTE 
-> module. Else my life would be cool.
-
-
-
-
-Grant. . . .
+Sathish Kumar.R
 
