@@ -1,13 +1,15 @@
-From: Arash Yadegarnia <arash@bluehome.net>
+From: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?=
+	<leolistas@solutti.com.br>
 Subject: Re: FWDing packets from a physical interface to a virtual interface
-Date: Wed, 12 Sep 2007 15:02:50 +0330
-Message-ID: <1189596770.5995.11.camel@Thinkpad>
-References: <1189550213.14727.34.camel@Thinkpad>
-	<web-24515613@bk3.webmaillogin.com>
+Date: Wed, 12 Sep 2007 08:45:17 -0300
+Message-ID: <46E7D14D.90603@solutti.com.br>
+References: <1189550213.14727.34.camel@Thinkpad>	<web-24515613@bk3.webmaillogin.com>
+	<1189596770.5995.11.camel@Thinkpad>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+	micalg=sha1; boundary="------------ms080509020007020609000408"
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <web-24515613@bk3.webmaillogin.com>
+In-Reply-To: <1189596770.5995.11.camel@Thinkpad>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -18,85 +20,169 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-9"
-To: Jorge Davila <davila@nicaraguaopensource.com>, netfilter@lists.netfilter.org
+To: Arash Yadegarnia <arash@bluehome.net>
+Cc: netfilter@lists.netfilter.org
 
-Thanks Jorge,
+This is a cryptographically signed message in MIME format.
 
-I'm not using any specific VPN solution, Me and my colleagues are
-developing a secure VPN solution based on kernel TUN/TAP driver.
-Since we have full control over our tap interface we just need to
-redirect the whole traffic coming into the eth0 (from a LAN) into the
-tap interface, so we can read them (I mean Ethernet frames in Layer 2)
-and send them out from the other pysical interface (eth1).
-BTW, Redirecting a single or even multiple ports won't work in my
-situation, because I want whole traffic in layer 2, not a specific port
-number.
-
-Thanks,
-Arash
+--------------ms080509020007020609000408
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
 
-On Tue, 2007-09-11 at 19:40 -0600, Jorge Davila wrote:
-> Arash:
->=20
-> AFAIK, you must open a path in the firewall to the vpn daemon=20
-> (port/protocol) and the daemon will be in charge of administering the=20
-> traffic between the clients and the vpn server.
 
-> Additionally, you must tell to the client where is the server (the ip=20
-> address), what device will be used (tun or tap device).
->=20
-> May you want ask in the mailing list for the vendor/provider of the vpn=
-=20
-> software that you are using.
->=20
->=20
-> Hope this helps,
->=20
-> Jorge D=C3=A1vila.
->=20
-> On Wed, 12 Sep 2007 02:06:53 +0330
->   Arash Yadegarnia <arash@bluehome.net> wrote:
-> > Hi, :)
-> >=20
-> > Here is the situation:
-> >=20
-> > I have a machine with 2 NICs, assume eth0 (192.168.0.10) connected to=
- my
-> > LAN, and eth1 (192.168.0.20) connected to Internet through a gateway.
-> > I also, have a virtual tap0 (TUN/TAP) interface (10.0.0.1) on this
-> > machine.
-> >=20
-> > All that I want to do is simply, forwarding ALL traffic coming to eth=
-0
-> > from the LAN, into my tap0 interface, So I can modify them using my o=
-wn
-> > user space program which can capture packets on the tap interface and
-> > send them on eth1 to another address somewhere in the world (through
-> > Internet).
-> >=20
-> > Since I want IP addresses unchanged, I cannot use NAT or Masquerading=
-.
-> > As far as I know, In this matter forwarding should be done in Layer-2=
- so
-> > I'm not sure if I can use iptables to do the job.
-> > I also have tried bridging but I was trapped in a horrible bridge loo=
-p
-> > (Enabling STP on bridge also didn't work for me).
-> >=20
-> > Any ideas? :)
-> >=20
-> > Thanks,
-> > Arash
-> >=20
-> >=20
-> >=20
->=20
-> Jorge Isaac Davila Lopez
-> Nicaragua Open Source
-> +505 430 5462
-> davila@nicaraguaopensource.com
->=20
+    So maybe you'll have to some bridging stuff and not=20
+netfilter/iptables ones ....
 
+    iptables/netfilter deals basically with Layer 3 (IP) packets and not =
+
+layer 2 frames, which are the ones you're interested.
+
+Arash Yadegarnia escreveu:
+> Thanks Jorge,
+>
+> I'm not using any specific VPN solution, Me and my colleagues are
+> developing a secure VPN solution based on kernel TUN/TAP driver.
+> Since we have full control over our tap interface we just need to
+> redirect the whole traffic coming into the eth0 (from a LAN) into the
+> tap interface, so we can read them (I mean Ethernet frames in Layer 2)
+> and send them out from the other pysical interface (eth1).
+> BTW, Redirecting a single or even multiple ports won't work in my
+> situation, because I want whole traffic in layer 2, not a specific port=
+
+> number.
+>
+> Thanks,
+> Arash
+>  =20
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3=83O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
+
+
+--------------ms080509020007020609000408
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRlzCC
+BN0wggPFoAMCAQICEHGS++YZX6xNEoV0cTSiGKcwDQYJKoZIhvcNAQEFBQAwezELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgMEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBwwHU2FsZm9yZDEa
+MBgGA1UECgwRQ29tb2RvIENBIExpbWl0ZWQxITAfBgNVBAMMGEFBQSBDZXJ0aWZpY2F0ZSBT
+ZXJ2aWNlczAeFw0wNDAxMDEwMDAwMDBaFw0yODEyMzEyMzU5NTlaMIGuMQswCQYDVQQGEwJV
+UzELMAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUg
+VVNFUlRSVVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2
+MDQGA1UEAxMtVVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWls
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5
+ShpHornMSMxqmNVNNRm5pELlzkniii8efNIxB8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqk
+kqgX8pgV8pPMyaQylbsMTzC9mKALi+VuG6JG+ni8om+rWV6lL8/K2m2qL+usobNqqrcuZzWL
+eeEeaYji5kbNoKXqvgvOdjp6Dpvq/NonWz1zHyLmSGHGTPNpsaguG7bUMSAsvIKKjqQOpdeJ
+Q/wWWq8dcdcRWdq6hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7NlyP0e03RiqhjKaJMeoYV+9Udl
+y/hNVyh00jT/MLbu9mIwFIws6wIDAQABo4IBJzCCASMwHwYDVR0jBBgwFoAUoBEKIz6W8Qfs
+4q8p74Klf9AwpLQwHQYDVR0OBBYEFImCZ33EnSZwAEu0UEh83j2uBG59MA4GA1UdDwEB/wQE
+AwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAR
+BgNVHSAECjAIMAYGBFUdIAAwewYDVR0fBHQwcjA4oDagNIYyaHR0cDovL2NybC5jb21vZG9j
+YS5jb20vQUFBQ2VydGlmaWNhdGVTZXJ2aWNlcy5jcmwwNqA0oDKGMGh0dHA6Ly9jcmwuY29t
+b2RvLm5ldC9BQUFDZXJ0aWZpY2F0ZVNlcnZpY2VzLmNybDARBglghkgBhvhCAQEEBAMCAQYw
+DQYJKoZIhvcNAQEFBQADggEBAJ2Vyzy4fqUJxB6/C8LHdo45PJTGEKpPDMngq4RdiVTgZTvz
+bRx8NywlVF+WIfw3hJGdFdwUT4HPVB1rbEVgxy35l1FM+WbKPKCCjKbI8OLp1Er57D9Wyd12
+jMOCAU9sAPMeGmF0BEcDqcZAV5G8ZSLFJ2dPV9tkWtmNH7qGL/QGrpxp7en0zykX2OBKnxog
+L5dMUbtGB8SKN04g4wkxaMeexIud6H4RvDJoEJYRmETYKlFgTYjrdDrfQwYyyDlWjDoRUtNB
+pEMD9O3vMyfbOeAUTibJ2PU54om4k123KSZB6rObroP8d3XK6Mq1/uJlSmM+RMTQw16Hc6mY
+HK9/FX8wggZXMIIFP6ADAgECAhEAtQOW9QEF+4D7358uHbrqtDANBgkqhkiG9w0BAQUFADCB
+rjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEe
+MBwGA1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVz
+ZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0
+aW9uIGFuZCBFbWFpbDAeFw0wNzA3MjUwMDAwMDBaFw0wODA3MjQyMzU5NTlaMIHwMTUwMwYD
+VQQLEyxDb21vZG8gVHJ1c3QgTmV0d29yayAtIFBFUlNPTkEgTk9UIFZBTElEQVRFRDFGMEQG
+A1UECxM9VGVybXMgYW5kIENvbmRpdGlvbnMgb2YgdXNlOiBodHRwOi8vd3d3LmNvbW9kby5u
+ZXQvcmVwb3NpdG9yeTEfMB0GA1UECxMWKGMpMjAwMyBDb21vZG8gTGltaXRlZDElMCMGA1UE
+AxMcTGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaGFlczEnMCUGCSqGSIb3DQEJARYYbGVvbGlz
+dGFzQHNvbHV0dGkuY29tLmJyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvmPE
+RsBVfxgAuuEeQFqd9PufbFYFkHgS1t+OjeXRxuEMM3J2powPOrd+LQl9n6ufyxT8BUWDlY5m
+WbOJLdYeBkBpyZuGbKXdiwISOgv7gmf5P2t1dxXnZ4iv878BOCE7oxnky++E6U913Htp2MQR
+Jtimsnyj6en/MltAuzV/sHaL/9ho2LMPilUMVZqOv7h3IdbyMA2VwRV+GoPulUEC+Ft9vVN7
+wkOwNVx9fvPeQz1xqisMMghSQ4vIpRLPI2CbPdWf35FV4cpjQOzxdPIgvv6cu1v5gHj07JRK
+aPMz5Iko9XQnecXdN32EYaJPstHCZYqi80WbkxqBAx+O0/cG7wIDAQABo4ICKjCCAiYwHwYD
+VR0jBBgwFoAUiYJnfcSdJnAAS7RQSHzePa4Ebn0wHQYDVR0OBBYEFG+PJOF4e+6ExlTxx36j
+W7cVS+ULMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZMBcGCCsGAQUF
+BwMEBgsrBgEEAbIxAQMFAjARBglghkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7BgwrBgEE
+AbIxAQIBAQEwKzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMw
+gaUGA1UdHwSBnTCBmjBMoEqgSIZGaHR0cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJG
+aXJzdC1DbGllbnRBdXRoZW50aWNhdGlvbmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2Ny
+bC5jb21vZG8ubmV0L1VUTi1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFp
+bC5jcmwwfAYIKwYBBQUHAQEEcDBuMDYGCCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9VVE5BQUFDbGllbnRDQS5jcnQwNAYIKwYBBQUHMAKGKGh0dHA6Ly9jcnQuY29tb2Rv
+Lm5ldC9VVE5BQUFDbGllbnRDQS5jcnQwIwYDVR0RBBwwGoEYbGVvbGlzdGFzQHNvbHV0dGku
+Y29tLmJyMA0GCSqGSIb3DQEBBQUAA4IBAQA3/bG1wT5OJ+cmq5RKB7LV/nFn0cmJ6EfSzs+d
+gleCZyn8QyL79F+0E9NjzR6mrcbEcz/uPYBLNJRYa7IjRqi25BSHC+gKRRy3PDagnWDlSp9U
+pnQ2yiOzaXiEk2NlC0K7Dpglw9FTijsoMoB4WbXfc4h/BLehVZ11Pd3zBwuYgv/cW1poF3Vu
+Yca7eBHSegHPZrwetxDkGLRTOHmrXuUJwrPJm7bE5OtFWddU9RBXfOR+NK68q5Ekb1Zc+9+A
+WYOuXKevHMsDAOZcE2iY//MSoimBJ2VhQ1h9dk/SrVI43TTmvKTBe7TOk/+uBIInrurVYLEr
+ZeYiQoYr5cSLCHaDMIIGVzCCBT+gAwIBAgIRALUDlvUBBfuA+9+fLh266rQwDQYJKoZIhvcN
+AQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtl
+IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDov
+L3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDcwNzI1MDAwMDAwWhcNMDgwNzI0MjM1OTU5WjCB
+8DE1MDMGA1UECxMsQ29tb2RvIFRydXN0IE5ldHdvcmsgLSBQRVJTT05BIE5PVCBWQUxJREFU
+RUQxRjBEBgNVBAsTPVRlcm1zIGFuZCBDb25kaXRpb25zIG9mIHVzZTogaHR0cDovL3d3dy5j
+b21vZG8ubmV0L3JlcG9zaXRvcnkxHzAdBgNVBAsTFihjKTIwMDMgQ29tb2RvIExpbWl0ZWQx
+JTAjBgNVBAMTHExlb25hcmRvIFJvZHJpZ3VlcyBNYWdhbGhhZXMxJzAlBgkqhkiG9w0BCQEW
+GGxlb2xpc3Rhc0Bzb2x1dHRpLmNvbS5icjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAL5jxEbAVX8YALrhHkBanfT7n2xWBZB4Etbfjo3l0cbhDDNydqaMDzq3fi0JfZ+rn8sU
+/AVFg5WOZlmziS3WHgZAacmbhmyl3YsCEjoL+4Jn+T9rdXcV52eIr/O/ATghO6MZ5MvvhOlP
+ddx7adjEESbYprJ8o+np/zJbQLs1f7B2i//YaNizD4pVDFWajr+4dyHW8jANlcEVfhqD7pVB
+Avhbfb1Te8JDsDVcfX7z3kM9caorDDIIUkOLyKUSzyNgmz3Vn9+RVeHKY0Ds8XTyIL7+nLtb
++YB49OyUSmjzM+SJKPV0J3nF3Td9hGGiT7LRwmWKovNFm5MagQMfjtP3Bu8CAwEAAaOCAiow
+ggImMB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59MB0GA1UdDgQWBBRvjyTheHvu
+hMZU8cd+o1u3FUvlCzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAgBgNVHSUEGTAX
+BggrBgEFBQcDBAYLKwYBBAGyMQEDBQIwEQYJYIZIAYb4QgEBBAQDAgUgMEYGA1UdIAQ/MD0w
+OwYMKwYBBAGyMQECAQEBMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9kby5u
+ZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL1VU
+Ti1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwSqBIoEaGRGh0
+dHA6Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0aW9u
+YW5kRW1haWwuY3JsMHwGCCsGAQUFBwEBBHAwbjA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5j
+b21vZG9jYS5jb20vVVROQUFBQ2xpZW50Q0EuY3J0MDQGCCsGAQUFBzAChihodHRwOi8vY3J0
+LmNvbW9kby5uZXQvVVROQUFBQ2xpZW50Q0EuY3J0MCMGA1UdEQQcMBqBGGxlb2xpc3Rhc0Bz
+b2x1dHRpLmNvbS5icjANBgkqhkiG9w0BAQUFAAOCAQEAN/2xtcE+TifnJquUSgey1f5xZ9HJ
+iehH0s7PnYJXgmcp/EMi+/RftBPTY80epq3GxHM/7j2ASzSUWGuyI0aotuQUhwvoCkUctzw2
+oJ1g5UqfVKZ0Nsojs2l4hJNjZQtCuw6YJcPRU4o7KDKAeFm133OIfwS3oVWddT3d8wcLmIL/
+3FtaaBd1bmHGu3gR0noBz2a8HrcQ5Bi0Uzh5q17lCcKzyZu2xOTrRVnXVPUQV3zkfjSuvKuR
+JG9WXPvfgFmDrlynrxzLAwDmXBNomP/zEqIpgSdlYUNYfXZP0q1SON005rykwXu0zpP/rgSC
+J67q1WCxK2XmIkKGK+XEiwh2gzGCBFMwggRPAgEBMIHEMIGuMQswCQYDVQQGEwJVUzELMAkG
+A1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRS
+VVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UE
+AxMtVVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsAhEAtQOW
+9QEF+4D7358uHbrqtDAJBgUrDgMCGgUAoIICYzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0wNzA5MTIxMTQ1MTdaMCMGCSqGSIb3DQEJBDEWBBR6MsRK6G3y
+cJDRqO0zbJvjUHcBKzBSBgkqhkiG9w0BCQ8xRTBDMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMC
+AgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCB1QYJKwYBBAGC
+NxAEMYHHMIHEMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQg
+TGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0
+dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVROLVVTRVJGaXJzdC1DbGllbnQg
+QXV0aGVudGljYXRpb24gYW5kIEVtYWlsAhEAtQOW9QEF+4D7358uHbrqtDCB1wYLKoZIhvcN
+AQkQAgsxgceggcQwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2Fs
+dCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMY
+aHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVu
+dCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEQC1A5b1AQX7gPvfny4duuq0MA0GCSqGSIb3
+DQEBAQUABIIBAIicacpjLXItfzjJL57YHuczDGGkYjSAb4IcwFDmn0Kn+2yDKxZPSE0y1oei
+1Gyee/7a1OpVC3h/e7yH0Xp5xOpaFUf43iV2FlDJy2WiuAOsWF/t1mW6tvK+ba/6E8NqtQXs
+TZB26CprZLvGFUhwv5xR9X0JcAzwLHqmmQPyFEQljks0LrcNXwziigr/3J25KB0no72P/oez
+omPG926O+9xPsdzkv7So1ftZ/NUKnDZsdAJXEtB/xLYdRf5jb9Pvk3IdceZv9TT1yYDJI8lM
+F7mY+8V/7nS5vVD1+fiuvisyOPV9aewLQVc1HEAnEDPhN71Ue9VpJXGVCH14Ja9WeAYAAAAA
+AAA=
+--------------ms080509020007020609000408--
 
