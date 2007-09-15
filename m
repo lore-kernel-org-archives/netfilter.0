@@ -1,51 +1,34 @@
-From: Patrick McHardy <kaber@trash.net>
+From: David Miller <davem@davemloft.net>
 Subject: Re: netfilter workshop group photo annotations
-Date: Sat, 15 Sep 2007 12:40:13 +0200
-Message-ID: <46EBB68D.4060506@trash.net>
-References: <46E7C131.6060500@trash.net>
-	<Pine.LNX.4.64.0709122028580.22467@fbirervta.pbzchgretzou.qr>
+Date: Sat, 15 Sep 2007 09:13:11 -0700 (PDT)
+Message-ID: <20070915.091311.03980098.davem@davemloft.net>
+References: <Pine.LNX.4.64.0709122028580.22467@fbirervta.pbzchgretzou.qr>
 	<20070915093745.GC4613@prithivi.gnumonks.org>
+	<46EBB68D.4060506@trash.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070915093745.GC4613@prithivi.gnumonks.org>
+Return-path: <netfilter-devel-bounces@lists.netfilter.org>
+In-Reply-To: <46EBB68D.4060506@trash.net>
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <http://lists.netfilter.org/pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="us-ascii"
-To: Harald Welte <laforge@netfilter.org>
-Cc: Jan Engelhardt <jengelh@computergmbh.de>, Netfilter Developer Mailing List <netfilter-devel@lists.netfilter.org>, Netfilter Mailing List <netfilter@lists.netfilter.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <http://lists.netfilter.org/pipermail/netfilter-devel>
+List-Post: <mailto:netfilter-devel@lists.netfilter.org>
+List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>, 
+	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-devel-bounces@lists.netfilter.org
+Errors-To: netfilter-devel-bounces@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: kaber@trash.net
+Cc: laforge@netfilter.org, jengelh@computergmbh.de, netfilter-devel@lists.netfilter.org, netfilter@lists.netfilter.org
 
-Harald Welte wrote:
-> I don't have an annotated photo, but maybe somebody wants to make one
-> using the following data:
-> 
-> (all from left to right)
-> 
-> Front row: Patrick McHardy, Jozsef Kadlecsik, Harald Welte, Rajesh H
-> Modhwadiya, Jing Min Zhao, Michael Bellion
-> 
-> Middle Row: Nishit Shah, Samir Bellabes, Pablo Neira, Narjess Ayari, ?, Henrik
-> Nordstrom, Krisztian Kovacs, Balazs Scheidler
+From: Patrick McHardy <kaber@trash.net>
+Date: Sat, 15 Sep 2007 12:40:13 +0200
 
+> Soyoung Park should also be on there next to Dave, but she seems to be
+> completely hidden by Laurent.
 
-The '?' above is Victor Stinner.
-
-> Last Row: Gert Hansen, Keyur K Pujara, Eric Leblond, Jesper Dangaard Brouer, David
-> Miller, Laurent Lefevre, Thomas Graf, Martin Josefsson, Stephen Hemminger, Holger
-> Eitzenberger
-
-
-Soyoung Park should also be on there next to Dave, but she seems to be
-completely hidden by Laurent.
-
-Cheers,
-Patrick
+Actually, she was back in the conference room during the photo
+so Laurent is innocent :-)
 
