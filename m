@@ -1,14 +1,15 @@
-From: =?iso-8859-15?Q?Ren=E9?= Pfeiffer <lynx@luchs.at>
-Subject: Re: Question about http://ipset.netfilter.org/ site
-Date: Sat, 15 Sep 2007 19:38:45 +0200
-Message-ID: <20070915173845.GF5321@nephtys.luchs.at>
-References: <20070915172509.GC5321@nephtys.luchs.at>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: netfilter workshop group photo annotations
+Date: Sat, 15 Sep 2007 19:46:48 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0709151946370.24423@fbirervta.pbzchgretzou.qr>
+References: <46E7C131.6060500@trash.net>
+	<Pine.LNX.4.64.0709122028580.22467@fbirervta.pbzchgretzou.qr>
+	<20070915093745.GC4613@prithivi.gnumonks.org>
+	<web-82301972@bk1.webmaillogin.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="61jdw2sOBCFtR2d/"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
-In-Reply-To: <20070915172509.GC5321@nephtys.luchs.at>
+In-Reply-To: <web-82301972@bk1.webmaillogin.com>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -19,40 +20,20 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-To: netfilter@lists.netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Jorge Davila <davila@nicaraguaopensource.com>
+Cc: Harald Welte <laforge@netfilter.org>, Netfilter Developer Mailing List <netfilter-devel@lists.netfilter.org>, Netfilter Mailing List <netfilter@lists.netfilter.org>
 
+> Hi!:
+>
+> I tried to find a photo to put the names but I didn't find any photo to=
+ edit
+> ...
+>
+> Jorge D=C3=A1vila.
+>
 
---61jdw2sOBCFtR2d/
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+http://nfws.inl.fr/en/wp-content/uploads/2007/09/nfws2007_group_photos.jp=
+g
 
-Re!
-
-Ok, sorry to bother you, I missed the email announcement of the migration. =
-:)
-
-Best wishes,
-Ren=E9.
-
---=20
-  )\._.,--....,'``.      Let GNU/Linux work for you while you take a nap.
- /,   _.. \   _\  (`._ ,. R. Pfeiffer <lynx at luchs.at> + http://web.luchs=
-=2Eat/
-`._.-(,_..'--(,_..'`-.;.'  - System administration + Consulting + Teaching -
-Got mail delivery problems?  http://web.luchs.at/information/blockedmail.php
-
---61jdw2sOBCFtR2d/
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFG7BileMu5lRpXJ7kRAgXHAJ0UrxlTnkKdkqhwC/R7P3RZuzcl9wCdEM3i
-5bVZLRvZhr13E8222bdeFME=
-=i0R6
------END PGP SIGNATURE-----
-
---61jdw2sOBCFtR2d/--
 
