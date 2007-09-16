@@ -1,12 +1,10 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Port-based routing with OpenVPN
-Date: Sun, 16 Sep 2007 13:05:08 +0200
-Message-ID: <46ED0DE4.1040300@plouf.fr.eu.org>
-References: <20070915231545.224150@gmx.net>
+From: Benoit Boissinot <bboissin@gmail.com>
+Subject: unexpected outgoing ACK
+Date: Mon, 17 Sep 2007 01:38:43 +0200
+Message-ID: <20070916233843.GG4987@ens-lyon.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-bounces@lists.netfilter.org>
-In-Reply-To: <20070915231545.224150@gmx.net>
+Content-Disposition: inline
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -17,43 +15,99 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@lists.netfilter.org
 
-Hello,
+This is on a machine sitting behind another firewall. It runs debian,
+with debian linux-image-2.6.18-5-686  2.6.18.dfsg.1-13etch2.
 
-Mario H=FClsegge a =E9crit :
->=20
-> i am trying to set up routing of all outgoing http-requests on my=20
-> workstation through my openvpn gateway (tun0). the web told me to do it=
-:
->=20
-> iptables -t mangle -A OUTPUT -p tcp --dport 80 -j MARK --set-mark 4
-> ip rule add fwmark 4 lookup 3
-> ip route add default dev tun0 table 3
+Once in a while, we see some unexpected ACK+RST going out of the server
+(the incoming SYN should have been dropped since the source port is not
+explicitely allowed in INPUT): 
 
-Looks fine.
+On Thu, Sep 13, 2007 at 09:02:12 +0200, logcheck system account wrote:
+> Sep 13 08:35:09 kernel: IN= OUT=eth0 SRC=140.77.x.y DST=152.77.24.38 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=17699 DF PROTO=TCP SPT=54597 DPT=62603 WINDOW=952 RES=0x00 ACK RST URGP=0
 
-> the problem is that it does not work. tcpdump gives me:
->=20
-> 00:28:00.461045 IP (tos 0x0, ttl  64, id 28447, offset 0, flags [DF],=20
-> proto: UDP (17), length: 71) 192.168.0.125.1049 > vroot.domain: [udp su=
-m=20
-> ok]  62654+ PTR? 67.11.71.195.in-addr.arpa. (43)
-> 00:28:00.515190 IP (tos 0x0, ttl  56, id 0, offset 0, flags [DF], proto=
-:=20
-> UDP (17), length: 127) vroot.domain > 192.168.0.125.1049:  62654 NXDoma=
-in=20
-> q: PTR? 67.11.71.195.in-addr.arpa. 0/1/0 ns: 71.195.in-addr.arpa. (99)
-> 00:28:01.459744 arp who-has 195.71.11.67 tell 192.168.0.125
-> 00:28:02.459844 arp who-has 195.71.11.67 tell 192.168.0.125
+On Sat, Sep 15, 2007 at 20:02:12 +0200, logcheck system account wrote:
+> Sep 15 19:53:28 kernel: IN= OUT=eth0 SRC=140.77.x.y DST=61.29.145.234 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=28476 DF PROTO=TCP SPT=41636 DPT=2948 WINDOW=5840 RES=0x00 ACK RST URGP=0
+> Sep 15 19:53:31 kernel: IN= OUT=eth0 SRC=140.77.x.y DST=61.29.145.234 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=43810 DF PROTO=TCP SPT=36437 DPT=2868 WINDOW=5840 RES=0x00 ACK RST URGP=0
 
-Was this trace captured on interface tun0 ?
-Please use option -n so addresses and port numbers are not converted=20
-into confusing names.
-What is the address of vroot ? Is it the other end of the VPN ?
-Is the OpenVPN link configured in TUN (IP) or TAP (ethernet) mode ? The=20
-interface name tun0 suggests TUN mode, but the ARP requests suggest TAP=20
-mode. If it is TAP mode, you must specify the gateway address in the ip=20
-route statement just as you would do with a gateway on an ethernet link.
+On Sun, Sep 16, 2007 at 05:02:12 +0200, logcheck system account wrote:
+> Sep 16 04:52:53 kernel: IN= OUT=eth0 SRC=140.77.x.y DST=221.206.165.157 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=41883 DF PROTO=TCP SPT=54608 DPT=1786 WINDOW=5840 RES=0x00 ACK RST URGP=0
+
+iptables -v -L looks like this (mangle and nat are empty):
+Chain INPUT (policy DROP 19 packets, 988 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+7060K 2416M ACCEPT     0    --  lo     *       0.0.0.0/0            0.0.0.0/0           
+  200 17395 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0           
+ 264K   28M ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp dpt:22 
+1364K  917M ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp dpt:25 
+    1    40 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp dpt:53 
+ 282K   16M ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp dpt:80 
+ 177K   44M ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp dpt:443 
+10377  917K ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp spt:22 
+ 766K   56M ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp spt:25 
+ 3532  644K ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp spt:53 
+ 812K  154M ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           udp spt:53 
+    0     0 ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           udp dpt:53 
+ 6686  508K ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           udp spt:123 
+    0     0 ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           udp dpt:123 
+41603 2569K ACCEPT     tcp  --  eth0   *       140.77.0.0/16        0.0.0.0/0           tcp dpt:1119 
+ 132K 9442K ACCEPT     tcp  --  eth0   *       140.77.0.0/16        0.0.0.0/0           tcp dpt:4030 
+35174 4593K DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type BROADCAST 
+ 9876  316K DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0           ADDRTYPE match dst-type MULTICAST 
+  530 26036 REJECT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp dpt:8080 reject-with icmp-port-unreachable 
+  132  6336 DROP       tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           multiport dports 135:139,445 
+    0     0 DROP       udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           multiport dports 135:139,445 
+   18   936 LOG        0    --  *      *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4 
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain OUTPUT (policy DROP 12 packets, 624 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+7060K 2416M ACCEPT     0    --  *      lo      0.0.0.0/0            0.0.0.0/0           
+ 2865  360K ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0           
+ 264K  172M ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           tcp spt:22 
+1210K   90M ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           tcp spt:25 
+    1    40 ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           tcp spt:53 
+ 535K  775M ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           tcp spt:80 
+ 232K  264M ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           tcp spt:443 
+28184 2609K ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           tcp dpt:22 
+1030K  989M ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           tcp dpt:25 
+ 4235  251K ACCEPT     tcp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           tcp dpt:53 
+    0     0 ACCEPT     udp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           udp spt:53 
+ 822K   62M ACCEPT     udp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           udp dpt:53 
+ 7017  533K ACCEPT     udp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           udp spt:123 
+    0     0 ACCEPT     udp  --  *      eth0    0.0.0.0/0            0.0.0.0/0           udp dpt:123 
+33220 4951K ACCEPT     tcp  --  *      eth0    0.0.0.0/0            140.77.0.0/16       tcp spt:1119 
+ 103K   34M ACCEPT     tcp  --  *      eth0    0.0.0.0/0            140.77.0.0/16       tcp spt:4030 
+   12   624 LOG        0    --  *      *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4 
+
+
+related modules loaded:
+iptable_mangle          2880  0
+iptable_nat             7044  0
+ip_nat                 16876  1 iptable_nat
+ip_conntrack           49088  2 iptable_nat,ip_nat
+nfnetlink               6680  2 ip_nat,ip_conntrack
+ipt_LOG                 6112  2
+xt_multiport            3264  2
+ipt_REJECT              5248  1
+ipt_addrtype            1952  2
+xt_tcpudp               3136  61
+iptable_filter          3104  1
+ip_tables              13028  3
+iptable_mangle,iptable_nat,iptable_filter
+x_tables               13316  7
+iptable_nat,ipt_LOG,xt_multiport,ipt_REJECT,ipt_addrtype,xt_tcpudp,ip_tables
+
+anything obvious we missed, or is this a bug somewhere ?
+
+regards,
+
+Benoit
+-- 
+:wq
 
