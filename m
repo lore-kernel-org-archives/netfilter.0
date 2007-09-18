@@ -1,11 +1,10 @@
-From: "pankaj jain" <jainp1979@gmail.com>
-Subject: DNAT and ICMP
-Date: Tue, 18 Sep 2007 17:17:03 +0530
-Message-ID: <d41814cf0709180447v68c70ef6h859b8276088c7462@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: [REMINDER]: netfilter list moved to kernel.org
+Date: Tue, 18 Sep 2007 14:34:24 +0200
+Message-ID: <000401c7f9f0$3eabc420$0b0ffe0a@NS006819>
+References: <46EFB7F9.5020001@trash.net>
 Return-path: <netfilter-bounces@lists.netfilter.org>
-Content-Disposition: inline
+In-Reply-To: <46EFB7F9.5020001@trash.net>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
@@ -16,33 +15,25 @@ List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
 	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
 Sender: netfilter-bounces@lists.netfilter.org
 Errors-To: netfilter-bounces@lists.netfilter.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@lists.netfilter.org
+Content-Transfer-Encoding: 7bit
+To: 'netfilter' <netfilter@lists.netfilter.org>
 
-Hi,
-I am working with SNAT and DNAT rules.
+netfilter-bounces@lists.netfilter.org wrote:
+> Just a reminder, the netfilter and netfilter-devel lists have
+> moved to kernel.org, you can subscribe to the new lists at
+>
+> http://vger.kernel.org/vger-lists.html#netfilter
+> http://vger.kernel.org/vger-lists.html#netfilter-devel
 
-When I send a packet {[IP1]} out it goes through the SNAT rules and
-source field in ip header gets changed.
-Now if there is an ICMP response { [IP2][ICMP][IP1] } for this packet,
-It goes through DNAT rules. IP2 gets DNATted  but the ip header (IP1)
-inside the ICMP packet also gets DNATted.
-
-src {SNAT(169.254.1.1) = 10.10.10.10} ----------> dst {10.10.10.11}
-icmp comes from dst.
-dst {10.10.10.11} -------------------------> src {DNAT(10.10.10.10) =
-169.254.1.1}
-the IP packet inside icmp header should have
-src = 10.10.10.10 and dst = 10.10.10.11 but it shows src = 169.254.1.1
-and dst = 10.10.10.11
-
-means for ICMP responses both ip headers (main ip header and the one
-inside icmp packet) are going through DNAT.
-
-Is it the connection tracking or there is special handling done in the kernel?
+Is the Netfilter Failover list also going to be moved to kernel.org,
+or...?
 
 
--- 
-Thanks
-Pankaj Jain
+Grts,
+Rob
+
+
+
 
