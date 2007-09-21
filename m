@@ -1,152 +1,55 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Questions on load-balancing (-j DNAT)
-Date: Fri, 21 Sep 2007 14:43:17 -0500
-Message-ID: <46F41ED5.7090701@riverviewtech.net>
-References: <00b301c7fc73$ba6cf590$b800a8c0@cybergeneration.com>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: "Mark Ackerman" <mark.ackerman@gmail.com>
+Subject: Netfilter source port manip question
+Date: Fri, 21 Sep 2007 15:25:49 -0600
+Message-ID: <1a0258560709211425n575a5ff1k550fa7bad0e7b040@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <00b301c7fc73$ba6cf590$b800a8c0@cybergeneration.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=K4ZAKX2A8q3VOevP6XOCoy2RRHeubQqZ4Ea9TTb9tV0=;
+        b=H5tKbM9Di73d/C4BiHQhIPpNugrvDn+LAb8QlYFPluPu5/7zo+qbfo4wLQX/Si25CH1UCk6hFQk9sN/7ZY8R33HPASnvjNdCnozSbq2mXYfMtU/x4eYpX+JLMouirUnmctmH8azU3wfJMQ6WHlohgVgfTu8Ive5zxaDJdlmol4M=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On 09/21/07 12:20, Maxime Ducharme wrote:
-> Lately we had some problems connecting to the servers behind and we 
-> noticed our firewall's conntrack maxed out, we saw these messages 
-> appear in system logs :
-> 
-> kernel: ip_conntrack: table full, dropping packet.
+Another try:
 
-That's no fun at all.
+I am writing a transparent proxy kernel module to fit an existing
+proxy code base. Currently, I am only having problems on packets that
+are targetting the proxy directly (ie. the switch issues a GET on the
+transparent proxy address).
 
-> /proc/sys/net/ipv4/ip_conntrack_max contains 16368,
-> 
-> we raised server's RAM and raised this value
+The iptable rule used is:
 
-*nod*
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 36250
 
-> we are using kinda old iptables, it is iptables 1.2.9 running on a 
-> 2.4 kernel
-> 
-> we plan to have more and more domains hosted in the future and I want 
-> to be ready to raise firewall's capacity like 10 times
+I have 3 netfilter hooks coded.
 
-I think you are going to be hard pressed to get that type of
-scaleability with out running in to memory constraints again.  But I
-could be wrong.
+PreRoute: (NF_IP_PRI_NAT_DST + 1)
+The preroute hook point looks at the packet and modifies the packet
+back to port 80 which the listener is using.  (I know I could modify
+the port the listener is using to 36250 etc. But for various reasons
+that is not desired.)
+For this problem, the daddr is already hitting local so no rewrite is necessary.
 
-> would an iptables upgrade help us in this situation ?
+PostRoute: (NF_IP_PRI_FIRST)
+For locally bound traffic (original daddr and port targetted at
+transparent proxy) the packet is just accepted.
+For off-box traffic the daddr is changed back to point at the origin server.
 
-Possibly.  I do not know enough about the differences between versions
-to help here.
+LocalOut: (NF_IP_PRI_NAT_SRC - 1)
+Here is where I hit the problem.  If the source port is 80, the code
+rewrites the port to 3620 (attempting to make NAT happy again).
+However, when the ip_nat_fun is called the source port has been set to
+1.
 
-> I was also wondering if guys in here have an idea on how we could 
-> load-balance the firewall service itself (conntrack) ?
+Starting to think maybe I need to use a helper function but I am not sure.
 
-conntrackd is your friend.
+Any ideas?
 
-> We thought about placing a zone in our DNS with 2 IPs and round-robin 
-> active, and place a second firewall with the same DNAT instructions 
-
-You could probably do this to spread the load across the two systems.
-However if you are using conntrackd to share the firewall state
-information between the systems, each will know its own and the others,
-so this will not do much good for you.  That is unless you have two sets
-of redundant firewalls.  I.e. A and B are redundant for each other, as
-well as C and D for each other.  Then load balance across the sets A/B
-and C/D so that half the load is on A/B and the other half is on C/D.
-
-> The firewall have these kind of instructions :
-> 
-> DNAT incoming TCP 25 to multiple LAN anti-spam servers (-j DNAT 
-> $IP1-$IPN)
-> 
-> DNAT incoming POP3, IMAP and HTTP to a single Mail Server (-j DNAT 
-> $MAILSERVER)
-
-Ok, this is simple enough.
-
-> Our conntrack was filled with incoming TCP 25 sessions (SMTP) caused 
-> by spamming botnets, we have an average of 15000 sessions in the day 
-> time.
-
-15,000 concurrent sessions?
-
-> Any other ideas ?
-
-Yes.
-
-Do not use DNAT to redirect your packets.  Rather look in to using Linux
-Virtual Server, probably in Direct Routing (LVS-DR) mode, to spread the
-load across your multiple servers.  I think (read:  hope) the LVS
-Director will completely bypass the connection tracking table that is
-your limitation.  (I do not have any experience in this so I can not say
-for sure.)  The idea is to use something other than DNAT which uses
-connection tracking which is your limitation.
-
-The LVS-DR Directory will receive packets destined to the IP address of
-the virtual server (virtual IP (VIP)) and alter the destination MAC
-address and pass the packet on to the internal real server.  The real
-server(s) will then process the packets and return them to the client(s).
-
-As far as firewalling, run a similarly configured firewall on all the
-real back end servers.
-
-Another advantage of LVS is that it can monitor the state of the back
-end servers and remove them from the redirection pool if they go down or
-add new ones as you need to for load.
-
-You can even have the LVS Director be redundant so there is no single
-point of failure.
-
-Here is an ASCII rendering of a single director.
-------------------------------------------------
-                                 +--------+   +-----------------+
-                                 | --->   +---+ Processing Node |
-                                 |   <--- |   +-----------------+
-                                 | --->   |
----+                            |   <--- |   +-----------------+
-    |                            | --->   +---+ Processing Node |
----+   +--------------------+   |   <--- |   +-----------------+
-    +---+ VIP / LVS Director +---+ Switch |
----+   +--------------------+   | --->   |   +-----------------+
-    |                            |   <--- |---+ Processing Node |
----+                            | --->   |   +-----------------+
-                                 |   <--- |
-                                 | --->   |   +-----------------+
-                                 |   <--- +---+ Processing Node |
-                                 +--------+   +-----------------+
-
-Here is an ASCII rendering of a redundant director.
----------------------------------------------------
-                                 +--------+   +-----------------+
-                                 | --->   +---+ Processing Node |
-                                 |   <--- |   +-----------------+
-                                 | --->   |
----+   +--------------------+   |   <--- |   +-----------------+
-    +---+ VIP / LVS Director +---+ --->   +---+ Processing Node |
----+   +--------------------+   |   <--- |   +-----------------+
-    |                            | Switch |
----+   +--------------------+   | --->   |   +-----------------+
-    +---+ VIP / LVS Director +---+   <--- |---+ Processing Node |
----+   +--------------------+   | --->   |   +-----------------+
-                                 |   <--- |
-                                 | --->   |   +-----------------+
-                                 |   <--- +---+ Processing Node |
-                                 +--------+   +-----------------+
-
-With the redundant director, you will use VRRPd or the likes to have one
-director be "active" at a time.  If the active one fails, the backup one
-will take over.
-
-> Thanks in advance and have a nice day
-
-You are welcome.
-
-
-
-Grant. . . .
-
+Mark Ackerman
+mark.ackerman@gmail.com
