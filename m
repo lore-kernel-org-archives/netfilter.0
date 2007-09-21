@@ -1,33 +1,64 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Old lists are disabled as of now
-Date: Thu, 20 Sep 2007 12:51:23 +0200
-Message-ID: <46F250AB.5000101__25846.6161824346$1190286031$gmane$org@trash.net>
+From: "Maxime Ducharme" <mducharme@cybergeneration.com>
+Subject: Questions on load-balancing (-j DNAT)
+Date: Fri, 21 Sep 2007 13:20:38 -0400
+Message-ID: <00b301c7fc73$ba6cf590$b800a8c0@cybergeneration.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-bounces@lists.netfilter.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: <http://lists.netfilter.org/pipermail/netfilter>
-List-Post: <mailto:netfilter@lists.netfilter.org>
-List-Help: <mailto:netfilter-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter>,
-	<mailto:netfilter-request@lists.netfilter.org?subject=subscribe>
-Sender: netfilter-bounces@lists.netfilter.org
-Errors-To: netfilter-bounces@lists.netfilter.org
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Development Mailinglist <netfilter-devel@lists.netfilter.org>, netfilter <netfilter@lists.netfilter.org>
+To: netfilter@vger.kernel.org
 
-gmane has picked up the new lists, marc.info probably also
-(if not it will soon), so effective immediately, I'm disabling
-subscriptions and postings to the old lists. Posters will
-receive an automatic reply pointing them to the new lists.
 
-Once again the URLs for subscription:
+Hello to the list
+ 
+Got a question about iptables capacity
+ 
+We are running a linux box with iptables and DNAT to
+load-balance incoming mail on multiple anti-spam servers
+(qmail + SpamAssassin + ClamAV) on a 100 mbits link
+ 
+Lately we had some problems connecting to the servers behind
+and we noticed our firewall's conntrack maxed out, we saw these
+messages appear in system logs :
+ 
+kernel: ip_conntrack: table full, dropping packet.
+ 
+/proc/sys/net/ipv4/ip_conntrack_max contains 16368,
+we raised server's RAM and raised this value
 
-http://vger.kernel.org/vger-lists.html#netfilter
-http://vger.kernel.org/vger-lists.html#netfilter-devel
+we are using kinda old iptables, it is iptables 1.2.9
+running on a 2.4 kernel
+ 
+we plan to have more and more domains hosted in the future and
+I want to be ready to raise firewall's capacity like 10 times
 
-Cheers,
-Patrick
+would an iptables upgrade help us in this situation ?
+ 
+I was also wondering if guys in here have an idea on how we
+could load-balance the firewall service itself (conntrack) ?
+ 
+We tought about placing a zone in our DNS with 2 IPs
+and round-robin active, and place a second firewall with
+the same DNAT instructions
+ 
+The firewall have these kind of instructions :
+ 
+DNAT incoming TCP 25 to multiple LAN anti-spam servers
+(-j DNAT $IP1-$IPN)
+
+DNAT incoming POP3, IMAP and HTTP to a single Mail Server
+(-j DNAT $MAILSERVER)
+ 
+Our conntrack was filled with incoming TCP 25 sessions (SMTP)
+caused by spamming botnets, we have an average of 15000
+sessions in the day time.
+ 
+Any other ideas ?
+ 
+Thanks in advance and have a nice day
+ 
+Maxime Ducharme
+
 
