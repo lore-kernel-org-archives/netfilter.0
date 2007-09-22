@@ -1,7 +1,7 @@
-From: Mike Wright <mike.wright@mailinator.com>
+From: "Eljas Alakulppi" <Buzer@buzer.net>
 Subject: Re: Iptables rules.
-Date: Sat, 22 Sep 2007 12:44:34 -0700
-Message-ID: <46F570A2.5000307@mailinator.com>
+Date: Sat, 22 Sep 2007 22:32:25 +0300
+Message-ID: <op.ty2lwbujrtqp7s@hagumi.lan>
 References: <46F56591.7010905@snurf.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -9,26 +9,29 @@ Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <46F56591.7010905@snurf.info>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Shams Fantar <sfantar@snurf.info>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
+To: Shams Fantar <sfantar@snurf.info>, netfilter@vger.kernel.org
 
-Shams Fantar wrote:
+Add:
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+Reason: You aren't allowing the incoming packets from the host you are  
+connected to (you send a packet, server recieves the packet, server sends  
+reply, your iptables rules drop it).
+
+Shams Fantar <sfantar@snurf.info> kirjoitti Sat, 22 Sep 2007 21:57:21  
++0300:
+
 > Hello,
-> 
-> I am writing iptables rules. Here is the rules, they are in a script : 
+>
+> I am writing iptables rules. Here is the rules, they are in a script :  
 > http://jumble.snurf.info/iptables-start
-> 
+>
 > When I use it, It blocks all access to the network. Why ?
-> 
+>
 > Do you have suggestions for my rules ?
+>
+> Regards,
+>
 
-There has to be a way for replies to outbound traffic to get back in. 
-Maybe this (probably near the top):
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-The rules -A OUTPUT aren't needed because OUTPUT's policy is already ACCEPT.
-
-hth,
-:m)
