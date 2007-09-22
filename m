@@ -1,26 +1,34 @@
-From: Shams Fantar <sfantar@snurf.info>
-Subject: Iptables rules.
-Date: Sat, 22 Sep 2007 20:57:21 +0200
-Message-ID: <46F56591.7010905@snurf.info>
+From: Mike Wright <mike.wright@mailinator.com>
+Subject: Re: Iptables rules.
+Date: Sat, 22 Sep 2007 12:44:34 -0700
+Message-ID: <46F570A2.5000307@mailinator.com>
+References: <46F56591.7010905@snurf.info>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <46F56591.7010905@snurf.info>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Shams Fantar <sfantar@snurf.info>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Shams Fantar wrote:
+> Hello,
+> 
+> I am writing iptables rules. Here is the rules, they are in a script : 
+> http://jumble.snurf.info/iptables-start
+> 
+> When I use it, It blocks all access to the network. Why ?
+> 
+> Do you have suggestions for my rules ?
 
-I am writing iptables rules. Here is the rules, they are in a script : 
-http://jumble.snurf.info/iptables-start
+There has to be a way for replies to outbound traffic to get back in. 
+Maybe this (probably near the top):
 
-When I use it, It blocks all access to the network. Why ?
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-Do you have suggestions for my rules ?
+The rules -A OUTPUT aren't needed because OUTPUT's policy is already ACCEPT.
 
-Regards,
-
--- 
-Shams Fantar (http://snurf.info)
-
+hth,
+:m)
