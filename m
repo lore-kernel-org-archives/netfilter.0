@@ -1,37 +1,25 @@
-From: "Eljas Alakulppi" <Buzer@buzer.net>
-Subject: Re: Iptables rules.
-Date: Sat, 22 Sep 2007 22:32:25 +0300
-Message-ID: <op.ty2lwbujrtqp7s@hagumi.lan>
-References: <46F56591.7010905@snurf.info>
+From: Gerry Reno <greno@verizon.net>
+Subject: fwknop: use with Fedora?
+Date: Sat, 22 Sep 2007 20:48:56 -0400
+Message-ID: <46F5B7F8.2060502@verizon.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <46F56591.7010905@snurf.info>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
-To: Shams Fantar <sfantar@snurf.info>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Add:
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+I installed fwknop and have it configured and ready to start but in 
+reading documentation it looks like it is going to link to a user chain 
+it creates from INPUT.  I'm using Fedora 7 and there already appears to 
+be a user chain, RH-Firewall-1-INPUT, in INPUT put there by Fedora.  So 
+is this going to mess things up with fwknop?  Does anyone have fwknop 
+working with Fedora?  How do you get it to work with an existing user chain?
 
-Reason: You aren't allowing the incoming packets from the host you are  
-connected to (you send a packet, server recieves the packet, server sends  
-reply, your iptables rules drop it).
+????
 
-Shams Fantar <sfantar@snurf.info> kirjoitti Sat, 22 Sep 2007 21:57:21  
-+0300:
+Gerry
 
-> Hello,
->
-> I am writing iptables rules. Here is the rules, they are in a script :  
-> http://jumble.snurf.info/iptables-start
->
-> When I use it, It blocks all access to the network. Why ?
->
-> Do you have suggestions for my rules ?
->
-> Regards,
->
 
 
