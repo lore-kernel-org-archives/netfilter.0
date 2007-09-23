@@ -1,7 +1,7 @@
 From: Gerry Reno <greno@verizon.net>
 Subject: Re: fwknop: use with Fedora?
-Date: Sat, 22 Sep 2007 23:01:46 -0400
-Message-ID: <46F5D71A.1050901@verizon.net>
+Date: Sat, 22 Sep 2007 22:27:24 -0400
+Message-ID: <46F5CF0C.3060004@verizon.net>
 References: <46F5B7F8.2060502@verizon.net> <46F5C161.7090908@verizon.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -39,16 +39,16 @@ Gerry Reno wrote:
 > help...
 >
 > Gerry
-Well, I found out that the problem is that Fedora 7 has libpcap 0.9.5
-installed and fwknop is looking specifically for libpcap 0.9.4.  So I
-just created a symlink from 0.9.5 to 0.9.4 in /usr/lib.  We'll see if
+Well, I found out that the problem is that Fedora 7 has libpcap 0.9.5 
+installed and fwknop is looking specifically for libpcap 0.9.4.  So I 
+just created a symlink from 0.9.5 to 0.9.4 in /usr/lib.  We'll see if 
 this will work.
 
 ----------------------------------
 So then we get to the next error:
 
 # service fwknop start
-Starting the fwknop daemons: [*] /etc/fwknop/access.conf: source ANY
+Starting the fwknop daemons: [*] /etc/fwknop/access.conf: source ANY 
 missing PORT_OFFSET, defaulting to 61000. at /usr/sbin/fwknopd line 2911.
                                                            [FAILED]
 
@@ -60,7 +60,7 @@ next try:
 put in a PORT_OFFSET
 
 # service fwknop start
-Starting the fwknop daemons: [*] /etc/fwknop/access.conf: source ANY
+Starting the fwknop daemons: [*] /etc/fwknop/access.conf: source ANY 
 missing KNOCK_INTERVAL, defaulting to 60. at /usr/sbin/fwknopd line 2973.
                                                            [FAILED]
 
@@ -78,17 +78,17 @@ Finally!
 But, when I check the log I see this:
 
 Sep 22 21:57:48 grp-01-00-50 fwknopd: starting fwknopd
-Sep 22 21:57:50 grp-01-00-50 fwknopd: flushing existing iptables
+Sep 22 21:57:50 grp-01-00-50 fwknopd: flushing existing iptables 
 IPT_AUTO_CHAIN chains
-Sep 22 21:57:50 grp-01-00-50 fwknopd: warning, could not find iptables
-state tracking rules in INPUT chain   <------- here I think it is
+Sep 22 21:57:50 grp-01-00-50 fwknopd: warning, could not find iptables 
+state tracking rules in INPUT chain   <------- here I think it is 
 confused about RH/Fedora iptables structure
-Sep 22 21:57:50 grp-01-00-50 fwknopd: imported access directives (1
+Sep 22 21:57:50 grp-01-00-50 fwknopd: imported access directives (1 
 SOURCE definitions).
 Sep 22 21:57:50 grp-01-00-50 kernel: device eth0 entered promiscuous mode
-Sep 22 21:57:52 grp-01-00-50 setroubleshoot:      SELinux is preventing
-/sbin/iptables (iptables_t) "write" to /var/log/fwknop/fwknopd.iptout
-(var_log_t).      For complete SELinux messages. run sealert -l
+Sep 22 21:57:52 grp-01-00-50 setroubleshoot:      SELinux is preventing 
+/sbin/iptables (iptables_t) "write" to /var/log/fwknop/fwknopd.iptout 
+(var_log_t).      For complete SELinux messages. run sealert -l 
 13ca6c50-c04a-4602-9464-9a01ec6a0ba5
 
 I tried to restorecon -v the file but no luck, still same error.
@@ -100,6 +100,5 @@ dr-x------ 2 root root 4096 2007-09-22 21:57 errs
 -rw-r--r-- 1 root root    0 2007-09-22 22:22 fwknopd.iptout
 
 ????
-
 
 
