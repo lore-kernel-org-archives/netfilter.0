@@ -1,42 +1,32 @@
-From: Gerry Reno <greno@verizon.net>
-Subject: Re: fwknop: use with Fedora?
-Date: Sun, 23 Sep 2007 22:47:21 -0400
-Message-ID: <46F72539.1090901@verizon.net>
-References: <46F5B7F8.2060502@verizon.net> <46F5C161.7090908@verizon.net>
- <46F5CF0C.3060004@verizon.net> <20070923043058.GA2940@minastirith>
- <46F65D0E.6050005@verizon.net> <46F65EBE.30502@verizon.net>
- <46F66A11.5000901@verizon.net> <46F66E89.1000809@verizon.net>
- <46F6755D.9070407@verizon.net> <46F693D1.2060909@verizon.net>
- <46F6FBCD.2070203@verizon.net> <46F71690.6040106@verizon.net>
+From: "Nir Tzachar" <nir.tzachar@gmail.com>
+Subject: libipq thread safety
+Date: Mon, 24 Sep 2007 11:18:08 +0200
+Message-ID: <9b2db90b0709240218r67da35f0n280f8718b42a4059@mail.gmail.com>
+References: <9b2db90b0709240216j95b58bch35a234527f9d97f4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <46F71690.6040106@verizon.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=mfYtkn0fQVXgtWoh6NWzalzTcs/BOzl35RfnJICMhUY=;
+        b=mPj4w7DYgqmRT0OYS0wETDNX2YZmHG43bSPFqYZ6K0I/wFbmTcxj2j2pGJonzcYc+7DVtyOPNokF9LXzN6Xicggym6vI3uwSUbX2kd1g9hRHoav7ucCF5nC/Y1OERAP2mgLwF4zY8d9RUtb7zGADBoRZ8OsUVltIYL21JpghCoI=
+In-Reply-To: <9b2db90b0709240216j95b58bch35a234527f9d97f4@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-I ran the daemon in debug mode but still no luck:
+Hello.
 
-# fwknopd --debug
-[+] ** Starting fwknopd (debug mode) **
-[+] Building iptables config info.
-/sbin/iptables -t filter -n -L INPUT
-[+] starting fwknopd
-[+] flushing existing iptables IPT_AUTO_CHAIN chains
-/sbin/iptables -t filter -n -L FWKNOP_INPUT
-/sbin/iptables -t filter -F FWKNOP_INPUT
-/sbin/iptables -nL INPUT
-[-] warning, could not find iptables state tracking rules in INPUT chain
-[+] imported access directives (1 SOURCE definitions).
-[+] Sniffing (promisc) packet data from interface: eth0
-[+] pcap_loop()
+I am writing an application which uses the QUEUE target and am using
+the libipq library.
 
-After a good knock sequence is received this is all the output that I 
-see from fwknopd in debug mode.
+I have a question regarding the thread safety of the library: is it
+possible to do a
+ipq_read from one thread and an ipq_set_verdict from another?
+Searching the archive of both netfilter and netfilter-devel yields no
+definite answers...
 
-Gerry
-
-
-
+Thanks for your help.
