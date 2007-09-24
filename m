@@ -1,39 +1,48 @@
-From: Gerry Reno <greno@verizon.net>
+From: Michael Rash <mbr@cipherdyne.org>
 Subject: Re: fwknop: use with Fedora?
-Date: Sun, 23 Sep 2007 19:50:37 -0400
-Message-ID: <46F6FBCD.2070203@verizon.net>
+Date: Sun, 23 Sep 2007 20:16:07 -0400
+Message-ID: <20070924001607.GD11683@minastirith>
 References: <46F5B7F8.2060502@verizon.net> <46F5C161.7090908@verizon.net>
  <46F5CF0C.3060004@verizon.net> <20070923043058.GA2940@minastirith>
  <46F65D0E.6050005@verizon.net> <46F65EBE.30502@verizon.net>
  <46F66A11.5000901@verizon.net> <46F66E89.1000809@verizon.net>
- <46F6755D.9070407@verizon.net> <46F693D1.2060909@verizon.net>
+ <46F6755D.9070407@verizon.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <46F693D1.2060909@verizon.net>
+In-reply-to: <46F6755D.9070407@verizon.net>
+Content-disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Working with this some more...
+On Sep 23, 2007, Gerry Reno wrote:
 
-I followed the code in /usr/bin/fwknop and there was no case to handle 
-tcp so I created this patch which fixed the problem:
+> Just trying to get port knock working first...
+> 
+> When I run the client I see this error:
+> 
+> $ ./knocklogin
+> ++ fwknop --Server-mode knock -A tcp/12345 -s -r --offset 55500 -D 
+> XXX.XXX.XXX.XXX
+> [+] Starting fwknop client.
+> [+] Enter an encryption key. This key must match a key in the file
+> /etc/fwknop/access.conf on the remote system.
+> 
+> Encryption Key:
+> [*] Must specify port to open. at /usr/bin/fwknop line 761, <STDIN> line 
+> 1. <------ I thought this is what the -A argument did????
+> ++ ssh -p 12345 user@XXX.XXX.XXX.XXX
+> ssh: connect to host XXX.XXX.XXX.XXX port 12345: Connection refused
+> ++ set +x
 
-750c750,755
-< if ($access_str =~ /udp/i) {
----
- > if ($access_str =~ /tcp/i) {
- > $proto_num = 6;
- > if ($access_str =~ /(\d+)/) {
- > $enc_allow_port = $1;
- > }
- > } elsif ($access_str =~ /udp/i) {
+Ok, thanks for reporting that; I'll fix it for the next release.  Still,
+this is the legacy port knocking mode.  How about trying this?:
 
-So now when I run the client I get the knock sequence sent to the 
-server, however the server is still not opening the port so now to 
-investigate that.
+$ fwknop -A tcp/12345 -R -D XXX.XXX.XXX.XXX
 
-Gerry
+...and setting your /etc/fwknop/access.conf file per one of my previous
+emails?  This will get you going with SPA mode.
 
+--Mike
