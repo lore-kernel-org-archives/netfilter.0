@@ -1,51 +1,48 @@
-From: "info" <info@mail.apd-hp.de>
-Subject: RE: Filtering based on domains
-Date: Tue, 25 Sep 2007 23:26:27 +0200
-Message-ID: <6407D8226F45114A973E9E4005AE9E5C380D9E@ns1.apd-hp.de>
-References: <200709251542.17186.S.Illes@westminster.ac.uk>
+From: Mario =?ISO-8859-1?Q?H=FClsegge?= <huelsegge@gmx.de>
+Subject: Re: Port-based routing with OpenVPN
+Date: Wed, 26 Sep 2007 00:14:39 +0200
+Message-ID: <1190758479.13546.8.camel@laptop>
+References: <20070915231545.224150@gmx.net>
+	 <46ED0DE4.1040300@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-content-class: urn:content-classes:message
+In-Reply-To: <46ED0DE4.1040300@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Szabolcs Illes <S.Illes@westminster.ac.uk>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Have a look for gepip  which allows acces rules per country (it's in
-pom-ng)
+Am Sonntag, den 16.09.2007, 13:05 +0200 schrieb Pascal Hambourg:
 
-Cheers
-Chirs 
+> 
+> > the problem is that it does not work. tcpdump gives me:
+> > 
+> > 00:28:00.461045 IP (tos 0x0, ttl  64, id 28447, offset 0, flags [DF], 
+> > proto: UDP (17), length: 71) 192.168.0.125.1049 > vroot.domain: [udp sum 
+> > ok]  62654+ PTR? 67.11.71.195.in-addr.arpa. (43)
+> > 00:28:00.515190 IP (tos 0x0, ttl  56, id 0, offset 0, flags [DF], proto: 
+> > UDP (17), length: 127) vroot.domain > 192.168.0.125.1049:  62654 NXDomain 
+> > q: PTR? 67.11.71.195.in-addr.arpa. 0/1/0 ns: 71.195.in-addr.arpa. (99)
+> > 00:28:01.459744 arp who-has 195.71.11.67 tell 192.168.0.125
+> > 00:28:02.459844 arp who-has 195.71.11.67 tell 192.168.0.125
+> 
+> Was this trace captured on interface tun0 ?
+ i am sorry, i confused the tcpdump output with another test on a normal
+eth device, this is the capture on tun0:
 
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org 
-> [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Szabolcs Illes
-> Sent: Tuesday, September 25, 2007 4:42 PM
-> To: netfilter@vger.kernel.org
-> Subject: Filtering based on domains
-> 
-> Hi,
-> 
-> I wonder If anyone knows any iptables extension which can be 
-> used to limit access based on a domains.
-> 
-> I have a Darvin Streaming Server and I would like the 
-> restrict the streaming to ac.uk domain.
-> 
-> Cheers,
-> Szabolcs
-> 
-> 
-> --
-> The University of Westminster is a charity and a company 
-> limited by guarantee.  Registration number: 977818 England.  
-> Registered Office:
-> 309 Regent Street, London W1B 2UW, UK.
-> -
-> To unsubscribe from this list: send the line "unsubscribe 
-> netfilter" in the body of a message to 
-> majordomo@vger.kernel.org More majordomo info at  
-> http://vger.kernel.org/majordomo-info.html
-> 
-> 
+23:47:54.378123 IP 192.168.0.125.3794 > ha-42.web.de.www: S
+471744113:471744113(
+0) win 5840 <mss 1460,sackOK,timestamp 7974928 0,nop,wscale 3>
+23:47:57.377790 IP 192.168.0.125.3794 > ha-42.web.de.www: S
+471744113:471744113(
+0) win 5840 <mss 1460,sackOK,timestamp 7975678 0,nop,wscale 3>
+23:48:03.378327 IP 192.168.0.125.3794 > ha-42.web.de.www: S
+471744113:471744113(
+0) win 5840 <mss 1460,sackOK,timestamp 7977178 0,nop,wscale 3>
+23:48:15.379418 IP 192.168.0.125.3794 > ha-42.web.de.www: S
+471744113:471744113(
+0) win 5840 <mss 1460,sackOK,timestamp 7980178 0,nop,wscale 3>
+
+the answer seems to be blocked in some way.. suggestions?
+
