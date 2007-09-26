@@ -1,42 +1,36 @@
-From: Gerald Vogt <vogt@spamcop.net>
-Subject: Stumped
-Date: Wed, 26 Sep 2007 13:13:55 +0900
-Message-ID: <46F9DC83.7000808@spamcop.net>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Subject: Re: Filtering based on domains
+Date: Wed, 26 Sep 2007 06:30:32 +0100 (BST)
+Message-ID: <Pine.LNX.4.58.0709260628030.23333@mail3.jubileegroup.co.uk>
+References: <200709251542.17186.S.Illes@westminster.ac.uk>
+ <6407D8226F45114A973E9E4005AE9E5C380D9E@ns1.apd-hp.de> <46F9B90B.7020205@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <46F9B90B.7020205@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi!
+Hi there,
 
-I want to get iptables running on my Kurobox device (NAS). The kernel 
-came without the filtering modules. Thus I recompiled a new kernel 
-adding what was missing and installed it and all modules for the 
-netfilter. Still I always get
+On Tue, 25 Sep 2007, Grant Taylor wrote:
 
-root@LS-GL7D6:~# iptables -L
-iptables v1.3.6: can't initialize iptables table `filter': Bad file 
-descriptor
-Perhaps iptables or your kernel needs to be upgraded.
+> On 9/25/2007 4:26 PM, info wrote:
+> > Have a look for gepip  which allows acces rules per country (it's in
+> > pom-ng)
+>
+> I think you may mean geoip.
 
-lsmod shows:
+Either way, I don't think it will do what the OP wants.
 
-root@LS-GL7D6:~# lsmod
-Module                  Size  Used by
-iptable_filter          2336  0
-ip_tables              23008  1 iptable_filter
+I think he'll have to do something in user space, or (probably better)
+do it a different way.  Obviously the performance hit of a DNS lookup
+for every connection could be serious.
 
-There is only very little information about the bad file descriptor 
-error in the internet and it did not help me.
+--
 
-iptables is from the debian stable packages. The kernel is 2.6.12.6-arm1.
-
-Can anyone help me to fix this problem to get iptables properly running 
-on that box?
-
-Thanks!
-
-Gerald
+73,
+Ged.
