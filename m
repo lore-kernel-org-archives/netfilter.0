@@ -1,34 +1,38 @@
 From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: Filtering based on domains
-Date: Wed, 26 Sep 2007 06:30:32 +0100 (BST)
-Message-ID: <Pine.LNX.4.58.0709260628030.23333@mail3.jubileegroup.co.uk>
-References: <200709251542.17186.S.Illes@westminster.ac.uk>
- <6407D8226F45114A973E9E4005AE9E5C380D9E@ns1.apd-hp.de> <46F9B90B.7020205@riverviewtech.net>
+Subject: Re: Stumped
+Date: Wed, 26 Sep 2007 06:34:31 +0100 (BST)
+Message-ID: <Pine.LNX.4.58.0709260633120.23333@mail3.jubileegroup.co.uk>
+References: <46F9DC83.7000808@spamcop.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <46F9B90B.7020205@riverviewtech.net>
+In-Reply-To: <46F9DC83.7000808@spamcop.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: Gerald Vogt <vogt@spamcop.net>
+Cc: netfilter@vger.kernel.org
 
 Hi there,
 
-On Tue, 25 Sep 2007, Grant Taylor wrote:
+On Wed, 26 Sep 2007, Gerald Vogt wrote:
 
-> On 9/25/2007 4:26 PM, info wrote:
-> > Have a look for gepip  which allows acces rules per country (it's in
-> > pom-ng)
+> Hi!
 >
-> I think you may mean geoip.
+> I want to get iptables running on my Kurobox device (NAS). The kernel
+> came without the filtering modules. Thus I recompiled a new kernel
+> adding what was missing and installed it and all modules for the
+> netfilter. Still I always get
+>
+> root@LS-GL7D6:~# iptables -L
+> iptables v1.3.6: can't initialize iptables table `filter': Bad file
+> descriptor
+> Perhaps iptables or your kernel needs to be upgraded.
+> [snip]
+> iptables is from the debian stable packages. The kernel is 2.6.12.6-arm1.
 
-Either way, I don't think it will do what the OP wants.
-
-I think he'll have to do something in user space, or (probably better)
-do it a different way.  Obviously the performance hit of a DNS lookup
-for every connection could be serious.
+Maybe iptables needs to be upgraded?  ISTR I once came across a situation
+where I had to do that after a kernel upgrade on Debian.
 
 --
 
