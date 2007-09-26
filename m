@@ -1,33 +1,36 @@
-From: Mario =?ISO-8859-1?Q?H=FClsegge?= <huelsegge@gmx.de>
-Subject: Re: Port-based routing with OpenVPN
-Date: Wed, 26 Sep 2007 14:49:57 +0200
-Message-ID: <1190810998.6867.5.camel@laptop>
-References: <20070915231545.224150@gmx.net>
-	 <46ED0DE4.1040300@plouf.fr.eu.org> <1190758479.13546.8.camel@laptop>
-	 <46FA3594.9050306@plouf.fr.eu.org>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Filtering based on domains
+Date: Wed, 26 Sep 2007 09:05:44 -0500
+Message-ID: <46FA6738.1090102@riverviewtech.net>
+References: <200709251542.17186.S.Illes@westminster.ac.uk> <6407D8226F45114A973E9E4005AE9E5C380D9E@ns1.apd-hp.de> <46F9B90B.7020205@riverviewtech.net> <Pine.LNX.4.58.0709260628030.23333@mail3.jubileegroup.co.uk>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <46FA3594.9050306@plouf.fr.eu.org>
+In-Reply-To: <Pine.LNX.4.58.0709260628030.23333@mail3.jubileegroup.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Am Mittwoch, den 26.09.2007, 12:33 +0200 schrieb Pascal Hambourg:
+On 09/26/07 00:30, G.W. Haywood wrote:
+> Either way, I don't think it will do what the OP wants.
 
-> You may need to add an iptables SNAT or MASQUERADE rule for 
-> packets leaving the tun0 interface. [...]
-> 
-> Finally, check that /proc/sys/net/ipv4/conf/tun0/rp_filter = 0, else 
-> your workstation routing may drop the replies arriving at tun0 (although 
-> tcpdump would see them).
-> -
+(with my head slanted sideways with a confused look on my face)
+Hugh???
 
-these 2 hints solved the problem, now all runs fine. i inserted a masq
-rule before, but without setting rp_filter (who would ever thought of
-THAT ;) ).
+> I think he'll have to do something in user space, or (probably 
+> better) do it a different way.  Obviously the performance hit of a 
+> DNS lookup for every connection could be serious.
 
-thank you very much for your help. 
+I have never used GeoIP my self so I can't say for sure, but it was my 
+(mis)understanding that GeoIP was intended to associate IP ranges with 
+specific countries.  Thus the OPs request may seems to be a perfect 
+match for GeoIP.  But seeing as how I have never used it my self, I 
+don't know how it is implemented.  I have not really given it any thought...
 
+If you know any more about GeoIP please enlighten me.  TIA
+
+
+
+Grant. . . .
