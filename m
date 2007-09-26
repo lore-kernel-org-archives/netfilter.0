@@ -1,40 +1,39 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Port-based routing with OpenVPN
-Date: Wed, 26 Sep 2007 16:10:06 +0200
-Message-ID: <46FA683E.5030307@plouf.fr.eu.org>
-References: <20070915231545.224150@gmx.net>	 <46ED0DE4.1040300@plouf.fr.eu.org> <1190758479.13546.8.camel@laptop>	 <46FA3594.9050306@plouf.fr.eu.org> <1190810998.6867.5.camel@laptop>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Filtering based on domains
+Date: Wed, 26 Sep 2007 09:12:16 -0500
+Message-ID: <46FA68C0.1040607@riverviewtech.net>
+References: <200709251542.17186.S.Illes@westminster.ac.uk> <6407D8226F45114A973E9E4005AE9E5C380D9E@ns1.apd-hp.de> <46F9B90B.7020205@riverviewtech.net> <Pine.LNX.4.58.0709260628030.23333@mail3.jubileegroup.co.uk> <46FA6738.1090102@riverviewtech.net>
+Reply-To: gtaylor+reply@riverviewtech.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1190810998.6867.5.camel@laptop>
+In-Reply-To: <46FA6738.1090102@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Mario H=FClsegge a =E9crit :
->=20
-> these 2 hints solved the problem, now all runs fine. i inserted a mas=
-q
-> rule before, but without setting rp_filter
+On 09/26/07 09:05, Grant Taylor wrote:
+> I have never used GeoIP my self so I can't say for sure, but it was my 
+> (mis)understanding that GeoIP was intended to associate IP ranges with 
+> specific countries.  Thus the OPs request may seems to be a perfect 
+> match for GeoIP.  But seeing as how I have never used it my self, I 
+> don't know how it is implemented.  I have not really given it any 
+> thought...
+> 
+> If you know any more about GeoIP please enlighten me.  TIA
 
-The kernel disables rp_filter by default, but the startup scripts=20
-provided by some distributions enable it.
+I just did some quick reading on GeoIP and found that it uses a local 
+database rather than using DNS lookups.  So, this probably would be a 
+viable solution for the OP.
 
-> (who would ever thought of THAT ;) ).
+Of course this presumes that the OP is wanting to restrict access to / 
+from the source / destination IP address domain and not the domain of 
+pages being served by the web server.  For this, the OP would need some 
+sort of layer 7 filtering, say a filtering proxy server, ala Squid.
 
-The practical answer is : anyone who experienced the problem once does.=
-=20
-Trust me.
+Again, if I'm wrong, or misunderstood something please let me know.
 
-The theoretical answer is : anyone using iproute should, because it is =
-a=20
-common issue documented in the Linux Advanced Routing & Traffic Control=
-=20
-HOWTO, and probably elsewhere. I myself hesitated to mention it and did=
-=20
-it only for completeness because it could not be the only cause of your=
-=20
-problem : tcpdump would have seen the replies even though the kernel ha=
-d=20
-dropped them.
+
+
+Grant. . . .
