@@ -1,36 +1,40 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Filtering based on domains
-Date: Wed, 26 Sep 2007 09:05:44 -0500
-Message-ID: <46FA6738.1090102@riverviewtech.net>
-References: <200709251542.17186.S.Illes@westminster.ac.uk> <6407D8226F45114A973E9E4005AE9E5C380D9E@ns1.apd-hp.de> <46F9B90B.7020205@riverviewtech.net> <Pine.LNX.4.58.0709260628030.23333@mail3.jubileegroup.co.uk>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Port-based routing with OpenVPN
+Date: Wed, 26 Sep 2007 16:10:06 +0200
+Message-ID: <46FA683E.5030307@plouf.fr.eu.org>
+References: <20070915231545.224150@gmx.net>	 <46ED0DE4.1040300@plouf.fr.eu.org> <1190758479.13546.8.camel@laptop>	 <46FA3594.9050306@plouf.fr.eu.org> <1190810998.6867.5.camel@laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.58.0709260628030.23333@mail3.jubileegroup.co.uk>
+In-Reply-To: <1190810998.6867.5.camel@laptop>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 09/26/07 00:30, G.W. Haywood wrote:
-> Either way, I don't think it will do what the OP wants.
+Mario H=FClsegge a =E9crit :
+>=20
+> these 2 hints solved the problem, now all runs fine. i inserted a mas=
+q
+> rule before, but without setting rp_filter
 
-(with my head slanted sideways with a confused look on my face)
-Hugh???
+The kernel disables rp_filter by default, but the startup scripts=20
+provided by some distributions enable it.
 
-> I think he'll have to do something in user space, or (probably 
-> better) do it a different way.  Obviously the performance hit of a 
-> DNS lookup for every connection could be serious.
+> (who would ever thought of THAT ;) ).
 
-I have never used GeoIP my self so I can't say for sure, but it was my 
-(mis)understanding that GeoIP was intended to associate IP ranges with 
-specific countries.  Thus the OPs request may seems to be a perfect 
-match for GeoIP.  But seeing as how I have never used it my self, I 
-don't know how it is implemented.  I have not really given it any thought...
+The practical answer is : anyone who experienced the problem once does.=
+=20
+Trust me.
 
-If you know any more about GeoIP please enlighten me.  TIA
-
-
-
-Grant. . . .
+The theoretical answer is : anyone using iproute should, because it is =
+a=20
+common issue documented in the Linux Advanced Routing & Traffic Control=
+=20
+HOWTO, and probably elsewhere. I myself hesitated to mention it and did=
+=20
+it only for completeness because it could not be the only cause of your=
+=20
+problem : tcpdump would have seen the replies even though the kernel ha=
+d=20
+dropped them.
