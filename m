@@ -1,46 +1,56 @@
-From: "Morten Egelund Rasmussen" <morten.egelund.rasmussen@gmail.com>
-Subject: Where do I start coding?
-Date: Sun, 30 Sep 2007 17:58:45 +0200
-Message-ID: <d60af9b90709300858o4f2cba9cx2172c9722219303c@mail.gmail.com>
-References: <d60af9b90709300856u2642472x2473a630aa3e9cea@mail.gmail.com>
+From: Mauricio Campiglia <mauricio@campiglia.org>
+Subject: Re: Where do I start coding?
+Date: Mon, 1 Oct 2007 00:14:40 -0300
+Message-ID: <200710010014.40431.mauricio@campiglia.org>
+References: <d60af9b90709300856u2642472x2473a630aa3e9cea@mail.gmail.com> <d60af9b90709300858o4f2cba9cx2172c9722219303c@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed;
+  boundary="nextPart1515394.lKx5bACLNV";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=beta;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=G4zggs/6k7IwLPxKSRLcq6AckI6SUJKnE9pDETovBSg=;
-        b=Wh6moOJ2JSlEvnoVCOb96hdncyz/R+PI5zsfnoKbG3n+NikKIJQqt4KFaWkZx/qWCv/0EL+Mx3V154od5Rk5cscFNityY3+6Q17mZ7HNEjhliqSBcOzv53Fp30VH6BtSDj+3P5oBEkraaj7vLkst5mSJHyZwOHItXcwkjCibTHk=
-In-Reply-To: <d60af9b90709300856u2642472x2473a630aa3e9cea@mail.gmail.com>
-Content-Disposition: inline
+        h=domainkey-signature:received:received:from:to:subject:date:user-agent:references:in-reply-to:mime-version:content-type:content-transfer-encoding:message-id:sender;
+        bh=jVK6KuXezoZpcqpvwgbulPmQVxeS2ZsiAAtSjEk4+8g=;
+        b=cUwc/PXgykBvHr+2UeSUv0S6lvH3iKkxj7EmDBpoD0Ni/zjwsHHj9p57xCPWm4o8r/RxOY5HDiwLUt5W5WF95l3sbcBz4YrPjR3mC7IIZGf45TLmJbTQP48GSzN8nh4S0mHl4KCSif7l9nyo7b9PowlHu+Ow+A2Ha9+5mbcpo6I=
+In-Reply-To: <d60af9b90709300858o4f2cba9cx2172c9722219303c@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi all!
+--nextPart1515394.lKx5bACLNV
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I'm thinking about writing a module to Netfilter (NAT & mangling), and
-have been browsing through most of the documentation found
-http://www.netfilter.org/documentation/
+On Sun 30, Morten Egelund Rasmussen wrote:
+> Could anybody please point me in the right direction....
 
-Anyway! On this page
-http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO-2.html
-it says:
+You can find directions at:
+http://www.netfilter.org/downloads.html
+Under Subversion Repository you will find how to checkout the branch(s) you=
+=20
+need.
 
-"There is a CVS server on netfilter.org which contains the latest
-HOWTOs, userspace tools and testsuite. For casual browsing, you can
-use the Web Interface."
+Hope this helps.
+Regards,
+      Mauricio Campiglia
+=2D-=20
+Docendo discimus.
 
-................
+--nextPart1515394.lKx5bACLNV
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-The CVS web interface doesn't exist anymore, and I believe it should
-be somewhere in Subversion. Been looking a bit around, but haven't
-found any nice example code to start out with (including a nice
-Makefile).
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
 
-Could anybody please point me in the right direction....
+iD8DBQBHAGYgAXrGWznQYpURAlpsAJ9EcRJKr+O7KHrNk9bkqbbWiI22KwCfSFdm
+ZKl73gnqe90sM1/NzzJAPH0=
+=7h6p
+-----END PGP SIGNATURE-----
 
-Best regards,
-
-~Morten :-)
+--nextPart1515394.lKx5bACLNV--
