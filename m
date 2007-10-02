@@ -1,53 +1,41 @@
-From: "Morten Egelund Rasmussen" <morten.egelund.rasmussen@gmail.com>
-Subject: Re: Where do I start coding?
-Date: Mon, 1 Oct 2007 17:45:51 +0200
-Message-ID: <d60af9b90710010845y47927665ne562047b85f04d86@mail.gmail.com>
-References: <d60af9b90709300856u2642472x2473a630aa3e9cea@mail.gmail.com>
-	 <d60af9b90709300858o4f2cba9cx2172c9722219303c@mail.gmail.com>
-	 <200710010014.40431.mauricio@campiglia.org>
-	 <d60af9b90710010200u64f472a8rd2cd4d951889f8e3@mail.gmail.com>
+From: "Vass Viktor" <vass.viktor@zuriel.hu>
+Subject: Iptables complains about kernel after filesystem damage
+Date: Tue, 2 Oct 2007 11:29:37 +0200
+Message-ID: <000201c804d6$c03aa380$0646010a@IBM26B52F62DB0>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=beta;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=Jo0PuwuZ8PP/PAxACcWG8EGWnVSbL0gJM86nIOl9bwI=;
-        b=rWnMr9k3sqxtD8OX6GJiYkQibUvy0W36Xdvs4892RWWlL/eE6HfxKNcZO1BPMLXaNQLOA/NTQSOVpOMWLH+mg5HWD4k+lEzjrncVsDVIFRkNDnXy2AXskne2jgyj3QXGFMQ/Nblfd55Xlp65LSIQx4fFYwYvsm4TA6noaQmAyQM=
-In-Reply-To: <d60af9b90710010200u64f472a8rd2cd4d951889f8e3@mail.gmail.com>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Okay. I did this:
+Hello all.
+I run a debian sarge system with a 2.6.16.19 grsec kernel and iptables v
+1.2.11. (No module loading support, every needed module compiled in the
+kernel.)
+Things were working fine, until on a "fine day" power, and more hard drives
+failed at the same time, breaking some raid arrays and taking the data in
+/var with them.
+Sadly, I wasn't the one who planned the system and it's so called backup.
+Had a bad share of data loss and every kind of corruption a filesystem can
+suffer under /var.
+With a bit of work I managed to get everything up and running...except for
+iptables.
 
-> svn co https://svn.netfilter.org/netfilter/trunk/documentation
-.....
-> svn co https://svn.netfilter.org/netfilter/trunk/iptables
-.....
-> cd documentation/examples/maintainer/
-> make
-Retrieving incoming example submissions from example master's incoming
-Password:
+It now says:
+iptables v1.2.11: can't initialize iptables table `filter': iptables who?
+(do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
-I went through the README. As far as I understand, I should be able to
-get a bunch of example code out from a repository somewhere. I can see
-from the Makefile, that it tries to rsync through SSH to this URL:
-roux@grace.speakeasy.org:website/netfilter/examples/incoming
+It seems that everything outside /var survived the incident without any data
+corruption or loss (I cannot be certain due to incomplete backups), but I'm
+absolutely sure, that the kernel has not changed or been corrupted.
+Reinstalled the iptables package and all it's dependencies to no avail.
 
-Of course I don't know roux' password, so any help would be appreciated. :-)
+Any suggestions, as to what could be causing this problem, or what I should
+check for will be greatly appreciated.
 
-Best regards,
-~Morten
+Thanks in advance,
+	Viktor Vass
 
-> On 10/1/07, Mauricio Campiglia <mauricio@campiglia.org> wrote:
-> > On Sun 30, Morten Egelund Rasmussen wrote:
-> > > Could anybody please point me in the right direction....
-> >
-> > You can find directions at:
-> > http://www.netfilter.org/downloads.html
-> > Under Subversion Repository you will find how to checkout the branch(s) you
-> > need.
->
