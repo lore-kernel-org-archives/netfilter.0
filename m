@@ -1,41 +1,77 @@
-From: "Vass Viktor" <vass.viktor@zuriel.hu>
-Subject: Iptables complains about kernel after filesystem damage
-Date: Tue, 2 Oct 2007 11:29:37 +0200
-Message-ID: <000201c804d6$c03aa380$0646010a@IBM26B52F62DB0>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: prerouting and route
+Date: Tue, 02 Oct 2007 13:29:02 +0200
+Message-ID: <47022B7E.3010208@plouf.fr.eu.org>
+References: <200709292323.12968.comp.ogz@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <200709292323.12968.comp.ogz@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello all.
-I run a debian sarge system with a 2.6.16.19 grsec kernel and iptables v
-1.2.11. (No module loading support, every needed module compiled in the
-kernel.)
-Things were working fine, until on a "fine day" power, and more hard drives
-failed at the same time, breaking some raid arrays and taking the data in
-/var with them.
-Sadly, I wasn't the one who planned the system and it's so called backup.
-Had a bad share of data loss and every kind of corruption a filesystem can
-suffer under /var.
-With a bit of work I managed to get everything up and running...except for
-iptables.
+Hello,
 
-It now says:
-iptables v1.2.11: can't initialize iptables table `filter': iptables who?
-(do you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded.
+Oguz Yarimtepe a =E9crit :
+>=20
+> I gave some points that i couldnt visualize.=20
+> First question is related with the route command. Lets say i defined =
+a local=20
+> route as,
+>=20
+> route add 10.2.0.0 netmask 255.255.255.0 gw 10.2.0.1 dev eth1
 
-It seems that everything outside /var survived the incident without any data
-corruption or loss (I cannot be certain due to incomplete backups), but I'm
-absolutely sure, that the kernel has not changed or been corrupted.
-Reinstalled the iptables package and all it's dependencies to no avail.
+Weird route. It looks like the gateway address belongs to the=20
+destination range. If so, how do you reach the gateway ?
 
-Any suggestions, as to what could be causing this problem, or what I should
-check for will be greatly appreciated.
+> and while i am configuring iptables i wrote some rules:
+[...]
+> iptables -t nat -A PREROUTING -i eth0 -p ALL -d 10.2.0.0/24 -j DNAT -=
+-to=20
+> 10.2.0.1
+>=20
+> At this point i ask myself whether i need this rule,
 
-Thanks in advance,
-	Viktor Vass
+The question is : what do you expect from this rule ?
 
+> because i had already=20
+> defined a route while configuring interfaces. So is there a relation =
+between=20
+> route definitions and prerouting,
+
+Not directly. Routes tell how to route a packet, i.e. how it must be=20
+sent out, mostly depending on its destination address, without altering=
+=20
+the destination address. DNAT rules say how to alter the destination=20
+address, not how to route that destination.
+
+In both cases here the packets will be sent to the gateway with address=
+=20
+10.2.0.1. But the difference is that routing does not change the=20
+original destination address, and the gateway will forward the packets=20
+to their final destination. With DNAT, the gateway becomes the final=20
+destination.
+
+> is it unnecessary to define a local route=20
+> and try to the same thing with iptables?
+
+I do not see what you mean.
+
+> Second, i have a rule as,
+>=20
+> iptables -t nat -A PREROUTING -i eth1 -p ALL  -j DNAT --to 192.168.1.=
+4
+>=20
+> 192.168.1.4 is the ip of eth0 which is plugged to a gateway with the =
+ip=20
+> 192.168.1.3. If i send a package from eth1 to lets say 192.168.1.10, =
+its=20
+> destination address is replaced with 192.168.1.4. After this point, w=
+ill it=20
+> continue to 192.168.1.3? If yes how?
+
+No. The new destination address belongs to the host which becomes the=20
+final destination, so the packet will be received locally instead of=20
+being forwarded.
