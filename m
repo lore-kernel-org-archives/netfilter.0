@@ -1,34 +1,50 @@
-From: John Madden <jmadden@ivytech.edu>
-Subject: Re: "DNAT" w/o changing source address?
-Date: Thu, 04 Oct 2007 09:14:26 -0400
-Message-ID: <1191503666.13379.15.camel@localhost.localdomain>
-References: <1191424890.25752.27.camel@localhost.localdomain>
-	 <47042728.1060508@riverviewtech.net>  <47042AD0.2080806@plouf.fr.eu.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: conntrack ctstate - multiple ISP links
+Date: Thu, 04 Oct 2007 15:58:24 +0200
+Message-ID: <4704F180.5000200@plouf.fr.eu.org>
+References: <4704A472.5080609@darkstar.nom.za> <4704C15E.9090203@plouf.fr.eu.org> <4704EB43.2000902@darkstar.nom.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47042AD0.2080806@plouf.fr.eu.org>
+In-Reply-To: <4704EB43.2000902@darkstar.nom.za>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
-> To be exhaustive, the only exception is in the OUTPUT chain on kernel 
-> versions less than 2.6.11, when DNAT changes the output interface the 
-> source address is also changed in order to match the new interface. 
-> However DNAT in the PREROUTING chain never changes the source address.
+[Please send your reply on the list so everyone can see it]
 
-This is on RHEL 4, which runs some variation of 2.6.9...
+Paulo Andre a =E9crit :
+>>
+>>> Apparently I need this to get multiple isp links working correctly =
+on=20
+>>> a FW. Packets entering interface eth2/eth3 all still leaving eth1,=20
+>>> default GW.
+>>
+>> Can you elaborate ?
+>=20
+> The incoming packets are not leaving out of the correct interfaces,=20
+> someone else has suggested that I need to use iptables as below:
+>=20
+> iptables -t mangle -N alreadyestablished
+> iptables -t mangle -A alreadyestablished -j CONNMARK --restore-mark
+>=20
+> iptables -t mangle -A PREROUTING -m connmark ! --mark 0 -j=20
+> alreadyestablished
+> iptables -t mangle -A PREROUTING -m ctstate --conntrack NEW -i eth1 -=
+j=20
+> CONNMARK --set-mark 11
+> iptables -t mangle -A PREROUTING -m ctstate --conntrack NEW -i eth2 -=
+j=20
+> CONNMARK --set-mark 12
+>=20
+> and then iproute2 to route based on the 'mark'.
+> Would this be the correct solution?
 
-John
+The principle is correct.
 
+> I am trying to get ctstate working so that I can test this
 
-
-
--- 
-John Madden
-Sr. UNIX Systems Engineer
-Ivy Tech Community College of Indiana
-jmadden@ivytech.edu
-
+The syntax is wrong. The correct syntax is "-m conntrack --ctstate NEW"=
+=2E
+Besides, this just does the same as "-m state --state NEW".
