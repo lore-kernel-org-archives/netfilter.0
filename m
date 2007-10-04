@@ -1,43 +1,55 @@
-From: John Madden <jmadden@ivytech.edu>
-Subject: Re: "DNAT" w/o changing source address?
-Date: Thu, 04 Oct 2007 10:22:59 -0400
-Message-ID: <1191507779.13379.50.camel@localhost.localdomain>
-References: <1191424890.25752.27.camel@localhost.localdomain>
-	 <47042728.1060508@riverviewtech.net>
-	 <1191503642.13379.12.camel@localhost.localdomain>
-	 <4704F5F5.7010601@plouf.fr.eu.org>
+From: Paulo Andre <pandre@darkstar.nom.za>
+Subject: Re: conntrack ctstate - multiple ISP links
+Date: Thu, 04 Oct 2007 16:53:28 +0200
+Message-ID: <4704FE68.5000706@darkstar.nom.za>
+References: <4704A472.5080609@darkstar.nom.za> <4704C15E.9090203@plouf.fr.eu.org> <4704EB43.2000902@darkstar.nom.za> <4704F180.5000200@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4704F5F5.7010601@plouf.fr.eu.org>
+In-Reply-To: <4704F180.5000200@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-> If traffic does not flow without it, it could mean that the mail server 
-> does not send the reply traffic back to the NAT box. This is a routing 
-> problem. Does the mail server use the NAT box as its default gateway ?
+Pascal Hambourg wrote:
+> [Please send your reply on the list so everyone can see it]
+>
+>> The incoming packets are not leaving out of the correct interfaces, 
+>> someone else has suggested that I need to use iptables as below:
+>>
+>> iptables -t mangle -N alreadyestablished
+>> iptables -t mangle -A alreadyestablished -j CONNMARK --restore-mark
+>>
+>> iptables -t mangle -A PREROUTING -m connmark ! --mark 0 -j 
+>> alreadyestablished
+>> iptables -t mangle -A PREROUTING -m ctstate --conntrack NEW -i eth1 
+>> -j CONNMARK --set-mark 11
+>> iptables -t mangle -A PREROUTING -m ctstate --conntrack NEW -i eth2 
+>> -j CONNMARK --set-mark 12
+>>
+>> and then iproute2 to route based on the 'mark'.
+>> Would this be the correct solution?
+>
+> The principle is correct.
+>
+>> I am trying to get ctstate working so that I can test this
+>
+> The syntax is wrong. The correct syntax is "-m conntrack --ctstate NEW".
+> Besides, this just does the same as "-m state --state NEW".
+> -
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
-Ah, now we're getting somewhere.  No, the mail server doesn't use the
-NAT box as it's default gateway, it's using a general default route
-somewhere else in the network for it.  The NAT box and the mail server
-are on different VLAN's, but that's about all that separates them --
-both have globally routable IP's.  
+Would I have to do a CONNMARK --save-mark on the POSTROUTING for this to 
+work?
+I have also followed this: 
+http://andthatsjazz.org:8/lartc/MultihomedLinuxNetworking.html
+When I dont use the above rules the connection is made but the packets 
+leave the wrong interface, with the above rules the connection is not 
+made at all.
 
-I'm literally just trying to emulate the functionality of LVS here,
-where port 80 on an IP goes to one machine and port 25 goes somewhere
-else.
-
-John
-
-
-
-
--- 
-John Madden
-Sr. UNIX Systems Engineer
-Ivy Tech Community College of Indiana
-jmadden@ivytech.edu
-
+Paulo
