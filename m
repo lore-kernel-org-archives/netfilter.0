@@ -1,43 +1,33 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: conntrack is bad during DDoS?
-Date: Thu, 04 Oct 2007 11:22:52 +0200
-Message-ID: <4704B0EC.2030802@trash.net>
-References: <4702BDCB.3060102@andrei.myip.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: conntrack ctstate - multiple ISP links
+Date: Thu, 04 Oct 2007 12:33:02 +0200
+Message-ID: <4704C15E.9090203@plouf.fr.eu.org>
+References: <4704A472.5080609@darkstar.nom.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4702BDCB.3060102@andrei.myip.org>
+In-Reply-To: <4704A472.5080609@darkstar.nom.za>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Florin Andrei wrote:
-> [...]
-> I am testing the firewall with pktgen, running on another machine. It's
-> pretty much a DDoS test, random source IP, random source UDP port, small
-> packets.
-> 
-> 
-> While pktgen is blasting the firewall, I am downloading a 2GB file
-> through the firewall in an infinite loop.
-> 
-> The problem: pretty soon after starting pktgen, the HTTP download stops.
->  It appears to happen only when using random source IP addresses for the
-> DoS. If all UDP packets have the same source IP, the firewall works fine.
+Hello,
 
+Paulo Andre a =E9crit :
+> How would I go about getting ctstate installed on my system, currentl=
+y=20
+> running iptables 1.3.8.
 
-Please try 2.6.23 once its out (or the current -rc), it should behave
-better.
+All you need is a kernel with the 'conntrack' match enabled=20
+(CONFIG_NETFILTER_XT_MATCH_CONNTRACK=3Dy|m on recent kernels or=20
+CONFIG_IP_NF_MATCH_CONNTRACK on older ones). Support for the 'conntrack=
+'=20
+match has been included in the kernel since version 2.4.20 and in=20
+iptables since version 1.2.7a.
 
-> I suspect it might be related to conntrack. Is there a way to disable
-> that module while still having that set of rules loaded up?
-> 
-> I don't need stateful filtering, all I need to do is:
-> - 1:1 NAT for each server behind the firewall (each server gets its own
-> public IP on the outside interface of the firewall)
+> Apparently I need this to get multiple isp links=20
+> working correctly on a FW. Packets entering interface eth2/eth3 all=20
+> still leaving eth1, default GW.
 
-
-2.6.24 will include stateless NAT again for 1:1 mappings.
-
-
+Can you elaborate ?
