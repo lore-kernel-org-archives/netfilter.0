@@ -1,53 +1,52 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: NAT problem with iptables
-Date: Sun, 07 Oct 2007 22:32:21 +0200
-Message-ID: <47094255.1040101@plouf.fr.eu.org>
-References: <4709153B.8060309@may.be> <470932FC.7090801@plouf.fr.eu.org> <47093D17.4010206@may.be>
+From: James Lay <jlay@slave-tothe-box.net>
+Subject: Re: Interesting message
+Date: Sun, 07 Oct 2007 20:54:43 -0600
+Message-ID: <C32EF813.B3C7%jlay@slave-tothe-box.net>
+References: <47068471.5000403@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47093D17.4010206@may.be>
+In-Reply-To: <47068471.5000403@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Cliff Stanford a =E9crit :
->=20
-> Pascal Hambourg wrote:
->=20
->>A possible explanation may be the following.
->>The remote box sends a continuous stream of UDP packets. The first=20
->>packet was received before the ruleset was installed but after the=20
->>conntrack was loaded, so a conntrack entry was created with no NAT, a=
-nd=20
->>does not expire because of the continuous stream.
->=20
-> Thank you!  You hit the nail right on the head!
->=20
->>Clear the conntrack table by any means and see what happens.
->=20
-> I cleared it with conntrack -F and you were absolutely right.  It's n=
-ow
-> working as expected.
 
-In order to avoid this, the iptables ruleset must preferably be=20
-installed before the network interfaces are UP and some traffic is sent=
-=20
-or received.
 
-> I knew it had to be my naivety but I couldn't see
-> what I was doing wrong.
 
-It has nothing to do with naivety. Your ruleset was correct. I believe=20
-this kind of problem requires fair knowledge and understanding of how=20
-Netfilter performs connection tracking and its side effects. Fortunatel=
-y=20
-you provided enough information, which not everyone does all the time.
+On 10/5/07 12:37 PM, "Grant Taylor" <gtaylor@riverviewtech.net> wrote:
 
-> Out of interest, I can't seem to find a syntax that conntrack -D like=
-s;
-> is there a tutorial for it anywhere or any docs better than the man p=
-age?
+> On 10/05/07 12:51, James Lay wrote:
+>> So I'm not sure how I managed to do this, but here it is:
+>> 
+>> sudo iptables -A FORWARD -s 10.0.0.0/8 -m string --string
+>> "myspace.com" --algo bm -j DROP
+>> iptables: match `string' v1.3.6 (I'm v1.3.8).
+>> 
+>> I'm running kernel 2.6.21.7.  Is there something I'm missing to get
+>> this to fly?  Thanks all.
+> 
+> 
+> I'm not sure but it looks like you have a kernel IPTables version vs
+> IPTables module version mismatch.  Did you by chance upgrade your kernel
+> or have any updates applied to your system?
+> 
+> 
+> 
+> Grant. . . .
+> -
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-I have never used conntrack and cannot help you on this, sorry.
+
+Grant,
+
+I've just recompiled my kernel...same kernel version, but now compiled with
+1.3.8.  I still get the same message.  Is there something obvious that I'm
+missing here?  Thanks.
+
+James
+
+
