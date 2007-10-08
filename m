@@ -1,52 +1,37 @@
-From: James Lay <jlay@slave-tothe-box.net>
-Subject: Re: Interesting message
-Date: Sun, 07 Oct 2007 20:54:43 -0600
-Message-ID: <C32EF813.B3C7%jlay@slave-tothe-box.net>
-References: <47068471.5000403@riverviewtech.net>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: conntrack is bad during DDoS?
+Date: Mon, 08 Oct 2007 10:45:18 +0200
+Message-ID: <4709EE1E.2060206@trash.net>
+References: <4702BDCB.3060102@andrei.myip.org> <4704B0EC.2030802@trash.net> <470562BF.3090504@andrei.myip.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47068471.5000403@riverviewtech.net>
+In-Reply-To: <470562BF.3090504@andrei.myip.org>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
+[Please keep me CCed]
 
-
-
-On 10/5/07 12:37 PM, "Grant Taylor" <gtaylor@riverviewtech.net> wrote:
-
-> On 10/05/07 12:51, James Lay wrote:
->> So I'm not sure how I managed to do this, but here it is:
->> 
->> sudo iptables -A FORWARD -s 10.0.0.0/8 -m string --string
->> "myspace.com" --algo bm -j DROP
->> iptables: match `string' v1.3.6 (I'm v1.3.8).
->> 
->> I'm running kernel 2.6.21.7.  Is there something I'm missing to get
->> this to fly?  Thanks all.
+Florin Andrei wrote:
+> Patrick McHardy wrote:
+> 
+>>
+>> Please try 2.6.23 once its out (or the current -rc), it should behave
+>> better.
+>>
+>> 2.6.24 will include stateless NAT again for 1:1 mappings.
 > 
 > 
-> I'm not sure but it looks like you have a kernel IPTables version vs
-> IPTables module version mismatch.  Did you by chance upgrade your kernel
-> or have any updates applied to your system?
+> So, can you elaborate a little bit?
+> I understand the thing about stateless NAT and 2.6.24 - that's very good
+> news, too bad it's not in older versions. :-)
 > 
-> 
-> 
-> Grant. . . .
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> But what's different in 2.6.23-rc that will make it better in my situation?
 
 
-Grant,
-
-I've just recompiled my kernel...same kernel version, but now compiled with
-1.3.8.  I still get the same message.  Is there something obvious that I'm
-missing here?  Thanks.
-
-James
-
-
+The eviction algorithms scans up to a maximum of 8 entries before
+giving up instead of stopping at the end of the hash chain (which
+is a single entry with a properly sized hash). So the chances
+of finding an unconfirmed entry to evict are better.
