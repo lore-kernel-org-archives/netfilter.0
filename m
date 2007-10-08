@@ -1,37 +1,34 @@
 From: Patrick McHardy <kaber@trash.net>
 Subject: Re: conntrack is bad during DDoS?
-Date: Mon, 08 Oct 2007 10:45:18 +0200
-Message-ID: <4709EE1E.2060206@trash.net>
-References: <4702BDCB.3060102@andrei.myip.org> <4704B0EC.2030802@trash.net> <470562BF.3090504@andrei.myip.org>
+Date: Mon, 08 Oct 2007 10:46:48 +0200
+Message-ID: <4709EE78.4010005@trash.net>
+References: <4702BDCB.3060102@andrei.myip.org> <4704B0EC.2030802@trash.net> <470562BF.3090504@andrei.myip.org> <47056569.3020704@andrei.myip.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <470562BF.3090504@andrei.myip.org>
+In-Reply-To: <47056569.3020704@andrei.myip.org>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-[Please keep me CCed]
-
 Florin Andrei wrote:
-> Patrick McHardy wrote:
+> Florin Andrei wrote:
 > 
->>
->> Please try 2.6.23 once its out (or the current -rc), it should behave
->> better.
->>
->> 2.6.24 will include stateless NAT again for 1:1 mappings.
+>> I understand the thing about stateless NAT and 2.6.24 - that's very
+>> good news, too bad it's not in older versions. :-)
 > 
 > 
-> So, can you elaborate a little bit?
-> I understand the thing about stateless NAT and 2.6.24 - that's very good
-> news, too bad it's not in older versions. :-)
-> 
-> But what's different in 2.6.23-rc that will make it better in my situation?
+> Come to think of it, I need explanations for this one too. :-)
+> Is that true only for 1:1 NAT, or NAT in general? If the former, is that
+> a special new case, requiring different iptables rules, or something else?
 
 
-The eviction algorithms scans up to a maximum of 8 entries before
-giving up instead of stopping at the end of the hash chain (which
-is a single entry with a properly sized hash). So the chances
-of finding an unconfirmed entry to evict are better.
+Its implemented as TC action, so its independant of iptables. It only
+supports 1:1 NAT, everything else needs to be stateful to avoid clashes.
+
+> I assume these are recent changes to netfilter - is there a place where
+> I can find these specific changes documented or discussed?
+
+
+Check the netdev archives of the past two or three weeks.
