@@ -1,33 +1,50 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Interesting message (SOLVES (sorta))
-Date: Tue, 09 Oct 2007 09:07:39 -0500
-Message-ID: <470B8B2B.6050603@riverviewtech.net>
-References: <C330472A.B5E8%jlay@slave-tothe-box.net>
-Reply-To: gtaylor+reply@riverviewtech.net
+From: Chad Eldridge <celdridge@corp.web.com>
+Subject: SNAT
+Date: Tue, 09 Oct 2007 14:47:35 -0400
+Message-ID: <470BCCC7.2070007@corp.web.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <C330472A.B5E8%jlay@slave-tothe-box.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 10/08/07 21:44, James Lay wrote:
-> Ok this is interesting...I recompiled my iptables-1.3.8 with make 
-> clean then make, and when I did a make install, I didn't see the 
-> extension libipt_string being created.  I did a make distclean, then 
-> forced it to the kernel dir with make KERNEL_DIR=/usr/src/linux. 
-> This time I see a libipt_string.so, but running make install still 
-> doesn't actually install it.  I had to manually copy it into 
-> /usr/lib/iptables.  Interesting...but mission accomplished.  Thanks 
-> to all for the assist :)
+I have a situation where I have packets coming into a server (we'll call 
+it RTR) and getting routed to other servers depending on the ip address 
+the packet is coming from. This part works great. The problem I am 
+having is when the server (call it Responder) answers back to the 
+original client (not going back through RTR), the client sees the 
+traffic coming from an address it did not originally try to open a 
+connection to and therefore rejects the packets and the connection is 
+never established. I thought I could fix this by using SNAT to change 
+the source ip on Responder.
+iptables -t nat -A POSTROUTING -p tcp -m tcp --sport $PORT -j SNAT --to 
+$RTR-IP
+This however, seems to do nothing. The Responder still sends replies to 
+the client, they make it to the client and show up as coming from the ip 
+address of Responder.
+It was suggested to me that I would need to turn off rp_filter (echo 0 > 
+/proc/sys/net/ipv4/conf/all/rp_filter; echo 0 > 
+/proc/sys/net/ipv4/conf/eth0/rp_filter) since the ip address I am trying 
+to change the source to does not actually exist on the server. I tried 
+that but it did not seem to help. Further more it was suggested that I 
+could setup the $RTR-IP on a loopback and arptables it off and then it 
+should work. This did not work either. If it is because iptables is 
+trying to prevent spoofing I'm guessing it is stopping it because it's 
+trying to send it out an interface that does not have the ip on it. Then 
+again, all of this guessing could be wrong.
+Is this even possible with iptables? If so, how can I accomplish it? 
+Everything I have seen that seems like it should work has so far failed.
+iptables v1.2.8
+Redhat ES3
+(Final box will probably be running ES4)
 
-Good.  I'm glad that you got things working.  This sounds like an 
-undocumented feature or bug, take your pick.  If it is the former, you 
-may want to drop a line to the maintainer of the libipt_string match 
-extension.
+Thanks,
 
+-- 
+Chad Eldridge
+Security | Web.com
+celdridge@corp.web.com
+404.260.2580
 
-
-Grant. . . .
