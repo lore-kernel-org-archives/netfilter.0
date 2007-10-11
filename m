@@ -1,101 +1,164 @@
-From: =?ISO-8859-1?Q?BERTRAND_Jo=EBl?= <joel.bertrand@systella.fr>
-Subject: [iptables/iproute2] Output interface and UDP packets
-Date: Wed, 10 Oct 2007 23:17:31 +0200
-Message-ID: <470D416B.7060603@systella.fr>
+From: "S. Sakar" <serkan.sakar@gmx.net>
+Subject: nfq_unbind_pf() fails with kernel 2.6.23
+Date: Thu, 11 Oct 2007 08:16:16 +0200
+Message-ID: <470DBFB0.1090600@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------020803000505050008090108"
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-	Hello,
+This is a multi-part message in MIME format.
+--------------020803000505050008090108
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 
-	I have made a test with a linux box connected by two NIC's on the same 
-LAN. This box is a 32 processors UltraSparc server and runs with 
-2.6.23-rc9 linux kernel (sparc64/SMP) on a debian/testing distribution.
+hi,
+I don't seem to be able to run the nfqnl_test code with kernel 2.6.23
+(amd64).
+It prints the following:
 
-eth0: 213.215.42.70/24
-eth3: 213.215.42.69/24
+>opening library handle
+>unbinding existing nf_queue handler for AF_INET (if any)
+>NFNETLINK answers: Invalid argument
+>error during nfq_unbind_pf()
 
-With the following iptables/iproute2 rules :
+The version that are used:
+libnfnetlink 0.0.25
+libnetfilter-queue 0.0.13
 
-iptables -P INPUT ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P OUTPUT ACCEPT
+regards
+Serkan
 
-route add default gw 213.215.42.65 dev eth0
-iproute2 rule add from 213.215.42.69 lookup local_traffic priority 100
-iproute2 rule add fwmark 1 table local_traffic priority 101
-iproute2 route add default via 213.215.42.65 dev eth3 table local_traffic
-iproute2 route flush cache
 
-echo 0 > /proc/sys/net/ipv4/conf/eth3/rp_filter
-echo 1 > /proc/sys/net/ipv4/conf/eth0/arp_ignore
-echo 1 > /proc/sys/net/ipv4/conf/eth3/arp_ignore
-echo 1 > /proc/sys/net/ipv4/conf/eth0/arp_filter
-echo 1 > /proc/sys/net/ipv4/conf/eth3/arp_filter
+--------------020803000505050008090108
+Content-Type: text/x-csrc;
+ name="nfqnl_test.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="nfqnl_test.c"
 
-iptables -t mangle -A INPUT -d 213.215.42.70 -j CONNMARK --set-mark 2
-iptables -t mangle -A OUTPUT -m connmark --mark 2 -j RETURN
-iptables -t mangle -A OUTPUT -j MARK --set-mark 1
 
-	Whit these command lines, I obtain :
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <linux/netfilter.h>		/* for NF_ACCEPT */
 
-Root gershwin:[~] > route
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use 
-Iface
-213.215.42.64   *               255.255.255.240 U     0      0        0 eth0
-213.215.42.64   *               255.255.255.240 U     0      0        0 eth3
-default         213.215.42.65   0.0.0.0         UG    0      0        0 eth0
-Root gershwin:[~] > Root gershwin:[~] > ip rule show
-0:      from all lookup local
-100:    from 213.215.42.69 lookup local_traffic
-101:    from all fwmark 0x1 lookup local_traffic
-32766:  from all lookup main
-32767:  from all lookup default
-Root gershwin:[~] > Root gershwin:[~] > ip route
-213.215.42.64/28 dev eth0  proto kernel  scope link  src 213.215.42.70
-213.215.42.64/28 dev eth3  proto kernel  scope link  src 213.215.42.69
-default via 213.215.42.65 dev eth0
-Root gershwin:[~] > ip route show table local_traffic
-default via 213.215.42.65 dev eth3
-Root gershwin:[~] >
+#include <libnetfilter_queue/libnetfilter_queue.h>
 
-All locally generated packets are routed via eth3, but with eth0 IP 
-address. Problem... Thus, I have added the following line to fix this 
-mistake :
+/* returns packet id */
+static u_int32_t print_pkt (struct nfq_data *tb)
+{
+	int id = 0;
+	struct nfqnl_msg_packet_hdr *ph;
+	u_int32_t mark,ifi; 
+	int ret;
+	char *data;
+	
+	ph = nfq_get_msg_packet_hdr(tb);
+	if (ph){
+		id = ntohl(ph->packet_id);
+		printf("hw_protocol=0x%04x hook=%u id=%u ",
+			ntohs(ph->hw_protocol), ph->hook, id);
+	}
+	
+	mark = nfq_get_nfmark(tb);
+	if (mark)
+		printf("mark=%u ", mark);
 
-iptables -t nat -A POSTROUTING -m mark --mark 1 -j SNAT \
-	--to-source 213.215.42.69
+	ifi = nfq_get_indev(tb);
+	if (ifi)
+		printf("indev=%u ", ifi);
 
-Now :
+	ifi = nfq_get_outdev(tb);
+	if (ifi)
+		printf("outdev=%u ", ifi);
 
-All ICMP (ping) and TCP (ssh for example) are routed via eth3. I can do 
-a ssh on external server without any trouble. But UDP packets are sent 
-via eth0 (but with eth3 IP address) _and_ received via eth3 :
+	ret = nfq_get_payload(tb, &data);
+	if (ret >= 0)
+		printf("payload_len=%d ", ret);
 
-Packets received by eth3:
-23:04:37.159721 IP kimsufi.gegeweb.org.ntp > brahms.systella.net.ntp: 
-NTPv4, Server, length 48
-23:04:38.159888 IP goelette.net.ntp > brahms.systella.net.ntp: NTPv4, 
-Server, length 48
-23:04:38.159950 IP ns.oredin.net.ntp > brahms.systella.net.ntp: NTPv4, 
-Server, length 48
+	fputc('\n', stdout);
 
-and send by eth0 (brahms is eth3 address)
-23:02:47.940968 IP brahms.systella.net.ntp > ntp.dr-j.eu.ntp: NTPv4, 
-Client, length 48
-23:03:05.940974 IP brahms.systella.net.ntp > goelette.net.ntp: NTPv4, 
-Client, length 48
-23:03:06.940979 IP brahms.systella.net.ntp > ns.oredin.net.ntp: NTPv4, 
-Client, length 48
+	return id;
+}
+	
 
-	I don't understand why datagrams are not routed by eth3. All 
-explanations are welcome ;-)
+static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
+	      struct nfq_data *nfa, void *data)
+{
+	u_int32_t id = print_pkt(nfa);
+	printf("entering callback\n");
+	return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
+}
 
-	Regards,
+int main(int argc, char **argv)
+{
+	struct nfq_handle *h;
+	struct nfq_q_handle *qh;
+	struct nfnl_handle *nh;
+	int fd;
+	int rv;
+	char buf[4096];
 
-	JKB
+	printf("opening library handle\n");
+	h = nfq_open();
+	if (!h) {
+		fprintf(stderr, "error during nfq_open()\n");
+		exit(1);
+	}
+
+	printf("unbinding existing nf_queue handler for AF_INET (if any)\n");
+	if (nfq_unbind_pf(h, AF_INET) < 0) {
+		fprintf(stderr, "error during nfq_unbind_pf()\n");
+		exit(1);
+	}
+
+	printf("binding nfnetlink_queue as nf_queue handler for AF_INET\n");
+	if (nfq_bind_pf(h, AF_INET) < 0) {
+		fprintf(stderr, "error during nfq_bind_pf()\n");
+		exit(1);
+	}
+
+	printf("binding this socket to queue '0'\n");
+	qh = nfq_create_queue(h,  0, &cb, NULL);
+	if (!qh) {
+		fprintf(stderr, "error during nfq_create_queue()\n");
+		exit(1);
+	}
+
+	printf("setting copy_packet mode\n");
+	if (nfq_set_mode(qh, NFQNL_COPY_PACKET, 0xffff) < 0) {
+		fprintf(stderr, "can't set packet_copy mode\n");
+		exit(1);
+	}
+
+	nh = nfq_nfnlh(h);
+	fd = nfnl_fd(nh);
+
+	while ((rv = recv(fd, buf, sizeof(buf), 0)) && rv >= 0) {
+		printf("pkt received\n");
+		nfq_handle_packet(h, buf, rv);
+	}
+
+	printf("unbinding from queue 0\n");
+	nfq_destroy_queue(qh);
+
+#ifdef INSANE
+	/* normally, applications SHOULD NOT issue this command, since
+	 * it detaches other programs/sockets from AF_INET, too ! */
+	printf("unbinding from AF_INET\n");
+	nfq_unbind_pf(h, AF_INET);
+#endif
+
+	printf("closing library handle\n");
+	nfq_close(h);
+
+	exit(0);
+}
+
+
+--------------020803000505050008090108--
