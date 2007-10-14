@@ -1,68 +1,43 @@
-From: Jorch <news-groups@jorch.net>
-Subject: Re: Packet marking in user queue with VWMARK
-Date: Sun, 14 Oct 2007 22:30:23 +0300
-Message-ID: <47126E4F.5070207@jorch.net>
-References: <470FBD5A.2070504@jorch.net> <1192313125.14168.6.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Petr Pisar <petr.pisar@atlas.cz>
+Subject: Re: DHCP works but iptables should have dropped
+Date: Sun, 14 Oct 2007 21:22:30 +0000 (UTC)
+Message-ID: <slrnfh5249.8cf.petr.pisar@album.ics.muni.cz>
+References: <E1IgS7N-0000Jz-Kg@www3.emo.freenet-rz.de>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1192313125.14168.6.camel@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Eric Leblond wrote:
-> Hi,
->=20
-> Le vendredi 12 octobre 2007 =E0 21:30 +0300, Jorch a =E9crit :
->> Hi,
->>
->> Can somebody please give me an example how to mark & match packets
->> with vwmark and iptables in user queue.
->>
->> I have patched the kernel (2.6.18) and iptables (1.3.8) to support
->> vwmark. Both progs compiles and installs ok and queue works normaly =
-with
->> ipq_set_verdict but not with ipq_set_vwmark.
+On 2007-10-12, pockiman@freenet.de <pockiman@freenet.de> wrote:
+>
+> i have a debian (etch) server/firewall with dhcp-server and iptables
+[...]
+> -I've set the default policy of both ipv4 and ipv6 for all chains to
+> DROP (debian server)
+[...]
+> if i boot the Laptop, there are 4 Packet registered to be dropped by
+> the INPUT-default-policy, but the Laptop gets the ip-address.
+> In the syslog of the server, there are entries from the dhcp-deamon
+> for the request and the answers., but the OUTPUT - chain
+> - Packet-Counter is already at 0.
+>
+> How are the packets (i thought it would be UDP) transmitted.
+>
+Use "netstat -lnp |grep dhcp". You can see that dhcpd has open 2 sockets.
+One is UDP socket for reply packet transmission, the second one is raw
+socket for request recieving.
 
-Got vwmark workin after i noticed i had bad test scenario to test the p=
-rog.
-System works with marking and verdicts but when i try to inject modifie=
-d packet
-back to queue, queue seems to drop packet every time(any ideas??)
+The raw socket has one important attribute: it recieves packets before
+netfilter. The same mechanism is used by tcpdump/libcap.
 
-> Please switch your program to work with libnetfilter_queue. It has
-> default support for packet marking.
+Therefore dhcpd can recieve packet even if they are blocked by
+netfilter. This is feature, not a bug. I have not idea why ISC' DHCP
+sever is implemented in this manner, but it is. (May be because of indirect
+broadcast destination IP address in DISCOVERY client request.)
 
-If i would find some kind of installation/usage manual from somewhere i=
-t would
-be great!! I have tried to get libnetfilter_queue work for several hour=
-s now
-and no success. libnfnetlink 0.0.16 and libnetfilter_queue 0.0.13 compi=
-les ok
-against kernel and installs ok.
+-- Petr
 
-The test program (nfqnl_test) wich comes in libnetfilter_queue packet, =
-can
-open library handle but unbinding or binding causes
-"NFNETLINK answers: Invalid argument" message.
-
-BTW: I got many hits to netfilter.org/pipermail/... When i was trying t=
-o get
-more information of the libnetfilter_queue, i noticed that there are ma=
-n page
-for libnetfilter_queue in address
-http://lists.netfilter.org/pipermail/netfilter-devel/2006-February/0234=
-88.html
-but for me: Forbidden, You don't have permission...
-
-> A code example can be found at :
-> http://software.inl.fr/trac/trac.cgi/browser/mirror/edenwall/nufw/tru=
-nk/nufw/src/nufw/authsrv.c
->=20
-> BR,
-
-Regs.
--jori
 
