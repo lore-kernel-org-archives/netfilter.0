@@ -1,34 +1,40 @@
-From: felix@crowfix.com
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Ignorance about combining two net connections
-Date: Sun, 14 Oct 2007 06:01:53 -0700
-Message-ID: <20071014130153.GA31564@crowfix.com>
-References: <20071014123703.GA30106@crowfix.com> <Pine.LNX.4.58.0710141352240.30566@mail3.jubileegroup.co.uk>
+Date: Sun, 14 Oct 2007 15:57:00 +0200
+Message-ID: <4712202C.9060301@plouf.fr.eu.org>
+References: <20071014123703.GA30106@crowfix.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0710141352240.30566@mail3.jubileegroup.co.uk>
+In-Reply-To: <20071014123703.GA30106@crowfix.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On Sun, Oct 14, 2007 at 01:53:46PM +0100, G.W. Haywood wrote:
-> 
-> On Sun, 14 Oct 2007 felix@crowfix.com wrote:
-> 
-> > I have a computer out in the boonies ... satellite can't supply
-> > static addresses, only DHCP, so can't be a mail server.
-> 
-> Wrong.  Check out dyndns.com
+Hello,
 
-Interesting, but I have my own mail server because I wanted control of
-it, and they want me to install their software on my computer.  I'd
-rather not have one more thing to worry about.  But still an
-interesting idea to keep in mind.
+felix@crowfix.com a =E9crit :
+[...]
+> For instance, I know that when a client connects to a
+> remote server's port 25, when the server accept()s the connection, it
+> assigns a new temporary port to that connection.
 
--- 
-            ... _._. ._ ._. . _._. ._. ___ .__ ._. . .__. ._ .. ._.
-     Felix Finch: scarecrow repairman & rocket surgeon / felix@crowfix.com
-  GPG = E987 4493 C860 246C 3B1E  6477 7838 76E9 182E 8151 ITAR license #4933
-I've found a solution to Fermat's Last Theorem but I see I've run out of room o
+Huh ? What are you talking about ? Aren't you confusing with FTP ?
+
+> Suppose I have an iptables rule which sends all outgoing traffic with
+> a destination port of 25 down the static pipe.
+
+You need more thant a simple iptables rule. Iptables will just mark the=
+=20
+packets and do some NAT if required, you need also advanced routing to=20
+route marked packets through the proper interface. See the LARTC howto.=
+=20
+Do not forget to disable source address validation (rp_filter).
+
+[cut irrelevant stuff]
+> Incoming to the local SMTP server doesn't need any attention, right?
+
+Reply traffic of incoming connections must be routed through the same=20
+ISP, because the other ISP may consider it as IP spoofing and drop it.=20
+This also requires advanced routing.
