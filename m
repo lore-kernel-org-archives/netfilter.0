@@ -1,28 +1,34 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+From: felix@crowfix.com
 Subject: Re: Ignorance about combining two net connections
-Date: Sun, 14 Oct 2007 13:53:46 +0100 (BST)
-Message-ID: <Pine.LNX.4.58.0710141352240.30566@mail3.jubileegroup.co.uk>
-References: <20071014123703.GA30106@crowfix.com>
+Date: Sun, 14 Oct 2007 06:01:53 -0700
+Message-ID: <20071014130153.GA31564@crowfix.com>
+References: <20071014123703.GA30106@crowfix.com> <Pine.LNX.4.58.0710141352240.30566@mail3.jubileegroup.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20071014123703.GA30106@crowfix.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0710141352240.30566@mail3.jubileegroup.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: felix@crowfix.com
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi there,
+On Sun, Oct 14, 2007 at 01:53:46PM +0100, G.W. Haywood wrote:
+> 
+> On Sun, 14 Oct 2007 felix@crowfix.com wrote:
+> 
+> > I have a computer out in the boonies ... satellite can't supply
+> > static addresses, only DHCP, so can't be a mail server.
+> 
+> Wrong.  Check out dyndns.com
 
-On Sun, 14 Oct 2007 felix@crowfix.com wrote:
+Interesting, but I have my own mail server because I wanted control of
+it, and they want me to install their software on my computer.  I'd
+rather not have one more thing to worry about.  But still an
+interesting idea to keep in mind.
 
-> I have a computer out in the boonies ... satellite can't supply
-> static addresses, only DHCP, so can't be a mail server.
-
-Wrong.  Check out dyndns.com
-
---
-
-73,
-Ged.
+-- 
+            ... _._. ._ ._. . _._. ._. ___ .__ ._. . .__. ._ .. ._.
+     Felix Finch: scarecrow repairman & rocket surgeon / felix@crowfix.com
+  GPG = E987 4493 C860 246C 3B1E  6477 7838 76E9 182E 8151 ITAR license #4933
+I've found a solution to Fermat's Last Theorem but I see I've run out of room o
