@@ -1,29 +1,29 @@
 From: Petr Pisar <petr.pisar@atlas.cz>
-Subject: Re: DHCP works but iptables should have dropped
-Date: Mon, 15 Oct 2007 15:39:59 +0000 (UTC)
-Message-ID: <slrnfh72ef.7et.petr.pisar@album.ics.muni.cz>
-References: <E1IgS7N-0000Jz-Kg@www3.emo.freenet-rz.de> <slrnfh5249.8cf.petr.pisar@album.ics.muni.cz> <47135720.9040804@freemail.hu>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Subject: Re: [ANNOUNCE] Release of iptables 1.4.0rc1
+Date: Mon, 15 Oct 2007 19:18:13 +0000 (UTC)
+Message-ID: <slrnfh7f7l.crr.petr.pisar@album.ics.muni.cz>
+References: <47139AD0.8060002@netfilter.org>
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On 2007-10-15, G=E1sp=E1r Lajos <swifty@freemail.hu> wrote:
->> The raw socket has one important attribute: it recieves packets befo=
-re
->> netfilter. The same mechanism is used by tcpdump/libcap.
->>
-> Are you saying that We CAN NOT "protect" the DHCP-server with iptable=
-s?
+On 2007-10-15, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 >
-The way how you say it is bad but it's true.
+> The netfilter coreteam proudly presents:
+>
+> 	iptables version 1.4.0rc1
+>
+Great to hear it. But it doesn't build ip6tables-{save,restore} as older
+versions either. The problem is that these two makefile targets are in
+*_EXP veriable.
 
-OTOH, how do you want to protect server before malicous packets which
-have source address 0.0.0.0? It makes no sense. Just omit the interface
-name in argument list of dhcpd and be happy ;)
+It is bug or a feature?
+
+PS: http://bugzilla.netfilter.org/ doesn't work.
 
 -- Petr
 
