@@ -1,112 +1,29 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] Release of iptables 1.4.0rc1
-Date: Mon, 15 Oct 2007 18:52:32 +0200
-Message-ID: <47139AD0.8060002@netfilter.org>
+From: Petr Pisar <petr.pisar@atlas.cz>
+Subject: Re: DHCP works but iptables should have dropped
+Date: Mon, 15 Oct 2007 15:39:59 +0000 (UTC)
+Message-ID: <slrnfh72ef.7et.petr.pisar@album.ics.muni.cz>
+References: <E1IgS7N-0000Jz-Kg@www3.emo.freenet-rz.de> <slrnfh5249.8cf.petr.pisar@album.ics.muni.cz> <47135720.9040804@freemail.hu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigCC00DAAB0E3375A5FFE6E023"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
-Cc: netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigCC00DAAB0E3375A5FFE6E023
-Content-Type: multipart/mixed;
- boundary="------------010003060208030808080306"
+On 2007-10-15, G=E1sp=E1r Lajos <swifty@freemail.hu> wrote:
+>> The raw socket has one important attribute: it recieves packets befo=
+re
+>> netfilter. The same mechanism is used by tcpdump/libcap.
+>>
+> Are you saying that We CAN NOT "protect" the DHCP-server with iptable=
+s?
+>
+The way how you say it is bad but it's true.
 
-This is a multi-part message in MIME format.
---------------010003060208030808080306
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+OTOH, how do you want to protect server before malicous packets which
+have source address 0.0.0.0? It makes no sense. Just omit the interface
+name in argument list of dhcpd and be happy ;)
 
-Hi!
+-- Petr
 
-The netfilter coreteam proudly presents:
-
-	iptables version 1.4.0rc1
-
-This is the first release candidate of the new iptables branch 1.4. This
-release candidate adds support for the generic xtables infrastructure
-that strongly improves IPv6 support. Also several accumulated bugfixed
-are included. Test it!
-
-Version 1.4.0rc1 can be obtained from:
-
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
-
-On behalf of the Netfilter Core Team.
-Happy testing!
-
---=20
-"Los honestos son inadaptados sociales" -- Les Luthiers
-
---------------010003060208030808080306
-Content-Type: text/plain;
- name="ChangeLog"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline;
- filename="ChangeLog"
-
-iptables v1.4.0rc1 Changelog
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Changes from 1.3.8:
-
-- Add support for generic xtables infrastructure (improved IPv6 support!)=
-
-	[ Yasuyuki Kozakai ]
-
-- Deletes empty ->final_check() functions
-	[ Jan Engelhardt ]
-
-- Fix sparse warnings: non-C99 array declaration, incorrect function prot=
-otypes
-	[ Patrick McHardy ]
-
-- Remove last vestiges of NFC
-	[ Peter Riley ]
-
-- Make @msg argument a const char *, just like printf
-	[ Jan Engelhardt ]
-
-- Makes it possible to omit extra_opts of matches/targets if unnecessary
-	[ Jan Engelhardt ]
-
-- Fix "iptables getsockopt failed strangely" when querying revisions for =
-non-existant matches and targets
-	[ Patrick McHardy]
-
-- Introduces DEST_IPT_LIBDIR in Makefile
-	[ Yasuyuki Kozakai ]
-
-- Change default KERNEL_DIR location and add KBUILD_OUTPUT
-	[ Sven Wegener ]
-
-- Removes obsolete KERNEL_64_USERSPACE_32 definitions
-	[ Yasuyuki Kozakai ]
-
-- Fix unused function warning
-	[ Patrick McHardy ]
-
---------------010003060208030808080306--
-
---------------enigCC00DAAB0E3375A5FFE6E023
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFHE5rUW42mhw+ndNkRAigxAJ9mf+zYdP8VPxVOWnnPr9Tfdnm8JQCdG/nF
-xQhzP0iKto8FjuvZrIIt3E8=
-=l2gi
------END PGP SIGNATURE-----
-
---------------enigCC00DAAB0E3375A5FFE6E023--
