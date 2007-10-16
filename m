@@ -1,30 +1,32 @@
-From: "Khoa Nguyen" <khoa.coffee@gmail.com>
-Subject: libipq and destination IP address
-Date: Tue, 16 Oct 2007 10:44:11 -0400
-Message-ID: <3d00e6dc0710160744ia8edebbn8dafb76d709622dc@mail.gmail.com>
-References: <mailman.21644.1192545951.25258.netfilter@lists.netfilter.org>
+From: "Ian Brown" <ianbrn@gmail.com>
+Subject: Writing a rule to change udp source port with iptables - noobie
+Date: Tue, 16 Oct 2007 16:47:52 +0200
+Message-ID: <d0383f90710160747n2790d1d0jad9ba67253c03d55@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=beta;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=OGbK9tNFwr3qAZ43XSXYKXbuYNtRA+PeiInbuB6B6tw=;
-        b=OebBnS8QEgERSUkOG1hBQK/9K8J8RdfKbGjpLCmINkcSigkS4HKtWsSem1x4JImx/C9Le80ibwkL5sdqCvL8WIrffYqu5ia8WrubjwRZqsEVWJR8Ui68iK8Zdigfpu/9X69atB7W7SXDCL0KDY4jwcVcZJzlNDc3oJxQ01lf0Xc=
-In-Reply-To: <mailman.21644.1192545951.25258.netfilter@lists.netfilter.org>
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=sDo3YUDb1q2EVwr5XJRtCoNqpZ9tSy2ei0ddbxqCTqk=;
+        b=CUaQBm+Yb63vZAQ/9/BAbZVL8fGMBoPUySASSNLbdCCIetKpkJrbi2ITxXq3wDRiUYt9ScuH7hWyBpTk8k+nNib77puAmsvM6OCuFvuFHBmES2TZXXi5EHntRwDEBgEBCC1jDJi46wkN/qlbowkVoym9I7BxV2IS2TmKXUPL4Gc=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello
 
-I am writing a small libipq program to extract packet info. I "queued"
-all packets in the OUTPUT chain. It looks like the packet has the same
-source and destination packet ( = host interface address). Why is
-that? Is there a way in libipq to extract the REAL destination
-address?
+- Could someone please tell how do declare a simple iptables rule
+which will change a specified udp source port in UDP packets having that port
+to another specifed port?
 
-Thanks,
-Khoa
+For example, change all incoming UDP packets which have UDP source port 100
+so thay will have UDP source port 200 instead ?
+
+second: where can I find the archives of this mailing list ?
+I see only broken links ?
+
+Reagrds,
+Ian
