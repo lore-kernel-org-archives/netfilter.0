@@ -1,30 +1,35 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [ANNOUNCE] Release of iptables 1.4.0rc1
-Date: Wed, 17 Oct 2007 10:48:15 +0200
-Message-ID: <4715CC4F.30400@trash.net>
-References: <47139AD0.8060002@netfilter.org> <slrnfh7f7l.crr.petr.pisar@album.ics.muni.cz> <471479F5.4000002@trash.net> <slrnfh9ioo.31t.petr.pisar@album.ics.muni.cz>
+From: "Andrew Good" <netrati@gmail.com>
+Subject: Multiple Gateways and SNAT
+Date: Thu, 18 Oct 2007 08:15:23 +0900
+Message-ID: <9ae240b20710171615s23c4218ds2092061160cbc8ef@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <slrnfh9ioo.31t.petr.pisar@album.ics.muni.cz>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=cvJkB1Jar6N/ABAm0Jk9Y8asv9vlGKZiCRz3fwMrPZk=;
+        b=TijTTIRLKX5co//27w8BIIjCCBjREHq4ZP5CRo/86ScX4QaWI4PE57zn3djS1QMiL84Y65n0wDpdkxJDR3kUt7sRVfJaRACjAnVAj3hX9w2Xbr+Wjt3UNm6Apn55EJ6X84wAk1bKuarbjVAe8VZBMSp2imbhzIrpeT5Uyzld4BY=
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Petr Pisar <petr.pisar@atlas.cz>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Petr Pisar wrote:
-> Probably you forgot on manual pages:
-> 
-> --- Makefile.old	2007-10-16 16:05:07.000000000 +0200
-> +++ Makefile	2007-10-16 16:07:37.000000000 +0200
-> @@ -62,7 +62,7 @@
->  EXTRAS+=ip6tables ip6tables.o ip6tables.8
->  EXTRA_INSTALLS+=$(DESTDIR)$(BINDIR)/ip6tables $(DESTDIR)$(MANDIR)/man8/ip6tables.8
->  EXTRAS+=ip6tables-save ip6tables-restore
-> -EXTRA_INSTALLS+=$(DESTDIR)$(BINDIR)/ip6tables-save $(DESTDIR)$(BINDIR)/ip6tables-restore # $(DESTDIR)$(MANDIR)/man8/iptables-restore.8 $(DESTDIR)$(MANDIR)/man8/iptables-save.8 $(DESTDIR)$(MANDIR)/man8/ip6tables-save.8 $(DESTDIR)$(MANDIR)/man8/ip6tables-restore.8
-> +EXTRA_INSTALLS+=$(DESTDIR)$(BINDIR)/ip6tables-save $(DESTDIR)$(BINDIR)/ip6tables-restore $(DESTDIR)$(MANDIR)/man8/ip6tables-save.8 $(DESTDIR)$(MANDIR)/man8/ip6tables-restore.8
->  endif
+Hello! I have two interfaces I'm trying to load balancing over with
+the gateway box doing SNAT for the LAN. The problem is packets try to
+go out on the eth2 interface with the external IP address of eth1 even
+though I've definied the routing rule. Any ideas?? Thanks
 
 
-Fixed, thanks.
+iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to 12.23.32.15
+iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 34.36.23.89
+
+ip route add default scope global nexthop via 12.23.32.1 dev eth2
+weight 1 nexthop via 34.36.23.1 dev eth1 weight 1
+
+ip rule add from 12.23.32.15 lookup 200
+ip rule add from 34.36.23.89 lookup 201
+
+ip rule add default via 12.23.32.1 dev eth2 tab 200
+ip rule add default via 34.36.23.1 dev eth1 tab 201
