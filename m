@@ -1,35 +1,54 @@
-From: "Andrew Good" <netrati@gmail.com>
-Subject: Multiple Gateways and SNAT
-Date: Thu, 18 Oct 2007 08:15:23 +0900
-Message-ID: <9ae240b20710171615s23c4218ds2092061160cbc8ef@mail.gmail.com>
+From: Tiaan Wessels <tiaan@netsys.co.za>
+Subject: ROUTE module problem
+Date: Thu, 18 Oct 2007 07:07:27 +0000
+Message-ID: <4717062F.6030907@netsys.co.za>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=beta;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=cvJkB1Jar6N/ABAm0Jk9Y8asv9vlGKZiCRz3fwMrPZk=;
-        b=TijTTIRLKX5co//27w8BIIjCCBjREHq4ZP5CRo/86ScX4QaWI4PE57zn3djS1QMiL84Y65n0wDpdkxJDR3kUt7sRVfJaRACjAnVAj3hX9w2Xbr+Wjt3UNm6Apn55EJ6X84wAk1bKuarbjVAe8VZBMSp2imbhzIrpeT5Uyzld4BY=
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello! I have two interfaces I'm trying to load balancing over with
-the gateway box doing SNAT for the LAN. The problem is packets try to
-go out on the eth2 interface with the external IP address of eth1 even
-though I've definied the routing rule. Any ideas?? Thanks
+Hi,
+
+I have the need to duplicate UDP packets arriving at a machine. They 
+need to be duplicated and sent of to both the original recipient and a 
+new recipient.
+After some reading I came to the conclusion the     -j ROUTE --tee    
+option to iptables is the way to go. Getting this to work for a novice 
+like me seems to be impossible.
+Doing a man on my FC5 system shows --tee to be there under the ROUTE 
+extension and I quote from the man page
+'iptables can use extended target modules: the following are included in 
+the standard distribution'
+however using iptables results in
+
+[root@nst2 ~]# /sbin/iptables -A PREROUTING -t mangle -p udp -d 
+192.168.3.77 --dport 9090 -j ROUTE --tee
+iptables v1.3.5: Unknown arg `--tee'
+
+locate libipt_ROUTE.so yields nothing which makes me believe the man 
+page was talking bollocks when claiming the extensions to be part of the 
+'standard distribution'
+
+After further reading I came to the conclusion patch-o-matic needed to 
+be used to install the ROUTE module. going to netfilter extensions HOWTO 
+I see I have to get the latest update from CVS like in so
+
+cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
 
 
-iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to 12.23.32.15
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 34.36.23.89
+but when I do this I get
 
-ip route add default scope global nexthop via 12.23.32.1 dev eth2
-weight 1 nexthop via 34.36.23.1 dev eth1 weight 1
+[root@nst2 ~]# cvs -d :pserver:cvs@pserver.netfilter.org:/cvspublic login
+Logging in to :pserver:cvs@pserver.netfilter.org:2401/cvspublic
+CVS password:
+cvs [login aborted]: connect to 
+pserver.netfilter.org(213.95.27.115):2401 failed: Connection refused
 
-ip rule add from 12.23.32.15 lookup 200
-ip rule add from 34.36.23.89 lookup 201
+so I really am giving up now after waisting enough time ... so any 
+experts out there willing to take me by the hand ??????
 
-ip rule add default via 12.23.32.1 dev eth2 tab 200
-ip rule add default via 34.36.23.1 dev eth1 tab 201
+thanks
+
