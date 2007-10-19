@@ -1,40 +1,43 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Packet duplication
-Date: Fri, 19 Oct 2007 13:25:29 +0200
-Message-ID: <003801c81242$c160fec0$0b0ffe0a@NS006819>
-References: <47184C6D.40202@netsys.co.za> <47186FC3.6030402@freemail.hu> <471875A4.8010000@netsys.co.za> <471882D0.2060602@freemail.hu> <47188A9A.2080604@netsys.co.za>
+From: Garrick il Bardo <miseriaccia@yahoo.it>
+Subject: NF_IP_POST_ROUTING hook & sk_buff struct
+Date: Fri, 19 Oct 2007 13:46:28 +0200 (CEST)
+Message-ID: <892457.37213.qm@web32707.mail.mud.yahoo.com>
+References: <20071019104639.1ebl44pdk4ooo4ck@mail.krutibrko.sk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47188A9A.2080604@netsys.co.za>
+In-Reply-To: <20071019104639.1ebl44pdk4ooo4ck@mail.krutibrko.sk>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-devel@vger.kernel.org
 
-Tiaan Wessels =EDrta:
-> thanks,
-> i have located patch-o-matic snapshot for yesterday on netfilter ftp
-> server. so i did a runme extra but it never asks me to apply the
-> ROUTE/--tee patch. is this correct ? must I recompile my
-> kernel in any case ?
+Hi,
+if I write a NF_IP_POST_ROUTING hook (for kernel
+2.6.21) to SNAT some TCP packets, can I suppose that
+(for TCP packets) TCP Payload is contiguous to TCP
+Header in struct sk_buff (payload pointer = skb->h->th
++ (skb->h->th->doff * 4) ) ? If not, is there a
+function that assure me this result ?
 
-Yes you have to supply the kernel source-path and compile your own
-kernel. While you're at it, also download the new iptables source and
-let POM-ng also patch that source. Compiling the kernel isn't that hard=
-,
-iptables is easier, just supply the iptables source path and when the
-kernel is done, compile and install iptables. Remember to remove the
-existing iptables package from your distribution.
+I'm writing a NF_IP_POST_ROUTING hook for kernel
+2.6.21, but it does right SNAT and checksum
+calculation only for TCP packet without payload,
+because TCP payload seems to be not contiguous to TCP
+Header in struct sk_buff!
 
-Perhaps you can find the kernel-config from the distro you're using to
-import when running "make menuconfig", so you automatically have all
-options selected that you currently have (unless you choose another
-kernel version than what you are using now). That way you only have to
-select the extra's you want.
+Thanks,
+Maurizio
 
 
-Grts,
-Rob
+---
+Maurizio
 
 
+(o<                                    (@_
+//\                                    //\
+V_/_....Powered By Ubuntu GNU/Linux....V_/_
+
+
+      ___________________________________ 
+L'email della prossima generazione? Puoi averla con la nuova Yahoo! Mail: http://it.docs.yahoo.com/nowyoucan.html
