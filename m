@@ -1,46 +1,71 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
-Date: Tue, 23 Oct 2007 15:17:11 +0200
-Message-ID: <471DF457.3010404@trash.net>
-References: <001f01c8142e$e6a67960$ea50f53c@FireEye.com>
+From: Guillaume Leccese <guillaume.leccese@oxalide.com>
+Subject: iptables logging to syslog: performance problem
+Date: Tue, 23 Oct 2007 17:12:40 +0200
+Message-ID: <471E0F68.4010700@oxalide.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <001f01c8142e$e6a67960$ea50f53c@FireEye.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ron Lai <ronlai@cs.stanford.edu>
-Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Please send bugreports to netfilter-devel.
+Hi list,
 
-Ron Lai wrote:
-> Hi all,
-> My 2.6.22.6 Linux box is acting as a NAT device. I found that a NATted 
-> FTP client is having problem using active mode to connect to a outside 
-> FTP server. (Passive mode works fine.)
-> 
->> From the trace I could see that the PORT command from the FTP client is 
-> correctly modified by the Linux box to use the converted NAT address. 
-> However, the confirmation from the server never makes it to the client 
-> and the client just keeps retransmitting the PORT command packet.
+On a 2.6.19.1 kernel box (nfct patch from Julian
+http://www.ssi.bg/~ja/nfct/) we have a strange performance problem.
+
+When a scan occur on a /24 network handled by the firewall (on a filtered
+port) packets dropping produces a syslog output. During the logging process,
+the traffic is at a frozen state (2 seconds to 30 seconds, depending of the
+number of ports scanned).
+
+vmstat output when the problem happen:
+
+procs -----------memory---------- ---swap-- -----io---- -system-- ----cpu----
+2 0     0 577112 102152 266592     0     0     0     0 1698 1513 0 16 84 0
+2 0     0 576120 102152 266592     0     0     0     0 1690 1507 0 16 83 0
+
+Before, interrupt is approximatively at 25k/sec (symmetrical to the
+traffic). For instance, usually we have 100mb/s on outgoing with
+a peak above 200mb/s during high activity.
+
+vmstat output at normal state:
+
+procs -----------memory---------- ---swap-- -----io---- -system-- ----cpu----
+0  0      0 753820 113540  77544    0    0     0    16 24668   91  0  6 94  0
+0  0      0 753820 113540  77544    0    0     0     0 24919   72  0  7 93  0
+
+The probleme can be reproduced with a nmap /24 scan on a specific port or
+with a full scan on a single host.
+
+a vmstats when output to syslog is not active:
+
+Oct 20 00:46:50 2 0 0 814400 43740 99024 0 0 0 0 16995 7325 10 32 58 0
+Oct 20 00:46:51 2 0 0 814316 43740 99024 0 0 0 0 16166 7322 10 32 58 0
+
+I have done these vmstats during the night, traffic was not so important, but
+interrupts does not decrease and no freeze noticed.
+
+When output to syslog is not effective, there is no performance decrease.
+
+More details about the configuration:
+
+- Linux 2.6.19.1, module activate, iptables not in module
+- e1000, tygon 3 and sundance drivers in module
+- bonding device in module
+- 2x e1000, driver v7.6.9 stable, in bonding
+- Keepalived 1.1.12-1, Debian apt version
+
+Comments and help are welcome.
+
+Regards,
+
+-- 
+Guillaume Leccese
+13, rue Greneta 75003 Paris
+tel: 01 44 78 63 66 - fax: 01 44 78 63 65
+http://www.oxalide.com
 
 
-Do you mean it never makes it to the FTP client or to the machine
-where the client is running?
 
-> The interesting part is that active mode can work if the length of the 
-> actual IP address of the client is the same as the length of the 
-> converted NAT address. It looks like if there is no TCP sequence number 
-> modification by the Linux box, the FTP connection can work properly in 
-> active mode. I am suspecting that there may a problem in the TCP 
-> sequence number tracking in the kernel modules.
-> 
-> The same settings work fine when I try with Linux 2.6.15 loading 
-> ip_nat_ftp.ko and ip_conntrack_ftp.ko. Did I miss anything in 
-> configuring the Linux 2.6.22.6 box?
-
-
-Works fine here. Please post the dump, ideally from a box in the
-middle.
