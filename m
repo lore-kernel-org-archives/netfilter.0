@@ -1,32 +1,63 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Packet duplication
-Date: Wed, 24 Oct 2007 14:45:55 +0200
-Message-ID: <002e01c8163b$d1f931b0$0b0ffe0a@NS006819>
-References: <47184C6D.40202@netsys.co.za> <47186FC3.6030402@freemail.hu> <471875A4.8010000@netsys.co.za> <471882D0.2060602@freemail.hu> <47188A9A.2080604@netsys.co.za> <003801c81242$c160fec0$0b0ffe0a@NS006819> <471F003A.7090501@netsys.co.za> <001501c81620$a81ac3b0$0b0ffe0a@NS006819> <471F17BC.9060507@netsys.co.za> <001601c81629$cd4831f0$0b0ffe0a@NS006819> <471F21E7.2000901@netsys.co.za>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Problem with new --physdev-out style
+Date: Wed, 24 Oct 2007 14:49:15 +0200
+Message-ID: <471F3F4B.80205@trash.net>
+References: <20071024071854.GA18581@volker-sauer.de> <471EF68A.702@trash.net> <471F00DC.9070001@snapgear.com> <471F03B1.3090909@trash.net> <471F0AD5.2050202@snapgear.com> <471F136D.6090907@trash.net> <20071024120622.GB27593@volker-sauer.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <471F21E7.2000901@netsys.co.za>
+In-Reply-To: <20071024120622.GB27593@volker-sauer.de>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Volker Sauer <volker@volker-sauer.de>
+Cc: Philip Craig <philipc@snapgear.com>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-> looks promising thanks. it said it download ROUTE extra so patched
-> (never asked me to apply ROUTE patch though) and am now
-> compiling kernel again so will let you know in a days time
-> thanks for your philantropy
+Volker Sauer wrote:
+> 99% of my rules on all my firewalls are like that:
+> 
+> $IPTABLES -A FORWARD -i $BR_INT -m physdev --physdev-in $IF_INT
+> --physdev-out $IF_DMZ -s $ZAPHOD -j ACCEPT
+> 
+> IF_INT (eth1) and IF_DMZ (vlan3) are both members of BR_INT (br-intern):
+> 
+> fw1: ~ # brctl show
+> br-intern               8000.000d88cd28c1       yes     eth1
+>                                                         vlan3
+> 
+> This means, that all rules like that are valid even with the new concept
+> of netfilter, right?? But why do I get error messages like quoted in my
+> first mail for these rules - it *is* bridged traffic inside *one*
+> bridge!
+> And: I don't see how --physdev-is-bridged should help, since it's a
+> match and not a command to the kernel saying: "this *is* bridged
+> traffic". It the kernel does not see this by itself,
+> --physdev-is-bridged doesn't help.
 
-I tried to patch 2.6.23.1 using POM-ng but it didn't ask to patch for
-ROUTE as you found out. Maybe it's not supported on this kernel so it'll
-won't work on this kernel.
 
-To see what happens, I patched the kernel manually (copied files, added
-stuff to Kconfig and Makefile), configured it for ROUTE (ipv4) and it
-seems to compile. I can't test if it will work, however.
+Whether you believe it or not, this is the only way to tell
+the physdev match that the rule only affects purely bridged
+traffic.
+
+> If my arguments are correct, I suggest the following improvement:
+> 
+> In case someone is using physdev in OUTPUT, display the message like it
+> is now: "using --physdev-out in the OUTPUT chains for non-bridged traffic
+> is not supported anymore".
+> 
+> In case it is used inside FORWARD, check if all physdev interfaces are
+> members of the same bridge. If yes, accept the rule, because then it is
+> allowed to use it!!!  (Which is the case all the thousands of rules in
+> my firewalls except the 5 that I sent to this list :-().
 
 
-Grts,
-Rob
+Does not work since one of the devices might be put in a different
+bridge after you loaded the rules.
+
+> If no, display a message like this:
+> 
+> "physdev match: using --physdev-out in the FORWARD chains is only 
+> allowed if all physical interfaces are members of the same bridge."
 
 
+Feel free to send a patch to improve the error messages.
