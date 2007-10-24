@@ -1,50 +1,32 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Problem with new --physdev-out style
-Date: Wed, 24 Oct 2007 16:11:25 +0200
-Message-ID: <471F528D.8000501@plouf.fr.eu.org>
-References: <20071024071854.GA18581@volker-sauer.de> <471EF68A.702@trash.net> <471F00DC.9070001@snapgear.com> <471F03B1.3090909@trash.net> <471F0AD5.2050202@snapgear.com> <471F136D.6090907@trash.net> <20071024120622.GB27593@volker-sauer.de>
+From: Tiaan Wessels <tiaan@netsys.co.za>
+Subject: Re: Packet duplication
+Date: Wed, 24 Oct 2007 15:02:52 +0000
+Message-ID: <471F5E9C.5010802@netsys.co.za>
+References: <47184C6D.40202@netsys.co.za> <47186FC3.6030402@freemail.hu> <471875A4.8010000@netsys.co.za> <471882D0.2060602@freemail.hu> <47188A9A.2080604@netsys.co.za> <003801c81242$c160fec0$0b0ffe0a@NS006819> <471F003A.7090501@netsys.co.za> <001501c81620$a81ac3b0$0b0ffe0a@NS006819> <471F17BC.9060507@netsys.co.za> <001601c81629$cd4831f0$0b0ffe0a@NS006819> <471F21E7.2000901@netsys.co.za> <002e01c8163b$d1f931b0$0b0ffe0a@NS006819>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20071024120622.GB27593@volker-sauer.de>
+In-Reply-To: <002e01c8163b$d1f931b0$0b0ffe0a@NS006819>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Volker Sauer a =E9crit :
->=20
-> In case someone is using physdev in OUTPUT, display the message like =
-it
-> is now: "using --physdev-out in the OUTPUT chains for non-bridged tra=
-ffic
-> is not supported anymore".
-
-Ok.
-
-> In case it is used inside FORWARD, check if all physdev interfaces ar=
-e
-> members of the same bridge.
-
-As Patrick said, that condition may change over time. I like to have al=
-l=20
-my ruleset loaded before the network is configured, even before some=20
-interfaces exist. Your proposed change would prevent it. Besides, my=20
-opinion is that it is not the job of iptables to do such checks.
-
-> If yes, accept the rule, because then it is
-> allowed to use it!!!  (Which is the case all the thousands of rules i=
-n
-> my firewalls except the 5 that I sent to this list :-().
-> If no, display a message like this:
->=20
-> "physdev match: using --physdev-out in the FORWARD chains is only=20
-> allowed if all physical interfaces are members of the same bridge."
-
-This is wrong and inacurate. Using --physdev-out in the FORWARD and=20
-POSTROUTING chains is supported for *bridged* traffic only, period. All=
-=20
-physical interfaces being members of the same bridge is not a sufficien=
-t=20
-condition to make sure that only bridged traffic will be matched.=20
-Traffic can still be routed from a bridge to itself.
+Rob Sterenborg wrote:
+>> looks promising thanks. it said it download ROUTE extra so patched
+>> (never asked me to apply ROUTE patch though) and am now
+>> compiling kernel again so will let you know in a days time
+>> thanks for your philantropy
+>>     
+>
+> I tried to patch 2.6.23.1 using POM-ng but it didn't ask to patch for
+> ROUTE as you found out. Maybe it's not supported on this kernel so it'll
+> won't work on this kernel.
+>
+> To see what happens, I patched the kernel manually (copied files, added
+> stuff to Kconfig and Makefile), configured it for ROUTE (ipv4) and it
+> seems to compile. I can't test if it will work, however.
+>
+>   
+i know this is much asked but any chance you could explain to me what 
+you did ? (you can be brief)
