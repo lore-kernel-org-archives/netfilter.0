@@ -1,189 +1,32 @@
-From: "Ron Lai" <ronlai@cs.stanford.edu>
-Subject: Re: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
-Date: Wed, 24 Oct 2007 05:24:34 -0700
-Message-ID: <002401c81638$d97f2ff0$050ba8c0@FireEye.com>
-References: <001f01c8142e$e6a67960$ea50f53c@FireEye.com> <471DF457.3010404@trash.net>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0021_01C815FE.29A56200"
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Packet duplication
+Date: Wed, 24 Oct 2007 14:45:55 +0200
+Message-ID: <002e01c8163b$d1f931b0$0b0ffe0a@NS006819>
+References: <47184C6D.40202@netsys.co.za> <47186FC3.6030402@freemail.hu> <471875A4.8010000@netsys.co.za> <471882D0.2060602@freemail.hu> <47188A9A.2080604@netsys.co.za> <003801c81242$c160fec0$0b0ffe0a@NS006819> <471F003A.7090501@netsys.co.za> <001501c81620$a81ac3b0$0b0ffe0a@NS006819> <471F17BC.9060507@netsys.co.za> <001601c81629$cd4831f0$0b0ffe0a@NS006819> <471F21E7.2000901@netsys.co.za>
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <471F21E7.2000901@netsys.co.za>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0021_01C815FE.29A56200
-Content-Type: text/plain;
-	format=flowed;
-	charset="ISO-8859-15";
-	reply-type=response
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-The packet dump from the 2.6.22.6 box in the middle is attached. In the 
-trace 172.16.119.91 is the original IP address of the FTP client and 
-172.16.255.123 is the NATted address. The FTP server's address is 
-172.16.118.1.
+> looks promising thanks. it said it download ROUTE extra so patched
+> (never asked me to apply ROUTE patch though) and am now
+> compiling kernel again so will let you know in a days time
+> thanks for your philantropy
 
-The problem happens between packet 31 and packet 34. Packet 31 indicates 
-that the client expects ACK number 0x64b4dda9 for the PORT command it sends. 
-However, the ACK number it actually gets is 0x64b4dda8.
+I tried to patch 2.6.23.1 using POM-ng but it didn't ask to patch for
+ROUTE as you found out. Maybe it's not supported on this kernel so it'll
+won't work on this kernel.
 
-Ron
------ Original Message ----- 
-From: "Patrick McHardy" <kaber@trash.net>
-To: "Ron Lai" <ronlai@cs.stanford.edu>
-Cc: <netfilter@vger.kernel.org>; "Netfilter Development Mailinglist" 
-<netfilter-devel@vger.kernel.org>
-Sent: Tuesday, October 23, 2007 6:17 AM
-Subject: Re: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
+To see what happens, I patched the kernel manually (copied files, added
+stuff to Kconfig and Makefile), configured it for ROUTE (ipv4) and it
+seems to compile. I can't test if it will work, however.
 
 
-> Please send bugreports to netfilter-devel.
->
-> Ron Lai wrote:
->> Hi all,
->> My 2.6.22.6 Linux box is acting as a NAT device. I found that a NATted 
->> FTP client is having problem using active mode to connect to a outside 
->> FTP server. (Passive mode works fine.)
->>
->>> From the trace I could see that the PORT command from the FTP client is
->> correctly modified by the Linux box to use the converted NAT address. 
->> However, the confirmation from the server never makes it to the client 
->> and the client just keeps retransmitting the PORT command packet.
->
->
-> Do you mean it never makes it to the FTP client or to the machine
-> where the client is running?
->
->> The interesting part is that active mode can work if the length of the 
->> actual IP address of the client is the same as the length of the 
->> converted NAT address. It looks like if there is no TCP sequence number 
->> modification by the Linux box, the FTP connection can work properly in 
->> active mode. I am suspecting that there may a problem in the TCP sequence 
->> number tracking in the kernel modules.
->>
->> The same settings work fine when I try with Linux 2.6.15 loading 
->> ip_nat_ftp.ko and ip_conntrack_ftp.ko. Did I miss anything in configuring 
->> the Linux 2.6.22.6 box?
->
->
-> Works fine here. Please post the dump, ideally from a box in the
-> middle.
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html 
+Grts,
+Rob
 
-------=_NextPart_000_0021_01C815FE.29A56200
-Content-Type: application/octet-stream;
-	name="ftp_test.pcap"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="ftp_test.pcap"
-
-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
-
-------=_NextPart_000_0021_01C815FE.29A56200--
 
