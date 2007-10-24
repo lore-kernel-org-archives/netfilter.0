@@ -1,34 +1,51 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Problem with new --physdev-out style
-Date: Wed, 24 Oct 2007 11:46:48 +0200
-Message-ID: <471F1488.3000200@plouf.fr.eu.org>
-References: <20071024071854.GA18581@volker-sauer.de> <471EF68A.702@trash.net> <471F00DC.9070001@snapgear.com> <471F03B1.3090909@trash.net> <471F0597.4030203@plouf.fr.eu.org> <471F0D18.1030606@snapgear.com> <471F0ED1.202@plouf.fr.eu.org> <471F12DC.8050508@snapgear.com>
+From: Tiaan Wessels <tiaan@netsys.co.za>
+Subject: Re: Packet duplication
+Date: Wed, 24 Oct 2007 10:00:28 +0000
+Message-ID: <471F17BC.9060507@netsys.co.za>
+References: <47184C6D.40202@netsys.co.za> <47186FC3.6030402@freemail.hu> <471875A4.8010000@netsys.co.za> <471882D0.2060602@freemail.hu> <47188A9A.2080604@netsys.co.za> <003801c81242$c160fec0$0b0ffe0a@NS006819> <471F003A.7090501@netsys.co.za> <001501c81620$a81ac3b0$0b0ffe0a@NS006819>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <471F12DC.8050508@snapgear.com>
+In-Reply-To: <001501c81620$a81ac3b0$0b0ffe0a@NS006819>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Philip Craig a =E9crit :
-> Pascal Hambourg wrote:
->=20
->>Sure, but what about packets that enter a bridged interface and then =
-are=20
->>routed ?
->=20
-> It's not set for them either, they are still just routed packets.
-> Not sure I understand your question.  My original comment was that
-> because the packets are routed (even though they arrived on a bridge)=
-,
-> the bridged flag is not set, and so the --physdev-is-bridged option
-> would never match for that particular rule, and it simply isn't
-> possible to fix that rule to get the --physdev-out to work.
+Rob Sterenborg wrote:
+>> i patched the kernel sources with pom and compiled and installed and
+>> then compiled and installed iptables 1.3.7 but still i get
+>>
+>> nst2:~ # /usr/local/sbin/iptables -A PREROUTE -t mangle -p
+>> udp --dport 9090 -j ROUTE
+>> iptables v1.3.7: Couldn't load target
+>> `ROUTE':/usr/local/lib/iptables/libipt_ROUTE.so: cannot open shared
+>> object file: No such file or directory
+>>     
+>
+> So, "locate libipt_ROUTE.so" doesn't return
+> "/usr/local/lib/iptables/libipt_ROUTE.so".
+>
+> In that case I suppose there was an error when compiling iptables
+> (perhaps also when compiling the kernel?) that caused libipt_ROUTE.so
+> not to be compiled. When you ran "make", did you see any related errors?
+> Anyway, I don't think I can help you there; I'm not a developer, maybe
+> someone else can.
+>
+>   
+thats correct. locate finds nothing. in an attempt at hacking i added 
+ROUTE to the variable PF_EXT_SLIB in extensions/Makefile and tried to 
+make but then get
 
-I misunderstood your original comment. I thought you meant that=20
---physdev-is-bridged would not help distinguish between routed and=20
-bridged packets when the input and output interfaces are bridges. Thank=
-s=20
-for taking the time to clarify.
+nst2:~/iptables-1.3.7 # make
+Unable to resolve dependency on linux/netfilter_ipv4/ipt_ROUTE.h. Try 
+'make clean'.
+Extensions found: IPv4:CLUSTERIP IPv4:connbytes IPv4:dccp IPv4:quota 
+IPv4:recent IPv4:statistic IPv4:string IPv6:REJECT IPv6:ah IPv6:esp 
+IPv6:frag IPv6:ipv6header IPv6:hbh IPv6:dst IPv6:rt IPv6:sctp
+
+
+i could not see any problem in compiling either the kernel or iptables. 
+what did strike me as odd was when i ran the ./runme script in pom it 
+never asks me for the patch on routing so i answer N to all the 
+questions. this right ???
