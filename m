@@ -1,32 +1,79 @@
-From: Tiaan Wessels <tiaan@netsys.co.za>
-Subject: Re: Packet duplication
-Date: Wed, 24 Oct 2007 15:02:52 +0000
-Message-ID: <471F5E9C.5010802@netsys.co.za>
-References: <47184C6D.40202@netsys.co.za> <47186FC3.6030402@freemail.hu> <471875A4.8010000@netsys.co.za> <471882D0.2060602@freemail.hu> <47188A9A.2080604@netsys.co.za> <003801c81242$c160fec0$0b0ffe0a@NS006819> <471F003A.7090501@netsys.co.za> <001501c81620$a81ac3b0$0b0ffe0a@NS006819> <471F17BC.9060507@netsys.co.za> <001601c81629$cd4831f0$0b0ffe0a@NS006819> <471F21E7.2000901@netsys.co.za> <002e01c8163b$d1f931b0$0b0ffe0a@NS006819>
+From: Volker Sauer <volker@volker-sauer.de>
+Subject: Re: Problem with new --physdev-out style
+Date: Wed, 24 Oct 2007 17:18:50 +0200
+Message-ID: <20071024151850.GA7153@volker-sauer.de>
+References: <20071024071854.GA18581@volker-sauer.de> <471EF68A.702@trash.net> <471F00DC.9070001@snapgear.com> <471F03B1.3090909@trash.net> <471F0AD5.2050202@snapgear.com> <471F136D.6090907@trash.net> <20071024120622.GB27593@volker-sauer.de> <471F528D.8000501@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <002e01c8163b$d1f931b0$0b0ffe0a@NS006819>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <471F528D.8000501@plouf.fr.eu.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Rob Sterenborg wrote:
->> looks promising thanks. it said it download ROUTE extra so patched
->> (never asked me to apply ROUTE patch though) and am now
->> compiling kernel again so will let you know in a days time
->> thanks for your philantropy
->>     
+
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mi, 24 Okt 2007, Pascal Hambourg <pascal.mail@plouf.fr.eu.org> wrote:
+> As Patrick said, that condition may change over time. I like to have all =
+my=20
+> ruleset loaded before the network is configured, even before some interfa=
+ces=20
+> exist. Your proposed change would prevent it. Besides, my opinion is that=
+ it=20
+> is not the job of iptables to do such checks.
+
+Agreed.
+
 >
-> I tried to patch 2.6.23.1 using POM-ng but it didn't ask to patch for
-> ROUTE as you found out. Maybe it's not supported on this kernel so it'll
-> won't work on this kernel.
+>> If yes, accept the rule, because then it is
+>> allowed to use it!!!  (Which is the case all the thousands of rules in
+>> my firewalls except the 5 that I sent to this list :-().
+>> If no, display a message like this:
+>> "physdev match: using --physdev-out in the FORWARD chains is only allowe=
+d=20
+>> if all physical interfaces are members of the same bridge."
 >
-> To see what happens, I patched the kernel manually (copied files, added
-> stuff to Kconfig and Makefile), configured it for ROUTE (ipv4) and it
-> seems to compile. I can't test if it will work, however.
->
->   
-i know this is much asked but any chance you could explain to me what 
-you did ? (you can be brief)
+> This is wrong and inacurate. Using --physdev-out in the FORWARD and=20
+> POSTROUTING chains is supported for *bridged* traffic only, period. All=
+=20
+> physical interfaces being members of the same bridge is not a sufficient=
+=20
+> condition to make sure that only bridged traffic will be matched. Traffic=
+=20
+> can still be routed from a bridge to itself.
+
+Yes, it is inacurate.
+But I think one needs a better explenation. I'm a power-user but still a
+user, not a developer. Users think in different terms and speak another
+language.=20
+Maybe an advice like "look for the option "--physdev-is-bridged" - it
+may help you" or so would be good.
+
+--=20
+  Volker Sauer  *  Poststrasse 1/601   *   64293 Darmstadt  *   Germany
+  E-Mail/Jabber: volker(at)volker-sauer.de * http://www.volker-sauer.de
+  PGPKey-Fingerprint: DB26 11C7 B12E 0B27 3999 2E4F 7E35 4E4D 5DD5 D0E0
+  http://wwwkeys.de.pgp.net/pks/lookup?op=3Dget&search=3D0x7E354E4D5DD5D0E0=
+=20
+
+--G4iJoqBmSsgzjUCe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFHH2JZfjVOTV3V0OARAoeoAKCSqobgcrGAa+jwE3MdANWBl8HCPQCg6X4n
+Ft5CESoRy5o2gSFte9x4Css=
+=GEiB
+-----END PGP SIGNATURE-----
+
+--G4iJoqBmSsgzjUCe--
