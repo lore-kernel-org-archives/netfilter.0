@@ -1,79 +1,50 @@
-From: Volker Sauer <volker@volker-sauer.de>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Problem with new --physdev-out style
-Date: Wed, 24 Oct 2007 14:57:19 +0200
-Message-ID: <20071024125718.GA27909@volker-sauer.de>
-References: <20071024071854.GA18581@volker-sauer.de> <471EF68A.702@trash.net> <471F00DC.9070001@snapgear.com> <471F03B1.3090909@trash.net> <471F0AD5.2050202@snapgear.com> <471F136D.6090907@trash.net> <20071024120622.GB27593@volker-sauer.de> <471F3F4B.80205@trash.net>
+Date: Wed, 24 Oct 2007 16:11:25 +0200
+Message-ID: <471F528D.8000501@plouf.fr.eu.org>
+References: <20071024071854.GA18581@volker-sauer.de> <471EF68A.702@trash.net> <471F00DC.9070001@snapgear.com> <471F03B1.3090909@trash.net> <471F0AD5.2050202@snapgear.com> <471F136D.6090907@trash.net> <20071024120622.GB27593@volker-sauer.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <471F3F4B.80205@trash.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20071024120622.GB27593@volker-sauer.de>
+Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-To: Patrick McHardy <kaber@trash.net>
-Cc: Philip Craig <philipc@snapgear.com>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-
---ReaqsoxgOBHFXBhH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mi, 24 Okt 2007, Patrick McHardy <kaber@trash.net> wrote:
-> >This means, that all rules like that are valid even with the new concept
-> >of netfilter, right?? But why do I get error messages like quoted in my
-> >first mail for these rules - it *is* bridged traffic inside *one*
-> >bridge!
-> >And: I don't see how --physdev-is-bridged should help, since it's a
-> >match and not a command to the kernel saying: "this *is* bridged
-> >traffic". It the kernel does not see this by itself,
-> >--physdev-is-bridged doesn't help.
+Volker Sauer a =E9crit :
 >=20
-> Whether you believe it or not, this is the only way to tell
-> the physdev match that the rule only affects purely bridged
-> traffic.
+> In case someone is using physdev in OUTPUT, display the message like =
+it
+> is now: "using --physdev-out in the OUTPUT chains for non-bridged tra=
+ffic
+> is not supported anymore".
 
-Aah, now I get it! This way I can avoid the error message....
-Great, I'll test it as soon as I'm back to the lab.=20
+Ok.
 
-> Does not work since one of the devices might be put in a different
-> bridge after you loaded the rules.
+> In case it is used inside FORWARD, check if all physdev interfaces ar=
+e
+> members of the same bridge.
 
-Yes, you're right.=20
-Then the only solution is to improve the error messages.
+As Patrick said, that condition may change over time. I like to have al=
+l=20
+my ruleset loaded before the network is configured, even before some=20
+interfaces exist. Your proposed change would prevent it. Besides, my=20
+opinion is that it is not the job of iptables to do such checks.
 
-> >If no, display a message like this:
-> >
-> >"physdev match: using --physdev-out in the FORWARD chains is only=20
-> >allowed if all physical interfaces are members of the same bridge."
+> If yes, accept the rule, because then it is
+> allowed to use it!!!  (Which is the case all the thousands of rules i=
+n
+> my firewalls except the 5 that I sent to this list :-().
+> If no, display a message like this:
 >=20
->=20
-> Feel free to send a patch to improve the error messages.
+> "physdev match: using --physdev-out in the FORWARD chains is only=20
+> allowed if all physical interfaces are members of the same bridge."
 
-Oh, I'll see if I can patch kernel 2.6.23.1.
-
-Regards
-Volker
-
---=20
-  Volker Sauer  *  Poststrasse 1/601   *   64293 Darmstadt  *   Germany
-  E-Mail/Jabber: volker(at)volker-sauer.de * http://www.volker-sauer.de
-  PGPKey-Fingerprint: DB26 11C7 B12E 0B27 3999 2E4F 7E35 4E4D 5DD5 D0E0
-  http://wwwkeys.de.pgp.net/pks/lookup?op=3Dget&search=3D0x7E354E4D5DD5D0E0=
+This is wrong and inacurate. Using --physdev-out in the FORWARD and=20
+POSTROUTING chains is supported for *bridged* traffic only, period. All=
 =20
-
---ReaqsoxgOBHFXBhH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFHH0EufjVOTV3V0OARAsTdAJ9xqlwxLmRVncofPNMqEZenErCy8wCcDg42
-/Mqmt3nUodBd+5THMvXk8sQ=
-=5dU0
------END PGP SIGNATURE-----
-
---ReaqsoxgOBHFXBhH--
+physical interfaces being members of the same bridge is not a sufficien=
+t=20
+condition to make sure that only bridged traffic will be matched.=20
+Traffic can still be routed from a bridge to itself.
