@@ -1,32 +1,26 @@
-From: Tarak Ranjan <tarak.ranjan@liqwidkrystal.com>
-Subject: Iptables Docs
-Date: Thu, 25 Oct 2007 16:13:15 +0530
-Message-ID: <47207343.4010908@liqwidkrystal.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Iptables Doc
+Date: Thu, 25 Oct 2007 13:14:49 +0200
+Message-ID: <001701c816f8$427b0c80$0b0ffe0a@NS006819>
+References: <47206C7F.3050501@liqwidkrystal.com>
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <47206C7F.3050501@liqwidkrystal.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi List,
-           where i can find the best documentation of iptables rules for 
-Mail Server and Gateway.
+netfilter-owner@vger.kernel.org wrote:
+> Hi List,
+>            where i can find the best documentation of iptables rules
+> for Mail Server and Gateway.
 
--- 
-Thanks & Regards,
+Search for Oskar Andreasson's iptables tutorial.
 
-Tarak Ranjan
-___________________________
-IS-Team
-Liqwid Krystal
 
-T:   +91 80  2509 1790 Ext. 107
-E@:  tarak.ranjan@liqwidkrystal.com
-IM:  reachtarak@hotmail.com
-
-Online Learning|Certification|Learning Solutions: http://www.liqwidkrystal.com 
-
+Grts,
+Rob
 
 
