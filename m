@@ -1,24 +1,35 @@
-From: Marc Manthey <marc@let.de>
-Subject: Re: Iptables Doc
-Date: Thu, 25 Oct 2007 13:24:39 +0200
-Message-ID: <D1B45148-4E3C-4338-BAD3-C86F6C05DC19@let.de>
-References: <47206C7F.3050501@liqwidkrystal.com> <001701c816f8$427b0c80$0b0ffe0a@NS006819>
-Mime-Version: 1.0 (Apple Message framework v752.2)
+From: Joakim Wennergren <jocke@dovado.com>
+Subject: Error om "-m state" - kernel configuration wrong??
+Date: Thu, 25 Oct 2007 17:49:12 +0200
+Message-ID: <1193327352.2992.6.camel@pierre-laptop>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <001701c816f8$427b0c80$0b0ffe0a@NS006819>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
+Hello.
 
->>            where i can find the best documentation of iptables rules
->> for Mail Server and Gateway.
->
-> Search for Oskar Andreasson's iptables tutorial.
+I've recently upgraded my kernel from 2.6.14 to 2.6.19 and now iptables
+doesn't work anymore. I get this error message:
 
-or klick here
+# iptables -A bad_tcp_packets -p tcp --tcp-flags SYN,ACK SYN,ACK -m
+state --state NEW -j DROP
+iptables v1.3.6: Couldn't find match `state'
 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+I've looked through the kernel configuration, and it seems I have to
+activate NETFILTER_XT_MATCH_STATE, which seems to replace
+IP_NF_TARGET_CLASSIFY (which no longer exists). However, when I do this,
+it still doesn't work.
+
+In fact, nothing I activate under the new "Core Netfilter configuration"
+folder in the kernel configuration (like "netfilter netlink" and xtables
+support) seems to affect the iptables command.
+
+Does anyone have any ideas? Am I even on the right track?
+
+
+This email was Anti Virus checked by Astaro Security Gateway.
 
