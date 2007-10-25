@@ -1,7 +1,7 @@
 From: Tarak Ranjan <tarak.ranjan@liqwidkrystal.com>
-Subject: Iptables Doc
-Date: Thu, 25 Oct 2007 15:44:23 +0530
-Message-ID: <47206C7F.3050501@liqwidkrystal.com>
+Subject: Iptables Docs
+Date: Thu, 25 Oct 2007 16:13:15 +0530
+Message-ID: <47207343.4010908@liqwidkrystal.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
