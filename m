@@ -1,196 +1,176 @@
-From: "Chris Aseltine" <ophidian@newsnation.com>
-Subject: trouble with DNAT on linux 2.6.23.1 and iptables 1.4.0rc1
-Date: Sat, 27 Oct 2007 23:31:44 -0500
-Message-ID: <002101c8191b$72204cf0$0902a8c0@mystery1>
+From: Tarak Ranjan <tarak.ranjan@liqwidkrystal.com>
+Subject: Gateway with Iptables
+Date: Mon, 29 Oct 2007 10:29:14 +0530
+Message-ID: <472568A2.3040002@liqwidkrystal.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I'm trying to forward a TCP port from my public IP address to a private IP
-address on my LAN, with a command like this:
+Hi List,
+i have a proxy server, when i enable the proxy my mail clients are not=20
+able to send/receive mail. here is my iptables. please help me with the=
+=20
+necessary changes.
 
-/usr/sbin/iptables -t nat -A PREROUTING -p tcp --dport 8089 -j DNAT --to
-192.168.224.2:8089
+#######################################################################=
+######
 
-I believe the syntax is correct, as it works on an older 2.4 system without
-a problem.
+# Internet Interface
+INET_IFACE=3D"eth1"
+INET_ADDRESS=3D"x.x.x.x"
+# Local Interface Information
+LOCAL_IFACE=3D"eth0"
+LOCAL_IP=3D"192.168.1.3"
+LOCAL_NET=3D"192.168.1.0/24"
+LOCAL_BCAST=3D"192.168.1.255"
+# Localhost Interface
+LO_IFACE=3D"lo"
+LO_IP=3D"127.0.0.1"
+#SQUID
+SQUID_SERVER=3D=93192.168.1.3?
+SQUID_PORT=3D"8080"
+echo "SSH Blocking.........."
+$IPT -A INPUT -p tcp -s 192.168.1.210 -d 0/0 --dport 22 -j ACCEPT
+$IPT -A INPUT -p tcp -s 192.168.1.123 -d 0/0 --dport 22 -j ACCEPT
+$IPT -A INPUT -p tcp -s 192.168.1.37 -d 0/0 --dport 22 -j ACCEPT
+$IPT -A FORWARD -i $LOCAL_IFACE -o $INET_IFACE -p tcp -s 192.168.1.123=20
+-d 0/0 --dport 22 -j ACCEPT
+$IPT -A FORWARD -i $LOCAL_IFACE -o $INET_IFACE -p tcp -s 192.168.1.37 -=
+d=20
+0/0 --dport 22 -j ACCEPT
+#$IPT -A FORWARD -i $LOCAL_IFACE -o $INET_IFACE -p tcp -s 192.168.1.37=20
+-d 0/0 --dport 22 -j ACCEPT
+$IPT -A FORWARD -i $LOCAL_IFACE -o $INET_IFACE -p tcp -s 192.168.1.210=20
+-d 0/0 --dport 22 -j ACCEPT
+$IPT -A FORWARD -i $LOCAL_IFACE -o $INET_IFACE -p tcp -s 192.168.1.0/24=
+=20
+-d 0/0 --dport 22 -j DROP
+#$IPT -A OUTPUT -i $LOCAL_IFACE -o $INET_IFACE -p tcp -s 192.168.1.38 -=
+d=20
+0/0 --dport 22 -j ACCEP
 
-When I ran it on another system running kernel 2.6.23.1, with iptables 1.3.5
-(which is what was already installed on the machine), I got:
+$IPT -A FORWARD -p tcp -s 0/0 -d x.x.x.y/32 --destination-port 25 --syn=
+=20
+-j ACCEPT
+#$IPT -t nat -A PREROUTING -i eth1 -p tcp --dport 25 -j DNAT --to=20
+192.168.1.100:25
+#$IPT -A FORWARD -p tcp -d 192.168.1.100 --dport 25 -j ACCEPT
+$IPT -A INPUT -p tcp -s 0/0 --dport 22 -j DROP
+$IPT -A INPUT -p tcp -s 0/0 --dport 3306 -j DROP
+#$IPT -A FORWARD -p tcp -d 0/0 -s 0/0 --dport 80 -j DROP
+$IPT -A INPUT -p tcp -s 0/0 --dport 111 -j DROP
+$IPT -A INPUT -p tcp -s 0/0 --dport 199 -j DROP
+$IPT -A INPUT -p tcp -s 0/0 --dport 443 -j ACCEPT
+#
+# This chain is used with a private network to prevent forwarding for
+# requests on specific protocols. Applied to the FORWARD rule from
+# the internal network. Ends with an ACCEPT
 
-iptables: Unknown error 4294967295
+# Block IRC
+$IPT -A tcp_outbound -p TCP -s 0/0 --destination-port 194 -j REJECT
 
-I upgraded to 1.4.0rc1, and now I get:
+# Block Outbound Telnet
+$IPT -A tcp_outbound -p TCP -s 0/0 --destination-port 23 -j REJECT
 
-iptables: No chain/target/match by that name
+# Block SSH
+$IPT -A tcp_outbound -p TCP -s 0/0 --destination-port 22 -j REJECT
 
-I got the impression from searching around that this meant I am missing a
-kernel module, but I don't know which one it could be as I believe I've
-built/loaded every one that could possibly be relevant.
+# Block Usenet Access
+$IPT -A tcp_outbound -p TCP -s 0/0 --destination-port 119 -j REJECT
 
-The strace and lsmod output follows.  Hope someone has an idea.
 
-lsmod:
+# No match, so ACCEPT
+$IPT -A tcp_outbound -p TCP -s 0/0 -j ACCEPT
 
-[root@linux /home/caseltine]# lsmod
-Module                  Size  Used by
-ipt_NETMAP              5888  0
-ppp_synctty            11136  0
-ppp_async              12420  1
-crc_ccitt               6016  1 ppp_async
-ppp_generic            21396  6 ppp_synctty,ppp_async
-slhc                    9344  1 ppp_generic
-iptable_filter          6404  1
-xt_state                6144  2
-iptable_nat             9860  1
-nf_conntrack_ipv4      16776  3 iptable_nat
-nf_nat_ftp              6788  0
-nf_conntrack_ftp       11048  1 nf_nat_ftp
-ipt_MASQUERADE          6784  2
-nf_nat                 19116  4
-ipt_NETMAP,iptable_nat,nf_nat_ftp,ipt_MASQUERADE
-nf_conntrack           51408  7
-xt_state,iptable_nat,nf_conntrack_ipv4,nf_nat_ftp,nf_conntrack_ftp,ipt_MASQU
-ERADE,nf_nat
-nfnetlink               8344  3 nf_conntrack_ipv4,nf_nat,nf_conntrack
-ip_tables              14036  2 iptable_filter,iptable_nat
-x_tables               14596  5
-ipt_NETMAP,xt_state,iptable_nat,ipt_MASQUERADE,ip_tables
-ide_scsi               17548  0
-vfat                   13696  0
-ntfs                  198336  0
-fat                    46364  1 vfat
-bridge                 48792  0
-llc                     9620  1 bridge
-tun                    11904  1
-usb_storage            37124  0
-cdc_acm                16544  0
-usbhid                 21552  0
-hid                    28548  1 usbhid
-sd_mod                 25216  0
-sg                     24868  0
-uhci_hcd               23828  0
-ohci_hcd               20108  0
-ehci_hcd               28952  0
-usbcore               110344  7
-usb_storage,cdc_acm,usbhid,uhci_hcd,ohci_hcd,ehci_hcd
-tulip                  48544  0
-8139too                23824  0
-[root@linux /home/caseltine]#
+# Allow all on localhost interface
+$IPT -A INPUT -p ALL -i $LO_IFACE -j ACCEPT
 
-strace:
+# Drop bad packets
+$IPT -A INPUT -p ALL -j bad_packets
+$IPT -A INPUT -p ALL -d 224.0.0.1 -j DROP
+# The rule to# Rules for the private network (accessing gateway system=20
+itself)
+$IPT -A INPUT -p ALL -i $LOCAL_IFACE -s $LOCAL_NET -j ACCEPT
+$IPT -A INPUT -p ALL -i $LOCAL_IFACE -d $LOCAL_BCAST -j ACCEPT
 
-[root@linux /home/caseltine]# strace /usr/sbin/iptables -t nat -A
-PREROUTING -p tcp --dport 8089 -j DNAT --to 192.168.224.2:8089
-execve("/usr/sbin/iptables", ["/usr/sbin/iptables", "-t", "nat", "-A",
-"PREROUTING", "-p", "tcp", "--dport", "8089", "-j", "DNAT", "--to",
-"192.168.224.2:8089"], [/* 28 vars */]) = 0
-uname({sys="Linux", node="linux", ...}) = 0
-brk(0)                                  = 0x8054000
-access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or
-directory)
-open("/etc/ld.so.cache", O_RDONLY)      = 3
-fstat64(3, {st_mode=S_IFREG|0644, st_size=51165, ...}) = 0
-mmap2(NULL, 51165, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7f90000
-close(3)                                = 0
-open("/lib/tls/libdl.so.2", O_RDONLY)   = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\320\v\0"..., 512) =
-512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=13120, ...}) = 0
-mmap2(NULL, 12392, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) =
-0xb7f8c000
-mmap2(0xb7f8e000, 8192, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1) = 0xb7f8e000
-close(3)                                = 0
-open("/lib/tls/libc.so.6", O_RDONLY)    = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\20O\1\000"..., 512)
-= 512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=1441201, ...}) = 0
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
-0xb7f8b000
-mmap2(NULL, 1240284, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) =
-0xb7e5c000
-mmap2(0xb7f85000, 16384, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x128) = 0xb7f85000
-mmap2(0xb7f89000, 7388, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7f89000
-close(3)                                = 0
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
-0xb7e5b000
-mprotect(0xb7f85000, 4096, PROT_READ)   = 0
-set_thread_area({entry_number:-1 -> 6, base_addr:0xb7e5b6c0, limit:1048575,
-seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1,
-seg_not_present:0, useable:1}) = 0
-munmap(0xb7f90000, 51165)               = 0
-brk(0)                                  = 0x8054000
-brk(0x8075000)                          = 0x8075000
-open("/etc/nsswitch.conf", O_RDONLY)    = 3
-fstat64(3, {st_mode=S_IFREG|0644, st_size=1083, ...}) = 0
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
-0xb7f9c000
-read(3, "#\n# /etc/nsswitch.conf\n#\n# An ex"..., 4096) = 1083
-read(3, "", 4096)                       = 0
-close(3)                                = 0
-munmap(0xb7f9c000, 4096)                = 0
-open("/etc/ld.so.cache", O_RDONLY)      = 3
-fstat64(3, {st_mode=S_IFREG|0644, st_size=51165, ...}) = 0
-mmap2(NULL, 51165, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7f90000
-close(3)                                = 0
-open("/lib/tls/libnss_files.so.2", O_RDONLY) = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0P\33\0\000"..., 512)
-= 512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=45361, ...}) = 0
-mmap2(NULL, 41612, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) =
-0xb7e50000
-mmap2(0xb7e59000, 8192, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x8) = 0xb7e59000
-close(3)                                = 0
-munmap(0xb7f90000, 51165)               = 0
-open("/etc/protocols", O_RDONLY)        = 3
-fcntl64(3, F_GETFD)                     = 0
-fcntl64(3, F_SETFD, FD_CLOEXEC)         = 0
-fstat64(3, {st_mode=S_IFREG|0644, st_size=5748, ...}) = 0
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
-0xb7f9c000
-read(3, "#\n# Internet protocols\n#\n# $Free"..., 4096) = 4096
-close(3)                                = 0
-munmap(0xb7f9c000, 4096)                = 0
-open("/usr/lib/iptables/libxt_tcp.so", O_RDONLY) = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\300\10"..., 512) =
-512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=12672, ...}) = 0
-mmap2(NULL, 11136, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) =
-0xb7f9a000
-mmap2(0xb7f9c000, 4096, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1) = 0xb7f9c000
-close(3)                                = 0
-open("/usr/lib/iptables/libxt_DNAT.so", O_RDONLY) = -1 ENOENT (No such file
-or directory)
-open("/usr/lib/iptables/libipt_DNAT.so", O_RDONLY) = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0p\7\0\000"..., 512)
-= 512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=10094, ...}) = 0
-mmap2(NULL, 8900, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) =
-0xb7f97000
-mmap2(0xb7f99000, 4096, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1) = 0xb7f99000
-close(3)                                = 0
-socket(PF_INET, SOCK_RAW, IPPROTO_RAW)  = 3
-getsockopt(3, SOL_IP, 0x40 /* IP_??? */, "nat\0Y\2\0\0\0\0\0\0\0\0
-\0\0\0\0\0\1\0\0\0\2\0\0\0\250"..., [84]) = 0
-getsockopt(3, SOL_IP, 0x41 /* IP_??? */,
-"nat\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., [984]) = 0
-setsockopt(3, SOL_IP, 0x40 /* IP_??? */,
-"nat\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 1248) = -1
-ENOENT (No such file or directory)
-write(2, "iptables: No chain/target/match "..., 45iptables: No
-chain/target/match by that name
-) = 45
-exit_group(1)                           = ?
-Process 17039 detached
-[root@linux /home/caseltine]#
+
+# Inbound Internet Packet Rules
+
+# Accept Established Connections
+$IPT -A INPUT -p ALL -i $INET_IFACE -m state --state ESTABLISHED,RELATE=
+D \
+-j ACCEPT
+
+# broadcast protocols.
+$IPT -A INPUT -m pkttype --pkt-type broadcast -j DROP
+
+# Log packets that still don't match
+$IPT -A INPUT -j LOG --log-prefix "fp=3DINPUT:99 a=3DDROP "
+# Used if forwarding for a private network
+
+# Drop bad packets
+$IPT -A FORWARD -p ALL -j bad_packets
+
+# Accept TCP packets we want to forward from internal sources
+$IPT -A FORWARD -p tcp -i $LOCAL_IFACE -j tcp_outbound
+
+# Accept UDP packets we want to forward from internal sources
+$IPT -A FORWARD -p udp -i $LOCAL_IFACE -j udp_outbound
+
+# If not blocked, accept any other packets from the internal interface
+$IPT -A FORWARD -p ALL -i $LOCAL_IFACE -j ACCEPT
+
+# Deal with responses from the internet
+$IPT -A FORWARD -i $INET_IFACE -m state --state ESTABLISHED,RELATED \
+-j ACCEPT
+
+# Log packets that still don't match
+$IPT -A FORWARD -j LOG --log-prefix "fp=3DFORWARD:99 a=3DDROP "
+#######################################################################=
+#####
+#Redirect all 80 port request to 8080 SQUID PROXY Added By TARAK
+# DNAT port 80 request comming from LAN systems to squid 3128=20
+($SQUID_PORT) aka transparent proxy
+
+#$IPT -t nat -A PREROUTING -p tcp -i eth1 --dport 80 -j REDIRECT=20
+--to-ports $SQUID_PORT
+#$IPT -t nat -A POSTROUTING -o eth1 -s $LOCAL_NET -j MASQUERADE
+#$IPT -A FORWARD -s $LOCAL_NET -d $SQUID_SERVER -i eth1 -o eth0 -p tcp=20
+--dport $SQUID_PORT -j ACCEPT
+$IPT -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT=20
+--to-port $SQUID_PORT
+#######################################################################=
+########
+$IPT -A OUTPUT -m state -p icmp --state INVALID -j DROP
+$IPT -A OUTPUT -p ALL -s $LOCAL_IP -j ACCEPT
+$IPT -A OUTPUT -p ALL -o $LOCAL_IFACE -j ACCEPT
+
+# To internet
+$IPT -A OUTPUT -p ALL -o $INET_IFACE -j ACCEPT
+
+# Log packets that still don't match
+$IPT -A OUTPUT -j LOG --log-prefix "fp=3DOUTPUT:99 a=3DDROP "
+
+
+--=20
+Thanks & Regards,
+
+Tarak Ranjan
+___________________________
+IS-Team
+Liqwid Krystal
+
+T:   +91 80  2509 1790 Ext. 107
+E@:  tarak.ranjan@liqwidkrystal.com
+IM:  reachtarak@hotmail.com
+
+Online Learning|Certification|Learning Solutions: http://www.liqwidkrys=
+tal.com=20
+
+
+
 
