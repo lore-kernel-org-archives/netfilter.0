@@ -1,48 +1,35 @@
-From: Tarak Ranjan <tarak.ranjan@liqwidkrystal.com>
-Subject: Re: Gateway with Iptables
-Date: Mon, 29 Oct 2007 16:37:49 +0530
-Message-ID: <4725BF05.5000708@liqwidkrystal.com>
-References: <472568A2.3040002@liqwidkrystal.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
+Date: Mon, 29 Oct 2007 13:51:47 +0100
+Message-ID: <4725D763.9080104@trash.net>
+References: <001f01c8142e$e6a67960$ea50f53c@FireEye.com> <471DF457.3010404@trash.net> <002401c81638$d97f2ff0$050ba8c0@FireEye.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <472568A2.3040002@liqwidkrystal.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <002401c81638$d97f2ff0$050ba8c0@FireEye.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Ron Lai <ronlai@cs.stanford.edu>
+Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+
+Ron Lai wrote:
+> The packet dump from the 2.6.22.6 box in the middle is attached. In the 
+> trace 172.16.119.91 is the original IP address of the FTP client and 
+> 172.16.255.123 is the NATted address. The FTP server's address is 
+> 172.16.118.1.
+> 
+> The problem happens between packet 31 and packet 34. Packet 31 indicates 
+> that the client expects ACK number 0x64b4dda9 for the PORT command it 
+> sends. However, the ACK number it actually gets is 0x64b4dda8.
 
 
-> Amos wrote:
-> I believe you need to exempt the traffic from squid (local machine 
-> IPA) from the REDIRECT about here.
->
-> $IPT -A PREROUTING -p tcp -s $SQUID_SERVER --dport 80 -j ACCEPT
->
-> ... And use "http port 8080 transparent" in the squid.conf
->
->
-> > $IPT -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT 
-> --to-port $SQUID_PORT
-> > 
-> ###############################################################################
-but after applying this users are able to connect to the Internet 
-directly without enable proxy. what else i have to do to stop direct 
-connection , they must use proxy.
+Thats really odd. It properly adjusts the sequence number in the
+original direction by +1, but incorrectly adjusts the acknowledgement
+in the reply direction by -2. I don't see how this could happen with
+the vanilla 2.6.22 kernel, are you using any additional patches?
 
--- 
-Thanks & Regards,
-
-Tarak Ranjan
-___________________________
-IS-Team
-Liqwid Krystal
-
-T:   +91 80  2509 1790 Ext. 107
-E@:  tarak.ranjan@liqwidkrystal.com
-IM:  reachtarak@hotmail.com
-
-Online Learning|Certification|Learning Solutions: http://www.liqwidkrystal.com 
-
-
+Otherwise please edit net/ipv4/netfilter/nf_nat_helper.c and add
+a #define DEBUG at the first line, recompile and post the output
+of the failed session (ideally two failed sessions). Thanks.
 
