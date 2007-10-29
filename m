@@ -1,54 +1,34 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Gateway with Iptables
-Date: Mon, 29 Oct 2007 17:12:45 +0100
-Message-ID: <008401c81a46$8adab100$0b0ffe0a@NS006819>
-References: <472568A2.3040002@liqwidkrystal.com> <4725BF05.5000708@liqwidkrystal.com>
+From: "Jeffrey Glass" <Jeffrey.Glass@fox.com>
+Subject: kernel warning NAT: no longer support implicit source local NAT
+Date: Mon, 29 Oct 2007 09:45:46 -0700
+Message-ID: <63FE92A65648AC4B9395047CA5255E1A0163BDCE@fegplmsexmb10.ffe.foxeg.com>
+References: <008401c81a46$8adab100$0b0ffe0a@NS006819>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4725BF05.5000708@liqwidkrystal.com>
+Content-class: urn:content-classes:message
+In-Reply-To: <008401c81a46$8adab100$0b0ffe0a@NS006819>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-> i have a proxy server, when i enable the proxy my mail clients are
-> not able to send/receive mail. here is my iptables. please help me
-> with the necessary changes.
+Hi Everyone,
 
-[...]
+Starting with kernel 2.6.11 we started getting this kernel warning:
 
-> but after applying this users are able to connect
-> to the Internet directly without enable proxy.
+kernel: NAT: no longer support implicit source local NAT
+kernel: NAT: packet src 10.92.1.200 -> dst 10.9.0.2
 
-How do you test this? If you configured Squid for transparent proxying
-and allow http (AFAIK you can't transparent proxy https) inbound, your
-users don't have to configure a proxy in their browser and will use the
-proxy "transparently".
+We have some special rules for routing packets (DNAT) and based on the
+error message I would say that we are not explicitly defining something
+that we should for future compatibility.
 
-> what else i have to do to stop direct connection , they must use
-> proxy.
+Does anyone have any insight on why "implicit source local NAT" is not
+going to be supported and what a typical "source local NAT" definition
+would look like?
 
-No offense, but I can't understand your ruleset. It looks like you
-scraped things together from other rulesets (which by itself doesn't
-have to be not wrong).
-I was going to rewrite the script to make sense of it, but I'm not clear
-on what is running where and what exactly is allowed. Also:
-- AFAICS some user defined chains are not defined so some rules should
-generate an error
-- some rules seem to allow too much
-- rules from the FORWARD chain call a user defined chain for the OUTPUT
-chain
-- it's easier to set the chain policies to DROP and specifically ACCEPT
-what you want to
+Thanks.
 
-Perhaps someone else can make sense of this based on current
-information, but for me it's impossible (well, I would be able to make
-something out of it, but I have no illusion that such ruleset would be
-working).
-
-
-Grts,
-Rob
-
+Richard Glass
 
