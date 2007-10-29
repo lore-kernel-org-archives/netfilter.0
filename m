@@ -1,42 +1,48 @@
-From: Leigh Peterson <warpig369@hotmail.com>
-Subject: =?windows-1256?Q?multiple_NIC_traffic_forwarding=FE?=
-Date: Mon, 29 Oct 2007 09:08:53 +0000
-Message-ID: <BAY119-W5D1A138C2C78AB9C1390CE9910@phx.gbl>
+From: Tarak Ranjan <tarak.ranjan@liqwidkrystal.com>
+Subject: Re: Gateway with Iptables
+Date: Mon, 29 Oct 2007 16:37:49 +0530
+Message-ID: <4725BF05.5000708@liqwidkrystal.com>
+References: <472568A2.3040002@liqwidkrystal.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <472568A2.3040002@liqwidkrystal.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
 
-Hi All,
+> Amos wrote:
+> I believe you need to exempt the traffic from squid (local machine 
+> IPA) from the REDIRECT about here.
+>
+> $IPT -A PREROUTING -p tcp -s $SQUID_SERVER --dport 80 -j ACCEPT
+>
+> ... And use "http port 8080 transparent" in the squid.conf
+>
+>
+> > $IPT -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT 
+> --to-port $SQUID_PORT
+> > 
+> ###############################################################################
+but after applying this users are able to connect to the Internet 
+directly without enable proxy. what else i have to do to stop direct 
+connection , they must use proxy.
 
-I have a question regarding iptables traffic forwarding. I have a machi=
-ne with 2 NICs (which are on different subnets) and all inbound traffic=
- is coming in on eth0.
+-- 
+Thanks & Regards,
 
-I currently have some rules that accepts traffic on a port range and th=
-en forwards that traffic to another host (like this one):
--A FORWARD -d 192.168.18.3 -i eth0 -p tcp -m tcp --dport 6660:6669 -j A=
-CCEPT
-as well as some rules that accept traffic for services on this host (li=
-ke this):
--A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 1900 =
--j ACCEPT
+Tarak Ranjan
+___________________________
+IS-Team
+Liqwid Krystal
 
-My first question is, how can I force the traffic from these two types =
-on rules to respond via eth1?
+T:   +91 80  2509 1790 Ext. 107
+E@:  tarak.ranjan@liqwidkrystal.com
+IM:  reachtarak@hotmail.com
 
-I also have ProxyPass rules in Apache the traffic of which I would also=
- like to forward to eth1. What would be the best way to do this? If you=
- need any more information, please let me know.
-
-Regards,
-Leigh
+Online Learning|Certification|Learning Solutions: http://www.liqwidkrystal.com 
 
 
-_________________________________________________________________
-100=92s of Music vouchers to be won with MSN Music
-https://www.musicmashup.co.uk
+
