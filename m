@@ -1,45 +1,48 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: Setting Source IP for outgoing traffic?
-Date: Tue, 30 Oct 2007 17:53:41 +1000
-Message-ID: <4726E305.3050008@snapgear.com>
-References: <6.2.5.6.2.20071024220938.034412a8@gsfc.nasa.gov>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: Gateway with Iptables
+Date: Tue, 30 Oct 2007 22:00:30 +1300
+Message-ID: <4726F2AE.1060108@treenet.co.nz>
+References: <472568A2.3040002@liqwidkrystal.com> <4725BF05.5000708@liqwidkrystal.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <6.2.5.6.2.20071024220938.034412a8@gsfc.nasa.gov>
+In-Reply-To: <4725BF05.5000708@liqwidkrystal.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Timothy Meader <Timothy.Meader@gsfc.nasa.gov>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Tarak Ranjan <tarak.ranjan@liqwidkrystal.com>
 Cc: netfilter@vger.kernel.org
 
-Timothy Meader wrote:
-> Basically, I need the responses to any traffic coming in on UDP port 
-> 1514 (or, alternatively, to the destination IP x.29) to go back out 
-> with a src address of x.29 instead of x.17 or x.18. Is there a method 
-> using iptables that can handle this problem? Or barring that, can 
-> anyone think of any other means to accomplish this task if iptables 
-> can't handle this on its own? Below, I've included the current 
-> iptables data rules that the two cluster nodes are presently sharing.
+Tarak Ranjan wrote:
+> 
+>> Amos wrote:
+>> I believe you need to exempt the traffic from squid (local machine 
+>> IPA) from the REDIRECT about here.
+>>
+>> $IPT -A PREROUTING -p tcp -s $SQUID_SERVER --dport 80 -j ACCEPT
+>>
+>> ... And use "http port 8080 transparent" in the squid.conf
+>>
+>>
+>> > $IPT -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT 
+>> --to-port $SQUID_PORT
+>> > 
+>> ############################################################################### 
+>>
+> but after applying this users are able to connect to the Internet 
+> directly without enable proxy. what else i have to do to stop direct 
+> connection , they must use proxy.
+> 
 
-You could try a source NAT rule, eg
+Huh? that should ONLY exempt the proxy, not the client machines. I'm not 
+100% certain of the rule as I use shorewall to simplify the config a lot.
 
-iptables -t nat -A POSTROUTING -p udp --sport 1514 -j SNAT --to-source xxx.xxx.xxx.29
+Do you mean the users are actually logged into the proxy server?
 
-but I'm not sure that this will work, since the tuple will clash with
-the connection that was created for the incoming packet.
+Or that it _looks_ like clients can connect directly. Check the 
+access.log of squid to be sure.
 
-You can't use iptables to do policy routing based on port, since that
-happens after address selection.
+The entire point of transparent is so clients don't do any config, the 
+proxy silently makes internet 'just work' for any allowed browsing.
 
-The proper fix is to change OSSEC to use the correct source address
-for its replies.  I can think of two ways for this.
-
-First, OSSEC could bind() to a specific address instead of INADDR_ANY.
-I don't know if it already has a config option to do this.
-
-Second, OSSEC could use the IP_PKTINFO socket option to determine the
-address it received a packet on, and send its reply using this as the
-source address.  For an example of an application that does this, see
-openswan (the code is in lib/libopenswan/udpfromto.c).
-
+Amos
