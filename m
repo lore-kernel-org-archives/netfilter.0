@@ -1,63 +1,68 @@
-From: dhottinger@harrisonburg.k12.va.us
-Subject: Re: redirect to webpage
-Date: Wed, 31 Oct 2007 13:02:09 -0400
-Message-ID: <20071031130209.wnb2jsiao0owc8ok@webmail.harrisonburg.k12.va.us>
-References: <20071031111119.hc54s7z4e80sc0ws@webmail.harrisonburg.k12.va.us>
-	<4728AF60.4090102@riverviewtech.net>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: Re: mangle table question
+Date: Wed, 31 Oct 2007 13:21:08 -0500
+Message-ID: <1193854868.18366.69.camel@grateful.d.umn.edu>
+References: <65CCDBD675D4F545AF59400EBEFE479D014700@av-mail01.aspenview.org>
+	 <47289DDC.6030707@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-YbkDKJIL8MaqjBiWvc8C"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4728AF60.4090102@riverviewtech.net>
-Content-Disposition: inline
+In-Reply-To: <47289DDC.6030707@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes	format=flowed"
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
-
-Quoting Grant Taylor <gtaylor@riverviewtech.net>:
-
-> On 10/31/07 10:11, dhottinger@harrisonburg.k12.va.us wrote:
->> Not sure if this is the best practice, but it works fine.  What I   
->> would like to do, instead of dropping this traffic is have it sent   
->> to an internal webserver that has our acceptable use policy on it.   
->>  Is there a REDIRECT command, or what would be the best way to   
->> accomplish this.  Most of this traffic is actually on port 443, and  
->>  I cant funnel this through my transparent proxy (squid).
->
-> Yes.  You want to look in to DNATing the traffic to an internal web
-> server that is specifically set up to do what you are wanting to do.
->
-> Hint, set up the web server of your choice that will answer any and all
-> domain names with one single page, the 404 (not found) error page that
-> is the content that you want displayed.  That way no matter what is
-> requested, your page will be displayed.  I would also suggest that you
-> include the headers to control how long the page is cached for, say 5 -
-> 15 minutes.  You may or may not want to return a 200 reply code.  Some
-> browsers will display ""Friendly 404 pages and thus not display your
-> text.
->
->
->
-> Grant. . . .
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-Cool and thanks,
-So something like:
-$IPC -t nat -A PREROUTING -d cantbustme.net -j DNAT --to-destination  
-mywebserver.com ?  Where cantbustme is the site I want to redirect and  
-mywebserver is the box with the youve been busted page?
-
-ddh
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
 
--- 
-Dwayne Hottinger
-Network Administrator
-Harrisonburg City Public Schools
+--=-YbkDKJIL8MaqjBiWvc8C
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-"rarely do people communicate, they just take turns talking"
+
+On Wed, 2007-10-31 at 16:23 +0100, Pascal Hambourg wrote:
+> Hello,
+>=20
+> Jason Sigurdur a =C3=A9crit :
+> >=20
+> > If a specific rule is matched, does it not exit the chain?
+>=20
+> Only if the target is "terminal". ACCEPT, DROP, REJECT are terminal.=20
+> NAT-specific targets such as SNAT and DNAT are terminal too. LOG is=20
+> obviously not terminal. Most if not all mangle-specific targets such as=20
+> DSCP are not terminal. Indeed one may want to alter several parts of a=20
+> packet in the same chain.
+
+Hence you could jump to a user defined chain like (create the chain
+first):
+
+iptables -t mangle -N AF31
+iptables -t mangle -A AF31 -j DSCP --set-dscp-class af31
+iptables -t mangle -A AF31 -j ACCEPT
+
+iptables -t mangle -A FORWARD -o net+ -p tcp --dport 25 -j AF31
+
+--=20
+Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
+University of Minnesota Duluth
+Information Technology Systems & Services
+PGP key 1024D/84E22DA2 2005-11-07
+Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
+
+He is not a fool who gives up what he cannot keep to gain what he cannot
+lose.
+-Jim Elliot
+
+--=-YbkDKJIL8MaqjBiWvc8C
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBHKMeUU+eIf4TiLaIRAg3yAKCF7XTRnEEs2bvcCtN3ZzStEN50YgCgkOkX
+de3nnBwETtSxt6+hQSeGa5I=
+=reAE
+-----END PGP SIGNATURE-----
+
+--=-YbkDKJIL8MaqjBiWvc8C--
 
