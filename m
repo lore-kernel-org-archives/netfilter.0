@@ -1,45 +1,39 @@
 From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: Re: mangle table question
-Date: Wed, 31 Oct 2007 13:21:08 -0500
-Message-ID: <1193854868.18366.69.camel@grateful.d.umn.edu>
-References: <65CCDBD675D4F545AF59400EBEFE479D014700@av-mail01.aspenview.org>
-	 <47289DDC.6030707@plouf.fr.eu.org>
+Subject: Re: Netfilter Performance when using MAC filter
+Date: Wed, 31 Oct 2007 13:26:51 -0500
+Message-ID: <1193855211.18366.73.camel@grateful.d.umn.edu>
+References: <54ea295d0710310923x1e5eff5cy6d70445d90d9e56e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-YbkDKJIL8MaqjBiWvc8C"
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-S+yphpg3N70QYvayhrW4"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47289DDC.6030707@plouf.fr.eu.org>
+In-Reply-To: <54ea295d0710310923x1e5eff5cy6d70445d90d9e56e@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+To: Babu Skeitson <babuskeitson@gmail.com>
 Cc: netfilter@vger.kernel.org
 
 
---=-YbkDKJIL8MaqjBiWvc8C
-Content-Type: text/plain; charset=utf-8
+--=-S+yphpg3N70QYvayhrW4
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
 
-On Wed, 2007-10-31 at 16:23 +0100, Pascal Hambourg wrote:
-> Hello,
->=20
-> Jason Sigurdur a =C3=A9crit :
-> >=20
-> > If a specific rule is matched, does it not exit the chain?
->=20
-> Only if the target is "terminal". ACCEPT, DROP, REJECT are terminal.=20
-> NAT-specific targets such as SNAT and DNAT are terminal too. LOG is=20
-> obviously not terminal. Most if not all mangle-specific targets such as=20
-> DSCP are not terminal. Indeed one may want to alter several parts of a=20
-> packet in the same chain.
+On Wed, 2007-10-31 at 14:23 -0200, Babu Skeitson wrote:
+> Hello everyone.
+> I'm thinking about implementing iptables MAC Address filtering (-m mac
+> --mac-source xx:xx....) in my network.
+> *BUT* I have a big network, with ~ 4000 internal hosts/IPs that will
+> be filtered via MAC, and I'm not sure about the performance of this
+> filtering.
 
-Hence you could jump to a user defined chain like (create the chain
-first):
+Are the 4000 hosts on the same network/vlan as the box running iptables?
 
-iptables -t mangle -N AF31
-iptables -t mangle -A AF31 -j DSCP --set-dscp-class af31
-iptables -t mangle -A AF31 -j ACCEPT
+If so, you can do MAC filtering (performance shouldn't matter as the MAC
+address is in the link header), if not MAC filtering won't buy you much,
+the layer2 address will always be the same.
 
-iptables -t mangle -A FORWARD -o net+ -p tcp --dport 25 -j AF31
+This is essentially the difference between ARP and IP, or switching and
+routing if you prefer.
 
 --=20
 Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
@@ -52,17 +46,17 @@ He is not a fool who gives up what he cannot keep to gain what he cannot
 lose.
 -Jim Elliot
 
---=-YbkDKJIL8MaqjBiWvc8C
+--=-S+yphpg3N70QYvayhrW4
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.6 (GNU/Linux)
 
-iD8DBQBHKMeUU+eIf4TiLaIRAg3yAKCF7XTRnEEs2bvcCtN3ZzStEN50YgCgkOkX
-de3nnBwETtSxt6+hQSeGa5I=
-=reAE
+iD8DBQBHKMjrU+eIf4TiLaIRAgTIAJ4nNBtBf6rBDkB744y4KH25aM8DoACglb21
+/+DSU1m6XOfE2qA3J9muj3U=
+=2oyB
 -----END PGP SIGNATURE-----
 
---=-YbkDKJIL8MaqjBiWvc8C--
+--=-S+yphpg3N70QYvayhrW4--
 
