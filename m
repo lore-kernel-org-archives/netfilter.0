@@ -1,67 +1,33 @@
-From: "Roman Ledovskiy" <roman@usonyx.net>
-Subject: conntrack INVALID packets
-Date: Wed, 31 Oct 2007 23:14:35 +0800
-Message-ID: <000401c81bd0$c0080e00$40182a00$@net>
+From: dhottinger@harrisonburg.k12.va.us
+Subject: redirect to webpage
+Date: Wed, 31 Oct 2007 11:11:19 -0400
+Message-ID: <20071031111119.hc54s7z4e80sc0ws@webmail.harrisonburg.k12.va.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-us
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
+I currently block a host of proxifier sites at my firewall using:
+$IPC -t nat -A PREROUTING -p tcp -d apchemistry.info -j DROP
 
-I have linux firewall in between internet and my network, diagram is
-following:
+Not sure if this is the best practice, but it works fine.  What I  
+would like to do, instead of dropping this traffic is have it sent to  
+an internal webserver that has our acceptable use policy on it.  Is  
+there a REDIRECT command, or what would be the best way to accomplish  
+this.  Most of this traffic is actually on port 443, and I cant funnel  
+this through my transparent proxy (squid).
 
-Upstream
-   |
-Firewall server
-   |
-my network
-
-"My network" hosts many different email/web servers.
-
-Firewall server is not a bridge, it has 2 interfaces (one to upstream, one
-to internal network)
-Not much kernel configuration, kernel is default kernel from Centos5 x64
-repo: 2.6.18-8.1.10.el5
-
-On this server I get quite a lot of INVALID packets, about 0.07% of all and
-I can't figure out why..
-
-Iptables output is quite big so can't post it here, but the logic is simple
-- inspect NEW packets, accept RELATED/ESTABLISHED, drop INVALID.
+thanks,
 
 
-Conntrack is not full:
-net.ipv4.netfilter.ip_conntrack_count = 5888
-net.ipv4.netfilter.ip_conntrack_max = 65536
+-- 
+Dwayne Hottinger
+Network Administrator
+Harrisonburg City Public Schools
 
-server has a lot of free memory also.
-
-It is not ip_conntrack_tcp_be_liberal or ip_conntrack_checksum (changing
-these values doesn't help)
- 
-There is definitely something wrong because I see INVALID packets not only
-from outside -> my network, but from my network -> reverse also (although a
-lot less)
-
-The only thing I can think of is that one of "ip_conntrack_*_timeout*"
-values is reached and conntrack removes connection (and after that there is
-one more packet in regards to that deleted connection)
-
-Could anybody tell possible reasons for packet being marked as INVALID
-besides those mentioned above.
-
-
-Any help is appreciated.
-
-
-
-Thanks
-Roman Ledovskiy
-
+"rarely do people communicate, they just take turns talking"
 
