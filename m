@@ -1,23 +1,38 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Netfilter Performance when using MAC filter
-Date: Thu, 01 Nov 2007 15:55:47 +0100
-Message-ID: <4729E8F3.5020801@plouf.fr.eu.org>
-References: <54ea295d0710310923x1e5eff5cy6d70445d90d9e56e@mail.gmail.com>	 <1193855211.18366.73.camel@grateful.d.umn.edu>	 <4728D541.9010308@plouf.fr.eu.org>	 <1193859183.5142.2.camel@grateful.d.umn.edu>	 <4729A4D6.2020106@plouf.fr.eu.org> <1193923052.5142.9.camel@grateful.d.umn.edu>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: redirect to webpage
+Date: Thu, 01 Nov 2007 11:19:11 -0500
+Message-ID: <4729FC7F.9050602@riverviewtech.net>
+References: <20071031111119.hc54s7z4e80sc0ws@webmail.harrisonburg.k12.va.us>	<4728AF60.4090102@riverviewtech.net>	<20071031130209.wnb2jsiao0owc8ok@webmail.harrisonburg.k12.va.us>	<4728CACF.70601@riverviewtech.net> <20071031205706.4i9hlqmw008ck4g0@mail.harrisonburg.k12.va.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1193923052.5142.9.camel@grateful.d.umn.edu>
+In-Reply-To: <20071031205706.4i9hlqmw008ck4g0@mail.harrisonburg.k12.va.us>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Matt Zagrabelny a =E9crit :
->=20
-> Okay, I see now. Performance would be related to the number of rules
-> that each packet needs to be tested against not against the criterion=
- of
-> the match.
+On 10/31/07 19:57, dhottinger@harrisonburg.k12.va.us wrote:
+> WOW.  Quite a lot of information.  Its been my goal to get my proxy 
+> server and firewall on the same box.  Havent got there yet.  My firewall 
+> is running on an old pII ibm workstation with 3 nics, doing routing, nat 
+> etc. and has worked very well.  Hardly ever breaks a sweat, so it hasnt 
+> been a priority like mail, etc.  The main reason I used the url is 
+> because the ip addresses of the sites change quite a bit also.  Im just 
+> about ready to throw the towel in, there is just to many proxiifier 
+> sites for people to use to circumvent my filter.   I guess the best way 
+> to do this would not run a transparent proxy, which maybe what I end up 
+> doing sometime in the future.  As always thanks for the advise.
 
-One suggestion : if performance happens to be an issue, it might be=20
-worth using ipset and the 'set' match instead of the 'mac' match.
+*nod*
+
+That is why I have found a liking of the unix way of thinking where you 
+lock down everything and just open up what is needed.
+
+Good luck with your problem(s).  If you are curious, you could probably 
+come up with a chain and sub-chain structure that only part of the 
+sub-chain(s) were updated via cron jobs when things change.
+
+
+
+Grant. . . .
