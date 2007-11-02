@@ -1,26 +1,55 @@
-From: "Srinivas Murthy" <codevana@gmail.com>
-Subject: Use mangle to DROP/ACCEPT
-Date: Fri, 2 Nov 2007 11:54:18 -0700
-Message-ID: <df1bdeb10711021154hf8db4baya3fa2861ef027e84@mail.gmail.com>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: Re: Use mangle to DROP/ACCEPT
+Date: Fri, 02 Nov 2007 14:04:59 -0500
+Message-ID: <1194030299.5142.35.camel@grateful.d.umn.edu>
+References: <df1bdeb10711021154hf8db4baya3fa2861ef027e84@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-RZvDPr/sKbcmHH0Q2lpv"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=beta;
-        h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition:x-google-sender-auth;
-        bh=xq8lyxXfUPPotOPmqnC0SskV3KHcabY2ftzDdvpb3nA=;
-        b=dEw0Z5XI31PB+Md5qPgyj8Rb0gB1on4V0jquRG2tioMXlLjXVsAvRFjqBGsD+zi9AVqZIcBgOXJJBDDducqRJcu7askmxIUxK+vpMWPl1xrwj9p/tlIYsE6pUgpJMansQhCJuLgHalPCHpIFzBT2hq76OjiXU2EJbd4oIYPH9OY=
-Content-Disposition: inline
+In-Reply-To: <df1bdeb10711021154hf8db4baya3fa2861ef027e84@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Srinivas Murthy <codevana@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
- Is it ok to use the "mangle" table to insert rules that can
-DROP/ACCEPT pkts in the PREROUTE chain?
 
- I cannot use "filter" since that is registered in the INPUT chain and
-I want these rules in the PREROUTE chain.
+--=-RZvDPr/sKbcmHH0Q2lpv
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+
+On Fri, 2007-11-02 at 11:54 -0700, Srinivas Murthy wrote:
+> Hi,
+>  Is it ok to use the "mangle" table to insert rules that can
+> DROP/ACCEPT pkts in the PREROUTE chain?
+
+You could mark the packets in the mangle table and then DROP/ACCEPT
+based on the markings in the filter table.
+
+[...]
+
+--=20
+Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
+University of Minnesota Duluth
+Information Technology Systems & Services
+PGP key 1024D/84E22DA2 2005-11-07
+Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
+
+He is not a fool who gives up what he cannot keep to gain what he cannot
+lose.
+-Jim Elliot
+
+--=-RZvDPr/sKbcmHH0Q2lpv
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBHK3TbU+eIf4TiLaIRAnWeAJ4sigwrwOsdzWg74uz0HIGxFDJXfwCg9Aq/
+PRbVO6OyelOEXml4vFTXyXg=
+=n+eh
+-----END PGP SIGNATURE-----
+
+--=-RZvDPr/sKbcmHH0Q2lpv--
+
