@@ -1,30 +1,35 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: Packet gets SNAT without reaching POSTROUTING
-Date: Mon, 05 Nov 2007 08:34:29 +0100
-Message-ID: <472EC785.2010406@rtij.nl>
-References: <200711050024.21381.netfilter_20071105.nsp@27b-6.de>
+From: Shyam Prasad <shyam@rocsys.com>
+Subject: Connection Stats per interface using iptables
+Date: Mon, 5 Nov 2007 00:09:19 -0800 (PST)
+Message-ID: <971580.28281.qm@web1005.biz.mail.sp1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200711050024.21381.netfilter_20071105.nsp@27b-6.de>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Magnus Schmidt <netfilter_20071105.nsp@27b-6.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Magnus Schmidt wrote:
-> I am aware that there are still hundreds of other rules active in FORWARD or 
-> INPUT (for filter). However the mangle-filter and the nat-filter are exactly 
-> as shown below. How can a packet traverse mangle-POSTROUTING, but not reach 
-> nat-POSTROUTING ?
->
->   
+Hi All,
 
+I need to get statistics like 
+Total outgoing connections
+Total incomming connections
+Total Connections dropped 
+Total TCP ,UDP data
+and other protocol stats on "PER INTERFACE" basis.
 
-Only the first packet is seen there, once a nat-mapping is established, 
-the nat tables are skipped for the rest of the packets.
+Is there a way to directly fetch these stats using
+iptables rule or i
+ have to create separate chains for each interface
+,redirect the traffic
+ to these interface specific chains and then calculate
+the stats.
 
-HTH,
-M4
+netstat -s gives me some info but it is the total info
+on all
+ interfaces but not on per interface basis...any
+pointers ???
 
+Regards,
+Shyam.
