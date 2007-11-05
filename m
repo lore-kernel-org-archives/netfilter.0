@@ -1,24 +1,36 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: ipt_random status
-Date: Mon, 05 Nov 2007 17:10:05 +0100
-Message-ID: <472F405D.9030803@plouf.fr.eu.org>
-References: <20071105150734.GA26774@santefisi.caos.org>
+From: "ron lai" <ronlai@cs.stanford.edu>
+Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
+Date: Mon, 5 Nov 2007 08:36:13 -0800
+Message-ID: <001c01c81fc9$fb5a0f10$6500a8c0@ronPc>
+References: <001601c81ccc$682bb4a0$bb0b10ac@FireEye.com> <472EF88E.8030006@ufomechanic.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20071105150734.GA26774@santefisi.caos.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Netfilter users mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Amin Azez <azez@ufomechanic.net>
+Cc: Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hello,
+The problem happens in both SNAT only and SNAT+DNAT cases.
 
-Stefano Sabatini a =E9crit :
->=20
-> I'm interested in a random filtering rule for iptables: I read about
-> the ipt_randon extension, so I downloaded the patch-o-matic SVN but I
-> checked that it has been removed from the trunk since revision 6568.
+Ron
+----- Original Message ----- 
+From: "Amin Azez" <azez@ufomechanic.net>
+To: "Ron Lai" <ronlai@cs.stanford.edu>
+Cc: "Patrick McHardy" <kaber@trash.net>; <netfilter@vger.kernel.org>; 
+<netfilter-devel@vger.kernel.org>
+Sent: Monday, November 05, 2007 3:03 AM
+Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 
+2.6.22.6
 
-The random function has been moved to the 'statistic' match, available=20
-since kernel 2.6.18 and iptables 1.3.6.
+
+> Are you doing SNAT and DNAT on the same connection?
+>
+> Sam
+>
+> -
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html 
+
