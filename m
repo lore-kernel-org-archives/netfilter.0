@@ -1,60 +1,30 @@
-From: Patrick McHardy <kaber@trash.net>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
-Date: Tue, 06 Nov 2007 15:05:12 +0100
-Message-ID: <47307498.70104@trash.net>
-References: <001601c81ccc$682bb4a0$bb0b10ac@FireEye.com> <47303E9D.2050909@trash.net> <001e01c82077$b4d67610$6500a8c0@ronPc> <47306B0E.7050401@trash.net> <001801c8207c$00307b70$6500a8c0@ronPc>
+Date: Tue, 06 Nov 2007 16:17:52 +0100
+Message-ID: <473085A0.7050202@plouf.fr.eu.org>
+References: <001601c81ccc$682bb4a0$bb0b10ac@FireEye.com> <47303E9D.2050909@trash.net> <001e01c82077$b4d67610$6500a8c0@ronPc> <47306B0E.7050401@trash.net> <001801c8207c$00307b70$6500a8c0@ronPc> <47307498.70104@trash.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060900080400090104060606"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <001801c8207c$00307b70$6500a8c0@ronPc>
+In-Reply-To: <47307498.70104@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-To: ron lai <ronlai@cs.stanford.edu>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Bart De Schuymer <bdschuym@pandora.be>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------060900080400090104060606
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello,
 
-ron lai wrote:
-> My ruleset is
-> iptables -t nat -A POSTROUTING -s 172.16.119.91 -j SNAT --to-source 
-> 172.16.255.123
-> 
-> I am using a bridge containing only one physical interface and the FTP 
-> traffic goes through the bridge.
+Patrick McHardy a =E9crit :
+>=20
+> The bridge netfilter code calls the IP POST_ROUTING
+> hook for outgoing packets, but the packet already went through it
+> during forwarding.
 
-
-That explains it. The bridge netfilter code calls the IP POST_ROUTING
-hook for outgoing packets, but the packet already went through it
-during forwarding. Please try this patch, which makes the bridge
-netfilter code only call the IP hook for packets that also came in
-on the bridge.
-
-
-
-
---------------060900080400090104060606
-Content-Type: text/plain;
- name="x"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="x"
-
-diff --git a/net/bridge/br_netfilter.c b/net/bridge/br_netfilter.c
-index 3ee2022..d8e5c94 100644
---- a/net/bridge/br_netfilter.c
-+++ b/net/bridge/br_netfilter.c
-@@ -773,7 +773,7 @@ static unsigned int br_nf_post_routing(unsigned int hook, struct sk_buff **pskb,
- 	}
- #endif
- 
--	if (!nf_bridge)
-+	if (!nf_bridge || !nf_bridge->physindev)
- 		return NF_ACCEPT;
- 
- 	if (!realoutdev)
-
---------------060900080400090104060606--
+Indeed I noticed once that a forwarded (i.e. not bridged) IP packet goe=
+s=20
+through the iptables POSTROUTING chain twice (after iptables FORWARD an=
+d=20
+after ebtables POSTROUTING) when the input and output interfaces are=20
+both bridges. But only once (after iptables FORWARD) when only the=20
+output interface is a bridge. Puzzles me why.
