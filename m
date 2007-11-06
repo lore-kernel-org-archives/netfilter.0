@@ -1,58 +1,73 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Problem with DNAT of UDP packets getting undone
-Date: Tue, 06 Nov 2007 12:54:51 -0600
-Message-ID: <4730B87B.10901@riverviewtech.net>
-References: <54395395F049BD4E8C97CC924B45A7A6062E227D@brexc47p> <32559.217.166.60.19.1194368615.squirrel@ma.rtij.nl>
+Date: Tue, 06 Nov 2007 21:24:15 +0100
+Message-ID: <4730CD6F.7040400@plouf.fr.eu.org>
+References: <54395395F049BD4E8C97CC924B45A7A6062E227D@brexc47p> <32559.217.166.60.19.1194368615.squirrel@ma.rtij.nl> <4730B87B.10901@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <32559.217.166.60.19.1194368615.squirrel@ma.rtij.nl>
+In-Reply-To: <4730B87B.10901@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 11/06/07 11:03, Martijn Lievaart wrote:
-> This is expected. A nat mapping is set up on the first packet of a 
-> "connection" and a reverse NAT is done automagically on all return 
-> packets. Exactly what you are seeing.
+Hello,
 
-I'll agree to the NATing part.  However the fact that the OP is 
-successfully using the loopback interface surprises me.  It was my 
-(mis)understanding that the loopback interface was holly and would not 
-talk to traffic that did not originate or terminate on the loopback 
-interface as well.  Or is the a side effect that the NATing code is 
-sending the traffic out the loopback interface destined to the loopback 
-interface as well, thus NATing is bridging the security barrier?  I am 
-almost positive that the same could not be done with routing.
+Grant Taylor a =E9crit :
+> On 11/06/07 11:03, Martijn Lievaart wrote:
+>=20
+>> This is expected. A nat mapping is set up on the first packet of a=20
+>> "connection" and a reverse NAT is done automagically on all return=20
+>> packets. Exactly what you are seeing.
+>=20
+> I'll agree to the NATing part.
 
-> This cannot easily be solved with current Linux kernels. Current 
-> kernels only do connection oriented NAT. You could insert a Cisco 
-> device or something similar to do the kind of NAT you require.
+So do I. Otherwise, stateful NAT would not work very well.
 
-Would it be possible to use stateless NATing via IP Route 2 rather than 
-IPTables to achieve this?
+> However the fact that the OP is=20
+> successfully using the loopback interface surprises me.  It was my=20
+> (mis)understanding that the loopback interface was holly and would no=
+t=20
+> talk to traffic that did not originate or terminate on the loopback=20
+> interface as well.
 
-> But......, the loadbalancer does DNAT, so it shoud do the 
-> corresponding SNAT on the return packets. If it does not do this, it 
-> is seriously broken, imnsho.
+You may confuse with the restriction from some RFCs stating that=20
+127.0.0.0/8 addresses are reserved for internal host use, i.e. the=20
+loopback interface. There is no such restriction for other addresses=20
+that may be configured on the loopback interface. Also, the Linux IP=20
+stack follows the "weak" model by default, so any unicast address=20
+(except 127.0.0.0/8) configured on any interface  can be used for=20
+communications on any other interface. So any non-127.0.0.0/8 address=20
+configured on the loopback interface can be used for communications on=20
+any other interface.
 
-Remember that the OP said "... The DNS servers are supposed to send 
-their responses directly to the client via an internet connection that 
-is not behind the load balancer. ...".  Thus the reply traffic is not 
-passing back out through the load balancer and as such the load balancer 
-never sees the traffic to undo the NATing in place.
+> Or is the a side effect that the NATing code is=20
+> sending the traffic out the loopback interface destined to the loopba=
+ck=20
+> interface as well, thus NATing is bridging the security barrier?  I a=
+m=20
+> almost positive that the same could not be done with routing.
 
-My recommendation to the OP is to set up the LVS in 'Direct Routing' 
-mode with the VIP bound to an additional non-ARPing interface other than 
-the loopback interface on all the real nodes.  This way the LVS 
-Director(s) will initially receive the traffic to the VIP and then 
-re-route the traffic on to the real server node.  The real server node 
-will then receive the traffic destined to the VIP with the DNS server 
-running on it.  This way all the traffic is really to and from the VIP 
-address(s).  This scenario will allow the real server(s) to use a 
-different route for the returning traffic than the original traffic used.
+Nope, NAT has nothing to do with this, and the loopback interface is no=
+t=20
+involved.
 
+>> This cannot easily be solved with current Linux kernels. Current=20
+>> kernels only do connection oriented NAT. You could insert a Cisco=20
+>> device or something similar to do the kind of NAT you require.
+>=20
+> Would it be possible to use stateless NATing via IP Route 2 rather th=
+an=20
+> IPTables to achieve this?
 
+The old stateless NAT in the routing code controlled with iproute2 is=20
+considered broken and all references to it were removed from kernel=20
+2.6.9. But a new stateless NAT is coming with the next kernel release=20
+2.6.24.
 
-Grant. . . .
+=46or now, an ugly workaround may be to use the NOTRACK target in the=20
+'raw' table on the (supposedly) return packets, to skip the connection=20
+tracking and the automagic reverse DNAT. I think this will work for DNS=
+=20
+over UDP, maybe not so well for TCP.
