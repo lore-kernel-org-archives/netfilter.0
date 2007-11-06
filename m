@@ -1,40 +1,47 @@
-From: "Srinivas Murthy" <codevana@gmail.com>
-Subject: New tables
-Date: Tue, 6 Nov 2007 09:29:49 -0800
-Message-ID: <df1bdeb10711060929m24071b3cx5c1af68d096edd2c@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: iptables NAT logging
+Date: Tue, 06 Nov 2007 12:07:56 -0600
+Message-ID: <4730AD7C.6090302@riverviewtech.net>
+References: <472AE429.1060906@bristol.ac.uk> <472B3B63.7000203@riverviewtech.net> <4730989C.4020301@bristol.ac.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=beta;
-        h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition:x-google-sender-auth;
-        bh=4UE9tHb8H+6tf5cOkDJz8x7y0q+Y7S4Ul0EYQsssi3Q=;
-        b=Es6YxUH/RFWj4qhxfL4/8xmUyNJQl7MENqtQEWwDljjUqyskuCg+t3Xz/6coNGdVwaO/k/zwk1GlZL/ujxIuXGtDqYRGGa2AT4BXgIEZQdqvCF3V2D4jl879x8x5Lz0G41xHPb4MotvgeBPs/IB5iHzfmkBIVg0bzPt7lcVW+z0=
-Content-Disposition: inline
+In-Reply-To: <4730989C.4020301@bristol.ac.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-I need to insert rules in the prerouting, postrouting, forward hooks
-with priorities diff than what is defined for the built-in chains for
-the existing tables ("mangle", "raw", "filter", etc.). Further, I need
-to insert rules and manipulate these from within kernel space.
+On 11/06/07 10:38, Jonathan Gazeley wrote:
+> Yes that's correct. Per connection is fine; we just need to know which 
+> users were talking to what, when. Logging every packet simply isn't 
+> feasible (or useful) on a network that shifts 38TB every single day!
 
-For this I'm creating some new tables, and define valid hooks for
-where I want to insert rules. For example, I'm using iptable_raw.c as
-an example for what I need to do to create a new table.
+That's a LOT of traffic and will equally be a LOT of logs.
 
-However I see that in the various files for the targets
-(ipt_CLASSIFY.c,) etc. there seems to be some work done based on the
-table ( Ex. if (table is "mangle") etc.).
+> Yes, knowing when the connection terminates is also useful, otherwise we 
+> won't know how long a user is connected to a server for.
 
-Is that something I need to worry about if create new tables?
+That may be more problematic to detect, especially with UDP.  For TCP 
+streams that shut down normally, you could watch for the FIN packets and 
+log them.  However I'm not sure how to detect the non continuance of a 
+UDP stream, much less other protocols.  The only thing that I can think 
+of is to watch for the lack of traffic for a specific amount of time and 
+presume that the connection is terminated.
 
-I think if I register these hooks from the new table (just as is done
-in iptable_raw.c), that should be sufficient to make sure all the rule
-invocation, matching, etc. would work as is expected. Isnt that right?
+I suppose you could augment the connection tracking code to log when it 
+expired a tracked connection.  You could at least get the end of a 
+connection this way.  However this is probably kernel coding.
 
-Is there an easier way to do this than create new tables?
+> I'll let you know how this goes, although this isn't my highest priority 
+> project at the moment so I may not get a chance to play for a few days.
 
-Thanks.
+Please do, I'm interested to know fore future projects.
+
+> Thanks a lot for your help.
+
+You are welcome.
+
+
+
+Grant. . . .
