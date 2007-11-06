@@ -1,46 +1,57 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: iptables NAT logging
-Date: Tue, 06 Nov 2007 12:07:56 -0600
-Message-ID: <4730AD7C.6090302@riverviewtech.net>
-References: <472AE429.1060906@bristol.ac.uk> <472B3B63.7000203@riverviewtech.net> <4730989C.4020301@bristol.ac.uk>
+Subject: Re: Problem with DNAT of UDP packets getting undone
+Date: Tue, 06 Nov 2007 12:54:51 -0600
+Message-ID: <4730B87B.10901@riverviewtech.net>
+References: <54395395F049BD4E8C97CC924B45A7A6062E227D@brexc47p> <32559.217.166.60.19.1194368615.squirrel@ma.rtij.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4730989C.4020301@bristol.ac.uk>
+In-Reply-To: <32559.217.166.60.19.1194368615.squirrel@ma.rtij.nl>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 11/06/07 10:38, Jonathan Gazeley wrote:
-> Yes that's correct. Per connection is fine; we just need to know which 
-> users were talking to what, when. Logging every packet simply isn't 
-> feasible (or useful) on a network that shifts 38TB every single day!
+On 11/06/07 11:03, Martijn Lievaart wrote:
+> This is expected. A nat mapping is set up on the first packet of a 
+> "connection" and a reverse NAT is done automagically on all return 
+> packets. Exactly what you are seeing.
 
-That's a LOT of traffic and will equally be a LOT of logs.
+I'll agree to the NATing part.  However the fact that the OP is 
+successfully using the loopback interface surprises me.  It was my 
+(mis)understanding that the loopback interface was holly and would not 
+talk to traffic that did not originate or terminate on the loopback 
+interface as well.  Or is the a side effect that the NATing code is 
+sending the traffic out the loopback interface destined to the loopback 
+interface as well, thus NATing is bridging the security barrier?  I am 
+almost positive that the same could not be done with routing.
 
-> Yes, knowing when the connection terminates is also useful, otherwise we 
-> won't know how long a user is connected to a server for.
+> This cannot easily be solved with current Linux kernels. Current 
+> kernels only do connection oriented NAT. You could insert a Cisco 
+> device or something similar to do the kind of NAT you require.
 
-That may be more problematic to detect, especially with UDP.  For TCP 
-streams that shut down normally, you could watch for the FIN packets and 
-log them.  However I'm not sure how to detect the non continuance of a 
-UDP stream, much less other protocols.  The only thing that I can think 
-of is to watch for the lack of traffic for a specific amount of time and 
-presume that the connection is terminated.
+Would it be possible to use stateless NATing via IP Route 2 rather than 
+IPTables to achieve this?
 
-I suppose you could augment the connection tracking code to log when it 
-expired a tracked connection.  You could at least get the end of a 
-connection this way.  However this is probably kernel coding.
+> But......, the loadbalancer does DNAT, so it shoud do the 
+> corresponding SNAT on the return packets. If it does not do this, it 
+> is seriously broken, imnsho.
 
-> I'll let you know how this goes, although this isn't my highest priority 
-> project at the moment so I may not get a chance to play for a few days.
+Remember that the OP said "... The DNS servers are supposed to send 
+their responses directly to the client via an internet connection that 
+is not behind the load balancer. ...".  Thus the reply traffic is not 
+passing back out through the load balancer and as such the load balancer 
+never sees the traffic to undo the NATing in place.
 
-Please do, I'm interested to know fore future projects.
-
-> Thanks a lot for your help.
-
-You are welcome.
+My recommendation to the OP is to set up the LVS in 'Direct Routing' 
+mode with the VIP bound to an additional non-ARPing interface other than 
+the loopback interface on all the real nodes.  This way the LVS 
+Director(s) will initially receive the traffic to the VIP and then 
+re-route the traffic on to the real server node.  The real server node 
+will then receive the traffic destined to the VIP with the DNS server 
+running on it.  This way all the traffic is really to and from the VIP 
+address(s).  This scenario will allow the real server(s) to use a 
+different route for the returning traffic than the original traffic used.
 
 
 
