@@ -1,35 +1,25 @@
-From: Carsten Aulbert <carsten@welcomes-you.com>
-Subject: iptables performance  good enough for 10 GBit link?
-Date: Wed, 07 Nov 2007 21:03:55 +0100
-Message-ID: <47321A2B.10801@welcomes-you.com>
+From: "Srinivas Murthy" <codevana@gmail.com>
+Subject: new table entry init default verdict
+Date: Wed, 7 Nov 2007 15:01:13 -0800
+Message-ID: <df1bdeb10711071501v4859ff60u58a41e3a00f5772d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition:x-google-sender-auth;
+        bh=InKQyZk5XzW0T9rL0H5VTvV1txaBv6OFzoP5dtBWjm4=;
+        b=D7Sx8e0K8FW2xHHSUugDY6qEkKoDQ81oUp0His8HAj04AqjEkQpZ0xg1dn1jl1O3Oc4vxOhnVEQuBMCdgjn4BXbzpKbBrV6BT8aU4tOqCfGYwrikol+mEhb4PLvpO5s/igVrkmo6+XjNtPgVpNcrXnZU5shnQfoEBHZmVO/P2Yw=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
+I see that a init value for an entry is -NF_ACCEPT-1
 
-sorry that my first posting here will be a vague one. We are currently
-estimating the possibility for a computer to act as a packet filter
-between 2 10Gbit links. Since we have no experience beyond 1 Gbit I
-would like to ask a few questions:
+Not sure if this value has any meaning.
 
-(1) Has anyone tried how much data can be pumped through available 10
-Gbit cards on a recent Linux kernel?
+What should be the default init value to accept?
 
-(2) How much CPU power/memory is needed by netfilter for a simple set-up
-where packages on the incoming port need to be evaluated based on their
-IP-range. Imaging simply allowing only ssh and NFS connections (TCP,
-limited port range) from a certain /24 network and reject/drop all other
-incoming packages on the external interface. So far no NAT is planned.
-
-(3) Is this the right place to ask these questions ;)
-
-Thanks a lot for a few hints, if this is possible or needs testing or ...
-
-Cheers
-
-Carsten
+Thanks.
