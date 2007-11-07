@@ -1,39 +1,68 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: iptables NAT logging
-Date: Tue, 06 Nov 2007 21:06:32 -0600
-Message-ID: <47312BB8.5040200@riverviewtech.net>
-References: <472AE429.1060906@bristol.ac.uk> <472B3B63.7000203@riverviewtech.net> <4730989C.4020301@bristol.ac.uk> <4730AD7C.6090302@riverviewtech.net> <47310CA5.5080901@snapgear.com> <473122FF.9000800@riverviewtech.net> <47312A99.3070208@snapgear.com>
+From: "ron lai" <ronlai@cs.stanford.edu>
+Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
+Date: Tue, 6 Nov 2007 21:08:18 -0800
+Message-ID: <005301c820fc$35c63a10$6400a8c0@ronPc>
+References: <001601c81ccc$682bb4a0$bb0b10ac@FireEye.com> <47303E9D.2050909@trash.net> <001e01c82077$b4d67610$6500a8c0@ronPc> <47306B0E.7050401@trash.net> <001801c8207c$00307b70$6500a8c0@ronPc> <47307498.70104@trash.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47312A99.3070208@snapgear.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Bart De Schuymer <bdschuym@pandora.be>
 
-On 11/6/2007 9:01 PM, Philip Craig wrote:
-> ulogd2 has support for listening to the events, although I haven't 
-> tested it recently.  Look for the flow logging options.
+I've verified that the module works fine if no bridge is used. Unfortunately 
+the patch doesn't fix the 2-calls-of-the-helper-function problem if a bridge 
+is applied to the system.
+
+Ron
+----- Original Message ----- 
+From: "Patrick McHardy" <kaber@trash.net>
+To: "ron lai" <ronlai@cs.stanford.edu>
+Cc: <netfilter@vger.kernel.org>; <netfilter-devel@vger.kernel.org>; "Bart De 
+Schuymer" <bdschuym@pandora.be>
+Sent: Tuesday, November 06, 2007 6:05 AM
+Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 
+2.6.22.6
+
+
+> ron lai wrote:
+>> My ruleset is
+>> iptables -t nat -A POSTROUTING -s 172.16.119.91 -j SNAT --to-source
+>> 172.16.255.123
+>>
+>> I am using a bridge containing only one physical interface and the FTP
+>> traffic goes through the bridge.
+>
+>
+> That explains it. The bridge netfilter code calls the IP POST_ROUTING
+> hook for outgoing packets, but the packet already went through it
+> during forwarding. Please try this patch, which makes the bridge
+> netfilter code only call the IP hook for packets that also came in
+> on the bridge.
+>
+>
+>
+>
+
+
+--------------------------------------------------------------------------------
+
+
+> diff --git a/net/bridge/br_netfilter.c b/net/bridge/br_netfilter.c
+> index 3ee2022..d8e5c94 100644
+> --- a/net/bridge/br_netfilter.c
+> +++ b/net/bridge/br_netfilter.c
+> @@ -773,7 +773,7 @@ static unsigned int br_nf_post_routing(unsigned int 
+> hook, struct sk_buff **pskb,
+>  }
+> #endif
+>
+> - if (!nf_bridge)
+> + if (!nf_bridge || !nf_bridge->physindev)
+>  return NF_ACCEPT;
+>
+>  if (!realoutdev)
 > 
-> You could also use the 'conntrack' tool to monitor them, and pipe 
-> that to a log file.
 
-Interesting.
-
-> This is purely about connection tracking, not filtering, so you can't 
-> match up these events with the filter rule that accepted it, unless 
-> you encode that in the mark or something.  It will only get events 
-> for connections that are accepted by filtering though.
-
-Unless I mis-understand the OP's desires, I don't think the shortcoming 
-(if it qualifies as that) of not being able to associate a NetLink event 
-with a given IPTables rule is all that big of a deal.  I think the OP 
-just needed to log internal and external source and destination IP 
-addresses and ports and when the connection started and stopped, thus 
-knowing which IPTables rule is (IMHO) a non issue.  I guess depending on 
-what someone was trying to do this could be an issue.
-
-
-
-Grant. . . .
