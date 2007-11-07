@@ -1,43 +1,48 @@
-From: "ron lai" <ronlai@cs.stanford.edu>
-Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
-Date: Wed, 7 Nov 2007 07:17:17 -0800
-Message-ID: <005b01c82151$4acac750$6500a8c0@ronPc>
-References: <001601c81ccc$682bb4a0$bb0b10ac@FireEye.com> <47303E9D.2050909@trash.net> <001e01c82077$b4d67610$6500a8c0@ronPc> <47306B0E.7050401@trash.net> <001801c8207c$00307b70$6500a8c0@ronPc> <47307498.70104@trash.net> <005301c820fc$35c63a10$6400a8c0@ronPc> <47318A3C.5070701@trash.net>
+From: LeRoy DeVries <dutch@rvfulltimer.com>
+Subject: Need help with IPTABLES
+Date: Wed, 07 Nov 2007 09:52:41 -0700
+Message-ID: <1194454362.5589.18.camel@DVA1>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Bart De Schuymer <bdschuym@pandora.be>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@vger.kernel.org>
 
-I am using a single bridge with one device.
+I am trying to drop all port 80 traffic from going from source 10.1.0.1
+to 192.168.0.1
 
-Ron
------ Original Message ----- 
-From: "Patrick McHardy" <kaber@trash.net>
-To: "ron lai" <ronlai@cs.stanford.edu>
-Cc: <netfilter@vger.kernel.org>; <netfilter-devel@vger.kernel.org>; "Bart De 
-Schuymer" <bdschuym@pandora.be>
-Sent: Wednesday, November 07, 2007 1:49 AM
-Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 
-2.6.22.6
+My routing table in the router is as follows:
 
 
-> ron lai wrote:
->> I've verified that the module works fine if no bridge is used. 
->> Unfortunately the patch doesn't fix the 2-calls-of-the-helper-function 
->> problem if a bridge is applied to the system.
->
->
-> Strange, I can't reproduce this. To clarify - you're using only a
-> single bridge with one device, or two bridges with one device each?
->
->
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter-devel" 
-> in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html 
+Routing Table  
+
+Destination  Gateway   Netmask         Interface
+
+192.168.1.0  0.0.0.0   255.255.255.0    vlan0
+
+192.168.0.0  0.0.0.0    255.255.255.0   vlan1
+
+10.1.0.0     0.0.0.0    255.255.255.0   tun0
+
+0.0.0.0    192.168.0.1   0.0.0.0        vlan1
+
+I tried to using the following;
+
+iptables -I FORWARD 1 -s 10.1.0.0/24 -d 192.168.0.1 -p tcp --dport 80 -j
+DROP
+
+however, the traffic still goes through on tun0
+
+I tried 
+
+iptables -I FORWARD 1 -d 192.168.0.1 -p tcp --dport 80 -j DROP
+
+and the vlan traffic gets block but not the tun0
+
+any ideas what I'm doing wrong?
+
+thanks in advance for any help...
+
 
