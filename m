@@ -1,48 +1,131 @@
-From: LeRoy DeVries <dutch@rvfulltimer.com>
-Subject: Need help with IPTABLES
-Date: Wed, 07 Nov 2007 09:52:41 -0700
-Message-ID: <1194454362.5589.18.camel@DVA1>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: Re: packets not seen by iptables - SOLVED
+Date: Wed, 07 Nov 2007 14:19:35 -0600
+Message-ID: <1194466775.19115.83.camel@grateful.d.umn.edu>
+References: <1193683986.18366.39.camel@grateful.d.umn.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-1k4R3jKOZW7XUG092uJS"
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1193683986.18366.39.camel@grateful.d.umn.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@vger.kernel.org>
-
-I am trying to drop all port 80 traffic from going from source 10.1.0.1
-to 192.168.0.1
-
-My routing table in the router is as follows:
+To: netfilter@vger.kernel.org
 
 
-Routing Table  
+--=-1k4R3jKOZW7XUG092uJS
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Destination  Gateway   Netmask         Interface
+Problem solved.
 
-192.168.1.0  0.0.0.0   255.255.255.0    vlan0
+Short answer: PEBKAC.
 
-192.168.0.0  0.0.0.0    255.255.255.0   vlan1
+Long answer:
 
-10.1.0.0     0.0.0.0    255.255.255.0   tun0
+My asymmetrical route map was sending traffic to the wrong address.
 
-0.0.0.0    192.168.0.1   0.0.0.0        vlan1
+The internal (incoming traffic) network for the cluster is:
 
-I tried to using the following;
+192.168.115.32/29
 
-iptables -I FORWARD 1 -s 10.1.0.0/24 -d 192.168.0.1 -p tcp --dport 80 -j
-DROP
+Virtual IP =3D 192.168.115.33
+Real IP (primary server) =3D 192.168.115.34
+Real IP (backup server) =3D 192.168.115.35
 
-however, the traffic still goes through on tun0
+The route map was sending traffic to 192.168.115.34 instead of
+192.168.115.33. *ugh*
 
-I tried 
+I am still confused as to why the backup server would be "seeing" the
+traffic via tcpdump, it is not as if I am using repeaters/hubs.
 
-iptables -I FORWARD 1 -d 192.168.0.1 -p tcp --dport 80 -j DROP
+Mystery solved.
 
-and the vlan traffic gets block but not the tun0
+On Mon, 2007-10-29 at 13:53 -0500, Matt Zagrabelny wrote:
+> Greetings,
+>=20
+> I am working on project that involves asymmetrical routing. I am using
+> two Debian GNU/Linux boxes as a active passive firewall cluster.
+>=20
+>=20
+>  Outgoing Traffic
+>=20
+> +--eth0---+   +--eth0---+
+> |         |   |         |
+> | primary |   | backup  |
+> |         |   |         |
+> +--eth1---+   +--eth1---+
+>=20
+>  Incoming Traffic
+>=20
+> On the primary node everything works as expected.
+>=20
+> I have done the following:
+>=20
+> # echo 1 > /proc/sys/net/ipv4/ip_forward
+> # echo 0 > /proc/sys/net/ipv4/conf/eth1/rp_filter
+>=20
+> I can see the traffic "go through the box" with the following commands:
+>=20
+> # tcpdump -i eth1
+> # tcpdump -i eth0
+>=20
+> and also
+>=20
+> # iptables -t mangle -L PREROUTING -v -n
+> # iptables -t filter -L FORWARD -v -n
+>=20
+> So, with the tcpdump commands I see on stdout the traffic. With the
+> iptables commands I see byte counts increasing on the FORWARD chain.
+>=20
+> Here lies the problem:
+>=20
+> When I shut off the primary node and configure the backup to perform the
+> same functionality traffic does not seem to "go through" the tables.
+>=20
+> Running the same commands on the backup:
+>=20
+> # tcpdump -i eth1        <---- Output on stdout (good)
+> # tcpdump -i eth0        <---- No output (bad)
+>=20
+> and also
+>=20
+> # iptables -t mangle -L PREROUTING -v -n  <- byte counts do not increase
+> # iptables -t filter -L FORWARD -v -n     <- byte counts do not increase
+>=20
+> So then I also did:
+>=20
+> iptables -t mangle -A PREROUTING -j LOG --log-level ALERT
+>=20
+> Again, I see no evidence on any packets reaching iptables.
+>=20
+> So.... I have no idea where the packets are going after I seem them in
+> tcpdump. They seem like they disappear.
+>=20
+> I have done an effective "diff" of /proc/sys/net/ between the two nodes
+> and they are identical.
+>=20
+--=20
+Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
+University of Minnesota Duluth
+Information Technology Systems & Services
+PGP key 1024D/84E22DA2 2005-11-07
+Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
 
-any ideas what I'm doing wrong?
+He is not a fool who gives up what he cannot keep to gain what he cannot
+lose.
+-Jim Elliot
 
-thanks in advance for any help...
+--=-1k4R3jKOZW7XUG092uJS
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD4DBQBHMh3XU+eIf4TiLaIRAqTWAJUev5r8Yqj+v96yaWRavUmF/qjJAJ9FjKFx
+1rvzi8aAaqfxqy0oTskT9A==
+=V3T2
+-----END PGP SIGNATURE-----
+
+--=-1k4R3jKOZW7XUG092uJS--
 
