@@ -1,25 +1,24 @@
-From: "Srinivas Murthy" <codevana@gmail.com>
-Subject: new table entry init default verdict
-Date: Wed, 7 Nov 2007 15:01:13 -0800
-Message-ID: <df1bdeb10711071501v4859ff60u58a41e3a00f5772d@mail.gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
+Date: Thu, 08 Nov 2007 00:19:18 +0100
+Message-ID: <473247F6.8090204@trash.net>
+References: <001601c81ccc$682bb4a0$bb0b10ac@FireEye.com> <47303E9D.2050909@trash.net> <001e01c82077$b4d67610$6500a8c0@ronPc> <47306B0E.7050401@trash.net> <001801c8207c$00307b70$6500a8c0@ronPc> <47307498.70104@trash.net> <005301c820fc$35c63a10$6400a8c0@ronPc> <47318A3C.5070701@trash.net> <005b01c82151$4acac750$6500a8c0@ronPc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=beta;
-        h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition:x-google-sender-auth;
-        bh=InKQyZk5XzW0T9rL0H5VTvV1txaBv6OFzoP5dtBWjm4=;
-        b=D7Sx8e0K8FW2xHHSUugDY6qEkKoDQ81oUp0His8HAj04AqjEkQpZ0xg1dn1jl1O3Oc4vxOhnVEQuBMCdgjn4BXbzpKbBrV6BT8aU4tOqCfGYwrikol+mEhb4PLvpO5s/igVrkmo6+XjNtPgVpNcrXnZU5shnQfoEBHZmVO/P2Yw=
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <005b01c82151$4acac750$6500a8c0@ronPc>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: ron lai <ronlai@cs.stanford.edu>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Bart De Schuymer <bdschuym@pandora.be>
 
-I see that a init value for an entry is -NF_ACCEPT-1
+ron lai wrote:
+> I am using a single bridge with one device.
 
-Not sure if this value has any meaning.
+In that case please post the full output of:
 
-What should be the default init value to accept?
-
-Thanks.
+ip link list
+ip addr show
+ip route show
+brctl show
