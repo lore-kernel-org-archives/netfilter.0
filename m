@@ -1,44 +1,53 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
-Date: Thu, 08 Nov 2007 12:43:13 +0100
-Message-ID: <4732F651.9090500@trash.net>
-References: <001601c81ccc$682bb4a0$bb0b10ac@FireEye.com> <47303E9D.2050909@trash.net> <001e01c82077$b4d67610$6500a8c0@ronPc> <47306B0E.7050401@trash.net> <001801c8207c$00307b70$6500a8c0@ronPc> <47307498.70104@trash.net> <005301c820fc$35c63a10$6400a8c0@ronPc> <47318A3C.5070701@trash.net> <005b01c82151$4acac750$6500a8c0@ronPc> <473247F6.8090204@trash.net> <000a01c82199$92441f30$bb0b10ac@FireEye.com> <4732D0DD.5020609@plouf.fr.eu.org>
+From: "Bradley Kite" <bradley.kite@gmail.com>
+Subject: NAT for multiple non-directly connected subnets
+Date: Thu, 8 Nov 2007 21:53:07 +0000
+Message-ID: <e97f32c10711081353t5602912fr560386581cd39c7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4732D0DD.5020609@plouf.fr.eu.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=TUJz4CYaDBuLT8NHfcGRxdGa3i+V2SgPZMtrCYtboEY=;
+        b=oc+LuWnRHdfwUWPzZvFtL0AFWpXtiClBZGnNwNHTy6t20843EOhHwCGoNnwrBjDWCaDzCAtkvngUv3dABF8lnW06DGMhpeXMZgXfkF0/8hdP6m0tJ04BpJliyhWENSU3lSWYmWJzN6uAoO+FEHfvY3Eg6dZg2Zq59fBGCNt73pc=
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: Ron Lai <ronlai@cs.stanford.edu>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Bart De Schuymer <bdschuym@pandora.be>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Pascal Hambourg wrote:
-> Ron Lai a =E9crit :
->>
->> -ip route show
->> 172.16.0.0/12 dev ether1  proto kernel  scope link  src 172.16.119.8=
-7
->> default via 172.16.1.1 dev ether1  metric 1
->>
->> -brctl show
->> bridge name     bridge id               STP enabled     interfaces
->> ether1          8000.00d0680df494       no              pether1
-> [...]
->>>> I am using a single bridge with one device.
->=20
-> But from the information you provided it seems that the bridge "ether=
-1"=20
-> is the only active interface in you system. So IP forwarding can only=
-=20
-> happen from a bridge (ether1) to a bridge (ether1), which is the=20
-> situation causing the IP POST_ROUTING hook to be called twice.
+Hi all,
 
+I've been using NAT for my home network (a single /24 RFC1918 address
+range) and it has been working well, however I've recently tried
+NATing a more complex environment environment as follows:
 
-That explains how it can happen with only a single bridge, thanks :)
+ Linux Machine:
+Internal Interface: 192.168.1.50/30 -> 192.168.1.49/30
+External Interface: 81.179.30.111/24
 
--
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Now, connected off the internal interface is a whole network
+consisting of several subnets all linked off each other - ie they are
+not directly connected to the linux machine.
+
+The problem I have is that the NAT on the linux box is only actually
+nating traffic that comes directly from  192.168.1.49 - the first
+upstream router. Any traffic from, for example, 192.168.2.0/24 wont
+get natted to  81.179.30.111  as expected. I can see this with tcpdump
+- traffic from the directly connected router gets natted, other
+traffic is seen (so its not a routing issue) its just not being
+natted.
+
+I am using kernel 2.6.18 and this is the rule I'm using for iptables:
+
+iptables --table nat -A POSTROUTING -o eth0 -j SNAT --to-source 81.179.30.111
+
+Is there any thing I am missing with this configuration? Is there some
+limitation with doing NAT that only allows directly connected subnets
+to be natted?
+
+Any help or suggestions will be much appreciated as I've tried all
+configurations that I can think of and I'm at my limit now.
+
+--
+Brad.
