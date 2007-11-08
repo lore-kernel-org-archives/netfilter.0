@@ -1,32 +1,47 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
-Date: Thu, 08 Nov 2007 10:03:25 +0100
-Message-ID: <4732D0DD.5020609@plouf.fr.eu.org>
-References: <001601c81ccc$682bb4a0$bb0b10ac@FireEye.com> <47303E9D.2050909@trash.net> <001e01c82077$b4d67610$6500a8c0@ronPc> <47306B0E.7050401@trash.net> <001801c8207c$00307b70$6500a8c0@ronPc> <47307498.70104@trash.net> <005301c820fc$35c63a10$6400a8c0@ronPc> <47318A3C.5070701@trash.net> <005b01c82151$4acac750$6500a8c0@ronPc> <473247F6.8090204@trash.net> <000a01c82199$92441f30$bb0b10ac@FireEye.com>
+From: "Paco Orozco" <pakusland@gmail.com>
+Subject: How to clear conntrack table
+Date: Thu, 8 Nov 2007 10:34:55 +0100
+Message-ID: <7c2474d40711080134k6f255ed9hba98b7a49aa3c1fe@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <000a01c82199$92441f30$bb0b10ac@FireEye.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=/ZkFvWDLc467P/mdvTXNiB9323QcT+LwgK/Bw7mj8ZM=;
+        b=fcAcWebVgZJ6YiRQynUtZc5p0RQ8J0ucWhJXJ2LPEjH9kWYiskNgKInzAiyI95F8IAbjIi2//lg5M5mLEdvL99WOCbQeyVJOl6BltCwNkLy+Guqd72ovyq/YDmQfz9fJLXp/w9oSLp1m5gRaSfYXpO3twWH0sT553C+rbM26nm4=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Ron Lai <ronlai@cs.stanford.edu>
-Cc: Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Bart De Schuymer <bdschuym@pandora.be>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Ron Lai a =E9crit :
->=20
-> -ip route show
-> 172.16.0.0/12 dev ether1  proto kernel  scope link  src 172.16.119.87
-> default via 172.16.1.1 dev ether1  metric 1
->=20
-> -brctl show
-> bridge name     bridge id               STP enabled     interfaces
-> ether1          8000.00d0680df494       no              pether1
-[...]
->>> I am using a single bridge with one device.
+Hiya,
 
-But from the information you provided it seems that the bridge "ether1"=
-=20
-is the only active interface in you system. So IP forwarding can only=20
-happen from a bridge (ether1) to a bridge (ether1), which is the=20
-situation causing the IP POST_ROUTING hook to be called twice.
+I've got a cluster of firewalls, using iptables and HA (heartbeat) in
+active - passive mode.
+
+When node 1 has de main IP address, I stablish a ssh connection from
+outside to inside.
+If node 2 takeovers this main IP address, for example with hb_takeover
+HA's command, this connection, and those has been stablished are
+maintained.
+Trully, node 2 creates a new conntrack entry, with new sequence numbers.
+
+But If I do a takeover in node 1, without rebooting it before. The
+main IP address is taken by node 1.
+The ssh connection isn't maintained, because conntrack has a ASSURED
+entry on node 1, the first one was created, that has diferents states
+(sequence numbres) from established connection in node 2.
+So, this ssh freezes and it isn't maintained. If I try to ssh again
+there's no problem.
+
+Obviously, If I reboot node 1 before taking the main IP address, all
+works correctly, but I'd like to have a better solution, for example
+I'd like to clear conntrack table before taking the main IP address.
+
+Does Anyone know It it is possible? Do you have similar environments?
+
+Thanks in advance...
+
+Paco
