@@ -1,40 +1,49 @@
-From: Bart De Schuymer <bdschuym@pandora.be>
-Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in  
-	2.6.22.6
-Date: Thu, 08 Nov 2007 00:29:51 +0100
-Message-ID: <1194478191.2983.7.camel@localhost.localdomain>
-References: <W352381485970601194435879@nocme1bl6.telenet-ops.be>
-	 <4731A7A9.1050606@trash.net>
+From: Olivier Sessink <lists@olivier.pk.wau.nl>
+Subject: Re: conntrack INVALID packets
+Date: Thu, 08 Nov 2007 08:47:37 +0100
+Message-ID: <4732BF19.1090607@olivier.pk.wau.nl>
+References: <000401c81bd0$c0080e00$40182a00$@net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4731A7A9.1050606@trash.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <000401c81bd0$c0080e00$40182a00$@net>
+Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Patrick McHardy <kaber@trash.net>
-Cc: "bdschuym@pandora.be" <bdschuym@telenet.be>, ron lai <ronlai@cs.stanford.edu>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Roman Ledovskiy <roman@usonyx.net>
+Cc: netfilter@vger.kernel.org
 
-Op wo, 07-11-2007 te 12:55 +0100, schreef Patrick McHardy:
-> Could you check the attached patch?
-
-Looks ok to me.
-
->  > Another solution I think is this:
-> > in br_nf_post_routing():
-> > change
-> > if (!nf_bridge)
-> > to
-> > if (!nf_bridge || !(nf_bridge->mask & BRNF_BRIDGED_DNAT))
+Roman Ledovskiy wrote:
+> Hi,
 > 
-> Wouldn't that break the regular case of packets forwarded
-> through a single bridge?
+> I have linux firewall in between internet and my network, diagram is
+> following:
+> 
+> Upstream
+>    |
+> Firewall server
+>    |
+> my network
+> 
+> "My network" hosts many different email/web servers.
+> 
+> Firewall server is not a bridge, it has 2 interfaces (one to upstream, one
+> to internal network)
+> Not much kernel configuration, kernel is default kernel from Centos5 x64
+> repo: 2.6.18-8.1.10.el5
+> 
+> On this server I get quite a lot of INVALID packets, about 0.07% of all and
+> I can't figure out why..
 
-Hmm, yes, we'd need to or it with BRNF_BRIDGED. I personally prefer
-something like that, leaving the call to nf_bridge_put when the skbuff
-is removed. But it's your call :)
+same thing here. most of the INVALID packets seem to have RST or FIN ACK
+set. So what I did, I increased the timeouts to setup a connection, and
+I increased the timeouts for connection closing. That helped a lot.
 
-cheers,
-Bart
+echo "240" >
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close_wait
+echo "60" > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close
+echo "240" > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_fin_wait
+echo "60" > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_last_ack
 
-
+regards,
+	Olivier
