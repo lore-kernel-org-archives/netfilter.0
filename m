@@ -1,86 +1,33 @@
-From: "Ron Lai" <ronlai@cs.stanford.edu>
-Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 2.6.22.6
-Date: Wed, 7 Nov 2007 15:54:44 -0800
-Message-ID: <000a01c82199$92441f30$bb0b10ac@FireEye.com>
-References: <001601c81ccc$682bb4a0$bb0b10ac@FireEye.com> <47303E9D.2050909@trash.net> <001e01c82077$b4d67610$6500a8c0@ronPc> <47306B0E.7050401@trash.net> <001801c8207c$00307b70$6500a8c0@ronPc> <47307498.70104@trash.net> <005301c820fc$35c63a10$6400a8c0@ronPc> <47318A3C.5070701@trash.net> <005b01c82151$4acac750$6500a8c0@ronPc> <473247F6.8090204@trash.net>
+From: "Hal Moroff" <hmoroff@teltone.com>
+Subject: question about connection tracking tcp timeout values
+Date: Wed, 7 Nov 2007 16:43:43 -0800
+Message-ID: <1C795E2FCD154E46979DDDD5374B5ABE01B99B7B@TTMAIL2.teltone.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Bart De Schuymer <bdschuym@pandora.be>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
--ip link list
-1: pether1: <BROADCAST,MULTICAST,UP,10000> mtu 1500 qdisc pfifo_fast qlen 
-1000
-    link/ether 00:d0:68:0d:f4:94 brd ff:ff:ff:ff:ff:ff
-2: pether2: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:d0:68:0d:f4:93 brd ff:ff:ff:ff:ff:ff
-3: pether6: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:e0:ed:07:f8:98 brd ff:ff:ff:ff:ff:ff
-4: pether5: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:e0:ed:07:f8:99 brd ff:ff:ff:ff:ff:ff
-5: pether4: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:e0:ed:07:f8:9a brd ff:ff:ff:ff:ff:ff
-6: pether3: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:e0:ed:07:f8:9b brd ff:ff:ff:ff:ff:ff
-7: lo: <LOOPBACK,UP,10000> mtu 16436 qdisc noqueue
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-12: ether1: <BROADCAST,MULTICAST,UP,10000> mtu 1500 qdisc noqueue
-    link/ether 00:d0:68:0d:f4:94 brd ff:ff:ff:ff:ff:ff
+I'm working on a router application.  The application monitors
+activity on the router, and in certain cases it must terminate
+a TCP connection.  It does this by watching sequence numbers
+and sending RST to both participants of the connection that it
+wants to cut.  I look in /proc/net/ip_conntrack for information
+about the connection (source port) before I cut it.
 
--ip addr show
-1: pether1: <BROADCAST,MULTICAST,UP,10000> mtu 1500 qdisc pfifo_fast qlen 
-1000
-    link/ether 00:d0:68:0d:f4:94 brd ff:ff:ff:ff:ff:ff
-2: pether2: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:d0:68:0d:f4:93 brd ff:ff:ff:ff:ff:ff
-3: pether6: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:e0:ed:07:f8:98 brd ff:ff:ff:ff:ff:ff
-4: pether5: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:e0:ed:07:f8:99 brd ff:ff:ff:ff:ff:ff
-5: pether4: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:e0:ed:07:f8:9a brd ff:ff:ff:ff:ff:ff
-6: pether3: <BROADCAST,MULTICAST> mtu 1500 qdisc pfifo_fast qlen 1000
-    link/ether 00:e0:ed:07:f8:9b brd ff:ff:ff:ff:ff:ff
-7: lo: <LOOPBACK,UP,10000> mtu 16436 qdisc noqueue
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 brd 127.255.255.255 scope host lo
-12: ether1: <BROADCAST,MULTICAST,UP,10000> mtu 1500 qdisc noqueue
-    link/ether 00:d0:68:0d:f4:94 brd ff:ff:ff:ff:ff:ff
-    inet 172.16.119.87/12 brd 172.31.255.255 scope global ether1
+My problem is that entries in ip_conntrack persist for a short
+time after I cut the connection.  If another connection from the
+same client is opened, and if I must cut that one as well then I
+may find both the new connection and the obsolete one in ip_conntrack.
+This causes my application fits, and I can't find any way to distinguish
+the two sessions.
 
--ip route show
-172.16.0.0/12 dev ether1  proto kernel  scope link  src 172.16.119.87
-default via 172.16.1.1 dev ether1  metric 1
+The solution I've found is to set ip_conntrack_tcp_timeout_wait_close
+and ip_conntrack_tcp_timeout_wait_close down to 1.
 
--brctl show
-bridge name     bridge id               STP enabled     interfaces
-ether1          8000.00d0680df494       no              pether1
-
------ Original Message ----- 
-From: "Patrick McHardy" <kaber@trash.net>
-To: "ron lai" <ronlai@cs.stanford.edu>
-Cc: <netfilter@vger.kernel.org>; <netfilter-devel@vger.kernel.org>; "Bart De 
-Schuymer" <bdschuym@pandora.be>
-Sent: Wednesday, November 07, 2007 3:19 PM
-Subject: Re: Fw: Problems with nf_nat_ftp.ko and nf_conntrack_ftp.ko in 
-2.6.22.6
-
-
-> ron lai wrote:
->> I am using a single bridge with one device.
->
-> In that case please post the full output of:
->
-> ip link list
-> ip addr show
-> ip route show
-> brctl show
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html 
-
+I have 2 questions:
+  1. what's the difference between these 2 parameters
+  2. is there going to be a downside to me setting these to 1?
