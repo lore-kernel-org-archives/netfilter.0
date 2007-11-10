@@ -1,55 +1,63 @@
-From: "Patrick Wong" <pawong@versasys.com>
-Subject: RE: NAT'ing multiple IPsec clients to the same destination IPSec server
-Date: Fri, 9 Nov 2007 18:19:21 -0500
-Message-ID: <6384F3D395F0A347A603C129CFD52DAA630CC1@exchange.versa.versasys.com>
-References: <1194648215.26369.17.camel@fe7pawong.versa.versasys.com> <4734E6D5.4050902@rtij.nl>
+From: "Bradley Kite" <bradley.kite@gmail.com>
+Subject: Re: NAT for multiple non-directly connected subnets
+Date: Sat, 10 Nov 2007 08:29:52 +0000
+Message-ID: <e97f32c10711100029n27c439a1g32ab5a7dbac6bbe7@mail.gmail.com>
+References: <e97f32c10711081353t5602912fr560386581cd39c7@mail.gmail.com>
+	 <1194559495.19115.105.camel@grateful.d.umn.edu>
+	 <e97f32c10711081417s19405b28p39cdf353ac2731cb@mail.gmail.com>
+	 <1194560755.19115.110.camel@grateful.d.umn.edu>
+	 <e97f32c10711081434p52358fbcs6a22619fba121bb9@mail.gmail.com>
+	 <e97f32c10711090243m277b0bfcyc9e0015780c210f5@mail.gmail.com>
+	 <e97f32c10711090742h45794a40me7207df8d0d98473@mail.gmail.com>
+	 <4734E861.3030106@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <4734E6D5.4050902@rtij.nl>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=M0GMbYHpxc4TiRN+M0pdbZbL08U7FGsjjiyJwHV2r6c=;
+        b=Xcarcq9r1icDMAiM4PXqQyGPEbJZic/i8FdatKCtqfnt5Gyvpd1Pvy2J1aCNS76rPlJR+WAR8fnPzMufybWcGTsra+1bI3rCEtHOm/rKapIAVMBIGS9wsjRM5R19sPa9Yvgr9sbTraltttU2p/2MHTfFuMCSJ1gkXOJEieGRjTA=
+In-Reply-To: <4734E861.3030106@plouf.fr.eu.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Martijn Lievaart <m@rtij.nl>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-
-That's the problem. I don't have control over UDP encapsulation because
-I don't control the server's end!
-
-
------Original Message-----
-From: Martijn Lievaart [mailto:m@rtij.nl] 
-Sent: Friday, November 09, 2007 6:02 PM
-To: Patrick Wong
-Cc: netfilter@vger.kernel.org
-Subject: Re: NAT'ing multiple IPsec clients to the same destination
-IPSec server
-
-Patrick Wong wrote:
-> Way back in 2.0.18 kernel, there was an IPsec connection tracking
-module
-> that would allow me to masquerade multiple IPsec clients (eg Cisco VPN
-> client) all going to the same remote IPsec server onto one external IP
-> address. This was done with IPsec connection module + ipmasqadm +
-> ipchains.
+On 09/11/2007, Pascal Hambourg <pascal.mail@plouf.fr.eu.org> wrote:
+> Hello,
 >
-> I have never been able to get the above to work on iptables. In the
-> early days of iptables, I also noticed there was no IPsec conntrack
-> module. 
+> Bradley Kite a =E9crit :
+> >
+> > the connection-tracking needs to be turned off on the bridges in or=
+der
+> > to make this work:
+> >
+> > iptables --table raw -A PREROUTING -i [BRIDGE] -j NOTRACK
 >
-> If I have only 1 external IP address on my firewall/gateway to SNAT
-to,
-> is there a way to support multiple IPSec clients on my internal LAN
-all
-> establishing IPSec connections to the same destination IPSec server?
->   
+> This may have undesirable side effects unless you add "-m physdev
+> --physdev-is-bridged" to ensure that this rule matches only bridged
+> traffic and not forwarded traffic received on the bridge interface.
+> If you just don't want Netfilter (including the conntrack and iptable=
+s)
+> to see the bridged IP traffic, you can do this by setting the sysctl
+> net.bridge.bridge-nf-call-iptables to 0.
+>
+> echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables
+> or
+> sysctl -w net.bridge.bridge-nf-call-iptables=3D0
+>
+> Add the following line in /etc/sysctl.conf to make it persistent acro=
+ss
+> reboots :
+>
+> net.bridge.bridge-nf-call-iptables=3D0
 
-Cisco VPN client supports UDP encapsulation. You have to allow it on the
+Ahh, great thats a much better way of doing it because I dont have to
+keep track of all my bridges and apply config to them seperatley.
 
-concentrator too, but if that is possible, it should work without 
-specific iptables rules.
+Many thanks for your help.
 
-M4
-
+--
+Brad.
