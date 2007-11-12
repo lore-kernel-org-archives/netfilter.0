@@ -1,35 +1,26 @@
-From: Stefano Sabatini <stefano.sabatini-lala@poste.it>
-Subject: Re: ipt_random status
-Date: Mon, 12 Nov 2007 15:34:09 +0100
-Message-ID: <20071112143409.GA20011@geppetto>
-References: <20071105150734.GA26774@santefisi.caos.org> <472F405D.9030803@plouf.fr.eu.org> <20071105093255.GA10259@santefisi.caos.org> <4730877C.9080102@plouf.fr.eu.org> <20071110171324.GC8300@geppetto> <4736E021.2020001@plouf.fr.eu.org> <20071111113205.GA13093@geppetto>
+From: Diego Alencar Alves de Lima <listas@diegolima.org>
+Subject: Can't use statistic target on iptables
+Date: Mon, 12 Nov 2007 12:23:59 -0200
+Message-ID: <1194877442.16101.13.camel@ws-diego.consuldata.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20071111113205.GA13093@geppetto>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter users mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter mailing list <netfilter@vger.kernel.org>
 
-On date Sunday 2007-11-11 12:32:05 +0100, Stefano Sabatini wrote:
-> On date Sunday 2007-11-11 11:57:37 +0100, Pascal Hambourg wrote:
-> > Stefano Sabatini a =E9crit :
-> >> On date Tuesday 2007-11-06 16:25:48 +0100, Pascal Hambourg wrote:
-> >>>
-> >>> Patches are welcome.
-> >> Here it is.
-> >> Can someone forward it to the devels?
-> >
-> > Sorry, I forgot to mention that patches must be submitted to the=20
-> > netfilter-devel list.
->=20
-> Ugh, I was trying to avoid that...
+Greetings,
 
-It got applied today :-).
+I am trying to use the "random" and "nth" methods on iptables. I have
+already compiled and loaded the xt_statistic kernel module but I can't
+figure out how to compile the statistic iptables object. I have compiled
+from v1.3.8 source and I get the following message:
 
-Best regards.
---=20
-Stefano Sabatini
-Linux user number 337176 (see http://counter.li.org)
+iptables v1.3.8: Couldn't load match
+`statistic':/usr/local/lib/iptables/libipt_statistic.so: cannot open
+shared object file: No such file or directory
+
+Do I have do add any parameter when I compile iptables to enable
+statistic?
+
