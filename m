@@ -1,49 +1,43 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Direct Internet Connection For Client
-Date: Tue, 13 Nov 2007 09:13:14 +0100
-Message-ID: <000901c825cd$09c13700$1d43a500$@info>
-References: <4739525D.70205@liqwidkrystal.com>
+From: Stefano Sabatini <stefano.sabatini-lala@poste.it>
+Subject: Re: Can't use statistic target on iptables
+Date: Tue, 13 Nov 2007 09:38:28 +0100
+Message-ID: <20071113083828.GA5064@geppetto>
+References: <1194877442.16101.13.camel@ws-diego.consuldata.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4739525D.70205@liqwidkrystal.com>
-Content-Language: nl
+Content-Disposition: inline
+In-Reply-To: <1194877442.16101.13.camel@ws-diego.consuldata.lan>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Tarak Ranjan' <tarak.ranjan@liqwidkrystal.com>, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@vger.kernel.org>
 
-> Hi list,
->            i have installed proxy and gateway in the same system.
-> How
-> can  stop "Direct Connection" in web browser for internet for the
-> clients(proxy). i have redirect 80 port to 8080. then also direct
-> connection is happening from the clients. what sort of iptables
-> rules
-> i've to implement in my gateway firewall , that every time users
-> should
-> pass through proxy(8080). No Direct Connection........
+On date Monday 2007-11-12 12:23:59 -0200, Diego Alencar Alves de Lima wrote:
+> Greetings,
+> 
+> I am trying to use the "random" and "nth" methods on iptables. I have
+> already compiled and loaded the xt_statistic kernel module but I can't
+> figure out how to compile the statistic iptables object. I have compiled
+> from v1.3.8 source and I get the following message:
+> 
+> iptables v1.3.8: Couldn't load match
+> `statistic':/usr/local/lib/iptables/libipt_statistic.so: cannot open
+> shared object file: No such file or directory
+> 
+> Do I have do add any parameter when I compile iptables to enable
+> statistic?
 
-When your clients can still connect when you redirect port 80 to 8080
-then your redirection doesn't work.
-This may be because packets hit another rule before the redirection. Or
-maybe you are redirecting to localhost which, (last time I tried) is not
-possible.
+Hi Diego,
 
-If I'm correct you've posted this question before and when I looked
-through that script I didn't have much trust in it. If you really want
-good advice, post your ruleset (and perhaps routing table). Otherwise,
-simply blocking internet access is done like this:
+I got the same problem with Ubuntu, see:
+https://bugs.launchpad.net/ubuntu/+source/iptables/+bug/141436
 
-$ipt -A FORWARD -s <net_lan> -p tcp --dport 80 \
-  -j REJECT --reject-with tcp-reset
+Try instead the last SVN version, it should work just fine (if you
+already compiled from source, did you installed it with make
+install?).
 
-The actual place where you want to insert the rule depends on the script
-you're currently using. This will do nothing if packets are already
-accepted by a previous rule.
-
-
-Grts,
-Rob
-
-
+HTH, regards.
+-- 
+Stefano Sabatini
+Linux user number 337176 (see http://counter.li.org)
