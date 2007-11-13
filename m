@@ -1,26 +1,33 @@
-From: Diego Alencar Alves de Lima <listas@diegolima.org>
-Subject: Can't use statistic target on iptables
-Date: Mon, 12 Nov 2007 12:23:59 -0200
-Message-ID: <1194877442.16101.13.camel@ws-diego.consuldata.lan>
+From: Tarak Ranjan <tarak.ranjan@liqwidkrystal.com>
+Subject: Direct Internet Connection For Client
+Date: Tue, 13 Nov 2007 12:59:33 +0530
+Message-ID: <4739525D.70205@liqwidkrystal.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Greetings,
+Hi list,
+           i have installed proxy and gateway in the same system. How 
+can  stop "Direct Connection" in web browser for internet for the 
+clients(proxy). i have redirect 80 port to 8080. then also direct 
+connection is happening from the clients. what sort of iptables rules 
+i've to implement in my gateway firewall , that every time users should 
+pass through proxy(8080). No Direct Connection........
 
-I am trying to use the "random" and "nth" methods on iptables. I have
-already compiled and loaded the xt_statistic kernel module but I can't
-figure out how to compile the statistic iptables object. I have compiled
-from v1.3.8 source and I get the following message:
 
-iptables v1.3.8: Couldn't load match
-`statistic':/usr/local/lib/iptables/libipt_statistic.so: cannot open
-shared object file: No such file or directory
 
-Do I have do add any parameter when I compile iptables to enable
-statistic?
+-- 
+Thanks & Regards,
+______________
+Tarak Ranjan
+E: tarak.ranjan@liqwidkrystal.com
+IM: reachtarak@hotmail.com
+
+Online Learning|Certification|Learning Solutions :
+www.liqwidkrystal.com
+
 
