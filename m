@@ -1,103 +1,61 @@
-From: Aiko Barz <aiko@deepco.de>
-Subject: INVALID FIN/ACK packets
-Date: Wed, 14 Nov 2007 11:02:26 +0100
-Message-ID: <20071114100226.GA29362@thorin.admin.heise.de>
+From: Andreas Jellinghaus <aj@ciphirelabs.com>
+Subject: internal packets to SNAT ip looped back - how to handle them?
+Date: Wed, 14 Nov 2007 11:32:07 +0100
+Message-ID: <fhej0g$ofh$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: aiko@deepco.de
 
+Hi.
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm starting with the usual example: router with masquerading - hide
+the internal 192.168.*.* net and rewrite the source with the internet ip of
+the linux router/NAT.
 
-Hi,
+if applications use STUN to find out what there source ip:port is NAT'ed to,
+they can use this to allow other people to connect to them. so such a setup
+works even fine if both sides have such a setup
+Client A -> Linux A -> Internet -> Linux B -> Client B
 
-like others, I'm facing some conntrack problems. A typical logentry
-looks like this:
+and the route back works too. given of course both Clients used STUN to find
+out what their local port:IP will be NAT'ed to and traded that information
+using a third party server.
 
-> Nov 14 10:46:22 lain fire: INVALID IN=3Deth0 OUT=3D MAC=3D00:e0:81:5c:f7:=
-d9:00:02:85:04:0e:c0:08:00 SRC=3Da.b.c.d DST=3D88.198.253.172 LEN=3D40 TOS=
-=3D0x00 PREC=3D0x00 TTL=3D57 ID=3D47775 DF PROTO=3DTCP SPT=3D49184 DPT=3D99=
-3 WINDOW=3D65535 RES=3D0x00 ACK RST URGP=3D0
-> Nov 14 10:46:22 lain fire: INPUT IN=3Deth0 OUT=3D MAC=3D00:e0:81:5c:f7:d9=
-:00:02:85:04:0e:c0:08:00 SRC=3Da.b.c.d DST=3D88.198.253.172 LEN=3D40 TOS=3D=
-0x00 PREC=3D0x00 TTL=3D57 ID=3D47775 DF PROTO=3DTCP SPT=3D49184 DPT=3D993 W=
-INDOW=3D65535 RES=3D0x00 ACK RST URGP=3D0=20
-> Nov 14 10:46:22 lain fire: OUTPUT IN=3D OUT=3Deth0 SRC=3D88.198.253.172 D=
-ST=3Da.b.c.d LEN=3D68 TOS=3D0x00 PREC=3D0xC0 TTL=3D64 ID=3D13872 PROTO=3DIC=
-MP TYPE=3D3 CODE=3D13 [SRC=3Da.b.c.d DST=3D88.198.253.172 LEN=3D40 TOS=3D0x=
-00 PREC=3D0x00 TTL=3D57 ID=3D47775 DF PROTO=3DTCP SPT=3D49184 DPT=3D993 WIN=
-DOW=3D65535 RES=3D0x00 ACK RST URGP=3D0 ]
+Now the problem I'm having is this: I want to simulate the above, but in my
+case both clients are behind the same linux box.
 
-lain is an IMAP server. This is not happening in any FORWARDING chain.
-I have one more server with this same kind of problem. "ACK RST" and
-"ACK FIN" packets are involved.
+linux knows this:
+        client A:port A         is nat'ed to internet:port A
+        client B:port B         is nat'ed to internet:port B
+        (port A could become A' and B could become B', but lets
+         say we are lucky and it was mapped like this...)
 
-> $ uname -a
-> Linux lain 2.6.22-gentoo-r8-lain #2 SMP Wed Oct 24 13:48:14 CEST 2007 x86=
-_64 AMD Athlon(tm) 64 X2 Dual Core Processor 3800+ AuthenticAMD GNU/Linux
+now client A sends a packet from client A:port A to internet:port B.
+How can I configure netfilter so this will end up in a packet back
+to the local network interface with source Internet:port A and destination
+client B:port B?
 
-> sysctl -a| grep -i conntrack
-> net.netfilter.nf_conntrack_generic_timeout =3D 600
-> net.netfilter.nf_conntrack_max =3D 65536
-> net.netfilter.nf_conntrack_count =3D 127
-> net.netfilter.nf_conntrack_buckets =3D 8192
-> net.netfilter.nf_conntrack_checksum =3D 1
-> net.netfilter.nf_conntrack_log_invalid =3D 1
-> net.netfilter.nf_conntrack_tcp_timeout_syn_sent =3D 120
-> net.netfilter.nf_conntrack_tcp_timeout_syn_recv =3D 60
-> net.netfilter.nf_conntrack_tcp_timeout_established =3D 432000
-> net.netfilter.nf_conntrack_tcp_timeout_fin_wait =3D 120
-> net.netfilter.nf_conntrack_tcp_timeout_close_wait =3D 60
-> net.netfilter.nf_conntrack_tcp_timeout_last_ack =3D 30
-> net.netfilter.nf_conntrack_tcp_timeout_time_wait =3D 120
-> net.netfilter.nf_conntrack_tcp_timeout_close =3D 10
-> net.netfilter.nf_conntrack_tcp_timeout_max_retrans =3D 300
-> net.netfilter.nf_conntrack_tcp_loose =3D 1
-> net.netfilter.nf_conntrack_tcp_be_liberal =3D 0
-> net.netfilter.nf_conntrack_tcp_max_retrans =3D 3
-> net.netfilter.nf_conntrack_udp_timeout =3D 30
-> net.netfilter.nf_conntrack_udp_timeout_stream =3D 180
-> net.netfilter.nf_conntrack_icmp_timeout =3D 30
-> net.nf_conntrack_max =3D 65536
+iptables -t nat -A POSTROUTING -o internet -j SNAT --to in.ter.net.ip
+isn't enought, I need a rule with "-d in.ter.net.ip" too?
 
-The rules are basically like the following set:
+but more important: when is the reverse step to SNAT done?
+the transformation of "to linux B" to "to client B" on "linux B"
+in the first example? isn't that done before routing takes place?
 
-> $fw -A INPUT -m state --state INVALID -j LOG --log-prefix "fire: INVALID "
-> $fw -A INPUT  -i $dev -m state --state ESTABLISHED,RELATED -s $world -d $=
-myip -j ACCEPT
-> $fw -A OUTPUT -o $dev -m state --state ESTABLISHED,RELATED -d $world -s $=
-myip -j ACCEPT
-> $fw -A INPUT -i $dev -p tcp -m tcp -m state --state NEW --syn -s $world -=
--sport 1024: -d $myip --dport 993 -j ACCEPT
+you see, I'm a bit confused. I want a packet to be internal - incoming
+on the local lan interface, leaving again on the local lan interface -
+but the packet should be handled as if it left on the internet interface
+(SNAT) and was received again from internet (reverse part of SNAT).
 
-Those rules are working most of the time. But there are quite a number
-of invalid connections...
+Is there any way how I can set up NAT rules for this? 
 
-Bye,
-    Aiko
---=20
-:wq
+and how would I need to firewall such a packet?
+allow all packets from Client A to the local in.ter.net.ip?
+what will be the outgoing interface at that moment?
 
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+Regards, Andreas
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFHOseyemsPkv+IVCERAjHyAJ460GkzXlA0zUX9XjtA5D9xdnLsXwCaA3tl
-RcI1WnRBJxLOjBEkFro7NP0=
-=KsF3
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
