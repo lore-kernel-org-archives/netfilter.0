@@ -1,38 +1,23 @@
-From: Olivier Sessink <lists@olivier.pk.wau.nl>
-Subject: Re: Can someone guide me on "kernel: nf_conntrack: table full, dropping
- packet"?
-Date: Wed, 14 Nov 2007 23:39:58 +0100
-Message-ID: <473B793E.3070308@olivier.pk.wau.nl>
-References: <e3b0905d0711130931w4991e196w32567cbfc0abc214@mail.gmail.com> <e3b0905d0711132229j7063b35bs3cbab071fceca0f@mail.gmail.com>
+From: Brian S Julin <BJulin@clarku.edu>
+Subject: RE: Do I need ipt_ROUTE to do this?
+Date: Wed, 14 Nov 2007 18:45:08 -0500
+Message-ID: <5A630F46702DD1498FFD48394B4A664C27DD5914@john.ad.clarku.edu>
+References: <5A630F46702DD1498FFD48394B4A664C27DD5909@john.ad.clarku.edu>,<473B23AE.9010106@riverviewtech.net>,<5A630F46702DD1498FFD48394B4A664C27DD590E@john.ad.clarku.edu>
+ <5A630F46702DD1498FFD48394B4A664C27DD5910@john.ad.clarku.edu>,<473B51B7.70200@riverviewtech.net>,<5A630F46702DD1498FFD48394B4A664C27DD5913@john.ad.clarku.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <e3b0905d0711132229j7063b35bs3cbab071fceca0f@mail.gmail.com>
+In-Reply-To: <5A630F46702DD1498FFD48394B4A664C27DD5913@john.ad.clarku.edu>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Goke Aruna <goksie@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: Brian S Julin <BJulin@clarku.edu>, Grant Taylor <gtaylor@riverviewtech.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Goke Aruna wrote:
-> Hi all,
-> 
-> I am running linux bridge using iptables version 1.3.5 on FC5 with
-> kernel 2.6.20-1.2320.fc5smp
-> 
-> However, after running it for almost 3 months, I just discovered the
-> error below in my message log and all the traffic will drop and later
-> comes up again.
 
-some ideas:
+I think I may have found a solution -- tc actions:
 
-check if ASSURED connections in conntrack (/proc/net/ip*something*) are
-also shown in netstat. If there is a large difference you have clients
-that drop dead in the middle of a connection. You could decrease the
-timeout for those connections (/proc/sys/net/ipv4/netfilter/*something*)
+http://svn.planet-lab.org/browser/iproute2/branches/fedora/doc/actions/mirred-usage?rev=2820
 
-if the number of connections is simply very high, you can increase the
-conntract table size (somewhere in the manual how to do that).
+...though I would still have to figure out how to assign a dst MAC address...
 
-regards,
-	Olivier
