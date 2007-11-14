@@ -1,45 +1,38 @@
 From: Olivier Sessink <lists@olivier.pk.wau.nl>
-Subject: Re: INVALID FIN/ACK packets
-Date: Wed, 14 Nov 2007 23:35:27 +0100
-Message-ID: <473B782F.2030907@olivier.pk.wau.nl>
-References: <20071114100226.GA29362@thorin.admin.heise.de>
+Subject: Re: Can someone guide me on "kernel: nf_conntrack: table full, dropping
+ packet"?
+Date: Wed, 14 Nov 2007 23:39:58 +0100
+Message-ID: <473B793E.3070308@olivier.pk.wau.nl>
+References: <e3b0905d0711130931w4991e196w32567cbfc0abc214@mail.gmail.com> <e3b0905d0711132229j7063b35bs3cbab071fceca0f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20071114100226.GA29362@thorin.admin.heise.de>
+In-Reply-To: <e3b0905d0711132229j7063b35bs3cbab071fceca0f@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Aiko Barz <aiko@deepco.de>, netfilter@vger.kernel.org
+To: Goke Aruna <goksie@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Aiko Barz wrote:
-> Hi,
+Goke Aruna wrote:
+> Hi all,
 > 
-> like others, I'm facing some conntrack problems. A typical logentry
-> looks like this:
+> I am running linux bridge using iptables version 1.3.5 on FC5 with
+> kernel 2.6.20-1.2320.fc5smp
 > 
->> Nov 14 10:46:22 lain fire: INVALID IN=eth0 OUT= MAC=00:e0:81:5c:f7:d9:00:02:85:04:0e:c0:08:00 SRC=a.b.c.d DST=88.198.253.172 LEN=40 TOS=0x00 PREC=0x00 TTL=57 ID=47775 DF PROTO=TCP SPT=49184 DPT=993 WINDOW=65535 RES=0x00 ACK RST URGP=0
->> Nov 14 10:46:22 lain fire: INPUT IN=eth0 OUT= MAC=00:e0:81:5c:f7:d9:00:02:85:04:0e:c0:08:00 SRC=a.b.c.d DST=88.198.253.172 LEN=40 TOS=0x00 PREC=0x00 TTL=57 ID=47775 DF PROTO=TCP SPT=49184 DPT=993 WINDOW=65535 RES=0x00 ACK RST URGP=0 
->> Nov 14 10:46:22 lain fire: OUTPUT IN= OUT=eth0 SRC=88.198.253.172 DST=a.b.c.d LEN=68 TOS=0x00 PREC=0xC0 TTL=64 ID=13872 PROTO=ICMP TYPE=3 CODE=13 [SRC=a.b.c.d DST=88.198.253.172 LEN=40 TOS=0x00 PREC=0x00 TTL=57 ID=47775 DF PROTO=TCP SPT=49184 DPT=993 WINDOW=65535 RES=0x00 ACK RST URGP=0 ]
-> 
-> lain is an IMAP server. This is not happening in any FORWARDING chain.
-> I have one more server with this same kind of problem. "ACK RST" and
-> "ACK FIN" packets are involved.
+> However, after running it for almost 3 months, I just discovered the
+> error below in my message log and all the traffic will drop and later
+> comes up again.
 
-same problem here. Even on a local very high speed (gigabit) network I
-see INVALID packages when connections are closed (especially when the
-server load is high). I see them between blades in the same bladecenter.
+some ideas:
 
-I think that the timeouts are too strict. Most of the problems are
-solved (for me) when the timeouts are increased:
+check if ASSURED connections in conntrack (/proc/net/ip*something*) are
+also shown in netstat. If there is a large difference you have clients
+that drop dead in the middle of a connection. You could decrease the
+timeout for those connections (/proc/sys/net/ipv4/netfilter/*something*)
 
-echo "240" >
-/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close_wait
-echo "60" > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close
-echo "240" > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_fin_wait
-echo "60" > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_last_ack
+if the number of connections is simply very high, you can increase the
+conntract table size (somewhere in the manual how to do that).
 
-perhaps one of the developers can elaborate why these timeouts are this
-strict by default?
-
-Olivier
+regards,
+	Olivier
