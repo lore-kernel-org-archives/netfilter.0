@@ -1,77 +1,73 @@
-From: Brian S Julin <BJulin@clarku.edu>
-Subject: Do I need ipt_ROUTE to do this?
-Date: Wed, 14 Nov 2007 10:55:16 -0500
-Message-ID: <5A630F46702DD1498FFD48394B4A664C27DD5909@john.ad.clarku.edu>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Do I need ipt_ROUTE to do this?
+Date: Wed, 14 Nov 2007 10:34:54 -0600
+Message-ID: <473B23AE.9010106@riverviewtech.net>
+References: <5A630F46702DD1498FFD48394B4A664C27DD5909@john.ad.clarku.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+In-Reply-To: <5A630F46702DD1498FFD48394B4A664C27DD5909@john.ad.clarku.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
+
+On 11/14/07 09:55, Brian S Julin wrote:
+> I need to determine A) if the below solution is workable and B) if 
+> there is any way to do the following without using ipt_ROUTE, what 
+> seems to be removed from most distros now due to build problems, and 
+> is still marked experimental.
+> 
+> Objective: We have two ISPs sending routes in via BGP, however both 
+> ISPs traffic is consolidated on a single link.  There is no vlan tag, 
+> MPLS wrap, or any other way to distinguish the traffic coming in, 
+> only the BGP table.  We need to separate this traffic onto two 
+> physical links in both directions, so that inline proprietary 
+> stateful packet shapers can work on each link independently.
+
+What type of physical connection do you have leaving your router that 
+has both upstream providers going out the same physical connection?  Are 
+you using multiple providers over the same ethernet connection?  (I'm 
+going to presume yes for the sake of discussion.)
+
+<snip>
+
+Sorry, I can't comment on the BGP as I have no experience working with it.
+
+> Can anyone think of a way to do this without using -j ROUTE or gluing 
+> things together with scripts?  This has to be a "stable" solution. 
+> Not opposed to using ebtables/bridging, either way is fine.
+
+I'm glad that you mentioned EBTables and bridging because that is the 
+first place that I was going to go.  This statement further makes me 
+believe that you are dealing with an ethernet solution.  If this is 
+indeed the case I'm betting that each provider connects to the same 
+ethernet segment out side of your control, thus you can not put your 
+load management equipment upstream before the traffic is aggregated. 
+However if this is an ethernet connection, that means that you should 
+have the MAC address of the router(s) that are putting the ethernet 
+frames on the segment.
+
+If you have the MAC addresses, you could easily set up a Linux box to 
+divide the traffic based on source MAC address.  Have one interface 
+pointing up stream, one pointing downstream to one piece of equipment, 
+and one pointing downstream to the other piece of equipment.
+
+So long as the upstream MAC addresses do not change on you (they should 
+not, or it should be predictable) you can direct the traffic one way or 
+the other.  If for some reason your upstream provider has multiple MAC 
+addresses, you can use multiple as a key to send one way or the other.
+
+I'm not quite sure what the proper EBTables config would be, but I 
+suspect that it would be something along the lines of allowing traffic 
+to come in the upstream interface and out one downstream interface while 
+blocking traffic out the other downstream interface for provider and 
+switch the downstream interfaces for the other provider.  You would 
+probably want to block or seriously limit the flow of traffic from one 
+down stream interface to the other too.  Naturally you will need to 
+allow traffic that comes in the downstream interfaces to go out the 
+upstream interface.
 
 
-Greetings,
 
-I need to determine A) if the below solution is workable and B) if
-there is any way to do the following without using ipt_ROUTE, what
-seems to be removed from most distros now due to build problems, and
-is still marked experimental.
-
-Objective: We have two ISPs sending routes in via BGP, however both
-ISPs traffic is consolidated on a single link.  There is no vlan tag, MPLS
-wrap, or any other way to distinguish the traffic coming in, only the
-BGP table.  We need to separate this traffic onto two physical links
-in both directions, so that inline proprietary stateful packet shapers
-can work on each link independently.
-
-This is no problem when sending traffic to the ISPs.  Normal BGP
-routing can take care of that.
-
-However it is proving impossible even with Cisco equipment to do
-policy routing based on a dynamic BGP route table.  The best we can
-get from their gear is to apply tos markings through "QoS Policy
-Propagation Via BGP."  We need to flip the BGP tables backwards and
-choose the route into our network based on the reverse path of the
-source addresses, and have this behavior update promptly when
-BGP tables are updated (hopefully promptly enough that packets
-are rarely dropped due to RPF checks and are not held up very long
-during table updates.)
-
-If I read things right, we could put in a linux box running
-quagga/bgpd and tell zebra to install routes for one ISP into a specific
-table.  Then, using iproute2's rule command we can assign a realm to
-anything routed through this table.  Again, if I read this right,
-iproute2 will assign two realms to any packet matching the BGP table
--- one based on the destination and one based on the source.
-
-Since realm assignment happens after routing, we cannot, however,
-(again if I am reading things right) use iproute2 policy routing on
-the packets heading into our network at this point, but we could match
-on the realm in the mangle table and send them via -j ROUTE.
-
-Can anyone think of a way to do this without using -j ROUTE or
-gluing things together with scripts?  This has to be a "stable"
-solution.  Not opposed to using ebtables/bridging, either way
-is fine.
-
-(A more elegant solution than ipt_ROUTE might be a "match" that
-can test a packet's source or destination against a kernel route
-table in the INPUT or FORWARD/PREROUTING stage, which would
-allow a mark to be applied earlier, and iproute2 to do the rest,
-but if there is one I've managed to miss noticing it.)
-
-As an aside, the build problems with ipt_ROUTE seem to have zapped
-a good number of people who were using it when it was yanked from
-distros.  In most cases this seems to be a good thing in that
-most of these folks could do what they wanted to do with iproute2.
-However, if ipt_ROUTE is still something that netfilter wants to
-maintain, distro package maintainers now seem to be under the
-misimpression that it is deprecated.
-
-Thanks a bunch,
-
---
-Brian
-
+Grant. . . .
