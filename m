@@ -1,28 +1,57 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Matching by packet connection
-Date: Fri, 16 Nov 2007 10:31:38 +0100
-Message-ID: <473D637A.3040708@plouf.fr.eu.org>
-References: <d95317090711160041n20025e6fldce7387cef82a115@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_conntrack 0.0.82 release
+Date: Fri, 16 Nov 2007 14:02:17 +0100
+Message-ID: <473D94D9.2050701@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed;
+ boundary="------------060301030308010207010401"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d95317090711160041n20025e6fldce7387cef82a115@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+To: netfilter-announce@lists.netfilter.org, netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-Hello,
+This is a multi-part message in MIME format.
+--------------060301030308010207010401
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Gilad Benjamini a =E9crit :
-> Is there a way to match a packet against a connection's direction ?
->=20
-> e.g. apply this rule
-> iptables -A chain --destination mymachine -m state --state ESTABLISHE=
-D
-> -j another_chain
-> only to packets belonging to CONNECTIONS with destination mymachine
+Hi!
 
-I think the 'conntrack' match is what you need.
+The netfilter project proudly presents libnetfilter_conntrack-0.0.82
 
--m conntrack --ctorigdst <mymachine> --ctstate ESTABLISHED
+libnetfilter_conntrack is a userspace library providing a programming
+interface (API) to the in-kernel connection tracking state table.
+
+This release includes TCP flags support and one bugfix for big-endian
+platforms. See ChangeLog for more details. Upgrade is recommended.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnetfilter_conntrack/
+ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
+
+Pablo (on behalf of the Netfilter Project)
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
+
+--------------060301030308010207010401
+Content-Type: text/plain;
+ name="ChangeLog"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog"
+
+libnetfilter_conntrack 0.0.82
+======================================================================
+
+Changes from 0.0.81:
+
+- add support for TCP flags
+	[Pablo Neira Ayuso]
+
+- Fix big-endian issues with getters
+	[Philip Craig]
+
+--------------060301030308010207010401--
