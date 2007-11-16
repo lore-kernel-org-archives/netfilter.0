@@ -1,75 +1,26 @@
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: Re: libnetfilter conntrack: problem in nfct_callback_register
-Date: Thu, 15 Nov 2007 13:26:56 -0600
-Message-ID: <1195154816.19115.289.camel@grateful.d.umn.edu>
-References: <200711151235.52842.julien@linuxwall.info>
-	 <1195150285.3480.5.camel@localhost>
-	 <200711151416.37081.julien@linuxwall.info>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: Matching by packet connection
+Date: Fri, 16 Nov 2007 00:41:46 -0800
+Message-ID: <d95317090711160041n20025e6fldce7387cef82a115@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-/p7unt6fis+bLYz9GqWb"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200711151416.37081.julien@linuxwall.info>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=wXboPh/7ughmo3gAY8HfWAWztmQecUEcgpPWVaVAI2o=;
+        b=It3GdXFDw4y6tqcyQpE27Pw134kC4TFOnVOu5VbOYPglD+of2Rr66n2Kw67KuzVwhSOrjO44xhq9HgauIjpUadKLEV9Y+WsvcysWvSpUI5yEOxEL/F27t4BNomY2qybBVN0DR8LrSzIgN7LLdN4G5ASaPVkn9ZYx/x86f0CWxQg=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-To: Julien VEHENT <julien@linuxwall.info>
-Cc: Eric Leblond <eric@inl.fr>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Is there a way to match a packet against a connection's direction ?
 
---=-/p7unt6fis+bLYz9GqWb
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+e.g. apply this rule
+iptables -A chain --destination mymachine -m state --state ESTABLISHED
+-j another_chain
+only to packets belonging to CONNECTIONS with destination mymachine
 
-
-On Thu, 2007-11-15 at 14:16 -0500, Julien VEHENT wrote:
-> On Thursday 15 November 2007 01:11:25 pm Eric Leblond wrote:
-> > Hi,
-> >
-> > > I'm using the following libs on Debian Lenny:
-> > > >libnetfilter-conntrack-dev    0.0.50-1
-> > > >libnetfilter-conntrack1       0.0.50-1
-> >
-> > First of all, please update the libs. A major rewrite has occur and lot=
-s
-> > of bug have been fixed. Please also nota that the API has changed.
-> >
-> > Last version can be downloaded from:
-> > http://netfilter.org/projects/libnetfilter_conntrack/downloads.html
->=20
-> Hi,
->=20
-> I'm probably asking too much, but do you have any .deb version of the=20
-> library ?
-> I would rather prefer to keep the integrity of my system.
-
-It looks like the packages are getting close to being in 'sid', however
-as of right now, are not. Once they are, you can use apt pinning to pull
-them in, or wait for them to migrate from 'sid' to 'lenny'.
-
-Otherwise, you could build from source and install to /usr/local/, which
-is what I would do.
-
---=20
-Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
-University of Minnesota Duluth
-Information Technology Systems & Services
-PGP key 1024D/84E22DA2 2005-11-07
-Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
-
-He is not a fool who gives up what he cannot keep to gain what he cannot
-lose.
--Jim Elliot
-
---=-/p7unt6fis+bLYz9GqWb
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBHPJ2AU+eIf4TiLaIRAjqVAKCOiN4mtUT/4L5IykTDPvYeqa0MUQCgrGbn
-ioSScqw1ViZqnGC7/hxtPc0=
-=z57t
------END PGP SIGNATURE-----
-
---=-/p7unt6fis+bLYz9GqWb--
-
+conntrack definitely knows has this information.
