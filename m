@@ -1,30 +1,19 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How can I flush  mangle, filter  table with  conntrack tools
- ?
-Date: Sat, 17 Nov 2007 16:16:05 +0100
-Message-ID: <473F05B5.3050100@plouf.fr.eu.org>
-References: <473EEDD5.3000600@zensoluciones.com>
+From: LarryCR <larka51@aol.com>
+Subject: Looking for descriptions of modules
+Date: Sat, 17 Nov 2007 16:30:57 -0700
+Message-ID: <473F79B1.2040103@aol.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <473EEDD5.3000600@zensoluciones.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
-
-S=E9bastien CRAMATTE a =E9crit :
->=20
-> How can I flush  mangle,filter  table with  conntrack tools ?
-
-Err... why the hell would you want to flush iptables tables with=20
-conntrack tools when iptables does the job just fine ?
-
-
-> #conntrack -F mangle
-> conntrack v1.00beta2: unknown type `mangle'
-
-'conntrack -F' flushes the conntrack or expect table, not iptables tabl=
-es.
+Hello I am looking for a place or places where I can get descriptions of 
+all the modules used by iptables.  There seems to be little or no info 
+on this subject.  I am looking to find the purpose, scope and definition 
+of each of the modules.  I am planning on using this for self 
+understanding and to put up a site that makes this info available to 
+all.  Any help in this matter will be greatly appreciated.
+larka
