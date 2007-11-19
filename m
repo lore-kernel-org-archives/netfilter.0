@@ -1,41 +1,23 @@
-From: Diego Alencar Alves de Lima <listas@diegolima.org>
-Subject: Re: Can't use statistic target on iptables
-Date: Mon, 19 Nov 2007 09:15:05 -0200
-Message-ID: <1195470908.24616.6.camel@ws-diego.consuldata.lan>
-References: <1194877442.16101.13.camel@ws-diego.consuldata.lan>
-	 <20071113083828.GA5064@geppetto>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: Kernel memory consumption
+Date: Mon, 19 Nov 2007 14:39:22 -0800
+Message-ID: <d95317090711191439i5fbf1b7aycde76a2b1d2fa897@mail.gmail.com>
+References: <d95317090711191437v7b24d0fdi5e1af93096677db8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20071113083828.GA5064@geppetto>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=9TtQsW31c5q7ir8KOmGFYjCVKAqEwVWZzBRCWWeHjQ8=;
+        b=Inew5NaMJLZdJ9HjmVJ14hUBvpvd3nmvxyoRXBLZMFAh4AUmZH76GXNFf5bw+3/Dm4ikIACkPFXbkVPxcda3+te2YBx+lHxukuMBZihCa9lUdd34X67YEeC2vioUTcQ9249V684AjvJbF63lhiN3zNMu7dFuzUXDIPuIzdwuTE8=
+In-Reply-To: <d95317090711191437v7b24d0fdi5e1af93096677db8@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Stefano Sabatini <stefano.sabatini-lala@poste.it>
-Cc: netfilter mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Greetings,
-
-> I got the same problem with Ubuntu, see:
-> https://bugs.launchpad.net/ubuntu/+source/iptables/+bug/141436
-> 
-> Try instead the last SVN version, it should work just fine (if you
-> already compiled from source, did you installed it with make
-> install?).
-
-I was indeed having that problem with Ubuntu. I didn't try the svn
-version, but the lastest stable didn't compile libipt_statistic.so. For
-now I am switching to Debian as it seems to work properly. 
-
-Thank you.
-
--  
-Diego Alencar Alves de Lima
-Linux User #405564
-http://www.diegolima.org
-
-
-
-> 
-> HTH, regards.
-
+How much kernel memory is consumed as a result of a new iptables rule ?
+A new chain ?
+Any pointers would be appreciated.
