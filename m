@@ -1,48 +1,53 @@
-From: "Eljas Alakulppi" <Buzer@buzer.net>
-Subject: Re: Is it possible to do bonding/connection teaming with non-ethernet devices?
-Date: Wed, 21 Nov 2007 17:14:06 +0200
-Message-ID: <op.t15dxsbprtqp7s@hagumi.home>
-References: <4744413F.1000700@aitel.hist.no>
+From: Tiago <tiago.deb@gmail.com>
+Subject: Re: How to register DROP rules in the kernel mode
+Date: Wed, 21 Nov 2007 17:32:51 +0000
+Message-ID: <9c1c9eb80711210932w14f5d04vd6d9e262bb1e922c@mail.gmail.com>
+References: <2156.211.111.195.128.1195629252.squirrel@211.111.194.2>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4744413F.1000700@aitel.hist.no>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=8BobaenAPxgOodgpF4yZ/R20saVVU1Ub41vNu14aeBM=;
+        b=tlvVkHhxdkVJzox9cVygPyEZsErnj3PNFe3FsPFa05i8w0mJx5Y+DlzAB+hvmZfflaGaszDNs020F2E/xG+xn700B4mxIjewK+Meb1t3Asg+P5Iy+ANnEE1yIe3mNgffGl5i1NyGidYPZq+Q9BdZPqwhge9MVtJ9a2h/6CP9Isw=
+In-Reply-To: <2156.211.111.195.128.1195629252.squirrel@211.111.194.2>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
-To: Helge Hafting <helge.hafting@aitel.hist.no>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: msn@vtopia.co.kr
+Cc: netfilter@vger.kernel.org
 
-You can this decently by using iproute2's nexthop. Of course, one client  
-isn't able to use more than one ISP per connection and their IP will keep  
-changing depending on which route they happend to get.
-
-Anyway, to the point.  
-http://wiki.robotz.com/index.php/Iproute2#General_Notes_and_Information
-On Wed, 21 Nov 2007 16:31:27 +0200, Helge Hafting  
-<helge.hafting@aitel.hist.no> wrote:
-
-> I am trying to set up a mobile router using linux. It connects to  
-> several ISPs
-> using 3G connections, and offers a NATed wireless network for clients.
+On Nov 21, 2007 7:14 AM, msn <msn@vtopia.co.kr> wrote:
 >
-> I wish to utilize the bandwith when all ISPs are available, and
-> be able to provide internet access for all as long as at least one
-> ISP is available.
+> Hi, i'm trying to writing the kerenl modules which is hooking the packet
+> from kernel mode, also it'll registering specific ip address to netfilter
+> drop rules. any one knows samples whatever ? thanks in advance.
 >
-> I have looked at bonding and "ifenslave". But I can't use this
-> because some of the 3G devices provides ppp links like
-> ppp0, ppp1, ... and bonding seems to want physical ethernet devices only.
-> Windows was able to do this - but the os turned out to be too unstable.
+> all ruls comes from do_replace() in the ip_tables.c which copying from
+> user space, i guess. this is what i want exactly. i mean need to get the
+> exampls of the do_replace().
 >
-> Is there some other approach that might work?
+> Cheers.
 >
-> Helge Hafting
+>
+>
 > -
 > To unsubscribe from this list: send the line "unsubscribe netfilter" in
 > the body of a message to majordomo@vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
+Hi,
 
+You should send email for Netfilter Developer Mailing List
+<netfilter-devel@vger.kernel.org>.
 
--- 
-Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
+This link contains a howto kernel hacking netfilter, but not iptables hacking.
+
+http://www.phrack.org/issues.html?issue=61&id=13
+
+Regards
+
+Tiago
