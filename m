@@ -1,37 +1,27 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: Is it possible to do bonding/connection teaming with
-	non-ethernet devices?
-Date: Thu, 22 Nov 2007 09:25:49 +0200
-Message-ID: <1195716349.2317.8.camel@localhost.localdomain>
-References: <4744413F.1000700@aitel.hist.no>
-Reply-To: casper@meteor.dp.ua
+From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
+Subject: target extension
+Date: Thu, 22 Nov 2007 12:54:57 +0100
+Message-ID: <47456E11.1090706@unipex.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4744413F.1000700@aitel.hist.no>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Helge Hafting <helge.hafting@aitel.hist.no>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-=F7 =F3=D2=C4, 21/11/2007 =D7 15:31 +0100, Helge Hafting =D0=C9=DB=C5=D4=
-:
-> I am trying to set up a mobile router using linux. It connects to=20
-> several ISPs
-> using 3G connections, and offers a NATed wireless network for clients=
-=2E
->=20
-> I wish to utilize the bandwith when all ISPs are available, and
-> be able to provide internet access for all as long as at least one
-> ISP is available.
+Hi all,
+I'm looking for an extension that load the ip address from the proc fs,
+so there I can set the address that I want to match. Something like:
 
-If I am correct setting several default routes with equal metric value
-will do what you want. This will do load ballancing between several
-available connections.
+iptables -A INPUT -m proc_ext --proc_ext_parms -j ACCEPT
+cat my_ip_host >> /proc/net/ipt_proc_ext/host
 
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+(similar that I can do with the condition extension)
+
+Looking on the net, but found none.
+
+
+Thanks,
+Michele
 
