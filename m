@@ -1,53 +1,37 @@
-From: Tiago <tiago.deb@gmail.com>
-Subject: Re: How to register DROP rules in the kernel mode
-Date: Wed, 21 Nov 2007 17:32:51 +0000
-Message-ID: <9c1c9eb80711210932w14f5d04vd6d9e262bb1e922c@mail.gmail.com>
-References: <2156.211.111.195.128.1195629252.squirrel@211.111.194.2>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: Is it possible to do bonding/connection teaming with
+	non-ethernet devices?
+Date: Thu, 22 Nov 2007 09:25:49 +0200
+Message-ID: <1195716349.2317.8.camel@localhost.localdomain>
+References: <4744413F.1000700@aitel.hist.no>
+Reply-To: casper@meteor.dp.ua
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=beta;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=8BobaenAPxgOodgpF4yZ/R20saVVU1Ub41vNu14aeBM=;
-        b=tlvVkHhxdkVJzox9cVygPyEZsErnj3PNFe3FsPFa05i8w0mJx5Y+DlzAB+hvmZfflaGaszDNs020F2E/xG+xn700B4mxIjewK+Meb1t3Asg+P5Iy+ANnEE1yIe3mNgffGl5i1NyGidYPZq+Q9BdZPqwhge9MVtJ9a2h/6CP9Isw=
-In-Reply-To: <2156.211.111.195.128.1195629252.squirrel@211.111.194.2>
-Content-Disposition: inline
+In-Reply-To: <4744413F.1000700@aitel.hist.no>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: msn@vtopia.co.kr
+Content-Type: text/plain; charset="koi8-r"
+To: Helge Hafting <helge.hafting@aitel.hist.no>
 Cc: netfilter@vger.kernel.org
 
-On Nov 21, 2007 7:14 AM, msn <msn@vtopia.co.kr> wrote:
->
-> Hi, i'm trying to writing the kerenl modules which is hooking the packet
-> from kernel mode, also it'll registering specific ip address to netfilter
-> drop rules. any one knows samples whatever ? thanks in advance.
->
-> all ruls comes from do_replace() in the ip_tables.c which copying from
-> user space, i guess. this is what i want exactly. i mean need to get the
-> exampls of the do_replace().
->
-> Cheers.
->
->
->
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+=F7 =F3=D2=C4, 21/11/2007 =D7 15:31 +0100, Helge Hafting =D0=C9=DB=C5=D4=
+:
+> I am trying to set up a mobile router using linux. It connects to=20
+> several ISPs
+> using 3G connections, and offers a NATed wireless network for clients=
+=2E
+>=20
+> I wish to utilize the bandwith when all ISPs are available, and
+> be able to provide internet access for all as long as at least one
+> ISP is available.
 
-Hi,
+If I am correct setting several default routes with equal metric value
+will do what you want. This will do load ballancing between several
+available connections.
 
-You should send email for Netfilter Developer Mailing List
-<netfilter-devel@vger.kernel.org>.
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
 
-This link contains a howto kernel hacking netfilter, but not iptables hacking.
-
-http://www.phrack.org/issues.html?issue=61&id=13
-
-Regards
-
-Tiago
