@@ -1,44 +1,50 @@
-From: =?ISO-8859-1?Q?J=F6rg_L=FCbbert?= <j.luebbert@login-lanstation.de>
-Subject: Re: Policy Routing with fwmark and iptables -j MARK
-Date: Sun, 25 Nov 2007 14:28:09 +0100
-Message-ID: <47497869.4000901@login-lanstation.de>
-References: <62183.64.81.58.143.1195982779.squirrel@calmail.berkeley.edu>
+From: "=?UTF-8?Q?Ph=E1=BA=A1m_Th=E1=BB=8B_Thanh_Nguy=C3=AAn?=" 
+	<ptthanhnguyen@gmail.com>
+Subject: Supporting nat table in ip6tables.
+Date: Sun, 25 Nov 2007 21:56:44 +0700
+Message-ID: <296c5f5a0711250656o750425d3vc0e1d6bcb69f1fc9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <62183.64.81.58.143.1195982779.squirrel@calmail.berkeley.edu>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=EHUlDX65DPYSlOQuD00X4yymIinDvNZaj/4Yi0sZ+zc=;
+        b=GMFTVMnWD8pmty88dwgHXgeaOQj+2SMoYyEz7zcpulvnUkKB9yJ5QUNwySaH9Ikg6k6G8uA5TEVFIXy3L0vtsKh07OguCQvxhtCahKZDIIAxMqborQFV86tVkua7DXsyN01+WdoEZ28gMB8A36Z1w3gFLHdGhYag/Gkcmr3sKVk=
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hello,
+Dear Netfilter Core Team,
 
-You might probably run into trouble with your MARK approach there as it=
-=20
-won't be able to correctly track connections which are related to other=
-=20
-connections. Ie. FTP-Data.
+My name is Pham Thi Thanh Nguyen. I am a Vietnamese student.
 
-You'll need to rely on connmark for such situation.
+Now I am interested in the NAT-PT system. So I want to ask you a
+question related to ip6tables.
 
-$IPTABLES -A PREROUTING -t mangle -j CONNMARK --restore-mark
+One of the main features of iptables is the supporting of network
+address and port translation (IPv4 only), isn't it?
 
-$IPTABLES -t mangle -A PREROUTING -p tcp -m multiport \
---dport $PORT_LIST -m statistic --mode random --probability .5 \
--m connmark ! --mark 0/0 \
--j MARK --set-mark 0x60000000
+So in the ip6tables, do you have any supports to NAT-PT (network
+address translation and protocol translation)? If the answer is yes,
+please let me know which version (current version is ip6tables 1.3.8)
+i can find out that support.
 
-$IPTABLES -t mangle -A PREROUTING -p tcp -m multiport \
--m connmark ! --mark 0/0 \
---dport $PORT_LIST -j MARK --set-mark 0x50000000
+When searching by google engine with keywords "ip6tables nat", I found
+something like this:
+/sbin/ip6tables -t nat -P PREROUTING ACCEPT
+/sbin/ip6tables -t nat -P POSTROUTING ACCEPT
+/sbin/ip6tables -t nat -P OUTPUT ACCEPT
 
-$IPTABLES -A PREROUTING -t mangle -j CONNMARK --save-mark
+Please explain and make me know more clearly.
 
-As for your L7 case, I'd need some more input there. Can you give a mor=
-e=20
-detailled description please? You don't want to use it as part of the=20
-routing decission, do you? (that wouldn't work)
+I appreciate highly your help.
 
 
-- J=F6rg
+Thank you very much.
+
+
+Best Regards,
+Pham Thi Thanh Nguyen
