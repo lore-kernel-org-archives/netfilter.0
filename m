@@ -1,50 +1,41 @@
-From: "=?UTF-8?Q?Ph=E1=BA=A1m_Th=E1=BB=8B_Thanh_Nguy=C3=AAn?=" 
-	<ptthanhnguyen@gmail.com>
-Subject: Supporting nat table in ip6tables.
-Date: Sun, 25 Nov 2007 21:56:44 +0700
-Message-ID: <296c5f5a0711250656o750425d3vc0e1d6bcb69f1fc9@mail.gmail.com>
+From: "ash sids" <toashwinisidhu@googlemail.com>
+Subject: Remote X not working through IPTABLES
+Date: Sun, 25 Nov 2007 11:38:30 -0800
+Message-ID: <898d8f300711251138w9f36e7cgcf8ef0eb5d9c739f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
+        d=googlemail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=EHUlDX65DPYSlOQuD00X4yymIinDvNZaj/4Yi0sZ+zc=;
-        b=GMFTVMnWD8pmty88dwgHXgeaOQj+2SMoYyEz7zcpulvnUkKB9yJ5QUNwySaH9Ikg6k6G8uA5TEVFIXy3L0vtsKh07OguCQvxhtCahKZDIIAxMqborQFV86tVkua7DXsyN01+WdoEZ28gMB8A36Z1w3gFLHdGhYag/Gkcmr3sKVk=
+        bh=u+aX7jAoCLdRn7fEIQyVKM4LoNvOtIF73aBrPxj3QTQ=;
+        b=rtICdUSFc1byK5TGjshy+NmklOe4eSHdrDw/yzgmFzArCAaw2W5FbgOIe58+Yc/Z+ouOLURiBEQFUXEbxIZN8d1D9XJEql+VLeeHjAcc/wP86WqZ64K5hhOvGiBZhe7XZopTHxUq3m/m+bDIjSANP3gTeW6mCD1mFCIbjD+f4uY=
 Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Dear Netfilter Core Team,
+HI
 
-My name is Pham Thi Thanh Nguyen. I am a Vietnamese student.
+I have a debian system (192.168.200.4), the firewall on that as is shown ...
+I am trying to run xclock from  192.168.200.2 using putty and  XMING
+...strangley enough with the following set up; xclock fails to start .
+As soon I change the policy on INPUT chain to ACCEPT , xclock starts working...
 
-Now I am interested in the NAT-PT system. So I want to ask you a
-question related to ip6tables.
+Anybody would have any idea why this is happening...
 
-One of the main features of iptables is the supporting of network
-address and port translation (IPv4 only), isn't it?
+# iptables -L
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     0    --  192.168.200.2        anywhere
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     0    --  192.168.200.4        anywhere
+ACCEPT     0    --  anywhere             anywhere            state
+RELATED,ESTABLISHED
 
-So in the ip6tables, do you have any supports to NAT-PT (network
-address translation and protocol translation)? If the answer is yes,
-please let me know which version (current version is ip6tables 1.3.8)
-i can find out that support.
-
-When searching by google engine with keywords "ip6tables nat", I found
-something like this:
-/sbin/ip6tables -t nat -P PREROUTING ACCEPT
-/sbin/ip6tables -t nat -P POSTROUTING ACCEPT
-/sbin/ip6tables -t nat -P OUTPUT ACCEPT
-
-Please explain and make me know more clearly.
-
-I appreciate highly your help.
-
-
-Thank you very much.
-
-
-Best Regards,
-Pham Thi Thanh Nguyen
+thanks
+ash
