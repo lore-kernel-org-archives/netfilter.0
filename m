@@ -1,74 +1,44 @@
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: Re: Remote X not working through IPTABLES
-Date: Mon, 26 Nov 2007 08:12:53 -0600
-Message-ID: <1196086373.14710.1.camel@grateful.d.umn.edu>
-References: <898d8f300711251138w9f36e7cgcf8ef0eb5d9c739f@mail.gmail.com>
+From: Quartexx <quartex73@gmail.com>
+Subject: Re: Fighting DOS attacks
+Date: Mon, 26 Nov 2007 20:42:29 +0100
+Message-ID: <4d7bf97f0711261142s9e6cf28r7931210acf8154e6@mail.gmail.com>
+References: <4d7bf97f0711220633s36cc7b91x4ac07fa0064d4bff@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-VpwOWMc62hq5rBlIwOtO"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <898d8f300711251138w9f36e7cgcf8ef0eb5d9c739f@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=M8t5KQXlhDrbkv8wq+NtoPYOcdtBCPUB7qdkBUXjV48=;
+        b=LDIGdeAAjgyMYfR9pyw1fZ/5sd5MGpZhJgkEsPEEIHoWbC6pmrE2mdDfJOlj9d8++pNFrcHpEiBx/OE42JchRRMGo3LF8QjKGF0mairY2ZutB2s57pi6soi1I5PGLDoZtXuxzcUH9Takbp3Ax0SuMdTjK6qdfOA32wNaz8DfyMI=
+In-Reply-To: <4d7bf97f0711220633s36cc7b91x4ac07fa0064d4bff@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-To: ash sids <toashwinisidhu@googlemail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+> The following kernel tunes are often reported on security books like
+> dos mitigators, still I would like to know your mind about these
+> kernel parameters settings:
+> echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+> echo 30 > /proc/sys/net/ipv4/tcp_fin_timeout
+> echo 1800 >/proc/sys/net/ipv4/tcp_keepalive_time
+> echo 0 >/proc/sys/net/ipv4/tcp_window_scaling
+> echo 0 >/proc/sys/net/ipv4/tcp_sack
+> echo 0 >/proc/sys/net/ipv4/tcp_timestamps
+>
+> Syncookies will help for sure.  Decreasing fin_timeout (from 60 to 30)
+> and keepalive_time (from 7200 to 1800) has any real benefits?
+> And what about turning off  tcp_window_scaling and tcp_sack?
+> Finally I think disabling tcp_timestamps is relevant only to disable
+> uptime detection...
+>
+> As far as I can tell, all these options will only help the Linux
+> firewall box itself and will not do anything to assist the hosts that the
+> Linux box is being used to protect.
+> So basically these parameters must be set on every host behind
+> firewall.  Is this correct?
 
---=-VpwOWMc62hq5rBlIwOtO
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-
-On Sun, 2007-11-25 at 11:38 -0800, ash sids wrote:
-> HI
->=20
-> I have a debian system (192.168.200.4), the firewall on that as is shown =
-...
-> I am trying to run xclock from  192.168.200.2 using putty and  XMING
-> ...strangley enough with the following set up; xclock fails to start .
-> As soon I change the policy on INPUT chain to ACCEPT , xclock starts work=
-ing...
->=20
-> Anybody would have any idea why this is happening...
-
-Perhaps do some logging. I am thinking after the ACCEPT rule in the
-INPUT chain, this would (of course) be before the DROP policy. Then you
-could see what is being dropped.
-
->=20
-> # iptables -L
-> Chain INPUT (policy DROP)
-> target     prot opt source               destination
-> ACCEPT     0    --  192.168.200.2        anywhere
-> Chain FORWARD (policy ACCEPT)
-> target     prot opt source               destination
-> Chain OUTPUT (policy ACCEPT)
-> target     prot opt source               destination
-> ACCEPT     0    --  192.168.200.4        anywhere
-> ACCEPT     0    --  anywhere             anywhere            state
-> RELATED,ESTABLISHED
-
---=20
-Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
-University of Minnesota Duluth
-Information Technology Systems & Services
-PGP key 1024D/84E22DA2 2005-11-07
-Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
-
-He is not a fool who gives up what he cannot keep to gain what he cannot
-lose.
--Jim Elliot
-
---=-VpwOWMc62hq5rBlIwOtO
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBHStRlU+eIf4TiLaIRApF8AKDqdaPGm+qMr/SBIXHXhZlIM/QqywCfTK+A
-jXaZSWbOOBtmHnaBxup3thA=
-=kzqN
------END PGP SIGNATURE-----
-
---=-VpwOWMc62hq5rBlIwOtO--
-
+Anyone?
+Thanks
