@@ -1,56 +1,47 @@
-From: James Lay <jlay@slave-tothe-box.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Blocking web-based proxy traffic
-Date: Wed, 28 Nov 2007 13:16:36 -0700
-Message-ID: <C3731AB4.2210%jlay@slave-tothe-box.net>
-References: <474DCA6D.2010305@riverviewtech.net>
+Date: Wed, 28 Nov 2007 14:35:38 -0600
+Message-ID: <474DD11A.4020209@riverviewtech.net>
+References: <C3731AB4.2210%jlay@slave-tothe-box.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <474DCA6D.2010305@riverviewtech.net>
+In-Reply-To: <C3731AB4.2210%jlay@slave-tothe-box.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
+On 11/28/07 14:16, James Lay wrote:
+> The latter ;)  Keeping the people on the inside from being naughty. 
+> One of my clients doesn't want a proxy server installed....I would 
+> normally just use squid and squidguard and be done with it, but 
+> that's not an option.  So baring using Snort to do it (somehow) I was 
+> thinking netfilter/iptables to match strings on port 80 for "http". 
+> Hope that explains it better.
+
+Ok.  Aside from needing to use a Clue-by-4 on your client, you are 
+headed down an ok track.
+
+Be aware that you are looking for ASCII text that is recognizable as a 
+prohibited site.  If you do use IPTables to do your matches, you will 
+either be able to DROP, REJECT, or DNAT (redirect) the traffic.  The 
+first option is not graceful at all as it will leave clients in a time 
+out condition while the second option will probably more gracefully 
+fail.  The preferred option would be to DNAT (redirect) the traffic to a 
+mini web server that will serve up a generic web page indicating that 
+the access has been blocked.
+
+I suppose that you can use layer 7 string matching to look for the 
+prohibited URL in the the real get string.  However if there is any 
+obfuscation being used, even simple URL encoding using %## the chances 
+of detecting the traffic is slim.  This is why you should really look in 
+to some sort of content filtering solution.
+
+Would you be able to install something like DansGuardian and tell your 
+client that it is a filter not a proxy and use that?  Of course to use 
+DansGuardian, you do have to have a proxy for DG to talk to.
 
 
 
-On 11/28/07 1:07 PM, "Grant Taylor" <gtaylor@riverviewtech.net> wrote:
-
-> On 11/28/07 14:01, James Lay wrote:
->> Interesting idea.  I know that when I've captured this proxy traffic
->> I see in ASCII "http://" and then whatever proxied site (usually
->> myspace).  I was thinking maybe a matchstring type thing?  Here's a
->> snippet from an access.log from a transparent squid proxy, using
->> sureproxy hitting playboy:
-> 
-> Possibly.
-> 
->> 10.1.1.191 - - [28/Nov/2007:12:49:26 -0700] "GET
->> http://www.sureproxy.com/nph-index.cgi/011110A/http/www.playboy.com/imx/front
->> page/2008-calendars.jpg
->> HTTP/1.1" 200 366
->> "http://www.sureproxy.com/nph-index.cgi/011110A/http/www.playboy.com/"
->> "Opera/9.24 (Macintosh; Intel Mac OS X; U; en)" TCP_MISS:DIRECT
->> 
->> Does my idea make sense or am I on crack :D
-> 
-> Are you wanting to prevent proxy services from accessing your web
-> site(s) or are you wanting to prevent people behind your proxy from
-> accessing prohibited material?  This makes a *BIG* difference in what
-> direction you go.
-> 
-> 
-> 
-> Grant. . . .
-
-
-The latter ;)  Keeping the people on the inside from being naughty.  One of
-my clients doesn't want a proxy server installed....I would normally just
-use squid and squidguard and be done with it, but that's not an option.  So
-baring using Snort to do it (somehow) I was thinking netfilter/iptables to
-match strings on port 80 for "http".  Hope that explains it better.
-
-James
-
-
+Grant. . . .
