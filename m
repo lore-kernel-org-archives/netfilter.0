@@ -1,31 +1,56 @@
-From: "Jason Hawthorne" <jhawthorne@lexionmedical.com>
-Subject: RE: Forwarding traffic from public IP to public IP.
-Date: Wed, 28 Nov 2007 14:11:52 -0600
-Message-ID: <AFB1C16E164D73439741623EBFEA771C4DB0D8@lex-exch1.lexionmedical.com>
-References: <AFB1C16E164D73439741623EBFEA771C4DB039@lex-exch1.lexionmedical.com> <474D9991.5000009@riverviewtech.net> <AFB1C16E164D73439741623EBFEA771C4DB07D@lex-exch1.lexionmedical.com> <474DBEB0.8050501@riverviewtech.net>
+From: James Lay <jlay@slave-tothe-box.net>
+Subject: Re: Blocking web-based proxy traffic
+Date: Wed, 28 Nov 2007 13:16:36 -0700
+Message-ID: <C3731AB4.2210%jlay@slave-tothe-box.net>
+References: <474DCA6D.2010305@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <474DBEB0.8050501@riverviewtech.net>
+In-Reply-To: <474DCA6D.2010305@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-> No, you do not want to DNAT to SOURCE-IP.  You want to do something
-> like
-> the following:
-> 
-> On DEBIAN, you would want to do something like the following:
-> 
-> # Redirect traffic originally to DEBIAN to be to DESTINATION
-> iptables -t nat -A PREROUTING -d DEBIAN-IP -j DNAT --to-destination
-> DESTINATION-IP
-> # SNAT DNATed traffic from DEBIAN to DESTINATION to be from DEBIAN
-> iptables -t nat -A POSTROUTING -d DESTINATION-IP -j SNAT --to-source
-> DEBIAN-IP
-> 
-> SOURCE ---> DEBIAN ---> DESTINATION ---> DEBIAN ---> SOURCE
 
-Thanks this worked like a charm! 
+
+
+On 11/28/07 1:07 PM, "Grant Taylor" <gtaylor@riverviewtech.net> wrote:
+
+> On 11/28/07 14:01, James Lay wrote:
+>> Interesting idea.  I know that when I've captured this proxy traffic
+>> I see in ASCII "http://" and then whatever proxied site (usually
+>> myspace).  I was thinking maybe a matchstring type thing?  Here's a
+>> snippet from an access.log from a transparent squid proxy, using
+>> sureproxy hitting playboy:
+> 
+> Possibly.
+> 
+>> 10.1.1.191 - - [28/Nov/2007:12:49:26 -0700] "GET
+>> http://www.sureproxy.com/nph-index.cgi/011110A/http/www.playboy.com/imx/front
+>> page/2008-calendars.jpg
+>> HTTP/1.1" 200 366
+>> "http://www.sureproxy.com/nph-index.cgi/011110A/http/www.playboy.com/"
+>> "Opera/9.24 (Macintosh; Intel Mac OS X; U; en)" TCP_MISS:DIRECT
+>> 
+>> Does my idea make sense or am I on crack :D
+> 
+> Are you wanting to prevent proxy services from accessing your web
+> site(s) or are you wanting to prevent people behind your proxy from
+> accessing prohibited material?  This makes a *BIG* difference in what
+> direction you go.
+> 
+> 
+> 
+> Grant. . . .
+
+
+The latter ;)  Keeping the people on the inside from being naughty.  One of
+my clients doesn't want a proxy server installed....I would normally just
+use squid and squidguard and be done with it, but that's not an option.  So
+baring using Snort to do it (somehow) I was thinking netfilter/iptables to
+match strings on port 80 for "http".  Hope that explains it better.
+
+James
+
+
