@@ -1,71 +1,66 @@
-From: Shyam Prasad <shyam@rocsys.com>
-Subject: Re: Reg Stateful firewall
-Date: Wed, 28 Nov 2007 07:49:29 -0800 (PST)
-Message-ID: <333233.67984.qm@web1009.biz.mail.sp1.yahoo.com>
+From: "Shaun Mccullagh" <Shaun.Mccullagh@xb.nl>
+Subject: Preventing simple DoS attacks with ipt_recent on Kernel 2.6.9-42.ELsmp
+Date: Wed, 28 Nov 2007 17:14:17 +0100
+Message-ID: <CC12CD48AEDA1E4B8A3F626DA84E927209CD45BA@ka-cap-sr-3601.xb.local>
+References: <333233.67984.qm@web1009.biz.mail.sp1.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Class: urn:content-classes:message
+In-Reply-To: <333233.67984.qm@web1009.biz.mail.sp1.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Martijn Lievaart <m@rtij.nl>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+Cc: John Donath <John.Donath@xb.nl>
 
-But would it not be efficient if the firewall automatically allows such packets which were validated in INPUT.
-that would save me lot of rules that might otherwise be necessary.
+Hi,
+
+I would like to use ipt_recent to prevent, or at least reduce, simple
+DoS attacks on our webservers.
+
+I've tried
+
+iptables -A FORWARD -p tcp --dport 80 -i eth0 -m state --state NEW -m
+recent --set --name browserconn -j ACCEPT
+
+iptables -A FORWARD -p tcp --dport 80 -i eth0 -m state --state NEW -m
+recent --rttl --update --seconds 60 --hitcount 100 --name blocked -j
+DROP
+
+Both these rules are inserted at the top of the FORWARD chain.
+
+/proc/net/rpt_recent/browserconn is quickly filled with new connections
+and everything appears to work perfectly.
+
+But if I login to a remote system and try 
+
+for i in `seq 1 120` ; do 
+	echo test | nc 1.2.3.4 80 >/dev/null 2>&1
+done 
+
+All the requests are allowed and I can still browse the site.
+
+Nothing appears in /proc/net/ipt_recent/blocked
+
+I've tried removing -name from both rules so that DEFAULT is used to no
+avail.
+
+What am I doing wrong?
+
+Is the nc test valid?
+
+TIA
+
+Shaun
 
 
-some linux based firewalls(not netfilter) do this automatically since they already know the state.
 
 
-Regards,
-Shyam
-
------ Original Message ----
-From: Martijn Lievaart <m@rtij.nl>
-To: Shyam Prasad <shyam@rocsys.com>
-Cc: netfilter@vger.kernel.org
-Sent: Wednesday, November 28, 2007 8:57:40 PM
-Subject: Re: Reg Stateful firewall
 
 
-<citaat van="Shyam Prasad">
-> Hi,
-> I have a doubt regarding statefull feature in iptables firewall
->
-> In my iptables filter table i set the default policy for INPUT,OUTPUT
- and
-> FORWARD as DROP.
-> so all packets are dropped.
-> now i added a policy
-> iptables -A INPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
->
-> My assumption is that when an external device sends a  ping
-> request(echo-request) its state will be NEW and it will be
- accepted,since
-> for this a state table is being maintained,the ping reply should be
- sent
-> through OUTPUT chain with out being blocked.but the packet is dropped
- in
-> the OUTPUT chain.
->
-> I understand that the rule we added is only for INPUT chain,but is a
- rule
-> in OUTPUT chain required to send the reply packet out even for a
-> legitimate packet that we accepted??
 
-Yes, you must accept ESTABLISHED. For good measure accept RELATED as
- well.
-
--A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-HTH,
-M4
-
--
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Op dit e-mailbericht is een disclaimer van toepassing, welke te vinden is op http://www.xb.nl/disclaimer.html
 
 
 
