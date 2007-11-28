@@ -1,39 +1,35 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Forwarding traffic from public IP to public IP.
-Date: Wed, 28 Nov 2007 13:17:04 -0600
-Message-ID: <474DBEB0.8050501@riverviewtech.net>
-References: <AFB1C16E164D73439741623EBFEA771C4DB039@lex-exch1.lexionmedical.com> <474D9991.5000009@riverviewtech.net> <AFB1C16E164D73439741623EBFEA771C4DB07D@lex-exch1.lexionmedical.com>
+Subject: Re: Blocking web-based proxy traffic
+Date: Wed, 28 Nov 2007 13:20:41 -0600
+Message-ID: <474DBF89.8000609@riverviewtech.net>
+References: <C372F9CA.21D9%jlay@slave-tothe-box.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AFB1C16E164D73439741623EBFEA771C4DB07D@lex-exch1.lexionmedical.com>
+In-Reply-To: <C372F9CA.21D9%jlay@slave-tothe-box.net>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 11/28/07 11:45, Jason Hawthorne wrote:
-> So would the rules look like this than?  Because it doesn't seem to be 
-> working.
-> 
-> iptables -t nat -A POSTROUTING -d DESTINATION-IP -j SNAT --to-source 
-> DEBIAN-IP
-> iptables -t nat -A PREROUTING -d DEBIAN-IP -j DNAT --to-destination 
-> SOURCE-IP
+(Please do not start a new thread by replying to an old one.)
 
-No, you do not want to DNAT to SOURCE-IP.  You want to do something like 
-the following:
+On 11/28/07 11:56, James Lay wrote:
+> A curious question I have been asked from a client...any way to block 
+> web-based proxies with iptables?  Wondering what it would take.
 
-On DEBIAN, you would want to do something like the following:
+Well, IPTables can filter packets based on source IP of the proxies if 
+they are known.  You could also use some sort of layer 7 match looking 
+for some sort of header indicating that a proxy was in use.  However 
+this would be very easy to circumvent and very much a catch up game on 
+the IP blocking.
 
-# Redirect traffic originally to DEBIAN to be to DESTINATION
-iptables -t nat -A PREROUTING -d DEBIAN-IP -j DNAT --to-destination 
-DESTINATION-IP
-# SNAT DNATed traffic from DEBIAN to DESTINATION to be from DEBIAN
-iptables -t nat -A POSTROUTING -d DESTINATION-IP -j SNAT --to-source 
-DEBIAN-IP
-
-SOURCE ---> DEBIAN ---> DESTINATION ---> DEBIAN ---> SOURCE
+If you are really serious about doing this I would suggest that you do 
+something that functioned based on the number of connections from a 
+given source IP with in a time frame knowing that it is likely that 
+proxies will possibly have a higher hit count than single systems. 
+However this will also catch NATing gateways for companies.  So you will 
+have to deal with white listing too.
 
 
 
