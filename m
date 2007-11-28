@@ -1,58 +1,28 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: libnetfilter conntrack: problem in nfct_callback_register
-Date: Wed, 28 Nov 2007 11:58:12 +0100
-Message-ID: <1196247492.25458.6.camel@localhost>
-References: <200711151235.52842.julien@linuxwall.info>
-	 <1195150285.3480.5.camel@localhost>
-	 <200711151416.37081.julien@linuxwall.info>
+From: Shyam Prasad <shyam@rocsys.com>
+Subject: Reg Stateful firewall
+Date: Wed, 28 Nov 2007 07:15:48 -0800 (PST)
+Message-ID: <552867.23040.qm@web1007.biz.mail.sp1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-/HWqjg5NczXT/ULIOZLJ"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200711151416.37081.julien@linuxwall.info>
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-To: Julien VEHENT <julien@linuxwall.info>
-Cc: netfilter@vger.kernel.org
-
-
---=-/HWqjg5NczXT/ULIOZLJ
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
 Hi,
+I have a doubt regarding statefull feature in iptables firewall
 
-Le jeudi 15 novembre 2007 =E0 14:16 -0500, Julien VEHENT a =E9crit :
-> On Thursday 15 November 2007 01:11:25 pm Eric Leblond wrote:
-> > Hi,
-> Hi,
->=20
-> I'm probably asking too much, but do you have any .deb version of the=20
-> library ?
-> I would rather prefer to keep the integrity of my system.
+In my iptables filter table i set the default policy for INPUT,OUTPUT and FORWARD as DROP.
+so all packets are dropped.
+now i added a policy 
+iptables -A INPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
 
-Sorry for the delay but the library are now available for etch from
-http://packages.inl.fr/ in their latest release.
+My assumption is that when an external device sends a  ping request(echo-request) its state will be NEW and it will be accepted,since for this a state table is being maintained,the ping reply should be sent through OUTPUT chain with out being blocked.but the packet is dropped in the OUTPUT chain.
 
-You can add to your sources.list:
-deb http://packages.inl.fr/ stable/
+I understand that the rule we added is only for INPUT chain,but is a rule in OUTPUT chain required to send the reply packet out even for a legitimate packet that we accepted??
 
-BR,
---=20
-Eric Leblond <eric@inl.fr>
-INL
+Regards,
+Shyam.
 
---=-/HWqjg5NczXT/ULIOZLJ
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBHTUnEnxA7CdMWjzIRAn3vAKCBZYd5UHt3yuBw5Ge4z+vXRpGu6QCfUhM+
-wSyHrRWdwlqD/By3RMCvsBM=
-=XqQv
------END PGP SIGNATURE-----
-
---=-/HWqjg5NczXT/ULIOZLJ--
 
