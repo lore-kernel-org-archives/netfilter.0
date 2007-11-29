@@ -1,74 +1,87 @@
-From: dhottinger@harrisonburg.k12.va.us
-Subject: Re: Blocking web-based proxy traffic
-Date: Wed, 28 Nov 2007 20:53:36 -0500
-Message-ID: <20071128205336.pnlj3692vwwoc04g@webmail.harrisonburg.k12.va.us>
-References: <C3731711.2208%jlay@slave-tothe-box.net>
-	<474DE07F.4020903@dutro.com>
+From: "Damian Hites" <nizebulous@gmail.com>
+Subject: Linking error using libnetfilter_queue on FC8
+Date: Wed, 28 Nov 2007 20:16:39 -0800
+Message-ID: <a2997d4b0711282016t4cf5dbf0ke4e860b58c55720a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <474DE07F.4020903@dutro.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=qE9aorf6W4lYvcGBbin00ZkzcsHCoBhr03YGZ7IASMw=;
+        b=mYcD42SZdcdisSLDxW1tOKo9DQtSoGdLqNjdRDZUkYGDv5hYbNvKOUTtUWeicHEGDyuvUk0nkj4n0/sG7NtUeY2ay3m9I9ux9eE7YAt+3l3W7Rhl5a4i0H/a0LeziHv7tk088UxP5QH7i6EFQdJCohZMZUQ0XS+dlozNK1OO5aA=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes	format=flowed"
-To: Tagg McDonald <taggm@dutro.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Quoting Tagg McDonald <taggm@dutro.com>:
+I keep getting this errror.  I installed libnetfilter_queue and
+libnetfilter_conntrack using yum.  The shared libraries are in the
+right places (/usr/lib/ and /usr/lib64/) and I'm using the -l options
+(-lnfnetlink -lnetfilter_queue).  Not sure why it's not working.  Here
+is the output:
 
->
->> Interesting idea.  I know that when I've captured this proxy traffic I see
->> in ASCII "http://" and then whatever proxied site (usually myspace).  I was
->> thinking maybe a matchstring type thing?  Here's a snippet from an
->> access.log from a transparent squid proxy, using sureproxy hitting playboy:
->>
->> 10.1.1.191 - - [28/Nov/2007:12:49:26 -0700] "GET
->> http://www.sureproxy.com/nph-index.cgi/011110A/http/www.playboy.com/imx/fron
->> tpage/2008-calendars.jpg HTTP/1.1" 200 366
->> "http://www.sureproxy.com/nph-index.cgi/011110A/http/www.playboy.com/"
->> "Opera/9.24 (Macintosh; Intel Mac OS X; U; en)" TCP_MISS:DIRECT
->>
->> Does my idea make sense or am I on crack :D
->>
->> James
->
-> If you have a transparent squid proxy in place you can do ACL's and/or
-> use squidguard or dans guardian.
->
-> --
-> Tagg McDonald
-> Dutro Company
-> 675 North 600 West
-> Logan, UT 84321
-> (435) 752-3921 x146
->
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-Even with a proxy and filter in place, they can still circumvent using  
-proxifier sites.  I block them at my firewall using the drop in my  
-preroute.  I really dont care about the timeouts, if your going around  
-the filter, your breaking policy.  Even then its hard to stop.  I cant  
-use my transparent proxy for https, which a lot of the sites run.   
-They will have http: and https:  both of which connect to the same  
-site.  I have a list of close to 300 + sites I block at the firewall  
-that I try to keep up to date, but new sites are out all the time.   
-One thing I have found, is that snort rules help to detect when these  
-things are happening.  Their are some policy rules that are able to  
-detect when some of these sites are accessed or when someone is trying  
-to use them.  In short, if anyone finds a way to block access to these  
-sites 100% I would sure like to hear about it.  Short of denying  
-access to the entire internet except for those sites specifically  
-allowed.
+g++ -g -Wall -c test.cpp -o test.o
+g++  -lnfnetlink -lnetfilter_queue test.o -o test
+test.o: In function `main':
+test.cpp:65: undefined reference to `nfq_open()'
+test.cpp:72: undefined reference to `nfq_unbind_pf(nfq_handle*, unsigned short)'
+test.cpp:78: undefined reference to `nfq_bind_pf(nfq_handle*, unsigned short)'
+test.cpp:84: undefined reference to `nfq_create_queue(nfq_handle*,
+unsigned short, int (*)(nfq_q_handle*, nfgenmsg*, nfq_data*, void*),
+void*)'
+test.cpp:91: undefined reference to `nfq_set_mode(nfq_q_handle*,
+unsigned char, unsigned int)'
+test.cpp:97: undefined reference to
+`nfq_set_queue_maxlen(nfq_q_handle*, unsigned int)'
+test.cpp:103: undefined reference to `nfq_nfnlh(nfq_handle*)'
+test.cpp:104: undefined reference to `nfnl_fd(nfnl_handle*)'
+test.cpp:108: undefined reference to `nfq_handle_packet(nfq_handle*,
+char*, int)'
+test.cpp:112: undefined reference to `nfq_destroy_queue(nfq_q_handle*)'
+test.cpp:115: undefined reference to `nfq_close(nfq_handle*)'
+test.o: In function `print_pkt':
+test.cpp:18: undefined reference to `nfq_get_msg_packet_hdr(nfq_data*)'
+test.cpp:25: undefined reference to `nfq_get_nfmark(nfq_data*)'
+test.cpp:29: undefined reference to `nfq_get_indev(nfq_data*)'
+test.cpp:33: undefined reference to `nfq_get_outdev(nfq_data*)'
+test.cpp:37: undefined reference to `nfq_get_payload(nfq_data*, char**)'
+test.o: In function `cb':
+test.cpp:52: undefined reference to `nfq_set_verdict(nfq_q_handle*,
+unsigned int, unsigned int, unsigned int, unsigned char*)'
+collect2: ld returned 1 exit status
+make: *** [test] Error 1
 
 
--- 
-Dwayne Hottinger
-Network Administrator
-Harrisonburg City Public Schools
+Here is my simplistic Makefile:
+LDOPTS =
 
-"rarely do people communicate, they just take turns talking"
+LIBS = -lnfnetlink -lnetfilter_queue
 
+INCDIR =
+
+CXXFLAGS= -g -Wall#$(INCDIR)
+
+sources := $(wildcard *.cpp) $(wildcard *.c)
+
+objs := $(sources)
+objs := $(objs:.c=.o)
+objs := $(objs:.cpp=.o)
+
+all: test
+
+clean:
+    rm -f $(objs) test
+
+test: $(objs)
+    $(CXX) $(LDOPTS) $(LIBS) $^ -o $@
+
+.c.o:
+    $(CC) $(CXXFLAGS) -c $< -o $@
+
+.cpp.o:
+    $(CXX) $(CXXFLAGS) -c $< -o $@
+
+Can anybody point me in the right direction?  Don't know why it
+doesn't want to link.
