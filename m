@@ -1,34 +1,63 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
 Subject: Re: check through put
-Date: Wed, 05 Dec 2007 17:54:21 +0200
-Message-ID: <1196870061.2317.18.camel@localhost.localdomain>
+Date: Wed, 05 Dec 2007 10:03:42 -0600
+Message-ID: <1196870622.19486.19.camel@grateful.d.umn.edu>
 References: <4756BF08.1090106@sartorit.co.uk>
-Reply-To: casper@meteor.dp.ua
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-TdYSOSu+ze25XKB/LHYh"
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <4756BF08.1090106@sartorit.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
 To: Gian Sartor <gian@sartorit.co.uk>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-=F7 =F3=D2=C4, 05/12/2007 =D7 15:08 +0000, Gian Sartor =D0=C9=DB=C5=D4:
+
+--=-TdYSOSu+ze25XKB/LHYh
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+
+On Wed, 2007-12-05 at 15:08 +0000, Gian Sartor wrote:
 > Hi All,
 >=20
 > I am fairly new to netfilter/iptables and am wondering if there is a=20
-> quick way to check the throughput of our firewall. We are having some=
-=20
+> quick way to check the throughput of our firewall. We are having some=20
 > network issues and suspect the firewall as being the bottleneck.
->=20
-> Thanks in advance.
-> Gian
 
-Try using "iptraf" program.
+iperf
+
+You could also do (if running an apt based system):
+
+apt-cache search net benchmark
+apt-cache search net performance
+apt-cache search net throughput
+etc.
+
+to get some other utilities/packages.
 
 --=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
+University of Minnesota Duluth
+Information Technology Systems & Services
+PGP key 1024D/84E22DA2 2005-11-07
+Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
+
+He is not a fool who gives up what he cannot keep to gain what he cannot
+lose.
+-Jim Elliot
+
+--=-TdYSOSu+ze25XKB/LHYh
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBHVsveU+eIf4TiLaIRAtV2AJwOxEGL0jGbWc38EKYoZ973vTozHgCgw+W5
+kNU8xbztfNJWvsGf3xMSsds=
+=eKEx
+-----END PGP SIGNATURE-----
+
+--=-TdYSOSu+ze25XKB/LHYh--
 
