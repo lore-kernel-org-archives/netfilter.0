@@ -1,63 +1,86 @@
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: Re: check through put
-Date: Wed, 05 Dec 2007 10:03:42 -0600
-Message-ID: <1196870622.19486.19.camel@grateful.d.umn.edu>
-References: <4756BF08.1090106@sartorit.co.uk>
+From: jamr <jamr@7lan.net>
+Subject: nat rules for 2 networks
+Date: Wed, 05 Dec 2007 15:59:04 -0200
+Message-ID: <1196877545.5936.4.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-TdYSOSu+ze25XKB/LHYh"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4756BF08.1090106@sartorit.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Gian Sartor <gian@sartorit.co.uk>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-
---=-TdYSOSu+ze25XKB/LHYh
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-
-On Wed, 2007-12-05 at 15:08 +0000, Gian Sartor wrote:
-> Hi All,
->=20
-> I am fairly new to netfilter/iptables and am wondering if there is a=20
-> quick way to check the throughput of our firewall. We are having some=20
-> network issues and suspect the firewall as being the bottleneck.
-
-iperf
-
-You could also do (if running an apt based system):
-
-apt-cache search net benchmark
-apt-cache search net performance
-apt-cache search net throughput
-etc.
-
-to get some other utilities/packages.
-
---=20
-Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
-University of Minnesota Duluth
-Information Technology Systems & Services
-PGP key 1024D/84E22DA2 2005-11-07
-Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
-
-He is not a fool who gives up what he cannot keep to gain what he cannot
-lose.
--Jim Elliot
-
---=-TdYSOSu+ze25XKB/LHYh
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQBHVsveU+eIf4TiLaIRAtV2AJwOxEGL0jGbWc38EKYoZ973vTozHgCgw+W5
-kNU8xbztfNJWvsGf3xMSsds=
-=eKEx
------END PGP SIGNATURE-----
-
---=-TdYSOSu+ze25XKB/LHYh--
+Hi list,
+        
+        I'm having problens regarding iptables using 2 different
+        networks:
+        
+        In my interfaces I have:
+        
+        eth0 -> 10.6.6.0/255.255.255.0
+        eth0:0 -> 192.168.7.0/255.255.255.0
+        
+        Sometimes, the workstations behind the nat firewall loses
+        connection to
+        some sites. The problem seems to stop when the user reboot his
+        machine
+        or I disable the transparent proxy rule.
+        
+        I don't know if there is any sysctl atribute to change for
+        this...
+        here are my rules:
+        
+        iptables -A PREROUTING -t nat -p tcp -d xxx.dyndns.info --dport
+        2121 -j
+        DNAT --to 10.6.6.1:22
+        
+        #bloqueio msn
+        iptables -A FORWARD -p tcp -s 10.6.6.199 --dport 1800:1899 -j
+        ACCEPT
+        iptables -A FORWARD -p tcp -s 10.6.6.242 --dport 1800:1899 -j
+        ACCEPT
+        iptables -A FORWARD -p tcp --dport 1800:1899 -j REJECT
+        
+        # regras de nat
+        iptables -t nat -A POSTROUTING -s 0/0 -j MASQUERADE
+        
+        #iptables -t nat -A POSTROUTING -s 10.6.6.0/255.255.255.0 -j
+        MASQUERADE
+        
+        iptables -A FORWARD -s 10.6.6.0/255.255.255.0 -j ACCEPT
+        iptables -A FORWARD -d 10.6.6.0/255.255.255.0 -m state --state
+        RELATED,ESTABLISHED -j ACCEPT
+        
+        iptables -A FORWARD -s 192.168.7.0/255.255.255.0 -j ACCEPT
+        iptables -A FORWARD -d 192.168.7.0/255.255.255.0 -m state
+        --state
+        RELATED,ESTABLISHED -j ACCEPT
+        
+        # liberacao de portas no servidor lapaz.poa.chipsat.com.br
+        
+        iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+        iptables -A INPUT -p tcp -m tcp --dport 4143 -j ACCEPT
+        #iptables -A INPUT -p tcp -m tcp --dport 3128 -j ACCEPT
+        
+        # libera interfaces desejadas e bloqueia o resto tudo.
+        
+        iptables -A INPUT -p tcp -m state --state RELATED,ESTABLISHED -j
+        ACCEPT
+        iptables -A INPUT -i lo -j ACCEPT
+        iptables -A INPUT -i eth0 -j ACCEPT
+        iptables -A INPUT -p tcp -j REJECT --reject-with
+        icmp-proto-unreachable
+        
+        
+        # forca navegacao pelo proxy
+        
+        iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j
+        REDIRECT
+        --to-port 3128
+        
+        I'm runing SLES 10.
+        
+        Thanks in advance,
+        
+        Joao Reis
 
