@@ -1,23 +1,21 @@
-From: Christopher Munns <munns@meetup.com>
-Subject: CONFIG_NF_CONNTRACK_EVENTS stability?
-Date: Wed, 05 Dec 2007 17:37:11 -0500
-Message-ID: <47572817.6010907@meetup.com>
+From: Neal Becker <ndbecker2@gmail.com>
+Subject: policy based routing question
+Date: Wed, 05 Dec 2007 21:19:19 -0500
+Message-ID: <fj7m77$n14$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-I was hoping someone might be able to comment on the stability of
-CONFIG_NF_CONNTRACK_EVENTS(in 2.6.22 right now).  I'm trying to set up
-conntrackd to aid in stateful failover between firewalls and since it is
-still marked as Experimental, I was curious just how experimental it
-is.  Has anyone had this under some high load?  100+ concurrent
-connections?  Any issues with DNAT?
+I'm interested in implementing policy based routing on a system with
+multiple interfaces.  I'd like to use some kind of classifier to determine
+the type of traffic associated with a packet.  I know iptables/mark + ip
+route can be used to classify packets by port #, but that isn't always
+sufficient.
 
-Thanks,
+I wonder if anyone has implemented anything like this and can give me any
+advice?
 
-- Chris Munns
-Meetup
