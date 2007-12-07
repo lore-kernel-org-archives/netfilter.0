@@ -1,100 +1,41 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: IPIP decapsulation
-Date: Fri, 07 Dec 2007 18:00:53 +0100
-Message-ID: <47597C45.4060606@plouf.fr.eu.org>
-References: <CC12CD48AEDA1E4B8A3F626DA84E927209CD49CD@ka-cap-sr-3601.xb.local>
+From: Stephanie Lockwood-Childs <sjl@vctlabs.com>
+Subject: [PATCH] netfilter_queue: byte order of mark
+Date: Fri, 7 Dec 2007 15:35:39 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.0712071304490.2760@dent.vctlabs.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CC12CD48AEDA1E4B8A3F626DA84E927209CD49CD@ka-cap-sr-3601.xb.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-Please do not reply to a message when you start a new discussion. This=20
-disrupts the existing thread and makes your message less visible.
+when trying to set marks with netfilter_queue library, I discovered there 
+is a discrepency in byte ordering between the library and the 
+nfnetlink_queue kernel model. The kernel code expects to receive the mark 
+attribute in network order
 
-Shaun Mccullagh a =E9crit :
->=20
->                           Director A (62.101.52.99)
->                               |    Virtual Server (62.101.52.106)
->                               |
->                               |
-> 				Iptables Firewall (62.101.15.9)
->                               |
-> 			Real Server B (10.1.60.10)
->=20
-> The idea is Browser Requests are sent to the Web Director. This then
-> encapsulates the datagrams using IPIP and tunnels them to the IPtable
-> Firewall which is on the same LAN as Real Server B
->=20
-> I've setup a tunnel on the IP Tables firewall so that it can return t=
-he
-> datagrams to the client browser with the same source address as the
-> Director
->=20
-> The IP Addresses used on the Director are
->=20
-> eth0: inet 62.101.52.99/28 brd 62.101.52.111 scope global eth0
->       inet 62.101.52.106/28 scope global secondary eth0 =20
->       (This is used as a Virtual Server IP)
->=20
-> Ipvsadm looks like this on the Director:
->=20
-> Prot LocalAddress:Port Scheduler Flags
->   -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
-> TCP  62.101.52.106:80 wlc persistent 86400
->   -> 62.101.15.9:80               Tunnel  1      4          0        =
-=20
->=20
-> IPtables firewall uses
->     inet 62.101.15.9/24 scope global secondary eth1.11
->     inet 10.1.60.5/24 eth0.60
->=20
-> and
->=20
-> tun0@NONE: <POINTOPOINT,NOARP,UP> mtu 1480 qdisc noqueue=20
->     link/ipip 62.101.15.9 peer 62.101.52.99
->     inet 62.101.52.106 peer 62.101.52.255/32 scope global tun2
->=20
-> This almost works.
->=20
-> The problem is I cannot figure out how to get the IPtables firewall t=
-o
-> forward the decapsulated datagrams to Real Server B. I believe this c=
-an
-> be done with mangling but I can't quite figure this out.
->=20
-> Here is my current NAT table
->=20
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination        =20
-> DNAT       tcp  --  0.0.0.0/0            62.101.15.9  dport 80
-> to:10.1.60.10
+net/netfilter/nfnetlink_queue.c
+if (nfqa[NFQA_MARK-1])
+ 	entry->skb->mark = ntohl(*(__be32 *)
+ 				NFA_DATA(nfqa[NFQA_MARK-1]));
 
-If I understand correctly (I have never used IPVS), IPIP encapsulating=20
-tunneling packets have source 62.101.52.99 and destination 62.101.15.9,=
-=20
-and encapsulated TCP packets have source [the client address] and=20
-destination 62.101.52.106. So in the -d option I would put 62.101.52.10=
-6=20
-instead of 62.101.15.9.
+so netfilter_queue library should put the mark into network order when
+sending it.
 
-> Input chain look like this
->=20
-> Chain INPUT (policy DROP)
-> target     prot opt source               destination        =20
-> ACCEPT     tcp  --  62.101.52.106         62.101.15.9   dport 80
+diff -ur libnetfilter_queue.orig/src/libnetfilter_queue.c libnetfilter_queue/src/libnetfilter_queue.c
+--- netfilter/libnetfilter_queue/src/libnetfilter_queue.c	2007-12-05 11:26:24.000000000 -0800
++++ libnetfilter_queue-0.0.15/src/libnetfilter_queue.c	2007-12-05 16:47:44.000000000 -0800
+@@ -333,8 +333,9 @@
+  	/* add verdict header */
+  	nfnl_addattr_l(nmh, sizeof(buf), NFQA_VERDICT_HDR, &vh, sizeof(vh));
 
-In the filter/INPUT chain you must allow IPIP tunneling (protocol 4)=20
-instead of TCP. You must accept TCP port 80 from any to 10.1.6.10 in th=
-e=20
-filter/FORWARD chain, and symmetric return traffic from the server of=20
-course.
++	/* kernel module expects mark to be in network byte order */
+  	if (set_mark)
+-		nfnl_addattr32(nmh, sizeof(buf), NFQA_MARK, mark);
++		nfnl_addattr32(nmh, sizeof(buf), NFQA_MARK, htonl(mark));
 
-You may also need to disable source validation (rp_filter) on the tunne=
-l=20
-interface tun0.
+  	iov[0].iov_base = nmh;
+  	iov[0].iov_len = NLMSG_TAIL(nmh) - (void *)nmh;
