@@ -1,41 +1,39 @@
-From: Stephanie Lockwood-Childs <sjl@vctlabs.com>
-Subject: [PATCH] netfilter_queue: byte order of mark
-Date: Fri, 7 Dec 2007 15:35:39 -0800 (PST)
-Message-ID: <Pine.LNX.4.64.0712071304490.2760@dent.vctlabs.com>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: Filter by state and destination mac
+Date: Fri, 7 Dec 2007 23:48:57 -0800
+Message-ID: <d95317090712072348h8218fa0pf5842208e174bb85@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=ZgRp46WnY7w8sPzoiiE9bjodeX1qP4arlmyDzThAfTw=;
+        b=nbWVBJWXQlc+vJU064QD0l/ZOpDKn7VAjkC9e9HlgBO/hU45FtfmaNYz8A2ybodVr1v7pMDz/4I5lE5KjHxsyCJqtocwKqelRI6ET4TlZMweEQPqS5Rr+Yiy3vJqENjCwLWkYYvOsrq5PC9b456xxE5D5wEMoJ67eiLD8PN6wNw=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
+I am filtering packets on a bridge. A simple bridge with no routing.
+Only IP and ARP packets.
 
-when trying to set marks with netfilter_queue library, I discovered there 
-is a discrepency in byte ordering between the library and the 
-nfnetlink_queue kernel model. The kernel code expects to receive the mark 
-attribute in network order
+I want to filter on a combination of destination MAC and the connection's state.
+ebtables, of course, knows nothing of connection state.
+iptables does not match by destination MAC. Reading a bit I understand
+that the option
+doesn't exist because it doesn't always know it.
+But in my case it does.
 
-net/netfilter/nfnetlink_queue.c
-if (nfqa[NFQA_MARK-1])
- 	entry->skb->mark = ntohl(*(__be32 *)
- 				NFA_DATA(nfqa[NFQA_MARK-1]));
+How can I filter on this combination then ?
 
-so netfilter_queue library should put the mark into network order when
-sending it.
+The only option I currently see is a combination
+- ebtables will filter on the FORWARD chain based on dest MAC, and
+mark the packets.
+- iptables will filter on the FORWARD chain based on the mark and the
+connection state.
 
-diff -ur libnetfilter_queue.orig/src/libnetfilter_queue.c libnetfilter_queue/src/libnetfilter_queue.c
---- netfilter/libnetfilter_queue/src/libnetfilter_queue.c	2007-12-05 11:26:24.000000000 -0800
-+++ libnetfilter_queue-0.0.15/src/libnetfilter_queue.c	2007-12-05 16:47:44.000000000 -0800
-@@ -333,8 +333,9 @@
-  	/* add verdict header */
-  	nfnl_addattr_l(nmh, sizeof(buf), NFQA_VERDICT_HDR, &vh, sizeof(vh));
-
-+	/* kernel module expects mark to be in network byte order */
-  	if (set_mark)
--		nfnl_addattr32(nmh, sizeof(buf), NFQA_MARK, mark);
-+		nfnl_addattr32(nmh, sizeof(buf), NFQA_MARK, htonl(mark));
-
-  	iov[0].iov_base = nmh;
-  	iov[0].iov_len = NLMSG_TAIL(nmh) - (void *)nmh;
+Ugly, but does the job.
+Is there a better way ?
+Would it make sense to extend the iptables code to allow this ?
