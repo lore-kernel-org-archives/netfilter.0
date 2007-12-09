@@ -1,29 +1,71 @@
-From: Deephay <tudoxxx@gmail.com>
-Subject: how to do a MAC-based filtering for NAT
-Date: Sun, 9 Dec 2007 13:11:05 +0800
-Message-ID: <9a9df61d0712082111s90a5fa3o4d272b2c1dacc1f1@mail.gmail.com>
+From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= 
+	<leolistas@solutti.com.br>
+Subject: Re: how to do a MAC-based filtering for NAT
+Date: Sun, 09 Dec 2007 09:31:27 -0200
+Message-ID: <475BD20F.6030206@solutti.com.br>
+References: <9a9df61d0712082111s90a5fa3o4d272b2c1dacc1f1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=6AdA0/138I/aCTWr7Q8w8643Nny7gyppinrf49eXa1U=;
-        b=i3YMv16pzFL68FWDJmd7sRWwfDJDFi4GmL0Vcf/pZFo72+WR8R4c+FvYEg4O4ng3eputj/nAEd95/ONrK6qK6FdG0/HarCDhV+wXtFUZMg9x8P8VJGFkQR9xtCM287mfmwVDhUmcZpA4k86kHqPhMyjH1ivxRd9d4FICrmaaCP0=
-Content-Disposition: inline
+In-Reply-To: <9a9df61d0712082111s90a5fa3o4d272b2c1dacc1f1@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Deephay <tudoxxx@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Greetings all,
 
-I am wondering how to do a MAC-based filtering for a NAT:
+    Yes it works if you have the correct rules.
 
-iptables -P FORWARD DROP
-iptables -A FORWARD -m mac --mac-source xxxxxxxx -j ACCEPT
+    Are these 2 FORWARD rules your only rules ????? If no, please post=20
+your full ruleset.
 
-the above things will not work, is there a way to achieve this? thanks!
+    If yes ..... i can clearly see 2 problems.
 
-Cheers,
-Deephay
+    You have not told us about your scenario, but i'll suppose you have=
+=20
+the simple scenario of a linux box with 2 NICs, forwarding packets=20
+between NICs. The --mac-source rule you made WILL work. But you're=20
+clearly missing some rule that allow packets to came back, the replies.=
+=20
+You're allowing the packet to go out, but not allowing replies to get=20
+back. So, 'it will not work'. Based on your scenario, you certainly nee=
+d=20
+some rules to allow the return traffic.
+
+    And if these are your only 2 rules, then you're simply forwarding,=20
+there's no NAT rule here. Packets will be forwarded but the original ip=
+=20
+address will be kept, that means, no Network Address Translation (NAT)=20
+will occur. You would need some '-t nat -A POSTROUTING' rule for doing=20
+the Source NAT.
+
+
+Deephay escreveu:
+> Greetings all,
+>
+> I am wondering how to do a MAC-based filtering for a NAT:
+>
+> iptables -P FORWARD DROP
+> iptables -A FORWARD -m mac --mac-source xxxxxxxx -j ACCEPT
+>
+> the above things will not work, is there a way to achieve this? thank=
+s!
+>
+>  =20
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
+
