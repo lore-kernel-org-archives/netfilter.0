@@ -1,25 +1,27 @@
-From: "Oscar N" <oscar@linnea.net>
-Subject: interfaces in /proc/net/ip_conntrack
-Date: Mon, 10 Dec 2007 18:49:26 +0100 (CET)
-Message-ID: <26618.83.227.11.237.1197308966.squirrel@mh.linnea.com>
-Reply-To: oscar@linnea.net
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: interfaces in /proc/net/ip_conntrack
+Date: Mon, 10 Dec 2007 20:26:14 +0100
+Message-ID: <475D92D6.9070203@plouf.fr.eu.org>
+References: <26618.83.227.11.237.1197308966.squirrel@mh.linnea.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <26618.83.227.11.237.1197308966.squirrel@mh.linnea.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Are the interfaces saved in any way in a session or is it only ip src, dst
-and ports that are saved and matched against?
+Hello,
 
-Why I ask is because what happens if I configure a linuxbox as two virtual
-firewall with same nets being used on different vlans. Will all the
-sessions be separate or will they sometimes "merge" if it happens to be
-the same IPs and ports in two sessions.
+Oscar N a =E9crit :
+> Are the interfaces saved in any way in a session or is it only ip src=
+, dst
+> and ports that are saved and matched against?
 
-/Oscar
-
-
+AFAIK, no ; only the MASQUERADE target saves the output interface for=20
+the sole purpose of deleting related contrack entries when an interface=
+=20
+goes down or its address changes. However you may want to get a more=20
+authoritative answer from a Netfilter developper.
 
