@@ -1,24 +1,35 @@
-From: Ryan Rodriguez <rrodriguez@astrocorp.com>
-Subject: -m nexthop to realm
-Date: Mon, 10 Dec 2007 13:33:26 -0600
-Message-ID: <20071210193326.GA3604@rr>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: interfaces in /proc/net/ip_conntrack
+Date: Tue, 11 Dec 2007 00:36:06 +0100
+Message-ID: <475DCD66.5080102@rtij.nl>
+References: <26618.83.227.11.237.1197308966.squirrel@mh.linnea.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <26618.83.227.11.237.1197308966.squirrel@mh.linnea.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: oscar@linnea.net
+Cc: netfilter@vger.kernel.org
 
-Hello netfilter mailing list
+Oscar N wrote:
+> Are the interfaces saved in any way in a session or is it only ip src, dst
+> and ports that are saved and matched against?
+>
+> Why I ask is because what happens if I configure a linuxbox as two virtual
+> firewall with same nets being used on different vlans. Will all the
+> sessions be separate or will they sometimes "merge" if it happens to be
+> the same IPs and ports in two sessions.
+>   
 
-I recently updated my kernel/iptables.  I find myself missing the match nexthop i'v read that the match realm can do the same thing but information on how seems to be lacking on the internet.  I am wondering if anyone knows of some documentation on how to do this?
+Interfaces are not used, not in this sense. In fact, this is a feature. 
+It allows asymetric routing, where packets go out through one interface 
+and the return packets arrive at a different interface.
 
-Thank you
+I would use two physical or virtual machines, as the risk you describe 
+is real, if remote.
 
--- 
-Ryan Rodriguez
+HTH,
+M4
 
-Astrocom Corporation
-http://www.astrocorp.com/
