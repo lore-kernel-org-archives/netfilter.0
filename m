@@ -1,40 +1,25 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Completely DROP for UDP packets.
-Date: Mon, 10 Dec 2007 16:17:31 +0100
-Message-ID: <475D588B.9040205@plouf.fr.eu.org>
-References: <1368.121.163.60.159.1197142746.squirrel@211.111.194.2>        <475AFFEE.5010906@rtij.nl> <4988.211.111.195.128.1197265533.squirrel@211.111.194.2>
+From: "Oscar N" <oscar@linnea.net>
+Subject: interfaces in /proc/net/ip_conntrack
+Date: Mon, 10 Dec 2007 18:49:26 +0100 (CET)
+Message-ID: <26618.83.227.11.237.1197308966.squirrel@mh.linnea.com>
+Reply-To: oscar@linnea.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4988.211.111.195.128.1197265533.squirrel@211.111.194.2>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
+Are the interfaces saved in any way in a session or is it only ip src, dst
+and ports that are saved and matched against?
 
-msn a =E9crit :
->=20
-> So, it is NOT possible to decreasing the CPU usage of the massive UDP
-> handling in the linux kernel ? any comments would be nice to me.
+Why I ask is because what happens if I configure a linuxbox as two virtual
+firewall with same nets being used on different vlans. Will all the
+sessions be separate or will they sometimes "merge" if it happens to be
+the same IPs and ports in two sessions.
 
-You cannot decrease the packet processing load in the network interface=
-=20
-driver, unless you use a more "efficient" network card or driver. As=20
-Martijn wrote, the best you can do at iptables level is drop the packet=
-s=20
-as soon as possible, in the PREROUTING chain of the 'raw' table even=20
-though this is not the primary purpose of the 'raw' table. This will=20
-save CPU usage for the traversal of subsequent iptables chains, the=20
-connection tracking if it is enabled (as opposed to filtering in the=20
-PREROUTING chain of the 'mangle' table), the input routing decision and=
-=20
-the fragment reassembly (as opposed to filtering in the INPUT chain of=20
-any table).
+/Oscar
 
-The path is as follows :
 
-interface -> raw/PREROUTING -> conntrack & fragment reassembly ->=20
-mangle/PREROUTING -> nat/PREROUTING -> routing decision -> fragment=20
-reassembly -> mangle/INPUT -> filter/INPUT -> local delivery
+
