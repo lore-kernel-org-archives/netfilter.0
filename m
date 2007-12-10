@@ -1,7 +1,7 @@
 From: "msn" <msn@vtopia.co.kr>
 Subject: Re: Completely DROP for UDP packets.
-Date: Mon, 10 Dec 2007 14:43:10 +0900 (KST)
-Message-ID: <4968.211.111.195.128.1197265390.squirrel@211.111.194.2>
+Date: Mon, 10 Dec 2007 14:45:33 +0900 (KST)
+Message-ID: <4988.211.111.195.128.1197265533.squirrel@211.111.194.2>
 References: <1368.121.163.60.159.1197142746.squirrel@211.111.194.2>
         <475AFFEE.5010906@rtij.nl>
 Reply-To: msn@vtopia.co.kr
@@ -15,7 +15,15 @@ Content-Type: text/plain; charset="us-ascii"
 To: m@rtij.nl
 Cc: netfilter@vger.kernel.org
 
-So, it is NO
+ignoring previous message. sorry...
+
+So, it is NOT possible to decreasing the CPU usage of the massive UDP
+handling in the linux kernel ? any comments would be nice to me. thanks in
+advance.
+
+Cheers.
+
+
 
 > msn wrote:
 >> Hi, I'm trying to dropping all UDP packets from specific address but
