@@ -1,65 +1,43 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: [Announce] Nulog 2.0-rc1
-Date: Thu, 13 Dec 2007 22:16:30 +0100
-Message-ID: <1197580590.6801.11.camel@localhost>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-fVzTfa5c/BSMjf9r8ooH"
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH net-2.6.25 5/8] net/netfilter: Use ipv4_is_<type>
+Date: Thu, 13 Dec 2007 15:38:58 -0800
+Message-ID: <1197589141-7020-5-git-send-email-joe@perches.com>
+References: <1197589141-7020-1-git-send-email-joe@perches.com>
+ <1197589141-7020-2-git-send-email-joe@perches.com>
+ <1197589141-7020-3-git-send-email-joe@perches.com>
+ <1197589141-7020-4-git-send-email-joe@perches.com>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1197589141-7020-4-git-send-email-joe@perches.com>
+Message-Id: <350bda1cfd4ac57b354451157b9009b3c8ce334e.1197432867.git.joe@perches.com>
+In-Reply-To: <e2ebcbf24539c0a3ef2ac77147dbfa55d8ac9e33.1197432867.git.joe@perches.com>
+References: <e2ebcbf24539c0a3ef2ac77147dbfa55d8ac9e33.1197432867.git.joe@perches.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>
-Cc: romain <romain@inl.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netdev@vger.kernel.org
+Cc: Patrick McHardy <kaber@trash.net>, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
 
---=-fVzTfa5c/BSMjf9r8ooH
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ net/netfilter/xt_pkttype.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Hello,
-
-Nulog2 developpement team and INL are proud to announce the availability
-of the first release candidate of Nulog 2.0.
-
-Nulog2 is a complete rewrite of Nulog the historical filtering log
-analysis solution from INL. Nulog2 is an application build upon Twisted,
-an advanced Python framework. It analyzes logs from Netfilter and/or
-NuFW and displays them on a Web page.
-
-Logs have to be injected in a MySQL database to be accessible to Nulog2.
-For Netfilter, this can easily be done via ULOG and ulogd and there is a
-native support of MySQL in NuFW, the authenticating firewall.
-
-Nulog2 is a modular application where the administrator can easily setup
-the index page by adding search results to it. In fact, a simple clic is
-enough to add a "widget" on the main page.
-
-The datas in the widget can be displayed in three forms:
-      * Textual array
-      * Bar chart
-      * Pie chart
-
-More information and download:
-Nulog2: http://software.inl.fr/trac/trac.cgi/wiki/EdenWall/NuLog2
-NuFW: http://www.nufw.org/
-INL: http://www.inl.fr/
-
-Happy filtering to all,
---=20
-Eric Leblond <eric@inl.fr>
-INL
-
---=-fVzTfa5c/BSMjf9r8ooH
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD4DBQBHYaEunxA7CdMWjzIRAiX9AKCDI6fUlQzfMjo05MaMs4UDyUNVLACTBqKi
-q8eErGw79NeV+B8/9q86JQ==
-=4W/t
------END PGP SIGNATURE-----
-
---=-fVzTfa5c/BSMjf9r8ooH--
+diff --git a/net/netfilter/xt_pkttype.c b/net/netfilter/xt_pkttype.c
+index c598bbe..2762449 100644
+--- a/net/netfilter/xt_pkttype.c
++++ b/net/netfilter/xt_pkttype.c
+@@ -31,7 +31,7 @@ pkttype_mt(const struct sk_buff *skb, const struct net_device *in,
+ 	const struct xt_pkttype_info *info = matchinfo;
+ 
+ 	if (skb->pkt_type == PACKET_LOOPBACK)
+-		type = MULTICAST(ip_hdr(skb)->daddr)
++		type = ipv4_is_multicast(ip_hdr(skb)->daddr)
+ 			? PACKET_MULTICAST
+ 			: PACKET_BROADCAST;
+ 	else
+-- 
+1.5.3.7.949.g2221a6
 
