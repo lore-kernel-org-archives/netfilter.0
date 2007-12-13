@@ -1,42 +1,65 @@
-From: "Jacob Lear" <jlear@brammo.com>
-Subject: RE: Network Communication Issues
-Date: Thu, 13 Dec 2007 10:41:41 -0800
-Message-ID: <004001c83db7$cd376bd0$fe02a8c0@brammo.main>
-References: <000b01c83ce4$71df9fb0$fe02a8c0@brammo.main> <4760800B.7040601@riverviewtech.net> <003e01c83db1$25d10460$fe02a8c0@brammo.main> <47617846.5090101@riverviewtech.net>
+From: Eric Leblond <eric@inl.fr>
+Subject: [Announce] Nulog 2.0-rc1
+Date: Thu, 13 Dec 2007 22:16:30 +0100
+Message-ID: <1197580590.6801.11.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-fVzTfa5c/BSMjf9r8ooH"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47617846.5090101@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
+To: netfilter <netfilter@vger.kernel.org>
+Cc: romain <romain@inl.fr>
 
- 
-> All references I see to "wrong data byte #30 should be 0x1e but was" 
-> suggest wrong drivers for the NIC.  Any thoughts?
 
-That's entirely possible. That NIC isn't one of the onboard NICs and was
-just one that I had laying around. I don't even remember what it is. The
-server is Red Hat EL4 x64 and the driver it is using is the one that it
-picked: "ADMtek NC100 Network Everywhere Fast Ethernet 10/100". I have a
-bunch of spare Linksys LNE100TX... I think it might be one of those. Is
-there a Linux driver for that and is that the correct driver for it,
-assuming that there is and that is what the card is?
+--=-fVzTfa5c/BSMjf9r8ooH
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> Ok...
-> I'm not entirely sure that the blank gateway on the second NIC is not a
-problem, though I don't think it is your current 
-> problem.  I've had mixed results not putting a gateway in on all interface
-config panels in Windows before.
+Hello,
 
-I don't think that's the problem... based on what I've read online, Windows
-doesn't like having more than 1 Default Gateway -- it confuses it (big
-shocker there huh?). I tried it that way at first and it was complaining
-when I tried to save the TCP/IP properties. I don't think the routing was
-working right either... I seem to recall some issues.
+Nulog2 developpement team and INL are proud to announce the availability
+of the first release candidate of Nulog 2.0.
 
- 
-Jacob Lear
-IT Systems Support Engineer
+Nulog2 is a complete rewrite of Nulog the historical filtering log
+analysis solution from INL. Nulog2 is an application build upon Twisted,
+an advanced Python framework. It analyzes logs from Netfilter and/or
+NuFW and displays them on a Web page.
+
+Logs have to be injected in a MySQL database to be accessible to Nulog2.
+For Netfilter, this can easily be done via ULOG and ulogd and there is a
+native support of MySQL in NuFW, the authenticating firewall.
+
+Nulog2 is a modular application where the administrator can easily setup
+the index page by adding search results to it. In fact, a simple clic is
+enough to add a "widget" on the main page.
+
+The datas in the widget can be displayed in three forms:
+      * Textual array
+      * Bar chart
+      * Pie chart
+
+More information and download:
+Nulog2: http://software.inl.fr/trac/trac.cgi/wiki/EdenWall/NuLog2
+NuFW: http://www.nufw.org/
+INL: http://www.inl.fr/
+
+Happy filtering to all,
+--=20
+Eric Leblond <eric@inl.fr>
+INL
+
+--=-fVzTfa5c/BSMjf9r8ooH
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD4DBQBHYaEunxA7CdMWjzIRAiX9AKCDI6fUlQzfMjo05MaMs4UDyUNVLACTBqKi
+q8eErGw79NeV+B8/9q86JQ==
+=4W/t
+-----END PGP SIGNATURE-----
+
+--=-fVzTfa5c/BSMjf9r8ooH--
 
