@@ -1,84 +1,62 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Network Communication Issues
-Date: Wed, 12 Dec 2007 18:42:51 -0600
-Message-ID: <4760800B.7040601@riverviewtech.net>
-References: <000b01c83ce4$71df9fb0$fe02a8c0@brammo.main>
+From: Saravanan Chanemouganandam <schane@osmozis.com>
+Subject: iptables v1.3.5: Couldn't load target `MASQUERADE':File not found
+Date: Thu, 13 Dec 2007 16:02:03 +0100
+Message-ID: <200712131602.04744.schane@osmozis.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <000b01c83ce4$71df9fb0$fe02a8c0@brammo.main>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 12/12/2007 11:28 AM, Jacob Lear wrote:
-> The problem is that communication with the Linux router isn't working 
-> properly.  I cannot ping the router from the other servers, but I CAN 
-> ping the other servers from the router; however I receive a message 
-> in every ping reply that says "wrong data byte #XX should be 0xXZ but 
-> was 0xXY".
+Hi all, 
 
-Can we see the actual error message rather than a sanitized one?
+Iam a newbie to use iptables and I am fascing the following issue with  
+iptables v 1.3.5 on my target pxa270 Xscale running linux 2.6.16.
 
-> What's even more strange is that I can ping the router's SAN NIC 
-> (192.168.1.1) from my workstation which is on the main subnet just 
-> fine, as well as the other servers on the SAN.
-> 
-> I've done some searching on the net and most people say that the 
-> common cause of something like this is a firewall.  The router is 
-> running iptables for its firewall and for NAT.  I've added entries to 
-> permit all internal traffic and checked the log (it displays a 
-> message in syslog when it rejects a packet) but it's not rejecting 
-> the traffic.  None of the other servers are running a firewall.
+schane:/sbin$ iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+iptables v1.3.5: Couldn't load target `MASQUERADE':File not found
 
-I would initially question whether or not the problem is firewall 
-related or if you have crossed subnet masks.
+Try `iptables -h' or 'iptables --help' for more information.
 
-> Here's the routing table from one of the Windows servers:
-> 
-> <snip>
-> 
-> And here's the routing table from the Linux router:
-> 
-> <snip>
-> 
-> And here's the iptables firewall script:
-> 
-> <snip>
+schane:/sbin$ iptables -A INPUT -i lo -j ACCEPT
+iptables v1.3.5: Couldn't load target `standard':File not found
+Try `iptables -h' or 'iptables --help' for more information.
 
-I don't see any thing in the script that should be causing problems. 
-Initially I wondered if you could access the firewall from the servers 
-via an IP address that would be forwarded through the router / firewall 
-but not directly into the router / firewall.  However you have lines in 
-your firewall script that look to allow any traffic in to the firewall 
-from the LAN and SAN so this should not be a problem.  Consider if this 
-was the case, the servers that are on both subnets would not be able to 
-ping the IP of the router / firewall that passes through the router / 
-firewall because it would always come from the close IP, i.e. the one 
-that is in the subnet, thus no need for forwarding.  However your 
-workstation would be able to ping the SAN IP address of the router / 
-firewall because it would have to forward the packet(s), passing through 
-the FORWARD chain, not the INPUT chain directly.
+I did google and mail archieve search but couldn't find the exact information 
+to fix the problem. To use iptables, I have enabled Core Netfilter 
+Configuration, IP Netfilter Configuration built into linux-2.6.16 kernel 
+image and cross compiled iptables package using buildroot's 
+arm-linux-uclibc-gcc as 
 
-> If anyone has any ideas or suggestions, I'd greatly appreciate some 
-> help.  I'm pretty much at a loss at this point.  All I can think of 
-> is that maybe there's something wrong with the NIC...  but that 
-> doesn't really make sense since I can ping it just fine from this 
-> workstation.
+make KERNEL_DIR=/home/pxa270/linux-2.6.16 
+CC=/home/sara/BuildRoot/buildroot/build_arm/staging_dir/usr/bin/arm-linux-gcc 
+LD=/home/sara/BuildRoot/buildroot/build_arm/staging_dir/usr/bin/arm-linux-ld
+BINDIR=/home/sara/BuildRoot/myrootfs/sbin 
+LIBDIR=/home/sara/BuildRoot/myrootfs/lib install
 
-Try disconnecting your internet connection for a few minutes (for 
-safety) and disabling all firewalling all together and allow just 
-straight routing.  If this works, you know for sure that there is a 
-problem in your firewall script.
+I have also built the netfilter configuration as kernel modules for the test 
+and lsmod shows the list of modules loaded , but still the problem persists.
+schane:~$ lsmod
+Module                  Size  Used by    Not tainted
+ipt_MASQUERADE          3296  0
+ipt_REJECT              4608  0
+ipt_owner               2016  0
+ipt_LOG                 6048  0
+iptable_nat             7300  0
+ip_nat                 15282  2 ipt_MASQUERADE,iptable_nat
+iptable_mangle          2400  0
+iptable_filter          2528  0
+ip_conntrack           51096  3 ipt_MASQUERADE,iptable_nat,ip_nat
+nfnetlink               5624  2 ip_nat,ip_conntrack
+ip_tables              11464  3 iptable_nat,iptable_mangle,iptable_filter
+x_tables               11172  6 
+ipt_MASQUERADE,ipt_REJECT,ipt_owner,ipt_LOG,iptable_nat,ip_tables
 
-If that does not work can we get an output of iptables-save so that we 
-see your entire firewall as in kernel memory?
+Can anybody tell me where it went wrong ? 
 
-> Thanks in advance,
+Thanks
+Sara
 
-*nod*
-
-
-
-Grant. . . .
