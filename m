@@ -1,68 +1,75 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: libipq NAT causes RSTs
-Date: Thu, 13 Dec 2007 18:26:48 +0100
-Message-ID: <47616B58.1000300@trash.net>
-References: <47614E80.9050504@secunet.com>
+From: "Jacob Lear" <jlear@brammo.com>
+Subject: RE: Network Communication Issues
+Date: Thu, 13 Dec 2007 09:54:03 -0800
+Message-ID: <003e01c83db1$25d10460$fe02a8c0@brammo.main>
+References: <000b01c83ce4$71df9fb0$fe02a8c0@brammo.main> <4760800B.7040601@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47614E80.9050504@secunet.com>
+In-Reply-To: <4760800B.7040601@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Thomas Egerer <thomas.Egerer@secunet.com>
-Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Thomas Egerer wrote:
-> I'm currently (trying) to write a transparent proxy application, using
-> libipq to capture packets + iptables' redirect mechanism.
-> The basic idea works as follows:
-> +---+      +---+      +---+
-> | S |<---->| P |<---->| D |
-> +---+ (1)  +---+  (2) +---+
-> 
-> (1) uses iptables' REDIRECT target; the received data is then forwarded,
->     using another socket connection (2)
-> (2) uses libipq to do some kind of SNAT and change the local source
->     address to S's address and vice versa for the incoming packets
->     from D
-> 
-> So far the theory. The application works fine, as long, as I do not
-> remap the source port (destination port, respectively) from P to D (2). Once
-> I enable the port remapping I get
-> a) syslog messages like the following:
->    [ 7742.939471] ip_rt_bug: [S' IP] -> [P's IP at (2)], ?
-> b) RST packets from P towards D, using exactly all the correct TCP
->    settings, except for the destination port, (being 1, sometimes 2, or 3,
->    I couldn't figure out, why)
-> 
-> The three-way-handshake works fine, the RSTs are generated
-> for the _first_ packet to contain a _TCP-payload_. Also netstat tells me,
-> there is an established connection between P and D, but somehow (I
-> assume that this might be the trouble) looking for the corresponding
-> socket connection on P fails.
-> I'm totally puzzled why that happens. libipq reinjects the packets with
-> properly changed checksums and whatnot, yet the RSTs are generated.
-> I've also tried NF_REPEAT, instead of the NF_ACCEPT verdict. The
-> behavior remains identically.
-> 
-> Any ideas, anyone?
+ 
+> Can we see the actual error message rather than a sanitized one?
 
+[root@router ~]$ ping 192.168.1.11
+PING 192.168.1.11 (192.168.1.11) 56(84) bytes of data.
+64 bytes from 192.168.1.11: icmp_seq=0 ttl=128 time=1.45 ms
+wrong data byte #30 should be 0x1e but was 0x8
+#16     10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 8 0 6 4 8 0 6 4 8 0 6 4 1e
+1f 20 1d 1e 1f
+#48     20 21 1e 1f 20 21 1e 1f
+64 bytes from 192.168.1.11: icmp_seq=1 ttl=128 time=0.092 ms
+wrong data byte #30 should be 0x1e but was 0x72
+#16     10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 72 53 9 2 72 53 9 2 72 53
+9 2 1e 1f 20 1d 1e 1f
+#48     20 21 1e 1f 20 21 1e 1f
 
-Most likely you're changing the source to a non-local address in
-LOCAL_OUT, causing rerouting of the packet and resulting in an
-input route instead of an output one. When dst_output is called
-you hit ip_rt_bug, dropping the packet. When this is the first
-packet of a connection, the connection tracking entry and
-NAT mappings are destroyed. Not sure whats causing the RSTs
-then, but its probably related to that.
+> I would initially question whether or not the problem is firewall related
+or if you have crossed subnet masks.
 
-Does changing:
+Here's the ifconfig output for the two NICs on "router":
 
-         return ip_route_me_harder(skb, RTN_UNSPEC);
+eth1      Link encap:Ethernet  HWaddr 00:15:C5:F1:9B:13
+          inet addr:192.168.2.1  Bcast:192.168.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::215:c5ff:fef1:9b13/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:100525429 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:31105444 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:124476618047 (115.9 GiB)  TX bytes:26593739981 (24.7 GiB)
+          Interrupt:169 Memory:f4000000-f4011100
 
-to
+eth2      Link encap:Ethernet  HWaddr 00:18:F8:09:48:6D
+          inet addr:192.168.1.1  Bcast:192.168.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::218:f8ff:fe09:486d/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:84630 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:77754600 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:9127453 (8.7 MiB)  TX bytes:111588916824 (103.9 GiB)
+          Interrupt:193 Base address:0xcc00
 
-         return ip_route_me_harder(skb, RTN_LOCAL);
+The Windows servers have similar settings. Each server has two NICs -- For
+example, Fileshare has the main one configured as 192.168.2.10 with a mask
+of 255.255.255.0 and Gateway 192.168.2.1. The DNS and WINS are set to point
+to the two domain controllers. The second adapter is configured as
+192.168.1.10 with a mask of 255.255.255.0. I've left everything else blank.
 
-in net/ipv4/netfilter.c:nf_ip_reroute have any effect?
+> Try disconnecting your internet connection for a few minutes (for
+> safety) and disabling all firewalling all together and allow just straight
+routing.  If this works, you know for sure that
+> there is a problem in your firewall script.
+> If that does not work can we get an output of iptables-save so that we see
+your entire firewall as in kernel memory?
+
+I'll try this later tonight or tomorrow night.
+
+Thanks,
+ 
+Jacob Lear
+IT Systems Support Engineer
+
