@@ -1,62 +1,69 @@
-From: Saravanan Chanemouganandam <schane@osmozis.com>
-Subject: iptables v1.3.5: Couldn't load target `MASQUERADE':File not found
-Date: Thu, 13 Dec 2007 16:02:03 +0100
-Message-ID: <200712131602.04744.schane@osmozis.com>
+From: Thomas Egerer <thomas.Egerer@secunet.com>
+Subject: libipq NAT causes RSTs
+Date: Thu, 13 Dec 2007 16:23:44 +0100
+Message-ID: <47614E80.9050504@secunet.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi all, 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: RIPEMD160
 
-Iam a newbie to use iptables and I am fascing the following issue with  
-iptables v 1.3.5 on my target pxa270 Xscale running linux 2.6.16.
+Hello *,
 
-schane:/sbin$ iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-iptables v1.3.5: Couldn't load target `MASQUERADE':File not found
+first of all, I _know_ I should use netfilter_queue. I don't because libipq
+actually has a quite nice documentation, being a set of man-pages. Unable to
+find something comparable for netfilter_queue I to stick to using libipq (even
+though having more than one queue sounds darn interesting to me)
 
-Try `iptables -h' or 'iptables --help' for more information.
+But for the problem, maybe it's my bad. Most probably! Even in that case I'd be
+glad if someone to pointed that out to me!
+I'm currently (trying) to write a transparent proxy application, using
+libipq to capture packets + iptables' redirect mechanism.
+The basic idea works as follows:
++---+      +---+      +---+
+| S |<---->| P |<---->| D |
++---+ (1)  +---+  (2) +---+
 
-schane:/sbin$ iptables -A INPUT -i lo -j ACCEPT
-iptables v1.3.5: Couldn't load target `standard':File not found
-Try `iptables -h' or 'iptables --help' for more information.
+(1) uses iptables' REDIRECT target; the received data is then forwarded,
+    using another socket connection (2)
+(2) uses libipq to do some kind of SNAT and change the local source
+    address to S's address and vice versa for the incoming packets
+    from D
 
-I did google and mail archieve search but couldn't find the exact information 
-to fix the problem. To use iptables, I have enabled Core Netfilter 
-Configuration, IP Netfilter Configuration built into linux-2.6.16 kernel 
-image and cross compiled iptables package using buildroot's 
-arm-linux-uclibc-gcc as 
+So far the theory. The application works fine, as long, as I do not
+remap the source port (destination port, respectively) from P to D (2). Once
+I enable the port remapping I get
+a) syslog messages like the following:
+   [ 7742.939471] ip_rt_bug: [S' IP] -> [P's IP at (2)], ?
+b) RST packets from P towards D, using exactly all the correct TCP
+   settings, except for the destination port, (being 1, sometimes 2, or 3,
+   I couldn't figure out, why)
 
-make KERNEL_DIR=/home/pxa270/linux-2.6.16 
-CC=/home/sara/BuildRoot/buildroot/build_arm/staging_dir/usr/bin/arm-linux-gcc 
-LD=/home/sara/BuildRoot/buildroot/build_arm/staging_dir/usr/bin/arm-linux-ld
-BINDIR=/home/sara/BuildRoot/myrootfs/sbin 
-LIBDIR=/home/sara/BuildRoot/myrootfs/lib install
+The three-way-handshake works fine, the RSTs are generated
+for the _first_ packet to contain a _TCP-payload_. Also netstat tells me,
+there is an established connection between P and D, but somehow (I
+assume that this might be the trouble) looking for the corresponding
+socket connection on P fails.
+I'm totally puzzled why that happens. libipq reinjects the packets with
+properly changed checksums and whatnot, yet the RSTs are generated.
+I've also tried NF_REPEAT, instead of the NF_ACCEPT verdict. The
+behavior remains identically.
 
-I have also built the netfilter configuration as kernel modules for the test 
-and lsmod shows the list of modules loaded , but still the problem persists.
-schane:~$ lsmod
-Module                  Size  Used by    Not tainted
-ipt_MASQUERADE          3296  0
-ipt_REJECT              4608  0
-ipt_owner               2016  0
-ipt_LOG                 6048  0
-iptable_nat             7300  0
-ip_nat                 15282  2 ipt_MASQUERADE,iptable_nat
-iptable_mangle          2400  0
-iptable_filter          2528  0
-ip_conntrack           51096  3 ipt_MASQUERADE,iptable_nat,ip_nat
-nfnetlink               5624  2 ip_nat,ip_conntrack
-ip_tables              11464  3 iptable_nat,iptable_mangle,iptable_filter
-x_tables               11172  6 
-ipt_MASQUERADE,ipt_REJECT,ipt_owner,ipt_LOG,iptable_nat,ip_tables
+Any ideas, anyone?
 
-Can anybody tell me where it went wrong ? 
+Thanks in advance
 
-Thanks
-Sara
+Thomas
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
+iD8DBQFHYU6AUGqFG0l5Kr0RA3DMAJ91LfFI2rkjx5Q80XG1paLg49PRAQCgvPQ3
+eAu14RJDYpgiLS03lpSthDU=
+=gGsR
+-----END PGP SIGNATURE-----
