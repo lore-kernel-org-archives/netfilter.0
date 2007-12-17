@@ -1,36 +1,26 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH] net/ipv4/: Spelling fixes
-Date: Mon, 17 Dec 2007 11:40:31 -0800
-Message-ID: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918894.git.joe__26142.3759199262$1197922257$gmane$org@perches.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1761650AbXLQUJi@vger.kernel.org>
-Message-Id: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918894.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH] net/netfilter/: Spelling fixes
+Date: Tue, 18 Dec 2007 00:49:48 +0100
+Message-ID: <47670B1C.2060602@trash.net>
+References: <1197920439-5455-28-git-send-email-joe@perches.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-To: linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "David S. Miller" <davem@davemloft.net>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, James Morris <jmorris@namei.org>, Patrick McHardy <kaber@trash.net>, coreteam@netfilter.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1197920439-5455-28-git-send-email-joe@perches.com>
+Sender: netfilter-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Joe Perches <joe@perches.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, coreteam@netfilter.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+
+Joe Perches wrote:
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>  net/netfilter/nf_conntrack_sip.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- net/ipv4/netfilter/nf_nat_sip.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/net/ipv4/netfilter/nf_nat_sip.c b/net/ipv4/netfilter/nf_nat_sip.c
-index 3ca9897..8996ccb 100644
---- a/net/ipv4/netfilter/nf_nat_sip.c
-+++ b/net/ipv4/netfilter/nf_nat_sip.c
-@@ -165,7 +165,7 @@ static int mangle_content_len(struct sk_buff *skb,
- 
- 	dataoff = ip_hdrlen(skb) + sizeof(struct udphdr);
- 
--	/* Get actual SDP lenght */
-+	/* Get actual SDP length */
- 	if (ct_sip_get_info(ct, dptr, skb->len - dataoff, &matchoff,
- 			    &matchlen, POS_SDP_HEADER) > 0) {
- 
--- 
-1.5.3.7.949.g2221a6
-
+Both your netfilter patches conflict with some pending patches
+of mine (which also fix those spelling errors). So for now I'm
+going to say no, please resubmit in case I won't get my patches
+in shape for 2.6.25.
