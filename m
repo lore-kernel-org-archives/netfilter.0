@@ -1,23 +1,33 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH net-2.6.25 5/8] net/netfilter: Use ipv4_is_<type>
-Date: Sun, 16 Dec 2007 13:46:24 -0800 (PST)
-Message-ID: <20071216.134624.04946855.davem@davemloft.net>
-References: <1197589141-7020-4-git-send-email-joe@perches.com>
-	<e2ebcbf24539c0a3ef2ac77147dbfa55d8ac9e33.1197432867.git.joe@perches.com>
-	<1197589141-7020-5-git-send-email-joe@perches.com>
+From: Shane Kelly <s.kelly@physics.gla.ac.uk>
+Subject: Information on proc etries for nf_conntrack and xt_conntrack
+Date: Mon, 17 Dec 2007 14:00:42 +0000
+Message-ID: <4766810A.9050409@physics.gla.ac.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1197589141-7020-5-git-send-email-joe@perches.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: joe@perches.com
-Cc: netdev@vger.kernel.org, kaber@trash.net, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-From: Joe Perches <joe@perches.com>
-Date: Thu, 13 Dec 2007 15:38:58 -0800
+Hi,
+     I have a need for a bridged firewall and while I have managed to get this 
+working, I would like to be pointed to any/all documentation regarding the 
+settings the nf/xt/ip modules place in the /proc file system, with a view to 
+understanding if I could tune them for smoother/faster/more efficient running 
+of the firebridge.
 
-> Signed-off-by: Joe Perches <joe@perches.com>
+Any pointers appreciated.
 
-Applied.
+Thanks
+
+Shane
+-- 
+Shane Kelly
+Faculty IT Manager
+Faculty of Physical Sciences
+Room 238
+Kelvin Building
+University of Glasgow
+
+Tel: 0141 330 2956
