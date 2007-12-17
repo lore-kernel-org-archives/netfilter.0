@@ -1,27 +1,45 @@
-From: "Srinivas Murthy" <codevana@gmail.com>
-Subject: redirected port
-Date: Mon, 17 Dec 2007 10:28:32 -0800
-Message-ID: <df1bdeb10712171028i152d5566k96fc5cc36f27dbdc@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition:x-google-sender-auth;
-        bh=METPTfMOEfEz81fq6yHxU0V3eBukJDWudZ3snioGAM4=;
-        b=lDJdQDbjaNmOpkpU7lnRvKHq/1pglNoklGdXsAUOcV2vCal3b2WIXX4bqe3k/qNmYW8+MvAujV5Ytk3Ut4ITEoSMvk3zceZZEmPHHjawMknzvFW+OeYMfF8aCc88NQ0qgah7WrDuSBSak2EHGUgAihDdMRTAV5F7In3o/NCHePY=
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH] net/netfilter/: Spelling fixes
+Date: Mon, 17 Dec 2007 11:40:34 -0800
+Message-ID: <1197920439-5455-28-git-send-email-joe@perches.com>
+Return-path: <netdev-owner@vger.kernel.org>
+Message-Id: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918894.git.joe@perches.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Patrick McHardy <kaber@trash.net>, coreteam@netfilter.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Hi,
-  Given an skb, I need to apply the NAT rules and get the redirected
-port etc. With ipchain, the ip_fw_ctl()
-http://lxr.linux.no/linux-bk+v2.6.10/+code=ip_fw_ctl was providing
-this in the kernel space.
 
- Can you guys send me some pointers on how I can do this using iptables?
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ net/netfilter/nf_conntrack_sip.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks.
+diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
+index 8f8b5a4..515abff 100644
+--- a/net/netfilter/nf_conntrack_sip.c
++++ b/net/netfilter/nf_conntrack_sip.c
+@@ -187,7 +187,7 @@ static const struct sip_header_nfo ct_sip_hdrs[] = {
+ 	}
+ };
+ 
+-/* get line lenght until first CR or LF seen. */
++/* get line length until first CR or LF seen. */
+ int ct_sip_lnlen(const char *line, const char *limit)
+ {
+ 	const char *k = line;
+@@ -236,7 +236,7 @@ static int digits_len(struct nf_conn *ct, const char *dptr,
+ 	return len;
+ }
+ 
+-/* get digits lenght, skiping blank spaces. */
++/* get digits length, skipping blank spaces. */
+ static int skp_digits_len(struct nf_conn *ct, const char *dptr,
+ 			  const char *limit, int *shift)
+ {
+-- 
+1.5.3.7.949.g2221a6
+
