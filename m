@@ -1,10 +1,10 @@
 From: Joe Perches <joe@perches.com>
 Subject: [PATCH] net/ipv4/: Spelling fixes
 Date: Mon, 17 Dec 2007 11:40:31 -0800
-Message-ID: <1197920439-5455-25-git-send-email-joe@perches.com>
-Return-path: <netdev-owner@vger.kernel.org>
+Message-ID: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918894.git.joe__28450.8683639162$1197920672$gmane$org@perches.com>
+Return-path: <netfilter-owner@vger.kernel.org>
 Message-Id: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918894.git.joe@perches.com>
-Sender: netdev-owner@vger.kernel.org
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
