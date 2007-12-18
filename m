@@ -1,69 +1,33 @@
-From: Denys Vlasenko <vda.linux@googlemail.com>
-Subject: Re: modprobe: cannot parse modules.dep error
-Date: Tue, 18 Dec 2007 11:08:23 +0000
-Message-ID: <200712181108.23892.vda.linux@googlemail.com>
-References: <200712181032.17947.schane@osmozis.com>
+From: "=?ISO-8859-1?Q?Gwenha=EBl_Pasquiers?=" <gegefr@gmail.com>
+Subject: Re: Captive portal and DNAT
+Date: Tue, 18 Dec 2007 14:41:37 +0100
+Message-ID: <47050bf90712180541y1e41214dj698fd320a59b18f0@mail.gmail.com>
+References: <47050bf90712170641h7cdcf7f5kfe352a999a60beb3@mail.gmail.com>
+	 <1197905123.19486.231.camel@grateful.d.umn.edu>
+	 <47050bf90712170825j5ba29561oba08f023de7f6dd4@mail.gmail.com>
+	 <47050bf90712170844p2b4057ckaf97c5974c2bd617@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date:user-agent:cc:references:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:message-id;
-        bh=et0nqYyBUnPr8DwEUB5NgBN/48/6zG8L7fEzR1Dxjb4=;
-        b=SxF+2W+CYPTb7F3C9+dH2j/l8UX/GXXKt4yU0RHLA2NqYPVlxnkuMEWk4RvHPX24XMxqEfutVoLjT/JgDvefT7ZX0kl4g9XNvzYMLh/oF6NLACmdXDCmBt7qUtwhdsdsEpguABJjOMY5d2Xrb+SPpnA5xUyy4M/qRyfhLYOxjSw=
-In-Reply-To: <200712181032.17947.schane@osmozis.com>
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=nWJ1IFUYk4K6OP6Vu+6toK8VFsars+E1DJZallFeb1s=;
+        b=tFBKrELKaxut1kHCya1t0Dv35hh+CkqZuF08sX+pAAZ7OXT2mypLbNh8/ts3LJCWY8hOuhud3/gkpSwATORN8LaR2takXO2rJgsnfAw+UOvARShyqvCxKq1rSa7byRul+EMAjooz1Va492jCf9KeArLzQAVb0GnZ0uOmmCljntQ=
+In-Reply-To: <47050bf90712170844p2b4057ckaf97c5974c2bd617@mail.gmail.com>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: busybox@busybox.net
-Cc: Saravanan Chanemouganandam <schane@osmozis.com>, netfilter@vger.kernel.org
+To: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Cc: netfilter@vger.kernel.org
 
-On Tuesday 18 December 2007 09:32, Saravanan Chanemouganandam wrote:
-> Hi all,
->
-> I am running into the following problem when invoking a netfilter iptables
-> ( v1.3.8) and xtables support in the buildroot's busybox (v1.7.2) system.
-> The netfilter packet configuration and support modules are compiled and
-> built into the linux-2.6.16 kernel image.
->
-> When a 'C++' application code calls the iptables  through
-> sprintf(buff, "%s -t mangle -A PREROUTING %s -j MARK --set-mark 512",
-> Config.iptables, Config.link[i]);
-> it throws the modprobe error.
->
-> iptables -t mangle -A PREROUTING -d 88.160.215.156 -p icmp -j MARK
-> --set-mark 512
-> modprobe: cannot parse modules.dep
-> modprobe: cannot parse modules.dep
-> iptables -t mangle -A PREROUTING -s 88.160.215.156 -p icmp -j MARK
-> --set-mark 512
-> modprobe: cannot parse modules.dep
-> modprobe: cannot parse modules.dep
-> iptables -t mangle -A PREROUTING -d 88.160.215.156 -p tcp --dport http -j
-> MARK --set-mark 512
-> modprobe: cannot parse modules.dep
+After investigating i found out that the NAT connection is probably
+monitoring the underlying TCP connection, so setting the Keepalive to
+0 should do the trick.
 
-Can you try the following in modprobe.c?
+However, I think the same problem occurs when a client goes from
+authorized to unauthorized state.
 
-static struct dep_t *build_dep(void) 
-{
-...
-        filename = xasprintf("/lib/modules/%s/modules.dep", un.release);
-        fd = open(filename, O_RDONLY);
-        if (ENABLE_FEATURE_CLEAN_UP)
-                free(filename);
-        if (fd < 0) {
-                /* Ok, that didn't work.  Fall back to looking in /lib/modules */
-                fd = open("/lib/modules/modules.dep", O_RDONLY);
-                if (fd < 0) {
--                       bb_error_msg_and_die("cannot parse modules.dep");
-+                       bb_error_msg("cannot parse modules.dep");
-+                       return NULL;
-                }
-        }
-...
-
-
---
-vda
+Wouldn't the currently active TCP connection pass throught their NAT
+connection as long as they are not closed (from a TCP point of view)?
