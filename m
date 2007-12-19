@@ -1,45 +1,49 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: iptables performance problems
-Date: Wed, 19 Dec 2007 10:28:19 +0000 (GMT)
-Message-ID: <Pine.LNX.4.58.0712191012530.15373@mail3.jubileegroup.co.uk>
-References: <4768EA52.7070602@oranged.to>
+From: Saravanan Chanemouganandam <schane@osmozis.com>
+Subject: iptables - Couldn't load target error
+Date: Wed, 19 Dec 2007 12:21:56 +0100
+Message-ID: <200712191221.58597.schane@osmozis.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4768EA52.7070602@oranged.to>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
+Cc: busybox@busybox.net, linux-arm@lists.arm.linux.org.uk
 
-Hi there,
+Hi all,
 
-On Wed, 19 Dec 2007, Jimmy Stewpot wrote:
+I have some problem with iptables (v1.3.8) and extension supports libraries 
+installed to the buildroot's root filesystem (/lib/iptables) running on 
+Xscale pxa270. 
 
-> I am currently using iptables on Linux kernel version 2.6.15 (Ubuntu
-> Dapper). I have recently been having problems with my servers load going
-> through the roof as remote hosts do nmap scans against the server. My
-> current iptables configuration is as follows
-> [snip]
-> It seems from my performance diagnostics its the logging which is
-> causing the system to buckle rather than the packet rate or anything
-> like that. Since I first noticed the system being hammered I put the -m
-> limit --limit 10/min on the LOG rule but it appears to either not work
-> or I have put it in the wrong place. Can anyone give me some advice
-> regarding performance and logging.
+iptables with MASQUERADE support throws Couldn't load target error. The 
+following strace shows that it tries to open libraries in the /lib and in 
+the /usr/lib instead of /lib/iptables.
 
-Most of the time I see no point in logging dropped packets with iptables.
+Can anybody precise me, why it is not looking into /lib/iptables for the 
+dynamic libraries?
 
-In my systems iptables drops packets as soon as possible.  What little
-logging is done is done by p0f, directly to a file.  That process can
-be killed at any time, with no adverse effect on system operation.
+#strace iptables -t nat -A POSTROUTING -o br_wan -j MASQUERADE shows 
+....
 
-Syslog-ng feeds data to one of several scripts, which in turn log to a
-database, if (and only if) a packet is accepted.  There are different
-scripts for mail, http, whatever.  Compared with the other things that
-the boxes are doing, the load is negligible.
+open("/home/sara/BuildRoot/buildroot/project_build_arm/uclibc/root/lib/iptables/libipt_MASQUERADE.so",)
+open("/lib/libipt_MASQUERADE.so", O_RDONLY) = -1 ENOENT (No such file or 
+directory)
+open("/lib/libipt_MASQUERADE.so", O_RDONLY) = -1 ENOENT (No such file or 
+directory)
+open("/usr/lib/libipt_MASQUERADE.so", O_RDONLY) = -1 ENOENT (No such file or 
+directory)
+munmap(0x40006000, 698)                 = 0
+write(2, "iptables", 8iptables)                 = 8
+write(2, " v", 2 v)                       = 2
+write(2, "1.3.8", 51.3.8)                    = 5
+write(2, ": ", 2: )                       = 2
+write(2, "Couldn\'t load target `", 22Couldn't load target `) = 22
+write(2, "MASQUERADE", 10MASQUERADE)              = 10
+write(2, "\':", 2':)                      = 2
+write(2, "File not found", 14File not found)          = 14
 
---
-
-73,
-Ged.
+thanks
+Sara
