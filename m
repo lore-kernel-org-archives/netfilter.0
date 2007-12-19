@@ -1,19 +1,43 @@
-From: Jimmy Stewpot <qmail@oranged.to>
-Subject: iptables performance problems
-Date: Wed, 19 Dec 2007 09:54:26 +0000
-Message-ID: <4768EA52.7070602@oranged.to>
+From: "Shaun Mccullagh" <Shaun.Mccullagh@xb.nl>
+Subject: RE: iptables performance problems
+Date: Wed, 19 Dec 2007 11:05:38 +0100
+Message-ID: <CC12CD48AEDA1E4B8A3F626DA84E927209CD4F4C@ka-cap-sr-3601.xb.local>
+References: <4768EA52.7070602@oranged.to>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Class: urn:content-classes:message
+In-Reply-To: <4768EA52.7070602@oranged.to>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
+
+Hi
+
+Here is an example of one way to use limit:
+
+
+iptables -A INPUT|FORWARD -m limit --limit 3/minute --limit-burst 3 -j
+LOG \
+          --log-level INFO --log-prefix "Put Your Label Here: "
+
+HTH
+
+S
+
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org
+[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Jimmy Stewpot
+Sent: Wednesday, December 19, 2007 10:54 AM
+To: netfilter@vger.kernel.org
+Subject: iptables performance problems
 
 Hello,
 
 I am currently using iptables on Linux kernel version 2.6.15 (Ubuntu 
-Dapper). I have recently been having problems with my servers load going 
+Dapper). I have recently been having problems with my servers load going
+
 through the roof as remote hosts do nmap scans against the server. My 
 current iptables configuration is as follows
 
@@ -27,9 +51,11 @@ current iptables configuration is as follows
 -A INPUT -p icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
 -A INPUT -s 10.0.0.0/255.0.0.0 -i eth1 -j ACCEPT
--A INPUT -i eth0 -p tcp -m tcp --dport 22 --tcp-flags SYN,RST,ACK SYN -j 
+-A INPUT -i eth0 -p tcp -m tcp --dport 22 --tcp-flags SYN,RST,ACK SYN -j
+
 ACCEPT
--A INPUT -d FIRST_PUB_ADDR -i eth0 -p tcp -m tcp --tcp-flags SYN,RST,ACK 
+-A INPUT -d FIRST_PUB_ADDR -i eth0 -p tcp -m tcp --tcp-flags SYN,RST,ACK
+
 SYN -m multiport --dports 21,25,80,110,143,443,993,995 -j ACCEPT
 -A INPUT -d SECOND_PUB_ADDR -i eth0 -p tcp -m tcp --tcp-flags 
 SYN,RST,ACK SYN -m multiport --dports 80,443 -j ACCEPT
@@ -52,3 +78,15 @@ regarding performance and logging.
 Regards,
 
 Jimmy
+-
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+
+
+Op dit e-mailbericht is een disclaimer van toepassing, welke te vinden is op http://www.xb.nl/disclaimer.html
+
+
+
