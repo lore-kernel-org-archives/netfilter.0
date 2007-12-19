@@ -1,49 +1,49 @@
-From: Alexander Griesser <alexander.griesser@lkh-vil.or.at>
-Subject: Re: iptables - Couldn't load target error
-Date: Wed, 19 Dec 2007 12:56:57 +0100
-Message-ID: <47690709.2020807@lkh-vil.or.at>
-References: <200712191221.58597.schane@osmozis.com>
+From: "Slagter, EM" <eslagter@wlz.nl>
+Subject: Possible bug ipsec and SNAT?
+Date: Wed, 19 Dec 2007 12:42:44 +0100
+Message-ID: <476903B4.8060303@wlz.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <busybox-bounces@busybox.net>
-In-Reply-To: <200712191221.58597.schane@osmozis.com>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://busybox.net/cgi-bin/mailman/listinfo/busybox>,
-	<mailto:busybox-request@busybox.net?subject=unsubscribe>
-List-Archive: <http://busybox.net/lists/busybox>
-List-Post: <mailto:busybox@busybox.net>
-List-Help: <mailto:busybox-request@busybox.net?subject=help>
-List-Subscribe: <http://busybox.net/cgi-bin/mailman/listinfo/busybox>,
-	<mailto:busybox-request@busybox.net?subject=subscribe>
-Sender: busybox-bounces@busybox.net
-Errors-To: busybox-bounces@busybox.net
-To: Saravanan Chanemouganandam <schane@osmozis.com>
-Cc: busybox@busybox.net, linux-arm@lists.arm.linux.org.uk, netfilter@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=wlz.nl; h=message-id:date:
+	from:mime-version:to:subject:content-type:
+	content-transfer-encoding; q=dns/txt; s=2007072701; bh=8WCK6/q+F
+	dvsmS03mZFyZqpkx7Y=; b=JeXavLt6XiubHzEFHxGK2UClpVg/j6ZaJssraTgiQ
+	EXL/VtIYBvBm6yYBDOcoaLwno7nOHCQ9Gt0D3UwvvL5V2L1BmWjyUBPj0H4+YmdL
+	ZXl0/ytI8wbjHxKxSTO7DM41CI/piWjjvrm+lV7z1EKOwD1CURIhH733SIVVqlId
+	4I=
+Sender: netfilter-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi,
 
-Saravanan Chanemouganandam wrote:
-> iptables with MASQUERADE support throws Couldn't load target error. The 
-> following strace shows that it tries to open libraries in the /lib and in 
-> the /usr/lib instead of /lib/iptables.
+I don't know whether this netfilter behaviour is a bug or intentional,
+but at least for me it's not what I'd expect (nor want).
 
-Maybe because your LD_LIBRARY_PATH needs to be adapted accordingly?
+Our system (simplified to significant parts):
+- linux i386 kernel 2.6.21.2 vanilla, almost all netfilter and ipsec
+parts compiled in, no (relevant) modules
+- one vlan interface connected to public internet
+- one vlan interface connected to internal vlan, RFC addresses
+- pluto ("openswan") to manage ISAKMP, appropriate config file
+- some netfilter rules that include -m policy to separate the ipsec
+traffic before and after encapsulation (for instance to prevent traffic
+to be sent over internet without encryption)
 
-man ldconfig
+Using this scenario, it works pretty much as documented.
 
-ciao,
-- --
-Alexander Griesser (Netzwerkadministration)
-E-Mail: alexander.griesser@lkh-vil.or.at | Web: http://www.lkh-vil.or.at
-KABEG LKH Villach | Nikolaigasse 43 | 9500 Villach
-Tel.:   +43 4242 208 3061 | Fax.:   +43 4242 971 3061
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+As soon as I add SNAT to traffic originating from this vlan (as required
+by our supplier), the rules that (properly) used to match on "-m policy
+--pol ipsec --dir out --tunnel-src ... --tunnel-dst ..." no longer
+match. Even if I remove the tunnel-src and --tunnel-dst the rule no
+longer matches. If I change "the --pol ipsec" to "--pol none" the rule
+matches again. This is wrong IMHO as the traffic is still encapsulated
+(checked this with tshark) as expected.
 
-iD8DBQFHaQcJ66HVD6KUm1oRAvm8AJ44DrrsphkQ13OGAxB7xKK1Ma8GFQCfatGA
-0jeJVKaO0JcQrW5CTlWReaU=
-=PlTs
------END PGP SIGNATURE-----
+I've checked the ChangeLogs of the kernel from 2.6.21.2 to current but
+there doesn't seem to have been a relevant patch on this matter.
+
+"Please help" ;-)
+
