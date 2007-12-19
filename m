@@ -1,49 +1,49 @@
-From: Saravanan Chanemouganandam <schane@osmozis.com>
-Subject: iptables - Couldn't load target error
-Date: Wed, 19 Dec 2007 12:21:56 +0100
-Message-ID: <200712191221.58597.schane@osmozis.com>
+From: Alexander Griesser <alexander.griesser@lkh-vil.or.at>
+Subject: Re: iptables - Couldn't load target error
+Date: Wed, 19 Dec 2007 12:56:57 +0100
+Message-ID: <47690709.2020807@lkh-vil.or.at>
+References: <200712191221.58597.schane@osmozis.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-Cc: busybox@busybox.net, linux-arm@lists.arm.linux.org.uk
+Content-Transfer-Encoding: 7bit
+Return-path: <busybox-bounces@busybox.net>
+In-Reply-To: <200712191221.58597.schane@osmozis.com>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <http://busybox.net/cgi-bin/mailman/listinfo/busybox>,
+	<mailto:busybox-request@busybox.net?subject=unsubscribe>
+List-Archive: <http://busybox.net/lists/busybox>
+List-Post: <mailto:busybox@busybox.net>
+List-Help: <mailto:busybox-request@busybox.net?subject=help>
+List-Subscribe: <http://busybox.net/cgi-bin/mailman/listinfo/busybox>,
+	<mailto:busybox-request@busybox.net?subject=subscribe>
+Sender: busybox-bounces@busybox.net
+Errors-To: busybox-bounces@busybox.net
+To: Saravanan Chanemouganandam <schane@osmozis.com>
+Cc: busybox@busybox.net, linux-arm@lists.arm.linux.org.uk, netfilter@vger.kernel.org
 
-Hi all,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I have some problem with iptables (v1.3.8) and extension supports libraries 
-installed to the buildroot's root filesystem (/lib/iptables) running on 
-Xscale pxa270. 
+Saravanan Chanemouganandam wrote:
+> iptables with MASQUERADE support throws Couldn't load target error. The 
+> following strace shows that it tries to open libraries in the /lib and in 
+> the /usr/lib instead of /lib/iptables.
 
-iptables with MASQUERADE support throws Couldn't load target error. The 
-following strace shows that it tries to open libraries in the /lib and in 
-the /usr/lib instead of /lib/iptables.
+Maybe because your LD_LIBRARY_PATH needs to be adapted accordingly?
 
-Can anybody precise me, why it is not looking into /lib/iptables for the 
-dynamic libraries?
+man ldconfig
 
-#strace iptables -t nat -A POSTROUTING -o br_wan -j MASQUERADE shows 
-....
+ciao,
+- --
+Alexander Griesser (Netzwerkadministration)
+E-Mail: alexander.griesser@lkh-vil.or.at | Web: http://www.lkh-vil.or.at
+KABEG LKH Villach | Nikolaigasse 43 | 9500 Villach
+Tel.:   +43 4242 208 3061 | Fax.:   +43 4242 971 3061
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-open("/home/sara/BuildRoot/buildroot/project_build_arm/uclibc/root/lib/iptables/libipt_MASQUERADE.so",)
-open("/lib/libipt_MASQUERADE.so", O_RDONLY) = -1 ENOENT (No such file or 
-directory)
-open("/lib/libipt_MASQUERADE.so", O_RDONLY) = -1 ENOENT (No such file or 
-directory)
-open("/usr/lib/libipt_MASQUERADE.so", O_RDONLY) = -1 ENOENT (No such file or 
-directory)
-munmap(0x40006000, 698)                 = 0
-write(2, "iptables", 8iptables)                 = 8
-write(2, " v", 2 v)                       = 2
-write(2, "1.3.8", 51.3.8)                    = 5
-write(2, ": ", 2: )                       = 2
-write(2, "Couldn\'t load target `", 22Couldn't load target `) = 22
-write(2, "MASQUERADE", 10MASQUERADE)              = 10
-write(2, "\':", 2':)                      = 2
-write(2, "File not found", 14File not found)          = 14
-
-thanks
-Sara
+iD8DBQFHaQcJ66HVD6KUm1oRAvm8AJ44DrrsphkQ13OGAxB7xKK1Ma8GFQCfatGA
+0jeJVKaO0JcQrW5CTlWReaU=
+=PlTs
+-----END PGP SIGNATURE-----
