@@ -1,49 +1,75 @@
-From: Denys Vlasenko <vda.linux@googlemail.com>
-Subject: Re: iptables - Couldn't load target error
-Date: Thu, 20 Dec 2007 10:03:26 +0000
-Message-ID: <200712201003.26454.vda.linux@googlemail.com>
-References: <200712191221.58597.schane@osmozis.com>
+From: "Slagter, EM" <eslagter@wlz.nl>
+Subject: Re: Possible bug ipsec and SNAT?
+Date: Thu, 20 Dec 2007 11:51:56 +0100
+Message-ID: <476A494C.1050606@wlz.nl>
+References: <476903B4.8060303@wlz.nl> <47692E3D.7090008@trash.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date:user-agent:cc:references:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:message-id;
-        bh=Ud3jPT3OL6vxQBVjUMCh3Um6oI4SgUQGlLjjipbLlOo=;
-        b=X7reGvLoBGuW5xFjpgbTVMC1cctc4HYZgYuioFIC7I1yvRWyBQq7cQFnpHUpMzS2/wgKj5WG9t26jXjoYlER+tIva7qlXyfQ2vSpm7T/6D4wYjmjyDKRJwvpQK2S93CFWAKYWFNwyFGsiRW4Pg8/1wJWxDDKkmG/T3vwvxzlV9Q=
-In-Reply-To: <200712191221.58597.schane@osmozis.com>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=wlz.nl; h=message-id:date:
+	from:mime-version:to:cc:subject:references:in-reply-to:
+	content-type:content-transfer-encoding; q=dns/txt; s=2007072701;
+	bh=nMXshxin7iz8UsxVBGheKjAheuA=; b=rFkv7cqzC2PSIvI7rW/ZBaY5nDAAr
+	VY3XNwMI05dPhK9dqj2VqZd3CFUOo3hk/uVhK4unadxmVRJJSkz95VYlLcN0rOI3
+	1B+NapByqFggFnfPNNFHzZb1yY8bJP0osun6AWH3VFkyGiF1bfG2QhgfBGORIT3l
+	R1MFGzY4DYRSSQ=
+In-Reply-To: <47692E3D.7090008@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: busybox@busybox.net
-Cc: Saravanan Chanemouganandam <schane@osmozis.com>, netfilter@vger.kernel.org, linux-arm@lists.arm.linux.org.uk
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-On Wednesday 19 December 2007 11:21, Saravanan Chanemouganandam wrote:
-> Hi all,
->
-> I have some problem with iptables (v1.3.8) and extension supports libraries
-> installed to the buildroot's root filesystem (/lib/iptables) running on
-> Xscale pxa270.
->
-> iptables with MASQUERADE support throws Couldn't load target error. The
-> following strace shows that it tries to open libraries in the /lib and in
-> the /usr/lib instead of /lib/iptables.
+Patrick McHardy wrote:
 
-Last time I built iptables from source it was iptables-1.3.5.
-iptables are not using de-facto standard "configure+make"
-install process, they take make variables instead.
+>> As soon as I add SNAT to traffic originating from this vlan (as required
+>> by our supplier), the rules that (properly) used to match on "-m policy
+>> --pol ipsec --dir out --tunnel-src ... --tunnel-dst ..." no longer
+>> match. Even if I remove the tunnel-src and --tunnel-dst the rule no
+>> longer matches. If I change "the --pol ipsec" to "--pol none" the rule
+>> matches again. This is wrong IMHO as the traffic is still encapsulated
+>> (checked this with tshark) as expected.
 
-Mine was built with:
+> This is expected behaviour. Before NAT takes place, the packet
+> doesn't match a policy, it only does after getting mangled by
+> NAT, but at that point it already passed through your policy
+> matches.
 
-# Do NOT point it to non-pristine kernel tree!
-# (seen horrible miscompilation on 32:64 user:kernel x86_64)
-KERNEL_DIR=/usr/src/kernel/delay/linux-2.6.17.11.src
+I think we're not talking about the same thing :-/
 
-make KERNEL_DIR="$KERNEL_DIR" BINDIR=... LIBDIR=... MANDIR=...
+I have a rule in the filter table like this:
 
-I guess you built your iptables with wrong/unset LIBDIR.
+iptables -t filter -A FORWARD -i ... -o ... -s ... -d ... -m policy
+--mode tunnel --pol ipsec --dir out --tunnnel-src ... --tunnel-dst ...
+-j ACCEPT
 
-People were right pointing out that this is not busybox related question.
---
-vda
+This rule works as expected, it matches certain ipsec traffic as intended.
+
+As soon as I add a rule like this to the nat table:
+
+iptables -t nat -A POSTROUTING -s ... -d ... -j SNAT --to-source ...
+
+then the OTHER rule (above, the one in the filter table) doesn't match
+anymore. This has nothing to do with the source address having changed
+because even in this "bare" form:
+
+iptables -t filter -A FORWARD -i ... -o ... -m policy --pol ipsec --dir out
+
+it doesn't match.
+
+This one does match (changed --pol ipsec into --pol none):
+
+iptables -t filter -A FORWARD -i ... -o ... -m policy --pol none --dir out
+
+Yet the traffic IS being encapsulated like before I applied the SNAT rule.
+
+That doesn't seem right to me.
+
+Maybe it's just that I take the wrong approach to the problem; our
+supplier requires an ipsec "tunnel" where our internal ip addresses are
+translated to a public ip address, I am talking about the encapsulated
+packets here, not the ESP packets. With my approach and the current
+behaviour, I cannot apply policies properly for this traffic. I am not
+at all happy with the situation, but I cannot change it :-(
+
+Thx.
