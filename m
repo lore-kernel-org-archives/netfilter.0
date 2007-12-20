@@ -1,52 +1,49 @@
-From: =?ISO-8859-1?Q?S=3F=E9bastien_Cramatte?= 
-	<scramatte@zensoluciones.com>
-Subject: nf_conntrack vs ip_conntrack ...
-Date: Wed, 19 Dec 2007 17:47:32 +0100
-Message-ID: <47694B24.7050003@zensoluciones.com>
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Subject: Re: iptables - Couldn't load target error
+Date: Thu, 20 Dec 2007 10:03:26 +0000
+Message-ID: <200712201003.26454.vda.linux@googlemail.com>
+References: <200712191221.58597.schane@osmozis.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date:user-agent:cc:references:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:message-id;
+        bh=Ud3jPT3OL6vxQBVjUMCh3Um6oI4SgUQGlLjjipbLlOo=;
+        b=X7reGvLoBGuW5xFjpgbTVMC1cctc4HYZgYuioFIC7I1yvRWyBQq7cQFnpHUpMzS2/wgKj5WG9t26jXjoYlER+tIva7qlXyfQ2vSpm7T/6D4wYjmjyDKRJwvpQK2S93CFWAKYWFNwyFGsiRW4Pg8/1wJWxDDKkmG/T3vwvxzlV9Q=
+In-Reply-To: <200712191221.58597.schane@osmozis.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: busybox@busybox.net
+Cc: Saravanan Chanemouganandam <schane@osmozis.com>, netfilter@vger.kernel.org, linux-arm@lists.arm.linux.org.uk
 
-Hello
+On Wednesday 19 December 2007 11:21, Saravanan Chanemouganandam wrote:
+> Hi all,
+>
+> I have some problem with iptables (v1.3.8) and extension supports libraries
+> installed to the buildroot's root filesystem (/lib/iptables) running on
+> Xscale pxa270.
+>
+> iptables with MASQUERADE support throws Couldn't load target error. The
+> following strace shows that it tries to open libraries in the /lib and in
+> the /usr/lib instead of /lib/iptables.
 
-I'm running 2.6.22.12 kernel
+Last time I built iptables from source it was iptables-1.3.5.
+iptables are not using de-facto standard "configure+make"
+install process, they take make variables instead.
 
-I would like to tweak netfilter parameters in sysctl.conf (I'm running
-debian Etch)
-My server is a traffic manager setuped as a bridge.  We filter P2P
-(ipp2p, l7filter)  and SIP/RTP  for an amount 60Mbits
+Mine was built with:
 
-I must tweak conntrack default values to  use most of available memory 
-and to  try to avoid overhead ...
+# Do NOT point it to non-pristine kernel tree!
+# (seen horrible miscompilation on 32:64 user:kernel x86_64)
+KERNEL_DIR=/usr/src/kernel/delay/linux-2.6.17.11.src
 
-How can apply these sysctl.conf  values to the new nf_conntrack style :
+make KERNEL_DIR="$KERNEL_DIR" BINDIR=... LIBDIR=... MANDIR=...
 
-net.ipv4.netfilter.ip_conntrack_max = 8388608
-net.ipv4.netfilter.ip_conntrack_tcp_timeout_established= 57600
-net.ipv4.netfilter.ip_conntrack_udp_timeout = 57600
-net.ipv4.netfilter.ip_conntrack_udp_timeout_stream = 57600
+I guess you built your iptables with wrong/unset LIBDIR.
 
-By default I've got theses values :
-
-net.netfilter.nf_conntrack_generic_timeout = 50
-net.netfilter.nf_conntrack_max = 65536
-net.netfilter.nf_conntrack_count = 0
-net.netfilter.nf_conntrack_buckets = 8192
-net.netfilter.nf_conntrack_checksum = 1
-net.netfilter.nf_conntrack_log_invalid = 0
-
-Which value can I put for tcp and udp timeout  ?
-I found some example but small wireless router not  60Mbits traffic
-shapper  ;)
-
-So I'm not sure what should be the best values
-We have something as 2000 customers (I'm working for a cable provider)
-that going through this  server,
-
-Many thanks for your help
-
-
+People were right pointing out that this is not busybox related question.
+--
+vda
