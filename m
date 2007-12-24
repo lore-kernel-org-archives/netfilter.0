@@ -1,155 +1,217 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] Release of iptables 1.4.0 final
-Date: Sat, 22 Dec 2007 14:53:26 +0100
-Message-ID: <476D16D6.2040001@netfilter.org>
+From: "Alex Girchenko" <gsmdib@gmail.com>
+Subject: htb qdisc doesn't shape
+Date: Mon, 24 Dec 2007 16:01:29 +0200
+Message-ID: <567e52cd0712240601t32ee65a8h660caf1a69f6b6fe@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig3DB129238798BC717D20CE50"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=qRTIr3KEgBGyA0yniUq2bztXExwDOWqd8YllpZopxUU=;
+        b=iowMgKv8QT3NpmnJ+2I7W8Ep566Z8/iExyD3xP2lLGTG6qzJuIN9+XNVXIdDK+UhqUk/zmHd62vSJae38qBRzNLXvcU701q/YEAEj80AP3fKgx2fcSGbO8JxB3Pdre74s11aaGtnYzowPNUeW7P+W2vkp72rQSkB8WlHNDVbyt8=
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig3DB129238798BC717D20CE50
-Content-Type: multipart/mixed;
- boundary="------------060203070200060909000903"
+I'm trying to setup a simple QOS implementation on my home router
+running Ubuntu Gutsy (kernel 2.6.22). The complete script is below,
+I'd like to mention one of the parts that doesn't function as
+expected.
+--
+tc qdisc add dev ppp0 root handle 3:0 htb default 30
+tc class add dev ppp0 parent 3:0 classid 3:1 htb rate 220kbit #for a 256k link
+# the default one
+tc class add dev ppp0 parent 3:1 classid 3:30 htb rate 10kbit ceil
+220kbit burst 6k prio 3
+# for p2p traffic
+tc class add dv ppp0 parent 3:1  classid 3:50 htb rate 5kbit ceil 6kbit prio 5
+# p2p client running on LAN and port 10720 is DNATed to ppp0
+tc filter add dev ppp0 parent 3: protocol ip u32 match ip sport 10720
+ 0xff flowid 3:50
+--
+Now, consider 2 options: 1)the last line is commented out and 2)the
+last line is uncommented.
+1) p2p traffic gets to the default class 3:30 and shapes accordingly
+to ceil. No prob here.
+2) p2p traffic gets to 3:50 (checked with 'tc -s -d class show dev
+ppp0', it really does) and consumes all the bandwidth (uploading
+files)! The ceil of 6 kbytes doesn't matter at all!
 
-This is a multi-part message in MIME format.
---------------060203070200060909000903
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Shaping of incoming traffic partly works on eth0 (e.g. ceil really
+limits) yet listening to a streaming radio becomes impossible when p2p
+is active. That shouldn't be. Besides, even with no other inbound
+traffic, p2p is really slow, occupying some 5-10% of the available
+bandwidth.
 
-Hi!
+Do I get something wrong?
 
-The netfilter coreteam proudly presents:
+TIA.
 
-	iptables version 1.4.0 final
+--
+#!/bin/bash
 
-The netfilter core team has released iptables-1.4.0. This is the first
-final release of the new iptables branch 1.4. This release contains lots
-of bugfixes and improvements for the previous release candidate which
-strongly improves IPv6 support. Please, upgrade!
+# The scpript for shaping traffic.
 
-Version 1.4.0 can be obtained from:
+## Interfaces
+# rates in kilobits.
 
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
+# Traffic direction
+# Against LAN
+#
+# LAN interface,
+# shaping incoming traffic
+LAN=eth0
+LAN_BW=1024000 #1 Gbit
+# WAN interface,
+# shaping outgoing traffic
+WAN=eth1
+WAN_BW=102400 #100 Mbit
+VPN_SERVER=192.168.1.254 # to track inet traffic going through WAN
+# Inet interface, established over eth1
+# shaping outgoing traffic
+INET=ppp0
+INET_UP=250
+INET_DOWN=250
+INET_IP=19.152.13.1
 
-On behalf of the Netfilter Core Team.
-Dum de dum, tum te tum.
+# Cleanup first
+tc qdisc del dev $LAN  root    &> /dev/null
+tc qdisc del dev $WAN  root    &> /dev/null
+tc qdisc del dev $INET root    &> /dev/null
+tc qdisc del dev $LAN  ingress &> /dev/null
+tc qdisc del dev $WAN  ingress &> /dev/null
+tc qdisc del dev $INET ingress &> /dev/null
 
---=20
-"Los honestos son inadaptados sociales" -- Les Luthiers
+# Just in case
+sleep 2
+
+## Root hierarchy
+tc qdisc add dev $LAN  root handle 1:0 htb default 30
+tc qdisc add dev $WAN  root handle 2:0 htb default 30
+tc qdisc add dev $INET root handle 3:0 htb default 30
+# Root classes
+tc class add dev $LAN  parent 1:0 classid 1:1 htb rate "$LAN_BW"kbit
+tc class add dev $WAN  parent 2:0 classid 2:1 htb rate "$WAN_BW"kbit
+tc class add dev $INET parent 3:0 classid 3:1 htb rate "$INET_UP"kbit
+
+#####################
+### LAN Unlimited ###
+#####################
+tc class add dev $LAN  parent 1:1 classid 1:90 htb rate $((LAN_BW -
+INET_DOWN))kbit ceil "$LAN_BW"kbit prio 10
+
+####################
+### Internet #######
+####################
+
+# Highest priority: ICMP, SSH, VoIP
+tc class add dev $LAN  parent 1:1 classid 1:10 htb rate 10kbit ceil
+"$INET_DOWN"kbit burst 6k prio 1
+tc class add dev $INET parent 3:1 classid 3:10 htb rate 10kbit ceil
+"$INET_UP"kbit burst 6k prio 1
+
+# High priority: Online Radios
+tc class add dev $LAN  parent 1:1 classid 1:20 htb rate 130kbit ceil
+"$INET_DOWN"kbit burst 6k prio 2
+tc class add dev $INET parent 3:1 classid 3:20 htb rate 10kbit ceil
+"$INET_UP"kbit burst 6k prio 2
+
+# Default: Browsing, etc.
+tc class add dev $LAN  parent 1:1  classid 1:30 htb rate 10kbit ceil
+"$INET_DOWN"kbit burst 6k prio 3
+tc class add dev $INET parent 3:1 classid 3:30 htb rate 10kbit ceil
+"$INET_UP"kbit burst 6k prio 3
+
+# Normal priority: Services running on the box available on the Internet
+tc class add dev $INET parent 3:1 classid 3:40 htb rate 10kbit ceil
+$((9*INET_UP/10))kbit burst 6k prio 4
+
+# Lowest priority:p2p and the like
+tc class add dev $LAN  parent 1:1  classid 1:50 htb rate 5kbit ceil
+$((9*INET_DOWN/10))kbit prio 5
+tc class add dev $INET parent 3:1  classid 3:50 htb rate 5kbit ceil
+$((9*INET_UP/10))kbit prio 5
+
+###########
+### WAN ###
+###########
+
+# Bandwidth reserved for Inet, overhead taken into account
+tc class add dev $WAN parent 2:1 classid 2:10 htb rate
+$((INET_DOWN*2))kbit prio 1
+
+# Streaming services
+tc class add dev $WAN parent 2:1 classid 2:20 htb rate 512kbit ceil
+"$WAN_BW"kbit prio 2
+
+# Bulk traffic
+tc class add dev $WAN parent 2:1 classid 2:30 htb rate 256kbit ceil
+$((9*WAN_BW/10))kbit prio 3
 
 
---------------060203070200060909000903
-Content-Type: text/plain;
- name="changes-iptables-1.4.0.txt"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline;
- filename="changes-iptables-1.4.0.txt"
+#############
+### Rules ###
+#############
 
-iptables v1.4.0 Changelog
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Changes from 1.4.0rc1:
+#### Inet ###
+## :10
 
-- Don't use dlfcn.h if NO_SHARED_LIBS is defined
-	[ Mike Frysinger ]
+# TOS 0x10
+tc filter add dev $LAN  parent 1: protocol ip u32 match ip tos 0x10
+0xff  flowid 1:10
+tc filter add dev $INET parent 3: protocol ip u32 match ip tos 0x10
+0xff  flowid 3:10
 
-- Fix showing help text for matches/targets with revision as user
-	[ Patrick McHardy ]
+# ICMP
+tc filter add dev $LAN  parent 1: protocol ip u32 match ip protocol 1
+0xff flowid 1:10
+tc filter add dev $INET parent 3: protocol ip u32 match ip protocol 1
+0xff flowid 3:10
 
-- Print warnings to stderr
-	[ Max Kellermann ]
+#ssh
+tc filter add dev $LAN  parent 1: protocol ip u32 match ip sport 22
+0xff flowid 1:10
+tc filter add dev $INET parent 3: protocol ip u32 match ip dport 22
+0xff flowid 3:10
 
-- Fix sscanf type errors
-	[ Patrick McHardy ]
 
-- Always print mask in iptables-save
-	[ Jan Engelhardt ]
+## :20
+# streaming
+tc filter add dev $LAN  parent 1: protocol ip u32 match ip sport 8000
+ 0xff flowid 1:20
+tc filter add dev $INET parent 3: protocol ip u32 match ip dport 8000
+ 0xff flowid 3:20
 
-- Don't silenty exit on failure to open /proc/net/{ip,ip6}_tables_names
-	[ Victor Stinner ]
+## :30
+# Default one, no rules required
 
-- Adds --table to iptables-restore
-	[ Peter Warasin ]
+## :40
+tc filter add dev $INET parent 3: protocol ip u32 match ip sport 80
+0xff flowid 3:40
+tc filter add dev $INET parent 3: protocol ip u32 match ip sport 25
+0xff flowid 3:40
 
-- Make DO_MULTI=3D1 work for ip6tables* binaries
-	[ Hann-huei Chiou ]
+## :50
+# TORRENT
+tc filter add dev $LAN  parent 1: protocol ip u32 match ip dport 10720
+  0xff flowid 1:50
+tc filter add dev $INET parent 3: protocol ip u32 match ip sport 10720
+  0xff flowid 3:50
 
-- Add ip6tables-{save,restore} to non-experimental target, fix strict ali=
-asing
-warnings
-	[ Patrick McHardy ]
+###########
+### WAN ###
+###########
+tc filter add dev $WAN parent 2: protocol ip u32 match ip dst
+"$VPN_SERVER"/32 flowid 2:10
 
-- Introducing libxt_*.man files. Sorted matches and modules
-	[ Laszlo Attila Toth ]
-
-- Install ip6tables-{save,restore} manpages
-	[ Patrick McHardy ]
-
-- Performance optimization in sorting chain during pull-out
-	[ Jesper Dangaard Brouer ]
-
-- Fix sockfd use accounting for kernels without autoloading
-	[ Patrick McHardy ]
-
-- use <linux/types.h>
-	[ Jan Engelhardt ]
-
-- Fix make/compile error for iptables-1.4.0rc1
-	[ Jesper Dangaard Brouer ]
-
-- Fix for --random option in DNAT and REDIRECT
-	[ Tom Eastep ]
-
-- Document xt_statistic=20
-	[ Stefano Sabatini ]
-
-- sctp: fix - mistake to pass a pointer where array is required
-	[ Li Zefan ]
-
-- Fix connlimit output for inverted --connlimit-above: ! > is <=3D, not <=
-
-	[ Patrick McHardy ]
-
-- Add NFLOG manpage
-	[ Patrick McHardy ]
-
-- Move libipt_DSCP.man to libxt_DSCP.man for ip6tables.8
-	[ Yasuyuki Kozakai ]
-
-- Unifies libip[6]t_CONNSECMARK.man to libxt_CONNSECMARK.man
-	[ Yasuyuki Kozakai ]
-
-- Moves libipt_CLASSYFY.man to libxt_CLASSYFY.man for ip6tables.8
-	[ Yasuyuki Kozakai ]
-
-- fix check_inverse() call
-	[ Jan Engelhardt ]
-
-- Bump version to 1.4.0 final
-	[ Pablo Neira Ayuso ]
-
---------------060203070200060909000903--
-
---------------enig3DB129238798BC717D20CE50
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iD8DBQFHbRbWW42mhw+ndNkRAkEAAKCbfncUQLT8d1qtDETupzK4vXzA8gCfV73h
-wV6zGCe7Qv5RqIxOFBTuRj4=
-=Ynof
------END PGP SIGNATURE-----
-
---------------enig3DB129238798BC717D20CE50--
+# No limits for private subnets => behind WAN
+tc filter add dev $LAN parent 1: protocol ip u32 match ip src
+192.168.0.0/16 flowid 1:90
+tc filter add dev $LAN parent 1: protocol ip u32 match ip src
+172.16.0.0/12  flowid 1:90
+tc filter add dev $LAN parent 1: protocol ip u32 match ip src
+10.0.0.0/8     flowid 1:90
+--
