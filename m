@@ -1,261 +1,27 @@
-From: "John L. Magee" <jlmagee@mageenet.net>
-Subject: Active FTP hangs with SNAT
-Date: Tue, 25 Dec 2007 22:18:22 -0500
-Message-ID: <91CBD7F22CBCE7458D3E7A71C81B07C848581D@mnetmx1.adamapps.host>
+From: reader@newsguy.com
+Subject: Re: Special firewall for wannabee dmz machine
+Date: Tue, 25 Dec 2007 22:14:35 -0600
+Message-ID: <87r6hagkic.fsf@newsguy.com>
+References: <87abnyubhl.fsf@newsguy.com>
+	<Pine.LNX.4.58.0712251639470.21533@mail3.jubileegroup.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+"G.W. Haywood" <ged@jubileegroup.co.uk> writes:
 
-Seems like this ought to work so I must be doing something stupid but
-cannot figure it out. In the diagram below, FTP from the Win2K machine
-hangs with the SNAT configuration documented below. Works fine without
-NAT, of course. Any help will be appreciated. Various diagnostic
-information follows the configuration.
+>> I'm setting up a gentoo linux machine who's sole purpose is to get
+>> traffic coming to a NETGEAR router upstream [snip]
+>
+> Why not install a purpose-made firewall distro, and maybe some addons?
+> You'll get logs, a GUI, graphs, all kinds of fun stuff.
 
+I'm not sure what you are talking about there.  Do you mean something
+like the `Soekris' board running openbsd?
 
-         Gateway to network 172.16.21.0/24  
-            172.18.148.214/29
-                    |
-                    |
-                    |
- 
-*----------------|------------------------------------------------------
-----------*
-   |                |
-|
-   | *-----------------------------*
-*-----------------------------*   |
-   | |      172.18.148.209/29      |               |
-|   |
-   | |                             |               |
-|   |
-   | |                             |               |
-|   |
-   | |                             |               |
-|   |
-   | |                             |               |
-|   |
-   | |            172.23.127.253/17|---------------|172.23.20.5/17
-|   |
-   | |                             |               |
-|   |
-   | |                             |               |
-|   |
-   | |                             |               |
-|   |
-   | |       CentOS 5.1 VM         |               |          Win2K VM
-|   |
-   | |                             |               |
-|   |
-   | *-----------------------------*
-*-----------------------------*   |
-   |
-|
-   |
-|
-   |
-|
-   |                        Xensource Express 4.0.1
-|
-   |
-|
-   |
-|
- 
-*-----------------------------------------------------------------------
-----------*
-The VMs are paravirtualized.
-
-! iptables configuration input
-
-modprobe iptable_nat
-modprobe ip_conntrack
-modprobe ip_nat_ftp
-modprobe ip_nat_irc
-modprobe ip_conntrack_ftp
-modprobe ip_conntrack_irc
-iptables --flush PREROUTING
-iptables --flush POSTROUTING
-iptables --flush FORWARD
-iptables --flush INPUT
-iptables --flush OUTPUT
-iptables --table nat --flush
-iptables --table filter --flush
-iptables --table mangle --flush
-iptables --delete-chain
-iptables --policy PREROUTING  ACCEPT
-iptables --policy POSTROUTING ACCEPT
-iptables --policy FORWARD     ACCEPT
-iptables --policy INPUT       ACCEPT
-iptables --policy OUTPUT      ACCEPT
-iptables -t nat -A POSTROUTING -o eth0 -s 172.23.0.0/17 -j SNAT
---to-source 172.18.148.209
-iptables -t filter -A FORWARD  -o eth0 -m state --state
-NEW,ESTABLISHED,RELATED -j ACCEPT
-iptables -t filter -A FORWARD  -i eth0 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-
-!ifconfig
-
-eth0      Link encap:Ethernet  HWaddr D6:ED:26:D3:1A:BD  
-          inet addr:172.18.148.209  Bcast:172.18.148.215
-Mask:255.255.255.248
-          inet6 addr: fe80::d4ed:26ff:fed3:1abd/64 Scope:Link
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:1584 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:2024 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000 
-          RX bytes:141915 (138.5 KiB)  TX bytes:402493 (393.0 KiB)
-
-eth1      Link encap:Ethernet  HWaddr BE:69:49:13:E2:03  
-          inet addr:172.23.127.253  Bcast:172.23.127.255
-Mask:255.255.128.0
-          inet6 addr: fe80::bc69:49ff:fe13:e203/64 Scope:Link
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:216 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:136 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000 
-          RX bytes:18040 (17.6 KiB)  TX bytes:39555 (38.6 KiB)
-
-lo        Link encap:Local Loopback  
-          inet addr:127.0.0.1  Mask:255.0.0.0
-          inet6 addr: ::1/128 Scope:Host
-          UP LOOPBACK RUNNING  MTU:16436  Metric:1
-          RX packets:8 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:8 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:0 
-          RX bytes:560 (560.0 b)  TX bytes:560 (560.0 b)
-
-# Generated by iptables-save v1.3.5 on Tue Dec 25 15:05:57 2007
-*mangle
-:PREROUTING ACCEPT [1675:121683]
-:INPUT ACCEPT [1457:83152]
-:FORWARD ACCEPT [195:37171]
-:OUTPUT ACCEPT [1719:336972]
-:POSTROUTING ACCEPT [1922:374399]
-COMMIT
-# Completed on Tue Dec 25 15:05:57 2007
-# Generated by iptables-save v1.3.5 on Tue Dec 25 15:05:57 2007
-*nat
-:PREROUTING ACCEPT [556:30705]
-:POSTROUTING ACCEPT [2:80]
-:OUTPUT ACCEPT [1:32]
--A POSTROUTING -s 172.23.0.0/255.255.128.0 -o eth0 -j SNAT --to-source
-172.18.148.209 
-COMMIT
-# Completed on Tue Dec 25 15:05:57 2007
-# Generated by iptables-save v1.3.5 on Tue Dec 25 15:05:57 2007
-*filter
-:INPUT ACCEPT [390:21969]
-:FORWARD ACCEPT [1:48]
-:OUTPUT ACCEPT [309:34620]
--A FORWARD -o eth0 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT 
--A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT 
-COMMIT
-# Completed on Tue Dec 25 15:05:57 2007
-
-!/proc/sys/net/ipv4/ip_forward = 1
-
-# Kernel sysctl configuration file for Red Hat Linux
-#
-# For binary values, 0 is disabled, 1 is enabled.  See sysctl(8) and
-# sysctl.conf(5) for more details.
-
-# Controls IP packet forwarding
-net.ipv4.ip_forward = 1
-
-# Controls source route verification
-net.ipv4.conf.default.rp_filter = 1
-
-# Do not accept source routing
-net.ipv4.conf.default.accept_source_route = 0
-
-# Controls the System Request debugging functionality of the kernel
-kernel.sysrq = 0
-
-# Controls whether core dumps will append the PID to the core filename
-# Useful for debugging multi-threaded applications
-kernel.core_uses_pid = 1
-
-# Controls the use of TCP syncookies
-net.ipv4.tcp_syncookies = 1
-
-# Controls the maximum size of a message, in bytes
-kernel.msgmnb = 65536
-
-# Controls the default maxmimum size of a mesage queue
-kernel.msgmax = 65536
-
-# Controls the maximum shared segment size, in bytes
-kernel.shmmax = 4294967295
-
-# Controls the maximum number of shared memory segments, in pages
-kernel.shmall = 268435456
-
-!lsmod
-
-Module                  Size  Used by
-nls_utf8                6209  1 
-cifs                  208569  1 
-ip_nat_irc              6721  0 
-ip_conntrack_irc       10801  1 ip_nat_irc
-ip_nat_ftp              7361  0 
-ip_conntrack_ftp       11697  1 ip_nat_ftp
-iptable_mangle          6849  0 
-iptable_nat            11205  1 
-ip_nat                 21101  3 ip_nat_irc,ip_nat_ftp,iptable_nat
-autofs4                24389  2 
-hidp                   23105  2 
-rfcomm                 42457  0 
-l2cap                  29633  10 hidp,rfcomm
-bluetooth              53925  5 hidp,rfcomm,l2cap
-sunrpc                144253  1 
-xennet                 28617  0 [permanent]
-ip_conntrack_netbios_ns     6977  0 
-ipt_REJECT              9537  0 
-xt_state                6209  2 
-ip_conntrack           53025  8
-ip_nat_irc,ip_conntrack_irc,ip_nat_ftp,ip_conntrack_ftp,iptable_nat,ip_n
-at,ip_conntrack_netbios_ns,xt_state
-nfnetlink              10713  2 ip_nat,ip_conntrack
-iptable_filter          7105  1 
-ip_tables              17029  3
-iptable_mangle,iptable_nat,iptable_filter
-ip6t_REJECT             9409  1 
-xt_tcpudp               7105  6 
-ip6table_filter         6849  1 
-ip6_tables             18181  1 ip6table_filter
-x_tables               17349  7
-iptable_nat,ipt_REJECT,xt_state,ip_tables,ip6t_REJECT,xt_tcpudp,ip6_tabl
-es
-ipv6                  251521  17 ip6t_REJECT
-dm_multipath           21577  0 
-parport_pc             29157  0 
-lp                     15849  0 
-parport                37641  2 parport_pc,lp
-pcspkr                  7105  0 
-dm_snapshot            20709  0 
-dm_zero                 6209  0 
-dm_mirror              28869  0 
-dm_mod                 58201  9
-dm_multipath,dm_snapshot,dm_zero,dm_mirror
-xenblk                 19473  3 
-ext3                  123336  2 
-jbd                    56553  1 ext3
-ehci_hcd               33357  0 
-ohci_hcd               23645  0 
-uhci_hcd               25677  0 
-
- 
- 
-jlm 
---- 
-John L Magee <jlmagee@mageenet.net> 
-http://mageenet.net 
+Can you name a few of these purpose built distros?
 
