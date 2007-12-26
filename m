@@ -1,12 +1,11 @@
 From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: Special firewall for wannabee dmz machine
-Date: Wed, 26 Dec 2007 16:24:56 +0000 (GMT)
-Message-ID: <Pine.LNX.4.58.0712261551300.14361@mail3.jubileegroup.co.uk>
-References: <87abnyubhl.fsf@newsguy.com> <Pine.LNX.4.58.0712251639470.21533@mail3.jubileegroup.co.uk>
- <87r6hagkic.fsf@newsguy.com>
+Subject: Re: Active FTP hangs with SNAT
+Date: Wed, 26 Dec 2007 16:38:16 +0000 (GMT)
+Message-ID: <Pine.LNX.4.58.0712261633580.14361@mail3.jubileegroup.co.uk>
+References: <91CBD7F22CBCE7458D3E7A71C81B07C848581D@mnetmx1.adamapps.host>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <87r6hagkic.fsf@newsguy.com>
+In-Reply-To: <91CBD7F22CBCE7458D3E7A71C81B07C848581D@mnetmx1.adamapps.host>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
@@ -15,33 +14,21 @@ To: netfilter@vger.kernel.org
 
 Hi there,
 
-On Tue, 25 Dec 2007 reader@newsguy.com wrote:
+On Tue, 25 Dec 2007, John L. Magee wrote:
 
-> "G.W. Haywood" <ged@jubileegroup.co.uk> writes:
->
-> >> I'm setting up a gentoo linux machine who's sole purpose is to get
-> >> traffic coming to a NETGEAR router upstream [snip]
-> >
-> > Why not install a purpose-made firewall distro, and maybe some addons?
-> > You'll get logs, a GUI, graphs, all kinds of fun stuff.
->
-> I'm not sure what you are talking about there.  Do you mean something
-> like the `Soekris' board running openbsd?
+> Seems like this ought to work so I must be doing something stupid but
+> cannot figure it out. In the diagram below...
 
-No, not at all.
+Transport of your diagram by email turned it into complete mush, so I
+can't make head nor tail of it.
 
-> Can you name a few of these purpose built distros?
+> FTP from the Win2K machine hangs with the SNAT configuration
+> documented below. Works fine without NAT, of course. Any help will
+> be appreciated. Various diagnostic information follows...
 
-ClarkConnect, Endian, Firestarter, Fli4l, Floppyfw, Gibraltar,
-GuardDog, IPCop, LutelWall, m0n0wall, NuFW, pfSense, Shorewall,
-SmoothWall, Turtle, Zorp...  You have heard of Google? :)
-
-As you can see there are quite a few.  They have different design
-criteria, they started from different places, and most of them made
-detours along the way.  Mainly I use IPCop and SmoothWall, with a
-substantial amount of fine-tuning by the addition of iptables rules,
-both scripted and hand-crafted.  By the sound of it, you might want
-something less 'packaged' than the distros that I use.
+Your diagnostic information didn't include the routing tables, so
+presumably you haven't spent much time looking at them.  Has to be
+worth a try. :)
 
 --
 
