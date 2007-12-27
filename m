@@ -1,109 +1,248 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: Strange ipfilter happenings
-Date: Wed, 26 Dec 2007 23:22:19 +0000 (GMT)
-Message-ID: <Pine.LNX.4.58.0712262215310.21102@mail3.jubileegroup.co.uk>
-References: <37cc9b7a236ffeb8ed42521651430571@teqknow.com>
+From: "John L. Magee" <jlmagee@mageenet.net>
+Subject: RE: Active FTP hangs with SNAT
+Date: Wed, 26 Dec 2007 20:35:25 -0500
+Message-ID: <91CBD7F22CBCE7458D3E7A71C81B07C8485837@mnetmx1.adamapps.host>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <37cc9b7a236ffeb8ed42521651430571@teqknow.com>
+Content-Class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi there,
+Thanks for the feedback.
 
-First off, I don't think this is really a netfilter list problem.
-It isn't something that iptables is doing without being bidden, it
-doesn't do things like that.  You might be better off asking on some
-general Linux/Fedora help forum.  I think you're going to need to do a
-bit of reading to get to grips with this, having "Linux Firewall" -
-whatever it is - plus SElinux plus rolling your own iptables firewall
-sounds like a recipe for confusion if you aren't completely happy that
-you understand it all.  I'm only stepping in here with some general
-help because everyone else will be on holiday.  Anyway, here goes...
+I've made a bit of progress and now have the following situation:
 
-On Wed, 26 Dec 2007, Phil Leinhauser wrote:
+- From outside network, Windows command line FTP works and IE6/7 work
+when the
+	"Use Passive FTP..." box is NOT checked. IE6/7 hangs when that
+box IS checked.
 
-> I have an FC6 install that is running Qmailtoaster. The QMT install
-> made sure all firewalls were off and installed IPtables and put in a
-> default config. Linux firewall and SElinux are both off.  ...  About
-> 15 minutes or so, the iptables config reverts back to some older
-> config!  ... I manually added a few random ports into the config
-> file and the same thing happens, they are active for a little while
-> but then the running config reverts to an older version.
+- From inside (Win2K VM), FTP only works when the "Use Passive FTP..."
+box IS checked.
 
-I don't quite understand all of that.  I'm not sure what you mean by
-"Linux firewall" - something in FC6? - and "iptables config file", and
-I have no idea at all what you mean by "the iptables config".  Do you
-mean for example the output of
+Configuration information, including Routing, follows. Everything else
+in this configuration seems to work fine.
 
-iptables-save
+Hopefully the diagram will not be mangled again.
 
-or something like
+    Gateway to Outside Network
+       172.18.148.214/29
+               |
+               |
+               |
+ *-------------|---------------------------------*
+ |             |                                 |
+ | *-----------------------*   *---------------* |
+ | |   172.18.148.209/29   |   |               | |
+ | |                       |   |               | |
+ | |                       |   |               | |
+ | |                       |   |               | |
+ | |                       |   |               | |
+ | |      172.23.127.253/17|---|172.23.20.5/17 | |
+ | |                       |   |               | |
+ | |                       |   |               | |
+ | |                       |   |               | |
+ | |    CentOS 5.1 VM      |   | Win2K VM      | |
+ | |                       |   |               | |
+ | *-----------------------*   *---------------* |
+ |                                               |
+ |                                               |
+ |                                               |
+ |           Xensource Express 4.0.1             |
+ |                                               |
+ |                                               |
+ *-----------------------------------------------*
 
-iptables -L -n -v --exact --line-numbers
+iptables --flush FORWARD
+iptables --flush INPUT
+iptables --flush OUTPUT
+iptables --table nat --flush
+iptables --table filter --flush
+iptables --table mangle --flush
+iptables --delete-chain
+iptables --policy FORWARD     ACCEPT
+iptables --policy INPUT       ACCEPT
+iptables --policy OUTPUT      ACCEPT
+iptables -t nat -A POSTROUTING -o eth0 -s 172.23.0.0/17 -j SNAT
+--to-source 172.18.148.209
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 172.18.148.225 --dport
+80  -j DNAT --to-destination 172.23.20.5:80
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 172.18.148.225 --dport
+443  -j DNAT --to-destination 172.23.20.5:443
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 172.18.148.225 --dport
+3389  -j DNAT --to-destination 172.23.20.5:3389
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 172.18.148.225 --dport
+53  -j DNAT --to-destination 172.23.20.5:53
+iptables -t nat -A PREROUTING -i eth0 -p udp -d 172.18.148.225 --dport
+53  -j DNAT --to-destination 172.23.20.5:53
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 172.18.148.225 --dport
+21  -j DNAT --to-destination 172.23.20.5:21
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 172.18.148.225 --dport
+20  -j DNAT --to-destination 172.23.20.5:20
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 172.18.148.225 --dport
+1024:65535 -j DNAT --to-destination 172.23.20.5
+iptables -t nat -A PREROUTING -i eth0 -p tcp -d 172.23.127.253 --dport
+22 -j DNAT --to-destination 172.23.127.253
+iptables -t nat -A PREROUTING -i eth0 -d 172.18.148.224/27  -j DROP
+iptables -t nat -A PREROUTING -i eth0 -d 172.23.0.0/17  -j DROP
+iptables -t filter -A FORWARD  -o eth0 -m state --state
+NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -t filter -A FORWARD  -i eth0 -m state --state
+ESTABLISHED,RELATED -j ACCEPT
 
-or are you looking at a file somewhere?  The kernel parts of iptables
-keep tables of rules which are altered by commands given through the
-iptables userspace binaries.  The two most commonly used such binaries
-are called 'iptables-restore' and (unfortunately) 'iptables'.  You can
-have a file which iptables-restore can read in order to set your kernel
-tables to a given state.  I'm pretty sure FC6 uses iptables-restore as
-delivered, but I don't know what's happened to your system since then.
-Alternatively you can have a script which calls the 'iptables' binary
-multiple times to add rules to the tables.  That might be the file
-that you're talking about.  You can of course do both.  Carefully.
-Usually, your system startup scripts use the iptables binaries to set
-security policies, and that's that.  The kernel then accepts, drops or
-logs as decreed in the tables.  I don't know much about SElinux, the
-fact that it's around on your system might have some bearing on all
-this even if as you say you think it's disabled - I just don't know.
+/proc/sys/net/ipv4/ip_forward
+1
+# Kernel sysctl configuration file for Red Hat Linux
+#
+# For binary values, 0 is disabled, 1 is enabled.  See sysctl(8) and
+# sysctl.conf(5) for more details.
 
-Make sure that your system clock is synced to atomic time (e.g. using
-ntpd, and by the way do that for every system you ever install).  Then
-your system logs might possibly be useful.  Then note the time of when
-things happen exactly.  Then find out what runs at those times.  Then
-you have some evidence.  You might even have your culprit. :)
+# Controls IP packet forwarding
+net.ipv4.ip_forward = 1
 
-> I have also done an iptables-save and it appears to save the config
-> with no errors but the iptables config file date stamp never
-> changes.  Where or what is it saving?
+# Controls source route verification
+net.ipv4.conf.default.rp_filter = 1
 
-Read the iptables-save manpage:
+# Do not accept source routing
+net.ipv4.conf.default.accept_source_route = 0
 
-man iptables-save
+# Controls the System Request debugging functionality of the kernel
+kernel.sysrq = 0
 
-That will tell you that iptables-save sends its output to STDOUT.
+# Controls whether core dumps will append the PID to the core filename
+# Useful for debugging multi-threaded applications
+kernel.core_uses_pid = 1
 
-Unless you're telling it to save output to a file using redirection,
-or unless you're not using the iptables-save utility with which I'm
-familiar, it's going to send the output to your terminal (or screen,
-or xterm, or whatever you gave the command from).
+# Controls the use of TCP syncookies
+net.ipv4.tcp_syncookies = 1
 
-While you're about it, also look at
+# Controls the maximum size of a message, in bytes
+kernel.msgmnb = 65536
 
-man iptables-restore
+# Controls the default maxmimum size of a mesage queue
+kernel.msgmax = 65536
 
-which _might_ be what's running when your rules get hosed.  But
-if it is, something will be running it, it doesn't run on its own.
+# Controls the maximum shared segment size, in bytes
+kernel.shmmax = 4294967295
 
-> I've been playing with this for weeks now
+# Controls the maximum number of shared memory segments, in pages
+kernel.shmall = 268435456
+Module                  Size  Used by
+tun                    14657  1
+nfsd                  201457  17
+exportfs                9665  1 nfsd
+lockd                  59209  2 nfsd
+nfs_acl                 7617  1 nfsd
+autofs4                24389  2
+hidp                   23105  2
+l2cap                  29633  5 hidp
+bluetooth              53925  2 hidp,l2cap
+sunrpc                144253  12 nfsd,lockd,nfs_acl
+xennet                 28617  0 [permanent]
+ip_conntrack_netbios_ns     6977  0
+ip_nat_irc              6721  0
+ip_nat_ftp              7361  0
+ip_conntrack_irc       10801  1 ip_nat_irc
+ip_conntrack_ftp       11697  1 ip_nat_ftp
+xt_state                6209  2
+iptable_filter          7105  1
+iptable_nat            11205  1
+ip_nat                 21101  3 ip_nat_irc,ip_nat_ftp,iptable_nat
+ip_conntrack           53025  8
+ip_conntrack_netbios_ns,ip_nat_irc,ip_nat_ftp,ip_conntrack_irc,ip_conntr
+ack_ftp,xt_state,iptable_nat,ip_nat
+nfnetlink              10713  2 ip_nat,ip_conntrack
+iptable_mangle          6849  0
+ip_tables              17029  3
+iptable_filter,iptable_nat,iptable_mangle
+ip6t_REJECT             9409  1
+xt_tcpudp               7105  15
+ip6table_filter         6849  1
+ip6_tables             18181  1 ip6table_filter
+x_tables               17349  6
+xt_state,iptable_nat,ip_tables,ip6t_REJECT,xt_tcpudp,ip6_tables
+ipv6                  251521  19 ip6t_REJECT
+dm_multipath           21577  0
+parport_pc             29157  0
+lp                     15849  0
+parport                37641  2 parport_pc,lp
+pcspkr                  7105  0
+dm_snapshot            20709  0
+dm_zero                 6209  0
+dm_mirror              28869  0
+dm_mod                 58201  9
+dm_multipath,dm_snapshot,dm_zero,dm_mirror
+xenblk                 19473  3
+ext3                  123336  2
+jbd                    56553  1 ext3
+ehci_hcd               33357  0
+ohci_hcd               23645  0
+uhci_hcd               25677  0
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use
+Iface
+192.168.37.2    *               255.255.255.255 UH    0      0        0
+tun0
+172.18.148.208  *               255.255.255.248 U     0      0        0
+eth0
+172.18.148.216  *               255.255.255.248 U     0      0        0
+eth2
+192.168.37.0    192.168.37.2    255.255.255.0   UG    0      0        0
+tun0
+172.23.0.0      *               255.255.128.0   U     0      0        0
+eth1
+169.254.0.0     *               255.255.0.0     U     0      0        0
+eth2
+default         172.18.148.214  0.0.0.0         UG    0      0        0
+eth0
+# Generated by iptables-save v1.3.5 on Wed Dec 26 19:43:43 2007
+*filter
+:INPUT ACCEPT [1018:65834]
+:FORWARD ACCEPT [48:2304]
+:OUTPUT ACCEPT [1425:183793]
+-A FORWARD -o eth0 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+COMMIT
+# Completed on Wed Dec 26 19:43:43 2007
+# Generated by iptables-save v1.3.5 on Wed Dec 26 19:43:43 2007
+*nat
+:PREROUTING ACCEPT [12527:637445]
+:POSTROUTING ACCEPT [4278:216137]
+:OUTPUT ACCEPT [135:10583]
+-A PREROUTING -d 172.18.148.225 -i eth0 -p tcp -m tcp --dport 80 -j DNAT
+--to-destination 172.23.20.5:80
+-A PREROUTING -d 172.18.148.225 -i eth0 -p tcp -m tcp --dport 443 -j
+DNAT --to-destination 172.23.20.5:443
+-A PREROUTING -d 172.18.148.225 -i eth0 -p tcp -m tcp --dport 3389 -j
+DNAT --to-destination 172.23.20.5:3389
+-A PREROUTING -d 172.18.148.225 -i eth0 -p tcp -m tcp --dport 53 -j DNAT
+--to-destination 172.23.20.5:53
+-A PREROUTING -d 172.18.148.225 -i eth0 -p udp -m udp --dport 53 -j DNAT
+--to-destination 172.23.20.5:53
+-A PREROUTING -d 172.18.148.225 -i eth0 -p tcp -m tcp --dport 21 -j DNAT
+--to-destination 172.23.20.5:21
+-A PREROUTING -d 172.18.148.225 -i eth0 -p tcp -m tcp --dport 20 -j DNAT
+--to-destination 172.23.20.5:20
+-A PREROUTING -d 172.18.148.225 -i eth0 -p tcp -m tcp --dport 1024:65535
+-j DNAT --to-destination 172.23.20.5
+-A PREROUTING -d 172.23.127.253 -i eth0 -p tcp -m tcp --dport 22 -j DNAT
+--to-destination 172.23.127.253
+-A PREROUTING -d 172.18.148.224/255.255.255.224 -i eth0 -j DROP
+-A PREROUTING -d 172.23.0.0/255.255.128.0 -i eth0 -j DROP
+-A POSTROUTING -s 172.23.0.0/255.255.128.0 -o eth0 -j SNAT --to-source
+172.18.148.209
+COMMIT
+# Completed on Wed Dec 26 19:43:43 2007
+# Generated by iptables-save v1.3.5 on Wed Dec 26 19:43:43 2007
+*mangle
+:PREROUTING ACCEPT [79845:11152342]
+:INPUT ACCEPT [24415:3169282]
+:FORWARD ACCEPT [47534:7595046]
+:OUTPUT ACCEPT [47725:5350611]
+:POSTROUTING ACCEPT [95471:12960523]
+COMMIT
+# Completed on Wed Dec 26 19:43:43 2007
 
-Your perseverance is commendable, but you should have asked sooner.
-
-> I even uninstalled and reinstalled iptables.
-
-Completely unnecessary, as I think you've discovered.
-
-This is not something mystical that iptables is doing.  Your system is
-doing it.  Probably a daemon that it's running.  Check your crontabs,
-and the logs.  You might find something interesting in /var/log/cron
-or something like that but I don't use FCanything so I can't be sure
-if this stuff will be logged nor, if it is, where the logs will be.
-
---
-
-73,
-Ged.
