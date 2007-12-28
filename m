@@ -1,42 +1,35 @@
-From: Saravanan Chanemouganandam <schane@osmozis.com>
-Subject: modprobe ip_tables problem
-Date: Thu, 27 Dec 2007 15:25:21 +0100
-Message-ID: <200712271525.22491.schane@osmozis.com>
+From: reader@newsguy.com
+Subject: [OT gentoo] Kernel settings for iptables
+Date: Thu, 27 Dec 2007 18:01:43 -0600
+Message-ID: <87wsqzit5k.fsf@newsguy.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi all,
+I'm hoping someone can steer me toward some specific documentation
+about setting up kernel options for maximum flexibility with iptables.
 
-Can anybody tell me, why iptable tries to load ip_tables even though it is 
-compilled and built statically into the kernel. I prefer not to build as 
-modules to have very small size root filesystem on my flash memory and  
-therefore, I built everything into kernel.
+Googling I see piles of discussions about that but I've been unable to
+pull out a clear idea of what needs to be set.
 
-On perofrming the following rule setup, it throws modprobe error.
+Going thru the make menuconfig dialog there seems to be quite a herd
+of Netfilter related settings.  So many as to make it really confusing
+what does what and which are important.
 
- cm-debian:~# iptables -t nat -A POSTROUTING -o br_wan
- -j MASQUERADE
- modprobe: module ip_tables not found.
- modprobe: failed to load module ip_tables
- modprobe: module ip_tables not found.
- modprobe: failed to load module ip_tables
- modprobe: module ip_tables not found.
- modprobe: failed to load module ip_tables
- modprobe: module ip_tables not found.
- modprobe: failed to load module ip_tables
+My general aim is to setup a small somewhat hardened Gentoo Linux OS
+that will receive rejected traffic from an upstream Netgear
+router/firewall. 
 
-All the supporting netfitler tables are built directly into the kernel. The 
-mailing list discussion says no need to perform modprobe ip_tables, modprobe 
-iptable_nat, modprobe ipt_MASQUERADE etc., if it is built into kernel. But, 
-still I face the modprobe problem. 
+It will NOT be routing traffic to the lan so not a true DMZ but the
+netgear has an option to send rejected traffic to what they call a
+`DMZ'.  
 
-can anybody precise why I keep getting this error?.
+So this machines' job is to reject and log analyze sift etc etc.
 
-thanks
-Sara
+I want to study the traffic... not create a honey pot.. just have a
+good look at what is coming at me.
+
