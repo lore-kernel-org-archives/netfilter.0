@@ -1,49 +1,37 @@
-From: Ben Lentz <BLentz@channing-bete.com>
-Subject: conntrack accounting
-Date: Sat, 29 Dec 2007 21:39:07 -0500
-Message-ID: <477704CB.8030809@channing-bete.com>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Subject: Re: Passive FTP Client fails connecting to Server behind IPTABLES
+ Firewall
+Date: Tue, 1 Jan 2008 12:25:27 +0000 (GMT)
+Message-ID: <Pine.LNX.4.58.0801011219430.30377@mail3.jubileegroup.co.uk>
+References: <91CBD7F22CBCE7458D3E7A71C81B07C8485882@mnetmx1.adamapps.host>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=channing-bete.com;
-	s=smtp; t=1198982341; bh=hdwDv8bZ0IgmXxuFrY1krC9yLONPHyHHuTbeZm2ZFe
-	s=; h=DomainKey-Signature:Message-ID:Date:From:User-Agent:
-	 MIME-Version:To:Subject:Content-Type:Content-Transfer-Encoding:
-	 X-OriginalArrivalTime:X-Antivirus; b=CBIoDf+VzAD2sV9orM2a46YExNAF7
-	Iw8WV2h6lheZ6/ZrKt6QUYHVk/z1Er+P5ad3euZ87I/UT0vt+dF299CeQ==
+In-Reply-To: <91CBD7F22CBCE7458D3E7A71C81B07C8485882@mnetmx1.adamapps.host>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Greetings list!
-I am considering using the conntrack-tools userspace package to perform 
-byte level accounting for iptables by reading events from the connection 
-tracking table for completed connections and logging the statistics for 
-the stateful connection to syslog. It appears that conntrack was really 
-designed to keep redundant firewalls' state tables in sync, but I'm 
-intrigued by it's ability to use the new connection tracking and state 
-notification features in netfilter without having to parse or poll 
-/proc/net/ip_conntrack.
+Hi there,
 
-The goal I'm trying to accomplish is similar to that of:
-conntrack -E conntrack -e DESTROY | logger -t conntrack &
+On Sat, 29 Dec 2007, John L. Magee wrote:
 
-which gives me the ability to log completed (e.g. entered the DESTROY 
-state) connections to syslog from kernel-triggered events. It's plenty 
-hackish though... it'd be nicer to have an actual daemon that fork()s 
-and detaches and closes file descriptors and communicates with syslog 
-directly. I understand that a patch has been contributed to allow 
-conntrackd to use syslog, but it appears that the logging facility in 
-conntrackd is limited to recording startup, shutdown, and error 
-information. In any event, the current incarnation of conntrackd does 
-not support the long-term recording of event messages.
+> TCPDUMP analysis shows that the response from the server to the client
+> telling it to go to passive mode on port x is retaining the INSIDE
+> address of the server in the command packet and the client therefore
+> tries to initiate the data connection directly to the inside address
+> instead of the outside one.
+>
+> I do see all kinds of related commentary while googling but none that
+> have any solutions for me. If ip_contrack_ftp and ip_nat_ftp are
+> supposed to manage this, they are not.
 
-What would you folks recommend to accomplish this goal? Am I simply 
-using the wrong tool here, or is it worthwhile to get a-patchin'?
+Does this help?
 
-If more appropriate, I'll repost this in netfilter failover, but since 
-I'm not actually looking to do failover (at the moment) I'd figure I'd 
-start here.
+http://securepoint.com/lists/html/NetFilter/2006-11/msg00209.html
 
-Thanks in advance for any information or opinions you can provide.
+--
+
+73,
+Ged.
