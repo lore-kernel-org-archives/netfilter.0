@@ -1,162 +1,56 @@
-From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= 
-	<leolistas@solutti.com.br>
+From: Umut Arus <umuta@sabanciuniv.edu>
 Subject: Re: Limiting httpd traffic
-Date: Sat, 05 Jan 2008 11:19:41 -0200
-Message-ID: <477F83ED.4040506@solutti.com.br>
-References: <20080105022544.99knia1nqesgkw48@webmail.sabanciuniv.edu>	<Pine.LNX.4.58.0801051108580.32055@mail3.jubileegroup.co.uk> <20080105135010.35aw2zq1biroogg8@webmail.sabanciuniv.edu>
+Date: Sat,  5 Jan 2008 15:35:19 +0200
+Message-ID: <20080105153519.yw3oill1e7pc80gk@webmail.sabanciuniv.edu>
+References: <20080105022544.99knia1nqesgkw48@webmail.sabanciuniv.edu>
+	<Pine.LNX.4.58.0801051108580.32055@mail3.jubileegroup.co.uk>
+	<20080105135010.35aw2zq1biroogg8@webmail.sabanciuniv.edu>
+	<477F83ED.4040506@solutti.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms050706050603090809030403"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080105135010.35aw2zq1biroogg8@webmail.sabanciuniv.edu>
+In-Reply-To: <477F83ED.4040506@solutti.com.br>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; delsp="Yes	format=flowed"
 To: netfilter ML <netfilter@vger.kernel.org>
 
-This is a cryptographically signed message in MIME format.
+Thank for reply. But squid can not handle this type of limitations and =
+=20
+waste excessive cpu. We removed that configuration before.
 
---------------ms050706050603090809030403
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+thanks,
 
 
+  Quoting Leonardo Rodrigues Magalh=C3=A3es <leolistas@solutti.com.br>:
 
-    squid can handle traffic limitation with his very flexible ACLs. Do=20
-you run squid in your network ?? If yes, maybe you can get better=20
-results doing this limitation in squid than in iptables.
-
-Umut Arus escreveu:
-> Hi,
 >
-> I mean that "http outgoing traffic". rapidshare connections and as=20
-> getright download manager softwares are exploited our bandwith. I want =
+>
+>    squid can handle traffic limitation with his very flexible ACLs. D=
+o
+> you run squid in your network ?? If yes, maybe you can get better
+> results doing this limitation in squid than in iptables.
+>
+> Umut Arus escreveu:
+>> Hi,
+>>
+>> I mean that "http outgoing traffic". rapidshare connections and as  =
+=20
+>> getright download manager softwares are exploited our bandwith. I  =20
+>> want to limit connection per web-site and per-source IP's.
+>> I hope so, I would explain more clearly
+>
+> --=20
+>
+>
+> 	Atenciosamente / Sincerily,
+> 	Leonardo Rodrigues
+> 	Solutti Tecnologia
+> 	http://www.solutti.com.br
+>
+> 	Minha armadilha de SPAM, N=C3=83O mandem email
+> 	gertrudes@solutti.com.br
+> 	My SPAMTRAP, do not email it
 
-> to limit connection per web-site and per-source IP's.
-> I hope so, I would explain more clearly
 
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
-
---------------ms050706050603090809030403
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRRDCC
-BIowggNyoAMCAQICECf06hH0eobEbp27bqkXBwcwDQYJKoZIhvcNAQEFBQAwbzELMAkGA1UE
-BhMCU0UxFDASBgNVBAoTC0FkZFRydXN0IEFCMSYwJAYDVQQLEx1BZGRUcnVzdCBFeHRlcm5h
-bCBUVFAgTmV0d29yazEiMCAGA1UEAxMZQWRkVHJ1c3QgRXh0ZXJuYWwgQ0EgUm9vdDAeFw0w
-NTA2MDcwODA5MTBaFw0yMDA1MzAxMDQ4MzhaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMC
-VVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5l
-dHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
-LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG
-9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVN
-NRm5pELlzkniii8efNIxB8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQy
-lbsMTzC9mKALi+VuG6JG+ni8om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXq
-vgvOdjp6Dpvq/NonWz1zHyLmSGHGTPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6
-hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7NlyP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu
-9mIwFIws6wIDAQABo4HhMIHeMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0G
-A1UdDgQWBBSJgmd9xJ0mcABLtFBIfN49rgRufTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/
-BAUwAwEB/zB7BgNVHR8EdDByMDigNqA0hjJodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9BZGRU
-cnVzdEV4dGVybmFsQ0FSb290LmNybDA2oDSgMoYwaHR0cDovL2NybC5jb21vZG8ubmV0L0Fk
-ZFRydXN0RXh0ZXJuYWxDQVJvb3QuY3JsMA0GCSqGSIb3DQEBBQUAA4IBAQAZ2IkRbyispgCi
-54fBm5AD236hEv0e8+LwAamUVEJrmgnEoG3XkJIEA2Z5Q3H8+G+v23ZF4jcaPd3kWQR4rBz0
-g0bzes9bhHIt5UbBuhgRKfPLSXmHPLptBZ2kbWhPrXIUNqi5sf2/z3/wpGqUNVCPz4FtVbHd
-WTBK322gnGQfSXzvNrv042n0+DmPWq1LhTq3Du3Tzw1EovsEv+QvcI4l+1pUBrPQxLxtjftz
-Mizpm4QkLdZ/kXpoAlAfDj9N6cz1u2fo3BwuO/xOzf4CjuOoEwqlJkRl6RDyTVKnrtw+ymsy
-XEFs/vVdoOr/0fqbhlhtPZZH5f4ulQTCAMyOofK7MIIGVzCCBT+gAwIBAgIRALUDlvUBBfuA
-+9+fLh266rQwDQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEX
-MBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29y
-azEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNF
-UkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDcwNzI1MDAwMDAw
-WhcNMDgwNzI0MjM1OTU5WjCB8DE1MDMGA1UECxMsQ29tb2RvIFRydXN0IE5ldHdvcmsgLSBQ
-RVJTT05BIE5PVCBWQUxJREFURUQxRjBEBgNVBAsTPVRlcm1zIGFuZCBDb25kaXRpb25zIG9m
-IHVzZTogaHR0cDovL3d3dy5jb21vZG8ubmV0L3JlcG9zaXRvcnkxHzAdBgNVBAsTFihjKTIw
-MDMgQ29tb2RvIExpbWl0ZWQxJTAjBgNVBAMTHExlb25hcmRvIFJvZHJpZ3VlcyBNYWdhbGhh
-ZXMxJzAlBgkqhkiG9w0BCQEWGGxlb2xpc3Rhc0Bzb2x1dHRpLmNvbS5icjCCASIwDQYJKoZI
-hvcNAQEBBQADggEPADCCAQoCggEBAL5jxEbAVX8YALrhHkBanfT7n2xWBZB4Etbfjo3l0cbh
-DDNydqaMDzq3fi0JfZ+rn8sU/AVFg5WOZlmziS3WHgZAacmbhmyl3YsCEjoL+4Jn+T9rdXcV
-52eIr/O/ATghO6MZ5MvvhOlPddx7adjEESbYprJ8o+np/zJbQLs1f7B2i//YaNizD4pVDFWa
-jr+4dyHW8jANlcEVfhqD7pVBAvhbfb1Te8JDsDVcfX7z3kM9caorDDIIUkOLyKUSzyNgmz3V
-n9+RVeHKY0Ds8XTyIL7+nLtb+YB49OyUSmjzM+SJKPV0J3nF3Td9hGGiT7LRwmWKovNFm5Ma
-gQMfjtP3Bu8CAwEAAaOCAiowggImMB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59
-MB0GA1UdDgQWBBRvjyTheHvuhMZU8cd+o1u3FUvlCzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0T
-AQH/BAIwADAgBgNVHSUEGTAXBggrBgEFBQcDBAYLKwYBBAGyMQEDBQIwEQYJYIZIAYb4QgEB
-BAQDAgUgMEYGA1UdIAQ/MD0wOwYMKwYBBAGyMQECAQEBMCswKQYIKwYBBQUHAgEWHWh0dHBz
-Oi8vc2VjdXJlLmNvbW9kby5uZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9j
-cmwuY29tb2RvY2EuY29tL1VUTi1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRF
-bWFpbC5jcmwwSqBIoEaGRGh0dHA6Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNs
-aWVudEF1dGhlbnRpY2F0aW9uYW5kRW1haWwuY3JsMHwGCCsGAQUFBwEBBHAwbjA2BggrBgEF
-BQcwAoYqaHR0cDovL2NydC5jb21vZG9jYS5jb20vVVROQUFBQ2xpZW50Q0EuY3J0MDQGCCsG
-AQUFBzAChihodHRwOi8vY3J0LmNvbW9kby5uZXQvVVROQUFBQ2xpZW50Q0EuY3J0MCMGA1Ud
-EQQcMBqBGGxlb2xpc3Rhc0Bzb2x1dHRpLmNvbS5icjANBgkqhkiG9w0BAQUFAAOCAQEAN/2x
-tcE+TifnJquUSgey1f5xZ9HJiehH0s7PnYJXgmcp/EMi+/RftBPTY80epq3GxHM/7j2ASzSU
-WGuyI0aotuQUhwvoCkUctzw2oJ1g5UqfVKZ0Nsojs2l4hJNjZQtCuw6YJcPRU4o7KDKAeFm1
-33OIfwS3oVWddT3d8wcLmIL/3FtaaBd1bmHGu3gR0noBz2a8HrcQ5Bi0Uzh5q17lCcKzyZu2
-xOTrRVnXVPUQV3zkfjSuvKuRJG9WXPvfgFmDrlynrxzLAwDmXBNomP/zEqIpgSdlYUNYfXZP
-0q1SON005rykwXu0zpP/rgSCJ67q1WCxK2XmIkKGK+XEiwh2gzCCBlcwggU/oAMCAQICEQC1
-A5b1AQX7gPvfny4duuq0MA0GCSqGSIb3DQEBBQUAMIGuMQswCQYDVQQGEwJVUzELMAkGA1UE
-CBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-IE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMt
-VVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMB4XDTA3MDcy
-NTAwMDAwMFoXDTA4MDcyNDIzNTk1OVowgfAxNTAzBgNVBAsTLENvbW9kbyBUcnVzdCBOZXR3
-b3JrIC0gUEVSU09OQSBOT1QgVkFMSURBVEVEMUYwRAYDVQQLEz1UZXJtcyBhbmQgQ29uZGl0
-aW9ucyBvZiB1c2U6IGh0dHA6Ly93d3cuY29tb2RvLm5ldC9yZXBvc2l0b3J5MR8wHQYDVQQL
-ExYoYykyMDAzIENvbW9kbyBMaW1pdGVkMSUwIwYDVQQDExxMZW9uYXJkbyBSb2RyaWd1ZXMg
-TWFnYWxoYWVzMScwJQYJKoZIhvcNAQkBFhhsZW9saXN0YXNAc29sdXR0aS5jb20uYnIwggEi
-MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+Y8RGwFV/GAC64R5AWp30+59sVgWQeBLW
-346N5dHG4QwzcnamjA86t34tCX2fq5/LFPwFRYOVjmZZs4kt1h4GQGnJm4Zspd2LAhI6C/uC
-Z/k/a3V3FedniK/zvwE4ITujGeTL74TpT3Xce2nYxBEm2KayfKPp6f8yW0C7NX+wdov/2GjY
-sw+KVQxVmo6/uHch1vIwDZXBFX4ag+6VQQL4W329U3vCQ7A1XH1+895DPXGqKwwyCFJDi8il
-Es8jYJs91Z/fkVXhymNA7PF08iC+/py7W/mAePTslEpo8zPkiSj1dCd5xd03fYRhok+y0cJl
-iqLzRZuTGoEDH47T9wbvAgMBAAGjggIqMIICJjAfBgNVHSMEGDAWgBSJgmd9xJ0mcABLtFBI
-fN49rgRufTAdBgNVHQ4EFgQUb48k4Xh77oTGVPHHfqNbtxVL5QswDgYDVR0PAQH/BAQDAgWg
-MAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYIKwYBBQUHAwQGCysGAQQBsjEBAwUCMBEGCWCG
-SAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEBATArMCkGCCsGAQUFBwIB
-Fh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzCBpQYDVR0fBIGdMIGaMEygSqBIhkZo
-dHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0
-aW9uYW5kRW1haWwuY3JsMEqgSKBGhkRodHRwOi8vY3JsLmNvbW9kby5uZXQvVVROLVVTRVJG
-aXJzdC1DbGllbnRBdXRoZW50aWNhdGlvbmFuZEVtYWlsLmNybDB8BggrBgEFBQcBAQRwMG4w
-NgYIKwYBBQUHMAKGKmh0dHA6Ly9jcnQuY29tb2RvY2EuY29tL1VUTkFBQUNsaWVudENBLmNy
-dDA0BggrBgEFBQcwAoYoaHR0cDovL2NydC5jb21vZG8ubmV0L1VUTkFBQUNsaWVudENBLmNy
-dDAjBgNVHREEHDAagRhsZW9saXN0YXNAc29sdXR0aS5jb20uYnIwDQYJKoZIhvcNAQEFBQAD
-ggEBADf9sbXBPk4n5yarlEoHstX+cWfRyYnoR9LOz52CV4JnKfxDIvv0X7QT02PNHqatxsRz
-P+49gEs0lFhrsiNGqLbkFIcL6ApFHLc8NqCdYOVKn1SmdDbKI7NpeISTY2ULQrsOmCXD0VOK
-OygygHhZtd9ziH8Et6FVnXU93fMHC5iC/9xbWmgXdW5hxrt4EdJ6Ac9mvB63EOQYtFM4eate
-5QnCs8mbtsTk60VZ11T1EFd85H40rryrkSRvVlz734BZg65cp68cywMA5lwTaJj/8xKiKYEn
-ZWFDWH12T9KtUjjdNOa8pMF7tM6T/64Egieu6tVgsStl5iJChivlxIsIdoMxggRTMIIETwIB
-ATCBxDCBrjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2Ug
-Q2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8v
-d3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBFbWFpbAIRALUDlvUBBfuA+9+fLh266rQwCQYFKw4DAhoFAKCCAmMw
-GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMTA1MTMxOTQx
-WjAjBgkqhkiG9w0BCQQxFgQUgEBDPi8JwxqGTVUXEYQOmQcKPnUwUgYJKoZIhvcNAQkPMUUw
-QzAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcw
-DQYIKoZIhvcNAwICASgwgdUGCSsGAQQBgjcQBDGBxzCBxDCBrjELMAkGA1UEBhMCVVMxCzAJ
-BgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJU
-UlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNV
-BAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBFbWFpbAIRALUD
-lvUBBfuA+9+fLh266rQwgdcGCyqGSIb3DQEJEAILMYHHoIHEMIGuMQswCQYDVQQGEwJVUzEL
-MAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNF
-UlRSVVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQG
-A1UEAxMtVVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsAhEA
-tQOW9QEF+4D7358uHbrqtDANBgkqhkiG9w0BAQEFAASCAQBFc2t3abECYtBaJ5vMVMI7tLJF
-dnIbQU4XTxr+gosUJyQ2vLixM9PhRZxCO8/7CNo2Yicd22Q5Mq8MoeJHPAroEDa5PUthNQEk
-q7zg5EOBh5Z/1WOMKIyV2PgrkcGjRStKFbpzVm8BZKbHpF9WfOyoK92vTTrOq9AG9iW5YY3J
-RiLouWeLtAv0EyzefWillhc3VStRXRcDm6Ab8L0drRjcUZWVl6k2ZNGS7n6iHD9s0Zsx08mn
-geMzCyB7/NpCVyohMjtHztxyFUja9dZahtQd7PAlyMpGWl25BvSaJadlnoHdZ+lJ1eUuFVeT
-VNYbpTPTXIrpRbVSdhdoNhqUOoXwAAAAAAAA
---------------ms050706050603090809030403--
