@@ -1,62 +1,30 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: SNAT leaks on kernel 2.6.22 ?
-Date: Wed, 9 Jan 2008 15:44:28 +0800
-Message-ID: <01a201c85293$76aedaa0$8119fea9@MingChing>
+From: "Videal ,)" <videal@gmail.com>
+Subject: Is it possible that iptables reads a trace from a file?
+Date: Wed, 9 Jan 2008 15:46:32 +0100
+Message-ID: <9c90ecd00801090646r268ee7f8scf67bcfd53380cda@mail.gmail.com>
+References: <9c90ecd00801090645u2c1adb71n653eb3209a7a6ceb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=B4ooeCS/mSqgVYEh0HgCSjcf6eSZt5FbIHr/HpkPswU=;
+        b=JO5FCzeMCbCLezhXunsWuKTPMvFr1MZOGAKr0n8qMOFnmdzNizgCYYtOdXIVdtFZpJTyn+VsWOK2sM0apjzW8r3uyJn5mJsKQwG/Dgarplc2QdL7AG/zX7bH1t2Tep5k1cKuiRdjMpMDqGQsd+hjSDFNNqgnybDmtjfCn7MGBqE=
+In-Reply-To: <9c90ecd00801090645u2c1adb71n653eb3209a7a6ceb@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
+Hello,
 
-I hope you can bear with me as this is a little long.
+I'm using iptables 1.4 with layer7-filter and I would like to know if
+it is possible that iptables get the packets from a trace saved in a
+file. I mean, get the packets from a file instead of a normal
+interface. I know that perhaps I could make a dummy interfaces or
+something like that, but I would like know if there is a more elegant
+way to do it.
 
-I have a system with linux 2.6.22.15 without any patch, and iptables 1.3.8 also
-without any patch ( I have done a great deal of problem isolation, therefore all
-the patches I added have been removed and so now it's left as a vanilla system). 
-
-In the system I happened to configure a bridge br0  and  is assigned an IP. 
-In the bridge there is also a  connection to internet using pppoe via an 
-additional interface. The outgoing interface is natted.
-
-I have a client on the side A of the bridge which default route to the IP 
-of br0 of the bridge. And on the bridge, there are two routing paths, 
-one via NAT to the internet and one is without NAT, another to a router 
-on the side B of the bridge. And the bridge is doing multipath weight 
-routing of equal weight on both the uplinks.
-
-What I noticed is that certain times I would get to have private IP
-leaks to the natted interface. I have been trying very hard to
-figure out how to repeat this problem and it does not happen
-all the time but which it happens, I don't know how to normalize
-it. I tried re-run iptables scripts and flush the routing cache, it
-does not bring the system back. And it does not happen to all 
-packets, only some.
-
-I am pretty sure I do SNAT or MASQUERADE on the natted
-interface, but this rule seems to be skipped or ignored at certain time.
-
-I have finally figured out a consistent way to repeat the problem
-but now I am still short of an answer. The detail of how I could
-repeat it is again quite long, and so I am skipping it for now.
-
-Also I have not been able to repeat this problem without using a bridge
-I tried multipath routing, one leg is natted, and another is routed without NAT
-and without bridge, but I don't see the problem.
-
-But since the problem comes out intermittently, I am at this moment
-unable to say for sure it does not happen without a bridge. 
-
-I know it probably a long shot now, anyone has a clue ?
-
-Best regards.
-
---------------------------------------------
-Important Warning! 
-
-*************************** 
-
-This electronic communication (including any attached files) may contain confidential and/or legally privileged information and is only intended for the use of the person to whom it is addressed. If you are not the intended recipient, you do not have permission to read, use, disseminate, distribute, copy or retain any part of this communication or its attachments in any form. If this e-mail was sent to you by mistake, please take the time to notify the sender so that they can identify the problem and avoid any more mistakes in sending e-mail to you. The unauthorised use of information contained in this communication or its attachments may result in legal action against any person who uses it.
-
+Thank you!
