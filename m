@@ -1,40 +1,31 @@
-From: Strato <netfilter@p0w.org>
-Subject: conntrack with protocol H.323
-Date: Thu, 10 Jan 2008 16:33:36 +0100
-Message-ID: <47863AD0.6080201@p0w.org>
+From: "Peter T. Breuer" <P.T.Breuer@cs.bham.ac.uk>
+Subject: [help] modern iptables rule for transproxy
+Date: Thu, 10 Jan 2008 17:02:44 +0100 (CET)
+Message-ID: <200801101602.m0AG2iC5022136@betty.it.uc3m.es>
+Reply-To: ptb@inv.it.uc3m.es
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+I'd be much obliged if somebody could give me a modern iptables
+equivalent for this ipchains rule
 
+   ipchains -A input -p tcp -d 0.0.0.0/0 80 -j REDIRECT 8081
 
-I need help ton configure my firewall to accept and conntrack video 
-stuff of msn from and to multiple machines into the LAN network.
+which is intended to redirect OUTGOING packets with port 80 as
+destination to port 8081 on localhost, where I have tproxy sitting
+waiting to talk to the LAN web proxy and cache.
 
-I don't want to simply NAT incoming traffic to a particular machine of 
-my LAN because I have multiple users using MSN, so NATing traffic will 
-authorize only one machine to use webcam within MSN.
+The tproxy man page doesn't give anything other than ipfw (freebsd)
+or ipfwadm or ipchains (or ipnat, whatever that is) rules, but then it
+was written in 2000. Perhaps the man page could be updated, with a
+suitable note of thanks, when we know what to put in it!
 
- - I talk about MSN but in fact, I have to permit gnomeeting/netmeeting, 
-MSN and skype to be able to share incoming and outgoing webcam traffic 
-through the firewall....
- - Before answering something like RTFM, I read this ml archives from 
-January 2006 and don't found anything about iptables rules to do this,
- - I also read RFC's about H.323, searched over the web, and I know that 
-maybe MSN/skype/netmeeting are not using H.323 protocol.
- - I also read some posts in the ml about l7-filter but it seems very 
-unstable and I'm not sure that is the solution for me
+Thanks in advance!
 
- - I have a 2.6.22.1 kernel and iptables v1.3.8
- - I have loaded modules nf_nat_h323 and nf_conntrack_h323
-
-Hope someone will help me dealing with this :)
-
-Best regards,
-Strato
+Peter (ptb@cs.bham.ac.uk, ptb@inv.it.uc3m.es)
 
