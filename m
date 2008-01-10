@@ -1,35 +1,34 @@
-From: =?ISO-8859-1?Q?S=3F=E9bastien_Cramatte?= 
-	<scramatte@zensoluciones.com>
-Subject: Why REJECT target  is not supported with MANGLE ?
-Date: Wed, 09 Jan 2008 23:20:42 +0100
-Message-ID: <478548BA.2020903@zensoluciones.com>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: Support for ICMP Time Exceeded in REJECT target ?
+Date: Thu, 10 Jan 2008 09:38:28 +0100
+Message-ID: <4785D984.9000909@freemail.hu>
+References: <200801091818.38810.laurentp@cse-semaphore.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <200801091818.38810.laurentp@cse-semaphore.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Laurent Pinchart <laurentp@cse-semaphore.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Laurent Pinchart =EDrta:
 
-Why REJECT target  is not supported with MANGLE ?
+=2E..
 
+> I know that my application breaks the OSI model and creates some kind=
+ of=20
+> hybrid "layer 2.5" device. I'm open to suggestions regarding a better=
+ way to=20
+> implement bridges enumeration between two ethernet hosts, but using t=
+he=20
+> traceroute command is a customer requirement which could only be chan=
+ged with=20
+> strong valid reasons.
+>  =20
+I'm really curios why would anyone need to enumerate the bridging host?
+Could you explain?
 
-My server is running debian etch4 with 2.6.22 kernel  and setuped as 
-traffic shaper + transparent bridge
+Swifty
 
-The command with connlimit  bellow won't work and return me "Invalid 
-Argument"
-
-iptables  -t mangle -N mytable
-iptables --table mangle --append POSTROUTING --out-interface br0 --match 
-physdev --physdev-is-bridged --physdev-out eth0 --jump  mytable
-
-iptables  -t mangle -A mytable --proto tcp --match connlimit 
---connlimit-above 15 --connlimit-mask 32 --jump REJECT
-iptables  -t mangle -A mytable --jump CLASSIFY --set-class 1:10
-
-How can I achieve this kind of setup ?
-
-Regards
