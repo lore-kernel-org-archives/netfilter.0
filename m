@@ -1,85 +1,124 @@
-From: Laurent Pinchart <laurentp@cse-semaphore.com>
-Subject: Re: Support for ICMP Time Exceeded in REJECT target ?
-Date: Thu, 10 Jan 2008 10:23:30 +0100
-Message-ID: <200801101023.35077.laurentp@cse-semaphore.com>
-References: <200801091818.38810.laurentp@cse-semaphore.com> <4785D984.9000909@freemail.hu>
+From: "Jovanny Saravia" <jovanny.saravia@gmail.com>
+Subject: Avoiding drops in GigaEthernet Interfaces
+Date: Thu, 10 Jan 2008 09:16:27 -0500
+Message-ID: <2eaa5dfd0801100616k2d30a150tb8f1d9f8ff8cbbc8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart2308161.DyyLLvkysN";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4785D984.9000909@freemail.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=TAYBT4GF3oEzZFBQMDqN2dzu3T2O9By9XVwvlFXKMhQ=;
+        b=UNQdSIeRtvK6IP2f+el82NjXMfFlfmPqORAQlfuMPQWeT27MWv8mPWbgJVfIWeq/KHBLoFF++yTWngsvA5dDuL50chSJMOj3iE62VOaKHR4sz8nSKJnkXuFA+04c8SU1rK7iboTKkmzxnM4RgBnzsyGspQa8pGbmEETJ3o/uxbg=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: =?iso-8859-1?q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
---nextPart2308161.DyyLLvkysN
-Content-Type: text/plain;
-  charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hi to all in the list,
 
-On Thursday 10 January 2008 09:38, G=E1sp=E1r Lajos wrote:
-> Laurent Pinchart =EDrta:
->
-> ...
->
-> > I know that my application breaks the OSI model and creates some kind of
-> > hybrid "layer 2.5" device. I'm open to suggestions regarding a better w=
-ay
-> > to implement bridges enumeration between two ethernet hosts, but using
-> > the traceroute command is a customer requirement which could only be
-> > changed with strong valid reasons.
->
-> I'm really curios why would anyone need to enumerate the bridging host?
-> Could you explain?
+I am having a problem for more than 2 weeks, and I hope I can found
+the solution here
 
-Our customer needs IP connectivity between two computers in the engines at=
-=20
-each end of the train. Each carriage will have an embedded routing device,=
-=20
-and connecting the carriages together creates a chain that ensures IP=20
-connectivity.
+Scenario:
 
-The customer's application requires enumerating the carriages. One easy=20
-solution was to enumerate the routing devices in the chain, either using=20
-their MAC or IP address. Configuring the devices as layer 3 routers would b=
-e=20
-really complex, as all routing tables must be automatically updated wheneve=
-r=20
-a carriage is added or removed. Using layer 2 bridges is much easier, but w=
-e=20
-then loose layer 3 route tracing. This is why we thought about making some=
-=20
-kind of hybrid device that acts as a layer 2 bridge except that it decremen=
-ts=20
-the IP TTL and sends an ICMP Time Exceeded message when the TTL reaches 0.
+Actually I have a linux box connected to a Cisco SW 4507, they are
+connected through 2 Giga interfaces using 8021Q. One of the interfaces
+receive the traffic (inbound eth1 with 2 subinterfaces) and then
+forward to the other interface (outbound eth0 with 1 subinterface).
 
-Best regards,
+Behind of the SW there is a Cisco router connected and establishing a
+BGP connection with the linux box using quagga -> bgpd. As there are 2
+connections then exists 2 neighbors in this BGP connection. Also the
+linux box has netfilter installed, and for some networks apply NAT
+rules. These are the features for the linux
 
-=2D-=20
-Laurent Pinchart
-CSE Semaphore Belgium
+- Fedora Core release 6 (Zod)
+- 2 Intel(R) Xeon(R) CPU 2.33GHz
+- 4 Gigas in Memory
+- 2.6.22.9-61.fc6 x86_64
+Problem:
 
-Chauss=E9e de Bruxelles, 732A
-B-1410 Waterloo
-Belgium
+Normally the traffic is between 40M to 300M every day. The problem
+starts when the traffic raise more than 200M, then I start to see
+drops in the interfaces in RX, the TX has no problems (although in low
+traffic sometimes apeears some litte drops in RX). I am measuring
+every minute for both interfaces in RX, and for example yesterday I
+saw the following number of packets drops in the interfaces:
 
-T +32 (2) 387 42 59
-=46 +32 (2) 387 42 75
+--------------------------------------------
+2008-01-09 11:01:33: eth0 3
+2008-01-09 11:02:33: eth0 160
+2008-01-09 11:03:33: eth0 1520
+2008-01-09 11:04:33: eth0 147
+2008-01-09 11:05:33: eth0 50
+2008-01-09 11:06:33: eth0 92
+2008-01-09 11:07:33: eth0 81
+2008-01-09 11:08:33: eth0 101
+2008-01-09 11:09:33: eth0 260
+2008-01-09 11:10:33: eth0 5850
+2008-01-09 11:11:33: eth0 401
+2008-01-09 11:12:33: eth0 275
+2008-01-09 11:13:33: eth0 2966
+2008-01-09 11:14:34: eth0 4601
+2008-01-09 11:15:34: eth0 201
+--------------------------------------------
+2008-01-09 11:01:33: eth1 12
+2008-01-09 11:02:33: eth1 47
+2008-01-09 11:03:33: eth1 1943
+2008-01-09 11:04:33: eth1 91
+2008-01-09 11:05:33: eth1 1
+2008-01-09 11:06:33: eth1 6
+2008-01-09 11:07:33: eth1 46
+2008-01-09 11:08:33: eth1 40
+2008-01-09 11:09:33: eth1 27
+2008-01-09 11:10:33: eth1 116
+2008-01-09 11:11:33: eth1 251
+2008-01-09 11:12:33: eth1 129
+2008-01-09 11:13:33: eth1 1291
+2008-01-09 11:14:34: eth1 61
+2008-01-09 11:15:34: eth1 103
+--------------------------------------------
+Normally the system could work with this drops, but sometimes the BGP
+connection is lost because the keepalives are not received in the
+linux box. Altough I increased the timers to 30 90 in BGP, sometimes
+this BGP connection is lost again.
 
---nextPart2308161.DyyLLvkysN
-Content-Type: application/pgp-signature
+I would like to avoid this drops, I tried to increase backlog
+parameters in the kernel and the number of drops are decreased a
+little, however the drops appears when the traffic increase during the
+day, even in low traffic appears few times some drop packet. In the
+cisco SW 4507 any drops neither errors appears so I discarded every
+physical problem.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
+These are the kernel parameters that I changed:
 
-iD8DBQBHheQX8y9gWxC9vpcRApBhAKCMM+M/oVDFQ4aZsrlTav9WLDqpmQCePbvl
-GKg3PjUf6fkwsaif0/bjSog=
-=vGJO
------END PGP SIGNATURE-----
+net.core.wmem_max = 67108864
+net.core.rmem_max = 67108864
+net.ipv4.tcp_wmem = 4096 65536 67108864
+net.ipv4.tcp_rmem = 4096 87380 67108864
+net.netfilter.nf_conntrack_max = 2048000
+net.core.netdev_max_backlog = 4096000
+net.ipv4.tcp_max_syn_backlog = 4096000
+txqueuelen:10000 in both interfaces eth0 and eth1
+After of this I downloaded conntrack package to see if maybe the drops
+could be there because netfilter, and I see this message:
 
---nextPart2308161.DyyLLvkysN--
+nfnl_listen: recvmsg overrun: No buffer space available
+
+For that reason I changed from 67108864 to 134217728 in the kernel
+parameter and the drops remains. I am writing this post, hoping
+someone here give me some lights to avoid these drops.
+
+So if someone here knows what I need to do in order to avoid these
+drops, please let me know
+
+Any help will be so much appreciated
+
+-- 
+Jovanny Saravia
+Solutions Manager
+e-solutions Ltda
+jovanny.saravia@gmail.com
++57-310-7676163
