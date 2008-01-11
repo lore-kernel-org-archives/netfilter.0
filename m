@@ -1,32 +1,46 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: Is there a way to DROP on OUTPUT without returning EPERM?
-Date: Thu, 10 Jan 2008 22:26:47 +0000 (GMT)
-Message-ID: <Pine.LNX.4.58.0801102224230.23731@mail3.jubileegroup.co.uk>
-References: <20080110213605.GA14931@club.cc.cmu.edu>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: [help] modern iptables rule for transproxy
+Date: Fri, 11 Jan 2008 16:30:27 +1300
+Message-ID: <4786E2D3.2040702@treenet.co.nz>
+References: <200801101602.m0AG2iC5022136@betty.it.uc3m.es>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080110213605.GA14931@club.cc.cmu.edu>
+In-Reply-To: <200801101602.m0AG2iC5022136@betty.it.uc3m.es>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: 
+Cc: netfilter@vger.kernel.org
 
-Hi there,
+Peter T. Breuer wrote:
+> I'd be much obliged if somebody could give me a modern iptables
+> equivalent for this ipchains rule
+> 
+>    ipchains -A input -p tcp -d 0.0.0.0/0 80 -j REDIRECT 8081
 
-On Thu, 10 Jan 2008, Mike Kasick wrote:
+My auto-generated FW has this (with suitable replacements):
 
-> iptables -A OUTPUT -o eth1 -m statistic --mode random --probability 0.5 -j DROP
->
-> has the side effect of returning EPERM ... I'd really like to drop
-> packets silently without the user application being notified.
->
-> Is there a way I can achieve a truly silent DROP on the OUTPUT chain?  Is
-> there an extension target that does this that I've missed?
+iptables -t nat -A PREROUTING -i $LOCAL_IFACE -p tcp -s ! $PROXY_BOX 
+--dport 80 -j REDIRECT --to-ports 8081
 
-Instead of DROPping it, why not just send it somewhere else?
+> 
+> which is intended to redirect OUTGOING packets with port 80 as
+> destination to port 8081 on localhost, where I have tproxy sitting
+> waiting to talk to the LAN web proxy and cache.
+> 
+> The tproxy man page doesn't give anything other than ipfw (freebsd)
+> or ipfwadm or ipchains (or ipnat, whatever that is) rules, but then it
+> was written in 2000. Perhaps the man page could be updated, with a
+> suitable note of thanks, when we know what to put in it!
+> 
+> Thanks in advance!
+> 
+> Peter (ptb@cs.bham.ac.uk, ptb@inv.it.uc3m.es)
+> 
 
---
+Amos
+-- 
+Please use Squid 2.6STABLE17 or 3.0STABLE1.
+There are serious security advisories out on all earlier releases.
 
-73,
-Ged.
