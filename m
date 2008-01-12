@@ -1,45 +1,107 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: Packet loss?
-Date: Sat, 12 Jan 2008 18:33:10 +0000 (GMT)
-Message-ID: <Pine.LNX.4.58.0801121827530.24458@mail3.jubileegroup.co.uk>
-References: <eafa772f0801120559p1cd3e2a4q41440060996efe11@mail.gmail.com>
+From: Dzianis Kahanovich <mahatma@bspu.unibel.by>
+Subject: NOTRACK only new connections
+Date: Sat, 12 Jan 2008 19:40:10 -0200
+Message-ID: <478933BA.9090906@bspu.unibel.by>
+Reply-To: mahatma@eu.by
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <eafa772f0801120559p1cd3e2a4q41440060996efe11@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi there,
+I am trying to modify conntrack core + NOTRACK target to NOTRACK only
+untracked connections. First packet searching for its connection entry and if
+none - no new conntrack entry created.
 
-On Sat, 12 Jan 2008, Steven Ayre wrote:
+I use single IP for few computers - for router (only in NAT "SAME" target and
+ARP to communicate with ISP) and server and want to exclude tracking for
+passing connections to server. Goal to not use IP directly on router and
+NATting it to fake IP on server are speed and DoS-stability.
 
-> From Linux machine:
-> OUT: [SYN] Seq=0 Len=0 MSS=1418 TSV=429048334 TSER=0 WS=1
-> IN:  [SYN,ACK] Seq=0 Ack=1 Win=8190 Len=0 MSS=1418
-> ...
-> IN:  [ACK] Seq=1 Ack=59 Win=64735 Len=0
-> IN:  ...HTML response received...
->
-> From LAN machine:
-> OUT: [SYN] Seq=0 Len=0 MSS=1460
-> IN:  [SYN,ACK] Seq=0 Ack=1 Win=8190 Len=0 MSS=1460
-> ...
-> IN:  [ACK] Seq=1 Ack=59 Win=63009 Len=0
-> ...then nothing...
+--- linux-2.6.23-gentoo-r3/net/netfilter/Kconfig	2007-10-09 23:31:38.000000000
++0300
++++ linux-2.6.23-gentoo-r3.fixed/net/netfilter/Kconfig	2007-12-11
+16:17:26.000000000 +0200
+@@ -353,6 +353,12 @@
+  	  If you want to compile it as a module, say M here and read
+  	  <file:Documentation/kbuild/modules.txt>.  If unsure, say `N'.
 
-Sounds like MTU.  Does this shed any light?
++config NETFILTER_XT_TARGET_NOTRACK_NEW
++	bool "NOTRACK safe (only new)"
++	depends on NETFILTER_XT_TARGET_NOTRACK
++	help
++	  Slow but safe way to NOTRACK only new/untracked connections.
++
+  config NETFILTER_XT_TARGET_TRACE
+  	tristate  '"TRACE" target support'
+  	depends on NETFILTER_XTABLES
+--- linux-2.6.23-gentoo-r3/net/netfilter/nf_conntrack_core.c	2007-10-09
+23:31:38.000000000 +0300
++++ linux-2.6.23-gentoo-r3.fixed/net/netfilter/nf_conntrack_core.c	2007-12-11
+16:38:04.000000000 +0200
+@@ -594,15 +594,26 @@
+  			     dataoff, l3num, protonum, &tuple, l3proto,
+  			     l4proto)) {
+  		pr_debug("resolve_normal_ct: Can't get tuple\n");
++		NF_CT_STAT_INC_ATOMIC(invalid);
+  		return NULL;
+  	}
 
-http://blue-labs.org/howto/mtu-mss.php
+  	/* look for tuple match */
+  	h = nf_conntrack_find_get(&tuple);
+  	if (!h) {
++#ifdef NETFILTER_XT_TARGET_NOTRACK_NEW
++		if((*skb)->nfctinfo == IP_CT_NEW) {
++		    (*skb)->nfct = &nf_conntrack_untracked.ct_general;
++		    nf_conntrack_get((*skb)->nfct);
++		    NF_CT_STAT_INC_ATOMIC(ignore);
++		    return NULL;
++		}
++#endif
+  		h = init_conntrack(&tuple, l3proto, l4proto, skb, dataoff);
+-		if (!h)
++		if (!h) {
++			NF_CT_STAT_INC_ATOMIC(invalid);
+  			return NULL;
++		}
+  		if (IS_ERR(h))
+  			return (void *)h;
+  	}
+@@ -678,7 +689,6 @@
+  			       &set_reply, &ctinfo);
+  	if (!ct) {
+  		/* Not valid part of a connection */
+-		NF_CT_STAT_INC_ATOMIC(invalid);
+  		return NF_ACCEPT;
+  	}
 
-Maybe bad packet checksums?  They could be being dropped before they
-even get to your router.  What happens if you put the browsing PC on
-the router directly (if you dare:) ?
+--- linux-2.6.23-gentoo-r3/net/netfilter/xt_NOTRACK.c	2007-10-09
+23:31:38.000000000 +0300
++++ linux-2.6.23-gentoo-r3.fixed/net/netfilter/xt_NOTRACK.c	2007-12-11
+16:18:44.000000000 +0200
+@@ -22,6 +22,9 @@
+  	if ((*pskb)->nfct != NULL)
+  		return XT_CONTINUE;
 
---
++#ifdef NETFILTER_XT_TARGET_NOTRACK_NEW
++	(*pskb)->nfctinfo = IP_CT_NEW;
++#else
+  	/* Attach fake conntrack entry.
+  	   If there is a real ct entry correspondig to this packet,
+  	   it'll hang aroun till timing out. We don't deal with it
+@@ -29,6 +32,7 @@
+  	(*pskb)->nfct = &nf_conntrack_untracked.ct_general;
+  	(*pskb)->nfctinfo = IP_CT_NEW;
+  	nf_conntrack_get((*pskb)->nfct);
++#endif
 
-73,
-Ged.
+  	return XT_CONTINUE;
+  }
+
+
+-- 
+WBR,
+Denis Kaganovich,  mahatma@eu.by  http://mahatma.bspu.unibel.by
 
