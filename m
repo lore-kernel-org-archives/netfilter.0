@@ -1,59 +1,131 @@
-From: "Peter T. Breuer" <ptb@inv.it.uc3m.es>
-Subject: Re: [help] modern iptables rule for transproxy
-Date: Sat, 12 Jan 2008 11:59:35 +0100 (CET)
-Message-ID: <200801121059.m0CAxZdG008224@betty.it.uc3m.es>
-Reply-To: ptb@inv.it.uc3m.es
+From: "Steven Ayre" <steveayre@gmail.com>
+Subject: Packet loss?
+Date: Sat, 12 Jan 2008 13:59:07 +0000
+Message-ID: <eafa772f0801120559p1cd3e2a4q41440060996efe11@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=Mm9BnF2cqbCpT5Gnyw7bwxaS2TKSH3AqVi3WEuPBVp8=;
+        b=rGpO1fDOb+iSo+QE5HY5hyTOuzvnEvsYaVgtBZ+SrxzEtLohbNXepRsSr7b5lDJ2kdCVTVX2BA53wRWReXs7kJCp42vOHeSSJSu/KVyFEEzXvpjq4xnA45Cj7RCwsfvxhk7hB3ztJ4SVavloCmvYgUdeomTuDmea2GYR8fcxBNU=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Amos Jeffries wrote:
-> Peter T. Breuer wrote:
-> > I'd be much obliged if somebody could give me a modern iptables
-> > equivalent for this ipchains rule
-> > 
-> >    ipchains -A input -p tcp -d 0.0.0.0/0 80 -j REDIRECT 8081
-> 
-> My auto-generated FW has this (with suitable replacements):
-> 
-> iptables -t nat -A PREROUTING -i $LOCAL_IFACE -p tcp -s ! $PROXY_BOX \
-> --dport 80 -j REDIRECT --to-ports 8081
+I have a Linux machine set up running an iptables firewall, acting as
+a internet gateway for the LAN and performing SNAT on the POSTROUTING
+chain.
 
-Yes, thanks. I've been trying variants on that for some time, with no
-success. Stracing the tproxy daemon on port 8081 shows no sign of
-activity at all when I do a
+This is working find 95% of the time, but there are certain websites
+which I can't get onto. When I find one that doesn't work, it's always
+repeatable. One such example is www.microsoft.com.
 
-   telnet news.bbc.co.uk 80
+Here's the strange thing... I can connect fine to www.microsoft.com
+(in reality an akadns.net server) from the Linux machine, but from any
+machine on the LAN I can't connect. Having traced the packets going
+in/out of the Linux machine on the WAN port I've found that the
+following is happening:
 
-for example. Is there a canonical way to debug iptables? I'm sure there
-must be. tcpdump shows nothing on port 8081 on any interface I can think
-of, but the telnet news.bbc.co.uk 80 gets through! It must be avoiding
-the REDIRECT somehow.
+From Linux machine:
+OUT: [SYN] Seq=0 Len=0 MSS=1418 TSV=429048334 TSER=0 WS=1
+IN:  [SYN,ACK] Seq=0 Ack=1 Win=8190 Len=0 MSS=1418
+OUT: [ACK] Seq=1 Ack=1 Win=5672 Len=0
+IN:  [TCP segment of reassembled PDU]
+OUT: [ACK] Seq=1 Ack=34 Win=8190 Len=0
+OUT: HTTP:
+        GET /en/us/default.aspx HTTP/1/1\n
+        HOST: www.microsoft.com\n
+        \n
+IN:  [ACK] Seq=1 Ack=59 Win=64735 Len=0
+IN:  ...HTML response received...
 
-
-The tproxy is clearly bound to port 8081
-
-   bind(4, {sa_family=AF_INET, sin_port=htons(8081), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
-   listen(4, 128)                          = 0
-
-and is stuck in an accept.
-
-iptables --t nat -L shows
-
-  Chain PREROUTING (policy ACCEPT)
-  target     prot opt source               destination
-  REDIRECT   tcp  -- !<proxyhost>          anywhere            tcp dpt:www redir ports 8081
-
-and nothing else. The builtins' rules (INPUT, etc.) are all empty.
-
-When I try and talk to port 80 on a distant machine, I ought to be making a
-socket which is bound to it with a high local port number. I can see net
-traffic from distant port 80s to high ports on my machine with tcpdump,
-but no sign of anything stirring on port 8081.
+From LAN machine:
+OUT: [SYN] Seq=0 Len=0 MSS=1460
+IN:  [SYN,ACK] Seq=0 Ack=1 Win=8190 Len=0 MSS=1460
+OUT: [ACK] Seq=1 Ack=1 Win=17520 Len=0
+IN:  [TCP segment of reassembled PDU]
+OUT: [ACK] Seq=1 Ack=34 Win=8190 Len=0
+OUT: HTTP:
+        GET /en/us/default.aspx HTTP/1/1\n
+        HOST: www.microsoft.com\n
+        \n
+IN:  [ACK] Seq=1 Ack=59 Win=63009 Len=0
+...then nothing...
 
 
-Peter
+There is very little difference as far as I can see between the data
+that's being sent - the Linux machine sends TSV, TSER, WS in the first
+packet and the MSS and window sizes are different, but everything else
+is identical. None of this should stop me receiving the HTTP response
+should it?
+
+The fact it works from the Linux machine itself is making me wonder if
+it's firewall related - could there be anything there that'd stop this
+working? Just to clarify, the dump above is of incoming traffic on the
+WAN interface so we are definitely sending the request, getting ACKs
+and the response is never received for the request sent from the LAN
+machine. It is also not being dropped by the firewall, as first that's
+a dump of what's coming into/leaving the machine on the WAN port and
+secondly I log anything that's dropped and nothing is showing up in
+the logs.
+
+Here's a dump of my firewall rules using -t nat -l and -t filter -l:
+eth0 == LAN
+eth1 == WAN
+eth2 == WLAN
+tun0 == VPN
+
+Table: nat
+Chain PREROUTING (policy ACCEPT 5224 packets, 273K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain POSTROUTING (policy ACCEPT 3477 packets, 190K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+ 3048  241K SNAT       0    --  *      eth1    0.0.0.0/0
+0.0.0.0/0           to:81.174.234.210
+
+Chain OUTPUT (policy ACCEPT 3916 packets, 306K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Table: filter
+Chain INPUT (policy DROP 30 packets, 7715 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+ 175K  127M ACCEPT     0    --  *      *       0.0.0.0/0
+0.0.0.0/0           state RELATED,ESTABLISHED
+  996 69294 ACCEPT     0    --  lo     *       0.0.0.0/0            0.0.0.0/0
+   39  5681 ACCEPT     0    --  eth0   *       0.0.0.0/0            0.0.0.0/0
+   36  5641 ACCEPT     0    --  eth2   *       0.0.0.0/0            0.0.0.0/0
+    0     0 ACCEPT     0    --  tun0   *       0.0.0.0/0            0.0.0.0/0
+    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0           state NEW tcp dpt:22
+   30  7715 LOG        0    --  *      *       0.0.0.0/0
+0.0.0.0/0           LOG flags 6 level 3 prefix `[INPUT DROP] : '
+
+Chain FORWARD (policy DROP 2 packets, 131 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+16254 7124K ACCEPT     0    --  *      *       0.0.0.0/0
+0.0.0.0/0           state RELATED,ESTABLISHED
+   50  3120 ACCEPT     0    --  eth0   *       0.0.0.0/0            0.0.0.0/0
+ 2618  126K ACCEPT     0    --  eth2   *       0.0.0.0/0            0.0.0.0/0
+    0     0 ACCEPT     0    --  tun0   *       0.0.0.0/0            0.0.0.0/0
+    1    40 LOG        0    --  *      *       0.0.0.0/0
+0.0.0.0/0           LOG flags 6 level 3 prefix `[FORWARD DROP] : '
+
+Chain OUTPUT (policy ACCEPT 177K packets, 247M bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DROP       icmp --  *      *       0.0.0.0/0
+0.0.0.0/0           state INVALID
+
+
+Just in case it was the router which is connected to the Linux
+machine's WAN port, I've already disabled the iptables based firewall
+on that by setting all the chain policies to ACCEPT and flushing all
+the chains.
+
+
+Rgds,
+-Steve
