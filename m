@@ -1,107 +1,70 @@
-From: Dzianis Kahanovich <mahatma@bspu.unibel.by>
-Subject: NOTRACK only new connections
-Date: Sat, 12 Jan 2008 19:40:10 -0200
-Message-ID: <478933BA.9090906@bspu.unibel.by>
-Reply-To: mahatma@eu.by
+From: P Zemlja <plodna_zemlja@yahoo.com>
+Subject: Can't set up transparent proxy on XO laptop
+Date: Sun, 13 Jan 2008 10:53:24 -0800 (PST)
+Message-ID: <25397.63399.qm@web51912.mail.re2.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-I am trying to modify conntrack core + NOTRACK target to NOTRACK only
-untracked connections. First packet searching for its connection entry and if
-none - no new conntrack entry created.
+Thanks in advance for looking over this.
+I'm trying to set up internet filtering on an OLPC XO
+laptop and I'm stuck at the point of 
+configuring iptables. I have squid and dansguardian
+installed. I've seen this command used 
+by many people on the internet, but it just doesn't
+work for me.
+-----------
+bash-3.2# /sbin/iptables -t nat -A OUTPUT -p tcp
+--dport 80 -m owner --uid-owner squid -j ACCEPT
+iptables: No chain/target/match by that name
 
-I use single IP for few computers - for router (only in NAT "SAME" target and
-ARP to communicate with ISP) and server and want to exclude tracking for
-passing connections to server. Goal to not use IP directly on router and
-NATting it to fake IP on server are speed and DoS-stability.
+-----------
+But, if I leave off the user specification it works:
+-----------
+bash-3.2# /sbin/iptables -t nat -A OUTPUT -p tcp
+--dport 80 -j ACCEPT
+bash-3.2# /sbin/iptables -t nat -L OUTPUT
+Chain OUTPUT (policy ACCEPT)
+target	prot	opt	source		destination
+ACCEPT	tcp	--	anywhere	anywhere	tcp dpt:http
 
---- linux-2.6.23-gentoo-r3/net/netfilter/Kconfig	2007-10-09 23:31:38.000000000
-+0300
-+++ linux-2.6.23-gentoo-r3.fixed/net/netfilter/Kconfig	2007-12-11
-16:17:26.000000000 +0200
-@@ -353,6 +353,12 @@
-  	  If you want to compile it as a module, say M here and read
-  	  <file:Documentation/kbuild/modules.txt>.  If unsure, say `N'.
+-----------
+The user squid does exist, and if I mutate the name
+iptables complains:
+-----------
+bash-3.2# /sbin/iptables -t nat -A OUTPUT -p tcp
+--dport 80 -m owner --uid-owner sqxuid -j ACCEPT
+iptables v1.3.8: Bad OWNER UID value 'sqxuid'
+Try 'iptables -h' or 'iptables --help' for more
+information.
 
-+config NETFILTER_XT_TARGET_NOTRACK_NEW
-+	bool "NOTRACK safe (only new)"
-+	depends on NETFILTER_XT_TARGET_NOTRACK
-+	help
-+	  Slow but safe way to NOTRACK only new/untracked connections.
-+
-  config NETFILTER_XT_TARGET_TRACE
-  	tristate  '"TRACE" target support'
-  	depends on NETFILTER_XTABLES
---- linux-2.6.23-gentoo-r3/net/netfilter/nf_conntrack_core.c	2007-10-09
-23:31:38.000000000 +0300
-+++ linux-2.6.23-gentoo-r3.fixed/net/netfilter/nf_conntrack_core.c	2007-12-11
-16:38:04.000000000 +0200
-@@ -594,15 +594,26 @@
-  			     dataoff, l3num, protonum, &tuple, l3proto,
-  			     l4proto)) {
-  		pr_debug("resolve_normal_ct: Can't get tuple\n");
-+		NF_CT_STAT_INC_ATOMIC(invalid);
-  		return NULL;
-  	}
+-----------
+If I try with user root instead, it doesn't work
+either:
+-----------
+bash-3.2# /sbin/iptables -t nat -A OUTPUT -p tcp
+--dport 80 -m owner --uid-owner root -j ACCEPT
+iptables: No chain/target/match by that name
 
-  	/* look for tuple match */
-  	h = nf_conntrack_find_get(&tuple);
-  	if (!h) {
-+#ifdef NETFILTER_XT_TARGET_NOTRACK_NEW
-+		if((*skb)->nfctinfo == IP_CT_NEW) {
-+		    (*skb)->nfct = &nf_conntrack_untracked.ct_general;
-+		    nf_conntrack_get((*skb)->nfct);
-+		    NF_CT_STAT_INC_ATOMIC(ignore);
-+		    return NULL;
-+		}
-+#endif
-  		h = init_conntrack(&tuple, l3proto, l4proto, skb, dataoff);
--		if (!h)
-+		if (!h) {
-+			NF_CT_STAT_INC_ATOMIC(invalid);
-  			return NULL;
-+		}
-  		if (IS_ERR(h))
-  			return (void *)h;
-  	}
-@@ -678,7 +689,6 @@
-  			       &set_reply, &ctinfo);
-  	if (!ct) {
-  		/* Not valid part of a connection */
--		NF_CT_STAT_INC_ATOMIC(invalid);
-  		return NF_ACCEPT;
-  	}
+-----------
+If I try the numeric id of the user squid it doesn't
+work:
+-----------
+bash-3.2# /sbin/iptables -t nat -A OUTPUT -p tcp
+--dport 80 -m owner --uid-owner 23 -j ACCEPT
+iptables: No chain/target/match by that name
 
---- linux-2.6.23-gentoo-r3/net/netfilter/xt_NOTRACK.c	2007-10-09
-23:31:38.000000000 +0300
-+++ linux-2.6.23-gentoo-r3.fixed/net/netfilter/xt_NOTRACK.c	2007-12-11
-16:18:44.000000000 +0200
-@@ -22,6 +22,9 @@
-  	if ((*pskb)->nfct != NULL)
-  		return XT_CONTINUE;
-
-+#ifdef NETFILTER_XT_TARGET_NOTRACK_NEW
-+	(*pskb)->nfctinfo = IP_CT_NEW;
-+#else
-  	/* Attach fake conntrack entry.
-  	   If there is a real ct entry correspondig to this packet,
-  	   it'll hang aroun till timing out. We don't deal with it
-@@ -29,6 +32,7 @@
-  	(*pskb)->nfct = &nf_conntrack_untracked.ct_general;
-  	(*pskb)->nfctinfo = IP_CT_NEW;
-  	nf_conntrack_get((*pskb)->nfct);
-+#endif
-
-  	return XT_CONTINUE;
-  }
+-----------
+Although I noticed that I can stick any number in
+there and get the same error.
+Any help is greatly appreciated.
 
 
--- 
-WBR,
-Denis Kaganovich,  mahatma@eu.by  http://mahatma.bspu.unibel.by
+      ____________________________________________________________________________________
+Be a better friend, newshound, and 
+know-it-all with Yahoo! Mobile.  Try it now.  http://mobile.yahoo.com/;_ylt=Ahu06i62sR8HDtDypao8Wcj9tAcJ 
 
