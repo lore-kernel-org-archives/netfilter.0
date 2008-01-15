@@ -1,33 +1,50 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: iptables
-Date: Tue, 15 Jan 2008 14:54:35 +0000 (GMT)
-Message-ID: <Pine.LNX.4.58.0801151450240.2757@mail3.jubileegroup.co.uk>
-References: <25397.63399.qm@web51912.mail.re2.yahoo.com>
- <Pine.LNX.4.58.0801132243230.5870@mail3.jubileegroup.co.uk>
- <053001c85681$7f96ac50$5505a8c0@stream.net> <Pine.LNX.4.58.0801140916250.12570@mail3.jubileegroup.co.uk>
- <03ca01c85778$4cb43670$5505a8c0@stream.net>
+From: DI Roman Fiedler <roman.fiedler@telbiomed.at>
+Subject: Connection intercept
+Date: Tue, 15 Jan 2008 17:43:29 +0100
+Message-ID: <478CE2B1.2000806@telbiomed.at>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <03ca01c85778$4cb43670$5505a8c0@stream.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello again,
+Hi all,
 
-On Tue, 15 Jan 2008 sa@streaming-networks.com wrote:
+I want to create an iptables setup that routes all packets that would be 
+dropped to a gateway on a separate interface. I try to do it by marking 
+these packets with a INTERCEPT connmark (and ACCEPT them) and use a 
+different routing table (std. policy routing) with a default route to 
+the separate interface.  The problem: I want to use the filter tables to 
+do the filtering, but the packets are already routed when they reach the 
+filter tables. So I cannot route the first packet of a connection to 
+this special interface, hence no real connection intercept is possible.
 
-> thanks, but i was looking for something to do with iptables settings
-> directly
+Setup:
 
-My feeling is that working with iptables directly isn't your best
-option, but if you insist:
+Inet  - Firewall - Internal Zone
+                 |
+              Intercept host
 
-http://iptables-tutorial.frozentux.net/
 
---
+The intercept host will answer for all IPs (Honeypot like), so that 
+connections that would have been refused are openen and can be analysed. 
+Example: Host xxxx from internal zone tries to reach nonstandard mail 
+exchange, mail connection is automatically routed to the intercept host 
+and mail is captured to see if xxxxx is just malconfigured or if some 
+malware tries to send out some data.
 
-73,
-Ged.
+
+Any ideas for workarounds to realise such an fw setup, e.g. exotic 
+netfilter targets that can push back a packet to the beginning of the 
+filter process so that it runs through the whole filter again, this time 
+with the correct connmark so that it uses the alternate interface
+
+greets, Roman
+
+
+
+
+
+
