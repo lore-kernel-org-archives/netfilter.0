@@ -1,78 +1,81 @@
-From: Dzianis Kahanovich <mahatma@bspu.unibel.by>
-Subject: Re: Per IP maximal speed limit inside HTB class
-Date: Wed, 16 Jan 2008 14:04:27 -0200
-Message-ID: <478E2B0B.4070600@bspu.unibel.by>
-References: <1200483046.5107.17.camel@casper2.meteor.dp.ua>
-Reply-To: mahatma@eu.by
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Connection intercept
+Date: Wed, 16 Jan 2008 09:36:06 -0600
+Message-ID: <478E2466.2080005@riverviewtech.net>
+References: <478CE2B1.2000806@telbiomed.at> <478DABBD.2000400@usa.net> <478DD043.6040904@telbiomed.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1200483046.5107.17.camel@casper2.meteor.dp.ua>
+In-Reply-To: <478DD043.6040904@telbiomed.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: casper@meteor.dp.ua
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB wrote:
+On 01/16/08 03:37, DI Roman Fiedler wrote:
+> The idea was that the intercept host(s) can see the original source and 
+> destination IP for traffic analysis (check if one source host scans all 
+> destinations or just permanently hits one), but I guess this is not a 
+> "must have". No matter which of these method is used, both of them split 
+> the traffic in PREROUTING and before the filter tables, which I want to 
+> avoid somehow (see below for explanation).
 
-> I already have HTB class tree which makes channel division between
-> client groups.
-> One of those groups now has to have clients with limited maximal spee=
-d
-> to implement "unlimited" traffic billing.
->=20
-> So the question is: is there any queueing discipline which can limit
-> maximal speed for any source/destination IP with one rule so that I
-> would not have to insert clases for each new IP?
+I'm not sure what your Layer 2 and Layer 3 setup looks like so I can't 
+say for sure, but I think I would be tempted to look at doing some sort 
+of Layer 2 filtering / bridging to accomplish what you are after.  More 
+specifically, if I was not happy with the traffic, I would alter its 
+Layer 2 destination MAC address to that of the honey pot.  This way, the 
+traffic would still have the appropriate Layer 3 source and destination 
+IP addresses.
 
-There are not too nefilter questions, but while I experiment with=20
-unconditional class 3 of PSPacer 2.1[.1]=20
-(http://www.gridmpi.org/pspacer-2.1/index.en.jsp), I remember there are=
- IMHO=20
-may (with additional programming) do it. Mode 3 still not complete and =
-fall=20
-kernel, but I comment out estimate_target_rate() code up to "cl->rate =3D=
-=20
-cp->rate;" line and do "cl->rate =3D <rate>;" and IMHO rate was reached=
-=2E But I=20
-not sure about there are warrantied rate. You may try to remove "tcp" c=
-ode=20
-from PSPacer and make some kind of hash, based on source and|or destina=
-tion=20
-IP. I just not found way to use it - I prefer to bound rate for my netw=
-ork to=20
-common channel and use it in concurrent way to fill channel. And not su=
-re to=20
-commercial-quality of rate (there are high-quality lostless scheduler, =
-but=20
-"warrantied" rate are not high-quality in this sense, only limited).
+> That's the problem: Our setup contains 7 networkcards, with vlan tagging 
+> more than 10 networks plus some vpns. We also need to do policy routing 
+> since some IPs occur more than once in the complete network setup. Some 
+> hundred rules are contained in a shorewall config. The problem: 
+> shorewall adds the filter rules to the filter table, after routing and 
+> natting, so massive change of setup would be needed to make pre-route 
+> decisions work.
 
-Else you must use not QoS (like HTB) anymore, just drop packets up the =
-limit=20
-with "tc filter ... policy ..." commands. There are not netfilter too.
+It sounds like things are fairly complex with lots of interfaces and 
+further more is likely to change with time as business needs change too. 
+  As such, with out knowing more about your filtering rules, I can't say 
+for sure if a Layer 2 approach would work for you or not.  I'm betting 
+that you would need a mixture of EBTables and IPTables to do all the 
+filtering that you want on the bridged traffic.  That is to say you 
+could do the simple filtering via EBTables and only use IPTables (seeing 
+the bridged traffic) for the things that EBTables can not do (i.e. 
+connection state and other advanced match extensions).
 
->=20
-> For example it would be perfect if I could make something like this:
->=20
-> + HTB class with from 5 Mbit/s to 5 Mbit/s
->   | HTB class with from 1 Mbit/s to 5 Mbit/s prio 2 (for clients with=
-out
-> unlimited traffic)
->   | HTB class with from 4 Mbit/s to 5 Mbit/s prio 1 (for clients with
-> unlimited traffic)
->     + {some limit qdisc}
->       | max speed limit 128 KBit/s (for 128K unlimited traffic) prio =
-1
->       | max speed limit 256 KBit/s (for 128K unlimited traffic) prio =
-2
->       | max speed limit 512 KBit/s (for 128K unlimited traffic) prio =
-3
->=20
-> Any hints?
->=20
+> My goal was to do it with minimal effort, e.g. make an iptables-save 
+> output patch that will transform the current iptables data to a setup 
+> that can do the intercepting. I do not think that it would be possible 
+> to do the thing with shorewall directly and I want to avoid recoding all 
+> filter rules in the prerouting table (some would be impossible since 
+> they use output interface for decision, which is not defined at this 
+> point).
+
+It may be possible to allow Shorewall manage the IPTables rules and you 
+personally (possibly via scripts) manage EBTables rules before IPTables 
+sees the packets.  If you did not need to use IPTables to filter the 
+bridged traffic (that is to say you are comfortable with stateless 
+filtering on source / destination protocol and / or port) you could 
+bridge the traffic with out IPTables being any the wiser.  If you can 
+use EBTables to do your filtering, I'd hope that you could put EBTables 
+and bridging in as a shim between the NICs and where IPTables picks up. 
+  You could possibly even bypass IPTables for some traffic entirely.
+
+Of course with bridging you will have to manage your IP ranges 
+appropriately.
+
+> I thought that perhaps somebody has done experiments with a "strange" 
+> setups, e.g. use a tricky combination of MIRROR targets or a loop via 
+> some geek netlink program that can feedback the packet from the ULOG 
+> target to the interface receive methods so that it can pass PREROUTING 
+> twice.
+
+Such is probably possible, though I'm not sure of any thing like that. 
+You may want to look in to how various IDS / IPS systems work.
 
 
---=20
-WBR,
-Denis Kaganovich,  mahatma@eu.by  http://mahatma.bspu.unibel.by
+
+Grant. . . .
