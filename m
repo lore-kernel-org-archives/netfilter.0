@@ -1,41 +1,36 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: Filtering bad http requests
-Date: Fri, 18 Jan 2008 08:34:09 +0000 (GMT)
-Message-ID: <Pine.LNX.4.58.0801180820430.4651@mail3.jubileegroup.co.uk>
-References: <478FDA5E.6050908@alumni.uwaterloo.ca>
+From: Swapnil Jain <swapnil.indore@gmail.com>
+Subject: forwarding udp broadcast
+Date: Fri, 18 Jan 2008 17:46:06 +0530
+Message-ID: <47909886.6010305@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <478FDA5E.6050908@alumni.uwaterloo.ca>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:user-agent:mime-version:to:subject:content-type:content-transfer-encoding;
+        bh=LvuzdUgwPaoRhaYJlZkiSPBAqhi6GqQjtbm+crYucEI=;
+        b=kVxUcUXEDuU+3dnU8KG6u6FPmGu960qbljGExvb9pnckz/quo/82eusPHU8a5BR/BiLW8QcfAhN4mV3NUvAEHV2Tt1oVwHY3VM4OTxitmBsMllcmDZMTuLcrRpk+MbI5okF1TpzFMg+thy84WVCCE6xfCJbuDyK/qVBbEhz+Vt0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi there,
+Hi,
 
-On Fri, 18 Jan 2008, Mike Leahy wrote:
+i have 2 LANs say
 
-> I'm wondering if anyone knows of a simple way to filter out bad HTTP
-> requests being sent to my server.
+LAN1) 192.168.1.xxx
+LAN2) 192.168.2.xxx
 
-I don't think it's simple.  There are many sneaky exploiters Out
-There.  We use scripts which tail the Apache logs (via syslog-ng)
-looking for suspicious activity.  The definition of 'suspicious' is
-wide, fluid and contained in a database which also records actions
-taken by the scripts.  We only use iptables at the back end of this
-system, the parameters for blocking are controlled by the scripts.
+i have a application server on LAN1 which send UDP broadcast on 
+192.168.1.255 on port 1234
 
-> I've iptables setup to do this sort of thing with brute force ssh
-> login attempts.
+i want to place a linux box between this 2 LAN and the it should take 
+the UDP broadcast of 192.168.1.255 of port 1234 and send it to LAN2 on 
+192.168.2.255 on the same port.
 
-I wonder if there's a need to accept ssh connections at all from most
-of the IPs that you see attacking you; my boxes accept ssh connections
-permanently from only two or three known IPs.  We see no brute force
-attacks whatever, as an IP just can't connect if it isn't known to us.
-We implemented a form of port knocking for mobile users.
+How is it possible thru iptables.
 
---
-
-73,
-Ged.
+___
+Swapnil Jain
+Indore
