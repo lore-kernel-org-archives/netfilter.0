@@ -1,35 +1,41 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
 Subject: Re: Filtering bad http requests
-Date: Thu, 17 Jan 2008 20:44:58 -0600
-Message-ID: <479012AA.5000905@riverviewtech.net>
+Date: Fri, 18 Jan 2008 08:34:09 +0000 (GMT)
+Message-ID: <Pine.LNX.4.58.0801180820430.4651@mail3.jubileegroup.co.uk>
 References: <478FDA5E.6050908@alumni.uwaterloo.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <478FDA5E.6050908@alumni.uwaterloo.ca>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 1/17/2008 4:44 PM, Mike Leahy wrote:
+Hi there,
+
+On Fri, 18 Jan 2008, Mike Leahy wrote:
+
 > I'm wondering if anyone knows of a simple way to filter out bad HTTP
-> requests being sent to my server.  You'll find an example of my apache
-> log below.  What I would like to do is set this up so that if somebody
-> makes too many 404/403 requests within a short period of time (say 5
-> hits within 5 minutes), then the IP gets temporarily banned.  I've
-> iptables setup to do this sort of thing with brute force ssh login
-> attempts.  Below is a simple example of how I have accomplished this (I
-> adopted this method from sample I found posted online somewhere).  I'm
-> wondering how difficult it might be to do the same (i.e., identify
-> connections that get 404/403 responses from httpd, and temporarily ban
-> their IP).
+> requests being sent to my server.
 
-Consider using the layer 7 filter to look for the 4xx error codes in 
-conjunction with the recent match extension to realize which system(s) 
-are causing ""problems.  Use the recent match extension to start 
-rejecting new connections from the ""problem system(s).
+I don't think it's simple.  There are many sneaky exploiters Out
+There.  We use scripts which tail the Apache logs (via syslog-ng)
+looking for suspicious activity.  The definition of 'suspicious' is
+wide, fluid and contained in a database which also records actions
+taken by the scripts.  We only use iptables at the back end of this
+system, the parameters for blocking are controlled by the scripts.
 
+> I've iptables setup to do this sort of thing with brute force ssh
+> login attempts.
 
+I wonder if there's a need to accept ssh connections at all from most
+of the IPs that you see attacking you; my boxes accept ssh connections
+permanently from only two or three known IPs.  We see no brute force
+attacks whatever, as an IP just can't connect if it isn't known to us.
+We implemented a form of port knocking for mobile users.
 
-Grant. . . .
+--
+
+73,
+Ged.
