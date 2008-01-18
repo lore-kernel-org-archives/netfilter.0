@@ -1,26 +1,35 @@
-From: "Sarath Kamisetty" <sarath.kamisetty@gmail.com>
-Subject: flow aging
-Date: Thu, 17 Jan 2008 16:18:11 -0800
-Message-ID: <641e6aa90801171618r572119eq79eae359e143fabe@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Filtering bad http requests
+Date: Thu, 17 Jan 2008 20:44:58 -0600
+Message-ID: <479012AA.5000905@riverviewtech.net>
+References: <478FDA5E.6050908@alumni.uwaterloo.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=9ztYEdmyOBzuL1gE67CWrhK8MFXL6xCr7hGtsjJ02w4=;
-        b=guNn8sHcV+WlODR/CSSo3NYtyc6apAqsa9xsFcEgk4aCeEZSAP3wGQJcj/OHq0Xlt82466FGjqEE/3W3n3V/cg+dIQc2sXWlTMnCkGLgmRddUaEVq1ZUVA52nYpJU/WRf67GibY540nx5EWsivf8qmIP0PWJEVuMoJLD6z9nUBk=
-Content-Disposition: inline
+In-Reply-To: <478FDA5E.6050908@alumni.uwaterloo.ca>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi,
+On 1/17/2008 4:44 PM, Mike Leahy wrote:
+> I'm wondering if anyone knows of a simple way to filter out bad HTTP
+> requests being sent to my server.  You'll find an example of my apache
+> log below.  What I would like to do is set this up so that if somebody
+> makes too many 404/403 requests within a short period of time (say 5
+> hits within 5 minutes), then the IP gets temporarily banned.  I've
+> iptables setup to do this sort of thing with brute force ssh login
+> attempts.  Below is a simple example of how I have accomplished this (I
+> adopted this method from sample I found posted online somewhere).  I'm
+> wondering how difficult it might be to do the same (i.e., identify
+> connections that get 404/403 responses from httpd, and temporarily ban
+> their IP).
 
-How does flow/connection aging work with netfilter ? When a UDP/TCP
-connection entry is created in ip_conntrack when does it get flushed ?
-Can you please point me to some documentation on this if any ?
+Consider using the layer 7 filter to look for the 4xx error codes in 
+conjunction with the recent match extension to realize which system(s) 
+are causing ""problems.  Use the recent match extension to start 
+rejecting new connections from the ""problem system(s).
 
-Thanks,
-Sarath
+
+
+Grant. . . .
