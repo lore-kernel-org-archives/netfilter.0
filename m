@@ -1,183 +1,28 @@
-From: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?= 
-	<leolistas@solutti.com.br>
-Subject: Re: iptables block samba or not?
-Date: Mon, 21 Jan 2008 23:52:38 -0200
-Message-ID: <47954C66.2000603@solutti.com.br>
-References: <200801212233.m0LMXQqO006594@indigo.cs.bgu.ac.il>
+From: vcarela <vcarela@ac.upc.edu>
+Subject: Could iptables read a trace file?
+Date: Wed, 23 Jan 2008 13:14:36 +0100
+Message-ID: <1201090477.8584.15.camel@vcarela-desktop>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms090004050800070103040500"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200801212233.m0LMXQqO006594@indigo.cs.bgu.ac.il>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Eial Czerwacki <eial@cs.bgu.ac.il>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: netfilter@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+I would like to know if iptables can read from a trace file.
 
---------------ms090004050800070103040500
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+The only way I know is to use a dummy interface and then do a tcpreplay
+to the dummy interface, but I do not know why the iptables do not run i=
+n
+this interface, perhaps it drops all the pkts before them arrive to the
+iptables level, I say iptables level because I can see the pkts with
+tcpdump, that works in lower level, in the dummy interface. Also I trie=
+d
+to modify with tcpwrite the source and destination MACs of the trace
+file with the dummy's MAC but did not work.
 
+Any hints?
 
+Valent=C3=ADn
 
-Eial Czerwacki escreveu:
-> hello to all.
-> I have a strange issue with iptables an samba, I've added samba's ports=
- to iptables and tried to connect to my local network but it isnt
-> working, it seems that iptables is blocking samba. here are my iptables=
- rules:
->
->  =20
-    iptables is NOT blocking samba. YOUR rules are blocking samba traffic=
-=2E
-
-> the ports are open and they receiving packages but the policy accept to=
-tal is showing 0.
->  =20
-    It's pretty obvious that nothing is going to reach your default=20
-policy ACCEPT rule ... you have a last one REJECT rule that matches 0/0=20
-all protocols. So, EVERYTHING will match your REJECT rule and, thus,=20
-never reach ACCEPT default policy one.
-
-> how can I open them? what port or rule did I missed?
->  =20
-    i dont have a clue .... get yourself a LOG rule before the final=20
-REJECT and watch for the LOGged rejected traffic .....
-
-> one more thing, is there a way to sent multiple source addresses to one=
- rule?
->  =20
-    i think that can be acchieved using ipset stuff. But that's not=20
-completly easy ... i have never searched for that. When I need multiple=20
-sources, i get multiple rules ....
-
-    but seems ipset can do the job.
-
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3=83O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
-
---------------ms090004050800070103040500
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRRDCC
-BIowggNyoAMCAQICECf06hH0eobEbp27bqkXBwcwDQYJKoZIhvcNAQEFBQAwbzELMAkGA1UE
-BhMCU0UxFDASBgNVBAoTC0FkZFRydXN0IEFCMSYwJAYDVQQLEx1BZGRUcnVzdCBFeHRlcm5h
-bCBUVFAgTmV0d29yazEiMCAGA1UEAxMZQWRkVHJ1c3QgRXh0ZXJuYWwgQ0EgUm9vdDAeFw0w
-NTA2MDcwODA5MTBaFw0yMDA1MzAxMDQ4MzhaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMC
-VVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5l
-dHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
-LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG
-9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVN
-NRm5pELlzkniii8efNIxB8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQy
-lbsMTzC9mKALi+VuG6JG+ni8om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXq
-vgvOdjp6Dpvq/NonWz1zHyLmSGHGTPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6
-hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7NlyP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu
-9mIwFIws6wIDAQABo4HhMIHeMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0G
-A1UdDgQWBBSJgmd9xJ0mcABLtFBIfN49rgRufTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/
-BAUwAwEB/zB7BgNVHR8EdDByMDigNqA0hjJodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9BZGRU
-cnVzdEV4dGVybmFsQ0FSb290LmNybDA2oDSgMoYwaHR0cDovL2NybC5jb21vZG8ubmV0L0Fk
-ZFRydXN0RXh0ZXJuYWxDQVJvb3QuY3JsMA0GCSqGSIb3DQEBBQUAA4IBAQAZ2IkRbyispgCi
-54fBm5AD236hEv0e8+LwAamUVEJrmgnEoG3XkJIEA2Z5Q3H8+G+v23ZF4jcaPd3kWQR4rBz0
-g0bzes9bhHIt5UbBuhgRKfPLSXmHPLptBZ2kbWhPrXIUNqi5sf2/z3/wpGqUNVCPz4FtVbHd
-WTBK322gnGQfSXzvNrv042n0+DmPWq1LhTq3Du3Tzw1EovsEv+QvcI4l+1pUBrPQxLxtjftz
-Mizpm4QkLdZ/kXpoAlAfDj9N6cz1u2fo3BwuO/xOzf4CjuOoEwqlJkRl6RDyTVKnrtw+ymsy
-XEFs/vVdoOr/0fqbhlhtPZZH5f4ulQTCAMyOofK7MIIGVzCCBT+gAwIBAgIRALUDlvUBBfuA
-+9+fLh266rQwDQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEX
-MBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29y
-azEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNF
-UkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDcwNzI1MDAwMDAw
-WhcNMDgwNzI0MjM1OTU5WjCB8DE1MDMGA1UECxMsQ29tb2RvIFRydXN0IE5ldHdvcmsgLSBQ
-RVJTT05BIE5PVCBWQUxJREFURUQxRjBEBgNVBAsTPVRlcm1zIGFuZCBDb25kaXRpb25zIG9m
-IHVzZTogaHR0cDovL3d3dy5jb21vZG8ubmV0L3JlcG9zaXRvcnkxHzAdBgNVBAsTFihjKTIw
-MDMgQ29tb2RvIExpbWl0ZWQxJTAjBgNVBAMTHExlb25hcmRvIFJvZHJpZ3VlcyBNYWdhbGhh
-ZXMxJzAlBgkqhkiG9w0BCQEWGGxlb2xpc3Rhc0Bzb2x1dHRpLmNvbS5icjCCASIwDQYJKoZI
-hvcNAQEBBQADggEPADCCAQoCggEBAL5jxEbAVX8YALrhHkBanfT7n2xWBZB4Etbfjo3l0cbh
-DDNydqaMDzq3fi0JfZ+rn8sU/AVFg5WOZlmziS3WHgZAacmbhmyl3YsCEjoL+4Jn+T9rdXcV
-52eIr/O/ATghO6MZ5MvvhOlPddx7adjEESbYprJ8o+np/zJbQLs1f7B2i//YaNizD4pVDFWa
-jr+4dyHW8jANlcEVfhqD7pVBAvhbfb1Te8JDsDVcfX7z3kM9caorDDIIUkOLyKUSzyNgmz3V
-n9+RVeHKY0Ds8XTyIL7+nLtb+YB49OyUSmjzM+SJKPV0J3nF3Td9hGGiT7LRwmWKovNFm5Ma
-gQMfjtP3Bu8CAwEAAaOCAiowggImMB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59
-MB0GA1UdDgQWBBRvjyTheHvuhMZU8cd+o1u3FUvlCzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0T
-AQH/BAIwADAgBgNVHSUEGTAXBggrBgEFBQcDBAYLKwYBBAGyMQEDBQIwEQYJYIZIAYb4QgEB
-BAQDAgUgMEYGA1UdIAQ/MD0wOwYMKwYBBAGyMQECAQEBMCswKQYIKwYBBQUHAgEWHWh0dHBz
-Oi8vc2VjdXJlLmNvbW9kby5uZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9j
-cmwuY29tb2RvY2EuY29tL1VUTi1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRF
-bWFpbC5jcmwwSqBIoEaGRGh0dHA6Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNs
-aWVudEF1dGhlbnRpY2F0aW9uYW5kRW1haWwuY3JsMHwGCCsGAQUFBwEBBHAwbjA2BggrBgEF
-BQcwAoYqaHR0cDovL2NydC5jb21vZG9jYS5jb20vVVROQUFBQ2xpZW50Q0EuY3J0MDQGCCsG
-AQUFBzAChihodHRwOi8vY3J0LmNvbW9kby5uZXQvVVROQUFBQ2xpZW50Q0EuY3J0MCMGA1Ud
-EQQcMBqBGGxlb2xpc3Rhc0Bzb2x1dHRpLmNvbS5icjANBgkqhkiG9w0BAQUFAAOCAQEAN/2x
-tcE+TifnJquUSgey1f5xZ9HJiehH0s7PnYJXgmcp/EMi+/RftBPTY80epq3GxHM/7j2ASzSU
-WGuyI0aotuQUhwvoCkUctzw2oJ1g5UqfVKZ0Nsojs2l4hJNjZQtCuw6YJcPRU4o7KDKAeFm1
-33OIfwS3oVWddT3d8wcLmIL/3FtaaBd1bmHGu3gR0noBz2a8HrcQ5Bi0Uzh5q17lCcKzyZu2
-xOTrRVnXVPUQV3zkfjSuvKuRJG9WXPvfgFmDrlynrxzLAwDmXBNomP/zEqIpgSdlYUNYfXZP
-0q1SON005rykwXu0zpP/rgSCJ67q1WCxK2XmIkKGK+XEiwh2gzCCBlcwggU/oAMCAQICEQC1
-A5b1AQX7gPvfny4duuq0MA0GCSqGSIb3DQEBBQUAMIGuMQswCQYDVQQGEwJVUzELMAkGA1UE
-CBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-IE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMt
-VVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMB4XDTA3MDcy
-NTAwMDAwMFoXDTA4MDcyNDIzNTk1OVowgfAxNTAzBgNVBAsTLENvbW9kbyBUcnVzdCBOZXR3
-b3JrIC0gUEVSU09OQSBOT1QgVkFMSURBVEVEMUYwRAYDVQQLEz1UZXJtcyBhbmQgQ29uZGl0
-aW9ucyBvZiB1c2U6IGh0dHA6Ly93d3cuY29tb2RvLm5ldC9yZXBvc2l0b3J5MR8wHQYDVQQL
-ExYoYykyMDAzIENvbW9kbyBMaW1pdGVkMSUwIwYDVQQDExxMZW9uYXJkbyBSb2RyaWd1ZXMg
-TWFnYWxoYWVzMScwJQYJKoZIhvcNAQkBFhhsZW9saXN0YXNAc29sdXR0aS5jb20uYnIwggEi
-MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+Y8RGwFV/GAC64R5AWp30+59sVgWQeBLW
-346N5dHG4QwzcnamjA86t34tCX2fq5/LFPwFRYOVjmZZs4kt1h4GQGnJm4Zspd2LAhI6C/uC
-Z/k/a3V3FedniK/zvwE4ITujGeTL74TpT3Xce2nYxBEm2KayfKPp6f8yW0C7NX+wdov/2GjY
-sw+KVQxVmo6/uHch1vIwDZXBFX4ag+6VQQL4W329U3vCQ7A1XH1+895DPXGqKwwyCFJDi8il
-Es8jYJs91Z/fkVXhymNA7PF08iC+/py7W/mAePTslEpo8zPkiSj1dCd5xd03fYRhok+y0cJl
-iqLzRZuTGoEDH47T9wbvAgMBAAGjggIqMIICJjAfBgNVHSMEGDAWgBSJgmd9xJ0mcABLtFBI
-fN49rgRufTAdBgNVHQ4EFgQUb48k4Xh77oTGVPHHfqNbtxVL5QswDgYDVR0PAQH/BAQDAgWg
-MAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYIKwYBBQUHAwQGCysGAQQBsjEBAwUCMBEGCWCG
-SAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEBATArMCkGCCsGAQUFBwIB
-Fh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzCBpQYDVR0fBIGdMIGaMEygSqBIhkZo
-dHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0
-aW9uYW5kRW1haWwuY3JsMEqgSKBGhkRodHRwOi8vY3JsLmNvbW9kby5uZXQvVVROLVVTRVJG
-aXJzdC1DbGllbnRBdXRoZW50aWNhdGlvbmFuZEVtYWlsLmNybDB8BggrBgEFBQcBAQRwMG4w
-NgYIKwYBBQUHMAKGKmh0dHA6Ly9jcnQuY29tb2RvY2EuY29tL1VUTkFBQUNsaWVudENBLmNy
-dDA0BggrBgEFBQcwAoYoaHR0cDovL2NydC5jb21vZG8ubmV0L1VUTkFBQUNsaWVudENBLmNy
-dDAjBgNVHREEHDAagRhsZW9saXN0YXNAc29sdXR0aS5jb20uYnIwDQYJKoZIhvcNAQEFBQAD
-ggEBADf9sbXBPk4n5yarlEoHstX+cWfRyYnoR9LOz52CV4JnKfxDIvv0X7QT02PNHqatxsRz
-P+49gEs0lFhrsiNGqLbkFIcL6ApFHLc8NqCdYOVKn1SmdDbKI7NpeISTY2ULQrsOmCXD0VOK
-OygygHhZtd9ziH8Et6FVnXU93fMHC5iC/9xbWmgXdW5hxrt4EdJ6Ac9mvB63EOQYtFM4eate
-5QnCs8mbtsTk60VZ11T1EFd85H40rryrkSRvVlz734BZg65cp68cywMA5lwTaJj/8xKiKYEn
-ZWFDWH12T9KtUjjdNOa8pMF7tM6T/64Egieu6tVgsStl5iJChivlxIsIdoMxggRTMIIETwIB
-ATCBxDCBrjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2Ug
-Q2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8v
-d3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBFbWFpbAIRALUDlvUBBfuA+9+fLh266rQwCQYFKw4DAhoFAKCCAmMw
-GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMTIyMDE1MjM4
-WjAjBgkqhkiG9w0BCQQxFgQUHZMhjqJYj3YZ49mogcLAG1MiFDQwUgYJKoZIhvcNAQkPMUUw
-QzAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcw
-DQYIKoZIhvcNAwICASgwgdUGCSsGAQQBgjcQBDGBxzCBxDCBrjELMAkGA1UEBhMCVVMxCzAJ
-BgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJU
-UlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNV
-BAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBFbWFpbAIRALUD
-lvUBBfuA+9+fLh266rQwgdcGCyqGSIb3DQEJEAILMYHHoIHEMIGuMQswCQYDVQQGEwJVUzEL
-MAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNF
-UlRSVVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQG
-A1UEAxMtVVROLVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsAhEA
-tQOW9QEF+4D7358uHbrqtDANBgkqhkiG9w0BAQEFAASCAQCfE/YqLBGf+M6Ol1vVukK+gX1x
-z1YfYq07sBP6VptIMDFQ9RgFq3G9ykndQN0zNdmXAujlHcNnxg6r6qghHSf1+VtsAjqh1N2k
-v1DOZxkLKGjsROglRH+ZqygfoQ2FfLLDVE/wCD2ke37btTEoLJ2B5cOvjXvITC+liZ7Wlt4U
-NFDUAM34GpIkJppdOEfgrfMtA7xBb71DzAyTPsPlGznpqhzzZESI54OV5jZ+qeek46PNbmNC
-edrQrBjfKAB7y76CGrQiOhsezkmElQaghfkagLYUNi3lnzuZQuSDo6j/VUgZb7QFOXR61AS3
-9NwOi8vEB/IhdQShauNKi6wtloK5AAAAAAAA
---------------ms090004050800070103040500--
