@@ -1,43 +1,32 @@
-From: Dzianis Kahanovich <mahatma@bspu.unibel.by>
-Subject: Re: iptables block samba or not?
-Date: Wed, 23 Jan 2008 20:00:28 -0200
-Message-ID: <4797B8FC.8080308@bspu.unibel.by>
-References: <200801212233.m0LMXQqO006594@indigo.cs.bgu.ac.il>
-Reply-To: mahatma@eu.by
+From: "Francisco Morales" <francisco.morales.lopez.de.gamarra@gmail.com>
+Subject: Howto capture first connection and redirect ???
+Date: Thu, 24 Jan 2008 00:21:04 +0100
+Message-ID: <59420160801231521n2f7d1459i9edf07c2d8c1a54a@mail.gmail.com>
+References: <59420160801231515j3e5f71dao58d8a5f89c7114ec@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200801212233.m0LMXQqO006594@indigo.cs.bgu.ac.il>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=+07Jp2yBaDb+KPhGrI/o0pP0Gr9AhqmABLlZMhmn4Ck=;
+        b=fSt199BEpobr6HR5Wkk1eWkGEUbVSWFUsB6u/zaiVSun2OZT8aig4IZIitIATA3TBxf7c4NleOBrKen98FNbSWWIH0Xlf4N2IUEYAWWhpRGTDfRskj4ibK61jnxO1yXq0nYHlLE9a5OLDLJb8mEDPpRaZc0I85W9ZuwHIhpvLIQ=
+In-Reply-To: <59420160801231515j3e5f71dao58d8a5f89c7114ec@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Eial Czerwacki wrote:
+Hello, I would like to know if does it possible to capture just the
+first connection og one user with a iptables rule and redirect to a
+specific ip/port address.
 
-> -A INPUT -p tcp -m state --state NEW --dport 135 -s 132.72.144.0/20 -j ACCEPT
-> -A INPUT -p tcp -m state --state NEW --dport 139 -s 132.72.144.0/20 -j ACCEPT
-> -A INPUT -p udp -m state --state NEW --dport 137:138 -s 132.72.144.0/20 -j ACCEPT
-> -A INPUT -p tcp -m state --state NEW --dport 426 -s 132.72.144.0/20 -j ACCEPT
-> -A INPUT -p tcp -m state --state NEW --dport 445 -s 132.72.144.0/20 -j ACCEPT
-> 
-> -A INPUT -p tcp -m state --state NEW --dport 135 -s 192.168.114.0/24 -j ACCEPT
-> -A INPUT -p tcp -m state --state NEW --dport 139 -s 192.168.114.0/24 -j ACCEPT
-> -A INPUT -p udp -m state --state NEW --dport 137:138 -s 192.168.114.0/24 -j ACCEPT
-> -A INPUT -p tcp -m state --state NEW --dport 426 -s 192.168.114.0/24 -j ACCEPT
-> -A INPUT -p tcp -m state --state NEW --dport 445 -s 192.168.114.0/24 -j ACCEPT
-> 
-> # up to 5 Bit-torrent connections
-> -A INPUT -p tcp -m state --state NEW --dport 6881:6886 -j ACCEPT
-> 
-> #else
-> -A INPUT -j REJECT --reject-with icmp-port-unreachable
+I have a intranet with a proxy machine with squid on debian for to out
+to internet, and I would like that when I user connect for first time,
+a iptable rule redirect it to a welcome page.... but just the first
+time ..
 
-You ACCEPTing only NEW connection state - initial packets for every session.
-Remove "-m state -- state NEW".
+Does it possible to do this with a iptable rule??
 
-
--- 
-WBR,
-Denis Kaganovich,  mahatma@eu.by  http://mahatma.bspu.unibel.by
-
+Thanks a lot
