@@ -1,28 +1,43 @@
-From: vcarela <vcarela@ac.upc.edu>
-Subject: Could iptables read a trace file?
-Date: Wed, 23 Jan 2008 13:14:36 +0100
-Message-ID: <1201090477.8584.15.camel@vcarela-desktop>
+From: Dzianis Kahanovich <mahatma@bspu.unibel.by>
+Subject: Re: iptables block samba or not?
+Date: Wed, 23 Jan 2008 20:00:28 -0200
+Message-ID: <4797B8FC.8080308@bspu.unibel.by>
+References: <200801212233.m0LMXQqO006594@indigo.cs.bgu.ac.il>
+Reply-To: mahatma@eu.by
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <200801212233.m0LMXQqO006594@indigo.cs.bgu.ac.il>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I would like to know if iptables can read from a trace file.
+Eial Czerwacki wrote:
 
-The only way I know is to use a dummy interface and then do a tcpreplay
-to the dummy interface, but I do not know why the iptables do not run i=
-n
-this interface, perhaps it drops all the pkts before them arrive to the
-iptables level, I say iptables level because I can see the pkts with
-tcpdump, that works in lower level, in the dummy interface. Also I trie=
-d
-to modify with tcpwrite the source and destination MACs of the trace
-file with the dummy's MAC but did not work.
+> -A INPUT -p tcp -m state --state NEW --dport 135 -s 132.72.144.0/20 -j ACCEPT
+> -A INPUT -p tcp -m state --state NEW --dport 139 -s 132.72.144.0/20 -j ACCEPT
+> -A INPUT -p udp -m state --state NEW --dport 137:138 -s 132.72.144.0/20 -j ACCEPT
+> -A INPUT -p tcp -m state --state NEW --dport 426 -s 132.72.144.0/20 -j ACCEPT
+> -A INPUT -p tcp -m state --state NEW --dport 445 -s 132.72.144.0/20 -j ACCEPT
+> 
+> -A INPUT -p tcp -m state --state NEW --dport 135 -s 192.168.114.0/24 -j ACCEPT
+> -A INPUT -p tcp -m state --state NEW --dport 139 -s 192.168.114.0/24 -j ACCEPT
+> -A INPUT -p udp -m state --state NEW --dport 137:138 -s 192.168.114.0/24 -j ACCEPT
+> -A INPUT -p tcp -m state --state NEW --dport 426 -s 192.168.114.0/24 -j ACCEPT
+> -A INPUT -p tcp -m state --state NEW --dport 445 -s 192.168.114.0/24 -j ACCEPT
+> 
+> # up to 5 Bit-torrent connections
+> -A INPUT -p tcp -m state --state NEW --dport 6881:6886 -j ACCEPT
+> 
+> #else
+> -A INPUT -j REJECT --reject-with icmp-port-unreachable
 
-Any hints?
+You ACCEPTing only NEW connection state - initial packets for every session.
+Remove "-m state -- state NEW".
 
-Valent=C3=ADn
+
+-- 
+WBR,
+Denis Kaganovich,  mahatma@eu.by  http://mahatma.bspu.unibel.by
 
