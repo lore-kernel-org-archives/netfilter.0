@@ -1,34 +1,66 @@
-From: Kendrick Hamilton <kendrick.hamilton@sasktel.net>
-Subject: Dual Independent Networks
-Date: Thu, 24 Jan 2008 08:20:13 -0600
-Message-ID: <47989E9D.7000003@sasktel.net>
+From: Gustavo Narea <me@gustavonarea.net>
+Subject: Re: Port redirection not working
+Date: Thu, 24 Jan 2008 16:04:32 +0100
+Message-ID: <200801241604.41073.me@gustavonarea.net>
+References: <200801241243.43277.me@gustavonarea.net> <1201182594.25760.17.camel@khasse.inl.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/signed;
+  boundary="nextPart2330105.seBGts6CQR";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1201182594.25760.17.camel@khasse.inl.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Eric Leblond <eric@inl.fr>
+Cc: netfilter@vger.kernel.org
 
-   I have a question for you. I hope you are the correct or a good 
-person to ask this question of. I have a linux box with two ethernet 
-interfaces. I would like them to be treated as two separate interfaces 
-that are not hooked to the same network. Both interfaces should run 
-Zeroconf and have independent IP address. The second ehternet address is 
-on a private network from the first ehternet address. Currently I am not 
-using iptables but could use it to do connection tracking. What is 
-currently happening is
-1. eth0 is configured and gets a zeroconf IP address.
-2. routing tables set to route all outbound packets for zeroconf out eth0.
-3. eth0 is working correctly
-4. eth1 is configured and gets a different zeroconf IP address.
-5. An incoming packet from eth1 is received and processed, since the 
-response is to go out to a zeroconf IP address, the response goes out 
-eth0. The computer connected on eth1 does not see the response.
+--nextPart2330105.seBGts6CQR
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
+Hello, Eric.
 
-Could this be solved with running IP tables and doing connection 
-tracking? or is  more complex?
+On Thursday 24 January 2008 14:49:54 Eric Leblond wrote:
+> > I'm using this line in the attached file:
+> > -A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+>
+> Miss "-t nat" in the line, you need to specify the table to use.
 
-Thank You for your time and any help you can give
-Kendrick Hamilton
+I've changed that line as you suggested, but now I get this error when runn=
+ing=20
+`iptables-restore < /etc/iptables.config':
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+iptables-restore v1.3.6: Line 7 seems to have a -t table option.
+
+Error occurred at line: 7
+Try `iptables-restore -h' or 'iptables-restore --help' for more information.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+It now reads:
+=2DA PREROUTING -t nat -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+
+Thanks!
+=2D-=20
+Gustavo Narea.
+http://gustavonarea.net/
+
+Get GNU/Linux! http://www.getgnulinux.org/
+
+--nextPart2330105.seBGts6CQR
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBHmKkJPPeetaRFqPERAtbFAJ9zNyBvDGkYXLMfnt7IvzE8G8moowCeOx15
+wkbfpJIN4JOxk/4+HG9kKeo=
+=fRHS
+-----END PGP SIGNATURE-----
+
+--nextPart2330105.seBGts6CQR--
