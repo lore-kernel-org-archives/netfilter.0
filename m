@@ -1,27 +1,63 @@
-From: Andrew Kraslavsky <andykras@hotmail.com>
-Subject: Locking needed for iptables target vs ioctl?
-Date: Wed, 23 Jan 2008 18:55:42 -0800
-Message-ID: <BAY119-W3037296726753B702E3B55D6380@phx.gbl>
+From: Gustavo Narea <me@gustavonarea.net>
+Subject: Port redirection not working
+Date: Thu, 24 Jan 2008 12:43:43 +0100
+Message-ID: <200801241243.43277.me@gustavonarea.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_vnHmHRRevwZxUHD"
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
+--Boundary-00=_vnHmHRRevwZxUHD
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-All,
+Hello, everyone.
 
-My question relates to locking requirements in an iptables target module on a single CPU system.
+I'm new to netfilter and I'm trying to set a port redirection from port 80 to 
+port 8080.
 
-If, in addition to the regular netfilter target inteface, a module also implements support for interaction via ioctl, does the module need to worry about the locking of data structures to ensure that the target invocation and the ioctl do not collide over access to the data structures?
+I'm using this line in the attached file:
+-A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
 
-I have seen where ipt_recent.c, which includes a /proc file system interface in addition to the regular iptables match interface, uses such locking and am wondering if that is solely out of concern for the SMP case or whether it also applies to a single processor system.
+But there's something wrong with it, and I don't know what.
 
-Thanks,
+When I run `iptables-restore < /etc/iptables.config', I get this error:
+iptables-restore: line 7 failed
 
-- Andrew Kraslavsky
-_________________________________________________________________
-Connect and share in new ways with Windows Live.
-http://www.windowslive.com/share.html?ocid=TXT_TAGHM_Wave2_sharelife_012008
+I'm using Debian Etch.
+
+Thanks in advance!
+-- 
+Gustavo Narea.
+http://gustavonarea.net/
+
+Get GNU/Linux! http://www.getgnulinux.org/
+
+--Boundary-00=_vnHmHRRevwZxUHD
+Content-Type: text/plain;
+  charset="utf-8";
+  name="iptables.config"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="iptables.config"
+
+*filter
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state INVALID -j DROP
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
+-A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+-A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+-A INPUT -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7
+-A INPUT -p tcp -j REJECT --reject-with tcp-reset
+-A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+-A INPUT -j REJECT --reject-with icmp-proto-unreachable
+-A FORWARD -j REJECT --reject-with icmp-port-unreachable
+COMMIT
+--Boundary-00=_vnHmHRRevwZxUHD--
