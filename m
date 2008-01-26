@@ -1,97 +1,51 @@
-From: mouss <mouss@netoyen.net>
-Subject: Re: Can I block nat'ed user with iptables?
-Date: Sat, 26 Jan 2008 22:51:02 +0100
-Message-ID: <479BAB46.4070501@netoyen.net>
-References: <985036.73480.qm@web55409.mail.re4.yahoo.com>
+From: "Oscar N" <oscar@linnea.net>
+Subject: Re: Dual Independent Networks
+Date: Sat, 26 Jan 2008 23:28:23 +0100 (CET)
+Message-ID: <48110.83.227.11.162.1201386503.squirrel@mh.linnea.com>
+References: <47989E9D.7000003@sasktel.net>
+Reply-To: oscar@linnea.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <985036.73480.qm@web55409.mail.re4.yahoo.com>
+In-Reply-To: <47989E9D.7000003@sasktel.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Kendrick Hamilton <kendrick.hamilton@sasktel.net>
+Cc: netfilter@vger.kernel.org
 
-duren duren wrote:
-> --- Rob Sterenborg <rob@sterenborg.info> wrote:
+I'm not sure if I understand you correctly but take a look at policy based
+routing and check if that can help you in any way.
+http://lartc.org/howto/lartc.rpdb.html
+
+/Regards Oscar
+
+>    I have a question for you. I hope you are the correct or a good
+> person to ask this question of. I have a linux box with two ethernet
+> interfaces. I would like them to be treated as two separate interfaces
+> that are not hooked to the same network. Both interfaces should run
+> Zeroconf and have independent IP address. The second ehternet address is
+> on a private network from the first ehternet address. Currently I am not
+> using iptables but could use it to do connection tracking. What is
+> currently happening is
+> 1. eth0 is configured and gets a zeroconf IP address.
+> 2. routing tables set to route all outbound packets for zeroconf out eth0.
+> 3. eth0 is working correctly
+> 4. eth1 is configured and gets a different zeroconf IP address.
+> 5. An incoming packet from eth1 is received and processed, since the
+> response is to go out to a zeroconf IP address, the response goes out
+> eth0. The computer connected on eth1 does not see the response.
 >
->   
->>> i have internet router using linux & i want only
->>>       
->> user1
->>     
->>> can access internet & user2 can't
->>> but if user1 use program like ccproxy, user2 can
->>>       
->> using
->>     
->>> internet from user1 as proxy server
->>>
->>> is't possible to block user from being nat'ed with
->>> iptables?
->>>       
->> Sure.
->>
->> INET_IP="a.b.c.d" # Your internet IP address
->> USER_IP="192.168.0.11" # IP of user1
->> LAN="192.168.0.0/24" # LAN where user1 is in
->>
->> $ipt -P FORWARD DROP
->> $ipt -A FORWARD -m state --state RELATED,ESTABLISHED
->> -j ACCEPT
->> $ipt -A FORWARD -m state --state NEW -s $USER_IP -j
->> ACCEPT
->> $ipt -t nat -A POSTROUTING -s $LAN -j SNAT --to
->> $INET_IP
->>
->> Here, it's possible to perform NAT for the entire
->> LAN (see the rule for
->> the nat table). However, the policy for the FORWARD
->> chain in the filter
->> table (which is where most of us do filtering) is
->> set to DROP so every
->> packet that did not match a rule that accepts a
->> packet will be dropped.
->> Only ESTABLISHED and RELATED packets (which will be
->> the most) will be
->> accepted, as well as NEW packets from user1. This
->> way only user1 will be
->> able to use the internet (assuming routing is setup
->> correctly). It's up
->> to you to get ccproxy on the PC of user1 working.
->>
->>
->> Grts,
->> Rob
->>
->>     
 >
-> thanks Rob, but i'm litle bit confusing about this. If
-> user1 install ccproxy & user2 use user1 as a proxy for
-> their browser & user2 can connect.
-> From linux server point of view, he just know, request
-> come from user1 IP not from user2 IP, so he will
-> forward it not block. is't right?
->   
-
-If a proxy or NAT is used on Machine1, all you see is the IP of this 
-machine. now what you can do depends on the details:
-
-- first, why do you want to block user2. Without knowing the real 
-problem details, you will not know whether any approach is the right 
-solution.
-
-- second, why does user1 install ccproxy? (is it to share the connection 
-with user2?). battling against internal users is harder than fighting 
-oustiders.
-
-- finally, what kind of network architecture/administrative control are 
-we talking about? (for example, things are different if you can put a 
-firewall between the two users,  or if you can install a firewall on 
-Machine1, ... etc).
+> Could this be solved with running IP tables and doing connection
+> tracking? or is  more complex?
+>
+> Thank You for your time and any help you can give
+> Kendrick Hamilton
+> -
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
 
-one possibility is to disconnect user1 from time to time and tell him 
-that he used all the bandwidth allocated for his usage. but if user2 
-usage doesn't cause you trouble, the simplest solution is to let him 
-connect...
