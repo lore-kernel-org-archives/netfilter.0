@@ -1,7 +1,7 @@
 From: duren duren <jusdurian_jr@yahoo.com>
 Subject: Can I block nat'ed user with iptables?
-Date: Fri, 25 Jan 2008 17:18:11 -0800 (PST)
-Message-ID: <657214.27793.qm@web55407.mail.re4.yahoo.com>
+Date: Fri, 25 Jan 2008 21:18:06 -0800 (PST)
+Message-ID: <694519.56558.qm@web55415.mail.re4.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
