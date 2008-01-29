@@ -1,45 +1,29 @@
-From: "Eric Estes" <Eric_Estes@aspensquare.com>
-Subject: Trouble compiling with connlimit support
-Date: Mon, 28 Jan 2008 14:09:43 -0500
-Message-ID: <665B03CFBE2C1346A66B0CB9A9A0EE3801C7E466@ASM220.aspen.com>
+From: "sami ahokas" <sami.m.ahokas@gmail.com>
+Subject: Memory leak in netfilter?
+Date: Tue, 29 Jan 2008 09:51:25 +0200
+Message-ID: <f04ec2cb0801282351p1da0ca69u6e5c405f2d2566f8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=MHISzpmZO2SfcMgVoe2J5kYFuZETChuzaH6Ap9G2weE=;
+        b=Gs283ZsXp/BChMQXcLdc3CuIrBMnZSv4+1UzDwpagww42X4Y677ZP0FYFJZvcwPdsJAnXZUiF9LmKa9Y0HWsVhl3h0w9iznRGmJUJSFC9iBi1/MUaB4wT9r4krHxArBAm6gErHuU8tjxHg6NDYX0SFoN8tE9kXsXb/5CQEzfaJI=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-I am running Debian Sid and I am running into problems recompiling the =
-kernel with connlimit support.
+Hi,
 
-Iptables-1.3.6
-Patch-o-matic-ng-20080127
-Linux-source-2.6.23
+I'm using Linux kernel v2.6.20 in a routing device. My problem is that
+after a couple of days my device resets itself due to lack of memory.
+I monitored slabinfo to see who might be consuming all of the
+available memory. What I saw was that nf_nat:help cache is constantly
+growing and eventually eats all of the available memory (30MB). Has
+any one seen this kind of behavior before? Any ideas what could cause
+this?
 
-Here is the output of the error when trying to recompile the kernel:
-
-  CC [M]  net/ipv4/netfilter/iptable_mangle.o
-  LD [M]  net/ipv4/netfilter/iptable_nat.o
-  CC [M]  net/ipv4/netfilter/iptable_raw.o
-  CC [M]  net/ipv4/netfilter/ipt_iprange.o
-  CC [M]  net/ipv4/netfilter/ipt_owner.o
-  CC [M]  net/ipv4/netfilter/ipt_tos.o
-  CC [M]  net/ipv4/netfilter/ipt_connlimit.o
-net/ipv4/netfilter/ipt_connlimit.c: In function =E2count_them=E2:
-net/ipv4/netfilter/ipt_connlimit.c:98: error: too many arguments to fun=
-ction =E2nf_conntrack_find_get=E2
-net/ipv4/netfilter/ipt_connlimit.c: At top level:
-net/ipv4/netfilter/ipt_connlimit.c:312: warning: initialization from in=
-compatible pointer type
-net/ipv4/netfilter/ipt_connlimit.c:316: warning: initialization from in=
-compatible pointer type
-make[4]: *** [net/ipv4/netfilter/ipt_connlimit.o] Error 1
-make[3]: *** [net/ipv4/netfilter] Error 2
-make[2]: *** [net/ipv4] Error 2
-make[1]: *** [net] Error 2
-make[1]: Leaving directory `/usr/src/linux-source-2.6.23'
-make: *** [debian/stamp-build-kernel] Error 2
-root@siduxbox:/usr/src/linux#
-
+br, Sami
