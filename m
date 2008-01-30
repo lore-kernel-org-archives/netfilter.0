@@ -1,29 +1,59 @@
-From: "sami ahokas" <sami.m.ahokas@gmail.com>
-Subject: Memory leak in netfilter?
-Date: Tue, 29 Jan 2008 09:51:25 +0200
-Message-ID: <f04ec2cb0801282351p1da0ca69u6e5c405f2d2566f8@mail.gmail.com>
+From: Vincent Arniego <vincent_arniego@yahoo.com>
+Subject: [NFQUEUE] Help with program that changes DHCP payload
+Date: Tue, 29 Jan 2008 19:58:35 -0800 (PST)
+Message-ID: <763049.9097.qm@web58311.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=MHISzpmZO2SfcMgVoe2J5kYFuZETChuzaH6Ap9G2weE=;
-        b=Gs283ZsXp/BChMQXcLdc3CuIrBMnZSv4+1UzDwpagww42X4Y677ZP0FYFJZvcwPdsJAnXZUiF9LmKa9Y0HWsVhl3h0w9iznRGmJUJSFC9iBi1/MUaB4wT9r4krHxArBAm6gErHuU8tjxHg6NDYX0SFoN8tE9kXsXb/5CQEzfaJI=
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
 
-I'm using Linux kernel v2.6.20 in a routing device. My problem is that
-after a couple of days my device resets itself due to lack of memory.
-I monitored slabinfo to see who might be consuming all of the
-available memory. What I saw was that nf_nat:help cache is constantly
-growing and eventually eats all of the available memory (30MB). Has
-any one seen this kind of behavior before? Any ideas what could cause
-this?
 
-br, Sami
+
+Hi Everyone,
+
+I'm kinda new here and I would like some help regarding
+ netfilter_queue. If this is asked already, forgive me I didn't see it in the archives.
+
+I'm making a program that changes the value of an attribute in the DHCP
+ payload.
+I'm using nfqueue to intercept the packet, change the content of the
+ payload and resend it again to DHCP
+which resides in the same server as the firewall. Why am I doing this?
+ I'm making a pseudo option 82 using a translated bridge (which the mac
+ is unchangeable) but I'm using the hostname attribute instead.
+
+So far, I was able to change the content of the hostname attribute of
+ the payload, and I checked the packet again
+just to be sure its sending the correct content. I use nfq_set_verdict
+ to resend the packet with the modified payload.
+
+But it didn't work.
+
+The next thing is did *just to be sure is just changing the TTL value
+ of the IP header, then resending again, but it seems its not working. I
+ used ethereal to capture the packets that are coming in after
+ modification. And yes I checksummed it.
+
+These are my questions:
+
+1. My firewall rule to intercept the packets is in the PREROUTING
+ chain, mangle table.Is this the correct way?
+2. The packets that are captured by ethereal, are these the packets
+ before modification or after? (just to be sure I'm looking it the right
+ way)
+3. What can I do to verify if the packets are indeed modified?
+
+If anyone need a snippet of the code, for everyone, I'll just send it
+ in a reply email.
+
+Thanks in advanced guys.
+
+
+
+      ____________________________________________________________________________________
+Looking for last minute shopping deals?  
+Find them fast with Yahoo! Search.  http://tools.search.yahoo.com/newsearch/category.php?category=shopping
