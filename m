@@ -1,52 +1,41 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: limit module
-Date: Wed, 30 Jan 2008 12:02:17 -0600
-Message-ID: <47A0BBA9.3020703@riverviewtech.net>
-References: <20080130161344.GA33214@diabolo.evga.ru>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: [NFQUEUE] Help with program that changes DHCP payload
+Date: Wed, 30 Jan 2008 22:22:37 +0100
+Message-ID: <47A0EA9D.2010705@rtij.nl>
+References: <763049.9097.qm@web58311.mail.re3.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080130161344.GA33214@diabolo.evga.ru>
+In-Reply-To: <763049.9097.qm@web58311.mail.re3.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: Vincent Arniego <vincent_arniego@yahoo.com>
+Cc: netfilter@vger.kernel.org
 
-On 01/30/08 10:13, Alexey Vlasov wrote:
-> # iptables -A INPUT -p tcp -s 111.222.111.222 --syn -m limit --limit 1/s
-> --limit-burst 50 -j ACCEPT
-> # iptables -A INPUT -p tcp -s 111.222.111.222 --syn -m limit
-> --limit-burst 1000 -j LOG
-> 
-> Do I understand right that according to the first rule through it can
-> pass only 50 SYN packets per second. If I am right, then it can be
-> checked like this: I launch 50 times all at once "telnet dst_host 80" and
-> look at the counter:
+Vincent Arniego wrote:
+>
+> Hi Everyone,
+>
+> I'm kinda new here and I would like some help regarding
+>  netfilter_queue. If this is asked already, forgive me I didn't see it in the archives.
+>
+> I'm making a program that changes the value of an attribute in the DHCP
+>  payload.
+> I'm using nfqueue to intercept the packet, change the content of the
+>  payload and resend it again to DHCP
+> which resides in the same server as the firewall. Why am I doing this?
+>  I'm making a pseudo option 82 using a translated bridge (which the mac
+>  is unchangeable) but I'm using the hostname attribute instead.
+>   
 
-It is my (mis)understanding that the limit match extension will allow 
-the rate of packets specified with a possible burst of what ever is left 
-over out of the burst buffer (if you will).  If there are no packets 
-matching the rule, they number of packets that did not come through goes 
-in to the burst buffer up to the point the burst buffer is full.
+Stop right there. The ISC DHCP server does very funky stuff to see 
+packets addressed to 0.0.0.0. This means those packets do not go through 
+netfilter. I bet this is at the root of your problem.
 
-Think of it this way:  You have a bucket that burst buffer in size that 
-is filled at limit speed.  You can take packets out of the bucket as 
-fast as possible (burst) up to the point that there are no more packets 
-in the bucket.  Once the bucket is empty, you can only take the packets 
-out of the bucket as fast as they are replenished, thus the limit speed.
+I cannot think of a quick way to change this. Maybe hacking at dhcrelay 
+sources is an better option.
 
-The burst is intended to allow short infrequent requests to pass as fast 
-as possible up to the limit of a grace (burst).  Once the grace (burst) 
-is exceeded, start rate limiting the requests.
+HTH,
+M4
 
-> Here goes that 50 packets came, but why only 16 came through the first
-> rule?
-
-With out knowing the timing on your tests (down to the millisecond) I 
-can only guess.  I'd say that your tests were off based on timing 
-between multiple runs.  Had you said X number of packets per minute you 
-may be able to get a more accurate test.
-
-
-
-Grant. . . .
