@@ -1,40 +1,28 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Alias reference in iptables
-Date: Fri, 01 Feb 2008 15:10:08 +0100
-Message-ID: <47A32840.60201@plouf.fr.eu.org>
-References: <1201872114.25131.14.camel@wtprcwbti01002>
+From: Diego Alencar Alves de Lima <listas@diegolima.org>
+Subject: DNAT'ing IP ranges
+Date: Fri, 01 Feb 2008 17:00:32 -0200
+Message-ID: <1201892435.9016.4.camel@ws-diegolima.consuldata.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1201872114.25131.14.camel@wtprcwbti01002>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Netfilter ML <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter mailing list <netfilter@vger.kernel.org>
 
-Hello,
+Greetings list,
 
-Cloves Pereira Costa Jr a =E9crit :
->=20
-> I'm configuring a linux router and i will create some alias in the LA=
-N
-> interface (eth1) for a network 10.1.1.0/27. For example:
-> eth1 --> 10.1.1.33
-> eth1:0 --> 10.1.1.65
-> eth1:1 --> 10.1.1.97
-> ...
->=20
-> My question is: I can use in iptables rules the reference to the alia=
-s
-> interfaces (eth1:0, eth1:1, ...)
+I'd like to know if there is any way I can add a DNAT rule that will nat
+an entire range of IP addresses to another range (which has the same
+network mask). Something like this:
 
-No. IP aliases are just extra addresses, not interfaces. IP aliases are=
-=20
-some kind of old IPv4-specific legacy used by ifconfig. They are not=20
-required to add extra IPv4 addresses to an interface and do not even=20
-exist in IPv6.
+-t nat -A PREROUTING -d 192.168.0.0/24 -j DNAT --to 192.168.1.0/24
 
-> or I can only refer to the main interface (eth1)?
+I need to keep the host address, just change the destination network
+address. Thank you,
 
-Yes. Same with routing : you won't find any alias name in the routing t=
-able.
+-- 
+Diego Alencar Alves de Lima
+http://www.diegolima.org
+
+
