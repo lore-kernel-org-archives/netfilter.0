@@ -1,29 +1,41 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: DNAT'ing IP ranges
-Date: Fri, 01 Feb 2008 21:25:32 +0100
-Message-ID: <47A3803C.9090303@plouf.fr.eu.org>
-References: <1201892435.9016.4.camel@ws-diegolima.consuldata.lan>
+From: RUMI Szabolcs <rumi_ml@rtfm.hu>
+Subject: MASQUERADE/SNAT before IPsec
+Date: Sat, 2 Feb 2008 22:00:14 +0100
+Message-ID: <20080202220014.ab018f1d.rumi_ml@rtfm.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1201892435.9016.4.camel@ws-diegolima.consuldata.lan>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hello,
+Hello!
 
-Diego Alencar Alves de Lima a =E9crit :
->=20
-> I'd like to know if there is any way I can add a DNAT rule that will =
-nat
-> an entire range of IP addresses to another range (which has the same
-> network mask). Something like this:
->=20
-> -t nat -A PREROUTING -d 192.168.0.0/24 -j DNAT --to 192.168.1.0/24
->=20
-> I need to keep the host address, just change the destination network
-> address. Thank you,
+I'm trying to achieve the following:
 
-Check the NETMAP target.
+I would like to connect a LAN behind a NAT gateway to an IPsec VPN.
+The IPsec VPN gets connected to via IPsec tunnelmode by the NAT
+gateway that is getting a single dynamic IP address valid on the
+VPN and this is what the LAN machines had to be MASQUERADEd to.
+
+On the NAT gateway a WAN address is assigned to eth0 and the
+dynamic IPsec VPN address is assigned to eth0:0. I can ping hosts
+on the IPsec VPN through the tunnel from the NAT gateway itself
+but I cannot ping them from any LAN hosts behind the gateway.
+
+The problem is that when I set up proper FORWARD and MASQUERADE rules
+for the LAN network, the MASQUERADEd packets seem to go out on eth0
+unencrypted without ever getting into the IPsec tunnel. I have also
+tried -j SNAT --to-source <address of eth0:0 valid on IPsec VPN>
+just to be sure and the same thing happens as with MASQUERADE.
+
+Environment: linux-2.6.22, iptables-1.3.8
+
+Is this behaviour intentional?
+How could I achieve what I described above?
+
+Thanks in advance!
+
+Best regards,
+Sab
