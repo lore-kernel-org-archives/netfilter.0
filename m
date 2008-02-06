@@ -1,27 +1,37 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: redirect rule question
-Date: Tue, 05 Feb 2008 14:06:17 -0600
-Message-ID: <47A8C1B9.2070006@riverviewtech.net>
-References: <df1bdeb10802051119w6b92ac21iae36c7d66cb94de8@mail.gmail.com>
+From: Cloves Pereira Costa Jr <cloves.costa@m2sys.com.br>
+Subject: Skype Access
+Date: Wed, 06 Feb 2008 11:08:41 -0200
+Message-ID: <1202303321.5984.25.camel@wtprcwbti01002>
+Reply-To: cloves.costa@m2sys.com.br
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <df1bdeb10802051119w6b92ac21iae36c7d66cb94de8@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter ML <netfilter@vger.kernel.org>
 
-On 02/05/08 13:19, Srinivas Murthy wrote:
-> If there is a mark set on an skb, (for any src or dst ip or port 
-> no's), redirect to the port no equal to the mark.
+Hi all...
 
-I'm not aware of any thing in IPTables that will act like a variable 
-that can be set to the value of the mark and then later use the contents 
-of the variable as the source for a redirect.
+I'm with some problems configuring Skype in my firewall...
 
-I'm afraid that you will need a multiple rules to match the multiple marks.
+I know that Skype tries to conects in high ports (>1024) everytime it
+starts. I would like to know if somenone knows a rule to configure in
+Iptables that could know what port to accept outgoing connections
+dinamicaly, in the same way that FTP does whith RELATED state.
 
+Thx in advance
 
+-
 
-Grant. . . .
+Cloves Jr
+
+-- 
+Cloves Pereira Costa Jr
+M2Sys Tecnologia
+
++55 41 3271-4400
++55 41 8413-6740
+www.m2sys.com.br
+cloves.costa@m2sys.com.br
+
