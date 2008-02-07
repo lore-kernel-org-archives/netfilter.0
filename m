@@ -1,67 +1,40 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: Skype Access
-Date: Wed, 6 Feb 2008 14:35:05 +0100
-Message-ID: <20080206133503.GB17524@bayen.regit.org>
-References: <1202303321.5984.25.camel@wtprcwbti01002>
+From: "Eric Estes" <Eric_Estes@aspensquare.com>
+Subject: RE: Patch-o-matic+iptables+kernel, which versions fits together?
+Date: Thu, 7 Feb 2008 11:03:38 -0500
+Message-ID: <665B03CFBE2C1346A66B0CB9A9A0EE3801C7E577@ASM220.aspen.com>
+References: <2301.5897-15286-1144045463-1202227021@seznam.cz>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1202303321.5984.25.camel@wtprcwbti01002>
+Content-class: urn:content-classes:message
+In-Reply-To: <2301.5897-15286-1144045463-1202227021@seznam.cz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Cloves Pereira Costa Jr <cloves.costa@m2sys.com.br>
-Cc: Netfilter ML <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello,
+> -----Original Message-----
+> From: netfilter-owner@vger.kernel.org [mailto:netfilter-
+> owner@vger.kernel.org] On Behalf Of lokiji lokiji
+> Sent: Tuesday, February 05, 2008 10:57 AM
+> To: netfilter@vger.kernel.org
+> Subject: Patch-o-matic+iptables+kernel, which versions fits together?
+> 
+> Hello,
+> i would like to use connlimit module, but i don't know which version
+of
+> patch-o-matic should i use on which version of kernel and iptables.
+Could
+> someone help me?
+> Thanks a lot
+> -
+> To unsubscribe from this list: send the line "unsubscribe netfilter"
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-On Wednesday, 2008 February  6 at 11:08:41 -0200, Cloves Pereira Costa Jr w=
-rote:
-> Hi all...
->=20
-> I'm with some problems configuring Skype in my firewall...
->=20
-> I know that Skype tries to conects in high ports (>1024) everytime it
-> starts. I would like to know if somenone knows a rule to configure in
-> Iptables that could know what port to accept outgoing connections
-> dinamicaly, in the same way that FTP does whith RELATED state.
 
-That's simple: send an email or phone to skype people and ask them to
-open their protocol and especially the part concerning port allocation.
-And don't forget to ask them to make this part of the protocol go
-unencrypted on the wire.
-
-Seriously, to develop an helper module for a protocol, 2 things are
-needed:
- * The protocol is known (we know where to search the information about
- port opening)
- * The protocol is clear (no crypto, we can parse information)
-
-Skype has both problems and will never have an helper module.
-
-BR,
---=20
-Eric Leblond
-INL: http://www.inl.fr/
-
---FCuugMFkClbJLl1L
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFHqbeHnxA7CdMWjzIRAq9rAJ0S3OxLGyOa0q6fFMuNcej7pV5yugCfXmYk
-Slhpk/Mxm+0kCVXUWDHuuho=
-=WF/5
------END PGP SIGNATURE-----
-
---FCuugMFkClbJLl1L--
+I would like to know this myself. I've tried multiple combinations and
+every time I try to recompile the kernel it dies on connlimit.
