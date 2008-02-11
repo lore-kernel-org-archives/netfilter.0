@@ -1,62 +1,51 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Blocking ports for outsider
-Date: Mon, 11 Feb 2008 14:52:50 +0100
-Message-ID: <004f01c86cb5$64a933f0$0b0ffe0a@NS006819>
-References: <1202726951.23042.0.camel@tarak.lk.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Session tracking failure - ssh packets dropped as INVALID
+Date: Mon, 11 Feb 2008 18:36:51 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0802111828200.16716@blackhole.kfki.hu>
+References: <691DA14F-3FD0-4E19-A61C-74F34E095E49@uq.edu.au>
+ <47AEA957.2030707@caf.com.tr> <47AF5BAE.7030700@rtij.nl>
+ <F7BF9AD4-B6CE-4DCB-A2E1-85E16AC38282@uq.edu.au> <47AFAEA4.2040202@snapgear.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1202726951.23042.0.camel@tarak.lk.com>
+In-Reply-To: <47AFAEA4.2040202@snapgear.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Philip Craig <philipc@snapgear.com>
+Cc: John Zornig <j.zornig@uq.edu.au>, netfilter@vger.kernel.org
 
-> Hi,
->     I have a mail server which has two interface eth0[internal],
-> eth1[external]. i want certain ports like 25, 110, 995 will
-> be open for
-> outsider as wel as local, and some port 10000, 5666 , will be open for
-> local only.. , if anyone help me out regarding this...
->
-> i'm a mail-system guy,so i'm not very much aware of iptables rules, if
-> anyone give me some documentation links for Mailling System related
-> iptables documentation, that will be helpful for me
+On Mon, 11 Feb 2008, Philip Craig wrote:
 
-It's best practice to have everything closed and just open up the ports
-(to specific IP's) where needed.
+> John Zornig wrote:
+> > echo "1" > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
+> 
+> This is just a workaround for a bug.
+> 
+> Are you using a recent kernel?
+> 
+> It would be good to work with Jozsef to get this fixed if you are able
+> to help debug it.  Also report it on the netfilter-devel list.
+> 
+> To debug, I think the first steps are to enable logging with:
+> 
+> 	modprobe ipt_LOG
+> 	echo 255 >/proc/sys/net/netfilter/nf_conntrack_log_invalid
+> 
+> and check your syslog for errors.
+> 
+> Also get a tcpdump of the ssh traffic with something like:
+> 
+> 	tcpdump -i eth0 -s 0 -w dump.pcap tcp port 22
 
-$LAN could be the network address you're using or a specific IP.
+Exactly. By enabling ip_conntrack_tcp_be_liberal you just mask the 
+problem. And without dumped traffic to analyze I cannot do anything to 
+improve the kernel.
 
-$ipt -P INPUT DROP
-$ipt -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-$ipt -A INPUT -m state --state NEW -i lo -j ACCEPT
-$ipt -A INPUT -m state --state NEW -p tcp -m multiport \
-  --dports 25,110,995 -j ACCEPT
-$ipt -A INPUT -m state --state NEW -s $LAN -p tcp \
-  -m multiport --dports 5666,10000 -j ACCEPT
-
-If you don't have the multiport match, you can do this instead:
-
-$ipt -P INPUT DROP
-$ipt -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-$ipt -A INPUT -m state --state NEW -i lo -j ACCEPT
-$ipt -A INPUT -m state --state NEW -p tcp --dport 25 -j ACCEPT
-$ipt -A INPUT -m state --state NEW -p tcp --dport 110 -j ACCEPT
-$ipt -A INPUT -m state --state NEW -p tcp --dport 995 -j ACCEPT
-$ipt -A INPUT -m state --state NEW -s $LAN -p tcp \
-  --dport 5666 -j ACCEPT
-$ipt -A INPUT -m state --state NEW -s $LAN -p tcp \
-  --dport 10000 -j ACCEPT
-
-As you can see the latter do the same rules as the first rules, there
-are just more rules to process.
-
-Oskar Andreasson wrote a good iptables tutorial.
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
-
-
-Grts,
-Rob
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
