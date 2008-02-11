@@ -1,14 +1,14 @@
 From: Tarak Ranjan <contacttrm@yahoo.co.in>
 Subject: Blocking ports for outsider
-Date: Mon, 11 Feb 2008 15:52:54 +0530
-Message-ID: <1202725374.22540.5.camel@tarak.lk.com>
+Date: Mon, 11 Feb 2008 16:19:10 +0530
+Message-ID: <1202726951.23042.0.camel@tarak.lk.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
 Hi,
     I have a mail server which has two interface eth0[internal],
@@ -25,4 +25,5 @@ Thank you
 
 
 Tarak Ranjan
+
 
