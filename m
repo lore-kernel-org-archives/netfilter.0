@@ -1,51 +1,36 @@
-From: Martijn Lievaart <m@rtij.nl>
+From: John Zornig <j.zornig@uq.edu.au>
 Subject: Re: Session tracking failure - ssh packets dropped as INVALID
-Date: Sun, 10 Feb 2008 21:16:46 +0100
-Message-ID: <47AF5BAE.7030700@rtij.nl>
-References: <691DA14F-3FD0-4E19-A61C-74F34E095E49@uq.edu.au> <47AEA957.2030707@caf.com.tr>
-Mime-Version: 1.0
+Date: Mon, 11 Feb 2008 11:08:34 +1000
+Message-ID: <F7BF9AD4-B6CE-4DCB-A2E1-85E16AC38282@uq.edu.au>
+References: <691DA14F-3FD0-4E19-A61C-74F34E095E49@uq.edu.au> <47AEA957.2030707@caf.com.tr> <47AF5BAE.7030700@rtij.nl>
+Mime-Version: 1.0 (Apple Message framework v915)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47AEA957.2030707@caf.com.tr>
+In-Reply-To: <47AF5BAE.7030700@rtij.nl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eray Aslan <eray.aslan@caf.com.tr>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+To: netfilter@vger.kernel.org
 
-Eray Aslan wrote:
-> On 10.02.2008 05:29, John Zornig wrote:
->> I can connect via ssh, but often when I generate a lot of traffic 
->> e.g. by cat'ing a large file or running top, the session hangs. By 
->> selective logging, I have discovered that when a session hangs the 
->> packets coming to port 22 for that session change from ESTABLISHED to 
->> INVALID and I have a rule that all INVALID packets are dropped. For 
->> some reason the connection tracking appears to be faulty. Is this a 
->> known issue or am I doing something incorrect? I've had this occur on 
->> a number of systems I'm setting up at the moment all are configured 
->> similarly.
+Thanks Martijn,
+
+
+On 11/02/2008, at 6:16 AM, Martijn Lievaart wrote:
+
 >
-> No word of advice unfortunately but I have bitten by packets getting 
-> dropped by the INVALID rule as well. In the end, I have disabled the 
-> rule that drops INVALID packets.
->
-> On 15.11.2007 Jozsef Kadlezsic wrote to a similar question:
->
->> Please enable full internal logging in netfilter and make sure at 
->> least one loggin target module is loaded in and record by tcpdump one 
->> full TCP session where such packets occurs. Then send me the 
->> generated kernel log and the dump file so that I could analyze it. 
->
-> I did not have the time to debug it. Maybe you can. In addition, I 
-> have seen reports that increasing timeouts may help 
-> (ip_conntrack_tcp_timeout_close_wait, ip_conntrack_tcp_timeout_close, 
-> ip_conntrack_tcp_timeout_fin_wait, ip_conntrack_tcp_timeout_last_ack). 
-> It did not help for me and of course this is just a work around. The 
-> real problem lies elsewhere.
+> Enabling conntrack_be_liberal seems to have solved the issue for me.
 >
 
-Enabling conntrack_be_liberal seems to have solved the issue for me.
 
-HTH,
-M4
+echo "1" > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
+
+seems to work for my systems. No more INVALID packets.
+
+Some of the netfilter firewall how-to guides I've found say that  
+ip_conntrack_tcp_be_liberal should never be set on a firewall. So I'm  
+still left wondering if I'm working around a bug and my firewall is  
+not as strict as it should be, or are these how-to's all wrong.
+
+Regards,
+JZ
 
