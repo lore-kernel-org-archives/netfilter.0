@@ -1,140 +1,112 @@
-From: Philip Prindeville <philipp@redfish-solutions.com>
-Subject: Re: Who currently owns ip_conntrack_sip?
-Date: Wed, 13 Feb 2008 00:33:24 -0800
-Message-ID: <47B2AB54.1020305@redfish-solutions.com>
-References: <47B279B9.4000202@redfish-solutions.com> <200802130925.05066.thomas.jarosch@intra2net.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060505090008080903060604"
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Blocking ports for outsider
+Date: Wed, 13 Feb 2008 12:53:17 +0100
+Message-ID: <001601c86e37$0636a400$0b0ffe0a@NS006819>
+References: <1202726951.23042.0.camel@tarak.lk.com> <004f01c86cb5$64a933f0$0b0ffe0a@NS006819> <1202884987.12351.7.camel@tarak.lk.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200802130925.05066.thomas.jarosch@intra2net.com>
+In-Reply-To: <1202884987.12351.7.camel@tarak.lk.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Thomas Jarosch <thomas.jarosch@intra2net.com>
-Cc: netfilter@vger.kernel.org
-
-This is a multi-part message in MIME format.
---------------060505090008080903060604
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Thomas Jarosch wrote:
-> Philip,
+> i have made one iptables rule set for my mailserver, but the thing is
+> that what i want from my rules, it's not responding in that way i
+> want... might be some thing wrong with my ruleset.
 >
-> On Wednesday, 13. February 2008 06:01:45 you wrote:
->   
->> I was using this module recently (added support to
->> arno-iptables-firewall and bundled it into AstLinux).  Works great.  A
->> real lifesaver.
->>
->> But I did have a couple of minor suggestions to make it more usable.
->>
->> Can the person who maintains it please contact me?
->>     
 >
-> Just post to this list, they will hear you.
+> 1) Locally incoming ssh should be allowed from 2 local ips
+> 2) 25, 110, 995, 80, 443 should be open for 0/0.
+> 3) 10000, 5666 should be open for LAN[192.168.1.0/24] Network
 >
-> Though general discussions are better suited for
-> the "netfilter" list if it's not development related.
->
-> Thomas
->   
+> Those are the things i want..... Here is my ruleset in my
+> MAILSERVER not in Gateway
 
-Ok.  I had a simple patch I'd like to see included that makes debugging 
-output dependent on a load-time module parameter, i.e. "debug=1".
+> # smtp  One per second limt -burst rate of FIVE
+> $IPTABLES -A INPUT -p tcp --dport 25 --syn -m limit --limit 1/s
+> --limit-burst 5 -j ACCEPT
+> $IPTABLES -A INPUT -p tcp --dport 25 --syn -j DROP
+> $IPTABLES -A INPUT -p tcp --dport 25 -j ACCEPT
 
-It's trivial.
+I don't think this will ever match. You accept 1 conn/sec on dport
+25/tcp. Connections at a higher rate than 1/sec are DROPped. So what's
+left to accept?
 
-I was also thinking that SIP typically either used as a single port 
-(5060), or as a block of ports (5060:5080).
+> $IPTABLES -A INPUT -m state --state NEW -p tcp -m multiport --dports
+> 110,995,443,80,53 -j ACCEPT
 
-Allowing specifying eight individual sparse ports isn't really useful.
+Are you running a DNS server for the internet that only allows tcp
+connections?
 
-Specifying 4 ranges of ports would be a lot more handy.
+> #OUTPUT RULES
+> $IPTABLES -A OUTPUT -o lo -j ACCEPT
 
-How easily could this be done?
+I hadn't read all of the above yet, but this can be a (the) problem. You
+only allow outgoing packets that use the lo interface. So, you may get
+incoming packets from another host, but nothing will ever get out via
+the actual network interfaces.
 
-I'm working on the AstLinux project (http://www.astlinux.org) and we are 
-releasing 0.60 to come with a couple of different firewall options that 
-will both leverage this module.  In most of the deployments of AstLinux, 
-our operational experience shows that one or two blocks of 5-40 ports is 
-typical (i.e. 95% of all cases).
+> #FORWARD RULES
+> $IPTABLES -A FORWARD -m state --state INVALID -j DROP
 
-Thanks,
+Try with a simple ruleset first. If it works, you add more rules or
+change them to be even more restrictive (but still let things work as
+they should).
 
--Philip
+$ipt -P INPUT DROP
+$ipt -P OUTPUT DROP
+$ipt -P FORWARD DROP
+
+$ipt -F
+$ipt -X
+
+$ipt -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+$ipt -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+$ipt -N NEW_IN
+# ssh in for LAN_IP1
+$ipt -A NEW_IN -s $LAN_IP1 -p tcp --dport 22 -j ACCEPT
+# ssh in for LAN_IP2
+$ipt -A NEW_IN -s $LAN_IP2 -p tcp --dport 22 -j ACCEPT
+# smtp in
+$ipt -A NEW_IN -p tcp --dport 25 -j ACCEPT
+# http in
+$ipt -A NEW_IN -p tcp --dport 80 -j ACCEPT
+# pop3 in
+$ipt -A NEW_IN -p tcp --dport 110 -j ACCEPT
+# https in
+$ipt -A NEW_IN -p tcp --dport 443 -j ACCEPT
+# pop3s in
+$ipt -A NEW_IN -p tcp --dport 995 -j ACCEPT
+# unknown service1 in for the LAN
+$ipt -A NEW_IN -s $LAN_NET -p tcp --dport 5666 -j ACCEPT
+# unknown service2 in for the LAN
+$ipt -A NEW_IN -s $LAN_NET -p tcp --dport 10000 -j ACCEPT
+
+$ipt -A INPUT -i lo -j ACCEPT
+$ipt -A INPUT -m state --state NEW -j NEW_IN
+
+$ipt -N NEW_OUT
+# smtp out
+$ipt -A NEW_OUT -p tcp --dport 25 -j ACCEPT
+# dns out (tcp)
+$ipt -A NEW_OUT -p tcp --dport 53 -j ACCEPT
+# dns out (udp)
+$ipt -A NEW_OUT -p udp --dport 53 -j ACCEPT
+# icmp out
+$ipt -A NEW_OUT -p icmp -j ACCEPT
+
+$ipt -A OUTPUT -o lo -j ACCEPT
+$ipt -A OUTPUT -m state --state NEW -j NEW_OUT
 
 
+I think this should get you going. If it doesn't, place some logging
+rules where appropriate to see where things are allowed or denied.
 
---------------060505090008080903060604
-Content-Type: text/plain;
- name="netfilter-sip.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="netfilter-sip.diff"
 
---- ip_conntrack_sip.c.orig	2007-10-17 12:31:14.000000000 -0700
-+++ ip_conntrack_sip.c	2008-02-11 10:14:33.000000000 -0800
-@@ -20,16 +20,16 @@
- #include <linux/netfilter_ipv4/ip_conntrack_helper.h>
- #include <linux/netfilter_ipv4/ip_conntrack_sip.h>
- 
--#if 0
--#define DEBUGP printk
--#else
--#define DEBUGP(format, args...)
--#endif
--
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Christian Hentschel <chentschel@arnet.com.ar>");
- MODULE_DESCRIPTION("SIP connection tracking helper");
- 
-+static unsigned int debug = 0;
-+module_param(debug, uint, 0);
-+MODULE_PARM_DESC(debug, "debug=1 is turn on debug messages");
-+
-+#define DEBUGP(format, args...) if (debug) printk(KERN_DEBUG format, ##args)
-+
- #define MAX_PORTS	8
- static unsigned short ports[MAX_PORTS];
- static int ports_c;
---- ip_nat_sip.c.orig	2007-10-17 12:31:14.000000000 -0700
-+++ ip_nat_sip.c	2008-02-11 10:15:30.000000000 -0800
-@@ -23,11 +23,11 @@
- MODULE_AUTHOR("Christian Hentschel <chentschel@arnet.com.ar>");
- MODULE_DESCRIPTION("SIP NAT helper");
- 
--#if 0
--#define DEBUGP printk
--#else
--#define DEBUGP(format, args...)
--#endif
-+static unsigned int debug = 0;
-+module_param(debug, uint, 0);
-+MODULE_PARM_DESC(debug, "debug=1 is turn on debug messages");
-+
-+#define DEBUGP(format, args...) if (debug) printk(KERN_DEBUG format, ##args...)
- 
- struct addr_map {
- 	struct {
---- nf_nat_sip.c.orig	2007-10-17 12:31:14.000000000 -0700
-+++ nf_nat_sip.c	2008-02-11 10:16:06.000000000 -0800
-@@ -25,11 +25,11 @@
- MODULE_DESCRIPTION("SIP NAT helper");
- MODULE_ALIAS("ip_nat_sip");
- 
--#if 0
--#define DEBUGP printk
--#else
--#define DEBUGP(format, args...)
--#endif
-+static unsigned int debug = 0;
-+module_param(debug, uint, 0);
-+MODULE_PARM_DESC(debug, "debug=1 is turn on debug messages");
-+
-+#define DEBUGP(format, args...) if (debug) printk(KERN_DEBUG format, ##args...)
- 
- struct addr_map {
- 	struct {
+Grts,
+Rob
 
---------------060505090008080903060604--
+
