@@ -1,52 +1,49 @@
-From: Jon Wilson <lists@erentil.net>
-Subject: Re: Filtering by Mac Address
-Date: Wed, 13 Feb 2008 19:55:11 -0700
-Message-ID: <47B3AD8F.6090704@erentil.net>
-References: <63D06BD7-145A-4A49-8E64-D91C813B987F@gmail.com>
+From: Brent Clark <brentgclarklist@gmail.com>
+Subject: Is anyone else having problems with the latest POM's geoip
+Date: Thu, 14 Feb 2008 13:24:34 +0200
+Message-ID: <47B424F2.5070607@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <63D06BD7-145A-4A49-8E64-D91C813B987F@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Cupertino Miranda <philfine@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Cupertino Miranda wrote:
-> Hello everyone,
-> 
-> For one of my current hackings I need to construct the following network 
-> rules.
-> 
-> I need to disable internet access to all the local network hosts by 
-> redirecting them the my webserver (allowing to show some web page in 
-> case of http connection).
-> Enable internet access by mac address to some of this hosts.
-> 
-> I have currently general NAT rules in gateway machine.
-> 
-> Can someone provide me some details how can I do it.
-> 
-> Thanks a lot
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-this is the shell script I wrote for wireless user authentication.
+Hi
 
-uses prerouting default drop policy to limit to dns and redirect 
-http/https traffic.  apache instance redirects everything coming in to 
-auth page, can run the shell script
+I would like to know if anyone else having problems with the latest POM=
+'s geoip with debian 2.6.24 kernel, and anyone know of release that wil=
+l work.
 
-firewall.sh add 00:01:02:03:04:05
+   CC [M]  net/ipv4/netfilter/ipt_ipp2p.o
+net/ipv4/netfilter/ipt_ipp2p.c:871: warning: initialization from incomp=
+atible pointer type
+net/ipv4/netfilter/ipt_ipp2p.c:875: warning: initialization from incomp=
+atible pointer type
+   CC [M]  net/ipv4/netfilter/ipt_geoip.o
+net/ipv4/netfilter/ipt_geoip.c: In function =91match=92:
+net/ipv4/netfilter/ipt_geoip.c:113: error: =91const struct sk_buff=92 h=
+as no member named =91nh=92
+net/ipv4/netfilter/ipt_geoip.c: At top level:
+net/ipv4/netfilter/ipt_geoip.c:280: warning: initialization from incomp=
+atible pointer type
+net/ipv4/netfilter/ipt_geoip.c:284: warning: initialization from incomp=
+atible pointer type
+net/ipv4/netfilter/ipt_geoip.c: In function =91init=92:
+net/ipv4/netfilter/ipt_geoip.c:291: error: implicit declaration of func=
+tion =91ipt_register_match=92
+net/ipv4/netfilter/ipt_geoip.c: In function =91fini=92:
+net/ipv4/netfilter/ipt_geoip.c:296: error: implicit declaration of func=
+tion =91ipt_unregister_match=92
+make[4]: *** [net/ipv4/netfilter/ipt_geoip.o] Error 1
+make[3]: *** [net/ipv4/netfilter] Error 2
+make[2]: *** [net/ipv4] Error 2
+make[1]: *** [net] Error 2
+make[1]: Leaving directory `/usr/src/linux-source-2.6.24'
 
-to add the mac to allowed range.
+If anyone could assist thanks in advance.
 
-should give you what you need.
+Regards
+Brent Clark
 
-http://erentil.net/wiki/iptables/auth/
-
--- 
-Jon Wilson
