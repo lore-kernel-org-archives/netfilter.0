@@ -1,32 +1,51 @@
-From: Cupertino Miranda <philfine@gmail.com>
-Subject: Filtering by Mac Address
-Date: Wed, 13 Feb 2008 17:54:44 +0000
-Message-ID: <63D06BD7-145A-4A49-8E64-D91C813B987F@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v919.2)
+From: tom <tom@t0mb.net>
+Subject: nfq_unbind_pf and nfq_bind_pf return values different in 2.6.23
+Date: Thu, 14 Feb 2008 01:46:03 +0000
+Message-ID: <47B39D5B.9080804@t0mb.net>
+Reply-To: tom@t0mb.net
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:from:to:content-type:content-transfer-encoding:mime-version:subject:date:x-mailer;
-        bh=IYLOcDcT6lL1ZlaGppFhyLLC6lnuo85yVmQbpbSE48c=;
-        b=BVBQ/15aHlXZ2GEjTXi+xFRsLo5rrsSvX3KWmno2qThlgNcNektvxx0CY3xsJj45XKRcZHNFCNYxUJBPypedcIMV5EXwN03cDKtzHqVtn6KCuE6jaCS7U2YAjxPaZkR5mAWOS4ELE9CUhfXD+sAeBXPArkOZkO3yiMxnMA0OhtU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello everyone,
+Hi,
 
-For one of my current hackings I need to construct the following  
-network rules.
+I haven't touched C for a while now, and have been using python.  I used
+to rely on python ipqueue, which uses ipq, but it has problems in 64bit,
+and rather than fix it myself, I decided to try the netfilter queue, as
+implemented in python nfqueue, given that the netfilter queue is
+supposed to make ipq obsolete anyhow, and the author of python ipqueue
+now recommends nfqueue.  Unfortunately, it seems that nfqueue has been
+broken as of kernel 2.6.23 due to changes in the return values of
+nfq_bind_pf and the unbind equivalent.  The code expects 0 to be
+returned, and complains of failure otherwise.  I was just wondering if
+someone could tell me how to interpret the return values and then I can
+fix nfqueue. 
 
-I need to disable internet access to all the local network hosts by  
-redirecting them the my webserver (allowing to show some web page in  
-case of http connection).
-Enable internet access by mac address to some of this hosts.
+At the moment, this is the problem unless I just fudge it so it doesn't
+bail out at this point:
 
-I have currently general NAT rules in gateway machine.
+localhost Wall # python testq.py
+NFNETLINK answers: Invalid argument
+Traceback (most recent call last):
+  File "testq.py", line 53, in ?
+    Queue = NetfilterQueue()
+  File "testq.py", line 44, in __init__
+    self.queue = nfqueue.Queue(False)
+  File "nfqueue.pyx", line 226, in nfqueue.Queue.__new__
+StandardError: nfq_unbind_pf failed
 
-Can someone provide me some details how can I do it.
+If I fudge it so as to just print out the return codes, I get this:
 
-Thanks a lot
+localhost Wall # python testq.py
+NFNETLINK answers: Invalid argument
+-22
+NFNETLINK answers: Device or resource busy
+-16
+
+
+Any help much appreciated.  Thanks. Tom.
+
