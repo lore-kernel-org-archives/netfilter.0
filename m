@@ -1,51 +1,62 @@
-From: tom <tom@t0mb.net>
-Subject: nfq_unbind_pf and nfq_bind_pf return values different in 2.6.23
-Date: Thu, 14 Feb 2008 01:46:03 +0000
-Message-ID: <47B39D5B.9080804@t0mb.net>
-Reply-To: tom@t0mb.net
+From: "Antonio Augusto (Mancha)" <mkhaos7@gmail.com>
+Subject: Re: Filtering by Mac Address
+Date: Wed, 13 Feb 2008 23:32:21 -0300
+Message-ID: <4c6e034d0802131832m5ca3e130j65ef5a3c2cfb37c9@mail.gmail.com>
+References: <63D06BD7-145A-4A49-8E64-D91C813B987F@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=yY96IgWtIbac7QfGEV01T1qZ6fRaiujFBQwIi+pOzwI=;
+        b=bRFr4zbJFCLgrBPpaHPpfYBdedBwcBxhfWEIdeu0VSQmodxceR8yXQzSChlKRzuna/aWX+jYibNCZmzFZk/T14Y3W7car+Qvaelh1r9LpKQ25hXLokZFERmnBTiA80hkwYDRWY/J4EOIgeqqsmLEezaoTao13eLkB9lHkbiCU/8=
+In-Reply-To: <63D06BD7-145A-4A49-8E64-D91C813B987F@gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Cupertino Miranda <philfine@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+You probably can use the mac target, passing a --mac-source option to
+filter the macs you want to have access to the net.
+All other connections should be treated by another rule that will do
+some NATing to redirect all the traffic to your web server.
+The second part of the solution probably was already discussed
+hundreds of times here already, and there are a lot of very good
+tutorial on the net on how to to this.
 
-I haven't touched C for a while now, and have been using python.  I used
-to rely on python ipqueue, which uses ipq, but it has problems in 64bit,
-and rather than fix it myself, I decided to try the netfilter queue, as
-implemented in python nfqueue, given that the netfilter queue is
-supposed to make ipq obsolete anyhow, and the author of python ipqueue
-now recommends nfqueue.  Unfortunately, it seems that nfqueue has been
-broken as of kernel 2.6.23 due to changes in the return values of
-nfq_bind_pf and the unbind equivalent.  The code expects 0 to be
-returned, and complains of failure otherwise.  I was just wondering if
-someone could tell me how to interpret the return values and then I can
-fix nfqueue. 
+Cheers,
+KM
 
-At the moment, this is the problem unless I just fudge it so it doesn't
-bail out at this point:
-
-localhost Wall # python testq.py
-NFNETLINK answers: Invalid argument
-Traceback (most recent call last):
-  File "testq.py", line 53, in ?
-    Queue = NetfilterQueue()
-  File "testq.py", line 44, in __init__
-    self.queue = nfqueue.Queue(False)
-  File "nfqueue.pyx", line 226, in nfqueue.Queue.__new__
-StandardError: nfq_unbind_pf failed
-
-If I fudge it so as to just print out the return codes, I get this:
-
-localhost Wall # python testq.py
-NFNETLINK answers: Invalid argument
--22
-NFNETLINK answers: Device or resource busy
--16
+On Wed, Feb 13, 2008 at 2:54 PM, Cupertino Miranda <philfine@gmail.com>=
+ wrote:
+> Hello everyone,
+>
+>  For one of my current hackings I need to construct the following
+>  network rules.
+>
+>  I need to disable internet access to all the local network hosts by
+>  redirecting them the my webserver (allowing to show some web page in
+>  case of http connection).
+>  Enable internet access by mac address to some of this hosts.
+>
+>  I have currently general NAT rules in gateway machine.
+>
+>  Can someone provide me some details how can I do it.
+>
+>  Thanks a lot
+>  -
+>  To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>  the body of a message to majordomo@vger.kernel.org
+>  More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
 
-Any help much appreciated.  Thanks. Tom.
 
+--=20
+Informa=E7=E3o & Seguran=E7a - Informa=E7=F5es para sua seguran=E7a na =
+rede.
+http://info-seg.blogspot.com
