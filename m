@@ -1,82 +1,62 @@
-From: "Thomas Boland" <tom@t0mb.net>
-Subject: Re: nfq_unbind_pf and nfq_bind_pf return values different in 2.6.23
-Date: Thu, 14 Feb 2008 23:38:40 -0000 (UTC)
-Message-ID: <60218.88.208.230.12.1203032320.squirrel@t0mb.net>
-References: <47B39D5B.9080804@t0mb.net>
-    <20080214192819.GB21538@bayen.regit.org>
+From: "Salatiel Filho" <salatiel.filho@gmail.com>
+Subject: Little help
+Date: Fri, 15 Feb 2008 12:39:46 -0300
+Message-ID: <beb91d720802150739p210cd688l73b3b1ce555685a8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080214192819.GB21538@bayen.regit.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=Ny33YoEIXmWxAASxwXsjcQTwnpF1rCQmCkF/XQHfxLA=;
+        b=JVAGxON/MNuzWOuOVO6rVg4quS4zfLZtNCC8n++5NHj0JDnw4ZsnJgrvr27zuehDKwVMjEStvKmJtBCVi5uCxyytTWJ/pv3QoXTVFoXYqg5POof3wnBgHmGrIpf7WtrAk4XhTOGjoM6H67jBxKXYdWm8zstpMo8tu2RTgkEllKM=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Eric Leblond <eric@inl.fr>, tom <tom@t0mb.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Hi Eric,
+Hi guys , maybe someone could help me to understand one problem i am
+facing with my setup.
+I don`t know exactly if it is related to iptables itself, but any help
+is welcome.
 
-Thank you for getting back to me.
+I have one server doing NAT/Firewall/SAMBA to my local LAN, the setup
+is like this:
 
-> Hi,
->
-> On Thursday, 2008 February 14 at  1:46:03 +0000, tom wrote:
->> Hi,
->>
->> I haven't touched C for a while now, and have been using python.  I used
->> supposed to make ipq obsolete anyhow, and the author of python ipqueue
->> now recommends nfqueue.  Unfortunately, it seems that nfqueue has been
->> broken as of kernel 2.6.23 due to changes in the return values of
->> nfq_bind_pf and the unbind equivalent.
->
-> Return code of nfq_unbind_pf has to be ignored in recent kernel.
->
->> The code expects 0 to be
->> returned, and complains of failure otherwise.  I was just wondering if
->> someone could tell me how to interpret the return values and then I can
->> fix nfqueue.
->>
->> At the moment, this is the problem unless I just fudge it so it doesn't
->> bail out at this point:
->> If I fudge it so as to just print out the return codes, I get this:
->>
->> localhost Wall # python testq.py
->> NFNETLINK answers: Invalid argument
->> -22
->> NFNETLINK answers: Device or resource busy
->> -16
->
-> This is bad ! someone of my team has just encounter a similar problem on
-> 2.6.24.2. Did you use compiled-in Netfilter (opposed to Netfilter in
-> loadable modules)
+eth0 connected to the dsl modem. Connection using pppoe.
+eth1 connected to the LAN.
 
-Yes, I have been using it compiled in, using 2.6.23.  I am led to believe that
-there is no difference on the later kernels, so haven't tried upgrading (despite
-the unrelated local root exploit!)
+i have the following rules in mangle postrouting...
 
->
-> PS: Could you tell me where to find the python binding for NFQUEUE ?
->
+# iptables  -t mangle -v -L POSTROUTING
+Chain POSTROUTING (policy ACCEPT 24M packets, 14G bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+ 202K   38M Default    all  --  any    ppp0    anywhere
+anywhere
+ 202K   38M IMQ        all  --  any    ppp0    anywhere
+anywhere            IMQ: todev 1
 
-I actually got it from the page for the IPQ bindings:
+If that rule is right the traffic will go to IMQ1 device ONLY if it
+will go out through ppp0 , right ?
 
-http://woozle.org/~neale/src/ipqueue/
+The problem is : When machines from the local lan try to access the
+SAMBA sharing on this machine, the traffic is being shaped inside imq1
+device and i can not understand why. The traffic is going out through
+eth1[lan interface] , so why is it entering that rule ? [that is the
+only rule that targets imq1 device].
 
+You can ignore the "Default" target on the first rule , it is used
+just to mark a few packets to be identified by iproute2.
 
-On another note, I tried converting the 3 instances of nfnl_talk to nfnl_query
-in libnfnetfilter (or perhaps libnetfilterqueue, I can't remember, I'm at work
-at the momment), and it doesn't complain, but I don't think it's working.  My
-knowledge of these things isn't enough to debug it properly I'm afraid, but I
-gather that it's the return code of nfnl_talk that is causing the problem...  I
-haven't got it in front of me (and i should be working at the moment!!!)
+I am using kernel 2.6.21.5 and iptables 1.3.8.
 
-Tanks for your help.  Tom.
+Thanks in advance.
 
+--=20
+[]'s
+Salatiel
 
-> BR,
-> --
-> Eric Leblond
-> INL: http://www.inl.fr/
-> NuFW: http://www.nufw.org/
->
-
-
+"O maior prazer do inteligente =E9 bancar o  idiota
+   diante de um  idiota que banca o inteligente".
