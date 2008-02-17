@@ -1,60 +1,66 @@
-From: "Robert M. Albrecht" <romal@gmx.de>
-Subject: Re: illegal packets
-Date: Sat, 16 Feb 2008 22:08:23 +0100
-Message-ID: <47B750C7.2070707@gmx.de>
-References: <47B74459.5010607@gmx.de> <Pine.LNX.4.64.0802162139240.26797@blackhole.kfki.hu>
+From: duren duren <jusdurian_jr@yahoo.com>
+Subject: Ask: Default Policy DROP for INPUT, OUTPUT and FORWARD
+Date: Sat, 16 Feb 2008 22:19:37 -0800 (PST)
+Message-ID: <24410.61709.qm@web55403.mail.re4.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0802162139240.26797@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi Jozsef,
+i want build firewal for router in one machine as a
+squid proxy server,  caching dns server and bandwith
+limiter with HTB.
 
-thanks for your fast reply.
+i use default policy DROP for forward, input, and
+output
 
-As newer kernels as 2.6.24 aren`t supported in OpenWRT I have to ignore it 
-for the moment :-(
+-------- code ----------------
+# Clean old firewall
+$IPT -F
+$IPT -X
+$IPT -t nat -F
+$IPT -t nat -X
+$IPT -t mangle -F
+$IPT -t mangle -X
 
-For the moment I have to remove the INVALID statement from my configuration 
-for the recent-module, as recent puts this invalid packets on the blacklist.
+$MPROBE ip_conntrack
+$MPROBE ip_conntrack_ftp
+$MPROBE ip_nat_ftp
+$MPROBE ip_nat_irc
 
-cu romal
+# Setting default filter policy
+$IPT -P INPUT DROP
+$IPT -P OUTPUT DROP
+$IPT -P FORWARD DROP
+
+# Unlimited access to loop back
+$IPT -A INPUT -i lo -j ACCEPT
+$IPT -A OUTPUT -o lo -j ACCEPT
+
+# Allow UDP, DNS and Passive FTP
+$IPT -A INPUT -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+$IPT -A OUTPUT -m state --state ESTABLISHED,RELATED -j
+ACCEPT
+------------ end of code
+--------------------------------------
+
+and my problem is, what filter i must write so my
+client can connect into my router.
+first i only define PREROUTING, FORWARD and
+POSTROUTING, but my client can't ping into router.
+
+so, if i want default policy DROP for forward, input,
+output, prerouting and postrouting, what i want to do?
+must i define all of this for allow my client?
 
 
-Jozsef Kadlecsik schrieb:
-> On Sat, 16 Feb 2008, Robert M. Albrecht wrote:
-> 
->> I keep getting this invalid packets, one to five per minute.
->>
->> Why are the invalid ?
-> 
->> kernel: nf_ct_tcp: invalid packed ignored IN= OUT= SRC=212.60.137.183 
->> DST=217.72.204.254 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=25024 DF 
->> PROTO=TCP SPT=52369 DPT=80 SEQ=4686532 ACK=0 WINDOW=5840 RES=0x00 SYN 
->> URGP=0 OPT (020405B40402080A0244
-> 
-> This is a connection-initiating SYN packet, but there is an existing 
-> connection already between 212.60.137.183:52369<->217.72.204.254:80. 
-> So the firewall ignores the packet (does not take it into account at 
-> keeping track the connection, but lets it through). Probably it's a 
-> connection-reopening, which is not handled properly.
-> 
-> The newest git tree contains a fix for reopening connections. So either 
-> upgrade or ignore the invalid packet warnings ;-).
-> 
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+thanks
+
+
+      ____________________________________________________________________________________
+Never miss a thing.  Make Yahoo your home page. 
+http://www.yahoo.com/r/hs
