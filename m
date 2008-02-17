@@ -1,40 +1,16 @@
-From: karimas@kfupm.edu.sa
-Subject: Re: Ask: Default Policy DROP for INPUT, OUTPUT and FORWARD
-Date: Sun, 17 Feb 2008 10:15:47 +0300
-Message-ID: <7c9ec6914d6.14d67c9ec69@kfupm.edu.sa>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Default Policy DROP for INPUT, OUTPUT and FORWARD
+Date: Sun, 17 Feb 2008 10:27:50 +0100
+Message-ID: <000001c87147$5dff5390$19fdfab0$@info>
 References: <24410.61709.qm@web55403.mail.re4.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <24410.61709.qm@web55403.mail.re4.yahoo.com>
-Content-language: en
-Content-disposition: inline
+In-Reply-To: <24410.61709.qm@web55403.mail.re4.yahoo.com>
+Content-language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: duren duren <jusdurian_jr@yahoo.com>
-Cc: netfilter@vger.kernel.org
-
-Your following commands will not work as state NEW is not there in the 
-INPUT chain, but if you add NEW, every one now can access your router.
-
->># Allow UDP, DNS and Passive FTP
->>$IPT -A INPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
->>$IPT -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-use the following command so that your client can access the router 
-through ssh but add before tha above mentioned command.
-iptables -A INPUT -s client_ip -dport 22 --state NEW, ESTABLISHED -j 
-ACCEPT
-
-Regards
-Karim Asif
-
-
------ Original Message -----
-From: duren duren <jusdurian_jr@yahoo.com>
-Date: Sunday, February 17, 2008 9:20 am
-Subject: Ask: Default Policy DROP for INPUT, OUTPUT and FORWARD
 To: netfilter@vger.kernel.org
 
 > i want build firewal for router in one machine as a
@@ -79,23 +55,57 @@ To: netfilter@vger.kernel.org
 > client can connect into my router.
 > first i only define PREROUTING, FORWARD and
 > POSTROUTING, but my client can't ping into router.
-> 
-> so, if i want default policy DROP for forward, input,
-> output, prerouting and postrouting, what i want to do?
-> must i define all of this for allow my client?
-> 
-> 
-> thanks
-> 
-> 
->      
-> 
-________________________________________________________________________
-____________Never miss a thing.  Make Yahoo your home page. 
-> http://www.yahoo.com/r/hs
-> -
-> To unsubscribe from this list: send the line "unsubscribe 
-> netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+
+No of course they can't: you don't allow it by setting the policy of
+these chains to DROP and not having a rule to allow icmp (in whatever
+chain you need it).
+Besides, please define what "can't ping into router" in your case
+actually means.
+
+Further: do not filter in the NAT table unless you know what you're
+doing, so, do not set the policy of these to DROP.
+
+> so, if i want default policy DROP for forward, input, output,
+
+Do this if it's in the filter table, but
+
+> prerouting and postrouting,
+
+don't do this unless you know what you're doing and you can troubleshoot
+it yourself.
+
+> what i want to do? must i define all of this for allow my client?
+
+You didn't tell us what you want your client to be able of doing.
+You are probably providing internet access for your client.
+- Will you provide access via NAT only, proxy only or both?
+- Does the client have to be able to resolve hostnames?
+- Any other services you want to provide?
+
+If you want to allow proxy traffic then allow incoming port 3128/tcp
+(squid default).
+If you want to allow NAT traffic then allow outgoing forwarded traffic,
+perhaps only for specific ports but that'll be your choice.
+If you want your client to be able to resolve hostnames using your DNS
+server, allow incoming traffic on port 53 both tcp and udp. (While tcp
+is not used often, it might be.)
+
+As Karim says, your RELATED,ESTABLISHED rules won't work here as there
+are no accompanying NEW rules: you don't allow anything so there won't
+be any connections in RELATED or ESTABLISHED state.
+However, it's better to put the rules allow connections in NEW state
+*after* the RELATED,ESTABLISHED rule (in each chain), not before. Most
+packets will belong to a connection in either ESTABLISHED or RELATED
+state, while only one packet in a connection will be in NEW state.
+Because the rule-check will stop after the first match, you want packets
+in ESTABLISHED or RELATED state to be accepted as soon as possible.
+
+Maybe you should first read into what it is you want to provide so you
+know what you need and have a look at Oskars iptables tutorial:
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+
+
+Grts,
+Rob
+
+
