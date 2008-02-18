@@ -1,86 +1,48 @@
-From: Michael =?ISO-8859-1?Q?Fern=E1ndez?= M <michael@michael.cl>
-Subject: Re: Filter by Packet's size
-Date: Mon, 18 Feb 2008 11:41:02 -0300
-Message-ID: <1203345662.2366.31.camel@amokk.microserv.cl>
-References: <1203337519.2366.4.camel@amokk.microserv.cl>
-	 <1203341778.18561.2.camel@localhost>
-	 <1203343140.2366.22.camel@amokk.microserv.cl>
-	 <1203345145.18561.13.camel@localhost>
+From: Ricardo Teixeira <rteixeira@iportalmais.pt>
+Subject: problems deleting conntrack entries with conntrack-tools 0.9.5
+Date: Mon, 18 Feb 2008 19:35:45 +0000
+Message-ID: <1203363346.5741.11.camel@venus.iportalmais.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1203345145.18561.13.camel@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: casper@meteor.dp.ua
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Mon, 2008-02-18 at 16:32 +0200, =D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=B8=
-=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=D0=BE=D1=81=D1=82=D0=B8=D0=BA wro=
-te:
-> =D0=92 =D0=9F=D0=BD=D0=B4, 18/02/2008 =D0=B2 10:59 -0300, Michael Fer=
-n=C3=A1ndez M =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Mon, 2008-02-18 at 15:36 +0200, =D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=
-=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=D0=BE=D1=81=D1=82=D0=B8=D0=BA =
-wrote:
-> > > =D0=92 =D0=9F=D0=BD=D0=B4, 18/02/2008 =D0=B2 09:25 -0300, Michael=
- Fern=C3=A1ndez M =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > > > Hi,=20
-> > > >=20
-> > > > Is there a way to filter a picket by the size of it?, i mean I =
-Would
-> > > > like to filter all the packet hat it size 2 MB.
-> > > >=20
-> > > > Is that possible?
-> > > >=20
-> > > > Thanks to any answer.
-> > >=20
-> > > iptables -m length --length 0:1024
-> > >=20
-> >=20
-> > > But let me admit that normal packet length is up to 1500 bytes, i=
-n some
-> > > cases up to 65535 bytes. Maybe you didn't correctly face the ques=
-tion?
-> > >=20
-> >=20
-> > Yea, i know... but the thing is:
-> >=20
-> > I have a mail server (Postfix), and if I restrict the size of messa=
-ges
-> > up to 2 MB.. then a user send an email (3 MB) and Postfix receive t=
-he
-> > message an then say: "You cannot send this message because of the
-> > size"... and send a notification to the user... so I want to stop t=
-he
-> > packets before them arrives to Postfix... and take off this load to=
- the
-> > mail server... =20
->=20
-> 1. You are mixing up 2 things: size of email (~tcp tream size) and
-> packet size. When you send an email of 3Mb size the process that is
-> happening is: tcp connection is being established (by sendning some t=
-cp
-> packets) and your message (protocol smtp) is being sent split by pack=
-ets
-> (commonly) 1500 bytes long.
+Hi!
 
-> 2. iptables deals on ip/tcp level and know nothing about high protoco=
-ls
-> such as smtp. Exclusion is iptables' level7 filter, which is not real=
-ly
-> good idea.
->=20
-> Finaly , the right place to solve this situation is really in your
-> smtp-server (postfix).
+i am having problems using conntrack-tools to delete entries.
 
+i am using the command "conntrack -D conntrack -s 192.168.69.24 -p tcp
+--sport 51266 --dport 22", among others, to try to get it to work.
+Though no matter how i try i always get this message : "Operation
+failed: such conntrack doesn't exist"
 
-mmm, well, thanks a lot for your help and time. its very clear..
+...of course:
 
-Michael.-
+#conntrack -L conntrack -s 192.168.69.24 -p tcp --sport 51266 --dport 22
 
+tcp      6 430195 ESTABLISHED src=192.168.69.24 dst=192.168.69.202
+sport=51266 dport=22 packets=1860 bytes=127416 src=192.168.69.202
+dst=192.168.69.24 sport=22 dport=51266 packets=1501 bytes=205145
+[ASSURED] mark=0 use=2
+tcp      6 431999 ESTABLISHED src=192.168.69.24 dst=192.168.69.202
+sport=51264 dport=22 packets=37328 bytes=2306744 src=192.168.69.202
+dst=192.168.69.24 sport=22 dport=51264 packets=42456 bytes=7307109
+[ASSURED] mark=0 use=1
 
->=20
+though it's weird that, in this case, it doesn't filter by the ports
+specified either...
 
+i'm running a debian sarge with 
+kernel 2.6.19.4-586 
+libnfnetlink-0.0.25
+libnetfilter_conntrack-0.0.82
+
+If some nice soul could help me it would me great
+
+Thanks in advance,
+
+Ricardo Teixeira.
 
