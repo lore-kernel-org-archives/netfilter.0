@@ -1,41 +1,29 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: "Eugene Polyanichko" <messiah@nline.net.ua>
 Subject: Re: conntrack "invalid parameters" error
-Date: Tue, 19 Feb 2008 14:22:03 +0100
-Message-ID: <47BAD7FB.8040709@netfilter.org>
-References: <003901c872f9$915921e0$0201a8c0@stealth>
+Date: Tue, 19 Feb 2008 15:40:03 +0200
+Message-ID: <005401c872fc$eebce120$0201a8c0@stealth>
+References: <003901c872f9$915921e0$0201a8c0@stealth> <47BAD7FB.8040709@netfilter.org>
+Reply-To: "Eugene Polyanichko" <messiah@nline.net.ua>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <003901c872f9$915921e0$0201a8c0@stealth>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Eugene Polyanichko <messiah@nline.net.ua>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-Eugene Polyanichko wrote:
-> Hello,
-> 
-> i've faced with a problem, which I don't know how to solve, so I will
-> appreciate any help. I've decided to upgrade my old red hat router from 2.4
-> kernel to latest 2.6.24.2 to make use of conntrack-tools. I've compiled
-> everything: kernel with netlink support, libnfnetlink,
-> libnetfilter_conntrack and conntrack-tools (all latest versions) and when I
-> execute 'conntrack -F' I get this:
-> 
-> # conntrack -F
-> Operation failed: invalid parameters
-> 
-> libnetfilter_conntrack get util (utils/conntrack_get) tells me this:
-> 
-> # ./conntrack_get
-> TEST: get conntrack (-1)(Invalid argument)
-> 
-> Any suggestions? Where the problem could be? Is it on kernel level or maybe
-> something wrong in libnfnetlink?
+I've compiled it (and almost all other netfilter features) inside kernel.
 
-Did you insmod nf_conntrack_netlink? nfnetlink can return EINVAL for
-those cases.
-
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>
+> Did you insmod nf_conntrack_netlink? nfnetlink can return EINVAL for
+> those cases.
+> 
+> -- 
+> "Los honestos son inadaptados sociales" -- Les Luthiers
+> -
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
