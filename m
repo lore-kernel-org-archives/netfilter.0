@@ -1,45 +1,33 @@
-From: Jon Wilson <lists@erentil.net>
-Subject: Re: Port forwarding (non-NAT)
-Date: Mon, 18 Feb 2008 17:26:29 -0700
-Message-ID: <47BA2235.4050806@erentil.net>
-References: <16791323.9561203376688071.JavaMail.SYSTEM@tater>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: problems deleting conntrack entries with conntrack-tools 0.9.5
+Date: Tue, 19 Feb 2008 01:32:06 +0100
+Message-ID: <47BA2386.6000803@netfilter.org>
+References: <1203363346.5741.11.camel@venus.iportalmais.pt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <16791323.9561203376688071.JavaMail.SYSTEM@tater>
+In-Reply-To: <1203363346.5741.11.camel@venus.iportalmais.pt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: Kristofer <kristofer@cybernetik.net>
+Content-Type: text/plain; charset="us-ascii"
+To: Ricardo Teixeira <rteixeira@iportalmais.pt>
+Cc: netfilter@vger.kernel.org
 
-Kristofer wrote:
-> I've googled and done some searches, and the only information I can find is for port forwarding with NAT. Perhaps that's what I need to accomplish what I am trying to do. If I missed an obvious link or source with this information, I apologize and please slap me. 
->
-> I currently have an SMTP server listening on port 25, and the machine has its own static IP address, no NAT is being used. 
->
-> I want to use iptables to forward inbound traffic on port 587 to port 25 of that same machine, so basically making SMTP listen on both ports. I do not wish to configure the SMTP software to listen on multiple ports, since I may want to open up several more ports in the future and that would be a lot of idle daemons listening on ports they may or may not use. 
->
-> So, my questions is: how can I have incoming traffic on port 587 go to port 25 of the localhost? 
->
-> Thanks, 
-> Kristofer 
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->   
-if iptables on the same computer as the smtp server:
+Ricardo Teixeira wrote:
+> i am having problems using conntrack-tools to delete entries.
+> 
+> i am using the command "conntrack -D conntrack -s 192.168.69.24 -p tcp
+> --sport 51266 --dport 22", among others, to try to get it to work.
+> Though no matter how i try i always get this message : "Operation
+> failed: such conntrack doesn't exist"
 
-iptables -t nat -A PREROUTING -p tcp --dport 587 -m state --state NEW -d 
-$IP_OF_MAIL_SERVER -j REDIRECT --to-ports 25
+You seem to have forgotten the destination address (-d) which is
+required. However, you have found a bug in the tool since it should
+complain about this wrong use.
 
-else:
+I'm also planning to improve the tool by reducing the number of
+parameters required to destroy entries, I have a patch here but it will
+take me some time until I finish it.
 
-iptables -t nat -A PREROUTING -p tcp --dport 587 -m state --state NEW -d 
-$IP_OF_MAIL_SERVER -j DNAT --to $IP_OF_MAIL_SERVER:25
-
-(assuming you allow established, related through)
 -- 
-Jon Wilson
+"Los honestos son inadaptados sociales" -- Les Luthiers
