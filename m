@@ -1,37 +1,32 @@
-From: "Oscar N" <oscar@linnea.net>
+From: Benedikt Gollatz <ben@differentialschokolade.org>
 Subject: Re: NAT TABLE Size
-Date: Thu, 21 Feb 2008 17:41:08 +0100 (CET)
-Message-ID: <54368.85.119.130.97.1203612068.squirrel@mh.linnea.com>
-References: <14426.217.78.42.11.1203601437.squirrel@webmail.sys.kth.se>
-Reply-To: oscar@linnea.net
+Date: Thu, 21 Feb 2008 17:58:37 +0100
+Message-ID: <200802211758.38710.ben@differentialschokolade.org>
+References: <14426.217.78.42.11.1203601437.squirrel@webmail.sys.kth.se> <54368.85.119.130.97.1203612068.squirrel@mh.linnea.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <14426.217.78.42.11.1203601437.squirrel@webmail.sys.kth.se>
+In-Reply-To: <54368.85.119.130.97.1203612068.squirrel@mh.linnea.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Memon,Arshad Mehrab" <arshadm@kth.se>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Maybe this is what you're looking for?
-/proc/sys/net/ipv4/ip_conntrack_max
+On Thursday 21 February 2008 17:41:08 Oscar N wrote:
+> Maybe this is what you're looking for?
+> /proc/sys/net/ipv4/ip_conntrack_max
 
-/Mvh Oscar
+For the sake of completeness, for my kernel compiled with "Layer 3 independent 
+connection tracking" (as it is the default since Linux 2.6.20 IIRC) the 
+equivalent is
+    /proc/sys/net/netfilter/nf_conntrack_max
+for the maximum number of entries and
+    /proc/sys/net/netfilter/nf_conntrack_{tcp,udp,icmp,icmpv6,frag6}_timeout*
+for the various timeouts.
 
->
-> Hi,
->    How can i increase the NAT table size and its timeout value.I am facing
-> this problem in the Linux based router when playing games or using
-> torrent.
->  /Blessed
->
->
->
-> -
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+I doubt that an embedded device runs such a new kernel, but maybe the kernel 
+still is compiled with the new connection tracking framework to support 
+stateful IPv6 filtering.
 
-
+Benedikt
