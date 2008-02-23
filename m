@@ -1,41 +1,35 @@
-From: Casey Scott <casey@phantombsd.org>
-Subject: Re: verifying set-mark
-Date: Sat, 23 Feb 2008 10:14:21 -0800 (PST)
-Message-ID: <25498998.61203790461346.JavaMail.root@tomcat.phantombsd.org>
-References: <1203720563.27608.55.camel@grateful.d.umn.edu>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: verifying set-mark
+Date: Sat, 23 Feb 2008 20:23:59 +0100
+Message-ID: <00cb01c87651$a432f290$ec98d7b0$@info>
+References: <1203720563.27608.55.camel@grateful.d.umn.edu> <25498998.61203790461346.JavaMail.root@tomcat.phantombsd.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1203720563.27608.55.camel@grateful.d.umn.edu>
+In-Reply-To: <25498998.61203790461346.JavaMail.root@tomcat.phantombsd.org>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Cc: Rob Sterenborg <rob@sterenborg.info>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Is there a way with tcpdump to verify that the marks are actually
-getting set though?
+> Is there a way with tcpdump to verify that the marks are actually
+> getting set though?
 
-Casey
+However, I was under the impression that tc is able to use the flags set by iptables.
 
------ "Matt Zagrabelny" <mzagrabe@d.umn.edu> wrote:
+Man tc:
 
-> On Fri, 2008-02-22 at 14:40 -0800, Casey Scott wrote:
-> > Ultimately, I am trying to mark packets for a tc filter. Should I
-> > not be using the iptables set-mark to do that?
-> 
-> I think set-mark is fine for that.
-> 
-> I suggest marking some packets in the prerouting chain and then
-> logging
-> them in input chain. Something like the following:
-> 
-> $iptables --table mangle --append PREROUTING
-> --in-interface $in_interface
-> --destination $host --jump MARK --set-mark $mark_integer
-> 
-> $iptables --table filter --append INPUT
-> --in-interface $in_interface
-> --match mark --mark $mark_integer --jump LOG
-> 
-> > 
+tc filters
+If  tc  filters are attached to a class, they are consulted first for relevant instructions. Filters can match on all fields of a packet header, as well as on the firewall mark applied by ipchains or iptables.
+See tc-filters(8).
+
+Now, I don't seem to have a man page for tc-filters, I can't find it on the internet, nor can I find it in the source (I looked in iproute2-2.6.19-061214), so I'm afraid nobody's got it which makes this a dead end.
+
+There surely must be examples around that show how to work with tc and iptables' mark. Perhaps this will get you going: http://www.szabilinux.hu/bandwidth/index.html
+
+
+Grts,
+Rob
+
+
