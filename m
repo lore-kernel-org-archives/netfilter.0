@@ -1,7 +1,8 @@
 From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: NETFILTER_XT_MATCH_TIME never matches
-Date: Mon, 25 Feb 2008 12:25:30 -0500
-Message-ID: <srt5s39vrkkafaaplm2thi2bljal801pdc@4ax.com>
+Subject: Re: NETFILTER_XT_MATCH_TIME never matches
+Date: Wed, 27 Feb 2008 04:31:56 -0500
+Message-ID: <bdbas35og2s9ed685gembios1quu474u23@4ax.com>
+References: <srt5s39vrkkafaaplm2thi2bljal801pdc@4ax.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
@@ -10,17 +11,11 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 
-I've been successfully using IP_NF_MATCH_TIME via patch-o-matic for quite a
-while, up through iptables 1.3.8.  With iptables 1.4.0 and kernel 2.6.24, I saw
-that IP_NF_MATCH_TIME had been replaced by NETFILTER_XT_MATCH_TIME native in the
-kernel, so I switched to that.
+> Unfortunately, XT_MATCH_TIME seems never to match, with the effect that all of
+> my traffic is blocked.
 
-Unfortunately, XT_MATCH_TIME seems never to match, with the effect that all of
-my traffic is blocked.  Is this a known bug?  Anyone else encountered it?  I
-can't find a mention of it on the list.
-
-Thanks,
-Andrew.
+Not sure what was going on, but for the archives, I cleared out and rebuilt the
+firewall and now the time matches are working again.
 
 -
 To unsubscribe from this list: send the line "unsubscribe netfilter" in
