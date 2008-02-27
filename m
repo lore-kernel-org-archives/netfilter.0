@@ -1,23 +1,61 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: Re: NETFILTER_XT_MATCH_TIME never matches
-Date: Wed, 27 Feb 2008 04:31:56 -0500
-Message-ID: <bdbas35og2s9ed685gembios1quu474u23@4ax.com>
-References: <srt5s39vrkkafaaplm2thi2bljal801pdc@4ax.com>
+From: marcoz123@comcast.net
+Subject: detecting rapid outbound open/close connections
+Date: Wed, 27 Feb 2008 16:45:18 +0000
+Message-ID: <022720081645.22415.47C5939E000E8E590000578F2213539653CCCDCE96010C9D0E03@comcast.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: TEXT/PLAIN; charset="windows-1252"
+To: netfilter@vger.kernel.org
 
-> Unfortunately, XT_MATCH_TIME seems never to match, with the effect that all of
-> my traffic is blocked.
+Thanks for your patience. Ive already posted this
+to the snort list serv and no response.
 
-Not sure what was going on, but for the archives, I cleared out and rebuilt the
-firewall and now the time matches are working again.
+I have an issue with some LAN devices, (users), who feel the need to=20
+monitor the entire galaxy and draw pretty maps with connecting lines,=20
+(war games). Originally this was done with constant ICMP polling so=20
+I filtered that at the border. Now the technique being used is to open =
+(syn)=20
+an outbound connection to a web server, port 80, then close the connect=
+ion. As far as I can=20
+tell, no data is exchanged, zero length packets?.=20
 
--
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Personally, I consider this sort of inbound and outbound traffic (ICMP =
+polling, NMAP=20
+scans etc), as reconnaissance and therefore a threat. I=92m guessing he=
+re that=20
+others might consider this a threat as well and it=92s somewhat my resp=
+onsibility=20
+to not allow it out on the Internet if it=92s not necessary to the miss=
+ion of this place.=20
+The sequence goes as follows:=20
+Local SYN sent out=20
+SYN, ACK received=20
+ACK sent=20
+=46IN,ACK sent=20
+=46IN, ACK received=20
+ACK sent.=20
+=46rom open to close, connection the time is something around 100 ms.=20
+as measured with wireshark.=20
+
+Question is, can I detect these sort of =93fast=94 open/close connectio=
+n that=20
+seem not to exchange any data other than open and tear down connection,=
+=20
+with an iptables/ebtables rule or connection tracking or somthing?=20
+
+Then perhaps fire off an iptables command to block the connection with =
+snortsam=20
+or something like that?=20
+
+Or:=20
+
+Can this be done with tcpdump and some scripting or something?=20
+
+Any pointers and or advice would be greatly appreciated.=20
+
+Thanks,=20
+
+--marcoz=20
