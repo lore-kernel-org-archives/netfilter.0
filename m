@@ -1,61 +1,68 @@
-From: marcoz123@comcast.net
-Subject: detecting rapid outbound open/close connections
-Date: Wed, 27 Feb 2008 16:45:18 +0000
-Message-ID: <022720081645.22415.47C5939E000E8E590000578F2213539653CCCDCE96010C9D0E03@comcast.net>
+From: Harald Welte <laforge@netfilter.org>
+Subject: Re: [RFC] Allowing non-root to get iptables info?
+Date: Thu, 28 Feb 2008 10:18:43 +0100
+Message-ID: <20080228091843.GJ3877@prithivi.gnumonks.org>
+References: <20080225094951.5bd89c9c@extreme>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20080225094951.5bd89c9c@extreme>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="windows-1252"
-To: netfilter@vger.kernel.org
+To: Stephen Hemminger <shemminger@vyatta.com>
+Cc: Rusty Russell <rusty@rustcorp.com.au>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter@vger.kernel.org
 
-Thanks for your patience. Ive already posted this
-to the snort list serv and no response.
 
-I have an issue with some LAN devices, (users), who feel the need to=20
-monitor the entire galaxy and draw pretty maps with connecting lines,=20
-(war games). Originally this was done with constant ICMP polling so=20
-I filtered that at the border. Now the technique being used is to open =
-(syn)=20
-an outbound connection to a web server, port 80, then close the connect=
-ion. As far as I can=20
-tell, no data is exchanged, zero length packets?.=20
+--eDB11BtaWSyaBkpc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Personally, I consider this sort of inbound and outbound traffic (ICMP =
-polling, NMAP=20
-scans etc), as reconnaissance and therefore a threat. I=92m guessing he=
-re that=20
-others might consider this a threat as well and it=92s somewhat my resp=
-onsibility=20
-to not allow it out on the Internet if it=92s not necessary to the miss=
-ion of this place.=20
-The sequence goes as follows:=20
-Local SYN sent out=20
-SYN, ACK received=20
-ACK sent=20
-=46IN,ACK sent=20
-=46IN, ACK received=20
-ACK sent.=20
-=46rom open to close, connection the time is something around 100 ms.=20
-as measured with wireshark.=20
+On Mon, Feb 25, 2008 at 09:49:51AM -0800, Stephen Hemminger wrote:
+> Is there any strong reason why checking the status of iptables is restric=
+ted?
 
-Question is, can I detect these sort of =93fast=94 open/close connectio=
-n that=20
-seem not to exchange any data other than open and tear down connection,=
-=20
-with an iptables/ebtables rule or connection tracking or somthing?=20
+It was ages ago that this question last came up.  I believe it was the
+general concensus at the time that allowing anyone to read the packet
+filter policy can be considered an information leak.
 
-Then perhaps fire off an iptables command to block the connection with =
-snortsam=20
-or something like that?=20
+It's not only the policy information, but also quite extensive (and
+depending on the ruleset, detailed) statistics about the amount of
+packets / bytes from/to a particular machine/service/... - information
+that can be much more valuable than the generally readable per-interface
+packet/byte counters.
 
-Or:=20
+Now yes, it may be arguable whether you should have regular user
+accounts on your firewall at all.  However, especially in the case of
+co-located servers with no dedicated firewall in front (i.e. just
+local INPUT/OUTPUT rules), you don't have much of a choice but to have
+local users.  Should they be able to obtain this detailed information?
 
-Can this be done with tcpdump and some scripting or something?=20
+I think better not.  There's no real reason for them to know this.
 
-Any pointers and or advice would be greatly appreciated.=20
+--=20
+- Harald Welte <laforge@netfilter.org>                 http://netfilter.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+  "Fragmentation is like classful addressing -- an interesting early
+   architectural error that shows how much experimentation was going
+   on while IP was being designed."                    -- Paul Vixie
 
-Thanks,=20
+--eDB11BtaWSyaBkpc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
---marcoz=20
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD4DBQFHxnxzXaXGVTD0i/8RAlcFAJ9LVQzvkF6UJBWHm55N6RM0OeFPagCY9lRN
+L7pHeXSDStIf3fOztOeN9A==
+=TU8q
+-----END PGP SIGNATURE-----
+
+--eDB11BtaWSyaBkpc--
