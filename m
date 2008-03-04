@@ -1,87 +1,57 @@
-From: "Paul Menage" <menage@google.com>
-Subject: [RFC] Using iptables to control bind/connect/accept/sendto permissions
-Date: Mon, 3 Mar 2008 22:04:43 -0800
-Message-ID: <6599ad830803032204j3dc191ech8dfb64d9366f5ffe@mail.gmail.com>
+From: "Andrea Bencini" <andrea.bencini@tin.it>
+Subject: bridge firewall and iptables.
+Date: Tue, 4 Mar 2008 12:38:26 +0100
+Message-ID: <004501c87dec$46690260$0200640a@wtlc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=google.com; s=beta;
-	t=1204610686; bh=sytYmyMyYkXeiqelci94TAPES0U=;
-	h=DomainKey-Signature:Message-ID:Date:From:To:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Content-Disposition; b=M4cS
-	vhlnpwBSJ1MxM2JyGpBnRNZJiUnZlL+nEpfe0W+64GwRLWpCuBqTx7FVi1Lg7YgIYNW
-	9p8Mx2v4yC++Q4Q==
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@vger.kernel.org
 
-As part of the cgroups/containers work, we'd like to be able to
-control what kinds of socket connections processes can get their hands
-on, on a per-group basis.
+I have a bridge firewall with dhcp server.
 
-So for example, we might want to say that processes in a particular
-group can listen on port X, and can connect to any hosts in a
-specified netmask in a given range of ports. It woul also be nice to
-be able to get notifications of what sockets different groups had open
-(without having to regularly trawl through large /proc/*/fd
-directories for large numbers of processes.
+I want that only internal-network clients (eth1-bridge side) can use 
+dhcp-server (client asks to dhcp-server IP address etc...) and
+I want to stop every DHCPDISCOVER-DHCPOFFER-DHCPREQUEST-DHCPACK etc.. 
+from/to local-network clients (eth0-bridge side).
 
-Now it would be possible to come up with our own API and mechanism for
-specifying, enforcing, and reporting all these details, but creating
-new complex APIs is generally a bad idea. Effectively what we want to
-do can be expressed as a subset of the API and functionality of
-iptables - when a user tries to perform a control-path operation such
-as connect() or accept(), we want to check their request against a
-series of rules, and be able to permit, deny, report, etc, their
-request. Many of these rules will involve matches against things like
-protocols, addresses, ports, etc. A NF_ACCEPT verdict would represent
-granting permission; a NF_DROP verdict would represent a permission
-failure.
+How can I put in practise some rules in my bridge firewall (iptables) to do 
+this?
 
-Exactly how to fit this into the iptables architecture, I'm not quite
-sure. At first I thought about adding a new netfilter hook,
-NF_CONTROL, but changing the number of hooks seemed to cause nasty
-compatibility issues with userspace and it would be nice to avoid
-that. Eventually I got a partial prototype working for controlling
-connect(), using the local output hook, but having the netfilter
-callback for my new table do nothing. The sequence looked something
-like:
+I installed FC8;
+iptables-1.3.8-6.fc8
 
-- user attempts to do an operation on a socket
-- protocol-specfic code (e.g. in tcp_v4_connect()) called a new
-function ipt_control_check()
-- ipt_control_check synthesized a fake skb with the appropriate
-source/dest/etc fields and passes it to ipt_do_table()
-- verdict is used to permit or deny the user's operation.
+My global network:10.100.0.0/24
 
-The same thing could be done for different protocols, and for accept(), etc.
+Internal-network address range (eth1-bridge side) :from 10.100.0.65 to 
+10.100.0.78 (I think I can write 10.100.0.64/28).
 
-Hooking into the local output hook doesn't feel quite right though - I
-think it would make more sense to tweak ipt_do_table() so that it
-could be used out of the context of any netfilter hook.
+dhcp configuration: range dynamic-bootp 10.100.0.65 10.100.0.78
 
-Since this would be running its checks in the context of a process,
-some of the existing expensive or deprecated matches such as the
-complex "owner" matches would become much more feasible in , since
-they'd be able to just check the properties of "current". Also, we'd
-probably add new matches such as "cgroup" which would match based on a
-cgroup-provided ID.
+ifcfg-eth0 configuration:
+DEVICE=eth0
+BOOTPROTO=static
+HWADDR=00:50:8B:67:82:6F
+ONBOOT=yes
 
-Now, we could approximate this using regular packet filtering, but
-that has some drawbacks such as:
+ifcfg-eth1 configuration:
+DEVICE=eth1
+BOOTPROTO=static
+HWADDR=00:50:8B:67:68:A4
+ONBOOT=yes
 
-- additional per-packet processing (some of the match expressions
-could get rather complex if you have tens of jobs on a machine each
-with their own permitted sets of remote destinations).
+Bridge configuration:
+brctl addbr br0
+brctl addif eth0
+brctl addif eth1
+ifdown br0
+ifconfig br0 10.100.0.55 netmask 255.255.255.0
+ifup br0
 
-- doesn't solve the problem of people listening on ports that are
-supposed to be reserved (by the job control system) for some other job
+Can you help me?
 
-- doesn't give such obvious feedback to the user
+Thanks
+Andrea 
 
-So what do people think? Is this a crazy idea that should be dropped
-ASAP? Or something that you'd be willing to consider patches for?
-
-Paul
