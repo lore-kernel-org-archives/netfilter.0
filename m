@@ -1,35 +1,34 @@
-From: "Eric Estes" <Eric_Estes@aspensquare.com>
-Subject: RE: bridge firewall and iptables.
-Date: Tue, 4 Mar 2008 10:36:23 -0500
-Message-ID: <665B03CFBE2C1346A66B0CB9A9A0EE3801C7E945@ASM220.aspen.com>
-References: <002101c87e0b$89e4ea80$0200640a@wtlc>
+From: "Andrea Bencini" <andrea.bencini@tin.it>
+Subject: ebtables - invalid table name
+Date: Tue, 4 Mar 2008 17:52:21 +0100
+Message-ID: <003201c87e18$20f6f6f0$0200640a@wtlc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <002101c87e0b$89e4ea80$0200640a@wtlc>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@vger.kernel.org
-Cc: Andrea Bencini <andrea.bencini@tin.it>
 
-> -----Original Message-----
-> From: Andrea Bencini [mailto:andrea.bencini@tin.it]
-> Sent: Tuesday, March 04, 2008 10:22 AM
-> To: netfilter@vger.kernel.org
-> Cc: Eric Estes
-> Subject: Re: bridge firewall and iptables.
-> 
-> > I just created a script that I run at startup.
-> >
-> > http://forum.openwrt.org/viewtopic.php?pid=31952
-> 
-> Sorry, but I don't found your script at
-> http://forum.openwrt.org/viewtopic.php?pid=31952.
-> Andrea
-> 
-> 
+I installed ebtables
+I created sample rules in the file /etc/sysconfig/ebtables.filter, like 
+those:
 
-I don't know if I put it in the right spot but I just pasted those line
-in my rc.local file.
+#! /bin/sh
+EBTABLES=/sbin/ebtables
+
+$EBTABLES -t filter -P INPUT DROP
+$EBTABLES -t filter -P FORWARD ACCEPT
+$EBTABLES -t filter -P OUTPUT DROP
+
+When I start the service:
+service ebtables start
+I receive this messages:
+File /etc/sysconfig/ebtables.filter contains invalid table name [FAILLED]
+
+What does it mean? What do I have to add in the file ebtables.filter?
+
+Can you help me?
+Thanks
+Andrea
+
