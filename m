@@ -1,49 +1,32 @@
-From: Rich <rhdyes@gmail.com>
-Subject: Trying to connect 172.31.0.0/21 on 2 different networks through iptables
-Date: Tue, 4 Mar 2008 22:17:22 -0500
-Message-ID: <8fb205ea0803041917o50cf3cbl814eb5f011fc9c72@mail.gmail.com>
+From: Oleg Petrov <dsacode@yandex.ru>
+Subject: Conntrack in-kernel question
+Date: Wed, 05 Mar 2008 08:31:16 +0300
+Message-ID: <1129421204695076@webmail25.yandex.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=v0aHUK9vlDPmA44aHwcKTdKNMROE8xrQXQb8W8hon8I=;
-        b=WJU79K6LLuorTOatCqIw6gwp1FXDbeJbAmpgZVslODU39p2PPCA32Da9IIOMSeWdBYW8qVKzku4T0icfhBziLNH808xkSshFpwKDgPBb5oywUE974uuP2048nmJmisp5KQONnv2PMPIff/dKQaBMJr3s6Jwc1k12TTxov+v3spo=
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-I have a challenge I am trying to solve. I work in a county and we
-have been passing ip traffic over an iptables gateway for a few years.
-Here is the setup
+Hello, Netfilter developers!
 
-MY side gateway county side
-172.31.0.0/21 eth0 172.31.5.240 main ip network is 10.0.0.0/128 with a
-192.168.14.1 interface to my eth1
-eth1 192.168.14.12
+I'm working on kernel module used for network accounting and it's based
+on amazing netfilter connection tracking code. But I lack some information
+in nf_conn structure. Can you please advice what's preferable way of
+getting such information:
 
-This has been working great with no problems. I have been linking to 2
-servers on their side. A Novell and a Lotus Notes Server and they have
-been link to our Novell and Lotus notes servers.
+1) In/out interface indices. More accurately, I'm interested in SNMP
+interface indices to export accounting information but I hadn't seen
+any interface stuff in conntrack code.
 
-Now here is the dilemma.
+2) TCP connection flags and IP ToS (Type of Service).
 
-The county has decided to consolidate our IT operations. We will be
-consolidating our Notes and Novell servers and consolidating our
-workstations onto their physical network. We decided in our planning
-that we would keep our 172.31.0.0/21 ip scheme. So we have brought in
-new switches and router running parallel to the old ones. They come
-into our buildings and link back to the county network. The new
-infrastructure in no way physically touches our existing network. All
-the traffic goes to the county network. There are vlans setup with no
-problem.
-This is the issue.
-How can I get the "new" 172.31.0.0 network to talk to the old
-172.31.0.0 network till the conversion is done and the old 172.31.0.0
-network is decommissioned. I tried to use the same iptables gateway to
-go from the new network to the old to no avail. Can this be done? Can
-I do it by building a seperate iptables router to handle the traffic
-coming from the new network to the old?
+If this is not implemented in conntrack, please describe me preferable
+way for adding support of this into netfilter - and I'll do so.
+
+Thank you in advance!
+
+P.S.: I'm not subscribed to the list so please CC me your replies.
