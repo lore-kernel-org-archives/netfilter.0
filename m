@@ -1,64 +1,49 @@
-From: martin f krafft <madduck@madduck.net>
-Subject: safely apply new rulesets: iptables-apply
-Date: Wed, 5 Mar 2008 00:16:06 +0100
-Message-ID: <20080304231606.GA16376@piper.oerlikon.madduck.net>
+From: Rich <rhdyes@gmail.com>
+Subject: Trying to connect 172.31.0.0/21 on 2 different networks through iptables
+Date: Tue, 4 Mar 2008 22:17:22 -0500
+Message-ID: <8fb205ea0803041917o50cf3cbl814eb5f011fc9c72@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=v0aHUK9vlDPmA44aHwcKTdKNMROE8xrQXQb8W8hon8I=;
+        b=WJU79K6LLuorTOatCqIw6gwp1FXDbeJbAmpgZVslODU39p2PPCA32Da9IIOMSeWdBYW8qVKzku4T0icfhBziLNH808xkSshFpwKDgPBb5oywUE974uuP2048nmJmisp5KQONnv2PMPIff/dKQaBMJr3s6Jwc1k12TTxov+v3spo=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter discussion list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+I have a challenge I am trying to solve. I work in a county and we
+have been passing ip traffic over an iptables gateway for a few years.
+Here is the setup
 
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+MY side gateway county side
+172.31.0.0/21 eth0 172.31.5.240 main ip network is 10.0.0.0/128 with a
+192.168.14.1 interface to my eth1
+eth1 192.168.14.12
 
-Hi folks,
+This has been working great with no problems. I have been linking to 2
+servers on their side. A Novell and a Lotus Notes Server and they have
+been link to our Novell and Lotus notes servers.
 
-You probably now the feeling, that cold and hot rush of adrenaline
-after you've typed "iptables-restore < new-ruleset" and didn't get to
-see the shell prompt again: you've just locked yourself out of
-a machine that=E2=80=99s potentially far away, and you feel like vandalism,
-or screaming on the top of your lungs, or whatever.
+Now here is the dilemma.
 
-I've had that feelings once too many and ended up writing
-iptables-apply[0] with a docbook manpage[1].
-
-0. http://svn.madduck.net/pub/sbin/base/iptables-apply
-1. http://svn.madduck.net/pub/sbin/base/iptables-apply.dbk
-
-iptables-apply is a simple shell script which applies the new
-ruleset and then prompts whether you like it. If you've locked
-yourself out, you cannot answer the prompt, and if you don't, the
-script rolls back the ruleset. Nice and simple.
-
-Could this script possibly make it into the iptables distribution
-tarball? I am flexible about the licence and all...
-
-Thanks,
-
---=20
-martin | http://madduck.net/ | http://two.sentenc.es/
-=20
-perl -e 'print "The earth is a disk!\n" if ( "earth" =3D=3D "flat" );'
-=20
-spamtraps: madduck.bogus@madduck.net
-
---/04w6evG8XlLl3ft
-Content-Type: application/pgp-signature; name="digital_signature_gpg.asc"
-Content-Description: Digital signature (see http://martin-krafft.net/gpg/)
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFHzdg2IgvIgzMMSnURArBNAJ4kuvrj5g571LF72yUI3nkykFTC6ACeKbv4
-TvLtGWKgQoSrJbkHG48Nfdo=
-=/eoZ
------END PGP SIGNATURE-----
-
---/04w6evG8XlLl3ft--
+The county has decided to consolidate our IT operations. We will be
+consolidating our Notes and Novell servers and consolidating our
+workstations onto their physical network. We decided in our planning
+that we would keep our 172.31.0.0/21 ip scheme. So we have brought in
+new switches and router running parallel to the old ones. They come
+into our buildings and link back to the county network. The new
+infrastructure in no way physically touches our existing network. All
+the traffic goes to the county network. There are vlans setup with no
+problem.
+This is the issue.
+How can I get the "new" 172.31.0.0 network to talk to the old
+172.31.0.0 network till the conversion is done and the old 172.31.0.0
+network is decommissioned. I tried to use the same iptables gateway to
+go from the new network to the old to no avail. Can this be done? Can
+I do it by building a seperate iptables router to handle the traffic
+coming from the new network to the old?
