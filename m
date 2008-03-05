@@ -1,57 +1,58 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: Conntrack in-kernel question
-Date: Wed, 5 Mar 2008 14:51:01 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0803051446170.7660@fbirervta.pbzchgretzou.qr>
-References: <1129421204695076@webmail25.yandex.ru>
+From: "Eric Estes" <Eric_Estes@aspensquare.com>
+Subject: RE: [l7-filter-users] Problem on Blocking Gnutella
+Date: Wed, 5 Mar 2008 10:13:17 -0500
+Message-ID: <665B03CFBE2C1346A66B0CB9A9A0EE3801C7E9A5@ASM220.aspen.com>
+References: <894043.42372.qm@web56606.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1129421204695076@webmail25.yandex.ru>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-class: urn:content-classes:message
+In-Reply-To: <894043.42372.qm@web56606.mail.re3.yahoo.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: Oleg Petrov <dsacode@yandex.ru>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: Tolga Onbay <tolgaonbay@yahoo.com>
+
+> -----Original Message-----
+> From: l7-filter-users-bounces@lists.sourceforge.net [mailto:l7-filter-
+> users-bounces@lists.sourceforge.net] On Behalf Of Tolga Onbay
+> Sent: Wednesday, March 05, 2008 9:46 AM
+> To: l7-filter-users@lists.sourceforge.net
+> Subject: Re: [l7-filter-users] Problem on Blocking Gnutella
+> 
+> Any idea?
+> 
+> ----- Original Message ----
+> From: Tolga Onbay <tolgaonbay@yahoo.com>
+> To: l7-filter-users@lists.sourceforge.net
+> Sent: Monday, February 11, 2008 2:45:43 PM
+> Subject: Problem on Blocking Gnutella
+> 
+> Hi,
+> 
+> I have been using l7-filter for 2 years. I blocked all P2P, IM and
+audio
+> traffic. I used ares, gnutella, edonkey, imesh to block the P2P
+traffic
+> and all had been working well. But today i realized that users on the
+> network can use limewire without problem. I changed the rule to LOG
+the
+> traffic using gnutella protocol. And it logged the traffic. But still
+all
+> users can connect/download and upload files.
+> 
+> Did you notice this problem? Is there any way to block the gnutella
+> traffic?
+> 
+> Thanks
 
 
-On Mar 5 2008 08:31, Oleg Petrov wrote:
->
->I'm working on kernel module used for network accounting and it's base=
-d
->on amazing netfilter connection tracking code. But I lack some informa=
-tion
->in nf_conn structure. Can you please advice what's preferable way of
->getting such information:
->
->1) In/out interface indices.
->More accurately, I'm interested in SNMP
->interface indices to export accounting information but I hadn't seen
->any interface stuff in conntrack code.
+Try filtering 'unknown'. That usually catches a ton of P2P for me. Also,
+you might want to check out these two links.
 
-Conntrack does not deal with interfaces=C2=A0=E2=80=94 that is a routin=
-g thing.
-It would be perfectly valid to send an SNMP query out on eth0,
-and receive the reply on eth1, while the re-reply goes out on eth2...
+http://l7-filter.sourceforge.net/protocols
 
-Hence conntrack only deals with <source address, destination address,
-other bits like port numbers or for example ESP SPI indexes> tuples.
-There is a dirty hack, which is skb->iif, but I would not rely on it.
+http://www.mastershaper.org
 
->2) TCP connection flags and IP ToS (Type of Service).
->
->If this is not implemented in conntrack, please describe me preferable
->way for adding support of this into netfilter - and I'll do so.
 
-TOS is not part of the unique tuple to identify a connection,
-hence I do not think it should be used as such (though you are free
-to do so, but I tell you, the result may not work).
-
-Or you can=C2=A0=E2=80=94 but again it only makes sense for learning nf=
-ct=C2=A0=E2=80=94
-to force the same TOS bit on any connection (and if that is not
-the case, drop it.)
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
