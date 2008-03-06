@@ -1,51 +1,38 @@
-From: "Daniel" <daniel@poligraph.com.br>
-Subject: wan links routing failover sheme
-Date: Wed, 5 Mar 2008 23:37:04 -0300
-Message-ID: <003501c87f32$f6d5d3c0$56f5edc8@softplan.com.br>
+From: "Ling Deng" <lingwsm@gmail.com>
+Subject: Prioritize packets at user space
+Date: Thu, 6 Mar 2008 18:00:35 +1300
+Message-ID: <7b4d898c0803052100x75f7d47fv53059b19ded04e48@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=AuFuTPHQXWexe1NtlA3+8Z0ngfsMIJGB/y353VBz8mk=;
+        b=bB313YKhirViQmkeW+73/oBJsVsPIOozfUtm78oqtI6BNH2+h8RcFr+YOWSHGEBmCBcPXMQSbXiHIlPRQONaxb0ClbGo//bIBlL9fOK3/eP2GdWjJ8IGvjx2/gEyHgn/piDrl6PQOSTAGAvq2eBZ8uG4P4BsUl1KAFXEV8lP1p0=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: iptables-netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-I need a routing failover scheme to address a vpn site-to-site scenario 
-where branches offices have 2 wan links and a linux box with 2 ethernet 
-ifaces, each one reaching one wan router. Wan links should working in 
-active/passive failover mode. Considering start vpn tunnels from branches to 
-headquarter, the problem is:
-At each branch, I need to choose one of the 2 wan routers as the linux box 
-default gateway. For failover work, I need some mechanism to monitor the 
-active/master link, like icmp/ping, and change the gateway to the 
-passive/backup link when the active/master link fails, and change back when 
-the active/master link becomes up again. If I address this with a routing 
-scheme, the vpn on demand tunnel from branch to headquarter work transparent 
-above it.
+Hi there,
+    I am doing a project on VoIP security. I need to implement a
+Application layer gateway on top of the linux firewall. But I have no
+clue how to do it, I hope someone can help me with it.
 
-On headquarter and on each branch I will use a linux box. I thinking in use 
-openvpn as vpn server and client (I have low know hall of openvpn), but 
-other vpn solutions, like ipsec, can be suggested! On branches, a fast and 
-cheap DSL link (should be the active/master link) and a realiable and slower 
-128kbps PPP link (should be the passive/backup link). Tunnels can be started 
-from any side, from headquarter or from branches, but I will consider start 
-tunnels from branches to headquarter for this scenario, I can change this 
-view, no problem.
+    The current firewall uses IP_QUEUE to pick up a packet,
+authenticate it, then do something with the packet, and forward the
+packet to the server. However, IP_QUEUE only has a single FIFO queue
+(is this correct?), if the system is under a flooding attack, this
+firewall can't help to reduce the effect of the attack.
 
-Should iproute2 address such solution?
-I ask about it in openvpn-users list, one people answer that he use linux 
-eql driver driver to form a logical connection and a little bit of scripting 
-to continuously monitor the tunnels and add or remove them from the bundle 
-if needed.
+    I want to add a priority on the firewall. To prioritize the
+packets, deep packet inspection is needed, then packets need to be put
+in different queues depending on the caller and callee numbers.
 
-As a comparision, as logn I know, Cisco solution use IPSLA as the monitoring 
-scheme and on the start vpn tunnel box a list of 2 vpn servers to reach (one 
-master and one backup), to address such failover environment.
+    Could anyone please give me some suggestion on how to make this happen?
 
-I will appreciate ny sugestions!
+    Thank you very much,
 
-
-Regards,
-Daniel.
-
-
+        Ling
