@@ -1,38 +1,61 @@
-From: "Ling Deng" <lingwsm@gmail.com>
-Subject: Prioritize packets at user space
-Date: Thu, 6 Mar 2008 18:00:35 +1300
-Message-ID: <7b4d898c0803052100x75f7d47fv53059b19ded04e48@mail.gmail.com>
+From: =?iso-8859-1?q?Alberto=20D=EDez?= <albertowhiterabbit@yahoo.es>
+Subject: RV: optimizations for large rule sets
+Date: Thu, 6 Mar 2008 17:06:52 +0100 (CET)
+Message-ID: <384944.49147.qm@web26503.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=AuFuTPHQXWexe1NtlA3+8Z0ngfsMIJGB/y353VBz8mk=;
-        b=bB313YKhirViQmkeW+73/oBJsVsPIOozfUtm78oqtI6BNH2+h8RcFr+YOWSHGEBmCBcPXMQSbXiHIlPRQONaxb0ClbGo//bIBlL9fOK3/eP2GdWjJ8IGvjx2/gEyHgn/piDrl6PQOSTAGAvq2eBZ8uG4P4BsUl1KAFXEV8lP1p0=
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Hi there,
-    I am doing a project on VoIP security. I need to implement a
-Application layer gateway on top of the linux firewall. But I have no
-clue how to do it, I hope someone can help me with it.
+hi!
+=20
+ I am trying to make use of a large number of rules
+ with iptables.=20
+=20
+ I have seen there are some optimizations referenced
+ like nf-HiPAC (www.hipac.org) , iptables with
+ classifiers (www.geocities.com/hamidreza_jm) which
+ appearently can deal with thousands of rules (thats
+ what i need).
+=20
+ I want per flow (orig addr,dst addr, orig port, dst
+ port, proto) filtering thats why i don=B4t think i can
+ use ipsets (or can i?)
+ I also would like to have the nice iptables features
+ like  mangle table and counters ..
+=20
+ I dont really understand what the conntrack does, or
+ if it can somehow helpme (where is the nice
+ documentation about this??)
+=20
+ What is the netfilter preferred way to have a large
+ set of rules and still do packet filtering?  are
+ HiPAC, iptables with classifiers or any other
+ solution
+ actual?
+=20
+ is there a howto,manual,some kind of
+ documentation, all that I find about this are quite
+ old (3 years?) material in the mailing list ... Is
+ this problem already solved? what was the solution
+ taken?
+=20
+=20
+ well if you could answer any of this questions i
+ would
+ be very thankful
+=20
+ Alberto Diez
+=20
+=20
+     =20
 
-    The current firewall uses IP_QUEUE to pick up a packet,
-authenticate it, then do something with the packet, and forward the
-packet to the server. However, IP_QUEUE only has a single FIFO queue
-(is this correct?), if the system is under a flooding attack, this
-firewall can't help to reduce the effect of the attack.
 
-    I want to add a priority on the firewall. To prioritize the
-packets, deep packet inspection is needed, then packets need to be put
-in different queues depending on the caller and callee numbers.
 
-    Could anyone please give me some suggestion on how to make this happen?
-
-    Thank you very much,
-
-        Ling
+      ______________________________________________=20
+Enviado desde Correo Yahoo!
+Disfruta de una bandeja de entrada m=E1s inteligente. http://es.docs.ya=
+hoo.com/mail/overview/index.html
