@@ -1,33 +1,51 @@
-From: Philip Craig <philipc@snapgear.com>
-Subject: Re: NAT packets leaking out with source address
-Date: Thu, 06 Mar 2008 12:01:34 +1000
-Message-ID: <47CF507E.2070203@snapgear.com>
-References: <20080305165231.505bdd44@speedy>
+From: "Daniel" <daniel@poligraph.com.br>
+Subject: wan links routing failover sheme
+Date: Wed, 5 Mar 2008 23:37:04 -0300
+Message-ID: <003501c87f32$f6d5d3c0$56f5edc8@softplan.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080305165231.505bdd44@speedy>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Stephen Hemminger <stephen.hemminger@vyatta.com>
-Cc: Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: iptables-netfilter list <netfilter@vger.kernel.org>
 
-Stephen Hemminger wrote:
-> QA is seeing some (not all packets) going through a NAT router with the
-> original source address.  Is this a known problem? or a configuration issue?
-> 
-> The packets are ICMP echo requests coming in at almost line rate, so some
-> table could be getting overloaded?
+I need a routing failover scheme to address a vpn site-to-site scenario 
+where branches offices have 2 wan links and a linux box with 2 ethernet 
+ifaces, each one reaching one wan router. Wan links should working in 
+active/passive failover mode. Considering start vpn tunnels from branches to 
+headquarter, the problem is:
+At each branch, I need to choose one of the 2 wan routers as the linux box 
+default gateway. For failover work, I need some mechanism to monitor the 
+active/master link, like icmp/ping, and change the gateway to the 
+passive/backup link when the active/master link fails, and change back when 
+the active/master link becomes up again. If I address this with a routing 
+scheme, the vpn on demand tunnel from branch to headquarter work transparent 
+above it.
 
-First step is to check the conntrack table for an unnatted and unreplied
-entry.
+On headquarter and on each branch I will use a linux box. I thinking in use 
+openvpn as vpn server and client (I have low know hall of openvpn), but 
+other vpn solutions, like ipsec, can be suggested! On branches, a fast and 
+cheap DSL link (should be the active/master link) and a realiable and slower 
+128kbps PPP link (should be the passive/backup link). Tunnels can be started 
+from any side, from headquarter or from branches, but I will consider start 
+tunnels from branches to headquarter for this scenario, I can change this 
+view, no problem.
 
-If the first ICMP was sent before the NAT rule was installed, and you never
-get a reply (presumably because it is was not NATted), then subsequent ICMP
-packets will use the same conntrack entry and not be NATted either.  These
-will also refresh the timeout on the conntrack, so it never expires until
-you stop pinging.
+Should iproute2 address such solution?
+I ask about it in openvpn-users list, one people answer that he use linux 
+eql driver driver to form a logical connection and a little bit of scripting 
+to continuously monitor the tunnels and add or remove them from the bundle 
+if needed.
 
-If this is the problem, the solution is to make sure you have the NAT rules
-installed before the filter rules allow the packets.
+As a comparision, as logn I know, Cisco solution use IPSLA as the monitoring 
+scheme and on the start vpn tunnel box a list of 2 vpn servers to reach (one 
+master and one backup), to address such failover environment.
+
+I will appreciate ny sugestions!
+
+
+Regards,
+Daniel.
+
+
