@@ -1,51 +1,54 @@
 From: Georgi Georgiev <chutz@gg3.net>
 Subject: Re: PPPoE on a bridge, nat sees bridge as incoming interface
-Date: Fri, 7 Mar 2008 09:43:00 +0900
-Message-ID: <20080307004300.GA31248@possum.gg3.net>
-References: <20080306172218.GA14566@possum.gg3.net> <47D07205.10906@plouf.fr.eu.org>
+Date: Fri, 7 Mar 2008 09:49:18 +0900
+Message-ID: <20080307004918.GB31248@possum.gg3.net>
+References: <20080306172218.GA14566@possum.gg3.net> <47D069BF.9080208@riverviewtech.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <47D07205.10906@plouf.fr.eu.org>
+In-Reply-To: <47D069BF.9080208@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-maillog: 06/03/2008-23:36:53(+0100): Pascal Hambourg types
-> Hello,
+maillog: 06/03/2008-16:01:35(-0600): Grant Taylor types
+> On 3/6/2008 11:22 AM, Georgi Georgiev wrote:
+>> I am having trouble understaning how bridging and iptables fit together. 
+>> The situation that bugs me is: if I do a PPPoE connection over a bridge 
+>> with a single physical port, my nat table will see any incoming packet as 
+>> coming from the bridge interface, and not the ppp interface. Why?
 >
-> Georgi Georgiev wrote :
->> I am having trouble understaning how bridging and iptables fit together.
->> The situation that bugs me is: if I do a PPPoE connection over a bridge
->> with a single physical port, my nat table will see any incoming packet
->> as coming from the bridge interface, and not the ppp interface. Why?
+> With out going any further in your email (I've read the rest but IMHO this 
+> takes precedence).  Is your kernel configured to have IPTables see your 
+> bridged traffic?  Is "CONFIG_BRIDGE_NETFILTER" enabled in your kernel?  
+> Here is a quote from help from menuconfig about Bridge Netfilter:
 >
-> I guess you have a kernel 2.6.22 or above.
+> "Enabling this option will let arptables resp. iptables see bridged ARP 
+> resp. IP traffic. If you want a bridging firewall, you probably want this 
+> option enabled.  Enabling or disabling this option doesn't enable or 
+> disable ebtables."
 >
-> From ChangeLog-2.6.22 :
->     [NETFILTER]: bridge-nf: filter bridged IPv4/IPv6 encapsulated in
->     pppoe traffic
->
->     The attached patch by Michael Milner adds support for using iptables
->     and ip6tables on bridged traffic encapsulated in pppoe frames,
->     similar to what's already supported for vlan.
->
-> Setting the net.bridge.bridge-nf-filter-pppoe-tagged sysctl 
-> (/proc/sys/net/bridge/bridge-nf-filter-pppoe-tagged) to 0 should disable 
-> it.
->
-> From <kernelsourcedir>/Documentation/networking/ip-sysctl.txt :
->
-> bridge-nf-filter-pppoe-tagged - BOOLEAN
->     1 : pass bridged pppoe-tagged IP/IPv6 traffic to {ip,ip6}tables.
->     0 : disable this.
->     Default: 1
+> If you turn this off your bridging will be a purely layer 2 operation that 
+> IPTables (and ARPTables) will be completely oblivious of.  If you wish to 
+> filter bridged traffic you will have to use EBTables. Incidentally I have 
+> had better luck turning this off (unless I had to have IPTables filtering 
+> of bridged traffic) and using EBTables to filter bridged traffic.  I 
+> consider this to be use layer 3 filtering (IPTables and ARPTables) for 
+> layer 3 traffic and use layer 2 filtering (EBTables) for layer 2 traffic.  
+> In other words don't use layer 3 filtering for layer 3 and 2 traffic which 
+> is what this does.  Granted you can use IPTables to filter layer 2 traffic, 
+> however you have to be aware of the ramifications and account for them in 
+> your firewall and logic in your head.
 
-The above did the trick with immediate effect. Thanks!
+I agree. I thought the bridge was supposed to behave like a switching
+hub. And it probably does, but I had misconfigured it.
+
+I have applided the sysctl fix from the other post in the thread for
+now. I'll test your suggestion when I get home.
 
 -- 
-/\   Georgi Georgiev   /\ Calling you stupid is an insult to stupid  /\
-\/    chutz@gg3.net    \/ people! -- Wanda, "A Fish Called Wanda"    \/
-/\  +81(90)2877-8845   /\                                            /\
+(    Georgi Georgiev   (  Q: Why did the lone ranger kill Tonto? A:  (
+ )    chutz@gg3.net     ) He found out what "kimosabe" really means.  )
+(  http://www.gg3.net/ (                                             (
