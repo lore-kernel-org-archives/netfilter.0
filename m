@@ -1,60 +1,36 @@
-From: =?iso-8859-1?q?Alberto=20D=EDez?= <albertowhiterabbit@yahoo.es>
-Subject: (unknown)
-Date: Fri, 7 Mar 2008 09:06:54 +0100 (CET)
-Message-ID: <223031.68565.qm@web26501.mail.ukl.yahoo.com>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Subject: Re: RV: optimizations for large rule sets
+Date: Fri, 7 Mar 2008 08:33:53 +0000 (GMT)
+Message-ID: <Pine.LNX.4.58.0803070825040.8681@mail3.jubileegroup.co.uk>
+References: <384944.49147.qm@web26503.mail.ukl.yahoo.com>
+ <47D066F2.4040008@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <47D066F2.4040008@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-hi!
-=20
- I am trying to make use of a large number of rules
- with iptables.=20
-=20
- I have seen there are some optimizations referenced
- like nf-HiPAC (www.hipac.org) , iptables with
- classifiers (www.geocities.com/hamidreza_jm) which
- appearently can deal with thousands of rules (thats
- what i need).
-=20
- I want per flow (orig addr,dst addr, orig port, dst
- port, proto) filtering thats why i don=B4t think i can
- use ipsets (or can i?)
- I also would like to have the nice iptables features
- like  mangle table and counters ..
-=20
- I dont really understand what the conntrack does, or
- if it can somehow helpme (where is the nice
- documentation about this??)
-=20
- What is the netfilter preferred way to have a large
- set of rules and still do packet filtering?  are
- HiPAC, iptables with classifiers or any other
- solution
- actual?
-=20
- is there a howto,manual,some kind of
- documentation, all that I find about this are quite
- old (3 years?) material in the mailing list ... Is
- this problem already solved? what was the solution
- taken?
-=20
-=20
- well if you could answer any of this questions i
- would
- be very thankful
-=20
- Alberto Diez
-=20
-=20
-     =20
+Hi there,
 
+On 3/6/2008 10:06 AM, Alberto D=EDez wrote:
 
-      ______________________________________________=20
-Enviado desde Correo Yahoo!
-Disfruta de una bandeja de entrada m=E1s inteligente. http://es.docs.ya=
-hoo.com/mail/overview/index.html
+> What is the netfilter preferred way to have a large set of rules and
+> still do packet filtering?
+
+I don't know if there's a "netfilter preferred way" and I don't know
+what you mean by "a large set of rules".
+
+Our iptables rules typically number about 200.  We use ipsets for
+about 40,000 rules in about 30 sets, on fairly modest hardware.
+
+People seem to run into performance issues with anything on the order
+of a thousand iptables rules - obviously it will depend on the rules
+and how they interact, and on the hardware, the processor load, etc.
+
+--
+
+73,
+Ged.
