@@ -1,26 +1,84 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE:
-Date: Fri, 7 Mar 2008 10:43:51 +0100
-Message-ID: <1A7A62D535A34867A7FDD17A14A32FB6@ns006819>
-References: <223031.68565.qm@web26501.mail.ukl.yahoo.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_conntrack 0.0.89 release
+Date: Fri, 07 Mar 2008 19:55:02 +0100
+Message-ID: <47D18F86.9060004@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <223031.68565.qm@web26501.mail.ukl.yahoo.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------080202090204060801000306"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@vger.kernel.org>
+To: netfilter-announce@lists.netfilter.org, netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org, lwn@lwn.net
 
->  I dont really understand what the conntrack does, or
->  if it can somehow helpme (where is the nice
->  documentation about this??)
+This is a multi-part message in MIME format.
+--------------080202090204060801000306
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html#STATEMACHI
-NE
+Hi!
+
+The netfilter project proudly presents libnetfilter_conntrack-0.0.89
+
+libnetfilter_conntrack is a userspace library providing a programming
+interface (API) to the in-kernel connection tracking state table.
+
+This release includes new features and minor fixes. See ChangeLog for
+more details. Upgrade is recommended.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnetfilter_conntrack/
+ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
+
+Pablo (on behalf of the Netfilter Project)
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
 
 
-Grts,
-Rob
+--------------080202090204060801000306
+Content-Type: text/plain;
+ name="ChangeLog-libnetfilter_conntrack-0.0.89"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog-libnetfilter_conntrack-0.0.89"
 
+libnetfilter_conntrack v0.0.89 Changelog (in chronological order)
+======================================================================
+Changes from 0.0.82:
 
+- Deprecate old libnetfilter_conntrack API
+	[ Pablo Neira Ayuso ]
+
+- Add support for conntrack master setup
+	[ Pablo Neira Ayuso ]
+
+- Rename libnetfilter_conntrack.c to main.c
+	[ Pablo Neira Ayuso ]
+
+- Include examples on how to add a new related conntrack
+	[ Pablo Neira Ayuso ]
+
+- Fix several compilation warnings
+	[ Pablo Neira Ayuso ]
+
+- Add support for secmark
+	[ Pablo Neira Ayuso ]
+
+- Add support for UDPLITE
+	[ Pablo Neira Ayuso ]
+
+- Add NFCT_OF_TIME flag to nfct_snprintf
+	[ Pablo Neira Ayuso ]
+
+- Several cleanups in Makefile.am
+	[ Pablo Neira Ayuso ]
+
+- Add support for NAT sequence adjustment
+	[ Pablo Neira Ayuso ]
+
+- Fix glibc 2.7.20 compilation
+	[ Paul P. Konkoff ]
+
+--------------080202090204060801000306--
