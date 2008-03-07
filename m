@@ -1,40 +1,60 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Prioritize packets at user space
-Date: Thu, 06 Mar 2008 23:47:45 -0600
-Message-ID: <47D0D701.9010605@riverviewtech.net>
-References: <7b4d898c0803052100x75f7d47fv53059b19ded04e48@mail.gmail.com>
+From: =?iso-8859-1?q?Alberto=20D=EDez?= <albertowhiterabbit@yahoo.es>
+Subject: (unknown)
+Date: Fri, 7 Mar 2008 09:06:54 +0100 (CET)
+Message-ID: <223031.68565.qm@web26501.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7b4d898c0803052100x75f7d47fv53059b19ded04e48@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On 3/5/2008 11:00 PM, Ling Deng wrote:
-> I want to add a priority on the firewall. To prioritize the packets, 
-> deep packet inspection is needed, then packets need to be put in 
-> different queues depending on the caller and callee numbers.
+hi!
+=20
+ I am trying to make use of a large number of rules
+ with iptables.=20
+=20
+ I have seen there are some optimizations referenced
+ like nf-HiPAC (www.hipac.org) , iptables with
+ classifiers (www.geocities.com/hamidreza_jm) which
+ appearently can deal with thousands of rules (thats
+ what i need).
+=20
+ I want per flow (orig addr,dst addr, orig port, dst
+ port, proto) filtering thats why i don=B4t think i can
+ use ipsets (or can i?)
+ I also would like to have the nice iptables features
+ like  mangle table and counters ..
+=20
+ I dont really understand what the conntrack does, or
+ if it can somehow helpme (where is the nice
+ documentation about this??)
+=20
+ What is the netfilter preferred way to have a large
+ set of rules and still do packet filtering?  are
+ HiPAC, iptables with classifiers or any other
+ solution
+ actual?
+=20
+ is there a howto,manual,some kind of
+ documentation, all that I find about this are quite
+ old (3 years?) material in the mailing list ... Is
+ this problem already solved? what was the solution
+ taken?
+=20
+=20
+ well if you could answer any of this questions i
+ would
+ be very thankful
+=20
+ Alberto Diez
+=20
+=20
+     =20
 
-If you can separate out the calls or mark them somehow, you could use 
-Traffic Control to divide things in to different queues for you.  I'd 
-suggest looking at SIP Express Router (presuming you are using SIP) as a 
-local gateway to route the calls.  If you can get S.E.R. to either mark 
-the packets of a call or to send them to different destinations (IP and 
-/ or port) you could then use TC to prioritize.  You just have to help 
-get the traffic split out (de-multiplexed) so that TC can work with it. 
-  Presently TC does not (to my knowledge) have any way to identify what 
-calls are what.  However I suppose you could get really creative with 
-either the u32 or layer 7 matches and look for specific strings in the 
-packet stream and decide what to do with them that way.  If you can get 
-IPTables match extensions to differentiate your calls, you can mark them 
-so that TC can work with them.
 
-> Thank you very much,
-
-You are welcome, and good luck.
-
-
-
-Grant. . . .
+      ______________________________________________=20
+Enviado desde Correo Yahoo!
+Disfruta de una bandeja de entrada m=E1s inteligente. http://es.docs.ya=
+hoo.com/mail/overview/index.html
