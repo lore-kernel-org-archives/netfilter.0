@@ -1,61 +1,30 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnfnetlink release 0.0.33
-Date: Sun, 09 Mar 2008 02:07:40 +0100
-Message-ID: <47D3385C.40605@netfilter.org>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: [RFC] Using iptables to control bind/connect/accept/sendto
+ permissions
+Date: Sun, 9 Mar 2008 17:19:04 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0803091718380.26142@fbirervta.pbzchgretzou.qr>
+References: <6599ad830803032204j3dc191ech8dfb64d9366f5ffe@mail.gmail.com>
+ <20080304181527.GI6475@khasse.inl.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070506080206000307060303"
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20080304181527.GI6475@khasse.inl.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-announce@lists.netfilter.org, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
-Cc: lwn@lwn.net
-
-This is a multi-part message in MIME format.
---------------070506080206000307060303
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Eric Leblond <eric@inl.fr>
+Cc: Paul Menage <menage@google.com>, netfilter@vger.kernel.org
 
-Hi!
 
-The netfilter project proudly presents libnfnetlink 0.0.33. This release
-includes minor bugfixes and updates. Changelog attached.
+On Mar 4 2008 19:15, Eric Leblond wrote:
+>Hi,
+>
+From a fast read of your mail it seems you may be interested in looking
+>at:
+>http://www.synack.fr/project/cn_net/cn_net.html
+>
+>This is a project which intercept binding, accept at kernel level and
+>ask it they have to be authorized at kernel level.
 
-libnfnetlink is the low-level library for netfilter related
-kernel/userspace communication. It provides a generic messaging
-infrastructure for in-kernel netfilter subsystems (such as
-nfnetlink_log, nfnetlink_queue, nfnetlink_conntrack) and their
-respective users and/or management tools in userspace.
 
-You can download it from:
-
-http://www.netfilter.org/projects/libnfnetlink/downloads.html
-
-Pablo (on behalf of the Netfilter Project)
-
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
-
---------------070506080206000307060303
-Content-Type: text/plain;
- name="Changelog"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="Changelog"
-
-- nfnl_handle must be const in nfnl_rcvbufsiz
-	[ Pablo Neira Ayuso ]
-
-- Introduce nfnl_set_rcv_buffer_size to set the receive buffer size
-	[ Pablo Neira Ayuso ]
-
-- Improve receive path performance: do only one recv instead of two
-	[ Pablo Neira Ayuso ]
-
-- Fix endless loop on unknown netfilter attributes.
-	[ Marcus Sundberg ]
-
-- Fix handling of multipart netlink packets in nfnl_handle_packet
-	[ Eric Leblond ]
-
---------------070506080206000307060303--
+Or more specifically, http://tuxguardian.sf.net/
