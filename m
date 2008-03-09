@@ -1,30 +1,32 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: [RFC] Using iptables to control bind/connect/accept/sendto
- permissions
-Date: Sun, 9 Mar 2008 17:19:04 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0803091718380.26142@fbirervta.pbzchgretzou.qr>
-References: <6599ad830803032204j3dc191ech8dfb64d9366f5ffe@mail.gmail.com>
- <20080304181527.GI6475@khasse.inl.fr>
+Subject: Re: New connlimit: how to use?
+Date: Sun, 9 Mar 2008 17:26:03 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0803091725340.26142@fbirervta.pbzchgretzou.qr>
+References: <20071207105645.586a0f23@penpal4u.net> <20080304135201.7df21ed1@penpal4u.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080304181527.GI6475@khasse.inl.fr>
+In-Reply-To: <20080304135201.7df21ed1@penpal4u.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Eric Leblond <eric@inl.fr>
-Cc: Paul Menage <menage@google.com>, netfilter@vger.kernel.org
+To: Christian Lerrahn <lists@penpal4u.net>
+Cc: netfilter@vger.kernel.org
 
 
-On Mar 4 2008 19:15, Eric Leblond wrote:
+On Mar 4 2008 13:52, Christian Lerrahn wrote:
+>
 >Hi,
+>I know that my original post (included in full above) is about 3 months
+>old. However, the problem remains unresolved. See below quoted bit for
+>some new information.
 >
-From a fast read of your mail it seems you may be interested in looking
->at:
->http://www.synack.fr/project/cn_net/cn_net.html
+>One thing that I have found out in the meantime, however, is that I do
+>see something in my kernel logs which is
 >
->This is a project which intercept binding, accept at kernel level and
->ask it they have to be authorized at kernel level.
+>cannot load conntrack support for address family 2
+>
+>and does help me just as much as the errors above because conntrack
+>seems to be in the kernel.
 
-
-Or more specifically, http://tuxguardian.sf.net/
+Hmmm.... I'll see if I can reproduce that.
