@@ -1,32 +1,35 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: New connlimit: how to use?
-Date: Sun, 9 Mar 2008 17:26:03 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0803091725340.26142@fbirervta.pbzchgretzou.qr>
-References: <20071207105645.586a0f23@penpal4u.net> <20080304135201.7df21ed1@penpal4u.net>
+Subject: Re: safely apply new rulesets: iptables-apply
+Date: Sun, 9 Mar 2008 17:45:06 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0803091733060.26142@fbirervta.pbzchgretzou.qr>
+References: <20080304231606.GA16376@piper.oerlikon.madduck.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080304135201.7df21ed1@penpal4u.net>
+In-Reply-To: <20080304231606.GA16376@piper.oerlikon.madduck.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Christian Lerrahn <lists@penpal4u.net>
-Cc: netfilter@vger.kernel.org
+To: martin f krafft <madduck@madduck.net>
+Cc: netfilter discussion list <netfilter@vger.kernel.org>
 
 
-On Mar 4 2008 13:52, Christian Lerrahn wrote:
+On Mar 5 2008 00:16, martin f krafft wrote:
 >
->Hi,
->I know that my original post (included in full above) is about 3 months
->old. However, the problem remains unresolved. See below quoted bit for
->some new information.
->
->One thing that I have found out in the meantime, however, is that I do
->see something in my kernel logs which is
->
->cannot load conntrack support for address family 2
->
->and does help me just as much as the errors above because conntrack
->seems to be in the kernel.
+>iptables-apply is a simple shell script which applies the new
+>ruleset and then prompts whether you like it. If you've locked
+>yourself out, you cannot answer the prompt, and if you don't, the
+>script rolls back the ruleset. Nice and simple.
 
-Hmmm.... I'll see if I can reproduce that.
+It needs a minor tweak in that the timeout needs to be started
+before you output anything to the terminal, just in case the
+terminal blocks.
+
+
+On a related note, you cannot trap signal 0:
+	trap "rm -f $TMPFILE" 0 1 2 3 4 5 6 7 8 10 11 12 13 14 15
+
+>Could this script possibly make it into the iptables distribution
+>tarball? I am flexible about the licence and all...
+
+The idea gets my approval.
