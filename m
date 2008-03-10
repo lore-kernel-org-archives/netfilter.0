@@ -1,55 +1,54 @@
-From: "Gabor Z. Papp" <gzp@papp.hu>
-Subject: Re: [ANNOUNCE] libnfnetlink release 0.0.33
-Date: Mon, 10 Mar 2008 14:07:42 +0100
-Message-ID: <x63aqyk9r5@gzp>
-References: <47D3385C.40605@netfilter.org>
-Mime-Version: 1.0
+From: Petr Pisar <petr.pisar@atlas.cz>
+Subject: conntrack can't delete more conntrack records
+Date: Mon, 10 Mar 2008 19:49:37 +0000 (UTC)
+Message-ID: <slrnftb46h.vkl.petr.pisar@album.ics.muni.cz>
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-* Pablo Neira Ayuso <pablo@netfilter.org>:
+Hello,
 
-| The netfilter project proudly presents libnfnetlink 0.0.33. This release
-| includes minor bugfixes and updates. Changelog attached.
+I'm trying to remove all conntrack records for one source IP address. If
+I specify only source IP address it will fail:
 
- gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\"
- -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
- -DPACKAGE=\"libnfnetlink\" -DVERSION=\"0.0.33\" -DSTDC_HEADERS=1
- -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1
- -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1
- -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1
- -DHAVE_DLFCN_H=1 -I. -I../include -fPIC -Wall -g -O2 -MT
- libnfnetlink.lo -MD -MP -MF .deps/libnfnetlink.Tpo -c libnfnetlink.c
- -o libnfnetlink.o
-In file included from ../include/libnfnetlink/libnfnetlink.h:20,
-                 from libnfnetlink.c:52:
-../include/libnfnetlink/linux_nfnetlink.h:81: error: expected  specifier-qualifier-list before '__be16'
-libnfnetlink.c: In function 'nfnl_fill_hdr': libnfnetlink.c:429: error: 'struct nfgenmsg' has no member named 'res_id'
-make[1]: *** [libnfnetlink.lo] Error 1
-make[1]: Leaving directory `/home/gzp/src/libnfnetlink-0.0.33/src'
+$ conntrack -D -s 10.0.0.179
+Operation failed: such conntrack doesn't exist
 
-[kernel]
-Linux gzp1 2.4.36.1-gzp1 #1 SMP Tue Feb 19 10:23:48 CET 2008 i686
-GNU/Linux
+However removing only one specific record using full trasport
+source/destinaton address works:
 
-[glibc]
-GNU C Library stable release version 2.3.6, by Roland McGrath et al.
-Compiled by GNU CC version 4.1.2.
-Compiled on a Linux 2.4.34-gzp1 system on 2007-04-04.
+$ conntrack -D -s 10.0.0.179 -d X.23.55.166 -p tcp --sport 4369 --dport 6881
 
-[gcc]
-gcc (GCC) 4.2.3
+I'm using latest conntrack-tools and dependend libraries
+(conntrack-tools-0.9.6.tar.bz2.sig
+libnetfilter_conntrack-0.0.89.tar.bz2.sig
+libnfnetlink-0.0.33.tar.bz2.sig).
 
-[binutils]
-GNU ld (Linux/GNU Binutils) 2.18.50.0.4.20080208
+The only problem I met during compilation of conntrack-tools was about
+shaddowing of global declaration which I've worked around by removing -Werror
+compilar option:
 
-[autoconf]
-autoconf (GNU Autoconf) 2.61
+make[1]: Entering directory `/tmp/conntrack-tools-0.9.6/src'
+gcc -DPACKAGE_NAME=\"conntrack-tools\" -DPACKAGE_TARNAME=\"conntrack-tools\" -DPACKAGE_VERSION=\"0.9.6\" -DPACKAGE_STRING=\"conntrack-tools\ 0.9.6\" -DPACKAGE_BUGREPORT=\"pablo@netfilter.org\" -DPACKAGE=\"conntrack-tools\" -DVERSION=\"0.9.6\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DYYTEXT_POINTER=1 -DHAVE_LINUX_CAPABILITY_H=1 -DHAVE_LIBNFNETLINK=1 -DHAVE_LIBNETFILTER_CONNTRACK=1 -DHAVE_ARPA_INET_H=1 -DHAVE_INET_PTON=1 -DHAVE_INET_PTON_IPV6=1 -I.  -I../include   -std=gnu99 -W -Wall -Werror -Wmissing-prototypes -Wwrite-strings -Wcast-qual -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wsign-compare -Waggregate-retur
+ n -Wmissing-declarations -Wredundant-decls -Wnested-externs -Winline -Wstrict-prototypes -Wundef -Wno-unused-parameter -g -O2  -I/usr/local/include   -MT conntrack.o -MD -MP -MF .deps/conntrack.Tpo -c -o conntrack.o conntrack.c
+cc1: changing search order for system directory "/usr/local/include"
+cc1:   as it has already been specified as a non-system directory
+cc1: warnings being treated as errors
+In file included from /usr/local/include/libnetfilter_conntrack/libnetfilter_conntrack.h:13,
+                 from ../include/conntrack.h:6,
+                 from conntrack.c:37:
+/usr/local/include/libnfnetlink/libnfnetlink.h:198: warning: declaration of `index' shadows a global declaration
+<built-in>:0: warning: shadowed declaration is here
+make[1]: *** [conntrack.o] Error 1
 
-[automake]
-automake (GNU automake) 1.10.1
+(I've met this problem twice.)
+
+So, my question is: Can conntrack remove subset of conntrack table? Is it a bug
+or a feature?
+
+-- Petr
+
