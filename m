@@ -1,73 +1,55 @@
-From: martin f krafft <madduck@madduck.net>
-Subject: Re: safely apply new rulesets: iptables-apply
-Date: Mon, 10 Mar 2008 12:02:09 +0100
-Message-ID: <20080310110209.GB17757@piper.oerlikon.madduck.net>
-References: <20080304231606.GA16376@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0803091733060.26142@fbirervta.pbzchgretzou.qr>
+From: "Gabor Z. Papp" <gzp@papp.hu>
+Subject: Re: [ANNOUNCE] libnfnetlink release 0.0.33
+Date: Mon, 10 Mar 2008 14:07:42 +0100
+Message-ID: <x63aqyk9r5@gzp>
+References: <47D3385C.40605@netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0803091733060.26142@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter discussion list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
+* Pablo Neira Ayuso <pablo@netfilter.org>:
 
---Fba/0zbH8Xs+Fj9o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+| The netfilter project proudly presents libnfnetlink 0.0.33. This release
+| includes minor bugfixes and updates. Changelog attached.
 
-also sprach Jan Engelhardt <jengelh@computergmbh.de> [2008.03.09.1745 +0100=
-]:
-> It needs a minor tweak in that the timeout needs to be started
-> before you output anything to the terminal, just in case the
-> terminal blocks.
+ gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\"
+ -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
+ -DPACKAGE=\"libnfnetlink\" -DVERSION=\"0.0.33\" -DSTDC_HEADERS=1
+ -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1
+ -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1
+ -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1
+ -DHAVE_DLFCN_H=1 -I. -I../include -fPIC -Wall -g -O2 -MT
+ libnfnetlink.lo -MD -MP -MF .deps/libnfnetlink.Tpo -c libnfnetlink.c
+ -o libnfnetlink.o
+In file included from ../include/libnfnetlink/libnfnetlink.h:20,
+                 from libnfnetlink.c:52:
+../include/libnfnetlink/linux_nfnetlink.h:81: error: expected  specifier-qualifier-list before '__be16'
+libnfnetlink.c: In function 'nfnl_fill_hdr': libnfnetlink.c:429: error: 'struct nfgenmsg' has no member named 'res_id'
+make[1]: *** [libnfnetlink.lo] Error 1
+make[1]: Leaving directory `/home/gzp/src/libnfnetlink-0.0.33/src'
 
-I don't really see a way to do this trivially. If the terminal
-blocks, the shell script will sooner or later be suspended and
-unless I used an external resource like atd as timeout processor,
-there's nothing I can do, I think.
+[kernel]
+Linux gzp1 2.4.36.1-gzp1 #1 SMP Tue Feb 19 10:23:48 CET 2008 i686
+GNU/Linux
 
-But I can turn off all printing to the terminal, which is
-informational anyway.
+[glibc]
+GNU C Library stable release version 2.3.6, by Roland McGrath et al.
+Compiled by GNU CC version 4.1.2.
+Compiled on a Linux 2.4.34-gzp1 system on 2007-04-04.
 
-> On a related note, you cannot trap signal 0:
-> 	trap "rm -f $TMPFILE" 0 1 2 3 4 5 6 7 8 10 11 12 13 14 15
+[gcc]
+gcc (GCC) 4.2.3
 
-Yes, you can. Trapping 0 means at-exit. Undoubtedly, I don't need it
-because I remove the tmpfile at the end anyway, but it's just
-a habit I formed and never broke with because it's the only reliable
-way I found to get rid of tmpfiles from shell scripts.
+[binutils]
+GNU ld (Linux/GNU Binutils) 2.18.50.0.4.20080208
 
-> >Could this script possibly make it into the iptables distribution
-> >tarball? I am flexible about the licence and all...
->=20
-> The idea gets my approval.
+[autoconf]
+autoconf (GNU Autoconf) 2.61
 
-Is there anything else I need to do?
-
-Thanks.
-
---=20
-martin | http://madduck.net/ | http://two.sentenc.es/
-=20
-people with narrow minds usually have broad tongues.
-=20
-spamtraps: madduck.bogus@madduck.net
-
---Fba/0zbH8Xs+Fj9o
-Content-Type: application/pgp-signature; name="digital_signature_gpg.asc"
-Content-Description: Digital signature (see http://martin-krafft.net/gpg/)
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFH1RUxIgvIgzMMSnURArqRAKCF98l7NHv9TbvwYYucy3rl/3vAiQCfZ2Th
-kKDTnjyBn5RL/8ZDw7G3GHY=
-=eXw2
------END PGP SIGNATURE-----
-
---Fba/0zbH8Xs+Fj9o--
+[automake]
+automake (GNU automake) 1.10.1
