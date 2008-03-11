@@ -1,59 +1,29 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: RHEL 4.5 + brigde + sample QUEUE app=panic
-Date: Tue, 11 Mar 2008 07:52:03 -0700 (PDT)
-Message-ID: <984706.6721.qm@web52412.mail.re2.yahoo.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: [SOLVED] PPPoE on a bridge, nat sees bridge as incoming interface
+Date: Tue, 11 Mar 2008 15:32:06 +0100
+Message-ID: <47D697E6.2050301@plouf.fr.eu.org>
+References: <20080306172218.GA14566@possum.gg3.net> <47D07205.10906@plouf.fr.eu.org> <20080306172218.GA14566@possum.gg3.net> <47D069BF.9080208@riverviewtech.net> <20080311110854.GA8806@possum.gg3.net> <Pine.LNX.4.64.0803111304160.24076@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0803111304160.24076@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi, I have a 64bit system, RHEL 4.5.
-I can get more details if needed.
-It has the modular ip_queue, netfilter headers, bridge
-control package and the like.
-For my queue program, I had to get the source for
-1.2.11 (the version indicated in the rpm).
+Jan Engelhardt a =E9crit :
+>>
+>>Problem: If a PPPoE connection is initialized over a bridge the nat
+>>table will see any incoming IP packet as coming from the bridge
+>>interface, and not the ppp interface.
+>=20
+> Solution 3: iptables -m physdev --physdev-in ppp0 -i br0
+>             ebtables --logical-in ppp0 -i br0
 
-I compiled the sample QUEUE from the manpages.
-The 2 differences:
-1.  I printf the indev and outdev
-2.  my verdict returns the payload (m->data_len,
-m->payload) from the ipq_get_packet()) as in the end I
-want to mangle the packet (but do not in this example)
+Could you elaborate, please ?
 
-I added the hooks:
-
-iptables -t mangle -A PREROUTING -i br0 -j QUEUE
-iptables -t mangle -A POSTROUTING -o br0 -j QUEUE
-
-I make my br0 bridge from eth0 to eth1.
-I modprobe the ip_queue.
-So I have the section:
-case IPQM_PACKET:
-ipq_packet_msg_t *m=ipq_get_packet(buf);
-status=ipq_set_verdict(h,m->packet_id,NF_ACCEPT,m->data_len,
-m->payload);
-
-
-I get the expected stream of messages from the test
-app but it will, invariably and relatively fast, cause
-the system to lock up completely, keyboard LEDs
-flashing.
-
-I did go in and remove the payload return (0,NULL) and
-it actually seems to be running just fine, a concern
-since I need to alter the payload data in the end. 
-
-Does anyone have thoughts as to why I panic when
-returning the same payload?
-
--Scott
-
-
-
-      ____________________________________________________________________________________
-Looking for last minute shopping deals?  
-Find them fast with Yahoo! Search.  http://tools.search.yahoo.com/newsearch/category.php?category=shopping
+--physdev-in expects a bridge port, which ppp0 is not.
+--logical-in expects a bridge interface, which ppp0 is not.
+-i in ebtables expects a bridge port, which br0 is not.
+Also, the targets are missing.
