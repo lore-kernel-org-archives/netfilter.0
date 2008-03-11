@@ -1,66 +1,94 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [nf-failover] conntrack questions
-Date: Tue, 11 Mar 2008 12:48:27 +0100
-Message-ID: <47D6718B.8000905@netfilter.org>
-References: <47BED5AF.3020006@telbiomed.at>
+Subject: Re: conntrack can't delete more conntrack records
+Date: Tue, 11 Mar 2008 12:56:32 +0100
+Message-ID: <47D67370.6000103@netfilter.org>
+References: <slrnftb46h.vkl.petr.pisar@album.ics.muni.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------010707070600060309080906"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47BED5AF.3020006@telbiomed.at>
+In-Reply-To: <slrnftb46h.vkl.petr.pisar@album.ics.muni.cz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Roman Fiedler <roman.fiedler@telbiomed.at>
+To: Petr Pisar <petr.pisar@atlas.cz>
 Cc: netfilter@vger.kernel.org
 
-Roman Fiedler wrote:
-> Hello Everyone,
-> 
-> I have some problems using the conntrack application, it could be that I'm just 
-> conntrack options the wrong way or that my assumptions about conntracking itself 
-> are wrong.
-> 
-> Testcase:
-> 
-> * Two networks 10.0.0.0/24 and 10.0.1.0/24 separated by firewall
-> * iptables firewall drops all tcp-SYN net A to B and writes log file entry
-> * some DROPS are interesting, so I grep info about them from logfile 
-> (src,dest,ports)
-> * with conntrack tool I want to create an conntrack table entry so that the 
-> connection is accepted and the following SYN is SNATed/DNATed to a given IP 
-> (currently also in net A but that could be changed)
-> 
-> Is this possible? My iptables setup should accept all RELATED,ESTABLISHED 
-> packets by default and the conntrack entry should set the natting for this 
-> single connection and make it ACCEPTED.
-> 
-> Currently when I use to add the connection (for testing src port is fixed to 
-> 1234 and dest 25, test host is 138, forbidden target 1.10, reroute host 0.77)
-> 
-> conntrack -I conntrack -p tcp --orig-src 10.0.0.138 --orig-dst 10.0.1.10 
-> --reply-src 10.0.0.77 --reply-dst 10.0.0.1 --orig-port-src 1234 --orig-port-dst 
-> 25 --reply-port-src 25 --reply-port-dst 1234 --state SYN_SENT -u ASSURED -t 10 
-> --src-nat 10.0.0.1 --dst-nat 10.0.0.77
-> 
-> With this rule the rule hit counter is incremented when sending a SYN, but ulogd 
-> still reports a DROP
-> 
-> tcp      6 117 SYN_SENT src=10.0.0.138 dst=10.0.1.10 sport=1234 dport=25 
-> packets=1 bytes=60 [UNREPLIED] src=10.0.0.77 dst=10.0.0.1 sport=25 dport=1234 
-> packets=0 bytes=0 [ASSURED] mark=0 use=1
-> 
-> ulog output:
-> Feb 22 12:39:17 firewall-grz-0 Shorewall:FORWARD:DROP: IN=eth0 OUT=eth1 MAC=00 
-> SRC=10.0.0.138 DST=10.0.1.10 LEN=60 TOS=00 PREC=0x00 TTL=63 ID=61556 CE DF 
-> PROTO=TCP SPT=1234 DPT=25 SEQ=2694492256 ACK=0 WINDOW=5840 SYN URGP=0
-> 
-> When using LISTEN instead of SYN_SENT, the packets/bytes counter does not go up, 
-> but also no drop is reported and packet does not leave via any interface.
-> 
-> Can someone give me a hint where I am wrong?
+This is a multi-part message in MIME format.
+--------------010707070600060309080906
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Sorry, to be honest, I don't understand what you're doing. Please,
-elaborate a bit more.
+Petr Pisar wrote:
+> Hello,
+> 
+> I'm trying to remove all conntrack records for one source IP address. If
+> I specify only source IP address it will fail:
+> 
+> $ conntrack -D -s 10.0.0.179
+> Operation failed: such conntrack doesn't exist
+
+This is not supported yet but it will in the next release 0.9.7.
+
+> However removing only one specific record using full trasport
+> source/destinaton address works:
+> 
+> $ conntrack -D -s 10.0.0.179 -d X.23.55.166 -p tcp --sport 4369 --dport 6881
+> 
+> I'm using latest conntrack-tools and dependend libraries
+> (conntrack-tools-0.9.6.tar.bz2.sig
+> libnetfilter_conntrack-0.0.89.tar.bz2.sig
+> libnfnetlink-0.0.33.tar.bz2.sig).
+> 
+> The only problem I met during compilation of conntrack-tools was about
+> shaddowing of global declaration which I've worked around by removing -Werror
+> compilar option:
+> 
+> make[1]: Entering directory `/tmp/conntrack-tools-0.9.6/src'
+> gcc -DPACKAGE_NAME=\"conntrack-tools\" -DPACKAGE_TARNAME=\"conntrack-tools\" -DPACKAGE_VERSION=\"0.9.6\" -DPACKAGE_STRING=\"conntrack-tools\ 0.9.6\" -DPACKAGE_BUGREPORT=\"pablo@netfilter.org\" -DPACKAGE=\"conntrack-tools\" -DVERSION=\"0.9.6\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DYYTEXT_POINTER=1 -DHAVE_LINUX_CAPABILITY_H=1 -DHAVE_LIBNFNETLINK=1 -DHAVE_LIBNETFILTER_CONNTRACK=1 -DHAVE_ARPA_INET_H=1 -DHAVE_INET_PTON=1 -DHAVE_INET_PTON_IPV6=1 -I.  -I../include   -std=gnu99 -W -Wall -Werror -Wmissing-prototypes -Wwrite-strings -Wcast-qual -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wsign-compare -Waggregate-ret
+ urn -Wmissing-declarations -Wredundant-decls -Wnested-externs -Winline -Wstrict-prototypes -Wundef -Wno-unused-parameter -g -O2  -I/usr/local/include   -MT conntrack.o -MD -MP -MF .deps/conn
+track.Tpo -c -o conntrack.o conntrack.c
+> cc1: changing search order for system directory "/usr/local/include"
+> cc1:   as it has already been specified as a non-system directory
+> cc1: warnings being treated as errors
+> In file included from /usr/local/include/libnetfilter_conntrack/libnetfilter_conntrack.h:13,
+>                  from ../include/conntrack.h:6,
+>                  from conntrack.c:37:
+> /usr/local/include/libnfnetlink/libnfnetlink.h:198: warning: declaration of `index' shadows a global declaration
+> <built-in>:0: warning: shadowed declaration is here
+> make[1]: *** [conntrack.o] Error 1
+> 
+> (I've met this problem twice.)
+
+Weird. It must be a global declaration of "index" somewhere in the
+system, does the patch attached fix your problem?
+
+> So, my question is: Can conntrack remove subset of conntrack table? Is it a bug
+> or a feature?
+
+It will be a feature anytime soon due to popular demand.
 
 -- 
 "Los honestos son inadaptados sociales" -- Les Luthiers
+
+--------------010707070600060309080906
+Content-Type: text/plain;
+ name="x"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline;
+ filename="x"
+
+Index: include/libnfnetlink/libnfnetlink.h
+===================================================================
+--- include/libnfnetlink/libnfnetlink.h	(revisi���n: 7400)
++++ include/libnfnetlink/libnfnetlink.h	(copia de trabajo)
+@@ -195,7 +195,7 @@
+ int nlif_query(struct nlif_handle *nlif_handle);
+ int nlif_catch(struct nlif_handle *nlif_handle);
+ int nlif_index2name(struct nlif_handle *nlif_handle, 
+-		    unsigned int index, 
++		    unsigned int if_index, 
+ 		    char *name);
+ 
+ /* Pablo: What is the equivalence of be64_to_cpu in userspace?
+
+--------------010707070600060309080906--
