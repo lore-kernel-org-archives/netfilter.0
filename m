@@ -1,61 +1,53 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: safely apply new rulesets: iptables-apply
-Date: Tue, 11 Mar 2008 19:54:11 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0803111947120.18745@fbirervta.pbzchgretzou.qr>
-References: <20080304231606.GA16376@piper.oerlikon.madduck.net>
- <Pine.LNX.4.64.0803091733060.26142@fbirervta.pbzchgretzou.qr>
- <20080310110209.GB17757@piper.oerlikon.madduck.net>
+Subject: Re: Question relating to ESTABLISHED,RELATED rule.
+Date: Tue, 11 Mar 2008 19:59:34 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0803111955220.18745@fbirervta.pbzchgretzou.qr>
+References: <alpine.DEB.1.00.0803111442040.19106@p34.internal.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080310110209.GB17757@piper.oerlikon.madduck.net>
+In-Reply-To: <alpine.DEB.1.00.0803111442040.19106@p34.internal.lan>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: martin f krafft <madduck@madduck.net>
-Cc: netfilter discussion list <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Justin Piszcz <jpiszcz@lucidpixels.com>
+Cc: netfilter@vger.kernel.org
 
 
-On Mar 10 2008 12:02, martin f krafft wrote:
->also sprach Jan Engelhardt <jengelh@computergmbh.de> [2008.03.09.1745 =
-+0100]:
->> It needs a minor tweak in that the timeout needs to be started
->> before you output anything to the terminal, just in case the
->> terminal blocks.
+On Mar 11 2008 14:43, Justin Piszcz wrote:
 >
->I don't really see a way to do this trivially.
-
-echo "Applying new rules...";
-iptables-restore <new.txt;
-if [ "$?" -ne 0 ]; then
-	echo "Dude, that failed horribly. (Old rules still intact.)";
-	exit 1;
-fi;
-
-echo "Also try starting a new connection to the "\
-"machine to verify that NEW connections are accepted "\
-"besides ESTABLISHED.  Do the rules work? (y/n) " &
-
-read -t 10 x;
-if [ "$x" !=3D "y" ]; then
-        iptables-restore <old.txt;
-fi;
-
-
->> On a related note, you cannot trap signal 0:
->> 	trap "rm -f $TMPFILE" 0 1 2 3 4 5 6 7 8 10 11 12 13 14 15
+> Question relating to ESTABLISHED,RELATED rule.
 >
->Yes, you can. Trapping 0 means at-exit.
+> Obviously at a minimum you need this for the INPUT chain.
 
-Oh, then probably use "EXIT" instead of "0" :-)
+... but only if your sieving rules would otherwise end in DROP :-)
 
->> >Could this script possibly make it into the iptables distribution
->> >tarball? I am flexible about the licence and all...
->>=20
->> The idea gets my approval.
+> It also seems to help a bit with the FORWARDING chain as well.
+
+A bit is an understatement:
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    4   304 ACCEPT     all  --  rtl0   *       0.0.0.0/0            0.0.0.0/0           
+    4   304 ACCEPT     all  --  sis0   *       0.0.0.0/0            0.0.0.0/0
+    ctstate RELATED,ESTABLISHED 
+    0     0 REJECT     tcp  --  sis0   *       0.0.0.0/0            0.0.0.0/0
+    reject-with tcp-reset 
+
+, ok, just NTP traffic, but that is what I want, allow everything back in
+that was started from the inside.
+
+> Is it necessary for the OUTPUT chain?
+
+If you would otherwise DROP it in OUTPUT... it always depends on the rules.
+
+> This is the rule I am asking about, currently I do not use it and I generally
+> do not see any problems but I am curious how come some people use this and
+> others do not, what are the pros/cons each way?
 >
->Is there anything else I need to do?
->
-A bit of CodingStyle perhaps, i.e.=C2=A0tabs for logical indent,
-and of course a patch with the updated script.
+> iptables -I OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
+# Nuke all non-HTTP connections. Example.
+iptables -P OUTPUT DROP
+iptables -A OUTPUT -p tcp --dport 80,443 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
