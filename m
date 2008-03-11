@@ -1,41 +1,59 @@
-From: bossk <bossk@tyntec.biz>
-Subject: iptables question
-Date: Tue, 11 Mar 2008 15:20:15 +0100
-Message-ID: <200803111520.15941.bossk@tyntec.biz>
-Reply-To: bossk@tyntec.biz
+From: Scott MacKay <scottmackay@yahoo.com>
+Subject: RHEL 4.5 + brigde + sample QUEUE app=panic
+Date: Tue, 11 Mar 2008 07:52:03 -0700 (PDT)
+Message-ID: <984706.6721.qm@web52412.mail.re2.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-I have a problem with some dropped packets which shouldn't been dropped when I 
-enable the following three rules
+Hi, I have a 64bit system, RHEL 4.5.
+I can get more details if needed.
+It has the modular ip_queue, netfilter headers, bridge
+control package and the like.
+For my queue program, I had to get the source for
+1.2.11 (the version indicated in the rpm).
 
-1. iptables -A allowed -p TCP --syn -j ACCEPT
-2. iptables -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
-3. iptables -A allowed -p TCP -j DROP
+I compiled the sample QUEUE from the manpages.
+The 2 differences:
+1.  I printf the indev and outdev
+2.  my verdict returns the payload (m->data_len,
+m->payload) from the ipq_get_packet()) as in the end I
+want to mangle the packet (but do not in this example)
 
-I see in conntrack that the connection exists
-tcp      6 431999 ESTABLISHED src=10.3.4.14 dst=10.3.4.2 sport=42884 
-dport=3128 packets=1140 bytes=59440 src=10.3.4.2 dst=10.3.4.14 sport=3128 
-dport=42884 packets=1475 bytes=1681482 [ASSURED] mark=0 secmark=0 use=1
+I added the hooks:
 
-Regarding rule 2.  the connections is ESTABLISHED and no packets should be 
-dropped.
+iptables -t mangle -A PREROUTING -i br0 -j QUEUE
+iptables -t mangle -A POSTROUTING -o br0 -j QUEUE
 
-But in the drop log it looks quite different
-IN= OUT=eth0 SRC=10.3.4.14 DST=10.3.4.2 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
-ID=20094 DF PROTO=TCP SPT=42884 DPT=3128 WINDOW=4 RES=0x00 ACK URGP=0
+I make my br0 bridge from eth0 to eth1.
+I modprobe the ip_queue.
+So I have the section:
+case IPQM_PACKET:
+ipq_packet_msg_t *m=ipq_get_packet(buf);
+status=ipq_set_verdict(h,m->packet_id,NF_ACCEPT,m->data_len,
+m->payload);
 
-What I also see is that the dropped packets have the PSH ACK Flags set, but 
-this shouldn't be a problem or? Because right now I don't know what the 
-problem is.
 
-It would be great if somebody could enlighten me.
+I get the expected stream of messages from the test
+app but it will, invariably and relatively fast, cause
+the system to lock up completely, keyboard LEDs
+flashing.
 
-Thanks,
-bossk
+I did go in and remove the payload return (0,NULL) and
+it actually seems to be running just fine, a concern
+since I need to alter the payload data in the end. 
+
+Does anyone have thoughts as to why I panic when
+returning the same payload?
+
+-Scott
+
+
+
+      ____________________________________________________________________________________
+Looking for last minute shopping deals?  
+Find them fast with Yahoo! Search.  http://tools.search.yahoo.com/newsearch/category.php?category=shopping
