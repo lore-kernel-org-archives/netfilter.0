@@ -1,37 +1,41 @@
-From: Petr Pisar <petr.pisar@atlas.cz>
-Subject: Re: conntrack can't delete more conntrack records
-Date: Tue, 11 Mar 2008 14:26:35 +0000 (UTC)
-Message-ID: <slrnftd5kr.s7n.petr.pisar@album.ics.muni.cz>
-References: <slrnftb46h.vkl.petr.pisar@album.ics.muni.cz> <47D67370.6000103@netfilter.org>
+From: bossk <bossk@tyntec.biz>
+Subject: iptables question
+Date: Tue, 11 Mar 2008 15:20:15 +0100
+Message-ID: <200803111520.15941.bossk@tyntec.biz>
+Reply-To: bossk@tyntec.biz
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On 2008-03-11, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> Petr Pisar wrote:
->> Hello,
->> 
->> I'm trying to remove all conntrack records for one source IP address. If
->> I specify only source IP address it will fail:
->> 
->> $ conntrack -D -s 10.0.0.179
->> Operation failed: such conntrack doesn't exist
->
-> This is not supported yet but it will in the next release 0.9.7.
+I have a problem with some dropped packets which shouldn't been dropped when I 
+enable the following three rules
 
-Great to hear it.
+1. iptables -A allowed -p TCP --syn -j ACCEPT
+2. iptables -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+3. iptables -A allowed -p TCP -j DROP
 
-If somebody would interest in ugly work around, following bash script
-does the hard work:
+I see in conntrack that the connection exists
+tcp      6 431999 ESTABLISHED src=10.3.4.14 dst=10.3.4.2 sport=42884 
+dport=3128 packets=1140 bytes=59440 src=10.3.4.2 dst=10.3.4.14 sport=3128 
+dport=42884 packets=1475 bytes=1681482 [ASSURED] mark=0 secmark=0 use=1
 
-conntrack -L -s "$SRC" | \
-        sed  's/\([^ ]*\).*src=\([^ ]*\) dst=\([^ ]*\) sport=\([^ ]*\) dport=\([^ ]*\) src=.*/conntrack -D -s \2 -d \3 -p \1 --sport \4 --dport \5/'| \
-        while read; do eval "$REPLY"; done
+Regarding rule 2.  the connections is ESTABLISHED and no packets should be 
+dropped.
 
+But in the drop log it looks quite different
+IN= OUT=eth0 SRC=10.3.4.14 DST=10.3.4.2 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+ID=20094 DF PROTO=TCP SPT=42884 DPT=3128 WINDOW=4 RES=0x00 ACK URGP=0
 
--- Petr
+What I also see is that the dropped packets have the PSH ACK Flags set, but 
+this shouldn't be a problem or? Because right now I don't know what the 
+problem is.
 
+It would be great if somebody could enlighten me.
+
+Thanks,
+bossk
