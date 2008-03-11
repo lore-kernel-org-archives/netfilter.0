@@ -1,37 +1,61 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: iptables question
-Date: Tue, 11 Mar 2008 19:46:19 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0803111941570.18745@fbirervta.pbzchgretzou.qr>
-References: <200803111520.15941.bossk@tyntec.biz>
+Subject: Re: safely apply new rulesets: iptables-apply
+Date: Tue, 11 Mar 2008 19:54:11 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0803111947120.18745@fbirervta.pbzchgretzou.qr>
+References: <20080304231606.GA16376@piper.oerlikon.madduck.net>
+ <Pine.LNX.4.64.0803091733060.26142@fbirervta.pbzchgretzou.qr>
+ <20080310110209.GB17757@piper.oerlikon.madduck.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200803111520.15941.bossk@tyntec.biz>
+In-Reply-To: <20080310110209.GB17757@piper.oerlikon.madduck.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: bossk <bossk@tyntec.biz>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: martin f krafft <madduck@madduck.net>
+Cc: netfilter discussion list <netfilter@vger.kernel.org>
 
 
-On Mar 11 2008 15:20, bossk wrote:
+On Mar 10 2008 12:02, martin f krafft wrote:
+>also sprach Jan Engelhardt <jengelh@computergmbh.de> [2008.03.09.1745 =
++0100]:
+>> It needs a minor tweak in that the timeout needs to be started
+>> before you output anything to the terminal, just in case the
+>> terminal blocks.
 >
->1. iptables -A allowed -p TCP --syn -j ACCEPT
->2. iptables -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
->3. iptables -A allowed -p TCP -j DROP
->
->Regarding rule 2.  the connections is ESTABLISHED and no packets should be 
->dropped.
->
->But in the drop log it looks quite different
->IN= OUT=eth0 SRC=10.3.4.14 DST=10.3.4.2 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
->ID=20094 DF PROTO=TCP SPT=42884 DPT=3128 WINDOW=4 RES=0x00 ACK URGP=0
+>I don't really see a way to do this trivially.
 
-Well then this packet did not belong to a known connection,
-was forged, or anything like that.
+echo "Applying new rules...";
+iptables-restore <new.txt;
+if [ "$?" -ne 0 ]; then
+	echo "Dude, that failed horribly. (Old rules still intact.)";
+	exit 1;
+fi;
 
-That is why I would also combine -p tcp --syn with additionally
--m conntrack --ctstate NEW.
-Needless to say that RELATED will never be considered because
-you already allow all connections with --syn.
+echo "Also try starting a new connection to the "\
+"machine to verify that NEW connections are accepted "\
+"besides ESTABLISHED.  Do the rules work? (y/n) " &
+
+read -t 10 x;
+if [ "$x" !=3D "y" ]; then
+        iptables-restore <old.txt;
+fi;
+
+
+>> On a related note, you cannot trap signal 0:
+>> 	trap "rm -f $TMPFILE" 0 1 2 3 4 5 6 7 8 10 11 12 13 14 15
+>
+>Yes, you can. Trapping 0 means at-exit.
+
+Oh, then probably use "EXIT" instead of "0" :-)
+
+>> >Could this script possibly make it into the iptables distribution
+>> >tarball? I am flexible about the licence and all...
+>>=20
+>> The idea gets my approval.
+>
+>Is there anything else I need to do?
+>
+A bit of CodingStyle perhaps, i.e.=C2=A0tabs for logical indent,
+and of course a patch with the updated script.
 
