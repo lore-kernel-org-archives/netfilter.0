@@ -1,33 +1,37 @@
-From: Justin Piszcz <jpiszcz@lucidpixels.com>
-Subject: Question relating to ESTABLISHED,RELATED rule.
-Date: Tue, 11 Mar 2008 14:43:35 -0400 (EDT)
-Message-ID: <alpine.DEB.1.00.0803111442040.19106@p34.internal.lan>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: iptables question
+Date: Tue, 11 Mar 2008 19:46:19 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0803111941570.18745@fbirervta.pbzchgretzou.qr>
+References: <200803111520.15941.bossk@tyntec.biz>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <200803111520.15941.bossk@tyntec.biz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; format="flowed"; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: bossk <bossk@tyntec.biz>
+Cc: netfilter@vger.kernel.org
 
-Hi,
 
-Question relating to ESTABLISHED,RELATED rule.
+On Mar 11 2008 15:20, bossk wrote:
+>
+>1. iptables -A allowed -p TCP --syn -j ACCEPT
+>2. iptables -A allowed -p TCP -m state --state ESTABLISHED,RELATED -j ACCEPT
+>3. iptables -A allowed -p TCP -j DROP
+>
+>Regarding rule 2.  the connections is ESTABLISHED and no packets should be 
+>dropped.
+>
+>But in the drop log it looks quite different
+>IN= OUT=eth0 SRC=10.3.4.14 DST=10.3.4.2 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+>ID=20094 DF PROTO=TCP SPT=42884 DPT=3128 WINDOW=4 RES=0x00 ACK URGP=0
 
-Obviously at a minimum you need this for the INPUT chain.
-It also seems to help a bit with the FORWARDING chain as well.
+Well then this packet did not belong to a known connection,
+was forged, or anything like that.
 
-Is it necessary for the OUTPUT chain?  Will it help problems with e.g.,
-sometimes I see blocks when I visit a lot of websites (TCP/port 80) from
-banner ads and such, would output help here, or?
-
-This is the rule I am asking about, currently I do not use it and I 
-generally do not see any problems but I am curious how come some people 
-use this and others do not, what are the pros/cons each way?
-
-iptables -I OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-Thanks,
-
-Justin.
+That is why I would also combine -p tcp --syn with additionally
+-m conntrack --ctstate NEW.
+Needless to say that RELATED will never be considered because
+you already allow all connections with --syn.
 
