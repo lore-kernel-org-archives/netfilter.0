@@ -1,31 +1,35 @@
-From: Roel Kluin <12o3l@tiscali.nl>
-Subject: [PATCH] net/netfilter/nf_conntrack_h323_main.c: logical-bitwise &
- confusion in process_setup()
-Date: Tue, 11 Mar 2008 09:48:30 +0100
-Message-ID: <47D6475E.6060707@tiscali.nl>
+From: Georgi Georgiev <chutz@gg3.net>
+Subject: [SOLVED] PPPoE on a bridge, nat sees bridge as incoming interface
+Date: Tue, 11 Mar 2008 20:08:55 +0900
+Message-ID: <20080311110854.GA8806@possum.gg3.net>
+References: <20080306172218.GA14566@possum.gg3.net> <47D07205.10906@plouf.fr.eu.org> <20080306172218.GA14566@possum.gg3.net> <47D069BF.9080208@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <47D07205.10906@plouf.fr.eu.org> <47D069BF.9080208@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: kaber@trash.net
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-logical-bitwise & confusion
+My problem has been solved for a week now. Here is the summary.
 
-Signed-off-by: Roel Kluin <12o3l@tiscali.nl>
----
-diff --git a/net/netfilter/nf_conntrack_h323_main.c b/net/netfilter/nf_conntrack_h323_main.c
-index 6213787..898f192 100644
---- a/net/netfilter/nf_conntrack_h323_main.c
-+++ b/net/netfilter/nf_conntrack_h323_main.c
-@@ -842,7 +842,7 @@ static int process_setup(struct sk_buff *skb, struct nf_conn *ct,
- 
- 	set_h225_addr = rcu_dereference(set_h225_addr_hook);
- 	if ((setup->options & eSetup_UUIE_destCallSignalAddress) &&
--	    (set_h225_addr) && ct->status && IPS_NAT_MASK &&
-+	    (set_h225_addr) && ct->status & IPS_NAT_MASK &&
- 	    get_h225_addr(ct, *data, &setup->destCallSignalAddress,
- 			  &addr, &port) &&
- 	    memcmp(&addr, &ct->tuplehash[!dir].tuple.src.u3, sizeof(addr))) {
+Problem: If a PPPoE connection is initialized over a bridge the nat
+table will see any incoming IP packet as coming from the bridge
+interface, and not the ppp interface.
+
+Solution 1: Set the following sysctl key to 0
+net.bridge.bridge-nf-filter-pppoe-tagged
+
+Warning: If adding this to /etc/sysctl.conf (or equivalent), make sure
+that the bridge module gets loaded *before* sysctl is applied.
+
+Solution 2: Compile the kernel without CONFIG_BRIDGE_NETFILTER.
+
+Both of these worked for me. I'm sticking with number two.
+
+-- 
+()   Georgi Georgiev   () If you don't care where you are, then you  ()
+()    chutz@gg3.net    () ain't lost.                                ()
+() http://www.gg3.net/ ()                                            ()
