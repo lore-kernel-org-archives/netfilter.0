@@ -1,97 +1,40 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: Re: RHEL 4.5 + brigde + sample QUEUE app=panic
-Date: Tue, 11 Mar 2008 21:45:34 -0700 (PDT)
-Message-ID: <429463.14929.qm@web52408.mail.re2.yahoo.com>
-References: <671872.8600.qm@web52403.mail.re2.yahoo.com>
+From: bossk <bossk@tyntec.biz>
+Subject: Performance question for chains
+Date: Wed, 12 Mar 2008 20:24:55 +0100
+Message-ID: <200803122024.56217.bossk@tyntec.biz>
+Reply-To: bossk@tyntec.biz
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <671872.8600.qm@web52403.mail.re2.yahoo.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-More details....
+Hi,
 
-The culprit seems to be the memcpy(), transferring the
-payload back into the skb.
-memcpy(e->skb->data, v->payload, v->data_len); 
+I have a lot of FORWARD rules to the same IPs and handfull different ports and 
+I try to increase the overall performance. I have the following ruleset in my 
+mind to achieve this goal,
 
-I commented that out, and put a "return 0;"after:
- e->skb->nfcache |= NFC_ALTERED;
+iptables -A FORWARD -d 10.0.0.1 -j next
+iptables -A next -p TCP --dport 111 -j next2
+iptables -A next2 -s 10.7.0.1 -j ACCEPT
 
-(basically skip the memcop and extra routing).  Worked
-fine.
+This means that I have to traverse 2 chains and than the next2 chain for 
+finding the right IP. If the sender sends another packet the packet has to 
+traverse the same chains again. If I instead do a
 
-I now put in a for loop to run several different
-tests.  It basically was:
-        for (index=0;index<v->data_len;index++)  {
-          /* insert test */
-        }
-First was:
-    c=v->payload[index];  /* read the payload */
-No crashes.
-Second was:
-    c=e->skb->data[index]; /* read the skb payload */
-No crashes.
-Next was:
-    c=e->skb->data[index];  /* read sky payload */
-    e->skb->data[index]=c;  /* write value back */
-No crashes.
-Now
-    c=v->payload[index];
-    e->skb->data[index]=c;
-No crashes.
-Finally:
-    e->skb->data[index]=v->payload[index];
-Crashes.
+iptables -A FORWARD -d 10.0.0.1 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+iptables -A FORWARD -d 10.0.0.1 -j next
+iptables -A next -p TCP --dport 111 -j next2
+iptables -A next2 -s 10.7.0.1 -m conntrack --ctstate NEW -j ACCEPT
 
-My test was with wget-ting a kernel and I would
-actually see read errors appear before it finally
-died.
+The following packets just traverse the first rule. 
 
-I wil be retesting the final couple, but any idea why
-in the world the memcpy and memcpy-ish loop would
-crash everything?
+My question now is are there any drawbacks to do it this way? Or is there 
+another more convenient way to do it?
 
--Scott
-
-
---- Scott MacKay <scottmackay@yahoo.com> wrote:
-
-> Related to this:
-> I got and rebuilt the ip_queue.c code and it seems
-> to
-> be within the ipq_mangle_ipv4 code.  The top part
-> does
-> not affect us since that is only for when size
-> changes.  I commented out the mangle call (so I was
-> still passing data down) and the system seemed to
-> run
-> ok, just like data_len=0.
-> 
-> When I reenabled the memcpy and the ALTER flag
-> change
-> it worked for a while but then locked up, the
-> keyboard
-> lights flashing.
-> 
-> Note that this did not always/immediately cause a
-> crash but pretty close.  The last thing I could try
-> is
-> a simple for loop on the incoming data to see if
-> accessing the data (like char c=payload[i] kind of
-> throwaway) is the issue.  If there are any thoughts
-> on
-> the stuff sendmsg() sends to the ip_queue I would
-> love
-> to know.  
-> 
-> -Scott
-
-
-
-      ____________________________________________________________________________________
-Looking for last minute shopping deals?  
-Find them fast with Yahoo! Search.  http://tools.search.yahoo.com/newsearch/category.php?category=shopping
+Thanks,
+bossk
