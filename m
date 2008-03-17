@@ -1,79 +1,64 @@
-From: bossk <bossk@tyntec.biz>
+From: "Marty Leisner" <leisner@rochester.rr.com>
 Subject: Re: simple netfilter machine redirection
-Date: Sun, 16 Mar 2008 23:45:32 +0100
-Message-ID: <200803162345.33028.bossk@tyntec.biz>
-References: <200803162323.m2GNNXe3013255@dell2.home>
-Reply-To: bossk@tyntec.biz
+Date: Sun, 16 Mar 2008 19:10:11 -0500
+Message-ID: <200803170010.m2H0ABFV016415@dell2.home>
+References: <200803162323.m2GNNXe3013255@dell2.home> <alpine.DEB.1.00.0803161825030.19487@p34.internal.lan> <47DDA102.4060607@netoyen.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200803162323.m2GNNXe3013255@dell2.home>
-Content-Disposition: inline
+In-reply-to: <47DDA102.4060607@netoyen.net> 
+Content-ID: <16412.1205712611.1@dell2.home>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Marty Leisner <leisner@rochester.rr.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: mouss <mouss@netoyen.net>
+Cc: netfilter@vger.kernel.org, leisner@rochester.rr.com
 
-On Monday 17 March 2008 00:23:33 Marty Leisner wrote:
-> I want to accomplish something simple with iptables..
-> (I've used IPtables successfully without really understanding how to =
-do
-> something from scratch -- I just followed "recipes")
->=20
-> I want machine A to redirect port 80 to machine B.
->=20
-> What's a way to do it?  (seems simple enough).
->=20
-> I've tried a number of ways, and nothing seems to work...
->=20
-> (the machine isn't a firewall)
+mouss <mouss@netoyen.net> writes  on Sun, 16 Mar 2008 23:36:50 +0100
+     > Justin Piszcz wrote:
+     > >
+     > >
+     > > On Sun, 16 Mar 2008, Marty Leisner wrote:
+     > >
+     > >> I want to accomplish something simple with iptables..
+     > >> (I've used IPtables successfully without really understanding how to do
+     > >> something from scratch -- I just followed "recipes")
+     > >>
+     > >> I want machine A to redirect port 80 to machine B.
+     > >>
+     > >> What's a way to do it?  (seems simple enough).
+     > >>
+     > >> I've tried a number of ways, and nothing seems to work...
+     > >>
+     > >> (the machine isn't a firewall)
+     > >>
+     > >> marty
+     > >
+     > > 152] How do I forward a port from the internet to the LAN? iptables -A 
+     > > PREROUTING -i eth0 -t nat -p tcp --dport 22 -j DNAT --to 192.168.0.5:22
+     > >
+     > > Forward port 22 -> internally to host 192.168.0.5:22 for instance.
+     > >
+     > > .. and yes I did test this just now, it still works :)
+     > 
+     > OP did not give enough details. The above works if the machine is a 
+     > "gateway" (if A is between the client and B).
+     > 
+     > if the client and B are on the same side of the gateway, B will respond 
+     > directly to the client. and since there is no TCP triplet, this won't 
+     > work (This is the "reflection" problem). If this is the case, OP must 
+     > also NAT the client (source) IP address to force responses to get back 
+     > via machine A.
 
-iptables -t nat -A PREROUTING -p TCP --dport 80 -j DNAT --to <IP of mac=
-hine B>:<Port of machine B>
+Right, I don't want any NAT -- I just want it to act as a tcp port relayer
+(connection A-B is reflected on connection B-C)
 
-HTH,
-bossk
+where
 
---=20
-bossk
-System Administration
-TynTec
+A is the source
+B is the relay machine
+C is the destination
 
-Tel:    +49 231 47 790-469
-Mob:    +49 172 83 68 751
-=46ax:    +49 231 10 87 992
-Email:  bossk@tyntec.biz
-http:   www.tyntec.biz
-=20
-=20
-UK-Douglas:          |UK-London:           |Germany-Munich:   |Germany-=
-Dortmund:
-11 Hope Street       |                     |                  |
-Douglas              |20 Eastcastle Street |Klenzestrasse 57b |Wittekin=
-dstrasse 105
-IM1 1AQ              |London W1W 8DB       |80469 Muenchen    |44139 Do=
-rtmund
-Isle of Man /UK      |UK                   |Germany           |Germany
+and all machines are on the same lan.
 
-
-=46or TynTec GmbH: TynTec GmbH, Dortmund, Gesch=E4ftsf=FChrer: Michael =
-Kowalzik,
-Thorsten Trapp, HRB Nr. 16438, Registergericht Dortmund
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-This electronic mail transmission and any accompanying attachments
-contain confidential information intended only for the use of the
-individual or entity named above. Any dissemination, distribution,
-copying or action taken in reliance on the contents of this
-communication by anyone other than the intended recipient is strictly=20
-prohibited. If you have received this communication in error please  =20
-immediately delete the E-mail and either notify the sender at
-the above E-mail address. Thank you.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+marty
