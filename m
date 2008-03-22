@@ -1,119 +1,36 @@
-From: "Eric Estes" <Eric_Estes@aspensquare.com>
-Subject: Bandwidth Management - By MAC Address
-Date: Fri, 21 Mar 2008 12:24:20 -0400
-Message-ID: <665B03CFBE2C1346A66B0CB9A9A0EE3801C7EC44@ASM220.aspen.com>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Xtables-addons 1.5.3 & xt_geoip
+Date: Sat, 22 Mar 2008 05:51:43 +0100 (CET)
+Message-ID: <alpine.LNX.1.00.0803220303120.28078@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
-I'm hoping someone could shed some light on this.
-
-I'm trying to throttle a specific MAC Address to 200Kbits but it only
-seems to work for outgoing traffic. Can anyone see anything wrong with
-the code below?
-
-/sbin/tc qdisc add dev eth1 handle 1: root htb default 1
-/sbin/iptables -t mangle -N ms-all
-/sbin/iptables -t mangle -N ms-all-chains
-/sbin/iptables -t mangle -N ms-prerouting
-/sbin/iptables -t mangle -A PREROUTING -j ms-prerouting
-/sbin/iptables -t mangle -A ms-prerouting -j CONNMARK --restore-mark
-/sbin/iptables -t mangle -A ms-prerouting -m physdev --physdev-in eth0
--j ms-all
-/sbin/iptables -t mangle -A POSTROUTING -m physdev --physdev-out eth1 -j
-ms-all-chains
-/sbin/tc class add dev eth1 parent 1: classid 1:1 htb rate 15888Kbit
-/sbin/tc filter add dev eth1 parent 1:0 protocol all u32 match u32 0 0
-classid 1:1
-######### Incoming Rules
-######### chain 0019.b96c.57e1
-/sbin/tc class add dev eth1 parent 1:1 classid 1:11 htb rate 200Kbit
-prio 5 quantum 1532
-/sbin/iptables -t mangle -N ms-chain-eth1-1:11
-/sbin/iptables -t mangle -A ms-all-chains -m connmark --mark 0x78512774
--j ms-chain-eth1-1:11
-/sbin/iptables -t mangle -A ms-all -m physdev --physdev-in eth0 -m mac
---mac-source 00:19:b9:6c:57:e1 -j MARK --set-mark 0x78512774
-/sbin/iptables -t mangle -A ms-all -m physdev --physdev-in eth0 -m mac
---mac-source 00:19:b9:6c:57:e1 -j RETURN
-######### generating pipes for 0019.b96c.57e1
-/sbin/tc class add dev eth1 parent 1:11 classid 1:199 htb rate 200Kbit
-prio 5 quantum 1532
-/sbin/tc qdisc add dev eth1 handle 199: parent 1:199 sfq
-/sbin/iptables -t mangle -A ms-chain-eth1-1:11 -j CLASSIFY --set-class
-1:199
-/sbin/iptables -t mangle -A ms-chain-eth1-1:11 -j RETURN
-######### chain 10.3.162.0/24
-/sbin/tc class add dev eth1 parent 1:1 classid 1:21 htb rate 1000Kbit
-prio 2 quantum 1532
-/sbin/iptables -t mangle -N ms-chain-eth1-1:21
-/sbin/iptables -t mangle -A ms-all-chains -m connmark --mark 0x537c74b1
--j ms-chain-eth1-1:21
-/sbin/iptables -t mangle -A ms-all -m physdev --physdev-in eth0 -d
-10.3.162.0/24 -j MARK --set-mark 0x537c74b1
-/sbin/iptables -t mangle -A ms-all -m physdev --physdev-in eth0 -d
-10.3.162.0/24 -j RETURN
-######### generating pipes for 10.3.162.0/24
-/sbin/tc class add dev eth1 parent 1:21 classid 1:299 htb rate 1000Kbit
-prio 2 quantum 1532
-/sbin/tc qdisc add dev eth1 handle 299: parent 1:299 sfq
-/sbin/iptables -t mangle -A ms-chain-eth1-1:21 -j CLASSIFY --set-class
-1:299
-/sbin/iptables -t mangle -A ms-chain-eth1-1:21 -j RETURN
+Hi,
 
 
+Xtables-addons 1.5.3 has been released. What's new?
 
-/sbin/tc qdisc add dev eth0 handle 1: root htb default 1
-/sbin/iptables -t mangle -A ms-prerouting -m physdev --physdev-in eth1
--j ms-all
-/sbin/iptables -t mangle -A POSTROUTING -m physdev --physdev-out eth0 -j
-ms-all-chains
-/sbin/tc class add dev eth0 parent 1: classid 1:1 htb rate 5320Kbit
-/sbin/tc filter add dev eth0 parent 1:0 protocol all u32 match u32 0 0
-classid 1:1
-######### Outgoing Rules
-######### chain 0019.b96c.57e1
-/sbin/tc class add dev eth0 parent 1:1 classid 1:11 htb rate 200Kbit
-prio 5 quantum 1532
-/sbin/iptables -t mangle -N ms-chain-eth0-1:11
-/sbin/iptables -t mangle -A ms-all-chains -m connmark --mark 0xc0ed4017
--j ms-chain-eth0-1:11
-/sbin/iptables -t mangle -A ms-all -m physdev --physdev-in eth1 -m mac
---mac-source 00:19:b9:6c:57:e1 -j MARK --set-mark 0xc0ed4017
-/sbin/iptables -t mangle -A ms-all -m physdev --physdev-in eth1 -m mac
---mac-source 00:19:b9:6c:57:e1 -j RETURN
-######### generating pipes for 0019.b96c.57e1
-/sbin/tc class add dev eth0 parent 1:11 classid 1:199 htb rate 200Kbit
-prio 5 quantum 1532
-/sbin/tc qdisc add dev eth0 handle 199: parent 1:199 sfq
-/sbin/iptables -t mangle -A ms-chain-eth0-1:11 -j CLASSIFY --set-class
-1:199
-/sbin/iptables -t mangle -A ms-chain-eth0-1:11 -j RETURN
-######### chain 10.3.162.0/24
-/sbin/tc class add dev eth0 parent 1:1 classid 1:21 htb rate 1000Kbit
-prio 2 quantum 1532
-/sbin/iptables -t mangle -N ms-chain-eth0-1:21
-/sbin/iptables -t mangle -A ms-all-chains -m connmark --mark 0xebc013d6
--j ms-chain-eth0-1:21
-/sbin/iptables -t mangle -A ms-all -m physdev --physdev-in eth1 -s
-10.3.162.0/24 -j MARK --set-mark 0xebc013d6
-/sbin/iptables -t mangle -A ms-all -m physdev --physdev-in eth1 -s
-10.3.162.0/24 -j RETURN
-######### generating pipes for 10.3.162.0/24
-/sbin/tc class add dev eth0 parent 1:21 classid 1:299 htb rate 1000Kbit
-prio 2 quantum 1532
-/sbin/tc qdisc add dev eth0 handle 299: parent 1:299 sfq
-/sbin/iptables -t mangle -A ms-chain-eth0-1:21 -j CLASSIFY --set-class
-1:299
-/sbin/iptables -t mangle -A ms-chain-eth0-1:21 -j RETURN
-/sbin/iptables -t mangle -A ms-prerouting -j CONNMARK --save-mark
+- some compat code got added so that the package should now compile on
+   older kernels, down to including 2.6.18 (and upwards to 2.6.25).
+   This should make a number of enterprise distribution users (Centos..=
+=2E)
+   happier that run not-so-new kernels.
 
+- improved geoip match
+   * works in {64-bit-kernel + 32-bit-userland} environments
+     (important for sparc distros and for 32-bit installs on amd64)
+   * endianess correctness (hopefully, I do not have sparc hw to test)
+   * O(log(n)) list search time [previously O(n)]
+   * a fix in address comparison (previously left out first and
+     last address of an IP range)
+   * geoip database at http://jengelh.hopto.org/files/geoip/
 
-
-Thank You,
-Eric
+Usual places to obtain it:
+tarball	=BB http://dev.computergmbh.de/files/xtables/
+gitweb	=BB http://dev.computergmbh.de/gitweb.cgi?p=3Dxtables-addons
+clone	=BB git://dev.computergmbh.de/xtables-addons
