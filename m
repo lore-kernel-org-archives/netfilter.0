@@ -1,39 +1,27 @@
-From: Jon Wilson <lists@erentil.net>
+From: george <gk@t-t-l.co.uk>
 Subject: Re: Disappearing packets
-Date: Sat, 22 Mar 2008 15:58:09 -0700
-Message-ID: <47E58F01.10800@erentil.net>
+Date: Sat, 22 Mar 2008 22:57:35 +0000
+Message-ID: <1206226655.14091.24.camel@len.t-t-l.co.uk>
 References: <1206222481.14091.19.camel@len.t-t-l.co.uk>
+	 <47E58F01.10800@erentil.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1206222481.14091.19.camel@len.t-t-l.co.uk>
+In-Reply-To: <47E58F01.10800@erentil.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: george <gk@t-t-l.co.uk>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-george wrote:
-> I'm desperately trying to let World of Warcraft through my firewall for
-> my son and I can't work out what's wrong.  I've been inserting log rules
-> in as many places as I can, to see what's happening to the packets -
-> which are tcp/3724.
->
-> I see the packets going out fine and I see the replies coming back with
-> my log rule at the top of raw-PREROUTING.  However I don't see the
-> replies going through FORWARD as I expect with my log rule at the top.
->
-> I have no rules in the mangle table and I also checked INPUT just in
-> case I'd messed up nat somehow but nothing there either.  I also see the
-> connections in /proc/net/ip_conntrack and see the connection in SYN_RECV
-> state.
->
-> I've reread the iptables tutorial and I don't think this is an iptables
-> problem - I suspect it's something else the kernel does, but I don't
-> know where else to look.  If someone can give me some clue where to try
-> then I would greatly appreciate it.
->   
-/proc/sys/net/ipv4/ip_forward is set to 1?
+Thanks Jon,
 
--- 
-Jon Wilson
+I hadn't checked that because I /knew/ that it was set already.  How
+embarrassing...
+
+Now I just need to work out why it wasn't set when it should have been.
+
+George.
+
+On Sat, 2008-03-22 at 15:58 -0700, Jon Wilson wrote:
+> /proc/sys/net/ipv4/ip_forward
+
