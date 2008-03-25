@@ -1,79 +1,83 @@
-From: Whit Blauvelt <whit@transpect.com>
-Subject: Re: Why does ipv6 enabled interfere with ipv4 SNAT?
-Date: Tue, 25 Mar 2008 10:25:53 -0400
-Message-ID: <20080325142553.GA8783@transpect.com>
-References: <20080325012807.GA15637@transpect.com> <alpine.LNX.1.10.0803250254100.9368@fbirervta.pbzchgretzou.qr> <20080325024424.GA16089@transpect.com> <Pine.LNX.4.64.0803251156560.1535@blackhole.kfki.hu>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrack can't delete more conntrack records
+Date: Tue, 25 Mar 2008 15:35:13 +0100
+Message-ID: <47E90DA1.9060507@netfilter.org>
+References: <slrnftb46h.vkl.petr.pisar@album.ics.muni.cz> <47D67370.6000103@netfilter.org> <slrnftde87.u6d.petr.pisar@album.ics.muni.cz> <47D94D87.8050506@netfilter.org> <20080315152638.GJ8863@tetsuo.ced.homedns.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0803251156560.1535@blackhole.kfki.hu>
+In-Reply-To: <20080315152638.GJ8863@tetsuo.ced.homedns.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?C=E9dric_Krier?= <cedk@gentoo.org>
+Cc: netfilter@vger.kernel.org
 
-On Tue, Mar 25, 2008 at 12:03:58PM +0100, Jozsef Kadlecsik wrote:
+C=E9dric Krier wrote:
+> On 13/03/08 16:51 +0100, Pablo Neira Ayuso wrote:
+>> Petr Pisar wrote:
+>>> On 2008-03-11, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>>>> Petr Pisar wrote:
+>>>>> cc1: warnings being treated as errors
+>>>>> In file included from=20
+>>>>> /usr/local/include/libnetfilter_conntrack/libnetfilter_conntrack.=
+h:13,
+>>>>>                  from ../include/conntrack.h:6,
+>>>>>                  from conntrack.c:37:
+>>>>> /usr/local/include/libnfnetlink/libnfnetlink.h:198: warning: decl=
+aration=20
+>>>>> of `index' shadows a global declaration
+>>>>> <built-in>:0: warning: shadowed declaration is here
+>>>>> make[1]: *** [conntrack.o] Error 1
+>>>>>
+>>>>> (I've met this problem twice.)
+>>>> Weird. It must be a global declaration of "index" somewhere in the
+>>>> system,
+>>> yes, it's index(3).
+>>>> does the patch attached fix your problem?
+>>> Partially. Other problem is:
+>>> make[1]: Entering directory `/tmp/conntrack-tools-0.9.6/src'
+>>> gcc -DPACKAGE_NAME=3D\"conntrack-tools\"=20
+>>> -DPACKAGE_TARNAME=3D\"conntrack-tools\" -DPACKAGE_VERSION=3D\"0.9.6=
+\"=20
+>>> -DPACKAGE_STRING=3D\"conntrack-tools\ 0.9.6\"=20
+>>> -DPACKAGE_BUGREPORT=3D\"pablo@netfilter.org\" -DPACKAGE=3D\"conntra=
+ck-tools\"=20
+>>> -DVERSION=3D\"0.9.6\" -DSTDC_HEADERS=3D1 -DHAVE_SYS_TYPES_H=3D1=20
+>>> -DHAVE_SYS_STAT_H=3D1 -DHAVE_STDLIB_H=3D1 -DHAVE_STRING_H=3D1 -DHAV=
+E_MEMORY_H=3D1=20
+>>> -DHAVE_STRINGS_H=3D1 -DHAVE_INTTYPES_H=3D1 -DHAVE_STDINT_H=3D1 -DHA=
+VE_UNISTD_H=3D1=20
+>>> -DHAVE_DLFCN_H=3D1 -DYYTEXT_POINTER=3D1 -DHAVE_LINUX_CAPABILITY_H=3D=
+1=20
+>>> -DHAVE_LIBNFNETLINK=3D1 -DHAVE_LIBNETFILTER_CONNTRACK=3D1 -DHAVE_AR=
+PA_INET_H=3D1=20
+>>> -DHAVE_INET_PTON=3D1 -DHAVE_INET_PTON_IPV6=3D1 -I.  -I../include   =
+-std=3Dgnu99=20
+>>> -W -Wall -Werror -Wmissing-prototypes -Wwrite-strings -Wcast-qual=20
+>>> -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wsign-c=
+ompare=20
+>>> -Waggregate-return -Wmissing-declarations -Wredundant-decls=20
+>>> -Wnested-externs -Winline -Wstrict-prototypes -Wundef=20
+>>> -Wno-unused-parameter -g -O2   -MT sync-mode.o -MD -MP -MF=20
+>>> .deps/sync-mode.Tpo -c -o sync-m
+>> ode.o sync-mode.c
+>>> cc1: warnings being treated as errors
+>>> In file included from sync-mode.c:27:
+>>> ../include/network.h:64: warning: declaration of `conf' shadows a g=
+lobal=20
+>>> declaration
+>>> ../include/conntrackd.h:144: warning: shadowed declaration is here
+>> Already applied a patch for that, please get a working copy from SVN=
+ which=20
+>> includes these fixes. Let me know if it's OK for you.
+>>
+>=20
+> Hi,
+> I have the same error with the svn version revision 7405 and
+> with gcc 3.4.6
 
-> > /proc/sys/net/ipv6/conf ends up with only:
-> > 
-> >    all default eth0 eth1 eth2 eth3 lo
-> > 
-> > while /proc/sys/net/ipv4/conf ends up (correctly) with:
-> > 
-> >    all default eth0 eth1 eth2 eth3 eth4 eth5 lo
-> 
-> If you have got ethernet devices with MTU smaller than 1500, those won't 
-> support IPv6 and therefore don't show up in /proc/sys/net/ipv6/conf.
+Still the problem remains? Sorry, I have missed your email.
 
-Interesting. But there is no difference between the MTU settings of eth2,
-eth3, eth4 and eth5 - in fact all four ports are on the same physical card.
-All the eth? devices are running at default of 1500. I've checked.
-
-> Please check which modules are loaded in. Probably IPv4 NAT related 
-> modules are not auto-loaded. Also, is there any error message when you 
-> issue 'iptables -t nat ...' commands?
-
-Josef, the set of iptables modules is precisely the same whether or not ipv6
-is enabled on the system (yes, I've looked). The only difference is whether
-the ipv6 module is loaded. Blocking the ipv6 module from loading at boot
-both prevents (of course) the /proc/sys/net/ipv6 space from being populated.
-It also fully restores SNAT functionality.
-
-There are no error messages from "iptables -t nat" commands. The nat rules
-show up precisely the same in the resulting tables - they just don't count
-any packets traversing them if ipv6 is also enabled. I haven't done packet
-inspection to see what's happening, but the problem remains:
-
-With _everything else_ unchanged, simply letting the ipv6 module load at
-boot results in:
-
-1) eth4 and eth5 not showing up as they should for ipv6 in
-   /proc/sys/net/ipv6/conf
-
-and (whether related or a separate bug)
-
-2) ipv4 Netfilter SNAT (in POSTROUTING in this case) becoming a black hole
-
-Boxes behind the firewall can still ping the firewall. The firewall can
-still ping the world. But just with the ipv6 module loaded, the boxes behind
-the firewall cannot ping the world. Clearly ipv6 is not properly
-provisioning its space. But why should ipv6's failing have any effect at all
-on ipv4 functionality? 
-
-For me, not loading the ipv6 module is a totally fine workaround. It's
-useless cruft in my context anyway. But even though my problem is fixed for
-now, it will be a problem for other people (maybe only those with > 4
-ethernet devices?) when the ipv6 transition finally happens. I remember in
-the early 90s when we were expecting it by about 1998.
-
-So in the spirit of open source development, I'm looking for for someone
-with better knowledge of the underlying theory to help identify where the
-bug here is. Then the responsible developers can have a chance to fix it
-before a lot of other sysadmins also end up wasting many hours because of
-the non-obviousness of having to look at ipv6 stuff to find why ipv4 SNAT
-becomes a black hole.
-
-Regards,
-Whit
+--=20
+"Los honestos son inadaptados sociales" -- Les Luthiers
