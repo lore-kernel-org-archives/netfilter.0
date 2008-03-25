@@ -1,7 +1,7 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: [PATCH 12/29] : remove ARPT_{CONTINUE,RETURN} indirection macros
-Date: Tue, 25 Mar 2008 19:30:04 +0100
-Message-ID: <21b69579e7f7f0ddc0cf2ab933d56263017b5d09.1206469820.git.jengelh@computergmbh.de>
+Subject: [PATCH 11/29] : remove arpt_(un)register_target indirection macros
+Date: Tue, 25 Mar 2008 19:30:03 +0100
+Message-ID: <8801489a9cb20b1dee2b641df58300cd53826d45.1206469820.git.jengelh@computergmbh.de>
 References: <alpine.LNX.1.10.0803251914060.2240@fbirervta.pbzchgretzou.qr>
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <alpine.LNX.1.10.0803251914060.2240@fbirervta.pbzchgretzou.qr>
@@ -17,72 +17,56 @@ Cc: netfilter@vger.kernel.org, Jan Engelhardt <jengelh@computergmbh.de>
 
 Signed-off-by: Jan Engelhardt <jengelh@computergmbh.de>
 ---
- include/linux/netfilter_arp/arp_tables.h |    6 ------
- net/ipv4/netfilter/arp_tables.c          |    6 +++---
- net/ipv4/netfilter/arpt_mangle.c         |    2 +-
- 3 files changed, 4 insertions(+), 10 deletions(-)
+ include/linux/netfilter_arp/arp_tables.h |    5 -----
+ net/ipv4/netfilter/arpt_mangle.c         |    8 +++-----
+ 2 files changed, 3 insertions(+), 10 deletions(-)
 
 diff --git a/include/linux/netfilter_arp/arp_tables.h b/include/linux/netfilter_arp/arp_tables.h
-index 493dcd2..2cdcc0c 100644
+index 1cb698b..493dcd2 100644
 --- a/include/linux/netfilter_arp/arp_tables.h
 +++ b/include/linux/netfilter_arp/arp_tables.h
-@@ -125,12 +125,6 @@ struct arpt_entry
- #define ARPT_SO_GET_REVISION_TARGET	(ARPT_BASE_CTL + 3)
- #define ARPT_SO_GET_MAX			(ARPT_SO_GET_REVISION_TARGET)
+@@ -259,11 +259,6 @@ struct arpt_error
+ 	.target.errorname = "ERROR",					       \
+ }
  
--/* CONTINUE verdict for targets */
--#define ARPT_CONTINUE XT_CONTINUE
+-#define arpt_register_target(tgt) 	\
+-({	(tgt)->family = NF_ARP;		\
+- 	xt_register_target(tgt); })
+-#define arpt_unregister_target(tgt) xt_unregister_target(tgt)
 -
--/* For standard target */
--#define ARPT_RETURN XT_RETURN
--
- /* The argument to ARPT_SO_GET_INFO */
- struct arpt_getinfo
- {
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 514f91b..bc124c2 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -264,7 +264,7 @@ unsigned int arpt_do_table(struct sk_buff *skb,
- 				v = ((struct arpt_standard_target *)t)->verdict;
- 				if (v < 0) {
- 					/* Pop from stack? */
--					if (v != ARPT_RETURN) {
-+					if (v != XT_RETURN) {
- 						verdict = (unsigned)(-v) - 1;
- 						break;
- 					}
-@@ -299,7 +299,7 @@ unsigned int arpt_do_table(struct sk_buff *skb,
- 				/* Target might have changed stuff. */
- 				arp = arp_hdr(skb);
- 
--				if (verdict == ARPT_CONTINUE)
-+				if (verdict == XT_CONTINUE)
- 					e = (void *)e + e->next_offset;
- 				else
- 					/* Verdict */
-@@ -542,7 +542,7 @@ static inline int check_entry_size_and_hooks(struct arpt_entry *e,
- 	}
- 
- 	/* FIXME: underflows must be unconditional, standard verdicts
--	   < 0 (not ARPT_RETURN). --RR */
-+	   < 0 (not XT_RETURN). --RR */
- 
- 	/* Clear counters and comefrom */
- 	e->counters = ((struct xt_counters) { 0, 0 });
+ extern struct xt_table *
+ arpt_register_table(struct net *net, struct xt_table *table,
+                     const struct arpt_replace *repl);
 diff --git a/net/ipv4/netfilter/arpt_mangle.c b/net/ipv4/netfilter/arpt_mangle.c
-index a385959..6cccaab 100644
+index f9c102a..a385959 100644
 --- a/net/ipv4/netfilter/arpt_mangle.c
 +++ b/net/ipv4/netfilter/arpt_mangle.c
-@@ -68,7 +68,7 @@ checkentry(const char *tablename, const void *e, const struct xt_target *target,
- 		return false;
+@@ -75,6 +75,7 @@ checkentry(const char *tablename, const void *e, const struct xt_target *target,
  
- 	if (mangle->target != NF_DROP && mangle->target != NF_ACCEPT &&
--	   mangle->target != ARPT_CONTINUE)
-+	   mangle->target != XT_CONTINUE)
- 		return false;
- 	return true;
+ static struct xt_target arpt_mangle_reg __read_mostly = {
+ 	.name		= "mangle",
++	.family		= NF_ARP,
+ 	.target		= target,
+ 	.targetsize	= sizeof(struct arpt_mangle),
+ 	.checkentry	= checkentry,
+@@ -83,15 +84,12 @@ static struct xt_target arpt_mangle_reg __read_mostly = {
+ 
+ static int __init arpt_mangle_init(void)
+ {
+-	if (arpt_register_target(&arpt_mangle_reg))
+-		return -EINVAL;
+-
+-	return 0;
++	return xt_register_target(&arpt_mangle_reg);
  }
+ 
+ static void __exit arpt_mangle_fini(void)
+ {
+-	arpt_unregister_target(&arpt_mangle_reg);
++	xt_unregister_target(&arpt_mangle_reg);
+ }
+ 
+ module_init(arpt_mangle_init);
 -- 
 1.5.4.4
 
