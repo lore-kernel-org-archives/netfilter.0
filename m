@@ -1,435 +1,353 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: [PATCH 18/29] : xt_recent: IPv6 support
-Date: Tue, 25 Mar 2008 19:30:10 +0100
-Message-ID: <e9b719df3c209f0c144ad2bca4a2711aa7e77d72.1206469820.git.jengelh@computergmbh.de>
+Subject: [PATCH 29/29] : Replace NF_CT_DUMP_TUPLE macro indrection by function call
+Date: Tue, 25 Mar 2008 19:30:21 +0100
+Message-ID: <c49adddf85d51d418870a3595346558ab0ae11c8.1206469820.git.jengelh@computergmbh.de>
 References: <alpine.LNX.1.10.0803251914060.2240@fbirervta.pbzchgretzou.qr>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <alpine.LNX.1.10.0803251914060.2240@fbirervta.pbzchgretzou.qr>
 In-Reply-To: <720350a38b1dbd43c907d5d81decd6edd6725d81.1206469820.git.jengelh@computergmbh.de>
 References: <720350a38b1dbd43c907d5d81decd6edd6725d81.1206469820.git.jengelh@computergmbh.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: kaber@trash.net
 Cc: netfilter@vger.kernel.org, Jan Engelhardt <jengelh@computergmbh.de>
 
-This updates xt_recent to support IPv6 handling. It is sort of a flag
-day, as the new control directory is /proc/net/xt_recent with a new,
-more strict protocol (the string you ought to write into
-/proc/net/xt_recent/LIST). But on the other hand, I kept the binary
-interface towards iptables (which is quite memory consuming I must
-say) to keep the patch small.
+Directly call IPv4 and IPv6 variants where the address family is
+easily known.
 
 Signed-off-by: Jan Engelhardt <jengelh@computergmbh.de>
 ---
- net/netfilter/xt_recent.c |  207 +++++++++++++++++++++++++------------
- 1 files changed, 143 insertions(+), 64 deletions(-)
+ include/net/netfilter/nf_conntrack_tuple.h     |    2 -
+ net/ipv4/netfilter/ipt_CLUSTERIP.c             |    2 +-
+ net/ipv4/netfilter/nf_conntrack_proto_icmp.c   |    2 +-
+ net/ipv4/netfilter/nf_nat_pptp.c               |    2 +-
+ net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c |    2 +-
+ net/netfilter/nf_conntrack_core.c              |    2 +-
+ net/netfilter/nf_conntrack_h323_main.c         |   26 ++++++++--------
+ net/netfilter/nf_conntrack_pptp.c              |    4 +-
+ net/netfilter/nf_conntrack_proto_gre.c         |    6 ++--
+ net/netfilter/nf_conntrack_proto_tcp.c         |    6 ++--
+ net/netfilter/nf_conntrack_sane.c              |    2 +-
+ net/netfilter/nf_conntrack_tftp.c              |    6 ++--
+ 12 files changed, 30 insertions(+), 32 deletions(-)
 
-diff --git a/net/netfilter/xt_recent.c b/net/netfilter/xt_recent.c
-index cc5472d..a614b34 100644
---- a/net/netfilter/xt_recent.c
-+++ b/net/netfilter/xt_recent.c
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) 2006 Patrick McHardy <kaber@trash.net>
-+ * Copyright =C2=A9 CC Computer Consultants GmbH, 2007 - 2008
-  *
-  * This program is free software; you can redistribute it and/or modif=
-y
-  * it under the terms of the GNU General Public License version 2 as
-@@ -13,6 +14,8 @@
-  */
- #include <linux/init.h>
- #include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/proc_fs.h>
- #include <linux/seq_file.h>
-@@ -30,9 +33,11 @@
- #include <linux/netfilter/xt_recent.h>
-=20
- MODULE_AUTHOR("Patrick McHardy <kaber@trash.net>");
-+MODULE_AUTHOR("Jan Engelhardt <jengelh@computergmbh.de>");
- MODULE_DESCRIPTION("Xtables: \"recently-seen\" host matching for IPv4"=
-);
- MODULE_LICENSE("GPL");
- MODULE_ALIAS("ipt_recent");
-+MODULE_ALIAS("ip6t_recent");
-=20
- static unsigned int ip_list_tot =3D 100;
- static unsigned int ip_pkt_list_tot =3D 20;
-@@ -49,14 +54,15 @@ module_param(ip_list_gid, uint, 0400);
- MODULE_PARM_DESC(ip_list_tot, "number of IPs to remember per list");
- MODULE_PARM_DESC(ip_pkt_list_tot, "number of packets per IP to remembe=
-r (max. 255)");
- MODULE_PARM_DESC(ip_list_hash_size, "size of hash table used to look u=
-p IPs");
--MODULE_PARM_DESC(ip_list_perms, "permissions on /proc/net/ipt_recent/*=
- files");
--MODULE_PARM_DESC(ip_list_uid,"owner of /proc/net/ipt_recent/* files");
--MODULE_PARM_DESC(ip_list_gid,"owning group of /proc/net/ipt_recent/* f=
-iles");
-+MODULE_PARM_DESC(ip_list_perms, "permissions on /proc/net/xt_recent/* =
-files");
-+MODULE_PARM_DESC(ip_list_uid,"owner of /proc/net/xt_recent/* files");
-+MODULE_PARM_DESC(ip_list_gid,"owning group of /proc/net/xt_recent/* fi=
-les");
-=20
- struct recent_entry {
- 	struct list_head	list;
- 	struct list_head	lru_list;
--	__be32			addr;
-+	union nf_inet_addr	addr;
-+	u_int16_t		family;
- 	u_int8_t		ttl;
- 	u_int8_t		index;
- 	u_int16_t		nstamps;
-@@ -87,24 +93,43 @@ static const struct file_operations	recent_fops;
- static u_int32_t hash_rnd;
- static int hash_rnd_initted;
-=20
--static unsigned int recent_entry_hash(__be32 addr)
-+static unsigned int recent_entry_hash4(const union nf_inet_addr *addr)
- {
- 	if (!hash_rnd_initted) {
--		get_random_bytes(&hash_rnd, 4);
-+		get_random_bytes(&hash_rnd, sizeof(hash_rnd));
- 		hash_rnd_initted =3D 1;
+diff --git a/include/net/netfilter/nf_conntrack_tuple.h b/include/net/netfilter/nf_conntrack_tuple.h
+index 6db3df6..405bea8 100644
+--- a/include/net/netfilter/nf_conntrack_tuple.h
++++ b/include/net/netfilter/nf_conntrack_tuple.h
+@@ -131,8 +131,6 @@ static inline void nf_ct_dump_tuple(const struct nf_conntrack_tuple *t)
  	}
--	return jhash_1word((__force u32)addr, hash_rnd) & (ip_list_hash_size =
-- 1);
-+	return jhash_1word((__force u32)addr->ip, hash_rnd) &
-+	       (ip_list_hash_size - 1);
-+}
-+
-+static unsigned int recent_entry_hash6(const union nf_inet_addr *addr)
-+{
-+	if (!hash_rnd_initted) {
-+		get_random_bytes(&hash_rnd, sizeof(hash_rnd));
-+		hash_rnd_initted =3D 1;
-+	}
-+	return jhash2((u32 *)addr->ip6, ARRAY_SIZE(addr->ip6), hash_rnd) &
-+	       (ip_list_hash_size - 1);
  }
-=20
- static struct recent_entry *
--recent_entry_lookup(const struct recent_table *table, __be32 addr, u_i=
-nt8_t ttl)
-+recent_entry_lookup(const struct recent_table *table,
-+                    const union nf_inet_addr *addrp, u_int16_t family,
-+                    u_int8_t ttl)
- {
- 	struct recent_entry *e;
- 	unsigned int h;
-=20
--	h =3D recent_entry_hash(addr);
-+	if (family =3D=3D AF_INET)
-+		h =3D recent_entry_hash4(addrp);
-+	else
-+		h =3D recent_entry_hash6(addrp);
-+
- 	list_for_each_entry(e, &table->iphash[h], list)
--		if (e->addr =3D=3D addr && (ttl =3D=3D e->ttl || !ttl || !e->ttl))
-+		if (e->family =3D=3D family &&
-+		    memcmp(&e->addr, addrp, sizeof(e->addr)) =3D=3D 0 &&
-+		    (ttl =3D=3D e->ttl || ttl =3D=3D 0 || e->ttl =3D=3D 0))
- 			return e;
- 	return NULL;
- }
-@@ -118,7 +143,8 @@ static void recent_entry_remove(struct recent_table=
- *t, struct recent_entry *e)
- }
-=20
- static struct recent_entry *
--recent_entry_init(struct recent_table *t, __be32 addr, u_int8_t ttl)
-+recent_entry_init(struct recent_table *t, const union nf_inet_addr *ad=
-dr,
-+                  u_int16_t family, u_int8_t ttl)
- {
- 	struct recent_entry *e;
-=20
-@@ -130,12 +156,16 @@ recent_entry_init(struct recent_table *t, __be32 =
-addr, u_int8_t ttl)
- 		    GFP_ATOMIC);
- 	if (e =3D=3D NULL)
- 		return NULL;
--	e->addr      =3D addr;
-+	memcpy(&e->addr, addr, sizeof(e->addr));
- 	e->ttl       =3D ttl;
- 	e->stamps[0] =3D jiffies;
- 	e->nstamps   =3D 1;
- 	e->index     =3D 1;
--	list_add_tail(&e->list, &t->iphash[recent_entry_hash(addr)]);
-+	e->family    =3D family;
-+	if (family =3D=3D AF_INET)
-+		list_add_tail(&e->list, &t->iphash[recent_entry_hash4(addr)]);
-+	else
-+		list_add_tail(&e->list, &t->iphash[recent_entry_hash6(addr)]);
- 	list_add_tail(&e->lru_list, &t->lru_list);
- 	t->entries++;
- 	return e;
-@@ -179,28 +209,42 @@ recent_mt(const struct sk_buff *skb, const struct=
- net_device *in,
- 	const struct xt_recent_mtinfo *info =3D matchinfo;
- 	struct recent_table *t;
- 	struct recent_entry *e;
--	__be32 addr;
-+	union nf_inet_addr addr;
- 	u_int8_t ttl;
- 	bool ret =3D info->invert;
-=20
--	if (info->side =3D=3D XT_RECENT_DEST)
--		addr =3D ip_hdr(skb)->daddr;
--	else
--		addr =3D ip_hdr(skb)->saddr;
-+	if (match->family =3D=3D AF_INET) {
-+		const struct iphdr *iph =3D ip_hdr(skb);
-+
-+		if (info->side =3D=3D XT_RECENT_DEST)
-+			addr.ip =3D iph->daddr;
-+		else
-+			addr.ip =3D iph->saddr;
-+
-+		ttl =3D iph->ttl;
-+	} else {
-+		const struct ipv6hdr *iph =3D ipv6_hdr(skb);
-+
-+		if (info->side =3D=3D XT_RECENT_DEST)
-+			memcpy(&addr.in6, &iph->daddr, sizeof(addr.in6));
-+		else
-+			memcpy(&addr.in6, &iph->saddr, sizeof(addr.in6));
-+
-+		ttl =3D iph->hop_limit;
-+	}
-=20
--	ttl =3D ip_hdr(skb)->ttl;
- 	/* use TTL as seen before forwarding */
- 	if (out && !skb->sk)
- 		ttl++;
-=20
- 	spin_lock_bh(&recent_lock);
- 	t =3D recent_table_lookup(info->name);
--	e =3D recent_entry_lookup(t, addr,
-+	e =3D recent_entry_lookup(t, &addr, match->family,
- 				info->check_set & XT_RECENT_TTL ? ttl : 0);
- 	if (e =3D=3D NULL) {
- 		if (!(info->check_set & XT_RECENT_SET))
- 			goto out;
--		e =3D recent_entry_init(t, addr, ttl);
-+		e =3D recent_entry_init(t, &addr, match->family, ttl);
- 		if (e =3D=3D NULL)
- 			*hotdrop =3D true;
- 		ret =3D !ret;
-@@ -318,7 +362,7 @@ static void recent_mt_destroy(const struct xt_match=
- *match, void *matchinfo)
-=20
- #ifdef CONFIG_PROC_FS
- struct recent_iter_state {
--	struct recent_table	*table;
-+	const struct recent_table *table;
- 	unsigned int		bucket;
- };
-=20
-@@ -343,8 +387,8 @@ static void *recent_seq_next(struct seq_file *seq, =
-void *v, loff_t *pos)
- {
- 	struct recent_iter_state *st =3D seq->private;
- 	const struct recent_table *t =3D st->table;
--	struct recent_entry *e =3D v;
--	struct list_head *head =3D e->list.next;
-+	const struct recent_entry *e =3D v;
-+	const struct list_head *head =3D e->list.next;
-=20
- 	while (head =3D=3D &t->iphash[st->bucket]) {
- 		if (++st->bucket >=3D ip_list_hash_size)
-@@ -367,8 +411,14 @@ static int recent_seq_show(struct seq_file *seq, v=
-oid *v)
- 	unsigned int i;
-=20
- 	i =3D (e->index - 1) % ip_pkt_list_tot;
--	seq_printf(seq, "src=3D%u.%u.%u.%u ttl: %u last_seen: %lu oldest_pkt:=
- %u",
--		   NIPQUAD(e->addr), e->ttl, e->stamps[i], e->index);
-+	if (e->family =3D=3D AF_INET)
-+		seq_printf(seq, "src=3D" NIPQUAD_FMT " ttl: %u last_seen: %lu "
-+		           "oldest_pkt: %u", NIPQUAD(e->addr.ip), e->ttl,
-+			   e->stamps[i], e->index);
-+	else
-+		seq_printf(seq, "src=3D" NIP6_FMT " ttl: %u last_seen: %lu "
-+		           "oldest_pkt: %u", NIP6(e->addr.in6), e->ttl,
-+		           e->stamps[i], e->index);
- 	for (i =3D 0; i < e->nstamps; i++)
- 		seq_printf(seq, "%s %lu", i ? "," : "", e->stamps[i]);
- 	seq_printf(seq, "\n");
-@@ -401,45 +451,59 @@ static ssize_t recent_proc_write(struct file *fil=
-e, const char __user *input,
- 	const struct proc_dir_entry *pde =3D PDE(file->f_path.dentry->d_inode=
-);
- 	struct recent_table *t =3D pde->data;
- 	struct recent_entry *e;
--	char buf[sizeof("+255.255.255.255")], *c =3D buf;
--	__be32 addr;
--	int add;
-+	char buf[sizeof("+b335:1d35:1e55:dead:c0de:1715:5afe:c0de")], *c =3D =
-buf;
-+	union nf_inet_addr addr;
-+	u_int16_t family;
-+	bool add, succ;
-=20
-+	if (size =3D=3D 0)
-+		return 0;
- 	if (size > sizeof(buf))
- 		size =3D sizeof(buf);
--	if (copy_from_user(buf, input, size))
-+	if (copy_from_user(buf, input, size) !=3D 0)
- 		return -EFAULT;
--	while (isspace(*c))
--		c++;
-=20
--	if (size - (c - buf) < 5)
--		return c - buf;
--	if (!strncmp(c, "clear", 5)) {
--		c +=3D 5;
-+	/* Strict protocol! */
-+	if (*loff !=3D 0)
-+		return -ESPIPE;
-+	switch (*c) {
-+	case '/': /* flush table */
- 		spin_lock_bh(&recent_lock);
- 		recent_table_flush(t);
- 		spin_unlock_bh(&recent_lock);
--		return c - buf;
--	}
+ 
+-#define NF_CT_DUMP_TUPLE(tp)	nf_ct_dump_tuple(tp)
 -
--	switch (*c) {
--	case '-':
--		add =3D 0;
--		c++;
-+		return size;
-+	case '-': /* remove address */
-+		add =3D false;
- 		break;
--	case '+':
--		c++;
--	default:
--		add =3D 1;
-+	case '+': /* add address */
-+		add =3D true;
- 		break;
-+	default:
-+		printk(KERN_INFO KBUILD_MODNAME ": Need +ip, -ip or /\n");
-+		return -EINVAL;
-+	}
-+
-+	++c;
-+	--size;
-+	if (strnchr(c, size, ':') !=3D NULL) {
-+		family =3D AF_INET6;
-+		succ   =3D in6_pton(c, size, (void *)&addr, '\n', NULL);
-+	} else {
-+		family =3D AF_INET;
-+		succ   =3D in4_pton(c, size, (void *)&addr, '\n', NULL);
-+	}
-+
-+	if (!succ) {
-+		printk(KERN_INFO KBUILD_MODNAME ": illegal address written "
-+		       "to procfs\n");
-+		return -EINVAL;
+ /* If we're the first tuple, it's the original dir. */
+ #define NF_CT_DIRECTION(h)						\
+ 	((enum ip_conntrack_dir)(h)->tuple.dst.dir)
+diff --git a/net/ipv4/netfilter/ipt_CLUSTERIP.c b/net/ipv4/netfilter/ipt_CLUSTERIP.c
+index ea8612a..9e03f0c 100644
+--- a/net/ipv4/netfilter/ipt_CLUSTERIP.c
++++ b/net/ipv4/netfilter/ipt_CLUSTERIP.c
+@@ -332,7 +332,7 @@ clusterip_tg(struct sk_buff *skb, const struct net_device *in,
  	}
--	addr =3D in_aton(c);
-=20
- 	spin_lock_bh(&recent_lock);
--	e =3D recent_entry_lookup(t, addr, 0);
-+	e =3D recent_entry_lookup(t, &addr, family, 0);
- 	if (e =3D=3D NULL) {
- 		if (add)
--			recent_entry_init(t, addr, 0);
-+			recent_entry_init(t, &addr, family, 0);
- 	} else {
- 		if (add)
- 			recent_entry_update(t, e);
-@@ -447,7 +511,9 @@ static ssize_t recent_proc_write(struct file *file,=
- const char __user *input,
- 			recent_entry_remove(t, e);
- 	}
- 	spin_unlock_bh(&recent_lock);
--	return size;
-+	/* Note we removed one above */
-+	*loff +=3D size + 1;
-+	return size + 1;
- }
-=20
- static const struct file_operations recent_fops =3D {
-@@ -459,14 +525,27 @@ static const struct file_operations recent_fops =3D=
- {
- };
- #endif /* CONFIG_PROC_FS */
-=20
--static struct xt_match recent_mt_reg __read_mostly =3D {
--	.name		=3D "recent",
--	.family		=3D AF_INET,
--	.match		=3D recent_mt,
--	.matchsize	=3D sizeof(struct xt_recent_mtinfo),
--	.checkentry	=3D recent_mt_check,
--	.destroy	=3D recent_mt_destroy,
--	.me		=3D THIS_MODULE,
-+static struct xt_match recent_mt_reg[] __read_mostly =3D {
-+	{
-+		.name       =3D "recent",
-+		.revision   =3D 0,
-+		.family     =3D AF_INET,
-+		.match      =3D recent_mt,
-+		.matchsize  =3D sizeof(struct xt_recent_mtinfo),
-+		.checkentry =3D recent_mt_check,
-+		.destroy    =3D recent_mt_destroy,
-+		.me         =3D THIS_MODULE,
-+	},
-+	{
-+		.name       =3D "recent",
-+		.revision   =3D 0,
-+		.family     =3D AF_INET6,
-+		.match      =3D recent_mt,
-+		.matchsize  =3D sizeof(struct xt_recent_mtinfo),
-+		.checkentry =3D recent_mt_check,
-+		.destroy    =3D recent_mt_destroy,
-+		.me         =3D THIS_MODULE,
-+	},
- };
-=20
- static int __init recent_mt_init(void)
-@@ -477,13 +556,13 @@ static int __init recent_mt_init(void)
- 		return -EINVAL;
- 	ip_list_hash_size =3D 1 << fls(ip_list_tot);
-=20
--	err =3D xt_register_match(&recent_mt_reg);
-+	err =3D xt_register_matches(recent_mt_reg, ARRAY_SIZE(recent_mt_reg))=
-;
- #ifdef CONFIG_PROC_FS
- 	if (err)
- 		return err;
--	proc_dir =3D proc_mkdir("ipt_recent", init_net.proc_net);
-+	proc_dir =3D proc_mkdir("xt_recent", init_net.proc_net);
- 	if (proc_dir =3D=3D NULL) {
--		xt_unregister_match(&recent_mt_reg);
-+		xt_unregister_matches(recent_mt_reg, ARRAY_SIZE(recent_mt_reg));
- 		err =3D -ENOMEM;
- 	}
+ 
+ #ifdef DEBUG
+-	NF_CT_DUMP_TUPLE(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
++	nf_ct_dump_tuple_ip(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
  #endif
-@@ -493,9 +572,9 @@ static int __init recent_mt_init(void)
- static void __exit recent_mt_exit(void)
- {
- 	BUG_ON(!list_empty(&tables));
--	xt_unregister_match(&recent_mt_reg);
-+	xt_unregister_matches(recent_mt_reg, ARRAY_SIZE(recent_mt_reg));
- #ifdef CONFIG_PROC_FS
--	remove_proc_entry("ipt_recent", init_net.proc_net);
-+	remove_proc_entry("xt_recent", init_net.proc_net);
- #endif
+ 	pr_debug("hash=%u ct_hash=%u ", hash, ct->mark);
+ 	if (!clusterip_responsible(cipinfo->config, hash)) {
+diff --git a/net/ipv4/netfilter/nf_conntrack_proto_icmp.c b/net/ipv4/netfilter/nf_conntrack_proto_icmp.c
+index 3b0591f..5f37cf6 100644
+--- a/net/ipv4/netfilter/nf_conntrack_proto_icmp.c
++++ b/net/ipv4/netfilter/nf_conntrack_proto_icmp.c
+@@ -115,7 +115,7 @@ static bool icmp_new(struct nf_conn *ct, const struct sk_buff *skb,
+ 		/* Can't create a new ICMP `conn' with this. */
+ 		pr_debug("icmp: can't create new conn with type %u\n",
+ 			 ct->tuplehash[0].tuple.dst.u.icmp.type);
+-		NF_CT_DUMP_TUPLE(&ct->tuplehash[0].tuple);
++		nf_ct_dump_tuple_ip(&ct->tuplehash[0].tuple);
+ 		return false;
+ 	}
+ 	atomic_set(&ct->proto.icmp.count, 0);
+diff --git a/net/ipv4/netfilter/nf_nat_pptp.c b/net/ipv4/netfilter/nf_nat_pptp.c
+index 3a1e6d6..da3d91a 100644
+--- a/net/ipv4/netfilter/nf_nat_pptp.c
++++ b/net/ipv4/netfilter/nf_nat_pptp.c
+@@ -72,7 +72,7 @@ static void pptp_nat_expected(struct nf_conn *ct,
+ 	}
+ 
+ 	pr_debug("trying to unexpect other dir: ");
+-	NF_CT_DUMP_TUPLE(&t);
++	nf_ct_dump_tuple_ip(&t);
+ 	other_exp = nf_ct_expect_find_get(&t);
+ 	if (other_exp) {
+ 		nf_ct_unexpect_related(other_exp);
+diff --git a/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c b/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c
+index 7b88299..b0b1efb 100644
+--- a/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c
++++ b/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c
+@@ -115,7 +115,7 @@ static bool icmpv6_new(struct nf_conn *ct, const struct sk_buff *skb,
+ 		/* Can't create a new ICMPv6 `conn' with this. */
+ 		pr_debug("icmpv6: can't create new conn with type %u\n",
+ 			 type + 128);
+-		NF_CT_DUMP_TUPLE(&ct->tuplehash[0].tuple);
++		nf_ct_dump_tuple_ipv6(&ct->tuplehash[0].tuple);
+ 		return false;
+ 	}
+ 	atomic_set(&ct->proto.icmp.count, 0);
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index b7ba7af..4800c98 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -764,7 +764,7 @@ void nf_conntrack_alter_reply(struct nf_conn *ct,
+ 	NF_CT_ASSERT(!nf_ct_is_confirmed(ct));
+ 
+ 	pr_debug("Altering reply tuple of %p to ", ct);
+-	NF_CT_DUMP_TUPLE(newreply);
++	nf_ct_dump_tuple(newreply);
+ 
+ 	ct->tuplehash[IP_CT_DIR_REPLY].tuple = *newreply;
+ 	if (ct->master || (help && help->expecting != 0))
+diff --git a/net/netfilter/nf_conntrack_h323_main.c b/net/netfilter/nf_conntrack_h323_main.c
+index a8f2267..10b429f 100644
+--- a/net/netfilter/nf_conntrack_h323_main.c
++++ b/net/netfilter/nf_conntrack_h323_main.c
+@@ -306,9 +306,9 @@ static int expect_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
+ 		if (nf_ct_expect_related(rtp_exp) == 0) {
+ 			if (nf_ct_expect_related(rtcp_exp) == 0) {
+ 				pr_debug("nf_ct_h323: expect RTP ");
+-				NF_CT_DUMP_TUPLE(&rtp_exp->tuple);
++				nf_ct_dump_tuple(&rtp_exp->tuple);
+ 				pr_debug("nf_ct_h323: expect RTCP ");
+-				NF_CT_DUMP_TUPLE(&rtcp_exp->tuple);
++				nf_ct_dump_tuple(&rtcp_exp->tuple);
+ 			} else {
+ 				nf_ct_unexpect_related(rtp_exp);
+ 				ret = -1;
+@@ -364,7 +364,7 @@ static int expect_t120(struct sk_buff *skb,
+ 	} else {		/* Conntrack only */
+ 		if (nf_ct_expect_related(exp) == 0) {
+ 			pr_debug("nf_ct_h323: expect T.120 ");
+-			NF_CT_DUMP_TUPLE(&exp->tuple);
++			nf_ct_dump_tuple(&exp->tuple);
+ 		} else
+ 			ret = -1;
+ 	}
+@@ -586,7 +586,7 @@ static int h245_help(struct sk_buff *skb, unsigned int protoff,
+ 	while (get_tpkt_data(skb, protoff, ct, ctinfo,
+ 			     &data, &datalen, &dataoff)) {
+ 		pr_debug("nf_ct_h245: TPKT len=%d ", datalen);
+-		NF_CT_DUMP_TUPLE(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
++		nf_ct_dump_tuple(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
+ 
+ 		/* Decode H.245 signal */
+ 		ret = DecodeMultimediaSystemControlMessage(data, datalen,
+@@ -701,7 +701,7 @@ static int expect_h245(struct sk_buff *skb, struct nf_conn *ct,
+ 	} else {		/* Conntrack only */
+ 		if (nf_ct_expect_related(exp) == 0) {
+ 			pr_debug("nf_ct_q931: expect H.245 ");
+-			NF_CT_DUMP_TUPLE(&exp->tuple);
++			nf_ct_dump_tuple(&exp->tuple);
+ 		} else
+ 			ret = -1;
+ 	}
+@@ -818,7 +818,7 @@ static int expect_callforwarding(struct sk_buff *skb,
+ 	} else {		/* Conntrack only */
+ 		if (nf_ct_expect_related(exp) == 0) {
+ 			pr_debug("nf_ct_q931: expect Call Forwarding ");
+-			NF_CT_DUMP_TUPLE(&exp->tuple);
++			nf_ct_dump_tuple(&exp->tuple);
+ 		} else
+ 			ret = -1;
+ 	}
+@@ -1138,7 +1138,7 @@ static int q931_help(struct sk_buff *skb, unsigned int protoff,
+ 	while (get_tpkt_data(skb, protoff, ct, ctinfo,
+ 			     &data, &datalen, &dataoff)) {
+ 		pr_debug("nf_ct_q931: TPKT len=%d ", datalen);
+-		NF_CT_DUMP_TUPLE(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
++		nf_ct_dump_tuple(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
+ 
+ 		/* Decode Q.931 signal */
+ 		ret = DecodeQ931(data, datalen, &q931);
+@@ -1288,7 +1288,7 @@ static int expect_q931(struct sk_buff *skb, struct nf_conn *ct,
+ 	} else {		/* Conntrack only */
+ 		if (nf_ct_expect_related(exp) == 0) {
+ 			pr_debug("nf_ct_ras: expect Q.931 ");
+-			NF_CT_DUMP_TUPLE(&exp->tuple);
++			nf_ct_dump_tuple(&exp->tuple);
+ 
+ 			/* Save port for looking up expect in processing RCF */
+ 			info->sig_port[dir] = port;
+@@ -1353,7 +1353,7 @@ static int process_gcf(struct sk_buff *skb, struct nf_conn *ct,
+ 
+ 	if (nf_ct_expect_related(exp) == 0) {
+ 		pr_debug("nf_ct_ras: expect RAS ");
+-		NF_CT_DUMP_TUPLE(&exp->tuple);
++		nf_ct_dump_tuple(&exp->tuple);
+ 	} else
+ 		ret = -1;
+ 
+@@ -1437,7 +1437,7 @@ static int process_rcf(struct sk_buff *skb, struct nf_conn *ct,
+ 			pr_debug("nf_ct_ras: set Q.931 expect "
+ 				 "timeout to %u seconds for",
+ 				 info->timeout);
+-			NF_CT_DUMP_TUPLE(&exp->tuple);
++			nf_ct_dump_tuple(&exp->tuple);
+ 			set_expect_timeout(exp, info->timeout);
+ 		}
+ 		spin_unlock_bh(&nf_conntrack_lock);
+@@ -1559,7 +1559,7 @@ static int process_acf(struct sk_buff *skb, struct nf_conn *ct,
+ 
+ 	if (nf_ct_expect_related(exp) == 0) {
+ 		pr_debug("nf_ct_ras: expect Q.931 ");
+-		NF_CT_DUMP_TUPLE(&exp->tuple);
++		nf_ct_dump_tuple(&exp->tuple);
+ 	} else
+ 		ret = -1;
+ 
+@@ -1613,7 +1613,7 @@ static int process_lcf(struct sk_buff *skb, struct nf_conn *ct,
+ 
+ 	if (nf_ct_expect_related(exp) == 0) {
+ 		pr_debug("nf_ct_ras: expect Q.931 ");
+-		NF_CT_DUMP_TUPLE(&exp->tuple);
++		nf_ct_dump_tuple(&exp->tuple);
+ 	} else
+ 		ret = -1;
+ 
+@@ -1717,7 +1717,7 @@ static int ras_help(struct sk_buff *skb, unsigned int protoff,
+ 	if (data == NULL)
+ 		goto accept;
+ 	pr_debug("nf_ct_ras: RAS message len=%d ", datalen);
+-	NF_CT_DUMP_TUPLE(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
++	nf_ct_dump_tuple(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
+ 
+ 	/* Decode RAS message */
+ 	ret = DecodeRasMessage(data, datalen, &ras);
+diff --git a/net/netfilter/nf_conntrack_pptp.c b/net/netfilter/nf_conntrack_pptp.c
+index 8fd8347..bfd3adf 100644
+--- a/net/netfilter/nf_conntrack_pptp.c
++++ b/net/netfilter/nf_conntrack_pptp.c
+@@ -119,7 +119,7 @@ static void pptp_expectfn(struct nf_conn *ct,
+ 		/* obviously this tuple inversion only works until you do NAT */
+ 		nf_ct_invert_tuplepr(&inv_t, &exp->tuple);
+ 		pr_debug("trying to unexpect other dir: ");
+-		NF_CT_DUMP_TUPLE(&inv_t);
++		nf_ct_dump_tuple(&inv_t);
+ 
+ 		exp_other = nf_ct_expect_find_get(&inv_t);
+ 		if (exp_other) {
+@@ -141,7 +141,7 @@ static int destroy_sibling_or_exp(const struct nf_conntrack_tuple *t)
+ 	struct nf_conn *sibling;
+ 
+ 	pr_debug("trying to timeout ct or exp for tuple ");
+-	NF_CT_DUMP_TUPLE(t);
++	nf_ct_dump_tuple(t);
+ 
+ 	h = nf_conntrack_find_get(t);
+ 	if (h)  {
+diff --git a/net/netfilter/nf_conntrack_proto_gre.c b/net/netfilter/nf_conntrack_proto_gre.c
+index 7f82933..2fa8ea2 100644
+--- a/net/netfilter/nf_conntrack_proto_gre.c
++++ b/net/netfilter/nf_conntrack_proto_gre.c
+@@ -82,7 +82,7 @@ static __be16 gre_keymap_lookup(struct nf_conntrack_tuple *t)
+ 	read_unlock_bh(&nf_ct_gre_lock);
+ 
+ 	pr_debug("lookup src key 0x%x for ", key);
+-	NF_CT_DUMP_TUPLE(t);
++	nf_ct_dump_tuple(t);
+ 
+ 	return key;
  }
-=20
---=20
+@@ -113,7 +113,7 @@ int nf_ct_gre_keymap_add(struct nf_conn *ct, enum ip_conntrack_dir dir,
+ 	*kmp = km;
+ 
+ 	pr_debug("adding new entry %p: ", km);
+-	NF_CT_DUMP_TUPLE(&km->tuple);
++	nf_ct_dump_tuple(&km->tuple);
+ 
+ 	write_lock_bh(&nf_ct_gre_lock);
+ 	list_add_tail(&km->list, &gre_keymap_list);
+@@ -238,7 +238,7 @@ static bool gre_new(struct nf_conn *ct, const struct sk_buff *skb,
+                     unsigned int dataoff)
+ {
+ 	pr_debug(": ");
+-	NF_CT_DUMP_TUPLE(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
++	nf_ct_dump_tuple(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
+ 
+ 	/* initialize to sane value.  Ideally a conntrack helper
+ 	 * (e.g. in case of pptp) is increasing them */
+diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
+index 67caddc..635f9cf 100644
+--- a/net/netfilter/nf_conntrack_proto_tcp.c
++++ b/net/netfilter/nf_conntrack_proto_tcp.c
+@@ -501,7 +501,7 @@ static bool tcp_in_window(const struct nf_conn *ct, struct ip_ct_tcp *state,
+ 
+ 	pr_debug("tcp_in_window: START\n");
+ 	pr_debug("tcp_in_window: ");
+-	NF_CT_DUMP_TUPLE(tuple);
++	nf_ct_dump_tuple(tuple);
+ 	pr_debug("seq=%u ack=%u sack=%u win=%u end=%u\n",
+ 		 seq, ack, sack, win, end);
+ 	pr_debug("tcp_in_window: sender end=%u maxend=%u maxwin=%u scale=%i "
+@@ -588,7 +588,7 @@ static bool tcp_in_window(const struct nf_conn *ct, struct ip_ct_tcp *state,
+ 		seq = end = sender->td_end;
+ 
+ 	pr_debug("tcp_in_window: ");
+-	NF_CT_DUMP_TUPLE(tuple);
++	nf_ct_dump_tuple(tuple);
+ 	pr_debug("seq=%u ack=%u sack =%u win=%u end=%u\n",
+ 		 seq, ack, sack, win, end);
+ 	pr_debug("tcp_in_window: sender end=%u maxend=%u maxwin=%u scale=%i "
+@@ -932,7 +932,7 @@ static int tcp_packet(struct nf_conn *ct,
+ 	ct->proto.tcp.last_dir = dir;
+ 
+ 	pr_debug("tcp_conntracks: ");
+-	NF_CT_DUMP_TUPLE(tuple);
++	nf_ct_dump_tuple(tuple);
+ 	pr_debug("syn=%i ack=%i fin=%i rst=%i old=%i new=%i\n",
+ 		 (th->syn ? 1 : 0), (th->ack ? 1 : 0),
+ 		 (th->fin ? 1 : 0), (th->rst ? 1 : 0),
+diff --git a/net/netfilter/nf_conntrack_sane.c b/net/netfilter/nf_conntrack_sane.c
+index 4f3d0cb..bb8bb49 100644
+--- a/net/netfilter/nf_conntrack_sane.c
++++ b/net/netfilter/nf_conntrack_sane.c
+@@ -148,7 +148,7 @@ static int help(struct sk_buff *skb,
+ 			  IPPROTO_TCP, NULL, &reply->port);
+ 
+ 	pr_debug("nf_ct_sane: expect: ");
+-	NF_CT_DUMP_TUPLE(&exp->tuple);
++	nf_ct_dump_tuple(&exp->tuple);
+ 
+ 	/* Can't expect this?  Best to drop packet now. */
+ 	if (nf_ct_expect_related(exp) != 0)
+diff --git a/net/netfilter/nf_conntrack_tftp.c b/net/netfilter/nf_conntrack_tftp.c
+index 95d1743..5666495 100644
+--- a/net/netfilter/nf_conntrack_tftp.c
++++ b/net/netfilter/nf_conntrack_tftp.c
+@@ -56,8 +56,8 @@ static int tftp_help(struct sk_buff *skb,
+ 	case TFTP_OPCODE_READ:
+ 	case TFTP_OPCODE_WRITE:
+ 		/* RRQ and WRQ works the same way */
+-		NF_CT_DUMP_TUPLE(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
+-		NF_CT_DUMP_TUPLE(&ct->tuplehash[IP_CT_DIR_REPLY].tuple);
++		nf_ct_dump_tuple(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
++		nf_ct_dump_tuple(&ct->tuplehash[IP_CT_DIR_REPLY].tuple);
+ 
+ 		exp = nf_ct_expect_alloc(ct);
+ 		if (exp == NULL)
+@@ -68,7 +68,7 @@ static int tftp_help(struct sk_buff *skb,
+ 				  IPPROTO_UDP, NULL, &tuple->dst.u.udp.port);
+ 
+ 		pr_debug("expect: ");
+-		NF_CT_DUMP_TUPLE(&exp->tuple);
++		nf_ct_dump_tuple(&exp->tuple);
+ 
+ 		nf_nat_tftp = rcu_dereference(nf_nat_tftp_hook);
+ 		if (nf_nat_tftp && ct->status & IPS_NAT_MASK)
+-- 
 1.5.4.4
 
