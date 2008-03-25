@@ -1,83 +1,32 @@
-From: Franck JONCOURT <franck.mail@dthconnex.com>
-Subject: Re: Stopping =?UTF-8?Q?ip=5Fconntrack=5Fmax=20from=20resetting?=
-Date: Tue, 25 Mar 2008 20:33:45 +0100
-Message-ID: <be74a7029007782ed97a12bfcd070e49@localhost>
-References: <alpine.LNX.1.10.0803250258490.9368@fbirervta.pbzchgretzou.qr>
+From: Benny Amorsen <benny+usenet@amorsen.dk>
+Subject: Re: Query: Can Netfilter inspect xml soap traffic
+Date: Tue, 25 Mar 2008 20:56:55 +0100
+Message-ID: <m3abkmy3ug.fsf@ursa.amorsen.dk>
+References: <47E913B6.4080004@tssg.org> <47E92B5A.5030903@riverviewtech.net> <47E93099.9010602@tssg.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0803250258490.9368@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+william fitzgerald <wfitzgerald@tssg.org> writes:
 
-On Tue, 25 Mar 2008 02:59:12 +0100 (CET), Jan Engelhardt
+> "Is Netfilter obsolete in an Enterprise Web Service Environment"
+> please let me know.
 
-<jengelh@computergmbh.de> wrote:
+The discussion about whether packet filters really deserve the word
+"firewall" applied to them goes back at least as far as mid 90's. You
+can probably find flame wars with Gauntlet and Raptor Eagle/Symantec
+Enterprise Firewall on one side and Firewall-1 and PIX on the other.
 
-> 
-
-> On Monday 2008-03-24 15:09, Richard Andrews wrote:
-
->> Hello,
-
-
-
-Hi,
-
-
-
->> We have a system running iptables, of which due to the incoming
-
->> traffic we've had to increase ip_conntrack_max via sysctl.
-
->> However, when restarting the service during any maintenance the
-
->> value we pass during sysctl.conf is reset to the default 65536.
-
->> Which then we are forced to run "sysctl -p" to reload our custom
-
->> value.  Is there a way to stop the iptables service from rewriting
-
->> ip_conntrack_max when issued a restart/reload?
-
-> 
-
-> That seems to be a bug of your distribution, because on mine,
-
-> sysctl.conf is read and applied on boot.
+Anyway, with the Level-7 match or Deep Packet Inspection or whichever
+buzz words you prefer, packet filters are closer in capabilities than
+ever before. At the same time application level proxies are faster
+than ever before. It's hard to pick a winner.
 
 
-
-Running Debian Sid, I can get the same behaviour. This is not
-
-a bug, just a matter of boot sequence.
-
-
-
-If you load sysctl configuration before your module is loaded
-
-(should be nf_conntrack_ipv4, not quite sure), the entry 
-
-net.ipv4.netfilter.ip_conntrack_max does not exist yet, so it
-
-is not possible to set it to its value.
-
-
-
-To get it work, I just added it to my module list, in order to 
-
-load it at boot time before my sysctl configuration.
-
-
-
----
-
-Franck Joncourt
-
-http://www.debian.org/ - http://smhteam.info/wiki/
-
+/Benny
 
 
