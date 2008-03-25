@@ -1,53 +1,56 @@
-From: Whit Blauvelt <whit@transpect.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: Why does ipv6 enabled interfere with ipv4 SNAT?
-Date: Mon, 24 Mar 2008 23:57:54 -0400
-Message-ID: <20080325035754.GA16404@transpect.com>
-References: <20080325012807.GA15637@transpect.com> <alpine.LNX.1.10.0803250254100.9368@fbirervta.pbzchgretzou.qr> <20080325024424.GA16089@transpect.com> <alpine.LNX.1.10.0803250354390.9368@fbirervta.pbzchgretzou.qr>
+Date: Tue, 25 Mar 2008 12:03:58 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0803251156560.1535@blackhole.kfki.hu>
+References: <20080325012807.GA15637@transpect.com>
+ <alpine.LNX.1.10.0803250254100.9368@fbirervta.pbzchgretzou.qr>
+ <20080325024424.GA16089@transpect.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.1.10.0803250354390.9368@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <20080325024424.GA16089@transpect.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@computergmbh.de>
-Cc: netfilter@vger.kernel.org
+To: Whit Blauvelt <whit@transpect.com>
+Cc: Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org
 
-On Tue, Mar 25, 2008 at 03:57:49AM +0100, Jan Engelhardt wrote:
+On Mon, 24 Mar 2008, Whit Blauvelt wrote:
 
-> How does it break? Do the counters increase in the nat table at all?
-> Do the chain and/or rule counters increase if you add the same rule
-> without action? (I.e.:
->
-> 	-t nat -A POSTROUTING -o eth4 -m whatever
-> 	-t nat -A POSTROUTING -o eth4 -m whatever -j SNAT --to xyz
+> I was mentioning where the mismatch was. Yeah the other stuff's there.
+> 
+> /proc/sys/net/ipv6/conf ends up with only:
+> 
+>    all default eth0 eth1 eth2 eth3 lo
+> 
+> while /proc/sys/net/ipv4/conf ends up (correctly) with:
+> 
+>    all default eth0 eth1 eth2 eth3 eth4 eth5 lo
 
-No the counters don't increase. Again, ipv4 Netfilter SNAT does not work if
-ipv6 is enabled on the system. It works perfectly if ipv6 is disabled - no
-other changes. Do you have any theory about that, at all? It may well be
-downstream of the failure to handle /proc assignments correctly for > 4 NICs
-on the ipv6 side - understandably most people aren't network admins on my
-level running boxes with > 4 NICs so that wouldn't bite that often. That
-wouldn't make it not a bug, though.
+If you have got ethernet devices with MTU smaller than 1500, those won't 
+support IPv6 and therefore don't show up in /proc/sys/net/ipv6/conf.
 
->> It is a stock kernel, if by that you mean a stock distro kernel -
->> Ubuntu's latest, 2.6.22-14-server.
+> Not sure what you're thinking there. My problem wasn't with there being too
+> many devices, but with two of the devices I actually have not being
+> represented - and with Netfilter not doing _ipv4_ SNAT on account of
+> something with _ipv6_. Why should Netfilter ipv4 code even _care_ about
+> what's right or not with ipv6? Do you have any knowledge about
+> interdependency there? 
+> 
+> > It still works with opensuse plus 2.6.23. Well, I suggest you
+> > try a stock kernel.
+> 
+> It is a stock kernel, if by that you mean a stock distro kernel -
+> Ubuntu's latest, 2.6.22-14-server. 
 
-> Stock vanilla kernel.org kernel.
+Please check which modules are loaded in. Probably IPv4 NAT related 
+modules are not auto-loaded. Also, is there any error message when you 
+issue 'iptables -t nat ...' commands?
 
-Why would I want to do that? If you read my orginal post closely, I have no
-need for ipv6. It's fine with me to run without it - which works perfectly.
-But what I want to do is understand where the fine bug is ... perhaps to
-report it to those responsible. Now, it looks pretty obviously like there's
-a serious bug in Netfilter here, because how else could anything about the
-state of the ipv6 configuration affect the success of ipv4 Netfilter SNAT?
-
-Now, if you can explain, theoretically, why I'm wrong about that, why the
-state of the ipv6 configuration should be critical to ipv4 Netfilter SNAT
-operation, I'm quite curious. But if you have no idea why the ipv4 Netfilter
-SNAT rule fails if-and-only-if ipv6 operation is also enabled on the system,
-then please let's see if someone who knows the innards of this stuff better
-than either of us can help illuminate the puzzle.
-
-Whit
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
