@@ -1,61 +1,59 @@
-From: william fitzgerald <wfitzgerald@tssg.org>
-Subject: Query: Can Netfilter inspect xml soap traffic
-Date: Tue, 25 Mar 2008 15:01:10 +0000
-Message-ID: <47E913B6.4080004@tssg.org>
-Reply-To: wfitzgerald@tssg.org
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Why does ipv6 enabled interfere with ipv4 SNAT?
+Date: Tue, 25 Mar 2008 16:53:19 +0100
+Message-ID: <47E91FEF.9080705@trash.net>
+References: <20080325012807.GA15637@transpect.com> <alpine.LNX.1.10.0803250254100.9368@fbirervta.pbzchgretzou.qr> <20080325024424.GA16089@transpect.com> <Pine.LNX.4.64.0803251156560.1535@blackhole.kfki.hu> <20080325142553.GA8783@transpect.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20080325142553.GA8783@transpect.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Whit Blauvelt <whit@transpect.com>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-Dear Netfilter Experts,
+Whit Blauvelt wrote:
+>
+> Josef, the set of iptables modules is precisely the same whether or not ipv6
+> is enabled on the system (yes, I've looked). The only difference is whether
+> the ipv6 module is loaded. Blocking the ipv6 module from loading at boot
+> both prevents (of course) the /proc/sys/net/ipv6 space from being populated.
+> It also fully restores SNAT functionality.
+> 
+> There are no error messages from "iptables -t nat" commands. The nat rules
+> show up precisely the same in the resulting tables - they just don't count
+> any packets traversing them if ipv6 is also enabled. I haven't done packet
+> inspection to see what's happening, but the problem remains:
+> 
+> With _everything else_ unchanged, simply letting the ipv6 module load at
+> boot results in:
+> 
+> 1) eth4 and eth5 not showing up as they should for ipv6 in
+>    /proc/sys/net/ipv6/conf
+> 
+> and (whether related or a separate bug)
+> 
+> 2) ipv4 Netfilter SNAT (in POSTROUTING in this case) becoming a black hole
+> 
+> Boxes behind the firewall can still ping the firewall. The firewall can
+> still ping the world. But just with the ipv6 module loaded, the boxes behind
+> the firewall cannot ping the world. Clearly ipv6 is not properly
+> provisioning its space. But why should ipv6's failing have any effect at all
+> on ipv4 functionality? 
+> 
+> For me, not loading the ipv6 module is a totally fine workaround. It's
+> useless cruft in my context anyway. But even though my problem is fixed for
+> now, it will be a problem for other people (maybe only those with > 4
+> ethernet devices?) when the ipv6 transition finally happens. I remember in
+> the early 90s when we were expecting it by about 1998.
+> 
+> So in the spirit of open source development, I'm looking for for someone
+> with better knowledge of the underlying theory to help identify where the
+> bug here is. Then the responsible developers can have a chance to fix it
+> before a lot of other sysadmins also end up wasting many hours because of
+> the non-obviousness of having to look at ipv6 stuff to find why ipv4 SNAT
+> becomes a black hole.
 
-Can Netfilter/iptables inspect xml/soap messages as xml based firewalls do?
-
-Does the Layer-7 module have enough "smarts" to inspect web service 
-messages.
-
-I am asking in regard to the role of Network Access Control firewalls 
-such as iptables within a dedicated enterprise web service SOA environment.
-
-I have seen some posts that suggest that firewalls are now obsolete, 
-particularly NACs, in regard to web services (everything is over http 
-hence less effect restrictions).
-
-However, my opinion is that its not as simple as opening ports 80 and 
-443 to tunnel SOAP messages.
-
-For example, I may want to restrict IP ranges, maybe I have some 
-business partners and I only want them accessing the web service. Or 
-maybe I need to control DoS attacks to web services.
-
-I think if iptables has also the ability to deep packet inspect xml 
-messages it then demonstrates that there is still an importance for NAC 
-based firewalls.
-
-All pointers to documentation and your comments are welcome.
-
-I look forward to your support,
-regards,
-Will.
-
--- 
-William M. Fitzgerald,
-PhD Student,
-Telecommunications Software & Systems Group,
-ArcLabs Research and Innovation Centre,
-Waterford Institute of Technology,
-WIT West Campus,
-Carriganore,
-Waterford.
-Office Ph: +353 51 302937
-Mobile Ph: +353 87 9527083
-Web: www.williamfitzgerald.org
-      www.linkedin.com/in/williamfitzgerald
-      www.ryze.com/go/wfitzgerald
-
-
-
+Please post the list of modules loaded and the output of
+/proc/net/nf_conntrack.
