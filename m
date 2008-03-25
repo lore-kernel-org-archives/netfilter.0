@@ -1,34 +1,51 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Query: Can Netfilter inspect xml soap traffic
-Date: Tue, 25 Mar 2008 15:13:25 -0500
-Message-ID: <47E95CE5.2020402@riverviewtech.net>
-References: <47E913B6.4080004@tssg.org> <47E92B5A.5030903@riverviewtech.net> <47E93099.9010602@tssg.org> <m3abkmy3ug.fsf@ursa.amorsen.dk>
+From: Casper Gripenberg <casper.gripenberg@kotiportti.fi>
+Subject: Re: REJECT wih tcp-reset not working (very weird problem)
+Date: Tue, 25 Mar 2008 23:38:08 +0200
+Message-ID: <47E970C0.2020307@kotiportti.fi>
+References: <47E7FAEE.8090002@kotiportti.fi>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <m3abkmy3ug.fsf@ursa.amorsen.dk>
+In-Reply-To: <47E7FAEE.8090002@kotiportti.fi>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 03/25/08 14:56, Benny Amorsen wrote:
-> Anyway, with the Level-7 match or Deep Packet Inspection or whichever 
-> buzz words you prefer, packet filters are closer in capabilities than 
-> ever before. At the same time application level proxies are faster 
-> than ever before. It's hard to pick a winner.
+Casper Gripenberg wrote:
+ >
+ > Hi..I have a very simple bridging firewall setup:
+ >
+ >                                BRIDGE
+ > computer1 <-internet-> [eth1 <-> br0 <-> eth0] <-> computer2
+ >
+ > [..snip..]
 
-Very good point.
+I think there's a bug in either the bridging or netfilter
+code. I just found a workaround which seem to indicate
+that the way the firewall is currently working is incorrect.
 
-I suppose one thing to think about is who is going to maintain what. 
-Developers would probably be able to maintain (add / change / delete 
-rules) an ALG better where as network administration staff would 
-probably be able to maintain a hardware firewall better.  Of course, why 
-not use some of each.  Use the hardware firewall for the lower end 
-simpler aspects of it while using the ALG for the higher end more 
-specific aspects.  Let the hardware ASICs do what they do best while 
-letting the ALG do what it does best.
+The workaround is to use ebtables to rewrite the MAC source
+of the RST packet to the correct source.
+
+I.e. I rewrite it from the bridge address to the address
+of computer2 -> the test case suddenly starts working.
+
+Here's the workaround:
+
+ebtables -t nat -A POSTROUTING -o eth1 -p ipv4 --ip-proto tcp \
+          --ip-sport 5555 -j snat --to-src 00:0d:56:af:17:47
+
+That of course will break a lot of other stuff, but
+it just proves that repairing the MAC is what makes
+the RST reply work properly.
+
+This bug seems to have been around for quite a while,
+as there was someone else back in 2004 who stumbled on
+the same problem:
+
+http://www.archivum.info/netfilter/2004-08/msg00614.html
+
+Casper
 
 
-
-Grant. . . .
