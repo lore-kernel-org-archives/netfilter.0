@@ -1,7 +1,7 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: [PATCH 29/29] : Replace NF_CT_DUMP_TUPLE macro indrection by function call
-Date: Tue, 25 Mar 2008 19:30:21 +0100
-Message-ID: <c49adddf85d51d418870a3595346558ab0ae11c8.1206469820.git.jengelh@computergmbh.de>
+Subject: [PATCH 27/29] : Deploy a prefix_length-to-network mask mapping table
+Date: Tue, 25 Mar 2008 19:30:19 +0100
+Message-ID: <672364ad1c63c40a780f3090fa2e706609031cc2.1206469820.git.jengelh@computergmbh.de>
 References: <alpine.LNX.1.10.0803251914060.2240@fbirervta.pbzchgretzou.qr>
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <alpine.LNX.1.10.0803251914060.2240@fbirervta.pbzchgretzou.qr>
@@ -15,339 +15,449 @@ Content-Transfer-Encoding: 7bit
 To: kaber@trash.net
 Cc: netfilter@vger.kernel.org, Jan Engelhardt <jengelh@computergmbh.de>
 
-Directly call IPv4 and IPv6 variants where the address family is
-easily known.
+Userspace utilities commonly transform a prefix length (CIDR notation
+like 192.168.222.1/32) into a full netmask before submitting it to
+the kernel.
+
+The size of struct xt_conntrack_mtinfo1 is currently 152 bytes, of
+which 64 bytes are for masks. By submitting prefix lengths to the
+kernel instead, 60 bytes (almost 40%) memory per rule can be saved as
+prefix lengths can fit into one uint8_t. Since we do not want to
+recompute the mask for each invocation of the match function, a
+static translation table will be used (net/core/pfxlen.c).
+
+The patch changes xt_conntrack revision 1 into revision 2.
+Userspace can easily fall back to revision 0.
+The patch also removes xt_hashlimit's obsolete mask computation.
 
 Signed-off-by: Jan Engelhardt <jengelh@computergmbh.de>
 ---
- include/net/netfilter/nf_conntrack_tuple.h     |    2 -
- net/ipv4/netfilter/ipt_CLUSTERIP.c             |    2 +-
- net/ipv4/netfilter/nf_conntrack_proto_icmp.c   |    2 +-
- net/ipv4/netfilter/nf_nat_pptp.c               |    2 +-
- net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c |    2 +-
- net/netfilter/nf_conntrack_core.c              |    2 +-
- net/netfilter/nf_conntrack_h323_main.c         |   26 ++++++++--------
- net/netfilter/nf_conntrack_pptp.c              |    4 +-
- net/netfilter/nf_conntrack_proto_gre.c         |    6 ++--
- net/netfilter/nf_conntrack_proto_tcp.c         |    6 ++--
- net/netfilter/nf_conntrack_sane.c              |    2 +-
- net/netfilter/nf_conntrack_tftp.c              |    6 ++--
- 12 files changed, 30 insertions(+), 32 deletions(-)
+ include/linux/netfilter/xt_conntrack.h |   12 +-
+ include/net/pfxlen.h                   |    8 ++
+ net/Kconfig                            |    6 +
+ net/core/Makefile                      |    1 +
+ net/core/pfxlen.c                      |  146 ++++++++++++++++++++++++
+ net/netfilter/Kconfig                  |    1 +
+ net/netfilter/xt_conntrack.c           |   43 +++++---
+ net/netfilter/xt_hashlimit.c           |   40 ++-----
+ 8 files changed, 206 insertions(+), 51 deletions(-)
+ create mode 100644 include/net/pfxlen.h
+ create mode 100644 net/core/pfxlen.c
 
-diff --git a/include/net/netfilter/nf_conntrack_tuple.h b/include/net/netfilter/nf_conntrack_tuple.h
-index 6db3df6..405bea8 100644
---- a/include/net/netfilter/nf_conntrack_tuple.h
-+++ b/include/net/netfilter/nf_conntrack_tuple.h
-@@ -131,8 +131,6 @@ static inline void nf_ct_dump_tuple(const struct nf_conntrack_tuple *t)
- 	}
- }
+diff --git a/include/linux/netfilter/xt_conntrack.h b/include/linux/netfilter/xt_conntrack.h
+index f3fd83e..79540e6 100644
+--- a/include/linux/netfilter/xt_conntrack.h
++++ b/include/linux/netfilter/xt_conntrack.h
+@@ -67,17 +67,19 @@ struct xt_conntrack_info
+ 	u_int8_t invflags;
+ };
  
--#define NF_CT_DUMP_TUPLE(tp)	nf_ct_dump_tuple(tp)
--
- /* If we're the first tuple, it's the original dir. */
- #define NF_CT_DIRECTION(h)						\
- 	((enum ip_conntrack_dir)(h)->tuple.dst.dir)
-diff --git a/net/ipv4/netfilter/ipt_CLUSTERIP.c b/net/ipv4/netfilter/ipt_CLUSTERIP.c
-index ea8612a..9e03f0c 100644
---- a/net/ipv4/netfilter/ipt_CLUSTERIP.c
-+++ b/net/ipv4/netfilter/ipt_CLUSTERIP.c
-@@ -332,7 +332,7 @@ clusterip_tg(struct sk_buff *skb, const struct net_device *in,
- 	}
+-struct xt_conntrack_mtinfo1 {
+-	union nf_inet_addr origsrc_addr, origsrc_mask;
+-	union nf_inet_addr origdst_addr, origdst_mask;
+-	union nf_inet_addr replsrc_addr, replsrc_mask;
+-	union nf_inet_addr repldst_addr, repldst_mask;
++struct xt_conntrack_mtinfo2 {
++	union nf_inet_addr origsrc_addr;
++	union nf_inet_addr origdst_addr;
++	union nf_inet_addr replsrc_addr;
++	union nf_inet_addr repldst_addr;
+ 	u_int32_t expires_min, expires_max;
+ 	u_int16_t l4proto;
+ 	__be16 origsrc_port, origdst_port;
+ 	__be16 replsrc_port, repldst_port;
+ 	u_int16_t match_flags, invert_flags;
+ 	u_int8_t state_mask, status_mask;
++	u_int8_t origsrc_pfx, origdst_pfx;
++	u_int8_t replsrc_pfx, repldst_pfx;
+ };
  
- #ifdef DEBUG
--	NF_CT_DUMP_TUPLE(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
-+	nf_ct_dump_tuple_ip(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
- #endif
- 	pr_debug("hash=%u ct_hash=%u ", hash, ct->mark);
- 	if (!clusterip_responsible(cipinfo->config, hash)) {
-diff --git a/net/ipv4/netfilter/nf_conntrack_proto_icmp.c b/net/ipv4/netfilter/nf_conntrack_proto_icmp.c
-index 3b0591f..5f37cf6 100644
---- a/net/ipv4/netfilter/nf_conntrack_proto_icmp.c
-+++ b/net/ipv4/netfilter/nf_conntrack_proto_icmp.c
-@@ -115,7 +115,7 @@ static bool icmp_new(struct nf_conn *ct, const struct sk_buff *skb,
- 		/* Can't create a new ICMP `conn' with this. */
- 		pr_debug("icmp: can't create new conn with type %u\n",
- 			 ct->tuplehash[0].tuple.dst.u.icmp.type);
--		NF_CT_DUMP_TUPLE(&ct->tuplehash[0].tuple);
-+		nf_ct_dump_tuple_ip(&ct->tuplehash[0].tuple);
- 		return false;
- 	}
- 	atomic_set(&ct->proto.icmp.count, 0);
-diff --git a/net/ipv4/netfilter/nf_nat_pptp.c b/net/ipv4/netfilter/nf_nat_pptp.c
-index 3a1e6d6..da3d91a 100644
---- a/net/ipv4/netfilter/nf_nat_pptp.c
-+++ b/net/ipv4/netfilter/nf_nat_pptp.c
-@@ -72,7 +72,7 @@ static void pptp_nat_expected(struct nf_conn *ct,
- 	}
+ #endif /*_XT_CONNTRACK_H*/
+diff --git a/include/net/pfxlen.h b/include/net/pfxlen.h
+new file mode 100644
+index 0000000..203a494
+--- /dev/null
++++ b/include/net/pfxlen.h
+@@ -0,0 +1,8 @@
++#ifndef _NET_PFXLEN_H
++#define _NET_PFXLEN_H 1
++
++#include <linux/netfilter.h>
++
++extern union nf_inet_addr prefixlen_netmask_map[];
++
++#endif /* _NET_PFXLEN_H */
+diff --git a/net/Kconfig b/net/Kconfig
+index acbf7c6..c355f08 100644
+--- a/net/Kconfig
++++ b/net/Kconfig
+@@ -27,6 +27,12 @@ if NET
  
- 	pr_debug("trying to unexpect other dir: ");
--	NF_CT_DUMP_TUPLE(&t);
-+	nf_ct_dump_tuple_ip(&t);
- 	other_exp = nf_ct_expect_find_get(&t);
- 	if (other_exp) {
- 		nf_ct_unexpect_related(other_exp);
-diff --git a/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c b/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c
-index 7b88299..b0b1efb 100644
---- a/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c
-+++ b/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c
-@@ -115,7 +115,7 @@ static bool icmpv6_new(struct nf_conn *ct, const struct sk_buff *skb,
- 		/* Can't create a new ICMPv6 `conn' with this. */
- 		pr_debug("icmpv6: can't create new conn with type %u\n",
- 			 type + 128);
--		NF_CT_DUMP_TUPLE(&ct->tuplehash[0].tuple);
-+		nf_ct_dump_tuple_ipv6(&ct->tuplehash[0].tuple);
- 		return false;
- 	}
- 	atomic_set(&ct->proto.icmp.count, 0);
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index b7ba7af..4800c98 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -764,7 +764,7 @@ void nf_conntrack_alter_reply(struct nf_conn *ct,
- 	NF_CT_ASSERT(!nf_ct_is_confirmed(ct));
+ menu "Networking options"
  
- 	pr_debug("Altering reply tuple of %p to ", ct);
--	NF_CT_DUMP_TUPLE(newreply);
-+	nf_ct_dump_tuple(newreply);
++config NET_PFXLEN
++	tristate
++	---help---
++	This option adds a translation table from prefix length to
++	expanded netmasks (e.g. /28 => 255.255.255.240)
++
+ config NET_NS
+ 	bool "Network namespace support"
+ 	default n
+diff --git a/net/core/Makefile b/net/core/Makefile
+index b1332f6..cc818dd 100644
+--- a/net/core/Makefile
++++ b/net/core/Makefile
+@@ -16,3 +16,4 @@ obj-$(CONFIG_NET_PKTGEN) += pktgen.o
+ obj-$(CONFIG_NETPOLL) += netpoll.o
+ obj-$(CONFIG_NET_DMA) += user_dma.o
+ obj-$(CONFIG_FIB_RULES) += fib_rules.o
++obj-$(CONFIG_NET_PFXLEN) += pfxlen.o
+diff --git a/net/core/pfxlen.c b/net/core/pfxlen.c
+new file mode 100644
+index 0000000..5667c03
+--- /dev/null
++++ b/net/core/pfxlen.c
+@@ -0,0 +1,146 @@
++#include <linux/netfilter.h>
++
++#define E(a, b, c, d) \
++	{.ip6 = { \
++		__constant_htonl(a), __constant_htonl(b), \
++		__constant_htonl(c), __constant_htonl(d), \
++	}}
++
++/*
++ * This table works for both IPv4 and IPv6;
++ * just use prefixlen_netmask_map[prefixlength].ip.
++ */
++const union nf_inet_addr prefixlen_netmask_map[] = {
++	E(0x00000000, 0x00000000, 0x00000000, 0x00000000),
++	E(0x80000000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xC0000000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xE0000000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xF0000000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xF8000000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFC000000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFE000000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFF000000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFF800000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFC00000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFE00000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFF00000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFF80000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFC0000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFE0000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFF0000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFF8000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFC000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFE000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFF000, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFF800, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFC00, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFE00, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFF00, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFF80, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFC0, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFE0, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFF0, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFF8, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFC, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFE, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0x80000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xC0000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xE0000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xF0000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xF8000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFC000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFE000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFF000000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFF800000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFC00000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFE00000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFF00000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFF80000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFC0000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFE0000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFF0000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFF8000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFC000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFE000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFF000, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFF800, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFC00, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFE00, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFF00, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFF80, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFC0, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFE0, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFF0, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFF8, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFC, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFE, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0x80000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xC0000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xE0000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xF0000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xF8000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFC000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFE000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFF000000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFF800000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFC00000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFE00000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFF00000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFF80000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFC0000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFE0000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFF0000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFF8000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFC000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFE000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFF000, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFF800, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFC00, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFE00, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFF00, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFF80, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFC0, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFE0, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFF0, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFF8, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFC, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFE, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x80000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xC0000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xE0000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xF0000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xF8000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFC000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFE000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFF000000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFF800000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFC00000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFE00000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFF00000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFF80000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFC0000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFE0000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFF0000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFF8000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFC000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFE000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFF000),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFF800),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFC00),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFE00),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFF00),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFF80),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFC0),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFE0),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFF0),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFF8),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFC),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFE),
++	E(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF),
++};
++EXPORT_SYMBOL(prefixlen_netmask_map);
++
++MODULE_LICENSE("GPL");
+diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
+index 222aa07..c1a7ea4 100644
+--- a/net/netfilter/Kconfig
++++ b/net/netfilter/Kconfig
+@@ -27,6 +27,7 @@ config NETFILTER_NETLINK_LOG
+ config NF_CONNTRACK
+ 	tristate "Netfilter connection tracking support"
+ 	default m if NETFILTER_ADVANCED=n
++	select NET_PFXLEN
+ 	help
+ 	  Connection tracking keeps a record of what packets have passed
+ 	  through your machine, in order to figure out how they are related
+diff --git a/net/netfilter/xt_conntrack.c b/net/netfilter/xt_conntrack.c
+index 0c50b28..0b03605 100644
+--- a/net/netfilter/xt_conntrack.c
++++ b/net/netfilter/xt_conntrack.c
+@@ -13,6 +13,7 @@
+ #include <linux/module.h>
+ #include <linux/skbuff.h>
+ #include <net/ipv6.h>
++#include <net/pfxlen.h>
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/netfilter/xt_conntrack.h>
+ #include <net/netfilter/nf_conntrack.h>
+@@ -132,42 +133,46 @@ conntrack_addrcmp(const union nf_inet_addr *kaddr,
  
- 	ct->tuplehash[IP_CT_DIR_REPLY].tuple = *newreply;
- 	if (ct->master || (help && help->expecting != 0))
-diff --git a/net/netfilter/nf_conntrack_h323_main.c b/net/netfilter/nf_conntrack_h323_main.c
-index a8f2267..10b429f 100644
---- a/net/netfilter/nf_conntrack_h323_main.c
-+++ b/net/netfilter/nf_conntrack_h323_main.c
-@@ -306,9 +306,9 @@ static int expect_rtp_rtcp(struct sk_buff *skb, struct nf_conn *ct,
- 		if (nf_ct_expect_related(rtp_exp) == 0) {
- 			if (nf_ct_expect_related(rtcp_exp) == 0) {
- 				pr_debug("nf_ct_h323: expect RTP ");
--				NF_CT_DUMP_TUPLE(&rtp_exp->tuple);
-+				nf_ct_dump_tuple(&rtp_exp->tuple);
- 				pr_debug("nf_ct_h323: expect RTCP ");
--				NF_CT_DUMP_TUPLE(&rtcp_exp->tuple);
-+				nf_ct_dump_tuple(&rtcp_exp->tuple);
- 			} else {
- 				nf_ct_unexpect_related(rtp_exp);
- 				ret = -1;
-@@ -364,7 +364,7 @@ static int expect_t120(struct sk_buff *skb,
- 	} else {		/* Conntrack only */
- 		if (nf_ct_expect_related(exp) == 0) {
- 			pr_debug("nf_ct_h323: expect T.120 ");
--			NF_CT_DUMP_TUPLE(&exp->tuple);
-+			nf_ct_dump_tuple(&exp->tuple);
- 		} else
- 			ret = -1;
- 	}
-@@ -586,7 +586,7 @@ static int h245_help(struct sk_buff *skb, unsigned int protoff,
- 	while (get_tpkt_data(skb, protoff, ct, ctinfo,
- 			     &data, &datalen, &dataoff)) {
- 		pr_debug("nf_ct_h245: TPKT len=%d ", datalen);
--		NF_CT_DUMP_TUPLE(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
-+		nf_ct_dump_tuple(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
- 
- 		/* Decode H.245 signal */
- 		ret = DecodeMultimediaSystemControlMessage(data, datalen,
-@@ -701,7 +701,7 @@ static int expect_h245(struct sk_buff *skb, struct nf_conn *ct,
- 	} else {		/* Conntrack only */
- 		if (nf_ct_expect_related(exp) == 0) {
- 			pr_debug("nf_ct_q931: expect H.245 ");
--			NF_CT_DUMP_TUPLE(&exp->tuple);
-+			nf_ct_dump_tuple(&exp->tuple);
- 		} else
- 			ret = -1;
- 	}
-@@ -818,7 +818,7 @@ static int expect_callforwarding(struct sk_buff *skb,
- 	} else {		/* Conntrack only */
- 		if (nf_ct_expect_related(exp) == 0) {
- 			pr_debug("nf_ct_q931: expect Call Forwarding ");
--			NF_CT_DUMP_TUPLE(&exp->tuple);
-+			nf_ct_dump_tuple(&exp->tuple);
- 		} else
- 			ret = -1;
- 	}
-@@ -1138,7 +1138,7 @@ static int q931_help(struct sk_buff *skb, unsigned int protoff,
- 	while (get_tpkt_data(skb, protoff, ct, ctinfo,
- 			     &data, &datalen, &dataoff)) {
- 		pr_debug("nf_ct_q931: TPKT len=%d ", datalen);
--		NF_CT_DUMP_TUPLE(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
-+		nf_ct_dump_tuple(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
- 
- 		/* Decode Q.931 signal */
- 		ret = DecodeQ931(data, datalen, &q931);
-@@ -1288,7 +1288,7 @@ static int expect_q931(struct sk_buff *skb, struct nf_conn *ct,
- 	} else {		/* Conntrack only */
- 		if (nf_ct_expect_related(exp) == 0) {
- 			pr_debug("nf_ct_ras: expect Q.931 ");
--			NF_CT_DUMP_TUPLE(&exp->tuple);
-+			nf_ct_dump_tuple(&exp->tuple);
- 
- 			/* Save port for looking up expect in processing RCF */
- 			info->sig_port[dir] = port;
-@@ -1353,7 +1353,7 @@ static int process_gcf(struct sk_buff *skb, struct nf_conn *ct,
- 
- 	if (nf_ct_expect_related(exp) == 0) {
- 		pr_debug("nf_ct_ras: expect RAS ");
--		NF_CT_DUMP_TUPLE(&exp->tuple);
-+		nf_ct_dump_tuple(&exp->tuple);
- 	} else
- 		ret = -1;
- 
-@@ -1437,7 +1437,7 @@ static int process_rcf(struct sk_buff *skb, struct nf_conn *ct,
- 			pr_debug("nf_ct_ras: set Q.931 expect "
- 				 "timeout to %u seconds for",
- 				 info->timeout);
--			NF_CT_DUMP_TUPLE(&exp->tuple);
-+			nf_ct_dump_tuple(&exp->tuple);
- 			set_expect_timeout(exp, info->timeout);
- 		}
- 		spin_unlock_bh(&nf_conntrack_lock);
-@@ -1559,7 +1559,7 @@ static int process_acf(struct sk_buff *skb, struct nf_conn *ct,
- 
- 	if (nf_ct_expect_related(exp) == 0) {
- 		pr_debug("nf_ct_ras: expect Q.931 ");
--		NF_CT_DUMP_TUPLE(&exp->tuple);
-+		nf_ct_dump_tuple(&exp->tuple);
- 	} else
- 		ret = -1;
- 
-@@ -1613,7 +1613,7 @@ static int process_lcf(struct sk_buff *skb, struct nf_conn *ct,
- 
- 	if (nf_ct_expect_related(exp) == 0) {
- 		pr_debug("nf_ct_ras: expect Q.931 ");
--		NF_CT_DUMP_TUPLE(&exp->tuple);
-+		nf_ct_dump_tuple(&exp->tuple);
- 	} else
- 		ret = -1;
- 
-@@ -1717,7 +1717,7 @@ static int ras_help(struct sk_buff *skb, unsigned int protoff,
- 	if (data == NULL)
- 		goto accept;
- 	pr_debug("nf_ct_ras: RAS message len=%d ", datalen);
--	NF_CT_DUMP_TUPLE(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
-+	nf_ct_dump_tuple(&ct->tuplehash[CTINFO2DIR(ctinfo)].tuple);
- 
- 	/* Decode RAS message */
- 	ret = DecodeRasMessage(data, datalen, &ras);
-diff --git a/net/netfilter/nf_conntrack_pptp.c b/net/netfilter/nf_conntrack_pptp.c
-index 8fd8347..bfd3adf 100644
---- a/net/netfilter/nf_conntrack_pptp.c
-+++ b/net/netfilter/nf_conntrack_pptp.c
-@@ -119,7 +119,7 @@ static void pptp_expectfn(struct nf_conn *ct,
- 		/* obviously this tuple inversion only works until you do NAT */
- 		nf_ct_invert_tuplepr(&inv_t, &exp->tuple);
- 		pr_debug("trying to unexpect other dir: ");
--		NF_CT_DUMP_TUPLE(&inv_t);
-+		nf_ct_dump_tuple(&inv_t);
- 
- 		exp_other = nf_ct_expect_find_get(&inv_t);
- 		if (exp_other) {
-@@ -141,7 +141,7 @@ static int destroy_sibling_or_exp(const struct nf_conntrack_tuple *t)
- 	struct nf_conn *sibling;
- 
- 	pr_debug("trying to timeout ct or exp for tuple ");
--	NF_CT_DUMP_TUPLE(t);
-+	nf_ct_dump_tuple(t);
- 
- 	h = nf_conntrack_find_get(t);
- 	if (h)  {
-diff --git a/net/netfilter/nf_conntrack_proto_gre.c b/net/netfilter/nf_conntrack_proto_gre.c
-index 7f82933..2fa8ea2 100644
---- a/net/netfilter/nf_conntrack_proto_gre.c
-+++ b/net/netfilter/nf_conntrack_proto_gre.c
-@@ -82,7 +82,7 @@ static __be16 gre_keymap_lookup(struct nf_conntrack_tuple *t)
- 	read_unlock_bh(&nf_ct_gre_lock);
- 
- 	pr_debug("lookup src key 0x%x for ", key);
--	NF_CT_DUMP_TUPLE(t);
-+	nf_ct_dump_tuple(t);
- 
- 	return key;
- }
-@@ -113,7 +113,7 @@ int nf_ct_gre_keymap_add(struct nf_conn *ct, enum ip_conntrack_dir dir,
- 	*kmp = km;
- 
- 	pr_debug("adding new entry %p: ", km);
--	NF_CT_DUMP_TUPLE(&km->tuple);
-+	nf_ct_dump_tuple(&km->tuple);
- 
- 	write_lock_bh(&nf_ct_gre_lock);
- 	list_add_tail(&km->list, &gre_keymap_list);
-@@ -238,7 +238,7 @@ static bool gre_new(struct nf_conn *ct, const struct sk_buff *skb,
-                     unsigned int dataoff)
+ static inline bool
+ conntrack_mt_origsrc(const struct nf_conn *ct,
+-                     const struct xt_conntrack_mtinfo1 *info,
++                     const struct xt_conntrack_mtinfo2 *info,
+                      unsigned int family)
  {
- 	pr_debug(": ");
--	NF_CT_DUMP_TUPLE(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
-+	nf_ct_dump_tuple(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
+ 	return conntrack_addrcmp(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.src.u3,
+-	       &info->origsrc_addr, &info->origsrc_mask, family);
++	       &info->origsrc_addr, &prefixlen_netmask_map[info->origsrc_pfx],
++	       family);
+ }
  
- 	/* initialize to sane value.  Ideally a conntrack helper
- 	 * (e.g. in case of pptp) is increasing them */
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
-index 67caddc..635f9cf 100644
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -501,7 +501,7 @@ static bool tcp_in_window(const struct nf_conn *ct, struct ip_ct_tcp *state,
+ static inline bool
+ conntrack_mt_origdst(const struct nf_conn *ct,
+-                     const struct xt_conntrack_mtinfo1 *info,
++                     const struct xt_conntrack_mtinfo2 *info,
+                      unsigned int family)
+ {
+ 	return conntrack_addrcmp(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.dst.u3,
+-	       &info->origdst_addr, &info->origdst_mask, family);
++	       &info->origdst_addr, &prefixlen_netmask_map[info->origdst_pfx],
++	       family);
+ }
  
- 	pr_debug("tcp_in_window: START\n");
- 	pr_debug("tcp_in_window: ");
--	NF_CT_DUMP_TUPLE(tuple);
-+	nf_ct_dump_tuple(tuple);
- 	pr_debug("seq=%u ack=%u sack=%u win=%u end=%u\n",
- 		 seq, ack, sack, win, end);
- 	pr_debug("tcp_in_window: sender end=%u maxend=%u maxwin=%u scale=%i "
-@@ -588,7 +588,7 @@ static bool tcp_in_window(const struct nf_conn *ct, struct ip_ct_tcp *state,
- 		seq = end = sender->td_end;
+ static inline bool
+ conntrack_mt_replsrc(const struct nf_conn *ct,
+-                     const struct xt_conntrack_mtinfo1 *info,
++                     const struct xt_conntrack_mtinfo2 *info,
+                      unsigned int family)
+ {
+ 	return conntrack_addrcmp(&ct->tuplehash[IP_CT_DIR_REPLY].tuple.src.u3,
+-	       &info->replsrc_addr, &info->replsrc_mask, family);
++	       &info->replsrc_addr, &prefixlen_netmask_map[info->replsrc_pfx],
++	       family);
+ }
  
- 	pr_debug("tcp_in_window: ");
--	NF_CT_DUMP_TUPLE(tuple);
-+	nf_ct_dump_tuple(tuple);
- 	pr_debug("seq=%u ack=%u sack =%u win=%u end=%u\n",
- 		 seq, ack, sack, win, end);
- 	pr_debug("tcp_in_window: sender end=%u maxend=%u maxwin=%u scale=%i "
-@@ -932,7 +932,7 @@ static int tcp_packet(struct nf_conn *ct,
- 	ct->proto.tcp.last_dir = dir;
+ static inline bool
+ conntrack_mt_repldst(const struct nf_conn *ct,
+-                     const struct xt_conntrack_mtinfo1 *info,
++                     const struct xt_conntrack_mtinfo2 *info,
+                      unsigned int family)
+ {
+ 	return conntrack_addrcmp(&ct->tuplehash[IP_CT_DIR_REPLY].tuple.dst.u3,
+-	       &info->repldst_addr, &info->repldst_mask, family);
++	       &info->repldst_addr, &prefixlen_netmask_map[info->repldst_pfx],
++	       family);
+ }
  
- 	pr_debug("tcp_conntracks: ");
--	NF_CT_DUMP_TUPLE(tuple);
-+	nf_ct_dump_tuple(tuple);
- 	pr_debug("syn=%i ack=%i fin=%i rst=%i old=%i new=%i\n",
- 		 (th->syn ? 1 : 0), (th->ack ? 1 : 0),
- 		 (th->fin ? 1 : 0), (th->rst ? 1 : 0),
-diff --git a/net/netfilter/nf_conntrack_sane.c b/net/netfilter/nf_conntrack_sane.c
-index 4f3d0cb..bb8bb49 100644
---- a/net/netfilter/nf_conntrack_sane.c
-+++ b/net/netfilter/nf_conntrack_sane.c
-@@ -148,7 +148,7 @@ static int help(struct sk_buff *skb,
- 			  IPPROTO_TCP, NULL, &reply->port);
+ static inline bool
+-ct_proto_port_check(const struct xt_conntrack_mtinfo1 *info,
++ct_proto_port_check(const struct xt_conntrack_mtinfo2 *info,
+                     const struct nf_conn *ct)
+ {
+ 	const struct nf_conntrack_tuple *tuple;
+@@ -210,7 +215,7 @@ conntrack_mt(const struct sk_buff *skb, const struct net_device *in,
+              const void *matchinfo, int offset, unsigned int protoff,
+              bool *hotdrop)
+ {
+-	const struct xt_conntrack_mtinfo1 *info = matchinfo;
++	const struct xt_conntrack_mtinfo2 *info = matchinfo;
+ 	enum ip_conntrack_info ctinfo;
+ 	const struct nf_conn *ct;
+ 	unsigned int statebit;
+@@ -289,6 +294,16 @@ conntrack_mt_check(const char *tablename, const void *ip,
+                    const struct xt_match *match, void *matchinfo,
+                    unsigned int hook_mask)
+ {
++	const struct xt_conntrack_mtinfo2 *info = matchinfo;
++
++	if (match->family == AF_INET && (info->origsrc_pfx > 32 ||
++	    info->origdst_pfx > 32 || info->replsrc_pfx > 32 ||
++	    info->repldst_pfx > 32))
++		return false;
++	if (match->family == AF_INET6 && (info->origsrc_pfx > 128 ||
++	    info->origdst_pfx > 128 || info->replsrc_pfx > 128 ||
++	    info->repldst_pfx > 128))
++		return false;
+ 	if (nf_ct_l3proto_try_module_get(match->family) < 0) {
+ 		printk(KERN_WARNING "can't load conntrack support for "
+ 				    "proto=%u\n", match->family);
+@@ -370,9 +385,9 @@ static struct xt_match conntrack_mt_reg[] __read_mostly = {
+ 	},
+ 	{
+ 		.name       = "conntrack",
+-		.revision   = 1,
++		.revision   = 2,
+ 		.family     = AF_INET,
+-		.matchsize  = sizeof(struct xt_conntrack_mtinfo1),
++		.matchsize  = sizeof(struct xt_conntrack_mtinfo2),
+ 		.match      = conntrack_mt,
+ 		.checkentry = conntrack_mt_check,
+ 		.destroy    = conntrack_mt_destroy,
+@@ -380,9 +395,9 @@ static struct xt_match conntrack_mt_reg[] __read_mostly = {
+ 	},
+ 	{
+ 		.name       = "conntrack",
+-		.revision   = 1,
++		.revision   = 2,
+ 		.family     = AF_INET6,
+-		.matchsize  = sizeof(struct xt_conntrack_mtinfo1),
++		.matchsize  = sizeof(struct xt_conntrack_mtinfo2),
+ 		.match      = conntrack_mt,
+ 		.checkentry = conntrack_mt_check,
+ 		.destroy    = conntrack_mt_destroy,
+diff --git a/net/netfilter/xt_hashlimit.c b/net/netfilter/xt_hashlimit.c
+index 5418ce5..c3ade12 100644
+--- a/net/netfilter/xt_hashlimit.c
++++ b/net/netfilter/xt_hashlimit.c
+@@ -26,6 +26,7 @@
+ #endif
  
- 	pr_debug("nf_ct_sane: expect: ");
--	NF_CT_DUMP_TUPLE(&exp->tuple);
-+	nf_ct_dump_tuple(&exp->tuple);
+ #include <net/net_namespace.h>
++#include <net/pfxlen.h>
  
- 	/* Can't expect this?  Best to drop packet now. */
- 	if (nf_ct_expect_related(exp) != 0)
-diff --git a/net/netfilter/nf_conntrack_tftp.c b/net/netfilter/nf_conntrack_tftp.c
-index 95d1743..5666495 100644
---- a/net/netfilter/nf_conntrack_tftp.c
-+++ b/net/netfilter/nf_conntrack_tftp.c
-@@ -56,8 +56,8 @@ static int tftp_help(struct sk_buff *skb,
- 	case TFTP_OPCODE_READ:
- 	case TFTP_OPCODE_WRITE:
- 		/* RRQ and WRQ works the same way */
--		NF_CT_DUMP_TUPLE(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
--		NF_CT_DUMP_TUPLE(&ct->tuplehash[IP_CT_DIR_REPLY].tuple);
-+		nf_ct_dump_tuple(&ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple);
-+		nf_ct_dump_tuple(&ct->tuplehash[IP_CT_DIR_REPLY].tuple);
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/netfilter_ipv4/ip_tables.h>
+@@ -466,43 +467,18 @@ static inline void rateinfo_recalc(struct dsthash_ent *dh, unsigned long now)
  
- 		exp = nf_ct_expect_alloc(ct);
- 		if (exp == NULL)
-@@ -68,7 +68,7 @@ static int tftp_help(struct sk_buff *skb,
- 				  IPPROTO_UDP, NULL, &tuple->dst.u.udp.port);
+ static inline __be32 maskl(__be32 a, unsigned int l)
+ {
+-	return htonl(ntohl(a) & ~(~(u_int32_t)0 >> l));
++	return a & prefixlen_netmask_map[l].ip;
+ }
  
- 		pr_debug("expect: ");
--		NF_CT_DUMP_TUPLE(&exp->tuple);
-+		nf_ct_dump_tuple(&exp->tuple);
+ #if defined(CONFIG_IP6_NF_IPTABLES) || defined(CONFIG_IP6_NF_IPTABLES_MODULE)
+ static void hashlimit_ipv6_mask(__be32 *i, unsigned int p)
+ {
+-	switch (p) {
+-	case 0:
+-		i[0] = i[1] = 0;
+-		i[2] = i[3] = 0;
+-		break;
+-	case 1 ... 31:
+-		i[0] = maskl(i[0], p);
+-		i[1] = i[2] = i[3] = 0;
+-		break;
+-	case 32:
+-		i[1] = i[2] = i[3] = 0;
+-		break;
+-	case 33 ... 63:
+-		i[1] = maskl(i[1], p - 32);
+-		i[2] = i[3] = 0;
+-		break;
+-	case 64:
+-		i[2] = i[3] = 0;
+-		break;
+-	case 65 ... 95:
+-		i[2] = maskl(i[2], p - 64);
+-		i[3] = 0;
+-	case 96:
+-		i[3] = 0;
+-		break;
+-	case 97 ... 127:
+-		i[3] = maskl(i[3], p - 96);
+-		break;
+-	case 128:
+-		break;
+-	}
++	const union nf_inet_addr *mask = &prefixlen_netmask_map[p];
++
++	i[0] &= mask->ip6[0];
++	i[1] &= mask->ip6[1];
++	i[2] &= mask->ip6[2];
++	i[3] &= mask->ip6[3];
+ }
+ #endif
  
- 		nf_nat_tftp = rcu_dereference(nf_nat_tftp_hook);
- 		if (nf_nat_tftp && ct->status & IPS_NAT_MASK)
 -- 
 1.5.4.4
 
