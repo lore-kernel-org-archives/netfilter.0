@@ -1,44 +1,96 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Why does ipv6 enabled interfere with ipv4 SNAT?
-Date: Wed, 26 Mar 2008 12:12:54 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0803261211470.3620@blackhole.kfki.hu>
-References: <20080325012807.GA15637@transpect.com>
- <alpine.LNX.1.10.0803250254100.9368@fbirervta.pbzchgretzou.qr>
- <20080325024424.GA16089@transpect.com> <Pine.LNX.4.64.0803251156560.1535@blackhole.kfki.hu>
- <47EA2D6E.9090409@plouf.fr.eu.org>
+From: "Sharon Tal" <shatal@websplanet.com>
+Subject: UNTRACKED packets are identified as INVALID
+Date: Wed, 26 Mar 2008 15:29:53 +0200
+Message-ID: <004b01c88f45$79bcf080$0a00a8c0@webplanet.local>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="110391808-474819862-1206529974=:3620"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47EA2D6E.9090409@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---110391808-474819862-1206529974=:3620
-Content-Type: TEXT/PLAIN; charset=ISO-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Hi there,
+I have 2 web servers behind an iptables based load-balancer, and I'm trying
+to setup a graphics web server on the load-balancer, so that if a simple
+static file is requested it will be able to respond instead of forwarding
+the request to the web servers.
+ 
+I've been trying to do that by matching packets at the raw table, setting
+them to be UNTRACKED and leaving them on the LB.
+The problem is that all UNTRACKED packets are identified as INVALID as soon
+as they get to the mangle chain and dropped.
+ 
+Here's my configuration (NS1, NS2 - the web servers, LB - the load balancer,
+INTFACE/EXTFACE - internal/external interface)
+<<--------------------------------------------------------------------------
+---------------->>
+echo 1 > /proc/sys/net/ipv4/ip_forward
+ 
+$IPTABLES -F INPUT
+$IPTABLES -F FORWARD
+$IPTABLES -F OUTPUT
+$IPTABLES -t raw  -F
+$IPTABLES -t mangle -F
+$IPTABLES -t nat -F
+$IPTABLES -Z
 
-On Wed, 26 Mar 2008, Pascal Hambourg wrote:
+# Drop invalid packets
+$IPTABLES -t mangle -A PREROUTING -m state --state INVALID -j DROP
+$IPTABLES -t mangle -A PREROUTING -p tcp ! --syn -m state --state NEW -j
+DROP
+ 
+# Prevent Spoofing
+$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -s 192.168.0.0/24 -p ! ICMP -j
+DROP
+ 
+# Prevent Smurf Attacks
+$IPTABLES -t mangle -A PREROUTING -p icmp -i $EXTFACE -d 192.168.0.255 -j
+DROP
+ 
+# Prevent Syn-Flood, Ping-O-Death & Fast Port Scanning
+$IPTABLES -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+$IPTABLES -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+$IPTABLES -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
 
-> Jozsef Kadlecsik a =E9crit :
-> >=20
-> > If you have got ethernet devices with MTU smaller than 1500, those won'=
-t
-> > support IPv6 and therefore don't show up in /proc/sys/net/ipv6/conf.
->=20
-> Don't you mean smaller than 1280 ?
+# Limit number of new connections/second from a single IP to a single port
+$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m state
+--state NEW -m recent --name HTTP --set
+$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m state
+--state NEW -m recent --name HTTP --update --seconds 2 --hitcount 100 -j
+DROP
 
-You are right, the exact boundary is 1280.
+# Forward traffic from internal servers to the internet
+$IPTABLES -t nat -A POSTROUTING -o $EXTFACE -j SNAT --to-source
+192.168.100.153
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
---110391808-474819862-1206529974=:3620--
+# JPG requests should be answered by LB
+$IPTABLES -t raw -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m string
+--algo bm --string "GET /" -m string --algo bm --string ".jpg HTTP/1." -j
+NOTRACK
+$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m state
+--state UNTRACKED -j MARK --set-mark 0x11
+
+# HTTP (25:75 Marking 1X)
+$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark
+--mark 0x0 -m statistic --mode nth --every 4 -j MARK --set-mark 0x12
+$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark
+--mark 0x0 -j MARK --set-mark 0x13
+$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -j RETURN
+$IPTABLES -t nat -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark --mark
+0x12 -j DNAT --to-destination $NS1IP:80
+$IPTABLES -t nat -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark --mark
+0x13 -j DNAT --to-destination $NS2IP:80
+$IPTABLES -t nat -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark --mark
+0x0 -j DNAT --to-destination $NS2IP:80
+$IPTABLES -t nat -A PREROUTING -i $EXTFACE -p tcp --dport 80 -j RETURN
+<<--------------------------------------------------------------------------
+---------------->>
+ 
+Any ideas on how to make this happen or what am I doing wrong?
+ 
+Thanks!
+ 
+Cheers!
+
