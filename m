@@ -1,96 +1,69 @@
-From: "Sharon Tal" <shatal@websplanet.com>
-Subject: UNTRACKED packets are identified as INVALID
-Date: Wed, 26 Mar 2008 15:29:53 +0200
-Message-ID: <004b01c88f45$79bcf080$0a00a8c0@webplanet.local>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Transfer stalls with NAT under 2.6.24.3
+Date: Wed, 26 Mar 2008 16:47:47 +0100
+Message-ID: <47EA7023.3000405@trash.net>
+References: <47EA0DAB.7080205@securenet.de> <47EA1653.3080300@trash.net> <47EA2399.1080201@securenet.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <47EA2399.1080201@securenet.de>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Sven Riedel <sr@securenet.de>
+Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
+Sven Riedel wrote:
+> Patrick McHardy wrote:
+>> Sven Riedel wrote:
+>>> Is this issue known/is there a patch available or would further 
+>>> information be needed to help debug the problem?
+>>
+>> 2.6.24.3 includes a patches that was supposed to fix problems
+>> with connections in TIME_WAIT state. Does 2.6.24.2 work better
+>> for you?
+> 
+> The firewall system in question is currently productive. I _might_ be 
+> able to try the other kernel tomorrow morning. Once I am able to try it 
+> I'll let you know.
+> 
+>>
+>> Please enable conntrack logging for TCP by executing:
+>>
+>> echo 6 >/proc/sys/net/netfilter/nf_conntrack_log_invalid
+>>
+>> and check whether you get any messages in the ring buffer.
+> 
+> Yep, lots ;)
+> 
+> In the following 100.100.100.100 is the external machine and 
+> 200.200.200.200 is the NAT IP-Address on the firewall. A 5MB file was 
+> transferred via scp to 100.100.100.100 from the internal network.
+> 
+> The output during a "clean" run, with an empty conntrack table and no 
+> stalls:
+> nf_ct_tcp: ACK is over the upper bound (ACKed data not seen yet) IN= OUT=
+> SRC=100.100.100.100 DST=200.200.200.200 LEN=64 TOS=0x00 PREC=0x00 TTL=56 
+> ID=42121
+> ...
+> 
+> During a run with stalls:
+> 
+> nf_ct_tcp: ACK is over the upper bound (ACKed data not seen yet) IN= OUT=
+> SRC=100.100.100.100 DST=200.200.200.200 LEN=80 TOS=0x00 PREC=0x00 TTL=56 
+> ID=44105
+> DF PROTO=TCP SPT=22 DPT=35858 SEQ=4160349927 ACK=596614326 WINDOW=49248
+> RES=0x00 ACK URGP=0 OPT
+> (0101080A4558793C1B13CE350101051A491E8751491E8CA9491E7B71491E81F9491E40A9491E5B61) 
+> 
+> 
+> ^^^^ Transfer stalled here for ~10 seconds.
+> 
+> 
+> printk: 22 messages suppressed.
+> nf_ct_tcp: ACK is over the upper bound (ACKed data not seen yet) IN= OUT=
+> SRC=100.100.100.100 DST=200.200.200.200 LEN=72 TOS=0x00 PREC=0x00 TTL=56 
+> ID=44113
 
-Hi there,
-I have 2 web servers behind an iptables based load-balancer, and I'm trying
-to setup a graphics web server on the load-balancer, so that if a simple
-static file is requested it will be able to respond instead of forwarding
-the request to the web servers.
- 
-I've been trying to do that by matching packets at the raw table, setting
-them to be UNTRACKED and leaving them on the LB.
-The problem is that all UNTRACKED packets are identified as INVALID as soon
-as they get to the mangle chain and dropped.
- 
-Here's my configuration (NS1, NS2 - the web servers, LB - the load balancer,
-INTFACE/EXTFACE - internal/external interface)
-<<--------------------------------------------------------------------------
----------------->>
-echo 1 > /proc/sys/net/ipv4/ip_forward
- 
-$IPTABLES -F INPUT
-$IPTABLES -F FORWARD
-$IPTABLES -F OUTPUT
-$IPTABLES -t raw  -F
-$IPTABLES -t mangle -F
-$IPTABLES -t nat -F
-$IPTABLES -Z
-
-# Drop invalid packets
-$IPTABLES -t mangle -A PREROUTING -m state --state INVALID -j DROP
-$IPTABLES -t mangle -A PREROUTING -p tcp ! --syn -m state --state NEW -j
-DROP
- 
-# Prevent Spoofing
-$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -s 192.168.0.0/24 -p ! ICMP -j
-DROP
- 
-# Prevent Smurf Attacks
-$IPTABLES -t mangle -A PREROUTING -p icmp -i $EXTFACE -d 192.168.0.255 -j
-DROP
- 
-# Prevent Syn-Flood, Ping-O-Death & Fast Port Scanning
-$IPTABLES -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
-$IPTABLES -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-$IPTABLES -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-
-# Limit number of new connections/second from a single IP to a single port
-$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m state
---state NEW -m recent --name HTTP --set
-$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m state
---state NEW -m recent --name HTTP --update --seconds 2 --hitcount 100 -j
-DROP
-
-# Forward traffic from internal servers to the internet
-$IPTABLES -t nat -A POSTROUTING -o $EXTFACE -j SNAT --to-source
-192.168.100.153
-
-# JPG requests should be answered by LB
-$IPTABLES -t raw -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m string
---algo bm --string "GET /" -m string --algo bm --string ".jpg HTTP/1." -j
-NOTRACK
-$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m state
---state UNTRACKED -j MARK --set-mark 0x11
-
-# HTTP (25:75 Marking 1X)
-$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark
---mark 0x0 -m statistic --mode nth --every 4 -j MARK --set-mark 0x12
-$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark
---mark 0x0 -j MARK --set-mark 0x13
-$IPTABLES -t mangle -A PREROUTING -i $EXTFACE -p tcp --dport 80 -j RETURN
-$IPTABLES -t nat -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark --mark
-0x12 -j DNAT --to-destination $NS1IP:80
-$IPTABLES -t nat -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark --mark
-0x13 -j DNAT --to-destination $NS2IP:80
-$IPTABLES -t nat -A PREROUTING -i $EXTFACE -p tcp --dport 80 -m mark --mark
-0x0 -j DNAT --to-destination $NS2IP:80
-$IPTABLES -t nat -A PREROUTING -i $EXTFACE -p tcp --dport 80 -j RETURN
-<<--------------------------------------------------------------------------
----------------->>
- 
-Any ideas on how to make this happen or what am I doing wrong?
- 
-Thanks!
- 
-Cheers!
-
+Thanks, can you send a binary tcpdump (... -w file) of a connection
+that triggers these messages please?
