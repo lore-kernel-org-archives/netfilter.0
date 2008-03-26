@@ -1,47 +1,49 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Transfer stalls with NAT under 2.6.24.3
-Date: Wed, 26 Mar 2008 10:24:35 +0100
-Message-ID: <47EA1653.3080300@trash.net>
-References: <47EA0DAB.7080205@securenet.de>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Why does ipv6 enabled interfere with ipv4 SNAT?
+Date: Wed, 26 Mar 2008 10:45:29 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0803261036220.3620@blackhole.kfki.hu>
+References: <20080325012807.GA15637@transpect.com>
+ <alpine.LNX.1.10.0803250254100.9368@fbirervta.pbzchgretzou.qr>
+ <20080325024424.GA16089@transpect.com> <Pine.LNX.4.64.0803251156560.1535@blackhole.kfki.hu>
+ <20080325142553.GA8783@transpect.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <47EA0DAB.7080205@securenet.de>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20080325142553.GA8783@transpect.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sven Riedel <sr@securenet.de>
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Whit Blauvelt <whit@transpect.com>
+Cc: Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org
 
-Sven Riedel wrote:
-> Hi,
-> I've run into a strange problem where large file transfers start 
-> stalling over a NATed connection. Packet traces reveal that ACK 
-> packets are sometimes not being passed through to the inside (NATed) 
-> host, which results in a transfer stall until a tcp timeout occurrs 
-> and the other side retransmits the ACK.
->
-> This only seems to happen if the conntrack table on the firewall 
-> already contains an entry for the same source and destination in 
-> TIME_WAIT state. If no conntrack entries exist for the same source and 
-> destination, the packets flow fine.
->
-> The problem seems to be alevated by setting ip_conntrac_tcp_be_liberal 
-> to 1, but this seems to be only a workaround not a real solution.
->
-> Scatter gather and tcp segment offloading have been disabled in the 
-> relevant NICs on the firewall during debugging, to make sure this 
-> isn't a hardware issue.
->
-> Is this issue known/is there a patch available or would further 
-> information be needed to help debug the problem?
+On Tue, 25 Mar 2008, Whit Blauvelt wrote:
 
-2.6.24.3 includes a patches that was supposed to fix problems
-with connections in TIME_WAIT state. Does 2.6.24.2 work better
-for you?
+> > If you have got ethernet devices with MTU smaller than 1500, those won't 
+> > support IPv6 and therefore don't show up in /proc/sys/net/ipv6/conf.
+> 
+> Interesting. But there is no difference between the MTU settings of eth2,
+> eth3, eth4 and eth5 - in fact all four ports are on the same physical card.
+> All the eth? devices are running at default of 1500. I've checked.
 
-Please enable conntrack logging for TCP by executing:
+OK. That was a possibility which could have explained the difference in 
+the interfaces.
+ 
+> > Please check which modules are loaded in. Probably IPv4 NAT related 
+> > modules are not auto-loaded. Also, is there any error message when you 
+> > issue 'iptables -t nat ...' commands?
+> 
+> Josef, the set of iptables modules is precisely the same whether or not ipv6
+> is enabled on the system (yes, I've looked). 
 
-echo 6 >/proc/sys/net/netfilter/nf_conntrack_log_invalid
+But which netfilter modules are loaded in? Again, there can be some 
+auto-loading problem which we cannot figure out without the list of the 
+modules. And as Patrick suggested: do you see the connections in 
+/proc/net/nf_conntrack? Or you have got /proc/net/ip_conntrack instead?
 
-and check whether you get any messages in the ring buffer.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
