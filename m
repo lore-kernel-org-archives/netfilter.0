@@ -1,69 +1,36 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Transfer stalls with NAT under 2.6.24.3
-Date: Wed, 26 Mar 2008 16:47:47 +0100
-Message-ID: <47EA7023.3000405@trash.net>
-References: <47EA0DAB.7080205@securenet.de> <47EA1653.3080300@trash.net> <47EA2399.1080201@securenet.de>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: IPv6 Redirecting a Port
+Date: Wed, 26 Mar 2008 17:33:25 +0100 (CET)
+Message-ID: <alpine.LNX.1.10.0803261733060.22661@fbirervta.pbzchgretzou.qr>
+References: <B48CB61665A101419E226D4D141D540E03035231A5@mail-server.inside.eclyptic.com> <47E92414.5000108@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <47EA2399.1080201@securenet.de>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <47E92414.5000108@trash.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sven Riedel <sr@securenet.de>
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Ryan Kruse <rkruse@alterpoint.com>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-Sven Riedel wrote:
-> Patrick McHardy wrote:
->> Sven Riedel wrote:
->>> Is this issue known/is there a patch available or would further 
->>> information be needed to help debug the problem?
->>
->> 2.6.24.3 includes a patches that was supposed to fix problems
->> with connections in TIME_WAIT state. Does 2.6.24.2 work better
->> for you?
-> 
-> The firewall system in question is currently productive. I _might_ be 
-> able to try the other kernel tomorrow morning. Once I am able to try it 
-> I'll let you know.
-> 
->>
->> Please enable conntrack logging for TCP by executing:
->>
->> echo 6 >/proc/sys/net/netfilter/nf_conntrack_log_invalid
->>
->> and check whether you get any messages in the ring buffer.
-> 
-> Yep, lots ;)
-> 
-> In the following 100.100.100.100 is the external machine and 
-> 200.200.200.200 is the NAT IP-Address on the firewall. A 5MB file was 
-> transferred via scp to 100.100.100.100 from the internal network.
-> 
-> The output during a "clean" run, with an empty conntrack table and no 
-> stalls:
-> nf_ct_tcp: ACK is over the upper bound (ACKed data not seen yet) IN= OUT=
-> SRC=100.100.100.100 DST=200.200.200.200 LEN=64 TOS=0x00 PREC=0x00 TTL=56 
-> ID=42121
-> ...
-> 
-> During a run with stalls:
-> 
-> nf_ct_tcp: ACK is over the upper bound (ACKed data not seen yet) IN= OUT=
-> SRC=100.100.100.100 DST=200.200.200.200 LEN=80 TOS=0x00 PREC=0x00 TTL=56 
-> ID=44105
-> DF PROTO=TCP SPT=22 DPT=35858 SEQ=4160349927 ACK=596614326 WINDOW=49248
-> RES=0x00 ACK URGP=0 OPT
-> (0101080A4558793C1B13CE350101051A491E8751491E8CA9491E7B71491E81F9491E40A9491E5B61) 
-> 
-> 
-> ^^^^ Transfer stalled here for ~10 seconds.
-> 
-> 
-> printk: 22 messages suppressed.
-> nf_ct_tcp: ACK is over the upper bound (ACKed data not seen yet) IN= OUT=
-> SRC=100.100.100.100 DST=200.200.200.200 LEN=72 TOS=0x00 PREC=0x00 TTL=56 
-> ID=44113
 
-Thanks, can you send a binary tcpdump (... -w file) of a connection
-that triggers these messages please?
+On Tuesday 2008-03-25 17:11, Patrick McHardy wrote:
+> Ryan Kruse wrote:
+>>
+>>  We have a network management application that has an embedded TFTP and FTP
+>>  server.  The application is written in Java and runs as an unprivileged
+>>  user so we can't bind to the well known ports.  On linux we bind TFTP and
+>>  FTP to high ports (udp/11069 and tcp/11021).  We then use iptables rules to
+>>  redirect the incoming low port (udp/69 and tcp/21) connections to the high
+>>  ports.
+>>
+>>  Now that our application supports IPv6 I need to do the same for that.  I
+>>  know that ip6tables doesn't support NAT (and shouldn't), but I haven't
+>>  found a way to redirect a port.  Any thoughts on how this can be done?
+>
+>
+> Routing by fwmark *might* work (add a new "local" table and a rule
+> pointing to it, mark packets appropriately, bind to ::0). If that
+> doesn't you'll most likely need a IPv6-capable TPROXY version.
+
+But how does routing change the destination port? It does not...
