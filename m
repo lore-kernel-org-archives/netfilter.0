@@ -1,53 +1,45 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: UNTRACKED packets are identified as INVALID
-Date: Wed, 26 Mar 2008 17:42:01 +0100 (CET)
-Message-ID: <alpine.LNX.1.10.0803261735061.22661@fbirervta.pbzchgretzou.qr>
-References: <004b01c88f45$79bcf080$0a00a8c0@webplanet.local>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: IPv6 Redirecting a Port
+Date: Wed, 26 Mar 2008 17:44:05 +0100
+Message-ID: <47EA7D55.5010403@trash.net>
+References: <B48CB61665A101419E226D4D141D540E03035231A5@mail-server.inside.eclyptic.com> <47E92414.5000108@trash.net> <alpine.LNX.1.10.0803261733060.22661@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <004b01c88f45$79bcf080$0a00a8c0@webplanet.local>
+In-Reply-To: <alpine.LNX.1.10.0803261733060.22661@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Sharon Tal <shatal@websplanet.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@computergmbh.de>
+Cc: Ryan Kruse <rkruse@alterpoint.com>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
+Jan Engelhardt wrote:
+> 
+> On Tuesday 2008-03-25 17:11, Patrick McHardy wrote:
+>> Ryan Kruse wrote:
+>>>
+>>>  We have a network management application that has an embedded TFTP 
+>>> and FTP
+>>>  server.  The application is written in Java and runs as an unprivileged
+>>>  user so we can't bind to the well known ports.  On linux we bind 
+>>> TFTP and
+>>>  FTP to high ports (udp/11069 and tcp/11021).  We then use iptables 
+>>> rules to
+>>>  redirect the incoming low port (udp/69 and tcp/21) connections to 
+>>> the high
+>>>  ports.
+>>>
+>>>  Now that our application supports IPv6 I need to do the same for 
+>>> that.  I
+>>>  know that ip6tables doesn't support NAT (and shouldn't), but I haven't
+>>>  found a way to redirect a port.  Any thoughts on how this can be done?
+>>
+>>
+>> Routing by fwmark *might* work (add a new "local" table and a rule
+>> pointing to it, mark packets appropriately, bind to ::0). If that
+>> doesn't you'll most likely need a IPv6-capable TPROXY version.
+> 
+> But how does routing change the destination port? It does not...
 
-On Wednesday 2008-03-26 14:29, Sharon Tal wrote:
->
-> Hi there,
-> I have 2 web servers behind an iptables based load-balancer, and I'm trying
-> to setup a graphics web server on the load-balancer, so that if a simple
-> static file is requested it will be able to respond instead of forwarding
-> the request to the web servers.
->
-> I've been trying to do that by matching packets at the raw table, setting
-> them to be UNTRACKED and leaving them on the LB.
-> The problem is that all UNTRACKED packets are identified as INVALID as soon
-> as they get to the mangle chain and dropped.
+Right, not the port of course, I misread the mail.
 
-I would have a hard time reproducing it --
-
-# iptables -t raw -A PREROUTING -s 134.76.13.21 -j NOTRACK
-# iptables -t raw -A PREROUTING -s 134.76.13.21 -j LOGMARK
-# iptables -t mangle -A PREROUTING -s 134.76.13.21 -j LOGMARK
-
-# ping 134.76.13.21 -c1
-PING 134.76.13.21 (134.76.13.21) 56(84) bytes of data.
-[352431.272089] nfmark=0x0 secmark=0x0 classify=0x0 ct=UNTRACKED ctmark=NULL
-ctstate=UNTRACKED ctstatus=NONE
-[352431.272249] nfmark=0x0 secmark=0x0 classify=0x0 ct=UNTRACKED ctmark=NULL
-ctstate=UNTRACKED ctstatus=NONE
-
-# iptables -t mangle -nvL PREROUTING
-Chain PREROUTING (policy ACCEPT 145 packets, 115K bytes)
-  pkts bytes target     prot opt in     out     source               destination
-
-     1    84 LOGMARK    all  --  *      *       134.76.13.21         0.0.0.0/0
-         LOGMARK level 4 prefix ""
-     0     0            all  --  *      *       134.76.13.21         0.0.0.0/0
-         ctstate INVALID
-
-Now I am not sure what system you use, but this is my output on
-kernel 2.6.23.
