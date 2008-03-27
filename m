@@ -1,105 +1,160 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: PATCHES AGAIN...
-Date: Thu, 27 Mar 2008 12:10:21 +0100 (CET)
-Message-ID: <alpine.LNX.1.10.0803271148040.22661@fbirervta.pbzchgretzou.qr>
-References: <47EB4AC7.5040202@freemail.hu>
+From: Whit Blauvelt <whit@transpect.com>
+Subject: Re: Why does ipv6 enabled interfere with ipv4 SNAT?
+Date: Thu, 27 Mar 2008 10:10:26 -0400
+Message-ID: <20080327141026.GA3288@transpect.com>
+References: <20080325012807.GA15637@transpect.com> <alpine.LNX.1.10.0803250254100.9368@fbirervta.pbzchgretzou.qr> <20080325024424.GA16089@transpect.com> <Pine.LNX.4.64.0803251156560.1535@blackhole.kfki.hu> <20080325142553.GA8783@transpect.com> <47E91FEF.9080705@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47EB4AC7.5040202@freemail.hu>
+Content-Disposition: inline
+In-Reply-To: <47E91FEF.9080705@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-15?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Cc: Netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-On Thursday 2008-03-27 08:20, G=E1sp=E1r Lajos wrote:
+On Tue, Mar 25, 2008 at 04:53:19PM +0100, Patrick McHardy wrote:
 
-> Hi list!
->
-> I have a "few" patches against the following setup:
->
-> Kernel: 2.6.24.4
-> iptables: 7424 svn
-> ipset: 7424 svn
-> patch-o-matic-ng: 7424 svn
-> chaostables: 66 svn
-> gcc: 4.3.1 20080309
->
-> "Changelog:"
-> patch-o-matic: recognise the latest iptables svn
-> iptables: remove the compiling warnings ( { .name =3D NULL } )
-> pom-patches: repair incompatible type warnings
-> etc. .... :-D
->
-> WorksForMe TM :D
->
-> To Jan Engelhardt:
->
-> I have seen a v0.8 version of your chaostables, but it is not include=
-d in the=20
-> svn.
-> Would you update the repository?
->
-> Swifty
->
->
+> Please post the list of modules loaded and the output of
+> /proc/net/nf_conntrack.
 
-    2      79 lines   Text/X-DIFF (Name: "ip6tables.c.patch")
-    3      35 lines   Text/X-DIFF (Name: "ip6tables-restore.c.patch")
-    4      20 lines   Text/X-DIFF (Name: "ip6tables-save.c.patch")
-    13     83 lines   Text/X-DIFF (Name: "iptables.c.patch")
-    14     37 lines   Text/X-DIFF (Name: "iptables-restore.c.patch")
-    15     20 lines   Text/X-DIFF (Name: "iptables-save.c.patch")
+First here is the list by the system in question, working once the ipv6
+module is blocked from loading at boot. Next is the list from a system with
+identical hardware and near-identical configuration (same firewall rules),
+but with ipv6 loading - and which also has only 4 of the 6 NICs showing up
+in the ipv6 proc conf space, and also has NAT (in this case DNAT is what I
+tested) failing - also where the NICs on the Internet side of things are
+those coincidentally not showing up with proc ipv6 conf settings. 
 
-I picked these up into my own stack (the unmerged one, remember) and=20
-added the IPv4 parts after cleanup.
+As to the output of /proc/net/nf_conntrack, you just want to see anything,
+or under specific load? I'm not going to just publicly post the raw data -
+although both systems have some there - since IPs can identify my client and
+their clients, which would violate confidentiality.
 
-    5     130 lines   Text/X-DIFF (Name: "ipt_connlimit.c.patch")
-    18     55 lines   Text/X-DIFF (Name: "libipt_connlimit.c.patch")
-    11    137 lines   Text/X-DIFF (Name: "ipt_time.c.patch")
-    12     39 lines   Text/X-DIFF (Name: "ipt_u32.c.patch")
-    27     37 lines   Text/X-DIFF (Name: "libipt_TARPIT.c.patch")
-    28    132 lines   Text/X-DIFF (Name: "libipt_time.c.patch")
-    29     45 lines   Text/X-DIFF (Name: "libipt_u32.c.patch")
+Okay, the fixed system:
 
-These modules are all already in mainline.
+Module                  Size  Used by
+drbd                  208136  2 
+cn                      9632  1 drbd
+parport_pc             37668  0 
+lp                     12452  0 
+parport                37448  2 parport_pc,lp
+loop                   19076  0 
+sg                     36380  0 
+sr_mod                 17700  0 
+cdrom                  37408  1 sr_mod
+ata_generic             8580  0 
+usbhid                 29664  0 
+hid                    28928  1 usbhid
+pcspkr                  4224  0 
+psmouse                39952  0 
+serio_raw               8068  0 
+shpchp                 34580  0 
+pci_hotplug            32576  1 shpchp
+evdev                  11136  0 
+ipt_TOS                 3200  16 
+ipt_REJECT              5760  2 
+xt_state                3456  372 
+nf_nat_ftp              4352  0 
+nf_conntrack_ftp       11136  1 nf_nat_ftp
+xt_limit                3584  3 
+xt_tcpudp               4224  616 
+ipt_LOG                 7552  2 
+iptable_mangle          3840  1 
+iptable_nat             8708  1 
+nf_nat                 20012  2 nf_nat_ftp,iptable_nat
+nf_conntrack_ipv4      19724  374 iptable_nat
+nf_conntrack           65160  6 xt_state,nf_nat_ftp,nf_conntrack_ftp,iptable_nat,nf_nat,nf_conntrack_ipv4
+nfnetlink               6936  3 nf_nat,nf_conntrack_ipv4,nf_conntrack
+iptable_filter          3968  1 
+ip_tables              13924  3 iptable_mangle,iptable_nat,iptable_filter
+x_tables               16260  8 ipt_TOS,ipt_REJECT,xt_state,xt_limit,xt_tcpudp,ipt_LOG,iptable_nat,ip_tables
+ext3                  133640  4 
+jbd                    60456  1 ext3
+mbcache                 9732  1 ext3
+ata_piix               17540  0 
+libata                125296  2 ata_generic,ata_piix
+ehci_hcd               36748  0 
+bnx2                  157208  0 
+e1000                 126656  0 
+uhci_hcd               26640  0 
+usbcore               138760  4 usbhid,ehci_hcd,uhci_hcd
+cciss                  61700  7 
+scsi_mod              146828  4 sg,sr_mod,libata,cciss
+dm_mirror              24320  0 
+dm_snapshot            18980  0 
+dm_mod                 58816  10 dm_mirror,dm_snapshot
+thermal                14344  0 
+processor              32072  1 thermal
+fan                     5764  0 
+fuse                   47124  1 
+apparmor               40600  0 
+commoncap               8320  1 apparmor
 
+Here's the list from a nearly identical sytem that's still got the ipv6
+module loading, and that's also failing at both populating the proc ipv6
+space fully (same thing - just four of the 6 NICs) and also failing at NAT
+(in this case DNAT was what I tried):
 
-    6     121 lines   Text/X-DIFF (Name: "ipt_ipp2p.c.patch")
-    20     93 lines   Text/X-DIFF (Name: "libipt_ipp2p.c.patch")
+Module                  Size  Used by
+ipt_TOS                 3200  16 
+ipt_REJECT              5760  2 
+nf_nat_ftp              4352  0 
+nf_conntrack_ftp       11136  1 nf_nat_ftp
+xt_limit                3584  3 
+xt_state                3456  92 
+xt_tcpudp               4224  266 
+ipt_LOG                 7552  2 
+iptable_mangle          3840  1 
+iptable_nat             8708  1 
+nf_nat                 20012  2 nf_nat_ftp,iptable_nat
+nf_conntrack_ipv4      19724  94 iptable_nat
+nf_conntrack           65160  6 nf_nat_ftp,nf_conntrack_ftp,xt_state,iptable_nat,nf_nat,nf_conntrack_ipv4
+nfnetlink               6936  3 nf_nat,nf_conntrack_ipv4,nf_conntrack
+iptable_filter          3968  1 
+ip_tables              13924  3 iptable_mangle,iptable_nat,iptable_filter
+x_tables               16260  8 ipt_TOS,ipt_REJECT,xt_limit,xt_state,xt_tcpudp,ipt_LOG,iptable_nat,ip_tables
+drbd                  208136  1 
+cn                      9632  1 drbd
+ipv6                  278916  30 
+parport_pc             37668  0 
+af_packet              24840  2 
+lp                     12452  0 
+parport                37448  2 parport_pc,lp
+loop                   19076  0 
+serio_raw               8068  0 
+pcspkr                  4224  0 
+psmouse                39952  0 
+shpchp                 34580  0 
+pci_hotplug            32576  1 shpchp
+evdev                  11136  0 
+sg                     36380  0 
+sr_mod                 17700  0 
+cdrom                  37408  1 sr_mod
+usbhid                 29664  0 
+hid                    28928  1 usbhid
+ata_piix               17540  0 
+ext3                  133640  2 
+jbd                    60456  1 ext3
+mbcache                 9732  1 ext3
+ehci_hcd               36748  0 
+ata_generic             8580  0 
+libata                125296  2 ata_piix,ata_generic
+uhci_hcd               26640  0 
+usbcore               138760  4 usbhid,ehci_hcd,uhci_hcd
+e1000                 126656  0 
+bnx2                  157208  0 
+cciss                  61700  6 
+scsi_mod              146828  4 sg,sr_mod,libata,cciss
+dm_mirror              24320  0 
+dm_snapshot            18980  0 
+dm_mod                 58816  10 dm_mirror,dm_snapshot
+thermal                14344  0 
+processor              32072  1 thermal
+fan                     5764  0 
+fuse                   47124  1 
+apparmor               40600  0 
+commoncap               8320  1 apparmor
 
-I currently have ipp2p evaluated for Xtables-addons (xt-a) inclusion=20
-already.
-
-    9     197 lines   Text/X-DIFF (Name: "ipt_ROUTE.c.patch")
-    23     61 lines   Text/X-DIFF (Name: "libipt_ROUTE.c.patch")
-    16     70 lines   Text/X-DIFF (Name: "libip6t_ROUTE.c.patch")
-
-ROUTE has been deleted. Not technically (as it seems), but in
-people's minds it is already gone since it is replaced by MARK and
-TEE (xt-a).
-
-    10    165 lines   Text/X-DIFF (Name: "ipt_TARPIT.c.patch")
-    32     20 lines   Text/X-DIFF (Name: "libxt_geoip.c.patch")
-
-xt_TARPIT and xt_geoip are in xt-a.
-
-    19     73 lines   Text/X-DIFF (Name: "libipt_IPMARK.c.patch")
-
-xt_IPMARK is projected for xt-a.
-
-    31     16 lines   Text/X-DIFF (Name: "libxt_CHAOS.c.patch")
-    33     38 lines   Text/X-DIFF (Name: "libxt_portscan.c.patch")
-    38     52 lines   Text/X-DIFF (Name: "xt_CHAOS.c.patch")
-    39     29 lines   Text/X-DIFF (Name: "xt_DELUDE.c.patch")
-    40     42 lines   Text/X-DIFF (Name: "xt_portscan.c.patch")
-
-Chaostables is in xtables-addons (git) now;
-(on a side note, the patches are not against the latest
-chaostables-svn version either).
-
-
-Just in case you are interested, urls are
-git://dev.computergmbh.de/xtables and
-git://dev.computergmbh.de/xtables-addons .
+- Whit
