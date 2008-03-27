@@ -1,7 +1,7 @@
 From: <pyoder3@verizon.net>
 Subject: nf_conntrack_tcp_timeout_close value
-Date: Thu, 27 Mar 2008 15:58:30 -0500 (CDT)
-Message-ID: <19200036.1321831206651510533.JavaMail.root@vms069.mailsrvcs.net>
+Date: Thu, 27 Mar 2008 16:00:12 -0500 (CDT)
+Message-ID: <20668041.1322381206651612450.JavaMail.root@vms069.mailsrvcs.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
