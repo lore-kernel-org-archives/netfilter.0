@@ -1,29 +1,54 @@
-From: <pyoder3@verizon.net>
-Subject: nf_conntrack_tcp_timeout_close value
-Date: Thu, 27 Mar 2008 16:00:12 -0500 (CDT)
-Message-ID: <20668041.1322381206651612450.JavaMail.root@vms069.mailsrvcs.net>
+From: Noino <mg8c1zu02@sneakemail.com>
+Subject: simple port translation on the localhost / local loopback
+Date: Thu, 27 Mar 2008 22:16:43 +0100
+Message-ID: <20080327211643.B37CA78C86@gam.mel.teaser.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Find something which I did not fully understand but I was able to fix by changing the nf_conntrack_tcp_timeout_close value to 1 or 0.
+Hi, List ! 
 
-I had an application connect upto my server via a proxy server. Sometimes we would send a RST to the client which would close the netstat state of the connection but it seems that iptables (ip_conntrack) does not clear the session right away. What you find is 
+I wish to submit to you experts an apparently simple problem involving port 
+address translation on the localhost/local loopback, which I've tried and 
+tried and read and couldn't find an authoritative answer for. 
 
-tcp      6 9 CLOSE src=192.168.13.2 dst=10.12.13.14  sport=22052 dport=18292 src=10.12.13.14 dst=192.168.13.2  sport=18292 dport=22052 [ASSURED] use=1                 
+Setup: Linux SUSE w/ kernel 2.6.5. Iptables v. 1.2.9.
+Have a relay DNS listener on UDP port 10053.
+Most DNS clients only know to contact a DNS server on port 53 though. 
 
-which I find out will remain like this for a 10 second window (set by nf_conntrack_tcp_timeout_close default value)
+Problem: using netfilter/ip divert packets from local clients to hit port 
+10053 instead of 53, and of course responses should come back to requesters 
+appearing as though coming from port 53. This is very elementary PAT, but 
+... whatever I've tried using iptables, either one of two equally incorrect 
+things happen : 
 
-Normally this is not a problem but the client proxy server is sending up an ACK to our RST packet which will now pass the iptables rule I have for ESTABLISHED connections since it is in the ip_conntrack with the ASSURED flag set. We will then send another RST and again an ACK from the client.
+ - (DNAT) requests hit the server, but the port number in replies in 
+untouched hence replies are ignored, or
+ - (SNAT) replies disappear in the ether & requesoer times out... 
 
-I can stop/prevent this with the above change nf_conntrack_tcp_timeout_close value to 0.
+Searching found that, maybe, a kernel option : CONFIG_IP_NF_NAT_LOCAL should 
+be necessary for PAT to work on the local host; can you confirm that it 
+would indeed work if I were to recompile my kernel with that option set ?  
+Further search seemes to imply that this option was removed from later 
+kernels altogether, which gets even more confusing... 
 
-Now my real question is there a reason I should not set that value to 0. The only time I see any mention to the timeout_close value is for a RST packet and I can not think of a reason to keep this in an ASSURED state in the firewall. If setting this to 0 is not the ideal fix any suggestion to another fix is greatly appreciated. 
+Can you help me set up the very basic port translation I need, using my 
+existing software if at all possible ? 
 
-Thanks 
-Peter
+What alternative options exist ? I've read about a thing called "Fast-NAT", 
+which unfortunately also seems to have been broken even before the 2.6 
+kernels. Is linux following the lead of the "other" OS in carelessly 
+breaking things along the road? \\\\\\\\\rub-out last question. 
+
+Regards, 
+
+-- 
+Noino 
+
+-- 
+Noino
 
