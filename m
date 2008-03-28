@@ -1,64 +1,34 @@
-From: Scott MacKay <scottmackay@yahoo.com>
-Subject: Re: pre 2.6.14 ip_queue - packet shrink issues?
-Date: Fri, 28 Mar 2008 07:05:52 -0700 (PDT)
-Message-ID: <418076.8475.qm@web52412.mail.re2.yahoo.com>
-References: <20080328134723.GA23603@khasse.inl.fr>
+From: Noino <mg8c1zu02@sneakemail.com>
+Subject: Re: simple port translation on the localhost / local loopback
+Date: Fri, 28 Mar 2008 15:15:41 +0100
+Message-ID: <20080328141541.6BD98B850@sem.mel.teaser.net>
+References: <20080327211643.B37CA78C86@gam.mel.teaser.net>
+            <47ECC9EB.1000308@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080328134723.GA23603@khasse.inl.fr>
+In-Reply-To: <47ECC9EB.1000308@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Eric Leblond <eric@inl.fr>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Pascal Hambourg wrote : 
 
---- Eric Leblond <eric@inl.fr> wrote:
+> I confirm. On 2.6 kernels < 2.6.11 and 2.4 kernels < 2.4.29 this option 
+> must be enabled in order to do local NAT on loopback.
 
-> Hello,
-> 
-> On Friday, 2008 March 28 at  6:07:47 -0700, Scott
-> MacKay wrote:
-> > With ip_queue, under the older libipq style
-> interface
-> > I seem to be having a problem resizing a mangled
-> > message smaller under 2.6.  It seems like the
-> contents
-> > could be changed, but the receiver got the
-> original
-> > packet size, like the trim failed or something. 
-> Still
-> > need to check the details in ethereal, but from
-> anyone
-> > using ip_queue or noting improvements in the new
-> > style, does an issue like this ring any bells? 
-> Thanks
-> > in advance!
-> 
-> I think remember such an issue. It has been fixed
-> and should work with
-> up-to-date code (I mean with libnetfilter_queue).
-> 
-> BR,
-> -- 
-> Eric Leblond
-> INL: http://www.inl.fr/
-> NuFW: http://www.nufw.org/
-> 
-Aah...so possibly no fix in the older style?  The new
-design seems easy enough to port to, I was just hoping
-on not hopping too many revisions from the kernel rev
-I have in (RHEL 4.5) if possible.  I was glad a minor
-UG within the up2date cleared my huge issue (panic
-when returning a payload thru libipq) but this of
-course is just as bad...I had a hope to keep in the
-RHEL available kernel distros but understand if this
-was rolled in outside of what is convenient.
+Merci, Pascal; that would explain why I had so little success... 
 
--Scott
+Stll, is there a way to achieve local port redirection without that option 
+set, maybe by combining DNAT, SNAT, REDIRECT in some astute way ? 
 
+Does it make things easier if I arrange for Tor to listen on the IP 
+associated with the ethernet adapter rather than localhost ? Or even listen 
+on 0.0.0.0 ? 
 
-      ____________________________________________________________________________________
-Looking for last minute shopping deals?  
-Find them fast with Yahoo! Search.  http://tools.search.yahoo.com/newsearch/category.php?category=shopping
+Regards 
+
+-- 
+Noino
+
