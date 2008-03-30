@@ -1,109 +1,68 @@
-From: "Steffen Heil" <lists@steffen-heil.de>
-Subject: RE: CONNMARK and ip rule fwmark
-Date: Sun, 30 Mar 2008 18:21:10 +0200
-Message-ID: <9656F3E88F2D43E986F8EEC3A0D18BFD@shs1>
-References: <046B6BE8F9E1409CAF96941CED215BD0@shs1> <bd29d6543567ecfd7c483671f163d14e@localhost>
+From: "Gary Bai" <lists.platinum@gmail.com>
+Subject: Re: Can netfilter conntrack ftp FXP ?
+Date: Mon, 31 Mar 2008 01:31:31 +0800
+Message-ID: <deecbc160803301031y6a2d4502kc96992e53ea2855b@mail.gmail.com>
+References: <deecbc160803292251kb0df43di2125a58a3fd0dfec@mail.gmail.com>
+	 <47EF9C89.1020100@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-	boundary="----=_NextPart_000_0038_01C89292.D378A9C0";
-	protocol="application/x-pkcs7-signature";
-	micalg=SHA1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <bd29d6543567ecfd7c483671f163d14e@localhost>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=9YAPWmbSWhZyHl/iLaSYWDs96h8bjvYWiT2wu4QDC0g=;
+        b=N0vrlargzHZwQhYWTLP67gtubWFBajJExOfRSZbiVpWsW7h59JuUtR2fmjjN7DAxACk/UFSebzbN212jYcBU47iOFLHye/hFEVRo2M/8gh68BrKq3N+WMQNEjPfKA+w7ix13B4Yr5M8SayBUj/CYVZn12zYuoQazlRXwbaj/Kjs=
+In-Reply-To: <47EF9C89.1020100@plouf.fr.eu.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: 'Franck JONCOURT' <franck.mail@dthconnex.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
+Hi, Pascal
 
-------=_NextPart_000_0038_01C89292.D378A9C0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+  I reloaded nf_conntrack_ftp with the parameter loose=3D1 on the ftp
+server, but it can't work well.
+  I use FlashFXP to login the same ftp server with two different ID,
+so it's my "all involved machines".
+  Then, I drag a file from the left window to the right, but....
 
-Hi
+[R] TYPE I
+[R] 200 Type set to I
+[L] PASV
+[L] 227 Entering Passive Mode (10,1,0,1,160,244).
+[R] PORT 10,1,0,1,160,244
+[R] 200 PORT command successful
+[R] STOR daemon410-x86.exe
+[L] 421 No transfer timeout (300 seconds): closing control connection
+[L] Transmission Fail!
+[L] Connection Lost: FTP Public
+[R] Connection Lost: FTP Private
 
-# iptables -t mangle -A PREROUTING -i tun1 -p tcp --syn -j CONNMARK --set-mark 
-71
-# iptables -t mangle -A OUTPUT -p tcp -m connmark --mark 71 -j MARK --set-mark 
-71
-
-> What about using the nat table to add your mark on a whole connection
-> instead of using the mangle table ?
-
-I just added:
-
-# iptables -t nat -A PREROUTING -i tun1 -p tcp --syn -j CONNMARK --set-mark 71
-
-Nothing changed.
-However I believe that the original rule was used, because the counters 
-(iptables -L -v) ARE incremented.
-
-Regards,
-  Steffen
-
-------=_NextPart_000_0038_01C89292.D378A9C0
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII7zCCAncw
-ggHgoAMCAQICECcZZPsvvC+/xhvbdPLhrpUwDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UEBhMCWkEx
-JTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQ
-ZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA3MDkyNDEyMjYwNFoXDTA4MDkyMzEyMjYw
-NFowXjENMAsGA1UEBBMESGVpbDEQMA4GA1UEKhMHU3RlZmZlbjEVMBMGA1UEAxMMU3RlZmZlbiBI
-ZWlsMSQwIgYJKoZIhvcNAQkBFhVsaXN0c0BzdGVmZmVuLWhlaWwuZGUwgZ8wDQYJKoZIhvcNAQEB
-BQADgY0AMIGJAoGBANV03as9J7BLKo1h6Jy5gO/J7LHxdXW9KGWkC+DdIo1Ii+Q+eok5FkpFgyCB
-hw0cj09ZKC6Rr7W51rGKzUrGycp9TnvbXhIWh3BricKjL12SYxaqazcfyw8YQ8fFvk8XFlJtRcok
-WouvAazUdl4CmfsxfpmN/WlghCvsPrKghw/lAgMBAAGjMjAwMCAGA1UdEQQZMBeBFWxpc3RzQHN0
-ZWZmZW4taGVpbC5kZTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBQUAA4GBAAKrC/mvgV3nYRT8
-+NboUGr27wfGkTGPXqJGd0TXJvbq8HgEG43XB9fQE/Hyi+yn/8WI6fDf1WiJ/YRCYyQx1E8X7MoF
-ZBP18twCJkQJqJi2Tv9mf78XmFtgCm8hXi0Nl9EfnOu2nEIdWH3P5ysei3caWEkmm0VAngkeCvlT
-Eq28MIIDLTCCApagAwIBAgIBADANBgkqhkiG9w0BAQQFADCB0TELMAkGA1UEBhMCWkExFTATBgNV
-BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29u
-c3VsdGluZzEoMCYGA1UECxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UE
-AxMbVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1m
-cmVlbWFpbEB0aGF3dGUuY29tMB4XDTk2MDEwMTAwMDAwMFoXDTIwMTIzMTIzNTk1OVowgdExCzAJ
-BgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgG
-A1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMg
-RGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3
-DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAw
-gYkCgYEA1GnX1LCUZFtx6UfYDFG26nKRsIRefS0Nj3sS34UldSh0OkIsYyeflXtL734Zhx2G6qPd
-uc6WZBrCFG5ErHzmj+hND3EfQDimAKOHePb5lIZererAXnbr2RSjXW56fAylS1V/Bhkpf56aJtVq
-uzgkCGqYx7Hao5iR/Xnb5VrEHLkCAwEAAaMTMBEwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0B
-AQQFAAOBgQDH7JJ+Tvj1lqVnYiqk8E0RYNBvjWBYYawmu1I1XAjPMPuoSpaKH2JCI4wXD/S6ZJwX
-rEcp352YXtJsYHFcoqzceePnbgBHH7UNKOgCneSa/RP0ptl8sfjcXyMmCZGAc9AUG95DqYMl8uac
-LxXK/qarigd1iwzdUYRr5PjRzneigTCCAz8wggKooAMCAQICAQ0wDQYJKoZIhvcNAQEFBQAwgdEx
-CzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEa
-MBgGA1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2Vydmlj
-ZXMgRGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqG
-SIb3DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMzA3MTcwMDAwMDBaFw0x
-MzA3MTYyMzU5NTlaMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAo
-UHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTCB
-nzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAxKY8VXNV+065yplaHmjAdQRwnd/p/6Me7L3N9Vvy
-Gna9fww6YfK/Uc4B1OVQCjDXAmNaLIkVcI7dyfArhVqqP3FWy688Cwfn8R+RNiQqE88r1fOCdz0D
-viv+uxg+B79AgAJk16emu59l0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sCAwEAAaOBlDCBkTASBgNV
-HRMBAf8ECDAGAQH/AgEAMEMGA1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9jcmwudGhhd3RlLmNvbS9U
-aGF3dGVQZXJzb25hbEZyZWVtYWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjApBgNVHREEIjAgpB4wHDEa
-MBgGA1UEAxMRUHJpdmF0ZUxhYmVsMi0xMzgwDQYJKoZIhvcNAQEFBQADgYEASIzRUIPqCy7MDaNm
-rGcPf6+svsIXoUOWlJ1/TCG4+DYfqi2fNi/A9BxQIJNwPP2t4WFiw9k6GX6EsZkbAMUaC4J0niVQ
-lGLH2ydxVyWN3amcOY6MIE9lX5Xa9/eH1sYITq726jTlEBpbNU1341YheILcIRk13iSx0x1G/11f
-ZU8xggL4MIIC9AIBATB2MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGlu
-ZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBD
-QQIQJxlk+y+8L7/GG9t08uGulTAJBgUrDgMCGgUAoIIB2DAYBgkqhkiG9w0BCQMxCwYJKoZIhvcN
-AQcBMBwGCSqGSIb3DQEJBTEPFw0wODAzMzAxNjIxMDlaMCMGCSqGSIb3DQEJBDEWBBQJ2NIrOgab
-rzbyhZv7I5OxpEfHEzBnBgkqhkiG9w0BCQ8xWjBYMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIA
-gDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDAHBgUrDgMCGjAKBggqhkiG
-9w0CBTCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENv
-bnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElz
-c3VpbmcgQ0ECECcZZPsvvC+/xhvbdPLhrpUwgYcGCyqGSIb3DQEJEAILMXigdjBiMQswCQYDVQQG
-EwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhh
-d3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECECcZZPsvvC+/xhvbdPLhrpUwDQYJKoZI
-hvcNAQEBBQAEgYCjzBthcKKW2ZAYgyOatogzOe0ZoowbauTKyFbLOrEJWB4NI4jr0Qs3uB0QkSFH
-1MBQP7hYyUKOCIIZOtOYOuLHOP9Ff+HWtrGG9Sncx+wQY5Z49jLVziOmBKjWr7tssAozs6pn5GnB
-iRlO7Q2ozb1Yc8wGS0p/kJXTlGY13edQNgAAAAAAAA==
-
-------=_NextPart_000_0038_01C89292.D378A9C0--
-
+2008/3/30, Pascal Hambourg <pascal.mail@plouf.fr.eu.org>:
+> Hello,
+>
+>  Gary Bai a =E9crit :
+>
+> >   And I tried to transmit two files between two FTP servers, but it=
+'s failed.
+>
+>
+> Try loading the FTP conntrack module ip_conntrack_ftp or
+>  nf_conntrack_ftp with parameter loose=3D1 on all involved machines (=
+i.e.
+>  client and both servers).
+>
+>
+>  >   Why so many conntrack_helpers except fxp ?
+>
+>
+> Because it is considered insecure.
+>
+> --
+>  To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>  the body of a message to majordomo@vger.kernel.org
+>  More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
