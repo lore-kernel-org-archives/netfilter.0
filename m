@@ -1,71 +1,28 @@
-From: Franck JONCOURT <franck.mail@dthconnex.com>
-Subject: Re: CONNMARK and ip rule fwmark
-Date: Sun, 30 Mar 2008 13:23:10 +0200
-Message-ID: <bd29d6543567ecfd7c483671f163d14e@localhost>
-References: <046B6BE8F9E1409CAF96941CED215BD0@shs1>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Can netfilter conntrack ftp FXP ?
+Date: Sun, 30 Mar 2008 15:58:33 +0200
+Message-ID: <47EF9C89.1020100@plouf.fr.eu.org>
+References: <deecbc160803292251kb0df43di2125a58a3fd0dfec@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <046B6BE8F9E1409CAF96941CED215BD0@shs1>
+In-Reply-To: <deecbc160803292251kb0df43di2125a58a3fd0dfec@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
+Hello,
 
-On Sun, 30 Mar 2008 13:03:09 +0200, "Steffen Heil" <lists@steffen-heil.de>
+Gary Bai a =E9crit :
+>   And I tried to transmit two files between two FTP servers, but it's=
+ failed.
 
-wrote:
+Try loading the FTP conntrack module ip_conntrack_ftp or=20
+nf_conntrack_ftp with parameter loose=3D1 on all involved machines (i.e=
+=2E=20
+client and both servers).
 
-> Hi
+>   Why so many conntrack_helpers except fxp ?
 
-
-
-Hi,
-
-
-
-> I want every reply packet belonging to every connection made through tun1
-
-> to
-
-> be send back through tun1 (not being the default gateway tough).
-
-> (tun1 is P-t-P, so there is no routing nessessary.)
-
-> 
-
-> I tried the following:
-
-> 
-
-> # iptables -t mangle -A PREROUTING -i tun1 -p tcp --syn -j CONNMARK
-
-> --set-mark 71
-
-> # iptables -t mangle -A OUTPUT -p tcp -m connmark --mark 71 -j MARK
-
-> --set-mark 71
-
-
-
-What about using the nat table to add your mark on a whole connection 
-
-instead of using the mangle table ?
-
-
-
-[...]
-
-No idea about that :p!
-
-
-
----
-
-Franck Joncourt
-
-http://www.debian.org/ - http://smhteam.info/wiki/
-
-
-
+Because it is considered insecure.
