@@ -1,38 +1,26 @@
-From: Franck JONCOURT <franck.mail@dthconnex.com>
-Subject: Re: NAT session tracking
-Date: Sat, 29 Mar 2008 18:27:14 +0100
-Message-ID: <b50c8cb36f98921e579ba99d3c17b9ac@localhost>
-References: <47EE7881.6090607@plouf.fr.eu.org>
+From: "Gary Bai" <lists.platinum@gmail.com>
+Subject: Can netfilter conntrack ftp FXP ?
+Date: Sun, 30 Mar 2008 13:51:34 +0800
+Message-ID: <deecbc160803292251kb0df43di2125a58a3fd0dfec@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47EE7881.6090607@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=bi70bC/nnZN7bJCsjqZ/MjHFs/hBnirEbCblRCaHcGg=;
+        b=dVPLnRAj+poEkhspiutCC4Bu42w7lJ6Wfc1fesImT2xj0ta53eYSvMotI0npPLUSrH9S8mDr/VN51RJaqhW/ZsC3no3VHNdPdfc2rFebAbey3xzLxnl/NHMVugEcIK/KMYV99H45ZIjjtWWQrrx4/8I8NkA9Fe5oVsJ3OXrtOtc=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-
-On Sat, 29 Mar 2008 18:12:33 +0100, Pascal Hambourg=0D
-<pascal.mail@plouf.fr.eu.org> wrote:=0D
-> Hello,=0D
-=0D
-Hi,=0D
- =0D
-> Ganesh Kumar N M a =C3=A9crit :=0D
->> I am trying to understanding the nat connection tracking. my doubt i=
-s=0D
->> how can I see the existing nat sessions=0D
-> =0D
-> cat /proc/net/ip_conntrack (/proc/net/nf_conntrack on recent kernels)=
-,=0D
-> or netstat-nat.=0D
-=0D
-Have a look at http://people.netfilter.org/pablo/conntrack-tools/=0D
-and its man page.=0D
-=0D
----=0D
-=46ranck Joncourt=0D
-http://www.debian.org/ - http://smhteam.info/wiki/=0D
-
-
+Hi all,
+  Good day !
+  I found ftp-fxp.patch for kernel-2.4.x, but I didn't find any patchs
+for kernel-2.6.x.
+  And I tried to transmit two files between two FTP servers, but it's failed.
+  Why so many conntrack_helpers except fxp ?
+  rgds,
+  Platinum
