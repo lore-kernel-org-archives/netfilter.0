@@ -1,76 +1,30 @@
-From: Sven Riedel <sr@securenet.de>
-Subject: Re: Transfer stalls with NAT under 2.6.24.3
-Date: Mon, 31 Mar 2008 08:53:06 +0200
-Message-ID: <47F08A52.9070802@securenet.de>
-References: <47EA0DAB.7080205@securenet.de> <47EA1653.3080300@trash.net> <47EA2399.1080201@securenet.de> <47EA7023.3000405@trash.net> <Pine.LNX.4.64.0803261941460.1905@blackhole.kfki.hu>
+From: "ml@bortal.de" <ml@bortal.de>
+Subject: Testing netfilter rules
+Date: Mon, 31 Mar 2008 11:30:46 +0200
+Message-ID: <47F0AF46.2040502@bortal.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0803261941460.1905@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi,
-we had a minor emergency here last week, so I wasn't able to test the=20
-old kernel. I'll see that I'll try that tomorrow.
+Hello List,
 
-Jozsef Kadlecsik wrote:
-> On Wed, 26 Mar 2008, Patrick McHardy wrote:
->=20
->>> During a run with stalls:
->>>
->>> nf_ct_tcp: ACK is over the upper bound (ACKed data not seen yet) IN=
-=3D OUT=3D
->>> SRC=3D100.100.100.100 DST=3D200.200.200.200 LEN=3D80 TOS=3D0x00 PRE=
-C=3D0x00 TTL=3D56
->>> ID=3D44105
->>> DF PROTO=3DTCP SPT=3D22 DPT=3D35858 SEQ=3D4160349927 ACK=3D59661432=
-6 WINDOW=3D49248
->>> RES=3D0x00 ACK URGP=3D0 OPT
->>> (0101080A4558793C1B13CE350101051A491E8751491E8CA9491E7B71491E81F949=
-1E40A9491E5B61)
->>>
->> Thanks, can you send a binary tcpdump (... -w file) of a connection
->> that triggers these messages please?
->=20
-> Yes, a tcpdump of a full session which is stalled could help a lot.
-Ok, I'll send one along later today.
+i would like to test my netfilter firewall. I am currently using ftester 
+(http://dev.inversepath.com/trac/ftester) but i am not happy with that 
+tool.
+Has anyone got some alternatives? I want a client/server or slave/master 
+to test my open ports.
 
-> But it almost look like as a SACK related problem: isn't there a (new=
-)
-> device between the communicating parties which performs ISN randomiza=
-tion
-> and fails to adjust SACK?
+Nmap, netcat or telnet does not do the job since i need to have 
+something to listen at the other end. (with hundreds hosts and ports)
 
-There are at least two devices between the communication partners: a DS=
-L=20
-modem and a firewall on the remote end (outside of my control). Both=20
-devices have been there already and didn't create any problems with the=
-=20
-old iptables setup. The only thing that changed on that communication=20
-path is the firewall hardware, the NIC on the firewall and the=20
-netfilter/iptables version used by the firewall.
+Is anyone using ftester or something similar?
+As far as i can tell ftester does not make a valid tcp handshake, it 
+just fakes it.
 
-Regards,
-Sven
+My aim is to check if my needed/wanted ports actually are allowed.
 
-
---=20
-sven.riedel@securenet.de
-
-SecureNet GmbH
-Intranet & Internet Solutions
-=46rankfurter Ring 193a
-D-80807 M=FCnchen
-Tel: +49 89 32133-632
-=46ax: +49 89 32133-699
-Zentrale: -600
-www.securenet.de
-
-Sitz der Gesellschaft: M=FCnchen
-HRB M=FCnchen 118876
-Gesch=E4ftsf=FChrer: Thomas Schreiber
-
+Thanks, Mario
