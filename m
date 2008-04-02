@@ -1,10 +1,10 @@
 From: martin f krafft <madduck@madduck.net>
-Subject: ip6tables: --state INVALID catches echo-request
-Date: Wed, 2 Apr 2008 23:21:49 +0200
-Message-ID: <20080402212149.GB11325@piper.oerlikon.madduck.net>
+Subject: ip6tables icmp conntracking on 2.6.18 vs 2.6.24
+Date: Wed, 2 Apr 2008 23:26:53 +0200
+Message-ID: <20080402212653.GC11325@piper.oerlikon.madduck.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jq0ap7NbKX2Kqbes"
+	protocol="application/pgp-signature"; boundary="7qSK/uQB79J36Y4o"
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
@@ -12,46 +12,53 @@ List-ID: <netfilter.vger.kernel.org>
 To: netfilter discussion list <netfilter@vger.kernel.org>
 
 
---jq0ap7NbKX2Kqbes
-Content-Type: text/plain; charset=utf-8
+--7qSK/uQB79J36Y4o
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi list,
+Hi,
 
-sorry for the previous post, here is my retry:
+I have two IPv6 hosts and while one can ping other hosts fine, the
+other cannot. I use the simplest ip6tables configuration on both:
 
-An IPv6 host cannot receive any echo-requests with the following
-ruleset:
+  -P INPUT DROP
+  -P FORWARD DROP
+  -P OUTPUT ACCEPT
 
-  -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-  -A INPUT -m state --state INVALID -j DROP
-  -A INPUT -m state --state NEW -j in-new
-  -A in-new -p icmpv6 -icmpv6-type echo-request -j ACCEPT
+  -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+  -A INPUT -j LOG --log-prefix "[INPUT6]: "
 
-The reason is that -m state --state INVALID -j DROP catches the
-ping packet.
+On a Debian sid host with 2.6.24, this works fine and my ping6
+packets get answered.
 
-In an IPv4 setting, this does *not* happen.
+On the host running Debian etch with 2.6.18, the ping6's leave, are
+answered, but the firewall then catches them:
 
-Both iptables(8) and ip6tables(8) say:
+  [INPUT6]: IN=3Deth2 OUT=3D
+  MAC=3D00:16:3e:46:5a:86:00:0e:d6:b8:dc:1b:86:dd SRC=3D
+  2001:41e0:ff00:003b:0000:0000:0000:0001
+  DST=3D2001:1620:2004:0000:0000:0000:0000:0002 LEN=3D104 TC=3D0 HOPLIM
+  IT=3D48 FLOWLBL=3D0 PROTO=3DICMPv6 TYPE=3D129 CODE=3D0 ID=3D48901 SEQ=3D1
 
-  INVALID meaning that the packet could not be  identified  for some
-  reason which  includes  running  out  of memory and ICMP errors
-  which don=E2=80=99t correspond to any known connection
+I cannot really reboot the 2.6.18 machine to install the backported
+2.6.24 on it right now, and I'd first like to know if the kernel is
+actually the culprit.
 
-But echo-request is not an error.
+Are you aware of this issue having been fixed between then and now?
 
-Is this a bug or am I doing something wrong?
+Thanks,
 
 --=20
 martin | http://madduck.net/ | http://two.sentenc.es/
 =20
-plan to be spontaneous tomorrow.
+"all women become like their mothers. that is their tragedy. no man
+ does. that's his."
+                                                        -- oscar wilde
 =20
 spamtraps: madduck.bogus@madduck.net
 
---jq0ap7NbKX2Kqbes
+--7qSK/uQB79J36Y4o
 Content-Type: application/pgp-signature; name="digital_signature_gpg.asc"
 Content-Description: Digital signature (see http://martin-krafft.net/gpg/)
 Content-Disposition: inline
@@ -59,9 +66,9 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.6 (GNU/Linux)
 
-iD8DBQFH8/jtIgvIgzMMSnURAj1qAJ0UbPrFuZ8fOXEfY+3ZlMQkuIZIpwCfV+5m
-TkJMpY6jIADaZZckXhXEycc=
-=+IPL
+iD8DBQFH8/odIgvIgzMMSnURArgdAKCxUTzbxr0z5n7YD+9t+moZrd0u2gCgzt3Y
+MCHgjd2u6i0zgTTa0D6/wTU=
+=cK0e
 -----END PGP SIGNATURE-----
 
---jq0ap7NbKX2Kqbes--
+--7qSK/uQB79J36Y4o--
