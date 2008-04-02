@@ -1,108 +1,62 @@
-From: "Steffen Heil" <lists@steffen-heil.de>
-Subject: reroute-check
-Date: Tue, 1 Apr 2008 23:49:13 +0200
-Message-ID: <D9E16B7CCBDE47EEAE5C6C1A5E00BE24@shs1>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Why does ipv6 enabled interfere with ipv4 SNAT?
+Date: Wed, 02 Apr 2008 12:26:34 +0200
+Message-ID: <47F35F5A.50209@trash.net>
+References: <20080325012807.GA15637@transpect.com> <alpine.LNX.1.10.0803250254100.9368@fbirervta.pbzchgretzou.qr> <20080325024424.GA16089@transpect.com> <Pine.LNX.4.64.0803251156560.1535@blackhole.kfki.hu> <20080325142553.GA8783@transpect.com> <47E91FEF.9080705@trash.net> <20080327141026.GA3288@transpect.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-	boundary="----=_NextPart_000_00DF_01C89452.FCCBE870";
-	protocol="application/x-pkcs7-signature";
-	micalg=SHA1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20080327141026.GA3288@transpect.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Whit Blauvelt <whit@transpect.com>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-This is a multi-part message in MIME format.
+Whit Blauvelt wrote:
+> On Tue, Mar 25, 2008 at 04:53:19PM +0100, Patrick McHardy wrote:
+> 
+>> Please post the list of modules loaded and the output of
+>> /proc/net/nf_conntrack.
+> 
+> First here is the list by the system in question, working once the ipv6
+> module is blocked from loading at boot. Next is the list from a system with
+> identical hardware and near-identical configuration (same firewall rules),
+> but with ipv6 loading - and which also has only 4 of the 6 NICs showing up
+> in the ipv6 proc conf space, and also has NAT (in this case DNAT is what I
+> tested) failing - also where the NICs on the Internet side of things are
+> those coincidentally not showing up with proc ipv6 conf settings. 
 
-------=_NextPart_000_00DF_01C89452.FCCBE870
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+The firewall rules appear to be different between the two systems,
+the first one has a lot more references to the IPv4 conntrack module.
 
-Hi
+> As to the output of /proc/net/nf_conntrack, you just want to see anything,
+> or under specific load? I'm not going to just publicly post the raw data -
+> although both systems have some there - since IPs can identify my client and
+> their clients, which would violate confidentiality.
 
-In which cases does the reroute-check in this picture take place?
-http://jengelh.hopto.org/images/nf-packet-flow.png 
+I'm mainly interested in one or more of the conntrack entries that
+should get NATed but don't. One entry should be enough, feel free
+to replace IPs as long as similar IPs still are similar.
 
-I see the packets in raw.OUTPUT and mangle.OUTPUT.
-I do set a mark in mangle.OUTPUT (and I log it to be sure).
-Then I see the packet in filter.OUTPUT and mangle.POSTROUTING.
+> 
+> Okay, the fixed system:
+> 
+> Module                  Size  Used by
+> ...
+ > iptable_nat             8708  1
+ > nf_nat                 20012  2 nf_nat_ftp,iptable_nat
+ > nf_conntrack_ipv4      19724  374 iptable_nat
+> 
+> Here's the list from a nearly identical sytem that's still got the ipv6
+> module loading, and that's also failing at both populating the proc ipv6
+> space fully (same thing - just four of the 6 NICs) and also failing at NAT
+> (in this case DNAT was what I tried):
+> 
+> iptable_nat             8708  1 
+> nf_nat                 20012  2 nf_nat_ftp,iptable_nat
+> nf_conntrack_ipv4      19724  94 iptable_nat
 
-Note: I don't see it in nat.OUTPUT or nat.POSTROUTING, but I think that's
-okay.
-
-But an "ip rule fwmark" does not work. (out-interface stays the same, even
-though the routing table refered by the ip rule only contains a default
-gateway on another interface.)
-So I think the reroute-check is not done.
-
-So: Does the kernel always reroute? Or does it have to be triggered?
-
-Regards,
-  Steffen
-
-------=_NextPart_000_00DF_01C89452.FCCBE870
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII7zCCAncw
-ggHgoAMCAQICECcZZPsvvC+/xhvbdPLhrpUwDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UEBhMCWkEx
-JTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQ
-ZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA3MDkyNDEyMjYwNFoXDTA4MDkyMzEyMjYw
-NFowXjENMAsGA1UEBBMESGVpbDEQMA4GA1UEKhMHU3RlZmZlbjEVMBMGA1UEAxMMU3RlZmZlbiBI
-ZWlsMSQwIgYJKoZIhvcNAQkBFhVsaXN0c0BzdGVmZmVuLWhlaWwuZGUwgZ8wDQYJKoZIhvcNAQEB
-BQADgY0AMIGJAoGBANV03as9J7BLKo1h6Jy5gO/J7LHxdXW9KGWkC+DdIo1Ii+Q+eok5FkpFgyCB
-hw0cj09ZKC6Rr7W51rGKzUrGycp9TnvbXhIWh3BricKjL12SYxaqazcfyw8YQ8fFvk8XFlJtRcok
-WouvAazUdl4CmfsxfpmN/WlghCvsPrKghw/lAgMBAAGjMjAwMCAGA1UdEQQZMBeBFWxpc3RzQHN0
-ZWZmZW4taGVpbC5kZTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3DQEBBQUAA4GBAAKrC/mvgV3nYRT8
-+NboUGr27wfGkTGPXqJGd0TXJvbq8HgEG43XB9fQE/Hyi+yn/8WI6fDf1WiJ/YRCYyQx1E8X7MoF
-ZBP18twCJkQJqJi2Tv9mf78XmFtgCm8hXi0Nl9EfnOu2nEIdWH3P5ysei3caWEkmm0VAngkeCvlT
-Eq28MIIDLTCCApagAwIBAgIBADANBgkqhkiG9w0BAQQFADCB0TELMAkGA1UEBhMCWkExFTATBgNV
-BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMRowGAYDVQQKExFUaGF3dGUgQ29u
-c3VsdGluZzEoMCYGA1UECxMfQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBEaXZpc2lvbjEkMCIGA1UE
-AxMbVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIENBMSswKQYJKoZIhvcNAQkBFhxwZXJzb25hbC1m
-cmVlbWFpbEB0aGF3dGUuY29tMB4XDTk2MDEwMTAwMDAwMFoXDTIwMTIzMTIzNTk1OVowgdExCzAJ
-BgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgG
-A1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMg
-RGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3
-DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAw
-gYkCgYEA1GnX1LCUZFtx6UfYDFG26nKRsIRefS0Nj3sS34UldSh0OkIsYyeflXtL734Zhx2G6qPd
-uc6WZBrCFG5ErHzmj+hND3EfQDimAKOHePb5lIZererAXnbr2RSjXW56fAylS1V/Bhkpf56aJtVq
-uzgkCGqYx7Hao5iR/Xnb5VrEHLkCAwEAAaMTMBEwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0B
-AQQFAAOBgQDH7JJ+Tvj1lqVnYiqk8E0RYNBvjWBYYawmu1I1XAjPMPuoSpaKH2JCI4wXD/S6ZJwX
-rEcp352YXtJsYHFcoqzceePnbgBHH7UNKOgCneSa/RP0ptl8sfjcXyMmCZGAc9AUG95DqYMl8uac
-LxXK/qarigd1iwzdUYRr5PjRzneigTCCAz8wggKooAMCAQICAQ0wDQYJKoZIhvcNAQEFBQAwgdEx
-CzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEa
-MBgGA1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2Vydmlj
-ZXMgRGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqG
-SIb3DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMzA3MTcwMDAwMDBaFw0x
-MzA3MTYyMzU5NTlaMGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAo
-UHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTCB
-nzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAxKY8VXNV+065yplaHmjAdQRwnd/p/6Me7L3N9Vvy
-Gna9fww6YfK/Uc4B1OVQCjDXAmNaLIkVcI7dyfArhVqqP3FWy688Cwfn8R+RNiQqE88r1fOCdz0D
-viv+uxg+B79AgAJk16emu59l0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sCAwEAAaOBlDCBkTASBgNV
-HRMBAf8ECDAGAQH/AgEAMEMGA1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9jcmwudGhhd3RlLmNvbS9U
-aGF3dGVQZXJzb25hbEZyZWVtYWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjApBgNVHREEIjAgpB4wHDEa
-MBgGA1UEAxMRUHJpdmF0ZUxhYmVsMi0xMzgwDQYJKoZIhvcNAQEFBQADgYEASIzRUIPqCy7MDaNm
-rGcPf6+svsIXoUOWlJ1/TCG4+DYfqi2fNi/A9BxQIJNwPP2t4WFiw9k6GX6EsZkbAMUaC4J0niVQ
-lGLH2ydxVyWN3amcOY6MIE9lX5Xa9/eH1sYITq726jTlEBpbNU1341YheILcIRk13iSx0x1G/11f
-ZU8xggL4MIIC9AIBATB2MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGlu
-ZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBD
-QQIQJxlk+y+8L7/GG9t08uGulTAJBgUrDgMCGgUAoIIB2DAYBgkqhkiG9w0BCQMxCwYJKoZIhvcN
-AQcBMBwGCSqGSIb3DQEJBTEPFw0wODA0MDEyMTQ5MTJaMCMGCSqGSIb3DQEJBDEWBBS1d/TiNwJR
-xeVuCfssj6SivVUJTTBnBgkqhkiG9w0BCQ8xWjBYMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIA
-gDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDAHBgUrDgMCGjAKBggqhkiG
-9w0CBTCBhQYJKwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENv
-bnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElz
-c3VpbmcgQ0ECECcZZPsvvC+/xhvbdPLhrpUwgYcGCyqGSIb3DQEJEAILMXigdjBiMQswCQYDVQQG
-EwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhh
-d3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECECcZZPsvvC+/xhvbdPLhrpUwDQYJKoZI
-hvcNAQEBBQAEgYARZwkUkuTui4m7MWy7ap+piybmY1D9a+cjY+Q6kV+/oli1O6YeX+yb/dBmEF7g
-EKQqX3CzMyNeOkmU3DJ/i9yqBrk0fdYZLLAu+4H8PRoqqnmnap25p9gdKHcuXsBkx8flOw9c2VGZ
-lj1XppXK9A9aa5FVFcpxqQNXgsBJ7Y/iJgAAAAAAAA==
-
-------=_NextPart_000_00DF_01C89452.FCCBE870--
-
+Could you figure out whats causing the different amount of references
+to nf_conntrack_ipv4? "-m state" rules, "-m conntrack" etc. take
+references, maybe something fails during load?
