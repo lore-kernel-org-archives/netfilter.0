@@ -1,62 +1,35 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Why does ipv6 enabled interfere with ipv4 SNAT?
-Date: Wed, 02 Apr 2008 12:26:34 +0200
-Message-ID: <47F35F5A.50209@trash.net>
-References: <20080325012807.GA15637@transpect.com> <alpine.LNX.1.10.0803250254100.9368@fbirervta.pbzchgretzou.qr> <20080325024424.GA16089@transpect.com> <Pine.LNX.4.64.0803251156560.1535@blackhole.kfki.hu> <20080325142553.GA8783@transpect.com> <47E91FEF.9080705@trash.net> <20080327141026.GA3288@transpect.com>
+From: "nir m" <nirm003@gmail.com>
+Subject: ARP proxy without iptables
+Date: Wed, 2 Apr 2008 14:40:59 +0300
+Message-ID: <e99c12ee0804020440h41f87b92tb7486616b86bc7bc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080327141026.GA3288@transpect.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=beta;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=hpz81LBC+ycHFJhBAKXNn0XSECvC0HeEYlIkypDk3js=;
+        b=esg7CTjDMc2bQCekhM1eJ7yvUglapAI9L5UweIsMxsyeHvViQTeUQELpOLuMGFfgtu34vWYl3Vg+N30AKoS3BvBqGUrhinbFrtCE286dsW92ekG061KiyFZvqRblwbP6jRg+6PTJLf2No0siOtCTeu+AmD/RnSz23MW7AIhmLlo=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Whit Blauvelt <whit@transpect.com>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Whit Blauvelt wrote:
-> On Tue, Mar 25, 2008 at 04:53:19PM +0100, Patrick McHardy wrote:
-> 
->> Please post the list of modules loaded and the output of
->> /proc/net/nf_conntrack.
-> 
-> First here is the list by the system in question, working once the ipv6
-> module is blocked from loading at boot. Next is the list from a system with
-> identical hardware and near-identical configuration (same firewall rules),
-> but with ipv6 loading - and which also has only 4 of the 6 NICs showing up
-> in the ipv6 proc conf space, and also has NAT (in this case DNAT is what I
-> tested) failing - also where the NICs on the Internet side of things are
-> those coincidentally not showing up with proc ipv6 conf settings. 
-
-The firewall rules appear to be different between the two systems,
-the first one has a lot more references to the IPv4 conntrack module.
-
-> As to the output of /proc/net/nf_conntrack, you just want to see anything,
-> or under specific load? I'm not going to just publicly post the raw data -
-> although both systems have some there - since IPs can identify my client and
-> their clients, which would violate confidentiality.
-
-I'm mainly interested in one or more of the conntrack entries that
-should get NATed but don't. One entry should be enough, feel free
-to replace IPs as long as similar IPs still are similar.
-
-> 
-> Okay, the fixed system:
-> 
-> Module                  Size  Used by
-> ...
- > iptable_nat             8708  1
- > nf_nat                 20012  2 nf_nat_ftp,iptable_nat
- > nf_conntrack_ipv4      19724  374 iptable_nat
-> 
-> Here's the list from a nearly identical sytem that's still got the ipv6
-> module loading, and that's also failing at both populating the proc ipv6
-> space fully (same thing - just four of the 6 NICs) and also failing at NAT
-> (in this case DNAT was what I tried):
-> 
-> iptable_nat             8708  1 
-> nf_nat                 20012  2 nf_nat_ftp,iptable_nat
-> nf_conntrack_ipv4      19724  94 iptable_nat
-
-Could you figure out whats causing the different amount of references
-to nf_conntrack_ipv4? "-m state" rules, "-m conntrack" etc. take
-references, maybe something fails during load?
+Hello,
+I would like to set up an ARP proxy on my machine.
+meaning, monitor arp replies as they pass through the machine,
+save them in some database and use them to reply for arp requests.
+I saw that there is a proxy_arp file in /proc which as I understand
+configures just that but the problem is that my machine is not a router
+so It cannot forward ip traffic and actually, installing iptables is not
+an option for me..
+I searched for an ebtables solution and found that it almost does what I want.
+ It has the arpreply feature which does what I want but for one specific MAC
+address which need to be supplied so I'd need one rule per MAC address I know
+which is too much...
+So I'm thinking that maybe I overlooked something in ebtables or maybe
+I'm missing
+an absolutely different, yet simple solution to my problem.
+Does anyone have any suggestions?
+Thanks
