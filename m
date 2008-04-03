@@ -1,62 +1,72 @@
-From: martin f krafft <madduck@madduck.net>
-Subject: Re: ip6tables icmp conntracking on 2.6.18 vs 2.6.24
-Date: Thu, 3 Apr 2008 00:05:17 +0200
-Message-ID: <20080402220517.GA15009@piper.oerlikon.madduck.net>
-References: <20080402212653.GC11325@piper.oerlikon.madduck.net> <slrnfv7vhg.46d.petr.pisar@album.ics.muni.cz>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+QahgC5+KEYLbs62"
+From: Steven Stromer <filter@stevenstromer.com>
+Subject: Re: [solved] possible bug in call to libipt_state
+Date: Wed, 2 Apr 2008 23:54:06 -0400
+Message-ID: <758C82ED-E150-44D2-AD78-D5F4D7BF088F@stevenstromer.com>
+References: <filter-4B6EC6.16121031032008@ger.gmane.org> <op.t8wenaw7rtqp7s@hagumi.azt>
+Mime-Version: 1.0 (Apple Message framework v753)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <slrnfv7vhg.46d.petr.pisar@album.ics.muni.cz>
+In-Reply-To: <op.t8wenaw7rtqp7s@hagumi.azt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; delsp="yes"; format="flowed"
 To: netfilter@vger.kernel.org
 
+Humbled again. After much searching found '-m -state --state' in two  
+locations, instead of '-m state --state'. I had searched long and  
+hard for '-m state -state', and '-m state ---state' before posting.  
+Finding errors in iptables is like the sysadmin's version of 'Where's  
+Waldo?' Thanks to you and Ukeme for your aid.
 
---+QahgC5+KEYLbs62
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-also sprach Petr Pisar <petr.pisar@atlas.cz> [2008.04.02.2344 +0200]:
-> ICMPv6 is used for neighborhood discovery (similar to ARP in IPv4).
-> Therefore droping all new packets is bad idea because it will drop ND
-> requestes from other link local stations.
-
-This is just a test-case, really. I am aware that I need to open the
-filter for more ICMP types. But in this case, it's all about
-echo-reply not being treated as RELATED...
+Steven
 
 
+On Mar 31, 2008, at 4:46 PM, Eljas Alakulppi wrote:
 
-also sprach Jan Engelhardt <jengelh@computergmbh.de> [2008.04.02.2357 +0200=
-]:
-> Even so, it should not be INVALID but NEW.
+> Hey.
+>
+> The reason might be that there is something like "---state" (note 3  
+> - instead of normal 2). You should start looking from /etc/init.d/ 
+> iptables (or firewall or something similar). A quick workaround  
+> could be to create a symbolic link for libipt_-state.so (ln -sf  
+> libipt_state.so /lib64/iptables/libipt_-state.so) if it's something  
+> that needs to be fixed now and the cause remains unclear (which I  
+> doubt).
+>
+> Steven Stromer <filter@stevenstromer.com> kirjoitti Mon, 31 Mar  
+> 2008 23:12:10 +0300:
+>
+>> Hi,
+>>
+>> On FC8, kernel 2.6.24.3-50.fc8 (and earlier, actually), iptables  
+>> v1.3.8, I am receiving the following error when trying to load  
+>> rules from a shell script:
+>>
+>> Couldn't load match '-state':/lib64/iptables/libipt_-state.so:  
+>> cannot open shared object file: No such file or directory
+>>
+>> In fact, there is no such file or directory, because the call is  
+>> being incorrectly made to 'libipt_-state.so', instead of  
+>> 'libipt_state.so':
+>>
+>> # ls -la /lib64/iptables | grep state
+>> -rwxr-xr-x 1 root root  6888 2007-11-05 12:08 libip6t_state.so
+>> -rwxr-xr-x 1 root root  6888 2007-11-05 12:08 libipt_state.so
+>>
+>> I am not at all certain whether this is a problem in the Fedora  
+>> iptables package, the kernel, or iptables itself. If anyone could  
+>> help me locate the source of the call, and could also confirm that  
+>> this really is a bug, I'll happily report it!
+>>
+>> Thanks,
+>> Steven Stromer
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe  
+>> netfilter" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>
+>
 
-Right, except RELATED in this case... but I understand your reply
-was to Petr.
-
---=20
-martin | http://madduck.net/ | http://two.sentenc.es/
-=20
-"durch frauen werden die h=F6hepunkte des lebens bereichert
- und die tiefpunkte vermehrt."
-                                                 - friedrich nietzsche
-=20
-spamtraps: madduck.bogus@madduck.net
-
---+QahgC5+KEYLbs62
-Content-Type: application/pgp-signature; name="digital_signature_gpg.asc"
-Content-Description: Digital signature (see http://martin-krafft.net/gpg/)
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFH9AMdIgvIgzMMSnURAtbAAKDJqTavL1ubITom7UH7QFMItkYV9gCfSN+U
-QGaKYMqi2n83/vIuMr07EVQ=
-=erdF
------END PGP SIGNATURE-----
-
---+QahgC5+KEYLbs62--
