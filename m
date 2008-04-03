@@ -1,73 +1,56 @@
-From: martin f krafft <madduck@madduck.net>
-Subject: Re: ip6tables icmp conntracking on 2.6.18 vs 2.6.24
-Date: Thu, 3 Apr 2008 12:26:32 +0200
-Message-ID: <20080403102632.GA22035@piper.oerlikon.madduck.net>
-References: <20080402212653.GC11325@piper.oerlikon.madduck.net> <20080403081822.GA13254@piper.oerlikon.madduck.net> <47F4A36A.2010600@plouf.fr.eu.org> <87r6dn1dqs.fsf@petole.dyndns.org> <20080402212653.GC11325@piper.oerlikon.madduck.net> <20080403081822.GA13254@piper.oerlikon.madduck.net> <47F4A36A.2010600@plouf.fr.eu.org>
+From: Bgs <bgs@bgs.hu>
+Subject: connlimit: 2.6.24.4 + p-o-m 20080331 compile problems
+Date: Thu, 03 Apr 2008 14:08:14 +0200
+Message-ID: <47F4C8AE.4050801@bgs.hu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87r6dn1dqs.fsf@petole.dyndns.org> <47F4A36A.2010600@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter discussion list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
 
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  Greetings,
 
-also sprach Pascal Hambourg <pascal.mail@plouf.fr.eu.org> [2008.04.03.1129 =
-+0200]:
-> Are you using a 2.6.18 kernel image from Debian etch or a custom one ?
-
-Debian's.
-
-> IPv6 conntrack requires the (now not so) new nf_conntrack, but in kernel =
-=20
-> versions older than 2.6.20 nf_conntrack did not support IPv4 NAT yet. =20
-> Only the old ip_conntrack, the IPv4-only conntrack, did. So IPv6 =20
-> conntrack and IPv4 NAT were mutually exclusive. AFAIK 2.6.18 kernel =20
-> images from Debian etch are built with ip_conntrack in order to support =
-=20
-> IPv4 NAT, and do not support IPv6 conntrack.
-
-Excellent explanation, thanks. I can confirm that nf_* modules are
-not present in Debian's 2.6.18, but they are with 2.6.24.
+I tried to compile the above setup but the compilation fails. I've seen 
+this error with 2.6.23/2.6.24 kernels before but used 2.6.22.X in 
+production. Has anything changed in the way to patch it?
 
 
+   CC      net/ipv4/netfilter/ipt_connlimit.o
+In file included from net/ipv4/netfilter/ipt_connlimit.c:23:
+include/net/netfilter/nf_conntrack.h:99: error: field 'ct_general' has 
+incomplete type
+include/net/netfilter/nf_conntrack.h: In function 'nf_ct_get':
+include/net/netfilter/nf_conntrack.h:160: error: 'const struct sk_buff' 
+has no member named 'nfct'
+include/net/netfilter/nf_conntrack.h: In function 'nf_ct_put':
+include/net/netfilter/nf_conntrack.h:167: error: implicit declaration of 
+function 'nf_conntrack_put'
+include/net/netfilter/nf_conntrack.h: In function 'nf_ct_is_untracked':
+include/net/netfilter/nf_conntrack.h:249: error: 'const struct sk_buff' 
+has no member named 'nfct'
+In file included from net/ipv4/netfilter/ipt_connlimit.c:24:
+include/net/netfilter/nf_conntrack_core.h: In function 
+'nf_conntrack_confirm':
+include/net/netfilter/nf_conntrack_core.h:68: error: 'struct sk_buff' 
+has no member named 'nfct'
+net/ipv4/netfilter/ipt_connlimit.c: In function 'count_them':
+net/ipv4/netfilter/ipt_connlimit.c:98: error: too many arguments to 
+function 'nf_conntrack_find_get'
+net/ipv4/netfilter/ipt_connlimit.c: At top level:
+net/ipv4/netfilter/ipt_connlimit.c:312: warning: initialization from 
+incompatible pointer type
+net/ipv4/netfilter/ipt_connlimit.c:316: warning: initialization from 
+incompatible pointer type
+make[3]: *** [net/ipv4/netfilter/ipt_connlimit.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
 
-also sprach Nicolas KOWALSKI <niko@petole.dyndns.org> [2008.04.03.1136 +020=
-0]:
-> I noticed the same behaviour on Etch + kernel 2.6.22 (from
-> backports.org): ICMPv6 echo replies are matched by INVALID.
 
-See http://marc.info/?l=3Dnetfilter&m=3D120717177831833&w=3D2
-And this is still the case with 2.6.24.
+Bye
+Bgs
 
---=20
-martin | http://madduck.net/ | http://two.sentenc.es/
-=20
-"whale feces or working at microsoft? i would probably be the whale
- feces researcher. salt air and whale flatulence; what
- could go wrong?"
-             -- michael moyer, executive editor of _popular science_
-=20
-spamtraps: madduck.bogus@madduck.net
 
---huq684BweRXVnRxX
-Content-Type: application/pgp-signature; name="digital_signature_gpg.asc"
-Content-Description: Digital signature (see http://martin-krafft.net/gpg/)
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFH9LDYIgvIgzMMSnURAisLAKDNDxz7b4Jc5WbjkN/jR/v+s+tN6QCgwfBZ
-A6gVQyvx9z4ctrmHa8YHsgw=
-=/j+Q
------END PGP SIGNATURE-----
-
---huq684BweRXVnRxX--
