@@ -1,60 +1,56 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: How to drop existing connections
-Date: Mon, 07 Apr 2008 14:59:23 +0300
-Message-ID: <1207569563.5879.39.camel@casper.meteor.dp.ua>
-References: <316483.74640.qm@web65716.mail.ac4.yahoo.com>
-	 <1207560499.5879.22.camel@casper.meteor.dp.ua>
-	 <alpine.LNX.1.10.0804071137480.17722@fbirervta.pbzchgretzou.qr>
-	 <1207562913.5879.32.camel@casper.meteor.dp.ua>
-	 <alpine.LNX.1.10.0804071307390.17722@fbirervta.pbzchgretzou.qr>
-Reply-To: casper@meteor.dp.ua
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: "Eric B." <ebenze@hotmail.com>
+Subject: Packets not traversing the POSTROUTING table?
+Date: Mon, 7 Apr 2008 23:27:24 -0400
+Message-ID: <fteoq6$ipr$1@ger.gmane.org>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0804071307390.17722@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-=F7 =F0=CE=C4, 07/04/2008 =D7 13:11 +0200, Jan Engelhardt =D0=C9=DB=C5=D4=
-:
-> On Monday 2008-04-07 12:08, =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=
-=D4=C9=CB wrote:
->=20
-> >=F7 =F0=CE=C4, 07/04/2008 =D7 11:39 +0200, Jan Engelhardt =D0=C9=DB=C5=
-=D4:
-> >> >
-> >> >You can use conntrack utility to remove conntrack entry,
-> >>=20
-> >> This only removes the conntrack entry of course, and
-> >> does not induce a TCP reset.
-> >>=20
-> >> >if you also
-> >> >drop INVALID packets with iptables this will let you kill connect=
-ion.
-> >>=20
-> >> When more packets come in, the 'connection' will go NEW, not INVAL=
-ID.
-> >
-> >Maybe, I remember reading this solution somewhere.
->=20
-> This solution requires that you only accept NEW connections
-> that have SYN set. Something like
->=20
->   -m conntrack --ctstate ESTABLISHED -j ACCEPT
->   -p tcp --syn -m conntrack --ctstatus NEW -j ACCEPT
->   -p udp -m conntrack --ctstatus NEW -j ACCEPT
->   -p tcp -j REJECT --reject-with tcp-reset
->   -j REJECT
->=20
-> yes, that is indeed a good idea to do a tcpkill on connections
-> using conntrack :-)
+Hi,
 
-That is it.
+I'm running into a strange issue here.  I'm not sure if I have done
+something wrong, or if am simply misunderstanding things.
 
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+I have added a very simple rule in my POSTROUTING nat table to log all
+packets, but the packets I am looking to find don't show up in my log file.
+If I initiate the packets from the machine itself, (eg: ping www.yahoo.com),
+then I see those packets show up.  However, if the machine is simply
+responding to packets from another machine (ex: ping 192.168.101.64 from
+another computer), they don't show up in the POSTROUTING table.  I'll see
+the packets show up in the log statement from the OUTPUT filter table, but
+not in the POSTROUTING nat table.
+
+I was under the impression/understanding that all packets travel through the
+POSTROUTING nat table.  Is this incorrect?  Do they only traverse that table
+under special circumstances?  Do response packets not traverse the
+POSTROUTING table?
+
+# iptables -F
+# iptables -t nat -I POSTROUTING -j LOG --log-prefix "POSTROUTE"
+# iptables -I OUTPUT -j LOG --log-prefix "OUTPUT"
+
+I've taken a look at http://www.docum.org/docum.org/kptd/ and from what I
+can tell, all packets are supposed to traverse the POSTROUTING table...   Am
+I missing something obvious here?
+
+From what someone on the comp.os.linux.networking group told me, only the 
+nat tables only see the first new packet of every connection, but since ICMP 
+is connectionless, does that not mean that every new ping would have to 
+travel through the nat table chains?  I added a log rule in the PREROUTE nat 
+table and see all the incoming ICMP ping requests; just absolutely nothing 
+in the POSTROUTE nat table....
+
+I'm running RHEL 4.2, kernel 2.6.9-67.0.4.ELsmp.
+
+Any help would greatly be appreciated!
+
+Thanks!
+
+Eric
+
+
 
