@@ -1,8 +1,8 @@
 From: "Eric B." <ebenze@hotmail.com>
-Subject: Re: iptables -j ROUTE --gw xxxx not working?
-Date: Tue, 8 Apr 2008 15:20:52 -0400
-Message-ID: <ftggj3$kkk$1@ger.gmane.org>
-References: <ftge49$b4h$1@ger.gmane.org> <alpine.LNX.1.10.0804082104350.2229@fbirervta.pbzchgretzou.qr>
+Subject: Re: Packets not traversing the POSTROUTING table?
+Date: Tue, 8 Apr 2008 15:28:38 -0400
+Message-ID: <ftgh3g$mek$1@ger.gmane.org>
+References: <fteoq6$ipr$1@ger.gmane.org> <alpine.LNX.1.10.0804081121460.17722@fbirervta.pbzchgretzou.qr> <ftflon$5ns$1@ger.gmane.org> <alpine.LNX.1.10.0804081359450.17722@fbirervta.pbzchgretzou.qr> <ftgcoq$512$1@ger.gmane.org> <alpine.LNX.1.10.0804082106570.2229@fbirervta.pbzchgretzou.qr>
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -12,37 +12,36 @@ Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
 "Jan Engelhardt" <jengelh@computergmbh.de> wrote in message 
-news:alpine.LNX.1.10.0804082104350.2229@fbirervta.pbzchgretzou.qr...
+news:alpine.LNX.1.10.0804082106570.2229@fbirervta.pbzchgretzou.qr...
 >
-> On Tuesday 2008-04-08 20:38, Eric B. wrote:
->>Hi,
+> On Tuesday 2008-04-08 20:15, Eric B. wrote:
+>>>>
+>>>>Sorry, but what is the LOGMARK target?  I can't seem to find that
+>>>>target anywhere in the docs or the man pages.  I've seen the LOG
+>>>>target and the MARK target, but not sure what the LOGMARK target
+>>>>is.
+>>>
+>>> Similar to LOG but instead of dumping the packet data, it dumps
+>>> the associated Netfilter metastructures.
 >>
->>I'm running RHEL4.2 with iptables iptables v1.2.11 from pkg
->>iptables-1.2.11-3.1.RHEL4.
->>
->>I've tried the following command but been told that --gw argument is
->>unknown:
->>
->># iptables -t mangle -I POSTROUTING -j ROUTE --gw 192.168.104.251
->>iptables v1.2.11: Unknown arg `--gw'
+>>I'm not sure I follow.  I'm using iptables v1.2.11, and I've tried the
+>>following command, but as I feared, LOGMARK is an unknown target for my
+>>version.  Is there a way to get the logmark target for my version, or do I
+>>need to update the entire package?
 >
-> Then you don't have(*) ROUTE. I would not even bother with this
-> ancient method of policy routing. Nowadays, MARK is used together
-> with iproute2 to select output routes.
+> LOGMARK is an extension I wrote, and it being in the xtables-addons
+> package menas you need kernel 2.6.18 at least (but newer is always
+> better, we are approaching 2.6.25), and the xtables base package.
 
-I would be more than happy to avoid this ancient method of policy routing. 
-Indeed, I was trying to get MARK to work together with iproute2 to select my 
-output routes and wasn't working, hence I figured I would try something 
-different (see my msg titled Need help understanding how to debug packet 
-traversal) and see if my logic was at least right.  I seem to be having a 
-lot of difficulty "seeing" what my packet is doing via iptables/iproute2.
+*sigh* Running enterprise servers precludes me from manually installing 
+those kernels.   Although I'm not quite sure what release 67 of the RH 
+kernel includes as updates to the 2.6.9 kernel...  Might there be any chance 
+of it working on the RH 2.6.9-67 kernel?
 
-Sure enough, I did a quick search for a *.ROUTE.so module and couldn't find 
-anything on my system.
+> Oh the joy of enterprise distros...
+One of the necessary side effects of running entreprise servers, I guess....
 
-Okay - back to the drawing board then....
-
-Thanks for the clarification,
+Thanks again,
 
 Eric
 
