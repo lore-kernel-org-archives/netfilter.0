@@ -1,52 +1,86 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: Packets not traversing the POSTROUTING table?
-Date: Tue, 8 Apr 2008 14:17:28 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804081359450.17722@fbirervta.pbzchgretzou.qr>
-References: <fteoq6$ipr$1@ger.gmane.org> <alpine.LNX.1.10.0804081121460.17722@fbirervta.pbzchgretzou.qr> <ftflon$5ns$1@ger.gmane.org>
+From: martin f krafft <madduck@madduck.net>
+Subject: Re: ip6tables icmp conntracking on 2.6.18 vs 2.6.24
+Date: Tue, 8 Apr 2008 15:15:33 +0200
+Message-ID: <20080408131533.GA28766@piper.oerlikon.madduck.net>
+References: <87r6dn1dqs.fsf@petole.dyndns.org> <20080402212653.GC11325@piper.oerlikon.madduck.net> <20080403081822.GA13254@piper.oerlikon.madduck.net> <47F4A36A.2010600@plouf.fr.eu.org> <20080403102632.GA22035@piper.oerlikon.madduck.net> <47F4F2B0.9020205@plouf.fr.eu.org> <20080403152330.GA15573@piper.oerlikon.madduck.net> <47F56197.1000504@plouf.fr.eu.org> <20080404085029.GA27854@piper.oerlikon.madduck.net> <47F65500.8040705@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ftflon$5ns$1@ger.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <47F65500.8040705@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Eric B." <ebenze@hotmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter discussion list <netfilter@vger.kernel.org>
 
 
-On Tuesday 2008-04-08 13:42, Eric B. wrote:
->>
->>>From what someone on the comp.os.linux.networking group told me, only the
->>>nat tables only see the first new packet of every connection,[...]
->>
->> Yes, the _first_ packet. But an ICMP reply (it also applies to TCP SYN
->> ACK)
->> is not the first(*). See the output of the LOGMARK target on
->> -t mangle -A POSTROUTING -p icmp -d <desktop>:
->>
->> Apr  8 11:15:31 sovereign kernel: [1415558.389017] hook=POSTROUTING
->> nfmark=0x0
->> secmark=0x0 classify=0x0 ctdir=REPLY ct=0xffff81007674c380 ctmark=0x0
->> ctstate=ESTABLISHED ctstatus=SEEN_REPLY,CONFIRMED
->>
->> Do you see "ctstate=NEW" anywhere? I don't! :-)
+--/9DWx/yDrRhgMJTb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+also sprach Pascal Hambourg <pascal.mail@plouf.fr.eu.org> [2008.04.04.1819 =
++0200]:
+>> Note, however, that the 2.6.18 kernel modules exist and everything
+>> can be set up without errors, it then just doesn't work.
 >
->Sorry, but what is the LOGMARK target?  I can't seem to find that target
->anywhere in the docs or the man pages.  I've seen the LOG target and the
->MARK target, but not sure what the LOGMARK target is.
+> This is getting confused. Didn't you wrote "I can confirm that nf_* =20
+> modules are not present in Debian's 2.6.18" ?
 
-Similar to LOG but instead of dumping the packet data, it dumps the
-associated Netfilter metastructures.
+No, nf_* are not, but ip_conntrack_* are and there is no error when
+I load a -m state rule with ip6tables.
 
->  Furthermore, how did
->you manage to get that log output from the POSTROUTING table, if the
->response packet doesn't traverse it?
+> But you reply him that "this is still the case with 2.6.24."
+> So what exactly is wrong with IPv6 conntrack in 2.6.24 ?
+>
+> On which pre-2.6.24 versions - besides Debian's 2.6.18 image which
+> has  IPv6 conntrack support disable at build time, this is not
+> a bug but a  feature - do you see an IPv6 conntrack bug such as
+> the "don't seem to  register OUTGOING packets in the connection
+> table" bug you described ?
 
-It's from the mangle table, the table directly traversed before.
-(as packets from ESTABLISHED connections do not traverse nat)
+Yes, http://marc.info/?l=3Dnetfilter&m=3D120717177831833&w=3D2
 
->I'm assuming you are using some advanced debugging features?  Where can I
->find out more about those?
+Other than that, this thread was to find out whether work has been
+done on IPv6 conntrack since 2.6.18.
 
-http://jengelh.hopto.org/projects/xtables/
+And apparently in 2.6.22, it's not fixed:
 
+  http://marc.info/?l=3Dnetfilter&m=3D120721692500732&w=3D2
+
+or is this just a Debian issue? CONFIG_NF_CONNTRACK_IPV6=3Dm is set in
+2.6.22.
+
+> AFAIK, the only improvement in the area of this thread is that an error =
+=20
+> "can't load conntrack support for proto=3D10" is triggered when you try t=
+o =20
+> use the 'state' match in ip6tables if the kernel is built with =20
+> ip_conntrack, thus lacks IPv6 conntrack support.
+
+Good. It *does* work on 2.6.24, so I guess we can close this thread.
+
+--=20
+martin | http://madduck.net/ | http://two.sentenc.es/
+=20
+"when a woman marries again it is because she detested her first husband.
+ when a man marries again it is because he adored his first wife.
+ women try their luck; men risk theirs."
+                                                        -- oscar wilde
+=20
+spamtraps: madduck.bogus@madduck.net
+
+--/9DWx/yDrRhgMJTb
+Content-Type: application/pgp-signature; name="digital_signature_gpg.asc"
+Content-Description: Digital signature (see http://martin-krafft.net/gpg/)
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFH+2/1IgvIgzMMSnURAo8zAKC1AR2MRrZdmoyK0ND2HU190dI94ACgtMxO
+Hrkcg8p8XhfAdooSJFZenvI=
+=FCas
+-----END PGP SIGNATURE-----
+
+--/9DWx/yDrRhgMJTb--
