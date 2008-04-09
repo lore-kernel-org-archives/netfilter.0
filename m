@@ -1,42 +1,69 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: xtables combined, thanks
-Date: Wed, 9 Apr 2008 13:56:03 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804091350380.4411@fbirervta.pbzchgretzou.qr>
-References: <47FC79B5.9080709@gmail.com>
+From: Minh Cao <minhcao123@yahoo.com>
+Subject: RE: Iptables Rules
+Date: Wed, 9 Apr 2008 10:01:00 -0700 (PDT)
+Message-ID: <401296.6393.qm@web82604.mail.mud.yahoo.com>
+References: <alpine.LNX.1.10.0804091153100.4411@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <47FC79B5.9080709@gmail.com>
+In-Reply-To: <alpine.LNX.1.10.0804091153100.4411@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Brent Clark <brentgclarklist@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@computergmbh.de>, Ukeme Noah <ukeme.noah@gmail.com>
+Cc: 'Minh Cao' <minhcao123@yahoo.com>, netfilter@vger.kernel.org
+
+Thanks for your help !
+
+Please explain why these two acting differently.
+On #2 I can login as anonymous, but ls.
+Can I combine two rules into one ?
+
+1/ 
+-A INPUT -m state --state RELATED,ESTABLISHED -j
+ACCEPT
+-A INPUT -m state --state NEW -p tcp -m tcp --dport 21
+-j ACCEPT
+
+2/
+-A INPUT -m state --state NEW,RELATED,ESTABLISHED -p
+tcp -m tcp --dport 21 -j ACCEPT
 
 
-On Wednesday 2008-04-09 10:09, Brent Clark wrote:
->
-> What a pleasure with the xtables-combined-1.5.3+20080329.tar.bz2 ,
-> everything installed automagically. It was great.
->
-> Im gonna move / use this on to my production FW.
->
-> On the side, and to help add some real value to your product, so
-> much so that newbies will rather use "out the box / prefer less
-> tampering", If you don't mind some advise / suggestion,
-> distributionate your xtables. What I mean is, it might / will be
-> useful to create deb, rpms etc.
 
-Providing distro-specific packages would be a huge task, so if at
-all, I'll leave that up to distributions or contributors. Especially
-since it builds kernel modules, you would have to build it against
-all kernels/kernel flavors. On opensuse that's easy so I do that, but
-for debian for example -> :rolleyes:, someone else please take over :-)
-I rather focus on xt-a itself.
 
-Given that patches start trickling into the main iptables package,
-something will probably happen automatically, but that's a bit into
-the future still it seems - depends on how fast the merge goes.
 
-Leaves xtables-addons; if distros could jump on it themselves, the
-better.
+
+--- Jan Engelhardt <jengelh@computergmbh.de> wrote:
+
+> 
+> >On Wednesday 2008-04-09 00:01, Minh Cao wrote:
+> >>Hi, 
+> >>Is that matter if I placed the options/extensions
+> ( -m
+> >>and -p ) in different orders ? 
+> >
+> >No, but it matters between multiple -m.
+> 
+> On Wednesday 2008-04-09 11:23, Ukeme Noah wrote:
+> >Howdy,
+> >The last two, the ones using the state machine
+> might give you problems if
+> >you use only those without specifying to allow
+> established ssh connections.
+> >
+> >So, I'd suggest you add ,ESTABLISHED right after
+> NEW to make the line
+> 
+> Adding random states to rules of which you do not
+> have the context
+> is unlikely to be fruitful.
+> 
+> --
+> To unsubscribe from this list: send the line
+> "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at 
+> http://vger.kernel.org/majordomo-info.html
+> 
+
