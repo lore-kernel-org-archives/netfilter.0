@@ -1,36 +1,26 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: RE: Iptables Rules
-Date: Wed, 9 Apr 2008 19:03:22 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804091902030.3866@fbirervta.pbzchgretzou.qr>
-References: <401296.6393.qm@web82604.mail.mud.yahoo.com>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: Re: Ranges and Single IPs
+Date: Wed, 9 Apr 2008 11:40:58 -0700
+Message-ID: <d95317090804091140l3643357fj79ffe44128202ef6@mail.gmail.com>
+References: <d95317090804091138t3f12f5feo51d16968715ede7b@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <401296.6393.qm@web82604.mail.mud.yahoo.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=k38f8696f/+9xZrQn8QyCmePABPwQy4eNKBedFDeIiI=;
+        b=cXBh1SqaTBuiVdw0s1d/P+3qjPzcbbwuRKxUSy3lcnuW6hxFUMLLnae8dW3hEsHfcbzrwhwoC9jQ6BltXXHEpjzkm5QZeBucLr5/FLROj2XgfOPQzinq9ZgvDfa5E2AyVPdBKcSjr42XE2ReptgwFDE04/Sq4hpsZvYreCzgTsk=
+In-Reply-To: <d95317090804091138t3f12f5feo51d16968715ede7b@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Minh Cao <minhcao123@yahoo.com>
-Cc: Ukeme Noah <ukeme.noah@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+I'd like to write a rule for a group. A group can include both single
+IP addresses and ranges of addresses.
+ipset can do the job with single addresses.
+ipragne can do the job with ranges
 
-On Wednesday 2008-04-09 19:01, Minh Cao wrote:
->Thanks for your help !
->
->Please explain why these two acting differently.
->On #2 I can login as anonymous, but ls.
-                                ^ but not ls
-
-That's because in #2, you limit RELATED to port 21,
-which is essentially meaningless.
-In #1, RELATED applies to any port (as does ESTABLISHED).
-
->Can I combine two rules into one ?
->
->1/ 
->-A INPUT -m state --state RELATED,ESTABLISHED -j
->ACCEPT
->-A INPUT -m state --state NEW -p tcp -m tcp --dport 21
->-j ACCEPT
-
-No.
+How can I combine the two ?
