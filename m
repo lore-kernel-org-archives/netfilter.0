@@ -1,54 +1,29 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: Success routing mark'ed packets - but still confused why it
- didn't work the first time....
-Date: Wed, 9 Apr 2008 06:15:24 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804090612580.2229@fbirervta.pbzchgretzou.qr>
-References: <ftgq9j$mf$1@ger.gmane.org>
+From: Brent Clark <brentgclarklist@gmail.com>
+Subject: xtables combined, thanks
+Date: Wed, 09 Apr 2008 10:09:25 +0200
+Message-ID: <47FC79B5.9080709@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ftgq9j$mf$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Eric B." <ebenze@hotmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org
+
+Hi Jan
+
+What a pleasure with the xtables-combined-1.5.3+20080329.tar.bz2 , 
+everything installed automagically. It was great.
+
+Im gonna move / use this on to my production FW.
+
+On the side, and to help add some real value to your product, so much so 
+that newbies will rather use "out the box / prefer less tampering",  If 
+you don't mind some advise / suggestion, distributionate your xtables. 
+What I mean is, it might / will be useful to create deb, rpms etc.
+
+Thanks for all your hard work.
+
+Brent Clark
 
 
-On Wednesday 2008-04-09 00:06, Eric B. wrote:
-
->Step 2) Marking the packets:
->Originally, I tried mark'ing packets in the mangle Prerouting table destined
->for my machine's virtual ip.  I was under the impression that any response
->to those packets would maintain the mark and hence be routed through the
->appropriate routing table created in step 1.  However, this didn't work.
-
-No, use CONNMARK as shown in http://dev.computergmbh.de/NF-Cookbook.tx
-
->And without any way of "seeing" whether the outgoing packets were marked, I
->couldn't tell why they weren't being routed properly (BTW - is there a way
->to "see" the mark on the packet in the log?)
-
-LOGMARK :p
-
->My solution was to use the mangle Output table to mark all the outgoing
->packets with their source being the virtual ip.  Once I did that, success.
->My outgoing packets are properly redirected out the appropriate gateways.
-
-Make sure you do not set a mark in an input/prerouting
-chain so that it accidentally hits the routing rule
-because that would mean incoming packets are diverted
-before they reach the machine.
-
->However my question now is the root of my confusion.  If a packet is mark'ed
->in the Preroute mangle table, is that mark not supposed to be maintained
->throughout the life of the packet,
-
-The mark is maintained during the life of the packet (until you change it
-of course).
-
-> including the machine's response to that
->packet?
-
-Response is a new packet. Only the ctmark (connection mark)
-can "survive" here.
