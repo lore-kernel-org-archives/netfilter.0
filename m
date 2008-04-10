@@ -1,39 +1,28 @@
-From: "Eric B." <ebenze@hotmail.com>
-Subject: Re: Success routing mark'ed packets - but still confused why it didn't work the first time....
-Date: Wed, 9 Apr 2008 23:13:48 -0400
-Message-ID: <ftk0o3$45q$1@ger.gmane.org>
-References: <ftgq9j$mf$1@ger.gmane.org> <alpine.LNX.1.10.0804090612580.2229@fbirervta.pbzchgretzou.qr> <ftj951$3cv$1@ger.gmane.org> <alpine.LNX.1.10.0804092310390.17930@fbirervta.pbzchgretzou.qr>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: FTP connection without NAT
+Date: Thu, 10 Apr 2008 07:45:14 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0804100744410.8765@fbirervta.pbzchgretzou.qr>
+References: <008801c89aa8$8e306a60$8119fea9@MingChing>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <008801c89aa8$8e306a60$8119fea9@MingChing>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Ming-Ching Tiew <mingching.tiew@redtone.com>
+Cc: netfilter@vger.kernel.org
 
-"Jan Engelhardt" <jengelh@computergmbh.de> wrote in message 
-news:alpine.LNX.1.10.0804092310390.17930@fbirervta.pbzchgretzou.qr...
->>Do the ip rules based on the fwmark work on the individual packet's mark
->>value or the conntrack mark, or both?
+
+On Thursday 2008-04-10 03:16, Ming-Ching Tiew wrote:
 >
-> routing rules work on packet mark ("nfmark" "fwmark"), whch is
-> why --restore-mark is needed.
+>1. FORWARD rule policy is DROP.
+>2. Inside can ACCEPT NEW connection to go to outside.
+>3. ACCEPT established or related connections.
+>4. FORWARD tcp port 21 from outside to the
+>    inside FTP server is ACCEPT.
+>
+>Will the connection tracking modules help in allowing
+>passive FTP session to get through to the FTP server ?
 
-But then, do you not need a --restore-mark in both the FORWARD and OUTPUT 
-chains?
-
--t mangle -A FORWARD -m connmark --mark 0 -m conntrack --ctstate NEW -j 
-prefout
-	-t mangle -A OUTPUT -m connmark --mark 0 -m conntrack --ctstate NEW -j 
-prefout
-
-Or are you simply marking the connection and expecting the system to 
-randomly choose whether to output on ppp0 or ppp1?
-
-Thanks,
-
-Eric
-
-
-
-
+Make sure nf_conntrack_ftp is loaded so that RELATED can do its job.
