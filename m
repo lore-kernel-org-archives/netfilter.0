@@ -1,32 +1,39 @@
-From: "Ming-Ching Tiew" <mingching.tiew@redtone.com>
-Subject: FTP connection without NAT
-Date: Thu, 10 Apr 2008 09:16:50 +0800
-Message-ID: <008801c89aa8$8e306a60$8119fea9@MingChing>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: "Eric B." <ebenze@hotmail.com>
+Subject: Re: Success routing mark'ed packets - but still confused why it didn't work the first time....
+Date: Wed, 9 Apr 2008 23:13:48 -0400
+Message-ID: <ftk0o3$45q$1@ger.gmane.org>
+References: <ftgq9j$mf$1@ger.gmane.org> <alpine.LNX.1.10.0804090612580.2229@fbirervta.pbzchgretzou.qr> <ftj951$3cv$1@ger.gmane.org> <alpine.LNX.1.10.0804092310390.17930@fbirervta.pbzchgretzou.qr>
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I have a firewall/router which is setup to do connection
-tracking firewalling but does not do NAT. And I would like
-to house an FTP server inside the firewalled  router.
+"Jan Engelhardt" <jengelh@computergmbh.de> wrote in message 
+news:alpine.LNX.1.10.0804092310390.17930@fbirervta.pbzchgretzou.qr...
+>>Do the ip rules based on the fwmark work on the individual packet's mark
+>>value or the conntrack mark, or both?
+>
+> routing rules work on packet mark ("nfmark" "fwmark"), whch is
+> why --restore-mark is needed.
 
-The firewall is setup to do this :-
+But then, do you not need a --restore-mark in both the FORWARD and OUTPUT 
+chains?
 
-1. FORWARD rule policy is DROP.
-2. Inside can ACCEPT NEW connection to go to outside.
-3. ACCEPT established or related connections.
-4. FORWARD tcp port 21 from outside to the
-    inside FTP server is ACCEPT.
+-t mangle -A FORWARD -m connmark --mark 0 -m conntrack --ctstate NEW -j 
+prefout
+	-t mangle -A OUTPUT -m connmark --mark 0 -m conntrack --ctstate NEW -j 
+prefout
 
-No PREROUTING DNAT and POSTROUTING SNAT,
-since the box does not do NAT.
+Or are you simply marking the connection and expecting the system to 
+randomly choose whether to output on ppp0 or ppp1?
 
-Will the connection tracking modules help in allowing
-passive FTP session to get through to the FTP server ?
+Thanks,
 
-Any comments ?
+Eric
+
+
+
 
