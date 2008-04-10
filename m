@@ -1,33 +1,53 @@
-From: Brent Clark <brentgclarklist@gmail.com>
-Subject: Re: [announce] Xtables-addons 1.5.4
-Date: Thu, 10 Apr 2008 13:37:21 +0200
-Message-ID: <47FDFBF1.5050800@gmail.com>
-References: <alpine.LNX.1.10.0804092136250.17930@fbirervta.pbzchgretzou.qr>
+From: martin f krafft <madduck@madduck.net>
+Subject: Re: safely apply new rulesets: iptables-apply
+Date: Thu, 10 Apr 2008 15:44:31 +0200
+Message-ID: <20080410134431.GA7209@lapse.madduck.net>
+References: <20080304231606.GA16376@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0803091733060.26142@fbirervta.pbzchgretzou.qr> <20080310110209.GB17757@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0803111947120.18745@fbirervta.pbzchgretzou.qr> <20080311190036.GA23401@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0803112027340.18745@fbirervta.pbzchgretzou.qr> <20080311202922.GC26811@piper.oerlikon.madduck.net> <20080404063255.GA14667@piper.oerlikon.madduck.net> <alpine.LNX.1.10.0804101228050.8765@fbirervta.pbzchgretzou.qr> <20080410133403.GA5538@lapse.madduck.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0804092136250.17930@fbirervta.pbzchgretzou.qr>
+Content-Disposition: inline
+In-Reply-To: <20080410133403.GA5538@lapse.madduck.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: 
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, lartc@mailman.ds9a.nl
+To: Jan Engelhardt <jengelh@computergmbh.de>, netfilter discussion list <netfilter@vger.kernel.org>
 
-Jan Engelhardt wrote:
-> Hi everyone,
->
->
-> Xtables-addons 1.5.4 has been released; highlights of this release are 
->
-> or alternatively a two-in-one pack:
-> 	http://dev.computergmbh.de/files/xtables/xtables-combined-1.5.4.tar.bz2
 
-ALREADY !!!!!
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sweet.
+also sprach martin f krafft <madduck@madduck.net> [2008.04.10.1534 +0200]:
+> > My patch queue finally starts to decrease..=E2=80=94
+>=20
+> yay!
 
-Kricky you heavy working at / on this xtables.  From my side, thanks for 
-all your hard work, and thanks for the "combined".
+On thing I forgot: could the iptables installation routine install
+a symlink from ip6tables-apply to iptables-apply, too, please?
 
-Regards
-Brent Clark
+--=20
+martin | http://madduck.net/ | http://two.sentenc.es/
+=20
+"our destiny exercises its influence over us even when, as yet,
+ we have not learned its nature; it is our future that lays down the
+ law of our today."
+                                                 - friedrich nietzsche
+=20
+spamtraps: madduck.bogus@madduck.net
+
+--wac7ysb48OaltWcw
+Content-Type: application/pgp-signature; name="digital_signature_gpg.asc"
+Content-Description: Digital signature (see http://martin-krafft.net/gpg/)
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFH/hm/IgvIgzMMSnURAvaAAJ4vkE+BN9k2EyngUNEbPM57Yf1qXgCgh5f+
+fq9z0mrwnoJayp3m0ZwZVUw=
+=EB6B
+-----END PGP SIGNATURE-----
+
+--wac7ysb48OaltWcw--
