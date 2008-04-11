@@ -1,39 +1,28 @@
-From: Martijn Lievaart <m@rtij.nl>
-Subject: Re: FTP connection without NAT
-Date: Thu, 10 Apr 2008 23:39:42 +0200
-Message-ID: <47FE891E.3030400@rtij.nl>
-References: <008801c89aa8$8e306a60$8119fea9@MingChing> <alpine.LNX.1.10.0804100744410.8765@fbirervta.pbzchgretzou.qr> <017001c89af3$d5e934e0$8119fea9@MingChing>
+From: "Marc McNeil" <mawcmcneil@gmail.com>
+Subject: Using netfilter to write an intermediate network driver
+Date: Fri, 11 Apr 2008 11:01:49 -0400
+Message-ID: <c27af5010804110801s1bace53dta839da389e074506@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <017001c89af3$d5e934e0$8119fea9@MingChing>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=Ovh6z5MUtqUz2F4+BsJYf5ju31N6Jl9pyGQH4+nlLu4=;
+        b=POuCrQWhTU0eezIEfyjUOgkOgxut4CAxsClmfxm7MtOPOeYcgswIAZrzjf+IiKpw/vDU67CGzlo6asyWB/m6HI7nNo6l1b86WNSpYIZcv5qyG3MmAQVGO3Fdw7Nip3DNMwVmxckyeKQPyGsisA3xLv8VCjxj2E8jtzDziVh+wK8=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ming-Ching Tiew <mingching.tiew@redtone.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Ming-Ching Tiew wrote:
-> Jan Engelhardt wrote:
->   
->> On Thursday 2008-04-10 03:16, Ming-Ching Tiew wrote:
->>     
->>> 1. FORWARD rule policy is DROP.
->>> 2. Inside can ACCEPT NEW connection to go to outside.
->>> 3. ACCEPT established or related connections.
->>> 4. FORWARD tcp port 21 from outside to the
->>>    inside FTP server is ACCEPT.
->>>
->>> Will the connection tracking modules help in allowing
->>> passive FTP session to get through to the FTP server ?
->>>       
->> Make sure nf_conntrack_ftp is loaded so that RELATED can do its job.
->>     
->
-> Is it necessary to specify the ftp port if it is not port 21 ?
->   
+I am new to this listserver and netfilter so my apologies for stupid questions.
 
-Sadly, yes.
-
-M4
-
+I am porting a driver from Windows to Linux. The driver adds a
+security layer just above the adapter driver and below all other
+layers such as TCP/IP etc. The driver has the need intercept packets,
+create new packets, and forward those new packets to the layer above
+and back down through another adapter (acting as a bridge). From what
+I have been reading, netfilter supplies hooks that look promising.
+Does anyone know if netfilter supplies enough functionality for this
+scenario?
