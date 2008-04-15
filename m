@@ -1,42 +1,23 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: Netfilter and IPSec
-Date: Tue, 15 Apr 2008 13:26:48 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804151322470.13202@fbirervta.pbzchgretzou.qr>
-References: <480423CD.3060707@lasige.di.fc.ul.pt>
+From: whiplash <whiplash@bofhland.org>
+Subject: Re: NAT Port Forward problem in a not so simple network
+Date: Tue, 15 Apr 2008 14:15:25 +0200
+Message-ID: <48049C5D.8040104@bofhland.org>
+References: <480479E8.3040904@naxe.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <480423CD.3060707@lasige.di.fc.ul.pt>
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <480479E8.3040904@naxe.it>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?F=C3=A1bio_Souto?= <fsouto@lasige.di.fc.ul.pt>
-Cc: netfilter@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Fabio De Paolis <fabiodepaolis@naxe.it>
+Cc: netfilter@vger.kernel.org
 
+Fabio De Paolis ha scritto:
 
-On Tuesday 2008-04-15 05:41, F=C3=A1bio Souto wrote:
->
-> I'm trying to find out some alternatives for a task I have been
-> assigned. Basically, I want to sign IPSec packets on another
-> machine. The idea is when I receive an IPSec packet, I delegate the
-> cryptographic signature generation to another machine, and I
-> receive the signed packet.
->
-> I'm currently studying several alternatives for doing this, and
-> even tried a socket-based approach, by changing some kernel
-> modules, which has failed. It would require a huge remake of kernel
-> code; this task is made even harder due to lack of documentation.
->
-> So I was wondering if anyone knew if with netfilter is possible to
-> achieve this. Any other suggestions/hints would be extremely
-> valued.
+> Packet 4 Cisco1 reset the communication, perhaps because he wait a reply 
+> from HPpro1 and not Cisco2?
 
-The situation is deliberate, yes. IPsec is done in what you could
-call the xfrm subsystem, not netfilter. To that end, the only
-suggestion I could give is that you create a new xfrm policy/state
-from esp where esp is split into your encryption and signing
-"targets".
-
-It kinda brings me the question why the ipsec transformation is
-not done with an xtables target instead; that would also give
-handy access to connection tracking if needed.
+Of course.
+A possible solution is to SNAT packets exiting from 192.168.0.11
+with destination 192.168.0.2.
