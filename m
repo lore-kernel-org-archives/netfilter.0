@@ -1,62 +1,50 @@
-From: Luke Elliott <lukester_null@yahoo.co.uk>
-Subject: intended behavior of REDIRECT
-Date: Tue, 15 Apr 2008 19:10:11 +0100
-Message-ID: <4804EF83.7080004@yahoo.co.uk>
+From: =?UTF-8?B?RsOhYmlvIFNvdXRv?= <fsouto@lasige.di.fc.ul.pt>
+Subject: Re: Netfilter and IPSec
+Date: Tue, 15 Apr 2008 19:45:41 +0100
+Message-ID: <4804F7D5.3000305@lasige.di.fc.ul.pt>
+References: <480423CD.3060707@lasige.di.fc.ul.pt> <alpine.LNX.1.10.0804151322470.13202@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.1.10.0804151322470.13202@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Jan Engelhardt <jengelh@computergmbh.de>
+Cc: netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-Hi
+Jan Engelhardt wrote:
+>
+>
+> The situation is deliberate, yes. IPsec is done in what you could
+> call the xfrm subsystem, not netfilter. To that end, the only
+> suggestion I could give is that you create a new xfrm policy/state
+> from esp where esp is split into your encryption and signing
+> "targets".
+>
+>  =20
+Thank you for all answers. The major problem I'm facing is the lacking=20
+of documentation on that subsystem.
+=46or example, how to create a policy. And after that?
+My task is a bit easier, because I only need to use AH and not ESP.
+Although a flexible solution would be of value :)
 
-I'm trying to figure out the intended behavior of a REDIRECT rule such as:
+The kernel is still a bit unknown to me, so I'm having a bit of trouble=
+=20
+into all the jargon you are using around.
+But the few things I understood are being extremely helpful.
+> It kinda brings me the question why the ipsec transformation is
+> not done with an xtables target instead; that would also give
+> handy access to connection tracking if needed.
+>  =20
+With that I must agree!
 
-iptables -t nat -A PREROUTING -p tcp --dport 9002 -j REDIRECT --to-ports 
-9003-9004
-
-I'd like to balance connections to port 9002 across the two servers on 
-ports 9003 and 9004. Using the --random (or --random 1 with iptables 
-1.3.8...) option works, but what should the non-random rule actually do?
-
-Digging around in the 2.6.24 kernel it seems to boil down to 
-tcp_unique_tuple() in nf_nat_proto_tcp.c. The interesting bit:
-
-    static u_int16_t port;
-
-    ...
-
-    for (i = 0; i < range_size; i++, port++) {
-        *portptr = htons(min + port % range_size);
-        if (!nf_nat_used_tuple(tuple, ct))
-            return 1;
-    }
-
-
-So if I'm reading this correctly, _port_ will only get incremented once 
-an in use tuple is hit. And assuming there are no other rules in place, 
-that means only after 64K-ish connections from a single host to port 
-9002? This seems to be what I see in practice - "everything" gets 
-forwarded to port 9003 (though TBH I've only tried a few hundred 
-connections).
-
-So presumably the intention is not to round-robin connections, something 
-like:
-
-    for (i = 0; i < range_size; i++) {
-        *portptr = htons(min + port % range_size);
-        ++port;
-        if (!nf_nat_used_tuple(tuple, ct))
-            return 1;
-    }
-
-(Though no doubt that breaks lots of other usages of the function...)
-
-An insight gratefully received!
-
-Regards
-
-Luke Elliott.
+--=20
+-----------------------------------------------------------------------=
+-------------------
+=46=C3=A1bio Souto
+LaSIGE , Navigators Group
+Departamento de Inform=C3=A1tica, FC/UL
+Block C6, room 6.3.32, Campo Grande
+1749-016 Lisboa, Portugal
 
