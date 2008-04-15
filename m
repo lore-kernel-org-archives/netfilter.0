@@ -1,29 +1,20 @@
-From: Ingo Oeser <netdev@axxeo.de>
+From: Patrick McHardy <kaber@trash.net>
 Subject: Re: Netfilter and IPSec
-Date: Tue, 15 Apr 2008 18:54:43 +0200
-Message-ID: <200804151854.44347.netdev@axxeo.de>
-References: <480423CD.3060707@lasige.di.fc.ul.pt> <alpine.LNX.1.10.0804151322470.13202@fbirervta.pbzchgretzou.qr>
+Date: Tue, 15 Apr 2008 19:02:42 +0200
+Message-ID: <4804DFB2.2090008@trash.net>
+References: <480423CD.3060707@lasige.di.fc.ul.pt> <alpine.LNX.1.10.0804151322470.13202@fbirervta.pbzchgretzou.qr> <200804151854.44347.netdev@axxeo.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0804151322470.13202@fbirervta.pbzchgretzou.qr>
-Content-Disposition: inline
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <200804151854.44347.netdev@axxeo.de>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@computergmbh.de>
-Cc: =?utf-8?q?F=C3=A1bio_Souto?= <fsouto@lasige.di.fc.ul.pt>, netfilter@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ingo Oeser <netdev@axxeo.de>
+Cc: Jan Engelhardt <jengelh@computergmbh.de>, =?ISO-8859-15?Q?F=E1bio_S?= =?ISO-8859-15?Q?outo?= <fsouto@lasige.di.fc.ul.pt>, netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-Jan Engelhardt schrieb:
-> It kinda brings me the question why the ipsec transformation is
-> not done with an xtables target instead; that would also give
-> handy access to connection tracking if needed.
-
-And simplify firewalling A LOT :-)
-
-BTW: Anybody has a working ipsec match these days or is this known broken?
+Ingo Oeser wrote:
+> BTW: Anybody has a working ipsec match these days or is this known broken?
 
 
-Best regards
-
-Ingo Oeser
+It should work as always. Are there any problems I'm not aware of?
