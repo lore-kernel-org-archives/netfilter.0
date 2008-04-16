@@ -1,34 +1,28 @@
-From: Roel Kluin <12o3l@tiscali.nl>
-Subject: [PATCH 5/6] NETFILTER: signed tcphoff for ipv6_skip_exthdr() retval
-Date: Wed, 16 Apr 2008 18:00:02 +0200
-Message-ID: <48062282.4070204@tiscali.nl>
-References: <480558CA.7090800@tiscali.nl>
+From: Martijn Lievaart <m@rtij.nl>
+Subject: Re: safely apply new rulesets: iptables-apply
+Date: Wed, 16 Apr 2008 23:56:29 +0200
+Message-ID: <4806760D.3040909@rtij.nl>
+References: <20080304231606.GA16376@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0803091733060.26142@fbirervta.pbzchgretzou.qr> <20080310110209.GB17757@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0803111947120.18745@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <480558CA.7090800@tiscali.nl>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0803111947120.18745@fbirervta.pbzchgretzou.qr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Jan Engelhardt <jengelh@computergmbh.de>
-Cc: kaber@trash.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, lkml <linux-kernel@vger.kernel.org>
+Cc: martin f krafft <madduck@madduck.net>, netfilter discussion list <netfilter@vger.kernel.org>
 
-if tcphoff remains unsigned, a negative ipv6_skip_exthdr() return value will
-go unnoticed,
-    
-Signed-off-by: Roel Kluin <12o3l@tiscali.nl>
----
-diff --git a/net/netfilter/xt_TCPOPTSTRIP.c b/net/netfilter/xt_TCPOPTSTRIP.c
-index 3b2aa56..9685b6f 100644
---- a/net/netfilter/xt_TCPOPTSTRIP.c
-+++ b/net/netfilter/xt_TCPOPTSTRIP.c
-@@ -90,7 +90,7 @@ tcpoptstrip_tg6(struct sk_buff *skb, const struct net_device *in,
- 		const struct xt_target *target, const void *targinfo)
- {
- 	struct ipv6hdr *ipv6h = ipv6_hdr(skb);
--	unsigned int tcphoff;
-+	int tcphoff;
- 	u_int8_t nexthdr;
- 
- 	nexthdr = ipv6h->nexthdr;
+Jan Engelhardt wrote:
+> echo "Applying new rules...";
+> iptables-restore <new.txt;
+> if [ "$?" -ne 0 ]; then
+> 	echo "Dude, that failed horribly. (Old rules still intact.)";
+> 	exit 1;
+> fi
+
+Are you sure? I think it may have committed some tables already and 
+errored on another.
+
+M4
 
