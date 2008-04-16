@@ -1,38 +1,59 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: Limit on number of rulesets?
-Date: Wed, 16 Apr 2008 13:51:46 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804161341570.9438@fbirervta.pbzchgretzou.qr>
-References: <lou904pmh4hkcovha7fkv9o37vnmt27ud5@4ax.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrack-0.9.6 bug (?)
+Date: Wed, 16 Apr 2008 15:38:17 +0200
+Message-ID: <48060149.4090901@netfilter.org>
+References: <20080415134449.66830@gmx.net> <4804C978.1020708@netfilter.org> <48052A6F.9010806@gmx.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <lou904pmh4hkcovha7fkv9o37vnmt27ud5@4ax.com>
+In-Reply-To: <48052A6F.9010806@gmx.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: iptables@haveland.com
+Content-Type: text/plain; charset="us-ascii"
+To: Stefan Behte <Stefan.Behte@gmx.net>
 Cc: netfilter@vger.kernel.org
 
+Stefan Behte wrote:
+> I managed to get the connection deleted before with:
+> conntrack -D -s 212.202.252.50 -d 192.168.40.88 -p tcp --sport 23854
+> --dport 22
+> 
+> It did not show up in conntrack -L -s 212.202.252.50 anymore, but was
+> still in "ESTABLISHED" state, the packets kept flowing.
+> 
+> So thought, that might be an error?!
+> 
+> Also, this does not work:
+> 
+> [root@haq ~]# conntrack -L | grep "dport=22 "
+> tcp      6 431999 ESTABLISHED src=192.168.0.2 dst=192.168.0.1 sport=22
+> dport=33555 packets=11 bytes=1324 src=192.168.0.1 dst=192.168.0.2
+> sport=33555 dport=22 packets=18 bytes=1272 [ASSURED] mark=0 use=1
+> [root@haq ~]# conntrack -D -s 192.168.0.2 -d 192.168.0.1 -p tcp --sport
+> 22 --dport 33555
+> [root@haq ~]# conntrack -L | grep "dport=22 "
+> tcp      6 431999 ESTABLISHED src=192.168.0.2 dst=192.168.0.1 sport=22
+> dport=33555 packets=5 bytes=628 src=192.168.0.1 dst=192.168.0.2
+> sport=33555 dport=22 packets=8 bytes=560 [ASSURED] mark=0 use=1
+> 
+> Or am I doing it all wrong?!
+> If that is really a bug, where would be the appropriate place to file a
+> bug report so that I do not have to bug you directly via mail (which
+> might be regarded as inappropriate)?
 
-On Tuesday 2008-04-15 21:18, iptables@haveland.com wrote:
->
->It is still working, and doing its job well - but I think it has reached an
->arbitrary limit. As there are about 60,000 individual addresses banned and
->other rules, could it be that rule ids are short ints?
+Probably your stateful rule-set is not well-formed or you have the
+connection pickup facility enabled
+(/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal must be 0,
+otherwise the connection tracking can recover connections from the
+middle with no complain). There's an example of a sane and simple
+stateful ruleset in [1].
 
-No, IIRC it is a linear byte stream of concatenated rules.
-I have had more than 250000 rules before -- when there's no more
-"space", you will get an appropriate error message.
+Don't forget that the connection tracking system does not drop packets
+by itself, you need a correct iptables configuration to enable the flow
+deletion, otherwise it won't work.
 
->/etc/init.d/iptables stop also hangs, but ctrl-C then gives this error:
->Message from syslogd@gaia at Apr 15 21:15:31 ...
-> kernel: Oops: 0000 [3] SMP
->Message from syslogd@gaia at Apr 15 21:15:31 ...
-> kernel: CR2: fffffffb8815b7d0
->
->An interesting problem - but what process would I need to kill to be able to
->release iptables and reload? Or is this even possible if part of the kernel?
+[1] http://conntrack-tools.netfilter.org/testcase.html
 
-It is an oops. Some process likely got killed as part of doing
-some operation while in kernel space, therefore leaving something
-locked, causing other apps to hang over time and requiring a BRS.
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
+
