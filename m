@@ -1,31 +1,23 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Redirecting ports in a bridge
-Date: Fri, 18 Apr 2008 09:38:39 -0500
-Message-ID: <4808B26F.4060205@riverviewtech.net>
-References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr> <48087E17.8080902@juntadeandalucia.es> <alpine.LNX.1.10.0804181328560.26385@fbirervta.pbzchgretzou.qr> <480888CE.3080400@juntadeandalucia.es>
+Date: Fri, 18 Apr 2008 09:34:13 -0500
+Message-ID: <4808B165.8020606@riverviewtech.net>
+References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480888CE.3080400@juntadeandalucia.es>
+In-Reply-To: <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 04/18/08 06:41, Javier Prieto Mart=EDnez wrote:
-> I need the bridge because the appliance is supposed to be totally=20
-> trasparent to the network, as its main use is logging traffic.
+On 04/18/08 05:35, Jan Engelhardt wrote:
+> IF you do bridge, then despite cabling being correct, you get a NAT 
+> shortcircuit: jengelh.medozas.de/images/dnat-mistake.png
 
-Ok, forgive me for asking.  Is this appliance multi-purpose in such tha=
-t=20
-it is suppose to log and redirect traffic?
-
-> It just has an IP address for administration purposes, but it doesn't=
-=20
-> really need it. Anyway, I can disable bridging as it's an appliance=20
-> with a closed configuration.
-
-*nod*
+Jan, *VERY* nicely done depiction of the problem.  That is what I 
+usually refer as a "TCP Triangle".
 
 
 
