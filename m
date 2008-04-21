@@ -1,21 +1,26 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [netfilter-core] [PATCH 5/6] NETFILTER: signed tcphoff for	ipv6_skip_exthdr()
- retval
-Date: Mon, 21 Apr 2008 14:24:06 +0200
-Message-ID: <480C8766.9010802@trash.net>
-References: <480558CA.7090800@tiscali.nl> <48062282.4070204@tiscali.nl>
+From: "Charles Romestant" <cromestant@gmail.com>
+Subject: C code rule modifying
+Date: Tue, 22 Apr 2008 17:35:54 +1930
+Message-ID: <5078d3df0804211505u2ab2c584o9e27fdae1a3fdb82@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <48062282.4070204@tiscali.nl>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:subject:cc:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=jM8xXOOPapvn7Fp6sCIqlePoeyQdWO8BcYMQSmgjjWA=;
+        b=tjJatXZCxoDx5kGLz/GBwG329X4QNekkjlHicivfTj/ja7TedAcZkvt2bGKodkA4NN2ggVV0B2ODaDzIAf5MleKvVClAg22CNogm+xsYqA2LpCUsS6jLke9zOm9krlIE5VUkRJM2IscyBef+PymWoaWPzpPafI9QFGHD7SCuzek=
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Roel Kluin <12o3l@tiscali.nl>
-Cc: Jan Engelhardt <jengelh@computergmbh.de>, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 
+Cc: netfilter@vger.kernel.org
 
-Roel Kluin wrote:
-> if tcphoff remains unsigned, a negative ipv6_skip_exthdr() return value will
-> go unnoticed,
+Hello, anyone happen to have some C sample code to modify existing
+ruleset, can t seem to get it to work with
+popen ( get segfault) even running as root.
 
-Applied, thanks.
+Thank you
+
+Charles
