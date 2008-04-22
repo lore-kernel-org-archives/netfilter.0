@@ -1,80 +1,68 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Loopback security...
-Date: Tue, 22 Apr 2008 09:08:22 -0500
-Message-ID: <480DF156.5060801@riverviewtech.net>
-References: <480D47F6.9080808@riverviewtech.net> <480DC570.80303@solutti.com.br>
+From: "Mike Herms" <mherms@gmail.com>
+Subject: NFQUEUE handler source example
+Date: Tue, 22 Apr 2008 10:04:18 -0400
+Message-ID: <c1ae779f0804220704s3a419fbu2e507ced85a6aa06@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480DC570.80303@solutti.com.br>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=F2WugHEiEAbhcstamgaUTA4tzm+8a8Fz4QBoPL5iREs=;
+        b=oz0M+XZ5AJ6v71PE1QBDuRUWBjntvxqRe0Yy3ULrWNUBY566lnfzAFAGeGJbPMCkd9K3MFc/1PWGx43efcICVj/VAuOdEmcM+u0G3f3JBPjV1SSAy+4LbtLICKpAaZk5wh3vlEtU2Zn1o6gH1g5t6uZvpu2U5cFw23sEQ4hwW7A=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 04/22/08 06:01, Leonardo Rodrigues Magalh=E3es wrote:
-> Are you sure you understand it right ??? What do you mean by 'linux=20
-> consider it secure' ?? do you mean it has no access control by=20
-> default ???? This happens with ALL linux network (logical and=20
-> phisical) ones. If you need access control on network level, then you=
-=20
-> got iptables !!!
+Short question:
+Does anyone have example source code for user land handling of packets
+off of NFQUEUE in a bridged environment?  I believe that I've
+successfully created a bridged environment as follows:
+============================
+ifconfig eth0 promisc up
+ifconfig eth0 promisc up
+brctl addbr br0
+brctl stp br0 off
+brctl setbridgeprio br0 2
+brctl addif br0 eth0
+brctl addif br0 eth1
+ifconfig br0 0.0.0.0
 
-No, you mis-understood me.  What I meant by "Linux considers it secure"=
-=20
-is that (by default) it will not let any traffic in to our out of the=20
-loopback interface from / to a different interface.  I.e. (presuming=20
-that a bind an additional subnet (192.0.2/24 ""Test network) to the=20
-loopback interface and set up another station to route to it via the=20
-static ip on the ethernet interface.
+echo 1 > /proc/sys/net/ipv4/ip_forward
+============================
+Using the above configuration and connecting my box between two
+networks or a network and a client computer works great.  Both sides
+work and the bridge appears transparent to them.
 
-+---+                  +---+
-| A +-- - - -  - - - --+ B |
-+---+ .1 (10.0.0) .254 +---+
+I try to handle packets in my userland application by sending them to
+an NFQUEUE using:
+============================
+sudo iptables -t mangle -A FORWARD -m physdev --physdev-in eth0 -j
+NFQUEUE --queue-num 0
+sudo iptables -t mangle -A FORWARD -m physdev --physdev-in eth1 -j
+NFQUEUE --queue-num 0
+============================
 
-Suppose I bind 192.0.2.1 to A's loop back interface and add a route to=20
-192.0.2/24 to B via 10.0.0.1.  If I try to ping 192.0.2.1 from B, the=20
-traffic will leave B and go down the wire just like it should.  However=
-=20
-my experience shows that A will not forward the traffic in to the=20
-loopback interface and destination IP.  Note:  This config is with all=20
-firewalling completely disabled and forwarding enabled.
+After I create the above two rules traffic no longer gets through the
+bridge, as I'd suspect since it must now be handled by someone reading
+from the NFQUEUE.
 
-Said another way, Linux will not allow foreign traffic (non localhost)=20
-on the loopback interface for security reasons.  I believe this to be a=
-=20
-design decision based on security.
+============================
+sudo iptables -t mangle --list -v
+============================
+Shows packets reaching both physical devices.  My problem is I cannot
+get my application to get a notification that something is in the
+queue so it can be handled.  I'm can post my source but a working
+skeleton example would get me there just as quickly without people
+debugging my code.
 
-> What was the problem solved/workarounded ???? Tell us what happened=20
-> and maybe we'll tell you if using rinetd was a smart solution and, if=
-=20
-> it's not, maybe give you other better workaround tips.
+Version information:
+bridge-utils v1.2
+iptables v1.4.0
+ebtables v2.0.8-1 (May 2007
+arptables v0.0.3-3
 
-This is not an actual problem but rather a (theoretical) discussion on=20
-whether such is or is not possible to do with Linux.
-
-> No seek and hide games .... tell us what's really your problem=20
-> please.
-
-Again, this is not a game or a problem to solve, merely a question /=20
-discussion of "Is it possible..." to send traffic in to and / or out of=
-=20
-the loopback interface.  If it is not possible (by default) is it=20
-possible to disable this built in / inherent security?
-
-> Do you mean loopback interface to throw/receive traffic on your=20
-> phisical network, ie, ethernet cables ??? If this is your idea, it=20
-> goes against the whole loopback idea and i think it certainly cant be=
-=20
-> done.
-
-Yes, this is what I was asking.  I know and understand fully well why=20
-this generally is not done.  However I wanted to know if it is possible=
-=20
-to throb some setting on the system to allow this to do be done against=
-=20
-better advice.
-
-
-
-Grant. . . .
+Thanks,
+Mike Herms
