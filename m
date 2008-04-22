@@ -1,41 +1,45 @@
-From: =?windows-1252?Q?Javier_Prieto_Mart=EDnez?= 
-	<javier.prieto.ext@juntadeandalucia.es>
-Subject: Re: Redirecting ports in a bridge
-Date: Tue, 22 Apr 2008 08:15:14 +0200
-Message-ID: <480D8272.1020200@juntadeandalucia.es>
-References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr> <48087E17.8080902@juntadeandalucia.es> <alpine.LNX.1.10.0804181328560.26385@fbirervta.pbzchgretzou.qr> <480888CE.3080400@juntadeandalucia.es> <4808B26F.4060205@riverviewtech.net> <480C3A6A.3090206@juntadeandalucia.es> <480D3FA2.4050000@riverviewtech.net>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: C code rule modifying
+Date: Tue, 22 Apr 2008 10:59:22 +0300
+Message-ID: <1208851162.15101.1.camel@casper.meteor.dp.ua>
+References: <5078d3df0804211505u2ab2c584o9e27fdae1a3fdb82@mail.gmail.com>
+	 <alpine.LNX.1.10.0804220041330.13697@fbirervta.pbzchgretzou.qr>
+	 <5078d3df0804211613o3213bdeege5054ff95e558d51@mail.gmail.com>
+Reply-To: casper@meteor.dp.ua
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480D3FA2.4050000@riverviewtech.net>
+In-Reply-To: <5078d3df0804211613o3213bdeege5054ff95e558d51@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Grant Taylor <gtaylor@riverviewtech.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="koi8-r"
+To: Charles Romestant <cromestant@gmail.com>
+Cc: Jan Engelhardt <jengelh@computergmbh.de>, netfilter@vger.kernel.org
 
+=F7 =F7=D4=CF, 22/04/2008 =D7 18:43 +0000, Charles Romestant =D0=C9=DB=C5=
+=D4:
+> Ok im trying to add the rule to a table named charz, here is the code=
+ :
+>=20
+> char *command;
 
-> Ok, to me logging is recording information and filtering is either 
-> allowing traffic to pass or not.  Based on your original post it 
-> sounds like you are wanting to do some re-direction of traffic too.  
-> Is this correct?
+This is first segfault, change to this:
 
-Yes. We are logging and filtering right now, but we want to redirect 
-traffic too.
+char command[1024];
 
-> The bridge can not be totally transparent and change things at the 
-> same time.  If you are having the bridge change things, the network 
-> will operate differently with it in verses out of service.  Please 
-> clarify what you are wanting.
-The point is we want the bridge to be transparent except for one 
-particular redirection we want to do :-)
+>         FILE *fp =3D popen("/sbin/iptables",'w');
+>         if (fp=3D=3DNULL){
+>         printf("\nerror opening pipe\n");
+>         return -1;
+>         }else{
+>         sprintf(command,"-A charz -p tcp --dport %s --source %s -j
+> %s\0",port,currentIp,action2);
+>         printf("\n\n\n%s\n\n\n",command);
+>         fwrite(command,strlen(command),1,fp);
+>         pclose(fp);
 
-> Remember that IPTables operates on layer 3 and EBTables operates on 
-> layer 2.  So unless you have your kernel configured to do such, 
-> IPTables will not see layer 2 traffic.  So, either you need to use 
-> EBTables (preferred in my opinion) or you need to configure your 
-> kernel so that IPTables sees layer 2 traffic.
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
 
-Thanks for the advice. I'll try with EBTables, then.
-
-Regards.
-    Javier
