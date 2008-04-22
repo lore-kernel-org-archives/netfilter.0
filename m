@@ -1,72 +1,57 @@
-From: =?ISO-8859-1?Q?Javier_Prieto_Mart=EDnez?= 
-	<javier.prieto.ext@juntadeandalucia.es>
-Subject: Re: Redirecting ports in a bridge
-Date: Tue, 22 Apr 2008 17:10:55 +0200
-Message-ID: <480DFFFF.7090807@juntadeandalucia.es>
-References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr> <48087E17.8080902@juntadeandalucia.es> <alpine.LNX.1.10.0804181328560.26385@fbirervta.pbzchgretzou.qr> <480888CE.3080400@juntadeandalucia.es> <4808B26F.4060205@riverviewtech.net> <480C3A6A.3090206@juntadeandalucia.es> <480D3FA2.4050000@riverviewtech.net> <480D8272.1020200@juntadeandalucia.es> <480DF644.8010302@riverviewtech.net>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Loopback security...
+Date: Tue, 22 Apr 2008 18:04:50 +0200
+Message-ID: <480E0CA2.2030902@plouf.fr.eu.org>
+References: <480D47F6.9080808@riverviewtech.net> <480DC570.80303@solutti.com.br> <480DF156.5060801@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480DF644.8010302@riverviewtech.net>
+In-Reply-To: <480DF156.5060801@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Grant Taylor <gtaylor@riverviewtech.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
+Hello,
 
->> Thanks for the advice. I'll try with EBTables, then.
->
-> *nod*
->
-> Except for possibly some syntactical change your rules should be very 
-> similar and operate in the same fashion.
->
-> Based on your previous statement "I don't want to mess with the real 
-> IPs" it sounds like you don't even want to change source / destination 
-> IPs of the traffic going to the back end system.  Am I understanding 
-> you correctly that you indeed want to not alter the source and / or 
-> destination IP?  If this is the case, be aware that you do not want to 
-> NAT the IP and that you will be down to NATing the MAC address (which 
-> can be done but is another discussion) as the frame is passing through 
-> the bridge.
->
-> I guess I should ask:
->
-> +---+         +---+   +---+   +---+
-> | C +-- - - --+ R +---+ A +---+ S |
-> +---+         +---+   +---+   +---+
->
-> Presuming that C is the client, R is the router, A is the appliance, 
-> and S is one or more of the servers, do you want S to see the source 
-> and destination IP that the client connected to?  Or is it ok for the 
-> appliance to munge the source and / or destination IP (as seen by the 
-> server) in the process of redirecting to the server?
+Grant Taylor a =E9crit :
+>=20
+> No, you mis-understood me.  What I meant by "Linux considers it secur=
+e"=20
+> is that (by default) it will not let any traffic in to our out of the=
+=20
+> loopback interface from / to a different interface.
 
-Well.. I don't speak English very well, so it's easy to misunderstand my 
-posts :-)
+There is no such traffic forwarded between the loopback interface and=20
+another interface, because it just makes no sense. The loopback is=20
+designed for local host communications : all that is sent through it is=
+=20
+received back by the host, and all that is received through it was sent=
+=20
+by the host.
 
-In your graph, "S" is my LAN with my all my servers and local 
-workstations. When I say that "I don't want to mess with the real IPs", 
-I mean I don't want to make any change within my LAN.
+> +---+                  +---+
+> | A +-- - - -  - - - --+ B |
+> +---+ .1 (10.0.0) .254 +---+
+>=20
+> Suppose I bind 192.0.2.1 to A's loop back interface and add a route t=
+o=20
+> 192.0.2/24 to B via 10.0.0.1.  If I try to ping 192.0.2.1 from B, the=
+=20
+> traffic will leave B and go down the wire just like it should.  Howev=
+er=20
+> my experience shows that A will not forward the traffic in to the=20
+> loopback interface and destination IP.
 
-The point of the redirection is that, when I need to make a change in 
-one of my servers, I'd like my appliance to redirect all the traffic 
-coming from the extranet ("C") to another server. For example, if I have 
-to stop the web server while upgrading, I'd like all the traffic coming 
-from outside to reach another web server with a catched version of my 
-web page.
+Of course not. Why would it ? The destination is local (see 'ip route=20
+show table local'), and is treated just as any other local destination=20
+like 10.0.0.1. Traffic is forwarded only when the destination is remote=
+=2E
 
-The proccess should be something like that:
+> Said another way, Linux will not allow foreign traffic (non localhost=
+)=20
+> on the loopback interface for security reasons.  I believe this to be=
+ a=20
+> design decision based on security.
 
-* C starts a connection to S1, port 80
-* R routes that packet to my LAN
-* A captures that packet, and changes the destintation to S2, port 80
-* S2 generates a response to C
-* A captures that packet, and changes its source to S1, port 80
-* R routes that packet to the outside network
-* C gets a packet from S1, port 80
-
-I'm making some tests with EBTables in my lab enviroment.
-I'll tell you the results.
-
-Thanks a lot.
+I believe it is rather based on common sense.
