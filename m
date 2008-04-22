@@ -1,7 +1,8 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= 
+	<leolistas@solutti.com.br>
 Subject: Re: Loopback security...
-Date: Tue, 22 Apr 2008 18:04:50 +0200
-Message-ID: <480E0CA2.2030902@plouf.fr.eu.org>
+Date: Tue, 22 Apr 2008 13:50:26 -0300
+Message-ID: <480E1752.2040308@solutti.com.br>
 References: <480D47F6.9080808@riverviewtech.net> <480DC570.80303@solutti.com.br> <480DF156.5060801@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -12,46 +13,41 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello,
 
-Grant Taylor a =E9crit :
->=20
-> No, you mis-understood me.  What I meant by "Linux considers it secur=
-e"=20
-> is that (by default) it will not let any traffic in to our out of the=
-=20
-> loopback interface from / to a different interface.
 
-There is no such traffic forwarded between the loopback interface and=20
-another interface, because it just makes no sense. The loopback is=20
-designed for local host communications : all that is sent through it is=
-=20
-received back by the host, and all that is received through it was sent=
-=20
-by the host.
-
-> +---+                  +---+
-> | A +-- - - -  - - - --+ B |
-> +---+ .1 (10.0.0) .254 +---+
->=20
-> Suppose I bind 192.0.2.1 to A's loop back interface and add a route t=
-o=20
-> 192.0.2/24 to B via 10.0.0.1.  If I try to ping 192.0.2.1 from B, the=
-=20
-> traffic will leave B and go down the wire just like it should.  Howev=
-er=20
-> my experience shows that A will not forward the traffic in to the=20
-> loopback interface and destination IP.
-
-Of course not. Why would it ? The destination is local (see 'ip route=20
-show table local'), and is treated just as any other local destination=20
-like 10.0.0.1. Traffic is forwarded only when the destination is remote=
-=2E
-
+Grant Taylor escreveu:
+>
 > Said another way, Linux will not allow foreign traffic (non localhost=
 )=20
 > on the loopback interface for security reasons.  I believe this to be=
- a=20
-> design decision based on security.
+=20
+> a design decision based on security.
+>
 
-I believe it is rather based on common sense.
+    I have to confess that i have almost none experience with other=20
+network OSs different than Linux. But i really think that this idea of=20
+loopback interface do NOT connects to real interfaces it not a linux=20
+decision. It seems to me that this is basically the whole loopback idea=
+:=20
+a network interface that connects the machine to itself, thus allowing=20
+TCP/IP to fully exist even if the machine is not connect to 'real' netw=
+orks.
+
+    The loopback interface is not 'connected' to the network, i really=20
+dont think that this would be possible to configure or tweak.
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
+
