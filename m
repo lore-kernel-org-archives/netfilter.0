@@ -1,68 +1,58 @@
-From: "Mike Herms" <mherms@gmail.com>
-Subject: NFQUEUE handler source example
-Date: Tue, 22 Apr 2008 10:04:18 -0400
-Message-ID: <c1ae779f0804220704s3a419fbu2e507ced85a6aa06@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Redirecting ports in a bridge
+Date: Tue, 22 Apr 2008 09:29:24 -0500
+Message-ID: <480DF644.8010302@riverviewtech.net>
+References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr> <48087E17.8080902@juntadeandalucia.es> <alpine.LNX.1.10.0804181328560.26385@fbirervta.pbzchgretzou.qr> <480888CE.3080400@juntadeandalucia.es> <4808B26F.4060205@riverviewtech.net> <480C3A6A.3090206@juntadeandalucia.es> <480D3FA2.4050000@riverviewtech.net> <480D8272.1020200@juntadeandalucia.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=F2WugHEiEAbhcstamgaUTA4tzm+8a8Fz4QBoPL5iREs=;
-        b=oz0M+XZ5AJ6v71PE1QBDuRUWBjntvxqRe0Yy3ULrWNUBY566lnfzAFAGeGJbPMCkd9K3MFc/1PWGx43efcICVj/VAuOdEmcM+u0G3f3JBPjV1SSAy+4LbtLICKpAaZk5wh3vlEtU2Zn1o6gH1g5t6uZvpu2U5cFw23sEQ4hwW7A=
-Content-Disposition: inline
+In-Reply-To: <480D8272.1020200@juntadeandalucia.es>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Short question:
-Does anyone have example source code for user land handling of packets
-off of NFQUEUE in a bridged environment?  I believe that I've
-successfully created a bridged environment as follows:
-============================
-ifconfig eth0 promisc up
-ifconfig eth0 promisc up
-brctl addbr br0
-brctl stp br0 off
-brctl setbridgeprio br0 2
-brctl addif br0 eth0
-brctl addif br0 eth1
-ifconfig br0 0.0.0.0
+On 04/22/08 01:15, Javier Prieto Mart=EDnez wrote:
+> Yes. We are logging and filtering right now, but we want to redirect=20
+> traffic too.
 
-echo 1 > /proc/sys/net/ipv4/ip_forward
-============================
-Using the above configuration and connecting my box between two
-networks or a network and a client computer works great.  Both sides
-work and the bridge appears transparent to them.
+*nod*
 
-I try to handle packets in my userland application by sending them to
-an NFQUEUE using:
-============================
-sudo iptables -t mangle -A FORWARD -m physdev --physdev-in eth0 -j
-NFQUEUE --queue-num 0
-sudo iptables -t mangle -A FORWARD -m physdev --physdev-in eth1 -j
-NFQUEUE --queue-num 0
-============================
+> The point is we want the bridge to be transparent except for one=20
+> particular redirection we want to do :-)
 
-After I create the above two rules traffic no longer gets through the
-bridge, as I'd suspect since it must now be handled by someone reading
-from the NFQUEUE.
+*nod*
 
-============================
-sudo iptables -t mangle --list -v
-============================
-Shows packets reaching both physical devices.  My problem is I cannot
-get my application to get a notification that something is in the
-queue so it can be handled.  I'm can post my source but a working
-skeleton example would get me there just as quickly without people
-debugging my code.
+> Thanks for the advice. I'll try with EBTables, then.
 
-Version information:
-bridge-utils v1.2
-iptables v1.4.0
-ebtables v2.0.8-1 (May 2007
-arptables v0.0.3-3
+*nod*
 
-Thanks,
-Mike Herms
+Except for possibly some syntactical change your rules should be very=20
+similar and operate in the same fashion.
+
+Based on your previous statement "I don't want to mess with the real=20
+IPs" it sounds like you don't even want to change source / destination=20
+IPs of the traffic going to the back end system.  Am I understanding yo=
+u=20
+correctly that you indeed want to not alter the source and / or=20
+destination IP?  If this is the case, be aware that you do not want to=20
+NAT the IP and that you will be down to NATing the MAC address (which=20
+can be done but is another discussion) as the frame is passing through=20
+the bridge.
+
+I guess I should ask:
+
++---+         +---+   +---+   +---+
+| C +-- - - --+ R +---+ A +---+ S |
++---+         +---+   +---+   +---+
+
+Presuming that C is the client, R is the router, A is the appliance, an=
+d=20
+S is one or more of the servers, do you want S to see the source and=20
+destination IP that the client connected to?  Or is it ok for the=20
+appliance to munge the source and / or destination IP (as seen by the=20
+server) in the process of redirecting to the server?
+
+
+
+Grant. . . .
