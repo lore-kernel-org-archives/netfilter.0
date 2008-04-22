@@ -1,71 +1,51 @@
-From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= 
-	<leolistas@solutti.com.br>
-Subject: Re: Loopback security...
-Date: Tue, 22 Apr 2008 08:01:04 -0300
-Message-ID: <480DC570.80303@solutti.com.br>
-References: <480D47F6.9080808@riverviewtech.net>
+From: "Charles Romestant" <cromestant@gmail.com>
+Subject: Re: C code rule modifying
+Date: Tue, 22 Apr 2008 08:26:33 -0400
+Message-ID: <5078d3df0804220526u46919df1wf9af2f6fc9bb639a@mail.gmail.com>
+References: <5078d3df0804211505u2ab2c584o9e27fdae1a3fdb82@mail.gmail.com>
+	 <alpine.LNX.1.10.0804220041330.13697@fbirervta.pbzchgretzou.qr>
+	 <5078d3df0804211613o3213bdeege5054ff95e558d51@mail.gmail.com>
+	 <002501c8a416$78a11ec0$8119fea9@MingChing>
+	 <F124820A-A657-48D2-8670-A52F58493AE6@gmail.com>
+	 <1208854129.2225.3.camel@tara.firmix.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480D47F6.9080808@riverviewtech.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=L14rpBBL9iK0MI+jD0iD1JMZpnD6zrhoBimPLi8d+Sw=;
+        b=B8mPZCK72R7A03Dhv5NKalyV3MVaXZlLo1BIfkPwjC5/Jc/hd+e4gr9Re1kLUnwA532QZ+JzqhIp6PxJdik3S5cuJf0ZhZyBQwqvaAIhWd54uFHYV1w8+skHHBDcd4vnmiDoSg8vkcr4OqtPKjXXB0CHDnpdy9QiGHbpbbzn4Sk=
+In-Reply-To: <1208854129.2225.3.camel@tara.firmix.at>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Bernd Petrovitsch <bernd@firmix.at>
+Cc: Ming-Ching Tiew <mingching.tiew@redtone.com>, "<netfilter@vger.kernel.org>" <netfilter@vger.kernel.org>
 
+thanks all, got it to work
 
-
-Grant Taylor escreveu:
-> It is my (mis)understanding that the Linux kernel treats the loopback=
-=20
-> interface and / or the 127.0.0.1/8 subnet as (in a word) "sacred" and=
-=20
-> as such secures it.  I believe I understand the mentality of this and=
-=20
-> do not have a problem with it.
-    Are you sure you understand it right ??? What do you mean by 'linux=
-=20
-consider it secure' ?? do you mean it has no access control by default=20
-???? This happens with ALL linux network (logical and phisical) ones. I=
-f=20
-you need access control on network level, then you got iptables !!!
-
-> However after helping someone work around this problem (via rinetd) I=
-=20
-> find my self asking wondering is it possible to disable this security=
-=20
-> on the loopback interface.
-    What was the problem solved/workarounded ???? Tell us what happened=
-=20
-and maybe we'll tell you if using rinetd was a smart solution and, if=20
-it's not, maybe give you other better workaround tips.
-
-> Is there a /proc and / or sys control entry that can be throbbed to=20
-> allow traffic in to and / or out of the loopback interface?
+On Tue, Apr 22, 2008 at 4:48 AM, Bernd Petrovitsch <bernd@firmix.at> wrote:
+> On Mon, 2008-04-21 at 21:03 -0430, Charles M. Romestant F. wrote:
+>  > Actually no compile errors whatsoever.  Not at computer at the momment
+>
+>  add at least "-Wall -Wextra -Werror" to the gcc-command line and fix the
+>  found errors.
+>  Caveat emptor: if your gcc doesn't understand "-Wextra", try to get a
+>  more current one.
+>  [...]
+>
+>         Bernd
+>  --
+>  Firmix Software GmbH                   http://www.firmix.at/
+>  mobil: +43 664 4416156                 fax: +43 1 7890849-55
+>           Embedded Linux Development and Services
+>
+>
 >
 
-    No seek and hide games .... tell us what's really your problem plea=
-se.
-
-    Do you mean loopback interface to throw/receive traffic on your=20
-phisical network, ie, ethernet cables ??? If this is your idea, it goes=
-=20
-against the whole loopback idea and i think it certainly cant be done.
 
 
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
+-- 
+Charz
