@@ -1,45 +1,53 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Loopback security...
-Date: Tue, 22 Apr 2008 21:48:23 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804222145350.13697@fbirervta.pbzchgretzou.qr>
-References: <480D47F6.9080808@riverviewtech.net> <480DC570.80303@solutti.com.br> <480DF156.5060801@riverviewtech.net>
+Date: Tue, 22 Apr 2008 15:07:50 -0500
+Message-ID: <480E4596.9030000@riverviewtech.net>
+References: <480D47F6.9080808@riverviewtech.net> <480DC570.80303@solutti.com.br> <480DF156.5060801@riverviewtech.net> <480E1752.2040308@solutti.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480DF156.5060801@riverviewtech.net>
+In-Reply-To: <480E1752.2040308@solutti.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
+
+On 04/22/08 11:50, Leonardo Rodrigues Magalh=E3es wrote:
+> I have to confess that i have almost none experience with other=20
+> network OSs different than Linux. But i really think that this idea o=
+f=20
+> loopback interface do NOT connects to real interfaces it not a linux=20
+> decision. It seems to me that this is basically the whole loopback id=
+ea:=20
+> a network interface that connects the machine to itself, thus allowin=
+g=20
+> TCP/IP to fully exist even if the machine is not connect to 'real'=20
+> networks.
+
+I don't know for sure if the loopback network being isolated is limited=
+=20
+to Linux or not.  I do know that Microsoft's TCP/IP implementation has =
+a=20
+laughable loopback setup.  Other than that I can not say.
+
+To me, the concept of the loopback interface is just a very unique=20
+network interface.  Personally I could be equally happy with an etherne=
+t=20
+interface with a loopback plug in it used as the loopback interface wit=
+h=20
+in the system.  I think the idea of having the interface always=20
+available is a good idea, but mainly there to remove the dependency on=20
+other network interfaces and drivers there for.
+
+I can see why there is a logical isolation of the loopback interface=20
+from the rest of the network, however I wish that the isolation was=20
+optional, much like reverse path filtering.
+
+> The loopback interface is not 'connected' to the network, i really=20
+> dont think that this would be possible to configure or tweak.
+
+To me this is just a routing decision more so than any thing else.
 
 
-On Tuesday 2008-04-22 16:08, Grant Taylor wrote:
-> On 04/22/08 06:01, Leonardo Rodrigues Magalh=C3=A3es wrote:
->
->> Are you sure you understand it right ??? What do you mean by
->> 'linux consider it secure' ?? do you mean it has no access control
->> by default ???? This happens with ALL linux network (logical and
->> phisical) ones. If you need access control on network level, then
->> you got iptables !!!
->
-> No, you mis-understood me.  What I meant by "Linux considers it
-> secure" is that (by default) it will not let any traffic in to our
-> out of the loopback interface from / to a different interface.=20
-> I.e. (presuming that a bind an additional subnet (192.0.2/24 ""Test
-> network) to the loopback interface and set up another station to
-> route to it via the static ip on the ethernet interface.
->
-> +---+                  +---+
-> | A +-- - - -  - - - --+ B |
-> +---+ .1 (10.0.0) .254 +---+
 
-There is no problem with doing
-
-	ip a f dev lo
-	ip a a 127.0.0.1/8 dev eth0
-
-However, ping 127.0.0.2 will fail of course, yes it is a special
-handling inside linux (but not really on the topic of "secure"),
-code-wise it is just like 240.0.0.0/8 which was not routed a few
-weeks ago until a patch changed it.
+Grant. . . .
