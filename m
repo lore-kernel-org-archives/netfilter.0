@@ -1,100 +1,76 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Redirecting ports in a bridge
-Date: Tue, 22 Apr 2008 14:24:13 -0500
-Message-ID: <480E3B5D.3020103@riverviewtech.net>
-References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr> <48087E17.8080902@juntadeandalucia.es> <alpine.LNX.1.10.0804181328560.26385@fbirervta.pbzchgretzou.qr> <480888CE.3080400@juntadeandalucia.es> <4808B26F.4060205@riverviewtech.net> <480C3A6A.3090206@juntadeandalucia.es> <480D3FA2.4050000@riverviewtech.net> <480D8272.1020200@juntadeandalucia.es> <480DF644.8010302@riverviewtech.net> <480DFFFF.7090807@juntadeandalucia.es>
+Subject: Re: Loopback security...
+Date: Tue, 22 Apr 2008 14:43:37 -0500
+Message-ID: <480E3FE9.8070008@riverviewtech.net>
+References: <480D47F6.9080808@riverviewtech.net> <480DC570.80303@solutti.com.br> <480DF156.5060801@riverviewtech.net> <480E0CA2.2030902@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480DFFFF.7090807@juntadeandalucia.es>
+In-Reply-To: <480E0CA2.2030902@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 04/22/08 10:10, Javier Prieto Mart=EDnez wrote:
-> Well.. I don't speak English very well, so it's easy to misunderstand=
- my=20
-> posts :-)
+On 04/22/08 11:04, Pascal Hambourg wrote:
+> There is no such traffic forwarded between the loopback interface and 
+> another interface, because it just makes no sense. The loopback is 
+> designed for local host communications : all that is sent through it is 
+> received back by the host, and all that is received through it was sent 
+> by the host.
 
-That's ok.  You are doing just fine.  :)
+Under normal circumstances I would agree with you completely.  However 
+there are (and have been) cases where there is a need to have other 
+systems communicate with a given systems loopback interface.  More 
+specifically (and closer to what prompted this discussion) is if I have 
+a system that had in the past a service bound to loopback that is no no 
+longer there that I would like to redirect this traffic out to a 
+different system.  Thus traditionally I could DNAT traffic in the OUTPUT 
+chain to the new address.  This way I would not need to re-configure 
+software or deal with software that can not be re-configured.  In this 
+case I want what starts as local traffic to be redirected OUT OF the 
+loopback ""network and for replies to come back in to it.
 
-> In your graph, "S" is my LAN with my all my servers and local=20
-> workstations. When I say that "I don't want to mess with the real IPs=
-",=20
-> I mean I don't want to make any change within my LAN.
+> Of course not. Why would it ? The destination is local (see 'ip route 
+> show table local'), and is treated just as any other local destination 
+> like 10.0.0.1. Traffic is forwarded only when the destination is remote.
 
-*nod*
+If this was a second ethernet interface verses the loopback interface, 
+the answer would be "of course it would".
 
-Just to make sure that I understand you correctly, you do not want to=20
-have to re-configure IP addresses on servers when you add or remove the=
-=20
-appliance but you do not care if a given server sees the traffic as=20
-being to its self rather than the original address.  I.e.
+Let me try explaining this again.
 
-C -> S1 (client sends traffic)
-C -> S1 (router routes traffic)
-C -> S1 (appliance receives traffic)
-C -> S2 (and changes it to S2      )
-C -> S2 (server 2 receives traffic)
-S2 -> C (server 2 replies to traffic)
-S2 -> C (appliance receives traffic)
-S1 -> C (and changes it to S1      )
-S1 -> C (router routes traffic)
-S1 -> C (client receives traffic)
+A
+   lo: 127.0.0.1/8 and 192.0.2.1/24
+eth0: 10.0.0.1/24
+Destination   Gateway     Genmask
+10.0.0.0      0.0.0.0     255.255.255.0
+127.0.0.0     127.0.0.1   255.0.0.0
+192.0.2.0     0.0.0.0     255.255.255.0
+0.0.0.0       10.0.0.X    0.0.0.0
 
-The key point is that S2 sees the traffic as being to (destination IP)=20
-its self, rather than to S1.
+B
+   lo: 127.0.0.1/8
+eth0: 10.0.0.254/24
+Destination   Gateway     Genmask
+10.0.0.0      0.0.0.0     255.255.255.0
+127.0.0.0     127.0.0.1   255.0.0.0
+192.0.2.0     10.0.0.1    255.255.255.0
+0.0.0.0       10.0.0.X    0.0.0.0
 
-If this is ok with you, then DNATing / SNATing will work just fine.
+In this case, B should route any traffic that is to 192.0.2.0/24 over to 
+A.  A would then receive this traffic and forward it to the loopback 
+interface.
 
-> The point of the redirection is that, when I need to make a change in=
-=20
-> one of my servers, I'd like my appliance to redirect all the traffic=20
-> coming from the extranet ("C") to another server. For example, if I h=
-ave=20
-> to stop the web server while upgrading, I'd like all the traffic comi=
-ng=20
-> from outside to reach another web server with a catched version of my=
-=20
-> web page.
+If you are hanging up on my use of the word "forward" for traffic that 
+comes in one interface destined to an address bound to a different 
+interface then please do not, or change the word.  If you would prefer, 
+substitute the word "route" for the word "forward".
 
-*nod*
+> I believe it is rather based on common sense.
 
-> The proccess should be something like that:
->=20
-> * C starts a connection to S1, port 80
-> * R routes that packet to my LAN
-> * A captures that packet, and changes the destintation to S2, port 80
-> * S2 generates a response to C
-> * A captures that packet, and changes its source to S1, port 80
-> * R routes that packet to the outside network
-> * C gets a packet from S1, port 80
-
-*nod*
-
-> I'm making some tests with EBTables in my lab enviroment.=20
-> I'll tell you the results.
-
-Ok.  Let me know if you need any thing else.
-
-Remember that you will need to DNAT the inbound traffic and SNAT the=20
-outbound traffic too.
-
-Also, if you are redirecting the traffic (originally to the downed=20
-server) to another up and functioning server, you have to be careful no=
-t=20
-to interfere with the other servers normally functioning traffic.
-
-You can very simply write an EBTables rule to SNAT the traffic as it=20
-passes through the appliance.  However you have to make sure that you=20
-only SNAT the traffic that was originally DNATed and not all the traffi=
-c=20
-from S2.
-
-> Thanks a lot.
-
-You are welcome.
+Yes this is (usually) common sense.  However my question was "Is it 
+possible to change this behavior...", which still stands.
 
 
 
