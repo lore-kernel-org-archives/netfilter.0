@@ -1,35 +1,32 @@
-From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
-Subject: Reject with tcp-reset on a bridge
-Date: Wed, 23 Apr 2008 11:31:14 -0700
-Message-ID: <d95317090804231131j66d2f84fp20a548c7d0f4d0a3@mail.gmail.com>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: Redirecting ports in a bridge
+Date: Wed, 23 Apr 2008 20:48:02 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0804232047490.15791@fbirervta.pbzchgretzou.qr>
+References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr> <48087E17.8080902@juntadeandalucia.es> <alpine.LNX.1.10.0804181328560.26385@fbirervta.pbzchgretzou.qr> <480888CE.3080400@juntadeandalucia.es>
+ <alpine.LNX.1.10.0804231722570.13697@fbirervta.pbzchgretzou.qr> <480F6EEE.9010201@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=7lHLoYXOqQmYzFzf/5rechiyWwiNKETJBb+5odkcHGI=;
-        b=K/fC8mhsbNrbLg2oVGgcAetHaOFR6VNPJ9zWeWb7eDBFYY/FT5d6gcC+3Yx/Z87VBvBZsdUptoKjgABg6q7XwRNR7PgR1fwMe/L8OU4F+8FqZlbx2TRVDBTjKNcGrQYm+3pGinBZCWfXW+C/sz0Fn7oMGYaswmVeB5uYAyFt+fs=
-Content-Disposition: inline
+In-Reply-To: <480F6EEE.9010201@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-I am using iptables to firewall connections on a bridge.
 
-The rule below (minimized to the sake of the example) works
-       iptables -A FORWARD -p tcp -j REJECT
+On Wednesday 2008-04-23 19:16, Grant Taylor wrote:
 
-A TCP-reset variation doesn't work
-      iptables -A FORWARD -p tcp -j REJECT  --reject-with tcp-reset
+> On 04/23/08 10:24, Jan Engelhardt wrote:
+>> Often layer-2 transparency is not needed, but what do I know. If you just log
+>> layer-3 (IP addrs) and up without caring about MAC addresses, make a standard
+>> routing setup, i.e. 192.168.1.0/22 on eth0, 192.168.2.0/22 on eth1, and
+>> enable forwarding; kinda like that. And let hosts use 192.168.1.1/192.168.2.1
+>> as a default gw (as they already should do).
+>
+> If it was not for the fact that the OP wanted layer 3 transparency, I would
+> agree with you.  However the desire to insert this between a router and one or
+> more systems with out changing the IP addressing necessitates the use of layer
+> 2 technology, i.e. bridging.
 
-The TCP packets don't go through, but I don't see a RST, or any other
-packet, coming back.
-My options are:
-   a. Something is wrong in my configuration
-   b. This isn't suppose to work
-   c. This doesn't work because of a bug
-   d. None of the above
-
-Which is it ?
+Well what routes do clients have at the moment?
