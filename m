@@ -1,38 +1,28 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Loopback security...
-Date: Wed, 23 Apr 2008 11:31:53 +0200
-Message-ID: <480F0209.4070902@plouf.fr.eu.org>
-References: <480D47F6.9080808@riverviewtech.net> <480DC570.80303@solutti.com.br> <480DF156.5060801@riverviewtech.net> <480E0CA2.2030902@plouf.fr.eu.org> <slrng0sju6.dhr.petr.pisar@album.ics.muni.cz>
+Date: Wed, 23 Apr 2008 11:44:04 +0200
+Message-ID: <480F04E4.9080103@plouf.fr.eu.org>
+References: <480D47F6.9080808@riverviewtech.net> <480DC570.80303@solutti.com.br> <480DF156.5060801@riverviewtech.net> <480E1752.2040308@solutti.com.br> <480E4596.9030000@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <slrng0sju6.dhr.petr.pisar@album.ics.muni.cz>
+In-Reply-To: <480E4596.9030000@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Petr Pisar a =E9crit :
+Grant Taylor a =E9crit :
 >=20
-> No. Loopback interface is just another dummy interface to be able to
-> assign node scope adresses from 127.0.0.0/8 block. The reason for
-> loopback is somobedy wants to have (node scoped) IP socket on machine=
- with
-> no real interfaces. It's just a historical relict because IP address
-> needs an interface in Linux.
+> To me, the concept of the loopback interface is just a very unique=20
+> network interface.  Personally I could be equally happy with an ether=
+net=20
+> interface with a loopback plug in it used as the loopback interface w=
+ith=20
+> in the system.
 
-I disagree. The loopback interface is very different from a dummy=20
-interface. A dummy interface is just a black hole, it cannot do what th=
-e=20
-loopback interface does. The loopback interface loops the traffic back=20
-to the host and the kernel knows about it, this is what makes it unique=
-=2E
-
-> E.g. I know about people running IPv6 networks where each router has
-> globally routable addresses on loopaback interface, real ethernet
-> interfaces between routers have only link scope addresses and a
-> dynamic routing protocol (e.g, OSPF) is used to solve routing via
-> network. And of course it works.
-
-So what ? You can do the same with IPv4 and it will work too, at least=20
-on Linux.
+Indeed, the loopback interface is a very unique network interface. It i=
+s=20
+more than just an ethernet interface with a loopback plug. Not only doe=
+s=20
+it loop back traffic, but also the kernel knows about it.
