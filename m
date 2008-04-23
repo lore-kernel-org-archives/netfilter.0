@@ -1,42 +1,39 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: IPTables : How to force data coming from ethX being output by
- the same device
-Date: Wed, 23 Apr 2008 20:50:04 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804232048170.15791@fbirervta.pbzchgretzou.qr>
-References: <c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com> <480F49BE.60600@solutti.com.br> <alpine.LNX.1.10.0804231641310.13697@fbirervta.pbzchgretzou.qr> <480F4CD9.4020006@solutti.com.br> <alpine.LNX.1.10.0804231717190.13697@fbirervta.pbzchgretzou.qr>
- <480F57D8.1060704@solutti.com.br> <480F64E0.50209@208.195-224-87.telenet.ru> <480F727C.20608@solutti.com.br>
+Subject: Re: Reject with tcp-reset on a bridge
+Date: Wed, 23 Apr 2008 20:53:29 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0804232050150.15791@fbirervta.pbzchgretzou.qr>
+References: <d95317090804231131j66d2f84fp20a548c7d0f4d0a3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480F727C.20608@solutti.com.br>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <d95317090804231131j66d2f84fp20a548c7d0f4d0a3@mail.gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?Leonardo_Rodrigues_Magalh=C3=A3es?= <leolistas@solutti.com.br>
-Cc: ML netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Gilad Benjamini <gilad.benjamini@gmail.com>
+Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
+On Wednesday 2008-04-23 20:31, Gilad Benjamini wrote:
 
-On Wednesday 2008-04-23 19:31, Leonardo Rodrigues Magalh=C3=A3es wrote:
-> Alexei Ustyuzhaninov escreveu:
->>
->> I don't think any routing may be done without iptables. A simple exa=
-mple: you
->> have two internet connections and want to route all outgoing smtp tr=
-affic
->> (dst port=3D25) to one provider and the rest of the traffic - to the=
- other
->> provider. How can you do this without marking packets with iptables?
->>
+>I am using iptables to firewall connections on a bridge.
 >
->   OK ..... but i have 2 internet connections and want some specific I=
-Ps (my
-> servers, for example) to go out on link1 and all the other machines r=
-eaches
-> internet through link2, then it can be done without iptables, with pl=
-ain source
-> routing rules.
+>The rule below (minimized to the sake of the example) works
+>       iptables -A FORWARD -p tcp -j REJECT
+>
+>A TCP-reset variation doesn't work
+>      iptables -A FORWARD -p tcp -j REJECT  --reject-with tcp-reset
+>
+>The TCP packets don't go through, but I don't see a RST, or any other
+>packet, coming back.
+>My options are:
+>   a. Something is wrong in my configuration
+>   b. This isn't suppose to work
+>   c. This doesn't work because of a bug
+>   d. None of the above
+>
+>Which is it ?
 
-Yes, but I seem to remember you wanted all packets originating from
-eth0 to go back into eth0; you did not mention specific IP addresses :-=
-)
-Either way, quite the same complexity class.
+Since missing features may be perceived as bugs but which of course
+are not, it would be 0.5*c+0.5*d.
+
+http://marc.info/?l=netfilter-devel&m=120716501006420&w=2
