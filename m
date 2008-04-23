@@ -1,93 +1,55 @@
-From: "Leonid Zeitlin" <lz@csltd.com.ua>
-Subject: Re: IPTables : How to force data coming from ethX being output by the same device
-Date: Wed, 23 Apr 2008 17:49:47 +0300
-Message-ID: <funiac$l5i$1@ger.gmane.org>
-References: <c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: Cloning Traffic had having it processed by two different hosts
+ - TEE
+Date: Wed, 23 Apr 2008 17:07:11 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0804231643000.13697@fbirervta.pbzchgretzou.qr>
+References: <480F2A96.3020603@rz.uni-karlsruhe.de>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <480F2A96.3020603@rz.uni-karlsruhe.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
-
-Hi Yves,
-I'm not sure I understand your problem completely, but sounds like your 
-situation is similar to the one described in Linux Advanced Routing and 
-Traffic Control HOWTO section 4.2 here: 
-http://lartc.org/howto/lartc.rpdb.multiple-links.html. Try to follow the 
-instructions in section 4.2.1 "Split access", this might be what you need.
-
-Thanks,
-  Leonid
+To: Bjoern Weiland <bjoern.weiland@rz.uni-karlsruhe.de>
+Cc: netfilter@vger.kernel.org
 
 
-"Yves DUF" <yves.duf@gmail.com> ???????/???????? ? ???????? ?????????: 
-news:c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com...
-> Hello World.
->
-> Not totally dumb with iptables (I know how to build a simple
-> firewall), I'm far from being an expert. I got a quite simple need,
-> but the more I try to build it, the less I understand how to do it :={
->
-> ==============================
-> Let me explain my configuration :
-> ==============================
-> I got a GNU/Linux server, with two Ethernet boards, for hosting on FTP 
-> server.
-> Here is a simplified diagram of my network :
->
->    FTP Server     <=>                Netasq FireWall Router
->    <=>       FTP client
->   _________                ________________________________
->  | eth0/ IP1a | _______ |  Dev 1
->       |                   _________
->  |                 |              |  + IP1b
->                 |                  |   Client    |
->  |                 |              |
->     Dev 3       |  ________  |  + IP3a    |
->  | eth1/ IP2a |________|  Dev 2                              + IP3b
->   |                  |_________|
->  | _________|              |  + IP2b
->          |
->                                  |________________________________|
->
-> The 3 sub-networks IP1 IP2 and IP3 are different. All the routing are
-> direct (no NAT/DNAT).
->
-> Some others constraints:
-> - I can not use two hosts for FTP server, neither another hardware
-> - I can not use NAT/DNAT inside the Netasq Firewall.
->
-> ==============================
-> The issue :
-> ==============================
-> The FTP client from IP3a arrives to router IP3b. It redirect the
-> packet to the good aimed wire (IP1a or IP1b). So the FTP server
-> receive the connection from the good link.
-> When the FTP server wants to answer, it aims IP3a. But it doesn't know
-> which device to use (eth0 or eth1). So it use the default gateway (if
-> that case let say eth0).
-> The whole stuff works if I do ftp to IP1a. But when I do ftp IP2a, the
-> answer comes back through IP1b. And the firewall blocks it because
-> it's not an authorized transfer.
->
-> ==============================
-> The mighty solution :
-> ==============================
-> I think that iptables on the GNU/Linux FTP server would be a good
-> solution, to do a sort of "ftp contracking". But I don't manage to
-> write a simple rule as "All traffic that comes from ethX will output
-> by ethX"
-> Does somebody got ideas on this subject (iptables or whatever else)?
->
-> Regards.
-> Yves
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+On Wednesday 2008-04-23 14:24, Bjoern Weiland wrote:
 
+> Hey list,
+>
+> here's what I need to do: Our central routers all export cisco
+> netflow data. This data is being sent to HOST A where it is
+> processed. Now for some researching, I also need this data on HOST
+> B for another kind of processing. So what I want to do is to clone
+> the traffic arriving at HOST A. One copy should be processed by
+> HOST A as usual and the copy needs to be sent to HOST B. As we do
+> not only want to passively monitor this traffic, but really work
+> with it, the copied traffic also needs to be rewritten with HOST
+> B's IP address in the netflow data's Headers.
 
+Use the RAW(S|D)NAT target for rewriting the address. It is available
+in the RAWNAT branch of the git repo.
 
+The teed packet however does not cross iptables on the machine it is
+teed due to ... limitations in ip_tables, not because there could 
+possible be some infinite recursion, so you would need to RAWNAT on a 
+different machine.
+
+> No here's the question: How do I best do this? I read and tried to
+> work with the tee target of patch-o-matic-ng's extra repository,
+> but apparently it is not working any longer on recent kernels.
+
+I don't see any tee target in pom (= dead horse) anyway.
+
+> Also
+> I do have massive problems getting xtables-addons to compile on my
+> Debian (I actually tried more than one machine and different gcc's
+> and kernels) and there seems to be no documentation or mailinglist.
+> Has anyone tried xtables-addons at Debian? If yes, which gcc,
+> kernel, xtables version?
+
+Mh, I used 2.6.18.0 for compile testing; there is a patch in 2.6.18.5 
+that changed ip_route_me_harder :-/
+Will fix.
