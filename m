@@ -1,26 +1,59 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: RE: Redirecting ports in a bridge
-Date: Wed, 23 Apr 2008 17:25:12 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804231724290.13697@fbirervta.pbzchgretzou.qr>
-References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr> <48087E17.8080902@juntadeandalucia.es> <alpine.LNX.1.10.0804181328560.26385@fbirervta.pbzchgretzou.qr> <480888CE.3080400@juntadeandalucia.es>
- <9376B7D1C2D4834285B48542AECC46F113FADC@faraday.rad.nd.edu>
+From: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?= 
+	<leolistas@solutti.com.br>
+Subject: Re: IPTables : How to force data coming from ethX being output by
+ the same device
+Date: Wed, 23 Apr 2008 12:38:00 -0300
+Message-ID: <480F57D8.1060704@solutti.com.br>
+References: <c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com> <480F49BE.60600@solutti.com.br> <alpine.LNX.1.10.0804231641310.13697@fbirervta.pbzchgretzou.qr> <480F4CD9.4020006@solutti.com.br> <alpine.LNX.1.10.0804231717190.13697@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <9376B7D1C2D4834285B48542AECC46F113FADC@faraday.rad.nd.edu>
+In-Reply-To: <alpine.LNX.1.10.0804231717190.13697@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Marc Cozzi <cozzi@hertz.rad.nd.edu>
-Cc: =?UTF-8?Q?Javier_Prieto_Mart=C3=ADnez?= <javier.prieto.ext@juntadeandalucia.es>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: Jan Engelhardt <jengelh@computergmbh.de>
+Cc: ML netfilter <netfilter@vger.kernel.org>
 
 
-On Friday 2008-04-18 14:26, Marc Cozzi wrote:
+
+Jan Engelhardt escreveu:
 >
->Can I ask what you are using for traffic logging
->on your bridge? I am in need of fairly decent accounting
->software for all traffic passing through the bridge.
+> It is not completely not related. By changing things such as
+> nfmark, TOS field, source or destination address, routing can
+> be influenced, so I would not say it's totally unrelated :)
+>  =20
 
-I suppose LOG/ULOG/NFLOG for the typical things, and tcpdump
-or a specially crafted logging target if you want the actual
-layer-7 data.
+    Changing all these parameters will do nothing if you dont have=20
+appropriate routing rules that uses them as routing criteria parameters=
+=2E
+
+    Well .... yes, it's not completly unrelated, iptables really can=20
+'help' routing decisions with those things.
+
+    iptables can be used to help routing decisions, but this is not the=
+=20
+only way of doing it. You can have your source routing rules and get=20
+advanced routing without iptables rules, it's not required, but yes can=
+=20
+be used sometimes. On pretty advanced routing situations, maybe iptable=
+s=20
+'helping' rules would be necessary, but advanced routing can be done=20
+without iptables.
+
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3=83O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
+
