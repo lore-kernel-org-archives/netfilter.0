@@ -1,55 +1,40 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: Cloning Traffic had having it processed by two different hosts
- - TEE
-Date: Wed, 23 Apr 2008 17:07:11 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804231643000.13697@fbirervta.pbzchgretzou.qr>
-References: <480F2A96.3020603@rz.uni-karlsruhe.de>
+Subject: Re: IPTables : How to force data coming from ethX being output by
+ the same device
+Date: Wed, 23 Apr 2008 17:17:51 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0804231717190.13697@fbirervta.pbzchgretzou.qr>
+References: <c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com> <480F49BE.60600@solutti.com.br> <alpine.LNX.1.10.0804231641310.13697@fbirervta.pbzchgretzou.qr> <480F4CD9.4020006@solutti.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480F2A96.3020603@rz.uni-karlsruhe.de>
+In-Reply-To: <480F4CD9.4020006@solutti.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Bjoern Weiland <bjoern.weiland@rz.uni-karlsruhe.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: =?UTF-8?Q?Leonardo_Rodrigues_Magalh=C3=A3es?= <leolistas@solutti.com.br>
+Cc: ML netfilter <netfilter@vger.kernel.org>
 
 
-On Wednesday 2008-04-23 14:24, Bjoern Weiland wrote:
-
-> Hey list,
+On Wednesday 2008-04-23 16:51, Leonardo Rodrigues Magalh=C3=A3es wrote:
+> Jan Engelhardt escreveu:
+>> On Wednesday 2008-04-23 16:37, Leonardo Rodrigues Magalh=C3=A3es wro=
+te: =20
+>>  =20
+>> >   This is not iptables related, this is ROUTING related.
+>> >
+>> >   iptables does not route packages.
+>> >    =20
+>>
+>> apt/smart routes packages :p
 >
-> here's what I need to do: Our central routers all export cisco
-> netflow data. This data is being sent to HOST A where it is
-> processed. Now for some researching, I also need this data on HOST
-> B for another kind of processing. So what I want to do is to clone
-> the traffic arriving at HOST A. One copy should be processed by
-> HOST A as usual and the copy needs to be sent to HOST B. As we do
-> not only want to passively monitor this traffic, but really work
-> with it, the copied traffic also needs to be rewritten with HOST
-> B's IP address in the netflow data's Headers.
+>   hmmmm i use Fedora, so i'll stick with yum :)
+>
+>   sorry for that, i mean 'packets' and not 'packages'.
+>
+>   iptables does not route network packets, that's done by kernel base=
+d on the
+> routing table entries. it's completly NOT iptables related.
 
-Use the RAW(S|D)NAT target for rewriting the address. It is available
-in the RAWNAT branch of the git repo.
-
-The teed packet however does not cross iptables on the machine it is
-teed due to ... limitations in ip_tables, not because there could 
-possible be some infinite recursion, so you would need to RAWNAT on a 
-different machine.
-
-> No here's the question: How do I best do this? I read and tried to
-> work with the tee target of patch-o-matic-ng's extra repository,
-> but apparently it is not working any longer on recent kernels.
-
-I don't see any tee target in pom (= dead horse) anyway.
-
-> Also
-> I do have massive problems getting xtables-addons to compile on my
-> Debian (I actually tried more than one machine and different gcc's
-> and kernels) and there seems to be no documentation or mailinglist.
-> Has anyone tried xtables-addons at Debian? If yes, which gcc,
-> kernel, xtables version?
-
-Mh, I used 2.6.18.0 for compile testing; there is a patch in 2.6.18.5 
-that changed ip_route_me_harder :-/
-Will fix.
+It is not completely not related. By changing things such as
+nfmark, TOS field, source or destination address, routing can
+be influenced, so I would not say it's totally unrelated :)
