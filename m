@@ -1,41 +1,55 @@
-From: "Yves DUF" <yves.duf@gmail.com>
-Subject: Re: IPTables : How to force data coming from ethX being output by the same device
-Date: Wed, 23 Apr 2008 21:06:59 +0200
-Message-ID: <c4ecb9830804231206m2f83f26flc684f58193327c05@mail.gmail.com>
-References: <c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com>
-	 <funiac$l5i$1@ger.gmane.org>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Invalid SACK numbers in NAT'ed packets
+Date: Wed, 23 Apr 2008 21:31:07 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0804232126040.28881@blackhole.kfki.hu>
+References: <funk78$srq$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=xesBOBVGCo6HX4KhCmqPpFoIVw/4mNyovDE4VX9zobU=;
-        b=J89N3U4GKY7zGReR6E9lAx0jEdKCRYT04WOaGT6AGl86k/yS4rbjQFKvj5MDDwzyAwclx6A5mJrILGbESDSfh1nT6y+CKeLJuMClkWvkOiDgcTwd6JbWiZB+voPUvqyOmGVEJb1+QsLPfUH/SGYGT+hv/D1JVLwUs9W3Bd/5UoU=
-In-Reply-To: <funiac$l5i$1@ger.gmane.org>
-Content-Disposition: inline
+In-Reply-To: <funk78$srq$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-Cc: Leonid Zeitlin <lz@csltd.com.ua>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Leonid Zeitlin <lz@csltd.com.ua>
+Cc: netfilter@vger.kernel.org
 
-Hello all.
+On Wed, 23 Apr 2008, Leonid Zeitlin wrote:
 
-Thanks for your multiples advices, I didn't dream such a reactivity.
-Sorry if I've mistaken with iptables, but maybe you are all right, it
-seems more advanced routing than iptables.
+> Further analysis of tcp dumps reveals the following. The Cisco router 
+> changes TCP sequence numbers when it does NAT. So, the sequence numbers and 
+> ACKs that go between the LAN and the Cisco box are not the same as the ones 
+> on the other side, between the Cisco box and the remote site. The problem 
+> is, the Cisco box does NOT change the sequence numbers within SACK TCP 
+> option! So, whenever a packet is lost, and the remote site sends an ACK 
+> packet that contains a SACK option, the Linux router sees a SACK option 
+> referencing a packet it never saw before. My guess is that this is the 
+> reason why the packet is not considered as belonging to an established 
+> connection by netfilter.
+> 
+> The questions:
+> 1. Does my explanation look plausible? Can an invalid sequence number in 
+> SACK lead to the packet not being considered as belonging to an established 
+> connection?
 
-2008/4/23, Leonid Zeitlin <lz@csltd.com.ua>:
-> Hi Yves,
->  I'm not sure I understand your problem completely, but sounds like your
->  situation is similar to the one described in Linux Advanced Routing and
->  Traffic Control HOWTO section 4.2 here:
->  http://lartc.org/howto/lartc.rpdb.multiple-links.html. Try to follow the
->  instructions in section 4.2.1 "Split access", this might be what you need.
+Yes, TCP connection tracking in netfilter checks the SACK option values as 
+well.
 
-Thanks for the link. Let me some time to understand and test this, and
-I will say if it was the good answer.
+> 2. Has anyone come across such issue with a Cisco hardware before? Can it be 
+> fixed by some configuration?
 
-Regards.
-Yves
+It was reported a few times. Try to upgrade IOS image as it's a Cisco bug
+
+> 3. If not, can it be worked around at the Linux side; i.e. somehow ignore 
+> invalid SACKs or prohibit SACKs on this particular connection (I am 
+> reluctant to turn them off altogether with a sysctl).
+
+or use IPV4OPTSTRIP for the SYN packets sent/received in this direction as 
+a selective workaround for the problem.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@sunserv.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
