@@ -1,49 +1,35 @@
-From: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?= 
-	<leolistas@solutti.com.br>
-Subject: Re: IPTables : How to force data coming from ethX being output by
- the same device
-Date: Wed, 23 Apr 2008 14:31:40 -0300
-Message-ID: <480F727C.20608@solutti.com.br>
-References: <c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com> <480F49BE.60600@solutti.com.br> <alpine.LNX.1.10.0804231641310.13697@fbirervta.pbzchgretzou.qr> <480F4CD9.4020006@solutti.com.br> <alpine.LNX.1.10.0804231717190.13697@fbirervta.pbzchgretzou.qr> <480F57D8.1060704@solutti.com.br> <480F64E0.50209@208.195-224-87.telenet.ru>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: Reject with tcp-reset on a bridge
+Date: Wed, 23 Apr 2008 11:31:14 -0700
+Message-ID: <d95317090804231131j66d2f84fp20a548c7d0f4d0a3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480F64E0.50209@208.195-224-87.telenet.ru>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=7lHLoYXOqQmYzFzf/5rechiyWwiNKETJBb+5odkcHGI=;
+        b=K/fC8mhsbNrbLg2oVGgcAetHaOFR6VNPJ9zWeWb7eDBFYY/FT5d6gcC+3Yx/Z87VBvBZsdUptoKjgABg6q7XwRNR7PgR1fwMe/L8OU4F+8FqZlbx2TRVDBTjKNcGrQYm+3pGinBZCWfXW+C/sz0Fn7oMGYaswmVeB5uYAyFt+fs=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"; format="flowed"
-To: ML netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+I am using iptables to firewall connections on a bridge.
 
+The rule below (minimized to the sake of the example) works
+       iptables -A FORWARD -p tcp -j REJECT
 
-Alexei Ustyuzhaninov escreveu:
->
-> I don't think any routing may be done without iptables. A simple=20
-> example: you have two internet connections and want to route all=20
-> outgoing smtp traffic (dst port=3D25) to one provider and the rest of=
-=20
-> the traffic - to the other provider. How can you do this without=20
-> marking packets with iptables?
->
+A TCP-reset variation doesn't work
+      iptables -A FORWARD -p tcp -j REJECT  --reject-with tcp-reset
 
-    OK ..... but i have 2 internet connections and want some specific=20
-IPs (my servers, for example) to go out on link1 and all the other=20
-machines reaches internet through link2, then it can be done without=20
-iptables, with plain source routing rules.
+The TCP packets don't go through, but I don't see a RST, or any other
+packet, coming back.
+My options are:
+   a. Something is wrong in my configuration
+   b. This isn't suppose to work
+   c. This doesn't work because of a bug
+   d. None of the above
 
-
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3=83O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
+Which is it ?
