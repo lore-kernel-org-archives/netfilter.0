@@ -1,34 +1,22 @@
-From: "Marco Berizzi" <pupilla@hotmail.com>
-Subject: nfconntrack and asymmetric routing
-Date: Wed, 23 Apr 2008 10:54:01 +0200
-Message-ID: <BAY103-DAV1263F9F3556A592C04C847B2E30@phx.gbl>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Loopback security...
+Date: Wed, 23 Apr 2008 11:07:13 +0200
+Message-ID: <480EFC41.2030209@plouf.fr.eu.org>
+References: <480D47F6.9080808@riverviewtech.net> <480DC570.80303@solutti.com.br> <480DF156.5060801@riverviewtech.net> <480E1752.2040308@solutti.com.br> <480E4596.9030000@riverviewtech.net> <480E49CF.1040405@solutti.com.br>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <480E49CF.1040405@solutti.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi folks,
+Leonardo Rodrigues Magalh=E3es a =E9crit :
+>=20
+> have you tried getting a new bridge device and bridging eth0 and lo0 =
+???
 
-Unfortunately I have a linux firewall
-which see half of packets because of a
-bad designed network.
-nfconntrack table is full of these entries:
-
-ipv4     2 tcp      6 431303 ESTABLISHED src=172.23.1.21 dst=82.9.69.137
-sport=25 dport=4036 packets=2 bytes=256 [UNREPLIED] src=82.9.69.137
-dst=172.23.1.21 sport=4036 dport=25 packets=0 bytes=0 mark=0 use=1
-
-because netfilter never see the fin/rst
-tcp packets.
-They never expires and sometimes linux
-logs these messages:
-
-nf_conntrack: table full, dropping packet
-
-Is there a way to tell netfilter to delete
-these entries?
-
-
+It won't work. You cannot brigde the loopback interface because its lin=
+k=20
+type is not ethernet.
