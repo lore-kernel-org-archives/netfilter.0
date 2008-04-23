@@ -1,30 +1,49 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Redirecting ports in a bridge
-Date: Wed, 23 Apr 2008 12:16:30 -0500
-Message-ID: <480F6EEE.9010201@riverviewtech.net>
-References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr> <48087E17.8080902@juntadeandalucia.es> <alpine.LNX.1.10.0804181328560.26385@fbirervta.pbzchgretzou.qr> <480888CE.3080400@juntadeandalucia.es> <alpine.LNX.1.10.0804231722570.13697@fbirervta.pbzchgretzou.qr>
+From: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?= 
+	<leolistas@solutti.com.br>
+Subject: Re: IPTables : How to force data coming from ethX being output by
+ the same device
+Date: Wed, 23 Apr 2008 14:31:40 -0300
+Message-ID: <480F727C.20608@solutti.com.br>
+References: <c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com> <480F49BE.60600@solutti.com.br> <alpine.LNX.1.10.0804231641310.13697@fbirervta.pbzchgretzou.qr> <480F4CD9.4020006@solutti.com.br> <alpine.LNX.1.10.0804231717190.13697@fbirervta.pbzchgretzou.qr> <480F57D8.1060704@solutti.com.br> <480F64E0.50209@208.195-224-87.telenet.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0804231722570.13697@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <480F64E0.50209@208.195-224-87.telenet.ru>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-
-On 04/23/08 10:24, Jan Engelhardt wrote:
-> Often layer-2 transparency is not needed, but what do I know. If you 
-> just log layer-3 (IP addrs) and up without caring about MAC 
-> addresses, make a standard routing setup, i.e. 192.168.1.0/22 on 
-> eth0, 192.168.2.0/22 on eth1, and enable forwarding; kinda like that. 
-> And let hosts use 192.168.1.1/192.168.2.1 as a default gw (as they 
-> already should do).
-
-If it was not for the fact that the OP wanted layer 3 transparency, I 
-would agree with you.  However the desire to insert this between a 
-router and one or more systems with out changing the IP addressing 
-necessitates the use of layer 2 technology, i.e. bridging.
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: ML netfilter <netfilter@vger.kernel.org>
 
 
 
-Grant. . . .
+Alexei Ustyuzhaninov escreveu:
+>
+> I don't think any routing may be done without iptables. A simple=20
+> example: you have two internet connections and want to route all=20
+> outgoing smtp traffic (dst port=3D25) to one provider and the rest of=
+=20
+> the traffic - to the other provider. How can you do this without=20
+> marking packets with iptables?
+>
+
+    OK ..... but i have 2 internet connections and want some specific=20
+IPs (my servers, for example) to go out on link1 and all the other=20
+machines reaches internet through link2, then it can be done without=20
+iptables, with plain source routing rules.
+
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3=83O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
+
