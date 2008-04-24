@@ -1,54 +1,44 @@
-From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
-Subject: Re: Reject with tcp-reset on a bridge
-Date: Wed, 23 Apr 2008 13:02:52 -0700
-Message-ID: <d95317090804231302p3d405eao83b48c0a10da259b@mail.gmail.com>
-References: <d95317090804231131j66d2f84fp20a548c7d0f4d0a3@mail.gmail.com>
-	 <alpine.LNX.1.10.0804232050150.15791@fbirervta.pbzchgretzou.qr>
+From: Alexei Ustyuzhaninov <alust@alust.homeunix.com>
+Subject: Re: IPTables : How to force data coming from ethX being output by
+ the same device
+Date: Thu, 24 Apr 2008 10:38:01 +0600
+Message-ID: <48100EA9.2050001@alust.homeunix.com>
+References: <c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com> <480F49BE.60600@solutti.com.br> <alpine.LNX.1.10.0804231641310.13697@fbirervta.pbzchgretzou.qr> <480F4CD9.4020006@solutti.com.br> <alpine.LNX.1.10.0804231717190.13697@fbirervta.pbzchgretzou.qr> <480F57D8.1060704@solutti.com.br> <480F64E0.50209@208.195-224-87.telenet.ru> <480F727C.20608@solutti.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=iQOmtQEzsMIoiK+W++IZ9tKza5z6yPDaqOOdI6L6J9o=;
-        b=xeyG2bQBE79WNncXE1A1wbhJ+sXVd+tm/jG7NZLtRK0deGDAZV6E8VDyaYUg5MZtPeyuHC7FPUlNfdNo2yL97twzENWHqHlp+n6HqeunD8C1llufxOCVCXdi/kOWPqEijj0Ect1rVrtUqy94bU7B1ZCA/MR/Wxa27sbazGWlpW4=
-In-Reply-To: <alpine.LNX.1.10.0804232050150.15791@fbirervta.pbzchgretzou.qr>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <480F727C.20608@solutti.com.br>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@computergmbh.de>
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?= <leolistas@solutti.com.br>
+Cc: ML netfilter <netfilter@vger.kernel.org>
 
-My scenario is slightly different.
-tcpdump doesn't show ANY response, with the right or wrong MAC.
+Leonardo Rodrigues Magalh=C3=A3es wrote:
+>=20
+>=20
+> Alexei Ustyuzhaninov escreveu:
+>>
+>> I don't think any routing may be done without iptables. A simple=20
+>> example: you have two internet connections and want to route all=20
+>> outgoing smtp traffic (dst port=3D25) to one provider and the rest o=
+f=20
+>> the traffic - to the other provider. How can you do this without=20
+>> marking packets with iptables?
+>>
+>=20
+>    OK ..... but i have 2 internet connections and want some specific =
+IPs=20
+> (my servers, for example) to go out on link1 and all the other machin=
+es=20
+> reaches internet through link2, then it can be done without iptables,=
+=20
+> with plain source routing rules.
 
-Ubuntu 7.10, kernel 2.6.22-14
+Yes, surely some routing cases (well, most of them in real life) maybe=20
+done with old good route command without any additional tools. But some=
+=20
+special ones require iptables.
 
-2008/4/23, Jan Engelhardt <jengelh@computergmbh.de>:
-> On Wednesday 2008-04-23 20:31, Gilad Benjamini wrote:
->
->  >I am using iptables to firewall connections on a bridge.
->  >
->  >The rule below (minimized to the sake of the example) works
->  >       iptables -A FORWARD -p tcp -j REJECT
->  >
->  >A TCP-reset variation doesn't work
->  >      iptables -A FORWARD -p tcp -j REJECT  --reject-with tcp-reset
->  >
->  >The TCP packets don't go through, but I don't see a RST, or any other
->  >packet, coming back.
->  >My options are:
->  >   a. Something is wrong in my configuration
->  >   b. This isn't suppose to work
->  >   c. This doesn't work because of a bug
->  >   d. None of the above
->  >
->  >Which is it ?
->
->
-> Since missing features may be perceived as bugs but which of course
->  are not, it would be 0.5*c+0.5*d.
->
->  http://marc.info/?l=netfilter-devel&m=120716501006420&w=2
->
+--=20
+Alexei
