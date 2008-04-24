@@ -1,24 +1,32 @@
-From: noa levy <levynoa@yahoo.com>
-Subject: Dynamically adding rules - are connection tracking states maintained?
-Date: Thu, 24 Apr 2008 09:12:29 -0700 (PDT)
-Message-ID: <989878.86998.qm@web57314.mail.re1.yahoo.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Dynamically adding rules - are connection tracking states maintained?
+Date: Thu, 24 Apr 2008 21:24:49 +0200
+Message-ID: <4810DE81.10302@plouf.fr.eu.org>
+References: <989878.86998.qm@web57314.mail.re1.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <989878.86998.qm@web57314.mail.re1.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi All,
+Hello,
 
-I'm trying to understand the impact of dynamically adding iptables rules, in terms of the resulting disruption to the firewall's performance. When I add a rule to (or delete a rule from) iptables, while it is running, does that have any effect on the states in the connection tracking table? Will the table be flushed? Are states linked to the rule that allowed the initial packet in, so that if a rule is deleted, only the corresponding state entry will be flushed?
+noa levy a =E9crit :
+>=20
+> When I add a rule to (or delete a rule from) iptables,
+> while it is running, does that have any effect on the states in the
+> connection tracking table?
 
-Thank you!
-Noa  
+No.
 
+> Will the table be flushed?
 
-      ____________________________________________________________________________________
-Be a better friend, newshound, and 
-know-it-all with Yahoo! Mobile.  Try it now.  http://mobile.yahoo.com/;_ylt=Ahu06i62sR8HDtDypao8Wcj9tAcJ
+No.
 
+> Are states linked  to the rule that allowed the initial packet in [..=
+=2E] ?
+
+No.
