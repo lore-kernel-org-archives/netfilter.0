@@ -1,44 +1,46 @@
-From: Alexei Ustyuzhaninov <alust@alust.homeunix.com>
-Subject: Re: IPTables : How to force data coming from ethX being output by
- the same device
-Date: Thu, 24 Apr 2008 10:38:01 +0600
-Message-ID: <48100EA9.2050001@alust.homeunix.com>
-References: <c4ecb9830804230703q3f3cc02doc03c34a293d6014c@mail.gmail.com> <480F49BE.60600@solutti.com.br> <alpine.LNX.1.10.0804231641310.13697@fbirervta.pbzchgretzou.qr> <480F4CD9.4020006@solutti.com.br> <alpine.LNX.1.10.0804231717190.13697@fbirervta.pbzchgretzou.qr> <480F57D8.1060704@solutti.com.br> <480F64E0.50209@208.195-224-87.telenet.ru> <480F727C.20608@solutti.com.br>
+From: =?ISO-8859-1?Q?Javier_Prieto_Mart=EDnez?= 
+	<javier.prieto.ext@juntadeandalucia.es>
+Subject: Re: Redirecting ports in a bridge
+Date: Thu, 24 Apr 2008 08:15:39 +0200
+Message-ID: <4810258B.7090403@juntadeandalucia.es>
+References: <48086990.5060000@juntadeandalucia.es> <alpine.LNX.1.10.0804181232400.26385@fbirervta.pbzchgretzou.qr> <48087E17.8080902@juntadeandalucia.es> <alpine.LNX.1.10.0804181328560.26385@fbirervta.pbzchgretzou.qr> <480888CE.3080400@juntadeandalucia.es> <alpine.LNX.1.10.0804231722570.13697@fbirervta.pbzchgretzou.qr> <480F6EEE.9010201@riverviewtech.net> <alpine.LNX.1.10.0804232047490.15791@fbirervta.pbzchgretzou.qr> <480F869E.2000600@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <480F727C.20608@solutti.com.br>
+In-Reply-To: <480F869E.2000600@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?= <leolistas@solutti.com.br>
-Cc: ML netfilter <netfilter@vger.kernel.org>
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Leonardo Rodrigues Magalh=C3=A3es wrote:
->=20
->=20
-> Alexei Ustyuzhaninov escreveu:
->>
->> I don't think any routing may be done without iptables. A simple=20
->> example: you have two internet connections and want to route all=20
->> outgoing smtp traffic (dst port=3D25) to one provider and the rest o=
-f=20
->> the traffic - to the other provider. How can you do this without=20
->> marking packets with iptables?
->>
->=20
->    OK ..... but i have 2 internet connections and want some specific =
-IPs=20
-> (my servers, for example) to go out on link1 and all the other machin=
-es=20
-> reaches internet through link2, then it can be done without iptables,=
+Exactly!
+
+I'm still learning the basics in EBTables, BTW... O:-)
+
+
+Grant Taylor escribi=F3:
+> On 04/23/08 13:48, Jan Engelhardt wrote:
+>> Well what routes do clients have at the moment?
+>
+> Clients will use their ISPs to cross the internet to the router in=20
+> question to get to the server.  Conversely the servers will use said=20
+> router to get back out to the world.
+>
+> It sounds like presently clients will come in from the internet in to=
 =20
-> with plain source routing rules.
-
-Yes, surely some routing cases (well, most of them in real life) maybe=20
-done with old good route command without any additional tools. But some=
-=20
-special ones require iptables.
-
---=20
-Alexei
+> the router then on to the servers.  This set up is (apparently) up an=
+d=20
+> running as it is.  The OP is wanting to put the appliance in between=20
+> the router and the servers with out having to re-configure any IP=20
+> addresses any where.
+>
+>
+>
+> Grant. . . .
+> --=20
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
