@@ -1,41 +1,31 @@
 From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: Handling RoadWarrior VPN Traffic with IPtables
-Date: Fri, 25 Apr 2008 17:11:13 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804251707000.6645@fbirervta.pbzchgretzou.qr>
-References: <4811F356.9000404@gmail.com>
+Subject: Re: intended behavior of REDIRECT
+Date: Fri, 25 Apr 2008 17:25:06 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0804251724070.6645@fbirervta.pbzchgretzou.qr>
+References: <4804EF83.7080004@yahoo.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4811F356.9000404@gmail.com>
+In-Reply-To: <4804EF83.7080004@yahoo.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Henrique Netfilter <henrique.netfilter@gmail.com>
+To: Luke Elliott <lukester_null@yahoo.co.uk>
 Cc: netfilter@vger.kernel.org
 
 
-On Friday 2008-04-25 17:05, Henrique Netfilter wrote:
+On Tuesday 2008-04-15 20:10, Luke Elliott wrote:
 >
-> The l2tpd is encaspuled inside the ESP traffic of the IPSec tunnel,
-> and when it reaches my external interface, it must be redirected to
-> my internal interface (where the l2tpd daemon listens) to continue
-> the connection. If I had a KLIPS kernel, I could easily just DNAT
-> the incoming L2TP requisition on interface ipsec0 to my internal
-> interface:
+> iptables -t nat -A PREROUTING -p tcp --dport 9002 -j REDIRECT --to-ports
+> 9003-9004
 >
-> iptables -t nat -A PREROUTING -i ipsecX -p udp --sport 1701 --dport
-> 1701 -j DNAT --to-destination X.X.X.X <------ my internal interface
-> IP
->
-> But since my kernel is NETKEY, I can't, since there is  no ipsec
-> interface, and I can't just DNAT the incoming traffic from my
-> external to my internal interface for security reasons (since I
-> want that only traffic coming from the IPSec tunnel to access the
-> l2tpd daemon).
+> I'd like to balance connections to port 9002 across the two servers on ports
+> 9003 and 9004. Using the --random (or --random 1 with iptables 1.3.8...) option
+> works, but what should the non-random rule actually do?
 
--i eth0 -m policy --dir in --pol ipsec
-[--tunnel-src theirip] [--tunnel-dst yourip]
+I'd rather use the two rules:
+1. -m statistic --mode nth --every 2 -j REDIRECT --to-port 9003 +
+2. (unconditional)                   -j REDIRECT --to-port 9004
 
-Should be able to accurately replace -i ipsecX. See the iptables
-manpage. --tunnel-src, --tunnel-dst are just for ensuring that
-you match exactly one tunnel, you can omit it if it satisfies you.
+Which will reliably RR over the ports.
+
