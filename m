@@ -1,46 +1,34 @@
-From: fender <frozenspot@gmail.com>
-Subject: [patch] portknocking module: casting bug
-Date: Fri, 25 Apr 2008 19:07:12 -0300
-Message-ID: <7e36c7130804251507r462d3cd7y7cf57873262416d5@mail.gmail.com>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: ipt_iplimit.so
+Date: Sat, 26 Apr 2008 00:16:31 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0804260014000.20150@fbirervta.pbzchgretzou.qr>
+References: <48123B41.1060901@hostgator.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=lxnMzEynRceh7Ef9EsE6FMIdnCE7Ke9QiOYDJ1NOosM=;
-        b=eBWbwiHTWusrCVldXF2igC3WiPWzbK3RfESlq+jo17/NNM9+xx/9Cb6xpMvx076/E/wpkRay0/Wszdh2/kYpTErp/Dyc2WnYz7+wGy5xPqIWQlnzTB7b/2jCYxqQDbFDdaA+yJwukRwc+reLy38v17AP7pOwRQEDt64laAw32Is=
-Content-Disposition: inline
+In-Reply-To: <48123B41.1060901@hostgator.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter-devel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Zachary Eadie <zeadie@hostgator.com>
 Cc: netfilter@vger.kernel.org
 
-SGksCgpJIGhhdmUgcmVjZWl2ZWQgYSBwYXRjaCB0aGF0IHNvbHZlcyBhIGJ1ZyBvbiBpeHA0eHgg
-QVJNIGFyY2hpdGVjdHVyZQp1c2VkIG9uIHNvbWUgTGlua3N5cy4gVGhpcyBwYXRjaCBmaXhlcyB0
-aGUgcHJvYmxlbSBpbiB0aGUgaXB0YWJsZXMKbGlicmFyeSBvZiB0aGUgcG9ydCBrbm9ja2luZyBt
-b2R1bGUuIFRoZSBidWcgY2F1c2VzIHRoYXQgcG9ydCBrbm9ja2luZwpzZXF1ZW5jZSBpcyBub3Qg
-cHJvcGVydHkgcGFyc2VkLiBGb3IgZXhhbXBsZSwgd2l0aG91dCB0aGlzIHBhdGNoIHlvdQp3b3Vs
-ZCBnZXQgMCwyLDAsNCwwLDYgaW5zdGVhZCBvZiB0aGUgcG9ydCBzZXF1ZW5jZSAxLDIsMyw0LDUs
-Ni4KClRoYW5rcyBQaW90ciBHYXNpZLNvIGZvciB0aGUgcGF0Y2guCgpSZWdhcmRzLAoKCkluZGV4
-OiBwb3J0a25vY2tvL2lwdGFibGVzL2xpYmlwdF9wa25vY2suYwo9PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBwb3J0
-a25vY2tvL2lwdGFibGVzL2xpYmlwdF9wa25vY2suYyAocmV2aXNpb24gNDU2KQorKysgcG9ydGtu
-b2Nrby9pcHRhYmxlcy9saWJpcHRfcGtub2NrLmMgKHdvcmtpbmcgY29weSkKQEAgLTcxLDYgKzcx
-LDggQEAKICAgICAgICBpbnQgaTsKICAgICAgICBpbnQgcmV0OwoKKyAgICAgICB1bnNpZ25lZCBp
-bnQgcG9ydDsKKwogICAgICAgIGlmIChwb3J0cyA9PSBOVUxMKSByZXR1cm4gMTsKCiAgICAgICAg
-aWYgKChzdHIgPSBzdHJkdXAocG9ydHMpKSA9PSBOVUxMKSByZXR1cm4gMjsKQEAgLTgwLDExICs4
-MiwxMiBAQAogICAgICAgICAgICAgICAgdG9rZW4gPSBzdHJ0b2soTlVMTCwgZGVsaW0pLCBpKyss
-IHBvcnRfYnVmKyspCiAgICAgICAgewogICAgICAgICAgICAgICAgcmV0ID0gc3RyaW5nX3RvX251
-bWJlcih0b2tlbiwgMCwgNjU1MzUsCi0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAodW5zaWduZWQgaW50ICopcG9ydF9idWYpOworICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgJnBvcnQpOwogICAgICAgICAgICAgICAgaWYgKHJldCA9PSAtMSkgewog
-ICAgICAgICAgICAgICAgICAgICAgICBpZiAoc3RyKSBmcmVlKHN0cik7CiAgICAgICAgICAgICAg
-ICAgICAgICAgIHJldHVybiAzOwogICAgICAgICAgICAgICAgfQorICAgICAgICAgICAgICAgKnBv
-cnRfYnVmID0gcG9ydDsKICNpZiBERUJVRwogICAgICAgICAgICAgICAgcHJpbnRmKCJwb3J0WyVk
-XTogJWRcbiIsIGksICpwb3J0X2J1Zik7CiAjZW5kaWYKCgoKLS0gCkZlZGVyaWNvCgovKgogKiBK
-LiBGZWRlcmljbyBIZXJuYW5kZXogU2NhcnNvIChmZW5kZXIpIHtmcm96ZW5zcG90IGF0IGdtYWls
-IGRvdCBjb219CiAqIEdQRyBQdWJLZXk6IHd3d2tleXMuZXUucGdwLm5ldCBrZXkgNkFFNzhCRjIK
-ICogRlA6IDI2QUIgN0ExQiBDMkM0IDcwRjggMEU3RCBDM0Y0IDk3MzYgNUNFMiA2QUU3IDhCRjIK
-ICovCg==
+On Friday 2008-04-25 22:12, Zachary Eadie wrote:
+
+> I am trying to establish a hard limit per ip without doing state 
+> checking, just for development.  I did a Google search for an old 
+> module in the ippersonality plugin found on koders.com, I was 
+> wondering, is there a more current module, or patch, or will this 
+> still even work, or is there something not too dissimilar from it to 
+> where we can set a hard limit for the maximum concurrent connections 
+> per-ip without using the -m limit/recent module, or would anyone just 
+> recommend the syn-limit?
+
+-m connlimit
+
+> Here are the links for reference:
+> http://www.koders.com/c/fid7BBD5FF5365A02D2561437989CBCD88C5C65C0B3.aspx
+> http://www.koders.com/c/fidC587D36BBA65E9C1A59D097A153CB42360D81CFB.aspx
+
+it was iirc the predecessor to ipt_connlimit which was the predecessor
+to xt_connlimit.
