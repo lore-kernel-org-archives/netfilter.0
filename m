@@ -1,34 +1,57 @@
-From: Jan Engelhardt <jengelh@computergmbh.de>
-Subject: Re: ipt_iplimit.so
-Date: Sat, 26 Apr 2008 00:16:31 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804260014000.20150@fbirervta.pbzchgretzou.qr>
-References: <48123B41.1060901@hostgator.com>
+From: Aymeric Moizard <jack@atosc.org>
+Subject: udp connection moved from ASSURED to UNREPLIED
+Date: Sat, 26 Apr 2008 16:07:24 +0200 (CEST)
+Message-ID: <Pine.LNX.4.63.0804261543110.6453@sip2>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48123B41.1060901@hostgator.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Zachary Eadie <zeadie@hostgator.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Friday 2008-04-25 22:12, Zachary Eadie wrote:
 
-> I am trying to establish a hard limit per ip without doing state 
-> checking, just for development.  I did a Google search for an old 
-> module in the ippersonality plugin found on koders.com, I was 
-> wondering, is there a more current module, or patch, or will this 
-> still even work, or is there something not too dissimilar from it to 
-> where we can set a hard limit for the maximum concurrent connections 
-> per-ip without using the -m limit/recent module, or would anyone just 
-> recommend the syn-limit?
+I've got a linux debian running 2.6.24-1-amd64 and iptables v1.4.0
+It's my NAT box and is connected to a dsl box using DHCP from which I
+get a public IP on eth0 and my LAN is connected using eth1.
 
--m connlimit
+I got established UDP connection initiated from LAN to a public
+server:
 
-> Here are the links for reference:
-> http://www.koders.com/c/fid7BBD5FF5365A02D2561437989CBCD88C5C65C0B3.aspx
-> http://www.koders.com/c/fidC587D36BBA65E9C1A59D097A153CB42360D81CFB.aspx
+ipv4     2 udp      17 178 src=192.168.2.50 dst=212.27.XX.X sport=6010 
+dport=5060 packets=48 bytes=4074 src=212.27.XX.X dst=88.171.XX.XX 
+sport=5060 dport=6010 packets=379 bytes=24499 [ASSURED] mark=0 secmark=0 
+use=1
 
-it was iirc the predecessor to ipt_connlimit which was the predecessor
-to xt_connlimit.
+This connection was initiated by 192.168.2.50, but most packets are coming 
+from 212.27.XX.X: those packets are meant to be "keep-alive" packets to
+hold the UDP binding opened for a VoIP application.
+
+Each 30minutes, the box is sengind an ARP request and suddenly, the 
+incoming packets from 212.27.XX.X gets rejected with icmp "port 
+unreachable" as if the conntrack was deleted upon receiving the arp 
+request from the dsl box.
+
+Right after this packet was refused, the conntrack for the entrie
+dissapear and gets back to a new one [UNREPLIED] as soon as a packet
+from server is received:
+
+ipv4     2 udp      17 28 src=212.27.52.5 dst=88.171.117.238 sport=5060 
+dport=6010 packets=1 bytes=60 [UNREPLIED] src=88.171.117.238 
+dst=212.27.52.5 sport=6010 dport=5060 packets=0 bytes=0 mark=0 secmark=0 
+use=1
+
+As you can see conntrack does not remember any more that I was sending
+UDP packets before: in the above case, the last outgoing UDP packet
+was sent less than 20 seconds before this happen.
+
+It looks to me that arp doesn't affect any existing TCP connection: 
+however UDP connection gets destroyed.
+
+I'm searching for help to avoid the removal of my UDP conntrack entry.
+
+tks,
+Aymeric MOIZARD / ANTISIP amsip - http://www.antisip.com
+osip2 - http://www.osip.org
+eXosip2 - http://savannah.nongnu.org/projects/exosip/
+
