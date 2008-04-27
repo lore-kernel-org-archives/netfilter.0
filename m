@@ -1,36 +1,30 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: libnetfilter_conntrack: Unable to create an entry in the expectation
- table (invalid argument)
-Date: Sun, 27 Apr 2008 09:49:17 +0200
-Message-ID: <48142FFD.6020902@netfilter.org>
-References: <a82687b60804250225p6b0bb892j796b80e14dc0bdcd@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: iptables 1.4.0.77, Xtables-addons 1.5.4.1
+Date: Sun, 27 Apr 2008 15:00:12 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0804271425100.20150@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <a82687b60804250225p6b0bb892j796b80e14dc0bdcd@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Emmanuel B <emmanuel.b.lists@gmail.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
-Emmanuel B wrote:
-> Hi,
-> 
-> The example program (expect_create) given in the utils directory of
-> libnetfilter_conntrack return the error code -1 (Invalid argument).
-> The master entry was correctly added to the conntrack table, but
-> nothing appears in expect table.
-> 
-> I have tested it on a RedHat 2.6.18 and Ubuntu 2.6.22 with the same result.
-> I use the libnetfilter_conntrack version 0.0.89 and libnfnetlink version 0.0.33
-> 
-> Is there anything wrong in the expect_create.c code or something
-> missing in kernel or libnetfilter_conntrack?
 
-You probably forgot to insmod "nf_conntrack_ftp", anyway I'll
-investigate if we can load-on-demand the module to avoid similar reports
-to this one.
+I have uploaded an (unofficial) tarball of the current (official) HEAD 
+from the SCM up to 
+http://dev.medozas.de/files/xtables/iptables-1.4.0.77.tar.bz2 (+ .asc). 
+The version number is derived from git-describe telling me it has been 
+77 commits since the last tag (Dec 22 2007), and it should not interfere 
+with any official release numbering plans. It seemed time to release 
+something in tarball form, the 5-6 month turnaround period for 
+official iptables tarballs is too long IMHO, at least when patches have 
+gone in.
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+
+Second, the Xtables-addons compile error with 2.6.18-stable has been 
+addressed, which should make a few Debian/Etch get better success. No 
+other changes interesting for end-users were made. URL is 
+http://dev.medozas.de/files/xtables/ where everything can be found 
+(including the -combined package that many prefer for the time being).
