@@ -1,81 +1,23 @@
-From: Aymeric Moizard <jack@atosc.org>
-Subject: Re: udp connection moved from ASSURED to UNREPLIED
-Date: Sun, 27 Apr 2008 19:42:39 +0200 (CEST)
-Message-ID: <Pine.LNX.4.63.0804271939550.6453@sip2>
-References: <Pine.LNX.4.63.0804261543110.6453@sip2>
- <alpine.LNX.1.10.0804262013110.20150@fbirervta.pbzchgretzou.qr>
- <Pine.LNX.4.63.0804270047390.6453@sip2>
+From: "Karim Reda Fakhir" <karimreda.fakhir@gmail.com>
+Subject: Question
+Date: Mon, 28 Apr 2008 11:01:39 +0200
+Message-ID: <818933700804280201h63ccf323gba1e889c87cc39b4@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.63.0804270047390.6453@sip2>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=8eCUX5XctLYqNE2eU8xrjWSWp+jJ7PqnctXLn6RygkI=;
+        b=NA/tAH5nTnJsWe2Zaohi1GXR0wrrLnayTkDf5oB/8vCyM5puWneJH03248pSoYA7tIW74d8HyE1o8iK24F7V4E01yS/o6EsGfmk75Um51eFiAcP+RXJhqzkXZFy5vSqeTR8CXBzuQS22sqSrMc8HMhfFAKuHxilUrvbGIGvb65k=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-
-Problem solved: I swithed from MASQUERADE to SNAT and the issue
-was solved. I don't know yet the difference between them but I'll
-look in the documentation.
-
-tks for your help,
-Aymeric MOIZARD / ANTISIP
-amsip - http://www.antisip.com
-osip2 - http://www.osip.org
-eXosip2 - http://savannah.nongnu.org/projects/exosip/
+How can i do SNAT and DNAT in same time with iptables , i try to
+change Ip src and Ip dest .
 
 
-On Sun, 27 Apr 2008, Aymeric Moizard wrote:
-
->
->
-> On Sat, 26 Apr 2008, Jan Engelhardt wrote:
->
->> 
->> On Saturday 2008-04-26 16:07, Aymeric Moizard wrote:
->>> 
->>> 
->>> ipv4     2 udp      17 178 src=192.168.2.50 dst=212.27.XX.X sport=6010
->>> dport=5060 packets=48 bytes=4074 src=212.27.XX.X dst=88.171.XX.XX 
->>> sport=5060
->>> dport=6010 packets=379 bytes=24499 [ASSURED] mark=0 secmark=0 use=1
->> 
->> Hiding IP addresses is totally meaninless, we all know it is
->> 88.171.117.238--212.27.52.5 you are talking to. That probably
->> does not even buy us a beer. Anyway...
->> 
->>> Each 30minutes, the box is sengind an ARP request and suddenly, the 
->>> incoming
->>> packets from 212.27.XX.X gets rejected with icmp "port unreachable" as if 
->>> the
->>> conntrack was deleted upon receiving the arp request from the dsl box.
->> 
->> So, throw up the conntrack event listener (`conntrack -E`) next
->> to a tcpdump and see what happens on the conntrack table when
->> that ARP is seen.
->
-> Among the event I get from "conntrack -E":
->
-> [DESTROY] udp      17 src=192.168.2.50 dst=212.27.52.5 sport=6010
-> dport=5060 packets=12 bytes=3102 src=212.27.52.5 dst=88.171.117.238
-> sport=5060 dport=6010 packets=75 bytes=6667
->
-> all other udp connections are getting destroyed as well.
->
->> Or maybe your keepalive packets come in intervals less than the
->> UDP timeout.
->
-> Sure they don't. It also happen with RTP/UDP stream: (packet in each 
-> direction each 20ms).
->
-> If you wish any other information, capture, log, beers, please ask!
->
-> tks,
-> Aymeric
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+                  Best Regards.
