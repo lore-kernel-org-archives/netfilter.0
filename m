@@ -1,49 +1,68 @@
-From: "Diego Lacerda" <diegolacerda@gmail.com>
-Subject: Re: Question
-Date: Mon, 28 Apr 2008 22:51:33 -0300
-Message-ID: <cc86d0010804281851i23d6b4w842c24de78231067@mail.gmail.com>
-References: <818933700804280201h63ccf323gba1e889c87cc39b4@mail.gmail.com>
-	 <alpine.LNX.1.10.0804281211150.20150@fbirervta.pbzchgretzou.qr>
+From: =?windows-1251?b?z+7q7vLo6+Xt6u4g?= =?windows-1251?b?yu7x8ujq?= 
+	<casper@meteor.dp.ua>
+Subject: Reasons for SFQ not being fair
+Date: Tue, 29 Apr 2008 15:53:37 +0300
+Message-ID: <20080429155337.wck83yqoessw4gcw@new.meteor.dp.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=L5FCUIk1JQaEfcOO5LslmP3pncSFTq6PAUfs674jpl4=;
-        b=BfmReKLLVAyMfiUhyOiv3YFWx/477LxYjrLtiQv41N0FpcUll0Dkout2woZx6oJ3+xd6exqmbvtv4hiffwUvpKQANpk1Y+U78e9OiGfgAbKdsGOsaMKoGq4V2wP6sHxLCzIX35FkwZJKiCquJyAaoo7C5svdUhg20sGUsTdjiwU=
-In-Reply-To: <alpine.LNX.1.10.0804281211150.20150@fbirervta.pbzchgretzou.qr>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@computergmbh.de>
-Cc: Karim Reda Fakhir <karimreda.fakhir@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Yeah,
+Hi there,
 
-It's possible, netfilter will change the packet as it passes through
-the chains (in the NAT table).
+I've been using SFQ as the ending for every class of HTB for very  
+long. All working just as expected.
 
-Regards,
-Diego Lacerda.
+After implementing the abillity to do "limited speed, unlimited  
+traffic" clients I've experienced SFQ not being fair for those.  
+Precisilly, one of several connections gets bandwidth other stailed or  
+they run in turn.
 
-On Mon, Apr 28, 2008 at 7:11 AM, Jan Engelhardt <jengelh@computergmbh.de> wrote:
->
->
-> On Monday 2008-04-28 11:01, Karim Reda Fakhir wrote:
->
-> >How can i do SNAT and DNAT in same time with iptables , i try to
-> >change Ip src and Ip dest .
->
-> -t nat -A PREROUTING -j DNAT ...
-> -t nat -A POSTROUTING -j SNAT ...
-> no?
->
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+Setup:
+
+1. There are 2 HTB classes for "limited speed, unlimited traffic"  
+clients each direction each ending with SFQ:
+  - base class (3:9900): for traffic < limit (2.5 Mbit/s for all)
+  - land class (3:9910): for landing traffic > limit (1 kbit/s for all)
+
+2. For each of those clients I insert 2 tc filters each direction:
+  - tc filter add dev $IN_DEV parent $IN_PARENT_CLASS protocol ip prio  
+10 handle $HANDLE10 fw police rate $IN_RATE buffer 10k continue  
+classid $IN_BASE_CLASS
+  - tc filter add dev $IN_DEV parent $IN_PARENT_CLASS protocol ip prio  
+11 handle $HANDLE10 fw classid $IN_LAND_CLASS
+
+All this work perfect except SFQ fairness/flow speed division.
+
+My thinkings:
+
+# tc -s -d qdisc ls dev eth3 (filtered)
+qdisc sfq 9900: parent 3:9900 limit 128p quantum 1514b flows 128/1024  
+perturb 10sec
+  Sent 23753684098 bytes 71470965 pkt (dropped 0, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+qdisc sfq 9910: parent 3:9910 limit 128p quantum 1514b flows 128/1024  
+perturb 10sec
+  Sent 38036550 bytes 26648 pkt (dropped 1320085, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 162525b 126p requeues 0
+
+In the "land" class there are too many droped packets. That's logical  
+because the rate is low (1 kbit/s) and there are only 128 packets  
+length queue. I think this is causing problems/unfairness because  
+droped packets means tcp retransmitions in best case and reconnects in  
+worst.
+
+I didn't found a way to encrease the limit of 128 packet for the SFQ  
+it probably complile time limit.
+
+Any hints/suggestions on how to tune SFQ?
+
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
+
+
