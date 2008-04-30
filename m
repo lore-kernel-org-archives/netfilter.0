@@ -1,25 +1,30 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: iptables 1.4.0.77, Xtables-addons 1.5.4.1
-Date: Wed, 30 Apr 2008 15:03:17 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804301435590.5623@fbirervta.pbzchgretzou.qr>
-References: <alpine.LNX.1.10.0804271425100.20150@fbirervta.pbzchgretzou.qr> <4815B2ED.7090806@netfilter.org> <alpine.LNX.1.10.0804291855590.21466@fbirervta.pbzchgretzou.qr> <48186204.4090701@trash.net>
+Date: Wed, 30 Apr 2008 17:09:59 +0200
+Message-ID: <48188BC7.3040706@netfilter.org>
+References: <alpine.LNX.1.10.0804271425100.20150@fbirervta.pbzchgretzou.qr>	 <4815B2ED.7090806@netfilter.org>	 <alpine.LNX.1.10.0804291855590.21466@fbirervta.pbzchgretzou.qr>	 <48186204.4090701@trash.net>	 <alpine.LNX.1.10.0804301435590.5623@fbirervta.pbzchgretzou.qr> <4c6e034d0804300723p3dcfe607n117dc8191b2ab7ec@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48186204.4090701@trash.net>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4c6e034d0804300723p3dcfe607n117dc8191b2ab7ec@mail.gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Antonio Augusto (Mancha)" <mkhaos7@gmail.com>
+Cc: Jan Engelhardt <jengelh@medozas.de>, Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
+Antonio Augusto (Mancha) wrote:
+> how about iptables-svn-date ? :)
 
-On Wednesday 2008-04-30 14:11, Patrick McHardy wrote:
-> I would prefer if you would avoid creating confusion by creating
-> unofficial tarballs with official sounding names and versioning.
+We already have daily snapshots that you can get (although they were 
+broken, I have fixed them yesterday):
 
-I would not call it confusing, since the number, obviously, reflects the 
-snapshot state. But ok, your politics.
-Then please tell me a way to do releases on my behalf without you 
-having a problem with either the xtables series or questioning
-the usefulness of snapshot tarballs.
+ftp://ftp.netfilter.org/pub/iptables/snapshot/iptables-20080430.tar.bz2
+
+> I agree with Patrick, the first time i saw this thread it looked like an 
+> official release to me.
+
+Same feeling.
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
