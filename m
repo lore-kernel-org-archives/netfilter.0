@@ -1,35 +1,51 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables 1.4.0.77, Xtables-addons 1.5.4.1
-Date: Wed, 30 Apr 2008 19:05:52 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0804301734150.5623@fbirervta.pbzchgretzou.qr>
-References: <alpine.LNX.1.10.0804271425100.20150@fbirervta.pbzchgretzou.qr>  <4815B2ED.7090806@netfilter.org>  <alpine.LNX.1.10.0804291855590.21466@fbirervta.pbzchgretzou.qr>  <48186204.4090701@trash.net>  <alpine.LNX.1.10.0804301435590.5623@fbirervta.pbzchgretzou.qr>
- <4c6e034d0804300723p3dcfe607n117dc8191b2ab7ec@mail.gmail.com>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: does -p udp --dport 5060 not work with -j LOG?
+Date: Wed, 30 Apr 2008 18:27:43 -0400
+Message-ID: <fvarov$iq2$1@ger.gmane.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4c6e034d0804300723p3dcfe607n117dc8191b2ab7ec@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Antonio Augusto (Mancha)" <mkhaos7@gmail.com>
-Cc: Patrick McHardy <kaber@trash.net>, Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+I'm trying to figure out why my sip port forwarding doesn't work.
 
-On Wednesday 2008-04-30 16:23, Antonio Augusto (Mancha) wrote:
+$IPT -t nat -A PREROUTING -i external -p udp --dport 5060 -j DNAT --to 
+10.10.10.180:5060
+$IPT -A FORWARD -p udp -m state --state NEW -d 10.10.10.180 --dport 5060 
+-j ACCEPT
 
->how about iptables-svn-date ? :)
+So before everything I put:
 
-Since I don't use svn but git, I take it iptables-git-rev is appropriate
-as an alternative to svn-date. Since git-describe returns v1.4.0-77-gxxxxx,
-that makes about iptables-1.4.0-77; replacing the dash by a dot for
-convenience because - and _ is used by rpm and consorts.
+$IPT -t nat -A PREROUTING -i external -p udp --sport 5060 --dport 5060 
+-j LOG --log-prefix "SIP-BEFORE:  "
 
->I agree with Patrick, the first time i saw this thread it looked like an
->official release to me.
+(I also tried it without --sport.)
 
-"Look beyond what you see"[1] - it does contain official files, though.
+But in syslog I get packets both from "lan" my internal interface:
 
+SIP-BEFORE:  IN=lan OUT= MAC=01:00:5e:7f:ff:fa:00:15:99:25:e1:32:08:00 
+SRC=10.10.10.102 DST=239.255.255.250 LEN=364 TOS=0x00 PREC=0x00 TTL=1 
+ID=33785 PROTO=UDP SPT=1024 DPT=1900 LEN=344
+SIP-BEFORE:  IN=lan OUT= MAC=01:00:5e:7f:ff:fa:00:15:99:25:e1:32:08:00 
+SRC=10.10.10.102 DST=239.255.255.250 LEN=372 TOS=0x00 PREC=0x00 TTL=1 
+ID=33795 PROTO=UDP SPT=1024 DPT=1900 LEN=352
 
+And, from the external interface, it logs all udp ports:
 
+SIP-BEFORE:  IN=external OUT= 
+MAC=00:48:54:8b:ab:29:00:1a:e2:84:bf:3b:08:00 SRC=xxx.yyy.113.22 
+DST=xxx.yyy.167.178 LEN=126 TOS=0x04 PREC=0x00 TTL=112 ID=56357 
+PROTO=UDP SPT=17214 DPT=32375 LEN=106
+SIP-BEFORE:  IN=external OUT= 
+MAC=00:48:54:8b:ab:29:00:1a:e2:84:bf:3b:08:00 SRC=xxx.yyy.113.22 
+DST=xx.yy.167.178 LEN=126 TOS=0x04 PREC=0x00 TTL=112 ID=56357 PROTO=UDP 
+SPT=17214 DPT=32375 LEN=106
 
-[1] http://youtube.com/watch?v=B5XkdmLN2WE   scnr :)
+So any suggestions on port forwarding sip appreciated. I'm disappointed 
+I can't figure this out myself using -j LOG (:
+
+sean
+
