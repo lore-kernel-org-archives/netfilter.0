@@ -1,105 +1,37 @@
-From: Diego Lacerda <diegolacerda@gmail.com>
-Subject: RE: does -p udp --dport 5060 not work with -j LOG?
-Date: Thu, 01 May 2008 21:45:09 -0300
-Message-ID: <1209689109.6381.20.camel@localhost.localdomain>
-References: <fvarov$iq2$1@ger.gmane.org>
-	 <cc86d0010804302023n2b2dbbeu9b7c5f7d80a308cb@mail.gmail.com>
-	 <fvdk6f$j6a$1@ger.gmane.org>  <05dd01c8abe6$7a65aa50$5000040a@skathlaptop>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Dynamically adding rules - are connection tracking states maintained?
+Date: Fri, 02 May 2008 03:10:28 +0200
+Message-ID: <481A6A04.1010000@netfilter.org>
+References: <460876.13814.qm@web57307.mail.re1.yahoo.com> <481A47D3.6080201@usa.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-YCBPR41rsJkbqmo18lBU"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:subject:from:to:cc:in-reply-to:references:content-type:date:message-id:mime-version:x-mailer;
-        bh=Xd7FNxxSznnM3eBm8Uxt/X4RrVCJndKdsXCo6KHHhwk=;
-        b=PVZe8+A+YQQ1jcYxedbXGeZQILg5+iZcFRrZiapyuWz5930y10Q2KXyhyrE85pinaoAT6508RmCPVIrAvD6eHnl9XHY40ptRYw1UoqFtg0eoAaXTUZ7bi3Nb2ZnHeBtCjbmZTd+Rm6gV/Fo3B56SiZpPnFgulUGufddrr1Fe7Iw=
-In-Reply-To: <05dd01c8abe6$7a65aa50$5000040a@skathlaptop>
+In-Reply-To: <481A47D3.6080201@usa.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Steven Kath <steven.kath@vyatta.com>
-Cc: 'sean darcy' <seandarcy2@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Josh Cepek <josh.cepek@usa.net>
+Cc: levynoa@yahoo.com, netfilter@vger.kernel.org
 
+Josh Cepek wrote:
+> noa levy wrote:
+>> Thank you again for your response. Suppose I do want drop existing
+>> connections, but I don't want to add the "drop" rule above the "allow
+>> established" rule, for performance reasons. Does netfilter provide any
+>> API for flushing the conntrack table (all of it or specific entries)?
+> 
+> Not easily, and not without disrupting other active connections.  If
+> conntrack support is compiled in as modules you can unload and reload
+> them, but this requires that no iptables rules reference the conntrack
+> module (ie: you must delete such rules first.)  Once unloaded, the
+> kernel will forget the maintained state table, but this also has the
+> side-effect of breaking any active sessions that were in an ESTABLISHED
+> state when you deleted the rules and reset the state table.
+> 
+> AFAIK there is no way to manually flush the conntrack state table or
+> remove specific entries.
 
---=-YCBPR41rsJkbqmo18lBU
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+This is no longer true as we have the conntrack-tools.
 
-
-On Thu, 2008-05-01 at 16:53 -0700, Steven Kath wrote:
-> >=20
-> > There only one line in my script that uses SIP:
-> >=20
-> > grep SIP firewall-masq
-> > $IPT -t nat -A PREROUTING -i external -p udp  --dport 5060 -j LOG
-> > --log-prefix "SIP-BEFORE:  "
-> >=20
-> > And it's run first:
-> >=20
-> > sh -x firewall-masq
-> > + IPT=3D/sbin/iptables
-> > + /sbin/iptables -F
-> > + /sbin/iptables -X
-> > + /sbin/iptables -t nat -A PREROUTING -i external -p udp --dport 5060 -=
-j
-> > LOG --log-prefix 'SIP-BEFORE:  '
-> > ...........
-> >=20
-> >=20
-> > I don't really understand this output:
-> >=20
-> > iptables -L -n -v -t nat | grep SIP
-> >      2   262 LOG        udp  --  *      *       0.0.0.0/0
-> > 0.0.0.0/0           udp dpt:5060 LOG flags 0 level 4 prefix `SIP-BEFORE=
-:
-> > '
-> >   144K   24M LOG        udp  --  *      *       0.0.0.0/0
-> > 0.0.0.0/0           LOG flags 0 level 4 prefix `SIP-BEFORE:  '
-> > 41816 5117K LOG        udp  --  external *       0.0.0.0/0
-> > 0.0.0.0/0           LOG flags 0 level 4 prefix `SIP-BEFORE:  '
-> >      0     0 LOG        udp  --  external *       0.0.0.0/0
-> > 0.0.0.0/0           udp dpt:5060 LOG flags 0 level 4 prefix `SIP-BEFORE=
-:
-> > '
-> >      0     0 LOG        udp  --  external *       0.0.0.0/0
-> > 0.0.0.0/0           udp dpt:5060 LOG flags 0 level 4 prefix `SIP-BEFORE=
-:
-> > '
-> ...
->=20
-> It looks like your nat table isn't getting flushed. =20
->=20
-> Have you tried running 'iptables -t nat -F' before firewall-masq or addin=
-g
-> that to the start of the script?
-
-Yeah,
-
-I think that you really need flush the NAT table before.
-In this case you can see that the second and third rules in you NAT table a=
-re logging every UDP packet (you can see that by first and second columns: =
-packets/bytes).
-
-Regards,
-
---=20
-Diego Evaristo de Lacerda (diegolacerda@gmail.com)
-Project Analyst
-LPIC Level III & Redhat Certified Engineer & Cisco Certified Network
-Associates
-
-URL: conectado.motime.com
-
---=-YCBPR41rsJkbqmo18lBU
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.7 (GNU/Linux)
-
-iD8DBQBIGmQOrWR2/j9WrhMRAn+vAJ9+i56lmL6+7zY09WVcY2GxYA5vDACgjY6l
-ENqvWGS68WaajXwfldfLTB8=
-=zMyL
------END PGP SIGNATURE-----
-
---=-YCBPR41rsJkbqmo18lBU--
-
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
