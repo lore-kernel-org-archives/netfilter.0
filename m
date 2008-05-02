@@ -1,72 +1,48 @@
-From: sean darcy <seandarcy2@gmail.com>
-Subject: Re: does -p udp --dport 5060 not work with -j LOG?
-Date: Thu, 01 May 2008 21:10:37 -0400
-Message-ID: <fvdpme$vrl$1@ger.gmane.org>
-References: <fvarov$iq2$1@ger.gmane.org>	 <cc86d0010804302023n2b2dbbeu9b7c5f7d80a308cb@mail.gmail.com>	 <fvdk6f$j6a$1@ger.gmane.org>  <05dd01c8abe6$7a65aa50$5000040a@skathlaptop> <1209689109.6381.20.camel@localhost.localdomain>
+From: "Steven Kath" <steven.kath@vyatta.com>
+Subject: RE: does -p udp --dport 5060 not work with -j LOG?
+Date: Thu, 1 May 2008 18:40:49 -0700 (PDT)
+Message-ID: <05f401c8abf5$73fb5ed0$5000040a@skathlaptop>
+References: <fvarov$iq2$1@ger.gmane.org>	 <cc86d0010804302023n2b2dbbeu9b7c5f7d80a308cb@mail.gmail.com>	 <fvdk6f$j6a$1@ger.gmane.org>  <05dd01c8abe6$7a65aa50$5000040a@skathlaptop> <1209689109.6381.20.camel@localhost.localdomain> <fvdpme$vrl$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1209689109.6381.20.camel@localhost.localdomain>
+In-Reply-To: <fvdpme$vrl$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: 'sean darcy' <seandarcy2@gmail.com>, netfilter@vger.kernel.org
 
-Diego Lacerda wrote:
-> On Thu, 2008-05-01 at 16:53 -0700, Steven Kath wrote:
->>> There only one line in my script that uses SIP:
->>>
->>> grep SIP firewall-masq
->>> $IPT -t nat -A PREROUTING -i external -p udp  --dport 5060 -j LOG
->>> --log-prefix "SIP-BEFORE:  "
->>>
->>> And it's run first:
->>>
->>> sh -x firewall-masq
->>> + IPT=/sbin/iptables
->>> + /sbin/iptables -F
->>> + /sbin/iptables -X
->>> + /sbin/iptables -t nat -A PREROUTING -i external -p udp --dport 5060 -j
->>> LOG --log-prefix 'SIP-BEFORE:  '
->>> ...........
->>>
->>>
->>> I don't really understand this output:
->>>
->>> iptables -L -n -v -t nat | grep SIP
->>>      2   262 LOG        udp  --  *      *       0.0.0.0/0
->>> 0.0.0.0/0           udp dpt:5060 LOG flags 0 level 4 prefix `SIP-BEFORE:
->>> '
->>>   144K   24M LOG        udp  --  *      *       0.0.0.0/0
->>> 0.0.0.0/0           LOG flags 0 level 4 prefix `SIP-BEFORE:  '
->>> 41816 5117K LOG        udp  --  external *       0.0.0.0/0
->>> 0.0.0.0/0           LOG flags 0 level 4 prefix `SIP-BEFORE:  '
->>>      0     0 LOG        udp  --  external *       0.0.0.0/0
->>> 0.0.0.0/0           udp dpt:5060 LOG flags 0 level 4 prefix `SIP-BEFORE:
->>> '
->>>      0     0 LOG        udp  --  external *       0.0.0.0/0
->>> 0.0.0.0/0           udp dpt:5060 LOG flags 0 level 4 prefix `SIP-BEFORE:
->>> '
->> ...
->>
->> It looks like your nat table isn't getting flushed.  
->>
->> Have you tried running 'iptables -t nat -F' before firewall-masq or adding
->> that to the start of the script?
+
+
+Sean darcy wrote:
+ 
+> Wow. That worked.
 > 
-> Yeah,
-> 
-> I think that you really need flush the NAT table before.
-> In this case you can see that the second and third rules in you NAT table are logging every UDP packet (you can see that by first and second columns: packets/bytes).
-> 
-> Regards,
+> I always thought iptables -F flushed all the tables. Is there a command
+> that does flush all the tables? Cleans the slate completely?
 > 
 
-Wow. That worked.
+The 'filter' table is the default if no -t argument is specified, so only
+the filter table gets flushed with iptables -F. 
 
-I always thought iptables -F flushed all the tables. Is there a command 
-that does flush all the tables? Cleans the slate completely?
+The closest thing I can imagine to a clean slate is flushing all the
+built-in tables by name, restoring the default policy for each table to
+ACCEPT,  and running iptables -X to delete all user-generated tables:
 
-sean
+iptables -t nat -F
+iptables -t nat -P ACCEPT
+iptables -t raw -F
+iptables -t raw -P ACCEPT
+iptables -t mangle -F
+iptables -t mangle -P ACCEPT
+iptables -t filter -F
+iptables -t filter -P ACCEPT
+iptables -X
+
+'-t filter' is redundant as it's the default but I showed it here for
+clarity.  
+
+Maybe there's an argument that's shorthand for some or all of this, but
+I'm not aware of one. 
 
 
