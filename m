@@ -1,48 +1,93 @@
-From: "Steven Kath" <steven.kath@vyatta.com>
-Subject: RE: does -p udp --dport 5060 not work with -j LOG?
-Date: Thu, 1 May 2008 18:40:49 -0700 (PDT)
-Message-ID: <05f401c8abf5$73fb5ed0$5000040a@skathlaptop>
-References: <fvarov$iq2$1@ger.gmane.org>	 <cc86d0010804302023n2b2dbbeu9b7c5f7d80a308cb@mail.gmail.com>	 <fvdk6f$j6a$1@ger.gmane.org>  <05dd01c8abe6$7a65aa50$5000040a@skathlaptop> <1209689109.6381.20.camel@localhost.localdomain> <fvdpme$vrl$1@ger.gmane.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Christoph Ehret <christoph.ehret@unifr.ch>
+Subject: Filtering module on OSI level 7?
+Date: Fri, 2 May 2008 14:20:44 +0200
+Message-ID: <DBB76FAC-A063-498C-812B-B785C6C0C724@unifr.ch>
+Mime-Version: 1.0 (Apple Message framework v919.2)
+Content-Type: multipart/signed; boundary=Apple-Mail-2--504589431; micalg=sha1; protocol="application/pkcs7-signature"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <fvdpme$vrl$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 'sean darcy' <seandarcy2@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
 
+--Apple-Mail-2--504589431
+Content-Type: text/plain;
+	charset=US-ASCII;
+	format=flowed;
+	delsp=yes
+Content-Transfer-Encoding: 7bit
 
-Sean darcy wrote:
- 
-> Wow. That worked.
-> 
-> I always thought iptables -F flushed all the tables. Is there a command
-> that does flush all the tables? Cleans the slate completely?
-> 
+Hi,
 
-The 'filter' table is the default if no -t argument is specified, so only
-the filter table gets flushed with iptables -F. 
+I am looking for a solution to do some filtering based on application  
+level mainly for the outgoing traffic. I have found the l7-filter (http://l7-filter.sourceforge.net 
+) that can do it. I would nevertheless prefer something similar to  
+LittleSnitch (http://www.obdev.at/products/littlesnitch/index.html) on  
+OS X or to ZoneAlarm on Windows. Does it already exist something  
+similar on Linux or some kind of module for iptables that can do it?  
+For example, I would like to ACCEPT application alohomora to be able to:
+	* open a connection (with possibility to  specify destination port  
+number)
+	* open a connection but only to closed.door.net (with possibility to  
+specify destination port number)
 
-The closest thing I can imagine to a clean slate is flushing all the
-built-in tables by name, restoring the default policy for each table to
-ACCEPT,  and running iptables -X to delete all user-generated tables:
+If not, I would be interested to try to develop something that could  
+go in this direction and with possibility to use it as a module for  
+iptables. I would also appreciate some hints and info where to look at  
+in order to begin; I am quite a newcomer to iptables.
 
-iptables -t nat -F
-iptables -t nat -P ACCEPT
-iptables -t raw -F
-iptables -t raw -P ACCEPT
-iptables -t mangle -F
-iptables -t mangle -P ACCEPT
-iptables -t filter -F
-iptables -t filter -P ACCEPT
-iptables -X
+Thanks a lot for your help and comments.
 
-'-t filter' is redundant as it's the default but I showed it here for
-clarity.  
+Christoph
+--Apple-Mail-2--504589431
+Content-Disposition: attachment;
+	filename=smime.p7s
+Content-Type: application/pkcs7-signature;
+	name=smime.p7s
+Content-Transfer-Encoding: base64
 
-Maybe there's an argument that's shorthand for some or all of this, but
-I'm not aware of one. 
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIGMTCCAuow
+ggJToAMCAQICECdoxvk5K+nnHzRYMEvS3u0wDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UEBhMCWkEx
+JTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQ
+ZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA4MDMyNzEzMzE0MFoXDTA5MDMyNzEzMzE0
+MFowSjEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEnMCUGCSqGSIb3DQEJARYYY2hy
+aXN0b3BoLmVocmV0QHVuaWZyLmNoMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvIxt
+pCf38mNNF1hffz9kCvzFvpSYo/C5EjPlUC2wdkJZDlUSZrjPDOeoHj7ypbH6LdyqAm30yS2Bl4J2
+S287FktidSB+iGbpiLToM/kDUpmkRg0HB/v86yIPeDdlUXNGN5cNY3PfD3o3x8lTeOdIkXa1xIAY
+aq7C545sqLcvUdvr4JM74uhh/aSPatwmzxdbft9ISIT09TClnIUCL6lU4IZa3mgBRJUZwdgloiBx
+CWKg6q19lAZrk8rEG6bRBNEtLzejqNYv8xkf0ML4bNDgagnLuExeXypJ9APIlxAYl2omzuiCuB8V
+aLGfTSzSyWEoYsZi7NvPMtQixUY1OcU0ewIDAQABozUwMzAjBgNVHREEHDAagRhjaHJpc3RvcGgu
+ZWhyZXRAdW5pZnIuY2gwDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQUFAAOBgQAjaBEmVrnCOsk+
+nJseSPkXYQbFCZ4Q6wDOxusGqUT9rG+c8C9Pr6j0Dvpr5hFiFrpcWPwN4noHhwumg4cVHBbggTOI
+ReHl8gd6DGzeZisu9xPuUH7AU56QkTID2cUYm/eDkihCUtfavps7gVB2HPKStu/rZV5f6LdRpQ+V
+OfcPHDCCAz8wggKooAMCAQICAQ0wDQYJKoZIhvcNAQEFBQAwgdExCzAJBgNVBAYTAlpBMRUwEwYD
+VQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENv
+bnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAiBgNV
+BAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVyc29uYWwt
+ZnJlZW1haWxAdGhhd3RlLmNvbTAeFw0wMzA3MTcwMDAwMDBaFw0xMzA3MTYyMzU5NTlaMGIxCzAJ
+BgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQD
+EyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTCBnzANBgkqhkiG9w0BAQEFAAOB
+jQAwgYkCgYEAxKY8VXNV+065yplaHmjAdQRwnd/p/6Me7L3N9VvyGna9fww6YfK/Uc4B1OVQCjDX
+AmNaLIkVcI7dyfArhVqqP3FWy688Cwfn8R+RNiQqE88r1fOCdz0Dviv+uxg+B79AgAJk16emu59l
+0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sCAwEAAaOBlDCBkTASBgNVHRMBAf8ECDAGAQH/AgEAMEMG
+A1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9jcmwudGhhd3RlLmNvbS9UaGF3dGVQZXJzb25hbEZyZWVt
+YWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxh
+YmVsMi0xMzgwDQYJKoZIhvcNAQEFBQADgYEASIzRUIPqCy7MDaNmrGcPf6+svsIXoUOWlJ1/TCG4
++DYfqi2fNi/A9BxQIJNwPP2t4WFiw9k6GX6EsZkbAMUaC4J0niVQlGLH2ydxVyWN3amcOY6MIE9l
+X5Xa9/eH1sYITq726jTlEBpbNU1341YheILcIRk13iSx0x1G/11fZU8xggMQMIIDDAIBATB2MGIx
+CzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYD
+VQQDEyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQQIQJ2jG+Tkr6ecfNFgwS9Le
+7TAJBgUrDgMCGgUAoIIBbzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEP
+Fw0wODA1MDIxMjIwNDRaMCMGCSqGSIb3DQEJBDEWBBS9JGkZrV9xgS4sw+Wkhm7hHoAaIjCBhQYJ
+KwYBBAGCNxAEMXgwdjBiMQswCQYDVQQGEwJaQTElMCMGA1UEChMcVGhhd3RlIENvbnN1bHRpbmcg
+KFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNvbmFsIEZyZWVtYWlsIElzc3VpbmcgQ0EC
+ECdoxvk5K+nnHzRYMEvS3u0wgYcGCyqGSIb3DQEJEAILMXigdjBiMQswCQYDVQQGEwJaQTElMCMG
+A1UEChMcVGhhd3RlIENvbnN1bHRpbmcgKFB0eSkgTHRkLjEsMCoGA1UEAxMjVGhhd3RlIFBlcnNv
+bmFsIEZyZWVtYWlsIElzc3VpbmcgQ0ECECdoxvk5K+nnHzRYMEvS3u0wDQYJKoZIhvcNAQEBBQAE
+ggEAgYhiTzVQZEgVFJiFCQkPOv7Kwt4sxiTJCzuLwoSIcj8KJjxNuaByHgChjtPGA1JC519XN2pj
+GUuwNzncs8bGcbhvwLiN4nBOK8JzCDPmi8i0jmv7PQix0xVHy1/LwmWztIk2aqIJu2PwANy75xBn
+8aMsS6hL0SXeLWKdrXZ7791B2aLCZec6q4dibL3lEOeq7tVi7AAaz57vGOtQz6J1gGXxhxL42wd0
+aoRxo2TKGQC4MIkPe2sixigjXWWcHR4j9mL66S7LhLioBFYzaqpXNVri+uOvQIlPP2rPCUl+vGMf
+4pV7RS4MfBddX3DQuvhi6SF8GGQBXtQzmoo6odFtpQAAAAAAAA==
 
-
+--Apple-Mail-2--504589431--
