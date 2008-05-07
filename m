@@ -1,43 +1,35 @@
-From: Gary Renshaw <gary@trilunar.ca>
-Subject: Re: SNAT spoofing problem
-Date: Wed, 07 May 2008 13:55:25 -0600
-Message-ID: <4822092D.6050803@trilunar.ca>
-References: <4821ED37.3020201@trilunar.ca> <4821FCE3.1060400@freemail.hu>
+From: "Steven Kath" <steven.kath@vyatta.com>
+Subject: RE: viewing rules and traffic while inserting/removing rules
+Date: Wed, 7 May 2008 13:01:07 -0700 (PDT)
+Message-ID: <090801c8b07c$fa084b60$5000040a@skathlaptop>
+References: <4821E655.4010504@roth.lu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4821FCE3.1060400@freemail.hu>
+In-Reply-To: <4821E655.4010504@roth.lu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: lists+netfilter@roth.lu, netfilter@vger.kernel.org
 
-That's true but I thought that the SNAT would re-write the outgoing ICM=
-P=20
-packet so that its source address is 192.168.1.1 instead of 192.168.1.2=
-=20
--- thus making it look to the receiver as if it had come from the=20
-gateway instead of the stealth host.  The gateway itself is not involve=
-d=20
-except for being an existing host on the same subnet.
+Marc wrote:
+> 
+> Hi there,
+> I have quite a large list of blacklisted networks in my iptables
+> firewall, approx. 20,000.
+> Now I have a script that updates this blacklist according to my needs
+> every hour. My problem now is that during the update period (which
+> consists of several iptables [-I|-D] $CHAIN -s ... -j ... commands) my
+> traffic accounting is going haywire.
+> I have narrowed it down to the problem that displaying the rules (from
+> which I extract the traffic information via iptables -xvnL $CHAIN)
+> intermittently shows 0s (zeroes) as paket and byte counters while the
+> insert/delete commands are being issued.
+> Is there a locking problem? Should I maybe report this to the devel
+list?
 
-Do I need to do this some other way?
+Have you considered using netfilter's ip sets for this?  Sounds like it
+might be perfect for your needs. 
 
-Gary
+http://www.netfilter.org/projects/ipset/ 
 
-G=E1sp=E1r Lajos wrote:
-> Gary Renshaw =EDrta:
->>
->> It looks like the SNAT is doing nothing at all.  What am I missing?
-> You are in one subnet.... NO PACKET GOES THROUGH your gateway...
->>
->> Thanks,
->> Gary
-
---=20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Trilunar Consulting    http://www.trilunar.ca/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
