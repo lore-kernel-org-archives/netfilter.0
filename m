@@ -1,75 +1,86 @@
-From: Josh Cepek <josh.cepek@usa.net>
-Subject: Re: SNAT spoofing problem
-Date: Wed, 07 May 2008 16:12:31 -0500
-Message-ID: <48221B3F.5020507@usa.net>
-References: <4821ED37.3020201@trilunar.ca>
+From: "eial@cs.bgu.ac.il" <eial@cs.bgu.ac.il>
+Subject: RE: accept rule not working.
+Date: Thu, 8 May 2008 00:25:46 +0300 (IDT)
+Message-ID: <200805072125.m47LPku7018772@indigo.cs.bgu.ac.il>
+References: <001101c8b057$23a5c950$6af15bf0$@info>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig2567A0F3189237E70D52B85D"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4821ED37.3020201@trilunar.ca>
+In-Reply-To: <001101c8b057$23a5c950$6af15bf0$@info>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Gary Renshaw <gary@trilunar.ca>, netfilter@vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig2567A0F3189237E70D52B85D
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-Gary Renshaw wrote:
-> I am trying to get a host to reject pings with an ICMP=20
-> host-unreachable message so that it looks like the host doesn't=20
-> exist.  This is easy and works nicely.
-
-This will not do what you want for several reasons.  On a local network, =
-
-the "host unreachable" condition is identified by the system _sending_=20
-the pings when there is no ARP reply from the target host; this means=20
-that any local host can know the "stealth" host is up from the ARP=20
-reply.  This method also won't work beyond most gateways unless you have =
-
-the cooperation of the gateway; most gateways are configured with=20
-firewalls that prevent spoofing across subnets, and thus it will drop=20
-any packets with invalid source addresses on them.  In your diagram=20
-anything upstream from the gateway would receive replies from the WAN=20
-(or upstream) IP address, not the LAN, and the gateway won't (or at=20
-least shouldn't) accept LAN packets sourced with an IP on a different=20
-network.
-
-If your goal is to hide the "stealth" host from clients on the local=20
-network, it's pointless; ARP's give you away as a live host anyway, and=20
-there's no way to "fix" that without breaking TCP/IP functionality=20
-all-together.
-
-> The problem is that I'd like to use SNAT to spoof the source address=20
-> so that the ICMP looks like it is coming from the network's gateway,=20
-> not the stealthy host.  This isn't working the way I expected.
->
-> I've set up a very simple test rig for this.
->
-> 192.168.1.1 (GATEWAY) <-----> 192.168.1.2 (STEALTH)
->                          |
->                          \--> 192.168.1.3 (WORKSTATION)
-
---=20
-Josh
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Rob Sterenborg <rob@sterenborg.info>
+Cc: netfilter@vger.kernel.org
 
 
+On Wed 07 May 18:29 2008 Rob Sterenborg wrote:
+> > I've created this rule:
+> > /sbin/iptables -A INPUT -i eth0 -p tcp -m state --state NEW --sport
+> > 80 -s 192.168.113.94 -j ACCEPT
+> > 
+> > but the firewall still blocks it, I guess there is a typo somewhere
+> > but I cant seem to be able to find it any hints?
+> 
+> Since the packets are still dropped, either the rule doesn't match the packets you expect it to match, or another blocking rule matches before it can be accepted by this one.
+> 
+> Also, you're using "--sport 80". Are you sure the packets are COMING FROM source port 80 instead of GOING TO port 80 (--dport 80)?
+> 
+> 
+> Grts,
+> Rob
+> 
+> 
+> 
 
---------------enig2567A0F3189237E70D52B85D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+both mangle and raw return this:
+FATAL: Module ip_tables not found.
+iptables v1.3.8: can't initialize iptables table `mangle': Table does not exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
+iptables -t nat -vnL
+Chain PREROUTING (policy ACCEPT 32M packets, 3282M bytes)
+pkts bytes target     prot opt in     out     source               destination
 
-iEYEARECAAYFAkgiG0MACgkQHSSgJy5aUSeuLwCggGKwAbJo0rd4hK6KZ0Cwco/g
-LUsAnA20RK9sKeQejOGS5IvMz9Wug4To
-=zuks
------END PGP SIGNATURE-----
+Chain POSTROUTING (policy ACCEPT 2990K packets, 215M bytes)
+pkts bytes target     prot opt in     out     source               destination
 
---------------enig2567A0F3189237E70D52B85D--
+Chain OUTPUT (policy ACCEPT 2991K packets, 215M bytes)
+pkts bytes target     prot opt in     out     source               destination
+
+Chain INPUT (policy DROP 240 packets, 23748 bytes)
+pkts bytes target     prot opt in     out     source               destination
+1468 1977K ACCEPT     all  --  *      *       127.0.0.1            0.0.0.0/0  
+607K  804M ACCEPT     all  --  eth0   *       0.0.0.0/0            0.0.0.0/0           state RELATED,ESTABLISHED
+   0     0 ACCEPT     tcp  --  eth0   *       192.168.113.94       0.0.0.0/0           state NEW tcp spt:80
+   0     0 ACCEPT     udp  --  eth0   *       0.0.0.0/0            255.255.255.255     state NEW udp dpt:67
+   0     0 ACCEPT     udp  --  eth0   *       0.0.0.0/0            255.255.255.255     state NEW udp dpt:68
+2141  321K ACCEPT     udp  --  eth0   *       0.0.0.0/0            255.255.255.255     state NEW udp dpt:2222
+   0     0 ACCEPT     udp  --  eth0   *       0.0.0.0/0            255.255.255.255     state NEW udp dpt:2223
+   0     0 ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           state NEW udp dpt:6111
+   9   666 ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           state NEW udp dpt:161
+1047 37692 ACCEPT     icmp --  eth0   *       192.168.111.249      0.0.0.0/0           icmp type 8 state NEW
+   0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:21
+   0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:443
+   0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:80
+   0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           state NEW tcp dpt:873
+   0     0 ACCEPT     udp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           state NEW udp dpt:873
+   0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           state NEW tcp dpts:6881:6886
+   0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            192.168.114.0/20     state NEW tcp dpt:135
+186K   21M ACCEPT     udp  --  eth0   *       0.0.0.0/0            192.168.114.0/20     state NEW udp dpts:137:139
+3249  160K ACCEPT     tcp  --  eth0   *       0.0.0.0/0            192.168.114.0/20     state NEW tcp dpts:137:139
+   0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            192.168.114.0/20     state NEW tcp dpt:426
+   9   436 ACCEPT     tcp  --  eth0   *       0.0.0.0/0            192.168.114.0/20     state NEW tcp dpt:445
+   8  2225 DROP       tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp flags:!0x17/0x02 state NEW
+   0     0 DROP       tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp flags:0x3F/0x3F
+   0     0 DROP       tcp  --  eth0   *       0.0.0.0/0            0.0.0.0/0           tcp flags:0x3F/0x00
+   0     0 LOG        all  -f  eth0   *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4 prefix `IPTABLES FRAGMENTS: '
+   0     0 DROP       all  -f  eth0   *       0.0.0.0/0            0.0.0.0/0  
+ 930  574K LOG        all  --  eth0   *       0.0.0.0/0            0.0.0.0/0           LOG flags 0 level 4 prefix `Rejected: '
+ 930  574K REJECT     all  --  eth0   *       0.0.0.0/0            0.0.0.0/0           reject-with icmp-port-unreachable
+
+rejection log example:
+Rejected: IN=eth0 OUT= MAC=mymacaddress SRC=192.168.113.94 DST=192.168.114.2 LEN=40 TOS=0x00 PREC=0x00 TTL=52 ID=0 DF PROTO=TCP SPT=80 DPT=59173 WINDOW=0 RES=0x00 RST URGP=0
+
+
 
