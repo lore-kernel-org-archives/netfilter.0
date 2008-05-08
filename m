@@ -1,24 +1,27 @@
-From: whiplash <whiplash@bofhland.org>
-Subject: Re: ip rule fwmarks letting me down
-Date: Thu, 08 May 2008 14:51:12 +0200
-Message-ID: <4822F740.4070400@bofhland.org>
-References: <4822967E.8030407@trinity.unimelb.edu.au>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: viewing rules and traffic while inserting/removing rules
+Date: Thu, 08 May 2008 11:44:07 -0500
+Message-ID: <48232DD7.3070603@riverviewtech.net>
+References: <4821E655.4010504@roth.lu> <090801c8b07c$fa084b60$5000040a@skathlaptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4822967E.8030407@trinity.unimelb.edu.au>
+In-Reply-To: <090801c8b07c$fa084b60$5000040a@skathlaptop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Geoff Crompton wrote:
+On 05/07/08 15:01, Steven Kath wrote:
+> Have you considered using netfilter's ip sets for this?  Sounds like 
+> it might be perfect for your needs.
 
-> So when I ping from a machine behind this firewall, it should be routed
-> via 203.28.240.92, but it isn't. I've been running tcpdump on both
-> 203.28.240.92 and 203.28.240.91, and the packets are definately being
-> routed via 203.28.240.91.
+With out knowing how or what the OP is accounting we don't know if s/he 
+is looking at each individual network that is being filtered or if it is 
+clients behind the system.  If it is networks that are being filtered I 
+would think that the single ipset rule would make it much harder, if not 
+impossible, to keep accounting data for a single rule.
 
-Did you
-ip route flush cache
-before testing?
+
+
+Grant. . . .
