@@ -1,58 +1,38 @@
-From: Geoff Crompton <geoffc@trinity.unimelb.edu.au>
-Subject: ip rule fwmarks letting me down
-Date: Thu, 08 May 2008 15:58:22 +1000
-Message-ID: <4822967E.8030407@trinity.unimelb.edu.au>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: accept rule not working.
+Date: Thu, 08 May 2008 11:28:18 +0200
+Message-ID: <4822C7B2.3070006@freemail.hu>
+References: <200805072125.m47LPku7018772@indigo.cs.bgu.ac.il>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <200805072125.m47LPku7018772@indigo.cs.bgu.ac.il>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: "eial@cs.bgu.ac.il" <eial@cs.bgu.ac.il>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+eial@cs.bgu.ac.il =EDrta:
+> 607K  804M ACCEPT     all  --  eth0   *       0.0.0.0/0            0.=
+0.0.0/0           state RELATED,ESTABLISHED
+>    0     0 ACCEPT     tcp  --  eth0   *       192.168.113.94       0.=
+0.0.0/0           state NEW tcp spt:80
+>  930  574K LOG        all  --  eth0   *       0.0.0.0/0            0.=
+0.0.0/0           LOG flags 0 level 4 prefix `Rejected: '
+>  930  574K REJECT     all  --  eth0   *       0.0.0.0/0            0.=
+0.0.0/0           reject-with icmp-port-unreachable
+>
+> rejection log example:
+> Rejected: IN=3Deth0 OUT=3D MAC=3Dmymacaddress SRC=3D192.168.113.94 DS=
+T=3D192.168.114.2 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PR=
+OTO=3DTCP SPT=3D80 DPT=3D59173 WINDOW=3D0 RES=3D0x00 RST URGP=3D0
+>
+>  =20
+Yes... Correct...
+These packets are not in the state of NEW,RELATED,ESTABLISHED...
+Maybe just INVALID...
 
-I'm having problems using fwmarks in my routing policy database, and I'm
-not sure why they are not working. We've got two internet uplinks, and
-we like to use our internode (our ISP) link for some of our traffic. So
-I've got an ip rule output like this:
+Swifty
 
-$ ip rule list
-0:      from all lookup 255
-32765:  from all fwmark 0x2 lookup internode
-32766:  from all lookup main
-32767:  from all lookup default
 
-$ ip route list table internode
-default via 203.28.240.92 dev vlan9
-$ ip route list table main | grep default
-default via 203.28.240.91 dev vlan9
-
-To isolate and test this bug, I have done:
-# iptables -t mangle -N test-marks
-# iptables -t mangle -A test-marks -j MARK --set-mark 0x02
-# iptables -t mangle -I PREROUTING 1 -d 192.231.203.132 -j test-marks
-
-Of course if I wanted to affect routing for -d 192.231.203.132 it would
-be much easier to do that as a normal routing command. But I need to get
-fwmark working, because we use it for other types of traffic.
-
-So when I ping from a machine behind this firewall, it should be routed
-via 203.28.240.92, but it isn't. I've been running tcpdump on both
-203.28.240.92 and 203.28.240.91, and the packets are definately being
-routed via 203.28.240.91.
-
-I'm sure the packets are getting marked. After doing some pinging from a
-PC behind the firewall:
-# iptables-save -c | grep test-marks
-:test-marks - [0:0]
-[4:336] -A PREROUTING -d 192.231.203.132 -j test-marks
-[4:336] -A test-marks -j MARK --set-mark 0x2
-
-Can anyone please suggest what I've done wrong, or gotchas to watch out
-for that I could go and check?
-
--- 
-+-Geoff Crompton
-+--Debian System Administrator
-+---Trinity College
