@@ -1,47 +1,70 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: DNAT routing problem
-Date: Thu, 08 May 2008 14:37:40 -0500
-Message-ID: <48235684.6060306@riverviewtech.net>
-References: <3598a5460805081117i7f519321y9ad85f084ba0f484@mail.gmail.com>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: Re: why can't I DNAT SIP?
+Date: Thu, 08 May 2008 18:24:20 -0400
+Message-ID: <fvvuil$ldh$1@ger.gmane.org>
+References: <fvtjuu$7i1$1@ger.gmane.org> <48235501.4030608@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3598a5460805081117i7f519321y9ad85f084ba0f484@mail.gmail.com>
+In-Reply-To: <48235501.4030608@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 05/08/08 13:17, Andrea Ranieri wrote:
-> Playing a bit with iptables, I observed a strange behavior. For 
-> example, if my router is forwarding even a few packets per second 
-> (ipv4 only payload), the rule is accepted, but not applied.
+Grant Taylor wrote:
+> On 05/07/08 20:10, sean darcy wrote:
+>> On my outside box I trying to route sip ( port 5060 ) and iax ( 4659 ) 
+>> packets to an internal asterisk server. I use DNAT, which works fine 
+>> for iax, but doesn't for SIP. I'm using identical DNAT statments.
+> 
+> No you are not.
+> 
+>> $IPT -t nat -A PREROUTING -i external -p udp --dport 4569 -j DNAT --to 
+>> 10.10.10.180:4569
+> 
+> (verses)
+> 
+>> $IPT -t nat -A PREROUTING -s ext-box  -p udp --dport 5060 -j DNAT --to 
+>> 10.10.10.180:5060
+> 
+> Note that you have "-i external" on the first (IAX) rule and "-s 
+> ext-box" on the second (SIP) rule.
+> 
+I tried it both ways. FWIW, it works both ways for iax. I showed it that 
+way because the LOG statement were that way. I've run them all both ways.
 
-<snip>
+> I don't know if you have taken this in to account or not, but remember 
+> that SIP is not really NAT friendly.
+> 
 
-> Conversely, if no traffic is being forwarded, the rule is accepted 
-> and correctly applied.
+Yeah, but why is iptables not filtering the packet correctly; it's just 
+a port 5060 udp packet. How can it matter that it's 5060 instead of 4569?
 
-<snip>
+Here it comes in -t raw -A PREROUTING:
 
-> I really don't understand this behavior, I hope I'm missing something 
-> obivious. I'd like to point out that I'm running a standard (debian 
-> 2.6.22-14-server) kernel, and each of this two tests, comes from a 
-> fresh boot.
+GATEWAY:   IN=external OUT= 
+MAC=00:48:54:8b:ab:29:00:1a:e2:84:bf:3b:08:00 SRC=xxx.yyy.148.160 
+DST=yyy.xxx.167.178 LEN=527 TOS=0x04 PREC=0x00 TTL=48 ID=32417 PROTO=UDP 
+SPT=5060 DPT=5060 LEN=507
 
-(Time to open my mouth and insert my foot.)
+either:
+$IPT -t nat -A PREROUTING -s ext-box  -p udp --dport 5060 -j DNAT --to
+10.10.10.180:5060
 
-NAT rules are applied to the first packet in a connection and then the 
-same action is auto-magically applied to all other packets in the 
-connection with out passing them through the NAT table.
+or:
 
-So what you are seeing is probably very likely based on existing verses 
-new connections.
+$IPT -t nat -A PREROUTING -i external -p udp --dport 5060 -j DNAT --to 
+10.10.10.180:5060
 
-> Thanks in advance, and sorry for the jumbo mail :) Andrea
+should send the packet to the FORWARD chain, but instead it shows up in 
+INPUT:
 
-*nod*
+SIP-INPUT:    IN=external OUT= 
+MAC=00:48:54:8b:ab:29:00:1a:e2:84:bf:3b:08:00 SRC=xxx.yyy.148.160 
+DST=yyyy.xxx.167.178 LEN=527 TOS=0x04 PREC=0x00 TTL=48 ID=32417 
+PROTO=UDP SPT=5060 DPT=5060 LEN=507
 
 
+?????
 
-Grant. . . .
