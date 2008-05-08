@@ -1,23 +1,37 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: viewing rules and traffic while inserting/removing rules
-Date: Thu, 08 May 2008 14:21:30 -0500
-Message-ID: <482352BA.50306@riverviewtech.net>
-References: <4821E655.4010504@roth.lu> <090801c8b07c$fa084b60$5000040a@skathlaptop> <48232DD7.3070603@riverviewtech.net> <482335C2.2070004@roth.lu>
+Subject: Re: why can't I DNAT SIP?
+Date: Thu, 08 May 2008 14:31:13 -0500
+Message-ID: <48235501.4030608@riverviewtech.net>
+References: <fvtjuu$7i1$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <482335C2.2070004@roth.lu>
+In-Reply-To: <fvtjuu$7i1$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 05/08/08 12:17, lists+netfilter@roth.lu wrote:
-> I do not need to keep individual accounting data for each network that 
-> is blocked.
+On 05/07/08 20:10, sean darcy wrote:
+> On my outside box I trying to route sip ( port 5060 ) and iax ( 4659 ) 
+> packets to an internal asterisk server. I use DNAT, which works fine for 
+> iax, but doesn't for SIP. I'm using identical DNAT statments.
 
-Ok.  In that case, I agree that an ipset would likely be a better way to 
-go.  However you made a comment about it not being in your kernel.
+No you are not.
+
+> $IPT -t nat -A PREROUTING -i external -p udp --dport 4569 -j DNAT --to 
+> 10.10.10.180:4569
+
+(verses)
+
+> $IPT -t nat -A PREROUTING -s ext-box  -p udp --dport 5060 -j DNAT --to 
+> 10.10.10.180:5060
+
+Note that you have "-i external" on the first (IAX) rule and "-s 
+ext-box" on the second (SIP) rule.
+
+I don't know if you have taken this in to account or not, but remember 
+that SIP is not really NAT friendly.
 
 
 
