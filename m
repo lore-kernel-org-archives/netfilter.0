@@ -1,41 +1,26 @@
-From: Geoff Crompton <geoffc@trinity.unimelb.edu.au>
-Subject: Re: ip rule fwmarks letting me down
-Date: Fri, 09 May 2008 11:57:42 +1000
-Message-ID: <4823AF96.1010107@trinity.unimelb.edu.au>
-References: <4822967E.8030407@trinity.unimelb.edu.au> <4822F740.4070400@bofhland.org>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: accept rule not working.
+Date: Fri, 09 May 2008 08:37:46 +0200
+Message-ID: <4823F13A.8060403@freemail.hu>
+References: <200805090443.m494hPLn001206@indigo.cs.bgu.ac.il>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4822F740.4070400@bofhland.org>
+In-Reply-To: <200805090443.m494hPLn001206@indigo.cs.bgu.ac.il>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: whiplash <whiplash@bofhland.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: "eial@cs.bgu.ac.il" <eial@cs.bgu.ac.il>
+Cc: swifty@freemail.hu, netfilter@vger.kernel.org
 
-whiplash wrote:
-> Geoff Crompton wrote:
-> 
->> So when I ping from a machine behind this firewall, it should be routed
->> via 203.28.240.92, but it isn't. I've been running tcpdump on both
->> 203.28.240.92 and 203.28.240.91, and the packets are definately being
->> routed via 203.28.240.91.
-> 
-> Did you
-> ip route flush cache
-> before testing?
+eial@cs.bgu.ac.il =EDrta:
+> ok, so what can I do?
+>
+>  =20
+What do you want to? RST packets are meant for closing connections...
 
-No, but I have now, and it made no difference. From my perspective, it
-looks like a failure in the routing policy database, so I'm not suprised
-that an 'ip route' command didn't change the situation. (However I know
-nothing about the code internals, so I'm happy to conceed the point if
-someone knows better).
+http://www.knowplace.org/pages/howtos/firewalling_with_netfilter_iptabl=
+es/ip_overview.php
 
-BTW, how long do route caches last?
-
--- 
-+-Geoff Crompton
-+--Debian System Administrator
-+---Trinity College
-
+Swifty
 
