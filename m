@@ -1,45 +1,42 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: DNAT routing problem
-Date: Fri, 09 May 2008 09:20:59 -0500
-Message-ID: <48245DCB.6060905@riverviewtech.net>
-References: <3598a5460805081117i7f519321y9ad85f084ba0f484@mail.gmail.com>	 <3598a5460805090348w526f46c9v3f1fd0f0874c84db@mail.gmail.com> <3598a5460805090630m2676a18dp9f25e7ca9efb9ca9@mail.gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: why can't I DNAT SIP?
+Date: Fri, 09 May 2008 16:23:58 +0200
+Message-ID: <48245E7E.8080206@trash.net>
+References: <fvtjuu$7i1$1@ger.gmane.org> <48235501.4030608@riverviewtech.net> <fvvuil$ldh$1@ger.gmane.org> <48245C6B.1090506@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3598a5460805090630m2676a18dp9f25e7ca9efb9ca9@mail.gmail.com>
+In-Reply-To: <48245C6B.1090506@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>, seandarcy2@gmail.com
 
-On 05/09/08 08:30, Andrea Ranieri wrote:
-> My previous tests involved a ipv4 flow going always from 10.0.5.2 to 
-> 10.0.6.2, and the results remains those I wrote in my first mail. Now 
-> I tried to change the source IP, and finally, the natting process 
-> begins. But obiviously with a strange behavior...
+Grant Taylor wrote:
+> On 05/08/08 17:24, sean darcy wrote:
+>> I tried it both ways. FWIW, it works both ways for iax. I showed it 
+>> that way because the LOG statement were that way. I've run them all 
+>> both ways.
+>>
+>> Yeah, but why is iptables not filtering the packet correctly; it's 
+>> just a port 5060 udp packet. How can it matter that it's 5060 instead 
+>> of 4569?
+> 
+> With out knowing the full scenario, I can't say for sure.  Are you 
+> dealing with an on going established connection, thus one that is not 
+> passing through the NAT chain again?
+> 
+> Is it possible that you are dealing with SIP Reinvited traffic that 
+> really has a source of elsewhere?
+> 
+> More things are starting to come in to play.
 
-(See below.)
+Some questions that might help answering this:
 
-> In this test I always have the 10.0.5.2->10.0.6.2 flow running, and a 
-> 10.0.5.[2 to 5]->10.0.6.2 flow. Every IP except the .2 get natted. 
-> The .2 remains unchanged. Moreover, when i flush the nat table, the 
-> rule disappear but .3, .4 and .5 IPs continue to get natted. I think 
-> that's a cache problem.
+- Which kernel version are you running?
 
-This really makes me believe that you are dealing with what connection 
-tracking thinks is an on going existing established flow / connection. 
-Remember that the NAT table only sees the first packet of a connection. 
-  So if you are altering your NAT table after a connection is 
-established it will name make any difference to the existing connection. 
-  This is further exemplified by you testing .3-.5 and seeing them start 
-to change and then continue doing what they were when you flush your NAT 
-table.  I think you will find that if you stop your connections, wait a 
-few minutes, and then start them back up they will behave as expected.
+- What helpers are loaded (both NAT and conntrack)
 
-> It's time to put feet in the mouth, isn't it? ^___^
-
-Na.  ;)
-
-
-
-Grant. . . .
+- How does the entry from /proc/net/nf_conntrack for the
+   SIP connection look like?
