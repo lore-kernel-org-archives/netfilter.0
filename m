@@ -1,39 +1,885 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: DNAT routing problem
-Date: Fri, 09 May 2008 12:55:50 -0500
-Message-ID: <48249026.5090307@riverviewtech.net>
-References: <3598a5460805081117i7f519321y9ad85f084ba0f484@mail.gmail.com>	 <3598a5460805090348w526f46c9v3f1fd0f0874c84db@mail.gmail.com>	 <3598a5460805090630m2676a18dp9f25e7ca9efb9ca9@mail.gmail.com> <3598a5460805090934g343f73e9q8fa2a8c0aa536df@mail.gmail.com>
+From: Dave <finalglide@gmail.com>
+Subject: ipt_ACCOUNT compile problem
+Date: Fri, 9 May 2008 12:04:48 -0700
+Message-ID: <935fab200805091204h5d786edekb9a80fb536581597@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3598a5460805090934g343f73e9q8fa2a8c0aa536df@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=ULWBDiUzJmbJ8gzFGEclyR1dcyjDoeZLGJanawd+D1k=;
+        b=B0NDCxPEdFXOknJPNDekbHOWWcoEUKZW4Gae6Y0hho67Q11cqdAGq7bS1ZNUktUYjfX3ti3ledhaMC94Vukkboe6E5ApwmyikmvfRRYronzBOoYJa74pE22YgyD861xoo1t/MOofC889d2Lh1IEowceRIGIN2ABTEM4UpZD1Eqc=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 05/09/08 11:34, Andrea Ranieri wrote:
-> Yes, that sounds as a good explanation of this phenomenon. However 
-> this behavior is not what I want/expect from netfilter. I'm looking 
-> for a simple, straight-forward, connectionless 1to1 IP NAT. And, of 
-> course, i'm looking for something that can be enabled/disabled 
-> without waiting minutes!
+Has anyone been able to successfully compile the ipt_ACCOUNT userspace tools?
 
-*nod*
+The kernel patch works fine.
+The iptables patch fails with hunk errors
+I keep getting compile errors when trying to compile the userspace tool.
 
-> Ok then, if that's the normal behavior of netfilter's NAT module, 
-> I'll have to find an alternative solution.
-
-I don't know if it is still in place or not, but you might look in to IP 
-Route 2's stateless NAT, it may be able to do what you are wanting.  I 
-think your main problem with NetFilter's NAT *is* the connection tracking.
-
-> Thank you very much for your help.
-
-*nod*
-
-You are welcome.
+I am using an up to date Debian stable release just installed.
+gcc4.1
+iptables-1.4.0
+ipt_ACCOUNT-1.3
+kernel-2.4.24 or kernel-2.4.25
+latest snapshot of POM or any earlier ones.
 
 
+Any input would be much appreciated, thanks -Dave
 
-Grant. . . .
+Compile example
+---snip
+/bin/sh ../libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.
+-I..     -g -O2 -MT ipt_ACCOUNT_cl.lo -MD -MP -MF
+.deps/ipt_ACCOUNT_cl.Tpo -c -o ipt_ACCOUNT_cl.lo ipt_ACCOUNT_cl.c
+mkdir .libs
+ gcc -DHAVE_CONFIG_H -I. -I.. -g -O2 -MT ipt_ACCOUNT_cl.lo -MD -MP -MF
+.deps/ipt_ACCOUNT_cl.Tpo -c ipt_ACCOUNT_cl.c  -fPIC -DPIC -o
+.libs/ipt_ACCOUNT_cl.o
+In file included from ipt_ACCOUNT_cl.c:17:
+./ipt_ACCOUNT_cl.h:14:46: error: linux/netfilter_ipv4/ipt_ACCOUNT.h:
+No such file or directory
+In file included from ipt_ACCOUNT_cl.c:17:
+./ipt_ACCOUNT_cl.h:22: error: field 'handle' has incomplete type
+ipt_ACCOUNT_cl.c: In function 'ipt_ACCOUNT_free_entries':
+ipt_ACCOUNT_cl.c:51: error: 'IPT_SO_SET_ACCOUNT_HANDLE_FREE'
+undeclared (first use in this function)
+ipt_ACCOUNT_cl.c:51: error: (Each undeclared identifier is reported only once
+ipt_ACCOUNT_cl.c:51: error: for each function it appears in.)
+ipt_ACCOUNT_cl.c:52: error: invalid application of 'sizeof' to
+incomplete type 'struct ipt_acc_handle_sockopt'
+ipt_ACCOUNT_cl.c: In function 'ipt_ACCOUNT_read_entries':
+ipt_ACCOUNT_cl.c:74: error: invalid application of 'sizeof' to
+incomplete type 'struct ipt_acc_handle_sockopt'
+ipt_ACCOUNT_cl.c:78: error: 'ACCOUNT_TABLE_NAME_LEN' undeclared (first
+use in this function)
+ipt_ACCOUNT_cl.c:83: error: 'IPT_SO_GET_ACCOUNT_PREPARE_READ_FLUSH'
+undeclared (first use in this function)
+ipt_ACCOUNT_cl.c:85: error: 'IPT_SO_GET_ACCOUNT_PREPARE_READ'
+undeclared (first use in this function)
+ipt_ACCOUNT_cl.c:96: error: invalid application of 'sizeof' to
+incomplete type 'struct ipt_acc_handle_ip'
+ipt_ACCOUNT_cl.c:117: error: invalid application of 'sizeof' to
+incomplete type 'struct ipt_acc_handle_sockopt'
+ipt_ACCOUNT_cl.c:118: error: 'IPT_SO_GET_ACCOUNT_GET_DATA' undeclared
+(first use in this function)
+ipt_ACCOUNT_cl.c:128: error: 'IPT_SO_SET_ACCOUNT_HANDLE_FREE'
+undeclared (first use in this function)
+ipt_ACCOUNT_cl.c:129: error: invalid application of 'sizeof' to
+incomplete type 'struct ipt_acc_handle_sockopt'
+ipt_ACCOUNT_cl.c: In function 'ipt_ACCOUNT_get_next_entry':
+ipt_ACCOUNT_cl.c:145: error: invalid application of 'sizeof' to
+incomplete type 'struct ipt_acc_handle_ip'
+ipt_ACCOUNT_cl.c: In function 'ipt_ACCOUNT_get_handle_usage':
+ipt_ACCOUNT_cl.c:153: error: invalid application of 'sizeof' to
+incomplete type 'struct ipt_acc_handle_sockopt'
+ipt_ACCOUNT_cl.c:155: error: 'IPT_SO_GET_ACCOUNT_GET_HANDLE_USAGE'
+undeclared (first use in this function)
+ipt_ACCOUNT_cl.c: In function 'ipt_ACCOUNT_free_all_handles':
+ipt_ACCOUNT_cl.c:167: error: 'IPT_SO_SET_ACCOUNT_HANDLE_FREE_ALL'
+undeclared (first use in this function)
+ipt_ACCOUNT_cl.c: In function 'ipt_ACCOUNT_get_table_names':
+ipt_ACCOUNT_cl.c:178: error: 'IPT_SO_GET_ACCOUNT_GET_TABLE_NAMES'
+undeclared (first use in this function)
+make[2]: *** [ipt_ACCOUNT_cl.lo] Error 1
+make[2]: Leaving directory `/usr/local/src/nf/libipt_ACCOUNT-1.3/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/usr/local/src/nf/libipt_ACCOUNT-1.3'
+make: *** [all] Error 2
+QoS:/usr/local/src/nf/libipt_ACCOUNT-1.3# l
+
+
+---configure log
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+It was created by configure, which was
+generated by GNU Autoconf 2.61.  Invocation command line was
+
+  $ ./configure
+
+## --------- ##
+## Platform. ##
+## --------- ##
+
+hostname = QoS
+uname -m = i686
+uname -r = 2.6.25
+uname -s = Linux
+uname -v = #2 Thu May 8 12:02:41 PDT 2008
+
+/usr/bin/uname -p = unknown
+/bin/uname -X     = unknown
+
+/bin/arch              = i686
+/usr/bin/arch -k       = unknown
+/usr/convex/getsysinfo = unknown
+/usr/bin/hostinfo      = unknown
+/bin/machine           = unknown
+/usr/bin/oslevel       = unknown
+/bin/universe          = unknown
+
+PATH: /usr/local/sbin
+PATH: /usr/local/bin
+PATH: /usr/sbin
+PATH: /usr/bin
+PATH: /sbin
+PATH: /bin
+
+
+## ----------- ##
+## Core tests. ##
+## ----------- ##
+
+configure:1969: checking for a BSD-compatible install
+configure:2025: result: /usr/bin/install -c
+configure:2036: checking whether build environment is sane
+configure:2079: result: yes
+configure:2107: checking for a thread-safe mkdir -p
+configure:2146: result: /bin/mkdir -p
+configure:2159: checking for gawk
+configure:2189: result: no
+configure:2159: checking for mawk
+configure:2175: found /usr/bin/mawk
+configure:2186: result: mawk
+configure:2197: checking whether make sets $(MAKE)
+configure:2218: result: yes
+configure:2461: checking for gcc
+configure:2477: found /usr/bin/gcc
+configure:2488: result: gcc
+configure:2726: checking for C compiler version
+configure:2733: gcc --version >&5
+gcc (GCC) 4.1.2 20061115 (prerelease) (Debian 4.1.1-21)
+Copyright (C) 2006 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+configure:2736: $? = 0
+configure:2743: gcc -v >&5
+Using built-in specs.
+Target: i486-linux-gnu
+Configured with: ../src/configure -v
+
+--enable-languages=c,c++,fortran,objc,obj-c++,treelang --prefix=/usr
+
+--enable-shared --with-system-zlib --libexecdir=/usr/lib
+
+--without-included-gettext --enable-threads=posix --enable-nls
+
+--program-suffix=-4.1 --enable-__cxa_atexit --enable-clocale=gnu
+
+--enable-libstdcxx-debug --enable-mpfr --with-tune=i686
+
+--enable-checking=release i486-linux-gnu
+Thread model: posix
+gcc version 4.1.2 20061115 (prerelease) (Debian 4.1.1-21)
+configure:2746: $? = 0
+configure:2753: gcc -V >&5
+gcc: '-V' option must have argument
+configure:2756: $? = 1
+configure:2779: checking for C compiler default output file name
+configure:2806: gcc    conftest.c  >&5
+configure:2809: $? = 0
+configure:2847: result: a.out
+configure:2864: checking whether the C compiler works
+configure:2874: ./a.out
+configure:2877: $? = 0
+configure:2894: result: yes
+configure:2901: checking whether we are cross compiling
+configure:2903: result: no
+configure:2906: checking for suffix of executables
+configure:2913: gcc -o conftest    conftest.c  >&5
+configure:2916: $? = 0
+configure:2940: result:
+configure:2946: checking for suffix of object files
+configure:2972: gcc -c   conftest.c >&5
+configure:2975: $? = 0
+configure:2998: result: o
+configure:3002: checking whether we are using the GNU C compiler
+configure:3031: gcc -c   conftest.c >&5
+configure:3037: $? = 0
+configure:3054: result: yes
+configure:3059: checking whether gcc accepts -g
+configure:3089: gcc -c -g  conftest.c >&5
+configure:3095: $? = 0
+configure:3194: result: yes
+configure:3211: checking for gcc option to accept ISO C89
+configure:3285: gcc  -c -g -O2  conftest.c >&5
+configure:3291: $? = 0
+configure:3314: result: none needed
+configure:3343: checking for style of include used by make
+configure:3371: result: GNU
+configure:3396: checking dependency style of gcc
+configure:3487: result: gcc3
+configure:3580: checking build system type
+configure:3598: result: i686-pc-linux-gnu
+configure:3620: checking host system type
+configure:3635: result: i686-pc-linux-gnu
+configure:3657: checking for a sed that does not truncate output
+configure:3713: result: /bin/sed
+configure:3716: checking for grep that handles long lines and -e
+configure:3790: result: /bin/grep
+configure:3795: checking for egrep
+configure:3873: result: /bin/grep -E
+configure:3889: checking for ld used by gcc
+configure:3956: result: /usr/bin/ld
+configure:3965: checking if the linker (/usr/bin/ld) is GNU ld
+configure:3980: result: yes
+configure:3985: checking for /usr/bin/ld option to reload object files
+configure:3992: result: -r
+configure:4010: checking for BSD-compatible nm
+configure:4059: result: /usr/bin/nm -B
+configure:4063: checking whether ln -s works
+configure:4067: result: yes
+configure:4074: checking how to recognize dependent libraries
+configure:4260: result: pass_all
+configure:4502: checking how to run the C preprocessor
+configure:4542: gcc -E  conftest.c
+configure:4548: $? = 0
+configure:4579: gcc -E  conftest.c
+conftest.c:10:28: error: ac_nonexistent.h: No such file or directory
+configure:4585: $? = 1
+configure: failed program was:
+| /* confdefs.h.  */
+| #define PACKAGE_NAME ""
+| #define PACKAGE_TARNAME ""
+| #define PACKAGE_VERSION ""
+| #define PACKAGE_STRING ""
+| #define PACKAGE_BUGREPORT ""
+| #define PACKAGE "libipt_ACCOUNT"
+| #define VERSION "1.3"
+| /* end confdefs.h.  */
+| #include <ac_nonexistent.h>
+configure:4618: result: gcc -E
+configure:4647: gcc -E  conftest.c
+configure:4653: $? = 0
+configure:4684: gcc -E  conftest.c
+conftest.c:10:28: error: ac_nonexistent.h: No such file or directory
+configure:4690: $? = 1
+configure: failed program was:
+| /* confdefs.h.  */
+| #define PACKAGE_NAME ""
+| #define PACKAGE_TARNAME ""
+| #define PACKAGE_VERSION ""
+| #define PACKAGE_STRING ""
+| #define PACKAGE_BUGREPORT ""
+| #define PACKAGE "libipt_ACCOUNT"
+| #define VERSION "1.3"
+| /* end confdefs.h.  */
+| #include <ac_nonexistent.h>
+configure:4728: checking for ANSI C header files
+configure:4758: gcc -c -g -O2  conftest.c >&5
+configure:4764: $? = 0
+configure:4863: gcc -o conftest -g -O2   conftest.c  >&5
+configure:4866: $? = 0
+configure:4872: ./conftest
+configure:4875: $? = 0
+configure:4892: result: yes
+configure:4916: checking for sys/types.h
+configure:4937: gcc -c -g -O2  conftest.c >&5
+configure:4943: $? = 0
+configure:4959: result: yes
+configure:4916: checking for sys/stat.h
+configure:4937: gcc -c -g -O2  conftest.c >&5
+configure:4943: $? = 0
+configure:4959: result: yes
+configure:4916: checking for stdlib.h
+configure:4937: gcc -c -g -O2  conftest.c >&5
+configure:4943: $? = 0
+configure:4959: result: yes
+configure:4916: checking for string.h
+configure:4937: gcc -c -g -O2  conftest.c >&5
+configure:4943: $? = 0
+configure:4959: result: yes
+configure:4916: checking for memory.h
+configure:4937: gcc -c -g -O2  conftest.c >&5
+configure:4943: $? = 0
+configure:4959: result: yes
+configure:4916: checking for strings.h
+configure:4937: gcc -c -g -O2  conftest.c >&5
+configure:4943: $? = 0
+configure:4959: result: yes
+configure:4916: checking for inttypes.h
+configure:4937: gcc -c -g -O2  conftest.c >&5
+configure:4943: $? = 0
+configure:4959: result: yes
+configure:4916: checking for stdint.h
+configure:4937: gcc -c -g -O2  conftest.c >&5
+configure:4943: $? = 0
+configure:4959: result: yes
+configure:4916: checking for unistd.h
+configure:4937: gcc -c -g -O2  conftest.c >&5
+configure:4943: $? = 0
+configure:4959: result: yes
+configure:4986: checking dlfcn.h usability
+configure:5003: gcc -c -g -O2  conftest.c >&5
+configure:5009: $? = 0
+configure:5023: result: yes
+configure:5027: checking dlfcn.h presence
+configure:5042: gcc -E  conftest.c
+configure:5048: $? = 0
+configure:5062: result: yes
+configure:5090: checking for dlfcn.h
+configure:5098: result: yes
+configure:5169: checking for g++
+configure:5185: found /usr/bin/g++
+configure:5196: result: g++
+configure:5227: checking for C++ compiler version
+configure:5234: g++ --version >&5
+g++ (GCC) 4.1.2 20061115 (prerelease) (Debian 4.1.1-21)
+Copyright (C) 2006 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+configure:5237: $? = 0
+configure:5244: g++ -v >&5
+Using built-in specs.
+Target: i486-linux-gnu
+Configured with: ../src/configure -v
+
+--enable-languages=c,c++,fortran,objc,obj-c++,treelang --prefix=/usr
+
+--enable-shared --with-system-zlib --libexecdir=/usr/lib
+
+--without-included-gettext --enable-threads=posix --enable-nls
+
+--program-suffix=-4.1 --enable-__cxa_atexit --enable-clocale=gnu
+
+--enable-libstdcxx-debug --enable-mpfr --with-tune=i686
+
+--enable-checking=release i486-linux-gnu
+Thread model: posix
+gcc version 4.1.2 20061115 (prerelease) (Debian 4.1.1-21)
+configure:5247: $? = 0
+configure:5254: g++ -V >&5
+g++: '-V' option must have argument
+configure:5257: $? = 1
+configure:5260: checking whether we are using the GNU C++ compiler
+configure:5289: g++ -c   conftest.cpp >&5
+configure:5295: $? = 0
+configure:5312: result: yes
+configure:5317: checking whether g++ accepts -g
+configure:5347: g++ -c -g  conftest.cpp >&5
+configure:5353: $? = 0
+configure:5452: result: yes
+configure:5477: checking dependency style of g++
+configure:5568: result: gcc3
+configure:5593: checking how to run the C++ preprocessor
+configure:5629: g++ -E  conftest.cpp
+configure:5635: $? = 0
+configure:5666: g++ -E  conftest.cpp
+conftest.cpp:21:28: error: ac_nonexistent.h: No such file or directory
+configure:5672: $? = 1
+configure: failed program was:
+| /* confdefs.h.  */
+| #define PACKAGE_NAME ""
+| #define PACKAGE_TARNAME ""
+| #define PACKAGE_VERSION ""
+| #define PACKAGE_STRING ""
+| #define PACKAGE_BUGREPORT ""
+| #define PACKAGE "libipt_ACCOUNT"
+| #define VERSION "1.3"
+| #define STDC_HEADERS 1
+| #define HAVE_SYS_TYPES_H 1
+| #define HAVE_SYS_STAT_H 1
+| #define HAVE_STDLIB_H 1
+| #define HAVE_STRING_H 1
+| #define HAVE_MEMORY_H 1
+| #define HAVE_STRINGS_H 1
+| #define HAVE_INTTYPES_H 1
+| #define HAVE_STDINT_H 1
+| #define HAVE_UNISTD_H 1
+| #define HAVE_DLFCN_H 1
+| /* end confdefs.h.  */
+| #include <ac_nonexistent.h>
+configure:5705: result: g++ -E
+configure:5734: g++ -E  conftest.cpp
+configure:5740: $? = 0
+configure:5771: g++ -E  conftest.cpp
+conftest.cpp:21:28: error: ac_nonexistent.h: No such file or directory
+configure:5777: $? = 1
+configure: failed program was:
+| /* confdefs.h.  */
+| #define PACKAGE_NAME ""
+| #define PACKAGE_TARNAME ""
+| #define PACKAGE_VERSION ""
+| #define PACKAGE_STRING ""
+| #define PACKAGE_BUGREPORT ""
+| #define PACKAGE "libipt_ACCOUNT"
+| #define VERSION "1.3"
+| #define STDC_HEADERS 1
+| #define HAVE_SYS_TYPES_H 1
+| #define HAVE_SYS_STAT_H 1
+| #define HAVE_STDLIB_H 1
+| #define HAVE_STRING_H 1
+| #define HAVE_MEMORY_H 1
+| #define HAVE_STRINGS_H 1
+| #define HAVE_INTTYPES_H 1
+| #define HAVE_STDINT_H 1
+| #define HAVE_UNISTD_H 1
+| #define HAVE_DLFCN_H 1
+| /* end confdefs.h.  */
+| #include <ac_nonexistent.h>
+configure:5870: checking for g77
+configure:5900: result: no
+configure:5870: checking for xlf
+configure:5900: result: no
+configure:5870: checking for f77
+configure:5900: result: no
+configure:5870: checking for frt
+configure:5900: result: no
+configure:5870: checking for pgf77
+configure:5900: result: no
+configure:5870: checking for cf77
+configure:5900: result: no
+configure:5870: checking for fort77
+configure:5900: result: no
+configure:5870: checking for fl32
+configure:5900: result: no
+configure:5870: checking for af77
+configure:5900: result: no
+configure:5870: checking for xlf90
+configure:5900: result: no
+configure:5870: checking for f90
+configure:5900: result: no
+configure:5870: checking for pgf90
+configure:5900: result: no
+configure:5870: checking for pghpf
+configure:5900: result: no
+configure:5870: checking for epcf90
+configure:5900: result: no
+configure:5870: checking for gfortran
+configure:5900: result: no
+configure:5870: checking for g95
+configure:5900: result: no
+configure:5870: checking for xlf95
+configure:5900: result: no
+configure:5870: checking for f95
+configure:5900: result: no
+configure:5870: checking for fort
+configure:5900: result: no
+configure:5870: checking for ifort
+configure:5900: result: no
+configure:5870: checking for ifc
+configure:5900: result: no
+configure:5870: checking for efc
+configure:5900: result: no
+configure:5870: checking for pgf95
+configure:5900: result: no
+configure:5870: checking for lf95
+configure:5900: result: no
+configure:5870: checking for ftn
+configure:5900: result: no
+configure:5927: checking for Fortran 77 compiler version
+configure:5934:  --version >&5
+./configure: line 5935: --version: command not found
+configure:5937: $? = 127
+configure:5944:  -v >&5
+./configure: line 5945: -v: command not found
+configure:5947: $? = 127
+configure:5954:  -V >&5
+./configure: line 5955: -V: command not found
+configure:5957: $? = 127
+configure:5965: checking whether we are using the GNU Fortran 77 compiler
+configure:5984:  -c  conftest.F >&5
+./configure: line 5985: -c: command not found
+configure:5990: $? = 127
+configure: failed program was:
+|       program main
+| #ifndef __GNUC__
+|        choke me
+| #endif
+|
+|       end
+configure:6007: result: no
+configure:6013: checking whether  accepts -g
+configure:6030:  -c -g conftest.f >&5
+./configure: line 6031: -c: command not found
+configure:6036: $? = 127
+configure: failed program was:
+|       program main
+|
+|       end
+configure:6052: result: no
+configure:6082: checking the maximum length of command line arguments
+configure:6194: result: 98304
+configure:6206: checking command to parse /usr/bin/nm -B output from gcc object
+configure:6311: gcc -c -g -O2  conftest.c >&5
+configure:6314: $? = 0
+configure:6318: /usr/bin/nm -B conftest.o \| sed -n -e 's/^.*[
+
+]\([ABCDGIRSTW][ABCDGIRSTW]*\)[         ][
+
+]*\([_A-Za-z][_A-Za-z0-9]*\)$/\1 \2 \2/p' \> conftest.nm
+configure:6321: $? = 0
+configure:6373: gcc -o conftest -g -O2   conftest.c conftstm.o >&5
+configure:6376: $? = 0
+configure:6414: result: ok
+configure:6418: checking for objdir
+configure:6433: result: .libs
+configure:6525: checking for ar
+configure:6541: found /usr/bin/ar
+configure:6552: result: ar
+configure:6621: checking for ranlib
+configure:6637: found /usr/bin/ranlib
+configure:6648: result: ranlib
+configure:6717: checking for strip
+configure:6733: found /usr/bin/strip
+configure:6744: result: strip
+configure:7030: checking if gcc supports -fno-rtti -fno-exceptions
+configure:7048: gcc -c -g -O2  -fno-rtti -fno-exceptions conftest.c >&5
+cc1: warning: command line option "-fno-rtti" is valid for C++/ObjC++ but not
+
+for C
+configure:7052: $? = 0
+configure:7065: result: no
+configure:7080: checking for gcc option to produce PIC
+configure:7312: result: -fPIC
+configure:7320: checking if gcc PIC flag -fPIC works
+configure:7338: gcc -c -g -O2  -fPIC -DPIC conftest.c >&5
+configure:7342: $? = 0
+configure:7355: result: yes
+configure:7383: checking if gcc static flag -static works
+configure:7411: result: yes
+configure:7421: checking if gcc supports -c -o file.o
+configure:7442: gcc -c -g -O2  -o out/conftest2.o conftest.c >&5
+configure:7446: $? = 0
+configure:7468: result: yes
+configure:7494: checking whether the gcc linker (/usr/bin/ld) supports shared
+
+libraries
+configure:8474: result: yes
+configure:8495: checking whether -lc should be explicitly linked in
+configure:8500: gcc -c -g -O2  conftest.c >&5
+configure:8503: $? = 0
+configure:8518: gcc -shared conftest.o  -v -Wl,-soname -Wl,conftest -o conftest
+
+2\>\&1 \| grep  -lc  \>/dev/null 2\>\&1
+configure:8521: $? = 0
+configure:8533: result: no
+configure:8541: checking dynamic linker characteristics
+configure:9145: result: GNU/Linux ld.so
+configure:9154: checking how to hardcode library paths into programs
+configure:9179: result: immediate
+configure:9193: checking whether stripping libraries is possible
+configure:9198: result: yes
+configure:10000: checking if libtool supports shared libraries
+configure:10002: result: yes
+configure:10005: checking whether to build shared libraries
+configure:10026: result: yes
+configure:10029: checking whether to build static libraries
+configure:10033: result: yes
+configure:10126: creating libtool
+configure:10714: checking for ld used by g++
+configure:10781: result: /usr/bin/ld
+configure:10790: checking if the linker (/usr/bin/ld) is GNU ld
+configure:10805: result: yes
+configure:10856: checking whether the g++ linker (/usr/bin/ld) supports shared
+
+libraries
+configure:11830: result: yes
+configure:11848: g++ -c -g -O2  conftest.cpp >&5
+configure:11851: $? = 0
+configure:12003: checking for g++ option to produce PIC
+configure:12287: result: -fPIC
+configure:12295: checking if g++ PIC flag -fPIC works
+configure:12313: g++ -c -g -O2  -fPIC -DPIC conftest.cpp >&5
+configure:12317: $? = 0
+configure:12330: result: yes
+configure:12358: checking if g++ static flag -static works
+configure:12386: result: yes
+configure:12396: checking if g++ supports -c -o file.o
+configure:12417: g++ -c -g -O2  -o out/conftest2.o conftest.cpp >&5
+configure:12421: $? = 0
+configure:12443: result: yes
+configure:12469: checking whether the g++ linker (/usr/bin/ld) supports shared
+
+libraries
+configure:12494: result: yes
+configure:12561: checking dynamic linker characteristics
+configure:13113: result: GNU/Linux ld.so
+configure:13122: checking how to hardcode library paths into programs
+configure:13147: result: immediate
+configure:19446: creating ./config.status
+
+## ---------------------- ##
+## Running config.status. ##
+## ---------------------- ##
+
+This file was extended by config.status, which was
+generated by GNU Autoconf 2.61.  Invocation command line was
+
+  CONFIG_FILES    =
+  CONFIG_HEADERS  =
+  CONFIG_LINKS    =
+  CONFIG_COMMANDS =
+  $ ./config.status
+
+on QoS
+
+config.status:666: creating Makefile
+config.status:666: creating src/Makefile
+config.status:666: creating iptaccount/Makefile
+config.status:666: creating libipt_ACCOUNT.pc
+config.status:666: creating libipt_ACCOUNT.spec
+config.status:666: creating config.h
+config.status:939: executing depfiles commands
+
+## ---------------- ##
+## Cache variables. ##
+## ---------------- ##
+
+ac_cv_build=i686-pc-linux-gnu
+ac_cv_c_compiler_gnu=yes
+ac_cv_cxx_compiler_gnu=yes
+ac_cv_env_CCC_set=
+ac_cv_env_CCC_value=
+ac_cv_env_CC_set=
+ac_cv_env_CC_value=
+ac_cv_env_CFLAGS_set=
+ac_cv_env_CFLAGS_value=
+ac_cv_env_CPPFLAGS_set=
+ac_cv_env_CPPFLAGS_value=
+ac_cv_env_CPP_set=
+ac_cv_env_CPP_value=
+ac_cv_env_CXXCPP_set=
+ac_cv_env_CXXCPP_value=
+ac_cv_env_CXXFLAGS_set=
+ac_cv_env_CXXFLAGS_value=
+ac_cv_env_CXX_set=
+ac_cv_env_CXX_value=
+ac_cv_env_F77_set=
+ac_cv_env_F77_value=
+ac_cv_env_FFLAGS_set=
+ac_cv_env_FFLAGS_value=
+ac_cv_env_LDFLAGS_set=
+ac_cv_env_LDFLAGS_value=
+ac_cv_env_LIBS_set=
+ac_cv_env_LIBS_value=
+ac_cv_env_build_alias_set=
+ac_cv_env_build_alias_value=
+ac_cv_env_host_alias_set=
+ac_cv_env_host_alias_value=
+ac_cv_env_target_alias_set=
+ac_cv_env_target_alias_value=
+ac_cv_f77_compiler_gnu=no
+ac_cv_header_dlfcn_h=yes
+ac_cv_header_inttypes_h=yes
+ac_cv_header_memory_h=yes
+ac_cv_header_stdc=yes
+ac_cv_header_stdint_h=yes
+ac_cv_header_stdlib_h=yes
+ac_cv_header_string_h=yes
+ac_cv_header_strings_h=yes
+ac_cv_header_sys_stat_h=yes
+ac_cv_header_sys_types_h=yes
+ac_cv_header_unistd_h=yes
+ac_cv_host=i686-pc-linux-gnu
+ac_cv_objext=o
+ac_cv_path_EGREP='/bin/grep -E'
+ac_cv_path_GREP=/bin/grep
+ac_cv_path_install='/usr/bin/install -c'
+ac_cv_path_mkdir=/bin/mkdir
+ac_cv_prog_AWK=mawk
+ac_cv_prog_CPP='gcc -E'
+ac_cv_prog_CXXCPP='g++ -E'
+ac_cv_prog_ac_ct_AR=ar
+ac_cv_prog_ac_ct_CC=gcc
+ac_cv_prog_ac_ct_CXX=g++
+ac_cv_prog_ac_ct_RANLIB=ranlib
+ac_cv_prog_ac_ct_STRIP=strip
+ac_cv_prog_cc_c89=
+ac_cv_prog_cc_g=yes
+ac_cv_prog_cxx_g=yes
+ac_cv_prog_f77_g=no
+ac_cv_prog_make_make_set=yes
+am_cv_CC_dependencies_compiler_type=gcc3
+am_cv_CXX_dependencies_compiler_type=gcc3
+lt_cv_deplibs_check_method=pass_all
+lt_cv_file_magic_cmd='$MAGIC_CMD'
+lt_cv_file_magic_test_file=
+lt_cv_ld_reload_flag=-r
+lt_cv_objdir=.libs
+lt_cv_path_LD=/usr/bin/ld
+lt_cv_path_LDCXX=/usr/bin/ld
+lt_cv_path_NM='/usr/bin/nm -B'
+lt_cv_path_SED=/bin/sed
+lt_cv_prog_compiler_c_o=yes
+lt_cv_prog_compiler_c_o_CXX=yes
+lt_cv_prog_compiler_rtti_exceptions=no
+lt_cv_prog_gnu_ld=yes
+lt_cv_prog_gnu_ldcxx=yes
+lt_cv_sys_global_symbol_pipe='sed -n -e '\''s/^.*[
+
+]\([ABCDGIRSTW][ABCDGIRSTW]*\)[         ][
+
+]*\([_A-Za-z][_A-Za-z0-9]*\)$/\1 \2 \2/p'\'''
+lt_cv_sys_global_symbol_to_c_name_address='sed -n -e '\''s/^: \([^ ]*\) $/
+
+{\"\1\", (lt_ptr) 0},/p'\'' -e '\''s/^[BCDEGRST] \([^ ]*\) \([^ ]*\)$/  {"\2",
+
+(lt_ptr) \&\2},/p'\'''
+lt_cv_sys_global_symbol_to_cdecl='sed -n -e '\''s/^. .* \(.*\)$/extern int
+
+\1;/p'\'''
+lt_cv_sys_max_cmd_len=98304
+lt_lt_cv_prog_compiler_c_o='"yes"'
+lt_lt_cv_prog_compiler_c_o_CXX='"yes"'
+lt_lt_cv_sys_global_symbol_pipe='"sed -n -e '\''s/^.*[
+
+]\\([ABCDGIRSTW][ABCDGIRSTW]*\\)[       ][
+
+]*\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 \\2 \\2/p'\''"'
+lt_lt_cv_sys_global_symbol_to_c_name_address='"sed -n -e '\''s/^: \\([^ ]*\\)
+
+\$/  {\\\"\\1\\\", (lt_ptr) 0},/p'\'' -e '\''s/^[BCDEGRST] \\([^ ]*\\) \\([^
+
+]*\\)\$/  {\"\\2\", (lt_ptr) \\&\\2},/p'\''"'
+lt_lt_cv_sys_global_symbol_to_cdecl='"sed -n -e '\''s/^. .* \\(.*\\)\$/extern
+
+int \\1;/p'\''"'
+
+## ----------------- ##
+## Output variables. ##
+## ----------------- ##
+
+ACLOCAL='${SHELL} /usr/local/src/nf/libipt_ACCOUNT-1.3/missing --run
+
+aclocal-1.10'
+AMDEPBACKSLASH='\'
+AMDEP_FALSE='#'
+AMDEP_TRUE=''
+AMTAR='${SHELL} /usr/local/src/nf/libipt_ACCOUNT-1.3/missing --run tar'
+AR='ar'
+AUTOCONF='${SHELL} /usr/local/src/nf/libipt_ACCOUNT-1.3/missing --run autoconf'
+AUTOHEADER='${SHELL} /usr/local/src/nf/libipt_ACCOUNT-1.3/missing --run
+
+autoheader'
+AUTOMAKE='${SHELL} /usr/local/src/nf/libipt_ACCOUNT-1.3/missing --run
+
+automake-1.10'
+AWK='mawk'
+CC='gcc'
+CCDEPMODE='depmode=gcc3'
+CFLAGS='-g -O2'
+CPP='gcc -E'
+CPPFLAGS=''
+CXX='g++'
+CXXCPP='g++ -E'
+CXXDEPMODE='depmode=gcc3'
+CXXFLAGS='-g -O2'
+CYGPATH_W='echo'
+DEFS='-DHAVE_CONFIG_H'
+DEPDIR='.deps'
+ECHO='echo'
+ECHO_C=''
+ECHO_N='-n'
+ECHO_T=''
+EGREP='/bin/grep -E'
+EXEEXT=''
+F77=''
+FFLAGS=''
+GREP='/bin/grep'
+INSTALL_DATA='${INSTALL} -m 644'
+INSTALL_PROGRAM='${INSTALL}'
+INSTALL_SCRIPT='${INSTALL}'
+INSTALL_STRIP_PROGRAM='$(install_sh) -c -s'
+LDFLAGS=''
+LIBOBJS=''
+LIBS=''
+LIBTOOL='$(SHELL) $(top_builddir)/libtool'
+LN_S='ln -s'
+LTLIBOBJS=''
+MAKEINFO='${SHELL} /usr/local/src/nf/libipt_ACCOUNT-1.3/missing --run makeinfo'
+OBJEXT='o'
+PACKAGE='libipt_ACCOUNT'
+PACKAGE_BUGREPORT=''
+PACKAGE_NAME=''
+PACKAGE_STRING=''
+PACKAGE_TARNAME=''
+PACKAGE_VERSION=''
+PATH_SEPARATOR=':'
+RANLIB='ranlib'
+SED='/bin/sed'
+SET_MAKE=''
+SHELL='/bin/sh'
+STRIP='strip'
+VERSION='1.3'
+ac_ct_CC='gcc'
+ac_ct_CXX='g++'
+ac_ct_F77=''
+am__fastdepCC_FALSE='#'
+am__fastdepCC_TRUE=''
+am__fastdepCXX_FALSE='#'
+am__fastdepCXX_TRUE=''
+am__include='include'
+am__isrc=''
+am__leading_dot='.'
+am__quote=''
+am__tar='${AMTAR} chof - "$$tardir"'
+am__untar='${AMTAR} xf -'
+bindir='${exec_prefix}/bin'
+build='i686-pc-linux-gnu'
+build_alias=''
+build_cpu='i686'
+build_os='linux-gnu'
+build_vendor='pc'
+datadir='${datarootdir}'
+datarootdir='${prefix}/share'
+docdir='${datarootdir}/doc/${PACKAGE}'
+dvidir='${docdir}'
+exec_prefix='${prefix}'
+host='i686-pc-linux-gnu'
+host_alias=''
+host_cpu='i686'
+host_os='linux-gnu'
+host_vendor='pc'
+htmldir='${docdir}'
+includedir='${prefix}/include'
+infodir='${datarootdir}/info'
+install_sh='$(SHELL) /usr/local/src/nf/libipt_ACCOUNT-1.3/install-sh'
+libdir='${exec_prefix}/lib'
+libexecdir='${exec_prefix}/libexec'
+localedir='${datarootdir}/locale'
+localstatedir='${prefix}/var'
+mandir='${datarootdir}/man'
+mkdir_p='/bin/mkdir -p'
+oldincludedir='/usr/include'
+pdfdir='${docdir}'
+prefix='/usr/local'
+program_transform_name='s,x,x,'
+psdir='${docdir}'
+sbindir='${exec_prefix}/sbin'
+sharedstatedir='${prefix}/com'
+sysconfdir='${prefix}/etc'
+target_alias=''
+
+## ----------- ##
+## confdefs.h. ##
+## ----------- ##
+
+#define PACKAGE_NAME ""
+#define PACKAGE_TARNAME ""
+#define PACKAGE_VERSION ""
+#define PACKAGE_STRING ""
+#define PACKAGE_BUGREPORT ""
+#define PACKAGE "libipt_ACCOUNT"
+#define VERSION "1.3"
+#define STDC_HEADERS 1
+#define HAVE_SYS_TYPES_H 1
+#define HAVE_SYS_STAT_H 1
+#define HAVE_STDLIB_H 1
+#define HAVE_STRING_H 1
+#define HAVE_MEMORY_H 1
+#define HAVE_STRINGS_H 1
+#define HAVE_INTTYPES_H 1
+#define HAVE_STDINT_H 1
+#define HAVE_UNISTD_H 1
+#define HAVE_DLFCN_H 1
+
+configure: exit 0
