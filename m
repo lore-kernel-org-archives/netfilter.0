@@ -1,92 +1,32 @@
-From: "sean darcy" <seandarcy2@gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: why can't I DNAT SIP?
-Date: Fri, 9 May 2008 22:04:52 -0400
-Message-ID: <c195ebf70805091904w5b728e5gbe0a57ed16b0516@mail.gmail.com>
-References: <fvtjuu$7i1$1@ger.gmane.org> <48235501.4030608@riverviewtech.net>
-	 <fvvuil$ldh$1@ger.gmane.org> <48245C6B.1090506@riverviewtech.net>
-	 <48245E7E.8080206@trash.net>
+Date: Sat, 10 May 2008 10:43:55 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805101041210.19952@fbirervta.pbzchgretzou.qr>
+References: <fvtjuu$7i1$1@ger.gmane.org> <48235501.4030608@riverviewtech.net>  <fvvuil$ldh$1@ger.gmane.org> <48245C6B.1090506@riverviewtech.net>  <48245E7E.8080206@trash.net> <c195ebf70805091904w5b728e5gbe0a57ed16b0516@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=yYx8OAcyuHP2SlVAsduaI0jjq1wVIfMtwoMEeXQXxYs=;
-        b=MKKSagS3K/FrtZ4XTehy3uBZGL7GjNOSVwfJiEGTa21Arz80258cIST/XfuQSN3hHt1f8HK7xBKtWx+O7SCfgD/7R8uD3WByTzpQNDb4JB/CiaFUqMetGl9tt2SCpYjwqNKu4aMOMrJ9+gBSKRVAJVNiyn+eX5jg55pXrwp9ajY=
-In-Reply-To: <48245E7E.8080206@trash.net>
-Content-Disposition: inline
+In-Reply-To: <c195ebf70805091904w5b728e5gbe0a57ed16b0516@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Patrick McHardy <kaber@trash.net>
-Cc: Grant Taylor <gtaylor@riverviewtech.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: sean darcy <seandarcy2@gmail.com>
+Cc: Patrick McHardy <kaber@trash.net>, Grant Taylor <gtaylor@riverviewtech.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Fri, May 9, 2008 at 10:23 AM, Patrick McHardy <kaber@trash.net> wrote:
-> Grant Taylor wrote:
+
+On Saturday 2008-05-10 04:04, sean darcy wrote:
 >>
->> On 05/08/08 17:24, sean darcy wrote:
->>>
->>> I tried it both ways. FWIW, it works both ways for iax. I showed it that
->>> way because the LOG statement were that way. I've run them all both ways.
->>>
->>> Yeah, but why is iptables not filtering the packet correctly; it's just a
->>> port 5060 udp packet. How can it matter that it's 5060 instead of 4569?
->>
->> With out knowing the full scenario, I can't say for sure.  Are you dealing
->> with an on going established connection, thus one that is not passing
->> through the NAT chain again?
->>
->> Is it possible that you are dealing with SIP Reinvited traffic that really
->> has a source of elsewhere?
->>
->> More things are starting to come in to play.
+>> - What helpers are loaded (both NAT and conntrack)
 >
-> Some questions that might help answering this:
+>?? How would I find out? If you mean modules:
 >
-> - Which kernel version are you running?
+>lsmod | grep nat
+>iptable_nat            11461  1
+>nf_nat                 22381  1 iptable_nat
+>nf_conntrack_ipv4      21837  5 iptable_nat
+>nf_conntrack           64585  4 xt_state,iptable_nat,nf_nat,nf_conntrack_ipv4
+>nfnetlink               9945  3 nf_nat,nf_conntrack_ipv4,nf_conntrack
+>ip_tables              16517  3 iptable_raw,iptable_nat,iptable_filter
+>x_tables               18629  5 xt_state,ipt_LOG,xt_tcpudp,iptable_nat,ip_tables
 
-2.6.22
->
-> - What helpers are loaded (both NAT and conntrack)
-
-?? How would I find out? If you mean modules:
-
-lsmod | grep nat
-iptable_nat            11461  1
-nf_nat                 22381  1 iptable_nat
-nf_conntrack_ipv4      21837  5 iptable_nat
-nf_conntrack           64585  4 xt_state,iptable_nat,nf_nat,nf_conntrack_ipv4
-nfnetlink               9945  3 nf_nat,nf_conntrack_ipv4,nf_conntrack
-ip_tables              16517  3 iptable_raw,iptable_nat,iptable_filter
-x_tables               18629  5 xt_state,ipt_LOG,xt_tcpudp,iptable_nat,ip_tables
->
-> - How does the entry from /proc/net/nf_conntrack for the
->  SIP connection look like?
->
-
-OK. It's sunspots. Just got back to this now, and it's working:
-
-GATEWAY:   IN=external OUT=
-MAC=00:48:54:8b:ab:29:00:1a:e2:84:bf:3b:08:00 SRC=xxx.yyy.144.110
-DST=yyy.xxx.167.178 LEN=576 TOS=0x04 PREC=0x00 TTL=49 ID=8130
-PROTO=UDP SPT=5060 DPT=5060 LEN=556
-SIP-FWD:    IN=external OUT=lan SRC=xxx.yyy.144.110 DST=10.10.10.180
-LEN=576 TOS=0x04 PREC=0x00 TTL=48 ID=8130 PROTO=UDP SPT=5060 DPT=5060
-LEN=556
-
-Thanks for all the help. I certainly know a lot more about debugging iptables.
-
-FWIW, here's the entry from /proc/net/nf_conntrack:
-
-ipv4     2 udp      17 161 src=xxx.yyy.144.110 dst=yyy.xxx.167.178
-sport=5060 dport=5060 packets=1288 bytes=693472 src=10.10.10.180
-dst=xxx.yyy.144.110 sport=5060 dport=5060 packets=1783 bytes=884951
-[ASSURED] mark=0 secmark=0 use=1
-
-Is this telling me there's an ESTABLISHED connection? So somehow a sip
-packet that was NEW got in, and the ACK made iptables set it up? If
-so, it works now as long as they keep ACKing each other, but if I try
-a new sip connection, for instance from the road, I'll have the same
-issue?
-
-sean
+I would have expected to find nf_nat_sip here.
