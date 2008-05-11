@@ -1,31 +1,36 @@
-From: "Mark Robson" <markxr@gmail.com>
-Subject: Request for comments: CLUSTERIP target emulator / replacement
-Date: Sat, 10 May 2008 16:09:27 +0100
-Message-ID: <ff1a07b80805100809r1c999f8by3e2bcd0e98ae7438@mail.gmail.com>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: Re: why can't I DNAT SIP?
+Date: Sun, 11 May 2008 10:53:02 -0400
+Message-ID: <g0718e$cpl$1@ger.gmane.org>
+References: <fvtjuu$7i1$1@ger.gmane.org> <48235501.4030608@riverviewtech.net>  <fvvuil$ldh$1@ger.gmane.org> <48245C6B.1090506@riverviewtech.net>  <48245E7E.8080206@trash.net> <c195ebf70805091904w5b728e5gbe0a57ed16b0516@mail.gmail.com> <alpine.LNX.1.10.0805101041210.19952@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=UuAdiQCBQbUYZlNdcbvXz8d+TSSq8mmuky4nL8T6DTA=;
-        b=OhItPZ0NQOtfUn50iW6Dxw7D8zWWCyuhXLvfsWqMgOjB0cCw93ufi10N6qmnmxoQBR613A/EBNhM85Iw+cSTtDEqw//BmIi8CEoHf9VWpe1byb9zGc037GQVZzGNqRW+wyWsLMqW8Pi4zOfbPpJDJ3LQ6qfqMHFc1MfRZXqPSbw=
-Content-Disposition: inline
+In-Reply-To: <alpine.LNX.1.10.0805101041210.19952@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+Jan Engelhardt wrote:
+> On Saturday 2008-05-10 04:04, sean darcy wrote:
+>>> - What helpers are loaded (both NAT and conntrack)
+>> ?? How would I find out? If you mean modules:
+>>
+>> lsmod | grep nat
+>> iptable_nat            11461  1
+>> nf_nat                 22381  1 iptable_nat
+>> nf_conntrack_ipv4      21837  5 iptable_nat
+>> nf_conntrack           64585  4 xt_state,iptable_nat,nf_nat,nf_conntrack_ipv4
+>> nfnetlink               9945  3 nf_nat,nf_conntrack_ipv4,nf_conntrack
+>> ip_tables              16517  3 iptable_raw,iptable_nat,iptable_filter
+>> x_tables               18629  5 xt_state,ipt_LOG,xt_tcpudp,iptable_nat,ip_tables
+> 
+> I would have expected to find nf_nat_sip here.
+> --
 
-I've been trying to design a cluster system similar to CLUSTERIP (but
-with more functionality, and mostly in userspace) - I've written an
-article about it here:
+I've seen references to nf_nat_sip, but no docs, howto or examples. What 
+does it do that simple port forwarding doesn't? and how do you use it?
 
-http://marksverbiage.blogspot.com/2008/05/linux-ip-load-balancing-without-load.html
+sean
 
-Comments please
-
-Ta
-
-Mark
