@@ -1,29 +1,29 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: fwmark iptables/ip routing interaction question
-Date: Sun, 11 May 2008 19:39:04 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805111938210.19952@fbirervta.pbzchgretzou.qr>
-References: <49159.212.190.198.36.1210171014.squirrel@webserver6.intec.ugent.be> <alpine.LNX.1.10.0805071703150.30395@fbirervta.pbzchgretzou.qr> <48271D8B.5030608@alust.homeunix.com>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: Re: why can't I DNAT SIP?
+Date: Sun, 11 May 2008 14:02:38 -0400
+Message-ID: <g07cbu$bi9$1@ger.gmane.org>
+References: <fvtjuu$7i1$1@ger.gmane.org> <48235501.4030608@riverviewtech.net>  <fvvuil$ldh$1@ger.gmane.org> <48245C6B.1090506@riverviewtech.net>  <48245E7E.8080206@trash.net> <c195ebf70805091904w5b728e5gbe0a57ed16b0516@mail.gmail.com> <alpine.LNX.1.10.0805101041210.19952@fbirervta.pbzchgretzou.qr> <g0718e$cpl$1@ger.gmane.org> <alpine.LNX.1.10.0805111658220.19952@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48271D8B.5030608@alust.homeunix.com>
+In-Reply-To: <alpine.LNX.1.10.0805111658220.19952@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Alexei Ustyuzhaninov <alust@alust.homeunix.com>
-Cc: pthyseba@intec.ugent.be, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Jan Engelhardt wrote:
+> On Sunday 2008-05-11 16:53, sean darcy wrote:
+>> I've seen references to nf_nat_sip, but no docs, howto or examples. What does
+>> it do that simple port forwarding doesn't? and how do you use it?
+> 
+> It modifies the SIP packets to contain the correct address when you
+> happen to NAT connections.
+> --
 
-On Sunday 2008-05-11 18:23, Alexei Ustyuzhaninov wrote:
->
-> Jan, could you explain please which code does this extra rerouting: iproute2 or
-> netfilter?
+Any examples on how to use it?
 
-Netfilter of course.
-grep -r route_me_harder net/ipv4/netfilter/
+I even went and read the source. Sigh.
 
-> I have a weird with the same scenario: after rerouting a packet goes
-> out through another interface but keeps the source address of the original
-> interface.
+sean
 
-Yes that is ... how the code is currently written it seems.
