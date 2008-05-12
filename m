@@ -1,135 +1,45 @@
-From: Pablo Florencio <pabloflorencio@cica.es>
-Subject: conntrackd daemon stops: is conntrackd running?
-Date: Mon, 12 May 2008 14:32:42 +0200
-Message-ID: <482838EA.7080003@cica.es>
+From: Maximilian Wilhelm <max@rfc2324.org>
+Subject: Re: conntrackd daemon stops: is conntrackd running?
+Date: Mon, 12 May 2008 16:16:15 +0200
+Message-ID: <20080512141615.GA19262@outback.rfc2324.org>
+References: <482838EA.7080003@cica.es>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms030504020308000405080502"
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <482838EA.7080003@cica.es>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Pablo Florencio scripsit:
 
---------------ms030504020308000405080502
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi!
 
-Hi to everyone.
+> I have installed conntrackd in my high availability firewall cluster and 
+> I found one problem that I can't resolve. The installation was ok, I 
+> used Heartbeat instead of Keepalived for set up the virtual ips and the 
+> conntrackd script and it seems to work fine- I have checked that both 
+> nodes can dump the internal and external cache correctly.
 
-First of all, I apologize for my english.
+> The problem comes when tried to use conntrackd a few minutes later since 
+> the daemon has started, for example, if I want to dump statistics 
+> collected by daemon I found this error message:
 
-I have installed conntrackd in my high availability firewall cluster and 
-I found one problem that I can't resolve. The installation was ok, I 
-used Heartbeat instead of Keepalived for set up the virtual ips and the 
-conntrackd script and it seems to work fine- I have checked that both 
-nodes can dump the internal and external cache correctly.
+[conntrackd dies after some time]
+> Is there any problem using heartbeat instead of keepalived? I can see it 
+> working fine for a few minutes but after that I mysteriously found this 
+> error in both nodes.
 
-The problem comes when tried to use conntrackd a few minutes later since 
-the daemon has started, for example, if I want to dump statistics 
-collected by daemon I found this error message:
+I'm running conntrackd with heartbeat wihout a problem for a while now.
+Most probably you hit the same bug in libnetfilter-conntrack than I
+did some weeks ago.
 
- >conntrackd -s
- >can't connect: is conntrackd running? appropriate permissions?
+See http://marc.info/?l=netfilter-devel&m=120942089523985&w=4 for
+details.
 
-The commands -c -f -R -k, etc, give the same result. If I try to restart 
-the dameon I get this message:
-
- >conntrackd -d
- >lockfile `/var/lock/conntrack.lock' exists, perhaps conntrackd already 
-running?
-
-If I look for the conntrackd process ( ps -ef | grep conntrackd ) I 
-found that it has disappear, so I have to delete the .lock file to be 
-able to start ir again.
-
-Is there any problem using heartbeat instead of keepalived? I can see it 
-working fine for a few minutes but after that I mysteriously found this 
-error in both nodes.
-
-Any help or ideas would be very much appreciated.
-
-Regards
-Pablo Florencio.
-
-
-
---------------ms030504020308000405080502
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIILtjCC
-BdcwggS/oAMCAQICASkwDQYJKoZIhvcNAQEFBQAwYjESMBAGCgmSJomT8ixkARkWAmVzMRQw
-EgYKCZImiZPyLGQBGRYEY2ljYTE2MDQGA1UEAxMtQ2VudHJvIEluZm9ybWF0aWNvIENpZW50
-aWZpY28gZGUgQW5kYWx1Y2lhIENBMB4XDTA3MDgwMzEzMzQyM1oXDTA4MDgwMjEzMzQyM1ow
-UzESMBAGCgmSJomT8ixkARkWAmVzMRQwEgYKCZImiZPyLGQBGRYEY2ljYTENMAsGA1UEChME
-Y2ljYTEYMBYGA1UEAxMPcGFibG8uZmxvcmVuY2lvMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEAvuK4Mgo5kGdx/UrxFdMy/RBGa0MPOKdmyXQcTXHSjsZAKkr9X1psI/5UZ2iB
-zpQYs0d9ZslTRGx53whW3phdk3IGLO5Y8SXW4HE6xU0TMAxGxyozRKA6WF+vuV2fYzXHWYjg
-Td77LSq3iFQhzD+Hn8RnVJkNGPvTOi1NJ++13yDPZm9xOsl+dFjIU69cK7Sd/iuo0x+hcpnJ
-sXCRKFfx2Tp29S8aWx7OgezWXX1a4vCDVJzUOA5cEnlPtgXkhMBehncXvpDB4s5EK86Oy4m4
-MLnTIRcmpYDs3hy6voz/wgPBJTBo4DnRD36xlCzXMfF1J61gkCQ/uo1nOhmIWAPMnwIDAQAB
-o4ICpTCCAqEwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUfxq2DcQJYKEOLE5nU5+82PhvvG8w
-gZQGA1UdIwSBjDCBiYAUzj3OU/jW5ncbnPe+1Q2vgPd9PSOhZqRkMGIxEjAQBgoJkiaJk/Is
-ZAEZFgJlczEUMBIGCgmSJomT8ixkARkWBGNpY2ExNjA0BgNVBAMTLUNlbnRybyBJbmZvcm1h
-dGljbyBDaWVudGlmaWNvIGRlIEFuZGFsdWNpYSBDQYIJAPWW/lUHhJhjMA4GA1UdDwEB/wQE
-AwIE8DAhBgNVHREEGjAYgRZwYWJsb2Zsb3JlbmNpb0BjaWNhLmVzMB4GA1UdEgQXMBWGE2h0
-dHA6Ly9wa2kuY2ljYS5lcy8wMQYDVR0lBCowKAYIKwYBBQUHAwIGCCsGAQUFBwMEBggrBgEF
-BQcDAwYIKwYBBQUHAwgwEQYJYIZIAYb4QgEBBAQDAgSwMDcGCWCGSAGG+EIBDQQqFihDSUNB
-IENlcnRpZmljYXRpb24gQXV0aG9yaXR5IENlcnRpZmljYXRlMC8GA1UdHwQoMCYwJKAioCCG
-Hmh0dHA6Ly9wa2kuY2ljYS5lcy9jcmwvY3JsLnR4dDAtBglghkgBhvhCAQMEIBYeaHR0cDov
-L3BraS5jaWNhLmVzL2NybC9jcmwucGVtMEYGCWCGSAGG+EIBCAQ5FjdodHRwOi8vcGtpLmNp
-Y2EuZXMvcG9saWN5LzEuMy42LjEuNC4xLjc1NDcuMS4yLjMuMi4wLjAvMGEGA1UdIARaMFgw
-VgYNKwYBBAG6ewECAwIAADBFMEMGCCsGAQUFBwIBFjdodHRwOi8vcGtpLmNpY2EuZXMvcG9s
-aWN5LzEuMy42LjEuNC4xLjc1NDcuMS4yLjMuMi4wLjAvMA0GCSqGSIb3DQEBBQUAA4IBAQA+
-vwpCprKAsURpTz/uEWOWp7oVDZi5OQz5zgCkMDET4Gj981n2/ckwl8s7sSS/75iYBQIkwE0n
-/ArExNWhxzHgJiS35c6+CqjkMJw8an/VvGAvfABhMPl+9f/6ymSXc2VIgYLsbzmziIVNXZ9L
-azj3VmpaHq0cbFxE4tR03QvgQALMmC9wECGU+iFuY7OK+qaw7M/9yDh20j7I1hv1ufUnUXQk
-W7b06Ox09SlLyHtl+v9remTuJ9m3bPQouiCVn6+Ktk5A+F9nMtdZtUQw8IClFFYzJqJhvu6c
-xWIqrSOw/T1Mp1X4aL3mMQvPbuhpjIxrN55+YAgBb5tu+KmCF+6lMIIF1zCCBL+gAwIBAgIB
-KTANBgkqhkiG9w0BAQUFADBiMRIwEAYKCZImiZPyLGQBGRYCZXMxFDASBgoJkiaJk/IsZAEZ
-FgRjaWNhMTYwNAYDVQQDEy1DZW50cm8gSW5mb3JtYXRpY28gQ2llbnRpZmljbyBkZSBBbmRh
-bHVjaWEgQ0EwHhcNMDcwODAzMTMzNDIzWhcNMDgwODAyMTMzNDIzWjBTMRIwEAYKCZImiZPy
-LGQBGRYCZXMxFDASBgoJkiaJk/IsZAEZFgRjaWNhMQ0wCwYDVQQKEwRjaWNhMRgwFgYDVQQD
-Ew9wYWJsby5mbG9yZW5jaW8wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+4rgy
-CjmQZ3H9SvEV0zL9EEZrQw84p2bJdBxNcdKOxkAqSv1fWmwj/lRnaIHOlBizR31myVNEbHnf
-CFbemF2TcgYs7ljxJdbgcTrFTRMwDEbHKjNEoDpYX6+5XZ9jNcdZiOBN3vstKreIVCHMP4ef
-xGdUmQ0Y+9M6LU0n77XfIM9mb3E6yX50WMhTr1wrtJ3+K6jTH6FymcmxcJEoV/HZOnb1Lxpb
-Hs6B7NZdfVri8INUnNQ4DlwSeU+2BeSEwF6Gdxe+kMHizkQrzo7LibgwudMhFyalgOzeHLq+
-jP/CA8ElMGjgOdEPfrGULNcx8XUnrWCQJD+6jWc6GYhYA8yfAgMBAAGjggKlMIICoTAMBgNV
-HRMBAf8EAjAAMB0GA1UdDgQWBBR/GrYNxAlgoQ4sTmdTn7zY+G+8bzCBlAYDVR0jBIGMMIGJ
-gBTOPc5T+Nbmdxuc977VDa+A9309I6FmpGQwYjESMBAGCgmSJomT8ixkARkWAmVzMRQwEgYK
-CZImiZPyLGQBGRYEY2ljYTE2MDQGA1UEAxMtQ2VudHJvIEluZm9ybWF0aWNvIENpZW50aWZp
-Y28gZGUgQW5kYWx1Y2lhIENBggkA9Zb+VQeEmGMwDgYDVR0PAQH/BAQDAgTwMCEGA1UdEQQa
-MBiBFnBhYmxvZmxvcmVuY2lvQGNpY2EuZXMwHgYDVR0SBBcwFYYTaHR0cDovL3BraS5jaWNh
-LmVzLzAxBgNVHSUEKjAoBggrBgEFBQcDAgYIKwYBBQUHAwQGCCsGAQUFBwMDBggrBgEFBQcD
-CDARBglghkgBhvhCAQEEBAMCBLAwNwYJYIZIAYb4QgENBCoWKENJQ0EgQ2VydGlmaWNhdGlv
-biBBdXRob3JpdHkgQ2VydGlmaWNhdGUwLwYDVR0fBCgwJjAkoCKgIIYeaHR0cDovL3BraS5j
-aWNhLmVzL2NybC9jcmwudHh0MC0GCWCGSAGG+EIBAwQgFh5odHRwOi8vcGtpLmNpY2EuZXMv
-Y3JsL2NybC5wZW0wRgYJYIZIAYb4QgEIBDkWN2h0dHA6Ly9wa2kuY2ljYS5lcy9wb2xpY3kv
-MS4zLjYuMS40LjEuNzU0Ny4xLjIuMy4yLjAuMC8wYQYDVR0gBFowWDBWBg0rBgEEAbp7AQID
-AgAAMEUwQwYIKwYBBQUHAgEWN2h0dHA6Ly9wa2kuY2ljYS5lcy9wb2xpY3kvMS4zLjYuMS40
-LjEuNzU0Ny4xLjIuMy4yLjAuMC8wDQYJKoZIhvcNAQEFBQADggEBAD6/CkKmsoCxRGlPP+4R
-Y5anuhUNmLk5DPnOAKQwMRPgaP3zWfb9yTCXyzuxJL/vmJgFAiTATSf8CsTE1aHHMeAmJLfl
-zr4KqOQwnDxqf9W8YC98AGEw+X71//rKZJdzZUiBguxvObOIhU1dn0trOPdWaloerRxsXETi
-1HTdC+BAAsyYL3AQIZT6IW5js4r6prDsz/3IOHbSPsjWG/W59SdRdCRbtvTo7HT1KUvIe2X6
-/2t6ZO4n2bds9Ci6IJWfr4q2TkD4X2cy11m1RDDwgKUUVjMmomG+7pzFYiqtI7D9PUynVfho
-veYxC89u6GmMjGs3nn5gCAFvm274qYIX7qUxggM1MIIDMQIBATBnMGIxEjAQBgoJkiaJk/Is
-ZAEZFgJlczEUMBIGCgmSJomT8ixkARkWBGNpY2ExNjA0BgNVBAMTLUNlbnRybyBJbmZvcm1h
-dGljbyBDaWVudGlmaWNvIGRlIEFuZGFsdWNpYSBDQQIBKTAJBgUrDgMCGgUAoIIBozAYBgkq
-hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0wODA1MTIxMjMyNDJaMCMG
-CSqGSIb3DQEJBDEWBBT+8jq5DFdg2s72t2uj8CFT0txUMTBSBgkqhkiG9w0BCQ8xRTBDMAoG
-CCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggq
-hkiG9w0DAgIBKDB2BgkrBgEEAYI3EAQxaTBnMGIxEjAQBgoJkiaJk/IsZAEZFgJlczEUMBIG
-CgmSJomT8ixkARkWBGNpY2ExNjA0BgNVBAMTLUNlbnRybyBJbmZvcm1hdGljbyBDaWVudGlm
-aWNvIGRlIEFuZGFsdWNpYSBDQQIBKTB4BgsqhkiG9w0BCRACCzFpoGcwYjESMBAGCgmSJomT
-8ixkARkWAmVzMRQwEgYKCZImiZPyLGQBGRYEY2ljYTE2MDQGA1UEAxMtQ2VudHJvIEluZm9y
-bWF0aWNvIENpZW50aWZpY28gZGUgQW5kYWx1Y2lhIENBAgEpMA0GCSqGSIb3DQEBAQUABIIB
-AIxoQa7nKRG+wmUsxP7l8/640QoxT0QbBx+nwmLs9FblTlSp3nFJapb3I7tdJFsfjiqJRYtk
-sXETFizLC9NA7prO6vbdCRsyp1/QmtmMJzYo8mKcUyOzUOrDJuwzjAS1phhJp4QC2UJSVlGw
-LVi73uuhluNKckHBhzm3jOeIIjOEsSu4APu+jgqjVT74Ps0pckHlJ3MEMiw8u9/eTNO/S2xw
-CHE1BJvW/7w+Rx4n+CUlbsPw/orz0KdHCtqNT9y1HtS89oouol8h7aknFsqfAneOHHuhPWZ6
-EwGo66WeNfpa8zOpwNNph0m1scDZ2ZoUo4JD1jK4uPmUt9bokv/TKCcAAAAAAAA=
---------------ms030504020308000405080502--
+Ciao
+Max
+-- 
+	Follow the white penguin.
