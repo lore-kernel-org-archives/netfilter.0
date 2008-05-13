@@ -1,137 +1,56 @@
-From: Pablo Florencio <pabloflorencio@cica.es>
-Subject: [Re: conntrackd daemon stops: is conntrackd running?]
-Date: Tue, 13 May 2008 13:35:25 +0200
-Message-ID: <48297CFD.5090005@cica.es>
+From: "Peter Kaagman" <P.Kaagman@atlascollege.nl>
+Subject: Problems with mms-conntrack-nat
+Date: Tue, 13 May 2008 16:06:11 +0200
+Message-ID: <6BEC0BC0C32DBE4480920A1A1DA06D25016DAC8F@MERCURIUS.atlas.atlascollege.nl>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms040608000502040406060106"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Hi there list,
 
---------------ms040608000502040406060106
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Sure hope this is the correct list and you guys can help me. Seing the
+topics go by here I am wondering if this is the place to ask questions
+like this.... but anyway.... here it is...
 
-Thank you for your response, Max.
+I am having problem trying to apply mms-conntrack-nat
 
-I have updated my getter.c function  with  the one at subversion but the 
-problems is still in there. I am also using
-ALARM base synchronization working in a Red Hat EL 5 (64bits).
-
-Please, take a look at this:
-
-# gdb /usr/local/sbin/conntrackd
-(gdb) run
-Starting program: /usr/local/sbin/conntrackd
-
-Program received signal SIGSEGV, Segmentation fault.
-0x00000000004061f8 in compare (data1=0x6462b8, data2=0x7fff1243d8e0) at 
-cache.c:120
-120             return ((memcmp(nfct_get_attr(u1->ct, ATTR_ORIG_IPV6_SRC),
-(gdb) bt
-#0  0x00000000004061f8 in compare (data1=0x6462b8, data2=0x7fff1243d8e0) 
-at cache.c:120
-#1  0x00000000004033f7 in hashtable_test (table=0x634e10, 
-data=0x7fff1243d8e0) at hash.c:126
-#2  0x00000000004059b2 in __update (c=0x620160, ct=0x7fff1243d9c0) at 
-cache.c:299
-#3  0x0000000000405c59 in cache_update_force (c=0x0, ct=0x0) at cache.c:356
-#4  0x00000000004075c3 in do_mcast_handler_step (net=0x7fff1243db94) at 
-sync-mode.c:72
-#5  0x0000000000407680 in run_sync (readfds=<value optimized out>) at 
-sync-mode.c:123
-#6  0x0000000000402d45 in run () at run.c:227
-#7  0x0000000000402967 in main (argc=1, argv=0x7fff1244eec8) at main.c:259
-(gdb) quit
-The program is running.  Exit anyway? (y or n) y
-
-It seems that the problem is in function compare at cache.c, isn't is? 
-Maybe with the attribute ATTR_ORIG_IPV6_SRC.
-IPv6 is full implemented at our network.
-
-Thanks for you attention
-Pablo Florencio
+This is my setup:
 
 
---------------ms040608000502040406060106
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+root@sentry2:/usr/src# ls -l
+total 12
+lrwxrwxrwx  1 root root   15 2008-04-25 12:51 iptables ->
+iptables-1.3.8//
+drwxr-xr-x  6 1000 1000 4096 2007-06-25 01:29 iptables-1.3.8/
+lrwxrwxrwx  1 root root   14 2008-04-23 16:46 linux -> linux-2.6.21.5/
+drwxr-xr-x 19 root root 4096 2008-04-25 13:34 linux-2.6.21.5/
+drwxr-xr-x  5 root root 4096 2008-04-25 12:46 patch-o-matic-ng-20080424/
+root@sentry2:/usr/src# uname -a
+Linux sentry2 2.6.21.5-smp #2 SMP Tue Jun 19 14:58:11 CDT 2007 i686
+Intel(R) Pentium(R) 4 CPU 2.80GHz GenuineIntel GNU/Linux
+root@sentry2:/usr/src# cat /etc/slackware-version
+Slackware 12.0.0
+root@sentry2:/usr/src#      
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIILtjCC
-BdcwggS/oAMCAQICASkwDQYJKoZIhvcNAQEFBQAwYjESMBAGCgmSJomT8ixkARkWAmVzMRQw
-EgYKCZImiZPyLGQBGRYEY2ljYTE2MDQGA1UEAxMtQ2VudHJvIEluZm9ybWF0aWNvIENpZW50
-aWZpY28gZGUgQW5kYWx1Y2lhIENBMB4XDTA3MDgwMzEzMzQyM1oXDTA4MDgwMjEzMzQyM1ow
-UzESMBAGCgmSJomT8ixkARkWAmVzMRQwEgYKCZImiZPyLGQBGRYEY2ljYTENMAsGA1UEChME
-Y2ljYTEYMBYGA1UEAxMPcGFibG8uZmxvcmVuY2lvMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEAvuK4Mgo5kGdx/UrxFdMy/RBGa0MPOKdmyXQcTXHSjsZAKkr9X1psI/5UZ2iB
-zpQYs0d9ZslTRGx53whW3phdk3IGLO5Y8SXW4HE6xU0TMAxGxyozRKA6WF+vuV2fYzXHWYjg
-Td77LSq3iFQhzD+Hn8RnVJkNGPvTOi1NJ++13yDPZm9xOsl+dFjIU69cK7Sd/iuo0x+hcpnJ
-sXCRKFfx2Tp29S8aWx7OgezWXX1a4vCDVJzUOA5cEnlPtgXkhMBehncXvpDB4s5EK86Oy4m4
-MLnTIRcmpYDs3hy6voz/wgPBJTBo4DnRD36xlCzXMfF1J61gkCQ/uo1nOhmIWAPMnwIDAQAB
-o4ICpTCCAqEwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUfxq2DcQJYKEOLE5nU5+82PhvvG8w
-gZQGA1UdIwSBjDCBiYAUzj3OU/jW5ncbnPe+1Q2vgPd9PSOhZqRkMGIxEjAQBgoJkiaJk/Is
-ZAEZFgJlczEUMBIGCgmSJomT8ixkARkWBGNpY2ExNjA0BgNVBAMTLUNlbnRybyBJbmZvcm1h
-dGljbyBDaWVudGlmaWNvIGRlIEFuZGFsdWNpYSBDQYIJAPWW/lUHhJhjMA4GA1UdDwEB/wQE
-AwIE8DAhBgNVHREEGjAYgRZwYWJsb2Zsb3JlbmNpb0BjaWNhLmVzMB4GA1UdEgQXMBWGE2h0
-dHA6Ly9wa2kuY2ljYS5lcy8wMQYDVR0lBCowKAYIKwYBBQUHAwIGCCsGAQUFBwMEBggrBgEF
-BQcDAwYIKwYBBQUHAwgwEQYJYIZIAYb4QgEBBAQDAgSwMDcGCWCGSAGG+EIBDQQqFihDSUNB
-IENlcnRpZmljYXRpb24gQXV0aG9yaXR5IENlcnRpZmljYXRlMC8GA1UdHwQoMCYwJKAioCCG
-Hmh0dHA6Ly9wa2kuY2ljYS5lcy9jcmwvY3JsLnR4dDAtBglghkgBhvhCAQMEIBYeaHR0cDov
-L3BraS5jaWNhLmVzL2NybC9jcmwucGVtMEYGCWCGSAGG+EIBCAQ5FjdodHRwOi8vcGtpLmNp
-Y2EuZXMvcG9saWN5LzEuMy42LjEuNC4xLjc1NDcuMS4yLjMuMi4wLjAvMGEGA1UdIARaMFgw
-VgYNKwYBBAG6ewECAwIAADBFMEMGCCsGAQUFBwIBFjdodHRwOi8vcGtpLmNpY2EuZXMvcG9s
-aWN5LzEuMy42LjEuNC4xLjc1NDcuMS4yLjMuMi4wLjAvMA0GCSqGSIb3DQEBBQUAA4IBAQA+
-vwpCprKAsURpTz/uEWOWp7oVDZi5OQz5zgCkMDET4Gj981n2/ckwl8s7sSS/75iYBQIkwE0n
-/ArExNWhxzHgJiS35c6+CqjkMJw8an/VvGAvfABhMPl+9f/6ymSXc2VIgYLsbzmziIVNXZ9L
-azj3VmpaHq0cbFxE4tR03QvgQALMmC9wECGU+iFuY7OK+qaw7M/9yDh20j7I1hv1ufUnUXQk
-W7b06Ox09SlLyHtl+v9remTuJ9m3bPQouiCVn6+Ktk5A+F9nMtdZtUQw8IClFFYzJqJhvu6c
-xWIqrSOw/T1Mp1X4aL3mMQvPbuhpjIxrN55+YAgBb5tu+KmCF+6lMIIF1zCCBL+gAwIBAgIB
-KTANBgkqhkiG9w0BAQUFADBiMRIwEAYKCZImiZPyLGQBGRYCZXMxFDASBgoJkiaJk/IsZAEZ
-FgRjaWNhMTYwNAYDVQQDEy1DZW50cm8gSW5mb3JtYXRpY28gQ2llbnRpZmljbyBkZSBBbmRh
-bHVjaWEgQ0EwHhcNMDcwODAzMTMzNDIzWhcNMDgwODAyMTMzNDIzWjBTMRIwEAYKCZImiZPy
-LGQBGRYCZXMxFDASBgoJkiaJk/IsZAEZFgRjaWNhMQ0wCwYDVQQKEwRjaWNhMRgwFgYDVQQD
-Ew9wYWJsby5mbG9yZW5jaW8wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC+4rgy
-CjmQZ3H9SvEV0zL9EEZrQw84p2bJdBxNcdKOxkAqSv1fWmwj/lRnaIHOlBizR31myVNEbHnf
-CFbemF2TcgYs7ljxJdbgcTrFTRMwDEbHKjNEoDpYX6+5XZ9jNcdZiOBN3vstKreIVCHMP4ef
-xGdUmQ0Y+9M6LU0n77XfIM9mb3E6yX50WMhTr1wrtJ3+K6jTH6FymcmxcJEoV/HZOnb1Lxpb
-Hs6B7NZdfVri8INUnNQ4DlwSeU+2BeSEwF6Gdxe+kMHizkQrzo7LibgwudMhFyalgOzeHLq+
-jP/CA8ElMGjgOdEPfrGULNcx8XUnrWCQJD+6jWc6GYhYA8yfAgMBAAGjggKlMIICoTAMBgNV
-HRMBAf8EAjAAMB0GA1UdDgQWBBR/GrYNxAlgoQ4sTmdTn7zY+G+8bzCBlAYDVR0jBIGMMIGJ
-gBTOPc5T+Nbmdxuc977VDa+A9309I6FmpGQwYjESMBAGCgmSJomT8ixkARkWAmVzMRQwEgYK
-CZImiZPyLGQBGRYEY2ljYTE2MDQGA1UEAxMtQ2VudHJvIEluZm9ybWF0aWNvIENpZW50aWZp
-Y28gZGUgQW5kYWx1Y2lhIENBggkA9Zb+VQeEmGMwDgYDVR0PAQH/BAQDAgTwMCEGA1UdEQQa
-MBiBFnBhYmxvZmxvcmVuY2lvQGNpY2EuZXMwHgYDVR0SBBcwFYYTaHR0cDovL3BraS5jaWNh
-LmVzLzAxBgNVHSUEKjAoBggrBgEFBQcDAgYIKwYBBQUHAwQGCCsGAQUFBwMDBggrBgEFBQcD
-CDARBglghkgBhvhCAQEEBAMCBLAwNwYJYIZIAYb4QgENBCoWKENJQ0EgQ2VydGlmaWNhdGlv
-biBBdXRob3JpdHkgQ2VydGlmaWNhdGUwLwYDVR0fBCgwJjAkoCKgIIYeaHR0cDovL3BraS5j
-aWNhLmVzL2NybC9jcmwudHh0MC0GCWCGSAGG+EIBAwQgFh5odHRwOi8vcGtpLmNpY2EuZXMv
-Y3JsL2NybC5wZW0wRgYJYIZIAYb4QgEIBDkWN2h0dHA6Ly9wa2kuY2ljYS5lcy9wb2xpY3kv
-MS4zLjYuMS40LjEuNzU0Ny4xLjIuMy4yLjAuMC8wYQYDVR0gBFowWDBWBg0rBgEEAbp7AQID
-AgAAMEUwQwYIKwYBBQUHAgEWN2h0dHA6Ly9wa2kuY2ljYS5lcy9wb2xpY3kvMS4zLjYuMS40
-LjEuNzU0Ny4xLjIuMy4yLjAuMC8wDQYJKoZIhvcNAQEFBQADggEBAD6/CkKmsoCxRGlPP+4R
-Y5anuhUNmLk5DPnOAKQwMRPgaP3zWfb9yTCXyzuxJL/vmJgFAiTATSf8CsTE1aHHMeAmJLfl
-zr4KqOQwnDxqf9W8YC98AGEw+X71//rKZJdzZUiBguxvObOIhU1dn0trOPdWaloerRxsXETi
-1HTdC+BAAsyYL3AQIZT6IW5js4r6prDsz/3IOHbSPsjWG/W59SdRdCRbtvTo7HT1KUvIe2X6
-/2t6ZO4n2bds9Ci6IJWfr4q2TkD4X2cy11m1RDDwgKUUVjMmomG+7pzFYiqtI7D9PUynVfho
-veYxC89u6GmMjGs3nn5gCAFvm274qYIX7qUxggM1MIIDMQIBATBnMGIxEjAQBgoJkiaJk/Is
-ZAEZFgJlczEUMBIGCgmSJomT8ixkARkWBGNpY2ExNjA0BgNVBAMTLUNlbnRybyBJbmZvcm1h
-dGljbyBDaWVudGlmaWNvIGRlIEFuZGFsdWNpYSBDQQIBKTAJBgUrDgMCGgUAoIIBozAYBgkq
-hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0wODA1MTMxMTM1MjVaMCMG
-CSqGSIb3DQEJBDEWBBRzM6qaKRvUHab87xQflC0qgpYRMjBSBgkqhkiG9w0BCQ8xRTBDMAoG
-CCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggq
-hkiG9w0DAgIBKDB2BgkrBgEEAYI3EAQxaTBnMGIxEjAQBgoJkiaJk/IsZAEZFgJlczEUMBIG
-CgmSJomT8ixkARkWBGNpY2ExNjA0BgNVBAMTLUNlbnRybyBJbmZvcm1hdGljbyBDaWVudGlm
-aWNvIGRlIEFuZGFsdWNpYSBDQQIBKTB4BgsqhkiG9w0BCRACCzFpoGcwYjESMBAGCgmSJomT
-8ixkARkWAmVzMRQwEgYKCZImiZPyLGQBGRYEY2ljYTE2MDQGA1UEAxMtQ2VudHJvIEluZm9y
-bWF0aWNvIENpZW50aWZpY28gZGUgQW5kYWx1Y2lhIENBAgEpMA0GCSqGSIb3DQEBAQUABIIB
-ACGWdvM+i3yuOX0vr1MQKkC6WfZ+/Taw0aqjBsXY7gIgJxsOLAdpehQNF8R26JdU3oLy7kyK
-L0BBmXkrYikm08JbOe9o8OqeaPmAn97thjhH31usCeygfXPRKWdsxs/fMF0j/p/2fltBmqeG
-zG7Kc93JlfkXZNv2a50tS0DMAA0Hmw7jQGW3uGOzhoJfIqHrOdklahBet5geHro6f3vCP9jV
-kkkIc+glCgXFIRkNxzlt3JTU3dip4NMuhOM42FdLuAyEIA7YwftHps92rE3QLMgRnuDrAlS9
-AJ7rqqGwVfQzp3uMtqHCuwW5iQzp7idT4PVSc1qehoq6w5WTl3QE6LAAAAAAAAA=
---------------ms040608000502040406060106--
+
+When I try to apply the mms-conntrack-nat patch I get the following
+error:
+
+Do you want to apply this patch [N/y/t/f/a/r/b/w/q/?] y
+unable to find ladd slot in src
+/tmp/pom-2986/net/ipv4/netfilter/Makefile
+(./patchlets/mms-conntrack-nat/linux-2.6.12/./net/ipv4/netfilter/Makefil
+e.ladd)
+
+Did not have this problem in the past... it applied just fine than.
+
+Tried googling on that but what I found did not really make sense to me.
+
+Regards
+
+Peter
