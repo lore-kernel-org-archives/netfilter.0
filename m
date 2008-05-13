@@ -1,22 +1,66 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Problems with mms-conntrack-nat
-Date: Tue, 13 May 2008 17:16:26 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805131714460.448@fbirervta.pbzchgretzou.qr>
-References: <6BEC0BC0C32DBE4480920A1A1DA06D25016DAC8F@MERCURIUS.atlas.atlascollege.nl>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: Re: iptables and performance
+Date: Tue, 13 May 2008 10:29:48 -0500
+Message-ID: <1210692588.545.119.camel@grateful.d.umn.edu>
+References: <1210661080.5829.225.camel@localhost.localdomain>
+	 <1210661965.5829.227.camel@localhost.localdomain>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ERorCknTV40b0Pvu3/Gg"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <6BEC0BC0C32DBE4480920A1A1DA06D25016DAC8F@MERCURIUS.atlas.atlascollege.nl>
+In-Reply-To: <1210661965.5829.227.camel@localhost.localdomain>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Peter Kaagman <P.Kaagman@atlascollege.nl>
+To: elhadad@cisco.com
 Cc: netfilter@vger.kernel.org
 
 
-On Tuesday 2008-05-13 16:06, Peter Kaagman wrote:
->
->I am having problem trying to apply mms-conntrack-nat
+--=-ERorCknTV40b0Pvu3/Gg
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Nobody updated this in recent times, similarly to the old pom.
+On Tue, 2008-05-13 at 09:59 +0300, Eli Hadad wrote:
+> Hi all,
+>=20
+> I am new to iptables and have few question I hope you can help with:
+> 1. Is there a limit to the number of rules I can add to specific chain?
+> I need to have around 20000 rules.
+> 2. What is the performance implications of using this large number of
+> rules? Is there any numbers people can share.
+> 3. I also saw the HIPAC project which claim to have much better
+> performance. Is there any work done to integrate same type of
+> functionality into iptables?
+
+Google: hipac ipset
+
+Look at the first pdf link. It talks about performance and netfilter. It
+also addresses HIPAC and ipset.
+
+I would say that you want to look at ipset.
+
+Cheers,
+
+--=20
+Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
+University of Minnesota Duluth
+Information Technology Systems & Services
+PGP key 1024D/84E22DA2 2005-11-07
+Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
+
+He is not a fool who gives up what he cannot keep to gain what he cannot
+lose.
+-Jim Elliot
+
+--=-ERorCknTV40b0Pvu3/Gg
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBIKbPsU+eIf4TiLaIRAjm9AJ9jvgBlEEzejiggcW2vQZUZD4njtwCdGfmV
+8UCki+g5xR9f+DAfwxo7vIs=
+=awDs
+-----END PGP SIGNATURE-----
+
+--=-ERorCknTV40b0Pvu3/Gg--
 
