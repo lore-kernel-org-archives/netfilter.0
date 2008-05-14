@@ -1,24 +1,62 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Netfiler REAL Rule Match Sequence
-Date: Wed, 14 May 2008 23:29:40 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805142328140.5292@fbirervta.pbzchgretzou.qr>
-References: <774cb3b60805141321l6b8ce420ia10b6e027c80dd74@mail.gmail.com>
+From: Martin <mylists@itcom.com.ar>
+Subject: Re: ip_conntrack files
+Date: Wed, 14 May 2008 18:58:41 -0300
+Message-ID: <1210802321.23968.41.camel@kr0sty.1.com.ar>
+References: <1210768892.2956.476.camel@kr0sty.1.com.ar>
+	 <935fab200805141401k7aadcbeci65f2c830dda74b14@mail.gmail.com>
+Reply-To: mylists@itcom.com.ar
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <774cb3b60805141321l6b8ce420ia10b6e027c80dd74@mail.gmail.com>
+In-Reply-To: <935fab200805141401k7aadcbeci65f2c830dda74b14@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?J=C3=BCrgen_Rochol?= <juergen.rox@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Dave <finalglide@gmail.com>
 Cc: netfilter@vger.kernel.org
 
 
-On Wednesday 2008-05-14 22:21, J=C3=BCrgen Rochol wrote:
->
->Putting in a simple way, is the packet evaluated under a unique single
->rule list or several rules lists -- one for each chain?
+On Wed, 2008-05-14 at 14:01 -0700, Dave wrote:
+> Hi Martin, I went down this road as well.
+> 
+> The source files seem to be included in the latest Patchomatic
+> sources. Did you check this site?
+> http://www.intra2net.com/de/produkte/opensource/ipt_account/
+> 
+> The POM will patch your kernel sources with the ACCOUNT tool, this
+> part worked flawlessly.
+> 
+> The source to add to the POM util is here if the files are not in your
+> POM already.
+> http://www.intra2net.com/de/produkte/opensource/ipt_account/pom-ng-ipt_ACCOUNT-1.12.tgz
+> 
+> I actually tried to compile the userspace tools for ACCOUNT but it
+> always failed, so I never got to use it.  Maybe you will have better
+> luck, please let us know if you are successful getting it up and
+> running.
+> 
+> Good luck
+> -Dave
 
-Sieve principle. What has not matched falls through
-until it finally matches (and takes a terminating action).
-Much like, uh, filters.
+Thanks for the response Dave.
+
+May be I didn't explain my problem very well, sorry I must improve my
+english :S
+
+I need ip_conntrack (core and some patchs like ftp and amanda), and
+ip_connlimit, but looks like I can't find them.
+
+I've downloaded POM, runed "./runme download" for extra packages, then
+"./runme extra", but ip_conntrack and ip_connlimit aren't there, all
+I've found are nf_conntrack and so.
+
+Am I missing something? I just can't find the way to install them on a
+2.6.25 vanilla kernel...
+
+
+Thanks again for your help
+
+cheers
+
+Martin
+
