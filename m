@@ -1,38 +1,48 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE]: Call for sponsors for the 6th netfilter developer workshop
-Date: Wed, 14 May 2008 19:34:38 +0200
-Message-ID: <482B22AE.50807@trash.net>
-References: <482B03DA.406@trash.net>
+From: "=?ISO-8859-1?Q?J=FCrgen_Rochol?=" <juergen.rox@gmail.com>
+Subject: Netfiler REAL Rule Match Sequence
+Date: Wed, 14 May 2008 17:21:49 -0300
+Message-ID: <774cb3b60805141321l6b8ce420ia10b6e027c80dd74@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <482B03DA.406@trash.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=9X5iNXko923WHpNqVcInpPKEKR82Qdcb7ivnupOIPHE=;
+        b=wGBjYAfIqil+zCCLGfP1tvlCyGRtZuT70OLFfF8NiAStSZw/KTv0mS6/IAtnyDGzx7j5HjJeWlcrB1lrv/2Dm6QjBTjcbu1hh4aADzFu1kw1TAxFh3d5FIR6kFCVHv4a7RWde5CRaRZ6WVFBa7QSIgrrKBLrCT9u9vBw9+j1AUM=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>, netfilt
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-The netfilter project is looking for sponsors for the 6th netfilter
-developer workshop, which will take place in Paris, France from
-September, 29th to October, 3rd. For futher information about the
-workshop please consult [1] and [2].
+Hi,
 
-If your company is using netfilter and always wanted to give something
-back, now is a great opportunity. Sponsorship money will be used for
-travel and accomodation expenses to get the developers to the workshop.
-Perks include your company name and logo on the workshop page, an
-invitation for one or more of your own developers and a heartily
-thanks from the netfilter project.
+My question is related to the sequence that rules are evaluated in the
+Linux Kernel with Netfilter.
 
-If you are interested, please contact coreteam@netfilter.org for our
-sponsorship policy and further information. If you know of anyone who
-might be interested, please forward this email.
+I'm aware of chains (INPUT, OUTPUT, FORWARD ...) and also tables
+(filter, nat and mangle) and how they're related.
 
-Thanks!
+But my question is:  imagine a single packet passing trough the
+machine (PRE_ROUTING, FORWARDING and POS_ROUTING chains).
+Suppose also that I've got rules in mangle table at PRE_ROUTING, nat
+at PREROUTING, and in nat at POSTROUTING.
 
-Patrick,
-on behalf of the Netfilter core team
+So this packet should be evaluated first in mangle at PRE_ROUTING. If
+a match happens, what happens(besides the rule match action)?
+1. The packet continues its flow and its also evaluted in NAT at
+PREROUTING as well as NAT at POSTROUTING (if it passes the rules, of
+course)
+2. Or the filter stops to evaluate at the VERY FIRST match, without
+caring about other possible matches withing other tables at the other
+chains?
 
-[1] http://workshop.netfilter.org/2008/
-[2] http://marc.info/?l=netfilter-devel&m=121077868519808&w=2
+Putting in a simple way, is the packet evaluated under a unique single
+rule list or several rules lists -- one for each chain?
 
+Thank you all in advance.
+
+Best Regards,
+
+J=FCrgen
