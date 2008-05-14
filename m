@@ -1,53 +1,38 @@
 From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE]: Netfilter Workshop 2008
-Date: Wed, 14 May 2008 17:23:06 +0200
-Message-ID: <482B03DA.406@trash.net>
+Subject: [ANNOUNCE]: Call for sponsors for the 6th netfilter developer workshop
+Date: Wed, 14 May 2008 19:34:38 +0200
+Message-ID: <482B22AE.50807@trash.net>
+References: <482B03DA.406@trash.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <482B03DA.406@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>, netfilt
 
-= Overview =
+The netfilter project is looking for sponsors for the 6th netfilter
+developer workshop, which will take place in Paris, France from
+September, 29th to October, 3rd. For futher information about the
+workshop please consult [1] and [2].
 
-Following the lastest successful workshop in Karlsruhe, Germany,
-in October 2007. We are happy to announce the next edition in the
-workshop series. This year the event will be hosted in Paris, France
-from September 29th to October 3rd, 2008. For more information, please
-visit the official website of the workshop [1].
+If your company is using netfilter and always wanted to give something
+back, now is a great opportunity. Sponsorship money will be used for
+travel and accomodation expenses to get the developers to the workshop.
+Perks include your company name and logo on the workshop page, an
+invitation for one or more of your own developers and a heartily
+thanks from the netfilter project.
 
-= Attendance =
+If you are interested, please contact coreteam@netfilter.org for our
+sponsorship policy and further information. If you know of anyone who
+might be interested, please forward this email.
 
-The attendance of the developer workshop is free but requires an
-invitation. You may consider attending if you are involved in any
-aspect of the Netfilter development. Please, send us an email to
-coreteam@netfilter.org before July 7th, 2008 (strict deadline).
-We have a very limited number of invitations!
-
-The user days are open for everyone and don't require an invitation.
-
-= Call for Participants =
-
-Are you involved in any awesome third party Netfilter related project?
-If your answer is yes then you have a chance to come and show us your
-project during the workshop days.
-
-In case that you are interested, please send us an abstract before
-July 7th, 2008 (strict deadline) to coreteam@netfilter.org in latex,
-docbook or odt format. The abstract must have 1000 words maximum
-provinding an introduction, targets, solution proposed and experimental
-results if any. You must also provide the source code under a
-GPL-compatible free software license. The source code requirement is
-mandatory.
-
-The program committee will select two candidates from all applications
-received whose travel and accomodation expenses will be funded by our
-sponsors. 
-
+Thanks!
 
 Patrick,
 on behalf of the Netfilter core team
 
 [1] http://workshop.netfilter.org/2008/
+[2] http://marc.info/?l=netfilter-devel&m=121077868519808&w=2
+
