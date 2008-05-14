@@ -1,48 +1,64 @@
-From: "=?ISO-8859-1?Q?J=FCrgen_Rochol?=" <juergen.rox@gmail.com>
-Subject: Netfiler REAL Rule Match Sequence
-Date: Wed, 14 May 2008 17:21:49 -0300
-Message-ID: <774cb3b60805141321l6b8ce420ia10b6e027c80dd74@mail.gmail.com>
+From: Dave <finalglide@gmail.com>
+Subject: Re: ip_conntrack files
+Date: Wed, 14 May 2008 14:01:38 -0700
+Message-ID: <935fab200805141401k7aadcbeci65f2c830dda74b14@mail.gmail.com>
+References: <1210768892.2956.476.camel@kr0sty.1.com.ar>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=9X5iNXko923WHpNqVcInpPKEKR82Qdcb7ivnupOIPHE=;
-        b=wGBjYAfIqil+zCCLGfP1tvlCyGRtZuT70OLFfF8NiAStSZw/KTv0mS6/IAtnyDGzx7j5HjJeWlcrB1lrv/2Dm6QjBTjcbu1hh4aADzFu1kw1TAxFh3d5FIR6kFCVHv4a7RWde5CRaRZ6WVFBa7QSIgrrKBLrCT9u9vBw9+j1AUM=
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=g8BVKk+BlQnOjqY+bhFeesBrJPOWJsjQ114m7p0fxCk=;
+        b=oSpjZXxVJXSjr33tuqRfVU1k7gm3tgtMk9ocFjiRmhz6IPlXsR9CeIcQ/Ur6ml4Xx/+kQXWeKyXySQfbzj7iJyVKCXjM/KZ9yU2aNA19zexgCNrhgppdwDgfDansVWQKzi1QLrXtI63RBhBqSwPN5LgGc32WhomKetBvLGTRnnU=
+In-Reply-To: <1210768892.2956.476.camel@kr0sty.1.com.ar>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: mylists@itcom.com.ar, netfilter@vger.kernel.org
 
-Hi,
+Hi Martin, I went down this road as well.
 
-My question is related to the sequence that rules are evaluated in the
-Linux Kernel with Netfilter.
+The source files seem to be included in the latest Patchomatic
+sources. Did you check this site?
+http://www.intra2net.com/de/produkte/opensource/ipt_account/
 
-I'm aware of chains (INPUT, OUTPUT, FORWARD ...) and also tables
-(filter, nat and mangle) and how they're related.
+The POM will patch your kernel sources with the ACCOUNT tool, this
+part worked flawlessly.
 
-But my question is:  imagine a single packet passing trough the
-machine (PRE_ROUTING, FORWARDING and POS_ROUTING chains).
-Suppose also that I've got rules in mangle table at PRE_ROUTING, nat
-at PREROUTING, and in nat at POSTROUTING.
+The source to add to the POM util is here if the files are not in your
+POM already.
+http://www.intra2net.com/de/produkte/opensource/ipt_account/pom-ng-ipt_=
+ACCOUNT-1.12.tgz
 
-So this packet should be evaluated first in mangle at PRE_ROUTING. If
-a match happens, what happens(besides the rule match action)?
-1. The packet continues its flow and its also evaluted in NAT at
-PREROUTING as well as NAT at POSTROUTING (if it passes the rules, of
-course)
-2. Or the filter stops to evaluate at the VERY FIRST match, without
-caring about other possible matches withing other tables at the other
-chains?
+I actually tried to compile the userspace tools for ACCOUNT but it
+always failed, so I never got to use it.  Maybe you will have better
+luck, please let us know if you are successful getting it up and
+running.
 
-Putting in a simple way, is the packet evaluated under a unique single
-rule list or several rules lists -- one for each chain?
+Good luck
+-Dave
 
-Thank you all in advance.
 
-Best Regards,
 
-J=FCrgen
+
+On Wed, May 14, 2008 at 5:41 AM, Martin <mylists@itcom.com.ar> wrote:
+> I don't know if I'm getting more confused while working in this task,
+> but can't find where are source packages of ip_conntrack for kernel
+> source, all I find is the userspace daemon and some libs at netfilter
+> site.
+>
+> =BFCan someone tell me where to find them? I mean those that use
+> at /usr/src/linux/net/ipv4/netfilter
+>
+> Thanks
+>
+> Mart=EDn
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
