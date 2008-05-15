@@ -1,56 +1,73 @@
-From: Martin <mylists@itcom.com.ar>
-Subject: Re: ip_conntrack files
-Date: Thu, 15 May 2008 09:30:28 -0300
-Message-ID: <1210854629.23968.406.camel@kr0sty.1.com.ar>
-References: <1210768892.2956.476.camel@kr0sty.1.com.ar>
-	 <935fab200805141401k7aadcbeci65f2c830dda74b14@mail.gmail.com>
-	 <1210802321.23968.41.camel@kr0sty.1.com.ar>
-	 <935fab200805141557x676acc9cp79906826b8c428b7@mail.gmail.com>
-Reply-To: mylists@itcom.com.ar
+From: "=?ISO-8859-1?Q?J=FCrgen_Rochol?=" <juergen.rox@gmail.com>
+Subject: Re: Netfiler REAL Rule Match Sequence
+Date: Thu, 15 May 2008 10:10:45 -0300
+Message-ID: <774cb3b60805150610h6aad9517l86eb7079e75cfaf4@mail.gmail.com>
+References: <774cb3b60805141321l6b8ce420ia10b6e027c80dd74@mail.gmail.com>
+	 <alpine.LNX.1.10.0805142328140.5292@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <935fab200805141557x676acc9cp79906826b8c428b7@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=i4QVVLhlfB+wHKy2Ke17F7eAfH6WFPGk3eAjwmY4rM0=;
+        b=mNYUTm2x9HPcz/S5lUAZCfr2aH65dEmvthg5Nz+z7YjQt6oNiuMI1DauQ4JKJbWSJnVPjZ6CwMVTLfXO41A/S+MR8Fp0F0FR3LVo14Svim5i4bjSlh12OM3AxblCchcIkI8+n9LA+q6/V7WwQ+VM8T5vMF+EmJpRR0kFBP5RKkQ=
+In-Reply-To: <alpine.LNX.1.10.0805142328140.5292@fbirervta.pbzchgretzou.qr>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: finalglide@gmail.com, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
+
+Hi Jan.
+
+Thanks for your answer.
+
+But I think  I wasn't  that clear.
+
+I did a simple test and I found that both rules below matched.
+
+Consider this simple scenario:
+
+Antes de tudo: arquivo before.pcap
+
+depois dropa toda sa=EDda :(
+iptables -P OUTPUT DROP
+
+Libera ICMP de sa=EDda accept.pcap:
+iptables -A OUTPUT -t filter  -p icmp  -j ACCEPT
+
+Mangle na POSTROUTING (mudar TTL) ttl.pcap:
+iptables -t mangle -A POSTROUTING -p icmp -j TTL --ttl-dec 10 iptables
+-t mangle -A POSTROUTING -p icmp -j TTL --ttl-dec 10
+
+Scenario 2:
+The same happens when:
+//n=E3o funcionou
+iptables -t mangle -A PREROUTING -p icmp -j TTL --ttl-dec 10
+
+//agora outra regra - alterou s=F3 no postrouting :(
+iptables -t mangle -A PREROUTING -p icmp  -j TOS --set-tos 0x10
+
+//dropa tudo, de cara.
+iptables -A INPUT -t filter  -p icmp  -j DROP
 
 
-On Wed, 2008-05-14 at 15:57 -0700, Dave wrote:
-> Actually, I think I might have misread your message, my eyes are
-> getting to me after all this compiling.  I believe all of these items
-> you are looking for are already in the new kernel.  No need to patch,
-> just enable them in the network settings of the kernel.  I use make
-> menuconfig usually.
-> 
-> Cheers
-> -Dave
-> 
 
 
-I supposed that, some new modules were at kernel that never seen before
-(like the "nf_"), but two problems appears, so may be I must be
-forgetting something.
-
-1) I use to load modules ip_conntrack_ftp, ip_conntrack_irc,
-ip_conntrack_tftp, ip_conntrack_amanda  and ip_conntrack_sip; but there
-aren't modules like nf_conntrack_amanda and so.
-
-2) Connlimit looks like is missing something. Ex: 
-
-# iptables -A FORWARD -s 10.10.28.0/24 -p tcp --dport 1024: -m connlimit
---connlimit-above 50 -j REJECT --reject-with tcp-reset
-
-iptables: Invalid argument
 
 
-That's why I think may still need old ip_conn[track/limit] pathces.
-Don't I?
-
-
-Thanks again for your support
-
-
-Martin
-
+On Wed, May 14, 2008 at 6:29 PM, Jan Engelhardt <jengelh@medozas.de> wr=
+ote:
+>
+> On Wednesday 2008-05-14 22:21, J=FCrgen Rochol wrote:
+>>
+>>Putting in a simple way, is the packet evaluated under a unique singl=
+e
+>>rule list or several rules lists -- one for each chain?
+>
+> Sieve principle. What has not matched falls through
+> until it finally matches (and takes a terminating action).
+> Much like, uh, filters.
+>
