@@ -1,35 +1,61 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrackd synchronisation at startup
-Date: Thu, 15 May 2008 16:03:36 +0200
-Message-ID: <482C42B8.6010500@netfilter.org>
-References: <20080515145035.ecbpgmdr8cg0o80o@webmail.ionblast.net>
+Subject: Re: conntrackd daemon stops: is conntrackd running?
+Date: Thu, 15 May 2008 16:07:59 +0200
+Message-ID: <482C43BF.2040300@netfilter.org>
+References: <482838EA.7080003@cica.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080515145035.ecbpgmdr8cg0o80o@webmail.ionblast.net>
+In-Reply-To: <482838EA.7080003@cica.es>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Christophe Painchaud <dash@ionblast.net>
+To: Pablo Florencio <pabloflorencio@cica.es>
 Cc: netfilter@vger.kernel.org
 
-Christophe Painchaud wrote:
-> Hello,
+Pablo Florencio wrote:
+> Hi to everyone.
 > 
->  I managed to create a cluster of 2 firewalls that share their conntrack
-> tables ; but I've got a little problem/question:
-> 
->  When I restart a node to simulate a failure, it won't request existing
-> connections, it will only get news ones. I am forced to do a 'conntrackd
-> -n' to resync it all. I tried to start conntrackd with 'conntrackd -d
-> -n' or 'conntrackd -dn' . No success here. Is there a proper way to do
-> this ? should I create a startup script that run -d command line, and
-> then -n ?
+> First of all, I apologize for my english.
 
-conntrackd does do this by itself, it needs the help of a failure
-detector manager, eg. keepalived. You have to include the conntrackd -n
-in your scripts when the node hits backup state. Have a look at the doc/
-directory inside the conntrack-tools.
+Your English is just fine.
+
+> I have installed conntrackd in my high availability firewall cluster and
+> I found one problem that I can't resolve. The installation was ok, I
+> used Heartbeat instead of Keepalived for set up the virtual ips and the
+> conntrackd script and it seems to work fine- I have checked that both
+> nodes can dump the internal and external cache correctly.
+
+This report doesn't help that much, what do the log file says? Please,
+also include the version of the software that your using, including the
+libraries.
+
+> The problem comes when tried to use conntrackd a few minutes later since
+> the daemon has started, for example, if I want to dump statistics
+> collected by daemon I found this error message:
+> 
+>>conntrackd -s
+>>can't connect: is conntrackd running? appropriate permissions?
+> 
+> The commands -c -f -R -k, etc, give the same result. If I try to restart
+> the dameon I get this message:
+> 
+>>conntrackd -d
+>>lockfile `/var/lock/conntrack.lock' exists, perhaps conntrackd already
+> running?
+
+Apparently, it seems that it is crashing but I need more information to
+give you a hand.
+
+> If I look for the conntrackd process ( ps -ef | grep conntrackd ) I
+> found that it has disappear, so I have to delete the .lock file to be
+> able to start ir again.
+> 
+> Is there any problem using heartbeat instead of keepalived? I can see it
+> working fine for a few minutes but after that I mysteriously found this
+> error in both nodes.
+
+Not really, I truly prefer keepalived but it's up to you.
 
 -- 
 "Los honestos son inadaptados sociales" -- Les Luthiers
