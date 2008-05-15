@@ -1,12 +1,12 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrackd daemon stops: is conntrackd running?
-Date: Thu, 15 May 2008 16:07:59 +0200
-Message-ID: <482C43BF.2040300@netfilter.org>
-References: <482838EA.7080003@cica.es>
+Subject: Re: [Re: conntrackd daemon stops: is conntrackd running?]
+Date: Thu, 15 May 2008 16:14:42 +0200
+Message-ID: <482C4552.5090300@netfilter.org>
+References: <48297CFD.5090005@cica.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <482838EA.7080003@cica.es>
+In-Reply-To: <48297CFD.5090005@cica.es>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -14,48 +14,45 @@ To: Pablo Florencio <pabloflorencio@cica.es>
 Cc: netfilter@vger.kernel.org
 
 Pablo Florencio wrote:
-> Hi to everyone.
+> Thank you for your response, Max.
 > 
-> First of all, I apologize for my english.
-
-Your English is just fine.
-
-> I have installed conntrackd in my high availability firewall cluster and
-> I found one problem that I can't resolve. The installation was ok, I
-> used Heartbeat instead of Keepalived for set up the virtual ips and the
-> conntrackd script and it seems to work fine- I have checked that both
-> nodes can dump the internal and external cache correctly.
-
-This report doesn't help that much, what do the log file says? Please,
-also include the version of the software that your using, including the
-libraries.
-
-> The problem comes when tried to use conntrackd a few minutes later since
-> the daemon has started, for example, if I want to dump statistics
-> collected by daemon I found this error message:
+> I have updated my getter.c function  with  the one at subversion but the
+> problems is still in there. I am also using
+> ALARM base synchronization working in a Red Hat EL 5 (64bits).
 > 
->>conntrackd -s
->>can't connect: is conntrackd running? appropriate permissions?
+> Please, take a look at this:
 > 
-> The commands -c -f -R -k, etc, give the same result. If I try to restart
-> the dameon I get this message:
+> # gdb /usr/local/sbin/conntrackd
+> (gdb) run
+> Starting program: /usr/local/sbin/conntrackd
 > 
->>conntrackd -d
->>lockfile `/var/lock/conntrack.lock' exists, perhaps conntrackd already
-> running?
-
-Apparently, it seems that it is crashing but I need more information to
-give you a hand.
-
-> If I look for the conntrackd process ( ps -ef | grep conntrackd ) I
-> found that it has disappear, so I have to delete the .lock file to be
-> able to start ir again.
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x00000000004061f8 in compare (data1=0x6462b8, data2=0x7fff1243d8e0) at
+> cache.c:120
+> 120             return ((memcmp(nfct_get_attr(u1->ct, ATTR_ORIG_IPV6_SRC),
+> (gdb) bt
+> #0  0x00000000004061f8 in compare (data1=0x6462b8, data2=0x7fff1243d8e0)
+> at cache.c:120
+> #1  0x00000000004033f7 in hashtable_test (table=0x634e10,
+> data=0x7fff1243d8e0) at hash.c:126
+> #2  0x00000000004059b2 in __update (c=0x620160, ct=0x7fff1243d9c0) at
+> cache.c:299
+> #3  0x0000000000405c59 in cache_update_force (c=0x0, ct=0x0) at cache.c:356
+> #4  0x00000000004075c3 in do_mcast_handler_step (net=0x7fff1243db94) at
+> sync-mode.c:72
+> #5  0x0000000000407680 in run_sync (readfds=<value optimized out>) at
+> sync-mode.c:123
+> #6  0x0000000000402d45 in run () at run.c:227
+> #7  0x0000000000402967 in main (argc=1, argv=0x7fff1244eec8) at main.c:259
+> (gdb) quit
+> The program is running.  Exit anyway? (y or n) y
 > 
-> Is there any problem using heartbeat instead of keepalived? I can see it
-> working fine for a few minutes but after that I mysteriously found this
-> error in both nodes.
+> It seems that the problem is in function compare at cache.c, isn't is?
+> Maybe with the attribute ATTR_ORIG_IPV6_SRC.
+> IPv6 is full implemented at our network.
 
-Not really, I truly prefer keepalived but it's up to you.
+OK, this is a better clue, Thanks Pablo. Is the module nf_conntrack_ipv6
+loaded?
 
 -- 
 "Los honestos son inadaptados sociales" -- Les Luthiers
