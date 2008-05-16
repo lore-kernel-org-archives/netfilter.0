@@ -1,34 +1,33 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: ip_conntrack vs. nf_conntrack
-Date: Fri, 16 May 2008 17:45:13 +0200
-Message-ID: <482DAC09.90304@plouf.fr.eu.org>
-References: <1210688686.2956.69.camel@kr0sty.1.com.ar> <482DA36B.6070801@plouf.fr.eu.org> <alpine.LNX.1.10.0805161714090.15590@fbirervta.pbzchgretzou.qr>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Netfiler REAL Rule Match Sequence
+Date: Fri, 16 May 2008 17:57:22 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805161756260.15590@fbirervta.pbzchgretzou.qr>
+References: <774cb3b60805141321l6b8ce420ia10b6e027c80dd74@mail.gmail.com>  <alpine.LNX.1.10.0805142328140.5292@fbirervta.pbzchgretzou.qr>  <774cb3b60805150610h6aad9517l86eb7079e75cfaf4@mail.gmail.com>  <774cb3b60805150611w292f88d1le77aece2ade7e934@mail.gmail.com>
+ <774cb3b60805150732o1ee9f5fao53537d46bec76ac2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0805161714090.15590@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <774cb3b60805150732o1ee9f5fao53537d46bec76ac2@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: =?UTF-8?Q?J=C3=BCrgen_Rochol?= <juergen.rox@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Jan Engelhardt a =E9crit :
-> On Friday 2008-05-16 17:08, Pascal Hambourg wrote:
->=20
->>>Anyway, there aren't nf_conntrack_amanda, nf_conntrack_irc, etc. =BF=
-are
->>>there available by now, or need some extra patches or something else=
-?
->>
->>Most of them were introduced in kernel 2.6.20 along with IPv4 statefu=
-l NAT.
->>Aliases have been defined, so you can keep using the old names.
->=20
-> No aliases have been defined.
->=20
-> $ modinfo nf_conntrack
 
-I meant aliases for helper modules. In most cases other netfilter=20
-modules should be autoloaded by iptables rules creation or other module=
-=20
-dependencies, so it should be useless to load them explicitly.
+On Thursday 2008-05-15 16:32, J=C3=BCrgen Rochol wrote:
+>
+>C)  iptables -P OUTPUT DROP  and iptables -A OUTPUT -t filter  -p icmp
+> -j ACCEPT and iptables -t mangle -A POSTROUTING -p icmp -j TTL
+>--ttl-dec 10
+>
+>What happens now?
+>* PC1 receives the reply.  This is the *first match* for this packet
+>(as in B). So thats ok.
+>* But other thing happens: PC1 receive the reply with TTL decremented.
+>So the 3rd rule above was also evaluated. That is, for a same packet,
+>2 rules were applied.
+
+They are different tables. So, all is still correct.
+Also, TTL is a non-terminating target, as are most targets designed
+for the mangle table.
