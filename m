@@ -1,36 +1,37 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: ip_conntrack vs. nf_conntrack
-Date: Fri, 16 May 2008 17:08:27 +0200
-Message-ID: <482DA36B.6070801@plouf.fr.eu.org>
-References: <1210688686.2956.69.camel@kr0sty.1.com.ar>
+Date: Fri, 16 May 2008 17:14:35 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805161714090.15590@fbirervta.pbzchgretzou.qr>
+References: <1210688686.2956.69.camel@kr0sty.1.com.ar> <482DA36B.6070801@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1210688686.2956.69.camel@kr0sty.1.com.ar>
+In-Reply-To: <482DA36B.6070801@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
-Hello,
 
-Martin a =E9crit :
->=20
-> I use to have a 2.6.18 kernel with some patches, including POM and
-> netfilter ones. The modules I insmod are ip_conntrack_ftp,
-> ip_conntrack_irc, ip_conntrack_tftp, ip_conntrack_amanda and
-> ip_conntrack_sip.
->=20
-> Asking around, have finally find that to get patches on mainstream, s=
-ome
-> names've changed and some code have been modified =BFis that right?
+On Friday 2008-05-16 17:08, Pascal Hambourg wrote:
+>
+>> Anyway, there aren't nf_conntrack_amanda, nf_conntrack_irc, etc. =C2=
+=BFare
+>> there available by now, or need some extra patches or something else=
+?
+>
+> Most of them were introduced in kernel 2.6.20 along with IPv4 statefu=
+l NAT.
+> Aliases have been defined, so you can keep using the old names.
 
-nf_conntrack is layer 3-independent and works with both IPv4 and IPv6,=20
-while ip_conntrack was IPv4-only.
+No aliases have been defined.
 
-> Anyway, there aren't nf_conntrack_amanda, nf_conntrack_irc, etc. =BFa=
-re
-> there available by now, or need some extra patches or something else?
-
-Most of them were introduced in kernel 2.6.20 along with IPv4 stateful=20
-NAT. Aliases have been defined, so you can keep using the old names.
+$ modinfo nf_conntrack
+filename:       /lib/modules/2.6.25.3-jen65-default/kernel/net/netfilte=
+r/nf_conntrack.ko
+license:        GPL
+srcversion:     3BD1C8DA6B930848245F7A5
+depends:       =20
+vermagic:       2.6.25.3-jen65-default SMP mod_unload 586=20
+parm:           expect_hashsize:uint
