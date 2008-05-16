@@ -1,34 +1,73 @@
-From: "Payam Chychi" <pchychi@gmail.com>
-Subject: iptables limit issue
-Date: Thu, 15 May 2008 17:08:23 -0700
-Message-ID: <f08c15d10805151708w6f72e8a0sad96e7a67a62578b@mail.gmail.com>
+From: John Haxby <john.haxby@oracle.com>
+Subject: ebtables problem with Xen bridges
+Date: Fri, 16 May 2008 11:24:01 +0100
+Message-ID: <482D60C1.1010800@oracle.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=yzPBlVbM/UB/sBCtLiN2jGetjAhL+H68imMTJby673c=;
-        b=NjdIbBfv3t1YrwnFWiRH87ut95WlM1Ai13P1rUCex0z4GhDca4llh5Z/cQONvZ9qlCUL+nYGzC9XNichhc0NaxAN9s5OpV1ut3zIXH2ri/pfrrgrqa5kG73RBpF1OsxzSjyubxtAqCu3D38xIZsrCmePBvNLbE89ML5Qgpn/q1c=
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi all,
+I have a problem with ebtables.
 
-I am running a bridged mode firewall with eth0 == external and eth1==
-internal. I am trying to limit the traffic per packet per second
-coming in through eth0 to rate limit down before it hits my eth1
-interface. The issue is that I cannot get more than 1000 packets/sec.
-I was wondering if anyone has come across this issue and if so, any
-solutions?
-when using the limit feature the maximum rate i can set is 10,000/sec,
-however this only allows roughly around 1100 pkts/sec to pass through
-the interface.
-I've spent some time looking at the kernel xt_limit.c and playing with
-" #define MAX_CPJ (0xFFFFFFFF / (HZ*60*60*24)) ".
+I am trying to configure a Xen domU as a firewall and while I can do
+this when the domU acting as firewall/proxy and the domU behind the
+firewall/proxy are on the same machine I can't make it work when the
+domU behind the firewall is on a different machine to the domU
+firewall.
 
-thanks in advance,
-Payam
+In other words: this works:
+
+   +-------------------------------------------------+
+   |   +---------------+        +---------------+    |
+   |   |          domU |        | firewall domU |    |
+   |   +---------------+        +---------------+    |
+   |                                            dom0 |
+   +-------------------------------------------------+
+
+  *broute
+  :BROUTING ACCEPT
+  -A BROUTING -s <dom0-MAC> -j ACCEPT
+  -A BROUTING -d <dom0-MAC> -j ACCEPT
+  -A BROUTING -s <firewall-MAC> -j ACCEPT
+  -A BROUTING -d <firewall-MAC> -j ACCEPT
+  -A BROUTING -p IPv4 -j dnat --to-dst <firewall-MAC> --dnat-target ACCEPT
+
+The idea here is that dom0 and the firewall/proxy have unfettered
+access but any other domU will have its IP traffic diverted through
+the firewall/proxy.  This works beautifully: the firewall gets to say
+what is allowed to and from the other domU's and also gets to
+redirect some traffic in the manner of a transparent proxy.
+
+The reason for doing it this way rather than the more conventional
+routing is that the non-firwall domU believes that it is on the local
+LAN (it has a normal local LAN IP address) and, indeed, limiting the
+final BROUTING rule to only match certain traffic does indeed allow
+some traffic to skip the firewall altogether.
+
+The problem now comes when I want traffic from a domU in a different
+dom0 to go through the firewall.
+
+I believe that what I should so is to add these to the beginning of
+the above rules and then have the same rules on both machines.
+
+  -A BROUTING -s <dom0'-MAC> -j ACCEPT
+  -A BROUTING -d <dom0'-MAC> -j ACCEPT
+
+Both dom0 and dom0' will have unrestricted access through their
+respective bridges and, as before domU running on dom0 will get its
+ traffic diverted through the firewall domU.
+
+I thought that a domU running on dom0' would also get its traffic
+diverted through the firewall as well, but this doesn't seem to be the
+case: something somewhere is just discarding frames.
+
+I'm sure that this is supposed to be possible, but I'm missing
+something (probably obvious) or I've misunderstood something.
+
+Is it possible?  What should I be doing?
+
+jch
+
