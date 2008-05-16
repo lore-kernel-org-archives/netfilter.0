@@ -1,33 +1,51 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Netfiler REAL Rule Match Sequence
-Date: Fri, 16 May 2008 17:57:22 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805161756260.15590@fbirervta.pbzchgretzou.qr>
-References: <774cb3b60805141321l6b8ce420ia10b6e027c80dd74@mail.gmail.com>  <alpine.LNX.1.10.0805142328140.5292@fbirervta.pbzchgretzou.qr>  <774cb3b60805150610h6aad9517l86eb7079e75cfaf4@mail.gmail.com>  <774cb3b60805150611w292f88d1le77aece2ade7e934@mail.gmail.com>
- <774cb3b60805150732o1ee9f5fao53537d46bec76ac2@mail.gmail.com>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: logdrop rule does not work any more
+Date: Fri, 16 May 2008 18:00:18 +0200
+Message-ID: <482DAF92.3050703@freemail.hu>
+References: <482DAAE9.80708@hellteam.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <774cb3b60805150732o1ee9f5fao53537d46bec76ac2@mail.gmail.com>
+In-Reply-To: <482DAAE9.80708@hellteam.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?J=C3=BCrgen_Rochol?= <juergen.rox@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: dandee@hellteam.net
 Cc: netfilter@vger.kernel.org
 
-
-On Thursday 2008-05-15 16:32, J=C3=BCrgen Rochol wrote:
+Daniel Dvo=F8=E1k =EDrta:
+> $ipt -P logdrop ACCEPT
+Policy is not supported on non built-in chains...
 >
->C)  iptables -P OUTPUT DROP  and iptables -A OUTPUT -t filter  -p icmp
-> -j ACCEPT and iptables -t mangle -A POSTROUTING -p icmp -j TTL
->--ttl-dec 10
+> $ipt -F INPUT
+> $ipt -F OUTPUT
+See below..
+> $ipt -F -t nat
+> $ipt -F -t mangle
+Okay...
+> $ipt -F logdrop
 >
->What happens now?
->* PC1 receives the reply.  This is the *first match* for this packet
->(as in B). So thats ok.
->* But other thing happens: PC1 receive the reply with TTL decremented.
->So the 3rd rule above was also evaluated. That is, for a same packet,
->2 rules were applied.
+Use this:
+$ipt -F -t filter
+$ipt -F -t raw
 
-They are different tables. So, all is still correct.
-Also, TTL is a non-terminating target, as are most targets designed
-for the mangle table.
+> $ipt -X logdrop
+not needed...
+> $ipt -N logdrop
+> $ipt -A logdrop -j LOG --log-prefix "logdrop"
+> $ipt -A logdrop -j DROP
+> ...
+> $ipt -t mangle -A POSTROUTING -p tcp --dport 25 -j logdrop ... for=20
+> example
+It is not a good idea to drop packets in other than the filter table...
+But if you want to do that then declare the logdrop chain in the mangle=
+=20
+table !!!
+
+$ipt -t mangle -N logdrop
+$ipt -t mangle -A logdrop .....
+
+
+Swifty
+
+
