@@ -1,68 +1,77 @@
-From: Martin <mylists@itcom.com.ar>
-Subject: Re: ip_conntrack vs. nf_conntrack
-Date: Fri, 16 May 2008 12:32:47 -0300
-Message-ID: <1210951968.23968.2614.camel@kr0sty.1.com.ar>
-References: <1210688686.2956.69.camel@kr0sty.1.com.ar>
-	 <482DA36B.6070801@plouf.fr.eu.org>
-Reply-To: mylists@itcom.com.ar
+From: =?ISO-8859-2?Q?Daniel_Dvo=F8=E1k?= <dandee@hellteam.net>
+Subject: logdrop rule does not work any more
+Date: Fri, 16 May 2008 17:40:25 +0200
+Message-ID: <482DAAE9.80708@hellteam.net>
+Reply-To: dandee@hellteam.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <482DA36B.6070801@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-
-On Fri, 2008-05-16 at 17:08 +0200, Pascal Hambourg wrote:
-> Hello,
->=20
-> Martin a =C3=A9crit :
-> >=20
-> > I use to have a 2.6.18 kernel with some patches, including POM and
-> > netfilter ones. The modules I insmod are ip_conntrack_ftp,
-> > ip_conntrack_irc, ip_conntrack_tftp, ip_conntrack_amanda and
-> > ip_conntrack_sip.
-> >=20
-> > Asking around, have finally find that to get patches on mainstream,=
- some
-> > names've changed and some code have been modified =C2=BFis that rig=
-ht?
->=20
-> nf_conntrack is layer 3-independent and works with both IPv4 and IPv6=
-,=20
-> while ip_conntrack was IPv4-only.
->=20
-> > Anyway, there aren't nf_conntrack_amanda, nf_conntrack_irc, etc. =C2=
-=BFare
-> > there available by now, or need some extra patches or something els=
-e?
->=20
-> Most of them were introduced in kernel 2.6.20 along with IPv4 statefu=
-l=20
-> NAT. Aliases have been defined, so you can keep using the old names.
-
-Thanks Pascal for the response.
-
-Couldn't find any documentation about that on netfilter site, but've
-seen that on the list.
-
-When compiling kernel there are potions to introduce them in netfilter
-modules, but there aren't modules or aliases to those names =C2=BFcan y=
-ou
-tell me how to add those alias? insmod keep telling me that
-ip_conntrack_amanda and ftp couldn't be loaded (I keep trying to load
-them on my firewall script).=20
-I've found nf_conntrack_* files, but are .h ones, and are at the includ=
-e
-path of the kernel source code, at netfilter section.
-
-
-I'll keep searching for more info.
-
-Cheers.
-
-Martin
-
+Hi all,
+=20
+I haven=B4t found any hint about my problem so I would like to ask abou=
+t=20
+logdrop rule.
+=20
+I had iptables 1.3.6 from Debian Etch distro and I use logdrop rule lik=
+e=20
+these rules:
+=20
+ipt=3D"/sbin/iptables"
+=20
+modprobe ip_conntrack
+modprobe ip_conntrack_ftp
+modprobe ipt_MASQUERADE
+modprobe ipt_state
+=20
+$ipt -P INPUT ACCEPT
+$ipt -P OUTPUT ACCEPT
+$ipt -P FORWARD ACCEPT
+$ipt -P logdrop ACCEPT
+=20
+$ipt -F INPUT
+$ipt -F OUTPUT
+$ipt -F -t nat
+$ipt -F -t mangle
+$ipt -F logdrop
+=20
+$ipt -X logdrop
+$ipt -N logdrop
+$ipt -A logdrop -j LOG --log-prefix "logdrop"
+$ipt -A logdrop -j DROP
+=2E..
+$ipt -t mangle -A POSTROUTING -p tcp --dport 25 -j logdrop ... for exam=
+ple
+=20
+It worked fain until I had to compile new iptables version 1.4.0 and my=
+=20
+problem has appeared every time when I start my firewall script.
+=20
+The error message is here:
+=20
+iptables: Bad built-in chain name
+iptables v1.4.0: Couldn't load target=20
+`logdrop':/usr/local/lib/iptables/libipt_logdrop.so: cannot open shared=
+=20
+object file: No such file or directory
+=20
+Try `iptables -h' or 'iptables --help' for more information.
+I do not know why during the compilation of new iptables, there is not=20
+libipt_logdrop.so module while in version 1.3.6 there had to be in=20
+directory, because no errors ever appeared.
+=20
+In changelog from 1.3.6 to 1.4.0, there is no information about=20
+cancelling logdrop support.
+=20
+So where is the problem ?
+What do I do in wrong way ?
+=20
+Thank you.
+=20
+Dan
+=20
+P.S.: I am not subscribed in mailling list, mail me directly please.
