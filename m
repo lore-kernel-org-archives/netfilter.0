@@ -1,47 +1,49 @@
-From: Martin <mylists@itcom.com.ar>
-Subject: Re: ip_conntrack vs. nf_conntrack
-Date: Fri, 16 May 2008 13:07:27 -0300
-Message-ID: <1210954048.23968.2777.camel@kr0sty.1.com.ar>
-References: <1210688686.2956.69.camel@kr0sty.1.com.ar>
-	 <482DA36B.6070801@plouf.fr.eu.org>
-	 <alpine.LNX.1.10.0805161714090.15590@fbirervta.pbzchgretzou.qr>
-	 <482DAC09.90304@plouf.fr.eu.org>
-Reply-To: mylists@itcom.com.ar
+From: "Greg Steuck" <greg@nest.cx>
+Subject: include/linux/netfilter.h after make headers_install is incomplete
+Date: Fri, 16 May 2008 15:21:48 -0700
+Message-ID: <a27c0c970805161521k332fba8cg808d52396b5cdce5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <482DAC09.90304@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition:x-google-sender-auth;
+        bh=NAz6Z586QPS8dawhzUqWr8nbxArQgSJQWRNKnIrdZ34=;
+        b=u7a38hza1JJf6fr6gKTAWI/ptB/8r6LPe9UeT2Z/IN/DlPI14HpybBWGFQZWQh36pQgCq5jmAyTPFiSOQ5fgvFBhmgLx8MYl2w1sBtBnOu2NFSGt8XkWc/FzWiaSZDh7QUgmogUIaYBOIu8OrThMgisMvt0GlJvyzIKb3+ECwQY=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
+Hello,
 
-On Fri, 2008-05-16 at 17:45 +0200, Pascal Hambourg wrote:
+I ran make headers_install in 2.6.25 tree and the installed netfilter.h is
+not complete. Namely, it declares
+union nf_inet_addr {
+	__u32		all[4];
+	__be32		ip;
+	__be32		ip6[4];
+...
+}
 
-> I meant aliases for helper modules. In most cases other netfilter 
-> modules should be autoloaded by iptables rules creation or other module 
-> dependencies, so it should be useless to load them explicitly.
+The __u32, __be32 types are declared in <linux/types.h> and the #include
+directive is removed by the installation process. This in turn makes some
+applications unbuildable against such an exported tree, e.g.
 
+busybox-1.10.1/networking/tcpudp.c:#include <linux/netfilter_ipv4.h>
 
-Ok, here is my progress:
+If I correctly understand the purpose of make headers_install, it is
+supposed to generate an API for applications. I could certainly
+make tcpudp.c include linux/types.h, but given that the application
+does not even use nf_inet_addr, this would be the wrong place for
+the fix.
 
-I've solved the connlimit problem. I was using as iptables source, an
-little old one from debian. Using iptables 1.4 source form netrfilter do
-the trick.
+Is kernel the right place then?
 
-
-So I've just one question at least. If there aren't nf_conntrack_*
-modules or aliases, does the amanda, ftp, quake3, etc. modules work just
-loading nf_conntrack? If so, I think I'm ready to go with this kernel
-history.
-
-Thanks to all for your help.
-
-Cheers
-
-
-Martin 
-
-
+Thanks
+Greg
+-- 
+nest.cx is Gmail hosted, use PGP for anything private. Key:
+http://tinyurl.com/ho8qg
+Fingerprint: 5E2B 2D0E 1E03 2046 BEC3  4D50 0B15 42BD 8DF5 A1B0
