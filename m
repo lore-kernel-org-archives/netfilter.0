@@ -1,51 +1,47 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: logdrop rule does not work any more
-Date: Fri, 16 May 2008 18:00:18 +0200
-Message-ID: <482DAF92.3050703@freemail.hu>
-References: <482DAAE9.80708@hellteam.net>
+From: Martin <mylists@itcom.com.ar>
+Subject: Re: ip_conntrack vs. nf_conntrack
+Date: Fri, 16 May 2008 13:07:27 -0300
+Message-ID: <1210954048.23968.2777.camel@kr0sty.1.com.ar>
+References: <1210688686.2956.69.camel@kr0sty.1.com.ar>
+	 <482DA36B.6070801@plouf.fr.eu.org>
+	 <alpine.LNX.1.10.0805161714090.15590@fbirervta.pbzchgretzou.qr>
+	 <482DAC09.90304@plouf.fr.eu.org>
+Reply-To: mylists@itcom.com.ar
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <482DAAE9.80708@hellteam.net>
+In-Reply-To: <482DAC09.90304@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: dandee@hellteam.net
+Content-Type: text/plain; charset="us-ascii"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-Daniel Dvo=F8=E1k =EDrta:
-> $ipt -P logdrop ACCEPT
-Policy is not supported on non built-in chains...
->
-> $ipt -F INPUT
-> $ipt -F OUTPUT
-See below..
-> $ipt -F -t nat
-> $ipt -F -t mangle
-Okay...
-> $ipt -F logdrop
->
-Use this:
-$ipt -F -t filter
-$ipt -F -t raw
 
-> $ipt -X logdrop
-not needed...
-> $ipt -N logdrop
-> $ipt -A logdrop -j LOG --log-prefix "logdrop"
-> $ipt -A logdrop -j DROP
-> ...
-> $ipt -t mangle -A POSTROUTING -p tcp --dport 25 -j logdrop ... for=20
-> example
-It is not a good idea to drop packets in other than the filter table...
-But if you want to do that then declare the logdrop chain in the mangle=
-=20
-table !!!
+On Fri, 2008-05-16 at 17:45 +0200, Pascal Hambourg wrote:
 
-$ipt -t mangle -N logdrop
-$ipt -t mangle -A logdrop .....
+> I meant aliases for helper modules. In most cases other netfilter 
+> modules should be autoloaded by iptables rules creation or other module 
+> dependencies, so it should be useless to load them explicitly.
 
 
-Swifty
+Ok, here is my progress:
+
+I've solved the connlimit problem. I was using as iptables source, an
+little old one from debian. Using iptables 1.4 source form netrfilter do
+the trick.
+
+
+So I've just one question at least. If there aren't nf_conntrack_*
+modules or aliases, does the amanda, ftp, quake3, etc. modules work just
+loading nf_conntrack? If so, I think I'm ready to go with this kernel
+history.
+
+Thanks to all for your help.
+
+Cheers
+
+
+Martin 
 
 
