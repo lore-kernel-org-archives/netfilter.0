@@ -1,17 +1,28 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: "Nishit Shah" <nishit@elitecore.com>
 Subject: RE: sequence of matches in a single rule
-Date: Sat, 17 May 2008 10:35:47 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805171032270.15590@fbirervta.pbzchgretzou.qr>
-References: <001501c8b7e0$8ef50a00$acdf1e00$@com> <alpine.LNX.1.10.0805170905070.15590@fbirervta.pbzchgretzou.qr> <002801c8b7ee$a72b2060$f5816120$@com>
+Date: Sat, 17 May 2008 14:18:36 +0530
+Message-ID: <000101c8b7fa$cb8f91f0$62aeb5d0$@com>
+References: <001501c8b7e0$8ef50a00$acdf1e00$@com> <alpine.LNX.1.10.0805170905070.15590@fbirervta.pbzchgretzou.qr> <002801c8b7ee$a72b2060$f5816120$@com> <alpine.LNX.1.10.0805171032270.15590@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <002801c8b7ee$a72b2060$f5816120$@com>
+In-Reply-To: <alpine.LNX.1.10.0805171032270.15590@fbirervta.pbzchgretzou.qr>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nishit Shah <nishit@elitecore.com>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Jan Engelhardt' <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
+
+
+
+-----Original Message-----
+From: jengelh@sovereign.computergmbh.de
+[mailto:jengelh@sovereign.computergmbh.de] On Behalf Of Jan Engelhardt
+Sent: Saturday, May 17, 2008 2:06 PM
+To: Nishit Shah
+Cc: netfilter@vger.kernel.org
+Subject: RE: sequence of matches in a single rule
 
 
 On Saturday 2008-05-17 09:21, Nishit Shah wrote:
@@ -22,8 +33,10 @@ On Saturday 2008-05-17 09:21, Nishit Shah wrote:
 >>as no internal state is modified. It does matter however,
 >>for example, with -m statistic --mode nth and -m quota.
 >
->So, can I have that order somewhere mentioned or I need to go through source
->code ? If I write some of my own match do I have any way to change the match
+>So, can I have that order somewhere mentioned or I need to go through
+source
+>code ? If I write some of my own match do I have any way to change the
+match
 >preference ? 
 
 This is not decided in source code. The order is defined by you when
@@ -45,3 +58,20 @@ passed hashlimit.
 >prefer 2 iptables rules for that ?
 
 One rule is much preferred in this case.
+
+
+Thanks for your explanation Jan,
+	Just curious what will happen in case when internal state is
+modified ?
+
+	What is the sequence of match when I have,
+
+		1.) -m statistic --mode nth and -m quota
+		2.) -m quota and -m statistic --mode nth
+
+		3.) -m statistic --mode nth and -m state
+		4.) -m state and -m statistic --mode nth
+
+Rgds,
+Nishit Shah.
+
