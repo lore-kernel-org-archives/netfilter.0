@@ -1,49 +1,65 @@
-From: "Greg Steuck" <greg@nest.cx>
-Subject: include/linux/netfilter.h after make headers_install is incomplete
-Date: Fri, 16 May 2008 15:21:48 -0700
-Message-ID: <a27c0c970805161521k332fba8cg808d52396b5cdce5@mail.gmail.com>
+From: Alexei Ustyuzhaninov <alust@alust.homeunix.com>
+Subject: Re: fwmark iptables/ip routing interaction question
+Date: Sat, 17 May 2008 09:53:37 +0600
+Message-ID: <482E56C1.2070508@alust.homeunix.com>
+References: <49159.212.190.198.36.1210171014.squirrel@webserver6.intec.ugent.be> <alpine.LNX.1.10.0805071703150.30395@fbirervta.pbzchgretzou.qr> <48271D8B.5030608@alust.homeunix.com> <alpine.LNX.1.10.0805111938210.19952@fbirervta.pbzchgretzou.qr> <482731F8.9030806@alust.homeunix.com> <482DA25D.70703@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition:x-google-sender-auth;
-        bh=NAz6Z586QPS8dawhzUqWr8nbxArQgSJQWRNKnIrdZ34=;
-        b=u7a38hza1JJf6fr6gKTAWI/ptB/8r6LPe9UeT2Z/IN/DlPI14HpybBWGFQZWQh36pQgCq5jmAyTPFiSOQ5fgvFBhmgLx8MYl2w1sBtBnOu2NFSGt8XkWc/FzWiaSZDh7QUgmogUIaYBOIu8OrThMgisMvt0GlJvyzIKb3+ECwQY=
-Content-Disposition: inline
+In-Reply-To: <482DA25D.70703@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Pascal Hambourg wrote:
+> Hello,
+>=20
+> Alexei Ustyuzhaninov a =E9crit :
+>>>
+>>>> I have a weird with the same scenario: after rerouting a packet go=
+es
+>>>> out through another interface but keeps the source address of the=20
+>>>> original interface.
+>>>
+>>> Yes that is ... how the code is currently written it seems.
+>=20
+> The source address is chosen before the packet is sent to the OUTPUT=20
+> chains, and cannot be changed by the rerouting code, this would break=
+=20
+> things such as connection tracking. It requires stateful NAT so the=20
+> correct original address is put back in replies. By the way, DNAT in =
+the=20
+> OUTPUT chain used to implicitly change the source address when the ne=
+w=20
+> destination address caused the output interface to change until kerne=
+l=20
+> 2.6.11.
 
-I ran make headers_install in 2.6.25 tree and the installed netfilter.h is
-not complete. Namely, it declares
-union nf_inet_addr {
-	__u32		all[4];
-	__be32		ip;
-	__be32		ip6[4];
-...
-}
+Hm. That's not clear to me as I don't know the destination address in=20
+advance (and don't want to change it). Anyhow this solution is obsolete=
+=20
+as I see.
 
-The __u32, __be32 types are declared in <linux/types.h> and the #include
-directive is removed by the installation process. This in turn makes some
-applications unbuildable against such an exported tree, e.g.
+>> Well, maybe you can suggest how to work around this? :) I tried snat=
+,=20
+>> but this solution seems not to work.
+>=20
+> SNAT should work on packets creating a new connection (i.e. in the st=
+ate=20
+> NEW).
 
-busybox-1.10.1/networking/tcpudp.c:#include <linux/netfilter_ipv4.h>
+Yes, really! The SYN packet goes out through the right interface with=20
+the right source address, SYN/ACK comes back and that's all, nothing=20
+will happen more.
 
-If I correctly understand the purpose of make headers_install, it is
-supposed to generate an API for applications. I could certainly
-make tcpudp.c include linux/types.h, but given that the application
-does not even use nf_inet_addr, this would be the wrong place for
-the fix.
+Anyhow  isn't this problem unresolvable in general? I just want a simpl=
+e=20
+thing: to send mail via one provider and all other traffic via the othe=
+r=20
+provider,
 
-Is kernel the right place then?
-
-Thanks
-Greg
--- 
-nest.cx is Gmail hosted, use PGP for anything private. Key:
-http://tinyurl.com/ho8qg
-Fingerprint: 5E2B 2D0E 1E03 2046 BEC3  4D50 0B15 42BD 8DF5 A1B0
+--=20
+Thanks,
+Alexei
