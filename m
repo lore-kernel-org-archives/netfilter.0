@@ -1,36 +1,28 @@
-From: lists+netfilter@roth.lu
-Subject: Re: Handling large list of rules - Efficient or not?
-Date: Sat, 17 May 2008 17:59:22 +0200
-Message-ID: <482F00DA.8010607@roth.lu>
-References: <b66ddc900805170728h34511bb7r9be1324034745748@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: fwmark iptables/ip routing interaction question
+Date: Sun, 18 May 2008 01:26:43 +0200
+Message-ID: <482F69B3.1050503@plouf.fr.eu.org>
+References: <49159.212.190.198.36.1210171014.squirrel@webserver6.intec.ugent.be> <alpine.LNX.1.10.0805071703150.30395@fbirervta.pbzchgretzou.qr> <48271D8B.5030608@alust.homeunix.com> <alpine.LNX.1.10.0805111938210.19952@fbirervta.pbzchgretzou.qr> <482731F8.9030806@alust.homeunix.com> <482DA25D.70703@plouf.fr.eu.org> <482E56C1.2070508@alust.homeunix.com> <482EB827.8010608@plouf.fr.eu.org> <482ED197.8040509@alust.homeunix.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <b66ddc900805170728h34511bb7r9be1324034745748@mail.gmail.com>
+In-Reply-To: <482ED197.8040509@alust.homeunix.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: howard chen <howachen@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-howard chen wrote:
-> My server sometimes is under attack by DDOS, so I want to make a
-> simple script which read the log (Apache access log), do the analysis,
-> and set the rule to drop the packets from a specific IP.
->
-> Since it is DDOS, so I assume there will be large ammount of unique IP
-> needed to be input into the iptables.
->
-> I want to know, are there any hidden efficiency problem in this setup?
-> Or any better method?
->
->
-> Howard.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->   
-Haven't we had this discussion several times in the very recent past? 
-See the archives.
-Hint: if the list is really large use ipsets.
+Alexei Ustyuzhaninov a =E9crit :
+> Pascal Hambourg wrote:
+>>
+>> You may be able to specify the desired source address for outgoing=20
+>> connections if your mail application allows it.
+>=20
+> No, of course the mail application doesn't bother about source addres=
+ses=20
+> and IP routing. I believe it operates at different level of ISO model=
+=2E
+
+An application can specify the source address to use when making=20
+outgoing connections. Common applications such as telnet or ping allow=20
+it as an option. The mail software exim allows it too.
