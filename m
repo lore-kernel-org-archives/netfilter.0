@@ -1,45 +1,36 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: RE: sequence of matches in a single rule
-Date: Sat, 17 May 2008 11:12:15 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805171111390.15590@fbirervta.pbzchgretzou.qr>
-References: <001501c8b7e0$8ef50a00$acdf1e00$@com> <alpine.LNX.1.10.0805170905070.15590@fbirervta.pbzchgretzou.qr> <002801c8b7ee$a72b2060$f5816120$@com> <alpine.LNX.1.10.0805171032270.15590@fbirervta.pbzchgretzou.qr> <000101c8b7fa$cb8f91f0$62aeb5d0$@com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: fwmark iptables/ip routing interaction question
+Date: Sat, 17 May 2008 12:49:11 +0200
+Message-ID: <482EB827.8010608@plouf.fr.eu.org>
+References: <49159.212.190.198.36.1210171014.squirrel@webserver6.intec.ugent.be> <alpine.LNX.1.10.0805071703150.30395@fbirervta.pbzchgretzou.qr> <48271D8B.5030608@alust.homeunix.com> <alpine.LNX.1.10.0805111938210.19952@fbirervta.pbzchgretzou.qr> <482731F8.9030806@alust.homeunix.com> <482DA25D.70703@plouf.fr.eu.org> <482E56C1.2070508@alust.homeunix.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <000101c8b7fa$cb8f91f0$62aeb5d0$@com>
+In-Reply-To: <482E56C1.2070508@alust.homeunix.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nishit Shah <nishit@elitecore.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Alexei Ustyuzhaninov a =E9crit :
+> Pascal Hambourg wrote:
+>>
+>> SNAT should work on packets creating a new connection (i.e. in the=20
+>> state NEW).
+>=20
+> Yes, really! The SYN packet goes out through the right interface with=
+=20
+> the right source address, SYN/ACK comes back and that's all, nothing=20
+> will happen more.
 
-On Saturday 2008-05-17 10:48, Nishit Shah wrote:
->
->>Using -m mark -m hashlimit, hashlimit only gets to see packets of
->>a specific mark, while -m hashlimit -m mark, hashlimit gets to
->>see all packets, and mark only sees packets which successfully
->>passed hashlimit.
->
->
->Thanks for your explanation Jan,
->	Just curious what will happen in case when internal state is
->modified ?
+This looks like a filtering issue causing the reply packet to be=20
+dropped. Check your iptables 'filter' rules and that source validation=20
+by reversed path is disabled for that interface=20
+(/proc/sys/net/ipv4/conf/<interface>/rp_filter=3D0).
 
-See above.
+> I just want a simple thing: to send mail via one provider and all oth=
+er
+> traffic via the other provider
 
->	What is the sequence of match when I have,
-
-From left to right.
-
->
->		1.) -m statistic --mode nth and -m quota
->		2.) -m quota and -m statistic --mode nth
->
->		3.) -m statistic --mode nth and -m state
->		4.) -m state and -m statistic --mode nth
->
->Rgds,
->Nishit Shah.
->
-
+You may be able to specify the desired source address for outgoing=20
+connections if your mail application allows it.
