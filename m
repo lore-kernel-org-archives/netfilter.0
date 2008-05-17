@@ -1,32 +1,50 @@
-From: "Payam Chychi" <pchychi@gmail.com>
-Subject: iptables limit --limit limitations
-Date: Sat, 17 May 2008 00:20:43 -0700
-Message-ID: <f08c15d10805170020i2ac5a207g969c0ed5bf10867c@mail.gmail.com>
+From: "Nishit Shah" <nishit@elitecore.com>
+Subject: RE: sequence of matches in a single rule
+Date: Sat, 17 May 2008 12:51:41 +0530
+Message-ID: <002801c8b7ee$a72b2060$f5816120$@com>
+References: <001501c8b7e0$8ef50a00$acdf1e00$@com> <alpine.LNX.1.10.0805170905070.15590@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=zdDBUxkcCtIEXKh5xsbFX7gSY4q4jrDeRj27VEqWH2I=;
-        b=fOL0Tz/0xarnIJC5+lxie3rLSJZ7K791Aamu8EjEBBWgfL82BHYDfXJJOPq6vWBqWALOPqPKHsObLKeo7G32kl2CSyTDZ0QgnYAhITr83AgcS2R/aRedBuSt+1uOc3GCVn8Zky8J2T1/R9I/7y+M44h/nXKB6pA9hhdDqLcBZCE=
-Content-Disposition: inline
+In-Reply-To: <alpine.LNX.1.10.0805170905070.15590@fbirervta.pbzchgretzou.qr>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: 'Jan Engelhardt' <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-Hi,
 
-Has anyone experienced any limitations when implementing the "limit
---limit $value/sec"  ? I can only get 1000 packets/sec with a value of
-1000 or 10000  with a burst of 5. Ive been able to increase the
-packets to almost 7500 packers/sec when using a value of 10000 with a
-burst of 20.
 
-Ive also tried increasing the HZ for High res timer on the kernel to
-1000 and enabled dynamic ticks (thanks to kuzin)
-any thoughts or ideas on this? I would greatly appreciate any feedback...
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org
+[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Jan Engelhardt
+Sent: Saturday, May 17, 2008 12:36 PM
+To: Nishit Shah
+Cc: netfilter@vger.kernel.org
+Subject: Re: sequence of matches in a single rule
 
-Thanks,
-Payam
+
+On Saturday 2008-05-17 07:40, Nishit Shah wrote:
+
+>Hi,
+>	Is there any specific order in which match will take place ?
+
+Yes. For -m conntrack and -m mark however, it does not matter,
+as no internal state is modified. It does matter however,
+for example, with -m statistic --mode nth and -m quota.
+
+So, can I have that order somewhere mentioned or I need to go through source
+code ? If I write some of my own match do I have any way to change the match
+preference ? 
+	The reason I am asking is, there are some matches that are CPU
+incentive and some are not. For an example I prefer -m mark to always take
+precedence before -m limit or -m hashlimit, something like that..
+	Or is it more preferable to not use such thing in single rule and
+prefer 2 iptables rules for that ?
+
+Rgds,
+Nishit Shah. 
+
+
+
