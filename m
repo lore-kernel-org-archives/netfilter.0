@@ -1,45 +1,69 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: ip_conntrack vs. nf_conntrack
-Date: Mon, 19 May 2008 19:42:28 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805191942020.15136@fbirervta.pbzchgretzou.qr>
-References: <1210688686.2956.69.camel@kr0sty.1.com.ar>  <482DA36B.6070801@plouf.fr.eu.org>  <alpine.LNX.1.10.0805161714090.15590@fbirervta.pbzchgretzou.qr>  <482DAC09.90304@plouf.fr.eu.org>  <1210954048.23968.2777.camel@kr0sty.1.com.ar> 
- <alpine.LNX.1.10.0805171329520.15590@fbirervta.pbzchgretzou.qr> <1211202805.23968.3867.camel@kr0sty.1.com.ar>
+From: "Jaroslav Rakhmatoullin" <jazzoslav@gmail.com>
+Subject: iptables -t raw [conditions] -j TRACE is not logging
+Date: Tue, 20 May 2008 07:32:09 +0200
+Message-ID: <9a7fd99c0805192232o2399fd48rb462a131da9fd2f6@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1211202805.23968.3867.camel@kr0sty.1.com.ar>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:sender:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition:x-google-sender-auth;
+        bh=lqukpqpeC/Mr4j/8bDC4q2iaKbASgm3TpVLgwrmZRHg=;
+        b=dwv3BrHXSVRalFwBmwFfOGeBfGxTgYXpVLX6y4+46y//rdsxsamTIIxJU2sM2/1+K93SgPlw+esWU8cmEGom53fnOj2SfdHBHDHIOCGovdNKIbYTJZG0kThMRTAd0ZLcaOl9VS/LNjzsRgch8J0F3tZ6h1TllBnSAqKm4w7LKgs=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Martin <mylists@itcom.com.ar>
-Cc: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+
+Host description
+
+distro: gentoo 2007.0 amd64
+kernel: linux 2.6.23-gentoo-r8
+ntfltr: iptables v1.4.0
+logger: syslog-ng 2.0.6
+
+Problem description
+iptables TRACE target never gives any output through ipt_LOG and syslog-ng
+
+I have successfully configured masquerading on the gateway with stuff
+like browsing, counter-strike:source, azureus and samba/nfs working
+behind it. To account for my lack in experience with netfilter I've
+set up logging through both ipt_LOG and ipt_ULOG to monitor dropped
+and rejected traffic. This has gotten me pretty far, but now I'm
+stuck. That is, I need more diagnostics/debugging over the netfilter
+rules.
+
+I installed the latest iptables package which supports the -j TRACE
+target. The kernel has support for this too. I can actually run
+
+iptables -t raw -A PREROUTING -p tcp --dport 80 -j TRACE
+iptables -t raw -A OUTPUT -p tcp --dport 80 -j TRACE
+
+without errors about illegal/missing chains/targets/matches.
+Logging through syslog-ng and ulogd works because I see stuff like
+
+May 20 04:07:46 raptor a   ping  IN=eth0 OUT= MAC=00  SRC=10.3.0.1
+DST=10.3.0.5 LEN=84 TOS=00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP TYPE=8
+CODE=0 ID=1906 SEQ=5
+May 20 05:33:10 raptor a   loop  IN=lo OUT= MAC=00  SRC=10.3.0.5
+DST=10.3.0.5 LEN=80 TOS=00 PREC=0xC0 TTL=64 ID=16564 PROTO=ICMP TYPE=3
+CODE=3
+
+in my ulogd [LOGEMU] file and
+
+05 20 04:06:43 tryggve kernel TRACE target: only valid in raw table, not filter
+05 20 04:08:20 tryggve kernel a  Lping IN= OUT=eth1 SRC=10.3.0.1
+DST=10.3.0.5 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP
+TYPE=8 CODE=0 ID=1906 SEQ=1
+
+in /var/log/messages. (Dont mind the TRACE error above, I was using -t filter.)
+The expected behavior of -j TRACE is do dump iptables rules a given
+packet goes through to syslog. Surprisingly i get nothing even when
+specifying port 80 traffic to be TRACEd.
 
 
-On Monday 2008-05-19 15:13, Martin wrote:
->> On Friday 2008-05-16 18:07, Martin wrote:
->> >
->> >So I've just one question at least. If there aren't nf_conntrack_*
->> >modules or aliases, does the amanda, ftp, quake3, etc. modules work just
->> >loading nf_conntrack? If so, I think I'm ready to go with this kernel
->> >history.
->> 
->> No, nf_conntrack_ftp is required for FTP (and similarly for the
->> others).
->
->But there isn't nf_conntrack_ftp.ko module. May be it have been renamed
->to /lib/modules/2.6.25/kernel/net/ipv4/netfilter/nf_nat_ftp.ko ?
-
-19:34 yaguchi:~/pub/Documents > modinfo nf_conntrack_ftp
-filename:
-/lib/modules/2.6.23.17-ccj64-rt/kernel/net/netfilter/nf_conntrack_ftp.ko
-alias:          ip_conntrack_ftp
-description:    ftp connection tracking helper
-author:         Rusty Russell <rusty@rustcorp.com.au>
-license:        GPL
-srcversion:     5719E7793C1052C8385FF11
-depends:        nf_conntrack
-vermagic:       2.6.23.17-ccj64-rt SMP preempt mod_unload 586 REGPARM 
-parm:           ports:array of ushort
-parm:           loose:bool
-
-When I say nf_conntrack_ftp, I meant nf_conntrack_ftp.
+If anyone has made this work for them I am very curious as to how they
+did it. If you want to have a look at my kernel .config or
+syslog-ng.conf or anything else on my system don't hesitate to ask,
+but I can't imagine the problem is rooted in the daemon configs.
