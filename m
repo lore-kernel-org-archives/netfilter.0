@@ -1,70 +1,33 @@
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
-Subject: Distros that can run conntrack-tools/conntrackd with the default kernel
-Date: Thu, 22 May 2008 11:04:56 +0300
-Message-ID: <20080522080456.GE8042@edu.joroinen.fi>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Distros that can run conntrack-tools/conntrackd with the default
+ kernel
+Date: Thu, 22 May 2008 10:49:28 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805221046190.971@fbirervta.pbzchgretzou.qr>
+References: <20080522080456.GE8042@edu.joroinen.fi>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <20080522080456.GE8042@edu.joroinen.fi>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
-
-Hello list!
-
-What distributions currently are able to run conntrack-tools with the
-default/included kernel? Or even ship with conntrack-tools packaged/included..
-
-Based on http://conntrack-tools.netfilter.org/install.html I think at least
-Fedora 9 has the needed options enabled in the default kernel:
-
-$ grep CONFIG_NF_CONNTRACK config-2.6.25-14.fc9.i686 
-CONFIG_NF_CONNTRACK=m
-CONFIG_NF_CONNTRACK_MARK=y
-CONFIG_NF_CONNTRACK_SECMARK=y
-CONFIG_NF_CONNTRACK_EVENTS=y
-CONFIG_NF_CONNTRACK_AMANDA=m
-CONFIG_NF_CONNTRACK_FTP=m
-CONFIG_NF_CONNTRACK_H323=m
-CONFIG_NF_CONNTRACK_IRC=m
-CONFIG_NF_CONNTRACK_NETBIOS_NS=m
-CONFIG_NF_CONNTRACK_PPTP=m
-CONFIG_NF_CONNTRACK_SANE=m
-CONFIG_NF_CONNTRACK_SIP=m
-CONFIG_NF_CONNTRACK_TFTP=m
-CONFIG_NF_CONNTRACK_IPV4=m
-# CONFIG_NF_CONNTRACK_PROC_COMPAT is not set
-CONFIG_NF_CONNTRACK_IPV6=m
-
-$ grep CONFIG_NETFILTER_NETLINK config-2.6.25-14.fc9.i686 
-CONFIG_NETFILTER_NETLINK=m
-CONFIG_NETFILTER_NETLINK_QUEUE=m
-CONFIG_NETFILTER_NETLINK_LOG=m
-
-$ grep CONFIG_NF_CT_NETLINK config-2.6.25-14.fc9.i686 
-CONFIG_NF_CT_NETLINK=m
-
-$ grep CONFIG_NF_CONNTRACK_EVENTS config-2.6.25-14.fc9.i686 
-CONFIG_NF_CONNTRACK_EVENTS=y
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: =?UTF-8?Q?Pasi_K=C3=A4rkk=C3=A4inen?= <pasik@iki.fi>
+Cc: netfilter@vger.kernel.org
 
 
+On Thursday 2008-05-22 10:04, Pasi K=C3=A4rkk=C3=A4inen wrote:
 
-Checking out CentOS 5.1 / RHEL 5.1 doesn't look too promising.. 
+>Hello list!
+>
+>What distributions currently are able to run conntrack-tools with the
+>default/included kernel? Or even ship with conntrack-tools packaged/in=
+cluded..
 
-$ grep CONFIG_NF_CONNTRACK config-2.6.18-53.el5
+openSUSE 10.3, perhaps SLES.
 
-$ grep CONFIG_NETFILTER_NETLINK config-2.6.18-53.el5 
-CONFIG_NETFILTER_NETLINK=m
-CONFIG_NETFILTER_NETLINK_QUEUE=m
-CONFIG_NETFILTER_NETLINK_LOG=m
+>Is there any way to get conntrack-tools working with the default RHEL/=
+CentOS 5.1
+>kernel?=20
 
-$ grep CONFIG_NF_CT_NETLINK config-2.6.18-53.el5
-
-$ grep CONFIG_NF_CONNTRACK_EVENTS config-2.6.18-53.el5
-
-
-Is there any way to get conntrack-tools working with the default RHEL/CentOS 5.1
-kernel? 
-
--- Pasi
+Very unlikely, but then again, that's what you get when
+going with "enterprise" distros.
