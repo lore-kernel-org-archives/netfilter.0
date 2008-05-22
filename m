@@ -1,26 +1,27 @@
-From: Akhil Sharma <goodpriest@yahoo.com>
-Subject: ipt_recent: how long does a violater stay in the bad guys list?
-Date: Thu, 22 May 2008 08:16:35 -0700 (PDT)
-Message-ID: <462705.29117.qm@web37105.mail.mud.yahoo.com>
+From: "Torrez-Bowen Group" <louietorrez@gmail.com>
+Subject: Returning calls make $500 - $3,500......OR MORE
+Date: Thu, 22 May 2008 17:26:54 -0600
+Message-ID: <CHILKAT-MID-e057d824-3f0f-42f3-8ccd-145187ec0f32@rebecca-8b86a3d>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:mime-version:date:x-priority:x-mailer:to:from:subject:content-type:content-transfer-encoding:message-id;
+        bh=3Y3poHE6ss5MLKuCwzv0dx6RZ61hQOPGiICJ0+zr+ks=;
+        b=fcTJj5YMJ4JiRXtLnrs4tS19r+2lEzctFROM5ADhTmHmDyQR1fN9+Vum9ZDDxDdHBG61ssLmNQlR3gEqIgvmPizrlDGe8WBrSBjfOxJnjOEqRO++LyCc7KP/RNhin/Wl2nKF9yxbiU9mI13ok5jmMeuhjzp9akOpeBVJ2bNYfXg=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Question: in ipt_recent, if a client is added to a
-hitlist
-(/proc/net/ipt_recent/hitlist) after having violated a
-rule of sending over 10
-packets in a minute, how long is the entry maintained
-in the list? Does it ever
-get removed from the hitlist? Instead, would it just
-track the last time the
-packets arrived and never get removed from the hitlist
-until the PC is
-rebooted?
+I would to teach you how.... you can Generate $500, $1000, $2000 or
+More a day.
+
+Just Call me.... Now!
+
+ask for louie
 
 
-      
+1-575-445-9382
+
