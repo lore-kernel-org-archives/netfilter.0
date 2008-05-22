@@ -1,51 +1,70 @@
-From: "=?ISO-8859-1?Q?Fl=E1vio_Costa?=" <fcosta75@gmail.com>
-Subject: Router with 2 public interfaces
-Date: Wed, 21 May 2008 16:36:25 -0800
-Message-ID: <9b7febdd0805211736k3f34b85i659d4aa761e09bda@mail.gmail.com>
+From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Subject: Distros that can run conntrack-tools/conntrackd with the default kernel
+Date: Thu, 22 May 2008 11:04:56 +0300
+Message-ID: <20080522080456.GE8042@edu.joroinen.fi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=M0grmqzv1p0Li3SF3dLDTEQ5BFhA+j2I58r67u6c+PA=;
-        b=jzNpQeiJgOwJ7scSqUIkOwACsDxjf0hkVUmpXr22jFNX61d1SA38S2/+URuK2xUiQBhsYBWTFQGV9pzAkxOEVd0UX8thTaIw5uBXBQOjTl4IB1Wvjh71OoXLlBDOYy5KwlHpd4+/fj3qEs9NyuGNXBLtU+BKeaCZPsMMQ18jV6U=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi.
+Hello list!
 
-I have a router with 3 interfaces. One is connected to an internal
-LAN. The other 2 are connected to internet.
+What distributions currently are able to run conntrack-tools with the
+default/included kernel? Or even ship with conntrack-tools packaged/included..
 
-I have the following interfaces:
+Based on http://conntrack-tools.netfilter.org/install.html I think at least
+Fedora 9 has the needed options enabled in the default kernel:
 
-eth0 -> (internal ex. 192.168.0.1)
-eth1 -> (fixed ex. 200.213.105.108)
-eth2 -> (dynamic ex. 201.10.10.11)
+$ grep CONFIG_NF_CONNTRACK config-2.6.25-14.fc9.i686 
+CONFIG_NF_CONNTRACK=m
+CONFIG_NF_CONNTRACK_MARK=y
+CONFIG_NF_CONNTRACK_SECMARK=y
+CONFIG_NF_CONNTRACK_EVENTS=y
+CONFIG_NF_CONNTRACK_AMANDA=m
+CONFIG_NF_CONNTRACK_FTP=m
+CONFIG_NF_CONNTRACK_H323=m
+CONFIG_NF_CONNTRACK_IRC=m
+CONFIG_NF_CONNTRACK_NETBIOS_NS=m
+CONFIG_NF_CONNTRACK_PPTP=m
+CONFIG_NF_CONNTRACK_SANE=m
+CONFIG_NF_CONNTRACK_SIP=m
+CONFIG_NF_CONNTRACK_TFTP=m
+CONFIG_NF_CONNTRACK_IPV4=m
+# CONFIG_NF_CONNTRACK_PROC_COMPAT is not set
+CONFIG_NF_CONNTRACK_IPV6=m
 
-The default route is configured for interface eth2.
+$ grep CONFIG_NETFILTER_NETLINK config-2.6.25-14.fc9.i686 
+CONFIG_NETFILTER_NETLINK=m
+CONFIG_NETFILTER_NETLINK_QUEUE=m
+CONFIG_NETFILTER_NETLINK_LOG=m
 
-Inside LAN I have a webserver listening on 192.168.0.10:80
+$ grep CONFIG_NF_CT_NETLINK config-2.6.25-14.fc9.i686 
+CONFIG_NF_CT_NETLINK=m
 
-People reaching my webserver by interface eth2 is all working fine.
+$ grep CONFIG_NF_CONNTRACK_EVENTS config-2.6.25-14.fc9.i686 
+CONFIG_NF_CONNTRACK_EVENTS=y
 
-When someone connect to webserver by interface eth1 I doesn't work,
-because packets go back by default route (eth2), which is not the same
-they arrive (eth1).
 
-I tried marking packets and forcing transverse by original interface,
-but it does not worked.
 
-Can someone give me an example of "iptable" and "ip" commands to
-configure this? I do not want balanced traffic, because in future I
-may block incoming requests to eth2 and keep it default route to
-people in LAN connect to webservers by that interface, which is less
-expensive.
+Checking out CentOS 5.1 / RHEL 5.1 doesn't look too promising.. 
 
-Thanks in advance
+$ grep CONFIG_NF_CONNTRACK config-2.6.18-53.el5
 
-Flavio Costa
+$ grep CONFIG_NETFILTER_NETLINK config-2.6.18-53.el5 
+CONFIG_NETFILTER_NETLINK=m
+CONFIG_NETFILTER_NETLINK_QUEUE=m
+CONFIG_NETFILTER_NETLINK_LOG=m
+
+$ grep CONFIG_NF_CT_NETLINK config-2.6.18-53.el5
+
+$ grep CONFIG_NF_CONNTRACK_EVENTS config-2.6.18-53.el5
+
+
+Is there any way to get conntrack-tools working with the default RHEL/CentOS 5.1
+kernel? 
+
+-- Pasi
