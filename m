@@ -1,78 +1,48 @@
-From: Josh Cepek <josh.cepek@usa.net>
+From: challado@ibocchi.com.br
 Subject: Re: DNAT iptables bug or connection tracking issue?
-Date: Fri, 23 May 2008 17:44:44 -0500
-Message-ID: <483748DC.3090508@usa.net>
-References: <4836D208.9040808@ibocchi.com.br>
+Date: Sat, 24 May 2008 11:52:40 -0300 (BRT)
+Message-ID: <20080524145316.20F0C33E69@www.ibocchi.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig8A9D57194CC4F88459B06627"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4836D208.9040808@ibocchi.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: =?ISO-8859-1?Q?Irm=E3os_Bocchi_=26_CIA_Ltda?= <challado@ibocchi.com.br>, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: 
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig8A9D57194CC4F88459B06627
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Hello, Josh! How are you? :)
 
-Irm=E3os Bocchi & CIA Ltda wrote:
-> 1) I have two routers in two different networks: one is a FreeBSD 7.0=20
-> router, here called "Router A" and another is a Debian 4.0 router,=20
-> here called "Router B"
-> 2) The Router A uses pf to make the firewall rules, with standard=20
-> installation. The Router B have the kernel 2.6.25.4 and iptables 1.4.0
-> 3) In the first router, I have a rule to access my vnc server in a=20
-> windows machine. To make these, I need to create this rule
-> rdr on sk0 proto tcp from any to <my external addr> port 5900 -> <my=20
-> internal addr> port 5900
-> nat on sk0 proto tcp from <my internal addr> port 5900 to any -> sk0
->
-> In resume: I need to create a rule to make the redirection and, after=20
-> these, I need to insert a rule to make the nat
->
-> 4) In the second router, only adding this rule
-> iptables -t nat -I PREROUTING -i eth0 -p tcp --dport 5900 -j DNAT=20
-> --to-destination <my internal addr> port 5900
->
-> THE RULES WORK PERFECTLY!
->
-> It's a bug? Because, in my vision, I need to create the two rules, the =
-
-> DNAT rule and the MASQUERADE rule to these work.
-
+=2E.
 Typically when you have a LAN behind NAT you use either MASQUERADE or=20
 SNAT on all packets going out the public interface.  It doesn't make=20
-sense to do so only for certain packets; if you intend to filter traffic =
-
+sense to do so only for certain packets; if you intend to filter traffi=
+c=20
 to prevent it from going out to the Internet you should do so in the=20
 filter table, not by preventing NAT from occurring (which won't=20
-necessarily stop the packet from being forwarded.)
+necessarily stop the packet from being forwarded.)=20
+=2E.
 
-> Another point of view: If I need to permit only the machines A, B and=20
-> C to access the VNC, in BSD, I only need to create these rules
->
-> my_servers=3D"{ server_a_addr, server_b_addr, server_c_addr }"
-> rdr on sk0 proto tcp from any to <my external addr> port 5900 -> <my=20
-> internal addr> port 5900
-> nat on sk0 proto tcp from <my internal addr> port 5900 to $my_servers=20
-> -> sk0
->
-> or
->
-> rdr on sk0 proto tcp from $my_servers to <my external addr> port 5900=20
-> -> <my internal addr> port 5900
-> nat on sk0 proto tcp from <my internal addr> port 5900 to any -> sk0
->
-> How I can make these in iptables?
+Ok, I understand. Really, is intetional that the packets pass without f=
+ilter by the firewall, because I use the tcpdump to discover a "little =
+tricks" in the ISP,
+because the ISP administrator block intetionally any ports and we have =
+problems with these... I need these to make a test. Problably, when I c=
+hange my ISP, I'll write
+more efficient rules in FORWARD table to block all traffic and only pas=
+s the really important traffic.
 
+But, my question is: how the DNAT rule works, in the kernel level, to d=
+o the NAT without the MASQUERADE rule?
+It's automatic? Because I won't insert the nat rule... I only insert th=
+e DNAT rule and all works!
+This is the question that I can't understand!
+
+=2E.
 The easiest way is probably to create a user-defined chain containing=20
 tests for the IP's you want to allow to connect to this port.  If you=20
 include a rule to allow ESTABLISHED traffic prior to the jump to=20
-vnc_access only the first packet in the connection will need to traverse =
-
+vnc_access only the first packet in the connection will need to travers=
+e=20
 the list of IP's to allow.  Something like this should accomplish the=20
 task (along with the NAT rule you listed above):
 
@@ -84,7 +54,8 @@ iptables -A vnc_access -j DROP
 
 [... other rules may go here ...]
 
-iptables -A FORWARD -d <internal addr> -p tcp --dport 5900 -j vnc_access
+iptables -A FORWARD -d <internal addr> -p tcp --dport 5900 -j vnc_acces=
+s
 
 If you have many IP's you want to add to the vnc_access chain, another=20
 way to write that first portion by using a bash for-loop might be as=20
@@ -97,33 +68,61 @@ for ip in $my_servers; do
 done
 iptables -A vnc_access -j DROP
 
-For many hundreds or thousands of IP's you probably want to look at=20
+=46or many hundreds or thousands of IP's you probably want to look at=20
 ipsets for a performance increase when processing that many rules.
+=2E.
 
-Finally, note that this will only cause packets to be dropped that are=20
+YEAH! Here, in my city, the people always say:
+
+"If you know, you know. If you won't know, you are nothing..."=20
+I work with iptables for long years. I never see this easily and intell=
+igent way to write the firewall.
+This little example shows the necessity to READ THE FUCK MANUAL, to all=
+ of us! If I read with attention and patience the manual, I believe tha=
+t I'll find these
+way to to the job. Sorry so much. I'm stupid, I agree... :'(
+
+=2E.
+=46inally, note that this will only cause packets to be dropped that ar=
+e=20
 sourced from IP's not in your list.  The standard VNC protocol has=20
 inherently weak security and would still be vulnerable to a=20
 man-in-the-middle attack potentially exposing your VNC password.  An=20
 encrypted tunnel such as a VPN or ssh port-forwarding would secure the=20
 VNC data cryptographically.
 
---=20
-Josh
+Yeah, I understand. Really, I have very much vpn's along these server, =
+and only few servers in this network can access the server. I know that=
+ this protocol is unsecure, and
+I only access my machines using vnc under VPN connections.
+
+Thanks a lot for your attention in these question.
 
 
+------------------------------------------------
+Os e-mails enviados por este dom=EDnio s=E3o verificados
+por sistemas antiv=EDrus e antispam, visando a prote=E7=E3o
+dos usu=E1rios e dos equipamentos de nossa empresa, bem como
+para proteger o conte=FAdo e o trabalho de outros que
+por ventura venham receber e-mails deste dom=EDnio.
 
---------------enig8A9D57194CC4F88459B06627
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+O Grupo Bocchi se reserva no direito de, a qualquer
+momento, bloquear ou inutilizar conte=FAdo de e-mails
+que venham a ser prejudiciais para o ambiente de trabalho.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
+Caso este e-mail n=E3o possua conte=FAdo que seja relevante
+=E0 sua atividade profissional, ou a do usu=E1rio que a enviou,
+por favor, delete-o imediatamente.
 
-iEYEARECAAYFAkg3SOAACgkQHSSgJy5aUSekIwCfZ7Q1xPBjtGJxgGrNUa3rpUdo
-a3YAnj9pSvvj9Kuby5Iiq40FFK+Ncwo0
-=i+Hp
------END PGP SIGNATURE-----
+O Grupo Bocchi n=E3o se responsabiliza por qualquer dano=20
+ou preju=EDzo que a utiliza=E7=E3o indevida deste e-mail
+possa causar a voc=EA ou sua empresa.
 
---------------enig8A9D57194CC4F88459B06627--
+Em caso de d=FAvidas, favor entrar em contato.
+---------------------------------------------
+
+
+Grupo Irm=E3os Bocchi & Cia Ltda
+
+http://www.ibocchi.com.br
 
