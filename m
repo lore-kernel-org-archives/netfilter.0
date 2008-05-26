@@ -1,36 +1,29 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables ip_conntrack_ftp + proftpd TLS: PORT command not
- understood
-Date: Mon, 26 May 2008 21:28:04 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805262127230.19084@fbirervta.pbzchgretzou.qr>
-References: <483B04A8.9000405@gmail.com> <483B06A1.6030907@gmail.com>
+From: whiplash <whiplash@bofhland.org>
+Subject: Re: iptables ip_conntrack_ftp + proftpd TLS: PORT command not understood
+Date: Mon, 26 May 2008 21:39:11 +0200
+Message-ID: <483B11DF.3050904@bofhland.org>
+References: <483B0E5E.4010209@gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <483B06A1.6030907@gmail.com>
+In-Reply-To: <483B0E5E.4010209@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Filippo Zeus <filippozeus@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Filippo Zeus ha scritto:
+> That's true ... proftpd has been configured to encrypt auth+data
+> so the PORT command is sent in cleartext way.
+> 
+> I you read
+> question Using mod_tls, FTP sessions through my firewall now no longer 
+> work. What's going on?
+> at http://www.castaglia.org/proftpd/doc/contrib/ProFTPD-mini-HOWTO-TLS.html
+> 
+> proftpd developers suggest to do this to fix this problem...
+> but it do not work.
 
-On Monday 2008-05-26 20:51, Filippo Zeus wrote:
-
-> Hi,
-> i think the ftp_contrack module has a bug.
->
-> I'm setting up proftpd 1.3.1 with TLS for encrypting auth+data only traffic to
-> let ftp_conntrack module understand the port command when a client connects to
-> the server using a PASV mode.
->
-> Look at link below and search for question
-> Using mod_tls, FTP sessions through my firewall now no longer work. What's
-> going on?
->
-> ftp_conntrack module probably do no understand the port command so it do not
-> open the port.
-
-No, it does not understand because you are encrypting the channel with TLS.
-Simple as that.
-
+Did you verify, by using for example tcpdump, that th client is actually using
+CCC, sending commands in clear text?
