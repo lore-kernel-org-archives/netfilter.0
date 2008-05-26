@@ -1,31 +1,30 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: iptables ip_conntrack_ftp + proftpd TLS: PORT command not understood
-Date: Mon, 26 May 2008 22:41:13 +0200
-Message-ID: <483B2069.7010504@trash.net>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: iptables ip_conntrack_ftp + proftpd TLS: PORT command not
+ understood
+Date: Tue, 27 May 2008 00:05:26 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805270003570.19084@fbirervta.pbzchgretzou.qr>
 References: <483B0E5E.4010209@gmail.com> <483B11DF.3050904@bofhland.org> <483B16F7.2010205@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <483B16F7.2010205@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: filippozeus@gmail.com
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Filippo Zeus <filippozeus@gmail.com>
+Cc: netfilter@vger.kernel.org, kaber@trash.net
 
-Filippo Zeus wrote:
-> thanks for your help at first !
->
-> yes. and i've tested tons of clients (ftp-ssl, filezilla, hated M$-IE).
-> unfortunatly tcpdump has confirmed my prefeeling.
-> Also, reading at proftpd log i can see that encrypted channel is 
-> switched off after PASS command
-> and stay on only for the data channel.
->
-> I'm not shure, cause i'm not a developer, but i think that 
-> ftp_conntrak module open a port *ONLY* if
-> it read first the USER command, then the PASS command, then PASV/PORT 
-> commands
-> not simply if a (cleartext) PORT command came from the ftp client. 
 
-Please send a tcpdump.
+On Monday 2008-05-26 22:00, Filippo Zeus wrote:
+
+> I'm not shure, cause i'm not a developer, but i think that ftp_conntrak module
+> open a port *ONLY* if
+> it read first the USER command, then the PASS command, then PASV/PORT commands
+> not simply if a (cleartext) PORT command came from the ftp client.
+
+It sets up an expectation once it sees PORT/EPRT/PASV/EPSV,
+regardless of USER/PASS.
+
+It does *NOT* recognize the TLS commands SSCN/CPSV,
+which is probably the problem, if you claim that the control
+connection is clear-text.
