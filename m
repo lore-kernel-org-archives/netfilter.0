@@ -1,33 +1,32 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables limit --limit limitations
-Date: Mon, 26 May 2008 13:20:15 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805261319140.19084@fbirervta.pbzchgretzou.qr>
-References: <f08c15d10805170020i2ac5a207g969c0ed5bf10867c@mail.gmail.com>
+Subject: Re: ipt_recent: how long does a violater stay in the bad guys
+ list?
+Date: Mon, 26 May 2008 14:40:02 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805261437050.19084@fbirervta.pbzchgretzou.qr>
+References: <462705.29117.qm@web37105.mail.mud.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <f08c15d10805170020i2ac5a207g969c0ed5bf10867c@mail.gmail.com>
+In-Reply-To: <462705.29117.qm@web37105.mail.mud.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Payam Chychi <pchychi@gmail.com>
+To: Akhil Sharma <goodpriest@yahoo.com>
 Cc: netfilter@vger.kernel.org
 
-On Saturday 2008-05-17 09:20, Payam Chychi wrote:
+On Thursday 2008-05-22 17:16, Akhil Sharma wrote:
 
->Hi,
->
->Has anyone experienced any limitations when implementing the "limit
->--limit $value/sec"  ? I can only get 1000 packets/sec with a value of
->1000 or 10000  with a burst of 5. Ive been able to increase the
->packets to almost 7500 packers/sec when using a value of 10000 with a
->burst of 20.
->
->Ive also tried increasing the HZ for High res timer on the kernel to
->1000 and enabled dynamic ticks (thanks to kuzin)
->any thoughts or ideas on this? I would greatly appreciate any feedback...
+>Question: in ipt_recent, if a client is added to a hitlist 
+>(/proc/net/ipt_recent/hitlist) after having violated a rule of sending 
+>over 10 packets in a minute, how long is the entry maintained in the 
+>list? Does it ever get removed from the hitlist? Instead, would it just 
+>track the last time the packets arrived and never get removed from the 
+>hitlist until the PC is rebooted?
 
-
-It is known that the algorithm in limit and hashlimit are not quite 
-accurate. Though, we seem to be out of solutions, too.
-
+The list keeps a number of timestamps the client last sent a packet (at 
+least it seems so); when a new timestamp is added to the head of the 
+list, one gets evicted at the tail if the list has already reached 
+its maximum length.
+Whether or not a packet subsequently matches the rule depends not on the 
+number of timestamp values recorded, but on the parameter you specified 
+in your rule (--seconds, etc.).
