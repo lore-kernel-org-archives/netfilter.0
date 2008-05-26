@@ -1,29 +1,39 @@
-From: whiplash <whiplash@bofhland.org>
+From: Filippo Zeus <filippozeus@gmail.com>
 Subject: Re: iptables ip_conntrack_ftp + proftpd TLS: PORT command not understood
-Date: Mon, 26 May 2008 21:39:11 +0200
-Message-ID: <483B11DF.3050904@bofhland.org>
-References: <483B0E5E.4010209@gmail.com>
-Reply-To: netfilter@vger.kernel.org
+Date: Mon, 26 May 2008 22:00:55 +0200
+Message-ID: <483B16F7.2010205@gmail.com>
+References: <483B0E5E.4010209@gmail.com> <483B11DF.3050904@bofhland.org>
+Reply-To: filippozeus@gmail.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <483B0E5E.4010209@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:disposition-notification-to:date:from:reply-to:user-agent:mime-version:to:subject:references:in-reply-to:content-type:content-transfer-encoding;
+        bh=GCshnsWIpjgUnjQIHd6iWikweK4hM56RAPKrq6hXomw=;
+        b=XHYFEtceFVO8zeK5t1AQxoQ1nzXk/8p6+83M8GnebJ79I9Or7mQLSNKpLSNl6UU9jn7zHMMeRJvd9TvAWU47ERcBtwKNycz+m7c+oD4X/6Vor0PjDSdsevY/TT66r+USTNP5MoKLUHy00+F3x/3jAuG+RyDMAF2x2m1xez/vOVc=
+In-Reply-To: <483B11DF.3050904@bofhland.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Filippo Zeus ha scritto:
-> That's true ... proftpd has been configured to encrypt auth+data
-> so the PORT command is sent in cleartext way.
-> 
-> I you read
-> question Using mod_tls, FTP sessions through my firewall now no longer 
-> work. What's going on?
-> at http://www.castaglia.org/proftpd/doc/contrib/ProFTPD-mini-HOWTO-TLS.html
-> 
-> proftpd developers suggest to do this to fix this problem...
-> but it do not work.
+thanks for your help at first !
 
-Did you verify, by using for example tcpdump, that th client is actually using
-CCC, sending commands in clear text?
+yes. and i've tested tons of clients (ftp-ssl, filezilla, hated M$-IE).
+unfortunatly tcpdump has confirmed my prefeeling.
+Also, reading at proftpd log i can see that encrypted channel is 
+switched off after PASS command
+and stay on only for the data channel.
+
+I'm not shure, cause i'm not a developer, but i think that ftp_conntrak 
+module open a port *ONLY* if
+it read first the USER command, then the PASS command, then PASV/PORT 
+commands
+not simply if a (cleartext) PORT command came from the ftp client.
+
+
+> Did you verify, by using for example tcpdump, that th client is 
+> actually using
+> CCC, sending commands in clear text?
+>
