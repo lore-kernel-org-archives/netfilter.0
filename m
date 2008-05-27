@@ -1,66 +1,60 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [netfilter-core] [ANNOUNCE] Release of iptables 1.4.1-rc2
-Date: Tue, 27 May 2008 15:11:42 +0200
-Message-ID: <483C088E.4020405@trash.net>
-References: <483AB493.6010503@trash.net> <x6skw443x5@gzp>	<483BB9DE.6050003@trash.net> <x6y75w3q2j@gzp>
+From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Subject: Re: Distros that can run conntrack-tools/conntrackd with the default kernel
+Date: Tue, 27 May 2008 16:15:57 +0300
+Message-ID: <20080527131557.GC8042@edu.joroinen.fi>
+References: <20080522080456.GE8042@edu.joroinen.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020007020505020800070200"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <x6y75w3q2j@gzp>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20080522080456.GE8042@edu.joroinen.fi>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "Gabor Z. Papp" <gzp@papp.hu>
-Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------020007020505020800070200
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, May 22, 2008 at 11:04:56AM +0300, Pasi K=E4rkk=E4inen wrote:
+> Hello list!
+>=20
+> What distributions currently are able to run conntrack-tools with the
+> default/included kernel? Or even ship with conntrack-tools packaged/i=
+ncluded..
+>=20
+> Based on http://conntrack-tools.netfilter.org/install.html I think at=
+ least
+> Fedora 9 has the needed options enabled in the default kernel:
+>=20
+> $ grep CONFIG_NF_CONNTRACK config-2.6.25-14.fc9.i686=20
+> CONFIG_NF_CONNTRACK=3Dm
+> CONFIG_NF_CONNTRACK_MARK=3Dy
+> CONFIG_NF_CONNTRACK_SECMARK=3Dy
+> CONFIG_NF_CONNTRACK_EVENTS=3Dy
+> CONFIG_NF_CONNTRACK_AMANDA=3Dm
+> CONFIG_NF_CONNTRACK_FTP=3Dm
+> CONFIG_NF_CONNTRACK_H323=3Dm
+> CONFIG_NF_CONNTRACK_IRC=3Dm
+> CONFIG_NF_CONNTRACK_NETBIOS_NS=3Dm
+> CONFIG_NF_CONNTRACK_PPTP=3Dm
+> CONFIG_NF_CONNTRACK_SANE=3Dm
+> CONFIG_NF_CONNTRACK_SIP=3Dm
+> CONFIG_NF_CONNTRACK_TFTP=3Dm
+> CONFIG_NF_CONNTRACK_IPV4=3Dm
+> # CONFIG_NF_CONNTRACK_PROC_COMPAT is not set
+> CONFIG_NF_CONNTRACK_IPV6=3Dm
+>=20
+> $ grep CONFIG_NETFILTER_NETLINK config-2.6.25-14.fc9.i686=20
+> CONFIG_NETFILTER_NETLINK=3Dm
+> CONFIG_NETFILTER_NETLINK_QUEUE=3Dm
+> CONFIG_NETFILTER_NETLINK_LOG=3Dm
+>=20
+> $ grep CONFIG_NF_CT_NETLINK config-2.6.25-14.fc9.i686=20
+> CONFIG_NF_CT_NETLINK=3Dm
+>=20
+> $ grep CONFIG_NF_CONNTRACK_EVENTS config-2.6.25-14.fc9.i686=20
+> CONFIG_NF_CONNTRACK_EVENTS=3Dy
+>=20
 
-Gabor Z. Papp wrote:
-> * Patrick McHardy <kaber@trash.net>:
-> 
-> | Thanks for the report. Does this patch fix it?
-> 
-> Not really.
-> 
->   CC       libxt_connlimit.oo
-> In file included from /usr/include/linux/netfilter_ipv4.h:9,
->                  from ../include/linux/netfilter_ipv4/ip_tables.h:19,
->                  from ../include/libiptc/libiptc.h:7,
->                  from ../include/iptables.h:5,
->                  from libxt_connlimit.c:8:
-> ../include/linux/netfilter.h:42: error: expected specifier-qualifier-list before '__be32'
-> make[2]: *** [libxt_connlimit.oo] Error 1
-> make[2]: Leaving directory `/home/gzp/src/iptables-1.4.1-rc2/extensions'
-> make[1]: *** [all-recursive] Error 1
+And actually Fedora 9 seems to contain conntrack-tools 0.9.6 rpm out of=
+ the box!
 
-Your types.h doesn't seem to include the endian annotated
-types at all. Does this patch work?
-
-
---------------020007020505020800070200
-Content-Type: text/plain;
- name="x"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="x"
-
-diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
-index 4196a51..b64a513 100644
---- a/include/linux/netfilter.h
-+++ b/include/linux/netfilter.h
-@@ -38,8 +38,8 @@ enum nf_inet_hooks {
- 
- union nf_inet_addr {
- 	__u32		all[4];
--	__be32		ip;
--	__be32		ip6[4];
-+	__u32		ip;
-+	__u32		ip6[4];
- 	struct in_addr	in;
- 	struct in6_addr	in6;
- };
-
---------------020007020505020800070200--
+-- Pasi
