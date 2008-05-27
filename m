@@ -1,60 +1,34 @@
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
-Subject: Re: Distros that can run conntrack-tools/conntrackd with the default kernel
-Date: Tue, 27 May 2008 16:15:57 +0300
-Message-ID: <20080527131557.GC8042@edu.joroinen.fi>
-References: <20080522080456.GE8042@edu.joroinen.fi>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Site-specific filter rules problem
+Date: Tue, 27 May 2008 09:29:02 -0500
+Message-ID: <483C1AAE.1010709@riverviewtech.net>
+References: <1211702139.7164.22.camel@u804mbr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20080522080456.GE8042@edu.joroinen.fi>
+In-Reply-To: <1211702139.7164.22.camel@u804mbr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Thu, May 22, 2008 at 11:04:56AM +0300, Pasi K=E4rkk=E4inen wrote:
-> Hello list!
->=20
-> What distributions currently are able to run conntrack-tools with the
-> default/included kernel? Or even ship with conntrack-tools packaged/i=
-ncluded..
->=20
-> Based on http://conntrack-tools.netfilter.org/install.html I think at=
- least
-> Fedora 9 has the needed options enabled in the default kernel:
->=20
-> $ grep CONFIG_NF_CONNTRACK config-2.6.25-14.fc9.i686=20
-> CONFIG_NF_CONNTRACK=3Dm
-> CONFIG_NF_CONNTRACK_MARK=3Dy
-> CONFIG_NF_CONNTRACK_SECMARK=3Dy
-> CONFIG_NF_CONNTRACK_EVENTS=3Dy
-> CONFIG_NF_CONNTRACK_AMANDA=3Dm
-> CONFIG_NF_CONNTRACK_FTP=3Dm
-> CONFIG_NF_CONNTRACK_H323=3Dm
-> CONFIG_NF_CONNTRACK_IRC=3Dm
-> CONFIG_NF_CONNTRACK_NETBIOS_NS=3Dm
-> CONFIG_NF_CONNTRACK_PPTP=3Dm
-> CONFIG_NF_CONNTRACK_SANE=3Dm
-> CONFIG_NF_CONNTRACK_SIP=3Dm
-> CONFIG_NF_CONNTRACK_TFTP=3Dm
-> CONFIG_NF_CONNTRACK_IPV4=3Dm
-> # CONFIG_NF_CONNTRACK_PROC_COMPAT is not set
-> CONFIG_NF_CONNTRACK_IPV6=3Dm
->=20
-> $ grep CONFIG_NETFILTER_NETLINK config-2.6.25-14.fc9.i686=20
-> CONFIG_NETFILTER_NETLINK=3Dm
-> CONFIG_NETFILTER_NETLINK_QUEUE=3Dm
-> CONFIG_NETFILTER_NETLINK_LOG=3Dm
->=20
-> $ grep CONFIG_NF_CT_NETLINK config-2.6.25-14.fc9.i686=20
-> CONFIG_NF_CT_NETLINK=3Dm
->=20
-> $ grep CONFIG_NF_CONNTRACK_EVENTS config-2.6.25-14.fc9.i686=20
-> CONFIG_NF_CONNTRACK_EVENTS=3Dy
->=20
+On 05/25/08 02:55, Mark Baker wrote:
+> I have packet captures from connections to this site, with and 
+> without firewall rules installed.  I don't see anything that should 
+> be blocked based on these rules - the only thing odd is that when the 
+> problem occurs I get a ton of retransmissions from the server. 
+> Another oddity in both cases is that virtually every packet coming 
+> from the server is fragmented; but from what I've read, connection 
+> tracking (which is running on this machine) should completely 
+> reassemble fragmented packets before delivery to the filter table. 
+> Still, could fragmentation be the problem?
 
-And actually Fedora 9 seems to contain conntrack-tools 0.9.6 rpm out of=
- the box!
+Based on the retransmissions, it sounds like something is expecting to 
+get something through and have it acknowledged that is not.
 
--- Pasi
+I'd look at what is being re-transmitted and see if it needs to get 
+through and / or if there is an unacknowledged reply that is being blocked.
+
+
+
+Grant. . . .
