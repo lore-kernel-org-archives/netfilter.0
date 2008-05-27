@@ -1,21 +1,35 @@
-From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
-Subject: TEE target
-Date: Tue, 27 May 2008 09:19:24 -0700
-Message-ID: <d95317090805270919s5a8347d5y75a3b8cbf5114727@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Building geoip against voyage kernel source fails
+Date: Tue, 27 May 2008 18:43:18 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805271833270.12937@fbirervta.pbzchgretzou.qr>
+References: <5AEFF5D121FC4228B90797FB303741CD@Gamma> <74BD5BE091304EFC96F804EB2869AA99@Gamma> <alpine.LNX.1.10.0805252112590.19084@fbirervta.pbzchgretzou.qr> <DD56BDDE964B41BFA022050ADCFA948B@Gamma>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
-        bh=Mj6PyO8j6RR9f50HT2F0jEciKIz5rb/dDZ6IoOMV0Qo=;
-        b=YcpF01ieUFVzNz44bnaZg2UOHtA2mrPNlHZ2IlmnEFlcSLZWG4eQ1eAFwy4HZPK0neWlb2r1gYiHNeX+naVRE0wnfb2/ya9SRkziWzAWfPE1z6FslcMSHmyqA8jqyLgaIlJaqgJZI+BIVsYjyFEPPAdOyMEhqGhaD/3Ven2tlpI=
-Content-Disposition: inline
+In-Reply-To: <DD56BDDE964B41BFA022050ADCFA948B@Gamma>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: David Balnaves <david@utopia.cable.nu>
+Cc: Nick Pasich <NewsLetters@NickAndBarb.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-When is the TEE target expected to be a standard part of iptables ?
-If that doesn't happen, when might it be able to compile without it's
-"attached" version of iptables ?
+
+On Tuesday 2008-05-27 14:06, David Balnaves wrote:
+
+> Hi,
+>
+> Does the Xtables-addons work with iptables-1.3.6?  From what I can see this is
+> part of iptables-1.4.  If I want to use earlier than 1.4 I should probably
+> stick to peejix's patchlet right?
+
+The older geoip before it was imported into xt-a had exponentially
+worse scalability, was not compatible with biarch setups, endianess
+was not handled at all, leading it to "not work" in a lot of
+situations.
+You could just upgrade iptables which received a lot of care to compile
+with older kernels. You can grab the convenient package at
+http://dev.medozas.de/files/xtables/xtables-combined-1.5.4.1.tar.bz2
+which has everything that one would need.
+(Well, except the geoip database because it changes often and is big;
+it is at http://jengelh.medozas.de/files/geoip/ ; see
+xtables-addons.8 manpage)
