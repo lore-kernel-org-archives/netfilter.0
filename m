@@ -1,45 +1,54 @@
-From: "Gabor Z. Papp" <gzp@papp.hu>
-Subject: Re: [ANNOUNCE] Release of iptables 1.4.1-rc2
-Date: Tue, 27 May 2008 09:11:34 +0200
-Message-ID: <x6skw443x5@gzp>
-References: <483AB493.6010503@trash.net>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: iptables ip_conntrack_ftp + proftpd TLS: PORT command not
+ understood
+Date: Tue, 27 May 2008 09:46:02 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805270944380.12937@fbirervta.pbzchgretzou.qr>
+References: <483B0E5E.4010209@gmail.com> <483B11DF.3050904@bofhland.org> <483B16F7.2010205@gmail.com> <483B2069.7010504@trash.net> <483B606E.9050305@gmail.com> <483BBAB3.6040805@trash.net>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <483BBAB3.6040805@trash.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Patrick McHardy <kaber@trash.net>
-Cc: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org, Netfilter Core Team <coreteam@netfilter.org>
+Cc: filippozeus@gmail.com, netfilter@vger.kernel.org
 
-* Patrick McHardy <kaber@trash.net>:
 
-|     iptables version 1.4.1-rc2
+On Tuesday 2008-05-27 09:39, Patrick McHardy wrote:
+> Filippo Zeus wrote:
+>> Considering ftp-control port is text based i've dumped with -A switch. I hope
+>> it's ok
+>> 
+>> 03:05:59.149005 IP ***HIDDEN_IP***.21 > 151.80.2.63.55194: P 1:71(70) ack 1
+>> win 46
+>> 2.P.?......L.1...P....`..220 FTP Server ready. Please use FTP-TLS or login wi
+>> 03:05:59.149078 IP 151.80.2.63.55194 > ***HIDDEN_IP***.21: . ack 71 win 1024
+>> 2....1.....M.P.......+
+>> 03:05:59.149759 IP 151.80.2.63.55194 > ***HIDDEN_IP***.21: P 1:11(10) ack 71
+>> win 1024
+>> 2....1.....M.P.......AUTH TLS
+>> 
+>> 03:05:59.700919 IP ***HIDDEN_IP***.21 > 151.80.2.63.55194: . ack 11 win 46
+>> 2.P.?......M.1...P.......
+>> 03:05:59.700939 IP ***HIDDEN_IP***.21 > 151.80.2.63.55194: P 71:96(25) ack 11
+>> win 46
+>> 2.P.?......M.1...P...O...234 AUTH TLS successful
+>> 
+>> 03:05:59.701036 IP 151.80.2.63.55194 > ***HIDDEN_IP***.21: . ack 96 win 1024
+>> 2....1.....M4P.......+
+>> 03:05:59.706276 IP 151.80.2.63.55194 > ***HIDDEN_IP***.21: P 11:95(84) ack 96
+>> win 1024
+>> 2....1.....M4P...L.......O...K..H;^w.i} ..\*.+....'b..]...5`.O....$.3.E.9
+>> 03:06:00.416441 IP ***HIDDEN_IP***.21 > 151.80.2.63.55194: P 1516:1666(150)
+>> ack 95 win 46
+>> 2.P.?......R.1...P....[...)E..5O......tsp.+).)..W[H..u.)IP..&....XZr...~.<... 
+>
+>
+> Its a bit hard to read, but this looks like your client also
+> encrypts the control connection, which explains why FTP
+> conntrack doesn't work.
 
-[kernel]
-Linux gzp1 2.4.36.4-gzp1 #1 SMP Fri May 9 17:21:19 CEST 2008 i686
-GNU/Linux
-
-[glibc]
-GNU C Library stable release version 2.3.6, by Roland McGrath et al.
-Compiled by GNU CC version 4.1.2.
-Compiled on a Linux 2.4.34-gzp1 system on 2007-04-04.
-
-[gcc]
-gcc (GCC) 4.2.4
-
-[binutils]
-GNU ld (Linux/GNU Binutils) 2.18.50.0.7.20080502
-
-  CC       libxt_connlimit.oo
-In file included from /usr/include/linux/netfilter_ipv4.h:9,
-                 from ../include/linux/netfilter_ipv4/ip_tables.h:18,
-                 from ../include/libiptc/libiptc.h:7,
-                 from ../include/iptables.h:5,
-                 from libxt_connlimit.c:8:
-../include/linux/netfilter.h:41: error: expected specifier-qualifier-list before '__be32'
-make[2]: *** [libxt_connlimit.oo] Error 1
-make[2]: Leaving directory `/home/gzp/src/iptables-1.4.1-rc2/extensions'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/home/gzp/src/iptables-1.4.1-rc2'
-make: *** [all] Error 2
+`tcpdump -Xs0` is preferred; unless the encryption is temporarily
+dropped using the CCC command to make the PASV/PORT commands in
+plaintext, the stream is not analyzable.
