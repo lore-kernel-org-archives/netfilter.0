@@ -1,47 +1,40 @@
-From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
-Subject: Re: TEE target
-Date: Tue, 27 May 2008 09:51:43 -0700
-Message-ID: <d95317090805270951s7a7595f5uc844d1cd573d8527@mail.gmail.com>
-References: <d95317090805270919s5a8347d5y75a3b8cbf5114727@mail.gmail.com>
-	 <alpine.LNX.1.10.0805271843320.12937@fbirervta.pbzchgretzou.qr>
+From: jeev <smallpox@gmail.com>
+Subject: DUAL wan issue, destination-based routing
+Date: Tue, 27 May 2008 16:44:30 -0700
+Message-ID: <840713630805271644hff81960m5c6bea1b612a973c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=imoI2F0vGoPMxW0hyagD/S9kMpNOAChgCOB6oUIntqE=;
-        b=kJcP93Veqzr+PX5pkB/BNrynFgY7pGijwr3UChTJvkV8UfW/B+wA9NiwJWnOMq0dFFhVU2oBerVmFnmVofsbnQxZSnDujaZMgO3aUM0vndfNOveNyQImd6r+gU7zr0vzcqQI7+X3EH/KXIMx9LOVYeQAEI9dLips3uNTGRXhhws=
-In-Reply-To: <alpine.LNX.1.10.0805271843320.12937@fbirervta.pbzchgretzou.qr>
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=oGi/OQVjj0Rre9Ieu78Z5MYuObtXpbX1oUXK8f/ZOzA=;
+        b=FLIF7PHZJ1eoyU6Y/NLo/6zhpsj7zzF38iR6pLc5JsjYGyit+jtbLnOy4ONcyYtuKnXSQ00LtD2cqYxpXMiW93k4pb1DGwi+KCb39ioiBRNYDMLixE9ckPyK3z+MiG0YjYDaBo7cGcJbZgCU+Sfu7v4Cz9Fc50q05K48VO+Huzk=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-While on the subject...
-- Can TEE be allowed earlier in the packet traversal, e.g. in the
-FORWARD chain ?
-- Rather than a gateway, can TEE get a device to direct to (e.g. a GRE tunnel) ?
+Hey guys, i was reading on the netfilter site.
 
-2008/5/27, Jan Engelhardt <jengelh@medozas.de>:
->
->  On Tuesday 2008-05-27 18:19, Gilad Benjamini wrote:
->
->  >When is the TEE target expected to be a standard part of iptables ?
->
->
-> Probably never.
->
->
->  >If that doesn't happen, when might it be able to compile without it's
->  >"attached" version of iptables ?
->
->
-> The attached version is just a copy of the official tree,
->  and is just provided for convenience because a lot of
->  distros are stuck with old versions.
->  There are also tarballs of Xtables-addons without the "attached" version;
->  see http://dev.medozas.de/files/xtables/ for singular files.
->
+I saw Patrick McHardy wrote about having 2 cable modems... i'm in the
+same situation... my only problem is that I dont want to do load
+balancing, i've just come from using PFSENSE/freebsd to use
+ClarkConnect on CentOS i guess.. i've never used iptables before. i've
+tried things like:
+
+"iptables -A POSTROUTING -t nat -o eth2 -s 192.168.2.0/24 -d
+67.17.117.0/24 -j MASQUERADE" and it still doesn't work.
+
+192.168.2.0/24 dev eth1  proto kernel  scope link  src 192.168.2.1
+24.x.x.0/23 dev eth2  proto kernel  scope link  src 24.x.x.23
+71.x.x.0/23 dev eth3  proto kernel  scope link  src 71.x.x.6
+default via 71.x.x.1 dev eth3
+
+so right now i have all traffic go out eth3, i'd love to have the ips
+and ipblocks i select and have it go out one of the cable interfaces.
+so for the example above, i want www.speedtest.net (because it shows
+the ip) to go out eth2 but it's still going out eth3.
+
+thanks in advance, i'm really lost...
