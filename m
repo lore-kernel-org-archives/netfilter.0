@@ -1,130 +1,82 @@
-From: Filippo Zeus <filippozeus@gmail.com>
-Subject: Re: iptables ip_conntrack_ftp + proftpd TLS: PORT command not understood
-Date: Tue, 27 May 2008 03:30:41 +0200
-Message-ID: <483B6441.1090005@gmail.com>
-References: <483B0E5E.4010209@gmail.com> <483B11DF.3050904@bofhland.org> <483B16F7.2010205@gmail.com> <alpine.LNX.1.10.0805270003570.19084@fbirervta.pbzchgretzou.qr> <483B3A9A.8010001@bofhland.org>
-Reply-To: filippozeus@gmail.com
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [netfilter-core] [ANNOUNCE] Release of iptables 1.4.1-rc2
+Date: Tue, 27 May 2008 09:35:58 +0200
+Message-ID: <483BB9DE.6050003@trash.net>
+References: <483AB493.6010503@trash.net> <x6skw443x5@gzp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:disposition-notification-to:date:from:reply-to:user-agent:mime-version:to:subject:references:in-reply-to:content-type:content-transfer-encoding;
-        bh=TXFbP672Ioe0TcIf+Rbc3tHZLS14Ddf7Tr3Zl6aATg0=;
-        b=w0YYE7bIfzasu2hMLgr+oMdst5jBP4AVh0jaOd9lttf1RbDQNx1UuchVRHelrom/GdSMQDSMOzVrxU/3rLTj9TmCf9oPegx3+S3BAVQy2cBWK2Q8/sHo/HD0qdZHHpno0k05Tth8D73k9g70tKAS2Jq+49zQiAvC0jjppl2gEeI=
-In-Reply-To: <483B3A9A.8010001@bofhland.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------000304030108020503020800"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <x6skw443x5@gzp>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+To: "Gabor Z. Papp" <gzp@papp.hu>
+Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>
 
-i do not know, but I'm using filezilla client.
-here are logs.
-I Hope this helps
+This is a multi-part message in MIME format.
+--------------000304030108020503020800
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Gabor Z. Papp wrote:
+>   CC       libxt_connlimit.oo
+> In file included from /usr/include/linux/netfilter_ipv4.h:9,
+>                  from ../include/linux/netfilter_ipv4/ip_tables.h:18,
+>                  from ../include/libiptc/libiptc.h:7,
+>                  from ../include/iptables.h:5,
+>                  from libxt_connlimit.c:8:
+> ../include/linux/netfilter.h:41: error: expected specifier-qualifier-list before '__be32'
+> make[2]: *** [libxt_connlimit.oo] Error 1
+> make[2]: Leaving directory `/home/gzp/src/iptables-1.4.1-rc2/extensions'
+> make[1]: *** [all-recursive] Error 1
+> make[1]: Leaving directory `/home/gzp/src/iptables-1.4.1-rc2'
+> make: *** [all] Error 2
+
+Thanks for the report. Does this patch fix it?
 
 
+--------------000304030108020503020800
+Content-Type: text/plain;
+ name="x"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="x"
 
-Stato:    Risoluzione dell'indirizzo IP in corso per ftp.lifesaver.it
-Trace:    ControlSocket.cpp(979):=20
-CRealControlSocket::ContinueConnect(0x1650c678) m_pEngine=3D0x154cbd30 =
- =20
-caller=3D0x8f7c28
-Stato:    Connessione a ***HIDDEN_IP***:21 in corso...
-Stato:    Connessione stabilita, in attesa del messaggio di benvenuto..=
-=2E
-Trace:    CFtpControlSocket::OnReceive()
-Risposta:    220 FTP Server ready. Please use FTP-TLS or login will be=20
-rejected.
-Trace:    CFtpControlSocket::SendNextCommand()
-Comando:    AUTH TLS
-Trace:    CFtpControlSocket::OnReceive()
-Risposta:    234 AUTH TLS successful
-Stato:    Inizializzazione TLS in corso...
-Trace:    CTlsSocket::Handshake()
-Trace:    CFtpControlSocket::SendNextCommand()
-Comando:    USER ftp_temp
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    CTlsSocket::Handshake()
-Trace:    Handshake successful
-Trace:    Cipher: AES-128-CBC, MAC: SHA1
-Stato:    Verifica del certificato in corso (checking cert.)...
-Stato:    Connessione TLS/SSL established.
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Risposta:    331 Password required for ftp_temp
-Trace:    CFtpControlSocket::SendNextCommand()
-Comando:    PASS **********
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Risposta:    230 Welcome !
-Trace:    CFtpControlSocket::SendNextCommand()
-Comando:    PBSZ 0
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Risposta:    200 PBSZ 0 successful
-Trace:    CFtpControlSocket::SendNextCommand()
-Comando:    PROT P
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Risposta:    200 Protection set to Private
-Stato:    Connesso (connected)
-Trace:    CFtpControlSocket::ResetOperation(0)
-Trace:    CControlSocket::ResetOperation(0)
-Stato:    Lettura elenco cartelle... (Reading folders list)
-Trace:    CFtpControlSocket::SendNextCommand()
-Trace:    CFtpControlSocket::ChangeDirSend()
-Comando:    PWD
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Risposta:    257 "/" is the current directory
-Trace:    CFtpControlSocket::ResetOperation(0)
-Trace:    CControlSocket::ResetOperation(0)
-Trace:    CFtpControlSocket::ParseSubcommandResult(0)
-Trace:    CFtpControlSocket::ListSubcommandResult()
-Trace:    CFtpControlSocket::SendNextCommand()
-Trace:    CFtpControlSocket::TransferSend()
-Comando:    TYPE I
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Risposta:    200 Type set to I
-Trace:    CFtpControlSocket::TransferParseResponse()
-Trace:    CFtpControlSocket::SendNextCommand()
-Trace:    CFtpControlSocket::TransferSend()
-Comando:    PASV
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Trace:    CFtpControlSocket::OnReceive()
-Risposta:    227 Entering Passive Mode (77,43,13,50,167,18).
-Trace:    CFtpControlSocket::TransferParseResponse()
-Trace:    CFtpControlSocket::SendNextCommand()
-Trace:    CFtpControlSocket::TransferSend()
-Comando:    LIST
-Trace:    CFtpControlSocket::OnReceive()
-Errore:    Tempo scaduto per la connessione
-Trace:    CFtpControlSocket::ResetOperation(2114)
-Trace:    CControlSocket::ResetOperation(2114)
-Trace:    CFtpControlSocket::ResetOperation(2114)
-Trace:    CControlSocket::ResetOperation(2114)
-Errore:    Non =E8 stato possibile leggere il contenuto della cartella=20
-(can't read folder content)
-whiplash ha scritto:
->
-> Aren't these extensions used only in FXP?
-> --=20
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index 4196a51..6ea935f 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -1,6 +1,7 @@
+ #ifndef __LINUX_NETFILTER_H
+ #define __LINUX_NETFILTER_H
+ 
++#include <linux/types.h>
+ 
+ /* Responses from hook functions. */
+ #define NF_DROP 0
+diff --git a/include/linux/netfilter_ipv4/ip_tables.h b/include/linux/netfilter_ipv4/ip_tables.h
+index fc64b97..c42c73f 100644
+--- a/include/linux/netfilter_ipv4/ip_tables.h
++++ b/include/linux/netfilter_ipv4/ip_tables.h
+@@ -15,6 +15,7 @@
+ #ifndef _IPTABLES_H
+ #define _IPTABLES_H
+ 
++#include <linux/types.h>
+ #include <linux/netfilter_ipv4.h>
+ 
+ #include <linux/netfilter/x_tables.h>
+diff --git a/include/linux/netfilter_ipv6/ip6_tables.h b/include/linux/netfilter_ipv6/ip6_tables.h
+index 68b22fc..fb03b31 100644
+--- a/include/linux/netfilter_ipv6/ip6_tables.h
++++ b/include/linux/netfilter_ipv6/ip6_tables.h
+@@ -15,6 +15,7 @@
+ #ifndef _IP6_TABLES_H
+ #define _IP6_TABLES_H
+ 
++#include <linux/types.h>
+ #include <linux/netfilter_ipv6.h>
+ 
+ #include <linux/netfilter/x_tables.h>
+
+--------------000304030108020503020800--
