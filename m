@@ -1,82 +1,51 @@
 From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [netfilter-core] [ANNOUNCE] Release of iptables 1.4.1-rc2
-Date: Tue, 27 May 2008 09:35:58 +0200
-Message-ID: <483BB9DE.6050003@trash.net>
-References: <483AB493.6010503@trash.net> <x6skw443x5@gzp>
+Subject: Re: iptables ip_conntrack_ftp + proftpd TLS: PORT command not understood
+Date: Tue, 27 May 2008 09:39:31 +0200
+Message-ID: <483BBAB3.6040805@trash.net>
+References: <483B0E5E.4010209@gmail.com> <483B11DF.3050904@bofhland.org> <483B16F7.2010205@gmail.com> <483B2069.7010504@trash.net> <483B606E.9050305@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000304030108020503020800"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <x6skw443x5@gzp>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <483B606E.9050305@gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "Gabor Z. Papp" <gzp@papp.hu>
-Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: filippozeus@gmail.com
+Cc: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------000304030108020503020800
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Filippo Zeus wrote:
+> Considering ftp-control port is text based i've dumped with -A switch. I 
+> hope it's ok
+> 
+> 03:05:59.149005 IP ***HIDDEN_IP***.21 > 151.80.2.63.55194: P 1:71(70) 
+> ack 1 win 46
+> 2.P.?......L.1...P....`..220 FTP Server ready. Please use FTP-TLS or 
+> login wi
+> 03:05:59.149078 IP 151.80.2.63.55194 > ***HIDDEN_IP***.21: . ack 71 win 
+> 1024
+> 2....1.....M.P.......+
+> 03:05:59.149759 IP 151.80.2.63.55194 > ***HIDDEN_IP***.21: P 1:11(10) 
+> ack 71 win 1024
+> 2....1.....M.P.......AUTH TLS
+> 
+> 03:05:59.700919 IP ***HIDDEN_IP***.21 > 151.80.2.63.55194: . ack 11 win 46
+> 2.P.?......M.1...P.......
+> 03:05:59.700939 IP ***HIDDEN_IP***.21 > 151.80.2.63.55194: P 71:96(25) 
+> ack 11 win 46
+> 2.P.?......M.1...P...O...234 AUTH TLS successful
+> 
+> 03:05:59.701036 IP 151.80.2.63.55194 > ***HIDDEN_IP***.21: . ack 96 win 
+> 1024
+> 2....1.....M4P.......+
+> 03:05:59.706276 IP 151.80.2.63.55194 > ***HIDDEN_IP***.21: P 11:95(84) 
+> ack 96 win 1024
+> 2....1.....M4P...L.......O...K..H;^w.i} ..\*.+....'b..]...5`.O....$.3.E.9
+> 03:06:00.416441 IP ***HIDDEN_IP***.21 > 151.80.2.63.55194: P 
+> 1516:1666(150) ack 95 win 46
+> 2.P.?......R.1...P....[...)E..5O......tsp.+).)..W[H..u.)IP..&....XZr...~.<... 
 
-Gabor Z. Papp wrote:
->   CC       libxt_connlimit.oo
-> In file included from /usr/include/linux/netfilter_ipv4.h:9,
->                  from ../include/linux/netfilter_ipv4/ip_tables.h:18,
->                  from ../include/libiptc/libiptc.h:7,
->                  from ../include/iptables.h:5,
->                  from libxt_connlimit.c:8:
-> ../include/linux/netfilter.h:41: error: expected specifier-qualifier-list before '__be32'
-> make[2]: *** [libxt_connlimit.oo] Error 1
-> make[2]: Leaving directory `/home/gzp/src/iptables-1.4.1-rc2/extensions'
-> make[1]: *** [all-recursive] Error 1
-> make[1]: Leaving directory `/home/gzp/src/iptables-1.4.1-rc2'
-> make: *** [all] Error 2
 
-Thanks for the report. Does this patch fix it?
+Its a bit hard to read, but this looks like your client also
+encrypts the control connection, which explains why FTP
+conntrack doesn't work.
 
-
---------------000304030108020503020800
-Content-Type: text/plain;
- name="x"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="x"
-
-diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
-index 4196a51..6ea935f 100644
---- a/include/linux/netfilter.h
-+++ b/include/linux/netfilter.h
-@@ -1,6 +1,7 @@
- #ifndef __LINUX_NETFILTER_H
- #define __LINUX_NETFILTER_H
- 
-+#include <linux/types.h>
- 
- /* Responses from hook functions. */
- #define NF_DROP 0
-diff --git a/include/linux/netfilter_ipv4/ip_tables.h b/include/linux/netfilter_ipv4/ip_tables.h
-index fc64b97..c42c73f 100644
---- a/include/linux/netfilter_ipv4/ip_tables.h
-+++ b/include/linux/netfilter_ipv4/ip_tables.h
-@@ -15,6 +15,7 @@
- #ifndef _IPTABLES_H
- #define _IPTABLES_H
- 
-+#include <linux/types.h>
- #include <linux/netfilter_ipv4.h>
- 
- #include <linux/netfilter/x_tables.h>
-diff --git a/include/linux/netfilter_ipv6/ip6_tables.h b/include/linux/netfilter_ipv6/ip6_tables.h
-index 68b22fc..fb03b31 100644
---- a/include/linux/netfilter_ipv6/ip6_tables.h
-+++ b/include/linux/netfilter_ipv6/ip6_tables.h
-@@ -15,6 +15,7 @@
- #ifndef _IP6_TABLES_H
- #define _IP6_TABLES_H
- 
-+#include <linux/types.h>
- #include <linux/netfilter_ipv6.h>
- 
- #include <linux/netfilter/x_tables.h>
-
---------------000304030108020503020800--
