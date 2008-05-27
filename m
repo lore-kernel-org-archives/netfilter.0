@@ -1,34 +1,21 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Site-specific filter rules problem
-Date: Tue, 27 May 2008 09:29:02 -0500
-Message-ID: <483C1AAE.1010709@riverviewtech.net>
-References: <1211702139.7164.22.camel@u804mbr>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: TEE target
+Date: Tue, 27 May 2008 09:19:24 -0700
+Message-ID: <d95317090805270919s5a8347d5y75a3b8cbf5114727@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1211702139.7164.22.camel@u804mbr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        bh=Mj6PyO8j6RR9f50HT2F0jEciKIz5rb/dDZ6IoOMV0Qo=;
+        b=YcpF01ieUFVzNz44bnaZg2UOHtA2mrPNlHZ2IlmnEFlcSLZWG4eQ1eAFwy4HZPK0neWlb2r1gYiHNeX+naVRE0wnfb2/ya9SRkziWzAWfPE1z6FslcMSHmyqA8jqyLgaIlJaqgJZI+BIVsYjyFEPPAdOyMEhqGhaD/3Ven2tlpI=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 05/25/08 02:55, Mark Baker wrote:
-> I have packet captures from connections to this site, with and 
-> without firewall rules installed.  I don't see anything that should 
-> be blocked based on these rules - the only thing odd is that when the 
-> problem occurs I get a ton of retransmissions from the server. 
-> Another oddity in both cases is that virtually every packet coming 
-> from the server is fragmented; but from what I've read, connection 
-> tracking (which is running on this machine) should completely 
-> reassemble fragmented packets before delivery to the filter table. 
-> Still, could fragmentation be the problem?
-
-Based on the retransmissions, it sounds like something is expecting to 
-get something through and have it acknowledged that is not.
-
-I'd look at what is being re-transmitted and see if it needs to get 
-through and / or if there is an unacknowledged reply that is being blocked.
-
-
-
-Grant. . . .
+When is the TEE target expected to be a standard part of iptables ?
+If that doesn't happen, when might it be able to compile without it's
+"attached" version of iptables ?
