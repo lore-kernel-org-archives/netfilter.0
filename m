@@ -1,15 +1,17 @@
 From: jeev <smallpox@gmail.com>
 Subject: DUAL wan issue, destination-based routing
-Date: Tue, 27 May 2008 16:44:30 -0700
-Message-ID: <840713630805271644hff81960m5c6bea1b612a973c@mail.gmail.com>
+Date: Tue, 27 May 2008 16:51:23 -0700
+Message-ID: <840713630805271651r116edbb8y58973325c2f7fa49@mail.gmail.com>
+References: <840713630805271644hff81960m5c6bea1b612a973c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type:content-transfer-encoding:content-disposition;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
         bh=oGi/OQVjj0Rre9Ieu78Z5MYuObtXpbX1oUXK8f/ZOzA=;
-        b=FLIF7PHZJ1eoyU6Y/NLo/6zhpsj7zzF38iR6pLc5JsjYGyit+jtbLnOy4ONcyYtuKnXSQ00LtD2cqYxpXMiW93k4pb1DGwi+KCb39ioiBRNYDMLixE9ckPyK3z+MiG0YjYDaBo7cGcJbZgCU+Sfu7v4Cz9Fc50q05K48VO+Huzk=
+        b=unwnpMXsi9SL0ZKWgS/HYlwXgdE/YhjDoLDdBwPyIJf6nCkh9q7BnSwI59goz82w0y88Zd9R+H25/R+TZk0+QVPnJR5n2hpBArjUVCadFa+vKh/JQLh+iJiHqTNHoWUbjBhMBSBtwzOe4MFbvmnEHzJOYV4AxlTZBBIlHZsd1Yo=
+In-Reply-To: <840713630805271644hff81960m5c6bea1b612a973c@mail.gmail.com>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
