@@ -1,42 +1,91 @@
-From: jeev <smallpox@gmail.com>
-Subject: DUAL wan issue, destination-based routing
-Date: Tue, 27 May 2008 16:51:23 -0700
-Message-ID: <840713630805271651r116edbb8y58973325c2f7fa49@mail.gmail.com>
-References: <840713630805271644hff81960m5c6bea1b612a973c@mail.gmail.com>
+From: "jiuwei li" <lijiuwei0902@gmail.com>
+Subject: using kernel_sendmsg function to send tcp package would return broken pipe error
+Date: Wed, 28 May 2008 11:10:03 +0800
+Message-ID: <122ccabe0805272010x77828bf4ie82263a2de320a87@mail.gmail.com>
+References: <122ccabe0805270019o22e5b93cw921d4137466ce64d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=oGi/OQVjj0Rre9Ieu78Z5MYuObtXpbX1oUXK8f/ZOzA=;
-        b=unwnpMXsi9SL0ZKWgS/HYlwXgdE/YhjDoLDdBwPyIJf6nCkh9q7BnSwI59goz82w0y88Zd9R+H25/R+TZk0+QVPnJR5n2hpBArjUVCadFa+vKh/JQLh+iJiHqTNHoWUbjBhMBSBtwzOe4MFbvmnEHzJOYV4AxlTZBBIlHZsd1Yo=
-In-Reply-To: <840713630805271644hff81960m5c6bea1b612a973c@mail.gmail.com>
+        bh=FlIJCQB+28A2RCEuo9n8k5IUx8ubeOGejvY1M6JwjmY=;
+        b=iGPr/wv16IzTtY6D7qmuC3X0gEyAmwvjBfaZ0WmMYCG61vCD8iYZipYINx/YMp77kcZ+Qzqx2wmBRSwTc5kulmvIeK4EIDmJtEQk2qLJPfIOUhF20x9KnkaHJKL5pBceMf/3ibkAin5bHYqfveZfIA6FS46LUONa0jHv2iFryv8=
+In-Reply-To: <122ccabe0805270019o22e5b93cw921d4137466ce64d@mail.gmail.com>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hey guys, i was reading on the netfilter site.
+anyone could tell me why the error is happened,what problem with the
+code and how to resolve it?
+any help is appreciated!
 
-I saw Patrick McHardy wrote about having 2 cable modems... i'm in the
-same situation... my only problem is that I dont want to do load
-balancing, i've just come from using PFSENSE/freebsd to use
-ClarkConnect on CentOS i guess.. i've never used iptables before. i've
-tried things like:
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/workqueue.h>
+#include <linux/in.h>
+#include <linux/inet.h>
+#include <linux/socket.h>
+#include <net/sock.h>
 
-"iptables -A POSTROUTING -t nat -o eth2 -s 192.168.2.0/24 -d
-67.17.117.0/24 -j MASQUERADE" and it still doesn't work.
+static struct socket *sock;
+static struct work_struct work;
+static int tcp_sendto(struct socket *sock, void * buff, size_t len,
+                unsigned flags, struct sockaddr *addr, int addr_len)
+{
+        struct kvec vec;
+        struct msghdr msg;
 
-192.168.2.0/24 dev eth1  proto kernel  scope link  src 192.168.2.1
-24.x.x.0/23 dev eth2  proto kernel  scope link  src 24.x.x.23
-71.x.x.0/23 dev eth3  proto kernel  scope link  src 71.x.x.6
-default via 71.x.x.1 dev eth3
+        vec.iov_base=buff;
+        vec.iov_len=len;
 
-so right now i have all traffic go out eth3, i'd love to have the ips
-and ipblocks i select and have it go out one of the cable interfaces.
-so for the example above, i want www.speedtest.net (because it shows
-the ip) to go out eth2 but it's still going out eth3.
+        memset(&msg, 0x00, sizeof(msg));
+        msg.msg_name=addr;
+        msg.msg_namelen=addr_len;
+        msg.msg_flags = flags | MSG_DONTWAIT | MSG_NOSIGNAL;
 
-thanks in advance, i'm really lost...
+        return kernel_sendmsg(sock, &msg, &vec, 1, len);
+}
+
+
+
+static char *hello = "hello";
+
+static void sendmsg(void *dummy)
+{
+        int n;
+        struct sockaddr_in addr;
+        memset(&addr, 0x00, sizeof(addr));
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(15221);
+        addr.sin_addr.s_addr = in_aton("192.168.0.102");
+        n = tcp_sendto(sock, hello, 6, 0, (struct sockaddr *)&addr,
+sizeof(addr));
+        if(n == -EPIPE) {
+            printk("broken pipe\n");
+        } else {
+            printk("send %d bytes\n", n);
+        }
+
+}
+
+static int __init socket_init(void)
+{
+        sock_create_kern(PF_INET, SOCK_STREAM, IPPROTO_TCP, &sock);
+        INIT_WORK(&work, sendmsg, NULL);
+        schedule_work(&work);
+        return 0;
+}
+
+static void __exit socket_exit(void)
+{
+        sock_release(sock);
+}
+
+
+
+module_init(socket_init);
+module_exit(socket_exit);
