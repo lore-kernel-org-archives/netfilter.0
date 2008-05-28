@@ -1,33 +1,50 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [netfilter-core] [ANNOUNCE] Release of iptables 1.4.1-rc2
-Date: Wed, 28 May 2008 08:43:45 +0200
-Message-ID: <483CFF21.40608@trash.net>
-References: <483AB493.6010503@trash.net> <x6skw443x5@gzp>	<483BB9DE.6050003@trash.net> <x6y75w3q2j@gzp>	<483C088E.4020405@trash.net> <x67idfq6d8@gzp>
+From: "ArcosCom Linux User" <linux@arcoscom.com>
+Subject: Problem accessing to Windows Terminal Server in load balancing.
+Date: Wed, 28 May 2008 10:54:22 +0200 (CEST)
+Message-ID: <34055.195.55.244.106.1211964862.squirrel@www.arcoscom.com>
+Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <x67idfq6d8@gzp>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-net-owner@vger.kernel.org>
+Sender: linux-net-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Gabor Z. Papp" <gzp@papp.hu>
-Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org, linux-net@vger.kernel.org
+Cc: centos@centos.org
 
-Gabor Z. Papp wrote:
-> * Patrick McHardy <kaber@trash.net>:
-> 
-> | Your types.h doesn't seem to include the endian annotated
-> | types at all. Does this patch work?
-> 
-> Yes. Next problem:
-> 
->   CC       libxt_conntrack.oo
-> In file included from libxt_conntrack.c:21:
-> ../include/linux/netfilter/xt_conntrack.h:38: error: expected specifier-qualifier-list before '__be32'
-> ../include/linux/netfilter/xt_conntrack.h:45: error: expected specifier-qualifier-list before '__be32'
-> libxt_conntrack.c: In function 'conntrack_parse': libxt_conntrack.c:321: error: 'struct <anonymous>' has no member named 'protonum'
+Hi guys, I have this configuration:
 
-Yes, I also noticed a bunch of other problems with old
-kernel headers. I'll resync the headers and fix it up,
-but it might take until tommorrow since I'm not sure
-whether I'll get near an internet connection again today.
+
+LAN -- LINUX BRIDGE -- LINUX BRIDGE -- TS
+
+The linux's bridges are for wifi purposes (2 centos machines) and is
+working fine.
+
+The problem I have is that the TS are 3 windows TS in load balancing
+configuration. There is 1 IP for general purposes and every TS has its own
+IP.
+For example, the configuration is:
+
+    192.168.0.1/24  TS1
+    192.168.0.2/24  TS2
+    192.168.0.3/24  TS3
+    192.168.0.10/24 (TS server IP for load balancing)
+
+The problem I encountered is that every PC into the LAN has access from
+the LAN to every TS (tested with ping), but them have no access to the IP
+for load balancing.
+
+I observed that all TSn IP's has their ARP entry in the ARP table, but the
+IP for load balancing not.
+
+How can I solve this problem at the bridge level? I think that there is
+something that the bridges are filtering and perhaps is because the TS
+load balancing software uses various "virtual macs" for the load balancing
+IP.
+
+Perhaps I must change any /proc/sys/net/ipv4/conf/<dev>/ file to bypass
+this filter, I'm thinking in "arp_ignore", put a "1" into it, but is a
+production environment and I don't want to loss the access to the devices.
+
+Any help?
+
