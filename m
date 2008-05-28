@@ -1,41 +1,51 @@
-From: "ad marginem" <admarginem@gmail.com>
-Subject: Fwd: IPTABLES and SAMBA behind NAT
-Date: Wed, 28 May 2008 12:27:43 +0300
-Message-ID: <3f88e2aa0805280227y5a88d899n365fa4d6c24d8cb1@mail.gmail.com>
-References: <3f88e2aa0805280226l3a229469lbff78c20cbd3d9f6@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: DUAL wan issue, destination-based routing
+Date: Wed, 28 May 2008 13:50:40 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805281350010.1470@fbirervta.pbzchgretzou.qr>
+References: <840713630805271644hff81960m5c6bea1b612a973c@mail.gmail.com> <840713630805271651r116edbb8y58973325c2f7fa49@mail.gmail.com> <483CE789.40806@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=NjT4t3SwaR5FyFiWzxnUQLxgOgtFiG094P4VHOxoNMk=;
-        b=ilNMo60y3BPA6YfVdzsRsNszXfEIuND2ameOTw0krX09PySyKDMLGfc9sRDT1zl4EWcR1mk0Xpwt9fWU8P1CATLKWWH0jEwSe96n95VqJD9BiI6tHBpDuGK+yNkKrYJZyjxjLRrCX9bHhkhZ1DFGzE3ir3MpYx65b78zeaZLwCE=
-In-Reply-To: <3f88e2aa0805280226l3a229469lbff78c20cbd3d9f6@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <483CE789.40806@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: jeev <smallpox@gmail.com>, netfilter@vger.kernel.org
 
-RGVhciBleHBlcnRzLAoKd2UgaGF2ZSBhIHNhbWJhIHNlcnZlciAod2luZG93cyAyazMpIGJlaGlu
-ZCB0aGUgbGludXggYm94IChkYXBwZXIpIHJ1bm5pbmcgTkFULgoKSSBhbSB0cnlpbmcgdG8gY29u
-ZmlndXJlIGlwdGFibGVzIHBvcnQgZm9yd2FyZGluZyBmcm9tIGV4dGVybmFsCm5ldHdvcmsgdG8g
-aW50ZXJuYWwgc2FtYmEgc2VydmVyIGJ1dCB3aXRob3V0IHN1Y2Nlc3MuCgpNeSBpcHRhYmxlcyBz
-Y3JpcHQgaXM6CgojIS9iaW4vYmFzaAplY2hvIDEgPiAvcHJvYy9zeXMvbmV0L2lwdjQvaXBfZm9y
-d2FyZAoKSUZfRVhUPSJldGgxIgpJRl9JTlQxPSJldGgwIgoKTlRfRVhUPSJFWFRFUk5BTCBJUCIK
-TlRfSU5UMT0iMTkyLjE2OC4xLjAvMjQiCgpQSU5LU1RBUj0iMTkyLjE2OC4xLjMiCgpJUFRBQkxF
-Uz0iL3NiaW4vaXB0YWJsZXMiCgojIENsZWFyIGFsbAokSVBUQUJMRVMgLUYKJElQVEFCTEVTIC1Y
-CiRJUFRBQkxFUyAtWgokSVBUQUJMRVMgLUYgLXQgbmF0CiRJUFRBQkxFUyAtWCAtdCBuYXQKJElQ
-VEFCTEVTIC1aIC10IG5hdAoKJElQVEFCTEVTIC1BIElOUFVUIC1pIGxvIC1qIEFDQ0VQVAokSVBU
-QUJMRVMgLUEgT1VUUFVUIC1vIGxvIC1qIEFDQ0VQVAoKIyBEZWZhdWx0IHBvbGljeTogYWNjZXB0
-IGFsbAokSVBUQUJMRVMgLVAgSU5QVVQgQUNDRVBUCiRJUFRBQkxFUyAtUCBPVVRQVVQgQUNDRVBU
-CiRJUFRBQkxFUyAtQSBGT1JXQVJEIC1wIHRjcCAtbSBtdWx0aXBvcnQgLS1kcG9ydCA1NTQsMTc1
-NSAtaiBEUk9QCiRJUFRBQkxFUyAtUCBGT1JXQVJEIEFDQ0VQVAoKJElQVEFCTEVTIC1BIEZPUldB
-UkQgLWkgJElGX0lOVDEgLWogQUNDRVBUCgojIE1hc3F1YXJhZGUKJElQVEFCTEVTIC10IG5hdCAt
-QSBQT1NUUk9VVElORyAtbyAkSUZfRVhUIC1qIFNOQVQgLS10by1zb3VyY2UgJE5UX0VYVAoKIyBT
-QU1CQQokSVBUQUJMRVMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLXAgdWRwIC1pICRJRl9FWFQgLWQg
-JE5UX0VYVCAtbQptdWx0aXBvcnQgLS1kcG9ydCAxMzcsMTM4IC1qIEROQVQgLS10byAkUElOS1NU
-QVIKJElQVEFCTEVTIC10IG5hdCAtQSBQUkVST1VUSU5HIC1wIHRjcCAtaSAkSUZfRVhUIC1kICRO
-VF9FWFQgLW0KbXVsdGlwb3J0IC0tZHBvcnQgMTM5LDQ0NSAtaiBETkFUIC0tdG8gJFBJTktTVEFS
-CgpUaGFuayB5b3UsCgotLQrQzyDL0sHRzQoKCi0tCtDPIMvSwdHNCg==
+
+On Wednesday 2008-05-28 07:03, Patrick McHardy wrote:
+
+> jeev wrote:
+>> Hey guys, i was reading on the netfilter site.
+>> 
+>> I saw Patrick McHardy wrote about having 2 cable modems... i'm in the
+>> same situation... my only problem is that I dont want to do load
+>> balancing, i've just come from using PFSENSE/freebsd to use
+>> ClarkConnect on CentOS i guess.. i've never used iptables before. i've
+>> tried things like:
+>> 
+>> "iptables -A POSTROUTING -t nat -o eth2 -s 192.168.2.0/24 -d
+>> 67.17.117.0/24 -j MASQUERADE" and it still doesn't work.
+>> 
+>> 192.168.2.0/24 dev eth1  proto kernel  scope link  src 192.168.2.1
+>> 24.x.x.0/23 dev eth2  proto kernel  scope link  src 24.x.x.23
+>> 71.x.x.0/23 dev eth3  proto kernel  scope link  src 71.x.x.6
+>> default via 71.x.x.1 dev eth3
+>> 
+>> so right now i have all traffic go out eth3, i'd love to have the ips
+>> and ipblocks i select and have it go out one of the cable interfaces.
+>> so for the example above, i want www.speedtest.net (because it shows
+>> the ip) to go out eth2 but it's still going out eth3.
+>
+>[...]
+> You can use any criteria you like for distribution, the important
+> thing is to make sure connections stay on one connection when using
+> NAT (since many providers don't allow spoofed addresses), [...]
+> Dealing with incoming connections on both internet connections
+> is trickier because you need to make sure they go out the same
+> way they came in, so I'll skip this because I'm short on time
+> right now :)
+
+As described in http://dev.medozas.de/NF-Cookbook.txt.
+
