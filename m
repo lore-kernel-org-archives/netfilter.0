@@ -1,50 +1,41 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: Problem accessing to Windows Terminal Server in load balancing.
-Date: Wed, 28 May 2008 10:54:22 +0200 (CEST)
-Message-ID: <34055.195.55.244.106.1211964862.squirrel@www.arcoscom.com>
-Reply-To: linux@arcoscom.com
+From: "ad marginem" <admarginem@gmail.com>
+Subject: Fwd: IPTABLES and SAMBA behind NAT
+Date: Wed, 28 May 2008 12:27:43 +0300
+Message-ID: <3f88e2aa0805280227y5a88d899n365fa4d6c24d8cb1@mail.gmail.com>
+References: <3f88e2aa0805280226l3a229469lbff78c20cbd3d9f6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-net-owner@vger.kernel.org>
-Sender: linux-net-owner@vger.kernel.org
+Content-Transfer-Encoding: base64
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=NjT4t3SwaR5FyFiWzxnUQLxgOgtFiG094P4VHOxoNMk=;
+        b=ilNMo60y3BPA6YfVdzsRsNszXfEIuND2ameOTw0krX09PySyKDMLGfc9sRDT1zl4EWcR1mk0Xpwt9fWU8P1CATLKWWH0jEwSe96n95VqJD9BiI6tHBpDuGK+yNkKrYJZyjxjLRrCX9bHhkhZ1DFGzE3ir3MpYx65b78zeaZLwCE=
+In-Reply-To: <3f88e2aa0805280226l3a229469lbff78c20cbd3d9f6@mail.gmail.com>
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org, linux-net@vger.kernel.org
-Cc: centos@centos.org
+Content-Type: text/plain; charset="koi8-r"
+To: netfilter@vger.kernel.org
 
-Hi guys, I have this configuration:
-
-
-LAN -- LINUX BRIDGE -- LINUX BRIDGE -- TS
-
-The linux's bridges are for wifi purposes (2 centos machines) and is
-working fine.
-
-The problem I have is that the TS are 3 windows TS in load balancing
-configuration. There is 1 IP for general purposes and every TS has its own
-IP.
-For example, the configuration is:
-
-    192.168.0.1/24  TS1
-    192.168.0.2/24  TS2
-    192.168.0.3/24  TS3
-    192.168.0.10/24 (TS server IP for load balancing)
-
-The problem I encountered is that every PC into the LAN has access from
-the LAN to every TS (tested with ping), but them have no access to the IP
-for load balancing.
-
-I observed that all TSn IP's has their ARP entry in the ARP table, but the
-IP for load balancing not.
-
-How can I solve this problem at the bridge level? I think that there is
-something that the bridges are filtering and perhaps is because the TS
-load balancing software uses various "virtual macs" for the load balancing
-IP.
-
-Perhaps I must change any /proc/sys/net/ipv4/conf/<dev>/ file to bypass
-this filter, I'm thinking in "arp_ignore", put a "1" into it, but is a
-production environment and I don't want to loss the access to the devices.
-
-Any help?
-
+RGVhciBleHBlcnRzLAoKd2UgaGF2ZSBhIHNhbWJhIHNlcnZlciAod2luZG93cyAyazMpIGJlaGlu
+ZCB0aGUgbGludXggYm94IChkYXBwZXIpIHJ1bm5pbmcgTkFULgoKSSBhbSB0cnlpbmcgdG8gY29u
+ZmlndXJlIGlwdGFibGVzIHBvcnQgZm9yd2FyZGluZyBmcm9tIGV4dGVybmFsCm5ldHdvcmsgdG8g
+aW50ZXJuYWwgc2FtYmEgc2VydmVyIGJ1dCB3aXRob3V0IHN1Y2Nlc3MuCgpNeSBpcHRhYmxlcyBz
+Y3JpcHQgaXM6CgojIS9iaW4vYmFzaAplY2hvIDEgPiAvcHJvYy9zeXMvbmV0L2lwdjQvaXBfZm9y
+d2FyZAoKSUZfRVhUPSJldGgxIgpJRl9JTlQxPSJldGgwIgoKTlRfRVhUPSJFWFRFUk5BTCBJUCIK
+TlRfSU5UMT0iMTkyLjE2OC4xLjAvMjQiCgpQSU5LU1RBUj0iMTkyLjE2OC4xLjMiCgpJUFRBQkxF
+Uz0iL3NiaW4vaXB0YWJsZXMiCgojIENsZWFyIGFsbAokSVBUQUJMRVMgLUYKJElQVEFCTEVTIC1Y
+CiRJUFRBQkxFUyAtWgokSVBUQUJMRVMgLUYgLXQgbmF0CiRJUFRBQkxFUyAtWCAtdCBuYXQKJElQ
+VEFCTEVTIC1aIC10IG5hdAoKJElQVEFCTEVTIC1BIElOUFVUIC1pIGxvIC1qIEFDQ0VQVAokSVBU
+QUJMRVMgLUEgT1VUUFVUIC1vIGxvIC1qIEFDQ0VQVAoKIyBEZWZhdWx0IHBvbGljeTogYWNjZXB0
+IGFsbAokSVBUQUJMRVMgLVAgSU5QVVQgQUNDRVBUCiRJUFRBQkxFUyAtUCBPVVRQVVQgQUNDRVBU
+CiRJUFRBQkxFUyAtQSBGT1JXQVJEIC1wIHRjcCAtbSBtdWx0aXBvcnQgLS1kcG9ydCA1NTQsMTc1
+NSAtaiBEUk9QCiRJUFRBQkxFUyAtUCBGT1JXQVJEIEFDQ0VQVAoKJElQVEFCTEVTIC1BIEZPUldB
+UkQgLWkgJElGX0lOVDEgLWogQUNDRVBUCgojIE1hc3F1YXJhZGUKJElQVEFCTEVTIC10IG5hdCAt
+QSBQT1NUUk9VVElORyAtbyAkSUZfRVhUIC1qIFNOQVQgLS10by1zb3VyY2UgJE5UX0VYVAoKIyBT
+QU1CQQokSVBUQUJMRVMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLXAgdWRwIC1pICRJRl9FWFQgLWQg
+JE5UX0VYVCAtbQptdWx0aXBvcnQgLS1kcG9ydCAxMzcsMTM4IC1qIEROQVQgLS10byAkUElOS1NU
+QVIKJElQVEFCTEVTIC10IG5hdCAtQSBQUkVST1VUSU5HIC1wIHRjcCAtaSAkSUZfRVhUIC1kICRO
+VF9FWFQgLW0KbXVsdGlwb3J0IC0tZHBvcnQgMTM5LDQ0NSAtaiBETkFUIC0tdG8gJFBJTktTVEFS
+CgpUaGFuayB5b3UsCgotLQrQzyDL0sHRzQoKCi0tCtDPIMvSwdHNCg==
