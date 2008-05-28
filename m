@@ -1,30 +1,52 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Fwd: IPTABLES and SAMBA behind NAT
-Date: Wed, 28 May 2008 19:22:11 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805281920400.19264@fbirervta.pbzchgretzou.qr>
-References: <3f88e2aa0805280226l3a229469lbff78c20cbd3d9f6@mail.gmail.com>  <3f88e2aa0805280227y5a88d899n365fa4d6c24d8cb1@mail.gmail.com>  <alpine.LNX.1.10.0805281351290.1470@fbirervta.pbzchgretzou.qr>
- <3f88e2aa0805280544h591fcde5x4d9f098fac91220c@mail.gmail.com>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: Re: TEE target
+Date: Wed, 28 May 2008 10:27:22 -0700
+Message-ID: <d95317090805281027i70b46548sbfeed39a040f746c@mail.gmail.com>
+References: <d95317090805270919s5a8347d5y75a3b8cbf5114727@mail.gmail.com>
+	 <alpine.LNX.1.10.0805271843320.12937@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3f88e2aa0805280544h591fcde5x4d9f098fac91220c@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:cc:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=HIzg3KRtgvY8BWmdTVF2mTrnknyQbBSqFg21SkGzkIM=;
+        b=iUHCi5fPYThb99VabjyYJlloGnu99hS4qnWbw3KjmJqcyael6jtyAd87Nbh1qzSSnwRf+jI5WxMfa9nUL3t17xsPFKs7ZB2vzQQwpD2xcPCKm5Jr7nDfhWKLbwAcIug3O0aeV61BpJFCDRfIAdPG5kDg28RkVqDdU6nI6FUkzUw=
+In-Reply-To: <alpine.LNX.1.10.0805271843320.12937@fbirervta.pbzchgretzou.qr>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ad marginem <admarginem@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
+I tried compiling and installing without the attached version.
+The installation, by default, places the ".so" files in different
+location that the standard iptables shared libraries.
+Is iptables supposed to find the libraries there somehow or am I
+suppose to configure the location differently ? I couldn't quite
+understand what variable I need to set in the configuration.
 
-On Wednesday 2008-05-28 14:44, ad marginem wrote:
+TIA
+Gilad
 
->Sorry for broad description. I mean, that when I try to telnet from
->external network to port 139 - I cannot.
-
-That is because 
-
->I have added to script: $IPTABLES -t nat -A PREROUTING -p tcp -i
->$IF_EXT -d $NT_EXT --dport 7139 -j DNAT --to 192.168.1.3:139
->and tried to connect to port 7139 - it worked.
-
-In case of Windows 2003, it probably suffices to forward
-445, without having to expose 137-139.
+2008/5/27, Jan Engelhardt <jengelh@medozas.de>:
+>
+>  On Tuesday 2008-05-27 18:19, Gilad Benjamini wrote:
+>
+>  >When is the TEE target expected to be a standard part of iptables ?
+>
+>
+> Probably never.
+>
+>
+>  >If that doesn't happen, when might it be able to compile without it's
+>  >"attached" version of iptables ?
+>
+>
+> The attached version is just a copy of the official tree,
+>  and is just provided for convenience because a lot of
+>  distros are stuck with old versions.
+>  There are also tarballs of Xtables-addons without the "attached" version;
+>  see http://dev.medozas.de/files/xtables/ for singular files.
+>
