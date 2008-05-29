@@ -1,83 +1,93 @@
-From: Mark Baker <mbaker824@gmail.com>
-Subject: Re: Site-specific filter rules problem
-Date: Wed, 28 May 2008 22:02:41 -0700
-Message-ID: <1212037361.7205.14.camel@u804mbr>
-References: <1211702139.7164.22.camel@u804mbr>
-	 <483C1AAE.1010709@riverviewtech.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Forwarding packets received on bridged interfaces -regarding
+Date: Thu, 29 May 2008 00:17:31 -0500
+Message-ID: <483E3C6B.1030208@riverviewtech.net>
+References: <69fec4520805281536t15dd5e5dq289799693263371b@mail.gmail.com>	 <483E1DF2.3080304@riverviewtech.net> <69fec4520805282155k441b60edo30a98bb26135df62@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:subject:from:to:in-reply-to:references:content-type:date:message-id:mime-version:x-mailer:content-transfer-encoding;
-        bh=U3EdwXfiWgMJHd5wnByV3vG9EJCsNvEo6DngSxk+Yms=;
-        b=lKnwK3s9/iGzTAujShJY1ql9gCEy6415mJ6hjj6xK2Rg+G09tfbNEO0XYTydHXNwqQYRuR+Mvu28u77yoGCN/NAWiOiAnglgvcsuauLB2yEWDVQGpM07pzQDEiWcMNkvqNY29M2QqsveNvlOcPmTmpbGUdjYtPc1zKewhLl2Xuw=
-In-Reply-To: <483C1AAE.1010709@riverviewtech.net>
+In-Reply-To: <69fec4520805282155k441b60edo30a98bb26135df62@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Tue, 2008-05-27 at 09:29 -0500, Grant Taylor wrote:
-> On 05/25/08 02:55, Mark Baker wrote:
-> > I have packet captures from connections to this site, with and 
-> > without firewall rules installed.  I don't see anything that should 
-> > be blocked based on these rules - the only thing odd is that when the 
-> > problem occurs I get a ton of retransmissions from the server. 
-> > Another oddity in both cases is that virtually every packet coming 
-> > from the server is fragmented; but from what I've read, connection 
-> > tracking (which is running on this machine) should completely 
-> > reassemble fragmented packets before delivery to the filter table. 
-> > Still, could fragmentation be the problem?
+On 05/28/08 23:55, Knight Tiger wrote:
+> I thank you for your quick response. I wish I could draw ascii art 
+> like that. I dont know how to do that on an email compose window.
+
+You are welcome.  As far as the ASCII art, a fixed width font and lots 
+of practice go a long way.  ;)
+
+> The bridge is between eth0 and eth1. AP0 is connected via a crossover 
+> cable. eth1 connects to "Net 1" and eth0 connects to AP0. eth0 does 
+> not have an IP address (I can assign it one, but I dont see any 
+> reason for it) The clients have IP address allocated from the same 
+> subnet as eth1, The clients are no different from eth1 from the 
+> perspective of the DHCP server.
+
+*nod*
+
+With that clarification, I'd suggest that you simply bridge eth0 and 
+eth1 and not have any rules in either EBTables or IPTables.  This should 
+allow your clients to communicate with each other like you are wanting.
+
+About the only thing that I might do differently than what you have done 
+(aside from any filtering) is to move the ""management IP to the bridge 
+interface rather than eth1.  I'd do this so that you can still get to 
+the management IP from one network if the other network's interface gets 
+shut down.  Consider what would happen if you were on a client on "Net 
+0" connected to the management IP (bound to eth1) when eth1 was taken 
+down.  This is just a personal preference though and should have no 
+baring on functionality.
+
+> The bridge system (comprising of interfaces eth0 and eth1) is a 
+> laptop running Linux that aims to extend the range of a wireless 
+> network (the one which the wireless interface eth1 connects to). It 
+> may appear to be easier to add more APs and connect them to the back 
+> bone network but we are evaluating this approach because we want to 
+> switch the wireless network to a 3G data connection and still offer 
+> Wi-Fi services to our clients. As a start we wanted to evaluate WiFi 
+> extension. with just WiFi. We want the Linux laptop to be totally 
+> transparent and the clients connect to the Wi-Fi network just as they 
+> would from any other AP. The Linux laptop merely acts as a firewall+ 
+> bridge for the clients. The clients would get IP addresses in the 
+> same subnet as eth1 in the figure. Remote monitoring of the linux 
+> machine is possible through the DHCP assigned IP address. All traffic 
+> from/to the clients should flow through the bridge. I plan to add 
+> filtering after I get traffic flowing in both directions.
+
+*nod*
+
+I don't see any problems with what you are proposing while using WiFi. 
+However I do wonder if you will still be using bridging when 3G is in 
+place, as I don't know how many IPs you will be able to get with your 3G 
+service.  Other than that, things should be fine.
+
+> The problem:
 > 
-> Based on the retransmissions, it sounds like something is expecting to 
-> get something through and have it acknowledged that is not.
-> 
-> I'd look at what is being re-transmitted and see if it needs to get 
-> through and / or if there is an unacknowledged reply that is being blocked.
-> 
-> 
-> 
-> Grant. . . .
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> The DHCP requests from the clients get blocked at the eth1 interface. 
+> I want all traffic from the clients to go out via eth1. I would like 
+> to know to configure this setup,
 
-Thanks for the advice, Grant.  Keeping in mind that I'm only having this
-problem with one site and therefore it must be doing something
-differently, I did a little more playing and found out I could eliminate
-the problem by adding the following rule after my state rule, like this:
+I re-looked at your EBTables rules and did not see any thing that should 
+prevent things from working as long as you are not using the MAC address 
+of eth1 (i.e. talking to or from eth1).  If you are using the MAC of 
+eth1 then you are forcing the bridge to route the packet when the IP 
+stack will not have any thing to route.
 
-$IPT -t filter -A U804-input -m state --state RELATED,ESTABLISHED -j
-ACCEPT
+The only other thing that comes to mind is that seeing as how (I think) 
+eth1 is a wireless NIC, you may be dealing with problems with a wireless 
+card that is not playing quite right.  You might consider testing your 
+bridging (and filtering when it is time) via a regular computer with two 
+wired ethernet interfaces.
 
-$IPT -t filter -A U804-input -s $ANGELIP -p tcp -m tcp --sport 80
---dport 1024:65535 ! --syn -j LOG
+> I thank you again for your patience. Looking forward to your replies.
 
-$IPT -t filter -A U804-input -s $ANGELIP -p tcp -m tcp --sport 80
---dport 1024:65535 ! --syn -j ACCEPT
+*nod*
 
-After adding the next 2nd and 3rd rules above, I found that huge numbers
-of packets were getting past my state rule, but it cured the problem.
-When I compare the logged packets to /proc/net/nf_conntrack, though, I
-find that the sockets identified in the missed packets matched
-established connections listed in nf_conntrack, so I'm still not sure
-why they were being missed. 
+You are welcome.
 
-I played around with it a bit more, and found that if I set
-nf_conntrack_tcp_be_liberal=1, virtually everything is accepted by my
-state rule (although by the end of the session with the problem site, 3
-out of about 3500 packets had still gotten through somehow).  The only
-problem is, I don't fully understand the ramifications of that setting.
-I spent a lot of time searching, but have found little information on
-the nf_conntrack settings in /proc/sys/net/netfilter.
 
-Can anyone help me understand exactly what nf_conntrack_tcp_be_liberal
-does?  Also, what about nf_conntrack_tcp_loose?  If anyone can tell me
-where to find documentation on the nf_conntrack parameters, that would
-be even better.
 
-Thanks,
-Mark
-
+Grant. . . .
