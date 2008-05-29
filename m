@@ -1,41 +1,31 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Site-specific filter rules problem
-Date: Thu, 29 May 2008 00:23:04 -0500
-Message-ID: <483E3DB8.6000908@riverviewtech.net>
-References: <1211702139.7164.22.camel@u804mbr>	 <483C1AAE.1010709@riverviewtech.net> <1212037361.7205.14.camel@u804mbr>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: NAT on the same network
+Date: Thu, 29 May 2008 10:24:35 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805291023080.19264@fbirervta.pbzchgretzou.qr>
+References: <1212005433.483dbc39ef035@www.versateladsl.be> <483E0127.4070301@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1212037361.7205.14.camel@u804mbr>
+In-Reply-To: <483E0127.4070301@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-
-On 05/29/08 00:02, Mark Baker wrote:
-> Thanks for the advice, Grant.  Keeping in mind that I'm only having 
-> this problem with one site and therefore it must be doing something 
-> differently, I did a little more playing and found out I could 
-> eliminate the problem by adding the following rule after my state 
-> rule, like this:
-
-You are welcome.  I'm glad that you got things working.
-
-<snip>
-
-> After adding the next 2nd and 3rd rules above, I found that huge 
-> numbers of packets were getting past my state rule, but it cured the 
-> problem. When I compare the logged packets to /proc/net/nf_conntrack, 
-> though, I find that the sockets identified in the missed packets 
-> matched established connections listed in nf_conntrack, so I'm still 
-> not sure why they were being missed.
-
-It might be worth submitting a new post to the mailing list (new thread 
-rather than a reply to this one) clearly stating what you were seeing in 
-your conntrack tables.  Also, include as many relevant logs and 
-conntrack entries as possible.  You may want to consider sniffing some 
-traffic and including that as well.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
 
+On Thursday 2008-05-29 03:04, Grant Taylor wrote:
+>> What can I do ?
+>
+> You are close with your DNATing rules except for the fact that when "Bob"
+> replies to "Tom" (who is on your network) "Bob's" reply will not pass through
+> the system that did the redirecting.  This means that "Tom" will see a packet
+> from "Bob" that he has no idea where it came from and as such hang up on "Bob".
 
-Grant. . . .
+In other words... *drumroll*
+http://jengelh.medozas.de/images/dnat-mistake.png :-)
+
+> To make this work, you need to SNAT the traffic [...]
+
+Therefore making bug hunting harder because the wrong IP address
+shows up in the logs on the final host.
