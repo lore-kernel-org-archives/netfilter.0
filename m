@@ -1,31 +1,29 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: NAT on the same network
-Date: Thu, 29 May 2008 10:24:35 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805291023080.19264@fbirervta.pbzchgretzou.qr>
-References: <1212005433.483dbc39ef035@www.versateladsl.be> <483E0127.4070301@riverviewtech.net>
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Re: Problem accessing to Windows Terminal Server in load balancing.
+Date: Thu, 29 May 2008 12:17:42 +0200
+Message-ID: <1212056262.32319.12.camel@enterprise.ims-firmen.de>
+References: <34055.195.55.244.106.1211964862.squirrel@www.arcoscom.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <483E0127.4070301@riverviewtech.net>
+In-Reply-To: <34055.195.55.244.106.1211964862.squirrel@www.arcoscom.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+I'm guessing you're using Windows Network Load balancein (NLB)?
 
-On Thursday 2008-05-29 03:04, Grant Taylor wrote:
->> What can I do ?
->
-> You are close with your DNATing rules except for the fact that when "Bob"
-> replies to "Tom" (who is on your network) "Bob's" reply will not pass through
-> the system that did the redirecting.  This means that "Tom" will see a packet
-> from "Bob" that he has no idea where it came from and as such hang up on "Bob".
+NLB relies on all incoming traffic being sent to all the nodes,
+the way it does this is by either not sending outgoing ethernet
+frames from the cluster MAC address (unicast mode, so that ordinary
+switches don't learn its origin and broadcast all the data) or by using
+a multicast ethernet address (multicast mode) as the cluster MAC. Either
+way you are flooding you L2 broadcast domain with all incoming traffic, 
+this is not always a clever idea.
 
-In other words... *drumroll*
-http://jengelh.medozas.de/images/dnat-mistake.png :-)
+Maybe this creates problems for Linux bridging?
 
-> To make this work, you need to SNAT the traffic [...]
+     Regards,
+              Thomas
 
-Therefore making bug hunting harder because the wrong IP address
-shows up in the logs on the final host.
