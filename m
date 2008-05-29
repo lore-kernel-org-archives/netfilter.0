@@ -1,85 +1,83 @@
-From: "Knight Tiger" <caugar@gmail.com>
-Subject: Re: Forwarding packets received on bridged interfaces -regarding
-Date: Wed, 28 May 2008 21:55:26 -0700
-Message-ID: <69fec4520805282155k441b60edo30a98bb26135df62@mail.gmail.com>
-References: <69fec4520805281536t15dd5e5dq289799693263371b@mail.gmail.com>
-	 <483E1DF2.3080304@riverviewtech.net>
+From: Mark Baker <mbaker824@gmail.com>
+Subject: Re: Site-specific filter rules problem
+Date: Wed, 28 May 2008 22:02:41 -0700
+Message-ID: <1212037361.7205.14.camel@u804mbr>
+References: <1211702139.7164.22.camel@u804mbr>
+	 <483C1AAE.1010709@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
-        bh=JW+RZ4c5pinUHCwpKfREUh93rDzWgZ8aOHUQJOcyZR8=;
-        b=jBpdbvdaR8vVqp9ehparDXK5GDAm/zLlsu2B/Rg8H2B9U3mPY7bApmFrpBVd9TqbwNuw801IC14wLxU/XVF9AuUmk3ZZdcYQ2jcPLxqffXONnN4218orqxP+R0rclrod0UPdeyzo+Uyoefj8zE6ZY+7pFaVKo9nVAGyFxqaINqw=
-In-Reply-To: <483E1DF2.3080304@riverviewtech.net>
-Content-Disposition: inline
+        h=domainkey-signature:received:received:subject:from:to:in-reply-to:references:content-type:date:message-id:mime-version:x-mailer:content-transfer-encoding;
+        bh=U3EdwXfiWgMJHd5wnByV3vG9EJCsNvEo6DngSxk+Yms=;
+        b=lKnwK3s9/iGzTAujShJY1ql9gCEy6415mJ6hjj6xK2Rg+G09tfbNEO0XYTydHXNwqQYRuR+Mvu28u77yoGCN/NAWiOiAnglgvcsuauLB2yEWDVQGpM07pzQDEiWcMNkvqNY29M2QqsveNvlOcPmTmpbGUdjYtPc1zKewhLl2Xuw=
+In-Reply-To: <483C1AAE.1010709@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi,
+On Tue, 2008-05-27 at 09:29 -0500, Grant Taylor wrote:
+> On 05/25/08 02:55, Mark Baker wrote:
+> > I have packet captures from connections to this site, with and 
+> > without firewall rules installed.  I don't see anything that should 
+> > be blocked based on these rules - the only thing odd is that when the 
+> > problem occurs I get a ton of retransmissions from the server. 
+> > Another oddity in both cases is that virtually every packet coming 
+> > from the server is fragmented; but from what I've read, connection 
+> > tracking (which is running on this machine) should completely 
+> > reassemble fragmented packets before delivery to the filter table. 
+> > Still, could fragmentation be the problem?
+> 
+> Based on the retransmissions, it sounds like something is expecting to 
+> get something through and have it acknowledged that is not.
+> 
+> I'd look at what is being re-transmitted and see if it needs to get 
+> through and / or if there is an unacknowledged reply that is being blocked.
+> 
+> 
+> 
+> Grant. . . .
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-I thank you for your quick response. I wish I could draw ascii art
-like that. I dont know how to do that on an email compose window.
+Thanks for the advice, Grant.  Keeping in mind that I'm only having this
+problem with one site and therefore it must be doing something
+differently, I did a little more playing and found out I could eliminate
+the problem by adding the following rule after my state rule, like this:
 
-On Wed, May 28, 2008 at 8:07 PM, Grant Taylor <gtaylor@riverviewtech.net> wrote:
-<snip>
->
-> Let's redraw this up a little bit.
->
->                  +--------------+
->                  |    Bridge    |
-> ("Net 0")   AP0---+ eth0    eth1 +---AP1   ("Net 1")   DHCP server
->                  +--------------+
->
-> Is a client on "Net 0" suppose to have an IP in the same subnet as clients
-> on "Net 1"?  Or is the "Bridge" system going to be routing for all the
-> clients on "Net 0" and hiding them as one IP to "Net 1"?
+$IPT -t filter -A U804-input -m state --state RELATED,ESTABLISHED -j
+ACCEPT
 
-The bridge is between eth0 and eth1. AP0 is connected via a crossover
-cable. eth1 connects to "Net 1" and eth0 connects to AP0. eth0 does
-not have an IP address (I can assign it one, but I dont see any reason
-for it)
-The clients have IP address allocated from the same subnet as eth1,
-The clients are no different from eth1 from the perspective of the
-DHCP server.
+$IPT -t filter -A U804-input -s $ANGELIP -p tcp -m tcp --sport 80
+--dport 1024:65535 ! --syn -j LOG
 
-> I ask this because you are starting to sound like the "Bridge" system is
-> suppose to act like a SOHO router like you would use on your DSL / cable
-> modem to connect your home LAN to your internet connection.  However your
-> original question implied that you wanted "Net 0" and "Net 1" to be joined
-> together as one big network where everything on both sides could see
-> everything else.
->
+$IPT -t filter -A U804-input -s $ANGELIP -p tcp -m tcp --sport 80
+--dport 1024:65535 ! --syn -j ACCEPT
 
-<snip>
+After adding the next 2nd and 3rd rules above, I found that huge numbers
+of packets were getting past my state rule, but it cured the problem.
+When I compare the logged packets to /proc/net/nf_conntrack, though, I
+find that the sockets identified in the missed packets matched
+established connections listed in nf_conntrack, so I'm still not sure
+why they were being missed. 
 
-The bridge system (comprising of interfaces eth0 and eth1) is a laptop
-running Linux that aims to extend the range of a wireless network (the
-one which the wireless interface eth1 connects to). It may appear to
-be easier to add more APs and connect them to the back bone network
-but we are evaluating this approach because we want to switch the
-wireless network to a 3G data connection and still offer Wi-Fi
-services to our clients. As a start we wanted to evaluate WiFi
-extension. with just WiFi. We want the Linux laptop to be totally
-transparent and the clients connect to the Wi-Fi network just as they
-would from any other AP. The Linux laptop merely acts as a firewall+
-bridge for the clients. The clients would get IP addresses in the same
-subnet as eth1 in the figure. Remote monitoring of the linux machine
-is possible through the DHCP assigned IP address. All traffic from/to
-the clients should flow through the bridge. I plan to add filtering
-after I get traffic flowing in both directions.
+I played around with it a bit more, and found that if I set
+nf_conntrack_tcp_be_liberal=1, virtually everything is accepted by my
+state rule (although by the end of the session with the problem site, 3
+out of about 3500 packets had still gotten through somehow).  The only
+problem is, I don't fully understand the ramifications of that setting.
+I spent a lot of time searching, but have found little information on
+the nf_conntrack settings in /proc/sys/net/netfilter.
 
-The problem:
+Can anyone help me understand exactly what nf_conntrack_tcp_be_liberal
+does?  Also, what about nf_conntrack_tcp_loose?  If anyone can tell me
+where to find documentation on the nf_conntrack parameters, that would
+be even better.
 
-The DHCP requests from the clients get blocked at the eth1 interface.
-I want all traffic from the clients to go out via eth1. I would like
-to know to configure this setup,
+Thanks,
+Mark
 
-I thank you again for your patience. Looking forward to your replies.
-
-Thanks
-Regards
-Knight
