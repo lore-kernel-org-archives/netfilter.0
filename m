@@ -1,7 +1,7 @@
 From: Erich Weiler <weiler@soe.ucsc.edu>
 Subject: IPTABLES port forwarding woes
-Date: Fri, 30 May 2008 06:24:25 -0700
-Message-ID: <48400009.1070308@soe.ucsc.edu>
+Date: Fri, 30 May 2008 06:15:33 -0700
+Message-ID: <483FFDF5.30505@soe.ucsc.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -12,8 +12,8 @@ To: netfilter@vger.kernel.org
 
 Hi All,
 
-I'm having trouble setting up port forwarding on a linux host I have...
-Basically I have 2 machines. One has a public and a private IP address,
+I'm having trouble setting up port forwarding on a linux host I have... 
+Basically I have 2 machines. One has a public and a private IP address, 
 the other just has a private address:
 
 
@@ -24,11 +24,11 @@ private IP: 10.1.1.50
 Machine 2:
 private IP: 10.1.1.133
 
-I want to ssh to port 2222 on machine 1 from the internet, on the public
-IP, and have it forward to port 22 on machine 2 on the private network.
-  I can't seem to open an SSH socket however when SSHing to port 2222 on
-machine 1's public IP address...  Note that I only want port 2222 routed
-to machine 2, all other ports should connect to machine 1 as normal.
+I want to ssh to port 2222 on machine 1 from the internet, on the public 
+IP, and have it forward to port 22 on machine 2 on the private network. 
+  I can't seem to open an SSH socket however when SSHing to port 2222 on 
+machine 1's public IP address...  Note that I only want port 2222 routed 
+to machine 2, all other ports should connect to machine 1 as normal. 
 This is my current IP tables file on machine 1:
 
 
@@ -37,7 +37,7 @@ This is my current IP tables file on machine 1:
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [66:7948]
--A FORWARD -d 10.1.3.133 -i eth0 -o eth1 -p tcp -m tcp --dport 22 -m
+-A FORWARD -d 10.1.3.133 -i eth0 -o eth1 -p tcp -m tcp --dport 22 -m 
 state --state NEW -j ACCEPT
 -A FORWARD -o eth0 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
@@ -52,18 +52,17 @@ COMMIT
 :PREROUTING ACCEPT [451:32699]
 :POSTROUTING ACCEPT [2:236]
 :OUTPUT ACCEPT [2:236]
--A PREROUTING -d 120.1.1.10 -i eth0 -p tcp -m tcp --dport 2222 -j DNAT
+-A PREROUTING -d 120.1.1.10 -i eth0 -p tcp -m tcp --dport 2222 -j DNAT 
 --to-destination 10.1.3.133:22
 -A POSTROUTING -s 10.1.3.133 -o eth0 -j SNAT --to-source 120.1.1.10
 COMMIT
 # Completed on Wed May 28 20:56:31 2008
 
-This just doesn't seem to work - can anyone see where I'm going wrong? I
-guess I want machine 2 to see connections coming from machine 1 to be
-coming from machine 1's private IP, but I'm not sure the 'source IP' is
-being re-written when it's being forwarded to machine 2... Not sure...
+This just doesn't seem to work - can anyone see where I'm going wrong? I 
+guess I want machine 2 to see connections coming from machine 1 to be 
+coming from machine 1's private IP, but I'm not sure the 'source IP' is 
+being re-written when it's being forwarded to machine 2... Not sure... 
 Anyway, if anyone can see what's wrong here please let me know!!
 
 Thanks so much,
 erich
-
