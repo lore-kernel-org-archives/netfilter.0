@@ -1,47 +1,54 @@
-From: Erich Weiler <weiler@soe.ucsc.edu>
-Subject: Re: IPTABLES port forwarding woes
-Date: Fri, 30 May 2008 14:06:19 -0700
-Message-ID: <48406C4B.9070002@soe.ucsc.edu>
-References: <484008D8.3080601@soe.ucsc.edu> <4840124D.2000303@plouf.fr.eu.org> <48401A99.70408@soe.ucsc.edu> <48405164.3000706@plouf.fr.eu.org>
+From: "Knight Tiger" <caugar@gmail.com>
+Subject: Re: Forwarding packets received on bridged interfaces -regarding
+Date: Fri, 30 May 2008 15:32:54 -0700
+Message-ID: <69fec4520805301532n7f68fc9m9af29004f1514833@mail.gmail.com>
+References: <69fec4520805281536t15dd5e5dq289799693263371b@mail.gmail.com>
+	 <483E1DF2.3080304@riverviewtech.net>
+	 <69fec4520805282155k441b60edo30a98bb26135df62@mail.gmail.com>
+	 <483E3C6B.1030208@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48405164.3000706@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:content-transfer-encoding:content-disposition:references;
+        bh=i2R5j/dHyuTDqGaUZIIL38a8E2SXRsnS1eDu2okoUq0=;
+        b=NEUYkASbfA9QF2C3oipeVvXatUsKHyyb1mkCO9XhN5NVc3vy2e87vH26eiChHUXjYteSHB7jl/yJq7kHCmZ1wL1v7q4ujRPOG43j9UMHcIH5Ty8bsZRNMGys4Jf39oSNC9CmobGfl2mRnelcwi8/oH6ySCzNprnoIQbpIHkpHoY=
+In-Reply-To: <483E3C6B.1030208@riverviewtech.net>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-> No, the connection tracking takes care of all this. The NAT operations 
-> applied by iptables rules to the first packet creating the connection 
-> are recorded and applied to subsequent packets in the same direction, 
-> while the inverse operations are applied to reply packets in the 
-> opposite direction.
+Hi,
 
-Excellent, it works just fine now!  Here's my final iptables file, just 
-in case it would help anyone in the list:
+<snip>
+>
+>> The problem:
+>>
+>> The DHCP requests from the clients get blocked at the eth1 interface. I
+>> want all traffic from the clients to go out via eth1. I would like to know
+>> to configure this setup,
+>
+> I re-looked at your EBTables rules and did not see any thing that should
+> prevent things from working as long as you are not using the MAC address of
+> eth1 (i.e. talking to or from eth1).  If you are using the MAC of eth1 then
+> you are forcing the bridge to route the packet when the IP stack will not
+> have any thing to route.
+>
+> The only other thing that comes to mind is that seeing as how (I think) eth1
+> is a wireless NIC, you may be dealing with problems with a wireless card
+> that is not playing quite right.  You might consider testing your bridging
+> (and filtering when it is time) via a regular computer with two wired
+> ethernet interfaces.
 
-*filter
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [66:7948]
--A FORWARD -d 10.1.3.133 -i eth0 -o eth1 -p tcp -m tcp --dport 22 -m 
-state --state NEW -j ACCEPT
--A FORWARD -o eth0 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-COMMIT
-*nat
-:PREROUTING ACCEPT [451:32699]
-:POSTROUTING ACCEPT [2:236]
-:OUTPUT ACCEPT [2:236]
--A PREROUTING -d 120.1.1.10 -i eth0 -p tcp -m tcp --dport 2222 -j DNAT 
---to-destination 10.1.3.133:22
--A POSTROUTING -s 10.1.3.133 -o eth0 -j SNAT --to-source 120.1.1.10
-COMMIT
--A POSTROUTING -o eth1 -p tcp --dport 22 -d 10.1.3.133 -j SNAT --to 
-10.1.1.50
+I did the test on a desktop with two NICs and no iptables/ebtables
+entries. The setup works great. Thanks. I expect the problem to be
+with the wirless NIC (I use the Intel Linux drivers but apparently
+they are no good for bridge settings).
 
-Thanks again!
+Thanks again.
 
--erich
+Regards
+Knight
