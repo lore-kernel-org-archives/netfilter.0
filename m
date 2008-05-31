@@ -1,25 +1,60 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: TEE in filter table
-Date: Sat, 31 May 2008 10:02:19 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0805311001440.4055@fbirervta.pbzchgretzou.qr>
-References: <d95317090805291827h1209422bl37ef53eb720c6609@mail.gmail.com> <d95317090805291827n6fc80781wcf4078099a086a0a@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnfnetlink release 0.0.38
+Date: Sat, 31 May 2008 18:29:54 +0200
+Message-ID: <48417D02.8050907@netfilter.org>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------070704050907090802070508"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d95317090805291827n6fc80781wcf4078099a086a0a@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+To: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Cc: netfilter-announce@lists.netfilter.org, lwn@lwn.net
+
+This is a multi-part message in MIME format.
+--------------070704050907090802070508
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-To: Gilad Benjamini <gilad.benjamini@gmail.com>
-Cc: netfilter@vger.kernel.org
+
+Hi!
+
+The netfilter project proudly presents libnfnetlink 0.0.38. This release
+includes minor bugfixes and updates. Changelog is attached.
+
+libnfnetlink is the low-level library for netfilter related
+kernel/userspace communication. It provides a generic messaging
+infrastructure for in-kernel netfilter subsystems (such as
+nfnetlink_log, nfnetlink_queue, nfnetlink_conntrack) and their
+respective users and/or management tools in userspace.
+
+This library requires a linux kernel >= 2.6.18.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnfnetlink/downloads.html
+
+Pablo (on behalf of the Netfilter Project)
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
 
 
-On Friday 2008-05-30 03:27, Gilad Benjamini wrote:
+--------------070704050907090802070508
+Content-Type: text/plain;
+ name="Changelog"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="Changelog"
 
->The TEE target is currently limited to the mangle table.
->I need to TEE on the filter table, specifically, when forwarding
->traffic on a bridge.
->Is there a problem with simply changing the code to allow that ?
+Jan Engelhardt (1):
+      The second, deprecated, form of `AM_INIT_AUTOMAKE' has two required
 
-No problem. Just remove the line ".table = "mangle"," to unlock
-it for all tables.
+Pablo Neira Ayuso (5):
+      recover the nested bit as now it is fully supported in kernel space.
+      major cleanup of index2name infrastructure: use linux list (and fix leak in the nlif_close path)
+      update include files
+      fix warning, getsockname takes a socklen_t as third parameter
+      add conditional defition of NLA_F_NESTED for old includes
+
+
+--------------070704050907090802070508--
