@@ -1,35 +1,25 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Forwarding packets received on bridged interfaces -regarding
-Date: Fri, 30 May 2008 17:57:09 -0500
-Message-ID: <48408645.7070902@riverviewtech.net>
-References: <69fec4520805281536t15dd5e5dq289799693263371b@mail.gmail.com>	 <483E1DF2.3080304@riverviewtech.net>	 <69fec4520805282155k441b60edo30a98bb26135df62@mail.gmail.com>	 <483E3C6B.1030208@riverviewtech.net> <69fec4520805301532n7f68fc9m9af29004f1514833@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: TEE in filter table
+Date: Sat, 31 May 2008 10:02:19 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0805311001440.4055@fbirervta.pbzchgretzou.qr>
+References: <d95317090805291827h1209422bl37ef53eb720c6609@mail.gmail.com> <d95317090805291827n6fc80781wcf4078099a086a0a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <69fec4520805301532n7f68fc9m9af29004f1514833@mail.gmail.com>
+In-Reply-To: <d95317090805291827n6fc80781wcf4078099a086a0a@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-
-On 05/30/08 17:32, Knight Tiger wrote:
-> I did the test on a desktop with two NICs and no iptables/ebtables 
-> entries. The setup works great. Thanks. I expect the problem to be 
-> with the wirless NIC (I use the Intel Linux drivers but apparently 
-> they are no good for bridge settings).
-
-I wondered if such was not going to be the problem.  Can you replace the 
-wireless card?
-
-For the record (and those searching the archive), what wireless card and 
-driver(s) are you using?
-
-> Thanks again.
-
-*nod*
-
-Good luck.  :)
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Gilad Benjamini <gilad.benjamini@gmail.com>
+Cc: netfilter@vger.kernel.org
 
 
+On Friday 2008-05-30 03:27, Gilad Benjamini wrote:
 
-Grant. . . .
+>The TEE target is currently limited to the mangle table.
+>I need to TEE on the filter table, specifically, when forwarding
+>traffic on a bridge.
+>Is there a problem with simply changing the code to allow that ?
+
+No problem. Just remove the line ".table = "mangle"," to unlock
+it for all tables.
