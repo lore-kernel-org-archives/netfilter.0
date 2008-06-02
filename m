@@ -1,81 +1,83 @@
-From: Martin <mylists@itcom.com.ar>
-Subject: load balance [OT?]
-Date: Mon, 02 Jun 2008 16:26:27 -0300
-Message-ID: <1212434787.2539.16326.camel@kr0sty.1.com.ar>
-Reply-To: mylists@itcom.com.ar
-Mime-Version: 1.0
+From: Glenn Henshaw <thraxisp@logicaloutcome.ca>
+Subject: Possible NetFilter Bug (2.4.27 and 2.6.20 kernel)
+Date: Mon, 2 Jun 2008 19:48:37 -0400
+Message-ID: <3A74F96F-F8DA-4E69-BFD8-AD18CE6CC4C5@logicaloutcome.ca>
+Mime-Version: 1.0 (Apple Message framework v924)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
 To: netfilter@vger.kernel.org
 
-Hello netfilter list!
+  I'm running into a problem with uCLinux 3.2 (2.4.17 kernel) router.  
+I can also reproduce the problem on 2.6.20 kernel (Debian 4.0). I  
+suspect that it still exists in more recent versions, but can't create  
+the environment to test this easily.
 
-I don't know if this is the right place to post this question, but looks
-that I won't find people with more knowledge about networking anywhere
-else :)
+  The router is running a NAT (MASQUERADE) firewall. After a few days  
+of operation with a number of clients , the ip_dst_cache fills and  
+overflows, stopping the router.  This is most noticeable with a large  
+number of hosts behind the router doing UDP transactions (although it  
+appears that ICMP and TCP connections produce the same effect).
 
-I've been browsing list archive and some people send a few examples on
-how to do it with ip route, but it's not working for me...
+  The culprit seems to be traffic passing through the NAT connections  
+in the router. Each new packet creates a new entry in the rt_cache, or  
+increases the ref count. These entries are never cleared away.  
+Eventually, no more entries can be allocated as the entries in the  
+cache are locked (refcount>0). I traced the issue back to the packets  
+returning to the router from the outside host, where the destination  
+of the packet is changed. This appears to be a netfilter bug?
 
-Here is what I've configured based on those examples and this
-http://lartc.org/lartc.html
+  Reproducing the problem is simple. Given a host (192.168.4.2) behind  
+the router (192.168.4.3 to 192.168.1.161) and a host on the other side  
+of the router, ping between the hosts. The (edited) results of the   
+route -Cn command on the router are shown below.
 
+### starting state
+# route -Cn
+Kernel IP routing cache
+Source          Destination     Gateway         Flags Metric Ref     
+Use Iface
+192.168.4.3     192.168.4.2     192.168.4.2           0      1         
+0 eth0
+192.168.1.161   206.191.32.163  192.168.1.2           0      0         
+0 eth1
+# route -Cn
 
-I've two ISP, and internal lan.
+### ping 25x
 
-#ISP 1
-ip route add $ISP1_NET dev $ISP1_IF src $ISP1_IP table 1
-ip route add default via $ISP1_GW dev $ISP1_IF
+# route -Cn
+Kernel IP routing cache
+Source          Destination     Gateway         Flags Metric Ref     
+Use Iface
+192.168.1.161   192.168.1.1     192.168.1.1           0      0        
+24 eth1
+192.168.4.2     192.168.1.1     192.168.1.1     i     0      25       
+24 eth1
+192.168.1.1     192.168.4.2     192.168.4.2     i     0      25       
+24 eth0
+192.168.4.3     192.168.4.2     192.168.4.2           0      1         
+0 eth0
+#
 
-#ISP 2 
-ip route add $ISP2_NET dev $ISP2_IF src $ISP2_IP table 2
-ip route add default via $ISP2_GW dev $ISP2_IF
-
-#Rules for ISPs
-ip rule add $ISP1_IP table 1
-ip rule add $ISP2_IP table 2
-
-#Internal LAN and cross reference to the other ISP
-ip route add $LAN_NET dev $LAN_IF table 1
-ip route add $ISP2_NET dev $ISP2_IF table 1
-
-ip route add $LAN_NET dev $LAN_IF table 2
-ip route add $ISP1_NET dev $ISP1_IF table 2
-
-#Add isp net in main
-ip route add $ISP1_NET dev $ISP1_IF src $ISP1_IP
-ip route add $ISP2_NET dev $ISP2_IF src $ISP2_IP
-
-#This should do the trick of balancing
-
-ip route add default scope global equalize nexthop via $ISP1_GW dev
-ISP1_IF weight 1 nexthop via $ISP2_GW dev $ISP2_IF weight 2
-
-
-What actually happens is that traffic is going out only by the first GW
-declared in the first nexthop, and it doesn't care weight nor balance.
-The only chance of making it to go throw the second GW declared is
-shutting down or collapse that interface, so then it goes for the second
-one.
-
-I'm using a vanilla kernel 2.6.23.17 with Alexey Kuznetsov's route
-patches and some others at http://www.ssi.bg/~ja/ (using the
-combinations patch offered in the site)
-
-
-
-What am I doing wrong? I'm missing something, but can't figure out
-what...
-
-
-Any clue will be investigated ;)
+  I've searched most of the lists, and added some patches (which  
+corrected lost ip_dst_cache entries). I'm looking for pointers on how  
+to resolve this. I must fix this in the 2.4 stream as this is an  
+embedded application and a kernel upgrade means recertifying with al  
+of our customers. Is there a better list to post to? Is there a bug  
+tracker somewhere to log this into?
 
 
-Thanks for your time
+-- 
+Glenn Henshaw                     Logical Outcome Ltd.
+e: thraxisp@logicaloutcome.ca     w: www.logicaloutcome.ca
 
 
-Martin
+
+-- 
+Glenn Henshaw                     Logical Outcome Ltd.
+e: thraxisp@logicaloutcome.ca     w: www.logicaloutcome.ca
+
+
 
