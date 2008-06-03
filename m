@@ -1,33 +1,81 @@
-From: "marcos" <info@sisint.com.ar>
-Subject: SIP services
-Date: Tue, 3 Jun 2008 11:37:48 -0300
-Message-ID: <004401c8c587$72878500$6e00a8c0@wrh92000>
+From: Martin <mylists@itcom.com.ar>
+Subject: Re: load balance [OT?]
+Date: Tue, 03 Jun 2008 13:35:20 -0300
+Message-ID: <1212510920.2539.16738.camel@kr0sty.1.com.ar>
+References: <1212434787.2539.16326.camel@kr0sty.1.com.ar>
+Reply-To: mylists@itcom.com.ar
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1212434787.2539.16326.camel@kr0sty.1.com.ar>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi list memembers,  i need to conect a  sip-pabx  micronet  sp5211 to inet ,
-it is behind  a  linux box with 2 networks cards , the former eth0  access
-to internet  , the  second  eth1 connects to lan, i am trying to use dnat to
-accept sip connection from internet  ,  but DNAT doesn't work, using iptraf
-i see the packets  arrive from internet with the right ip addrerss  from the
-client  that treat to conect, but the registration process fail  ,  on the
-same box i am using  dnat redirecting the port 8008 from the public side to
-PABX ip - port  80 in the lan , and the remote administration for the pabx
-work fine ,
-o other  hand  in  same box i have several domains  working  under
-apache/php/mysql and work fine , too, there some bug about  DNATing SIPs
-connections???
-the have a  old di stribution Red  HAT 9.0   iptables 1.2.7a
 
-i am thinking to add a  new   interface eth2  and  bridge it with etho,
+On Mon, 2008-06-02 at 16:26 -0300, Martin wrote:
+[...]
+> #ISP 1
+> ip route add $ISP1_NET dev $ISP1_IF src $ISP1_IP table 1
+> ip route add default via $ISP1_GW dev $ISP1_IF
+> 
+> #ISP 2 
+> ip route add $ISP2_NET dev $ISP2_IF src $ISP2_IP table 2
+> ip route add default via $ISP2_GW dev $ISP2_IF
+> 
+> #Rules for ISPs
+> ip rule add $ISP1_IP table 1
+> ip rule add $ISP2_IP table 2
+> 
+> #Internal LAN and cross reference to the other ISP
+> ip route add $LAN_NET dev $LAN_IF table 1
+> ip route add $ISP2_NET dev $ISP2_IF table 1
+> 
+> ip route add $LAN_NET dev $LAN_IF table 2
+> ip route add $ISP1_NET dev $ISP1_IF table 2
+> 
+> #Add isp net in main
+> ip route add $ISP1_NET dev $ISP1_IF src $ISP1_IP
+> ip route add $ISP2_NET dev $ISP2_IF src $ISP2_IP
+> 
+> #This should do the trick of balancing
+> 
+> ip route add default scope global equalize nexthop via $ISP1_GW dev
+> ISP1_IF weight 1 nexthop via $ISP2_GW dev $ISP2_IF weight 2
+[...]
 
-could helpme anyone.
-Thanks a lot
- marcos
 
+Well, here is some update.
+
+
+I made some kind of load balance, but not as expected.
+
+Doing some tests just to try to find out where con be the problem, I
+found this:
+
+ip route add default equalize nexthop dev $ISP_IF1 weight 1 nexthop dev
+$ISP2_IF weight 1
+
+
+It does load balance, sending some packets to one interface or another,
+but using $ISP1_IP. That makes no sense, it's using second nexthop, but
+using first nexthop's ip.
+
+Anyway, if I add the complete sentence with corresponding IP and dev, it
+keeps using only the first nexthop until it goes down.
+
+Can't figure out why it only uses first IP at the "nexthop" rule....
+
+
+Should I call Molder and Scully? :S
+
+
+Thanks list for your support
+
+
+Cheers
+
+
+Martin
 
