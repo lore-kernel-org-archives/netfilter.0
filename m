@@ -1,49 +1,33 @@
-From: Martin <mylists@itcom.com.ar>
-Subject: Re: load balance [OT?]
-Date: Tue, 03 Jun 2008 10:17:15 -0300
-Message-ID: <1212499036.2539.16648.camel@kr0sty.1.com.ar>
-References: <1212434787.2539.16326.camel@kr0sty.1.com.ar>
-	 <4844DD17.1000501@googlemail.com>
-Reply-To: mylists@itcom.com.ar
+From: "marcos" <info@sisint.com.ar>
+Subject: SIP services
+Date: Tue, 3 Jun 2008 11:37:48 -0300
+Message-ID: <004401c8c587$72878500$6e00a8c0@wrh92000>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4844DD17.1000501@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Mark Perry <rita.co.ltd@googlemail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Tue, 2008-06-03 at 12:56 +0700, Mark Perry wrote:
-[...]
-> You have requested different weights:
->=20
-> ip route add default scope global equalize nexthop via $ISP1_GW dev
-> ISP1_IF weight 1 nexthop via $ISP2_GW dev $ISP2_IF weight 2
->=20
-> If you want each to be equal then at least give them equal weights.
->=20
+Hi list memembers,  i need to conect a  sip-pabx  micronet  sp5211 to inet ,
+it is behind  a  linux box with 2 networks cards , the former eth0  access
+to internet  , the  second  eth1 connects to lan, i am trying to use dnat to
+accept sip connection from internet  ,  but DNAT doesn't work, using iptraf
+i see the packets  arrive from internet with the right ip addrerss  from the
+client  that treat to conect, but the registration process fail  ,  on the
+same box i am using  dnat redirecting the port 8008 from the public side to
+PABX ip - port  80 in the lan , and the remote administration for the pabx
+work fine ,
+o other  hand  in  same box i have several domains  working  under
+apache/php/mysql and work fine , too, there some bug about  DNATing SIPs
+connections???
+the have a  old di stribution Red  HAT 9.0   iptables 1.2.7a
 
-Thanks for your response Mark.
+i am thinking to add a  new   interface eth2  and  bridge it with etho,
 
-That's right, I'm using different weights because they are differents
-providers with different bandwidth.
+could helpme anyone.
+Thanks a lot
+ marcos
 
-Anyway, I tried it without "equalize", but still the same happens. Only
-the first hop is used.
-
-
-Can't figure out what am I doing wrong =C2=BFsomething in kernel that I
-should enable? Have "Advanced routing" build-in and some other things o=
-f
-the "combination patch" at http://www.ssi.bg/~ja/=20
-
-
-Thanks again for you feedback.
-
-
-Cheers
-
-Martin
 
