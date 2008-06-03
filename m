@@ -1,56 +1,58 @@
 From: Martin <mylists@itcom.com.ar>
 Subject: Re: load balance [OT?]
-Date: Tue, 03 Jun 2008 15:13:48 -0300
-Message-ID: <1212516828.2539.16788.camel@kr0sty.1.com.ar>
+Date: Tue, 03 Jun 2008 17:58:14 -0300
+Message-ID: <1212526694.2539.16895.camel@kr0sty.1.com.ar>
 References: <1212434787.2539.16326.camel@kr0sty.1.com.ar>
 	 <1212510920.2539.16738.camel@kr0sty.1.com.ar>
-	 <48458766.2030602@googlemail.com>
 Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48458766.2030602@googlemail.com>
+In-Reply-To: <1212510920.2539.16738.camel@kr0sty.1.com.ar>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Mark Perry <rita.co.ltd@googlemail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+
+Well, it won't work, and probably is some kind of error with a kernel
+patch.
 
 
-On Wed, 2008-06-04 at 01:03 +0700, Mark Perry wrote:
-> Martin wrote:
-> >> #ISP 1
-> >> ip route add $ISP1_NET dev $ISP1_IF src $ISP1_IP table 1
-> >> ip route add default via $ISP1_GW dev $ISP1_IF
-> >>
-> >> #ISP 2 
-> >> ip route add $ISP2_NET dev $ISP2_IF src $ISP2_IP table 2
-> >> ip route add default via $ISP2_GW dev $ISP2_IF
-> >>
-> 
-> Shouldn't the default routes here be for table 1 and table 2 respectively?
-> 
-> You are adding them to the default table?
-> 
-> I thought the idea was to have 2 new tables each with their own default 
-> route?
-> 
-> mark
-> 
+My last test was using the method explained here
+http://www.ssi.bg/~ja/nano.txt
 
-Right, I figured out that after sending the first mail to the list.
+As it didn't work out, I tried the same method using a fresh Debian
+install, with a stock kernel without patches or anything else....it work
+out just out the box.
 
-By now it is:
-#ISP 1
-ip route add $ISP1_NET dev $ISP1_IF src $ISP1_IP table 1
-ip route add default via $ISP1_GW dev $ISP1_IF table 1
+The only difference between my try of linux router and a fresh installed
+Debian box is the kernel it uses.
 
-#ISP 2 
-ip route add $ISP2_NET dev $ISP2_IF src $ISP2_IP table 2
-ip route add default via $ISP2_GW dev $ISP2_IF table 2
+Kernel used in Linux-router: 2.6.23.17
+Patches: IMQ www.linuximq.net
+	 Combination routing patch www.ssi.bg/~ja/nano.txt
+	 Layer 7 http://l7-filter.sourceforge.net
+
+Load balance work: NO
+-----------------------------------------------------------
+
+Kernel in fresh Debian install: stock kernel 2.6.18-5-686
+Patches: NONE
+Load balance work: YES
 
 
-And then add the defualt with two nexthops at the default route.
+
+If someone have similar kernel using those patches, or at least the
+combination patch, with a working load balance, I'll be glad to ear
+about how you did it (and invite you a beer if you ever come to where I
+live). Until then.
+
+I'll start trying one patch at time (and applying separated patches from
+the combinations one) and see what can I do.
+
+
+Thanks to all, specially to Mark Perry for his time and extra pair of
+eyes 8)
 
 
 Cheers
