@@ -1,72 +1,28 @@
-From: "Knight Tiger" <caugar@gmail.com>
-Subject: Re: Forwarding packets received on bridged interfaces -regarding
-Date: Wed, 4 Jun 2008 11:22:03 -0700
-Message-ID: <69fec4520806041122x2a953904ra259ed8ebfc44cf5@mail.gmail.com>
-References: <69fec4520805281536t15dd5e5dq289799693263371b@mail.gmail.com>
-	 <483E1DF2.3080304@riverviewtech.net>
-	 <69fec4520805282155k441b60edo30a98bb26135df62@mail.gmail.com>
-	 <483E3C6B.1030208@riverviewtech.net>
-	 <69fec4520805301532n7f68fc9m9af29004f1514833@mail.gmail.com>
-	 <48408645.7070902@riverviewtech.net>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: "extensions/libipt_ah.c" iptables 1.4.0 compilation problem
+Date: Wed, 4 Jun 2008 21:38:35 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0806042136230.4055@fbirervta.pbzchgretzou.qr>
+References: <4845C3C9.8000109@zensoluciones.com> <4845CAD9.3090308@zensoluciones.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:subject
-         :cc:in-reply-to:mime-version:content-type:content-transfer-encoding
-         :content-disposition:references;
-        bh=w9POydjjhEIns+JAf20wU26/bXckKqhDoA4SikK0P8s=;
-        b=k8EBKRl3L3XsLNgNgSTve7YmfHaGqUQuAMCuum7lPKvS72m5UifsYKr+STrpJQ2coA
-         Mmf8RB49fwnUfPTWMXBuiNmMejI7fPkTv2t7iUmCaQH5eF3Ab2o3TpW5DXk/f9WV+e6b
-         psBlQsccbpaMqRQmgX0PXJwdDL1es5Nydu7JM=
-In-Reply-To: <48408645.7070902@riverviewtech.net>
-Content-Disposition: inline
+In-Reply-To: <4845CAD9.3090308@zensoluciones.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
-
-Hi,
-
-The wireless card is Intel PRO/Wireless 2200 BG and the driver is
-obtained from  ipw2200.sourceforge.net.
-I am running Fedora Core 5 on an IBM Thinkpad T43
-
-I tried the same tests with a PCMCIA orinoco card (lucent) but that
-failed as well. I tried a Cisco card but it was not detected. Proxim
-failed the detection test as well.
-
-Thanks !
-Knight
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: =?UTF-8?Q?S=C3=A9bastien_Cramatte?= <scramatte@zensoluciones.com>
+Cc: netfilter@vger.kernel.org
 
 
-On Fri, May 30, 2008 at 3:57 PM, Grant Taylor <gtaylor@riverviewtech.net> wrote:
-> On 05/30/08 17:32, Knight Tiger wrote:
->>
->> I did the test on a desktop with two NICs and no iptables/ebtables
->> entries. The setup works great. Thanks. I expect the problem to be with the
->> wirless NIC (I use the Intel Linux drivers but apparently they are no good
->> for bridge settings).
+On Wednesday 2008-06-04 00:51, S?=C3=A9bastien Cramatte wrote:
+
+> I answer to myself !
 >
-> I wondered if such was not going to be the problem.  Can you replace the
-> wireless card?
+> 1) Next, make the package.
+>       % make KERNEL_DIR=3D<<where-you-built-your-kernel>>
+> ...
 >
-> For the record (and those searching the archive), what wireless card and
-> driver(s) are you using?
->
->> Thanks again.
->
-> *nod*
->
-> Good luck.  :)
->
->
->
-> Grant. . . .
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+> Please update the DOC !
+
+Please try a newer version first! This is fixed in 1.4.0.77
+onwards, currently we are at 1.4.1-rc2.
