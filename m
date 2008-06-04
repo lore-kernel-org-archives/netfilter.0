@@ -1,123 +1,133 @@
-From: Glenn Henshaw <thraxisp@logicaloutcome.ca>
-Subject: Re: Difficulty with iptables script to only allow 3 ports across the  firewall
-Date: Tue, 3 Jun 2008 23:03:43 -0400
-Message-ID: <DBB4A77D-0A56-41B8-9442-C087A14A91F4@logicaloutcome.ca>
-References: <W424637935269591212542985@webmail15>
-Mime-Version: 1.0 (Apple Message framework v924)
+From: Martin <mylists@itcom.com.ar>
+Subject: Re: load balance [OT?]
+Date: Wed, 04 Jun 2008 10:06:55 -0300
+Message-ID: <1212584815.2539.19001.camel@kr0sty.1.com.ar>
+References: <1212434787.2539.16326.camel@kr0sty.1.com.ar>
+	 <44140.84.123.239.190.1212532030.squirrel@www.arcoscom.com>
+Reply-To: mylists@itcom.com.ar
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <W424637935269591212542985@webmail15>
+In-Reply-To: <44140.84.123.239.190.1212532030.squirrel@www.arcoscom.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
-To: john@langherd.com
+Content-Type: text/plain; charset="us-ascii"
+To: linux@arcoscom.com
 Cc: netfilter@vger.kernel.org
 
 
-On 3-Jun-08, at 9:29 PM, john@langherd.com wrote:
+On Wed, 2008-06-04 at 00:27 +0200, ArcosCom Linux User wrote:
+> I was using the patch you commented along this thread but it overloads the
+> routing tables.
+> 
+> Now I have this configuration:
+> === REGLAS IPTABLES PARA EL ENRUTADO ===
+> Chain PREROUTING (policy ACCEPT 21M packets, 16G bytes)
+> num   pkts bytes target     prot opt in     out     source              
+> destination
+> 1      14M   11G M_TRAF_IN  all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0
+> 2      13M   10G M_IFACE    all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0
+> Chain M_IFACE (1 references)
+> num   pkts bytes target     prot opt in     out     source              
+> destination
+> 1      12M 8196M CONNMARK   all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0           MARK match 0x0/0xf000 CONNMARK restore
+> 2    2581K 2331M RETURN     all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0           MARK match !0x0/0xf000
+> 3      11M 8158M M_IFACE_TRAF  all  --  *      *       0.0.0.0/0          
+>  0.0.0.0/0           MARK match 0x0/0xf000
+> 4    40242 2284K MARK       all  --  eth2   *       0.0.0.0/0           
+> 0.0.0.0/0           MARK match 0x0/0xf000 state NEW MARK or 0x2000
+> 5    40342 2381K MARK       all  --  eth3   *       0.0.0.0/0           
+> 0.0.0.0/0           MARK match 0x0/0xf000 state NEW MARK or 0x8000
+> 6    80584 4665K CONNMARK   all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0           MARK match !0x0/0xf000 CONNMARK save
+> 7      11M 8158M RETURN     all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0
+> Chain M_IFACE_TRAF (2 references)
+> num   pkts bytes target     prot opt in     out     source              
+> destination
+> Chain FORWARD (policy ACCEPT 3292K packets, 1985M bytes)
+> num   pkts bytes target     prot opt in     out     source              
+> destination
+> 1    1618K 1046M M_IFACE_OUT  all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0
+> Chain OUTPUT (policy ACCEPT 20M packets, 15G bytes)
+> num   pkts bytes target     prot opt in     out     source              
+> destination
+> 1      13M 9867M M_IFACE_OUT  all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0
+> Chain M_IFACE_OUT (2 references)
+> num   pkts bytes target     prot opt in     out     source              
+> destination
+> 1      13M 9885M CONNMARK   all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0           MARK match 0x0/0xf000 CONNMARK restore
+> 2    2342K 1180M RETURN     all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0           MARK match !0x0/0xf000
+> 3      12M 9733M M_IFACE_TRAF  all  --  *      *       0.0.0.0/0          
+>  0.0.0.0/0           MARK match 0x0/0xf000
+> 4    58815 3592K MARK       all  --  *      eth2    0.0.0.0/0           
+> 0.0.0.0/0           MARK match 0x0/0xf000 state NEW MARK or 0x2000
+> 5    59337 3615K MARK       all  --  *      eth3    0.0.0.0/0           
+> 0.0.0.0/0           MARK match 0x0/0xf000 state NEW MARK or 0x8000
+> 6     118K 7207K CONNMARK   all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0           MARK match !0x0/0xf000 CONNMARK save
+> 7      12M 9733M RETURN     all  --  *      *       0.0.0.0/0           
+> 0.0.0.0/0
+> === REGLAS DE ENRUTAMIENTO ===
+> 0:      from all lookup local
+> 50:     from all lookup main
+> 100:    from all fwmark 0x2000/0x2000 lookup uno
+> 101:    from all fwmark 0x8000/0x8000 lookup dos
+> 150:    from 212.170.103.235 lookup uno
+> 151:    from 212.59.210.142 lookup dos
+> 200:    from all lookup defecto
+> 32766:  from all lookup main
+> 32767:  from all lookup default
+> === TABLAS DE RUTAS ===
+> === MAIN ===
+> 212.170.103.192/26 dev eth2  proto kernel  scope link  src 212.170.103.235
+> 192.168.3.0/24 dev zlan0  proto kernel  scope link  src 192.168.3.247
+> 192.168.2.0/24 dev zlan0  proto kernel  scope link  src 192.168.2.247
+> 192.168.1.0/24 dev zlan0  proto kernel  scope link  src 192.168.1.247
+> 212.59.210.0/24 dev eth3  proto kernel  scope link  src 212.59.210.142
+> 10.1.1.0/24 dev zlan0  proto kernel  scope link  src 10.1.1.6
+> === eth2 TABLA 150 ===
+> 212.170.103.192/26 dev eth2  scope link  src 212.170.103.235
+> default via 212.170.103.193 dev eth2  src 212.170.103.235
+> prohibit default  proto static  metric 1
+> === eth3 TABLA 151 ===
+> 212.59.210.0/24 dev eth3  scope link  src 212.59.210.142
+> default via 212.59.210.1 dev eth3  src 212.59.210.142
+> prohibit default  proto static  metric 1
+> === TABLA 200 (defecto) ===
+> default
+>         nexthop via 212.170.103.193  dev eth2 weight 1
+>         nexthop via 212.59.210.1  dev eth3 weight 1
+> 
+> 
+> 
+> Appears to work, but, for now, I'm having problems (last Centos 2.6.18
+> kernel).
+> 
+> I expect this can help you a bit. Be care, I have some problem as you,
+> with previous 2.6.18 centos kernel this configuration appeared to works
+> fine, but with last 2.6.28 centos kernel I'm having troubles.
+> 
+> Regards
+> 
+[..]
 
-> First, thanks for taking the time to look.
->
-> I've been poking at this for almost 2 weeks and am quite stuck.
->
-> Here's the nutshell version of what I'm trying to do:
->
-> Client machine has an IP address of 192.168.100.101.  The only way I  
-> want this client to be able to communicate with machines on the  
-> 10.138.x.x network is via HTTPS (443), plus make DNS lookup  
-> requests.  I don't want PING, or any windows SMB type connections to  
-> succeed.  Just HTTPS and DNS.  Also, the linux box provides dhcp  
-> services to the 192.168.200.x network.
->
-> I think my fundamental understanding of iptables is wrong.
->
-> I 'think' the INPUT is what's allowed to the local machine (i.e.  
-> firewall box)
-> FORWARD is what's passed from NIC to NIC.
-> OUTPUT is what's allowed off the NIC.
->
-> Would anybody please give me a hand here?  I learn quickly by  
-> examples.  I've poked at a large number of websites, but am not  
-> making much headway.
->
-> Respectfully,
->
-> John
->
-> Here's my script as it sits.  It's driving me nuts that I can  
-> connect via SMB from the clients on the 192 network to windows SMB  
-> shares on the 10. network.
->
->
-> IPT="/sbin/iptables"
->
-> # THE NETWORK CONTAINING THE SITE SYSTEMS
-> DMZ_IP="10.138.2.117"
-> DMZ_IFACE="eth0"
-> DMZ_BROADCAST="10.138.2.255"
->
-> # THE IP RANGE FOR CLIENT COMPUTERS (disconnected network)
-> CLIENTS_IP="192.168.200.1"
-> CLIENTS_IP_RANGE="192.168.200.0/24"
-> CLIENTS_IFACE="eth1"
->
-> $IPT --flush
-> $IPT --table nat --flush
-> $IPT --delete-chain
-> $IPT --table nat --delete-chain
->
-> $IPT -A INPUT -j LOG --log-prefix "INPUT_PACKETS: "
-> $IPT -A FORWARD -j LOG --log-prefix "FORWARD_PACKETS: "
-> $IPT -A OUTPUT -j LOG --log-prefix "OUTPUT_PACKETS: "
->
-> $IPT --policy INPUT DROP
-> #$IPT --policy OUTPUT DROP
+Thanks for the advice and details.
 
-   try adding
-  $IPT --policy FORWARD DROP
-   this will drop any packets not explicitly listed
-
->
->
->
-> $IPT -A INPUT -p tcp --dport 22 -j ACCEPT
-> $IPT -A INPUT -p tcp --dport 80 -j ACCEPT
-> $IPT -A INPUT -p tcp --dport 443 -j ACCEPT
-> $IPT -A INPUT -p tcp --dport 53 -j ACCEPT
-> $IPT -A INPUT -p udp --dport 53 -j ACCEPT
->
-> #$IPT -A INPUT -p udp -j ACCEPT
-> #$IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> #$IPT -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> #$IPT -A FORWARD -p tcp --dport 80 -j ACCEPT
-> $IPT -A FORWARD -p tcp --dport 443 -j ACCEPT
-> $IPT -A FORWARD -p udp --dport 53 -j ACCEPT
-> $IPT -A FORWARD -p tcp --dport 53 -j ACCEPT
-> $IPT -A FORWARD -p tcp --dport 445 -j DROP
-
-    also add the following line to drop attempts to pass packets from  
-DMZ to CLIENT
-   $IPT -A FORWARD -i $DMZ_IFACE -j DROP
->
-> $IPT -N LOGDROP
-> $IPT -A LOGDROP -j LOG
-> $IPT -A LOGDROP -j DROP
-> $IPT -A INPUT -j LOG
-> $IPT -A FORWARD -j LOG
->
-> $IPT --table nat --append POSTROUTING --out-interface $DMZ_IFACE -j  
-> MASQUERADE
-> echo 1 > /proc/sys/net/ipv4/ip_forward
->
->
-
-   I often use iptables -L -v to list the tables and see the packet  
-counts for each filter. It helps to figure out where the packets go.
-
--- 
-Glenn Henshaw                     Logical Outcome Ltd.
-e: thraxisp@logicaloutcome.ca     w: www.logicaloutcome.ca
+I'll be patching -> compiling -> testing all day, so I'll post any
+update if I find that the problem is one of those patches.
 
 
+Cheers and happy birthday to me! :)
+
+
+Martin
 
