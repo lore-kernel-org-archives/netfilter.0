@@ -1,24 +1,47 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables -t raw [conditions] -j TRACE is not logging
-Date: Thu, 5 Jun 2008 18:02:27 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0806051802060.29055@fbirervta.pbzchgretzou.qr>
-References: <9a7fd99c0805192232o2399fd48rb462a131da9fd2f6@mail.gmail.com>
+From: "Gabor Z. Papp" <gzp@papp.hu>
+Subject: Re: [netfilter-core] [ANNOUNCE] Release of iptables 1.4.1-rc2
+Date: Thu, 05 Jun 2008 19:11:11 +0200
+Message-ID: <x663snremo@gzp>
+References: <483AB493.6010503@trash.net> <x6skw443x5@gzp>
+	<483BB9DE.6050003@trash.net> <x6y75w3q2j@gzp>
+	<483C088E.4020405@trash.net> <x67idfq6d8@gzp>
+	<483CFF21.40608@trash.net> <4847F64C.2040902@trash.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <9a7fd99c0805192232o2399fd48rb462a131da9fd2f6@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jaroslav Rakhmatoullin <jazzoslav@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>
 
+* Patrick McHardy <kaber@trash.net>:
 
-On Tuesday 2008-05-20 07:32, Jaroslav Rakhmatoullin wrote:
->
->Problem description
->iptables TRACE target never gives any output through ipt_LOG and syslog-ng
+| Took me a bit longer. I've resynced all headers and added
+| a recent linux/types.h. Does this patch (on top of 1.4.1-rc2)
+| fix compilation?
 
-Will it become visible on a tty (tty1-6) when you execute...?
-	klogconsole -l8 -r0
+patching file include/linux/netfilter.h
+Reversed (or previously applied) patch detected!  Assume -R? [n]
+Apply anyway? [n]
+Skipping patch.
+1 out of 1 hunk ignored -- saving rejects to file include/linux/netfilter.h.rej
 
+make  all-recursive
+make[1]: Entering directory `/home/gzp/src/iptables-1.4.1-rc2'
+Making all in extensions
+make[2]: Entering directory `/home/gzp/src/iptables-1.4.1-rc2/extensions'
+
+[...]
+
+  CC       libxt_dccp.oo
+libxt_dccp.c:16:24: warning: linux/dccp.h: No such file or directory
+
+[...]
+
+make[2]: *** [libxt_dccp.oo] Error 1
+make[2]: Leaving directory
+`/home/gzp/src/iptables-1.4.1-rc2/extensions'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/home/gzp/src/iptables-1.4.1-rc2'
+make: *** [all] Error 2
