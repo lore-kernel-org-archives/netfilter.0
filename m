@@ -1,31 +1,19 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Weird nat/conntrack Problem with PASV FTP upload
-Date: Fri, 06 Jun 2008 17:02:12 +0200
-Message-ID: <48495174.30909@trash.net>
-References: <E350C77ABFDBD242BDD51F5DA07905C102825E13@SONNE.gw.bringe.net> <4847F14D.5000806@trash.net> <484941F6.9080701@bringe.com>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [Bugme-new] [Bug 10875] New: Oops in nf_nat_setup_info
+Date: Fri, 6 Jun 2008 11:52:01 -0700
+Message-ID: <20080606115201.fcd6c2b0.akpm@linux-foundation.org>
+References: <bug-10875-10286@http.bugzilla.kernel.org/>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <484941F6.9080701@bringe.com>
+In-Reply-To: <bug-10875-10286@http.bugzilla.kernel.org/>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-15?Q?Thomas_B=E4tzler?= <t.baetzler@bringe.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Thomas B=E4tzler wrote:
-> Patrick McHardy wrote:
->> I guess you're seeing INVALID packets (from the view of conntrack)
->> and they're thus not NATed but delivered locally, causing a RST.
->> Does dropping -m state --state INVALID packets in PREROUTING make
->> any difference?
->=20
-> I've tried that for a day, to no avail:
-> ..
-> My nat rules currently look like this:
->=20
-> iptables -t nat -A PREROUTING -m state --state INVALID -j LOG
-> iptables -t nat -A PREROUTING -m state --state INVALID -j DROP
+On Fri,  6 Jun 2008 10:45:25 -0700 (PDT) bugme-daemon@bugzilla.kernel.org wrote:
 
-These rules need to go in mangle, that nat table is only
-traversed for the first packet of a connection.
+> http://bugzilla.kernel.org/show_bug.cgi?id=10875
+
+fyi, there are a few 2.6.24 netfilter oopses in there.
