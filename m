@@ -1,47 +1,32 @@
-From: "Gabor Z. Papp" <gzp@papp.hu>
-Subject: Re: [netfilter-core] [ANNOUNCE] Release of iptables 1.4.1-rc2
-Date: Thu, 05 Jun 2008 19:11:11 +0200
-Message-ID: <x663snremo@gzp>
-References: <483AB493.6010503@trash.net> <x6skw443x5@gzp>
-	<483BB9DE.6050003@trash.net> <x6y75w3q2j@gzp>
-	<483C088E.4020405@trash.net> <x67idfq6d8@gzp>
-	<483CFF21.40608@trash.net> <4847F64C.2040902@trash.net>
+From: Vincent Arniego <vincent_arniego@yahoo.com>
+Subject: [libnetfilter_queue] Load Balancing using multiple queues
+Date: Thu, 5 Jun 2008 18:49:17 -0700 (PDT)
+Message-ID: <305732.3074.qm@web58309.mail.re3.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>
+To: netfilter@vger.kernel.org
 
-* Patrick McHardy <kaber@trash.net>:
 
-| Took me a bit longer. I've resynced all headers and added
-| a recent linux/types.h. Does this patch (on top of 1.4.1-rc2)
-| fix compilation?
+Hi Everyone,
 
-patching file include/linux/netfilter.h
-Reversed (or previously applied) patch detected!  Assume -R? [n]
-Apply anyway? [n]
-Skipping patch.
-1 out of 1 hunk ignored -- saving rejects to file include/linux/netfilter.h.rej
+We did a setup using libnetfilter_queue that examines the http headers of http packets.
+In the setup, the firewall redirects packets in port 80 (source and destination) to an application listening on queue 0.
+This box is acting as a router, so we setup the NFQUEUE rule in the forward chain
 
-make  all-recursive
-make[1]: Entering directory `/home/gzp/src/iptables-1.4.1-rc2'
-Making all in extensions
-make[2]: Entering directory `/home/gzp/src/iptables-1.4.1-rc2/extensions'
+Somehow we were able to make it work after some adjustments in the kernel (sysctl net.core.rmem_max and rmem_default)
 
-[...]
+Assuming we are facing around 66 Mbps or around 11000 packets per second of traffic (from iptraf):
+1. Is there a way to compute the correct optimized settings for net.core.rmem_max and rmem_default? Like a formula?
+2.
+Is there a way to automatically load balance the incoming packets to
+multiple applications using multiple queues? This is assuming we cannot
+segregate the packets by its source IP and/or destination IP.
 
-  CC       libxt_dccp.oo
-libxt_dccp.c:16:24: warning: linux/dccp.h: No such file or directory
+Thanks!
 
-[...]
 
-make[2]: *** [libxt_dccp.oo] Error 1
-make[2]: Leaving directory
-`/home/gzp/src/iptables-1.4.1-rc2/extensions'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/home/gzp/src/iptables-1.4.1-rc2'
-make: *** [all] Error 2
+      
