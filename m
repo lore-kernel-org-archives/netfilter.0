@@ -1,66 +1,22 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE] Release of iptables 1.4.1-rc3
-Date: Fri, 06 Jun 2008 13:37:13 +0200
-Message-ID: <48492169.6060300@trash.net>
+From: =?UTF-8?B?U8KOw6liYXN0aWVuIENyYW1hdHRl?= 
+	<scramatte@zensoluciones.com>
+Subject: nf_conntrack_sip howto ?
+Date: Fri, 06 Jun 2008 15:53:48 +0200
+Message-ID: <4849416C.70104@zensoluciones.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080807070005090605060807"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, netfilter-announce@lists.netfilter.org, netfilter-cor
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------080807070005090605060807
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello
 
-The netfilter coreteam proudly presents:
+I'm search for an howto or any docs to use "nf_conntrack_sip".
+I've build a traffic shapper and I want to classify  SIP, IAX and RTP 
+traffic. 
 
-     iptables version 1.4.1-rc3
+Thank you for your help
+Regards
 
-The hopefully final release candidate for 1.4.1. Actually I already
-wanted to have released 1.4.1 by now, but my notebook broke last
-week during travel, which caused some delays.
-
-This release candidate includes some minor fixes, manpage updates
-and a full resync of the kernel header files to fix the build on
-old systems that don't have all headers or miss the endian annotated
-types. The header resync is the main reason for having this release
-candidate since it has some risk of introducing new compilation
-breakage. So even if you can't do real functional testing, please
-verify whether it compiles cleanly for you.
-
-Version 1.4.1-rc3 can be obtained from (please note that the
-webpage hasn't been rebuilt yet, but will be shortly):
-
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
-git://git.netfilter.org/iptables.git
-
-On behalf of the Netfilter Core Team.
-Happy testing!
-
---------------080807070005090605060807
-Content-Type: text/plain;
- name="changes-iptables-1.4.1-rc3.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changes-iptables-1.4.1-rc3.txt"
-
-Jan Engelhardt (2):
-      Update .gitignore
-      build: check for missing feature files
-
-Patrick McHardy (2):
-      manpages: consistent syntax
-      Resync header files with kernel
-
-Thomas Jarosch (1):
-      Add xtables version defines.
-
-Yasuyuki Kozakai (1):
-      Use s6_addr32 to access bits in int6_addr instead of incompatible name
-
-
---------------080807070005090605060807--
