@@ -1,62 +1,76 @@
-From: =?iso-8859-1?Q?Thomas_B=E4tzler?= <t.baetzler@bringe.com>
-Subject: RE: Weird nat/conntrack Problem with PASV FTP upload
-Date: Mon, 9 Jun 2008 12:36:10 +0200
-Message-ID: <E350C77ABFDBD242BDD51F5DA07905C102825E31@SONNE.gw.bringe.net>
+From: Vincent Arniego <vincent_arniego@yahoo.com>
+Subject: Re: [libnetfilter_queue] Load Balancing using multiple queues
+Date: Mon, 9 Jun 2008 04:03:58 -0700 (PDT)
+Message-ID: <849231.49892.qm@web58312.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Thomas Jacob <jacob@internet24.de>
+Cc: netfilter@vger.kernel.org
 
-Jozsef Kadlecsik wrote:
-> On Mon, 9 Jun 2008, Thomas B=E4tzler wrote:
->> In any case I'm wondering why netfilter doesn't consider
->> these packets  to be part of a connection. Is there a
->> known problem with netfilter and TCP SACK?
->=20
-> In these cases usually there is a device sitting between the=20
-> firewall running netfilter and the server/client machine,=20
-> which randomizes the TCP sequence numbers but fails to=20
-> propagate the changes to the SACK fields.=20
-> Thus the SACK values are totally bogus and therefore=20
-> netfilter marks them as INVALID.
 
-I thought of that, too, but it doesn't seem to be the case.
-Let's have a look at an excerpt (tcpdump -S):
 
-22:37:44.830784 IP gateway.41803 > server.37890: SWE 1599996997:1599996=
-997(0) win 5840 <mss 1460,sackOK,timestamp 495055487 0,nop,wscale 7>
-22:37:44.846411 IP server.37890 > gateway.41803: SE 23582050:23582050(0=
-) ack 1599996998 win 5792 <mss 1460,sackOK,timestamp 49338617 495055487=
-,nop,wscale 7>
-22:37:44.846533 IP gateway.41803 > server.37890: . ack 23582051 win 46 =
-<nop,nop,timestamp 495055488 49338617>
+----- Original Message ----
+> From: Thomas Jacob <jacob@internet24.de>
+> To: Vincent Arniego <vincent_arniego@yahoo.com>
+> Cc: netfilter@vger.kernel.org
+> Sent: Friday, June 6, 2008 10:46:12 PM
+> Subject: Re: [libnetfilter_queue] Load Balancing using multiple queues
+> 
+> On Fri, 2008-06-06 at 04:08 -0700, Vincent Arniego wrote:
+> > Hi Thomas,
+> > 
+> > That's actually a good suggestion, Unfortunately we can't force teach our 
+> subscribers to use a proxy in their setup. >
+> > They use a certain equipment that uses 3G and configuring it would be like 
+> rocket science to them.
+> 
+> So you're not load balancing requests to one website then... obviously I
+> didn't read your post thoroughly enough ;-)
+> 
+> A transparent proxy solution could still work (but not with pound).
+> 
+> > iptables -A FORWARD -p tcp --dport 80 -j NFQUEUE --queue-num 0:5
+> > 
+> > something like that. This doesn't work btw.
+> 
+> You could you statistic+connmark to do that, so that all packets
+> belonging to one connection are copied to the same queue:
+> 
+> iptables -N PORT80
+> iptables -N PORT80_NEW
+> 
+> iptables -A FORWARD -p tcp --dport 80 -j PORT80
+> 
+> iptables -A PORT80 -m connmark --mark 0 -j PORT80_NEW
+> 
+> iptables -A PORT80_NEW -m statistic --mode nth --every 5 --packet 0 -m
+> connmark --mark 0 -j CONNMARK --set-mark 1
+> iptables -A PORT80_NEW -m statistic --mode nth --every 5 --packet 1 -m
+> connmark --mark 0 -j CONNMARK --set-mark 2
+> iptables -A PORT80_NEW -m statistic --mode nth --every 5 --packet 2 -m
+> connmark --mark 0 -j CONNMARK --set-mark 3
+> iptables -A PORT80_NEW -m statistic --mode nth --every 5 --packet 3 -m
+> connmark --mark 0 -j CONNMARK --set-mark 4
+> iptables -A PORT80_NEW -m statistic --mode nth --every 5 --packet 4 -m
+> connmark --mark 0 -j CONNMARK --set-mark 5
+> 
+> 
+> iptables -A PORT80 -m connmark --mark 1 -j NFQUEUE --queue-num 1
+> iptables -A PORT80 -m connmark --mark 2 -j NFQUEUE --queue-num 2
+> iptables -A PORT80 -m connmark --mark 3 -j NFQUEUE --queue-num 3
+> iptables -A PORT80 -m connmark --mark 4 -j NFQUEUE --queue-num 4
+> iptables -A PORT80 -m connmark --mark 5 -j NFQUEUE --queue-num 5
 
-[...]
 
-22:37:44.974253 IP gateway.41803 > server.37890: . 1600282667:160028411=
-5(1448) ack 23582051 win 46 <nop,nop,timestamp 495055501 49338649>
+Wow, this is the solution I'm looking for. Its not exactly like automatic load balancing, but spreading across multiple queues can do the trick.
 
-[...]
+Our application that is using libnetfilter_queue has some delays in processing the packets, around 200 ms max every so and so packets. by doing this, we could share the queue around. So that when a packet gets delayed somehow, the other packets can still move to the other queues.
 
-22:37:44.989794 IP server.37890 > gateway.41803: . ack 1600281219 win 8=
-92 <nop,nop,timestamp 49338653 495055501>
-22:37:44.990228 IP gateway.41803 > server.37890: . 1600358775:160036022=
-3(1448) ack 23582051 win 46 <nop,nop,timestamp 495055502 49338653>
+Thanks a lot! Guys!
 
-[...]
 
-22:37:44.990397 IP server.37890 > gateway.41803: . ack 1600281219 win 8=
-92 <nop,nop,timestamp 49338653 495055501,nop,nop,sack 1 {1600282667:160=
-0284115}>
-22:37:44.990417 IP gateway.41803 > server.37890: R 1600281219:160028121=
-9(0) win 0
-
-As you can see, the SACK data matches a previously sent segment,
-so it's not scrambled.
-
-HTH,
-Thomas
+      
