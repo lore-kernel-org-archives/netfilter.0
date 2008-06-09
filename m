@@ -1,38 +1,39 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Weird nat/conntrack Problem with PASV FTP upload
-Date: Mon, 9 Jun 2008 14:38:58 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0806091438140.20733@fbirervta.pbzchgretzou.qr>
-References: <E350C77ABFDBD242BDD51F5DA07905C102825E13@SONNE.gw.bringe.net> <4847F14D.5000806@trash.net> <484941F6.9080701@bringe.com> <48495174.30909@trash.net> <alpine.LNX.1.10.0806091106170.20733@fbirervta.pbzchgretzou.qr> <484CF334.3000200@trash.net>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: RE: Weird nat/conntrack Problem with PASV FTP upload
+Date: Mon, 9 Jun 2008 14:53:12 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0806091452020.30276@blackhole.kfki.hu>
+References: <E350C77ABFDBD242BDD51F5DA07905C102825E32@SONNE.gw.bringe.net>
 Mime-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="110391808-196660017-1213015992=:30276"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <484CF334.3000200@trash.net>
+In-Reply-To: <E350C77ABFDBD242BDD51F5DA07905C102825E32@SONNE.gw.bringe.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: =?UTF-8?Q?Thomas_B=C3=A4tzler?= <t.baetzler@bringe.com>, netfilter@vger.kernel.org
+To: =?iso-8859-1?Q?Thomas_B=E4tzler?= <t.baetzler@bringe.com>
+Cc: netfilter@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Monday 2008-06-09 11:09, Patrick McHardy wrote:
->>   
->> > > I've tried that for a day, to no avail:
->> > > ..
->> > > My nat rules currently look like this:
->> > >
->> > > iptables -t nat -A PREROUTING -m state --state INVALID -j LOG
->> > > iptables -t nat -A PREROUTING -m state --state INVALID -j DROP
->> > >       
->> > These rules need to go in mangle, that nat table is only
->> > traversed for the first packet of a connection.
->>
->> These rules should go into filter, because that's what "filter"
->> is for... filtering.
->
-> As you are well aware, there is no PREROUTING chain in filter.
-> So I'm guessing you're trying to pull me into a discussion
-> about that, in an irritating way.
->
-I overlooked that. In that case, it has to be done in INPUT/FORWARD then.
--t filter -A INPUT -m conntrack --ctstate INVALID -j LOG (and DROP)
--t filter -A FORWARD -m conntrack --ctstate INVALID -j LOG (and DROP)
+--110391808-196660017-1213015992=:30276
+Content-Type: TEXT/PLAIN; charset=ISO-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Mon, 9 Jun 2008, Thomas B=E4tzler wrote:
+
+> Jozsef Kadlecsik wrote:
+> > Then the best were if you could capture a full TCP session by=20
+> > tcpdump and send it so that we could replay and analyze the traffic.
+>=20
+> I've uploaded an archive to http://baetzler.de/sandbox/dump.tar.bz2.
+
+Thanks, I have downloaded it and will try to replay and analyze.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+--110391808-196660017-1213015992=:30276--
