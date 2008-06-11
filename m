@@ -1,72 +1,42 @@
-From: Rainer Sabelka <sabelka@iue.tuwien.ac.at>
+From: "Marco Barbero" <marco.barbero@gmail.com>
 Subject: Re: conntrackd [ERROR] commit: Invalid argument
-Date: Wed, 11 Jun 2008 19:15:30 +0200
-Message-ID: <200806111915.32313.sabelka@iue.tuwien.ac.at>
-References: <e1aa27e00806090621r3fa83ac0s7bb89d903de3be41@mail.gmail.com> <200806111545.18856.sabelka@iue.tuwien.ac.at> <484FFCA2.1090500@netfilter.org>
+Date: Wed, 11 Jun 2008 20:11:31 +0200
+Message-ID: <e1aa27e00806111111n7ca3c97en89b7b1b973b5b245@mail.gmail.com>
+References: <e1aa27e00806090621r3fa83ac0s7bb89d903de3be41@mail.gmail.com>
+	 <484FD25F.2010800@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <484FFCA2.1090500@netfilter.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=+7X8tfIYV3nbAAS3nxEvEJtPB0JJzc4+KTSq7Ys5uG8=;
+        b=TBKDAbmhVeeMWVBMf6FVIZBky1PdlztEh6FTyezyvK+EugcOdPiHD7UF/95n/HuKOd
+         46OFIOH1H132pF3WMfhxo/8fX0Kh+4rCnOOkMRNrgArF8oJnsVMKjE8QN/lpG2lW/uLA
+         QdJ6KsjsHGyhlDSC9UGY2goWezPVdsVsfdMY8=
+In-Reply-To: <484FD25F.2010800@netfilter.org>
 Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Marco Barbero <marco.barbero@gmail.com>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+To: netfilter@vger.kernel.org, netfilter-dev@vger.kernel.org
 
-On Wednesday 11 June 2008 18:26, Pablo Neira Ayuso wrote:
-> Rainer Sabelka wrote:
-> > On Wednesday 11 June 2008 15:25, Pablo Neira Ayuso wrote:
-> >> Are your scripts committing the entries twice (ie. invoking conntrackd
-> >> -c several times)?
-> >
-> > In my case - yes I did.
-> >
-> >> The only way to reproduce this that I have found is
-> >> to double insert an existing conntrack with some NAT handling. In the
-> >> upcoming 2.6.26 you'll get a EBUSY instead of EINVAL which sounds more
-> >> reasonable.
-> >>
-> >> Anyhow, does the patch attached fix this behaviour? The idea behind it
-> >> is to check if there is a conntrack present in kernel, if so, just
-> >> update the attributes of the conntrack object that are changeable to
-> >> avoid the error. Would you mind testing it?
-> >
-> > Thanks for the patch!
-> > Now I see no more "commit: Invalid argument" in the logs. Instead I get
-> > something like this, which looks much fiendlier:
-> >
-> > Jun 11 15:36:48 fw1b conntrack-tools[13273]: committing external cache
-> > Jun 11 15:36:48 fw1b conntrack-tools[13273]: Committed 69 new entries
-> > Jun 11 15:36:48 fw1b conntrack-tools[13273]: 53 entries ignored, already
-> > exist
->                                                              ^^^
-> I'll also fix the message (those entries are not ignored but updated).
-> Then I'll commit the patch asap.
->
-> > But in rare cases I can see "commit-create: Cannot allocate memory".
-> > I also noticed this a few times before applying this patch. Is this
-> > something I should worry about?
->
-> Yes, very strange. ctnetlink is hitting ENOMEM, ie. it cannot create the
-> conntrack because there's no memory available. As for now ctnetlink is
-> allocating conntracks via nf_conntrack_alloc() which uses GFP_ATOMIC.
-> I'll send you a patch to relax this to check if that is the problem,
-> otherwise I think that the error is bogus.
->
-> > Jun 11 15:40:07 fw1b conntrack-tools[13383]: committing external cache
-> > Jun 11 15:40:07 fw1b conntrack-tools[13383]: commit-create: Cannot
-> > allocate memory
-> > Jun 11 15:40:07 fw1b conntrack-tools[13383]: Committed 33 new entries
-> > Jun 11 15:40:07 fw1b conntrack-tools[13383]: 25 entries ignored, already
-> > exist Jun 11 15:40:07 fw1b conntrack-tools[13383]: 1 entries can't be
-> > committed
->
-> What it is really annoying is the fact that you hit error with that less
-> entries. I cannot reproduce that in my testbed with ~20000 entries. Are
-> you using some kind of embedded device? Architecture?
+Thanks Pablo,
+Now I'm getting:
 
-This is a vitual machine (i686) which 128 MByte of memory running under VMware 
-server 1.0.4.
+[Wed Jun 11 20:04:07 2008] (pid=9974) [notice] Committed 1179 new entries
+[Wed Jun 11 20:04:07 2008] (pid=9974) [notice] 1179 entries ignored,
+already exist
+[Wed Jun 11 20:04:07 2008] (pid=9974) [notice] 8 entries can't be committed
+[Wed Jun 11 20:04:07 2008] (pid=3012) [notice] resync with master table
 
--Rainer
+
+So it seems issue is now only on 8 entries
+
+4 entries with:
+[ERROR] commit-create: Invalid argument
+
+and 4 entries with:
+[ERROR] commit-create: Cannot allocate memory
