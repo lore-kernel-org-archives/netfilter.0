@@ -1,62 +1,124 @@
-From: =?ISO-8859-2?Q?Thomas_B=E4tzler?= <t.baetzler@bringe.com>
-Subject: Re: Weird nat/conntrack Problem with PASV FTP upload
-Date: Wed, 11 Jun 2008 10:50:45 +0200
-Message-ID: <484F91E5.8040807@bringe.com>
-References: <E350C77ABFDBD242BDD51F5DA07905C102825E32@SONNE.gw.bringe.net> <Pine.LNX.4.64.0806101024010.31994@blackhole.kfki.hu>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd [ERROR] commit: Invalid argument
+Date: Wed, 11 Jun 2008 15:25:51 +0200
+Message-ID: <484FD25F.2010800@netfilter.org>
+References: <e1aa27e00806090621r3fa83ac0s7bb89d903de3be41@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0806101024010.31994@blackhole.kfki.hu>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------080306020909070006040404"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <e1aa27e00806090621r3fa83ac0s7bb89d903de3be41@mail.gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+To: Marco Barbero <marco.barbero@gmail.com>
+Cc: netfilter@vger.kernel.org, sabelka@iue.tuwien.ac.at, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-Hi,
+This is a multi-part message in MIME format.
+--------------080306020909070006040404
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Jozsef Kadlecsik schrieb:
-> In the first dump there is no dropped packet and the second one conta=
-ins a=20
-> single packet. Neither of the dumps help. I need a full record of a T=
-CP=20
-> session in which packets were marked as INVALID. If you can attach th=
-e log=20
-> record, that'd be even better.
+Hi Marco,
 
-Sorry, my fault.
+Marco Barbero wrote:
+> conntrack-tools-0.9.7
+> libnetfilter_conntrack-0.0.94
+> libnfnetlink-0.0.38
+> 
+> kernel 2.6.25.5
+> Mode ALARM
+> 
+> conntrackd -c from node master:
+> 
+> looking logs:
+> 
+> a lot of  [ERROR] commit: Invalid argument
+> Mon Jun  9 15:01:26 2008        tcp      6 180 TIME_WAIT
+> src=192.168.200.14 dst=62.149.195.137 sport=47144 dport=80 src=x.x.x.x
+> dst=192.168.200.14 sport=80 dport=47144 [ASSURED] mark=0
+> 
+> and at the end:
+> 
+> [Mon Jun  9 15:01:26 2008] (pid=13176) [notice] Committed 1172 new entries
+> [Mon Jun  9 15:01:26 2008] (pid=13176) [notice] 3294 entries can't be committed
+> 
+> Any hints?
 
-Here's what I've done now:
+Are your scripts committing the entries twice (ie. invoking conntrackd 
+-c several times)? The only way to reproduce this that I have found is 
+to double insert an existing conntrack with some NAT handling. In the 
+upcoming 2.6.26 you'll get a EBUSY instead of EINVAL which sounds more 
+reasonable.
 
-- "tcpdump -s0" on the external interface
-- I log invalid packets using this iptables rule:
-   iptables -t mangle -A PREROUTING -m state --state INVALID -j LOG
-- locate "invalid" dropped in kernel.log
-- tcpdump -r -w on port identified above to create a session dump.
+Anyhow, does the patch attached fix this behaviour? The idea behind it 
+is to check if there is a conntrack present in kernel, if so, just 
+update the attributes of the conntrack object that are changeable to 
+avoid the error. Would you mind testing it?
 
-I've uploaded such a session dump and the corresponding log line to
-http://baetzler.de/sandbox/dump.tar.bz2
+> [...]
+> solved kernel panic issues but still I got 'entries can't be committed'
+> [ERROR] commit: Invalid argument
 
-I'm running a Debian flavour 2.6.25 kernel (nf_conntrack version 0.5.0=20
-(16384 buckets, 65536 max)).
+Patrick posted a patch to netfilter-devel to fix the kernel panics. He 
+has also passed it to -stable.
 
-If there's a better/different method to do this or to get additional=20
-debugging info, please let me know. I'm currently running a kernel=20
-compiled with debugging info for netfilter enabled, but this does not=20
-seem to produce any additional output in kernel.log.
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
 
-TIA,
-Thomas
---=20
-BRINGE Informationstechnik GmbH
-Zur Seeplatte 12
-D-76228 Karlsruhe
-Germany
+--------------080306020909070006040404
+Content-Type: text/plain;
+ name="x"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="x"
 
-=46on: +49 721 94246-0
-=46on: +49 171 5438457
-=46ax: +49 721 94246-66
-Web: http://www.bringe.de/
+diff --git a/src/cache_iterators.c b/src/cache_iterators.c
+index c26d349..2fe7278 100644
+--- a/src/cache_iterators.c
++++ b/src/cache_iterators.c
+@@ -91,20 +91,29 @@ static int do_commit(void *data1, void *
+ 	 */
+ 	nfct_set_attr_u32(ct, ATTR_TIMEOUT, CONFIG(commit_timeout));
+ 
+-	ret = nl_create_conntrack(ct);
+-	if (ret == -1) {
+-		switch(errno) {
+-			case EEXIST:
+-				c->commit_exist++;
+-				break;
+-			default:
+-				dlog(LOG_ERR, "commit: %s", strerror(errno));
+-				dlog_ct(STATE(log), u->ct, NFCT_O_PLAIN);
+-				c->commit_fail++;
+-				break;
+-		}
+-	} else {
+-		c->commit_ok++;
++	ret = nl_exist_conntrack(ct);
++	switch (ret) {
++	case -1:
++		dlog(LOG_ERR, "commit-exist: %s", strerror(errno));
++		dlog_ct(STATE(log), ct, NFCT_O_PLAIN);
++		break;
++	case 0:
++		if (nl_create_conntrack(ct) == -1) {
++			dlog(LOG_ERR, "commit-create: %s", strerror(errno));
++			dlog_ct(STATE(log), ct, NFCT_O_PLAIN);
++			c->commit_fail++;
++		} else
++			c->commit_ok++;
++		break;
++	case 1:
++		c->commit_exist++;
++		if (nl_update_conntrack(ct) == -1) {
++			dlog(LOG_ERR, "commit-update: %s", strerror(errno));
++			dlog_ct(STATE(log), ct, NFCT_O_PLAIN);
++			c->commit_fail++;
++		} else
++			c->commit_ok++;
++		break;
+ 	}
+ 
+ 	/* keep iterating even if we have found errors */
 
-Gesch=E4ftsf=FChrer: Dipl.-Ing. (FH) Martin Bringe
-Ust.Id: DE812936645, HRB 108943 Mannheim
+--------------080306020909070006040404--
