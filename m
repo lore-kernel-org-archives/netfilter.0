@@ -1,43 +1,28 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCEMENT] ipset-2.3.1 released
-Date: Thu, 12 Jun 2008 12:01:21 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0806121135040.2250@blackhole.kfki.hu>
+From: rigoberto perez <rigo666beast@yahoo.com>
+Subject: Defragmentation in Netfilter Hook
+Date: Thu, 12 Jun 2008 05:25:22 -0700 (PDT)
+Message-ID: <278184.19561.qm@web33201.mail.mud.yahoo.com>
+Reply-To: rigo666beast@yahoo.com
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter <netfilter@vger.kernel.org>
 
-Hello,
+The ip_conntrack module makes an automatic defragmentation but I need modify the packets (padding bytes and change the ip protocol) and the conntrack have a rare behavior with TCP connections. The Netfilter Howto Documment (Netfilter Hooks For Tunnel Writers) it recommended to do:
 
-I'm happy to release a new version of ipset. This is a bugfix release, no 
-new features added. The list of the fixes:
+nf_conntrack_put(skb->nfct);
+skb->nfct = 0;
 
-- kernel part: a nasty typo which can lead to kernel crash when 
-  creating a set is fixed in the macipmap type
-- userspace tool:
-  - segfault on --unbind :all: :all: fixed (reported by cheetah and Tom 
-    Eastep)
-  - User input parameters are sanitized everywhere
-  - Initial testsuite added: few bugs discovered and fixed
-    - typo in macipmap type prevented to use max size set of this type
-    - *map types are made sure to allow and use max size of sets
+But it don't resolves my problem, so I'm trying to avoid use ip_conntrack module cause I use it only for defragmentation. The point is: how I can do a manualy defragmentation in netfilter hook?
 
-You can download the ipset-1.3.1 source tree and the patch-o-matic-ng 
-snapshot from http://ipset.netfilter.org/.
+The funtion ip_defrag return a NULL pointer if the packet is not complete and I don't know what do with the packet: I should enqueue it? How?
 
-The sources can be downloaded directly from the git and svn repositories
-as well:
+I appreciate any help, Thanks.
 
-- patch-o-matic-ng from git: git://git.netfilter.org/patch-o-matic-ng.git
-- ipset from svn: https://svn.netfilter.org/netfilter/trunk/ipset
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
