@@ -1,39 +1,39 @@
-From: pud <pud@subnet666.de>
-Subject: Re: [ANNOUNCEMENT] ipset-2.3.1 released
-Date: Sat, 14 Jun 2008 17:43:53 +0200
-Message-ID: <20080614154353.GA24486@safeTpin.homeunix.org>
-References: <Pine.LNX.4.64.0806121135040.2250@blackhole.kfki.hu>
-Reply-To: pud@subnet666.de
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: patch-o-matic and recent kernel/iptables
+Date: Sat, 14 Jun 2008 19:09:36 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0806141906040.23098@fbirervta.pbzchgretzou.qr>
+References: <4853E82F.8080807@solutti.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0806121135040.2250@blackhole.kfki.hu>
+In-Reply-To: <4853E82F.8080807@solutti.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-
-On Thu, 12 Jun 2008, Jozsef Kadlecsik wrote:
-
-> Hello,
-> 
-> I'm happy to release a new version of ipset. This is a bugfix release, no 
-> new features added. The list of the fixes:
-
-thanks for that, but maybe it still needs a fix for building with glibc-2.8:
-
-cc -O2 -Wall -Wunused -I/usr/src/linux/include -I.  -fPIC -o ipset_iphash.o -c ipset_iphash.c
-ipset_iphash.c: In function 'create_parse':
-ipset_iphash.c:71: error: 'UINT_MAX' undeclared (first use in this function)
-ipset_iphash.c:71: error: (Each undeclared identifier is reported only once
-ipset_iphash.c:71: error: for each function it appears in.)
-make: *** [ipset_iphash.o] Error 1
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: =?UTF-8?Q?Leonardo_Rodrigues_Magalh=C3=A3es?= <leolistas@solutti.com.br>
+Cc: ML netfilter <netfilter@vger.kernel.org>
 
 
-including limits.h fixes it of cause, but i'm not sure if that is a proper fix
+On Saturday 2008-06-14 17:47, Leonardo Rodrigues Magalh=C3=A3es wrote:
+>   Hello Guys,
+>
+>   I've download latest iptables (1.4.1) and latest kernel (2.6.25.6).=
+ I've
+> download also latest available patch-o-matic-ng snapshot, dated 20080=
+521.
+>
+>   Unfortunelly i cannot apply POM patches over this iptables/kernel
+> combination. Always i got is:
 
+Consider patch-o-matic dead. A few projects that need direct patching,
+such as xt_ACCOUNT and xt_layer7 provide perfect patches that make
+runme unnecessary, and other extensions are available in Xtables-addons
+which does not require any patching but builds as modules.
 
+>   Question ..... is there any place where i can grab most recent POM =
+or that
+> project is really frozen ? is there anyway of applying POM patches ov=
+er this
+> kernel/iptables combination ?
 
--- 
-gpg-key #C3B04767
+http://freshmeat.net/p/xtables-addons/
