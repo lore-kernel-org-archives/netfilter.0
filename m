@@ -1,25 +1,53 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: iptables 1.4.1 + iprange fails for me
-Date: Fri, 13 Jun 2008 18:00:06 +0200
-Message-ID: <48529986.1020204@trash.net>
-References: <20080613090236.417411cd@maxim.office.modum.by> <alpine.LNX.1.10.0806131047070.23098@fbirervta.pbzchgretzou.qr>
+From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= 
+	<leolistas@solutti.com.br>
+Subject: patch-o-matic and recent kernel/iptables
+Date: Sat, 14 Jun 2008 12:47:59 -0300
+Message-ID: <4853E82F.8080807@solutti.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0806131047070.23098@fbirervta.pbzchgretzou.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Maxim Britov <maxim.britov@gmail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: ML netfilter <netfilter@vger.kernel.org>
 
-Jan Engelhardt wrote:
-> iprange: kernel flags were not set
->     
-> The --src-range and --dst-range parameters did not set the IPRANGE_*
-> flags in struct xt_iprange_mtinfo.
->     
-> Reported-by: Maxim Britov <maxim.britov@gmail.com>
-> Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
 
-Applied, thanks Jan.
+    Hello Guys,
+
+    I've download latest iptables (1.4.1) and latest kernel (2.6.25.6).=
+=20
+I've download also latest available patch-o-matic-ng snapshot, dated=20
+20080521.
+
+    Unfortunelly i cannot apply POM patches over this iptables/kernel=20
+combination. Always i got is:
+
+[root@f8 patch-o-matic-ng-20080521]# export=20
+KERNEL_DIR=3D/usr/src/linux-2.6.25.6
+[root@f8 patch-o-matic-ng-20080521]# export=20
+IPTABLES_DIR=3D/usr/src/iptables-1.4.1
+[root@f8 patch-o-matic-ng-20080521]# ./runme
+Your iptables version  is unknown for patch-o-matic at ./runme line 333
+[root@f8 patch-o-matic-ng-20080521]#
+
+
+    Question ..... is there any place where i can grab most recent POM=20
+or that project is really frozen ? is there anyway of applying POM=20
+patches over this kernel/iptables combination ?
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
+
+
