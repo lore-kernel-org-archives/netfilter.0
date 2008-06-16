@@ -1,163 +1,88 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrackd [ERROR] commit: Invalid argument
-Date: Mon, 16 Jun 2008 02:31:07 +0200
-Message-ID: <4855B44B.5030504@netfilter.org>
-References: <e1aa27e00806090621r3fa83ac0s7bb89d903de3be41@mail.gmail.com> <200806111915.32313.sabelka@iue.tuwien.ac.at> <48513A30.1020908@netfilter.org> <200806130122.16216.sabelka@iue.tuwien.ac.at>
+From: Mathieu Espagnacq <mathieu.espagnacq@greffe-tc-paris.fr>
+Subject: Troubles with iptables, ip and VPN
+Date: Mon, 16 Jun 2008 12:21:50 +0200
+Message-ID: <48563EBE.9050108@greffe-tc-paris.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020101040309090205000409"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <200806130122.16216.sabelka@iue.tuwien.ac.at>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Rainer Sabelka <sabelka@iue.tuwien.ac.at>
-Cc: Marco Barbero <marco.barbero@gmail.com>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------020101040309090205000409
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Hi all,
 
-Rainer Sabelka wrote:
-> I tried to debug this a bit and added some printk()s in the 
-> ctnetlink_create_conntrack() function to find out where the ENOMEM is coming 
-> from:
-> So, now I see that nf_conntrack_alloc() is not returning this error, but it is 
-> coming from a couple of lines below in the same function:
-> 
->         helper = nf_ct_helper_find_get(rtuple);
->         if (helper) {
->                 help = nf_ct_helper_ext_add(ct, GFP_KERNEL);
->                 if (help == NULL) {
->                         nf_ct_helper_put(helper);
->                         err = -ENOMEM;
->                         goto err;
->                 }
-> 
-> There, nf_ct_helper_ext_add() returns NULL, which causes ENOMEM to be 
-> returned.
-> 
-> I didn't debug this further because I'm rather lost in the code. But maybe 
-> this gives you some hint what's wrong.
+	It's my first time on this list, i hope it's the right place for 
+posting this kind of question.
 
-I just noticed a bug that may be the reason for EINVAL while injecting
-connections that have a helper. The messages that contained connections
-with helpers were malformed (one attribute was missing). Attached a
-patch to fix this problem in libnetfilter_conntrack (already applied to
-git, so probably it is better if you check out a working copy). With
-regards to ENOMEM, probably we're hitting it because of some malformed
-message.
+My goal is to make a management network for different site. Those site 
+are strictly independent and can localy use same IP. I decided to use a 
+server to host openvpn and route packet. I decided than every site will 
+use a subnet on this virtual network using DNAT to translate with adress 
+on local network.
 
-The other patch is not directly related but it reduces the size of the
-messages that are sent to kernel space to check for the existence of a
-conntrack.
 
-I have put a lot effort on the synchronization protocols in this release
-but it seems that the commit still need one spin. As always, any help
-testing and reporting problems is appreciated.
+I tried to implement this solution like this :
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+OpenVPN host server is a debian.
 
---------------020101040309090205000409
-Content-Type: text/x-diff;
- name="conntrack.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="conntrack.patch"
+I actually use two tap interfaces.
 
-X-Git-Url: http://git.netfilter.org/cgi-bin/gitweb.cgi?p=conntrack-tools.git;a=blobdiff_plain;f=src%2Fnetlink.c;h=387062d5f29094733bc1e19760b82a877c15182b;hp=10c464360999fe6d1b4c39f85daa6997194ff7da;hb=807f1e477baf2eb7a642e65017ede0a079ebeb4d;hpb=40598325d5ff7a6b928640e456a377001aeae285
+tap0 : 10.0.254.1 netmask 255.255.255.0
+tap1 : 10.0.253.1 netmask 255.255.255.0
 
-diff --git a/src/netlink.c b/src/netlink.c
-index 10c4643..387062d 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -23,6 +23,7 @@
- #include "log.h"
- #include "debug.h"
- 
-+#include <string.h>
- #include <errno.h>
- 
- int ignore_conntrack(struct nf_conntrack *ct)
-@@ -219,8 +220,15 @@ int nl_overrun_request_resync(void)
- int nl_exist_conntrack(struct nf_conntrack *ct)
- {
- 	int ret;
-+	char __tmp[nfct_maxsize()];
-+	struct nf_conntrack *tmp = (struct nf_conntrack *) (void *)__tmp;
- 
--	ret = nfct_query(STATE(dump), NFCT_Q_GET, ct);
-+	memset(__tmp, 0, sizeof(__tmp));
-+
-+	/* use the original tuple to check if it is there */
-+	nfct_copy(tmp, ct, NFCT_CP_ORIG);
-+
-+	ret = nfct_query(STATE(dump), NFCT_Q_GET, tmp);
- 	if (ret == -1)
- 		return errno == ENOENT ? 0 : -1;
- 
+I created two entries in /etc/iproute2/rt_tables :
+201 test.net1
+200 test.net2
 
---------------020101040309090205000409
-Content-Type: text/x-diff;
- name="libnetfilter_conntrack.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="libnetfilter_conntrack.patch"
+I created some iptables rules :
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Date: Sun, 15 Jun 2008 23:58:41 +0000 (+0200)
-Subject: fix wrong ATTR_*_L3PROTO handling in the message building
-X-Git-Url: http://git.netfilter.org/cgi-bin/gitweb.cgi?p=libnetfilter_conntrack.git;a=commitdiff_plain;h=29ce47fc611015a64f66d1ec93c67a9d998f0592;hp=0ceaca69ad2517e156066203111e153084140a18
+iptables -t mangle -A PREROUTING -d 10.0.254.0/24 -j MARK --set-mark 1
+iptables -t nat -A PREROUTING -d 10.0.254.2 -j DNAT --to 172.21.1.69
+iptables -t nat -A POSTROUTING -o tap0 -j SNAT --to 10.0.254.1
 
-fix wrong ATTR_*_L3PROTO handling in the message building
+iptables -t mangle -A PREROUTING -d 10.0.253.0/24 -j MARK --set-mark 2
+iptables -t nat -A PREROUTING -d 10.0.253.3 -j DNAT --to 10.1.0.1
 
-- include missing ATTR_MASTER_L3PROTO attribute into messages
-- include ATTR_[ORIG|REPL]_L3PROTO iff there is at least another layer 3
-attribute
----
 
-diff --git a/src/conntrack/parse.c b/src/conntrack/parse.c
-index a18e3ad..7b6c0c5 100644
---- a/src/conntrack/parse.c
-+++ b/src/conntrack/parse.c
-@@ -379,23 +379,29 @@ void __parse_conntrack(const struct nlmsghdr *nlh,
- {
- 	struct nfgenmsg *nfhdr = NLMSG_DATA(nlh);
- 
--	ct->tuple[__DIR_ORIG].l3protonum = nfhdr->nfgen_family;
--	set_bit(ATTR_ORIG_L3PROTO, ct->set);
-+	if (cda[CTA_TUPLE_ORIG-1]) {
-+		ct->tuple[__DIR_ORIG].l3protonum = nfhdr->nfgen_family;
-+		set_bit(ATTR_ORIG_L3PROTO, ct->set);
- 
--	ct->tuple[__DIR_REPL].l3protonum = nfhdr->nfgen_family;
--	set_bit(ATTR_REPL_L3PROTO, ct->set);
--
--	if (cda[CTA_TUPLE_ORIG-1])
- 		__parse_tuple(cda[CTA_TUPLE_ORIG-1], 
- 			      &ct->tuple[__DIR_ORIG], __DIR_ORIG, ct->set);
-+	}
-+
-+	if (cda[CTA_TUPLE_REPLY-1]) {
-+		ct->tuple[__DIR_REPL].l3protonum = nfhdr->nfgen_family;
-+		set_bit(ATTR_REPL_L3PROTO, ct->set);
- 
--	if (cda[CTA_TUPLE_REPLY-1])
- 		__parse_tuple(cda[CTA_TUPLE_REPLY-1], 
- 			      &ct->tuple[__DIR_REPL], __DIR_REPL, ct->set);
-+	}
-+
-+	if (cda[CTA_TUPLE_MASTER-1]) {
-+		ct->tuple[__DIR_MASTER].l3protonum = nfhdr->nfgen_family;
-+		set_bit(ATTR_MASTER_L3PROTO, ct->set);
- 
--	if (cda[CTA_TUPLE_MASTER-1])
- 		__parse_tuple(cda[CTA_TUPLE_MASTER-1], 
- 			      &ct->tuple[__DIR_MASTER], __DIR_MASTER, ct->set);
-+	}
- 
- 	if (cda[CTA_NAT_SEQ_ADJ_ORIG-1])
- 		__parse_nat_seq(cda[CTA_NAT_SEQ_ADJ_ORIG-1], ct, __DIR_ORIG);
+And some ip rules :
 
---------------020101040309090205000409--
+ip rule del fwmark 1 table test.net1
+ip rule add fwmark 1 table test.net1
+ip route del default via 10.0.254.4 dev tap0 table test.net1
+ip route add default via 10.0.254.4 dev tap0 table test.net1
+
+ip rule del fwmark 2 table test.net2
+ip rule add fwmark 2 table test.net2
+ip route del default via 10.0.253.2 dev tap1 table test.net2
+ip route add default via 10.0.253.2 dev tap1 table test.net2
+
+
+ From 10.0.253.2 i execute : ping 10.0.254.2
+Packet never come back.
+
+ From the routeur point of view (where all this mess run), i get some 
+informations
+from tap1 :
+
+11:45:35.753988 IP 10.0.253.2 > 10.0.254.2: ICMP echo request, id 53277, 
+seq 8, length 64
+
+from tap0 :
+
+11:46:12.759495 IP 10.0.254.1 > 172.21.1.69: ICMP echo request, id 
+53277, seq 45, length 64
+11:46:12.782288 IP 172.21.1.69 > 10.0.254.1: ICMP echo reply, id 53277, 
+seq 45, length 64
+
+And from kernel log something :
+martian source 10.0.253.2 from 172.21.1.69, on dev tap0
+ll header: 00:ff:ff:88:88:a1:00:ff:f5:cc:7c:74:08:00
+
+
+I don't really understand why packet coming back from 172.21.1.69 to 
+10.0.253.2 (10.0.254.1 before nat) don't go on tap1.
+
+Thanks for readings, regards,
+
+m.e.
