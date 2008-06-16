@@ -1,66 +1,38 @@
-From: mathieu <mathieu@infolibre.net>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: VPN client from behind a firewall
-Date: Mon, 16 Jun 2008 14:09:59 +0200
-Message-ID: <48565817.2040600@infolibre.net>
-References: <90d975d30806160444t7c9bbf21if9b0062e2e72ac56@mail.gmail.com>
+Date: Mon, 16 Jun 2008 17:21:45 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0806161720190.6620@fbirervta.pbzchgretzou.qr>
+References: <90d975d30806160444t7c9bbf21if9b0062e2e72ac56@mail.gmail.com> <48565817.2040600@infolibre.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <90d975d30806160444t7c9bbf21if9b0062e2e72ac56@mail.gmail.com>
+In-Reply-To: <48565817.2040600@infolibre.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: mathieu <mathieu@infolibre.net>
+Cc: netfilter@vger.kernel.org
 
-Hi,
 
-	You need to authorize traffic and masquerade/SNAT connections and allo=
-w=20
-forwarding.
+On Monday 2008-06-16 14:09, mathieu wrote:
 
-Authorize :
+> Hi,
+>
+> 	You need to authorize traffic and masquerade/SNAT connections and allow
+> forwarding.
+>
+> Authorize :
+>
+> iptables -A FORWARD -i eth1 -p udp -d $VPN_SERVER_IP -s $INTERNAL_CLIENT_IP
+> --dport 500 -m state NEW, ESTABLISHED -j ACCEPT
+>
+> iptables -A FORWARD -i eth0 -p udp -s $VPN_SERVER_IP -d $INTERNAL_CLIENT_IP
+> --sport 500 -m state ESTABLISHED -j ACCEPT
+>
+> SNAT (change internal adress by a public one) :
 
-iptables -A FORWARD -i eth1 -p udp -d $VPN_SERVER_IP -s=20
-$INTERNAL_CLIENT_IP --dport 500 -m state NEW, ESTABLISHED -j ACCEPT
+But only if you have a NAT. A firewall is not a NAT, and vice-versa.
 
-iptables -A FORWARD -i eth0 -p udp -s $VPN_SERVER_IP -d=20
-$INTERNAL_CLIENT_IP --sport 500 -m state ESTABLISHED -j ACCEPT
-
-SNAT (change internal adress by a public one) :
-
-iptables -t nat -A POSTROUTING -o eth0 -p udp -d $VPN_SERVER_IP --dport=
-=20
-  500 -j SNAT --to-source $PUB_IP
-
-It's look like udp port 4500 and 10000 are also used. And Client must b=
-e=20
-a SecureNat one (i can't confirm, i'm not using cisco VPN).
-
-Regards,
-
-m.e.
-
-Gergely Buday a =E9crit :
-> Dear All,
->=20
-> I would like to use a Cisco VPN client from behind my CentOS server,
-> which has an iptables firewall. The network topology is as follows:
-> eth0 is towards the ISP, eth1 heads the local clients. Up to now I
-> used
->=20
-> http://tldp.org/HOWTO/IP-Masquerade-HOWTO/firewall-examples.html#RC.F=
-IREWALL-IPTABLES
->=20
-> but this clearly needs extension. What I know is that I should allow
-> the IPSec port (500) to be open. What else, and how? I'm not very
-> familiar with iptables, so some pointers would be more than welcome.
->=20
-> Best Wishes
->=20
-> - Gergely
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+As such -p udp 500 and -p esp will be needed for a firewall;
+and only -p udp 4500 for a NAT.
 
