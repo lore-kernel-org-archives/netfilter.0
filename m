@@ -1,7 +1,7 @@
-From: Mathieu Espagnacq <mathieu.espagnacq@greffe-tc-paris.fr>
+From: mathieu <mathieu@infolibre.net>
 Subject: Troubles with iptables, ip and VPN
-Date: Mon, 16 Jun 2008 12:21:50 +0200
-Message-ID: <48563EBE.9050108@greffe-tc-paris.fr>
+Date: Mon, 16 Jun 2008 12:22:52 +0200
+Message-ID: <48563EFC.7050105@infolibre.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -12,7 +12,7 @@ To: netfilter@vger.kernel.org
 
 Hi all,
 
-	It's my first time on this list, i hope it's the right place for 
+     It's my first time on this list, i hope it's the right place for 
 posting this kind of question.
 
 My goal is to make a management network for different site. Those site 
