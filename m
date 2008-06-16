@@ -1,88 +1,65 @@
-From: "Artem Y. Pervin" <artempervin@gmail.com>
-Subject: rule is ignored for the localhost
-Date: Mon, 16 Jun 2008 23:41:50 +0400
-Message-ID: <86ff9a9a0806161241r65b5a734o2b0ebc8e2ef0c4fe@mail.gmail.com>
+From: Rainer Sabelka <sabelka@iue.tuwien.ac.at>
+Subject: Re: conntrackd [ERROR] commit: Invalid argument
+Date: Mon, 16 Jun 2008 22:28:16 +0200
+Message-ID: <200806162228.17436.sabelka@iue.tuwien.ac.at>
+References: <e1aa27e00806090621r3fa83ac0s7bb89d903de3be41@mail.gmail.com> <200806130122.16216.sabelka@iue.tuwien.ac.at> <4855B44B.5030504@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=LCYhRf/0bsHHntZAfzwDBjHQOB22fMbYjmhf2H+znU4=;
-        b=GZQITNsGuPSCqnppTv96paoHI2WbDHmxzH3tvb3XSaPvKdSVq9AL1K5mlBgJiRLJgF
-         m1z2IY+seKHYScXQFKEDg31xRtdsS2g1oUwsHU/dZ53XcVuPENUsjqJuD0TI3LtrLgu7
-         w5AbLkLaBJ3get6SuktsIOQ5oco7GyjupP61I=
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4855B44B.5030504@netfilter.org>
 Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Marco Barbero <marco.barbero@gmail.com>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-Dear netfilter/iptables users!
+On Monday 16 June 2008 02:31:07 Pablo Neira Ayuso wrote:
+> Rainer Sabelka wrote:
+> > I tried to debug this a bit and added some printk()s in the
+> > ctnetlink_create_conntrack() function to find out where the ENOMEM is
+> > coming from:
+> > So, now I see that nf_conntrack_alloc() is not returning this error, but
+> > it is coming from a couple of lines below in the same function:
+> >
+> >         helper = nf_ct_helper_find_get(rtuple);
+> >         if (helper) {
+> >                 help = nf_ct_helper_ext_add(ct, GFP_KERNEL);
+> >                 if (help == NULL) {
+> >                         nf_ct_helper_put(helper);
+> >                         err = -ENOMEM;
+> >                         goto err;
+> >                 }
+> >
+> > There, nf_ct_helper_ext_add() returns NULL, which causes ENOMEM to be
+> > returned.
+> >
+> > I didn't debug this further because I'm rather lost in the code. But
+> > maybe this gives you some hint what's wrong.
+>
+> I just noticed a bug that may be the reason for EINVAL while injecting
+> connections that have a helper. The messages that contained connections
+> with helpers were malformed (one attribute was missing). Attached a
+> patch to fix this problem in libnetfilter_conntrack (already applied to
+> git, so probably it is better if you check out a working copy). With
+> regards to ENOMEM, probably we're hitting it because of some malformed
+> message.
+>
+> The other patch is not directly related but it reduces the size of the
+> messages that are sent to kernel space to check for the existence of a
+> conntrack.
+>
+> I have put a lot effort on the synchronization protocols in this release
+> but it seems that the commit still need one spin. As always, any help
+> testing and reporting problems is appreciated.
 
-Can you please help me with iptables setup?
-I want to do a simple thing. I want some port of the external
-interface to redirect TCP traffic to the private network.
-So, I have the following rule sequence:
+Thanks Pablo. I've tested your patches but unfortunately I still get "Cannot 
+allocate memory" sometimes.
 
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
-$ cat rules.sh
-INTIF="eth1"
-EXTIF="eth2"
+Jun 16 22:24:45 fw1b conntrack-tools[5599]: committing external cache
+Jun 16 22:24:45 fw1b conntrack-tools[5599]: commit-create: Cannot allocate 
+memory
+Jun 16 22:24:45 fw1b conntrack-tools[5599]: Committed 623 new entries
+Jun 16 22:24:45 fw1b conntrack-tools[5599]: 1 entries can't be committed
 
-# Default policy
-iptables -P INPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -P OUTPUT ACCEPT
-
-# Flush tables
-iptables -F INPUT
-iptables -F FORWARD
-iptables -F OUTPUT
-iptables -F -t nat
-
-# Setup NAT
-iptables -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-
-# Port forwarding
-iptables -t nat -I PREROUTING -i $EXTIF -p tcp --dport 30099 -j DNAT
---to 192.168.10.119:22
-iptables -t nat -I PREROUTING -i lo -p tcp --dport 30099 -j DNAT --to
-192.168.10.119:22
-iptables -I INPUT -i $EXTIF -p tcp --dport 30099 -j ACCEPT
-iptables -I INPUT -i lo -p tcp --dport 30099 -j ACCEPT
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
-
-When I try to access my machine from a remote host, everything works fine:
-[versus@demo ~]$ ssh -p 30099 root@somehost.somedomain
-...
-Are you sure you want to continue connecting (yes/no)?
-
-But when I try to access the 30099 port from the localhost, I get
-connection refused:
-[root@somehost ~]# ssh -vp 30099 root@localhost
-OpenSSH_3.9p1, OpenSSL 0.9.7a Feb 19 2003
-debug1: Reading configuration data /etc/ssh/ssh_config
-debug1: Applying options for *
-debug1: Connecting to localhost [127.0.0.1] port 30099.
-debug1: connect to address 127.0.0.1 port 30099: Connection refused
-ssh: connect to host localhost port 30099: Connection refused
-
-I've tried to use the external ip adress as well, but I'm getting the
-same result:
-[root@somehost ~]# ssh -vp 30099 root@somehost.somedomain
-OpenSSH_3.9p1, OpenSSL 0.9.7a Feb 19 2003
-debug1: Reading configuration data /etc/ssh/ssh_config
-debug1: Applying options for *
-...
-ssh: connect to host somehost.somedomain port 30099: Connection refused
-
-What is wrong with my configuration? Why iptables ignore the rule for
-the localhost case?
-I'm using iptables v1.3.7, kernel is 2.6.21.1.
-
---
-Best regards,
-Artem Pervin
+-Rainer
