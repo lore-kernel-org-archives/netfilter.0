@@ -1,65 +1,65 @@
-From: Rainer Sabelka <sabelka@iue.tuwien.ac.at>
-Subject: Re: conntrackd [ERROR] commit: Invalid argument
-Date: Mon, 16 Jun 2008 22:28:16 +0200
-Message-ID: <200806162228.17436.sabelka@iue.tuwien.ac.at>
-References: <e1aa27e00806090621r3fa83ac0s7bb89d903de3be41@mail.gmail.com> <200806130122.16216.sabelka@iue.tuwien.ac.at> <4855B44B.5030504@netfilter.org>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: rule is ignored for the localhost
+Date: Mon, 16 Jun 2008 15:49:31 -0500
+Message-ID: <4856D1DB.9050107@riverviewtech.net>
+References: <86ff9a9a0806161241r65b5a734o2b0ebc8e2ef0c4fe@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4855B44B.5030504@netfilter.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <86ff9a9a0806161241r65b5a734o2b0ebc8e2ef0c4fe@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Marco Barbero <marco.barbero@gmail.com>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Monday 16 June 2008 02:31:07 Pablo Neira Ayuso wrote:
-> Rainer Sabelka wrote:
-> > I tried to debug this a bit and added some printk()s in the
-> > ctnetlink_create_conntrack() function to find out where the ENOMEM is
-> > coming from:
-> > So, now I see that nf_conntrack_alloc() is not returning this error, but
-> > it is coming from a couple of lines below in the same function:
-> >
-> >         helper = nf_ct_helper_find_get(rtuple);
-> >         if (helper) {
-> >                 help = nf_ct_helper_ext_add(ct, GFP_KERNEL);
-> >                 if (help == NULL) {
-> >                         nf_ct_helper_put(helper);
-> >                         err = -ENOMEM;
-> >                         goto err;
-> >                 }
-> >
-> > There, nf_ct_helper_ext_add() returns NULL, which causes ENOMEM to be
-> > returned.
-> >
-> > I didn't debug this further because I'm rather lost in the code. But
-> > maybe this gives you some hint what's wrong.
->
-> I just noticed a bug that may be the reason for EINVAL while injecting
-> connections that have a helper. The messages that contained connections
-> with helpers were malformed (one attribute was missing). Attached a
-> patch to fix this problem in libnetfilter_conntrack (already applied to
-> git, so probably it is better if you check out a working copy). With
-> regards to ENOMEM, probably we're hitting it because of some malformed
-> message.
->
-> The other patch is not directly related but it reduces the size of the
-> messages that are sent to kernel space to check for the existence of a
-> conntrack.
->
-> I have put a lot effort on the synchronization protocols in this release
-> but it seems that the commit still need one spin. As always, any help
-> testing and reporting problems is appreciated.
+On 06/16/08 14:41, Artem Y. Pervin wrote:
+> I want to do a simple thing. I want some port of the external 
+> interface to redirect TCP traffic to the private network.
 
-Thanks Pablo. I've tested your patches but unfortunately I still get "Cannot 
-allocate memory" sometimes.
+Ok...
 
-Jun 16 22:24:45 fw1b conntrack-tools[5599]: committing external cache
-Jun 16 22:24:45 fw1b conntrack-tools[5599]: commit-create: Cannot allocate 
-memory
-Jun 16 22:24:45 fw1b conntrack-tools[5599]: Committed 623 new entries
-Jun 16 22:24:45 fw1b conntrack-tools[5599]: 1 entries can't be committed
+> So, I have the following rule sequence:
 
--Rainer
+At a quick glance your rules seem to be ok.
+
+> When I try to access my machine from a remote host, everything works 
+> fine:
+
+*nod*
+
+> I've tried to use the external ip adress as well, but I'm getting the 
+> same result:
+
+*nod*
+
+> What is wrong with my configuration? Why iptables ignore the rule for 
+> the localhost case?
+
+I don't think it is anything with your rules per say.  Rather I think 
+the problem is that you are trying to redirect something from localhost 
+to something not on localhost.  The Linux kernel will prevent this for 
+security reasons.
+
+I would suggest that you use some sort of proxy program (see below) 
+listening on localhost:30099 that will proxy connections to 
+192.168.10.119:22 for you.
+
+You could even have the proxy program listen on the external interface, 
+or all interfaces for that matter, and do all the redirecting for you.
+However keep in mind that when the proxy program connects to 
+192.168.10.119 on your behalf, the connection(s) will appear to be from 
+the host running the proxy app, so logging on the target host will not 
+show the real source of the connection.  If you think about it, when the 
+host that is doing the redirecting connects to 192.168.10.119, it would 
+be the source of the traffic, so there is little difference (if any) in 
+it connecting via the proxy or connecting directly to 192.168.10.119.
+
+With this in mind, I would be tempted to DNAT with IPTables so that the 
+target host will see the real source IP and proxy traffic from localhost 
+on the DNAT box to 192.168.10.119.
+
+"socat" and "rinetd" are a couple of example proxy applications.
+
+
+
+Grant. . . .
