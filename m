@@ -1,43 +1,46 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCEMENT] ipset-2.3.1 released
-Date: Tue, 17 Jun 2008 15:55:46 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0806171552200.8037@blackhole.kfki.hu>
-References: <Pine.LNX.4.64.0806121135040.2250@blackhole.kfki.hu>   
- <20080614154353.GA24486@safeTpin.homeunix.org>   
- <Pine.LNX.4.64.0806171004170.8037@blackhole.kfki.hu>
- <41107.84.123.239.190.1213710233.squirrel@www.arcoscom.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: rule is ignored for the localhost
+Date: Tue, 17 Jun 2008 16:03:47 +0200
+Message-ID: <4857C443.8080502@plouf.fr.eu.org>
+References: <86ff9a9a0806161241r65b5a734o2b0ebc8e2ef0c4fe@mail.gmail.com> <4856D1DB.9050107@riverviewtech.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <41107.84.123.239.190.1213710233.squirrel@www.arcoscom.com>
+In-Reply-To: <4856D1DB.9050107@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ArcosCom Linux User <linux@arcoscom.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Tue, 17 Jun 2008, ArcosCom Linux User wrote:
+Hello,
 
-> >> cc -O2 -Wall -Wunused -I/usr/src/linux/include -I.  -fPIC -o
-> >> ipset_iphash.o -c ipset_iphash.c
-> >> ipset_iphash.c: In function 'create_parse':
-> >> ipset_iphash.c:71: error: 'UINT_MAX' undeclared (first use in this
-> >> function)
-> >> ipset_iphash.c:71: error: (Each undeclared identifier is reported only
-> >> once
-> >> ipset_iphash.c:71: error: for each function it appears in.)
-> >> make: *** [ipset_iphash.o] Error 1
+Grant Taylor a =E9crit :
+> On 06/16/08 14:41, Artem Y. Pervin wrote:
+>=20
+>> I want to do a simple thing. I want some port of the external=20
+>> interface to redirect TCP traffic to the private network.
+>> So, I have the following rule sequence:
+>>=20
+>> # Port forwarding
+>> iptables -t nat -I PREROUTING -i $EXTIF -p tcp --dport 30099 -j DNAT
+>> --to 192.168.10.119:22
+>> iptables -t nat -I PREROUTING -i lo -p tcp --dport 30099 -j DNAT --t=
+o
+>> 192.168.10.119:22
+>=20
+> At a quick glance your rules seem to be ok.
 
-> Be carefull about 32/64 bits architectures, this macro value, perhaps, is
-> diferent depending on it.
+I beg to differ. AFAIK packets routed through the loopback interface=20
+don't go through the nat/PREROUTING chain, so the latter rule will neve=
+r=20
+match any packet. My understanding is that only packets creating a new=20
+yet unconfirmed connection go through the nat chains, and the connectio=
+n=20
+is confirmed right after the POSTROUTING chains, before the packet is=20
+looped back into the PREROUTING chains. I have the feeling that=20
+conntrack and NAT on loopback is somehow dodgy.
 
-No, it holds the same value. ULONG_MAX (LONG_MIN/LONG_MAX) is different on 
-32 and 64 bit modes.
+So the rule must be added to the OUTPUT chain :
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+iptables -t nat -I OUTPUT -o lo -p tcp --dport 30099 -j DNAT --to=20
+192.168.10.119:22
