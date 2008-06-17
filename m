@@ -1,32 +1,29 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Want to "plug in" a link-level protocol into IP stack
-Date: Tue, 17 Jun 2008 09:05:34 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0806170904540.6620@fbirervta.pbzchgretzou.qr>
-References: <27cb3ada0806162003l3f8d4ee0y7db0306ddb1de9e0@mail.gmail.com>
+From: "=?UTF-8?Q?ifj._Tarnay_K=C3=A1lm=C3=A1n?=" <kalmisoft@gmail.com>
+Subject: ROUTE patch is not present in newer patch-o-matic-ng snapshots?
+Date: Tue, 17 Jun 2008 09:54:51 +0200
+Message-ID: <8252340d0806170054i5ef9c7cci686249fb1aca5543@mail.gmail.com>
+References: <8252340d0806170052n2fdba64ew3341034797191909@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <27cb3ada0806162003l3f8d4ee0y7db0306ddb1de9e0@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=u/xgmcK0d1a3fqpIysuDaiMYc1/zFZ4T7TztYm+HjFo=;
+        b=hZ02iFJqHvir/fSBPXriCMaSyNQgVxhxb57KgNmyortTbMKZW3OyKeIy8BeFmk4c5q
+         Ofmx6uiFw2pKiA+4R1E3ron8CYnkxDw4NMM2+7sO844160GMgnjwr8K8YGMU9E7qPfg3
+         rg5hqwe6nIFOWSdS9+gY581+CWLWldZIgnIEs=
+In-Reply-To: <8252340d0806170052n2fdba64ew3341034797191909@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Len Gross <sandiegobiker@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Could someone tell me why the ROUTE patch is not present in newer
+patch-o-matic-ng snapshots?
 
-On Tuesday 2008-06-17 05:03, Len Gross wrote:
-
->I have used FreeBSD's Netgraph to successfully develop a unique link-level
->protocol.  I would like to do a similar thing in Linux and would like to do
->the initial implementation in userland.  I use Ethernet packets on a
->LAN and embed
->the protocol inside them.  I have to modify outgoing packets and strip out
->header/trailers from incoming packets.  IP frames need to be passed-up
->the stack.
->
->Would Netfilter be the best way to approach this? If not, what other
->LINUX tools make sense\?
-
-Netfilter is a kernel component, but you wanted to do an userspace thing.
-Programs that directly play with the link layer, such as dhcpd,
-use a PF_PACKET socket.
+Thanks in advance,
+Kalmi
