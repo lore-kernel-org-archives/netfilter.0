@@ -1,27 +1,59 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Duplicated multicast packets with -j ROUTE --tee
-Date: Tue, 17 Jun 2008 16:40:27 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0806171640170.32473@fbirervta.pbzchgretzou.qr>
-References: <145d4e1a0806170243m1eb8a6bds888f8e9bd4146d92@mail.gmail.com> <145d4e1a0806170639l1ef3eef5g70be859b47c3e04e@mail.gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: [ANNOUNCE] Release of iptables 1.4.1.1
+Date: Tue, 17 Jun 2008 17:22:10 +0200
+Message-ID: <4857D6A2.104@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <145d4e1a0806170639l1ef3eef5g70be859b47c3e04e@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------040308050806070008040603"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?Javier_G=C3=A1lvez_Guerrero?= <javier.galvez.guerrero@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>, netfilt
+
+This is a multi-part message in MIME format.
+--------------040308050806070008040603
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+
+The netfilter coreteam presents:
+
+     iptables version 1.4.1.1
+
+This release is a pure bugfix release for regressions reported
+against 1.4.1, fixing some mainly cosmetic problems in the
+ruleset listing, installation problems with --disable-shared
+and non-working --src-range/--dst-range parameters in the
+iprange match.
+
+Version 1.4.1.1 can be obtained from (please note that as
+usual, the webpage hasn't been rebuilt yet, but will hopefully
+be shortly):
+
+http://www.netfilter.org/projects/iptables/downloads.html
+ftp://ftp.netfilter.org/pub/iptables/
+git://git.netfilter.org/iptables.git
+
+On behalf of the Netfilter Core Team.
+Happy firewalling!
 
 
-On Tuesday 2008-06-17 15:39, Javier G=C3=A1lvez Guerrero wrote:
+--------------040308050806070008040603
+Content-Type: text/plain;
+ name="changes-iptables-1.4.1-1.4.1.1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changes-iptables-1.4.1-1.4.1.1"
 
->Hi again,
->
->Although I thought the ROUTE target was installed, the file
->ip_tables_targets is completely empty and it should contain the
->applied targets, shouldn't it? So, I'm trying to patch the kernel with
->the ROUTE target following the patch-o-matic tutorial in netfilter.org
->site.
+Henrik Nordstrom (1):
+      iptables: fix printing of line numbers with --line-numbers arg
 
-http://marc.info/?l=3Dnetfilter&m=3D121346341804721&w=3D2
+Jan Engelhardt (3):
+      ip6tables: fix printing of ipv6 network masks
+      build: fix `make install` when --disable-shared is used
+      iprange: kernel flags were not set
+
+Patrick McHardy (1):
+      v1.4.1.1
+
+
+--------------040308050806070008040603--
