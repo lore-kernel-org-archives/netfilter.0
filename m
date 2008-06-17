@@ -1,22 +1,20 @@
 From: "=?ISO-8859-1?Q?Javier_G=E1lvez_Guerrero?=" 
 	<javier.galvez.guerrero@gmail.com>
-Subject: Duplicating multicast packets with -j ROUTE --tee
-Date: Tue, 17 Jun 2008 11:40:17 +0200
-Message-ID: <145d4e1a0806170240p581a1d60gd051cb83ebe63a06@mail.gmail.com>
-References: <145d4e1a0806170237n14271024p50176f5f5b9611bf@mail.gmail.com>
+Subject: Duplicated multicast packets with -j ROUTE --tee
+Date: Tue, 17 Jun 2008 11:43:41 +0200
+Message-ID: <145d4e1a0806170243m1eb8a6bds888f8e9bd4146d92@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=RUdC/SGUkj/dctUHBmQxUTNgL0avyXLHtsH9wRmRGoo=;
-        b=lLwaBLN/T1DwAeXndKmw/v/mBuihcM0pIRbk8pOSHWwUOVrIe8pFZTIjYJ0EFuAXI7
-         MZBWRuks82GEeFgf1Co5BjJQKgUoRrK8oi3T1PDqhLakzCveI84AHnGw8C82JKHlC9pM
-         HOxZ2qLUxYIxE8sgpzJkWVTw+GZJkbTEJweNM=
-In-Reply-To: <145d4e1a0806170237n14271024p50176f5f5b9611bf@mail.gmail.com>
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=Z9h3+hzmBBPRJGY2UMb7fU4mtmsqhgfLPZUfuCUn/0M=;
+        b=Wms78NiTcUlXqskeh0IyZ6JXZnWApvV1doSoFwf7tLaTYaYCczTIXF6cCncW4FqqO3
+         TXyvvJ9F/IDPVaRDoRbyuONvLfXaRdMhuKJq7TU9rZYr54z7hVV+uty3Rs1RaakClgja
+         TXiTAK7F17W7N6GgakvMKOb4cBcY8045VcKYI=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -35,26 +33,25 @@ I'm working in a Debian machine with kernel 2.6.18-6-686 and iptables
 version 1.3.6. I have done some research with google and, eventually,
 I've tried this:
 
-   # iptables -t mangle -A OUTPUT -d 239.255.1.0/24 -o eth0 -j ROUTE
+  # iptables -t mangle -A OUTPUT -d 239.255.1.0/24 -o eth0 -j ROUTE
 --tee --oif eth0
 
 but I obtain:
 
-   iptables: No chain/target/match by that name
+  iptables: No chain/target/match by that name
 
 Besides that, if I try the same without specifying what ROUTE should do:
 
-   # iptables -t mangle -A OUTPUT -d 239.255.1.0/24 -o eth0 -j ROUTE
+  # iptables -t mangle -A OUTPUT -d 239.255.1.0/24 -o eth0 -j ROUTE
 
 I get:
 
-   iptables v1.3.6: ROUTE target: oif, iif or gw option required
-   Try `iptables -h' or 'iptables --help' for more information.
+  iptables v1.3.6: ROUTE target: oif, iif or gw option required
+  Try `iptables -h' or 'iptables --help' for more information.
 
 Then, I think that the ROUTE target is included in the kernel, so I
 suppose there's no need to apply a patch and recompile the kernel but
-I don't know what to do in order to succeed in this.
-
+I don't know what to do in order to succeed in this.Hi everyone,
 
 Anyway, I would like to get some help for more experienced users or
 anyone who has dealed with this issue. Any help would be much
@@ -63,3 +60,5 @@ appreciated.
 
 Thank you all,
 Javi
+
+PS: Some issues with formatted text. Sorry.
