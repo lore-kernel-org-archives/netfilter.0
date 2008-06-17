@@ -1,39 +1,27 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCEMENT] ipset-2.3.1 released
-Date: Tue, 17 Jun 2008 10:07:09 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0806171004170.8037@blackhole.kfki.hu>
-References: <Pine.LNX.4.64.0806121135040.2250@blackhole.kfki.hu>
- <20080614154353.GA24486@safeTpin.homeunix.org>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: ROUTE patch is not present in newer patch-o-matic-ng snapshots?
+Date: Tue, 17 Jun 2008 10:40:56 +0200
+Message-ID: <4170F7A4E7E04A77AF3E5B22BE7A8AE7@dcyb.net>
+References: <8252340d0806170052n2fdba64ew3341034797191909@mail.gmail.com> <8252340d0806170054i5ef9c7cci686249fb1aca5543@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080614154353.GA24486@safeTpin.homeunix.org>
+In-Reply-To: <8252340d0806170054i5ef9c7cci686249fb1aca5543@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: pud <pud@subnet666.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Sat, 14 Jun 2008, pud wrote:
+> Could someone tell me why the ROUTE patch is not present in newer
+> patch-o-matic-ng snapshots? 
 
-> thanks for that, but maybe it still needs a fix for building with glibc-2.8:
-> 
-> cc -O2 -Wall -Wunused -I/usr/src/linux/include -I.  -fPIC -o ipset_iphash.o -c ipset_iphash.c
-> ipset_iphash.c: In function 'create_parse':
-> ipset_iphash.c:71: error: 'UINT_MAX' undeclared (first use in this function)
-> ipset_iphash.c:71: error: (Each undeclared identifier is reported only once
-> ipset_iphash.c:71: error: for each function it appears in.)
-> make: *** [ipset_iphash.o] Error 1
-> 
-> including limits.h fixes it of cause, but i'm not sure if that is a proper fix
+Because it's unmaintained and newer kernels can't be patched for the ROUTE
+target.
+Look for xtables with it's extensions and the TEE target.
+http://dev.medozas.de/files/xtables/
 
-I added the limits.h to the files which uses UINT_MAX. svn holds the fixed 
-version, thank you the report.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Grts,
+Rob
+
+
