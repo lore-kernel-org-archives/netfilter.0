@@ -1,41 +1,65 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: patch-o-matic and recent kernel/iptables
-Date: Tue, 17 Jun 2008 10:50:55 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0806171048060.8037@blackhole.kfki.hu>
-References: <4853E82F.8080807@solutti.com.br>
+From: "=?ISO-8859-1?Q?Javier_G=E1lvez_Guerrero?=" 
+	<javier.galvez.guerrero@gmail.com>
+Subject: Duplicating multicast packets with -j ROUTE --tee
+Date: Tue, 17 Jun 2008 11:40:17 +0200
+Message-ID: <145d4e1a0806170240p581a1d60gd051cb83ebe63a06@mail.gmail.com>
+References: <145d4e1a0806170237n14271024p50176f5f5b9611bf@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4853E82F.8080807@solutti.com.br>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=RUdC/SGUkj/dctUHBmQxUTNgL0avyXLHtsH9wRmRGoo=;
+        b=lLwaBLN/T1DwAeXndKmw/v/mBuihcM0pIRbk8pOSHWwUOVrIe8pFZTIjYJ0EFuAXI7
+         MZBWRuks82GEeFgf1Co5BjJQKgUoRrK8oi3T1PDqhLakzCveI84AHnGw8C82JKHlC9pM
+         HOxZ2qLUxYIxE8sgpzJkWVTw+GZJkbTEJweNM=
+In-Reply-To: <145d4e1a0806170237n14271024p50176f5f5b9611bf@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= <leolistas@solutti.com.br>
-Cc: ML netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Sat, 14 Jun 2008, Leonardo Rodrigues Magalh?es wrote:
+Hi everyone,
 
->    I've download latest iptables (1.4.1) and latest kernel (2.6.25.6). I've
-> download also latest available patch-o-matic-ng snapshot, dated 20080521.
-> 
->    Unfortunelly i cannot apply POM patches over this iptables/kernel
-> combination. Always i got is:
-> 
-> [root@f8 patch-o-matic-ng-20080521]# export KERNEL_DIR=/usr/src/linux-2.6.25.6
-> [root@f8 patch-o-matic-ng-20080521]# export
-> IPTABLES_DIR=/usr/src/iptables-1.4.1
-> [root@f8 patch-o-matic-ng-20080521]# ./runme
-> Your iptables version  is unknown for patch-o-matic at ./runme line 333
-> [root@f8 patch-o-matic-ng-20080521]#
+I'm a complete newbie with iptables. I've read some tutorials from
+netfilters.org in order to have a look about how to proceed. I'm
+generating a multicast flow and, in order to take some research
+results, I would like to duplicate the packets in the source computer
+through the ethernet interface.
 
-I have fixed patch-o-matic-ng in git. So either check out it from git or 
-wait for the next daily snapshot and give it a try. The fixed version 
-should work fine with iptables-1.4.1.
+I'm working in a Debian machine with kernel 2.6.18-6-686 and iptables
+version 1.3.6. I have done some research with google and, eventually,
+I've tried this:
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+   # iptables -t mangle -A OUTPUT -d 239.255.1.0/24 -o eth0 -j ROUTE
+--tee --oif eth0
+
+but I obtain:
+
+   iptables: No chain/target/match by that name
+
+Besides that, if I try the same without specifying what ROUTE should do:
+
+   # iptables -t mangle -A OUTPUT -d 239.255.1.0/24 -o eth0 -j ROUTE
+
+I get:
+
+   iptables v1.3.6: ROUTE target: oif, iif or gw option required
+   Try `iptables -h' or 'iptables --help' for more information.
+
+Then, I think that the ROUTE target is included in the kernel, so I
+suppose there's no need to apply a patch and recompile the kernel but
+I don't know what to do in order to succeed in this.
+
+
+Anyway, I would like to get some help for more experienced users or
+anyone who has dealed with this issue. Any help would be much
+appreciated.
+
+
+Thank you all,
+Javi
