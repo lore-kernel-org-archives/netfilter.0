@@ -1,40 +1,41 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: rule is ignored for the localhost
-Date: Tue, 17 Jun 2008 09:16:31 -0500
-Message-ID: <4857C73F.1090406@riverviewtech.net>
-References: <86ff9a9a0806161241r65b5a734o2b0ebc8e2ef0c4fe@mail.gmail.com> <4856D1DB.9050107@riverviewtech.net> <4857C443.8080502@plouf.fr.eu.org>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: [ANNOUNCEMENT] ipset-2.3.1 released
+Date: Tue, 17 Jun 2008 16:38:12 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0806171636510.32473@fbirervta.pbzchgretzou.qr>
+References: <Pine.LNX.4.64.0806121135040.2250@blackhole.kfki.hu>    <20080614154353.GA24486@safeTpin.homeunix.org>    <Pine.LNX.4.64.0806171004170.8037@blackhole.kfki.hu> <41107.84.123.239.190.1213710233.squirrel@www.arcoscom.com>
+ <Pine.LNX.4.64.0806171552200.8037@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4857C443.8080502@plouf.fr.eu.org>
+In-Reply-To: <Pine.LNX.4.64.0806171552200.8037@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-
-On 06/17/08 09:03, Pascal Hambourg wrote:
-> I beg to differ. AFAIK packets routed through the loopback interface 
-> don't go through the nat/PREROUTING chain, so the latter rule will never 
-> match any packet. My understanding is that only packets creating a new 
-> yet unconfirmed connection go through the nat chains, and the connection 
-> is confirmed right after the POSTROUTING chains, before the packet is 
-> looped back into the PREROUTING chains. I have the feeling that 
-> conntrack and NAT on loopback is somehow dodgy.
-> 
-> So the rule must be added to the OUTPUT chain :
-> 
-> iptables -t nat -I OUTPUT -o lo -p tcp --dport 30099 -j DNAT --to 
-> 192.168.10.119:22
-
-I'll mostly agree with you (based on my (mis)understandings) on the 
-OUTPUT verses PREROUTING chain and the fact that only the first packet 
-in a connection pass through the nat table.
-
-However I believe the dodyness is at least partially do to the kernel 
-treating the loopback subnet special.  If I were to bind 192.0.2.1 to 
-the loopback or dummy interface and try to NAT them, I'd need to use the 
-OUTPUT chain for locally generated traffic.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: ArcosCom Linux User <linux@arcoscom.com>, netfilter@vger.kernel.org
 
 
+On Tuesday 2008-06-17 15:55, Jozsef Kadlecsik wrote:
 
-Grant. . . .
+>On Tue, 17 Jun 2008, ArcosCom Linux User wrote:
+>
+>> >> cc -O2 -Wall -Wunused -I/usr/src/linux/include -I.  -fPIC -o
+>> >> ipset_iphash.o -c ipset_iphash.c
+>> >> ipset_iphash.c: In function 'create_parse':
+>> >> ipset_iphash.c:71: error: 'UINT_MAX' undeclared (first use in this
+>> >> function)
+>> >> ipset_iphash.c:71: error: (Each undeclared identifier is reported only
+>> >> once
+>> >> ipset_iphash.c:71: error: for each function it appears in.)
+>> >> make: *** [ipset_iphash.o] Error 1
+>
+>> Be carefull about 32/64 bits architectures, this macro value, perhaps, is
+>> diferent depending on it.
+>
+>No, it holds the same value.
+
+The same value... currently, and on selected systems ;-)
+(UINT_MAX is implementation dependent.)
+
+Also, -I/usr/src/linux looks *very* wrong to me, there is reason
+we have /usr/include/linux...
