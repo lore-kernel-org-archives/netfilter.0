@@ -1,94 +1,62 @@
-From: "=?ISO-8859-1?Q?Javier_G=E1lvez_Guerrero?=" 
-	<javier.galvez.guerrero@gmail.com>
-Subject: Re: Duplicated multicast packets with -j ROUTE --tee
-Date: Tue, 17 Jun 2008 15:39:25 +0200
-Message-ID: <145d4e1a0806170639l1ef3eef5g70be859b47c3e04e@mail.gmail.com>
-References: <145d4e1a0806170243m1eb8a6bds888f8e9bd4146d92@mail.gmail.com>
+From: "ArcosCom Linux User" <linux@arcoscom.com>
+Subject: Re: [ANNOUNCEMENT] ipset-2.3.1 released
+Date: Tue, 17 Jun 2008 15:43:53 +0200 (CEST)
+Message-ID: <41107.84.123.239.190.1213710233.squirrel@www.arcoscom.com>
+References: <Pine.LNX.4.64.0806121135040.2250@blackhole.kfki.hu>
+    <20080614154353.GA24486@safeTpin.homeunix.org>
+    <Pine.LNX.4.64.0806171004170.8037@blackhole.kfki.hu>
+Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=ltzubz5xX5OFKPPa3/eZYXKEtZ2J0FBCUWCu9rdW7Bc=;
-        b=FpfYkBH2epNb2DZm0qhra4FqGmNhcvBH6RgIlIjroBKQV54q/3nSCEkuNgAtdibPc6
-         kLhuSQXtnTQKftjucEN7PbzDftDM74tvOF62M0uSqpna6osltQtd2Uzl9a713ksYX/lP
-         CD88zlgq0GQwYpsWP5y5m4mKz6wdetuLisJKE=
-In-Reply-To: <145d4e1a0806170243m1eb8a6bds888f8e9bd4146d92@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0806171004170.8037@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Hi again,
+Be carefull about 32/64 bits architectures, this macro value, perhaps, =
+is
+diferent depending on it.
 
-Although I thought the ROUTE target was installed, the file
-ip_tables_targets is completely empty and it should contain the
-applied targets, shouldn't it? So, I'm trying to patch the kernel with
-the ROUTE target following the patch-o-matic tutorial in netfilter.org
-site.
+Regards
 
-The problem is that when I click 'y' in order to install the ROUTE
-target/patch the following error message appears:
+El Mar, 17 de Junio de 2008, 10:07, Jozsef Kadlecsik escribi=F3:
+> On Sat, 14 Jun 2008, pud wrote:
+>
+>> thanks for that, but maybe it still needs a fix for building with
+>> glibc-2.8:
+>>
+>> cc -O2 -Wall -Wunused -I/usr/src/linux/include -I.  -fPIC -o
+>> ipset_iphash.o -c ipset_iphash.c
+>> ipset_iphash.c: In function 'create_parse':
+>> ipset_iphash.c:71: error: 'UINT_MAX' undeclared (first use in this
+>> function)
+>> ipset_iphash.c:71: error: (Each undeclared identifier is reported on=
+ly
+>> once
+>> ipset_iphash.c:71: error: for each function it appears in.)
+>> make: *** [ipset_iphash.o] Error 1
+>>
+>> including limits.h fixes it of cause, but i'm not sure if that is a
+>> proper fix
+>
+> I added the limits.h to the files which uses UINT_MAX. svn holds the =
+fixed
+> version, thank you the report.
+>
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
-    unable to find ladd slot in src /tmp/pom-10667/net/ipv6/netfilter/M=
-akefile
 
-The number in pom-XXXX changes each time I try to patch the kernel (it
-seems obvious as it is located in the tmp directory). Anyway, I don't
-know how to cope with this.
-
-As you can see, I'm not an experienced kernel patcher, so that's why I
-would appreciate any help you could provide to me.
-
-
-Thanks a lot,
-Javi
-
-2008/6/17 Javier G=E1lvez Guerrero <javier.galvez.guerrero@gmail.com>:
-> Hi everyone,
->
-> I'm a complete newbie with iptables. I've read some tutorials from
-> netfilters.org in order to have a look about how to proceed. I'm
-> generating a multicast flow and, in order to take some research
-> results, I would like to duplicate the packets in the source computer
-> through the ethernet interface.
->
-> I'm working in a Debian machine with kernel 2.6.18-6-686 and iptables
-> version 1.3.6. I have done some research with google and, eventually,
-> I've tried this:
->
->  # iptables -t mangle -A OUTPUT -d 239.255.1.0/24 -o eth0 -j ROUTE
-> --tee --oif eth0
->
-> but I obtain:
->
->  iptables: No chain/target/match by that name
->
-> Besides that, if I try the same without specifying what ROUTE should =
-do:
->
->  # iptables -t mangle -A OUTPUT -d 239.255.1.0/24 -o eth0 -j ROUTE
->
-> I get:
->
->  iptables v1.3.6: ROUTE target: oif, iif or gw option required
->  Try `iptables -h' or 'iptables --help' for more information.
->
-> Then, I think that the ROUTE target is included in the kernel, so I
-> suppose there's no need to apply a patch and recompile the kernel but
-> I don't know what to do in order to succeed in this.Hi everyone,
->
-> Anyway, I would like to get some help for more experienced users or
-> anyone who has dealed with this issue. Any help would be much
-> appreciated.
->
->
-> Thank you all,
-> Javi
->
-> PS: Some issues with formatted text. Sorry.
->
