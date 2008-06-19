@@ -1,45 +1,67 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: too many INVALID packets
-Date: Thu, 19 Jun 2008 15:13:26 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0806191507580.11904@blackhole.kfki.hu>
-References: <200806181415.00808.vladislav.kurz@webstep.net>
- <200806191231.56317.vladislav.kurz@webstep.net>
- <Pine.LNX.4.64.0806191244430.11904@blackhole.kfki.hu>
- <200806191346.14950.vladislav.kurz@webstep.net>
+From: "A System Admin" <asysad@gmail.com>
+Subject: Triple Duplicate Acks
+Date: Thu, 19 Jun 2008 09:47:18 -0400
+Message-ID: <89622f200806190647h4a4418d2o7cc584e01c389a6e@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200806191346.14950.vladislav.kurz@webstep.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=oYrwEp5pEVoFrqCc6X3jEJmAC02x7bOOagK66Nen0ng=;
+        b=bVqltb7TXax87l77g1qK0/rK2++Kihil+d0WxQgmiQBN2oghGDSnpXBOzoEeeH68Qx
+         UaNXuoIDFs82T0uiKEu7bucXUqnuwfrGdYfO3m2bBDq9pioIZ4z3WopA0DwNZiZNgQD+
+         kEakKLZb8woBnrPc1UE2yXamzZvdhcT6EfSZA=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Vladislav Kurz <vladislav.kurz@webstep.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Thu, 19 Jun 2008, Vladislav Kurz wrote:
+Netfilter list,
 
-> > > Last line is logged by iptables. What I wonder is that there is
-> > > corresponding log from iptables to "ACK is under the lower bound" but not
-> > > to "SEQ is under the lower bound".
-> >
-> > That is strange. If you log INVALID packets, then you should get the
-> > correspondig log lines.
-> 
-> Well, my bad in this case, I forgot to log INVALID in OUTPUT chain. 
-> But anyway I see lots of "ip_ct_tcp: invalid packet ignored" without 
-> corresponding log from iptables. And vice-versa, iptables log much more 
-> invalid TCP packets then ip_ct_tcp does.
+We are seeing a fair amount of Triple Duplicate Acks between a
+webserver that is using the following nat table prerouting redirect
+and an application server....
 
-If iptables logs much more INVALID TCP packets than what is logged by 
-ip_conntrack_log_invalid, that's normal. The latter simply gives more 
-information on why the packet was flagged as INVALID, for selected cases. 
-Not for all INVALID TCP packets. But you should always find the 
-corresponding log lines if you log INVALID packets too.
+*nat
+:PREROUTING ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A PREROUTING -d <another hosts IP address>  -j REDIRECT
+COMMIT
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Here is our conntrack tcp parameters:
+
+# for i in `ls /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp*` ; do
+echo "$i" && cat $i ; done
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal
+0
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_loose
+3
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_max_retrans
+3
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close
+10
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close_wait
+60
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established
+432000
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_fin_wait
+120
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_last_ack
+30
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_max_retrans
+300
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_syn_recv
+60
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_syn_sent
+120
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_time_wait
+120
+#
+
+Is there anything that can be done from the conntrack perspective to
+lessen/eliminate the Triple Duplicate Acks?
