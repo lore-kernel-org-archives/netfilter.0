@@ -1,29 +1,47 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: too many INVALID packets
-Date: Thu, 19 Jun 2008 12:54:13 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0806191253360.14231@fbirervta.pbzchgretzou.qr>
-References: <200806181415.00808.vladislav.kurz@webstep.net> <Pine.LNX.4.64.0806181446100.10175@blackhole.kfki.hu> <200806191231.56317.vladislav.kurz@webstep.net> <alpine.LNX.1.10.0806191249310.14231@fbirervta.pbzchgretzou.qr>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: RE: iphash vs iptreemap
+Date: Thu, 19 Jun 2008 13:03:20 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0806191246100.11904@blackhole.kfki.hu>
+References: <002c01c8d1ea$7fd81840$7f8848c0$@com>
+ <Pine.LNX.4.64.0806191119580.11904@blackhole.kfki.hu> <000a01c8d1f0$a48d2990$eda77cb0$@com>
+ <Pine.LNX.4.64.0806191144130.11904@blackhole.kfki.hu> <000f01c8d1f6$c98a1950$5c9e4bf0$@com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0806191249310.14231@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <000f01c8d1f6$c98a1950$5c9e4bf0$@com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Vladislav Kurz <vladislav.kurz@webstep.net>
+To: Nishit Shah <nishit@elitecore.com>
 Cc: netfilter@vger.kernel.org
 
+On Thu, 19 Jun 2008, Nishit Shah wrote:
 
-On Thursday 2008-06-19 12:50, Jan Engelhardt wrote:
->>>
->>> Yes, it's a (well known) feature of netfilter. This way we can catch up
->>> connections already established. If you do not want to support it, use
->>> the last rule you wrote.
->>
->>I thought it might be useful to block some weird portscans (e.g. nmap xmas 
->>scan).
->
->Xmas scans can be matched much more easily - using INVALID, see
->http://jengelh.medozas.de/projects/chaostables/
-Correction, http://jengelh.medozas.de/documents/Chaostables.pdf
-chapter 2.
+> 	Can you suggest me guidelines for doing the same (i.e which things
+> to look out while tests are running or type of tests)? 
+
+You can test the speed by adding IP addresses to the sets and then test 
+them one-by-one and measure the elapsed time. (It's worth to test entries 
+missing from the set as well!) Unfortunately you cannot exclude the 
+userspace-kernel communication overhead.
+
+>       can /proc/slabinfo help to identify the memory usage ?
+
+The hash types use a fixed size hash (which is resized if required), so 
+you can calculate the required memory directly from the hash size.
+
+The iptree types use slab caches, so /proc/slabinfo can be used.
+ 
+> 	Also, what is significant of --gc parameter in iptreemap ?
+> 	Does it make difference in testing ? 
+
+It governs how often garbage collector is run to release empty leaves 
+and branches. Of course it has an effect on the current memory usage.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
