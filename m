@@ -1,52 +1,29 @@
-From: "Nishit Shah" <nishit@elitecore.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: RE: iphash vs iptreemap
-Date: Thu, 19 Jun 2008 15:11:26 +0530
-Message-ID: <000a01c8d1f0$a48d2990$eda77cb0$@com>
-References: <002c01c8d1ea$7fd81840$7f8848c0$@com> <Pine.LNX.4.64.0806191119580.11904@blackhole.kfki.hu>
+Date: Thu, 19 Jun 2008 11:56:52 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0806191144130.11904@blackhole.kfki.hu>
+References: <002c01c8d1ea$7fd81840$7f8848c0$@com>
+ <Pine.LNX.4.64.0806191119580.11904@blackhole.kfki.hu> <000a01c8d1f0$a48d2990$eda77cb0$@com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0806191119580.11904@blackhole.kfki.hu>
-Content-Language: en-us
+In-Reply-To: <000a01c8d1f0$a48d2990$eda77cb0$@com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Jozsef Kadlecsik' <kadlec@blackhole.kfki.hu>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Nishit Shah <nishit@elitecore.com>
 Cc: netfilter@vger.kernel.org
-
-
-Thanks Sir,
-
-		Is it a way to find memory usage by both of them ?
-		How much difference in terms of memory do we have ?
-
-Rgds,
-Nishit Shah.	
-
------Original Message-----
-From: Jozsef Kadlecsik [mailto:kadlec@blackhole.kfki.hu] 
-Sent: Thursday, June 19, 2008 3:00 PM
-To: Nishit Shah
-Cc: netfilter@vger.kernel.org
-Subject: Re: iphash vs iptreemap
-
-Hi,
 
 On Thu, 19 Jun 2008, Nishit Shah wrote:
 
-> 	If I have list of only IP Addresses, which set type is better to use
-> in terms of Matching speed and memory ? iphash or iptreemap ?
+> 		Is it a way to find memory usage by both of them ?
+> 		How much difference in terms of memory do we have ?
 
-Good questions! I'd say iptree(map) is faster. But if the IP addresses are 
-random, then iphash can use less memory than iptree(map), if the probes 
-parameter of the hash is small.
+Both could be figured out by testing only, which as far as I know hasn't 
+been done by anyone.
 
-> 	Does the decision depends of number of IP Addresses ?
-
-Not really, the number of addresses are a neutral factor. But if you 
-create an iphash with small hashsize (compared to the IP addresses 
-planned to store), it can be slow when adding the IP addresses due to 
-rehashing if it has to grow the hash. 
+This reminds me to add statistics parameters to the next version of ipset 
+in order to get the required data easily...
 
 Best regards,
 Jozsef
@@ -55,4 +32,3 @@ E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
 PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
 Address : KFKI Research Institute for Particle and Nuclear Physics
           H-1525 Budapest 114, POB. 49, Hungary
-
