@@ -1,24 +1,42 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: How to SNAT in PREROUTING table for local machine
-Date: Fri, 20 Jun 2008 12:22:50 +0200
-Message-ID: <485B84FA.9080204@trash.net>
-References: <004a01c8d204$fb1022e0$1402a8c0@nemesisk7>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: conntrack and PREROUTING
+Date: Fri, 20 Jun 2008 12:55:58 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0806201253500.11250@fbirervta.pbzchgretzou.qr>
+References: <869998.64693.qm@web52012.mail.re2.yahoo.com> <alpine.LNX.1.10.0806200942340.11250@fbirervta.pbzchgretzou.qr> <485B8494.7050608@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <004a01c8d204$fb1022e0$1402a8c0@nemesisk7>
+In-Reply-To: <485B8494.7050608@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tobias Krummen <tobias.krummen@t-online.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Doug Kehn <rdkehn@yahoo.com>, netfilter@vger.kernel.org
 
-Tobias Krummen wrote:
-> So, is there a way to change the source ip-address of incoming packets 
-> with the given possibilities of netfilter, or are there other tools to 
-> get this done?
 
-You need to add an INPUT chain to the NAT table to do this
-and adjust the HOOK2MANIP macro to deal with this.
+On Friday 2008-06-20 12:21, Patrick McHardy wrote:
 
+> Jan Engelhardt wrote:
+>> On Friday 2008-06-20 01:57, Doug Kehn wrote:
+>> 
+>> > iptables -t raw -A PREROUTING -d ! 192.168.2.0/24 -i br0
+>> > -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK ACK -m tcp --dport 80 -m
+>> > conntrack --ctstate ESTABLISHED -j NOTRACK
+>> >
+>> > Does this even make sense?
+>> 
+>> Yes, but:
+>
+> No. The raw table doesn't have conntrack information.
+>
+Oops ;-)
+
+But you can assume that any ACK belongs to an established connection,
+hence omitting -m conntrack --ctstate ESTABLISHED would achieve the
+same.
+
+Of course there are scenarios, like probe ACKs sent by nmap that
+do not belong to any, or a conntrack router B which got rebooted
+(and hence lost the connections that are still active between two
+hosts A and C), but that should be real corner cases.
 
