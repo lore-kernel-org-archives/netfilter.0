@@ -1,42 +1,70 @@
 From: Doug Kehn <rdkehn@yahoo.com>
 Subject: Re: conntrack and PREROUTING
-Date: Fri, 20 Jun 2008 06:34:18 -0700 (PDT)
-Message-ID: <503574.79448.qm@web52007.mail.re2.yahoo.com>
-References: <485BAAA9.3080906@freemail.hu>
+Date: Fri, 20 Jun 2008 06:58:14 -0700 (PDT)
+Message-ID: <715692.2426.qm@web52006.mail.re2.yahoo.com>
+References: <485BB006.9020104@trash.net>
 Reply-To: rdkehn@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <485BAAA9.3080906@freemail.hu>
+In-Reply-To: <485BB006.9020104@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
 Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
 
-Hi G=E1sp=E1r,
+Hi Patrick,
 
 
---- On Fri, 6/20/08, G=E1sp=E1r Lajos wrote:
+--- On Fri, 6/20/08, Patrick McHardy wrote:
 
-> Doug Kehn =EDrta:
-> > The connections do hang if I change the rule to:
-> >
-> > iptables -t raw -A PREROUTING -d !
-> 192.168.2.0/255.255.255.0 -i eth0 -p tcp -m tcp --tcp-flags
-> FIN,SYN,RST,ACK ACK -m tcp --dport 80 -j NOTRACK
-> >
-> > This makes sense, I believe, because the ACK to the
-> SYN-ACK wouldn't be tracked and the connection state
-> would never reach ESTABLISHED.
-> >  =20
-> What about the UNTRACKED state???
+> Doug Kehn wrote:
+> > Hi Patrick,
+> > 
+> > 
+> > --- On Fri, 6/20/08, Patrick McHardy wrote:
+> > 
+> >> Jan Engelhardt wrote:
+> >>> On Friday 2008-06-20 01:57, Doug Kehn wrote:
+> >>>
+> >>>> iptables -t raw -A PREROUTING -d !
+> >> 192.168.2.0/255.255.255.0 -i br0
+> >>>> -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK
+> ACK -m
+> >> tcp --dport 80 -m
+> >>>> conntrack --ctstate ESTABLISHED -j NOTRACK
+> >>>>
+> >>>> Does this even make sense?
+> >>> Yes, but:
+> >> No. The raw table doesn't have conntrack
+> information.
+> > 
+> > I assume the same holds for -m state as well?  If so,
+> this would explain why the rules are never matched.
+> 
+> Correct.
+> 
+> > Is there a way to have ACKs bypass the proxy and not
+> break connection tracking?
+> > 
+> > My theory is that when performing a streaming HTTP
+> download (e.g. streaming video over HTTP) having the ACKs
+> traverse the proxy introduces sufficient delay to degrade
+> video playback.  I'm hoping to find a general solution.
+>  Creating a NOTRACK rule for each site is possible but a
+> little cumbersome.
+> 
+> I don't see how that could work, the proxy has two
+> seperate
+> connections (client<->proxy and
+> proxy<->server), so it
+> needs to receive all packets.
 
-I get the same result with UNTRACKED.  8(
+Yep, that's my understanding.  I guess I was hoping that my feeble little brain was missing something obvious/cleaver.
 
 Thanks,
-=2E..doug
+...doug
 
 
-
-     =20
+      
