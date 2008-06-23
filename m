@@ -1,40 +1,54 @@
-From: =?ISO-8859-2?Q?Thomas_B=E4tzler?= <t.baetzler@bringe.com>
-Subject: Re: Weird nat/conntrack Problem with PASV FTP upload
-Date: Mon, 23 Jun 2008 15:46:51 +0200
-Message-ID: <485FA94B.70202@bringe.com>
-References: <E350C77ABFDBD242BDD51F5DA07905C102825E32@SONNE.gw.bringe.net> <Pine.LNX.4.64.0806101024010.31994@blackhole.kfki.hu> <484F91E5.8040807@bringe.com> <Pine.LNX.4.64.0806231204220.17434@blackhole.kfki.hu>
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Warning: never matched protocol: ah. use extension match instead.
+Date: Mon, 23 Jun 2008 15:55:59 +0200
+Message-ID: <1214229359.9717.34.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-UyrRkrd9kjGdSJj++iAg"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0806231204220.17434@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 
-Jozsef Kadlecsik wrote:
-> That's a perfect dump file, thank you. Please try the patch below and=
-=20
-> please report me if it helps without any bad effect.
 
-I'm now running the modified code. I should have some results
-for you by the end of the week (or sooner, if it doesn't work ;-)).
+--=-UyrRkrd9kjGdSJj++iAg
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Thanks a lot for your work on this!
+Could someone clarify what exactly the warning message in the subject
+(from ip6tables) is supposed to tell me?
 
-Cheers,
-Thomas
---=20
-BRINGE Informationstechnik GmbH
-Zur Seeplatte 12
-D-76228 Karlsruhe
-Germany
+It looks like that ip6tables -p ah (or -p in general) would match
+packets that contain an ah header as the last extension header whereas
+-m ah matches packets that contain an ah header at any position, but
+I'm not sure.
 
-=46on: +49 721 94246-0
-=46on: +49 171 5438457
-=46ax: +49 721 94246-66
-Web: http://www.bringe.de/
+The core of the question is this: how does one pass unspecified
+ipsec traffic in ip6tables (the way you could do with -p ah + -p esp in
+iptables)?
 
-Gesch=E4ftsf=FChrer: Dipl.-Ing. (FH) Martin Bringe
-Ust.Id: DE812936645, HRB 108943 Mannheim
+
+  Thanks & Regards,
+      Thomas
+
+
+
+
+
+
+
+
+
+--=-UyrRkrd9kjGdSJj++iAg
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBIX6tvgF9cFv867HwRAqRvAJ9KwiOIHw/c4qCPe+LI0YhUPLUGVwCePzRQ
+vTBE0WmqDoGzkZuxdVz9g64=
+=e4lW
+-----END PGP SIGNATURE-----
+
+--=-UyrRkrd9kjGdSJj++iAg--
+
