@@ -1,55 +1,66 @@
-From: Simon <turner25@gmail.com>
-Subject: undefined references when linking
-Date: Sun, 22 Jun 2008 13:57:33 -0400
-Message-ID: <485E928D.5010108@gmail.com>
+From: "Sebastian Vieira" <sebvieira@gmail.com>
+Subject: Re: multiprimary conntrackd setup
+Date: Mon, 23 Jun 2008 08:46:47 +0200
+Message-ID: <279239c70806222346r834dd7bpa6e260794237cdba@mail.gmail.com>
+References: <279239c70806170402j47f89251s2379d0909c1bca0e@mail.gmail.com>
+	 <48590828.2060206@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:content-type
-         :content-transfer-encoding;
-        bh=W7ewDKNMGs6mcOv0ghc5+gxyrR2SxBT7/kaXXKei8ZQ=;
-        b=XC434TKCag1LvHPaHky31IDdC7QOkfGcnv+yw7XgdJOSqWXqgZMWMt1NBVyAu0tukA
-         zNXR9AgV8Ttf631btQ1RAkOgBYTOugiIypKEmSG6vgGuMeIGgEGjK6I0zE72d3jIFXa1
-         g5mKjrwLN4cvTx6PdBWcZBLJrTyjVIXVyJDss=
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=3mboBUiuWEyZmKPF3kQ8YhgS9i/R9oC7YliK4nksDug=;
+        b=QfQ5Lm7MV2Jg7RzuY0jwB8V8zsSTGhBpji6qVPe54JqaqAo1F1m3bvgkXe/5e2HC5F
+         V152ihVi7CPHGygMS6jAJ4nQ9lHcY2AoNe9Y9v0/CP205nGM3362Gyo3MD+arhE2Qg4K
+         vb7OUOsylobKJVsCmNnLir1G7WMq3ubdBsbmk=
+In-Reply-To: <48590828.2060206@netfilter.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-Hi,
-   I'm new to this list, I'm new to programming with netfilter (though I've been 
-using it on my linux installation for years) and I'm warning you that my 
-programming style hovers between C and C++.  I do have a lot of experience at 
-compiling with different libs, however this issue puzzled me quite a lot.
+On Wed, Jun 18, 2008 at 3:05 PM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>
+> What kind of active-active? There are two kind:
 
-   I'm interested in the QUEUEing mechanism, so I downloaded the 
-libnetfilter_queue source and found the example/test program.  I kept all the 
-includes and basically made no important changes to it.  The libraries nfnetlink 
-and netfilter_queue that are installed have been installed (and reinstalled) 
-from the gentoo tree (which has been sync before doing so).  To my knowlege, all 
-is good so far.
+-snip-
 
-   When compiling all is good also, however at the time of linking I get one 
-"undedefined reference to <some netfilter_queue func here>" for each func that I 
-use.  I verified and the link is done properly, i mean the linker finds the 
-library and reads it well.  The library it finds does contain the symbols (found 
-with dumpelf, they are not UND).
+> b) asymmetric or packet-based: typical case of OSPF setups, there is no
+> guarantees that the packet is handled by the same firewall replica as
+> OSPF may change the routes at any time. In that case, you have to enable
+> the CacheWriteThrough. However, from the design point of view,
+> conntrackd suits better in the scenario a).
 
-   I'm wondering if this is a known issue you guys know of or if it would be a 
-problem strictly on the side of gentoo?  I will try to recompile both libs by 
-hand soon and see how that goes...  (but this will be a challenge since the 
-Quebec's holiday is coming real soon, similar to the 4th of july but where 
-people drink stronger beer!)
+I'm using the asymmetric setup. Two firewalls connected with BGP to
+the service provider, and as you mentioned, no way of knowing which
+firewall handles which packet.
 
-Anyway, thanks in advance for any help/pointers (to defined references!),
+But the funny thing is, that it's working now :)  Yes, i enabled the
+CacheWriteThrough option, but i was testing with ICMP's. Later i
+learnt that ICMP is a kind of unreliable protocol because when i
+tested it with a simple tcp connection it worked fine.
 
-   Simon
+I'm still fiddling around a bit with the ip_conntrack_max sysctl
+setting because i tend to get dropped packets. Also `conntrackd -s`
+indicated that for both nodes it failed to destroy connections on
+internal cache. These numbers roughly match  the other node's
+succesfully destroyed connections:
 
-PS:  Also, I have just one more question in mind, is that the packet that is 
-examined by netfilter_queue is in fact the Ethernet frame, right? and its data 
-would be, for example, an IP structure which in turn could contain a TCP 
-structure and so on... but initially with netfilter_queue I'll be working with 
-eth, right?
+node1:
+connections destroyed:		    31473050	failed:	        7334
+
+node2:
+connections destroyed:		        7441	failed:	    31475657
+
+
+Is this something i need to worry about?
+
+
+regards,
+
+Sebastian
