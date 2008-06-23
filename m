@@ -1,7 +1,7 @@
 From: "Anatoly Muliarski" <x86ever@gmail.com>
 Subject: Re: How to mark traffic on used bandwidth
-Date: Mon, 23 Jun 2008 21:51:03 +0300
-Message-ID: <38db14850806231151p1c5e9b22rd0b852b19816a63c@mail.gmail.com>
+Date: Mon, 23 Jun 2008 22:12:31 +0300
+Message-ID: <38db14850806231212y4326697cwe0ab96c842aa7749@mail.gmail.com>
 References: <38db14850806230123h2c0a1aa4uef8afd8275d07d98@mail.gmail.com>
 	 <d39744a20806230335u4c527f53p258437b4bcc8416@mail.gmail.com>
 	 <alpine.LNX.1.10.0806231717480.26570@fbirervta.pbzchgretzou.qr>
@@ -15,10 +15,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:received:received:message-id:date:from:to
          :subject:cc:in-reply-to:mime-version:content-type
          :content-transfer-encoding:content-disposition:references;
-        bh=TT0VpiVMNiVc1CxRMH9EaDScb65QEso1IbPQ+VViGrA=;
-        b=OfNhnID+j1j/rlgkRherjR9i9VlMbbEZYll4WDyfm8QRw61Tnf2eLq3BY2IsMQpAE0
-         OIbj53kbFTN5tHShxEhSyNS5XJGdPXqvP1LcRiZ+lE7CgO323hDsXzPKTSm3URb78lFY
-         eG/LV0hXef/0y+KPGoVUucu6hP6ev0Jfu1jQI=
+        bh=OD9k6DlQuI8mnU0KOd8x9L3lOFtCtUy3mfKIGXYsYN8=;
+        b=GLhb2Zm6F666/k7WrV06qk49dPJFmXcSsH6uxM6TsoM18usGainlbI+x/lfTq3Mb7H
+         BF1O9IxSoG9yqgAuiJbgJCfem8+rjYzkHfUx4LvA0p9RuoVVvz8bHhd/RejGlB7U/bHd
+         LxiCEDcb91LIdP8nTXACN/N/zDL0W/LIoLJ8E=
 In-Reply-To: <alpine.LNX.1.10.0806232032100.16957@fbirervta.pbzchgretzou.qr>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
@@ -27,10 +27,11 @@ Content-Type: text/plain; charset="us-ascii"
 To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
-I've looked at it but I didn't fully understand the idea. What means
-the estimator?
-Nevertheless thanks for the hint, I'll search through the maillist and
-look in the sources.
+Thanks again :)
+I looked at the sources and understood that it is just the thing!
+A couple of questions. What for are two estimators used and what mean
+their names?
+Why don't use it as -m limit semantics?
 
 2008/6/23, Jan Engelhardt <jengelh@medozas.de>:
 > On Monday 2008-06-23 20:09, Anatoly Muliarski wrote:
