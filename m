@@ -1,67 +1,122 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: NAT issue on a machine with both routing and bridging.
-Date: Tue, 24 Jun 2008 09:29:32 -0500
-Message-ID: <486104CC.7090500@riverviewtech.net>
-References: <485FB19D.9080908@satcom1.com> <485FBB02.9090901@riverviewtech.net> <485FC07D.6060306@satcom1.com> <485FC5B4.8060608@riverviewtech.net> <485FC8B9.1010804@satcom1.com> <485FD267.2070604@riverviewtech.net> <4860B329.7070000@satcom1.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: multiprimary conntrackd setup
+Date: Tue, 24 Jun 2008 18:06:42 +0200
+Message-ID: <48611B92.3060200@netfilter.org>
+References: <279239c70806170402j47f89251s2379d0909c1bca0e@mail.gmail.com>	 <48590828.2060206@netfilter.org>	 <279239c70806222346r834dd7bpa6e260794237cdba@mail.gmail.com>	 <485F6849.7030606@netfilter.org> <279239c70806230542h1f68765eha99fb21721a9ca6c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4860B329.7070000@satcom1.com>
+In-Reply-To: <279239c70806230542h1f68765eha99fb21721a9ca6c@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Sebastian Vieira <sebvieira@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On 06/24/08 03:41, Francois Goudal wrote:
-> Ok, I checked this, and it appears that in the standard Debian kernel I 
-> use, this is enabled. But still, my iptables are almost empty, there's 
-> just one single rule, for the masqueading, and I don't think this can 
-> have an impact on bridged packets, can it ?
+Sebastian Vieira wrote:
+> On Mon, Jun 23, 2008 at 11:09 AM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> 
+> First of all, thanks alot for the (quick) response, i appreciate it!
+> 
+>> As you said, replicating ICMP does not make too much sense to me either.
+>>
+>> Some considerations on this setup: There's a shortcoming in the
+>> asymmetric approach. conntrackd performs much better in a flow-based
+>> multiprimary setup.
+>>
+>> The multipath setup that you're using works fine iif the RTT between the
+>> FW cluster and the server peer is greater than the time to send and
+>> inject the state change from FW1 to FW2. Otherwise, you'll probably
+>> notice a slow down in the connection setup. This condition fulfills if
+>> the server peer is in the Internet (DSL RTT is ~30 ms and the
+>> synchronization messages barely take 0.01 ms here). This limitation
+>> happens due to the asynchronous nature of the solution. The design of
+>> conntrackd supports this scenario but flow-based performs much better.
+> 
+> Right. Is there any way to measure these synchronization times? The
+> setup is located on the LAN where even the synchronization messages
+> are passing through a switch. Maybe we can overcome this by hooking up
+> a crosscable but that depends, i don't know if we have free NIC :)
 
-This option allows IPTables to be able to intercept packets but your 
-IPTables configuration is not doing so, thus I don't think this is 
-having any impact for you.
+Actually, the nodes must use a dedicated link, otherwise you risk to
+leak state information. And please, elaborate your setup a bit more.
 
-> Okay, I did a quick test, by just removing eth1 from br0 and putting it 
-> in br1, but keeping the DomU, still.
-> So now, it looks like this :
+>> Well, I need to know which replication approach you're using. Anyhow,
+>> I'll try to do several assumptions from the information that you've posted.
+>>
+>> Basically, that output means that node1 has try to destroy 7334
+>> connections that were not available it its cache. Since you have trimmed
+>> the output, I don't know if it's the internal or external cache.
+> 
+> Both is the output of internal cache. I'll paste it in full below.
+> Note that conntrackd was just restarted a couple of minutes ago:
+> 
+> node1:
+> cache internal:
+> current active connections:            15200
+> connections created:                   28326    failed:            0
+> connections updated:                   68477    failed:            0
+> connections destroyed:                 13126    failed:            1
+> 
+> cache external:
+> current active connections:              167
+> connections created:                     167    failed:            0
+> connections updated:                     434    failed:            0
+> connections destroyed:                     0    failed:            0
+> 
+> traffic processed:
+>                    0 Bytes                         0 Pckts
+> 
+> multicast traffic:
+>              6735580 Bytes sent                53708 Bytes recv
+>                75025 Pckts sent                  596 Pckts recv
+>                    0 Error send                    0 Error recv
+> 
+> multicast sequence tracking:
+>                    0 Pckts mfrm                    0 Pckts lost
+> 
+> 
+> node2:
+> cache internal:
+> current active connections:             1699
+> connections created:                    1826    failed:            0
+> connections updated:                     636    failed:            0
+> connections destroyed:                   127    failed:          804
+> 
+> cache external:
+> current active connections:            11893
+> connections created:                   11989    failed:            0
+> connections updated:                   68991    failed:            0
+> connections destroyed:                    96    failed:            0
+> 
+> traffic processed:
+>                    0 Bytes                         0 Pckts
+> 
+> multicast traffic:
+>                58372 Bytes sent              6810200 Bytes recv
+>                  646 Pckts sent                75940 Pckts recv
+>                    0 Error send                    0 Error recv
+> 
+> multicast sequence tracking:
+>                    0 Pckts mfrm                    0 Pckts lost
+> 
+> 
+> 
+> And for completeness' sake, the conntrackd.conf for both nodes (where
+> only IPv4_interface differs) :
+> 
+> fw02:~# cat /etc/conntrackd/conntrackd.conf
+> Sync {
+>         Mode NOTRACK {
+>                 CommitTimeout 180
+>         }
 
-<snip>
+If you're using NOTRACK, the nodes do not seem to be in sync as the
+number of internal cache entries in node1 must be equal to node2's in
+the external cache. I guess that you've been testing the failover
+several times before posting this results. BTW, which HA manager are you
+using? The HA manager is required to assist conntrackd as it invokes
+several important commands (see the scripts).
 
-> The VM is still here, but all the traffic from/to eth1 is not going 
-> through it, but reaches directly br1.
-
-*nod*
-
-> And actually, in this configuration, the packets from Host A to Host D 
-> are correctly masqueraded by Host C. Packets from Host B to Host D are 
-> still correctly masqueraded as well.
-
-Ok...
-
-> If I remove the VM completely, it works, also, but the previous test 
-> shows that the problem does not come from the presence of the VM, but 
-> the way all this is "connected".
-
-So, just to make sure we are on the same page, your belief is that by 
-bypassing Host B things are indeed working, and as such the problem has 
-something (as of yet unknown) to do with Host B.  Correct?
-
-If so, I agree.  However, based on the fact that Host A could get to 
-Host C with out a problem while Host B was in the mix, I don't see any 
-thing obvious about Host B that would be interfering.
-
-> I'm doing my tests with ICMP Echo messages, for the moment, this is not 
-> something that has connection states, it must work, the tests with TCP 
-> traffic comes later, once this basic stuff will work.
-
-For what you are testing at the moment, I'd say it's "ok" to be using 
-ICMP rather than TCP.  Just be aware that some tests do behave 
-differently depending on what protocol you are testing.  Load balancing 
-is notorious that you need to test the protocol you are going to use. 
-Just keep that in mind.  It may be worth a simple ""telnet to a clear 
-text port (25, 80, 110, ...).
-
-
-
-Grant. . . .
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
