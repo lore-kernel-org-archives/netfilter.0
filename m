@@ -1,14 +1,10 @@
-From: "Anatoly Muliarski" <x86ever@gmail.com>
-Subject: Re: How to mark traffic on used bandwidth
-Date: Mon, 23 Jun 2008 23:21:28 +0300
-Message-ID: <38db14850806231321k70813efbx1513c7c1f52511b4@mail.gmail.com>
-References: <38db14850806230123h2c0a1aa4uef8afd8275d07d98@mail.gmail.com>
-	 <d39744a20806230335u4c527f53p258437b4bcc8416@mail.gmail.com>
-	 <alpine.LNX.1.10.0806231717480.26570@fbirervta.pbzchgretzou.qr>
-	 <38db14850806231109p4ef2197cu48082c445fea34ce@mail.gmail.com>
-	 <alpine.LNX.1.10.0806232032100.16957@fbirervta.pbzchgretzou.qr>
-	 <38db14850806231212y4326697cwe0ab96c842aa7749@mail.gmail.com>
-	 <alpine.LNX.1.10.0806232125430.16957@fbirervta.pbzchgretzou.qr>
+From: "Gergely Buday" <gbuday@gmail.com>
+Subject: Re: VPN client from behind a firewall
+Date: Tue, 24 Jun 2008 10:36:09 +0200
+Message-ID: <90d975d30806240136j5c54032awf4de9aa04598257d@mail.gmail.com>
+References: <90d975d30806160444t7c9bbf21if9b0062e2e72ac56@mail.gmail.com>
+	 <48565817.2040600@infolibre.net>
+	 <alpine.LNX.1.10.0806161720190.6620@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -17,35 +13,43 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:received:received:message-id:date:from:to
          :subject:cc:in-reply-to:mime-version:content-type
          :content-transfer-encoding:content-disposition:references;
-        bh=Kii6xDeUq+9YKKAVX8f2XYBXpoQ9pAFX448rWQi6o6A=;
-        b=CabYMzOt2yUmb3mZnsR4ijy+4kMTzuww2wofjZiUgT0hNl6Bi0jX+Y0wk+Dfwz9sXn
-         0Ba6L9qVAiPzxfJ4oHVOzoWe8ArOOCBt4FDqWCK6DZAXsLInpCc+y6Y+zgWr6ZFUdsty
-         qjR6Ulm2iezMenXMLvsxSD4qu+bp1HgJq/VfE=
-In-Reply-To: <alpine.LNX.1.10.0806232125430.16957@fbirervta.pbzchgretzou.qr>
+        bh=iC1BYXySHt9aG2Ne3CaOB2w4sksdJcrJrrheF/7LtVA=;
+        b=XfqDbSujoicwZWnlvBdli5gAstQ0gtd9c3tX/LsL8hF1IVKIW9mQcMg+SUmoThqjPL
+         AWYO76jgHip/8mmCXIlikOiJ+4MeFK2aBvhfDNOZUbMLq2kvDHDQdMp27gQpZYbBdoiR
+         p4cgRS9puaMhfa3KKTb/iYJ+98jYpfj/KuOOQ=
+In-Reply-To: <alpine.LNX.1.10.0806161720190.6620@fbirervta.pbzchgretzou.qr>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Cc: mathieu <mathieu@infolibre.net>, netfilter@vger.kernel.org
 
-Thank you.
-You have cleared the subject up to me and I shall try to play with it.
-git.kernel.org is the best doc :)
-
-
-2008/6/23, Jan Engelhardt <jengelh@medozas.de>:
+2008/6/16 Jan Engelhardt <jengelh@medozas.de>:
 >
-
+> On Monday 2008-06-16 14:09, mathieu wrote:
 >
-> -m limit has a ... math problem related to accuracy it seems.
+>> Hi,
+>>
+>>       You need to authorize traffic and masquerade/SNAT connections and allow
+>> forwarding.
+>>
+>> Authorize :
+>>
+>> iptables -A FORWARD -i eth1 -p udp -d $VPN_SERVER_IP -s $INTERNAL_CLIENT_IP
+>> --dport 500 -m state NEW, ESTABLISHED -j ACCEPT
+>>
+>> iptables -A FORWARD -i eth0 -p udp -s $VPN_SERVER_IP -d $INTERNAL_CLIENT_IP
+>> --sport 500 -m state ESTABLISHED -j ACCEPT
+>>
+>> SNAT (change internal adress by a public one) :
 >
-> See linux kernel commit 50c164a81f1c0dfad056f99e5685537fdd0f07dd
-> for a use case. Two rate estimators are only used if you are
-> going to calculate the delta between them.
+> But only if you have a NAT. A firewall is not a NAT, and vice-versa.
 >
+> As such -p udp 500 and -p esp will be needed for a firewall;
+> and only -p udp 4500 for a NAT.
 
+Thanks for your help. I made it work by adding "500" after -p udp in
+the first command. Does this make a security risk?
 
--- 
-Best regards
-Anatoly Muliarski
+- Gergely
