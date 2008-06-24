@@ -1,44 +1,67 @@
-From: "Gergely Buday" <gbuday@gmail.com>
-Subject: Re: VPN client from behind a firewall
-Date: Tue, 24 Jun 2008 12:14:22 +0200
-Message-ID: <90d975d30806240314q5e9f6c7cgd120a659fc044a3@mail.gmail.com>
-References: <90d975d30806160444t7c9bbf21if9b0062e2e72ac56@mail.gmail.com>
-	 <48565817.2040600@infolibre.net>
-	 <alpine.LNX.1.10.0806161720190.6620@fbirervta.pbzchgretzou.qr>
-	 <90d975d30806240136j5c54032awf4de9aa04598257d@mail.gmail.com>
-	 <alpine.LNX.1.10.0806241057550.16957@fbirervta.pbzchgretzou.qr>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: NAT issue on a machine with both routing and bridging.
+Date: Tue, 24 Jun 2008 09:29:32 -0500
+Message-ID: <486104CC.7090500@riverviewtech.net>
+References: <485FB19D.9080908@satcom1.com> <485FBB02.9090901@riverviewtech.net> <485FC07D.6060306@satcom1.com> <485FC5B4.8060608@riverviewtech.net> <485FC8B9.1010804@satcom1.com> <485FD267.2070604@riverviewtech.net> <4860B329.7070000@satcom1.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:cc:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=fPzFqO0ZkuksAZaIZoyJOONu3/FC6OpWmGxUft/ylUg=;
-        b=qtpWqeKvuN1jrTQOvwnZIvVi6wx3wbUDx/Cvptj+mwwFDiyNrT2Bm+B/iHfGfluCyf
-         JOSqysoDqJg3R1Map77i4Yy68NgY9wzZpBBgfykourx6frE6uwFebk67H7IvQPbEHF+q
-         KbrPxqqH0p0LnGLMPziNAoBRBG8szmwMjLKMM=
-In-Reply-To: <alpine.LNX.1.10.0806241057550.16957@fbirervta.pbzchgretzou.qr>
-Content-Disposition: inline
+In-Reply-To: <4860B329.7070000@satcom1.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: mathieu <mathieu@infolibre.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-2008/6/24 Jan Engelhardt <jengelh@medozas.de>:
->
-> On Tuesday 2008-06-24 10:36, Gergely Buday wrote:
->>> As such -p udp 500 and -p esp will be needed for a firewall;
->>> and only -p udp 4500 for a NAT.
->>
->>Thanks for your help. I made it work by adding "500" after -p udp in
->>the first command. Does this make a security risk?
->
-> Rent a security guy who will talk you into it being either
-> "yeah that's secure" or "well but that opens holes"? :-)
+On 06/24/08 03:41, Francois Goudal wrote:
+> Ok, I checked this, and it appears that in the standard Debian kernel I 
+> use, this is enabled. But still, my iptables are almost empty, there's 
+> just one single rule, for the masqueading, and I don't think this can 
+> have an impact on bridged packets, can it ?
 
-Oh, thanks. I thought that it was just me who did not understand security :-)
+This option allows IPTables to be able to intercept packets but your 
+IPTables configuration is not doing so, thus I don't think this is 
+having any impact for you.
 
-- Gergely
+> Okay, I did a quick test, by just removing eth1 from br0 and putting it 
+> in br1, but keeping the DomU, still.
+> So now, it looks like this :
+
+<snip>
+
+> The VM is still here, but all the traffic from/to eth1 is not going 
+> through it, but reaches directly br1.
+
+*nod*
+
+> And actually, in this configuration, the packets from Host A to Host D 
+> are correctly masqueraded by Host C. Packets from Host B to Host D are 
+> still correctly masqueraded as well.
+
+Ok...
+
+> If I remove the VM completely, it works, also, but the previous test 
+> shows that the problem does not come from the presence of the VM, but 
+> the way all this is "connected".
+
+So, just to make sure we are on the same page, your belief is that by 
+bypassing Host B things are indeed working, and as such the problem has 
+something (as of yet unknown) to do with Host B.  Correct?
+
+If so, I agree.  However, based on the fact that Host A could get to 
+Host C with out a problem while Host B was in the mix, I don't see any 
+thing obvious about Host B that would be interfering.
+
+> I'm doing my tests with ICMP Echo messages, for the moment, this is not 
+> something that has connection states, it must work, the tests with TCP 
+> traffic comes later, once this basic stuff will work.
+
+For what you are testing at the moment, I'd say it's "ok" to be using 
+ICMP rather than TCP.  Just be aware that some tests do behave 
+differently depending on what protocol you are testing.  Load balancing 
+is notorious that you need to test the protocol you are going to use. 
+Just keep that in mind.  It may be worth a simple ""telnet to a clear 
+text port (25, 80, 110, ...).
+
+
+
+Grant. . . .
