@@ -1,115 +1,53 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnfnetlink and libnetfilter_* libraries release
-Date: Fri, 27 Jun 2008 15:52:50 +0200
-Message-ID: <4864F0B2.5060002@netfilter.org>
+From: Dave <finalglide@gmail.com>
+Subject: POM Xtables???
+Date: Fri, 27 Jun 2008 10:54:07 -0700
+Message-ID: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000309000103060805090106"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=bjvwEVGt7T3UeseuVzVdIErpewE42timoBLg2L9M8h0=;
+        b=MNmtQZNL8rPCXouJltLEMoM/sKpT1YkGJ05yHA4yYr+bP5/8AhoN/RxqV1KUt772AE
+         olCukTGFofbn9aXy6ONywJ298XaMTKmTjQKVMtzSHo7yh1NJSje69acf1nmkdfnU/fL0
+         EMQQ1P2GioU+6rxr6oWXIjsZnWkx6nLo6jQ6g=
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-This is a multi-part message in MIME format.
---------------000309000103060805090106
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Hi there guys, I'm a bit frustrated with the whole Patch-O-Matic thing.
 
-Hi!
+Something seems very weird with this whole thing, when I read the
+message boards, I keep seeing references that state POM is outdated
+and to use something called Xtables, but I have no idea what that is.
 
-The netfilter project proudly presents:
+1)  When I go to Netfilter.com, I see the POM on the left side,
+however I don't see anything about Xtables.
+2)  When I read the Netfilter extentions how-to, it shows how to use
+POM but mentions nothing about Xtables.
+3)  When I go to the FTP and GIT sites, I see no references to
+Xtables, only POM.
 
-  * libnfnetlink-0.0.39
-  * libnetfilter_conntrack-0.0.95
-  * libnetfilter_queue-0.0.16
-  * libnetfilter_log-0.0.14
+Yet, reading the message boards we should be using this Xtables, yet
+there is no way to download it and there seems to be no documentation
+on it.
 
-This release set includes bugfixes for the userspace netfilter
-libraries. See ChangeLog for more details. Upgrade is recommended.
+Am I missing something here?
 
-You can download them from:
+I guess what i'm looking for is.
 
-http://www.netfilter.org
-ftp://ftp.netfilter.org
+1) Is there any way to download this Xtables?
+2) Is there any documentation on how to use it?
+3) Can we get a clarification on the main Netfilter site on these things?
+4) If we are not to use POM, then why is it still listed on the site
+in the main projects list.
 
-Enjoy,
-Pablo - on behalf of the Netfilter Project.
+Very confused here.
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
-
-
-
-
---------------000309000103060805090106
-Content-Type: text/plain;
- name="changelog-libnetfilter_conntrack"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changelog-libnetfilter_conntrack"
-
-Fabian Hugelshofer (1):
-      Use union of char buffer and message header to ensure proper byte
-
-Pablo Neira Ayuso (2):
-      fix wrong ATTR_*_L3PROTO handling in the message building
-      bump version to 0.0.95
-
-
---------------000309000103060805090106
-Content-Type: text/plain;
- name="changelog-libnetfilter_log"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changelog-libnetfilter_log"
-
-KOVACS Krisztian (1):
-      libnetfilter_log pkt-config changes 
-
-Patrick McHardy (1):
-      Add NFULA_GID support
-
-Fabian Hugelshofer (1):
-      Use union to ensure proper alignment
-
-Pablo Neira Ayuso (1):
-      bump version to 0.0.14
-
---------------000309000103060805090106
-Content-Type: text/plain;
- name="changelog-libnetfilter_queue"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changelog-libnetfilter_queue"
-
-Paul P. Komkoff (1):
-      fix compilation issues on newer toolchains
-
-Fabian Hugelshofer (1):
-      fix alignment issues
-
-Jan Engelhardt (1):
-      libnfq: mark functions as extern C
-
-Pablo Neira Ayuso (2):
-      bump version to 0.0.16 and bump libnfnetlink dependencies
-
---------------000309000103060805090106
-Content-Type: text/plain;
- name="changelog-libnfnetlink"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changelog-libnfnetlink"
-
-Fabian Hugelshofer (1):
-      Aligns buffers to maximum alignment of architecture
-
-Jan Engelhardt (1):
-      libnfnetlink: mark functions as extern C
-
-Pablo Neira Ayuso (1):
-      bump version to 0.0.39
-
-
---------------000309000103060805090106--
+Thanks
+-Dave
