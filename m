@@ -1,63 +1,115 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Xtables compilation problem
-Date: Fri, 27 Jun 2008 12:08:48 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0806271208010.12725@fbirervta.pbzchgretzou.qr>
-References: <145d4e1a0806270216m58e7801bh3a01be5e24382cc7@mail.gmail.com> <145d4e1a0806270241p403dcd40l1f77b121fb8e7a42@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnfnetlink and libnetfilter_* libraries release
+Date: Fri, 27 Jun 2008 15:52:50 +0200
+Message-ID: <4864F0B2.5060002@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <145d4e1a0806270241p403dcd40l1f77b121fb8e7a42@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------000309000103060805090106"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: =?UTF-8?Q?Javier_G=C3=A1lvez_Guerrero?= <javier.galvez.guerrero@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
+This is a multi-part message in MIME format.
+--------------000309000103060805090106
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-On Friday 2008-06-27 11:16, Javier G=C3=A1lvez Guerrero wrote:
->
->I want=C2=A0 to use iptables to double output packets from a network
->interface, so I would like to use the TEE target (or the ROUTE one wit=
-h
->the --tee option). I have tried to apply patch-o-matic in order to pat=
-ch
->the kernel and use ROUTE but it doesn't work (it doesn't allow me to d=
-o
->it). Some people pointed me to your site where I could find xtables an=
-d I
->found that it included the TEE target, so I decided to try to make it
->run.
+Hi!
 
-patch-o-matic is deprecated; ROUTE even more so (for routing decisions
-one uses iproute2, for teeing, well, you use TEE).
+The netfilter project proudly presents:
 
->I have attached the output lines obtained from the configure and make
->commands.
->
+  * libnfnetlink-0.0.39
+  * libnetfilter_conntrack-0.0.95
+  * libnetfilter_queue-0.0.16
+  * libnetfilter_log-0.0.14
 
-(make-debian):
+This release set includes bugfixes for the userspace netfilter
+libraries. See ChangeLog for more details. Upgrade is recommended.
 
-/home/dulceangustia/xtables-combined-1.5.4.1/xtables-addons-1.5.4.1/ext=
-ensions/compat_xtables.h:26:3:
-warning: #warning You need either CONFIG_NF_CONNTRACK or
-CONFIG_IP_NF_CONNTRACK.
+You can download them from:
 
-You need either enabled in your kernel, preferably CONFIG_NF_CONNTRACK=20
-since you are on >=3D 2.6.18.
+http://www.netfilter.org
+ftp://ftp.netfilter.org
+
+Enjoy,
+Pablo - on behalf of the Netfilter Project.
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
 
 
 
-(make-ubuntu)
-make[3]: se ingresa al directorio `/home/dulceangustia/xtables-combined=
--1.5.4.1/iptables-1.4.0.77/extensions'
-  CC       initext4.o
-initext4.c:72: error: expected identifier or ???(??? before ???-??? tok=
-en
-initext4.c:74: error: expected identifier or ???(??? before ???-??? tok=
-en
 
-I have no idea what's going on here. Please send me initext4.c and I'll=
- see.
-You can try to compile iptables 1.4.1.1 (the most recent xtables-combin=
-ed
-tarball has an older one packaged) and see if 1.4.1.1 works better.
+--------------000309000103060805090106
+Content-Type: text/plain;
+ name="changelog-libnetfilter_conntrack"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changelog-libnetfilter_conntrack"
+
+Fabian Hugelshofer (1):
+      Use union of char buffer and message header to ensure proper byte
+
+Pablo Neira Ayuso (2):
+      fix wrong ATTR_*_L3PROTO handling in the message building
+      bump version to 0.0.95
+
+
+--------------000309000103060805090106
+Content-Type: text/plain;
+ name="changelog-libnetfilter_log"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changelog-libnetfilter_log"
+
+KOVACS Krisztian (1):
+      libnetfilter_log pkt-config changes 
+
+Patrick McHardy (1):
+      Add NFULA_GID support
+
+Fabian Hugelshofer (1):
+      Use union to ensure proper alignment
+
+Pablo Neira Ayuso (1):
+      bump version to 0.0.14
+
+--------------000309000103060805090106
+Content-Type: text/plain;
+ name="changelog-libnetfilter_queue"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changelog-libnetfilter_queue"
+
+Paul P. Komkoff (1):
+      fix compilation issues on newer toolchains
+
+Fabian Hugelshofer (1):
+      fix alignment issues
+
+Jan Engelhardt (1):
+      libnfq: mark functions as extern C
+
+Pablo Neira Ayuso (2):
+      bump version to 0.0.16 and bump libnfnetlink dependencies
+
+--------------000309000103060805090106
+Content-Type: text/plain;
+ name="changelog-libnfnetlink"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changelog-libnfnetlink"
+
+Fabian Hugelshofer (1):
+      Aligns buffers to maximum alignment of architecture
+
+Jan Engelhardt (1):
+      libnfnetlink: mark functions as extern C
+
+Pablo Neira Ayuso (1):
+      bump version to 0.0.39
+
+
+--------------000309000103060805090106--
