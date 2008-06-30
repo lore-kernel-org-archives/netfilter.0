@@ -1,24 +1,41 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: POM Xtables???
-Date: Sat, 28 Jun 2008 21:20:02 -0500
-Message-ID: <4866F152.7030109@riverviewtech.net>
-References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com> <alpine.LNX.1.10.0806272003170.12725@fbirervta.pbzchgretzou.qr>
+From: Martin <mylists@itcom.com.ar>
+Subject: Re: load balance [OT?] [Solution]
+Date: Mon, 30 Jun 2008 10:32:37 -0300
+Message-ID: <1214832757.19463.40.camel@kr0sty>
+References: <1214492735.4427.6885.camel@kr0sty>
+	 <4866ECB1.2040903@riverviewtech.net>
+Reply-To: mylists@itcom.com.ar
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0806272003170.12725@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <4866ECB1.2040903@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 6/27/2008 1:58 PM, Jan Engelhardt wrote:
-> (there is also an easy --but unimplemented-- way to patch a kernel if 
-> you want to have it built-in)
+On Sat, 2008-06-28 at 21:00 -0500, Grant Taylor wrote:
+> On 6/26/2008 10:05 AM, Martin wrote:
+> > That was it, pinging gateways before load balance script and pinging 
+> > them every 10 minutes do the trick.
+> 
+> How well will pinging work if the kernel's DGD detects the gateway to be 
+> dead?  I'd be tempted to use an ARP ping to be sure that the kernel's 
+> routing table is not re-routing the packets out a different way.
+> 
+> 
+> 
+> Grant. . . .
 
-Can I get some more information or pointers on what to read about 
-including things in the kernel?
+That's right, the ping part is to keep gateways in the arp table, so
+arpinging them'd be the same as normal ping for the case. Probably (I
+didn't tested it) adding MAC and IP with arp should work too.
+
+May be I'm missing something, but what do you mean with "kernel's DGD"?
+
+Cheers.
 
 
+Martin
 
-Grant. . . .
