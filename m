@@ -1,63 +1,56 @@
-From: Martin <mylists@itcom.com.ar>
-Subject: Re: load balance [OT?] [Solution]
-Date: Mon, 30 Jun 2008 13:26:23 -0300
-Message-ID: <1214843183.19463.149.camel@kr0sty>
-References: <1214492735.4427.6885.camel@kr0sty>
-	 <4866ECB1.2040903@riverviewtech.net> <1214832757.19463.40.camel@kr0sty>
-	 <4868ED10.3020506@riverviewtech.net> <1214840071.19463.112.camel@kr0sty>
-	 <48690289.2030909@riverviewtech.net>
-Reply-To: mylists@itcom.com.ar
+From: Dave <finalglide@gmail.com>
+Subject: libnetfilter_conntrack-0.0.95 compile error
+Date: Mon, 30 Jun 2008 09:44:05 -0700
+Message-ID: <935fab200806300944m4a184537qe3d2082afc4512e1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48690289.2030909@riverviewtech.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=UNf6hIDgcjnHaHlkaefKOVFHamRv/CN95IrvLXL83iM=;
+        b=oeN3NWWMnBIngXniHxjUaMAJ5neeWC1BAXA+15pfUBZEaAF5lSobHHTvDJUvfeqg9Z
+         Mw0ZYKvgzrx0wRX93ZbDH8V/C0hcLBfCClI/NffVjCyt3HVhGXJYeg5niuPJkEQd2DFh
+         VbVAVvx3FZCcLfBnaFPEF6NfmpQYICaGmKTmE=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Mon, 2008-06-30 at 10:58 -0500, Grant Taylor wrote:
-> On 06/30/08 10:34, Martin wrote:
-> > Well, I don't know if understood it ok, but I'll try to answer it.
-> 
-> *nod*
-> 
-> > Ping work pretty well for me. Ping each gateway and if them responds 
-> > and if them are not saturated, load balance works great. If one 
-> > gateway doesn't responds or it's saturated, traffic switch to the 
-> > other interface.
-> 
-> Ok.
-> 
-> > About the loop, if one of the gateways goes down, but it still 
-> > responds because it passes traffic between both nics internally in 
-> > servers, you can test some things.
-> 
-> Ok, you are deciding to let the loop happen and just detect that it is 
-> and / or prevent it from happening.  I guess that is another way to 
-> solve the problem.  IMHO, not having the loop happen is better, but what 
-> ever works for you.
-> 
-> > Please, keep us updated about your tests or if you can solve it. May 
-> > be a different thread would be better to keep a track of this.
-> 
-> Um, I'm not testing, that was based on what I have done in the past.
+Just tried to update conntrack librarys to new version but error out.
+0.94 compiles just fine though.
 
-
-In my case, loop won't happen, both gateways are internal of internet
-carriers.
+gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\"
+-DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
+-DPACKAGE=\"libnetfilter_conntrack\" -DVERSION=\"0.0.95\"
+-DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1
+-DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1
+-DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1
+-DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_ARPA_INET_H=1
+-DHAVE_INET_NTOP=1 -DHAVE_INET_NTOP_IPV6=1 -I.  -I../include    -g -O2
+-DLIBNETFILTER_CONNTRACK_DIR=\"/usr/local/lib/libnetfilter_conntrack/\"
+-I/usr/local/include   -MT conntrack_events.o -MD -MP -MF
+.deps/conntrack_events.Tpo -c -o conntrack_events.o conntrack_events.c
+conntrack_events.c: In function 'sk_set_filter':
+conntrack_events.c:44: error: invalid application of 'sizeof' to
+incomplete type 'struct nlattr'
+conntrack_events.c:66: error: invalid application of 'sizeof' to
+incomplete type 'struct nlattr'
+conntrack_events.c:92: error: invalid application of 'sizeof' to
+incomplete type 'struct nlattr'
+conntrack_events.c: At top level:
+conntrack_events.c:149: error: invalid application of 'sizeof' to
+incomplete type 'struct nlattr'
+conntrack_events.c:170: error: invalid application of 'sizeof' to
+incomplete type 'struct nlattr'
+conntrack_events.c:195: error: invalid application of 'sizeof' to
+incomplete type 'struct nlattr'
+make[1]: *** [conntrack_events.o] Error 1
 
 
-Sorry for the missed response, for some reason I think you were asking
-me.
-
-And that's right, an arping can be more accurate for this cases.
-
-
-Thanks for the tip, and really sorry for the misunderstood of your mail.
-
-Cheers.
-
-Martin
-
+Any ideas?
+Thanks
+-Dave
