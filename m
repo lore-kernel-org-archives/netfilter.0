@@ -1,66 +1,48 @@
-From: Patrick McHardy <kaber@trash.net>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: POM Xtables???
-Date: Mon, 30 Jun 2008 22:52:23 +0200
-Message-ID: <48694787.3080906@trash.net>
-References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com>  <alpine.LNX.1.10.0806272003170.12725@fbirervta.pbzchgretzou.qr>  <4866F152.7030109@riverviewtech.net> <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com> <486907EA.60105@trash.net> <alpine.LNX.1.10.0806302218500.30639@fbirervta.pbzchgretzou.qr>
+Date: Mon, 30 Jun 2008 23:11:13 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0806302236070.29802@blackhole.kfki.hu>
+References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com> 
+ <alpine.LNX.1.10.0806272003170.12725@fbirervta.pbzchgretzou.qr> 
+ <4866F152.7030109@riverviewtech.net> <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com>
+ <486907EA.60105@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0806302218500.30639@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <486907EA.60105@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Dave <finalglide@gmail.com>, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Dave <finalglide@gmail.com>, Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Jan Engelhardt wrote:
-> On Monday 2008-06-30 18:20, Patrick McHardy wrote:
->   
->>> 3) Still don't know where Xtables-addons fits in with Netfilter?  Why
->>> is Xtables not on the Netfilter site or even mentioned there at all?
->>> What does the core Netfilter team think of Xtables-addons?
->>>       
->> I have no opinion about this except that already mentioned by
->> Jan: useful patches in proper state should be upstream, all
->> others I don't care about.
->>     
->
-> Well at least I want to give it some care. POM, and Xtables-addons
-> exist because modules were rejected upstream.
-> ...
-> - the rest: dunno?
->   
+Hi,
 
-Which rest? Is the list at the end of your mail complete?
+On Mon, 30 Jun 2008, Patrick McHardy wrote:
 
->>> 6) Currently the extensions and patching systems seems to be a
->>> hodge-podge of items, all with different web sites, maintainers and
->>> writers, from a newbie perspective it's confusing, would be nice if it
->>> was wrapped up into something more straitforward. Hopefully this is
->>> what Xtables-addons is doing, BUT would be really nice if this all
->>> started officially at Netfilter.org.
->>>       
->> Short answer - don't do it, the module provided by the kernel
->> should be enough for 99.99% of all cases. If it isn't, convince
->> us to merge the patch, which usually isn't very hard.
->>
->> History has repeatedly shown that out of tree patches are buggy
->> and cause more problems than they solve, which is why there
->> is no interest from the netfilter team in maintaining external
->> patches.
->>     
->
-> Hence I have taken up some and fixed them to be straight.
-> Patrick, what's your judgment on the existing
-> xt_{LOGMARK,TARPIT,TEE,condition,geoip,ipp2p} modules in xtables-addons?
->   
+> History has repeatedly shown that out of tree patches are buggy
+> and cause more problems than they solve, which is why there
+> is no interest from the netfilter team in maintaining external
+> patches (with the one exception of ipset, which is not considered
+> ready for upstream yet by Jozsef, its author).
 
-- LOGMARK - haven't seen it or can't remember
-- TARPIT - fine if remaining issues are fixed
-- TEE - same as TARPIT
-- condition - undecided
-- geoip - seems like a toy. Whats the use case?
-- ipp2p - last version I've seen was a *horrible* mess, unless I'm
-  confusing it with the other l7 classifier module out there.
+The reason why I haven't been considering ipset ready for kernel inclusion 
+is actually simple: the current ipset framework is not flexible enough due 
+to the rigid kernel<->userspace communication method and it does not 
+support IPv6 at all. As I had expected to be ready with the next 
+generation of ipset (codename nfset) more soon, I have been refraining to 
+submit ipset for kernel inclusion. nfset is finally getting shape, by the 
+end of summer it'll be released. So the reason not to submit ipset is 
+stronger than ever.
 
-
+In order to make life easier, as I apply the patches sent by Swen, 
+there'll be a new, "standalone" version of ipset, i.e. it'll be possible 
+to use it without patch-o-matic-ng.
+ 
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
