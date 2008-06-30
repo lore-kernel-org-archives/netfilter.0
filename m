@@ -1,64 +1,63 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: POM Xtables???
-Date: Mon, 30 Jun 2008 18:20:58 +0200
-Message-ID: <486907EA.60105@trash.net>
-References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com>	 <alpine.LNX.1.10.0806272003170.12725@fbirervta.pbzchgretzou.qr>	 <4866F152.7030109@riverviewtech.net> <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com>
+From: Martin <mylists@itcom.com.ar>
+Subject: Re: load balance [OT?] [Solution]
+Date: Mon, 30 Jun 2008 13:26:23 -0300
+Message-ID: <1214843183.19463.149.camel@kr0sty>
+References: <1214492735.4427.6885.camel@kr0sty>
+	 <4866ECB1.2040903@riverviewtech.net> <1214832757.19463.40.camel@kr0sty>
+	 <4868ED10.3020506@riverviewtech.net> <1214840071.19463.112.camel@kr0sty>
+	 <48690289.2030909@riverviewtech.net>
+Reply-To: mylists@itcom.com.ar
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com>
+In-Reply-To: <48690289.2030909@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Dave <finalglide@gmail.com>
-Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Dave wrote:
-> Over the weekend I managed to get the Xtables-addons working with
-> Kernel 2.6.25.  Throughout this process many questions have come up
-> that were unanswered by the documentation or Netfilter site.  I'll
-> point them out.
+On Mon, 2008-06-30 at 10:58 -0500, Grant Taylor wrote:
+> On 06/30/08 10:34, Martin wrote:
+> > Well, I don't know if understood it ok, but I'll try to answer it.
 > 
-> 1) Confusion on just what Xtables is.  Is Xtables really just
-> Iptables?  It seems to be, but there is nothing saying so officially.
+> *nod*
+> 
+> > Ping work pretty well for me. Ping each gateway and if them responds 
+> > and if them are not saturated, load balance works great. If one 
+> > gateway doesn't responds or it's saturated, traffic switch to the 
+> > other interface.
+> 
+> Ok.
+> 
+> > About the loop, if one of the gateways goes down, but it still 
+> > responds because it passes traffic between both nics internally in 
+> > servers, you can test some things.
+> 
+> Ok, you are deciding to let the loop happen and just detect that it is 
+> and / or prevent it from happening.  I guess that is another way to 
+> solve the problem.  IMHO, not having the loop happen is better, but what 
+> ever works for you.
+> 
+> > Please, keep us updated about your tests or if you can solve it. May 
+> > be a different thread would be better to keep a track of this.
+> 
+> Um, I'm not testing, that was based on what I have done in the past.
 
-x_tables is the common core behind ip_tables, ip6_tables and
-arp_tables.
 
-> 3) Still don't know where Xtables-addons fits in with Netfilter?  Why
-> is Xtables not on the Netfilter site or even mentioned there at all?
-> What does the core Netfilter team think of Xtables-addons?
+In my case, loop won't happen, both gateways are internal of internet
+carriers.
 
-I have no opinion about this except that already mentioned by
-Jan: useful patches in proper state should be upstream, all
-others I don't care about.
 
-> 4) How does one patch for ACCOUNT and IPSET?  I couldn't find any
-> modules for Xtables-addons to patch for these extensions, although I
-> did find mention of a xt_account extension, but couldn't find any
-> download or anyway to add it to addons.  I had to patch ACCOUNT and
-> IPSET with Patch-O-Matic.  It seems we really have to use both these
-> patchers to get everything.
+Sorry for the missed response, for some reason I think you were asking
+me.
 
-ipset is an exception as its the only patch maintained by
-someone from the Core Team that has not been merged upstream
-yet. As such it shouldn't be included in Jan's package since
-Jozsef is doing official releases in pom.
+And that's right, an arping can be more accurate for this cases.
 
-> 6) Currently the extensions and patching systems seems to be a
-> hodge-podge of items, all with different web sites, maintainers and
-> writers, from a newbie perspective it's confusing, would be nice if it
-> was wrapped up into something more straitforward. Hopefully this is
-> what Xtables-addons is doing, BUT would be really nice if this all
-> started officially at Netfilter.org.
 
-Short answer - don't do it, the module provided by the kernel
-should be enough for 99.99% of all cases. If it isn't, convince
-us to merge the patch, which usually isn't very hard.
+Thanks for the tip, and really sorry for the misunderstood of your mail.
 
-History has repeatedly shown that out of tree patches are buggy
-and cause more problems than they solve, which is why there
-is no interest from the netfilter team in maintaining external
-patches (with the one exception of ipset, which is not considered
-ready for upstream yet by Jozsef, its author).
+Cheers.
+
+Martin
 
