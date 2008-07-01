@@ -1,50 +1,36 @@
-From: "Wessel Louwris" <wessel.louwris@gmail.com>
-Subject: pptpd on multiple wan connections
-Date: Tue, 1 Jul 2008 02:29:53 +0200
-Message-ID: <d97749ef0806301729n209f8e93ra70497688f135851@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: POM Xtables???
+Date: Tue, 1 Jul 2008 11:43:45 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0807011135120.30394@blackhole.kfki.hu>
+References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com> 
+ <alpine.LNX.1.10.0806272003170.12725@fbirervta.pbzchgretzou.qr> 
+ <4866F152.7030109@riverviewtech.net> <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com>
+ <486907EA.60105@trash.net> <alpine.LNX.1.10.0806302218500.30639@fbirervta.pbzchgretzou.qr>
+ <48694787.3080906@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=tVzsw+0HZ5KKK44NtE3FowB1bX//aYJ3PC9tvLgfe+8=;
-        b=tZbeR+I4KxsOW0iIAeJDdvxyAxH5OAhBkTPMVB2jkJbvqDxdTI3s9z8xa5HOHGUgKt
-         FJ1R/oGUvylhR1LANLhbZIl20kkjUSYu8n9U5hWI+UslPNdGqMqGVjaGrCSyFYedfGCs
-         i+Wos9WcZvG3Ayr5ynwyG8tm1nqu+34g3WfLw=
-Content-Disposition: inline
+In-Reply-To: <48694787.3080906@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Jan Engelhardt <jengelh@medozas.de>, Dave <finalglide@gmail.com>, netfilter@vger.kernel.org
 
-Hi,
+On Mon, 30 Jun 2008, Patrick McHardy wrote:
 
-I have a pptpd running on a router (ubuntu 8.04) with two WAN
-connections and does some traffic balancing on these connections
-(configured with ebox-platform btw)
+> - LOGMARK - haven't seen it or can't remember
 
-The pptp is configured to listen on the first (eth0) WAN connection,
-but sometimes the GRE traffic is going via the second WAN (eth1)
-connection, which results in a 619 error in the microsoft pptp client
-after a while (makes sense I guess).
+It adds the possibility to log the mark values of the packet/corresponding 
+conntrack entry via syslog. 
 
-I tried adding a rule in my mangle table, which seems to work for tcp
-port 1723 but not for GRE. What am I doing wrong?
+The feature should simply be added to the LOG target, there's no real 
+point to keep a separated target, as far as I see.
 
-The correspondig rules are:
-
--A PREROUTING -m mark --mark 0x0/0xff -m mac --mac-source
-00:19:CB:3E:2A:0F -j MARK --set-mark 0x1
--A PREROUTING -m mark --mark 0x0/0xff -m mac --mac-source
-00:1B:54:CB:7E:05 -j MARK --set-mark 0x2
--A PREROUTING  -p tcp -m tcp --sport 1723 -m mark --mark 0x0/0xff -j
-MARK --set-mark 0x1
--A PREROUTING  -p gre -m mark --mark 0x0/0xff -j MARK --set-mark 0x1
-
-
-Thanks for your help!
-Wessel
+Best regards,
+Jozsef
 -
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
