@@ -1,86 +1,101 @@
-From: Elison.Niven@matrixtelesol.com
-Subject: iptables resources consumed
-Date: Wed, 2 Jul 2008 09:59:53 +0530
-Message-ID: <VPOP31.4.0e.20080702095953.250.a.1.00149acd@matrixindia>
+From: Evan Borgstrom <evan@fatbox.ca>
+Subject: conntrackd: segfault at ignore_pool.c:37
+Date: Wed, 02 Jul 2008 01:38:18 -0400
+Message-ID: <486B144A.8070707@fatbox.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi List,
+Hi,
 
-I am looking to run iptables on an embedded powerpc system.
-It=92s the first time I=92ll be using it. I need to have a few confusio=
-ns cleared out.
+I'm setting up a pair of active-active bridging firewalls that are also 
+LVS directors. The last thing I need to get working is connection 
+tracking synchronization through conntrackd, but I'm having repeated 
+segfaults on only one of the nodes.
 
-There are three ethernet interfaces on the system: eth0, eth1 and eth2.
-___________________________________
-|                                  |
-|         ___________              |
-|        |           |             |
-|        |  Powerpc  |             |
-|        |           eth2          |
-|        |           |             |
-|        |_eth0_eth1_|             |
-|                                  |
-|       _______        ________    |
-|_______|      |_______|       |___|
-         eth0           eth1
+They are both running conntrackd from conntrack-tools 0.9.7 which I 
+compiled using the Debian control files from 0.9.6.
 
-eth0 and eth1 are external interfaces to the system. eth2 is internal.
-eth2 is connected to another L2 switch on the same board behind which a=
-re 8 DSPs.
+Both nodes are set with CacheWriteThrough on. When I run Sync in FTFW 
+mode the segfault usually takes a little while to occur. If I switch to 
+NOTRACK or ALARM mode the segfault happens almost immediately.
 
-=46or now do not consider eth1. There are only 2 interfaces eth0 and et=
-h2.
+In all instances the segfault looks the same and happens at the same 
+point at ignore_pool.c. Here's a backtrace from gdb.
 
-I need to forward UDP packets received on eth0 to eth2 and send them to=
- a particular DSP, and also forward packets received on eth2 to eth0.
+(gdb) attach 12436
+Attaching to process 12436
+Reading symbols from /home/evan/conntrack-tools-0.9.7/src/conntrackd...done.
+Using host libthread_db library "/lib/i686/cmov/libthread_db.so.1".
+Reading symbols from /usr/lib/libnetfilter_conntrack.so.1...done.
+Loaded symbols for /usr/lib/libnetfilter_conntrack.so.1
+Reading symbols from /usr/lib/libnfnetlink.so.0...done.
+Loaded symbols for /usr/lib/libnfnetlink.so.0
+Reading symbols from /lib/i686/cmov/libc.so.6...done.
+Loaded symbols for /lib/i686/cmov/libc.so.6
+Reading symbols from /lib/i686/cmov/libdl.so.2...done.
+Loaded symbols for /lib/i686/cmov/libdl.so.2
+Reading symbols from /lib/ld-linux.so.2...done.
+Loaded symbols for /lib/ld-linux.so.2
+0xffffe410 in __kernel_vsyscall ()
+(gdb) continue
+Continuing.
 
-General rule: All outgoing packets from eth0 should have src ip =3D eth=
-0 ip.
+Program received signal SIGSEGV, Segmentation fault.
+hash (data=0x0, table=0x806c280) at ignore_pool.c:37
+37              return jhash_1word(*ip, 0) % table->hashsize;
+(gdb) bt full
+#0  hash (data=0x0, table=0x806c280) at ignore_pool.c:37
+No locals.
+#1  0x0804b0e9 in hashtable_test (table=0x806c280, data=0x0) at hash.c:122
+         e = <value optimized out>
+         id = <value optimized out>
+#2  0x0804d4de in ignore_pool_test (ip=0x806c270, ct=0x807ddf0) at 
+ignore_pool.c:119
+         ret = <value optimized out>
+#3  0x0804d12d in ignore_conntrack (ct=0x807ddf0) at netlink.c:47
+No locals.
+#4  0x0804d152 in dump_handler (type=NFCT_T_UPDATE, ct=0x807ddf0, 
+data=0x0) at netlink.c:131
+No locals.
+#5  0xb7f139e1 in __callback () from /usr/lib/libnetfilter_conntrack.so.1
+No symbol table info available.
+#6  0xb7f07e80 in ?? () from /usr/lib/libnfnetlink.so.0
+No symbol table info available.
+#7  0xbf84d5b0 in ?? ()
+No symbol table info available.
+#8  0xbf84d4f0 in ?? ()
+No symbol table info available.
+#9  0x0807cac8 in ?? ()
+No symbol table info available.
+#10 0x00000078 in ?? ()
+No symbol table info available.
+#11 0xbf84d5c4 in ?? ()
+No symbol table info available.
+#12 0xbf84d5d8 in ?? ()
+No symbol table info available.
+#13 0xbf84d5ec in ?? ()
+No symbol table info available.
+#14 0x00000000 in ?? ()
+No symbol table info available.
+(gdb)
 
-Example rules:
+Has anyone encountered this before?
 
-Rule 1: a)Packets received on eth0 with src IP address =3D X, dest port=
- =3D 8000 should be sent to DSP1, port =3D 8000.
-b)Packets received on eth2 (i.e from the L2switch) with src IP =3D DSP1=
- IP OR dest IP =3D X, dest port =3D 10000 should be sent on eth0 to IP =
-address X, port =3D 10000.
+Let me know if more info is needed or you would like to see my 
+conntrackd.conf file.
 
-Rule 2: a)Packets received on eth0 with src IP address =3D Y, dest port=
- =3D 9000 should be sent to DSP2, port =3D 9000.
-b)Packets received on eth2 (i.e from the L2switch) with src ip =3D DSP2=
- IP OR dest IP =3D Y, dest port =3D 11000 should be sent on eth0 to IP =
-address Y, port =3D 11000.
+Thanks,
+-Evan
 
-I will have a maximum of 256 such rules i.e effectively 256*2 =3D 512 r=
-ules. (256 for packets received on eth0, 256 for packets received on et=
-h2)
-
-I am assuming that a packet is received every 20 ms on eth0 and eth2 fo=
-r a single rule.
-So for a total of 256, 256 packets are received every 20 ms on eth0 and=
- 256 packets are received every 20 ms on eth2.
-
-Or I can make eth2 IP address as the default gateway of all the DSPs. T=
-he DSPs will send packets with dest IP address =3D X, Y etc. These pack=
-ets should be sent out through eth0 and should have source IP =3D eth0.=
- This will eliminate rules 1b and 2b above. Thus, packet filtering to r=
-ead src IP and dest port will only be on eth0. Now total rules will be =
-256.
-
-The processor will be running at 400 MHz, 256 MB DDR2 RAM using Linux k=
-ernel 2.6.10.
-
-Will it be able to do this task and also run the main application? How =
-much resources will iptables require?
-
-Regards,
-Elison
-
-
-
+-- 
+Evan Borgstrom <evan@fatbox.ca>
+FatBox Inc.
+255 Richmond St East, Suite 1213
+Toronto, Ontario, M5A 4T7
+t:416.833.3763 | f:888.829.5963
+msn: evan@fatbox.ca | aim: evan@fatbox.ca
