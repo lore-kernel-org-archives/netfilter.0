@@ -1,38 +1,32 @@
-From: Evan Borgstrom <evan@fatbox.ca>
-Subject: Re: conntrackd: segfault at ignore_pool.c:37
-Date: Wed, 02 Jul 2008 02:15:07 -0400
-Message-ID: <486B1CEB.8090800@fatbox.ca>
-References: <486B144A.8070707@fatbox.ca>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset-2.3.2
+Date: Wed, 2 Jul 2008 14:56:49 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0807021449020.32444@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <486B144A.8070707@fatbox.ca>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
+Hi,
 
-> Both nodes are set with CacheWriteThrough on. When I run Sync in FTFW 
-> mode the segfault usually takes a little while to occur. If I switch to 
-> NOTRACK or ALARM mode the segfault happens almost immediately.
-> 
-> In all instances the segfault looks the same and happens at the same 
-> point at ignore_pool.c. 
+I'm happy to announce ipset-2.3.2. Besides cosmetic changes and cleanups, 
+this release includes the sources of both the userspace tool and the 
+kernel modules: you can install ipset wihtout patch-o-matic-ng. Please 
+read the README file for the instructions on how to install ipset without 
+pom-ng.
 
-Go figure... after spending awhile trying to solve this before I sent 
-the first message, I finally got it within 5 minutes of sending it.
+You can download ipset from the home page or from the svn repository
 
-On the node that was having this issue the nf_conntrack_ipv4 module was 
-not loaded. Once I loaded that module everything is up and running and 
-there hasn't been a segfault in about 45 minutes.
+	http://ipset.netfilter.org/
+	https://svn.netfilter.org/netfilter/trunk/ipset
 
--Evan
-
--- 
-Evan Borgstrom <evan@fatbox.ca>
-FatBox Inc.
-255 Richmond St East, Suite 1213
-Toronto, Ontario, M5A 4T7
-t:416.833.3763 | f:888.829.5963
-msn: evan@fatbox.ca | aim: evan@fatbox.ca
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
