@@ -1,38 +1,29 @@
-From: Krzysztof Oledzki <ole@ans.pl>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: [ANNOUNCE] ipset-2.3.2
-Date: Wed, 2 Jul 2008 15:37:20 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0807021536140.4958@bizon.gios.gov.pl>
+Date: Wed, 2 Jul 2008 15:46:21 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0807021545290.32444@blackhole.kfki.hu>
 References: <Pine.LNX.4.64.0807021449020.32444@blackhole.kfki.hu>
+ <Pine.LNX.4.64.0807021536140.4958@bizon.gios.gov.pl>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-187430788-1751777196-1215005840=:4958"
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0807021449020.32444@blackhole.kfki.hu>
+In-Reply-To: <Pine.LNX.4.64.0807021536140.4958@bizon.gios.gov.pl>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Krzysztof Oledzki <ole@ans.pl>
 Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, 2 Jul 2008, Krzysztof Oledzki wrote:
 
----187430788-1751777196-1215005840=:4958
-Content-Type: TEXT/PLAIN; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+> Is statically linking still supported?
 
-
-
-On Wed, 2 Jul 2008, Jozsef Kadlecsik wrote:
-
-> Hi,
-Hi,
-
-> I'm happy to announce ipset-2.3.2. Besides cosmetic changes and cleanups,
-> this release includes the sources of both the userspace tool and the
-> kernel modules: you can install ipset wihtout patch-o-matic-ng.
-
-Is statically linking still supported?
+No, it has never been supported. (Probaly you mean iptables?)
 
 Best regards,
-
- =09=09=09=09Krzysztof Ol=EAdzki
----187430788-1751777196-1215005840=:4958--
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
