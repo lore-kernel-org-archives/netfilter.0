@@ -1,47 +1,86 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: POM Xtables???
-Date: Tue, 01 Jul 2008 16:34:30 +0200
-Message-ID: <486A4076.8080007@trash.net>
-References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com>  <alpine.LNX.1.10.0806272003170.12725@fbirervta.pbzchgretzou.qr>  <4866F152.7030109@riverviewtech.net> <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com> <486907EA.60105@trash.net> <alpine.LNX.1.10.0806302218500.30639@fbirervta.pbzchgretzou.qr> <48694787.3080906@trash.net> <Pine.LNX.4.64.0807011135120.30394@blackhole.kfki.hu> <4869FCE7.9000404@trash.net> <alpine.LNX.1.10.0807011326351.12878@fbirervta.pbzchgretzou.qr> <486A1865.40106@trash.net> <486A39BF.4090206@riverviewtech.net> <486A3AD6.7040905@trash.net> <486A3EDA.8030804@riverviewtech.net>
+From: Elison.Niven@matrixtelesol.com
+Subject: iptables resources consumed
+Date: Wed, 2 Jul 2008 09:59:53 +0530
+Message-ID: <VPOP31.4.0e.20080702095953.250.a.1.00149acd@matrixindia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <486A3EDA.8030804@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="windows-1252"
+To: netfilter@vger.kernel.org
 
-Again, please don't trim CC lists.
+Hi List,
 
-Grant Taylor wrote:
-> On 07/01/08 09:10, Patrick McHardy wrote:
->> In any case, its unreasonable to expect us to never *extend* (not 
->> change) the output to accomodate buggy parsers. This is by the way 
->> the same way that is often used to extend binary structures, even 
->> though someone stupid might use exact size checks.
->
-> *nod*
->
-> Agreed.
->
-> However as I sit here and think about it, it may be worth adding a new 
-> field *as early as possible* (read closes to the start of line) in the 
-> field list that indicates a version, which can be used to determine 
-> the fields and their position there in.  This would make it very easy 
-> for people to write strict parsers down the road.  A simple three 
-> character hex field (4 bytes including the leading space) would allow 
-> for 4k of strict layouts.  (Even more 0-9 and a-z or additionally 
-> A-Z.) Just a thought.
+I am looking to run iptables on an embedded powerpc system.
+It=92s the first time I=92ll be using it. I need to have a few confusio=
+ns cleared out.
 
-I don't it would be very useful at this time since we already made
-those changes over the time of multiple years, so basically the
-damage (if any) is already done.
+There are three ethernet interfaces on the system: eth0, eth1 and eth2.
+___________________________________
+|                                  |
+|         ___________              |
+|        |           |             |
+|        |  Powerpc  |             |
+|        |           eth2          |
+|        |           |             |
+|        |_eth0_eth1_|             |
+|                                  |
+|       _______        ________    |
+|_______|      |_______|       |___|
+         eth0           eth1
 
-And we have ULOG and nfnetlink_log that should be used for anything
-serious for the reasons I stated earlier (more reliable, doesn't block
-when using serial consoles, ...).
+eth0 and eth1 are external interfaces to the system. eth2 is internal.
+eth2 is connected to another L2 switch on the same board behind which a=
+re 8 DSPs.
+
+=46or now do not consider eth1. There are only 2 interfaces eth0 and et=
+h2.
+
+I need to forward UDP packets received on eth0 to eth2 and send them to=
+ a particular DSP, and also forward packets received on eth2 to eth0.
+
+General rule: All outgoing packets from eth0 should have src ip =3D eth=
+0 ip.
+
+Example rules:
+
+Rule 1: a)Packets received on eth0 with src IP address =3D X, dest port=
+ =3D 8000 should be sent to DSP1, port =3D 8000.
+b)Packets received on eth2 (i.e from the L2switch) with src IP =3D DSP1=
+ IP OR dest IP =3D X, dest port =3D 10000 should be sent on eth0 to IP =
+address X, port =3D 10000.
+
+Rule 2: a)Packets received on eth0 with src IP address =3D Y, dest port=
+ =3D 9000 should be sent to DSP2, port =3D 9000.
+b)Packets received on eth2 (i.e from the L2switch) with src ip =3D DSP2=
+ IP OR dest IP =3D Y, dest port =3D 11000 should be sent on eth0 to IP =
+address Y, port =3D 11000.
+
+I will have a maximum of 256 such rules i.e effectively 256*2 =3D 512 r=
+ules. (256 for packets received on eth0, 256 for packets received on et=
+h2)
+
+I am assuming that a packet is received every 20 ms on eth0 and eth2 fo=
+r a single rule.
+So for a total of 256, 256 packets are received every 20 ms on eth0 and=
+ 256 packets are received every 20 ms on eth2.
+
+Or I can make eth2 IP address as the default gateway of all the DSPs. T=
+he DSPs will send packets with dest IP address =3D X, Y etc. These pack=
+ets should be sent out through eth0 and should have source IP =3D eth0.=
+ This will eliminate rules 1b and 2b above. Thus, packet filtering to r=
+ead src IP and dest port will only be on eth0. Now total rules will be =
+256.
+
+The processor will be running at 400 MHz, 256 MB DDR2 RAM using Linux k=
+ernel 2.6.10.
+
+Will it be able to do this task and also run the main application? How =
+much resources will iptables require?
+
+Regards,
+Elison
 
 
 
