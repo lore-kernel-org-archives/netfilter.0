@@ -1,72 +1,39 @@
-From: Simon Perreault <simon.perreault@viagenie.ca>
-Subject: NFQUEUE hello world-style program
-Date: Thu, 3 Jul 2008 16:07:21 -0400
-Message-ID: <200807031607.21168.simon.perreault@viagenie.ca>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset-2.3.2
+Date: Thu, 3 Jul 2008 23:38:22 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0807032332580.3107@blackhole.kfki.hu>
+References: <Pine.LNX.4.64.0807021449020.32444@blackhole.kfki.hu>
+ <Pine.LNX.4.64.0807021536140.4958@bizon.gios.gov.pl>
+ <Pine.LNX.4.64.0807021545290.32444@blackhole.kfki.hu>
+ <Pine.LNX.4.64.0807021547090.4958@bizon.gios.gov.pl>
+ <Pine.LNX.4.64.0807021559170.32444@blackhole.kfki.hu>
+ <Pine.LNX.4.64.0807031150290.1816@blackhole.kfki.hu>
+ <Pine.LNX.4.58.0807031849570.14344@mail3.jubileegroup.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0807031849570.14344@mail3.jubileegroup.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Cc: Krzysztof Oledzki <ole@ans.pl>, netfilter@vger.kernel.org
 
-Hello,
+On Thu, 3 Jul 2008, G.W. Haywood wrote:
 
-I'm trying to write a hello world-style program using NFQUEUE. It hangs in the 
-select() call on the nfq file descriptor even though I can see 
-with "iptables -L -n -v" that there are packets that match the rule.
+> I suppose a 2.4 kernel is out of the question?
+> 
+> I only ask because the place I really _need_ ipsets is on a machine that's
+> still running a 2.4 kernel - the one that's sending this mail - currently
+> it has 45,000 ipsets. :)
 
-Here's my iptables rule:
+Wow! Actually, it's not that hard to support 2.4 kernels, I was just lazy 
+to keep it in 2.3.2. It'll put it back in the next days.
 
-# iptables -A INPUT -p udp --dport 12345 -j NFQUEUE --queue-num=0
-
-I generate packets thusly:
-
-# echo "hello" | nc -u localhost 12345
-
-Here's my C code:
-
-=======================================================
-#include <libnetfilter_queue/libnetfilter_queue.h>
-
-#include <stdio.h>
-
-int cb( struct nfq_q_handle* q, struct nfgenmsg *nfmsg,
-        struct nfq_data *nfad, void *data )
-{
-    char* payload;
-    printf( "received %d bytes\n", nfq_get_payload(nfad, &payload) );
-    return 0;
-}
-
-int main()
-{
-    struct nfq_handle* h = nfq_open();
-    struct nfq_q_handle* q = nfq_create_queue( h, 0, cb, 0 );
-    int fd = nfq_fd(h);
-
-    while (1) {
-        fd_set readfds;
-        FD_ZERO(&readfds);
-        FD_SET(fd, &readfds);
-        select( fd + 1, &readfds, 0, 0, 0 );
-
-        char buf[8192];
-        ssize_t size = recv( fd, buf, sizeof(buf), 0 );
-
-        nfq_handle_packet( h, buf, size );
-    }
-
-    return 0;
-}
-=======================================================
-
-Any idea what might be missing?
-
-Thanks,
-Simon
-
--- 
-Please try Numb, a STUN/TURN server implementation.
-Free access at http://numb.viagenie.ca/.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
