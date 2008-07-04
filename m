@@ -1,58 +1,70 @@
-From: "Elison Niven" <elison.niven@matrixtelesol.com>
-Subject: re : iptables resources consumed
-Date: Fri, 4 Jul 2008 14:42:03 +0530
-Message-ID: <VPOP31.4.0e.20080704144214.906.2.1.00149acd@matrixindia>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: NFQUEUE hello world-style program
+Date: Fri, 4 Jul 2008 11:26:38 +0200
+Message-ID: <20080704092637.GA30729@bayen.regit.org>
+References: <200807031607.21168.simon.perreault@viagenie.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <200807031607.21168.simon.perreault@viagenie.ca>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
-
-Hi,
-
-Comments inline.
-
-> You can do the source IP spoofing here, but I would not recommend it for 
-> multiple reasons.
->   - You will have to (re)configure all the DSPs with the IP of eth0 if 
-> it ever changes.
->   - This could conflict with reverse path filtering on your system.
->   - IMHO this is bad form.
->   - If the DSP wants to communicate with your system it will have to use 
-> a different source IP, or other trickery will have to be done to allow 
-> your system to communicate with the DSP.
->   - SNATing is not going to be that much of a load.
-
-Well, this is not a problem at all. The source IP that the DSP puts in the
-*RTP packets* it generates can be changed dynamically at runtime. And it can
-be different for different RTP sessions as well, not that I would need to do
-it. That apart, this is allowed only for *RTP packets* (this traffic has to
-forwarded out from eth0). All other packets (the only ones that remain are
-the DSP control packets directed towards my system) use the source IP as the
-actual DSP IP address.
-
-> This is not a rule.  This is standard routing / forwarding.  If a packet 
-> coming in to an interface has a destination IP belonging to the system, 
-> it will be processed by the system.  If a packet coming in to an 
-> interface has a destination that does not belong to the system it will 
-> be forwarded as long as forwarding is enabled.
-
-Ok, but all the packets that I need to send to the DSPs will reach my system
-and will have destination IP belonging to my system. They are not needed to
-be processed by my system but are to be sent to the DSPs. How do I do that?
-
-> Can you provide a list of source / destination IPs and ports or a 
-> pattern there of?  I'll look at it and see how many rules I think would 
-> be needed (with and with out the optimizations that I spoke of).
-
-Well, actually this list is dynamic and can change at runtime. The actual
-port numbers and IP addresses depend on the SIP/SDP negotiation.
-
-Thanks a lot for helping me out.
-
-Best regards,
-Elison
+To: Simon Perreault <simon.perreault@viagenie.ca>
+Cc: netfilter@vger.kernel.org
 
 
+--7JfCtLOvnd9MIVvH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+On Thursday, 2008 July  3 at 16:07:21 -0400, Simon Perreault wrote:
+>=20
+> #include <stdio.h>
+>=20
+> int cb( struct nfq_q_handle* q, struct nfgenmsg *nfmsg,
+>         struct nfq_data *nfad, void *data )
+> {
+>     char* payload;
+>     printf( "received %d bytes\n", nfq_get_payload(nfad, &payload) );
+>     return 0;
+> }
+>=20
+> int main()
+> {
+>     struct nfq_handle* h =3D nfq_open();
+
+You are missing the unbind  bind=20
+=09
+	nfq_unbind_pf(h, AF_INET);
+	nfq_bind_pf(h, AF_INET);
+
+You can have a look at for working  code:=20
+ * utils/nfqnl_test.c in libnetfilter_queue sources
+ * http://software.inl.fr/trac/browser/mirror/edenwall/nufw/trunk/nufw/src/=
+nufw/packetsrv.c#L219
+
+BR,
+--=20
+Eric Leblond
+INL: http://www.inl.fr/
+NuFW: http://www.nufw.org/
+
+--7JfCtLOvnd9MIVvH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFIbezNnxA7CdMWjzIRAkITAJkB6BnjrHxTqvHPCt2nHfY7uCQ4MgCfQddO
+STSjo44BrAohfDhWNDXo7fs=
+=olYZ
+-----END PGP SIGNATURE-----
+
+--7JfCtLOvnd9MIVvH--
