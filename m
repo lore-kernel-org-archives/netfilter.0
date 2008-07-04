@@ -1,31 +1,49 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: =?UTF-8?B?U8KOw6liYXN0aWVuIENyYW1hdHRl?= 
+	<scramatte@zensoluciones.com>
 Subject: Re: ipp2 won't compile with lastest  iptables from  git
-Date: Fri, 4 Jul 2008 18:46:45 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0807041846060.31959@fbirervta.pbzchgretzou.qr>
-References: <486E42BD.7090609@zensoluciones.com>
+Date: Fri, 04 Jul 2008 21:11:07 +0200
+Message-ID: <486E75CB.7060301@zensoluciones.com>
+References: <486E42BD.7090609@zensoluciones.com> <alpine.LNX.1.10.0807041846060.31959@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <486E42BD.7090609@zensoluciones.com>
+In-Reply-To: <alpine.LNX.1.10.0807041846060.31959@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?S=C2=8E=C3=A9bastien_Cramatte?= <scramatte@zensoluciones.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: Jan Engelhardt <jengelh@medozas.de>
 
-
-On Friday 2008-07-04 17:33, S?=C3=A9bastien Cramatte wrote:
-
-> Hi
+Jan Engelhardt escribi=C3=B3:
+> On Friday 2008-07-04 17:33, S?=C3=A9bastien Cramatte wrote:
 >
-> I can't compile ipp2p wit the latest iptables from git !
+>  =20
+>> Hi
+>>
+>> I can't compile ipp2p wit the latest iptables from git !
+>>    =20
+>
+> The latest ipp2p version is included in Xtables-addons.
+>
+>  =20
+>> I've applied the ipp2p patch from  patch-o-matic  git  ... When I op=
+en
+>> libipt_ipp2.c it seems that the source already has the required chan=
+ge for
+>> iptables 1.4.x ... biut unfortuanteley doesn't works for me !
+>>    =20
+>
+> Because pom-ng is old and not updated.
+>  =20
+Yes ! But my problem is that I must package a kernel that use initramfs=
+ =20
+with all included modules.
+As pom-ng patch the kernel source  was nice for me ...
 
-The latest ipp2p version is included in Xtables-addons.
+Moreover I can't use Xtables-addons directly because I compile on =20
+dedicaded box that use another kernel than the target !
+My target box boot from Compact Flash to memory and doesn't have =20
+development tools installed !
 
-> I've applied the ipp2p patch from  patch-o-matic  git  ... When I ope=
-n
-> libipt_ipp2.c it seems that the source already has the required chang=
-e for
-> iptables 1.4.x ... biut unfortuanteley doesn't works for me !
+Any solutions ?
 
-Because pom-ng is old and not updated.
