@@ -1,84 +1,77 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: NFQUEUE hello world-style program
-Date: Fri, 4 Jul 2008 16:08:08 +0200
-Message-ID: <20080704140808.GC30729@bayen.regit.org>
-References: <200807031607.21168.simon.perreault@viagenie.ca> <20080704092637.GA30729@bayen.regit.org> <200807040828.37923.simon.perreault@viagenie.ca>
+From: =?UTF-8?B?U8KOw6liYXN0aWVuIENyYW1hdHRl?= 
+	<scramatte@zensoluciones.com>
+Subject: ipp2 won't compile with lastest  iptables from  git
+Date: Fri, 04 Jul 2008 17:33:17 +0200
+Message-ID: <486E42BD.7090609@zensoluciones.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QKdGvSO+nmPlgiQ/"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <200807040828.37923.simon.perreault@viagenie.ca>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Simon Perreault <simon.perreault@viagenie.ca>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
+
+Hi
+
+I can't compile ipp2p wit the latest iptables from git !
+I've applied the ipp2p patch from  patch-o-matic  git  ... When I open 
+libipt_ipp2.c it seems that the source already has the required change 
+for  iptables 1.4.x ... biut unfortuanteley doesn't works for me !
+
+...
+make[2]: Entering directory `/usr/src/iptables/extensions'
+  CC       libipt_ipp2p.oo
+libipt_ipp2p.c:396: error: variable 'ipp2p' has initializer but 
+incomplete type
+libipt_ipp2p.c:398: error: unknown field 'next' specified in initializer
+libipt_ipp2p.c:398: warning: excess elements in struct initializer
+libipt_ipp2p.c:398: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:399: error: unknown field 'name' specified in initializer
+libipt_ipp2p.c:399: warning: excess elements in struct initializer
+libipt_ipp2p.c:399: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:400: error: unknown field 'version' specified in initializer
+libipt_ipp2p.c:400: error: 'IPTABLES_VERSION' undeclared here (not in a 
+function)
+libipt_ipp2p.c:400: warning: excess elements in struct initializer
+libipt_ipp2p.c:400: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:401: error: unknown field 'size' specified in initializer
+libipt_ipp2p.c:401: warning: excess elements in struct initializer
+libipt_ipp2p.c:401: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:402: error: unknown field 'userspacesize' specified in 
+initializer
+libipt_ipp2p.c:402: warning: excess elements in struct initializer
+libipt_ipp2p.c:402: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:403: error: unknown field 'help' specified in initializer
+libipt_ipp2p.c:403: warning: excess elements in struct initializer
+libipt_ipp2p.c:403: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:404: error: unknown field 'init' specified in initializer
+libipt_ipp2p.c:404: warning: excess elements in struct initializer
+libipt_ipp2p.c:404: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:405: error: unknown field 'parse' specified in initializer
+libipt_ipp2p.c:405: warning: excess elements in struct initializer
+libipt_ipp2p.c:405: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:406: error: unknown field 'final_check' specified in 
+initializer
+libipt_ipp2p.c:406: warning: excess elements in struct initializer
+libipt_ipp2p.c:406: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:407: error: unknown field 'print' specified in initializer
+libipt_ipp2p.c:407: warning: excess elements in struct initializer
+libipt_ipp2p.c:407: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:408: error: unknown field 'save' specified in initializer
+libipt_ipp2p.c:408: warning: excess elements in struct initializer
+libipt_ipp2p.c:408: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c:409: error: unknown field 'extra_opts' specified in 
+initializer
+libipt_ipp2p.c:410: warning: excess elements in struct initializer
+libipt_ipp2p.c:410: warning: (near initialization for 'ipp2p')
+libipt_ipp2p.c: In function 'libipt_ipp2p_init':
+libipt_ipp2p.c:416: warning: implicit declaration of function 
+'register_match'
+make[2]: *** [libipt_ipp2p.oo] Error 1
+make[2]: Leaving directory `/usr/src/iptables/extensions'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/usr/src/iptables'
+make: *** [all] Error 2
 
 
---QKdGvSO+nmPlgiQ/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello,
-
-On Friday, 2008 July  4 at  8:28:37 -0400, Simon Perreault wrote:
-> On Friday 04 July 2008 05:26:38 Eric Leblond wrote:
-> > You are missing the unbind  bind
-> >
-> > 	nfq_unbind_pf(h, AF_INET);
-> > 	nfq_bind_pf(h, AF_INET);
-> >
-> > You can have a look at for working  code:
-> >  * utils/nfqnl_test.c in libnetfilter_queue sources
-> >  *
-> > http://software.inl.fr/trac/browser/mirror/edenwall/nufw/trunk/nufw/src=
-/nuf
-> >w/packetsrv.c#L219
->=20
-> Many thanks!
->=20
-> I suppose if I want to bind to multiple families I do as in packetsrv.c,=
-=20
-> right?
->=20
-> nfq_unbind_pf(h, AF_INET);
-> nfq_bind_pf(h, AF_INET);
-> nfq_unbind_pf(h, AF_INET6);
-> nfq_bind_pf(h, AF_INET6);
-
-
-Exact !
-
-> And out of curiosity, is the unbind really needed or is it a relic of the=
-=20
-> past? :)
-
-Don't know could you test this ? I did not change or look at my code on
-NuFW since a long time now.
-
->=20
-> Thanks again,
-
-You're welcome.
-
-BR,
---=20
-Eric Leblond
-INL: http://www.inl.fr/
-NuFW: http://www.nufw.org/
-
---QKdGvSO+nmPlgiQ/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFIbi7InxA7CdMWjzIRAlWzAJ4k54xYFLNI7k792FF+nx3wUwgJpACfS/ms
-s4PqeUQ6Ptht4TGa9xgzcXM=
-=jYfG
------END PGP SIGNATURE-----
-
---QKdGvSO+nmPlgiQ/--
