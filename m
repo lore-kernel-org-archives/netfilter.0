@@ -1,40 +1,55 @@
-From: =?UTF-8?B?U8KOw6liYXN0aWVuIENyYW1hdHRl?= 
-	<scramatte@zensoluciones.com>
-Subject: Re: ipp2 won't compile with lastest  iptables from  git
-Date: Fri, 04 Jul 2008 22:26:56 +0200
-Message-ID: <486E8790.6040002@zensoluciones.com>
-References: <486E42BD.7090609@zensoluciones.com> <alpine.LNX.1.10.0807041846060.31959@fbirervta.pbzchgretzou.qr> <486E75CB.7060301@zensoluciones.com> <alpine.LNX.1.10.0807042120040.31959@fbirervta.pbzchgretzou.qr> <486E7A02.20107@zensoluciones.com> <alpine.LNX.1.10.0807042215410.31959@fbirervta.pbzchgretzou.qr>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: re : iptables resources consumed
+Date: Sat, 05 Jul 2008 18:46:56 -0500
+Message-ID: <487007F0.8080704@riverviewtech.net>
+References: <VPOP31.4.0e.20080704105216.765.b.1.00149acd@matrixindia>	<486DC28B.2080303@riverviewtech.net> <VPOP31.4.0e.20080704144214.906.2.1.00149acd@matrixindia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0807042215410.31959@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <VPOP31.4.0e.20080704144214.906.2.1.00149acd@matrixindia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Jan Engelhardt escribi=C3=B3:
-> On Friday 2008-07-04 21:29, S?=C3=A9bastien Cramatte wrote:
->
->  =20
->> This what I've done but ...
->>
->> I can't compile xtables-addons with a 2.6.25.10 kernel
->> I get the latest sources from git  and  my setup my kernel before to=
- include
->> CONFIG_NF_CONNTRACK modules and dependencies.
->>    =20
->
-> You can select what modules to build (or not) by editing
-> the 'mconfig' file in the xtables-addons directory.
-> Either you enable said options in the kernel, or disable LOGMARK
-> in mconfig.
-> Note however that some modules duly require NF_CONNTRACK.
->  =20
-I've enabled all the NF_CONNTRACK modules available in the kernel ...
-This is why I don't understand why xt_LOGMARK give this error ...
+On 7/4/2008 4:12 AM, Elison Niven wrote:
+> Well, this is not a problem at all. The source IP that the DSP puts 
+> in the *RTP packets* it generates can be changed dynamically at 
+> runtime. And it can be different for different RTP sessions as well, 
+> not that I would need to do it. That apart, this is allowed only for 
+> *RTP packets* (this traffic has to forwarded out from eth0). All 
+> other packets (the only ones that remain are the DSP control packets 
+> directed towards my system) use the source IP as the actual DSP IP 
+> address.
 
-Please try it with a 2.6.25.10 ...
+Ok.  The, I suppose you can spoof the source IP if you want to.
 
-Regards
+> Ok, but all the packets that I need to send to the DSPs will reach my 
+> system and will have destination IP belonging to my system. They are 
+> not needed to be processed by my system but are to be sent to the 
+> DSPs. How do I do that?
+
+Right, this is why you DNAT them to the DSPs inside.
+
+> Well, actually this list is dynamic and can change at runtime. The 
+> actual port numbers and IP addresses depend on the SIP/SDP 
+> negotiation.
+
+Uh, this could make for a bit of fun.  It is trivial to write an 
+IPTables rule to match based on static source / destination IP and / or 
+source / destination port or any combination there of.  However to match 
+the dynamic ports, you will need may need a helper to find what is 
+negotiated.
+
+Question:  Is filtering out packets from the DSPs other than what you 
+have mentioned a must or is it ok if packets leak out.  In other words, 
+do they have to be filtered (prevent them from going) out as long as the 
+RTP packets go where they are suppose to go?
+
+> Thanks a lot for helping me out.
+
+*nod*  You are welcome.
+
+
+
+Grant. . . .
