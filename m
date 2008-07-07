@@ -1,89 +1,76 @@
-From: Dave <finalglide@gmail.com>
-Subject: Re: libnetfilter_conntrack-0.0.95 compile error
-Date: Mon, 7 Jul 2008 15:22:04 -0700
-Message-ID: <935fab200807071522q586aa452x54b4b3df13f62d48@mail.gmail.com>
-References: <935fab200806300948y65018956ud5513d16cd93c9cd@mail.gmail.com>
-	 <486DD54B.9040902@netfilter.org>
+From: "Charles Romestant" <cromestant@gmail.com>
+Subject: Re: Port Forwarding .
+Date: Tue, 8 Jul 2008 18:02:29 +1930
+Message-ID: <5078d3df0807071532w4ab76fe4vcf4e60a8980525ba@mail.gmail.com>
+References: <5078d3df0807071449k730a33cxe31e0b34078f5794@mail.gmail.com>
+	 <4872943B.2060309@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
+         :subject:cc:in-reply-to:mime-version:content-type
          :content-transfer-encoding:content-disposition:references;
-        bh=AFJCH8tA1ItLa/uUlyv9071i+bh1z1/bG3z4t9Xp2hc=;
-        b=AmJA+KZb2q/V99NIRS+WvslyvYVmAwdtQrpVRBX9uE+CC/DF31qiM3O8NuAxxebfHh
-         ocHCvz1nkOEKw5dz8DuuX8T8AbZ+ZXxIipjpMipJDAin9WgnEoCK9w/HZCB6jiwXEEXH
-         9ysRGgTBWTW1JwJUn9MSCtrpKEtBz7Ai1JWyQ=
-In-Reply-To: <486DD54B.9040902@netfilter.org>
+        bh=fkFqg9bNgtfC3NwFzKev4VKiAXrOIlwzz4iDrLyUolQ=;
+        b=BwtlbOwUfTJaA4sB0bwAFgBECNY0L9pgkjMWakm1VZ4SsC2yYJVdkzY2nwTnEUCFoA
+         IWN6KAqhfCmxu8BdcwXHcIbUU+aXRM1p7pFBgamdXLIXgFEvr1e8Zr+1BboxfY5boERe
+         Xvhdju20pIqX1xoO0RqSDugGMih77Z0fnKJNw=
+In-Reply-To: <4872943B.2060309@riverviewtech.net>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Drats, still have the issue.
+thanks for answer
 
-1) Downloaded off main Netfilter site again and tried = same error
-ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/libnetfilter_conntrack-0.0.95.tar.bz2
-= make error
+hmm tried it and still does not work...
 
-2) Downloaded the most recent snapshots but all snapshots appear to be
-missing their configure.
-  2a) Latest one error on configure script
-ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/snapshot/libnetfilter_conntrack-20080521.tar.bz2
-= configure error
-
-  2b) Other two snapshots were missing their configure programs.
-ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/snapshot/libnetfilter_conntrack-20080520.tar.bz2
-= no configure included
-ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/snapshot/libnetfilter_conntrack-20080519.tar.bz2
-= no configure included
+any ideas, at least to get some debug info... still can t see the
+server from a browser on A.
 
 
-Cheers
--Dave
-
-On Fri, Jul 4, 2008 at 12:46 AM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> Dave wrote:
->> Just tried to update conntrack librarys to new version but error out.
->> 0.94 compiles just fine though.
+On Tue, Jul 8, 2008 at 5:40 PM, Grant Taylor <gtaylor@riverviewtech.net> wrote:
+> On 07/07/08 16:49, Charles Romestant wrote:
 >>
->> gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\"
->> -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
->> -DPACKAGE=\"libnetfilter_conntrack\" -DVERSION=\"0.0.95\"
->> -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1
->> -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1
->> -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1
->> -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_ARPA_INET_H=1
->> -DHAVE_INET_NTOP=1 -DHAVE_INET_NTOP_IPV6=1 -I.  -I../include    -g -O2
->> -DLIBNETFILTER_CONNTRACK_DIR=\"/usr/local/lib/libnetfilter_conntrack/\"
->> -I/usr/local/include   -MT conntrack_events.o -MD -MP -MF
->> .deps/conntrack_events.Tpo -c -o conntrack_events.o conntrack_events.c
->> conntrack_events.c: In function 'sk_set_filter':
->> conntrack_events.c:44: error: invalid application of 'sizeof' to
->> incomplete type 'struct nlattr'
->> conntrack_events.c:66: error: invalid application of 'sizeof' to
->> incomplete type 'struct nlattr'
->> conntrack_events.c:92: error: invalid application of 'sizeof' to
->> incomplete type 'struct nlattr'
->> conntrack_events.c: At top level:
->> conntrack_events.c:149: error: invalid application of 'sizeof' to
->> incomplete type 'struct nlattr'
->> conntrack_events.c:170: error: invalid application of 'sizeof' to
->> incomplete type 'struct nlattr'
->> conntrack_events.c:195: error: invalid application of 'sizeof' to
->> incomplete type 'struct nlattr'
->> make[1]: *** [conntrack_events.o] Error 1
+>> on C there is a web server, running on port 80, I want to be able to
+>> access it through B from A.
 >>
->>
->> Any ideas?
+>> So basically the ruleset should be on B if its port 80, forward to port 80
+>> on C.
 >
-> You seem to have compiled a SVN snapshot. Please, try lastest svn
-> snapshot - the previous were broken as you have noticed - or the
-> official release 0.0.95.
+> These two rules should do the trick to get the traffic forwarded on through
+> B to C.
 >
+> iptables -t nat -A PREROUTING -i eth0 -d 10.0.1.192 -p tcp --dport 80 -j
+> DNAT --to-destination 10.0.10.1
+> iptables -t filter -A FORWARD -i eth0 -o eth1 -d 10.0.10.1 -p tcp --dport 80
+> -j ACCEPT
+>
+> You will need to make sure that the reply traffic back from C is allowed and
+> appears to be from B.
+>
+> iptables -t filter -A FORWARD -i eth1 -o eth0 -s 10.0.10.1 -p tcp --sport 80
+> -j ACCEPT
+> iptables -t nat -A POSTROUTING -o eth0 -s 10.0.10.1 -p tcp --sport 80 -j
+> SNAT --to-source 10.0.1.192
+>
+>> Any help would be appreciated, thank you in advance,
+>
+> You are welcome.
+>
+>
+>
+> Grant. . . .
 > --
-> "Los honestos son inadaptados sociales" -- Les Luthiers
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >
+
+
+
+-- 
+Charz
