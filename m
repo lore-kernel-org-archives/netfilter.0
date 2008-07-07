@@ -1,74 +1,134 @@
-From: Robert L Mathews <lists@tigertech.com>
-Subject: Re: conntrack and ESTABLISHED / UNREPLIED connections
-Date: Mon, 07 Jul 2008 16:04:53 -0700
-Message-ID: <4872A115.2030604@tigertech.com>
-References: <486D31D9.9070900@tigertech.com>
+From: "Charles Romestant" <cromestant@gmail.com>
+Subject: Re: Port Forwarding .
+Date: Tue, 8 Jul 2008 18:40:57 +1930
+Message-ID: <5078d3df0807071610m5b47a81qc5d830a8b7bd0cff@mail.gmail.com>
+References: <5078d3df0807071449k730a33cxe31e0b34078f5794@mail.gmail.com>
+	 <4872943B.2060309@riverviewtech.net>
+	 <5078d3df0807071532w4ab76fe4vcf4e60a8980525ba@mail.gmail.com>
+	 <5078d3df0807071533k47a5dd16i254b3ae3592d7a77@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <486D31D9.9070900@tigertech.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=hCCoKegXvCC4lrAxZoB5f+oCSNn4RwY/Tv7rIZ+y+sc=;
+        b=ipwW4vXNA62zFOhDA+y5UCzyWXAaPfztYIgc0+owuO0ICNwp+ncfTxV20h+2ZiWLrr
+         xnIlBoFA3ipYZnesFo5UkYfnYCdNTxq+vZnvs5yGCus26NHhFlMIa9D1wMggWHJ9zv8N
+         LwHs5k6UiuxluWWUYdm7FSWykSJax8ZI6fTOo=
+In-Reply-To: <5078d3df0807071533k47a5dd16i254b3ae3592d7a77@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Forgive me for replying to my own message, but I didn't get any replies 
-from the list, and I've found out more info.
+ok i just saw that the little "diagram" I sent on OP had been moved
+about when sent, so resending the interface information just in case.
 
-Summary of the previous problem: On our Web servers, conntrack shows 
-many ESTABLISHED / UNREPLIED connections, like this:
+A: 10.0.1.200
+B : eth0 10.0.1.192, eth1 10.0.10.2
+C : eth0 10.0.10.1
 
-tcp      6 426339 ESTABLISHED src=64.62.209.98 dst=96.221.109.137 
-sport=443 dport=50465 packets=2 bytes=178 [UNREPLIED] src=96.221.109.137 
-dst=64.62.209.98 sport=50465 dport=443 packets=0 bytes=0 mark=0 
-secmark=0 use=1
 
-These are not real connections (they don't appear in netstat), and they 
-linger for five days before they go away. This can cause serious 
-problems when using connlimit, because it incorrectly counts these 
-phantom connections as valid.
+A and B are on the same subnet and B and C are on another subnet.
 
-After much debugging, I now see exactly how these "connections" are 
-getting created. What's happening is this (I think):
+The idea is to open the browser in A type 10.0.1.192 and get the web
+server that is on C.
 
-A client makes an HTTP connection and sends a request. The client 
-decides to close that connection, sending a FIN packet. However, just 
-before the server receives the FIN packet, it sent a data packet with 
-the ack bit set. When that data packet arrives at the client, the client 
-considers the connection to be closed, so it replies with a RST.
+I did what you suggested Mr Taylor, and still does not work.
 
-On the server, conntrack sees that RST and marks the connection as state 
-CLOSEd, then DESTROYed. But there's a problem -- the server is still 
-repeatedly trying to resend that final data packet because it was never 
-ACKed.
+iptables -L lists this :
 
-So conntrack sees the resent outgoing packet with the ack bit set, but 
-it doesn't know about an established connection (that connection was 
-destroyed by the RST). This makes conntrack create a new outgoing 
-ESTABLISHED "connection" that doesn't really exist, but which lingers 
-for 5 days. This appears to happen because the TCP state transition 
-table for the original direction of nf_conntrack_proto_tcp.c assumes 
-that sNO -> sES is automatically a valid, established connection.
 
-This is a problem. On each of my Web servers, there are thousands of 
-such phantom "outgoing source port 80/443" connections being tracked by 
-netfilter, and it causes incorrect matches of my connlimit rule.
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
 
-Is this a known issue? How do other people work around it? Assuming this 
-is normal behavior, what I really want is for conntrack to ignore any 
-bogus outgoing packets that appear to be "from" port 80 or 443 on the 
-server -- my servers never open new outgoing connections with those 
-source ports -- but I can't figure out how to do that, despite much 
-playing around with the "raw" table.
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     tcp  --  anywhere             Macintosh.local     tcp dpt:www
+ACCEPT     tcp  --  Macintosh.local      anywhere            tcp spt:www
 
-Something like this sounds like it should work:
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
-  iptables -t raw -I OUTPUT -p tcp --sport 80 -j NOTRACK
+Chain fail2ban-ssh (0 references)
 
-But in practice that breaks the normal conntrack reply tracking for an 
-incoming connection.
 
-Any suggestions? Thanks for your time!
+thank you again
+
+Charles
+
+On Tue, Jul 8, 2008 at 6:03 PM, Charles Romestant <cromestant@gmail.com> wrote:
+> by the way, from B i can see the server on C, so it is not a NIC problem.
+>
+> thanks again.
+>
+> charles
+>
+> On Tue, Jul 8, 2008 at 6:02 PM, Charles Romestant <cromestant@gmail.com> wrote:
+>> thanks for answer
+>>
+>> hmm tried it and still does not work...
+>>
+>> any ideas, at least to get some debug info... still can t see the
+>> server from a browser on A.
+>>
+>>
+>> On Tue, Jul 8, 2008 at 5:40 PM, Grant Taylor <gtaylor@riverviewtech.net> wrote:
+>>> On 07/07/08 16:49, Charles Romestant wrote:
+>>>>
+>>>> on C there is a web server, running on port 80, I want to be able to
+>>>> access it through B from A.
+>>>>
+>>>> So basically the ruleset should be on B if its port 80, forward to port 80
+>>>> on C.
+>>>
+>>> These two rules should do the trick to get the traffic forwarded on through
+>>> B to C.
+>>>
+>>> iptables -t nat -A PREROUTING -i eth0 -d 10.0.1.192 -p tcp --dport 80 -j
+>>> DNAT --to-destination 10.0.10.1
+>>> iptables -t filter -A FORWARD -i eth0 -o eth1 -d 10.0.10.1 -p tcp --dport 80
+>>> -j ACCEPT
+>>>
+>>> You will need to make sure that the reply traffic back from C is allowed and
+>>> appears to be from B.
+>>>
+>>> iptables -t filter -A FORWARD -i eth1 -o eth0 -s 10.0.10.1 -p tcp --sport 80
+>>> -j ACCEPT
+>>> iptables -t nat -A POSTROUTING -o eth0 -s 10.0.10.1 -p tcp --sport 80 -j
+>>> SNAT --to-source 10.0.1.192
+>>>
+>>>> Any help would be appreciated, thank you in advance,
+>>>
+>>> You are welcome.
+>>>
+>>>
+>>>
+>>> Grant. . . .
+>>> --
+>>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>>> the body of a message to majordomo@vger.kernel.org
+>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>>
+>>
+>>
+>>
+>> --
+>> Charz
+>>
+>
+>
+>
+> --
+> Charz
+>
+
+
 
 -- 
-Robert L Mathews, Tiger Technologies
+Charz
