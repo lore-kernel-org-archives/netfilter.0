@@ -1,76 +1,48 @@
-From: =?ISO-8859-1?Q?Pekka_J=E4rvinen?= <pekkajarvinen@kolumbus.fi>
-Subject: NAT only selected bridges
-Date: Mon, 07 Jul 2008 01:49:37 +0300
-Message-ID: <48714C01.6000207@kolumbus.fi>
+From: "Elison Niven" <Elison.Niven@Matrixtelesol.com>
+Subject: Re: iptables resources consumed
+Date: Mon, 7 Jul 2008 11:02:53 +0530
+Message-ID: <VPOP31.4.0e.20080707110152.031.c.1.00149acd@matrixindia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-I have
-VLAN 111 - LAN
-VLAN 222 - WLAN
-VLAN 333 - ADSL Modem
-VLAN 444 - Internet (connecting through VLAN 333)
+> Uh, this could make for a bit of fun.  It is trivial to write an 
+> IPTables rule to match based on static source / destination IP and / or 
+> source / destination port or any combination there of.  However to match 
+> the dynamic ports, you will need may need a helper to find what is 
+> negotiated.
 
-br0 - Internet
-br1 - LAN 192.168.0.0/24
-br2 - WLAN 192.168.1.0/24
+My main application will know these IP addresses and port numbers through
+the negotiation. Once the negotiation is done actual RTP data will flow to
+and from the DSPs and this data has to sent from eth0 to eth2 and from eth2
+to eth0.
 
-With current setup br1 and br2 are NAT'ed correctly but connections=20
-coming straight from br0 are NAT'ed too for some reason.
+After the negotiation, my main application (in C) will do a simple system
+call like
 
-So I'm trying to set up rules for something like:
-NAT br1 and br2 and don't change IP addresses coming directly from br0=20
-(or VLAN 444).
+system("iptables [OPTIONS] ...");
+
+to add a rule for packets received on eth0 and on which DSP to forward them
+to.
+
+After the call is over, my main application will do another call to iptables
+to remove the above added rule.
+
+> Question:  Is filtering out packets from the DSPs other than what you 
+> have mentioned a must or is it ok if packets leak out.  In other words, 
+> do they have to be filtered (prevent them from going) out as long as the 
+> RTP packets go where they are suppose to go?
+
+No, packets that the DSPs send are not to be prevented from going out on
+eth0.
+
+Best Regards,
+Elison
 
 
-Here's /etc/network/interfaces:
-auto lo
-iface lo inet loopback
-
-allow-hotplug eth0
-allow-hotplug eth1
-
-iface eth0 inet static
-iface eth1 inet static
-
-auto br0
-auto br1
-auto br2
-
-# Internet bridge
-iface br0 inet static
-        address 62.204.1.12
-        netmask 255.255.255.128
-        gateway 62.204.1.1
-        bridge_ports eth1.333 eth0.444
-        bridge_stp on
-        post-up iptables -t nat -A POSTROUTING -o br0 -j MASQUERADE
-        pre-down iptables -t nat -D POSTROUTING -o br0 -j MASQUERADE
-
-# LAN bridge
-iface br1 inet static
-        address 192.168.0.1
-        netmask 255.255.255.0
-        bridge_ports eth0.111
-        bridge_stp on
-
-# WLAN bridge
-iface br2 inet static
-        address 192.168.1.1
-        netmask 255.255.255.0
-        bridge_ports eth0.222
-        bridge_stp on
-
-# -----
-
-ipv4 forward is enabled.
-
---=20
-Pekka J=E4rvinen
