@@ -1,74 +1,38 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: conntrack and ESTABLISHED / UNREPLIED connections
-Date: Tue, 8 Jul 2008 11:42:07 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0807081130220.7417@blackhole.kfki.hu>
-References: <486D31D9.9070900@tigertech.com> <4872A115.2030604@tigertech.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: libnetfilter_conntrack-0.0.95 compile error
+Date: Tue, 08 Jul 2008 12:23:18 +0200
+Message-ID: <48734016.8010702@netfilter.org>
+References: <935fab200806300948y65018956ud5513d16cd93c9cd@mail.gmail.com>	 <486DD54B.9040902@netfilter.org> <935fab200807071522q586aa452x54b4b3df13f62d48@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4872A115.2030604@tigertech.com>
+In-Reply-To: <935fab200807071522q586aa452x54b4b3df13f62d48@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Robert L Mathews <lists@tigertech.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Dave <finalglide@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Mon, 7 Jul 2008, Robert L Mathews wrote:
-
-> Summary of the previous problem: On our Web servers, conntrack shows 
-> many ESTABLISHED / UNREPLIED connections, like this:
+Dave wrote:
+> Drats, still have the issue.
 > 
-> tcp      6 426339 ESTABLISHED src=64.62.209.98 dst=96.221.109.137 sport=443
-> dport=50465 packets=2 bytes=178 [UNREPLIED] src=96.221.109.137
-> dst=64.62.209.98 sport=50465 dport=443 packets=0 bytes=0 mark=0 secmark=0
-> use=1
+> 1) Downloaded off main Netfilter site again and tried = same error
+> ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/libnetfilter_conntrack-0.0.95.tar.bz2
+> = make error
 > 
-> These are not real connections (they don't appear in netstat), and they linger
-> for five days before they go away. This can cause serious problems when using
-> connlimit, because it incorrectly counts these phantom connections as valid.
+> 2) Downloaded the most recent snapshots but all snapshots appear to be
+> missing their configure.
+>   2a) Latest one error on configure script
+> ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/snapshot/libnetfilter_conntrack-20080521.tar.bz2
+> = configure error
 > 
-> After much debugging, I now see exactly how these "connections" are getting
-> created. What's happening is this (I think):
-> 
-> A client makes an HTTP connection and sends a request. The client decides to
-> close that connection, sending a FIN packet. However, just before the server
-> receives the FIN packet, it sent a data packet with the ack bit set. When that
-> data packet arrives at the client, the client considers the connection to be
-> closed, so it replies with a RST.
+>   2b) Other two snapshots were missing their configure programs.
+> ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/snapshot/libnetfilter_conntrack-20080520.tar.bz2
+> = no configure included
+> ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/snapshot/libnetfilter_conntrack-20080519.tar.bz2
+> = no configure included
 
-If the data packet sent by the server is valid, the client should send an 
-ACK and not a RST packet. If the data packet is invalid, the client should 
-send an ACK again and not a RST. 
- 
-> On the server, conntrack sees that RST and marks the connection as state
-> CLOSEd, then DESTROYed. But there's a problem -- the server is still
-> repeatedly trying to resend that final data packet because it was never ACKed.
+Type `sh autogen.sh' to generate the configure file.
 
-If the server receives the RST packet (and it's valid) it should never 
-ever send unsent data but destroy the connection.
-
-Something is definitely wrong at the client, the server or between.
- 
-> So conntrack sees the resent outgoing packet with the ack bit set, but it
-> doesn't know about an established connection (that connection was destroyed by
-> the RST). This makes conntrack create a new outgoing ESTABLISHED "connection"
-> that doesn't really exist, but which lingers for 5 days. This appears to
-> happen because the TCP state transition table for the original direction of
-> nf_conntrack_proto_tcp.c assumes that sNO -> sES is automatically a valid,
-> established connection.
-> 
-> This is a problem. On each of my Web servers, there are thousands of such
-> phantom "outgoing source port 80/443" connections being tracked by netfilter,
-> and it causes incorrect matches of my connlimit rule.
-
-Disable picking up connections and you get rid of those stale connections:
-
-# echo 0 > /proc/sys/net/netfilter/nf_conntrack_tcp_loose
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
