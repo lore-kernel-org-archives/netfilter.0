@@ -1,64 +1,74 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: What are these and how can I not log them?
-Date: Mon, 07 Jul 2008 21:29:58 -0500
-Message-ID: <4872D126.8090304@riverviewtech.net>
-References: <48729139.8040505@libertytrek.org> <48729582.909@riverviewtech.net> <48729F72.5060502@libertytrek.org>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: conntrack and ESTABLISHED / UNREPLIED connections
+Date: Tue, 8 Jul 2008 11:42:07 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0807081130220.7417@blackhole.kfki.hu>
+References: <486D31D9.9070900@tigertech.com> <4872A115.2030604@tigertech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48729F72.5060502@libertytrek.org>
+In-Reply-To: <4872A115.2030604@tigertech.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Robert L Mathews <lists@tigertech.com>
+Cc: netfilter@vger.kernel.org
 
-On 7/7/2008 5:57 PM, Simon wrote:
-> Thanks for the response...
+On Mon, 7 Jul 2008, Robert L Mathews wrote:
 
-You are welcome.
-
-> Ok, makes sense, at least for the computers inside my network - but when 
-> the flood happens, it is from a non-local IP address, although I can't 
-> swear that the source/dest ports are the same... I'll have to watch for 
-> the next one and grab a snippet...
-
-Hum.  I'd be between curious to concerned to find unexpected IPs in 
-logs.  Now, if the logs are the "Default Drop and Log" type and not just 
-your internal interface, then it could be external traffic that appears 
-similar.
-
-> Yeah, I had someone help me set this up years ago, and I told him I 
-> wanted it buttoned up as tight as possible. He even added rules to block 
-> most OUT bound traffic as well, which I have since learned is probably 
-> not a great idea...
-
-Doing egress filtering is not necessarily a bad idea, you just have to 
-be careful.  Usually egress filtering helps ensure that you are a good 
-internet neighbor which is usually a good thing.
-
-> Any chance you or someone could help me in re-evaluating my current 
-> ruleset?
-
-I'm not sure that this mailing list is the best place to ask for help in 
-creating and / or (re)assessing a rule set.  IMHO this list is more of a 
-place to ask how to make something specific work rather than how should 
-I / what firewall should I use for my network with this <bla> config. 
-(However I'd be willing to do so off list if you will email me directly.)
-
-> To dump the current rules to a file I'd just do:
+> Summary of the previous problem: On our Web servers, conntrack shows 
+> many ESTABLISHED / UNREPLIED connections, like this:
 > 
-> iptables-save > myrules
+> tcp      6 426339 ESTABLISHED src=64.62.209.98 dst=96.221.109.137 sport=443
+> dport=50465 packets=2 bytes=178 [UNREPLIED] src=96.221.109.137
+> dst=64.62.209.98 sport=50465 dport=443 packets=0 bytes=0 mark=0 secmark=0
+> use=1
 > 
-> Then just copy/paste the contents here for evaluation (if thats ok)?
+> These are not real connections (they don't appear in netstat), and they linger
+> for five days before they go away. This can cause serious problems when using
+> connlimit, because it incorrectly counts these phantom connections as valid.
+> 
+> After much debugging, I now see exactly how these "connections" are getting
+> created. What's happening is this (I think):
+> 
+> A client makes an HTTP connection and sends a request. The client decides to
+> close that connection, sending a FIN packet. However, just before the server
+> receives the FIN packet, it sent a data packet with the ack bit set. When that
+> data packet arrives at the client, the client considers the connection to be
+> closed, so it replies with a RST.
 
-Yes, that will probably work the best.
+If the data packet sent by the server is valid, the client should send an 
+ACK and not a RST packet. If the data packet is invalid, the client should 
+send an ACK again and not a RST. 
+ 
+> On the server, conntrack sees that RST and marks the connection as state
+> CLOSEd, then DESTROYed. But there's a problem -- the server is still
+> repeatedly trying to resend that final data packet because it was never ACKed.
 
-> Thanks again for your time...
+If the server receives the RST packet (and it's valid) it should never 
+ever send unsent data but destroy the connection.
 
-*nod*
+Something is definitely wrong at the client, the server or between.
+ 
+> So conntrack sees the resent outgoing packet with the ack bit set, but it
+> doesn't know about an established connection (that connection was destroyed by
+> the RST). This makes conntrack create a new outgoing ESTABLISHED "connection"
+> that doesn't really exist, but which lingers for 5 days. This appears to
+> happen because the TCP state transition table for the original direction of
+> nf_conntrack_proto_tcp.c assumes that sNO -> sES is automatically a valid,
+> established connection.
+> 
+> This is a problem. On each of my Web servers, there are thousands of such
+> phantom "outgoing source port 80/443" connections being tracked by netfilter,
+> and it causes incorrect matches of my connlimit rule.
 
-You are welcome.
+Disable picking up connections and you get rid of those stale connections:
 
+# echo 0 > /proc/sys/net/netfilter/nf_conntrack_tcp_loose
 
-
-Grant. . . .
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
