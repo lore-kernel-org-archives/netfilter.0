@@ -1,56 +1,25 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnetfilter_conntrack 0.0.96 release
-Date: Wed, 09 Jul 2008 16:41:30 +0200
-Message-ID: <4874CE1A.7060407@netfilter.org>
+From: Robert L Mathews <lists@tigertech.com>
+Subject: Re: conntrack and ESTABLISHED / UNREPLIED connections
+Date: Wed, 09 Jul 2008 09:22:03 -0700
+Message-ID: <4874E5AB.4070700@tigertech.com>
+References: <486D31D9.9070900@tigertech.com> <4872A115.2030604@tigertech.com> <Pine.LNX.4.64.0807081130220.7417@blackhole.kfki.hu> <4873A605.1010209@tigertech.com> <Pine.LNX.4.64.0807090842270.11391@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000401080706020002070504"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0807090842270.11391@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-This is a multi-part message in MIME format.
---------------000401080706020002070504
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Jozsef Kadlecsik wrote:
 
-Hi!
+> Is the RST segment valid? Could you create a dump file using the '-S' flag 
+> of tcpdump so that not relative but absolute sequence numbers are printed?
 
-The netfilter project proudly presents libnetfilter_conntrack-0.0.96
+Sure thing; here's another one with -S:
 
-libnetfilter_conntrack is a userspace library providing a programming
-interface (API) to the in-kernel connection tracking state table.
-
-This library requires a linux kernel >= 2.6.18.
-
-This release includes a compilation fix in debian systems. See ChangeLog
-for more details.
-
-You can download it from:
-
-http://www.netfilter.org/projects/libnetfilter_conntrack/
-ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
-
-Pablo (on behalf of the Netfilter Project)
+  http://tigertech.net/20080709.tcpdump.server.txt
 
 -- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
-
-
-
-
---------------000401080706020002070504
-Content-Type: text/plain;
- name="ChangeLog"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ChangeLog"
-
-Pablo Neira Ayuso (2):
-      conditional compilation of testsuite utils
-      bump version to 0.0.96
-
-
---------------000401080706020002070504--
+Robert L Mathews, Tiger Technologies
