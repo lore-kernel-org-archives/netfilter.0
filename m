@@ -1,31 +1,59 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Port Forwarding .
-Date: Tue, 08 Jul 2008 15:21:52 -0500
-Message-ID: <4873CC60.9060808@riverviewtech.net>
-References: <5078d3df0807071449k730a33cxe31e0b34078f5794@mail.gmail.com>	 <5078d3df0807071533k47a5dd16i254b3ae3592d7a77@mail.gmail.com>	 <5078d3df0807071610m5b47a81qc5d830a8b7bd0cff@mail.gmail.com>	 <5078d3df0807071658p73a25291v8522a9645fa8b8f9@mail.gmail.com>	 <4872CFA4.4030406@riverviewtech.net>	 <5078d3df0807081220q71674472m660de0de432e6bd7@mail.gmail.com>	 <4873C1E0.2010609@riverviewtech.net>	 <5078d3df0807081240m24ccbf81s9502fb078a7187cf@mail.gmail.com>	 <4873C516.5010300@riverviewtech.net>	 <5078d3df0807081254m44696415s23951989a736b741@mail.gmail.com> <5078d3df0807081311mbd257dctc19ce6c14d36ed10@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: conntrack and ESTABLISHED / UNREPLIED connections
+Date: Wed, 9 Jul 2008 08:54:06 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0807090842270.11391@blackhole.kfki.hu>
+References: <486D31D9.9070900@tigertech.com> <4872A115.2030604@tigertech.com>
+ <Pine.LNX.4.64.0807081130220.7417@blackhole.kfki.hu> <4873A605.1010209@tigertech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5078d3df0807081311mbd257dctc19ce6c14d36ed10@mail.gmail.com>
+In-Reply-To: <4873A605.1010209@tigertech.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Robert L Mathews <lists@tigertech.com>
+Cc: netfilter@vger.kernel.org
 
-On 07/08/08 15:11, Charles Romestant wrote:
-> Ok, found out what the problem was... and i am trlly sorry to have 
-> wasted your time. Problem was simple host C did not have the gateway 
-> set to the ip of the NAT... so basically no return path for packets 
-> IIRC.
+On Tue, 8 Jul 2008, Robert L Mathews wrote:
 
-Dough!  That will do it.
+> Jozsef Kadlecsik wrote:
+> 
+> > If the data packet sent by the server is valid, the client should send an
+> > ACK and not a RST packet. If the data packet is invalid, the client should
+> > send an ACK again and not a RST. 
+> 
+> Actually, unless I'm misunderstanding, RFC1122 section 4.2.2.13 seems to allow
+> what the client is doing:
+> 
+>   A host MAY implement a "half-duplex" TCP close sequence, so
+>   that an application that has called CLOSE cannot continue to
+>   read data from the connection.  If such a host issues a
+>   CLOSE call while received data is still pending in TCP, or
+>   if new data is received after CLOSE is called, its TCP
+>   SHOULD send a RST to show that data was lost.
+> 
+> So in this case, the client app closed the connection even though there was
+> data from the server that hadn't been delivered, and the client's TCP stack
+> replied with a RST as described above.
 
-> again, thank you very much for your help
+Yes, that's correct and I was wrong above.
+  
+> > If the server receives the RST packet (and it's valid) it should never ever
+> > send unsent data but destroy the connection.
+> 
+> That's what I would have thought, but packet dumps are showing otherwise. On a
+> standard Debian 2.6.24 kernel it keeps retrying the un-acked packet for more
+> than a minute despite the RST, as shown at the end of:
+> 
+>  http://tigertech.net/20080703.tcpdump.server.txt
 
-We are all human.
-
-You are welcome.
-
-
-
-Grant. . . .
+Is the RST segment valid? Could you create a dump file using the '-S' flag 
+of tcpdump so that not relative but absolute sequence numbers are printed?
+ 
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
