@@ -1,76 +1,96 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: conntrack and ESTABLISHED / UNREPLIED connections
-Date: Thu, 10 Jul 2008 14:44:01 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0807101247240.13027@blackhole.kfki.hu>
-References: <486D31D9.9070900@tigertech.com> <4872A115.2030604@tigertech.com>
- <Pine.LNX.4.64.0807081130220.7417@blackhole.kfki.hu> <4873A605.1010209@tigertech.com>
- <Pine.LNX.4.64.0807090842270.11391@blackhole.kfki.hu> <4874E5AB.4070700@tigertech.com>
-Mime-Version: 1.0
+From: John Stockdale <jstockdale@videosurf.com>
+Subject: IPTables with LVS-TUN -- eth0 shows encapsulated packets, but the decapsulated packets never make it to tunl0
+Date: Thu, 10 Jul 2008 12:36:29 -0700
+Message-ID: <698F3541-812A-4F45-98E9-55C94F23B4F1@videosurf.com>
+Mime-Version: 1.0 (Apple Message framework v924)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4874E5AB.4070700@tigertech.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Robert L Mathews <lists@tigertech.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+To: netfilter@vger.kernel.org
 
-On Wed, 9 Jul 2008, Robert L Mathews wrote:
+Hi everyone,
 
-> > Is the RST segment valid? Could you create a dump file using the '-S' flag
-> > of tcpdump so that not relative but absolute sequence numbers are printed?
-> 
-> Sure thing; here's another one with -S:
-> 
->  http://tigertech.net/20080709.tcpdump.server.txt
+I'm running a LVS loadbalancer in front of several apache instances,  
+using ip tunneling to forward the packets. When the firewall is down  
+(--flush) everything works beautifully. When I bring iptables back up,  
+everything dies.
 
-The end of the TCP session is as follows:
+I've managed to trace the issue to the point where I can watch (with  
+tcpdump) the proto: IPIP packets ingress on eth0, but never show up  
+decapsulated on tunl0 (or anywhere else).
 
-08:55:16.499702 IP 64.62.209.98.443 > 96.221.109.137.49553: P 
-716440962:716440999(37) ack 2354211888 win 71 
-<nop,nop,timestamp 140394633 528033351>
+Any help would be greatly appreciated.
 
-Server sends data still pending to the client.
+The relevant iptables rules, and ifconfig output follows. XXX.XXX.XXX. 
+17 is the primary loadbalancer, XXX.XXX.XXX.18 is the secondary, and  
+XXX.XXX.XXX.42 is the service address (bound to tunl0).
 
-08:55:16.499799 IP 64.62.209.98.443 > 96.221.109.137.49553: F 
-716440999:716440999(0) ack 2354211888 win 71 
-<nop,nop,timestamp 140394633 528033351>
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [11714046:38544927249]
+:Firewall - [0:0]
+-A INPUT -j Firewall
+# Global allow established traffic
+-A Firewall -m state --state ESTABLISHED,RELATED -j ACCEPT
+# Global SSH @ Port 22
+-A Firewall -p tcp -m tcp --dport 22 -j ACCEPT
+# DNS Responses
+-A Firewall -p udp -s XXX.XXX.XXX.XXX/32 --source-port 53 -d 0/0 -- 
+destination-port 1024:65535 -j ACCEPT
+-A Firewall -p udp -s XXX.XXX.XXX.XXX/32 --source-port 53 -d 0/0 -- 
+destination-port 1024:65535 -j ACCEPT
+# Global WWW
+-A Firewall -p tcp -m tcp --dport 80 -j ACCEPT
+# time.nist.gov ntpd access
+-A Firewall -p udp -s 192.43.244.18/32 --source-port 123 --destination- 
+port 123 -j ACCEPT
+# Office ping
+-A Firewall -s XXX.XXX.XXX.XXX/29 -p icmp --icmp-type 8 -j ACCEPT
+# Local ping
+-A Firewall -s XXX.XXX.XXX.XXX/25 -p icmp --icmp-type 8 -j ACCEPT
+# Global allow ip tunnels from loadbalancers
+-A Firewall -s XXX.XXX.23.17 -p ipip -j ACCEPT
+-A Firewall -s XXX.XXX.23.18 -p ipip -j ACCEPT
+-A Firewall -d XXX.XXX.23.42 -p all -j ACCEPT
+# Allow local interface traffic on lo and tunl0
+-A Firewall -i lo -s 127.0.0.1 -p all -j ACCEPT
+-A Firewall -i tunl0 -p all -j ACCEPT
+# Global reject
+-A Firewall -j DROP
+COMMIT
 
-Then the server sends a connection termination request.
+eth0      Link encap:Ethernet  HWaddr XX:XX:XX:XX:XX:XX
+           inet addr:XXX.XXX.XXX.7  Bcast:XXX.XXX.XXX.127  Mask: 
+255.255.255.128
+           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+           RX packets:479975 errors:0 dropped:0 overruns:0 frame:0
+           TX packets:286084 errors:0 dropped:0 overruns:0 carrier:0
+           collisions:0 txqueuelen:1000
+           RX bytes:157547624 (150.2 MiB)  TX bytes:32662562 (31.1 MiB)
+           Interrupt:169 Memory:f8000000-f8012100
 
-08:55:16.500008 IP 96.221.109.137.49553 > 64.62.209.98.443: F 
-2354211888:2354211888(0) ack 716440962 win 65535 
-<nop,nop,timestamp 528033351 140394349>
+lo        Link encap:Local Loopback
+           inet addr:127.0.0.1  Mask:255.0.0.0
+           UP LOOPBACK RUNNING  MTU:16436  Metric:1
+           RX packets:444 errors:0 dropped:0 overruns:0 frame:0
+           TX packets:444 errors:0 dropped:0 overruns:0 carrier:0
+           collisions:0 txqueuelen:0
+           RX bytes:58036 (56.6 KiB)  TX bytes:58036 (56.6 KiB)
 
-Client did not receive the last two packets from the server but sends
-a connection termination request too.
+tunl0     Link encap:IPIP Tunnel  HWaddr
+           inet addr:XXX.XXX.XXX.42  Mask:255.255.255.255
+           UP RUNNING NOARP  MTU:1480  Metric:1
+           RX packets:2659 errors:0 dropped:0 overruns:0 frame:0
+           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+           collisions:0 txqueuelen:0
+           RX bytes:305154 (298.0 KiB)  TX bytes:0 (0.0 b) <- Note:  
+the RX bytes only increase when the firewall is down.
 
-08:55:16.500037 IP 64.62.209.98.443 > 96.221.109.137.49553: . ack 
-2354211889 win 71 <nop,nop,timestamp 140394633 528033351>
+____________________
+John Stockdale
+System Engineer
+jstockdale@videosurf.com
 
-Server ACKs that it received the FIN packet from the client.
-
-08:55:16.529487 IP 96.221.109.137.49553 > 64.62.209.98.443: R 
-2354211888:2354211888(0) win 0
-
-Client sends RST, which is out of (before) the window (left edge is at 
-2354211889), thus ignored by the server.
-
-08:55:16.740815 IP 64.62.209.98.443 > 96.221.109.137.49553: P 
-716440962:716440999(37) ack 2354211889 win 71 
-<nop,nop,timestamp 140394693 528033351>
-
-Server tries to send the data still pending.
-
-You wrote the client runs Mac OS X 10.4.11. I don't really know what's 
-wrong with it but it seems as a client related issue - or an ISP between 
-the client and server which tries to generate fake RST packets to tear 
-down connections.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
