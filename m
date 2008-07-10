@@ -1,58 +1,39 @@
-From: Dave <finalglide@gmail.com>
-Subject: Re: libnetfilter_conntrack-0.0.95 compile error
-Date: Wed, 9 Jul 2008 11:32:35 -0700
-Message-ID: <935fab200807091132x5df06ab3nf00deb9f1c84cde9@mail.gmail.com>
-References: <935fab200806300948y65018956ud5513d16cd93c9cd@mail.gmail.com>
-	 <486DD54B.9040902@netfilter.org>
-	 <935fab200807071522q586aa452x54b4b3df13f62d48@mail.gmail.com>
-	 <487341AE.50501@netfilter.org>
+From: "David Sparks" <dave@ca.sophos.com>
+Subject: DNAT multiple --to-destination gone: why?
+Date: Wed, 09 Jul 2008 17:32:44 -0700
+Message-ID: <487558AC.8080704@ca.sophos.com>
+Reply-To: "David Sparks" <dave@ca.sophos.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=1GNAu7hmc6/KOHhrcm+VveKsUPsmgio6QgQ9XSO+Cc0=;
-        b=oWaaLf3EZVtYbu+nAWuY4PX4Xqlpf7iJ46hrmH7OZeAzDdJMLLSSZw5DPlvVA177BZ
-         zCcBKZYy9L/2mRXYzN71biI1EmB7nxx8lC7NcKG8ukvTl8K7PjB4AuAMNpnNH4QDrhrr
-         icP6sZczFeXmIs6Cbknz5YRcW9CvvP/11jpQs=
-In-Reply-To: <487341AE.50501@netfilter.org>
-Content-Disposition: inline
+Content-Class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Thanks Pablo, the newest version compiled just fine.
+According to man iptables:
 
-http://www.netfilter.org/projects/libnetfilter_conntrack/files/libnetfilter_conntrack-0.0.96.tar.bz2
+DNAT...
+               In Kernels up to 2.6.10 you  can  add  several  --to-destination
+               options.  For those kernels, if you specify more than one desti-
+               nation address, either via an address range  or  multiple  --to-
+               destination  options, a simple round-robin (one after another in
+               cycle) load  balancing  takes  place  between  these  addresses.
+               Later  Kernels  (>= 2.6.11-rc1) don't have the ability to NAT to
+               multiple ranges anymore.
 
+I'm wondering why this feature was removed?
 
+What are the workarounds/alternatives?
 
-On Tue, Jul 8, 2008 at 3:30 AM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> Dave wrote:
->> Drats, still have the issue.
->>
->> 1) Downloaded off main Netfilter site again and tried = same error
->> ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/libnetfilter_conntrack-0.0.95.tar.bz2
->> = make error
->>
->> 2) Downloaded the most recent snapshots but all snapshots appear to be
->> missing their configure.
->>   2a) Latest one error on configure script
->> ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/snapshot/libnetfilter_conntrack-20080521.tar.bz2
->> = configure error
->>
->>   2b) Other two snapshots were missing their configure programs.
->> ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/snapshot/libnetfilter_conntrack-20080520.tar.bz2
->> = no configure included
->> ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/snapshot/libnetfilter_conntrack-20080519.tar.bz2
->> = no configure included
->
-> Sorry, there was some problems with the snapshots, could you try latest?
->
-> --
-> "Los honestos son inadaptados sociales" -- Les Luthiers
->
+The reason I ask is that I'm using the range feature to DNAT packets 
+round-robin to 5 machines (.101-.105).  .103 just had a hard drive failure and 
+when I went to remove it from the iptables config I find I can't do that 
+anymore as the feature was removed!  I've worked around the problem by 
+re-IPing a machine but I'm wondering if there is a iptables solution to this 
+so I'll be better prepared in future?
+
+Thanks!
+
+ds
