@@ -1,61 +1,54 @@
-From: Brian Austin <brian@standarduniversal.com.au>
-Subject: dual wan routing, looking from the outside...
-Date: Fri, 11 Jul 2008 10:18:15 +1000
-Message-ID: <4876A6C7.7010709@standarduniversal.com.au>
+From: Robert L Mathews <lists@tigertech.com>
+Subject: Re: conntrack and ESTABLISHED / UNREPLIED connections
+Date: Thu, 10 Jul 2008 17:45:55 -0700
+Message-ID: <4876AD43.3020205@tigertech.com>
+References: <486D31D9.9070900@tigertech.com> <4872A115.2030604@tigertech.com> <Pine.LNX.4.64.0807081130220.7417@blackhole.kfki.hu> <4873A605.1010209@tigertech.com> <Pine.LNX.4.64.0807090842270.11391@blackhole.kfki.hu> <4874E5AB.4070700@tigertech.com> <Pine.LNX.4.64.0807101247240.13027@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0807101247240.13027@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
-after some problems with attempt #1 at dual wan routing I have decided 
-to start afresh. Unfortunately I have put the router in production so I 
-need to be pretty careful now with what I do, so thought to ask the 
-clever people for some thoughts.
+Jozsef Kadlecsik wrote:
 
-for my second attempt
+> Client sends RST, which is out of (before) the window (left edge is at 
+> 2354211889), thus ignored by the server.
 
-I have my kernel 2.6.25.15 patched with http://www.ssi.bg/~ja/#routes.
+That makes sense, but it seems like conntrack processes the RST and 
+marks the original connection as closed, then treats the server resends 
+as new outgoing connections, which doesn't seem right.
 
-I have two isp connections and I advertise my mail server (smtp & imap) 
-on my first ISP connection, and my vpn connection on the other isp 
-connection.
+In other words, if the server's TCP stack is ignoring the RST, shouldn't 
+conntrack ignore it, too?
 
-mail - isp1 --adslmodem1---192.168.20.x
-imaps                          |
-                           dual wan router    --192.168.41.x-- mail 
-imaps server is behind the wan router
-                           is also vpn server
-                            and smtp server     
-                               |
-vpn  - isp2 --adslmodem2---192.168.19.x
+It apparently doesn't -- I used the "conntrack -E" tool to show a log of 
+these connections, and it definitely shows it handling the RST, then 
+detecting a new connection in the other direction from the retried 
+outgoing packets.
 
-I port forward through the adsl modems to the wan router, adslmodem1 
-port forwards mail 25,993 ports, adslmodem2 forwards openvpn port.
+Here's an example of one:
 
-openvpn is served up by the dual wan router, as is smtp.
+  http://www.tigertech.net/20080710.txt
 
-the imap mail is served up by the mail server behind the wan router, 
-like this
-iptables -A PREROUTING -d 192.168.20.253 -i eth20 -p tcp -m tcp --dport 
-993 -j DNAT --to-destination 192.168.41.5:993
+This includes the tcpdump, plus (at the end) the output of the 
+"conntrack" tool used in both directions, showing how it incorrectly 
+detected a new connection in the outbound direction. Unfortunately the 
+conntrack output doesn't show timestamps, but I was watching it, and the 
+spurious outbound "connection" was detected during the retries, within 
+maybe 30 seconds after the incoming connection was DESTROYed.
 
- 
-Now the problem I have at the moment is.
 
- From the outside, I can only access services from one isp connection at 
-a time. So if I VPN in, then I cant access my imaps mail,
+> You wrote the client runs Mac OS X 10.4.11. I don't really know what's 
+> wrong with it but it seems as a client related issue - or an ISP between 
+> the client and server which tries to generate fake RST packets to tear 
+> down connections.
 
-do I need to do some sort of packet marking to achieve this? So that 
-packets from the same internet host can route out both wan connections 
-simultaniously?
+Whatever it is, it's unfortunately quite common -- as I said, any of our 
+reasonably-busy Web servers show thousands of such phantom connections 
+from hundreds of unique IP addresses.
 
-Pointers to example scripts or the right information to study appreciated
-
-regards
-
-Brian
-
+-- 
+Robert L Mathews, Tiger Technologies
