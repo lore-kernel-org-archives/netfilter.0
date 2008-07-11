@@ -1,114 +1,61 @@
-From: John Stockdale <jstockdale@videosurf.com>
-Subject: Re: IPTables with LVS-TUN -- eth0 shows encapsulated packets, but the decapsulated packets never make it to tunl0
-Date: Thu, 10 Jul 2008 14:44:37 -0700
-Message-ID: <E671C09E-B703-46FE-A2BE-A5A2798EA516@videosurf.com>
-References: <698F3541-812A-4F45-98E9-55C94F23B4F1@videosurf.com>
-Mime-Version: 1.0 (Apple Message framework v924)
+From: Brian Austin <brian@standarduniversal.com.au>
+Subject: dual wan routing, looking from the outside...
+Date: Fri, 11 Jul 2008 10:18:15 +1000
+Message-ID: <4876A6C7.7010709@standarduniversal.com.au>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <698F3541-812A-4F45-98E9-55C94F23B4F1@videosurf.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
-Cc: John Stockdale <jstockdale@videosurf.com>
 
-To clarify, this is the firewall on the apache machines, not the  
-loadbalancer. The LB firewall works just fine.
-____________________
-John Stockdale
-System Engineer
-jstockdale@videosurf.com
+Hi,
+after some problems with attempt #1 at dual wan routing I have decided 
+to start afresh. Unfortunately I have put the router in production so I 
+need to be pretty careful now with what I do, so thought to ask the 
+clever people for some thoughts.
 
-On Jul 10, 2008, at 12:36 PM, John Stockdale wrote:
+for my second attempt
 
-> Hi everyone,
->
-> I'm running a LVS loadbalancer in front of several apache instances,  
-> using ip tunneling to forward the packets. When the firewall is down  
-> (--flush) everything works beautifully. When I bring iptables back  
-> up, everything dies.
->
-> I've managed to trace the issue to the point where I can watch (with  
-> tcpdump) the proto: IPIP packets ingress on eth0, but never show up  
-> decapsulated on tunl0 (or anywhere else).
->
-> Any help would be greatly appreciated.
->
-> The relevant iptables rules, and ifconfig output follows.  
-> XXX.XXX.XXX.17 is the primary loadbalancer, XXX.XXX.XXX.18 is the  
-> secondary, and XXX.XXX.XXX.42 is the service address (bound to tunl0).
->
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [11714046:38544927249]
-> :Firewall - [0:0]
-> -A INPUT -j Firewall
-> # Global allow established traffic
-> -A Firewall -m state --state ESTABLISHED,RELATED -j ACCEPT
-> # Global SSH @ Port 22
-> -A Firewall -p tcp -m tcp --dport 22 -j ACCEPT
-> # DNS Responses
-> -A Firewall -p udp -s XXX.XXX.XXX.XXX/32 --source-port 53 -d 0/0 -- 
-> destination-port 1024:65535 -j ACCEPT
-> -A Firewall -p udp -s XXX.XXX.XXX.XXX/32 --source-port 53 -d 0/0 -- 
-> destination-port 1024:65535 -j ACCEPT
-> # Global WWW
-> -A Firewall -p tcp -m tcp --dport 80 -j ACCEPT
-> # time.nist.gov ntpd access
-> -A Firewall -p udp -s 192.43.244.18/32 --source-port 123 -- 
-> destination-port 123 -j ACCEPT
-> # Office ping
-> -A Firewall -s XXX.XXX.XXX.XXX/29 -p icmp --icmp-type 8 -j ACCEPT
-> # Local ping
-> -A Firewall -s XXX.XXX.XXX.XXX/25 -p icmp --icmp-type 8 -j ACCEPT
-> # Global allow ip tunnels from loadbalancers
-> -A Firewall -s XXX.XXX.23.17 -p ipip -j ACCEPT
-> -A Firewall -s XXX.XXX.23.18 -p ipip -j ACCEPT
-> -A Firewall -d XXX.XXX.23.42 -p all -j ACCEPT
-> # Allow local interface traffic on lo and tunl0
-> -A Firewall -i lo -s 127.0.0.1 -p all -j ACCEPT
-> -A Firewall -i tunl0 -p all -j ACCEPT
-> # Global reject
-> -A Firewall -j DROP
-> COMMIT
->
-> eth0      Link encap:Ethernet  HWaddr XX:XX:XX:XX:XX:XX
->          inet addr:XXX.XXX.XXX.7  Bcast:XXX.XXX.XXX.127  Mask: 
-> 255.255.255.128
->          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
->          RX packets:479975 errors:0 dropped:0 overruns:0 frame:0
->          TX packets:286084 errors:0 dropped:0 overruns:0 carrier:0
->          collisions:0 txqueuelen:1000
->          RX bytes:157547624 (150.2 MiB)  TX bytes:32662562 (31.1 MiB)
->          Interrupt:169 Memory:f8000000-f8012100
->
-> lo        Link encap:Local Loopback
->          inet addr:127.0.0.1  Mask:255.0.0.0
->          UP LOOPBACK RUNNING  MTU:16436  Metric:1
->          RX packets:444 errors:0 dropped:0 overruns:0 frame:0
->          TX packets:444 errors:0 dropped:0 overruns:0 carrier:0
->          collisions:0 txqueuelen:0
->          RX bytes:58036 (56.6 KiB)  TX bytes:58036 (56.6 KiB)
->
-> tunl0     Link encap:IPIP Tunnel  HWaddr
->          inet addr:XXX.XXX.XXX.42  Mask:255.255.255.255
->          UP RUNNING NOARP  MTU:1480  Metric:1
->          RX packets:2659 errors:0 dropped:0 overruns:0 frame:0
->          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
->          collisions:0 txqueuelen:0
->          RX bytes:305154 (298.0 KiB)  TX bytes:0 (0.0 b) <- Note:  
-> the RX bytes only increase when the firewall is down.
->
-> ____________________
-> John Stockdale
-> System Engineer
-> jstockdale@videosurf.com
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter"  
-> in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I have my kernel 2.6.25.15 patched with http://www.ssi.bg/~ja/#routes.
+
+I have two isp connections and I advertise my mail server (smtp & imap) 
+on my first ISP connection, and my vpn connection on the other isp 
+connection.
+
+mail - isp1 --adslmodem1---192.168.20.x
+imaps                          |
+                           dual wan router    --192.168.41.x-- mail 
+imaps server is behind the wan router
+                           is also vpn server
+                            and smtp server     
+                               |
+vpn  - isp2 --adslmodem2---192.168.19.x
+
+I port forward through the adsl modems to the wan router, adslmodem1 
+port forwards mail 25,993 ports, adslmodem2 forwards openvpn port.
+
+openvpn is served up by the dual wan router, as is smtp.
+
+the imap mail is served up by the mail server behind the wan router, 
+like this
+iptables -A PREROUTING -d 192.168.20.253 -i eth20 -p tcp -m tcp --dport 
+993 -j DNAT --to-destination 192.168.41.5:993
+
+ 
+Now the problem I have at the moment is.
+
+ From the outside, I can only access services from one isp connection at 
+a time. So if I VPN in, then I cant access my imaps mail,
+
+do I need to do some sort of packet marking to achieve this? So that 
+packets from the same internet host can route out both wan connections 
+simultaniously?
+
+Pointers to example scripts or the right information to study appreciated
+
+regards
+
+Brian
 
