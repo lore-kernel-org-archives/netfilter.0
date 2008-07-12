@@ -1,23 +1,44 @@
-From: Velvet Pixel <velvetpixel@gmail.com>
-Subject: iptables help please
-Date: Fri, 11 Jul 2008 16:16:45 -0700
-Message-ID: <1ce04a81aa0e973c5d33389c51759336@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v624)
+From: "Ukeme Noah" <ukeme.noah@gmail.com>
+Subject: RE: iptables help please
+Date: Sat, 12 Jul 2008 00:32:32 -0400
+Message-ID: <487833cf.0405be0a.0354.106d@mx.google.com>
+References: <1ce04a81aa0e973c5d33389c51759336@gmail.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:mime-version
-         :content-transfer-encoding:message-id:content-type:to:from:subject
-         :date:x-mailer;
-        bh=lbpK/6AKurU6m/J0ygXLc0q8I8x2Pg+pplLxaIkAxPI=;
-        b=d04Vl7vDCvOIzXT36Oqz6xMFWsfbTZMw1NaaE7OJfGDO9Z6dpY4i7bH7geY3njBp3G
-         Ae5nj3MUJk5/oxbGpVfUkLs1zOay2X6ZrAPNWguPLjc24oRiDrH2t908ZC/RoR+Nt94u
-         yn/Tg2nZcTwR/d/VCERqbf+rZ86pmX0b3sZHM=
+        h=domainkey-signature:received:received:from:to:subject:date
+         :mime-version:content-type:content-transfer-encoding:x-mailer
+         :thread-index:in-reply-to:x-mimeole:message-id;
+        bh=MnkdfoeW81+YRuqp6kSJhNE7BZqhun+dV3z1owi/EPI=;
+        b=fvzRzCB4bSAEf4kupN0qeqdSqUx0Ph9TeLyC3Y4FoTR8vKHE3KZLHBWS+z3L/8ROF8
+         xMjndBszgGMYY06Fh3ONXYyAY3EFM5uwrsBCrmbZhlRX9dAmrPhOcgCsD87fUIEDJ5Wb
+         AItfZTdLY0X5oPTVmCSgp4gDOPf5olZgLhm2Q=
+In-Reply-To: <1ce04a81aa0e973c5d33389c51759336@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: 'Velvet Pixel' <velvetpixel@gmail.com>, netfilter@vger.kernel.org
+
+Howdy,
+
+From my understanding, a message like "RES=0X00 ACK SYN URGP=0" would
+indicate a reply to a syn packet. Considering the source port is 22, I would
+suspect unauthorized access attempts on your server. On that note, I'd
+strongly advise, [if you've not already done so] that you use the PKI
+authentication mechanism and configure the SSH server to close any
+connection attempt to your server that fails to use this mechanism.
+
+Warm Regards
+Ukeme Noah
+
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org
+[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Velvet Pixel
+Sent: Friday, July 11, 2008 7:17 PM
 To: netfilter@vger.kernel.org
+Subject: iptables help please
 
 Since upgrading my install from CentOS 5.1 to 5.2 and I am getting lots 
 of errors in messages that look like they are iptables related.
@@ -83,4 +104,9 @@ with thousands of those messages being logged so I need help :)
 
 Thanks,
 Cameron
+
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
