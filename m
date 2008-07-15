@@ -1,61 +1,31 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: conntrack and ESTABLISHED / UNREPLIED connections
-Date: Mon, 14 Jul 2008 10:55:30 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0807141026370.17325@blackhole.kfki.hu>
-References: <486D31D9.9070900@tigertech.com> <4872A115.2030604@tigertech.com>
- <Pine.LNX.4.64.0807081130220.7417@blackhole.kfki.hu> <4873A605.1010209@tigertech.com>
- <Pine.LNX.4.64.0807090842270.11391@blackhole.kfki.hu> <4874E5AB.4070700@tigertech.com>
- <Pine.LNX.4.64.0807101247240.13027@blackhole.kfki.hu> <4876AD43.3020205@tigertech.com>
+From: Arnaud MARTIN <arnaud@bsa.net.my>
+Subject: ebtables brouting of all tcp and udp traffic
+Date: Tue, 15 Jul 2008 15:26:21 +0800
+Message-ID: <200807151526.21545.arnaud@bsa.net.my>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4876AD43.3020205@tigertech.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Robert L Mathews <lists@tigertech.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Thu, 10 Jul 2008, Robert L Mathews wrote:
+I have created a bridge on my server and I would like to bridge only the protocols other than tcp and udp. For these protocols I have an application running on the box that is listening in promiscuous mode to catch these packets. 
+The application is only interested in the packets not directly destined to the server itself.
 
-> Jozsef Kadlecsik wrote:
-> 
-> > Client sends RST, which is out of (before) the window (left edge is at
-> > 2354211889), thus ignored by the server.
-> 
-> That makes sense, but it seems like conntrack processes the RST and marks the
-> original connection as closed, then treats the server resends as new outgoing
-> connections, which doesn't seem right.
-> 
-> In other words, if the server's TCP stack is ignoring the RST, shouldn't
-> conntrack ignore it, too?
+I'm using the scrpt below to realize that:
 
-In theory, yes. But conntrack does not have got the same info as the end 
-nodes, e.g. packets which were seen and taken into account by conntrack 
-may get lost in transit. The window sizes in netfilter can easily be 
-slightly wider than the real window sizes at the sender and the receiver. 
-This is the reason why conntrack may think the RST segment is valid and 
-therefore destroys the conntrack entry.
- 
-> Whatever it is, it's unfortunately quite common -- as I said, any of our
-> reasonably-busy Web servers show thousands of such phantom connections from
-> hundreds of unique IP addresses.
+MAC_OF_BR0=<MAC of my bridge>
 
-Still, it's quite strange. Why such RST packets are generated at all?
+ebtables -t broute --flush
+ebtables -t broute -A BROUTING -d $MAC_OF_BR0 -p ipv4 -j redirect --redirect-target DROP
+ebtables -t broute -A BROUTING -p ipv4 --ip-proto tcp -i eth0 -j DROP
+ebtables -t broute -A BROUTING -p ipv4 --ip-proto tcp -i eth1 -j DROP
+ebtables -t broute -A BROUTING -p ipv4 --ip-proto udp -i eth0 -j DROP
+ebtables -t broute -A BROUTING -p ipv4 --ip-proto udp -i eth1 -j DROP
 
-"Late" packets (i.e. packets which are received after a connection is 
-destroyed in conntrack) creates "phantom" connections if 
-nf_conntrack_tcp_be_liberal is enabled (which is the default). We have to 
-balance on a two-edge sword: if we keep the connection in memory too long 
-after we have seen a complete termination (FIN-FIN-ACK or RST), then we 
-waste memory and conntrack is susceptible to DoS attacks; if we destroy 
-the connections too fast, the late packets create phantom connections or 
-false alarms.
+So far the brouting seems to work but as soon as I run this script, I'm not able to ssh to the server anymore. Also my application running on the server, has to connect to other server in the same configuration but it is not able to do it anymore. This is the reason why I added the 2nd line in the script but it doesn't work.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+To sum up I need to broute all udp and tcp traffic, except the traffic destined to the bridge IP/interface.
+How can I do it ?
