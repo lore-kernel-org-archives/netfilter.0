@@ -1,29 +1,48 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: NAT rule
-Date: Wed, 16 Jul 2008 14:31:31 -0500
-Message-ID: <487E4C93.9080502@riverviewtech.net>
-References: <487E4A67.70400@hoecoop.org>
+From: "Curtis Wyatt" <zhackwyatt@gmail.com>
+Subject: Re: ipq_get_packet returns wrong data_len value
+Date: Wed, 16 Jul 2008 12:55:08 -0700
+Message-ID: <7915e7b50807161255wb76b311wf5213613062dacb4@mail.gmail.com>
+References: <7915e7b50807151507m3d1ccadfub7cf1882817c72ca@mail.gmail.com>
+	 <20080716062424.GB11639@bayen.regit.org>
+	 <7915e7b50807160845j3806f5acr392da01f7136f6c8@mail.gmail.com>
+	 <7915e7b50807161133g14b61423m589dc07f25936bf6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <487E4A67.70400@hoecoop.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=CRrMEF0bicoOV5G8XzqSDxNz/lTpN4SsrJz78t7iyKA=;
+        b=mvzsENYcGOoWnqn4Zr/xSzWBAAsJAPWMC1SiwaYundBnTKaGj5SK5R5Rky9Vd83Ck9
+         Yu0TGCTtZVRe/qRl63Hv2tPxqIgCCB2uBMFMcYLt/JWtWq8t6t8jjXExlIyyur/nn2ch
+         UTPZ+EqwegnVTvj9Djc/y/C0hmXRNfvG8XPjg=
+In-Reply-To: <7915e7b50807161133g14b61423m589dc07f25936bf6@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Eric Leblond <eric@inl.fr>, Curtis Wyatt <zhackwyatt@gmail.com>, netfilter@vger.kernel.org
 
-On 07/16/08 14:22, Michael Crider wrote:
-> Thank you, Jan, for taking the time to come up with rules that would do 
-> exactly what I was asking. Thank you, Grant, for thinking outside the 
-> box. I implemented your suggestion and it works perfectly.
+On Wed, Jul 16, 2008 at 11:33 AM, Curtis Wyatt <zhackwyatt@gmail.com> wrote:
+>
+> Well I thought that did it but I spoke prematurely.  I guess I don't
+> understand why I need ntohl on one program on the same machine, and
+> not in another program.  Anyways, the data_len is ok,  but the payload
+> is wrong.
+>
+> Thanks again for the help.
+>
+> -----------------------------
+> Curtis
+> http://gocalipso.com
+>
 
-You are welcome.  I'm glad that things are working the way they need to.
+Sorry about the spam, but I'm narrowing down the problem.
 
-And as an added benefit with the second network, you don't have to worry 
-about keeping them from connecting to other hosts.  Of course depending 
-on what access they have to the target system they can still bounce 
-elsewhere. :s  But with a VPN, they are just about in any way.
-
-
-
-Grant. . . .
+For some reason, there are 3 bytes added to the beginning of the
+payload.  Does anyone know why?  They are all 0.
+-----------------------------
+Curtis
+http://gocalipso.com
