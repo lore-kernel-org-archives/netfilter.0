@@ -1,49 +1,33 @@
-From: "Curtis Wyatt" <zhackwyatt@gmail.com>
-Subject: Re: ipq_get_packet returns wrong data_len value
-Date: Wed, 16 Jul 2008 11:33:26 -0700
-Message-ID: <7915e7b50807161133g14b61423m589dc07f25936bf6@mail.gmail.com>
-References: <7915e7b50807151507m3d1ccadfub7cf1882817c72ca@mail.gmail.com>
-	 <20080716062424.GB11639@bayen.regit.org>
-	 <7915e7b50807160845j3806f5acr392da01f7136f6c8@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: NAT rule
+Date: Wed, 16 Jul 2008 13:49:55 -0500
+Message-ID: <487E42D3.4080904@riverviewtech.net>
+References: <487E1DF3.1090203@hoecoop.org> <alpine.LNX.1.10.0807161850580.32031@fbirervta.pbzchgretzou.qr> <487E2DAD.9040806@riverviewtech.net> <alpine.LNX.1.10.0807161924150.32031@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=/8Rj+JavmPnL8eGPp2yS1K/jwYmcD9V9/TAdP4ENLEs=;
-        b=vJIsHjoGOvxYJt8eY8qARug9o+1kdzm9Sk/d5m2qMMLzjRe4JuPwQ1YuhnL2j/VHvs
-         jBD4xz3P92TGwiV9xjHOS4QpfLymFjgdJo9eQLjWwmR5iQT85hoYu5QSX/ohWYspaaDA
-         Q05Gxt1DjxfNZB3trEiQ7MR2H7d+TgH2nt/4Y=
-In-Reply-To: <7915e7b50807160845j3806f5acr392da01f7136f6c8@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <alpine.LNX.1.10.0807161924150.32031@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Eric Leblond <eric@inl.fr>, Curtis Wyatt <zhackwyatt@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Tue, Jul 15, 2008 at 11:24 PM, Eric Leblond <eric@inl.fr> wrote:
-> Hello,
->
-> Please use libnetfilter_queue. ip_queue is deprecated since at least two
-> years.
->
-> About your problem :
->        ntohl(671088640) = 40
->
-> BR,
-> --
-> Eric Leblond
+On 07/16/08 12:25, Jan Engelhardt wrote:
+> Packets already destined for the tunnel (see first rule) are not 
+> rerouted, because, well, it's POSTrouting.
 
-Well I thought that did it but I spoke prematurely.  I guess I don't
-understand why I need ntohl on one program on the same machine, and
-not in another program.  Anyways, the data_len is ok,  but the payload
-is wrong.
+By the time packets would make it to your rule, yes.  My concern is that 
+the router / VPN setup will see one subnet on one ethernet interface and 
+the same subnet on the other end of the tunnel.  At least that is the 
+understanding that I got from the OP.  So my concern is not so much 
+confusion on IPTables part so much as it is a simple routing (which 
+interface gets used) seeing the same subnet in two different locations.
 
-Thanks again for the help.
+I guess I should ask, how well will the router handle having the same 
+subnet addresses in two different (non connected) locations, one being 
+the ethernet interface and the other being through the tunnel?
 
------------------------------
-Curtis
-http://gocalipso.com
+
+
+
+Grant. . . .
