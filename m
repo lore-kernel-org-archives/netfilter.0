@@ -1,48 +1,35 @@
-From: "Curtis Wyatt" <zhackwyatt@gmail.com>
-Subject: Re: ipq_get_packet returns wrong data_len value
-Date: Wed, 16 Jul 2008 12:55:08 -0700
-Message-ID: <7915e7b50807161255wb76b311wf5213613062dacb4@mail.gmail.com>
-References: <7915e7b50807151507m3d1ccadfub7cf1882817c72ca@mail.gmail.com>
-	 <20080716062424.GB11639@bayen.regit.org>
-	 <7915e7b50807160845j3806f5acr392da01f7136f6c8@mail.gmail.com>
-	 <7915e7b50807161133g14b61423m589dc07f25936bf6@mail.gmail.com>
+From: kotayabu <ronholy@gmail.com>
+Subject: How to mark a package using ebtables and can be seen by iptables?
+Date: Thu, 17 Jul 2008 09:26:44 +0800
+Message-ID: <db5661d60807161826r365754dxa0b2c178f29839f0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=CRrMEF0bicoOV5G8XzqSDxNz/lTpN4SsrJz78t7iyKA=;
-        b=mvzsENYcGOoWnqn4Zr/xSzWBAAsJAPWMC1SiwaYundBnTKaGj5SK5R5Rky9Vd83Ck9
-         Yu0TGCTtZVRe/qRl63Hv2tPxqIgCCB2uBMFMcYLt/JWtWq8t6t8jjXExlIyyur/nn2ch
-         UTPZ+EqwegnVTvj9Djc/y/C0hmXRNfvG8XPjg=
-In-Reply-To: <7915e7b50807161133g14b61423m589dc07f25936bf6@mail.gmail.com>
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=RPtrR7pf0I4vX7gw8rDaXXTsN/mrsM1luo7q4aUZdJw=;
+        b=DKf3eJj54lTM13ZPqlU7LeEzmj1EfrtvGi5vXoHQy04MPtR8q5aUs98NSaGrHTsN7m
+         RMq8ppFMjxNrpkyAXVBXte4MY5IIVPGBYewwQYILsPXYfLDvQrPLXTQSM2UnNNpNhqFx
+         VdZ8gCAY4cQ2I7cVZvczeYcIRwNuq+D6oMm4k=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Eric Leblond <eric@inl.fr>, Curtis Wyatt <zhackwyatt@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, Jul 16, 2008 at 11:33 AM, Curtis Wyatt <zhackwyatt@gmail.com> wrote:
->
-> Well I thought that did it but I spoke prematurely.  I guess I don't
-> understand why I need ntohl on one program on the same machine, and
-> not in another program.  Anyways, the data_len is ok,  but the payload
-> is wrong.
->
-> Thanks again for the help.
->
-> -----------------------------
-> Curtis
-> http://gocalipso.com
->
+I have those rules to accomplish my need, but it failed:
 
-Sorry about the spam, but I'm narrowing down the problem.
+ebtables -t nat -A POSTROUTING -p ipv4 --ip-src 10.111.207.26 -d
+00:50:56:C0:00:08 -j mark --mark-set 2 --mark-target ACCEPT
+iptables -t nat -A POSTROUTING -s 10.111.207.26 -m mark --mark 2 -j MASQUERADE
 
-For some reason, there are 3 bytes added to the beginning of the
-payload.  Does anyone know why?  They are all 0.
------------------------------
-Curtis
-http://gocalipso.com
+What i'm trying to do is when the package routes to one of my gateway
+00:50:56:C0:00:08, it's masquaded, and others defaults to accept.
+and i tried many times but still not result.
+
+does anybody knows how to solve this?
+
+:P
