@@ -1,44 +1,34 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE]: 2nd call for sponsors for the 6th netfilter developer
- workshop
-Date: Thu, 17 Jul 2008 10:51:34 +0200
-Message-ID: <487F0816.8060900@trash.net>
-References: <482B03DA.406@trash.net> <482B22AE.50807@trash.net>
+From: Bernhard Bock <mailinglists@bock.nu>
+Subject: conntrack performance test results in INVALID packets
+Date: Fri, 18 Jul 2008 11:39:41 +0200
+Message-ID: <488064DD.5080509@bock.nu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <482B22AE.50807@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>, netfilt
+To: netfilter@vger.kernel.org
 
-The netfilter project is looking for sponsors for the 6th netfilter
-developer workshop, which will take place in Paris, France from
-September, 29th to October, 3rd. For futher information about the
-workshop please consult [1] and [2].
+Hi,
 
-Since our first call for sponsors, we found four companies willing
-to support the event, but costs in Paris are higher than expected
-and we haven't raised the necessary money yet.
+I'm performance testing a firewall with netfilter connection tracking 
+based on Fedora Core 9 and I'm having some problems.
 
-If your company is using netfilter and always wanted to give something
-back, now is a great opportunity. Sponsorship money will be used for
-travel and accomodation expenses to get the developers to the workshop.
-Perks include your company name and logo on the workshop page, an
-invitation for one or more of your own developers and a heartily
-thanks from the netfilter project.
+Every now and then the firewall drops packets in the state "INVALID".
 
-If you are interested, please contact coreteam@netfilter.org for our
-sponsorship policy and further information. If you know of anyone who
-might be interested, please forward this email.
+The test setup is as follows:
+- I'm using plain HTTP as test traffic, nothing else.
+- Client is an ApacheBench (ab) client.
+- Server is Apache.
+- HTTP connection keepalive with a maximum lifetime of
+   30 seconds per TCP session.
 
-Thanks!
+With 100 parallel TCP connections, it works. With 1000 parallel TCP 
+connections, I start seeing INVALID packets.
 
-Patrick,
-on behalf of the Netfilter core team
+Can somebody point me in a direction where to search for the root cause?
 
-[1] http://workshop.netfilter.org/2008/
-[2] http://marc.info/?l=netfilter-devel&m=121077868519808&w=2
-
+best regards
+Bernhard
 
