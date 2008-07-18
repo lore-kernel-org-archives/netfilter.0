@@ -1,28 +1,32 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Bernhard Bock <mailinglists@bock.nu>
 Subject: Re: conntrack performance test results in INVALID packets
-Date: Fri, 18 Jul 2008 12:13:33 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0807181212331.12734@fbirervta.pbzchgretzou.qr>
-References: <488064DD.5080509@bock.nu>
+Date: Fri, 18 Jul 2008 12:52:33 +0200
+Message-ID: <488075F1.80901@bock.nu>
+References: <488064DD.5080509@bock.nu> <alpine.LNX.1.10.0807181212331.12734@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <488064DD.5080509@bock.nu>
+In-Reply-To: <alpine.LNX.1.10.0807181212331.12734@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Bernhard Bock <mailinglists@bock.nu>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
+Jan,
 
-On Friday 2008-07-18 11:39, Bernhard Bock wrote:
->
-> With 100 parallel TCP connections, it works. With 1000 parallel TCP
-> connections, I start seeing INVALID packets.
->
-> Can somebody point me in a direction where to search for the root cause?
+Jan Engelhardt schrieb:
+> Vague guess..
+> You have too few memory and/or your connection table is full, hence
+> connections are dropped and future packets can't find their
+> original connection, resulting in INVALID. (Though I'd say they
+> should become NEW again)
 
-Vague guess..
-You have too few memory and/or your connection table is full, hence
-connections are dropped and future packets can't find their
-original connection, resulting in INVALID. (Though I'd say they
-should become NEW again)
+Thanks for your answer. How can I check and/or increase the memory limit 
+for the netfilter connection tracking?
+
+The machine has 4G of RAM, so I guess the overall memory should not be a 
+problem.
+
+best regards
+Bernhard
