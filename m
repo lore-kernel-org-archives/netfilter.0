@@ -1,61 +1,33 @@
-From: =?ISO-8859-1?Q?Leonardo_Rodrigues_Magalh=E3es?= 
-	<leolistas@solutti.com.br>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: More ethernet port same ip address
-Date: Sat, 19 Jul 2008 11:01:07 -0300
-Message-ID: <4881F3A3.3080502@solutti.com.br>
-References: <48819901.6030604@unipex.it>
+Date: Sat, 19 Jul 2008 16:13:55 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0807191613060.10846@fbirervta.pbzchgretzou.qr>
+References: <48819901.6030604@unipex.it> <4881F3A3.3080502@solutti.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48819901.6030604@unipex.it>
+In-Reply-To: <4881F3A3.3080502@solutti.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: =?UTF-8?Q?Leonardo_Rodrigues_Magalh=C3=A3es?= <leolistas@solutti.com.br>
+Cc: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>, netfilter@vger.kernel.org
 
 
+On Saturday 2008-07-19 16:01, Leonardo Rodrigues Magalh=C3=A3es wrote:
+> Michele Petrazzo - Unipex srl escreveu:
+>> Hi all,
+>> this is a very strange ask (I don't find any other on the net)...
 
-Michele Petrazzo - Unipex srl escreveu:
-> Hi all,
-> this is a very strange ask (I don't find any other on the net)...
+It's as simple as "first interface with same subnet wins".
+
+>   have you tried setting a bridge interface ???
 >
-> I need to setup a linux box with more than one ethernet ports and eve=
-ry
-> one must have the same ip address. I, of course :), already tried to=20
-> do it
-> with a lot of solutions that linux offer (iptables+mark+ip route,=20
-> bonding,
-> a vlan every port), but with the same result... Packet come into
-> the right port but go out through the "last" that I have set, so it w=
-ill
-> never arrive.=20
+>   do NOT give ip address to the real ethernet interfaces (ethX) .....=
+ simply
+> get them 'up' and them bring a bridge interface up, with the ip addre=
+ss you
+> need, and 'add' all the physical interfaces on the bridge interface.
 
-    have you tried setting a bridge interface ???
-
-    do NOT give ip address to the real ethernet interfaces (ethX) .....=
-=20
-simply get them 'up' and them bring a bridge interface up, with the ip=20
-address you need, and 'add' all the physical interfaces on the bridge=20
-interface.
-
-    that should do the job easily.
-
-    and then get iptables rules on the bridge (probably br0) interface=20
-=2E... and there you have it !
-
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
+And depending on the situation you might also need to enforce routing
+at the bridge border so as to not open security holes.
