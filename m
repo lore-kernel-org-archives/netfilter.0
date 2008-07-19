@@ -1,35 +1,32 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-2.3.3
-Date: Sat, 19 Jul 2008 23:16:37 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0807192259320.24664@blackhole.kfki.hu>
+From: Zoe Parsons <zoe@zarp.org.uk>
+Subject: patch-o-matic problems..?
+Date: Sat, 19 Jul 2008 22:45:08 +0100 (BST)
+Message-ID: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: TEXT/PLAIN; format="flowed"; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi,
+Hi, I'm probably just missing something obvious but still....
 
-This is a compatibility fix release of ipset which supports kernel 
-versions >= 2.6.16 and 2.4.36.x. All internal changes which affect ipset 
-above 2.6.16 and between 2.4.36.x and the 2.6 kernel trees were checked 
-and revised. Now a single source tree supports both the 2.6 and the 2.4 
-kernel versions. 
+I've had the first cause to use something out of POM in a few years (ipp2p 
+not that it really matters), and when I run it I just get the message:
+/usr/src/iptables-1.4.1.1 doesn't look like a iptables source code 
+directory 
+to me.
 
-If you run ipset on a 2.4 kernel, please upgrade as you'll get all the 
-bugfixes (which had been forgotten to backport) and iptreemap support.
+I've tried it with the debian package source, a downloaded tarball from 
+the  netfilter site, and finally with the git tree (using both downloaded 
+and git retrieved copies of POM as well).
 
-You can download ipset from the home page or from the svn repository
+Oh and it's been invoked as: ./runme --download --kernel-path 
+/usr/src/linux-source-2.6.25 --iptables-path /usr/src/iptables-1.4.1.1
 
-        http://ipset.netfilter.org/
-        https://svn.netfilter.org/netfilter/trunk/ipset
+Any suggestions?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+TIA
+-- 
+ZoeP
