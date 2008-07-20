@@ -1,49 +1,55 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset-2.3.3
-Date: Sun, 20 Jul 2008 21:48:49 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0807202147180.25564@blackhole.kfki.hu>
-References: <Pine.LNX.4.64.0807192259320.24664@blackhole.kfki.hu>
- <Pine.LNX.4.58.0807201524360.8513@mail3.jubileegroup.co.uk>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: More ethernet port same ip address
+Date: Sun, 20 Jul 2008 18:41:41 -0500
+Message-ID: <4883CD35.3060704@riverviewtech.net>
+References: <48819901.6030604@unipex.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.58.0807201524360.8513@mail3.jubileegroup.co.uk>
+In-Reply-To: <48819901.6030604@unipex.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi Greg,
-
-On Sun, 20 Jul 2008, G.W. Haywood wrote:
-
-> On Sat, 19 Jul 2008, Jozsef Kadlecsik wrote:
+On 7/19/2008 2:34 AM, Michele Petrazzo - Unipex srl wrote:
+> I need to setup a linux box with more than one ethernet ports and 
+> every one must have the same ip address. I, of course :), already 
+> tried to do it with a lot of solutions that linux offer 
+> (iptables+mark+ip route, bonding, a vlan every port), but with the 
+> same result... Packet come into the right port but go out through the 
+> "last" that I have set, so it will never arrive.
 > 
-> > This is a compatibility fix release of ipset which supports kernel
-> > versions >= 2.6.16 and 2.4.36.x [snip]
-> > If you run ipset on a 2.4 kernel, please upgrade as you'll get all the
-> > bugfixes (which had been forgotten to backport) and iptreemap support.
+> Here the server have the two ports with 172.16.0.1 and two clients, 
+> connected into the two others has 172.16.0.3 and 172.16.0.10
 > 
-> Currently running 2.4.35.1 patched for ipsets by hand using the old
-> POM sources.  No problems with that at all.
-> 
-> Using fresh kernel 2.36.6 source and the ipsets source download from
-> http://ipset.netfilter.org/ I can't seem to get past this failure to
-> build the kernel, no matter how I permute the building and patching
-> instructions, although I've put no time into actually debugging it:
-> 
-> ip_set.c: In function `ip_set_register_set_type':
-> ip_set.c:329: parse error before ',' token
-> ip_set.c: In function `ip_set_create':
-> ip_set.c:840: parse error before ',' token
+> It's there a solution for achieve this?
 
-I have just released 2.3.3a which should fix it. Please give it a try.
+Like others have said, I think (based on what little you have said) that 
+bridging is an appropriate option.  I say "think" because I don't know 
+if you are trying to filter what passes between the two sides of the server.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Could you do what you are wanting to do by moving the two ethernet 
+cables that connect to the server over to a switch and then run one 
+cable from the switch to the server?  If this will work, bridging will 
+do exactly the same thing in software.
+
+I'd suggest that your bridge the two interfaces (with out any IPs) and 
+bind the 172.16.0.1 IP address to the bridge interface its self.
+
+With regards to the question about choosing which interface the traffic 
+will go out, (with out forcing its hand) bridging does the exact same 
+thing as a switch would.  When you send a packet to a given destination 
+the bridge will send the ethernet frame containing the packet out the 
+port that is destination MAC is connected to.  If the port the 
+destination MAC is connected to is not known bridging will send the 
+frame out all ports until it does know what port it is connected to 
+(i.e. the bridge receives a reply thus learning the port).
+
+I say "with out forcing its hand" because there are a lot of things that 
+you can do with EBTables and / or IPTables to encourage bridging to do 
+what you want if it is not the norm.
+
+
+
+Grant. . . .
