@@ -1,30 +1,48 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: patch-o-matic problems..?
-Date: Sun, 20 Jul 2008 17:06:12 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0807201652360.21244@fbirervta.pbzchgretzou.qr>
-References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin> <alpine.LNX.1.10.0807201105300.21244@fbirervta.pbzchgretzou.qr> <alpine.DEB.1.10.0807201544510.8813@fairy.dhcp.penguin>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset-2.3.3
+Date: Sun, 20 Jul 2008 18:27:51 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0807201824590.25442@blackhole.kfki.hu>
+References: <Pine.LNX.4.64.0807192259320.24664@blackhole.kfki.hu>
+ <Pine.LNX.4.58.0807201524360.8513@mail3.jubileegroup.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.1.10.0807201544510.8813@fairy.dhcp.penguin>
+In-Reply-To: <Pine.LNX.4.58.0807201524360.8513@mail3.jubileegroup.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Zoe Parsons <zoe@zarp.org.uk>
-Cc: netfilter@vger.kernel.org
+To: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
+On Sun, 20 Jul 2008, G.W. Haywood wrote:
 
-On Sunday 2008-07-20 16:48, Zoe Parsons wrote:
-> On Sun, 20 Jul 2008, Jan Engelhardt wrote:
->
->> Mail archives -
->> http://www.spinics.net/lists/netfilter/msg43859.html
->> http://www.spinics.net/lists/netfilter/msg43925.html
->
-> Ah excellent, this seemed to work. I don't quite understand why things aren't
-> linked from the main site,
+> On Sat, 19 Jul 2008, Jozsef Kadlecsik wrote:
+> 
+> > This is a compatibility fix release of ipset which supports kernel
+> > versions >= 2.6.16 and 2.4.36.x [snip]
+> > If you run ipset on a 2.4 kernel, please upgrade as you'll get all the
+> > bugfixes (which had been forgotten to backport) and iptreemap support.
+> 
+> Currently running 2.4.35.1 patched for ipsets by hand using the old
+> POM sources.  No problems with that at all.
+> 
+> Using fresh kernel 2.36.6 source and the ipsets source download from
+> http://ipset.netfilter.org/ I can't seem to get past this failure to
+> build the kernel, no matter how I permute the building and patching
+> instructions, although I've put no time into actually debugging it:
+> 
+> ip_set.c: In function `ip_set_register_set_type':
+> ip_set.c:329: parse error before ',' token
+> ip_set.c: In function `ip_set_create':
+> ip_set.c:840: parse error before ',' token
 
-> or why current patch-o-matic can't at least work with current iptables
+Do you compile your kernel without modules? The macro which is called at 
+that lines is not prepared to handle that case... I'm going to fix it.
 
-What do you need from patch-o-matic that is not yet in 
-Xtables-addons?
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
