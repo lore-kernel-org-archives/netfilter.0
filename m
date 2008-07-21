@@ -1,43 +1,36 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: [ANNOUNCE] ipset-2.3.3
-Date: Mon, 21 Jul 2008 18:35:25 +0100 (BST)
-Message-ID: <Pine.LNX.4.58.0807211828380.17282@mail3.jubileegroup.co.uk>
-References: <Pine.LNX.4.64.0807192259320.24664@blackhole.kfki.hu>
- <Pine.LNX.4.58.0807201524360.8513@mail3.jubileegroup.co.uk>
- <Pine.LNX.4.64.0807201824590.25442@blackhole.kfki.hu>
- <Pine.LNX.4.58.0807210815530.30128@mail3.jubileegroup.co.uk>
- <Pine.LNX.4.64.0807211633550.26314@blackhole.kfki.hu>
+From: Padmanabhan <rpdumps@gmail.com>
+Subject: Re: iptables u32 tests and user logging
+Date: Mon, 21 Jul 2008 13:06:12 -0500
+Message-ID: <76fdae320807211106m4d0c6dd8qfae16a04a31577d8@mail.gmail.com>
+References: <76fdae320807202313ma67d4c3l1921e41fa962a976@mail.gmail.com>
+	 <76fdae320807202315mb59c131s5f4c52f350d31aca@mail.gmail.com>
+	 <alpine.LNX.1.10.0807210942340.21244@fbirervta.pbzchgretzou.qr>
+	 <4884ADDC.7000600@riverviewtech.net>
+	 <76fdae320807210941p39dc17b6i1e4e3e75592c7b6b@mail.gmail.com>
+	 <alpine.LNX.1.10.0807211848360.21244@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0807211633550.26314@blackhole.kfki.hu>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=bEqIgyez9uJbB6LWQ71J0gQkiLwO5963Ub1IRVSIqYI=;
+        b=AYbRCs1txPiI5xzM39hArZXL2s0Sj4e1pIh0VfBxJ7bZ7Y6qC6VzUz/HnKL2sW5OKi
+         smPeaUEwzBcLVzRBwXK3+4x2pAA4bvgD/SN1acgkzRzQkCMFkBZFB4C6uvEvv4Qivoz3
+         mVqjO779yeC6dPPi6CUxBsUKM+eQjAqhZdrYE=
+In-Reply-To: <alpine.LNX.1.10.0807211848360.21244@fbirervta.pbzchgretzou.qr>
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi Jozsef,
+Hello,
+Is there way we can add code to u32 to do this function ,, after
+matching a criteria,  print/ log interested bytes  ?
 
-On Mon, 21 Jul 2008, Jozsef Kadlecsik wrote:
 
-> On Mon, 21 Jul 2008, G.W. Haywood wrote:
->
-> > Is there any chance of being able to compile a non-modular 2.4 kernel
-> > with the released ipsets, or am I on my own with that?
->
-> With ipset-2.3.3a you should be able to compile a non-modular kernel.
-> I.e. you can configure the features of the patched kernel as you want and
-> it should be compiled cleanly.
-
-Bless my soul, so it does!  It might be worth making an adjustment in the
-README, it seems to imply that only 2.6 kernels can be compiled non-modular.
-I had tried anyway, with 2.4.36.6 and 2.3.3, but of course it failed - and I
-didn't try again with 2.3.3a. :(
-
-Thanks very much. :)
-
---
-
-73,
-Ged.
+Thanks
+Padmanabhan
