@@ -1,55 +1,72 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: More ethernet port same ip address
-Date: Sun, 20 Jul 2008 18:41:41 -0500
-Message-ID: <4883CD35.3060704@riverviewtech.net>
-References: <48819901.6030604@unipex.it>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd failover works partially, was Re: conntrack performance
+ test results in INVALID packets
+Date: Mon, 21 Jul 2008 02:37:33 +0200
+Message-ID: <4883DA4D.4080906@netfilter.org>
+References: <488064DD.5080509@bock.nu> <alpine.LNX.1.10.0807181212331.12734@fbirervta.pbzchgretzou.qr> <488075F1.80901@bock.nu> <4880891C.4090004@netfilter.org> <4880A6BA.6030007@bock.nu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48819901.6030604@unipex.it>
+In-Reply-To: <4880A6BA.6030007@bock.nu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Bernhard Bock <mailinglists@bock.nu>
+Cc: netfilter@vger.kernel.org
 
-On 7/19/2008 2:34 AM, Michele Petrazzo - Unipex srl wrote:
-> I need to setup a linux box with more than one ethernet ports and 
-> every one must have the same ip address. I, of course :), already 
-> tried to do it with a lot of solutions that linux offer 
-> (iptables+mark+ip route, bonding, a vlan every port), but with the 
-> same result... Packet come into the right port but go out through the 
-> "last" that I have set, so it will never arrive.
+Bernhard Bock wrote:
+> My next step is to run two firewalls in a cluster with conntrackd.
 > 
-> Here the server have the two ports with 172.16.0.1 and two clients, 
-> connected into the two others has 172.16.0.3 and 172.16.0.10
+> The basic setup works like a charm. I have increased the HashSize
+> parameter in conntrackd as well. It replicates the states to the backup
+> firewall just fine.
 > 
-> It's there a solution for achieve this?
+> Unfortunately, failover works only in about 50% of all tests. There is
+> no obvious pattern as to when this failures occur.
+> 
+> We trigger the failover softly by advertising a higher priority on the
+> backup firewall, not by switching off the primary one. If it goes well,
+> we do not loose a single connection. If it doesn't go well, we basically
+> loose all connections and the apachebench dies. There are hundreds of
+> INVALID packets in the syslog, and also some NEW (not SYN). In this
+> case, we also see lost packets in "multicast sequence tracking" in the
+> conntrackd stats.
 
-Like others have said, I think (based on what little you have said) that 
-bridging is an appropriate option.  I say "think" because I don't know 
-if you are trying to filter what passes between the two sides of the server.
+As you're using the Alarm mode, the time required to resynchronize the
+backup and the master is RefreshTime (which is 15 seconds in your config
+files). Are you probably triggering the fail-over before that amount of
+time?
 
-Could you do what you are wanting to do by moving the two ethernet 
-cables that connect to the server over to a switch and then run one 
-cable from the switch to the server?  If this will work, bridging will 
-do exactly the same thing in software.
+BTW, you can use "conntrackd -i" and "conntrackd -e" to diagnose
+problems, these commands dump the internal and external caches. The
+internal cache contains the set of flows that this firewall replica is
+filtering. The external cache contains the set of flows that the other
+firewall replicas are filtering. Basically, you must to find the same
+set of flows in the master's internal-cache and the backup's
+external-cache if everything goes fine.
 
-I'd suggest that your bridge the two interfaces (with out any IPs) and 
-bind the 172.16.0.1 IP address to the bridge interface its self.
+The lost packets reported by the sequence tracking can be reduced with a
+clause introduced in 0.9.7 to increase the sender and the receiver
+multicast socket buffers.
 
-With regards to the question about choosing which interface the traffic 
-will go out, (with out forcing its hand) bridging does the exact same 
-thing as a switch would.  When you send a packet to a given destination 
-the bridge will send the ethernet frame containing the packet out the 
-port that is destination MAC is connected to.  If the port the 
-destination MAC is connected to is not known bridging will send the 
-frame out all ports until it does know what port it is connected to 
-(i.e. the bridge receives a reply thus learning the port).
+> One more detail worth mentioning is that we in any case see many
+> "connections destroyed failed" in conntrackd statistics, but it does not
+> have any visible impact.
 
-I say "with out forcing its hand" because there are a lot of things that 
-you can do with EBTables and / or IPTables to encourage bridging to do 
-what you want if it is not the norm.
+This means that the kernel has told conntrackd to destroy a flow that it
+is supposed to be in its internal cache. However, conntrackd did not
+find such flow in there.
 
+> We use conntrackd version 0.9.6 included with Fedora 9 in Alarm mode.
+> Below I have attached the relevant config files snippets.
+> 
+> Can you (again) give any helpful pointers where I can search?
 
+Until we reach conntrack-tools-1.0, which I expect to reach soon since
+most of the pending work is already done, I suggest you to upgrade to
+lastest (as for now, it is 0.9.7). This release includes important
+improvements, fixes and features. The alarm mode is a bit spamming, I
+also suggest you to give a try to the ft-fw and the notrack approaches.
 
-Grant. . . .
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
