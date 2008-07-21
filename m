@@ -1,42 +1,27 @@
-From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
-Subject: Re: More ethernet port same ip address
-Date: Mon, 21 Jul 2008 20:11:44 +0200
-Message-ID: <4884D160.7060701@unipex.it>
-References: <48819901.6030604@unipex.it>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: iptables u32 tests and user logging
+Date: Mon, 21 Jul 2008 20:49:41 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0807212046490.21244@fbirervta.pbzchgretzou.qr>
+References: <76fdae320807202313ma67d4c3l1921e41fa962a976@mail.gmail.com>  <76fdae320807202315mb59c131s5f4c52f350d31aca@mail.gmail.com>  <alpine.LNX.1.10.0807210942340.21244@fbirervta.pbzchgretzou.qr>  <4884ADDC.7000600@riverviewtech.net> 
+ <76fdae320807210941p39dc17b6i1e4e3e75592c7b6b@mail.gmail.com>  <alpine.LNX.1.10.0807211848360.21244@fbirervta.pbzchgretzou.qr> <76fdae320807211106m4d0c6dd8qfae16a04a31577d8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48819901.6030604@unipex.it>
+In-Reply-To: <76fdae320807211106m4d0c6dd8qfae16a04a31577d8@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Padmanabhan <rpdumps@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi another time,
 
-made some tries and I see that it works well with the "bridge" mode. The
-only thing that I do was to to create a new bridge, remove the ip address
-from the interfaces, add them to the bridge and set an ip address for
-the bridge. Nothing other. With arp_proxy 1 or 0 it works in the same
-manner.
+On Monday 2008-07-21 20:06, Padmanabhan wrote:
 
-The strange it's that I already tried this solution in test room, but I
-remember that it didn't work. One think that forgot to say it's that
-when I tried, I was using a different switch configuration (that now I
-cannot reproduce): there was two different switch (with stp enabled and
-configured), each one with 3 different vlan and each of the three vlans
-end into one server ethernet port.
-So:
+>Hello,
+>Is there way we can add code to u32 to do this function ,, after
+>matching a criteria,  print/ log interested bytes  ?
 
-pc1 <--> | vlan5 ------------- stp| <->  |stp ----------- stp| vlan 5<-> 
-srv port 1
-pc2 <--> | vlan6 -switch1-  stp| <-> |stp switch2 stp| vlan 6<-> srv port 2
-pc3 <--> | vlan7 ------------- stp| <->  |stp ----------- stp| vlan 7<-> 
-srv port 3
-
-Here, for make the communication working, I have to setup the three
-vlan(s) on the server port's, but they must have the same address.
-And, with the "bridge" solution I think that I cannot.
-
-Thanks to all,
-Michele
+u32 is a match. It is supposed to be dumb.
+But one could introduce (probably to the dismay of Patrick)
+something like a LOGU32 target to be used in a fashion like
+--u32.
