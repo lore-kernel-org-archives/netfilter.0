@@ -1,8 +1,8 @@
-From: Padmanabhan <rpdumps@gmail.com>
-Subject: iptables u32 tests and user logging
-Date: Mon, 21 Jul 2008 01:15:19 -0500
-Message-ID: <76fdae320807202315mb59c131s5f4c52f350d31aca@mail.gmail.com>
-References: <76fdae320807202313ma67d4c3l1921e41fa962a976@mail.gmail.com>
+From: "Anatoly Muliarski" <x86ever@gmail.com>
+Subject: Re: More ethernet port same ip address
+Date: Mon, 21 Jul 2008 10:00:29 +0300
+Message-ID: <38db14850807210000v3f33643fne46f28f03ea00cdc@mail.gmail.com>
+References: <48819901.6030604@unipex.it> <4883CD35.3060704@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -11,41 +11,36 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:received:received:message-id:date:from:to
          :subject:in-reply-to:mime-version:content-type
          :content-transfer-encoding:content-disposition:references;
-        bh=LwlwdhPzmYZX7mT4T30Zp6XtQwa5FlJttxVvNGMXpQw=;
-        b=HPAkf+9zbz9SFeclkNveoEVCaINCbo8Xnb5MNVLkxoXSoTMzc9XlCGWYE9gaC7FB4u
-         T81zFp0pfhuez3YOWAQM3wR6pmcyaxYKpcU8yK8NVBSTgt8FPeS6GytH1KQBBPOf37UD
-         U3n9JnLWKXCqe4HzbzzGKl4BygblOnS2snB3o=
-In-Reply-To: <76fdae320807202313ma67d4c3l1921e41fa962a976@mail.gmail.com>
+        bh=Wt5Y6Nlj+ujlxYjVbEJOO/NczRMDDVRaJfhQk6ffq6M=;
+        b=SENHg+aMJzFLhwqPxPmAm1GYvotF2OYCvVEw6VNkAZOUUofICbDi1/cyxBiFKoyLUO
+         NKJyOr7XHxlr/x0TOauYwArp+u7leRzUrYhHDexp479KPiH4BZph1mjM1/e4Zc84LSke
+         6WbV4f5d3bVV1VXJtrgMGkaYnkzm31P31eSeM=
+In-Reply-To: <4883CD35.3060704@riverviewtech.net>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello All,
-I am couple of questions on whether iptables can used to achieve my requirement.
+I'll try to put in my 5 cents ...
+A working example from openet.ru
+---
+(x.x.x.99 ... x.x.x.110) --- (eth1, x.x.x.98 | eth0, x.x.x.98) --- (x.x.x.97)
 
-Test Setup
-Two Fedora core 9 ( kernel 2.6.25.6-55) systems running Intel 2 core
-duo processor as iSCSI initiator/target connected via Gig Ethernet
-switch
-IP Tables v 1.4.0
+1. Delete default routes
+   ip route del x.x.x.96/28 dev eth0
+   ip route del x.x.x.96/28 dev eth1
 
-Requirement
-On the target system, I have to look for packets that have TOS bits
-set and in those packets, I have look beyond the TCP header i.e. into
-iSCSI header for specific values.
-In this case, i am looking for iSCSI read command( first byte) and
-notedown ITT value ( 4 bytes, from 16-19 )
+2. Set up routes for subnets
+   ip route add x.x.x.97 dev eth0
+   ip route add x.x.x.96/28 dev eth1
 
-I studied manual pages and I am not sure whetehr IP tables/u32/ulog
-can help me to achieve me this requirement.
+3. Turn on Proxy ARP
+   echo 1 > /proc/sys/net/ipv4/conf/eth0/proxy_arp
+   echo 1 > /proc/sys/net/ipv4/conf/eth1/proxy_arp
+---
 
-Questions
-1. I just need to pull out few bytes out from the packet and log it.
-2. Whether ulog can record only few bytes or interested bytes in the paylod ??
 
-Thanks in advance for your suggestions
-
-Regards
-Padmanabhan
+-- 
+Best regards
+Anatoly Muliarski
