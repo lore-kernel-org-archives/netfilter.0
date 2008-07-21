@@ -1,46 +1,47 @@
-From: "Anatoly Muliarski" <x86ever@gmail.com>
-Subject: Re: More ethernet port same ip address
-Date: Mon, 21 Jul 2008 10:00:29 +0300
-Message-ID: <38db14850807210000v3f33643fne46f28f03ea00cdc@mail.gmail.com>
-References: <48819901.6030604@unipex.it> <4883CD35.3060704@riverviewtech.net>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Subject: Re: [ANNOUNCE] ipset-2.3.3
+Date: Mon, 21 Jul 2008 08:21:18 +0100 (BST)
+Message-ID: <Pine.LNX.4.58.0807210815530.30128@mail3.jubileegroup.co.uk>
+References: <Pine.LNX.4.64.0807192259320.24664@blackhole.kfki.hu>
+ <Pine.LNX.4.58.0807201524360.8513@mail3.jubileegroup.co.uk>
+ <Pine.LNX.4.64.0807201824590.25442@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=Wt5Y6Nlj+ujlxYjVbEJOO/NczRMDDVRaJfhQk6ffq6M=;
-        b=SENHg+aMJzFLhwqPxPmAm1GYvotF2OYCvVEw6VNkAZOUUofICbDi1/cyxBiFKoyLUO
-         NKJyOr7XHxlr/x0TOauYwArp+u7leRzUrYhHDexp479KPiH4BZph1mjM1/e4Zc84LSke
-         6WbV4f5d3bVV1VXJtrgMGkaYnkzm31P31eSeM=
-In-Reply-To: <4883CD35.3060704@riverviewtech.net>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0807201824590.25442@blackhole.kfki.hu>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-I'll try to put in my 5 cents ...
-A working example from openet.ru
----
-(x.x.x.99 ... x.x.x.110) --- (eth1, x.x.x.98 | eth0, x.x.x.98) --- (x.x.x.97)
+Hi Jozsef,
 
-1. Delete default routes
-   ip route del x.x.x.96/28 dev eth0
-   ip route del x.x.x.96/28 dev eth1
+Thanks for the very quick replies.
 
-2. Set up routes for subnets
-   ip route add x.x.x.97 dev eth0
-   ip route add x.x.x.96/28 dev eth1
+On Sun, 20 Jul 2008, Jozsef Kadlecsik wrote:
+>
+> On Sun, 20 Jul 2008, G.W. Haywood wrote:
+>
+> > ip_set.c: In function `ip_set_register_set_type':
+> > ip_set.c:329: parse error before ',' token
+> > ip_set.c: In function `ip_set_create':
+> > ip_set.c:840: parse error before ',' token
+>
+> Do you compile your kernel without modules?
 
-3. Turn on Proxy ARP
-   echo 1 > /proc/sys/net/ipv4/conf/eth0/proxy_arp
-   echo 1 > /proc/sys/net/ipv4/conf/eth1/proxy_arp
----
+All my production kernels are compiled without modules, but in this
+case I had enabled modules in the kernel .config file - otherwise I
+could not have expected it to build.  (Obviously:)
 
+> I have just released 2.3.3a which should fix it. Please give it a try.
 
--- 
-Best regards
-Anatoly Muliarski
+That's fine now.
+
+Is there any chance of being able to compile a non-modular 2.4 kernel
+with the released ipsets, or am I on my own with that?
+
+--
+
+73,
+Ged.
