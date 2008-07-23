@@ -1,75 +1,33 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE] Release of iptables 1.4.2-rc1
-Date: Wed, 23 Jul 2008 15:39:47 +0200
-Message-ID: <488734A3.3090401@trash.net>
+From: "John Williams" <john.b.williams@gmail.com>
+Subject: seek consultant in North NJ, USA
+Date: Wed, 23 Jul 2008 10:18:58 -0400
+Message-ID: <44212b900807230718y231fba9aic4988fa655aa6eef@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060108020405080504090006"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=cR8Clzm44QV1oqOxuJ6/HARPaRmf2ms/YiSd5bXK/TE=;
+        b=s/ZVWxMm7e3AYWub99K+VZQQ63lscXu+Rlw8YrXtO+8UdvMYQOgBVha5UykZwYA50O
+         5LlJx12dC/muZyC9/KQbsT+T4VtYQFQTyWx1WMAfRFdeqKHQEluRFPtbsPvzmAugCV97
+         OhVVu+BbOQaaAzyvGtq2bmTofuHvJw9kWbBQ0=
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>, netfilter-announce@lists.netfilter.org, Netfilter Core Team <coreteam@net>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------060108020405080504090006
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Dear netfilter list,
 
-The netfilter coreteam presents:
+I seek a consultant in Northern New Jersey, USA, to install/config a firewall.
 
-     iptables version 1.4.2-rc1
+Can y'all refer me to anyone?
 
-The first release candidate for iptables 1.4.2.
+Thank you!
 
-The major change in this release are some scalability improvements
-from Jesper Dangaard Brouer that should greatly increase ruleset
-parsing performance with many chains. Besides that we have some
-minor bugfixes, manpage updates, case insensitive string match
-support (requires current -git kernel) and --goto support for
-ip6tables.
-
-Version 1.4.2-rc1 can be obtained from (please note that the
-webpage hasn't been rebuilt yet, but will be sometime soon):
-
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
-git://git.netfilter.org/iptables.git
-
-The plan is to have a final 1.4.2 release shortly before 2.6.27
-is released.
-
-On behalf of the Netfilter Core Team.
-Happy testing!
-
---------------060108020405080504090006
-Content-Type: text/plain;
- name="changes-iptables-1.4.1.1-1.4.2-rc1.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changes-iptables-1.4.1.1-1.4.2-rc1.txt"
-
-Jan Engelhardt (6):
-      build: change equailty test for old bash
-      build: ip6.h is not required
-      libxt_TOS: make sure --set-tos value/mask is recognized
-      build: quote variables in release.sh
-      build: various changes to release.sh
-      manpages: various updates
-
-Jesper Dangaard Brouer (2):
-      libiptc: minor bugfix
-      libiptc: fix scalability performance issue during initial ruleset parsing
-
-Joonwoo Park (1):
-      xt_string: string extension case insensitive matching
-
-Patrick McHardy (3):
-      Add simple release script
-      release.sh: fix changelog filename
-      v1.4.2-rc1
-
-Thomas Jacob (1):
-      ip6tables: add --goto support
-
-
---------------060108020405080504090006--
+John Williams
+The Shauger Group
+E. Orange, NJ USA  07017
