@@ -1,38 +1,41 @@
-From: "Curtis Wyatt" <zhackwyatt@gmail.com>
-Subject: ip_queue, libnetfilter_queue, and packet alteration
-Date: Tue, 22 Jul 2008 17:02:14 -0700
-Message-ID: <7915e7b50807221702m752d5b74y9283a28f4b9b1689@mail.gmail.com>
+From: Dave <finalglide@gmail.com>
+Subject: Re: patch-o-matic problems..?
+Date: Tue, 22 Jul 2008 17:36:46 -0700
+Message-ID: <935fab200807221736k5c95037fgac0eac3e1e4915b2@mail.gmail.com>
+References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>
+	 <alpine.LNX.1.10.0807201105300.21244@fbirervta.pbzchgretzou.qr>
+	 <alpine.DEB.1.10.0807201544510.8813@fairy.dhcp.penguin>
+	 <alpine.LNX.1.10.0807201652360.21244@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=EO1ybGkCgAW9VdG7dBX54zYcVAwZ/y/5yEpIzvSGego=;
-        b=ouqXgKd6Pk/YwyN7D0lS+x2gkP1p9adtPWMiDZJNXdxoTR1LfN+2Wa5hdAZlnIZJV1
-         cxjCrsdUKT0ep2SOM/NC1+uJZkLZZZtCdNtu9TfOhBQNMyE5K1m+8Hi0/OfGCLP6nYqb
-         8an6PdY7OPfEBaN3EbFrVSxv1fTHK+ZDHey7U=
+         :subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=wY+pnzaAh3ytHeu1XscpH9azPg8UIhXLv5rQUAqVjvM=;
+        b=I7qA/a9qEi5QPKoSTd3r1jY3OSn7sojawwLTDmWM8tzxGh8Uu1OMohLwfHx56AOgXR
+         3M91sge6YrRSwrLSLTGe2wQcDlqagl/gWjILf7iAWsHQbt30/LhH239pMzmZvMxv9elr
+         oFvVs5m0wCqq0JpKCEKecDCLcVPK0GT+MwSTo=
+In-Reply-To: <alpine.LNX.1.10.0807201652360.21244@fbirervta.pbzchgretzou.qr>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-I am using ip_queue.  I understand that is depreciated.
+I have to agree with these guys, the whole POM and Xtables things is
+extremely confusing to the newbies.
 
-I want to intercept a packet, alter it (change payload and source ip
-address and destination ip address) and then do an NF_ACCEPT on it, to
-have it continue on its way to another machine.  However it never
-shows up at that other machine.  Is there anyway to do this without
-doing an NF_DROP and then sending a new packet through?
+Is there any way to clean this up on the Netfilter site so all the
+other newbies don't have to deal with the same issues over and over?
 
-Will libnetfilter_queue do this for me?  I don't want to move to
-libnetfilter_queue because I can't find a redhat rpm and I can't find
-hardly any documentation on it.
+My idea as how it should be presented >>
 
-Thank you for any help.
------------------------------
-Curtis
-http://gocalipso.com
+1) Remote POM from Netfilter.org
+2) Add Xtables-Addons to Netfilter.org
+3) Add documentation on reasons why moving to Xtables and how it works
+to Netfilter.org
+
+-Dave
