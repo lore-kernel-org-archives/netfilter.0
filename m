@@ -1,46 +1,55 @@
-From: "Charles 'Boyo" <charlesboyo@gmail.com>
-Subject: Compiling and using libipq on Fedora Core 5 & CentOS 4
-Date: Wed, 23 Jul 2008 20:50:47 +0100
-Message-ID: <a0410a580807231250w580bf169t23c49c413d799bb5@mail.gmail.com>
-References: <a0410a580807231241o3527e899v533d37f32eaed47d@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: POM Xtables???
+Date: Wed, 23 Jul 2008 22:19:30 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0807010907040.26892@fbirervta.pbzchgretzou.qr>
+References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com>  <alpine.LNX.1.10.0806272003170.12725@fbirervta.pbzchgretzou.qr>  <4866F152.7030109@riverviewtech.net> <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com> <486907EA.60105@trash.net>
+ <alpine.LNX.1.10.0806302218500.30639@fbirervta.pbzchgretzou.qr> <48694787.3080906@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=7odj62ti/q024XhIZ3Plw/njcnwtvxI1h8B+mu6gQf4=;
-        b=GF1+P6oNzfWMwvC/pfh81XAgTbpg11jQqsmAiCGoH8oOL81890e29ldsdBuYiBb8O9
-         Mep7ACsWWP5CS1YgyIPZzN0f/IxI2HiFllEnXpRr4CB/WBOGGfkHO+xohdzeyiKxTBqf
-         kH/qvLintU6moOETbkzmCHyaqf5qP4T9gAReA=
-In-Reply-To: <a0410a580807231241o3527e899v533d37f32eaed47d@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <48694787.3080906@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Dave <finalglide@gmail.com>, netfilter@vger.kernel.org
 
-Hello netfilter team.
 
-I have a requirement to make some modifications to incoming UDP
-packets and I am in possession of sample code that could be modified
-to suit my purpose based on libipq.
-However, attempts to build the applicaton on a pair of Linux servers
-have failed. These boxes are running:
+Still had this in the Draft folder..
 
-Fedora Core 5: 2.6.15-1.2054_FC5
-CentOS 4.4: 2.6.9-42.EL
+On Monday 2008-06-30 22:52, Patrick McHardy wrote:
+>
+> Which rest? Is the list at the end of your mail complete?
 
-It appears the neither of these contain any references to libipq. In
-its place appears to be libnetfilter_queue, however I am not about to
-make any kernel levels changes. Neither do I have the code that works
-with that.
+Just contains those you have not yet rejected ;-)
 
-The source code in question is as found at:
-http://www.cs.princeton.edu/~nakao/libipq.htm
+>> Hence I have taken up some and fixed them to be straight.
+>> Patrick, what's your judgment on the existing
+>> xt_{LOGMARK,TARPIT,TEE,condition,geoip,ipp2p} modules in xtables-addons?
+>>   
+>
+> - LOGMARK - haven't seen it or can't remember
 
-Thanks
+Prints everything that LOG is missing, like nfmark, ctmark, secmark,
+connection state, status. Quite useful when toying around with
+fwmark-based policy routing.
 
-Charles
+> - TARPIT - fine if remaining issues are fixed
+> - TEE - same as TARPIT
+> - condition - undecided
+> - geoip - seems like a toy. Whats the use case?
+
+Matching on countries and (possibly) blocking them. People have
+philosophized in the past whether (or not) it could use ipset;
+right now it uses a binary search over ipranges, which is at least
+a known good denominator.
+
+> - ipp2p - last version I've seen was a *horrible* mess, unless I'm
+> confusing it with the other l7 classifier module out there.
+
+It was ugly from a codingstyle pov, which was fixed. It inspects
+packets 
+
+xt_ipp2p I gave it some care and a cleanup. it also "works", that is, it 
+matches on bittorrent (something I could test), not all 
+(data) connections though, but I guess the control connections are in.
