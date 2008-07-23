@@ -1,50 +1,75 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: patch-o-matic problems..?
-Date: Wed, 23 Jul 2008 15:04:53 +0200
-Message-ID: <48872C75.10503@netfilter.org>
-References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>	 <alpine.LNX.1.10.0807201105300.21244@fbirervta.pbzchgretzou.qr>	 <alpine.DEB.1.10.0807201544510.8813@fairy.dhcp.penguin>	 <alpine.LNX.1.10.0807201652360.21244@fbirervta.pbzchgretzou.qr> <935fab200807221736k5c95037fgac0eac3e1e4915b2@mail.gmail.com> <48871C77.5060503@netfilter.org> <48871E6F.4050302@treenet.co.nz>
+From: Patrick McHardy <kaber@trash.net>
+Subject: [ANNOUNCE] Release of iptables 1.4.2-rc1
+Date: Wed, 23 Jul 2008 15:39:47 +0200
+Message-ID: <488734A3.3090401@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48871E6F.4050302@treenet.co.nz>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------060108020405080504090006"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Amos Jeffries <squid3@treenet.co.nz>
-Cc: netfilter@vger.kernel.org
+To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>, netfilter-announce@lists.netfilter.org, Netfilter Core Team <coreteam@net>
 
-Amos Jeffries wrote:
-> Pablo Neira Ayuso wrote:
->> Dave wrote:
->>> I have to agree with these guys, the whole POM and Xtables things is
->>> extremely confusing to the newbies.
->>
->> Indeed. IMO they should not exist anymore.
->>
->> With regards to POM(-ng) - I cannot talk about the other project since
->> it is not supported by the Netfilter Project itself - it was something
->> that we needed during the 2.4 days, since we could not add new features
->> to the kernel that quickly. However, with the new 2.6 development cycle,
->> features can get into kernel faster. So if you need some feature or some
->> contibution into mainline, go and ask for it. Of course, it must suit
->> the standards and it must be an interesting contribution to what we
->> already have. On the other hand, you may also get the reason why it is
->> not in mainline yet.
->>
->> Well, Anyway I think that we've already discussed about this in a long
->> thread [1].
->>
->> [1] http://marc.info/?l=netfilter&m=121484288209802&w=2
->>
-> 
-> Could the netfilter team at least publish something along the lines of:
->  POM(-ng) is now being deprecated. There is another independent project
-> run by X over at U which performs a replacement service ...
+This is a multi-part message in MIME format.
+--------------060108020405080504090006
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I just told my opinion, we have to discuss this in the team, we'll do
-such announcement if we agree with it. Anyhow, you seem to have
-completely missed the main point of my previous email which is why do we
-need pom-ng or any other of replacement at all?
+The netfilter coreteam presents:
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+     iptables version 1.4.2-rc1
+
+The first release candidate for iptables 1.4.2.
+
+The major change in this release are some scalability improvements
+from Jesper Dangaard Brouer that should greatly increase ruleset
+parsing performance with many chains. Besides that we have some
+minor bugfixes, manpage updates, case insensitive string match
+support (requires current -git kernel) and --goto support for
+ip6tables.
+
+Version 1.4.2-rc1 can be obtained from (please note that the
+webpage hasn't been rebuilt yet, but will be sometime soon):
+
+http://www.netfilter.org/projects/iptables/downloads.html
+ftp://ftp.netfilter.org/pub/iptables/
+git://git.netfilter.org/iptables.git
+
+The plan is to have a final 1.4.2 release shortly before 2.6.27
+is released.
+
+On behalf of the Netfilter Core Team.
+Happy testing!
+
+--------------060108020405080504090006
+Content-Type: text/plain;
+ name="changes-iptables-1.4.1.1-1.4.2-rc1.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changes-iptables-1.4.1.1-1.4.2-rc1.txt"
+
+Jan Engelhardt (6):
+      build: change equailty test for old bash
+      build: ip6.h is not required
+      libxt_TOS: make sure --set-tos value/mask is recognized
+      build: quote variables in release.sh
+      build: various changes to release.sh
+      manpages: various updates
+
+Jesper Dangaard Brouer (2):
+      libiptc: minor bugfix
+      libiptc: fix scalability performance issue during initial ruleset parsing
+
+Joonwoo Park (1):
+      xt_string: string extension case insensitive matching
+
+Patrick McHardy (3):
+      Add simple release script
+      release.sh: fix changelog filename
+      v1.4.2-rc1
+
+Thomas Jacob (1):
+      ip6tables: add --goto support
+
+
+--------------060108020405080504090006--
