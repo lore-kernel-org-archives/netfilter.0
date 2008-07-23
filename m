@@ -1,33 +1,69 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: patch-o-matic problems..?
-Date: Wed, 23 Jul 2008 11:31:48 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0807231118560.23410@fbirervta.pbzchgretzou.qr>
-References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>  <alpine.LNX.1.10.0807201105300.21244@fbirervta.pbzchgretzou.qr>  <alpine.DEB.1.10.0807201544510.8813@fairy.dhcp.penguin>  <alpine.LNX.1.10.0807201652360.21244@fbirervta.pbzchgretzou.qr>
- <935fab200807221736k5c95037fgac0eac3e1e4915b2@mail.gmail.com>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: ip_queue, libnetfilter_queue, and packet alteration
+Date: Wed, 23 Jul 2008 11:45:12 +0200
+Message-ID: <20080723094512.GA2250@khasse.inl.fr>
+References: <7915e7b50807221702m752d5b74y9283a28f4b9b1689@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <935fab200807221736k5c95037fgac0eac3e1e4915b2@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <7915e7b50807221702m752d5b74y9283a28f4b9b1689@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Dave <finalglide@gmail.com>
+To: Curtis Wyatt <zhackwyatt@gmail.com>
 Cc: netfilter@vger.kernel.org
 
 
-On Wednesday 2008-07-23 02:36, Dave wrote:
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->I have to agree with these guys, the whole POM and Xtables things is
->extremely confusing to the newbies.
->
->Is there any way to clean this up on the Netfilter site so all the
->other newbies don't have to deal with the same issues over and over?
->
->My idea as how it should be presented >>
->
->1) Remote POM from Netfilter.org
->2) Add Xtables-Addons to Netfilter.org
->3) Add documentation on reasons why moving to Xtables and how it works
->to Netfilter.org
+Hello,
 
-4) Tell distributions to package it so users don't have to worry about (3)
+On Tuesday, 2008 July 22 at 17:02:14 -0700, Curtis Wyatt wrote:
+> I am using ip_queue.  I understand that is depreciated.
+>=20
+> I want to intercept a packet, alter it (change payload and source ip
+> address and destination ip address) and then do an NF_ACCEPT on it, to
+> have it continue on its way to another machine.  However it never
+> shows up at that other machine.  Is there anyway to do this without
+> doing an NF_DROP and then sending a new packet through?
+>=20
+> Will libnetfilter_queue do this for me?
+
+Yes, but you will have to compute the checksum of the modified packet by
+yourself.
+
+Someone should send a patch which adds helper functions to ease that
+task in a day or two.
+
+> I don't want to move to
+> libnetfilter_queue because I can't find a redhat rpm and I can't find
+> hardly any documentation on it.
+
+Compilation is not really difficult but lack of documentation is a real
+problem. The only thing for now is too look at snort-inline or NuFW code
+to see how to use the library.
+
+BR,
+--=20
+Eric Leblond
+INL: http://www.inl.fr/
+NuFW: http://www.nufw.org/
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkiG/agACgkQnxA7CdMWjzLKGgCfe+aNSojD9TrH0pMPyT4q2t9i
+H9sAnAtchLKOd5yAutIABVVfofOModux
+=GXnQ
+-----END PGP SIGNATURE-----
+
+--ZPt4rx8FFjLCG7dd--
