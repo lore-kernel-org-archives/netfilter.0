@@ -1,45 +1,38 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: ip_queue, libnetfilter_queue, and packet alteration
-Date: Wed, 23 Jul 2008 13:19:58 +0200
-Message-ID: <20080723111957.GB2250@khasse.inl.fr>
-References: <7915e7b50807221702m752d5b74y9283a28f4b9b1689@mail.gmail.com> <20080723094512.GA2250@khasse.inl.fr> <488701CD.1040509@netfilter.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: patch-o-matic problems..?
+Date: Wed, 23 Jul 2008 13:56:39 +0200
+Message-ID: <48871C77.5060503@netfilter.org>
+References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>	 <alpine.LNX.1.10.0807201105300.21244@fbirervta.pbzchgretzou.qr>	 <alpine.DEB.1.10.0807201544510.8813@fairy.dhcp.penguin>	 <alpine.LNX.1.10.0807201652360.21244@fbirervta.pbzchgretzou.qr> <935fab200807221736k5c95037fgac0eac3e1e4915b2@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <488701CD.1040509@netfilter.org>
+In-Reply-To: <935fab200807221736k5c95037fgac0eac3e1e4915b2@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Curtis Wyatt <zhackwyatt@gmail.com>, netfilter@vger.kernel.org
+To: Dave <finalglide@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Dave wrote:
+> I have to agree with these guys, the whole POM and Xtables things is
+> extremely confusing to the newbies.
 
-On Wednesday, 2008 July 23 at 12:02:53 +0200, Pablo Neira Ayuso wrote:
-> Eric Leblond wrote:
-> > Hello,
-> > 
-> > On Tuesday, 2008 July 22 at 17:02:14 -0700, Curtis Wyatt wrote:
-> >> I am using ip_queue.  I understand that is depreciated.
-> >>
-> >> I want to intercept a packet, alter it (change payload and source ip
-> >> address and destination ip address) and then do an NF_ACCEPT on it, to
-> >> have it continue on its way to another machine.  However it never
-> >> shows up at that other machine.  Is there anyway to do this without
-> >> doing an NF_DROP and then sending a new packet through?
-> > problem. The only thing for now is too look at snort-inline or NuFW code
-> > to see how to use the library.
-> 
-> I remember that you have mentioned some libnetfilter_queue's
-> documentation during the RMLL? I'm willing to include it if that helps
-> users. Where is it?
+Indeed. IMO they should not exist anymore.
 
-I think this is the doc you are talking about:
-http://lists.netfilter.org/pipermail/netfilter-devel/2006-February/023286.html
+With regards to POM(-ng) - I cannot talk about the other project since
+it is not supported by the Netfilter Project itself - it was something
+that we needed during the 2.4 days, since we could not add new features
+to the kernel that quickly. However, with the new 2.6 development cycle,
+features can get into kernel faster. So if you need some feature or some
+contibution into mainline, go and ask for it. Of course, it must suit
+the standards and it must be an interesting contribution to what we
+already have. On the other hand, you may also get the reason why it is
+not in mainline yet.
 
-BR,
+Well, Anyway I think that we've already discussed about this in a long
+thread [1].
+
+[1] http://marc.info/?l=netfilter&m=121484288209802&w=2
+
 -- 
-Eric Leblond
-INL: http://www.inl.fr/
-NuFW: http://www.nufw.org/
+"Los honestos son inadaptados sociales" -- Les Luthiers
