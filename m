@@ -1,48 +1,36 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: ip_queue, libnetfilter_queue, and packet alteration
-Date: Wed, 23 Jul 2008 12:02:53 +0200
-Message-ID: <488701CD.1040509@netfilter.org>
-References: <7915e7b50807221702m752d5b74y9283a28f4b9b1689@mail.gmail.com> <20080723094512.GA2250@khasse.inl.fr>
+Subject: Re: patch-o-matic problems..?
+Date: Wed, 23 Jul 2008 12:12:46 +0200
+Message-ID: <4887041E.3060101@netfilter.org>
+References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080723094512.GA2250@khasse.inl.fr>
+In-Reply-To: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Eric Leblond <eric@inl.fr>, Curtis Wyatt <zhackwyatt@gmail.com>, netfilter@vger.kernel.org
+To: Zoe Parsons <zoe@zarp.org.uk>
+Cc: netfilter@vger.kernel.org
 
-Eric Leblond wrote:
-> Hello,
+Zoe Parsons wrote:
+> Hi, I'm probably just missing something obvious but still....
 > 
-> On Tuesday, 2008 July 22 at 17:02:14 -0700, Curtis Wyatt wrote:
->> I am using ip_queue.  I understand that is depreciated.
->>
->> I want to intercept a packet, alter it (change payload and source ip
->> address and destination ip address) and then do an NF_ACCEPT on it, to
->> have it continue on its way to another machine.  However it never
->> shows up at that other machine.  Is there anyway to do this without
->> doing an NF_DROP and then sending a new packet through?
->>
->> Will libnetfilter_queue do this for me?
+> I've had the first cause to use something out of POM in a few years
+> (ipp2p not that it really matters), and when I run it I just get the
+> message:
+> /usr/src/iptables-1.4.1.1 doesn't look like a iptables source code
+> directory to me.
 > 
-> Yes, but you will have to compute the checksum of the modified packet by
-> yourself.
+> I've tried it with the debian package source, a downloaded tarball from
+> the  netfilter site, and finally with the git tree (using both
+> downloaded and git retrieved copies of POM as well).
 > 
-> Someone should send a patch which adds helper functions to ease that
-> task in a day or two.
-> 
->> I don't want to move to
->> libnetfilter_queue because I can't find a redhat rpm and I can't find
->> hardly any documentation on it.
-> 
-> Compilation is not really difficult but lack of documentation is a real
-> problem. The only thing for now is too look at snort-inline or NuFW code
-> to see how to use the library.
+> Oh and it's been invoked as: ./runme --download --kernel-path
+> /usr/src/linux-source-2.6.25 --iptables-path /usr/src/iptables-1.4.1.1
 
-I remember that you have mentioned some libnetfilter_queue's
-documentation during the RMLL? I'm willing to include it if that helps
-users. Where is it?
+You forgot to run ./configure in your iptables sources before running
+pom-ng?
 
 -- 
 "Los honestos son inadaptados sociales" -- Les Luthiers
