@@ -1,66 +1,46 @@
-From: DEMAINE Benoit-Pierre <benoit@demaine.info>
-Subject: Re: ebtables to perform MAC NAT ?
-Date: Wed, 23 Jul 2008 20:54:14 +0200
-Message-ID: <48877E56.90703@demaine.info>
-References: <4884282D.80804@demaine.info> <4884A677.8080003@riverviewtech.net> <4884B214.90406@demaine.info> <4884E580.5000909@riverviewtech.net> <4885171A.1080709@demaine.info> <48860C0C.60504@riverviewtech.net>
+From: "Charles 'Boyo" <charlesboyo@gmail.com>
+Subject: Compiling and using libipq on Fedora Core 5 & CentOS 4
+Date: Wed, 23 Jul 2008 20:50:47 +0100
+Message-ID: <a0410a580807231250w580bf169t23c49c413d799bb5@mail.gmail.com>
+References: <a0410a580807231241o3527e899v533d37f32eaed47d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48860C0C.60504@riverviewtech.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=7odj62ti/q024XhIZ3Plw/njcnwtvxI1h8B+mu6gQf4=;
+        b=GF1+P6oNzfWMwvC/pfh81XAgTbpg11jQqsmAiCGoH8oOL81890e29ldsdBuYiBb8O9
+         Mep7ACsWWP5CS1YgyIPZzN0f/IxI2HiFllEnXpRr4CB/WBOGGfkHO+xohdzeyiKxTBqf
+         kH/qvLintU6moOETbkzmCHyaqf5qP4T9gAReA=
+In-Reply-To: <a0410a580807231241o3527e899v533d37f32eaed47d@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Grant Taylor wrote:
-> Heh.  Sounds like your home network is more of a daisy chain of 
-> computers with multiple network cars in them or something else equally 
-> as strange.
+Hello netfilter team.
 
-This is a very good point of view of my topology. But offtopic.
+I have a requirement to make some modifications to incoming UDP
+packets and I am in possession of sample code that could be modified
+to suit my purpose based on libipq.
+However, attempts to build the applicaton on a pair of Linux servers
+have failed. These boxes are running:
 
-> That's because it's not a package per say.  Proxy ARP is a feature of 
-> the kernel that has to be enabled, much like routing and IP forwarding.
-> 
-> Rather than me re-typing how to do it, take a look at the write up about 
-> it in the Linux Advanced Routing and Traffic Control HowTo - 
-> Pseudo-bridges with Proxy-ARP 
-> (http://lartc.org/howto/lartc.bridging.proxy-arp.html).
+Fedora Core 5: 2.6.15-1.2054_FC5
+CentOS 4.4: 2.6.9-42.EL
 
-I will read that soon.
+It appears the neither of these contain any references to libipq. In
+its place appears to be libnetfilter_queue, however I am not about to
+make any kernel levels changes. Neither do I have the code that works
+with that.
 
-[...]
+The source code in question is as found at:
+http://www.cs.princeton.edu/~nakao/libipq.htm
 
-For now, i have tested parprouted (see message dated 22/07/08 18:01 
-(west Europe)). Fact is: it solves the arp problem at one condition: I 
-have to shutdown completely the bridge.
+Thanks
 
-parprouted does not work at all with br0; it works properly only for 
-eth0+wlan0_rename ... and only when br0 is off ("brctl delbr br0"); 
-then, all ARP tables are set up as desired (real mac of the machine 
-within the segment; IPs of machines from other segments are aliased to 
-Gluton's MAC). Et the time i do "brctl addbr br0 && brctl addif br0 
-eth0", arp resolution stops working (after cache expiry, or manual 
-deletion).
-
-So, my problem is not to get the right arp resolution, and find a way to 
-bridge interfaces so that it wont prevent arp to work as required. This 
-is an offtopic problem for now; i have a new path to walk, and i got new 
-ideas for google keywords to search for. I ll give feedback in few days 
-(either giving a solution, or with new problems :D ). I have to find why 
-parprouted and brctl seem incompatible ... or how people do the bridging 
-when using parprouted around ...
-
-***
-
-I am open minded for changing the software approach, as long as we keep 
-trying to use my actual hardware.
-
-I now have things to work on my side.
-
--- 
-  >o_/ DEMAINE Benoit-Pierre (aka DoubleHP) http://benoit.demaine.info/
-If computing were an exact science, IT engineers would not have work \_o<
-
-"So all that's left, Is the proof that love's not only blind but deaf."
-(FAKE TALES OF SAN FRANCISCO, Arctic Monkeys)
+Charles
