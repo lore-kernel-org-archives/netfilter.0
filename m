@@ -1,70 +1,38 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+From: Patrick McHardy <kaber@trash.net>
 Subject: Re: [ANNOUNCE] Release of iptables 1.4.2-rc1
-Date: Thu, 24 Jul 2008 12:40:32 +0100 (BST)
-Message-ID: <Pine.LNX.4.58.0807241231520.30125@mail3.jubileegroup.co.uk>
-References: <488734A3.3090401@trash.net>
+Date: Thu, 24 Jul 2008 13:42:50 +0200
+Message-ID: <48886ABA.8020200@trash.net>
+References: <488734A3.3090401@trash.net> <Pine.LNX.4.58.0807241231520.30125@mail3.jubileegroup.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <488734A3.3090401@trash.net>
+In-Reply-To: <Pine.LNX.4.58.0807241231520.30125@mail3.jubileegroup.co.uk>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "G.W. Haywood" <ged@jubileegroup.co.uk>
 Cc: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>
 
-Hi there,
+G.W. Haywood wrote:
+> Hi there,
+> 
+> On Wed, 23 Jul 2008, Patrick McHardy wrote:
+> 
+>> The netfilter coreteam presents:
+>>
+>>      iptables version 1.4.2-rc1
+> 
+> No problems here, built and installed fine right out of the box with
+> ./configure
+> make
+> make install
 
-On Wed, 23 Jul 2008, Patrick McHardy wrote:
+Thanks.
 
-> The netfilter coreteam presents:
->
->      iptables version 1.4.2-rc1
+> I'm curious about the ipset userspace tool - will it eventually find
+> its way to the iptables tarball?  Right now it seems that you get it
+> kind of incidentally when you apply the kernel patch, which seems to
+> me a little odd.
 
-No problems here, built and installed fine right out of the box with
-./configure
-make
-make install
+Jozsef should be able to answer that.
 
-I'm curious about the ipset userspace tool - will it eventually find
-its way to the iptables tarball?  Right now it seems that you get it
-kind of incidentally when you apply the kernel patch, which seems to
-me a little odd.
-
-8<----------------------------------------------------------------------
-
-[ged]$ gcc -v
-Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/specs
-Configured with: ../configure --prefix=/usr --mandir=/usr/share/man
-  --infodir=/usr/share/info --enable-shared --enable-threads=posix
-  --disable-checking --with-system-zlib --enable-__cxa_atexit
-  --host=i386-redhat-linux
-Thread model: posix
-gcc version 3.2.2 20030222 (Red Hat Linux 3.2.2-5)
-
-8<----------------------------------------------------------------------
-
-[ged]$ /lib/libc.so.6
-GNU C Library stable release version 2.3.2, by Roland McGrath et al.
-Copyright (C) 2003 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.
-There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.
-Compiled by GNU CC version 3.2.2 20030222 (Red Hat Linux 3.2.2-5).
-Compiled on a Linux 2.4.20 system on 2003-03-13.
-Available extensions:
-        GNU libio by Per Bothner
-        crypt add-on version 2.1 by Michael Glad and others
-        linuxthreads-0.10 by Xavier Leroy
-        BIND-8.2.3-T5B
-        libthread_db work sponsored by Alpha Processor Inc
-        NIS(YP)/NIS+ NSS modules 0.19 by Thorsten Kukuk
-Thread-local storage support included.
-Report bugs using the `glibcbug' script to <bugs@gnu.org>.
-
-8<----------------------------------------------------------------------
-
---
-
-73,
-Ged.
