@@ -1,27 +1,54 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [CONFIG] Block port when listening socket is closed?
-Date: Thu, 24 Jul 2008 03:15:41 +0200 (CEST)
-Message-ID: <alpine.LNX.1.10.0807240315050.23410@fbirervta.pbzchgretzou.qr>
-References: <8e8818110807231710k6f15cfb3n694a409f83e2833f@mail.gmail.com>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: ip_queue, libnetfilter_queue, and packet alteration
+Date: Thu, 24 Jul 2008 09:41:44 +0200
+Message-ID: <20080724074144.GE2250@khasse.inl.fr>
+References: <7915e7b50807221702m752d5b74y9283a28f4b9b1689@mail.gmail.com> <20080723094512.GA2250@khasse.inl.fr> <488766CB.9060102@trash.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <8e8818110807231710k6f15cfb3n694a409f83e2833f@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <488766CB.9060102@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: ibramo addison <ibramo5050@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: Patrick McHardy <kaber@trash.net>
+Cc: Curtis Wyatt <zhackwyatt@gmail.com>, netfilter@vger.kernel.org, toady@inl.fr
 
+Hello,
 
-On Thursday 2008-07-24 02:10, ibramo addison wrote:
-
->Hi
+On Wednesday, 2008 July 23 at 19:13:47 +0200, Patrick McHardy wrote:
+> Eric Leblond wrote:
+>> Hello,
+>>
+>> On Tuesday, 2008 July 22 at 17:02:14 -0700, Curtis Wyatt wrote:
+>>> I am using ip_queue.  I understand that is depreciated.
+>>>
+>>> I want to intercept a packet, alter it (change payload and source ip
+>>> address and destination ip address) and then do an NF_ACCEPT on it, to
+>>> have it continue on its way to another machine.  However it never
+>>> shows up at that other machine.  Is there anyway to do this without
+>>> doing an NF_DROP and then sending a new packet through?
+>>>
+>>> Will libnetfilter_queue do this for me?
+>>
+>> Yes, but you will have to compute the checksum of the modified packet by
+>> yourself.
+>>
+>> Someone should send a patch which adds helper functions to ease that
+>> task in a day or two.
 >
->Would you happen to know a way to control system behaviour when
->connection requests are received on TCP or UDP ports where there is no
->socket listening? I know this can be done using net.inet.tcp.blackhole
->or net.inet.udp.blackhole in FreeBSD but I'm not aware of anything
->similar in Linux, so I thought iptables would be the only possibility.
+> That makes sense. It would also allow to take advantage of hardware
+> TX csumming.
 
--m socket, but the tproxy guys have not yet merged that code :-/
+You mean, doing this on kernel side ? That's seem nice but tha atch have
+been prepared for userspace.
+
+I will try to look into it. I know that kernel was automatically
+computing checksum if it was set to zero in packet vefore verdict but
+the feature seems to have disappear.
+
+BR,
+-- 
+Eric Leblond
+INL: http://www.inl.fr/
+NuFW: http://www.nufw.org/
