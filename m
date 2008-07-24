@@ -1,54 +1,70 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: ip_queue, libnetfilter_queue, and packet alteration
-Date: Thu, 24 Jul 2008 12:22:06 +0200
-Message-ID: <488857CE.3060406@trash.net>
-References: <7915e7b50807221702m752d5b74y9283a28f4b9b1689@mail.gmail.com> <20080723094512.GA2250@khasse.inl.fr> <488766CB.9060102@trash.net> <20080724074144.GE2250@khasse.inl.fr>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Subject: Re: [ANNOUNCE] Release of iptables 1.4.2-rc1
+Date: Thu, 24 Jul 2008 12:40:32 +0100 (BST)
+Message-ID: <Pine.LNX.4.58.0807241231520.30125@mail3.jubileegroup.co.uk>
+References: <488734A3.3090401@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20080724074144.GE2250@khasse.inl.fr>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <488734A3.3090401@trash.net>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eric Leblond <eric@inl.fr>, Patrick McHardy <kaber@trash.net>, Curtis Wyatt <zhackwyatt@gmail.com>, netfilter@vger.kernel.org, toady@inl.fr
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>
 
-Eric Leblond wrote:
-> Hello,
-> 
-> On Wednesday, 2008 July 23 at 19:13:47 +0200, Patrick McHardy wrote:
->> Eric Leblond wrote:
->>> Hello,
->>>
->>> On Tuesday, 2008 July 22 at 17:02:14 -0700, Curtis Wyatt wrote:
->>>> I am using ip_queue.  I understand that is depreciated.
->>>>
->>>> I want to intercept a packet, alter it (change payload and source ip
->>>> address and destination ip address) and then do an NF_ACCEPT on it, to
->>>> have it continue on its way to another machine.  However it never
->>>> shows up at that other machine.  Is there anyway to do this without
->>>> doing an NF_DROP and then sending a new packet through?
->>>>
->>>> Will libnetfilter_queue do this for me?
->>> Yes, but you will have to compute the checksum of the modified packet by
->>> yourself.
->>>
->>> Someone should send a patch which adds helper functions to ease that
->>> task in a day or two.
->> That makes sense. It would also allow to take advantage of hardware
->> TX csumming.
-> 
-> You mean, doing this on kernel side ? That's seem nice but tha atch have
-> been prepared for userspace.
+Hi there,
 
-Not necessarily, userspace could also get the partial checksums
-if its aware of them (which could be indicated when configuring
-the queue). But thats only one half of it, when modifying the
-packet in a way that incremental checksum updates are not possible,
-it has to be recalculated entirely. Thats where the hardware
-could help.
+On Wed, 23 Jul 2008, Patrick McHardy wrote:
 
-> I will try to look into it. I know that kernel was automatically
-> computing checksum if it was set to zero in packet vefore verdict but
-> the feature seems to have disappear.
+> The netfilter coreteam presents:
+>
+>      iptables version 1.4.2-rc1
 
-I'm not aware of this feature. Was it present in ip_queue?
+No problems here, built and installed fine right out of the box with
+./configure
+make
+make install
+
+I'm curious about the ipset userspace tool - will it eventually find
+its way to the iptables tarball?  Right now it seems that you get it
+kind of incidentally when you apply the kernel patch, which seems to
+me a little odd.
+
+8<----------------------------------------------------------------------
+
+[ged]$ gcc -v
+Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/specs
+Configured with: ../configure --prefix=/usr --mandir=/usr/share/man
+  --infodir=/usr/share/info --enable-shared --enable-threads=posix
+  --disable-checking --with-system-zlib --enable-__cxa_atexit
+  --host=i386-redhat-linux
+Thread model: posix
+gcc version 3.2.2 20030222 (Red Hat Linux 3.2.2-5)
+
+8<----------------------------------------------------------------------
+
+[ged]$ /lib/libc.so.6
+GNU C Library stable release version 2.3.2, by Roland McGrath et al.
+Copyright (C) 2003 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+Compiled by GNU CC version 3.2.2 20030222 (Red Hat Linux 3.2.2-5).
+Compiled on a Linux 2.4.20 system on 2003-03-13.
+Available extensions:
+        GNU libio by Per Bothner
+        crypt add-on version 2.1 by Michael Glad and others
+        linuxthreads-0.10 by Xavier Leroy
+        BIND-8.2.3-T5B
+        libthread_db work sponsored by Alpha Processor Inc
+        NIS(YP)/NIS+ NSS modules 0.19 by Thorsten Kukuk
+Thread-local storage support included.
+Report bugs using the `glibcbug' script to <bugs@gnu.org>.
+
+8<----------------------------------------------------------------------
+
+--
+
+73,
+Ged.
