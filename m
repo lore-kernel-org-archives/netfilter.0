@@ -1,48 +1,51 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: xtables-addons license (was: patch-o-matic problems..?)
-Date: Fri, 25 Jul 2008 06:01:01 -0400
-Message-ID: <i68j84dug7nqmocorl97vvp4bqm8irlkg7@4ax.com>
-References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>  <alpine.LNX.1.10.0807201105300.21244@fbirervta.pbzchgretzou.qr>  <alpine.DEB.1.10.0807201544510.8813@fairy.dhcp.penguin>  <alpine.LNX.1.10.0807201652360.21244@fbirervta.pbzchgretzou.qr> <935fab200807221736k5c95037fgac0eac3e1e4915b2@mail.gmail.com> <alpine.LNX.1.10.0807231118560.23410@fbirervta.pbzchgretzou.qr>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] Release of iptables 1.4.2-rc1
+Date: Fri, 25 Jul 2008 14:22:45 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0807251357210.30751@blackhole.kfki.hu>
+References: <488734A3.3090401@trash.net> <Pine.LNX.4.58.0807241231520.30125@mail3.jubileegroup.co.uk>
+ <48886ABA.8020200@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <48886ABA.8020200@trash.net>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: "G.W. Haywood" <ged@jubileegroup.co.uk>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>, Netfilter Core Team <coreteam@netfilter.org>
 
-> >3) Add documentation on reasons why moving to Xtables and how it works
-> >to Netfilter.org
+On Thu, 24 Jul 2008, Patrick McHardy wrote:
+
+> G.W. Haywood wrote:
 > 
-> 4) Tell distributions to package it so users don't have to worry about (3)
+> > I'm curious about the ipset userspace tool - will it eventually find
+> > its way to the iptables tarball?  Right now it seems that you get it
+> > kind of incidentally when you apply the kernel patch, which seems to
+> > me a little odd.
+> 
+> Jozsef should be able to answer that.
 
-Jan, I'm working on creating Debian packages of xtables-addons.  I'm not a
-Debian developer, but I can still post the packages.
+With the iptables source you already get the userspace part of the set 
+match and target. The (new) ipset source tarball contains both the ipset 
+userspace tool and the kernel modules, including the netfilter match and 
+target. There's no need for patch-o-matic-ng for ipset anymore, so the 
+life is easier to get the complete ipset functionality.
 
-But there's a problem:  there's no overall license file, and a lot of the source
-files don't have license statements in them.  Here are the source files I find
-with no license:
+As I stated several times, I do not want to submit the kernel part of 
+ipset for inclusion: there's no point to waste the resources of the 
+maintainers as I have been working on a complete rewriting of ipset.
+By the next netfilter development workshop I want to release the first 
+version of it, so it's not in the indefinite future anymore.
 
-extensions/libxt_condition.c
-extensions/libxt_ECHO.c
-extensions/libxt_ipp2p.c
-extensions/libxt_LOGMARK.c
-extensions/libxt_TARPIT.c
-extensions/libxt_TEE.c
+I'd not like the ipset userspace tool to be included into the iptables 
+source either. That'd be an even stranger situation and then there'd come 
+even bigger pressure to submit the kernel part of the present version of 
+ipset.
 
-The remaining source files are all GPL.
-
-Can the above files be released under GPL too?  Most of them don't have
-copyright statements in them.  Do you/we know who their authors are?
-
-I know very little about licenses.  What about all of the other files in the
-archive?  Do they need to be licensed too, and would a general COPYING file such
-as one usually sees cover them all?
-
-Thanks,
-Andrew.
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
