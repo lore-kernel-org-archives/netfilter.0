@@ -1,46 +1,40 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: [ANNOUNCE] Release of iptables 1.4.2-rc1
-Date: Fri, 25 Jul 2008 14:10:01 +0100 (BST)
-Message-ID: <Pine.LNX.4.58.0807251358380.25240@mail3.jubileegroup.co.uk>
-References: <488734A3.3090401@trash.net> <Pine.LNX.4.58.0807241231520.30125@mail3.jubileegroup.co.uk>
- <48886ABA.8020200@trash.net> <Pine.LNX.4.64.0807251357210.30751@blackhole.kfki.hu>
+From: "Barry A Rich" <barich@trisectrix.com>
+Subject: RE: UDP stream load balancing across multiple uplinks
+Date: Fri, 25 Jul 2008 10:19:09 -0400
+Message-ID: <000001c8ee61$67e4b7a0$37ae26e0$@com>
+References: <000501c8edf5$19903230$4cb09690$@com> <a43edf1b0807241837n7e6dceb4id5a16dd56c6344a9@mail.gmail.com>
+Reply-To: <barich@trisectrix.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.0807251357210.30751@blackhole.kfki.hu>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <a43edf1b0807241837n7e6dceb4id5a16dd56c6344a9@mail.gmail.com>
+Content-Language: en-us
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi Jozsef,
+Bonding is not required in this case. The system that receives the UDP stream does not care if the UDP packets have different source IP addresses. NAT would not be required in this case, but the ISP might drop packets if the source address does not match the uplink address.
 
-On Fri, 25 Jul 2008, Jozsef Kadlecsik wrote:
+Given those assumptions, what's the best way to load balance across the uplinks? If netfilter cannot be configured to do this, can I change ip_conntrack to ignore UDP packets?
 
-> > G.W. Haywood wrote:
+> 
+> Why would it need to be tracked?  Are you using NAT?  NAT necessarily
+> must assign one public address to the outgoing connection as it
+> traverses the router.  Therefore, unless all three uplinks can be
+> bonded together to have the same IP address, you can not do that.
+> 
+> On Thu, Jul 24, 2008 at 20:23, Barry A Rich <barich@trisectrix.com> wrote:
+> > I've configured a kubuntu 8.04 PC as router with one LAN interface and three
+> > Internet uplinks. A UDP stream is being produced on the LAN. I'd like the
+> > UPD packets from the stream to be load balanced across the uplinks.
+> > Currently, the UDP stream is tracked as a single connection and all the UPD
+> > packets are sent to the same uplink. What's the best way to accomplish this?
 > >
-> > > I'm curious about the ipset userspace tool - will it eventually find
-> > > its way to the iptables tarball?
->
-> With the iptables source you already get the userspace part of the set
-> match and target. The (new) ipset source tarball contains both the ipset
-> userspace tool and the kernel modules, including the netfilter match and
-> target. There's no need for patch-o-matic-ng for ipset anymore, so the
-> life is easier to get the complete ipset functionality.
+> >
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> >
 
-You're quite right, I've installed it on a couple of my mailservers and
-it is a lot easier than patching [sic] the patch-o-matic sources.
-
-Thank you.  Thank you all! very much for your efforts.
-
-> ...there's no point to waste the resources of the maintainers as I
-> have been working on a complete rewriting of ipset.  By the next
-> netfilter development workshop I want to release the first version...
-
-I understand.  I was just curious. :)
-
---
-
-73,
-Ged.
