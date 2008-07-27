@@ -1,48 +1,36 @@
-From: "Barry A Rich" <barich@trisectrix.com>
-Subject: RE: UDP stream load balancing across multiple uplinks
-Date: Sat, 26 Jul 2008 17:36:36 -0400
-Message-ID: <003201c8ef67$aed713e0$0c853ba0$@com>
-References: <000501c8edf5$19903230$4cb09690$@com> <a43edf1b0807241837n7e6dceb4id5a16dd56c6344a9@mail.gmail.com> <000001c8ee61$67e4b7a0$37ae26e0$@com> <4889ECB9.3090206@riverviewtech.net>
-Reply-To: <barich@trisectrix.com>
+From: David Boulding <davidboulding@gmail.com>
+Subject: (unknown)
+Date: Sat, 26 Jul 2008 21:11:08 -0400
+Message-ID: <009301c8ef85$a7389050$f5a9b0f0$@com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4889ECB9.3090206@riverviewtech.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:to:subject:date:message-id
+         :mime-version:content-type:content-transfer-encoding:x-mailer
+         :thread-index:content-language:from;
+        bh=7sbgkEqEZGqiGNROMBdylp4JakAtFpt7uwSV1hfyeow=;
+        b=XNhHpoK+NIBnmyyr9uKjTYfx80D30QTWMLsEo5EtuwxSN7VPb+78VjZ+sJgAf4uc0Q
+         PHadUqv16lRCaxUuB9948g6oofOIVo7W07JxzIUQQIcNZk9QVDOtnOWLnkMNWfHAYpa1
+         4XuIajMEuDyicsnlp6reUNxnN+CW4lbN+5fDc=
+Subject: 
 Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Grant Taylor' <gtaylor@riverviewtech.net>, 'Mail List - Netfilter' <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org
-[mailto:netfilter-owner@vger.kernel.org]
-> On Behalf Of Grant Taylor
-> Sent: Friday, July 25, 2008 11:10 AM
-> 
-> Given that the source IP of your packets can change mid stream, you
-> could use the "nth" match extension.  Using "nth" you would match
-> packets to decide how to mark them and then use the mark to determine
-> what routing table to use which would ultimately decide which outbound
-> path to use.
+Hey all,
 
-The nth match looks promising. Given that I want to avoid connection
-tracking, I tried the following commands:
+I'm developing with libnetfilter_queue, using "iptables -A FORWARD ." to
+capture packets of interest on a bridge for analysis (firewall). 
+I use nfq_get_payload() to grab everything from the IP layer and on, but I
+was wondering if there was any way to get the raw MAC layer. 
+Is there any command like nfq_get_payload() that will return everything
+similar to what you would get using wireshark or ethereal?
 
-iptables -t raw -A PREROUTING -i eth0 -p udp --sport $SPORT -m statistic
---mode nth --every 3 --packet 0 -j SNAT --to-source $UPLINK1IP
-iptables -t raw -A PREROUTING -i eth0 -p udp --sport $SPORT -m statistic
---mode nth --every 3 --packet 1 -j SNAT --to-source $UPLINK2IP
-iptables -t raw -A PREROUTING -i eth0 -p udp --sport $SPORT -m statistic
---mode nth --every 3 --packet 2 -j SNAT --to-source $UPLINK3IP
+Thanks,
 
-Each of these produce the following error:
-
-	iptables: Invalid argument
-
-Any suggestions on what is wrong? Is this the correct way to bypass
-connection tracking?
-
-Thanks.
-
+Dave
 
