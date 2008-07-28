@@ -1,60 +1,74 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Sebastian =?ISO-8859-1?Q?Cla=DFen?= <sebastian.classen@freenet.ag>
 Subject: Re: xtables-addons license (was: patch-o-matic problems..?)
-Date: Sun, 27 Jul 2008 16:35:36 -0400 (EDT)
-Message-ID: <alpine.LNX.1.10.0807271419120.9173@fbirervta.pbzchgretzou.qr>
-References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>  <alpine.LNX.1.10.0807201105300.21244@fbirervta.pbzchgretzou.qr>  <alpine.DEB.1.10.0807201544510.8813@fairy.dhcp.penguin>  <alpine.LNX.1.10.0807201652360.21244@fbirervta.pbzchgretzou.qr>
- <935fab200807221736k5c95037fgac0eac3e1e4915b2@mail.gmail.com> <alpine.LNX.1.10.0807231118560.23410@fbirervta.pbzchgretzou.qr> <i68j84dug7nqmocorl97vvp4bqm8irlkg7@4ax.com>
+Date: Mon, 28 Jul 2008 08:06:09 +0200
+Message-ID: <1217225169.13628.1.camel@mars.freenet-ag.de>
+References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin>
+	 <alpine.LNX.1.10.0807201105300.21244@fbirervta.pbzchgretzou.qr>
+	 <alpine.DEB.1.10.0807201544510.8813@fairy.dhcp.penguin>
+	 <alpine.LNX.1.10.0807201652360.21244@fbirervta.pbzchgretzou.qr>
+	 <935fab200807221736k5c95037fgac0eac3e1e4915b2@mail.gmail.com>
+	 <alpine.LNX.1.10.0807231118560.23410@fbirervta.pbzchgretzou.qr>
+	 <i68j84dug7nqmocorl97vvp4bqm8irlkg7@4ax.com>
+	 <alpine.LNX.1.10.0807271419120.9173@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <i68j84dug7nqmocorl97vvp4bqm8irlkg7@4ax.com>
+In-Reply-To: <alpine.LNX.1.10.0807271419120.9173@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Stephane Ouellette <ouellettes@videotron.ca>, Massimiliano Hofer <max@nucleus.it>, Eicke Friedrich/Klaus Degner <ipp2p@ipp2p.org>, =?UTF-8?Q?Sebastian_Cla=C3=9Fen?= <sebastian.classen>
+Content-Type: text/plain; charset="utf-8"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org, Andrew Schulman <andrex@alumni.utexas.net>
 
+Am Sonntag, den 27.07.2008, 16:35 -0400 schrieb Jan Engelhardt:
+> On Friday 2008-07-25 06:01, Andrew Schulman wrote:
+> >
+> >But there's a problem:  there's no overall license file, and a lot o=
+f=20
+> >the source files don't have license statements in them.  Here are th=
+e=20
+> >source files I find with no license:
+> >
+> >extensions/libxt_condition.c
+> (Stephane and Massimiliano)
+>=20
+> >extensions/libxt_ECHO.c
+> (me)
+>=20
+> >extensions/libxt_ipp2p.c
+> (ipp2p project group, code audited by me)
+>=20
+> >extensions/libxt_LOGMARK.c
+> (me)
+>=20
+> >extensions/libxt_TARPIT.c
+> (trivial)
+>=20
+> >extensions/libxt_TEE.c
+> (Sebastian and audited by me)
 
-On Friday 2008-07-25 06:01, Andrew Schulman wrote:
->
->But there's a problem:  there's no overall license file, and a lot of 
->the source files don't have license statements in them.  Here are the 
->source files I find with no license:
->
->extensions/libxt_condition.c
-(Stephane and Massimiliano)
+=46or me GPL is fine ;)
 
->extensions/libxt_ECHO.c
-(me)
+> >The remaining source files are all GPL.
+> >
 
->extensions/libxt_ipp2p.c
-(ipp2p project group, code audited by me)
+Greets
+  Sebastian.
 
->extensions/libxt_LOGMARK.c
-(me)
+--=20
+Sebastian Cla=C3=9Fen
+Postmaster
+----------------------------------------------------------------------
+Telefon: + 49 (0) 211 53087 522
+Telefax: + 49 (0) 211 5381573
+E-Mail:  sebastian.classen@freenet.ag
+Website: www.freenet.de; www.mobilcom.de; www.freenet.ag
+----------------------------------------------------------------------
+freenet.de GmbH
+Ein Unternehmen der freenet AG
+Willst=C3=A4tterstr. 13
+40549 D=C3=BCsseldorf
+----------------------------------------------------------------------
+Gesch=C3=A4ftsf=C3=BChrung: Eckhard Spoerr, Axel Krieger, Eric Berger
+Sitz der Gesellschaft ist Hamburg HRB 105353, Amtsgericht Hamburg
 
->extensions/libxt_TARPIT.c
-(trivial)
-
->extensions/libxt_TEE.c
-(Sebastian and audited by me)
-
->The remaining source files are all GPL.
->
->Can the above files be released under GPL too?  Most of them don't have
->copyright statements in them.  Do you/we know who their authors are?
-
-The iptables extensions are mostly trivial and I would not consider them 
-meaningfully copyrightable (especially libxt_TARPIT.c). I relaxedly put 
-in GPL because anything else does not make sense. (e.g. there is no BSD 
-implementation of the iptables command line interface which could 
-possibly use these modules)
-
-If any of the Cc'ed co-authors disagree with picking GPL2+, now is your 
-time to speak up.
-
->I know very little about licenses.  What about all of the other files 
->in the archive?  Do they need to be licensed too, and would a general 
->COPYING file such as one usually sees cover them all?
-
-I'll fix that.
