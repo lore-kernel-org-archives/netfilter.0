@@ -1,70 +1,72 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: your mail
-Date: Tue, 29 Jul 2008 09:11:30 +0200
-Message-ID: <20080729071130.GA5383@bayen.regit.org>
-References: <009301c8ef85$a7389050$f5a9b0f0$@com> <20080728141409.GC27519@khasse.inl.fr> <5226fb870807280721kaa95f6esc6955cc87da42c18@mail.gmail.com> <20080728144341.GD27519@khasse.inl.fr> <5226fb870807280833x5eccb178jf8fc16740396b33b@mail.gmail.com>
+From: Brian Mearns <mearns.b@gmail.com>
+Subject: Re: Is p-o-m still the correct thing to use?
+Date: Tue, 29 Jul 2008 06:25:54 -0400
+Message-ID: <488EF032.5020000@gmail.com>
+References: <488A7D17.4070506@gmail.com> <s7sl841gefisi4k0lreotlvqbmq9kfl99u@4ax.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5226fb870807280833x5eccb178jf8fc16740396b33b@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :organization:user-agent:mime-version:to:cc:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=txwnasL/Gwqg30mQW2hBHdUqesdNnPBhbBhpzkZ0l7s=;
+        b=GMckoN8S/vz8aOih92i6Dhfwi06WMclz6WUU3Tz5d4eEL4pK9ZIz/WPJrR/DyL4rS8
+         /lJoreymwhfu8831pZ/nldkG7wm6NmFqIwbluZJYtlaUIlEejtYWp5ir05vajTk99elK
+         T6saOgd6k7fVJXsOAt/8PRuykIHkWJRcyfJe0=
+In-Reply-To: <s7sl841gefisi4k0lreotlvqbmq9kfl99u@4ax.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: David Boulding <davidboulding@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Andrew Schulman <andrex@alumni.utexas.net>
 Cc: netfilter@vger.kernel.org
 
+Thanks a lot for the help, Andrew. The iptables source I have doesn't 
+have a configure script...oh, but it does have an autogen script. I 
+guess I was probably supposed to use that first. But it's a moot point, 
+apparently, because of xtables, so I will be switching to that.
 
---yrj/dFKFPuw6o+aM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks,
+-Brian
 
-Hello,
-
-On Monday, 2008 July 28 at 11:33:24 -0400, David Boulding wrote:
-> I've never heard of NFLOG or ULOG, is there any documentation under
-> netfilter on how to use it? How would I get the data that I want (to
-> sniff) using NFLOG/ULOG?
-
-For ULOG, you can have a look at ulogd or ulogd2 code.
-	http://git.netfilter.org/cgi-bin/gitweb.cgi?p=3Dulogd2.git;a=3Dblob;f=3Din=
-put/packet/ulogd_inppkt_ULOG.c;h=3Dc00d9bf8a965be7f961738892e19191efcf8f691=
-;hb=3D0b789ea9bf810497845456e9b83bff8c5ae5ca23
-By the way, as ulogd2 uses a plugin mechanism, you may be able to build
-what you want by coding an ulogd2 plugin. It can provide you a way to
-code something independant from low level (NFLOG or ULOG can be used as
-input without changing your plugin).
-
-A mini doc about ulogd2 hacking is available here:
-	http://home.regit.org/?page_id=3D90
-
-For NFLOG, you need to use latest git for kernel and libnetfilter_log.
-
-The following functions are available:
-
-- nflog_get_hwtype: to fetch hardware type (and thus give the parser to
-  use)
-- nflog_get_msg_packet_hwhdrlen: to get hardware header len
-- nflog_get_msg_packet_hwhdr: get hardware datas
-
-BR,
---=20
-Eric Leblond
-INL: http://www.inl.fr/
-NuFW: http://www.nufw.org/
-
---yrj/dFKFPuw6o+aM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFIjsKinxA7CdMWjzIRAofmAJ9mi4P5SRkPugu8wADwtmB2LlHmigCfWjNn
-E77TPzKV3LStdfYgpFCobVA=
-=ruvK
------END PGP SIGNATURE-----
-
---yrj/dFKFPuw6o+aM--
+Andrew Schulman wrote:
+>> The latest version of POM seems to be from 2004, and I saw some 
+>> references in the mailing list archive seeming to indicate that is' 
+>> being deprecated, but is there anything to replace it?
+> 
+> For POM-ng, if you look in the snapshot directory of the FTP server, you'll find
+> daily versions up to yesterday.  However, I recently tried to use on of those to
+> install the condition patch, and it failed for reasons that I wasn't able to
+> figure out in 30 mins. or so of research.
+> 
+> POM has now been superseded by xtables-addons
+> (http://jengelh.medozas.de/projects/xtables/).  Unfortunately the netfilter site
+> hasn't been updated yet to reflect this.  Discussion threads on that in this
+> forum within the last week:
+> 
+>   POM Xtables???
+>   patch-0-matic problems..?
+> 
+> At first I was annoyed at yet another big change in netfilter patching, but
+> xtables-addons is better because it doesn't require you to patch either your
+> kernel or iptables.
+> 
+>> I'd really like to patch in TARPITs, but the latest POM does not work 
+>> with the latest iptable src ("doesn't look like a iptables source code 
+>> directory to me.")
+> 
+> You have to run ./configure in your iptables source dir first.  Not sure if that
+> used to be the case-- I think it wasn't.
+> 
+> That gets to wny I always used to hate using POM.  It was unique and volatile--
+> about once a year someone would change something and my script would break and
+> I'd have to go back and figure it all out again.  Good riddance, I say.
+> 
+> Good luck,
+> Andrew.
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
