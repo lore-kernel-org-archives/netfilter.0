@@ -1,44 +1,52 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: iptables, NAT, DNS & Dan Kaminsky
-Date: Wed, 30 Jul 2008 20:17:16 +0200
-Message-ID: <1217441836.16919.23.camel@enterprise.ims-firmen.de>
-References: <2d460de70807300753h6673017i29374763ca9f763@mail.gmail.com>
-	 <1217435970.14516.17.camel@enterprise.ims-firmen.de>
-	 <2d460de70807301019y68e592f1x8e00af9fabff1ff6@mail.gmail.com>
+From: "Barry A Rich" <barich@trisectrix.com>
+Subject: UDP packets not being SNAT-ed
+Date: Wed, 30 Jul 2008 21:58:36 -0400
+Message-ID: <00bb01c8f2b0$f2875360$d795fa20$@com>
+Reply-To: <barich@trisectrix.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <2d460de70807301019y68e592f1x8e00af9fabff1ff6@mail.gmail.com>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Richard Hartmann <richih.mailinglist@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+
+I've configured an ubuntu PC as a router. All TCP based protocols are
+working. The UDP packets are not getting SNAT-ed. Can someone help with the
+setup?
+
+The relevant iptables setup is:
+
+$IPTABLES -A OUTPUT -o lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
+
+$IPTABLES -t nat -A POSTROUTING -o $UPLINK1IF -j SNAT --to $UPLINK1IP
+
+$IPTABLES -t nat -A POSTROUTING -o $UPLINK2IF -j SNAT --to $UPLINK2IP
+
+$IPTABLES -t nat -A POSTROUTING -o $UPLINK3IF -j SNAT --to $UPLINK3IP
+
+The routing setup is:
+
+ip route add $UPLINK1NET dev $UPLINK1IF src $UPLINK1IP table uplink1
+
+ip route add default via $UPLINK1GW table uplink1
+
+ip route add $UPLINK2NET dev $UPLINK2IF src $UPLINK2IP table uplink2
+
+ip route add default via $UPLINK2GW table uplink2
+
+ip route add $UPLINK3NET dev $UPLINK3IF src $UPLINK3IP table uplink3
+
+ip route add default via $UPLINK2GW table uplink3
+
+ip route add default scope global \
+
+ nexthop via $UPLINK1GW dev $UPLINK1IF weight 1 \
+
+ nexthop via $UPLINK2GW dev $UPLINK2IF weight 1 \
+
+ nexthop via $UPLINK3GW dev $UPLINK3IF weight 1
 
 
-> The exploit _has_ been published and Dan confirmed it. The
-> current Metasploit implementation is not as fast as Dan's
-> version, but it works. Several people reported expoits in
-> the wild that are actively abusing said security hole.
-
-Hmm, am obviously not up to date ;-)
-
-> 
-> > The question therefore is if you will really gain a lot
-> > of security with respect to the exploit in question. Hmm..
-> 
-> Yes. You increase the entropy from 2^16 to 2^32 - 1025.
-> This is not great security and DNSSEC is the only viable
-> long-term solution, but right now, I am concerned to fully
-> understand the impact of the exploit with regards to my
-> three questions.
-
-But are you really? My point is that the sequence of numbers both of
-the old bind random number generator and also, probably,
-the one used in the Linux kernel, can easily be predicted, if
-you can get hold of a small number of samples. Maybe that's
-irrelevant to the attack, but why did the bind people include
-OpenBSD's ARC4 PRNG then, accepting the big performance penalty this
-apparently causes... but I should really check out the details of the
-exploit...
 
