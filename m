@@ -1,37 +1,28 @@
-From: Massimiliano Hofer <max@nucleus.it>
-Subject: Re: xtables-addons license (was: patch-o-matic problems..?)
-Date: Fri, 1 Aug 2008 21:08:29 +0200
-Message-ID: <200808012108.30486.max@nucleus.it>
-References: <alpine.DEB.1.10.0807192237270.9838@fairy.dhcp.penguin> <200808011734.14053.max@nucleus.it> <alpine.LNX.1.10.0808011359450.6855@fbirervta.pbzchgretzou.qr>
-Mime-Version: 1.0
+From: Shawn Fitzgerald <sargon97@gmail.com>
+Subject: Setting up a proxy with iptables
+Date: Fri, 1 Aug 2008 16:24:34 -0700
+Message-ID: <9985EB74-27E3-42CA-B86C-36D895EE2A59@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v926)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0808011359450.6855@fbirervta.pbzchgretzou.qr>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:from:to
+         :content-type:content-transfer-encoding:mime-version:subject:date
+         :x-mailer;
+        bh=8/rv7fWtKZEuIQNCH7RoFdowh5Ke4FNbbbCj+kAIiJ8=;
+        b=H3i7ISPEIIMm5ixl0B1QjWKTDBjKUqxBXVUK1x1/bFl+HnAJgiQv7gNPNXELRLRTR8
+         msB9dcbj68s47Ykj7IeAzCAfhqW16R+VtkTxdHRIpuFJ1Bxlf2gWMSD1xRwEl8YEYn0G
+         X2oA+57ae53XQjAiFZZEGm4PvrShqoTMMf6EY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Stephane Ouellette <ouellettes@videotron.ca>, Eicke Friedrich/Klaus Degner <ipp2p@ipp2p.org>, Sebastian =?iso-8859-1?q?Cla=DFen?= <sebastian.classen@freenet.ag>, netfilter@vger.kernel.org, Andrew Schulman <andrex@alumni.utexas.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+To: netfilter@vger.kernel.org
 
-On Friday 1 August 2008, Jan Engelhardt wrote:
+Hi,
 
-> Well how about "v2 or later"?
+I am trying to set up a proxy with iptables nothing seems to work. I  
+would like to forward outbound traffic destined to port 80 on an  
+external ip address to localhost port 8080.
 
-If you'd like "v2 or v3", I may agree.
-Anyway I don't like the idea of an unspecified future license. It defeats the 
-very goal of free software.
-
-On a purely practical note, given that the kernel code has to be GPLv2 (for 
-the forseeable future), won't it be a license nightmare if the userspace were 
-under a different license?
-I know the userspace is not derived form the kernel, but this would surely add 
-complexity.
-
--- 
-Bye,
-   Massimiliano Hofer
-        Nucleus
-
-P.S.: I don't want to start a flame war. It's just my opinion and I respect 
-other people's (different) views.
+Thanks in advance for the help.
