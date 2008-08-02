@@ -1,36 +1,31 @@
 From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
-Subject: Re: Setting up a proxy with iptables
-Date: Sat, 02 Aug 2008 10:04:22 +0200
-Message-ID: <48941506.6080409@unipex.it>
-References: <K4YPNL$F8087895A3C60C84D241022EEA93B6DB@libero.it>
+Subject: Re: Help me... please
+Date: Sat, 02 Aug 2008 10:10:45 +0200
+Message-ID: <48941685.8080509@unipex.it>
+References: <K4XRO1$60B3DD52CED09AAF46CAA0DC13BE33CD@libero.it> <38db14850808012326g4e3e35b6yc6f1c8b5adf69120@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <K4YPNL$F8087895A3C60C84D241022EEA93B6DB@libero.it>
+In-Reply-To: <38db14850808012326g4e3e35b6yc6f1c8b5adf69120@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "linuxmc@libero.it" <linuxmc@libero.it>
-Cc: sargon97 <sargon97@gmail.com>, netfilter <netfilter@vger.kernel.org>
+To: Anatoly Muliarski <x86ever@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-linuxmc@libero.it wrote:
-> Hi, have you try with a rule like
+Anatoly Muliarski wrote:
+> Hi,
 > 
-> $IPTABLES -t nat -A PREROUTING  -p tcp -m tcp   --dport 80 -j DNAT
-> --to-destination 82.109.120.222:8080
-> 
-> ?
-> 
-> Best regards ! Marco
+> You should remove -m state --state NEW statements because they track 
+> only START of connections.
 > 
 
-Should be better the redirect target:
 
-$IPTABLES -t nat -A PREROUTING -i $INTERNAL -p tcp --dport 80 -j 
-REDIRECT --to-ports $PROXY_PORT
-$IPTABLES -t nat -A PREROUTING -i $INTERNAL -p tcp --dport 443 -j 
-REDIRECT --to-ports $PROXY_PORT
+Or you can accept the established and related _before_ to the other rules.
 
+$IPTABLES -I INPUT 1 [FORWARD] -m state --state RELATED,ESTABLISHED -j 
+ACCEPT
 
-Ciao,
-MIchele
+However, can you send us the log that drop the traffic on the rule_39 ?
+
+Michele
