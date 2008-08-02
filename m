@@ -1,43 +1,51 @@
-From: "Anatoly Muliarski" <x86ever@gmail.com>
-Subject: Re: Help me... please
-Date: Sat, 2 Aug 2008 09:26:06 +0300
-Message-ID: <38db14850808012326g4e3e35b6yc6f1c8b5adf69120@mail.gmail.com>
-References: <K4XRO1$60B3DD52CED09AAF46CAA0DC13BE33CD@libero.it>
+From: "linuxmc\@libero\.it" <linuxmc@libero.it>
+Subject: Re:Setting up a proxy with iptables
+Date: Sat,  2 Aug 2008 09:18:57 +0200
+Message-ID: <K4YPNL$F8087895A3C60C84D241022EEA93B6DB@libero.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=JO9Tlj1YWwM2zN0/hVW0T95rw6mW9+BdKRr83mp3x3U=;
-        b=W52GoIWNyD325irIjg2PRDci+EUVBDJ4QiGCxnyvG7TpIJEkdJCwoqYmlSuVXEncVC
-         CM6PQsOyY6xrUzg8E9BRv6qfSVyMi/Z/iivk+lD8L7lEYezHEOxzyvuT8HGOVyeGVcqT
-         XEvXewTzwwqaxpoN4jL2Ut3qJH/4drxd/Z1fA=
-In-Reply-To: <K4XRO1$60B3DD52CED09AAF46CAA0DC13BE33CD@libero.it>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
-
-Hi,
-
-You should remove -m state --state NEW statements because they track
-only START of connections.
-
-2008/8/1, linuxmc@libero.it <linuxmc@libero.it>:
-> echo "Rule 9 (global)"
-> $IPTABLES -N RULE_9
-> $IPTABLES -A INPUT -m mac --mac-source 00:1B:38:B1:9A:57 -m state --state NEW -j RULE_9
-> $IPTABLES -A INPUT -m mac --mac-source 00:0E:A6:C1:4E:18 -m state --state NEW -j RULE_9
-> $IPTABLES -A FORWARD -m mac --mac-source 00:1B:38:B1:9A:57 -m state --state NEW -j RULE_9
-> $IPTABLES -A FORWARD -m mac --mac-source 00:0E:A6:C1:4E:18 -m state --state NEW -j RULE_9
-> $IPTABLES -A RULE_9 -j LOG --log-level info --log-prefix "RULE 9 -- ACCEPT "
-> $IPTABLES -A RULE_9 -j ACCEPT
+To: sargon97 <sargon97@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
 
--- 
-Best regards
-Anatoly Muliarski
+Hi, have you try with a rule like
+
+$IPTABLES -t nat -A PREROUTING  -p tcp -m tcp   --dport 80 -j DNAT --to-destination 82.109.120.222:8080
+
+?
+
+Best regards !
+Marco 
+
+
+---------- Initial Header -----------
+
+From      : netfilter-owner@vger.kernel.org
+To          : netfilter@vger.kernel.org
+Cc          : 
+Date      : Fri, 1 Aug 2008 16:24:34 -0700
+Subject : Setting up a proxy with iptables
+
+
+
+
+
+
+
+> Hi,
+> 
+> I am trying to set up a proxy with iptables nothing seems to work. I  
+> would like to forward outbound traffic destined to port 80 on an  
+> external ip address to localhost port 8080.
+> 
+> Thanks in advance for the help.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+
