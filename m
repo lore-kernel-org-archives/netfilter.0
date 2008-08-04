@@ -1,91 +1,60 @@
-From: "Barry A Rich" <barich@trisectrix.com>
-Subject: RE: UDP stream load balancing across multiple uplinks
-Date: Mon, 4 Aug 2008 11:48:04 -0400
-Message-ID: <000c01c8f649$7bd91950$738b4bf0$@com>
-References: <000501c8edf5$19903230$4cb09690$@com>	 <a43edf1b0807241837n7e6dceb4id5a16dd56c6344a9@mail.gmail.com>	 <000001c8ee61$67e4b7a0$37ae26e0$@com> <4889ECB9.3090206@riverviewtech.net>	 <000801c8f0b6$7a804580$6f80d080$@com>	 <1217834772.4178.7.camel@casper.meteor.dp.ua>	 <000301c8f63a$00215660$00640320$@com> <1217860886.4178.27.camel@casper.meteor.dp.ua>
-Reply-To: <barich@trisectrix.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: chownat
+Date: Mon, 04 Aug 2008 11:42:43 -0500
+Message-ID: <48973183.10404@riverviewtech.net>
+References: <48971B26.7090905@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1217860886.4178.27.camel@casper.meteor.dp.ua>
-Content-Language: en-us
+In-Reply-To: <48971B26.7090905@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
-Cc: casper@meteor.dp.ua
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-> -----Original Message-----
-> From: =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB [mailto:ca=
-sper@meteor.dp.ua]
-> Sent: Monday, August 04, 2008 10:41 AM
-> To: barich@trisectrix.com
-> Cc: 'Mail List - Netfilter'
-> Subject: RE: UDP stream load balancing across multiple uplinks
->=20
-> =F7 =F0=CE=C4, 04/08/2008 =D7 09:57 -0400, Barry A Rich =D0=C9=DB=C5=D4=
-:
-> > > -----Original Message-----
-> > > From: netfilter-owner@vger.kernel.org
-> > [mailto:netfilter-owner@vger.kernel.org]
-> > > On Behalf Of ??????????? ??????
-> > > Sent: Monday, August 04, 2008 3:26 AM
-> > > To: barich@trisectrix.com
-> > > Cc: 'Mail List - Netfilter'
-> > > Subject: RE: UDP stream load balancing across multiple uplinks
-> > >
-> > > =F7 =F0=CE=C4, 28/07/2008 =D7 09:33 -0400, Barry A Rich =D0=C9=DB=
-=C5=D4:
-> > > > > -----Original Message-----
-> > > > > From: netfilter-owner@vger.kernel.org
-> > > > > [mailto:netfilter-owner@vger.kernel.org]
-> > > > > On Behalf Of Grant Taylor
-> > > > > Sent: Friday, July 25, 2008 11:10 AM
-> > > > >
-> > > > > Given that the source IP of your packets can change mid strea=
-m,
-you
-> > > > > could use the "nth" match extension.  Using "nth" you would m=
-atch
-> > > > > packets to decide how to mark them and then use the mark to
-determine
-> > > > > what routing table to use which would ultimately decide which
-outbound
-> > > > > path to use.
-> > > >
-> > > > The following setup does load balancing across the uplinks. How=
-ever,
-the
-> > > > source address in the outgoing packets is not being SNAT'ed. An=
-y
-> > > > suggestions?
-> > >
-> > > Only first packet of udp "connection" is reaching the rule in the=
- nat
-> > > table and does the job, since nat occurs for all packets in this
-> > > connection rest of rules would not match.
-> >
-> > I understand better. I removed the following rule:
-> >
-> > #iptables -t raw -A PREROUTING -i eth0 -p udp --sport $SPORT -j NOT=
-RACK
-> >
-> > The connection is tracked and the outgoing UDP packets are SNAT-ed.
-However,
-> > the source address for all UDP packets is the IP address of the upl=
-ink
-> > assigned to the connection (regardless of the uplink they actually =
-are
-> > sent).
-> >
-> > Is there a way to SNAT without connection tracking?
->=20
-> Sure:
->=20
-> http://linux-ip.net/html/nat-stateless.html
+On 08/04/08 10:07, Brent Clark wrote:
+> Has anyone played with chownat.
 
-Stateless NAT with IPROUTE2 does not appear to be selective. I only wan=
-t to
-SNAT UDP packets with a specific source port.
+I can't say as I have.
+
+> I haven't played or tested it, but from what I gather, isn't this how 
+> skype is works and theoretically breaks / gets past NAT.
+
+I don't know how Skype works so I can't say.  I believe the general 
+premise behind things like this is that NAT can fairly easily be 
+subverted by having both ends try to initiate an outbound connection to 
+each other in such a manner that the outbound connections can end up in 
+fashion (a very poor choice of words) ""spliced together by some how 
+confusing (?) the NAT table and / or state table so that the NATing 
+devices believe that each end is really receiving replies to its own 
+outbound connections from the other end.  Thus there is a form of two 
+way tunnel between the two end.  I believe that usually a third entity 
+in the middle is needed to initiate the connection which once initiated 
+falls back to just the two end points.
+
+Take a look at how STUN works for UDP and VoIP.
+
+> In my opinion and proving that people that solely rely on NAT, are in 
+> for a surprise.
+
+The thing that you have to remember is 1) this type of tunnel requires 
+active support (someone doing something) on both ends, 2) NAT is not a 
+security mechanism, and 3) this does not take in to account any form of 
+egress filtering that should help stop this.
+
+> I look forward to peoples opinion / thoughts.
+
+*nod*
+
+Please provide more of your opinion / concerns for the sake of discussion.
+
+> Hope im wrong.
+
+I don't think you are wrong.  Things like this can and will be abused. 
+There are also cases where things like this are a good thing, i.e. STUN 
+for VoIP.  This, or its technology, is a tool and just like any other 
+tool, it can be used for both good *and* bad.
 
 
+
+Grant. . . .
