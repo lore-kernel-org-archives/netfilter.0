@@ -1,41 +1,31 @@
-From: Charles Duffy <Charles_Duffy@messageone.com>
-Subject: NETMAP of destination *after* routing
-Date: Wed, 06 Aug 2008 17:57:42 -0500
-Message-ID: <g7da9g$21r$1@ger.gmane.org>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: NETMAP of destination *after* routing
+Date: Wed, 6 Aug 2008 19:13:49 -0400 (EDT)
+Message-ID: <alpine.LNX.1.10.0808061912150.6682@fbirervta.pbzchgretzou.qr>
+References: <g7da9g$21r$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <g7da9g$21r$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-
-Howdy, all. I'm looking at building NETMAP-like functionality into 
-libvirt, such that groups of guest VMs (each group on its own bridge) 
-can think they're sharing the same address space, but be separately 
-addressable from outside (including the VM host itself). This has 
-applications in automated QA -- being able to suspend a group of virtual 
-machines in-flight, create an arbitrary number of copy-on-write images 
-of these machines (each group of copies attached via a different bridge 
-device) connected to different bridges, and being immediately able to 
-separately address each copy via a distinct network address without 
-reconfiguration.
-
-Unfortunately, the current behavior of NETMAP -- translating the source 
-address in POSTROUTING and the destination in PREROUTING -- doesn't 
-appear to work for this purpose: I still need the original destination 
-intact when routing to decide which bridge packets should go out.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Charles Duffy <Charles_Duffy@messageone.com>
+Cc: netfilter@vger.kernel.org
 
 
-How do 'yall suggest resolving this? I've played around with 
-xtables-addons somewhat, and am pondering building a target to do 
-translation in the mangle table on a packet-by-packet basis (as my 
-present understanding -- correct or otherwise -- is that translating the 
-destination post-routing with existing conntrack-based NAT functionality 
-simply isn't feasible)... but at present I don't know what roadblocks 
-are likely to be hit in the process.
+On Wednesday 2008-08-06 18:57, Charles Duffy wrote:
+>
+> How do 'yall suggest resolving this? I've played around with
+> xtables-addons somewhat, and am pondering building a target to do
+> translation in the mangle table on a packet-by-packet basis (as my
+> present understanding -- correct or otherwise -- is that
 
-Thoughts?
+This is what RAWNAT (in the "RAWNAT" branch of xtables-addons) is
+supposed to do, though I do not claim it being well-tested;
+Manu ran into a few issues I still have not addressed :/
 
-Thanks!
-
+> translating the destination post-routing with existing
+> conntrack-based NAT functionality simply isn't feasible)... but at
+> present I don't know what roadblocks are likely to be hit in the
+> process.
