@@ -1,30 +1,41 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Is p-o-m still the correct thing to use?
-Date: Tue, 5 Aug 2008 15:50:43 -0400 (EDT)
-Message-ID: <alpine.LNX.1.10.0807290646260.21011@fbirervta.pbzchgretzou.qr>
-References: <488A7D17.4070506@gmail.com> <s7sl841gefisi4k0lreotlvqbmq9kfl99u@4ax.com> <488EF032.5020000@gmail.com>
+From: Charles Duffy <Charles_Duffy@messageone.com>
+Subject: NETMAP of destination *after* routing
+Date: Wed, 06 Aug 2008 17:57:42 -0500
+Message-ID: <g7da9g$21r$1@ger.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <488EF032.5020000@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Brian Mearns <mearns.b@gmail.com>
-Cc: Andrew Schulman <andrex@alumni.utexas.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
+
+Howdy, all. I'm looking at building NETMAP-like functionality into 
+libvirt, such that groups of guest VMs (each group on its own bridge) 
+can think they're sharing the same address space, but be separately 
+addressable from outside (including the VM host itself). This has 
+applications in automated QA -- being able to suspend a group of virtual 
+machines in-flight, create an arbitrary number of copy-on-write images 
+of these machines (each group of copies attached via a different bridge 
+device) connected to different bridges, and being immediately able to 
+separately address each copy via a distinct network address without 
+reconfiguration.
+
+Unfortunately, the current behavior of NETMAP -- translating the source 
+address in POSTROUTING and the destination in PREROUTING -- doesn't 
+appear to work for this purpose: I still need the original destination 
+intact when routing to decide which bridge packets should go out.
 
 
-On Tuesday 2008-07-29 06:25, Brian Mearns wrote:
+How do 'yall suggest resolving this? I've played around with 
+xtables-addons somewhat, and am pondering building a target to do 
+translation in the mangle table on a packet-by-packet basis (as my 
+present understanding -- correct or otherwise -- is that translating the 
+destination post-routing with existing conntrack-based NAT functionality 
+simply isn't feasible)... but at present I don't know what roadblocks 
+are likely to be hit in the process.
 
-> Thanks a lot for the help, Andrew. The iptables source I have
-> doesn't have a configure script...oh, but it does have an autogen
-> script. I guess I was probably supposed to use that first. But it's
-> a moot point, apparently, because of xtables, so I will be
-> switching to that.
+Thoughts?
 
-Released tarballs should have configure; for autogen, you usually
-need (even more) developer tools than you do without, like
-autoconf, automake, and the other autowhatevers.
+Thanks!
 
-No moot point; iptables still is, as of today, the name of the
-userspace package and control program.
