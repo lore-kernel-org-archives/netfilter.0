@@ -1,7 +1,7 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Sven-Haegar Koch <haegar@sdinet.de>
 Subject: Re: NETMAP of destination *after* routing
-Date: Wed, 6 Aug 2008 19:13:49 -0400 (EDT)
-Message-ID: <alpine.LNX.1.10.0808061912150.6682@fbirervta.pbzchgretzou.qr>
+Date: Thu, 7 Aug 2008 13:43:47 +0200 (CEST)
+Message-ID: <alpine.DEB.1.10.0808071340480.31237@mercury.sdinet.de>
 References: <g7da9g$21r$1@ger.gmane.org>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -13,19 +13,24 @@ Content-Transfer-Encoding: 7bit
 To: Charles Duffy <Charles_Duffy@messageone.com>
 Cc: netfilter@vger.kernel.org
 
+On Wed, 6 Aug 2008, Charles Duffy wrote:
 
-On Wednesday 2008-08-06 18:57, Charles Duffy wrote:
->
-> How do 'yall suggest resolving this? I've played around with
-> xtables-addons somewhat, and am pondering building a target to do
-> translation in the mangle table on a packet-by-packet basis (as my
-> present understanding -- correct or otherwise -- is that
+> Unfortunately, the current behavior of NETMAP -- translating the source
+> address in POSTROUTING and the destination in PREROUTING -- doesn't appear to
+> work for this purpose: I still need the original destination intact when
+> routing to decide which bridge packets should go out.
+> 
+> 
+> How do 'yall suggest resolving this?
 
-This is what RAWNAT (in the "RAWNAT" branch of xtables-addons) is
-supposed to do, though I do not claim it being well-tested;
-Manu ran into a few issues I still have not addressed :/
+Perhaps setting a mark based on the destination address at pre-routing,
+use netmap, and then route based on the mark?
+(Using one routing table a'la 'common-dest/mask -> bridgeX' per mark)
 
-> translating the destination post-routing with existing
-> conntrack-based NAT functionality simply isn't feasible)... but at
-> present I don't know what roadblocks are likely to be hit in the
-> process.
+c'ya
+sven
+
+-- 
+
+The Internet treats censorship as a routing problem, and routes around
+it. (John Gilmore on http://www.cygnus.com/~gnu/)
