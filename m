@@ -1,32 +1,24 @@
-From: Charles Duffy <Charles_Duffy@messageone.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: NETMAP of destination *after* routing
-Date: Thu, 07 Aug 2008 14:22:41 -0500
-Message-ID: <g7fi2a$neu$1@ger.gmane.org>
-References: <g7da9g$21r$1@ger.gmane.org> <alpine.LNX.1.10.0808061912150.6682@fbirervta.pbzchgretzou.qr>
+Date: Thu, 07 Aug 2008 14:35:18 -0500
+Message-ID: <489B4E76.2040702@riverviewtech.net>
+References: <g7da9g$21r$1@ger.gmane.org> <alpine.DEB.1.10.0808071340480.31237@mercury.sdinet.de> <g7f2ch$tbm$1@ger.gmane.org> <489B11EA.6020700@riverviewtech.net> <alpine.LNX.1.10.0808071202200.8323@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0808061912150.6682@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <alpine.LNX.1.10.0808071202200.8323@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Jan Engelhardt wrote:
-> On Wednesday 2008-08-06 18:57, Charles Duffy wrote:
->> How do 'yall suggest resolving this? I've played around with
->> xtables-addons somewhat, and am pondering building a target to do
->> translation in the mangle table on a packet-by-packet basis (as my
->> present understanding -- correct or otherwise -- is that
-> 
-> This is what RAWNAT (in the "RAWNAT" branch of xtables-addons) is
-> supposed to do, though I do not claim it being well-tested;
-> Manu ran into a few issues I still have not addressed :/
+On 08/07/08 11:03, Jan Engelhardt wrote:
+> That of course won't work because Xtables does chain inspection and 
+> spots the illegal use of SNAT in a chain which is referenced from 
+> PREROUTING.
 
-My prime concern with RAWNAT is its chances of being merged, given 
-Patrick's concerns about the overhead of adding additional tables; 
-otherwise, it looks to be just the tool for the job.
+Sorry. I was thinking DNATing in both the PREROUTING and OUTPUT chains.
 
-Is the workaround Manu provided (commenting out the skb_make_writable 
-call) safe?
 
+
+Grant. . . .
