@@ -1,24 +1,35 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: NETMAP of destination *after* routing
-Date: Thu, 07 Aug 2008 14:35:18 -0500
-Message-ID: <489B4E76.2040702@riverviewtech.net>
-References: <g7da9g$21r$1@ger.gmane.org> <alpine.DEB.1.10.0808071340480.31237@mercury.sdinet.de> <g7f2ch$tbm$1@ger.gmane.org> <489B11EA.6020700@riverviewtech.net> <alpine.LNX.1.10.0808071202200.8323@fbirervta.pbzchgretzou.qr>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd [ERROR] commit: Invalid argument
+Date: Fri, 08 Aug 2008 10:27:19 +0200
+Message-ID: <489C0367.1010408@netfilter.org>
+References: <e1aa27e00806090621r3fa83ac0s7bb89d903de3be41@mail.gmail.com> <200806130122.16216.sabelka@iue.tuwien.ac.at> <4855B44B.5030504@netfilter.org> <200806162228.17436.sabelka@iue.tuwien.ac.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0808071202200.8323@fbirervta.pbzchgretzou.qr>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <200806162228.17436.sabelka@iue.tuwien.ac.at>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Rainer Sabelka <sabelka@iue.tuwien.ac.at>
+Cc: Marco Barbero <marco.barbero@gmail.com>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-On 08/07/08 11:03, Jan Engelhardt wrote:
-> That of course won't work because Xtables does chain inspection and 
-> spots the illegal use of SNAT in a chain which is referenced from 
-> PREROUTING.
+Hi Rainer,
 
-Sorry. I was thinking DNATing in both the PREROUTING and OUTPUT chains.
+Rainer Sabelka wrote:
+> Thanks Pablo. I've tested your patches but unfortunately I still get "Cannot 
+> allocate memory" sometimes.
+> 
+> Jun 16 22:24:45 fw1b conntrack-tools[5599]: committing external cache
+> Jun 16 22:24:45 fw1b conntrack-tools[5599]: commit-create: Cannot allocate 
+> memory
+> Jun 16 22:24:45 fw1b conntrack-tools[5599]: Committed 623 new entries
+> Jun 16 22:24:45 fw1b conntrack-tools[5599]: 1 entries can't be committed
 
+Sorry for the late reply. The problem seems to be in the kernel side. It
+was introduced in 2.6.23. I have posted a patch that fixes it [1]. It
+applies to 2.6.27-rc but it should be easy to backport it.
 
+[1] http://marc.info/?l=netfilter-devel&m=121812264402131&w=2
 
-Grant. . . .
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
