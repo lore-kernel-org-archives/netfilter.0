@@ -1,57 +1,53 @@
-From: "Dirk H. Schulz" <dirk.schulz@kinzesberg.de>
-Subject: CacheWriteThrough or commiting to the kernel table does not work
-Date: Tue, 12 Aug 2008 13:07:11 +0200
-Message-ID: <81874E4FCE5CF65E336A0B85@file.wkd-druck.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd working, but netfilter not impressed
+Date: Tue, 12 Aug 2008 13:40:18 +0200
+Message-ID: <48A176A2.6000301@netfilter.org>
+References: <BD9F23BEBBF883939AE367D6@Dirks-MacBook-Pro.local> <200808111322.58469.misch@multinet.de> <0F0E3430135185A207EFA41A@Dirks-MacBook-Pro.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <0F0E3430135185A207EFA41A@Dirks-MacBook-Pro.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Dirk H. Schulz" <dirk.schulz@kinzesberg.de>
+Cc: netfilter@vger.kernel.org
 
-Hi folks,
+Dirk H. Schulz wrote:
+> <misch@multinet.de> wrote:
+>> Did you conntrackd tell to import sync'ed tables into the kernel tables?
+>> Scripts see:
+>> /usr/share/doc/examples/sync/ftfw/script_master.sh
+> 
+> That is what I missed. I have looked into the example script now - it
+> looks like committing the external cache into the kernel tables is
+> something to do manually?!?
 
-I try it once more after looking more deeply into it.
+No. The scripts are there for for the primary-backup or multi-primary
+with flow persistency, ie. when we can guarantee that the same firewall
+handles the same subset of flows at any time - symmetric routing.
 
-I have a setup with 2 routers/firewalls using OSPF to 2 upstream routers. 
-Because of OSPF I do not have connection persistency, i.e. packets 
-belonging to a certain connection  must be able to pass both firewalls.
+> That means in an active-active setup like mine I would have to commit
+> every second - which of course can be done, but does that make sense? I
+> would have expected conntrackd to do it automatically or to have an
+> option that makes it do it automatically.
 
-So I installed conntrack-tools (current version) using a ftfw setup on both 
-routers/firewalls. I switched CacheWriteThrough to on, because
-> 	# If you have a multiprimary setup (active-active) without connection
-> 	# persistency, ie. you can't know which firewall handles a packet
-> 	# that is part of a connection, then you need direct commit of
-> 	# conntrack entries to the kernel conntrack table. OSPF setups must
-> 	# set on this option. Default is Off.
-> 	#
-> 	CacheWriteThrough On
+The CacheWriteThrough clause should do that for you but with some
+important considerations: higher CPU consumption and possible race
+conditions - the time to transmit the state to the other firewall
+replica should be smaller than the RTT between the firewall and the
+end-peer. This is generally true if your firewall is connected to a DSL
+line or whatever that inherently inserts some latency in the communications.
 
-To me that sounds that I do not have to commit the external cache manually 
-(via conntrackd -c) because it is committed automatically.
+Anyhow, the multi-primary setup with asynchronous routing is really bad
+design for stateful firewalls. The key problem is that stateful
+firewalling works with at flow-level and OSPF only knows about packets.
+The preferred way to go should be the multi-primary with symmetric
+routing or simply use primary-backup instead if you cannot guarantee the
+previous statement.
 
-But when I test the setup, it does not work. Here are the details again:
-1. I make a test ping from a server to the outside. The ping leaves via 
-router2, the answer comes in via router1.
-2. I use "conntrackd -e" on router1 to make sure the connection has been 
-sync'd over from router2 to router1.
-3. The firewall on router1 blocks the incoming packet.
-4. Disabling the firewall makes the packets pass.
+I'm finishing some documentation for the upcoming release that should
+stop this confusion, that will be out soon.
 
-I can only interpret that as CacheWriteThrough does not work. So I made 
-another test: I setup a script that calls "conntrackd -c" every 5 seconds 
-and let a long stream of pings and http calls run - the packets on router1 
-were still blocked.
-
-That leads me to the conclusion that committing the cache to the kernel 
-table does not work at all. How can I test specifically that?
-
-And how can I solve this problem? Any hint or help is appreciated. I can 
-post the conntrackd.conf, if it is of any use. The conntrackd logfile does 
-not contain anything besides startup messages.
-
-Please help!
-
-Dirk
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
