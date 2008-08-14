@@ -1,30 +1,40 @@
-From: "Stephen Isard" <y8ju2p902@sneakemail.com>
-Subject: iptables rules for cups printer discovery
-Date: Thu, 14 Aug 2008 14:51:49 -0400 (EDT)
-Message-ID: <19894-78618@sneakemail.com>
-Mime-Version: 1.0
+From: Ted Kaczmarek <tedkaz@gmail.com>
+Subject: Iptables with tproxy 4 support
+Date: Thu, 14 Aug 2008 15:27:18 -0400
+Message-ID: <A04C0873-3C03-466B-9B4D-D8420AF29956@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v928.1)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:from:to
+         :content-type:content-transfer-encoding:mime-version:subject:date
+         :x-mailer;
+        bh=3gFOFDRx+AKGhjvtR4+sgtw243vLUgvOtP/uHfjpHLk=;
+        b=xP5KyknNtFCLQ1pQ0zhMslcjoAMAaVy+KaIGQOmKpMKFtcP+9LXZ0TbfVgKS0ZltFN
+         nVGqx5Qcjy8ou2RQqNhKeYYNdiYkwA9r95oZvj4gAoloEVYYI+Kc+cX1kpJKf24c5UMy
+         lvMfIV/1ceJhSGzYO+rwpuNmA4OSq6jdI3++g=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; format="flowed"; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
 To: netfilter@vger.kernel.org
 
-I'm wondering whether there are iptables rules that will permit cups 
-snmp printer discovery to operate without creating a serious security 
-risk.
+Trying to get a tproxy4 going on Fedora 9.
 
-Cups printer discovery works by sending a broadcast from a high numbered 
-port (a different one each time) to the snmp port (161) of every device 
-on the local network.  Printers are then supposed to send back replies 
-from their port 161 to the high numbered port on the computer that the 
-broadcast came from.  Since the replies are to a broadcast, they are not 
-treated as ESTABLISHED or RELATED by iptables rules.  My question is 
-really whether there is some way of identifying replies to such a 
-broadcast, so that I don't have to let through all udp packets from port 
-161 of any machine on the local network to all high numbered ports on my 
-machine, at any time, which looks as if it might be unsafe, especially 
-when I can't be certain that the local network is absolutely secure 
-against break-ins.
+Got the kernel and tproxy modules built, built iptables 1.4 against  
+this kernel source but iptables is not recognizing "-t proxy".
 
-Thanks.
+I am using 2.6.25.11 with the iptables 1.4 and tproxy- 
+iptables-1.4.0-20080521-113954-1211362794.patch.
+
+It appears to build ok. I edited the spec file from the src rpm, added  
+this patch to the patch list, edited the KERNEL_DIR and KERNEL_OUTPUT  
+to point to the 2.6.25.11, and  and did and rpmbuid -ba and
+appeared to go ok.
+
+The modules nf_tproxy_core and xt_TPROXY load fine.
+
+Any suggestions on where I am going wrong?
+
+Regards,
+Ted
