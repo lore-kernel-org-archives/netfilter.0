@@ -1,47 +1,26 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: iptables rules for cups printer discovery
-Date: Fri, 15 Aug 2008 11:16:39 -0500
-Message-ID: <48A5ABE7.2040008@riverviewtech.net>
-References: <19894-78618@sneakemail.com> <48A4DD48.3080004@riverviewtech.net> <alpine.LNX.1.10.0808142150080.25617@fbirervta.pbzchgretzou.qr> <48A4E340.1090305@riverviewtech.net> <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr> <30978-20009@sneakemail.com> <alpine.LNX.1.10.0808150912130.27140@fbirervta.pbzchgretzou.qr> <19140-74447@sneakemail.com> <48A59EE8.8090709@riverviewtech.net> <17319-84921@sneakemail.com>
+From: Jan Klod <janklodvan@gmail.com>
+Subject: Re: VPN (interface) access for and all traffic through from single user -- how to do it?
+Date: Fri, 15 Aug 2008 19:19:22 +0300
+Message-ID: <200808151919.23070.janklodvan@gmail.com>
+References: <200808151255.44987.janklodvan@gmail.com> <48A5A0ED.8010502@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <17319-84921@sneakemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:message-id;
+        bh=pGHeD72I/+oT2+aFxpw/K2XBpc7VEOSNR8VZ96L20YQ=;
+        b=vIqhh5Xlcreia4XOdDh+Zv5Xjy0N3U6K19itlOEZnq/n77A6M0jFF0ckc13ptTuSkU
+         flq4KYfUNdFpjI6WeZAeew4aTn9/GWGpZ0J0g5n/9CL4ZgX9pD6oM5lzgcaKMqTkvB4r
+         fhSjlg6TVWQhv8+cDuwvB5dVWlqcrlMTpX0tE=
+In-Reply-To: <48A5A0ED.8010502@riverviewtech.net>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 08/15/08 10:38, Stephen Isard wrote:
-> Thanks, Grant.
-
-*nod*
-
-> I don't think any spoofing is required.  I had in mind someone who had 
-> gained access to my local network (not simple, but not out of the 
-> question) and who was essentially pretending to be a printer by sending 
-> packets from his port 161 immediately following a cups broadcast.  I'm 
-> not worried about people without access to the local network because 
-> they wouldn't see the broadcast that opens the "recent" time window.
-
-Um, if they have gotten a system in to your LAN I think you have bigger 
-problems.  If this is a real concern, I'd suggest that you look in to 
-802.1x (port) authentication.
-
-Also remember that you can adjust the length of time for the "recent" 
-window.  You can probably also mitigate the window by looking for the 
-closing connection (at least with TCP) and do a --remove to clear the 
-connection from the recent list.
-
-> Am I fussing over nothing here?  Is it clear that much harm can be done 
-> by getting upd packets through my firewall to arbitrary high numbered 
-> ports?  Denial of service is probably not a big issue because of the 
-> short time window.
-
-I don't think you are fussing over nothing, but you certainly should 
-consider other things first.  Now if you have already considered the 
-other things, then by all means, continue discussing here.  ;)
-
-
-
-Grant. . . .
+I forgot to mention: this is all done on and for single machine.
+Interface "separation" could be done by packet marking.... 
