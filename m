@@ -1,35 +1,56 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: iptables rules for cups printer discovery
-Date: Fri, 15 Aug 2008 13:01:29 -0500
-Message-ID: <48A5C479.9050509@riverviewtech.net>
-References: <19894-78618@sneakemail.com> <48A4DD48.3080004@riverviewtech.net> <alpine.LNX.1.10.0808142150080.25617@fbirervta.pbzchgretzou.qr> <48A4E340.1090305@riverviewtech.net> <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr> <30978-20009@sneakemail.com> <alpine.LNX.1.10.0808150912130.27140@fbirervta.pbzchgretzou.qr> <19140-74447@sneakemail.com> <48A59EE8.8090709@riverviewtech.net> <17319-84921@sneakemail.com> <48A5ABE7.2040008@riverviewtech.net> <21281-33344@sneakemail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_log 0.0.15 release
+Date: Fri, 15 Aug 2008 22:24:43 +0200
+Message-ID: <48A5E60B.2000306@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <21281-33344@sneakemail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------040801090901060601070509"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-On 08/15/08 11:28, Stephen Isard wrote:
-> This is a large university department where students and visitors use 
-> the lan.  The computing officers are highly competent and doing their 
-> best to provide security, but, as you know, it's a constant battle.
+This is a multi-part message in MIME format.
+--------------040801090901060601070509
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Sounds like it is time to divide the different access networks up in to 
-smaller pieces and route between them.  Make sure that you do some 
-sanity checking (filtering) as part of the routing process too.  Try to 
-help prevent spoofing as close to the edge as possible.  ;)
+Hi!
 
-> This particular case involves udp.
+The netfilter project proudly presents:
 
-*nod*
+  * libnetfilter_log-0.0.15
 
-> Thanks for your advice.
+libnetfilter_log is a userspace library providing interface to packets
+that have been logged by the kernel packet filter. It is is part of a
+system that deprecates the old syslog/dmesg based packet logging. See
+ChangeLog for more details.
 
-You are welcome.
+You can download them from:
+
+http://www.netfilter.org
+ftp://ftp.netfilter.org
+
+Enjoy,
+Pablo - on behalf of the Netfilter Project.
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
+
+--------------040801090901060601070509
+Content-Type: text/plain;
+ name="ChangeLog"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog"
+
+Eric Leblond (1):
+      Add parsing function for raw hardware header
+
+Pablo Neira Ayuso (2):
+      conditional compilation of testsuite utils
+      bump version to 0.0.15
 
 
-
-Grant. . . .
+--------------040801090901060601070509--
