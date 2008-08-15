@@ -1,58 +1,44 @@
-From: "James King" <t.james.king@gmail.com>
-Subject: Re: POM Xtables???
-Date: Fri, 15 Aug 2008 01:48:21 -0700
-Message-ID: <38bcb3ec0808150148k3af99a55gc4298341221c3c01@mail.gmail.com>
-References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com>
-	 <4866F152.7030109@riverviewtech.net>
-	 <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com>
-	 <486907EA.60105@trash.net>
-	 <alpine.LNX.1.10.0806302218500.30639@fbirervta.pbzchgretzou.qr>
-	 <48694787.3080906@trash.net>
-	 <alpine.LNX.1.10.0807010907040.26892@fbirervta.pbzchgretzou.qr>
-	 <4887BCE0.2050902@trash.net>
-	 <38bcb3ec0807240131n1f5d4051k9e89731aa2fcb6c9@mail.gmail.com>
-	 <488849A5.6050401@netfilter.org>
+From: Jan Klod <janklodvan@gmail.com>
+Subject: VPN (interface) access for and all traffic through from single user -- how to do it?
+Date: Fri, 15 Aug 2008 12:55:44 +0300
+Message-ID: <200808151255.44987.janklodvan@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:cc:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=ae0dAxW68bBSDba9OIxhDY70xLV25pcnCXKFTS1XrXI=;
-        b=lZta5Ahlr7rklcQVrlv4ipslBbTlZRW2EcV0OwL4X5WcMrMq0glUbbOzrqXVP+VkH1
-         rnBWCmOMhBlOyvpB/vh6kA4Rb+lJf3tavsHCvAGTuojTqryEjOVz0/ivq5aqj6ScmrTN
-         rGo9DlsWO7VY2KonaeB7M79dmKGCkaqgaq7mI=
-In-Reply-To: <488849A5.6050401@netfilter.org>
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:mime-version:content-type:content-transfer-encoding
+         :content-disposition:message-id;
+        bh=X3RNZgeMEd9Z4IUGR9vWcKGYt39gj602vmlIvqgIV7U=;
+        b=ER/ex7zErIW/iI8921rm36PgBRJglrJtOI3AavOK5i2j1jEo3cPqlldsCIgTU9NYaw
+         +rvbG2+QZyxs/vNGoy41XlG7q2g63EvwDqPxTBiM2epERv3lyrJHgjc0lCSTjNF2WPNW
+         8A5OgHBN/JfWeHKukDst+W2EVhPmZa00YtbQ0=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Patrick McHardy <kaber@trash.net>, Jan Engelhardt <jengelh@medozas.de>, Dave <finalglide@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, Jul 24, 2008 at 2:21 AM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> The other choise is userspace by means NFQUEUE. If we use some
-> heuristics, we may try to classify the traffic by means of the initial
-> data packets and then mark the connection. Thus, the number of packets
-> that go to userspace would be small and the classification logic is
-> implemented in userspace using whatever regex
-> engine/aho-corasick/bit-wise/boyer-moore/bayes whatsoever...
+Hello!
 
-I'm a bit nervous about using the existing mechanisms for userspace
-classification.  As I understand it (and correct me if I'm wrong),
-network performance could be severely impacted if the system load gets
-high (packet is blocked until userspace returns a verdict?).  If so,
-even restricting the number of packets going to userspace to the
-initial exchange won't solve this problem.
+There is one thing really troubling me for fourth day and I hope, this is the 
+right place to ask for advices: 
+I have VPN access through LAN NIC, I managed to log in the VPN server and, 
+using ping -I ppp0 some.host.domain got an answer. Nothing more this far, but 
+the initial goal was simply to grant an user access to VPN as toppic subject 
+describes. Just like I would have started firefox -I ppp0!
+(all user's traffic through ppp0, while other users can still go through 
+eth1!)
 
-Asynchronous userspace classification on the other hand could be
-extremely useful.  If there was a mechanism to fire packets and their
-associated conntrack ID to userspace and immediately allow the packet
-through unmolested (so that userspace delays wouldn't hinder traffic),
-combined with a way to set CONNMARK for an arbitrary conntrack from
-userspace after the fact, this type of impact could be greatly
-minimized.  The only drawback I can think of would be for very
-short-lived flows, where the conntrack has already gone away by the
-time userspace makes a decision.
+Also this created an extra question: how web browser "knows", which interface 
+should be used, if there are multiple?
+
+I would greatly appreciate your help here, since my efforts following 
+http://gentoo-wiki.com/HOWTO_PPTP_VPN_client_(Microsoft-compatible_with_mppe)
+http://www.wlug.org.nz/SourceBasedRouting
+http://lartc.org/lartc.pdf
+just didn't succeed somehow. 
+
+Hope, you know,
+Jan
