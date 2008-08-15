@@ -1,97 +1,59 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: "Stephen Isard" <y8ju2p902@sneakemail.com>
 Subject: Re: iptables rules for cups printer discovery
-Date: Fri, 15 Aug 2008 09:23:26 -0400 (EDT)
-Message-ID: <alpine.LNX.1.10.0808150912130.27140@fbirervta.pbzchgretzou.qr>
-References: <19894-78618@sneakemail.com> <48A4DD48.3080004@riverviewtech.net> <alpine.LNX.1.10.0808142150080.25617@fbirervta.pbzchgretzou.qr> <48A4E340.1090305@riverviewtech.net> <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr>
- <30978-20009@sneakemail.com>
+Date: Fri, 15 Aug 2008 10:17:53 -0400 (EDT)
+Message-ID: <19140-74447@sneakemail.com>
+References: <19894-78618@sneakemail.com> <48A4DD48.3080004@riverviewtech.net>
+ <alpine.LNX.1.10.0808142150080.25617@fbirervta.pbzchgretzou.qr>
+ <48A4E340.1090305@riverviewtech.net> <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr>
+ <30978-20009@sneakemail.com> <alpine.LNX.1.10.0808150912130.27140@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <30978-20009@sneakemail.com>
+In-Reply-To: <alpine.LNX.1.10.0808150912130.27140@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Stephen Isard <y8ju2p902@sneakemail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Friday 2008-08-15 09:10, Stephen Isard wrote:
-> On Thu, 14 Aug 2008, Jan Engelhardt jengelh-at-medozas.de |netfilter| wrote:
->
->> You can specify --rsrc/--rdest (patch just merged that documents
->> them). But somehow I am not sure...
->>
->> -A INPUT -d 192.168.0.255 -p udp --dport 161 -m recent --name snmp
->> --rsrc --set
->>
->> -A OUTPUT -p udp --sport 161 -m recent --name snmp
->> --rdest --rcheck
->>
->> Try?
->
-> I've tried, but my system doesn't seem to like --rsrc/--rdest.
-> Applying iptables firewall rules: iptables-restore v1.3.5: Unknown arg `--rsrc'
+> Oh it's --rsource not --rsrc. But --rdest is correct.
 
-Oh it's --rsource not --rsrc. But --rdest is correct.
+Ok!  Now I find the printers.  (I also had to stick -j ACCEPT at the 
+ends of the lines.  You were probably taking that for granted.)
 
-> Just to make sure I'm not completely confused, you've made a typo
-> and reversed INPUT and OUTPUT, right?  That is, I think we want
-> --set to happen on output when we broadcast to the destination port
-> 161.
+> I was assuming,
+> from what you told me, that a standalone printer spews SNMP to a
+> broadcast address and a Linux box replies, but now it looks like that
+> hardly makes sense ;-)
 
-Oh yeah, depends on which side you are looking at. I was assuming,
-from what you told me, that a standalone printer spews SNMP to a
-broadcast address and a Linux box replies, but now it looks like that
-hardly makes sense ;-)
+No, the printers don't spew.  They sit there demurely waiting for 
+broadcasts.
 
-> This is on Scientific Linux 5.2 with its latest kernel, 2.6.18-92.1.10.el5.  So
-> do I need a much more recent kernel?
+> The port is not stored, since in common sense, it is not part of the
+> address. An (address,port) tuple is however not stored.
 
-Nope, this is fine.
+Assuming you really mean that last "not", then my description
+>> If the port isn't
+>> stored, then all we are storing is the address of our own interface
+>> and we match any packet coming in from a port 161.  That's still an
+>> improvement because we only let in the packets during a relatively
+>> short window after a broadcast, but it's not quite what we'd really
+>> like.
+seems to apply.  So if a bad guy knew how take advantage of udp 
+broadcasts to arbitrary high numbered ports, he could sit there waiting 
+for a cups broadcast and then send his evil packets from his port 161 to 
+whichever of my ports he wanted.  Fortunately, such broadcasts will not 
+be very frequent, since once the printers are discovered, there is no 
+need to rediscover them until something changes.  But still it would be 
+better to match the broadcast port number.  A new feature?
 
-> Can you recommend a reasonably lightweight distribution that would
-> serve?  Obviously it needs a fairly recent cups as well.  The latest KNOPPIX?
+>> But is there an approved firewall setup for samba these days?  (I 
+>> don't use samba myself.)  If so, maybe we could adapt it.
 
-I am of course biased, so you will only hear openSUSE 11 from me. The
-default minimal install is like ~500 M but one can strip it down to
-like 300 (fits on a CF card!) by throwing out unneeded pkgs and
-translation files.
+> If by approved you mean what distributions use, then that's something
+> simple along the lines of
+> -A INPUT -p udp --dport 137:139 -j ACCEPT
 
-> Can you comment on my understanding of the "recent" rules as set
-> out below?
->
-> "-m recent --set" stores an address, just as an address, not marked
-> as source or dest.  This address is taken from either the source or
-> destination address of a packet, depending on the use of
-> --rsrc/--rdest. In order for the rules to do what we want them to,
-> the address has to include the port number as well as the ip
-> address.
+Hmm.  That doesn't seem to address the issue at all.  Maybe samba has 
+changed, or I was misunderstanding.
 
-Correct.
-
-> "-m recent --rcheck" looks to see whether the stored address is the
-> same as either the source or destination address on a packet,
-> depending on the use of --rsrc/--rdest.
-
-Correct.
-
-> If that is correct and the port is stored as part of the address,
-
-The port is not stored, since in common sense, it is not part of the
-address. An (address,port) tuple is however not stored.
-
-> then the logic of your rules looks good to me.  If the port isn't
-> stored, then all we are storing is the address of our own interface
-> and we match any packet coming in from a port 161.  That's still an
-> improvement because we only let in the packets during a relatively
-> short window after a broadcast, but it's not quite what we'd really
-> like.
->
-> By the way, googling around for help on this issue, I came across a forum
-> thread from 2004 discussing the same problem with respect to samba.  Evidently
-> samba uses the same broadcast/response tactic. Unfortunately the thread seemed
-> to peter out without resolution.  But is there an approved firewall setup for
-> samba these days?  (I don't use samba myself.)  If so, maybe we could adapt it.
-
-If by approved you mean what distributions use, then that's something
-simple along the lines of
--A INPUT -p udp --dport 137:139 -j ACCEPT
+Thanks for your help!
