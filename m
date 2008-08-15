@@ -1,60 +1,33 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: VPN (interface) access for and all traffic through from single
- user -- how to do it?
-Date: Fri, 15 Aug 2008 11:28:02 -0500
-Message-ID: <48A5AE92.6090500@riverviewtech.net>
-References: <200808151255.44987.janklodvan@gmail.com> <48A5A0ED.8010502@riverviewtech.net> <200808151914.21997.janklodvan@gmail.com>
+From: "Stephen Isard" <y8ju2p902@sneakemail.com>
+Subject: Re: iptables rules for cups printer discovery
+Date: Fri, 15 Aug 2008 12:28:41 -0400 (EDT)
+Message-ID: <21281-33344@sneakemail.com>
+References: <19894-78618@sneakemail.com> <48A4DD48.3080004@riverviewtech.net> <alpine.LNX.1.10.0808142150080.25617@fbirervta.pbzchgretzou.qr> <48A4E340.1090305@riverviewtech.net> <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr>
+ <30978-20009@sneakemail.com> <alpine.LNX.1.10.0808150912130.27140@fbirervta.pbzchgretzou.qr> <19140-74447@sneakemail.com> <48A59EE8.8090709@riverviewtech.net> <17319-84921@sneakemail.com> <48A5ABE7.2040008@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200808151914.21997.janklodvan@gmail.com>
+In-Reply-To: <48A5ABE7.2040008@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; format="flowed"; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 08/15/08 11:14, Jan Klod wrote:
-> May I ask some commands?
+> Um, if they have gotten a system in to your LAN I think you have bigger 
+> problems.  If this is a real concern, I'd suggest that you look in to 802.1x 
+> (port) authentication.
 
-*nod*
+This is a large university department where students and visitors use 
+the lan.  The computing officers are highly competent and doing their 
+best to provide security, but, as you know, it's a constant battle.
 
-> Say, I have eth1 with address 192.168.2.34, router (and nameserver) 
-> address 192.168.2.1 and I've connected to VPN through ppp0 with local 
-> IP address 215.155.114.16 and remote IP address 215.155.115.254! 
-> (VPN's gateway is 194.12.33.1 for connecting) (VPN or PPTP)
+> Also remember that you can adjust the length of time for the "recent" window.
 
-So your client is 192.168.2.34 and your (current) default gateway is 
-192.168.2.1.  You have a VPN established from your client to 
-215.155.115.254.  Your end of the inside of the VPN is 
-194.12.33.<something> and the remote end of the inside of the VPN is 
-194.12.33.1.  Is all of this correct?  (I'm going to presume yes with 
-the commands below.)
+Right.
 
-route add -host 215.155.114.254 gw 192.168.2.1
-route add default gw 194.12.33.1 metric 1
-route del default gw 192.168.2.1
-route add default gw 192.168.2.1 metric 2
+> You can probably also mitigate the window by looking for the closing 
+> connection (at least with TCP)
 
-This should do the following:
-  - Add a route to your VPN target by way of (the IP of) your (current) 
-default gateway.
-  - Add a the remote end of the inside of the VPN as your new default 
-gateway with a low metric.
-  - Delete your old (local) default gateway.
-  - Re-add your old (local) default gateway with a higher metric.
+This particular case involves udp.
 
-> At least, what are those command line entries, so I can browse 
-> network through VPN?
-
-If by "browse" you mean browse the web or use any other ""standard 
-internet service, you should be good to go.  If by "browse" you mean 
-"Browse 'My Network Places'" you may run in to other SMB / CIFS related 
-networking issues (crossing subnets).
-
-> Hope, I explained better...
-
-I think so.  Does my response help?
-
-
-
-Grant. . . .
+Thanks for your advice.
