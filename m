@@ -1,59 +1,71 @@
-From: "Stephen Isard" <y8ju2p902@sneakemail.com>
-Subject: Re: iptables rules for cups printer discovery
-Date: Fri, 15 Aug 2008 10:17:53 -0400 (EDT)
-Message-ID: <19140-74447@sneakemail.com>
-References: <19894-78618@sneakemail.com> <48A4DD48.3080004@riverviewtech.net>
- <alpine.LNX.1.10.0808142150080.25617@fbirervta.pbzchgretzou.qr>
- <48A4E340.1090305@riverviewtech.net> <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr>
- <30978-20009@sneakemail.com> <alpine.LNX.1.10.0808150912130.27140@fbirervta.pbzchgretzou.qr>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: "NAT redirection", or NAT from inside to inside?
+Date: Fri, 15 Aug 2008 09:32:26 -0500
+Message-ID: <48A5937A.7080801@riverviewtech.net>
+References: <bcc0d0530808140217y37de308cj5bee8c0b64971a4c@mail.gmail.com> <48A4D815.2050708@riverviewtech.net> <91417772-9FB8-4F64-88A4-80F2F84B35D2@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0808150912130.27140@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <91417772-9FB8-4F64-88A4-80F2F84B35D2@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-> Oh it's --rsource not --rsrc. But --rdest is correct.
+On 08/15/08 05:31, Philipp Periventas wrote:
+> Hello Grant,
 
-Ok!  Now I find the printers.  (I also had to stick -j ACCEPT at the 
-ends of the lines.  You were probably taking that for granted.)
+Morning.
 
-> I was assuming,
-> from what you told me, that a standalone printer spews SNMP to a
-> broadcast address and a Linux box replies, but now it looks like that
-> hardly makes sense ;-)
+> thank you very much for your mail and your effort! I finally solved the 
+> problem with exactly the commands you wrote in your mail, plus a command 
+> for letting the firewall itself getting access to the webserver by 
+> manipulating the NAT output chain. I found this advice on the website 
+> http://iptables-tutorial.frozentux.net/chunkyhtml/x4033.html - 
+> unfortunately, I found it a bit too late!
 
-No, the printers don't spew.  They sit there demurely waiting for 
-broadcasts.
+*nod*
 
-> The port is not stored, since in common sense, it is not part of the
-> address. An (address,port) tuple is however not stored.
+I'm glad that what I suggested worked as I had not had a chance to try 
+it my self.
 
-Assuming you really mean that last "not", then my description
->> If the port isn't
->> stored, then all we are storing is the address of our own interface
->> and we match any packet coming in from a port 161.  That's still an
->> improvement because we only let in the packets during a relatively
->> short window after a broadcast, but it's not quite what we'd really
->> like.
-seems to apply.  So if a bad guy knew how take advantage of udp 
-broadcasts to arbitrary high numbered ports, he could sit there waiting 
-for a cups broadcast and then send his evil packets from his port 161 to 
-whichever of my ports he wanted.  Fortunately, such broadcasts will not 
-be very frequent, since once the printers are discovered, there is no 
-need to rediscover them until something changes.  But still it would be 
-better to match the broadcast port number.  A new feature?
+I *always* forget about the firewall its self being able to access 
+things as I so seldom need it to be able to do so.
 
->> But is there an approved firewall setup for samba these days?  (I 
->> don't use samba myself.)  If so, maybe we could adapt it.
+> The website also addresses the problem with "manipulated logs" - but I 
+> guess by defining a source LAN address (like you did) I can live with 
+> this constraint...
 
-> If by approved you mean what distributions use, then that's something
-> simple along the lines of
-> -A INPUT -p udp --dport 137:139 -j ACCEPT
+Yes.  I think who ever wrote that web page was working through things 
+evolutionary (at least that's how it reads to me) and solved their 
+problems as they came to them.  A simple TCPDump of unSNATed connections 
+will show the problem which would prompt an SNAT rule.  After that 
+looking at logs on the web server would it become obvious that you don't 
+want to SNAT everything, just the LAN traffic.  This is one of the 
+*many* reasons why having a DMZ be on a separate subnet is such a good ting.
 
-Hmm.  That doesn't seem to address the issue at all.  Maybe samba has 
-changed, or I was misunderstanding.
+> Damn! There should be special term for this kind of stupid - yet easy to 
+> solve problem, because I was looking and asking for about a whole week 
+> in forums, irc channels and so on...
 
-Thanks for your help!
+Eh.  Most firewalling documentation is written around the idea that both 
+the request and reply packets pass through the firewall (as opposed to 
+some other route) and really one set of query / reply packets at that. 
+When you start getting in to more complex things where the traffic might 
+or might not pass through the firewall or you may want to deal with 
+different IP addresses in subsequent query / reply sets or even 
+different source / dest IPs in the query and reply (see the recent 
+thread on SNMP and CUPS printing) the amount of documentation drops off 
+and your need to truly understand what the packets are doing goes way 
+up.  Try throwing hardware (switches) in there that do not like seeing 
+the same MAC address on multiple VLANs and have to work around that...
+
+> So, over again, thanks!
+
+*nod*
+
+You are quite welcome.  I'm glad that my ramblings helped.
+
+
+
+Grant. . . .
