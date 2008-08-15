@@ -1,25 +1,34 @@
-From: Ted Kaczmarek <tedkaz@gmail.com>
-Subject: Test Post
-Date: Thu, 14 Aug 2008 22:06:36 -0400
-Message-ID: <6B692DB4-AB1C-4407-9D5A-25519FA20982@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v928.1)
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: iptables rules for cups printer discovery
+Date: Thu, 14 Aug 2008 21:14:27 -0500
+Message-ID: <48A4E683.80206@riverviewtech.net>
+References: <19894-78618@sneakemail.com> <48A4DD48.3080004@riverviewtech.net> <alpine.LNX.1.10.0808142150080.25617@fbirervta.pbzchgretzou.qr> <48A4E340.1090305@riverviewtech.net> <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:from:to
-         :content-type:content-transfer-encoding:mime-version:subject:date
-         :x-mailer;
-        bh=juV28K3DprDnfBoe4jKMifSeVhtiSqzVnj/iUagEqh4=;
-        b=FmEt3nWFLE4IesqW2xrsAjgDB7SwTVphIUo63q9tB0c3GW5ZKDFyprViLXKo3imkeA
-         E12fjo/1opBK+CLs/dgzeQ+selSHvwXOxLa+f8FsvJB4Vpfxm5uoQqNQTb2zYsXI4M0k
-         YdJyzfWnSGmJzCmsa1XK/kCIdZ+deTymtswls=
+In-Reply-To: <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-My post from earlier today never made it, just doing a sanity check  
-before resending.
+On 8/14/2008 9:04 PM, Jan Engelhardt wrote:
+> You can specify --rsrc/--rdest (patch just merged that documents 
+> them).
 
-Ted
+So the options did exist, but they were undocumented?
+
+> -A INPUT -d 192.168.0.255 -p udp --dport 161 -m recent --name snmp 
+> --rsrc --set
+> 
+> -A OUTPUT -p udp --sport 161 -m recent --name snmp --rdest --rcheck
+
+*nod*  That is the general idea.
+
+So I take it that the default is --rsrc but you can specify --rdest and 
+act on the destination IP for all options of recent, i.e. --update and 
+--remove too?
+
+
+
+Grant. . . .
