@@ -1,36 +1,25 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables rules for cups printer discovery
-Date: Thu, 14 Aug 2008 22:04:09 -0400 (EDT)
-Message-ID: <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr>
-References: <19894-78618@sneakemail.com> <48A4DD48.3080004@riverviewtech.net> <alpine.LNX.1.10.0808142150080.25617@fbirervta.pbzchgretzou.qr> <48A4E340.1090305@riverviewtech.net>
-Mime-Version: 1.0
+From: Ted Kaczmarek <tedkaz@gmail.com>
+Subject: Test Post
+Date: Thu, 14 Aug 2008 22:06:36 -0400
+Message-ID: <6B692DB4-AB1C-4407-9D5A-25519FA20982@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v928.1)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48A4E340.1090305@riverviewtech.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:from:to
+         :content-type:content-transfer-encoding:mime-version:subject:date
+         :x-mailer;
+        bh=juV28K3DprDnfBoe4jKMifSeVhtiSqzVnj/iUagEqh4=;
+        b=FmEt3nWFLE4IesqW2xrsAjgDB7SwTVphIUo63q9tB0c3GW5ZKDFyprViLXKo3imkeA
+         E12fjo/1opBK+CLs/dgzeQ+selSHvwXOxLa+f8FsvJB4Vpfxm5uoQqNQTb2zYsXI4M0k
+         YdJyzfWnSGmJzCmsa1XK/kCIdZ+deTymtswls=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
+My post from earlier today never made it, just doing a sanity check  
+before resending.
 
-On Thursday 2008-08-14 22:00, Grant Taylor wrote:
-
-> On 8/14/2008 8:53 PM, Jan Engelhardt wrote:
->> Nope that would not work because the source and destination addresses are
->> flipped on return packets, and then you even have the .255 thing.
->
-> Ah.  I forgot about the fact that recent only dealt with the source IP and that
-> you could not specify source or dest in the set / update / check parameters to
-> recent.  :(
-
-You can specify --rsrc/--rdest (patch just merged that documents them).
-But somehow I am not sure...
-
--A INPUT -d 192.168.0.255 -p udp --dport 161 -m recent --name snmp
---rsrc --set
-
--A OUTPUT -p udp --sport 161 -m recent --name snmp
---rdest --rcheck
-
-Try?
+Ted
