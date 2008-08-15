@@ -1,51 +1,39 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: VPN (interface) access for and all traffic through from single
- user -- how to do it?
-Date: Fri, 15 Aug 2008 10:29:49 -0500
-Message-ID: <48A5A0ED.8010502@riverviewtech.net>
-References: <200808151255.44987.janklodvan@gmail.com>
+From: "Stephen Isard" <y8ju2p902@sneakemail.com>
+Subject: Re: iptables rules for cups printer discovery
+Date: Fri, 15 Aug 2008 11:38:22 -0400 (EDT)
+Message-ID: <17319-84921@sneakemail.com>
+References: <19894-78618@sneakemail.com> <48A4DD48.3080004@riverviewtech.net> <alpine.LNX.1.10.0808142150080.25617@fbirervta.pbzchgretzou.qr> <48A4E340.1090305@riverviewtech.net> <alpine.LNX.1.10.0808142202380.25617@fbirervta.pbzchgretzou.qr>
+ <30978-20009@sneakemail.com> <alpine.LNX.1.10.0808150912130.27140@fbirervta.pbzchgretzou.qr> <19140-74447@sneakemail.com> <48A59EE8.8090709@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200808151255.44987.janklodvan@gmail.com>
+In-Reply-To: <48A59EE8.8090709@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-
-On 08/15/08 04:55, Jan Klod wrote:
-> There is one thing really troubling me for fourth day and I hope, 
-> this is the right place to ask for advices: I have VPN access through 
-> LAN NIC, I managed to log in the VPN server and, using ping -I ppp0 
-> some.host.domain got an answer. Nothing more this far, but the 
-> initial goal was simply to grant an user access to VPN as toppic 
-> subject describes. Just like I would have started firefox -I ppp0!
-> 
-> (all user's traffic through ppp0, while other users can still go 
-> through eth1!)
-> 
-> Also this created an extra question: how web browser "knows", which 
-> interface should be used, if there are multiple?
-
-(With out having even looked at the links you provided I'm going to take 
-a stab in the dark.)
-
-I believe you are wanting to have your traffic go through the VPN as a 
-default rather than through your existing default gateway.  (Presuming 
-that this is the case.)
-
-Add a route to the IP address of your remote VPN end point via your 
-current default gateway.  (Bring the VPN up if it is not already up.) 
-Add a new default gateway of the *inside* remote end of the VPN.  Remove 
-your existing local default gateway.  Or if you would like you can 
-change the metric of your existing local default gateway so that it is 
-higher (thus less preferred) than the default gateway on the other end 
-of the VPN.
-
-Doing this will allow anything on the VPN client computer to route its 
-traffic through the VPN with out having to modify any thing specific to 
-each program.
+Content-Type: TEXT/PLAIN; format="flowed"; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
 
 
-Grant. . . .
+On Fri, 15 Aug 2008, Grant Taylor wrote:
+
+> If you are worried about someone else spoofing an IP in your recent list, 
+> look in to the --rttl option to have the recent list remember the TTL values 
+> of packets and require them to be the same.  This way if some jerk off who is 
+> more hops away from you is trying to pretend to be you, his traffic will 
+> appear to be at a different TTL than yours.  This is not fool proof, but it 
+> will sure help reduce the risk of exposure that you are referring to.
+
+Thanks, Grant.
+
+I don't think any spoofing is required.  I had in mind someone who had 
+gained access to my local network (not simple, but not out of the 
+question) and who was essentially pretending to be a printer by sending 
+packets from his port 161 immediately following a cups broadcast.  I'm 
+not worried about people without access to the local network because 
+they wouldn't see the broadcast that opens the "recent" time window.
+
+Am I fussing over nothing here?  Is it clear that much harm can be done 
+by getting upd packets through my firewall to arbitrary high numbered 
+ports?  Denial of service is probably not a big issue because of the 
+short time window.
