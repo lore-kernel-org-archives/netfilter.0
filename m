@@ -1,31 +1,30 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnetfilter_log 0.0.15 release
-Date: Fri, 15 Aug 2008 22:24:43 +0200
-Message-ID: <48A5E60B.2000306@netfilter.org>
+Subject: [ANNOUNCE] ulogd 2.0.0beta2
+Date: Fri, 15 Aug 2008 22:34:10 +0200
+Message-ID: <48A5E842.8030407@netfilter.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040801090901060601070509"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
-
-This is a multi-part message in MIME format.
---------------040801090901060601070509
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 
 Hi!
 
 The netfilter project proudly presents:
 
-  * libnetfilter_log-0.0.15
+  * ulogd 2.0.0beta2
 
-libnetfilter_log is a userspace library providing interface to packets
-that have been logged by the kernel packet filter. It is is part of a
-system that deprecates the old syslog/dmesg based packet logging. See
-ChangeLog for more details.
+ulogd is a userspace logging daemon for netfilter/iptables related
+logging. This includes per-packet logging of security violations,
+per-packet logging for accounting purpose as well as per-flow logging.
+
+ulogd comes in two flavours: ulogd-1.x has been around since 2000 and is
+the stable series. All production systems should use the stable series
+at this time. The 1.x series are frozen, do not expect new features into
+this line. ulogd-2.x is currently in beta stage.
 
 You can download them from:
 
@@ -35,22 +34,11 @@ ftp://ftp.netfilter.org
 Enjoy,
 Pablo - on behalf of the Netfilter Project.
 
+Note: Sorry, this release does not include changelog, you can browse the
+changes in the git tree, we expect to provide the changelog in the
+upcoming releases. It is worth mention than most of the changeset comes
+from Harald Welte and Eric Leblond.
+
 -- 
 "Los honestos son inadaptados sociales" -- Les Luthiers
 
---------------040801090901060601070509
-Content-Type: text/plain;
- name="ChangeLog"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ChangeLog"
-
-Eric Leblond (1):
-      Add parsing function for raw hardware header
-
-Pablo Neira Ayuso (2):
-      conditional compilation of testsuite utils
-      bump version to 0.0.15
-
-
---------------040801090901060601070509--
