@@ -1,26 +1,60 @@
-From: Jan Klod <janklodvan@gmail.com>
-Subject: Re: VPN (interface) access for and all traffic through from single user -- how to do it?
-Date: Fri, 15 Aug 2008 19:19:22 +0300
-Message-ID: <200808151919.23070.janklodvan@gmail.com>
-References: <200808151255.44987.janklodvan@gmail.com> <48A5A0ED.8010502@riverviewtech.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: VPN (interface) access for and all traffic through from single
+ user -- how to do it?
+Date: Fri, 15 Aug 2008 11:28:02 -0500
+Message-ID: <48A5AE92.6090500@riverviewtech.net>
+References: <200808151255.44987.janklodvan@gmail.com> <48A5A0ED.8010502@riverviewtech.net> <200808151914.21997.janklodvan@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date
-         :user-agent:references:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:message-id;
-        bh=pGHeD72I/+oT2+aFxpw/K2XBpc7VEOSNR8VZ96L20YQ=;
-        b=vIqhh5Xlcreia4XOdDh+Zv5Xjy0N3U6K19itlOEZnq/n77A6M0jFF0ckc13ptTuSkU
-         flq4KYfUNdFpjI6WeZAeew4aTn9/GWGpZ0J0g5n/9CL4ZgX9pD6oM5lzgcaKMqTkvB4r
-         fhSjlg6TVWQhv8+cDuwvB5dVWlqcrlMTpX0tE=
-In-Reply-To: <48A5A0ED.8010502@riverviewtech.net>
-Content-Disposition: inline
+In-Reply-To: <200808151914.21997.janklodvan@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-I forgot to mention: this is all done on and for single machine.
-Interface "separation" could be done by packet marking.... 
+On 08/15/08 11:14, Jan Klod wrote:
+> May I ask some commands?
+
+*nod*
+
+> Say, I have eth1 with address 192.168.2.34, router (and nameserver) 
+> address 192.168.2.1 and I've connected to VPN through ppp0 with local 
+> IP address 215.155.114.16 and remote IP address 215.155.115.254! 
+> (VPN's gateway is 194.12.33.1 for connecting) (VPN or PPTP)
+
+So your client is 192.168.2.34 and your (current) default gateway is 
+192.168.2.1.  You have a VPN established from your client to 
+215.155.115.254.  Your end of the inside of the VPN is 
+194.12.33.<something> and the remote end of the inside of the VPN is 
+194.12.33.1.  Is all of this correct?  (I'm going to presume yes with 
+the commands below.)
+
+route add -host 215.155.114.254 gw 192.168.2.1
+route add default gw 194.12.33.1 metric 1
+route del default gw 192.168.2.1
+route add default gw 192.168.2.1 metric 2
+
+This should do the following:
+  - Add a route to your VPN target by way of (the IP of) your (current) 
+default gateway.
+  - Add a the remote end of the inside of the VPN as your new default 
+gateway with a low metric.
+  - Delete your old (local) default gateway.
+  - Re-add your old (local) default gateway with a higher metric.
+
+> At least, what are those command line entries, so I can browse 
+> network through VPN?
+
+If by "browse" you mean browse the web or use any other ""standard 
+internet service, you should be good to go.  If by "browse" you mean 
+"Browse 'My Network Places'" you may run in to other SMB / CIFS related 
+networking issues (crossing subnets).
+
+> Hope, I explained better...
+
+I think so.  Does my response help?
+
+
+
+Grant. . . .
