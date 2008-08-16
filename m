@@ -1,44 +1,35 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] ulogd 2.0.0beta2
-Date: Fri, 15 Aug 2008 22:34:10 +0200
-Message-ID: <48A5E842.8030407@netfilter.org>
+From: Jan Klod <janklodvan@gmail.com>
+Subject: Re: VPN (interface) access for and all traffic through from single user -- how to do it?
+Date: Sat, 16 Aug 2008 23:47:54 +0300
+Message-ID: <200808162347.55392.janklodvan@gmail.com>
+References: <200808151255.44987.janklodvan@gmail.com> <200808152212.59882.janklodvan@gmail.com> <48A5F9E2.5080206@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:message-id;
+        bh=il6IcIYG8HC1h+LnxqO0GLNyyUR4zHGtcNg+CwurBOw=;
+        b=ZjXmZNkTd9JW3/L358h7B4WYaXSgHgHu1kBMCKj8It9v2WPOv6l/1z7yxEO8P7QZAz
+         4XS/vCaTUQ54/684rdElobgErKoHq5SDWusRPyrCmgwKtR9b2yd4EezL5SDvQJX5DmYr
+         VuzJFM6qfwQCZOfoDGd6UTxIW4CWLucbHPvDM=
+In-Reply-To: <48A5F9E2.5080206@riverviewtech.net>
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-Hi!
+Still asking questions. I tried to follow probably the most simple case 
+presented here:
+http://pptpclient.sourceforge.net/routing.phtml#all-to-tunnel
+but result is no access to internet at all. How can I debug these things and 
+find out what is going on? Now it is like in the dark...
 
-The netfilter project proudly presents:
+Is it considerable to be a proof, that pptp VPN tunnel is working, if I can 
+ping -i ppp0 <remote VPN address>?
 
-  * ulogd 2.0.0beta2
-
-ulogd is a userspace logging daemon for netfilter/iptables related
-logging. This includes per-packet logging of security violations,
-per-packet logging for accounting purpose as well as per-flow logging.
-
-ulogd comes in two flavours: ulogd-1.x has been around since 2000 and is
-the stable series. All production systems should use the stable series
-at this time. The 1.x series are frozen, do not expect new features into
-this line. ulogd-2.x is currently in beta stage.
-
-You can download them from:
-
-http://www.netfilter.org
-ftp://ftp.netfilter.org
-
-Enjoy,
-Pablo - on behalf of the Netfilter Project.
-
-Note: Sorry, this release does not include changelog, you can browse the
-changes in the git tree, we expect to provide the changelog in the
-upcoming releases. It is worth mention than most of the changeset comes
-from Harald Welte and Eric Leblond.
-
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
-
+Looking for solutions,
+Jan
