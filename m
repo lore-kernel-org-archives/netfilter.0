@@ -1,35 +1,34 @@
-From: Jan Klod <janklodvan@gmail.com>
-Subject: Re: VPN (interface) access for and all traffic through from single user -- how to do it?
-Date: Sat, 16 Aug 2008 23:47:54 +0300
-Message-ID: <200808162347.55392.janklodvan@gmail.com>
-References: <200808151255.44987.janklodvan@gmail.com> <200808152212.59882.janklodvan@gmail.com> <48A5F9E2.5080206@riverviewtech.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: VPN (interface) access for and all traffic through from single
+ user -- how to do it?
+Date: Sat, 16 Aug 2008 23:31:33 -0500
+Message-ID: <48A7A9A5.3040403@riverviewtech.net>
+References: <200808151255.44987.janklodvan@gmail.com> <200808152212.59882.janklodvan@gmail.com> <48A5F9E2.5080206@riverviewtech.net> <200808162347.55392.janklodvan@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date
-         :user-agent:references:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:message-id;
-        bh=il6IcIYG8HC1h+LnxqO0GLNyyUR4zHGtcNg+CwurBOw=;
-        b=ZjXmZNkTd9JW3/L358h7B4WYaXSgHgHu1kBMCKj8It9v2WPOv6l/1z7yxEO8P7QZAz
-         4XS/vCaTUQ54/684rdElobgErKoHq5SDWusRPyrCmgwKtR9b2yd4EezL5SDvQJX5DmYr
-         VuzJFM6qfwQCZOfoDGd6UTxIW4CWLucbHPvDM=
-In-Reply-To: <48A5F9E2.5080206@riverviewtech.net>
-Content-Disposition: inline
+In-Reply-To: <200808162347.55392.janklodvan@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Still asking questions. I tried to follow probably the most simple case 
-presented here:
-http://pptpclient.sourceforge.net/routing.phtml#all-to-tunnel
-but result is no access to internet at all. How can I debug these things and 
-find out what is going on? Now it is like in the dark...
+On 8/16/2008 3:47 PM, Jan Klod wrote:
+> Is it considerable to be a proof, that pptp VPN tunnel is working, if 
+> I can ping -i ppp0 <remote VPN address>?
 
-Is it considerable to be a proof, that pptp VPN tunnel is working, if I can 
-ping -i ppp0 <remote VPN address>?
+If the address is on the inside of the VPN or on the LAN on the other 
+end of the VPN, most likely.
 
-Looking for solutions,
-Jan
+> Looking for solutions,
+
+Please reset everything to the way it was before trying things suggested 
+(restart your network or reboot should do it).
+
+Please provide the output of "ifconfig" and "route -n" after bring up 
+the VPN and being able to ping like above.  I'll then try to provide 
+example commands at that point to do what you are wanting.
+
+
+
+Grant. . . .
