@@ -1,36 +1,25 @@
-From: devel@thom.fr.eu.org
-Subject: Routing from ppp to ipsec tunnel
-Date: Mon, 18 Aug 2008 19:24:19 +0200 (CEST)
-Message-ID: <1289.10.211.10.2.1219080259.squirrel@mail.thom.fr.eu.org>
+From: "Lamons, Scott" <scott.lamons@hp.com>
+Subject: netfilter kernel interfaces
+Date: Mon, 18 Aug 2008 18:17:15 +0000
+Message-ID: <CD2B872281385A439B98164F5351E6DD24CF6D4486@GVW1144EXB.americas.hpqcorp.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: "netfilter@lists.samba.org" <netfilter@lists.samba.org>
 
-Hello,
+Hi Folks,
 
-I have two sites connected using an IPSEC Tunnel (Linux 2.6/KAME Tools)=
-=2E
-I can also have "roadwarriors" clients (Windows based) connect to eithe=
-r
-site using an L2TP/IPSEC tunnel.
-I would like to know if it's possible to route packets from the
-roadwarrior client (sent out through my ppp interface) through the inte=
-r
-site ipsec tunnel and back.
-So far, the only way I could have this work was by SNATing the traffic
-from my ppp network destined to the other site network to the local lan
-interface address, but I'd rather not use SNAT to achieve this.
+Can someone tell me if any of the exported Netfilter interfaces or symbols are GPL only?
 
-Anybody can help ?
+Thanks,
 
-Thanks
-
-=46ran=E7ois
-
---=20
-
-
+Scott Lamons
+Program Manager
+HP Open Source & Linux Lab
+Voice: 970-898-2804
+Email: mailto:scott.lamons@hp.com
+http://opensource.hp.com
