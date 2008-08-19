@@ -1,71 +1,87 @@
-From: Brent Clark <brentgclarklist@gmail.com>
-Subject: Re: POM Xtables???
-Date: Tue, 19 Aug 2008 13:35:01 +0200
-Message-ID: <48AAAFE5.10201@gmail.com>
-References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com>	 <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com>	 <486907EA.60105@trash.net>	 <alpine.LNX.1.10.0806302218500.30639@fbirervta.pbzchgretzou.qr>	 <48694787.3080906@trash.net>	 <alpine.LNX.1.10.0807010907040.26892@fbirervta.pbzchgretzou.qr>	 <4887BCE0.2050902@trash.net>	 <38bcb3ec0807240131n1f5d4051k9e89731aa2fcb6c9@mail.gmail.com>	 <488849A5.6050401@netfilter.org> <48884ED3.8080901@trash.net> <38bcb3ec0808150117n729cb7b1yadcfa9018b9714be@mail.gmail.com>
+From: "jon hale" <jon.h.hale@gmail.com>
+Subject: Policy routing problem using group id, fwmark, and iproute2
+Date: Tue, 19 Aug 2008 15:34:19 -0700
+Message-ID: <abe9c56e0808191534m25ffbfe9qba0c60dd8b68c3df@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <38bcb3ec0808150117n729cb7b1yadcfa9018b9714be@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=uysCFl462ZQqInt0sesaDEoSxZ3dOH9PuiU2ooikhK0=;
+        b=pAH8Z/WaaPHYBq8IdPYOv36dDRa/9CPOZy36/wsYG7aJPv+8qnxU7xiMSD2Pvtp2Ie
+         vOTLHga7e3FymLUukpg+6euM1f9x1IpMvvND+8HW6f0ZF3Wqit99otkm4zlGCSdvwsz3
+         daOUa6gtUTXjSeHLc0x9evNE9xgIAZAvgjDoE=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: James King <t.james.king@gmail.com>
-Cc: Patrick McHardy <kaber@trash.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Jan Engelhardt <jengelh@medozas.de>, Dave <finalglide@gmail.com>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-James King wrote:
-> ipp2p and l7filter both use different strategies for DPI
-> classification, each having their own pros and cons.
-You know most people, groups etc look for the next best thing. Take a 
-look at Firefox and apple ( *pod), they continuously announcing whats 
-hip and new, what they doing etc, and looking at ways to keep a captive 
-audience.
+Synopsis:
+        I have been trying to set up policy routing based upon the group id
+        of the process sending the packets.
 
-My question is what netfilters next best thing?
+        It works for most packets, but there is some scenario that happens at
+        the end of every ftp upload, where the packet goes out the wrong
+        interface and gums up the works.
 
-Having used and using Xtables, I thinking it FSCKING brilliant (excuse 
-slander, hope I did not offend, but there was not other way to explain). 
-I dont have to struggle and my turn around time is minutes.
-I continuously thank Jan for the work his doing.
+        I am doing this using iptables and iproute2 features. When I change
+        my iptables fwmark rule from marking gid-owner packets to marking
+        packets based on their destination address it all works fine.
 
-I suggest forget POM. its old and the process is slow and laborious (and 
-thats hoping you can get it compiled in the kernel).
+Details:
+        in /etc/iproute2/rt_table I added a table p0
 
-Getting back to iptables.
+        I added a rule (with ip ru add) "from all fwmark 0x1 lookup p0"
 
-Its great to see others stepping forward and wanting to implement a 
-Layer 7 filtering, and I say go for it and work on it, but in the mean 
-time and to the netfilter team, my question is, how long will that take 
-till its able to get off the ground to too hope that it gets accepted by 
-the teams (netfilter and kernel).
+        I bring up my ppp daemon and I get the following address
+        (from ip addr sh ppp0):
+                 inet 70.223.3.172 peer 66.174.168.192/32 scope global ppp0
 
-To be constructive, and looking for a solid way forward (even if 
-interim), would it not be better to implement l7 in xtables or better 
-iptables.
-Yes the L7 code may suck now or incorrectly thoughtout, but getting it 
-working will help people. People understand that its not perfect or bug 
-less, the fact they have option and it being worked on, helps.
+        I create the entries for table p0:
+                TARGETIP dev ppp0  scope link
+                default via 66.174.168.192 dev ppp0  src 70.223.3.172
+        I take the ppp0 default rule out of table main.
 
-Im of the opinion that Netfilter really needs to look and think out the 
-box and realize ppl want *now*, troubleless (less not free), shiny and 
-new (this goes hand in hand with promoting, marketing etc).
-Google for pf vs iptables, and you will find a plethora of links 
-promoting either / or. Netfilter needs that "shiny" that will set it 
-apart from the rest that will and have the bells and whistles.
+        I added some iptables rules:
+                iptables -t mangle -A OUTPUT -m mark ! --mark 0 -j ACCEPT
+                iptables -t mangle -A OUTPUT -m mark    \
+                        --mark 0 -m owner --gid-owner $GROUP_0 -j MARK \
+                        --set-mark 0x1
+                iptables -t mangle -A OUTPUT -j CONNMARK --save-mark
+                iptables -t nat -A POSTROUTING -o ppp0 -j SNAT \
+                        --to-source 70.223.3.172
+        I then flush the route cache (ip route flush cache)
 
-My aim it to not offend anyone, but let the powers that be know, that 
-there is a demand for more. Ill probably get flamed, but I hope this 
-email gets taken in the light of constructive criticism and for the 
-greater of the user community that like quick install, all in one solution.
+        Now I run ftp and upload a file. Ouch! A few of the packets go out
+        my eth0 interface.
 
-Kind Regards
-Brent Clark
+Interesting facts:
+        I can successfully upload a file up to size 4344 bytes. When I try using
+        a file of size 4345 bytes. Things go bad. 4344 is interesting because
+        this is three times the tcp payload of one packet.
 
-P.s. James, I hope you get your solution off the ground  and working.
+        If I change the  --set-mark rule above to :
+                iptables -t mangle -A OUTPUT -d $TARGET -j MARK --set-mark 0x1
+        Then everything works fine. But this will not accomplish my larger goal.
+        My larger goal is having two processes owned by the same user, but in
+        different groups to be able to have packets to $TARGET take different
+        routes.
 
+        If I change the --set-mark rule above to match on the uid instead of
+        the gid, I still have the same problem.
 
+Versions of things:
+        #ip -V
+                ip utility, iproute2-ss070313
+        #iptables -V
+                iptables v1.3.7
+        #linux kernel  2.6.22.9 WITHOUT SMP
 
-
-
-
-
+I need a clue.
+Or maybe just help understanding the clues that I do have.
+Thank you,
+-jon
