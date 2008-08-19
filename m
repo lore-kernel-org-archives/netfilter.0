@@ -1,152 +1,71 @@
-From: devel@thom.fr.eu.org
-Subject: [Fwd: Re: Routing from ppp to ipsec tunnel]
-Date: Tue, 19 Aug 2008 09:19:58 +0200 (CEST)
-Message-ID: <49353.80.118.132.195.1219130398.squirrel@mail.thom.fr.eu.org>
+From: Brent Clark <brentgclarklist@gmail.com>
+Subject: Re: POM Xtables???
+Date: Tue, 19 Aug 2008 13:35:01 +0200
+Message-ID: <48AAAFE5.10201@gmail.com>
+References: <935fab200806271054oa7c340evbf465b7a9984498b@mail.gmail.com>	 <935fab200806300904rc7dc7b2kf58ab7893c3ef20a@mail.gmail.com>	 <486907EA.60105@trash.net>	 <alpine.LNX.1.10.0806302218500.30639@fbirervta.pbzchgretzou.qr>	 <48694787.3080906@trash.net>	 <alpine.LNX.1.10.0807010907040.26892@fbirervta.pbzchgretzou.qr>	 <4887BCE0.2050902@trash.net>	 <38bcb3ec0807240131n1f5d4051k9e89731aa2fcb6c9@mail.gmail.com>	 <488849A5.6050401@netfilter.org> <48884ED3.8080901@trash.net> <38bcb3ec0808150117n729cb7b1yadcfa9018b9714be@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <38bcb3ec0808150117n729cb7b1yadcfa9018b9714be@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: James King <t.james.king@gmail.com>
+Cc: Patrick McHardy <kaber@trash.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Jan Engelhardt <jengelh@medozas.de>, Dave <finalglide@gmail.com>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-Thank you for this quick answer.
+James King wrote:
+> ipp2p and l7filter both use different strategies for DPI
+> classification, each having their own pros and cons.
+You know most people, groups etc look for the next best thing. Take a 
+look at Firefox and apple ( *pod), they continuously announcing whats 
+hip and new, what they doing etc, and looking at ways to keep a captive 
+audience.
 
-I tried first to set it up as you mentionned :
-Say site 1 lan is 10.211/16 site 2 lan is 10.212/16
-road warrior 1 range is 10.210/16 (let's first don't consider the secon=
-d
-road warrior access)
+My question is what netfilters next best thing?
 
-So at first (before trying to turn on road warriors) I configured the
-following SAs :
+Having used and using Xtables, I thinking it FSCKING brilliant (excuse 
+slander, hope I did not offend, but there was not other way to explain). 
+I dont have to struggle and my turn around time is minutes.
+I continuously thank Jan for the work his doing.
 
-10.211.0.0/16 to 10.212.0.0/16 and vice versa on each end of the VPN (a=
-nd
-this worked fine)
-and add the routes 10.212.0.0/16 through 10.211.254.254 (being the vpn
-gateway lan address)
-and 10.211.0.0/16 through 10.212.254.254 on site 2 gateway
+I suggest forget POM. its old and the process is slow and laborious (and 
+thats hoping you can get it compiled in the kernel).
 
-These 2 VPN gateway also act as nating firewall for internet access, an=
-d
-so all the lan client are configured with these address as default
-gateway.
+Getting back to iptables.
 
-So far, this work great.
+Its great to see others stepping forward and wanting to implement a 
+Layer 7 filtering, and I say go for it and work on it, but in the mean 
+time and to the netfilter team, my question is, how long will that take 
+till its able to get off the ground to too hope that it gets accepted by 
+the teams (netfilter and kernel).
 
-Then to allow road warrior attached to site 1 traffic go through the
-tunnel, I thought I just had to modify the SAs and routes as follows :
+To be constructive, and looking for a solid way forward (even if 
+interim), would it not be better to implement l7 in xtables or better 
+iptables.
+Yes the L7 code may suck now or incorrectly thoughtout, but getting it 
+working will help people. People understand that its not perfect or bug 
+less, the fact they have option and it being worked on, helps.
 
-10.210.0.0/15 to 10.212.0.0/16 and vice versa on each end, then on site=
- 2
-gateway, replace the route to site one by 10.210.0.0/15 through
-10.212.254.254.
+Im of the opinion that Netfilter really needs to look and think out the 
+box and realize ppl want *now*, troubleless (less not free), shiny and 
+new (this goes hand in hand with promoting, marketing etc).
+Google for pf vs iptables, and you will find a plethora of links 
+promoting either / or. Netfilter needs that "shiny" that will set it 
+apart from the rest that will and have the bells and whistles.
 
-At this point, the intersite VPN works ok, but when I try to ping site =
-2
-gateway from the local (site 1) ppp end, I can't get the traffic go
-through the tunnel. I can see the packet (I use LOG target in netfilter=
-)
-get out ppp0 in the OUTPUT table, then go through the POSTROUTING table=
- in
-NAT chain, and that's all. No IPSEC traffic is generated for the packet=
-=2E
+My aim it to not offend anyone, but let the powers that be know, that 
+there is a demand for more. Ill probably get flamed, but I hope this 
+email gets taken in the light of constructive criticism and for the 
+greater of the user community that like quick install, all in one solution.
 
-What did I do wrong ?
+Kind Regards
+Brent Clark
 
-=46ran=E7ois
-
----------------------------- Message original -------------------------=
----
-Objet:   Re: Routing from ppp to ipsec tunnel
-De:      "Grant Taylor" <gtaylor@riverviewtech.net>
-Date:    Lun 18 ao=FBt 2008 23:16
-=C0:       "Mail List - Netfilter" <netfilter@vger.kernel.org>
------------------------------------------------------------------------=
----
-
-On 08/18/08 12:24, devel@thom.fr.eu.org wrote:
-> I have two sites connected using an IPSEC Tunnel (Linux 2.6/KAME
-> Tools). I can also have "roadwarriors" clients (Windows based)
-> connect to either site using an L2TP/IPSEC tunnel.
-
-Ok...
-
-> I would like to know if it's possible to route packets from the
-> roadwarrior client (sent out through my ppp interface) through the
-> inter site ipsec tunnel and back.
-
-Yes.
-
-> So far, the only way I could have this work was by SNATing the
-> traffic from my ppp network destined to the other site network to the
-> local lan interface address, but I'd rather not use SNAT to achieve
-> this.
-
-SNAT / MASQUERADE will work, but as you are seeing is undesirable.
-
-> Anybody can help?
-
-As I see it there are a couple of different things working against you.
- 1)  You will have to add routes to each VPN gateway for the road
-warriors on the other end.
- 2)  You will need to (re)configure your IPSec VPN to allow the
-additional road warrior IP space.
-
-I don't know what you have for IP address space on either end of the
-VPN, so I can't say for sure what you need to do.  In essence you will
-need to provision a new subnet for the road warriors at each end.  This
-can be done by either creating a new dis-similar subnet for the road
-warriors or if the IP addressing scheme will allow by enlarging the
-subnet (reducing the netmask by one bit).  If you can do the later
-things with in your VPN will be easier because you can just alter the
-netmask of what IPs are allowed to go through (match) the VPN.  If one
-office is 192.168.0/24 and the other is 192.168.1/24 then you can't
-expand the netmask with out re-addressing one end or the other and you
-will have to more drastically adjust your VPNs.
-
-I've not had to mess with an IPSec VPN that had multiple dis-similar IP
-subnets pass through them, so I can't say how to do it.  In short, you
-will have four subnets in the company, Site 1 LAN, Site 1 Road Warrior,
-Site 2 LAN, and Site 2 Road Warrior.  With this in mind you will need t=
-o
-have your VPN allow traffic from either LAN or Road Warriors at Site 1
-to either LAN or Road Warriors at Site 2.  So you end up with these
-possible combinations
-
-1L <-> 2L
-1L <-> 2R
-1R <-> 2L
-1R <-> 2R
-
-(You may be able to get away with out allowing a road warrior at one
-site to talk to another road warrior at the other site, thus negating
-the need for 1R <-> 2R.)
-
-But this does mean that you will need to allow at least the first three
-subnet to subnet communications.  If you can not define these in one
-single IPSec VPN, you /may/ have to establish a separate IPSec VPN for
-each subnet to subnet pairing.  Thus what was one simple site to site
-VPN now becomes three site to site VPNs.  :(
-
-I know that this seems like a lot of work just to allow road warriors t=
-o
-be able to access other remote sites, but I agree with you hole
-heartedly about not wanting to SNAT / MASQUERADE.  (Though you could ge=
-t
-away with just nating the road warrior traffic and not the rest of the
-site to site traffic.)
+P.s. James, I hope you get your solution off the ground  and working.
 
 
 
-Grant. . . .
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 
---=20
 
 
