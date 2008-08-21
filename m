@@ -1,49 +1,44 @@
-From: Abhishek Singh <aks.abhishek@gmail.com>
-Subject: Regarding iptables mac matching
-Date: Thu, 21 Aug 2008 20:18:14 +0545
-Message-ID: <48AD7CAA.8020205@gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Regarding iptables mac matching
+Date: Thu, 21 Aug 2008 09:41:38 -0500
+Message-ID: <48AD7EA2.9050106@riverviewtech.net>
+References: <48AD7CAA.8020205@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:x-enigmail-version:content-type
-         :content-transfer-encoding;
-        bh=l5yLtKu9i2OXs/ZeDce3zbEotSPNizJCcg89Wp0BiTg=;
-        b=wx4qrVxcl5MU5CBKkuGJZACTpEQiWoBbo/0J+fRH/6P47AqLrGImXrWdtb6lvh9LoS
-         tUXvBsE5oPQuhUv7R4f9s2TGj/EqS1FQiLb82eWTqCbZhtk5pUfwFBwSUFqW/3JZk87Z
-         4HX8u1gZBOaGkZ5Z9ZZAjZ63vysblFPi56Rp8=
+In-Reply-To: <48AD7CAA.8020205@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Dear All,
-     I'm using iptables on Fedora 9. I need to block network access to a 
-specific mac address. My LAN uses a gateway. On the gateway I'm using 
-iptables for firewalling. I monitor the network traffic from hosts on my 
-LAN, and need to block the hosts which are consuming too much of network 
-traffic. To block a host with MAC address 00:E0:4D:02:1F:B8, I added 
-these rules in iptables:
+On 08/21/08 09:33, Abhishek Singh wrote:
+> I like to block the access of that host to other hosts, the gateway 
+> and the internet as well. But I'm unable to do that using the above 
+> mentioned rules. I'm quite optimistic that someone help me with this 
+> problem.
 
-iptables -A INPUT -m mac --mac-source 00:E0:4D:02:1F:B8 -j DROP
-iptables -A FORWARD -m mac --mac-source 00:E0:4D:02:1F:B8 -j DROP
+In short I am fairly certain that you will not (reliably) be able to 
+block host to host communications on your LAN.  Here's a quick synopsis 
+of a very similar discussion on the EBTables mailing list.
 
-I tested the network connection on the host with the mac address 
-matching 00:E0:4D:02:1F:B8 and I got the following results:
+Consider your LAN a small room with multiple people in it, all of which 
+are in ear shot of each other.  So when one person tries to talk to 
+another person they can do it with out a problem because it is directly 
+between each other.  Your firewall only enters the picture when someone 
+tries to leave the room to go out to the world.  With out shouting at 
+everyone, there is very little that you can do to prevent each other 
+from talking between them selves.
 
-   * The gateway blocked ssh and ping requests from the host.
-   * But I was still able to access other servers on real ip (say
-     pinging google.com, worked fine)
+> Thanks in advance.
 
-I like to block the access of that host to other hosts, the gateway and 
-the internet as well. But I'm unable to do that using the above 
-mentioned rules. I'm quite optimistic that someone help me with this 
-problem.
-Thanks in advance.
-
-Regards,
-Abhishek Singh
+*nod*
 
 
+
+Grant. . . .
+
+
+P.S.  This assumes that all the systems are on the same subnet.  If they 
+are on different subnets and have to pass through the router to get 
+between subnets you can do something if you want to.
