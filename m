@@ -1,44 +1,68 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Regarding iptables mac matching
-Date: Thu, 21 Aug 2008 09:41:38 -0500
-Message-ID: <48AD7EA2.9050106@riverviewtech.net>
-References: <48AD7CAA.8020205@gmail.com>
+From: Volkan YAZICI <yazicivo@ttmail.com>
+Subject: Traffic Mirroring for Debugging
+Date: Fri, 22 Aug 2008 10:57:13 +0300
+Message-ID: <87vdxtwkh2.fsf@alamut.mobiliz.com.tr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48AD7CAA.8020205@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 08/21/08 09:33, Abhishek Singh wrote:
-> I like to block the access of that host to other hosts, the gateway 
-> and the internet as well. But I'm unable to do that using the above 
-> mentioned rules. I'm quite optimistic that someone help me with this 
-> problem.
+Hi,
 
-In short I am fairly certain that you will not (reliably) be able to 
-block host to host communications on your LAN.  Here's a quick synopsis 
-of a very similar discussion on the EBTables mailing list.
+In one of our servers, I want to debug a network server daemon. The
+problem is I don't have luxury for a downtime or to iterrupt related
+server's network traffic. Current routing structure looks like below.
 
-Consider your LAN a small room with multiple people in it, all of which 
-are in ear shot of each other.  So when one person tries to talk to 
-another person they can do it with out a problem because it is directly 
-between each other.  Your firewall only enters the picture when someone 
-tries to leave the room to go out to the world.  With out shouting at 
-everyone, there is very little that you can do to prevent each other 
-from talking between them selves.
+  VPN Switch (192.168.1.1) -> Server Machine (192.168.1.2)
 
-> Thanks in advance.
+To debug the related server daemon, I planned to redirect the network
+traffic to a second sandbox server. Planned routing structure is:
 
-*nod*
+  VPN Switch (192.168.1.1)
+  |
+  +-> Temporary Linux Machine (192.168.1.10)
+      ||
+      |+-> Server Machine (192.168.1.2)
+      +--> Sandbox Server Machine (192.168.1.20)
+
+For test purposes, I configured a client to connect to 192.168.1.10
+(instead of actual server, 192.168.1.2). But I couldn't manage to
+redirect incoming traffic of 192.168.1.10 to 192.168.1.2 and
+192.168.2.20 machines. How can I get such a mirrored redirection?
+
+Furthermore, I first considered using DNAT of iptables, but learnt that
+it doesn't support multiple destinations without load-balancing. Anyway,
+I wanted to give it a try for just a single machine. I connected to 1.10
+machine and typed below iptables command:
+
+  # iptables -t nat -A PREROUTING -d 192.168.1.10 -j DNAT --to-destination 192.168.1.20
+  # iptables -L -n -t nat
+  Chain PREROUTING (policy ACCEPT)
+  target     prot opt source               destination
+  DNAT       0    --  0.0.0.0/0            192.168.1.10 to:192.168.1.20
+
+  Chain POSTROUTING (policy ACCEPT)
+  target     prot opt source               destination
+
+  Chain OUTPUT (policy ACCEPT)
+  target     prot opt source               destination
+
+And started a netcat listener on 1.20 machine:
+
+  # nc -l -p 2310
+
+Then tried to connect to the started nc listener from 1.10 machine:
+
+  # nc -vvv 192.168.1.10 2310
+  192.168.1.10: inverse host lookup failed: Unknown host
+  (UNKNOWN) [192.168.1.10] 2310 (?) : Connection refused
+   sent 0, rcvd 0
+
+Gosh! Even couldn't manage to make DNAT for a single address work
+properly. Any helps will be really really appreciated.
 
 
-
-Grant. . . .
-
-
-P.S.  This assumes that all the systems are on the same subnet.  If they 
-are on different subnets and have to pass through the router to get 
-between subnets you can do something if you want to.
+Regards.
