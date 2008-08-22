@@ -1,61 +1,62 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: XTABLES errors...
-Date: Fri, 22 Aug 2008 12:29:02 -0400 (EDT)
-Message-ID: <alpine.LNX.1.10.0808221222550.10702@fbirervta.pbzchgretzou.qr>
-References: <48AEE47A.9030300@freemail.hu>
+From: Jan Klod <janklodvan@gmail.com>
+Subject: Re: VPN (interface) access for and all traffic through from single user -- how to do it?
+Date: Fri, 22 Aug 2008 23:40:23 +0300
+Message-ID: <200808222340.23688.janklodvan@gmail.com>
+References: <200808151255.44987.janklodvan@gmail.com> <200808171420.32090.janklodvan@gmail.com> <48A865A3.1010307@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48AEE47A.9030300@freemail.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:references:in-reply-to:mime-version:content-disposition
+         :content-type:content-transfer-encoding:message-id;
+        bh=yvNZ6u7dUOvGrlBXVLeP13ocueOPMP7iA+sjZSMKwTE=;
+        b=DJiEmdNND+ktIS5XU118MdKl8rOLm9keGMA98WAisR2NiforNomabtE29eibHucRdc
+         oIkkpjycojE6bwRhdYoBcSK4e0GvbSRkN81j5350t23eSxB7FGfTmGCp/5BQX7SSuXtM
+         bumrrf78wRcM43z/1vvj8fdQy/ezRX0YoZXyk=
+In-Reply-To: <48A865A3.1010307@riverviewtech.net>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: =?UTF-8?Q?G=C3=A1sp=C3=A1r_Lajos?= <swifty@freemail.hu>
-Cc: Netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Well, I got it to work in a mode, where all traffic is going through VPN like 
+this:
 
-On Friday 2008-08-22 12:08, G=C3=A1sp=C3=A1r Lajos wrote:
+ip route add $IP_VPN_GATEWAY via $IP_LOCAL_GATEWAY dev eth1
+ip route del $IP_REMOTE_VPN_ENDPOINT dev ppp0 src $IP_LOCAL_VPN_ENDPOINT
+ip route del default via $IP_LOCAL_GATEWAY dev eth1 && ip route add default 
+via $IP_VPN_GATEWAY dev ppp0
 
-> Hi list!
->
-> I have a compile problem...
-[with iptables]
->
-> Jan can you help me?
->
-> fw01:/usr/src/xtables# make
-> make  all-recursive
-> make[1]: Entering directory `/usr/src/xtables'
-> Making all in extensions
-> make[2]: Entering directory `/usr/src/xtables/extensions'
-> GEN      initext4.c
-> In file included from libxt_CLASSIFY.c:7:
-> ../include/xtables.h:26: error: expected identifier or '(' before '<<=
-' token
-> ../include/xtables.h:28: error: expected identifier or '(' before '=3D=
-=3D' token
-> ../include/xtables.h:30: error: expected identifier or '(' before '>>=
-' token
-> ../include/xtables.h:146: warning: 'struct xtables_match' declared in=
-side
->
-> I have strange lines in the /usr/src/xtables/include/xtables.h file:
+But is not as nice as I would like. 
 
-> #define XTABLES_API_VERSION(x,y,z)    (0x10000*(x) + 0x100*(y) + z)
->
-> <<<<<<< HEAD:include/xtables.h.in
-> union nf_inet_addr;
-> =3D=3D=3D=3D=3D=3D=3D
-> struct in_addr;
->> > > > > > > d91bd17eccd00fd392fbd89568bc21a605e84ea9:include/xtables=
-=2Eh.in
->
-> What is wrong ????
+I tried this to achieve my initial goal -- ppp0 for particular user:
 
-You did a git pull (most likely) without fixing up the merge conflicts.
-I do not see where union nf_inet_addr comes from, it may have been part
-of my personal development tree earlier on (in which case `gitk --all`
-will help you find where you are).
-If you just want to get it running and do not do personal development,
-I suggest you use one of the available git techniques (reset-hard,
-checkout or reclone) to get a clean slate.
+	echo localIP_VPN = $1
+        echo remoteIP_VPN = IP_VPN_GATEWAY = $2
+        echo real interface = $3
+        ip rule add from all fwmark 1 table net
+        ip rule add from all fwmark 2 table net-2111
+        ip route add table net default via $2 dev ppp0
+        ip route add table net-2111 default via 0.0.0.0 dev $3
+        ip route del $2 dev ppp0 src $1
+        ip route flush cache
+
+        iptables -t mangle -A OUTPUT -m mark --mark 1 -j ACCEPT
+        iptables -t mangle -A PREROUTING -m mark --mark 2 -j ACCEPT
+        iptables -t mangle -A OUTPUT -m mark ! --mark 1 -m owner --uid-owner 
+articles -j MARK --set-mark 1
+        iptables -t mangle -A PREROUTING -d $1 -m mark ! --mark 2 -j 
+MARK --set-mark 2
+        iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source $1
+
+But that just didn't worked somehow. Please take a closer look at previous 
+commands and give some advices about if that is what I should do...
+
+As you see, I have two tables, so I hope to "take out" outgoing from user 
+through ppp0 and forward replies back to eth1, which, I believe is listened 
+to, when is default in route main table.
+
+Jan
