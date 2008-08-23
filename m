@@ -1,62 +1,71 @@
-From: Jan Klod <janklodvan@gmail.com>
-Subject: Re: VPN (interface) access for and all traffic through from single user -- how to do it?
-Date: Fri, 22 Aug 2008 23:40:23 +0300
-Message-ID: <200808222340.23688.janklodvan@gmail.com>
-References: <200808151255.44987.janklodvan@gmail.com> <200808171420.32090.janklodvan@gmail.com> <48A865A3.1010307@riverviewtech.net>
+From: bsilva <bsilva@sonic.net>
+Subject: Policy routing issue
+Date: Fri, 22 Aug 2008 17:57:24 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0808221753320.23246@bolt.sonic.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date
-         :user-agent:references:in-reply-to:mime-version:content-disposition
-         :content-type:content-transfer-encoding:message-id;
-        bh=yvNZ6u7dUOvGrlBXVLeP13ocueOPMP7iA+sjZSMKwTE=;
-        b=DJiEmdNND+ktIS5XU118MdKl8rOLm9keGMA98WAisR2NiforNomabtE29eibHucRdc
-         oIkkpjycojE6bwRhdYoBcSK4e0GvbSRkN81j5350t23eSxB7FGfTmGCp/5BQX7SSuXtM
-         bumrrf78wRcM43z/1vvj8fdQy/ezRX0YoZXyk=
-In-Reply-To: <48A865A3.1010307@riverviewtech.net>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Well, I got it to work in a mode, where all traffic is going through VPN like 
-this:
 
-ip route add $IP_VPN_GATEWAY via $IP_LOCAL_GATEWAY dev eth1
-ip route del $IP_REMOTE_VPN_ENDPOINT dev ppp0 src $IP_LOCAL_VPN_ENDPOINT
-ip route del default via $IP_LOCAL_GATEWAY dev eth1 && ip route add default 
-via $IP_VPN_GATEWAY dev ppp0
+I'm having an unusual problem with a Policy Routing setup.  I have a
+combination of IPtables and Policy Routing rules that force certain
+protocols out one interface and other protocols out the other interface.
+The problem is that SNMP traps are exiting the correct interface, but
+with the IP address of the other interface!
 
-But is not as nice as I would like. 
+Furthermore, the situation only occurs if the destination is not local.
+If the destination is local, the packet exits the correct interface with
+the correct source IP.  If the destination is via a gateway, then the
+packet exits via the correct interface, but with the wrong source IP.
 
-I tried this to achieve my initial goal -- ppp0 for particular user:
+I'm at a loss.  The rules and routes all appear to work correctly, it's
+just the final assignment of the source IP that seems to be wrong.  It
+appears to me that I've found a bug in the kernel, but I'm not sure.  Any
+clues or further things to look at would be very helpful.
 
-	echo localIP_VPN = $1
-        echo remoteIP_VPN = IP_VPN_GATEWAY = $2
-        echo real interface = $3
-        ip rule add from all fwmark 1 table net
-        ip rule add from all fwmark 2 table net-2111
-        ip route add table net default via $2 dev ppp0
-        ip route add table net-2111 default via 0.0.0.0 dev $3
-        ip route del $2 dev ppp0 src $1
-        ip route flush cache
 
-        iptables -t mangle -A OUTPUT -m mark --mark 1 -j ACCEPT
-        iptables -t mangle -A PREROUTING -m mark --mark 2 -j ACCEPT
-        iptables -t mangle -A OUTPUT -m mark ! --mark 1 -m owner --uid-owner 
-articles -j MARK --set-mark 1
-        iptables -t mangle -A PREROUTING -d $1 -m mark ! --mark 2 -j 
-MARK --set-mark 2
-        iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to-source $1
+Thanks in advance,
+Brad
 
-But that just didn't worked somehow. Please take a closer look at previous 
-commands and give some advices about if that is what I should do...
+---------------------------------------------------
 
-As you see, I have two tables, so I hope to "take out" outgoing from user 
-through ppp0 and forward replies back to eth1, which, I believe is listened 
-to, when is default in route main table.
+I'm running kernel 2.6.16.55 on a custom distribution.
 
-Jan
+Here's the route rules and route tables: (I've simplified the setup for
+this problem)
+
+$ iptables -L -t mangle
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+MARK       tcp  --  anywhere             anywhere            tcp dpt:162
+MARK set 0x1
+
+$ ip rule list
+0:	from all lookup 255
+2000:	from all fwmark 0x1 lookup 1
+32766:	from all lookup main
+32767:	from all lookup default
+
+(I know that route table 1 is being selected since I can change these
+routes and the result changes as expected)
+$ ip route list table 1
+192.168.105.0/24 dev bond2  scope link  src 192.168.105.79
+default via 192.168.105.6 dev bond2  src 192.168.105.79
+
+(note that even though the route specifies a "src 192.168.105.79" and
+the cache entry shows the correct "via" address, the "from" address is
+192.168.123.79!)
+$ ip route list cache
+....
+192.168.100.254 from 192.168.123.79 via 192.168.105.6 dev bond2
+    cache  (null) 1500 ssthresh 1460 advmss 64
+....
+
+
+
+
+
