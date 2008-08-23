@@ -1,37 +1,37 @@
-From: Volkan YAZICI <yazicivo@ttmail.com>
+From: Eray Aslan <eray.aslan@caf.com.tr>
 Subject: Re: Traffic Mirroring for Debugging
-Date: Sat, 23 Aug 2008 09:36:21 +0300
-Message-ID: <87wsi89r16.fsf@alamut.mobiliz.com.tr>
-References: <87vdxtwkh2.fsf@alamut.mobiliz.com.tr>
-	<48AF7DFE.1020306@riverviewtech.net>
+Date: Sat, 23 Aug 2008 10:10:22 +0300
+Message-ID: <48AFB7DE.1050901@caf.com.tr>
+References: <87vdxtwkh2.fsf@alamut.mobiliz.com.tr>	<48AF7DFE.1020306@riverviewtech.net> <87wsi89r16.fsf@alamut.mobiliz.com.tr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48AF7DFE.1020306@riverviewtech.net> (Grant Taylor's message of
-	"Fri, 22 Aug 2008 22:03:26 -0500")
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=caf.com.tr; h=
+	content-transfer-encoding:content-type:in-reply-to:references
+	:subject:mime-version:user-agent:from:date:message-id:received
+	:received:x-virus-scanned; s=originating; t=1219475431; bh=ukEcq
+	UMBzW5IbKZYAwmI+HLmM4kuOfg2lsTUmqeg7P0=; b=LwrGkDVtlWsV1xwKrZLU4
+	eyDlpveX4CbmxIrDZ0WP63hZVwNjpr+NONa9Mz+3E3p0HJvP/B/oG2OlaCd/Btef
+	aJ9LLYgpKxqzJUPTKM1egm2MkA+rGDgTBXoDew/dEPLmzmhKOO4ca/tMB9cgG7tJ
+	J4JyphkfUf6ArnERV+45JA=
+In-Reply-To: <87wsi89r16.fsf@alamut.mobiliz.com.tr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Fri, 22 Aug 2008, Grant Taylor <gtaylor@riverviewtech.net> writes:
-> It won't help with the packet duplication, but I think it is related.  I think
-> you will need to SNAT the traffic as it leaves 1.10 so that 1.2 / 1.20 will
-> reply back to 1.10 rather than directly back to the client.  I think that 1.2 /
-> 1.20 is replying directly back to the client and the client is going WTF???  Why
-> is 1.2 / 1.20 replying to me?  I have not started a connection with
-> them.
+On 23.08.2008 09:36, Volkan YAZICI wrote:
+[...]
+>> As far as packet duplication, I'd start with ulogd or something like
+>> that.  I'm betting you are going to have to pass the packets to user
+>> space for the duplication.
+> 
+> I'll check out ulogd. Thanks.
 
-In the actual setup, original packets are received from a mobile device
-through a VPN gateway. Therefore, endpoint server replies back to this
-client, instead of the gateway packages received from.
+Also check the TEE target.  I am not sure what the current status is though:
 
-> As far as packet duplication, I'd start with ulogd or something like
-> that.  I'm betting you are going to have to pass the packets to user
-> space for the duplication.
+http://www.gossamer-threads.com/lists/iptables/devel/68781
+http://dev.computergmbh.de/files/xtables/
 
-I'll check out ulogd. Thanks.
-
-
-Regards.
+-- 
+Eray
