@@ -1,39 +1,39 @@
-From: "Jose Ildefonso Camargo Tolosa" <ildefonso.camargo@gmail.com>
-Subject: Question about packet flow picture.
-Date: Tue, 26 Aug 2008 19:11:50 +1930
-Message-ID: <4c4b58e80808251641ge01d7e4pca4fff19e8621d8a@mail.gmail.com>
+From: "Curtis Wyatt" <zhackwyatt@gmail.com>
+Subject: Queue all traffic...even if not destined for local machine
+Date: Mon, 25 Aug 2008 19:26:09 -0700
+Message-ID: <7915e7b50808251926j1ed07815k84ab2e1ca6cddb5@mail.gmail.com>
+References: <6886667862162200006@unknownmsgid>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=kRPAmqyfKaX2gyqYd3ZPRUco7oFjv5r9RRlYEFN0yNs=;
-        b=NHZFzVyelCS95g+qgT4ijkc7OORMQv7WMu1eDAdh1SsNNBrnzU5u/PNaGcTYAu8x9T
-         x099ZfvtvFaTTJzyiJkba6AHp1htSY9Wlumi/3pngJ9v6QnPGNtua6wwQbuC9iJNzjf1
-         gL9x7mZ1INVsmbvW1P6SgiSgU5fFnKugwxbX0=
+         :subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=fWdDU7oHjja4YBBPDAHMC25gPfSEghELa2XwNXZg3TQ=;
+        b=JSDmTR3nRUsdAI00WjsupeCwzs3YGio66KUCncoF+Rbj2kkG2z0jk5r5mVs7wupwf1
+         qGzxr5A75EYHUSN3xeQ+p3uqVXgmQoVF/EE7zsIEwiiVio80tFEoKHFMcv4uaEIXkaOF
+         SVt2eTkHWqXvEJr4pv0TX9k6QG/n5YcyYz/ds=
+In-Reply-To: <6886667862162200006@unknownmsgid>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi everybody!
+Hello all, me again:
 
-I have been using for quite a while this picture (
-http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png ) as a
-reference for understanding/teaching iptables packet flow, I know it
-is still valid, but I don't know how accurate is it, I mean, there has
-been changes to the netfilter code since the time that picture was
-made, the first thing you can see is that, there is no raw table
-there.
 
-Yes, I know, that's from ebtables site, but It also includes netfilter tables.
+I have a box with two Nic cards on it. What I will be doing is taking
+a packet coming in on one nic, encapsulating it, and then sticking it
+on the other card. I know how to Queue traffic destined for that
+machine (iptables --insert INPUT 1 --in-interface eth+). But how do I
+get traffic not destined for itself? --insert FORWARD 1 doesn't seem
+to work.
 
-Can anybody take a look at it and evaluate whether or not it is still accurate?
+Do I need to look at promiscuous mode?
 
-Thanks in advance,
-
-Ildefonso Camargo
+Thank you very much
+-----------------------------
+Curtis
