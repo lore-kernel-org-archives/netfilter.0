@@ -1,49 +1,57 @@
-From: bsilva <bsilva@sonic.net>
-Subject: Re: Connecting an host with a subnet to a LAN with different subnet
-Date: Wed, 27 Aug 2008 12:04:07 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0808271159550.3508@bolt.sonic.net>
-References: <F1F6EC0C8B75034F9E3A79FC85122E8E01000E0D@aquib01a>
-Mime-Version: 1.0
+From: "H.Suzuki" <suzuki@tokyo.eeyo.jp>
+Subject: dscp module on ip6tables
+Date: Thu, 28 Aug 2008 08:04:52 +0900
+Message-ID: <F3BE45CBC8EB41568B558470FD291FE2@gillsPC>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <F1F6EC0C8B75034F9E3A79FC85122E8E01000E0D@aquib01a>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: DI BACCO ANTONIO - technolabs <Antonio.DiBacco@technolabs.it>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+
+I'm using Ip6tables(v1.4.2-rc-1) on RHEL5 standard kernel-2.6.18-e15.
+
+I'd like to use "dscp" module on "MATCH EXTENSION" but getting error
+as follows.
+
+It looks like it's there by looking at help message but "libip6t_*dscp* is
+not created. I compiled by executing " make config ; make install".
+
+Please let me know how can I use "dscp" option on ip6tables.
 
 
-There may be subtlties to your problem that this solution cannot address,
-but a simpler solution and one that I've used many times is to give the
-machine a secondary IP address on the same interface.
-
-i.e.  "ifconfig eth0:1 192.168.0.x"
-
-Then both addresses are present on the system.
-
-
-Regards,
-Brad
+Error Messages:
+# /usr/local/sbin/ip6tables  -t mangle -A OUTPUT -p tcp -j DSCP -m 
+dscp --dscp-class EF
+ip6tables v1.4.2-rc1: DSCP target: Parameter --set-dscp is required
+Try `ip6tables -h' or 'ip6tables --help' for more information.
+# /usr/local/sbin/ip6tables  -t mangle -A OUTPUT -p tcp -j DSCP -m 
+dscp --set-dscp 1
+ip6tables v1.4.2-rc1: DSCP match: Parameter --dscp is required
+Try `ip6tables -h' or 'ip6tables --help' for more information.
 
 
-On Wed, 27 Aug 2008, DI BACCO ANTONIO - technolabs wrote:
+Enviroment::
+# /usr/local/sbin/ip6tables -V
+iptables v1.4.2-rc1
 
->
->
-> I have a LAN with a given subnet, let us say: 192.168.0.0/24  with a lot
-> of hosts. Now I want to connect another host (PLUTO) with an interface
-> that has  address 10.10.10.1 and netmask 255.255.255.0. I can't change
-> this ip address but I want to insert some iptables rules on PLUTO to
-> translate both source and dest ip address of the packets it receives to
-> subnet 10.10.10.0/24 and viceversa. I think that target NETMAP can help
-> me, but I'm getting confused.
->
-> Bye,
-> Antonio.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
+# /usr/local/sbin/ip6tables -m dscp -h
+
+dscp match options
+[!] --dscp value                Match DSCP codepoint with numerical value
+                                This value can be in decimal (ex: 32)
+                        or in hex (ex: 0x20)
+[!] --dscp-class name           Match the DiffServ class. This value may
+                                be any of the BE,EF, AFxx or CSx classes
+
+# ls /usr/local/libexec/xtables/libip6t_*dsc*
+ls: /usr/local/libexec/xtables/libip6t_*dsc*: No such file or directory
+
+
+Thank you!
+
+----
+H.Suzuki 
+
+
