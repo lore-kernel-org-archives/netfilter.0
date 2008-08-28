@@ -1,57 +1,48 @@
-From: "H.Suzuki" <suzuki@tokyo.eeyo.jp>
-Subject: dscp module on ip6tables
-Date: Thu, 28 Aug 2008 08:04:52 +0900
-Message-ID: <F3BE45CBC8EB41568B558470FD291FE2@gillsPC>
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: fender <frozenspot@gmail.com>
+Subject: [update] port knocking match extension
+Date: Thu, 28 Aug 2008 01:28:01 -0300
+Message-ID: <7e36c7130808272128l22aa701by97169ca79312dc82@mail.gmail.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=xo9bA80i/HZRRDRBM9MEmuG0Mz1uNa2qLuFX5Z2xpM4=;
+        b=tNVkkUIEq5wMf4LVMm/pWMetNAHH3O7J7XDbHwJcf4lj0kSgtujf9Qmeqs1Gl4jwiT
+         XOGGU1TSHZOwanyQqhvx07sOhwkHi5675KqyIVj6kCRzLFAx3BO6WREFbxaHalL8/BQq
+         Flv12U5lbz9/Zb2Wxp4S4tG1BpNGOiIumcPjU=
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, lucholaf@gmail.com
 
-I'm using Ip6tables(v1.4.2-rc-1) on RHEL5 standard kernel-2.6.18-e15.
+Hi people,
 
-I'd like to use "dscp" module on "MATCH EXTENSION" but getting error
-as follows.
+We've applied some patches to add support for kernel 2.6.26 and iptables 1.4.x.
 
-It looks like it's there by looking at help message but "libip6t_*dscp* is
-not created. I compiled by executing " make config ; make install".
+You can download the tarball "pknock-0.5.tar.gz" from the web site and
+compile the match extension and the iptables extension, but without
+the need of recompiling the kernel.
 
-Please let me know how can I use "dscp" option on ip6tables.
+Any feedback or suggestion will be welcome.
 
+Regards,
 
-Error Messages:
-# /usr/local/sbin/ip6tables  -t mangle -A OUTPUT -p tcp -j DSCP -m 
-dscp --dscp-class EF
-ip6tables v1.4.2-rc1: DSCP target: Parameter --set-dscp is required
-Try `ip6tables -h' or 'ip6tables --help' for more information.
-# /usr/local/sbin/ip6tables  -t mangle -A OUTPUT -p tcp -j DSCP -m 
-dscp --set-dscp 1
-ip6tables v1.4.2-rc1: DSCP match: Parameter --dscp is required
-Try `ip6tables -h' or 'ip6tables --help' for more information.
+(*) The ipt_pknock match module implements Port Knocking and SPA
+(Simple Packet Authentication) as a netfilter match extension.
 
+(*) More information at http://portknocko.berlios.de/
 
-Enviroment::
-# /usr/local/sbin/ip6tables -V
-iptables v1.4.2-rc1
+--
+Federico
 
-# /usr/local/sbin/ip6tables -m dscp -h
-
-dscp match options
-[!] --dscp value                Match DSCP codepoint with numerical value
-                                This value can be in decimal (ex: 32)
-                        or in hex (ex: 0x20)
-[!] --dscp-class name           Match the DiffServ class. This value may
-                                be any of the BE,EF, AFxx or CSx classes
-
-# ls /usr/local/libexec/xtables/libip6t_*dsc*
-ls: /usr/local/libexec/xtables/libip6t_*dsc*: No such file or directory
-
-
-Thank you!
-
-----
-H.Suzuki 
-
-
+/*
+ *  J. Federico Hernandez Scarso (fender) {frozenspot at gmail dot com}
+ *  GPG PubKey: wwwkeys.eu.pgp.net key 6AE78BF2
+ *  FP: 26AB 7A1B C2C4 70F8 0E7D  C3F4 9736 5CE2 6AE7 8BF2
+ */
