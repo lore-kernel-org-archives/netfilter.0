@@ -1,111 +1,59 @@
-From: =?UTF-8?B?U8KOw6liYXN0aWVuIENyYW1hdHRl?= 
-	<scramatte@zensoluciones.com>
-Subject: CLASSIFY vs MARK ?
-Date: Thu, 28 Aug 2008 09:41:22 +0200
-Message-ID: <48B656A2.8060904@zensoluciones.com>
+From: Brian Mearns <mearns.b@gmail.com>
+Subject: Re: Is p-o-m still the correct thing to use?
+Date: Thu, 28 Aug 2008 20:37:32 -0400
+Message-ID: <48B744CC.6080903@gmail.com>
+References: <488A7D17.4070506@gmail.com> <s7sl841gefisi4k0lreotlvqbmq9kfl99u@4ax.com> <488EF032.5020000@gmail.com> <alpine.LNX.1.10.0807290646260.21011@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :organization:user-agent:mime-version:to:cc:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=21XcEXGnjJexzG6G+H6YX+wBthe6FCY/HUnG6aTuA9Q=;
+        b=UGTbYPc4cpZo9GncfQ1Pr5ITUd0hVv7URSubv5DTFBlVCOu7OBolQQyiIGhuFVMrfY
+         eQ/1g/8JGPrfnbBPFC3gwMqBBd32LQtx36NbiuLHE0U2VEzHIH1xwekaiwxDNvwtx79u
+         r6PeF3ooCb9FovCSNjKN0MY7Wy6SnoxF6E7oI=
+In-Reply-To: <alpine.LNX.1.10.0807290646260.21011@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Andrew Schulman <andrex@alumni.utexas.net>, netfilter@vger.kernel.org
 
-Hello,
+Thanks for the help Jan and Andrew. I've got xtables (combined) and it 
+built and installed fine. When I run iptables --version, it matches 
+what's given in the versions file in the source distribution. My problem 
+is that the TARPIT target doesn't seem to be recognized. When I try to 
+add a rule with the TARPIT target, it says "iptables: No 
+chain/target/match by that name". I've tried using rules that work 
+otherwise, for instance, changing from DROP to TARPIT, and it still 
+doesn't work, so it's not the rest of the rule that is the problem.
 
-I would like to know how what is the diference between MARK and CLASSIF=
-Y=20
-target ? =C2=BF Whichone give better performance with lot's of traffic =
-/ rules ?
-Seems that the LARTC doesn't works anymore ? ...
+I found libxt_TARPIT.so in /usr/local/libexec/xtables/. Is it in the 
+wrong spot or something? Also, my service runs from /sbin/iptables, but 
+this is soft linked to /usr/local/sbin/iptables: could this be part of 
+the problem? I did this so my package manager doesn't overwrite it any 
+point, but maybe it was a bad idea?
 
-I understand that MARK + Connmark module is able set  a connection stat=
-e=20
-to  "related" and put the mark automaticaly on each packet ... isn't it=
- ?
-As I can test use CLASSIFY target is fare easy ...
-My twice example works,  traffic is matched/shaped properly (I'm using =
-a=20
-bridge).
+Any help would be great.
 
-Do CLASSIFY target use CONNTRACK  module ?
-Does it exists a way to use CLASSIFY in the same way as MARK ... I mean=
-=20
-CLASSIFY the first packet and set the connection state to "related"  to=
-=20
-automaticaly put
-other packets in the proper tc class ?
+Thanks,
+-Brian
 
-CLASSIFY is a feature of 2.6.x kernel  and most of QoS scripts I've=20
-found are for 2.4.x
-
-I need to filter lot of P2P with Ipp2p  and l7filter this is why I'm=20
-searching  to optimize my rules for better performance.
-Seems that with Ipp2p you must use MARK  but for other kind of traffic=20
-like VoIP, Ftp  or Web ?
-
-Any comments, tips or help is welcome :)
-
-Regards
-
-
---- Connmark / MARK version ---
-#!/bin/sh
-
-TC=3D/sbin/tc
-IPT=3D/sbin/iptables
-
-
-${IPT} -t mangle -F
-${IPT} -t mangle -X
-
-${TC} qdisc del dev eth0 root
-
-${TC} qdisc add dev eth0 handle 1: root htb default 1
-${IPT} -t mangle -N postrouting_eth0
-
-${IPT} -t mangle -A POSTROUTING -m physdev --physdev-out eth0 -j=20
-postrouting_eth0
-
-${TC} class add dev eth0 parent 1: classid 1:1 htb rate 2048Kbit ceil=20
-2048Kbit
-${TC} class add dev eth0 parent 1:1 classid 1:10 htb rate 64Kbit ceil=20
-2048Kbit prio 0
-${TC} filter add dev eth0 protocol ip pref 2 parent 1: handle 10 fw=20
-classid 1:10
-
-${IPT} -A postrouting_eth0 -t mangle -j CONNMARK --restore-mark
-${IPT} -A postrouting_eth0 -t mangle -m mark ! --mark 0 -j RETURN
-${IPT} -A postrouting_eth0 -t mangle -p tcp --sport 80 -j MARK=20
---set-mark 0xa
-
-${IPT} -A postrouting_eth0 -t mangle -j CONNMARK --save-mark
-${IPT} -A postrouting_eth0 -t mangle -j RETURN
-
-
---- CLASSIFY version ---
-#!/bin/sh
-
-TC=3D/sbin/tc
-IPT=3D/sbin/iptables
-
-${IPT} -t mangle -F
-${IPT} -t mangle -X
-
-${TC} qdisc del dev eth0 root
-
-${TC} qdisc add dev eth0 handle 1: root htb default 1
-${IPT} -t mangle -N postrouting_eth0
-
-${IPT} -t mangle -A POSTROUTING -m physdev --physdev-out eth0 -j=20
-postrouting_eth0
-
-${TC} class add dev eth0 parent 1: classid 1:1 htb rate 2048Kbit ceil=20
-2048Kbit
-${TC} class add dev eth0 parent 1:1 classid 1:10 htb rate 64Kbit ceil=20
-2048Kbit prio 0
-
-${IPT} -A postrouting_eth0 -t mangle -p tcp --sport 80 -j CLASSIFY=20
---set-class 1:10
-
-
+Jan Engelhardt wrote:
+> On Tuesday 2008-07-29 06:25, Brian Mearns wrote:
+> 
+>> Thanks a lot for the help, Andrew. The iptables source I have
+>> doesn't have a configure script...oh, but it does have an autogen
+>> script. I guess I was probably supposed to use that first. But it's
+>> a moot point, apparently, because of xtables, so I will be
+>> switching to that.
+> 
+> Released tarballs should have configure; for autogen, you usually
+> need (even more) developer tools than you do without, like
+> autoconf, automake, and the other autowhatevers.
+> 
+> No moot point; iptables still is, as of today, the name of the
+> userspace package and control program.
