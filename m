@@ -1,27 +1,30 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: Re: [update] port knocking match extension
-Date: Thu, 28 Aug 2008 23:32:17 -0400
-Message-ID: <edreb4d0rs3rv2rf0n7eglvvo11thq3ol4@4ax.com>
-References: <7e36c7130808272128l22aa701by97169ca79312dc82@mail.gmail.com> <48B6482C.2010408@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrack sample code
+Date: Fri, 29 Aug 2008 12:43:06 +0200
+Message-ID: <48B7D2BA.2010300@netfilter.org>
+References: <9DC12A28-8B45-444A-9CB7-D130B6BDB123@ncircle.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <9DC12A28-8B45-444A-9CB7-D130B6BDB123@ncircle.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Joe Boyle <jboyle@ncircle.com>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-> Thank you for your work.
-> Would you not be interested in submitting and adding it to Jan 
-> Engelhardt's xtable.
+Joe Boyle wrote:
 > 
-> It would beat having to install iptables/xtable and then you work.
+> Greetings all,
 > 
-> An all in one solution would be nice and appreciated.
+> I'm hoping someone can direct me to either some netfilter conntrack API
+> documentation _OR_ a clean implementation of a simple conntrack
+> application.  Are there any relatively simple tools out there that
+> demonstrate how to use the conntack API?
 
-I'll second that.
+You mean a sample code of the library use? Get lastest
+libnetfilter_conntrack release and check the directory utils/. There are
+several examples.
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
