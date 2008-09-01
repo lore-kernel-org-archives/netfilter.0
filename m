@@ -1,22 +1,47 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: Re: [update] port knocking match extension
-Date: Mon, 01 Sep 2008 14:58:24 -0400
-Message-ID: <hpeob4lg94q4b9dcuhostiogl93lddelgv@4ax.com>
-References: <7e36c7130808272128l22aa701by97169ca79312dc82@mail.gmail.com> <48B6482C.2010408@gmail.com> <7e36c7130808311057u7993e5b1q870a7f37cfa95b68@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Xtables-addons 1.5.7 released
+Date: Mon, 1 Sep 2008 17:49:25 -0400 (EDT)
+Message-ID: <alpine.LNX.1.10.0809011748160.8643@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
-> Thank you for your suggestion. I don't know what xtable is, but I'll
-> check it out.
 
-xtables-addons, actually.  http://jengelh.medozas.de/projects/xtables/
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+URL:
+http://dev.medozas.de/files/xtables/xtables-addons-1.5.7.tar.bz2
+
+Changes from v1.5.5:
+
+James King (1):
+      ipset: adjust semaphore.h include for kernel >= 2.6.27
+
+Jan Engelhardt (17):
+      build: prepare make tarball for git 1.6.0
+      libxt_geoip: reorder option parsing code
+      Clear hotdrop before use
+      xt_SYSRQ: fix compilation for Linux kernel version <= 2.6.19
+      Automatically run `depmod -a`
+      fuzzy: import 20050627 code base
+      fuzzy: remove unneeded spinlock
+      fuzzy: misc cleanup
+      fuzzy: IPv6 support
+      xt_condition: ues glue-provided init_net__proc_net
+      src: move to a pskb-based API
+      DHCP address match and mangler
+      build: remove dependency on netinet/in6.h
+      src: remove redundant return statements
+      xt_portscan: IPv6 support
+      xt_SYSRQ: add missing aliases
+      Xtables-addons 1.5.7
+
+
+About:
+Xtables-addons is a package that mostly supersedes the old patch-o-matic 
+repository for the Linux kernel and iptables. Instead of patching the 
+kernel source, extensions are built as modules and thus allow extending 
+kernels without recompilation.
