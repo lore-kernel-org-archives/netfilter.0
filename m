@@ -1,34 +1,47 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: Re: [update] port knocking match extension
-Date: Tue, 02 Sep 2008 15:10:00 -0400
-Message-ID: <qo3rb4l7fer2a8fkehnsbo9ugui37cgg3h@4ax.com>
-References: <7e36c7130808272128l22aa701by97169ca79312dc82@mail.gmail.com> <48B6482C.2010408@gmail.com> <7e36c7130808311057u7993e5b1q870a7f37cfa95b68@mail.gmail.com> <hpeob4lg94q4b9dcuhostiogl93lddelgv@4ax.com> <7e36c7130809021158x522c6c41o8530a8721a90a5d9@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd failover works partially, was Re: conntrack performance
+ test results in INVALID packets
+Date: Wed, 03 Sep 2008 11:13:43 +0200
+Message-ID: <48BE5547.8030505@netfilter.org>
+References: <488064DD.5080509@bock.nu> <alpine.LNX.1.10.0807181212331.12734@fbirervta.pbzchgretzou.qr> <488075F1.80901@bock.nu> <4880891C.4090004@netfilter.org> <4880A6BA.6030007@bock.nu> <489C0835.3090900@netfilter.org> <48BD09B6.5010905@bock.nu> <48BD0DD6.9000803@netfilter.org> <48BD32CC.5010203@bock.nu> <48BD362C.8020301@netfilter.org> <48BD5931.7050703@bock.nu> <48BD6846.9030006@netfilter.org> <48BD6FEC.5090100@bock.nu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <48BD6FEC.5090100@bock.nu>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Bernhard Bock <mailinglists@bock.nu>
+Cc: netfilter@vger.kernel.org
 
-> > xtables-addons, actually.  http://jengelh.medozas.de/projects/xtables/
+Bernhard Bock wrote:
+> Pablo Neira Ayuso wrote:
+>> During the fail-over, keepalived recovers the virtual IPs and conntrackd
+>> commits the states into the kernel. The commit takes very short but you
+>> can still lose some packets if the state is not yet present in the
+>> kernel - thus, these packets are logged as invalid and dropped as we
+>> don't find any matching state (with a sane stateful rule-set, of
+>> course). *However*, the TCP sessions should recover as the peer or the
+>> server retransmits the packet in short, so I don't understand why you
+>> lose nearly all the sessions.
 > 
-> I took a look at xtables-addons, and I think that we don't need it for
-> now. 
+> Agreed. My problem is, it doesn't recover. It keeps dropping packets as
+> long as the test runs (the test stops at some point in time with socket
+> timeouts).
 
-I think you may have misunderstood the suggestion.  We aren't saying that you
-need xtables-addons to make your patch work.  We're suggesting that you
-contribute your patch to xtables-addons, where it seems like a natural fit. Then
-everyone can more easily get and use it, since xtables-addons is already well
-established.
+Hm, I remember that the problem reported with RHEL kernel was similar.
+That user assured me that the state entries were successfully committed
+- ie. he could verify that conntrack -L displays them - but the packets
+were not matching the injected states, thus, leading to invalid logs and
+drops. He ended up changing to Ubuntu. However, if it is a Fedora/RHEL
+problem, it would be nice to know what's wrong with it.
 
-> In fact, you don't need to recompile kernel and iptables to get
-> our extension working. 
+>> Is the firewall sending RST packets to the peer/server to close
+>> connections? If so, I remember a similar report with a RHEL kernel:
+> 
+> Will check tomorrow.
 
-Neither does xtables-addons.
-Andrew.
+OK, wait for your news.
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
