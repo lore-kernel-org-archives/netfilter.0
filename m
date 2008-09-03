@@ -1,39 +1,46 @@
-From: Bernhard Bock <mailinglists@bock.nu>
-Subject: Re: conntrackd failover works partially, was Re: conntrack performance
- test results in INVALID packets
-Date: Wed, 03 Sep 2008 13:26:53 +0200
-Message-ID: <48BE747D.3010106@bock.nu>
-References: <488064DD.5080509@bock.nu> <alpine.LNX.1.10.0807181212331.12734@fbirervta.pbzchgretzou.qr> <488075F1.80901@bock.nu> <4880891C.4090004@netfilter.org> <4880A6BA.6030007@bock.nu> <489C0835.3090900@netfilter.org> <48BD09B6.5010905@bock.nu> <48BD0DD6.9000803@netfilter.org> <48BD32CC.5010203@bock.nu> <48BD362C.8020301@netfilter.org> <48BD5931.7050703@bock.nu> <48BD6846.9030006@netfilter.org> <48BD6FEC.5090100@bock.nu> <48BE5547.8030505@netfilter.org>
+From: "Fabrizio Regalli" <fabreg@gmail.com>
+Subject: DNAT and SNAT
+Date: Wed, 3 Sep 2008 16:02:50 +0200
+Message-ID: <43d295de0809030702i1d42b404w36483608498a6fcc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48BE5547.8030505@netfilter.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=+asdl8+MMlpVmmMpWq6cvVUOWKTsL5O9XYfqx1f3xrU=;
+        b=Fu6Pe11nCFxAhXDoOHyxQc9snO6QplY/C7KUbEqt71vcfNJVCdaXy4JfSp++Fe6nSP
+         y+fpRvA62N1C9Sc9J9A4ZINSqLbXNU33oAPUXPniTfoXOTnSJf9bSEWIdxKZ87oxP9Ge
+         0/fU28O2mlc3aWGDLNBihqL3IjaYFfwWiHGy4=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi Pablo,
+Hi list.
 
-Pablo Neira Ayuso wrote:
->>> Is the firewall sending RST packets to the peer/server to close
->>> connections? If so, I remember a similar report with a RHEL kernel:
+I have a router "closed" and I can't using PAT but I need to forward
+the ssh port to another external port (50002)
+My router is 192.168.1.1
+My server is 192.168.1.2
+My client is 192.168.1.3
+In other words I need to forward the ssh port of 192.168.1.3 to server ip:50002
 
-I do not see any RST packets, neither on server nor on client side.
+For PREROUTING rule I suppose this is right:
 
-I have done more tests this morning. Unfortunately, things are complicated:
+iptables -t nat -A PREROUTING -p tcp -m tcp --dport 50002 -j DNAT
+--to-destination 192.168.1.3:22
 
-I repeated a basic failover test lots of times while making 1.000.000
-connections. This test with 1000 parallel connections breaks every time.
-500 is OK every time.
+For POSTROUTING rule, I need an help. I'm trying in this way:
 
-The kernel only has problems with 1000 connections, and then only from
-time to time. In most of the cases (I guess ca. 80% of all tests), I do
-not need to unload/load the kernel modules, but only clear the conntrack
-table to get it back up running. The other times I have to reload the
-kernel modules in order to make the system work again. I cannot see any
-pattern there.
+iptables -t nat -A POSTROUTING -p tcp -m tcp -d 192.168.1.2 --dport 22
+-j SNAT --to-source 192.168.1.2:50002
 
-Best regards
-Bernhard
+But unfortunately it doesn't work.
+
+Could please someone give me a suggest for POSTROUTING rule?
+
+Thanks in advance.
