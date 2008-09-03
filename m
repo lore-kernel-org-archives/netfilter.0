@@ -1,65 +1,35 @@
-From: "Fabrizio Regalli" <fabreg@gmail.com>
-Subject: Re: DNAT and SNAT
-Date: Wed, 3 Sep 2008 16:43:05 +0200
-Message-ID: <43d295de0809030743m30964ac8o66194e2b4aed1f6@mail.gmail.com>
-References: <43d295de0809030702i1d42b404w36483608498a6fcc@mail.gmail.com>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: Reject on a Bridge
+Date: Wed, 3 Sep 2008 15:41:13 -0700
+Message-ID: <d95317090809031541n396f4ddao29dbbfa196801f64@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=oGJQIxctAl527olzXxJ02cxE1w/RGju0YYBDjV+1sWo=;
-        b=sfCdPyGjPhYP8Qg9tY5XCDITRdi0+gYCQSd5Ndt6oGdoK43RmuhIGBG38+WhsmBgdX
-         XCJZXJpVR/zC/pqUs8luIzExlD4/ajJWU5rVhdsf61ig4VLplgNKISa2qNeNFfig0la9
-         jJjkIw0+14RYDgS9F2p8o89UNDG7GrAYL4zro=
-In-Reply-To: <43d295de0809030702i1d42b404w36483608498a6fcc@mail.gmail.com>
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=3Hp30jhOXfIhypCQbJzMPd7OFC7zh6lgSZDh3U4eIlA=;
+        b=RNKvt/fSGJXNbvv4BVV2KYcNSPgJiG49+5PE/Zgs2GtsIUS1h2/BAK5aVSj5TolD+N
+         FCrFDkIfpxofELZlCOy4ylGamW4dntNA9R4vV+FbomTfqALhnXLv5++7VbHf6l7L4782
+         CXI9i8MBW3hF9EIe2+DPsw6DHCpjTsLWcB10o=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-I've found the right rules:
+I am using iptables to run a firewall on a bridge.
+The bridge consists of eth1 and eth2. Neither interface, nor the
+bridge itself, have an IP address.
+eth0, which is not on the bridge, does have an IP address.
 
-iptables -t nat -A PREROUTING -p tcp -m tcp --dport 50002 -j DNAT
---to-destination 192.168.1.3:22
+Trying to use the REJECT target with --tcp-reset doesn't work.
+If I understand the code correctly, the route for the RST packet is
+determined through ip_route_me_harder in the send_reset function,
+implying in my case that the RST packet will leave through eth0, which
+is not the desired behavior. Theoretically, eth0 might be even
+physically disconnected from the bridged network.
 
-iptables -t nat -A POSTROUTING -p tcp -m tcp -d 192.168.1.3 --dport 22
--j SNAT --to-source 192.168.1.2:50002
-
-iptables -P FORWARD ACCEPT
-
-Now works.
-
-Thanks.
-Fabrizio
-
-2008/9/3 Fabrizio Regalli <fabreg@gmail.com>:
-> Hi list.
->
-> I have a router "closed" and I can't using PAT but I need to forward
-> the ssh port to another external port (50002)
-> My router is 192.168.1.1
-> My server is 192.168.1.2
-> My client is 192.168.1.3
-> In other words I need to forward the ssh port of 192.168.1.3 to server ip:50002
->
-> For PREROUTING rule I suppose this is right:
->
-> iptables -t nat -A PREROUTING -p tcp -m tcp --dport 50002 -j DNAT
-> --to-destination 192.168.1.3:22
->
-> For POSTROUTING rule, I need an help. I'm trying in this way:
->
-> iptables -t nat -A POSTROUTING -p tcp -m tcp -d 192.168.1.2 --dport 22
-> -j SNAT --to-source 192.168.1.2:50002
->
-> But unfortunately it doesn't work.
->
-> Could please someone give me a suggest for POSTROUTING rule?
->
-> Thanks in advance.
->
+Am I missing something, or is this a real problem ?
