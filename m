@@ -1,7 +1,7 @@
-From: "Cam Bazz" <cambazz@gmail.com>
-Subject: iptables problem
-Date: Fri, 5 Sep 2008 14:12:12 +0300
-Message-ID: <1bcb7c7f0809050412g67724c2dl3dfcfb2eb59749b@mail.gmail.com>
+From: "Yury Batrakov" <batrakov@gmail.com>
+Subject: Question about conntrack
+Date: Fri, 5 Sep 2008 16:31:02 +0400
+Message-ID: <786c7f0809050531s1a12b40au8c7b2c9387f9b055@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,43 +10,35 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:received:received:message-id:date:from:to
          :subject:mime-version:content-type:content-transfer-encoding
          :content-disposition;
-        bh=WXhnK121vxlsCAYgvJpRV9/5z5FT6595naFhXD8VGU8=;
-        b=mDUIccXEIqY9Z7EMZnEkWlnUX5/vB+nwEuZ0HuEJNp0Xt4hTB5aWaGmOHP70dJUAMh
-         nG+1Ar5hMJxB+MSvMlfje4PtB7TkvApM+k3PLbI3t+WTPR61zz8STfhQej3nVeD6Xidi
-         f3T1HtKMWjSVqTW9lu9uYEJx1Ky3/VFVxzuIU=
+        bh=JsUz2NbOXyEoINn7Wa7LKsULS7l+9zZzOwBxmDWf5bU=;
+        b=MkjIWJH9WwiM3aIMKe13llpf40fdyv62qTy9Bzhfg5JBO3iozRgN25MGypPKq1T+wL
+         CaBaSHakiy+oyloq06jf14ExTK99pr1TGyUE5Pc+Cyf8n2BDz9xpIb2KubcTmGHb3TcU
+         NIKE5JK3NORjFIJlv8AYxrPhDCK7nGmtEH8K4=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hello
+Hello all!
 
-I am running a glassfish server and I need the basic requirement of
-forwarding port 80 to port 8080. Here is what I have done: (I put
-1.1.1.1 instead of my real ip adress.)
+I've got a couple of questiona about netfilter's connection tracker,
+could someone clarify it to me?
+1. When conntrack is being flushed? In /proc/net/ip_conntrack I see
+lots of UNREPLIED connections, I reload conntrack kernel module but
+see the table being filled with old entries. The same looks to happen
+after rebooting Linux box.
+2. Are UNREPLIED connections being wiped when number of connections to
+track equals to conntrack's capacity? Some web resources tell they
+are, but some tell otherwise. I tried to reduce conntrack's capacity
+and saw that these connections aren't wiped and cause conntrack to
+overflow is it bug or feature?
+3. I played with NOTRACK target of table raw and discovered that if I
+add a NOTRACK rule that matches with already established connections,
+they stuck in table as unreplied. Most of them disappear when I set
+net.ipv4.netfilter.ip_conntrack_tcp_loose to 0. Is it recommended to
+kill existing unreplied connections in this way? Could it be any side
+effect for new or currently established connections that don't match
+NOTRACK?
 
-#
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT;
-iptables -A INPUT --destination 1.1.1.1/32 -p tcp --dport 8080 -m
-conntrack --ctstate DNAT -j ACCEPT;
-iptables -t nat -A PREROUTING -d 1.1.1.1/32 -p tcp --dport 80 -j
-REDIRECT --to-port 8080;
-iptables -A INPUT -j DROP;
-iptables -I INPUT 1 -i lo -j ACCEPT;
-#
-
-
-it works fine. but here is the problem. I added another ip address
-with ip aliasing and now I got eth0:1.
-
-I want to run apache on port 80 on this ip.
-
-but no matter what I tried, I could not modify the rules so packets
-coming to eth0:1 port80 do not go to port 8080 on eth0. currently all
-packets routed to eth0:1 port80 goes to eth0 port 8080.
-
-any ideas/recomendations/help greatly appreciated.
-
-Best regards,
--C.B.
+Thanks in advance
