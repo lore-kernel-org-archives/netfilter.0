@@ -1,44 +1,75 @@
-From: "Yury Batrakov" <batrakov@gmail.com>
-Subject: Question about conntrack
-Date: Fri, 5 Sep 2008 16:31:02 +0400
-Message-ID: <786c7f0809050531s1a12b40au8c7b2c9387f9b055@mail.gmail.com>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: Re: iptables problem
+Date: Fri, 05 Sep 2008 07:39:08 -0500
+Message-ID: <1220618348.32533.794.camel@grateful.d.umn.edu>
+References: <1bcb7c7f0809050412g67724c2dl3dfcfb2eb59749b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-uXr7z9Crfqj4yekSOgTx"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=JsUz2NbOXyEoINn7Wa7LKsULS7l+9zZzOwBxmDWf5bU=;
-        b=MkjIWJH9WwiM3aIMKe13llpf40fdyv62qTy9Bzhfg5JBO3iozRgN25MGypPKq1T+wL
-         CaBaSHakiy+oyloq06jf14ExTK99pr1TGyUE5Pc+Cyf8n2BDz9xpIb2KubcTmGHb3TcU
-         NIKE5JK3NORjFIJlv8AYxrPhDCK7nGmtEH8K4=
-Content-Disposition: inline
+In-Reply-To: <1bcb7c7f0809050412g67724c2dl3dfcfb2eb59749b@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Cam Bazz <cambazz@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Hello all!
 
-I've got a couple of questiona about netfilter's connection tracker,
-could someone clarify it to me?
-1. When conntrack is being flushed? In /proc/net/ip_conntrack I see
-lots of UNREPLIED connections, I reload conntrack kernel module but
-see the table being filled with old entries. The same looks to happen
-after rebooting Linux box.
-2. Are UNREPLIED connections being wiped when number of connections to
-track equals to conntrack's capacity? Some web resources tell they
-are, but some tell otherwise. I tried to reduce conntrack's capacity
-and saw that these connections aren't wiped and cause conntrack to
-overflow is it bug or feature?
-3. I played with NOTRACK target of table raw and discovered that if I
-add a NOTRACK rule that matches with already established connections,
-they stuck in table as unreplied. Most of them disappear when I set
-net.ipv4.netfilter.ip_conntrack_tcp_loose to 0. Is it recommended to
-kill existing unreplied connections in this way? Could it be any side
-effect for new or currently established connections that don't match
-NOTRACK?
+--=-uXr7z9Crfqj4yekSOgTx
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Thanks in advance
+On Fri, 2008-09-05 at 14:12 +0300, Cam Bazz wrote:
+> Hello
+>=20
+> I am running a glassfish server and I need the basic requirement of
+> forwarding port 80 to port 8080. Here is what I have done: (I put
+> 1.1.1.1 instead of my real ip adress.)
+>=20
+> #
+> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT;
+> iptables -A INPUT --destination 1.1.1.1/32 -p tcp --dport 8080 -m
+> conntrack --ctstate DNAT -j ACCEPT;
+> iptables -t nat -A PREROUTING -d 1.1.1.1/32 -p tcp --dport 80 -j
+> REDIRECT --to-port 8080;
+> iptables -A INPUT -j DROP;
+> iptables -I INPUT 1 -i lo -j ACCEPT;
+> #
+>=20
+>=20
+> it works fine. but here is the problem. I added another ip address
+> with ip aliasing and now I got eth0:1.
+>=20
+> I want to run apache on port 80 on this ip.
+>=20
+> but no matter what I tried, I could not modify the rules so packets
+> coming to eth0:1 port80 do not go to port 8080 on eth0. currently all
+> packets routed to eth0:1 port80 goes to eth0 port 8080.
+>=20
+> any ideas/recomendations/help greatly appreciated.
+
+The DNAT target can accept ip addresses as well as port numbers.
+
+--=20
+Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
+University of Minnesota Duluth
+Information Technology Systems & Services
+PGP key 1024D/84E22DA2 2005-11-07
+Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
+
+He is not a fool who gives up what he cannot keep to gain what he cannot
+lose.
+-Jim Elliot
+
+--=-uXr7z9Crfqj4yekSOgTx
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkjBKGgACgkQU+eIf4TiLaIvqwCggLVJZkbVGRGq5KMwoY5vn3pR
+5xEAniiD/XttITzCtytjQmImrHZwtdpc
+=r4JS
+-----END PGP SIGNATURE-----
+
+--=-uXr7z9Crfqj4yekSOgTx--
+
