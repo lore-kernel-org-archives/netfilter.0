@@ -1,31 +1,38 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: iptables problem
-Date: Fri, 05 Sep 2008 10:35:51 -0500
-Message-ID: <48C151D7.1030309@riverviewtech.net>
-References: <1bcb7c7f0809050412g67724c2dl3dfcfb2eb59749b@mail.gmail.com>
+From: Vimal <j.vimal@gmail.com>
+Subject: Development equivalent on Mac OS X
+Date: Sat, 6 Sep 2008 23:45:12 +0530
+Message-ID: <ff71fbf20809061115n2f53c86dk4d0db1aa951f12aa@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1bcb7c7f0809050412g67724c2dl3dfcfb2eb59749b@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=P3ZLmHqldS+F/EPExqq/5sGPKHuWp8huPxqMTlLRuMs=;
+        b=eq8CZr7cEdsnmbDIKCUibt90I0aQGk6IXWwWgX0wqCwK9E07hHl/G+SShV+HvDlv6h
+         xBuWEak6cZDc1GqrtQjGSWauul3QPEDGLtMkZzSaUYvpnZoIEGv1vZPOIQZQasc9eGQe
+         Kq61XZhqdZVm0ZgwejTWHMRX8kzOdv+uUR/CQ=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 09/05/08 06:12, Cam Bazz wrote:
-> but no matter what I tried, I could not modify the rules so packets
-> coming to eth0:1 port80 do not go to port 8080 on eth0. currently all
-> packets routed to eth0:1 port80 goes to eth0 port 8080.
-> 
-> any ideas/recomendations/help greatly appreciated.
+Hello,
 
-Add the following rule:
+Are there libraries for Mac OS X (10.5) that allow packet
+manipulation, just like Linux's netfilter library does?
 
-    iptables -A INPUT --destination 1.1.1.2/32 -p tcp --dport 80 -m 
-conntrack --ctstate NEW -j ACCEPT
+Specifically, I would like to write a program that should be able to
+process every packet in the system before it gets `written' on the
+wire. According to this page:
+http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO-3.html,
+my program should be able to be hooked at stage [4].
 
-This should allow your traffic to come in to port 80 on the new address.
+I searched a lot, but in vain.
 
-
-
-Grant. . . .
+Thanks,
+--
+Vimal
