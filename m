@@ -1,38 +1,29 @@
-From: Vimal <j.vimal@gmail.com>
-Subject: Development equivalent on Mac OS X
-Date: Sat, 6 Sep 2008 23:45:12 +0530
-Message-ID: <ff71fbf20809061115n2f53c86dk4d0db1aa951f12aa@mail.gmail.com>
+From: =?ISO-8859-1?Q?Jo=E3o_Valverde?= <backup95@netcabo.pt>
+Subject: NFNETLINK answers: File exists
+Date: Sun, 07 Sep 2008 17:07:09 +0100
+Message-ID: <48C3FC2D.903@netcabo.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=P3ZLmHqldS+F/EPExqq/5sGPKHuWp8huPxqMTlLRuMs=;
-        b=eq8CZr7cEdsnmbDIKCUibt90I0aQGk6IXWwWgX0wqCwK9E07hHl/G+SShV+HvDlv6h
-         xBuWEak6cZDc1GqrtQjGSWauul3QPEDGLtMkZzSaUYvpnZoIEGv1vZPOIQZQasc9eGQe
-         Kq61XZhqdZVm0ZgwejTWHMRX8kzOdv+uUR/CQ=
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hello everyone,
 
-Are there libraries for Mac OS X (10.5) that allow packet
-manipulation, just like Linux's netfilter library does?
+I'm working on a program that uses libnetfilter_queue, and after the=20
+program crashes or I have to kill it I get the following error starting=
+ up:
 
-Specifically, I would like to write a program that should be able to
-process every packet in the system before it gets `written' on the
-wire. According to this page:
-http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO-3.html,
-my program should be able to be hooked at stage [4].
+NFNETLINK answers: File exists
+Error during nfq_bind_pf(): File exists
 
-I searched a lot, but in vain.
+Rebooting fixes it so I guess the netlink socket in question is a=20
+"virtual" one. What I'd like to know is how to clear this error without=
+=20
+rebooting?
 
-Thanks,
---
-Vimal
+Thank you for your help,
+
+Jo=E3o Valverde
