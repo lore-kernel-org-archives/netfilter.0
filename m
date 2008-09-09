@@ -1,29 +1,60 @@
-From: =?ISO-8859-1?Q?Jo=E3o_Valverde?= <backup95@netcabo.pt>
-Subject: NFNETLINK answers: File exists
-Date: Sun, 07 Sep 2008 17:07:09 +0100
-Message-ID: <48C3FC2D.903@netcabo.pt>
+From: "ArcosCom Linux User" <linux@arcoscom.com>
+Subject: Help with multiple IP networks over an ethernet one
+Date: Tue, 9 Sep 2008 10:29:37 +0200 (CEST)
+Message-ID: <ef6cbd7b0cc8d867f0702b0494896b60.squirrel@www.arcoscom.com>
+Reply-To: linux@arcoscom.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <bridge-bounces@lists.linux-foundation.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/bridge>, 
+	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linux-foundation.org/pipermail/bridge>
+List-Post: <mailto:bridge@lists.linux-foundation.org>
+List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/bridge>, 
+	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
+Sender: bridge-bounces@lists.linux-foundation.org
+Errors-To: bridge-bounces@lists.linux-foundation.org
+To: bridge@lists.linux-foundation.org, linux-net@vger.kernel.org, netfilter@vger.kernel.org
 
-Hello everyone,
+Hello people,
+   I have a little problem with one linux box that route some local IP
+networks between them and internet.
+   An schema from the IP point of view is this:
+        (3 uplinks)
+  INTERNET <---> route <---> LANS
 
-I'm working on a program that uses libnetfilter_queue, and after the=20
-program crashes or I have to kill it I get the following error starting=
- up:
+  From ethernet point of view is this:
 
-NFNETLINK answers: File exists
-Error during nfq_bind_pf(): File exists
+  INET link 1 <--->        <---> INET link 3
+  INET link 2 <---> router <---> LANs
 
-Rebooting fixes it so I guess the netlink socket in question is a=20
-"virtual" one. What I'd like to know is how to clear this error without=
-=20
-rebooting?
+  Physically there are 3 ethernet networks, one for the uplink 1, other
+for uplink 2, and the third is for the lans and the uplink 3.
+  I forced to share the ethernet for the LANs and uplink 3.
 
-Thank you for your help,
+  The router has 4 interfaces, eth1 for uplink 1, eth2 for uplink 2, eth3
+for uplink 3 and eth0 for the LANs.
 
-Jo=E3o Valverde
+  The problem I have is that, without a constant time or reason, sometimes
+I detect latences between uplink 3 and the router, and other times
+between the router and LAN hosts.
+
+  I think that I need to configure something in eth3 config files
+(/proc/sys/net/ipv4/conf/eth3) to disallow local frames and allow only
+the router and uplink 3 gateway comunication, but I don't found anything
+that help me.
+
+  I tried with arp_filter, rp_filter, and many of them, but without
+success (I don't found many documentation about it, and I review lartc
+and googled about that parameters).
+
+  I think that only allowing arp traffic betwen eth3 and uplink 3 gateway
+(using arptables) will solve this, but I don't know if arptables will be
+the solution or not.
+
+  Do anybody help me a bit?
+
+  Thanks!!
