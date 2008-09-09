@@ -1,60 +1,66 @@
-From: "ArcosCom Linux User" <linux@arcoscom.com>
-Subject: Help with multiple IP networks over an ethernet one
-Date: Tue, 9 Sep 2008 10:29:37 +0200 (CEST)
-Message-ID: <ef6cbd7b0cc8d867f0702b0494896b60.squirrel@www.arcoscom.com>
-Reply-To: linux@arcoscom.com
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Help with multiple IP networks over an ethernet one
+Date: Tue, 09 Sep 2008 16:49:15 -0500
+Message-ID: <48C6EF5B.3030005@riverviewtech.net>
+References: <ef6cbd7b0cc8d867f0702b0494896b60.squirrel@www.arcoscom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <bridge-bounces@lists.linux-foundation.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/bridge>, 
-	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linux-foundation.org/pipermail/bridge>
-List-Post: <mailto:bridge@lists.linux-foundation.org>
-List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/bridge>, 
-	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
-Sender: bridge-bounces@lists.linux-foundation.org
-Errors-To: bridge-bounces@lists.linux-foundation.org
-To: bridge@lists.linux-foundation.org, linux-net@vger.kernel.org, netfilter@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <ef6cbd7b0cc8d867f0702b0494896b60.squirrel@www.arcoscom.com>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello people,
-   I have a little problem with one linux box that route some local IP
-networks between them and internet.
-   An schema from the IP point of view is this:
-        (3 uplinks)
-  INTERNET <---> route <---> LANS
+On 09/09/08 03:29, ArcosCom Linux User wrote:
+> Physically there are 3 ethernet networks, one for the uplink 1, other 
+> for uplink 2, and the third is for the lans and the uplink 3. I 
+> forced to share the ethernet for the LANs and uplink 3.
 
-  From ethernet point of view is this:
+Ok...
 
-  INET link 1 <--->        <---> INET link 3
-  INET link 2 <---> router <---> LANs
+> The router has 4 interfaces, eth1 for uplink 1, eth2 for uplink 2, 
+> eth3 for uplink 3 and eth0 for the LANs.
 
-  Physically there are 3 ethernet networks, one for the uplink 1, other
-for uplink 2, and the third is for the lans and the uplink 3.
-  I forced to share the ethernet for the LANs and uplink 3.
+Just so I understand you correctly.  You have four physical ethernet 
+interfaces in the system, but eth3 and eth0 are connected to the same 
+ethernet network (broadcast domain)?
 
-  The router has 4 interfaces, eth1 for uplink 1, eth2 for uplink 2, eth3
-for uplink 3 and eth0 for the LANs.
+(Presuming that the above understanding is correct.)  Why do you have 
+eth0 (LANs) and eth3 (uplink 3) connected to the same ethernet network? 
+  Rather why not have them be different networks from each other?
 
-  The problem I have is that, without a constant time or reason, sometimes
-I detect latences between uplink 3 and the router, and other times
-between the router and LAN hosts.
+> The problem I have is that, without a constant time or reason, 
+> sometimes I detect latences between uplink 3 and the router, and 
+> other times between the router and LAN hosts.
 
-  I think that I need to configure something in eth3 config files
-(/proc/sys/net/ipv4/conf/eth3) to disallow local frames and allow only
-the router and uplink 3 gateway comunication, but I don't found anything
-that help me.
+Ok...
 
-  I tried with arp_filter, rp_filter, and many of them, but without
-success (I don't found many documentation about it, and I review lartc
-and googled about that parameters).
+Can we have some information about the IP addresses used for each 
+network?  Do all four networks have IP addresses in different subnets / 
+networks?  Can we ask what they are (sanitized if need be) for the sake 
+of discussion?
 
-  I think that only allowing arp traffic betwen eth3 and uplink 3 gateway
-(using arptables) will solve this, but I don't know if arptables will be
-the solution or not.
+> I think that I need to configure something in eth3 config files 
+> (/proc/sys/net/ipv4/conf/eth3) to disallow local frames and allow 
+> only the router and uplink 3 gateway comunication, but I don't found 
+> anything that help me.
 
-  Do anybody help me a bit?
+I can't say one way or the other for sure until I know what IP addresses 
+you have where.  However as a general rule of thumb you don't need to do 
+that.  I'd be wondering if you don't have a hardware resource / IRQ 
+conflict depending on how much data (amount and / or size of packets).
 
-  Thanks!!
+> I tried with arp_filter, rp_filter, and many of them, but without 
+> success (I don't found many documentation about it, and I review 
+> lartc and googled about that parameters).
+> 
+> I think that only allowing arp traffic betwen eth3 and uplink 3 
+> gateway (using arptables) will solve this, but I don't know if 
+> arptables will be the solution or not.
+
+With out knowing your IP addressing scheme better it's hard to say.
+
+
+
+Grant. . . .
