@@ -1,60 +1,58 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: What's required for a stateful firewall + ipvs in 2.6 kernel?
-Date: Wed, 10 Sep 2008 10:16:18 -0500
-Message-ID: <48C7E4C2.9050500@riverviewtech.net>
-References: <48C70B10.3040405@vfive.com>
+From: "Dirk H. Schulz" <dirk.schulz@kinzesberg.de>
+Subject: Re: Development equivalent on Mac OS X
+Date: Wed, 10 Sep 2008 18:54:23 +0200
+Message-ID: <6A7FB7356664D302E1133B85@Dirks-MacBook-Pro.local>
+References: <ff71fbf20809061115n2f53c86dk4d0db1aa951f12aa@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48C70B10.3040405@vfive.com>
+In-Reply-To: <ff71fbf20809061115n2f53c86dk4d0db1aa951f12aa@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: Vimal <j.vimal@gmail.com>, netfilter@vger.kernel.org
 
-On 09/09/08 18:47, Brian Ghidinelli wrote:
-> I'm trying to get a handle on whether or not it's possible to set up the 
-> following on a redundant pair of boxes:
-> 
-> 1. Stateful iptables firewall
-> 2. LVS director (keepalived)
-> 3. DNAT, SNAT and fwmarks
-> 4. Connection synchronization for failover
+Vimal,
 
-You should easily be able to get SPI (1), NAT (3), and failover (4) 
-between multiple systems.  However I'm not sure if you will get LVS (2) 
-to play properly in this or not.  Traditionally LVS worked independently 
-/ completely out side of IPTables (1 and 3) and thus was not able to be 
-synchronized / failed over (4) between multiple boxen.  This does not 
-mean that it can not be done, just that it is not going to be documented 
-in the usual locations if it is possible.
+maybe you want to ask on one of the darwin mailing lists - there must b=
+e=20
+more people with the knowledge you need.
 
-> * Do the antefacto patches allow netfilter to access connections managed 
-> by ipvs and support DNAT, SNAT and fwmarks used in the LVS configuration?
+Dirk
 
-Based on the (below) referenced web page from Julian, yes to some extent 
-it does..
+--On 6. September 2008 23:45:12 +0530 Vimal <j.vimal@gmail.com> wrote:
 
-> 2. Setup conntrackd - will mirror the connection information 
-> synchronized by keepalived at the netfilter level.  Will conntrackd work 
-> on RHEL/CentOS 5.2?
-
-It is my (mis)understanding that keepalived does not do the 
-synchronization, rather just the monitoring of things.  Conntrackd will 
-do the synchronization for NetFilter.
-
-As far as whether or not conntrackd will work on RHEL/CentOS, it should. 
-  I don't know of any reason you can't compile it and get it to work. 
-You may have to change some underlying libraries if versions are not 
-correct (I don't know b/c I run different distro(s)).
-
-> Are libntnetlink or libnetfilter_conntrack required?  I have been 
-> reading all day but don't yet follow how all of the pieces go together. 
-
-I don't know.  If you read the documentation with conntrackd you should 
-be able to find out if libnetlink / libnetfilter are needed or not.  I 
-would not be surprised if you need libnetfilter.
+> Hello,
+>
+> Are there libraries for Mac OS X (10.5) that allow packet
+> manipulation, just like Linux's netfilter library does?
+>
+> Specifically, I would like to write a program that should be able to
+> process every packet in the system before it gets `written' on the
+> wire. According to this page:
+> http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO-=
+3.ht
+> ml, my program should be able to be hooked at stage [4].
+>
+> I searched a lot, but in vain.
+>
+> Thanks,
+> --
+> Vimal
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 
 
-Grant. . . .
+--------------------------------------------------------------
+Dirk H. Schulz
+IT Systems Service
+Wiesenweg 12, 85567 Grafing
+Tel. 0 80 92/86 25 68
+=46ax. 0 80 92/86 25 72
+--------------------------------------------------------------
+Technik vom Feinsten - und das n=C3=B6tige Tuning
