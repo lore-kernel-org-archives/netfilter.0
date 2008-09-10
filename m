@@ -1,54 +1,94 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: What's required for a stateful firewall + ipvs in 2.6 kernel?
-Date: Wed, 10 Sep 2008 12:03:40 -0500
-Message-ID: <48C7FDEC.3060907@riverviewtech.net>
-References: <48C70B10.3040405@vfive.com> <48C7E4C2.9050500@riverviewtech.net> <48C7FD16.301@vfive.com>
+From: pedro noticioso <cucnews@yahoo.com>
+Subject: Re: Development equivalent on Mac OS X
+Date: Wed, 10 Sep 2008 10:48:38 -0700 (PDT)
+Message-ID: <312741.96959.qm@web110410.mail.gq1.yahoo.com>
+References: <6A7FB7356664D302E1133B85@Dirks-MacBook-Pro.local>
+Reply-To: cucnews@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48C7FD16.301@vfive.com>
+In-Reply-To: <6A7FB7356664D302E1133B85@Dirks-MacBook-Pro.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Vimal <j.vimal@gmail.com>, netfilter@vger.kernel.org, "Dirk H. Schulz" <dirk.schulz@kinzesberg.de>
 
-On 09/10/08 12:00, Brian Ghidinelli wrote:
-> That's the issue... there are a lot of posts about LVS and netfilter on 
-> Austintek.com and other sites but the dates range from 2000 to 2006 or 
-> so making it hard to figure out what's current.
+look for firewall documentation on the free BSD UNIX flavors, since OS =
+X is based on one of them, I dont knw which.
 
-*nod*  This is the case with a lot of things, not just LVS.
+I helped a friend one with this, so after a while I end up making a few=
+ changes on the GUI firewall configuring thinguie, looking at the resul=
+ts and changing it by hand to what I wanted, it was a while ago so I do=
+nt recall exactly
 
-> In sysadmining, I don't really like to be the pioneer. :)  No one else 
-> has turned an RHEL box into a Firewall + LVS Director?
-
-I doubt that you are the first, but I don't know that others have 
-documented things for people to find.
-
-> I believe keepalived synchronizes the LVS connections between ipvs on 
-> the two boxes.  There is a config option "lvs_sync_daemon_inteface" for 
-> this (as I understand it).
-
-Ok...
-
-> This is only half the picture though, and conntrackd appears to solve 
-> the other half by also keeping netfilter in sync about which connections 
-> are already established or related so iptables rules don't kill valid 
-> sessions.
-
-*nod*
-
-> So in the end I suppose the real question is whether or not anyone has 
-> successfully used the Antefacto patches on RHEL?  I will try the 
-> lvs-users mailing list for that one...
-
-Please follow up with what you find so others searching this archive in 
-the future will have some information.
-
-> Thanks for the help Grant,
-
-You are welcome.
+here is one possible match
+http://www.freebsd.org/doc/en/books/handbook/firewalls.html
 
 
 
-Grant. . . .
+--- On Wed, 9/10/08, Dirk H. Schulz <dirk.schulz@kinzesberg.de> wrote:
+
+> From: Dirk H. Schulz <dirk.schulz@kinzesberg.de>
+> Subject: Re: Development equivalent on Mac OS X
+> To: "Vimal" <j.vimal@gmail.com>, netfilter@vger.kernel.org
+> Date: Wednesday, September 10, 2008, 9:54 AM
+> Vimal,
+>=20
+> maybe you want to ask on one of the darwin mailing lists -
+> there must be=20
+> more people with the knowledge you need.
+>=20
+> Dirk
+>=20
+> --On 6. September 2008 23:45:12 +0530 Vimal
+> <j.vimal@gmail.com> wrote:
+>=20
+> > Hello,
+> >
+> > Are there libraries for Mac OS X (10.5) that allow
+> packet
+> > manipulation, just like Linux's netfilter library
+> does?
+> >
+> > Specifically, I would like to write a program that
+> should be able to
+> > process every packet in the system before it gets
+> `written' on the
+> > wire. According to this page:
+> >
+> http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO-=
+3.ht
+> > ml, my program should be able to be hooked at stage
+> [4].
+> >
+> > I searched a lot, but in vain.
+> >
+> > Thanks,
+> > --
+> > Vimal
+> > --
+> > To unsubscribe from this list: send the line
+> "unsubscribe netfilter" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at=20
+> http://vger.kernel.org/majordomo-info.html
+>=20
+>=20
+>=20
+> --------------------------------------------------------------
+> Dirk H. Schulz
+> IT Systems Service
+> Wiesenweg 12, 85567 Grafing
+> Tel. 0 80 92/86 25 68
+> Fax. 0 80 92/86 25 72
+> --------------------------------------------------------------
+> Technik vom Feinsten - und das n=F6tige Tuning
+> --
+> To unsubscribe from this list: send the line
+> "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at=20
+> http://vger.kernel.org/majordomo-info.html
+
+
+     =20
