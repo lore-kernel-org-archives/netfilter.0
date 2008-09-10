@@ -1,105 +1,59 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Help with multiple IP networks over an ethernet one
-Date: Wed, 10 Sep 2008 09:15:40 -0500
-Message-ID: <48C7D68C.2070902@riverviewtech.net>
-References: <ef6cbd7b0cc8d867f0702b0494896b60.squirrel@www.arcoscom.com>    <48C6EF5B.3030005@riverviewtech.net> <99a0783d528d1709644f5e55f406f469.squirrel@www.arcoscom.com>
+Subject: Re: What's required for a stateful firewall + ipvs in 2.6 kernel?
+Date: Wed, 10 Sep 2008 10:16:18 -0500
+Message-ID: <48C7E4C2.9050500@riverviewtech.net>
+References: <48C70B10.3040405@vfive.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <99a0783d528d1709644f5e55f406f469.squirrel@www.arcoscom.com>
+In-Reply-To: <48C70B10.3040405@vfive.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 09/10/08 02:51, ArcosCom Linux User wrote:
-> Thanks for the response, I explain a bit more.
-
-*nod*
-
-> The 3 uplinks have 3 public IP addressess (one per uplink), and are 
-> "ADSL" links, one public ip per interface.
-
-Ok.
-
-> eth1 and eth2 have, each one, their direct connect to their ADSL 
-> gateway.
-
-Ok.
-
-> eth3 (public IP) and eth0 (private IP) share the same ethernet 
-> network.
-
-This confirms what I was thinking.  However I ask why they are sharing 
-the same ethernet network?  Why is the uplink 3 connection on the same 
-ethernet network as your LANs?  Is there as reason that this is the case 
-rather than just putting uplink 3 directly on eth3 with out putting it 
-across the LANs network segment?
-
-> Physically, this shared ethernet have many wireless bridges (using 
-> STP) to link all the buildings we need to link.
-
-Ok.  This should not matter.
-
-> The test I done to see the latences are send 2 pings to the same 
-> physical place to diferent defices from the linux box.
-
-Ok...
-
-> One ping from router to adsl gateway (eth3->uplink3 gateway) and, at 
-> the same time, one ping from router to a workstation (eth0->LAN).
+On 09/09/08 18:47, Brian Ghidinelli wrote:
+> I'm trying to get a handle on whether or not it's possible to set up the 
+> following on a redundant pair of boxes:
 > 
-> Physically the two pings go trought the same physicall path and end 
-> in the same switch where the uplink3 gateway and the test workstation 
-> are.
+> 1. Stateful iptables firewall
+> 2. LVS director (keepalived)
+> 3. DNAT, SNAT and fwmarks
+> 4. Connection synchronization for failover
 
-So the uplink 3 gateway is on the LAN and on the local side of a WAN link?
+You should easily be able to get SPI (1), NAT (3), and failover (4) 
+between multiple systems.  However I'm not sure if you will get LVS (2) 
+to play properly in this or not.  Traditionally LVS worked independently 
+/ completely out side of IPTables (1 and 3) and thus was not able to be 
+synchronized / failed over (4) between multiple boxen.  This does not 
+mean that it can not be done, just that it is not going to be documented 
+in the usual locations if it is possible.
 
-> In router:
-> 
-> a) I MASQUERADE the IP by interface (-j MASQUERADE), because I need 
-> to have all ougoing frames control.
+> * Do the antefacto patches allow netfilter to access connections managed 
+> by ipvs and support DNAT, SNAT and fwmarks used in the LVS configuration?
 
-Is this the only reason that you have both eth0 and eth3 connected to 
-the same ethernet network?
+Based on the (below) referenced web page from Julian, yes to some extent 
+it does..
 
-> b) I balance the routers (as described in lartc and use magle to 
-> allow the responses from the incomming interface where they arrives.
+> 2. Setup conntrackd - will mirror the connection information 
+> synchronized by keepalived at the netfilter level.  Will conntrackd work 
+> on RHEL/CentOS 5.2?
 
-I believe this should be able to be done independent of the physical 
-interface that packets are leaving.
+It is my (mis)understanding that keepalived does not do the 
+synchronization, rather just the monitoring of things.  Conntrackd will 
+do the synchronization for NetFilter.
 
-> c) I use tc (using HTB qdiscs) for the QoS (the problem became with 
-> QoS disabled too, don't think this were the problem).
+As far as whether or not conntrackd will work on RHEL/CentOS, it should. 
+  I don't know of any reason you can't compile it and get it to work. 
+You may have to change some underlying libraries if versions are not 
+correct (I don't know b/c I run different distro(s)).
 
-Ok.
+> Are libntnetlink or libnetfilter_conntrack required?  I have been 
+> reading all day but don't yet follow how all of the pieces go together. 
 
-> Yesterday, I found a local kernel text file called 
-> /usr/share/doc/kernel-doc-2.6.18/Documentation/networking/ip-sysctl.txt 
-> (internet is not all) where I see a very usefull information about ip 
-> parameters and appears that tweaking some of them will solve some 
-> problems with ARP, but really I don't know many of these parameters 
-> and only appears to be usefull for me some of them: arp_filter, 
-> arp_accept, arp_ignore, rp_filter.
-
-With out knowing for sure what the problem is or what is causing it I 
-can't say what to adjust.  However I suspect your problem has something 
-to do with the fact that (if I recall correctly) Linux will by default 
-respond to ARP queries on any interface for an IP that may be bound to a 
-different interface.  In short IPs are more or less bound to the box not 
-the interface, thus any interface can get you to the box.  There are a 
-couple of /proc entries that will adjust the kernel's ARP behavior to 
-make it only respond to ARP queries if they are bound to an IP that is 
-bound to the interface that it is coming in on, rather if the 
-interface's IP is in the subnet pertinent to the ARP query.
-
-I'm just guessing (with out seeing some TCPDumps of traffic) that 
-systems on either eth0 or eth3 are needing to ARP for either of the IPs 
-of eth0 or eth3 and the wrong interface is replying, or both are 
-replying.  If both interfaces are replying at the same time or if they 
-are flip flopping back and forth I can see how your layer 2 ethernet 
-network / switch would be getting confused as well as devices wanting to 
-talk to said IPs.
+I don't know.  If you read the documentation with conntrackd you should 
+be able to find out if libnetlink / libnetfilter are needed or not.  I 
+would not be surprised if you need libnetfilter.
 
 
 
