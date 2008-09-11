@@ -1,16 +1,22 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
+From: "David Doster" <DGD@reinhardt.edu>
 Subject: Re: IP Tables and DNS
-Date: Thu, 11 Sep 2008 14:53:40 -0400
-Message-ID: <u1qic49dl8q0020pbblh2o4pdm3gi5nrfd@4ax.com>
-References: <s8c926a0.083@newborder.reinhardt.edu>
+Date: Thu, 11 Sep 2008 18:02:35 -0400
+Message-ID: <s8c95d4e.068@newborder.reinhardt.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: netfilter@vger.kernel.org
 
+Cool.  Thanks for the info, Andrew.
+
+Dave
+
+
+>>> Andrew Schulman <andrex@alumni.utexas.net> 9/11/2008 02:53 PM >>>
 > Does netfilter/iptables keep up with "connections" in UDP, even though UDP is connectionless?
 
 Yes.  ICMP, too.
@@ -31,5 +37,9 @@ A.
 
 --
 To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+the body of a message to majordomo@vger.kernel.org 
+More majordomo info at  http://vger.kernel.org/majordomo-info.html 
+
+--- Scanned by M+ Guardian Messaging Firewall ---
+
+
