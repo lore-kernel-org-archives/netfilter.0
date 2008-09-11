@@ -1,45 +1,35 @@
-From: "David Doster" <DGD@reinhardt.edu>
-Subject: Re: IP Tables and DNS
-Date: Thu, 11 Sep 2008 18:02:35 -0400
-Message-ID: <s8c95d4e.068@newborder.reinhardt.edu>
+From: val <verbatim.val@gmail.com>
+Subject: sar interface stats
+Date: Thu, 11 Sep 2008 16:03:10 -0600
+Message-ID: <a508421a0809111503o28be41dbs17f29d918f191930@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=VvxL9q8gvT+/EZB6K1X8idHNu2NEWN+Y7XLWAF4zh2Y=;
+        b=ELFxThTYlqDQU5SmOBAi6tqUjjssn7BGBk2TGpO0f/TVTIGFLa2TA1Q8XwVjVNgcWA
+         +Isaan2Cn7kR1GE/rcEkp7TFMnHX3MZm2B4QgK08KCL4eEQHDH5u/Yr3gbZ2luv3/dPu
+         XWsUkOZwS7NiHeRJhohQEY8C331L3smLk9uz4=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Cool.  Thanks for the info, Andrew.
+On a RHEL5.x86_64 firewall type system (one interface
+internet-exposed, the other
+faces intranet), totals for received bytes/sec and transmitted bytes/sec as
+reported by 'sar -n DEV' are always nearly equal for both interfaces.  This
+despite the fact that for sure the external interface is kept very busy
+dropping the usual internet cruft.  Do interface 'received' statistics as
+maintained by the kernel NOT reflect traffic that is DENYed/DROPed/REJECTed
+by netfilter (iptables) rules?   If so, any ideas why?  Or if it's not the
+case that the dropped traffic isn't counted, why the near equality for total
+traffic on both interfaces?  Or am I merely confused, again...
 
-Dave
-
-
->>> Andrew Schulman <andrex@alumni.utexas.net> 9/11/2008 02:53 PM >>>
-> Does netfilter/iptables keep up with "connections" in UDP, even though UDP is connectionless?
-
-Yes.  ICMP, too.
-
->  ie - How does it assure that it only accepts responses from the IP that it sent the query to?  I saw a posting from Jan back about 3 years ago that said that as long as the response came back within ~30 seconds then netfilter would allow the response in.  Is that still the case?
-
-Can't remember now exactly how this works... but it's something like that.
-
->  If so, do I need any rules on the external interface other than the rules to allow the outgoing query (tcp and udp) and an "established,related" rule?
-
-Nope.  "Established" covers direct replies to UDP packets (i.e. DNS requests)
-that you've already sent out, so that's probably all you need in this case.
-"Related" covers new connections related to the first one, such as FTP data
-connections triggered by FTP control traffic.  I don't think there are any
-"related" criteria that apply to DNS.
-
-A.
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org 
-More majordomo info at  http://vger.kernel.org/majordomo-info.html 
-
---- Scanned by M+ Guardian Messaging Firewall ---
-
-
+thanks,
+val
