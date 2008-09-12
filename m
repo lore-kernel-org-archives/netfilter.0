@@ -1,42 +1,37 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Changing IP destination in NF_IP_PRE_ROUTING hook
-Date: Fri, 12 Sep 2008 09:25:41 -0400 (EDT)
-Message-ID: <alpine.LNX.1.10.0809120918320.14464@fbirervta.pbzchgretzou.qr>
-References: <f4a980250809120428l14a26a31j1a08725404470fc4@mail.gmail.com>
+From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
+Subject: Re: IP Tables and DNS
+Date: Fri, 12 Sep 2008 10:13:54 -0400
+Message-ID: <6nskc4dhshenokacdlk6di8ljhbi6h0e5p@4ax.com>
+References: <s8c926a0.083@newborder.reinhardt.edu> <u1qic49dl8q0020pbblh2o4pdm3gi5nrfd@4ax.com> <200809120942.11190.vladislav.kurz@webstep.net>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <f4a980250809120428l14a26a31j1a08725404470fc4@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Partha Majumdar <pmajumdar.kernel@gmail.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 
+> > Nope.  "Established" covers direct replies to UDP packets (i.e. DNS
+> > requests) that you've already sent out, so that's probably all you need in
+> > this case. "Related" covers new connections related to the first one, such
+> > as FTP data connections triggered by FTP control traffic.  I don't think
+> > there are any "related" criteria that apply to DNS.
+> 
+> What about some ICMP (port|host) unreachable packet when you try to query a 
+> broken DNS server? Isn't that a RELATED packet?
 
-On Friday 2008-09-12 07:28, Partha Majumdar wrote:
->
->I am not very familiar with Linux kernel internals. I am trying to
->write a simple netfilter hook but facing some issues and did not find
->any clear answer in available docs on packet filter or netfilter
->hacking.
->
->I am writing an experimental kernel module that will register a
->NF_IP_PRE_ROUTING hook. This hook will change the destination address
->of the IP header. After that I'll update the checksum of the IP header
->by calling ip_nat_cheat_check as it is done in manip_pkt. Do I need to
->update the TCP checksum as well (if it is a TCP packet) since the
->pseudo header of the packet has changed? If I need to do update the
->tcp checksum as well then why isn't it being done  mainp_pkt after
->changing the source or destination IP address?
+Good point, and that could apply for any type of connection.  I'm not sure if
+those are matched by ESTABLISHED or RELATED.  I guess there's no harm in
+matching against both.
 
-What you want to achieve sounds pretty much like the RAWNAT
-extension:
-http://dev.medozas.de/gitweb.cgi?p=xtables-addons;a=summary
+I just looked at my firewall.  The incoming DNS rule matches only ESTABLISHED,
+not RELATED.  It's matched 12,000 times since boot.  Later on there is a generic
+RELATED match, but it's only matched 19 times.  So FWIW, it seems to me that
+ESTABLISHED covers essentially all you need for DNS replies.
 
->I also want to do similar modification for IPv6 packets. For IPv4 I
->have seen that skb_ip_make_writable is being called before modifying
->the IPv4 headers. I did not find anything similar for IPv6. What is
->the logic I should follow for IPv6?
+Andrew.
 
-It is always skb_make_writable().
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
