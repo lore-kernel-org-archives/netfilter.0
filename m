@@ -1,19 +1,38 @@
-From: "Wennie V. Lagmay" <wlagmay@yanbulink.net>
-Subject: SAME is not working with FC 9 kernel 2.6.26.3-29
-Date: Sat, 13 Sep 2008 17:28:37 +0300 (AST)
-Message-ID: <22957610.2781221316117079.JavaMail.root@mail.yanbulink.net>
+From: Doug Kehn <rdkehn@yahoo.com>
+Subject: netfilter/dansguardian/polipo slow
+Date: Sun, 14 Sep 2008 07:49:36 -0700 (PDT)
+Message-ID: <656617.35927.qm@web52002.mail.re2.yahoo.com>
+Reply-To: rdkehn@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: rdkehn@yahoo.com
 
-Hi all,
+Hi All,
 
-I am having a problem using SAME on my iptables. (iptables version is 1.4.1.1) Using the older package on Fedora Core 4 I can use SAME in place of SNAT, my objective is to enable voice chat for my clients. I am trying to install Fedora Core 9 with kernel version 2.6.26.3-29 and I am encountering an error: "iptables: No chain/Target/match by that name".
+I have an AMCC PPC-440 based board running Monta Vista Linux 2.6.18, dansguardian 2.9.8.5, and polipo 1.0.4.  dansguardian is used for URL and content filtering.  polipo is serving as the http proxy.  The iptables rule to redirect port 80 packets to dansguardian is:
 
-Can anybody help me to activate SAME under the latest version of Fedora and kernel?
+iptables -t nat -A PREROUTING -d ! 192.168.2.0/255.255.255.0 -i br0 \
+-p tcp -m tcp --dport 80 -j REDIRECT --to-ports 3129
 
-Thank you very much
+All components are functioning properly.  However, web page load times are 3 to 4 times slower with this rule in place than without.  I suspected the delay was with dansguardian/polipo.  Then, I left the rule in place and configured the browser's http proxy settings for 192.168.2.1/3129.  Page load times decreased dramatically.  Packets were still traversing dansguardian/polipo as URL/content filtering rules still worked as expected.  I also changed the PREROUTING policy from ACCEPT to DROP.  After doing this, I could no longer browse the internet (or communicate with the board).  I'm pretty sure the PREROUTING chain is being traversed; the rule is just not matching.
+
+It appears (???) the delay is only observed when the rule matches.  I tried different variants of the rule to see if writing the rule in different ways produced different results.  For example,
+
+iptables -t nat -A PREROUTING -i br0 -p tcp -m tcp --dport 80 \
+-j REDIRECT --to-ports 3129
+
+All rule variations resulted in the same increased page load times.
+
+Unfortunately, updating the kernel and/or configuring the browser's http proxy settings aren't allowable options. 8(  Does anyone have any information, comments suggestions, tips, or tricks?  
+
+Thanks,
+...doug
+
+
+
+      
