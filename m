@@ -1,53 +1,63 @@
-From: "Xu, Qiang (FXSGSC)" <Qiang.Xu@fujixerox.com>
-Subject: RE: iptables not prevent access
-Date: Mon, 15 Sep 2008 15:53:06 +0800
-Message-ID: <D8C9BC7FFCF8154FB7141EB8DB609C1721725A40CE@SGPAPHQ-EXSCC01.dc01.fujixerox.net>
-References: <D8C9BC7FFCF8154FB7141EB8DB609C1721725A3FD3@SGPAPHQ-EXSCC01.dc01.fujixerox.net>
- <9518B26607784D55A361431633134C9B@dcyb.net>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: RE: Reject on a Bridge
+Date: Mon, 15 Sep 2008 01:03:16 -0700
+Message-ID: <48ce16ce.1c078e0a.726c.ffff8ef9@mx.google.com>
+References: <d95317090809031541n396f4ddao29dbbfa196801f64@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <9518B26607784D55A361431633134C9B@dcyb.net>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:references
+         :in-reply-to:subject:date:mime-version:content-type
+         :content-transfer-encoding:x-mailer:thread-index:content-language
+         :message-id;
+        bh=sDy98Ezv4r1Zo5twLSPebmQkAorsB6KXqwZL2BrsrUQ=;
+        b=IQtrYS3zLRFD8DGQhBVbnD/r+1+9XV4HO9Lx37NaOzJCmkIg+HuXfQBuDvTirsxsH8
+         StlerpNUc2UiNKgORrXoUMNN7aPgv7fscLrMONX2wAe2qMBZ4kZACd9N2B/iHtptOJ3m
+         CMUox6T5JpeBsXe1uu4z1LQgF3IhMhNDUZQS4=
+In-Reply-To: <d95317090809031541n396f4ddao29dbbfa196801f64@mail.gmail.com>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Rob Sterenborg <rob@sterenborg.info>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org
-> [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Rob Sterenborg
-> Sent: Monday, September 15, 2008 3:34 PM
-> To: netfilter@vger.kernel.org
-> Subject: RE: iptables not prevent access
->
-> Is there a rule that would accept the http packet before it
-> would hit this rule?
+Following the replies I got I understand this is not supported by the code.
+I played around with the code and was able to make this work in some
+scenarios but not in others.
+If I understand correctly, my main obstacle is the call to
+ip_route_me_harder, which is completely wrong for my case, as no routing is
+involved.
+Anyone has an idea for a simple patch that might solve this ?
 
-Actually, this is the only rule that exists in the server.
+In case I wasn't clear, the idea is simple; on the bridge, fake a RST packet
+as if it came from the destination of the original packet.
 
-> Place a LOG rule identical to the REJECT rule in front of it
-> and look in your messages log if it hits:
->
-> $ipt -A INPUT -i eth0 -s 13.121.8.119 -p tcp --dport 80 -j LOG \
->   --log-level info --log-prefix "IPT: TEST: "
-> $ipt -A INPUT -i eth0 -s 13.121.8.119 -p tcp --dport 80 -j REJECT
+Thanks for any help 
 
-We don't have "ipt" command, only "iptables" command, and "iptables --help" shows it doesn't support a option of "--log-level"
-=====================================
-GUMP:/tmp/nvram <45> iptables -A INPUT -i eth0 -s 13.121.8.119 -p tcp --dport 80 -j LOG  --log-level info --log-prefix "IPT: TEST: "
-iptables v1.2.8: Unknown arg `--log-level'
-Try `iptables -h' or 'iptables --help' for more information.
-=====================================
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org
+[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Gilad Benjamini
+Sent: Wednesday, September 03, 2008 3:41 PM
+To: netfilter@vger.kernel.org
+Subject: Reject on a Bridge
 
-> If it doesn't hit, either the rule is incorrect (for what you
-> want it to do) or another rule has already accepted the packet.
+I am using iptables to run a firewall on a bridge.
+The bridge consists of eth1 and eth2. Neither interface, nor the
+bridge itself, have an IP address.
+eth0, which is not on the bridge, does have an IP address.
 
-What's strange is that, when I run the same command to other machines, say 13.121.8.120, the http access is successfully rejected. Does that mean something wrong with the network configuration of the machine 13.121.8.119? What is the possible cause of that behavior?
+Trying to use the REJECT target with --tcp-reset doesn't work.
+If I understand the code correctly, the route for the RST packet is
+determined through ip_route_me_harder in the send_reset function,
+implying in my case that the RST packet will leave through eth0, which
+is not the desired behavior. Theoretically, eth0 might be even
+physically disconnected from the bridged network.
 
-Another thing is quite strange, when capturing network trace from and to 13.121.8.119, I can't find any packet associated with the server which runs "iptables" command. However, when I was capturing network trace from and to 13.121.8.120 (which was successfully blocked), I can see some network packets associated with the server.
+Am I missing something, or is this a real problem ?
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Got confused...
-
-> Grts,
-> Rob
