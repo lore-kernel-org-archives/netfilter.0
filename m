@@ -1,38 +1,48 @@
-From: "Xu, Qiang (FXSGSC)" <Qiang.Xu@fujixerox.com>
-Subject: RE: iptables not prevent access
-Date: Tue, 16 Sep 2008 12:14:35 +0800
-Message-ID: <D8C9BC7FFCF8154FB7141EB8DB609C1721726069D2@SGPAPHQ-EXSCC01.dc01.fujixerox.net>
-References: <D8C9BC7FFCF8154FB7141EB8DB609C1721725A3FD3@SGPAPHQ-EXSCC01.dc01.fujixerox.net>
-	 <9518B26607784D55A361431633134C9B@dcyb.net>
-	 <D8C9BC7FFCF8154FB7141EB8DB609C1721725A40CE@SGPAPHQ-EXSCC01.dc01.fujixerox.net>
-	 <ff71fbf20809150342u52afb246vbb672cbdf36a43ad@mail.gmail.com>
-	 <D8C9BC7FFCF8154FB7141EB8DB609C1721726062EC@SGPAPHQ-EXSCC01.dc01.fujixerox.net>
-	 <ff71fbf20809150511g6db0b772o9ebf7fdf54325dac@mail.gmail.com>
-	 <D8C9BC7FFCF8154FB7141EB8DB609C17217260693A@SGPAPHQ-EXSCC01.dc01.fujixerox.net>
- <ff71fbf20809152052x163607e4k8bcba0590c997502@mail.gmail.com>
+From: "Sam Chan" <sam@mosmsg.com.sg>
+Subject: Https website is not accessible once transparent proxy is set up
+Date: Tue, 16 Sep 2008 14:49:06 +0800
+Message-ID: <A42989E6EE1BCE4C9C1FF7DE428FF3C6630F@mos-exchange.mosmsg.com.sg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ff71fbf20809152052x163607e4k8bcba0590c997502@mail.gmail.com>
-Content-Language: en-US
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Vimal <j.vimal@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org
-> [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Vimal
-> Sent: Tuesday, September 16, 2008 11:53 AM
-> To: Xu, Qiang (FXSGSC)
-> Cc: netfilter@vger.kernel.org
-> Subject: Re: iptables not prevent access
->
-> Just like you blocked client 119 and it failed, and then you
-> tried 120 and it worked; block the gateway and unblock 120.
-> If it works from 120, but it doesn't work from 119 (now), it
-> means that the request is coming from the gateway for 119.
+Hi,
 
-I just tried "iptables -p tcp -j REJECT -A INPUT -i eth0 -s 13.121.8.0/24 --dport 80", to block 13.121.8.* from accessing 8.106 via WebUI. But the blocking still fails.
-:-(
+I have just set up a transparent proxy (Squid 3.0 on Debian etch).
+
+Http redirect to port 3128 is ok and I can see http traffic in
+access.log.
+
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+REDIRECT   tcp  --  anywhere             anywhere            tcp dpt:www
+redir ports 3128
+
+
+But I cannot access https website even though I have enable port 443 to
+be forwarded.
+
+Chain FORWARD (policy DROP)
+target     prot opt source               destination
+LOG        0    --  anywhere             anywhere            state
+INVALID LOG level warning tcp-options ip-options prefix `DROP INVALID
+FORWARD'
+DROP       0    --  anywhere             anywhere            state
+INVALID
+ACCEPT     0    --  anywhere             anywhere            state
+RELATED,ESTABLISHED
+ACCEPT     tcp  --  localnet/24          anywhere            tcp
+dpt:https flags:FIN,SYN,RST,ACK/SYN state NEW
+LOG        0    --  anywhere             anywhere            LOG level
+warning tcp-options ip-options prefix `DROP '
+
+Base on what I see on my syslog, whenever I browse any https site, the
+packet falls under INVALID and hence drop base on my second rule above.
+
+Can anybody help me?
+
