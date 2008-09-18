@@ -1,80 +1,53 @@
-From: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
-Subject: Re: marking is not working out my eth0 interface
-Date: Thu, 18 Sep 2008 20:53:33 +1000
-Message-ID: <48D2332D.1010104@standarduniversal.com.au>
-References: <48D22851.4080601@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Question about conntrack
+Date: Thu, 18 Sep 2008 16:05:22 +0200
+Message-ID: <48D26022.7060207@netfilter.org>
+References: <786c7f0809050531s1a12b40au8c7b2c9387f9b055@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48D22851.4080601@gmail.com>
+In-Reply-To: <786c7f0809050531s1a12b40au8c7b2c9387f9b055@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Brent Clark <brentgclarklist@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Yury Batrakov <batrakov@gmail.com>
 Cc: netfilter@vger.kernel.org
 
+Yury Batrakov wrote:
+> Hello all!
+> 
+> I've got a couple of questiona about netfilter's connection tracker,
+> could someone clarify it to me?
+> 1. When conntrack is being flushed? In /proc/net/ip_conntrack I see
+> lots of UNREPLIED connections, I reload conntrack kernel module but
+> see the table being filled with old entries. The same looks to happen
+> after rebooting Linux box.
+> 2. Are UNREPLIED connections being wiped when number of connections to
+> track equals to conntrack's capacity? Some web resources tell they
+> are, but some tell otherwise. I tried to reduce conntrack's capacity
+> and saw that these connections aren't wiped and cause conntrack to
+> overflow is it bug or feature?
 
+No, when the table gets full the selected conntracks are those that are
+!ASSURED.
 
-Brent Clark wrote:
-> Hi
->
-> I dont know if its a state of panic or what, I rebooted my FW, and the 
-> next thing I know marking is not working
->
-> #here i do marking
->
-> /usr/local/sbin/iptables -t mangle -A PREROUTING -i eth1 -p tcp -m 
-> multiport --dport 8080,8087,993,22,80,443 -s 192.168.111.0/24 -j MARK 
-> --set-mark 0x1
->
-> #heres the result (OUT, should be eth2)
-> Sep 18 11:51:22 cptgate kernel: [ 2915.617078] [FORWARD  DROP]: 
-> IN=eth1 OUT=eth0 SRC=192.168.111.9 DST=66.102.9.127 LEN=60 TOS=0x00 
-> PREC=0x00 TTL=63 ID=52056 DF PROTO=TCP SPT=41618 DPT=80 WINDOW=5840 
-> RES=0x00 SYN URGP=0 MARK=0x1
->
-> #My entry in the rt_table
-> root@gate:/root/iptables_sub_scripts# cat /etc/iproute2/rt_tables
-> #
-> # reserved values
-> #
-> 255    local
-> 254    main
-> 253    default
-> 0    unspec
-> #
-> # local
-> #
-> #1    inr.ruhep
-> 201    TELKOM
->
-> root@gate:/root/iptables_sub_scripts# ip rule list
-> 0:    from all lookup local
-> 32765:    from all fwmark 0x1 lookup TELKOM
-> 32766:    from all lookup main
-> 32767:    from all lookup default
->
-> # My entry for iptables
-> /usr/local/sbin/iptables -t filter -A FORWARD -i eth1 -o eth2 -p tcp 
-> -s 192.168.111.9 -m multiport --dport 80,443,8087 -m state --state NEW 
-> -j ACCEPT
->
-> #sysctl.conf
-> net.ipv4.ip_forward=1
-> -- 
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-where is your TELKOM table ?
-ip route show table TELKOM
-The mark appears to be made... MARK=0x1
+> 3. I played with NOTRACK target of table raw and discovered that if I
+> add a NOTRACK rule that matches with already established connections,
+> they stuck in table as unreplied. Most of them disappear when I set
+> net.ipv4.netfilter.ip_conntrack_tcp_loose to 0. Is it recommended to
+> kill existing unreplied connections in this way?
 
-try
+You may kill the entries using:
 
-        echo 1 > /proc/sys/net/ipv4/ip_forward
+# conntrack -D -s IP -p tcp --dport xyz
 
+See conntrack(8) for reference, or the conntrack-tools website.
 
+> Could it be any side
+> effect for new or currently established connections that don't match
+> NOTRACK?
 
-#sysctl.conf
-net.ipv4.ip_forward=1  doesnt do it for me...
+No, if you really only kill the conntracks that you don't need anymore.
 
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
