@@ -1,60 +1,41 @@
-From: Franck Joncourt <franck.mail@dthconnex.com>
-Subject: Re: snort_inline
-Date: Mon, 22 Sep 2008 12:56:54 +0200
-Message-ID: <48D779F6.1040408@dthconnex.com>
-References: <48D7693F.8090908@gmail.com>
+From: Aleksej <aleksej05@googlemail.com>
+Subject: monitoring with iptables question
+Date: Mon, 22 Sep 2008 20:25:20 +0200
+Message-ID: <16d377d70809221125l5e3195cage4035a92352577d8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig86A380718C8F5EFB3507EE72"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48D7693F.8090908@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=DOY6cuLVARQo+PldvzqHYAAanKRX9XJIC2y3kyLELRE=;
+        b=rS1MwSY05THMkorwg/3HQDAA5cMh/ZUstVO3Wed6ZpXjDZfIpwq4wWUEUT9t97Dclq
+         gM6bAPXAzhqfcQ8iHwFj1J5Pw9gw5CBxB3oV1mE67ScjxUMKbGqNh9wwlw23geXNfDkw
+         t0zUaHxj8Iblr1KpuhQTqyK2XSOUrn68yLoZ4=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
-Cc: Michael Rash <mbr@cipherdyne.org>
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig86A380718C8F5EFB3507EE72
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Brent Clark wrote:
-> Hi
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
 Hi,
 
-> Anyone using snort_inline for the filtering.
->=20
-> If so, how do you find it? Does it work?
+I know that iptables can be used for some monitoring tasks. Is it
+possible to solve the following task with iptables?
 
-You may be interested in that:
+Let's say I have an application that generates 20 Mbps data for
+transmission, but due to high network load only 10Mbps is actually
+transmitted. So, the output transmission queue is always loaded with
+packets waiting for transmission. Is it possible to see somehow with
+iptables that the output transmission queue is always busy? Or maybe
+it is possible to count how many packets were generated for
+transmission and how many packets have been actually transmitted?
 
-http://www.cipherdyne.org/fwsnort/
+I need this for monitoring the queue load. The main task is to monitor
+what portion of time the output transmission queue is empty/busy.
 
-The Debian package is available from the repository the same way as fwkno=
-p:
+Thanks for any hints!!
 
-http://www.cipherdyne.org/blog/2008/08/installing-fwknop-on-debian-and-ub=
-untu.html
-
---=20
-Franck Joncourt
-http://debian.org - http://smhteam.info/wiki/
-Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
-
-
---------------enig86A380718C8F5EFB3507EE72
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkjXegYACgkQxJBTTnXAif5VBwCfSACCEXt8MxX3zeLMTTdPGrwh
-f0MAoMVqkCBnaZ0ymkMJWNRZCyfY4M8S
-=EUAV
------END PGP SIGNATURE-----
-
---------------enig86A380718C8F5EFB3507EE72--
+Aleksej.
