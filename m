@@ -1,56 +1,60 @@
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
-Subject: Re: netfilter kernel crash in ip_ct_refresh_acct / ip_conntrack with centos 5.x
-Date: Mon, 22 Sep 2008 13:50:29 +0300
-Message-ID: <20080922105029.GG13941@edu.joroinen.fi>
-References: <20080915081156.GK13941@edu.joroinen.fi>
+From: Franck Joncourt <franck.mail@dthconnex.com>
+Subject: Re: snort_inline
+Date: Mon, 22 Sep 2008 12:56:54 +0200
+Message-ID: <48D779F6.1040408@dthconnex.com>
+References: <48D7693F.8090908@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig86A380718C8F5EFB3507EE72"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20080915081156.GK13941@edu.joroinen.fi>
+In-Reply-To: <48D7693F.8090908@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
+Cc: Michael Rash <mbr@cipherdyne.org>
 
-On Mon, Sep 15, 2008 at 11:11:56AM +0300, Pasi K=E4rkk=E4inen wrote:
-> Hello list!
->=20
-> Has anyone seen this netfilter kernel crash?=20
->=20
-> Images from the console of the crashed firewall:
-> http://pasik.reaktio.net/centos5-kernel-crash/
->=20
-> Firewall is HP DL360 G4 server running CentOS 5.x 32 bit.=20
->=20
-> I've seen this firewall crashing multiple times, but I only started i=
-nvestigating it lately..
->=20
-> It has happened using CentOS 5.0, 5.1 and now also with 5.2. I'm not =
-sure if
-> it was the same bug earlier, but at least the last two times (with Ce=
-ntOS 5.2)=20
-> it has been the same, see screenshots.
->=20
-> Last lines of the console output:
->=20
-> EIP: [<f8af2c5c>] __ip_ct_refresh_acct+0xa1/0x129 [ip_conntrack] SS:E=
-SP 0068:c0724e4c
->  <0>Kernel panic - not syncing: Fatal exception in interrupt
->=20
-> At the moment firewall is running CentOS 5.2, Linux kernel 2.6.18-92.=
-1.10.el5.centos.plus.
->=20
-> Any tips how to resolve this?=20
->=20
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig86A380718C8F5EFB3507EE72
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-http://lists.centos.org/pipermail/centos/2008-September/064929.html
+Brent Clark wrote:
+> Hi
 
-https://bugzilla.redhat.com/show_bug.cgi?id=3D433661
+Hi,
 
-So it's a known bug, fix/patch is included in RHEL 5.3 beta/test kernel=
-s..
-and hopefully in the final RHEL 5.3 kernel build, whenever that will be
-available.
+> Anyone using snort_inline for the filtering.
+>=20
+> If so, how do you find it? Does it work?
 
--- Pasi
+You may be interested in that:
+
+http://www.cipherdyne.org/fwsnort/
+
+The Debian package is available from the repository the same way as fwkno=
+p:
+
+http://www.cipherdyne.org/blog/2008/08/installing-fwknop-on-debian-and-ub=
+untu.html
+
+--=20
+Franck Joncourt
+http://debian.org - http://smhteam.info/wiki/
+Fingerprint : C10E D1D0 EF70 0A2A CACF 9A3C C490 534E 75C0 89FE
+
+
+--------------enig86A380718C8F5EFB3507EE72
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkjXegYACgkQxJBTTnXAif5VBwCfSACCEXt8MxX3zeLMTTdPGrwh
+f0MAoMVqkCBnaZ0ymkMJWNRZCyfY4M8S
+=EUAV
+-----END PGP SIGNATURE-----
+
+--------------enig86A380718C8F5EFB3507EE72--
