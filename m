@@ -1,34 +1,49 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: NFNETLINK answers: File exists
-Date: Tue, 23 Sep 2008 12:06:22 +0200
-Message-ID: <48D8BF9E.3010406@netfilter.org>
-References: <48C3FC2D.903@netcabo.pt>
+Subject: Re: What's required for a stateful firewall + ipvs in 2.6 kernel?
+Date: Tue, 23 Sep 2008 12:09:51 +0200
+Message-ID: <48D8C06F.6030101@netfilter.org>
+References: <48C70B10.3040405@vfive.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48C3FC2D.903@netcabo.pt>
+In-Reply-To: <48C70B10.3040405@vfive.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-1?Q?Jo=E3o_Valverde?= <backup95@netcabo.pt>
+Content-Type: text/plain; charset="us-ascii"
+To: Brian Ghidinelli <brian@vfive.com>
 Cc: netfilter@vger.kernel.org
 
-Jo=E3o Valverde wrote:
-> Hello everyone,
->=20
-> I'm working on a program that uses libnetfilter_queue, and after the
-> program crashes or I have to kill it I get the following error starti=
-ng up:
->=20
-> NFNETLINK answers: File exists
-> Error during nfq_bind_pf(): File exists
->=20
-> Rebooting fixes it so I guess the netlink socket in question is a
-> "virtual" one. What I'd like to know is how to clear this error witho=
-ut
-> rebooting?
+Brian Ghidinelli wrote:
+> I'm trying to get a handle on whether or not it's possible to set up the
+> following on a redundant pair of boxes:
+> 
+> 1. Stateful iptables firewall
+> 2. LVS director (keepalived)
+> 3. DNAT, SNAT and fwmarks
+> 4. Connection synchronization for failover
+> 
+> I currently have CentOS/RHEL 5 running 1, 2 and 3 above but the RHEL
+> 2.6.18-* kernels don't export LVS connections to netfilter resulting in
+> lots of INVALID packets on return traffic from real servers.  It also
+> prevents connection synchronization to the backup fw/director for
+> failover.  Google has been giving me conflicting results on the
+> following questions:
+> 
+> * Do the antefacto patches allow netfilter to access connections managed
+> by ipvs and support DNAT, SNAT and fwmarks used in the LVS configuration?
+> 
+> * Has anyone gotten this to work on RHEL/CentOS via a kernel recompile
+> with the antefacto patches?
+> 
+> If so, is there anything needed beyond the following?:
+> 
+> 1. Recompile CentOS kernel (2.6.18 ok?) with Antefacto patches
+> (http://www.ssi.bg/~ja/nfct/)
 
-Could you post the code of your program?
+The last time that I had a look at the antefacto patch it look to me
+like a hack. IIRC, the problem is the LVS design (at least time ago when
+I had a look at it) as it bypasses the network stack. This screws up the
+possibility of having stateful firewalling and LVS.
 
---=20
+-- 
 "Los honestos son inadaptados sociales" -- Les Luthiers
