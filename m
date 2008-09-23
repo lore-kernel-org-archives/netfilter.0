@@ -1,49 +1,52 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: What's required for a stateful firewall + ipvs in 2.6 kernel?
-Date: Tue, 23 Sep 2008 12:09:51 +0200
-Message-ID: <48D8C06F.6030101@netfilter.org>
-References: <48C70B10.3040405@vfive.com>
+From: Brent Clark <brentgclarklist@gmail.com>
+Subject: connect to openvpn but multipath routing used.
+Date: Tue, 23 Sep 2008 17:34:58 +0200
+Message-ID: <48D90CA2.8090208@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48C70B10.3040405@vfive.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Brian Ghidinelli <brian@vfive.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
 
-Brian Ghidinelli wrote:
-> I'm trying to get a handle on whether or not it's possible to set up the
-> following on a redundant pair of boxes:
-> 
-> 1. Stateful iptables firewall
-> 2. LVS director (keepalived)
-> 3. DNAT, SNAT and fwmarks
-> 4. Connection synchronization for failover
-> 
-> I currently have CentOS/RHEL 5 running 1, 2 and 3 above but the RHEL
-> 2.6.18-* kernels don't export LVS connections to netfilter resulting in
-> lots of INVALID packets on return traffic from real servers.  It also
-> prevents connection synchronization to the backup fw/director for
-> failover.  Google has been giving me conflicting results on the
-> following questions:
-> 
-> * Do the antefacto patches allow netfilter to access connections managed
-> by ipvs and support DNAT, SNAT and fwmarks used in the LVS configuration?
-> 
-> * Has anyone gotten this to work on RHEL/CentOS via a kernel recompile
-> with the antefacto patches?
-> 
-> If so, is there anything needed beyond the following?:
-> 
-> 1. Recompile CentOS kernel (2.6.18 ok?) with Antefacto patches
-> (http://www.ssi.bg/~ja/nfct/)
+Hi
 
-The last time that I had a look at the antefacto patch it look to me
-like a hack. IIRC, the problem is the LVS design (at least time ago when
-I had a look at it) as it bypasses the network stack. This screws up the
-possibility of having stateful firewalling and LVS.
+For the likes of me I cant get my mind around this.
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+I got two DSL (two separate ISP's) lines that I use multipath routing on 
+(works like a bomb, i.e. from in the LAN out to internet). But what I 
+want to do is have it that I can randomly connect to my openvpn (sits 
+and configured on my router / fw), via either ISP.
+
+Basically in the openvpn conf file I would like to have
+
+remote-random
+remote oneisp.dyndns.org (fixed ip)
+remote anotherisp.dyndns.org (dynamic ip)
+
+Currently I have openvpn working through the one ISP (fixed ip).
+
+For my tests I have being trying :
+
+iptables -t filter -A INPUT -p udp --dport 1194 -m state --state NEW -j 
+ACCEPT
+
+For output (please bare with me on this)
+iptables -t filter -A OUTPUT -m state --state NEW -j ACCEPT
+
+For marking I have been trying and trying to get traffic out the dynamic 
+ISP.
+
+iptables -t mangle -A OUTPUT -p udp --sport 1194 -j MARK --set-mark 0x1
+iptables -t mangle -A POSTROUTING -p udp --sport 1194 -j MARK --set-mark 0x1
+
+The stranges thing that I saw was that on using the last two of the 
+above rules, is that with using tshark, that i was seeing that ip 
+address of my primary interface (fixed ip address), as opposed to that 
+of the dynamic ip.
+
+If anyone can help it would be appreciate.
+
+Kind Regards
+Brent Clark
