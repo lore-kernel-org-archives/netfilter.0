@@ -1,32 +1,45 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: ULOG/NFLOG on a non-forwarding machine
-Date: Tue, 23 Sep 2008 21:57:54 -0500
-Message-ID: <48D9ACB2.80502@riverviewtech.net>
-References: <m38wtjur74.fsf@ursa.amorsen.dk>
+From: Alexey Mikhailov <karma@galois.botik.ru>
+Subject: Conntrack flow expirations
+Date: Wed, 24 Sep 2008 10:38:57 +0400
+Message-ID: <877i929hfi.fsf@galois.botik.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <m38wtjur74.fsf@ursa.amorsen.dk>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
 
-On 9/23/2008 4:50 AM, Benny Amorsen wrote:
-> Is there a way to catch incoming traffic which is neither INPUT nor 
-> FORWARD with netfilter?
+Hello!
 
-You /might/ be able to catch some traffic *if* the Linux TCP/IP stack 
-thought that it was appropriately addressed to the system.
+I'm working on some accounting application based on connection tracking
+subsytem. Basically, i just gather information from expired flows. But
+there's problem, any TCP flow can live for 4 or 5 days for example, and
+I need to get more or less real-time processing. So I want to have some
+expiration mechanism. I need to:
 
-I think you will have better luck doing this with bridging as bridging 
-is (more) accustom to dealing with traffic that may or may not be 
-addressed to the local system.
+ a) I don't want flows to live more than 30 minutes
+ b) If flow is inactive for 15 secs I want to get it expired as well
 
-It may be possible to get IPTables to log some information about packets 
-that it thinks are completely erroneous, but I'm thinking that if it is 
-possible, it will be severely limited.
+So here comes my question, how do I specify expiration time-out for
+long lived flows? I have found 
 
+net.ipv4.netfilter.ip_conntrack_tcp_timeout_established = 5 DAYS
 
+If I will change it to 30 MINS will it make trick? But there're
+other protocols like UDP: how can I specify active timeout for
+it? Another question, if it will affect underlying packet
+converstation (i want it to remain undisturbed)? And last
+question is how do I specify inactive timeout? I'm not sure that
+it's possible but I can write it. And if so, can you please advice
+me how I better done it: nf_ct_extend.. for example.
 
-Grant. . . .
+So many questions in so little message but I really looking forward
+for your support.
+
+Thank you in advance,
+-- Alexey
+
+P.S.: I'm not subscribed to list so please CC me your replies.
+
