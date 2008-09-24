@@ -1,32 +1,74 @@
-From: John Haxby <john.haxby@oracle.com>
-Subject: Re: Portsweep
-Date: Wed, 24 Sep 2008 08:59:20 +0100
-Message-ID: <48D9F358.3020005@oracle.com>
-References: <194384.45623.qm@web55301.mail.re4.yahoo.com> <48D9534B.4080602@riverviewtech.net>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: Conntrack flow expirations
+Date: Wed, 24 Sep 2008 18:17:01 +1000
+Message-ID: <48D9F77D.90005@snapgear.com>
+References: <877i929hfi.fsf@galois.botik.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48D9534B.4080602@riverviewtech.net>
+In-Reply-To: <877i929hfi.fsf@galois.botik.ru>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Alexey Mikhailov <karma@galois.botik.ru>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Grant Taylor wrote:
-> On 09/23/08 01:51, bahamin takhtaei wrote:
->> Do you know How to use iptables against Portsweep attacks?
->
-> There use to be a Port Scan Detection (psd) match extension that would 
-> help detecting this easier.  I.e. did it look like a system was 
-> initiating a port scan, and if so, handle it accordingly (drop / 
-> reject / tar pit / etc.).  I don't know what the current state of the 
-> psd match is, so you will have to find out.
-FWIW, my Netgear DG834N has this in a chain called DOS:
+Alexey Mikhailov wrote:
+> Hello!
+> 
+> I'm working on some accounting application based on connection tracking
+> subsytem. Basically, i just gather information from expired flows. But
+> there's problem, any TCP flow can live for 4 or 5 days for example, and
+> I need to get more or less real-time processing. So I want to have some
+> expiration mechanism. I need to:
+> 
+>  a) I don't want flows to live more than 30 minutes
+>  b) If flow is inactive for 15 secs I want to get it expired as well
 
-SCAN       all  --  anywhere             anywhere           psd weight-threshold: 21 delay-threshold: 300 lo-ports-weight: 3 hi-ports-weight: 1
+Unless you have a very specific traffic profile, both of these limits
+are far too low.
 
+> So here comes my question, how do I specify expiration time-out for
+> long lived flows? I have found 
+> 
+> net.ipv4.netfilter.ip_conntrack_tcp_timeout_established = 5 DAYS
 
+(While it will work, that sysctl is just for backwards compat.
+Use net.netfilter.nf_conntrack_tcp_timeout_established instead.)
 
-Netgear make their source available so you could try looking there.
+That setting is the inactive timeout, not the maximum duration.
+There is no way to specify a maximum duration that I know of.  You
+could get your accounting application to delete them after the maximum
+duration.  eg using nfctnetlink or the conntrack userspace tool.
 
-jch
+Also note that if you want to enforce a maximum duration, you'll
+need to disable nf_conntrack_tcp_loose, otherwise the conntrack will
+just get created again on the next packet.
+
+> If I will change it to 30 MINS will it make trick? But there're
+> other protocols like UDP: how can I specify active timeout for
+
+There are settings for other protocols in the same place
+eg net.netfilter.nf_conntrack_{udp,icmp,generic}_timeout
+
+> it? Another question, if it will affect underlying packet
+> converstation (i want it to remain undisturbed)? And last
+
+Removing a conntrack for a connection that is still alive isn't
+going to leave it undisturbed.  These timeouts are a tradeoff between
+the likelihood of a connection being stale versus it being alive
+but inactive.
+
+> question is how do I specify inactive timeout? I'm not sure that
+> it's possible but I can write it. And if so, can you please advice
+
+As I mentioned above, these are the inactive timeouts.
+
+> me how I better done it: nf_ct_extend.. for example.
+> 
+> So many questions in so little message but I really looking forward
+> for your support.
+> 
+> Thank you in advance,
+> -- Alexey
+
