@@ -1,39 +1,36 @@
-From: Christoph Paasch <christoph.paasch@gmail.com>
-Subject: Connection Protocol in the state?
-Date: Thu, 25 Sep 2008 13:35:58 +0200
-Message-ID: <200809251335.58738.christoph.paasch@gmail.com>
-Reply-To: Christoph Paasch <christoph.paasch@gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: ULOG/NFLOG on a non-forwarding machine
+Date: Thu, 25 Sep 2008 09:05:48 -0500
+Message-ID: <48DB9ABC.9060902@riverviewtech.net>
+References: <m38wtjur74.fsf@ursa.amorsen.dk>	<48D9ACB2.80502@riverviewtech.net> <m3hc84mw4m.fsf@ursa.amorsen.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:reply-to:to:subject:date
-         :user-agent:mime-version:content-type:content-transfer-encoding
-         :content-disposition:message-id;
-        bh=s0jk4O5Il7PbqBALPXHZbwtMg4QDtAB3Cq4knfkYQEE=;
-        b=q7Ob5nzUgmIjSaKGqsiHa7CsEcBNF+ZTuABEpTpPl6043mUwcVUOz5r0rCbiUsE6aM
-         WecabvMK7g8kVvOqxUPF0hu4rfqSmz0uRSYO5ARgwi7q2vwJ9OuLIWDM7KZ1EXvdZ3zZ
-         h0eEhfGe3TJaOk8Yz5fM0TgREy5n9uPsZg1uM=
-Content-Disposition: inline
+In-Reply-To: <m3hc84mw4m.fsf@ursa.amorsen.dk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello,
+On 09/25/08 04:07, Benny Amorsen wrote:
+> That is exactly the problem. The network stack doesn't think it needs 
+> to do anything with the packets.
 
-I would like to know, that if I have a filter like the one shown below 
-(allowing outgoing connections of every protocol-type), does netfilter stores 
-in the state of the established outgoing connection also the protocol which 
-established the connection? (TCP, UDP, ....) Or does it opens the connection 
-for any protocol?
+*nod*
 
-iptables -A FORWARD -i eth0 --ctstate NEW, RELATED, ESTABLISHED -j ACCEPT
+> If the kernel has to forward the packet, the performance advantages 
+> of using NFLOG probably disappear.
+
+Eh...
+
+> I guess I'm sticking to libpcap then.
+
+Consider looking at bridging and allowing IPTables to see bridged 
+traffic.  The traffic will end up being dropped or not forwarded because 
+there is no destination on the other side.  However in the process I 
+think the traffic will pass through IPTables thus allowing you to do 
+what you are wanting to do.
 
 
-Thanks in advance
 
--- 
-Christoph Paasch
---
+Grant. . . .
