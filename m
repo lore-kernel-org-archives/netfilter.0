@@ -1,40 +1,36 @@
-From: Christoph Paasch <christoph.paasch@gmail.com>
-Subject: Connection Protocol in the state?
-Date: Thu, 25 Sep 2008 10:39:19 +0200
-Message-ID: <200809251039.20056.christoph.paasch@gmail.com>
-Reply-To: Christoph Paasch <christoph.paasch@gmail.com>
+From: Benny Amorsen <benny+usenet@amorsen.dk>
+Subject: Re: ULOG/NFLOG on a non-forwarding machine
+Date: Thu, 25 Sep 2008 11:07:37 +0200
+Message-ID: <m3hc84mw4m.fsf@ursa.amorsen.dk>
+References: <m38wtjur74.fsf@ursa.amorsen.dk>
+	<48D9ACB2.80502@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:reply-to:to:subject:date
-         :user-agent:mime-version:content-type:content-transfer-encoding
-         :content-disposition:message-id;
-        bh=QPYs/sP5vlrw1LXFYdFrsKIKPy7IOfgCaWFKxDRoNqw=;
-        b=sg59BdzK12+lq5vowZShYXWvBUgFmODJKDTdI+KLj7fePATNz7Fm8k1bWo3YIlBhRK
-         5fvOtrnTttvjmzpgd0Ocv+aX/5lqp8RU8hHJFNZIZvNcBWLUNYOC/lx27vyMPOapgT2i
-         7f2LheXSsfjgOhoO2I3KMxTPZ+QLSneI3N9a0=
-Content-Disposition: inline
+In-Reply-To: <48D9ACB2.80502@riverviewtech.net> (Grant Taylor's message of "Tue\, 23 Sep 2008 21\:57\:54 -0500")
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello,
+Grant Taylor <gtaylor@riverviewtech.net> writes:
 
-I would like to know, that if I have a filter like the one shown below 
-(allowing outgoing connections of every protocol-type), does netfilter stores 
-in the state of the established outgoing connection also the protocol which 
-established the connection? (TCP, UDP, ....) Or does it opens the connection 
-for any protocol?
+> You /might/ be able to catch some traffic *if* the Linux TCP/IP stack
+> thought that it was appropriately addressed to the system.
 
-iptables -A FORWARD -i eth0 --ctstate NEW, RELATED, ESTABLISHED -j ACCEPT
+That is exactly the problem. The network stack doesn't think it needs
+to do anything with the packets.
+
+> I think you will have better luck doing this with bridging as bridging
+> is (more) accustom to dealing with traffic that may or may not be
+> addressed to the local system.
+
+If the kernel has to forward the packet, the performance advantages of
+using NFLOG probably disappear.
+
+I guess I'm sticking to libpcap then.
 
 
-Thanks in advance
--- 
-Christoph Paasch
-www.rollerbulls.be
---
+/Benny
 
