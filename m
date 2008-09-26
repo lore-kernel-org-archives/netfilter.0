@@ -1,31 +1,21 @@
-From: Jason Cosby <sky_jason@yahoo.com>
-Subject: MAC Hash
-Date: Thu, 25 Sep 2008 15:18:06 -0700 (PDT)
-Message-ID: <604608.25377.qm@web37308.mail.mud.yahoo.com>
-Reply-To: sky_jason@yahoo.com
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: ULOG/NFLOG on a non-forwarding machine
+Date: Fri, 26 Sep 2008 10:43:34 +1000
+Message-ID: <48DC3036.1010103@snapgear.com>
+References: <m38wtjur74.fsf@ursa.amorsen.dk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <m38wtjur74.fsf@ursa.amorsen.dk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Benny Amorsen <benny+usenet@amorsen.dk>
+Cc: netfilter@vger.kernel.org
 
-All,
+Benny Amorsen wrote:
+> Is there a way to catch incoming traffic which is neither INPUT nor
+> FORWARD with netfilter?
 
-I have the following running on our server:
+Have you tried PREROUTING?
 
-for m in xx:xx:xx:xx:xx:xx...about 75 MACs
-do
-  iptables -t mangle -A PREROUTING -i eth1 -m mac --mac-source $m -j ACCEPT
-done
-
-iptables -t mangle -A PREROUTING -i eth1 DROP
-
-iptables -t mangle -A PREROUTING -i eth1 -m iprange ! --src-range \
-   192.168.1.1-192.168.1.74 -j DROP
-
-and encountered a noticable slowdown when I incorporated the above. Can anyone offer suggestions as to how to speed this up? I know that hash tables are out there, but I am not clear on their use. 
-
-Thanks,
-Jason
