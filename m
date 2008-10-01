@@ -1,90 +1,67 @@
-From: Marcio Veloso Antunes <mveloso@tecnologiaip.com.br>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Something weird
-Date: Wed, 1 Oct 2008 11:51:53 -0300
-Message-ID: <200810011151.53192.mveloso@tecnologiaip.com.br>
-References: <200810010834.51705.mveloso@tecnologiaip.com.br> <48E38584.60704@riverviewtech.net>
+Date: Wed, 01 Oct 2008 09:59:52 -0500
+Message-ID: <48E39068.9020908@riverviewtech.net>
+References: <200810010834.51705.mveloso@tecnologiaip.com.br> <48E38584.60704@riverviewtech.net> <200810011151.53192.mveloso@tecnologiaip.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48E38584.60704@riverviewtech.net>
-Content-Disposition: inline
+In-Reply-To: <200810011151.53192.mveloso@tecnologiaip.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Grant,
+On 10/01/08 09:51, Marcio Veloso Antunes wrote:
+> I found out what is happening, it is exactly what you've said.
 
-  I found out what is happening, it is exactly what you've said.
+*nod*
 
-  The reason this occurs is related to conntrack, the specific route is=
- getting up after=20
-the first packet leaves the internal network (via VPN interface, withou=
-t masquerade), then=20
-when the specific route enters, the connection has been established alr=
-eady.
+> The reason this occurs is related to conntrack, the specific route is 
+> getting up after the first packet leaves the internal network (via 
+> VPN interface, without masquerade), then when the specific route 
+> enters, the connection has been established already.
 
-=A0 Even when the interface changes from TUN0 to PPP0 the connection pe=
-rsists and the packets=20
-keep NOT being re-verified.
+That will do it.
 
-=A0 I don't know if it can be considered a Bug, but it seems to me an o=
-dd situation as the interface=20
-have changed, other networks will be crossed, i think the rules should =
-be re-validated, don't you ?
+> Even when the interface changes from TUN0 to PPP0 the connection 
+> persists and the packets keep NOT being re-verified.
 
-root@fw:/proc/net# grep 172.18.0.13 ip_conntrack
-udp =A0 =A0 =A017 2809 src=3D172.18.0.13 dst=3D200.198.184.204 sport=3D=
-5060 dport=3D5060 packets=3D977 bytes=3D537937 src=3D200.198.184.204 ds=
-t=3D172.18.0.13 sport=3D5060 dport=3D5060 packets=3D30 bytes=3D16384=20
-[ASSURED] mark=3D0 use=3D1
+'k
 
-=A0 Thanks for your help,
+> I don't know if it can be considered a Bug, but it seems to me an odd 
+> situation as the interface have changed, other networks will be 
+> crossed, i think the rules should be re-validated, don't you ?
 
-Em Quarta 01 Outubro 2008, voc=EA escreveu:
-> On 10/01/08 06:34, Marcio Veloso Antunes wrote:
-> > Can you bring me some light on why packets from 172.18.0.13 are
-> > crossing ppp0 whithout being masqueraded?
->
-> I can't tell for sure (you did not provide your IP addresses per say)
-> but it looks like the traffic is from your internal network and heade=
-d
-> for your external ppp0 interface its self.
->
-> Seeing as how you did not actually provide your IPs I'm guessing base=
-d
-> on the fact that you have a route of 200.198.184.204/32 on your ppp0
-> interface that said IP is bound to said interface.  If this is the ca=
-se,
-> it is possible that the traffic is entering the kernel and going up t=
-he
-> network stack directly rather than being forwarded like you would exp=
-ect.
->
-> I believe this is coming back to the fact that IPs are not bound to a=
-n
-> interface per say, but rather the computer and that in some situation=
-s
-> any interface in the system will take the traffic and pass it up in t=
-o
-> the network with out forwarding it over to the interface that it is
-> bound to before it takes the traffic and passes it higher in the
-> networking stack.
->
->
->
-> Grant. . . .
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I don't know if it is a bug per say or not.  I would guess it has to do 
+with whether or not the connection tracking code in kernel is aware of 
+interface / network / route state changes or not.  If it is unaware of 
+state changes then it is not possible for connection tracking to know 
+that something is amiss.  If it is aware of state change then I would 
+think that it should trap for this and handle it more gracefully than it 
+did, thus a possible bug.  But seeing as how I don't get that deep in to 
+kernel I can't say one way or the other.
+
+> root@fw:/proc/net# grep 172.18.0.13 ip_conntrack
+> udp      17 2809 src=172.18.0.13 dst=200.198.184.204 sport=5060 
+> dport=5060 packets=977 bytes=537937 src=200.198.184.204 
+> dst=172.18.0.13 sport=5060 dport=5060 packets=30 bytes=16384 
+> [ASSURED] mark=0 use=1
+
+Would it be possible to DROP the traffic before the VPN comes up such 
+that the connection would never be successfully established and then 
+allow the traffic once the VPN is up?  Hopefully this would allow 
+connection tracking to track the traffic on the proper interface.  Also, 
+make sure you use a DROP not a REJECT as you don't want to return an 
+error the the client application(s) thus causing them to give up rather 
+than timing out and re-trying like they would if the traffic was just 
+DROPed and lost in the ether.
+
+> Thanks for your help,
+
+If you consider a direction to look with out an answer help, you are 
+welcome.  ;)
 
 
 
---=20
-Marcio Veloso Antunes
-Tecnologia IP Ltda
-+55.21.3005.3004
-+55.11.3588.0802
-+55.21.8539.2949
+Grant. . . .
