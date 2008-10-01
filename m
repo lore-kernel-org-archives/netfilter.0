@@ -1,47 +1,69 @@
-From: "Servers 4you" <servers4you@gmail.com>
-Subject: --hex-string help with offsets.
-Date: Tue, 30 Sep 2008 21:07:36 -0300
-Message-ID: <98f5d92c0809301707j4d762534n3f83cab9f8088613@mail.gmail.com>
+From: Marcio Veloso Antunes <mveloso@tecnologiaip.com.br>
+Subject: Something weird
+Date: Wed, 1 Oct 2008 08:34:51 -0300
+Message-ID: <200810010834.51705.mveloso@tecnologiaip.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=AwkMuAFD82f5h/46cADBXxQO/cKSpAc2CBcviJRsbLs=;
-        b=UBykefuXvwGGhnQb850rMq4CcNsXDCZuu6q3BuJptd6IvS0I/iRuAwdPHpCq2N/mCd
-         j8cn9ADP4wnNjW+j7ZuNLIgb4yols2h67SjCrVKWOn2MQeONKInFq/vcQPimLEMSP7DG
-         p1pUTKyc3Gsoais4IBdenpm0pYlSPC03jcm0c=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-I have this packets:
+Hi people,
 
-8365 3f47 e5aab87c3563bb7885a2
-f76f 3f47 c58b189164198aabb126
-fc6a 3f47 c572c0cc0bcf542e32f3
-a988 3f47 2c3873bae9432f448c97
-9688 3f47 85dac8c05a130798cbbc
+  I'm asking for help because i'm getting crazy. :)
 
-like you see the package just repeat 3F47 in the same position, that
-why i use --hex-string becouse this packet come from any ip.
+  I have PPPoE connection Up, all my traffic is correctly masqueraded BUT an specific route is not being masqueraded, look:
 
-Iam ussing this rule atm:
+root@fw:/etc/ppp# iptables -L -nv -t nat
+...
+Chain POSTROUTING (policy ACCEPT 1759 packets, 154K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 MASQUERADE  all  --  *      ppp0    172.18.0.128/28      0.0.0.0/0
+   54  4477 MASQUERADE  all  --  *      ppp0    172.18.0.0/24        0.0.0.0/0
 
-iptables -A INPUT -p tcp --dport 38500:38600 -m string --hex-string
-"|3f 47|" --from 42 --to 44 --algo bm -j DROP
+root@fw:/etc/ppp# tcpdump -i ppp0 -n port 5060
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on ppp0, link-type LINUX_SLL (Linux cooked), capture size 96 bytes
+08:24:04.072325 IP 172.18.0.13.5060 > 200.198.184.204.5060: SIP, length: 422
+08:24:06.076677 IP 172.18.0.13.5060 > 200.198.184.204.5060: SIP, length: 422
 
-but im not sure about if gonna work.
+My route table is:
+root@fw:/etc/ppp# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+200.198.184.204 0.0.0.0         255.255.255.255 UH    0      0        0 ppp0
+200.222.117.82  0.0.0.0         255.255.255.255 UH    0      0        0 ppp0
+10.8.0.1        0.0.0.0         255.255.255.255 UH    0      0        0 tun0
+200.198.184.196 10.8.0.1        255.255.255.252 UG    0      0        0 tun0
+200.198.184.200 10.8.0.1        255.255.255.248 UG    0      0        0 tun0
+172.18.2.128    0.0.0.0         255.255.255.240 U     0      0        0 eth0
+172.18.0.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0
+172.18.1.0      0.0.0.0         255.255.255.0   U     0      0        0 eth0
+172.25.0.0      10.8.0.1        255.255.255.0   UG    0      0        0 tun0
+172.21.0.0      10.8.0.1        255.255.255.0   UG    0      0        0 tun0
+172.20.0.0      10.8.0.1        255.255.0.0     UG    0      0        0 tun0
+127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
+0.0.0.0         0.0.0.0         0.0.0.0         U     0      0        0 ppp0
 
-I need some info about, how check the offset from where start --FROM
-and --TO or another way to do this.
-I ust get 42/44 makeing test, but i dont have a good idea about how
-works the --from --to system.
+and my masquerade config is:
+...
+IPTABLES="/usr/sbin/iptables"
+EXT="ppp0"
+NET_INTERNA="172.18.0.0/24"
+...
+$IPTABLES -t nat -A POSTROUTING -o $EXT -s $NET_INTERNA                -j MASQUERADE
 
+Can you bring me some light on why packets from 172.18.0.13 are crossing ppp0 whithout being masqueraded ?
+I am lost.
 
-thanks in advance.
+Thanks a lot,
+
+-- 
+Marcio Veloso Antunes
+Tecnologia IP Ltda
++55.21.3005.3004
++55.11.3588.0802
++55.21.8539.2949
