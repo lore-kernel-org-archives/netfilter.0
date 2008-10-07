@@ -1,64 +1,47 @@
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: Re: iptables execution with sudo fails
-Date: Mon, 06 Oct 2008 08:19:50 -0500
-Message-ID: <1223299190.4745.316.camel@grateful.d.umn.edu>
-References: <548BC174642DC44AB25D749C28840FD308C72D7F@ZMY16EXM66.ds.mot.com>
+From: "Sebastian Seemann" <MisterSeaman@gmx.de>
+Subject: Re: Re:
+Date: Tue, 07 Oct 2008 11:26:12 +0200
+Message-ID: <20081007092612.44400@gmx.net>
+References: <S1752389AbYJDKwq/20081004105246Z+121@vger.kernel.org>
+ <20081004112000.258830@gmx.net> <48E84D36.20206@riverviewtech.net>
+ <j9lge49sifmaovo3en60ss9am36lbi4g76@4ax.com> <20081005084518.61060@gmx.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-8ZnHfybpP8+WXuLpif3F"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <548BC174642DC44AB25D749C28840FD308C72D7F@ZMY16EXM66.ds.mot.com>
+In-Reply-To: <20081005084518.61060@gmx.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Tanneeru Muralidhar Babu-A19589 <muralidharbabu@motorola.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
+  -------- Original-Nachricht -------- > Datum: Sun, 05 Oct 2008 10:45:=
+18 +0200 > Von: "Sebastian Seemann" <MisterSeaman@gmx.de> > An: netfilt=
+er@vger.kernel.org > Betreff: Re: Re:  > > On Sun, 05 Oct 2008 00:14:30=
+ -0500, Grant Taylor
+> > >I would be tempted to re-write your rule like this
+> > >
+> > >    iptables -A INPUT ! -m geoip --src-cc [country] -j ACCEPT
+>=20
+> > >The difference being that you are moving the negative logic out of=
+ an=20
+> > >unpredictable failure situation (GeoIP not knowing where the IP is
+> from)=20
+> > >to a controlled situation (IPTables inverting the result of a matc=
+h=20
+> > >extension).
+> Ah, I see. So simple but so great. Thank you.
+In fact, sadly this doesn't seem to work in general. iptables reports=20
+"unexpected ! flag before match". This was with iptables 1.4.0. Any=20
+other ideas?
 
---=-8ZnHfybpP8+WXuLpif3F
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2008-10-06 at 12:56 +0800, Tanneeru Muralidhar Babu-A19589
-wrote:
-> Hi,
-> =20
-> While executing iptables command using sudo on my system (running MV
-> 2.6.10), I see following errors. Could someone please help me understand
-> this error ?
-> =20
-> sudo:        0 : uid 0 does not exist in the passwd file! ; TTY=3Dunknown
-> ; PWD=3Dunknown ; USER=3Droot ; COMMAND=3D/sbin/iptables
-> =20
-> Is this a problem with passwd file ? Under what circumstances do we see
-> this error ?
-
-Do other commands work with sudo?
-
-What is the exact syntax of the command you are trying to run?
-
-What is the contents of /etc/sudoers?
+Regards,
+Sebastian
 
 --=20
-Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
-University of Minnesota Duluth
-Information Technology Systems & Services
-PGP key 1024D/84E22DA2 2005-11-07
-Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
+Der GMX SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!=20
+Ideal f=FCr Modem und ISDN: http://www.gmx.net/de/go/smartsurfer
 
-He is not a fool who gives up what he cannot keep to gain what he cannot
-lose.
--Jim Elliot
-
---=-8ZnHfybpP8+WXuLpif3F
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkjqEHUACgkQU+eIf4TiLaKTrQCghiSQwjpuzBRtuockVSR5O90u
-YwIAoJ15Dl9nqI3cuR+Qzt+Xw8M1MeyJ
-=0XYJ
------END PGP SIGNATURE-----
-
---=-8ZnHfybpP8+WXuLpif3F--
-
+--=20
+GMX startet ShortView.de. Hier findest Du Leute mit Deinen Interessen!
+Jetzt dabei sein: http://www.shortview.de/wasistshortview.php?mc=3Dsv_e=
+xt_mf@gmx
