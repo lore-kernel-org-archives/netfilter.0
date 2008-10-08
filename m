@@ -1,70 +1,100 @@
-From: okahei@gmail.com
-Subject: Problems with DNAT UDP
-Date: Wed, 8 Oct 2008 13:43:28 +0200
-Message-ID: <ab52e4180810080443q48743098u4becd5cd029bd087@mail.gmail.com>
+From: "Michel Benoit" <murpme@gmail.com>
+Subject: Re: IP forwarding with MASQUERADE
+Date: Wed, 8 Oct 2008 18:12:40 +0200
+Message-ID: <c88e466f0810080912s46f24354xc8e5fa7aae12a4f8@mail.gmail.com>
+References: <c88e466f0810030507x7e601d09q1034c7cc18be9b57@mail.gmail.com>
+	 <48E62AD3.9060001@riverviewtech.net>
+	 <c88e466f0810070858o18687b09yabd9cc7e5a46391@mail.gmail.com>
+	 <48EBA72B.80306@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=XlRtNR2beiYXb0WLiLM29Vdhkc/jIRLhQsd1NxxMUOY=;
-        b=r1kCHFQseNQ23jMYZRXMwRg/FGu68wBQnV0lfKqnh5WQkfgxoW4F/Os/xI7asJmLrt
-         w0hStmJa+KM9fbs3fLy5tlBYFISwyk/T8+IZ/q8i7dTMGgSXWV2T2MzleiWq/XV63uzw
-         2ph3WqBZAskackUGscUl+G0SspYB04kfyBGnQ=
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=cBW5sYM40vvDOPYmn0TUbQvrzrewXAurmPm6wsmt8R0=;
+        b=nq+RmrA6M+/R9eKM2FSHBzaBVtqIzEpF6YXUp+26eS595e2T5yKzZx3V6NxeGsep4v
+         JDx/rSxUf6lHg1yD75Imb8vji6Vm2aYogxDayxHCYslrWKKNw6DtrTwp58KDDOKjXufr
+         AfNfvAG2iwcBnY2O7H/YO/K+HZCagzXWQEBC4=
+In-Reply-To: <48EBA72B.80306@riverviewtech.net>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello List.
+>
+> Am I correct in presuming that "mail1.telia.com" is 10.0.0.1?
+>
 
-I have some strange problems. (i tested it with Centos 2.4 kernel and
-Debian 2.6 kernel) with UDP traffic.
-
-One of my rules :
-
-0     0 DNAT       udp  --  eth3   *       0.0.0.0/0
-0.0.0.0/0           udp dpt:6977 to:192.168.3.4:6977
-
-port UDP 6977 on public interface DNATS to 192.168.3.4
-
-(i must say that i have six openvpn-tunnels through this firewall with
-no problems)
-
-The udp packet never match the iptable rule, and with tcpdump running
-on the firewall i see this :
-
-fir1:~# tcpdump -i any -qn host 189.XX.XX.XX
-tcpdump: WARNING: Promiscuous mode not supported on the "any" device
-tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
-listening on any, link-type LINUX_SLL (Linux cooked), capture size 96 bytes
-15:21:18.356144 IP 189.XX.XX.XX.6977 > 213.XX.XX.XX.6977: UDP, length 60
-15:21:18.356206 IP 213.XX.XX.XX > 189.XX.XX.XX: ICMP 213.XX.XX.XX udp
-port 6977 unreachable, length 96
-15:21:22.114444 IP 189.XX.XX.XX.6977 > 213.XX.XX.XX.6977: UDP, length 108
-15:21:22.114453 IP 213.XX.XX.XX > 189.XX.XX.XX: ICMP 213.XX.XX.XX udp
-port 6977 unreachable, length 144
-15:21:28.314972 IP 189.XX.XX.XX.6977 > 213.XX.XX.XX.6977: UDP, length 60
-15:21:28.314982 IP 213.XX.XX.XX > 189.XX.XX.XX: ICMP 213.XX.XX.XX udp
-port 6977 unreachable, length 96
-15:21:32.117147 IP 189.XX.XX.XX.6977 > 213.XX.XX.XX.6977: UDP, length 108
-15:21:32.117157 IP 213.XX.XX.XX > 189.XX.XX.XX: ICMP 213.XX.XX.XX udp
-port 6977 unreachable, length 144
+Yes.  I get the same result no matter what ip address I use.
 
 
-Well, if i switch openvpn conf to TCP-tunnel, i works great, but with
-UPD the traffic never goes inside the Kernel, never match iptables
-rules.
 
-With tcpdump i see that our firewall sends back "icmp udp port 6977 unreachable"
+>
+> I believe the connections that connection tracking is keeping track of are
+> listed somewhere in /proc, but I don't know where off hand.
 
-But with netcat i can reach this udp port from the firewall to
-192.168.3.4 and other six udp tunnels work great.
+Should the file /proc/net/ip_masquerade exist?
+I found some reference to it on the web but there does not seem to be
+such a file when I grep the source code.
+Are there any other files I can look at?
+/proc/net/ip_conntrack or /proc/net/nf_conntrack for example
 
-Anyone knows what is happening ?
+>> Can the combination of iptables v1.3.8 and linux kernel v2.6.25 be out of
+>> synch or corrupted?
+>
+> I would not think.  Usually if you have a mis-match between the iptables
+> binary and the kernel you will get an error indicating such, not a weird
+> mis-behavior like you are seeing.
 
-Regards
+Can netfilter be broken in 2.6.25?  Has anything changed in the
+netfilter kernel code recently?
+
+>
+> The only thing that comes to mind is that there is something stale in your
+> IPTables rules in memory.  Will you please do an iptables-save and show us
+> the output?
+>
+
+# iptables-save
+# Generated by iptables-save v1.3.8 on Wed Oct  8 17:48:35 2008
+*raw
+:PREROUTING ACCEPT [12:1335]
+:OUTPUT ACCEPT [8:672]
+COMMIT
+# Completed on Wed Oct  8 17:48:35 2008
+# Generated by iptables-save v1.3.8 on Wed Oct  8 17:48:35 2008
+*nat
+:PREROUTING ACCEPT [3:427]
+:POSTROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [3:252]
+-A POSTROUTING -j LOG --log-prefix "msk:"
+-A POSTROUTING -o ppp0 -j MASQUERADE
+COMMIT
+# Completed on Wed Oct  8 17:48:35 2008
+# Generated by iptables-save v1.3.8 on Wed Oct  8 17:48:35 2008
+*mangle
+:PREROUTING ACCEPT [12:1335]
+:INPUT ACCEPT [11:1251]
+:FORWARD ACCEPT [1:84]
+:OUTPUT ACCEPT [8:672]
+:POSTROUTING ACCEPT [9:756]
+COMMIT
+# Completed on Wed Oct  8 17:48:35 2008
+# Generated by iptables-save v1.3.8 on Wed Oct  8 17:48:35 2008
+*filter
+:INPUT ACCEPT [11:1251]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [8:672]
+-A INPUT -j LOG --log-prefix "in:"
+-A FORWARD -j LOG --log-prefix "fwd:"
+-A FORWARD -i ppp0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i eth0 -j ACCEPT
+-A OUTPUT -j LOG --log-prefix "out:"
+COMMIT
+# Completed on Wed Oct  8 17:48:35 2008
+#
