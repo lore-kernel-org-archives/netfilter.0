@@ -1,91 +1,80 @@
-From: "Servers 4you" <servers4you@gmail.com>
-Subject: Re: block packet by size
-Date: Wed, 8 Oct 2008 16:38:05 -0300
-Message-ID: <98f5d92c0810081238t38d7aa89je8cf9a977986517c@mail.gmail.com>
-References: <98f5d92c0810080921t6232cebai52c6128cf655e731@mail.gmail.com>
-	 <20081008165852.GA25766@khasse.inl.fr>
-	 <98f5d92c0810081003p67913c73tf89e93147b4d3bef@mail.gmail.com>
-	 <20081008181952.GA21177@outback.rfc2324.org>
+From: Brent Clark <brentgclarklist@gmail.com>
+Subject: Different kind transparent proxy
+Date: Thu, 09 Oct 2008 13:01:42 +0200
+Message-ID: <48EDE496.8000900@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=q1+MDCyoleq7bKPQuWoMFPsmfQMPCri+kShrl4fwCDw=;
-        b=MLgShaqjknxPHiej4wd6j4P1K5fsOJAe5X5NJqB1+JtyukNZOJJVoC/f7QirVY92vI
-         eLD/8Ha++rgbDPZsQ5VqlqDL1SjDIhnAtmlRxkz94Ssc/MJM92bLwDj9WjeU6hkgeoLx
-         MnBOF4xwAcVo5rtjoFQvQx+3jRQnP6fpLtxjc=
-In-Reply-To: <20081008181952.GA21177@outback.rfc2324.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
 
-Well wireshark separate the packet in 5 part:
+Hi
 
-frame -> all the packet
-ethernet II -> len: 14
-internet protocol -> len 20
-transmission control protocol -> change
-data -> my packet always have len = 14
+I have a basic home setup, the router / gate and the proxy server sit on 
+different machines (Dont want squid on the FW).
+
+I have a client that I want to access the web, but via squid.
+
+The proxy and the client, both are on the same LAN etc.
+
+Here are my rules.
+
+For PREROUTING nat I have
+186 10692 DNAT       tcp  --  eth1   *      !192.168.111.9        
+0.0.0.0/0           multiport dports 80,443 to:192.168.111.9:3128
+
+In my FORWARD filter I have
+
+362 20472 LANWEB     tcp  --  *      *       0.0.0.0/0            
+0.0.0.0/0           tcp dpt:3128
+
+For my LANWEB chain I have
+
+Chain LANWEB (1 references)
+target     prot opt source               destination        
+LOG        tcp  --  0.0.0.0/0            192.168.111.9       LOG flags 0 
+level 4 prefix `ECCOWALL I'
+ACCEPT     tcp  --  0.0.0.0/0            192.168.111.9      
+LOG        tcp  --  0.0.0.0/0            192.168.111.9       LOG flags 0 
+level 4 prefix `ECCOWALL O'
+
+For some reason I cant get this working.
+I have a look at the squid logs and theres nothing.
+
+Using tcpdump on the gateway I am seeing,
+tcpdump -n -i eth1 port 3128
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth1, link-type EN10MB (Ethernet), capture size 96 bytes
+12:54:55.611493 IP 192.168.111.31.40550 > 192.168.111.9.3128: S 
+233035686:233035686(0) win 5840 <mss 1460,sackOK,timestamp 3618633 
+0,nop,wscale 6>
+12:54:55.611653 IP 192.168.111.9.3128 > 192.168.111.31.40550: S 
+1234458253:1234458253(0) ack 233035687 win 5792 <mss 
+1460,sackOK,timestamp 737699015 3618633,nop,wscale 2>
+
+And on squid
+
+root@eccowall:~# tcpdump -n port 3128
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
+12:56:42.322401 IP 192.168.111.31.42990 > 192.168.111.9.3128: S 
+1202540725:1202540725(0) win 5840 <mss 1460,sackOK,timestamp 3645306 
+0,nop,wscale 6>
+12:56:42.322693 IP 192.168.111.9.3128 > 192.168.111.31.42990: S 
+2913335189:2913335189(0) ack 1202540726 win 5792 <mss 
+1460,sackOK,timestamp 737725700 3645306,nop,wscale 2>
+12:56:42.322435 IP 192.168.111.31.42990 > 192.168.111.9.3128: R 
+1202540726:1202540726(0) win 0
+
+But i cant understand cause the browser is not displaying anything.
+
+If anyone could help, it would be appreciated.
+
+TIA
+
+Regards
+Brent Clark
 
 
-0000   00 30 48 97 47 07 00 1b 0d e6 57 c0 08 00 45 00
-0010   00 36 c4 c9 40 00 70 06 1b 5b 45 a2 42 a5 43 e4
-0020   5e 72 07 20 94 df 5f da e3 e0 db a8 f2 5e 50 18
-0030   45 10 dd 91 00 00 f7 6f 3f 47 c5 8b 18 91 64 19
-0040   8a a8 b1 26
-
-this its the complete packet, i want block the data part.
-
-i means this:
-
-0000   f7 6f 3f 47 c5 8b 18 91 64 19 8a a8 b1 26
-
-
-then waht i want is:
-
-block every single packet with DATA part len = 14.
-
-thanks
-
-
-
-
-2008/10/8 Maximilian Wilhelm <max@rfc2324.org>:
-> Anno domini 2008 Servers 4you scripsit:
->
->> 2008/10/8 Eric Leblond <eric@inl.fr>:
->
->> > man iptables :
->> >
->> >   length
->> >          This module matches the length of the layer-3 payload (e.g.
->                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> >          layer-4 packet) f a packet against a specific value or range
->> >          of values.
->> >
->> >   [!] --length length[:length]
->
->> yes i try see man page, but they dont explain if the size its: the
->> full packet size or the data part.
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> i have a packet with diffent total size (becouse the header change)
->> but always with 14bytes on data.
->
-> Which parts of the header changes in your setup?
-> What do you in general want to accomplish?
->
-> Ciao
-> Max
-> --
->        Follow the white penguin.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
