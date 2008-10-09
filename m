@@ -1,39 +1,39 @@
-From: "=?ISO-8859-2?Q?Karel_=D8e=F8icha?=" <karel@maxtel.cz>
-Subject: mark as hashkey in tc filter
-Date: Thu, 9 Oct 2008 15:41:52 +0200
-Message-ID: <5b19ed110810090641y5d768763q2d55cace9ee2b3d8@mail.gmail.com>
+From: "Michel Benoit" <murpme@gmail.com>
+Subject: Re: IP forwarding with MASQUERADE
+Date: Thu, 9 Oct 2008 18:36:33 +0200
+Message-ID: <c88e466f0810090936h7fb69cf1t62cffc8f9b0f3710@mail.gmail.com>
+References: <c88e466f0810030507x7e601d09q1034c7cc18be9b57@mail.gmail.com>
+	 <48E62AD3.9060001@riverviewtech.net>
+	 <c88e466f0810070858o18687b09yabd9cc7e5a46391@mail.gmail.com>
+	 <48EBA72B.80306@riverviewtech.net>
+	 <c88e466f0810080912s46f24354xc8e5fa7aae12a4f8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=V+AFTYJaLBFZNR8MHI/TURdsV/Fvzvm9tw6KIjZ93JU=;
+        b=iE/64/imhaQtJvNjDqrATNbqn84kZn/xNXReMMmAz+B4ZmnsL+CR0X0D4apmpDyrVF
+         4HLglJ+VXGdhl7xHfQDr+YsDe/6JPGSyHifyViGsLxVSYo1izsTx9HMFPqXvYs2B8L24
+         kKIXn3Q9yXlkgxZNUg7o/kewKNpAM+RtqZn9g=
+In-Reply-To: <c88e466f0810080912s46f24354xc8e5fa7aae12a4f8@mail.gmail.com>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello list,
+FYI, I tried running exactly the same script and configuration with
+linux kernel version 2.6.20.4 and it worked fine.
+Packets are correctly masquerade through the embedded linux box.
 
-is it possible to use mark value as hashkey when hashing tc filters ?
-So the command of creating hashing filter would for example looked
-like:
+Something must be wrong with my configuration or netfiler in my 2.6.25 kernel.
+Is anyone else succesfully running netfilter with MASQUERADE on a
+2.6.25 or 2.6.26 kernel.
+I will post something on the list when I figure out what I did wrong.
 
-tc filter add dev eth1 protocol ip parent 1:0 prio 5 u32 ht 800::
-match ip src 0.0.0.0/0 hashkey mark link 2:
-
-We have shaping and natting router with marking packets in iptables in
-2-level B-trees and selecting classes by marks in tc filters, but load
-is still quite high (thousands of customers, five priority subclasses
-in each customer class), so we would like to lower down load by
-implementing hashing filters. But current status of hashkey based only
-on IP address (looks like by using different offsets after "at"
-keyword any part of packet header can be used, but it is still useless
-for us) is not usable for us because of NAT.
-
-We cant use tc filters only because we need some capabilities of
-iptables. And splitting QOS and NAT into two different servers would
-not help much, because each customer can have multiple IP addresses
-(so would have to duplicate filter rules in different hash positions).
-
-I have found few people with same problem on google, but no solution yet.
-
-Karel Rericha
+Thanks for the help!
