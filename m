@@ -1,47 +1,69 @@
-From: okahei@gmail.com
-Subject: CONNMARK target
-Date: Sun, 12 Oct 2008 19:12:58 +0200
-Message-ID: <ab52e4180810121012he399cf3pb7c1a4b9474f872f@mail.gmail.com>
+From: Denys Fedoryshchenko <denys@visp.net.lb>
+Subject: conntrack timers usage
+Date: Mon, 13 Oct 2008 01:49:25 +0300
+Message-ID: <200810130149.25635.denys@visp.net.lb>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=jdkae7WZsgSnq8BO9nySqGnrT5Th2UpA9YOc0yvSGFw=;
-        b=d1Vz6lztmB7I2NvPxJhmFXwY7bIkD9vFjDoS22E7/Z4xWWU1ErynxcYfa1diaqD9bH
-         fouT2gctB6X8PKx3B6kbClx75PTyYlFk1of8G3to8Yhc3PkOtag8P1J7IZRVEhVTebvz
-         TqYwvW0mvtPNM+uyPLZaWcjgYpvMbMtP+jkHk=
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: netdev@vger.kernel.org, netfilter@vger.kernel.org
 
-Hello list.
+The story with excessive timers usage continue.
 
-I've got a question with CONNMARK target.
+Here is my results from /proc/timer_stats for 30 seconds (150Mbps traffic)
 
-It's possible to mark whole connection playing with this parameter ?
+This is "non-netfilter" related events
 
-What i want is when a packet arrives to port 6900 UDP of firewall,
-mark it with 0x99, and when the response packet arrives again from DMZ
-interface of the firewall, are marked again with 0x99.
+Router-Dora ~ # cat /proc/timer_stats |grep -v '__nf'
+Timer Stats Version: v0.2
+Sample period: 30.002 s
+Overflow: 45261 entries
+  300,  3308 insmod           ipmi_init_msghandler (ipmi_timeout)
+ 1032,     1 swapper          neigh_table_init_no_netlink 
+(neigh_periodic_timer)
+    3,     0 swapper          sk_reset_timer (tcp_delack_timer)
+  298,  1342 vconfig          garp_join_timer_arm (garp_join_timer)
+ 1621,     0 swapper          qdisc_watchdog_schedule (qdisc_watchdog)
+  169,     6 ksoftirqd/1      qdisc_watchdog_schedule (qdisc_watchdog)
+    3,     6 ksoftirqd/1      neigh_add_timer (neigh_timer_handler)
+ 1417,     0 swapper          qdisc_watchdog_schedule (qdisc_watchdog)
+    2,     6 ksoftirqd/1      neigh_add_timer (neigh_timer_handler)
+  294,  1352 vconfig          garp_join_timer_arm (garp_join_timer)
+   15,     0 swapper          e1000_intr (e1000_watchdog)
+    3,     1 swapper          enqueue_task_rt (sched_rt_period_timer)
+   60,     0 swapper          clocksource_register (clocksource_watchdog)
+    2,  5003 sshd             sk_reset_timer (tcp_write_timer)
+  30D,     1 swapper          schedule_delayed_work_on (delayed_work_timer_fn)
+   30,  1128 insmod           queue_delayed_work (delayed_work_timer_fn)
+  30D,     1 swapper          schedule_delayed_work_on (delayed_work_timer_fn)
+    1,     0 swapper          neigh_add_timer (neigh_timer_handler)
+    1,     0 swapper          neigh_add_timer (neigh_timer_handler)
+6318 total events, 210.429 events/sec
 
-I want to mark only packets arrives from one interface of the firewall
-plus the response must be marked too "dinamicaly".
+And here is netfilter usage, looks like ....
+I did also sysctl -w net.netfilter.nf_conntrack_acct=0
 
-I can mark all outgoing packets src port 6900 udp coming from DMZ
-iface, but thats not what i want to do, becouse i want tou route
-packets back through the corresponding inet iface that thouse udp
-packets coming.
+   1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
+    1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
+    1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
+    1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
+    1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
+    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
+    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
+    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
+    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
+    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
+    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
+    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
+    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
+....
 
-Then i can do something like:
+Router-Dora ~ # cat /proc/timer_stats |grep '__nf'|wc -l
+1005
 
-ip rule add fwmark 0x99 lookup table2
+Is it important to do so much calls to timers in conntrack?
+Precision on it is not more than 1 second.
 
-Is this possible ?
-
-regards
