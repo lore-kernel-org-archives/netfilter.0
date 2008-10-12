@@ -1,42 +1,47 @@
-From: Huang Weiyi <weiyi.huang@gmail.com>
-Subject: netfilter: remove unused #include <version.h>
-Date: Sun, 12 Oct 2008 23:12:51 +0800
-Message-ID: <20081012231045.E7EC.WEIYI.HUANG@gmail.com>
+From: okahei@gmail.com
+Subject: CONNMARK target
+Date: Sun, 12 Oct 2008 19:12:58 +0200
+Message-ID: <ab52e4180810121012he399cf3pb7c1a4b9474f872f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:date:from:to:subject:cc
-         :message-id:mime-version:content-type:content-transfer-encoding
-         :x-mailer;
-        bh=/Clstd/jXVwSjoUidDWhcFRr1S9loYFqJzTtevXQJ7E=;
-        b=ULKrLbajFwRMSdbTrv5+JW+tk3ZQCRo9YhGbMhUqdiOsB+yb4V0Ze9S2Wd2HY8LuUt
-         +0P7zGXOr9aooxJcb3l1WmUOlQLwxYslrilE3Mc73TEihQSimDMeTk7AN349H3gv9nwK
-         Qz1W6HE97K9SLHTS8rKTuJGOVpEzxiUCwoFh4=
-Sender: netfilter-devel-owner@vger.kernel.org
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=jdkae7WZsgSnq8BO9nySqGnrT5Th2UpA9YOc0yvSGFw=;
+        b=d1Vz6lztmB7I2NvPxJhmFXwY7bIkD9vFjDoS22E7/Z4xWWU1ErynxcYfa1diaqD9bH
+         fouT2gctB6X8PKx3B6kbClx75PTyYlFk1of8G3to8Yhc3PkOtag8P1J7IZRVEhVTebvz
+         TqYwvW0mvtPNM+uyPLZaWcjgYpvMbMtP+jkHk=
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: kaber@trash.net
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+To: netfilter@vger.kernel.org
 
-The file(s) below do not use LINUX_VERSION_CODE nor KERNEL_VERSION.
-  net/netfilter/nf_tproxy_core.c
+Hello list.
 
-This patch removes the said #include <version.h>.
+I've got a question with CONNMARK target.
 
-Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
+It's possible to mark whole connection playing with this parameter ?
 
-diff --git a/net/netfilter/nf_tproxy_core.c b/net/netfilter/nf_tproxy_core.c
-index fe34f4b..cdc97f3 100644
---- a/net/netfilter/nf_tproxy_core.c
-+++ b/net/netfilter/nf_tproxy_core.c
-@@ -10,7 +10,6 @@
-  *
-  */
+What i want is when a packet arrives to port 6900 UDP of firewall,
+mark it with 0x99, and when the response packet arrives again from DMZ
+interface of the firewall, are marked again with 0x99.
 
--#include <linux/version.h>
- #include <linux/module.h>
+I want to mark only packets arrives from one interface of the firewall
+plus the response must be marked too "dinamicaly".
 
- #include <linux/net.h>
+I can mark all outgoing packets src port 6900 udp coming from DMZ
+iface, but thats not what i want to do, becouse i want tou route
+packets back through the corresponding inet iface that thouse udp
+packets coming.
 
+Then i can do something like:
+
+ip rule add fwmark 0x99 lookup table2
+
+Is this possible ?
+
+regards
