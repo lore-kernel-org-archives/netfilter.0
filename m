@@ -1,50 +1,42 @@
-From: Yawhen Kasarzhewski <yevg@pisem.net>
-Subject: Re: Expectation table size
-Date: Sat, 11 Oct 2008 15:12:03 +0300
-Message-ID: <48F09813.8080600@pisem.net>
-References: <48EF68D6.7020807@pisem.net> <20081010170650.GD11769@bayen.regit.org>
+From: Huang Weiyi <weiyi.huang@gmail.com>
+Subject: netfilter: remove unused #include <version.h>
+Date: Sun, 12 Oct 2008 23:12:51 +0800
+Message-ID: <20081012231045.E7EC.WEIYI.HUANG@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20081010170650.GD11769@bayen.regit.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:date:from:to:subject:cc
+         :message-id:mime-version:content-type:content-transfer-encoding
+         :x-mailer;
+        bh=/Clstd/jXVwSjoUidDWhcFRr1S9loYFqJzTtevXQJ7E=;
+        b=ULKrLbajFwRMSdbTrv5+JW+tk3ZQCRo9YhGbMhUqdiOsB+yb4V0Ze9S2Wd2HY8LuUt
+         +0P7zGXOr9aooxJcb3l1WmUOlQLwxYslrilE3Mc73TEihQSimDMeTk7AN349H3gv9nwK
+         Qz1W6HE97K9SLHTS8rKTuJGOVpEzxiUCwoFh4=
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eric Leblond <eric@inl.fr>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: kaber@trash.net
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-Hi,
+The file(s) below do not use LINUX_VERSION_CODE nor KERNEL_VERSION.
+  net/netfilter/nf_tproxy_core.c
 
-this helped a bit. But I am still receving following:
+This patch removes the said #include <version.h>.
 
-nf_ct_h323: incomplete TPKT (fragmented?)
-nf_ct_q931: packet dropped
+Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
 
-Are there any unconfigured kernel parameters that cause these messages 
-or can I safely ignore them?
+diff --git a/net/netfilter/nf_tproxy_core.c b/net/netfilter/nf_tproxy_core.c
+index fe34f4b..cdc97f3 100644
+--- a/net/netfilter/nf_tproxy_core.c
++++ b/net/netfilter/nf_tproxy_core.c
+@@ -10,7 +10,6 @@
+  *
+  */
 
-Eric Leblond wrote:
-> Hi,
->
-> On Friday, 2008 October 10 at 17:38:14 +0300, Yawhen Kasarzhewski wrote:
->   
->> Hi,
->>
->> does any one know which is the default expectation table size and how to  
->> enlarge it?
->>
->> I get lots of messages in dmegs like:
->>
->> nf_ct_q931: packet dropped
->> __ratelimit: 129 messages suppressed
->> nf_conntrack: expectation table full
->>     
->
->
-> You can try to use :
-> 	/proc/sys/net/netfilter/nf_conntrack_expect_max
->
-> It should behave like /proc/sys/net/netfilter/nf_conntrack_max.
->
-> BR,
->   
+-#include <linux/version.h>
+ #include <linux/module.h>
+
+ #include <linux/net.h>
 
