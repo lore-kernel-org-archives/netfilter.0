@@ -1,47 +1,45 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: conntrack timers usage
-Date: Mon, 13 Oct 2008 15:20:39 +0200
-Message-ID: <48F34B27.50001@trash.net>
-References: <200810130149.25635.denys@visp.net.lb>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: CONNMARK target
+Date: Mon, 13 Oct 2008 17:10:07 +0200
+Message-ID: <20081013151007.GE4148@khasse.inl.fr>
+References: <ab52e4180810121012he399cf3pb7c1a4b9474f872f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <200810130149.25635.denys@visp.net.lb>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <ab52e4180810121012he399cf3pb7c1a4b9474f872f@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Denys Fedoryshchenko <denys@visp.net.lb>
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: okahei@gmail.com
+Cc: netfilter@vger.kernel.org
 
-Denys Fedoryshchenko wrote:
-> The story with excessive timers usage continue.
-> 
-> Here is my results from /proc/timer_stats for 30 seconds (150Mbps traffic)
-> ...
-> And here is netfilter usage, looks like ....
-> I did also sysctl -w net.netfilter.nf_conntrack_acct=0
-> 
->    1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
->     1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
->     1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
->     1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
->     1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
->     1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
->     1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
->     1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
->     1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
->     1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
->     1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
->     1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
->     1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
-> ....
-> 
-> Router-Dora ~ # cat /proc/timer_stats |grep '__nf'|wc -l
-> 1005
-> 
-> Is it important to do so much calls to timers in conntrack?
-> Precision on it is not more than 1 second.
+Hi,
 
-There's one timer per conntrack. As you noticed, we only update
-timers for delta >= 1s, but with many conntracks, that still adds
-up to a lot.
+On Sunday, 2008 October 12 at 19:12:58 +0200, okahei@gmail.com wrote:
+> Hello list.
+> 
+> I've got a question with CONNMARK target.
+> 
+> It's possible to mark whole connection playing with this parameter ?
+> 
+> What i want is when a packet arrives to port 6900 UDP of firewall,
+> mark it with 0x99, and when the response packet arrives again from DMZ
+> interface of the firewall, are marked again with 0x99.
+
+You can get some information a connmark on the following page :
+	http://home.regit.org/?page_id=7
+
+Basically, what you want to add to your ruleset is :
+iptables -A POSTROUTING -t mangle -j CONNMARK --restore-mark
+iptables -A POSTROUTING -t mangle -j CONNMARK --save-mark
+
+First one restore mark when packet arrive (It put connection mark to the
+pt mark.. Second one save packet mark to connection mark to be able
+to restore it later (with --restore-mark).
+
+BR,
+-- 
+Eric Leblond
+INL: http://www.inl.fr/
+NuFW: http://www.nufw.org/
