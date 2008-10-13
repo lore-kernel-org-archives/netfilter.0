@@ -1,69 +1,26 @@
-From: Denys Fedoryshchenko <denys@visp.net.lb>
-Subject: conntrack timers usage
-Date: Mon, 13 Oct 2008 01:49:25 +0300
-Message-ID: <200810130149.25635.denys@visp.net.lb>
+From: David Miller <davem@davemloft.net>
+Subject: Re: netfilter: remove unused #include <version.h>
+Date: Sun, 12 Oct 2008 21:08:42 -0700 (PDT)
+Message-ID: <20081012.210842.148758498.davem@davemloft.net>
+References: <20081012231045.E7EC.WEIYI.HUANG@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20081012231045.E7EC.WEIYI.HUANG@gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netdev@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: weiyi.huang@gmail.com
+Cc: kaber@trash.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-The story with excessive timers usage continue.
+From: Huang Weiyi <weiyi.huang@gmail.com>
+Date: Sun, 12 Oct 2008 23:12:51 +0800
 
-Here is my results from /proc/timer_stats for 30 seconds (150Mbps traffic)
+> The file(s) below do not use LINUX_VERSION_CODE nor KERNEL_VERSION.
+>   net/netfilter/nf_tproxy_core.c
+> 
+> This patch removes the said #include <version.h>.
+> 
+> Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
 
-This is "non-netfilter" related events
-
-Router-Dora ~ # cat /proc/timer_stats |grep -v '__nf'
-Timer Stats Version: v0.2
-Sample period: 30.002 s
-Overflow: 45261 entries
-  300,  3308 insmod           ipmi_init_msghandler (ipmi_timeout)
- 1032,     1 swapper          neigh_table_init_no_netlink 
-(neigh_periodic_timer)
-    3,     0 swapper          sk_reset_timer (tcp_delack_timer)
-  298,  1342 vconfig          garp_join_timer_arm (garp_join_timer)
- 1621,     0 swapper          qdisc_watchdog_schedule (qdisc_watchdog)
-  169,     6 ksoftirqd/1      qdisc_watchdog_schedule (qdisc_watchdog)
-    3,     6 ksoftirqd/1      neigh_add_timer (neigh_timer_handler)
- 1417,     0 swapper          qdisc_watchdog_schedule (qdisc_watchdog)
-    2,     6 ksoftirqd/1      neigh_add_timer (neigh_timer_handler)
-  294,  1352 vconfig          garp_join_timer_arm (garp_join_timer)
-   15,     0 swapper          e1000_intr (e1000_watchdog)
-    3,     1 swapper          enqueue_task_rt (sched_rt_period_timer)
-   60,     0 swapper          clocksource_register (clocksource_watchdog)
-    2,  5003 sshd             sk_reset_timer (tcp_write_timer)
-  30D,     1 swapper          schedule_delayed_work_on (delayed_work_timer_fn)
-   30,  1128 insmod           queue_delayed_work (delayed_work_timer_fn)
-  30D,     1 swapper          schedule_delayed_work_on (delayed_work_timer_fn)
-    1,     0 swapper          neigh_add_timer (neigh_timer_handler)
-    1,     0 swapper          neigh_add_timer (neigh_timer_handler)
-6318 total events, 210.429 events/sec
-
-And here is netfilter usage, looks like ....
-I did also sysctl -w net.netfilter.nf_conntrack_acct=0
-
-   1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
-    1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
-    1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
-    1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
-    1,     0 swapper          __nf_ct_refresh_acct (death_by_timeout)
-    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
-    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
-    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
-    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
-    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
-    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
-    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
-    1,     0 swapper          __nf_conntrack_confirm (death_by_timeout)
-....
-
-Router-Dora ~ # cat /proc/timer_stats |grep '__nf'|wc -l
-1005
-
-Is it important to do so much calls to timers in conntrack?
-Precision on it is not more than 1 second.
-
+Applied, thank you.
