@@ -1,7 +1,7 @@
 From: Richard Barry <richard@multenet.com>
 Subject: iptables install
-Date: Thu, 16 Oct 2008 16:26:07 +0200
-Message-ID: <48F74EFF.5050807@multenet.com>
+Date: Thu, 16 Oct 2008 16:11:41 +0200
+Message-ID: <48F74B9D.10907@multenet.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -79,10 +79,22 @@ target     prot opt source               destination
 
 ------------ Output end
 
-What modules could it be attempting to load?  Or should I disregard it and assume it's working? (It
+What modules could it be attempting to load?  Or should I disregard it and assume it's working? (It 
 looks like it works after a few simple tests)
 
 Regards,
 Richard Barry
 
 
+-- 
+Richard Barry
+Software Engineer
+
+Multenet Technologies (Pty) Ltd.
+P O Box 7155, Stellenbosch, 7599.
+The Vineyard Centre, Adam Tas Road,
+Stellenbosch, 7600.
+Tel: +27 21 882 8811
+Fax: +27 21 882 8825
+e-mail: richard@multenet.com
+website: www.multenet.com
