@@ -1,100 +1,45 @@
-From: Richard Barry <richard@multenet.com>
-Subject: iptables install
-Date: Thu, 16 Oct 2008 16:11:41 +0200
-Message-ID: <48F74B9D.10907@multenet.com>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: RE: General question about chains
+Date: Thu, 16 Oct 2008 09:41:56 -0700
+Message-ID: <48f76edb.14098e0a.10f3.2a43@mx.google.com>
+References: <001501c92f41$d380c0a0$7a8241e0$@net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:references
+         :in-reply-to:subject:date:mime-version:content-type
+         :content-transfer-encoding:x-mailer:content-language:thread-index
+         :message-id;
+        bh=JCA37GdhO90S+TTCNkfbO2qQ8Nah8BvhVLaiUUpFPOs=;
+        b=qQQEzaL6ocuMNneJ98Hq90q/SienMdWhOSBDkrK7coLLAXe7fvkqBFFwJDA1I8ognw
+         c5KAc4N25dCausQa11gT0VgUpglUnzQO/HJjQbN7VEU11erom5XOI3yeGTD3Hgs3OGIY
+         d0WiDNNtAjv975i3GEbCqYN72dTMMBsKItDeo=
+In-Reply-To: <001501c92f41$d380c0a0$7a8241e0$@net>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-I'm trying to build iptables-1.4.2 for a 2.6 kernel running on an
-embedded ARM device (up to now I've used 1.2.11 on a 2.4 kernel).  To
-build and install, I run:
 
-#./configure --host=arm --enable-static KERNEL_DIR=$KERNEL_SOURCE
-prefix=$BUILD_DIR CC=arm-9tdmi-linux-gnu-gcc LD=arm-9tdmi-linux-gnu-ld
-AR=arm-9tdmi-linux-gnu-ar
+> 
+> So my first question is do I understand correcty how to utilize chains?
+> 
+> Will I be able to load and unload chains rather than flush everything
+> end
+> reload everything? ( I have a lot of rules )
+> 
+> Sample syntax would be great because I have found a million sites
+> without
+> seeing what I really want.
+> 
 
-#make KERNEL_DIR=$KERNEL_SOURCE prefix= CC=arm-9tdmi-linux-gnu-gcc
-LD=arm-9tdmi-linux-gnu-ld AR=arm-9tdmi-linux-gnu-ar
+If you are talking about iptables-restore, you should use the "--noflush"
+flag.
+It will initialize (and completely override) only those chains defined in
+the input.
+Note, though, that it should include all chains referenced as targets of
+your rules within this input.
 
-#make KERNEL_DIR=$KERNEL_SOURCE prefix=$BUILD_DIR
-CC=arm-9tdmi-linux-gnu-gcc LD=arm-9tdmi-linux-gnu-ld
-AR=arm-9tdmi-linux-gnu-ar install
-
-In $BUILD_DIR/sbin , I then see "iptables-static".  Is that the binary I
-should run? Or put another way, should I rename "iptables-static" to
-"iptables" to use the same scripts and apps that expect a binary called
-"iptables"?  Why doesn't "make install" name it iptables?  Or am I doing
-something wrong on the install side?
-
-When I do rename it to "iptables", and I run iptables on the device, the
-output looks like it's still trying to load modules from somewhere, even
-though I used the --enable-static option when running configure.  The
-output:
-
---------Output start
-
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-modprobe: could not parse modules.dep
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-REJECT     udp  --  anywhere             anywhere            udp
-dpt:domain reject-with icmp-host-prohibited
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
------------- Output end
-
-What modules could it be attempting to load?  Or should I disregard it and assume it's working? (It 
-looks like it works after a few simple tests)
-
-Regards,
-Richard Barry
-
-
--- 
-Richard Barry
-Software Engineer
-
-Multenet Technologies (Pty) Ltd.
-P O Box 7155, Stellenbosch, 7599.
-The Vineyard Centre, Adam Tas Road,
-Stellenbosch, 7600.
-Tel: +27 21 882 8811
-Fax: +27 21 882 8825
-e-mail: richard@multenet.com
-website: www.multenet.com
