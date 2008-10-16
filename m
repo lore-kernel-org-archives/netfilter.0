@@ -1,109 +1,88 @@
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: Re: General question about chains
-Date: Thu, 16 Oct 2008 08:19:25 -0500
-Message-ID: <1224163165.3999.7.camel@grateful.d.umn.edu>
-References: <001501c92f41$d380c0a0$7a8241e0$@net>
+From: Richard Barry <richard@multenet.com>
+Subject: iptables install
+Date: Thu, 16 Oct 2008 16:26:07 +0200
+Message-ID: <48F74EFF.5050807@multenet.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Db9lu69lzoUEvOzjlnFc"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <001501c92f41$d380c0a0$7a8241e0$@net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Joey <Joey@Web56.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+I'm trying to build iptables-1.4.2 for a 2.6 kernel running on an
+embedded ARM device (up to now I've used 1.2.11 on a 2.4 kernel).  To
+build and install, I run:
 
---=-Db9lu69lzoUEvOzjlnFc
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+#./configure --host=arm --enable-static KERNEL_DIR=$KERNEL_SOURCE
+prefix=$BUILD_DIR CC=arm-9tdmi-linux-gnu-gcc LD=arm-9tdmi-linux-gnu-ld
+AR=arm-9tdmi-linux-gnu-ar
 
-On Wed, 2008-10-15 at 23:46 -0400, Joey wrote:
-> Hello All,
->=20
-> While I have used iptables for a while, I have found that I needed to gai=
-n
-> more knowledge to push what I am doing with it to another level.
->=20
-> I have read through a few things on-line and in the readme stuff, but hav=
-e
-> some confusion that I want to clear up.
->=20
-> I am thinking that a chain is a group of rules, and I can create multiple
-> chains to define rules for different things.
-> Lets say FTP-RULES, SPAM-RULES etc.
->=20
-> If I do this I can hopefully flush just one group or chain without effect=
-ing
-> the other rules is what I am thinking.
->=20
-> When I execute a rule I do this:
-> iptables -A INPUT -p tcp -s 118.242.0.0/16 -j LOG --log-prefix SPAM-BLOCK=
--
-> CIDR-ASIAN
-> iptables -A INPUT -p tcp -s 118.242.0.0/16 --dport 25 -j DROP
->=20
->=20
-> I wanted to change it to add it to a chain like so:
-> iptables CIDR-ASIAN -A INPUT -p tcp -s 118.242.0.0/16 -j LOG --log-prefix
-> SPAM-BLOCK-CIDR-ASIAN
-> iptables CIDR-ASIAN -A INPUT -p tcp -s 118.242.0.0/16 --dport 25 -j DROP
->=20
-> iptables -N CIDR-ASIAN -A INPUT -p tcp -s 118.242.0.0/16 -j LOG --log-pre=
-fix
-> SPAM-BLOCK-CIDR-ASIAN
-> iptables -N CIDR-ASIAN -A INPUT -p tcp -s 118.242.0.0/16 --dport 25 -j DR=
-OP
+#make KERNEL_DIR=$KERNEL_SOURCE prefix= CC=arm-9tdmi-linux-gnu-gcc
+LD=arm-9tdmi-linux-gnu-ld AR=arm-9tdmi-linux-gnu-ar
 
-# create the chain
-iptables -N CIDR-ASIAN
+#make KERNEL_DIR=$KERNEL_SOURCE prefix=$BUILD_DIR
+CC=arm-9tdmi-linux-gnu-gcc LD=arm-9tdmi-linux-gnu-ld
+AR=arm-9tdmi-linux-gnu-ar install
 
-# hook the chain into another chain (PREROUTING, INPUT, FORWARD, etc)
-iptables -A INPUT -j CIDR-ASIAN
+In $BUILD_DIR/sbin , I then see "iptables-static".  Is that the binary I
+should run? Or put another way, should I rename "iptables-static" to
+"iptables" to use the same scripts and apps that expect a binary called
+"iptables"?  Why doesn't "make install" name it iptables?  Or am I doing
+something wrong on the install side?
 
-# add rules to the new chain
-iptables -A CIDR-ASIAN -p tcp -s 118.242.0.0/16 -j LOG --log-prefix
-SPAM-BLOCK-CIDR-ASIAN
+When I do rename it to "iptables", and I run iptables on the device, the
+output looks like it's still trying to load modules from somewhere, even
+though I used the --enable-static option when running configure.  The
+output:
 
-iptables -A CIDR-ASIAN -p tcp -s 118.242.0.0/16 --dport 25 -j DROP=20
+--------Output start
 
-# flush the chain
-iptable -F CIDR-ASIAN
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+modprobe: could not parse modules.dep
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+REJECT     udp  --  anywhere             anywhere            udp
+dpt:domain reject-with icmp-host-prohibited
 
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
 
-> This didn't work for me and I have tried several varients with no luck.
->=20
-> So my first question is do I understand correcty how to utilize chains?
->=20
-> Will I be able to load and unload chains rather than flush everything end
-> reload everything? ( I have a lot of rules )
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
-I don't quite understand your question.
+------------ Output end
 
-You 'create' and 'delete' user-defined chains. You can, of course, flush
-chains individually as well.
+What modules could it be attempting to load?  Or should I disregard it and assume it's working? (It
+looks like it works after a few simple tests)
 
---=20
-Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
-University of Minnesota Duluth
-Information Technology Systems & Services
-PGP key 1024D/84E22DA2 2005-11-07
-Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
+Regards,
+Richard Barry
 
-He is not a fool who gives up what he cannot keep to gain what he cannot
-lose.
--Jim Elliot
-
---=-Db9lu69lzoUEvOzjlnFc
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkj3P1YACgkQU+eIf4TiLaJbZQCg6nhjU/Ps9WQI6R+HJ5nAHCgx
-ms4AoPAgjkzXQRmrZKfoMWFA+sGU9h/I
-=+Xo6
------END PGP SIGNATURE-----
-
---=-Db9lu69lzoUEvOzjlnFc--
 
