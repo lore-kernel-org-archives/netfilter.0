@@ -1,41 +1,40 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
 Subject: Re: Iptables execution time
-Date: Thu, 16 Oct 2008 19:48:58 +0200
-Message-ID: <48F77E8A.6080502@netfilter.org>
-References: <48F77A0F.1050405@unipex.it>
+Date: Thu, 16 Oct 2008 20:17:30 +0200
+Message-ID: <48F7853A.20500@unipex.it>
+References: <48F77A0F.1050405@unipex.it> <48F77E8A.6080502@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <48F77A0F.1050405@unipex.it>
+In-Reply-To: <48F77E8A.6080502@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-Michele Petrazzo - Unipex srl wrote:
-> Hi list,
-> I'm seeing that the execution of an iptables update via a shell script
-> take very different time into a my "in production" server and on my test
-> server. My script has about 1500 iptables commands and simple insert a
-> rule on a table.
+Pablo Neira Ayuso wrote:
+> I think that it's taking the time in forking and executing, but you 
+> can do some profiling so we can stop speculating.
 > 
-> On my in production server, it takes about 45 sec and on my test server 4!
-> My server are 2x Xeon 2.6GHz (so 4 cpus) with 2.6.26 on x86_64 SMP with
-> 2GB ram and my test server amd  3000+ with 2.6.26 i686 1GB,
+
+How do it? It's a "simple" script that repeater N times that same thing,
+more or less (where N are ~1500)
+
+And after, also if it's not a iptables-related question, why that so
+time for do the fork and execute when It's, at least, two time faster
+than the test one?
+
+>> P.s. Yes, I know that the same rules with iptables-restore on my 
+>> test server takes about 0.5 sec :)
 > 
-> Can be that, on the production server that has a lot of connection it
-> take so lot of time due the connections (I try to say that it has to "lock"
-> the kernel before and "unlock" after an iptables add) or there can be some
-> problems?
+> So, why don't you use that interface? :)
+> 
 
-I think that it's taking the time in forking and executing, but you can
-do some profiling so we can stop speculating.
 
-> P.s. Yes, I know that the same rules with iptables-restore on my test
-> server takes about 0.5 sec :)
+Why leave the right way for follow the new one that you don't know where
+it'll bing you? :). Ok I'll take a look for update my script system!
 
-So, why don't you use that interface? :)
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+Thanks,
+Michele
