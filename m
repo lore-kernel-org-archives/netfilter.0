@@ -1,45 +1,33 @@
-From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
-Subject: RE: General question about chains
-Date: Thu, 16 Oct 2008 09:41:56 -0700
-Message-ID: <48f76edb.14098e0a.10f3.2a43@mx.google.com>
-References: <001501c92f41$d380c0a0$7a8241e0$@net>
+From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
+Subject: Iptables execution time
+Date: Thu, 16 Oct 2008 19:29:51 +0200
+Message-ID: <48F77A0F.1050405@unipex.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:references
-         :in-reply-to:subject:date:mime-version:content-type
-         :content-transfer-encoding:x-mailer:content-language:thread-index
-         :message-id;
-        bh=JCA37GdhO90S+TTCNkfbO2qQ8Nah8BvhVLaiUUpFPOs=;
-        b=qQQEzaL6ocuMNneJ98Hq90q/SienMdWhOSBDkrK7coLLAXe7fvkqBFFwJDA1I8ognw
-         c5KAc4N25dCausQa11gT0VgUpglUnzQO/HJjQbN7VEU11erom5XOI3yeGTD3Hgs3OGIY
-         d0WiDNNtAjv975i3GEbCqYN72dTMMBsKItDeo=
-In-Reply-To: <001501c92f41$d380c0a0$7a8241e0$@net>
-Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
+Hi list,
+I'm seeing that the execution of an iptables update via a shell script
+take very different time into a my "in production" server and on my test
+server. My script has about 1500 iptables commands and simple insert a
+rule on a table.
 
-> 
-> So my first question is do I understand correcty how to utilize chains?
-> 
-> Will I be able to load and unload chains rather than flush everything
-> end
-> reload everything? ( I have a lot of rules )
-> 
-> Sample syntax would be great because I have found a million sites
-> without
-> seeing what I really want.
-> 
+On my in production server, it takes about 45 sec and on my test server 4!
+My server are 2x Xeon 2.6GHz (so 4 cpus) with 2.6.26 on x86_64 SMP with
+2GB ram and my test server amd  3000+ with 2.6.26 i686 1GB,
 
-If you are talking about iptables-restore, you should use the "--noflush"
-flag.
-It will initialize (and completely override) only those chains defined in
-the input.
-Note, though, that it should include all chains referenced as targets of
-your rules within this input.
+Can be that, on the production server that has a lot of connection it
+take so lot of time due the connections (I try to say that it has to "lock"
+the kernel before and "unlock" after an iptables add) or there can be some
+problems?
+
+Thanks,
+Michele
+
+P.s. Yes, I know that the same rules with iptables-restore on my test
+server takes about 0.5 sec :)
 
