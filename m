@@ -1,57 +1,109 @@
-From: Petr Pisar <petr.pisar@atlas.cz>
-Subject: Re: Transfer ipv6 packages over ipv4 iptables gateway to ipv4 ISP's network
-Date: Thu, 16 Oct 2008 07:16:02 +0000 (UTC)
-Message-ID: <slrngfdqhi.3bf.petr.pisar@album.ics.muni.cz>
-References: <1814bfe70810151332r61aa900see2931df5dddcdb0@mail.gmail.com>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: Re: General question about chains
+Date: Thu, 16 Oct 2008 08:19:25 -0500
+Message-ID: <1224163165.3999.7.camel@grateful.d.umn.edu>
+References: <001501c92f41$d380c0a0$7a8241e0$@net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Db9lu69lzoUEvOzjlnFc"
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <001501c92f41$d380c0a0$7a8241e0$@net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Joey <Joey@Web56.net>
+Cc: netfilter@vger.kernel.org
 
-On 2008-10-15, Elvir Kuric <omasnjak@gmail.com> wrote:
->
-> I am wondering does someone has experinece with translation from ipv6
-> ---> ipv4
 
-`Translating' is not proper word unless you mean real NAT-PT (Network
-address translation and protocol translation).
+--=-Db9lu69lzoUEvOzjlnFc
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-If you want just to connect your IPv6 island via IPv4 Internet to native IPv6
-Internet backbone (i.e. bypass your lazy ISP), use 6to4 (in case you
-have public IPv4 address on your gateway) or AYIYA (in other case). This
-is called tunneling and former post enlightened it already.
+On Wed, 2008-10-15 at 23:46 -0400, Joey wrote:
+> Hello All,
+>=20
+> While I have used iptables for a while, I have found that I needed to gai=
+n
+> more knowledge to push what I am doing with it to another level.
+>=20
+> I have read through a few things on-line and in the readme stuff, but hav=
+e
+> some confusion that I want to clear up.
+>=20
+> I am thinking that a chain is a group of rules, and I can create multiple
+> chains to define rules for different things.
+> Lets say FTP-RULES, SPAM-RULES etc.
+>=20
+> If I do this I can hopefully flush just one group or chain without effect=
+ing
+> the other rules is what I am thinking.
+>=20
+> When I execute a rule I do this:
+> iptables -A INPUT -p tcp -s 118.242.0.0/16 -j LOG --log-prefix SPAM-BLOCK=
+-
+> CIDR-ASIAN
+> iptables -A INPUT -p tcp -s 118.242.0.0/16 --dport 25 -j DROP
+>=20
+>=20
+> I wanted to change it to add it to a chain like so:
+> iptables CIDR-ASIAN -A INPUT -p tcp -s 118.242.0.0/16 -j LOG --log-prefix
+> SPAM-BLOCK-CIDR-ASIAN
+> iptables CIDR-ASIAN -A INPUT -p tcp -s 118.242.0.0/16 --dport 25 -j DROP
+>=20
+> iptables -N CIDR-ASIAN -A INPUT -p tcp -s 118.242.0.0/16 -j LOG --log-pre=
+fix
+> SPAM-BLOCK-CIDR-ASIAN
+> iptables -N CIDR-ASIAN -A INPUT -p tcp -s 118.242.0.0/16 --dport 25 -j DR=
+OP
 
-If you want to be able to connect from your IPv6 host to IPv4 only
-servers in IPv4 Internet, you have to choices:
+# create the chain
+iptables -N CIDR-ASIAN
 
-Provide to all IPv6 hosts IPv4 connectivity (i.e. dual stack solution),
-or do NAT-PT on your gateway.
+# hook the chain into another chain (PREROUTING, INPUT, FORWARD, etc)
+iptables -A INPUT -j CIDR-ASIAN
 
-NAT-PT translates one protocol family into other one. However due to
-some differences between these two protocols, the translation is not
-seamless (like IPv4 NAPT). Thus there exist few limitations and
-different solutions how to achieve it.
+# add rules to the new chain
+iptables -A CIDR-ASIAN -p tcp -s 118.242.0.0/16 -j LOG --log-prefix
+SPAM-BLOCK-CIDR-ASIAN
 
-I know only about RFC3142 (An IPv6-to-IPv4 Transport Relay Translator)
-implementation and it's pTRTd <http://www.litech.org/ptrtd/> and totd
-(http://www.vermicelli.pasta.cs.uit.no/software/totd.html). It works
-following:
+iptables -A CIDR-ASIAN -p tcp -s 118.242.0.0/16 --dport 25 -j DROP=20
 
-IPv6 only client asks totd name server for AAAA record of IPv4 only
-host. The name server provides fake answer resolving to network prefix
-routed to pTRTd server. Then your client sends IPv6 TCP or UDP packet to
-given fake IPv6 address, the packet recieves pTRTd server (a
-userspace daemon capturing packets on TUN network interface), pTRTd
-established mapping between IPv6 and IPv4 transport addresses,
-translates the packet into IPv4 protocol and transmits it to the real
-IPv4 only host in IPv4 Internet. Of course the pTRTd processes returing
-responses and forward them to your IPv6 client as IPv6 packets.
+# flush the chain
+iptable -F CIDR-ASIAN
 
-Thus your IPv6 only hosts can see whole IPv4 world as a subnet in IPv6
-address space.
 
--- Petr
+> This didn't work for me and I have tried several varients with no luck.
+>=20
+> So my first question is do I understand correcty how to utilize chains?
+>=20
+> Will I be able to load and unload chains rather than flush everything end
+> reload everything? ( I have a lot of rules )
+
+I don't quite understand your question.
+
+You 'create' and 'delete' user-defined chains. You can, of course, flush
+chains individually as well.
+
+--=20
+Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
+University of Minnesota Duluth
+Information Technology Systems & Services
+PGP key 1024D/84E22DA2 2005-11-07
+Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
+
+He is not a fool who gives up what he cannot keep to gain what he cannot
+lose.
+-Jim Elliot
+
+--=-Db9lu69lzoUEvOzjlnFc
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkj3P1YACgkQU+eIf4TiLaJbZQCg6nhjU/Ps9WQI6R+HJ5nAHCgx
+ms4AoPAgjkzXQRmrZKfoMWFA+sGU9h/I
+=+Xo6
+-----END PGP SIGNATURE-----
+
+--=-Db9lu69lzoUEvOzjlnFc--
 
