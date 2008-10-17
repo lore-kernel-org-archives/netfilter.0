@@ -1,37 +1,78 @@
-From: "Jeremy Pullicino" <pullicino@gmail.com>
-Subject: routing all HTTP requests to my own web server
-Date: Fri, 17 Oct 2008 19:40:58 +0200
-Message-ID: <a0a0d59c0810171040s3646c212g150d7691e6d92f4b@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Transfer ipv6 packages over ipv4 iptables gateway to ipv4 ISP's
+ network
+Date: Fri, 17 Oct 2008 12:45:51 -0500
+Message-ID: <48F8CF4F.3010704@riverviewtech.net>
+References: <1814bfe70810151332r61aa900see2931df5dddcdb0@mail.gmail.com> <slrngfdqhi.3bf.petr.pisar@album.ics.muni.cz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=z806obkrEyCgfaBaWrzJlSCwPIexTZPamVc4tB9DJ2s=;
-        b=INhvxO+wWz73lyHGkgWgvR5N4W2ivKwfPhP8x3C+3FZQXcYNIdY1fym87Bp83fxpC6
-         W4g2DSxeaSAcKlzL/3q847iWXj6eIiDA3hOqvaYnFTRvva/fDjwp9g2dUy8PlSVpR8os
-         AsF36hfznoIOfVQF69i0WxhQy0rnl0XaT0P5Q=
-Content-Disposition: inline
+In-Reply-To: <slrngfdqhi.3bf.petr.pisar@album.ics.muni.cz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi,
+On 10/16/08 02:16, Petr Pisar wrote:
+> `Translating' is not proper word unless you mean real NAT-PT (Network 
+> address translation and protocol translation).
 
-I would like to route all outbound HTTP requests to my own HTTP server.
+I was going to use the term "gatewaying" to describe what needed to be 
+done between the IPv6 and the IPv4 protocols.  "Translating" is usually 
+done /with in/ a single protocol and "gatewaying" is usually done 
+/between/ two protocols.  At least that's my take on it.
 
-After consulting with the docs and online tutorials I came up with the
-command below:
+> If you want just to connect your IPv6 island via IPv4 Internet to 
+> native IPv6 Internet backbone (i.e. bypass your lazy ISP), use 6to4 
+> (in case you have public IPv4 address on your gateway) or AYIYA (in 
+> other case). This is called tunneling and former post enlightened it 
+> already.
 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT 192.168.11.100
+*nod*
 
-Is this the correct way to do it?
+> If you want to be able to connect from your IPv6 host to IPv4 only 
+> servers in IPv4 Internet, you have to choices:
+> 
+> Provide to all IPv6 hosts IPv4 connectivity (i.e. dual stack 
+> solution), or do NAT-PT on your gateway.
 
-Any advice will be really appreciated.
+I think the OP is wanting to avoid dual stack despite this probably 
+being the simpler of the options.
 
-Thanks,
-Jeremy Pullicino
+> NAT-PT translates one protocol family into other one. However due to 
+> some differences between these two protocols, the translation is not 
+> seamless (like IPv4 NAPT). Thus there exist few limitations and 
+> different solutions how to achieve it.
+> 
+> I know only about RFC3142 (An IPv6-to-IPv4 Transport Relay 
+> Translator) implementation and it's pTRTd 
+> <http://www.litech.org/ptrtd/> and totd 
+> (http://www.vermicelli.pasta.cs.uit.no/software/totd.html). It works 
+> following:
+> 
+> IPv6 only client asks totd name server for AAAA record of IPv4 only 
+> host. The name server provides fake answer resolving to network 
+> prefix routed to pTRTd server. Then your client sends IPv6 TCP or UDP 
+> packet to given fake IPv6 address, the packet recieves pTRTd server 
+> (a userspace daemon capturing packets on TUN network interface), 
+> pTRTd established mapping between IPv6 and IPv4 transport addresses, 
+> translates the packet into IPv4 protocol and transmits it to the real 
+> IPv4 only host in IPv4 Internet. Of course the pTRTd processes 
+> returing responses and forward them to your IPv6 client as IPv6 
+> packets.
+> 
+> Thus your IPv6 only hosts can see whole IPv4 world as a subnet in 
+> IPv6 address space.
+
+Very interesting!
+
+I now have a reason to mess with IPv6.
+
+
+
+Grant. . . .
+
+
+P.S.  Very good reply.  I was going to try to sum up the bit about 
+translation verses gatewaying, but I think you did a better job than I 
+could have.
