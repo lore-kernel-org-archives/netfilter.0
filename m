@@ -1,63 +1,42 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: MAC Address masking/NAT
-Date: Fri, 17 Oct 2008 12:15:03 -0500
-Message-ID: <48F8C817.1090407@riverviewtech.net>
-References: <1460c7de0810162313t28b5cd7ete6dda27e534ae55d@mail.gmail.com>
+Subject: Re: Some weird issue with return traffic with redirect rule
+Date: Fri, 17 Oct 2008 12:19:26 -0500
+Message-ID: <48F8C91E.5010608@riverviewtech.net>
+References: <cc64e8ce0810162330i44d61166xc16eafc0cfbf3834@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1460c7de0810162313t28b5cd7ete6dda27e534ae55d@mail.gmail.com>
+In-Reply-To: <cc64e8ce0810162330i44d61166xc16eafc0cfbf3834@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 10/17/08 01:13, Timothy Toole wrote:
-> What I'd like to do is use iptables or ebtables to.... change the MAC 
-> address of Host B as packets traverse the bridge. Host A will only see 
-> the "changed" MAC address, not the actual one of Host B.
-> 
-> Here's a lame ascii art diagram:
-> 
->               ____________________
->              |                    |
->              |        br0         |
->              |                    |
->              | eth0.1      eth0.2 |
->              |__/______________\__|
->                /                \
->               /                  \ <--- Translate MAC to
->              /                    \     11:11:11:22:22:22
->             /                      \
->            /                        \
->        ___|___                    ___|___
->       |       |                  |       |
->       |   A   |                  |   B   |
->       |_______|                  |_______|
-> MAC: 00:11:22:33:44:55      MAC:55:44:33:22:11:00
-> 
-> Can this be done? Also, if I don't know the MAC address of either 
-> host, can a rule be written as a "catch-all" to change any MAC that's 
-> plugged in?
-
-
-Yes this can.  I think you will be doing most of this work in EBTables 
-rather than IPTables.  (IPTables can be made to work with ethernet 
-frames, but it is nicer to use EBTables which does it directly.  Proper 
-tool for the job and all.)
-
-You can easily use EBTables to (S)NAT the frames ethernet MAC address.
-
-As far as the catch all rule, you would have to use rules to act on the 
-/known/ systems and then another ""catch all rule to act on /unknown/ 
-systems.
-
-If you need more help, just ask.  Though the EBTables mailing list might 
-be a more appropriate and better place to get more help.
-
-> Many Thanks.
+On 10/17/08 01:30, Pranav Desai wrote:
+> We are seeing cases where the return traffic is going out using the 
+> proxyIP and port 8001, instead of using the origin servers IP and 
+> port 80. I have added the traces for both cases below. Most of the 
+> traffic goes out correctly using the origin server IP and port, but 
+> the traffic using port 8001 is not insignificant, hence we are a bit 
+> concerned about it.
 
 *nod*
+
+> There are no connections coming in to port 8001.
+
+Ok...
+
+I have to ask, is there a reason you are not configuring clients to talk 
+directly to the proxy?  In my experience this works a lot better than 
+transparent proxying.  I tend to use direct proxying as the primary 
+method and then transparent proxying as a backup and to catch devices 
+that don't know how to talk to a proxy.
+
+> I am not sure what could be causing this behavior or how I should go 
+> about debugging this. Could the conntrack table or its usage be 
+> screwed up?
+
+Are there any DMESG or syslog entries about the connection table being full?
 
 
 
