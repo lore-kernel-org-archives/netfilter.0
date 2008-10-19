@@ -1,63 +1,64 @@
-From: "Timothy Toole" <ttoole@toole.net>
-Subject: Re: MAC Address masking/NAT
-Date: Sat, 18 Oct 2008 17:22:19 -0600
-Message-ID: <1460c7de0810181622t7c4c4717g47c280e3249b5596@mail.gmail.com>
-References: <1460c7de0810162313t28b5cd7ete6dda27e534ae55d@mail.gmail.com>
-	 <1460c7de0810171952naa78102l79536b3089035944@mail.gmail.com>
+From: Simon <tanstaafl@libertytrek.org>
+Subject: Re: Log flooded with these...
+Date: Sun, 19 Oct 2008 11:53:19 -0400
+Message-ID: <48FB57EF.2090505@libertytrek.org>
+References: <48FB4FD8.7090307@libertytrek.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:sender
-         :to:subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references
-         :x-google-sender-auth;
-        bh=Xs67cIvKddaZ+yp5RSJY+oTMbDgF3fHNPL7hMGM54gU=;
-        b=c7L8zfVssd/oIjeQ+nyz+VyFkkOJkiJoAYq4LIi39x1Rj4qOzv0WGirRnNN29j7WKN
-         /VFpyFiBySkLgA9jV02XCLdF/IXruFh/HiJFkDkuezNVui3wAGQ6rxB4d3WlLk99I3+2
-         nRqiH6ik/pATpqyzORL3f9vKTC2hIc1Y37f5A=
-In-Reply-To: <1460c7de0810171952naa78102l79536b3089035944@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <48FB4FD8.7090307@libertytrek.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-I think I found the solution (at least it works in my case). Not sure
-why I couldn't figure this out earlier, it's actually quite simple.
-Any packet with a source MAC address that we want to change needs a
-rule, and any packet destined to out fake MAC address needs another
-rule.
+On 10/19/2008 11:18 AM, Simon wrote:
+> Hello,
+> 
+> I'm not sure whats going on here, but I came in today and my log is
+> being flooded with these... about once per second, I get 2 or 3 of the
+> following:
 
-Starting again with the network diagram:
-           ____________________
-            |                    |
-            |        br0         |
-            |                    |
-            | eth0.1      eth0.2 |
-            |__/______________\__|
-              /                \
-             /                  \ <--- Translate MAC to
-            /                    \     11:11:11:22:22:22
-           /                      \
-          /                        \
-      ___|___                    ___|___
-     |       |                  |       |
-     |   A   |                  |   B   |
-     |_______|                  |_______|
-MAC: 00:11:22:33:44:55      MAC:55:44:33:22:11:00
+Ok, reviewing the logs to see when these started, it was right at 3:00pm
+yesterday (Saturday), and less than a minute after the hourly cron job
+ran - up until then, the logs looked completely normal:
 
-We need to add two rules. The first rule will change the [real] source
-MAC address to the new/faked MAC address.
-# ebtables -t nat -A POSTROUTING -j snat -s 55:44:33:22:11:00 --to-src
-11:11:11:22:22:22 --snat-arp
+Oct 18 15:00:01 myhost cron[22911]: (root) CMD (rm -f
+/var/spool/cron/lastrun/cron.hourly)
+Oct 18 15:00:01 myhost cron[22912]: (root) CMD (test -x
+/usr/sbin/run-crons && /usr/sbin/run-crons )
+Oct 18 15:00:51 myhost IPTABLES-IN Default Drop: IN=eth0 OUT=
+MAC=ff:ff:ff:ff:ff:ff:00:11:2f:36:c6:4c:08:00 SRC=192.168.1.47
+DST=255.255.255.
+255 LEN=328 TOS=0x00 PREC=0x00 TTL=128 ID=18229 PROTO=UDP SPT=68 DPT=67
+LEN=308
+Oct 18 15:01:38 myhost IPTABLES-IN Default Drop: IN=eth0 OUT=
+MAC=ff:ff:ff:ff:ff:ff:00:1c:c0:69:16:89:08:00 SRC=0.0.0.0
+DST=255.255.255.255 L
+EN=328 TOS=0x00 PREC=0x00 TTL=128 ID=351 PROTO=UDP SPT=68 DPT=67 LEN=308
+Oct 18 15:01:38 myhost IPTABLES-IN Default Drop: IN=eth0 OUT=
+MAC=ff:ff:ff:ff:ff:ff:00:04:5a:8f:d6:11:08:00 SRC=192.168.1.250
+DST=255.255.255
+.255 LEN=347 TOS=0x00 PREC=0x00 TTL=128 ID=12140 PROTO=UDP SPT=67 DPT=68
+LEN=327
+Oct 18 15:01:38 myhost IPTABLES-IN Default Drop: IN=eth0 OUT=
+MAC=ff:ff:ff:ff:ff:ff:00:1c:c0:69:16:89:08:00 SRC=0.0.0.0
+DST=255.255.255.255 L
+EN=360 TOS=0x00 PREC=0x00 TTL=128 ID=352 PROTO=UDP SPT=68 DPT=67 LEN=340
 
-The second rule will change the any of the faked MAC address back into
-the real one.
-# ebtables -t nat -A PREROUTING -j dnat -d 11:11:11:22:22:22
---to-destination 55:44:33:22:11:00
+I have installed a few updates recently, but not iptables...
 
-Thanks to all that responded with help.
+There was an update available for it - has been for a while - so I went
+ahead and updated it, but the problem persists... I also tried updating
+the kernel (there's been an update available for it for a while too) and
+rebooted, but again, the problem remains...
 
--tim
+Everything else on this server seems fine (mail, web)...
+
+Is the domain controller actually doing something it shouldn't? It seems
+to be fine, nothing unusual in the logs for it...
+
+Besides - it is just way too suspicious that this started exactly at
+3:00pm, and immediately following the hourly cron job...
+
+Anyone have any ideas?
