@@ -1,41 +1,56 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: is it possible to mix iprange and multiport modules?
-Date: Mon, 20 Oct 2008 21:07:37 +1300
-Message-ID: <48FC3C49.7010207@treenet.co.nz>
-References: <219949.10508.qm@web110412.mail.gq1.yahoo.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: IP redirect?
+Date: Mon, 20 Oct 2008 11:23:00 -0500
+Message-ID: <48FCB064.1020907@riverviewtech.net>
+References: <48FC5095.5040202@read.org.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <219949.10508.qm@web110412.mail.gq1.yahoo.com>
+In-Reply-To: <48FC5095.5040202@read.org.nz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: cucnews@yahoo.com
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-pedro noticioso wrote:
-> Hi there friends!
+On 10/20/08 04:34, Morgan Read wrote:
+> To redirect lan traffic addressed to the wan IP (e.g.) 123.456.789.012 
+> to the lan IP address 192.168.1.123, I'm using the following:
+> $ iptables -t nat -I PREROUTING 1 -d 123.456.789.012 -j DNAT 
+> --to-destination 192.168.1.123
 > 
-> I am managing a 15 node vpn network with well over 500 pcs scattered all over, so I am looking for creative ways to simplify and better control my traffic while replacing the old IT guys 1600 line-and-10 seconds to load  firewall script, so I tried a trick that did not seem to actually work:
-> 
-> /sbin/iptables -A INPUT -p tcp \
->  -m multiport  --source-port 22,53,80,110,443,2525 \
->  -m iprange --src-range 192.168.19.25-192.168.19.100 \
->  -j ACCEPT
-> 
-> So, am I just dreaming here, or is there a nice trick out there to achieve my goal in an elegant manner?
-> 
-> thanks a lot!
-> 
+> But, all internal traffic seems to get lost - 18 months ago when I last 
+> did this, traffic to 123.456.789.012 seemed to hit 192.168.1.123 and 
+> come back without problem.
 
-I'll point you the way of 'ferm'. An iptables utility uses the 
-iptables-restore interface for maximum speed on load. With a nice simply 
-config file syntax to easily handle fast reload of some complex 
-settings. Including methods of doing iterator loops, macro expansion, 
-and such if needed.
+Please search the mailing list archives for the "TCP Triangle".  The 
+most recent thread was "routing all HTTP requests to my own web server". 
+  Also, take a look at one of Julian's images 
+"http://jengelh.hopto.org/images/dnat-mistake.png" for more information.
 
-   http://ferm.foo-projects.org/
+> I've added the following, with some interesting results:
+> $ iptables -t nat -I POSTROUTING 1 -s 192.168.1.40 -j SNAT --to-source 
+> 58.28.20.69
 
-NP: My bias here is that of a happy customer.
+*nod*
 
-AYJ
+> Now, the traffic from the specific lan IP 192.168.1.123 does seem to be 
+> redirected correctly and come back to itself.  But still, all other lan 
+> traffic seems to get lost.
+
+This is as I would expect.
+
+> Any ideas what's happening, where I'm getting lost?
+
+You are only SNATing traffic from (-s) 192.168.1.40.  Try SNATing all 
+traffic from your local LAN that is being redirected to your system.
+
+$ iptables -t nat -I POSTROUTING 1 -s 192.168.1.0/24 -d 192.168.1.123 -j 
+SNAT --to-source 58.28.20.69
+
+Note:  I'm not sure why you are using a source of 58.28.20.69.  I would 
+think that you would want to use the source of your internal interface 
+in the 192.168.1.0/24 network.
+
+
+
+Grant. . . .
