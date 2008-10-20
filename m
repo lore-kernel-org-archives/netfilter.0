@@ -1,42 +1,41 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 2.4 released
-Date: Mon, 20 Oct 2008 13:05:05 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0810201254190.23040@blackhole.kfki.hu>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: is it possible to mix iprange and multiport modules?
+Date: Mon, 20 Oct 2008 21:07:37 +1300
+Message-ID: <48FC3C49.7010207@treenet.co.nz>
+References: <219949.10508.qm@web110412.mail.gq1.yahoo.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <219949.10508.qm@web110412.mail.gq1.yahoo.com>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: cucnews@yahoo.com
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello,
+pedro noticioso wrote:
+> Hi there friends!
+> 
+> I am managing a 15 node vpn network with well over 500 pcs scattered all over, so I am looking for creative ways to simplify and better control my traffic while replacing the old IT guys 1600 line-and-10 seconds to load  firewall script, so I tried a trick that did not seem to actually work:
+> 
+> /sbin/iptables -A INPUT -p tcp \
+>  -m multiport  --source-port 22,53,80,110,443,2525 \
+>  -m iprange --src-range 192.168.19.25-192.168.19.100 \
+>  -j ACCEPT
+> 
+> So, am I just dreaming here, or is there a nice trick out there to achieve my goal in an elegant manner?
+> 
+> thanks a lot!
+> 
 
-I'm happy to announce ipset 2.4. The new release contains some bugfixes, 
-a compatibility fix for kernels >= 2.6.27 and three new set types:
+I'll point you the way of 'ferm'. An iptables utility uses the 
+iptables-restore interface for maximum speed on load. With a nice simply 
+config file syntax to easily handle fast reload of some complex 
+settings. Including methods of doing iterator loops, macro expansion, 
+and such if needed.
 
-- ipportiphash: you can store and match IP address, port number and
-  IP address triples in it, where the first IP address must come from
-  a /16 sized network or range.
-- ipportnethash: you can store and match IP address, port number
-  and network address triples in it, where the first IP address
-  must come from a /16 sized network or range.
-- setlist: other sets can be stored in a setlist type of set, it's like 
-  an ordered union of sets.
+   http://ferm.foo-projects.org/
 
-Check out the manpage for the full description of the new set types.
+NP: My bias here is that of a happy customer.
 
-The binding feature is scheduled for removal in the next ipset release: 
-the functionality can be replaced by the new set types.
-
-You can download the new version from the ipset homepage:
-
-	http://ipset.netfilter.org/
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+AYJ
