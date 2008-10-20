@@ -1,50 +1,42 @@
-From: Morgan Read <mstuff@read.org.nz>
-Subject: IP redirect?
-Date: Mon, 20 Oct 2008 22:34:13 +1300
-Message-ID: <48FC5095.5040202@read.org.nz>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 2.4 released
+Date: Mon, 20 Oct 2008 13:05:05 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0810201254190.23040@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi Folks
+Hello,
 
-To redirect lan traffic addressed to the wan IP (e.g.) 123.456.789.012
-to the lan IP address 192.168.1.123, I'm using the following:
-$ iptables -t nat -I PREROUTING 1 -d 123.456.789.012 -j DNAT
---to-destination 192.168.1.123
+I'm happy to announce ipset 2.4. The new release contains some bugfixes, 
+a compatibility fix for kernels >= 2.6.27 and three new set types:
 
-But, all internal traffic seems to get lost - 18 months ago when I last
-did this, traffic to 123.456.789.012 seemed to hit 192.168.1.123 and
-come back without problem.
+- ipportiphash: you can store and match IP address, port number and
+  IP address triples in it, where the first IP address must come from
+  a /16 sized network or range.
+- ipportnethash: you can store and match IP address, port number
+  and network address triples in it, where the first IP address
+  must come from a /16 sized network or range.
+- setlist: other sets can be stored in a setlist type of set, it's like 
+  an ordered union of sets.
 
-I've added the following, with some interesting results:
-$ iptables -t nat -I POSTROUTING 1 -s 192.168.1.40 -j SNAT --to-source
-58.28.20.69
+Check out the manpage for the full description of the new set types.
 
-Now, the traffic from the specific lan IP 192.168.1.123 does seem to be
-redirected correctly and come back to itself.  But still, all other lan
-traffic seems to get lost.
+The binding feature is scheduled for removal in the next ipset release: 
+the functionality can be replaced by the new set types.
 
-Any ideas what's happening, where I'm getting lost?
+You can download the new version from the ipset homepage:
 
-Regards,
-Morgan.
--- 
-Getting errors: "There are problems with the signature" (or similar)?
-Update your system by installing certificates from CAcert Inc, see here:
-http://wiki.cacert.org/wiki/BrowserClients?#head-259758ec5ba51c5205cfb179cf60e0b54d9e378b
-Or, if Internet Explorer is your default browser, simply click this link:
-http://www.cacert.org/index.php?id=17
+	http://ipset.netfilter.org/
 
-Morgan Read
-NEW ZEALAND
-<mailto:mstuffATreadDOTorgDOTnz>
-
-fedora & freedom; fact || fiction?
-http://fedoraproject.org/wiki/Overview
-get freed-ora!
-http://www.fsfla.org/svnwiki/selibre/linux-libre/freed-ora
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
