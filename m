@@ -1,37 +1,34 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: "Karel Rericha" <karel@maxtel.cz>
 Subject: Re: [ANNOUNCE] conntrack-tools 0.9.8 released
-Date: Wed, 22 Oct 2008 13:10:33 +0200
-Message-ID: <48FF0A29.90708@netfilter.org>
-References: <48FE2CA5.3050004@netfilter.org> <5b19ed110810220325y2c44e00dhbb42dddf56ff88bc@mail.gmail.com>
+Date: Wed, 22 Oct 2008 14:24:11 +0200
+Message-ID: <5b19ed110810220524q4f5520a3r58bc02d89ccb69a2@mail.gmail.com>
+References: <48FE2CA5.3050004@netfilter.org>
+	 <5b19ed110810220325y2c44e00dhbb42dddf56ff88bc@mail.gmail.com>
+	 <48FF0A29.90708@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5b19ed110810220325y2c44e00dhbb42dddf56ff88bc@mail.gmail.com>
+In-Reply-To: <48FF0A29.90708@netfilter.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Karel Rericha <karel@maxtel.cz>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-Karel Rericha wrote:
-> Hi Pablo and list,
-> 
-> is there any way to delete mark from connection (all marks from all
-> connections) without deleting connection itself ?
-> 
-> We are using iptables with
-> 
-> ...  -m mark ! --mark 0 -j CONNMARK --save-mark
-> 
-> but we would like few times a day delete all marks from all
-> connections to let connections are marked again (with different marks
-> based on time). Conntrack-tools would have been fine tool for it, if
-> such option had been included. Or is there any other way to do it?
+2008/10/22 Pablo Neira Ayuso <pablo@netfilter.org>:
 
-When you mean "delete all marks", you refer to resetting the connection
-marks to zero? This command should be enough.
+> When you mean "delete all marks", you refer to resetting the connection
+> marks to zero? This command should be enough.
 
-# conntrack -U -m 0
+Yes, resetting all marks to zero, sry for not being clear enough.
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+> # conntrack -U -m 0
+
+Works great from conntrack-tools 0.9.7 (0.9.6 complains about missing
+parameters), "man conntrack" does not show -U command and thats why I
+missed it. "conntrack --help" shows much more information.
+
+Thanks for help Pablo
+
+Karel
