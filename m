@@ -1,61 +1,86 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: tool to search within cidr blocks
-Date: Wed, 22 Oct 2008 18:07:31 -0500
-Message-ID: <48FFB233.1070706@riverviewtech.net>
-References: <004301c9347c$6ab0a3c0$4011eb40$@net>
+From: Krzysztof Oledzki <ole@ans.pl>
+Subject: Re: [ANNOUNCE] ipset 2.4 released
+Date: Thu, 23 Oct 2008 03:11:49 +0200 (CEST)
+Message-ID: <alpine.LNX.1.10.0810230253170.15215@bizon.gios.gov.pl>
+References: <Pine.LNX.4.64.0810201254190.23040@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <004301c9347c$6ab0a3c0$4011eb40$@net>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1144830174-2133777948-1224724310=:15215"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0810201254190.23040@blackhole.kfki.hu>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On 10/22/2008 2:28 PM, Joey wrote:
-> I have several ranges of IP=92s being put into iptables.
-> The IP ranges look like this:
-> 62.29.0.0/17
-> 62.68.192.0/19
-> 62.108.64.0/19
-> 62.244.192.0/18
-> 62.248.0.0/17
-> 77.67.128.0/17
-> 77.72.184.0/21
-> 77.73.216.0/21
-> 77.75.32.0/21
-> 77.75.216.0/21
-> 77.79.64.0/18
-> 77.92.0.0/19
-> 77.92.96.0/19
-> 77.92.128.0/19
-> 77.223.128.0/19
-> 77.245.144.0/20
-> 78.40.224.0/21
-> 78.111.96.0/20
-> 78.135.0.0/17
->=20
-> I am blocking a specific IP from the firewall as logged in messages=20
-> 71.74.56.125.=20
-> In looking at each block of ip=92s and using a CIDR calculator I can=92=
-t figure=20
-> out what range it=92s really coming from.  The list I have is pretty =
-huge.=20
-> Is there a tool or a way to ask iptables what rule it matches?  Based=
- on all=20
-> my calculations I don=92t have anything declared that would block tha=
-t IP.
->=20
-> Thanks!
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Um, 71.74.56.125 is not part of any of the Class A ranges that you are=20
-blocking (62., 77., 78.).  So... that sort of implies that something=20
-else is blocking it.
-
-Do you care to provide the (sanitized) output of an 'iptables-save' for=
-=20
-us to look at?
+---1144830174-2133777948-1224724310=:15215
+Content-Type: TEXT/PLAIN; charset="iso-8859-2"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 
 
 
-Grant. . . .
+On Mon, 20 Oct 2008, Jozsef Kadlecsik wrote:
+
+> Hello,
+>
+> I'm happy to announce ipset 2.4. The new release contains some bugfixes,
+> a compatibility fix for kernels >=3D 2.6.27 and three new set types:
+>
+> - ipportiphash: you can store and match IP address, port number and
+>  IP address triples in it, where the first IP address must come from
+>  a /16 sized network or range.
+> - ipportnethash: you can store and match IP address, port number
+>  and network address triples in it, where the first IP address
+>  must come from a /16 sized network or range.
+
+Hello again,
+
+In file included from net/ipv4/netfilter/ip_set_iptree.c:23:
+include/linux/netfilter_ipv4/ip_set_iptree.h:25: error: field 'gc' has inco=
+mplete type
+net/ipv4/netfilter/ip_set_iptree.c: In function 'ip_tree_gc':
+net/ipv4/netfilter/ip_set_iptree.c:258: error: implicit declaration of func=
+tion 'add_timer'
+net/ipv4/netfilter/ip_set_iptree.c: In function 'init_gc_timer':
+net/ipv4/netfilter/ip_set_iptree.c:270: error: implicit declaration of func=
+tion 'init_timer'
+net/ipv4/netfilter/ip_set_iptree.c: In function 'iptree_destroy':
+net/ipv4/netfilter/ip_set_iptree.c:332: error: implicit declaration of func=
+tion 'del_timer'
+make[3]: *** [net/ipv4/netfilter/ip_set_iptree.o] Error 1
+make[3]: *** Waiting for unfinished jobs....
+In file included from net/ipv4/netfilter/ip_set_iptreemap.c:27:
+include/linux/netfilter_ipv4/ip_set_iptreemap.h:26: error: field 'gc' has i=
+ncomplete type
+net/ipv4/netfilter/ip_set_iptreemap.c: In function 'gc':
+net/ipv4/netfilter/ip_set_iptreemap.c:456: error: implicit declaration of f=
+unction 'add_timer'
+net/ipv4/netfilter/ip_set_iptreemap.c: In function 'init_gc_timer':
+net/ipv4/netfilter/ip_set_iptreemap.c:464: error: implicit declaration of f=
+unction 'init_timer'
+net/ipv4/netfilter/ip_set_iptreemap.c: In function 'iptreemap_destroy':
+net/ipv4/netfilter/ip_set_iptreemap.c:506: error: implicit declaration of f=
+unction 'del_timer'
+make[3]: *** [net/ipv4/netfilter/ip_set_iptreemap.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
+Command exited with non-zero status 2
+
+# head -4 Makefile
+VERSION =3D 2
+PATCHLEVEL =3D 6
+SUBLEVEL =3D 26
+EXTRAVERSION =3D .7
+
+It seems that "#include <linux/timer.h>" is missing in both files, however =
+
+it worked with the previous ipset release (2.6.26.6 + ipset-2.3.2a)=20
+without such include. Strange.
+
+Best regards,
+
+ 				Krzysztof Ol=EAdzki
+---1144830174-2133777948-1224724310=:15215--
