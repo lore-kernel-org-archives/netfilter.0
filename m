@@ -1,35 +1,29 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 2.4 released
-Date: Thu, 23 Oct 2008 16:55:42 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0810231653270.28786@blackhole.kfki.hu>
-References: <Pine.LNX.4.64.0810201254190.23040@blackhole.kfki.hu>
- <alpine.LNX.1.10.0810230253170.15215@bizon.gios.gov.pl>
+Subject: [ANNOUNCE] ipset-2.4.2 released
+Date: Thu, 23 Oct 2008 19:40:30 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0810231931420.28950@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.1.10.0810230253170.15215@bizon.gios.gov.pl>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Krzysztof Oledzki <ole@ans.pl>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Thu, 23 Oct 2008, Krzysztof Oledzki wrote:
+Hi,
 
-> In file included from net/ipv4/netfilter/ip_set_iptree.c:23:
-> include/linux/netfilter_ipv4/ip_set_iptree.h:25: error: field 'gc' has
-> incomplete type
-> 
-> It seems that "#include <linux/timer.h>" is missing in both files, however it
-> worked with the previous ipset release (2.6.26.6 + ipset-2.3.2a) without such
-> include. Strange.
+Krzysztof Oledzki discovered a serious bug in the 2.4.x versions of ipset: 
+when flushing a nethash/ipportnethash type of set, it can lead to a kernel 
+crash due to a wrong type declaration in the flush functions. Also, for a 
+successful compilation with kernel versions above 2.6.26.6, an include 
+file was missing from ip_set_iptree.c and ip_set_iptreemap.c.
 
-I did remove a lot of include files - probably my hand was too quick with 
-<linux/timer.h>. It is strange, because compiling/running/testing did not 
-produce me any warnings/problems on my system.
+Please upgrade to ipset 2.4.2.
 
-I'll go throught all the include files again to make sure nothing is 
-missing or redundant.
+You can download the source of ipset from the webpage or svn:
+
+        http://ipset.netfilter.org/
+        svn co https://svn.netfilter.org/netfilter/trunk/ipset
 
 Best regards,
 Jozsef
