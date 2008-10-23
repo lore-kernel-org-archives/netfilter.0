@@ -1,36 +1,40 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: IP redirect?
-Date: Thu, 23 Oct 2008 08:56:59 -0500
-Message-ID: <490082AB.9060606@riverviewtech.net>
-References: <48FC5095.5040202@read.org.nz> <48FCB064.1020907@riverviewtech.net> <4900492A.1050101@read.org.nz>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 2.4 released
+Date: Thu, 23 Oct 2008 16:55:42 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0810231653270.28786@blackhole.kfki.hu>
+References: <Pine.LNX.4.64.0810201254190.23040@blackhole.kfki.hu>
+ <alpine.LNX.1.10.0810230253170.15215@bizon.gios.gov.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4900492A.1050101@read.org.nz>
+In-Reply-To: <alpine.LNX.1.10.0810230253170.15215@bizon.gios.gov.pl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Krzysztof Oledzki <ole@ans.pl>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On 10/23/08 04:51, Morgan Read wrote:
-> OK, thank you
+On Thu, 23 Oct 2008, Krzysztof Oledzki wrote:
 
-You are welcome.
+> In file included from net/ipv4/netfilter/ip_set_iptree.c:23:
+> include/linux/netfilter_ipv4/ip_set_iptree.h:25: error: field 'gc' has
+> incomplete type
+> 
+> It seems that "#include <linux/timer.h>" is missing in both files, however it
+> worked with the previous ipset release (2.6.26.6 + ipset-2.3.2a) without such
+> include. Strange.
 
-> Thank you, it works - any ideas why why the DNAT worked on it's own 
-> with out the SNAT 18 months ago?  Or is that a silly question...
+I did remove a lot of include files - probably my hand was too quick with 
+<linux/timer.h>. It is strange, because compiling/running/testing did not 
+produce me any warnings/problems on my system.
 
-No.  I see no reason that it would have worked before at all.  The only 
-thing that I can think of is that you were not DNATing with in the same 
-subnet such that your traffic was routed back through the router where 
-it would unDNAT it any way, much like MASQUERADing / SNAT does out to 
-the internet (remember that MASQUERADing / SNATing is only so that 
-systems on the net have a route back to your client).
+I'll go throught all the include files again to make sure nothing is 
+missing or redundant.
 
-> Many thanks,
-
-*nod*
-
-
-
-Grant. . . .
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
