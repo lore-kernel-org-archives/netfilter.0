@@ -1,56 +1,76 @@
-From: "Joey" <Joey@Web56.net>
-Subject: RE: netblock.py line 109
-Date: Thu, 23 Oct 2008 02:21:34 -0400
-Message-ID: <004b01c934d7$98bd0ff0$ca372fd0$@net>
-References: <OFB2C9107C.7BC96E03-ON862574EA.00735C73-862574EA.00736AC4@uscmail.uscourts.gov> <004501c93496$8e7b8c10$ab72a430$@net> <OF0767CEE0.A50C3667-ON862574EA.007C7333-862574EA.007CB941@uscmail.uscourts.gov>
+From: Morgan Read <mstuff@read.org.nz>
+Subject: Re: IP redirect?
+Date: Thu, 23 Oct 2008 22:51:38 +1300
+Message-ID: <4900492A.1050101@read.org.nz>
+References: <48FC5095.5040202@read.org.nz> <48FCB064.1020907@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <OF0767CEE0.A50C3667-ON862574EA.007C7333-862574EA.007CB941@uscmail.uscourts.gov>
-Content-Language: en-us
+In-Reply-To: <48FCB064.1020907@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: IPTables <netfilter@vger.kernel.org>
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-> -----Original Message-----
-> From: Greg_Swift@aotx.uscourts.gov [mailto:Greg_Swift@aotx.uscourts.gov]
-> Sent: Wednesday, October 22, 2008 6:42 PM
-> To: Joey
-> Subject: RE: netblock.py line 109
+Below:
+
+On 21/10/08 05:23, Grant Taylor wrote:
+> On 10/20/08 04:34, Morgan Read wrote:
+>> To redirect lan traffic addressed to the wan IP (e.g.) 123.456.789.012
+>> to the lan IP address 192.168.1.123, I'm using the following:
+>> $ iptables -t nat -I PREROUTING 1 -d 123.456.789.012 -j DNAT
+>> --to-destination 192.168.1.123
+>>
+>> But, all internal traffic seems to get lost - 18 months ago when I
+>> last did this, traffic to 123.456.789.012 seemed to hit 192.168.1.123
+>> and come back without problem.
 > 
-> >
-> > That was quick ;)
-> > I didn't see this message right after the other.
-> > Just an FYI it worked from an error perspective, but it didn't find
-> > what block it came from when I searched several IP's.
-> >
-> > I put the file here http://web56.net/test.txt
-> >
-> > And I basically ran this:
-> > ./netblock.py test.txt 58.180.27.3
-> >
-> > Line 27 contains the 58.180.0.0 ip block.
-> >
-> > Thanks!
-> >
+> Please search the mailing list archives for the "TCP Triangle".  The
+> most recent thread was "routing all HTTP requests to my own web server".
+>  Also, take a look at one of Julian's images
+> "http://jengelh.hopto.org/images/dnat-mistake.png" for more information.
+
+OK, thank you
+
 > 
-> In that case here is an updated version of netblock.py that does all of
-it,
-> and i just tested it, it works.
+>> I've added the following, with some interesting results:
+>> $ iptables -t nat -I POSTROUTING 1 -s 192.168.1.40 -j SNAT --to-source
+>> 58.28.20.69
 > 
-> -greg(See attached file: netblock.py)
+> *nod*
+> 
+>> Now, the traffic from the specific lan IP 192.168.1.123 does seem to
+>> be redirected correctly and come back to itself.  But still, all other
+>> lan traffic seems to get lost.
+> 
+> This is as I would expect.
+> 
+>> Any ideas what's happening, where I'm getting lost?
+> 
+> You are only SNATing traffic from (-s) 192.168.1.40.  Try SNATing all
+> traffic from your local LAN that is being redirected to your system.
+> 
+> $ iptables -t nat -I POSTROUTING 1 -s 192.168.1.0/24 -d 192.168.1.123 -j
+> SNAT --to-source 58.28.20.69
 
-Greg,
+Thank you, it works - any ideas why why the DNAT worked on it's own with
+out the SNAT 18 months ago?  Or is that a silly question...
 
-Thanks a million the script looks like it works!
-The funny thing is I can't figure out where we are blocking 71.74.56.125
-from, our log says were blocking it, but the CIDR IP's says no.
-I did test several IP's from the blocks against your script and it worked
-great!
+Many thanks,
+M.
+-- 
+Getting errors: "There are problems with the signature" (or similar)?
+Update your system by installing certificates from CAcert Inc, see here:
+http://wiki.cacert.org/wiki/BrowserClients?#head-259758ec5ba51c5205cfb179cf60e0b54d9e378b
+Or, if Internet Explorer is your default browser, simply click this link:
+http://www.cacert.org/index.php?id=17
 
-Thanks again for taking your time to do this!
+Morgan Read
+NEW ZEALAND
+<mailto:mstuffATreadDOTorgDOTnz>
 
-Joey
-
-
+fedora & freedom; fact || fiction?
+http://fedoraproject.org/wiki/Overview
+get freed-ora!
+http://www.fsfla.org/svnwiki/selibre/linux-libre/freed-ora
