@@ -1,195 +1,32 @@
-From: "Joey" <Joey@Web56.net>
-Subject: RE: tool to search within cidr blocks
-Date: Fri, 24 Oct 2008 18:24:03 -0400
-Message-ID: <007401c93627$38b8f640$aa2ae2c0$@net>
-References: <004301c9347c$6ab0a3c0$4011eb40$@net> <48FFB233.1070706@riverviewtech.net> <006801c93551$1d93fa30$58bbee90$@net> <op.ujhwj8rhrtqp7s@chiyo.azt> <006901c93570$d080a1b0$7181e510$@net> <49013A78.3030509@riverviewtech.net> <007001c9358f$01d1c550$05754ff0$@net> <490156B0.2050905@riverviewtech.net>
+From: "Servers 4you" <servers4you@gmail.com>
+Subject: block tcp packet.
+Date: Fri, 24 Oct 2008 20:00:55 -0300
+Message-ID: <98f5d92c0810241600r7d44b366u8c0b84c917a4c8b9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <490156B0.2050905@riverviewtech.net>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=MdmxKpIZuMUj/KChQY8LCxJUN9F+h55t4ka9phHPtvY=;
+        b=pncbEYAvYj9/jDMwim/jueuptl1XopRELl9lnJvP5KguHL0lqPk2F4OPwJnRrWrnj/
+         xQQBKtk3rpS+TKRV6C+G/oWgWSf0W9tvSVWAN/x8Ad7KttKlbWx597L4UQT+m7HMbS7r
+         +Z9NBt2sAKDvdJI6IEK7/UezmUtRfsB4bgH28=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: IPTables <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-I think with all the times we loaded and unloaded our iptables configs and
-using the type executed by command line, then through iptables-save etc that
-we trashed iptables hence it was blocking IP's we weren't expecting.
-For right now I think the reboot did it....
+Hello every one!
 
-Thanks for all your help!
+how can i block a tcp packet, just knowing the 4th byte its "47" and
+the total length of DATA is 14bytes?
 
-Joey
+this is my packet:
+aa883f 47 9434f54c9b03e8327940
 
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org
-[mailto:netfilter-owner@vger.kernel.org]
-> On Behalf Of Grant Taylor
-> Sent: Friday, October 24, 2008 1:02 AM
-> To: Mail List - Netfilter
-> Subject: Re: tool to search within cidr blocks
-> 
-> On 10/23/2008 11:14 PM, Joey wrote:
-> > Hey Grant,
-> 
-> *wave*
-> 
-> > Here is what I can tell you.
-> > I run iptables -F which is supposed to clear everything.
-> 
-> *nod*
-> 
-> > I then load my config and what you see as a result of that load is what
-you
-> > see in the iptables-save result.
-> 
-> Ok...  Do the pages you linked to before reflect what is below, or is
-> what you have below a small subset of the over all config?
-> 
-> > I have a script that builds the iptables-save.cfg file from a file
-> > containing IP numbers only.
-> 
-> I gathered that is what you were doing.  I don't see any thing wrong
-> with doing that either.
-> 
-> > When I build the script you can see that certain things happen based on
-the
-> > fact that I am reading in values and building each "chain" in order, so
-you
-> > won't see all the defining of the chains at the top like the
-iptables-save
-> > version.
-> 
-> *nod*
-> 
-> > Now I could be missing something somewhere in my declarations, but the
-code
-> > is working in general.  I see IP's being blocked, as you can see I do a
-lot
-> > of logging to insure I know what's going on.
-> 
-> Yep.
-> 
-> > The chains for fail2ban are built and managed by that app so I don't
-mess
-> > with them.
-> 
-> Ah.
-> 
-> > I completely rebooted the box prior to doing the below.  Normally I
-never
-> > rebooted the box, but new kernel came out so I figured we will start
-from a
-> > clean slate.
-> 
-> I tend to do the same.
-> 
-> > I did a reduced list test:
-> > ----------------------------------------------------
-> > My quick file which is created by my app:
-> > *filter
-> > :INPUT ACCEPT [0:0]
-> > :FORWARD ACCEPT [0:0]
-> > :OUTPUT ACCEPT [0:0]
-> > :SMTP_TRAFFIC - [0:0]
-> > -A INPUT -p tcp --dport 25 -m state --state NEW -j SMTP_TRAFFIC
-> > :LOG_ASIAN - [0:0]
-> > :CIDR-ASIAN - [0:0]
-> > -A SMTP_TRAFFIC -j CIDR-ASIAN
-> > -A LOG_ASIAN -j LOG --log-prefix "SPAM-BLOCK-CIDR-ASIAN"
-> > -A LOG_ASIAN -j DROP
-> > -A CIDR-ASIAN -s 58.14.0.0/15 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.16.0.0/13 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.24.0.0/15 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.29.0.0/16 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.30.0.0/15 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.32.0.0/11 -j LOG_ASIAN
-> > COMMIT
-> > ----------------------------------------------------
-> > I executed iptables-restore < above-file
-> 
-> Is the above file your current config, or just a small portion of your
-> config that you created for this test?  I don't see hardly any thing
-> compared to your previous iptables-save file.
-> 
-> > ----------------------------------------------------
-> > Executing iptables --list results in:
-> > Chain INPUT (policy ACCEPT)
-> > target     prot opt source               destination
-> > SMTP_TRAFFIC  tcp  --  anywhere             anywhere            tcp
-dpt:smtp
-> > state NEW
-> >
-> > Chain FORWARD (policy ACCEPT)
-> > target     prot opt source               destination
-> >
-> > Chain OUTPUT (policy ACCEPT)
-> > target     prot opt source               destination
-> >
-> > Chain CIDR-ASIAN (1 references)
-> > target     prot opt source               destination
-> > LOG_ASIAN  all  --  58.14.0.0/15         anywhere
-> > LOG_ASIAN  all  --  58.16.0.0/13         anywhere
-> > LOG_ASIAN  all  --  58.24.0.0/15         anywhere
-> > LOG_ASIAN  all  --  58.29.0.0/16         anywhere
-> > LOG_ASIAN  all  --  58.30.0.0/15         anywhere
-> > LOG_ASIAN  all  --  58.32.0.0/11         anywhere
-> >
-> > Chain LOG_ASIAN (6 references)
-> > target     prot opt source               destination
-> > LOG        all  --  anywhere             anywhere            LOG level
-> > warning prefix `SPAM-BLOCK-CIDR-ASIAN'
-> > DROP       all  --  anywhere             anywhere
-> >
-> > Chain SMTP_TRAFFIC (1 references)
-> > target     prot opt source               destination
-> > CIDR-ASIAN  all  --  anywhere             anywhere
-> > ----------------------------------------------------
-> 
-> This is what I would expect to see based on your iptables-save file above.
-> 
-> > Executing iptables-save resulted in:
-> > # Generated by iptables-save v1.2.11 on Fri Oct 24 00:08:34 2008
-> > *filter
-> > :INPUT ACCEPT [1091:155172]
-> > :FORWARD ACCEPT [0:0]
-> > :OUTPUT ACCEPT [1287:150175]
-> > :CIDR-ASIAN - [0:0]
-> > :LOG_ASIAN - [0:0]
-> > :SMTP_TRAFFIC - [0:0]
-> > -A INPUT -p tcp -m tcp --dport 25 -m state --state NEW -j SMTP_TRAFFIC
-> > -A CIDR-ASIAN -s 58.14.0.0/255.254.0.0 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.16.0.0/255.248.0.0 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.24.0.0/255.254.0.0 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.29.0.0/255.255.0.0 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.30.0.0/255.254.0.0 -j LOG_ASIAN
-> > -A CIDR-ASIAN -s 58.32.0.0/255.224.0.0 -j LOG_ASIAN
-> > -A LOG_ASIAN -j LOG --log-prefix "SPAM-BLOCK-CIDR-ASIAN"
-> > -A LOG_ASIAN -j DROP
-> > -A SMTP_TRAFFIC -j CIDR-ASIAN
-> > COMMIT
-> > # Completed on Fri Oct 24 00:08:34 2008
-> > ----------------------------------------------------
-> 
-> Again, this is what I would expect to see based on your iptables-save
-> file above.
-> 
-> > Let me know what you see or think...
-> 
-> Please try re-applying your iptables-save.cfg file from your previous
-> post and let us know if your firewall is still blocking the 71.74.56.125
-IP.
-> 
-> > Thanks!!!!!
-> 
-> You are welcome.
-> 
-> 
-> 
-> Grant. . . .
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
+thanks. :)
