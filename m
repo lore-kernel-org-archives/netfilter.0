@@ -1,32 +1,40 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-2.4.3 released
-Date: Sat, 25 Oct 2008 15:09:48 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0810251505360.30759@blackhole.kfki.hu>
+From: Matt <mattmoran76@gmail.com>
+Subject: ebtables on x86_64
+Date: Sun, 26 Oct 2008 17:37:27 +0000
+Message-ID: <68fea9390810261037le3a9453q9f1e256503265c94@mail.gmail.com>
+References: <68fea9390810261036h41dd81cex8f47960c573a009a@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=iPNPPxu3N95/Kb+zG248MV43exhhXqSC103Lskqrq6g=;
+        b=QH/oEMh8OndsXnaHhkIER9aU6RIOne0PZUa1raEhCasFnNT+YVrvcMxSG2m31/+rhy
+         ZisipO4M5zEmL7IjvxXXrchQRrxtIgdVLJrMfPmRjxohHGlOVvCUVhyoCqSkhS8MBKKN
+         pT7N3BQC02pc6BD1O6Rau9K6Nso7QmaFWMqGc=
+In-Reply-To: <68fea9390810261036h41dd81cex8f47960c573a009a@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-deve@blackhole.kfki.hu
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-The newest release of the week of ipset releases ;-) contains a small fix 
-to compile ipset cleanly in all environments:
+Installed - ebtables-2.0.8.2-1.el5.rf.x86_64.rpm on CentOS 5.2
 
-  - Include file <limits.h> was missing from userspace set type
-    modules, reported by Krzysztof Oledzki and Sven Wegener.
+I'm having trouble with ebtables - I get the following when calling
+certain ebtables commands such as ebtables -X
 
-You can download the source of ipset from the webpage or svn:
+"The kernel doesn't support a certain ebtables extension, consider
+recompiling your kernel or insmod the extension."
 
-        http://ipset.netfilter.org/
-        svn co https://svn.netfilter.org/netfilter/trunk/ipset
+Found little apart from that 2.0.6 is supposed to work, however i'm
+having trouble compiling that for CentOS-5, anyone had similar issues?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks,
+
+Matt
