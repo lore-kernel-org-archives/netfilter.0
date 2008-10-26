@@ -1,40 +1,37 @@
-From: Matt <mattmoran76@gmail.com>
-Subject: ebtables on x86_64
-Date: Sun, 26 Oct 2008 17:37:27 +0000
-Message-ID: <68fea9390810261037le3a9453q9f1e256503265c94@mail.gmail.com>
-References: <68fea9390810261036h41dd81cex8f47960c573a009a@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: tool to search within cidr blocks
+Date: Sun, 26 Oct 2008 14:08:31 -0500
+Message-ID: <4904C02F.6020705@riverviewtech.net>
+References: <004301c9347c$6ab0a3c0$4011eb40$@net> <48FFB233.1070706@riverviewtech.net> <006801c93551$1d93fa30$58bbee90$@net> <op.ujhwj8rhrtqp7s@chiyo.azt> <006901c93570$d080a1b0$7181e510$@net> <49013A78.3030509@riverviewtech.net> <007001c9358f$01d1c550$05754ff0$@net> <490156B0.2050905@riverviewtech.net> <007401c93627$38b8f640$aa2ae2c0$@net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=iPNPPxu3N95/Kb+zG248MV43exhhXqSC103Lskqrq6g=;
-        b=QH/oEMh8OndsXnaHhkIER9aU6RIOne0PZUa1raEhCasFnNT+YVrvcMxSG2m31/+rhy
-         ZisipO4M5zEmL7IjvxXXrchQRrxtIgdVLJrMfPmRjxohHGlOVvCUVhyoCqSkhS8MBKKN
-         pT7N3BQC02pc6BD1O6Rau9K6Nso7QmaFWMqGc=
-In-Reply-To: <68fea9390810261036h41dd81cex8f47960c573a009a@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <007401c93627$38b8f640$aa2ae2c0$@net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi,
+On 10/24/2008 5:24 PM, Joey wrote:
+> I think with all the times we loaded and unloaded our iptables 
+> configs and using the type executed by command line, then through 
+> iptables-save etc that we trashed iptables hence it was blocking IP's 
+> we weren't expecting.  For right now I think the reboot did it....
 
-Installed - ebtables-2.0.8.2-1.el5.rf.x86_64.rpm on CentOS 5.2
+Ok...  If you are comfortable with that, I guess that is ok.  I would 
+suggest keeping an eye on things.  To me that type of failure is a 
+symptom of an underlying bug.  However seeing as how we can't duplicate 
+the problem we can't troubleshoot it, so it may have been the difference 
+between a "-s" and a "-d" in a script that was accidentally created and 
+subsequently corrected.  So it is hard to say.
 
-I'm having trouble with ebtables - I get the following when calling
-certain ebtables commands such as ebtables -X
+Either way seeing that things are working as expected I'd say you are 
+good to go.
 
-"The kernel doesn't support a certain ebtables extension, consider
-recompiling your kernel or insmod the extension."
+> Thanks for all your help!
 
-Found little apart from that 2.0.6 is supposed to work, however i'm
-having trouble compiling that for CentOS-5, anyone had similar issues?
+You are welcome.
 
-Thanks,
 
-Matt
+
+Grant. . . .
