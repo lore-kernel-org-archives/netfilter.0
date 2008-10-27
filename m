@@ -1,28 +1,51 @@
-From: "Karel Rericha" <karel@maxtel.cz>
-Subject: Re: block tcp packet.
-Date: Mon, 27 Oct 2008 09:39:26 +0100
-Message-ID: <5b19ed110810270139s7304f5c1k3af524afdf991378@mail.gmail.com>
-References: <98f5d92c0810241600r7d44b366u8c0b84c917a4c8b9@mail.gmail.com>
+From: "Jacky Luk" <jacky.luk@primecreation.com>
+Subject: About the netfilter_queue and ip_queue!
+Date: Mon, 27 Oct 2008 17:01:32 +0800
+Message-ID: <web-4603247@mail.primecreation.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <98f5d92c0810241600r7d44b366u8c0b84c917a4c8b9@mail.gmail.com>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Servers 4you <servers4you@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-2008/10/25 Servers 4you <servers4you@gmail.com>:
-> Hello every one!
->
-> how can i block a tcp packet, just knowing the 4th byte its "47" and
-> the total length of DATA is 14bytes?
->
-> this is my packet:
-> aa883f 47 9434f54c9b03e8327940
+Hi,
 
-Google U32 match, it is what you need.
+My program is using ip_queue to develop in RHEL4.6. 
+Recently, I need to port my program to RHEL5.2 because the 
+stability issue of the system and my program in RHEL4.6.
 
-Karel
+I found that the ip_queue is replaced by netfilter_queue 
+in RHEL5.2 now and netfilter_queue provides the backward 
+compatibility of ip_queue. As a result, I try to 
+re-compile my program without changing the source code (My 
+program is still using the ip_queue) and I found that it 
+can be compiled successfully in RHEL5.2.
+
+However, I found that my program cannot retrieve the 
+packets from the kernelspace into the userspace after it 
+is initialized as usual (Set the rules in iptables, 
+modprobe ip_queue - I think in RHEL5.2 is not needed to 
+modprobe ip_queue, but RHEL4.6 is needed).
+
+The following is my questions. Why my program cannot 
+retrieve the packets? Is it the configuration problem of 
+the rules in iptables? Or some steps is forgotten to 
+perform? Or netfilter_queue cannot be backward compatible 
+to the ip_queue?
+
+The platform which I compiled and executed my program is 
+RHEL5.2 (2.6.18-92.el5) with the installation of 
+libnfnetlink-0.0.39 and libnetfilter_queue-0.0.16. The 
+rules in iptables is listed in the below (It is the same 
+in RHEL4.6 and RHEL5.2):
+iptables -t mangle -A PREROUTING -i eth0 -p udp -d 
+192.168.0.0/24 -m multiport --destination-port 
+2123,2152,3386 -j QUEUE
+
+Thank you very much!
+
+Regards,
+
+Jacky Luk
