@@ -1,51 +1,70 @@
-From: "Jacky Luk" <jacky.luk@primecreation.com>
-Subject: About the netfilter_queue and ip_queue!
-Date: Mon, 27 Oct 2008 17:01:32 +0800
-Message-ID: <web-4603247@mail.primecreation.com>
+From: Diego Casado Mansilla <diego.casadomansilla@gmail.com>
+Subject: NAT in an already established TCP connection
+Date: Tue, 28 Oct 2008 12:25:13 +0100
+Message-ID: <4906F699.6010006@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=Wp3uvR86ot8HEFeynj0dWVqk0MRsFmDs9RVYiEE1Lbc=;
+        b=QiNDJ5tqFSG2/yMB75izyUHnn86OjQi/u6M4hKHNWvbwKEoMzfJ7Qe1OFysHmZgGIt
+         U4U+2kjmrpfcDzhuLZ0zLBv6pQcBLXRzp7iH+J4BT1L29oG4aAqL9GSKe0FBDeB7AJh4
+         /LOgRxihJG/WaC7YUXqM3fZibdDLptwSobj08=
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@lists.samba.org
 
-Hi,
+Hello all!!!
 
-My program is using ip_queue to develop in RHEL4.6. 
-Recently, I need to port my program to RHEL5.2 because the 
-stability issue of the system and my program in RHEL4.6.
+This is my first mail in the list.
 
-I found that the ip_queue is replaced by netfilter_queue 
-in RHEL5.2 now and netfilter_queue provides the backward 
-compatibility of ip_queue. As a result, I try to 
-re-compile my program without changing the source code (My 
-program is still using the ip_queue) and I found that it 
-can be compiled successfully in RHEL5.2.
+Hopefully the question is interesting and you can figure out how to help me.
 
-However, I found that my program cannot retrieve the 
-packets from the kernelspace into the userspace after it 
-is initialized as usual (Set the rules in iptables, 
-modprobe ip_queue - I think in RHEL5.2 is not needed to 
-modprobe ip_queue, but RHEL4.6 is needed).
+I use iptables rules to manage the connections from internet to my local 
+network. I know how to filter, do nat, etc...
+But this days I'm trying to do NAT in connections that are already 
+established. The problem is (as far as I know) the packets which pass 
+throught the nat table are only the SYN packets (once), thus, the 
+packets that are used to perform a NEW connection.
 
-The following is my questions. Why my program cannot 
-retrieve the packets? Is it the configuration problem of 
-the rules in iptables? Or some steps is forgotten to 
-perform? Or netfilter_queue cannot be backward compatible 
-to the ip_queue?
+After that the connection is created, the maintenance and the resolution 
+of the SNAT and DNAT are kept till the connection finish.
+What I'm wondering is: how can I change the ports or IPs of an already 
+established connection if my packets just go throught the nat table at 
+the connection time?
 
-The platform which I compiled and executed my program is 
-RHEL5.2 (2.6.18-92.el5) with the installation of 
-libnfnetlink-0.0.39 and libnetfilter_queue-0.0.16. The 
-rules in iptables is listed in the below (It is the same 
-in RHEL4.6 and RHEL5.2):
-iptables -t mangle -A PREROUTING -i eth0 -p udp -d 
-192.168.0.0/24 -m multiport --destination-port 
-2123,2152,3386 -j QUEUE
+**** Maybe doing packets' replication since those ones are redirected to 
+annother machine?
 
-Thank you very much!
+**** NAT TCP Extensions??Patch-O-Matic --> window-tracking??
 
-Regards,
+**** I read this in an interntet site:
 
-Jacky Luk
+--- NEW (and RELATED non-icmp)
+    This is a very important part relevant for understanding the whole NAT
+    subsystem. Only if the packet has the state NEW (i.e. it would establish
+    a new connection, if we'd accept it), the NAT table is traversed by
+    calling ip_nat_rule.c:ip_nat_rule_find(), which in turn calls
+    ip_tables.c:ipt_do_table() for the actual IP table traversal. The 
+traversal
+    ends up in either ACCEPTing the packet as it is, or one of the nat 
+targets
+    (SNAT, DNAT and if loaded: REDIRECT, MASQUERADE) Please see
+    chapter FIXME for further description of those targets.
+
+--- ESTABLISHED
+    This packet belongs to an already established connection. We don't need
+    to traverse the NAT table again, as the necessary information
+    (struct ip_nat_info) was already gained Hello everybody,
+
+
+Thank you very much in advance and if my questions are not clear don't 
+doubt to send me a message.
+
+Diego.
+
