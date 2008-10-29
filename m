@@ -1,36 +1,36 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: [ANNOUNCE] iface match released
-Date: Wed, 29 Oct 2008 17:11:09 +0100
-Message-ID: <CF0A1CFBA04B44DE824F387BDA41F3E3@dcyb.net>
-References: <49088123.4060905@freemail.hu> <74644A4E34C546F08188965A9641FF01@dcyb.net> <49088881.3060207@freemail.hu>
+From: Paul Evans <paul@mxtelecom.com>
+Subject: -j ROUTE and conntrack
+Date: Wed, 29 Oct 2008 15:46:50 +0000
+Message-ID: <20081029154650.004cc3b5@nacelle.mxtelecom.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49088881.3060207@freemail.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Netfilter list' <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-netfilter-owner@vger.kernel.org <> wrote on Wednesday , 29 October 2008
-17:00:
+Our outbound traffic gets SNATted to claim to come from one of several
+role IPs. These IPs are hosted on different routers for load
+distribution purposes. The choice of which role IP to use depends on
+the exact destination IP address / TCP port number the connection goes
+to.
 
->>> You can download source from my webpage:
->>> 
->>>     http://www.glsys.eu/iface/iface.tar.bz
->>> 
->> 
->> I'm getting a 404 error?
->> 
->> 
-> Sorry.. a number "2" missing: :D
-> 
-> http://www.glsys.eu/iface/iface.tar.bz2
+I'm using the "-j ROUTE" target to force a routing decision for this,
+but it seems to have the side effect of breaking conntrack. Without -j
+ROUTE, the outbound connection appears in the conntrack table, so that
+when incoming replies arrive, they pass an ESTABLISHED test, and are
+let in. If it needs to -j ROUTE on the way out, then when the reply
+comes back, no conntrack entry means it fails ESTABLISHED and gets
+dropped. It seems that "-j ROUTE --continue" doesn't help either, it
+still goes missing.
 
-Heh, I should have known... I guess I "wanted" to see a "g" instead of a
-"b". :^)
+Can anyone shed any light on this? How to keep the entry in conntrack
+even though using -j ROUTE. Failing that, how else to perform a routing
+decision override in a way that won't break conntrack?
 
-
-Grts,
-Rob
-
+-- 
+Paul Evans <paul@mxtelecom.com>
+Tel: +44 (0) 845 666 7778
+Fax: +44 (0) 870 163 4694
+http://www.mxtelecom.com
