@@ -1,60 +1,81 @@
-From: Paul Evans <paul@mxtelecom.com>
-Subject: Re: -j ROUTE and conntrack
-Date: Wed, 29 Oct 2008 18:03:20 +0000
-Message-ID: <20081029180320.16e92db5@nacelle.mxtelecom.com>
-References: <20081029154650.004cc3b5@nacelle.mxtelecom.com>
+From: "Joey" <Joey@Web56.net>
+Subject: help with whitelist
+Date: Wed, 29 Oct 2008 14:13:10 -0400
+Message-ID: <001101c939f2$00158910$00409b30$@net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/w1NfNArJa.3y0U6fFXRgrq.";
- protocol="application/pgp-signature"; micalg=PGP-SHA1
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20081029154650.004cc3b5@nacelle.mxtelecom.com>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: IPTables <netfilter@vger.kernel.org>
 
---Sig_/w1NfNArJa.3y0U6fFXRgrq.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello All,
 
-On Wed, 29 Oct 2008 15:46:50 +0000
-Paul Evans <paul@mxtelecom.com> wrote:
+ 
 
-> I'm using the "-j ROUTE" target to force a routing decision for this,
-> but it seems to have the side effect of breaking conntrack. Without -j
-> ROUTE, the outbound connection appears in the conntrack table, so that
-> when incoming replies arrive, they pass an ESTABLISHED test, and are
-> let in. If it needs to -j ROUTE on the way out, then when the reply
-> comes back, no conntrack entry means it fails ESTABLISHED and gets
-> dropped. It seems that "-j ROUTE --continue" doesn't help either, it
-> still goes missing.
+I have been refining my iptables code and have perfected the blocking side (
+thanks to all who helped! ).  Rules here http://web56.net/iptables-save.cfg
 
-Actually, this seems to be my mistake. There's an unfortunate
-side-effect of giving ROUTE the --continue option when called from
-PREROUTING. The packet exits the PREROUTING chain already with a
-routing decision made in it before it hits the kernel's routing core
-which seems to confuse it. It then drops the packet and the
-conntrack information associated.
+ 
 
-I've moved the ROUTE calls into POSTROUTING and now it seems to work
-fine - it routes correctly, it remains in conntrack so the reply passes
-the ESTABLISHED test.
+But now, I need to create some whitelist entries.
 
---=20
-Paul Evans <paul@mxtelecom.com>
-Tel: +44 (0) 845 666 7778
-Fax: +44 (0) 870 163 4694
-http://www.mxtelecom.com
+ 
 
---Sig_/w1NfNArJa.3y0U6fFXRgrq.
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
+Lets say I have a block rule of 207.144.68.0/24 and I need to whitelist
+207.144.68.15
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+ 
 
-iEYEARECAAYFAkkIpWgACgkQcGehlx3Gqx5nvwCggOOpX8oaXEyZL5yi1zWxq1XY
-1bsAoJLB9l7nkCGTejuo6NDeAyvxGUnc
-=mU4N
------END PGP SIGNATURE-----
+I tried this by hand for testing purposes:
 
---Sig_/w1NfNArJa.3y0U6fFXRgrq.--
+ 
+
+Create chain
+
+iptables -N WHITE_LIST
+
+rue for chain
+
+iptables -A WHITE_LIST -p tcp --dport 25 -s 207.144.68.15 -m state --state
+NEW -j ACCEPT
+
+hook rule
+
+iptables -A INPUT -j WHITE_LIST
+
+ 
+
+I also tried this, but no luck
+
+ 
+
+iptables -A INPUT -p tcp -s 207.44.168.15 -j LOG --log-prefix JOEY-TEST-JOEY
+
+iptables -A INPUT -p tcp -s 207.44.168.15 --dport 25 -j DROP
+
+iptables -N WHITE_LIST
+
+iptables -A SMTP_TRAFFIC -j WHITE_LIST
+
+iptables -N LOG_WHITE_LIST
+
+iptables -A LOG_WHITE_LIST -j LOG --log-prefix "WHITELISTED"
+
+iptables -A LOG_WHITE_LIST -j ACCEPT
+
+ 
+
+I'm not real clear on this so I figured before I break something ask for
+help.
+
+ 
+
+Thanks!
+
+
+Joey
+
+
