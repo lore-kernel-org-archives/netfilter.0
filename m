@@ -1,41 +1,60 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: "invalid packets" and "bad HW ICMP checksum"
-Date: Wed, 29 Oct 2008 18:10:03 +0100
-Message-ID: <490898EB.4080307@freemail.hu>
+From: Paul Evans <paul@mxtelecom.com>
+Subject: Re: -j ROUTE and conntrack
+Date: Wed, 29 Oct 2008 18:03:20 +0000
+Message-ID: <20081029180320.16e92db5@nacelle.mxtelecom.com>
+References: <20081029154650.004cc3b5@nacelle.mxtelecom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/w1NfNArJa.3y0U6fFXRgrq.";
+ protocol="application/pgp-signature"; micalg=PGP-SHA1
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20081029154650.004cc3b5@nacelle.mxtelecom.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi List,
+--Sig_/w1NfNArJa.3y0U6fFXRgrq.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-My firewall logs many of the following packets!
+On Wed, 29 Oct 2008 15:46:50 +0000
+Paul Evans <paul@mxtelecom.com> wrote:
 
-Can anyone help me with it?
+> I'm using the "-j ROUTE" target to force a routing decision for this,
+> but it seems to have the side effect of breaking conntrack. Without -j
+> ROUTE, the outbound connection appears in the conntrack table, so that
+> when incoming replies arrive, they pass an ESTABLISHED test, and are
+> let in. If it needs to -j ROUTE on the way out, then when the reply
+> comes back, no conntrack entry means it fails ESTABLISHED and gets
+> dropped. It seems that "-j ROUTE --continue" doesn't help either, it
+> still goes missing.
 
-I found a similar post: 
-http://lists.netfilter.org/pipermail/netfilter/2007-July/069183.html
+Actually, this seems to be my mistake. There's an unfortunate
+side-effect of giving ROUTE the --continue option when called from
+PREROUTING. The packet exits the PREROUTING chain already with a
+routing decision made in it before it hits the kernel's routing core
+which seems to confuse it. It then drops the packet and the
+conntrack information associated.
 
-I use REJECT too and have two interfaces but nothing special.
+I've moved the ROUTE calls into POSTROUTING and now it seems to work
+fine - it routes correctly, it remains in conntrack so the reply passes
+the ESTABLISHED test.
 
-fw01 kernel: nf_ct_icmp: bad HW ICMP checksum IN= OUT= 
-SRC=87.171.106.238 DST=[EXT_IP] LEN=154 TOS=0x00 PREC=0x00 TTL=56 
-ID=35986 PROTO=ICMP TYPE=3 CODE=1 [SRC=[EXT_IP] DST=87.171.106.238 
-LEN=126 TOS=0x00 PREC=0x00 TTL=118 ID=59786 PROTO=UDP SPT=11405 
-DPT=64067 LEN=106 ]
+--=20
+Paul Evans <paul@mxtelecom.com>
+Tel: +44 (0) 845 666 7778
+Fax: +44 (0) 870 163 4694
+http://www.mxtelecom.com
 
-fw01 kernel: nf_ct_icmp: bad HW ICMP checksum IN= OUT= SRC=70.55.137.237 
-DST=[EXT_IP] LEN=154 TOS=0x00 PREC=0x00 TTL=35 ID=30825 PROTO=ICMP 
-TYPE=3 CODE=3 [SRC=[EXT_IP] DST=70.55.137.237 LEN=126 TOS=0x00 PREC=0x00 
-TTL=108 ID=59731 PROTO=UDP SPT=11405 DPT=25756 LEN=106 ]
+--Sig_/w1NfNArJa.3y0U6fFXRgrq.
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
 
-fw01 kernel: nf_ct_tcp: invalid packet ignored IN= OUT= 
-SRC=195.228.240.23 DST=[EXT_IP] LEN=52 TOS=0x00 PREC=0x00 TTL=59 
-ID=60017 DF PROTO=TCP SPT=80 DPT=59558 SEQ=3345506104 ACK=508060430 
-WINDOW=33792 RES=0x00 ACK URGP=0 OPT (0101080A2F70DB47013D0A2B)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
+iEYEARECAAYFAkkIpWgACgkQcGehlx3Gqx5nvwCggOOpX8oaXEyZL5yi1zWxq1XY
+1bsAoJLB9l7nkCGTejuo6NDeAyvxGUnc
+=mU4N
+-----END PGP SIGNATURE-----
 
-Swifty
+--Sig_/w1NfNArJa.3y0U6fFXRgrq.--
