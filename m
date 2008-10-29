@@ -1,46 +1,33 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <gaspar.lajos@whb.hu>
-Subject: Re: libpcap (tcpdump) and netfilter (iptables)
-Date: Wed, 29 Oct 2008 14:56:31 +0100
-Message-ID: <49086B8F.1070207@whb.hu>
-References: <49086324.9060900@laposte.net>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: [ANNOUNCE] iface match released
+Date: Wed, 29 Oct 2008 16:28:35 +0100
+Message-ID: <49088123.4060905@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49086324.9060900@laposte.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Pierre LEBRECH <pierre.lebrech@laposte.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter list <netfilter@vger.kernel.org>, Jan Engelhardt <jengelh@medozas.de>, =?ISO-8859-2?Q?Kadlecsik_J=F3zsef?= <kadlec@blackhole.kfki.hu>
 
-Hi!
+Hi List,
 
-Short answer: Yes. tcpdump sees every packet.
+The first release of my first addon to xtables-addons. :D
 
-Long answer:
+This match is part of my thesis.
 
-http://www.google.hu/search?q=3Diptables+tcpdump
+It adds support to iptables/xtables to check interface states.
 
-http://mydebian.blogdns.org/?p=3D85
+I would like to thank Jozsef Kadlecsik his very kind help!
+
+You can download source from my webpage:
+
+    http://www.glsys.eu/iface/iface.tar.bz
+
+Or simply adding the following line to the "sources" file in the 
+xtables-addons
+directory and running the "xa-download-more" script:
+
+    http://www.glsys.eu/iface
 
 Swifty
-
-Pierre LEBRECH =EDrta:
-> Hi,
->
-> It seems that even if I drop some INPUT packets with iptables, tcpdum=
-p
-> still sees these packets arriving on the ethernet interface.
->
-> Could anybody explain me a bit about this?
->
-> Thanks
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
->  =20
-
