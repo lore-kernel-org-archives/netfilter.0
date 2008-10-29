@@ -1,19 +1,25 @@
 From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH] arptable_filter: merge forward hook
-Date: Wed, 29 Oct 2008 09:51:48 +0100
-Message-ID: <49082424.9070606@trash.net>
-References: <20081028205406.GB15660@x200.localdomain>
+Subject: Re: [PATCH 1/7] netns ebtables: part 1
+Date: Wed, 29 Oct 2008 09:53:40 +0100
+Message-ID: <49082494.6060209@trash.net>
+References: <20081028205835.GC15660@x200.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20081028205406.GB15660@x200.localdomain>
+In-Reply-To: <20081028205835.GC15660@x200.localdomain>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: netfilter@vger.kernel.org, containters@osdl.org
+Cc: netfilter@vger.kernel.org, containers@osdl.org
 
 Alexey Dobriyan wrote:
-> It's identical to NF_ARP_IN hook.
+> * propagate netns from userspace, register table in passed netns
+> * remporarily register every ebt_table in init_net
+> 
+> P. S.: one needs to add ".netns_ok = 1" to igmp_protocol to test with
+> ebtables(8) in netns.
 
-Applied, thanks.
+The containers list address bounces and the netfilter address is
+the user list. Please resend with the proper addresses so other
+developers get a chance to review the patches. Thanks.
