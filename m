@@ -1,39 +1,27 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: [PATCH 7/7] netns ebtables: br_nf_pre_routing_finish() fixup
-Date: Wed, 29 Oct 2008 00:02:28 +0300
-Message-ID: <20081028210228.GI15660@x200.localdomain>
+From: "Karel Rericha" <karel@maxtel.cz>
+Subject: Re: block tcp packet.
+Date: Wed, 29 Oct 2008 09:45:59 +0100
+Message-ID: <5b19ed110810290145t4a0aaf4cg2fdd784bce8ae92c@mail.gmail.com>
+References: <98f5d92c0810241600r7d44b366u8c0b84c917a4c8b9@mail.gmail.com>
+	 <5b19ed110810270139s7304f5c1k3af524afdf991378@mail.gmail.com>
+	 <98f5d92c0810270811l6463705dyad43c3be69008c4a@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:date:from:to:cc:subject
-         :message-id:mime-version:content-type:content-disposition:user-agent;
-        bh=wjGTXXQOlQB++ivBWsUGTy8vTIEwjNUao03+xl0Z9yc=;
-        b=iTytJngjIOzkR8thuU0i60mQhIttrl2FGWlfTg2pAtq9eQK+vcVAYdtUUR50H0+j7/
-         LjLgisYMX9OkPMpQKnivuD6/pzH+ArRcE72vE1tCACZKL9uSjvtBjhJ3H18ICkDRe/ON
-         /NlI2+8c3vbMrBIddqxbeFle237LZPAPKVAQI=
+In-Reply-To: <98f5d92c0810270811l6463705dyad43c3be69008c4a@mail.gmail.com>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: kaber@trash.net
-Cc: netfilter@vger.kernel.org, containers@osdl.org
+To: Servers 4you <servers4you@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+2008/10/27 Servers 4you <servers4you@gmail.com>:
+> i was reading about U32 match, but i think its used to work with packet
+> headers, not with data.
 
- net/bridge/br_netfilter.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am not sure but I think you can trick u32 to match data in packet
+with positive offset as you can reach frame header with negative
+offset. But I never tried myself. Maybe someone on list did ?
 
---- a/net/bridge/br_netfilter.c
-+++ b/net/bridge/br_netfilter.c
-@@ -357,7 +357,7 @@ static int br_nf_pre_routing_finish(struct sk_buff *skb)
- 			if (err != -EHOSTUNREACH || !in_dev || IN_DEV_FORWARD(in_dev))
- 				goto free_skb;
- 
--			if (!ip_route_output_key(&init_net, &rt, &fl)) {
-+			if (!ip_route_output_key(dev_net(dev), &rt, &fl)) {
- 				/* - Bridged-and-DNAT'ed traffic doesn't
- 				 *   require ip_forwarding. */
- 				if (((struct dst_entry *)rt)->dev == dev) {
+Karel
