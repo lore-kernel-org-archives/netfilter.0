@@ -1,33 +1,42 @@
-From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
-Subject: Userland Netfilter
-Date: Thu, 30 Oct 2008 08:49:52 -0700
-Message-ID: <4909d7a5.0fba720a.690e.70fc@mx.google.com>
+From: Rick Jones <rick.jones2@hp.com>
+Subject: Re: Shortcuts to counting rules?
+Date: Thu, 30 Oct 2008 09:40:38 -0700
+Message-ID: <4909E386.1000405@hp.com>
+References: <4908FDE9.7040006@hp.com> <49090A3D.40102@snapgear.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date
-         :mime-version:content-type:content-transfer-encoding:x-mailer
-         :thread-index:content-language:message-id;
-        bh=nUIKBToOysxZod3el4uS7brpQPYPB2MA/vD4GGfPEt8=;
-        b=NkkSZvdYlRUhP7jiS01c2PoXSm+zmR3aG8mRJbB3ezyRkfkzRu6+r+cI35yqU9rLYq
-         A9qjR/5IOmoDHliX66V6RGyw80LVDZKSNMmf8J6ueeRbIe0YAAfZ33hSfVJ7qQRkkGbn
-         iFAkL/PXdZTB5YA6NGUgGUNlZfa9ZfZ6dHUTs=
-Content-Language: en-us
+In-Reply-To: <49090A3D.40102@snapgear.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Philip Craig <philipc@snapgear.com>
+Cc: netfilter@vger.kernel.org
 
-I need to create a userland simulation for filtering packets.
-I remember running into a userland netfilter, but can't seem to find it. Any
-pointers or info would be appreciated.
-Another option is to feed the packets into tun/tap devices, and let the real
-netfilter do the job. Performance, of course, is not a concern in my case.
-Does that sound reasonable ? Tun/tap seems to be an almost dead project.
-Will it work in newer distributions ?
+Philip Craig wrote:
+> Rick Jones wrote:
+> 
+>>Are there any reasonable ways I might relax that requirement that 
+>>iptables-dev be present?  Are some of the datastructures used in the 
+>>getsockopt() calls "stable enough" to do that that netperf could make 
+>>the getsockopt() calls directly without having to pull-in libiptc? 
+>>Netperf does not particularly care about the rules themselves, just 
+>>their number.
+> 
+> 
+> libiptc is only intended for use by iptables itself.  The fact that
+> iptables-dev includes libiptc is a bug IMO.  There's probably some
+> applications out that that wrongly depend on it already though.
 
-Thanks
- 
+I can see the appeal to an application since it does provide a nice 
+abstraction.
 
+> The getsockopt() calls are part of the linux ABI.  Using them is safe.
+> You just need to make sure you handle the case that they aren't
+> implemented.
+
+Time to go find their documentation then I suppose.
+
+thanks,
+
+rick jones
