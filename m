@@ -1,33 +1,28 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: Marking particular programs
-Date: Fri, 31 Oct 2008 11:43:40 +0200
-Message-ID: <1225446220.4408.9.camel@casper.meteor.dp.ua>
-References: <490A45BF.5060800@amfes.com>
-Reply-To: casper@meteor.dp.ua
+From: "Jacky Luk" <jacky.luk@primecreation.com>
+Subject: About the netfilter_queue and multi threads!
+Date: Fri, 31 Oct 2008 18:45:23 +0800
+Message-ID: <web-4608013@mail.primecreation.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <490A45BF.5060800@amfes.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: dmiller@amfes.com
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-=F7 =FE=D4=D7, 30/10/2008 =D7 16:39 -0700, Daniel L. Miller =D0=C9=DB=C5=
-=D4:
-> Is it possible to "mark" packets from particular programs running on =
-the=20
-> routing server?  Such as Squid or Apt?
->=20
-> Without this, I have no way (that I know of) of identifying the natur=
-e=20
-> of the HTTP traffic so I can limit it accordingly.
+Hi, 
 
-owner match?
+Does the netfilter_queue support the multi-thread 
+processing? In other words, I use one thread to receive 
+packets from the netfilter_queue (Use recv() function). In 
+the meanwhile, I dispatch them to other threads (Another 6 
+threads) to process by using Round-Robin method (Use 
+nfq_set_verdict() function when the processing is 
+finished). If so, does it cause any stability issues to 
+the system (e.g. Cause kernel panic)?
 
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+Thank you very much!
 
+Regards,
+
+Jacky Luk
