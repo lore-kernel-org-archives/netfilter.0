@@ -1,19 +1,31 @@
-From: Rick Jones <rick.jones2@hp.com>
-Subject: Re: Netlink programming problem
-Date: Fri, 31 Oct 2008 10:13:06 -0700
-Message-ID: <490B3CA2.8070807@hp.com>
-References: <8a38e1330810310032i63da7c19l74b71b6a8a05c5fe@mail.gmail.com>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: Marking particular programs
+Date: Sat, 01 Nov 2008 18:35:47 +1300
+Message-ID: <490BEAB3.1010406@treenet.co.nz>
+References: <490A45BF.5060800@amfes.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <8a38e1330810310032i63da7c19l74b71b6a8a05c5fe@mail.gmail.com>
+In-Reply-To: <490A45BF.5060800@amfes.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jianqing Zhang <arrow.jianqing@gmail.com>
+To: dmiller@amfes.com
 Cc: netfilter@vger.kernel.org
 
-I find strace to be very helpful in debugging, especially as it can help 
-me find problems with parameters to system calls.
+Daniel L. Miller wrote:
+> Is it possible to "mark" packets from particular programs running on the 
+> routing server?  Such as Squid or Apt?
+> 
+> Without this, I have no way (that I know of) of identifying the nature 
+> of the HTTP traffic so I can limit it accordingly.
 
-rick jones
+Squid marks its own traffic for QoS as needed.
+Recent versions go as far as to set it based on originating source for 
+better external/internal flow handling.
+
+apt can be configured to use Squid or system proxy settings for more 
+efficient bandwidth usage.
+
+Amos Jeffries
+Squid Developer
