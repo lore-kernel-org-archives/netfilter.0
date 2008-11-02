@@ -1,7 +1,7 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Basic Routing
-Date: Sun, 02 Nov 2008 14:04:08 -0600
-Message-ID: <490E07B8.6050905@riverviewtech.net>
+Date: Sun, 02 Nov 2008 14:51:43 -0600
+Message-ID: <490E12DF.6090602@riverviewtech.net>
 References: <490DD23F.7060406@amfes.com> <013f01c93d0c$f4a47410$dded5c30$@info> <490DF4CA.1010808@amfes.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -13,160 +13,163 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
 Note:  Because of the length of my reply I'm going to split this reply 
-in to two parts.  The first (this) part will be on routing in general 
-and the second (next) part will be on NATing.
+in to two parts.  The first (previous) part will be on routing in 
+general and the second (this) part will be on NATing.
 
 On 11/2/2008 12:43 PM, Daniel L. Miller wrote:
-> Thanx.  I'm still not sure of the vocabulary with which to phrase my 
-> "true" question - so I'll try it with more words (although I think 
-> you've already answered me - I'm just looking for confirmation).
-
-Eh...  What Daniel said is true, but your (mis)understandings are not 
-quite right.  You are actually trying to understand some lower level 
-functionality by observing some higher level functionality that causes 
-you to misconstrue the underlying functionality.  It's sort of like 
-trying to grab something under water while looking at it from out of the 
-water if you don't know that water changes the angle you need to look at.
-
-> Given:
-> 1.  A linux box "router" that has ip-fowarding enabled, and no 
-> restrictions via iptables.
-> 2.  This box has a routing table that lists two or more networks
-> 
-> If another host on network 'A', lists the box "router" as its default 
-> gateway, and tries to contact network 'B' through the router - will the 
-> router automagically pass along the packets?  Or this simply doesn't 
-> work, because of a basic networking concept I haven't grasped - and NAT 
-> is the technique to accomplish this?
-
-Yes and no.
-
-NATing, or Network Address Translation, is a special technique to alter 
-(possibly hide) either the source and / or destination address the 
-traffic is coming from and / or going to.  (I say "and / or" because it 
-is possible to NAT both the source and destination if need be, which is 
-called double NATing and even more complex.)
-
-First let's say that a /Default Gateway/ is nothing more than a catch 
-all route to be used when there are no other better routes to use.  In 
-essence, use the /Default Gateway/ as the last resort to fall back on if 
-nothing else works.
-
-Now, routes in general are just a way of saying that if you want to go 
-to this particular destination, you need to go by way of here to get to 
-your ultimate destination.
-
-Now, let's consider your scenario above:
-
-+---+         +--------+         +---+
-| 1 +---(A)---+ Router +---(B)---+ 2 |
-+---+         +--------+         +---+
-
-We configure host 1 on network A to use the Router as its default 
-gateway and similarly we configure host 2 to use the Router as its 
-default gateway.
-
-Now, host 1 can ping any thing on network A directly because it is local 
-and with in it's (sub)net(work).  However if host 1 wants to ping any 
-thing out side of network A it will have to find a route to get to the 
-destination.  Knowing that host 1 only has one route, the /Default 
-Gateway/ all traffic not going to the local (sub)net(work) will go to 
-the /Default Gateway/.  So, host 1 sends its traffic to the /Default 
-Gateway/ of Router.  Now it is up to Router to handle the traffic.
-
-Router now has traffic from host 1 that it needs to deliver to host 2. 
-So Router looks in its routing tables and finds that host 2 is in 
-network B and that it is directly attached to network B and as such is 
-able to send the traffic directly to host 2 in network B.
-
-When host 2 receives the traffic and is ready to reply to host 1 it goes 
-through a similar process as host 1 to send the reply traffic.  Likewise 
-Router handles the traffic in reverse.
-
-Thus hosts 1 and 2 are able to talk to each other by way of Router.
-
-When hosts 1 and 2 are talking to each other, they both know that that 
-traffic originated from the other because of the source IP address in 
-the packets they received.
-
-Now, let's elaborate the network connection a bit more to further 
-explain routing.
-
-                  :                 :
-                  |                 |
-+---+         +--+--+           +--+--+         +---+
-| 1 +---(A)---+ Bob +===(XXX)===+ Tom +---(B)---+ 2 |
-+---+         +-----+           +-----+         +---+
-
-Here we have two friends that have their home network, each with their 
-own internet connection.  However, considering that they are friends, 
-they have some sort of connection between their homes to allow them to 
-use each others network resources.  This connection could be a VPN 
-across the internet, or it could be a wireless network connection, or if 
-they are close enough to each other, it could be an ethernet connection 
-between their routers.
-
-In this scenario, both hosts 1 and 2 use their local routers (Bob and 
-Tom respectively) as their /Default Gateway/.
-
-Now let's re-consider host 1 pinging host 2 in this new network.  Like 
-before, when host 1 wants to pint host 2 it finds that host 2 is not 
-with in its network and thus must have a route to get there.  Like 
-before host 1 will send the traffic to its /Default Gateway/ (in this 
-case) "Bob".  Bob will then have to find a route to get to host 2.  This 
-time Bob has a default gateway of the internet connection (going out the 
-top) -AND- Bob has a route to network B by way of "Tom".  So Bob will 
-send the packet on to Tom.  Tom will then as you would expect see that 
-host 2 is directly connected to network B and send the packet on to host 2.
-
-Similarly when host 2 replies, it's traffic will go to it's /Default 
-Gateway/ (in this case) "Tom".  Tom will then find that it has a route 
-to network A by way of "Bob" and as such will send traffic to network A 
-to Bob.  Bob will then see that the traffic is to a system on network A 
-and send the traffic accordingly.
-
-In both of the above scenarios hosts 1 and 2 used the /Default Gateway/ 
-to send their traffic and did not need a routing table with any thing 
-more than their /Default Gateway/.  The following scenario is a bit 
-different.
-
-    :                                             :
-    |                                             |
-+--+--+         +---+           +---+         +--+--+
-| Bob +---(A)---+ 1 |           | 2 +---(B)---+ Tom |
-+-----+    |    +---+           +---+    |    +-----+
-            |                             |
-            |    +---+           +---+    |
-            +----+ 7 +===(XXX)===+ 8 +----+
-                 +---+           +---+
-
-Here things are more than a bit different.  In this configuration, we 
-still have Bob's and Tom's houses, except this time the connection 
-between the two networks is not through their /Default Gateway/ but 
-rather the respective systems 7 and 8.
-
-In this scenario, when host 1 wants to ping host 2, host 1 will again 
-consult its routing table.  However this time there will have to be an 
-entry that says that network B is accessible by  host 7 in addition to 
-the /Default Gateway/ entry.  Thus when host 1 sends its packet it will 
-find that it needs to send the packet to host 7 rather than the /Default 
-Gateway/ of "Bob".  Host 7 will then receive the packet and find that it 
-needs to send the packet on to host 8.  Host 8 will then find that it 
-can send the packet directly to host 2 on the local network B.
-
-Similarly host 2 will have to have a route in its routing table so that 
-it knows that it reaches network A by way of host 8.  Thus host 2 sends 
-its reply packet to host 8 which sends the packet on to host 7 which 
-then sends the packet directly to host 1.
-
 > I guess part of my difficulty lies in a lack of experience configuring 
 > non-linux routers.  Behind-the-scenes, as it were, do all/most routers 
 > use NAT to accomplish the goal of linking networks?  It always seemed to 
 > me NAT was a 'kludge' that was somehow unnecessary when "more 
 > expensive?" equipment was involved.
 
-Quickly, *NO*, routers in general do *NOT* use NAT.  Look at my next 
-email for an explanation as to what NAT is for.
+No, routers in general do *NOT* use NAT.
+
+In all the above scenarios, all systems in the path see the real source 
+and destination IPs of host 1 and host 2.  NAT is a way to change source 
+and or destination address for some reason.
+
+To understand NATing you need to understand that there are some IP 
+address ranges that are *NOT* suppose to be seen on the global internet 
+and thus have to be changed (translated) in to something that is more 
+acceptable on the global internet.  Similar is also done with in complex 
+networks, especially when tyeing multiple businesses together for some 
+reason.
+
+Usually the reason is that most networks use RFC 1918 Addresses reserved 
+for Private Internets, which are *NOT* suppose to be on the open 
+globally routable internet.  In fact, RFC 1918 addresses are typically 
+filtered out as soon as they hit the internet, or at least the ISP 
+/should/ filter them and not pass them.
+
+Despite the fact that routing can handle these addresses with out any 
+problem there are agreed upon rules / guidelines that have been agreed 
+to that impose that these (RFC 1918) addresses are not to be in use on 
+the internet.
+
+Thus to allow systems that are on these RFC 1918 private IP addresses to 
+reach the internet, their source address IP /Network Address/ has to be 
+changed or /Translated/, thus we have /Network Address Translation/, or 
+NAT for short.
+
+Let's consider this very simple scenario where I have my home network 
+and a router and a simple ADSL internet connection.
+
+    :
+    |
++--+--+         +----+
+| RTR +---(A)---+ Me |
++-----+         +----+
+
+Let's suppose I have a source IP of 192.168.1.2 and I want to search the 
+web using Google, so my computer talks to 74.125.95.99 (one of the IPs 
+that www.google.com resolves to).
+
+My packet with a source IP address of 192.168.1.2 and a destination 
+address of 74.125.95.99 leaves my computer and goes to my router 
+(because of my /Default Gateway/).
+
+My router then sees that it has to send the packet to its /Default 
+Gateway/, my ISP's router.  However my router knows that it has to 
+/Translate/ the source IP of the packet to something that is internet 
+friendly.  So, my router alters the source IP of the packet to its own 
+external globally routable IP address A.B.C.D, which is not an RFC 1918 
+private IP address.  So now the packet with a source IP address of 
+A.B.C.D and a destination address of 74.125.95.99 leaves my router and 
+goes to my ISP's router.
+
+My ISP's router chooses one of its upstream connections and sends the 
+packet with a source IP address of A.B.C.D and a destination address of 
+74.125.95.99 to one of its upstream router.  My ISP's upstream router 
+will then choose a route and send the packet with a source IP address of 
+A.B.C.D and a destination address of 74.125.95.99 on down the line until 
+it reaches the destination 74.125.95.99.
+
+Google will then process my packet and reply back to me.  Thus Google 
+sends a packet with a source ip of 74.125.95.99 and a destination 
+address of A.B.C.D back through the internet to my ISP's ISP, and my 
+ISP, and to my router.
+
+My router will then see the packet with a source ip of 74.125.95.99 and 
+a destination address of A.B.C.D and realize that it is actually a reply 
+packet that needs to be un/Translated/.  So my router will change the 
+destination IP address of A.B.C.D back to my real IP address of 
+192.168.1.2 and send it on to my computer.
+
+My computer sees the packet with a source IP address of 74.125.95.99 and 
+a destination address of 192.168.1.2 and realizes that it is the reply 
+to the packet I sent moments earlier and hands it up through the network 
+stack to my web browser.
+
+As you can see the only place that /Network Address Translation/ (a.k.a. 
+NAT) took place is where my private network connected to the global 
+internet.
+
+I had to use NAT because there are rules on the global internet that say 
+that the IP addresses that I chose to use are not allowed on the global 
+internet.  Recalling the previous diagram(s) where Bob and Tom connected 
+their networks, they /could/ have /chosen/ to use NAT if they did not 
+want to have to set up routes between each other.
+
+Another use of NATing is to allow two completely independent networks to 
+inter operate.  Below is an example of double NATing that I like to 
+refer to as a "Customer Interface Router", typically used when a 
+business is subscribing to a service and / or support form a larger 
+entity that supports multiple individual customers all with varying and 
+possibly conflicting network configurations.  An example of which might 
+be a big wholesale book distributor or local / state / national 
+government agency that is offering some sort of service to the small 
+entity that has the Customer Interface Router (a.k.a. CIR).  Typically 
+in such scenarios both entities only want to allow connections for the 
+services needed with out having to re-configure their network to support 
+connections to far flung parts of the others network, or in the case of 
+the larger provider deal with potential overlapping IP address spaces of 
+smaller networks.
+
+    :
+    |
++--+--+         +---+
+| RTR +---(A)---+ T |
++-----+    |    +---+
+            |
+            |    +-----+
+            +----+ CIR += = =
+                 +-----+
+
+So in this case, the Customer send a packet with a source IP of T and a 
+destination IP address of CIR from their terminal T to the Customer 
+Interface Router CIR.
+
+The Customer Interface Router will then /Translate/ the source IP 
+address to be it's own IP of the interface facing the providers network 
+as well as /Translating/ the destination IP to be what ever the provider 
+wants with in their own network.  Ultimately the Customer Interface 
+Router sends a packet with a source IP of <IP of CIR's provider 
+interface> and a destination IP address of <something with in the 
+providers network>.
+
+The packet will then pass through the providers network to the real end 
+point equipment (AS/400, mainframe, video surveillance system, what 
+ever) and be processed and a reply packet will be sent.
+
+The reply packet with a source IP of <something with in the providers 
+network> and a destination IP address of <IP of CIR's provider interface>.
+
+The Customer Interface Router will receive the packet with a source IP 
+of <something with in the providers network> and a destination IP 
+address of <IP of CIR's provider interface> and /Translate/ the source 
+IP address of CIR on the customers network as well as /Translating/ the 
+destination IP to be T.  Ultimately the Customer Interface Router sends 
+a packet with a source IP address of CIR and a destination IP address of 
+CIR back to the terminal T.
+
+Thus through the use of double NAT on the Customer Interface Router we 
+have allowed two completely separate and independent network structures 
+to communicate and inter operate with out any regard as to what the 
+others network structure is.
+
+In short, NATing is used when you need to cross two conceptually unique 
+networks that do not necessarily play well with each other.
 
 
 
