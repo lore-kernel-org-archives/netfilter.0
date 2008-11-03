@@ -1,65 +1,71 @@
 From: "Daniel L. Miller" <dmiller@amfes.com>
-Subject: Re: Single-NIC Traffic Shaping
-Date: Sun, 02 Nov 2008 17:34:58 -0800
-Message-ID: <490E5542.6000606@amfes.com>
-References: <490DDA76.5030600@amfes.com> <490DF590.3010507@amfes.com> <490E14F8.6020402@riverviewtech.net>
+Subject: Re: Basic Routing
+Date: Sun, 02 Nov 2008 17:52:59 -0800
+Message-ID: <490E597B.50400@amfes.com>
+References: <490DD23F.7060406@amfes.com> <013f01c93d0c$f4a47410$dded5c30$@info> <490DF4CA.1010808@amfes.com> <490E12DF.6090602@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <490E14F8.6020402@riverviewtech.net>
+In-Reply-To: <490E12DF.6090602@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
 Grant Taylor wrote:
-> On 11/2/2008 12:46 PM, Daniel L. Miller wrote:
->> Since tc acts on an interface basis - can I perhaps setup a bridge 
->> with a single interface in it?  So address the physical interface 
->> eth0 for my LAN, set the bridge for the Internet modem, and then use 
->> tc on the bridge but not on the ethernet interface?
+> Note:  Because of the length of my reply I'm going to split this reply 
+> in to two parts.  The first (previous) part will be on routing in 
+> general and the second (this) part will be on NATing.
 >
-> Unless you have a good reason, I would strongly suggest that you add a 
-> second NIC to the box and put your internet connection on that second 
-> NIC.
+> On 11/2/2008 12:43 PM, Daniel L. Miller wrote:
+>> I guess part of my difficulty lies in a lack of experience 
+>> configuring non-linux routers.  Behind-the-scenes, as it were, do 
+>> all/most routers use NAT to accomplish the goal of linking networks?  
+>> It always seemed to me NAT was a 'kludge' that was somehow 
+>> unnecessary when "more expensive?" equipment was involved.
 >
-> Technically I /believe/ you can do it with a single NIC, but it is 
-> extremely complex to do in such as you have to take in to account both 
-> internal (LAN), external (Internet), inbound, and outbound traffic all 
-> on the same interface and in the same tree structure.  Where as if you 
-> have separate NICs you can separate your interfaces and tree 
-> structures such that internet reply traffic is processed as traffic 
-> going out the internal interface and internet request traffic is 
-> processed as traffic going out the external interface.  Usually people 
-> do not want to rate limit / QoS their internal LAN traffic, requests 
-> or replies.
+> No, routers in general do *NOT* use NAT.
 >
-> Further, if someone is on the same network segment as your internet 
-> connection, (with Static IP or DHCP) it may be possible for them to do 
-> some nefarious things (think MAC addresses) to be able to connect 
-> directly in to your systems across the internet bypassing your router 
-> all together.
-"Good reason"?!  It's the best reason of all!  $$$$!
+> In all the above scenarios, all systems in the path see the real 
+> source and destination IPs of host 1 and host 2.  NAT is a way to 
+> change source and or destination address for some reason.
+>
+> To understand NATing you need to understand that there are some IP 
+> address ranges that are *NOT* suppose to be seen on the global 
+> internet and thus have to be changed (translated) in to something that 
+> is more acceptable on the global internet.  Similar is also done with 
+> in complex networks, especially when tyeing multiple businesses 
+> together for some reason.
+>
+> Usually the reason is that most networks use RFC 1918 Addresses 
+> reserved for Private Internets, which are *NOT* suppose to be on the 
+> open globally routable internet.  In fact, RFC 1918 addresses are 
+> typically filtered out as soon as they hit the internet, or at least 
+> the ISP /should/ filter them and not pass them.
+I'm going to read these two mails a few times - I sincerely appreciate 
+the thorough answer - hopefully it'll penetrate my skull soon enough.
 
-This particular application is for my super-advanced home network - I 
-have a Linux box doing relatively nothing, but I have added Squid to 
-it.  This, along with the rest of my home gaming machines 
-(cough-I-mean-workstations-cough) are hanging off a simple 5-port switch 
-w/ router, then the DSL modem.  I wanted to take advantage of some 
-bandwidth control tools on that box to shape the whole network - so I've 
-added DHCP to the Linux box, turned it off on the router, and the Linux 
-box is now the default gateway for the network.  Given the 100BaseT 
-connection, I'm not overly worried about saturating it to keep up with 
-my 5M DSL - but the goal was to optimize speed by controlling upload 
-bandwidth - not choke the connection (which has been the result of my 
-current efforts).
+I do understand that the private address ranges were not to be directly 
+exposed to the Internet.  I guess what I was looking for was for a 
+router to perform the following:
 
- I may give up on the single NIC idea - especially since this box has 
-two NIC's built-in - but then I've got the outrageous expense of another 
-patch cord - not to mention I'd be out of ports on the router!
+1.  Host 'A' realizes Host 'B' is not on its network
+2.  Host 'A' contacts Router 'C' and asks it to get the information out 
+and bring back the response.
+3.  Router 'C', via whatever magical method (DNS/hosts/etc.) figures out 
+the router responsible for Host 'B's presence on the Internet.
+4.  Router 'C' contacts Router 'D', sends along the information, and 
+tells Router 'D' to send any responses to ROUTER C, not Host A
+5.  D, goes to B, comes back to D, and back to C
+6.  Router C, on receiving a response from D, remembers that Host 'A' 
+was waiting for this information and sends it on.
 
-But I thought it would be neat to have a single box that can physically 
-"hang" off the "side" of the network and perform this job, instead of 
-"physically" flowing through it.
+In essence, I believe I'm correct in this summary - however the tool 
+used by Router C for "remembering" that Host A asked for the 
+information, and that responses from Router D should come back to Router 
+C, is NAT?
+
+So does this mean that ANY connection of a private address space to the 
+Internet MUST be performed via NAT?
 -- 
 Daniel
