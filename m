@@ -1,56 +1,46 @@
-From: Maximilian Wilhelm <max@rfc2324.org>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Another way of doing? --state NEW -j DROP
-Date: Mon, 3 Nov 2008 04:00:57 +0100
-Message-ID: <20081103030057.GF19842@outback.rfc2324.org>
-References: <1225679763.2479.34.camel@sylv>
+Date: Sun, 02 Nov 2008 21:21:25 -0600
+Message-ID: <490E6E35.9090005@riverviewtech.net>
+References: <1225679763.2479.34.camel@sylv> <20081103030057.GF19842@outback.rfc2324.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1225679763.2479.34.camel@sylv>
+In-Reply-To: <20081103030057.GF19842@outback.rfc2324.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Anno domini 2008 Sylvan Andrew - NIDS scripsit:
+On 11/2/2008 9:00 PM, Maximilian Wilhelm wrote:
+> So you have to input all your rules via a GUI which does not accept 
+> '--state NEW' right?
 
-Hi!
+As an aside, one might question why you are using such a limiting tool.  :(
 
->  I am sure this might be an easy answer for someone. Could you please
-> enlighten me ?
+> Asuming yes and the you catch all '--state ESTABLISHED,RELATED' 
+> packet which are/could be answer packets to outbound connections, how 
+> about just leaving '--state NEW' out and DROP'ing all packets 
+> remaining? Obviously after all rules which should accept things.
 
-Let's see. :)
+*nod*
 
-> I am using the rule below to drop any inbound connections into my .0.3
-> Class which by default allows any Outbound connections. Plus if the
-> connection is already established than those outside connections are ok
-> as well.
+This will work.
 
-> iptables -A INPUT -d 192.168.3.0/24 -m state --state NEW -j DROP
+As far as TCP, you could watch for the SYN and ACK flag and filter out 
+any packet that has are not fully established, i.e. SYN,ACK ACK.
 
-> However I am now using a router that doesn't support the -m state
-> --state NEW rule.(crappy GUI thing) :-( Could someone please tell me another way using
-> iptables to drop any new inbound connections but allow everything else
-> outbound and the established connection replys to get back into the .0.3
-> Class ? What is the most secure/easiest way ?
+> DROP'ing unwanted packets IMO is rather bad behavior as it makes 
+> debugging (possible) network problems a lot harder. If you just 
+> REJECT packets you don't want (with a appropriate limit) everybody 
+> knows he is not welcome. So IMO it would be nicer to use '-j REJECT 
+> --reject-with icmp-admin-prohibited'.
 
-So you have to input all your rules via a GUI which does not acceppt
-'--state NEW' right?
-Asuming yes and the you catched all '--state ESTABLISHED,RELATED'
-packet which are/could be answer packets to outbound connections, how
-about just leaving '--state NEW' out and DROP'ing all packets
-remaining? Obviously after all rules which should accept things.
+Agreed.
 
-Nearby:
- DROP'ing unwanted packets IMO is rather bad behavior as it makes
- debugging (possible) network problems a lot harder. If you just
- REJECT packets you don't want (with a appropriate limit) everybody
- knows he is not welcome. So IMO it would be nicer to use
- '-j REJECT --reject-with icmp-admin-prohibited'.
+However you need to make sure that you will not reject packets with 
+spoofed source address in to your network.  Consider Reverse Path filtering.
 
-HTH
-Ciao
-Max
--- 
-	Follow the white penguin.
+
+
+Grant. . . .
