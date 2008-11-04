@@ -1,52 +1,39 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrackd and CacheWriteThrough
-Date: Tue, 04 Nov 2008 11:13:24 +0100
-Message-ID: <49102044.8090400@netfilter.org>
-References: <20081029155332.GA20850@bongo.bofh.it>
+From: "Jacky Luk" <jacky.luk@primecreation.com>
+Subject: About the using of libnetfilter_queue!
+Date: Wed, 05 Nov 2008 00:14:07 +0800
+Message-ID: <web-4630504@mail.primecreation.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20081029155332.GA20850@bongo.bofh.it>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org, md@linux.it
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: michael.tso@primecreation.com, michael.soong@primecreation.com
 
-Marco d'Itri wrote:
-> When I try to start conntrackd (0.9.6 and 0.9.7, from the Debian
-> packages), it dies with this message:
-> 
-> Error parsing config file: line (58), symbol 'CacheWriteThrough': syntax error
-> 
-> What's wrong?
-> 
-> I have a pair of firewalls running quagga and OSPF announcing the
-> network behind them to my network core and keepalived managing a
-> virtual gateway on it, so I need an active-active setup because
-> traffic can enter the protected network from any of the firewalls.
+Hi,
 
-Sorry, this setup is no longer supported. At least until we find a sane
-way to do it. See http://conntrack-tools.netfilter.org/manual.html.
-Also see: http://marc.info/?l=netfilter&m=122164806109759&w=2
+I have some questions about the using of 
+libnetfilter_queue. I use the RHEL 5.2 to develop my 
+application (Kernel: 2.6.18-92.el5). I found that there 
+are several strange phenomena when using the API of the 
+libnetfilter_queue.
 
-Anyway, about your problem:
+1. The nfq_get_timestamp() always returns the same value 
+of the timestamp for all packets retrieved from the 
+NFQUEUE. What is the cause of this problem?
 
-> This is my configuration file:
-[...]
-> 
->         # Replicate ESTABLISHED TIME_WAIT for TCP
->         Replicate ESTABLISHED TIME_WAIT
+2. I cannot set the maximum length of the queue by using 
+the function nfq_set_queue_maxlen(). This function always 
+returns -1 even though I have inputted the correct 
+parameters into this function. I have searched about this 
+issue in Google and someone said that kernel >= 2.6.20 
+would be supported to use this function. Is it true? If 
+so, how can I set the maximum length of the queue when I 
+use the kernel = 2.6.18?
 
-Missing "for TCP" confuses the parsing?
+Thank you very much!
 
->         # If you have a multiprimary setup (active-active) without connection
->         # persistency, ie. you can't know which firewall handles a packet
->         # that is part of a connection, then you need direct commit of
->         # conntrack entries to the kernel conntrack table. OSPF setups must
->         # set on this option. Default is Off.
->         #
->         CacheWriteThrough On
-> }
+Regards,
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+Jacky Luk
