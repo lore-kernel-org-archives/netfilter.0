@@ -1,39 +1,38 @@
-From: "Jacky Luk" <jacky.luk@primecreation.com>
-Subject: About the using of libnetfilter_queue!
-Date: Wed, 05 Nov 2008 00:14:07 +0800
-Message-ID: <web-4630504@mail.primecreation.com>
+From: md@Linux.IT (Marco d'Itri)
+Subject: Re: conntrackd and CacheWriteThrough
+Date: Tue, 4 Nov 2008 17:09:20 +0100
+Message-ID: <20081104160920.GA18489@bongo.bofh.it>
+References: <20081029155332.GA20850@bongo.bofh.it> <49102044.8090400@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <49102044.8090400@netfilter.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
-Cc: michael.tso@primecreation.com, michael.soong@primecreation.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+On Nov 04, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
-I have some questions about the using of 
-libnetfilter_queue. I use the RHEL 5.2 to develop my 
-application (Kernel: 2.6.18-92.el5). I found that there 
-are several strange phenomena when using the API of the 
-libnetfilter_queue.
+> Sorry, this setup is no longer supported. At least until we find a sane
+> way to do it. See http://conntrack-tools.netfilter.org/manual.html.
+> Also see: http://marc.info/?l=netfilter&m=122164806109759&w=2
+Indeed I wondered about races between the traffic and state updates.
 
-1. The nfq_get_timestamp() always returns the same value 
-of the timestamp for all packets retrieved from the 
-NFQUEUE. What is the cause of this problem?
+Load sharing with a multicast MAC address and sources hashing would not
+help me because each one of my firewalls is connected to two core
+routers with no shared L2 domain between them (i.e. each router is
+connected to both firewalls).
 
-2. I cannot set the maximum length of the queue by using 
-the function nfq_set_queue_maxlen(). This function always 
-returns -1 even though I have inputted the correct 
-parameters into this function. I have searched about this 
-issue in Google and someone said that kernel >= 2.6.20 
-would be supported to use this function. Is it true? If 
-so, how can I set the maximum length of the queue when I 
-use the kernel = 2.6.18?
+My real goal is not sharing load but supporting asymmetrical routing,
+because the firewalls announce the customer network to the core using
+an IGP. If I am not missing anything I could use OSPF and give a lower
+cost to the port with the higher VRRP priority.
+This way I would be able to use normal active/passive conntrack
+replication.
 
-Thank you very much!
-
-Regards,
-
-Jacky Luk
+-- 
+ciao,
+Marco
