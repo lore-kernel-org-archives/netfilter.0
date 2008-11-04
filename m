@@ -1,31 +1,52 @@
-From: "Jianqing Zhang" <arrow.jianqing@gmail.com>
-Subject: Can iptables/netfilter capture an incoming IP packet which is not addressed to the local machine?
-Date: Mon, 3 Nov 2008 23:07:28 -0600
-Message-ID: <8a38e1330811032107j5edfb76s19073e3618622537@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd and CacheWriteThrough
+Date: Tue, 04 Nov 2008 11:13:24 +0100
+Message-ID: <49102044.8090400@netfilter.org>
+References: <20081029155332.GA20850@bongo.bofh.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=g4ixkWMatbrOJn/qHHnKq4uPaPsESLOWeUIwpgwWFyY=;
-        b=RVNGA1wdAEqllgUdHHlbjsH7a2MxdemfH7IODTP4xpMbqIy9CfJGltgX78op69YDy+
-         pKuYoH2bh/ldMTyD8ZuS6ldiDerwMTNfc/fR1X45J1Vr3Q0jzM+hWrh45Bz/MC3TIn3W
-         qJ3bkuXyy5VFRyCaWyVgmKn5LXJB+YuINxzak=
-Content-Disposition: inline
+In-Reply-To: <20081029155332.GA20850@bongo.bofh.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org, md@linux.it
 
-Can I use netfilter or iptables to capture a packet which is wrapped
-by a Ethernet frame with multicast mac address, but the destination IP
-address (a unicast address) is not the local one? According to my
-experiments, a local application can get such Ethernet frames by a raw
-socket, but the payload, the IP packet with unmatched IP dest., cannot
-be delivered to upper layers. Can iptables capture it and put it in
-QUEUE?
+Marco d'Itri wrote:
+> When I try to start conntrackd (0.9.6 and 0.9.7, from the Debian
+> packages), it dies with this message:
+> 
+> Error parsing config file: line (58), symbol 'CacheWriteThrough': syntax error
+> 
+> What's wrong?
+> 
+> I have a pair of firewalls running quagga and OSPF announcing the
+> network behind them to my network core and keepalived managing a
+> virtual gateway on it, so I need an active-active setup because
+> traffic can enter the protected network from any of the firewalls.
 
-Thanks
+Sorry, this setup is no longer supported. At least until we find a sane
+way to do it. See http://conntrack-tools.netfilter.org/manual.html.
+Also see: http://marc.info/?l=netfilter&m=122164806109759&w=2
+
+Anyway, about your problem:
+
+> This is my configuration file:
+[...]
+> 
+>         # Replicate ESTABLISHED TIME_WAIT for TCP
+>         Replicate ESTABLISHED TIME_WAIT
+
+Missing "for TCP" confuses the parsing?
+
+>         # If you have a multiprimary setup (active-active) without connection
+>         # persistency, ie. you can't know which firewall handles a packet
+>         # that is part of a connection, then you need direct commit of
+>         # conntrack entries to the kernel conntrack table. OSPF setups must
+>         # set on this option. Default is Off.
+>         #
+>         CacheWriteThrough On
+> }
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
