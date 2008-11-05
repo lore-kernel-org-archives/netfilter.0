@@ -1,95 +1,127 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Basic Routing
-Date: Wed, 05 Nov 2008 09:56:15 -0600
-Message-ID: <4911C21F.5000907@riverviewtech.net>
-References: <490DD23F.7060406@amfes.com> <013f01c93d0c$f4a47410$dded5c30$@info> <490DF4CA.1010808@amfes.com> <490E12DF.6090602@riverviewtech.net> <490E597B.50400@amfes.com> <490E633D.20103@riverviewtech.net> <490F5103.8070409@amfes.com> <490F537B.7070506@amfes.com> <490F5E8E.1050505@riverviewtech.net> <4910E22A.4070705@amfes.com> <018001c93f06$6d8869e0$48993da0$@info>
+Date: Wed, 05 Nov 2008 11:17:58 -0600
+Message-ID: <4911D546.2020104@riverviewtech.net>
+References: <490DD23F.7060406@amfes.com> <013f01c93d0c$f4a47410$dded5c30$@info> <490DF4CA.1010808@amfes.com> <490E12DF.6090602@riverviewtech.net> <490E597B.50400@amfes.com> <490E633D.20103@riverviewtech.net> <490F5103.8070409@amfes.com> <4910D722.6050008@riverviewtech.net> <4910E095.2050003@amfes.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <018001c93f06$6d8869e0$48993da0$@info>
+In-Reply-To: <4910E095.2050003@amfes.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 11/04/08 23:21, Rob Sterenborg wrote:
-> Grant is doing too good a job... :-)
+On 11/04/08 17:53, Daniel L. Miller wrote:
+> *Head bouncing on desk*  You just had to do it.  You just HAD to throw 
+> something else in, didn't you?  Ok - no VPN during these discussions!!! 
+> That's next thread.
 
-Thank you.  :)
+Ok...  I only brought VPN up because you will want that to tie two 
+offices across the internet together.  But if you want to pretend for 
+the sake of discussion that you have a really long ethernet cable (or a 
+legacy WAN using T1s which use basic routing) I'm ok with that.
 
-> Since these IP's are all private you do NOT need NAT.
+> Once again - I'm using language that's too ambiguous.  I actually 
+> probably inferred that - but I didn't intend to.  The INTENT was to 
+> illustrate a clumsy, inefficient, amateurish connection between Internet 
+> connected sites using non-VPN capable home-office consumer-grade 
+> firewall routers - the under $20 kind.
 
-Agreed.
+Ok.
 
-> Do NOT use NAT in this situation unless you tried plain routing and for 
-> some fancy reason, strange situation or requirement you find out you 
-> might actually need NAT here. But in your case I don't think you will 
-> come to that conclusion unless there's something you haven't told us yet 
-> (again: I don't think so).
+Be aware that the simple facts that you are using private IP addresses 
+and that you want to take them across the internet, where they can not 
+go, means that you will have to use NAT.  Remember that the internet 
+only caries globally routable IP addresses.
 
-Agreed.
+> You're assuming a level of capability and courtesy for the sysadmin I am 
+> not - nor am I talking about higher-level protocols.  So from Los 
+> Angeles, they'll have to type in the public IP address of the New York 
+> router to reach that office.
 
-> Just enable and allow all forwarding, add the routes you need and your 
-> magic box will shine like a magic lantern. :^)
+Eh.  I'm not so much assuming that as I'm trying to lead a horse to 
+water that is safe to drink that will also solve the problems that you 
+unknowingly are going to have.  If you would prefer to discuss things 
+and then get a "That will not work because of..." and then have to 
+re-discuss things, we can do that.  :)  Just let me know how you want 
+the conversation to go.  In short you are asking questions and providing 
+some details of your needs (which keep admittedly by you changing) and I 
+am trying to answer them and get you to understand along the way.
 
-Um, mostly agreed.
+> *Exasperated shrug* Now that I've typed that - it really doesn't make 
+> too much sense.  All right - fine.  I guess a VPN was needed somewhere.  
+> But darn it - the VPN operates at a higher level - somewhere along the 
+> line the VPN server/router needs to translate the virtual IP's to 
+> something the rest of the world understands - and that means NAT!
 
-> iptables -P FORWARD ACCEPT
-> iptables -F FORWARD
-> echo 1 > /proc/sys/net/ipv4/ip_forward
-> route add -net [...etc...]
+No.  VPN's don't /NAT/.  VPN's /encapsulate/.  Think of a VPN as taking 
+a letter you wrote to someone and putting it inside of another bigger 
+envelope and sending it to someone who opens the outer envelope and 
+takes the smaller envelope out and sends it to the proper department on 
+their end.
 
-The part that I want to point out is that the routes that you add will 
-not be on the Linux router, but rather the systems on the networks.
++-----------+    +-------------------+    +----------+
+| IP packet | -> | VPN packet        | -> | Internet |
++-----------+    |     +-----------+ |    +----------+
+                  |     | IP packet | |
+                  |     +-----------+ |
+                  +-------------------+
 
-Let's look at this example.
++----------+    +-------------------+    +-----------+
+| Internet | -> | VPN packet        | -> | IP packet |
++----------+    |     +-----------+ |    +-----------+
+                 |     | IP packet | |
+                 |     +-----------+ |
+                 +-------------------+
 
+The (IP packet) has host 1 as its source and host 2 as its destination 
+and does not change any where in transit.
+The [VPN packet ...] has the one VPN gateway as its source and the other 
+VPN gateway as its destination.  These packets have the globally 
+routable IP addresses in them.
 
-          :
-        +-+-+         +---+
-        | C +---(z)---+ 3 |
-        +---+    |    +---+
-                 |
-   :             |             :
-+-+-+         +-+-+         +-+-+
-| A +---(x)---+ R +---(y)---+ B |
-+---+    |    +---+    |    +---+
-          |             |
-+---+    |             |    +---+
-| 1 +----+             +----+ 2 |
-+---+                       +---+
+> Again with the proxy (what's the matter with you?  Trying to give me a 
+> complete answer that accounts for the exceptions?  Geez....)
 
-Let's say that this is three independent networks (x, y, and z) with 
-their own internet connections (A, B, and C) that you are trying to tie 
-together with the Linux router (R).  Each host (1, 2, and 3) will use 
-their own internet router (A, B, and C respectively) as their default 
-gateway.
+Sorry.  :P
 
-One of two things will happen when host 1 wants to talk to host 3.
-  1)  Host 1 will not have a route to network z that host 3 is on, so 
-host 1 will send the traffic to its default gateway A which would have 
-to have a route to send the traffic to router R.
-  2)  Host 1 will have a route to network z by way of router R and send 
-traffic directly to router R which will then send the traffic to host 3.
+Up until recently what you have presented could be solved by basic 
+routing and / or NATing -OR- by proxying.  Seeing as how I started off 
+indicating that either could be used I was just continuing the concept 
+in discussion.  I'll drop it and let you pick it up later if you want to 
+inquire about it.  :)
 
-> No, this is not secure, but that's not what we're talking about here. 
-> This way, your box will effectively be a router. No fancy filtering, 
-> NAT-ing, whatever.
+> I think my confusion stems from my own introduction to IP, which was via 
+> WindozeNT 4.0.  Somewhere along the line NAT was referred to in some 
+> documentation as a "poor-man's solution" to doing "proper" routing - and 
+> that concept has carried forward with me to where I keep thinking NAT is 
+> somehow an inferior solution to the "proper" way of doing things.  If 
+> the only "proper" (read: other) way of connecting LAN's to the Internet 
+> is by assigning public IP's to workstations (and of course 
+> purchasing/reserving/controlling such IP's) - then I can drop the 
+> inferiority complex I've held with regard to NAT.
 
-Correct.  However that is not to say that filtering and / or NATing 
-can't be added if you want to, because they can when you are ready / 
-want to do something like that.
+Ugh.  Forgive me if I believe just from the statement about where you 
+learned about routing (not even taking in to consideration this 
+discussion) that you were not taught hardly any thing (if even that) 
+about routing.  It has been my experience that /most/ information that 
+Microsoft has provided on routing was the smallest amount that they 
+could to even thing about stepping up and playing with the big boys.  It 
+is my opinion that Microsoft network was and still is to a large part 
+NetBIOS based, even if it is on top of TCP/IP.  Even that, the TCP/IP is 
+simply a happenstance as a carrier protocol that could just as easily 
+been IPX or DECNet Phase IV.
 
-> Have a look at http://www.fwbuilder.org/. 
-> I'm not using it, I'm not endorsing it, don't know anything of how it 
-> builds it's ruleset, etc. It just looks nice if you're coming from MS 
-> ISA and you might actually find it handy.
+There was a time that (in my opinion) /most/ Windows technicians would 
+have thought that the only two ways to get a Windows machine to access 
+the internet was with live globally routable IPs assigned to all the 
+workstations using ""proper routing -OR- to use NAT.  However there was 
+/ is this other seldom used technology that I'm no longer mentioning.  ;)
 
-With out having ever used (but have heard of) FWBuilder my self I can't 
-comment on it.  However considering how Daniel is asking how things work 
-and appears to be trying to learn, I don't think jumping directly in to 
-some sort of application that hides this knowledge from him is that good 
-of an idea.
+At this point I don't really see any questions, just comments on things, 
+so I'm going to let you lead the conversation by asking some other 
+questions, which I'll respond to.  :)
 
 
 
