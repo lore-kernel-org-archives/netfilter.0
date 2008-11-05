@@ -1,59 +1,62 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Basic Routing
-Date: Wed, 05 Nov 2008 11:31:10 -0600
-Message-ID: <4911D85E.2080109@riverviewtech.net>
-References: <490DD23F.7060406@amfes.com> <49119087.5060307@thehaxbys.co.uk>
+From: "Rob Sterenborg" <rob@sterenborg.info>
+Subject: RE: Basic Routing
+Date: Wed, 5 Nov 2008 19:22:58 +0100
+Message-ID: <9C4B6E684A354E9B8C325F30A70EC501@dcyb.net>
+References: <490DD23F.7060406@amfes.com> <013f01c93d0c$f4a47410$dded5c30$@info> <490DF4CA.1010808@amfes.com> <490E12DF.6090602@riverviewtech.net> <490E597B.50400@amfes.com> <490E633D.20103@riverviewtech.net> <490F5103.8070409@amfes.com> <490F537B.7070506@amfes.com> <490F5E8E.1050505@riverviewtech.net> <4910E22A.4070705@amfes.com> <018001c93f06$6d8869e0$48993da0$@info> <4911C21F.5000907@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49119087.5060307@thehaxbys.co.uk>
+In-Reply-To: <4911C21F.5000907@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Netfilter list' <netfilter@vger.kernel.org>
 
-On 11/05/08 06:24, John Haxby wrote:
-> Perhaps the problem is that the good people on this list know just 
-> too much about the finer points of routing and the caveats and 
-> wrinkles that you occasionally need to avoid special purpose 
-> problems.
+>> Grant is doing too good a job... :-)
+> 
+> Thank you.  :)
 
-*nod* (guilty) *nod*
+You're welcome.. Heheh.
 
-> For the most part, though, it's actually quite simple.   And I know 
-> that some of the things I will say are wrong in some cases and I 
-> would hope that someone will explain to me where they're wrong and 
-> maybe we'll all be enlightened.
+>> Just enable and allow all forwarding, add the routes you need and
+>> your magic box will shine like a magic lantern. :^)
+> 
+> Um, mostly agreed.
 
-I don't see any thing wrong with what you have said.  I might have used 
-different wording, but we are two different humans.  :)
+You mean you don't agree to the shining part?
 
-<snip>
+>> iptables -P FORWARD ACCEPT
+>> iptables -F FORWARD
+>> echo 1 > /proc/sys/net/ipv4/ip_forward
+>> route add -net [...etc...]
+> 
+> The part that I want to point out is that the routes that you
+> add will not be on the Linux router, but rather the systems on
+> the networks.
 
-I do have a quick comment to add about the routing table though.  The 
-routing table is ordered with the most specific match first (what you 
-were getting at by the number of zeros).  So when the routing table is 
-searched, the first route to be found, the most specific one, is the 
-proper one.  The reason you might have a more specific route and a less 
-specific route is if you have a fast high latency satellite connection 
-to and a slow low latency dial up or leased line connection back to 
-corporate.  You would want the bulk of (non interactive) traffic to go 
-through the faster high latency connection for most things but still 
-have smaller interactive (think terminal type) traffic go over the 
-slower lower latency dial up / leased line.  To be able to do this you 
-would put the destination server equipment for the interactive traffic 
-be in a smaller ""special part of the larger address range.  Then you 
-tell the router that it has access to the smaller range over the dial up 
-and the rest of the address range across the satellite.
+Yes, well, in the basic example I was refering to (A <-> C <-> D <-> B),
+routers C and D already know the routes to the networks they're connected to
+(and I assume that hosts in A and B have a (default) route to C and D resp)
+so they don't need extra routes. But they do need forwarding set to ACCEPT
+and allowed. In a more complex situation things are different.
 
-The more specific routes can be used to override less specific routes.
+>> Have a look at http://www.fwbuilder.org/.
+>> I'm not using it, I'm not endorsing it, don't know anything of how it
+>> builds it's ruleset, etc. It just looks nice if you're coming from MS
+>> ISA and you might actually find it handy.
+> 
+> With out having ever used (but have heard of) FWBuilder my self I
+> can't comment on it.  However considering how Daniel is asking how
+> things work and appears to be trying to learn, I don't think jumping
+> directly in to some sort of application that hides this knowledge from
+> him is that good of an idea.
 
-> Does that help or has it left you even more confused?
-
-I'm guessing that it left Daniel with more to think about and to 
-formulate more questions.  Which is in and of it self a good thing as 
-that is the normal process of learning.  :)
+No, I don't think so too. I already pointed him to Oskars iptables tutorial
+which I think still mostly holds and I hope he'll read (and understand) it.
+Writing your own script is still more flexible and you learn more about what
+you're doing and dealing with.
 
 
+Grts,
+Rob
 
-Grant. . . .
