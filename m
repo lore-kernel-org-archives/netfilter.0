@@ -1,43 +1,40 @@
-From: "Karthik V" <karthikv.vk@gmail.com>
-Subject: Error when IPRANGE used on 2.4 Kernel
-Date: Thu, 6 Nov 2008 19:55:52 +0530
-Message-ID: <13c27d00811060625v7da1b917t37b0dd8a84c58f71@mail.gmail.com>
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: Error when IPRANGE used on 2.4 Kernel
+Date: Thu, 6 Nov 2008 15:54:28 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.0811061552340.29399@aurora.sdinet.de>
+References: <13c27d00811060625v7da1b917t37b0dd8a84c58f71@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=ElHdhBREj3fyWrT2dlC9Dj1niDTIHD76ppiNKwMg7/M=;
-        b=n1mY7peDMThT7bydeE4cRTZn5HvVJmEaQCyM7zeSarUoAeDVALUjcXuTIIM9qJSw7n
-         n2nQxBPruTZ5KZ6QXx3hqFlF7fuBR/HpRULF8Brik/5KdpA2nMXYRNLZeQt2NG+A95Z2
-         s+L3C7DKSOKN47K+8kfc9+sftwmlGu/Wr/x14=
-Content-Disposition: inline
+In-Reply-To: <13c27d00811060625v7da1b917t37b0dd8a84c58f71@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Karthik V <karthikv.vk@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi all,
-I am faced with a weird error for IPTABLES version 1.2.9 on 2.4
-kernel. The following command:
+On Thu, 6 Nov 2008, Karthik V wrote:
 
-iptables -A INPUT -m iprange --src-range 192.168.0.0-192.168.0.0 -j ACCEPT
+> I am faced with a weird error for IPTABLES version 1.2.9 on 2.4
+> kernel. The following command:
+> 
+> iptables -A INPUT -m iprange --src-range 192.168.0.0-192.168.0.0 -j ACCEPT
+> 
+> - fails on 2.4 Kernel with Error: No chain/target/match by that name.
+> 
+> - But the same command is working on other systems with 2.6 kernel
+> viz., Fedora Core 6 Desktop and OpenWRT router.
 
-- fails on 2.4 Kernel with Error: No chain/target/match by that name.
+I think kernel 2.4 just does not support -m iprange at all, unless you 
+patched it to your kernel tree yourself.
 
-- But the same command is working on other systems with 2.6 kernel
-viz., Fedora Core 6 Desktop and OpenWRT router.
+Also the range '192.168.0.0-192.168.0.0' looks quite stupid to me, as 
+this is just one address.
 
-As per my initial analsis,
-- if there is a syntactical mistake in the range, the library
-extension for iprange is getting called. So it would not be a scenario
-of iprange extension missing.
-- If there is any issue with mismatch in range should the above error creep in?
+c'ya
+sven
 
-Any help with this regard is welcome as I have reached my wits end with this !!!
+-- 
 
-Thanks and Regards,
-Karthik
+The Internet treats censorship as a routing problem, and routes around
+it. (John Gilmore on http://www.cygnus.com/~gnu/)
