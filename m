@@ -1,56 +1,43 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Basic Routing
-Date: Wed, 5 Nov 2008 20:49:53 +0100
-Message-ID: <018301c93f7f$ac4cf190$04e6d4b0$@info>
-References: <490DD23F.7060406@amfes.com> <013f01c93d0c$f4a47410$dded5c30$@info> <490DF4CA.1010808@amfes.com> <490E12DF.6090602@riverviewtech.net> <490E597B.50400@amfes.com> <490E633D.20103@riverviewtech.net> <490F5103.8070409@amfes.com> <490F537B.7070506@amfes.com> <490F5E8E.1050505@riverviewtech.net> <4910E22A.4070705@amfes.com> <018001c93f06$6d8869e0$48993da0$@info> <4911C21F.5000907@riverviewtech.net> <9C4B6E684A354E9B8C325F30A70EC501@dcyb.net> <4911E661.2030505@riverviewtech.net>
+From: "Karthik V" <karthikv.vk@gmail.com>
+Subject: Error when IPRANGE used on 2.4 Kernel
+Date: Thu, 6 Nov 2008 19:55:52 +0530
+Message-ID: <13c27d00811060625v7da1b917t37b0dd8a84c58f71@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4911E661.2030505@riverviewtech.net>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=ElHdhBREj3fyWrT2dlC9Dj1niDTIHD76ppiNKwMg7/M=;
+        b=n1mY7peDMThT7bydeE4cRTZn5HvVJmEaQCyM7zeSarUoAeDVALUjcXuTIIM9qJSw7n
+         n2nQxBPruTZ5KZ6QXx3hqFlF7fuBR/HpRULF8Brik/5KdpA2nMXYRNLZeQt2NG+A95Z2
+         s+L3C7DKSOKN47K+8kfc9+sftwmlGu/Wr/x14=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-> +---+         +---+         +---+         +---+
-> | A +---(x)---+ C +---(y)---+ D +---(z)---+ B |
-> +---+         +---+         +---+         +---+
-> 
-> A knows about network x.
-> C knows about networks x and y.
-> D knows about networks y and z.
-> B knows about network z.
-> 
-> C does /not/ know about network z.
-> D does /not/ know about network x.
+Hi all,
+I am faced with a weird error for IPTABLES version 1.2.9 on 2.4
+kernel. The following command:
 
-Yes you're correct.. I should stop assuming things that I already
-figured out in my head but don't write down when replying. (Actually, a
-"few" emails ago I wrote an email that describes the exact same as the
-above -including art- but I discarded it when I saw your answer which
-was even more complete.)
+iptables -A INPUT -m iprange --src-range 192.168.0.0-192.168.0.0 -j ACCEPT
 
-> We have already covered the IP forwarding in another email.  As far
-> as the firewalling is concerned, you are correct.  However I believe
-> Daniel said that there was no firewalling (yet).
+- fails on 2.4 Kernel with Error: No chain/target/match by that name.
 
-Nope, there was no word about firewalling, just NAT and routing.
+- But the same command is working on other systems with 2.6 kernel
+viz., Fedora Core 6 Desktop and OpenWRT router.
 
-> Agreed.  I think both are likely good ways to learn about
-> firewalling, specifically IPTables.  Seeing as how this
-> discussion is about routing...
+As per my initial analsis,
+- if there is a syntactical mistake in the range, the library
+extension for iprange is getting called. So it would not be a scenario
+of iprange extension missing.
+- If there is any issue with mismatch in range should the above error creep in?
 
-We started with NAT, which is something that netfilter can do and what
-the tutorial also describes, and routing. I was hoping that Daniel would
-see why he didn't need NAT by reading it.
+Any help with this regard is welcome as I have reached my wits end with this !!!
 
-Daniel, this is getting lengthy and I think everything that needed to be
-said has been said about NAT and routing. I hope things are (more) clear
-now.
-
-
-Grts,
-Rob
-
-
+Thanks and Regards,
+Karthik
