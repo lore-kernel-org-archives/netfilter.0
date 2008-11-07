@@ -1,72 +1,62 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Redirect back to internal network
-Date: Fri, 07 Nov 2008 15:12:05 -0600
-Message-ID: <4914AF25.6090909@riverviewtech.net>
-References: <ebccda510811070906s62a2619di8a8d54dc4b3b9f9e@mail.gmail.com>
+From: "OpenSource Dev" <dev.opensource@gmail.com>
+Subject: QUEUE Target
+Date: Fri, 7 Nov 2008 15:24:45 -0600
+Message-ID: <c813aacf0811071324u4fa41d87sec544655b94220fd@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ebccda510811070906s62a2619di8a8d54dc4b3b9f9e@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=lXvme3foWn8v87Q267PKK2TQtk1zLKJ1gdb6ccBn06k=;
+        b=cxkDLBMdzmTSf3BF+SgrGjBtZIN8SjQGRf7Jxr4vf+AU6tJOzu9OvtDo/Q8H6qXLPV
+         TK+gAFheHohzeBh+MK4g6ojWdS/JY4UXccnfIqr4KZLTZqaEkycSy9lVNyRwNA85TVQv
+         xKzE0w4yWMh5PynSisIHugs7kAHSV7ZKU0S2I=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@vger.kernel.org>
 
-On 11/07/08 11:06, Henrique Netfilter wrote:
-> Apparently it did work. But once my web server answers, the answer is 
-> not sent back to the machines in my internal network.
-> 
-> Anyone that can give me some light into it?
+I am trying to copy IP packet to user-land application using QUEUE
+target in netfilter.
 
-Now that things are working, I'll explain why it was not working before.
+So far I am able to read packet headers but I am not sure if I am
+getting the payload.
 
-lan.C is the internal IP of the LAN client.
-lan.R is the internal IP of the router.
-www.R is the external IP of the router.
-www.S is the external IP of the server.
-lan.S is the internal IP of the server.
+nfq_get_payload() returns correct size of the packet but I don't find
+anything in data. I used both strlen and sizeof to check the size of
+data but it always returns 1 or is there better way to check.
 
-The client sends the request packet with a source IP of 'lan.C' and a 
-destination IP of 'www.S'.
+I am running Ubuntu 8.10 server on x86.
 
-The router receives the packet with a source IP of 'lan.C' and a 
-destination IP of 'www.S'.  The router knows that any traffic going to 
-'www.S' (port 80) is to be redirected to the internal server 'lan.S'. 
-So the router NATs the destination address and sends a new packet with a 
-source IP of 'lan.C' and a destination IP of 'lan.S'.
+ Here is what I have done so far:
 
-The server receives the packet with a source IP of 'lan.C' and a 
-destination IP of 'lan.S'.  The server will process the request and 
-reply with a new packet.  The server sends a new packet back to the 
-client with a source address of 'lan.S' and a destination IP of 'lan.C'.
-
-The client receives a reply packet with a source IP of 'lan.S' and a 
-destination IP of 'lan.C'.  This reply packet does not match any packet 
-that the client knows about so it disregards (it may also tell the 
-server to reset the connection).
-
-This is the simple premise of what I refer to as the "TCP Triangle".
-
-You can see from the above and the rules in my other email that the 
-router will have to SNAT / MASQUERADE any traffic /from the lan/ that is 
-being redirected to the server.  This way the server will reply back to 
-the router which will then reply back to the client.
-
-A short packet flow will look like this:
-
-lan.C -> www.S    # Client sends the request
-
-lan.C -> lan.S    # Router DNAT's the request
-lan.R -> lan.S    # Router SNAT's the request
-
-lan.R -> lan.S    # Server receives the request
-lan.S -> lan.R    # Server sends to the reply
-
-lan.S -> lan.C    # Router (un)DNAT's the reply
-www.S -> lan.C    # Router (un)SNAT's the reply
-
-www.S -> lan.C    # Client receives the reply
+main():
+   nfq_bind_pf(h, AF_INET);
+   qh = nfq_create_queue(h,  0, &cb, NULL);
+   nh = nfq_nfnlh(h);
+   fd = nfnl_fd(nh);
+   nfq_set_mode(qh, NFQNL_COPY_PACKET, 0xffff)
 
 
+static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
+              struct nfq_data *nfa, void *data)
+{
+        char *payloadData;
+        int ret;
 
-Grant. . . .
+        ret = nfq_get_payload(nfa, &payloadData);
+        printf("Len %d of data is: %d \n", ret, strlen(payloadData));
+
+        u_int32_t id = print_pkt(nfa);
+
+        return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
+}
+
+Can anyone please point me what I am missing here ?
+
+Thanks,
+Bikrant
