@@ -1,74 +1,57 @@
-From: "OpenSource Dev" <dev.opensource@gmail.com>
-Subject: Re: QUEUE Target
-Date: Fri, 7 Nov 2008 17:02:34 -0600
-Message-ID: <c813aacf0811071502q7f334804m136798520a1444c@mail.gmail.com>
-References: <c813aacf0811071324u4fa41d87sec544655b94220fd@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Altering firewall rules to enable NAT Reflection
+Date: Sat, 08 Nov 2008 12:21:13 +0100
+Message-ID: <49157629.2020104@plouf.fr.eu.org>
+References: <5bdb1aa70811061525h36988a9cr3db531232e4422d5@mail.gmail.com> <49149060.70100@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=7QbHFk/bhNSfe+MGdrspQURWyDoI253GJ/SzWWPUyGk=;
-        b=ZR1hp5DbKVHBE4POYkfnAMzl3fQUqgDmpO86FtXqzYYtW5+585ns9046ggbtv2JiNd
-         qUVzIUyrPB7rvYkErPJD4oIXJWzlAC0C/vYSduZV6zzhkL9xMhy/3CauCzhUJRgAPut+
-         DiV2obkwh/OIfwJbdk+ZISdzMoQukH/8mJFmo=
-In-Reply-To: <c813aacf0811071324u4fa41d87sec544655b94220fd@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <49149060.70100@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-oops my bad..I think I was trying something that is not possible. (to
-get the allocated size of a pointer).
-Actually data was copied to the pointer as I wanted ..sweet!
+Hello,
 
-thanks,
-Bikrant
+Grant Taylor a =E9crit :
+>=20
+> What you want to do is have a very similar rule to DNAT any outbound=20
+> traffic (coming in the internal interface to go out the external=20
+> interface) that is destined to the IP and / or port of the service=20
+> DNATed over to the internal IP / port as well.  I.e.
+>=20
+>    iptables -t nat -A PREROUTING -i eth1 -d $PUBLIC_IP -p tcp --dport=
+=20
+> 443 -j DNAT --to-destination $PRIVATE_IP
 
+And make sure that traffic forwarded from eth1 to eth1 is ACCEPTed in=20
+the filter/FORWARD chain.
 
-On Fri, Nov 7, 2008 at 3:24 PM, OpenSource Dev <dev.opensource@gmail.com> wrote:
-> I am trying to copy IP packet to user-land application using QUEUE
-> target in netfilter.
->
-> So far I am able to read packet headers but I am not sure if I am
-> getting the payload.
->
-> nfq_get_payload() returns correct size of the packet but I don't find
-> anything in data. I used both strlen and sizeof to check the size of
-> data but it always returns 1 or is there better way to check.
->
-> I am running Ubuntu 8.10 server on x86.
->
->  Here is what I have done so far:
->
-> main():
->   nfq_bind_pf(h, AF_INET);
->   qh = nfq_create_queue(h,  0, &cb, NULL);
->   nh = nfq_nfnlh(h);
->   fd = nfnl_fd(nh);
->   nfq_set_mode(qh, NFQNL_COPY_PACKET, 0xffff)
->
->
-> static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
->              struct nfq_data *nfa, void *data)
-> {
->        char *payloadData;
->        int ret;
->
->        ret = nfq_get_payload(nfa, &payloadData);
->        printf("Len %d of data is: %d \n", ret, strlen(payloadData));
->
->        u_int32_t id = print_pkt(nfa);
->
->        return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
-> }
->
-> Can anyone please point me what I am missing here ?
->
-> Thanks,
-> Bikrant
->
+> Now to prevent what I call a "TCP Triangle" you will need to SNAT the=
+=20
+> internal traffic that is being redirected back to the $PRIVATE_IP so=20
+> that replies pass back through the router and back to the original=20
+> client rather than the $PRIVATE_IP replying directly to the original=20
+> client.  (See 'Julian's TCP Triangle' page=20
+> "http://jengelh.medozas.de/images/dnat-mistake.png" for a diagram.)
+>=20
+>    iptables -t nat -A POSTROUTING -o eth1 -s $PRIVATE_LAN/$NM -d=20
+> $PRIVATE_IP -j MASQUERADE
+>=20
+> Note:  You can use either the MASQUERADE or SNAT target depending on=20
+> your preferences or what ever is compiled in to your kernel.  I chose=
+=20
+> MASQUERADE so I did not have to take your routers internal IP in to=20
+> account in the rule(s) above.
+
+Note both SNAT and MASQUERADE hide the real source address from the=20
+server, which may be annoying for logging or access control purposes.=20
+Source NAT is not required to avoid the "routing triangle" if the serve=
+r=20
+itself can route the return traffic to the NAT router. This can be=20
+achieved with advanced routing on Linux. Alternatively, the router may=20
+use the NETMAP target instead of SNAT or MASQUERADE to do a 1-to-1=20
+mapping of the source address range into another range, so the original=
+=20
+source address can be retrieved.
