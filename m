@@ -1,27 +1,30 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Is it a bug???
-Date: Mon, 10 Nov 2008 15:44:18 +0100
-Message-ID: <491848C2.8030305@freemail.hu>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Is it a bug???
+Date: Mon, 10 Nov 2008 09:28:17 -0600
+Message-ID: <49185311.4000203@riverviewtech.net>
+References: <491848C2.8030305@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <491848C2.8030305@freemail.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi List,
+On 11/10/08 08:44, G=E1sp=E1r Lajos wrote:
+> Are these messages related to the REJECT target?
+> And if yes then there is a bug in the conntrack?
 
-I have a lot of these messages in my syslog:
+Please search the (recent) archives of this mailing list for a details=20
+description of this problem.
 
- fw01 kernel: nf_ct_icmp: bad HW ICMP checksum IN= OUT= SRC=84.0.19.129 
-DST={EXT_IP} LEN=158 TOS=0x00 PREC=0x00 TTL=123 ID=7437 PROTO=ICMP 
-TYPE=3 CODE=3 [SRC={EXT_IP} DST=84.0.19.129 LEN=130 TOS=0x00 PREC=0x00 
-TTL=123 ID=53146 PROTO=UDP SPT=49702 DPT=12082 LEN=110 ]
+If I recall correctly, no this is not a NetFilter / Connection Tracking=
+=20
+bug.  This has more to do with a NIC driver problem using offloading of=
+=20
+some processing to the processor on the card.
 
-Are these messages related to the REJECT target?
-And if yes then there is a bug in the conntrack?
 
-Thanx,
 
- Swifty
+Grant. . . .
