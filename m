@@ -1,30 +1,32 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Is it a bug???
-Date: Mon, 10 Nov 2008 09:28:17 -0600
-Message-ID: <49185311.4000203@riverviewtech.net>
-References: <491848C2.8030305@freemail.hu>
+From: "JC Janos" <jcjanos245@gmail.com>
+Subject: ipset, when to use iptree?
+Date: Mon, 10 Nov 2008 08:57:07 -0800
+Message-ID: <7259d7020811100857h45ae4116o714723e5282c4e6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <491848C2.8030305@freemail.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=n0QcyIYyHhrZnNR4gihNyDfpImVfiYCz1JrxqlBgB/c=;
+        b=buFx74wPeCDWJsO9eTXh/cHPCyfRXI2/PcK2fyC//y5FKktWUbLRjKBzhWM8LcK7dk
+         CEsFD8RBCF2NB1UvX70FYK5KTQXFJiTOaN8c7quQgwhTjNT1thnljwh8Jr30QGarmz6j
+         WMys859jqBQpQz9qDz1E44KNv0YT93mhcKT+o=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 11/10/08 08:44, G=E1sp=E1r Lajos wrote:
-> Are these messages related to the REJECT target?
-> And if yes then there is a bug in the conntrack?
+Hello,
 
-Please search the (recent) archives of this mailing list for a details=20
-description of this problem.
+What's the basis for choosing between ipset's iphash and iptree set types?
 
-If I recall correctly, no this is not a NetFilter / Connection Tracking=
-=20
-bug.  This has more to do with a NIC driver problem using offloading of=
-=20
-some processing to the processor on the card.
+I'm guessing it's performance, but I'm not understanding the
+difference from the man page.
 
+When to use which?
 
-
-Grant. . . .
+--JC
