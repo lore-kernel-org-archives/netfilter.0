@@ -1,36 +1,27 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Altering firewall rules to enable NAT Reflection
-Date: Sun, 09 Nov 2008 22:39:03 -0600
-Message-ID: <4917BAE7.5080207@riverviewtech.net>
-References: <5bdb1aa70811061525h36988a9cr3db531232e4422d5@mail.gmail.com>	 <49149060.70100@riverviewtech.net>	 <5bdb1aa70811091514t506c9f7dib2d40ac26bba02b0@mail.gmail.com>	 <49178DAF.5090105@riverviewtech.net> <5bdb1aa70811091906v5b5f0caco6bac4de9cea23cc5@mail.gmail.com>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Is it a bug???
+Date: Mon, 10 Nov 2008 15:44:18 +0100
+Message-ID: <491848C2.8030305@freemail.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5bdb1aa70811091906v5b5f0caco6bac4de9cea23cc5@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: Netfilter list <netfilter@vger.kernel.org>
 
-On 11/9/2008 9:06 PM, Simon wrote:
-> OK.. Ive got it. I changed the external interface to PPPoE and also 
-> changed from IPCOP to Endian firewall. In Endian, there is a nice 
-> pretty GUI with a "Enable SNAT" checkbox.
+Hi List,
 
-*nod*
+I have a lot of these messages in my syslog:
 
-> ohh Ahh its working!
+ fw01 kernel: nf_ct_icmp: bad HW ICMP checksum IN= OUT= SRC=84.0.19.129 
+DST={EXT_IP} LEN=158 TOS=0x00 PREC=0x00 TTL=123 ID=7437 PROTO=ICMP 
+TYPE=3 CODE=3 [SRC={EXT_IP} DST=84.0.19.129 LEN=130 TOS=0x00 PREC=0x00 
+TTL=123 ID=53146 PROTO=UDP SPT=49702 DPT=12082 LEN=110 ]
 
-Good!
+Are these messages related to the REJECT target?
+And if yes then there is a bug in the conntrack?
 
-> Thanks for your help anyways, i learnt some more!
+Thanx,
 
-You are welcome.
-
-For the record and those who might be searching the archives in the 
-future, will you please do a quick overview of what you did to make this 
-work?  Thanks.
-
-
-
-Grant. . . .
+ Swifty
