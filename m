@@ -1,32 +1,32 @@
-From: "JC Janos" <jcjanos245@gmail.com>
-Subject: ipset, when to use iptree?
-Date: Mon, 10 Nov 2008 08:57:07 -0800
-Message-ID: <7259d7020811100857h45ae4116o714723e5282c4e6@mail.gmail.com>
+From: "news.gmane.org" <seandarcy2@gmail.com>
+Subject: DNAT to a specific interface?
+Date: Mon, 10 Nov 2008 13:34:46 -0500
+Message-ID: <gf9us7$pub$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=n0QcyIYyHhrZnNR4gihNyDfpImVfiYCz1JrxqlBgB/c=;
-        b=buFx74wPeCDWJsO9eTXh/cHPCyfRXI2/PcK2fyC//y5FKktWUbLRjKBzhWM8LcK7dk
-         CEsFD8RBCF2NB1UvX70FYK5KTQXFJiTOaN8c7quQgwhTjNT1thnljwh8Jr30QGarmz6j
-         WMys859jqBQpQz9qDz1E44KNv0YT93mhcKT+o=
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
+I have a multihomed server. eth0 for internal NAT, eth1 for default 
+internet, and eth3 for VOIP.
 
-What's the basis for choosing between ipset's iphash and iptree set types?
+VOIP comes into the server with dport set to 19999. What I'd like to do 
+is have all those VOIP packets set to a real VOIP port ( which I think I 
+can figure out ) and go out eth3. I can't set up a static route going 
+out eth3 since the SIP proxies are dynamic, so they don't have a fixed 
+ip address.
 
-I'm guessing it's performance, but I'm not understanding the
-difference from the man page.
+So:
 
-When to use which?
+iptables -t nat -A POSTROUTING -i eth0 -p udp --dport 19999 -j DNAT --to 
+:5469
+iptables -t nat -A PREROUTING  -i eth3 -p udp --dport 5469  -j DNAT --to 
+:19999
 
---JC
+would change the port, but how can I tell it to use interface eth3?
+
+sean
+
