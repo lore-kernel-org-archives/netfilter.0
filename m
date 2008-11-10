@@ -1,32 +1,27 @@
-From: "news.gmane.org" <seandarcy2@gmail.com>
-Subject: DNAT to a specific interface?
-Date: Mon, 10 Nov 2008 13:34:46 -0500
-Message-ID: <gf9us7$pub$1@ger.gmane.org>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: DNAT to a specific interface?
+Date: Mon, 10 Nov 2008 15:38:21 -0600
+Message-ID: <4918A9CD.9020808@riverviewtech.net>
+References: <gf9us7$pub$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <gf9us7$pub$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-I have a multihomed server. eth0 for internal NAT, eth1 for default 
-internet, and eth3 for VOIP.
+On 11/10/08 12:34, news.gmane.org wrote:
+> how can I tell it to use interface eth3?
 
-VOIP comes into the server with dport set to 19999. What I'd like to do 
-is have all those VOIP packets set to a real VOIP port ( which I think I 
-can figure out ) and go out eth3. I can't set up a static route going 
-out eth3 since the SIP proxies are dynamic, so they don't have a fixed 
-ip address.
+Set up an IP rule to match either the source port or a mark set by 
+IPTables watching for the source port.
 
-So:
+With the IP rule in place you can use a different routing table that 
+uses a different interface as the source for any traffic using that 
+routing table.
 
-iptables -t nat -A POSTROUTING -i eth0 -p udp --dport 19999 -j DNAT --to 
-:5469
-iptables -t nat -A PREROUTING  -i eth3 -p udp --dport 5469  -j DNAT --to 
-:19999
 
-would change the port, but how can I tell it to use interface eth3?
 
-sean
-
+Grant. . . .
