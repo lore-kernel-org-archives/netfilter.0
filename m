@@ -1,49 +1,57 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset, when to use iptree?
-Date: Tue, 11 Nov 2008 11:51:29 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.0811111127050.6034@blackhole.kfki.hu>
-References: <7259d7020811100857h45ae4116o714723e5282c4e6@mail.gmail.com>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: FTP-server on non-standard port behind DNAT, client behind SNAT
+Date: Tue, 11 Nov 2008 14:16:37 +0200
+Message-ID: <1226405797.16116.19.camel@casper.meteor.dp.ua>
+Reply-To: casper@meteor.dp.ua
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7259d7020811100857h45ae4116o714723e5282c4e6@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: JC Janos <jcjanos245@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"
+To: netfilter@vger.kernel.org
 
-On Mon, 10 Nov 2008, JC Janos wrote:
+I have proftpd-server with virtual hosts running on 21 and 3421 ports.
+Both are masquerading to the public IP of a gateway/nat.
 
-> What's the basis for choosing between ipset's iphash and iptree set types?
-> 
-> I'm guessing it's performance, but I'm not understanding the
-> difference from the man page.
+Gateway/nat running:
+ip_conntrack_ftp ports=3D21,3421
+ip_nat_ftp ports=3D21,3421
 
-The iptree type gives you the ability to add elements to the set together 
-with a timeout value. That's all :-). It's very hard to compare iphash to 
-iptree: the performance and the memory usage depend on the hash parameters 
-and the input data as well.
+Using a client behind the SNAT I can connect to 21 and get directory
+listing in passive mode, can connect to 3421 but CAN'T get directory
+listing in passive mode.
 
-If you use a set to catch attackers, in theory, iptree can be weaker than 
-iphash: by properly generated IP addresses the attacker can make te tree 
-wide and sparse (every branch has got a single sub-branch and that has got 
-a single leaf). The iphash type is robust against such attacks, but in a 
-hash collisions always happen so iphash will have got holes as well.
+Seems like ip_conntrack_ftp/ip_nat_ftp doesn't spy 3421 port. What can
+be wrong? How to debug?
 
-> When to use which?
+Directory listing on 21 goes well:
 
-I can give you only generic guidelines: if you want entries to be timed 
-out automatically, without using any external book-keeping, then go with 
-iptree. If you have got a static IP address collection which consists of 
-several (full/not full) different subnets and possibly some other 
-addresses from here and there, then go with iptree again. Otherwise use 
-iphash.
+ftp> pass
+Passive mode on.
+ftp> ls
+227 Entering Passive Mode (xxx,xxx,xxx,xxx,236,99).
+150 Opening ASCII mode data connection for file list
+[directory listings]
+226 Transfer complete.
+ftp>
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+When trying to get directory listing on 3421 I get:
+
+ftp> pas
+Passive mode on.
+ftp> ls
+227 Entering Passive Mode (xxx,xxx,xxx,xxx,157,8).
+ftp: connect: Connection refused
+ftp>
+
+where xxx,xxx,xxx,xxx: public IP of gateway/nat of a FTP server.
+
+Gateway/nat running Debian etch, recompiled standard kernel 2.6.18 with
+some patches from patch-o-matic-ng and imq.
+
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
+
