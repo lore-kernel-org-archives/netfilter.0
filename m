@@ -1,71 +1,89 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: using iptables to deny ipsec connections
-Date: Mon, 10 Nov 2008 19:10:37 -0600
-Message-ID: <4918DB8D.8010503@riverviewtech.net>
-References: <S1752377AbYKKAIu/20081111000850Z+3277@vger.kernel.org> <D50E2D13-F2E8-4830-883A-9495D904A96D@nd.edu>
+From: mictlan tecutli <mictlan.tecutli.0@gmail.com>
+Subject: http PREROUTING works but other ports do not
+Date: Mon, 10 Nov 2008 19:48:46 -0600
+Message-ID: <20081110194846.79984f14@zas.gateway.2wire.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="MP_/nN4M6AmVf1uwfLG5zaiyl1i"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <D50E2D13-F2E8-4830-883A-9495D904A96D@nd.edu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:date:from:to:subject
+         :message-id:x-mailer:mime-version:content-type;
+        bh=jC4eSg9Rt7APuAev4TDjVnOJjZE+X3VgXdgn+ktTono=;
+        b=ih4jrQNjkS5TtunTbytxemELhPuiWpgEjrdSRny1/WcInv1eiR8GcHj6QIvt2Hq8xB
+         mexGuCosgEYMXkQ385ApaakN3QRC5ashRtSKaK7JI1KrmYnUmNvHhk2BYPVjkYTOt5fF
+         GBau9El8bdbsCdBpwJy35tMALuo1j8P/v+aag=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 11/10/2008 6:22 PM, Eric Lease Morgan wrote:
-> How do I use iptables to deny IPSEC connections?
+--MP_/nN4M6AmVf1uwfLG5zaiyl1i
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I'm not 100% sure, but I think you can block ESP, IP protocol 50.
+Hola,
 
-> I am running iptables v1.3.8 on Fedora 5. On a regular basis a remote 
-> host connects to my machine and gobbles up more than 3 MB/sec of 
-> bandwidth, makes my swap space almost full, and always seems to be 
-> associated with a second, remote machine. Not only is this irritating 
-> but it is also embarrassing. I'm not sure, but I think remote machine 
-> one is talking to remote machine two.
+i=C2=B4m using iptables v1.2.3. i  got a strange problem where i=C2=B4m usi=
+ng
+esentialy the same rules to forward  (PREROUTING) various ports in a
+vserver setup with a single static ip (xxx.xxx.xxx). my vservers on on
+the 10.10.10.0 network. with the configuration i=C2=B4ve attached to this
+mail, i can view the web pages hosted in 10.10.10.20, but can not reach the=
+ ssh servers on the same host, nor those on other hosts. nor can i reach ic=
+ecast on port 8000. in the config i=C2=B4ve included, you=C2=B4ll se i=C2=
+=B4ve tried subtle variations on the distint hosts. none of the variations =
+you see there work.=20
 
-Do you have any thing IPSec related installed or in kernel?  (I don't 
-use Fedora so I don't know what the default is.)
-
-I find it very unlikely that one (or more) unknown system(s) are 
-successfully negotiating an IPSec connection to your system with out 
-your knowledge and help.  About the only way that I can see this 
-happening is if your security has been breached and someone else with 
-knowledge of IPSec set it up.
-
-> I have a rule in /etc/sysconfig/iptables that looks like this (with IP 
-> changed to protect the guilty):
-> 
->   -A RH-Firewall-1-INPUT -s 123.456.789.109 -j REJECT
-> 
-> I believe this rule says, "Reject any connections coming from 
-> 123.456.789.109", but after I restart iptables the connections persist.
-
-Well, the simple act of matching based on the source and rejecting is 
-correct.  However, like I said above, I don't know any thing about 
-Fedora so I can't say any thing to the RH-Firewall-1-INPUT chain being 
-referenced.
-
-Also, does the rule persist after you restart your firewall, or is it 
-getting flushed out when you restart the firewall?
-
-> Using ntop as my diagnostic tool, I see that 0% of the connections from 
-> 123.456.789.109 are IP-based but rather IPSEC-based. (Does such a thing 
-> make sense?)
-
-Well, IPSec's ESP rides on top of IP, so, I'm not quite sure why this is 
-worded the way that it is.
-
-> How do I either: 1) deny any access to my machine from 123.456.789.109, 
-> or 2) deny any connections that are IPSEC-based because I have no such 
-> need for IPSEC, I think. What is host 123.456.789.109 exploiting?
-
-A simple IPTables rule like above /should/ do what you are wanting.  I 
-have a feeling that something else here is in play here with out your 
-knowledge.
-
-Do you have a capture of any of the traffic?
+i=C2=B4d apreciate any help.=20
 
 
+saludo,=20
+kev
 
-Grant. . . .
+--MP_/nN4M6AmVf1uwfLG5zaiyl1i
+Content-Type: application/octet-stream; name=iptables.rules
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=iptables.rules
+
+IyBHZW5lcmF0ZWQgYnkgaXB0YWJsZXMtc2F2ZSB2MS4zLjYgb24gTW9uIE5vdiAxMCAxOTozNjoy
+MiAyMDA4CiptYW5nbGUKOlBSRVJPVVRJTkcgQUNDRVBUIFsyNDIyMDoxNTI0ODk2NF0KOklOUFVU
+IEFDQ0VQVCBbMjI4MzM6MTUxMzI5NzddCjpGT1JXQVJEIEFDQ0VQVCBbMDowXQo6T1VUUFVUIEFD
+Q0VQVCBbMjA1MDE6OTExNzk3N10KOlBPU1RST1VUSU5HIEFDQ0VQVCBbMjA1MDE6OTExNzk3N10K
+Q09NTUlUCiMgQ29tcGxldGVkIG9uIE1vbiBOb3YgMTAgMTk6MzY6MjIgMjAwOAojIEdlbmVyYXRl
+ZCBieSBpcHRhYmxlcy1zYXZlIHYxLjMuNiBvbiBNb24gTm92IDEwIDE5OjM2OjIyIDIwMDgKKnJh
+dwo6UFJFUk9VVElORyBBQ0NFUFQgWzI0MjIwOjE1MjQ4OTY0XQo6T1VUUFVUIEFDQ0VQVCBbMjA1
+MDE6OTExNzk3N10KQ09NTUlUCiMgQ29tcGxldGVkIG9uIE1vbiBOb3YgMTAgMTk6MzY6MjIgMjAw
+OAojIEdlbmVyYXRlZCBieSBpcHRhYmxlcy1zYXZlIHYxLjMuNiBvbiBNb24gTm92IDEwIDE5OjM2
+OjIyIDIwMDgKKm5hdAo6UFJFUk9VVElORyBBQ0NFUFQgWzI0MDE6MjI0MDU3XQo6UE9TVFJPVVRJ
+TkcgQUNDRVBUIFsxNTA6OTgxNF0KOk9VVFBVVCBBQ0NFUFQgWzM1ODoyMzAyOV0KLUEgUFJFUk9V
+VElORyAtZCB4eHgueHh4Lnh4eC4wLzI1NS4yNTUuMjU1LjAgLXAgdGNwIC1tIHRjcCAtLWRwb3J0
+IDgwIC1qIEROQVQgLS10by1kZXN0aW5hdGlvbiAxMC4xMC4xMC4yMDo4MCAKLUEgUFJFUk9VVElO
+RyAtaSBldGgwIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCAyMjMwIC1qIEROQVQgLS10by1kZXN0aW5h
+dGlvbiAxMC4xMC4xMC4zMDoyMiAKLUEgUFJFUk9VVElORyAtZCB4eHgueHh4Lnh4eC45IC1wIHRj
+cCAtbSB0Y3AgLS1kcG9ydCAyMjIwIC1qIEROQVQgLS10by1kZXN0aW5hdGlvbiAxMC4xMC4xMC4y
+MDoyMiAKLUEgUFJFUk9VVElORyAtaSBldGgwIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCAyMjYwIC1q
+IEROQVQgLS10by1kZXN0aW5hdGlvbiAxMC4xMC4xMC42MDoyMiAKLUEgUFJFUk9VVElORyAtZCB4
+eHgueHh4Lnh4eC4wLzI1NS4yNTUuMjU1LjAgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDgwMDAgLWog
+RE5BVCAtLXRvLWRlc3RpbmF0aW9uIDEwLjEwLjEwLjIwOjgwMDAgCi1BIFBSRVJPVVRJTkcgLWQg
+eHh4Lnh4eC54eHguMC8yNTUuMjU1LjI1NS4wIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCAyMjUwIC1q
+IEROQVQgLS10by1kZXN0aW5hdGlvbiAxMC4xMC4xMC41MDoyMiAKLUEgUE9TVFJPVVRJTkcgLXMg
+MTAuMTAuMTAuMC8yNTUuMjU1LjI1NS4wIC1kICEgMTAuMTAuMTAuMC8yNTUuMjU1LjI1NS4wIC1q
+IFNOQVQgLS10by1zb3VyY2UgeHh4Lnh4eC54eHguOSAKQ09NTUlUCiMgQ29tcGxldGVkIG9uIE1v
+biBOb3YgMTAgMTk6MzY6MjIgMjAwOAojIEdlbmVyYXRlZCBieSBpcHRhYmxlcy1zYXZlIHYxLjMu
+NiBvbiBNb24gTm92IDEwIDE5OjM2OjIyIDIwMDgKKmZpbHRlcgo6SU5QVVQgQUNDRVBUIFswOjBd
+CjpGT1JXQVJEIEFDQ0VQVCBbMDowXQo6T1VUUFVUIEFDQ0VQVCBbMDowXQotQSBJTlBVVCAtaSBk
+dW1teTAgLWogQUNDRVBUIAotQSBJTlBVVCAtaSBsbyAtaiBBQ0NFUFQgCi1BIElOUFVUIC1zICEg
+MTAuMTAuMTAuMC8yNTUuMjU1LjI1NS4wIC1wIHVkcCAtbSB1ZHAgLS1kcG9ydCA1MTQgLWogRFJP
+UCAKLUEgSU5QVVQgLXMgISAxMC4xMC4xMC4wLzI1NS4yNTUuMjU1LjAgLXAgdWRwIC1tIHVkcCAt
+LWRwb3J0IDM1NTEgLWogRFJPUCAKLUEgSU5QVVQgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDIyNTAg
+LWogQUNDRVBUIAotQSBJTlBVVCAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgMjIzMCAtaiBBQ0NFUFQg
+Ci1BIElOUFVUIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCAyMjIwIC1qIEFDQ0VQVCAKLUEgSU5QVVQg
+LXAgdGNwIC1tIHRjcCAtLWRwb3J0IDgwIC1qIEFDQ0VQVCAKLUEgSU5QVVQgLW0gc3RhdGUgLS1z
+dGF0ZSBSRUxBVEVELEVTVEFCTElTSEVEIC1qIEFDQ0VQVCAKLUEgSU5QVVQgLXAgdGNwIC1tIHRj
+cCAtLWRwb3J0IDIyMjIgLWogQUNDRVBUIAotQSBJTlBVVCAtcCB0Y3AgLW0gdGNwIC0tdGNwLWZs
+YWdzIEFDSyBBQ0sgLWogQUNDRVBUIAotQSBJTlBVVCAtaiBSRUpFQ1QgLS1yZWplY3Qtd2l0aCBp
+Y21wLXBvcnQtdW5yZWFjaGFibGUgCi1BIE9VVFBVVCAtaiBBQ0NFUFQgCkNPTU1JVAojIENvbXBs
+ZXRlZCBvbiBNb24gTm92IDEwIDE5OjM2OjIyIDIwMDgK
+
+--MP_/nN4M6AmVf1uwfLG5zaiyl1i--
