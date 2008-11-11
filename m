@@ -1,77 +1,63 @@
-From: Frank Ramirez <coquinino@gmail.com>
-Subject: skb_copy_expand with a single pointer
-Date: Mon, 10 Nov 2008 22:49:04 -0500
-Message-ID: <7050DCE5-7BA8-4A32-8099-CAF17B1D7558@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v926)
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd + mark problems
+Date: Tue, 11 Nov 2008 11:23:10 +0100
+Message-ID: <49195D0E.2050906@netfilter.org>
+References: <491879DD.2060608@3gnt.net>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:from:to
-         :content-type:content-transfer-encoding:mime-version:subject:date
-         :x-mailer;
-        bh=PK2y2TdaDTMDSkPhk494+N4aFEarrmGbukkaqCRLyZc=;
-        b=LP8LsSykg/rCHoiXQ/CceHLRwt1mLRfbDM7phn1Nlr4f84ayODIrE3Wuh+NYE/1imL
-         g24jxMaI6kUK9bbz3LqPaeMpNg75POrHNtHlQ1QfKMEGfNPsALyLJO/J9HDNH1xPvZD2
-         KoF6qoZie+MyTlwN2AhCDLu/hKRTeaYfQ+sTM=
+In-Reply-To: <491879DD.2060608@3gnt.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Igor Neves <igor@3gnt.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello,
+Igor Neves wrote:
+> Hi,
+> 
+> First of all, i would like to thanks you, for your great your.
+> 
+> I have setup two firewalls with conntrackd in Centos 5, and everything
+> it's ok and working as it should. By the way I have used heartbeat as HA
+> manager, for that I have to develop conntrackd init script, and one ocf
+> script for heartbeat. There are any interest in adding them to tree?
 
-My teammate and I are working on a master's project involving  
-netfilter.  Using Ubuntu 7.10 (kernel 2.6.22) we were able to  
-successfully take a packet and perform a skb_copy_expand in order to  
-enlarge its size and send it out with additional information.  This  
-was when netfilter still used double pointers passed into its hook  
-functions.  Simplified code is shown below:
+If they are generic enough to help others to set up hearbeat +
+conntrackd, I'll be fine with it. Please, send them to me so I can check
+them and don't forget to add the corresponding credits.
 
-sb = *skb;
+> I just have found one problem, in this 2 firewalls I need to setup
+> "Policy Routing" and "Policy Shaper", but our solutions are based on
+> mark's.
+> 
+> I noticed that when the the backup firewall takes over the service(go to
+> primary), and the primary goes to state backup, the connmark connections
+> move from one to the other without any problem but it does not take the
+> mark with it, it always insert the rule in the new primary with "mark=0".
+> 
+> Is this a configuration problem? A todo item? A bug?
 
-if(skb_tailroom(sb) < our_length){
-	new = skb_copy_expand(sb, skb_headroom(sb), skb_tailroom(sb) 
-+our_length, GFP_ATOMIC)
-	if(sb->sk)
-		skb_set_owner_w(new, sb->sk);
-	if(new)
-	{
-		*skb = new;
-		sb = *skb;
-	}
-	else
-	{
-		printk(KERN_INFO "FAIL\n");
-	}
-}
+Looking at the archives, conntrack-tools >= 0.9.5 and Linux kernel >=
+2.6.20 supports connmarking. Please, try to guess where the connmark is
+getting lost:
 
-Now we are trying to port the code to Ubuntu 8.04 (kernel 2.6.24) but  
-netfilter has now moved to using only single pointers passed into its  
-hook functions.  We tried the following code, but it doesn't work:
+(in the primary) # conntrack -L                # shows kernel table
+(in the primary) # conntrackd -i               # shows userspace cache
+(in the backup)# conntrackd -e                 # shows external cache
 
-sb = skb;
+They all should show the connmark. And also try:
 
-if(skb_tailroom(sb) < our_length){
-	new = skb_copy_expand(sb, skb_headroom(sb), skb_tailroom(sb) 
-+our_length, GFP_ATOMIC)
-	if(sb->sk)
-		skb_set_owner_w(new, sb->sk);
-	if(new)
-	{
-		skb = new;
-		sb = skb;
-	}
-	else
-	{
-		printk(KERN_INFO "FAIL\n");
-	}
-}
+# conntrack -I -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport 1111 --dport 2222 -t
+10 -u SEEN_REPLY --state SYN_SENT -m 1
 
+This lines creates an entry manually with the command line tool - line
+above. Please, check that the mark is set.
 
-Can anyone shed any light on how to make this work for the updated  
-kernel?
+> Thanks for your help,
+> PS: I know I should send this to the list, but I'm not subscribed, sorry.
 
-Thanks,
+I'm Cc'ing netfilter users mailing list, just to keep this for the record.
 
--Frank
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
