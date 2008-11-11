@@ -1,63 +1,49 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrackd + mark problems
-Date: Tue, 11 Nov 2008 11:23:10 +0100
-Message-ID: <49195D0E.2050906@netfilter.org>
-References: <491879DD.2060608@3gnt.net>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset, when to use iptree?
+Date: Tue, 11 Nov 2008 11:51:29 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.0811111127050.6034@blackhole.kfki.hu>
+References: <7259d7020811100857h45ae4116o714723e5282c4e6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <491879DD.2060608@3gnt.net>
+In-Reply-To: <7259d7020811100857h45ae4116o714723e5282c4e6@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Igor Neves <igor@3gnt.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: JC Janos <jcjanos245@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Igor Neves wrote:
-> Hi,
+On Mon, 10 Nov 2008, JC Janos wrote:
+
+> What's the basis for choosing between ipset's iphash and iptree set types?
 > 
-> First of all, i would like to thanks you, for your great your.
-> 
-> I have setup two firewalls with conntrackd in Centos 5, and everything
-> it's ok and working as it should. By the way I have used heartbeat as HA
-> manager, for that I have to develop conntrackd init script, and one ocf
-> script for heartbeat. There are any interest in adding them to tree?
+> I'm guessing it's performance, but I'm not understanding the
+> difference from the man page.
 
-If they are generic enough to help others to set up hearbeat +
-conntrackd, I'll be fine with it. Please, send them to me so I can check
-them and don't forget to add the corresponding credits.
+The iptree type gives you the ability to add elements to the set together 
+with a timeout value. That's all :-). It's very hard to compare iphash to 
+iptree: the performance and the memory usage depend on the hash parameters 
+and the input data as well.
 
-> I just have found one problem, in this 2 firewalls I need to setup
-> "Policy Routing" and "Policy Shaper", but our solutions are based on
-> mark's.
-> 
-> I noticed that when the the backup firewall takes over the service(go to
-> primary), and the primary goes to state backup, the connmark connections
-> move from one to the other without any problem but it does not take the
-> mark with it, it always insert the rule in the new primary with "mark=0".
-> 
-> Is this a configuration problem? A todo item? A bug?
+If you use a set to catch attackers, in theory, iptree can be weaker than 
+iphash: by properly generated IP addresses the attacker can make te tree 
+wide and sparse (every branch has got a single sub-branch and that has got 
+a single leaf). The iphash type is robust against such attacks, but in a 
+hash collisions always happen so iphash will have got holes as well.
 
-Looking at the archives, conntrack-tools >= 0.9.5 and Linux kernel >=
-2.6.20 supports connmarking. Please, try to guess where the connmark is
-getting lost:
+> When to use which?
 
-(in the primary) # conntrack -L                # shows kernel table
-(in the primary) # conntrackd -i               # shows userspace cache
-(in the backup)# conntrackd -e                 # shows external cache
+I can give you only generic guidelines: if you want entries to be timed 
+out automatically, without using any external book-keeping, then go with 
+iptree. If you have got a static IP address collection which consists of 
+several (full/not full) different subnets and possibly some other 
+addresses from here and there, then go with iptree again. Otherwise use 
+iphash.
 
-They all should show the connmark. And also try:
-
-# conntrack -I -s 1.1.1.1 -d 2.2.2.2 -p tcp --sport 1111 --dport 2222 -t
-10 -u SEEN_REPLY --state SYN_SENT -m 1
-
-This lines creates an entry manually with the command line tool - line
-above. Please, check that the mark is set.
-
-> Thanks for your help,
-> PS: I know I should send this to the list, but I'm not subscribed, sorry.
-
-I'm Cc'ing netfilter users mailing list, just to keep this for the record.
-
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
