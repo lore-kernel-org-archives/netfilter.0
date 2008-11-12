@@ -1,79 +1,63 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: monitoring network question
-Date: Wed, 12 Nov 2008 16:36:07 -0600
-Message-ID: <491B5A57.7000604@riverviewtech.net>
-References: <491AE0C8.1080705@solutti.com.br>
+From: mictlan tecutli <mictlan.tecutli.0@gmail.com>
+Subject: Re: http PREROUTING works but other ports do not
+Date: Wed, 12 Nov 2008 17:02:00 -0600
+Message-ID: <20081112170200.410edbe5@zas.gateway.2wire.net>
+References: <20081110194846.79984f14@zas.gateway.2wire.net>
+	<491A7300.5010200@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <491AE0C8.1080705@solutti.com.br>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:date:from:to:subject
+         :message-id:in-reply-to:references:x-mailer:mime-version
+         :content-type:content-transfer-encoding;
+        bh=l+DDb0z4miBJvk/sHI5GIMArO1Ckyrf49Ef18EWs/zo=;
+        b=hJRhBPY3VkqduMOarEjAmkwzzySimOqMiw2PZIuvh0cBbaPEwJme8zidSyBx8pisvr
+         0Fu7WsXcWynsnh59HeQaY+Y0KmNi/EflBwI8GUytomLa46jq9+RedHeh62DKdk3l0Ds7
+         xLKvE5n2YV0BjowwLmjX1MCpaC2GB23NELqjY=
+In-Reply-To: <491A7300.5010200@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: Grant Taylor <gtaylor@riverviewtech.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 11/12/08 07:57, Leonardo Rodrigues Magalh=E3es wrote:
-> i cannot use normal iptables -j ULOG rules, because there's no IP=20
-> traffic flowing on the box. Traffic flowing are ethernet frames on th=
-e=20
-> bridge.
->=20
-> i have tried ebtables with ulog as well:
->=20
-> ebtables -A FORWARD --ulog -j CONTINUE
->=20
-> and then fprobe-ulog to export packets, configuration with works just=
+first of all thanks for the quick responce. i=C2=B4ll attempt to answer=
+ your questions as clearly as possible.=20
+
+> I can't say for sure, but I do see a few things that are odd.
+>   - You are making reference to both ports 2220 and 2222.  Is one of=20
+> them a typo?
+
+nope i=C2=B4m using both of them. i have ssh on port 2222 on the host r=
+unning the firewall (that is to say the host hosting the vservers). and=
+ port 2220 get forwared to 10.10.10.20:22, that is to say the standard =
+ssh port on 10.10.10.20, which is on a virtual interface callded dummy0=
+:something. each vserver has an ip in the 10.10.10.* net, and the exter=
+nal interface is eth0 and corresponds to xxx.xxx.xxx.9.=20
+
+>   - I can't tell what your real destination IP is, xxx.xxx.xxx.0/24=20
+> (your subnet) or xxx.xxx.xxx.9 (a specific host).  I'm going to think=
 =20
-> fine with iptables ULOG, but didnt worked with ebtables ulog. Maybe i=
-'m=20
-> missing some ebtables rule or different target than ulog ..... this i=
-s=20
-> the first time i've used ebtables anyway.
+> that it's .9 and refer back to the above point.
 
-Have you considered enabling "Bridged NetFilter" (a.k.a. bridge-nf and=20
-brnf)?  That should allow IPTables to see the bridged ethernet frames.=20
-If IPTables can see the frames, you should be able to do what you are=20
-accustom to doing.  At least I think.
+i=C2=B4ve tried using a destination address ("-d") of the specific addr=
+ess (xxx.xxx.xxx.9) and the subnet (xxx.xxx.xxx.0/24) on diferent in or=
+der to try all the posible variations hope that one of them would work =
+:/
 
-> but .... i got a third idea on how to accomplish that. My idea, with=20
-> this box, is to put it right in front the firewall (yes, with proper=20
-> authorization, nothing illegal here), so i would have the whole netwo=
-rk=20
-> in one side of the bridge and the firewall on the other side of the=20
-> bridge. In other words ..... several MACs which i dont know which wou=
-ld=20
-> be on one side, and just a single MAC, known one, on the other side o=
-f=20
-> the bridge.
->=20
-> based on this, i tought on doing some arpspoof thing, having this box=
-=20
-> to fake arp replies to the firewall MAC address and sending it's own =
-and=20
-> then forwarding the frames to the real firewall.
+>   - Will you please clarify what is your internal and external=20
+> interface, eth0 verses what?
 
-Yuck.
+eth0 is external and dummy0 is internal virtual interface.=20
 
-IMHO this is in effect a poor mans form of Proxy ARP(ing), which is a=20
-very poor substitute for bridging.
+>   - Do you have specific IPs in your network assigned / allocated to=20
+> individual virtual servers?  Or are you doing everything based on por=
+t?
 
-> i dont know how to do this and dont know neither if this setup would=20
-> help me acchieving what i need.
-
-I don't think it would.
-
-Either you will be passing ethernet frames with out them passing throug=
-h=20
-the higher IP stack, or you will be doing routing which will require=20
-modifying your network structure or some (IMHO very nasty) hacks with=20
-policy based routing.
-
-> well .... i would like to hear some ideas on how to acchieve my=20
-> goals. Can anyone help me on this scenario ?
-
-Take a look at bridged netfilter and see if it will do what you are=20
-wanting to do.
+i have specific ips (10.10.10.*) assignied to the individial virtual vi=
+rtual servers. all of the virtual servers run ssh on port 22. in the ho=
+st, iptables recieves a request for, say, port 2220 and sends it on to =
+port 22 and the ip in question (10.10.10.20 in this case).
 
 
-
-Grant. . . .
