@@ -1,42 +1,44 @@
-From: "JC Janos" <jcjanos245@gmail.com>
-Subject: ipset returns "Zero valued IP address" when trying to add '0.0.0.0/7'
-Date: Tue, 11 Nov 2008 21:55:55 -0800
-Message-ID: <7259d7020811112155j5315d0e0ke9bc7576e927ad76@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: http PREROUTING works but other ports do not
+Date: Wed, 12 Nov 2008 00:09:04 -0600
+Message-ID: <491A7300.5010200@riverviewtech.net>
+References: <20081110194846.79984f14@zas.gateway.2wire.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=2qSaSzoA2YTOy0ymnBWsxn9rqIihZFPeo/RLZmm+1qU=;
-        b=tGMupXdU74vyyzsQUJWM+NJ63/gYnux47TwCjIXqdLqxyMTEf4HJcUAoZ1tWfKUfEr
-         I/hETWq460nUXiclBKETTQDd3sRi7NUD8yFPiQIjBA1LvoGe4uVx4nkG4RhDPkNJ8bUY
-         FPI+zxsDHqm7HzQZJF381LhQyAobyitjKAwAc=
-Content-Disposition: inline
+In-Reply-To: <20081110194846.79984f14@zas.gateway.2wire.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello,
+On 11/10/2008 7:48 PM, mictlan tecutli wrote:
+> i'm using iptables v1.2.3. i got a strange problem where i'm using 
+> esentialy the same rules to forward  (PREROUTING) various ports in a 
+> vserver setup with a single static ip (xxx.xxx.xxx). my vservers on on 
+> the 10.10.10.0 network. with the configuration i've attached to this 
+> mail, i can view the web pages hosted in 10.10.10.20, but can not reach 
+> the ssh servers on the same host, nor those on other hosts. nor can i 
+> reach icecast on port 8000. in the config i've included, you'll se i've 
+> tried subtle variations on the distint hosts. none of the variations you 
+> see there work.
 
-I'm using IPSET to create a nethash typed set to contain a short list
-of "bogons" as defined @
-http://www.team-cymru.org/Services/Bogons/#http for eventual use in a
-firewall rule.
+I can't say for sure, but I do see a few things that are odd.
+  - You are making reference to both ports 2220 and 2222.  Is one of 
+them a typo?
+  - I can't tell what your real destination IP is, xxx.xxx.xxx.0/24 
+(your subnet) or xxx.xxx.xxx.9 (a specific host).  I'm going to think 
+that it's .9 and refer back to the above point.
+  - Will you please clarify what is your internal and external 
+interface, eth0 verses what?
+  - Do you have specific IPs in your network assigned / allocated to 
+individual virtual servers?  Or are you doing everything based on port?
 
-But for one of those defined nets, ipset fails to add,
+> i'd apreciate any help.
 
- ipset -N BOGONS nethash
- ipset -A BOGONS 0.0.0.0/7
-    ipset v2.4.3: Zero valued IP address `0.0.0.0' specified
-    Try `ipset -H' or 'ipset --help' for more information.
+Think about and respond to the above.  I can't do much more with out 
+some more information.
 
-I can certainly use the "0.0.0.0/7" in a rule.  How can I correctly
-add it to an ipset?
 
-Thanks.
 
---JC
+Grant. . . .
