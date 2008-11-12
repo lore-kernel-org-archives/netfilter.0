@@ -1,43 +1,50 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: http PREROUTING works but other ports do not
-Date: Wed, 12 Nov 2008 00:09:04 -0600
-Message-ID: <491A7300.5010200@riverviewtech.net>
-References: <20081110194846.79984f14@zas.gateway.2wire.net>
+Subject: Re: ipset returns "Zero valued IP address" when trying to add '0.0.0.0/7'
+Date: Wed, 12 Nov 2008 00:23:04 -0600
+Message-ID: <491A7648.6000703@riverviewtech.net>
+References: <7259d7020811112155j5315d0e0ke9bc7576e927ad76@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20081110194846.79984f14@zas.gateway.2wire.net>
+In-Reply-To: <7259d7020811112155j5315d0e0ke9bc7576e927ad76@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 11/10/2008 7:48 PM, mictlan tecutli wrote:
-> i'm using iptables v1.2.3. i got a strange problem where i'm using 
-> esentialy the same rules to forward  (PREROUTING) various ports in a 
-> vserver setup with a single static ip (xxx.xxx.xxx). my vservers on on 
-> the 10.10.10.0 network. with the configuration i've attached to this 
-> mail, i can view the web pages hosted in 10.10.10.20, but can not reach 
-> the ssh servers on the same host, nor those on other hosts. nor can i 
-> reach icecast on port 8000. in the config i've included, you'll se i've 
-> tried subtle variations on the distint hosts. none of the variations you 
-> see there work.
+On 11/11/2008 11:55 PM, JC Janos wrote:
+> I'm using IPSET to create a nethash typed set to contain a short list 
+> of "bogons" as defined @ 
+> http://www.team-cymru.org/Services/Bogons/#http for eventual use in a 
+> firewall rule.
+> 
+> But for one of those defined nets, ipset fails to add,
+> 
+>  ipset -N BOGONS nethash
+>  ipset -A BOGONS 0.0.0.0/7
+>     ipset v2.4.3: Zero valued IP address `0.0.0.0' specified
+>     Try `ipset -H' or 'ipset --help' for more information.
+> 
+> I can certainly use the "0.0.0.0/7" in a rule.  How can I correctly 
+> add it to an ipset?
 
-I can't say for sure, but I do see a few things that are odd.
-  - You are making reference to both ports 2220 and 2222.  Is one of 
-them a typo?
-  - I can't tell what your real destination IP is, xxx.xxx.xxx.0/24 
-(your subnet) or xxx.xxx.xxx.9 (a specific host).  I'm going to think 
-that it's .9 and refer back to the above point.
-  - Will you please clarify what is your internal and external 
-interface, eth0 verses what?
-  - Do you have specific IPs in your network assigned / allocated to 
-individual virtual servers?  Or are you doing everything based on port?
+It sounds like ipset does not like the fact that you are using an IP 
+address that is all zeros.  You may have to add something like the 
+following:
 
-> i'd apreciate any help.
+    ipset -A BOGONS 1.0.0.0/7
+    ipset -A BOGONS 2.0.0.0/7
+    ipset -A BOGONS 4.0.0.0/7
+    ipset -A BOGONS 6.0.0.0/7
+    ipset -A BOGONS 8.0.0.0/7
+    ipset -A BOGONS 10.0.0.0/7
+    ...
+You probably will not be able to start the zero (0.0.0.0/7) network with 
+a zero for the same reason you are running in to your problem.  However 
+a 1.0.0.0 is with in the zero network with a netmask of /7.  The rest of 
+the networks will probably add ok.
 
-Think about and respond to the above.  I can't do much more with out 
-some more information.
+Also, are you sure you meant to enter a netmask of /7 and not /8?
 
 
 
