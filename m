@@ -1,50 +1,62 @@
-From: "patrick daures" <patrick.daures@gmail.com>
-Subject: special SNAT and DNAT gateway
-Date: Thu, 13 Nov 2008 15:58:12 +0100
-Message-ID: <5ed0ca650811130658s3d0b99aejadd956d3b4899487@mail.gmail.com>
+From: Wolfram Schlich <lists@wolfram.schlich.org>
+Subject: Re: PaX killing conntrackd (strange "execution attempt")
+Date: Thu, 13 Nov 2008 17:01:25 +0100
+Message-ID: <20081113160125.GL26975@bla.fasel.org>
+References: <20081113100309.GH26975@bla.fasel.org> <20081113132723.GK26975@bla.fasel.org> <491C3CC5.8090402@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=3bWRPefnLNEXT+tHdRL8atOqAhJKqyfdxDEVcWKF1O0=;
-        b=a+8iptvWL/u21lkHbfDz4SnT1/S89qFtTB51ktS8kkcbU9Gxbc51Sr8NbDCdG5uFwo
-         8ayPHVdrzVLu2uXM5+DdfQCpgxR28yH0xCtrZrXEwUHne1ZTZIo1IFExNKB9ZcaawEa1
-         6phlUoMfods5jbhPWyGqb/7zIGLOiAIFPVgXU=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=bla.fasel.org; h=date:from
+	:to:subject:message-id:references:mime-version:content-type:
+	in-reply-to; s=mx; bh=YvuinMsuv0GzTNlAogEcurYMcus=; b=etgG09y4OR
+	PR8jksONF7eth5kbtosloWRvU0HSkJ+vzCpWRaUAxz3V79yAV+Wm8hrZopJ6tOtc
+	NlZJwDWsUzMj3cdQM/ToWfxAinJDvwTIik5Mhiqkyw86vfxkivo2eT5jYM/pjOkF
+	HHTZMSJfthBvzijOCKzbgIAHEraHH7hXA=
 Content-Disposition: inline
+In-Reply-To: <491C3CC5.8090402@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
-I would like to create a gateway in order to do a special kind of NAT.
-I need to do SNAT and DNAT in this way :
+* Pablo Neira Ayuso <pablo@netfilter.org> [2008-11-13 15:43]:
+> Wolfram Schlich wrote:
+> > Here's the answer from the PaX team, for those who might be interested:
+> > 
+> > * pageexec@freemail.hu <pageexec@freemail.hu> [2008-11-13 14:18]:
+> >> On 13 Nov 2008 at 11:03, Wolfram Schlich wrote:
+> >>> --8<--
+> >>> 2008-11-13 07:38:34 +01:00; hafw2; kern.notice; kernel: ip4t_FW DENY_IN: IN=eth1 OUT= MAC=XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX SRC=XX.XXX.XX.XX DST=XX.XX.XXX.X LEN=48 TO
+> >>> S=0x00 PREC=0x00 TTL=118 ID=23801 DF PROTO=TCP SPT=2608 DPT=21 WINDOW=65535 RES=0x00 SYN URGP=0
+> >>> 2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: execution attempt in: <NULL>, 00000000-00000000 00000000
+> >>> 2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: terminating task: /usr/sbin/conntrackd(conntrackd):6562, uid/euid: 0/0, PC: 0000000000000000, SP: 0000797077f7ea48
+> >>> 2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: bytes at PC: ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
+> >>> 2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: bytes at SP-8:
+> >>> 2008-11-13 07:38:34 +01:00; hafw2; kern.alert; kernel: grsec: denied resource overstep by requesting 4096 for RLIMIT_CORE against limit 0 for /usr/sbin/conntrackd[conntrackd:
+> >>> 6562] uid/euid:0/0 gid/egid:0/0, parent /sbin/init[init:1] uid/euid:0/0 gid/egid:0/0
+> >>> --8<--
+> >>>
+> >>> The log messages look somewhat strange, especially the 'NULL',
+> >>> '000..' and '??' parts :) I've always only seen such messages
+> >>> with a more meaningful content so far, thus I'm a bit confused.
+> >>>
+> >>> What might be the reason for that?
+> >> this is a null function pointer dereference problem on the surface and you'll have to
+> >> debug it to get more info. i wonder why nothing shows up in the stack dump however,
+> >> maybe there's more corruption here behind the scenes. once you get the coredumps (and
+> >> i hope you have debug info saved away ;) we can get a backtrace and other things. also
+> >> disable randomization in /proc/sys/... so that results are comparable. best would be
+> >> to find a way to directly trigger this crash, then you could have a live gdb session
+> >> instead of coredump analysis.
+> > 
+> > I'll take care of these suggestions now and let you know
+> > about any news.
+> 
+> Thank you. BTW, what version of conntrackd is triggering this problem?
+> Is it latest 0.9.8?
 
-SNAT :
-@src A.X.Y.Z -> A+1.X.Y.Z
-Example:
-@src 192.168.0.1 -> 193.168.9.1
-@src 191.23.33 -> 192.23.33
-
-DNAT :
-@dst A.X.Y.Z -> A+1.X.Y.Z
-Example:
-@dst 168.1.0.1 -> 169.1.0.1
-@dst 154.9.2.36> 155.9.2.36
-
-I know how to do it with "static list" of @IP with iptables :
-DNAT :
-iptables -t nat -A PREROUTING -d 192.168.0.1  -j DNAT --to-destination
- 193.168.0.1
-SNAT
-iptables -t nat -A POSTOUTING -s 168.1.0.1  -j DNAT --to-destination  169.1.0.1
-
-But, as I have a large number of @IP, how can I do it for ALL ip addresses ?
-
-Thank you for giving few secondes to explain me how to do it if you
-have an answer.
-Thank you !
+Yep, as you can see from my initial mail :)
+-- 
+Regards,
+Wolfram Schlich <wschlich@gentoo.org>
+Gentoo Linux * http://dev.gentoo.org/~wschlich/
