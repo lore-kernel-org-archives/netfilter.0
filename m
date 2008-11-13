@@ -1,52 +1,43 @@
-From: Christoph Paasch <christoph.paasch@gmail.com>
+From: Thomas Jacob <jacob@internet24.de>
 Subject: Re: INVALID state
-Date: Thu, 13 Nov 2008 13:16:56 +0100
-Message-ID: <200811131316.57097.christoph.paasch@gmail.com>
-References: <491b53e3.2a528c0a.1c10.385b@mx.google.com> <1226574837.19007.19.camel@enterprise.ims-firmen.de>
+Date: Thu, 13 Nov 2008 13:48:05 +0100
+Message-ID: <1226580485.19007.38.camel@enterprise.ims-firmen.de>
+References: <491b53e3.2a528c0a.1c10.385b@mx.google.com>
+	 <1226574837.19007.19.camel@enterprise.ims-firmen.de>
+	 <200811131316.57097.christoph.paasch@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date
-         :user-agent:cc:references:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:message-id;
-        bh=ZofCZ13Y/uhQo2cqI1o2CabksP7fcCLayuKQdn7z1lU=;
-        b=KOEjraJjULTq39/OG3YtHmRNsfsxNDLq+X9iSpUV7vH95689UFjPnkOppCndPWDfzu
-         JaYesPjhGeg1wYVy2UDycyB1N3vGg8EWZeaSajepjIxmEwoySFXlbTQf6wyDy5goMPM7
-         c++eoJRSfnhbSN+oI+qim3T5KVER4CmWrHVB0=
-In-Reply-To: <1226574837.19007.19.camel@enterprise.ims-firmen.de>
-Content-Disposition: inline
+In-Reply-To: <200811131316.57097.christoph.paasch@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Jacob <jacob@internet24.de>
+To: Christoph Paasch <christoph.paasch@gmail.com>
 Cc: Gilad Benjamini <gilad.benjamini@gmail.com>, netfilter@vger.kernel.org
 
-Hi,
+> In xt_state.c->match(...) I saw, that it detects the state XT_STATE_INVALID if 
+> there is no connection associated to the packet (skb->nfct). But in the ICMP 
 
-On Thu November 13 2008, Thomas Jacob wrote:
-> For instance, if your ICMP echo request doesn't go through your
-> firewall, how can the stateful inspection know
-> about the echo reply to be expected? Also, if the firewall
-> doesn't see the initial TCP SYN packet, but the SYN-ACK goes
-> through the firewall, it clearly shouldn't allow that through.
+To clarify, I wasn't making any specific claims related to Gilad's
+problem on how exactly ICMP connections fail with an asymmetric routing
+setup, just that asymmetric routing causes problems like this in
+general.
+  
+However, an initial SYN-ACK packet in a TCP connection for instance,
+definitely is considered invalid (see the tcp_conntracks array
+in netfilter/nf_conntrack_proto_tcp.c).
 
-as I'm currently trying to understand the netfilter implementation, I tried to 
-find the point, where the ICMP-Echo-Reply gets filtered.
+For ICMP packets, I think icmp_new in nf_conntrack_proto_icmp.c doesn't
+allow an echo request for the creation of a new conntrack, but I'm not
+so sure.
 
-In xt_state.c->match(...) I saw, that it detects the state XT_STATE_INVALID if 
-there is no connection associated to the packet (skb->nfct). But in the ICMP 
-connection tracker I don't find the point, that it doesn't tracks the echo-
-reply packets if no echo-request packet passed. I have the impression, that it 
-will track the echo-reply as a NEW connection.
+But I was also having something like this in mind:
 
-Could someone please point me to the code?
+-P FORWARD DROP
+-A FORWARD -m state --state ESTABLISHED, RELATED -j ACCEPT
+-A FORWARD --state NEW -p icmp --icmp-type echo-request
 
-Thanks in advance,
+If your initial packet echo-request doesn't pass through the
+firewall, the echo reply will be blocked, even if the conntrack
+code wouldn't classify a sole echo reply as INVALID.
 
---
-Christoph Paasch
-
-www.rollerbulls.be
---
