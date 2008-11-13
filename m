@@ -1,7 +1,7 @@
 From: Bill Chappell <chappewr@critical.com>
 Subject: Re: using iptables to deny ipsec connections
-Date: Thu, 13 Nov 2008 12:49:49 -0500
-Message-ID: <491C68BD.7050107@critical.com>
+Date: Thu, 13 Nov 2008 12:44:06 -0500
+Message-ID: <491C6766.6040908@critical.com>
 References: <S1752377AbYKKAIu/20081111000850Z+3277@vger.kernel.org> <D50E2D13-F2E8-4830-883A-9495D904A96D@nd.edu> <4918DB8D.8010503@riverviewtech.net> <3BF8F7DB-146E-4B24-9323-967DD9AC153E@nd.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -12,15 +12,20 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Addition to previous response:
-
-Besides INPUT (and OUTPUT), put your rules
-in FORWARD.
-If an internal box is involved, too, traffic
-to and from it will be in the FORWARD chain.
+Since you know the destination host, put LOG and DROP
+rules in your OUTPUT chain with that destination.
+That way if someone internally legitimately tries
+to connect to the destination, you will know.  Or
+even illegitimately, if your someone has a rogue
+bot running on it.
+To get the IP address of the "other end", I would
+use nslookup, repeatedly, in case it has multiple
+IP addresses.
+I know this is not a clean solution, but it should
+help both with cutting down the traffic and maybe
+with identifying it.
 
 Bill Chappell
-
 
 Eric Lease Morgan wrote:
 > 
