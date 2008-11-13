@@ -1,55 +1,51 @@
-From: "JC Janos" <jcjanos245@gmail.com>
-Subject: Re: [ANNOUNCE] ipset-2.4.4 released
-Date: Thu, 13 Nov 2008 06:31:51 -0800
-Message-ID: <7259d7020811130631g1d826818pf72980da11e18831@mail.gmail.com>
-References: <alpine.DEB.2.00.0811131040050.9639@blackhole.kfki.hu>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: PaX killing conntrackd (strange "execution attempt")
+Date: Thu, 13 Nov 2008 15:42:13 +0100
+Message-ID: <491C3CC5.8090402@netfilter.org>
+References: <20081113100309.GH26975@bla.fasel.org> <20081113132723.GK26975@bla.fasel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:cc:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=sxADFIGnMst5+d3Eby+84fqZnKsbw8uT26tFtvtmhZs=;
-        b=P+z+XLZiDiHZZJxi5t3HXVAEImUS5jHs0k7v1ihjLzvEJJ49vG4lkHXFJsw88kfXFX
-         N9MbNJj2K5qM4nnZQ1ksE+DxHVq0JMTlOVEvanwKoRSUMKg/N803gH7k9TebNpRocqHX
-         abOk34j8AFCWLu83E1L8Yl2taB6SVypnB4STI=
-In-Reply-To: <alpine.DEB.2.00.0811131040050.9639@blackhole.kfki.hu>
-Content-Disposition: inline
+In-Reply-To: <20081113132723.GK26975@bla.fasel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Jozsef,
+Wolfram Schlich wrote:
+> Here's the answer from the PaX team, for those who might be interested:
+> 
+> * pageexec@freemail.hu <pageexec@freemail.hu> [2008-11-13 14:18]:
+>> On 13 Nov 2008 at 11:03, Wolfram Schlich wrote:
+>>> --8<--
+>>> 2008-11-13 07:38:34 +01:00; hafw2; kern.notice; kernel: ip4t_FW DENY_IN: IN=eth1 OUT= MAC=XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX SRC=XX.XXX.XX.XX DST=XX.XX.XXX.X LEN=48 TO
+>>> S=0x00 PREC=0x00 TTL=118 ID=23801 DF PROTO=TCP SPT=2608 DPT=21 WINDOW=65535 RES=0x00 SYN URGP=0
+>>> 2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: execution attempt in: <NULL>, 00000000-00000000 00000000
+>>> 2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: terminating task: /usr/sbin/conntrackd(conntrackd):6562, uid/euid: 0/0, PC: 0000000000000000, SP: 0000797077f7ea48
+>>> 2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: bytes at PC: ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
+>>> 2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: bytes at SP-8:
+>>> 2008-11-13 07:38:34 +01:00; hafw2; kern.alert; kernel: grsec: denied resource overstep by requesting 4096 for RLIMIT_CORE against limit 0 for /usr/sbin/conntrackd[conntrackd:
+>>> 6562] uid/euid:0/0 gid/egid:0/0, parent /sbin/init[init:1] uid/euid:0/0 gid/egid:0/0
+>>> --8<--
+>>>
+>>> The log messages look somewhat strange, especially the 'NULL',
+>>> '000..' and '??' parts :) I've always only seen such messages
+>>> with a more meaningful content so far, thus I'm a bit confused.
+>>>
+>>> What might be the reason for that?
+>> this is a null function pointer dereference problem on the surface and you'll have to
+>> debug it to get more info. i wonder why nothing shows up in the stack dump however,
+>> maybe there's more corruption here behind the scenes. once you get the coredumps (and
+>> i hope you have debug info saved away ;) we can get a backtrace and other things. also
+>> disable randomization in /proc/sys/... so that results are comparable. best would be
+>> to find a way to directly trigger this crash, then you could have a live gdb session
+>> instead of coredump analysis.
+> 
+> I'll take care of these suggestions now and let you know
+> about any news.
 
-On Thu, Nov 13, 2008 at 1:43 AM, Jozsef Kadlecsik
-<kadlec@blackhole.kfki.hu> wrote:
-> I'm happy to announce the new version of ipset - the list of the changes
-> is as follows:
+Thank you. BTW, what version of conntrackd is triggering this problem?
+Is it latest 0.9.8?
 
-Thanks for the fixes/release.
-
-I've downloaded from the ipset.sf.net site, but, I notice you offer
-also the SVN repo.
-
-The netfilter site (http://netfilter.org/downloads.html#git) says,
-
-	Subversion Repository (obsolete)
-	The SVN repository is not updated anymore and only exists for
-historical reference.
-
-and the extensions HOWTO
-(http://netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-2.html#ss2.1)
-says,
-
-	"First, you should get the latest CVS tree, to be sure that you are
-using the latest extensions."
-
-Which is the right repo for ipset?  It sounds like we should use git?
-I don't see ipset as a separate repo at
-http://git.netfilter.org/cgi-bin/gitweb.cgi ...
-
---JC
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
