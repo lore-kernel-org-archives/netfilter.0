@@ -1,30 +1,21 @@
-From: Wessel <wessel.louwris@gmail.com>
+From: Amos Jeffries <squid3@treenet.co.nz>
 Subject: Re: www.adobe.com
-Date: Thu, 13 Nov 2008 09:42:18 +0100
-Message-ID: <491BE86A.20704@gmail.com>
+Date: Thu, 13 Nov 2008 21:44:32 +1300
+Message-ID: <491BE8F0.5080203@treenet.co.nz>
 References: <20081113075231.50345b2c@gmail.com> <1226565204.29859.3.camel@casper.meteor.dp.ua>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=dplc2ioBuIxAKUnM6UCg3QbbYOJrphzkgYHGlqsZPs0=;
-        b=GUSh4sq73QNgQOOybg/+xEMy63rby4JJg06Ovt4zSekhGX8aDPAriUfICe12LXqJDX
-         N5EqHcIZOIOWC/Nb3/qJeGUjxdIAWVobnEEqeFAVdThZNQsSerHcxvPBwYIJu0RUrNTp
-         lE2dyTSQQHU/CTqiYDM+PRDMKzX79YDf2tox8=
 In-Reply-To: <1226565204.29859.3.camel@casper.meteor.dp.ua>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="koi8-r"; format="flowed"
-To: netfilter@vger.kernel.org
+To: casper@meteor.dp.ua
+Cc: TheOldFellow <theoldfellow@gmail.com>, netfilter@vger.kernel.org
 
 =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB wrote:
 > =F7 =FE=D4=D7, 13/11/2008 =D7 07:52 +0000, TheOldFellow =D0=C9=DB=C5=D4=
 :
->  =20
 >> My firewall works well, except that I can't get any kind of access t=
 o
 >> www.adobe.com.
@@ -69,8 +60,7 @@ REC=3D0x00 TTL=3D53 ID=3D45688 PROTO=3DTCP SPT=3D80 DPT=3D3723 WINDOW=3D=
 4:42:08:00 SRC=3D192.150.18.101 DST=3D192.168.1.2 LEN=3D44 TOS=3D0x00 P=
 REC=3D0x00 TTL=3D53 ID=3D37819 PROTO=3DTCP SPT=3D80 DPT=3D3723 WINDOW=3D=
 20498 RES=3D0x00 URGP=3D0=20
->>    =20
->
+>=20
 > It does seem strange for www.adobe.com to have privat IP 192.150.18.1=
 01
 > which is also as I can see the IP of your box. You are pinging your
@@ -78,16 +68,13 @@ REC=3D0x00 TTL=3D53 ID=3D37819 PROTO=3DTCP SPT=3D80 DPT=3D3723 WINDOW=3D=
 u
 > edited addresses wrong or your DNS server (or /etc/hosts) has wrong
 > record for www.adobe.com.
->
+>=20
 > Hope that helps.
->
->  =20
-192.150.18.101 is not  a private ip range=20
-(http://www.whois.ws/whois-ip/192.150.18.101/) as far as I know.
-But it looks like the traffic coming back from adobe is blocked?=20
-(although, should the SPT and DPT not be the swapped then?)
+>=20
 
-Guess you need to include your firewall rules to get more help.
+192.150.0.0/16 is global public space for www.wip3.adobe.com.
 
-Wessel
+I think you are confusing with 192.168.0.0/16 the RFC1918 private space=
+=2E
 
+AYJ
