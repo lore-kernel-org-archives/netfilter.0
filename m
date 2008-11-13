@@ -1,117 +1,51 @@
-From: Bill Chappell <chappewr@critical.com>
-Subject: Re: using iptables to deny ipsec connections
-Date: Thu, 13 Nov 2008 12:44:06 -0500
-Message-ID: <491C6766.6040908@critical.com>
-References: <S1752377AbYKKAIu/20081111000850Z+3277@vger.kernel.org> <D50E2D13-F2E8-4830-883A-9495D904A96D@nd.edu> <4918DB8D.8010503@riverviewtech.net> <3BF8F7DB-146E-4B24-9323-967DD9AC153E@nd.edu>
+From: "Gilad Benjamini" <gilad.benjamini@gmail.com>
+Subject: Re: INVALID state
+Date: Thu, 13 Nov 2008 10:16:53 -0800
+Message-ID: <491c6f1c.27b38c0a.7748.ffffe1d6@mx.google.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3BF8F7DB-146E-4B24-9323-967DD9AC153E@nd.edu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :mime-version:content-type:content-transfer-encoding:x-mailer
+         :thread-index:content-language:message-id;
+        bh=OAfv3k2lj3Pnit8I8IXsP92uM0sYCRHgH19uXuwiZec=;
+        b=BB9UCRRO+X2Mr1TrFJ3ykirYG7x1Y8t/KxhlC9vs25kp/vmDkHpOdo+EMKrEU8+BcK
+         kUrixzIMQC7gT7CVQW2AhqapgxFSFsXfSZmMRb59/lDZpEwQgg2oHJgq65BaZYaRD1SK
+         9Hm9je8cBSTDkREZLc6GnpElV3bu0Jj8nRk/Q=
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Since you know the destination host, put LOG and DROP
-rules in your OUTPUT chain with that destination.
-That way if someone internally legitimately tries
-to connect to the destination, you will know.  Or
-even illegitimately, if your someone has a rogue
-bot running on it.
-To get the IP address of the "other end", I would
-use nslookup, repeatedly, in case it has multiple
-IP addresses.
-I know this is not a clean solution, but it should
-help both with cutting down the traffic and maybe
-with identifying it.
+Here is my partial analysis of the code (2.6.24) , trying to understand what
+INVALID state means.
+Feedbacks are appreciated.
 
-Bill Chappell
+- init_conntrack calls l4proto->new. If a zero value is returned,
+nf_conntrack_free is called and the packet's connection is considered
+INVALID
+- l4proto->new can be one of
+	- tcp_new
+		- Determines the new state according to tcp_conntracks
+		- Returns 0 in these cases:
+			- The new state is invalid
+			- The new state is not SYN_SENT, and loose TCP is
+turned off
+	- icmp_new
+		- Return 1 only for ICMP: ECHO,
+TIMESTAMP,INFO_REQUEST,ADDRESS
+	- icmpv6_new
+		- Return 1 only for ECHO, NI_QUERY
+	- sctp_new
+		- (not sure of the details) 
+	- A list of functions which always return 1; i.e. never produce an
+INVALID state
+		- udp_new
+		- new (@nf_conntrack_proto_generic.c)
+		- gre_new
+		- udplite_new
 
-Eric Lease Morgan wrote:
-> 
-> On Nov 10, 2008, at 8:10 PM, Grant Taylor wrote:
-> 
->>> How do I use iptables to deny IPSEC connections?
->>
->> I'm not 100% sure, but I think you can block ESP, IP protocol 50.
-> 
-> 
-> Thank you for the prompt reply, but I have not been able to resolve my 
-> problem. I still have a remote host that seems to be connecting to my 
-> machine, doing something, and communicating with another machine. I am 
-> unable to determine what port they are using, nor what application they 
-> are running. Frustrating and embarrassing.
-> 
-> I believe I have turned off IP protocol 50:
-> 
->   -A RH-Firewall-1-INPUT -p 50 -j REJECT
-> 
-> 
->>> I am running iptables v1.3.8 on Fedora 5. On a regular basis a remote 
->>> host connects to my machine and gobbles up more than 3 MB/sec of 
->>> bandwidth, makes my swap space almost full, and always seems to be 
->>> associated with a second, remote machine. Not only is this irritating 
->>> but it is also embarrassing. I'm not sure, but I think remote machine 
->>> one is talking to remote machine two.
->>
->> Do you have any thing IPSec related installed or in kernel?  (I don't 
->> use Fedora so I don't know what the default is.)
-> 
-> I'm sorry, but I do not know how to check whether or not anything 
-> related to IPSec is installed or in kernel.
-> 
-> 
-> 
->>> I have a rule in /etc/sysconfig/iptables that looks like this (with 
->>> IP changed to protect the guilty):
->>>  -A RH-Firewall-1-INPUT -s 123.456.789.109 -j REJECT
->>> I believe this rule says, "Reject any connections coming from 
->>> 123.456.789.109", but after I restart iptables the connections persist.
->>
->> Well, the simple act of matching based on the source and rejecting is 
->> correct.  However, like I said above, I don't know any thing about 
->> Fedora so I can't say any thing to the RH-Firewall-1-INPUT chain being 
->> referenced.
->>
->> Also, does the rule persist after you restart your firewall, or is it 
->> getting flushed out when you restart the firewall?
-> 
-> The offending host seems to go by three identities, a name and two IP 
-> addresses:
-> 
->   * host-50-65-23-65.ussignalcom.net
->   * 65.23.65.50
->   * 208.69.36.132
-> 
-> At the beginning of my /etc/sysconfig/iptables file I have put the 
-> following, and restarted iptables, but the diagnostic tool I am using 
-> (ntop) still reports connections from the host:
-> 
->   -A RH-Firewall-1-INPUT -s 65.23.65.50 -j REJECT
->   -A RH-Firewall-1-INPUT -s 208.69.36.132 -j REJECT
-> 
-> Ironically, when I use netstat (netstat -a) I do not see any of the 
-> three hosts, above, listed. Yes, when I do something like iptables 
-> --list the hosts are listed as being rejected, but the IP addresses are 
-> being translated into domain names:
-> 
->   REJECT all -- host-50-65-23-65.ussignalcom.net anywhere reject-with 
-> icmp-port-unreachable
-> 
-> 
->> Do you have a capture of any of the traffic?
-> 
-> I'm sorry, but I do not know how to capture the traffic. Can you tell me 
-> how to do this?
-> 
-> In short, I seem to have some host (host-50-65-23-65.ussignalcom.net) 
-> connecting to my computer, running an unknown process, and sending 
-> output to a second host (artemis49.hitherward.info). How can I see more 
-> directly what is going on here and stop it?
-> 
 
--- 
-William Chappell, Software Engineer, Critical Technologies Inc.
-* Creativity * Diversity * Expertise * Flexibility * Integrity *
-Suite 400 Technology Center, 4th Floor 1001 Broad St, Utica NY 13501
-315-793-0248 x148 FAX -9710 <bill.chappell@critical.com> www.critical.com
