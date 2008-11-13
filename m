@@ -1,43 +1,41 @@
-From: Thomas Jacob <jacob@internet24.de>
+From: Christoph Paasch <christoph.paasch@gmail.com>
 Subject: Re: INVALID state
-Date: Thu, 13 Nov 2008 13:48:05 +0100
-Message-ID: <1226580485.19007.38.camel@enterprise.ims-firmen.de>
-References: <491b53e3.2a528c0a.1c10.385b@mx.google.com>
-	 <1226574837.19007.19.camel@enterprise.ims-firmen.de>
-	 <200811131316.57097.christoph.paasch@gmail.com>
+Date: Thu, 13 Nov 2008 14:08:08 +0100
+Message-ID: <200811131408.08590.christoph.paasch@gmail.com>
+References: <491b53e3.2a528c0a.1c10.385b@mx.google.com> <200811131316.57097.christoph.paasch@gmail.com> <1226580485.19007.38.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200811131316.57097.christoph.paasch@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:cc:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:message-id;
+        bh=RGNJKo2FMta3JlCTOuoVNf6kY9bca0PnSn2vUOLuQrQ=;
+        b=ujm7VaJQBiZahHttwVQzP+JfQJyX/ZxGpXeC8G9tuYrB+cUnyVkpLm3C9/zEiTgHno
+         o7qCAvHAWiftAZlrJSuofdPa1w3RxPJGJ3O0VKqOOoRdl8mN8KkurBxrptwbb2cXOYEK
+         /jbpcBztmhIHFW0uSyf+EpUTHughayea5Cycc=
+In-Reply-To: <1226580485.19007.38.camel@enterprise.ims-firmen.de>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Christoph Paasch <christoph.paasch@gmail.com>
+To: Thomas Jacob <jacob@internet24.de>
 Cc: Gilad Benjamini <gilad.benjamini@gmail.com>, netfilter@vger.kernel.org
 
-> In xt_state.c->match(...) I saw, that it detects the state XT_STATE_INVALID if 
-> there is no connection associated to the packet (skb->nfct). But in the ICMP 
+Hi,
 
-To clarify, I wasn't making any specific claims related to Gilad's
-problem on how exactly ICMP connections fail with an asymmetric routing
-setup, just that asymmetric routing causes problems like this in
-general.
-  
-However, an initial SYN-ACK packet in a TCP connection for instance,
-definitely is considered invalid (see the tcp_conntracks array
-in netfilter/nf_conntrack_proto_tcp.c).
+thanks for the fast answer...
 
-For ICMP packets, I think icmp_new in nf_conntrack_proto_icmp.c doesn't
-allow an echo request for the creation of a new conntrack, but I'm not
-so sure.
+On Thu November 13 2008, Thomas Jacob wrote:
+> For ICMP packets, I think icmp_new in nf_conntrack_proto_icmp.c doesn't
+> allow an echo request for the creation of a new conntrack, but I'm not
+> so sure.
+That's true, it checks, if the type of the ICMP is one of valid_new 
+(containing ECHO, TIMESTAMP, INFO_REQUEST and ADDRESS)
 
-But I was also having something like this in mind:
+--
+Christoph Paasch
 
--P FORWARD DROP
--A FORWARD -m state --state ESTABLISHED, RELATED -j ACCEPT
--A FORWARD --state NEW -p icmp --icmp-type echo-request
-
-If your initial packet echo-request doesn't pass through the
-firewall, the echo reply will be blocked, even if the conntrack
-code wouldn't classify a sole echo reply as INVALID.
-
+www.rollerbulls.be
+--
