@@ -1,53 +1,46 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: "JC Janos" <jcjanos245@gmail.com>
 Subject: Re: [ANNOUNCE] ipset-2.4.4 released
-Date: Thu, 13 Nov 2008 18:43:01 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.0811131839140.10251@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.0811131040050.9639@blackhole.kfki.hu> <7259d7020811130631g1d826818pf72980da11e18831@mail.gmail.com>
+Date: Thu, 13 Nov 2008 09:49:18 -0800
+Message-ID: <7259d7020811130949gbb4cdd9h19523f06657c7559@mail.gmail.com>
+References: <alpine.DEB.2.00.0811131040050.9639@blackhole.kfki.hu>
+	 <7259d7020811130631g1d826818pf72980da11e18831@mail.gmail.com>
+	 <alpine.DEB.2.00.0811131839140.10251@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7259d7020811130631g1d826818pf72980da11e18831@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=Z1O9y4N+GP2+QGbiZFeGRLUeghVLhgnSPgQ7solUYWE=;
+        b=VjkjON8Odt0zfLM0/ZiwiHTwSOb7GiuRELF3e2Fj+fC536O8cOQDA/SDp/YjjO+qv5
+         SwMCO6wxYnZ3k5DAMrl62mYN7ocvVv/vMiSDHxHICPCTnqi27ECsgAb880dtzj8zMM4g
+         zm21QJwUY+/FzJH+Pj5IKSWc/2kMZL08fjM1s=
+In-Reply-To: <alpine.DEB.2.00.0811131839140.10251@blackhole.kfki.hu>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: JC Janos <jcjanos245@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Thu, 13 Nov 2008, JC Janos wrote:
+Jozsef,
 
-> I've downloaded from the ipset.sf.net site, but, I notice you offer
-> also the SVN repo.
-> 
-> The netfilter site (http://netfilter.org/downloads.html#git) says,
-> 
-> 	Subversion Repository (obsolete)
-> 	The SVN repository is not updated anymore and only exists for
-> historical reference.
+On Thu, Nov 13, 2008 at 9:43 AM, Jozsef Kadlecsik
+<kadlec@blackhole.kfki.hu> wrote:
 
-ipset hasn't been converted to git from svn yet. So it is still kept, 
-updated and available from svn.
- 
-> and the extensions HOWTO
-> (http://netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-2.html#ss2.1)
-> says,
-> 
-> 	"First, you should get the latest CVS tree, to be sure that you are
-> using the latest extensions."
+> ipset hasn't been converted to git from svn yet. So it is still kept,
+> updated and available from svn.
+...
+> Everything is in git, except ipset. When ipset will be moved to git too,
+> I'll announce it on the mailing lists.
 
-Ohh, that's a highly outdated information in the HOWTO. There's no cvs at 
-all for ages.
- 
-> Which is the right repo for ipset?  It sounds like we should use git?
-> I don't see ipset as a separate repo at
-> http://git.netfilter.org/cgi-bin/gitweb.cgi ...
+Thanks for clearing that up!
 
-Everything is in git, except ipset. When ipset will be moved to git too, 
-I'll announce it on the mailing lists.
+> Ohh, that's a highly outdated information in the HOWTO. There's no cvs at
+> all for ages.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+"They" always tell us brginners to "RTFM", but when we RTFM, well ... ;-)
+
+--KC
