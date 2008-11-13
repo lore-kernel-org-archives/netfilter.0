@@ -1,59 +1,61 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: www.adobe.com
-Date: Thu, 13 Nov 2008 11:02:13 +0100
-Message-ID: <491BFB25.3000800@plouf.fr.eu.org>
-References: <20081113075231.50345b2c@gmail.com>
+From: Wolfram Schlich <lists@wolfram.schlich.org>
+Subject: PaX killing conntrackd (strange "execution attempt")
+Date: Thu, 13 Nov 2008 11:03:09 +0100
+Message-ID: <20081113100309.GH26975@bla.fasel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20081113075231.50345b2c@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=bla.fasel.org; h=date:from
+	:to:subject:message-id:mime-version:content-type; s=mx; bh=GJnbf
+	dEUS+HnESpOtIqpHymqfJs=; b=Dih6SpMSaXbbxynHiCgx4Ea29gGJlpVWPb3v/
+	Z1sopOGV+DGIgTleHjSxDpDoRLbgyvOeqSLoqQ6EdE1N5TMkM9bhx1BeHHOoJdKL
+	FdyQKt1h9SfJHupUaIE2C2OoFbdjP3d/Q/L2/pTZiYTipfrLRmiDXQHz8rKMmdx2
+	2NcHAs=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, grsecurity@grsecurity.net
 
-Hello,
+Hi,
 
-TheOldFellow a =E9crit :
->=20
-> # wget http://www.adobe.com/index.html
-> --07:45:04--  http://www.adobe.com/index.html
->            =3D> `index.html'
-> Resolving www.adobe.com... 192.150.18.101
-> Connecting to www.adobe.com|192.150.18.101|:80...=20
->=20
-> it just times out - browsers are the same.
->=20
-> Looking at the log shows the following warnings:
->=20
-> IPTABLES:INPUT IN=3Dnet OUT=3D MAC=3D00:a0:c9:43:8f:77:00:90:96:f7:74=
-:42:08:00 SRC=3D192.150.18.101 DST=3D192.168.1.2 LEN=3D44 TOS=3D0x00 PR=
-EC=3D0x00 TTL=3D53 ID=3D9637 PROTO=3DTCP SPT=3D80 DPT=3D3723 WINDOW=3D2=
-0498 RES=3D0x00 URGP=3D0=20
-> IPTABLES:INPUT IN=3Dnet OUT=3D MAC=3D00:a0:c9:43:8f:77:00:90:96:f7:74=
-:42:08:00 SRC=3D192.150.18.101 DST=3D192.168.1.2 LEN=3D44 TOS=3D0x00 PR=
-EC=3D0x00 TTL=3D53 ID=3D45688 PROTO=3DTCP SPT=3D80 DPT=3D3723 WINDOW=3D=
-20498 RES=3D0x00 URGP=3D0=20
-> IPTABLES:INPUT IN=3Dnet OUT=3D MAC=3D00:a0:c9:43:8f:77:00:90:96:f7:74=
-:42:08:00 SRC=3D192.150.18.101 DST=3D192.168.1.2 LEN=3D44 TOS=3D0x00 PR=
-EC=3D0x00 TTL=3D53 ID=3D37819 PROTO=3DTCP SPT=3D80 DPT=3D3723 WINDOW=3D=
-20498 RES=3D0x00 URGP=3D0=20
+I set up a testbed for an HA firewall using Gentoo Hardened,
+keepalived and conntrackd.
+After running for several hours, the kernel (PaX) seems to
+terminate the conntrackd process on the currently active
+firewall (hafw2) due to some odd execution attempt in a
+non-executable page:
 
-Wget hanging after printing "Connecting to..." but before printing=20
-"connected" seems to indicate that it didn't receive a SYN/ACK packet=20
-from the server in response to its SYN packet. However the logged and=20
-dropped packets do not look like SYN/ACK packets, as they do not have=20
-the SYN and ACK flags set.
+--8<--
+2008-11-13 07:38:34 +01:00; hafw2; kern.notice; kernel: ip4t_FW DENY_IN: IN=eth1 OUT= MAC=XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX SRC=XX.XXX.XX.XX DST=XX.XX.XXX.X LEN=48 TO
+S=0x00 PREC=0x00 TTL=118 ID=23801 DF PROTO=TCP SPT=2608 DPT=21 WINDOW=65535 RES=0x00 SYN URGP=0
+2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: execution attempt in: <NULL>, 00000000-00000000 00000000
+2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: terminating task: /usr/sbin/conntrackd(conntrackd):6562, uid/euid: 0/0, PC: 0000000000000000, SP: 0000797077f7ea48
+2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: bytes at PC: ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
+2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: bytes at SP-8:
+2008-11-13 07:38:34 +01:00; hafw2; kern.alert; kernel: grsec: denied resource overstep by requesting 4096 for RLIMIT_CORE against limit 0 for /usr/sbin/conntrackd[conntrackd:
+6562] uid/euid:0/0 gid/egid:0/0, parent /sbin/init[init:1] uid/euid:0/0 gid/egid:0/0
+--8<--
 
-Can you provide a capture of the resulting traffic from and to=20
-192.150.18.101 on interface 'net' with tcpdump, tshark or wireshark whe=
-n=20
-running wget ? E.g.
+The log messages look somewhat strange, especially the 'NULL',
+'000..' and '??' parts :) I've always only seen such messages
+with a more meaningful content so far, thus I'm a bit confused.
 
-# tcpdump -nvi net host 192.150.18.101
+What might be the reason for that?
 
-Does the problem happen if you temporarily allow all input traffic (at=20
-least from 192.150.18.101) ? E.g.
+Used software:
+- Gentoo Hardened
+- Kernel: 2.6.27.5 (Gentoo hardened-sources-2.6.27-r1, that is
+  vanilla 2.6.27.5 + grsecurity 2.1.12-2.6.27.5-200811071900 +
+  some other smaller patches)
+  .config: http://paste.frubar.net/9326/txt
+- keepalived 1.1.15 (from Gentoo Portage)
+- conntrack-tools 0.9.8 (from Gentoo Portage)
 
-# iptables -I INPUT -s 192.150.18.101 -j ACCEPT
-
+As you can see, a coredump was prevented by a resource limit.
+I've now removed the limit and am trying to reproduce the
+situation in order to get a coredump.
+-- 
+Regards,
+Wolfram Schlich <wschlich@gentoo.org>
+Gentoo Linux * http://dev.gentoo.org/~wschlich/
