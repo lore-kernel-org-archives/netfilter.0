@@ -1,48 +1,54 @@
-From: "Adem" <for-gmane@alicewho.com>
-Subject: Re: The "badguy" example in the man page not working(-->"iptables: No chain/target/match by that name")
-Date: Mon, 17 Nov 2008 00:28:07 +0100
-Message-ID: <gfqadk$u7n$1@ger.gmane.org>
-References: <gfk58b$qlv$1@ger.gmane.org> <1226678430.11373.265.camel@grateful.d.umn.edu> <gfkds5$ti4$1@ger.gmane.org> <1226693732.11373.296.camel@grateful.d.umn.edu> <1226694102.11373.297.camel@grateful.d.umn.edu>
+From: Christoph Paasch <christoph.paasch@gmail.com>
+Subject: Re: INVALID state
+Date: Fri, 14 Nov 2008 00:01:30 +0100
+Message-ID: <200811140001.31179.christoph.paasch@gmail.com>
+References: <491c6f1c.27b38c0a.7748.ffffe1d6@mx.google.com> <200811132331.08821.christoph.paasch@gmail.com> <491cab7d.27b38c0a.772a.42ee@mx.google.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:cc:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:message-id;
+        bh=WtLhfutfAHVUkzZ1M7IIF1OJ+pXjNKBG4PnVbx8H2Ug=;
+        b=JrNiZ1qVKaiYiGC26UwH+3S8oNo49PknANQrjq6Lbrd8bSBF1zuw3B+gNXYk9hrsOo
+         I3HImCWAj7nxdnV0sJSm1fCIyvna1UEuKxXMWIjZEvS/KIANQeDVqJ4kFDlUEU5XZSSZ
+         A5vuNAiNIzxSvFWOkKxgQWe9yqZf1P9WxcEMc=
+In-Reply-To: <491cab7d.27b38c0a.772a.42ee@mx.google.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Gilad Benjamini <gilad.benjamini@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-> > > iptables v1.3.6
-> > 
-> What GNU/Linux distro are you running?
+On Thu November 13 2008, Gilad Benjamini wrote:
+> Back to my original question then: what is the rule of thumb ?
+> In other words, for a non-programmer reading proper documentation, how
+> would the documentation describe INVALID ?
 
-Debian 5 (Lenny) i386
- 
- > I am running Debian Sid and here are my versions:
-> 
-> 2.6.26-1-686
-> iptables v1.4.1.1
->
-> Also you could check to see if you have the module:
->
-> % lsmod | grep recent
->
-> and
-> 
-> % modinfo ipt_recent
+In the "Packet Filtering HOWTO" of netfilter.org, they say:
 
-The following command shows that the "ipt_recent" module is missing
-in my VPS. Unfortunately it seems it can only be enabled by the hosting provider:
+A packet which could not be identified for some reason: this includes running 
+out of memoory and ICMP errors which don't correspond to any known connection.
 
-# cat /proc/net/ip_tables_matches
-length
-ttl
-tcpmss
-tos
-multiport
-limit
-state
-tcp
-udp
-icmp
+By looking to the code, I would say, that a packet is invalid, if the 
+connection tracker doesn't manages to create a proper connection-state for 
+that packet (memory-errors while treating the packet, ...), or the tests 
+defined by the specific protocol-handlers fail.
 
+But I'm also asking me this question, because I have to implement shim6-
+support in netfilter in the case of my Master Thesis. So does somebody can give 
+me a reference which will explain me, what a firewall should check, and what 
+not...? Should it check, if the packet respects the whole protocol (in case of 
+shim6: nonces, cga/hba, ...)?
 
+Thanks for your help, and sorry, if i'm running out of the topic of that 
+thread.
+
+--
+Christoph Paasch
+
+www.rollerbulls.be
+--
