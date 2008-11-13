@@ -1,61 +1,93 @@
-From: Wolfram Schlich <lists@wolfram.schlich.org>
-Subject: PaX killing conntrackd (strange "execution attempt")
-Date: Thu, 13 Nov 2008 11:03:09 +0100
-Message-ID: <20081113100309.GH26975@bla.fasel.org>
+From: TheOldFellow <theoldfellow@gmail.com>
+Subject: Re: www.adobe.com
+Date: Thu, 13 Nov 2008 10:52:05 +0000
+Message-ID: <20081113105205.7496faf5@gmail.com>
+References: <20081113075231.50345b2c@gmail.com>
+	<491BFB25.3000800@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=bla.fasel.org; h=date:from
-	:to:subject:message-id:mime-version:content-type; s=mx; bh=GJnbf
-	dEUS+HnESpOtIqpHymqfJs=; b=Dih6SpMSaXbbxynHiCgx4Ea29gGJlpVWPb3v/
-	Z1sopOGV+DGIgTleHjSxDpDoRLbgyvOeqSLoqQ6EdE1N5TMkM9bhx1BeHHOoJdKL
-	FdyQKt1h9SfJHupUaIE2C2OoFbdjP3d/Q/L2/pTZiYTipfrLRmiDXQHz8rKMmdx2
-	2NcHAs=
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, grsecurity@grsecurity.net
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Hi,
+On Thu, 13 Nov 2008 11:02:13 +0100
+Pascal Hambourg <pascal.mail@plouf.fr.eu.org> wrote:
 
-I set up a testbed for an HA firewall using Gentoo Hardened,
-keepalived and conntrackd.
-After running for several hours, the kernel (PaX) seems to
-terminate the conntrackd process on the currently active
-firewall (hafw2) due to some odd execution attempt in a
-non-executable page:
+> Hello,
+>=20
+> TheOldFellow a =C3=A9crit :
+> >=20
+> > # wget http://www.adobe.com/index.html
+> > --07:45:04--  http://www.adobe.com/index.html
+> >            =3D> `index.html'
+> > Resolving www.adobe.com... 192.150.18.101
+> > Connecting to www.adobe.com|192.150.18.101|:80...=20
+> >=20
+> > it just times out - browsers are the same.
+<snip>
+>=20
+> Wget hanging after printing "Connecting to..." but before printing=20
+> "connected" seems to indicate that it didn't receive a SYN/ACK packet=
+=20
+> from the server in response to its SYN packet. However the logged and=
+=20
+> dropped packets do not look like SYN/ACK packets, as they do not have=
+=20
+> the SYN and ACK flags set.
+>=20
+> Can you provide a capture of the resulting traffic from and to=20
+> 192.150.18.101 on interface 'net' with tcpdump, tshark or wireshark w=
+hen=20
+> running wget ? E.g.
+>=20
+> # tcpdump -nvi net host 192.150.18.101
+>=20
+> Does the problem happen if you temporarily allow all input traffic (a=
+t=20
+> least from 192.150.18.101) ? E.g.
+>=20
+> # iptables -I INPUT -s 192.150.18.101 -j ACCEPT
 
---8<--
-2008-11-13 07:38:34 +01:00; hafw2; kern.notice; kernel: ip4t_FW DENY_IN: IN=eth1 OUT= MAC=XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX SRC=XX.XXX.XX.XX DST=XX.XX.XXX.X LEN=48 TO
-S=0x00 PREC=0x00 TTL=118 ID=23801 DF PROTO=TCP SPT=2608 DPT=21 WINDOW=65535 RES=0x00 SYN URGP=0
-2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: execution attempt in: <NULL>, 00000000-00000000 00000000
-2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: terminating task: /usr/sbin/conntrackd(conntrackd):6562, uid/euid: 0/0, PC: 0000000000000000, SP: 0000797077f7ea48
-2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: bytes at PC: ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
-2008-11-13 07:38:34 +01:00; hafw2; kern.err; kernel: PAX: bytes at SP-8:
-2008-11-13 07:38:34 +01:00; hafw2; kern.alert; kernel: grsec: denied resource overstep by requesting 4096 for RLIMIT_CORE against limit 0 for /usr/sbin/conntrackd[conntrackd:
-6562] uid/euid:0/0 gid/egid:0/0, parent /sbin/init[init:1] uid/euid:0/0 gid/egid:0/0
---8<--
 
-The log messages look somewhat strange, especially the 'NULL',
-'000..' and '??' parts :) I've always only seen such messages
-with a more meaningful content so far, thus I'm a bit confused.
+Thanks, and to everyone else who tried to help.
 
-What might be the reason for that?
+I didn't know about tcpdump, so I had to build and install it first.
+The output when executing the wget above is:
 
-Used software:
-- Gentoo Hardened
-- Kernel: 2.6.27.5 (Gentoo hardened-sources-2.6.27-r1, that is
-  vanilla 2.6.27.5 + grsecurity 2.1.12-2.6.27.5-200811071900 +
-  some other smaller patches)
-  .config: http://paste.frubar.net/9326/txt
-- keepalived 1.1.15 (from Gentoo Portage)
-- conntrack-tools 0.9.8 (from Gentoo Portage)
+$ sudo /usr/sbin/tcpdump -nvi net host 192.150.18.101
+tcpdump: listening on net, link-type EN10MB (Ethernet), capture size 68=
+ bytes 10:45:28.743810 IP (tos 0x0, ttl 64, id 55527, offset 0, flags [=
+DF], proto TCP (6), length 60)
+    192.168.1.2.2901 > 192.150.18.101.80: Flags [S], seq 3678776487, wi=
+n 5840, options [mss 1460,sackOK,TS[|tcp]>
+10:45:28.932756 IP (tos 0x0, ttl 53, id 25304, offset 0, flags [none], =
+proto TCP (6), length 44)
+    192.150.18.101.80 > 192.168.1.2.2901:  tcp 24 [bad hdr length 0 - t=
+oo short, < 20]
+10:45:31.741831 IP (tos 0x0, ttl 64, id 55528, offset 0, flags [DF], pr=
+oto TCP (6), length 60)
+    192.168.1.2.2901 > 192.150.18.101.80: Flags [S], seq 3678776487, wi=
+n 5840, options [mss 1460,sackOK,TS[|tcp]>
+10:45:31.930558 IP (tos 0x0, ttl 53, id 46986, offset 0, flags [none], =
+proto TCP (6), length 44)
+    192.150.18.101.80 > 192.168.1.2.2901:  tcp 24 [bad hdr length 0 - t=
+oo short, < 20]
+10:45:37.741754 IP (tos 0x0, ttl 64, id 55529, offset 0, flags [DF], pr=
+oto TCP (6), length 60)
+    192.168.1.2.2901 > 192.150.18.101.80: Flags [S], seq 3678776487, wi=
+n 5840, options [mss 1460,sackOK,TS[|tcp]>
+<snip>
+18 packets captured
+18 packets received by filter
+0 packets dropped by kernel
 
-As you can see, a coredump was prevented by a resource limit.
-I've now removed the limit and am trying to reproduce the
-situation in order to get a coredump.
--- 
+Allowing all input doesn't change a thing.  Did I capture enough?
+
 Regards,
-Wolfram Schlich <wschlich@gentoo.org>
-Gentoo Linux * http://dev.gentoo.org/~wschlich/
+R.
+
+
+
+
