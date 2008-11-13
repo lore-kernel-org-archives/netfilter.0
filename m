@@ -1,57 +1,55 @@
-From: Wolfram Schlich <lists@wolfram.schlich.org>
-Subject: Re: PaX killing conntrackd (strange "execution attempt")
-Date: Thu, 13 Nov 2008 21:10:42 +0100
-Message-ID: <20081113201042.GN26975@bla.fasel.org>
-References: <20081113100309.GH26975@bla.fasel.org> <20081113132723.GK26975@bla.fasel.org> <20081113174138.GM26975@bla.fasel.org>
+From: Christoph Paasch <christoph.paasch@gmail.com>
+Subject: Re: INVALID state
+Date: Thu, 13 Nov 2008 23:31:08 +0100
+Message-ID: <200811132331.08821.christoph.paasch@gmail.com>
+References: <491c6f1c.27b38c0a.7748.ffffe1d6@mx.google.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=bla.fasel.org; h=date:from
-	:to:subject:message-id:references:mime-version:content-type:
-	in-reply-to; s=mx; bh=sS7NEgcGH7w30cA8sEajAdFbmwA=; b=JnvpiO5jUT
-	bSsm4kUjgu30a2c7PeZXz3eErDS0fJBNcVzd+wtwNnLF7uY75LmuswdEf9tVdgQo
-	nQBcabmbO+TB3BvXiyUbRsDDtMYjLO3OEJQsQn0S/40XXXXBP2QFQItHnjoGkqkH
-	1np458BS2BsNPvqGEPbcznSs7fBRdMHzA=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:cc:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:message-id;
+        bh=/3YA1cYNHOiYqV943M3D3qWB/m1Sv3C9OX5gvnY2dEk=;
+        b=XVmwwYkuJkTc2sgNuQRiW2HpmPXWT2YTwSOOlTbnqHZURG5jzQtxHeBCuy/Hb6ekmF
+         raPyyYHDZDW+jxT/1pV7NLmE1zoooXLX8aMpv3YJmSET/t9iEWkkohWYaZCxAjawG1wX
+         xkmf1CKGqqmxSywimHc9Gx6PmHCYkVXYPcnL0=
+In-Reply-To: <491c6f1c.27b38c0a.7748.ffffe1d6@mx.google.com>
 Content-Disposition: inline
-In-Reply-To: <20081113174138.GM26975@bla.fasel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Gilad Benjamini <gilad.benjamini@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-* Wolfram Schlich <lists@wolfram.schlich.org> [2008-11-13 18:41]:
-> * Wolfram Schlich <lists@wolfram.schlich.org> [2008-11-13 14:27]:
-> > Here's the answer from the PaX team, for those who might be interested:
-> > * pageexec@freemail.hu <pageexec@freemail.hu> [2008-11-13 14:18]:
-> > > [...]
-> > > this is a null function pointer dereference problem on the surface and you'll have to
-> > > debug it to get more info. i wonder why nothing shows up in the stack dump however,
-> > > maybe there's more corruption here behind the scenes. once you get the coredumps (and
-> > > i hope you have debug info saved away ;) we can get a backtrace and other things. also
-> > > disable randomization in /proc/sys/... so that results are comparable. best would be
-> > > to find a way to directly trigger this crash, then you could have a live gdb session
-> > > instead of coredump analysis.
-> > 
-> > I'll take care of these suggestions now and let you know
-> > about any news.
-> 
-> I've now recompiled conntrack-tools using these CFLAGS:
-> 
-> 	-march=nocona -O0 -ggdb -DDEBUG
-> 
-> Also, the binaries were not stripped anymore:
-> 
-> 	/usr/sbin/conntrackd: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), for GNU/Linux 2.6.9, not stripped
-> 
-> (I forgot to mention I'm on a 64bit kernel + userland).
-> 
-> I'm now stressing the firewalls with packets.
+Hi,
 
-Damnit, it doesn't break! :)
-Been stressing the firewall with gigabytes of packets...
-Last time it crashed, it hadn't receive a hundred megabytes
-of packets at all... *sigh*
--- 
-Regards,
-Wolfram Schlich <wschlich@gentoo.org>
-Gentoo Linux * http://dev.gentoo.org/~wschlich/
+On Thu November 13 2008, Gilad Benjamini wrote:
+> - init_conntrack calls l4proto->new. If a zero value is returned,
+> nf_conntrack_free is called and the packet's connection is considered
+> INVALID
+In fact, the packet isn't marked "INVALID", there is just xt_state.c, who 
+detects an invalid packet, if nf_ct_get(...) returns 0 or null. Which means, 
+that skb->nfct == NULL. Which in turn means, that nf_conntrack_in doesn't 
+assigned a connection to the packet.
+
+And that will be the case, if any of these calls return a negative value (take 
+a look at nf_conntrack_in and the functions it's calling):
+l3proto->get_l4proto
+l3proto->pkt_to_tuple
+l3proto->invert_tuple
+l4proto->error
+l4proto->pkt_to_tuple
+l4proto->invert_tuple
+l4proto->new
+l4proto->packet
+nf_conntrack_alloc
+
+So, there can be A LOT of cases, where conntrack detects an invalid packet...
+
+--
+Christoph Paasch
+
+www.rollerbulls.be
+--
