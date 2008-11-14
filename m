@@ -1,49 +1,44 @@
-From: pageexec@freemail.hu
-Subject: Re: PaX killing conntrackd (strange "execution attempt")
-Date: Fri, 14 Nov 2008 16:36:13 +0200
-Message-ID: <491D9AED.12969.1657939B@pageexec.freemail.hu>
-References: <20081113100309.GH26975@bla.fasel.org>, <491D6927.3010701@netfilter.org>, <20081114150908.GV26975@bla.fasel.org>
-Reply-To: pageexec@freemail.hu
+From: ivan <lagigliaivan@gmail.com>
+Subject: L2 NAT
+Date: Fri, 14 Nov 2008 14:34:40 -0200
+Message-ID: <f4d9d6df0811140834h5e8397b9y1b544c637bb29d78@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <20081114150908.GV26975@bla.fasel.org>
-Content-description: Mail message body
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=grPr2zZrKUZgB5MVsJEikXGPHfstlTghz23kUJ5iL+M=;
+        b=A2xluJkRo8TwjRgNvtcMqzR/AJ6wtDuI6r0YMdM0coOfEFoS5wHwYC/xYZ45llXgZF
+         9ufPF5gojApkGyGn63wiCeKiLEPDd+VJysJQciUxYhZlTMeFBAffDbTEwIDRaPpOec9h
+         8AYV0w/Hz22f4Be1eTTOKtn7ju0WyEMMRGaHY=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org, Wolfram Schlich <lists@wolfram.schlich.org>
+To: netfilter@vger.kernel.org
 
-On 14 Nov 2008 at 16:09, Wolfram Schlich wrote:
+Hi All,
 
-> Here's the log entry:
-> --8<--
-> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: From 10.10.10.249: execution attempt in: <NULL>, 00000000-00000000 00000000
-> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: terminating task: /usr/sbin/conntrackd(conntrackd):7543, uid/euid: 0/0, PC: 0000000000000000, SP: 00007fffffffb398
-> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: bytes at PC: ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
-> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: bytes at SP-8:
-> --8<--
+I need to connect three devices via ethernet, through a switch, to the
+same tftp server. The problem is that these devices have the same IPs,
+i.e. 192.168.0.181, and when I address to or get data from one of
+them, I can't tell which device I'm actually talking to. The devices
+are three items of the same product, and their IP cannot be changed.
 
-ok, here's the rest of the story:
+I have implemented a perl script that changes the ARP table in tftp
+server side, but I need a stronger solution.
 
-(gdb) x/16x $sp
-0x7fffffffb398: 0xf7ba28b5      0x00007fff      0x00000001      0x00000000
-(gdb) x/8i 0x00007ffff7ba28b5-3
-0x7ffff7ba28b2 <__build_protoinfo+450>: callq  *(%rdx,%rax,8)
-0x7ffff7ba28b5 <__build_protoinfo+453>: mov    $0x1,%eax
-0x7ffff7ba28ba <__build_protoinfo+458>: mov    %ebp,%ecx
-0x7ffff7ba28bc <__build_protoinfo+460>: shl    %cl,%rax
-0x7ffff7ba28bf <__build_protoinfo+463>: or     %eax,(%r14,%rbx,4)
-0x7ffff7ba28c3 <__build_protoinfo+467>: cmp    $0x37,%r12d
-0x7ffff7ba28c7 <__build_protoinfo+471>: jle    0xfffffffff7ba287f
-0x7ffff7ba28c9 <__build_protoinfo+473>: mov    0x10(%rsp),%rdx
-(gdb) i r rdx rax
-rdx            0x7ffff7db5000   140737351733248
-rax            0x37     55
-(gdb) x/8x $rdx+8*$rax
-0x7ffff7db51b8: 0x00000000      0x00000000      0xf7ba9468      0x00007fff
-0x7ffff7db51c8: 0xf7ba94b1      0x00007fff      0xf7ba9505      0x00007fff
+I was thinking on developing a sort of L2 NAT which could change the
+IP source address of a package according to its MAC address, and put
+it in the middle of the tftp server and the devices.
 
-so that's a null function pointer in whatever structure __build_protoinfo dereferences
-there. is it of any help to you or do you need me to dig out more?
+Using the current iptables command can I set up this?? or  I need to
+develop my own kernel module???
 
+If you have any idea please let me know.
+
+
+Thanks.
