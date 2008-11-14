@@ -1,34 +1,49 @@
-From: Wolfram Schlich <lists@wolfram.schlich.org>
+From: pageexec@freemail.hu
 Subject: Re: PaX killing conntrackd (strange "execution attempt")
-Date: Fri, 14 Nov 2008 17:18:25 +0100
-Message-ID: <20081114161825.GY26975@bla.fasel.org>
-References: <20081113100309.GH26975@bla.fasel.org> <20081113132723.GK26975@bla.fasel.org> <20081113174138.GM26975@bla.fasel.org> <20081113201042.GN26975@bla.fasel.org> <491D6927.3010701@netfilter.org> <20081114150908.GV26975@bla.fasel.org> <20081114155403.GX26975@bla.fasel.org>
+Date: Fri, 14 Nov 2008 16:36:13 +0200
+Message-ID: <491D9AED.12969.1657939B@pageexec.freemail.hu>
+References: <20081113100309.GH26975@bla.fasel.org>, <491D6927.3010701@netfilter.org>, <20081114150908.GV26975@bla.fasel.org>
+Reply-To: pageexec@freemail.hu
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=bla.fasel.org; h=date:from
-	:to:subject:message-id:references:mime-version:content-type:
-	in-reply-to; s=mx; bh=abFmSEFpld9i2Emy+5tve7FRfXo=; b=GsuDLriJAd
-	An1IRahKfV5Hf8hnx3181JuqQ5KjE0S6zCQvWA/WcpOvx6zT2/02902b8DRl3gjU
-	769rvDAk1ZDqm/7ShtfjOxQmfs5OnUCm+IWcaUBNUfd9fxqyYvdxlWNhtYLGmMrX
-	sdHkwKCxF4SFk2mMt+MD1f60sGlnn2M7c=
-Content-Disposition: inline
-In-Reply-To: <20081114155403.GX26975@bla.fasel.org>
+In-reply-to: <20081114150908.GV26975@bla.fasel.org>
+Content-description: Mail message body
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, Wolfram Schlich <lists@wolfram.schlich.org>
 
-* Wolfram Schlich <lists@wolfram.schlich.org> [2008-11-14 16:54]:
-> * Wolfram Schlich <lists@wolfram.schlich.org> [2008-11-14 16:09]:
-> > Now I got a core, after more than a day, but it doesn't look good :(
-> 
-> Here's the reply of the PaX team (I sent in the conntrackd binary
-> along with the coredump):
+On 14 Nov 2008 at 16:09, Wolfram Schlich wrote:
 
-Whoops!
-Didn't notice the PaX team sent their reply to this list as well ;)
--- 
-Regards,
-Wolfram Schlich <wschlich@gentoo.org>
-Gentoo Linux * http://dev.gentoo.org/~wschlich/
+> Here's the log entry:
+> --8<--
+> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: From 10.10.10.249: execution attempt in: <NULL>, 00000000-00000000 00000000
+> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: terminating task: /usr/sbin/conntrackd(conntrackd):7543, uid/euid: 0/0, PC: 0000000000000000, SP: 00007fffffffb398
+> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: bytes at PC: ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
+> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: bytes at SP-8:
+> --8<--
+
+ok, here's the rest of the story:
+
+(gdb) x/16x $sp
+0x7fffffffb398: 0xf7ba28b5      0x00007fff      0x00000001      0x00000000
+(gdb) x/8i 0x00007ffff7ba28b5-3
+0x7ffff7ba28b2 <__build_protoinfo+450>: callq  *(%rdx,%rax,8)
+0x7ffff7ba28b5 <__build_protoinfo+453>: mov    $0x1,%eax
+0x7ffff7ba28ba <__build_protoinfo+458>: mov    %ebp,%ecx
+0x7ffff7ba28bc <__build_protoinfo+460>: shl    %cl,%rax
+0x7ffff7ba28bf <__build_protoinfo+463>: or     %eax,(%r14,%rbx,4)
+0x7ffff7ba28c3 <__build_protoinfo+467>: cmp    $0x37,%r12d
+0x7ffff7ba28c7 <__build_protoinfo+471>: jle    0xfffffffff7ba287f
+0x7ffff7ba28c9 <__build_protoinfo+473>: mov    0x10(%rsp),%rdx
+(gdb) i r rdx rax
+rdx            0x7ffff7db5000   140737351733248
+rax            0x37     55
+(gdb) x/8x $rdx+8*$rax
+0x7ffff7db51b8: 0x00000000      0x00000000      0xf7ba9468      0x00007fff
+0x7ffff7db51c8: 0xf7ba94b1      0x00007fff      0xf7ba9505      0x00007fff
+
+so that's a null function pointer in whatever structure __build_protoinfo dereferences
+there. is it of any help to you or do you need me to dig out more?
+
