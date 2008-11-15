@@ -1,73 +1,68 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: L2 NAT
-Date: Fri, 14 Nov 2008 22:02:32 -0600
-Message-ID: <491E49D8.8060302@riverviewtech.net>
-References: <f4d9d6df0811140834h5e8397b9y1b544c637bb29d78@mail.gmail.com>
+From: sebastien <sebastien@sriliam.webhop.net>
+Subject: question on extern exec prog with iptables.
+Date: Sat, 15 Nov 2008 07:38:10 +0100
+Message-ID: <1226731090.4215.39.camel@lya14-2-82-232-125-204.fbx.proxad.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <f4d9d6df0811140834h5e8397b9y1b544c637bb29d78@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On 11/14/2008 10:34 AM, ivan wrote:
-> I need to connect three devices via ethernet, through a switch, to 
-> the same tftp server. The problem is that these devices have the same 
-> IPs, i.e. 192.168.0.181, and when I address to or get data from one 
-> of them, I can't tell which device I'm actually talking to. The 
-> devices are three items of the same product, and their IP cannot be 
-> changed.
+Hi all,
 
-Do the devices ever initiate connections to your server or just respond 
-to connections that the server initiates?
+I have a web server which send "wrong" html to the client and I would
+like to be able to correct this "wrong" html by reforming packets and
+send them an the network.
 
-If it is your server initiating connections, you might be able to 
-statically set arp entries for each device on it's own bogus IP.  By 
-doing this you should be able to talk to each bogus IP and have the 
-ethernet frames go to the proper device.  If the IP stack / software on 
-each device is simple enough, you can probably talk to it with the 
-incorrect destination IP.  Though I'm not 100% sure what the returning 
-packet would be like.  But it is a direction to look.
+The problem is that iptables or ip6tables won't be natively able to sen=
+d
+me the original destination client's address and port of server's
+answer : am I wrong ? iptables and ip6tables will form a new address an=
+d
+port destination and that'all.
 
-> I have implemented a perl script that changes the ARP table in tftp 
-> server side, but I need a stronger solution.
-
-*nod*
-
-> I was thinking on developing a sort of L2 NAT which could change the 
-> IP source address of a package according to its MAC address, and put 
-> it in the middle of the tftp server and the devices.
-
-You might be able to use Bridge NetFilter extensions on a box between 
-the three devices and the server to be able to NAT the IPs of the traffic.
-
-You could choose what source IP to SNAT traffic to based on the source 
-MAC address.  If you send the new ethernet frame out with the original 
-source MAC address your server will have the proper MAC address and a 
-spoofed IP to know where the packet came from.
-
-Your server will have to reply to a MAC address, probably the real MAC 
-address of the device but with a spoofed IP.  So the bridge will have to 
-DNAT the traffic based on the destination MAC address.
-
-This should take care of packets leaving the devices going to the server.
-
-You will need to watch for ARP queries from the network for the spoofed 
-IPs of the devices and have the bridge send the ARP reply with the 
-correct MAC addresses and the spoofed IPs.
-
-> Using the current iptables command can I set up this?? or  I need to 
-> develop my own kernel module???
-
-I think you might be able to pull it off with a combination of IPTables 
-and EBTables.
-
-> If you have any idea please let me know.
-
-See what you think of the above ideas.
+If so, I need a way to send the exact port of the original packet to th=
+e
+corrective program : the one which will desserve transparently the
+client called by ? ... iptables or ip6tables.
 
 
 
-Grant. . . .
+Legacy, with "wrong" html :
+
+----------          --------------
++ Client +   <--->  + Web Server +
+----------          --------------
+
+
+Result, hopefully wanted, after transformation :
+
+----------      --------------     ----------------------     ---------=
+-
++ Client + -->  + Web Server + --> + corrective program + --> + Client =
++
+----------      --------------     ----------------------     ---------=
+-
+
+
+As you can see, I have no way to see packet from Client to Server. I
+suppose that the only "strange" packet from Client is a change port
+asking which the server answer (tcp option). Corrective program will no=
+t
+touch thoses packets : it simply "re-arrange" packet at application
+level to the client and deliver it to the good port (the one of the
+server originaly send to).
+
+Does iptables and ip6tables modules can do this ? Call a extern program
+with the full packet content of the server.
+
+Thanks by advance, best regards.
+See ya.
+S=C3=A9bastien
+
+Nota : one can notice iptables and ip6tables mention. The production
+server is on Ipv4 and I only can reproduce an Ipv6 laboratory. So, I
+need a way to make the job with both protocols.
+
