@@ -1,77 +1,57 @@
-From: sebastien <sebastien@sriliam.webhop.net>
-Subject: Subscribing and question on extern exec prog with iptables.
-Date: Sat, 15 Nov 2008 07:31:31 +0100
-Message-ID: <1226730691.4215.34.camel@lya14-2-82-232-125-204.fbx.proxad.net>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Alternate routing table and source IP address question.
+Date: Sat, 15 Nov 2008 12:57:52 +0100
+Message-ID: <491EB940.6070107@plouf.fr.eu.org>
+References: <1226578553.8310.40.camel@localhost.localdomain> <491C5FCE.9060001@plouf.fr.eu.org> <Pine.LNX.4.58.0811141747390.12742@bolt.sonic.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.58.0811141747390.12742@bolt.sonic.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi all,
+Hello,
 
-=46irst of all, I try to subscribe to the netfilter mailing list with n=
-o
-success : 3 times with a webmail address 1 with a exim mail address (th=
-e
-one desserving this mail).
+bsilva a =E9crit :
+> At my job, we use iptables commands to mark packets to use alternate
+> routing tables.  Basically, we're using this to have two default gate=
+ways,
+> some traffic types go out interface A to one gateway, other types of
+> traffic go out interface B to a second gateway.
+>=20
+> The issue is that by the time the packet gets to the routing table, t=
+he
+> source IP address has already been set and we get the packets exiting
+> interface B, but with the source IP address of interface A.
 
-How subscribe to the mailing list ?
+Indeed, this is a common issue.
 
-Second, why do not write my question here ?
+> The only way we've found to correct this is to have the application t=
+hat
+> generates the traffic bind to the particular source IP address of the
+> interface that it's eventually going to use.
+>=20
+> Is there a better way to do it?
 
-I have a web server which send "wrong" html to the client and I would
-like to be able to correct this "wrong" html by reforming packets and
-send them an the network.
+You can use SNAT or MASQUERADE, but IMO having the application bind to=20
+the desired source address is a cleaner way when applicable. NAT does=20
+not work well with all kinds of traffic. Besides, source-based routing=20
+is easier than mark-based routing, as it does not need iptables rules.
 
-The problem is that iptables or ip6tables won't be natively able to sen=
-d
-me the original destination client's address and port of server's
-answer : am I wrong ? iptables and ip6tables will form a new address an=
-d
-port destination and that'all.
+> I see this nice box on Jan Engelhardt's Packet Flow graph labeled "re=
+route
+> check", but I don't see a way to invoke it.  I was hoping that adding=
+ a
+> "src 123.123.123.2" parameter to the route statement would invoke rer=
+oute,
+> but that doesn't seem to happen.  Or is the "reroute check" only used=
+ in
+> NAT cases?
 
-If so, I need a way to send the exact port of the original packet to th=
-e
-corrective program : the one which will desserve transparently the
-client called by ? ... iptables or ip6tables.
-
-
-
-Legacy, with "wrong" html :
-
-----------          --------------
-+ Client +   <--->  + Web Server +
-----------          --------------
-
-
-Result, hopefully wanted, after transformation :
-
-----------      --------------     ----------------------     ---------=
--
-+ Client + -->  + Web Server + --> + corrective program + --> + Client =
-+
-----------      --------------     ----------------------     ---------=
--
-
-
-As you can see, I have no way to see packet from Client to Server. I
-suppose that the only "strange" packet from Client is a change port
-asking which the server answer (tcp option). Corrective program will no=
-t
-touch thoses packets : it simply "re-arrange" packet at application
-level to the client and deliver it to the good port (the one of the
-server originaly send to).
-
-Does iptables and ip6tables modules can do this ? Call a extern program
-with the full packet content of the server.
-
-Thanks by advance, best regards.
-See ya.
-S=C3=A9bastien
-
-Nota : one can notice iptables and ip6tables mention. The production
-server is on Ipv4 and I only can reproduce an Ipv6 laboratory. So, I
-need a way to make the job with both protocols.
+The reroute check just updates the routing decision due to an address=20
+translation or a mark set in the OUTPUT chains. The "src" option in a=20
+route is used only in the first routing decision before the OUTPUT=20
+chains, when the packet is created without a defined source address. A=20
+routing decision does not change the defined source address.
