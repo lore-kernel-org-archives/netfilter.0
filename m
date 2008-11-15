@@ -1,34 +1,56 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-2.4.5 released
-Date: Sat, 15 Nov 2008 21:23:45 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.0811152120400.13100@blackhole.kfki.hu>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: where are my udp packets going?
+Date: Sat, 15 Nov 2008 16:04:41 -0500
+Message-ID: <gfndh9$n0s$1@ger.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hello,
+I'm trying to setup port forwarding for a VOIP server that uses IAX 
+packets, port 4569:
 
-The new ipset release contains a fix in the new set type setlist
-and a kernel compatibility correction:
++ /sbin/iptables -t nat -A PREROUTING -i eth0 -p udp --dport 4569 -j 
+DNAT --to 10.10.10.180:4569
++ /sbin/iptables -A FORWARD -p udp -m state --state NEW -d 10.10.10.180 
+--dport 4569 -j ACCEPT
 
-  - setlist type does not work properly together with swapping
-    sets, bug reported by Thomas Jacob.
-  - Include linux/capability.h explicitly in ip_set.c
-    (Jan Engelhardt)
+but the packets aren't showing up at 10.10.10.180.
 
-You can download the source of ipset from the webpage or svn:
+I put in a bunch of log statements:
 
-        http://ipset.netfilter.org/
-        svn co https://svn.netfilter.org/netfilter/trunk/ipset
+$IPT -t raw -A PREROUTING -i $EXTIF -p udp --dport 4569 -j LOG 
+--log-prefix "iax packet RAW:   "
+$IPT -t nat -A PREROUTING -i $EXTIF -p udp --dport 4569 -j DNAT --to 
+10.10.10.180:4569
+$IPT -t nat -A PREROUTING -i $EXTIF -p udp --dport 4569 -j LOG 
+--log-prefix "iax packet PRE NAT:   "
+$IPT -A FORWARD -p udp -m state --state NEW -d 10.10.10.180 --dport 4569 
+-j ACCEPT
+$IPT -A FORWARD -p udp  --dport 4569 -d 10.10.10.180    -j LOG 
+--log-prefix "iax packet FORWARD:  "
+$IPT -t nat -A POSTROUTING  -p udp --dport 4569         -j LOG 
+--log-prefix "iax packet POST:   "
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+So, I would expect each iax packet to show up sequentially as:
+iax packet RAW:
+iax packet PRE NAT:
+iax packet FORWARD:
+iax packet POST:
+
+But no:
+
+I get lots of "iax packet RAW:   " , and an "iax packet FORWARD:  " 
+every 2 -  10 "iax packet RAW:  " messages. That's it. no postrouting, 
+no prerouting nat.
+
+And the voip server sees no iax packets.
+
+Where are they going?
+
+sean
+
+
