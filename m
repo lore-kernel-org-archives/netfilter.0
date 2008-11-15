@@ -1,91 +1,59 @@
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: Re: The "badguy" example in the man page not working
-	(-->"iptables: No chain/target/match by that name")
-Date: Fri, 14 Nov 2008 14:21:42 -0600
-Message-ID: <1226694102.11373.297.camel@grateful.d.umn.edu>
-References: <gfk58b$qlv$1@ger.gmane.org>
-	 <1226678430.11373.265.camel@grateful.d.umn.edu>
-	 <gfkds5$ti4$1@ger.gmane.org>
-	 <1226693732.11373.296.camel@grateful.d.umn.edu>
+From: bsilva <bsilva@sonic.net>
+Subject: Alternate routing table and source IP address question.
+Date: Fri, 14 Nov 2008 18:06:55 -0800 (PST)
+Message-ID: <Pine.LNX.4.58.0811141747390.12742@bolt.sonic.net>
+References: <1226578553.8310.40.camel@localhost.localdomain>
+ <491C5FCE.9060001@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-4JXpn85pWrDV+fWmkC54"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1226693732.11373.296.camel@grateful.d.umn.edu>
+In-Reply-To: <491C5FCE.9060001@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Adem <for-gmane@alicewho.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
 
---=-4JXpn85pWrDV+fWmkC54
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+At my job, we use iptables commands to mark packets to use alternate
+routing tables.  Basically, we're using this to have two default gateways,
+some traffic types go out interface A to one gateway, other types of
+traffic go out interface B to a second gateway.
 
-On Fri, 2008-11-14 at 14:15 -0600, Matt Zagrabelny wrote:
-> On Fri, 2008-11-14 at 18:48 +0100, Adem wrote:
-> > "Matt Zagrabelny" wrote:
-> > > On Fri, 2008-11-14 at 16:22 +0100, Adem wrote:
-> > > > The following example from the man page doesn't work on my box:
-> > > >=20
-> > > >   iptables -A FORWARD -m recent --name badguy --rcheck --seconds 60=
- -j DROP
-> > > >   iptables -A FORWARD -p tcp -i eth0 --dport 139 -m recent --name b=
-adguy --set -j DROP
-> > >=20
-> > > I see 'eth0' in your rule, but below there is no eth0.
-> >=20
-> > Oops. that was just a cut&paste error, I actually had changed it,
-> > tried everything, but w/o success.
-> > Any other ideas what it might be?
-> >=20
-> > BTW, it is a virtual private server (VPS) box, there is nothing under /=
-boot.
-> >=20
-> > Here the version info:
-> >=20
-> > # uname -r
-> > 2.6.9-023stab048.4-smp
-> >=20
-> > # iptables --version
-> > iptables v1.3.6
->=20
-> What GNU/Linux distro are you running?
->=20
-> I am running Debian Sid and here are my versions:
->=20
-> 2.6.26-1-686
-> iptables v1.4.1.1
+The issue is that by the time the packet gets to the routing table, the
+source IP address has already been set and we get the packets exiting
+interface B, but with the source IP address of interface A.
 
-Also you could check to see if you have the module:
+The only way we've found to correct this is to have the application that
+generates the traffic bind to the particular source IP address of the
+interface that it's eventually going to use.
 
-% lsmod | grep recent
+Is there a better way to do it?
 
-and
+Interface "A": 123.123.111.2
+Interface "B": 123.123.123.2
+NTP server: 123.123.222.10
 
-% modinfo ipt_recent
+Example:
+# Sets mark on NTP packets.
+iptables -A OUTPUT -t mangle -p udp  --dport 123 -j MARK --set-mark 1
+#Add rule to have marked packets use route table 1
+ip rule add fwmark 1 table 1 priority 2000
+#Build route table 1
+ip route add 123.123.123.0/24 dev bond2 src 123.123.123.2 table 1
+ip route add default via 123.123.123.1 src 123.123.123.2 table 1
 
---=20
-Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
-University of Minnesota Duluth
-Information Technology Systems & Services
-PGP key 1024D/84E22DA2 2005-11-07
-Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
+Using this example, NTP packets will exit interface B, but will have the
+source IP address of interface A.
 
-He is not a fool who gives up what he cannot keep to gain what he cannot
-lose.
--Jim Elliot
+I see this nice box on Jan Engelhardt's Packet Flow graph labeled "reroute
+check", but I don't see a way to invoke it.  I was hoping that adding a
+"src 123.123.123.2" parameter to the route statement would invoke reroute,
+but that doesn't seem to happen.  Or is the "reroute check" only used in
+NAT cases?
 
---=-4JXpn85pWrDV+fWmkC54
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+(http://jengelh.medozas.de/images/nf-packet-flow.png)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+Thanks,
+Brad
 
-iEYEABECAAYFAkkd3dYACgkQU+eIf4TiLaLEdgCguP7LJ9WTmqviLysvwB/9PVkF
-PvEAoPONU+h6CxDEiued0s8zv2lAkbu6
-=Aw+3
------END PGP SIGNATURE-----
-
---=-4JXpn85pWrDV+fWmkC54--
 
