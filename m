@@ -1,74 +1,75 @@
-From: sean darcy <seandarcy2@gmail.com>
-Subject: Re: where are my udp packets going?
-Date: Sun, 16 Nov 2008 16:31:11 -0500
-Message-ID: <gfq3f0$9ot$1@ger.gmane.org>
-References: <gfndh9$n0s$1@ger.gmane.org> <gfnngg$gvn$1@ger.gmane.org> <492043E5.1080903@plouf.fr.eu.org>
+From: bsilva <bsilva@sonic.net>
+Subject: Re: howto dumb switch?
+Date: Sun, 16 Nov 2008 13:58:41 -0800 (PST)
+Message-ID: <Pine.LNX.4.58.0811161343100.7362@bolt.sonic.net>
+References: <49205D8D.2090601@mailinator.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <492043E5.1080903@plouf.fr.eu.org>
+In-Reply-To: <49205D8D.2090601@mailinator.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mike Wright <mike.wright@mailinator.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Pascal Hambourg wrote:
-> Hello,
->=20
-> sean darcy a =E9crit :
->> sean darcy wrote:
->>> I'm trying to setup port forwarding for a VOIP server that uses IAX=
-=20
->>> packets, port 4569:
->>>
->>> + /sbin/iptables -t nat -A PREROUTING -i eth0 -p udp --dport 4569 -=
-j=20
->>> DNAT --to 10.10.10.180:4569
->>> + /sbin/iptables -A FORWARD -p udp -m state --state NEW -d=20
->>> 10.10.10.180 --dport 4569 -j ACCEPT
->>>
->>> but the packets aren't showing up at 10.10.10.180.
-> [...]
->> Well, they're going to input.
-> [...]
->> In other words, it's port forwarding all iax except from 76.
->=20
-> This happens probably because your NAT box started to receive UDP/456=
-9=20
-> packets from 76.zzz.xxx.yyy before the DNAT rule was created and=20
-> continually receives packets since then. The netfilter connection=20
-> tracking created a conntrack entry without any NAT operation so=20
-> subsequent UDP/4569 packets from 76.zzz.xxx.yyy use that same conntra=
-ck=20
-> entry and skip the nat chains, until the entry expires. If the box=20
-> continally sees UDP/4569 packets from 76.zzz.xxx.yyy, then the entry=20
-> never expires. If you pull the ethernet wire off eth0 for a couple of=
-=20
-> minutes, the conntrack entry should expire.
->=20
-> Rationale : don't allow any traffic before all rules are created. A=20
-> simple way to achieve it is to create the rules before network=20
-> interfaces are UP.
-> --=20
 
-I was able to shut down the 76. machine, reboot the server, and it=20
-worked. So, thanks.
+Well, dumb switches (as opposed to managed or smart switches), do not need
+an IP address, because they only operate on Ethernet packets.  They don't
+know (or care) whether those packets are IP or some other protocol.  All
+they do is look at the Ethernet address (aka MAC address) and figure out
+what port to forward it to.  If they do not know what port, then they send
+it out all ports.
 
-But all this leaves me puzzled.
+That's as short a description of an Ethernet switch as I can write.  There
+are a couple of other details, but the important part is that they look at
+the first 12 Octets of the packet.
 
-My server does NOT generate 4569 packets, and iptables INPUT drops all=20
-from eth0, except for ssh and ESTABLISHED. So how could there be a=20
-conntrack entry?
+Also, they do not "route".  That term is usually reserved for the logic of
+how higher level protocols (such as IPv4 or IPv6) get forwarded.
 
-Is there a way to DNAT traffic before it reaches the conntrack entry?=20
-Can I change the destination in raw/PREROUTING?
 
-Is there a way to flush the conntrack entry? I'd reallly like not to=20
-take the network down if this happens again. It's a very remote machine=
-,=20
-and if ssh didn't come up again, I'd need a new job.
+Managed switches keep track of statisics and other information about the
+traffic on the network, and as such have their own commputers internally
+that needs to comunicate over IP.
 
-Thanks for the help.
 
-sean
+A Linux box can be setup to act like an Ethernet switch, but that's
+usually only done if you want to filter or otherwise modify the traffic
+going through the box.  A Linux bx cannot forward packets as fast as even
+a cheap Ethernet switch (and obviously costs more).  In the Linux kernel,
+this is called Bridging.  Here's a good Howto:
+http://www.faqs.org/docs/Linux-HOWTO/Ethernet-Bridge-netfilter-HOWTO.html
 
+
+I hope that helps,
+Brad
+
+
+I hope that helps clear things
+
+On Sun, 16 Nov 2008, Mike Wright wrote:
+
+> Hi all,
+>
+> Would somebody be so kind as to explain to me how those cheapo ($10US)
+> five port unmanaged switches work?  They have no IP of their own but
+> manage to bridge?/route? disparate networks together.
+>
+> I've been trying to make one out of a multi-nic linux box and just don't
+> seem to get it.
+>
+> Pointers to any documention would be great.
+>
+> tia for any help.
+>
+> Mike Wright :m)
+>
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>
