@@ -1,54 +1,72 @@
-From: Christoph Paasch <christoph.paasch@gmail.com>
-Subject: Re: INVALID state
-Date: Fri, 14 Nov 2008 00:01:30 +0100
-Message-ID: <200811140001.31179.christoph.paasch@gmail.com>
-References: <491c6f1c.27b38c0a.7748.ffffe1d6@mx.google.com> <200811132331.08821.christoph.paasch@gmail.com> <491cab7d.27b38c0a.772a.42ee@mx.google.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: where are my udp packets going?
+Date: Mon, 17 Nov 2008 11:28:48 +0100
+Message-ID: <49214760.1010006@plouf.fr.eu.org>
+References: <gfndh9$n0s$1@ger.gmane.org> <gfnngg$gvn$1@ger.gmane.org> <492043E5.1080903@plouf.fr.eu.org> <gfq3f0$9ot$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date
-         :user-agent:cc:references:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:message-id;
-        bh=WtLhfutfAHVUkzZ1M7IIF1OJ+pXjNKBG4PnVbx8H2Ug=;
-        b=JrNiZ1qVKaiYiGC26UwH+3S8oNo49PknANQrjq6Lbrd8bSBF1zuw3B+gNXYk9hrsOo
-         I3HImCWAj7nxdnV0sJSm1fCIyvna1UEuKxXMWIjZEvS/KIANQeDVqJ4kFDlUEU5XZSSZ
-         A5vuNAiNIzxSvFWOkKxgQWe9yqZf1P9WxcEMc=
-In-Reply-To: <491cab7d.27b38c0a.772a.42ee@mx.google.com>
-Content-Disposition: inline
+In-Reply-To: <gfq3f0$9ot$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Gilad Benjamini <gilad.benjamini@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Thu November 13 2008, Gilad Benjamini wrote:
-> Back to my original question then: what is the rule of thumb ?
-> In other words, for a non-programmer reading proper documentation, how
-> would the documentation describe INVALID ?
+sean darcy a =E9crit :
+>
+> I was able to shut down the 76. machine, reboot the server, and it wo=
+rked.
 
-In the "Packet Filtering HOWTO" of netfilter.org, they say:
+Hmm, shut down or reboot was a bit overkill.
 
-A packet which could not be identified for some reason: this includes running 
-out of memoory and ICMP errors which don't correspond to any known connection.
+> My server does NOT generate 4569 packets, and iptables INPUT drops al=
+l=20
+> from eth0, except for ssh and ESTABLISHED. So how could there be a=20
+> conntrack entry?
 
-By looking to the code, I would say, that a packet is invalid, if the 
-connection tracker doesn't manages to create a proper connection-state for 
-that packet (memory-errors while treating the packet, ...), or the tests 
-defined by the specific protocol-handlers fail.
+The DROP target prevents a packet from creating a new conntrack entry.=20
+However I suppose there was a sort of race condition with incoming=20
+packets, conntrack activation, default policy definition and rule creat=
+ion.
 
-But I'm also asking me this question, because I have to implement shim6-
-support in netfilter in the case of my Master Thesis. So does somebody can give 
-me a reference which will explain me, what a firewall should check, and what 
-not...? Should it check, if the packet respects the whole protocol (in case of 
-shim6: nonces, cga/hba, ...)?
+If the conntrack module is loaded before a DROP rule is created in the=20
+filter/INPUT chain or its policy is set to DROP, then an incoming packe=
+t=20
+  could create the bogus conntrack entry. The conntrack module can be=20
+autoloaded by many ways including :
+- loading a conntrack or NAT helper module,
+- creating a rule using a match or target that requires conntrack=20
+(state, conntrack, connmark, CONNMARK...)
+- loading the nat table, which may be caused by creating a rule in one=20
+of its chains, defining the default policy of one of its chains or just=
+=20
+flushing one of its chains.
+So conntrack may be enabled sooner that you think.
 
-Thanks for your help, and sorry, if i'm running out of the topic of that 
-thread.
+Check the order in which the following operations happen at startup :
+- load conntrack/NAT modules {ip,nf}_{conntrack,nat}*
+- define iptables default policies in the nat and filter tables
+- create or flush iptables rules in the nat and filter tables
+- enable network interfaces
 
---
-Christoph Paasch
+> Is there a way to DNAT traffic before it reaches the conntrack entry?=
+=20
 
-www.rollerbulls.be
---
+No, because NAT requires conntrack.
+
+> Can I change the destination in raw/PREROUTING?
+
+No. All you can do in raw/PREROUTING is DROP or mark packets in the=20
+UNTRACKED state with the NOTRACK target so the conntrack won't see them=
+=2E=20
+By the way I guess that adding a temporary rule matching the IAX traffi=
+c=20
+from 76.x.x.x in this chain until the related conntrack entry expires=20
+would have done the trick too, without having to put machines offline.
+
+> Is there a way to flush the conntrack entry?
+
+Yes, with the conntrack utility from the conntrack-tools package. If yo=
+u=20
+distro does not ship it, you can get it from the netfilter site.
+<http://www.netfilter.org/projects/conntrack-tools/index.html>
