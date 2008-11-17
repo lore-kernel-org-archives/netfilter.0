@@ -1,72 +1,65 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: where are my udp packets going?
-Date: Mon, 17 Nov 2008 11:28:48 +0100
-Message-ID: <49214760.1010006@plouf.fr.eu.org>
-References: <gfndh9$n0s$1@ger.gmane.org> <gfnngg$gvn$1@ger.gmane.org> <492043E5.1080903@plouf.fr.eu.org> <gfq3f0$9ot$1@ger.gmane.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: PaX killing conntrackd (strange "execution attempt")
+Date: Mon, 17 Nov 2008 13:44:36 +0100
+Message-ID: <49216734.9080505@netfilter.org>
+References: <20081113100309.GH26975@bla.fasel.org>, <491D6927.3010701@netfilter.org>, <20081114150908.GV26975@bla.fasel.org> <491D9AED.12969.1657939B@pageexec.freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <gfq3f0$9ot$1@ger.gmane.org>
+In-Reply-To: <491D9AED.12969.1657939B@pageexec.freemail.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: pageexec@freemail.hu
+Cc: netfilter@vger.kernel.org, Wolfram Schlich <lists@wolfram.schlich.org>
 
-sean darcy a =E9crit :
->
-> I was able to shut down the 76. machine, reboot the server, and it wo=
-rked.
+pageexec@freemail.hu wrote:
+> On 14 Nov 2008 at 16:09, Wolfram Schlich wrote:
+> 
+>> Here's the log entry:
+>> --8<--
+>> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: From 10.10.10.249: execution attempt in: <NULL>, 00000000-00000000 00000000
+>> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: terminating task: /usr/sbin/conntrackd(conntrackd):7543, uid/euid: 0/0, PC: 0000000000000000, SP: 00007fffffffb398
+>> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: bytes at PC: ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
+>> 11-14 14:25:20 +01:00; hafw2; kern.err; kernel: PAX: bytes at SP-8:
+>> --8<--
+> 
+> ok, here's the rest of the story:
+> 
+> (gdb) x/16x $sp
+> 0x7fffffffb398: 0xf7ba28b5      0x00007fff      0x00000001      0x00000000
+> (gdb) x/8i 0x00007ffff7ba28b5-3
+> 0x7ffff7ba28b2 <__build_protoinfo+450>: callq  *(%rdx,%rax,8)
+> 0x7ffff7ba28b5 <__build_protoinfo+453>: mov    $0x1,%eax
+> 0x7ffff7ba28ba <__build_protoinfo+458>: mov    %ebp,%ecx
+> 0x7ffff7ba28bc <__build_protoinfo+460>: shl    %cl,%rax
+> 0x7ffff7ba28bf <__build_protoinfo+463>: or     %eax,(%r14,%rbx,4)
+> 0x7ffff7ba28c3 <__build_protoinfo+467>: cmp    $0x37,%r12d
+> 0x7ffff7ba28c7 <__build_protoinfo+471>: jle    0xfffffffff7ba287f
+> 0x7ffff7ba28c9 <__build_protoinfo+473>: mov    0x10(%rsp),%rdx
+> (gdb) i r rdx rax
+> rdx            0x7ffff7db5000   140737351733248
+> rax            0x37     55
+> (gdb) x/8x $rdx+8*$rax
+> 0x7ffff7db51b8: 0x00000000      0x00000000      0xf7ba9468      0x00007fff
+> 0x7ffff7db51c8: 0xf7ba94b1      0x00007fff      0xf7ba9505      0x00007fff
+> 
+> so that's a null function pointer in whatever structure __build_protoinfo dereferences
+> there. is it of any help to you or do you need me to dig out more?
 
-Hmm, shut down or reboot was a bit overkill.
+Hm, that code belongs to libnetfilter_conntrack (src/conntrack/build.c). 
+The annoying thing is that I see no structure with function pointers in 
+that piece of bits. There are only calls to libnfnetlink functions to 
+build the netlink message that is sent to kernel-space.
 
-> My server does NOT generate 4569 packets, and iptables INPUT drops al=
-l=20
-> from eth0, except for ssh and ESTABLISHED. So how could there be a=20
-> conntrack entry?
+@Wolfram: that code is only reachable during a fail-over - ie. when the 
+external cache commits the entries or if you have CacheWriteThrough 
+enabled (you shouldn't unless you know what you're doing). I'm telling 
+this because otherwise I don't see a way to reach that code - 
+considering the posibility of having a memory corruption so that this 
+backtrace becomes useless.
 
-The DROP target prevents a packet from creating a new conntrack entry.=20
-However I suppose there was a sort of race condition with incoming=20
-packets, conntrack activation, default policy definition and rule creat=
-ion.
+BTW, thank you for the detailed report.
 
-If the conntrack module is loaded before a DROP rule is created in the=20
-filter/INPUT chain or its policy is set to DROP, then an incoming packe=
-t=20
-  could create the bogus conntrack entry. The conntrack module can be=20
-autoloaded by many ways including :
-- loading a conntrack or NAT helper module,
-- creating a rule using a match or target that requires conntrack=20
-(state, conntrack, connmark, CONNMARK...)
-- loading the nat table, which may be caused by creating a rule in one=20
-of its chains, defining the default policy of one of its chains or just=
-=20
-flushing one of its chains.
-So conntrack may be enabled sooner that you think.
-
-Check the order in which the following operations happen at startup :
-- load conntrack/NAT modules {ip,nf}_{conntrack,nat}*
-- define iptables default policies in the nat and filter tables
-- create or flush iptables rules in the nat and filter tables
-- enable network interfaces
-
-> Is there a way to DNAT traffic before it reaches the conntrack entry?=
-=20
-
-No, because NAT requires conntrack.
-
-> Can I change the destination in raw/PREROUTING?
-
-No. All you can do in raw/PREROUTING is DROP or mark packets in the=20
-UNTRACKED state with the NOTRACK target so the conntrack won't see them=
-=2E=20
-By the way I guess that adding a temporary rule matching the IAX traffi=
-c=20
-from 76.x.x.x in this chain until the related conntrack entry expires=20
-would have done the trick too, without having to put machines offline.
-
-> Is there a way to flush the conntrack entry?
-
-Yes, with the conntrack utility from the conntrack-tools package. If yo=
-u=20
-distro does not ship it, you can get it from the netfilter site.
-<http://www.netfilter.org/projects/conntrack-tools/index.html>
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
