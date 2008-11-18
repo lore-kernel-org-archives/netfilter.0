@@ -1,35 +1,27 @@
-From: John Haxby <john.haxby@oracle.com>
-Subject: Problem compiling
-Date: Mon, 17 Nov 2008 20:05:49 +0000
-Message-ID: <4921CE9D.8060908@oracle.com>
+From: bahamin takhtaei <b_takhtaei@yahoo.com>
+Subject: specified protocl number problem
+Date: Mon, 17 Nov 2008 23:31:55 -0800 (PST)
+Message-ID: <59826.13109.qm@web55306.mail.re4.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-[resend -- sent to wrong list originally, sorry]
+Hi everybody,
 
-Hello All,
+Why I can't QUEUE some ip-protocol packets such as IGMP, AH, ESP 
+and so on?
+I add these rules to Iptables:
 
-I'm having problems compiling this:
-http://marek.terminus.sk/prog/ipt_sysrq.shtml
+iptables -A INPUT -j QUEUE
+iptables -A OUTPUT -j QUEUE
 
-This is on Fedora 9 and RHEL5 and in both cases I get this error:
+and I see that TCP, UDP and ICMP packets are queued only and 
+other protocol packets are not! But I see them by tcpdump. :(
 
-/usr/include/iptables.h:5:29: error: libiptc/libiptc.h: No such file or
-directory
 
-Now, the easiest way to "fix" this is it to make sure that
-libiptc/libiptc.h is installed into /usr/include but I'm wary of this as
-libiptc.a has a comment in the Makefile that says "libiptc is not a
-public interface and therefore not installed."
 
-What is the right thing to do here?   Install the missing header file(s)
-or fix the normally installed header files to not refer to those that
-aren't?
-
-jch
-
+      
