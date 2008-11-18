@@ -1,34 +1,44 @@
-From: Christoph Paasch <christoph.paasch@gmail.com>
-Subject: conntrack helper documentation
-Date: Tue, 18 Nov 2008 16:31:37 +0100
-Message-ID: <200811181631.37686.christoph.paasch@gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: SNAT with ip address range not working...
+Date: Tue, 18 Nov 2008 17:00:15 +0100
+Message-ID: <4922E68F.7020709@plouf.fr.eu.org>
+References: <8FC72664318547708851AFDCFB7B1721@squarepi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date
-         :user-agent:mime-version:content-type:content-transfer-encoding
-         :content-disposition:message-id;
-        bh=ldRwsuYo81420t5TGwYMS1QPYiQqq6ltgx73b/EXGHI=;
-        b=pVB+OEtvoIlYqb1MYU5hSvyNfNJqOmSQLVzKRwSwyBT0PNc/PPFSvdd5mck16fH4ZC
-         QPyo4BqJ7XZU/vXn5m1kuquC9p0mhmOcbo6R2WhdC9LAj1MATsV0AS+m3W4hstNeXete
-         7/lruXn1FAFK3bMDMYC/xeI82n/QVluZHFkPA=
-Content-Disposition: inline
+In-Reply-To: <8FC72664318547708851AFDCFB7B1721@squarepi.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi everybody,
+Hello,
 
-I'm looking for documentation on the implementation of the connection-tracking 
-helper modules.
+John Lister a =E9crit :
+> Hi, i'm trying to set up a rule to snat over a range of ip addresses =
+with
+> something like this:
+>=20
+> iptables -t nat -A POSTROUTING -m state --state NEW -j SNAT --to-sour=
+ce=20
+> 192.168.96.34-192.168.96.136
+>=20
+> however after dumping the packets, it seems that only the first addre=
+ss=20
+> is ever used and the rule is being matched correctly
+>=20
+> In the docs it mentions that it selects an address in the range at=20
+> random for a stream - i'm assuming for netfilter a stream is a single=
+=20
+> connection and each subsequent connection should get a new ip address=
+,=20
+> or does it group similar connections to/from the same ip addresses an=
+d=20
+> give it the same ip address - which happens with routing (cache)?
 
-Thanks in advance
-
---
-Christoph Paasch
-
-www.rollerbulls.be
---
+Your documentation may be outdated. Since the linux kernel 2.6.11,=20
+randomness (actually round robin AFAIK) in the SNAT and DNAT address=20
+selection has been replaced with a selection based on a hash of the=20
+source and destination address. So for the same (src, dst) SNAT and DNA=
+T=20
+will always select the same address in the range.
