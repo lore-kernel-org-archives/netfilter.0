@@ -1,76 +1,56 @@
-From: bahamin takhtaei <b_takhtaei@yahoo.com>
-Subject: Re: specified protocl number problem
-Date: Tue, 18 Nov 2008 01:35:45 -0800 (PST)
-Message-ID: <661657.80032.qm@web55307.mail.re4.yahoo.com>
-References: <49227324.4080508@critical.com>
-Reply-To: b_takhtaei@yahoo.com
+From: "Darren Yang" <pigsign.pykota@gmail.com>
+Subject: How can transfer Public IP packet inside NAT to outside Public IP site....
+Date: Tue, 18 Nov 2008 17:44:22 +0800
+Message-ID: <c914c50e0811180144p6c2b917dudf5c270d2ed077a0@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49227324.4080508@critical.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=GPEH5YnBkDGI81wSbsKNp0hzBv7KoYv5d+Y9YWSHtMQ=;
+        b=h2kvZYxYFaycXhDTPJ7e36Fu4n6cv5fJfiKVA7AilLJsuIGAXNu94Yu+SMCGO3eJxK
+         NBPq+Uxh3kp6I4jXm2S5k2S8R+jgi9oUFh9Idr+A5bLyZX4oAzjaX+F5Bh/jOJ7HFup7
+         uM+rw7q2zr90yehWDDDJ5qzcwUUuop5/Mfjx4=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi,
-I change the rules to these:
+Hi All,
 
-iptables -A INPUT -p 200 -j QUEUE
-iptables -A OUTPUT -p 200 -j QUEUE
+Because I must enable Cisco tunnel keepalive mechanism and Cisco
+Router is at NAT inside...
+I made a strange network lab like below...
 
-and send some packets with protocol-number=200 to target,
-but Iptables can't QUEUE the packets still!
+PC01----(NAT inside eth0)Linux Firewall(NAT outside eth1)----Internet----PC02
 
+PC01:
+eth0 - 10.1.1.1
+eth0:0 - 1.1.1.1
+Default gateway: 10.1.1.254
 
---- On Tue, 11/18/08, Bill Chappell <chappewr@critical.com> wrote:
+Linux Firewall:
+eth0 - 10.1.1.254
+eth1 - 1.1.1.1
 
-> From: Bill Chappell <chappewr@critical.com>
-> Subject: Re: specified protocl number problem
-> To: "bahamin takhtaei" <b_takhtaei@yahoo.com>
-> Cc: "netfilter" <netfilter@vger.kernel.org>
-> Date: Tuesday, November 18, 2008, 2:47 AM
-> The packets you are seeing (TCP, UDP, and ICMP)
-> are what you would get if you were to specify
-> "-p all".
-> "all" is not as inclusive as one might expect.
-> To get packets with other protocols, you must
-> specific them explicitly.
-> 
-> Bill
-> 
-> bahamin takhtaei wrote:
-> > Hi everybody,
-> > 
-> > Why I can't QUEUE some ip-protocol packets such as
-> IGMP, AH, ESP and so on?
-> > I add these rules to Iptables:
-> > 
-> > iptables -A INPUT -j QUEUE
-> > iptables -A OUTPUT -j QUEUE
-> > 
-> > and I see that TCP, UDP and ICMP packets are queued
-> only and other protocol packets are not! But I see them by
-> tcpdump. :(
-> > 
-> > 
-> > 
-> >       --
-> > To unsubscribe from this list: send the line
-> "unsubscribe netfilter" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at 
-> http://vger.kernel.org/majordomo-info.html
-> > 
-> 
-> -- William Chappell, Software Engineer, Critical
-> Technologies Inc.
-> * Creativity * Diversity * Expertise * Flexibility *
-> Integrity *
-> Suite 400 Technology Center, 4th Floor 1001 Broad St, Utica
-> NY 13501
-> 315-793-0248 x148 FAX -9710
-> <bill.chappell@critical.com> www.critical.com
+PC02:
+eth0 -  2.1.1.1
 
+How can use PC01's eth0:0 to ping PC02's eth0 successfully, like below..
+-------------------------------------------------------
+$ ping -I 1.1.1.1 2.1.1.1
+-------------------------------------------------------
 
-      
+Linux Firewall iptables configuration:
+-------------------------------------------------------
+iptables -t nat -A POSTROUTING -s 1.1.1.1/32 -j SNAT --to 1.1.1.1
+iptables -t nat -A PREROUTING -d 1.1.1.1/32 -j DNAT --to 10.1.1.1
+-------------------------------------------------------
+
+Thanks
+
+pigsign
