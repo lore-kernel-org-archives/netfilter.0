@@ -1,34 +1,22 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: isp like shaping with tc
-Date: Tue, 18 Nov 2008 18:04:46 +0100
-Message-ID: <1227027886.24883.21.camel@enterprise.ims-firmen.de>
-References: <4922D159.10608@krediidiinfo.ee>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Xtables-addons 1.6
+Date: Tue, 18 Nov 2008 18:42:39 +0100 (CET)
+Message-ID: <alpine.LNX.1.10.0811181840170.2316@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4922D159.10608@krediidiinfo.ee>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Aleksander Kamenik <aleksander@krediidiinfo.ee>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 Cc: netfilter@vger.kernel.org
 
 
-> The current solution where I have 19 groups does not scale to 19*256 groups.
+A short notice to inform readers of the Xtables-addons 1.6 release, 
+which incorporates a newer version of ipset (after the many releases it 
+did ;-) and making the package compile under the latest 2.6.28(-rc).
 
-> What solutions exist for linux to make linux into a ISP like bandwidth 
-> limiting router?
+I will try to process the feature requests that piled up by now... 
+meanwhile enjoy:
 
-I haven't tried this myself but: 
-
-Have you looked into the IPMARK iptables extension (in
-pom/xtables-addons):
-
-http://www.netfilter.org/projects/patch-o-matic/pom-external.html#pom-external-IPMARK
-
-Their basic usage example seems to be doing more or less what you
-want to achieve. 
-
-So its a netfilter list related question after all :-)
-
-
+http://dev.medozas.de/files/xtables/xtables-addons-1.6.tar.bz2 {,.asc}
