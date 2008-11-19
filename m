@@ -1,7 +1,7 @@
-From: "JC Janos" <jcjanos245@gmail.com>
-Subject: When is ipset's "resize 0" used?
-Date: Tue, 18 Nov 2008 20:34:18 -0800
-Message-ID: <7259d7020811182034m16f47786rcb0e0805767b05ca@mail.gmail.com>
+From: "nfsnfs chen" <nfsnfs@gmail.com>
+Subject: I write a module for Dynamic NAT, but it's not working
+Date: Wed, 19 Nov 2008 13:35:20 +0800
+Message-ID: <59c2e8110811182135u37521024t16bc738a4c45963d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,33 +10,39 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:received:received:message-id:date:from:to
          :subject:mime-version:content-type:content-transfer-encoding
          :content-disposition;
-        bh=xXpAqT7kz+mSOJQr+cyiyJHnJ3Ls172Zg+jC84j7734=;
-        b=iQYj9tHHip28GDlYKO3/Kp5kyK/8ss9F2JscSo3T8/5efnCGJPMaGX3XDVsaj6fLUG
-         8OorD7C5Zoe4hPSfJz5FFJM+Ph8VpyrTAqty2j3IU11eKPF2CmLXB8xqZLmmJjKWOl/L
-         KX688I7QNSRaGyiaKzl4QncGOUXl7GLne/Yks=
+        bh=ChpP3nz8sbWGnmoGJBi8tAbN6Owt8HhqpcArv/qf594=;
+        b=TC1YFs3OIxxGGgwEw1TLAeiG7e11RsN0u1aWki9kHmPq93pBuC5pxAe838HOPcsdhl
+         HGP+LJDy7BbhRdY7+o1U1G/VeYR0EiA+HJb7RX3+F7of/j786WSpnup7MV0Pg+U8L1LP
+         rRiF4p9W8muveYhgi2Bsnl8rLCytdlqBdGSbI=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-From the ipset "tips & examples" ,
+Hi all,
 
-  If you want a fixed size iphash type of set, then define it with
-zero valued resize parameter:
-  ipset -N foo iphash --resize 0
+I wrote a module for Dynamic NAT.
+My modules are hooked in PREROUTING and POSTROUTING.
+I try to modify the destination ip address in PREROUTING and the
+source ip address in POSTROUTING.
 
-Would this be used for a constant/unchanging ipset, e.g. containing 25
-IPs that won't be addded to or changed dynamically?  Similar to
-OpenBSD's pf "const" table construct,
+for example,
+// PREROUTING
+if ( iph->saddr  == MY_DEFINE_IP)
+    iph->daddr = MY_HOST1;
 
-  table <XXX> const { ip1, ip2, ..., ipN }
+// POSTROUTING
+if ( iph->daddr == MY_HOST1;
+    iph->saddr = MY_LOCAL_IP;
 
-?
+But it seems not working.
 
-Also, Does hashsize literally correspond to # of entries?  So, 25
-entries would need only hashsize=25?
+First, in ip_forward, because of (skb->pkt_type != PACKET_HOST), the
+packet will be dropped.
+If I pass the check of skb->pkt_type, the packet do not send either.
+Thanks for help!
 
-Thanks.
-
---JC
+-- 
+Li-Han
+nfsnfs@gmail.com
