@@ -1,53 +1,53 @@
-From: "patrick daures" <patrick.daures@gmail.com>
-Subject: DNAT + Bridge ?
-Date: Wed, 19 Nov 2008 16:42:55 +0100
-Message-ID: <5ed0ca650811190742p16982fd0u6a001d751052135b@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Andy Whitcroft <apw@canonical.com>
+Subject: [PATCH 1/1] netfilter: ip{,6}t_policy.h should include xp_policy.h
+Date: Wed, 19 Nov 2008 16:21:22 +0000
+Message-ID: <1227111682-14073-1-git-send-email-apw@canonical.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=Jc8uwtE9MubH1ou3AnavM0HGKWUY4MEEQeyhsNotuJU=;
-        b=JtQwv/vhR+1lfyrNuseLUEIyogi4fGGTowbZS067NnpItrRGAhspXX3UHBqI2uGWs/
-         /ewi6cB6qOnIjQduwIJ9qwhT0lYAeuZ3+XfUBykEkCqRuTAs4A/5AxDBNvMIJpTPewli
-         Kbp92uD+2RvjWbROxseeVEcWVx5cVrWfmFU9M=
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Cc: Andy Whitcroft <apw@canonical.com>
 
-Hi,
+It seems that all of the include/netfilter_{ipv4,ipv6}/{ipt,ip6t}_*.h which
+share constants include the corresponding include/netfilter/xp_*.h files.
+Neither ipt_policy.h not ip6t_policy.h do.  Make these consistant with
+the norm.
 
-I'm trying to do DNAT on a bridge.
-This is the configuration of my network :
+Signed-off-by: Andy Whitcroft <apw@canonical.com>
+---
+ include/linux/netfilter_ipv4/ipt_policy.h  |    2 ++
+ include/linux/netfilter_ipv6/ip6t_policy.h |    2 ++
+ 2 files changed, 4 insertions(+), 0 deletions(-)
 
-COMPUTER1 eth0 ------------eth0 BRIDGE1 eth1------------ eth0
-COMPUTER2 eth1--------eth0 BRIDGE2 eth1--------- eth0 COMPUTER3
+diff --git a/include/linux/netfilter_ipv4/ipt_policy.h b/include/linux/netfilter_ipv4/ipt_policy.h
+index b9478a2..1037fb2 100644
+--- a/include/linux/netfilter_ipv4/ipt_policy.h
++++ b/include/linux/netfilter_ipv4/ipt_policy.h
+@@ -1,6 +1,8 @@
+ #ifndef _IPT_POLICY_H
+ #define _IPT_POLICY_H
+ 
++#include <linux/netfilter/xt_policy.h>
++
+ #define IPT_POLICY_MAX_ELEM		XT_POLICY_MAX_ELEM
+ 
+ /* ipt_policy_flags */
+diff --git a/include/linux/netfilter_ipv6/ip6t_policy.h b/include/linux/netfilter_ipv6/ip6t_policy.h
+index 6bab316..b1c449d 100644
+--- a/include/linux/netfilter_ipv6/ip6t_policy.h
++++ b/include/linux/netfilter_ipv6/ip6t_policy.h
+@@ -1,6 +1,8 @@
+ #ifndef _IP6T_POLICY_H
+ #define _IP6T_POLICY_H
+ 
++#include <linux/netfilter/xt_policy.h>
++
+ #define IP6T_POLICY_MAX_ELEM		XT_POLICY_MAX_ELEM
+ 
+ /* ip6t_policy_flags */
+-- 
+1.6.0.4.911.gc990
 
-
-|eth2 _ _ _ _ _  eth0 COMPUTER4
-
-@IPs :
-
-192.168.1.1-------bridge1----- 192.168.1.2 |  192.168.2.2--------
-bridge2 --------- 192.168.2.1
-
-                    | _ _ _ 199.0.2.1
-
-I try to du DNAT on bridge1 with iptables :
-iptables -t nat -A PREROUTING -s 192.168.1.1 -d 192.168.2.1 -j DNAT
---to-destination 199.0.2.1
-
-Without DNAT :
-COMPUTER1 can ping COMPUTER 3 & COMPUTER4. So, my bridges look OK.
-
-But, when I activate my little iptables rule, bridge1 seems to do
-DNAT, packets are sent to bridge1 eth0 interface, but nothing seems to
-be sent to computer2.
-
-What did I do wrong ?
-Thank you !
