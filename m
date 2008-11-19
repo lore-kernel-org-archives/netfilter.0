@@ -1,49 +1,57 @@
-From: sriliam <sriliam@free.fr>
-Subject: How to make NFQUEUE ?
-Date: Wed, 19 Nov 2008 20:28:30 +0100
-Message-ID: <1227122910.6445.14.camel@lya14-2-82-232-125-204.fbx.proxad.net>
+From: "David Wu" <davidwu@arcturusnetworks.com>
+Subject: iptables (1.4.2 release) failed to run on embedded system with "can't
+ initialize iptables table `filter'"
+Date: Wed, 19 Nov 2008 16:51:38 -0500
+Message-ID: <op.ukvy0c1eqigx4y@cyprus.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi all,
+I am trying to run iptables (1.4.2 release)on a MCF53281(m68knommu, 2.6.26
+kernel) embedded board.
+It failed with "
+iptables v1.4.2: can't initialize iptables table `filter': No
+chain/target/match by that name
+Perhaps iptables or your kernel needs to be upgraded.
 
-Some days ago, I present a question and I been oriented to NFQUEUE.
-Ok ... but how does it work ?
+I traced the calls and found out that it failed at
+iptcc_chain_index_alloc():
 
-Really strange behavior.
+           h->chain_index = malloc(array_mem);
+
+in the first call to iptcc_chain_index_alloc() array_mem is 0 which means
+malloc(0) is called in the above statement.
+depends on the implementation malloc(0) may return NULL which is the case
+for m68k-uclinux-gcc(gcc version 4.2.3 and uClibc-0.9.29-20081003)
+
+I have changed the code to:
+          if(array_mem == 0)
+                  h->chain_index = malloc(1);
+          else
+          h->chain_index = malloc(array_mem);
+
+and it works(while I have to fix another error -- ip_tables: ERROR target:
+invalid size 30 != 32)
+
+My question:
+    1 why tries to allocate 0 size memory, it is useful?
+    2 is there any problem to the iptables program in my change?
+      I may have to rebuild the toolchain so malloc will return a live
+pointer for 0 size allocation.
+    3 I have got the error
+      ip_tables: ERROR target: invalid size 30 != 32
+      from 1.3.7 and 1.4.2 (didn't try other versions) and sent to this list
+a question before but haven't received any answer
+   then I assume I have done something wrong.
+
+If this is not the correct mailing list for these questions then can
+someone let me know the right mailing list ?
+
+thanks,
 
 
-
-Data :
-
-I said : "~# iptables -I INPUT -j NFQUEUE".
-
-So, I suppose that I will have all packets of INPUT filter table playin=
-g
-with NFQUEUE : am I wrong ?
-
-Next, I rely this to some example programs in order to ACCEPT the
-packet, like from net-perl-bindings : I made a network mirror like.
-
-
-
-Questions :
-
-=46irst, not all packets get through NFQUEUE : with perl and more
-dramaticaly with C too.
-
-Second, not all packets get the policy ACCEPT, so my browser don't get
-images ... but only text, perfectly indeed. Is there a way to get ACCEP=
-T
-on an handler that have no lenght ?
-
-If someone know about this, I would happy to read an HowTo.
-
-Thanks, best regards.
-S=C3=A9bastien Major
-
+David Wu
