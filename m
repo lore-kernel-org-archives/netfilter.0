@@ -1,11 +1,11 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: When is ipset's "resize 0" used?
-Date: Wed, 19 Nov 2008 09:48:10 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.0811190940320.22082@blackhole.kfki.hu>
-References: <7259d7020811182034m16f47786rcb0e0805767b05ca@mail.gmail.com>
+Subject: Re: Check whether an IPSET already exists?
+Date: Wed, 19 Nov 2008 09:59:38 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.0811190957230.22082@blackhole.kfki.hu>
+References: <7259d7020811182012u544a1c53w719736aa74bdbc28@mail.gmail.com> <alpine.DEB.2.00.0811190909010.22082@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7259d7020811182034m16f47786rcb0e0805767b05ca@mail.gmail.com>
+In-Reply-To: <alpine.DEB.2.00.0811190909010.22082@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
@@ -13,31 +13,17 @@ Content-Transfer-Encoding: 7bit
 To: JC Janos <jcjanos245@gmail.com>
 Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Tue, 18 Nov 2008, JC Janos wrote:
+On Wed, 19 Nov 2008, Jozsef Kadlecsik wrote:
 
-> >From the ipset "tips & examples" ,
-> 
->   If you want a fixed size iphash type of set, then define it with
-> zero valued resize parameter:
->   ipset -N foo iphash --resize 0
-> 
-> Would this be used for a constant/unchanging ipset, e.g. containing 25
-> IPs that won't be addded to or changed dynamically?  Similar to
-> OpenBSD's pf "const" table construct,
-> 
->   table <XXX> const { ip1, ip2, ..., ipN }
+> # Check that an existing set is empty:
+> if [ -z "`ipset -L foo 2>/dev/null | \
+> 	  awk '{ if (FNR == 7) print $0 }'| \
+> 	  grep Bindings:`" ]; then
+> 	echo "Set foo is empty."
+> fi
 
-No, of course not: you are free to add or delete entries from a fixed size 
-hash anytime.
- 
-> Also, Does hashsize literally correspond to # of entries?  So, 25
-> entries would need only hashsize=25?
-
-No, not at all. It can easily happen that in spite of having free slots in 
-the hash those cannot be used: the hash value computed from the elemet to 
-be stored points to a hash slot already occupied. So if you want to store 
-exactly 25 elements in a fixed size hash, do not set hashsize to 25 but 
-something larger, say 30. Experiment! :-)
+The test should be inverted to check that the set is empty, i.e.
+"if [ -n ..."
 
 Best regards,
 Jozsef
