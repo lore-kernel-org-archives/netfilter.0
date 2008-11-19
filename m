@@ -1,53 +1,30 @@
-From: Andy Whitcroft <apw@canonical.com>
-Subject: [PATCH 1/1] netfilter: ip{,6}t_policy.h should include xp_policy.h
-Date: Wed, 19 Nov 2008 16:21:22 +0000
-Message-ID: <1227111682-14073-1-git-send-email-apw@canonical.com>
+From: John Haxby <john.haxby@oracle.com>
+Subject: xtables problem
+Date: Wed, 19 Nov 2008 17:25:37 +0000
+Message-ID: <49244C11.6080808@oracle.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
-Cc: Andy Whitcroft <apw@canonical.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-It seems that all of the include/netfilter_{ipv4,ipv6}/{ipt,ip6t}_*.h which
-share constants include the corresponding include/netfilter/xp_*.h files.
-Neither ipt_policy.h not ip6t_policy.h do.  Make these consistant with
-the norm.
+I'm ashamed to say I can't build xtables-addons.   I'm at a bit of a 
+loss, but this is what I get:
 
-Signed-off-by: Andy Whitcroft <apw@canonical.com>
----
- include/linux/netfilter_ipv4/ipt_policy.h  |    2 ++
- include/linux/netfilter_ipv6/ip6t_policy.h |    2 ++
- 2 files changed, 4 insertions(+), 0 deletions(-)
+$ ./configure --with-kbuild=/lib/modules/2.6.27.6/build
+$ make
+...
+  CC       libxt_CHAOS.oo
+  CCLD     libxt_CHAOS.so
+libxt_CHAOS.oo: In function `_init':
+/home/jch/rpmbuild/BUILD/xtables-addons-1.6/extensions/libxt_CHAOS.c:112: multiple definition of `_init'
+/usr/lib/gcc/x86_64-redhat-linux/4.3.0/../../../../lib64/crti.o:(.init+0x0): first defined here
+collect2: ld returned 1 exit status
 
-diff --git a/include/linux/netfilter_ipv4/ipt_policy.h b/include/linux/netfilter_ipv4/ipt_policy.h
-index b9478a2..1037fb2 100644
---- a/include/linux/netfilter_ipv4/ipt_policy.h
-+++ b/include/linux/netfilter_ipv4/ipt_policy.h
-@@ -1,6 +1,8 @@
- #ifndef _IPT_POLICY_H
- #define _IPT_POLICY_H
- 
-+#include <linux/netfilter/xt_policy.h>
-+
- #define IPT_POLICY_MAX_ELEM		XT_POLICY_MAX_ELEM
- 
- /* ipt_policy_flags */
-diff --git a/include/linux/netfilter_ipv6/ip6t_policy.h b/include/linux/netfilter_ipv6/ip6t_policy.h
-index 6bab316..b1c449d 100644
---- a/include/linux/netfilter_ipv6/ip6t_policy.h
-+++ b/include/linux/netfilter_ipv6/ip6t_policy.h
-@@ -1,6 +1,8 @@
- #ifndef _IP6T_POLICY_H
- #define _IP6T_POLICY_H
- 
-+#include <linux/netfilter/xt_policy.h>
-+
- #define IP6T_POLICY_MAX_ELEM		XT_POLICY_MAX_ELEM
- 
- /* ip6t_policy_flags */
--- 
-1.6.0.4.911.gc990
 
+It's the end of a long day, so I'm probably doing something stupidly 
+wrong.   If anyone can point out the error of my ways I'd be most grateful.
+
+jch
