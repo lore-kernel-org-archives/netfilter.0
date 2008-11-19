@@ -1,34 +1,27 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Check whether an IPSET already exists?
-Date: Wed, 19 Nov 2008 09:59:38 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.0811190957230.22082@blackhole.kfki.hu>
-References: <7259d7020811182012u544a1c53w719736aa74bdbc28@mail.gmail.com> <alpine.DEB.2.00.0811190909010.22082@blackhole.kfki.hu>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: specified protocl number problem
+Date: Wed, 19 Nov 2008 11:25:22 +0100
+Message-ID: <4923E992.9090401@plouf.fr.eu.org>
+References: <59826.13109.qm@web55306.mail.re4.yahoo.com> <49227324.4080508@critical.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.0811190909010.22082@blackhole.kfki.hu>
+In-Reply-To: <49227324.4080508@critical.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: JC Janos <jcjanos245@gmail.com>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
-On Wed, 19 Nov 2008, Jozsef Kadlecsik wrote:
+Hello,
 
-> # Check that an existing set is empty:
-> if [ -z "`ipset -L foo 2>/dev/null | \
-> 	  awk '{ if (FNR == 7) print $0 }'| \
-> 	  grep Bindings:`" ]; then
-> 	echo "Set foo is empty."
-> fi
+Bill Chappell a =E9crit :
+> The packets you are seeing (TCP, UDP, and ICMP)
+> are what you would get if you were to specify
+> "-p all".
+> "all" is not as inclusive as one might expect.
+> To get packets with other protocols, you must
+> specific them explicitly.
 
-The test should be inverted to check that the set is empty, i.e.
-"if [ -n ..."
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Where did you get such information ? It contradicts the manpage, and my=
+=20
+own experience FWIW.
