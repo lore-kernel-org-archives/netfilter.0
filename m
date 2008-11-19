@@ -1,27 +1,47 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: specified protocl number problem
-Date: Wed, 19 Nov 2008 11:25:22 +0100
-Message-ID: <4923E992.9090401@plouf.fr.eu.org>
-References: <59826.13109.qm@web55306.mail.re4.yahoo.com> <49227324.4080508@critical.com>
+From: Aleksander Kamenik <aleksander@krediidiinfo.ee>
+Subject: Re: isp like shaping with tc
+Date: Wed, 19 Nov 2008 14:51:32 +0200
+Message-ID: <49240BD4.8000206@krediidiinfo.ee>
+References: <4922D159.10608@krediidiinfo.ee> <1227027886.24883.21.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49227324.4080508@critical.com>
+In-Reply-To: <1227027886.24883.21.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hello,
+Thomas Jacob wrote:
 
-Bill Chappell a =E9crit :
-> The packets you are seeing (TCP, UDP, and ICMP)
-> are what you would get if you were to specify
-> "-p all".
-> "all" is not as inclusive as one might expect.
-> To get packets with other protocols, you must
-> specific them explicitly.
+> Have you looked into the IPMARK iptables extension (in
+> pom/xtables-addons):
+> 
+> http://www.netfilter.org/projects/patch-o-matic/pom-external.html#pom-external-IPMARK
+> 
+> Their basic usage example seems to be doing more or less what you
+> want to achieve. 
 
-Where did you get such information ? It contradicts the manpage, and my=
-=20
-own experience FWIW.
+This solves the marking the connections and assigning them to a queue 
+part, but there would still have to about 6000 qdisc leafs created (One 
+for each possible IP). Don't know whether this scales, but will test. 
+Looks promising anyhow.
+
+So I'm at least half way there, thanks!
+
+Nevertheless, what would be the correct list/group to discuss tc queue 
+disciplines?
+
+Regards,
+
+-- 
+
+Aleksander Kamenik
+System Administrator
+Krediidiinfo AS
+an Experian Company
+Phone: +372 665 9649
+Email: aleksander@krediidiinfo.ee
+
+http://www.krediidiinfo.ee/
+http://www.experiangroup.com/
