@@ -1,48 +1,33 @@
-From: "nfsnfs chen" <nfsnfs@gmail.com>
-Subject: I write a module for Dynamic NAT, but it's not working
-Date: Wed, 19 Nov 2008 13:35:20 +0800
-Message-ID: <59c2e8110811182135u37521024t16bc738a4c45963d@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Xtables-addons 1.6
+Date: Wed, 19 Nov 2008 09:05:19 +0100 (CET)
+Message-ID: <alpine.LNX.1.10.0811190900450.24370@fbirervta.pbzchgretzou.qr>
+References: <alpine.LNX.1.10.0811181840170.2316@fbirervta.pbzchgretzou.qr> <7259d7020811181620n1ca06f84oe9d6d1f5f0a680c7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=ChpP3nz8sbWGnmoGJBi8tAbN6Owt8HhqpcArv/qf594=;
-        b=TC1YFs3OIxxGGgwEw1TLAeiG7e11RsN0u1aWki9kHmPq93pBuC5pxAe838HOPcsdhl
-         HGP+LJDy7BbhRdY7+o1U1G/VeYR0EiA+HJb7RX3+F7of/j786WSpnup7MV0Pg+U8L1LP
-         rRiF4p9W8muveYhgi2Bsnl8rLCytdlqBdGSbI=
-Content-Disposition: inline
+In-Reply-To: <7259d7020811181620n1ca06f84oe9d6d1f5f0a680c7@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: JC Janos <jcjanos245@gmail.com>
+Cc: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org
 
-Hi all,
 
-I wrote a module for Dynamic NAT.
-My modules are hooked in PREROUTING and POSTROUTING.
-I try to modify the destination ip address in PREROUTING and the
-source ip address in POSTROUTING.
+On Wednesday 2008-11-19 01:20, JC Janos wrote:
+>On Tue, Nov 18, 2008 at 9:42 AM, Jan Engelhardt <jengelh@medozas.de> wrote:
+>> which incorporates a newer version of ipset (after the many releases it
+>> did ;-)
+>
+>If we already have built & installed the latest ipset from its svn:
+>repository is it ok to use it instead?
 
-for example,
-// PREROUTING
-if ( iph->saddr  == MY_DEFINE_IP)
-    iph->daddr = MY_HOST1;
+Yes - your choice.
 
-// POSTROUTING
-if ( iph->daddr == MY_HOST1;
-    iph->saddr = MY_LOCAL_IP;
+You only really need to be aware that `make install` may overwrite an
+existing ipset (specifically the binary and manpage).
 
-But it seems not working.
+>Can the xtables-addons build be informed of a preexisting ipset?
+>'configure --help' doesn't seem to have an option for it.
 
-First, in ip_forward, because of (skb->pkt_type != PACKET_HOST), the
-packet will be dropped.
-If I pass the check of skb->pkt_type, the packet do not send either.
-Thanks for help!
-
--- 
-Li-Han
-nfsnfs@gmail.com
+Yes, you can edit the "mconfig" file and set "build_ipset=n".
