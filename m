@@ -1,30 +1,22 @@
-From: John Haxby <john.haxby@oracle.com>
-Subject: xtables problem
-Date: Wed, 19 Nov 2008 17:25:37 +0000
-Message-ID: <49244C11.6080808@oracle.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH 1/1] netfilter: ip{,6}t_policy.h should include xp_policy.h
+Date: Wed, 19 Nov 2008 19:08:17 +0100
+Message-ID: <49245611.1080905@trash.net>
+References: <1227111682-14073-1-git-send-email-apw@canonical.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1227111682-14073-1-git-send-email-apw@canonical.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Andy Whitcroft <apw@canonical.com>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-I'm ashamed to say I can't build xtables-addons.   I'm at a bit of a 
-loss, but this is what I get:
+Andy Whitcroft wrote:
+> It seems that all of the include/netfilter_{ipv4,ipv6}/{ipt,ip6t}_*.h which
+> share constants include the corresponding include/netfilter/xp_*.h files.
+> Neither ipt_policy.h not ip6t_policy.h do.  Make these consistant with
+> the norm.
 
-$ ./configure --with-kbuild=/lib/modules/2.6.27.6/build
-$ make
-...
-  CC       libxt_CHAOS.oo
-  CCLD     libxt_CHAOS.so
-libxt_CHAOS.oo: In function `_init':
-/home/jch/rpmbuild/BUILD/xtables-addons-1.6/extensions/libxt_CHAOS.c:112: multiple definition of `_init'
-/usr/lib/gcc/x86_64-redhat-linux/4.3.0/../../../../lib64/crti.o:(.init+0x0): first defined here
-collect2: ld returned 1 exit status
-
-
-It's the end of a long day, so I'm probably doing something stupidly 
-wrong.   If anyone can point out the error of my ways I'd be most grateful.
-
-jch
+Does this actually fix a bug, or is it just for added consistency?
