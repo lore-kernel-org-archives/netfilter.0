@@ -1,57 +1,82 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: "JC Janos" <jcjanos245@gmail.com>
 Subject: Re: Xtables-addons 1.6
-Date: Thu, 20 Nov 2008 21:23:28 +0100 (CET)
-Message-ID: <alpine.LNX.1.10.0811202103120.21606@fbirervta.pbzchgretzou.qr>
-References: <alpine.LNX.1.10.0811181840170.2316@fbirervta.pbzchgretzou.qr>  <7259d7020811181620n1ca06f84oe9d6d1f5f0a680c7@mail.gmail.com>  <alpine.LNX.1.10.0811190900450.24370@fbirervta.pbzchgretzou.qr>
- <7259d7020811190732u571b90dh3d1f9938c70a1b27@mail.gmail.com>
+Date: Thu, 20 Nov 2008 13:51:34 -0800
+Message-ID: <7259d7020811201351q7d927070j4dc510e5a7759fcb@mail.gmail.com>
+References: <alpine.LNX.1.10.0811181840170.2316@fbirervta.pbzchgretzou.qr>
+	 <7259d7020811181620n1ca06f84oe9d6d1f5f0a680c7@mail.gmail.com>
+	 <alpine.LNX.1.10.0811190900450.24370@fbirervta.pbzchgretzou.qr>
+	 <7259d7020811190732u571b90dh3d1f9938c70a1b27@mail.gmail.com>
+	 <alpine.LNX.1.10.0811202103120.21606@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7259d7020811190732u571b90dh3d1f9938c70a1b27@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=gC4MFg/xP/+1zRHjo2jL3cqBcH4eoCksfg2J4tLC278=;
+        b=OB917dV0RW8lRyXHrHLFzDdHKbIrdpiVZP2jvC7ACGMMpjz/chrYkq5KmVfEwfDa99
+         81EoSmepMLpZUv5nE0iaFIbNr1OQYzi93r/1hE6pVpKXkAvu88+eb2NFYmE+Hl0Q5vO3
+         htGMw8EPJ0aQdWDQ5BJnYcqg4HuGXeSNhqBhQ=
+In-Reply-To: <alpine.LNX.1.10.0811202103120.21606@fbirervta.pbzchgretzou.qr>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: JC Janos <jcjanos245@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
+Jan,
 
-On Wednesday 2008-11-19 16:32, JC Janos wrote:
+With your fix above (Thanks), using latest checkouts,
 
->Not quite done, sorry.  Just a couple questions about what is actually
->happening.
->
->I changed
->
->	-	build_ipset=m
->	+	build_ipset=n
->
->xtables-addons' install reports,
->
->	make install | grep ipset
->		Making install in extensions/ipset
->		make[1]: Entering directory `/usr/local/src/xtables-addons/extensions/ipset'
->		install -pm0755 ipset "/usr/local/sbin/";
->		install -pm0755 libipset_iphash.so libipset_ipmap.so
+cd /usr/local/src/ipset-svn
+svn info | grep Revision
+ Revision: 7576
 
-This is now fixed in the latest git snapshot as of v1.6-3-g85e3c24.
+ipset --version
+ ipset v2.4.5 Protocol version 2.
 
->I may be confused about your comment,
->
->	You only really need to be aware that `make install` may overwrite an
->	existing ipset (specifically the binary and manpage).
->
->Is that supposed to still true even if the "build_ipset=n" is set?
+cd /usr/local/src/xtables-addons/
+ commit fdb7f34bc8f8b0af0b228ba22c9cc5deec3550fc
 
-It was meant to say "as long as make install does not overwrite
-the other ipset, you can ignore it" ;-)
+       (p.s. how do your get "v1.6-3-g85e3c24" out of git?)
 
->		(1)	-rwxr-xr-x 1 root root 15151 2008-11-16 10:01
->/usr/local/lib/ipset/libipset_iptree.so
->		(2)	-rwxr-xr-x 1 root root 23679 2008-11-19 07:10
->/usr/local/libexec/xtables/libipset_iptree.so
->
->Also, there's a difference in binary size (23679 vs 15151) for the two
->libraries.  What's the difference -- is it important?
+I end up with 'only',
 
-The second was built using gcc as linker frontend, which adds the
-common runtime to the .so. This is what ipset 2.4.4 is doing too.
+/usr/local/libexec/xtables:
+ -rwxr-xr-x 1 root root   15504 2008-11-20 13:38 libxt_CHAOS.so
+ -rwxr-xr-x 1 root root   16181 2008-11-20 13:38 libxt_condition.so
+ -rwxr-xr-x 1 root root   13820 2008-11-20 13:38 libxt_DELUDE.so
+ -rwxr-xr-x 1 root root 2114070 2008-11-20 13:38 libxt_dhcpaddr.so
+ -rwxr-xr-x 1 root root 2114103 2008-11-20 13:38 libxt_DHCPADDR.so
+ -rwxr-xr-x 1 root root   16906 2008-11-20 13:38 libxt_fuzzy.so
+ -rwxr-xr-x 1 root root   26236 2008-11-20 13:38 libxt_geoip.so
+ -rwxr-xr-x 1 root root   21815 2008-11-20 13:38 libxt_IPMARK.so
+ -rwxr-xr-x 1 root root   21786 2008-11-20 13:38 libxt_ipp2p.so
+ -rwxr-xr-x 1 root root   20565 2008-11-20 13:38 libxt_LOGMARK.so
+ -rwxr-xr-x 1 root root   15844 2008-11-20 13:38 libxt_portscan.so
+ -rwxr-xr-x 1 root root   21097 2008-11-20 13:38 libxt_quota2.so
+ -rwxr-xr-x 1 root root   14197 2008-11-20 13:38 libxt_SYSRQ.so
+ -rwxr-xr-x 1 root root   13820 2008-11-20 13:38 libxt_TARPIT.so
+ -rwxr-xr-x 1 root root   16942 2008-11-20 13:38 libxt_TEE.so
+
+/usr/local/lib/ipset:
+ -rwxr-xr-x 1 root root   14941 2008-11-20 13:28 libipset_iphash.so
+ -rwxr-xr-x 1 root root   15029 2008-11-20 13:28 libipset_ipmap.so
+ -rwxr-xr-x 1 root root   15370 2008-11-20 13:28 libipset_ipporthash.so
+ -rwxr-xr-x 1 root root   15253 2008-11-20 13:28 libipset_ipportiphash.so
+ -rwxr-xr-x 1 root root 2112524 2008-11-20 13:28 libipset_ipportnethash.so
+ -rwxr-xr-x 1 root root   15232 2008-11-20 13:28 libipset_iptreemap.so
+ -rwxr-xr-x 1 root root   15151 2008-11-20 13:28 libipset_iptree.so
+ -rwxr-xr-x 1 root root   15352 2008-11-20 13:28 libipset_macipmap.so
+ -rwxr-xr-x 1 root root   15153 2008-11-20 13:28 libipset_nethash.so
+ -rwxr-xr-x 1 root root   14843 2008-11-20 13:28 libipset_portmap.so
+ -rwxr-xr-x 1 root root   15042 2008-11-20 13:28 libipset_setlist.so
+
+which is less confusing to me, and looks about right.
+
+Thanks.
+
+--JC
