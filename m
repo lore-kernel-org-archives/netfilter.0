@@ -1,70 +1,42 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: xtables-addons problem
-Date: Thu, 20 Nov 2008 17:36:14 +0100 (CET)
-Message-ID: <alpine.LNX.1.10.0811201655430.7635@fbirervta.pbzchgretzou.qr>
-References: <49244C11.6080808@oracle.com> <492582B3.4000001@oracle.com>
+From: Mike <mikef1007@gmail.com>
+Subject: Re: Ports
+Date: Thu, 20 Nov 2008 10:00:20 -0800
+Message-ID: <d006ee070811201000k7684ffaah4851e687dc3942d4@mail.gmail.com>
+References: <d006ee070811192334o159d28b2mc48713998e423f13@mail.gmail.com>
+	 <20081120122753.606233a2@nacelle.mxtelecom.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <492582B3.4000001@oracle.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: John Haxby <john.haxby@oracle.com>
-Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, twoerner@redhat.com
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=nnpAP1ePESzyIPe8kOnp9adk9vU3hF7kTfPhXw+aPWU=;
+        b=FlMOeSH0hyOR4DbN8CC450SY+BjBvb1MtIDREXn6NojEq5hNFZu1QjWOe4HU7QNqKE
+         bYF9+jHhw0xoXy3/LVm+D8LxYlO4uvoAQI2JxmwWiMsS1/bTX2Q3kxD+UcreSDCoTq4C
+         qdsJ0LSYDX5YnTGZYSbcwsx0dH2OehZYz3Wek=
+In-Reply-To: <20081120122753.606233a2@nacelle.mxtelecom.com>
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Paul Evans <paul@mxtelecom.com>
+Cc: netfilter@vger.kernel.org
 
-
-On Thursday 2008-11-20 16:30, John Haxby wrote:
-
-> John Haxby wrote:
->>
->> $ ./configure --with-kbuild=/lib/modules/2.6.27.6/build
->> $ make
->> ...
->>  CC       libxt_CHAOS.oo
->>  CCLD     libxt_CHAOS.so
->> libxt_CHAOS.oo: In function `_init':
->> /home/jch/rpmbuild/BUILD/xtables-addons-1.6/extensions/libxt_CHAOS.c:112:
->> multiple definition of `_init'
->> /usr/lib/gcc/x86_64-redhat-linux/4.3.0/../../../../lib64/crti.o:(.init+0x0):
->> first defined here
->> collect2: ld returned 1 exit status
+> Mike <mikef1007@gmail.com> wrote:
 >
-> You can go off a distro, you really can:
-
-(It took a while to get this... it's supposed to say)
-	You can go off _on_ a distro, you really can.
-Yes indeed.
-
-> The only thing that springs to mind is that variables and 
-> C-preprocessor names whose names begin with "_" are reserved by C and 
-> you shouldn't use them.
+>> iptables -t nat -A PREROUTING -p tcp --dport portX -j DNAT --to :portY
 >
-> If Thomas is listening, can you shed any light?
->
-> Would it not be nice, as well, if iptables and xtables could come to 
-> an agreement over what is the right thing to do.
+> You want -j REDIRECT rather than DNAT
 
-(a) the iptables userspace package uses _init
+Paul, Thanks for your reply.
 
-(b) xtables is a generic term for protocol-independent code/components
+I tried the following, prior to that i flushed iptables.
 
-(c) xtables-addons's kernel parts are based on an unmodified kernel 
-source.
+ iptables -t nat -A PREROUTING -p tcp --dport X -j REDIRECT --to-ports Y
 
-(d) xtables-addons's userspace parts are based on an unmodified iptables 
-source.
+I ssh from another box, into the box I issued the above iptable
+tcpdump only showed traffic on port X and nothing on port Y
 
-> * Mon Feb 11 2008 Thomas Woerner <twoerner@redhat.com> 1.4.0-1
-> - new version 1.4.0
-> - fixed condrestart (rhbz#428148)
-> - report the module in rmmod_r if there is an error
-> - use nf_ext_init instead of my_init for extension constructors
-
-Not only did RedHat manage to blow up on (c) for RHEL5/CentOS because of 
-excessive backporting, but now they also crippled their iptables 
-package with that nf_ext_init, breaking ALL extensions out there.
-
-I wonder how they managed to not break the compilation of the
-extensions inside the iptables package -- because these continue to
-use _init and its substitution was just nuked by that patch.
+thanks,
