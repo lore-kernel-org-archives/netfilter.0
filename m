@@ -1,38 +1,32 @@
-From: Mike <mikef1007@gmail.com>
-Subject: Ports
-Date: Wed, 19 Nov 2008 23:34:20 -0800
-Message-ID: <d006ee070811192334o159d28b2mc48713998e423f13@mail.gmail.com>
+From: Andy Whitcroft <apw@canonical.com>
+Subject: Re: [PATCH 1/1] netfilter: ip{,6}t_policy.h should include
+	xp_policy.h
+Date: Thu, 20 Nov 2008 09:45:41 +0000
+Message-ID: <20081120094541.GA31575@shadowen.org>
+References: <1227111682-14073-1-git-send-email-apw@canonical.com> <49245611.1080905@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=XZXYZ+mZnw2sow/ECgVL5sKr+3Rx0FeHg4sNDU2rJlo=;
-        b=tWv7bGt5cTbYd+hZ1hALfzOZiHwZ3zFLrD60+5ZfjoqMpdsH1iISpsV23NpCtga0mE
-         Cyj93q3pP5m/r0h0CQVi7fjOPDihOd+IdfoQUyY6KpGLfXlnVQyP45dR+fm0Bhwsy5pg
-         R6TqvZI2d+TBaMQHN5c5Rr7qx62HEdKfcR8uo=
 Content-Disposition: inline
+In-Reply-To: <49245611.1080905@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-I am trying to port forward ssh portX to portY on same box
+On Wed, Nov 19, 2008 at 07:08:17PM +0100, Patrick McHardy wrote:
+> Andy Whitcroft wrote:
+>> It seems that all of the include/netfilter_{ipv4,ipv6}/{ipt,ip6t}_*.h which
+>> share constants include the corresponding include/netfilter/xp_*.h files.
+>> Neither ipt_policy.h not ip6t_policy.h do.  Make these consistant with
+>> the norm.
+>
+> Does this actually fix a bug, or is it just for added consistency?
 
-I am listening on both ports using tcpdump.
+It was reported by an Ubuntu user who was compiling against them.  From
+my point of view it seemed clearly inconsistant and therefore most likely
+wrong.  So it seemed reasonable to fix it and push it upstream, if
+there was a reason I was sure you'd soon put me straight.
 
-On the same machine, I telnet "localhost portX" or "portY"  results:
-NOTHING seen by tcpdump screen .
-I do the same in respect to portY.  I also telnet "IP_number portX or
-portY  results: NOTHING seen by tcpdump screen.
-
-BTW, on the ssh-server side, I have portX and portY accepting connections.
-
-This is what I have come up with after some google-search.
-
-iptables -t nat -A PREROUTING -p tcp --dport portX -j DNAT --to :portY
-
-No luck,
+-apw
