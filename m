@@ -1,72 +1,43 @@
-From: sean darcy <seandarcy2@gmail.com>
-Subject: Re: conntrack: will it restart after delete?
-Date: Fri, 21 Nov 2008 09:50:34 -0500
-Message-ID: <gg6hrq$1kd$1@ger.gmane.org>
-References: <gfs68h$560$1@ger.gmane.org> <4921C75B.2020201@plouf.fr.eu.org> <gg56n6$9up$1@ger.gmane.org>
+From: "varun uppal" <varuneet.uppal@gmail.com>
+Subject: problem with ip_queue
+Date: Fri, 21 Nov 2008 15:13:32 +0000
+Message-ID: <ed1bf3f70811210713w7bc46adbp17a24c9ece01fedf@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <gg56n6$9up$1@ger.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=M2iBArrNxfsteg4hCPXP1OytvijJN4QwJFEmzOrkmic=;
+        b=Jo3Z36ls+lqNPz4Fnvbjl7D2vRgddcnZHcnz4BjnYMlNzN92UmzbV3B3DZ5h9gwviE
+         d4oZCROrTYN96Q6RTv1KvFWAm/5ZqQJTLGV9AWDfpAdK5PX2PG5Ra01gkJuUGOHGxET/
+         AJkKAEYwkFpagYmX3Xok/pkG6Vv+qvc6dYcC0=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-sean darcy wrote:
-> Pascal Hambourg wrote:
->> Hello,
->>
->> sean darcy a =E9crit :
->>> I've had a problem with a udp connection being setup before DNAT,=20
->>> occurred. See "where are my udp packets going?" Nov 15, 2008.
->>>
->>> So just before setting up DNAT I'd propose to run:
->>>
->>> conntrack -D -p    udp --dport 4569
->>>
->>> but the user guide says this "blocks" the connection.
->>
->> The user manual only says "this can be used to block traffic" (cut a=
-n=20
->> existing connection) with proper ruleset and settings. It does not=20
->> block traffic by itself.
->>
->>> I only want to flush/empty it, and let it start again with DNAT wor=
-king.
->>>
->>> Does this do it?
->>
->> I guess so, although I never used conntrack (no need yet).
->> However I would run the conntrack command after setting up DNAT rule=
-s,=20
->> because a packet could arrive between the two operations. Deleting a=
-=20
->> UDP conntrack entry should be harmless, as the next UDP packet would=
-=20
->> create it again anyway.
->> --=20
->=20
-> Well, it didn't work:
->=20
-> conntrack -D -p    udp --dport 4569
-> conntrack v0.9.6: You need to supply the `--sport' option for this co=
-mmand
-> Try `conntrack -h' or 'conntrack --help' for more information.
->=20
->  conntrack -D -p    udp --sport 4569
-> conntrack v0.9.6: You need to supply the `--dport' option for this co=
-mmand
-> Try `conntrack -h' or 'conntrack --help' for more information.
->=20
->  conntrack -D -p    udp --sport 4569  --dport 4569
-> conntrack v0.9.6: Can't kill conntracks just by its IDTry `conntrack =
--h'=20
-> or 'conntrack --help' for more information.
->=20
-> Puzzled, but trolling through man conntrack.
->=20
+Hi,
 
-Solved. I was using 0.9.6, upgraded to 0.9.8 - now it works.
+  I am using a utility which reads packets from ip_queue, queued by
+iptables  capture on INPUT chain of filter table using QUEUE target.
+ I am getting a wierd problem, the incoming TCP segments especially
+with size larger than around 200 bytes get corrupted.
+I took tcpdump on the machine and the data in the segments looks fine,
+but when read by utility, most of the TCP payload looks to be reset,
+and checksum value is same as was seen in the tcpdump traces taken on
+the interface.
+Is this a problem with ip_queue module, which is not being able to
+copy larger packets to user space.
+I have red hat enterprise linux 4, with kernel 2.6.9-42 and iptables
+version 1.2.11
 
-sean
+The same utility works fine with kernel 2.4.26 and 2.6.18. My problem
+is i cannot change the kernel on the machine on which i am getting the
+problem. Can someone please help.
 
+thanks
+varun
