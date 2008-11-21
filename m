@@ -1,43 +1,36 @@
-From: "varun uppal" <varuneet.uppal@gmail.com>
-Subject: problem with ip_queue
-Date: Fri, 21 Nov 2008 15:13:32 +0000
-Message-ID: <ed1bf3f70811210713w7bc46adbp17a24c9ece01fedf@mail.gmail.com>
+From: John Haxby <john.haxby@oracle.com>
+Subject: Re: xtables problem
+Date: Fri, 21 Nov 2008 17:39:31 +0000
+Message-ID: <4926F253.90802@oracle.com>
+References: <49244C11.6080808@oracle.com> <492582B3.4000001@oracle.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:mime-version:content-type:content-transfer-encoding
-         :content-disposition;
-        bh=M2iBArrNxfsteg4hCPXP1OytvijJN4QwJFEmzOrkmic=;
-        b=Jo3Z36ls+lqNPz4Fnvbjl7D2vRgddcnZHcnz4BjnYMlNzN92UmzbV3B3DZ5h9gwviE
-         d4oZCROrTYN96Q6RTv1KvFWAm/5ZqQJTLGV9AWDfpAdK5PX2PG5Ra01gkJuUGOHGxET/
-         AJkKAEYwkFpagYmX3Xok/pkG6Vv+qvc6dYcC0=
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <492582B3.4000001@oracle.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-Hi,
+John Haxby wrote:
+> $ ./configure --with-kbuild=/lib/modules/2.6.27.6/build
+> $ make
+> ...
+>  CC       libxt_CHAOS.oo
+>  CCLD     libxt_CHAOS.so
+> libxt_CHAOS.oo: In function `_init':
+> /home/jch/rpmbuild/BUILD/xtables-addons-1.6/extensions/libxt_CHAOS.c:112: 
+> multiple definition of `_init'
+> /usr/lib/gcc/x86_64-redhat-linux/4.3.0/../../../../lib64/crti.o:(.init+0x0): 
+> first defined here
+> collect2: ld returned 1 exit status
 
-  I am using a utility which reads packets from ip_queue, queued by
-iptables  capture on INPUT chain of filter table using QUEUE target.
- I am getting a wierd problem, the incoming TCP segments especially
-with size larger than around 200 bytes get corrupted.
-I took tcpdump on the machine and the data in the segments looks fine,
-but when read by utility, most of the TCP payload looks to be reset,
-and checksum value is same as was seen in the tcpdump traces taken on
-the interface.
-Is this a problem with ip_queue module, which is not being able to
-copy larger packets to user space.
-I have red hat enterprise linux 4, with kernel 2.6.9-42 and iptables
-version 1.2.11
+I've submitted a bug report for this: 
+https://bugzilla.redhat.com/show_bug.cgi?id=472548
 
-The same utility works fine with kernel 2.4.26 and 2.6.18. My problem
-is i cannot change the kernel on the machine on which i am getting the
-problem. Can someone please help.
+Looking through this history of changes, it seems that this was a 
+well-intentioned fix as part of moving from "ld -shared" to "gcc 
+-shared" a while back (1.3.4 time) that accidentally got carried forward 
+even though it wasn't needed due to changes in iptables.
 
-thanks
-varun
+jch
