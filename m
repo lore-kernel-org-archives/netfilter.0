@@ -1,49 +1,63 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Question about NAT, src ports and dst ports.
-Date: Mon, 24 Nov 2008 16:44:21 +0100
-Message-ID: <492ACBD5.20405@plouf.fr.eu.org>
-References: <5ed0ca650811240548v39adffd2ndfc24ee7d858f9fe@mail.gmail.com>
+From: "JC Janos" <jcjanos245@gmail.com>
+Subject: Which "illegal" tcp-fragments should be blocked?
+Date: Mon, 24 Nov 2008 09:01:35 -0800
+Message-ID: <7259d7020811240901o53a4fd7bt99985dd2b3a7cb74@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5ed0ca650811240548v39adffd2ndfc24ee7d858f9fe@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=ehkjebvB0ZfqJ80w3/bIWGkE2WnTnm2eYHwtDatNsMI=;
+        b=phH8B8tp8hi/IlvwsN5B4TVZgl9xXAJsorSr+QI+bckYRLy0DhO111fXMPV3Jb9pE5
+         vjWiTV6Cnx7HShSSVayvQ0fwgEd4cZPRnxLZnaz0W2g5musaVWeNXuHYw0mRGX7oc09q
+         WJ3lgI5WnvfgW+R9jqQ5zBmUc7ntz53nCyjPc=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello,
+I've read on numerous sites, and in bunches of examples, that "illegal
+tcp fragments" should be blocked early in a firewall rule set.
 
-patrick daures a =E9crit :
->=20
-> iptables -t nat -A PREROUTING -d .... -m dscp --dscp 46 -j NETMAP --t=
-o
-> 193.0.0.0/8
->=20
-> But (yes, there is a but)
-> when my tool generates packets, it can create TCP, UDP, ... packets
-> with dst port and src port values.
-> When it creates udp packets with DIFFERENT dscp values but using the
-> SAME ports, iptables rules doesn't work like I want.
-[...]
-> Is this normal ? (I think "yes")
+As I understand it, the rule takes the form,
 
-Yes. NAT works on a per-connection basis, not on a per-packet basis. It=
-=20
-relies on connection tracking (aka conntrack) to identify which=20
-connection a packet belongs to. When a packet belongs to an existing=20
-connection, it does not go through the nat chains, it is applied the=20
-same NAT operations as those which were applied to the first packet=20
-which created the connection instead. This way the same NAT operations=20
-are applied to all the packets belonging to the same connection. The=20
-conntrack uses addresses, protocol and ports but not the DSCP field to=20
-uniquely identify connections. So packets with the same addresses,=20
-protocol and ports are associated to the same connection regardless of=20
-the DSCP field.
+	iptables -A INPUT -p tcp --tcp-flags "mask" "comp" -j DROP
 
-> Could I change it ? Is it possible to set iptables in order to avoid
-> the srcPort and dstPort check ?
+Every source I read seems to match & block a different combination of
+fragments.  So far, the list of "block these" mask/comp pairs that
+I've come across are:
 
-I'm afraid not. You must change at least one element among the source=20
-and destination addresses and ports so packets appear to belong to=20
-different connections.
+	"mask"                            "comp"
+	----------------                  ----------------
+	ALL                               ALL
+	ALL                               NONE
+	ALL                               FIN,URG,PSH
+	ALL                               FIN,URG,PSH
+	ALL                               SYN,RST,ACK,FIN,URG
+	ACK                               ACK
+	FIN,ACK                           FIN
+	FIN,URG,PSH                       FIN,URG,PSH
+	SYN                               NONE
+	SYN,RST                           SYN,RST
+	SYN,FIN,RST,ACK                   NONE
+	SYN,FIN,RST,ACK,URG               NONE
+	SYN,FIN                           SYN,FIN
+	SYN,FIN,RST,ACK                   FIN
+	SYN,FIN,RST,ACK,URG               URG
+	SYN,FIN                           SYN,FIN
+	SYN,FIN,RST,ACK                   SYN,FIN
+	SYN,FIN,RST,ACK,URG,PSH,ECE,CWR   FIN,URG,PSH
+	SYN,FIN,RST,ACK,URG               SYN,FIN,RST,ACK,URG
+	SYN,FIN,RST,ACK,URG,PSH           SYN,FIN,RST,ACK,URG,PSH
+
+Which of these are really valid targets to block?  Each of the pairs
+is blocked at least sometimes; noone I've found so far blocks them
+all.  Is this list even complete?
+
+Thanks.
+
+--JC
