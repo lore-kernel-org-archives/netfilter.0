@@ -1,38 +1,51 @@
-From: Nigel Heron <nigel-ml@xprima.com>
-Subject: banning bot ips with ipset
-Date: Tue, 25 Nov 2008 16:00:48 -0500
-Message-ID: <492C6780.4020909@xprima.com>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Subject: Re: banning bot ips with ipset
+Date: Tue, 25 Nov 2008 22:25:17 +0000 (GMT)
+Message-ID: <Pine.LNX.4.58.0811252145030.31197@mail3.jubileegroup.co.uk>
+References: <492C6780.4020909@xprima.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <492C6780.4020909@xprima.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Nigel Heron <nigel-ml@xprima.com>
+Cc: netfilter@vger.kernel.org
 
-Hi list,
-We're using iptables (with shorewall for config) and lvs on our 
-firewall/load balancer. We're being attacked by a botnet alternating 
-between http request floods and syn floods. We have a way to identify 
-the ips that are http'ing and started dropping them in iptables, once we 
-got to ~1700 banned ips the server stopped nat'ing completely (not sure 
-why..) and we were forced to remove the blacklist. We're now banning non 
-north-american class-As to drop half the bots, but it's obviously not a 
-good long term solution. We just came across ipset, but the lack of any 
-feedback on the net (besides on *.netfilter.org) has us a bit worried 
-about real world deployment. Is ipset stable enough to be deployed on 
-live environments? iphash seems like the best set type for us, how many 
-ips can the set handle before there's a noticeable slowdown? any 
-feedback would be appreciated.
+Hi there,
 
-obviously, we don't expect ipset to help us with the syn flood, at 
-~30Mb/s of syn traffic, syn cookies aren't helping either, is there a 
-syn-proxy implementation for linux?
+On Tue, 25 Nov 2008, Nigel Heron wrote:
 
-also, if it helps anyone else .. while trying ipset 2.4.5 i had to add:
-#include <stdbool.h>
-to "kernel/ip_set_setlist.c" to get it to compile.
+> We're being attacked by a botnet ... started dropping them in
+> iptables, once we got to ~1700 banned ips the server stopped nat'ing
+> completely (not sure why..)
 
-thanks,
+It probably just ran out of steam.  The performance of iptables with
+thousands of rules can be poor if you don't structure them carefully.
 
--nigel.
+> Is ipset stable enough to be deployed on live environments?
+
+I've been using it for years with absolutely zero problems.
+
+> iphash seems like the best set type for us, how many
+> ips can the set handle before there's a noticeable slowdown?
+
+I currently have about 50,000 ipset (iphash) rules on modest hardware,
+with no noticeable performance impact.  There's a good report here:
+
+http://people.netfilter.org/kadlec/nftest.pdf
+
+One of the authors also wrote ipset.  He's on this list.
+
+> obviously, we don't expect ipset to help us with the syn flood, at
+> ~30Mb/s of syn traffic, syn cookies aren't helping either, is there
+> a syn-proxy implementation for linux?
+
+Sorry, never looked at it, but a quick Google for /"syn proxy" linux/
+gave me over 1,000 hits.
+
+--
+
+73,
+Ged.
