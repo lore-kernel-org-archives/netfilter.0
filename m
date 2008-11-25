@@ -1,65 +1,38 @@
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: Re: Allow client only 1 connect per 20 seconds
-Date: Tue, 25 Nov 2008 14:21:32 -0600
-Message-ID: <1227644492.11373.562.camel@grateful.d.umn.edu>
-References: <gghgq9$33t$1@ger.gmane.org>
+From: Nigel Heron <nigel-ml@xprima.com>
+Subject: banning bot ips with ipset
+Date: Tue, 25 Nov 2008 16:00:48 -0500
+Message-ID: <492C6780.4020909@xprima.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-qMl26rXTolOGQM4KQ50O"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <gghgq9$33t$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Adem <for-gmane@alicewho.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Hi list,
+We're using iptables (with shorewall for config) and lvs on our 
+firewall/load balancer. We're being attacked by a botnet alternating 
+between http request floods and syn floods. We have a way to identify 
+the ips that are http'ing and started dropping them in iptables, once we 
+got to ~1700 banned ips the server stopped nat'ing completely (not sure 
+why..) and we were forced to remove the blacklist. We're now banning non 
+north-american class-As to drop half the bots, but it's obviously not a 
+good long term solution. We just came across ipset, but the lack of any 
+feedback on the net (besides on *.netfilter.org) has us a bit worried 
+about real world deployment. Is ipset stable enough to be deployed on 
+live environments? iphash seems like the best set type for us, how many 
+ips can the set handle before there's a noticeable slowdown? any 
+feedback would be appreciated.
 
---=-qMl26rXTolOGQM4KQ50O
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+obviously, we don't expect ipset to help us with the syn flood, at 
+~30Mb/s of syn traffic, syn cookies aren't helping either, is there a 
+syn-proxy implementation for linux?
 
-On Tue, 2008-11-25 at 19:38 +0100, Adem wrote:
-> How would you code this rule in iptables:
->=20
-> If anybody tries to do more than 1 connection to port 8191
-> within 20 seconds, regardless of the protocol, then DROP=20
-> it and ignore any further connect attempts on that port
-> from that source for 20 seconds.
+also, if it helps anyone else .. while trying ipset 2.4.5 i had to add:
+#include <stdbool.h>
+to "kernel/ip_set_setlist.c" to get it to compile.
 
-NOTE: this is completely untested:
+thanks,
 
-iptables -A INPUT -p tcp --dport 8191 --match state --state
-ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p tcp --dport 8191 --match state --state NEW --match
-recent --name THROTTLE --set
-iptables -A INPUT -p tcp --dport 8191 --match state --state NEW --match
-recent --name THROTTLE --update --seconds 20 --hitcount 2 --rttl -j DROP
-
-Same rules for '-p udp'.
-
-Cheers,
-
---=20
-Matt Zagrabelny - mzagrabe@d.umn.edu - (218) 726 8844
-University of Minnesota Duluth
-Information Technology Systems & Services
-PGP key 1024D/84E22DA2 2005-11-07
-Fingerprint: 78F9 18B3 EF58 56F5 FC85  C5CA 53E7 887F 84E2 2DA2
-
-He is not a fool who gives up what he cannot keep to gain what he cannot
-lose.
--Jim Elliot
-
---=-qMl26rXTolOGQM4KQ50O
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkksXkgACgkQU+eIf4TiLaKOJgCgm7VDECmHke9aMzdhlrMyeEZO
-wR8AoIca/7GNr4v0TM6NAaXUAI5eOAhp
-=outq
------END PGP SIGNATURE-----
-
---=-qMl26rXTolOGQM4KQ50O--
-
+-nigel.
