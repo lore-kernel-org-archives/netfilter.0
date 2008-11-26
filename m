@@ -1,26 +1,41 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: Quickly checking number of rules/chains
-Date: Wed, 26 Nov 2008 16:51:23 +0100
-Message-ID: <1227714683.8883.13.camel@enterprise.ims-firmen.de>
-References: <1227714230.8883.7.camel@enterprise.ims-firmen.de>
+From: Nigel Heron <nigel-ml@xprima.com>
+Subject: Re: banning bot ips with ipset
+Date: Wed, 26 Nov 2008 11:28:16 -0500
+Message-ID: <492D7920.1000007@xprima.com>
+References: <492C6780.4020909@xprima.com> <alpine.DEB.2.00.0811260918140.31365@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1227714230.8883.7.camel@enterprise.ims-firmen.de>
+In-Reply-To: <alpine.DEB.2.00.0811260918140.31365@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-
-On Wed, 2008-11-26 at 16:43 +0100, Thomas Jacob wrote:
-> I'm looking for something that can frequently check this without having
-> to transfer the whole ruleset from the kernel and decode it, which
-> can take up a considerable amount of resources if you have a
-> really huge rulesets (XXXk rules), in order to determine whether
-> any rules are loaded yet.
-
-What about /sys/module/iptable_{raw,nat,filter,mangle}/refcnt, is this
-always zero when no chains and rules exist, and always >0 in the other
-case?
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org
 
 
+
+Jozsef Kadlecsik wrote:
+
+> ipset is stable enough for in production usage. The speed of the iphash 
+> set is actually constant by nature and independent of the number of actual 
+> entries (your network card and bus will slow you down and not iphash).
+>  
+
+thanks for everyone's feedback, we tried it on a test box with all our 
+rules and it seems to work really well. we'll try it live during the week.
+
+>> also, if it helps anyone else .. while trying ipset 2.4.5 i had to add:
+>> #include <stdbool.h>
+>> to "kernel/ip_set_setlist.c" to get it to compile.
+> 
+> What is your kernel version?
+> 
+
+2.6.18.2 which comes with opensuse 10.2
+gcc "4.1.2 20061115 (prerelease) (SUSE Linux)" .. also bundled with 
+opensuse 10.2
+
+
+thanks,
+-nigel.
