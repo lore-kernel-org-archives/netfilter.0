@@ -1,41 +1,45 @@
-From: Nigel Heron <nigel-ml@xprima.com>
-Subject: Re: banning bot ips with ipset
-Date: Wed, 26 Nov 2008 11:28:16 -0500
-Message-ID: <492D7920.1000007@xprima.com>
-References: <492C6780.4020909@xprima.com> <alpine.DEB.2.00.0811260918140.31365@blackhole.kfki.hu>
+From: "JC Janos" <jcjanos245@gmail.com>
+Subject: Re: Which "illegal" tcp-fragments should be blocked?
+Date: Wed, 26 Nov 2008 09:00:14 -0800
+Message-ID: <7259d7020811260900p64a3f60as27102d958c2ef103@mail.gmail.com>
+References: <7259d7020811240901o53a4fd7bt99985dd2b3a7cb74@mail.gmail.com>
+	 <492C0774.9070002@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.0811260918140.31365@blackhole.kfki.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=3mizYRDtHDPffHVIkQQP1TusSalwBo0dngkdQw4uwoA=;
+        b=lRyHhw+4ZeOop0hyNPcyLVHWdlEbvzGsl3u5/BFW6Gm8sB7WRk7i3QUYLSJWmSNtRM
+         /3priiwb/0hdTTgJ/W9IGTN1qviBwVuLYyVWR2LO9YtSH+/3eLqn6o5rwa9ZMD//kYSz
+         1Eit2WQ5g64zVxFgbhs7Z+9RhVPdlCAC7jV74=
+In-Reply-To: <492C0774.9070002@freemail.hu>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Cc: Netfilter list <netfilter@vger.kernel.org>
 
+Gaspar,
 
+2008/11/25 G=E1sp=E1r Lajos <swifty@freemail.hu>:
+> Hi!
+>
+> I use the following five combination to filter bogous packets:
 
-Jozsef Kadlecsik wrote:
+Why those in particular, and not the others?  Your set also adds one
+mask/comp pair,
 
-> ipset is stable enough for in production usage. The speed of the iphash 
-> set is actually constant by nature and independent of the number of actual 
-> entries (your network card and bus will slow you down and not iphash).
->  
+  RST,FIN    RST,FIN
 
-thanks for everyone's feedback, we tried it on a test box with all our 
-rules and it seems to work really well. we'll try it live during the week.
+It seems that just about every example uses a different combination of
+fragment rules.  I'm simply wondering what the logic in choosing one
+over the other is.
 
->> also, if it helps anyone else .. while trying ipset 2.4.5 i had to add:
->> #include <stdbool.h>
->> to "kernel/ip_set_setlist.c" to get it to compile.
-> 
-> What is your kernel version?
-> 
+Is there maybe some documentation you can point to?
 
-2.6.18.2 which comes with opensuse 10.2
-gcc "4.1.2 20061115 (prerelease) (SUSE Linux)" .. also bundled with 
-opensuse 10.2
-
-
-thanks,
--nigel.
+--JC
