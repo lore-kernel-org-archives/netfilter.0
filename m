@@ -1,7 +1,7 @@
 From: =?ISO-8859-2?Q?Vlado_Dr=BE=EDk?= <vlado@ttx.sk>
 Subject: Iproute2: tc + iptables actions
-Date: Fri, 28 Nov 2008 20:05:00 +0100
-Message-ID: <493040DC.2080809@ttx.sk>
+Date: Fri, 28 Nov 2008 22:36:13 +0100
+Message-ID: <4930644D.7060006@ttx.sk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -38,3 +38,4 @@ long time. I'm hoping that here it could be maybe better place.
 --
 Regards,
 Vlado
+
