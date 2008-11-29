@@ -1,46 +1,65 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: NAT for locahost to IP LAN for mail services
-Date: Sat, 29 Nov 2008 11:30:00 +0100
-Message-ID: <493119A8.6060202@plouf.fr.eu.org>
-References: <98028b00811271443g51a06f71y14b605b9a8b7638f@mail.gmail.com>	 <98028b00811271446h56adc55bl91f8ae7f152ca8ca@mail.gmail.com>	 <492F3057.8010007@plouf.fr.eu.org>	 <98028b00811271627n45966505pf4fcd3aed4814700@mail.gmail.com>	 <492FD4BF.6030101@plouf.fr.eu.org> <98028b00811282006r3dff45a9v7d52ec67077c7109@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_conntrack 0.0.98 release
+Date: Sat, 29 Nov 2008 13:49:19 +0100
+Message-ID: <49313A4F.6090904@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed;
+ boundary="------------010701060004070107080504"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <98028b00811282006r3dff45a9v7d52ec67077c7109@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-Zagato a =E9crit :
-> Hi.. thanks for the answer... but i really sure that my old rules
-> works fine on centos 4.2, when i upgrade to 5.2 psql -h localhost -p
-> 5432 test have the same symptomatic, maybe a kernel module that i nee=
-d
-> to modoprobe ? what chage that my old rules doesn't work anymore... ?
->=20
-> Centos 5.2 kernel: 2.6.18-92.el5
+This is a multi-part message in MIME format.
+--------------010701060004070107080504
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-According to a quick search it seems that Centos 4.2 included a kernel=20
-2.6.9. In kernels before 2.6.11, the DNAT target in the OUTPUT chain=20
-used to change the source address to reflect the new output interface.=20
-This is not true for newer 2.6 kernels due to a change in kernel 2.6.11=
-=2E
+Hi!
 
- From <http://www.kernel.org/pub/linux/kernel/v2.6/ChangeLog-2.6.11> :
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-   [PATCH] Remove do_extra_mangle: double NAT on LOCAL_OUT
+The netfilter project proudly presents libnetfilter_conntrack-0.0.98.
 
-   On NF_IP_LOCAL_OUT, when destination NAT changes the destination
-   interface, we also change the source address, so the packet is the
-   same as if it were generated to go that way in the first place.  Thi=
-s
-   is not strictly necessary, I believe.
+libnetfilter_conntrack is a userspace library providing a programming
+interface (API) to the in-kernel connection tracking state table. This
+library requires a linux kernel >= 2.6.18.
 
-   This patch rips that code out to see what breaks.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-(Well, you can see what breaks)
+This release includes one major bugfix, a couple of minor fixes, the new
+attribute group API and cleanups. See ChangeLog for more details.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnetfilter_conntrack/
+ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
+
+Pablo,
+on behalf of the Netfilter Project.
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
+
+
+--------------010701060004070107080504
+Content-Type: text/plain;
+ name="ChangeLog"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog"
+
+Pablo Neira Ayuso (13):
+      objopt: use indirect calls instead of switch
+      API: use of __builtin_expect in error checking paths
+      snprintf: fix compilation warning in 64-bits platforms
+      groups: add attribute group API
+      API: add nfct_attr_is_set_array function
+      version: bump to 0.0.98
+      src: set specific array size for the API
+      qa: add test file to check for missing indirect function calls
+      helper: fix missing copy function for helper name
+      bsf: major rework of the BSF generation code
+      bsf: remove unnecessary function inline
+      api: fix bogus netlink flags in nfct_build_query
+      api: fix bogus netlink flags in nfexp_build_query
+
+
+--------------010701060004070107080504--
