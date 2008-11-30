@@ -1,85 +1,44 @@
-From: Zagato <zagato.gekko@gmail.com>
-Subject: Re: NAT for locahost to IP LAN for mail services
-Date: Sat, 29 Nov 2008 15:41:05 +0000
-Message-ID: <98028b00811290741y2753d47dycd0b7f34e8918edf@mail.gmail.com>
-References: <98028b00811271443g51a06f71y14b605b9a8b7638f@mail.gmail.com>
-	 <98028b00811271446h56adc55bl91f8ae7f152ca8ca@mail.gmail.com>
-	 <492F3057.8010007@plouf.fr.eu.org>
-	 <98028b00811271627n45966505pf4fcd3aed4814700@mail.gmail.com>
-	 <492FD4BF.6030101@plouf.fr.eu.org>
-	 <98028b00811282006r3dff45a9v7d52ec67077c7109@mail.gmail.com>
-	 <493119A8.6060202@plouf.fr.eu.org>
+From: Wolfram Schlich <lists@wolfram.schlich.org>
+Subject: Re: [ANNOUNCE] libnetfilter_conntrack 0.0.98 release
+Date: Sun, 30 Nov 2008 10:46:46 +0100
+Message-ID: <20081130094646.GE9523@bla.fasel.org>
+References: <49313A4F.6090904@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:cc:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=SV1Lb3PSkB/NIkWgVgqjiSFlMS3iZSjb4b9am4izfWA=;
-        b=CoF8vC10K4QymEjNrfuQRClrNJe2GHMDegYncEOX1SRsgLsOWcjwHshFTLPstYMW3B
-         /sqfDSaIBLWoWZu095uXi5i84fHctAv21obYOWvOK1ucDORpLUjV5qX0HsxTSrppSnnc
-         UKo0czunFJpDqQzbk8gQwfl0a9c0sWSjNlX/g=
-In-Reply-To: <493119A8.6060202@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=bla.fasel.org; h=date:from
+	:to:subject:message-id:references:mime-version:content-type:
+	in-reply-to; s=mx; bh=uBtwOXKGbho4CcuXDmh//hID0aY=; b=gp2lLMwUsR
+	f8r4+hNJKiX7vCXFfw+29PoXQUqqILOYMYyVekUVX3doRsOcdyJyErjpNQy9Pmoe
+	PrfDAF334sRt7+kvjvc2N3d/wg7v1JfPqutFsyYNms4N9AhllCGqHDPwCZlYk6DG
+	eH/jWcS17gJxm2se7CdF6XSXnNYvvzC4M=
 Content-Disposition: inline
+In-Reply-To: <49313A4F.6090904@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Mmmm.... a lot of thanks for the help... so was a change... Jeje...
-well now i'm using rinetd to redirect my localhost ports to another
-interface and its working, very simple using /etc/rinetd.conf..
+* Pablo Neira Ayuso <pablo@netfilter.org> [2008-11-29 13:49]:
+> Hi!
 
-Thanks...
+Hey :)
 
-Alan Jairo Acosta
+> The netfilter project proudly presents libnetfilter_conntrack-0.0.98.
 
-On Sat, Nov 29, 2008 at 10:30 AM, Pascal Hambourg
-<pascal.mail@plouf.fr.eu.org> wrote:
-> Zagato a =E9crit :
->>
->> Hi.. thanks for the answer... but i really sure that my old rules
->> works fine on centos 4.2, when i upgrade to 5.2 psql -h localhost -p
->> 5432 test have the same symptomatic, maybe a kernel module that i ne=
-ed
->> to modoprobe ? what chage that my old rules doesn't work anymore... =
-?
->>
->> Centos 5.2 kernel: 2.6.18-92.el5
->
-> According to a quick search it seems that Centos 4.2 included a kerne=
-l
-> 2.6.9. In kernels before 2.6.11, the DNAT target in the OUTPUT chain =
-used to
-> change the source address to reflect the new output interface. This i=
-s not
-> true for newer 2.6 kernels due to a change in kernel 2.6.11.
->
-> From <http://www.kernel.org/pub/linux/kernel/v2.6/ChangeLog-2.6.11> :
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
->  [PATCH] Remove do_extra_mangle: double NAT on LOCAL_OUT
->
->  On NF_IP_LOCAL_OUT, when destination NAT changes the destination
->  interface, we also change the source address, so the packet is the
->  same as if it were generated to go that way in the first place.  Thi=
-s
->  is not strictly necessary, I believe.
->
->  This patch rips that code out to see what breaks.
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> (Well, you can see what breaks)
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+After upgrading to 0.0.98 and restarting conntrackd, I constantly
+get such messages on the backup firewall, even after restarting
+conntrackd on both firewalls once again:
+
+2008-11-30 10:40:08 +01:00; hafw2; daemon.warning; conntrack-tools[29154]: Received seq=1228038103 before expected seq=1228039271
+2008-11-30 10:40:09 +01:00; hafw2; daemon.warning; conntrack-tools[29154]: Received seq=1228038104 before expected seq=1228039271
+2008-11-30 10:40:10 +01:00; hafw2; daemon.warning; conntrack-tools[29154]: Received seq=1228038105 before expected seq=1228039273
+2008-11-30 10:40:11 +01:00; hafw2; daemon.warning; conntrack-tools[29154]: Received seq=1228038106 before expected seq=1228039274
+
+The numbers look kinda confusing to me.
+
+What's wrong? :)
+-- 
+Regards,
+Wolfram Schlich <wschlich@gentoo.org>
+Gentoo Linux * http://dev.gentoo.org/~wschlich/
