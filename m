@@ -1,74 +1,78 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: routing to forward a service request to another machine with iptables.
-Date: Tue, 9 Dec 2008 05:55:46 +0100
-Message-ID: <002a01c959ba$666e17d0$334a4770$@info>
-References: <307438.64180.qm@web76715.mail.sg1.yahoo.com>
+From: Guillaume Tamboise <gtamboise@gmail.com>
+Subject: Outgoing TCP RST packets dropped
+Date: Tue, 09 Dec 2008 09:00:49 +0100
+Message-ID: <493E25B1.6010901@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <307438.64180.qm@web76715.mail.sg1.yahoo.com>
-Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-> We use inbit for our internal company communication among the
-> employees. The inbit server is located in our internal LAN (without
-> public IP). Inbit Server has IP of 192.168.1.1 .
-> 
-> Some of the users those mobile needs the inbit too.
-> 
-> The mobile users do login to Inbit Server through our internet
-> gateway whose public IP and the IP is 219.83.114.179 . The Inbit
-> service port number is 10883.
+Hello,
 
-[...]
+I am running netfilter on Debian etchnhalf (kernel 2.6.24 on AMD64) to 
+protect the server it is running on.
+The server is not too busy: maximum 400 established connections, 6 
+FIN_WAIT, 15000 TIME_WAIT, 40 SYN_SENT, 5000 UDP connections, 15000 assured.
 
-> ======
-> 
-> I want the incoming packet in 219.83.114.179:10883 will be
-> forwarded to 192.168.1.1:10883.
-> 
-> But I don't know how to forward the PREROUTING / SNAT.
-> 
-> This are what I've done:
-> ======
-> mysussy:~ # iptables -I FORWARD 1 -i eth0 -o eth1 -p tcp -s 0/0 -d
-> 219.83.114.179 --dport 10883 -j ACCEPT
-> mysussy:~ # iptables -D FORWARD 1
-> mysussy:~ # iptables -D INPUT 1
-> mysussy:~ # iptables -I INPUT 1 -p tcp -s 0/0 -d 219.83.114.179 -i
-> eth0 --dport 10883 -j ACCEPT
-> mysussy:~ # iptables -I FORWARD 1 -i eth0 -o eth1 -p tcp -s 0/0 -d
-> 219.83.114.179 --dport 10883 -j ACCEPT
+My output chain ends with an explicit drop/log for each protocol:
 
-- If you want to forward packets, in the filter table you only use the FORWARD chain: not the INPUT or OUTPUT chain so this won't work.
-- If I'm not mistaken, you can't specify "-o eth1" in the PREROUTING chain.
-- Finally, if you want to specify "any" ip, you don't need to specify "0/0". You can just omit it which makes the rule more readable.
+-A OUTPUT -o eth+ -p tcp -j LOG --log-prefix "IPTABLES TCP-OUT: "
+-A OUTPUT -o eth+ -p tcp -j DROP
 
-> mysussy:~ # iptables -t nat -I PREROUTING 1 -i eth0 -o eth1 --dport
-> 10883 -J SNAT --to-destination 192.168.1.1
-> iptables v1.4.0: Unknown arg `--dport'
-> Try `iptables -h' or 'iptables --help' for more information.
-> ======
+I am observing fairly large number of outgoing TCP RST packets that are 
+dropped:
+kernel: IPTABLES TCP-OUT: IN= OUT=eth0 SRC=X.X.X.X DST=Y.Y.Y.Y LEN=40 
+TOS=0x08 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=80 D
+PT=45360 WINDOW=0 RES=0x00 RST URGP=0
 
-The error means that iptables doesn't know what protocol you want to match, but you did specify the port. You need to specify "-p tcp" or "-p udp" here.
+In the past couple of weeks, we are talking 12,300 packets dropped, 
+11,000 of them being RST packets (we also had 1,300 ACK packets dropped).
+They mostly concern the HTTP service running on the server, some of them 
+concern the SMTP service.
 
-Try this (assuming your routing table is correct):
+This server is a drop-in replacement for a Debian Sarge (kernel 2.6.8k7) 
+with exactly the same firewall rule set and netfilter settings.
+The main change is that the 10 Mbps interface got turned into a 100 Mbps 
+interface, and the platform changed from k7 to AMD64.
+The 2.6.8k7 kernel on the old server did not exhibit the issue of 
+dropping outgoing RST or ACK packets.
 
-$ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-$ipt -A FORWARD -m state --state NEW -i eth0 -o eth1 \
-  -d 192.168.1.1 -p tcp --dport 10883 -j ACCEPT
-$ipt -t nat -A PREROUTING -i eth0 -d 219.83.114.179 -p tcp \
-  --dport 10883 -j DNAT --to 192.168.1.1
+On the old server, I had to tweak the netfilter parameters. I reached 
+those settings, that were good at the time, and that I originally used 
+as is on the new server:
 
-- The first rule will accept all packets in a connection once it has been setup.
-- The second rule will (only) match the first packet in the connection specified by this rule and accept it. Remember you want to forward packets to 192.168.1.1 so for the FORWARD chain, that's the destination IP.
-- The third rule specifies how to NAT the packet. Here the destination IP is your public IP and you DNAT only packets to 10883/tcp to 192.168.1.1.
+/bin/echo 960 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close
+/bin/echo 2400 > 
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close_wait
+/bin/echo 960 > 
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_time_wait
+/bin/echo 3600 > 
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_fin_wait
+/bin/echo 120 > 
+/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_last_ack
+/bin/echo 180 > /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout
+/bin/echo 1440 > 
+/proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream
+/bin/echo 131072 > /proc/sys/net/ipv4/ip_conntrack_max
 
 
-Grts,
-Rob
+Looking around on this mailing-list, I tried these changes one by one, 
+without success:
+
+- Upgrade from 2.6.18-6-amd64 to 2.6.24-etchnhalf.1-amd64
+- Switch on ip_conntrack_tcp_be_liberal
+- options nf_conntrack hashsize=16384
+/proc/sys/net/ipv4/netfilter/ip_conntrack_max at 131072
+/proc/sys/net/ipv4/netfilter/ip_conntrack_buckets at 16384
 
 
+Would anybody have an idea on where I should be looking at now?
+
+
+
+Thanks & Regards,
+
+Guillaume
