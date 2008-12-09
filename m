@@ -1,7 +1,7 @@
-From: Knute Johnson <knute2008@www.knutejohnson.com>
-Subject: UDP netbios nameserver packets blocked
-Date: Mon, 08 Dec 2008 16:39:46 -0800
-Message-ID: <493DBE52.1010003@www.knutejohnson.com>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: howto setup masquerade in multihomed server
+Date: Mon, 08 Dec 2008 21:57:17 -0500
+Message-ID: <ghkmqe$sus$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,29 +10,42 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I have the following line in my iptables configuration;
+I've got one internal interface (INTIF), a static external interface 
+(EXTIF) and a Verison DSL external interface (VERISONIF). I want to use 
+EXTIF just for voip and the VERIZONIF for general internet. I can set 
+this all up on the server, setting the correct default route.
 
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+If EXTIF is set as the default route ( not what I eventually want ), NAT 
+works fine with this SNAT:
 
-When I use the smbclient command, it attempts a DNS lookup, which fails 
-as it should, then does a netbios nameserver lookup.  The response is 
-getting blocked with the last line in my configuration;
+$IPT -t nat -A POSTROUTING -o $EXTIF -j SNAT --to-source xxx.yyy.zzz.aaa
 
--A INPUT -j REJECT --reject-with icmp-host-prohibited
+but if I set the default route to VERIZONIF ( dynamic address ) , NAT 
+doesn't work with this masquerade:
 
-I can make it work if I put in the following;
+$IPT   -t nat -A POSTROUTING -o $VERIZONIF   -j MASQUERADE
 
--A INPUT -p udp --sport 137 -j ACCEPT
+Forward should work regardless of interface:
 
-but I thought the top line should have allowed the response to pass 
-through.  It is coming back on the same port as it was sent on.
+#now set up block firewall chain
+/sbin/iptables  -N  block
+/sbin/iptables  -A block  -m state --state ESTABLISHED,RELATED -j ACCEPT
+/sbin/iptables  -A block   -i  $INTIF  -j ACCEPT
+/sbin/iptables  -A block    -j DROP
 
-Any insight would be appreciated.
+# allow all from localhost
+$IPT -A INPUT  -i lo -j ACCEPT
+$IPT -A OUTPUT -o lo -j ACCEPT
 
-Thanks,
+#allow from ssh
+$IPT -A INPUT -p tcp -s 0/0 --dport 22 -j ACCEPT  #ssh
 
--- 
+# send everything else to the block chain
+$IPT  -A INPUT -j  block
+$IPT  -A FORWARD -j  block
 
-Knute Johnson
-knute2008@www.knutejohnson.com
+
+So what am I missing?
+
+sean
 
