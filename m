@@ -1,28 +1,39 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: "excessively large" library built in standalone ipset build
-Date: Wed, 10 Dec 2008 17:01:50 +0100 (CET)
-Message-ID: <alpine.LNX.1.10.0812101657440.2534@fbirervta.pbzchgretzou.qr>
-References: <7259d7020811201429p2b83a4a5h88c46331cfbbf449@mail.gmail.com>  <alpine.LNX.1.10.0811202352550.25790@fbirervta.pbzchgretzou.qr>  <7259d7020811201543w3283fdd7red50d86788a0b730@mail.gmail.com>  <alpine.LNX.1.10.0811210051370.30112@fbirervta.pbzchgretzou.qr>
- <7259d7020811201607lc71f12ftaa9e5dbe09111e21@mail.gmail.com>
+From: rigoberto perez <rigo666beast@yahoo.com>
+Subject: Problems with UNIX SCO
+Date: Wed, 10 Dec 2008 08:45:02 -0800 (PST)
+Message-ID: <332483.28349.qm@web33206.mail.mud.yahoo.com>
+Reply-To: rigo666beast@yahoo.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7259d7020811201607lc71f12ftaa9e5dbe09111e21@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: JC Janos <jcjanos245@gmail.com>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
+
+Friends:
+
+I wrote a netfilter module with the follows operations:
+
+OUT
+***
+1) Modify every packet by paddding 64 bytes
+2) Save the original protocol in the 64 bytes trailer (that's enough space!)
+3) Modify the protocol header in TCP
+4) Calculate the IP checksum
 
 
-On Friday 2008-11-21 01:07, JC Janos wrote:
->On Thu, Nov 20, 2008 at 4:00 PM, Jan Engelhardt <jengelh@medozas.de> w=
-rote:
+IN
+**
+1) Restore the original protocol by get the saved in the trailer
+2) Trim the 64 bytes in the tail
+3) Calculate the IP checksum
 
->>> =E2=80=9Cexcessively large=E2=80=9D library built in standalone ips=
-et build
->> Not ipset related, move along :-)
->Moving ... !
+I wrote the same funcionality in a SCO OPENSERVER UNIX. The comunication between the boths systems through pings is OK but in the case of TCP report errors in the checksum of the packets in UNIX.
+
+Anybody have some idea about it?
+
+Thanks.
 
 
-https://bugzilla.novell.com/show_bug.cgi?id=3D455997
+      
