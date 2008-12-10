@@ -1,36 +1,27 @@
-From: Knute Johnson <knute2008@www.knutejohnson.com>
-Subject: Re: UDP netbios nameserver packets blocked
-Date: Tue, 09 Dec 2008 10:38:50 -0800
-Message-ID: <493EBB3A.8080300@www.knutejohnson.com>
-References: <493DBE52.1010003@www.knutejohnson.com> <493E4A95.7040302@freemail.hu>
+From: dstorvik <dstorvik@consultech.net>
+Subject: nf_conntrack format
+Date: Wed, 10 Dec 2008 10:35:06 -0500
+Message-ID: <F5E47532014E8E45A339717AF42215342F1A1E7C2F@hild.consultech.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <493E4A95.7040302@freemail.hu>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-G=E1sp=E1r Lajos wrote:
-> Hello,
->=20
-> I think that you did not load the nf_conntrack_netbios_ns module...
+I'm looking for the format of the /proc/net/nf_conntrack file.  I can't seem to find anywhere the definition of each column in this file.  Can anyone point me in the right direction?
 
-You're right!
+Thanks
+   Derek
 
-> Just to be clear: DNS !=3D NETBIOS NS !!!
+--------------------------------
+Derek Storvik
 
-I do know that.  That was why I was surprised that DNS worked and NBNS=20
-didn't.
+Network & Systems Engineer
 
-Can you point me to a list of the modules what they do?
-
-Thanks very much,
-
---=20
-
-Knute Johnson
-knute2008@www.knutejohnson.com
+ConsulTech Technologies, Inc.
+Quality  Value  Reliability
+--------------------------------
 
