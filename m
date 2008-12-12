@@ -1,76 +1,51 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Using MARK and TOS to route traffic through different interfaces
- to the same destination
-Date: Fri, 12 Dec 2008 13:42:28 +0100
-Message-ID: <49425C34.3050108@plouf.fr.eu.org>
-References: <145d4e1a0812110418l3a867cb6pe6d45e9fd1007a75@mail.gmail.com>	 <1228998831.22977.9.camel@enterprise.ims-firmen.de>	 <49410A7C.6010501@plouf.fr.eu.org>	 <145d4e1a0812110515j30341cc0s438505a5e3785f74@mail.gmail.com>	 <49423E07.6050806@plouf.fr.eu.org> <145d4e1a0812120357i12694aa6o11c64fba2ab8fefb@mail.gmail.com>
+From: Richard Kennedy <richard@rsk.demon.co.uk>
+Subject: [PATCH] netfilter: remove padding from struct xt_match on 64bit
+	builds
+Date: Fri, 12 Dec 2008 13:39:50 +0000
+Message-ID: <1229089190.2921.7.camel@castor.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <145d4e1a0812120357i12694aa6o11c64fba2ab8fefb@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1758752AbYLLNkE@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: coreteam@netfilter.org
+Cc: lkml <linux-kernel@vger.kernel.org>, netfilter@vger.kernel.org
 
-Javier G=E1lvez Guerrero a =E9crit :
->=20
-> It seems that it matches and manages more or less properly, but the I=
-P
-> address not change while the output interface seems to be selected
-> accordingly the rules. As said before, each interface is binded to a
-> different IP address.
+reorder struct xt_match to remove 8 bytes of padding and make its size
+128 bytes.
 
-The source address is selected either by the sender process or by the=20
-initial routing decision, before the OUTPUT chains. Rerouting after the=
-=20
-OUTPUT chains does not alter it even though the output interface has=20
-changed. Thus the source address selection is unaware of iptables-based=
-=20
-advanced routing.
+This saves a small amount of data space in each of the xt netfilter
+modules and fits xt_match in one 128 byte cache line.
 
-> This is the configuration I set:
-[...]
-> sudo ip route add table 1 192.168.0.2 dev ath0
-> sudo ip route add table 2 192.168.0.2 dev eth0
+Signed-off-by: Richard Kennedy <richard@rsk.demon.co.uk>
+----
 
-Isn't there a typo ? These commands create host routes to 192.168.0.2,=20
-not default routes via gateway 192.168.0.2 as in your previous message.
-Another problem is that according to the interface subnets and the main=
-=20
-routing table, 192.168.0.2 is reachable only on eth0, not ath0.
+patch against v2.6.28-rc8
+Compiled & running on AMD X2 desktop machine.
+regards
+Richard
 
-> dulceangustia@spike:~$ ip route
-> 192.168.0.0/25 dev eth0  proto kernel  scope link  src 192.168.0.3
-> 192.168.0.128/25 dev ath0  proto kernel  scope link  src 192.168.0.15=
-0
-> default via 192.168.0.1 dev eth0
 
-Are both interfaces on the same link ? If yes, what is the subnet on=20
-that link ?
 
-> And this is what I get:
->=20
-> dulceangustia@spike:~$ sudo iptables -vL
+diff --git a/include/linux/netfilter/x_tables.h b/include/linux/netfilter/x_tables.h
+index e52ce47..c7ee874 100644
+--- a/include/linux/netfilter/x_tables.h
++++ b/include/linux/netfilter/x_tables.h
+@@ -270,6 +270,7 @@ struct xt_match
+ 	struct list_head list;
+ 
+ 	const char name[XT_FUNCTION_MAXNAMELEN-1];
++	u_int8_t revision;
+ 
+ 	/* Return true or false: return FALSE and set *hotdrop = 1 to
+            force immediate packet drop. */
+@@ -302,7 +303,6 @@ struct xt_match
+ 	unsigned short proto;
+ 
+ 	unsigned short family;
+-	u_int8_t revision;
+ };
+ 
+ /* Registration hooks for targets. */
 
-This command only shows the default (filter) table. You want to display=
-=20
-the mangle table with -t mangle.
-
-> I don't know why the source IP address is not changed. May be a
-> problem of ip route and not iptables?
-
-I explained why the source address is unchanged, see above.
-
-> Any idea about how to solve it?
-
-Either select the source address in the sender process (if you can=20
-select the destination port, you may be able to select the source=20
-address too) or use iptables SNAT.
-
-> I tried also to add a POSTROUTING SNAT rule to change the origin
-> source but it doesn't take any effect.
-
-It should work. What rules did you try ? Note that iperf shows only the=
-=20
-initial source address before SNAT, not the actual address on the wire.
