@@ -1,29 +1,33 @@
-From: Julien Vehent <julien@linuxwall.info>
-Subject: SpamHaus DROP list in Netfilter
-Date: Tue, 16 Dec 2008 15:27:52 +0100
-Message-ID: <57c616a9d26d450a7cda0fa3d52a191d@localhost>
+From: =?utf-8?q?Bj=C3=B6rn_Paulsen?= <b.paulsen@cms-mail.de>
+Subject: One TFTP-Server much devices with same IP-Address
+Date: Tue, 16 Dec 2008 15:45:23 +0100
+Message-ID: <200812161545.23142.b.paulsen@cms-mail.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="macroman"
 To: netfilter@vger.kernel.org
 
-Hi All,
+Hello together,
 
-I was wondering how I could integrate the spamhaus drop list
-(http://www.spamhaus.org/drop/drop.lasso) into my Netfilter rules.
+I have found your Project at my search at the Internet. I hope you can =
+help=20
+me. Our problem is, we have one TFTP-Server and much devices with the s=
+ame=20
+IP-Address, we can not change the IP-Addresses on the devices. Now we s=
+earch=20
+for a solution that all devices can get a file from the TFTP-Server at =
+the=20
+same time.
 
-The list is not too long, so I thought putting it directly into a new chain
-would be doable without degrading too much the performances. Somebody also
-told me to use a chains tree, but I wonder if this is necessary considering
-the size of the list...
+Our TFTP-Server have five ethernetcards so we would plugin five devices=
+ at the=20
+same Time. Can you help me how I configure that? It is generally possib=
+le?
 
-Has anybody done this before ?
+Thanks
 
-Thanks,
-Julien
-
--- 
-www.linuxwall.info
+Bj=C3=B6rn Paulsen
