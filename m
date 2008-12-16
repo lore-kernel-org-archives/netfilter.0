@@ -1,33 +1,62 @@
-From: =?utf-8?q?Bj=C3=B6rn_Paulsen?= <b.paulsen@cms-mail.de>
-Subject: One TFTP-Server much devices with same IP-Address
-Date: Tue, 16 Dec 2008 15:45:23 +0100
-Message-ID: <200812161545.23142.b.paulsen@cms-mail.de>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 11/11] net/bridge/netfilter: Move a dereference below a NULL
+ test
+Date: Tue, 16 Dec 2008 16:15:53 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0812161615320.20444@pc-004.diku.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: kaber@trash.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 
-Hello together,
+From: Julia Lawall <julia@diku.dk>
 
-I have found your Project at my search at the Internet. I hope you can =
-help=20
-me. Our problem is, we have one TFTP-Server and much devices with the s=
-ame=20
-IP-Address, we can not change the IP-Addresses on the devices. Now we s=
-earch=20
-for a solution that all devices can get a file from the TFTP-Server at =
-the=20
-same time.
+In each case, if the NULL test is necessary, then the dereference should be
+moved below the NULL test.
 
-Our TFTP-Server have five ethernetcards so we would plugin five devices=
- at the=20
-same Time. Can you help me how I configure that? It is generally possib=
-le?
+The semantic patch that makes this change is as follows:
+(http://www.emn.fr/x-info/coccinelle/)
 
-Thanks
+// <smpl>
+@@
+type T;
+expression E;
+identifier i,fld;
+statement S;
+@@
 
-Bj=C3=B6rn Paulsen
+- T i = E->fld;
++ T i;
+  ... when != E
+      when != i
+  if (E == NULL) S
++ i = E->fld;
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ net/bridge/netfilter/ebtables.c     |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index 0fa208e..1616884 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -86,12 +86,13 @@ static inline int ebt_do_match (struct ebt_entry_match *m,
+ static inline int ebt_dev_check(char *entry, const struct net_device *device)
+ {
+ 	int i = 0;
+-	const char *devname = device->name;
++	const char *devname;
+ 
+ 	if (*entry == '\0')
+ 		return 0;
+ 	if (!device)
+ 		return 1;
++	devname = device->name;
+ 	/* 1 is the wildcard token */
+ 	while (entry[i] != '\0' && entry[i] != 1 && entry[i] == devname[i])
+ 		i++;
