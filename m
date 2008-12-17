@@ -1,178 +1,116 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Access from inside proxy to server with apache
-Date: Wed, 17 Dec 2008 15:54:46 +0100
-Message-ID: <494912B6.3070702@freemail.hu>
-References: <22552e810812170530t79d02e5cieb363bb6afa61816@mail.gmail.com>
+From: "Payam Chychi" <pchychi@gmail.com>
+Subject: Re: Bug in limit match?
+Date: Wed, 17 Dec 2008 07:02:01 -0800
+Message-ID: <f08c15d10812170702i443f4963t91913747a6925be0@mail.gmail.com>
+References: <4948C9F9.5010803@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <22552e810812170530t79d02e5cieb363bb6afa61816@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=CJxfHWxBCWcnUMQ5EVC274myysiVLxLFYqNrfgx1N7M=;
+        b=qTVs9BmegB8LRXpYw0luDI5IMbY1ZyY44XQkoIT38yMPczq22TkCdcr2UTsuHnjIeR
+         UA363XNdoA36H+Ru62SYCmM8WW24G+JE4WftKdJ6c42piKKz3KS0duHRTMkmLjab/Ohi
+         oOL/NBbWhkSBtgTRQes2E0TCt5AlToMASwz60=
+In-Reply-To: <4948C9F9.5010803@chello.at>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Javi Legido <javi@legido.com>
-Cc: Netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Mart Frauenlob <mart.frauenlob@chello.at>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+Hey,
 
-Javi Legido =EDrta:
-> Hi.
->
-> I have the following schema:
->
-> [A]
->
-> [Pc] (80) =3D> (80) [Router] (80) =3D> (80) [Server]
->
-> [B]
->
-> [Pc] (80) =3D> (80) [Proxy] ?? =3D> (80) [Router] (80) =3D> (80) [Ser=
-ver]
->
-> More data:
->
-> -The server has iptables and Apache
-> -The router has port 80 tcp redirected to the server
->
-> Troubleshooting:
->
-> -When I 'switch on' iptables, schema [B] fails (schema [A] always wor=
-ks fine)
-> -When I 'switch off' iptables, schema [B] works fine
->
->  =20
-=2E..
-> Dec 17 12:32:24 servidor kernel: [1120947.846431] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D56
-> TOS=3D0x00 PREC=3D0x00 TTL=3D155 ID=3D31428 PROTO=3DICMP TYPE=3D3 COD=
-E=3D4
-> [SRC=3D192.168.1.2 DST=3Dpublic_ip_1 LEN=3D1500 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D63
-> ID=3D16093 DF PROTO=3DTCP INCOMPLETE [8 bytes] ] MTU=3D1492
-> Dec 17 12:32:54 servidor kernel: [1120979.925513] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:32:57 servidor kernel: [1120983.069334] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:32:57 servidor kernel: [1120983.693341] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:03 servidor kernel: [1120989.596154] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:03 servidor kernel: [1120990.224560] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:15 servidor kernel: [1121001.913149] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:15 servidor kernel: [1121002.550066] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:45 servidor kernel: [1121033.566738] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31434 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D1
-> Dec 17 12:33:46 servidor kernel: [1121034.571848] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31435 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D2
-> Dec 17 12:33:47 servidor kernel: [1121035.592819] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31436 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D3
-> Dec 17 12:33:48 servidor kernel: [1121036.789595] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31437 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D4
-> Dec 17 12:33:49 servidor kernel: [1121037.817587] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31438 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D5
-> Dec 17 12:33:50 servidor kernel: [1121038.945584] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31439 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D6
-> Dec 17 12:33:51 servidor kernel: [1121039.974620] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31440 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D7
-> Dec 17 12:33:52 servidor kernel: [1121040.974610] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31441 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D8
-> Dec 17 12:33:53 servidor kernel: [1121041.978981] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31442 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D9
-> Dec 17 12:33:54 servidor kernel: [1121042.991844] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31443 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D10
->  =20
-I do not see in this log any http (port 80 SPT=3D80 or DPT=3D80) activi=
-ty....
+The algorithm used in iptables for the limit feature is incorrect and
+so for example the value for the $time is only estimated and also
+cannot go above 1000 packets per second unless u use a limit of 10000
+and a burst of 500 which estimates to give you around 10,000 pps. Ive
+tried fixing it but ive had no luck
 
-Swifty
+better luck to you
 
+-- 
+Payam Tarverdyan Chychi
+Network Security Specialist / Network Engineer
+
+
+On Wed, Dec 17, 2008 at 1:44 AM, Mart Frauenlob
+<mart.frauenlob@chello.at> wrote:
+> Hello netfilter user mailing list!
+>
+> I think i discovered a small problem with the limit match of iptables:
+>
+> eris:~# iptables -A INPUT -i eth2 -s 123.123.123.123 -m limit --limit 1/day
+> -j LOG
+> iptables: Invalid argument
+> eris:~#
+>
+> eris:~# iptables -A INPUT -i eth2 -s 123.123.123.123 -m limit --limit 2/day
+> -j LOG
+> eris:~# echo $?
+> 0
+> eris:~#
+>
+> eris:~# iptables -A INPUT -i eth2 -s 123.123.123.123 -m limit --limit 3/day
+> -j LOG
+> iptables: Invalid argument
+> eris:~#
+>
+> eris:~# iptables -A INPUT -i eth2 -s 123.123.123.123 -m limit --limit 4/day
+> -j LOG
+> eris:~# echo $?
+> 0
+> eris:~#
+>
+> the invalid argument error, happens with 1/d(ay) or 3/d(ay) limt rate value.
+> not that i really want to log 1 or 3 packets a day, but... looks like a bug
+> to me.
+>
+> eris:~# iptables -V
+> iptables v1.3.6
+>
+> debian etch:
+> eris:~# uname -a
+> Linux eris 2.6.18-6-686 #1 SMP Mon Oct 13 16:13:09 UTC 2008 i686 GNU/Linux
+>
+>
+> Also the man page says:
+> A rule using this extension will match until this limit is  reached  (unless
+>  the  `!' flag is used).
+>
+> well...:
+>
+> eris:~# iptables -A INPUT -i eth2 -s 123.123.123.123 -m limit ! --limit 3/s
+> -j LOG
+> iptables v1.3.6: limit does not support invert
+> Try `iptables -h' or 'iptables --help' for more information.
+> eris:~#
+>
+> eris:~# iptables -A INPUT -i eth2 -s 123.123.123.123 -m limit --limit ! 3/s
+> -j LOG
+> iptables v1.3.6: limit does not support invert
+> Try `iptables -h' or 'iptables --help' for more information.
+> eris:~#
+>
+> Either the man page, or the program is wrong. Or does the man page refer to
+> negating any other value in the rule? I could not think about anything
+> reverting the limit match.
+>
+> Please correct me if i'm wrong!
+> If this should be bug reported, what would I need to do?
+> Maybe this is fixed in newer releases of iptables. I don't know.
+>
+> Good day
+>
+> Mart
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
