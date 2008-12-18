@@ -1,250 +1,384 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Access from inside proxy to server with apache
-Date: Wed, 17 Dec 2008 20:51:29 +0100
-Message-ID: <49495841.9050601@chello.at>
-References: <22552e810812170530t79d02e5cieb363bb6afa61816@mail.gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: Jason Cosby <sky_jason@yahoo.com>
+Subject: Two lines, IMQ, and NAT
+Date: Wed, 17 Dec 2008 22:54:04 -0800 (PST)
+Message-ID: <971762.41930.qm@web37308.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed; boundary="0-1040235319-1229583244=:41930"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <22552e810812170530t79d02e5cieb363bb6afa61816@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
-Cc: Javi Legido <javi@legido.com>
 
-Javi Legido wrote:
-> Hi.
->
-> I have the following schema:
->
-> [A]
->
-> [Pc] (80) =3D> (80) [Router] (80) =3D> (80) [Server]
->
-> [B]
->
-> [Pc] (80) =3D> (80) [Proxy] =BF? =3D> (80) [Router] (80) =3D> (80) [S=
-erver]
->
-> More data:
->
-> -The server has iptables and Apache
-> -The router has port 80 tcp redirected to the server
->
-> Troubleshooting:
->
-> -When I 'switch on' iptables, schema [B] fails (schema [A] always wor=
-ks fine)
-> -When I 'switch off' iptables, schema [B] works fine
->
-> The output:
->
-> ************************ iptables -S ***************************
->
-> -P INPUT ACCEPT
-> -P FORWARD ACCEPT
-> -P OUTPUT ACCEPT
-> -A INPUT -s public_ip_1/32 -i eth0 -p tcp -m tcp --dport 22 -j ACCEPT
-> -A INPUT -s public_ip_1/32 -i eth0 -p tcp -m tcp --dport 443 -j ACCEP=
-T
-> -A INPUT -s 192.168.1.31/32 -i eth0 -p tcp -m tcp --dport 22 -j ACCEP=
-T
-> -A INPUT -s 192.168.1.30/32 -i eth0 -p tcp -m tcp --dport 22 -j ACCEP=
-T
-> -A INPUT -i eth0 -p tcp -m tcp --dport 80 -j ACCEPT
-> -A INPUT -i eth0 -p tcp -m tcp --sport 80 -j ACCEPT
-> -A INPUT -i eth0 -p tcp -m tcp --dport 4080 -j ACCEPT
-> -A INPUT -i eth0 -p udp -m udp --dport 4080 -j ACCEPT
-> -A INPUT -i eth0 -p tcp -m tcp --dport 21 -j ACCEPT
-> -A INPUT -i eth0 -p udp -m udp --dport 21 -j ACCEPT
-> -A INPUT -i eth0 -p udp -m udp --sport 53 -j ACCEPT
-> -A INPUT -i eth0 -p tcp -m tcp --sport 23 -j ACCEPT
-> -A INPUT -i lo -j ACCEPT
-> -A INPUT -j LOG --log-prefix "INPUT_"
-> -A INPUT -j REJECT --reject-with icmp-port-unreachable
-> -A FORWARD -p tcp -m tcp --dport 9999 -j ACCEPT
-> -A FORWARD -p tcp -m tcp --dport 6882 -j ACCEPT
-> -A FORWARD -p udp -m udp --dport 5865 -j ACCEPT
-> -A FORWARD -p tcp -m tcp --dport 5865 -j ACCEPT
-> -A FORWARD -p udp -m udp --dport 8443 -j ACCEPT
-> -A FORWARD -p tcp -m tcp --dport 8443 -j ACCEPT
-> -A FORWARD -p udp -m udp --dport 4666 -j ACCEPT
-> -A FORWARD -p tcp -m tcp --dport 4662 -j ACCEPT
-> -A FORWARD -j LOG --log-prefix "FORWARD"
-> -A FORWARD -j REJECT --reject-with icmp-port-unreachable
-> -A OUTPUT -o lo -j ACCEPT
->
-> ******************** /var/log/messages ****************************
->
-> Dec 17 12:32:24 servidor kernel: [1120947.846431] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D56
-> TOS=3D0x00 PREC=3D0x00 TTL=3D155 ID=3D31428 PROTO=3DICMP TYPE=3D3 COD=
-E=3D4
-> [SRC=3D192.168.1.2 DST=3Dpublic_ip_1 LEN=3D1500 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D63
-> ID=3D16093 DF PROTO=3DTCP INCOMPLETE [8 bytes] ] MTU=3D1492
-> Dec 17 12:32:54 servidor kernel: [1120979.925513] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:32:57 servidor kernel: [1120983.069334] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:32:57 servidor kernel: [1120983.693341] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:03 servidor kernel: [1120989.596154] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:03 servidor kernel: [1120990.224560] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:15 servidor kernel: [1121001.913149] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:15 servidor kernel: [1121002.550066] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.2=
- LEN=3D60
-> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=3D=
-56202
-> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-> Dec 17 12:33:45 servidor kernel: [1121033.566738] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31434 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D1
-> Dec 17 12:33:46 servidor kernel: [1121034.571848] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31435 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D2
-> Dec 17 12:33:47 servidor kernel: [1121035.592819] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31436 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D3
-> Dec 17 12:33:48 servidor kernel: [1121036.789595] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31437 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D4
-> Dec 17 12:33:49 servidor kernel: [1121037.817587] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31438 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D5
-> Dec 17 12:33:50 servidor kernel: [1121038.945584] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31439 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D6
-> Dec 17 12:33:51 servidor kernel: [1121039.974620] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31440 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D7
-> Dec 17 12:33:52 servidor kernel: [1121040.974610] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31441 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D8
-> Dec 17 12:33:53 servidor kernel: [1121041.978981] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31442 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D9
-> Dec 17 12:33:54 servidor kernel: [1121042.991844] INPUT_IN=3Deth0 OUT=
-=3D
-> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.2=
- LEN=3D84
-> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31443 PROTO=3DICMP TYPE=3D0 COD=
-E=3D0 ID=3D33569
-> SEQ=3D10
->
-> **************************************** end
-> *******************************************+
->
-> Notice there are 2 different ip's: public_ip_2 and public_ip_1. Maybe
-> there is the key...
->
-> Can anybody helps me to make iptables let pass the traffic to the sch=
-ema [B]?
->
-> PD: I tested two simillar schemas [b]: two machines from inside a
-> proxy, and the two machines failed to connect to server.
->
-> Thanks in advice.
->
-> Javier
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->  =20
-hello,
+--0-1040235319-1229583244=:41930
+Content-Type: text/plain; charset=us-ascii
 
-you say traffic on port 80 is redirected. how?
-i do not see any DNAT rules.
-also if the destination address is changed by nat, the packets get=20
-routed over the other interface.
-that is why you need to allow the traffic in the FORWARD chain.
-i do not see any of those in your rules above.
-if i understand it correctly and you have two external interfaces on th=
-e=20
-router, there are no rules either.
-and with two external interfaces your routing could come into account.=20
-but you did not provide any
-information about that.
+All,
 
-greets
+I can really use some advice here. I help to maintain a server providing internet service to troops in Iraq. Bandwidth is slim, so it is a challenge. A second line is being installed and I need to modify the scripts to make it work. 
 
-mart
+The server performs NAT and the qos script runs on IMQ devices both up and down. eth1 (LAN facing) is currently SNAT'ed to eth0 (internet facing). eth2 (internet facing) will be the second line coming in. It is simple enough attaching two lines to an IMQ, but here are my concerns:
 
+The qos script adjusts bandwidth every minute based upon quota and time remaining, so both internet facing NICs need to get an equal share. Does IMQ do load balancing on its own or do I need more? With the two internet facing NICs having different IPs, is it even possible to have a high bandwidth requirement pass through both IPs simultaneously?
+
+How do I deal with SNAT? Can I SNAT to both eth0 and eth2 from the LAN side? Also, coming back in, eth0 is DNAT'ed to eth1. This is the same basic question--do I DNAT from eth0 and eth2 to eth1?
+
+Attached is the script for reference. The firewall script is seperate and handles the NAT'ing, but it's pretty simple. Thanks so much in advance.  
+
+Jason
+--0-1040235319-1229583244=:41930
+Content-Type: text/plain; name="rc.qos.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="rc.qos.txt"
+
+Iy9iaW4vYmFzaA0KDQojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIw0KIyAgIFRoaXMgc2NyaXB0IHJlcXVpcmVzIHR3byBuZXR3b3JrIGNh
+cmRzLCBvbmUgaW50ZXJuZXQgZmFjaW5nIGFuZCBvbmUgDQojICAgTEFOIGZh
+Y2luZyBvbiBhIE5BVCBtYWNoaW5lLiBSZWFkIHRoZSBzY3JpcHQgZm9yIHJl
+cXVpcmVkIG1vZHVsZXMgDQojICAgKHRoZXJlIGFyZSBhIGxvdCkuIE5vdGUg
+dGhhdCBJTVEsIGlmIGJ1aWx0IGFzIGEgbW9kdWxlLCBtdXN0IA0KIyAgIGJl
+IG1hbnVhbGx5IGxvYWRlZCBlaXRoZXIgYnkgYWRkaW5nIHRvIHRoaXMgc2Ny
+aXB0IG9yIGxvYWRpbmcgDQojICAgZWxzZXdoZXJlIChpdCB3aWxsIG5vdCBh
+dXRvbG9hZCkuIA0KIw0KIyAgIEZpcnN0IHNldCB1cCB2YXJpYWJsZXMgdXNl
+ZCB0aHJvdWdob3V0IHRoZSBzY3JpcHQuIFRoaXMgcGFydGljdWxhciANCiMg
+ICBJU1AgdXNlcyBxdW90YXMgdGhhdCByZXNldCBldmVyeSA4IGhvdXJzLiBV
+cG9uIGNvbnN1bWluZyBYIG51bWJlciANCiMgICBvZiBieXRlcywgc3BlZWQg
+cmVzdHJpY3Rpb25zIG9jY3VyLiBBcyB0aGUgc2VydmVyIE1VU1QgYmUgdGhl
+IGJvdHRsZSANCiMgICBuZWNrIGluIHRoZSBsaW5rIGluIG9yZGVyIHRvIG1h
+aW50YWluIHFvcywgdGhlIGFkanVzdF9iYW5kd2lkdGgoKSANCiMgICBmdW5j
+dGlvbiB0YWtlcyBjYXJlIG9mIHRoaXMuIEVuc3VyZSB0aGUgbnVtX3VzZXJz
+IHZhcmlhYmxlIGJlbG93DQojICAgbWF0Y2hlcyB0aGUgbnVtYmVyIG9mIElQ
+IGdyb3VwcyBpbiB1c2VyX2lwIGJlbG93Lg0KIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMgDQpleHBvcnQgZGV2X2xhbj1ldGgxIGRldl9u
+ZXQ9ZXRoMCBpbXFfdXA9aW1xMCBpbXFfZHduPWltcTEgaW1xX3VwX2FsbD1p
+bXEyDQpleHBvcnQgcmF0ZV91cD0xMDg4MCByYXRlX2R3bj04MDAwMCBtYXhf
+dXA9NTc2MDAgbWF4X2R3bj0xNDA4MDANCmV4cG9ydCBxdW90YV9kd249MjMw
+Njg2NzIwMCBxdW90YV91cD0zMTE0MjcwNzINCmV4cG9ydCBsb2dmaWxlPS92
+YXIvbG9nL2JhbmR3aWR0aC5sb2cgbnVtX3VzZXJzPTM0IGxhbl9zdWI9MTky
+LjE2OC4xDQoNCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+DQojICAgVXNlcnMgYXJlIGdyb3VwZWQgYnkgbnVtYmVycyBvZiBtYWNoaW5l
+cyBzbyB0aGF0IGV2ZXJ5b25lLCBub3QgZXZlcnkgDQojICAgbWFjaGluZSwg
+Z2V0cyBlcXVhbCBiYW5kd2lkdGguIE1ha2Ugc3VyZSBJUHMgYXJlIGFzc2ln
+bmVkIGluIGEgbWFubmVyIA0KIyAgIGNvbnNpc3RlbnQgd2l0aCB0aGUgYmVs
+b3cgSVAgc2V0cy4gQSBzcGFjZSByZXByZXNlbnRzIG9uZSB1c2VyLiBGb3IN
+CiMgICBleGFtcGxlLCB0aGUgdXNlciB3aXRoIDUgbWFjaGluZXMgZ2V0cyB0
+aGUgc2FtZSBiYW5kd2lkdGggYXMgdGhlIHVzZXINCiMgICB3aXRoIG9uZS4g
+RG9uJ3QgZm9yZ2V0IHRvIGluY2x1ZGUgYm90aCB0aGUgd2lyZWxlc3MgYW5k
+IHdpcmVkIGNhcmRzDQojICAgZm9yIGVhY2ggdXNlciB0aGF0IGhhcyBib3Ro
+LiANCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjDQoNCnVz
+ZXJfaXA9IjggOSAxMDoxMSAxMiAxMyAxNDoxNSAxNiAxNyAxOCAxOSAyMCAy
+MSAyMiAyMyBcDQoyNCAyNSAyNiAyNzo1NiAyOCAyOTo1NyAzMCAzMTo1NSAz
+MjozMyAzNCAzNTozNiAzNzozODozOSA0MDo0MSA0Mjo0MyA0NDo0NSBcDQo0
+Njo0NyA0ODo0OSA1MDo1MyA1MTo1MiA1NCINCg0KIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMNCiMgICBDbGVhciB0YWJsZXMgYW5kIHJl
+c2V0IGV2ZXJ5dGhpbmcuIFRoaXMgd29uJ3QgYWZmZWN0IHJlZ3VsYXIgZmly
+ZXdhbGwgDQojICAgcnVsZXMsIGFzIHdlIGFyZSB1c2luZyBzZXBlcmF0ZSBj
+aGFpbnMgZm9yIHFvcy4gDQojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIw0KDQppcHRhYmxlcyAtdCBtYW5nbGUgLUQgUFJFUk9VVElORyAt
+aSAkZGV2X25ldCAtaiBieXRlc19pbiAmPiAvZGV2L251bGwNCmlwdGFibGVz
+IC10IG1hbmdsZSAtRCBQT1NUUk9VVElORyAtbyAkZGV2X25ldCAtaiBieXRl
+c19vdXQgJj4gL2Rldi9udWxsDQppcHRhYmxlcyAtdCBtYW5nbGUgLUQgUFJF
+Uk9VVElORyAtaSAkZGV2X2xhbiAtaiBxb3NfZHduICY+IC9kZXYvbnVsbA0K
+aXB0YWJsZXMgLXQgbWFuZ2xlIC1EIFBPU1RST1VUSU5HIC1vICRkZXZfbGFu
+IC1qIHFvc191cCAmPiAvZGV2L251bGwNCg0KZm9yIGRldiBpbiAkaW1xX3Vw
+ICRpbXFfZHduOyBkbw0KICAgdGMgcWRpc2MgZGVsIGRldiAkZGV2IHJvb3Qg
+Jj4gL2Rldi9udWxsDQogICBpcCBsaW5rIHNldCAkZGV2IGRvd24gJj4gL2Rl
+di9udWxsDQpkb25lDQoNCmlwdGFibGVzIC10IG1hbmdsZSAtRCBQUkVST1VU
+SU5HIC1pICRkZXZfbGFuIC1qIElNUSAtLXRvZGV2IDAgJj4gL2Rldi9udWxs
+DQppcHRhYmxlcyAtdCBtYW5nbGUgLUQgUE9TVFJPVVRJTkcgLW8gJGRldl9s
+YW4gLWogSU1RIC0tdG9kZXYgMSAmPiAvZGV2L251bGwNCg0KZm9yIGNoYWlu
+IGluIGJ5dGVzX2luIGJ5dGVzX291dCBxb3NfdXAgcW9zX2R3bjsgZG8NCiAg
+IGlwdGFibGVzIC10IG1hbmdsZSAtRiAkY2hhaW4gJj4gL2Rldi9udWxsDQog
+ICBpcHRhYmxlcyAtdCBtYW5nbGUgLVggJGNoYWluICY+IC9kZXYvbnVsbA0K
+ICAgaXB0YWJsZXMgLXQgbWFuZ2xlIC1OICRjaGFpbiAmPiAvZGV2L251bGwN
+CmRvbmUNCg0KIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMN
+CiMgICBUaGUgZm9sbHdpbmcgYWRqdXN0cyBiYW5kd2lkdGggYWNjb3JkaW5n
+IHRvIGEgbnVtYmVyIG9mIHBhcmFtZXRlcnMuIA0KIyAgIEZpcnN0LCBpdCBo
+YXMgYmVlbiBkZXRlcm1pbmVkIHRoYXQgdGhlIG1heCBjb25zaXN0ZW50IHNw
+ZWVkIGF0dGFpbmFibGUgd2l0aCANCiMgICB0aGlzIElTUCBpcyAxMTAwLzQ1
+MCBtZWdhYml0cyBkb3duL3VwLiBTZWNvbmQsIHRoaXMgSVNQIHNldHMgYSBx
+dW90YSANCiMgICBjYXAgb2YgMjIwMC8yOTcgTUIgZG93bi91cCBwZXIgOCBo
+b3VyIHBlcmlvZC4gV2UgYWxzbyBoaXQgYSBzcGVlZCANCiMgICByZXN0cmlj
+dGlvbiBvZiA1MTIvNjAga2lsb2JpdHMvc2Vjb25kIGFmdGVyIDcwMC8xODAg
+TUIgZG93bi91cCBhcmUgY29uc3VtZWQuIyANCiMNCiMgICBGaXJzdCwgd2Ug
+aGF2ZSB0byBkZXRlcm1pbmUgd2hhdCB0aW1lIGl0IGlzIFVUQyAoR3JlZW53
+aWNoKS4gVGhlIElTUCANCiMgICByZXNldHMgdGhlIHF1b3RhcyBhdCBub29u
+LCAyMDAwLCBhbmQgMDQwMCBkYWlseS4gV2UgdXNlIHRoZSBMaW51eCANCiMg
+ICBlcG9jaCB0byBhY2NvbXBsaXNoIHRoaXMuIFRoZSBkYXRlIGNvbW1hbmQg
+YmVsb3cgZ2l2ZXMgdGhlIG51bWJlciANCiMgICBvZiBzZWNvbmRzIHNpbmNl
+IG1pZG5pZ2h0LCBKYW4gMXN0IDE5NzAuIERpdmlkaW5nIHRoaXMgYnkgb25l
+IGRheSANCiMgICBhbmQgdGFraW5nIHRoZSByZW1haW5kZXIgZ2l2ZXMgdXMg
+dGhlIG51bWJlciBvZiBzZWNvbmRzIHNpbmNlIG1pZG5pZ2h0IA0KIyAgIHRv
+ZGF5LiBGcm9tIGhlcmUgd2UgY2FuIGRpdmlkZSBieSBzZWNvbmRzLCBtaW51
+dGVzLCBhbmQgaG91cnMgdG8gDQojICAgZGV0ZXJtaW5lIHdoYXQgdGltZSBp
+dCBpcyBhbmQgaG93IG11Y2ggdGltZSByZW1haW5zIGluIGEgcXVvdGEgcGVy
+aW9kLiANCiMgICBPbmNlIHdlIGhhdmUgdGltZSByZW1haW5pbmcsIHdlIGRp
+dmlkZSBieSB0aGUgYW1vdW50IG9mIHFvdXRhIHJlbWFpbmluZyANCiMgICB0
+byBkZXRlcm1pbmUgZGVzaXJlZCBzcGVlZC4gVGhpcyBpcyBjaGVja2VkIGFn
+YWluc3Qgb3VyIHNwZWVkIGNhcHMgYW5kIA0KIyAgIG1heCBzcGVlZCBhdHRh
+aW5hYmxlIHRvIGVuc3VyZSB0aGF0IHdlIGFyZSBub3QgYWJvdmUgd2hhdCBp
+cyB3b3JrYWJsZS4gDQojICAgT25jZSB3ZSBoYXZlIG91ciBzcGVlZCBjYWxj
+dWxhdGVkLCB0aGlzIHNwZWVkIGlzIHBhc3NlZCB0byB0aGUgDQojICAgdXNl
+cl9jbGFzcygpIGFuZCBwYXJlbnRfY2xhc3MgZnVuY3Rpb25zIHRvIGNoYW5n
+ZSB0aGUgYmFuZHdpZHRoIA0KIyAgIGFsbG90dGVkIHRvIHRoZSBxdWV1ZXMu
+IA0KIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMNCg0KYWRq
+dXN0X2JhbmR3aWR0aCgpIHsNCg0Kc2VjdGltZT0kKCgkKGRhdGUgKyVzKSU4
+NjQwMCkpDQoNCmJ5dGVzX2luPSQoaXB0YWJsZXMgLXQgbWFuZ2xlIC1MIGJ5
+dGVzX2luIC1uIC14IC12IHwgXA0KICAgZ3JlcCAkZGV2X25ldCB8IGF3ayAn
+eyBwcmludCAkMiB9JykNCg0KYnl0ZXNfb3V0PSQoaXB0YWJsZXMgLXQgbWFu
+Z2xlIC1MIGJ5dGVzX291dCAtbiAteCAtdiB8IFwNCiAgIGdyZXAgJGRldl9u
+ZXQgfCBhd2sgJ3sgcHJpbnQgJDIgfScpDQoNCmlmIFsgJHNlY3RpbWUgLWdl
+IDAgLWEgJHNlY3RpbWUgLWx0IDE0NDAwIF07IHRoZW4NCiAgIHNlY3NyZW1h
+aW49JCgoMTQ0MDAtJHNlY3RpbWUpKQ0KZWxpZiBbICRzZWN0aW1lIC1nZSAx
+NDQwMCAtYSAkc2VjdGltZSAtbHQgNDMyMDAgXTsgdGhlbg0KICAgc2Vjc3Jl
+bWFpbj0kKCg0MzIwMC0kc2VjdGltZSkpDQplbGlmIFsgJHNlY3RpbWUgLWdl
+IDQzMjAwIC1hICRzZWN0aW1lIC1sdCA3MjAwMCBdOyB0aGVuDQogICBzZWNz
+cmVtYWluPSQoKDcyMDAwLSRzZWN0aW1lKSkNCmVsaWYgWyAkc2VjdGltZSAt
+Z2UgNzIwMDAgLWEgJHNlY3RpbWUgLWx0IDg2NDAwIF07IHRoZW4NCiAgIHNl
+Y3NyZW1haW49JCgoJCgoODY0MDAtJHNlY3RpbWUpKSsxNDQwMCkpDQpmaQ0K
+DQppZiBbICRieXRlc19pbiAtZXEgMCBdOyB0aGVuDQogICBzcGVlZF9kd249
+JCgoJHF1b3RhX2R3bi8kc2Vjc3JlbWFpbikpDQplbGlmIFsgJGJ5dGVzX2lu
+IC1nZSA3MzQwMDMyMDAgXTsgdGhlbg0KICAgc3BlZWRfZHduPTY1NTM2DQpl
+bHNlDQogICBzcGVlZF9kd249JCgoKCRxdW90YV9kd24tJGJ5dGVzX2luKS8k
+c2Vjc3JlbWFpbikpDQpmaQ0KDQppZiBbICRieXRlc19vdXQgLWVxIDAgXTsg
+dGhlbg0KICAgc3BlZWRfdXA9JCgoJHF1b3RhX3VwLyRzZWNzcmVtYWluKSkN
+CmVsaWYgWyAkYnl0ZXNfb3V0IC1nZSAxODg3NDM2ODAgXTsgdGhlbg0KICAg
+c3BlZWRfdXA9NzY4MA0KZWxzZQ0KICAgc3BlZWRfdXA9JCgoKCRxdW90YV91
+cC0kYnl0ZXNfb3V0KS8kc2Vjc3JlbWFpbikpDQpmaQ0KDQppZiBbICRzcGVl
+ZF9kd24gLWdlICRtYXhfZHduIF07IHRoZW4NCiAgIG5ld3JhdGVfZHduPSRt
+YXhfZHduDQplbHNlDQogICBuZXdyYXRlX2R3bj0kc3BlZWRfZHduDQpmaQ0K
+DQppZiBbICRzcGVlZF91cCAtZ2UgJG1heF91cCBdOyB0aGVuDQogICBuZXdy
+YXRlX3VwPSRtYXhfdXANCmVsc2UNCiAgIG5ld3JhdGVfdXA9JHNwZWVkX3Vw
+DQpmaQ0KDQpsb2dyYXRlX2R3bj0kKCgkbmV3cmF0ZV9kd24qOC8xMDI0KSkg
+bG9ncmF0ZV91cD0kKCgkbmV3cmF0ZV91cCo4LzEwMjQpKQ0KZWNobyAiJChk
+YXRlKSBTcGVlZCBjaGFuZ2VkIHRvICRsb2dyYXRlX2R3bi8kbG9ncmF0ZV91
+cCBcDQprYml0IGRvd24vdXAuIiA+PiAkbG9nZmlsZQ0KDQpwYXJlbnRfY2xh
+c3MgY2hhbmdlICRpbXFfdXAgJG5ld3JhdGVfdXANCnBhcmVudF9jbGFzcyBj
+aGFuZ2UgJGltcV9kd24gJG5ld3JhdGVfZHduDQoNCmZvciB1c2VyIGluICR1
+c2VyX2lwOyBkbw0KICAgbWFyaz1gZWNobyAkdXNlciB8IHNlZCAtZSAicy9b
+XjAtOV0uKi8vZyJgDQogICBtYXJrPSQoKCRtYXJrKjEwKSk7DQogICB1c2Vy
+X2NsYXNzIGNoYW5nZSAkaW1xX3VwICRuZXdyYXRlX3VwICRtYXJrDQogICB1
+c2VyX2NsYXNzIGNoYW5nZSAkaW1xX2R3biAkbmV3cmF0ZV9kd24gJG1hcmsN
+CmRvbmUNCg0KfQ0KDQojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMgICANCiMgICBUaGlzIGlzIHRoZSBtYWluIGNsYXNzIHN0cnVjdHVy
+ZS4gV2Ugc2V0IHVwIHRoZSByb290IHFkaXNjIHdpdGggYSANCiMgICBsYW4g
+c3BlZWQgY2xhc3MgdW5kZXIgaXQgZm9yIG5vbi1pbnRlcm5ldCB0cmFuc2Zl
+cnMuIEEgc2luZ2xlIHBmaWZvDQojICAgcWRpc2MgYW5kIHRjIGZpbHRlciBh
+cmUgcGFydCBvZiB0aGlzIHNjaGVtZSB0byBnZXQgdGhlIExBTiB0cmFmZmlj
+IGludG8NCiMgICB0aGUgZnVsbCBzcGVlZCBxdWV1ZS4gDQojDQojICAgQWZ0
+ZXIgdGhpcyB3ZSBjcmVhdGUgdGhlIGludGVyYWN0aXZlIGNsYXNzIGZvciBh
+cHBsaWNhdGlvbnMgbGlrZSB2b2lwLA0KIyAgIHZpZGVvIGNvbmZlcmVuY2lu
+ZywgYW5kIGRlbGF5IHNlbnNhdGl2ZSBhcHBsaWNhdGlvbnMuIEEgcGZpZm8g
+cWRpc2MgDQojICAgaXMgYXR0YWNoZWQgdG8gdGhpcyBhcyBvcHBvc2VkIHRv
+IHNmcSB0byBrZWVwIGRlbGF5IHRvIGFuIGFic29sdXRlDQojICAgbWluaW11
+bSAod2Ugc2hvdWxkIG9ubHkgaGF2ZSBvbmUgdXNlciBpbiB0aGlzIGJhbmQg
+YXQgYSB0aW1lLCBhbnl3YXkpLiANCiMgICBUaGVuIHdlIGNyZWF0ZSBhIGxv
+dyBiYW5kd2lkdGggcmVzZXJ2ZSBmb3Igc3NoLCBzbyB0aGF0IHdlIGNhbiB3
+b3JrIG9uIHRoZQ0KIyAgIHNlcnZlciBkdXJpbmcgaGlnaCB0cmFmZmljLiBU
+aGVuIHdlIGNyZWF0ZSB0aGUgbWFpbiBpbnRlcm5ldCBjbGFzcywgDQojICAg
+d2hpY2ggZ2V0cyB0aGUgbGlvbnMgc2hhcmUgb2YgdGhlIGJhbmR3aWR0aC4g
+TGFzdCwgd2UgY3JlYXRlIHRoZSBsb3dlc3QgDQojICAgcHJpb3JpdHkgZG93
+bmxvYWQgY2xhc3MsIHdoaWNoIGdldHMgYSB0b3RhbCBvZiAyMCUgdG90YWwg
+YmFuZHdpZHRoLiBCZQ0KIyAgIGNhcmVmdWwgc2V0dGluZyB0aGlzIHRvbyBo
+aWdoLCBhcyBpdCBpcyBkaWZmaWN1bHQgdG8gc2xvdyBkb3duIGEgDQojICAg
+c2NyZWFtaW5nIGRvd25sb2FkIG9uY2UgaXQgcmVhY2hlcyBhIGhpZ2ggbGV2
+ZWwgb2Ygc2F0dXJhdGlvbi4gDQojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjDQoNCnBhcmVudF9jbGFzcygpIHsNCg0KY29tbWFuZD0kMSBk
+ZXY9JDIgcmF0ZT0kMw0KDQppZiBbICRjb21tYW5kID09IGFkZCBdOyB0aGVu
+DQogICB0YyBxZGlzYyAkY29tbWFuZCBkZXYgJGRldiByb290IGhhbmRsZSAx
+OiBodGIgZGVmYXVsdCA1DQoNCiAgIHRjIGNsYXNzIGFkZCBkZXYgJGRldiBw
+YXJlbnQgMTogY2xhc3NpZCAxOjEgaHRiIHJhdGUgXA0KICAgOTAwMDAwYnBz
+IHF1YW50dW0gMTUxMCBwcmlvIDANCg0KICAgdGMgcWRpc2MgYWRkIGRldiAk
+ZGV2IHBhcmVudCAxOjEgaGFuZGxlIDI6IHBmaWZvDQoNCiAgIHRjIGZpbHRl
+ciAkY29tbWFuZCBkZXYgJGRldiBwYXJlbnQgMTogcHJvdG9jb2wgaXAgcHJp
+byAxIHUzMiBtYXRjaCBcDQogICBpcCBwcm90b2NvbCAweDYgMHhmZiBtYXRj
+aCBpcCB0b3MgMHgxMCAweGZmIGZsb3dpZCAxOjENCg0KZmkNCg0KdGMgY2xh
+c3MgJGNvbW1hbmQgZGV2ICRkZXYgcGFyZW50IDE6IGNsYXNzaWQgMToyIGh0
+YiByYXRlICQoKCRyYXRlKSlicHMgXA0KY2VpbCAkKCgkcmF0ZSkpYnBzIHF1
+YW50dW0gMTUxMA0KDQppZiBbICRkZXYgPT0gJGltcV91cCBdOyB0aGVuDQog
+ICB0YyBjbGFzcyAkY29tbWFuZCBkZXYgJGRldiBwYXJlbnQgMToyIGNsYXNz
+aWQgMTozIGh0YiByYXRlIFwNCiAgICQoKCRyYXRlKjUvMTAwKSlicHMgY2Vp
+bCAxMjgwMGJwcyBxdWFudHVtIDE1MTAgcHJpbyAxDQplbHNlDQogICB0YyBj
+bGFzcyAkY29tbWFuZCBkZXYgJGRldiBwYXJlbnQgMToyIGNsYXNzaWQgMToz
+IGh0YiByYXRlIFwNCiAgICQoKCRyYXRlKjUvMTAwKSlicHMgcXVhbnR1bSAx
+NTEwIHByaW8gMQ0KZmkNCg0KdGMgY2xhc3MgJGNvbW1hbmQgZGV2ICRkZXYg
+cGFyZW50IDE6MiBjbGFzc2lkIDE6NCBodGIgcmF0ZSBcDQokKCgkcmF0ZSoy
+MC8xMDApKWJwcyBjZWlsICQoKCRyYXRlKjI1LzEwMCkpYnBzIHF1YW50dW0g
+MTUxMCBwcmlvIDMNCg0KdGMgY2xhc3MgJGNvbW1hbmQgZGV2ICRkZXYgcGFy
+ZW50IDE6MiBjbGFzc2lkIDE6NSBodGIgcmF0ZSBcDQokKCgkcmF0ZSo1NS8x
+MDApKWJwcyBjZWlsICQoKCRyYXRlKSlicHMgYnVyc3QgNmsgY2J1cnN0IDZr
+IHF1YW50dW0gMTUxMCBwcmlvIDINCg0KdGMgY2xhc3MgJGNvbW1hbmQgZGV2
+ICRkZXYgcGFyZW50IDE6MiBjbGFzc2lkIDE6NiBodGIgcmF0ZSBcDQokKCgk
+cmF0ZSoyMC8xMDApKWJwcyBjZWlsICQoKCRyYXRlKjI1LzEwMCkpYnBzIHF1
+YW50dW0gMTUxMCBwcmlvIDQNCg0KaWYgWyAkY29tbWFuZCA9PSBhZGQgXTsg
+dGhlbg0KICAgdGMgcWRpc2MgYWRkIGRldiAkZGV2IHBhcmVudCAxOjMgaGFu
+ZGxlIDM6IHBmaWZvDQogICB0YyBxZGlzYyBhZGQgZGV2ICRkZXYgcGFyZW50
+IDE6NCBoYW5kbGUgNDogc2ZxIHBlcnR1cmIgMTANCiAgIHRjIHFkaXNjIGFk
+ZCBkZXYgJGRldiBwYXJlbnQgMTo1IGhhbmRsZSA1OiBzZnEgcGVydHVyYiAx
+MA0KDQpmb3IgY2xhc3MgaW4gMSAzIDQgNTsgZG8NCiAgIHRjIGZpbHRlciBh
+ZGQgZGV2ICRkZXYgcGFyZW50IDE6IHByb3RvY29sIGlwIHByaW8gMiBoYW5k
+bGUgJGNsYXNzIFwNCiAgIGZ3IGZsb3dpZCAxOiRjbGFzcw0KZG9uZQ0KDQpm
+aQ0KDQp9DQoNCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyAgIA0KIyAgIHVzZXJfY2xhc3MoKSBjcmVhdGVzIGEgY2xhc3MgdW5kZXIg
+dGhlIHBhcmVudCBkb3dubG9hZCBjbGFzcy4gV2UgZG9uJ3QgDQojICAgYWxs
+b2NhdGUgZXZlcnl0aGluZyBieSBpbmRpdmlkdWFsIHVzZXIsIGp1c3QgZG93
+bmxvYWRzLCBhcyBpdCBpcyAgDQojICAgYmV0dGVyIHRvIHN0YXkgb3V0IG9m
+IHNxdWlkJ3Mgd2F5LiBzcXVpZCBoYXMgaXQncyBvd24gc2NoZW1lIGFuZCAN
+CiMgICBpdCB3b3JrcyB3ZWxsLiANCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjDQoNCnVzZXJfY2xhc3MoKSB7DQoNCmNvbW1hbmQ9JDEg
+ZGV2PSQyIHVyYXRlPSQoKCQzKjIwLzEwMCkpIG1hcms9JDQNCg0KdGMgY2xh
+c3MgJGNvbW1hbmQgZGV2ICRkZXYgcGFyZW50IDE6NiBjbGFzc2lkIDE6JG1h
+cmsgaHRiIHJhdGUgXA0KJCgoJHVyYXRlLyRudW1fdXNlcnMpKWJwcyBjZWls
+ICQoKCR1cmF0ZSkpYnBzIHF1YW50dW0gMTUxMCBwcmlvIDUNCg0KaWYgWyAk
+Y29tbWFuZCA9PSBhZGQgXTsgdGhlbg0KICAgdGMgcWRpc2MgYWRkIGRldiAk
+ZGV2IHBhcmVudCAxOiRtYXJrIGhhbmRsZSAkbWFyazogc2ZxIHBlcnR1cmIg
+MTANCg0KICAgdGMgZmlsdGVyIGFkZCBkZXYgJGRldiBwYXJlbnQgMTogcHJv
+dG9jb2wgaXAgcHJpbyAzIGhhbmRsZSAkbWFyayBcDQogICBmdyBjbGFzc2lk
+IDE6JG1hcmsNCmZpDQoNCn0NCg0KIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMNCiMgICB1c2VyX3J1bGVzIHBpY2tzIHVwIGRvd25sb2Fk
+cyBhbmQgbWFya3MgdGhlbSB3aXRoIHRoZSBtYXJrIGRlcml2ZWQgZnJvbQ0K
+IyAgIHRoZSB1c2VyJ3MgSVAgYWRkcmVzcy4gVGhlc2UgYXJlIHRoZW4gcGxh
+Y2VkIGluIHRoZSBsb3dlc3QgcHJpb3JpdHkgDQojICAgY2xhc3MsIHdoZXJl
+IDIwJSBvZiB0aGUgcGlwZSdzIHRvdGFsIGJhbmR3aWR0aCBpcyBzaGFyZWQg
+YnkgYWxsIA0KIyAgIGRvd25sb2Fkcy4gQmUgY2FyZWZ1bCB3aXRoIHRoZSBu
+dW1iZXJzLiAyNTZLIHdvcmtzIHdlbGwuIE11Y2ggbG93ZXIgDQojICAgYW5k
+IHlvdSdsbCBiZSBwbGFjaW5nIGxhcmdlIHdlYiBwYWdlcyBpbiB0aGUgc2xv
+d2VzdCBjbGFzcywgbXVjaCBoaWdoZXIgDQojICAgYW5kIGRvd25sb2FkcyBy
+dW4gbG9uZ2VyIHRoYW4gdGhleSBuZWVkIHRvIGF0IGhpZ2hlciBzcGVlZHMu
+IA0KIw0KIyAgIHVwbG9hZCBxdW90YXMgYXJlIGFsc28gaW5pdGlhdGVkIGhl
+cmUuIFdlIGdpdmUgdXNlcnMgdGhlaXIgc2hhcmUqMiwgDQojICAgc2luY2Ug
+bm90IGFsbCB1c2VycyB3aWxsIHVzZSB0aGVpciBlbnRpcmUgcXVvdGEgZXZl
+cnkgOCBob3Vycy4gQWRqdXN0IA0KIyAgIGFzIGFwcHJvcHJpYXRlLiBUaGlz
+IGlzIHJlc2V0IGV2ZXJ5IDggaG91cnMgYnkgdGhlIGRhZW1vbiBmdW5jdGlv
+bg0KIyAgIGJlbG93LiANCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjDQogDQp1c2VyX3J1bGVzKCkgew0KDQpjaGFpbj0kMSBmbG93PSQy
+IGlwPSQzIG1hcms9JDQNCmNtZD0iaXB0YWJsZXMgLXQgbWFuZ2xlIC1JICRj
+aGFpbiAkZmxvdyAkaXAiDQoNCiRjbWQgLW0gY29ubmJ5dGVzIC0tY29ubmJ5
+dGVzIDI1NjAwMDogLS1jb25uYnl0ZXMtZGlyIG9yaWdpbmFsIFwNCi0tY29u
+bmJ5dGVzLW1vZGUgYnl0ZXMgLWogTUFSSyAtLXNldC1tYXJrICRtYXJrDQoN
+CmlmIFsgJGNoYWluID09IHFvc191cCBdOyB0aGVuDQogICAkY21kIC1qIERS
+T1ANCiAgICRjbWQgLW0gcXVvdGEyIC0tbmFtZSAkaXAgLS1xdW90YSAkKCgk
+cXVvdGFfdXAqMi8kbnVtX3VzZXJzKSkgLWogQUNDRVBUDQpmaQ0KDQp9DQoN
+CiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjDQojICAgSGVy
+ZSBpcyB3aGVyZSBhbGwgb2YgdGhlIG1hcmtpbmcgdGFrZXMgcGxhY2UuIFRo
+aW5ncyBzaG91bGQgYmUgc2VsZg0KIyAgIGV4cGxhbmF0b3J5LS13ZSBhcmUg
+anVzdCBwcmlvcml0aXppbmcgYW5kIGFzc2duaW5nIG1hcmtzLiBUaGUgcmVh
+c29uIA0KIyAgIHBvcnQgNjAwMCBpcyBwcmlvcml0aXplZCBpcyBmb3IgdGhl
+IFZzZWUgYXBwbGljYXRpb24uIFRoZQ0KIyAgIGxvd2VyIG51bWVyaWNhbGx5
+IHRoZSBtYXJrLCB0aGUgaGlnaGVyIHRoZSBwcmlvcml0eS4gQ2xhc3MgMTo1
+IGlzIHRoZQ0KIyAgIGRlZmF1bHQsIHNvIHRoaXMgdHJhZmZpYyBuZWVkcyBu
+byBtYXJrLiBEb3dubG9hZCB0cmFmZmljIGlzIHB1bGxlZCANCiMgICBmcm9t
+IDE6NSBhbmQgcGxhY2VkIGluIDE6NiBpbiB1c2VyX3J1bGVzKCkgYWZ0ZXIg
+MjU2SyBoYXMgYmVlbiBjb25zdW1lZC4gDQojIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIw0KDQpmb3IgY2hhaW4gaW4gcW9zX3VwIHFvc19k
+d247IGRvDQpjbWQ9ImlwdGFibGVzIC10IG1hbmdsZSAtQSAkY2hhaW4iDQoN
+CiRjbWQgLXMgMTkyLjE2OC4xLjAgLWQgMTkyLjE2OC4xLjAgLWogTUFSSyAt
+LXNldC1tYXJrIDENCiRjbWQgLXMgMTkyLjE2OC4xLjAgLWQgMTkyLjE2OC4x
+LjAgLWogUkVUVVJODQoNCiRjbWQgLXAgaWNtcCAtaiBNQVJLIC0tc2V0LW1h
+cmsgMw0KJGNtZCAtcCBpY21wIC1qIFJFVFVSTg0KDQokY21kIC1tIGxheWVy
+NyAtLWw3cHJvdG8gc2lwIC1qIE1BUksgLS1zZXQtbWFyayAzDQokY21kIC1t
+IGxheWVyNyAtLWw3cHJvdG8gc2lwIC1qIFJFVFVSTg0KDQokY21kIC1tIGxh
+eWVyNyAtLWw3cHJvdG8gc2t5cGVvdXQgLWogTUFSSyAtLXNldC1tYXJrIDMN
+CiRjbWQgLW0gbGF5ZXI3IC0tbDdwcm90byBza3lwZW91dCAtaiBSRVRVUk4N
+Cg0KJGNtZCAtbSBsYXllcjcgLS1sN3Byb3RvIHNreXBldG9za3lwZSAtaiBN
+QVJLIC0tc2V0LW1hcmsgMw0KJGNtZCAtbSBsYXllcjcgLS1sN3Byb3RvIHNr
+eXBldG9za3lwZSAtaiBSRVRVUk4NCg0KJGNtZCAtcCB0Y3AgLS1zcG9ydCA2
+MDAwIC1qIE1BUksgLS1zZXQtbWFyayAzDQokY21kIC1wIHRjcCAtLXNwb3J0
+IDYwMDAgLWogUkVUVVJODQoNCiRjbWQgLXAgdWRwIC0tc3BvcnQgNjAwMCAt
+aiBNQVJLIC0tc2V0LW1hcmsgMw0KJGNtZCAtcCB1ZHAgLS1zcG9ydCA2MDAw
+IC1qIFJFVFVSTg0KDQokY21kIC1wIHRjcCAtLWRwb3J0IDYwMDAgLWogTUFS
+SyAtLXNldC1tYXJrIDMNCiRjbWQgLXAgdGNwIC0tZHBvcnQgNjAwMCAtaiBS
+RVRVUk4NCg0KJGNtZCAtcCB1ZHAgLS1kcG9ydCA2MDAwIC1qIE1BUksgLS1z
+ZXQtbWFyayAzDQokY21kIC1wIHVkcCAtLWRwb3J0IDYwMDAgLWogUkVUVVJO
+DQoNCiRjbWQgLXAgdGNwIC0tZHBvcnQgc3NoIC1qIE1BUksgLS1zZXQtbWFy
+ayA0DQokY21kIC1wIHRjcCAtLWRwb3J0IHNzaCAtaiBSRVRVUk4NCg0KJGNt
+ZCAtcCB0Y3AgLW0gdG9zICEgLS10b3MgTWluaW1pemUtRGVsYXkgLS1zcG9y
+dCBzc2ggLWogTUFSSyAtLXNldC1tYXJrIDQNCiRjbWQgLXAgdGNwIC1tIHRv
+cyAhIC0tdG9zIE1pbmltaXplLURlbGF5IC0tc3BvcnQgc3NoIC1qIFJFVFVS
+Tg0KDQokY21kIC1wIHRjcCAtbSB0b3MgISAtLXRvcyBNaW5pbWl6ZS1EZWxh
+eSAtLWRwb3J0IHNzaCAtaiBNQVJLIC0tc2V0LW1hcmsgNA0KJGNtZCAtcCB0
+Y3AgLW0gdG9zICEgLS10b3MgTWluaW1pemUtRGVsYXkgLS1kcG9ydCBzc2gg
+LWogUkVUVVJODQoNCmRvbmUNCg0KIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMNCiMgICBIZXJlIHdlIGNhbGwgdGhlIGZ1bmN0aW9ucyB0
+byBjcmVhdGUgdGhlIGNsYXNzZXMsIHF1ZXVlcywgcnVsZXMsIGFuZCANCiMg
+ICBmaWx0ZXJzIHdoZW4gdGhlIHNjcmlwdCBpcyBmaXJzdCBydW4uIFRoZSBv
+bmx5IHRoaW5nIGNoYW5nZWQgYWZ0ZXIgDQojICAgdGhlIHNjcmlwdCdzIGlu
+aXRpYWwgZXhlY3V0aW9uIGlzIHRoZSBiYW5kd2lkdGggYW5kIHF1b3Rhcy4g
+DQojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIw0KDQpwYXJl
+bnRfY2xhc3MgYWRkICRpbXFfdXAgJHJhdGVfdXANCnBhcmVudF9jbGFzcyBh
+ZGQgJGltcV9kd24gJHJhdGVfZHduDQoNCmZvciB1c2VyIGluICR1c2VyX2lw
+OyBkbw0KICAgbWFyaz1gZWNobyAkdXNlciB8IHNlZCAtZSAicy9bXjAtOV0u
+Ki8vZyJgDQogICBtYXJrPSQoKCRtYXJrKjEwKSk7DQogICB1c2VyX2NsYXNz
+IGFkZCAkaW1xX3VwICRyYXRlX3VwICRtYXJrICRudW1fdXNlcnMNCiAgIHVz
+ZXJfY2xhc3MgYWRkICRpbXFfZHduICRyYXRlX2R3biAkbWFyayAkbnVtX3Vz
+ZXJzDQogICBpcF9saXN0PWBlY2hvICR1c2VyIHwgc2VkIC1lICJzLzovIC9n
+IiAtZSAicy9bXjAtOSBdLiovLyJgDQogICBmb3IgaXAgaW4gJGlwX2xpc3Q7
+IGRvDQogICBpcD0kbGFuX3N1Yi4kaXAgY2hhaW5fdXA9cW9zX3VwIGNoYWlu
+X2R3bj1xb3NfZHduIGZsb3dfdXA9Ii1zIiBmbG93X2R3bj0iLWQiDQogICAg
+ICB1c2VyX3J1bGVzICRjaGFpbl91cCAkZmxvd191cCAkaXAgJG1hcmsNCiAg
+ICAgIHVzZXJfcnVsZXMgJGNoYWluX2R3biAkZmxvd19kd24gJGlwICRtYXJr
+DQogICBkb25lDQpkb25lDQoNCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjDQojICAgSGVyZSB3ZSBob29rIHRoZSBpbXFzIGFuZCBxb3Mg
+Y2hhaW5zIGludG8gdGhlaXIgcmVzcGVjdGl2ZSBkZXZpY2VzIGFuZCANCiMg
+ICBpcHRhYmxlcyBjaGFpbnMuIA0KIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMNCg0KaXB0YWJsZXMgLXQgbWFuZ2xlIC1JIFBSRVJPVVRJ
+TkcgLWkgJGRldl9sYW4gLWogSU1RIC0tdG9kZXYgMA0KaXAgbGluayBzZXQg
+JGltcV91cCB1cCAmPiAvZGV2L251bGwNCmlwdGFibGVzIC10IG1hbmdsZSAt
+SSBQT1NUUk9VVElORyAtbyAkZGV2X2xhbiAtaiBJTVEgLS10b2RldiAxDQpp
+cCBsaW5rIHNldCAkaW1xX2R3biB1cCAmPiAvZGV2L251bGwNCmlwdGFibGVz
+IC10IG1hbmdsZSAtSSBQT1NUUk9VVElORyAtbyAkZGV2X2xhbiAtaiBxb3Nf
+ZHduDQppcHRhYmxlcyAtdCBtYW5nbGUgLUkgUFJFUk9VVElORyAtaSAkZGV2
+X2xhbiAtaiBxb3NfdXANCmlwdGFibGVzIC10IG1hbmdsZSAtQSBieXRlc19p
+biAtaSAkZGV2X25ldA0KaXB0YWJsZXMgLXQgbWFuZ2xlIC1BIFBSRVJPVVRJ
+TkcgLWogYnl0ZXNfaW4NCmlwdGFibGVzIC10IG1hbmdsZSAtQSBieXRlc19v
+dXQgLW8gJGRldl9uZXQNCmlwdGFibGVzIC10IG1hbmdsZSAtQSBQT1NUUk9V
+VElORyAtaiBieXRlc19vdXQNCg0Kc2xlZXAgMQ0KDQojIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIw0KIyAgIFRoaXMgaXMgdGhlIHBhcnQg
+b2YgdGhlIHNjcmlwdCB0aGF0IHJ1bnMgaW4gbWVtb3J5IGNvbnRpbnVvdXNs
+eS4gVGhlIA0KIyAgIHRpbWVyIHZhcmlhYmxlIGRpdmlkZXMgYnkgNjAgZXZl
+cnkgc2Vjb25kLiBXaGVuIHdlIGhhdmUgbm8gcmVtYWluZGVyLA0KIyAgIHdl
+IGFyZSBhdCB0aGUgdG9wIG9mIHRoZSBtaW51dGUuIEF0IHRoaXMgcG9pbnQs
+IHdlIGNoZWNrIHRvIHNlZSBpZiANCiMgICB3ZSBhcmUgYXQgdGhlIHRvcCBv
+ZiB0aGUgaG91ciBmb3IgdGhlIDggaG91ciBxdW90YSByZXNldC4gSWYgc28s
+IHVzZXINCiMgICB1cGxvYWQgcXVvdGFzIGFyZSByZXNldC4gVGhlbiwgZXZl
+cnkgbWludXRlLCB0aGUgYWRqdXN0X2JhbmR3aWR0aCgpDQojICAgZnVuY3Rp
+b24gaXMgcnVuLiANCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjDQoNCndoaWxlIDo7IGRvDQoNCnRpbWVyPSQoKCQoZGF0ZSArJXMpJTYw
+KSkNCg0KaWYgWyAkdGltZXIgLWVxIDAgXTsgdGhlbg0KICAgc2VjdGltZT0k
+KCgkKGRhdGUgKyVzKSU4NjQwMCkpDQogICBsb2dmaWxlPS92YXIvbG9nL2Jh
+bmR3aWR0aC5sb2cNCiAgIGlmIFsgJHNlY3RpbWUgLWVxIDI0NDAwIC1vICRz
+ZWN0aW1lIC1lcSA0MzIwMCAtbyAkc2VjdGltZSAtZXEgNzIwMDAgXTsgdGhl
+bg0KICAgICAgZWNobyAiJChkYXRlKSBCeXRlcyBpbiByZXNldCBhdCAkKCgk
+Ynl0ZXNfaW4vMTA0ODU3NikpTUIuIiA+PiAkbG9nZmlsZQ0KICAgICAgZWNo
+byAiJChkYXRlKSBCeXRlcyBvdXQgcmVzZXQgYXQgJCgoJGJ5dGVzX291dC8x
+MDQ4NTc2KSlNQi4iID4+ICRsb2dmaWxlDQogICAgICBlY2hvICIkKGRhdGUp
+IFF1b3RhIGNvdW50ZXJzIHJlc2V0LiIgPj4gJGxvZ2ZpbGUNCiAgICAgIGlw
+dGFibGVzIC1aDQogICAgICBmb3IgcyBpbiAkKHNlcSA4IDU3KTsgZG8NCiAg
+ICAgICAgIHF1b3RhX3VwPTMxMTQyNzA3MiBudW1fdXNlcnM9MzQNCiAgICAg
+ICAgIGVjaG8gJCgoJHF1b3RhX3VwKjIvJG51bV91c2VycykpID4gL3Byb2Mv
+bmV0L3h0X3F1b3RhLzE5Mi4xNjguMS4kcw0KICAgICAgZG9uZQ0KICAgZmkN
+CiAgIGFkanVzdF9iYW5kd2lkdGgNCmZpDQoNCnNsZWVwIDENCg0KZG9uZQ0K
+DQo=
+
+--0-1040235319-1229583244=:41930--
