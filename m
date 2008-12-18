@@ -1,145 +1,298 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] conntrack-tools 0.9.9 released
-Date: Thu, 18 Dec 2008 12:27:11 +0100
-Message-ID: <494A338F.8020603@netfilter.org>
+From: "Javi Legido" <javi@legido.com>
+Subject: Re: Access from inside proxy to server with apache
+Date: Thu, 18 Dec 2008 14:47:26 +0100
+Message-ID: <22552e810812180547k4759e365t8e2820dd62f2e50a@mail.gmail.com>
+References: <22552e810812170530t79d02e5cieb363bb6afa61816@mail.gmail.com>
+	 <49495841.9050601@chello.at>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050205060008020901080106"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:sender
+         :to:subject:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references
+         :x-google-sender-auth;
+        bh=sws5y+D9RYy/3UQfjF0vhGBFyyNUwr5NO9pef3BTwAI=;
+        b=aRs0bpr0IQGG6rESU2yOMN05UQsO64Qi4ZXPifKqc+ltT/WlmfpKQ2tvBKqHQ0sLWr
+         yC1Zw55guKUqPNg2lDWzbDsgOdFq7aHs2KBQAOWILmLe8UDjCsiK8/kIEgRAd9I/NZMN
+         f9uxOL0MNATziPDRTtWhKuWehUUXAZKnf0Bx8=
+In-Reply-To: <49495841.9050601@chello.at>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------050205060008020901080106
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+>>you say traffic on port 80 is redirected. how?
 
-Hi!
+[A]
 
-The netfilter project proudly presents another development release of
-the conntrack-tools. This release includes important updates, fixes and
-improvements. See changelog for details.
+[Pc] (80) =3D> (80) [Router] (80) =3D> (80) [Server]
 
-Q: What are the conntrack-tools?
-A: The conntrack-tools are:
+The router does NAT. I repeat: if i quit iptables, all works fine,
+then I assume router NAT works
 
-- The userspace daemon so-called conntrackd that covers the specific
-aspects of stateful Linux firewalls to enable high availability
-solutions. It can be used as statistics collector of the firewall use as
-well. The daemon is highly configurable and easily extensible.
+>> also if the destination address is changed by nat, the packets get r=
+outed over the other
+>> interface.
+>> that is why you need to allow the traffic in the FORWARD chain.
+>> i do not see any of those in your rules above.
 
-- The command line interface (CLI) conntrack that provides an interface
-to add, delete and update flow entries, list current active flows in
-plain text/XML, current IPv4 NAT'ed flows, reset counters, and flush the
-complete connection tracking table among many other.
+I added (without success) the following rule:
 
-Q: Where can I download it from?
-A: http://www.netfilter.org/projects/conntrack-tools/downloads.html
+-A FORWARD -i eth0 -p tcp -m tcp --dport 80 -j ACCEPT
 
-Q: Where can I get more information about them?
-A: http://conntrack-tools.netfilter.org
+------------------------------------------
 
-Q: Where can I have a look at the user manual?
-A: http://conntrack-tools.netfilter.org/manual.html
+The trouble continues: from inside a proxy, I can't access to the
+Apache server (I can access, for instance, via ssh). If I quit
+iptables, all works fine
 
-Q: What are the main changes in this release?
-A: The main changes in the conntrack command line interface are:
-- filtering support for related connections (-L --status EXPECTED)
-- several manpage updates
-A: The main changes in the conntrackd user-space daemon are:
-- new message format in the replication protocol (note that this breaks
-backward compatibility with previous conntrack-tools releases)
-- several performance improvements
-- CIDR-based filtering support
-- fixes and improvements in the state injection to kernel (aka. committing)
-- several cleanups
+Thanks for your interest.
 
-On behalf of the Netfilter Project,
-Pablo
-
-Enjoy!
-
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+Javier
 
 
 
-
---------------050205060008020901080106
-Content-Type: text/plain;
- name="ChangeLog"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ChangeLog"
-
-Pablo Neira Ayuso (65):
-      ftfw: rise the size of the acknowledgment window in the example
-      conntrack: add missing -U in conntrack(8) manpage
-      ftfw: add option `-v' to output debugging information (if any)
-      ftfw: remove bottleneck in ack/nack handling
-      network: remove message omission test-code
-      network: add protocol version field (breaks backward compatibility)
-      network: rework TLV-based protocol
-      filter: use XOR instead of branches
-      filter: use jhash2 instead of jhash for IPv6 addresses
-      filter: remove useless branch in the check functions
-      conntrack: --status should not be mandatory with -I
-      filter: choose the filtering method via configuration file
-      conntrack: cleanup command line tool protocol extensions
-      build: add attribute header size to total attribute length
-      filter: CIDR-based filtering support
-      run: release fds structure in the exit path
-      fds: remove unused array of file descriptors
-      ftfw: remove useless ftfw_run invocation in the alive alarm handler
-      src: move callbacks to run.c for better readability
-      conntrack: do_parse_parameter show warning to stderr (not to stdout)
-      conntrack: remove hardcoded buffer size, use sizeof instead
-      conntrack: support diminutives for -L
-      conntrack: move release options code to free_options()
-      config: move `Checksum' inside `Multicast' clause
-      network: make tx buffer initialization independent of mcast config
-      manpage: add notice about conntrackd version incompatibilities
-      conntrack: add new --status EXPECTED to filter expected connections
-      manpage: add --status FIXED_TIMEOUT and EXPECTED
-      build: do not include NTA_TIMEOUT in the replication messages
-      netlink: clone conntrack object while creation/update
-      netlink: use NFCT_Q_[CREATE|UPDATE] instead of NFCT_Q_CREATE_UPDATE
-      netlink: constify conntrack object parameter of nl_*_conntrack()
-      netlink: remove unnecessary whitespace lines in netlink.h
-      netlink: unset ATTR_HELPER_NAME to avoid EBUSY in nl_update_conntrack()
-      parse: fix missing master layer 4 protocol number assignation
-      network: remove unused function mcast_send_netmsg()
-      network: remove length parameter of mcast_buffered_send_netmsg()
-      network: remove __do_send() function
-      network: remove the netpld header from the messages
-      network: fix data offset alignment returned by NTA_DATA macro
-      parse: strict attribute size checking
-      src: recover conntrackd -F operation
-      run: better wait() error handling
-      netlink: fix EILSEQ error messages due to process race condition
-      cache_iterators: use a cloned object while resetting timers
-      netlink: build TCP flags/mask only if this is a TCP connection
-      netlink: conditional build of TCP flags/mask for updates
-      netlink: do not build the reply tuple in update messages
-      configure: conntrack-tools requires libnetfilter_conntrack 0.0.99
-      network: use NET_T_* instead of NFCT_Q_*
-      ftfw: do not check for data messages in tx_queue_xmit
-      ftfw: resync messages can be retransmitted
-      network: do more strict message type checking
-      ftfw: shrink alive message size
-      sync-mode: check if message type is >= NET_T_STATE_MAX before parsing
-      src: cleanup, rename hashtable_test() by hashtable_find()
-      cache: cleanup, rename __del2() by __del()
-      netlink: log report initial netlink event socket buffer size
-      doc: fix typo SocketBufferSizeMaxGrowth in example conffiles
-      doc: document the netlink buffer size clauses
-      doc: better documentation about ResendBufferSize
-      doc: add note on McastSndSocketBuffer and McastRcvSocketBuffer
-      netlink: fix type in warning message on SocketBufferSizeMaxGrowth
-      automake: add missing cidr.h
-      configure: bump version to 0.9.9
-
-
---------------050205060008020901080106--
+On 17/12/2008, Mart Frauenlob <mart.frauenlob@chello.at> wrote:
+> Javi Legido wrote:
+>> Hi.
+>>
+>> I have the following schema:
+>>
+>> [A]
+>>
+>> [Pc] (80) =3D> (80) [Router] (80) =3D> (80) [Server]
+>>
+>> [B]
+>>
+>> [Pc] (80) =3D> (80) [Proxy] =BF? =3D> (80) [Router] (80) =3D> (80) [=
+Server]
+>>
+>> More data:
+>>
+>> -The server has iptables and Apache
+>> -The router has port 80 tcp redirected to the server
+>>
+>> Troubleshooting:
+>>
+>> -When I 'switch on' iptables, schema [B] fails (schema [A] always wo=
+rks
+>> fine)
+>> -When I 'switch off' iptables, schema [B] works fine
+>>
+>> The output:
+>>
+>> ************************ iptables -S ***************************
+>>
+>> -P INPUT ACCEPT
+>> -P FORWARD ACCEPT
+>> -P OUTPUT ACCEPT
+>> -A INPUT -s public_ip_1/32 -i eth0 -p tcp -m tcp --dport 22 -j ACCEP=
+T
+>> -A INPUT -s public_ip_1/32 -i eth0 -p tcp -m tcp --dport 443 -j ACCE=
+PT
+>> -A INPUT -s 192.168.1.31/32 -i eth0 -p tcp -m tcp --dport 22 -j ACCE=
+PT
+>> -A INPUT -s 192.168.1.30/32 -i eth0 -p tcp -m tcp --dport 22 -j ACCE=
+PT
+>> -A INPUT -i eth0 -p tcp -m tcp --dport 80 -j ACCEPT
+>> -A INPUT -i eth0 -p tcp -m tcp --sport 80 -j ACCEPT
+>> -A INPUT -i eth0 -p tcp -m tcp --dport 4080 -j ACCEPT
+>> -A INPUT -i eth0 -p udp -m udp --dport 4080 -j ACCEPT
+>> -A INPUT -i eth0 -p tcp -m tcp --dport 21 -j ACCEPT
+>> -A INPUT -i eth0 -p udp -m udp --dport 21 -j ACCEPT
+>> -A INPUT -i eth0 -p udp -m udp --sport 53 -j ACCEPT
+>> -A INPUT -i eth0 -p tcp -m tcp --sport 23 -j ACCEPT
+>> -A INPUT -i lo -j ACCEPT
+>> -A INPUT -j LOG --log-prefix "INPUT_"
+>> -A INPUT -j REJECT --reject-with icmp-port-unreachable
+>> -A FORWARD -p tcp -m tcp --dport 9999 -j ACCEPT
+>> -A FORWARD -p tcp -m tcp --dport 6882 -j ACCEPT
+>> -A FORWARD -p udp -m udp --dport 5865 -j ACCEPT
+>> -A FORWARD -p tcp -m tcp --dport 5865 -j ACCEPT
+>> -A FORWARD -p udp -m udp --dport 8443 -j ACCEPT
+>> -A FORWARD -p tcp -m tcp --dport 8443 -j ACCEPT
+>> -A FORWARD -p udp -m udp --dport 4666 -j ACCEPT
+>> -A FORWARD -p tcp -m tcp --dport 4662 -j ACCEPT
+>> -A FORWARD -j LOG --log-prefix "FORWARD"
+>> -A FORWARD -j REJECT --reject-with icmp-port-unreachable
+>> -A OUTPUT -o lo -j ACCEPT
+>>
+>> ******************** /var/log/messages ****************************
+>>
+>> Dec 17 12:32:24 servidor kernel: [1120947.846431] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D56
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D155 ID=3D31428 PROTO=3DICMP TYPE=3D3 CO=
+DE=3D4
+>> [SRC=3D192.168.1.2 DST=3Dpublic_ip_1 LEN=3D1500 TOS=3D0x00 PREC=3D0x=
+00 TTL=3D63
+>> ID=3D16093 DF PROTO=3DTCP INCOMPLETE [8 bytes] ] MTU=3D1492
+>> Dec 17 12:32:54 servidor kernel: [1120979.925513] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.=
+2 LEN=3D60
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=
+=3D56202
+>> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
+>> Dec 17 12:32:57 servidor kernel: [1120983.069334] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.=
+2 LEN=3D60
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=
+=3D56202
+>> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
+>> Dec 17 12:32:57 servidor kernel: [1120983.693341] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.=
+2 LEN=3D60
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=
+=3D56202
+>> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
+>> Dec 17 12:33:03 servidor kernel: [1120989.596154] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.=
+2 LEN=3D60
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=
+=3D56202
+>> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
+>> Dec 17 12:33:03 servidor kernel: [1120990.224560] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.=
+2 LEN=3D60
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=
+=3D56202
+>> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
+>> Dec 17 12:33:15 servidor kernel: [1121001.913149] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.=
+2 LEN=3D60
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=
+=3D56202
+>> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
+>> Dec 17 12:33:15 servidor kernel: [1121002.550066] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3Dpublic_ip_2 DST=3D192.168.1.=
+2 LEN=3D60
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D52 ID=3D0 DF PROTO=3DTCP SPT=3D4242 DPT=
+=3D56202
+>> WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
+>> Dec 17 12:33:45 servidor kernel: [1121033.566738] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31434 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D1
+>> Dec 17 12:33:46 servidor kernel: [1121034.571848] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31435 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D2
+>> Dec 17 12:33:47 servidor kernel: [1121035.592819] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31436 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D3
+>> Dec 17 12:33:48 servidor kernel: [1121036.789595] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31437 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D4
+>> Dec 17 12:33:49 servidor kernel: [1121037.817587] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31438 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D5
+>> Dec 17 12:33:50 servidor kernel: [1121038.945584] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31439 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D6
+>> Dec 17 12:33:51 servidor kernel: [1121039.974620] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31440 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D7
+>> Dec 17 12:33:52 servidor kernel: [1121040.974610] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31441 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D8
+>> Dec 17 12:33:53 servidor kernel: [1121041.978981] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31442 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D9
+>> Dec 17 12:33:54 servidor kernel: [1121042.991844] INPUT_IN=3Deth0 OU=
+T=3D
+>> MAC=3Dmac_server:mac_client:08:00 SRC=3D192.168.1.1 DST=3D192.168.1.=
+2 LEN=3D84
+>> TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D31443 PROTO=3DICMP TYPE=3D0 CO=
+DE=3D0 ID=3D33569
+>> SEQ=3D10
+>>
+>> **************************************** end
+>> *******************************************+
+>>
+>> Notice there are 2 different ip's: public_ip_2 and public_ip_1. Mayb=
+e
+>> there is the key...
+>>
+>> Can anybody helps me to make iptables let pass the traffic to the sc=
+hema
+>> [B]?
+>>
+>> PD: I tested two simillar schemas [b]: two machines from inside a
+>> proxy, and the two machines failed to connect to server.
+>>
+>> Thanks in advice.
+>>
+>> Javier
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+>>
+> hello,
+>
+> you say traffic on port 80 is redirected. how?
+> i do not see any DNAT rules.
+> also if the destination address is changed by nat, the packets get
+> routed over the other interface.
+> that is why you need to allow the traffic in the FORWARD chain.
+> i do not see any of those in your rules above.
+> if i understand it correctly and you have two external interfaces on =
+the
+> router, there are no rules either.
+> and with two external interfaces your routing could come into account=
+=2E
+> but you did not provide any
+> information about that.
+>
+> greets
+>
+> mart
+>
+>
