@@ -1,68 +1,36 @@
-From: Aleksei Bebinov <alex@gipi.kg>
-Subject: Re: multiple exclusive DNAT does not work
-Date: Sat, 27 Dec 2008 14:19:18 +0600
-Message-ID: <4955E506.5060907@gipi.kg>
-References: <S1751268AbYLZSRi/20081226181738Z+155@vger.kernel.org> <49552652.1040705@gipi.kg> <49552910.2030503@solutti.com.br>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Re: Links to projects using netfilter
+Date: Sat, 27 Dec 2008 12:43:45 +0100
+Message-ID: <495614F1.5070903@tana.it>
+References: <4954EEA7.7000302@tana.it> <4955116C.7010806@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49552910.2030503@solutti.com.br>
+In-Reply-To: <4955116C.7010806@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?B?TGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaMOjZXM=?= <leolistas@solutti.com.br>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Nick <vbox.nick@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Thanks Leonardo.
-It works fine, and its some different than OBSD PF :-)
-
-
-
-Leonardo Rodrigues Magalh=C3=A3es =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->
->
-> Aleksei Bebinov escreveu:
->> I do so :
->> ---------------
->> cat /etc/config/kg-nets | while read LINE
->> do
->> #iptables -t nat -A PREROUTING -i br-lan -d  !  $LINE -p tcp -m
->> multiport --dports  80 -j DNAT --to-destination pr.oxy.ip:3128
+Nick wrote:
+> Alessandro Vesely =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> IPQ BDB maps an IP Queue to a Berkeley DB indexed on the ipv4
+>> field. More at https://savannah.nongnu.org/projects/ipqbdb/
 >>
->> done
->> --------------------------------------------
->>
->> My script cat the file line by line and add excluding rules ( with !=
- )
->> of nets that i dont need to redirect.
->> BUT!
->> if only one rule ( for one subnet) persist in table - it works fine,=
- and
->> if i ll add second  - with second net -  all the traffic redirecting=
- to
->> proxy - without any  exclusions.
->>
->>  =20
->
->    wrong rule for your needs. Maybe:
->
-> for LINE in `cat /etc/config/kg-nets`; do
->    iptables -t nat -A PREROUTING -i br-lan -d $LINE -p tcp --dport 80
-> -j ACCEPT
-> done
-> iptables -t nat -A PREROUTING -i br-lan -p tcp --dport 80 -j DNAT
-> --to-destination pr.oxy.ip:3128
->
->    will do it.
->
->    if someone asks me ONE single tip for making iptables easier, i
-> would say "do NOT use negation rules, those with !" ..... they work
-> just fine, but people rarely understands that it wont allow multiple
-> exclusions and will keep fighting with that. Anyway, anything done
-> with negation rules can be written in other single (and easier to
-> understood) rules.
->
->
->
->
+> The NFQUEUE target is nice feature. I using perl ( module ) for inspe=
+ct=20
+> and accounting network traffic, but perl script works slow. If the=20
+> bandwidth of more than 2MBit/s, the cpu loading is 50% (C2D E6550).
+> Here is a program written in C, works much faster and less weight CPU=
+ 1-2%.
 
+Besides being written in C, using BDB makes it very fast. On the 5th=20
+day I had 9140 records and the following /top/ output
+PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  SWAP   CODE DATA COMMAND
+15   0 10376 1308 1172 S    0  0.0   0:02.05 9068   16  252 ipqbdbd
+18   0  9500 1312 1152 S    0  0.0   0:31.78 8188   32  256 ibd-parse
+
+The second line above is a daemon that applies 5 pcre expressions to=20
+each mail.log line, in order to catch attackers: it consumes 15+ times=20
+more than issuing verdicts (both configured for a single queue.)
