@@ -1,34 +1,45 @@
-From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
-Subject: Re: help on tc with kernels >= 2.6.27
-Date: Sat, 03 Jan 2009 13:29:22 +0100
-Message-ID: <495F5A22.5020207@unipex.it>
-References: <37b3b63f0901021046n40962c84mef64cab10153261e@mail.gmail.com>	<20090102204908.7ec18094@catlap> <495F39BE.1070901@unipex.it>	<001701c96d92$43c4e600$cb4eb200$@jorge@decimal.pt> <495F5036.2090104@unipex.it> <002701c96d9b$53a5c0e0$faf142a0$@jorge@decimal.pt>
+From: =?iso-8859-15?Q?Roland_H=E4der?= <r.haeder@web.de>
+Subject: Bastille/netfilter with Linux 2.6.28 blocks connections
+Date: Sat, 03 Jan 2009 22:02:53 +0100
+Message-ID: <662506031@web.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <002701c96d9b$53a5c0e0$faf142a0$@jorge@decimal.pt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jorge Bastos <mysql.jorge@decimal.pt>
-Cc: 'Marek Kierdelewicz' <marek@piasta.pl>, 'Jorge Bastos' <jorge.decimal@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Jorge Bastos wrote:
-> Bingo!
-> 
+Hi together,
 
-:)
+I have a Debian Unstable (Sid) here with vanilla kernel 2.6.28. I use t=
+he Bastille firewall script to setup firewall rules.
 
-> So it seams that the problem is in TBF since 2.6.27 >= Checking the
-> 2.6.27 changelog as you said, were made a lot of changes regargind
-> TBF (also some CBQ and HTB changes), so that may be the problem. I
-> say this because my rules were the same always, and always worked ok.
->  How can this be reported to the QoS people that maintains it in the
-> kernel?
-> 
+When I now start a service e.g. Tor which needs open ports at 9001 and =
+9030 it can connect to itself when the firewall is done.
 
-See into the changelog, there is the mail addrs of the people who made the
-commits and, if you want, to the lkml.
+But when I start it it's self-connections got blocked.
 
-Michele
+Here is my ruleset exported with "iptables-save > iptables.list":
+http://www.mxchange.org/downloads/firebox/iptables.list
+
+The rule with log-prefix "INPUT DROP 10" blocks Tor's own connection at=
+tempt.
+
+Additonally no masq is working.
+
+My router has IP 192.168.1.1 on internal NIC and 192.168.20.1 on extern=
+al NIC where the ADSL box is connected.
+
+If you need kernel config or output of "route -n" I can upload it on my=
+ server as well.
+
+Please assisst me here. :)
+
+Regards,
+Roland
+_______________________________________________________________________
+Sensationsangebot verl=E4ngert: WEB.DE FreeDSL - Telefonanschluss + DSL
+f=FCr nur 16,37 Euro/mtl.!* http://dsl.web.de/?ac=3DOM.AD.AD008K15039B7=
+069a
 
