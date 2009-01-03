@@ -1,50 +1,60 @@
 From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
 Subject: Re: help on tc with kernels >= 2.6.27
-Date: Sat, 03 Jan 2009 11:11:10 +0100
-Message-ID: <495F39BE.1070901@unipex.it>
-References: <37b3b63f0901021046n40962c84mef64cab10153261e@mail.gmail.com> <20090102204908.7ec18094@catlap>
+Date: Sat, 03 Jan 2009 12:47:02 +0100
+Message-ID: <495F5036.2090104@unipex.it>
+References: <37b3b63f0901021046n40962c84mef64cab10153261e@mail.gmail.com>	<20090102204908.7ec18094@catlap> <495F39BE.1070901@unipex.it> <001701c96d92$43c4e600$cb4eb200$@jorge@decimal.pt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090102204908.7ec18094@catlap>
+In-Reply-To: <001701c96d92$43c4e600$cb4eb200$@jorge@decimal.pt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: Jorge Bastos <jorge.decimal@gmail.com>, netfilter@vger.kernel.org
+To: Jorge Bastos <mysql.jorge@decimal.pt>
+Cc: 'Marek Kierdelewicz' <marek@piasta.pl>, 'Jorge Bastos' <jorge.decimal@gmail.com>, netfilter@vger.kernel.org
 
-Marek Kierdelewicz wrote:
->> Hi,
-> 
-> Hi Jorge & List,
-
-Hi,
-
-> 
->> I just joined the mailing list.
-> 
-> It's mailing list for netfilter not Linux QoS. I think your issue is
->  more suitable for lartc mailing list (is lartc list alive by the
-> way? anyone?).
+Jorge Bastos wrote:
+> Hi Michele,
 > 
 
-If I remember correctly, lartc is dead and it's joined to netfilter one.
+Ciao,
 
->> I'm using tc to do traffic shaping for about 6 years Since kernels
->>> = 2.6.27 it just stoped working, and started shaping traffic to
->> 1/2kb /sec. How could this be debug? I don't see other place to 
->> request for help other than this one, and I was adviced to ask for 
->> help here too.
+> For htb, the script Marek wrote here, shape's the traffic, but it 
+> gets a bit unstable, sometimes if goes down, other goes up, for a 
+> considered number of seconds, so I believe it's a pike.
 > 
 
-Just tried here (with 2.6.27) with Marek example and some modifies (like
-remove the tc filter and add classify into mangle) and it's works well.
+I have a "big" environ with htb (kernel .26) and it works well, without
+problems. Never seen up and down course.
 
-Looking at the .27 changelog at:
-http://kernel.org/pub/linux/kernel/v2.6/ChangeLog-2.6.27
-seem that there are some patches against the various htb/hfs and so on,
-that can (only a supposition) introduce a problems.
 
-Can you recreate a simple working script that show us the problem?
+> Here's what Marek wrote here:
+<-cut->
+
+> 
+> With cbq, the traffic was always stable at a constant speed, the 
+> oscillation wasn't more than about 1kb.
+> 
+
+Also here the same.
+
+> What I use for cbq, is the cbq.init script that generates this rules:
+> 
+> 
+> 
+> 
+
+<-cut->
+
+> For cbq, instead of the 20kb/sec, it goes to 1/2, sometimes 4 or 5, 
+> but never more than that.
+> 
+
+
+With that rules, also here :( . Starting to say that I'm not a big tc
+expert but after some test, it's seem that tbf create the problems:
+if you try to remove that rule, it'll work. Also tried sfq or cbq like last
+queuing and seem to shape correctly. (my test was done with scp and iptraf)
+Have you tried it?
 
 Michele
