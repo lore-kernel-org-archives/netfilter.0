@@ -1,45 +1,57 @@
-From: =?iso-8859-15?Q?Roland_H=E4der?= <r.haeder@web.de>
-Subject: Bastille/netfilter with Linux 2.6.28 blocks connections
-Date: Sat, 03 Jan 2009 22:02:53 +0100
-Message-ID: <662506031@web.de>
+From: Barry R Cisna <brcisna@eazylivin.net>
+Subject: sip voip traffic forwarding
+Date: Sat, 03 Jan 2009 18:19:18 -0600
+Message-ID: <1231028358.31327.47.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi together,
+Hello List,
 
-I have a Debian Unstable (Sid) here with vanilla kernel 2.6.28. I use t=
-he Bastille firewall script to setup firewall rules.
+First time posting here. I am fairly familiar with iptables rules in
+general. I always use Webmin to apply rules to try and cut down on me
+fatfingering things:). I am trying to get port forwarding working on my
+Linux terminal server ,server to a newly built asterisk/trixbox. This is
+on a default install of K12ltsp/ Centos5,default kernel. I have tried
+all of the MANY how to's on trying to get the correct stuff forwarded.No
+luck bottom line.
 
-When I now start a service e.g. Tor which needs open ports at 9001 and =
-9030 it can connect to itself when the firewall is done.
+Setup: Linux server has two nics in it. eth1=public eth0=internal
+Asterisk/trixbox one nic eth0
+internet-->cable connection-
+-->Linksys wrt54gs router to LinTS->eth1
+All ports on the linksys wrt54gs are forwarded to the LinTS. (The only
+purpose the linksys is really serving is wifi for a couple laptops.)
+LinTS runs iptables.
+I have loaded the ip_conntack_sip & ip_nat_sip modules into iptables.
+Naturally, the TS has nat/MASQ setup on it with a default install.
 
-But when I start it it's self-connections got blocked.
+I'll try and 'display' as best I can my setup physically.
 
-Here is my ruleset exported with "iptables-save > iptables.list":
-http://www.mxchange.org/downloads/firebox/iptables.list
+**internet**-->wrt54gs-->eth1=LinTS=eth0(nat/masq)-->switch-->clients
+						     -->asterisk/trixbox
 
-The rule with log-prefix "INPUT DROP 10" blocks Tor's own connection at=
-tempt.
 
-Additonally no masq is working.
+Gateway;192.168.1.1-eth1;192.168.1.2-eth0;192.168.0.1-.dhcp/nat->clients
+,asterisk
 
-My router has IP 192.168.1.1 on internal NIC and 192.168.20.1 on extern=
-al NIC where the ADSL box is connected.
+Is this do-able with the default iptables contained in Centos5,or do i
+need to add some patches,and add ons?
+Sidenote: I was considering setting the astersk server right on the
+wrt54gs linksys,but my plan is to do away with the linksys if I can make
+this work to cut down on clutter/pieces,cabling.
+I would need to of course udp 5061, 10000-20000 forward to asterisk
+server from LinTS eth1,eth0?.
+Would someone be good enough to do a ,,1.,,2.,,3. how to accomplish
+this?
+Sorry for the long post.
 
-If you need kernel config or output of "route -n" I can upload it on my=
- server as well.
+Thanks,
 
-Please assisst me here. :)
-
-Regards,
-Roland
-_______________________________________________________________________
-Sensationsangebot verl=E4ngert: WEB.DE FreeDSL - Telefonanschluss + DSL
-f=FCr nur 16,37 Euro/mtl.!* http://dsl.web.de/?ac=3DOM.AD.AD008K15039B7=
-069a
+Barry
+                                         
 
