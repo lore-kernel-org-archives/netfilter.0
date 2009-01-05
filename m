@@ -1,57 +1,26 @@
-From: Barry R Cisna <brcisna@eazylivin.net>
-Subject: sip voip traffic forwarding
-Date: Sat, 03 Jan 2009 18:19:18 -0600
-Message-ID: <1231028358.31327.47.camel@localhost.localdomain>
+From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
+Subject: Re: help on tc with kernels >= 2.6.27
+Date: Mon, 05 Jan 2009 12:39:17 +0100
+Message-ID: <4961F165.9060909@unipex.it>
+References: <37b3b63f0901021046n40962c84mef64cab10153261e@mail.gmail.com>	<20090102204908.7ec18094@catlap> <495F39BE.1070901@unipex.it>	<001701c96d92$43c4e600$cb4eb200$@jorge@decimal.pt>	<495F5036.2090104@unipex.it>	<002701c96d9b$53a5c0e0$faf142a0$@jorge@decimal.pt> <495F5A22.5020207@unipex.it> <003101c96ddb$9d991310$d8cb3930$@jorge@decimal.pt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <003101c96ddb$9d991310$d8cb3930$@jorge@decimal.pt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jorge Bastos <mysql.jorge@decimal.pt>
+Cc: 'Marek Kierdelewicz' <marek@piasta.pl>, 'Jorge Bastos' <jorge.decimal@gmail.com>, netfilter@vger.kernel.org
 
-Hello List,
+Jorge Bastos wrote:
+> Michele, The NIC in where you are shaping, it's a 100mbit or
+> 1000mbit?
+> 
 
-First time posting here. I am fairly familiar with iptables rules in
-general. I always use Webmin to apply rules to try and cut down on me
-fatfingering things:). I am trying to get port forwarding working on my
-Linux terminal server ,server to a newly built asterisk/trixbox. This is
-on a default install of K12ltsp/ Centos5,default kernel. I have tried
-all of the MANY how to's on trying to get the correct stuff forwarded.No
-luck bottom line.
+My nic are 100mbit (or better, are a 1000mbit with a 100mbit switch) and
+I have the problems, so I think that aren't this the problem.
 
-Setup: Linux server has two nics in it. eth1=public eth0=internal
-Asterisk/trixbox one nic eth0
-internet-->cable connection-
--->Linksys wrt54gs router to LinTS->eth1
-All ports on the linksys wrt54gs are forwarded to the LinTS. (The only
-purpose the linksys is really serving is wifi for a couple laptops.)
-LinTS runs iptables.
-I have loaded the ip_conntack_sip & ip_nat_sip modules into iptables.
-Naturally, the TS has nat/MASQ setup on it with a default install.
+Have you tried to wrote to the devels?
 
-I'll try and 'display' as best I can my setup physically.
-
-**internet**-->wrt54gs-->eth1=LinTS=eth0(nat/masq)-->switch-->clients
-						     -->asterisk/trixbox
-
-
-Gateway;192.168.1.1-eth1;192.168.1.2-eth0;192.168.0.1-.dhcp/nat->clients
-,asterisk
-
-Is this do-able with the default iptables contained in Centos5,or do i
-need to add some patches,and add ons?
-Sidenote: I was considering setting the astersk server right on the
-wrt54gs linksys,but my plan is to do away with the linksys if I can make
-this work to cut down on clutter/pieces,cabling.
-I would need to of course udp 5061, 10000-20000 forward to asterisk
-server from LinTS eth1,eth0?.
-Would someone be good enough to do a ,,1.,,2.,,3. how to accomplish
-this?
-Sorry for the long post.
-
-Thanks,
-
-Barry
-                                         
-
+Michele
