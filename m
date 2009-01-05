@@ -1,84 +1,34 @@
-From: =?iso-8859-15?Q?Roland_H=E4der?= <r.haeder@web.de>
-Subject: Re: Bastille/netfilter with Linux 2.6.28 blocks connections
-Date: Mon, 05 Jan 2009 14:41:40 +0100
-Message-ID: <664670418@web.de>
+From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
+Subject: Re: help on tc with kernels >= 2.6.27
+Date: Mon, 05 Jan 2009 15:21:45 +0100
+Message-ID: <49621779.6030107@unipex.it>
+References: <37b3b63f0901021046n40962c84mef64cab10153261e@mail.gmail.com>	<20090102204908.7ec18094@catlap> <495F39BE.1070901@unipex.it>	<001701c96d92$43c4e600$cb4eb200$@jorge@decimal.pt>	<495F5036.2090104@unipex.it>	<002701c96d9b$53a5c0e0$faf142a0$@jorge@decimal.pt>	<495F5A22.5020207@unipex.it>	<003101c96ddb$9d991310$d8cb3930$@jorge@decimal.pt> <4961F165.9060909@unipex.it> <01ee01c96f3b$eee74fa0$ccb5eee0$@jorge@decimal.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <01ee01c96f3b$eee74fa0$ccb5eee0$@jorge@decimal.pt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jorge Bastos <mysql.jorge@decimal.pt>
 Cc: netfilter@vger.kernel.org
 
-> Hi!
-Hi,
+Jorge Bastos wrote:
+> Hum... could it be my NIC's with the "sky2" driver, I mean, a sky2 bug
+> causing this?
 
-> Why you said "now". It has never worked? When it's start to had probl=
-ems?
-It has worked on earlier days and with an older kernel, I cannot recall=
- the exact version number, so maybe it was 2.6.18 which I have also use=
-d a long time. But once I have upgraded it to newer kernels, and double=
--checked the config, these routing problems starts.
+Could be a lot of things!
+Have you tried with another board? A simple rtl8139 can be a good choice
 
-Okay, anyway. As I have promised before I have uploaded some more detai=
-ls:
+> The devel's... to wich list should I report this Michele?
+> 
 
-=46irst here is the requested logfile (syslog) with the relevant ports:
-http://www.mxchange.org/downloads/firebox/tor-drops_syslog.log
+As said, see to the changelog where there are the mail addrs of the 
+devels. Try also on lkml
 
-Okay, two thinks I was mentioning before where wrong, sorry about that.=
- :( First INPUT DROP 8 is dropping the packets and second they came fro=
-m outside as you can see in the logs.
+> To "netdev@vger.kernel.org"?
+> 
 
-Here are some more files for inspection:
+Can be also this
 
-My actually used kernel config:                                        =
-                                                                       =
-              =20
-http://www.mxchange.org/downloads/firebox/config-2.6.28-vanilla
-
-Output of "route -n": (it should be fine, I suppose)
-http://www.mxchange.org/downloads/firebox/route.txt
-
-That x.x.x.x was me. It is the PPP partner IP of my ISP.
-
-This directory contains my extra-scripts for the corresponding Bastille=
- "hooks":
-http://www.mxchange.org/downloads/firebox/firewall.d/
-
-That directory should be found in /etc/Bastille/.
->
-> You have to say us what you want to leave pass from that firewall... =
-tor
-> from internet, from lan? tor on localhost wants to connect to your-se=
-lf
-> by 127 or 192 ?
-192.168.1.1 is my router, 192.168.1.1x are my clients, both have a "def=
-ault gateway" set to 192.168.1.1 and /etc/resolve.conf has a nameserver=
- entry pointing only to 192.168.1.1
-
-I want to pass through from my LAN (eth1) to Internet (eth0/ppp0) regul=
-ar things like Mail, Newsgroups and such things. So I need to masq my p=
-rivate network 192.168.1.0 on eth1 to the Internet. And this is no long=
-er working.
- =20
-I want to route traffic from Internet on TCP/UDP port 31017 which is be=
-ing used by Descent2-Rebirth to my client 192.168.1.17. I used PREROUTE=
- and FORWARD for this.
-                                                                       =
-                                                                       =
-              =20
-Like I wrote above it *has* worked, until I have upgraded the farly out=
-dated kernel which should be done on regular basis. I guess you know wh=
-y. :)
-
-> Too short description and no logs.
-Hope that helps a bit more? :)
-
-Roland
-
-__________________________________________________________________
-Deutschlands gr=F6=DFte Online-Videothek schenkt Ihnen 12.000 Videos!*
-http://entertainment.web.de/de/entertainment/maxdome/index.html
-
+Michele
