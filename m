@@ -1,7 +1,7 @@
 From: =?iso-8859-15?Q?Roland_H=E4der?= <r.haeder@web.de>
 Subject: Re: Bastille/netfilter with Linux 2.6.28 blocks connections
-Date: Mon, 05 Jan 2009 17:37:54 +0100
-Message-ID: <665067273@web.de>
+Date: Mon, 05 Jan 2009 17:52:03 +0100
+Message-ID: <665109810@web.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -11,56 +11,21 @@ Content-Type: text/plain; charset="iso-8859-1"
 To: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
 Cc: netfilter@vger.kernel.org
 
-> Not right that "both" have the default gw to 192.168.1.1 Only the
-> clients on 192.168.1.0/24 have to. The router (the server where you a=
-re
-> writing the iptables rules) need another gw!
-Yes, I have your mentioned setup here: clients have 192.168.1.1 as gate=
-way and 192.168.1.1 has the PPP partner as its gateway.
+When I run "InteractiveBastille" I got this outout:
 
-> Try
-> IP -F -t nat
-> IP -F FORWARD
-> IP -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-> IP -A FORWARD -i eth1 -m state --state NEW -j LOG --log-prefix "NEW F=
-W"
-> IP -A FORWARD -i eth1 -j ACCEPT
-> IP -A POSTROUTING -o eth0 -m state --state NEW -j LOG --log-prefix "N=
-EW POR"
-> IP -A POSTROUTING -o eth0 -j MASQUERADE
-I suppose I should not replace my _whole_ ruleset but a small part? Els=
-e these rules will be a little less secure.
+http://www.mxchange.org/downloads/firebox/InteractiveBastille.log
 
-And currently my firewall got attacked on port 110 which is (sadly!) re=
-achable on all NICs.
+DB5.0 is not supported... Hmmm, maybe that's why I have this routing pr=
+oblems?
 
-So where should I add/replace your rules?
+=2E.. Oh, I recall that, yes, I have updated Debian likewise.
 
-> For this into the above iptables.list there are no rules!
-> IP -A PREROUTING -i eth0 -p tcp --dport 30017 -j DNAT --to-destinatio=
-n=20
-> 192.168.1.17
->=20
-> and add the forward one
-I have a similar one already and as I said, it worked before like a sha=
-rm. :)
+I hope the Bastille team is also listening here, or do they have a sepe=
+rate mailing list?
 
-So the "bug" must be someone else. Okay, I put all in /etc/Bastille in =
-a ZIP and try it from a fresh installation. Then I put my custom firewa=
-ll.d back in place step-by-step.
-
-If that is still failing I try yours but shut down a lot processes on m=
-y box. I hate that my box got hacked by some script-kiddie or spammer .=
-=2E.. :(
-
-I will add "netstat -lnp" soon!
-
-> I don't know about this....
-Okay, never mind. :)
-
-> Michele
 Roland
-__________________________________________________________________
-Deutschlands gr=F6=DFte Online-Videothek schenkt Ihnen 12.000 Videos!*
-http://entertainment.web.de/de/entertainment/maxdome/index.html
+_______________________________________________________________________
+Sensationsangebot verl=E4ngert: WEB.DE FreeDSL - Telefonanschluss + DSL
+f=FCr nur 16,37 Euro/mtl.!* http://dsl.web.de/?ac=3DOM.AD.AD008K15039B7=
+069a
 
