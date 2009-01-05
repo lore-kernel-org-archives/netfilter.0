@@ -1,26 +1,48 @@
 From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
-Subject: Re: help on tc with kernels >= 2.6.27
-Date: Mon, 05 Jan 2009 12:39:17 +0100
-Message-ID: <4961F165.9060909@unipex.it>
-References: <37b3b63f0901021046n40962c84mef64cab10153261e@mail.gmail.com>	<20090102204908.7ec18094@catlap> <495F39BE.1070901@unipex.it>	<001701c96d92$43c4e600$cb4eb200$@jorge@decimal.pt>	<495F5036.2090104@unipex.it>	<002701c96d9b$53a5c0e0$faf142a0$@jorge@decimal.pt> <495F5A22.5020207@unipex.it> <003101c96ddb$9d991310$d8cb3930$@jorge@decimal.pt>
+Subject: Re: Bastille/netfilter with Linux 2.6.28 blocks connections
+Date: Mon, 05 Jan 2009 12:47:38 +0100
+Message-ID: <4961F35A.8030207@unipex.it>
+References: <662506031@web.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <003101c96ddb$9d991310$d8cb3930$@jorge@decimal.pt>
+In-Reply-To: <662506031@web.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jorge Bastos <mysql.jorge@decimal.pt>
-Cc: 'Marek Kierdelewicz' <marek@piasta.pl>, 'Jorge Bastos' <jorge.decimal@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?Roland_H=E4der?= <r.haeder@web.de>
+Cc: netfilter@vger.kernel.org
 
-Jorge Bastos wrote:
-> Michele, The NIC in where you are shaping, it's a 100mbit or
-> 1000mbit?
-> 
+Roland H=E4der wrote:
+> Hi together,
+>=20
 
-My nic are 100mbit (or better, are a 1000mbit with a 100mbit switch) and
-I have the problems, so I think that aren't this the problem.
+Hi!
 
-Have you tried to wrote to the devels?
+> I have a Debian Unstable (Sid) here with vanilla kernel 2.6.28. I use
+>  the Bastille firewall script to setup firewall rules.
+>=20
+> When I now start a service e.g. Tor which needs open ports at 9001=20
+> and 9030 it can connect to itself when the firewall is done.
+>=20
+
+Why you said "now". It has never worked? When it's start to had problem=
+s?
+
+> But when I start it it's self-connections got blocked.
+>=20
+> Here is my ruleset exported with "iptables-save > iptables.list":=20
+> http://www.mxchange.org/downloads/firebox/iptables.list
+>=20
+
+You have to say us what you want to leave pass from that firewall... to=
+r
+from internet, from lan? tor on localhost wants to connect to your-self
+by 127 or 192 ?
+Too short description and no logs.
+Past the "INPUT DROP 10" drop syslog or add some logging "debug" rules
+around and see why it's not pass
+Masq from .. to... ?
 
 Michele
+
