@@ -1,33 +1,42 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: sip voip traffic forwarding
-Date: Mon, 5 Jan 2009 23:04:03 +0100
-Message-ID: <20090105230403.6964e0e7@catlap>
-References: <1231028358.31327.47.camel@localhost.localdomain>
+From: =?UTF-8?B?QXJ0xatyYXMgxaBsYWp1cw==?= <x11@arturaz.net>
+Subject: Mystics of packet forwarding
+Date: Tue, 06 Jan 2009 21:41:31 +0200
+Message-ID: <4963B3EB.6090806@arturaz.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1231028358.31327.47.camel@localhost.localdomain>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Barry R Cisna <brcisna@eazylivin.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
->I would need to of course udp 5061, 10000-20000 forward to asterisk
->server from LinTS eth1,eth0?.
->Would someone be good enough to do a ,,1.,,2.,,3. how to accomplish
->this?
+Hello fellow netfilter users,
 
-I hope I understand your post the way you meant. If so following
-iptables rule on TS may do the job:
+I have a strange problem and I think I should blame my ISP for that...
 
-iptables -t nat -A PREROUTING -d 192.168.1.2 -p udp --dport 5060:5061 \
--j DNAT --to ASTERISK_ADDR
+Recently I lost connectivity to some sites (i.e. digg.com, yahoo). The best part 
+is that I can regain connectivity by clearing out all the rules from iptables.
 
-This would allow connections coming from internet to be redirected to
-asterisk box. Rules above may not work in the desired way if you
-already have some entries in PREROUTING chain or some of the traffic
-is filtered.
+So if I have empty chains - I can connect to digg. After I add one rule:
 
-Regards,
-Marek Kierdelewicz
+iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j MASQUERADE (or SNAT, doesn't 
+make a difference)
+
+and bam! in 3-5 seconds I lose connectivity to these sites. Others work just fine.
+
+The delay of impact is one thing that bothers me and makes me wonder about magic 
+in ISP side.
+
+Other thingie is if I do:
+
+iptables -t nat -I POSTROUTING -s 192.168.0.0/16 -j DROP
+
+After 3-5 seconds I regain connectivity... It seems that my ISP is somehow 
+monitoring nat'ing and dropping access to some sites...
+
+Any ideas why could this be happening and what is so special about digg.com and 
+some of yahoo servers that they connectivity to them get affected like this?
+
+Any ideas welcome.
+
+Thanks, Arthur.
