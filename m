@@ -1,54 +1,34 @@
-From: "Billy Crook" <billycrook@gmail.com>
+From: =?ISO-8859-13?Q?Art=FBras_=D0lajus?= <x11@arturaz.net>
 Subject: Re: Mystics of packet forwarding
-Date: Tue, 6 Jan 2009 14:54:55 -0600
-Message-ID: <a43edf1b0901061254t1e3a6fb1v3a4f75b870bae810@mail.gmail.com>
-References: <4963B3EB.6090806@arturaz.net>
+Date: Wed, 07 Jan 2009 00:20:20 +0200
+Message-ID: <4963D924.9040905@arturaz.net>
+References: <4963B3EB.6090806@arturaz.net> <a43edf1b0901061254t1e3a6fb1v3a4f75b870bae810@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from:to
-         :subject:cc:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:content-disposition:references;
-        bh=Z+Jdu5+YcBAM7/5nbDJd5lHgK6mtPWFSrkfZmXUN9iE=;
-        b=mmHkTllhoilHn4UzAIQqhtqCl6HwPD5tvRMEvVhGHCRArooFkNT7hPfMBrb1mKTs4i
-         czofJGLGGyE8ghSvOFetQfBBsZ6gbaO/WAulWliKWEMDHtJYT3qgMHLtRUOfCeIqTu1e
-         qiDBeIIdYdl7t8k89FcBb9SuQGNEqt2SQ67/w=
-In-Reply-To: <4963B3EB.6090806@arturaz.net>
-Content-Disposition: inline
+In-Reply-To: <a43edf1b0901061254t1e3a6fb1v3a4f75b870bae810@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-13?Q?Art=FBras_=D0lajus?= <x11@arturaz.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Billy Crook <billycrook@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-T24gVHVlLCBKYW4gNiwgMjAwOSBhdCAxMzo0MSwgQXJ0+3JhcyDQbGFqdXMgPHgxMUBhcnR1cmF6
-Lm5ldD4gd3JvdGU6Cj4gSGVsbG8gZmVsbG93IG5ldGZpbHRlciB1c2VycywKPgo+IEkgaGF2ZSBh
-IHN0cmFuZ2UgcHJvYmxlbSBhbmQgSSB0aGluayBJIHNob3VsZCBibGFtZSBteSBJU1AgZm9yIHRo
-YXQuLi4KPgo+IFJlY2VudGx5IEkgbG9zdCBjb25uZWN0aXZpdHkgdG8gc29tZSBzaXRlcyAoaS5l
-LiBkaWdnLmNvbSwgeWFob28pLiBUaGUgYmVzdAo+IHBhcnQgaXMgdGhhdCBJIGNhbiByZWdhaW4g
-Y29ubmVjdGl2aXR5IGJ5IGNsZWFyaW5nIG91dCBhbGwgdGhlIHJ1bGVzIGZyb20KPiBpcHRhYmxl
-cy4KPgo+IFNvIGlmIEkgaGF2ZSBlbXB0eSBjaGFpbnMgLSBJIGNhbiBjb25uZWN0IHRvIGRpZ2cu
-IEFmdGVyIEkgYWRkIG9uZSBydWxlOgo+Cj4gaXB0YWJsZXMgLXQgbmF0IC1BIFBPU1RST1VUSU5H
-IC1zIDE5Mi4xNjguMC4wLzE2IC1qIE1BU1FVRVJBREUgKG9yIFNOQVQsCj4gZG9lc24ndCBtYWtl
-IGEgZGlmZmVyZW5jZSkKPgo+IGFuZCBiYW0hIGluIDMtNSBzZWNvbmRzIEkgbG9zZSBjb25uZWN0
-aXZpdHkgdG8gdGhlc2Ugc2l0ZXMuIE90aGVycyB3b3JrIGp1c3QKPiBmaW5lLgo+Cj4gVGhlIGRl
-bGF5IG9mIGltcGFjdCBpcyBvbmUgdGhpbmcgdGhhdCBib3RoZXJzIG1lIGFuZCBtYWtlcyBtZSB3
-b25kZXIgYWJvdXQKPiBtYWdpYyBpbiBJU1Agc2lkZS4KPgo+IE90aGVyIHRoaW5naWUgaXMgaWYg
-SSBkbzoKPgo+IGlwdGFibGVzIC10IG5hdCAtSSBQT1NUUk9VVElORyAtcyAxOTIuMTY4LjAuMC8x
-NiAtaiBEUk9QCj4KPiBBZnRlciAzLTUgc2Vjb25kcyBJIHJlZ2FpbiBjb25uZWN0aXZpdHkuLi4g
-SXQgc2VlbXMgdGhhdCBteSBJU1AgaXMgc29tZWhvdwo+IG1vbml0b3JpbmcgbmF0J2luZyBhbmQg
-ZHJvcHBpbmcgYWNjZXNzIHRvIHNvbWUgc2l0ZXMuLi4KPgo+IEFueSBpZGVhcyB3aHkgY291bGQg
-dGhpcyBiZSBoYXBwZW5pbmcgYW5kIHdoYXQgaXMgc28gc3BlY2lhbCBhYm91dCBkaWdnLmNvbQo+
-IGFuZCBzb21lIG9mIHlhaG9vIHNlcnZlcnMgdGhhdCB0aGV5IGNvbm5lY3Rpdml0eSB0byB0aGVt
-IGdldCBhZmZlY3RlZCBsaWtlCj4gdGhpcz8KPgo+IEFueSBpZGVhcyB3ZWxjb21lLgo+Cj4gVGhh
-bmtzLCBBcnRodXIuCgpIYXMgeW91ciBJU1AgZXZlciBpbmRpY2F0ZWQgaG9zdGlsaXR5IHZlcmJh
-bGx5LCBvciBpbiB3cml0aW5nLCB0b3dhcmQKTkFUPyAgSXMgaXQgZm9yYmlkZGVuIGJ5IHlvdXIg
-VGVybXMgb2YgU2VydmljZT8KCkkgZmluZCBpdCBkaWZmaWN1bHQgdG8gYmVsaWV2ZSB0aGF0IHlv
-dXIgSVNQIHdvdWxkIGRvIHNvbWV0aGluZyBzbwplbGFib3JhdGUgdG8gZGlzY291cmFnZSBOQVQs
-IGVzcGVjaWFsbHkgaWYgdGhleSBkb24ndCBleHBsaWNpdGx5CmZvcmJpZCBpdC4gIFRyeSBkaXNj
-b25uZWN0aW5nIHlvdXIgbGFuIGZyb20gdGhpcyBtYWNoaW5lLCBhbmQgdGVzdGluZwpmb3IgdGhp
-cyBhbm9tYWx5LiAgSSBzdXNwZWN0IG9uZSBvZiB0aGUgbWFjaGluZXMgb24geW91ciBsYW4gbWF5
-IGJlCmF0dGFja2luZyB5YWhvbyBvciBkaWdnLCBhbmQgY2F1c2luZyB0aG9zZSBzaXRlcyB0byB0
-ZW1wb3JhcmlseSBibG9jawp5b3VyIFtwdWJsaWNdIElQLgo=
+Billy Crook wrote:
+> Has your ISP ever indicated hostility verbally, or in writing, toward
+> NAT?  Is it forbidden by your Terms of Service?
+Well, it says that NAT is allowed in one house. Also a friend of mine that works 
+as main admin on that ISP says they didn't do anything like that.
+
+> I find it difficult to believe that your ISP would do something so
+> elaborate to discourage NAT, especially if they don't explicitly
+> forbid it.  Try disconnecting your lan from this machine, and testing
+> for this anomaly.
+An idea. But it seems that only actually forwarded packets make it happen...
+
+>  I suspect one of the machines on your lan may be
+> attacking yahoo or digg, and causing those sites to temporarily block
+> your [public] IP.
+An idea too. I'll try to get an temporary ip and monitor logs for a while...
+
+How could this attack look like? Packet bursts? Lot of connections?
+
