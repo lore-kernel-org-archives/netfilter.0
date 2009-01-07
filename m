@@ -1,33 +1,51 @@
-From: =?ISO-8859-13?Q?Art=FBras_=D0lajus?= <x11@arturaz.net>
-Subject: Re: Mystics of packet forwarding
-Date: Wed, 07 Jan 2009 10:50:19 +0200
-Message-ID: <49646CCB.9060803@arturaz.net>
-References: <4963B3EB.6090806@arturaz.net> <49644880.8000903@treenet.co.nz> <d39744a20901070000m1491882x6665a88a22b839a4@mail.gmail.com>
+From: Michele Petrazzo - Unipex srl <michele.petrazzo@unipex.it>
+Subject: Re: Bastille/netfilter with Linux 2.6.28 blocks connections
+Date: Wed, 07 Jan 2009 09:51:34 +0100
+Message-ID: <49646D16.8040505@unipex.it>
+References: <665067273@web.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d39744a20901070000m1491882x6665a88a22b839a4@mail.gmail.com>
+In-Reply-To: <665067273@web.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ivan Petrushev <ivanatora@gmail.com>
-Cc: Amos Jeffries <squid3@treenet.co.nz>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?Roland_H=E4der?= <r.haeder@web.de>
+Cc: netfilter@vger.kernel.org
 
-Ivan Petrushev wrote:
-> One think I can come with is TTL limiting (largely known here where I
-> live). Try pinging these "troubling" sites from your home gateway and
-> see if TTL is 1 or 2 or some bigger value.
-I don't quite understand what are you saying? TTL too small and expires in path? 
-TTL too big and gets filtered some how?
+Roland H=E4der wrote:
+> I suppose I should not replace my _whole_ ruleset but a small part?
+> Else these rules will be a little less secure.
+>=20
 
-> And one other thing - you said these sites disappear, but I didin't
-> understood where from are you testing? From the home gateway or from
-> the NATed boxes behind it?
- From both sites..
+Those replace only the forward one and add some debug. Of course, at th=
+e
+end of tests, you'll modify and replace your rules with mine :)
 
-> Could you add SNAT rule for non-existant box (IP that is not present
-> on your network, like 192.168.0.200) and see if these sites work.
-> 
-> And one other thing - /16 ? Do you really have such big network? :)
-No, but I have a lot of dumbass users who love to set static ips to ones that 
-servers use :)) And I doubt that this is the problem...
+> And currently my firewall got attacked on port 110 which is (sadly!)
+> reachable on all NICs.
+>=20
+
+IP -I INPUT -m state --state NEW -p tcp --dport 110 -j ACCEPT
+
+> So where should I add/replace your rules?
+>=20
+
+=46or test, into a "running" env, so after yours.
+
+>> For this into the above iptables.list there are no rules! IP -A
+>> PREROUTING -i eth0 -p tcp --dport 30017 -j DNAT --to-destination=20
+>> 192.168.1.17
+>>=20
+>> and add the forward one
+> I have a similar one already and as I said, it worked before like a
+> sharm. :)
+>=20
+
+Strange. Start with a "rule clean" and recreate the only one that do th=
+e
+work you want. Make them work and after, and only after, start to debug
+
+
+Bye
+
