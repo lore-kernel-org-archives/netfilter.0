@@ -1,46 +1,58 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
+From: "Ivan Petrushev" <ivanatora@gmail.com>
 Subject: Re: Mystics of packet forwarding
-Date: Wed, 07 Jan 2009 19:15:28 +1300
-Message-ID: <49644880.8000903@treenet.co.nz>
-References: <4963B3EB.6090806@arturaz.net>
+Date: Wed, 7 Jan 2009 10:00:05 +0200
+Message-ID: <d39744a20901070000m1491882x6665a88a22b839a4@mail.gmail.com>
+References: <4963B3EB.6090806@arturaz.net> <49644880.8000903@treenet.co.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4963B3EB.6090806@arturaz.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=sIpp2miCJ0r+TCf6wuwo/lVLWHhWU4ScJBMy5SahaVU=;
+        b=i6c/vPIiMjT8sRTOPhgNqzTURZArVkGVHkgmidCeAUtLaBqU3ntyFt3YVl5uzyH+EY
+         mUNgUVxRcDrIwx/n0GlsQ4KPBRz6AGh1bnWVl+gMZreJ4DHZHIXuE5FW+KF9D6VVs0tu
+         ZYkZMERmxUflGwP6NCOO8WtXQWrRZLJ1LEkgc=
+In-Reply-To: <49644880.8000903@treenet.co.nz>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: =?UTF-8?B?QXJ0xatyYXMgxaBsYWp1cw==?= <x11@arturaz.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1254"
+To: Amos Jeffries <squid3@treenet.co.nz>
+Cc: =?ISO-8859-13?Q?Art=FBras_=D0lajus?= <x11@arturaz.net>, netfilter@vger.kernel.org
 
-Art=C5=ABras =C5=A0lajus wrote:
-> Hello fellow netfilter users,
->=20
-> I have a strange problem and I think I should blame my ISP for that..=
-=2E
->=20
-> Recently I lost connectivity to some sites (i.e. digg.com, yahoo). Th=
-e=20
-> best part is that I can regain connectivity by clearing out all the=20
-> rules from iptables.
->=20
-> So if I have empty chains - I can connect to digg. After I add one ru=
-le:
->=20
-> iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j MASQUERADE (or SN=
-AT,=20
-> doesn't make a difference)
-
-I very much doubt it's your ISP. Maybe the
-
-one-sided NAT does not usually work very well. Try adding both the=20
-symmetrical sides at once:
-
-SNAT on the outbound request packets
-   iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j SNAT ...
-
-MASQUERADE on the inbound reply packets
-  iptables -t nat -A PREROUTING -d 192.168.0.0/16 -j MASQUERADE
-
-
-AYJ
+U05BVCBzaG91bGQgYmUgc3VmZmljaWVudC4KWW91ciBmcmllbmQgYWRtaW4gc2FpZCB0aGV5IGRp
+ZG4ndCBkbyBhbnl0aGluZy4gTWF5YmUgaXQgaXMgdGhlCnByb3ZpZGVyIHRoZXkgYXJlIGdldHRp
+bmcgYmFuZHdpZHRoIGZyb20/Ck9uZSB0aGluayBJIGNhbiBjb21lIHdpdGggaXMgVFRMIGxpbWl0
+aW5nIChsYXJnZWx5IGtub3duIGhlcmUgd2hlcmUgSQpsaXZlKS4gVHJ5IHBpbmdpbmcgdGhlc2Ug
+InRyb3VibGluZyIgc2l0ZXMgZnJvbSB5b3VyIGhvbWUgZ2F0ZXdheSBhbmQKc2VlIGlmIFRUTCBp
+cyAxIG9yIDIgb3Igc29tZSBiaWdnZXIgdmFsdWUuCkFuZCBvbmUgb3RoZXIgdGhpbmcgLSB5b3Ug
+c2FpZCB0aGVzZSBzaXRlcyBkaXNhcHBlYXIsIGJ1dCBJIGRpZGluJ3QKdW5kZXJzdG9vZCB3aGVy
+ZSBmcm9tIGFyZSB5b3UgdGVzdGluZz8gRnJvbSB0aGUgaG9tZSBnYXRld2F5IG9yIGZyb20KdGhl
+IE5BVGVkIGJveGVzIGJlaGluZCBpdD8KCkNvdWxkIHlvdSBhZGQgU05BVCBydWxlIGZvciBub24t
+ZXhpc3RhbnQgYm94IChJUCB0aGF0IGlzIG5vdCBwcmVzZW50Cm9uIHlvdXIgbmV0d29yaywgbGlr
+ZSAxOTIuMTY4LjAuMjAwKSBhbmQgc2VlIGlmIHRoZXNlIHNpdGVzIHdvcmsuCgpBbmQgb25lIG90
+aGVyIHRoaW5nIC0gLzE2ID8gRG8geW91IHJlYWxseSBoYXZlIHN1Y2ggYmlnIG5ldHdvcms/IDop
+CgpHcmVldGluZ3MsCkl2YW4uCgpPbiBXZWQsIEphbiA3LCAyMDA5IGF0IDg6MTUgQU0sIEFtb3Mg
+SmVmZnJpZXMgPHNxdWlkM0B0cmVlbmV0LmNvLm56PiB3cm90ZToKPiBBcnT7cmFzINBsYWp1cyB3
+cm90ZToKPj4KPj4gSGVsbG8gZmVsbG93IG5ldGZpbHRlciB1c2VycywKPj4KPj4gSSBoYXZlIGEg
+c3RyYW5nZSBwcm9ibGVtIGFuZCBJIHRoaW5rIEkgc2hvdWxkIGJsYW1lIG15IElTUCBmb3IgdGhh
+dC4uLgo+Pgo+PiBSZWNlbnRseSBJIGxvc3QgY29ubmVjdGl2aXR5IHRvIHNvbWUgc2l0ZXMgKGku
+ZS4gZGlnZy5jb20sIHlhaG9vKS4gVGhlCj4+IGJlc3QgcGFydCBpcyB0aGF0IEkgY2FuIHJlZ2Fp
+biBjb25uZWN0aXZpdHkgYnkgY2xlYXJpbmcgb3V0IGFsbCB0aGUgcnVsZXMKPj4gZnJvbSBpcHRh
+Ymxlcy4KPj4KPj4gU28gaWYgSSBoYXZlIGVtcHR5IGNoYWlucyAtIEkgY2FuIGNvbm5lY3QgdG8g
+ZGlnZy4gQWZ0ZXIgSSBhZGQgb25lIHJ1bGU6Cj4+Cj4+IGlwdGFibGVzIC10IG5hdCAtQSBQT1NU
+Uk9VVElORyAtcyAxOTIuMTY4LjAuMC8xNiAtaiBNQVNRVUVSQURFIChvciBTTkFULAo+PiBkb2Vz
+bid0IG1ha2UgYSBkaWZmZXJlbmNlKQo+Cj4gSSB2ZXJ5IG11Y2ggZG91YnQgaXQncyB5b3VyIElT
+UC4gTWF5YmUgdGhlCj4KPiBvbmUtc2lkZWQgTkFUIGRvZXMgbm90IHVzdWFsbHkgd29yayB2ZXJ5
+IHdlbGwuIFRyeSBhZGRpbmcgYm90aCB0aGUKPiBzeW1tZXRyaWNhbCBzaWRlcyBhdCBvbmNlOgo+
+Cj4gU05BVCBvbiB0aGUgb3V0Ym91bmQgcmVxdWVzdCBwYWNrZXRzCj4gIGlwdGFibGVzIC10IG5h
+dCAtQSBQT1NUUk9VVElORyAtcyAxOTIuMTY4LjAuMC8xNiAtaiBTTkFUIC4uLgo+Cj4gTUFTUVVF
+UkFERSBvbiB0aGUgaW5ib3VuZCByZXBseSBwYWNrZXRzCj4gIGlwdGFibGVzIC10IG5hdCAtQSBQ
+UkVST1VUSU5HIC1kIDE5Mi4xNjguMC4wLzE2IC1qIE1BU1FVRVJBREUKPgo+Cj4gQVlKCj4gLS0K
+PiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3Jp
+YmUgbmV0ZmlsdGVyIiBpbgo+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdl
+ci5rZXJuZWwub3JnCj4gTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVs
+Lm9yZy9tYWpvcmRvbW8taW5mby5odG1sCj4K
