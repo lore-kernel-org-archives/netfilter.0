@@ -1,31 +1,41 @@
-From: Roman Fiedler <roman.fiedler@telbiomed.at>
+From: "Billy Crook" <billycrook@gmail.com>
 Subject: Re: Mystics of packet forwarding
-Date: Wed, 07 Jan 2009 12:26:44 +0100
-Message-ID: <49649174.6070606@telbiomed.at>
-References: <4963B3EB.6090806@arturaz.net> <496475AB.9040303@arturaz.net> <d39744a20901070251qc6c87e9l8f33deaf4febfa83@mail.gmail.com>
+Date: Wed, 7 Jan 2009 07:59:54 -0600
+Message-ID: <a43edf1b0901070559t66ffbd3ct7119e11d522c0799@mail.gmail.com>
+References: <4963B3EB.6090806@arturaz.net> <496475AB.9040303@arturaz.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d39744a20901070251qc6c87e9l8f33deaf4febfa83@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:cc:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:content-disposition:references;
+        bh=WPyezqNFBRbiJoi1uRfuWlzI7McgCj6pWGfc+O+NE0g=;
+        b=xegaFsHs7SpEsxsCi8CeZiLnfeU6VBFgnEWiSgY5sYsU9ut0vYpwqrmM/U+4o40cVk
+         IvPxEJEEixD7DLN6HkbfHelWDNU3xvyE5apFxkdB808oReYZXtwc6O6ENV2G8F4GR+Ih
+         N1hmsnNvw4cqx01BkkAKtzRwgNvzYERkd/u6s=
+In-Reply-To: <496475AB.9040303@arturaz.net>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1254"
+To: =?ISO-8859-13?Q?Art=FBras_=D0lajus?= <x11@arturaz.net>
+Cc: netfilter@vger.kernel.org
 
-Ivan Petrushev wrote:
->> Ok, it seems that really - someone in LAN is attacking the internet.
-> It could be worms or viruses. In my experience every home or student
-> Windows network is awfully crowded with viruses. Maybe you should work
-> on filtering your outgoing traffic.
->
-> I'm not sure, but search on google what could cause ban on DIGG or
-> YAHOO. Probably lots of connections or flood could result in banning
-> you from these sites. But you say that immediately when you remove the
-> NAT rules the access is restored? I don't believe their firewalls are
-> quick enough to restore your position two seconds after you stop being
-> "bad" to them. Maybe something else is the reason.
-
-Are there any hardcoded external IPs in your ruleset? These might fail 
-if other hosts have some DNS-round-robin.
-
-
+T24gV2VkLCBKYW4gNywgMjAwOSBhdCAwMzoyOCwgQXJ0+3JhcyDQbGFqdXMgPHgxMUBhcnR1cmF6
+Lm5ldD4gd3JvdGU6Cj4gT2ssIGl0IHNlZW1zIHRoYXQgcmVhbGx5IC0gc29tZW9uZSBpbiBMQU4g
+aXMgYXR0YWNraW5nIHRoZSBpbnRlcm5ldC4KPgo+IElmIEkgdHVybiBvbiBmb3J3YXJkaW5nIGZv
+ciBmZXcgdXNlcnMgbGlrZSBtZSwgc29tZSBvdGhlciBjb21wdXRlci1saXRlcmF0ZQo+IGZyaWVu
+ZHMgLSBkaWdnLmNvbSBzdGlsbCB3b3JrcyA6KSkKPgo+IE5vdyBpdCdzIHRoZSBxdWVzdGlvbiBo
+b3cgZG8gSSBjYXRjaCBiYWQgZ3V5cz8gV2hhdCBzaG91bGQgSSBsb29rIGludG8/Cj4gUGFja2V0
+IGJ1cnN0cz8gTG90J3Mgb2YgbmV3IGNvbm5lY3Rpb25zPyBFdGM/CgpHaXZlbiB0aGUgbmF0dXJl
+IG9mIHlhaG9vIGFuZCBkaWdnJ3Mgc2VydmljZXMsIHRoZSBhdHRhY2tzIGFyZQpwcm9iYWJseSBo
+YXBwZW5pbmcgb3ZlciBUQ1AuICBMb2cgYWxsIG91dGRvaW5nIHRjcCBjb25uZWN0aW9ucywgdGhl
+bgplbmFibGUgTkFULCB3YWl0IHVudGlsIHlhaG9vIGJsb2NrIHlvdSwgdHVybiBpdCBiYWNrIG9m
+ZiwgYW5kIGxvb2sgYXQKdGhlIGxvZ3MuICBJIGJldCBpdCB3aWxsIGJlIGZhaXJseSBvYnZpb3Vz
+IHdoaWNoIGNsaWVudChzKSBhcmUKcmVzcG9uc2libGUuICBJZiBub3QsIHNvcnQgdGhlIGxvZ3Ms
+IGFuZCBjb3VudCB0aGUgbnVtYmVyIG9mCmNvbm5lY3Rpb25zIGZyb20gZWFjaCBpbnRlcm5hbCBj
+bGllbnQuICBTbW9vdGh3YWxsIGhhcyB0aGVzZSBuaWNlCnBlci1jbGllbnQgdHJhZmZpYyBncmFw
+aHMgd2hpY2ggd291bGQgc2hvdyBiZSB3aGljaCBjbGllbnRzIG9uIG15Cm5ldHdvcmsgYXJlIGdl
+bmVyYXRpbmcgdGhlIG1vc3QgdHJhZmZpYy4K
