@@ -1,33 +1,30 @@
-From: Roland Haeder <r.haeder@web.de>
-Subject: Re: Bastille/netfilter with Linux 2.6.28 blocks connections
-Date: Wed, 07 Jan 2009 01:16:27 +0000
-Message-ID: <4964026B.EE8212A9@web.de>
-References: <669246551@web.de> <496529CF.1060208@chello.at>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Mystics of packet forwarding
+Date: Wed, 7 Jan 2009 19:26:46 -0600
+Message-ID: <200901071926.46455.rob0@gmx.co.uk>
+References: <4963B3EB.6090806@arturaz.net> <d39744a20901070752t45c57f98v51d04236bc81a5e8@mail.gmail.com> <49652E64.7040303@arturaz.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <49652E64.7040303@arturaz.net>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Mart Frauenlob <mart.frauenlob@chello.at>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-> -A FORWARD -s 192.168.1.0/24 -o eth0 -j ACCEPT
-Applied. Well, don't shoot me. I setup eth0 as external device only in
-/etc/Bastille/bastille-firewall.cfg, but it has to be eth0 and ppp0 ...
+On Wed January 7 2009 16:36:20 Art=C5=ABras =C5=A0lajus wrote:
+> I'm lost. And desperate.
 
-> advice 1: double check your data before posting.
-> 
-> advice 2: make yourself familiar with iptables.
-Will follow them next time. :)
+Where did we see your "iptables-save -c" output? I looked through the=20
+whole thread just now, can't find it.
 
-As a contribution to Bastille I left the script files and bogon.list on
-my server, others are removed.
+My WAG without seeing your rules is that they're complex and insane;=20
+also, I bet you're missing a state rule for return packets.
 
-Thanks again both for your help, even when the mistake was here and not
-in iptables nor Bastille.
-
-But anyway. The InteractiveBastille tool is still not regonizing DB5.0
-as OS type. I already filled a bug report out. Hope they will fix it.
-
-Roland
+SIMPLIFY. Start off with a nice simple ruleset that works, something=20
+along the lines of Rusty's Really Quick Guide to $FOO (for values of=20
+=46OO of "Packet Filtering" and "NAT".)
+--=20
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
