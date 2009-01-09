@@ -1,10 +1,9 @@
 From: "Richard Hartmann" <richih.mailinglist@gmail.com>
 Subject: Re: (Ab)using iptables to record byte count per IP?
-Date: Fri, 9 Jan 2009 13:46:06 +0100
-Message-ID: <2d460de70901090446g1159b1few85eec8cc19da836f@mail.gmail.com>
+Date: Fri, 9 Jan 2009 13:47:07 +0100
+Message-ID: <2d460de70901090447n21e725f5qe24752991edbd01e@mail.gmail.com>
 References: <2d460de70901090327y625afd60g792467e843d3f1d@mail.gmail.com>
-	 <49673A13.6050807@arturaz.net>
-	 <1231502126.24038.15.camel@enterprise.ims-firmen.de>
+	 <49674499.30705@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -13,23 +12,25 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:received:received:message-id:date:from:to
          :subject:cc:in-reply-to:mime-version:content-type
          :content-transfer-encoding:content-disposition:references;
-        bh=5K92/Udcqmv7JkOkk6JDGqNCiI229RmRebOR2foDplM=;
-        b=V53Uwiom5GIWnTCVy8LK9bM0rcsh4BD2OcMR6SMuxF8IHwzfhGolKMxiA/JvDzv85a
-         2ERaCSiw+UVspoEgqkBVocPUZaCEsaqtQOjbnJ0Xfuav598zYsdF/paXJy12fpNBpWzj
-         agmqPL68DaNdpV981ex065e5diZgLahUnwlmg=
-In-Reply-To: <1231502126.24038.15.camel@enterprise.ims-firmen.de>
+        bh=OxMKUPH5FsDKzZeXm9bhTHRmooRXwG2yDNJ89H7NPd0=;
+        b=FlCCcLlCxY4lflF3elyKo6DBc09rG5SSib+FHPUwRdIDOntWKjK2FPAm5JmmGKo+sC
+         hp2xsghnLpAhT0ufB6v8PYXxK47Y8aM92mBTod+uM3syN0fPH/IuqNaCrjf31ZbxyGOA
+         r6tFk7PUFO3aJBwvAxy0oay0JMw9uRjc6P0FM=
+In-Reply-To: <49674499.30705@netfilter.org>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Jacob <jacob@internet24.de>
-Cc: =?UTF-8?Q?Art=C5=ABras_=C5=A0lajus?= <x11@arturaz.net>, netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-On Fri, Jan 9, 2009 at 12:55, Thomas Jacob <jacob@internet24.de> wrote:
+On Fri, Jan 9, 2009 at 13:35, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
-> http://www.intra2net.com/de/produkte/opensource/ipt_account/
+> Polling iptables does not look to me a good option. The way to go should be
+> ulogd2 or or the conntrackd in its simple statistics mode.
 
-Neat. I can't use it in this case, but I will keep it in mind :)
+Normally yes. But in this case, I need to use what's there and I know that
+iptables is there :)
 
 
 Richard
