@@ -1,30 +1,38 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Mystics of packet forwarding
-Date: Wed, 7 Jan 2009 19:26:46 -0600
-Message-ID: <200901071926.46455.rob0@gmx.co.uk>
-References: <4963B3EB.6090806@arturaz.net> <d39744a20901070752t45c57f98v51d04236bc81a5e8@mail.gmail.com> <49652E64.7040303@arturaz.net>
+From: "Richard Hartmann" <richih.mailinglist@gmail.com>
+Subject: (Ab)using iptables to record byte count per IP?
+Date: Fri, 9 Jan 2009 12:27:10 +0100
+Message-ID: <2d460de70901090327y625afd60g792467e843d3f1d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49652E64.7040303@arturaz.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:to
+         :subject:mime-version:content-type:content-transfer-encoding
+         :content-disposition;
+        bh=vO9PBtno23ESkvBc23hISgXnPFo0T0r2og4JpsJKLko=;
+        b=bgNllvH33eaQzzp7Ujxewi63Nh7+686RR5+rAV9XWjTlzHfFsFgvVF1AlLJPBF/5kW
+         YSMCIx6erTRPnUhWq1Kx4/g3nVtzd0kwIt9B9zahDK6E5+0JzYcNab1H/q9e2NWo0snK
+         wInriYXLuaywdbRvykD28yZy0MCFCsAoN+nug=
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On Wed January 7 2009 16:36:20 Art=C5=ABras =C5=A0lajus wrote:
-> I'm lost. And desperate.
+Hi all,
 
-Where did we see your "iptables-save -c" output? I looked through the=20
-whole thread just now, can't find it.
+I need to log the traffic each local IP in a NAT'ed network generates
+per day.
 
-My WAG without seeing your rules is that they're complex and insane;=20
-also, I bet you're missing a state rule for return packets.
+Unfortunately, the environment is rather restricted and compiling new
+software is not an option. Thus, I am wondering if I can abuse iptables,
+which is in use anyway, to log for me, as well.
 
-SIMPLIFY. Start off with a nice simple ruleset that works, something=20
-along the lines of Rusty's Really Quick Guide to $FOO (for values of=20
-=46OO of "Packet Filtering" and "NAT".)
---=20
-    Offlist mail to this address is discarded unless
-    "/dev/rob0" or "not-spam" is in Subject: header
+The end result should be a log which contains IP, date and traffic
+generated. I don't really care about the output format as I will perl it
+into the format I need, anyway.
+
+
+Thanks for all input,
+Richard
