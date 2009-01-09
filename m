@@ -1,31 +1,35 @@
 From: "Richard Hartmann" <richih.mailinglist@gmail.com>
 Subject: Re: (Ab)using iptables to record byte count per IP?
-Date: Fri, 9 Jan 2009 13:44:23 +0100
-Message-ID: <2d460de70901090444v20f514dck8bc7a7740ce84685@mail.gmail.com>
+Date: Fri, 9 Jan 2009 13:46:06 +0100
+Message-ID: <2d460de70901090446g1159b1few85eec8cc19da836f@mail.gmail.com>
 References: <2d460de70901090327y625afd60g792467e843d3f1d@mail.gmail.com>
 	 <49673A13.6050807@arturaz.net>
+	 <1231502126.24038.15.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:message-id:date:from:to
          :subject:cc:in-reply-to:mime-version:content-type
          :content-transfer-encoding:content-disposition:references;
-        bh=R9onG6Rule0e+F/NZUIlMN6yH9pJPvxM8p5BRzhR4Uk=;
-        b=q7C3Uviimk0HhrlIeMOrA7g2dwuRSfYpb/lldCiNVfZR2sOMacv987PNhFLX+D9sSr
-         s/H4xScLcc7j0oYrxWus4ExtoOeCQ8kUORgsqUQQeYuowEogbwOv+e8ZUm/bJyArjsZH
-         izcI/YmS2fsw3ikVEnYJbhExGGZKyzyQ+QAaI=
-In-Reply-To: <49673A13.6050807@arturaz.net>
+        bh=5K92/Udcqmv7JkOkk6JDGqNCiI229RmRebOR2foDplM=;
+        b=V53Uwiom5GIWnTCVy8LK9bM0rcsh4BD2OcMR6SMuxF8IHwzfhGolKMxiA/JvDzv85a
+         2ERaCSiw+UVspoEgqkBVocPUZaCEsaqtQOjbnJ0Xfuav598zYsdF/paXJy12fpNBpWzj
+         agmqPL68DaNdpV981ex065e5diZgLahUnwlmg=
+In-Reply-To: <1231502126.24038.15.camel@enterprise.ims-firmen.de>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1254"
-To: =?UTF-8?Q?Art=C5=ABras_=C5=A0lajus?= <x11@arturaz.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Thomas Jacob <jacob@internet24.de>
+Cc: =?UTF-8?Q?Art=C5=ABras_=C5=A0lajus?= <x11@arturaz.net>, netfilter@vger.kernel.org
 
-T24gRnJpLCBKYW4gOSwgMjAwOSBhdCAxMjo1MCwgQXJ0xatyYXMgxaBsYWp1cyA8eDExQGFydHVy
-YXoubmV0PiB3cm90ZToKCj4gaXB0YWJsZXMgLUEgQUNDT1VOVElORyAtcyB5b3VyX3VzZXJfaXAg
-LWogQUNDRVBUCj4gaXB0YWJsZXMgLUEgQUNDT1VOVElORyAtZCB5b3VyX3VzZXJfaXAgLWogQUND
-RVBUCgpEb2Vzbid0IHRoYXQgbWVhbiB0aGF0IEkgYW0gYnlwYXNzaW5nIHRoZSByZXN0IG9mIHRo
-ZQpmaXJld2FsbCBydWxlcz8KClJpY2hhcmQK
+On Fri, Jan 9, 2009 at 12:55, Thomas Jacob <jacob@internet24.de> wrote:
+
+> http://www.intra2net.com/de/produkte/opensource/ipt_account/
+
+Neat. I can't use it in this case, but I will keep it in mind :)
+
+
+Richard
