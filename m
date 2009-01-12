@@ -1,56 +1,70 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: (Ab)using iptables to record byte count per IP?
-Date: Sat, 10 Jan 2009 15:55:33 +1300
-Message-ID: <49680E25.7030609@treenet.co.nz>
-References: <2d460de70901090327y625afd60g792467e843d3f1d@mail.gmail.com>	 <49673A13.6050807@arturaz.net> <1231502126.24038.15.camel@enterprise.ims-firmen.de>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Troubles with MARK target in 2.6.28
+Date: Mon, 12 Jan 2009 07:19:15 +0100
+Message-ID: <496AE0E3.1030009@trash.net>
+References: <86617ABF8F494F2A940C18251E3DC8D0@Hakkenden>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1231502126.24038.15.camel@enterprise.ims-firmen.de>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------050208030106080205060300"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <86617ABF8F494F2A940C18251E3DC8D0@Hakkenden>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+To: "Nikolay S. Rybalov" <nowhere@hakkenden.ath.cx>
+Cc: netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Jan Engelhardt <jengelh@medozas.de>
 
-Thomas Jacob wrote:
-> On Fri, 2009-01-09 at 13:50 +0200, Art=C5=ABras =C5=A0lajus wrote:
->> Richard Hartmann wrote:
->>  > Hi all,
->>  >
->>  > I need to log the traffic each local IP in a NAT'ed network gener=
-ates
->>  > per day.
->>  >
->>  > Unfortunately, the environment is rather restricted and compiling=
- new
->>  > software is not an option. Thus, I am wondering if I can abuse ip=
-tables,
->>  > which is in use anyway, to log for me, as well.
->>  >
->>  > The end result should be a log which contains IP, date and traffi=
-c
->>  > generated. I don't really care about the output format as I will =
-perl it
->>  > into the format I need, anyway.
->>
->> iptables -N ACCOUNTING
->> iptables -A FORWARD -j ACCOUNTING
->> iptables -A ACCOUNTING -s your_user_ip -j ACCEPT
->> iptables -A ACCOUNTING -d your_user_ip -j ACCEPT
->>
->> bam, with iptables -L ACCOUNTING -n -v you can have packet/byte coun=
-ters ;)
->=20
-> Or you could use the external extension ipt_ACCOUNT
->=20
-> http://www.intra2net.com/de/produkte/opensource/ipt_account/=20
->=20
-> which does the same much faster and you don't have to
-> specify lots of accounting rules. Unfortunately you need
-> to patch your kernel for that, if you want to use it
-> as is.
+This is a multi-part message in MIME format.
+--------------050208030106080205060300
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Whats needed and is anyone working towards getting that integrated prop=
-erly?
+Nikolay S. Rybalov wrote:
+> Hi all,
+> 
+> I have troubles with "-j MARK --set-xmark" combination in mangle table. 
+> Particulary, I want set one bit in nf mark by means, say, --set-xmark 
+> 0x10/0x10, and it worked in kernels from at least 2.6.24 up to the last 
+> in 2.6.27.
+> 
+> I use: iptables -t mangle -A POSTROUTING -o eth1 -d 192.168.37.0/24 -j 
+> MARK --set-xmark 0x10/0x10
+> 
+> and get:
+> 
+> iptables v1.4.2: Unknown arg `(null)'
+> Try `iptables -h' or 'iptables --help' for more information.
+> 
+> When I try --or-mark, iptables says that my "kernel too old for --or-mark"
+> 
+> Same thing happens with -j CONNMARK.
+> 
+> Can someone advise what to do, I really need to set only one bit without 
+> altering the rest of the mark.
 
-AYJ
+Does this patch fix it?
+
+
+--------------050208030106080205060300
+Content-Type: text/plain;
+ name="x"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="x"
+
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index 89837a4..36cb63b 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -289,6 +289,10 @@ static int target_revfn(u8 af, const char *name, u8 revision, int *bestp)
+ 				have_rev = 1;
+ 		}
+ 	}
++
++	if (af != NFPROTO_UNSPEC && !have_rev)
++		return target_revfn(NFPROTO_UNSPEC, name, revision, bestp);
++
+ 	return have_rev;
+ }
+ 
+
+--------------050208030106080205060300--
