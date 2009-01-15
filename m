@@ -1,66 +1,41 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnfnetlink 0.0.40 release
-Date: Wed, 14 Jan 2009 11:56:20 +0100
-Message-ID: <496DC4D4.6060106@netfilter.org>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: Troubles with MARK target in 2.6.28
+Date: Thu, 15 Jan 2009 14:57:48 +0100
+Message-ID: <496F40DC.2000605@trash.net>
+References: <86617ABF8F494F2A940C18251E3DC8D0@Hakkenden> <496AE0E3.1030009@trash.net> <496AEC64.5040202@trash.net> <alpine.LSU.2.00.0901120814250.21692@fbirervta.pbzchgretzou.qr> <496AEEB0.3080905@trash.net> <alpine.LSU.2.00.0901140530190.26721@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070306060509090701090507"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LSU.2.00.0901140530190.26721@fbirervta.pbzchgretzou.qr>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: "Nikolay S. Rybalov" <nowhere@hakkenden.ath.cx>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------070306060509090701090507
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Jan Engelhardt wrote:
+> On Monday 2009-01-12 08:18, Patrick McHardy wrote:
+>> Jan Engelhardt wrote:
+>>> I can tell it is not (more like a missing feature if you will),
+>>> because /proc/net/ip_t* is for IPv4 only, and /proc/net/ip6_t*
+>>> is for IPv6 only. I had a patch somewhere that added a better
+>>> overview, let's see where in my git realms that disappeared...
+ >>
+>> Its supposed to show the targets and matches *available* for
+>> a family.
+> 
+> Possibly - I found no comment in the source.
 
-Hi!
+It is older than xtables and has always worked that way. It doesn't
+make sense to have the contents dependant on implementation details.
+I also know that some UIs rely on having available modules shown,
+IIRC one of them was shorewall. This needs to be fixed.
 
-The netfilter project proudly presents:
+> But the spartanic output of those proc files barely helps (especially
+> in light of multiple revisions), so here is the patch I spoke about,
+> refreshed and rebased, that solves the worries.
 
-  * libnfnetlink-0.0.40
-
-libnfnetlink is the low-level library for netfilter related
-kernel/userspace communication. It provides a generic messaging
-infrastructure for in-kernel netfilter subsystems (such as
-nfnetlink_log, nfnetlink_queue, nfnetlink_conntrack) and their
-respective users and/or management tools in userspace.
-
-This release includes a couple of updates for the interface2index
-infrastructure one bugfix. See ChangeLog for more details.
-
-You can download it from:
-
-http://www.netfilter.org/projects/libnfnetlink/downloads.html
-ftp://ftp.netfilter.org/pub/libnfnetlink/
-
-Enjoy,
-Pablo - on behalf of the Netfilter Project.
-
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
-
---------------070306060509090701090507
-Content-Type: text/plain;
- name="ChangeLog"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ChangeLog"
-
-Eric Leblond (1):
-      Suppress iftable_up function which is not used.
-
-Jan Engelhardt (1):
-      libnfnetlink: mark functions as extern C
-
-Pablo Neira Ayuso (5):
-      bump version to 0.0.39
-      conditional compilation of testsuite utils
-      nlif: fix possible re-insertion in the list of interfaces
-      iftable: add nlif_get_ifflags to get the network interface flags
-      configure: bump version to 0.0.40
-
-
---------------070306060509090701090507--
+That seems a bit overkill. Text-based representation also doesn't seem
+ideal, iptables already has this information and a cmdline user will
+simply use "iptables ... -h" to get the supported option. For other
+programs a binary representation would probably be easier to handle.
