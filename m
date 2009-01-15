@@ -1,41 +1,34 @@
-From: Patrick McHardy <kaber@trash.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: Troubles with MARK target in 2.6.28
-Date: Thu, 15 Jan 2009 14:57:48 +0100
-Message-ID: <496F40DC.2000605@trash.net>
-References: <86617ABF8F494F2A940C18251E3DC8D0@Hakkenden> <496AE0E3.1030009@trash.net> <496AEC64.5040202@trash.net> <alpine.LSU.2.00.0901120814250.21692@fbirervta.pbzchgretzou.qr> <496AEEB0.3080905@trash.net> <alpine.LSU.2.00.0901140530190.26721@fbirervta.pbzchgretzou.qr>
+Date: Thu, 15 Jan 2009 15:06:40 +0100
+Message-ID: <496F42F0.7050305@netfilter.org>
+References: <86617ABF8F494F2A940C18251E3DC8D0@Hakkenden> <496AE0E3.1030009@trash.net> <496AEC64.5040202@trash.net> <alpine.LSU.2.00.0901120814250.21692@fbirervta.pbzchgretzou.qr> <496AEEB0.3080905@trash.net> <alpine.LSU.2.00.0901140530190.26721@fbirervta.pbzchgretzou.qr> <496F40DC.2000605@trash.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.00.0901140530190.26721@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <496F40DC.2000605@trash.net>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: "Nikolay S. Rybalov" <nowhere@hakkenden.ath.cx>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Patrick McHardy <kaber@trash.net>
+Cc: Jan Engelhardt <jengelh@medozas.de>, "Nikolay S. Rybalov" <nowhere@hakkenden.ath.cx>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-Jan Engelhardt wrote:
-> On Monday 2009-01-12 08:18, Patrick McHardy wrote:
->> Jan Engelhardt wrote:
->>> I can tell it is not (more like a missing feature if you will),
->>> because /proc/net/ip_t* is for IPv4 only, and /proc/net/ip6_t*
->>> is for IPv6 only. I had a patch somewhere that added a better
->>> overview, let's see where in my git realms that disappeared...
- >>
->> Its supposed to show the targets and matches *available* for
->> a family.
+Patrick McHardy wrote:
+> Jan Engelhardt wrote:
+>> But the spartanic output of those proc files barely helps (especially
+>> in light of multiple revisions), so here is the patch I spoke about,
+>> refreshed and rebased, that solves the worries.
 > 
-> Possibly - I found no comment in the source.
+> That seems a bit overkill. Text-based representation also doesn't seem
+> ideal, iptables already has this information and a cmdline user will
+> simply use "iptables ... -h" to get the supported option. For other
+> programs a binary representation would probably be easier to handle.
 
-It is older than xtables and has always worked that way. It doesn't
-make sense to have the contents dependant on implementation details.
-I also know that some UIs rely on having available modules shown,
-IIRC one of them was shorewall. This needs to be fixed.
+Agreed. The text-based interface seems to me like yet-another-interface
+that users may (ab)use (like /proc/net/nf_conntrack, I have seen people
+polling from it to display information, this was OK in the early days).
+Following this basis, one may come and implement another text-based
+interface to display the rule-set in the kernel and so on.
 
-> But the spartanic output of those proc files barely helps (especially
-> in light of multiple revisions), so here is the patch I spoke about,
-> refreshed and rebased, that solves the worries.
-
-That seems a bit overkill. Text-based representation also doesn't seem
-ideal, iptables already has this information and a cmdline user will
-simply use "iptables ... -h" to get the supported option. For other
-programs a binary representation would probably be easier to handle.
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
