@@ -1,38 +1,43 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Troubles with MARK target in 2.6.28
-Date: Thu, 15 Jan 2009 16:54:13 +0100
-Message-ID: <496F5C25.2010702@trash.net>
-References: <86617ABF8F494F2A940C18251E3DC8D0@Hakkenden> <496AE0E3.1030009@trash.net> <496AEC64.5040202@trash.net> <alpine.LSU.2.00.0901120814250.21692@fbirervta.pbzchgretzou.qr> <496AEEB0.3080905@trash.net> <alpine.LSU.2.00.0901140530190.26721@fbirervta.pbzchgretzou.qr> <496F40DC.2000605@trash.net> <496F42F0.7050305@netfilter.org> <alpine.LSU.2.00.0901151651410.17559@fbirervta.pbzchgretzou.qr>
+From: "Demetrios J. Tsillas" <jtsillas@appledor.net>
+Subject: EBTABLES: init-table says kernel doesn't know about table
+Date: Thu, 15 Jan 2009 10:56:32 -0500 (EST)
+Message-ID: <be5b21bbb71de2072fd17ba3e02111cb.squirrel@www.appledor.net>
+Reply-To: jtsillas@appledor.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.00.0901151651410.17559@fbirervta.pbzchgretzou.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, "Nikolay S. Rybalov" <nowhere@hakkenden.ath.cx>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Jan Engelhardt wrote:
-> On Thursday 2009-01-15 15:06, Pablo Neira Ayuso wrote:
->> Patrick McHardy wrote:
->>> Jan Engelhardt wrote:
->>>> But the spartanic output of those proc files barely helps (especially
->>>> in light of multiple revisions), so here is the patch I spoke about,
->>>> refreshed and rebased, that solves the worries.
->>> That seems a bit overkill. Text-based representation also doesn't seem
->>> ideal, iptables already has this information and a cmdline user will
->>> simply use "iptables ... -h" to get the supported option. For other
->>> programs a binary representation would probably be easier to handle.
->> Agreed. The text-based interface seems to me like yet-another-interface
->> that users may (ab)use (like /proc/net/nf_conntrack, I have seen people
->> polling from it to display information, this was OK in the early days).
->> Following this basis, one may come and implement another text-based
->> interface to display the rule-set in the kernel and so on.
-> 
-> But is there an equivalent user tool and interface at this time
-> to obtain the same information?
+<sorry if this is a duplicate>
 
-No that I know of, but that doesn't matter as long as nobody has a
-need for it.
+I am using the 2.0.8-2 version of ebtables with Linux 2.6.21.7 on a mips64
+machine (big-endian).
+
+Here is the sequence of commands:
+
+I am using v2.0.8-2 with a 2.6.21.7 kernel running on a mips64 (big-endian):
+
+vmalfcvm40:/home/jtsillas/ebtables-v2.0.8-2# ./static --init-table
+The kernel doesn't support the ebtables 'filter' table.
+vmalfcvm40:/home/jtsillas/ebtables-v2.0.8-2# lsmod
+Module                  Size  Used by
+ebtable_broute          4992  0
+ebt_pkttype             4480  0
+ebt_ip                  5376  0
+ebtable_filter          5248  0
+ebt_snat                5760  0
+ebtable_nat             5376  0
+ebtables               29952  6
+ebtable_broute,ebt_pkttype,ebt_ip,ebtable_filter,ebt_snat,ebtable_nat
+xt_MARK                 5760  2
+iptable_mangle          5760  1
+ip_tables              27600  1 iptable_mangle
+x_tables               25488  2 xt_MARK,ip_tables
+tun                    15104  0
+ipv6                  433712  24
+cavium_ethernet        51536  0
+
 
