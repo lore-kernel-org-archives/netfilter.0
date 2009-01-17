@@ -1,39 +1,58 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Troubles with MARK target in 2.6.28
-Date: Fri, 16 Jan 2009 09:14:14 +0100 (CET)
-Message-ID: <alpine.LSU.2.00.0901160901090.22357@fbirervta.pbzchgretzou.qr>
-References: <86617ABF8F494F2A940C18251E3DC8D0@Hakkenden> <496AE0E3.1030009@trash.net> <496AEC64.5040202@trash.net> <alpine.LSU.2.00.0901120814250.21692@fbirervta.pbzchgretzou.qr> <496AEEB0.3080905@trash.net> <alpine.LSU.2.00.0901140530190.26721@fbirervta.pbzchgretzou.qr>
- <496F40DC.2000605@trash.net> <496F42F0.7050305@netfilter.org> <alpine.LSU.2.00.0901151651410.17559@fbirervta.pbzchgretzou.qr> <496F5C25.2010702@trash.net> <alpine.LSU.2.00.0901151658280.17559@fbirervta.pbzchgretzou.qr> <496F5E6C.3030703@trash.net>
- <alpine.LSU.2.00.0901151720090.19363@fbirervta.pbzchgretzou.qr> <4970385B.3000209@trash.net>
-Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4970385B.3000209@trash.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+From: Peter Renzland <peter@dancing.org>
+Subject: Re: Counting Connections
+Date: Sat, 17 Jan 2009 13:08:54 -0500
+Message-ID: <766EDACA-B529-4638-86CD-DB7621D012ED@dancing.org>
+References: <5E1140B1-A4E2-4D7B-937F-7CD1DA0966D0@dancing.org> <496DA704.80302@arturaz.net>
+Mime-Version: 1.0 (Apple Message framework v930.3)
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <496DA704.80302@arturaz.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, "Nikolay S. Rybalov" <nowhere@hakkenden.ath.cx>, netfilter@vger.kernel.org, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed	delsp=yes"
+To: =?UTF-8?Q?Art=C5=ABras_=C5=A0lajus?= <x11@arturaz.net>
+Cc: netfilter@vger.kernel.org
+
+On 09  Jan 14, at 03:49 , Art=C5=ABras =C5=A0lajus wrote:
+
+> Peter Renzland wrote:
+>> I would also like to count connections (those that have been =20
+>> tracked), just like the packets and bytes that have been moved.
+>> Can someone please show me how that can be done?
+> New connections? -m state --state NEW should work.
 
 
-On Friday 2009-01-16 08:33, Patrick McHardy wrote:
->>>> As a developer of Xtables modules I have a need  ;-)
->>> That was one of my first thoughts, it looks mainly useful for
->>> developers. And I'm not very fond of the idea of adding almost
->>> 300 lines of segfile beauty for that.
->>>
->> Then you probably won't like it if I say that the same logic is
->> needed if I shall make the existing proc-files multi-nfproto aware.
->
-> What does "multi-nfproto aware" mean exactly?
+I *finally* figured this out. :-)
 
-The thing is, /proc/net/ip_tables_matches's seq_start function takes
-the lock, lets it iterate, and drops the lock on seq_stop. That is
-easy for a single list (xt[af].match), but when you want to make
-matches from more than just one nfproto visible in that file, you
-need to drop the lock during seq_next, and acquire the next one too.
-Not only that, but you also have to switch the list you are
-traversing, which is currently conveniently passed through the "v"
-variable. And you need to keep track of the nfproto whose list you
-are iterating through, because seq_stop can be called with either one
-currently being traversed.
+At first I thought that this could only count packets and bytes, but I =
+=20
+want to count connections, not packets and bytes.  Well, since each =20
+connection is started by exactly one packet, the number of such =20
+packets is the number of connections that I seek.  Very clever.  =20
+Thanks!!!
+
+So, to count all connections:
+
+iptables -N conncount
+iptables -I FORWARD -j conncount
+iptables -A conncount -m state --state NEW
+
+And I can even count over-limit connection attempts:
+
+iptables -N connover
+iptables -I FORWARD -p tcp --syn -m iprange --src-range $IP1-$IP2 -m =20
+connlimit --connlimit-above 100 -j connover
+iptables -I FORWARD -p ! tcp     -m iprange --src-range $IP1-$IP2 -m =20
+connlimit --connlimit-above  50 -j connover
+iptables -A connover -j REJECT
+
+Does that look about right?
+
+(Do I really need that "--syn"?)
+
+
+Thanks.
+
+Peter
+
+
