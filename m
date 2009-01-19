@@ -1,97 +1,68 @@
-From: Peter Renzland <peter@dancing.org>
-Subject: CONNLIMIT Questions
-Date: Sun, 18 Jan 2009 13:32:20 -0500
-Message-ID: <55F56AFD-736E-4FBB-9F08-B4A6A3393140@dancing.org>
-Mime-Version: 1.0 (Apple Message framework v930.3)
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+From: Stephen Rothwell <sfr-3FnU+UHB4dNDw9hX6IcOSA@public.gmane.org>
+Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
+Date: Mon, 19 Jan 2009 11:24:29 +1100
+Message-ID: <20090119112429.78f5dc33.sfr@canb.auug.org.au>
+References: <1232223441.3966.22.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Mon__19_Jan_2009_11_24_29_+1100_YrWGFK.9COO2jjcI"
+Return-path: <linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1232223441.3966.22.camel-bi+AKbBUZKY6gyzm1THtWbp2dZbC/Bob@public.gmane.org>
+Sender: linux-nfs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
-To: netfilter@vger.kernel.org
+To: Jaswinder Singh Rajput <jaswinder-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Ingo Molnar <mingo-X9Un+BFzKDI@public.gmane.org>, x86 maintainers <x86-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, urs.thuermann-l29pVbxQd1IUtdQbppsyvg@public.gmane.org, oliver.hartkopp-l29pVbxQd1IUtdQbppsyvg@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bfields-uC3wQj2KruNg9hUCZPvPmw@public.gmane.org, neilb-l3A5Bk7waGM@public.gmane.org, linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-raid-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dbrownell-Rn4VEauK+AKRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, spi-devel-general-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dwmw2-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, mchehab-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>
 
-What I want to do is limit the total number of (mostly) outgoing  
-(mostly UDP) connection (attempts) by LAN IP.  This is because of out- 
-of-control BT (etc.) configurations and clients that will try to set  
-up thousands of connections in a few seconds, almost all of which will  
-fail and time out.  With a dozen LAN users doing this simultaneously,  
-the router is toast.
+--Signature=_Mon__19_Jan_2009_11_24_29_+1100_YrWGFK.9COO2jjcI
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Sun, 18 Jan 2009 01:47:21 +0530 Jaswinder Singh Rajput <jaswinder@kernel=
+.org> wrote:
+>
+> diff --git a/include/linux/nfsd/stats.h b/include/linux/nfsd/stats.h
+> index 7678cfb..0b53cfe 100644
+> --- a/include/linux/nfsd/stats.h
+> +++ b/include/linux/nfsd/stats.h
+> @@ -29,9 +29,11 @@ struct nfsd_stats {
+>  	unsigned int	ra_size;	/* size of ra cache */
+>  	unsigned int	ra_depth[11];	/* number of times ra entry was found that d=
+eep
+>  					 * in the cache (10percentiles). [10] =3D not found */
+> +#ifdef __KERNEL__
+>  #ifdef CONFIG_NFSD_V4
+>  	unsigned int	nfs4_opcount[LAST_NFS4_OP + 1];	/* count of individual nfs=
+v4 operations */
+>  #endif
+> +#endif /* __KERNEL__ */
+> =20
+>  };
 
-I have seen the following two rules suggested frequently:
+The only variable in the kernel of type "struct nfsd_stats" is only
+exported to user mode via procfs, so this whole structure could probably
+go inside __KERNEL__.  Then looking harder, I wonder if this header
+should be exported to user mode at all.
 
+--=20
+Cheers,
+Stephen Rothwell                    sfr-3FnU+UHB4dNDw9hX6IcOSA@public.gmane.org
+http://www.canb.auug.org.au/~sfr/
 
-iptables -I FORWARD -p tcp --syn -m iprange --src-range  
-192.168.0.100-192.168.0.199 -m connlimit --connlimit-above 100 -j DROP
+--Signature=_Mon__19_Jan_2009_11_24_29_+1100_YrWGFK.9COO2jjcI
+Content-Type: application/pgp-signature
 
-iptables -I FORWARD -p ! tcp -m iprange --src-range  
-192.168.0.100-192.168.0.199 -m connlimit --connlimit-above 50 -j DROP
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
+iEYEARECAAYFAklzyD0ACgkQjjKRsyhoI8yt9QCgmEHLhNSAB2fYNfqbvgl+WPEm
+rRoAnRBfynsNZYdMSfUK9yUqeTiWdV62
+=eQRT
+-----END PGP SIGNATURE-----
 
-My questions:
-
-1. Is REJECT any better than DROP?  (Will anything or anyone actually  
-get the reject message and learn anything from it?)
-
-2. Is the "--syn" necessary?  The manual says:
-
-     "--syn
-         Only match TCP packets with the SYN bit set and the ACK,RST  
-and FIN bits cleared. Such packets are used to request TCP connection  
-initiation; for example, blocking such packets coming in an interface  
-will prevent incoming TCP connections, but outgoing TCP connections  
-will be unaffected"
-
-      When limiting connections with CONNLIMIT, can I not rely on  
-CONNTRACK's logic to determine that a new connection is about to be  
-tracked?  Why should I have to duplicate part of this effort?  Does  
-the logic of the text of that paragraph accurately reflect the  
-program's logic?
-
-
-3. Is there not a single rule that will limit connections regardless  
-of protocol?  Why does:
-
-     iptables -I FORWARD  -m iprange --src-range  
-192.168.0.100-192.168.0.199 -m connlimit --connlimit-above 50 -j DROP
-
-     fail with "Invalid argument"?
-
-     This man page ( http://linux.die.net/man/8/iptables ) states:
-
-    "connlimit
-	Allows you to restrict the number of parallel TCP connections to a  
-server per client IP address (or address block)."
-
-
-     And all examples are for TCP, and all specify "--syn".
-
-
-     So, is "! tcp" just a kludge to get around a "tcp-only" design  
-limitation?  Or is there some "good" reason? :-)
-
-
-     (After all, the concept of connection in connection-tracking is  
-much broader than the concept of connection in TCP.  What might I be  
-missing? :-)
-
-
-4. Here is the BIG question:
-
-     The manual says: "restrict the number of parallel TCP connections  
-to a server".
-
-     But that is not at all what I want to do.   I want to restrict  
-the number of greatly *divergent* connections to many, many different  
-servers.
-
-
-
-Perhaps there is a better (effective) way to limit connection attempts  
-by LAN IP?
-In any direction and for any protocol.
-
-
-Thanks much!
-
-Peter Renzland
+--Signature=_Mon__19_Jan_2009_11_24_29_+1100_YrWGFK.9COO2jjcI--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-nfs" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
