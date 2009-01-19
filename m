@@ -1,38 +1,42 @@
-From: Sitaram Chamarty <sitaramc@gmail.com>
-Subject: Re: CONNLIMIT Questions
-Date: Mon, 19 Jan 2009 15:34:16 +0000 (UTC)
-Message-ID: <slrngn97bo.dts.sitaramc@sitaramc.homelinux.net>
-References: <55F56AFD-736E-4FBB-9F08-B4A6A3393140@dancing.org>
-Mime-Version: 1.0
+From: Peter Renzland <peter@dancing.org>
+Subject: Questions about Conntrack Timeouts
+Date: Mon, 19 Jan 2009 11:21:25 -0500
+Message-ID: <D7222E61-D1B6-4D68-B391-C0CDF97C2B3E@dancing.org>
+Mime-Version: 1.0 (Apple Message framework v930.3)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
 To: netfilter@vger.kernel.org
 
-On 2009-01-18, Peter Renzland <peter@dancing.org> wrote:
-> 1. Is REJECT any better than DROP?  (Will anything or anyone actually  
-> get the reject message and learn anything from it?)
+[Netfilter v1.3.7, Linux 2.4.20, Tomato 1.23, Busybox v1.12.3,  
+embedded in a WRT54GL router]
 
-REJECT is better than DROP in the sense that the application
-making the connection will get (and be able to pass back to
-the user, presumably) a proper error message.  A DROP looks
-like the packet didn't make it, and the program will not
-report back to the user until some timeout or retry limit
-finishes.
+Connection storms -- attempts to set up thousands of (mostly UDP)  
+outgoing connections in a few seconds, almost all of which remain  
+unreplied -- are a hazard to router stability.
 
->      But that is not at all what I want to do.   I want to restrict  
-> the number of greatly *divergent* connections to many, many different  
-> servers.
+Two possible counter-measures are:
 
-> Perhaps there is a better (effective) way to limit connection attempts  
-> by LAN IP?
-> In any direction and for any protocol.
+1. Using connlimit to limit  the "connections" that go in the  
+conntrack table,
+2. Using timeouts to limit the time they stay in the CT.
 
-You could take a look at the hashlimit and the limit
-modules; one of those should do what you want.  I have no
-used the hashlimit one so far, and the limit one only for
-incoming connections, but they seem more general than
-connlimit.
 
+Are there any risks in reducing the following timeouts down to 10  
+seconds?:
+
+TCP Timeout:
+10 SYN Sent	
+10 Time Wait	
+10 Close	
+
+UDP Timeout:
+10 Unreplied	(this timeout (apparently) also applies to UDP  
+connections that are neither Unreplied nor Assured.)
+10 Assured
+
+Thanks.
+
+Peter Renzland
