@@ -1,49 +1,38 @@
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
-Date: Mon, 19 Jan 2009 08:23:14 +0530
-Message-ID: <1232333594.3129.31.camel@localhost.localdomain>
-References: <1232223441.3966.22.camel@localhost.localdomain>
-	 <20090119112429.78f5dc33.sfr@canb.auug.org.au>
+From: Sitaram Chamarty <sitaramc@gmail.com>
+Subject: Re: CONNLIMIT Questions
+Date: Mon, 19 Jan 2009 15:34:16 +0000 (UTC)
+Message-ID: <slrngn97bo.dts.sitaramc@sitaramc.homelinux.net>
+References: <55F56AFD-736E-4FBB-9F08-B4A6A3393140@dancing.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20090119112429.78f5dc33.sfr@canb.auug.org.au>
-Sender: linux-media-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Ingo Molnar <mingo@elte.hu>, x86 maintainers <x86@kernel.org>, urs.thuermann@volkswagen.de, oliver.hartkopp@volkswagen.de, linux-media@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, bfields@fieldses.org, neilb@suse.de, linux-nfs@vger.kernel.org, linux-raid@vger.kernel.org, dbrownell@users.sourceforge.net, spi-devel-general@lists.sourceforge.net, netdev@vger.kernel.org, greg@kroah.com, linux-usb@vger.kernel.org, dwmw2@infradead.org, linux-mtd@lists.infradead.org, tiwai@suse.de, mchehab@infradead.org, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+To: netfilter@vger.kernel.org
 
-On Mon, 2009-01-19 at 11:24 +1100, Stephen Rothwell wrote:
-> On Sun, 18 Jan 2009 01:47:21 +0530 Jaswinder Singh Rajput <jaswinder@kernel.org> wrote:
-> >
-> > diff --git a/include/linux/nfsd/stats.h b/include/linux/nfsd/stats.h
-> > index 7678cfb..0b53cfe 100644
-> > --- a/include/linux/nfsd/stats.h
-> > +++ b/include/linux/nfsd/stats.h
-> > @@ -29,9 +29,11 @@ struct nfsd_stats {
-> >  	unsigned int	ra_size;	/* size of ra cache */
-> >  	unsigned int	ra_depth[11];	/* number of times ra entry was found that deep
-> >  					 * in the cache (10percentiles). [10] = not found */
-> > +#ifdef __KERNEL__
-> >  #ifdef CONFIG_NFSD_V4
-> >  	unsigned int	nfs4_opcount[LAST_NFS4_OP + 1];	/* count of individual nfsv4 operations */
-> >  #endif
-> > +#endif /* __KERNEL__ */
-> >  
-> >  };
-> 
-> The only variable in the kernel of type "struct nfsd_stats" is only
-> exported to user mode via procfs, so this whole structure could probably
-> go inside __KERNEL__.  Then looking harder, I wonder if this header
-> should be exported to user mode at all.
-> 
+On 2009-01-18, Peter Renzland <peter@dancing.org> wrote:
+> 1. Is REJECT any better than DROP?  (Will anything or anyone actually  
+> get the reject message and learn anything from it?)
 
-I was in doubt may be this will be used by some userspace utilities.
+REJECT is better than DROP in the sense that the application
+making the connection will get (and be able to pass back to
+the user, presumably) a proper error message.  A DROP looks
+like the packet didn't make it, and the program will not
+report back to the user until some timeout or retry limit
+finishes.
 
-Once I got confirmation that it is not required in userspace, I will
-remove it :-)
+>      But that is not at all what I want to do.   I want to restrict  
+> the number of greatly *divergent* connections to many, many different  
+> servers.
 
---
-JSR
+> Perhaps there is a better (effective) way to limit connection attempts  
+> by LAN IP?
+> In any direction and for any protocol.
+
+You could take a look at the hashlimit and the limit
+modules; one of those should do what you want.  I have no
+used the hashlimit one so far, and the limit one only for
+incoming connections, but they seem more general than
+connlimit.
 
