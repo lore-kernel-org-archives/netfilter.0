@@ -1,126 +1,61 @@
-From: Peter Renzland <peter@dancing.org>
-Subject: Re: CONNLIMIT Questions
-Date: Wed, 21 Jan 2009 14:25:32 -0500
-Message-ID: <02D9FB1E-193C-4C3A-85F5-F581DDDD2D6D@dancing.org>
-References: <55F56AFD-736E-4FBB-9F08-B4A6A3393140@dancing.org> <slrngn97bo.dts.sitaramc@sitaramc.homelinux.net> <080C17B3-CF53-45FD-AC6D-C3F7C545C8A5@dancing.org>
-Mime-Version: 1.0 (Apple Message framework v930.3)
+From: David J Craigon <david@craigon.co.uk>
+Subject: Re: Conntrack not recording packets going through a firewall
+Date: Wed, 21 Jan 2009 20:33:54 +0000
+Message-ID: <c1ace6860901211233h7a978638g86e891e25991b4d4@mail.gmail.com>
+References: <c1ace6860901210632m6d9e5b12g71010545a57be1b5@mail.gmail.com>
+	 <4977522B.5030007@mailinator.com>
+	 <c1ace6860901210920l1922c626x124b83e7f02d0844@mail.gmail.com>
+	 <c1ace6860901210937m375a8f38g87a86e6264ff6023@mail.gmail.com>
+	 <49776B2A.4070005@mailinator.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <080C17B3-CF53-45FD-AC6D-C3F7C545C8A5@dancing.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:sender:received:in-reply-to
+         :references:date:x-google-sender-auth:message-id:subject:from:to
+         :content-type:content-transfer-encoding;
+        bh=uZAGNq3OCWPATLHLDS7hzt0uFzaksccFK04KdnNOjFc=;
+        b=WiFOvRUlfcGYYpnliV5vQaEedblYWrLwhSUe+GkwIZf9oHl6XfRL9ZEy3eDqT325Cm
+         m8cx3VR3Cd8NzaMNVJUBsFbvl0Mjgl6KHR1IQ1M4/8mMa2zf1Y9lJuTkXcwtvmtLYaDK
+         GFcUHV7BTvnI3nDMGOfW2jfJISaRvD9uxVKXA=
+In-Reply-To: <49776B2A.4070005@mailinator.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
-To: netfilter@vger.kernel.org
-Cc: Sitaram Chamarty <sitaramc@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Mike Wright <mike.wright@mailinator.com>, netfilter@vger.kernel.org
 
-I got partial answers by experimenting:
+well whatever. Routing, schmoting. If I turn off IPTables, everything
+can see everything else fine.
 
-icmp-admin-prohibited is indeed treated as "DROP"
-icmp-net-prohibited and -host- ... ping says: Dest Unreachable, Bad  
-Code: 9  (and 10)
-telnet says "network unreachable" or "connection refused"
-Safari says nothing specific.
-
-However, I did find a significant operational difference between DROP  
-and REJECT:
-
-Reject immediately returns a message to the client.
-Drop simply does not respond to the client.  I.e. it *ignores* the  
-request, leaving the client waiting, until the client gives up.
-
- From the perspective of the router's well-being, DROP may be  
-preferable, since the client will not try again, while he is busy  
-waiting! :-)
-
-This is especially so if the router is unable to send a meaningful  
-reject message, such as "admin-prohibited".
-Other messages will only result in retries, when the underlying  
-message is "stop trying, you are failing because you are trying too  
-much!"
-
-[Perhaps one day we will be able to specify an arbitrary (meaningful)  
-text, such as "Connection Limit Exceeded", and no kernel needs to  
-approve of it!]
-
-Peter
-
-
-On 09  Jan 21, at 12:54 , Peter Renzland wrote:
-
-> [Netfilter v1.3.7, Linux 2.4.20, Tomato 1.23, Busybox v1.12.3,  
-> embedded in a WRT54GL router]
->
-> On 09  Jan 19, at 10:34 , Sitaram Chamarty wrote:
->
->> On 2009-01-18, Peter Renzland <peter@dancing.org> wrote:
->>> 1. Is REJECT any better than DROP?  (Will anything or anyone  
->>> actually
->>> get the reject message and learn anything from it?)
+2009/1/21 Mike Wright <mike.wright@mailinator.com>:
+> David J Craigon wrote:
 >>
->> REJECT is better than DROP in the sense that the application
->> making the connection will get (and be able to pass back to
->> the user, presumably) a proper error message.  A DROP looks
->> like the packet didn't make it, and the program will not
->> report back to the user until some timeout or retry limit
->> finishes.
->
-> If (and that is the question) the reject-reason is indeed seen, then  
-> perhaps --reject-with icmp-admin-prohibited would be a clearer  
-> message to send than the default icmp-host-unreachable.
->
-> This raises some new questions, expanding the original (yet  
-> unresolved one) to:
->
-> 1.1 will anyone or anything actually *get* and *use* the reject  
-> reason? (Especially PC users and their software, and especially  
-> BitTorrent users and BitTorrent clients.)
->
-> -- the iptables manual states that "Using icmp-admin-prohibited with  
-> kernels that do not support it will result in a plain DROP instead  
-> of REJECT".  --
-> 1.2 why does a message text need kernel support?
->
-> 1.3 why "drop" instead "reject with reason unavailable"?
->
-> 1.4 how does an iptables user determine whether such kernel support  
-> exists?
->
->
->
->
->>>    But that is not at all what I want to do.   I want to restrict
->>> the number of greatly *divergent* connections to many, many  
->>> different
->>> servers.
+>> Think I might of misunderstood your email. What I want to happen is
+>> for all traffic to go through the firewall. Customer 1 and Customer 5
+>> are on separate VLANs. I want Customer 5 to be able to access Customer
+>> 1's server as if it was any other host on the internet.
 >>
->>> Perhaps there is a better (effective) way to limit connection  
->>> attempts
->>> by LAN IP?
->>> In any direction and for any protocol.
+>> Does that make more sense?
 >>
->> You could take a look at the hashlimit and the limit
->> modules; one of those should do what you want.  I have no
->> used the hashlimit one so far, and the limit one only for
->> incoming connections, but they seem more general than
->> connlimit.
+>> 2009/1/21 David J Craigon <david@craigon.co.uk>:
+>>
+>>> No, the routing is definitely working 8-). Otherwise how could all
+>>> traffic go from the internet to these servers? They have no other
+>>> internet connection than through the firewall.
 >
-> The central question that was never addressed was:
+> Not too sure about VLANs but I have a 3-legged firewall/router with discrete
+> network cards.
 >
-> * The iptables manual page states that connlimit
-
-[edited...]
-> "restrict the number of parallel TCP connections to a server per  
-> client IP address (or address block)."
+> I just removed the route to my DMZ and now I can't reach it.  Hosts on my
+> DMZ can still see my LAN and the internet because 1)net is on default route
+> and 2)route to LAN still exists.
 >
-> I want to limit what overwhelmingly are divergent UDP connection  
-> attempts to 1000's of servers.
-[...edited]
-
-
-> Thanks,
-> Peter Renzland
+> Ping a DMZ host from a LAN host and I see 100% packet loss.
 >
-> [Netfilter v1.3.7, Linux 2.4.20, Tomato 1.23, Busybox v1.12.3,  
-> embedded in a WRT54GL router]
-
-
+> I re-added the route:  ip route add DMZ/24 dev eth1
+>
+> Voila', ping starts to work.
+>
+> :m)
+>
