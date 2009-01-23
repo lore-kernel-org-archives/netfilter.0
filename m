@@ -1,54 +1,81 @@
-From: Karel Rericha <karel@maxtel.cz>
-Subject: tc filter - marks equals classids
-Date: Fri, 23 Jan 2009 10:58:20 +0100
-Message-ID: <5b19ed110901230158s4af2ffr5c2b61ce441c6d85@mail.gmail.com>
+From: Yoann Juet <yoann.juet@univ-nantes.fr>
+Subject: Re: Second failover failure with conntrackd - INVALID packets
+Date: Fri, 23 Jan 2009 13:39:14 +0100
+Message-ID: <4979BA72.50405@univ-nantes.fr>
+References: <497760CB.6090008@univ-nantes.fr> <49778AF4.7000201@netfilter.org> <4978425F.1030003@univ-nantes.fr> <4978A4F8.5060901@netfilter.org>
+Reply-To: yoann.juet@univ-nantes.fr
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------050002080409070102060106"
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4978A4F8.5060901@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+This is a multi-part message in MIME format.
+--------------050002080409070102060106
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-we have about 20 000 classes, we mark packets with iptables and we use
-marks and classids which match each other (for example mark 0x2064 is
-directed via tc filter rule to class 1:0x2064), so we have about 20
-000 filters too. I have read somewhere (probably on docum.org) that is
-it possible to write filter without specifying handle and classid, and
-such filter will direct packets to classes by their marks.
+ > That's another known problem of 0.9.6. Probably, you don't see EINVAL
+ > but a message like "N entries can't be committed". I suggest you to
+ > upgrade to latest. I'm about to release 0.9.10, using current would 
+ >make my life easier to provide you support.
 
-So rule:
+Well, I installed conntrack-tools 0.9.9 and libnetfilter_conntrack 
+0.0.99 on the cluster. No more "delayed packet" message or another 
+warning or error message. Unfortunately, I get the same result when the 
+second failover is triggered. Packets are denied due to INVALID state.
 
-tc filter add dev eth0 protocol ip parent 1:0 prio 1 fw
+PS: the new configuration subblock "Filter from Kernelspace" in 
+conntrackd.conf is not parsed correctly. I get an error message:
 
-would direct packets marked as 0x1666 to class 1:0x1666, packets
-marked with 0x1667 to class 1:0x1667 and so on.
+"Error parsing config file: line (190), symbol 'from': syntax error"
 
-When I create needed classes (test):
+I have to delete it to make starting conntrackd.
 
-tc qdisc add dev eth0 root handle 1: htb
-tc class add dev eth0 parent 1: classid 1:1 htb rate 100000kbit
+Regards,
 
-I can run above tc filter command without problems. But here strange
-things begin. Regardless mentioned tc filter run or not
+Pablo Neira Ayuso wrote:
+> Yoann Juet wrote:
+>> Hi,
+>>
+>> I see tons of messages "[warning] delayed packet?", even before the
+>> first failover, but nothing related to EINVAL. Does it help ?
+> 
+> That's another known problem of 0.9.6. Probably, you don't see EINVAL
+> but a message like "N entries can't be committed". I suggest you to
+> upgrade to latest. I'm about to release 0.9.10, using current would make
+> my life easier to provide you support.
+> 
+>> FYI, the cluster is a KVM guest using hardware virtualization with net
+>> virtio.
+> 
+> Interesting. I have never used it in such environment.
+> 
 
-tc -s filter ls dev eth0
 
-always shows on first row
+--------------050002080409070102060106
+Content-Type: text/x-vcard; charset=utf-8;
+ name="yoann_juet.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="yoann_juet.vcf"
 
-filter parent 1: protocol ip pref 1 fw
+begin:vcard
+fn:Yoann Juet
+n:Juet;Yoann
+org;quoted-printable:;DSI Universit=C3=A9 de Nantes
+adr;quoted-printable:BP92208;;2, rue de la Houssini=C3=A8re;Nantes;;44322;France
+email;internet:yoann.juet@univ-nantes.fr
+title;quoted-printable:Ing=C3=A9nieur s=C3=A9curit=C3=A9 & r=C3=A9seau
+tel;work:02.51.12.53.93
+tel;fax:02.51.12.58.60
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
 
-But when I run
 
-tc filter del dev eth0 protocol ip parent 1:0 prio 1 fw
-
-this row dissapears. I would like to know if it is possible to use
-such tc filter for all marks, and why there is such strange behaviour
-when listing filters.
-
-System is dual dualcore Opteron running latest Gentoo x86-64 with
-kernel 2.6.27-r8, iproute2 2.6.22.20070710 and iptables 1.4.0-r1.
-
-Karel
+--------------050002080409070102060106--
