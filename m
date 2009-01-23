@@ -1,58 +1,54 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: Is the libnetfilter_queue thread-safe?
-Date: Fri, 23 Jan 2009 08:35:25 +0100
-Message-ID: <1232696125.22893.5.camel@ice-age>
-References: <web-4707182@mail.primecreation.com>
+From: Karel Rericha <karel@maxtel.cz>
+Subject: tc filter - marks equals classids
+Date: Fri, 23 Jan 2009 10:58:20 +0100
+Message-ID: <5b19ed110901230158s4af2ffr5c2b61ce441c6d85@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-x6ErBJHlDAYxltTwdFtl"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <web-4707182@mail.primecreation.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Jacky Luk <jacky.luk@primecreation.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Hello,
 
---=-x6ErBJHlDAYxltTwdFtl
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
+we have about 20 000 classes, we mark packets with iptables and we use
+marks and classids which match each other (for example mark 0x2064 is
+directed via tc filter rule to class 1:0x2064), so we have about 20
+000 filters too. I have read somewhere (probably on docum.org) that is
+it possible to write filter without specifying handle and classid, and
+such filter will direct packets to classes by their marks.
 
-Hi,
+So rule:
 
-Le vendredi 23 janvier 2009 =E0 12:02 +0800, Jacky Luk a =E9crit :
-> Hi,
->=20
-> I would like to ask a question about the=20
-> libnetfilter_queue. Is the libnetfilter_queue thread-safe?=20
+tc filter add dev eth0 protocol ip parent 1:0 prio 1 fw
 
-Is had yet to be decide :/ From my experience on NuFW, you can use it
-with multithreaded programs and you can have a reading thread and a
-writing thread working together on the same queue.
+would direct packets marked as 0x1666 to class 1:0x1666, packets
+marked with 0x1667 to class 1:0x1667 and so on.
 
-> Would the API of libnetfilter_queue cause the kernel crash=20
-> under multi-threading environment?
+When I create needed classes (test):
 
-Clearly not, the worse that can happen is an application crash not a
-kernel crash.
+tc qdisc add dev eth0 root handle 1: htb
+tc class add dev eth0 parent 1: classid 1:1 htb rate 100000kbit
 
-BR,
---=20
-Eric Leblond <eric@inl.fr>
-INL: http://www.inl.fr/
-NuFW: http://www.nufw.org/
+I can run above tc filter command without problems. But here strange
+things begin. Regardless mentioned tc filter run or not
 
---=-x6ErBJHlDAYxltTwdFtl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Ceci est une partie de message
- =?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+tc -s filter ls dev eth0
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+always shows on first row
 
-iD8DBQBJeXM6nxA7CdMWjzIRAproAKCPomDxQhyb7b3K0MyD0IiAihvPfACgjCZ0
-veLfkUoV1Xwcarap/ji0Vsk=
-=d8j6
------END PGP SIGNATURE-----
+filter parent 1: protocol ip pref 1 fw
 
---=-x6ErBJHlDAYxltTwdFtl--
+But when I run
 
+tc filter del dev eth0 protocol ip parent 1:0 prio 1 fw
+
+this row dissapears. I would like to know if it is possible to use
+such tc filter for all marks, and why there is such strange behaviour
+when listing filters.
+
+System is dual dualcore Opteron running latest Gentoo x86-64 with
+kernel 2.6.27-r8, iproute2 2.6.22.20070710 and iptables 1.4.0-r1.
+
+Karel
