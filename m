@@ -1,34 +1,50 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Why --syn on tcp connlimit?
-Date: Fri, 23 Jan 2009 20:58:11 +0100
-Message-ID: <497A2153.7090502@plouf.fr.eu.org>
-References: <1FDE2549-3F21-4BD7-BB37-06C971D32052@dancing.org>
+From: "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
+Date: Fri, 23 Jan 2009 13:33:07 -0800
+Message-ID: <497A3793.5090502@zytor.com>
+References: <1232223441.3966.22.camel@localhost.localdomain>
+	<1232228261.27094.0.camel@macbook.infradead.org>
+	<20090117221932.GA4956@uranus.ravnborg.org>
+	<49725B1E.604@kernel.org>
+	<1232498319.3123.34.camel@localhost.localdomain>
+	<1232726359.3504.18.camel@localhost.localdomain>
+	<1232726658.3504.22.camel@localhost.localdomain>
+	<alpine.LSU.2.00.0901231710350.15413@fbirervta.pbzchgretzou.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1FDE2549-3F21-4BD7-BB37-06C971D32052@dancing.org>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org>
+In-Reply-To: <alpine.LSU.2.00.0901231710350.15413@fbirervta.pbzchgretzou.qr>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Sender: linux-mtd-bounces@lists.infradead.org
+Errors-To: linux-mtd-bounces+gldm-linux-mtd-36=gmane.org@lists.infradead.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: urs.thuermann@volkswagen.de, neilb@suse.de, greg@kroah.com, bfields@fieldses.org, linux-mtd@lists.infradead.org, "H. Peter Anvin" <hpa@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, dbrownell@users.sourceforge.net, x86 maintainers <x86@kernel.org>, tiwai@suse.de, netfilter-devel@vger.kernel.org, Ingo Molnar <mingo@elte.hu>, linux-media@vger.kernel.org, mchehab@infradead.org, linux-raid@vger.kernel.org, netfilter@vger.kernel.org, linux-nfs@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Jaswinder Singh Rajput <jaswinder@kernel.org>, oliver.hartkopp@volkswagen.de, Andrew Morton <akpm@linux-foundation.org>, David Woodhouse <dwmw2@infradead.org>
 
-Hello,
+Jan Engelhardt wrote:
+> 
+> I had an objection as previously stated -- namely that
+> <stdint.h> should be included to remain friendly to C++0x
+> programs which should use <cstdint> instead. Forcing
+> stdint.h is therefore not nice.
+> 
 
-Peter Renzland a =E9crit :
-> I have often seen rules such as:
->=20
-> iptables -I FORWARD -p tcp --syn -m iprange --src-range=20
-> 192.168.1.10-192.168.1.250 -m connlimit --connlimit-above 150 -j DROP
->=20
-> How is this, in effect, different from?:
->=20
-> iptables -I FORWARD -p tcp       -m iprange --src-range=20
-> 192.168.1.10-192.168.1.250 -m connlimit --connlimit-above 150 -j DROP
+FWIW, it's kind of pointless in that case; <cstdint> exports it into the 
+std:: namespace rather than the root namespace, so using stdint types 
+still don't work.
 
-connlimit matches *any* TCP packet as soon as there are enough existing=
-=20
-TCP connections from the source address or prefix, including packets=20
-belonging to established connections. --syn makes sure that the rule=20
-matches only SYN packets creating a new connection, without disrupting=20
-established connections. Another way to achieve this is to match only=20
-packets in the state NEW, as explained by Nikolay.
+It again comes down to: for headers exported to userspace we *have* to 
+use double-underscore types.
+
+	-hpa
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
