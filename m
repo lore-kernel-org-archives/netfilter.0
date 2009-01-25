@@ -1,29 +1,32 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [ANNOUNCE] conntrack-tools 0.9.10 released
-Date: Mon, 26 Jan 2009 00:50:19 +0100 (CET)
-Message-ID: <alpine.LSU.2.00.0901260050030.31299@fbirervta.pbzchgretzou.qr>
-References: <497CD41A.3040106@netfilter.org>
+From: Andy Theuninck <gohanman@gmail.com>
+Subject: --iif argument unrecognized by iptables
+Date: Sun, 25 Jan 2009 17:59:57 -0600
+Message-ID: <f8a02f3e0901251559q6324e3faqc75af6d16eba8038@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <497CD41A.3040106@netfilter.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=CORHOaeSXnvEcAO3WZHwZz+juPnpzsqB/Sml8SS5gbU=;
+        b=G1Kjosv/bPpgyMUx5V95Xr68lfQdyk/M/s5dO/PY+bnbkkeYwPI/Up5bayEDHh8oMv
+         Gg4IuE3KrIBSZP0x6mrjpmce5XPmjkmc0/Z1o857bEZjopJOMvu4HQO4mGn83d7LXGmi
+         UHedgXL109J7VxtXjRPeMdVoUUObPjoG/yK0A=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+I'm running into a fairly odd issue. I want to redirect certain
+incoming packets to a different interface. I'm trying to do this using
+the ROUTE target in the mangle table, but for some reason it doesn't
+work. Here's what I'm seeing:
 
-On Sunday 2009-01-25 22:05, Pablo Neira Ayuso wrote:
+# iptables -t mangle -A INPUT -d 192.168.1.2 -s !
+192.168.1.0/255.255.255.0 -p udp --dport 500 -j ROUTE --iif eth0:1
+iptables v1.3.5: Unknown arg `--iif'
+Try `iptables -h' or 'iptables --help' for more information.
 
->Hi!
->
->The netfilter project presents another development release of the
->conntrack-tools. As usual, this release includes important fixes,
->improvements and new features, mainly:
-
-The git tag for 0.9.10 seems to be missing.
-
-
-Thanks,
-Jan
+I'm a bit baffled. I can't find anything in the man page that I'm
+missing. It seems like this *should* work.
