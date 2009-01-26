@@ -1,37 +1,56 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Is the libnetfilter_queue thread-safe?
-Date: Mon, 26 Jan 2009 14:21:57 +0100
-Message-ID: <497DB8F5.80600@trash.net>
-References: <web-4707182@mail.primecreation.com> <1232696125.22893.5.camel@ice-age>
+From: Andy Theuninck <gohanman@gmail.com>
+Subject: Re: --iif argument unrecognized by iptables
+Date: Mon, 26 Jan 2009 08:46:43 -0600
+Message-ID: <f8a02f3e0901260646p3791088dmb591400469cc2454@mail.gmail.com>
+References: <f8a02f3e0901251559q6324e3faqc75af6d16eba8038@mail.gmail.com>
+	 <497D88FA.2060005@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1232696125.22893.5.camel@ice-age>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=l30zBRlcmmZsT0gwcw6ZFZV2w59MpEvWIUm3al5UO2w=;
+        b=MFcsSl+njdtC+j6riw9jUUDaqE384kT7h+ojpgD3SngVkR0PM5wUAf1FXX36gnBtFI
+         HvVxG2x5dGUTqCYlm9KuF59qVq8fP71Kbvw8FaLSt9iH6IH3Qb3GvP16di8UK9jibj4+
+         VQnmqR/fr/Kelv6sNz9CppAinRxeLOrYQunuw=
+In-Reply-To: <497D88FA.2060005@plouf.fr.eu.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Eric Leblond <eric@inl.fr>
-Cc: Jacky Luk <jacky.luk@primecreation.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Eric Leblond wrote:
-> Hi,
->=20
-> Le vendredi 23 janvier 2009 =E0 12:02 +0800, Jacky Luk a =E9crit :
->> Hi,
+iptables -j ROUTE -h gives identical output to iptables -h.
+
+Thanks for the tip though. Apparently ROUTE isn't going to solve my
+problem anyway.
+
+On Mon, Jan 26, 2009 at 3:57 AM, Pascal Hambourg
+<pascal.mail@plouf.fr.eu.org> wrote:
+> Hello,
+>
+> Andy Theuninck a =E9crit :
 >>
->> I would like to ask a question about the=20
->> libnetfilter_queue. Is the libnetfilter_queue thread-safe?=20
->=20
-> Is had yet to be decide :/ From my experience on NuFW, you can use it
-> with multithreaded programs and you can have a reading thread and a
-> writing thread working together on the same queue.
-
-I think it should be as long as you don't change anything related
-to the handle while using it. The remaining parts are merely a
-stateless communication mechanism, there's no reason why they
-shouldn't be thread-safe.
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>> # iptables -t mangle -A INPUT -d 192.168.1.2 -s !
+>> 192.168.1.0/255.255.255.0 -p udp --dport 500 -j ROUTE --iif eth0:1
+>> iptables v1.3.5: Unknown arg `--iif'
+>> Try `iptables -h' or 'iptables --help' for more information.
+>
+> Maybe your iptables was build without the ROUTE support. What is the =
+output
+> of :
+>
+> iptables -j ROUTE -h
+>
+> Unrelated to the error message, eth0:0 is not an interface name but a=
+n IP
+> alias label. Iptables rules require interface names such as eth0, not
+> aliases.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
