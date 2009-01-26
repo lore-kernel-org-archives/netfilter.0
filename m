@@ -1,71 +1,95 @@
-From: Andy Theuninck <gohanman@gmail.com>
-Subject: Re: --iif argument unrecognized by iptables
-Date: Mon, 26 Jan 2009 09:23:59 -0600
-Message-ID: <f8a02f3e0901260723p66665a7ex35d712709b0f6207@mail.gmail.com>
-References: <f8a02f3e0901251559q6324e3faqc75af6d16eba8038@mail.gmail.com>
-	 <497D88FA.2060005@plouf.fr.eu.org>
-	 <f8a02f3e0901260646p3791088dmb591400469cc2454@mail.gmail.com>
-	 <497DD2F9.2010004@plouf.fr.eu.org>
+From: Yoann Juet <yoann.juet@univ-nantes.fr>
+Subject: Re: Second failover failure with conntrackd - INVALID packets
+Date: Mon, 26 Jan 2009 20:27:37 +0100
+Message-ID: <497E0EA9.1020408@univ-nantes.fr>
+References: <497760CB.6090008@univ-nantes.fr> <49778AF4.7000201@netfilter.org> <4978425F.1030003@univ-nantes.fr> <4978A4F8.5060901@netfilter.org> <4979BA72.50405@univ-nantes.fr> <497C4440.7050809@netfilter.org> <497CA7A2.2000906@netfilter.org>
+Reply-To: yoann.juet@univ-nantes.fr
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed;
+ boundary="------------080406030006000708000407"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=V1F3BhK17Z512z4MBvbtlL5iZhIwbrK9rp2wmFiZqAg=;
-        b=aRlxSEEpBjYfoXyx33WUB2U9tUFblfRglNfgxEShqdXo22MaDaUQzcE3Bz6HwRQmXv
-         WqbLhpJkABUmnLL2jex9ibiw8eNKNq7ewU/HerAmI1I6ralu4Dm30HLxdZ+M89TSPvY5
-         kwm1G+RrGloya89ZEY9R8UehakMcM2fvOkA4o=
-In-Reply-To: <497DD2F9.2010004@plouf.fr.eu.org>
+In-Reply-To: <497CA7A2.2000906@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-Yep. iptables -j ROUTE -h | grep -i ROUTE gives no output at all. So
-CentOS and/or RHEL must need rebuilding like you said.
+This is a multi-part message in MIME format.
+--------------080406030006000708000407
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I was actually trying to ROUTE to an IP alias to get around an ipsec
-problem introduced by a Red Hat patch. If I have to rebuild something
-either way, I'll go straight to the source of the trouble and
-recompile openswan without the problem patch.
+Hi pablo !
 
-On Mon, Jan 26, 2009 at 9:12 AM, Pascal Hambourg
-<pascal.mail@plouf.fr.eu.org> wrote:
-> Andy Theuninck a =E9crit :
+> that were fixed in the subsequent kernel releases, but I did not know
+> any that affected the internal TCP flags set/unset. As these stuff is
+> under development, I suggest you to use the latest Linux kernel, 
+>please let me know if the problem persists.
+
+I still have the same symptoms with a 2.6.28-2 kernel. My testbed is not 
+so far away from yours:
+
+You        		Me
+----------------------------------
+Etch <-> 		Lenny
+2.6.28 <-> 		2.6.28-2
+conntrack 0.9.9? <-> 	conntrack 0.9.9
+ftfw mode <-> 		ftfw mode
+keepalived 1.1.15 <-> 	heartbeat 2.1.3
+no virtualization <-> 	KVM with net virtio
+
+On your opinion, could it be the side effect of KVM ? Unfortunately, I 
+cannot do without KVM, and cannot test easily without...
+
+Regards,
+
+Pablo Neira Ayuso wrote:
+> Pablo Neira Ayuso wrote:
+>> Yoann Juet wrote:
+>>> "Error parsing config file: line (190), symbol 'from': syntax error"
+>>>
+>>> I have to delete it to make starting conntrackd.
+>> Filter From Kernelspace {
+>>          Protocol Accept {
+>>                 TCP
+>>          }
+>>          Address Ignore {
+>>                 IPv4_address 127.0.0.1 # loopback
+>>          }
+>> }
 >>
->> iptables -j ROUTE -h gives identical output to iptables -h.
->
-> Even at the very end ? It should display help about the ROUTE target =
-like
-> here :
->
->> ROUTE target v1.11 options:
->>    --oif       ifname          Route packet through `ifname' network
->> interface
->>    --iif       ifname          Change packet's incoming interface to
->> `ifname'
->>    --gw        ip              Route packet via this gateway `ip'
->>    --continue                  Route packet and continue traversing =
-the
->>                                rules. Not valid with --iif or --tee.
->>    --tee                       Duplicate packet, route the duplicate=
-,
->>                                continue traversing with original pac=
-ket.
->>                                Not valid with --iif or --continue.
->
-> Else it means this target is not supported by your iptables build.
-> I remember that (by default ?) some versions built only shared librar=
-ies for
-> matches and target supported in the kernel, so you had to rebuild ipt=
-ables
-> after enabling a new feature in the kernel.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+>> It works here fine. Error reporting in the parsing is not very precise
+>> yet, probably the problem is not in Filter but before (something is
+>> missing and the parser gets confused). Could you post your config file
+>> to reproduce it? You can send it to me in private if you want.
+> 
+> Sorry, you're right. There is a typo in the example files. I have
+> applied the following fix to the git (will be available in
+> conntrack-tools-0.9.10).
+> 
+> 
+
+
+
+--------------080406030006000708000407
+Content-Type: text/x-vcard; charset=utf-8;
+ name="yoann_juet.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="yoann_juet.vcf"
+
+begin:vcard
+fn:Yoann Juet
+n:Juet;Yoann
+org;quoted-printable:;DSI Universit=C3=A9 de Nantes
+adr;quoted-printable:BP92208;;2, rue de la Houssini=C3=A8re;Nantes;;44322;France
+email;internet:yoann.juet@univ-nantes.fr
+title;quoted-printable:Ing=C3=A9nieur s=C3=A9curit=C3=A9 & r=C3=A9seau
+tel;work:02.51.12.53.93
+tel;fax:02.51.12.58.60
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
+
+
+--------------080406030006000708000407--
