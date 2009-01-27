@@ -1,40 +1,38 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: martian destination and RAW iptable
-Date: Tue, 27 Jan 2009 19:19:58 +0100
-Message-ID: <497F504E.9040807@chello.at>
-References: <ea182b20901270724r3c7909dbo7ddec6bc92c8afa6@mail.gmail.com> <ea182b20901270725n3fde42e4i166b346a919a3050@mail.gmail.com>
+From: Fabio De Paolis <fabiodepaolis@naxe.it>
+Subject: NAT Port Forward problem in a not so simple network
+Date: Tue, 27 Jan 2009 20:10:16 +0100
+Message-ID: <497F5C18.8010703@naxe.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ea182b20901270725n3fde42e4i166b346a919a3050@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Yury Polyanskiy wrote:
-> Hello everyone!
->
-> I wanted to filter out the annoying logs:
->
-> Jan 24 00:19:54 tetra kernel: martian destination 0.0.0.0 from 1.2.3.4, dev eth0
->
-> and issued the following:
->
-> #iptables -t raw -I PREROUTING -s 1.2.3.4 -d 0.0.0.0 -j DROP
-> #iptables -t raw -I PREROUTING -s 1.2.3.4 -j DROP
->
-> Amazingly, I'm still getting those pesky log messages. How is this possible?
->
-> # uname -a
-> Linux xxx.xxx.xxx.EDU 2.6.28 #1 SMP PREEMPT Fri Jan 16 00:41:03 EST
-> 2009 i686 GNU/Linux
->
->   
-find /proc -name log_martians
+Hi to all,
 
-set the one for your interface to `0'.
+I'm sure this thread is quite old,
+but I would like to ask to this nice mailing list what is best way to
+achieve a bandwidth limit with IpTables/NetFilter
 
-greets
+I have several server with Debian Sarge stable
+Linux 2.6.18-6-686 #1 SMP i686 GNU/Linux
 
-mart
+And with IpTables v1.3.6
+
+The bandwidth of the network is 10Mbit
+I would like to limit the network traffic for each server to 250KByte/sec
+This limit should be for upstram and dowstream
+
+I searched around and have read a lot about:
+shaper, wondershaper, tc, qdisc, etc.
+And also about monitoring to see if it work:
+ntop, sntop, iptraf, etc.
+
+But I'm not sure what are pro and cons of each method.
+I'm sure you can tell more!
+
+Thanks in advance.
+
+
