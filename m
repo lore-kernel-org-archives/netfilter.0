@@ -1,55 +1,133 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: NAT Port Forward problem in a not so simple network
-Date: Tue, 27 Jan 2009 21:34:27 +0100
-Message-ID: <20090127213427.54f5ee07@catlap>
-References: <497F5C18.8010703@naxe.it>
+From: "Hodapp Jim (CDI)" <Jim.Hodapp@thomson.net>
+Subject: RE:  Problems adding a simple rule via iptables on an embedded Linux target
+Date: Tue, 27 Jan 2009 15:37:00 -0500
+Message-ID: <DF1CDCC7B707E84D99DE102AA0730F7B011E3CE3@INDYSMAILMB03.am.thmulti.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <497F5C18.8010703@naxe.it>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Fabio De Paolis <fabiodepaolis@naxe.it>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
->Hi to all,
+Does anyone have any thoughts or can at least point me to a good place
+on the web that guides one through setting up a firewall on a fresh
+Linux box that does not have netfilter/iptables compiled into the kernel
+yet?
+
+Thanks,
+
+
+Jim Hodapp
+
+
+-----Original Message-----
+From: Hodapp Jim (CDI) 
+Sent: Thursday, January 22, 2009 10:21 AM
+To: 'netfilter@vger.kernel.org'
+Subject: Problems adding a simple rule via iptables on an embedded Linux
+target
 
 Hi,
+I am trying to enable a very simple firewall on an embedded target that
+my team is developing. We're running a stock Linux kernel, version
+2.6.18.5. Below you can see that at least for a test, I've compiled in
+the main netfilter/iptables functionality into the kernel and have
+enabled everything else as a module. When the target boots up, this is
+what "iptables -L" outputs:
 
->This limit should be for upstram and dowstream
->I searched around and have read a lot about:
->shaper, wondershaper, tc, qdisc, etc.
->But I'm not sure what are pro and cons of each method.
->I'm sure you can tell more!
+Chain INPUT (policy ACCEPT)
+target prot opt source destination
+Chain FORWARD (policy ACCEPT)
+target prot opt source destination
+Chain OUTPUT (policy ACCEPT)
+target prot opt source destination
 
-I recommend using tc tool[1]& IFB device[2] & htb qdisc[3] & u32
-filter[4] for the job. Following page contains HTB user guide with
-examples[5]. Building configuration to suit your needs shouldn't be too
-hard. If you have any problems just ask.
+As a simple example (one in which I know works on my local desktop
+Ubuntu 8.10 machine even starting with the same policy as listed above),
+I'm trying to add the rule from the shell as follows: "iptables -A INPUT
+-s 0/0 -d 0/0 -p tcp --dport 22 -j ACCEPT"
 
-General idea:
-- Let's assume eth0 is your upstream interface (to Internet) that you do
-NAT on and eth1 is downstream interface connected to servers,
-- Downstream shaping would be done on eth1,
-- Ingress traffic on eth1 would be redirected to ifb0 [2],
-- Upstream shaping would be done on ifb0 (source addresses of
-traffic from your servers would be pre-nat addresses, so no need for
-iptables packet marking - u32 filter[4] is usable).
+What I get back is: "iptables: match `tcp' already registered." An
+"iptables -L" confirms that it did not add the rule to the list. I have
+not been able to find anything via google of other people having this
+kind of problem, so I thought I'd email this mailing list to see what
+I've missed.
 
->And also about monitoring to see if it work:
->ntop, sntop, iptraf, etc.
+Here's my netfilter/iptables kernel config section: 
 
-tc tool[1] with specific parameters (eg. "tc -s -d class sh dev eth0")
-can show you rates and pps of each class on specified interface.
+#
+# IP: Virtual Server Configuration
+#
+# CONFIG_IP_VS is not set
+# CONFIG_IPV6 is not set
+# CONFIG_INET6_XFRM_TUNNEL is not set
+# CONFIG_INET6_TUNNEL is not set
+# CONFIG_NETWORK_SECMARK is not set
+CONFIG_NETFILTER=y
+# CONFIG_NETFILTER_DEBUG is not set
+#
+# Core Netfilter Configuration
+#
+CONFIG_NETFILTER_NETLINK=m
+CONFIG_NETFILTER_NETLINK_QUEUE=m
+CONFIG_NETFILTER_NETLINK_LOG=m
+CONFIG_NETFILTER_XTABLES=m
+CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+# CONFIG_NETFILTER_XT_TARGET_CONNMARK is not set
+CONFIG_NETFILTER_XT_TARGET_MARK=m CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
+CONFIG_NETFILTER_XT_TARGET_NOTRACK=m
+CONFIG_NETFILTER_XT_MATCH_COMMENT=m
+# CONFIG_NETFILTER_XT_MATCH_CONNBYTES is not set #
+CONFIG_NETFILTER_XT_MATCH_CONNMARK is not set
+CONFIG_NETFILTER_XT_MATCH_CONNTRACK=m
+CONFIG_NETFILTER_XT_MATCH_DCCP=m
+CONFIG_NETFILTER_XT_MATCH_ESP=m
+CONFIG_NETFILTER_XT_MATCH_HELPER=m
+CONFIG_NETFILTER_XT_MATCH_LENGTH=m
+CONFIG_NETFILTER_XT_MATCH_LIMIT=m
+CONFIG_NETFILTER_XT_MATCH_MAC=m
+CONFIG_NETFILTER_XT_MATCH_MARK=m
+CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
+CONFIG_NETFILTER_XT_MATCH_PKTTYPE=m
+CONFIG_NETFILTER_XT_MATCH_QUOTA=m
+CONFIG_NETFILTER_XT_MATCH_REALM=m
+CONFIG_NETFILTER_XT_MATCH_SCTP=m
+CONFIG_NETFILTER_XT_MATCH_STATE=m
+CONFIG_NETFILTER_XT_MATCH_STATISTIC=m
+CONFIG_NETFILTER_XT_MATCH_STRING=m
+CONFIG_NETFILTER_XT_MATCH_TCPMSS=m
+#
+# IP: Netfilter Configuration
+#
+CONFIG_IP_NF_CONNTRACK=m
+CONFIG_IP_NF_CT_ACCT=y
+CONFIG_IP_NF_CONNTRACK_MARK=y
+# CONFIG_IP_NF_CONNTRACK_EVENTS is not set #
+CONFIG_IP_NF_CONNTRACK_NETLINK is not set # CONFIG_IP_NF_CT_PROTO_SCTP
+is not set CONFIG_IP_NF_FTP=m # CONFIG_IP_NF_IRC is not set #
+CONFIG_IP_NF_NETBIOS_NS is not set CONFIG_IP_NF_TFTP=m #
+CONFIG_IP_NF_AMANDA is not set # CONFIG_IP_NF_PPTP is not set #
+CONFIG_IP_NF_H323 is not set # CONFIG_IP_NF_SIP is not set #
+CONFIG_IP_NF_QUEUE is not set CONFIG_IP_NF_IPTABLES=m
+CONFIG_IP_NF_MATCH_IPRANGE=m CONFIG_IP_NF_MATCH_TOS=m
+CONFIG_IP_NF_MATCH_RECENT=m CONFIG_IP_NF_MATCH_ECN=m
+CONFIG_IP_NF_MATCH_DSCP=m CONFIG_IP_NF_MATCH_AH=m
+CONFIG_IP_NF_MATCH_TTL=m CONFIG_IP_NF_MATCH_OWNER=m
+CONFIG_IP_NF_MATCH_ADDRTYPE=m CONFIG_IP_NF_MATCH_HASHLIMIT=m
+CONFIG_IP_NF_FILTER=m CONFIG_IP_NF_TARGET_REJECT=m
+CONFIG_IP_NF_TARGET_LOG=m CONFIG_IP_NF_TARGET_ULOG=m
+CONFIG_IP_NF_TARGET_TCPMSS=m # CONFIG_IP_NF_NAT is not set
+CONFIG_IP_NF_MANGLE=m CONFIG_IP_NF_TARGET_TOS=m
+CONFIG_IP_NF_TARGET_ECN=m CONFIG_IP_NF_TARGET_DSCP=m
+CONFIG_IP_NF_TARGET_TTL=m # CONFIG_IP_NF_TARGET_CLUSTERIP is not set
+CONFIG_IP_NF_RAW=m # CONFIG_IP_NF_ARPTABLES is not set 
 
-Good luck in your endeavours.
 
-[1] http://linux.die.net/man/8/tc
-[2] http://www.linuxfoundation.org/en/Net:IFB
-[3] http://linux.die.net/man/8/tc-htb
-[4] http://tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.adv-filter.u32.html
-[5] http://luxik.cdi.cz/~devik/qos/htb/manual/userg.htm
+Thanks,
+Jim Hodapp 
 
-Regards,
-Marek Kierdelewicz
+Thomson Inc. 
+Colony Project Software Engineer 
+
