@@ -1,81 +1,62 @@
 From: Kostas Pelechrinis <kpele_ntua@yahoo.com>
 Subject: Re: Blocking outgoing 802.11 ACKs
-Date: Wed, 28 Jan 2009 04:06:22 -0800 (PST)
-Message-ID: <386978.92907.qm@web31606.mail.mud.yahoo.com>
-References: <d39744a20901280329y4a2edc9yc0f7c59eb86c4bbc@mail.gmail.com>
+Date: Wed, 28 Jan 2009 04:08:35 -0800 (PST)
+Message-ID: <769867.61314.qm@web31602.mail.mud.yahoo.com>
+References: <alpine.DEB.2.00.0901281257540.22626@aurora.sdinet.de>
 Reply-To: kpele_ntua@yahoo.com
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d39744a20901280329y4a2edc9yc0f7c59eb86c4bbc@mail.gmail.com>
+In-Reply-To: <alpine.DEB.2.00.0901281257540.22626@aurora.sdinet.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ivan Petrushev <ivanatora@gmail.com>
+To: Sven-Haegar Koch <haegar@sdinet.de>
 Cc: netfilter@vger.kernel.org
 
-Hi Ivan,
+Hi Sven,
 
-thanks a lot for the info about the nth module.  Well I know that the quality of the link is going to drop but this is what exactly I want :) I want to force a client "reduce" its rate by not sending ACKs to him.  My concern is that 802.11 ACKs are being handled at the firmware and I do not know if iptables can handle this.  
+thanks for the reply.  I just saw it.  Thanks for the info.  I was afraid that this would be the case :)
 
-Anyone knows anything about this?
-
-Thanks a lot,
+Thanks,
 Kostas
 
 
---- On Wed, 1/28/09, Ivan Petrushev <ivanatora@gmail.com> wrote:
+--- On Wed, 1/28/09, Sven-Haegar Koch <haegar@sdinet.de> wrote:
 
-> From: Ivan Petrushev <ivanatora@gmail.com>
+> From: Sven-Haegar Koch <haegar@sdinet.de>
 > Subject: Re: Blocking outgoing 802.11 ACKs
-> To: kpele_ntua@yahoo.com
+> To: "Kostas Pelechrinis" <kpele_ntua@yahoo.com>
 > Cc: netfilter@vger.kernel.org
-> Date: Wednesday, January 28, 2009, 6:29 AM
-> iptables has "nth" match extension that matches
-> every n-th packet. It
-> is described in the man page.
-> But why would you want to drop ACK packets? That would have
-> negative
-> impact on your link.
+> Date: Wednesday, January 28, 2009, 7:00 AM
+> On Wed, 28 Jan 2009, Kostas Pelechrinis wrote:
 > 
-> Ivan.
-> 
-> On Wed, Jan 28, 2009 at 12:41 PM, Kostas Pelechrinis
-> <kpele_ntua@yahoo.com> wrote:
-> > Hi all,
-> >
 > > I have two nodes communicating via their wireless
-> interfaces.  Let us assume that node A sends packets to node
-> B.  Once node B is receiving the packets, he transmits the
-> 802.11 ACK frame.  What I want to do is to prevent node B
-> from sending this ACK frames once every two packets for
-> example.
-> >
-> > One indirect way I have thought about is setting the
-> following rule to node B:
-> >
-> > iptables -A INPUT -i ath0 -m limit --limit
-> _SPECIFIED-LIMIT_ -s _NODE'S A IP_ -j DROP
-> >
-> > However,  I am not sure if this prevents the 802.11
-> ACKs from being transmitted.  This has to do with the place
-> where the above rule is being enforced.
-> >
-> > Do you have any comments or suggestions on how I can
-> achieve what I am trying to?
-> >
-> > Thanks,
-> > Kostas
-> >
-> >
-> >
-> > --
-> > To unsubscribe from this list: send the line
-> "unsubscribe netfilter" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at 
-> http://vger.kernel.org/majordomo-info.html
-> >
+> interfaces.  Let us 
+> > assume that node A sends packets to node B.  Once node
+> B is receiving 
+> > the packets, he transmits the 802.11 ACK frame.  What
+> I want to do is 
+> > to prevent node B from sending this ACK frames once
+> every two packets 
+> > for example. 
+> 
+> iptables does not see 802.11 ACK frames, and depending on
+> the used 
+> driver they are even invisible to the layers below IP, as
+> they are 
+> generated/handled in hardware/firmware of the wireless
+> interface.
+> 
+> I do not see a "normal" way to block them beside
+> modifying the wireless 
+> driver or mac80211 layer (if used by your driver).
+> 
+> c'ya
+> sven
+> 
+> -- 
+> The lights are fading out, once more...
 
 
       
