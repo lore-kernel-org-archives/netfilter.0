@@ -1,39 +1,31 @@
-From: Rick Jones <rick.jones2@hp.com>
+From: Tore Anderson <tore.anderson@redpill-linpro.com>
 Subject: Re: SMP load balancing of softirqs
-Date: Thu, 29 Jan 2009 09:33:50 -0800
-Message-ID: <4981E87E.2070103@hp.com>
-References: <49817DD4.1010402@redpill-linpro.com> <1233226181.13705.24.camel@enterprise.ims-firmen.de>
+Date: Thu, 29 Jan 2009 21:26:48 +0100
+Message-ID: <49821108.4090900@redpill-linpro.com>
+References: <49817DD4.1010402@redpill-linpro.com>	 <1233226181.13705.24.camel@enterprise.ims-firmen.de>	 <498191AD.7010302@redpill-linpro.com> <1233230764.8230.8.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1233226181.13705.24.camel@enterprise.ims-firmen.de>
+In-Reply-To: <1233230764.8230.8.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: Thomas Jacob <jacob@internet24.de>
-Cc: Tore Anderson <tore.anderson@redpill-linpro.com>, netfilter@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-> Some newer NICs (some of Intel's for instance) support several packet
-> queues to make it possible to deal with just this problem.
+* Thomas Jacob
 
-I think it may be more than just "some" newer/newish 10Gig NICs actually. 
-Besides Intel, ChelsIO and Neterion and Broadcom come to mind, and probably 
-Myricom and SolarFlare (did they merge with someone?) and certainly others.  I 
-think that Cisco and Qlogic also offer 10G NICs these days.
+> Don't know about the current state of general Linux driver support for
+> this, but the Intel hardware also supports multiple RX queues:
+> 
+> http://www.intel.com/network/connectivity/resources/technologies/10_gigabit_ethernet.htm
 
-> It would be great if you'd let the list know of the results should you
-> try to use one of the multiqueue NICs for a netfilter firewall, I for
-> one am very curious...
+This (MSI-X and/or Receive-Side Scaling) looks like exactly the kind of
+functionality I need.  Thank you very much for the pointer!  I'll make
+sure to let you know how it goes if I get one of these cards in my lab.
 
-IIRC there are sort of "two" multiqueues - there is the older, more established 
-"inbound" multiqueue stuff - what Microsoft has everyone calling RSS or Recieve 
-Side Scaling (or am I mixing terms?) that only affects inbound packets.
-
-Then there is "tx (transmit) multiqueue" which is rather newer (first in 2.6.26 
-kernels?) and still "evolving."
-
-If you are forwarding traffic, you probably want both, and likely as not probably 
-want to be on as current (bleeding edge) a kernel and NIC drivers as you can 
-stomache.
-
-rick jones
+Best regards,
+-- 
+Tore Anderson
+Redpill Linpro AS - http://www.redpill-linpro.com/
+Tel: +47 21 54 41 27
